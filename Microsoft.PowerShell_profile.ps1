@@ -241,21 +241,7 @@ if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
 
         }
     }
-    
-    # ALIAS
-    Set-Alias -Name ip -Value ipconfig
-    Set-Alias -Name np -Value notepad
-    Set-Alias -Name v -Value nvim
-    Set-Alias -Name o -Value ollama
-
-    function go {
-        . $PROFILE
-    }
-
-    function folder {
-        start .
-    }
-
+    # DOTNET CREATE PROJECT
     function console {
         param(
             [string]$projectName
@@ -325,4 +311,97 @@ if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
     }
 
     Set-RandomOhMyPoshTheme
+    # GIT COMMANDS
+    function gc {
+        param(
+            [string]$commitMessage
+        )
+        
+        # Commits changes with the provided commit message
+        git commit -m $commitMessage
+    }
+    function co {
+        param(
+            [string]$branchName
+        )
+        
+        # Creates and switches to a new Git branch
+        git checkout -b $branchName
+    }
+    function ga {
+        git add .
+    }
+    function glo {
+        git log --graph --oneline --decorate --all
+    }
+    function gl {
+        git log
+    }
+    function gs {
+        git status
+    }
+
+    # function gp {
+    #     git pull
+    # }
+    function gf {
+        git fetch --all
+    }
+    function gu {
+        git push
+    }
+    # function gm {
+    #     git merge
+    # }
+    function glc {
+        git show --stat HEAD
+    }
+    function grh {
+        git reset --hard
+    }
+    function gr {
+        git reset HEAD~
+    }
+    function gb {
+        git branch
+    }
+    
+
+    # DOCKER COMMAND
+    function dkcl {
+        docker container ls
+    }
+    function dkrmac {
+        docker rm $(docker container ls -aq)
+    }
+    function dkstac {
+        docker stop $(docker container ls -aq)
+    }
+    function dkcpu {
+        docker-compose up
+    }
+    function dkcpub {
+        docker-compose up --build
+    }
+    function fix-volume {
+        docker volume prune
+    }
+    function fix-image {
+        docker image prune
+    }
 }
+
+
+function go {
+    . $PROFILE
+}
+
+function folder {
+    start .
+}
+
+# ALIAS
+Set-Alias -Name ip -Value ipconfig
+Set-Alias -Name np -Value notepad
+Set-Alias -Name v -Value nvim
+Set-Alias -Name o -Value ollama
