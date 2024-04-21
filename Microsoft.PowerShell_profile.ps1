@@ -389,8 +389,27 @@ if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
     function fix-image {
         docker image prune
     }
-}
+    # OLLAMA COMMANDS
+    function ol{
+        ollama list
+    }
+    
+    function or {
+        param(
+            [string]$model
+        )
 
+        ollama run $model
+    }
+
+    function orv {
+        param(
+            [string]$model
+        )
+
+        ollama run $model --verbose
+    }
+}
 
 function go {
     . $PROFILE
