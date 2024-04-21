@@ -4,90 +4,6 @@ oh-my-posh --init --shell pwsh --config "$env:POSH_THEMES_PATH\op-my-posh-v3.omp
 # amp.omp.json is minimalis theme
 # op-my-posh-v3.omp.json
 
-# ALIAS
-Set-Alias -Name ip -Value ipconfig
-Set-Alias -Name np -Value notepad
-Set-Alias -Name v -Value nvim
-Set-Alias -Name o -Value ollama
-
-function go {
-    . $PROFILE
-}
-
-function open {
-    start .
-}
-
-function console {
-    param(
-        [string]$projectName
-    )
-    
-    mkdir $projectName
-    Set-Location $projectName
-    dotnet new console -n $projectName
-    Set-Location $projectName
-    code .
-    dotnet new gitignore
-    git init
-    git add .
-    git commit -m "init"
-    dotnet run
-}
-
-function webapi {
-    param(
-        [string]$projectName
-    )
-    mkdir $projectName
-    Set-Location $projectName
-    dotnet new webapi -n $projectName
-    Set-Location $projectName
-    code .
-    dotnet new gitignore
-    git init
-    git add .
-    git commit -m "Initial commit"
-    dotnet run
-}
-
-function read {
-    param(
-        [string]$filePath
-    )
-
-    # Open the specified file or directory in Visual Studio Code
-    code -r $filePath
-}
-
-# FUNCTION
-function Set-RandomOhMyPoshTheme {
-    # Get all theme files in the POSH_THEMES_PATH directory
-    $themesPath = $env:POSH_THEMES_PATH
-    $themeFiles = Get-ChildItem -Path $themesPath -Filter *.omp.json -File
-
-    # Randomly select a theme file
-    $randomThemeFile = $themeFiles | Get-Random -Count 1
-
-    # Construct the full path to the selected theme file
-    $fullThemePath = Join-Path -Path $themesPath -ChildPath $randomThemeFile.Name
-
-    # Set the Oh-My-Posh theme using the randomly selected theme file
-    oh-my-posh --init --shell pwsh --config $fullThemePath | Invoke-Expression
-
-    "$fullThemePath"
-}
-
-function fact {
-    irm -Uri https://uselessfacts.jsph.pl/random.json?language=en | Select -ExpandProperty text
-}
-
-function joke {
-    irm https://icanhazdadjoke.com/ -Headers @{accept = 'application/json' } | select -ExpandProperty joke
-}
-
-Set-RandomOhMyPoshTheme
-
 if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
     # Import the PSReadline module
     Import-Module PSReadline 
@@ -325,4 +241,88 @@ if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
 
         }
     }
+    
+    # ALIAS
+    Set-Alias -Name ip -Value ipconfig
+    Set-Alias -Name np -Value notepad
+    Set-Alias -Name v -Value nvim
+    Set-Alias -Name o -Value ollama
+
+    function go {
+        . $PROFILE
+    }
+
+    function folder {
+        start .
+    }
+
+    function console {
+        param(
+            [string]$projectName
+        )
+    
+        mkdir $projectName
+        Set-Location $projectName
+        dotnet new console -n $projectName
+        Set-Location $projectName
+        code .
+        dotnet new gitignore
+        git init
+        git add .
+        git commit -m "init"
+        dotnet run
+    }
+
+    function webapi {
+        param(
+            [string]$projectName
+        )
+        mkdir $projectName
+        Set-Location $projectName
+        dotnet new webapi -n $projectName
+        Set-Location $projectName
+        code .
+        dotnet new gitignore
+        git init
+        git add .
+        git commit -m "Initial commit"
+        dotnet run
+    }
+
+    function read {
+        param(
+            [string]$filePath
+        )
+
+        # Open the specified file or directory in Visual Studio Code
+        code -r $filePath
+    }
+
+    # FUNCTION
+    function Set-RandomOhMyPoshTheme {
+        # Get all theme files in the POSH_THEMES_PATH directory
+        $themesPath = $env:POSH_THEMES_PATH
+        $themeFiles = Get-ChildItem -Path $themesPath -Filter *.omp.json -File
+
+        # Randomly select a theme file
+        $randomThemeFile = $themeFiles | Get-Random -Count 1
+
+        # Construct the full path to the selected theme file
+        $fullThemePath = Join-Path -Path $themesPath -ChildPath $randomThemeFile.Name
+
+        # Set the Oh-My-Posh theme using the randomly selected theme file
+        oh-my-posh --init --shell pwsh --config $fullThemePath | Invoke-Expression
+
+        "$fullThemePath"
+    }
+
+    function fact {
+        irm -Uri https://uselessfacts.jsph.pl/random.json?language=en | Select -ExpandProperty text
+    }
+
+    function joke {
+        irm https://icanhazdadjoke.com/ -Headers @{accept = 'application/json' } | select -ExpandProperty joke
+    }
+
+    Set-RandomOhMyPoshTheme
 }
