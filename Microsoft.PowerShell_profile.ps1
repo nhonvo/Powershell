@@ -1,9 +1,10 @@
 $env:POSH_THEMES_PATH = "$env:USERPROFILE\Documents\PowerShell\powershell-themes"
 # INIT
-oh-my-posh --init --shell pwsh --config "$env:POSH_THEMES_PATH\op-my-posh-v3.omp.json" | Invoke-Expression
-# amp.omp.json is minimalis theme
-# op-my-posh-v3.omp.json
-
+oh-my-posh --init --shell pwsh --config "$env:POSH_THEMES_PATH\neko.omp.json" | Invoke-Expression
+# Quick commands
+# - rand -> random themes
+# - go -> apply new code
+#  
 if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
     # Import the PSReadline module
     Import-Module PSReadline 
@@ -241,7 +242,34 @@ if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
 
         }
     }
-    # DOTNET CREATE PROJECT
+    # DOTNET 
+    function dr{
+        dotnet run
+    }
+
+    function dw{
+        dotnet watch
+    }
+    
+    function db{
+        dotnet build
+    }
+    function df{
+        dotnet format
+    }
+    # DOTNET migrations
+    function du{
+        dotnet ef database update
+    }
+    function da{
+        dotnet ef migrations add $1
+    }
+    function dd{
+        dotnet ef database drop
+    }
+    function dremove{
+        dotnet ef migrations remove
+    }
     function console {
         param(
             [string]$projectName
@@ -285,7 +313,7 @@ if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
     }
 
     # FUNCTION
-    function Set-RandomOhMyPoshTheme {
+    function rand {
         # Get all theme files in the POSH_THEMES_PATH directory
         $themesPath = $env:POSH_THEMES_PATH
         $themeFiles = Get-ChildItem -Path $themesPath -Filter *.omp.json -File
@@ -310,7 +338,7 @@ if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
         irm https://icanhazdadjoke.com/ -Headers @{accept = 'application/json' } | select -ExpandProperty joke
     }
 
-    Set-RandomOhMyPoshTheme
+    # Set-RandomOhMyPoshTheme
     # GIT COMMANDS
     function gc {
         param(
