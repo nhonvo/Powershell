@@ -1,24 +1,38 @@
-$env:POSH_THEMES_PATH = "$env:USERPROFILE\Documents\PowerShell\powershell-themes"
-# INIT
-oh-my-posh --init --shell pwsh --config "$env:POSH_THEMES_PATH\neko.omp.json" | Invoke-Expression
-# Quick commands
-# - rand -> random themes
-# - go -> apply new code
-#  
-if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
-    # Import the PSReadline module
-    Import-Module PSReadline 
-    Import-Module -Name Terminal-Icons
+# INIT_COMMANDS
+# CUSTOM_HOTKEYS 
+# DOTNET_COMMANDS 
+# GIT_COMMANDS 
+# DOCKER_COMMANDS 
+# AWS_COMMANDS 
 
-    # Set PSReadline options
-    Set-PSReadLineOption -EditMode Windows
-    Set-PSReadLineOption -PredictionSource History
-    Set-PSReadLineOption -PredictionViewStyle ListView 
+# ============================INIT_COMMANDS============================ 
+
+$env:POSH_THEMES_PATH = "$env:USERPROFILE\Documents\PowerShell\powershell-themes"
+oh-my-posh --init --shell pwsh --config "$env:POSH_THEMES_PATH\neko.omp.json" | Invoke-Expression
+
+# ALIAS
+Set-Alias -Name ip -Value ipconfig
+Set-Alias -Name np -Value notepad
+Set-Alias -Name v -Value nvim
+Set-Alias -Name o -Value ollama
+
+# Import the PSReadline module
+Import-Module PSReadline 
+Import-Module -Name Terminal-Icons
+
+# Set PSReadline options
+Set-PSReadLineOption -EditMode Windows
+Set-PSReadLineOption -PredictionSource History
+Set-PSReadLineOption -PredictionViewStyle ListView 
     
-    # Define custom key bindings for PSReadline
-    Set-PSReadLineKeyHandler -Function AcceptSuggestion -Key 'Ctrl+Spacebar'
-    Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
-    Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward 
+# Define custom key bindings for PSReadline
+Set-PSReadLineKeyHandler -Function AcceptSuggestion -Key 'Ctrl+Spacebar'
+Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
+Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward 
+
+
+# ============================CUSTOM_HOTKEYS============================ 
+if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
 
     # Configure PSReadline colors for syntax highlighting
     Set-PSReadlineOption -Color @{
@@ -242,93 +256,20 @@ if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
 
         }
     }
-    # DOTNET 
-    function dr{
-        dotnet run
-    }
 
-    function dw{
-        dotnet watch
-    }
-    
-    function db{
-        dotnet build
-    }
-    function df{
-        dotnet format
-    }
-    # DOTNET migrations
-    function du{
-        dotnet ef database update
-    }
-    function da{
-        dotnet ef migrations add $1
-    }
-    function dd{
-        dotnet ef database drop
-    }
-    function dremove{
-        dotnet ef migrations remove
-    }
-    function console {
-        param(
-            [string]$projectName
-        )
-    
-        mkdir $projectName
-        Set-Location $projectName
-        dotnet new console -n $projectName
-        Set-Location $projectName
-        code .
-        dotnet new gitignore
-        git init
-        git add .
-        git commit -m "init"
-        dotnet run
-    }
-
-    function webapi {
-        param(
-            [string]$projectName
-        )
-        mkdir $projectName
-        Set-Location $projectName
-        dotnet new webapi -n $projectName
-        Set-Location $projectName
-        code .
-        dotnet new gitignore
-        git init
-        git add .
-        git commit -m "Initial commit"
-        dotnet run
-    }
-
-    function read {
-        param(
-            [string]$filePath
-        )
-
-        # Open the specified file or directory in Visual Studio Code
-        code -r $filePath
-    }
-
-    # FUNCTION
-    function rand {
-        # Get all theme files in the POSH_THEMES_PATH directory
+    <#
+    # <randome-theme> random theme each create new terminal or enter "go" command
+    #>
+    function Set-RandomOhMyPoshTheme {
         $themesPath = $env:POSH_THEMES_PATH
         $themeFiles = Get-ChildItem -Path $themesPath -Filter *.omp.json -File
-
-        # Randomly select a theme file
         $randomThemeFile = $themeFiles | Get-Random -Count 1
-
-        # Construct the full path to the selected theme file
         $fullThemePath = Join-Path -Path $themesPath -ChildPath $randomThemeFile.Name
 
-        # Set the Oh-My-Posh theme using the randomly selected theme file
         oh-my-posh --init --shell pwsh --config $fullThemePath | Invoke-Expression
-
         "$fullThemePath"
     }
+    # Set-RandomOhMyPoshTheme
 
     function fact {
         irm -Uri https://uselessfacts.jsph.pl/random.json?language=en | Select -ExpandProperty text
@@ -337,118 +278,100 @@ if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
     function joke {
         irm https://icanhazdadjoke.com/ -Headers @{accept = 'application/json' } | select -ExpandProperty joke
     }
-
-    # Set-RandomOhMyPoshTheme
-    # GIT COMMANDS
-    function gc {
-        param(
-            [string]$commitMessage
-        )
-        
-        # Commits changes with the provided commit message
-        git commit -m $commitMessage
-    }
-    function co {
-        param(
-            [string]$branchName
-        )
-        
-        # Creates and switches to a new Git branch
-        git checkout -b $branchName
-    }
-    function ga {
-        git add .
-    }
-    function glo {
-        git log --graph --oneline --decorate --all
-    }
-    function gl {
-        git log
-    }
-    function gs {
-        git status
-    }
-
-    # function gp {
-    #     git pull
-    # }
-    function gf {
-        git fetch --all
-    }
-    function gu {
-        git push
-    }
-    # function gm {
-    #     git merge
-    # }
-    function glc {
-        git show --stat HEAD
-    }
-    function grh {
-        git reset --hard
-    }
-    function gr {
-        git reset HEAD~
-    }
-    function gb {
-        git branch
-    }
-    
-
-    # DOCKER COMMAND
-    function dkcl {
-        docker container ls
-    }
-    function dkrmac {
-        docker rm $(docker container ls -aq)
-    }
-    function dkstac {
-        docker stop $(docker container ls -aq)
-    }
-    function dkcpu {
-        docker-compose up
-    }
-    function dkcpub {
-        docker-compose up --build
-    }
-    function fix-volume {
-        docker volume prune
-    }
-    function fix-image {
-        docker image prune
-    }
-    # OLLAMA COMMANDS
-    function ol{
-        ollama list
-    }
-    
-    function or {
-        param(
-            [string]$model
-        )
-
-        ollama run $model
-    }
-
-    function orv {
-        param(
-            [string]$model
-        )
-
-        ollama run $model --verbose
-    }
 }
 
-function go {
-    . $PROFILE
+
+# ============================DOTNET_COMMANDS============================ 
+function dr { dotnet run } 
+function dw { dotnet watch } 
+function db { dotnet build } 
+function df { dotnet format } 
+
+# DOTNET entity framework 
+function du { dotnet ef database update } 
+function da { dotnet ef migrations add $1 } 
+function dd { dotnet ef database drop } 
+function dremove { dotnet ef migrations remove } 
+
+function console {
+    param( [string]$projectName ) 
+    mkdir $projectName
+    Set-Location $projectName
+    dotnet new console -n $projectName
+    Set-Location $projectName
+    code .
+    dotnet new gitignore
+    git init
+    git add .
+    git commit -m "init"
+    dotnet run
 }
 
-function folder {
-    start .
+function webapi {
+    param( [string]$projectName )
+    mkdir $projectName
+    Set-Location $projectName
+    dotnet new webapi -n $projectName
+    Set-Location $projectName
+    code .
+    dotnet new gitignore
+    git init
+    git add .
+    git commit -m "Initial commit"
+    dotnet run
 }
+# ============================GIT_COMMANDS============================ 
+function gc { 
+    param( [string]$commitMessage ) 
+    git commit -m $commitMessage 
+} 
+function co { param( [string]$branchName ) git checkout $branchName } 
+function cob { param( [string]$branchName ) git checkout -b $branchName } 
+function gca { git commit --amend } 
+function ga { git add . } 
+function glo { git log --graph --oneline --decorate --all } 
+function glg { git log } 
+function gs { git status } 
+function gpu { git pull } 
+function gf { git fetch --all } 
+function gus { git push } 
+function guf { git push -f } 
+function gme { param( [string]$branchName ) git merge $branchName } 
+function gms { param( [string]$branchName ) git merge --squash $branchName } 
+function glc { git show --stat HEAD } 
+function grh { git reset --hard } 
+function gr { git reset HEAD~ } 
+function gb { git branch } 
+function gbd { param( [string]$branchName ) git branch -d $branchName } 
 
-# ALIAS
-Set-Alias -Name ip -Value ipconfig
-Set-Alias -Name np -Value notepad
-Set-Alias -Name v -Value nvim
-Set-Alias -Name o -Value ollama
+# ============================DOCKER_COMMANDS============================ 
+function dkcl { docker container ls } 
+function dkrmac { docker rm $(docker container ls -aq) } 
+function dkstac { docker stop $(docker container ls -aq) } 
+function dkcpu { docker-compose up } 
+function dkcpub { docker-compose up --build } 
+function fix-volume { docker volume prune } 
+function fix-image { docker image prune } 
+
+# ============================AWS_COMMANDS============================ 
+function clear-queue { awslocal --endpoint-url=http://127.0.0.1:4566 sqs purge-queue --queue-url http://127.0.0.1:4566/000000000000/MessageQueue.fifo } 
+function list-queue { awslocal --endpoint-url=http://127.0.0.1:4566 sqs list-queues } 
+# eg: http://127.0.0.1:4566/000000000000/MessageQueue.fifo 
+function del-queue { awslocal --endpoint-url=http://localhost:24870 sqs delete-queue --queue-name=AppEventQueue } 
+function create-queue { awslocal --endpoint-url=http://localhost:4566 sqs create-queue --queue-name=AppEventQueue } 
+function number-mes { awslocal sqs get-queue-attributes --queue-url http://127.0.0.1:4566/000000000000/MessageQueue.fifo --attribute-names All } 
+function send-mess { awslocal --endpoint-url=http://127.0.0.1:4566 sqs send-message --message-group-id 098 --queue-url http://127.0.0.1:4566/000000000000/MessageQueue.fifo --message-body "test msq" } 
+function receive-mess { awslocal --endpoint-url=http://127.0.0.1:4566/_aws/sqs/messages sqs receive-message --queue-url http://127.0.0.1:4566/000000000000/AppEventQueue } 
+
+# ============================OLLAMA_COMMANDS============================ 
+function ol { ollama list } 
+function or { param([string]$model)ollama run $model } 
+function orv { param([string]$model)ollama run $model --verbose }
+
+# ============================OTHER_COMMANDS============================
+function go { . $PROFILE } 
+function folder { start . } 
+function read { param( [string]$filePath ) code -r $filePath } 
+# Alias quick access folder
+function clean() { cd "D:\1.Project\1.clean-architech-template-c#\api-clean-architecture-net-8.0" } 
+function pws() { cd "C:\Users\TruongNhon\Documents\PowerShell" } 
