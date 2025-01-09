@@ -1,68 +1,81 @@
 {
-    "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
-    "blocks": [
-      {
-        "alignment": "left",
-        "segments": [
-          {
-            "style": "plain",
-            "template": "😺💬<#FF8000> Meow! What should I do next? ...</>",
-            "type": "text"
-          }],
-          "type": "prompt"
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "properties": {
+            "cache_duration": "none"
+          },
+          "template": "😺💬<#FF8000> Meow! What should I do next? ...</>",
+          "type": "text",
+          "style": "plain"
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "properties": {
+            "cache_duration": "none",
+            "style": "folder"
+          },
+          "template": "🏡 {{ .Path }} ",
+          "foreground": "#56B6C2",
+          "type": "path",
+          "style": "plain"
         },
-      {
-        "alignment": "right",
-        "segments": [
-          {
-            "foreground": "#56B6C2",
-            "properties": {
-              "style": "folder"
-            },
-            "style": "plain",
-            "template": "🏡 {{ .Path }} ",
-            "type": "path"
+        {
+          "properties": {
+            "branch_icon": "",
+            "cache_duration": "none",
+            "fetch_status": false
           },
-          {
-            "foreground": "#D0666F",
-            "properties": {
-              "branch_icon": "",
-              "fetch_status": false
-            },
-            "style": "plain",
-            "template":  "<#5FAAE8>git:(</>{{ .HEAD }}<#5FAAE8>)</>",
-            "type": "git"
+          "template": "<#5FAAE8>git:(</>{{ .HEAD }}<#5FAAE8>)</>",
+          "foreground": "#D0666F",
+          "type": "git",
+          "style": "plain"
+        },
+        {
+          "properties": {
+            "cache_duration": "none"
           },
-          {
-            "foreground": "#1a415d",
-						"style": "plain",
-						"template": "⌚",
-						"type": "text"
-					},
-          {
-            "foreground": "#1a415d",
-            "properties": {
-              "time_format": "15:04"
-            },
-            "style": "plain",
-            "template": " {{ .CurrentDate | date .Format }} ",
-            "type": "time"
-          }
-        ],
-        "type": "prompt"
-      },
-			{
-				"alignment": "left",
-				"segments": [
-					{
-						"foreground": "#FF8000",
-						"style": "plain",
-						"template": "😀💬<#FF8000> ~ </>",
-						"type": "text"
-					}
-				],
-				"type": "prompt"
-			}
-    ],
-    "version": 2
-  }
+          "template": "\u231a",
+          "foreground": "#1a415d",
+          "type": "text",
+          "style": "plain"
+        },
+        {
+          "properties": {
+            "cache_duration": "none",
+            "time_format": "15:04"
+          },
+          "template": " {{ .CurrentDate | date .Format }} ",
+          "foreground": "#1a415d",
+          "type": "time",
+          "style": "plain"
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "properties": {
+            "cache_duration": "none"
+          },
+          "template": "\ud83d\ude00💬<#FF8000> ~ </>",
+          "foreground": "#FF8000",
+          "type": "text",
+          "style": "plain"
+        }
+      ]
+    }
+  ],
+  "version": 3
+}

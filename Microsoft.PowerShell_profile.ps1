@@ -15,6 +15,7 @@ Set-Alias -Name ip -Value ipconfig
 Set-Alias -Name np -Value notepad
 Set-Alias -Name v -Value nvim
 Set-Alias -Name o -Value ollama
+Set-Alias -Name p -Value p
 
 # Import the PSReadline module
 Import-Module PSReadline 
@@ -260,7 +261,7 @@ if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
     <#
     # <randome-theme> random theme each create new terminal or enter "go" command
     #>
-    function Set-RandomOhMyPoshTheme {
+    function rand {
         $themesPath = $env:POSH_THEMES_PATH
         $themeFiles = Get-ChildItem -Path $themesPath -Filter *.omp.json -File
         $randomThemeFile = $themeFiles | Get-Random -Count 1
@@ -269,7 +270,7 @@ if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
         oh-my-posh --init --shell pwsh --config $fullThemePath | Invoke-Expression
         "$fullThemePath"
     }
-    # Set-RandomOhMyPoshTheme
+    # rand
 
     function fact {
         irm -Uri https://uselessfacts.jsph.pl/random.json?language=en | Select -ExpandProperty text
@@ -321,16 +322,17 @@ function webapi {
     dotnet run
 }
 # ============================GIT_COMMANDS============================ 
-function gc { 
+function gcmt { 
     param( [string]$commitMessage ) 
-    git commit -m $commitMessage 
+    git commit -m "$commitMessage" 
 } 
 function co { param( [string]$branchName ) git checkout $branchName } 
 function cob { param( [string]$branchName ) git checkout -b $branchName } 
 function gca { git commit --amend } 
 function ga { git add . } 
-function glo { git log --graph --oneline --decorate --all } 
-function glg { git log } 
+function glga { git log --graph --oneline --decorate --all } 
+function glg { git log --graph --oneline --decorate } 
+function glo { git log } 
 function gs { git status } 
 function gpu { git pull } 
 function gf { git fetch --all } 
@@ -343,6 +345,7 @@ function grh { git reset --hard }
 function gr { git reset HEAD~ } 
 function gb { git branch } 
 function gbd { param( [string]$branchName ) git branch -d $branchName } 
+function diffcmt { git log --full-diff --oneline master..develop }
 
 # ============================DOCKER_COMMANDS============================ 
 function dkcl { docker container ls } 
@@ -375,3 +378,38 @@ function read { param( [string]$filePath ) code -r $filePath }
 # Alias quick access folder
 function clean() { cd "D:\1.Project\1.clean-architech-template-c#\api-clean-architecture-net-8.0" } 
 function pws() { cd "C:\Users\TruongNhon\Documents\PowerShell" } 
+
+function bd { cd "D:\1.Project\BinhDinhFood" }
+
+## terminal/window .bat
+
+# ```bash
+# @echo off
+# start cmd /k "command_1 && command 2"
+# start cmd /k "command_3"
+# ```
+
+# - Linux most use command - publish new webapi in linux basic comma
+
+# ```bash
+
+# chmod 400 "nhonvtt-key.pem"
+
+
+# ssh -i "nhonvtt-key.pem" ec2-user@ec2-3-85-185-59.compute-1.amazonaws.com
+
+
+
+# # Update your package lists
+# sudo yum update -y
+
+# # change to root user
+# sudo -i
+
+# sudo yum install <package_name>
+# # popular package: vim, dotnet-sdk-8.0, postgresql, nodejs, npm, nginx, docker-ce, git
+
+# dotnet publish -c Release
+
+# # list all the installed packages
+# yum list installed
