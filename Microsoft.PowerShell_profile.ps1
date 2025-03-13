@@ -5,10 +5,15 @@
 # DOCKER_COMMANDS 
 # AWS_COMMANDS 
 
+# Quick doc
+# rand to random theme
+# fin to opean finance app
+
 # ============================INIT_COMMANDS============================ 
 
 $env:POSH_THEMES_PATH = "$env:USERPROFILE\Documents\PowerShell\powershell-themes"
-oh-my-posh --init --shell pwsh --config "$env:POSH_THEMES_PATH\neko.omp.json" | Invoke-Expression
+$env:THEME = "json" # neko
+oh-my-posh --init --shell pwsh --config "$env:POSH_THEMES_PATH\$env:THEME.omp.json" | Invoke-Expression
 
 # ALIAS
 Set-Alias -Name ip -Value ipconfig

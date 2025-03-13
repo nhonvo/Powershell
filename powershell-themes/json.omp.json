@@ -2,49 +2,57 @@
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
   "blocks": [
     {
+      "type": "prompt",
       "alignment": "left",
       "segments": [
         {
-          "foreground": "#F1FA8C",
           "properties": {
+            "cache_duration": "none",
             "style": "folder"
           },
-          "style": "diamond",
-          "template": "<#42E66C>\u2B22 </><b>{{ .Path }}</b>",
-          "type": "path"
+          "template": "<#42E66C>\u2b22 </><b>{{ .Path }}</b>",
+          "foreground": "#F1FA8C",
+          "type": "path",
+          "style": "diamond"
         },
         {
-          "foreground": "#43CCEA",
           "properties": {
-            "branch_icon": ""
+            "branch_icon": "",
+            "cache_duration": "none"
           },
-          "style": "diamond",
-          "template": "<#ffffff> \u26A1 </><b>{{ .HEAD }}</b>",
-          "type": "git"
+          "template": "<#ffffff> ⚡ </><b>{{ .HEAD }}</b>",
+          "foreground": "#43CCEA",
+          "type": "git",
+          "style": "diamond"
         },
         {
+          "properties": {
+            "cache_duration": "none"
+          },
+          "template": "<#ff0000> \u25c9</>",
           "foreground": "#ff0000",
-          "style": "diamond",
-          "template": "<#ff0000> \u25C9</>",
-          "type": "text"
+          "type": "text",
+          "style": "diamond"
         }
-      ],
-      "type": "prompt"
+      ]
     },
     {
+      "type": "prompt",
       "alignment": "left",
-      "newline": true,
       "segments": [
         {
-          "foreground": "#000000",
-          "style": "plain",
+          "properties": {
+            "cache_duration": "none"
+          },
           "template": ">",
-          "type": "text"
+          "foreground": "#000000",
+          "type": "text",
+          "style": "plain"
         }
       ],
-      "type": "prompt"
+      "newline": true
     }
   ],
-  "final_space": true,
-  "version": 2
+  "version": 3,
+  "final_space": true
 }

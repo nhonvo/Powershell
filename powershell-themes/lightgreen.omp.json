@@ -1,22 +1,26 @@
 {
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "pwd": "osc99",
   "blocks": [
     {
+      "type": "prompt",
       "alignment": "left",
       "segments": [
         {
-          "background": "#000000",
+          "properties": {
+            "cache_duration": "none"
+          },
+          "template": " ⚡",
           "foreground": "#dd1e1e",
-          "style": "plain",
-          "template": " \u26a1",
-          "type": "root"
+          "background": "#000000",
+          "type": "root",
+          "style": "plain"
         },
         {
-          "background": "#000000",
-          "foreground": "#ffffff",
           "properties": {
             "alpine": "\uf300",
             "arch": "\uf303",
+            "cache_duration": "none",
             "centos": "\uf304",
             "debian": "\uf306",
             "elementary": "\uf309",
@@ -32,129 +36,154 @@
             "windows": "\ue62a",
             "wsl": "\ue712"
           },
-          "style": "plain",
           "template": " {{ if .WSL }}WSL at {{ end }}{{.Icon}} ",
-          "type": "os"
+          "foreground": "#ffffff",
+          "background": "#000000",
+          "type": "os",
+          "style": "plain"
         },
         {
-          "background": "#272727",
-          "foreground": "#3EC669",
-          "leading_diamond": "\ue0b6",
           "properties": {
+            "cache_duration": "none",
             "style": "folder"
           },
-          "style": "diamond",
-          "template": "\ue5ff {{ .Path }}",
+          "leading_diamond": "\ue0b6",
           "trailing_diamond": "\ue0b4",
-          "type": "path"
+          "template": "\ue5ff {{ .Path }}",
+          "foreground": "#3EC669",
+          "background": "#272727",
+          "type": "path",
+          "style": "diamond"
         },
         {
-          "background": "#272727",
-          "foreground": "#00ff0d",
           "properties": {
+            "cache_duration": "none",
             "fetch_stash_count": true,
             "fetch_status": true
           },
-          "style": "plain",
           "template": "<#000000>\ue0b1 </>{{ .HEAD }}{{ if .Staging.Changed }}<#FF6F00> \uf046 {{ .Staging.String }}</>{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if gt .StashCount 0 }} \ueb4b {{ .StashCount }}{{ end }} ",
-          "type": "git"
+          "foreground": "#00ff0d",
+          "background": "#272727",
+          "type": "git",
+          "style": "plain"
         },
         {
-          "background": "#306998",
-          "foreground": "#FFE873",
+          "properties": {
+            "cache_duration": "none"
+          },
           "leading_diamond": "\ue0b6",
-          "style": "diamond",
+          "trailing_diamond": "\ue0b4 ",
           "template": "\ue235 {{ if .Error }}{{ .Error }}{{ else }}{{ if .Venv }}{{ .Venv }} {{ end }}{{ .Full }}{{ end }}",
-          "trailing_diamond": "\ue0b4 ",
-          "type": "python"
+          "foreground": "#FFE873",
+          "background": "#306998",
+          "type": "python",
+          "style": "diamond"
         },
         {
-          "background": "#ffffff",
-          "foreground": "#06aad5",
+          "properties": {
+            "cache_duration": "none"
+          },
           "leading_diamond": "\ue0b6",
-          "style": "diamond",
+          "trailing_diamond": "\ue0b4 ",
           "template": "\ue626 {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }}",
-          "trailing_diamond": "\ue0b4 ",
-          "type": "go"
+          "foreground": "#06aad5",
+          "background": "#ffffff",
+          "type": "go",
+          "style": "diamond"
         },
         {
-          "background": "#565656",
-          "foreground": "#faa029",
+          "properties": {
+            "cache_duration": "none"
+          },
           "leading_diamond": "\ue0b6",
-          "style": "diamond",
+          "trailing_diamond": "\ue0b4 ",
           "template": "\ue7ad {{.Profile}}{{if .Region}}@{{.Region}}{{end}}",
-          "trailing_diamond": "\ue0b4 ",
-          "type": "aws"
+          "foreground": "#faa029",
+          "background": "#565656",
+          "type": "aws",
+          "style": "diamond"
         },
         {
-          "type": "terraform",
-          "style": "powerline",
-          "powerline_symbol": "\uE0B0",
+          "properties": {
+            "cache_duration": "none"
+          },
+          "template": "{{.WorkspaceName}}",
           "foreground": "#000000",
+          "powerline_symbol": "\ue0b0",
           "background": "#ebcc34",
-          "template": "{{.WorkspaceName}}"
+          "type": "terraform",
+          "style": "powerline"
         },
         {
-          "background": "#316ce4",
-          "foreground": "#ffffff",
+          "properties": {
+            "cache_duration": "none"
+          },
           "leading_diamond": "\ue0b6",
-          "style": "diamond",
-          "template": "\uf308 {{.Context}}{{if .Namespace}} :: {{.Namespace}}{{end}}",
           "trailing_diamond": "\ue0b4",
-          "type": "kubectl"
+          "template": "\uf308 {{.Context}}{{if .Namespace}} :: {{.Namespace}}{{end}}",
+          "foreground": "#ffffff",
+          "background": "#316ce4",
+          "type": "kubectl",
+          "style": "diamond"
         }
-      ],
-      "type": "prompt"
+      ]
     },
     {
+      "type": "rprompt",
       "alignment": "right",
       "segments": [
         {
           "properties": {
-              "style": "roundrock",
-              "always_enabled": true
-            },
-            "style": "diamond",
-            "template": "{{ .FormattedMs }} ",
-            "type": "executiontime"
+            "always_enabled": true,
+            "cache_duration": "none",
+            "style": "roundrock"
+          },
+          "template": "{{ .FormattedMs }} ",
+          "type": "executiontime",
+          "style": "diamond"
         },
         {
-          "background": "#ffffff",
-          "foreground": "#3c3c3c",
-          "style": "plain",
+          "properties": {
+            "cache_duration": "none"
+          },
           "template": " {{ round .PhysicalPercentUsed .Precision }}% ",
-          "type": "sysinfo"
+          "foreground": "#3c3c3c",
+          "background": "#ffffff",
+          "type": "sysinfo",
+          "style": "plain"
         },
         {
+          "properties": {
+            "cache_duration": "none",
+            "charged_icon": "\uf240 ",
+            "charging_icon": "\uf1e6 ",
+            "discharging_icon": "\ue234 "
+          },
+          "leading_diamond": "\ue0b2",
+          "template": " {{ if not .Error }}{{ .Icon }}{{ .Percentage }}{{ end }}{{ .Error }}\uf295 <#262626>\ue0b2</>",
+          "foreground": "#262626",
           "background": "#f36943",
+          "type": "battery",
+          "style": "plain",
           "background_templates": [
             "{{if eq \"Charging\" .State.String}}#b8e994{{end}}",
             "{{if eq \"Discharging\" .State.String}}#fff34e{{end}}",
             "{{if eq \"Full\" .State.String}}#33DD2D{{end}}"
           ],
-          "foreground": "#262626",
-          "invert_powerline": true,
-          "leading_diamond": "\ue0b2",
-          "properties": {
-            "charged_icon": "\uf240 ",
-            "charging_icon": "\uf1e6 ",
-            "discharging_icon": "\ue234 "
-          },
-          "style": "plain",
-          "template": " {{ if not .Error }}{{ .Icon }}{{ .Percentage }}{{ end }}{{ .Error }}\uf295 <#262626>\ue0b2</>",
-          "type": "battery"
+          "invert_powerline": true
         },
         {
-          "background": "#000000",
-          "foreground": "lightGreen",
-          "style": "plain",
+          "properties": {
+            "cache_duration": "none"
+          },
           "template": "{{ .CurrentDate | date .Format }}",
-          "type": "time"
+          "foreground": "lightGreen",
+          "background": "#000000",
+          "type": "time",
+          "style": "plain"
         }
-      ],
-      "type": "rprompt"
+      ]
     }
   ],
-  "pwd": "osc99",
-  "version": 2
+  "version": 3
 }

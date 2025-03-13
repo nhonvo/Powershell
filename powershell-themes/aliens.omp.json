@@ -2,49 +2,59 @@
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
   "blocks": [
     {
+      "type": "prompt",
       "alignment": "left",
       "segments": [
         {
-          "background": "#61AFEF",
-          "foreground": "#ffffff",
+          "properties": {
+            "cache_duration": "none"
+          },
           "leading_diamond": "\ue0b6",
-          "style": "diamond",
-          "template": " {{ .UserName }}@{{ .HostName }} ",
           "trailing_diamond": "\ue0b0",
-          "type": "session"
+          "template": " {{ .UserName }}@{{ .HostName }} ",
+          "foreground": "#ffffff",
+          "background": "#61AFEF",
+          "type": "session",
+          "style": "diamond"
         },
         {
-          "background": "#C678DD",
-          "foreground": "#ffffff",
-          "powerline_symbol": "\ue0b0",
           "properties": {
+            "cache_duration": "none",
             "style": "full"
           },
-          "style": "powerline",
           "template": " {{ .Path }} ",
-          "type": "path"
+          "foreground": "#ffffff",
+          "powerline_symbol": "\ue0b0",
+          "background": "#C678DD",
+          "type": "path",
+          "style": "powerline"
         },
         {
-          "background": "#95ffa4",
+          "properties": {
+            "cache_duration": "none"
+          },
+          "template": " {{ .HEAD }} ",
           "foreground": "#193549",
           "powerline_symbol": "\ue0b0",
-          "style": "powerline",
-          "template": " {{ .HEAD }} ",
-          "type": "git"
+          "background": "#95ffa4",
+          "type": "git",
+          "style": "powerline"
         },
         {
-          "background": "#FF6471",
-          "foreground": "#ffffff",
+          "properties": {
+            "cache_duration": "none"
+          },
           "leading_diamond": "<transparent,background>\ue0b0</>",
-          "style": "diamond",
-          "template": " {{ if .Error }}{{ .Error }}{{ else }}{{ if .Venv }}{{ .Venv }} {{ end }}{{ .Full }}{{ end }} ",
           "trailing_diamond": "\ue0b4",
-          "type": "python"
+          "template": " {{ if .Error }}{{ .Error }}{{ else }}{{ if .Venv }}{{ .Venv }} {{ end }}{{ .Full }}{{ end }} ",
+          "foreground": "#ffffff",
+          "background": "#FF6471",
+          "type": "python",
+          "style": "diamond"
         }
-      ],
-      "type": "prompt"
+      ]
     }
   ],
-  "final_space": true,
-  "version": 2
+  "version": 3,
+  "final_space": true
 }
