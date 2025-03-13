@@ -367,19 +367,27 @@ function send-mess { awslocal --endpoint-url=http://127.0.0.1:4566 sqs send-mess
 function receive-mess { awslocal --endpoint-url=http://127.0.0.1:4566/_aws/sqs/messages sqs receive-message --queue-url http://127.0.0.1:4566/000000000000/AppEventQueue } 
 
 # ============================OLLAMA_COMMANDS============================ 
-function ol { ollama list } 
-function or { param([string]$model)ollama run $model } 
-function orv { param([string]$model)ollama run $model --verbose }
+# function ol { ollama list } 
+# function or { param([string]$model)ollama run $model } 
+# function orv { param([string]$model)ollama run $model --verbose }
 
 # ============================OTHER_COMMANDS============================
 function go { . $PROFILE } 
 function folder { start . } 
 function read { param( [string]$filePath ) code -r $filePath } 
-# Alias quick access folder
-function clean() { cd "D:\1.Project\1.clean-architech-template-c#\api-clean-architecture-net-8.0" } 
-function pws() { cd "C:\Users\TruongNhon\Documents\PowerShell" } 
 
-function bd { cd "D:\1.Project\BinhDinhFood" }
+# run finance app
+function fin() { 
+    cd "D:\1.Project\1.project\tool\tool-finance-analysis-py" 
+    ./run.bat 
+}
+# Alias quick access folder
+
+function pw() { 
+    cd "C:\Users\TruongNhon\Documents\PowerShell" 
+    code .
+} 
+
 
 ## terminal/window .bat
 
