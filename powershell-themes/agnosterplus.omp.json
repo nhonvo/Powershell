@@ -5,53 +5,61 @@
       "type": "rprompt",
       "segments": [
         {
-          "foreground": "#007ACC",
           "properties": {
+            "cache_duration": "none",
             "time_format": "15:04:05"
           },
-          "style": "plain",
           "template": " {{ .CurrentDate | date .Format }} ",
-          "type": "time"
+          "foreground": "#007ACC",
+          "type": "time",
+          "style": "plain"
         }
       ]
     },
     {
+      "type": "prompt",
       "alignment": "left",
       "segments": [
         {
-          "background": "#ffffff",
+          "properties": {
+            "cache_duration": "none"
+          },
+          "template": " {{ .UserName }}@{{ .HostName }} ",
           "foreground": "#100e23",
           "powerline_symbol": "\ue0b0",
-          "style": "powerline",
-          "template": " {{ .UserName }}@{{ .HostName }} ",
-          "type": "session"
+          "background": "#ffffff",
+          "type": "session",
+          "style": "powerline"
         },
         {
-          "background": "#91ddff",
-          "foreground": "#100e23",
-          "powerline_symbol": "\ue0b0",
           "properties": {
+            "cache_duration": "none",
             "folder_icon": "\uf115",
             "folder_separator_icon": " \ue0b1 ",
             "home_icon": "\ueb06",
             "style": "agnoster"
           },
-          "style": "powerline",
           "template": " {{ .Path }} ",
-          "type": "path"
+          "foreground": "#100e23",
+          "powerline_symbol": "\ue0b0",
+          "background": "#91ddff",
+          "type": "path",
+          "style": "powerline"
         },
         {
-          "background": "#95ffa4",
+          "properties": {
+            "cache_duration": "none"
+          },
+          "template": " {{ .HEAD }} ",
           "foreground": "#193549",
           "powerline_symbol": "\ue0b0",
-          "style": "powerline",
-          "template": " {{ .HEAD }} ",
-          "type": "git"
+          "background": "#95ffa4",
+          "type": "git",
+          "style": "powerline"
         }
-      ],
-      "type": "prompt"
+      ]
     }
   ],
-  "final_space": true,
-  "version": 2
+  "version": 3,
+  "final_space": true
 }

@@ -2,75 +2,90 @@
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
   "blocks": [
     {
+      "type": "prompt",
       "alignment": "left",
       "segments": [
         {
-          "background": "#E0E0E0",
-          "foreground": "#BF231D",
-          "style": "plain",
+          "properties": {
+            "cache_duration": "none"
+          },
           "template": " \uf0e7 ",
-          "type": "root"
+          "foreground": "#BF231D",
+          "background": "#E0E0E0",
+          "type": "root",
+          "style": "plain"
         },
         {
-          "background": "#E0E0E0",
-          "foreground": "#EF7D00",
-          "style": "plain",
+          "properties": {
+            "cache_duration": "none"
+          },
           "template": " {{ .Icon }} ",
-          "type": "os"
+          "foreground": "#EF7D00",
+          "background": "#E0E0E0",
+          "type": "os",
+          "style": "plain"
         },
         {
-          "background": "#E0E0E0",
-          "foreground": "#424242",
-          "style": "plain",
+          "properties": {
+            "cache_duration": "none"
+          },
           "template": "{{ .UserName }}",
-          "type": "session"
+          "foreground": "#424242",
+          "background": "#E0E0E0",
+          "type": "session",
+          "style": "plain"
         },
         {
-          "background": "#E0E0E0",
-          "foreground": "#424242",
-          "foreground_templates": [
-            "{{ if or (.Working.Changed) (.Staging.Changed) }}#053F22{{ end }}",
-            "{{ if or (gt .Ahead 0) (gt .Behind 0) }}#0A703E{{ end }}"
-          ],
           "properties": {
             "branch_max_length": 30,
+            "cache_duration": "none",
             "fetch_status": true,
             "fetch_upstream_icon": true
           },
-          "style": "plain",
           "template": " [{{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }}<#BD6200> \uf044 {{ .Working.String }}</>{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}<#053F22> \uf046 {{ .Staging.String }}</>{{ end }}] ",
-          "type": "git"
+          "foreground": "#424242",
+          "background": "#E0E0E0",
+          "type": "git",
+          "style": "plain",
+          "foreground_templates": [
+            "{{ if or (.Working.Changed) (.Staging.Changed) }}#053F22{{ end }}",
+            "{{ if or (gt .Ahead 0) (gt .Behind 0) }}#0A703E{{ end }}"
+          ]
         },
         {
-          "background": "#E0E0E0",
-          "foreground": "#424242",
           "properties": {
+            "cache_duration": "none",
             "style": "full"
           },
-          "style": "plain",
           "template": " {{ .Path }}",
-          "type": "path"
+          "foreground": "#424242",
+          "background": "#E0E0E0",
+          "type": "path",
+          "style": "plain"
         },
         {
-          "background": "#E0E0E0",
-          "foreground": "#424242",
-          "powerline_symbol": "\ue0b0",
-          "style": "plain",
-          "template": " \ue235 {{ if .Error }}{{ .Error }}{{ else }}{{ if .Venv }}{{ .Venv }} {{ end }}{{ .Full }}{{ end }} ",
           "properties": {
+            "cache_duration": "none",
             "text": "\ue0b0"
           },
-          "type": "python"
+          "template": " \ue235 {{ if .Error }}{{ .Error }}{{ else }}{{ if .Venv }}{{ .Venv }} {{ end }}{{ .Full }}{{ end }} ",
+          "foreground": "#424242",
+          "powerline_symbol": "\ue0b0",
+          "background": "#E0E0E0",
+          "type": "python",
+          "style": "plain"
         },
         {
-          "foreground": "#E0E0E0",
-          "style": "plain",
+          "properties": {
+            "cache_duration": "none"
+          },
           "template": "\ue0b0 ",
-          "type": "text"
+          "foreground": "#E0E0E0",
+          "type": "text",
+          "style": "plain"
         }
-      ],
-      "type": "prompt"
+      ]
     }
   ],
-  "version": 2
+  "version": 3
 }

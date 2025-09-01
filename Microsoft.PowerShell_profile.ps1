@@ -12,7 +12,7 @@
 # ============================INIT_COMMANDS============================ 
 
 $env:POSH_THEMES_PATH = "$env:USERPROFILE\Documents\PowerShell\powershell-themes"
-$env:THEME = "json" # neko
+$env:THEME = "neko" # neko
 oh-my-posh --init --shell pwsh --config "$env:POSH_THEMES_PATH\$env:THEME.omp.json" | Invoke-Expression
 
 # ALIAS
@@ -35,7 +35,7 @@ Set-PSReadLineOption -PredictionViewStyle ListView
 Set-PSReadLineKeyHandler -Function AcceptSuggestion -Key 'Ctrl+Spacebar'
 Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
 Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward 
-
+Set-PSReadLineKeyHandler -Key Shift+RightArrow -Function SelectForwardChar
 
 # ============================CUSTOM_HOTKEYS============================ 
 if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
@@ -377,7 +377,7 @@ function receive-mess { awslocal --endpoint-url=http://127.0.0.1:4566/_aws/sqs/m
 # function orv { param([string]$model)ollama run $model --verbose }
 
 # ============================OTHER_COMMANDS============================
-function go { . $PROFILE } 
+function reset { . $PROFILE } 
 function folder { start . } 
 function read { param( [string]$filePath ) code -r $filePath } 
 
