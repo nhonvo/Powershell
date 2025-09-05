@@ -1,375 +1,375 @@
-# INIT_COMMANDS
-# CUSTOM_HOTKEYS 
-# DOTNET_COMMANDS 
-# GIT_COMMANDS 
-# DOCKER_COMMANDS 
-# AWS_COMMANDS 
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#  Enhanced PowerShell Profile
+#  Combines Oh My Posh, custom hotkeys, and powerful command functions for
+#  .NET, Git, Docker, and AWS workflows.
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# ============================INIT_COMMANDS============================ 
-$env:POSH_THEMES_PATH = "$env:USERPROFILE\Documents\PowerShell\powershell-themes"
-$env:THEME = "neko" # neko
-oh-my-posh --init --shell pwsh --config "$env:POSH_THEMES_PATH\$env:THEME.omp.json" | Invoke-Expression
+#region Initial Setup & Theme
 
-# ALIAS
-Set-Alias -Name ip -Value ipconfig
-Set-Alias -Name np -Value notepad
-Set-Alias -Name v -Value nvim
-Set-Alias -Name o -Value ollama
-Set-Alias -Name p -Value p
+Write-Host "🚀 Loading Enhanced PowerShell Profile..." -ForegroundColor Cyan
 
-# Import the PSReadline module
-Import-Module PSReadline 
-Import-Module -Name Terminal-Icons
+# --- Oh My Posh Theme Initialization ---
+# To change themes, update the $env:THEME variable.
+$env:POSH_THEMES_PATH = Join-Path -Path $env:USERPROFILE -ChildPath "Documents\PowerShell\powershell-themes"
+$env:THEME = "neko" # You can change your theme here
+$themePath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "$($env:THEME).omp.json"
+if (Test-Path $themePath) {
+    oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
+} else {
+    Write-Warning "Oh My Posh theme '$($env:THEME)' not found at '$themePath'."
+}
 
-# Set PSReadline options
+# --- Module Loading ---
+# Ensures required modules are loaded for an interactive session.
+if ($Host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
+    try {
+        Write-Progress -Activity "Loading Modules" -Status "PSReadLine" -PercentComplete 33
+        Import-Module PSReadLine -Force -ErrorAction SilentlyContinue
+
+        Write-Progress -Activity "Loading Modules" -Status "Terminal-Icons" -PercentComplete 66
+        Import-Module Terminal-Icons -Force -ErrorAction SilentlyContinue
+
+        Write-Progress -Activity "Loading Modules" -Status "Posh-Git" -PercentComplete 90
+        if (Get-Module -ListAvailable -Name posh-git) {
+            Import-Module posh-git -Force -ErrorAction SilentlyContinue
+        }
+        Write-Progress -Activity "Loading Modules" -Status "Complete" -PercentComplete 100 -Completed
+    }
+    catch {
+        Write-Warning "An error occurred while loading modules: $_"
+    }
+}
+
+# --- Core Aliases ---
+Set-Alias -Name ip       -Value Get-NetIPConfiguration -Force
+Set-Alias -Name cls      -Value Clear-Host -Force
+Set-Alias -Name grep     -Value Select-String -Force
+Set-Alias -Name which    -Value Get-Command -Force
+Set-Alias -Name code     -Value "code" -Option AllScope # Ensure 'code' works everywhere
+Set-Alias -Name v        -Value nvim -Force
+Set-Alias -Name o        -Value ollama -Force
+Set-Alias -Name go       -Value Reload-Profile -Force # Reloads this profile
+Set-Alias -Name commands -Value Get-CustomCommands -Force
+
+# --- Quick Navigation Aliases ---
+Set-Alias -Name ..  -Value Set-LocationParent -Force
+Set-Alias -Name ... -Value Set-LocationGrandParent -Force
+
+function Set-LocationParent { Set-Location .. }
+function Set-LocationGrandParent { Set-Location ../.. }
+
+#endregion
+
+#region PSReadLine Configuration & Hotkeys
+
+# --- PSReadLine General Options ---
 Set-PSReadLineOption -EditMode Windows
 Set-PSReadLineOption -PredictionSource History
-Set-PSReadLineOption -PredictionViewStyle ListView 
-    
-# Define custom key bindings for PSReadline
-Set-PSReadLineKeyHandler -Function AcceptSuggestion -Key 'Ctrl+Spacebar'
+Set-PSReadLineOption -PredictionViewStyle ListView
+Set-PSReadLineOption -BellStyle None
+
+# --- Custom Color Scheme ---
+Set-PSReadlineOption -Color @{
+    "Command"          = [ConsoleColor]::Green
+    "Parameter"        = [ConsoleColor]::Gray
+    "Operator"         = [ConsoleColor]::Magenta
+    "Variable"         = [ConsoleColor]::Yellow
+    "String"           = [ConsoleColor]::Cyan
+    "Number"           = [ConsoleColor]::White
+    "Type"             = [ConsoleColor]::Blue
+    "Comment"          = [ConsoleColor]::DarkGreen
+    "Keyword"          = [ConsoleColor]::DarkYellow
+    "Error"            = [ConsoleColor]::Red
+    "InlinePrediction" = '#70A99F' # Custom hex color for prediction
+}
+
+# --- Custom Key Bindings ---
+# History Search & Suggestions
 Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
-Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward 
-Set-PSReadLineKeyHandler -Key Shift+RightArrow -Function SelectForwardChar
+Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+Set-PSReadLineKeyHandler -Key 'Ctrl+Spacebar' -Function Complete # Changed to standard completion hotkey
 
-# ============================CUSTOM_HOTKEYS============================ 
-if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
+# .NET Build & Test Hotkeys
+Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+b' -ScriptBlock {
+    [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("db") # Uses the 'db' function below
+    [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+}
+Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+t' -ScriptBlock {
+    [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("dt") # Uses the 'dt' function below
+    [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+}
 
-    # Configure PSReadline colors for syntax highlighting
-    Set-PSReadlineOption -Color @{
-        "Command"          = [ConsoleColor]::Green
-        "Parameter"        = [ConsoleColor]::Gray
-        "Operator"         = [ConsoleColor]::Magenta
-        "Variable"         = [ConsoleColor]::Yellow
-        "String"           = [ConsoleColor]::Yellow
-        "Number"           = [ConsoleColor]::Yellow
-        "Type"             = [ConsoleColor]::Cyan
-        "Comment"          = [ConsoleColor]::DarkCyan
-        "InlinePrediction" = '#70A99F'
-    }
-
-    # Ctrl+Shift+b -> dotnet build
-    # Define a custom key binding for building the current directory with dotnet
-    Set-PSReadLineKeyHandler -Key Ctrl+Shift+b `
-        -BriefDescription BuildCurrentDirectory `
-        -LongDescription "Build the current directory" `
-        -ScriptBlock {
+# F7 for graphical history viewer
+Set-PSReadLineKeyHandler -Key F7 -ScriptBlock {
+    $command = Get-History | Out-GridView -Title 'Command History' -PassThru
+    if ($command) {
         [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
-        [Microsoft.PowerShell.PSConsoleReadLine]::Insert("dotnet build")
-        [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
-    }
-    # Ctrl+Shift+t -> dotnet test
-    Set-PSReadLineKeyHandler -Key Ctrl+Shift+t `
-        -BriefDescription BuildCurrentDirectory `
-        -LongDescription "Build the current directory" `
-        -ScriptBlock {
-        [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
-        [Microsoft.PowerShell.PSConsoleReadLine]::Insert("dotnet test")
-        [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
-    }
-    # Auto filled {} () []
-    Set-PSReadLineKeyHandler -Key '(', '{', '[' `
-        -BriefDescription InsertPairedBraces `
-        -LongDescription "Insert matching braces" `
-        -ScriptBlock {
-        param($key, $arg)
-
-        $closeChar = switch ($key.KeyChar) {
-            <#case#> '(' { [char]')'; break }
-            <#case#> '{' { [char]'}'; break }
-            <#case#> '[' { [char]']'; break }
-        }
-
-        $selectionStart = $null
-        $selectionLength = $null
-        [Microsoft.PowerShell.PSConsoleReadLine]::GetSelectionState([ref]$selectionStart, [ref]$selectionLength)
-
-        $line = $null
-        $cursor = $null
-        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-        
-        if ($selectionStart -ne -1) {
-            # Text is selected, wrap it in brackets
-            [Microsoft.PowerShell.PSConsoleReadLine]::Replace($selectionStart, $selectionLength, $key.KeyChar + $line.SubString($selectionStart, $selectionLength) + $closeChar)
-            [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($selectionStart + $selectionLength + 2)
-        }
-        else {
-            # No text is selected, insert a pair
-            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$($key.KeyChar)$closeChar")
-            [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor + 1)
-        }
-    }
-    # Auto escape )]}
-    Set-PSReadLineKeyHandler -Key ')', ']', '}' `
-        -BriefDescription SmartCloseBraces `
-        -LongDescription "Insert closing brace or skip" `
-        -ScriptBlock {
-        param($key, $arg)
-
-        $line = $null
-        $cursor = $null
-        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-
-        if ($line[$cursor] -eq $key.KeyChar) {
-            [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($cursor + 1)
-        }
-        else {
-            [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$($key.KeyChar)")
-        }
-    }
-    # delete match })]
-    Set-PSReadLineKeyHandler -Key Backspace `
-        -BriefDescription SmartBackspace `
-        -LongDescription "Delete previous character or matching quotes/parens/braces" `
-        -ScriptBlock {
-        param($key, $arg)
-
-        $line = $null
-        $cursor = $null
-        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-
-        if ($cursor -gt 0) {
-            $toMatch = $null
-            if ($cursor -lt $line.Length) {
-                switch ($line[$cursor]) {
-                    <#case#> '"' { $toMatch = '"'; break }
-                    <#case#> "'" { $toMatch = "'"; break }
-                    <#case#> ')' { $toMatch = '('; break }
-                    <#case#> ']' { $toMatch = '['; break }
-                    <#case#> '}' { $toMatch = '{'; break }
-                }
-            }
-
-            if ($toMatch -ne $null -and $line[$cursor - 1] -eq $toMatch) {
-                [Microsoft.PowerShell.PSConsoleReadLine]::Delete($cursor - 1, 2)
-            }
-            else {
-                [Microsoft.PowerShell.PSConsoleReadLine]::BackwardDeleteChar($key, $arg)
-            }
-        }
-    }
-
-    # F7 -> open history form
-    Set-PSReadLineKeyHandler -Key F7 `
-        -BriefDescription History `
-        -LongDescription 'Show command history' `
-        -ScriptBlock {
-        $pattern = $null
-        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$pattern, [ref]$null)
-        if ($pattern) {
-            $pattern = [regex]::Escape($pattern)
-        }
-
-        $history = [System.Collections.ArrayList]@(
-            $last = ''
-            $lines = ''
-            foreach ($line in [System.IO.File]::ReadLines((Get-PSReadLineOption).HistorySavePath)) {
-                if ($line.EndsWith('`')) {
-                    $line = $line.Substring(0, $line.Length - 1)
-                    $lines = if ($lines) {
-                        "$lines`n$line"
-                    }
-                    else {
-                        $line
-                    }
-                    continue
-                }
-
-                if ($lines) {
-                    $line = "$lines`n$line"
-                    $lines = ''
-                }
-
-                if (($line -cne $last) -and (!$pattern -or ($line -match $pattern))) {
-                    $last = $line
-                    $line
-                }
-            }
-        )
-        $history.Reverse()
-
-        $command = $history | Out-GridView -Title History -PassThru
-        if ($command) {
-            [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
-            [Microsoft.PowerShell.PSConsoleReadLine]::Insert(($command -join "`n"))
-        }
-    }
-
-    <#
-    # .SYNOPSIS
-    #  Clears the command history, including the saved-to-file history, if applicable.
-    #>
-    function Clear-SavedHistory {
-        [CmdletBinding(ConfirmImpact = 'High', SupportsShouldProcess)]
-        param(    
-        )
-
-        # Debugging: For testing you can simulate not having PSReadline loaded with
-        #            Remove-Module PSReadline -Force
-        $havePSReadline = ($null -ne (Get-Module -EA SilentlyContinue PSReadline))
-
-        Write-Verbose "PSReadline present: $havePSReadline"
-
-        $target = if ($havePSReadline) { "entire command history, including from previous sessions" } else { "command history" } 
-
-        if (-not $pscmdlet.ShouldProcess($target)) {
-            return
-        }
-
-        if ($havePSReadline) {
-        
-            Clear-Host
-
-            # Remove PSReadline's saved-history file.
-            if (Test-Path (Get-PSReadlineOption).HistorySavePath) { 
-                # Abort, if the file for some reason cannot be removed.
-                Remove-Item -EA Stop (Get-PSReadlineOption).HistorySavePath 
-                # To be safe, we recreate the file (empty). 
-                $null = New-Item -Type File -Path (Get-PSReadlineOption).HistorySavePath
-            }
-
-            # Clear PowerShell's own history 
-            Clear-History
-
-            # Clear PSReadline's *session* history.
-            # General caveat (doesn't apply here, because we're removing the saved-history file):
-            #   * By default (-HistorySaveStyle SaveIncrementally), if you use
-            #    [Microsoft.PowerShell.PSConsoleReadLine]::ClearHistory(), any sensitive
-            #    commands *have already been saved to the history*, so they'll *reappear in the next session*. 
-            #   * Placing `Set-PSReadlineOption -HistorySaveStyle SaveAtExit` in your profile 
-            #     SHOULD help that, but as of PSReadline v1.2, this option is BROKEN (saves nothing). 
-            [Microsoft.PowerShell.PSConsoleReadLine]::ClearHistory()
-
-        }
-        else {
-            # Without PSReadline, we only have a *session* history.
-
-            Clear-Host
-        
-            # Clear the doskey library's buffer, used pre-PSReadline. 
-            # !! Unfortunately, this requires sending key combination Alt+F7.
-            # Thanks, https://stackoverflow.com/a/13257933/45375
-            $null = [system.reflection.assembly]::loadwithpartialname("System.Windows.Forms")
-            [System.Windows.Forms.SendKeys]::Sendwait('%{F7 2}')
-
-            # Clear PowerShell's own history 
-            Clear-History
-
-        }
-    }
-
-    <#
-    # <randome-theme> random theme each create new terminal or enter "go" command
-    #>
-    function rand {
-        $themesPath = $env:POSH_THEMES_PATH
-        $themeFiles = Get-ChildItem -Path $themesPath -Filter *.omp.json -File
-        $randomThemeFile = $themeFiles | Get-Random -Count 1
-        $fullThemePath = Join-Path -Path $themesPath -ChildPath $randomThemeFile.Name
-
-        oh-my-posh --init --shell pwsh --config $fullThemePath | Invoke-Expression
-        "$fullThemePath"
-    }
-    # rand
-    function fact {
-        irm -Uri https://uselessfacts.jsph.pl/random.json?language=en | Select -ExpandProperty text
-    }
-    function joke {
-        irm https://icanhazdadjoke.com/ -Headers @{accept = 'application/json' } | select -ExpandProperty joke
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert($command.CommandLine)
     }
 }
 
-# ============================DOTNET_COMMANDS============================ 
-function dr { dotnet run } 
-function dw { dotnet watch } 
-function db { dotnet build } 
-function df { dotnet format } 
+# Auto-pairing of brackets and quotes
+Set-PSReadLineKeyHandler -Key '(', '{', '[', '"', "'" -ScriptBlock {
+    param($key, $arg)
+    $openChar = $key.KeyChar
+    $closeChar = switch ($openChar) {
+        '(' { ')' }
+        '{' { '}' }
+        '[' { ']' }
+        '"' { '"' }
+        "'" { "'" }
+    }
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$openChar$closeChar")
+    [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition((Get-PSReadLineKeyHandler | Where-Object {$_.Key -eq 'LeftArrow'}).Function, 1)
+}
 
-# DOTNET entity framework 
-function du { dotnet ef database update } 
-function da { dotnet ef migrations add $1 } 
-function dd { dotnet ef database drop } 
-function dremove { dotnet ef migrations remove } 
+# Smart backspace to delete pairs
+Set-PSReadLineKeyHandler -Key 'Backspace' -ScriptBlock {
+    $line = ''
+    $cursor = 0
+    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+    if ($cursor -gt 0) {
+        $charBehind = $line[$cursor - 1]
+        $charAhead = if ($cursor -lt $line.Length) { $line[$cursor] } else { $null }
+        $pairs = @{ '(' = ')'; '{' = '}'; '[' = ']'; '"' = '"'; "'" = "'" }
 
-function console {
-    param( [string]$projectName ) 
-    mkdir $projectName
-    Set-Location $projectName
-    dotnet new console -n $projectName
-    Set-Location $projectName
-    code .
+        if ($pairs.ContainsKey($charBehind) -and $pairs[$charBehind] -eq $charAhead) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::Delete($cursor - 1, 2)
+        } else {
+            [Microsoft.PowerShell.PSConsoleReadLine]::BackwardDeleteChar()
+        }
+    }
+}
+
+#endregion
+
+#region .NET Development Commands
+
+# --- Core Build Commands ---
+function dr { Write-Host "🚀 Running project..." -ForegroundColor Green; dotnet run @args }
+function dw { Write-Host "👀 Watching for changes..." -ForegroundColor Cyan; dotnet watch @args }
+function db { Write-Host "🔨 Building project..." -ForegroundColor Blue; dotnet build @args }
+function df { Write-Host "💅 Formatting code..." -ForegroundColor Magenta; dotnet format @args }
+function dt { Write-Host "🧪 Running tests..." -ForegroundColor Yellow; dotnet test @args }
+
+# --- Entity Framework Commands ---
+function du {
+    param([string]$Context)
+    Write-Host "📈 Updating database..." -ForegroundColor Green
+    $cmd = "dotnet ef database update"
+    if ($Context) { $cmd += " --context $Context" }
+    Invoke-Expression $cmd
+}
+function da {
+    param([Parameter(Mandatory=$true)][string]$MigrationName, [string]$Context)
+    Write-Host "➕ Adding migration: $MigrationName" -ForegroundColor Cyan
+    $cmd = "dotnet ef migrations add $MigrationName"
+    if ($Context) { $cmd += " --context $Context" }
+    Invoke-Expression $cmd
+}
+function dd {
+    param([string]$Context)
+    Write-Host "🔥 Dropping database..." -ForegroundColor Red
+    $confirmation = Read-Host "Are you sure you want to drop the database? (y/N)"
+    if ($confirmation -eq 'y') {
+        $cmd = "dotnet ef database drop --force"
+        if ($Context) { $cmd += " --context $Context" }
+        Invoke-Expression $cmd
+        Write-Host "Database dropped." -ForegroundColor Green
+    } else { Write-Host "Operation cancelled." -ForegroundColor Yellow }
+}
+function dremove {
+    param([string]$Context)
+    Write-Host "⏪ Removing last migration..." -ForegroundColor Yellow
+    $cmd = "dotnet ef migrations remove"
+    if ($Context) { $cmd += " --context $Context" }
+    Invoke-Expression $cmd
+}
+
+# --- Project Scaffolding ---
+function New-ConsoleProject {
+    param(
+        [Parameter(Mandatory=$true)] [string]$ProjectName,
+        [switch]$SkipGit
+    )
+    Write-Host "Creating new Console project: $ProjectName" -ForegroundColor Green
+    mkdir $ProjectName; cd $ProjectName
+    dotnet new console -n $ProjectName
     dotnet new gitignore
-    git init
-    git add .
-    git commit -m "init"
+    if (-not $SkipGit) {
+        git init; git add .; git commit -m "Initial commit"
+    }
+    code .
     dotnet run
 }
+Set-Alias -Name console -Value New-ConsoleProject
 
-function webapi {
-    param( [string]$projectName )
-    mkdir $projectName
-    Set-Location $projectName
-    dotnet new webapi -n $projectName
-    Set-Location $projectName
-    code .
+function New-WebApiProject {
+    param(
+        [Parameter(Mandatory=$true)] [string]$ProjectName,
+        [switch]$SkipGit
+    )
+    Write-Host "Creating new Web API project: $ProjectName" -ForegroundColor Green
+    mkdir $ProjectName; cd $ProjectName
+    dotnet new webapi -n $ProjectName
     dotnet new gitignore
-    git init
-    git add .
-    git commit -m "Initial commit"
+    if (-not $SkipGit) {
+        git init; git add .; git commit -m "Initial commit"
+    }
+    code .
     dotnet run
 }
-# ============================GIT_COMMANDS============================ 
-function gcmt { 
-    param( [string]$commitMessage ) 
-    git commit -m "$commitMessage" 
-} 
-function co { param( [string]$branchName ) git checkout $branchName } 
-function cob { param( [string]$branchName ) git checkout -b $branchName } 
-function gca { git commit --amend } 
-function ga { git add . } 
-function glga { git log --graph --oneline --decorate --all } 
-function glg { git log --graph --oneline --decorate } 
-function glo { git log } 
-function gs { git status } 
-function gpu { git pull } 
-function gf { git fetch --all } 
-function gus { git push } 
-function guf { git push -f } 
-function gme { param( [string]$branchName ) git merge $branchName } 
-function gms { param( [string]$branchName ) git merge --squash $branchName } 
-function glc { git show --stat HEAD } 
-function grh { git reset --hard } 
-function gr { git reset HEAD~ } 
-function gb { git branch } 
-function gbd { param( [string]$branchName ) git branch -d $branchName } 
-function diffcmt { git log --full-diff --oneline master..develop }
+Set-Alias -Name webapi -Value New-WebApiProject
 
-# ============================DOCKER_COMMANDS============================ 
-function dkcl { docker container ls } 
-function dkrmac { docker rm $(docker container ls -aq) } 
-function dkstac { docker stop $(docker container ls -aq) } 
-function dkcpu { docker-compose up } 
-function dkcpub { docker-compose up --build } 
-function fix-volume { docker volume prune } 
-function fix-image { docker image prune } 
+#endregion
 
-# ============================AWS_COMMANDS============================ 
-function clear-queue { awslocal --endpoint-url=http://127.0.0.1:4566 sqs purge-queue --queue-url http://127.0.0.1:4566/000000000000/MessageQueue.fifo } 
-function list-queue { awslocal --endpoint-url=http://127.0.0.1:4566 sqs list-queues } 
-# eg: http://127.0.0.1:4566/000000000000/MessageQueue.fifo 
-function del-queue { awslocal --endpoint-url=http://localhost:24870 sqs delete-queue --queue-name=AppEventQueue } 
-function create-queue { awslocal --endpoint-url=http://localhost:4566 sqs create-queue --queue-name=AppEventQueue } 
-function number-mes { awslocal sqs get-queue-attributes --queue-url http://127.0.0.1:4566/000000000000/MessageQueue.fifo --attribute-names All } 
-function send-mess { awslocal --endpoint-url=http://127.0.0.1:4566 sqs send-message --message-group-id 098 --queue-url http://127.0.0.1:4566/000000000000/MessageQueue.fifo --message-body "test msq" } 
-function receive-mess { awslocal --endpoint-url=http://127.0.0.1:4566/_aws/sqs/messages sqs receive-message --queue-url http://127.0.0.1:4566/000000000000/AppEventQueue } 
+#region Git Commands
 
-# ============================OTHER_COMMANDS============================
-function reset { . $PROFILE } 
-function folder { start . } 
-function read { param( [string]$filePath ) code -r $filePath } 
+function gs   { Write-Host "🔍 Git Status" -ForegroundColor Yellow; git status @args }
+function ga   { Write-Host "✅ Staging all changes..." -ForegroundColor Green; git add . }
+function gcmt {
+    param([Parameter(Mandatory=$true, ValueFromRemainingArguments=$true)][string[]]$Message)
+    $commitMessage = $Message -join ' '
+    Write-Host "📝 Committing with message: `"$commitMessage`"" -ForegroundColor Cyan
+    git commit -m "$commitMessage"
+}
+function gca  { Write-Host "✍️ Amending previous commit..." -ForegroundColor Cyan; git commit --amend @args }
+function co   { param([string]$branchName); Write-Host "Переключение на ветку: $branchName" -ForegroundColor Green; git checkout $branchName }
+function cob  { param([string]$branchName); Write-Host "Создание и переключение на новую ветку: $branchName" -ForegroundColor Green; git checkout -b $branchName }
+function glg  { git log --graph --oneline --decorate --all }
+function gpu  { Write-Host "⏬ Pulling changes from remote..." -ForegroundColor Blue; git pull @args }
+function gus  { Write-Host "⏫ Pushing changes to remote..." -ForegroundColor Blue; git push @args }
+function guf  { Write-Host "⏫ Force pushing changes..." -ForegroundColor Red; git push --force @args }
+function gf   { Write-Host "🔎 Fetching from all remotes..." -ForegroundColor Blue; git fetch --all --prune }
+function gb   { Write-Host "🌿 Branches:" -ForegroundColor Green; git branch @args }
+function gbd  { param([string]$branchName); git branch -d $branchName }
 
-# Alias quick access folder
-function pw() { 
-    cd "C:\Users\TruongNhon\Documents\PowerShell" 
-    code .
-} 
+#endregion
+
+#region Docker Commands
+
+function dkcl {
+    param([switch]$All)
+    Write-Host "🐳 Docker Containers:" -ForegroundColor Blue
+    if ($All) { docker container ls -a } else { docker container ls }
+}
+function dkrmac {
+    Write-Host "🗑️ Removing ALL containers..." -ForegroundColor Red
+    $confirmation = Read-Host "This will remove ALL containers. Are you sure? (y/N)"
+    if ($confirmation -eq 'y') {
+        $containers = docker container ls -aq
+        if ($containers) {
+            docker rm $containers
+            Write-Host "All containers removed." -ForegroundColor Green
+        } else { Write-Host "ℹ️ No containers to remove." -ForegroundColor Yellow }
+    } else { Write-Host "Operation cancelled." -ForegroundColor Yellow }
+}
+function dkstac {
+    Write-Host "⏹️ Stopping ALL running containers..." -ForegroundColor Yellow
+    $containers = docker container ls -q
+    if ($containers) {
+        docker stop $containers
+        Write-Host "All containers stopped." -ForegroundColor Green
+    } else { Write-Host "ℹ️ No running containers to stop." -ForegroundColor Yellow }
+}
+function dkcpu { Write-Host "🚀 Starting Docker Compose..." -ForegroundColor Green; docker-compose up @args }
+function dkcpub { Write-Host "🔨 Building and starting Docker Compose..." -ForegroundColor Blue; docker-compose up --build @args }
+function dkcpd { Write-Host "🛑 Stopping Docker Compose..." -ForegroundColor Yellow; docker-compose down @args }
+function fix-volume { Write-Host "🧹 Pruning Docker volumes..." -ForegroundColor Magenta; docker volume prune }
+function fix-image { Write-Host "🧹 Pruning Docker images..." -ForegroundColor Magenta; docker image prune }
+
+#endregion
+
+#region AWS LocalStack Commands
+
+$localStackUrl = "http://127.0.0.1:4566"
+
+function list-queue { awslocal --endpoint-url=$localStackUrl sqs list-queues }
+function create-queue { param([string]$QueueName); awslocal --endpoint-url=$localStackUrl sqs create-queue --queue-name=$QueueName }
+function clear-queue { param([string]$QueueUrl); awslocal --endpoint-url=$localStackUrl sqs purge-queue --queue-url $QueueUrl }
+function send-mess {
+    param([string]$QueueUrl, [string]$MessageBody, [string]$GroupId = "default-group")
+    awslocal --endpoint-url=$localStackUrl sqs send-message --queue-url $QueueUrl --message-body $MessageBody --message-group-id $GroupId
+}
+function receive-mess { param([string]$QueueUrl); awslocal --endpoint-url=$localStackUrl sqs receive-message --queue-url $QueueUrl }
+function number-mes { param([string]$QueueUrl); awslocal --endpoint-url=$localStackUrl sqs get-queue-attributes --queue-url $QueueUrl --attribute-names All }
+
+#endregion
+
+#region System Utilities & Fun
+
+# --- Utility Functions ---
+function Reload-Profile { . $PROFILE; Write-Host "✅ Profile reloaded." -ForegroundColor Green }
+function folder { Invoke-Item . }
+function edit-profile { code $PROFILE }
+function mkcd { param([string]$DirName); mkdir $DirName; cd $DirName }
+function pw { cd "C:\Users\TruongNhon\Documents\PowerShell"; code . }
+
+# --- Fun Commands ---
+function fact { irm -Uri https://uselessfacts.jsph.pl/random.json?language=en | Select -ExpandProperty text }
+function joke { irm https://icanhazdadjoke.com/ -Headers @{accept = 'application/json' } | select -ExpandProperty joke }
+
+# --- History Management ---
+function Clear-SavedHistory {
+    [CmdletBinding(ConfirmImpact = 'High', SupportsShouldProcess)]
+    param()
+    if ($pscmdlet.ShouldProcess("entire command history, including the saved history file")) {
+        Clear-Host
+        Remove-Item (Get-PSReadlineOption).HistorySavePath -ErrorAction SilentlyContinue
+        [Microsoft.PowerShell.PSConsoleReadLine]::ClearHistory()
+        Clear-History
+        Write-Host "🧹 All command history has been cleared." -ForegroundColor Yellow
+    }
+}
+
+#endregion
+
+#region Help and Documentation
+
+function Get-CustomCommands {
+    Write-Host "
+╔═════════════════════════════════════╗
+║      Custom PowerShell Commands     ║
+╚═════════════════════════════════════╝
+" -ForegroundColor Cyan
+
+    $commandHelp = @{
+        ".NET"    = @(
+            "db, dt, dr, dw, df     - Build, Test, Run, Watch, Format"
+            "du, da, dd, dremove    - EF Core commands (Update, Add, Drop, Remove)"
+            "console, webapi        - Create new .NET projects"
+        )
+        "Git"     = @(
+            "gs, ga, gcmt, gca      - Status, Add, Commit, Amend"
+            "co, cob, gb, gbd       - Branch operations (Checkout, Create, List, Delete)"
+            "gpu, gus, guf, gf      - Pull, Push, Force Push, Fetch"
+            "glg                    - Show pretty log graph"
+        )
+        "Docker"  = @(
+            "dkcl [-All]            - List containers"
+            "dkstac, dkrmac         - Stop/Remove all containers (with confirmation)"
+            "dkcpu, dkcpub, dkcpd   - Docker Compose Up, Up --build, Down"
+            "fix-volume, fix-image  - Prune unused volumes or images"
+        )
+        "System"  = @(
+            "go                     - Reload this profile"
+            "edit-profile           - Open this profile in VS Code"
+            "folder                 - Open current directory in File Explorer"
+            "mkcd <dir>             - Make a directory and enter it"
+            "Clear-SavedHistory     - Wipes all command history"
+            "ip, cls, grep, which   - Core aliases"
+            ".., ...                - Navigate up one or two directories"
+        )
+    }
+
+    foreach ($category in $commandHelp.Keys) {
+        Write-Host "`n$category" -ForegroundColor Yellow
+        Write-Host ('-' * $category.Length) -ForegroundColor Gray
+        foreach ($command in $commandHelp[$category]) { Write-Host "  $command" -ForegroundColor White }
+    }
+    Write-Host "`nType 'commands' again to see this list. Use 'Get-PSReadlineKeyHandler' to see all hotkeys." -ForegroundColor Cyan
+}
+
+#endregion
