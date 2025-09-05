@@ -5,12 +5,7 @@
 # DOCKER_COMMANDS 
 # AWS_COMMANDS 
 
-# Quick doc
-# rand to random theme
-# fin to opean finance app
-
 # ============================INIT_COMMANDS============================ 
-
 $env:POSH_THEMES_PATH = "$env:USERPROFILE\Documents\PowerShell\powershell-themes"
 $env:THEME = "neko" # neko
 oh-my-posh --init --shell pwsh --config "$env:POSH_THEMES_PATH\$env:THEME.omp.json" | Invoke-Expression
@@ -276,16 +271,13 @@ if ($host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
         "$fullThemePath"
     }
     # rand
-
     function fact {
         irm -Uri https://uselessfacts.jsph.pl/random.json?language=en | Select -ExpandProperty text
     }
-
     function joke {
         irm https://icanhazdadjoke.com/ -Headers @{accept = 'application/json' } | select -ExpandProperty joke
     }
 }
-
 
 # ============================DOTNET_COMMANDS============================ 
 function dr { dotnet run } 
@@ -371,58 +363,13 @@ function number-mes { awslocal sqs get-queue-attributes --queue-url http://127.0
 function send-mess { awslocal --endpoint-url=http://127.0.0.1:4566 sqs send-message --message-group-id 098 --queue-url http://127.0.0.1:4566/000000000000/MessageQueue.fifo --message-body "test msq" } 
 function receive-mess { awslocal --endpoint-url=http://127.0.0.1:4566/_aws/sqs/messages sqs receive-message --queue-url http://127.0.0.1:4566/000000000000/AppEventQueue } 
 
-# ============================OLLAMA_COMMANDS============================ 
-# function ol { ollama list } 
-# function or { param([string]$model)ollama run $model } 
-# function orv { param([string]$model)ollama run $model --verbose }
-
 # ============================OTHER_COMMANDS============================
 function reset { . $PROFILE } 
 function folder { start . } 
 function read { param( [string]$filePath ) code -r $filePath } 
 
-# run finance app
-function fin() { 
-    cd "D:\1.Project\1.project\tool\tool-finance-analysis-py" 
-    ./run.bat 
-}
 # Alias quick access folder
-
 function pw() { 
     cd "C:\Users\TruongNhon\Documents\PowerShell" 
     code .
 } 
-
-
-## terminal/window .bat
-
-# ```bash
-# @echo off
-# start cmd /k "command_1 && command 2"
-# start cmd /k "command_3"
-# ```
-
-# - Linux most use command - publish new webapi in linux basic comma
-
-# ```bash
-
-# chmod 400 "nhonvtt-key.pem"
-
-
-# ssh -i "nhonvtt-key.pem" ec2-user@ec2-3-85-185-59.compute-1.amazonaws.com
-
-
-
-# # Update your package lists
-# sudo yum update -y
-
-# # change to root user
-# sudo -i
-
-# sudo yum install <package_name>
-# # popular package: vim, dotnet-sdk-8.0, postgresql, nodejs, npm, nginx, docker-ce, git
-
-# dotnet publish -c Release
-
-# # list all the installed packages
-# yum list installed
