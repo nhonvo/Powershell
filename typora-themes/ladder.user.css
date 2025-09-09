@@ -1,0 +1,430 @@
+/**
+ * Ladder Theme - Custom Build by Gemini
+ *
+ * This file contains all the custom features, styles, and optimizations
+ * built on top of the base Ladder theme.
+ *
+ * Table of Contents:
+ * 1. BothView 3-Panel Layout
+ * 2. Core Theme Overrides & Variables
+ * 3. Content Styling
+ * 4. Interactive Elements & Accessibility
+ * 5. Application UI Shell Theming
+ */
+
+/*=======================================================================*/
+/* 1. BothView 3-Panel Layout                                            */
+/*=======================================================================*/
+/* From XiLaiTL | MIT License */
+
+header{ z-index: -1;}
+.pin-outline header:hover ~ footer{ z-index: -2; }
+.typora-node.pin-outline:not(.megamenu-opened):not(.typora-sourceview-on) #typora-sidebar{ width: 100% }
+.info-panel-tab-wrapper { width: var(--sidebar-width);}
+.sidebar-footer{ width: var(--sidebar-width);}
+#file-library-search{ width: var(--sidebar-width);}
+
+.pin-outline content {
+    min-height: 0%;
+    height:calc(100% - 30px);
+    left: var(--sidebar-width);
+    right: var(--sidebar-width);
+}
+
+/* When "Files" is active, show Outline on the right */
+.pin-outline .active-tab-files #file-library {
+    width: var(--sidebar-width);
+    min-width: 0%;
+}
+.pin-outline .active-tab-files #outline-content{
+    position: fixed;
+    width: var(--sidebar-width);
+    min-width: 0%;
+    right: 0;
+    left: calc(100% - var(--sidebar-width));
+    display: block;
+}
+
+/* When "Outline" is active, show Files on the right */
+.pin-outline .active-tab-outline #outline-content {
+    background-color: var(--side-bar-bg-color);
+    position: relative;
+    width: var(--sidebar-width);
+    min-width: 0%;
+    left: 0;
+    display: block;
+}
+.pin-outline .active-tab-outline #file-library{
+    background-color: var(--bg-color);
+    position: fixed;
+    top: 0;
+    width: var(--sidebar-width);
+    left: calc(100% - var(--sidebar-width));
+    display: block !important;
+}
+
+
+/*=======================================================================*/
+/* 2. Core Theme Overrides & Variables                                   */
+/*=======================================================================*/
+
+:root {
+    /* -- Sizing -- */
+    --sidebar-width: 280px;
+
+    /* -- Interactivity -- */
+    
+
+    /* -- Custom Color Palette (Dark Mode) -- */
+    --tw-prose-invert-bg: #1a1d24; /* Main background */
+    --tw-prose-invert-pre-bg: #282c34; /* Code background */
+    --tw-prose-invert-body: #d1d5db; /* Main text */
+    --tw-prose-invert-headings: #ffffff; /* Headings */
+    --tw-prose-invert-links: #7dd3fc; /* Links */
+    --tw-prose-invert-quotes: #a5b4fc; /* Blockquotes */
+    --tw-prose-invert-quote-borders: #6366f1;
+
+    /* -- Syntax Highlighting -- */
+    --code-neutral-inverted: #abb2bf;
+    --code-string-inverted: #98c379;
+    --code-number-inverted: #d19a66;
+    --code-tag-inverted: #e06c75;
+    --code-variable-inverted: #61afef;
+    --code-operator-inverted: #c678dd;
+    --code-comment-inverted: #5c6370;
+    --code-bracket-inverted: #abb2bf;
+    --code-citation-inverted: #98c379;
+
+    /* -- Hierarchical Header Colors -- */
+    --header-border-h1: #7dd3fc; /* sky-300 */
+    --header-border-h2: #a5b4fc; /* indigo-300 */
+    --header-border-h3: #98c379; /* Green */
+    --header-border-h4: #d19a66; /* Orange */
+    --header-border-h5: #c678dd; /* Purple */
+    --header-border-h6: #e06c75; /* Red */
+}
+
+/* Base font settings from user */
+#write {
+    font-size: 1.25rem;
+    max-width: 90%;
+    line-height: 1.8;
+}
+
+p {
+    line-height: 2rem;
+}
+
+pre, code, kbd, tt, var {
+    font-family: "Operator Mono", "Fira Code", "Consolas", "Courier New", monospace;
+    font-size: 0.9em;
+}
+
+
+/*=======================================================================*/
+/* 3. Content Styling                                                    */
+/*=======================================================================*/
+
+/* -- Japanese Readability (Performance Optimized) -- */
+p, li {
+    letter-spacing: 0.05em;
+}
+
+/* -- Hierarchical Headers -- */
+h1, h2, h3, h4, h5, h6 {
+    padding-left: 1em;
+    border-left-style: solid;
+    position: relative;
+}
+h1 { border-left-width: 5px; border-left-color: var(--header-border-h1); }
+h2 { border-left-width: 4px; border-left-color: var(--header-border-h2); }
+h3 { border-left-width: 3px; border-left-color: var(--header-border-h3); }
+h4 { border-left-width: 2px; border-left-color: var(--header-border-h4); }
+h5 { border-left-width: 2px; border-left-color: var(--header-border-h5); font-style: italic; }
+h6 { border-left-width: 2px; border-left-color: var(--header-border-h6); color: var(--code-comment-inverted); }
+
+/* -- Enhanced Blockquotes -- */
+blockquote {
+    position: relative;
+    background-color: rgba(40, 44, 52, 0.5);
+    padding: 1.5em 2em;
+    border-left: 4px solid var(--tw-prose-invert-quote-borders);
+    border-radius: 8px;
+    transition: border-color 0.3s ease, color 0.3s ease;
+    will-change: border-color;
+}
+blockquote::before {
+    content: '\201C';
+    font-family: Georgia, serif;
+    font-size: 5em;
+    color: rgba(255, 255, 255, 0.05);
+    position: absolute;
+    left: 10px;
+    top: 0px;
+    line-height: 1;
+}
+
+/* -- Styled Horizontal Rules -- */
+hr {
+    border: 0;
+    height: auto;
+    text-align: center;
+    margin: 3em 0;
+    background: transparent;
+}
+hr::after {
+    content: '◆';
+    display: inline-block;
+    color: var(--code-comment-inverted);
+    font-size: 1.2em;
+}
+
+/* -- Upgraded Code Blocks -- */
+code {
+    background-color: #282c34;
+    color: #abb2bf;
+    padding: 0.2em 0.4em;
+    border-radius: 5px;
+}
+
+/* -- Enhanced YAML Front Matter -- */
+pre.md-meta-block {
+    background-color: rgba(40, 44, 52, 0.5);
+    border: 1px solid var(--code-comment-inverted);
+    border-radius: 8px;
+    padding: 1.5em;
+    font-size: 0.85em;
+    position: relative;
+}
+pre.md-meta-block::before {
+    content: "YAML";
+    position: absolute;
+    top: -0.75em;
+    right: 1em;
+    background: var(--code-comment-inverted);
+    color: var(--tw-prose-invert-bg);
+    padding: 0.2em 0.5em;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+/* -- Enhanced Image Styling (Performance Optimized) -- */
+#write img {
+    border-radius: 8px;
+    border: 1px solid var(--code-comment-inverted);
+    transition: border-color 0.3s ease, transform 0.3s ease;
+    will-change: border-color, transform;
+}
+
+/* -- Modern Task Lists -- */
+.task-list-item {
+    list-style-type: none;
+}
+.task-list-item input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--tw-prose-invert-pre-bg);
+    margin-right: 0.5em;
+    font: inherit;
+    color: currentColor;
+    width: 1.15em;
+    height: 1.15em;
+    border: 0.15em solid currentColor;
+    border-radius: 0.15em;
+    transform: translateY(-0.075em);
+    display: inline-grid;
+    place-content: center;
+}
+.task-list-item input[type="checkbox"]::before {
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em var(--tw-prose-invert-links);
+    transform-origin: bottom left;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    will-change: transform;
+}
+.task-list-item input[type="checkbox"]:checked::before {
+    transform: scale(1);
+}
+
+/* -- Table Readability -- */
+tbody tr:nth-child(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+
+/*=======================================================================*/
+/* 4. Interactive Elements & Accessibility                               */
+/*=======================================================================*/
+
+/* -- Custom Selection Color -- */
+::selection {
+    background-color: var(--tw-prose-invert-links);
+    color: var(--tw-prose-invert-pre-bg);
+}
+
+/* -- Accessibility: Keyboard Focus -- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+    outline: 2px solid var(--tw-prose-invert-links);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--tw-prose-invert-bg), 0 0 0 6px var(--tw-prose-invert-links);
+}
+
+/* -- Transitions -- */
+body, content { transition: background-color 0.5s ease; }
+tbody tr { transition: background-color 0.3s ease; }
+
+/* -- Hover Effects -- */
+#write img:hover {
+   border-color: var(--tw-prose-invert-links);
+   transform: scale(1.02);
+}
+tbody tr:hover {
+    background-color: rgba(125, 211, 252, 0.1);
+}
+blockquote:hover {
+    border-left-color: var(--tw-prose-invert-links);
+}
+
+/* -- Link Underline Effect -- */
+a {
+    text-decoration: none !important;
+    position: relative;
+    transition: color 0.3s ease;
+}
+a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--tw-prose-invert-links);
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-out;
+    will-change: transform;
+}
+a:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+/* -- Hover-reveal Heading Anchors -- */
+h1:hover .md-heading-anchor, h2:hover .md-heading-anchor, h3:hover .md-heading-anchor, h4:hover .md-heading-anchor, h5:hover .md-heading-anchor, h6:hover .md-heading-anchor {
+    opacity: 1;
+    transform: translateX(0);
+}
+.md-heading-anchor {
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+    transform: translateX(-10px);
+    color: var(--tw-prose-invert-links);
+    text-decoration: none;
+    font-weight: normal;
+    will-change: opacity, transform;
+    left: -1em; /* Adjust for new header padding */
+}
+
+/* -- Collapsible Sections -- */
+.md-heading.md-folded {
+  color: var(--code-comment-inverted);
+  font-style: italic;
+  transition: color 0.3s ease;
+}
+.md-heading.md-folded:hover {
+    color: var(--tw-prose-invert-body);
+}
+.md-heading.md-folded::after {
+  content: ' [...]';
+  color: var(--tw-prose-invert-links);
+  font-style: normal;
+  font-size: 0.7em;
+  vertical-align: middle;
+  padding-left: 0.5em;
+}
+
+
+/*=======================================================================*/
+/* 5. Application UI Shell Theming                                       */
+/*=======================================================================*/
+
+/* -- Custom Scrollbars -- */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--tw-prose-invert-bg); }
+::-webkit-scrollbar-thumb { background: var(--code-comment-inverted); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--tw-prose-invert-body); }
+
+/* -- Status Bar -- */
+#typora-statusbar {
+    background-color: var(--tw-prose-invert-pre-bg);
+    color: var(--code-neutral-inverted);
+    border-top: 1px solid var(--code-comment-inverted);
+    font-size: 0.85em;
+}
+.status-item { transition: color 0.3s ease; }
+.status-item:hover { color: var(--tw-prose-invert-headings); }
+
+/* -- Sidebar / Navigator -- */
+.sidebar-tab {
+    background-color: var(--tw-prose-invert-pre-bg);
+    color: var(--code-neutral-inverted);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+.sidebar-tab.active, .sidebar-tab:hover {
+    background-color: var(--tw-prose-invert-bg);
+    color: var(--tw-prose-invert-headings);
+    border-bottom-color: var(--tw-prose-invert-links);
+}
+
+/* -- Dialogs & Pop-ups -- */
+.modal-dialog {
+    background-color: var(--tw-prose-invert-bg);
+    border: 1px solid var(--code-comment-inverted);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+.modal-header, .modal-title {
+    background-color: var(--tw-prose-invert-pre-bg);
+    color: var(--tw-prose-invert-headings);
+    border-bottom: 1px solid var(--code-comment-inverted);
+}
+.modal-body { color: var(--tw-prose-invert-body); }
+.modal-footer {
+    background-color: var(--tw-prose-invert-pre-bg);
+    border-top: 1px solid var(--code-comment-inverted);
+}
+
+/* -- Buttons -- */
+.btn {
+    background-color: var(--button-bg-inverted);
+    color: var(--tw-prose-invert-headings);
+    border: 1px solid var(--code-comment-inverted);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+.btn:hover {
+    background-color: var(--tw-prose-invert-links);
+    color: var(--tw-prose-invert-pre-bg);
+    border-color: var(--tw-prose-invert-links);
+}
+.btn.btn-primary {
+    background-color: var(--tw-prose-invert-links);
+    color: var(--tw-prose-invert-pre-bg);
+}
+.btn.btn-primary:hover {
+    background-color: #7dd3fc;
+    box-shadow: 0 0 10px rgba(125, 211, 252, 0.3);
+}
+
+/* -- Title Bar -- */
+header {
+    background-color: var(--tw-prose-invert-pre-bg);
+    border-bottom: 1px solid var(--code-comment-inverted);
+}

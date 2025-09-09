@@ -1,0 +1,785 @@
+:root {
+    --side-bar-bg-color: rgb(247, 246, 243);
+    --control-text-color: #777;
+
+    /* dark color for background*/
+    /* default color */
+    --bg-color1: rgb(40, 44, 52);
+    /* for most panel, context, header, etc */
+    --bg-color2: rgb(33, 37, 43);
+    /* for toc and table edit panel */
+    --bg-color3: rgba(16, 17, 20, 0.5);
+    /* for tips */
+    --bg-color4: black;
+    /* for blockquote, codeblock, input, etc */
+    --bg-color5: rgb(29, 31, 35);
+
+    /* Codeblocks / Fences */
+    --bg-color-codeblock: rgb(29, 31, 35);
+    --bg-color-fences:    rgb(29, 31, 35);
+
+    /* light color for text and icon*/
+    /* default color */
+    --text-color1: rgb(170, 178, 180);
+    /* for text on panel - Colour of Mermaid strokes */
+    --text-color2:rgba(39, 48, 63, 1.0);
+    /* for checkbox and radio */
+    --text-color3: hsl(192, 6%, 40%);
+    /* for tips */
+    --text-color4: white;
+    /* for focus mode */
+    --text-color5: rgba(170, 178, 180, 0.5);
+    /* link color */
+    --link-color: rgb(197, 202, 210);
+    /* for codeblocks */
+    --text-color-codeblock: rgb(247, 246, 243);
+    --text-color-fences:    rgba(100, 116, 139, 1.0);
+
+    /* codeblock color */
+    --code-red-color: rgb(221, 110, 115);
+    --code-yellow-color: rgb(218, 192, 123);
+    --code-cyan-color: rgb(86, 182, 194);
+    --code-blue-color: rgb(94, 174, 237);
+    --code-purple-color: rgb(195, 115, 215);
+    --code-orange-color: rgb(221, 153, 103);
+    --code-grey-color: rgb(127, 132, 142);
+    --code-green-color: rgb(152, 195, 123);
+    --code-select-bg-color: rgb(64, 72, 89);
+    --code-cursor-color: rgb(82, 139, 255);
+}
+
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Open Sans Regular'),url('./notion/400.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: italic;
+    font-weight: normal;
+    src: local('Open Sans Italic'),url('./notion/400i.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: bold;
+    src: local('Open Sans Bold'),url('./notion/700.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    font-style: italic;
+    font-weight: bold;
+    src: local('Open Sans Bold Italic'),url('./notion/700i.woff') format('woff');
+}
+
+html {
+    font-size: 20px;
+}
+
+body {
+    font-family: "Open Sans","Clear Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: rgb(51, 51, 51);
+    line-height: 1.6;
+}
+
+
+
+/*  ┌─────────────────────────────────────────────────────────────────────────┐
+    │                                                                         │░
+    │                                                                         │░
+    │                                 NOTION                                  │░
+    │                                                                         │░
+    │                                                                         │░
+    └─────────────────────────────────────────────────────────────────────────┘░
+     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ */
+
+
+/*  ┌─────────────────────────────────────────────────────────────────────────┐
+    │                             Main writing section                        │
+    └─────────────────────────────────────────────────────────────────────────┘ */
+    #write {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 30px;
+        padding-bottom: 100px;
+    }
+
+    @media only screen and (min-width: 1400px) {
+        #write {
+            max-width: 1024px;
+        }
+    }
+
+    @media only screen and (min-width: 1800px) {
+        #write {
+            max-width: 1200px;
+        }
+    }
+
+    #write > ul:first-child,
+    #write > ol:first-child{
+        margin-top: 30px;
+    }
+
+    
+/*  ┌─────────────────────────────────────────────────────────────────────────┐
+    │                        FIRST Header Image / iframe                      │
+    └─────────────────────────────────────────────────────────────────────────┘ */
+    #write p:first-child img:nth-of-type(1) {
+        height: 30vh;
+        min-height: 300px;
+        width: 101vw;
+        max-width: 101vw;
+        object-fit: cover; 
+        object-position: center center;
+        margin-top: -54px;
+        margin-left: calc((-100vw / 2) + 320px);
+        margin-bottom: 3.2em;
+        display: inline-block;
+    }
+
+    .sidebar-tab.active {
+        opacity: 0;
+    }
+
+    #typora-sidebar  {
+        border-right: 0px solid rgba(0,0,0,.07)
+    }
+
+/*  ┌─────────────────────────────────────────────────────────────────────────┐
+    │                               Wider Tables                              │
+    └─────────────────────────────────────────────────────────────────────────┘ */
+    .md-table-fig {
+        max-width: 100vw;
+        margin: 0px -10vw;
+    }
+
+/*  ┌─────────────────────────────────────────────────────────────────────────┐
+    │                                   LOGO                                  │
+    └─────────────────────────────────────────────────────────────────────────┘ */
+    .sidebar-tabs {
+        background-image: url("./notion/logo.svg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+    }
+
+/*  ┌─────────────────────────────────────────────────────────────────────────┐
+    │                           BACKGROUND PATTERN                            │
+    └─────────────────────────────────────────────────────────────────────────┘ */
+    .sidebar-content {
+        background-color: rgb(247, 246, 243);
+        /* background-image: url("./notion/sidebar.svg"); */
+        background-attachment: fixed;
+        background-size: cover;
+    }
+
+    #file-library {
+        padding-top: 20px;
+    }
+
+
+    /* remove folder icon */
+    .fa-folder:before {
+        content: "";
+    }
+    /* Space file icon */
+    .fa-file-text-o:before {
+        margin-right:5px;
+    }
+
+
+
+
+a {
+    color: #4183C4;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    position: relative;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    line-height: 1.4;
+    cursor: text;
+}
+h1:hover a.anchor,
+h2:hover a.anchor,
+h3:hover a.anchor,
+h4:hover a.anchor,
+h5:hover a.anchor,
+h6:hover a.anchor {
+    text-decoration: none;
+}
+h1 tt,
+h1 code {
+    font-size: inherit;
+}
+h2 tt,
+h2 code {
+    font-size: inherit;
+}
+h3 tt,
+h3 code {
+    font-size: inherit;
+}
+h4 tt,
+h4 code {
+    font-size: inherit;
+}
+h5 tt,
+h5 code {
+    font-size: inherit;
+}
+h6 tt,
+h6 code {
+    font-size: inherit;
+}
+h1 {
+    padding-bottom: .3em;
+    font-size: 2.25em;
+    line-height: 1.2;
+    border-bottom: 1px solid #eee;
+}
+h2 {
+   padding-bottom: .3em;
+    font-size: 1.75em;
+    line-height: 1.225;
+    border-bottom: 1px solid #eee;
+}
+h3 {
+    font-size: 1.5em;
+    line-height: 1.43;
+}
+h4 {
+    font-size: 1.25em;
+}
+h5 {
+    font-size: 1em;
+}
+h6 {
+   font-size: 1em;
+    color: #777;
+}
+p,
+blockquote,
+ul,
+ol,
+dl,
+table{
+    margin: 0.8em 0;
+}
+li>ol,
+li>ul {
+    margin: 0 0;
+}
+hr {
+    height: 2px;
+    padding: 0;
+    margin: 16px 0;
+    background-color: #e7e7e7;
+    border: 0 none;
+    overflow: hidden;
+    box-sizing: content-box;
+}
+
+li p.first {
+    display: inline-block;
+}
+ul,
+ol {
+    padding-left: 30px;
+}
+ul:first-child,
+ol:first-child {
+    margin-top: 0;
+}
+ul:last-child,
+ol:last-child {
+    margin-bottom: 0;
+}
+blockquote {
+    border-left: 4px solid #dfe2e5;
+    padding: 0 15px;
+    color: #777777;
+}
+blockquote blockquote {
+    padding-right: 0;
+}
+table {
+    padding: 0;
+    word-break: initial;
+}
+table tr {
+    border-top: 1px solid #dfe2e5;
+    margin: 0;
+    padding: 0;
+}
+table tr:nth-child(2n),
+thead {
+    background-color: #f8f8f8;
+}
+table tr th {
+    font-weight: bold;
+    border: 1px solid #dfe2e5;
+    border-bottom: 0;
+    margin: 0;
+    padding: 6px 13px;
+}
+table tr td {
+    border: 1px solid #dfe2e5;
+    margin: 0;
+    padding: 6px 13px;
+}
+table tr th:first-child,
+table tr td:first-child {
+    margin-top: 0;
+}
+table tr th:last-child,
+table tr td:last-child {
+    margin-bottom: 0;
+}
+
+.CodeMirror-lines {
+    padding-left: 4px;
+}
+
+.code-tooltip {
+    box-shadow: 0 1px 1px 0 rgba(0,28,36,.3);
+    border-top: 1px solid #eef2f2;
+}
+
+.md-fences,
+code,
+tt {
+    border: 1px solid #e7eaed;
+    background-color: #f8f8f8;
+    border-radius: 3px;
+    padding: 0;
+    padding: 2px 4px 0px 4px;
+    font-size: 0.9em;
+}
+
+code {
+    background-color: #f3f4f4;
+    padding: 0 2px 0 2px;
+}
+
+.md-fences {
+    margin-bottom: 15px;
+    margin-top: 15px;
+    padding-top: 8px;
+    padding-bottom: 6px;
+}
+
+/* andyp code  - codeblocks black  */
+
+/* inline codeblock */
+code {
+    color: var(--text-color-codeblock);
+    font-size: 1em;
+    background-color: var(--bg-color-codeblock);
+    border-radius: 6px;
+    padding: 4px 8px 4px 8px;
+    margin: 0px 6px 0px 6px;
+    /* box-shadow: 0px 0px 10px rgba(0, 0, 0, .2); */
+}
+
+/* codeblock */
+.md-fences,
+.md-fences:active {
+    background-color: var(--bg-color-fences);
+    color: var(--text-color-fences);
+    border-radius: 6px;
+    padding: 8px 4px 8px 4px !important;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    /* box-shadow: 0px 0px 10px rgba(0, 0, 0, .2); */
+}
+
+.md-fences .code-tooltip {
+    display: block !important;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.3s;
+    background-color: var(--bg-color3);
+}
+
+.md-fences.md-focus .code-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.CodeMirror-lines {
+    padding-left: 4px;
+}
+
+/* selected text and cursor */
+.CodeMirror-selected,
+.CodeMirror-selectedtext {
+    background: var(--code-select-bg-color) !important;
+}
+
+.CodeMirror div.CodeMirror-cursor {
+    border-left: 2px solid var(--code-cursor-color);
+    z-index: 3;
+}
+
+.CodeMirror.cm-s-typora-default div.CodeMirror-cursor {
+    border-left: 3px solid var(--code-cursor-color);
+}
+
+/* highlight */
+.cm-s-inner .cm-property {
+    color: var(--code-blue-color) !important;
+}
+
+.cm-s-inner .cm-operator {
+    color: var(--code-cyan-color) !important;
+}
+
+.cm-s-inner .cm-keyword {
+    color: var(--code-purple-color) !important;
+}
+
+.cm-s-inner .cm-tag {
+    color: var(--code-red-color) !important;
+}
+
+.cm-s-inner .cm-attribute {
+    color: var(--code-orange-color) !important;
+}
+
+.cm-s-inner .cm-string {
+    color: var(--code-green-color) !important;
+}
+
+.cm-s-inner .cm-comment,
+.cm-s-inner.cm-comment {
+    /*     color: var(--code-orange-color) !important; */
+    color: var(--code-grey-color) !important;
+    font-style: italic;
+}
+
+.cm-s-inner .cm-header,
+.cm-s-inner .cm-def,
+.cm-s-inner.cm-header,
+.cm-s-inner.cm-def {
+    /*     color: var(--code-red-color) !important; */
+    color: var(--code-blue-color) !important;
+}
+
+.cm-s-inner .cm-meta,
+.cm-s-inner .cm-qualifier {
+    color: var(--code-red-color) !important;
+}
+
+.cm-s-inner .cm-builtin {
+    /*     color: var(--code-blue-color) !important; */
+    color: var(--code-cyan-color) !important;
+}
+
+.cm-s-inner .cm-bracket {
+    color: var(--text-color1) !important;
+}
+
+.cm-s-inner .cm-number {
+    color: var(--code-orange-color) !important;
+}
+
+.cm-s-inner .cm-variable {
+    color: var(--text-color1) !important;
+}
+
+.cm-s-inner .cm-variable-2 {
+    /*     color: var(--code-blue-color) !important; */
+    color: var(--code-yellow-color) !important;
+}
+
+.cm-s-typora-default .cm-header,
+.cm-s-typora-default .cm-property {
+    color: var(--code-red-color) !important;
+}
+
+.cm-s-typora-default .cm-string {
+    /*     color: var(--code-blue-color); */
+    color: var(--code-purple-color);
+}
+
+.cm-s-typora-default .cm-atom {
+    color: var(--code-grey-color);
+    font-style: italic;
+}
+
+.cm-s-typora-default .cm-number {
+    color: var(--code-orange-color);
+    font-style: normal !important;
+}
+
+.cm-s-typora-default .cm-link {
+    color: var(--code-blue-color);
+}
+
+.cm-s-typora-default .CodeMirror-activeline-background {
+    background: var(--hover-bg-color1);
+}
+
+.cm-s-typora-default .cm-comment,
+.cm-s-typora-default .cm-code {
+    color: var(--code-purple-color);
+}
+
+.cm-s-typora-default .cm-tag {
+    /*     color: var(--code-red-color); */
+    color: var(--code-blue-color);
+}
+
+.cm-s-typora-default .cm-strong,
+.cm-s-typora-default .cm-em,
+.cm-s-typora-default .cm-del {
+    /*     color: var(--code-green-color); */
+    color: var(--code-orange-color)
+}
+
+.cm-s-typora-default .cm-block-start.cm-variable-2 {
+    /*     color: var(--code-orange-color); */
+    color: var(--code-red-color);
+}
+
+.cm-formatting-task .cm-formatting-task {
+    color: var(--code-red-color);
+}
+
+/* math formula tag */
+.cm-s-inner .cm-atom,
+.cm-s-inner.cm-atom {
+    color: var(--code-blue-color);
+}
+
+/* inline codeblock in source mode */
+.cm-s-typora-default .cm-comment {
+    color: var(--code-green-color);
+}
+
+/* horizontal divider when language is markdown */
+.cm-s-inner .cm-hr {
+    color: var(--text-color1);
+}
+
+/* variable type when language is c/cpp */
+.cm-s-inner .cm-variable-3 {
+    color: var(--code-purple-color);
+}
+
+/* unknown highlight keyword */
+.cm-s-inner .cm-quote,
+.cm-s-inner.cm-quote {
+    color: #57ac57;
+}
+
+.cm-s-inner .cm-link {
+    color: var(--code-blue-color);
+}
+
+.cm-s-inner .cm-negative {
+    color: #d95050;
+}
+
+.cm-s-inner .cm-positive {
+    color: #50e650;
+}
+
+.cm-s-inner .cm-string-2 {
+    color: #f50;
+}
+
+.CodeMirror-gutters {
+    border-right: none;
+}
+/* andyp - codeblocks black */
+
+.md-task-list-item > input {
+  margin-left: -1.3em;
+}
+
+@media print {
+    html {
+        font-size: 13px;
+    }
+    table,
+    pre {
+        page-break-inside: avoid;
+    }
+    pre {
+        word-wrap: break-word;
+    }
+}
+
+/* .md-fences {
+	background-color: #f8f8f8;
+} */
+#write pre.md-meta-block {
+	padding: 1rem;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #f7f7f7;
+    border: 0;
+    border-radius: 3px;
+    color: #242424;
+    margin-top: 0 !important;
+}
+
+.mathjax-block>.code-tooltip {
+	bottom: .375rem;
+}
+
+.md-mathjax-midline {
+    background: #fafafa;
+}
+
+#write>h3.md-focus:before{
+	left: -1.5625rem;
+	top: .375rem;
+}
+#write>h4.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+#write>h5.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+#write>h6.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+.md-image>.md-meta {
+    /*border: 1px solid #ddd;*/
+    border-radius: 3px;
+    padding: 2px 0px 0px 4px;
+    font-size: 0.9em;
+    color: inherit;
+}
+
+.md-tag {
+    color: #a7a7a7;
+    opacity: 1;
+}
+
+.md-toc { 
+    margin-top:20px;
+    padding-bottom:20px;
+}
+
+.sidebar-tabs {
+    border-bottom: none;
+}
+
+/* andyp sidebar */
+#typora-sidebar .file-list-item-file-name {
+    font-family: 'Open Sans';
+    font-weight: bold;
+}
+
+#typora-sidebar .file-list-item-summary,
+#typora-sidebar .ty-search-item-line {
+    font-family: 'Open Sans';
+}
+
+#typora-sidebar #outline-content .outline-h1>.outline-item {
+    font-family: 'Open Sans';
+}
+
+#typora-sidebar .file-tree-node.file-library-file-node.active .file-node-background,
+#typora-sidebar .file-list-item.file-library-file-node.active {
+    border-left: 6px solid #53A5E3;
+}
+
+.file-library-node:not(.file-node-root):focus>.file-node-content {
+    outline: none;
+}
+
+#typora-sidebar .file-list-item.file-library-file-node:hover {
+    background: #f1f1f1;
+}
+
+#typora-sidebar .file-tree-node.file-library-file-node {
+    padding: 0px 0px 0px 18px;
+}
+
+#typora-sidebar .file-tree-node.file-library-file-node.active .file-node-title {
+    color: #53A5E3;
+}
+
+#typora-sidebar .file-tree-node {
+    border: 0;
+    padding: 0 0 0 20px;
+    margin: 0;
+}
+
+/* andyp */
+
+#typora-quick-open {
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+}
+
+#typora-quick-open-item {
+    background-color: #FAFAFA;
+    border-color: #FEFEFE #e5e5e5 #e5e5e5 #eee;
+    border-style: solid;
+    border-width: 1px;
+}
+
+/** focus mode */
+.on-focus-mode blockquote {
+    border-left-color: rgba(85, 85, 85, 0.12);
+}
+
+header, .context-menu, .megamenu-content, footer{
+    font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.file-node-content:hover .file-node-icon,
+.file-node-content:hover .file-node-open-state{
+    visibility: visible;
+}
+
+.mac-seamless-mode #typora-sidebar {
+    background-color: #fafafa;
+    background-color: var(--side-bar-bg-color);
+}
+
+.md-lang {
+    color: #b4654d;
+}
+
+.html-for-mac .context-menu {
+    --item-hover-bg-color: #E6F0FE;
+}
+
+#md-notification .btn {
+    border: 0;
+}
+
+.dropdown-menu .divider {
+    border-color: #e5e5e5;
+}
+
+.ty-preferences .window-content {
+    background-color: #fafafa;
+}
+
+.ty-preferences .nav-group-item.active {
+    color: white;
+    background: #999;
+}

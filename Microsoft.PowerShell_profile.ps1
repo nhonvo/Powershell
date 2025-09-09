@@ -15,7 +15,8 @@ $env:THEME = "neko" # You can change your theme here
 $themePath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "$($env:THEME).omp.json"
 if (Test-Path $themePath) {
     oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
-} else {
+}
+else {
     Write-Warning "Oh My Posh theme '$($env:THEME)' not found at '$themePath'."
 }
 
@@ -122,7 +123,7 @@ Set-PSReadLineKeyHandler -Key '(', '{', '[', '"', "'" -ScriptBlock {
         "'" { "'" }
     }
     [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$openChar$closeChar")
-    [Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition((Get-PSReadLineKeyHandler | Where-Object {$_.Key -eq 'LeftArrow'}).Function, 1)
+    [Microsoft.PowerShell.PSConsoleReadLine]::BackwardChar()
 }
 
 # Smart backspace to delete pairs
@@ -137,7 +138,8 @@ Set-PSReadLineKeyHandler -Key 'Backspace' -ScriptBlock {
 
         if ($pairs.ContainsKey($charBehind) -and $pairs[$charBehind] -eq $charAhead) {
             [Microsoft.PowerShell.PSConsoleReadLine]::Delete($cursor - 1, 2)
-        } else {
+        }
+        else {
             [Microsoft.PowerShell.PSConsoleReadLine]::BackwardDeleteChar()
         }
     }
@@ -163,7 +165,7 @@ function du {
     Invoke-Expression $cmd
 }
 function da {
-    param([Parameter(Mandatory=$true)][string]$MigrationName, [string]$Context)
+    param([Parameter(Mandatory = $true)][string]$MigrationName, [string]$Context)
     Write-Host "➕ Adding migration: $MigrationName" -ForegroundColor Cyan
     $cmd = "dotnet ef migrations add $MigrationName"
     if ($Context) { $cmd += " --context $Context" }
@@ -178,7 +180,8 @@ function dd {
         if ($Context) { $cmd += " --context $Context" }
         Invoke-Expression $cmd
         Write-Host "Database dropped." -ForegroundColor Green
-    } else { Write-Host "Operation cancelled." -ForegroundColor Yellow }
+    }
+    else { Write-Host "Operation cancelled." -ForegroundColor Yellow }
 }
 function dremove {
     param([string]$Context)
@@ -191,7 +194,7 @@ function dremove {
 # --- Project Scaffolding ---
 function New-ConsoleProject {
     param(
-        [Parameter(Mandatory=$true)] [string]$ProjectName,
+        [Parameter(Mandatory = $true)] [string]$ProjectName,
         [switch]$SkipGit
     )
     Write-Host "Creating new Console project: $ProjectName" -ForegroundColor Green
@@ -208,7 +211,7 @@ Set-Alias -Name console -Value New-ConsoleProject
 
 function New-WebApiProject {
     param(
-        [Parameter(Mandatory=$true)] [string]$ProjectName,
+        [Parameter(Mandatory = $true)] [string]$ProjectName,
         [switch]$SkipGit
     )
     Write-Host "Creating new Web API project: $ProjectName" -ForegroundColor Green
@@ -227,24 +230,30 @@ Set-Alias -Name webapi -Value New-WebApiProject
 
 #region Git Commands
 
-function gs   { Write-Host "🔍 Git Status" -ForegroundColor Yellow; git status @args }
-function ga   { Write-Host "✅ Staging all changes..." -ForegroundColor Green; git add . }
+function gs { Write-Host "🔍 Git Status" -ForegroundColor Yellow; git status @args }
+function ga { Write-Host "✅ Staging all changes..." -ForegroundColor Green; git add . }
 function gcmt {
-    param([Parameter(Mandatory=$true, ValueFromRemainingArguments=$true)][string[]]$Message)
+    param([Parameter(Mandatory = $true, ValueFromRemainingArguments = $true)][string[]]$Message)
     $commitMessage = $Message -join ' '
     Write-Host "📝 Committing with message: `"$commitMessage`"" -ForegroundColor Cyan
     git commit -m "$commitMessage"
 }
-function gca  { Write-Host "✍️ Amending previous commit..." -ForegroundColor Cyan; git commit --amend @args }
-function co   { param([string]$branchName); Write-Host "Переключение на ветку: $branchName" -ForegroundColor Green; git checkout $branchName }
-function cob  { param([string]$branchName); Write-Host "Создание и переключение на новую ветку: $branchName" -ForegroundColor Green; git checkout -b $branchName }
-function glg  { git log --graph --oneline --decorate --all }
-function gpu  { Write-Host "⏬ Pulling changes from remote..." -ForegroundColor Blue; git pull @args }
-function gus  { Write-Host "⏫ Pushing changes to remote..." -ForegroundColor Blue; git push @args }
-function guf  { Write-Host "⏫ Force pushing changes..." -ForegroundColor Red; git push --force @args }
-function gf   { Write-Host "🔎 Fetching from all remotes..." -ForegroundColor Blue; git fetch --all --prune }
-function gb   { Write-Host "🌿 Branches:" -ForegroundColor Green; git branch @args }
-function gbd  { param([string]$branchName); git branch -d $branchName }
+function gca { Write-Host "✍️ Amending previous commit..." -ForegroundColor Cyan; git commit --amend @args }
+function co { param([string]$branchName); Write-Host "Check out branch: $branchName" -ForegroundColor Green; git checkout $branchName }
+function cob { param([string]$branchName); Write-Host "Check out and create a new branch: $branchName" -ForegroundColor Green; git checkout -b $branchName }
+function glg { git log --graph --oneline --decorate --all }
+function gpu { Write-Host "⏬ Pulling changes from remote..." -ForegroundColor Blue; git pull @args }
+function gus { Write-Host "⏫ Pushing changes to remote..." -ForegroundColor Blue; git push @args }
+function guf { Write-Host "⏫ Force pushing changes..." -ForegroundColor Red; git push --force @args }
+function gf { Write-Host "🔎 Fetching from all remotes..." -ForegroundColor Blue; git fetch --all --prune }
+function gb { Write-Host "🌿 Branches:" -ForegroundColor Green; git branch @args }
+function gbd { param([string]$branchName); git branch -d $branchName }
+function gms {
+    param([Parameter(Mandatory = $true)] [string]$BranchName)
+    Write-Host "Squash merging branch: $BranchName" —ForegroundColor Yellow
+    git merge --squash $BranchName
+    Write-Host "Don't forget to commit the squashed changes! "—ForegroundColor Cyan
+}
 
 #endregion
 
@@ -263,8 +272,10 @@ function dkrmac {
         if ($containers) {
             docker rm $containers
             Write-Host "All containers removed." -ForegroundColor Green
-        } else { Write-Host "ℹ️ No containers to remove." -ForegroundColor Yellow }
-    } else { Write-Host "Operation cancelled." -ForegroundColor Yellow }
+        }
+        else { Write-Host "ℹ️ No containers to remove." -ForegroundColor Yellow }
+    }
+    else { Write-Host "Operation cancelled." -ForegroundColor Yellow }
 }
 function dkstac {
     Write-Host "⏹️ Stopping ALL running containers..." -ForegroundColor Yellow
@@ -272,7 +283,8 @@ function dkstac {
     if ($containers) {
         docker stop $containers
         Write-Host "All containers stopped." -ForegroundColor Green
-    } else { Write-Host "ℹ️ No running containers to stop." -ForegroundColor Yellow }
+    }
+    else { Write-Host "ℹ️ No running containers to stop." -ForegroundColor Yellow }
 }
 function dkcpu { Write-Host "🚀 Starting Docker Compose..." -ForegroundColor Green; docker-compose up @args }
 function dkcpub { Write-Host "🔨 Building and starting Docker Compose..." -ForegroundColor Blue; docker-compose up --build @args }
@@ -336,24 +348,24 @@ function Get-CustomCommands {
 " -ForegroundColor Cyan
 
     $commandHelp = @{
-        ".NET"    = @(
+        ".NET"   = @(
             "db, dt, dr, dw, df     - Build, Test, Run, Watch, Format"
             "du, da, dd, dremove    - EF Core commands (Update, Add, Drop, Remove)"
             "console, webapi        - Create new .NET projects"
         )
-        "Git"     = @(
+        "Git"    = @(
             "gs, ga, gcmt, gca      - Status, Add, Commit, Amend"
             "co, cob, gb, gbd       - Branch operations (Checkout, Create, List, Delete)"
             "gpu, gus, guf, gf      - Pull, Push, Force Push, Fetch"
             "glg                    - Show pretty log graph"
         )
-        "Docker"  = @(
+        "Docker" = @(
             "dkcl [-All]            - List containers"
             "dkstac, dkrmac         - Stop/Remove all containers (with confirmation)"
             "dkcpu, dkcpub, dkcpd   - Docker Compose Up, Up --build, Down"
             "fix-volume, fix-image  - Prune unused volumes or images"
         )
-        "System"  = @(
+        "System" = @(
             "go                     - Reload this profile"
             "edit-profile           - Open this profile in VS Code"
             "folder                 - Open current directory in File Explorer"
