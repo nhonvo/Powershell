@@ -51,6 +51,7 @@ Set-Alias -Name v        -Value nvim -Force
 Set-Alias -Name o        -Value ollama -Force
 Set-Alias -Name go       -Value Reload-Profile -Force # Reloads this profile
 Set-Alias -Name commands -Value Get-CustomCommands -Force
+Set-Alias -Name code        -Value "code" -Option AllScope
 
 # --- Quick Navigation Aliases ---
 Set-Alias -Name ..  -Value Set-LocationParent -Force
@@ -254,6 +255,7 @@ function gms {
     git merge --squash $BranchName
     Write-Host "Don't forget to commit the squashed changes! "—ForegroundColor Cyan
 }
+function gr { git reset HEAD~ } 
 
 #endregion
 
@@ -335,6 +337,45 @@ function Clear-SavedHistory {
         Write-Host "🧹 All command history has been cleared." -ForegroundColor Yellow
     }
 }
+function code {
+    [CmdletBinding()]
+    param(
+        # The file or folder path to open in Visual Studio Code.
+        # Defaults to the current directory.
+        [string]$Path = "."
+    )
+
+    Write-Host "🔎 Searching for VS Code..." -ForegroundColor Magenta
+
+    # An array of common installation paths for the VS Code executable
+    $vscodePaths = @(
+        "$env:LOCALAPPDATA\Programs\Microsoft VS Code\Code.exe",
+        "$env:ProgramFiles\Microsoft VS Code\Code.exe",
+        "$env:ProgramFiles(x86)\Microsoft VS Code\Code.exe"
+    )
+
+    $vscodeExe = $null
+
+    # Loop through the common paths to find a valid installation
+    foreach ($vscodePath in $vscodePaths) {
+        if (Test-Path $vscodePath) {
+            $vscodeExe = $vscodePath
+            break # Exit the loop as soon as it's found
+        }
+    }
+
+    # Check if an executable was found before trying to run it
+    if ($vscodeExe) {
+        Write-Host "✅ VS Code found! Opening path: $Path" -ForegroundColor Green
+        & $vscodeExe $Path
+    }
+    else {
+        # Display an error if VS Code was not found in the common locations
+        Write-Host "❌ VS Code not found in standard installation directories." -ForegroundColor Red
+        Write-Host "   Please ensure VS Code is installed or that 'code' is in your system's PATH." -ForegroundColor Yellow
+        Write-Host "   Download from: https://code.visualstudio.com/" -ForegroundColor Yellow
+    }
+}
 
 #endregion
 
@@ -382,6 +423,129 @@ function Get-CustomCommands {
         foreach ($command in $commandHelp[$category]) { Write-Host "  $command" -ForegroundColor White }
     }
     Write-Host "`nType 'commands' again to see this list. Use 'Get-PSReadlineKeyHandler' to see all hotkeys." -ForegroundColor Cyan
+}
+
+function proj {
+    [CmdletBinding()]
+    param()
+
+    # --- CONFIGURATION ---
+    # Set the root path where all your project folders are located.
+    $projectsPath = "D:\1. Project"
+
+    # Define a list of priority projects with custom short names.
+    $priorityProjects = @(
+        @{ Name = "CAL.Consumer.Api";    Short = "con" },
+        @{ Name = "CAL.HubLocation.Api"; Short = "hub" },
+        @{ Name = "CAL.Quotes.Api";      Short = "quote" },
+        @{ Name = "Robusta-wiki";        Short = "wiki" },
+        @{ Name = "CAL.Proxy";           Short = "proxy" }
+    )
+    # --- END CONFIGURATION ---
+
+    # 1. Validate the main projects directory
+    if (-not (Test-Path $projectsPath)) {
+        Write-Host "❌ Projects directory not found: $projectsPath" -ForegroundColor Red
+        return
+    }
+
+    $allProjects = Get-ChildItem -Path $projectsPath -Directory | Sort-Object Name
+    if ($allProjects.Count -eq 0) {
+        Write-Host "🟡 No project folders found in $projectsPath" -ForegroundColor Yellow
+        return
+    }
+
+    # 2. Build the list of projects for selection
+    $tableData = @()
+    $number = 1
+
+    # Add priority projects to the list first
+    foreach ($priority in $priorityProjects) {
+        $project = $allProjects | Where-Object { $_.Name -eq $priority.Name }
+        if ($project) {
+            $tableData += [PSCustomObject]@{
+                Number     = $number++
+                Short      = $priority.Short
+                Project    = $project.Name
+                Path       = $project.FullName
+                IsPriority = $true
+            }
+        }
+    }
+
+    # Add the remaining non-priority projects
+    $priorityNames = $priorityProjects.Name
+    $remainingProjects = $allProjects | Where-Object { $_.Name -notin $priorityNames }
+
+    foreach ($project in $remainingProjects) {
+        # Generate a short name automatically
+        $words = $project.Name -split '[.\-_]+'
+        $shortName = if ($words.Count -eq 1) {
+            # For single-word names, take the first 3 characters
+            $words[0].Substring(0, [Math]::Min(3, $words[0].Length))
+        }
+        else {
+            # For multi-word names, take the first letter of each word
+            ($words | ForEach-Object { $_.Substring(0, 1) }) -join ''
+        }
+        $shortName = $shortName.ToLower()
+
+        # Ensure the generated short name is unique
+        $originalShort = $shortName
+        $counter = 2
+        while ($tableData.Short -contains $shortName) {
+            $shortName = "$($originalShort)$($counter++)"
+        }
+
+        $tableData += [PSCustomObject]@{
+            Number     = $number++
+            Short      = $shortName
+            Project    = $project.Name
+            Path       = $project.FullName
+            IsPriority = $false
+        }
+    }
+
+    # 3. Display the project selection menu
+    Write-Host "Available Projects:" -ForegroundColor Cyan
+    Write-Host ("-" * 40)
+    foreach ($item in $tableData) {
+        $line = "{0,3}. [{1,-7}] {2}" -f $item.Number, $item.Short, $item.Project
+        if ($item.IsPriority) {
+            Write-Host $line -ForegroundColor Cyan
+        }
+        else {
+            Write-Host $line
+        }
+    }
+    Write-Host ("-" * 40)
+
+    # 4. Get user selection and navigate
+    $selection = Read-Host "Select a project (by short name or number) or '0' to stay"
+
+    if ($selection -eq '0' -or [string]::IsNullOrWhiteSpace($selection)) {
+        Write-Host "➡️ Staying in current directory." -ForegroundColor Green
+        return
+    }
+
+    # Try to find the project by short name first, then by number
+    $selectedProject = $tableData | Where-Object { $_.Short -eq $selection.ToLower() }
+    if (-not $selectedProject) {
+        if ([int]::TryParse($selection, [ref]$null)) {
+            $selectedProject = $tableData | Where-Object { $_.Number -eq [int]$selection }
+        }
+    }
+
+    # 5. Perform the navigation or show an error
+    if ($selectedProject) {
+        Write-Host "🚀 Navigating to: $($selectedProject.Project)" -ForegroundColor Green
+        Set-Location $selectedProject.Path
+        Write-Host "Contents of '$($selectedProject.Project)':" -ForegroundColor Yellow
+        Get-ChildItem | Format-Table -AutoSize
+    }
+    else {
+        Write-Host "❌ Invalid selection. Please use a valid short name or number from the list." -ForegroundColor Red
+    }
 }
 
 #endregion
