@@ -82,6 +82,12 @@ function glg {
     param() 
     git log --graph --oneline --decorate --all 
 }
+
+function glo { 
+    [CmdletBinding()] 
+    param() 
+    git log 
+}
 <# 
 .SYNOPSIS 
 Pulls from remote ('git pull'). 

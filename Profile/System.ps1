@@ -87,17 +87,20 @@ System & Utility Commands
 function Open-Code {
     [CmdletBinding()]
     param(
-        [Parameter(ValueFromRemainingArguments=$true)]
-        [string]$Path = "."
+        [Parameter(ValueFromRemainingArguments = $true)]
+        [string[]]$Path
     )
-    
+
+    # Use current directory if no path is provided
+    $targetPath = if ($Path -and $Path.Count -gt 0) { $Path -join " " } else { "." }
+
     $vscodeExe = Get-Command code -ErrorAction SilentlyContinue
     if ($vscodeExe) {
-        Write-Host "✅ VS Code found! Opening path: $Path" -ForegroundColor Green
-        & $vscodeExe $Path
+        Write-Host "✅ VS Code found! Opening path: $targetPath" -ForegroundColor Green
+        & $vscodeExe $targetPath
     } else {
         Write-Host "❌ VS Code not found. Please ensure 'code' is in your system's PATH." -ForegroundColor Red
     }
-}
+}   
 
 #endregion

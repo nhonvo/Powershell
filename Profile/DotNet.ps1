@@ -148,7 +148,7 @@ function New-WebApiProject {
     [CmdletBinding()] 
     param([Parameter(Mandatory=$true)][string]$ProjectName, [switch]$SkipGit) 
     Write-Host "Creating new Web API project: $ProjectName" -ForegroundColor Green
-    mkdir $ProjectName; cd $ProjectName
+    # mkdir $ProjectName; cd $ProjectName
     dotnet new webapi -n $ProjectName
     dotnet new gitignore
     if (-not $SkipGit) { 
@@ -157,7 +157,7 @@ function New-WebApiProject {
         git commit -m "Initial commit" 
     }
     Open-Code .
-    dotnet run 
+    # dotnet run 
 }
 
 #endregion

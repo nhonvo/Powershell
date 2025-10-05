@@ -12,7 +12,7 @@ Set-Alias -Name v -Value nvim -Force
 Set-Alias -Name o -Value ollama -Force
 Set-Alias -Name go -Value Reload-Profile -Force
 Set-Alias -Name commands -Value Get-CustomCommands -Force
-Set-Alias -Name code -Value Open-Code -Force
+# Set-Alias -Name code -Value Open-Code -Force
 
 # --- Quick Navigation ---
 Set-Alias -Name .. -Value Set-LocationParent -Force
