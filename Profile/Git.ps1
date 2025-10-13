@@ -179,4 +179,10 @@ function gr {
     git reset HEAD~ 
 }
 
+function grh { 
+    [CmdletBinding()] 
+    param() 
+    git reset --hard 
+} 
+
 #endregion

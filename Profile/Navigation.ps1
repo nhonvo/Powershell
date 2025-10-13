@@ -40,11 +40,13 @@ function proj {
     # --- CONFIGURATION ---
     $projectsPath = Join-Path $env:USERPROFILE "Desktop"
     $priorityProjects = @(
-        @{ Name = "nhonvo.github.io";    Short = "blog" },
-        @{ Name = "senior-developer-study-plan";    Short = "senior" },
         @{ Name = "back-up";    Short = "ba" },
-        @{ Name = "clean-architecture-net-8.0";    Short = "clean" },
+        @{ Name = "finance-dashboard";    Short = "fin" },
+        @{ Name = "nextjs-template";    Short = "next" },
+        @{ Name = "senior-developer-study-plan";    Short = "senior" },
         @{ Name = "profile";    Short = "profile" }
+        @{ Name = "nhonvo.github.io";    Short = "nhon" },
+        @{ Name = "clean-architecture-net-8.0";    Short = "clean" }
     )
     # --- END CONFIGURATION ---
 
