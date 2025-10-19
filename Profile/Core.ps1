@@ -16,16 +16,14 @@ if (Test-Path $themePath) {
 }
 
 # --- Module Loading ---
-if ($Host.Name -eq 'ConsoleHost' -or $host.Name -eq 'Visual Studio Code Host') {
-    try {
-        Import-Module PSReadLine -Force -ErrorAction SilentlyContinue
-        Import-Module Terminal-Icons -Force -ErrorAction SilentlyContinue
-        if (Get-Module -ListAvailable -Name posh-git) {
-            Import-Module posh-git -Force -ErrorAction SilentlyContinue
-        }
-    } catch {
-        Write-Warning "An error occurred while loading modules: $_"
+try {
+    Import-Module PSReadLine -Force -ErrorAction SilentlyContinue
+    Import-Module Terminal-Icons -Force -ErrorAction SilentlyContinue
+    if (Get-Module -ListAvailable -Name posh-git) {
+        Import-Module posh-git -Force -ErrorAction SilentlyContinue
     }
+} catch {
+    Write-Warning "An error occurred while loading modules: $_"
 }
 
 # --- PSReadLine Options ---

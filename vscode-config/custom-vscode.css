@@ -1,7 +1,7 @@
 /* Code comment style */
 .mtk3 {
     /* font-family: 'Monaspace Radon', monospace !important; */
-    color: #008c7d !important;
+    color: #6A9955 !important; /* Dark+ green for comments */
 }
 
 .line-numbers {
@@ -30,15 +30,15 @@
 
 /* File Explorer Selected Item */
 .monaco-list.list_id_1 .monaco-list-row.selected {
-    background-color: #4f5971 !important;
+    background-color: #2A2D2E !important; /* Dark+ selection background */
     opacity: 1 !important;
-    border-top: 1px #727b90 solid;
-    border-bottom: 1px #727b90 solid;
+    border-top: 1px #3E3E42 solid;
+    border-bottom: 1px #3E3E42 solid;
 }
 
 /* List item label name */
 .monaco-list.list_id_1 .monaco-list-row.selected .label-name {
-    color: #fff !important;
+    color: #FFFFFF !important;
     opacity: 1 !important;
 }
 
@@ -54,7 +54,7 @@
     /* font-family: 'Geist Mono Black', monospace !important; */
     font-size: 14px !important;
     font-weight: 400 !important;
-    color: #FFF !important;
+    color: #CCCCCC !important; /* Lighter grey for better readability */
 }
 
 /* Sidebar top shadow */
@@ -67,14 +67,14 @@
 .composite.title {
     display: flex !important;
     flex-direction: row !important;
-    align-items: center !important;
+    align-items: center !importanT;
     justify-items: center !important;
 }
 .composite.title h2 {
     font-weight: bold !important;
     font-size: 12px !important;
     text-transform: uppercase;
-    color: #bc9abc !important;
+    color: #9CDCFE !important; /* Dark+ light blue */
 }
 
 .composite.title h2::before {
@@ -89,7 +89,7 @@
     position: absolute !important;
     right: 1px !important;
     width: 1px !important;
-    background: #bc9abc !important;
+    background: #3E3E42 !important; /* Dark+ UI grey */
     left: auto !important;
 }
 
@@ -100,12 +100,23 @@
 /* Tooltip box style */
 .monaco-editor-hover,
 .monaco-hover {
-    box-shadow: 0px 8px 32px rgba(0,0,0,.45) !important;
-    padding: 10px !important;
-    background-image: linear-gradient(#3c3c50 0%, #2a2b38 100%) !important;
-    backdrop-filter: blur(3px) !important;
-    border-radius: 20px !important;
-    border: none !important
+    box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.45) !important;
+    padding: 15px !important;
+    background-color: rgba(37, 37, 38, 0.9) !important; /* Dark+ background with slight transparency */
+    border-radius: 10px !important;
+    border: 1px solid #3E3E42 !important;
+    backdrop-filter: blur(5px) !important;
+
+    /* Responsive and readability improvements */
+    min-width: 300px !important;
+    max-width: 60vw !important; /* Use viewport width for max-width */
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    white-space: normal !important; /* Ensure text wraps */
+}
+
+.monaco-hover-content {
+    white-space: normal !important; /* Ensure content inside wraps */
 }
 
 /* Project title's style at the top. */
@@ -125,7 +136,7 @@
 .search-label {
     /* font-family: 'Geist Mono Black' !important; */
     font-size: 14px !important;
-    color: #fff;
+    color: #CCCCCC !important;
     display: block;
 }
 
@@ -152,9 +163,9 @@
     top: 50% !important;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, .45) !important;
     padding: 10px 10px 18px 10px !important;
-    background-image: linear-gradient(#3c3c50 0%, #2a2b38 100%) !important;
-    backdrop-filter: blur(3px) !important;
-    border-radius: 20px !important;
+    background-color: #252526 !important; /* Dark+ background */
+    border-radius: 12px !important;
+    border: 1px solid #3E3E42 !important;
 }
 
 /* Remove background for lists */
@@ -164,31 +175,19 @@
 
 /* List hover */
 .monaco-list-row:hover {
-    background: rgba(0, 0, 0, .2) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
 }
 
 .notifications-toasts .monaco-list-row:hover {
     background: none !important;
 }
 
-/* .monaco-list-row.focused {
-    background-color: rgb(181 198 228 / 25%) !important;
-} */
-
-/* .synthetic-focus {
-    outline-color: rgba(50, 50, 50, 1) !important;
-} */
-
-/* .quick-input-widget .monaco-label {
-    font-size: 11px !important;
-} */
-
 /* Command palette text input */
 .quick-input-filter .monaco-inputbox {
-    border-radius: 12px !important;
+    border-radius: 8px !important;
     padding: 8px !important;
-    border: none !important;
-    background-color: rgba(34, 34, 34, .40) !important;
+    border: 1px solid #3E3E42 !important;
+    background-color: #3C3C3C !important; /* Dark+ input background */
     /* font-family: "Geist Mono Black" !important; */
     font-size: 14px !important;
     margin-bottom: 16px !important;
@@ -201,18 +200,12 @@
     background: rgba(0, 0, 0, .15);
     top: 0;
     left: 0;
-    backdrop-filter: blur(8px);
 }
 
 /* Command palette's input box placeholder. */
 .monaco-inputbox input::placeholder {
-    color: rgba(255, 255, 255, .3) !important;
+    color: #A6A6A6 !important;
 }
-
-/* .monaco-workbench label {
-    color: #fff !important;
-    font-size: 14px !important;
-} */
 
 /* Container that holds the VS Code home icon. */
 .editor-group-watermark {
@@ -221,4 +214,87 @@
 
 .command-center-center {
     width:  auto !important;
+}
+
+/* === SYNTAX HIGHLIGHTING (Dark+ Aligned) === */
+
+/* C# Interpolated Strings */
+.monaco-editor .token.string.interpolated.cs {
+    color: #9CDCFE !important;
+}
+
+/* C# Attributes */
+.monaco-editor .token.meta.attribute.cs {
+    color: #4EC9B0 !important;
+}
+
+/* Python F-strings */
+.monaco-editor .token.string.interpolated.python {
+    color: #9CDCFE !important;
+}
+
+/* Python Decorators */
+.monaco-editor .token.meta.function.decorator.python {
+    color: #DCDCAA !important;
+}
+
+/* Python Type Hints */
+.monaco-editor .token.support.type.python {
+    color: #4EC9B0 !important;
+}
+
+/* TypeScript Template Strings */
+.monaco-editor .token.string.template.ts {
+    color: #9CDCFE !important;
+}
+
+/* TypeScript Decorators */
+.monaco-editor .token.meta.decorator.ts {
+    color: #DCDCAA !important;
+}
+
+/* TypeScript Type Annotations */
+.monaco-editor .token.support.type.ts {
+    color: #4EC9B0 !important;
+}
+
+
+/* --- MARKDOWN READABILITY (Dark+ Aligned) --- */
+
+/* Headings */
+.monaco-editor .token.markup.heading.markdown {
+    color: #569CD6 !important; /* Dark+ blue for headings */
+    font-weight: bold !important;
+}
+
+/* Blockquotes */
+.monaco-editor .token.markup.quote.markdown {
+    color: #6A9955 !important;
+    font-style: italic !important;
+}
+
+/* Code Blocks */
+.monaco-editor .token.markup.inline.raw.string.markdown {
+    color: #CE9178 !important;
+}
+
+/* Japanese Font Fallback for Markdown */
+.monaco-editor .view-lines[data-mode-id="markdown"] {
+    font-family: 'Meiryo', 'Yu Gothic', sans-serif !important;
+}
+
+/* --- GENERAL UI (Dark+ Aligned) --- */
+
+/* Status Bar */
+.monaco-workbench .part.statusbar {
+    border-top: 1px solid #007ACC !important; /* Dark+ active blue */
+}
+
+/* Editor Tabs */
+.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container .tab {
+    transition: all 0.2s ease-in-out;
+}
+
+.monaco-workbench .part.editor > .content .editor-group-container > .title .tabs-container .tab:hover {
+    background-color: #2A2D2E !important;
 }

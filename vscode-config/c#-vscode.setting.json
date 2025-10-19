@@ -1,91 +1,35 @@
 {
 	"[aspnetcorerazor]": {
-	  "editor.defaultFormatter": "ms-dotnettools.csharp"
+		"editor.defaultFormatter": "ms-dotnettools.csharp"
 	},
 	"[css]": {
-	  "editor.defaultFormatter": "esbenp.prettier-vscode"
-	},
-	"[dart]": {
-	  "editor.formatOnSave": true,
-	  "editor.formatOnType": true,
-	  "editor.rulers": [80],
-	  "editor.selectionHighlight": false,
-	  "editor.suggest.snippetsPreventQuickSuggestions": false,
-	  "editor.suggestSelection": "first",
-	  "editor.tabCompletion": "onlySnippets",
-	  "editor.wordBasedSuggestions": "off"
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"[html]": {
-	  "editor.defaultFormatter": "vscode.html-language-features"
+		"editor.defaultFormatter": "vscode.html-language-features"
 	},
 	"[javascript]": {
-	  "editor.defaultFormatter": "vscode.typescript-language-features"
+		"editor.defaultFormatter": "vscode.typescript-language-features"
 	},
 	"[json]": {
-	  "editor.defaultFormatter": "esbenp.prettier-vscode"
+		"editor.defaultFormatter": "vscode.json-language-features"
 	},
 	"[jsonc]": {
-	  "editor.defaultFormatter": "esbenp.prettier-vscode"
+		"editor.defaultFormatter": "vscode.json-language-features"
 	},
 	"[markdown]": {
-	  "editor.defaultFormatter": "esbenp.prettier-vscode"
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 	"[python]": {
-	  "editor.formatOnType": true
+		"editor.formatOnType": true
 	},
 	"[typescript]": {
-	  "editor.defaultFormatter": "vscode.typescript-language-features"
+		"editor.defaultFormatter": "vscode.typescript-language-features"
 	},
 	"[typescriptreact]": {
-	  "editor.defaultFormatter": "vscode.typescript-language-features"
-	},
-	"[xml]": {
-	  "editor.defaultFormatter": "redhat.vscode-xml"
+		"editor.defaultFormatter": "vscode.typescript-language-features"
 	},
 	"cSpell.enabled": true,
-	"cSpell.ignoreWords": [
-	  "Nhon",
-	  "Thuong",
-	  "Truong",
-	  "hutech",
-	  "println",
-	  "trinh",
-	  "truongnhon"
-	],
-	"cSpell.userWords": [
-	  "Appsetting",
-	  "appsettings",
-	  "Authen",
-	  "AWSSDK",
-	  "Binh",
-	  "Bson",
-	  "Classname",
-	  "cleanarch",
-	  "Clientside",
-	  "Cloudinary",
-	  "CQRS",
-	  "Dinh",
-	  "ecommerce",
-	  "Extentions",
-	  "hackathon",
-	  "healthcheck",
-	  "ISQS",
-	  "Laravel",
-	  "Mediat",
-	  "mongosh",
-	  "Newtonsoft",
-	  "Npgsql",
-	  "reactjs",
-	  "Serilog",
-	  "sqlserver",
-	  "Subarray",
-	  "Swashbuckle",
-	  "tickprefix",
-	  "TNJS",
-	  "Uncategorized",
-	  "Validatable"
-	],
-	"code-runner.runInTerminal": true,
 	"debug.openDebug": "openOnDebugBreak",
 	"diffEditor.ignoreTrimWhitespace": false,
 	"diffEditor.renderSideBySide": true,
@@ -123,18 +67,26 @@
 	"editor.unicodeHighlight.ambiguousCharacters": false,
 	"editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
 	"emmet.includeLanguages": {
-	  "aspnetcorerazor": "html"
+		"aspnetcorerazor": "html"
 	},
-	"errorLens.enabledDiagnosticLevels": ["error"],
-	"errorLens.excludeBySource": ["csharp(CS7036)", "csharp(CS0029)"],
+	"errorLens.enabledDiagnosticLevels": [
+		"error"
+	],
+	"errorLens.excludeBySource": [
+		"csharp(CS7036)",
+		"csharp(CS0029)"
+	],
 	"errorLens.lintFilePaths": {
-	  "eslint": ["**/*.eslintrc.{js,cjs,yaml,yml,json}", "**/*package.json"],
-	  "Stylelint": [
-		"**/*.stylelintrc",
-		"**/*.stylelintrc.{cjs,js,json,yaml,yml}",
-		"**/*stylelint.config.{cjs,js}",
-		"**/*package.json"
-	  ]
+		"eslint": [
+			"**/*.eslintrc.{js,cjs,yaml,yml,json}",
+			"**/*package.json"
+		],
+		"Stylelint": [
+			"**/*.stylelintrc",
+			"**/*.stylelintrc.{cjs,js,json,yaml,yml}",
+			"**/*stylelint.config.{cjs,js}",
+			"**/*package.json"
+		]
 	},
 	"errorLens.statusBarIconsEnabled": true,
 	"explorer.confirmDelete": false,
@@ -144,53 +96,42 @@
 	"extensions.autoUpdate": "onlyEnabledExtensions",
 	"extensions.ignoreRecommendations": true,
 	"files.associations": {
-	  "*.cshtml": "cshtml",
-	  "*.vue": "html"
+		"*.cshtml": "cshtml",
+		"*.vue": "html"
 	},
 	"files.autoSave": "afterDelay",
 	"files.defaultLanguage": "",
 	"files.exclude": {
-	  "**/.classpath": true,
-	  "**/.factorypath": true,
-	  "**/.project": true,
-	  "**/.settings": true,
-	  "**/.vs": true
+		"**/.classpath": true,
+		"**/.factorypath": true,
+		"**/.project": true,
+		"**/.settings": true,
+		"**/.vs": true
 	},
 	"git.autofetch": true,
 	"git.openRepositoryInParentFolders": "always",
 	"gitlens.advanced.messages": {
-	  "suppressGitDisabledWarning": true,
-	  "suppressGitMissingWarning": true,
-	  "suppressLineUncommittedWarning": true
+		"suppressGitDisabledWarning": true,
+		"suppressGitMissingWarning": true,
+		"suppressLineUncommittedWarning": true
 	},
-	"hediet.vscode-drawio.resizeImages": null,
-	"hediet.vscode-drawio.theme": "atlas",
 	"html.format.contentUnformatted": "",
 	"indentRainbow.indicatorStyle": "light",
 	"javascript.updateImportsOnFileMove.enabled": "always",
-	"liveServer.settings.donotShowInfoMsg": true,
-	"liveServer.settings.donotVerifyTags": true,
 	"notebook.cellToolbarLocation": {
-	  "default": "right",
-	  "jupyter-notebook": "left"
+		"default": "right",
+		"jupyter-notebook": "left"
 	},
 	"powershell.buttons.showPanelMovementButtons": false,
 	"powershell.integratedConsole.focusConsoleOnExecute": true,
 	"powershell.powerShellDefaultVersion": "Windows PowerShell (x64)",
-	"python.terminal.activateEnvironment": true,
 	"redhat.telemetry.enabled": true,
-	"remote.SSH.remotePlatform": {
-	  "69.161.221.211": "linux",
-	  "vps": "linux",
-	  "eForm": "linux"
-	},
 	"screencastMode.fontSize": 20,
 	"screencastMode.keyboardOverlayTimeout": 500,
 	"screencastMode.mouseIndicatorColor": "#FFFFFF",
 	"screencastMode.verticalOffset": 0,
 	"search.searchOnType": false,
 	"security.workspace.trust.untrustedFiles": "open",
-	"tabnine.experimentalAutoImports": true,
 	"terminal.integrated.defaultProfile.windows": "PowerShell",
 	"terminal.integrated.enableMultiLinePasteWarning": "never",
 	"terminal.integrated.fontFamily": "Hack Nerd Font",
@@ -198,62 +139,66 @@
 	"terminal.integrated.fontWeight": "normal",
 	"terminal.integrated.gpuAcceleration": "off",
 	"terminal.integrated.profiles.windows": {
-	  "PowerShell": {
-		"source": "PowerShell",
-		"icon": "terminal-powershell"
-	  },
-	  "Command Prompt": {
-		"path": [
-		  "${env:windir}\\Sysnative\\cmd.exe",
-		  "${env:windir}\\System32\\cmd.exe"
-		],
-		"args": [],
-		"icon": "terminal-cmd"
-	  },
-	  "Git Bash": {
-		"source": "Git Bash"
-	  },
-	  "Windows PowerShell": {
-		"path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
-	  }
+		"PowerShell": {
+			"source": "PowerShell",
+			"icon": "terminal-powershell"
+		},
+		"Command Prompt": {
+			"path": [
+				"${env:windir}\\Sysnative\\cmd.exe",
+				"${env:windir}\\System32\\cmd.exe"
+			],
+			"args": [],
+			"icon": "terminal-cmd"
+		},
+		"Git Bash": {
+			"source": "Git Bash"
+		},
+		"Windows PowerShell": {
+			"path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+		}
 	},
 	"terminal.integrated.scrollback": 10000,
 	"typescript.updateImportsOnFileMove.enabled": "always",
 	"update.showReleaseNotes": false,
-	"vsicons.dontShowNewVersionMessage": true,
 	"window.commandCenter": false,
 	"window.customMenuBarAltFocus": true,
 	"window.customTitleBarVisibility": "never",
 	"window.menuBarVisibility": "visible",
 	"window.zoomLevel": 0,
 	"workbench.colorCustomizations": {
-	  "terminal.background": "#00000000"
+		"terminal.background": "#00000000"
 	},
 	"workbench.editor.empty.hint": "hidden",
 	"workbench.editor.enablePreview": true,
 	"workbench.editorAssociations": {
-	  "*.ico": "default",
-	  "*.csv": "gc-excelviewer-csv-editor",
-	  "*.ipynb": "jupyter-notebook"
+		"*.ico": "default",
+		"*.csv": "gc-excelviewer-csv-editor",
+		"*.ipynb": "jupyter-notebook"
 	},
 	"workbench.iconTheme": "material-icon-theme",
 	"workbench.layoutControl.enabled": false,
 	"workbench.layoutControl.type": "menu",
-	"workbench.settings.applyToAllProfiles": ["workbench.colorCustomizations"],
+	"workbench.settings.applyToAllProfiles": [
+		"workbench.colorCustomizations"
+	],
 	"workbench.sideBar.location": "right",
 	"workbench.startupEditor": "none",
 	"workbench.tree.indent": 10,
 	"workbench.tree.renderIndentGuides": "none",
-	"workbench.colorTheme": "Default Dark+"
+	"workbench.colorTheme": "Default Dark+",
+	"geminicodeassist.project": "optimal-empire-77q7c",
 	// minimal
-	// "editor.scrollbar.verticalScrollbarSize": 0,
-	// "editor.scrollbar.horizontalScrollbarSize": 2,
-	// "workbench.statusBar.visible": false,
-	// "editor.minimap.enabled": false,
+	"editor.scrollbar.verticalScrollbarSize": 0,
+	"editor.scrollbar.horizontalScrollbarSize": 2,
+	"workbench.statusBar.visible": false,
+	"editor.minimap.enabled": false,
 	// "workbench.activityBar.location": "hidden",
-	// "editor.scrollbar.vertical": "hidden",
-	// "editor.scrollbar.horizontal": "hidden",
-	// "editor.lineNumbers": "off",
-	// "editor.showFoldingControls": "never",
-  }
-  
+	"editor.scrollbar.vertical": "hidden",
+	"editor.scrollbar.horizontal": "hidden",
+	"editor.lineNumbers": "off",
+	"editor.showFoldingControls": "never",
+	"vscode_custom_css.imports": [
+		"file:///c:/Users/TruongNhon/Documents/Powershell/vscode-config/custom-vscode.css"
+	]
+}
