@@ -1,31 +1,16 @@
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #  Enhanced PowerShell Profile - Main Loader
-#  This profile is modular. It loads scripts from the 'Profile' subdirectory.
+#  This profile is modular. It dynamically loads all scripts from 'Profile'
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 $PSScriptRoot = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 $ProfileDir = Join-Path -Path $PSScriptRoot -ChildPath 'Profile'
 
-# The order of sourcing matters. Core setup and aliases should come first.
-$modules = @(
-    "Core.ps1",
-    "Aliases.ps1",
-    "Navigation.ps1",
-    "System.ps1",
-    "DotNet.ps1",
-    "Git.ps1",
-    "Docker.ps1",
-    "AWS.ps1",
-    "Help.ps1"
-)
+# Dynamically load all .ps1 files in the Profile directory, sorted by name
+$modules = Get-ChildItem -Path $ProfileDir -Filter "*.ps1" | Sort-Object Name
 
 foreach ($module in $modules) {
-    $modulePath = Join-Path -Path $ProfileDir -ChildPath $module
-    if (Test-Path $modulePath) {
-        . $modulePath
-    } else {
-        Write-Warning "Profile module not found: $modulePath"
-    }
+    . $module.FullName
 }
 
 Write-Host "✅ Enhanced PowerShell Profile loaded." -ForegroundColor Green

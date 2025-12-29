@@ -59,14 +59,38 @@ Set-PSReadLineKeyHandler -Key F7 -ScriptBlock {
 # .NET Hotkeys
 Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+b' -ScriptBlock { [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine(); [Microsoft.PowerShell.PSConsoleReadLine]::Insert("db"); [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine() }
 Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+t' -ScriptBlock { [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine(); [Microsoft.PowerShell.PSConsoleReadLine]::Insert("dt"); [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine() }
-# Auto-pairing brackets and quotes
+# Smart Auto-pairing and Overtyping
 Set-PSReadLineKeyHandler -Key '(', '{', '[', '"', "'" -ScriptBlock {
     param($key, $arg)
     $openChar = $key.KeyChar
     $closeChar = switch ($openChar) { '(' { ')' } '{' { '}' } '[' { ']' } '"' { '"' } "'" { "'" } }
-    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$openChar$closeChar")
-    [Microsoft.PowerShell.PSConsoleReadLine]::BackwardChar()
+
+    $line = ''; $cursor = 0
+    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+
+    # If we are just before the same opening quote, just move past it (Overtyping for quotes)
+    if ($cursor -lt $line.Length -and $line[$cursor] -eq $openChar -and ($openChar -eq '"' -or $openChar -eq "'")) {
+        [Microsoft.PowerShell.PSConsoleReadLine]::ForwardChar()
+    } else {
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$openChar$closeChar")
+        [Microsoft.PowerShell.PSConsoleReadLine]::BackwardChar()
+    }
 }
+
+# Explicit Overtyping for closing characters
+Set-PSReadLineKeyHandler -Key ')', '}', ']' -ScriptBlock {
+    param($key, $arg)
+    $closeChar = $key.KeyChar
+    $line = ''; $cursor = 0
+    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+
+    if ($cursor -lt $line.Length -and $line[$cursor] -eq $closeChar) {
+        [Microsoft.PowerShell.PSConsoleReadLine]::ForwardChar()
+    } else {
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert($closeChar)
+    }
+}
+
 # Smart backspace
 Set-PSReadLineKeyHandler -Key 'Backspace' -ScriptBlock {
     $line = ''; $cursor = 0

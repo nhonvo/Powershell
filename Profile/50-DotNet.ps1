@@ -126,18 +126,22 @@ function dremove {
 function New-ConsoleProject { 
     [CmdletBinding()] 
     param([Parameter(Mandatory=$true)][string]$ProjectName, [switch]$SkipGit) 
-    Write-Host "Creating new Console project: $ProjectName" -ForegroundColor Green
-    mkdir $ProjectName; cd $ProjectName
+    Write-Host "🚀 Creating new Console project: $ProjectName" -ForegroundColor Green
+    
     dotnet new console -n $ProjectName
+    Set-Location $ProjectName
+    
     dotnet new gitignore
     if (-not $SkipGit) { 
         git init
         git add .
         git commit -m "Initial commit" 
     }
+    
     Open-Code .
     dotnet run 
 }
+
 <# 
 .SYNOPSIS 
 Creates a new .NET Web API project with Git initialized. 
@@ -147,17 +151,19 @@ Creates a new .NET Web API project with Git initialized.
 function New-WebApiProject { 
     [CmdletBinding()] 
     param([Parameter(Mandatory=$true)][string]$ProjectName, [switch]$SkipGit) 
-    Write-Host "Creating new Web API project: $ProjectName" -ForegroundColor Green
-    # mkdir $ProjectName; cd $ProjectName
+    Write-Host "🚀 Creating new Web API project: $ProjectName" -ForegroundColor Green
+    
     dotnet new webapi -n $ProjectName
+    Set-Location $ProjectName
+    
     dotnet new gitignore
     if (-not $SkipGit) { 
         git init
         git add .
         git commit -m "Initial commit" 
     }
+    
     Open-Code .
-    # dotnet run 
 }
 
 #endregion
