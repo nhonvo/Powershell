@@ -17,11 +17,77 @@ function Reload-Profile {
 
 <#
 .SYNOPSIS
+Gets the current public IP address.
+.CATEGORY
+System & Utility Commands
+#>
+function Get-PublicIP {
+    [CmdletBinding()]
+    param()
+    try {
+        $ip = Invoke-RestMethod -Uri "https://api.ipify.org" -ErrorAction Stop
+        Write-Host "🌍 Public IP: $ip" -ForegroundColor Cyan
+    } catch {
+        Write-Error "Could not get public IP."
+    }
+}
+
+<#
+.SYNOPSIS
+Displays disk space usage for all drives.
+.CATEGORY
+System & Utility Commands
+#>
+function Get-DiskSpace {
+    Get-PSDrive -PSProvider FileSystem | Select-Object Name, @{N='Used(GB)';E={"{0:N2}" -f ($_.Used/1GB)}}, @{N='Free(GB)';E={"{0:N2}" -f ($_.Free/1GB)}}, @{N='Total(GB)';E={"{0:N2}" -f (($_.Used + $_.Free)/1GB)}} | Format-Table -AutoSize
+}
+
+<#
+.SYNOPSIS
+Displays a tree view of the current directory (ignoring git/bin/obj).
+.CATEGORY
+System & Utility Commands
+#>
+function Get-FileTree {
+    [CmdletBinding()]
+    param([int]$Depth = 2)
+    tree /f | Select-Object -First 100 # Wrapper for standard tree, limited output
+}
+
+<#
+.SYNOPSIS
+Interactive process killer.
+.CATEGORY
+System & Utility Commands
+#>
+function Stop-ProcessFriendly {
+    [CmdletBinding()]
+    param([string]$Name)
+    if ($Name) {
+        Stop-Process -Name $Name -Force
+    } else {
+        Get-Process | Out-GridView -Title "Select Process to Kill" -PassThru | Stop-Process -Force
+    }
+}
+
+<#
+.SYNOPSIS
+Refreshes environment variables without restarting the shell.
+.CATEGORY
+System & Utility Commands
+#>
+function Update-EnvironmentVariables {
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+    Write-Host "🔁 Environment variables refreshed." -ForegroundColor Green
+}
+
+<#
+.SYNOPSIS
 Opens the current directory in File Explorer.
 .CATEGORY
 System & Utility Commands
 #>
-function folder {
+function Invoke-OpenExplorer {
     [CmdletBinding()]
     param()
     Invoke-Item .
@@ -33,10 +99,10 @@ Opens the PowerShell profile in VS Code for editing.
 .CATEGORY
 System & Utility Commands
 #>
-function edit-profile {
+function Edit-Profile {
     [CmdletBinding()]
     param()
-    Open-Code $PROFILE
+    Invoke-VSCode $PROFILE
 }
 
 <#
@@ -45,7 +111,7 @@ Creates a new directory and changes the current location to it.
 .CATEGORY
 System & Utility Commands
 #>
-function mkcd {
+function New-DirAndEnter {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory=$true)]
@@ -84,7 +150,7 @@ The file or folder path to open.
 .CATEGORY
 System & Utility Commands
 #>
-function Open-Code {
+function Invoke-VSCode {
     [CmdletBinding()]
     param(
         [Parameter(ValueFromRemainingArguments = $true)]

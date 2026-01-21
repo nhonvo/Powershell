@@ -5,6 +5,7 @@
 
 Write-Host "🚀 Loading Enhanced PowerShell Profile... (Core)" -ForegroundColor Cyan
 
+
 # --- Oh My Posh Theme ---
 $env:POSH_THEMES_PATH = Join-Path -Path $env:USERPROFILE -ChildPath "Documents\PowerShell\powershell-themes"
 $env:THEME = "neko" # Change your theme here

@@ -1,6 +1,6 @@
 #region .NET DEVELOPMENT COMMANDS
 # ------------------------------------------------------------------------------
-#  Shortcuts for dotnet CLI commands.
+#  Shortcuts for dotnet CLI commands with Verb-Noun naming.
 # ------------------------------------------------------------------------------
 
 <# 
@@ -9,55 +9,137 @@ Runs 'dotnet run'.
 .CATEGORY
 .NET Development Commands
 #>
-function dr { 
+function Invoke-DotNetRun { 
     [CmdletBinding()] 
     param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
     Write-Host "🚀 Running project..." -ForegroundColor Green; dotnet run @args 
 }
+
+<# 
+.SYNOPSIS 
+Recursively deletes bin and obj folders. 
+.CATEGORY
+.NET Development Commands
+#>
+function Remove-BinObj { 
+    [CmdletBinding()] 
+    param() 
+    Write-Host "💥 Destroying bin/ and obj/ folders..." -ForegroundColor Red
+    Get-ChildItem -Inc -Include bin,obj -Recurse | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+    Write-Host "✅ Clean complete." -ForegroundColor Green
+}
+
+<# 
+.SYNOPSIS 
+Creates a new solution file. 
+.CATEGORY
+.NET Development Commands
+#>
+function New-Solution { 
+    [CmdletBinding()] 
+    param([string]$Name)
+    dotnet new sln -n $Name
+}
+
+<# 
+.SYNOPSIS 
+Adds all projects in subfolders to the solution. 
+.CATEGORY
+.NET Development Commands
+#>
+function Add-AllProjectsToSolution { 
+    [CmdletBinding()] 
+    param() 
+    $projects = Get-ChildItem -Recurse -Filter "*.csproj"
+    foreach ($p in $projects) {
+        dotnet sln add $p.FullName
+    }
+}
+
+<# 
+.SYNOPSIS 
+Runs 'dotnet watch test'. 
+.CATEGORY
+.NET Development Commands
+#>
+function Invoke-DotNetWatchTest { 
+    [CmdletBinding()] 
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
+    Write-Host "👀 Watching Tests..." -ForegroundColor Yellow; dotnet watch test @args 
+}
+
 <# 
 .SYNOPSIS 
 Runs 'dotnet watch'. 
 .CATEGORY
 .NET Development Commands
 #>
-function dw { 
+function Invoke-DotNetWatch { 
     [CmdletBinding()] 
     param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
     Write-Host "👀 Watching for changes..." -ForegroundColor Cyan; dotnet watch @args 
 }
+
 <# 
 .SYNOPSIS 
 Runs 'dotnet build'. 
 .CATEGORY
 .NET Development Commands
 #>
-function db { 
+function Invoke-DotNetBuild { 
     [CmdletBinding()] 
     param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
     Write-Host "🔨 Building project..." -ForegroundColor Blue; dotnet build @args 
 }
+
 <# 
 .SYNOPSIS 
 Runs 'dotnet format'. 
 .CATEGORY
 .NET Development Commands
 #>
-function df { 
+function Invoke-DotNetFormat { 
     [CmdletBinding()] 
     param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
     Write-Host "💅 Formatting code..." -ForegroundColor Magenta; dotnet format @args 
 }
+
 <# 
 .SYNOPSIS 
 Runs 'dotnet test'. 
 .CATEGORY
 .NET Development Commands
 #>
-function dt { 
+function Invoke-DotNetTest { 
     [CmdletBinding()] 
     param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
     Write-Host "🧪 Running tests..." -ForegroundColor Yellow; dotnet test @args 
 }
+
+<# 
+.SYNOPSIS 
+Runs 'dotnet clean'. 
+.CATEGORY
+.NET Development Commands
+#>
+function Invoke-DotNetClean { 
+    [CmdletBinding()] 
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
+    Write-Host "🧹 Cleaning project..." -ForegroundColor Yellow; dotnet clean @args 
+}
+
+<# 
+.SYNOPSIS 
+Runs 'dotnet restore'. 
+.CATEGORY
+.NET Development Commands
+#>
+function Invoke-DotNetRestore { 
+    [CmdletBinding()] 
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
+    Write-Host "📦 Restoring packages..." -ForegroundColor Magenta; dotnet restore @args 
+}
+
 
 # --- Entity Framework ---
 <# 
@@ -66,7 +148,7 @@ Runs 'dotnet ef database update'.
 .CATEGORY
 .NET Development Commands
 #>
-function du { 
+function Update-Database { 
     [CmdletBinding()] 
     param([string]$Context) 
     Write-Host "📈 Updating database..." -ForegroundColor Green
@@ -74,13 +156,14 @@ function du {
     if ($Context) { $params += "--context", "$Context" }
     dotnet @params 
 }
+
 <# 
 .SYNOPSIS 
 Runs 'dotnet ef migrations add'. 
 .CATEGORY
 .NET Development Commands
 #>
-function da { 
+function Add-Migration { 
     [CmdletBinding()] 
     param([Parameter(Mandatory=$true)][string]$MigrationName, [string]$Context) 
     Write-Host "➕ Adding migration: $MigrationName" -ForegroundColor Cyan
@@ -88,13 +171,14 @@ function da {
     if ($Context) { $params += "--context", "$Context" }
     dotnet @params
 }
+
 <# 
 .SYNOPSIS 
 Runs 'dotnet ef database drop'. 
 .CATEGORY
 .NET Development Commands
 #>
-function dd { 
+function Remove-Database { 
     [CmdletBinding()] 
     param([string]$Context) 
     Write-Host "🔥 Dropping database..." -ForegroundColor Red
@@ -107,13 +191,14 @@ function dd {
         Write-Host "Cancelled." 
     } 
 }
+
 <# 
 .SYNOPSIS 
 Runs 'dotnet ef migrations remove'. 
 .CATEGORY
 .NET Development Commands
 #>
-function dremove { 
+function Remove-Migration { 
     [CmdletBinding()] 
     param([string]$Context) 
     Write-Host "⏪ Removing last migration..." -ForegroundColor Yellow
@@ -138,7 +223,7 @@ function New-ConsoleProject {
         git commit -m "Initial commit" 
     }
     
-    Open-Code .
+    if (Get-Command code -ErrorAction SilentlyContinue) { code . }
     dotnet run 
 }
 
@@ -163,7 +248,7 @@ function New-WebApiProject {
         git commit -m "Initial commit" 
     }
     
-    Open-Code .
+    if (Get-Command code -ErrorAction SilentlyContinue) { code . }
 }
 
 #endregion
