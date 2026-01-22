@@ -13,7 +13,7 @@ Set-Alias -Name v -Value nvim -Force
 # --- System & Navigation (20-Navigation, 30-System) ---
 Set-Alias -Name .. -Value Set-LocationParent -Force
 Set-Alias -Name ... -Value Set-LocationGrandParent -Force
-Set-Alias -Name proj -Value Enter-Project -Force
+Set-Alias -Name prj -Value Enter-Project -Force
 Set-Alias -Name go -Value Reload-Profile -Force
 Set-Alias -Name folder -Value Invoke-OpenExplorer -Force
 Set-Alias -Name edit-profile -Value Edit-Profile -Force

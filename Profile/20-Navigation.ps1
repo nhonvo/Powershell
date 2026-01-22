@@ -66,7 +66,7 @@ function Enter-Project {
     # --- END CONFIGURATION ---
 
     $allProjects = @()
-    $excludeFolders = @("My Music", "My Pictures", "My Videos", "Default", "Public", "WindowsPowerShell", "Custom Office Templates", "Visual Studio 2022")
+    $excludeFolders = @("My Music", "My Pictures", "My Videos", "Default", "Public", "WindowsPowerShell", "Custom Office Templates", "Visual Studio 2022", "img", "Modules","vscode-config", "typora-themes")
 
     Write-Progress -Activity "Scanning for projects..." -Status "Please wait"
     
