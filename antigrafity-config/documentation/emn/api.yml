@@ -1,0 +1,952 @@
+openapi: 3.0.0
+info:
+  title: emn-dien
+  version: 1.0.0
+  description: ''
+servers:
+  - url: https://emn.vn
+  - url: https://calc.evn.com.vn
+paths:
+  /api/lichngungcungcapdienapi/getlichcatdienkhuvuc:
+    get:
+      summary: https://emn.vn/api/lichngungcungcapdienapi/getlichcatdienkhuvuc
+      parameters:
+        - name: maTram
+          in: query
+          schema:
+            type: string
+        - name: ngayBatDau
+          in: query
+          schema:
+            type: string
+          example: 15%2F01%2F2026
+        - name: ngayKetThuc
+          in: query
+          schema:
+            type: string
+          example: 14%2F02%2F2026
+        - name: accept-language
+          in: header
+          schema:
+            type: string
+          example: en-US,en;q=0.9,vi;q=0.8,ja;q=0.7
+        - name: priority
+          in: header
+          schema:
+            type: string
+          example: u=1, i
+        - name: referer
+          in: header
+          schema:
+            type: string
+          example: https://emn.vn/LichNgungCungCapDien/KhuVuc
+        - name: sec-ch-ua
+          in: header
+          schema:
+            type: string
+          example: '"Microsoft Edge";v="143", "Chromium";v="143", "Not A(Brand";v="24"'
+        - name: sec-ch-ua-mobile
+          in: header
+          schema:
+            type: string
+          example: '?0'
+        - name: sec-ch-ua-platform
+          in: header
+          schema:
+            type: string
+          example: '"Windows"'
+        - name: sec-fetch-dest
+          in: header
+          schema:
+            type: string
+          example: empty
+        - name: sec-fetch-mode
+          in: header
+          schema:
+            type: string
+          example: cors
+        - name: sec-fetch-site
+          in: header
+          schema:
+            type: string
+          example: same-origin
+        - name: user-agent
+          in: header
+          schema:
+            type: string
+          example: >-
+            Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0
+        - name: x-requested-with
+          in: header
+          schema:
+            type: string
+          example: XMLHttpRequest
+        - name: Cookie
+          in: header
+          schema:
+            type: string
+          example: >-
+            .AspNetCore.Antiforgery.wNHxb8GUpqA=xxxx;
+            .AspNetCore.Cookies=xxxx
+      responses: {}
+  /api/dichvuapi/getchisochitiet:
+    get:
+      summary: https://emn.vn/api/dichvuapi/getchisochitiet
+      parameters:
+        - name: maKhachHang
+          in: query
+          schema:
+            type: string
+          example: VGPBS80409
+        - name: ngayBatDau
+          in: query
+          schema:
+            type: string
+          example: 15%2F12%2F2025
+        - name: ngayKetThuc
+          in: query
+          schema:
+            type: string
+          example: 14%2F01%2F2026
+        - name: accept-language
+          in: header
+          schema:
+            type: string
+          example: en-US,en;q=0.9,vi;q=0.8,ja;q=0.7
+        - name: priority
+          in: header
+          schema:
+            type: string
+          example: u=1, i
+        - name: referer
+          in: header
+          schema:
+            type: string
+          example: https://emn.vn/TraCuuThongTin/ChiSoDienNangTieuThu
+        - name: sec-ch-ua
+          in: header
+          schema:
+            type: string
+          example: '"Microsoft Edge";v="143", "Chromium";v="143", "Not A(Brand";v="24"'
+        - name: sec-ch-ua-mobile
+          in: header
+          schema:
+            type: string
+          example: '?0'
+        - name: sec-ch-ua-platform
+          in: header
+          schema:
+            type: string
+          example: '"Windows"'
+        - name: sec-fetch-dest
+          in: header
+          schema:
+            type: string
+          example: empty
+        - name: sec-fetch-mode
+          in: header
+          schema:
+            type: string
+          example: cors
+        - name: sec-fetch-site
+          in: header
+          schema:
+            type: string
+          example: same-origin
+        - name: user-agent
+          in: header
+          schema:
+            type: string
+          example: >-
+            Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0
+        - name: x-requested-with
+          in: header
+          schema:
+            type: string
+          example: XMLHttpRequest
+        - name: Cookie
+          in: header
+          schema:
+            type: string
+          example: >-
+            .AspNetCore.Antiforgery.wNHxb8GUpqA=xxxx;
+            .AspNetCore.Cookies=xxxx
+      responses: {}
+  /api/dichvuapi/getlichghichiso:
+    get:
+      summary: https://emn.vn/api/dichvuapi/getlichghichiso
+      parameters:
+        - name: maKhachHang
+          in: query
+          schema:
+            type: string
+          example: VGPBS80409
+        - name: ngayBatDau
+          in: query
+          schema:
+            type: string
+          example: 16%2F12%2F2025
+        - name: ngayKetThuc
+          in: query
+          schema:
+            type: string
+          example: 15%2F01%2F2026
+        - name: accept-language
+          in: header
+          schema:
+            type: string
+          example: en-US,en;q=0.9,vi;q=0.8,ja;q=0.7
+        - name: priority
+          in: header
+          schema:
+            type: string
+          example: u=1, i
+        - name: referer
+          in: header
+          schema:
+            type: string
+          example: https://emn.vn/TraCuuThongTin/LichGhiChiSo
+        - name: sec-ch-ua
+          in: header
+          schema:
+            type: string
+          example: '"Microsoft Edge";v="143", "Chromium";v="143", "Not A(Brand";v="24"'
+        - name: sec-ch-ua-mobile
+          in: header
+          schema:
+            type: string
+          example: '?0'
+        - name: sec-ch-ua-platform
+          in: header
+          schema:
+            type: string
+          example: '"Windows"'
+        - name: sec-fetch-dest
+          in: header
+          schema:
+            type: string
+          example: empty
+        - name: sec-fetch-mode
+          in: header
+          schema:
+            type: string
+          example: cors
+        - name: sec-fetch-site
+          in: header
+          schema:
+            type: string
+          example: same-origin
+        - name: user-agent
+          in: header
+          schema:
+            type: string
+          example: >-
+            Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0
+        - name: x-requested-with
+          in: header
+          schema:
+            type: string
+          example: XMLHttpRequest
+        - name: Cookie
+          in: header
+          schema:
+            type: string
+          example: >-
+            .AspNetCore.Antiforgery.wNHxb8GUpqA=xxxx;
+            .AspNetCore.Cookies=xxxx
+      responses: {}
+  /api/thanhtoanapi/getlichsuthanhtoan:
+    get:
+      summary: https://emn.vn/api/thanhtoanapi/getlichsuthanhtoan
+      parameters:
+        - name: maKhachHang
+          in: query
+          schema:
+            type: string
+          example: VGPBS80409
+        - name: thangBatDau
+          in: query
+          schema:
+            type: string
+          example: 10%2F2025
+        - name: thangKetThuc
+          in: query
+          schema:
+            type: string
+          example: 01%2F2026
+        - name: accept-language
+          in: header
+          schema:
+            type: string
+          example: en-US,en;q=0.9,vi;q=0.8,ja;q=0.7
+        - name: priority
+          in: header
+          schema:
+            type: string
+          example: u=1, i
+        - name: referer
+          in: header
+          schema:
+            type: string
+          example: https://emn.vn/ThanhToanTrucTuyen/LichSuThanhToan
+        - name: sec-ch-ua
+          in: header
+          schema:
+            type: string
+          example: '"Microsoft Edge";v="143", "Chromium";v="143", "Not A(Brand";v="24"'
+        - name: sec-ch-ua-mobile
+          in: header
+          schema:
+            type: string
+          example: '?0'
+        - name: sec-ch-ua-platform
+          in: header
+          schema:
+            type: string
+          example: '"Windows"'
+        - name: sec-fetch-dest
+          in: header
+          schema:
+            type: string
+          example: empty
+        - name: sec-fetch-mode
+          in: header
+          schema:
+            type: string
+          example: cors
+        - name: sec-fetch-site
+          in: header
+          schema:
+            type: string
+          example: same-origin
+        - name: user-agent
+          in: header
+          schema:
+            type: string
+          example: >-
+            Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0
+        - name: x-requested-with
+          in: header
+          schema:
+            type: string
+          example: XMLHttpRequest
+        - name: Cookie
+          in: header
+          schema:
+            type: string
+          example: >-
+            .AspNetCore.Antiforgery.wNHxb8GUpqA=xxxx;
+            .AspNetCore.Cookies=xxxx
+      responses: {}
+  /TinhHoaDon/api/getDMuc:
+    get:
+      summary: https://calc.evn.com.vn/TinhHoaDon/api/getDMuc
+      parameters:
+        - name: accept-language
+          in: header
+          schema:
+            type: string
+          example: en-US,en;q=0.9,vi;q=0.8,ja;q=0.7
+        - name: priority
+          in: header
+          schema:
+            type: string
+          example: u=1, i
+        - name: referer
+          in: header
+          schema:
+            type: string
+          example: https://calc.evn.com.vn/
+        - name: sec-ch-ua
+          in: header
+          schema:
+            type: string
+          example: '"Microsoft Edge";v="143", "Chromium";v="143", "Not A(Brand";v="24"'
+        - name: sec-ch-ua-mobile
+          in: header
+          schema:
+            type: string
+          example: '?0'
+        - name: sec-ch-ua-platform
+          in: header
+          schema:
+            type: string
+          example: '"Windows"'
+        - name: sec-fetch-dest
+          in: header
+          schema:
+            type: string
+          example: empty
+        - name: sec-fetch-mode
+          in: header
+          schema:
+            type: string
+          example: cors
+        - name: sec-fetch-site
+          in: header
+          schema:
+            type: string
+          example: same-origin
+        - name: sec-fetch-storage-access
+          in: header
+          schema:
+            type: string
+          example: active
+        - name: user-agent
+          in: header
+          schema:
+            type: string
+          example: >-
+            Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0
+      responses: {}
+  /TinhHoaDon/api/Calculate:
+    post:
+      summary: https://calc.evn.com.vn/TinhHoaDon/api/Calculate
+      parameters:
+        - name: accept-language
+          in: header
+          schema:
+            type: string
+          example: en-US,en;q=0.9,vi;q=0.8,ja;q=0.7
+        - name: origin
+          in: header
+          schema:
+            type: string
+          example: https://calc.evn.com.vn
+        - name: priority
+          in: header
+          schema:
+            type: string
+          example: u=1, i
+        - name: referer
+          in: header
+          schema:
+            type: string
+          example: https://calc.evn.com.vn/
+        - name: sec-ch-ua
+          in: header
+          schema:
+            type: string
+          example: '"Microsoft Edge";v="143", "Chromium";v="143", "Not A(Brand";v="24"'
+        - name: sec-ch-ua-mobile
+          in: header
+          schema:
+            type: string
+          example: '?0'
+        - name: sec-ch-ua-platform
+          in: header
+          schema:
+            type: string
+          example: '"Windows"'
+        - name: sec-fetch-dest
+          in: header
+          schema:
+            type: string
+          example: empty
+        - name: sec-fetch-mode
+          in: header
+          schema:
+            type: string
+          example: cors
+        - name: sec-fetch-site
+          in: header
+          schema:
+            type: string
+          example: same-origin
+        - name: sec-fetch-storage-access
+          in: header
+          schema:
+            type: string
+          example: active
+        - name: user-agent
+          in: header
+          schema:
+            type: string
+          example: >-
+            Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0
+      responses: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                KIMUA_CSPK:
+                  type: string
+                  format: utc-millisec
+                LOAI_DDO:
+                  type: string
+                  format: utc-millisec
+                SO_HO:
+                  type: integer
+                MA_CAPDAP:
+                  type: string
+                  format: utc-millisec
+                NGAY_DKY:
+                  type: string
+                NGAY_CKY:
+                  type: string
+                NGAY_DGIA:
+                  type: string
+                HDG_BBAN_APGIA:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      LOAI_BCS:
+                        type: string
+                      TGIAN_BANDIEN:
+                        type: string
+                      MA_NHOMNN:
+                        type: string
+                      MA_NGIA:
+                        type: string
+                GCS_CHISO:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      BCS:
+                        type: string
+                      SAN_LUONG:
+                        type: string
+                        format: utc-millisec
+                      LOAI_CHISO:
+                        type: string
+            example:
+              KIMUA_CSPK: '0'
+              LOAI_DDO: '1'
+              SO_HO: 1
+              MA_CAPDAP: '1'
+              NGAY_DKY: 15/01/2026
+              NGAY_CKY: 15/02/2026
+              NGAY_DGIA: 01/01/1900
+              HDG_BBAN_APGIA:
+                - LOAI_BCS: KT
+                  TGIAN_BANDIEN: KT
+                  MA_NHOMNN: SHBT
+                  MA_NGIA: A
+              GCS_CHISO:
+                - BCS: KT
+                  SAN_LUONG: '1000'
+                  LOAI_CHISO: DDK
+  /api/homeapi/getthongtinkhachhang:
+    get:
+      summary: https://emn.vn/api/homeapi/getthongtinkhachhang
+      parameters:
+        - name: accept-language
+          in: header
+          schema:
+            type: string
+          example: en-US,en;q=0.9,vi;q=0.8,ja;q=0.7
+        - name: priority
+          in: header
+          schema:
+            type: string
+          example: u=1, i
+        - name: referer
+          in: header
+          schema:
+            type: string
+          example: https://emn.vn/Home
+        - name: sec-ch-ua
+          in: header
+          schema:
+            type: string
+          example: '"Microsoft Edge";v="143", "Chromium";v="143", "Not A(Brand";v="24"'
+        - name: sec-ch-ua-mobile
+          in: header
+          schema:
+            type: string
+          example: '?0'
+        - name: sec-ch-ua-platform
+          in: header
+          schema:
+            type: string
+          example: '"Windows"'
+        - name: sec-fetch-dest
+          in: header
+          schema:
+            type: string
+          example: empty
+        - name: sec-fetch-mode
+          in: header
+          schema:
+            type: string
+          example: cors
+        - name: sec-fetch-site
+          in: header
+          schema:
+            type: string
+          example: same-origin
+        - name: user-agent
+          in: header
+          schema:
+            type: string
+          example: >-
+            Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0
+        - name: x-requested-with
+          in: header
+          schema:
+            type: string
+          example: XMLHttpRequest
+        - name: Cookie
+          in: header
+          schema:
+            type: string
+          example: >-
+            .AspNetCore.Antiforgery.wNHxb8GUpqA=xxxx;
+            .AspNetCore.Cookies=xxxx
+      responses: {}
+  /api/homeapi/getchisocongto:
+    get:
+      summary: https://emn.vn/api/homeapi/getchisocongto
+      parameters:
+        - name: accept-language
+          in: header
+          schema:
+            type: string
+          example: en-US,en;q=0.9,vi;q=0.8,ja;q=0.7
+        - name: priority
+          in: header
+          schema:
+            type: string
+          example: u=1, i
+        - name: referer
+          in: header
+          schema:
+            type: string
+          example: https://emn.vn/Home
+        - name: sec-ch-ua
+          in: header
+          schema:
+            type: string
+          example: '"Microsoft Edge";v="143", "Chromium";v="143", "Not A(Brand";v="24"'
+        - name: sec-ch-ua-mobile
+          in: header
+          schema:
+            type: string
+          example: '?0'
+        - name: sec-ch-ua-platform
+          in: header
+          schema:
+            type: string
+          example: '"Windows"'
+        - name: sec-fetch-dest
+          in: header
+          schema:
+            type: string
+          example: empty
+        - name: sec-fetch-mode
+          in: header
+          schema:
+            type: string
+          example: cors
+        - name: sec-fetch-site
+          in: header
+          schema:
+            type: string
+          example: same-origin
+        - name: user-agent
+          in: header
+          schema:
+            type: string
+          example: >-
+            Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0
+        - name: x-requested-with
+          in: header
+          schema:
+            type: string
+          example: XMLHttpRequest
+        - name: Cookie
+          in: header
+          schema:
+            type: string
+          example: >-
+            .AspNetCore.Antiforgery.wNHxb8GUpqA=xxxx;
+            .AspNetCore.Cookies=xxxx
+      responses: {}
+  /api/homeapi/gethoadontiendien:
+    get:
+      summary: https://emn.vn/api/homeapi/gethoadontiendien
+      parameters:
+        - name: accept-language
+          in: header
+          schema:
+            type: string
+          example: en-US,en;q=0.9,vi;q=0.8,ja;q=0.7
+        - name: priority
+          in: header
+          schema:
+            type: string
+          example: u=1, i
+        - name: referer
+          in: header
+          schema:
+            type: string
+          example: https://emn.vn/Home
+        - name: sec-ch-ua
+          in: header
+          schema:
+            type: string
+          example: '"Microsoft Edge";v="143", "Chromium";v="143", "Not A(Brand";v="24"'
+        - name: sec-ch-ua-mobile
+          in: header
+          schema:
+            type: string
+          example: '?0'
+        - name: sec-ch-ua-platform
+          in: header
+          schema:
+            type: string
+          example: '"Windows"'
+        - name: sec-fetch-dest
+          in: header
+          schema:
+            type: string
+          example: empty
+        - name: sec-fetch-mode
+          in: header
+          schema:
+            type: string
+          example: cors
+        - name: sec-fetch-site
+          in: header
+          schema:
+            type: string
+          example: same-origin
+        - name: user-agent
+          in: header
+          schema:
+            type: string
+          example: >-
+            Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0
+        - name: x-requested-with
+          in: header
+          schema:
+            type: string
+          example: XMLHttpRequest
+        - name: Cookie
+          in: header
+          schema:
+            type: string
+          example: >-
+            .AspNetCore.Antiforgery.wNHxb8GUpqA=xxxx;
+            .AspNetCore.Cookies=xxxx
+      responses: {}
+  /api/homeapi/getlichsuemailsms:
+    get:
+      summary: https://emn.vn/api/homeapi/getlichsuemailsms
+      parameters:
+        - name: accept-language
+          in: header
+          schema:
+            type: string
+          example: en-US,en;q=0.9,vi;q=0.8,ja;q=0.7
+        - name: priority
+          in: header
+          schema:
+            type: string
+          example: u=1, i
+        - name: referer
+          in: header
+          schema:
+            type: string
+          example: https://emn.vn/Home
+        - name: sec-ch-ua
+          in: header
+          schema:
+            type: string
+          example: '"Microsoft Edge";v="143", "Chromium";v="143", "Not A(Brand";v="24"'
+        - name: sec-ch-ua-mobile
+          in: header
+          schema:
+            type: string
+          example: '?0'
+        - name: sec-ch-ua-platform
+          in: header
+          schema:
+            type: string
+          example: '"Windows"'
+        - name: sec-fetch-dest
+          in: header
+          schema:
+            type: string
+          example: empty
+        - name: sec-fetch-mode
+          in: header
+          schema:
+            type: string
+          example: cors
+        - name: sec-fetch-site
+          in: header
+          schema:
+            type: string
+          example: same-origin
+        - name: user-agent
+          in: header
+          schema:
+            type: string
+          example: >-
+            Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0
+        - name: x-requested-with
+          in: header
+          schema:
+            type: string
+          example: XMLHttpRequest
+        - name: Cookie
+          in: header
+          schema:
+            type: string
+          example: >-
+            .AspNetCore.Antiforgery.wNHxb8GUpqA=xxxx;
+            .AspNetCore.Cookies=xxxx
+      responses: {}
+  /api/homeapi/getlichsuyeucau:
+    get:
+      summary: https://emn.vn/api/homeapi/getlichsuyeucau
+      parameters:
+        - name: accept-language
+          in: header
+          schema:
+            type: string
+          example: en-US,en;q=0.9,vi;q=0.8,ja;q=0.7
+        - name: priority
+          in: header
+          schema:
+            type: string
+          example: u=1, i
+        - name: referer
+          in: header
+          schema:
+            type: string
+          example: https://emn.vn/Home
+        - name: sec-ch-ua
+          in: header
+          schema:
+            type: string
+          example: '"Microsoft Edge";v="143", "Chromium";v="143", "Not A(Brand";v="24"'
+        - name: sec-ch-ua-mobile
+          in: header
+          schema:
+            type: string
+          example: '?0'
+        - name: sec-ch-ua-platform
+          in: header
+          schema:
+            type: string
+          example: '"Windows"'
+        - name: sec-fetch-dest
+          in: header
+          schema:
+            type: string
+          example: empty
+        - name: sec-fetch-mode
+          in: header
+          schema:
+            type: string
+          example: cors
+        - name: sec-fetch-site
+          in: header
+          schema:
+            type: string
+          example: same-origin
+        - name: user-agent
+          in: header
+          schema:
+            type: string
+          example: >-
+            Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0
+        - name: x-requested-with
+          in: header
+          schema:
+            type: string
+          example: XMLHttpRequest
+        - name: Cookie
+          in: header
+          schema:
+            type: string
+          example: >-
+            .AspNetCore.Antiforgery.wNHxb8GUpqA=xxxx;
+            .AspNetCore.Cookies=xxxx
+      responses: {}
+  /api/homeapi/getlichtreothaoghidien:
+    get:
+      summary: https://emn.vn/api/homeapi/getlichtreothaoghidien
+      parameters:
+        - name: accept-language
+          in: header
+          schema:
+            type: string
+          example: en-US,en;q=0.9,vi;q=0.8,ja;q=0.7
+        - name: priority
+          in: header
+          schema:
+            type: string
+          example: u=1, i
+        - name: referer
+          in: header
+          schema:
+            type: string
+          example: https://emn.vn/Home
+        - name: sec-ch-ua
+          in: header
+          schema:
+            type: string
+          example: '"Microsoft Edge";v="143", "Chromium";v="143", "Not A(Brand";v="24"'
+        - name: sec-ch-ua-mobile
+          in: header
+          schema:
+            type: string
+          example: '?0'
+        - name: sec-ch-ua-platform
+          in: header
+          schema:
+            type: string
+          example: '"Windows"'
+        - name: sec-fetch-dest
+          in: header
+          schema:
+            type: string
+          example: empty
+        - name: sec-fetch-mode
+          in: header
+          schema:
+            type: string
+          example: cors
+        - name: sec-fetch-site
+          in: header
+          schema:
+            type: string
+          example: same-origin
+        - name: user-agent
+          in: header
+          schema:
+            type: string
+          example: >-
+            Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+            like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0
+        - name: x-requested-with
+          in: header
+          schema:
+            type: string
+          example: XMLHttpRequest
+        - name: Cookie
+          in: header
+          schema:
+            type: string
+          example: >-
+            .AspNetCore.Antiforgery.wNHxb8GUpqA=xxxx;
+            .AspNetCore.Cookies=xxxx
+      responses: {}

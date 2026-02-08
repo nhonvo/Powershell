@@ -1,0 +1,1222 @@
+openapi: 3.0.0
+info:
+  title: Finance Dashboard API
+  description: Comprehensive API documentation for the Finance Dashboard application.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Local Development Server
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+  schemas:
+    Transaction:
+      type: object
+      properties:
+        _id: { type: string }
+        transaction_code: { type: string }
+        amount: { type: number }
+        debit: { type: number }
+        credit: { type: number }
+        balance: { type: number }
+        type: { type: string, enum: [income, expense] }
+        category: { type: string }
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              name: { type: string }
+              color: { type: string }
+        auto_category: { type: string }
+        transaction_date: { type: string, format: date-time }
+        description: { type: string }
+    Budget:
+      type: object
+      properties:
+        _id: { type: string }
+        category: { type: string }
+        amount: { type: number }
+        period: { type: string, enum: [monthly, weekly] }
+        alert_threshold: { type: number }
+        spent: { type: number, description: "Calculated spent amount" }
+        remaining: { type: number, description: "Calculated remaining amount" }
+        percentage: { type: number, description: "Calculated percentage used" }
+        isExceeded: { type: boolean, description: "Whether budget is exceeded" }
+    Goal:
+      type: object
+      properties:
+        _id: { type: string }
+        name: { type: string }
+        target_amount: { type: number }
+        current_amount: { type: number }
+        deadline: { type: string, format: date-time }
+        color: { type: string }
+    User:
+      type: object
+      properties:
+        _id: { type: string }
+        email: { type: string }
+        displayName: { type: string }
+        username: { type: string }
+        avatarUrl: { type: string }
+    AdminUser:
+      type: object
+      properties:
+        _id: { type: string }
+        displayName: { type: string }
+        email: { type: string }
+        role: { type: string, enum: [user, admin] }
+        status: { type: string, enum: [active, inactive] }
+        createdAt: { type: string, format: date-time }
+        lastLogin: { type: string, format: date-time }
+        avatarUrl: { type: string }
+        password: { type: string, description: "Input only" }
+    Role:
+      type: object
+      properties:
+        _id: { type: string }
+        name: { type: string }
+        permissions: { type: array, items: { type: string } }
+        usersCount: { type: integer }
+        description: { type: string }
+        createdAt: { type: string }
+    Overview:
+      type: object
+      properties:
+        availableBalance: { type: number }
+        totalIncome: { type: number }
+        totalExpense: { type: number }
+        netChange: { type: number }
+        transactionCount: { type: integer }
+    ChatSession:
+      type: object
+      properties:
+        _id: { type: string }
+        title: { type: string }
+    Subscription:
+      type: object
+      properties:
+        _id: { type: string }
+        name: { type: string }
+        merchant: { type: string }
+        amount: { type: number }
+        frequency: { type: string, enum: [daily, weekly, monthly, yearly] }
+        category: { type: string }
+        type: { type: string, enum: [income, expense] }
+        startDate: { type: string, format: date-time }
+        nextRunDate: { type: string, format: date-time }
+        status: { type: string, enum: [active, paused] }
+    SubscriptionCandidate:
+      type: object
+      properties:
+        merchant: { type: string }
+        amount: { type: number }
+        frequency: { type: string }
+        confidence: { type: number, minimum: 0, maximum: 1 }
+        modelName: { type: string }
+        updatedAt: { type: string, format: date-time }
+    Notification:
+      type: object
+      properties:
+        _id: { type: string }
+        type: { type: string, enum: [info, success, warning, error] }
+        title: { type: string }
+        message: { type: string }
+        isRead: { type: boolean }
+        relatedId: { type: string }
+        link: { type: string }
+        createdAt: { type: string, format: date-time }
+
+security:
+  - cookieAuth: []
+
+paths:
+  # Authentication
+  /auth/signin:
+    post:
+      summary: Sign In
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+      responses:
+        "200":
+          description: Successful Login
+          headers:
+            Set-Cookie: { schema: { type: string } }
+  /auth/signup:
+    post:
+      summary: Sign Up
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+                username: { type: string }
+                displayName: { type: string }
+      responses:
+        "201":
+          description: Created
+  /auth/signout:
+    get:
+      summary: Sign Out
+      tags: [Auth]
+      responses:
+        "200":
+          description: Signed Out
+
+  # User Profile
+  /me:
+    get:
+      summary: Get Current User
+      tags: [User]
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/User" }
+          description: NoContent
+
+  # Search
+  /search:
+    get:
+      summary: Global Search
+      description: Search across navigation items and transactions.
+      tags: [System]
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: List of search results.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: string }
+                    title: { type: string }
+                    subtitle: { type: string }
+                    url: { type: string }
+                    type: { type: string, enum: [page, transaction] }
+                    category: { type: string }
+
+  # Analytics
+  /overview:
+    get:
+      summary: Get Financial Overview
+      description: Retrieves summary metrics for the dashboard.
+      tags: [Analytics]
+      parameters:
+        - { name: startDate, in: query, schema: { type: string, format: date } }
+        - { name: endDate, in: query, schema: { type: string, format: date } }
+      responses:
+        "200":
+          description: Aggregated overview data.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Overview" }
+
+  /expense-tree:
+    get:
+      summary: Get Expense Tree
+      description: Returns a hierarchical structure of expenses by category.
+      tags: [Analytics]
+      parameters:
+        - { name: startDate, in: query, schema: { type: string, format: date } }
+        - { name: endDate, in: query, schema: { type: string, format: date } }
+      responses:
+        "200":
+          description: A tree structure of expense categories.
+
+  /analytics/comparison:
+    get:
+      summary: Compare Periods
+      description: Compares spending/income between two date ranges.
+      tags: [Analytics]
+      parameters:
+        - { name: startDate, in: query, schema: { type: string, format: date } }
+        - { name: endDate, in: query, schema: { type: string, format: date } }
+      responses:
+        "200":
+          description: Comparison metrics.
+
+  /analytics/insights:
+    get:
+      summary: Get AI Insights
+      description: Retrieves proactive financial advice and anomalies.
+      tags: [Analytics]
+      responses:
+        "200":
+          description: List of insights.
+
+  # Transactions
+  /transactions:
+    get:
+      summary: Get Transactions
+      tags: [Transactions]
+      parameters:
+        - { name: page, in: query, schema: { type: integer } }
+        - { name: limit, in: query, schema: { type: integer } }
+        - { name: query, in: query, schema: { type: string } }
+        - { name: category, in: query, schema: { type: string } }
+        - { name: startDate, in: query, schema: { type: string, format: date } }
+        - { name: endDate, in: query, schema: { type: string, format: date } }
+        - { name: sortBy, in: query, schema: { type: string } }
+        - { name: isAscending, in: query, schema: { type: boolean } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Transaction" }
+          description: NoContent
+
+    post:
+      summary: Create Transaction
+      tags: [Transactions]
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Transaction" }
+      responses:
+        "201":
+          description: Created
+
+  /transactions/{transaction_code}:
+    get:
+      summary: Get Transaction Details
+      tags: [Transactions]
+      parameters:
+        - {
+            name: transaction_code,
+            in: path,
+            required: true,
+            schema: { type: string },
+          }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Transaction" }
+          description: NoContent
+
+    put:
+      summary: Update Transaction
+      tags: [Transactions]
+      parameters:
+        - {
+            name: transaction_code,
+            in: path,
+            required: true,
+            schema: { type: string },
+          }
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Transaction" }
+      responses:
+        "200":
+          description: Updated
+    delete:
+      summary: Delete Transaction
+      tags: [Transactions]
+      parameters:
+        - {
+            name: transaction_code,
+            in: path,
+            required: true,
+            schema: { type: string },
+          }
+      responses:
+        "200":
+          description: Deleted
+
+  /transactions/bulk:
+    post:
+      summary: Bulk Update Transactions
+      description: Applies changes (e.g., category, status) to multiple transactions at once.
+      tags: [Transactions]
+      responses:
+        "200":
+          description: Bulk operation successful.
+
+  # Bills & Subscriptions
+  /bills:
+    get:
+      summary: List Bills
+      tags: [Finance]
+      responses:
+        "200":
+          description: List of upcoming bills.
+    post:
+      summary: Create Bill
+      tags: [Finance]
+      responses:
+        "201":
+          description: Created.
+
+  /bills/{id}:
+    put:
+      summary: Update Bill
+      tags: [Finance]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: Updated.
+    delete:
+      summary: Delete Bill
+      tags: [Finance]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: Deleted.
+
+  /bills/subscriptions:
+    get:
+      summary: List Subscriptions
+      description: Identifies recurring subscription-like expenses.
+      tags: [Finance]
+      responses:
+        "200":
+          description: List of subscriptions.
+
+  # Recurring Transactions
+  /recurring:
+    get:
+      summary: List Recurring Transactions
+      tags: [Finance]
+      responses:
+        "200":
+          description: List of recurring schedules.
+    post:
+      summary: Create Recurring Schedule
+      tags: [Finance]
+      responses:
+        "201":
+          description: Created.
+
+  /recurring/process:
+    post:
+      summary: Process Recurring Transactions
+      description: Manually triggers the generation of transactions from recurring schedules.
+      tags: [Finance]
+      responses:
+        "200":
+          description: Processed.
+
+  # Calendar
+  /calendar:
+    get:
+      summary: Get Calendar Events
+      description: Retrieves daily spending, bills, and recurring events for a calendar view.
+      tags: [Finance]
+      parameters:
+        - {
+            name: startDate,
+            in: query,
+            required: true,
+            schema: { type: string, format: date },
+          }
+        - {
+            name: endDate,
+            in: query,
+            required: true,
+            schema: { type: string, format: date },
+          }
+      responses:
+        "200":
+          description: Calendar data including spending aggregates and specific events.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dailySpending:
+                    { type: object, additionalProperties: { type: number } }
+                  bills:
+                    {
+                      type: array,
+                      items: { $ref: "#/components/schemas/Bill" },
+                    }
+                  recurring: { type: array, items: { type: object } }
+
+  # Categorization
+  /categorization/rules:
+    get:
+      summary: List Rules
+      tags: [Categorization]
+      responses:
+        "200":
+          description: List of auto-categorization rules.
+    post:
+      summary: Create Rule
+      tags: [Categorization]
+      responses:
+        "201":
+          description: Created.
+
+  /categorization/apply:
+    post:
+      summary: Apply Rules
+      description: Re-applies categorization rules to existing transactions.
+      tags: [Categorization]
+      responses:
+        "200":
+          description: Rules applied.
+
+  # Budgets
+  /budgets:
+    get:
+      summary: Get Budgets
+      tags: [Budgets]
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Budget" }
+          description: NoContent
+
+    post:
+      summary: Create Budget
+      tags: [Budgets]
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Budget" }
+      responses:
+        "201":
+          description: Created
+
+  /budgets/{id}:
+    put:
+      summary: Update Budget
+      tags: [Budgets]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Budget" }
+      responses:
+        "200":
+          description: Updated
+    delete:
+      summary: Delete Budget
+      tags: [Budgets]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: Deleted
+
+  # Goals
+  /goals:
+    get:
+      summary: Get Goals
+      tags: [Goals]
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Goal" }
+          description: NoContent
+
+    post:
+      summary: Create Goal
+      tags: [Goals]
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Goal" }
+      responses:
+        "201":
+          description: Created
+
+  /goals/{id}:
+    put:
+      summary: Update Goal
+      tags: [Goals]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Goal" }
+      responses:
+        "200":
+          description: Updated
+    delete:
+      summary: Delete Goal
+      tags: [Goals]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: Deleted
+
+  # Wealth Management
+  /assets:
+    get:
+      summary: List Assets
+      tags: [Wealth]
+      responses:
+        "200":
+          description: List of assets.
+    post:
+      summary: Create Asset
+      tags: [Wealth]
+      responses:
+        "201":
+          description: Created.
+
+  /assets/{id}:
+    put:
+      summary: Update Asset
+      tags: [Wealth]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: Updated.
+    delete:
+      summary: Delete Asset
+      tags: [Wealth]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: Deleted.
+
+  /debts:
+    get:
+      summary: List Debts
+      tags: [Wealth]
+      responses:
+        "200":
+          description: List of debts.
+    post:
+      summary: Create Debt
+      tags: [Wealth]
+      responses:
+        "201":
+          description: Created.
+
+  /debts/{id}:
+    put:
+      summary: Update Debt
+      tags: [Wealth]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: Updated.
+    delete:
+      summary: Delete Debt
+      tags: [Wealth]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: Deleted.
+
+  /forecast/runway:
+    get:
+      summary: Get Cash Runway
+      description: Projected number of months before funds are exhausted based on current burn rate.
+      tags: [Wealth]
+      responses:
+        "200":
+          description: Runway projection.
+
+  /investments/analytics:
+    get:
+      summary: Get Investment Analytics
+      description: Detailed performance metrics for the investment portfolio.
+      tags: [Wealth]
+      parameters:
+        - { name: startDate, in: query, schema: { type: string, format: date } }
+        - { name: endDate, in: query, schema: { type: string, format: date } }
+        - { name: currency, in: query, schema: { type: string, default: VND } }
+      responses:
+        "200":
+          description: Investment analytics data.
+
+  # Tax Management
+  /tax/report:
+    get:
+      summary: Get Tax Report
+      tags: [Finance]
+      responses:
+        "200":
+          description: Tax summary data.
+  /tax/mapping:
+    get:
+      summary: Get Tax Mappings
+      tags: [Finance]
+      responses:
+        "200":
+          description: Category to tax code mappings.
+  /tax/settings:
+    get:
+      summary: Get Tax Settings
+      tags: [Finance]
+      responses:
+        "200":
+          description: Tax configuration.
+
+  # Export
+  /export:
+    get:
+      summary: Export Data
+      description: Downloads transactions or financial reports.
+      tags: [Finance]
+      parameters:
+        - {
+            name: format,
+            in: query,
+            required: true,
+            schema: { type: string, enum: [csv, json, pdf] },
+          }
+      responses:
+        "200":
+          description: File download.
+  
+  # Subscriptions
+  /subscriptions:
+    get:
+      summary: Get Subscriptions
+      description: Retrieves active subscriptions and AI-detected candidates for the authenticated user.
+      tags: [Finance]
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Subscription data retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  active:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Subscription"
+                  candidates:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SubscriptionCandidate"
+        "401":
+          description: Unauthorized
+    post:
+      summary: Add Subscription
+      description: Creates a new subscription record for tracking.
+      tags: [Finance]
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                amount: { type: number }
+                frequency: { type: string, enum: [daily, weekly, monthly, yearly] }
+                category: { type: string }
+                type: { type: string, enum: [income, expense] }
+                startDate: { type: string, format: date-time }
+                nextRunDate: { type: string, format: date-time }
+                status: { type: string, enum: [active, paused] }
+      responses:
+        "200":
+          description: Subscription created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Subscription"
+        "401":
+          description: Unauthorized
+        "500":
+          description: Server error
+
+  # System
+  /system/seed:
+    post:
+      summary: Seed Data
+      description: Seeds the database with initial data for development or testing.
+      tags: [System]
+      responses:
+        "200":
+          description: Seed completed and data operations finished.
+
+  /admin/global-settings:
+    get:
+      summary: Get Global Settings
+      description: Retrieves system-wide configuration. requires admin privileges.
+      tags: [System]
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Global settings object.
+    put:
+      summary: Update Global Settings
+      description: Updates system-wide configuration. requires admin privileges.
+      tags: [System]
+      security:
+        - cookieAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                siteName: { type: string }
+                maintenanceMode: { type: boolean }
+                allowRegistration: { type: boolean }
+                sessionTimeoutMinutes: { type: integer }
+                enforce2FA: { type: boolean }
+                supportContact: { type: string }
+                maxUploadSizeMB: { type: number }
+                widgetDefaults: { type: object }
+      responses:
+        "200":
+          description: Settings updated.
+
+  # AI Chat
+  /ai/chat:
+    post:
+      summary: Send Message to AI
+      description: Sends a message to the AI assistant and receives a context-aware response.
+      tags: [AI]
+      requestBody:
+        description: Message payload including session history.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                messages:
+                  type: array
+                  description: The list of chat messages.
+                  items:
+                    type: object
+                    description: A single message object.
+                    properties:
+                      role: { type: string }
+                      content: { type: string }
+                sessionId: { type: string }
+                model: { type: string }
+      responses:
+        "200":
+          description: AI response generated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response: { type: string }
+                  contextUsed: { type: boolean }
+
+  /ai/chat/sessions:
+    get:
+      summary: Get Chat Sessions
+      description: Retrieves a list of all chat sessions for the current user.
+      tags: [AI]
+      responses:
+        "200":
+          description: List of chat sessions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sessions:
+                    type: array
+                    description: Array of chat session objects.
+                    items: { $ref: "#/components/schemas/ChatSession" }
+    post:
+      summary: Create Chat Session
+      description: Starts a new chat session with the AI.
+      tags: [AI]
+      requestBody:
+        description: Initial session details.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string }
+                modelName: { type: string }
+      responses:
+        "201":
+          description: Chat session created successfully.
+
+  /ai/chat/sessions/{id}:
+    get:
+      summary: Get Chat Session Details
+      description: Retrieves the full message history and metadata for a specific chat session.
+      tags: [AI]
+      parameters:
+        - {
+            name: id,
+            in: path,
+            required: true,
+            description: "The session ID",
+            schema: { type: string },
+          }
+      responses:
+        "200":
+          description: Detailed session data.
+    patch:
+      summary: Update Session Title
+      description: Renames an existing chat session.
+      tags: [AI]
+      parameters:
+        - {
+            name: id,
+            in: path,
+            required: true,
+            description: "The session ID",
+            schema: { type: string },
+          }
+      requestBody:
+        description: New title for the session.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string }
+      responses:
+        "200":
+          description: Session updated successfully.
+
+  # Notifications
+  /notifications:
+    get:
+      summary: Get User Notifications
+      description: Retrieves active notifications for the current user.
+      tags: [Notifications]
+      parameters:
+        - {
+            name: limit,
+            in: query,
+            description: "Number of notifications to return",
+            schema: { type: integer },
+          }
+        - {
+            name: offset,
+            in: query,
+            description: "Offset for pagination",
+            schema: { type: integer },
+          }
+      responses:
+        "200":
+          description: List of notifications.
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of notification objects.
+                items: { $ref: "#/components/schemas/Notification" }
+
+  /notifications/check:
+    post:
+      summary: Trigger Notification Checks
+      description: Manually triggers the system to check for new alerts (bills, budgets, etc.).
+      tags: [Notifications]
+      responses:
+        "200":
+          description: Checks triggered successfully.
+
+  /notifications/{id}:
+    put:
+      summary: Mark Notification as Read
+      description: Updates a notification status to read.
+      tags: [Notifications]
+      parameters:
+        - {
+            name: id,
+            in: path,
+            required: true,
+            description: "The notification ID",
+            schema: { type: string },
+          }
+      responses:
+        "200":
+          description: Notification updated.
+    delete:
+      summary: Delete Notification
+      description: Removes a notification from the user's history.
+      tags: [Notifications]
+      parameters:
+        - {
+            name: id,
+            in: path,
+            required: true,
+            description: "The notification ID",
+            schema: { type: string },
+          }
+      responses:
+        "200":
+          description: Notification deleted.
+
+  # Admin
+  /admin/users:
+    get:
+      summary: List Users (Admin)
+      description: Retrieves all users with their administrative metadata.
+      tags: [Admin]
+      responses:
+        "200":
+          description: List of all users.
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of admin user objects.
+                items: { $ref: "#/components/schemas/AdminUser" }
+    post:
+      summary: Create User (Admin)
+      description: Manually creates a new user account.
+      tags: [Admin]
+      requestBody:
+        description: New user details.
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AdminUser" }
+      responses:
+        "201":
+          description: User created successfully.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AdminUser" }
+
+  /admin/users/{id}:
+    put:
+      summary: Update User (Admin)
+      description: Updates user details or role.
+      tags: [Admin]
+      parameters:
+        - {
+            name: id,
+            in: path,
+            required: true,
+            description: "The user ID",
+            schema: { type: string },
+          }
+      requestBody:
+        description: Updated user data.
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AdminUser" }
+      responses:
+        "200":
+          description: User updated successfully.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AdminUser" }
+    delete:
+      summary: Delete User (Admin)
+      description: Permanently removes a user account.
+      tags: [Admin]
+      parameters:
+        - {
+            name: id,
+            in: path,
+            required: true,
+            description: "The user ID",
+            schema: { type: string },
+          }
+      responses:
+        "200":
+          description: User deleted.
+
+  /admin/roles:
+    get:
+      summary: List Roles
+      description: Retrieves all available roles and their permissions.
+      tags: [Admin]
+      responses:
+        "200":
+          description: List of roles.
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of role objects.
+                items: { $ref: "#/components/schemas/Role" }
+    post:
+      summary: Create Role
+      description: Defines a new role with specific permissions.
+      tags: [Admin]
+      requestBody:
+        description: Role definition.
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Role creation object.
+              properties:
+                name: { type: string, description: "Role name" }
+                permissions:
+                  type: array
+                  description: List of permission keys.
+                  items: { type: string }
+      responses:
+        "201":
+          description: Role created successfully.
+
+    delete:
+      summary: Delete Role
+      description: Removes a custom role.
+      tags: [Admin]
+      parameters:
+        - {
+            name: id,
+            in: query,
+            required: true,
+            description: "The role ID",
+            schema: { type: string },
+          }
+      responses:
+        "200":
+          description: Role deleted.
+
+  /admin/global-settings:
+    get:
+      summary: Get Global Settings
+      description: Retrieves system-wide configurations.
+      tags: [Admin]
+      responses:
+        "200":
+          description: Global settings object.
+          content:
+            application/json:
+              schema: { type: object, description: "The settings object" }
+    put:
+      summary: Update Global Settings
+      description: Updates system-wide configurations.
+      tags: [Admin]
+      requestBody:
+        description: Updated settings data.
+        content:
+          application/json:
+            schema: { type: object, description: "The settings object" }
+      responses:
+        "200":
+          description: Settings updated.
+
+  /admin/health:
+    get:
+      summary: Get System Health
+      description: Retrieves status information for the database and system services.
+      tags: [Admin]
+      responses:
+        "200":
+          description: System health status.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Health status object.
+                properties:
+                  status: { type: string }
+                  database: { type: string }
+                  version: { type: string }
+                  uptime: { type: number }
+
+  # Widgets
+  /widgets:
+    get:
+      summary: Get Available Widgets
+      description: Retrieves a list of all available widget types.
+      tags: [System]
+      responses:
+        "200":
+          description: List of widgets.
+    post:
+      summary: Create Widget
+      description: Creates a new widget instance.
+      tags: [System]
+      responses:
+        "201":
+          description: Created.
+    put:
+      summary: Update Widget Positions
+      description: Updates the layout positions of multiple widgets.
+      tags: [System]
+      responses:
+        "200":
+          description: Updated.
+
+  /user/widgets:
+    get:
+      summary: Get User Widget Preferences
+      description: Retrieves user-specific widget settings and layout.
+      tags: [User]
+      responses:
+        "200":
+          description: User widget preferences.
+    put:
+      summary: Update User Widget Preferences
+      description: Updates user-specific widget settings.
+      tags: [User]
+      responses:
+        "200":
+          description: Updated.
+    delete:
+      summary: Reset User Widgets
+      description: Resets user widgets to system defaults.
+      tags: [User]
+      responses:
+        "200":
+          description: Reset complete.
+
+  # System Internal
+  /config:
+    get:
+      summary: Get Client Configuration
+      description: Returns public configuration for the frontend (e.g., features flags).
+      tags: [System]
+      responses:
+        "200":
+          description: Client config.
+
+  /csrf:
+    get:
+      summary: Get CSRF Token
+      description: Retrieves a fresh CSRF token for mutating requests.
+      tags: [System]
+      responses:
+        "200":
+          description: CSRF token.
