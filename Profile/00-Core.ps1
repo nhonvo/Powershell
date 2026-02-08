@@ -16,15 +16,35 @@ if (Test-Path $themePath) {
     Write-Warning "Oh My Posh theme '$($env:THEME)' not found at '$themePath'."
 }
 
-# --- Module Loading ---
-try {
-    Import-Module PSReadLine -Force -ErrorAction SilentlyContinue
-    Import-Module Terminal-Icons -Force -ErrorAction SilentlyContinue
-    if (Get-Module -ListAvailable -Name posh-git) {
-        Import-Module posh-git -Force -ErrorAction SilentlyContinue
+# --- Module Loading & Auto-Healing ---
+# List of essential modules. 'Z' is added for smart directory jumping.
+$modules = @(
+    @{ Name = "PSReadLine";                         Description = "Core CLI Experience" }
+    @{ Name = "Terminal-Icons";                     Description = "Rich File Icons" }
+    @{ Name = "posh-git";                           Description = "Git Status in Prompt" }
+    @{ Name = "z";                                  Description = "Smart Directory Navigation" }
+    @{ Name = "Microsoft.PowerShell.ConsoleGuiTools"; Description = "Terminal UI (Out-ConsoleGridView)" } 
+    @{ Name = "BurntToast";                         Description = "Windows Notifications" }
+)
+
+foreach ($mod in $modules) {
+    # 1. Auto-Install if missing
+    if (-not (Get-Module -ListAvailable -Name $mod.Name)) {
+        Write-Host "📦 Installing $($mod.Name) ($($mod.Description))..." -ForegroundColor Cyan
+        try {
+            Install-Module $mod.Name -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck -ErrorAction Stop
+        } catch {
+            Write-Warning "⚠️ Failed to install $($mod.Name). Skipping."
+            continue
+        }
     }
-} catch {
-    Write-Warning "An error occurred while loading modules: $_"
+    
+    # 2. Safe Import
+    try {
+        Import-Module $mod.Name -ErrorAction SilentlyContinue
+    } catch {
+        Write-Warning "❌ Error loading $($mod.Name): $_"
+    }
 }
 
 # --- PSReadLine Options ---

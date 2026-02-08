@@ -1,0 +1,490 @@
+{
+    // ----------------------------------------------------------------------
+    // LANGUAGE & FORMATTING
+    // ----------------------------------------------------------------------
+    "[aspnetcorerazor]": {
+        "editor.defaultFormatter": "ms-dotnettools.csharp"
+    },
+    "[css]": {
+        "editor.defaultFormatter": "vscode.css-language-features"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[markdown]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "files.defaultLanguage": "",
+    "files.autoSave": "afterDelay",
+    "editor.formatOnSave": true,
+    // ----------------------------------------------------------------------
+    // EDITOR VISUALS & TYPOGRAPHY
+    // ----------------------------------------------------------------------
+    "editor.fontFamily": "'Cascadia Code', 'Consolas', 'Fira Code', 'Courier New', monospace,'Hack Nerd Font'",
+    // -> >= <= === != !== => && || /* */ => change to 'Cascadia Code' or 'Fira Code' to have fontLigatures feature
+    "editor.fontLigatures": true,
+    "editor.fontSize": 14,
+    "editor.fontWeight": "330",
+    "editor.lineHeight": 24,
+    "editor.cursorBlinking": "smooth",
+    "editor.cursorSmoothCaretAnimation": "on",
+    "editor.cursorStyle": "line",
+    "editor.cursorWidth": 2,
+    "editor.renderLineHighlight": "gutter",
+    "editor.smoothScrolling": true,
+    // ----------------------------------------------------------------------
+    // MINIMALIST UI (Distraction Free)
+    // ----------------------------------------------------------------------
+    "window.menuBarVisibility": "visible",
+    "window.commandCenter": false,
+    "window.zoomLevel": 0,
+    "window.customMenuBarAltFocus": true,
+    "workbench.activityBar.location": "top",
+    "workbench.sideBar.location": "right",
+    "workbench.statusBar.visible": false,
+    "workbench.layoutControl.enabled": false,
+    "workbench.layoutControl.type": "menu",
+    "workbench.startupEditor": "none",
+    "workbench.editor.empty.hint": "hidden",
+    "editor.glyphMargin": false,
+    "editor.guides.indentation": false,
+    "editor.hideCursorInOverviewRuler": true,
+    "editor.minimap.renderCharacters": false,
+    "editor.overviewRulerBorder": false,
+    "editor.scrollBeyondLastLine": false,
+    "editor.scrollbar.horizontal": "hidden",
+    "editor.scrollbar.horizontalScrollbarSize": 2,
+    "editor.scrollbar.vertical": "hidden",
+    // minimal
+    "editor.scrollbar.verticalScrollbarSize": 0,
+    "workbench.tree.indent": 10,
+    "workbench.tree.renderIndentGuides": "none",
+    "workbench.list.smoothScrolling": true,
+    // ----------------------------------------------------------------------
+    // WORKBENCH & EXPLORER
+    // ----------------------------------------------------------------------
+    "workbench.colorTheme": "774ec7ad-d6a0-4d9c-b195-2f54d72ab664",
+    "workbench.iconTheme": "symbols",
+    "workbench.colorCustomizations": {
+        "terminal.background": "#00000000"
+    },
+    // Sync adjustments
+    "workbench.settings.applyToAllProfiles": [
+        "workbench.colorCustomizations"
+    ],
+    "workbench.editor.enablePreview": false,
+    "workbench.editor.enablePreviewFromCodeNavigation": true,
+    "workbench.editor.enablePreviewFromQuickOpen": true,
+    "workbench.editor.autoLockGroups": {
+        "mainThreadWebview-markdown.preview": true
+    },
+    "workbench.editorAssociations": {
+        "*.csv": "gc-excelviewer-csv-editor",
+        "*.ico": "default",
+        "*.ipynb": "jupyter-notebook"
+    },
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+    "explorer.openEditors.visible": 1,
+    "explorer.decorations.colors": false,
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.factorypath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.vs": true
+    },
+    "files.associations": {
+        "*.cshtml": "cshtml",
+        "*.vue": "html"
+    },
+    "search.searchOnType": false,
+    "security.workspace.trust.untrustedFiles": "open",
+    // ----------------------------------------------------------------------
+    // INTELLISENSE & CODE BEHAVIOR
+    // ----------------------------------------------------------------------
+    "editor.inlineSuggest.enabled": true,
+    "editor.suggest.preview": true,
+    "editor.tabCompletion": "off",
+    "editor.matchBrackets": "always",
+    "editor.bracketPairColorization.enabled": false,
+    "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
+    "editor.accessibilitySupport": "off",
+    "editor.copyWithSyntaxHighlighting": true,
+    "editor.rename.enablePreview": false,
+    "editor.showFoldingControls": "always",
+    "editor.largeFileOptimizations": false,
+    "editor.multiCursorLimit": 20000,
+    "editor.unicodeHighlight.ambiguousCharacters": false,
+    "mouseWheelZoom": true, // Note: Removed 'editor.' prefix as per VS Code API, or kept if locally recognized.
+    "editor.mouseWheelZoom": true,
+    "diffEditor.renderSideBySide": true,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "diffEditor.useInlineViewWhenSpaceIsLimited": false,
+    "notebook.cellToolbarLocation": {
+        "default": "right",
+        "jupyter-notebook": "left"
+    },
+    "emmet.includeLanguages": {
+        "aspnetcorerazor": "html"
+    },
+    // ----------------------------------------------------------------------
+    // TERMINAL
+    // ----------------------------------------------------------------------
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.fontFamily": "'Hack Nerd Font', 'Cascadia Code', monospace",
+    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontWeight": "normal",
+    "terminal.integrated.gpuAcceleration": "off",
+    "terminal.integrated.scrollback": 10000,
+    "terminal.integrated.enableMultiLinePasteWarning": "never",
+    "terminal.integrated.profiles.windows": {
+        "Command Prompt": {
+            "icon": "terminal-cmd",
+            "path": [
+                "${env:windir}\\Sysnative\\cmd.exe",
+                "${env:windir}\\System32\\cmd.exe"
+            ]
+        },
+        "Git Bash": {
+            "source": "Git Bash"
+        },
+        "PowerShell": {
+            "icon": "terminal-powershell",
+            "source": "PowerShell"
+        },
+        "Windows PowerShell": {
+            "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+        }
+    },
+    "powershell.powerShellDefaultVersion": "Windows PowerShell (x64)",
+    "powershell.integratedConsole.focusConsoleOnExecute": true,
+    "powershell.buttons.showPanelMovementButtons": false,
+    // ----------------------------------------------------------------------
+    // GIT & SCM
+    // ----------------------------------------------------------------------
+    "git.autofetch": true,
+    "git.openRepositoryInParentFolders": "always",
+    "git.enableSmartCommit": true,
+    "gitlens.advanced.messages": {
+        "suppressGitDisabledWarning": true,
+        "suppressGitMissingWarning": true,
+        "suppressLineUncommittedWarning": true
+    },
+    // ----------------------------------------------------------------------
+    // EXTENSIONS & DEBUGGING
+    // ----------------------------------------------------------------------
+    "extensions.autoUpdate": "onlyEnabledExtensions",
+    "extensions.ignoreRecommendations": true,
+    "update.showReleaseNotes": false,
+    "debug.openDebug": "openOnDebugBreak",
+    "cSpell.enabled": true,
+    "indentRainbow.indicatorStyle": "light",
+    "redhat.telemetry.enabled": true,
+    "vscode-pets.petSize": "medium",
+    "screencastMode.fontSize": 20,
+    "screencastMode.verticalOffset": 0,
+    "screencastMode.keyboardOverlayTimeout": 500,
+    "screencastMode.mouseIndicatorColor": "#FFFFFF",
+    "vscode_custom_css.imports": [
+        "file:///c:/Users/TruongNhon/Documents/Powershell/vscode-config/custom-vscode.css"
+    ],
+    // AI Assistants
+    "github.copilot.enable": {
+        "*": false,
+        "markdown": false,
+        "plaintext": false,
+        "scminput": false
+    },
+    "geminicodeassist.project": "optimal-empire-77q7c",
+    // Language Specific updates
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "vscode-edge-devtools.headless": false,
+    // Error Lens
+    "errorLens.statusBarIconsEnabled": true,
+    "errorLens.enabledDiagnosticLevels": [
+        "error"
+    ],
+    "errorLens.excludeBySource": [
+        "csharp(CS7036)",
+        "csharp(CS0029)"
+    ],
+    "errorLens.lintFilePaths": {
+        "eslint": [
+            "**/*.eslintrc.{js,cjs,yaml,yml,json}",
+            "**/*package.json"
+        ],
+        "Stylelint": [
+            "**/*.stylelintrc",
+            "**/*.stylelintrc.{cjs,js,json,yaml,yml}",
+            "**/*stylelint.config.{cjs,js}",
+            "**/*package.json"
+        ]
+    },
+    "gemini.codeAssist.agent.allowListTerminalCommands": [
+        "npm install",
+        "npm i",
+        "npm ci",
+        "npm test",
+        "npm run",
+        "npm run test",
+        "npm run dev",
+        "npm run build",
+        "npm run lint",
+        "npm run preview",
+        "npm run format",
+        "npm ls",
+        "npm list",
+        "npm outdated",
+        "npm view",
+        "npm version",
+        "npm audit",
+        "npm fund",
+        "npm cache verify",
+        "npm pkg",
+        "npm explain",
+        "npm why",
+        "pnpm install",
+        "pnpm i",
+        "pnpm run",
+        "pnpm dev",
+        "pnpm build",
+        "pnpm test",
+        "pnpm add",
+        "pnpm ls",
+        "pnpm why",
+        "yarn",
+        "yarn install",
+        "yarn add",
+        "yarn dev",
+        "yarn build",
+        "yarn test",
+        "yarn why",
+        "yarn info",
+        "bun install",
+        "bun run",
+        "bun dev",
+        "bun build",
+        "bun test",
+        "bun add",
+        "git status",
+        "git log",
+        "git diff",
+        "git branch",
+        "git show",
+        "git remote",
+        "git remote -v",
+        "git tag",
+        "git stash list",
+        "git fetch",
+        "git config",
+        "git config --list",
+        "git rev-parse",
+        "git describe",
+        "git ls-files",
+        "git ls-tree",
+        "git shortlog",
+        "git blame",
+        "git reflog",
+        "cat",
+        "type",
+        "ls",
+        "ls -la",
+        "dir",
+        "tree",
+        "head",
+        "tail",
+        "less",
+        "more",
+        "wc",
+        "find",
+        "fd",
+        "rg",
+        "grep",
+        "awk",
+        "sed",
+        "sort",
+        "uniq",
+        "diff",
+        "Get-Content",
+        "Get-ChildItem",
+        "Select-String",
+        "Test-Path",
+        "Resolve-Path",
+        "Split-Path",
+        "Join-Path",
+        "Get-Item",
+        "Get-ItemProperty",
+        "Measure-Object",
+        "Format-Table",
+        "Format-List",
+        "Out-String",
+        "ConvertTo-Json",
+        "ConvertFrom-Json",
+        "node",
+        "node --version",
+        "node -v",
+        "ts-node",
+        "tsx",
+        "tsc",
+        "tsc --version",
+        "tsc --noEmit",
+        "tsc --showConfig",
+        "eslint",
+        "prettier",
+        "prettier --check",
+        "vitest",
+        "vitest run",
+        "vitest list",
+        "vitest bench",
+        "jest",
+        "jest --listTests",
+        "playwright test",
+        "playwright show-report",
+        "playwright codegen",
+        "cypress run",
+        "cypress open",
+        "prisma generate",
+        "prisma studio",
+        "prisma format",
+        "prisma validate",
+        "prisma version",
+        "prisma db pull",
+        "drizzle-kit generate",
+        "drizzle-kit studio",
+        "docker ps",
+        "docker images",
+        "docker logs",
+        "docker inspect",
+        "docker stats",
+        "docker top",
+        "docker port",
+        "docker version",
+        "docker info",
+        "docker network ls",
+        "docker volume ls",
+        "docker-compose ps",
+        "docker-compose logs",
+        "docker-compose config",
+        "docker compose ps",
+        "docker compose logs",
+        "docker compose config",
+        "python --version",
+        "python -V",
+        "python -m pip list",
+        "python -m pip show",
+        "python -m pip check",
+        "pip list",
+        "pip show",
+        "pip check",
+        "pip freeze",
+        "pip index",
+        "uv pip list",
+        "uv pip show",
+        "uv run",
+        "cargo build",
+        "cargo run",
+        "cargo test",
+        "cargo check",
+        "cargo clippy",
+        "cargo fmt",
+        "cargo doc",
+        "cargo tree",
+        "cargo version",
+        "rustc --version",
+        "go version",
+        "go build",
+        "go run",
+        "go test",
+        "go mod tidy",
+        "go mod download",
+        "go list",
+        "dotnet --version",
+        "dotnet build",
+        "dotnet run",
+        "dotnet test",
+        "dotnet restore",
+        "echo",
+        "printf",
+        "pwd",
+        "which",
+        "where",
+        "whereis",
+        "file",
+        "stat",
+        "du",
+        "df",
+        "free",
+        "uptime",
+        "date",
+        "cal",
+        "env",
+        "printenv",
+        "Get-Location",
+        "Get-Command",
+        "Get-Process",
+        "Get-Service",
+        "Get-Date",
+        "Get-Host",
+        "Get-Variable",
+        "Get-Alias",
+        "Get-History",
+        "Get-Module",
+        "Get-InstalledModule",
+        "Get-Package",
+        "Get-Disk",
+        "Get-Volume",
+        "Get-NetAdapter",
+        "Get-NetIPAddress",
+        "hostname",
+        "whoami",
+        "id",
+        "uname",
+        "systeminfo",
+        "ver",
+        "winver",
+        "tasklist",
+        "wmic",
+        "curl",
+        "wget",
+        "http",
+        "Invoke-WebRequest",
+        "Invoke-RestMethod",
+        "Test-NetConnection",
+        "ping",
+        "tracert",
+        "traceroute",
+        "nslookup",
+        "dig",
+        "host",
+        "netstat",
+        "ss",
+        "ipconfig",
+        "ifconfig",
+        "ip",
+        "arp",
+        "route print",
+        "cloudflared tunnel list",
+        "cloudflared tunnel info",
+        "cloudflared version"
+    ]
+}
