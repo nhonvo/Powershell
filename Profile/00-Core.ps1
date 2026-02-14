@@ -3,6 +3,9 @@
 #  Initial configuration for the shell environment, theme, and modules.
 # ------------------------------------------------------------------------------
 
+# Ensure UTF8 for Icons
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
 Write-Host "🚀 Loading Enhanced PowerShell Profile... (Core)" -ForegroundColor Cyan
 
 
@@ -41,7 +44,11 @@ foreach ($mod in $modules) {
     
     # 2. Safe Import
     try {
-        Import-Module $mod.Name -ErrorAction SilentlyContinue
+        if ($mod.Name -eq "Terminal-Icons") {
+            Import-Module $mod.Name -Force -ErrorAction SilentlyContinue
+        } else {
+            Import-Module $mod.Name -ErrorAction SilentlyContinue
+        }
     } catch {
         Write-Warning "❌ Error loading $($mod.Name): $_"
     }
@@ -49,8 +56,19 @@ foreach ($mod in $modules) {
 
 # --- PSReadLine Options ---
 Set-PSReadLineOption -EditMode Windows
-Set-PSReadLineOption -PredictionSource History
-Set-PSReadLineOption -PredictionViewStyle ListView
+# Only enable prediction when VT is supported to avoid errors in redirected hosts
+try {
+    $supportsVt = $Host.UI.SupportsVirtualTerminal -and -not [Console]::IsOutputRedirected
+    if ($supportsVt) {
+        Set-PSReadLineOption -PredictionSource History
+        Set-PSReadLineOption -PredictionViewStyle ListView
+    } else {
+        Set-PSReadLineOption -PredictionSource None
+    }
+} catch {
+    # Safe fallback for hosts that don't expose VT info
+    Set-PSReadLineOption -PredictionSource None
+}
 Set-PSReadLineOption -BellStyle None
 Set-PSReadlineOption -Color @{
     "Command"          = [ConsoleColor]::Green

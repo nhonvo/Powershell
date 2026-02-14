@@ -239,9 +239,9 @@ Git Commands
 function Invoke-GitMergeSquash { 
     [CmdletBinding()] 
     param([Parameter(Mandatory=$true)][string]$BranchName) 
-    Write-Host "Squash merging branch: $BranchName" —ForegroundColor Yellow
+    Write-Host "Squash merging branch: $BranchName" -ForegroundColor Yellow
     git merge --squash $BranchName
-    Write-Host "Commit the squashed changes!" —ForegroundColor Cyan 
+    Write-Host "Commit the squashed changes!" -ForegroundColor Cyan 
 }
 
 <# 

@@ -9,6 +9,23 @@ Navigates to the parent directory.
 .CATEGORY
 System & Utility Commands
 #>
+function Set-LocationParent {
+    [CmdletBinding()]
+    param()
+    Set-Location ..
+}
+
+<#
+.SYNOPSIS
+Navigates to the grandparent directory.
+.CATEGORY
+System & Utility Commands
+#>
+function Set-LocationGrandParent {
+    [CmdletBinding()]
+    param()
+    Set-Location ..\..
+}
 
 
 #region PROJECT NAVIGATION

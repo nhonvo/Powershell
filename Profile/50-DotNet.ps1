@@ -25,7 +25,8 @@ function Remove-BinObj {
     [CmdletBinding()] 
     param() 
     Write-Host "💥 Destroying bin/ and obj/ folders..." -ForegroundColor Red
-    Get-ChildItem -Inc -Include bin,obj -Recurse | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+    Get-ChildItem -Path . -Recurse -Directory -Include bin,obj -Force -ErrorAction SilentlyContinue |
+        Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
     Write-Host "✅ Clean complete." -ForegroundColor Green
 }
 
