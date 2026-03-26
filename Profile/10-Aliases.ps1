@@ -14,6 +14,7 @@ Set-Alias -Name v -Value nvim -Force
 Set-Alias -Name .. -Value Set-LocationParent -Force
 Set-Alias -Name ... -Value Set-LocationGrandParent -Force
 Set-Alias -Name prj -Value Enter-Project -Force
+Set-Alias -Name proj -Value Enter-Project -Force
 Set-Alias -Name go -Value Reload-Profile -Force
 Set-Alias -Name folder -Value Invoke-OpenExplorer -Force
 Set-Alias -Name edit-profile -Value Edit-Profile -Force
@@ -92,6 +93,8 @@ Set-Alias -Name rsm -Value Get-LocalSQSMessage -Force
 Set-Alias -Name gsqa -Value Get-LocalSQSAttributes -Force
 
 # --- AI Tools (60-AI) ---
+Set-Alias -Name agm -Value Start-AntigravityManager -Force
+Set-Alias -Name agm-build -Value Build-AntigravityManager -Force
 Set-Alias -Name ox -Value Get-OllamaModels -Force
 Set-Alias -Name '??' -Value Invoke-CopilotSuggest -Force
 Set-Alias -Name 'what?' -Value Invoke-CopilotExplain -Force

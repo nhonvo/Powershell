@@ -51,7 +51,7 @@ System & Utility Commands
 function Get-FileTree {
     [CmdletBinding()]
     param([int]$Depth = 2)
-    tree /f | Select-Object -First 100 # Wrapper for standard tree, limited output
+    tree.com /f | Select-Object -First 100 # Wrapper for standard tree, limited output
 }
 
 <#
