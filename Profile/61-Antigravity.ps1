@@ -45,6 +45,45 @@ function Start-AntigravityManager {
 
 <#
 .SYNOPSIS
+Starts the Antigravity Claude Proxy project.
+.DESCRIPTION
+Automatically navigates to the proxy directory, ensures dependencies are installed,
+and launches the application via 'npm start'.
+.CATEGORY
+AI Tools
+#>
+function Start-AntigravityProxy {
+    $projectDir = "C:\Users\TruongNhon\Desktop\back-up\1.project\antigrafity_config\antigravity-claude-proxy"
+    
+    if (-not (Test-Path $projectDir)) {
+        Write-Error "Project directory not found: $projectDir"
+        return
+    }
+
+    # Navigate to project
+    Set-Location $projectDir
+    
+    try {
+        Write-Host "`n[1/2] 📦 Checking dependencies in Antigravity Claude Proxy..." -ForegroundColor Cyan
+        
+        if (-not (Test-Path "node_modules")) {
+            Write-Host "   -> node_modules not found. Installing dependencies (npm install)..." -ForegroundColor Yellow
+            npm install
+        } else {
+            Write-Host "   -> node_modules found." -ForegroundColor Green
+        }
+
+        Write-Host "[2/2] 🚀 Launching Antigravity Claude Proxy..." -ForegroundColor Green
+        npm start
+    }
+    catch {
+        Write-Error "Failed to start Antigravity Claude Proxy: $_"
+    }
+}
+
+
+<#
+.SYNOPSIS
 Builds the Antigravity Manager project as an installer (.exe).
 .DESCRIPTION
 Runs the electron-forge make command to generate distributables in the 'out/' directory.

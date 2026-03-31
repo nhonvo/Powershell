@@ -14,3 +14,6 @@ foreach ($module in $modules) {
 }
 
 Write-Host "✅ Enhanced PowerShell Profile loaded." -ForegroundColor Green
+
+$env:ANTHROPIC_BASE_URL = 'http://localhost:8080'
+$env:ANTHROPIC_AUTH_TOKEN = 'test'

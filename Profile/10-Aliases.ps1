@@ -94,6 +94,7 @@ Set-Alias -Name gsqa -Value Get-LocalSQSAttributes -Force
 
 # --- AI Tools (60-AI) ---
 Set-Alias -Name agm -Value Start-AntigravityManager -Force
+Set-Alias -Name agp -Value Start-AntigravityProxy -Force
 Set-Alias -Name agm-build -Value Build-AntigravityManager -Force
 Set-Alias -Name ox -Value Get-OllamaModels -Force
 Set-Alias -Name '??' -Value Invoke-CopilotSuggest -Force
