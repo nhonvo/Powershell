@@ -1,236 +1,173 @@
 #region HELP AND DOCUMENTATION
 # ------------------------------------------------------------------------------
-#  Command to display a summary of all custom functions and aliases.
+#  Arrow-key navigable help menu for all custom profile commands.
 # ------------------------------------------------------------------------------
 <#
 .SYNOPSIS
-Displays a categorized list of all custom commands available in the profile.
+Browse custom profile commands with arrow-key menus.
 .PARAMETER CategoryFilter
-Optional. If provided (e.g., 'Git', 'Net'), skips the menu and directly shows that category's commands.
+Optional. Show a specific category directly (e.g. 'Git', 'AI').
 #>
 function Get-CustomCommands {
     [CmdletBinding()]
-    param(
-        [Parameter(Position=0)]
-        [string]$CategoryFilter
-    )
+    param([Parameter(Position=0)][string]$CategoryFilter)
 
-    # --- 1. SCANNING PHASE ---
-    if (-not $CategoryFilter) {
-        Write-Host "🔄 Scanning commands..." -ForegroundColor Cyan
-    }
-    
-    # 1. Map Aliases: Alias -> FunctionName
-    # Regex fix: [\w\?-]+ allows hyphens in alias names (e.g. sln-add)
+    # --- Alias map: FunctionName -> alias ---
     $aliasFile = Join-Path (Split-Path $PSCommandPath -Parent) "10-Aliases.ps1"
-    $aliasMap = @{}
+    $aliasMap  = @{}
     if (Test-Path $aliasFile) {
-        $lines = Get-Content $aliasFile
-        foreach ($line in $lines) {
+        foreach ($line in (Get-Content $aliasFile)) {
             if ($line -match 'Set-Alias -Name\s+[''"]?([\w\?\.-]+)[''"]?\s+-Value\s+[''"]?([\w-]+)[''"]?') {
-                $aliasMap[$Matches[2]] = $Matches[1] 
+                $aliasMap[$Matches[2]] = $Matches[1]
             }
         }
     }
 
-    # Helper to get description directly from the .SYNOPSIS block — unused, kept for reference
-    # function Get-Synopsis { ... }
-
-    # Scan Functions
+    # --- Synopsis from source (fast — avoids Get-Help overhead) ---
+    # --- Build category map ---
+    $fileCache = @{}   # file path -> string[] of lines
+    $aliasFileName = Split-Path $aliasFile -Leaf
     $profileFunctions = Get-Command -CommandType Function | Where-Object {
-        $_.ScriptBlock.File -like "$PSScriptRoot\*" -and $_.Name -ne "Get-CustomCommands" -and $_.Name -ne "Get-Synopsis"
+        $_.ScriptBlock.File -like "$PSScriptRoot\*" -and
+        (Split-Path $_.ScriptBlock.File -Leaf) -ne $aliasFileName -and
+        $_.Name -notin @('Get-CustomCommands','Render-AIMenu','Render-ProjectMenu')
     }
 
     $commandsByCategory = @{}
-    $total = $profileFunctions.Count
-    $current = 0
-
     foreach ($func in $profileFunctions) {
-        if (-not $CategoryFilter) {
-            $current++
-            $p = [int](($current / $total) * 100)
-            Write-Progress -Activity "Building Help Menu" -Status "Analyzing $($func.Name)..." -PercentComplete $p
-        }
-
         $file = $func.ScriptBlock.File
-        $category = if ($file -match "Nav") { "System & Navigation" }
-                    elseif ($file -match "Sys") { "System & Navigation" }
-                    elseif ($file -match "DotNet") { ".NET Development" }
-                    elseif ($file -match "Git") { "Git Ops" }
-                    elseif ($file -match "Docker") { "Docker Containers" }
-                    elseif ($file -match "AWS") { "AWS LocalStack" }
-                    elseif ($file -match "AI") { "AI Tools" }
-                    else { "Other" }
-
-        # Reliable Synopsis extraction using Get-Help
-        $helpInfo = Get-Help $func.Name -ErrorAction SilentlyContinue
-        $desc = if ($helpInfo.Synopsis) { $helpInfo.Synopsis.Trim() } else { "Custom Command" }
-        
+        $cat  = switch -Regex ($file) {
+            'Nav|Sys|Help'  { 'Navigation & System' }
+            'DotNet'        { '.NET' }
+            'Git'           { 'Git' }
+            'Docker'        { 'Docker' }
+            'AWS'           { 'AWS' }
+            'AI'            { 'AI Tools' }
+            'Projects'      { 'Projects' }
+            default         { 'Navigation & System' }
+        }
         $alias = $aliasMap[$func.Name]
-        
-        # Display Name Logic
-        $entryName = if ($alias) { "$alias" } else { $func.Name }
-        $fullName = if ($alias) { "$alias ($($func.Name))" } else { $func.Name }
+        $label = if ($alias) { "$alias" } else { $func.Name }
 
-        $entry = @{ 
-            DisplayName = $fullName; 
-            ShortName = $entryName;
-            Description = $desc; 
-            Function = $func.Name 
-        }
-
-        if (-not $commandsByCategory[$category]) { $commandsByCategory[$category] = @() }
-        $commandsByCategory[$category] += $entry
-    }
-    if (-not $CategoryFilter) {
-        Write-Progress -Activity "Building Help Menu" -Completed
-    }
-
-    # --- DIRECT CATEGORY MODE (Quick Filter) ---
-    if ($CategoryFilter) {
-        $foundCat = $commandsByCategory.Keys | Where-Object { $_ -like "*$CategoryFilter*" } | Select-Object -First 1
-        
-        if ($foundCat) {
-            Write-Host "::: $foundCat :::" -ForegroundColor Yellow -BackgroundColor DarkBlue
-            $cmds = $commandsByCategory[$foundCat] | Sort-Object DisplayName
-            
-            # Align
-            $maxLength = 0
-            foreach ($c in $cmds) { if ($c.DisplayName.Length -gt $maxLength) { $maxLength = $c.DisplayName.Length } }
-            $padLimit = $maxLength + 2
-
-            foreach ($cmd in $cmds) {
-                Write-Host "  $($cmd.DisplayName)" -NoNewline -ForegroundColor White
-                $pad = $padLimit - $cmd.DisplayName.Length
-                if ($pad -lt 1) { $pad = 1 }
-                Write-Host (" " * $pad) -NoNewline
-                Write-Host "- $($cmd.Description)" -ForegroundColor Gray
+        # Synopsis: walk backwards from function definition line
+        $desc = ""
+        if ($file -and (Test-Path $file)) {
+            if (-not $fileCache[$file]) { $fileCache[$file] = Get-Content $file }
+            $lines = $fileCache[$file]
+            $funcLine = -1
+            for ($i = 0; $i -lt $lines.Count; $i++) {
+                if ($lines[$i] -match "^\s*function\s+$([regex]::Escape($func.Name))\b") { $funcLine = $i; break }
             }
-            return # Exit after showing without interactivity
-        } else {
-            Write-Warning "No category found matching '$CategoryFilter'."
-            return
+            if ($funcLine -gt 0) {
+                for ($i = $funcLine - 1; $i -ge [Math]::Max(0, $funcLine - 15); $i--) {
+                    if ($lines[$i] -match '^\s*\.SYNOPSIS\s*$') {
+                        if (($i + 1) -lt $funcLine -and $lines[$i+1] -match '\S') {
+                            $desc = $lines[$i+1].Trim()
+                        }
+                        break
+                    }
+                }
+            }
+        }
+        if ($desc.Length -gt 55) { $desc = $desc.Substring(0,52) + '...' }
+
+        if (-not $commandsByCategory[$cat]) { $commandsByCategory[$cat] = [System.Collections.Generic.List[object]]::new() }
+        $commandsByCategory[$cat].Add([PSCustomObject]@{
+            Label    = $label
+            FullName = if ($alias) { "$alias › $($func.Name)" } else { $func.Name }
+            Desc     = $desc
+            Func     = $func.Name
+        })
+    }
+
+    # --- Quick filter mode ---
+    if ($CategoryFilter) {
+        $cat = $commandsByCategory.Keys | Where-Object { $_ -like "*$CategoryFilter*" } | Select-Object -First 1
+        if (-not $cat) { Write-Warning "No category matching '$CategoryFilter'"; return }
+        Write-Host "  $cat" -ForegroundColor Cyan
+        $pad = ($commandsByCategory[$cat] | ForEach-Object { $_.FullName.Length } | Measure-Object -Maximum).Maximum + 2
+        foreach ($c in ($commandsByCategory[$cat] | Sort-Object Label)) {
+            Write-Host ("  {0,-$pad}" -f $c.FullName) -NoNewline -ForegroundColor White
+            Write-Host $c.Desc -ForegroundColor DarkGray
+        }
+        return
+    }
+
+    # --- Shared arrow-key picker ---
+    # Returns selected index, or -1 on Esc
+    function Invoke-ArrowMenu([string]$Header, [string[]]$Items, [string[]]$Hints) {
+        $sel = 0
+        [Console]::CursorVisible = $false
+        Write-Host ""
+        Write-Host "  $Header" -ForegroundColor DarkGray
+        Write-Host "  (↑↓ move · Enter select · Esc back)" -ForegroundColor DarkGray
+        Write-Host ""
+        $top = [Console]::CursorTop
+
+        function Draw {
+            [Console]::SetCursorPosition(0, $top)
+            for ($i = 0; $i -lt $Items.Count; $i++) {
+                $hint = if ($Hints -and $Hints[$i]) { "  $($Hints[$i])" } else { "" }
+                if ($i -eq $sel) {
+                    Write-Host ("  ▶ {0,-30}{1}" -f $Items[$i], $hint) -ForegroundColor Cyan
+                } else {
+                    Write-Host ("    {0,-30}{1}" -f $Items[$i], $hint) -ForegroundColor DarkGray
+                }
+            }
+        }
+        Draw
+
+        while ($true) {
+            $k = [Console]::ReadKey($true)
+            switch ($k.Key) {
+                'UpArrow'   { if ($sel -gt 0)              { $sel-- }; Draw }
+                'DownArrow' { if ($sel -lt $Items.Count-1) { $sel++ }; Draw }
+                'Enter'     { [Console]::CursorVisible = $true; Write-Host ""; return $sel }
+                'Escape'    { [Console]::CursorVisible = $true; Write-Host ""; return -1  }
+            }
         }
     }
 
-    # Map Categories to Shortcuts
-    $catShortcuts = @{
-        "System & Navigation" = "csys"
-        ".NET Development"    = "cnet"
-        "Git Ops"            = "cg"
-        "Docker Containers"   = "cdk"
-        "AWS LocalStack"      = "caws"
-        "AI Tools"           = "cai"
-    }
-
-    # --- INTERACTIVE MENU LOOP ---
+    # --- Category menu ---
+    $categories = $commandsByCategory.Keys | Sort-Object
     while ($true) {
         Clear-Host
-        Write-Host "╔═════════════════════════════════════╗" -ForegroundColor Cyan
-        Write-Host "║      Custom PowerShell Commands     ║" -ForegroundColor Cyan
-        Write-Host "╚═════════════════════════════════════╝" -ForegroundColor Cyan
         Write-Host ""
-        
-        # Display Categories
-        $categories = $commandsByCategory.Keys | Sort-Object
-        $i = 1
-        foreach ($cat in $categories) {
-            $shortcut = $catShortcuts[$cat]
-            $suffix = if ($shortcut) { "($shortcut)" } else { "" }
-            Write-Host "  $i. $cat $suffix" -ForegroundColor Yellow
-            $i++
-        }
-        Write-Host "  A. Show All (List Only)" -ForegroundColor Gray
-        Write-Host "  Q. Quit" -ForegroundColor Gray
-        Write-Host ""
+        Write-Host "  ╔══════════════════════════════╗" -ForegroundColor Cyan
+        Write-Host "  ║   Custom PowerShell Commands  ║" -ForegroundColor Cyan
+        Write-Host "  ╚══════════════════════════════╝" -ForegroundColor Cyan
+        $catLabels = $categories | ForEach-Object { $_ }
+        $catHints  = $categories | ForEach-Object { "$($commandsByCategory[$_].Count) cmds" }
 
-        $selection = Read-Host "Select a category (1-$($categories.Count))"
-        
-        if ($selection -match "^[qQ]$") { break }
-        
-        # --- SHOW ALL MODE ---
-        if ($selection -match "^[aA]$") { 
-             Clear-Host
-             foreach ($cat in $categories) {
-                Write-Host "::: $cat :::" -ForegroundColor Yellow -BackgroundColor DarkBlue
-                $cmds = $commandsByCategory[$cat] | Sort-Object DisplayName
-                
-                # Calculate Max Length for Alignment in this category
-                $maxLength = 0
-                foreach ($c in $cmds) { if ($c.DisplayName.Length -gt $maxLength) { $maxLength = $c.DisplayName.Length } }
-                $padLimit = $maxLength + 2
+        $catIdx = Invoke-ArrowMenu "Select category" $catLabels $catHints
+        if ($catIdx -lt 0) { return }
 
-                foreach ($cmd in $cmds) {
-                    Write-Host "  $($cmd.DisplayName)" -NoNewline -ForegroundColor White
-                    $pad = $padLimit - $cmd.DisplayName.Length
-                    if ($pad -lt 1) { $pad = 1 }
-                    Write-Host (" " * $pad) -NoNewline
-                    Write-Host "- $($cmd.Description)" -ForegroundColor Gray
-                }
-                Write-Host ""
-            }
-            Write-Host "Press any key to return..." -ForegroundColor DarkGray
-            $null = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-            continue
-        }
+        # --- Command menu ---
+        $selectedCat = $categories[$catIdx]
+        $cmds = $commandsByCategory[$selectedCat] | Sort-Object Label
 
-        # --- CATEGORY SELECTION MODE ---
-        if ($selection -match "^\d+$" -and [int]$selection -le $categories.Count -and [int]$selection -gt 0) {
-            $selectedCat = $categories[[int]$selection - 1]
-            
-            while ($true) {
-                Clear-Host
-                Write-Host "::: $selectedCat :::" -ForegroundColor Yellow -BackgroundColor DarkBlue
-                Write-Host "(Select a number to RUN & EXIT, or 0 to go back)" -ForegroundColor DarkGray
-                Write-Host ""
+        while ($true) {
+            Clear-Host
+            Write-Host ""
+            Write-Host "  ╔══════════════════════════════╗" -ForegroundColor Cyan
+            Write-Host ("  ║  {0,-28}║" -f $selectedCat) -ForegroundColor Cyan
+            Write-Host "  ╚══════════════════════════════╝" -ForegroundColor Cyan
+            $cmdLabels = $cmds | ForEach-Object { $_.FullName }
+            $cmdHints  = $cmds | ForEach-Object { $_.Desc }
 
-                $cmds = $commandsByCategory[$selectedCat] | Sort-Object DisplayName
-                
-                # Calculate Max Length for Alignment
-                $maxLength = 0
-                foreach ($c in $cmds) { if ($c.DisplayName.Length -gt $maxLength) { $maxLength = $c.DisplayName.Length } }
-                $padLimit = $maxLength + 2
+            $cmdIdx = Invoke-ArrowMenu "Select command" $cmdLabels $cmdHints
+            if ($cmdIdx -lt 0) { break }   # Esc → back to category menu
 
-                $j = 1
-                foreach ($cmd in $cmds) {
-                    # Print Item:  1. alias (Func)     - Description
-                    $numStr = "{0,2}. " -f $j
-                    Write-Host $numStr -NoNewline -ForegroundColor Green
-                    
-                    Write-Host "$($cmd.DisplayName)" -NoNewline -ForegroundColor White
-                    $pad = $padLimit - $cmd.DisplayName.Length
-                    if ($pad -lt 1) { $pad = 1 }
-                    Write-Host (" " * $pad) -NoNewline
-                    Write-Host "- $($cmd.Description)" -ForegroundColor Gray
-                    $j++
-                }
-                Write-Host ""
-                $cmdSelection = Read-Host "Run Command #"
-
-                if ($cmdSelection -eq '0' -or [string]::IsNullOrWhiteSpace($cmdSelection)) { break }
-
-                if ($cmdSelection -match "^\d+$" -and [int]$cmdSelection -le $cmds.Count -and [int]$cmdSelection -gt 0) {
-                    $targetCmd = $cmds[[int]$cmdSelection - 1]
-                    
-                    # EXECUTION LOGIC
-                    
-                    # 1. Clear Host to start fresh for the command output
-                    Clear-Host
-                    
-                    Write-Host "🚀 Running: $($targetCmd.ShortName)" -ForegroundColor Green
-                    
-                    try {
-                        $exe = if ($targetCmd.ShortName) { $targetCmd.ShortName } else { $targetCmd.Function }
-                        Invoke-Expression $exe
-                    } catch {
-                        Write-Error "Failed to run command: $_"
-                    }
-
-                    # Pause to verify output, then cycle back to menu
-                    Write-Host "`n[Press Enter to return to menu]" -ForegroundColor DarkGray
-                    Read-Host
-                }
-            }
+            # Run selected command
+            $target = $cmds[$cmdIdx]
+            Clear-Host
+            Write-Host "  Running: $($target.Label)" -ForegroundColor Green
+            Write-Host ""
+            try { Invoke-Expression $target.Label }
+            catch { Write-Error "Failed: $_" }
+            Write-Host ""
+            Write-Host "  [any key to return]" -ForegroundColor DarkGray
+            $null = [Console]::ReadKey($true)
         }
     }
 }

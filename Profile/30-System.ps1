@@ -101,36 +101,4 @@ function Clear-SavedHistory {
     }
 }
 
-<#
-.SYNOPSIS
-Opens a file or folder in Visual Studio Code.
-.DESCRIPTION
-This function robustly finds the VS Code executable and opens the specified path.
-It defaults to the current directory.
-.PARAMETER Path
-The file or folder path to open.
-.CATEGORY
-System & Utility Commands
-#>
-function Invoke-VSCode {
-    [CmdletBinding()]
-    param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$Path
-    )
-
-    $targetPath = if ($Path -and $Path.Count -gt 0) { $Path -join " " } else { "." }
-
-    # Resolve the real 'code' binary, not our alias
-    $vscodeExe = Get-Command code.cmd -ErrorAction SilentlyContinue
-    if (-not $vscodeExe) {
-        $vscodeExe = Get-Command code -CommandType Application -ErrorAction SilentlyContinue
-    }
-
-    if ($vscodeExe) {
-        & $vscodeExe $targetPath
-    } else {
-        Write-Host "❌ VS Code not found. Please ensure 'code' is in your system's PATH." -ForegroundColor Red
-    }
-}   
 #endregion

@@ -92,6 +92,9 @@ Set-Alias -Name fix-image  -Value Remove-UnusedDockerImages  -Force
 
 # --- AI Tools (60-AI, 61-Antigravity) ---
 Set-Alias -Name ai          -Value Invoke-MultiAgent        -Force
+Set-Alias -Name claude      -Value Invoke-ClaudeChat        -Force   # proxy mode
+Set-Alias -Name gpt         -Value Invoke-ChatGPT           -Force
+Set-Alias -Name ox          -Value Get-OllamaModels         -Force
 Set-Alias -Name agm         -Value Start-AntigravityManager -Force
 Set-Alias -Name agp         -Value Start-AntigravityProxy   -Force
 
