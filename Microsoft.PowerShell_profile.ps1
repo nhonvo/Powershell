@@ -3,8 +3,7 @@
 #  This profile is modular. It dynamically loads all scripts from 'Profile'
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-$PSScriptRoot = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
-$ProfileDir = Join-Path -Path $PSScriptRoot -ChildPath 'Profile'
+$ProfileDir = Join-Path -Path (Split-Path -Parent -Path $MyInvocation.MyCommand.Definition) -ChildPath 'Profile'
 
 # Dynamically load all .ps1 files in the Profile directory, sorted by name
 $modules = Get-ChildItem -Path $ProfileDir -Filter "*.ps1" | Sort-Object Name
@@ -14,6 +13,3 @@ foreach ($module in $modules) {
 }
 
 Write-Host "✅ Enhanced PowerShell Profile loaded." -ForegroundColor Green
-
-$env:ANTHROPIC_BASE_URL = 'http://localhost:8080'
-$env:ANTHROPIC_AUTH_TOKEN = 'test'

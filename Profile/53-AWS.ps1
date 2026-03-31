@@ -3,7 +3,7 @@
 #  Commands for interacting with AWS services via LocalStack.
 # ------------------------------------------------------------------------------
 
-$localStackUrl = "http://localhost:4566"
+$script:localStackUrl = "http://localhost:4566"
 
 <# 
 .SYNOPSIS 
@@ -12,7 +12,7 @@ Lists S3 buckets.
 AWS LocalStack Commands
 #>
 function Get-S3Buckets { 
-    awslocal --endpoint-url=$localStackUrl s3 ls 
+    awslocal --endpoint-url=$script:localStackUrl s3 ls 
 }
 
 <# 
@@ -24,7 +24,7 @@ AWS LocalStack Commands
 function New-S3Bucket { 
     [CmdletBinding()] 
     param([string]$Name)
-    awslocal --endpoint-url=$localStackUrl s3 mb s3://$Name
+    awslocal --endpoint-url=$script:localStackUrl s3 mb s3://$Name
 }
 
 <# 
@@ -34,7 +34,7 @@ Lists Lambda functions.
 AWS LocalStack Commands
 #>
 function Get-LambdaFunctions { 
-    awslocal --endpoint-url=$localStackUrl lambda list-functions 
+    awslocal --endpoint-url=$script:localStackUrl lambda list-functions 
 }
 
 <# 
@@ -46,7 +46,7 @@ AWS LocalStack Commands
 function Get-LocalSQSQueues { 
     [CmdletBinding()] 
     param() 
-    awslocal --endpoint-url=$localStackUrl sqs list-queues 
+    awslocal --endpoint-url=$script:localStackUrl sqs list-queues 
 }
 
 <# 
@@ -58,7 +58,7 @@ AWS LocalStack Commands
 function New-LocalSQSQueue { 
     [CmdletBinding()] 
     param([string]$QueueName) 
-    awslocal --endpoint-url=$localStackUrl sqs create-queue --queue-name=$QueueName 
+    awslocal --endpoint-url=$script:localStackUrl sqs create-queue --queue-name=$QueueName 
 }
 
 <# 
@@ -70,7 +70,7 @@ AWS LocalStack Commands
 function Clear-LocalSQSQueue { 
     [CmdletBinding()] 
     param([string]$QueueUrl) 
-    awslocal --endpoint-url=$localStackUrl sqs purge-queue --queue-url $QueueUrl 
+    awslocal --endpoint-url=$script:localStackUrl sqs purge-queue --queue-url $QueueUrl 
 }
 
 <# 
@@ -82,7 +82,7 @@ AWS LocalStack Commands
 function Send-LocalSQSMessage { 
     [CmdletBinding()] 
     param([string]$QueueUrl, [string]$MessageBody, [string]$GroupId = "default-group") 
-    awslocal --endpoint-url=$localStackUrl sqs send-message --queue-url $QueueUrl --message-body $MessageBody --message-group-id $GroupId 
+    awslocal --endpoint-url=$script:localStackUrl sqs send-message --queue-url $QueueUrl --message-body $MessageBody --message-group-id $GroupId 
 }
 
 <# 
@@ -94,7 +94,7 @@ AWS LocalStack Commands
 function Get-LocalSQSMessage { 
     [CmdletBinding()] 
     param([string]$QueueUrl) 
-    awslocal --endpoint-url=$localStackUrl sqs receive-message --queue-url $QueueUrl 
+    awslocal --endpoint-url=$script:localStackUrl sqs receive-message --queue-url $QueueUrl 
 }
 
 <# 
@@ -106,7 +106,7 @@ AWS LocalStack Commands
 function Get-LocalSQSAttributes { 
     [CmdletBinding()] 
     param([string]$QueueUrl) 
-    awslocal --endpoint-url=$localStackUrl sqs get-queue-attributes --queue-url $QueueUrl --attribute-names All 
+    awslocal --endpoint-url=$script:localStackUrl sqs get-queue-attributes --queue-url $QueueUrl --attribute-names All 
 }
 
 #endregion

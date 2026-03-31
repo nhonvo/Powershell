@@ -46,137 +46,90 @@ function Enter-Project {
     [CmdletBinding()]
     param()
 
-    # --- CONFIGURATION (Customize this list!) ---
-    # Prioritize specific code directories to avoid scanning entire Documents/Desktop
-    $potentialPaths = @(
-        "C:\Code",
-        "C:\Projects",
-        "C:\Dev",
-        "C:\Users\TruongNhon\Desktop\back-up\1.project",
-        "$env:USERPROFILE\source\repos", # Default VS location
-        "$env:USERPROFILE\Documents\Code",
-        "$env:USERPROFILE\Documents\Projects",
-        "$env:USERPROFILE\Desktop\Projects",
-        "$env:USERPROFILE\Documents\Powershell" # Keep this
-    )
-    
-    # Fallback: scan root of Documents/Desktop only if no specific code folders found
-    # But filtering out heavy system folders
-    $fallbackPaths = @(
-        "$env:USERPROFILE\Documents",
-        "$env:USERPROFILE\Desktop"
-    )
-
-    $searchPaths = @()
-    foreach ($p in $potentialPaths) { if (Test-Path $p) { $searchPaths += $p } }
-    
-    # If no "Code" folders found, use fallback but warn/limit
-    if ($searchPaths.Count -eq 0) {
-        $searchPaths = $fallbackPaths
-    }
+    # --- CONFIGURATION ---
+    $searchPaths = @(
+        "$env:USERPROFILE\Desktop\back-up\1.project",
+        "$env:USERPROFILE\Documents\Powershell"
+    ) | Where-Object { Test-Path $_ }
 
     $priorityProjects = @(
-        @{ Name = "Powershell";    Short = "pw" },
-        @{ Name = "finance-dashboard";    Short = "fin" },
+        @{ Name = "Powershell";         Short = "pw"   }
+        @{ Name = "finance-dashboard";  Short = "fin"  }
         @{ Name = "nextjs-template";    Short = "next" }
     )
+    $excludeFolders = @("My Music","My Pictures","My Videos","WindowsPowerShell",
+                        "Custom Office Templates","Visual Studio 2022","Modules",
+                        "vscode-config","typora-themes","img")
     # --- END CONFIGURATION ---
 
-    $allProjects = @()
-    $excludeFolders = @("My Music", "My Pictures", "My Videos", "Default", "Public", "WindowsPowerShell", "Custom Office Templates", "Visual Studio 2022", "img", "Modules","vscode-config", "typora-themes")
+    if (-not $searchPaths) {
+        Write-Host "No search paths found. Edit `$searchPaths in 20-Navigation.ps1." -ForegroundColor Yellow
+        return
+    }
 
-    Write-Progress -Activity "Scanning for projects..." -Status "Please wait"
-    
-    foreach ($path in $searchPaths) {
-        if (Test-Path $path) {
-            try {
-                # Only looking at immediate children (Depth 0) to prevent timeouts
-                $items = Get-ChildItem -Path $path -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -notin $excludeFolders }
-                if ($items) { $allProjects += $items }
-            } catch {
-                # Ignore errors
+    # Collect immediate-child directories only (fast, no recursion)
+    $allProjects = $searchPaths | ForEach-Object {
+        Get-ChildItem -Path $_ -Directory -ErrorAction SilentlyContinue |
+            Where-Object { $_.Name -notin $excludeFolders }
+    } | Sort-Object Name -Unique
+
+    if (-not $allProjects) {
+        Write-Host "No projects found in configured paths." -ForegroundColor Yellow
+        return
+    }
+
+    # Build ordered list: priorities first, then the rest alphabetically
+    $priorityNames = $priorityProjects.Name
+    $items = @()
+    foreach ($p in $priorityProjects) {
+        $match = $allProjects | Where-Object { $_.Name -eq $p.Name } | Select-Object -First 1
+        if ($match) { $items += [PSCustomObject]@{ Label = $match.Name; Path = $match.FullName; Priority = $true } }
+    }
+    foreach ($proj in ($allProjects | Where-Object { $_.Name -notin $priorityNames })) {
+        $items += [PSCustomObject]@{ Label = $proj.Name; Path = $proj.FullName; Priority = $false }
+    }
+
+    # Arrow-key menu
+    $selected = 0
+    [Console]::CursorVisible = $false
+    Write-Host ""
+    Write-Host "  Select project  (↑↓ move, Enter confirm, Esc cancel)" -ForegroundColor DarkGray
+    Write-Host ""
+    $menuTop = [Console]::CursorTop
+
+    function Render-ProjectMenu {
+        [Console]::SetCursorPosition(0, $menuTop)
+        for ($i = 0; $i -lt $items.Count; $i++) {
+            $icon = if ($items[$i].Priority) { "★" } else { " " }
+            if ($i -eq $selected) {
+                Write-Host "  ▶ $icon $($items[$i].Label)  " -ForegroundColor Cyan
+            } else {
+                $color = if ($items[$i].Priority) { "White" } else { "DarkGray" }
+                Write-Host "    $icon $($items[$i].Label)  " -ForegroundColor $color
             }
         }
     }
-    Write-Progress -Activity "Scanning for projects..." -Completed
 
-    # Remove duplicates and sort
-    $allProjects = $allProjects | Sort-Object Name -Unique
+    Render-ProjectMenu
 
-    if ($allProjects.Count -eq 0) {
-        Write-Host "🟡 No project folders found. Please create a 'C:\Code' or 'Documents\Projects' folder." -ForegroundColor Yellow
-        return
-    }
-
-    $tableData = @()
-    $number = 1
-
-    # 1. Add Priority Projects First
-    foreach ($priority in $priorityProjects) {
-        $project = $allProjects | Where-Object { $_.Name -eq $priority.Name }
-        if ($project) {
-            $tableData += [PSCustomObject]@{ Number = $number++; Short = $priority.Short; Project = $project.Name; Path = $project.FullName; IsPriority = $true }
+    while ($true) {
+        $key = [Console]::ReadKey($true)
+        switch ($key.Key) {
+            'UpArrow'   { if ($selected -gt 0) { $selected-- }; Render-ProjectMenu }
+            'DownArrow' { if ($selected -lt $items.Count - 1) { $selected++ }; Render-ProjectMenu }
+            'Enter' {
+                [Console]::CursorVisible = $true
+                Write-Host ""
+                Write-Host "  Navigating to: $($items[$selected].Label)" -ForegroundColor Green
+                Set-Location $items[$selected].Path
+                return
+            }
+            'Escape' {
+                [Console]::CursorVisible = $true
+                Write-Host ""
+                Write-Host "  Cancelled." -ForegroundColor DarkGray
+                return
+            }
         }
-    }
-
-    # 2. Add Remaining Projects
-    $priorityNames = $priorityProjects.Name
-    $remainingProjects = $allProjects | Where-Object { $_.Name -notin $priorityNames }
-
-    foreach ($project in $remainingProjects) {
-        # Generate short name (first 3 letters or initials)
-        $words = $project.Name -split '[\.\-_]+'
-        $shortName = if ($words.Count -eq 1) { 
-            if ($words[0].Length -ge 3) { $words[0].Substring(0, 3) } else { $words[0] }
-        } else { 
-            # Initials
-            ($words | ForEach-Object { $_.Substring(0, 1) }) -join '' 
-        }
-        $shortName = $shortName.ToLower()
-        
-        # Ensure uniqueness
-        $originalShort = $shortName
-        $counter = 2
-        while ($tableData.Short -contains $shortName) { $shortName = "$($originalShort)$($counter++)" }
-
-        $tableData += [PSCustomObject]@{ Number = $number++; Short = $shortName; Project = $project.Name; Path = $project.FullName; IsPriority = $false }
-    }
-
-    # 3. Display Menu
-    Write-Host "Available Projects:" -ForegroundColor Cyan
-    Write-Host ("-" * 50)
-    foreach ($item in $tableData) {
-        $line = "{0,3}. [{1,-7}] {2}" -f $item.Number, $item.Short, $item.Project
-        if ($item.IsPriority) { Write-Host $line -ForegroundColor Cyan } else { Write-Host $line }
-    }
-    Write-Host ("-" * 50)
-
-    # 4. Prompt User
-    try {
-        $selection = Read-Host "Select a project (by short name or number) or '0' to stay"
-    } catch {
-        # Handle non-interactive environments gracefully
-        return
-    }
-
-    if ($selection -eq '0' -or [string]::IsNullOrWhiteSpace($selection)) {
-        Write-Host "➡️ Staying in current directory." -ForegroundColor Green
-        return
-    }
-
-    # 5. Handle Selection
-    $selectedProject = $tableData | Where-Object { $_.Short -eq $selection.ToLower() }
-    if (-not $selectedProject) {
-        if ([int]::TryParse($selection, [ref]$null)) {
-            $selectedProject = $tableData | Where-Object { $_.Number -eq [int]$selection }
-        }
-    }
-
-    if ($selectedProject) {
-        Write-Host "🚀 Navigating to: $($selectedProject.Project)" -ForegroundColor Green
-        Set-Location $selectedProject.Path
-        Get-ChildItem | Format-Table -AutoSize
-    } else {
-        Write-Host "❌ Invalid selection." -ForegroundColor Red
     }
 }

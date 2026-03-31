@@ -51,7 +51,7 @@ System & Utility Commands
 function Get-FileTree {
     [CmdletBinding()]
     param([int]$Depth = 2)
-    tree.com /f | Select-Object -First 100 # Wrapper for standard tree, limited output
+    tree.com /f /a | Select-Object -First (50 * $Depth)
 }
 
 <#
@@ -72,17 +72,6 @@ function Stop-ProcessFriendly {
 
 <#
 .SYNOPSIS
-Refreshes environment variables without restarting the shell.
-.CATEGORY
-System & Utility Commands
-#>
-function Update-EnvironmentVariables {
-    $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-    Write-Host "🔁 Environment variables refreshed." -ForegroundColor Green
-}
-
-<#
-.SYNOPSIS
 Opens the current directory in File Explorer.
 .CATEGORY
 System & Utility Commands
@@ -91,33 +80,6 @@ function Invoke-OpenExplorer {
     [CmdletBinding()]
     param()
     Invoke-Item .
-}
-
-<#
-.SYNOPSIS
-Opens the PowerShell profile in VS Code for editing.
-.CATEGORY
-System & Utility Commands
-#>
-function Edit-Profile {
-    [CmdletBinding()]
-    param()
-    Invoke-VSCode $PROFILE
-}
-
-<#
-.SYNOPSIS
-Creates a new directory and changes the current location to it.
-.CATEGORY
-System & Utility Commands
-#>
-function New-DirAndEnter {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory=$true)]
-        [string]$DirName
-    )
-    mkdir $DirName; cd $DirName
 }
 
 <#
@@ -157,16 +119,18 @@ function Invoke-VSCode {
         [string[]]$Path
     )
 
-    # Use current directory if no path is provided
     $targetPath = if ($Path -and $Path.Count -gt 0) { $Path -join " " } else { "." }
 
-    $vscodeExe = Get-Command code -ErrorAction SilentlyContinue
+    # Resolve the real 'code' binary, not our alias
+    $vscodeExe = Get-Command code.cmd -ErrorAction SilentlyContinue
+    if (-not $vscodeExe) {
+        $vscodeExe = Get-Command code -CommandType Application -ErrorAction SilentlyContinue
+    }
+
     if ($vscodeExe) {
-        Write-Host "✅ VS Code found! Opening path: $targetPath" -ForegroundColor Green
         & $vscodeExe $targetPath
     } else {
         Write-Host "❌ VS Code not found. Please ensure 'code' is in your system's PATH." -ForegroundColor Red
     }
 }   
-
 #endregion

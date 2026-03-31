@@ -8,9 +8,8 @@
 
 Write-Host "🚀 Loading Enhanced PowerShell Profile... (Core)" -ForegroundColor Cyan
 
-
 # --- Oh My Posh Theme ---
-$env:POSH_THEMES_PATH = Join-Path -Path $env:USERPROFILE -ChildPath "Documents\PowerShell\powershell-themes"
+$env:POSH_THEMES_PATH = Join-Path -Path $env:USERPROFILE -ChildPath "Documents\PowerShell\asset\powershell-themes"
 $env:THEME = "neko" # Change your theme here
 $themePath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "$($env:THEME).omp.json"
 if (Test-Path $themePath) {
@@ -98,52 +97,53 @@ Set-PSReadLineKeyHandler -Key F7 -ScriptBlock {
 # .NET Hotkeys
 Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+b' -ScriptBlock { [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine(); [Microsoft.PowerShell.PSConsoleReadLine]::Insert("db"); [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine() }
 Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+t' -ScriptBlock { [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine(); [Microsoft.PowerShell.PSConsoleReadLine]::Insert("dt"); [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine() }
-# Smart Auto-pairing and Overtyping
-Set-PSReadLineKeyHandler -Key '(', '{', '[', '"', "'" -ScriptBlock {
-    param($key, $arg)
-    $openChar = $key.KeyChar
-    $closeChar = switch ($openChar) { '(' { ')' } '{' { '}' } '[' { ']' } '"' { '"' } "'" { "'" } }
 
-    $line = ''; $cursor = 0
-    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+# # Smart Auto-pairing and Overtyping
+# Set-PSReadLineKeyHandler -Key '(', '{', '[', '"', "'" -ScriptBlock {
+#     param($key, $arg)
+#     $openChar = $key.KeyChar
+#     $closeChar = switch ($openChar) { '(' { ')' } '{' { '}' } '[' { ']' } '"' { '"' } "'" { "'" } }
 
-    # If we are just before the same opening quote, just move past it (Overtyping for quotes)
-    if ($cursor -lt $line.Length -and $line[$cursor] -eq $openChar -and ($openChar -eq '"' -or $openChar -eq "'")) {
-        [Microsoft.PowerShell.PSConsoleReadLine]::ForwardChar()
-    } else {
-        [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$openChar$closeChar")
-        [Microsoft.PowerShell.PSConsoleReadLine]::BackwardChar()
-    }
-}
+#     $line = ''; $cursor = 0
+#     [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
 
-# Explicit Overtyping for closing characters
-Set-PSReadLineKeyHandler -Key ')', '}', ']' -ScriptBlock {
-    param($key, $arg)
-    $closeChar = $key.KeyChar
-    $line = ''; $cursor = 0
-    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+#     # If we are just before the same opening quote, just move past it (Overtyping for quotes)
+#     if ($cursor -lt $line.Length -and $line[$cursor] -eq $openChar -and ($openChar -eq '"' -or $openChar -eq "'")) {
+#         [Microsoft.PowerShell.PSConsoleReadLine]::ForwardChar()
+#     } else {
+#         [Microsoft.PowerShell.PSConsoleReadLine]::Insert("$openChar$closeChar")
+#         [Microsoft.PowerShell.PSConsoleReadLine]::BackwardChar()
+#     }
+# }
 
-    if ($cursor -lt $line.Length -and $line[$cursor] -eq $closeChar) {
-        [Microsoft.PowerShell.PSConsoleReadLine]::ForwardChar()
-    } else {
-        [Microsoft.PowerShell.PSConsoleReadLine]::Insert($closeChar)
-    }
-}
+# # Explicit Overtyping for closing characters
+# Set-PSReadLineKeyHandler -Key ')', '}', ']' -ScriptBlock {
+#     param($key, $arg)
+#     $closeChar = $key.KeyChar
+#     $line = ''; $cursor = 0
+#     [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
 
-# Smart backspace
-Set-PSReadLineKeyHandler -Key 'Backspace' -ScriptBlock {
-    $line = ''; $cursor = 0
-    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-    if ($cursor -gt 0) {
-        $charBehind = $line[$cursor - 1]
-        $charAhead = if ($cursor -lt $line.Length) { $line[$cursor] } else { $null }
-        $pairs = @{ '(' = ')'; '{' = '}'; '[' = ']'; '"' = '"'; "'" = "'" }
-        if ($pairs.ContainsKey($charBehind) -and $pairs[$charBehind] -eq $charAhead) {
-            [Microsoft.PowerShell.PSConsoleReadLine]::Delete($cursor - 1, 2)
-        } else {
-            [Microsoft.PowerShell.PSConsoleReadLine]::BackwardDeleteChar()
-        }
-    }
-}
+#     if ($cursor -lt $line.Length -and $line[$cursor] -eq $closeChar) {
+#         [Microsoft.PowerShell.PSConsoleReadLine]::ForwardChar()
+#     } else {
+#         [Microsoft.PowerShell.PSConsoleReadLine]::Insert($closeChar)
+#     }
+# }
+
+# # Smart backspace
+# Set-PSReadLineKeyHandler -Key 'Backspace' -ScriptBlock {
+#     $line = ''; $cursor = 0
+#     [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
+#     if ($cursor -gt 0) {
+#         $charBehind = $line[$cursor - 1]
+#         $charAhead = if ($cursor -lt $line.Length) { $line[$cursor] } else { $null }
+#         $pairs = @{ '(' = ')'; '{' = '}'; '[' = ']'; '"' = '"'; "'" = "'" }
+#         if ($pairs.ContainsKey($charBehind) -and $pairs[$charBehind] -eq $charAhead) {
+#             [Microsoft.PowerShell.PSConsoleReadLine]::Delete($cursor - 1, 2)
+#         } else {
+#             [Microsoft.PowerShell.PSConsoleReadLine]::BackwardDeleteChar()
+#         }
+#     }
+# }
 
 #endregion

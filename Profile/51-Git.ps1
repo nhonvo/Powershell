@@ -9,10 +9,10 @@ Runs 'git status'.
 .CATEGORY
 Git Commands
 #>
-function Get-GitStatus { 
-    [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "🔍 Git Status" -ForegroundColor Yellow; git status @args 
+function Get-GitStatus {
+    [CmdletBinding()]
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "🔍 Git Status" -ForegroundColor Yellow; git status @PassThruArgs
 }
 
 <# 
@@ -98,10 +98,10 @@ Amends the previous commit ('git commit --amend').
 .CATEGORY
 Git Commands
 #>
-function Invoke-GitAmend { 
-    [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "✍️ Amending previous commit..." -ForegroundColor Cyan; git commit --amend @args 
+function Invoke-GitAmend {
+    [CmdletBinding()]
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "✍️ Amending previous commit..." -ForegroundColor Cyan; git commit --amend @PassThruArgs
 }
 
 <# 
@@ -164,10 +164,10 @@ Pulls from remote ('git pull').
 .CATEGORY
 Git Commands
 #>
-function Invoke-GitPull { 
-    [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "⏬ Pulling changes from remote..." -ForegroundColor Blue; git pull @args 
+function Invoke-GitPull {
+    [CmdletBinding()]
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "⏬ Pulling changes from remote..." -ForegroundColor Blue; git pull @PassThruArgs
 }
 
 <# 
@@ -176,10 +176,10 @@ Pushes to remote ('git push').
 .CATEGORY
 Git Commands
 #>
-function Invoke-GitPush { 
-    [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "⏫ Pushing changes to remote..." -ForegroundColor Blue; git push @args 
+function Invoke-GitPush {
+    [CmdletBinding()]
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "⏫ Pushing changes to remote..." -ForegroundColor Blue; git push @PassThruArgs
 }
 
 <# 
@@ -188,10 +188,10 @@ Force pushes to remote ('git push --force').
 .CATEGORY
 Git Commands
 #>
-function Invoke-GitPushForce { 
-    [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "⏫ Force pushing changes..." -ForegroundColor Red; git push --force @args 
+function Invoke-GitPushForce {
+    [CmdletBinding()]
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "⏫ Force pushing changes..." -ForegroundColor Red; git push --force @PassThruArgs
 }
 
 <# 
@@ -212,10 +212,10 @@ Lists branches ('git branch').
 .CATEGORY
 Git Commands
 #>
-function Get-GitBranches { 
-    [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "🌿 Branches:" -ForegroundColor Green; git branch @args 
+function Get-GitBranches {
+    [CmdletBinding()]
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "🌿 Branches:" -ForegroundColor Green; git branch @PassThruArgs
 }
 
 <# 

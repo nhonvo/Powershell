@@ -11,8 +11,8 @@ Runs 'dotnet run'.
 #>
 function Invoke-DotNetRun { 
     [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "🚀 Running project..." -ForegroundColor Green; dotnet run @args 
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "🚀 Running project..." -ForegroundColor Green; dotnet run @PassThruArgs
 }
 
 <# 
@@ -65,8 +65,8 @@ Runs 'dotnet watch test'.
 #>
 function Invoke-DotNetWatchTest { 
     [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "👀 Watching Tests..." -ForegroundColor Yellow; dotnet watch test @args 
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "👀 Watching Tests..." -ForegroundColor Yellow; dotnet watch test @PassThruArgs
 }
 
 <# 
@@ -77,8 +77,8 @@ Runs 'dotnet watch'.
 #>
 function Invoke-DotNetWatch { 
     [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "👀 Watching for changes..." -ForegroundColor Cyan; dotnet watch @args 
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "👀 Watching for changes..." -ForegroundColor Cyan; dotnet watch @PassThruArgs
 }
 
 <# 
@@ -89,8 +89,8 @@ Runs 'dotnet build'.
 #>
 function Invoke-DotNetBuild { 
     [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "🔨 Building project..." -ForegroundColor Blue; dotnet build @args 
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "🔨 Building project..." -ForegroundColor Blue; dotnet build @PassThruArgs
 }
 
 <# 
@@ -101,8 +101,8 @@ Runs 'dotnet format'.
 #>
 function Invoke-DotNetFormat { 
     [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "💅 Formatting code..." -ForegroundColor Magenta; dotnet format @args 
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "💅 Formatting code..." -ForegroundColor Magenta; dotnet format @PassThruArgs
 }
 
 <# 
@@ -113,8 +113,8 @@ Runs 'dotnet test'.
 #>
 function Invoke-DotNetTest { 
     [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "🧪 Running tests..." -ForegroundColor Yellow; dotnet test @args 
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "🧪 Running tests..." -ForegroundColor Yellow; dotnet test @PassThruArgs
 }
 
 <# 
@@ -125,8 +125,8 @@ Runs 'dotnet clean'.
 #>
 function Invoke-DotNetClean { 
     [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "🧹 Cleaning project..." -ForegroundColor Yellow; dotnet clean @args 
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "🧹 Cleaning project..." -ForegroundColor Yellow; dotnet clean @PassThruArgs
 }
 
 <# 
@@ -137,8 +137,8 @@ Runs 'dotnet restore'.
 #>
 function Invoke-DotNetRestore { 
     [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "📦 Restoring packages..." -ForegroundColor Magenta; dotnet restore @args 
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "📦 Restoring packages..." -ForegroundColor Magenta; dotnet restore @PassThruArgs
 }
 
 

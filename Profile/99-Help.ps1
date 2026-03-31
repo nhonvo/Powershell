@@ -22,7 +22,7 @@ function Get-CustomCommands {
     
     # 1. Map Aliases: Alias -> FunctionName
     # Regex fix: [\w\?-]+ allows hyphens in alias names (e.g. sln-add)
-    $aliasFile = "$PSScriptRoot\10-Aliases.ps1"
+    $aliasFile = Join-Path (Split-Path $PSCommandPath -Parent) "10-Aliases.ps1"
     $aliasMap = @{}
     if (Test-Path $aliasFile) {
         $lines = Get-Content $aliasFile
@@ -33,19 +33,12 @@ function Get-CustomCommands {
         }
     }
 
-    # Helper to get description directly from the .SYNOPSIS block
-    function Get-Synopsis {
-        param($ScriptBlock)
-        $text = $ScriptBlock.ToString()
-        if ($text -match '(?ms)\.SYNOPSIS\s*\r?\n\s*(.+?)\s*(\.|#>)') { 
-            return $Matches[1].Trim() 
-        }
-        return "Custom Command"
-    }
+    # Helper to get description directly from the .SYNOPSIS block — unused, kept for reference
+    # function Get-Synopsis { ... }
 
     # Scan Functions
-    $profileFunctions = Get-Command -CommandType Function | Where-Object { 
-        $_.ScriptBlock.File -like "$PSScriptRoot\*" -and $_.Name -ne "Get-CustomCommands"
+    $profileFunctions = Get-Command -CommandType Function | Where-Object {
+        $_.ScriptBlock.File -like "$PSScriptRoot\*" -and $_.Name -ne "Get-CustomCommands" -and $_.Name -ne "Get-Synopsis"
     }
 
     $commandsByCategory = @{}
@@ -92,10 +85,6 @@ function Get-CustomCommands {
     if (-not $CategoryFilter) {
         Write-Progress -Activity "Building Help Menu" -Completed
     }
-
-    # Add Winget (Special Case - Manual Entry)
-    if (-not $commandsByCategory["System & Navigation"]) { $commandsByCategory["System & Navigation"] = @() }
-    $commandsByCategory["System & Navigation"] += @{ DisplayName = "wsearch, winstall"; ShortName = "wsearch"; Description = "Winget Package Manager Shortcuts"; Function = "wsearch" }
 
     # --- DIRECT CATEGORY MODE (Quick Filter) ---
     if ($CategoryFilter) {

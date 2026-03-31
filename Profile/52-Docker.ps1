@@ -58,8 +58,8 @@ Docker Commands
 #>
 function Invoke-ComposeUp { 
     [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "🚀 Starting Docker Compose..." -ForegroundColor Green; docker-compose up @args 
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "🚀 Starting Docker Compose..." -ForegroundColor Green; docker-compose up @PassThruArgs
 }
 
 <# 
@@ -70,8 +70,8 @@ Docker Commands
 #>
 function Invoke-ComposeUpBuild { 
     [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "🔨 Building and starting Docker Compose... " -ForegroundColor Blue; docker-compose up --build @args 
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "🔨 Building and starting Docker Compose... " -ForegroundColor Blue; docker-compose up --build @PassThruArgs
 }
 
 <# 
@@ -82,8 +82,8 @@ Docker Commands
 #>
 function Invoke-ComposeDown { 
     [CmdletBinding()] 
-    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$args) 
-    Write-Host "🛑 Stopping Docker Compose..." -ForegroundColor Yellow; docker-compose down @args 
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
+    Write-Host "🛑 Stopping Docker Compose..." -ForegroundColor Yellow; docker-compose down @PassThruArgs
 }
 
 <# 
