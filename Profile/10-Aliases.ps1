@@ -96,7 +96,7 @@ Set-Alias -Name claude      -Value Invoke-ClaudeChat        -Force   # proxy mod
 Set-Alias -Name gpt         -Value Invoke-ChatGPT           -Force
 Set-Alias -Name ox          -Value Get-OllamaModels         -Force
 Set-Alias -Name agm         -Value Start-AntigravityManager -Force
-Set-Alias -Name agp         -Value Start-AntigravityProxy   -Force
+# Set-Alias -Name agp         -Value Start-AntigravityProxy   -Force
 
 # --- Help shortcuts ---
 Set-Alias -Name cc -Value Get-CustomCommands -Force
