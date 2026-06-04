@@ -1,4 +1,4 @@
-#region AWS LOCALSTACK COMMANDS
+﻿#region AWS LOCALSTACK COMMANDS
 # ------------------------------------------------------------------------------
 #  Commands for interacting with AWS services via LocalStack.
 # ------------------------------------------------------------------------------
