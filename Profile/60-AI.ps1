@@ -1,4 +1,4 @@
-#region AI TOOLS
+﻿#region AI TOOLS
 # ------------------------------------------------------------------------------
 #  Wrappers for AI CLI tools: Gemini CLI, GitHub Copilot, Claude, Ollama, ChatGPT.
 # ------------------------------------------------------------------------------
@@ -167,9 +167,9 @@ function Invoke-MultiAgent {
             if ([string]::IsNullOrWhiteSpace($Query)) { Write-Warning "Copilot requires a prompt."; return }
             Invoke-CopilotExplain -Command $Query; return
         }
-        "Ollama"  { Invoke-OllamaChat -Model ($Model ?? "llama3"); return }
+        "Ollama"  { Invoke-OllamaChat -Model (if ($Model) { $Model } else { "llama3" }); return }
         "Claude"  { Invoke-ClaudeChat; return }
-        "Local"   { Invoke-ClaudeChat -Local -Model ($Model ?? "qwen3-coder"); return }
+        "Local"   { Invoke-ClaudeChat -Local -Model (if ($Model) { $Model } else { "qwen3-coder" }); return }
         "ChatGPT" { if ($Query) { Invoke-ChatGPT $Query } else { Invoke-ChatGPT }; return }
     }
 
@@ -183,8 +183,8 @@ function Invoke-MultiAgent {
             Invoke-CopilotExplain -Command $Query
         }}
         [PSCustomObject]@{ Label = "🛸  Claude (Antigravity proxy)"; Action = { Invoke-ClaudeChat } }
-        [PSCustomObject]@{ Label = "🤖  Claude (local Ollama / qwen3-coder)"; Action = { Invoke-ClaudeChat -Local -Model ($Model ?? "qwen3-coder") } }
-        [PSCustomObject]@{ Label = "🦙  Ollama (interactive)";    Action = { Invoke-OllamaChat -Model ($Model ?? "llama3") } }
+        [PSCustomObject]@{ Label = "🤖  Claude (local Ollama / qwen3-coder)"; Action = { Invoke-ClaudeChat -Local -Model (if ($Model) { $Model } else { "qwen3-coder" }) } }
+        [PSCustomObject]@{ Label = "🦙  Ollama (interactive)";    Action = { Invoke-OllamaChat -Model (if ($Model) { $Model } else { "llama3" }) } }
         [PSCustomObject]@{ Label = "🤖  ChatGPT CLI";             Action = { if ($Query) { Invoke-ChatGPT $Query } else { Invoke-ChatGPT } } }
     )
 

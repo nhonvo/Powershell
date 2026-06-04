@@ -1,4 +1,4 @@
-#region ALIASES
+﻿#region ALIASES
 # ------------------------------------------------------------------------------
 #  Shortcuts for frequently used commands.
 #  All aliases for the profile are centralized here.
@@ -6,7 +6,7 @@
 
 # --- Core ---
 Set-Alias -Name ip  -Value Get-NetIPConfiguration -Force
-Set-Alias -Name cls -Value Clear-Host             -Force
+Set-Item -Path Alias:\cls -Value Clear-Host -Force -Option AllScope
 
 # --- System & Navigation (20-Navigation, 30-System) ---
 Set-Alias -Name ..          -Value Set-LocationParent          -Force
@@ -21,7 +21,7 @@ Set-Alias -Name refresh-env -Value Update-EnvironmentVariables -Force
 Set-Alias -Name usage       -Value Get-DiskSpace               -Force
 Set-Alias -Name myip        -Value Get-PublicIP                -Force
 Set-Alias -Name tree        -Value Get-FileTree                -Force
-Set-Alias -Name kill        -Value Stop-ProcessFriendly        -Force
+Set-Item -Path Alias:\kill -Value Stop-ProcessFriendly -Force -Option AllScope
 Set-Alias -Name commands    -Value Get-CustomCommands          -Force
 
 # --- Git (51-Git) ---

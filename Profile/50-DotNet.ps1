@@ -1,4 +1,4 @@
-#region .NET DEVELOPMENT COMMANDS
+﻿#region .NET DEVELOPMENT COMMANDS
 # ------------------------------------------------------------------------------
 #  Shortcuts for dotnet CLI commands with Verb-Noun naming.
 # ------------------------------------------------------------------------------

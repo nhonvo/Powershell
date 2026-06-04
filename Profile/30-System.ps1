@@ -1,4 +1,4 @@
-#region SYSTEM & UTILITY COMMANDS
+﻿#region SYSTEM & UTILITY COMMANDS
 # ------------------------------------------------------------------------------
 #  Functions for system interaction, profile management, and fun.
 # ------------------------------------------------------------------------------

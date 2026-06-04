@@ -1,11 +1,11 @@
-#region ANTIGRAVITY PROJECTS
+﻿#region ANTIGRAVITY PROJECTS
 # ------------------------------------------------------------------------------
 #  Dev launchers for the Antigravity Manager and Claude Proxy projects.
 # ------------------------------------------------------------------------------
 
 Write-Host "🛸 Loading Antigravity Projects..." -ForegroundColor Cyan
 
-$script:AgBaseDir = "$env:USERPROFILE\Desktop\back-up\1.project\antigrafity_config"
+$script:AgBaseDir = "$env:USERPROFILE\Desktop\project"
 
 <#
 .SYNOPSIS

@@ -1,4 +1,4 @@
-#region HELP AND DOCUMENTATION
+﻿#region HELP AND DOCUMENTATION
 # ------------------------------------------------------------------------------
 #  Arrow-key navigable help menu for all custom profile commands.
 # ------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-#region CORE SETUP
+﻿#region CORE SETUP
 # ------------------------------------------------------------------------------
 #  Initial configuration for the shell environment, theme, and modules.
 # ------------------------------------------------------------------------------
@@ -30,8 +30,12 @@ $modules = @(
 )
 
 foreach ($mod in $modules) {
-    # 1. Auto-Install if missing
+    # 1. Auto-Install if missing (only in interactive console)
     if (-not (Get-Module -ListAvailable -Name $mod.Name)) {
+        if ([Console]::IsOutputRedirected -or -not [Environment]::UserInteractive) {
+            Write-Warning "⚠️ Module $($mod.Name) is missing and console is non-interactive. Skipping installation."
+            continue
+        }
         Write-Host "📦 Installing $($mod.Name) ($($mod.Description))..." -ForegroundColor Cyan
         try {
             Install-Module $mod.Name -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck -ErrorAction Stop
