@@ -5,6 +5,8 @@
 
 Write-Host "[AI] Loading AI Tools..." -ForegroundColor Cyan
 
+$Script:AiToolsDir = $PSScriptRoot
+
 # --- Unified AI Router ---
 
 <#
@@ -110,6 +112,30 @@ function Invoke-MultiAgent {
 
 # --- Ollama / Claude Code Integration ---
 
+function Ensure-OllamaProxy {
+    $proxyPort = 11435
+    try {
+        $null = Invoke-RestMethod -Uri "http://127.0.0.1:$proxyPort/" -TimeoutSec 1 -ErrorAction Stop
+    } catch {
+        Write-Host "[AI] Ollama Proxy is not running on port $proxyPort. Starting..." -ForegroundColor Yellow
+        
+        $rootDir = Split-Path -Parent -Path $Script:AiToolsDir
+        $proxyScript = Join-Path $rootDir "Scripts\ollama-proxy.js"
+        
+        $stdoutPath = Join-Path $env:TEMP "ollama_proxy_out.log"
+        $stderrPath = Join-Path $env:TEMP "ollama_proxy_err.log"
+        if (Test-Path $stdoutPath) { Remove-Item $stdoutPath -Force -ErrorAction SilentlyContinue }
+        if (Test-Path $stderrPath) { Remove-Item $stderrPath -Force -ErrorAction SilentlyContinue }
+        
+        try {
+            Start-Process -FilePath "node" -ArgumentList $proxyScript -WindowStyle Hidden -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath -ErrorAction Stop
+        } catch {
+            Write-Host "[AI] Failed to start Ollama Proxy: $_" -ForegroundColor Red
+        }
+        Start-Sleep -Seconds 1
+    }
+}
+
 function Ensure-OllamaServer {
     try {
         $null = Invoke-RestMethod -Uri "http://127.0.0.1:11434/" -TimeoutSec 1 -ErrorAction Stop
@@ -117,13 +143,10 @@ function Ensure-OllamaServer {
         Write-Host "[AI] Ollama is not running. Auto-starting..." -ForegroundColor Yellow
         Initialize-OllamaServer
     }
+    Ensure-OllamaProxy
 }
 
 function Invoke-Claude-By-Ollama {
-    [CmdletBinding()]
-    param(
-        [Parameter(ValueFromRemainingArguments=$true)][string[]]$ArgsList
-    )
     Ensure-OllamaServer
     
     $oldNodeOptions = $env:NODE_OPTIONS
@@ -132,44 +155,49 @@ function Invoke-Claude-By-Ollama {
         $env:NODE_OPTIONS = if ($env:NODE_OPTIONS) { "$env:NODE_OPTIONS --dns-result-order=ipv4first" } else { "--dns-result-order=ipv4first" }
         
         $flags = @()
-        if ($ArgsList -notcontains "--model") {
+        if ($args -notcontains "--model") {
             $flags += "--model", "qwen3:1.7b"
         }
         
-        & ollama.exe launch claude @flags @ArgsList
+        if ($MyInvocation.ExpectingInput) {
+            $input | & ollama.exe launch claude @flags @args
+        } else {
+            & ollama.exe launch claude @flags @args
+        }
     } finally {
         $env:NODE_OPTIONS = $oldNodeOptions
     }
 }
 
 function Invoke-Codex-By-Ollama {
-    [CmdletBinding()]
-    param(
-        [Parameter(ValueFromRemainingArguments=$true)][string[]]$ArgsList
-    )
     Ensure-OllamaServer
     
     $oldBaseUrl = $env:OPENAI_BASE_URL
     $oldApiKey = $env:OPENAI_API_KEY
+    $oldNodeOptions = $env:NODE_OPTIONS
     try {
-        $env:OPENAI_BASE_URL = "http://127.0.0.1:11434/v1"
+        $env:OPENAI_BASE_URL = "http://127.0.0.1:11435/v1"
         $env:OPENAI_API_KEY = "ollama"
+        # Force Node.js (Codex CLI) to resolve localhost to IPv4 (127.0.0.1) instead of IPv6 ([::1])
+        $env:NODE_OPTIONS = if ($env:NODE_OPTIONS) { "$env:NODE_OPTIONS --dns-result-order=ipv4first" } else { "--dns-result-order=ipv4first" }
         
         $flags = @()
-        if ($ArgsList -notcontains "--oss") {
-            $flags += "--oss"
+        if ($args -notcontains "-c" -and $args -notcontains "--config") {
+            $flags += "-c", "model_provider=ollama_custom"
         }
-        if ($ArgsList -notcontains "--local-provider") {
-            $flags += "--local-provider", "ollama"
-        }
-        if ($ArgsList -notcontains "--model") {
+        if ($args -notcontains "--model") {
             $flags += "--model", "qwen3:1.7b"
         }
         
-        & codex.cmd @flags @ArgsList
+        if ($MyInvocation.ExpectingInput) {
+            $input | & codex.cmd @flags @args
+        } else {
+            & codex.cmd @flags @args
+        }
     } finally {
         $env:OPENAI_BASE_URL = $oldBaseUrl
         $env:OPENAI_API_KEY = $oldApiKey
+        $env:NODE_OPTIONS = $oldNodeOptions
     }
 }
 
@@ -247,7 +275,13 @@ function Initialize-OllamaServer {
     $oldHost = $env:OLLAMA_HOST
     $env:OLLAMA_HOST = "[::]:$port"
     
-    Start-Process -FilePath "ollama" -ArgumentList "serve" -WindowStyle Hidden -ErrorAction SilentlyContinue
+    $ollamaCmd = Get-Command "ollama" -ErrorAction SilentlyContinue
+    $ollamaPath = if ($ollamaCmd) { $ollamaCmd.Source } else { "ollama" }
+    
+    $logPath = Join-Path $env:TEMP "ollama_server.log"
+    if (Test-Path $logPath) { Remove-Item $logPath -Force -ErrorAction SilentlyContinue }
+    
+    Start-Process -FilePath $ollamaPath -ArgumentList "serve" -WindowStyle Hidden -RedirectStandardOutput $logPath -RedirectStandardError $logPath -ErrorAction SilentlyContinue
     
     # Wait for server to respond
     $retry = 0

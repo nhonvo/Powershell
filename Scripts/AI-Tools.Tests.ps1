@@ -96,9 +96,8 @@ Describe "AI Tools Wrapper Functions" {
             Invoke-Codex-By-Ollama
             
             $global:commandRun | Should Be "codex.cmd"
-            $global:argsPassed -contains "--oss" | Should Be $true
-            $global:argsPassed -contains "--local-provider" | Should Be $true
-            $global:argsPassed -contains "ollama" | Should Be $true
+            $global:argsPassed -contains "-c" | Should Be $true
+            $global:argsPassed -contains "model_provider=ollama_custom" | Should Be $true
             $global:argsPassed -contains "--model" | Should Be $true
             $global:argsPassed -contains "qwen3:1.7b" | Should Be $true
         }

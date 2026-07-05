@@ -1,4 +1,4 @@
-﻿#region ALIASES
+#region ALIASES
 # ------------------------------------------------------------------------------
 #  Shortcuts for frequently used commands.
 #  All aliases for the profile are centralized here.
@@ -92,8 +92,8 @@ Set-Alias -Name fix-image  -Value Remove-UnusedDockerImages  -Force
 
 # --- AI Tools (60-AI, 61-Antigravity) ---
 Set-Alias -Name ai          -Value Invoke-MultiAgent        -Force
-Set-Alias -Name codex          -Value codex        -Force
-Set-Alias -Name claude          -Value claude        -Force
+Set-Alias -Name codex       -Value Invoke-Codex-By-Ollama   -Force
+Set-Alias -Name claude      -Value Invoke-Claude-By-Ollama  -Force
 Set-Alias -Name agm         -Value Start-AntigravityManager -Force
 
 # --- Help shortcuts ---
