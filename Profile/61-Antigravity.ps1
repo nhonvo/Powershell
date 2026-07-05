@@ -446,31 +446,97 @@ function Select-AgyAccountInteractive {
     $accounts = Get-AgyAccounts
     $active = Get-AgyActiveAccount
 
-    Write-Host ""
-    Write-Host "🛸 Select Antigravity Account:" -ForegroundColor Cyan
-    Write-Host "=============================" -ForegroundColor Cyan
-    
+    # Build menu items
+    $menuItems = @()
     for ($i = 0; $i -lt $accounts.Count; $i++) {
         $acc = $accounts[$i]
-        $paddedAcc = $("{0,-15}" -f $acc)
-        if ($acc -eq $active) {
-            Write-Host "  ▶  [$($i + 1)] $paddedAcc (Active)" -ForegroundColor Green
-        } else {
-            Write-Host "     [$($i + 1)] $paddedAcc" -ForegroundColor Gray
+        $status = if ($acc -eq $active) { "(Active)" } else { "" }
+        $menuItems += "$($acc) $status"
+    }
+    $menuItems += "➕ Add New Account"
+    $menuItems += "❌ Delete Account"
+    $menuItems += "🚪 Cancel / Exit"
+
+    $currentIndex = 0
+    # Find active account index to start highlight there
+    for ($i = 0; $i -lt $accounts.Count; $i++) {
+        if ($accounts[$i] -eq $active) {
+            $currentIndex = $i
+            break
         }
     }
-    Write-Host "     [A] Add New Account" -ForegroundColor Cyan
-    Write-Host "     [D] Delete Account" -ForegroundColor Red
-    Write-Host "     [Q] Cancel / Exit" -ForegroundColor Yellow
-    Write-Host ""
 
-    $choice = Read-Host "Select account [1-$($accounts.Count)] or option"
-    if ($choice -eq "A" -or $choice -eq "a") {
+    # Hide cursor
+    $oldCursorVisible = $null
+    try {
+        $oldCursorVisible = [Console]::CursorVisible
+        [Console]::CursorVisible = $false
+    } catch {}
+
+    try {
+        while ($true) {
+            Clear-Host
+            Write-Host ""
+            Write-Host "🛸 Select Antigravity Account:" -ForegroundColor Cyan
+            Write-Host "=============================" -ForegroundColor Cyan
+            
+            for ($i = 0; $i -lt $menuItems.Count; $i++) {
+                if ($i -eq $currentIndex) {
+                    Write-Host "  ▶  $($menuItems[$i])" -ForegroundColor Green
+                } else {
+                    Write-Host "     $($menuItems[$i])" -ForegroundColor Gray
+                }
+            }
+            Write-Host ""
+            Write-Host "Use Arrow Keys [↑/↓] to navigate, [Enter] to select, [Esc] to exit." -ForegroundColor DarkGray
+
+            $key = $null
+            try {
+                $key = [Console]::ReadKey($true)
+            } catch {
+                # Non-interactive fallback: ask for input text
+                [Console]::CursorVisible = $true
+                $choice = Read-Host "Select index [1-$($menuItems.Count)]"
+                if ([int]::TryParse($choice, [ref]$val) -and $val -ge 1 -and $val -le $menuItems.Count) {
+                    $currentIndex = $val - 1
+                    break
+                }
+                return
+            }
+
+            if ($key.Key -eq [ConsoleKey]::UpArrow) {
+                $currentIndex = ($currentIndex - 1 + $menuItems.Count) % $menuItems.Count
+            }
+            elseif ($key.Key -eq [ConsoleKey]::DownArrow) {
+                $currentIndex = ($currentIndex + 1) % $menuItems.Count
+            }
+            elseif ($key.Key -eq [ConsoleKey]::Enter) {
+                break
+            }
+            elseif ($key.Key -eq [ConsoleKey]::Escape) {
+                return
+            }
+        }
+    } finally {
+        try {
+            if ($null -ne $oldCursorVisible) {
+                [Console]::CursorVisible = $oldCursorVisible
+            }
+        } catch {}
+    }
+
+    # Process selection
+    if ($currentIndex -lt $accounts.Count) {
+        Set-AgyActiveAccount -AccountName $accounts[$currentIndex]
+    }
+    elseif ($currentIndex -eq $accounts.Count) {
+        Write-Host ""
         $name = Read-Host "Enter new account name"
         if (-not [string]::IsNullOrWhiteSpace($name)) {
             Add-AgyAccount -AccountName $name
         }
-    } elseif ($choice -eq "D" -or $choice -eq "d") {
+    }
+    elseif ($currentIndex -eq ($accounts.Count + 1)) {
         $deletable = $accounts | Where-Object { $_ -ne "default" }
         if ($deletable.Count -eq 0) {
             Write-Warning "No secondary accounts available to delete."
@@ -484,14 +550,6 @@ function Select-AgyAccountInteractive {
         $delChoice = Read-Host "Select account to delete [1-$($deletable.Count)]"
         if ([int]::TryParse($delChoice, [ref]$dIdx) -and $dIdx -ge 1 -and $dIdx -le $deletable.Count) {
             Remove-AgyAccount -AccountName $deletable[$dIdx - 1]
-        } else {
-            Write-Error "Invalid selection."
-        }
-    } elseif ($choice -eq "Q" -or $choice -eq "q" -or [string]::IsNullOrWhiteSpace($choice)) {
-        Write-Host "Cancelled." -ForegroundColor Yellow
-    } else {
-        if ([int]::TryParse($choice, [ref]$idx) -and $idx -ge 1 -and $idx -le $accounts.Count) {
-            Set-AgyActiveAccount -AccountName $accounts[$idx - 1]
         } else {
             Write-Error "Invalid selection."
         }
