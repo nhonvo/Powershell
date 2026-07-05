@@ -1,11 +1,13 @@
 # C:\Users\TruongNhon\Documents\Powershell\Scripts\Test-OllamaFunctions.ps1
 
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$profilePath = Join-Path $scriptDir "..\Profile\60-AI.ps1"
-. $profilePath
+$ProfileDir = Join-Path $PSScriptRoot "..\Profile"
+. (Join-Path $ProfileDir "TerminalMenu.ps1")
+. (Join-Path $ProfileDir "ProfileEnvironment.ps1")
+. (Join-Path $ProfileDir "AiHelper.ps1")
+. (Join-Path $ProfileDir "Aliases.ps1")
 
 Write-Host "1. Initializing Ollama Server and Proxy..." -ForegroundColor Cyan
-Ensure-OllamaServer
+[AiHelper]::EnsureOllamaServer()
 
 Write-Host "`n2. Sending 'hi' via Codex (local Ollama custom provider)..." -ForegroundColor Cyan
 try {
@@ -16,7 +18,6 @@ try {
 
 Write-Host "`n3. Testing Claude-Ollama integration (claude)..." -ForegroundColor Cyan
 try {
-    # Check help/version response to verify execution
     Invoke-Claude-By-Ollama --help
 } catch {
     Write-Warning "Claude wrapper output/error: $_"

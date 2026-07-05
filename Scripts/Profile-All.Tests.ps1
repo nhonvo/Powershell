@@ -16,11 +16,24 @@ function awslocal { $global:awsArgs = $args }
 function tailscale { $global:tailscaleArgs = $args; return "100.115.92.12" }
 
 Describe "Core Profile Functions Validation" {
-    Context "Navigation (20-Navigation.ps1)" {
-        BeforeAll {
-            . (Join-Path $ProfileDir "20-Navigation.ps1")
-        }
+    BeforeAll {
+        . (Join-Path $ProfileDir "TerminalMenu.ps1")
+        . (Join-Path $ProfileDir "ProfileEnvironment.ps1")
+        . (Join-Path $ProfileDir "ProfileNavigator.ps1")
+        . (Join-Path $ProfileDir "SystemHelper.ps1")
+        . (Join-Path $ProfileDir "SshHelper.ps1")
+        . (Join-Path $ProfileDir "DotNetHelper.ps1")
+        . (Join-Path $ProfileDir "GitHelper.ps1")
+        . (Join-Path $ProfileDir "DockerHelper.ps1")
+        . (Join-Path $ProfileDir "AwsHelper.ps1")
+        . (Join-Path $ProfileDir "AiHelper.ps1")
+        . (Join-Path $ProfileDir "AgyAccountManager.ps1")
+        . (Join-Path $ProfileDir "Projects.ps1")
+        . (Join-Path $ProfileDir "ProfileHelp.ps1")
+        . (Join-Path $ProfileDir "Aliases.ps1")
+    }
 
+    Context "Navigation (20-Navigation.ps1)" {
         It "Set-LocationParent navigates up one level" {
             $global:navigatedTo = $null
             Mock Set-Location { param($Path) $global:navigatedTo = $Path }
@@ -39,10 +52,6 @@ Describe "Core Profile Functions Validation" {
     }
 
     Context "System Helpers (30-System.ps1)" {
-        BeforeAll {
-            . (Join-Path $ProfileDir "30-System.ps1")
-        }
-
         It "Get-DiskSpace outputs table format" {
             $disk = Get-DiskSpace
             $disk | Should Not BeNullOrEmpty
@@ -66,10 +75,6 @@ Describe "Core Profile Functions Validation" {
     }
 
     Context "DotNet Cmdlets (50-DotNet.ps1)" {
-        BeforeAll {
-            . (Join-Path $ProfileDir "50-DotNet.ps1")
-        }
-
         It "Remove-BinObj cleans bin and obj folders" {
             $global:itemsDeleted = @()
             Mock Remove-Item {
@@ -98,10 +103,6 @@ Describe "Core Profile Functions Validation" {
     }
 
     Context "Git Cmdlets (51-Git.ps1)" {
-        BeforeAll {
-            . (Join-Path $ProfileDir "51-Git.ps1")
-        }
-
         It "Get-GitStatus runs git status" {
             $global:gitArgs = @()
             Get-GitStatus
@@ -117,10 +118,6 @@ Describe "Core Profile Functions Validation" {
     }
 
     Context "Docker Helpers (52-Docker.ps1)" {
-        BeforeAll {
-            . (Join-Path $ProfileDir "52-Docker.ps1")
-        }
-
         It "Get-DockerContainers lists containers" {
             $global:dockerArgs = @()
             Get-DockerContainers -All
@@ -131,10 +128,6 @@ Describe "Core Profile Functions Validation" {
     }
 
     Context "AWS Commands (53-AWS.ps1)" {
-        BeforeAll {
-            . (Join-Path $ProfileDir "53-AWS.ps1")
-        }
-
         It "Get-S3Buckets lists AWS buckets" {
             $global:awsArgs = @()
             Get-S3Buckets
@@ -144,13 +137,9 @@ Describe "Core Profile Functions Validation" {
     }
 
     Context "Antigravity Multi-Account Manager (61-Antigravity.ps1)" {
-        BeforeAll {
-            . (Join-Path $ProfileDir "61-Antigravity.ps1")
-        }
-
         It "Get-AgyActiveAccount returns current active account" {
             $env:GEMINI_HOME = "C:\Users\TruongNhon\.gemini_account1"
-            $active = Get-AgyActiveAccount
+            $active = [AgyAccountManager]::GetActiveAccount()
             $active | Should Be "account1"
         }
 
@@ -158,7 +147,7 @@ Describe "Core Profile Functions Validation" {
             $target = "C:\Users\Public\.gemini_account2"
             Mock Test-Path { return $true }
             
-            Set-AgyActiveAccount -AccountName "account2" -Temporary
+            [AgyAccountManager]::SetActiveAccount("account2", $true)
             $env:GEMINI_HOME | Should Be $target
         }
     }
