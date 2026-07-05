@@ -23,6 +23,8 @@ Set-Alias -Name myip        -Value Get-PublicIP                -Force
 Set-Alias -Name tree        -Value Get-FileTree                -Force
 Set-Item -Path Alias:\kill -Value Stop-ProcessFriendly -Force -Option AllScope
 Set-Alias -Name commands    -Value Get-CustomCommands          -Force
+Set-Alias -Name ssh-info    -Value Get-SshConnectionInfo       -Force
+Set-Alias -Name ssh-addkey  -Value Add-SshAuthorizedKey        -Force
 
 # --- Git (51-Git) ---
 # Inspect
@@ -95,6 +97,11 @@ Set-Alias -Name ai          -Value Invoke-MultiAgent        -Force
 Set-Alias -Name codex       -Value Invoke-Codex-By-Ollama   -Force
 Set-Alias -Name claude      -Value Invoke-Claude-By-Ollama  -Force
 Set-Alias -Name agm         -Value Start-AntigravityManager -Force
+Set-Alias -Name openclaw    -Value Invoke-OpenClaw-By-Ollama -Force
+Set-Alias -Name clawdbot    -Value Invoke-Clawdbot-By-Ollama -Force
+Set-Alias -Name hermes      -Value Invoke-Hermes-By-Ollama   -Force
+Set-Alias -Name hermesd     -Value Invoke-HermesDesktop-By-Ollama -Force
+Set-Alias -Name model       -Value Set-OllamaModel          -Force
 
 # --- Help shortcuts ---
 Set-Alias -Name cc -Value Get-CustomCommands -Force

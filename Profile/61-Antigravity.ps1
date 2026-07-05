@@ -8,10 +8,16 @@
 Write-Host "🛸 Loading Antigravity Multi-Account Manager..." -ForegroundColor Cyan
 
 # --- Core Configurations ---
-$script:AgySourceHome = Join-Path $env:USERPROFILE ".gemini"
-$script:AgyAccountPrefix = Join-Path $env:USERPROFILE ".gemini_"
+$script:AgySourceHome = "C:\Users\Public\.gemini"
+$script:AgyAccountPrefix = "C:\Users\Public\.gemini_"
 $script:AgyActiveAccountFile = Join-Path $script:AgySourceHome "active_account.txt"
-$script:AgyBinaryPath = Join-Path $env:LOCALAPPDATA "agy\bin\agy.exe"
+$script:AgyBinaryPath = "C:\ProgramData\agy\bin\agy.exe"
+
+# Dynamically add global agy binary directory to PATH for the current session
+$globalBinDir = "C:\ProgramData\agy\bin"
+if ($env:PATH -split ';' -notcontains $globalBinDir) {
+    $env:PATH = "$globalBinDir;$env:PATH"
+}
 
 # --- Helper Functions ---
 
@@ -254,7 +260,12 @@ function Invoke-AgyWithAccount {
         [string[]]$Args
     )
 
-    $targetHome = if ($AccountName -eq "default") { $script:AgySourceHome } else { "$($script:AgyAccountPrefix)$AccountName" }
+        $targetHome = ""
+    if ($AccountName -eq "default") {
+        $targetHome = $script:AgySourceHome
+    } else {
+        $targetHome = "$($script:AgyAccountPrefix)$AccountName"
+    }
     if (-not (Test-Path $targetHome)) {
         Write-Error "Account '$AccountName' does not exist."
         return
@@ -309,9 +320,9 @@ function Show-AgyAccounts {
     foreach ($acc in $accounts) {
         $path = if ($acc -eq "default") { $script:AgySourceHome } else { "$($script:AgyAccountPrefix)$acc" }
         if ($acc -eq $active) {
-            Write-Host "  ▶  $($acc,-15) ($path)" -ForegroundColor Green
+            Write-Host "  ▶  $("{0,-15}" -f $acc) ($path)" -ForegroundColor Green
         } else {
-            Write-Host "     $($acc,-15) ($path)" -ForegroundColor DarkGray
+            Write-Host "     $("{0,-15}" -f $acc) ($path)" -ForegroundColor DarkGray
         }
     }
     Write-Host ""
@@ -359,7 +370,12 @@ function Reset-AgyCredentials {
         [string]$AccountName
     )
 
-    $targetHome = if ($AccountName -eq "default") { $script:AgySourceHome } else { "$($script:AgyAccountPrefix)$AccountName" }
+        $targetHome = ""
+    if ($AccountName -eq "default") {
+        $targetHome = $script:AgySourceHome
+    } else {
+        $targetHome = "$($script:AgyAccountPrefix)$AccountName"
+    }
     if (-not (Test-Path $targetHome)) {
         Write-Error "Account '$AccountName' does not exist."
         return
@@ -397,12 +413,53 @@ Manage and execute Antigravity CLI configurations across multiple isolated accou
 .CATEGORY
 AI Tools
 #>
+function Select-AgyAccountInteractive {
+    [CmdletBinding()]
+    param()
+
+    $accounts = Get-AgyAccounts
+    $active = Get-AgyActiveAccount
+
+    Write-Host ""
+    Write-Host "ðŸ›¸ Select Antigravity Account:" -ForegroundColor Cyan
+    Write-Host "=============================" -ForegroundColor Cyan
+    
+    for ($i = 0; $i -lt $accounts.Count; $i++) {
+        $acc = $accounts[$i]
+        $paddedAcc = $("{0,-15}" -f $acc)
+        if ($acc -eq $active) {
+            Write-Host "  â–¶  [$($i + 1)] $paddedAcc (Active)" -ForegroundColor Green
+        } else {
+            Write-Host "     [$($i + 1)] $paddedAcc" -ForegroundColor Gray
+        }
+    }
+    Write-Host "     [A] Add New Account" -ForegroundColor Cyan
+    Write-Host "     [Q] Cancel / Exit" -ForegroundColor Red
+    Write-Host ""
+
+    $choice = Read-Host "Select account [1-$($accounts.Count)] or option"
+    if ($choice -eq "A" -or $choice -eq "a") {
+        $name = Read-Host "Enter new account name"
+        if (-not [string]::IsNullOrWhiteSpace($name)) {
+            Add-AgyAccount -AccountName $name
+        }
+    } elseif ($choice -eq "Q" -or $choice -eq "q" -or [string]::IsNullOrWhiteSpace($choice)) {
+        Write-Host "Cancelled." -ForegroundColor Yellow
+    } else {
+        if ([int]::TryParse($choice, [ref]$idx) -and $idx -ge 1 -and $idx -le $accounts.Count) {
+            Set-AgyActiveAccount -AccountName $accounts[$idx - 1]
+        } else {
+            Write-Error "Invalid selection."
+        }
+    }
+}
+
 function Invoke-AgyAccount {
     [CmdletBinding()]
     param(
         [Parameter(Position=0)]
-        [ValidateSet("list", "lst", "show", "use", "add", "create", "remove", "delete", "del", "run", "exec", "logout", "signout", "login", "signin")]
-        [string]$Action = "list",
+        [ValidateSet("list", "lst", "show", "use", "add", "create", "remove", "delete", "del", "run", "exec", "logout", "signout", "login", "signin", "interactive", "select")]
+        [string]$Action = "interactive",
 
         [Parameter(Position=1)]
         [string]$Account,
@@ -414,12 +471,18 @@ function Invoke-AgyAccount {
     )
 
     switch ($Action) {
+        "interactive" {
+            Select-AgyAccountInteractive
+        }
+        "select" {
+            Select-AgyAccountInteractive
+        }
         { $_ -in "list", "lst", "show" } {
             Show-AgyAccounts
         }
         "use" {
             if ([string]::IsNullOrWhiteSpace($Account)) {
-                Write-Error "Please specify an account name to switch to."
+                Select-AgyAccountInteractive
                 return
             }
             Set-AgyActiveAccount -AccountName $Account -Temporary:$Temporary

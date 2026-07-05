@@ -9,10 +9,38 @@ Ensure-OllamaServer
 
 Write-Host "`n2. Sending 'hi' via Codex (local Ollama custom provider)..." -ForegroundColor Cyan
 try {
-    # Send 'hi' to Codex CLI and print output
     "" | Invoke-Codex-By-Ollama exec "hi" --ephemeral
 } catch {
     Write-Error "Failed to run Codex: $_"
+}
+
+Write-Host "`n3. Testing Claude-Ollama integration (claude)..." -ForegroundColor Cyan
+try {
+    # Check help/version response to verify execution
+    Invoke-Claude-By-Ollama --help
+} catch {
+    Write-Warning "Claude wrapper output/error: $_"
+}
+
+Write-Host "`n4. Testing OpenClaw integration (openclaw)..." -ForegroundColor Cyan
+try {
+    Invoke-OpenClaw-By-Ollama --help
+} catch {
+    Write-Warning "OpenClaw wrapper output/error: $_"
+}
+
+Write-Host "`n5. Testing Hermes integration (hermes)..." -ForegroundColor Cyan
+try {
+    Invoke-Hermes-By-Ollama --help
+} catch {
+    Write-Warning "Hermes wrapper output/error: $_"
+}
+
+Write-Host "`n6. Testing Hermes Desktop integration (hermesd)..." -ForegroundColor Cyan
+try {
+    Invoke-HermesDesktop-By-Ollama --help
+} catch {
+    Write-Warning "Hermes Desktop wrapper output/error: $_"
 }
 
 Write-Host "`nFlow verification completed." -ForegroundColor Green

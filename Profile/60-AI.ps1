@@ -7,6 +7,18 @@ Write-Host "[AI] Loading AI Tools..." -ForegroundColor Cyan
 
 $Script:AiToolsDir = $PSScriptRoot
 
+$script:OllamaDefaultModelFile = Join-Path $env:USERPROFILE ".ollama_default_model"
+$script:OllamaDefaultModel = "qwen3:1.7b"
+
+if (Test-Path $script:OllamaDefaultModelFile) {
+    try {
+        $savedModel = (Get-Content $script:OllamaDefaultModelFile -ErrorAction SilentlyContinue).Trim()
+        if ($savedModel) {
+            $script:OllamaDefaultModel = $savedModel
+        }
+    } catch {}
+}
+
 # --- Unified AI Router ---
 
 <#
@@ -149,14 +161,18 @@ function Ensure-OllamaServer {
 function Invoke-Claude-By-Ollama {
     Ensure-OllamaServer
     
+    $oldOllamaHost = $env:OLLAMA_HOST
+    $oldAnthropicBaseUrl = $env:ANTHROPIC_BASE_URL
     $oldNodeOptions = $env:NODE_OPTIONS
     try {
+        $env:OLLAMA_HOST = "127.0.0.1:11434"
+        $env:ANTHROPIC_BASE_URL = "http://127.0.0.1:11434"
         # Force Node.js (Claude Code) to resolve localhost to IPv4 (127.0.0.1) instead of IPv6 ([::1])
         $env:NODE_OPTIONS = if ($env:NODE_OPTIONS) { "$env:NODE_OPTIONS --dns-result-order=ipv4first" } else { "--dns-result-order=ipv4first" }
         
         $flags = @()
         if ($args -notcontains "--model") {
-            $flags += "--model", "qwen3:1.7b"
+            $flags += "--model", $script:OllamaDefaultModel
         }
         
         if ($MyInvocation.ExpectingInput) {
@@ -165,6 +181,8 @@ function Invoke-Claude-By-Ollama {
             & ollama.exe launch claude @flags @args
         }
     } finally {
+        $env:OLLAMA_HOST = $oldOllamaHost
+        $env:ANTHROPIC_BASE_URL = $oldAnthropicBaseUrl
         $env:NODE_OPTIONS = $oldNodeOptions
     }
 }
@@ -172,10 +190,12 @@ function Invoke-Claude-By-Ollama {
 function Invoke-Codex-By-Ollama {
     Ensure-OllamaServer
     
+    $oldOllamaHost = $env:OLLAMA_HOST
     $oldBaseUrl = $env:OPENAI_BASE_URL
     $oldApiKey = $env:OPENAI_API_KEY
     $oldNodeOptions = $env:NODE_OPTIONS
     try {
+        $env:OLLAMA_HOST = "127.0.0.1:11434"
         $env:OPENAI_BASE_URL = "http://127.0.0.1:11435/v1"
         $env:OPENAI_API_KEY = "ollama"
         # Force Node.js (Codex CLI) to resolve localhost to IPv4 (127.0.0.1) instead of IPv6 ([::1])
@@ -186,7 +206,7 @@ function Invoke-Codex-By-Ollama {
             $flags += "-c", "model_provider=ollama_custom"
         }
         if ($args -notcontains "--model") {
-            $flags += "--model", "qwen3:1.7b"
+            $flags += "--model", $script:OllamaDefaultModel
         }
         
         if ($MyInvocation.ExpectingInput) {
@@ -195,6 +215,7 @@ function Invoke-Codex-By-Ollama {
             & codex.cmd @flags @args
         }
     } finally {
+        $env:OLLAMA_HOST = $oldOllamaHost
         $env:OPENAI_BASE_URL = $oldBaseUrl
         $env:OPENAI_API_KEY = $oldApiKey
         $env:NODE_OPTIONS = $oldNodeOptions
@@ -208,11 +229,17 @@ function Invoke-OpenClaw-By-Ollama {
     )
     Ensure-OllamaServer
     
-    $flags = @()
-    if ($ArgsList -notcontains "--model") {
-        $flags += "--model", "qwen3:1.7b"
+    $oldOllamaHost = $env:OLLAMA_HOST
+    try {
+        $env:OLLAMA_HOST = "127.0.0.1:11434"
+        $flags = @()
+        if ($ArgsList -notcontains "--model") {
+            $flags += "--model", $script:OllamaDefaultModel
+        }
+        & ollama.exe launch openclaw @flags @ArgsList
+    } finally {
+        $env:OLLAMA_HOST = $oldOllamaHost
     }
-    & ollama.exe launch openclaw @flags @ArgsList
 }
 
 # Note: aliases for clawdbot also supported
@@ -229,11 +256,19 @@ function Invoke-Hermes-By-Ollama {
     param(
         [Parameter(ValueFromRemainingArguments=$true)][string[]]$ArgsList
     )
-    $flags = @()
-    if ($ArgsList -notcontains "--model") {
-        $flags += "--model", "qwen3:1.7b"
+    Ensure-OllamaServer
+    
+    $oldOllamaHost = $env:OLLAMA_HOST
+    try {
+        $env:OLLAMA_HOST = "127.0.0.1:11434"
+        $flags = @()
+        if ($ArgsList -notcontains "--model") {
+            $flags += "--model", $script:OllamaDefaultModel
+        }
+        & ollama.exe launch hermes @flags @ArgsList
+    } finally {
+        $env:OLLAMA_HOST = $oldOllamaHost
     }
-    & ollama.exe launch hermes @flags @ArgsList
 }
 
 function Invoke-HermesDesktop-By-Ollama {
@@ -241,11 +276,19 @@ function Invoke-HermesDesktop-By-Ollama {
     param(
         [Parameter(ValueFromRemainingArguments=$true)][string[]]$ArgsList
     )
-    $flags = @()
-    if ($ArgsList -notcontains "--model") {
-        $flags += "--model", "qwen3:1.7b"
+    Ensure-OllamaServer
+    
+    $oldOllamaHost = $env:OLLAMA_HOST
+    try {
+        $env:OLLAMA_HOST = "127.0.0.1:11434"
+        $flags = @()
+        if ($ArgsList -notcontains "--model") {
+            $flags += "--model", $script:OllamaDefaultModel
+        }
+        & ollama.exe launch hermes-desktop @flags @ArgsList
+    } finally {
+        $env:OLLAMA_HOST = $oldOllamaHost
     }
-    & ollama.exe launch hermes-desktop @flags @ArgsList
 }
 
 # --- Ollama Server Initialization ---
@@ -264,7 +307,7 @@ function Initialize-OllamaServer {
         $proc = Get-Process -Id $pidToKill -ErrorAction SilentlyContinue
         if ($proc) {
             Write-Host "[Ollama] Killing existing process '$($proc.Name)' (PID $pidToKill) on port $port..." -ForegroundColor Yellow
-            Stop-Process -Id $pidToKill -Force
+            Stop-Process -Id $pidToKill -Force -ErrorAction SilentlyContinue
             Start-Sleep -Seconds 1
         }
     } else {
@@ -273,15 +316,13 @@ function Initialize-OllamaServer {
     
     Write-Host "[Ollama] Starting Ollama server..." -ForegroundColor Cyan
     $oldHost = $env:OLLAMA_HOST
-    $env:OLLAMA_HOST = "[::]:$port"
+    $env:OLLAMA_HOST = "127.0.0.1:$port"
     
     $ollamaCmd = Get-Command "ollama" -ErrorAction SilentlyContinue
     $ollamaPath = if ($ollamaCmd) { $ollamaCmd.Source } else { "ollama" }
     
-    $logPath = Join-Path $env:TEMP "ollama_server.log"
-    if (Test-Path $logPath) { Remove-Item $logPath -Force -ErrorAction SilentlyContinue }
-    
-    Start-Process -FilePath $ollamaPath -ArgumentList "serve" -WindowStyle Hidden -RedirectStandardOutput $logPath -RedirectStandardError $logPath -ErrorAction SilentlyContinue
+    # Start Ollama server in a new visible window so the user can check the logs directly
+    Start-Process -FilePath $ollamaPath -ArgumentList "serve" -WindowStyle Normal -ErrorAction SilentlyContinue
     
     # Wait for server to respond
     $retry = 0
@@ -340,13 +381,78 @@ function Install-AIIntegrations {
     }
 }
 
-# --- Aliases ---
+<#
+.SYNOPSIS
+Lists local Ollama models and allows setting the default model used by the local wrapper integrations.
+.EXAMPLE
+  model-o
+  model-o qwen3:4b
+.CATEGORY
+  AI Tools
+#>
+function Set-OllamaModel {
+    [CmdletBinding()]
+    param(
+        [Parameter(Position=0)]
+        [string]$ModelName
+    )
 
-Set-Alias -Name claude-o -Value Invoke-Claude-By-Ollama
-Set-Alias -Name codex-o -Value Invoke-Codex-By-Ollama
-Set-Alias -Name openclaw-o -Value Invoke-OpenClaw-By-Ollama
-Set-Alias -Name clawdbot-o -Value Invoke-Clawdbot-By-Ollama
-Set-Alias -Name hermes-o -Value Invoke-Hermes-By-Ollama
-Set-Alias -Name hermesd-o -Value Invoke-HermesDesktop-By-Ollama
+    $ollamaCmd = Get-Command "ollama" -ErrorAction SilentlyContinue
+    if (-not $ollamaCmd) {
+        Write-Error "Ollama is not installed or not in PATH."
+        return
+    }
+    
+    $localModels = (ollama list | Select-Object -Skip 1 | ForEach-Object {
+        $parts = $_ -split '\s+'
+        if ($parts[0] -and $parts[0] -ne "") { $parts[0] }
+    }) | Where-Object { $_ }
+
+    if (-not $localModels) {
+        Write-Error "No local Ollama models found. Please download one using 'ollama pull'."
+        return
+    }
+
+    if ($ModelName) {
+        if ($ModelName -in $localModels) {
+            $script:OllamaDefaultModel = $ModelName
+            $script:OllamaDefaultModel | Out-File -FilePath $script:OllamaDefaultModelFile -Force -Encoding utf8
+            Write-Host "🟢 Default Ollama model set to '$ModelName'." -ForegroundColor Green
+        } else {
+            Write-Error "Model '$ModelName' is not available locally. Available models: $($localModels -join ', ')"
+        }
+        return
+    }
+
+    # Interactive selector
+    Write-Host ""
+    Write-Host "🤖 Select Default Ollama Model:" -ForegroundColor Cyan
+    Write-Host "==============================" -ForegroundColor Cyan
+    for ($i = 0; $i -lt $localModels.Count; $i++) {
+        $m = $localModels[$i]
+        if ($m -eq $script:OllamaDefaultModel) {
+            Write-Host "  ▶  [$($i + 1)] $m (Active)" -ForegroundColor Green
+        } else {
+            Write-Host "     [$($i + 1)] $m" -ForegroundColor Gray
+        }
+    }
+    Write-Host "     [Q] Cancel / Exit" -ForegroundColor Red
+    Write-Host ""
+
+    $choice = Read-Host "Select model [1-$($localModels.Count)]"
+    if ($choice -eq "Q" -or $choice -eq "q" -or [string]::IsNullOrWhiteSpace($choice)) {
+        Write-Host "Cancelled." -ForegroundColor Yellow
+        return
+    }
+
+    if ([int]::TryParse($choice, [ref]$idx) -and $idx -ge 1 -and $idx -le $localModels.Count) {
+        $selectedModel = $localModels[$idx - 1]
+        $script:OllamaDefaultModel = $selectedModel
+        $selectedModel | Out-File -FilePath $script:OllamaDefaultModelFile -Force -Encoding utf8
+        Write-Host "🟢 Default Ollama model set to '$selectedModel'." -ForegroundColor Green
+    } else {
+        Write-Error "Invalid selection."
+    }
+}
 
 #endregion
