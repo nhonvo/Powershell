@@ -313,9 +313,9 @@ class AgyAccountManager {
         foreach ($acc in $accounts) {
             $path = if ($acc -eq "default") { [AgyAccountManager]::AgySourceHome } else { "$([AgyAccountManager]::AgyAccountPrefix)$acc" }
             if ($acc -eq $active) {
-                Write-Host "  ▶  $("{0,-15}" -f $acc) ($path)" -ForegroundColor Green
+                Write-Host "  ▶  $('{0,-15}' -f $acc) ($path)" -ForegroundColor Green
             } else {
-                Write-Host "     $("{0,-15}" -f $acc) ($path)" -ForegroundColor DarkGray
+                Write-Host "     $('{0,-15}' -f $acc) ($path)" -ForegroundColor DarkGray
             }
         }
         Write-Host ""
@@ -383,17 +383,9 @@ class AgyAccountManager {
                 Write-Warning "No secondary accounts available to delete."
                 return
             }
-            Write-Host ""
-            Write-Host "❌ Select Account to Delete:" -ForegroundColor Red
-            for ($i = 0; $i -lt $deletable.Count; $i++) {
-                Write-Host "  [$($i + 1)] $($deletable[$i])" -ForegroundColor Gray
-            }
-            $delChoice = Read-Host "Select account to delete [1-$($deletable.Count)]"
-            $dIdx = 0
-            if ([int]::TryParse($delChoice, [ref]$dIdx) -and $dIdx -ge 1 -and $dIdx -le $deletable.Count) {
-                [AgyAccountManager]::RemoveAccount($deletable[$dIdx - 1])
-            } else {
-                Write-Error "Invalid selection."
+            $selectedDel = ([type]"TerminalMenu")::Show("Delete Antigravity Account", $deletable, 0)
+            if ($selectedDel -ge 0) {
+                [AgyAccountManager]::RemoveAccount($deletable[$selectedDel])
             }
         }
     }
