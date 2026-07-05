@@ -67,7 +67,7 @@ class TerminalMenu {
         $startRow = [Console]::CursorTop
         $startCol = [Console]::CursorLeft
         $lastLinesCount = 0
-        $width = [Console]::WindowWidth - 1
+        $width = 0
 
         # Hide cursor
         $oldCursorVisible = $null
@@ -78,6 +78,7 @@ class TerminalMenu {
 
         try {
             while ($true) {
+                $width = [Console]::WindowWidth - 1
                 # Filter items
                 $cleanFilter = $filterText
                 if ($filterText.StartsWith("/")) {
@@ -128,8 +129,10 @@ class TerminalMenu {
                     $null = $outputLines.Add([ColoredLine]@{ Text = "     [No items matching filter]"; Color = $Global:TuiColors.Alert })
                     $null = $outputLines.Add([ColoredLine]@{ Text = ""; Color = "Gray" })
                 } else {
-                    # Render window of max 12 items
-                    $maxVisible = 12
+                    # Render window dynamically based on console height
+                    $nonItemLines = 10
+                    if ($searchMode) { $nonItemLines += 2 }
+                    $maxVisible = [Math]::Min(12, [Math]::Max(3, ([Console]::WindowHeight - $nonItemLines)))
                     $start = 0
                     if ($currentIndex -ge $maxVisible) {
                         $start = $currentIndex - $maxVisible + 1
@@ -163,9 +166,13 @@ class TerminalMenu {
                     $helpStr = "Type to filter list. [Enter] to select suggestion, [Esc] to exit search mode."
                 }
                 $null = $outputLines.Add([ColoredLine]@{ Text = $helpStr; Color = $Global:TuiColors.Footer })
-
                 # Write out compiled lines inline
-                [Console]::SetCursorPosition($startCol, $startRow)
+                try {
+                    [Console]::SetCursorPosition($startCol, $startRow)
+                } catch {
+                    $startRow = [Console]::CursorTop
+                    $startCol = 0
+                }
                 foreach ($line in $outputLines) {
                     $txt = $line.Text
                     $padded = if ($txt.Length -lt $width) { $txt + (" " * ($width - $txt.Length)) } else { $txt.Substring(0, $width) }
@@ -176,7 +183,7 @@ class TerminalMenu {
                 $diff = $lastLinesCount - $outputLines.Count
                 if ($diff -gt 0) {
                     for ($d = 0; $d -lt $diff; $d++) {
-                        Write-Host (" " * $width)
+                        Write-Host (" " * ([Console]::WindowWidth - 1))
                     }
                 }
                 $lastLinesCount = $outputLines.Count
@@ -264,7 +271,7 @@ class TerminalMenu {
                 # Clear all menu lines from screen to restore prompt
                 [Console]::SetCursorPosition($startCol, $startRow)
                 for ($d = 0; $d -lt $lastLinesCount; $d++) {
-                    Write-Host (" " * $width)
+                    Write-Host (" " * ([Console]::WindowWidth - 1))
                 }
                 [Console]::SetCursorPosition($startCol, $startRow)
                 if ($null -ne $oldCursorVisible) {
@@ -288,7 +295,7 @@ class TerminalMenu {
         $startRow = [Console]::CursorTop
         $startCol = [Console]::CursorLeft
         $lastLinesCount = 0
-        $width = [Console]::WindowWidth - 1
+        $width = 0
 
         # Hide cursor
         $oldCursorVisible = $null
@@ -299,6 +306,7 @@ class TerminalMenu {
 
         try {
             while ($true) {
+                $width = [Console]::WindowWidth - 1
                 # Resolve list of MenuItems dynamically based on filter text
                 $cleanFilter = $filterText
                 if ($filterText.StartsWith("/")) {
@@ -345,8 +353,10 @@ class TerminalMenu {
                     $null = $outputLines.Add([ColoredLine]@{ Text = ""; Color = "Gray" })
                     $null = $outputLines.Add([ColoredLine]@{ Text = ""; Color = "Gray" }) # Spacing placeholder
                 } else {
-                    # Render window of max 12 items
-                    $maxVisible = 12
+                    # Render window dynamically based on console height
+                    $nonItemLines = 10
+                    if ($searchMode) { $nonItemLines += 2 }
+                    $maxVisible = [Math]::Min(12, [Math]::Max(3, ([Console]::WindowHeight - $nonItemLines)))
                     $start = 0
                     if ($currentIndex -ge $maxVisible) {
                         $start = $currentIndex - $maxVisible + 1
@@ -397,9 +407,13 @@ class TerminalMenu {
                     $helpStr = "Type to filter list. [Enter] to select suggestion, [Esc] to exit search mode."
                 }
                 $null = $outputLines.Add([ColoredLine]@{ Text = $helpStr; Color = $Global:TuiColors.Footer })
-
                 # Write out compiled lines inline
-                [Console]::SetCursorPosition($startCol, $startRow)
+                try {
+                    [Console]::SetCursorPosition($startCol, $startRow)
+                } catch {
+                    $startRow = [Console]::CursorTop
+                    $startCol = 0
+                }
                 foreach ($line in $outputLines) {
                     $txt = $line.Text
                     $padded = if ($txt.Length -lt $width) { $txt + (" " * ($width - $txt.Length)) } else { $txt.Substring(0, $width) }
@@ -410,7 +424,7 @@ class TerminalMenu {
                 $diff = $lastLinesCount - $outputLines.Count
                 if ($diff -gt 0) {
                     for ($d = 0; $d -lt $diff; $d++) {
-                        Write-Host (" " * $width)
+                        Write-Host (" " * ([Console]::WindowWidth - 1))
                     }
                 }
                 $lastLinesCount = $outputLines.Count
@@ -522,7 +536,7 @@ class TerminalMenu {
                 # Clear all menu lines from screen to restore prompt
                 [Console]::SetCursorPosition($startCol, $startRow)
                 for ($d = 0; $d -lt $lastLinesCount; $d++) {
-                    Write-Host (" " * $width)
+                    Write-Host (" " * ([Console]::WindowWidth - 1))
                 }
                 [Console]::SetCursorPosition($startCol, $startRow)
                 if ($null -ne $oldCursorVisible) {
