@@ -55,12 +55,13 @@ $aiItems = @(
     @{ Type = "Function"; Name = "Initialize-OllamaServer" }
     @{ Type = "Function"; Name = "Install-AIIntegrations" }
     
-    @{ Type = "Alias"; Name = "claude-o" }
-    @{ Type = "Alias"; Name = "codex-o" }
-    @{ Type = "Alias"; Name = "openclaw-o" }
-    @{ Type = "Alias"; Name = "clawdbot-o" }
-    @{ Type = "Alias"; Name = "hermes-o" }
-    @{ Type = "Alias"; Name = "hermesd-o" }
+    @{ Type = "Alias"; Name = "claude" }
+    @{ Type = "Alias"; Name = "codex" }
+    @{ Type = "Alias"; Name = "openclaw" }
+    @{ Type = "Alias"; Name = "clawdbot" }
+    @{ Type = "Alias"; Name = "hermes" }
+    @{ Type = "Alias"; Name = "hermesd" }
+    @{ Type = "Alias"; Name = "model" }
 )
 
 foreach ($item in $aiItems) {
@@ -84,26 +85,26 @@ foreach ($item in $aiItems) {
 # 5. Dry-run Invocation Tests (non-blocking)
 Write-Host "`nPerforming dry-run tests on wrapper functions..." -ForegroundColor Cyan
 
-Write-Host "  Testing claude-o (--version)..."
+Write-Host "  Testing claude (--version)..."
 try {
-    $out = claude-o --version 2>&1
+    $out = claude --version 2>&1
     Write-Host "    Response: $out" -ForegroundColor Gray
 } catch {
     Write-Warning "    Failed: $_"
 }
 
-Write-Host "  Testing codex-o (--help)..."
+Write-Host "  Testing codex (--help)..."
 try {
     # Just grab first line of help to verify execution
-    $out = (codex-o --help 2>&1 | Select-Object -First 1)
+    $out = (codex --help 2>&1 | Select-Object -First 1)
     Write-Host "    Response: $out" -ForegroundColor Gray
 } catch {
     Write-Warning "    Failed: $_"
 }
 
-Write-Host "  Testing openclaw-o (--help)..."
+Write-Host "  Testing openclaw (--help)..."
 try {
-    $out = (openclaw-o --help 2>&1 | Select-Object -First 1)
+    $out = (openclaw --help 2>&1 | Select-Object -First 1)
     Write-Host "    Response: $out" -ForegroundColor Gray
 } catch {
     Write-Warning "    Failed: $_"
