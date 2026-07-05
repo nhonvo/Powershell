@@ -269,6 +269,14 @@ function Initialize-OllamaServer {
 
 # --- AI Integrations Installer ---
 
+function Invoke-Npm {
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromRemainingArguments=$true)][string[]]$ArgsList
+    )
+    & npm @ArgsList
+}
+
 function Install-AIIntegrations {
     [CmdletBinding()]
     param()
@@ -276,7 +284,7 @@ function Install-AIIntegrations {
     # 1. Claude Code
     if (-not (Get-Command "claude" -ErrorAction SilentlyContinue)) {
         Write-Host "[AI] Installing Claude Code via npm..." -ForegroundColor Cyan
-        npm install -g @anthropic-ai/claude-code
+        Invoke-Npm install -g @anthropic-ai/claude-code
     } else {
         Write-Host "[AI] Claude Code is already installed." -ForegroundColor Green
     }
@@ -284,7 +292,7 @@ function Install-AIIntegrations {
     # 2. Codex CLI
     if (-not (Get-Command "codex" -ErrorAction SilentlyContinue)) {
         Write-Host "[AI] Installing Codex CLI via npm..." -ForegroundColor Cyan
-        npm install -g @openai/codex
+        Invoke-Npm install -g @openai/codex
     } else {
         Write-Host "[AI] Codex CLI is already installed." -ForegroundColor Green
     }
@@ -292,7 +300,7 @@ function Install-AIIntegrations {
     # 3. OpenClaw
     if (-not (Get-Command "openclaw" -ErrorAction SilentlyContinue)) {
         Write-Host "[AI] Installing OpenClaw via npm..." -ForegroundColor Cyan
-        npm install -g openclaw
+        Invoke-Npm install -g openclaw
     } else {
         Write-Host "[AI] OpenClaw is already installed." -ForegroundColor Green
     }

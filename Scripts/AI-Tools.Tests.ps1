@@ -16,11 +16,11 @@ Describe "AI Tools Wrapper Functions" {
         
         It "restarts the server if Ollama is not running" {
             Mock Invoke-RestMethod { throw "Connection refused" }
-            $script:initCalled = $false
-            Mock Initialize-OllamaServer { $script:initCalled = $true }
+            $global:initCalled = $false
+            Mock Initialize-OllamaServer { $global:initCalled = $true }
             
             Ensure-OllamaServer
-            $script:initCalled | Should Be $true
+            $global:initCalled | Should Be $true
         }
     }
 
@@ -30,21 +30,21 @@ Describe "AI Tools Wrapper Functions" {
             Mock Get-NetTCPConnection {
                 return [PSCustomObject]@{ OwningProcess = 99999 }
             }
-            $script:killed = $false
+            $global:killed = $false
             Mock Get-Process {
                 return [PSCustomObject]@{ Id = 99999; Name = "ollama" }
             }
-            Mock Stop-Process { $script:killed = $true }
+            Mock Stop-Process { $global:killed = $true }
             
             # Mock Start-Process and REST method
-            $script:started = $false
-            Mock Start-Process { $script:started = $true }
+            $global:started = $false
+            Mock Start-Process { $global:started = $true }
             Mock Invoke-RestMethod { return "Ollama is running" }
             
             Initialize-OllamaServer
             
-            $script:killed | Should Be $true
-            $script:started | Should Be $true
+            $global:killed | Should Be $true
+            $global:started | Should Be $true
         }
     }
     
@@ -52,21 +52,21 @@ Describe "AI Tools Wrapper Functions" {
         It "configures NODE_OPTIONS and launches claude with default model" {
             Mock Ensure-OllamaServer {}
             
-            $script:commandRun = $null
-            $script:argsPassed = $null
+            $global:commandRun = $null
+            $global:argsPassed = $null
             
             Mock ollama.exe {
-                $script:commandRun = "ollama.exe"
-                $script:argsPassed = $args
+                $global:commandRun = "ollama.exe"
+                $global:argsPassed = $args
             }
             
             Invoke-Claude-By-Ollama
             
-            $script:commandRun | Should Be "ollama.exe"
-            $script:argsPassed -contains "launch" | Should Be $true
-            $script:argsPassed -contains "claude" | Should Be $true
-            $script:argsPassed -contains "--model" | Should Be $true
-            $script:argsPassed -contains "qwen3:1.7b" | Should Be $true
+            $global:commandRun | Should Be "ollama.exe"
+            $global:argsPassed -contains "launch" | Should Be $true
+            $global:argsPassed -contains "claude" | Should Be $true
+            $global:argsPassed -contains "--model" | Should Be $true
+            $global:argsPassed -contains "qwen3:1.7b" | Should Be $true
         }
 
         It "passes custom parameters and handles NODE_OPTIONS cleanup" {
@@ -85,22 +85,22 @@ Describe "AI Tools Wrapper Functions" {
         It "sets environment variables and launches codex" {
             Mock Ensure-OllamaServer {}
             
-            $script:commandRun = $null
-            $script:argsPassed = $null
+            $global:commandRun = $null
+            $global:argsPassed = $null
             
             Mock codex.cmd {
-                $script:commandRun = "codex.cmd"
-                $script:argsPassed = $args
+                $global:commandRun = "codex.cmd"
+                $global:argsPassed = $args
             }
             
             Invoke-Codex-By-Ollama
             
-            $script:commandRun | Should Be "codex.cmd"
-            $script:argsPassed -contains "--oss" | Should Be $true
-            $script:argsPassed -contains "--local-provider" | Should Be $true
-            $script:argsPassed -contains "ollama" | Should Be $true
-            $script:argsPassed -contains "--model" | Should Be $true
-            $script:argsPassed -contains "qwen3:1.7b" | Should Be $true
+            $global:commandRun | Should Be "codex.cmd"
+            $global:argsPassed -contains "--oss" | Should Be $true
+            $global:argsPassed -contains "--local-provider" | Should Be $true
+            $global:argsPassed -contains "ollama" | Should Be $true
+            $global:argsPassed -contains "--model" | Should Be $true
+            $global:argsPassed -contains "qwen3:1.7b" | Should Be $true
         }
     }
 
@@ -108,19 +108,19 @@ Describe "AI Tools Wrapper Functions" {
         It "launches openclaw with the default model" {
             Mock Ensure-OllamaServer {}
             
-            $script:commandRun = $null
-            $script:argsPassed = $null
+            $global:commandRun = $null
+            $global:argsPassed = $null
             
             Mock ollama.exe {
-                $script:commandRun = "ollama.exe"
-                $script:argsPassed = $args
+                $global:commandRun = "ollama.exe"
+                $global:argsPassed = $args
             }
             
             Invoke-OpenClaw-By-Ollama
             
-            $script:argsPassed -contains "launch" | Should Be $true
-            $script:argsPassed -contains "openclaw" | Should Be $true
-            $script:argsPassed -contains "qwen3:1.7b" | Should Be $true
+            $global:argsPassed -contains "launch" | Should Be $true
+            $global:argsPassed -contains "openclaw" | Should Be $true
+            $global:argsPassed -contains "qwen3:1.7b" | Should Be $true
         }
     }
 
@@ -128,19 +128,19 @@ Describe "AI Tools Wrapper Functions" {
         It "launches hermes with the default model" {
             Mock Ensure-OllamaServer {}
             
-            $script:commandRun = $null
-            $script:argsPassed = $null
+            $global:commandRun = $null
+            $global:argsPassed = $null
             
             Mock ollama.exe {
-                $script:commandRun = "ollama.exe"
-                $script:argsPassed = $args
+                $global:commandRun = "ollama.exe"
+                $global:argsPassed = $args
             }
             
             Invoke-Hermes-By-Ollama
             
-            $script:argsPassed -contains "launch" | Should Be $true
-            $script:argsPassed -contains "hermes" | Should Be $true
-            $script:argsPassed -contains "qwen3:1.7b" | Should Be $true
+            $global:argsPassed -contains "launch" | Should Be $true
+            $global:argsPassed -contains "hermes" | Should Be $true
+            $global:argsPassed -contains "qwen3:1.7b" | Should Be $true
         }
     }
 
@@ -148,17 +148,17 @@ Describe "AI Tools Wrapper Functions" {
         It "installs missing integrations via npm" {
             Mock Get-Command { return $null }
             
-            $script:npmCalls = @()
-            Mock npm {
-                $script:npmCalls += ,$args
+            $global:npmCalls = @()
+            Mock Invoke-Npm {
+                $global:npmCalls += ,$ArgsList
             }
             
             Install-AIIntegrations
             
-            $script:npmCalls.Count | Should Be 3
-            $script:npmCalls[0] -contains "@anthropic-ai/claude-code" | Should Be $true
-            $script:npmCalls[1] -contains "@openai/codex" | Should Be $true
-            $script:npmCalls[2] -contains "openclaw" | Should Be $true
+            $global:npmCalls.Count | Should Be 3
+            $global:npmCalls[0] -contains "@anthropic-ai/claude-code" | Should Be $true
+            $global:npmCalls[1] -contains "@openai/codex" | Should Be $true
+            $global:npmCalls[2] -contains "openclaw" | Should Be $true
         }
     }
 }
