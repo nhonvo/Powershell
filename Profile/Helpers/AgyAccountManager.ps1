@@ -442,20 +442,20 @@ class AgyAccountManager {
             try {
                 $env:GEMINI_CLI_IDE_AUTH_TOKEN = $null
                 $env:GEMINI_CLI_IDE_SERVER_PORT = $null
-                if ($PassThruArgs) { & ([AgyAccountManager]::AgyBinaryPath) @PassThruArgs } else { & ([AgyAccountManager]::AgyBinaryPath) }
+                if ($PassThruArgs) { & ([AgyAccountManager]::AgyBinaryPath) @PassThruArgs | Out-Default } else { & ([AgyAccountManager]::AgyBinaryPath) | Out-Default }
             } finally {
                 $env:GEMINI_CLI_IDE_AUTH_TOKEN = $oldToken
                 $env:GEMINI_CLI_IDE_SERVER_PORT = $oldPort
             }
         } else {
-            if ($PassThruArgs) { & ([AgyAccountManager]::AgyBinaryPath) @PassThruArgs } else { & ([AgyAccountManager]::AgyBinaryPath) }
+            if ($PassThruArgs) { & ([AgyAccountManager]::AgyBinaryPath) @PassThruArgs | Out-Default } else { & ([AgyAccountManager]::AgyBinaryPath) | Out-Default }
         }
     }
 
     static [void] InvokeMultigravity([string[]]$PassThruArgs) {
         $mgScript = Join-Path $env:USERPROFILE ".local\bin\multigravity.ps1"
         if (Test-Path $mgScript) {
-            & $mgScript @PassThruArgs
+            & $mgScript @PassThruArgs | Out-Default
         } else {
             Write-Error "multigravity script not found at $mgScript"
         }
