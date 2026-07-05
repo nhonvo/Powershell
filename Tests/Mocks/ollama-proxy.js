@@ -97,8 +97,18 @@ const server = http.createServer((req, res) => {
     
     proxyReq.on('error', (err) => {
         console.error(`[Proxy] Error forwarding request: ${err.message}`);
-        res.writeHead(500);
-        res.end(err.message);
+        try {
+            res.writeHead(500);
+            res.end(err.message);
+        } catch (e) {}
+    });
+    
+    req.on('error', (err) => {
+        console.error(`[Proxy] Client request error: ${err.message}`);
+    });
+    
+    res.on('error', (err) => {
+        console.error(`[Proxy] Client response error: ${err.message}`);
     });
     
     req.pipe(proxyReq);

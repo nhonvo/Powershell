@@ -26,11 +26,11 @@ class AiHelper {
         } catch {
             Write-Host "[AI] Ollama Proxy is not running on port $proxyPort. Starting..." -ForegroundColor Yellow
             $currentDir = $PSScriptRoot
-            # Resolve scripts directory relatively
-            $rootDir = Split-Path -Parent -Path $currentDir
-            $proxyScript = Join-Path $rootDir "Scripts\ollama-proxy.js"
+            # Resolve repository root (up two levels from Profile/Helpers)
+            $repoDir = Split-Path -Parent -Path (Split-Path -Parent -Path $currentDir)
+            $proxyScript = Join-Path $repoDir "Tests\Mocks\ollama-proxy.js"
             if (-not (Test-Path $proxyScript)) {
-                $proxyScript = Join-Path $rootDir "tests\ollama-proxy.js"
+                $proxyScript = Join-Path $repoDir "Tests\ollama-proxy.js"
             }
 
             $stdoutPath = Join-Path $env:TEMP "ollama_proxy_out.log"

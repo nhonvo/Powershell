@@ -6,14 +6,26 @@ $global:AgyProfileLoaded = $true
 # ==============================================================================
 
 $ProfileDir = Join-Path -Path (Split-Path -Parent -Path $MyInvocation.MyCommand.Definition) -ChildPath 'Profile'
-$files = Get-ChildItem -Path $ProfileDir -Filter "*.ps1"
+$files = Get-ChildItem -Path $ProfileDir -Filter "*.ps1" -Recurse
 
-# Load core dependencies (TerminalMenu) first, then the rest alphabetically
-$first = $files | Where-Object { $_.Name -eq 'TerminalMenu.ps1' }
-$rest = $files | Where-Object { $_.Name -ne 'TerminalMenu.ps1' } | Sort-Object Name
+# Core order: TerminalMenu.ps1 first, then ProfileEnvironment.ps1, then Projects.ps1, then the rest alphabetically
+$orderedFiles = [System.Collections.Generic.List[System.IO.FileInfo]]::new()
 
-if ($first) { . $first.FullName }
-foreach ($file in $rest) {
+$menuFile = $files | Where-Object { $_.Name -eq 'TerminalMenu.ps1' } | Select-Object -First 1
+$envFile  = $files | Where-Object { $_.Name -eq 'ProfileEnvironment.ps1' } | Select-Object -First 1
+$projFile = $files | Where-Object { $_.Name -eq 'Projects.ps1' } | Select-Object -First 1
+
+if ($menuFile) { $orderedFiles.Add($menuFile) }
+if ($envFile)  { $orderedFiles.Add($envFile) }
+if ($projFile) { $orderedFiles.Add($projFile) }
+
+foreach ($f in ($files | Sort-Object Name)) {
+    if ($f.Name -notin @('TerminalMenu.ps1', 'ProfileEnvironment.ps1', 'Projects.ps1')) {
+        $orderedFiles.Add($f)
+    }
+}
+
+foreach ($file in $orderedFiles) {
     . $file.FullName
 }
 

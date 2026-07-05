@@ -1,10 +1,10 @@
 # C:\Users\TruongNhon\Documents\Powershell\Scripts\Test-OllamaFunctions.ps1
 
-$ProfileDir = Join-Path $PSScriptRoot "..\Profile"
-. (Join-Path $ProfileDir "TerminalMenu.ps1")
-. (Join-Path $ProfileDir "ProfileEnvironment.ps1")
-. (Join-Path $ProfileDir "AiHelper.ps1")
-. (Join-Path $ProfileDir "Aliases.ps1")
+$ProfileDir = Join-Path $PSScriptRoot "..\..\Profile"
+. (Join-Path $ProfileDir "Core\TerminalMenu.ps1")
+. (Join-Path $ProfileDir "Core\ProfileEnvironment.ps1")
+. (Join-Path $ProfileDir "Helpers\AiHelper.ps1")
+. (Join-Path $ProfileDir "Core\Aliases.ps1")
 
 Write-Host "1. Initializing Ollama Server and Proxy..." -ForegroundColor Cyan
 [AiHelper]::EnsureOllamaServer()

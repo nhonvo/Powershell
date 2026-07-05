@@ -1,77 +1,212 @@
 # Enhanced PowerShell Profile 🚀
 
-A modular, supercharged PowerShell configuration designed for .NET developers and AI enthusiasts.
+A modular, strongly-typed, class-based PowerShell profile environment optimized for .NET developers and AI engineers.
 
-## 📂 Structure
+---
 
-The profile is split into modular scripts within the `Profile/` directory for better maintainability:
+## 📂 Repository Architecture & Layout
 
-- **00-Core.ps1**: Theme (`oh-my-posh`), `PSReadLine` settings, and module imports.
-- **10-Aliases.ps1**: **CENTRALIZED** location for all aliases (WinGet, Git, .NET, AI, etc.).
-- **20-Navigation.ps1**: Navigation logic (`Enter-Project`, `Set-LocationParent`).
-- **30-System.ps1**: Utilities (`Reload-Profile`, `Invoke-VSCode`, `Invoke-OpenExplorer`).
-- **50-DotNet.ps1**: Functions for the .NET CLI (`Invoke-DotNetRun`, `Update-Database`).
-- **51-Git.ps1**: Git workflow functions (`Get-GitStatus`, `Invoke-GitAddAll`).
-- **52-Docker.ps1**: Docker & Docker Compose functions.
-- **53-AWS.ps1**: LocalStack SQS functions.
-- **60-AI.ps1**: **NEW** Configuration for AI tools (Ollama, Claude, Copilot, Gemini).
-- **99-Help.ps1**: Run `commands` to see a summary of available tools.
+Core environment scripts and specific helper classes are separated from the test project into logical subfolders under `Profile/` and `Tests/`:
 
-## 📦 Winget Shortcuts (New)
+```
+Powershell/
+├── .github/
+│   └── workflows/
+│       └── ci.yml                     # GitHub Actions CI Workflow
+├── Profile/                           # Profile configuration & classes
+│   ├── Core/                          # Core profile and TUI elements
+│   │   ├── TerminalMenu.ps1           # class TerminalMenu (TUI menu helper)
+│   │   ├── ProfileEnvironment.ps1     # class ProfileEnvironment (PSReadLine & theme options)
+│   │   ├── Aliases.ps1                # Centralized aliases & routing wrappers
+│   │   ├── Projects.ps1               # Projects collection configuration
+│   │   └── ProfileHelp.ps1            # class ProfileHelp (interactive help menu)
+│   └── Helpers/                       # Context-specific class modules
+│       ├── ProfileNavigator.ps1       # class ProfileNavigator (workspace hopper)
+│       ├── SystemHelper.ps1           # class SystemHelper (processes & disks helper)
+│       ├── SshHelper.ps1              # class SshHelper (SSH connections & secure keys)
+│       ├── DotNetHelper.ps1           # class DotNetHelper (.NET SDK & EF Migrations)
+│       ├── GitHelper.ps1              # class GitHelper (Git wrapper)
+│       ├── DockerHelper.ps1           # class DockerHelper (Docker Compose & cleanup)
+│       ├── AwsHelper.ps1              # class AwsHelper (LocalStack client queries)
+│       ├── AiHelper.ps1               # class AiHelper (Ollama CLI integrations)
+│       └── AgyAccountManager.ps1      # class AgyAccountManager (Multi-Account isolation)
+├── Tests/                             # Consolidated Test Project
+│   ├── Unit/                          # Pester unit tests
+│   │   ├── AI-Tools.Tests.ps1         # AI wrappers mock unit tests
+│   │   └── Profile-All.Tests.ps1      # Core profile features unit tests
+│   ├── E2E/                           # End-to-end integration tests
+│   │   └── Test-OllamaFunctions.ps1   # Real Ollama proxy integration validator
+│   ├── Mocks/                         # Mock proxy server logic
+│   │   └── ollama-proxy.js            # Port 11435 model-inject compat proxy
+│   └── run_tests.ps1                  # Local AST syntax and Pester test runner
+├── .gitignore
+└── README.md
+```
 
-- **Search**: `wsearch <query>`
-- **Install**: `winstall <package>`
-- **List**: `wlist`
-- **Update**: `wupdate`
+---
 
-## 🤖 AI Capabilities
+## ⚙️ Session Boot Sequence
 
-This profile integrates local and cloud AI tools into your terminal flow.
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant Profile as Microsoft.PowerShell_profile.ps1
+    participant Core as Profile/Core/*
+    participant Helpers as Profile/Helpers/*
+    
+    User->>Profile: Start PowerShell Session
+    activate Profile
+    Profile->>Core: Dot-source TerminalMenu.ps1
+    Profile->>Core: Dot-source ProfileEnvironment.ps1
+    Profile->>Core: Dot-source Projects.ps1
+    Profile->>Helpers: Dot-source class helper files alphabetically
+    Profile->>Core: Dot-source Aliases.ps1
+    Note over Core: Maps aliases directly to class static methods
+    Profile->>User: Display boot splash & ready prompt
+    deactivate Profile
+```
 
-### 🧠 Ollama (Local AI)
+---
 
-- **Check Status**: `ox` (Lists running models).
-- **Run**: `ollama run <model>` (Standard CLI).
-- **Config**: Default host is `localhost:11434`.
+## 🧠 Business Logic & Script Usage Notes
 
-### 🐱 GitHub Copilot CLI
+### 1. Multi-Account Manager (`agy` / `AgyAccountManager`)
+Isolates accounts by manipulating `$env:GEMINI_HOME` under `C:\Users\Public\.gemini_<name>`.
+* **Persistent Switch**: `agy-account use '<name>'` (survives shell reboots by writing to `active_account.txt`).
+* **Temporary Switch**: `agy-account use '<name>' -Temporary` (isolated for the current console session only).
+* **Isolation Flow**:
+```mermaid
+graph TD
+    A[agy-account use 'my-account'] --> B{Account Dir Exists?}
+    B -- Yes --> C[Set $env:GEMINI_HOME = C:\Users\Public\.gemini_my-account]
+    B -- No --> D[Create junction links to global config/ & history/]
+    D --> C
+    C --> E[Verify/Re-generate unique installation_id GUID]
+    E --> F[Session isolated from default account]
+```
 
-- **Suggest**: `?? "create a regex for email"` (Wraps `gh copilot suggest`).
-- **Explain**: `what? "git reset --soft HEAD~1"` (Wraps `gh copilot explain`).
-- _Requires `gh` CLI and `copilot` extension._
+### 2. Workspace Navigator (`project nav` / `ProfileNavigator`)
+Runs quick transitions to registered workspace directories.
+* **Jump directly**: `proj <query>` (performs case-insensitive regex search; jumps immediately if query is unique).
+* **Conflict resolution**: Shows interactive TUI selection menu if multiple match your query.
+* **Star Indicators**: Star symbols `★` mark prioritized/active workspaces.
 
-### 🤖 Claude
+### 3. AI Integrations (`ai helper` / `AiHelper`)
+Manages background server dependencies and proxy wrappers.
+* **Autostart Server**: Running `claude`, `codex`, `openclaw`, or `hermes` checks port `11434` and starts the Ollama server if offline.
+* **Model Cache**: Caches your selected default model in `ollama_default_model.txt` to speed up CLI startups.
+* **Compatibility Proxy**: Launches Node-based `ollama-proxy.js` on port `11435` to rewrite OpenAPI schemas for legacy clients (like Codex CLI).
 
-- **Run**: `claude` (Aliased to your local binary).
-- **Config**: Can be configured to point to Ollama (mimicking Anthropic API) in `60-AI.ps1`.
+---
 
-### 💎 Gemini
+## 🛠️ Quick Use Guide
 
-- **Config**: Use `Set-GeminiKey` to set your API key for the session.
+## 🛠️ Quick Use Guide
 
-## 🚀 Setup & Usage
+### 1. AI & Multi-Account Shortcuts
 
-1. **Prerequisites**:
-   - PowerShell 7+
-   - [Oh My Posh](https://ohmyposh.dev/)
-   - [Terminal Icons](https://github.com/devblackops/Terminal-Icons)
-   - Git, .NET SDK, Docker (optional)
+| Alias / Command | Routing Target | Description |
+| :--- | :--- | :--- |
+| `ai` | `Invoke-MultiAgent` | Interactive TUI menu to select and launch configured AI agents |
+| `claude` | `Invoke-Claude-By-Ollama` | Launch Claude Code via Ollama local API wrapper |
+| `codex` | `Invoke-Codex-By-Ollama` | Launch Codex CLI routed through Ollama schema proxy (port 11435) |
+| `openclaw` | `Invoke-OpenClaw-By-Ollama` | Launch OpenClaw CLI local agent |
+| `clawdbot` | `Invoke-Clawdbot-By-Ollama` | Launch Clawdbot AI helper |
+| `hermes` | `Invoke-Hermes-By-Ollama` | Launch Hermes local reasoning LLM console |
+| `hermesd` | `Invoke-HermesDesktop-By-Ollama` | Launch Hermes reasoning LLM on Desktop screen |
+| `model` | `Set-OllamaModel` | View or change cached default model for local AI tools |
+| `agy-account` / `agy-acc` | `Invoke-AgyAccount` | Manage isolated Antigravity accounts, credentials, and directories |
+| `agy` | `agy` | Invoke the native `agy` CLI under the active isolated account context |
+| `multigravity` | `multigravity` | Run the `multigravity` multi-profile orchestration CLI |
 
-2. **Installation**:
-   Clone this repo to your Documents folder:
+### 2. Project Navigation & System Shortcuts
 
-   ```powershell
-   cd $home\Documents
-   git clone <repo-url> Powershell
-   ```
+| Alias / Command | Routing Target | Description |
+| :--- | :--- | :--- |
+| `..` | `Set-LocationParent` | Navigate one directory level up |
+| `...` | `Set-LocationGrandParent` | Navigate two directory levels up |
+| `proj` / `prj` | `Enter-Project` | Hop to project workspace (launches search TUI on conflicts) |
+| `go` | `Reload-Profile` | Force reload the current PowerShell profile session |
+| `usage` | `Get-DiskSpace` | Display partition utilization statistics |
+| `kill` | `Stop-ProcessFriendly` | Gracefully stop named process or select via TUI grid |
+| `ssh-info` | `Get-SshConnectionInfo` | Active SSH connections list and Tailscale quick link guide |
+| `ssh-addkey` | `Add-SshAuthorizedKey` | Authorize passwordless public key for SSH authentication |
+| `f` | `Invoke-OpenExplorer` | Open the current working directory in Windows File Explorer |
+| `mkcd` | `New-DirAndEnter` | Create a new directory and navigate into it immediately |
+| `myip` | `Get-PublicIP` | Resolve and print the current public IPv4 address |
+| `tree` | `Get-FileTree` | Display printout of folder tree structure |
+| `commands` / `cc` | `Get-CustomCommands` | Access the interactive TUI profile manual |
+| `cg` / `cnet` / `csys` | `c*` help shortcuts | Display Git, .NET, or System helper command references |
+| `cdk` / `cai` / `caws` | `c*` help shortcuts | Display Docker, AI, or AWS helper command references |
 
-3. **Reload**:
-   Type `go` to reload the profile after changes.
+### 3. Git Shortcuts
 
-4. **Explore**:
-   Type `commands` to see the custom help menu.
+| Alias / Command | Routing Target | Description |
+| :--- | :--- | :--- |
+| `gs` | `Get-GitStatus` | Fast `git status` output with colorized formatting |
+| `gd` | `Show-GitDiff` | Open the diff of unstaged local file changes |
+| `glo` / `glg` | `Get-GitLogGraph` | Print colorized branching layout using git log graph |
+| `glog` | `Get-GitLogPretty` | Print clean list of commits with author and date |
+| `gb` | `Get-GitBranches` | Display local and remote branches |
+| `co` | `Invoke-GitCheckout` | Safely switch branches |
+| `cob` | `New-GitBranch` | Create and checkout a new branch |
+| `gbd` | `Remove-GitBranch` | Delete a local branch |
+| `ga` | `Invoke-GitAddAll` | Stage all unstaged and untracked changes |
+| `gunstage` | `Invoke-GitUnstage` | Unstage currently staged changes |
+| `gcmt` | `Invoke-GitCommit` | Commit changes with message arguments |
+| `gca` | `Invoke-GitAmend` | Amend modifications into the last commit |
+| `gundo` | `Invoke-GitUndo` | Soft reset the previous commit (keeping local changes staged) |
+| `gr` | `Invoke-GitResetSoft` | Perform a soft reset on the HEAD branch |
+| `grh` | `Invoke-GitResetHard` | Discard all staged/unstaged changes and reset to origin |
+| `gf` | `Invoke-GitFetch` | Fetch metadata updates from the remote repository |
+| `gpu` | `Invoke-GitPull` | Pull remote updates |
+| `gus` | `Invoke-GitPush` | Push current staged commits to origin |
+| `guf` | `Invoke-GitPushForce` | Force push to remote branch |
+| `gms` | `Invoke-GitMergeSquash` | Squash and merge target branch into HEAD |
+| `gsnap` | `Invoke-GitStashSnapshot` | Create a checkpoint stash snapshot without losing local changes |
 
-## 🛠 customization
+### 4. .NET SDK Development Shortcuts
 
-- **Theme**: Edit `00-Core.ps1` to change the Oh My Posh theme.
-- **Projects**: Edit `20-Navigation.ps1` to add your own paths to the `proj` menu.
+| Alias / Command | Routing Target | Description |
+| :--- | :--- | :--- |
+| `dr` | `Invoke-DotNetRun` | Execute `dotnet run` on the active project |
+| `dw` | `Invoke-DotNetWatch` | Launch hot-reload development server via `dotnet watch` |
+| `db` | `Invoke-DotNetBuild` | Run `dotnet build` compiling all assets |
+| `df` | `Invoke-DotNetFormat` | Format codebase style and syntax rules |
+| `dt` | `Invoke-DotNetTest` | Execute all test cases |
+| `wt` | `Invoke-DotNetWatchTest` | Execute hot-reload test watcher |
+| `dcl` | `Invoke-DotNetClean` | Run standard `dotnet clean` |
+| `dres` | `Invoke-DotNetRestore` | Restore project dependencies and NuGet packages |
+| `dclean` | `Remove-BinObj` | Delete all compiler folders (`bin/`, `obj/`) recursively |
+| `da` | `Add-Migration` | Add an Entity Framework Core migration |
+| `du` | `Update-Database` | Apply migrations to database target |
+| `dd` | `Remove-Database` | Drop database target |
+| `dremove` | `Remove-Migration` | Rollback last database migration |
+| `sln` | `New-Solution` | Create a new solution file `.sln` |
+| `sln-add` | `Add-AllProjectsToSolution` | Scans recursively and appends all `.csproj` files to the solution |
+| `console` | `New-ConsoleProject` | Create a new .NET Console application |
+| `webapi` | `New-WebApiProject` | Create a new .NET Web API application |
+
+### 5. Docker Containers Shortcuts
+
+| Alias / Command | Routing Target | Description |
+| :--- | :--- | :--- |
+| `dkcl` | `Get-DockerContainers` | Get active/inactive containers status |
+| `dkrmac` | `Remove-AllDockerContainers` | Force delete all containers |
+| `dkstac` | `Stop-AllDockerContainers` | Force stop all running containers |
+| `dkcpu` | `Invoke-ComposeUp` | Run `docker compose up` |
+| `dkcpub` | `Invoke-ComposeUpBuild` | Rebuild and run compose container stack |
+| `dkcpd` | `Invoke-ComposeDown` | Shut down compose containers stack |
+| `fix-volume` | `Remove-UnusedDockerVolumes` | Prune all dangling Docker volumes |
+| `fix-image` | `Remove-UnusedDockerImages` | Prune unused Docker images |
+
+---
+
+## 🧪 Verification & Testing
+
+Execute the syntax parsers and run the unit test suites locally:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ./Tests/run_tests.ps1
+```

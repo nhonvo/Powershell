@@ -1,6 +1,6 @@
 # C:\Users\TruongNhon\Documents\Powershell\Scripts\Profile-All.Tests.ps1
 
-$ProfileDir = Join-Path $PSScriptRoot "..\Profile"
+$ProfileDir = Join-Path $PSScriptRoot "..\..\Profile"
 
 # Global mock hooks to intercept native executables in PS 5.1
 $global:gitArgs = @()
@@ -17,20 +17,20 @@ function tailscale { $global:tailscaleArgs = $args; return "100.115.92.12" }
 
 Describe "Core Profile Functions Validation" {
     BeforeAll {
-        . (Join-Path $ProfileDir "TerminalMenu.ps1")
-        . (Join-Path $ProfileDir "ProfileEnvironment.ps1")
-        . (Join-Path $ProfileDir "ProfileNavigator.ps1")
-        . (Join-Path $ProfileDir "SystemHelper.ps1")
-        . (Join-Path $ProfileDir "SshHelper.ps1")
-        . (Join-Path $ProfileDir "DotNetHelper.ps1")
-        . (Join-Path $ProfileDir "GitHelper.ps1")
-        . (Join-Path $ProfileDir "DockerHelper.ps1")
-        . (Join-Path $ProfileDir "AwsHelper.ps1")
-        . (Join-Path $ProfileDir "AiHelper.ps1")
-        . (Join-Path $ProfileDir "AgyAccountManager.ps1")
-        . (Join-Path $ProfileDir "Projects.ps1")
-        . (Join-Path $ProfileDir "ProfileHelp.ps1")
-        . (Join-Path $ProfileDir "Aliases.ps1")
+        . (Join-Path $ProfileDir "Core\TerminalMenu.ps1")
+        . (Join-Path $ProfileDir "Core\ProfileEnvironment.ps1")
+        . (Join-Path $ProfileDir "Helpers\ProfileNavigator.ps1")
+        . (Join-Path $ProfileDir "Helpers\SystemHelper.ps1")
+        . (Join-Path $ProfileDir "Helpers\SshHelper.ps1")
+        . (Join-Path $ProfileDir "Helpers\DotNetHelper.ps1")
+        . (Join-Path $ProfileDir "Helpers\GitHelper.ps1")
+        . (Join-Path $ProfileDir "Helpers\DockerHelper.ps1")
+        . (Join-Path $ProfileDir "Helpers\AwsHelper.ps1")
+        . (Join-Path $ProfileDir "Helpers\AiHelper.ps1")
+        . (Join-Path $ProfileDir "Helpers\AgyAccountManager.ps1")
+        . (Join-Path $ProfileDir "Core\Projects.ps1")
+        . (Join-Path $ProfileDir "Core\ProfileHelp.ps1")
+        . (Join-Path $ProfileDir "Core\Aliases.ps1")
     }
 
     Context "Navigation (20-Navigation.ps1)" {

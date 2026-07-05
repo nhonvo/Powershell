@@ -1,12 +1,10 @@
 # C:\Users\TruongNhon\Documents\Powershell\Scripts\AI-Tools.Tests.ps1
 
-$profilePath = Join-Path $PSScriptRoot "..\Profile\60-AI.ps1"
-
 Describe "AI Tools Wrapper Functions" {
     # Import functions under test
-    . (Join-Path $PSScriptRoot "..\Profile\TerminalMenu.ps1")
-    . (Join-Path $PSScriptRoot "..\Profile\AiHelper.ps1")
-    . (Join-Path $PSScriptRoot "..\Profile\Aliases.ps1")
+    . (Join-Path $PSScriptRoot "..\..\Profile\Core\TerminalMenu.ps1")
+    . (Join-Path $PSScriptRoot "..\..\Profile\Helpers\AiHelper.ps1")
+    . (Join-Path $PSScriptRoot "..\..\Profile\Core\Aliases.ps1")
     
     Context "Ensure-OllamaServer" {
         It "does not restart the server if Ollama is running" {

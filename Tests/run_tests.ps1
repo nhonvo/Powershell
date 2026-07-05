@@ -1,8 +1,8 @@
 Write-Host "Running PowerShell Profile Tests..." -ForegroundColor Cyan
 
 # 1. Check syntax of all profile files
-$profileDir = "C:\Users\TruongNhon\Documents\Powershell\Profile"
-$files = Get-ChildItem -Path $profileDir -Filter "*.ps1"
+$profileDir = Join-Path $PSScriptRoot "..\Profile"
+$files = Get-ChildItem -Path $profileDir -Filter "*.ps1" -Recurse
 
 Write-Host "Parsing file syntax via AST..." -ForegroundColor Cyan
 foreach ($file in $files) {
@@ -114,8 +114,8 @@ try {
 Write-Host "`nRunning detailed Pester unit tests..." -ForegroundColor Cyan
 if (Get-Module -ListAvailable Pester) {
     $tests = @(
-        (Join-Path $PSScriptRoot "AI-Tools.Tests.ps1"),
-        (Join-Path $PSScriptRoot "Profile-All.Tests.ps1")
+        (Join-Path $PSScriptRoot "Unit\AI-Tools.Tests.ps1"),
+        (Join-Path $PSScriptRoot "Unit\Profile-All.Tests.ps1")
     )
     Invoke-Pester -Script $tests -EnableExit
 } else {
