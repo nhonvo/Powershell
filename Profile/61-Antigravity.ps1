@@ -108,6 +108,28 @@ function Set-AgyActiveAccount {
         }
     }
 
+    # Self-healing: Ensure the account has a unique installation_id to isolate credentials
+    $defaultIdFile = Join-Path $script:AgySourceHome "installation_id"
+    $targetIdFile = Join-Path $targetDir "installation_id"
+    $defaultId = ""
+    if (Test-Path $defaultIdFile) {
+        $content = Get-Content $defaultIdFile -ErrorAction SilentlyContinue
+        if ($null -ne $content) { $defaultId = $content.ToString().Trim() }
+    }
+    $targetId = ""
+    if (Test-Path $targetIdFile) {
+        $content = Get-Content $targetIdFile -ErrorAction SilentlyContinue
+        if ($null -ne $content) { $targetId = $content.ToString().Trim() }
+    }
+    if ([string]::IsNullOrWhiteSpace($targetId) -or $targetId -eq $defaultId) {
+        if (-not [System.IO.Directory]::Exists($targetDir)) {
+            [void][System.IO.Directory]::CreateDirectory($targetDir)
+        }
+        $newId = [guid]::NewGuid().ToString()
+        $newId | Out-File -FilePath $targetIdFile -NoNewline -Force -Encoding utf8
+        Write-Host "⚙️ Re-generated unique installation ID for '$AccountName' to separate credentials." -ForegroundColor Yellow
+    }
+
     $env:GEMINI_HOME = $targetDir
     if (-not $Temporary) {
         # Ensure root directory exists
@@ -300,6 +322,30 @@ function Invoke-AgyWithAccount {
     $oldHome = $env:GEMINI_HOME
     $oldToken = $env:GEMINI_CLI_IDE_AUTH_TOKEN
     $oldPort = $env:GEMINI_CLI_IDE_SERVER_PORT
+
+    # Self-healing: Ensure the account has a unique installation_id to isolate credentials
+    if ($AccountName -ne "default") {
+        $defaultIdFile = Join-Path $script:AgySourceHome "installation_id"
+        $targetIdFile = Join-Path $targetHome "installation_id"
+        $defaultId = ""
+        if (Test-Path $defaultIdFile) {
+            $content = Get-Content $defaultIdFile -ErrorAction SilentlyContinue
+            if ($null -ne $content) { $defaultId = $content.ToString().Trim() }
+        }
+        $targetId = ""
+        if (Test-Path $targetIdFile) {
+            $content = Get-Content $targetIdFile -ErrorAction SilentlyContinue
+            if ($null -ne $content) { $targetId = $content.ToString().Trim() }
+        }
+        if ([string]::IsNullOrWhiteSpace($targetId) -or $targetId -eq $defaultId) {
+            if (-not [System.IO.Directory]::Exists($targetHome)) {
+                [void][System.IO.Directory]::CreateDirectory($targetHome)
+            }
+            $newId = [guid]::NewGuid().ToString()
+            $newId | Out-File -FilePath $targetIdFile -NoNewline -Force -Encoding utf8
+            Write-Host "⚙️ Re-generated unique installation ID for '$AccountName' to separate credentials." -ForegroundColor Yellow
+        }
+    }
 
     try {
         $env:GEMINI_HOME = $targetHome
