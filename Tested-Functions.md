@@ -42,6 +42,25 @@ These functions simplify and secure connections when linking a phone (e.g. runni
 
 ---
 
+## 💻 Core Navigation, System, & Development Tools
+
+| Component / Function | Action / Purpose | Verification Strategy | Status |
+| :--- | :--- | :--- | :--- |
+| `Set-LocationParent` / `cg` | Navigates up one folder level. | Pester unit test scope validation. | **Passed** |
+| `Set-LocationGrandParent` | Navigates up two folder levels. | Pester unit test scope validation. | **Passed** |
+| `Get-DiskSpace` | Displays disk space usage for all filesystem drives. | Runs execution check. | **Passed** |
+| `Stop-ProcessFriendly` | Stops processes by name. | Mock process testing. | **Passed** |
+| `Remove-BinObj` | Recursively deletes `bin` and `obj` project folders. | Mock deletion test. | **Passed** |
+| `Invoke-DotNetBuild` | Compiles a .NET project. | Argument capturing test. | **Passed** |
+| `Get-GitStatus` | Returns the current Git repository status. | Argument capturing test. | **Passed** |
+| `Invoke-GitUndo` | Soft resets the last commit. | Argument capturing test. | **Passed** |
+| `Get-DockerContainers` | Lists all Docker containers. | Argument capturing test. | **Passed** |
+| `Get-S3Buckets` | Lists AWS S3 buckets via LocalStack. | Argument capturing test. | **Passed** |
+| `Get-AgyActiveAccount` | Returns the currently active Antigravity account context. | Directory pattern matching test. | **Passed** |
+| `Set-AgyActiveAccount` | Switches active Antigravity account context. | Directory validation test. | **Passed** |
+
+---
+
 ## 🧪 Automated Test Verification Summary
 
 The complete test suite was run via `Scripts/test_profile.ps1`. All modular profile scripts are syntactically valid and pass unit test assertions:
@@ -64,5 +83,5 @@ Parsing file syntax via AST...
 Importing Profile to verify function resolution...
   [OK] Profile loaded successfully with no execution errors.
 
-Passed: 9 Failed: 0 Skipped: 0
+Passed: 22 Failed: 0 Skipped: 0
 ```
