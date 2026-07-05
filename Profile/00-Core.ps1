@@ -1,4 +1,4 @@
-#region CORE SETUP
+﻿#region CORE SETUP
 # ------------------------------------------------------------------------------
 #  Initial configuration for the shell environment, theme, and modules.
 # ------------------------------------------------------------------------------
@@ -122,4 +122,4 @@ Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+b' -ScriptBlock { [Microsoft.PowerShel
 Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+t' -ScriptBlock { [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine(); [Microsoft.PowerShell.PSConsoleReadLine]::Insert('dt'); [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine() }
 
 #endregion
-
+
