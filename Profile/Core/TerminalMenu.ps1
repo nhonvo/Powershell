@@ -275,7 +275,7 @@ class TerminalMenu {
         return -1
     }
 
-    static [MenuItem] ShowDynamic([string]$Header, [ScriptBlock]$Resolver, [int]$DefaultIndex) {
+    static [MenuItem] ShowDynamic([string]$Header, [ScriptBlock]$Resolver, [int]$DefaultIndex, [string]$InitialFilter = "") {
         # Ensure TUI colors are initialized
         if ($null -eq $Global:TuiColors) { [TerminalMenu]::InitializeTuiColors() }
 

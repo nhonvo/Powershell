@@ -124,22 +124,6 @@ class ProfileHelp {
     static [void] Show([string]$CategoryFilter) {
         $cmds = [ProfileHelp]::GetCommands()
 
-        if ($CategoryFilter) {
-            $matchedKey = $cmds.Keys | Where-Object { $_ -like "*$CategoryFilter*" } | Select-Object -First 1
-            if ($matchedKey) {
-                Write-Host "  $matchedKey" -ForegroundColor Cyan
-                $items = $cmds[$matchedKey]
-                $pad = ($items | ForEach-Object { $_.Alias.Length } | Measure-Object -Maximum).Maximum + 2
-                foreach ($item in $items) {
-                    Write-Host ("  {0,-$pad}" -f $item.Alias) -NoNewline -ForegroundColor White
-                    Write-Host $item.Desc -ForegroundColor DarkGray
-                }
-            } else {
-                Write-Warning "No category matching '$CategoryFilter' found."
-            }
-            return
-        }
-
         # Dynamic TUI category menu using global TerminalMenu
         $categories = [string[]]($cmds.Keys | Sort-Object)
 
@@ -182,8 +166,11 @@ class ProfileHelp {
         }
 
         while ($true) {
-            $selected = [TerminalMenu]::ShowDynamic("Select Help Category", $resolver, 0)
+            $selected = [TerminalMenu]::ShowDynamic("Select Help Category", $resolver, 0, $CategoryFilter)
             if ($null -eq $selected) { return }
+
+            # Reset the filter once a selection is made or on loop return so it doesn't get locked
+            $CategoryFilter = ""
 
             if ($selected.Type -eq "Command") {
                 # Select command from global search result and run directly
