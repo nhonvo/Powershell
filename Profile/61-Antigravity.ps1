@@ -34,13 +34,18 @@ function Get-AgyAccounts {
     $accounts = [System.Collections.Generic.List[string]]::new()
     $accounts.Add("default")
 
-    if (Test-Path $env:USERPROFILE) {
-        $dirs = Get-ChildItem -Path $env:USERPROFILE -Directory -Filter ".gemini_*"
+    $scanPaths = @()
+    if (Test-Path $env:USERPROFILE) { $scanPaths += $env:USERPROFILE }
+    $parentDir = Split-Path $script:AgyAccountPrefix -Parent
+    if ((Test-Path $parentDir) -and ($parentDir -notin $scanPaths)) { $scanPaths += $parentDir }
+
+    foreach ($path in $scanPaths) {
+        $dirs = Get-ChildItem -Path $path -Directory -Filter ".gemini_*" -ErrorAction SilentlyContinue
         foreach ($dir in $dirs) {
             if ($dir.Name -match '^\.gemini_(.+)$') {
                 $name = $Matches[1]
                 # Filter out system/backup folder patterns
-                if ($name -notmatch 'backup|copy|temp') {
+                if ($name -notmatch 'backup|copy|temp' -and $name -notin $accounts) {
                     $accounts.Add($name)
                 }
             }
