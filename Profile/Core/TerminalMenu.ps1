@@ -147,10 +147,15 @@ class TerminalMenu {
                     }
                     for ($i = $start; $i -le $end; $i++) {
                         $actualIndex = $filteredIndices[$i]
+                        $label = $Items[$actualIndex]
+                        $maxLabelLen = $width - 6
+                        if ($maxLabelLen -gt 3 -and $label.Length -gt $maxLabelLen) {
+                            $label = $label.Substring(0, $maxLabelLen - 3) + "..."
+                        }
                         if ($i -eq $currentIndex) {
-                            $null = $outputLines.Add([ColoredLine]@{ Text = "  >  $($Items[$actualIndex])"; Color = $Global:TuiColors.Selected })
+                            $null = $outputLines.Add([ColoredLine]@{ Text = "  >  $label"; Color = $Global:TuiColors.Selected })
                         } else {
-                            $null = $outputLines.Add([ColoredLine]@{ Text = "     $($Items[$actualIndex])"; Color = $Global:TuiColors.Regular })
+                            $null = $outputLines.Add([ColoredLine]@{ Text = "     $label"; Color = $Global:TuiColors.Regular })
                         }
                     }
                     if ($end -lt $filteredCount - 1) {
@@ -161,9 +166,9 @@ class TerminalMenu {
                 }
 
                 # Instruction footer
-                $helpStr = "Use Arrow Keys [Up/Down] to navigate, [Enter] to select, [/] to search, [Esc] to cancel."
+                $helpStr = if ($width -lt 70) { "Arrows/Enter: select, [/] search, [Esc] exit" } else { "Use Arrow Keys [Up/Down] to navigate, [Enter] to select, [/] to search, [Esc] to cancel." }
                 if ($searchMode) {
-                    $helpStr = "Type to filter list. [Enter] to select suggestion, [Esc] to exit search mode."
+                    $helpStr = if ($width -lt 70) { "Type: filter. [Enter] select, [Esc] exit" } else { "Type to filter list. [Enter] to select suggestion, [Esc] to exit search mode." }
                 }
                 $null = $outputLines.Add([ColoredLine]@{ Text = $helpStr; Color = $Global:TuiColors.Footer })
                 # Write out compiled lines inline
@@ -371,10 +376,15 @@ class TerminalMenu {
                     }
                     for ($i = $start; $i -le $end; $i++) {
                         $actualItem = $currentItems[$i]
+                        $label = $actualItem.Label
+                        $maxLabelLen = $width - 6
+                        if ($maxLabelLen -gt 3 -and $label.Length -gt $maxLabelLen) {
+                            $label = $label.Substring(0, $maxLabelLen - 3) + "..."
+                        }
                         if ($i -eq $currentIndex) {
-                            $null = $outputLines.Add([ColoredLine]@{ Text = "  >  $($actualItem.Label)"; Color = $Global:TuiColors.Selected })
+                            $null = $outputLines.Add([ColoredLine]@{ Text = "  >  $label"; Color = $Global:TuiColors.Selected })
                         } else {
-                            $null = $outputLines.Add([ColoredLine]@{ Text = "     $($actualItem.Label)"; Color = $Global:TuiColors.Regular })
+                            $null = $outputLines.Add([ColoredLine]@{ Text = "     $label"; Color = $Global:TuiColors.Regular })
                         }
                     }
                     if ($end -lt $filteredCount - 1) {
@@ -402,9 +412,9 @@ class TerminalMenu {
                 }
 
                 # Instruction footer
-                $helpStr = "Use Arrow Keys [Up/Down] to navigate, [Enter] to select, [/] to search, [Esc] to cancel."
+                $helpStr = if ($width -lt 70) { "Arrows/Enter: select, [/] search, [Esc] exit" } else { "Use Arrow Keys [Up/Down] to navigate, [Enter] to select, [/] to search, [Esc] to cancel." }
                 if ($searchMode) {
-                    $helpStr = "Type to filter list. [Enter] to select suggestion, [Esc] to exit search mode."
+                    $helpStr = if ($width -lt 70) { "Type: filter. [Enter] select, [Esc] exit" } else { "Type to filter list. [Enter] to select suggestion, [Esc] to exit search mode." }
                 }
                 $null = $outputLines.Add([ColoredLine]@{ Text = $helpStr; Color = $Global:TuiColors.Footer })
                 # Write out compiled lines inline

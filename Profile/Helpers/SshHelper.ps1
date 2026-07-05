@@ -130,5 +130,251 @@ class SshHelper {
 
         Write-Host "✅ Secure OpenSSH file permissions applied." -ForegroundColor Green
     }
+
+
+    static [void] StartMobileSshKeyReceiver() {
+        # Check active network IPs
+        $tsIP = $null
+        $tsStatus = Get-Command "tailscale" -ErrorAction SilentlyContinue
+        if ($tsStatus) { $tsIP = (tailscale ip -4 2>$null) }
+        
+        $localIPs = Get-NetIPAddress -AddressFamily IPv4 -InterfaceAlias "Wi-Fi", "Ethernet" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty IPAddress
+        $displayIP = if ($tsIP) { $tsIP } elseif ($localIPs) { $localIPs[0] } else { "localhost" }
+        
+        $port = 8999
+        $listener = [System.Net.HttpListener]::new()
+        $listener.Prefixes.Add("http://*:$port/")
+        
+        Write-Host ""
+        Write-Host "📱 Mobile SSH Key Authorizer" -ForegroundColor Cyan
+        Write-Host "=============================" -ForegroundColor Cyan
+        Write-Host "Starting temporary local server to receive your public SSH key..." -ForegroundColor Gray
+        Write-Host ""
+        Write-Host "👉 Link to open in your phone's browser:" -ForegroundColor Cyan
+        Write-Host "   http://${displayIP}:${port}/" -ForegroundColor Green
+        Write-Host "  (or http://localhost:${port}/ if local)" -ForegroundColor Gray
+        Write-Host ""
+        Write-Host "Waiting for connection... (Timeout in 2 minutes. Press Ctrl+C to cancel)" -ForegroundColor Yellow
+        Write-Host ""
+
+        try {
+            $listener.Start()
+        } catch {
+            Write-Error "Failed to start HTTP listener: $_. Make sure port $port is not in use and you have administrator permissions."
+            return
+        }
+
+        $timeoutSeconds = 120
+        $startTime = [DateTime]::Now
+        $success = $false
+        
+        try {
+            while ($true) {
+                # Check for timeout
+                $elapsed = ([DateTime]::Now - $startTime).TotalSeconds
+                if ($elapsed -ge $timeoutSeconds) {
+                    Write-Host "⏱️ Session timed out after 2 minutes. Stopping listener..." -ForegroundColor Red
+                    break
+                }
+                
+                # Check for context asynchronously to prevent locking the loop (so we can check timeout)
+                $asyncResult = $listener.BeginGetContext($null, $null)
+                while (-not $asyncResult.IsCompleted) {
+                    Start-Sleep -Milliseconds 200
+                    $elapsed = ([DateTime]::Now - $startTime).TotalSeconds
+                    if ($elapsed -ge $timeoutSeconds) {
+                        break
+                    }
+                }
+                
+                if ($elapsed -ge $timeoutSeconds) {
+                    break
+                }
+                
+                $context = $listener.EndGetContext($asyncResult)
+                $request = $context.Request
+                $response = $context.Response
+                
+                # Handle GET request (serve the HTML form)
+                if ($request.HttpMethod -eq "GET") {
+                    $html = @"
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerShell Mobile SSH Key Authorizer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0f141c;
+            color: #abb2bf;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+        }
+        .container {
+            background-color: #161b22;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 1px solid #30363d;
+        }
+        h2 { color: #56b6c2; margin-top: 0; font-size: 1.5rem; text-align: center; }
+        p { font-size: 0.95rem; line-height: 1.5; color: #8b949e; }
+        textarea {
+            width: 100%;
+            height: 120px;
+            box-sizing: border-box;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            resize: vertical;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #58a6ff;
+        }
+        button {
+            width: 100%;
+            background-color: #238636;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover { background-color: #2ea043; }
+        .footer {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #484f58;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>📱 Add SSH Public Key</h2>
+        <p>Paste the public SSH key from your mobile phone (e.g. from Termux's <code>~/.ssh/id_ed25519.pub</code>) to authorize connection.</p>
+        <form method="POST">
+            <label for="key" style="font-weight: bold; font-size: 0.9rem;">Public SSH Key:</label>
+            <textarea name="key" id="key" placeholder="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5..." required></textarea>
+            <button type="submit">Authorize Key</button>
+        </form>
+        <div class="footer">Temporary local server will stop immediately after submission.</div>
+    </div>
+</body>
+</html>
+"@
+                    $buffer = [System.Text.Encoding]::UTF8.GetBytes($html)
+                    $response.ContentLength64 = $buffer.Length
+                    $response.ContentType = "text/html"
+                    $response.OutputStream.Write($buffer, 0, $buffer.Length)
+                    $response.OutputStream.Close()
+                }
+                # Handle POST request (receive public key)
+                elseif ($request.HttpMethod -eq "POST") {
+                    $reader = [System.IO.StreamReader]::new($request.InputStream, [System.Text.Encoding]::UTF8)
+                    $body = $reader.ReadToEnd()
+                    $reader.Close()
+                    
+                    # Parse URL-encoded body
+                    $decoded = [System.Net.WebUtility]::UrlDecode($body)
+                    $sshKey = $decoded
+                    if ($decoded.StartsWith("key=")) {
+                        $sshKey = $decoded.Substring(4)
+                    }
+                    $sshKey = $sshKey.Trim()
+                    
+                    # Basic validation
+                    $isValid = $false
+                    if ($sshKey -match '^ssh-(ed25519|rsa|dss|ecdsa) [A-Za-z0-9+/=]+( .+)?$') {
+                        $isValid = $true
+                    }
+                    
+                    $resultHtml = ""
+                    if ($isValid) {
+                        # Authorize the key using the existing static method
+                        [SshHelper]::AddAuthorizedKey($sshKey, $null)
+                        $success = $true
+                        
+                        $resultHtml = @"
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success</title>
+    <style>
+        body { font-family: sans-serif; background-color: #0f141c; color: #abb2bf; text-align: center; padding: 50px 20px; }
+        .card { background-color: #161b22; border-radius: 12px; padding: 30px; max-width: 450px; margin: 0 auto; border: 1px solid #30363d; }
+        h2 { color: #2ea043; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>✅ Success!</h2>
+        <p>The SSH key has been successfully added to authorized_keys and NTFS file permissions have been secured.</p>
+        <p>You can close this window now.</p>
+    </div>
+</body>
+</html>
+"@
+                    } else {
+                        $resultHtml = @"
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid Key</title>
+    <style>
+        body { font-family: sans-serif; background-color: #0f141c; color: #abb2bf; text-align: center; padding: 50px 20px; }
+        .card { background-color: #161b22; border-radius: 12px; padding: 30px; max-width: 450px; margin: 0 auto; border: 1px solid #f85149; }
+        h2 { color: #f85149; }
+        a { color: #58a6ff; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>❌ Invalid SSH Key Format</h2>
+        <p>The key provided does not match a valid public SSH key format (e.g. ssh-ed25519 or ssh-rsa).</p>
+        <p><a href="/">Go back and try again</a></p>
+    </div>
+</body>
+</html>
+"@
+                    }
+                    
+                    $buffer = [System.Text.Encoding]::UTF8.GetBytes($resultHtml)
+                    $response.ContentLength64 = $buffer.Length
+                    $response.ContentType = "text/html"
+                    $response.OutputStream.Write($buffer, 0, $buffer.Length)
+                    $response.OutputStream.Close()
+                    
+                    if ($success) {
+                        # Break loop to stop listener after serving success page
+                        break
+                    }
+                }
+            }
+        } finally {
+            $listener.Stop()
+            $listener.Close()
+            Write-Host "🛑 Mobile Key Authorizer server stopped." -ForegroundColor DarkGray
+        }
+    }
 }
 #endregion

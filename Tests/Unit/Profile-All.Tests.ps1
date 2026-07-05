@@ -1,4 +1,4 @@
-# C:\Users\TruongNhon\Documents\Powershell\Scripts\Profile-All.Tests.ps1
+﻿# C:\Users\TruongNhon\Documents\Powershell\Scripts\Profile-All.Tests.ps1
 
 $ProfileDir = Join-Path $PSScriptRoot "..\..\Profile"
 
@@ -162,6 +162,18 @@ Describe "Core Profile Functions Validation" {
         It "Select-ShellTheme function and theme alias exist" {
             (Get-Command Select-ShellTheme -ErrorAction SilentlyContinue) | Should Not Be $null
             (Get-Alias -Name theme -ErrorAction SilentlyContinue) | Should Not Be $null
+        }
+
+        It "Toggle-MobileMode function and mobile alias exist" {
+            (Get-Command Toggle-MobileMode -ErrorAction SilentlyContinue) | Should Not Be $null
+            (Get-Alias -Name mobile -ErrorAction SilentlyContinue) | Should Not Be $null
+        }
+    }
+
+    Context "Mobile SSH Key Authorizer (SshHelper.ps1)" {
+        It "Start-MobileSshKeyReceiver function and ssh-addkey-mobile alias exist" {
+            (Get-Command Start-MobileSshKeyReceiver -ErrorAction SilentlyContinue) | Should Not Be $null
+            (Get-Alias -Name ssh-addkey-mobile -ErrorAction SilentlyContinue) | Should Not Be $null
         }
     }
 }

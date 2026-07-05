@@ -43,6 +43,8 @@ function Add-SshAuthorizedKey {
     param([string]$Key, [string]$Account)
     [SshHelper]::AddAuthorizedKey($Key, $Account)
 }
+function Toggle-MobileMode { [ThemeHelper]::ToggleMobileMode() }
+function Start-MobileSshKeyReceiver { [SshHelper]::StartMobileSshKeyReceiver() }
 
 # Navigation & System Aliases
 Set-Alias -Name ..          -Value Set-LocationParent          -Force
@@ -59,6 +61,8 @@ Set-Item -Path Alias:\kill -Value Stop-ProcessFriendly -Force -Option AllScope
 Set-Alias -Name commands    -Value Get-CustomCommands          -Force
 Set-Alias -Name ssh-info    -Value Get-SshConnectionInfo       -Force
 Set-Alias -Name ssh-addkey  -Value Add-SshAuthorizedKey        -Force
+Set-Alias -Name mobile             -Value Toggle-MobileMode            -Force
+Set-Alias -Name ssh-addkey-mobile  -Value Start-MobileSshKeyReceiver    -Force
 
 # --- Git Wrappers ---
 function Get-GitStatus { [GitHelper]::Status($args) }

@@ -45,5 +45,39 @@ class ThemeHelper {
             }
         }
     }
+
+
+    static [void] ToggleMobileMode() {
+        $themesPath = Join-Path -Path $env:USERPROFILE -ChildPath "Documents\PowerShell\asset\powershell-themes"
+        $mobileFlagFile = Join-Path -Path $themesPath -ChildPath "mobile_mode_active.txt"
+        
+        $isMobile = $false
+        if (Test-Path $mobileFlagFile) {
+            $isMobile = (Get-Content $mobileFlagFile -Raw | Out-String).Trim() -eq "true"
+        }
+        
+        $newMobileState = -not $isMobile
+        Set-Content -Path $mobileFlagFile -Value ($newMobileState.ToString().ToLower()) -Force
+        
+        # Decide which theme file to load
+        $themeName = if ($newMobileState) { "neko-mobile" } else { "neko" }
+        
+        # Persist standard active theme
+        $activeThemeFile = Join-Path -Path $themesPath -ChildPath "active_theme.txt"
+        Set-Content -Path $activeThemeFile -Value $themeName -Force
+        $env:THEME = $themeName
+        
+        # Re-initialize current session
+        $themePath = Join-Path -Path $themesPath -ChildPath "$themeName.omp.json"
+        if (Test-Path $themePath) {
+            oh-my-posh init pwsh --config $themePath | Invoke-Expression
+            if ($newMobileState) {
+                Write-Host "📱 Mobile Prompt Theme activated (ASCII mode, stacked)." -ForegroundColor Cyan
+            } else {
+                Write-Host "🟢 Desktop Prompt Theme activated (Rich Unicode/Emoji mode)." -ForegroundColor Green
+            }
+            [TerminalMenu]::InitializeTuiColors()
+        }
+    }
 }
 #endregion
