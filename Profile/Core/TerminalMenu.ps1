@@ -418,19 +418,30 @@ class TerminalMenu {
                 # Non-blocking read with 150ms sleep for horizontal marquee scroll animation
                 $key = $null
                 $scrollTimer = 0
-                while (-not [Console]::KeyAvailable) {
-                    Start-Sleep -Milliseconds 150
-                    $scrollTimer++
-                    if ($scrollTimer -ge 4) {
-                        # Trigger redraw to animate marquee
-                        break
+                $keyAvailable = $false
+
+                try {
+                    while (-not [Console]::KeyAvailable) {
+                        Start-Sleep -Milliseconds 150
+                        $scrollTimer++
+                        if ($scrollTimer -ge 4) {
+                            # Trigger redraw to animate marquee
+                            break
+                        }
                     }
+                    $keyAvailable = [Console]::KeyAvailable
+                } catch {
+                    # If KeyAvailable throws, we are likely in a non-interactive/redirected host. Exit gracefully.
+                    return $null
                 }
 
-                if ([Console]::KeyAvailable) {
+                if ($keyAvailable) {
                     try {
                         $key = [Console]::ReadKey($true)
-                    } catch {}
+                    } catch {
+                        # If ReadKey throws, exit gracefully to prevent infinite rendering loop.
+                        return $null
+                    }
                     $marqueeOffset = 0 # Reset marquee on keypress
                 } else {
                     $marqueeOffset++ # Increment marquee offset on timeout redraw
