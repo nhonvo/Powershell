@@ -1,112 +1,212 @@
 ﻿#region AWS LOCALSTACK COMMANDS
+
 # ------------------------------------------------------------------------------
+
 #  Commands for interacting with AWS services via LocalStack.
+
 # ------------------------------------------------------------------------------
+
 
 $script:localStackUrl = "http://localhost:4566"
 
-<# 
-.SYNOPSIS 
-Lists S3 buckets. 
+
+<#
+
+.SYNOPSIS
+
+Lists S3 buckets.
+
 .CATEGORY
+
 AWS LocalStack Commands
+
 #>
-function Get-S3Buckets { 
-    awslocal --endpoint-url=$script:localStackUrl s3 ls 
+
+function Get-S3Buckets {
+
+    awslocal --endpoint-url=$script:localStackUrl s3 ls
+
 }
 
-<# 
-.SYNOPSIS 
-Creates an S3 bucket. 
+
+<#
+
+.SYNOPSIS
+
+Creates an S3 bucket.
+
 .CATEGORY
+
 AWS LocalStack Commands
+
 #>
-function New-S3Bucket { 
-    [CmdletBinding()] 
+
+function New-S3Bucket {
+
+    [CmdletBinding()]
+
     param([string]$Name)
+
     awslocal --endpoint-url=$script:localStackUrl s3 mb s3://$Name
+
 }
 
-<# 
-.SYNOPSIS 
-Lists Lambda functions. 
+
+<#
+
+.SYNOPSIS
+
+Lists Lambda functions.
+
 .CATEGORY
+
 AWS LocalStack Commands
+
 #>
-function Get-LambdaFunctions { 
-    awslocal --endpoint-url=$script:localStackUrl lambda list-functions 
+
+function Get-LambdaFunctions {
+
+    awslocal --endpoint-url=$script:localStackUrl lambda list-functions
+
 }
 
-<# 
-.SYNOPSIS 
-Lists SQS queues. 
+
+<#
+
+.SYNOPSIS
+
+Lists SQS queues.
+
 .CATEGORY
+
 AWS LocalStack Commands
+
 #>
-function Get-LocalSQSQueues { 
-    [CmdletBinding()] 
-    param() 
-    awslocal --endpoint-url=$script:localStackUrl sqs list-queues 
+
+function Get-LocalSQSQueues {
+
+    [CmdletBinding()]
+
+    param()
+
+    awslocal --endpoint-url=$script:localStackUrl sqs list-queues
+
 }
 
-<# 
-.SYNOPSIS 
-Creates an SQS queue. 
+
+<#
+
+.SYNOPSIS
+
+Creates an SQS queue.
+
 .CATEGORY
+
 AWS LocalStack Commands
+
 #>
-function New-LocalSQSQueue { 
-    [CmdletBinding()] 
-    param([string]$QueueName) 
-    awslocal --endpoint-url=$script:localStackUrl sqs create-queue --queue-name=$QueueName 
+
+function New-LocalSQSQueue {
+
+    [CmdletBinding()]
+
+    param([string]$QueueName)
+
+    awslocal --endpoint-url=$script:localStackUrl sqs create-queue --queue-name=$QueueName
+
 }
 
-<# 
-.SYNOPSIS 
-Purges all messages from an SQS queue. 
+
+<#
+
+.SYNOPSIS
+
+Purges all messages from an SQS queue.
+
 .CATEGORY
+
 AWS LocalStack Commands
+
 #>
-function Clear-LocalSQSQueue { 
-    [CmdletBinding()] 
-    param([string]$QueueUrl) 
-    awslocal --endpoint-url=$script:localStackUrl sqs purge-queue --queue-url $QueueUrl 
+
+function Clear-LocalSQSQueue {
+
+    [CmdletBinding()]
+
+    param([string]$QueueUrl)
+
+    awslocal --endpoint-url=$script:localStackUrl sqs purge-queue --queue-url $QueueUrl
+
 }
 
-<# 
-.SYNOPSIS 
-Sends a message to an SQS queue. 
+
+<#
+
+.SYNOPSIS
+
+Sends a message to an SQS queue.
+
 .CATEGORY
+
 AWS LocalStack Commands
+
 #>
-function Send-LocalSQSMessage { 
-    [CmdletBinding()] 
-    param([string]$QueueUrl, [string]$MessageBody, [string]$GroupId = "default-group") 
-    awslocal --endpoint-url=$script:localStackUrl sqs send-message --queue-url $QueueUrl --message-body $MessageBody --message-group-id $GroupId 
+
+function Send-LocalSQSMessage {
+
+    [CmdletBinding()]
+
+    param([string]$QueueUrl, [string]$MessageBody, [string]$GroupId = "default-group")
+
+    awslocal --endpoint-url=$script:localStackUrl sqs send-message --queue-url $QueueUrl --message-body $MessageBody --message-group-id $GroupId
+
 }
 
-<# 
-.SYNOPSIS 
-Receives messages from an SQS queue. 
+
+<#
+
+.SYNOPSIS
+
+Receives messages from an SQS queue.
+
 .CATEGORY
+
 AWS LocalStack Commands
+
 #>
-function Get-LocalSQSMessage { 
-    [CmdletBinding()] 
-    param([string]$QueueUrl) 
-    awslocal --endpoint-url=$script:localStackUrl sqs receive-message --queue-url $QueueUrl 
+
+function Get-LocalSQSMessage {
+
+    [CmdletBinding()]
+
+    param([string]$QueueUrl)
+
+    awslocal --endpoint-url=$script:localStackUrl sqs receive-message --queue-url $QueueUrl
+
 }
 
-<# 
-.SYNOPSIS 
-Gets all attributes for an SQS queue. 
+
+<#
+
+.SYNOPSIS
+
+Gets all attributes for an SQS queue.
+
 .CATEGORY
+
 AWS LocalStack Commands
+
 #>
-function Get-LocalSQSAttributes { 
-    [CmdletBinding()] 
-    param([string]$QueueUrl) 
-    awslocal --endpoint-url=$script:localStackUrl sqs get-queue-attributes --queue-url $QueueUrl --attribute-names All 
+
+function Get-LocalSQSAttributes {
+
+    [CmdletBinding()]
+
+    param([string]$QueueUrl)
+
+    awslocal --endpoint-url=$script:localStackUrl sqs get-queue-attributes --queue-url $QueueUrl --attribute-names All
+
 }
+
 
 #endregion
