@@ -44,18 +44,25 @@ Project Navigation
 #>
 function Enter-Project {
     [CmdletBinding()]
-    param()
+    param(
+        [Parameter(Position=0, Mandatory=$false)]
+        [string]$Name
+    )
 
     # --- CONFIGURATION ---
     $searchPaths = @(
         "$env:USERPROFILE\Desktop\back-up\1.project",
+        "$env:USERPROFILE\Desktop\project",
+        "C:\Users\sshuser\project",
         "$env:USERPROFILE\Documents\Powershell"
     ) | Where-Object { Test-Path $_ }
 
     $priorityProjects = @(
         @{ Name = "Powershell";         Short = "pw"   }
         @{ Name = "finance-dashboard";  Short = "fin"  }
-        @{ Name = "nextjs-template";    Short = "next" }
+        @{ Name = "clean-architecture-net-8.0"; Short = "clean" }
+        @{ Name = "BinhDinhFood";       Short = "food" }
+        @{ Name = "test-road-map";      Short = "road" }
     )
     $excludeFolders = @("My Music","My Pictures","My Videos","WindowsPowerShell",
                         "Custom Office Templates","Visual Studio 2022","Modules",
@@ -87,6 +94,34 @@ function Enter-Project {
     }
     foreach ($proj in ($allProjects | Where-Object { $_.Name -notin $priorityNames })) {
         $items += [PSCustomObject]@{ Label = $proj.Name; Path = $proj.FullName; Priority = $false }
+    }
+
+    # Direct match check
+    if ($Name) {
+        # Check priority short names first
+        $matchedPriority = $priorityProjects | Where-Object { $_.Short -eq $Name } | Select-Object -First 1
+        if ($matchedPriority) {
+            $matchedProj = $items | Where-Object { $_.Label -eq $matchedPriority.Name } | Select-Object -First 1
+            if ($matchedProj) {
+                Write-Host "  Navigating to: $($matchedProj.Label)" -ForegroundColor Green
+                Set-Location $matchedProj.Path
+                return
+            }
+        }
+
+        # Otherwise match by name/label (case-insensitive contains)
+        $matches = $items | Where-Object { $_.Label -like "*$Name*" }
+        if ($matches.Count -eq 1) {
+            Write-Host "  Navigating to: $($matches[0].Label)" -ForegroundColor Green
+            Set-Location $matches[0].Path
+            return
+        } elseif ($matches.Count -gt 1) {
+            # Filter the interactive list to only display the matching options
+            $items = $matches
+        } else {
+            Write-Host "  No project matching '$Name' found." -ForegroundColor Yellow
+            return
+        }
     }
 
     # Arrow-key menu

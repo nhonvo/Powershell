@@ -1,4 +1,4 @@
-﻿#region CORE SETUP
+#region CORE SETUP
 # ------------------------------------------------------------------------------
 #  Initial configuration for the shell environment, theme, and modules.
 # ------------------------------------------------------------------------------
@@ -13,7 +13,10 @@ $env:POSH_THEMES_PATH = Join-Path -Path $env:USERPROFILE -ChildPath "Documents\P
 $env:THEME = "neko" # Change your theme here
 $themePath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "$($env:THEME).omp.json"
 if (Test-Path $themePath) {
-    oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
+    if (-not $global:PoshInitialized) {
+        oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
+        $global:PoshInitialized = $true
+    }
 } else {
     Write-Warning "Oh My Posh theme '$($env:THEME)' not found at '$themePath'."
 }
@@ -102,14 +105,16 @@ try {
 }
 
 # --- PSReadLine Key Bindings ---
-Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
-Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
-Set-PSReadLineKeyHandler -Key 'Ctrl+Spacebar' -Function Complete
-Set-PSReadLineKeyHandler -Key F7 -ScriptBlock {
-    $command = Get-History | Out-GridView -Title 'Command History' -PassThru
-    if ($command) {
-        [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
-        [Microsoft.PowerShell.PSConsoleReadLine]::Insert($command.CommandLine)
+if ($Host.Name -eq 'ConsoleHost' -and (Get-Command Set-PSReadLineKeyHandler -ErrorAction SilentlyContinue)) {
+    Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
+    Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+    Set-PSReadLineKeyHandler -Chord 'Ctrl+Spacebar' -Function Complete
+    Set-PSReadLineKeyHandler -Key F7 -ScriptBlock {
+        $command = Get-History | Out-GridView -Title 'Command History' -PassThru
+        if ($command) {
+            [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+            [Microsoft.PowerShell.PSConsoleReadLine]::Insert($command.CommandLine)
+        }
     }
 }
 # .NET Hotkeys

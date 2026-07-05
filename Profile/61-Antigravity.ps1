@@ -8,8 +8,8 @@
 Write-Host "🛸 Loading Antigravity Multi-Account Manager..." -ForegroundColor Cyan
 
 # --- Core Configurations ---
-$script:AgySourceHome = "C:\Users\TruongNhon\.gemini"
-$script:AgyAccountPrefix = "C:\Users\TruongNhon\.gemini_"
+$script:AgySourceHome = Join-Path $env:USERPROFILE ".gemini"
+$script:AgyAccountPrefix = Join-Path $env:USERPROFILE ".gemini_"
 $script:AgyActiveAccountFile = Join-Path $script:AgySourceHome "active_account.txt"
 $script:AgyBinaryPath = Join-Path $env:LOCALAPPDATA "agy\bin\agy.exe"
 
@@ -28,8 +28,8 @@ function Get-AgyAccounts {
     $accounts = [System.Collections.Generic.List[string]]::new()
     $accounts.Add("default")
 
-    if (Test-Path "C:\Users\TruongNhon") {
-        $dirs = Get-ChildItem -Path "C:\Users\TruongNhon" -Directory -Filter ".gemini_*"
+    if (Test-Path $env:USERPROFILE) {
+        $dirs = Get-ChildItem -Path $env:USERPROFILE -Directory -Filter ".gemini_*"
         foreach ($dir in $dirs) {
             if ($dir.Name -match '^\.gemini_(.+)$') {
                 $name = $Matches[1]
@@ -527,7 +527,7 @@ foreach ($acc in $availableAccounts) {
 function multigravity {
     [CmdletBinding()]
     param([Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
-    & "C:\Users\TruongNhon\.local\bin\multigravity.ps1" @PassThruArgs
+    $mgScript = Join-Path $env:USERPROFILE ".local\bin\multigravity.ps1"; if (Test-Path $mgScript) { & $mgScript @PassThruArgs } else { Write-Error "multigravity script not found at $mgScript" }
 }
 
 # 4. Register Multigravity tab-completion if available
@@ -535,7 +535,7 @@ if (Get-Command multigravity -ErrorAction SilentlyContinue) {
     Register-ArgumentCompleter -Native -CommandName multigravity -ScriptBlock {
         param($wordToComplete, $commandAst, $cursorPosition)
         $opts = @('new', 'list', 'status', 'rename', 'delete', 'clone', 'template', 'export', 'import', 'update', 'doctor', 'stats', 'completion', 'help')
-        $profiles = if (Test-Path 'C:\Users\TruongNhon\AntigravityProfiles') { Get-ChildItem -Directory -Path 'C:\Users\TruongNhon\AntigravityProfiles' | Select-Object -ExpandProperty Name } else { @() }
+        $profiles = if (Test-Path (Join-Path $env:USERPROFILE "AntigravityProfiles")) { Get-ChildItem -Directory -Path (Join-Path $env:USERPROFILE "AntigravityProfiles") | Select-Object -ExpandProperty Name } else { @() }
         ($opts + $profiles) | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
             [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
         }

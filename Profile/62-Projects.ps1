@@ -5,7 +5,7 @@
 
 Write-Host "🛸 Loading Antigravity Projects..." -ForegroundColor Cyan
 
-$script:AgBaseDir = "$env:USERPROFILE\Desktop\project"
+$script:AgBaseDir = if (Test-Path "C:\Users\sshuser\project") { "C:\Users\sshuser\project" } else { "$env:USERPROFILE\Desktop\project" }
 
 <#
 .SYNOPSIS

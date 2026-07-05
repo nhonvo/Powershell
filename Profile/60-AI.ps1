@@ -1,133 +1,9 @@
-﻿#region AI TOOLS
+#region AI TOOLS
 # ------------------------------------------------------------------------------
 #  Wrappers for AI CLI tools: Gemini CLI, GitHub Copilot, Claude, Ollama, ChatGPT.
 # ------------------------------------------------------------------------------
 
-Write-Host "🤖 Loading AI Tools..." -ForegroundColor Cyan
-
-# --- Gemini CLI ---
-
-<#
-.SYNOPSIS
-Launch Gemini CLI. Pass a prompt or open interactive mode.
-.CATEGORY
-AI Tools
-#>
-function Invoke-GeminiChat {
-    [CmdletBinding()]
-    param([Parameter(Position=0, ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
-    if (-not (Get-Command gemini -ErrorAction SilentlyContinue)) {
-        Write-Warning "Gemini CLI not found. Install: npm install -g @google/generative-ai"
-        return
-    }
-    if ($PassThruArgs) { gemini @PassThruArgs } else { gemini }
-}
-
-# --- GitHub Copilot ---
-
-<#
-.SYNOPSIS
-Ask Copilot to suggest a shell command.
-.CATEGORY
-AI Tools
-#>
-function Invoke-CopilotSuggest {
-    [CmdletBinding()]
-    param([Parameter(Mandatory=$true, ValueFromRemainingArguments=$true)][string]$Query)
-    if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
-        Write-Warning "GitHub CLI 'gh' not found. Install from https://cli.github.com/"
-        return
-    }
-    gh copilot suggest -t shell $Query
-}
-
-<#
-.SYNOPSIS
-Ask Copilot to explain a shell command.
-.CATEGORY
-AI Tools
-#>
-function Invoke-CopilotExplain {
-    [CmdletBinding()]
-    param([Parameter(Mandatory=$true, ValueFromRemainingArguments=$true)][string]$Command)
-    if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
-        Write-Warning "GitHub CLI 'gh' not found. Install from https://cli.github.com/"
-        return
-    }
-    gh copilot explain $Command
-}
-
-# --- Claude ---
-
-<#
-.SYNOPSIS
-Launch Claude CLI via Antigravity proxy (default) or local Ollama model.
-.EXAMPLE
-  Invoke-ClaudeChat                     # proxy mode (Antigravity)
-  Invoke-ClaudeChat -Local              # local Ollama (qwen3-coder)
-  Invoke-ClaudeChat -Local -Model phi3  # custom local model
-.CATEGORY
-AI Tools
-#>
-function Invoke-ClaudeChat {
-    [CmdletBinding()]
-    param(
-        [switch]$Local,
-        [string]$Model = "qwen3-coder",
-        [Parameter(ValueFromRemainingArguments=$true)][string[]]$PassThruArgs
-    )
-    if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
-        Write-Warning "Claude CLI not found. Install from https://claude.ai/code"
-        return
-    }
-    if ($Local) {
-        Write-Host "🤖 Claude → Ollama ($Model)..." -ForegroundColor Yellow
-        claude --model $Model @PassThruArgs
-    } else {
-        Write-Host "🛸 Claude → Antigravity Proxy..." -ForegroundColor Cyan
-        claude @PassThruArgs
-    }
-}
-
-# --- ChatGPT CLI ---
-
-<#
-.SYNOPSIS
-Launch ChatGPT CLI. Pass a prompt or open interactive mode.
-.CATEGORY
-AI Tools
-#>
-function Invoke-ChatGPT {
-    [CmdletBinding()]
-    param([Parameter(Position=0, ValueFromRemainingArguments=$true)][string[]]$PassThruArgs)
-    if (-not (Get-Command chatgpt -ErrorAction SilentlyContinue)) {
-        Write-Warning "ChatGPT CLI not found. Install: npm install -g chatgpt-cli"
-        return
-    }
-    if ($PassThruArgs) { chatgpt @PassThruArgs } else { chatgpt }
-}
-
-# --- Ollama ---
-
-<#
-.SYNOPSIS
-Launch an Ollama model interactively. Defaults to llama3.
-.EXAMPLE
-  Invoke-OllamaChat             # runs llama3
-  Invoke-OllamaChat -Model phi3
-.CATEGORY
-AI Tools
-#>
-function Invoke-OllamaChat {
-    [CmdletBinding()]
-    param([string]$Model = "llama3")
-    if (-not (Get-Command ollama -ErrorAction SilentlyContinue)) {
-        Write-Warning "Ollama not installed or not in PATH."
-        return
-    }
-    Write-Host "🦙 Ollama ($Model)..." -ForegroundColor Yellow
-    ollama run $Model
-}
+Write-Host "[AI] Loading AI Tools..." -ForegroundColor Cyan
 
 # --- Unified AI Router ---
 
@@ -175,17 +51,17 @@ function Invoke-MultiAgent {
 
     # --- Arrow-key menu ---
     $agents = @(
-        [PSCustomObject]@{ Label = "♊  Gemini CLI";              Action = { if ($Query) { Invoke-GeminiChat $Query } else { Invoke-GeminiChat } } }
-        [PSCustomObject]@{ Label = "🐙  GitHub Copilot (explain)"; Action = {
+        [PSCustomObject]@{ Label = "[Gemini] Gemini CLI";              Action = { if ($Query) { Invoke-GeminiChat $Query } else { Invoke-GeminiChat } } }
+        [PSCustomObject]@{ Label = "[Copilot] GitHub Copilot (explain)"; Action = {
             if ([string]::IsNullOrWhiteSpace($Query)) {
                 $Query = Read-Host "Copilot prompt"
             }
             Invoke-CopilotExplain -Command $Query
         }}
-        [PSCustomObject]@{ Label = "🛸  Claude (Antigravity proxy)"; Action = { Invoke-ClaudeChat } }
-        [PSCustomObject]@{ Label = "🤖  Claude (local Ollama / qwen3-coder)"; Action = { Invoke-ClaudeChat -Local -Model (if ($Model) { $Model } else { "qwen3-coder" }) } }
-        [PSCustomObject]@{ Label = "🦙  Ollama (interactive)";    Action = { Invoke-OllamaChat -Model (if ($Model) { $Model } else { "llama3" }) } }
-        [PSCustomObject]@{ Label = "🤖  ChatGPT CLI";             Action = { if ($Query) { Invoke-ChatGPT $Query } else { Invoke-ChatGPT } } }
+        [PSCustomObject]@{ Label = "[Claude] Claude (Antigravity proxy)"; Action = { Invoke-ClaudeChat } }
+        [PSCustomObject]@{ Label = "[Local Claude] Claude (local Ollama / qwen3-coder)"; Action = { Invoke-ClaudeChat -Local -Model (if ($Model) { $Model } else { "qwen3-coder" }) } }
+        [PSCustomObject]@{ Label = "[Ollama] Ollama (interactive)";    Action = { Invoke-OllamaChat -Model (if ($Model) { $Model } else { "llama3" }) } }
+        [PSCustomObject]@{ Label = "[ChatGPT] ChatGPT CLI";             Action = { if ($Query) { Invoke-ChatGPT $Query } else { Invoke-ChatGPT } } }
     )
 
     $selected = 0
@@ -194,7 +70,7 @@ function Invoke-MultiAgent {
     # Save cursor position and hide it
     [Console]::CursorVisible = $false
     Write-Host ""
-    Write-Host "  Select AI agent  (↑↓ to move, Enter to confirm, Esc to cancel)" -ForegroundColor DarkGray
+    Write-Host "  Select AI agent  (Up/Down to move, Enter to confirm, Esc to cancel)" -ForegroundColor DarkGray
     Write-Host ""
     $menuTop = [Console]::CursorTop
 
@@ -202,7 +78,7 @@ function Invoke-MultiAgent {
         [Console]::SetCursorPosition(0, $menuTop)
         for ($i = 0; $i -lt $agents.Count; $i++) {
             if ($i -eq $selected) {
-                Write-Host "  ▶ $($agents[$i].Label)  " -ForegroundColor Cyan
+                Write-Host "  > $($agents[$i].Label)  " -ForegroundColor Cyan
             } else {
                 Write-Host "    $($agents[$i].Label)  " -ForegroundColor DarkGray
             }
@@ -231,5 +107,204 @@ function Invoke-MultiAgent {
         }
     }
 }
+
+# --- Ollama / Claude Code Integration ---
+
+function Ensure-OllamaServer {
+    try {
+        $null = Invoke-RestMethod -Uri "http://127.0.0.1:11434/" -TimeoutSec 1 -ErrorAction Stop
+    } catch {
+        Write-Host "[AI] Ollama is not running. Auto-starting..." -ForegroundColor Yellow
+        Initialize-OllamaServer
+    }
+}
+
+function Invoke-Claude-By-Ollama {
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromRemainingArguments=$true)][string[]]$ArgsList
+    )
+    Ensure-OllamaServer
+    
+    $oldNodeOptions = $env:NODE_OPTIONS
+    try {
+        # Force Node.js (Claude Code) to resolve localhost to IPv4 (127.0.0.1) instead of IPv6 ([::1])
+        $env:NODE_OPTIONS = if ($env:NODE_OPTIONS) { "$env:NODE_OPTIONS --dns-result-order=ipv4first" } else { "--dns-result-order=ipv4first" }
+        
+        $flags = @()
+        if ($ArgsList -notcontains "--model") {
+            $flags += "--model", "qwen3:1.7b"
+        }
+        
+        & ollama.exe launch claude @flags @ArgsList
+    } finally {
+        $env:NODE_OPTIONS = $oldNodeOptions
+    }
+}
+
+function Invoke-Codex-By-Ollama {
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromRemainingArguments=$true)][string[]]$ArgsList
+    )
+    Ensure-OllamaServer
+    
+    $oldBaseUrl = $env:OPENAI_BASE_URL
+    $oldApiKey = $env:OPENAI_API_KEY
+    try {
+        $env:OPENAI_BASE_URL = "http://127.0.0.1:11434/v1"
+        $env:OPENAI_API_KEY = "ollama"
+        
+        $flags = @()
+        if ($ArgsList -notcontains "--oss") {
+            $flags += "--oss"
+        }
+        if ($ArgsList -notcontains "--local-provider") {
+            $flags += "--local-provider", "ollama"
+        }
+        if ($ArgsList -notcontains "--model") {
+            $flags += "--model", "qwen3:1.7b"
+        }
+        
+        & codex.cmd @flags @ArgsList
+    } finally {
+        $env:OPENAI_BASE_URL = $oldBaseUrl
+        $env:OPENAI_API_KEY = $oldApiKey
+    }
+}
+
+function Invoke-OpenClaw-By-Ollama {
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromRemainingArguments=$true)][string[]]$ArgsList
+    )
+    Ensure-OllamaServer
+    
+    $flags = @()
+    if ($ArgsList -notcontains "--model") {
+        $flags += "--model", "qwen3:1.7b"
+    }
+    & ollama.exe launch openclaw @flags @ArgsList
+}
+
+# Note: aliases for clawdbot also supported
+function Invoke-Clawdbot-By-Ollama {
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromRemainingArguments=$true)][string[]]$ArgsList
+    )
+    Invoke-OpenClaw-By-Ollama @ArgsList
+}
+
+function Invoke-Hermes-By-Ollama {
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromRemainingArguments=$true)][string[]]$ArgsList
+    )
+    $flags = @()
+    if ($ArgsList -notcontains "--model") {
+        $flags += "--model", "qwen3:1.7b"
+    }
+    & ollama.exe launch hermes @flags @ArgsList
+}
+
+function Invoke-HermesDesktop-By-Ollama {
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromRemainingArguments=$true)][string[]]$ArgsList
+    )
+    $flags = @()
+    if ($ArgsList -notcontains "--model") {
+        $flags += "--model", "qwen3:1.7b"
+    }
+    & ollama.exe launch hermes-desktop @flags @ArgsList
+}
+
+# --- Ollama Server Initialization ---
+
+function Initialize-OllamaServer {
+    [CmdletBinding()]
+    param()
+    
+    $port = 11434
+    Write-Host "[Ollama] Resetting port $port..." -ForegroundColor Cyan
+    
+    # Find process using the port
+    $connection = Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($connection) {
+        $pidToKill = $connection.OwningProcess
+        $proc = Get-Process -Id $pidToKill -ErrorAction SilentlyContinue
+        if ($proc) {
+            Write-Host "[Ollama] Killing existing process '$($proc.Name)' (PID $pidToKill) on port $port..." -ForegroundColor Yellow
+            Stop-Process -Id $pidToKill -Force
+            Start-Sleep -Seconds 1
+        }
+    } else {
+        Write-Host "[Ollama] Port $port is free." -ForegroundColor Green
+    }
+    
+    Write-Host "[Ollama] Starting Ollama server..." -ForegroundColor Cyan
+    $oldHost = $env:OLLAMA_HOST
+    $env:OLLAMA_HOST = "[::]:$port"
+    
+    Start-Process -FilePath "ollama" -ArgumentList "serve" -WindowStyle Hidden -ErrorAction SilentlyContinue
+    
+    # Wait for server to respond
+    $retry = 0
+    while ($retry -lt 10) {
+        Start-Sleep -Seconds 1
+        try {
+            $resp = Invoke-RestMethod -Uri "http://127.0.0.1:$port/" -TimeoutSec 2 -ErrorAction SilentlyContinue
+            if ($resp -like "*Ollama is running*") {
+                Write-Host "[Ollama] Ollama server is running and ready!" -ForegroundColor Green
+                $env:OLLAMA_HOST = $oldHost
+                return
+            }
+        } catch {}
+        $retry++
+    }
+    $env:OLLAMA_HOST = $oldHost
+    Write-Warning "[Ollama] Failed to verify if Ollama started successfully after 10 seconds."
+}
+
+# --- AI Integrations Installer ---
+
+function Install-AIIntegrations {
+    [CmdletBinding()]
+    param()
+    
+    # 1. Claude Code
+    if (-not (Get-Command "claude" -ErrorAction SilentlyContinue)) {
+        Write-Host "[AI] Installing Claude Code via npm..." -ForegroundColor Cyan
+        npm install -g @anthropic-ai/claude-code
+    } else {
+        Write-Host "[AI] Claude Code is already installed." -ForegroundColor Green
+    }
+    
+    # 2. Codex CLI
+    if (-not (Get-Command "codex" -ErrorAction SilentlyContinue)) {
+        Write-Host "[AI] Installing Codex CLI via npm..." -ForegroundColor Cyan
+        npm install -g @openai/codex
+    } else {
+        Write-Host "[AI] Codex CLI is already installed." -ForegroundColor Green
+    }
+    
+    # 3. OpenClaw
+    if (-not (Get-Command "openclaw" -ErrorAction SilentlyContinue)) {
+        Write-Host "[AI] Installing OpenClaw via npm..." -ForegroundColor Cyan
+        npm install -g openclaw
+    } else {
+        Write-Host "[AI] OpenClaw is already installed." -ForegroundColor Green
+    }
+}
+
+# --- Aliases ---
+
+Set-Alias -Name claude-o -Value Invoke-Claude-By-Ollama
+Set-Alias -Name codex-o -Value Invoke-Codex-By-Ollama
+Set-Alias -Name openclaw-o -Value Invoke-OpenClaw-By-Ollama
+Set-Alias -Name clawdbot-o -Value Invoke-Clawdbot-By-Ollama
+Set-Alias -Name hermes-o -Value Invoke-Hermes-By-Ollama
+Set-Alias -Name hermesd-o -Value Invoke-HermesDesktop-By-Ollama
 
 #endregion

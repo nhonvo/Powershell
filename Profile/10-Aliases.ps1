@@ -92,11 +92,9 @@ Set-Alias -Name fix-image  -Value Remove-UnusedDockerImages  -Force
 
 # --- AI Tools (60-AI, 61-Antigravity) ---
 Set-Alias -Name ai          -Value Invoke-MultiAgent        -Force
-Set-Alias -Name claude      -Value Invoke-ClaudeChat        -Force   # proxy mode
-Set-Alias -Name gpt         -Value Invoke-ChatGPT           -Force
-Set-Alias -Name ox          -Value Get-OllamaModels         -Force
+Set-Alias -Name codex          -Value codex        -Force
+Set-Alias -Name claude          -Value claude        -Force
 Set-Alias -Name agm         -Value Start-AntigravityManager -Force
-# Set-Alias -Name agp         -Value Start-AntigravityProxy   -Force
 
 # --- Help shortcuts ---
 Set-Alias -Name cc -Value Get-CustomCommands -Force
@@ -110,7 +108,7 @@ function caws { Get-CustomCommands "AWS" }
 # --- Conditional ---
 $claudeExe = "$env:USERPROFILE\.local\bin\claude.exe"
 if (Test-Path $claudeExe) {
-    Set-Alias -Name claude -Value $claudeExe -Force
+    Set-Alias -Name claude-proxy -Value $claudeExe -Force
 }
 
 #endregion
