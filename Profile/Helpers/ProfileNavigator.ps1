@@ -60,6 +60,19 @@ class ProfileNavigator {
 
         # Direct match check
         if ($Name) {
+            # List projects on screen if requested
+            if ($Name -eq '-list' -or $Name -eq '-l' -or $Name -eq '--list') {
+                Write-Host ""
+                Write-Host "Registered Workspaces:" -ForegroundColor Cyan
+                Write-Host "======================" -ForegroundColor Cyan
+                foreach ($item in $items) {
+                    $icon = if ($item.Priority) { "★" } else { " " }
+                    Write-Host ("  $icon {0,-30} - {1}" -f $item.Label, $item.Path)
+                }
+                Write-Host ""
+                return
+            }
+
             # Check priority short names first
             $matchedPriority = $priorityProjects | Where-Object { $_.Short -eq $Name } | Select-Object -First 1
             if ($matchedPriority) {

@@ -23,6 +23,15 @@ class SystemHelper {
         Invoke-Item .
     }
 
+    static [string] GetPublicIP() {
+        try {
+            $webClient = [System.Net.WebClient]::new()
+            return $webClient.DownloadString("https://api.ipify.org").Trim()
+        } catch {
+            return "Unable to resolve public IP."
+        }
+    }
+
     static [void] ClearHistory() {
         Clear-Host
         Remove-Item (Get-PSReadlineOption).HistorySavePath -ErrorAction SilentlyContinue

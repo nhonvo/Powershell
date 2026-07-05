@@ -12,7 +12,12 @@ class ProfileEnvironment {
 
         # --- Oh My Posh Theme ---
         $env:POSH_THEMES_PATH = Join-Path -Path $env:USERPROFILE -ChildPath "Documents\PowerShell\asset\powershell-themes"
-        $env:THEME = "neko" # Change your theme here
+        $activeThemeFile = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "active_theme.txt"
+        $theme = "neko"
+        if (Test-Path $activeThemeFile) {
+            $theme = (Get-Content $activeThemeFile -Raw | Out-String).Trim()
+        }
+        $env:THEME = $theme
         $themePath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "$($env:THEME).omp.json"
         if (Test-Path $themePath) {
             if (-not $global:PoshInitialized) {
@@ -133,6 +138,8 @@ class ProfileEnvironment {
                 $pr::AcceptLine()
             }
         }
+        # Initialize TUI colors based on loaded prompt theme
+        [TerminalMenu]::InitializeTuiColors()
     }
 }
 

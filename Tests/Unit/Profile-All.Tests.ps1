@@ -28,6 +28,7 @@ Describe "Core Profile Functions Validation" {
         . (Join-Path $ProfileDir "Helpers\AwsHelper.ps1")
         . (Join-Path $ProfileDir "Helpers\AiHelper.ps1")
         . (Join-Path $ProfileDir "Helpers\AgyAccountManager.ps1")
+        . (Join-Path $ProfileDir "Helpers\ThemeHelper.ps1")
         . (Join-Path $ProfileDir "Core\Projects.ps1")
         . (Join-Path $ProfileDir "Core\ProfileHelp.ps1")
         . (Join-Path $ProfileDir "Core\Aliases.ps1")
@@ -55,6 +56,11 @@ Describe "Core Profile Functions Validation" {
         It "Get-DiskSpace outputs table format" {
             $disk = Get-DiskSpace
             $disk | Should Not BeNullOrEmpty
+        }
+
+        It "Get-PublicIP runs and returns string or error" {
+            $ip = Get-PublicIP
+            $ip | Should Not BeNullOrEmpty
         }
 
         It "Stop-ProcessFriendly stops named process" {
@@ -149,6 +155,13 @@ Describe "Core Profile Functions Validation" {
             
             [AgyAccountManager]::SetActiveAccount("account2", $true)
             $env:GEMINI_HOME | Should Be $target
+        }
+    }
+
+    Context "Theme Switcher (ThemeHelper.ps1)" {
+        It "Select-ShellTheme function and theme alias exist" {
+            (Get-Command Select-ShellTheme -ErrorAction SilentlyContinue) | Should Not Be $null
+            (Get-Alias -Name theme -ErrorAction SilentlyContinue) | Should Not Be $null
         }
     }
 }

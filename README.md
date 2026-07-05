@@ -52,8 +52,8 @@ sequenceDiagram
     autonumber
     actor User
     participant Profile as Microsoft.PowerShell_profile.ps1
-    participant Core as Profile/Core/*
-    participant Helpers as Profile/Helpers/*
+    participant Core as "Profile/Core/*"
+    participant Helpers as "Profile/Helpers/*"
     
     User->>Profile: Start PowerShell Session
     activate Profile
@@ -79,11 +79,11 @@ Isolates accounts by manipulating `$env:GEMINI_HOME` under `C:\Users\Public\.gem
 ```mermaid
 graph TD
     A[agy-account use 'my-account'] --> B{Account Dir Exists?}
-    B -- Yes --> C[Set $env:GEMINI_HOME = C:\Users\Public\.gemini_my-account]
-    B -- No --> D[Create junction links to global config/ & history/]
+    B -- Yes --> C["Set $env:GEMINI_HOME = C:\Users\Public\.gemini_my-account"]
+    B -- No --> D["Create junction links to global config/ & history/"]
     D --> C
-    C --> E[Verify/Re-generate unique installation_id GUID]
-    E --> F[Session isolated from default account]
+    C --> E["Verify/Re-generate unique installation_id GUID"]
+    E --> F["Session isolated from default account"]
 ```
 
 ### 2. Workspace Navigator (`project nav` / `ProfileNavigator`)
@@ -99,8 +99,6 @@ Manages background server dependencies and proxy wrappers.
 * **Compatibility Proxy**: Launches Node-based `ollama-proxy.js` on port `11435` to rewrite OpenAPI schemas for legacy clients (like Codex CLI).
 
 ---
-
-## 🛠️ Quick Use Guide
 
 ## 🛠️ Quick Use Guide
 
@@ -136,9 +134,16 @@ Manages background server dependencies and proxy wrappers.
 | `mkcd` | `New-DirAndEnter` | Create a new directory and navigate into it immediately |
 | `myip` | `Get-PublicIP` | Resolve and print the current public IPv4 address |
 | `tree` | `Get-FileTree` | Display printout of folder tree structure |
-| `commands` / `cc` | `Get-CustomCommands` | Access the interactive TUI profile manual |
-| `cg` / `cnet` / `csys` | `c*` help shortcuts | Display Git, .NET, or System helper command references |
-| `cdk` / `cai` / `caws` | `c*` help shortcuts | Display Docker, AI, or AWS helper command references |
+| `commands` / `cc` | `Get-CustomCommands` | Access the main interactive TUI profile manual |
+| `cg` | `cg` | Display the Git helper commands manual |
+| `cnet` | `cnet` | Display the .NET SDK helper commands manual |
+| `csys` | `csys` | Display the System utility commands manual |
+| `cdk` | `cdk` | Display the Docker containers helper commands manual |
+| `cai` | `cai` | Display the AI agents integration commands manual |
+| `caws` | `caws` | Display the LocalStack AWS helper commands manual |
+| `cnav` | `cnav` | Display the Project Navigation helper commands manual |
+| `cssh` | `cssh` | Display the SSH helper commands manual |
+| `theme` | `Select-ShellTheme` | Interactive TUI menu to select and apply Oh My Posh shell prompt styles |
 
 ### 3. Git Shortcuts
 
@@ -200,6 +205,43 @@ Manages background server dependencies and proxy wrappers.
 | `dkcpd` | `Invoke-ComposeDown` | Shut down compose containers stack |
 | `fix-volume` | `Remove-UnusedDockerVolumes` | Prune all dangling Docker volumes |
 | `fix-image` | `Remove-UnusedDockerImages` | Prune unused Docker images |
+
+### 6. AWS LocalStack Shortcuts
+
+| Alias / Command | Routing Target | Description |
+| :--- | :--- | :--- |
+| `Get-S3Buckets` | `Get-S3Buckets` | List all local S3 buckets in LocalStack |
+| `New-S3Bucket` | `New-S3Bucket` | Create a new local S3 bucket |
+| `Get-LambdaFunctions` | `Get-LambdaFunctions` | List local Lambda functions |
+| `Get-LocalSQSQueues` | `Get-LocalSQSQueues` | List local SQS queues |
+| `New-LocalSQSQueue` | `New-LocalSQSQueue` | Create a new local SQS queue |
+| `Clear-LocalSQSQueue` | `Clear-LocalSQSQueue` | Delete all messages from a local SQS queue |
+| `Send-LocalSQSMessage` | `Send-LocalSQSMessage` | Publish a message to a local SQS queue |
+| `Get-LocalSQSMessage` | `Get-LocalSQSMessage` | Read messages from a local SQS queue |
+| `Get-LocalSQSAttributes` | `Get-LocalSQSAttributes` | Retrieve queue metadata and attributes |
+
+### 7. SSH & Remote Shortcuts
+
+| Alias / Command | Routing Target | Description |
+| :--- | :--- | :--- |
+| `ssh-info` | `Get-SshConnectionInfo` | Print network status and Tailscale SSH control guides |
+| `ssh-addkey` | `Add-SshAuthorizedKey` | Authorize public key for secure passwordless logins |
+
+### 8. Isolated Account Manager Action Reference
+
+The `agy-account` (aliased to `agy-acc`) wrapper supports interactive TUI selection as well as direct command-line arguments:
+
+| Command Action | Syntax Example | Description |
+| :--- | :--- | :--- |
+| **Interactive TUI** | `agy-account` or `agy-account interactive` | Opens interactive TUI menu to select, add, or delete accounts |
+| **List Accounts** | `agy-account list` (or `lst`, `show`) | Prints all configured account names and points out the active one |
+| **Use Account (Persistent)** | `agy-account use 'account-name'` | Switches the active account persistently across reboots |
+| **Use Account (Session Only)** | `agy-account use 'account-name' -Temporary` | Swaps the active account context for the current console session only |
+| **Add/Register Account** | `agy-account add 'new-account'` | Creates folder paths and initializes GUID identifiers for a new account |
+| **Delete Account** | `agy-account remove 'target-account'` | De-registers and deletes configs for the specified account |
+| **Run Command Under Account** | `agy-account run 'account-name' <command>` | Executes a command on the fly under the targeted account context |
+| **Authenticate / Sign-In** | `agy-account login 'account-name'` | Initiates sign-in and resets saved access tokens for the account |
+| **Log Out / Sign-Out** | `agy-account logout 'account-name'` | Discards saved API keys/credentials for the specified account |
 
 ---
 

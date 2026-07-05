@@ -375,4 +375,10 @@ function csys { [ProfileHelp]::Show("Sys") }
 function cdk  { [ProfileHelp]::Show("Docker") }
 function cai  { [ProfileHelp]::Show("AI") }
 function caws { [ProfileHelp]::Show("AWS") }
+function cnav { [ProfileHelp]::Show("Navigation") }
+function cssh { [ProfileHelp]::Show("SSH") }
+
+# Theme Switcher
+function Select-ShellTheme { [ThemeHelper]::SelectThemeInteractive() }
+Set-Alias -Name theme -Value Select-ShellTheme -Force
 #endregion
