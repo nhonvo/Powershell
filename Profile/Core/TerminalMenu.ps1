@@ -71,7 +71,23 @@ class TerminalMenu {
         $filterText = ""
         $searchMode = $false
 
-        # Capture starting cursor coordinates
+        # Pre-scroll if drawing near the bottom to avoid repeated headers due to scroll shifts
+        $maxVisible = [Math]::Min(12, [Math]::Max(3, ([Console]::WindowHeight - 10)))
+        $estimatedLines = 7 + $maxVisible
+        if ($searchMode) { $estimatedLines += 3 }
+        
+        $visibleCursorRow = [Console]::CursorTop - [Console]::WindowTop
+        $remainingVisibleLines = [Console]::WindowHeight - $visibleCursorRow
+        $spaceNeeded = $estimatedLines - $remainingVisibleLines
+        if ($spaceNeeded -gt 0) {
+            for ($i = 0; $i -lt $spaceNeeded; $i++) {
+                Write-Host ""
+            }
+            $targetRow = [Math]::Max(0, [Console]::CursorTop - $spaceNeeded)
+            try {
+                [Console]::SetCursorPosition([Console]::CursorLeft, $targetRow)
+            } catch {}
+        }
         $startRow = [Console]::CursorTop
         $startCol = [Console]::CursorLeft
         $lastLinesCount = 0
@@ -324,7 +340,23 @@ class TerminalMenu {
         $searchMode = $false
         $marqueeOffset = 0
 
-        # Capture starting cursor coordinates
+        # Pre-scroll if drawing near the bottom to avoid repeated headers due to scroll shifts
+        $maxVisible = [Math]::Min(12, [Math]::Max(3, ([Console]::WindowHeight - 10)))
+        $estimatedLines = 7 + $maxVisible
+        if ($searchMode) { $estimatedLines += 3 }
+        
+        $visibleCursorRow = [Console]::CursorTop - [Console]::WindowTop
+        $remainingVisibleLines = [Console]::WindowHeight - $visibleCursorRow
+        $spaceNeeded = $estimatedLines - $remainingVisibleLines
+        if ($spaceNeeded -gt 0) {
+            for ($i = 0; $i -lt $spaceNeeded; $i++) {
+                Write-Host ""
+            }
+            $targetRow = [Math]::Max(0, [Console]::CursorTop - $spaceNeeded)
+            try {
+                [Console]::SetCursorPosition([Console]::CursorLeft, $targetRow)
+            } catch {}
+        }
         $startRow = [Console]::CursorTop
         $startCol = [Console]::CursorLeft
         $lastLinesCount = 0
@@ -583,6 +615,168 @@ class TerminalMenu {
             } catch {}
         }
         return $null
+    }
+
+    static [void] ShowScrollableContent([string]$Title, [string[]]$Lines) {
+        if ($null -eq $Global:TuiColors) { [TerminalMenu]::InitializeTuiColors() }
+
+        $width = 80
+        try {
+            $width = [Console]::WindowWidth - 1
+        } catch {}
+        if ($width -lt 40) { $width = 80 }
+
+        # Define encoding-safe Unicode characters
+        $charLine = [char]0x2500     # ─
+        $charAngle = [char]0x2514    # └
+        $charUp = [char]0x2191       # ↑
+        $charDown = [char]0x2193     # ↓
+        $charBullet = [char]0x00B7   # ·
+
+        # Max visible lines in the pager window
+        $winHeight = 25
+        try {
+            $winHeight = [Console]::WindowHeight
+        } catch {}
+        $maxVisible = [Math]::Min(15, [Math]::Max(5, ($winHeight - 8)))
+        
+        $currentIndex = 0 # Top visible line index
+        
+        # Pre-scroll based on $maxVisible + headers + footers (about 6 lines total header/footer)
+        $totalHeight = $maxVisible + 6
+        
+        $visibleCursorRow = 0
+        $remainingVisibleLines = 25
+        try {
+            $visibleCursorRow = [Console]::CursorTop - [Console]::WindowTop
+            $remainingVisibleLines = [Console]::WindowHeight - $visibleCursorRow
+        } catch {}
+        
+        $spaceNeeded = $totalHeight - $remainingVisibleLines
+        if ($spaceNeeded -gt 0) {
+            for ($i = 0; $i -lt $spaceNeeded; $i++) {
+                Write-Host ""
+            }
+            $targetRow = 0
+            try {
+                $targetRow = [Math]::Max(0, [Console]::CursorTop - $spaceNeeded)
+                [Console]::SetCursorPosition([Console]::CursorLeft, $targetRow)
+            } catch {}
+        }
+        
+        $startRow = 0
+        $startCol = 0
+        try {
+            $startRow = [Console]::CursorTop
+            $startCol = [Console]::CursorLeft
+        } catch {}
+
+        # Hide cursor
+        $oldCursorVisible = $null
+        try {
+            $oldCursorVisible = [Console]::CursorVisible
+            [Console]::CursorVisible = $false
+        } catch {}
+
+        try {
+            $running = $true
+            while ($running) {
+                # Move to start position
+                try {
+                    [Console]::SetCursorPosition($startCol, $startRow)
+                } catch {}
+
+                # Print Header
+                Write-Host ([string]$charLine * $width) -ForegroundColor Gray
+                Write-Host "$charAngle $Title" -ForegroundColor Cyan
+                Write-Host ""
+
+                # Print visible window of lines
+                for ($i = 0; $i -lt $maxVisible; $i++) {
+                    $lineIndex = $currentIndex + $i
+                    if ($lineIndex -lt $Lines.Count) {
+                        $l = $Lines[$lineIndex]
+                        # Pad line to clear previous content
+                        $padded = $l.PadRight($width).Substring(0, $width)
+                        if ($padded -match '^\s*\*') {
+                            Write-Host $padded -ForegroundColor Green
+                        } else {
+                            Write-Host $padded
+                        }
+                    } else {
+                        Write-Host (" " * $width)
+                    }
+                }
+
+                # Print Footer
+                Write-Host ""
+                Write-Host "  $charUp/$charDown Scroll $charBullet pgup/pgdown Page $charBullet ctrl+end Bottom $charBullet ctrl+home Top $charBullet esc Close" -ForegroundColor Gray
+                Write-Host ([string]$charLine * $width) -ForegroundColor Gray
+
+                # Wait for key input
+                try {
+                    $key = [Console]::ReadKey($true)
+                } catch {
+                    # Fallback if ReadKey is not supported
+                    try {
+                        Write-Host "  [Fallback] Press Enter to close..." -ForegroundColor Yellow
+                        $null = Read-Host
+                    } catch {
+                        Start-Sleep -Seconds 1
+                    }
+                    $running = $false
+                    break
+                }
+
+                switch ($key.Key) {
+                    "DownArrow" {
+                        if ($currentIndex + $maxVisible -lt $Lines.Count) {
+                            $currentIndex++
+                        }
+                    }
+                    "UpArrow" {
+                        if ($currentIndex -gt 0) {
+                            $currentIndex--
+                        }
+                    }
+                    "PageDown" {
+                        $currentIndex = [Math]::Min($Lines.Count - $maxVisible, $currentIndex + $maxVisible)
+                        if ($currentIndex -lt 0) { $currentIndex = 0 }
+                    }
+                    "PageUp" {
+                        $currentIndex = [Math]::Max(0, $currentIndex - $maxVisible)
+                    }
+                    "Home" {
+                        $currentIndex = 0
+                    }
+                    "End" {
+                        $currentIndex = [Math]::Max(0, $Lines.Count - $maxVisible)
+                    }
+                    "Escape" {
+                        $running = $false
+                    }
+                    "Enter" {
+                        $running = $false
+                    }
+                }
+            }
+        } finally {
+            # Clean up / Erase from screen to restore console state
+            $targetRow = $startRow
+            for ($i = 0; $i -lt ($totalHeight); $i++) {
+                try {
+                    [Console]::SetCursorPosition($startCol, $targetRow)
+                    Write-Host (" " * $width)
+                } catch {}
+                $targetRow++
+            }
+            try {
+                [Console]::SetCursorPosition($startCol, $startRow)
+                if ($null -ne $oldCursorVisible) {
+                    [Console]::CursorVisible = $oldCursorVisible
+                }
+            } catch {}
+        }
     }
 }
 

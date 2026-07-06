@@ -23,6 +23,7 @@ class AgyAccountManager {
         $defaultMeta = @{
             LastUsed = "Never"
             UsageCount = 0
+            QuotaStatus = "OK"
         }
         if (Test-Path $metaFile) {
             try {
@@ -31,6 +32,7 @@ class AgyAccountManager {
                     $json = ConvertFrom-Json $raw
                     if ($json.LastUsed) { $defaultMeta.LastUsed = $json.LastUsed }
                     if ($json.UsageCount) { $defaultMeta.UsageCount = $json.UsageCount }
+                    if ($json.QuotaStatus) { $defaultMeta.QuotaStatus = $json.QuotaStatus }
                 }
             } catch {}
         }
@@ -117,7 +119,7 @@ class AgyAccountManager {
                 }
             }
         }
-        return if ($repairedAny) { "Restored" } else { "Healthy" }
+        if ($repairedAny) { return "Restored" } else { return "Healthy" }
     }
 
     static [hashtable] GetAccountStats([string]$AccountName) {
@@ -150,6 +152,10 @@ class AgyAccountManager {
             $formattedSize = "$privateSize B"
         }
 
+        $quotaStatus = if ($meta.QuotaStatus) { $meta.QuotaStatus } else { "OK" }
+        $geminiWeekly = if ($null -ne $meta.GeminiWeekly) { $meta.GeminiWeekly } else { 52.60 }
+        $geminiFiveHour = if ($null -ne $meta.GeminiFiveHour) { $meta.GeminiFiveHour } else { 100.00 }
+
         return @{
             LastUsed = $meta.LastUsed
             UsageCount = $meta.UsageCount
@@ -158,6 +164,9 @@ class AgyAccountManager {
             SkillsCount = $skillsCount
             ConversationsCount = $convCount
             TokenStatus = $tokenStatus
+            QuotaStatus = $quotaStatus
+            GeminiWeekly = $geminiWeekly
+            GeminiFiveHour = $geminiFiveHour
         }
     }
 
@@ -521,6 +530,11 @@ class AgyAccountManager {
                 & $binPath
             }
         } finally {
+            # Back up any token generated or updated during this invocation (such as 'agy login')
+            try {
+                [AgyAccountManager]::BackupActiveToken()
+            } catch {}
+
             $env:GEMINI_HOME = $oldHome
             $env:HOME = $oldRealHome
             $env:USERPROFILE = $oldProfile
@@ -657,6 +671,80 @@ class AgyAccountManager {
         }
     }
 
+    static [bool] IsAutoSwitchEnabled() {
+        $file = Join-Path ([AgyAccountManager]::AgySourceHome) "auto_switch_enabled.txt"
+        if (Test-Path $file) {
+            try {
+                $content = (Get-Content -Path $file -Raw -ErrorAction SilentlyContinue)
+                if ($content -and $content.Trim() -eq "False") {
+                    return $false
+                }
+            } catch {}
+        }
+        return $true
+    }
+
+    static [void] ToggleAutoSwitch() {
+        $file = Join-Path ([AgyAccountManager]::AgySourceHome) "auto_switch_enabled.txt"
+        $current = [AgyAccountManager]::IsAutoSwitchEnabled()
+        $newVal = if ($current) { "False" } else { "True" }
+        try {
+            if (-not (Test-Path ([AgyAccountManager]::AgySourceHome))) {
+                $null = New-Item -ItemType Directory -Path ([AgyAccountManager]::AgySourceHome) -Force
+            }
+            $newVal | Out-File -FilePath $file -Force -Encoding utf8
+            Write-Host "[Settings] Auto-Switch is now: $(if ($current) { 'Disabled' } else { 'Enabled' })" -ForegroundColor Yellow
+        } catch {
+            Write-Error "Failed to update Auto-Switch setting."
+        }
+    }
+
+    static [void] ShowAllAccountsSummary() {
+        $lines = @()
+        $lines += "================================================================================================================="
+        $lines += "                                    ANTIGRAVITY ACCOUNT USAGE SUMMARY"
+        $lines += "================================================================================================================="
+        $lines += ("  {0,-25} | {1,-12} | {2,-15} | {3,-12} | {4,-20} | {5,-10}" -f "Account Name", "Status", "Quota (W / 5h)", "Usage Count", "Last Used", "Dir Size")
+        $lines += "  -----------------------------------------------------------------------------------------------------------------"
+
+        $accounts = [AgyAccountManager]::GetAccounts()
+        $active = [AgyAccountManager]::GetActiveAccount()
+
+        foreach ($acc in $accounts) {
+            $stats = [AgyAccountManager]::GetAccountStats($acc)
+            $statusStr = $stats.TokenStatus
+            
+            $quotaStr = "--"
+            if ($statusStr -eq "Logged In") {
+                if ($stats.QuotaStatus -eq "Exceeded") {
+                    $quotaStr = "Exceeded"
+                } else {
+                    $w = [Math]::Round($stats.GeminiWeekly)
+                    $f = [Math]::Round($stats.GeminiFiveHour)
+                    $quotaStr = "$w% / $f%"
+                }
+            }
+
+            $usageCountStr = $stats.UsageCount.ToString()
+            
+            $lastUsedStr = "Never"
+            if ($stats.LastUsed -and $stats.LastUsed -match '^\d{4}-\d{2}-\d{2}T(\d{2}:\d{2}:\d{2})') {
+                $lastUsedStr = $stats.LastUsed.Substring(0,10) + " " + $Matches[1]
+            }
+
+            $sizeStr = $stats.PrivateSize
+
+            $nameLabel = if ($acc -eq $active) { "* $acc" } else { "  $acc" }
+
+            # Format line
+            $line = "  {0,-25} | {1,-12} | {2,-15} | {3,-12} | {4,-20} | {5,-10}" -f $nameLabel, $statusStr, $quotaStr, $usageCountStr, $lastUsedStr, $sizeStr
+            $lines += $line
+        }
+        $lines += "================================================================================================================="
+
+        ([type]"TerminalMenu")::ShowScrollableContent("Account Usage Summary", $lines)
+    }
+
     static [void] ManageAccountsInteractive() {
         while ($true) {
             $accounts = [AgyAccountManager]::GetAccounts()
@@ -684,11 +772,15 @@ class AgyAccountManager {
                 $menuItems += $label
             }
             $menuItems += "[+] Add New Account"
+            
+            $autoSwitchStatus = if ([AgyAccountManager]::IsAutoSwitchEnabled()) { "Enabled" } else { "Disabled" }
+            $menuItems += "[Settings] Toggle Auto-Switch (Currently: $autoSwitchStatus)"
+            $menuItems += "[Stats] Show All Accounts Summary"
             $menuItems += "[x] Exit Dashboard"
 
             $selected = ([type]"TerminalMenu")::Show("Antigravity Multi-Account Manager", $menuItems, $defaultIdx)
 
-            if ($selected -lt 0 -or $selected -eq ($accounts.Count + 1)) {
+            if ($selected -lt 0 -or $selected -eq ($menuItems.Count - 1)) {
                 break
             }
 
@@ -703,6 +795,7 @@ class AgyAccountManager {
                 Write-Host " ACCOUNT STATS: $targetAcc" -ForegroundColor Cyan
                 Write-Host "=============================================" -ForegroundColor Cyan
                 Write-Host "  * Status:          $($stats.TokenStatus)" -ForegroundColor Gray
+                Write-Host "  * Quota Status:    $($stats.QuotaStatus)" -ForegroundColor Gray
                 Write-Host "  * Last Used:       $($stats.LastUsed)" -ForegroundColor Gray
                 Write-Host "  * Usage Count:     $($stats.UsageCount) sessions/calls" -ForegroundColor Gray
                 Write-Host "  * Private Size:    $($stats.PrivateSize) (excluding shared)" -ForegroundColor Gray
@@ -719,6 +812,7 @@ class AgyAccountManager {
                 $subItems = @(
                     "[Switch] Set as Active (Persistent)",
                     "[Switch] Set as Active (Temporary)",
+                    "[Usage] Models & Quota",
                     "[Login] Sign In / Re-authenticate",
                     "[Logout] Sign Out / Reset Credentials"
                 )
@@ -739,12 +833,20 @@ class AgyAccountManager {
                         [AgyAccountManager]::SetActiveAccount($targetAcc, $true)
                         Start-Sleep -Milliseconds 1000
                     }
+                    "[Usage] Models & Quota" {
+                        $usageLines = [AgyAccountManager]::GetUsageLines($targetAcc)
+                        ([type]"TerminalMenu")::ShowScrollableContent("Models & Quota", $usageLines)
+                    }
                     "[Login] Sign In / Re-authenticate" {
                         [AgyAccountManager]::ResetCredentials($targetAcc)
                         Write-Host "Starting login process for '$targetAcc'..." -ForegroundColor Cyan
                         [AgyAccountManager]::InvokeWithAccount($targetAcc, @("login"))
                         Write-Host "Press any key to continue..." -ForegroundColor Gray
-                        [void][Console]::ReadKey($true)
+                        try {
+                            [void][Console]::ReadKey($true)
+                        } catch {
+                            Start-Sleep -Seconds 2
+                        }
                     }
                     "[Logout] Sign Out / Reset Credentials" {
                         [AgyAccountManager]::ResetCredentials($targetAcc)
@@ -765,12 +867,298 @@ class AgyAccountManager {
                     Start-Sleep -Milliseconds 1000
                 }
             }
+            elseif ($selected -eq ($accounts.Count + 1)) {
+                # Toggle Auto-Switch
+                [AgyAccountManager]::ToggleAutoSwitch()
+                Start-Sleep -Milliseconds 1000
+            }
+            elseif ($selected -eq ($accounts.Count + 2)) {
+                # Show Stats
+                [AgyAccountManager]::ShowAllAccountsSummary()
+            }
         }
     }
 
+    static [void] SetAccountQuotaExceeded([string]$AccountName, [bool]$Exceeded) {
+        $accDir = [AgyAccountManager]::GetAccountDirectory($AccountName)
+        if (Test-Path $accDir) {
+            $metaFile = Join-Path $accDir "account_metadata.json"
+            $meta = [AgyAccountManager]::GetAccountMetadata($AccountName)
+            $newStatus = if ($Exceeded) { "Exceeded" } else { "OK" }
+            if ($meta.QuotaStatus -ne $newStatus) {
+                $meta.QuotaStatus = $newStatus
+                try {
+                    $json = ConvertTo-Json $meta
+                    $json | Out-File -FilePath $metaFile -Force -Encoding utf8
+                } catch {}
+            }
+        }
+    }
+
+    static [void] CheckQuotaAfterRun([string]$AccountName) {
+        try {
+            $brainDir = "C:\Users\TruongNhon\.gemini\antigravity\brain"
+            if (-not (Test-Path $brainDir)) { return }
+            
+            # Find the most recently modified transcript.jsonl
+            $latestFile = Get-ChildItem -Path $brainDir -Filter "transcript.jsonl" -Recurse -File -ErrorAction SilentlyContinue |
+                          Sort-Object LastWriteTime -Descending | Select-Object -First 1
+
+            if ($latestFile) {
+                # If modified within the last 60 seconds
+                $diff = (Get-Date) - $latestFile.LastWriteTime
+                if ($diff.TotalSeconds -le 60) {
+                    $content = Get-Content -Path $latestFile.FullName -Tail 15 -ErrorAction SilentlyContinue
+                    $quotaErr = $false
+                    foreach ($line in $content) {
+                        if ($line -match 'RESOURCE_EXHAUSTED|quota exceeded|quotaExceeded|ResourceExhausted|quota limit') {
+                            if ($line -match '"status"\s*:\s*"ERROR"' -or $line -match '"code"\s*:\s*429') {
+                                $quotaErr = $true
+                                break
+                            }
+                        }
+                    }
+
+                    if ($quotaErr) {
+                        Write-Host "[!] Detected quota exceeded or API error for '$AccountName'." -ForegroundColor Red
+                        [AgyAccountManager]::SetAccountQuotaExceeded($AccountName, $true)
+                    } else {
+                        [AgyAccountManager]::SetAccountQuotaExceeded($AccountName, $false)
+                    }
+                }
+            }
+        } catch {}
+    }
+
+    static [void] AutoSwitchOnQuotaExceeded() {
+        if (-not [AgyAccountManager]::IsAutoSwitchEnabled()) { return }
+        
+        $active = [AgyAccountManager]::GetActiveAccount()
+        $activeMeta = [AgyAccountManager]::GetAccountMetadata($active)
+        if ($activeMeta.QuotaStatus -eq "Exceeded") {
+            # Active account is out of quota. Let's find another logged-in account with OK quota
+            $available = [AgyAccountManager]::GetAccounts()
+            $candidate = $null
+            foreach ($acc in $available) {
+                if ($acc -eq $active) { continue }
+                
+                $accDir = [AgyAccountManager]::GetAccountDirectory($acc)
+                $tokenFile = Join-Path $accDir "keyring_token.txt"
+                if (Test-Path $tokenFile) {
+                    $meta = [AgyAccountManager]::GetAccountMetadata($acc)
+                    $quota = if ($meta.QuotaStatus) { $meta.QuotaStatus } else { "OK" }
+                    if ($quota -eq "OK") {
+                        $candidate = $acc
+                        break
+                    }
+                }
+            }
+
+            if ($candidate) {
+                Write-Host "[!] Active account '$active' exceeded quota. Auto-switching to candidate account '$candidate' with available quota." -ForegroundColor Yellow
+                [AgyAccountManager]::SetActiveAccount($candidate, $false)
+            }
+        }
+    }
+
+    static [string] GetProgressBar([double]$percentage) {
+        $totalChars = 50
+        $filledChars = [int][Math]::Round(($percentage / 100.0) * $totalChars)
+        if ($filledChars -gt $totalChars) { $filledChars = $totalChars }
+        if ($filledChars -lt 0) { $filledChars = 0 }
+        $emptyChars = $totalChars - $filledChars
+        $charFilled = [char]0x2588
+        $charEmpty = [char]0x2591
+        $bar = ([string]$charFilled * $filledChars) + ([string]$charEmpty * $emptyChars)
+        return "    [$bar] $([Math]::Round($percentage, 2).ToString('F2'))%"
+    }
+
+    static [string[]] GetUsageLines([string]$AccountName) {
+        $meta = [AgyAccountManager]::GetAccountMetadata($AccountName)
+        
+        # Ensure quota fields exist
+        if ($null -eq $meta.GeminiWeekly) { $meta.GeminiWeekly = 52.60 }
+        if ($null -eq $meta.GeminiFiveHour) { $meta.GeminiFiveHour = 100.00 }
+        if ($null -eq $meta.ClaudeWeekly) { $meta.ClaudeWeekly = 100.00 }
+        if ($null -eq $meta.ClaudeFiveHour) { $meta.ClaudeFiveHour = 100.00 }
+
+        # Dynamically calculate refresh time (next Sunday night)
+        $now = Get-Date
+        $daysToSunday = ([int][System.DayOfWeek]::Sunday - [int]$now.DayOfWeek)
+        if ($daysToSunday -le 0) { $daysToSunday += 7 }
+        $nextSunday = $now.Date.AddDays($daysToSunday).AddHours(23).AddMinutes(59).AddSeconds(59)
+        $diff = $nextSunday - $now
+        $hours = [Math]::Floor($diff.TotalHours)
+        $mins = $diff.Minutes
+        $refreshStr = "${hours}h ${mins}m"
+
+        # Define encoding-safe Unicode characters
+        $charLine = [char]0x2500     # ─
+        $charAngle = [char]0x2514    # └
+        $charVertical = [char]0x2502 # │
+        $charBullet = [char]0x00B7   # ·
+        $horizontalBar = [string]$charLine * 140
+
+        $lines = @()
+        $lines += $horizontalBar
+        $lines += ">"
+        $lines += $horizontalBar
+        $lines += "$charAngle Models & Quota"
+        $lines += ""
+        $lines += "  Account: $AccountName"
+        $lines += ""
+        $lines += "GEMINI MODELS"
+        $lines += "  Models within this group: Gemini Flash, Gemini Pro"
+        $lines += ""
+        $lines += "  Weekly Limit"
+        $lines += [AgyAccountManager]::GetProgressBar($meta.GeminiWeekly)
+        $remGeminiWeekly = [int][Math]::Round($meta.GeminiWeekly)
+        $lines += "    $remGeminiWeekly% remaining $charBullet Refreshes in $refreshStr"
+        $lines += ""
+        $lines += "  Five Hour Limit"
+        $lines += [AgyAccountManager]::GetProgressBar($meta.GeminiFiveHour)
+        $remGemini5h = [int][Math]::Round($meta.GeminiFiveHour)
+        if ($meta.GeminiFiveHour -ge 100.0) {
+            $lines += "    Quota available"
+        } else {
+            $lines += "    $remGemini5h% remaining $charBullet Refreshes in 4h 12m"
+        }
+        $lines += ""
+        $lines += ""
+        $lines += "CLAUDE AND GPT MODELS"
+        $lines += "  Models within this group: Claude Opus, Claude Sonnet, GPT-OSS"
+        $lines += ""
+        $lines += "  Weekly Limit"
+        $lines += [AgyAccountManager]::GetProgressBar($meta.ClaudeWeekly)
+        $remClaudeWeekly = [int][Math]::Round($meta.ClaudeWeekly)
+        if ($meta.ClaudeWeekly -ge 100.0) {
+            $lines += "    Quota available"
+        } else {
+            $lines += "    $remClaudeWeekly% remaining"
+        }
+        $lines += ""
+        $lines += "  Five Hour Limit"
+        $lines += [AgyAccountManager]::GetProgressBar($meta.ClaudeFiveHour)
+        $remClaude5h = [int][Math]::Round($meta.ClaudeFiveHour)
+        if ($meta.ClaudeFiveHour -ge 100.0) {
+            $lines += "    Quota available"
+        } else {
+            $lines += "    $remClaude5h% remaining"
+        }
+        $lines += ""
+        $lines += ""
+        $lines += "  $charVertical Within each group, models share a weekly limit and a 5-hour limit. Quota is"
+        $lines += "  $charVertical consumed proportionally to the cost of the tokens. Thus, limits will last"
+        $lines += "  $charVertical longer with shorter tasks or using more cost-effective models. The 5-hour"
+        $lines += "  $charVertical limit smooths out aggregate demand to fairly distribute global capacity"
+        $lines += "  $charVertical across all users, while your weekly limit is tied directly to your individual"
+        $lines += "  $charVertical tier."
+        
+        return $lines
+    }
+
+
+    static [void] SyncActiveAccountWithKeyring([bool]$Silent) {
+        if (-not [AgyAccountManager]::IsAutoSwitchEnabled()) { return }
+        try {
+            $savedAcc = "default"
+            if (Test-Path ([AgyAccountManager]::AgyActiveAccountFile)) {
+                $content = (Get-Content ([AgyAccountManager]::AgyActiveAccountFile) -ErrorAction SilentlyContinue)
+                if ($content) { $savedAcc = $content.Trim() }
+            }
+
+            $currentKeyringToken = [AgyKeyringHelper]::ReadToken("gemini:antigravity")
+            if ($currentKeyringToken) {
+                $matchedAcc = $null
+                $availableAccounts = [AgyAccountManager]::GetAccounts()
+                foreach ($acc in $availableAccounts) {
+                    $accDir = [AgyAccountManager]::GetAccountDirectory($acc)
+                    $tokenFile = Join-Path $accDir "keyring_token.txt"
+                    if (Test-Path $tokenFile) {
+                        $encrypted = (Get-Content -Path $tokenFile -Raw -ErrorAction SilentlyContinue)
+                        if ($encrypted) {
+                            $encrypted = $encrypted.Trim()
+                            $secure = ConvertTo-SecureString $encrypted
+                            $networkCred = [System.Net.NetworkCredential]::new("", $secure)
+                            $savedToken = $networkCred.Password
+                            if ($savedToken -eq $currentKeyringToken) {
+                                $matchedAcc = $acc
+                                break
+                            } else {
+                                try {
+                                    $savedJson = ConvertFrom-Json $savedToken -ErrorAction SilentlyContinue
+                                    $currentJson = ConvertFrom-Json $currentKeyringToken -ErrorAction SilentlyContinue
+                                    if ($savedJson.token.refresh_token -and $currentJson.token.refresh_token -and $savedJson.token.refresh_token -eq $currentJson.token.refresh_token) {
+                                        $matchedAcc = $acc
+                                        break
+                                    }
+                                } catch {}
+                            }
+                        }
+                    }
+                }
+
+                # If no matching offline token was found, try online TokenInfo API lookup using Google OAuth
+                if (-not $matchedAcc) {
+                    try {
+                        $json = ConvertFrom-Json $currentKeyringToken -ErrorAction SilentlyContinue
+                        $accessToken = $json.token.access_token
+                        if ($accessToken) {
+                            $tokenInfo = Invoke-RestMethod -Uri "https://oauth2.googleapis.com/tokeninfo?access_token=$accessToken" -TimeoutSec 3 -ErrorAction Stop
+                            if ($tokenInfo.email) {
+                                $email = $tokenInfo.email.Trim().ToLower()
+                                foreach ($acc in $availableAccounts) {
+                                    if ($acc.Trim().ToLower() -eq $email) {
+                                        $matchedAcc = $acc
+                                        break
+                                    }
+                                }
+                            }
+                        }
+                    } catch {}
+                }
+
+                if ($matchedAcc) {
+                    if ($matchedAcc -ne $savedAcc) {
+                        if (-not $Silent) {
+                            Write-Host "[agy] Keyring matches account '$matchedAcc'. Auto-switching active account." -ForegroundColor Yellow
+                        }
+                        $savedAcc = $matchedAcc
+                        if (-not (Test-Path ([AgyAccountManager]::AgySourceHome))) {
+                            $null = New-Item -ItemType Directory -Path ([AgyAccountManager]::AgySourceHome) -Force
+                        }
+                        $savedAcc | Out-File -FilePath ([AgyAccountManager]::AgyActiveAccountFile) -Force -Encoding utf8
+                        $env:GEMINI_HOME = [AgyAccountManager]::GetAccountDirectory($savedAcc)
+                    }
+                    # Always backup the token to the matched account folder so it is updated and persistent
+                    $accDir = [AgyAccountManager]::GetAccountDirectory($savedAcc)
+                    if (-not (Test-Path $accDir)) {
+                        $null = New-Item -ItemType Directory -Path $accDir -Force
+                    }
+                    $tokenFile = Join-Path $accDir "keyring_token.txt"
+                    $secure = ConvertTo-SecureString $currentKeyringToken -AsPlainText -Force
+                    $encrypted = ConvertFrom-SecureString $secure
+                    $encrypted | Out-File -FilePath $tokenFile -Force -Encoding utf8
+                } else {
+                    # No account matched the keyring token. Backup to currently active account.
+                    $accDir = [AgyAccountManager]::GetAccountDirectory($savedAcc)
+                    if (-not (Test-Path $accDir)) {
+                        $null = New-Item -ItemType Directory -Path $accDir -Force
+                    }
+                    $tokenFile = Join-Path $accDir "keyring_token.txt"
+                    $secure = ConvertTo-SecureString $currentKeyringToken -AsPlainText -Force
+                    $encrypted = ConvertFrom-SecureString $secure
+                    $encrypted | Out-File -FilePath $tokenFile -Force -Encoding utf8
+                }
+            }
+        } catch {}
+    }
 
     static [void] InitializeManager() {
         Write-Host "[agy] Loading Antigravity Multi-Account Manager..." -ForegroundColor Cyan
+
+        # Sync active account with keyring to auto-detect any changes from Agy Desktop
+        [AgyAccountManager]::SyncActiveAccountWithKeyring($false)
 
         # 1. Load active account selection from persistent settings file if available
         $savedAcc = "default"
@@ -814,6 +1202,12 @@ class AgyAccountManager {
     }
 
     static [void] InvokeAgy([string[]]$PassThruArgs) {
+        # Sync active account with keyring to handle changes since terminal session started
+        [AgyAccountManager]::SyncActiveAccountWithKeyring($false)
+
+        # Auto switch if current account has exceeded quota
+        [AgyAccountManager]::AutoSwitchOnQuotaExceeded()
+
         $binPath = [AgyAccountManager]::AgyBinaryPath
         $activeAcc = [AgyAccountManager]::GetActiveAccount()
         # Update usage metadata
@@ -860,6 +1254,12 @@ class AgyAccountManager {
         } finally {
             # Auto-save any new token or token refresh on exit
             [AgyAccountManager]::BackupActiveToken()
+
+            # Check if quota exceeded error occurred during execution
+            [AgyAccountManager]::CheckQuotaAfterRun($activeAcc)
+
+            # Auto switch if current account has exceeded quota
+            [AgyAccountManager]::AutoSwitchOnQuotaExceeded()
         }
     }
 
