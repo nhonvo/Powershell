@@ -98,6 +98,9 @@ class AiHelper {
             if ($ArgsList -notcontains "--model") {
                 $flags += "--model", [AiHelper]::OllamaDefaultModel
             }
+            if ($ArgsList -notcontains "-c" -and $ArgsList -notcontains "--config") {
+                $flags += "-c", "model_provider=ollama_custom"
+            }
 
             # Use Start-Process to preserve TTY state inside nested shell scripts
             $argList = @()
@@ -129,15 +132,34 @@ class AiHelper {
         $oldOllamaHost = $env:OLLAMA_HOST
         try {
             $env:OLLAMA_HOST = "127.0.0.1:11434"
-            $flags = @()
-            if ($ArgsList -notcontains "--model") {
-                $flags += "--model", [AiHelper]::OllamaDefaultModel
+
+            # Parse out model parameter if passed in arguments
+            $model = $null
+            $cleanArgs = @()
+            for ($i = 0; $i -lt $ArgsList.Count; $i++) {
+                if ($ArgsList[$i] -eq "--model" -and $i -lt $ArgsList.Count - 1) {
+                    $model = $ArgsList[$i+1]
+                    $i++ # Skip model name
+                } else {
+                    $cleanArgs += $ArgsList[$i]
+                }
             }
 
+            if (-not $model) {
+                $model = [AiHelper]::OllamaDefaultModel
+            }
+
+            # Set model in OpenClaw config programmatically
+            if ($model) {
+                $cleanModel = $model -replace '^ollama/', ''
+                # Execute config set synchronously before starting chat UI
+                $null = Start-Process -FilePath "openclaw.cmd" -ArgumentList @("config", "set", "agents.defaults.model.primary", "ollama/$cleanModel") -NoNewWindow -Wait -ErrorAction SilentlyContinue
+            }
+
+            # Default to chat if no arguments passed
+            $argList = if ($cleanArgs.Count -eq 0) { @("chat") } else { $cleanArgs }
+
             # Use Start-Process to preserve TTY state inside nested shell scripts
-            $argList = @()
-            foreach ($f in $flags) { $argList += $f }
-            foreach ($a in $ArgsList) { $argList += $a }
             $proc = Start-Process -FilePath "openclaw.cmd" -ArgumentList $argList -NoNewWindow -PassThru -Wait
         } finally {
             $env:OLLAMA_HOST = $oldOllamaHost
@@ -327,9 +349,7 @@ class AiHelper {
                     if ($env:GEMINI_API_KEY) {
                         if ($Query) { Invoke-GeminiChat $Query } else { Invoke-GeminiChat }
                     } else {
-                        $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
-                        Write-Warning "GEMINI_API_KEY is not set. Falling back to local Ollama model '$activeModel'."
-                        [AiHelper]::InvokeOpenClaw(@(if ($activeModel) { "--model"; $activeModel }))
+                        Write-Warning "GEMINI_API_KEY is not set. Please configure it to use Gemini CLI."
                     }
                     return 
                 }
@@ -349,8 +369,8 @@ class AiHelper {
                         if ($Query) { Invoke-ChatGPT $Query } else { Invoke-ChatGPT }
                     } else {
                         $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
-                        Write-Warning "OPENAI_API_KEY is not set. Falling back to local Ollama model '$activeModel'."
-                        [AiHelper]::InvokeOpenClaw(@(if ($activeModel) { "--model"; $activeModel }))
+                        Write-Warning "OPENAI_API_KEY is not set. Falling back to local Codex CLI via Ollama ('$activeModel')."
+                        [AiHelper]::InvokeCodex(@(if ($activeModel) { "--model"; $activeModel }))
                     }
                     return 
                 }
@@ -367,9 +387,7 @@ class AiHelper {
                 if ($env:GEMINI_API_KEY) {
                     if ($Query) { Invoke-GeminiChat $Query } else { Invoke-GeminiChat }
                 } else {
-                    $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
-                    Write-Warning "GEMINI_API_KEY is not set. Falling back to local Ollama model '$activeModel'."
-                    [AiHelper]::InvokeOpenClaw(@(if ($activeModel) { "--model"; $activeModel }))
+                    Write-Warning "GEMINI_API_KEY is not set. Please configure it to use Gemini CLI."
                     Write-Host "Press any key to continue..." -ForegroundColor Gray
                     [void][Console]::ReadKey($true)
                 }
@@ -403,8 +421,8 @@ class AiHelper {
                     if ($Query) { Invoke-ChatGPT $Query } else { Invoke-ChatGPT }
                 } else {
                     $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
-                    Write-Warning "OPENAI_API_KEY is not set. Falling back to local Ollama model '$activeModel'."
-                    [AiHelper]::InvokeOpenClaw(@(if ($activeModel) { "--model"; $activeModel }))
+                    Write-Warning "OPENAI_API_KEY is not set. Falling back to local Codex CLI via Ollama ('$activeModel')."
+                    [AiHelper]::InvokeCodex(@(if ($activeModel) { "--model"; $activeModel }))
                     Write-Host "Press any key to continue..." -ForegroundColor Gray
                     [void][Console]::ReadKey($true)
                 }
