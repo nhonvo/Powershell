@@ -109,8 +109,19 @@ class AiHelper {
         }
     }
 
+    static [void] EnsureOpenClawGateway() {
+        $port = 18789
+        $connection = Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
+        if (-not $connection) {
+            Write-Host "[AI] OpenClaw Gateway is not running. Starting..." -ForegroundColor Yellow
+            Start-Process -FilePath "openclaw" -ArgumentList "gateway", "start" -WindowStyle Hidden -ErrorAction SilentlyContinue
+            Start-Sleep -Seconds 2
+        }
+    }
+
     static [void] InvokeOpenClaw([string[]]$ArgsList) {
         Ensure-OllamaServer
+        [AiHelper]::EnsureOpenClawGateway()
 
         $oldOllamaHost = $env:OLLAMA_HOST
         try {
@@ -119,7 +130,7 @@ class AiHelper {
             if ($ArgsList -notcontains "--model") {
                 $flags += "--model", [AiHelper]::OllamaDefaultModel
             }
-            & ollama.exe launch openclaw @flags @ArgsList
+            & openclaw.cmd @flags @ArgsList
         } finally {
             $env:OLLAMA_HOST = $oldOllamaHost
         }
