@@ -80,7 +80,12 @@ class AiHelper {
                 $flags += "--model", [AiHelper]::OllamaDefaultModel
             }
 
-            & ollama.exe launch claude @flags @ArgsList
+            # Build argument list for Start-Process to preserve TTY state
+            $argList = @("launch", "claude")
+            foreach ($f in $flags) { $argList += $f }
+            foreach ($a in $ArgsList) { $argList += $a }
+
+            $proc = Start-Process -FilePath "ollama.exe" -ArgumentList $argList -NoNewWindow -PassThru -Wait
         } finally {
             $env:OLLAMA_HOST = $oldOllamaHost
             $env:ANTHROPIC_BASE_URL = $oldAnthropicBaseUrl
