@@ -285,6 +285,7 @@ class AiHelper {
     }
 
     static [void] ShowOllamaLogs() {
+        [AiHelper]::EnsureOllamaServer()
         $logPath = Join-Path $env:LOCALAPPDATA "Ollama\server.log"
         if (Test-Path $logPath) {
             Write-Host "--- Ollama Server Log (Last 50 lines) ---" -ForegroundColor Cyan
