@@ -185,47 +185,96 @@ class AiHelper {
     static [void] InvokeHermes([string[]]$ArgsList) {
         Ensure-OllamaServer
 
-        $oldOllamaHost = $env:OLLAMA_HOST
-        try {
-            $env:OLLAMA_HOST = "127.0.0.1:11434"
-            
-            # Resolve model name from args list
-            $model = "hermes3"
-            for ($i = 0; $i -lt $ArgsList.Count; $i++) {
-                if ($ArgsList[$i] -eq "--model" -and $i -lt $ArgsList.Count - 1) {
-                    $model = $ArgsList[$i+1]
+        $bin = Get-Command hermes -CommandType Application -ErrorAction SilentlyContinue
+        if (-not $bin) {
+            $localPaths = @(
+                "$env:USERPROFILE\.hermes\bin\hermes.exe",
+                "$env:USERPROFILE\.hermes\bin\hermes.cmd",
+                "$env:LOCALAPPDATA\Programs\Hermes\bin\hermes.exe"
+            )
+            foreach ($p in $localPaths) {
+                if (Test-Path $p) {
+                    $bin = Get-Item $p
                     break
                 }
             }
-
-            # Start interactive Ollama run session
-            $proc = Start-Process -FilePath "ollama.exe" -ArgumentList @("run", $model) -NoNewWindow -PassThru -Wait
-        } finally {
-            $env:OLLAMA_HOST = $oldOllamaHost
         }
+
+        if (-not $bin) {
+            Write-Host "⚠️ Hermes Agent is not installed on your system." -ForegroundColor Yellow
+            $choice = Read-Host "Would you like to install Hermes Agent now? (Y/N)"
+            if ($choice -match "^[Yy]") {
+                Write-Host "🚀 Running Hermes Agent PowerShell Installer..." -ForegroundColor Cyan
+                Invoke-Expression (Invoke-RestMethod https://hermes-agent.nousresearch.com/install.ps1)
+                Write-Host "✅ Installation complete! Please reload your shell or recall CC." -ForegroundColor Green
+            }
+            return
+        }
+
+        # Auto-configure local Ollama endpoint in config.toml
+        $configPath = "$env:USERPROFILE\.hermes\config.toml"
+        if (-not (Test-Path $configPath)) {
+            $null = New-Item -ItemType File -Path $configPath -Force
+        }
+        $configContent = Get-Content -Raw -Path $configPath -ErrorAction SilentlyContinue
+        if (-not $configContent -or $configContent -notlike "*127.0.0.1:11434*") {
+            Write-Host "[AI] Configuring local Ollama endpoint in Hermes config.toml..." -ForegroundColor Yellow
+            $ollamaConfig = @"
+
+[model_providers.ollama_custom]
+name = "Ollama Custom"
+base_url = "http://127.0.0.1:11434/v1"
+"@
+            Add-Content -Path $configPath -Value $ollamaConfig -Force
+        }
+
+        $argList = @("chat")
+        foreach ($a in $ArgsList) {
+            if ($a -ne "--model" -and $a -ne [AiHelper]::OllamaDefaultModel) {
+                $argList += $a
+            }
+        }
+
+        Write-Host "Starting Hermes Agent TUI..." -ForegroundColor Cyan
+        $proc = Start-Process -FilePath $bin.Source -ArgumentList $argList -NoNewWindow -PassThru -Wait
     }
 
     static [void] InvokeHermesDesktop([string[]]$ArgsList) {
         Ensure-OllamaServer
 
-        $oldOllamaHost = $env:OLLAMA_HOST
-        try {
-            $env:OLLAMA_HOST = "127.0.0.1:11434"
-            
-            # Resolve model name from args list
-            $model = "hermes3"
-            for ($i = 0; $i -lt $ArgsList.Count; $i++) {
-                if ($ArgsList[$i] -eq "--model" -and $i -lt $ArgsList.Count - 1) {
-                    $model = $ArgsList[$i+1]
+        $bin = Get-Command hermes-desktop -CommandType Application -ErrorAction SilentlyContinue
+        if (-not $bin) {
+            $localPaths = @(
+                "$env:USERPROFILE\.hermes\bin\hermes-desktop.exe",
+                "$env:LOCALAPPDATA\Programs\Hermes\bin\hermes-desktop.exe"
+            )
+            foreach ($p in $localPaths) {
+                if (Test-Path $p) {
+                    $bin = Get-Item $p
                     break
                 }
             }
-
-            # Start interactive Ollama run session
-            $proc = Start-Process -FilePath "ollama.exe" -ArgumentList @("run", $model) -NoNewWindow -PassThru -Wait
-        } finally {
-            $env:OLLAMA_HOST = $oldOllamaHost
         }
+
+        if (-not $bin) {
+            # Try to run hermes command with desktop argument or notify
+            $cliBin = Get-Command hermes -CommandType Application -ErrorAction SilentlyContinue
+            if ($cliBin) {
+                Write-Host "Starting Hermes Desktop..." -ForegroundColor Cyan
+                $proc = Start-Process -FilePath $cliBin.Source -ArgumentList @("desktop") -NoNewWindow -PassThru -Wait
+            } else {
+                Write-Host "⚠️ Hermes Desktop is not installed." -ForegroundColor Yellow
+                $choice = Read-Host "Would you like to install Hermes Agent now? (Y/N)"
+                if ($choice -match "^[Yy]") {
+                    Write-Host "🚀 Running Hermes Agent PowerShell Installer..." -ForegroundColor Cyan
+                    Invoke-Expression (Invoke-RestMethod https://hermes-agent.nousresearch.com/install.ps1)
+                }
+            }
+            return
+        }
+
+        Write-Host "Starting Hermes Desktop..." -ForegroundColor Cyan
+        $proc = Start-Process -FilePath $bin.Source -NoNewWindow -PassThru -Wait
     }
 
     static [void] InitializeOllamaServer() {
