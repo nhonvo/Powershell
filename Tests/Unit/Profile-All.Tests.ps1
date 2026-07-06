@@ -157,10 +157,10 @@ Describe "Core Profile Functions Validation" {
 
         It "Set-AgyActiveAccount switches account context" {
             $target = "C:\Users\Public\.gemini_account2"
-            Mock Test-Path { return $true }
-            Mock Out-File { }
-            Mock ConvertTo-SecureString { }
-            Mock ConvertFrom-SecureString { }
+            Mock Test-Path { return $true } -ParameterFilter { $Path -like "*_account2*" -or $Path -like "*keyring_token.txt*" }
+            Mock Out-File { } -ParameterFilter { $FilePath -like "*keyring_token.txt*" }
+            Mock ConvertTo-SecureString { } -ParameterFilter { $String -ne $null }
+            Mock ConvertFrom-SecureString { } -ParameterFilter { $SecureString -ne $null }
             
             try {
                 [AgyAccountManager]::SetActiveAccount("account2", $true)
@@ -173,14 +173,77 @@ Describe "Core Profile Functions Validation" {
         }
 
         It "RestoreActiveToken handles missing files gracefully" {
-            Mock Test-Path { return $false }
+            Mock Test-Path { return $false } -ParameterFilter { $Path -like "*keyring_token.txt*" }
             { [AgyAccountManager]::RestoreActiveToken("nonexistent") } | Should Not Throw
         }
 
         It "BackupActiveToken handles uninitialized account folder gracefully" {
-            Mock Test-Path { return $false }
-            Mock New-Item { return $null }
+            Mock Test-Path { return $false } -ParameterFilter { $Path -like "*keyring_token.txt*" -or $Path -like "*_default*" }
+            Mock New-Item { return $null } -ParameterFilter { $Path -like "*_default*" }
             { [AgyAccountManager]::BackupActiveToken() } | Should Not Throw
+        }
+
+        It "GetAccountMetadata returns default values if no metadata file exists" {
+            $meta = [AgyAccountManager]::GetAccountMetadata("nonexistent-test-acc")
+            $meta.LastUsed | Should Be "Never"
+            $meta.UsageCount | Should Be 0
+        }
+
+        It "UpdateAccountMetadata creates metadata file and increments counter" {
+            $testAcc = "meta_test_acc"
+            $testDir = [AgyAccountManager]::GetAccountDirectory($testAcc)
+            $null = New-Item -ItemType Directory -Path $testDir -Force -ErrorAction SilentlyContinue
+            
+            try {
+                [AgyAccountManager]::UpdateAccountMetadata($testAcc)
+                $meta = [AgyAccountManager]::GetAccountMetadata($testAcc)
+                $meta.UsageCount | Should Be 1
+                $meta.LastUsed | Should Not Be "Never"
+
+                [AgyAccountManager]::UpdateAccountMetadata($testAcc)
+                $meta = [AgyAccountManager]::GetAccountMetadata($testAcc)
+                $meta.UsageCount | Should Be 2
+            } finally {
+                if (Test-Path $testDir) {
+                    Remove-Item -Path $testDir -Recurse -Force -ErrorAction SilentlyContinue
+                }
+            }
+        }
+
+        It "GetPrivateDirectorySize correctly measures files and skips junctions" {
+            $testAcc = "size_test_acc"
+            $testDir = [AgyAccountManager]::GetAccountDirectory($testAcc)
+            $null = New-Item -ItemType Directory -Path $testDir -Force -ErrorAction SilentlyContinue
+            $file1 = Join-Path $testDir "file1.txt"
+            "hello" | Out-File -FilePath $file1 -Encoding utf8
+            
+            $subPath = Join-Path $testDir "config"
+            $srcPath = Join-Path ([AgyAccountManager]::AgySourceHome) "config"
+            if (-not (Test-Path $srcPath)) {
+                $null = New-Item -ItemType Directory -Path $srcPath -Force -ErrorAction SilentlyContinue
+            }
+            if (-not (Test-Path $subPath)) {
+                $null = New-Item -ItemType Junction -Path $subPath -Value $srcPath -Force -ErrorAction SilentlyContinue
+            }
+            
+            $srcFile = Join-Path $srcPath "shared_file.txt"
+            "shared data" | Out-File -FilePath $srcFile -Encoding utf8
+            
+            try {
+                $size = [AgyAccountManager]::GetPrivateDirectorySize($testDir)
+                $file1Size = (Get-Item $file1).Length
+                $size | Should Be $file1Size
+            } finally {
+                if (Test-Path $subPath) {
+                    cmd /c rmdir "$subPath"
+                }
+                if (Test-Path $testDir) {
+                    Remove-Item -Path $testDir -Recurse -Force -ErrorAction SilentlyContinue
+                }
+                if (Test-Path $srcFile) {
+                    Remove-Item -Path $srcFile -Force -ErrorAction SilentlyContinue
+                }
+            }
         }
     }
 

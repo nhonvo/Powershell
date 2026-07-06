@@ -17,6 +17,150 @@ class AgyAccountManager {
         }
     }
 
+    static [hashtable] GetAccountMetadata([string]$AccountName) {
+        $accDir = [AgyAccountManager]::GetAccountDirectory($AccountName)
+        $metaFile = Join-Path $accDir "account_metadata.json"
+        $defaultMeta = @{
+            LastUsed = "Never"
+            UsageCount = 0
+        }
+        if (Test-Path $metaFile) {
+            try {
+                $raw = Get-Content -Path $metaFile -Raw -ErrorAction SilentlyContinue
+                if ($raw) {
+                    $json = ConvertFrom-Json $raw
+                    if ($json.LastUsed) { $defaultMeta.LastUsed = $json.LastUsed }
+                    if ($json.UsageCount) { $defaultMeta.UsageCount = $json.UsageCount }
+                }
+            } catch {}
+        }
+        return $defaultMeta
+    }
+
+    static [void] UpdateAccountMetadata([string]$AccountName) {
+        $accDir = [AgyAccountManager]::GetAccountDirectory($AccountName)
+        if (-not (Test-Path $accDir)) {
+            try { $null = New-Item -ItemType Directory -Path $accDir -Force } catch {}
+        }
+        if (Test-Path $accDir) {
+            $metaFile = Join-Path $accDir "account_metadata.json"
+            $meta = [AgyAccountManager]::GetAccountMetadata($AccountName)
+            $meta.LastUsed = (Get-Date).ToString("yyyy-MM-ddTHH:mm:sszzz")
+            $meta.UsageCount = [int]($meta.UsageCount) + 1
+            try {
+                $json = ConvertTo-Json $meta
+                $json | Out-File -FilePath $metaFile -Force -Encoding utf8
+            } catch {}
+        }
+    }
+
+    static [long] GetPrivateDirectorySize([string]$Path) {
+        if (-not (Test-Path $Path)) { return 0 }
+        $totalSize = 0
+        try {
+            $items = Get-ChildItem -Path $Path -Recurse -Force -ErrorAction SilentlyContinue
+            foreach ($item in $items) {
+                if (-not $item.PSIsContainer) {
+                    $isInsideJunction = $false
+                    $parent = Split-Path $item.FullName -Parent
+                    while ($parent -and $parent.Length -ge $Path.Length) {
+                        if (Test-Path $parent) {
+                            $parentObj = Get-Item $parent -ErrorAction SilentlyContinue
+                            if ($parentObj -and $parentObj.LinkType -eq "Junction") {
+                                $isInsideJunction = $true
+                                break
+                            }
+                        }
+                        $parent = Split-Path $parent -Parent
+                    }
+                    if (-not $isInsideJunction) {
+                        $totalSize += $item.Length
+                    }
+                }
+            }
+        } catch {}
+        return $totalSize
+    }
+
+    static [string] SyncSharedComponents([string]$AccountName) {
+        if ($AccountName -eq "default") { return "Healthy (Primary)" }
+        $destDir = [AgyAccountManager]::GetAccountDirectory($AccountName)
+        if (-not (Test-Path $destDir)) { return "Uninitialized" }
+        
+        $subDirsToShare = @("antigravity", "antigravity-cli", "config", "history", "antigravity-ide", "wf")
+        $repairedAny = $false
+        foreach ($subDir in $subDirsToShare) {
+            $srcSubPath = Join-Path ([AgyAccountManager]::AgySourceHome) $subDir
+            $destSubPath = Join-Path $destDir $subDir
+
+            if (-not (Test-Path $srcSubPath)) {
+                try { $null = New-Item -ItemType Directory -Path $srcSubPath -Force } catch {}
+            }
+
+            $needsRelink = $false
+            if (-not (Test-Path $destSubPath)) {
+                $needsRelink = $true
+            } else {
+                $item = Get-Item $destSubPath -ErrorAction SilentlyContinue
+                if ($item.LinkType -ne "Junction") {
+                    Remove-Item $destSubPath -Recurse -Force -ErrorAction SilentlyContinue
+                    $needsRelink = $true
+                }
+            }
+
+            if ($needsRelink) {
+                try {
+                    $null = New-Item -ItemType Junction -Path $destSubPath -Value $srcSubPath -Force
+                    $repairedAny = $true
+                } catch {
+                    Write-Warning "Failed to re-link shared components for '$subDir'."
+                }
+            }
+        }
+        return if ($repairedAny) { "Restored" } else { "Healthy" }
+    }
+
+    static [hashtable] GetAccountStats([string]$AccountName) {
+        $meta = [AgyAccountManager]::GetAccountMetadata($AccountName)
+        $dir = [AgyAccountManager]::GetAccountDirectory($AccountName)
+        $privateSize = [AgyAccountManager]::GetPrivateDirectorySize($dir)
+        $junctionStatus = [AgyAccountManager]::SyncSharedComponents($AccountName)
+        
+        $skillsPath = Join-Path ([AgyAccountManager]::AgySourceHome) "config\skills"
+        $skillsCount = 0
+        if (Test-Path $skillsPath) {
+            $skillsCount = (Get-ChildItem -Path $skillsPath -Directory -ErrorAction SilentlyContinue).Count
+        }
+
+        $convPath = Join-Path ([AgyAccountManager]::AgySourceHome) "antigravity\brain"
+        $convCount = 0
+        if (Test-Path $convPath) {
+            $convCount = (Get-ChildItem -Path $convPath -Directory -ErrorAction SilentlyContinue).Count
+        }
+
+        $tokenFile = Join-Path $dir "keyring_token.txt"
+        $tokenStatus = if (Test-Path $tokenFile) { "Logged In" } else { "Not Logged In" }
+
+        $formattedSize = "0 B"
+        if ($privateSize -gt 1MB) {
+            $formattedSize = "$([Math]::Round($privateSize / 1MB, 2)) MB"
+        } elseif ($privateSize -gt 1KB) {
+            $formattedSize = "$([Math]::Round($privateSize / 1KB, 2)) KB"
+        } else {
+            $formattedSize = "$privateSize B"
+        }
+
+        return @{
+            LastUsed = $meta.LastUsed
+            UsageCount = $meta.UsageCount
+            PrivateSize = $formattedSize
+            JunctionStatus = $junctionStatus
+            SkillsCount = $skillsCount
+            ConversationsCount = $convCount
+            TokenStatus = $tokenStatus
+        }
+    }
+
     static [string[]] GetAccounts() {
         $accounts = [System.Collections.Generic.List[string]]::new()
         $accounts.Add("default")
@@ -110,6 +254,9 @@ class AgyAccountManager {
     }
 
     static [void] SetActiveAccount([string]$AccountName, [bool]$Temporary) {
+        # Update usage metadata
+        [AgyAccountManager]::UpdateAccountMetadata($AccountName)
+
         # 1. Back up active token before switching
         [AgyAccountManager]::BackupActiveToken()
 
@@ -301,6 +448,9 @@ class AgyAccountManager {
     }
 
     static [void] InvokeWithAccount([string]$AccountName, [string[]]$ArgsList) {
+        # Update usage metadata
+        [AgyAccountManager]::UpdateAccountMetadata($AccountName)
+
         $targetHome = [AgyAccountManager]::GetAccountDirectory($AccountName)
         if (-not (Test-Path $targetHome)) {
             Write-Error "Account '$AccountName' does not exist."
@@ -545,6 +695,23 @@ class AgyAccountManager {
             if ($selected -lt $accounts.Count) {
                 # Account Selected -> Open Sub-menu of actions!
                 $targetAcc = $accounts[$selected]
+
+                # Fetch and display stats card
+                Clear-Host
+                $stats = [AgyAccountManager]::GetAccountStats($targetAcc)
+                Write-Host "=============================================" -ForegroundColor Cyan
+                Write-Host " ACCOUNT STATS: $targetAcc" -ForegroundColor Cyan
+                Write-Host "=============================================" -ForegroundColor Cyan
+                Write-Host "  * Status:          $($stats.TokenStatus)" -ForegroundColor Gray
+                Write-Host "  * Last Used:       $($stats.LastUsed)" -ForegroundColor Gray
+                Write-Host "  * Usage Count:     $($stats.UsageCount) sessions/calls" -ForegroundColor Gray
+                Write-Host "  * Private Size:    $($stats.PrivateSize) (excluding shared)" -ForegroundColor Gray
+                Write-Host "  * Sync Health:     $($stats.JunctionStatus)" -ForegroundColor Gray
+                Write-Host "  * Shared Skills:   $($stats.SkillsCount) skills" -ForegroundColor Gray
+                Write-Host "  * Shared History:  $($stats.ConversationsCount) conversations" -ForegroundColor Gray
+                Write-Host "=============================================" -ForegroundColor Cyan
+                Write-Host ""
+
                 $accDir = [AgyAccountManager]::GetAccountDirectory($targetAcc)
                 $tokenFile = Join-Path $accDir "keyring_token.txt"
                 $status = if (Test-Path $tokenFile) { "Logged In" } else { "Not Logged In" }
@@ -649,6 +816,8 @@ class AgyAccountManager {
     static [void] InvokeAgy([string[]]$PassThruArgs) {
         $binPath = [AgyAccountManager]::AgyBinaryPath
         $activeAcc = [AgyAccountManager]::GetActiveAccount()
+        # Update usage metadata
+        [AgyAccountManager]::UpdateAccountMetadata($activeAcc)
         try {
             if ($activeAcc -ne "default") {
                 $oldHome = $env:GEMINI_HOME
