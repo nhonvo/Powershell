@@ -99,8 +99,11 @@ class AiHelper {
                 $flags += "--model", [AiHelper]::OllamaDefaultModel
             }
 
-            # Run raw codex command directly against our local compat proxy
-            & codex.cmd @flags @ArgsList
+            # Use Start-Process to preserve TTY state inside nested shell scripts
+            $argList = @()
+            foreach ($f in $flags) { $argList += $f }
+            foreach ($a in $ArgsList) { $argList += $a }
+            $proc = Start-Process -FilePath "codex.cmd" -ArgumentList $argList -NoNewWindow -PassThru -Wait
         } finally {
             $env:OLLAMA_HOST = $oldOllamaHost
             $env:OPENAI_BASE_URL = $oldBaseUrl
@@ -130,7 +133,12 @@ class AiHelper {
             if ($ArgsList -notcontains "--model") {
                 $flags += "--model", [AiHelper]::OllamaDefaultModel
             }
-            & openclaw.cmd @flags @ArgsList
+
+            # Use Start-Process to preserve TTY state inside nested shell scripts
+            $argList = @()
+            foreach ($f in $flags) { $argList += $f }
+            foreach ($a in $ArgsList) { $argList += $a }
+            $proc = Start-Process -FilePath "openclaw.cmd" -ArgumentList $argList -NoNewWindow -PassThru -Wait
         } finally {
             $env:OLLAMA_HOST = $oldOllamaHost
         }
