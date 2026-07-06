@@ -322,16 +322,11 @@ class AiHelper {
                 }
                 "Ollama"  { [AiHelper]::InvokeOpenClaw(@(if ($Model) { "--model"; $Model })); return }
                 "Claude"  {
-                    if ($env:ANTHROPIC_API_KEY) {
-                        [AiHelper]::InvokeClaude(@())
-                    } else {
-                        $activeModel = if ($Model) { $Model } else { "qwen3-coder" }
-                        Write-Warning "ANTHROPIC_API_KEY is not set. Falling back to local Claude via Ollama ('$activeModel')."
-                        [AiHelper]::InvokeClaude(@("--model", $activeModel))
-                    }
+                    $activeModel = if ($Model) { $Model } else { "qwen3-coder" }
+                    [AiHelper]::InvokeClaude(@("--model", $activeModel))
                     return
                 }
-                "Local"   { [AiHelper]::InvokeClaude(@("-Local", (if ($Model) { "--model"; $Model } else { "--model"; "qwen3-coder" }))); return }
+                "Local"   { [AiHelper]::InvokeClaude(@("--model", (if ($Model) { $Model } else { "qwen3-coder" }))); return }
                 "ChatGPT" { 
                     if ($env:OPENAI_API_KEY) {
                         if ($Query) { Invoke-ChatGPT $Query } else { Invoke-ChatGPT }
@@ -365,19 +360,9 @@ class AiHelper {
                 Write-Host "Press any key to continue..." -ForegroundColor Gray
                 [void][Console]::ReadKey($true)
             }}
-            [PSCustomObject]@{ Label = "[Claude] Claude (Antigravity proxy)"; Action = { 
-                if ($env:ANTHROPIC_API_KEY) {
-                    [AiHelper]::InvokeClaude(@())
-                } else {
-                    $activeModel = if ($Model) { $Model } else { "qwen3-coder" }
-                    Write-Warning "ANTHROPIC_API_KEY is not set. Falling back to local Claude via Ollama ('$activeModel')."
-                    [AiHelper]::InvokeClaude(@("--model", $activeModel))
-                    Write-Host "Press any key to continue..." -ForegroundColor Gray
-                    [void][Console]::ReadKey($true)
-                }
-            } }
-            [PSCustomObject]@{ Label = "[Local Claude] Claude (local Ollama)"; Action = { 
-                [AiHelper]::InvokeClaude(@("--model", (if ($Model) { $Model } else { "qwen3-coder" }))) 
+            [PSCustomObject]@{ Label = "[Claude] Claude (local Ollama)"; Action = { 
+                $activeModel = if ($Model) { $Model } else { "qwen3-coder" }
+                [AiHelper]::InvokeClaude(@("--model", $activeModel))
                 Write-Host "Press any key to continue..." -ForegroundColor Gray
                 [void][Console]::ReadKey($true)
             } }
