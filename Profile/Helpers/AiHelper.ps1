@@ -421,6 +421,9 @@ class AiHelper {
             $labels += $agent.Label
         }
 
+        # Flush key buffer to prevent leftover keystrokes from causing automatic menu selections
+        while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
+
         $selected = ([type]"TerminalMenu")::Show("Select AI Agent", $labels, 0)
         if ($selected -ge 0) {
             Write-Host ""

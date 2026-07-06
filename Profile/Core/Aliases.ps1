@@ -146,6 +146,9 @@ function Get-CustomCommands {
             "[Exit]     Exit Control Center"
         )
 
+        # Flush key buffer to prevent leftover keystrokes from causing automatic menu selections
+        while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
+
         $selected = ([type]"TerminalMenu")::Show("Profile Control Center Dashboard", $menuItems, 0)
         if ($selected -lt 0 -or $selected -eq ($menuItems.Count - 1)) {
             # Position cursor cleanly below the menu
