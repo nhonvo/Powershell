@@ -85,29 +85,17 @@ class AiHelper {
         Ensure-OllamaServer
 
         $oldOllamaHost = $env:OLLAMA_HOST
-        $oldBaseUrl = $env:OPENAI_BASE_URL
-        $oldApiKey = $env:OPENAI_API_KEY
-        $oldNodeOptions = $env:NODE_OPTIONS
         try {
             $env:OLLAMA_HOST = "127.0.0.1:11434"
-            $env:OPENAI_BASE_URL = "http://127.0.0.1:11435/v1"
-            $env:OPENAI_API_KEY = "ollama"
-            $env:NODE_OPTIONS = if ($env:NODE_OPTIONS) { "$env:NODE_OPTIONS --dns-result-order=ipv4first" } else { "--dns-result-order=ipv4first" }
 
             $flags = @()
-            if ($ArgsList -notcontains "-c" -and $ArgsList -notcontains "--config") {
-                $flags += "-c", "model_provider=ollama_custom"
-            }
             if ($ArgsList -notcontains "--model") {
                 $flags += "--model", [AiHelper]::OllamaDefaultModel
             }
 
-            & codex.cmd @flags @ArgsList
+            & ollama.exe launch codex @flags @ArgsList
         } finally {
             $env:OLLAMA_HOST = $oldOllamaHost
-            $env:OPENAI_BASE_URL = $oldBaseUrl
-            $env:OPENAI_API_KEY = $oldApiKey
-            $env:NODE_OPTIONS = $oldNodeOptions
         }
     }
 
