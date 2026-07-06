@@ -35,8 +35,138 @@ function Stop-ProcessFriendly {
     [SystemHelper]::StopProcessFriendly($Name)
 }
 function Get-CustomCommands {
-    param([string]$Category)
-    [ProfileHelp]::Show($Category)
+    [CmdletBinding(DefaultParameterSetName = "Menu")]
+    param(
+        [Parameter(ParameterSetName = "Menu")]
+        [switch]$Menu,
+
+        [Parameter(ParameterSetName = "Account")]
+        [switch]$Account,
+
+        [Parameter(ParameterSetName = "Account")]
+        [switch]$Agy,
+
+        [Parameter(ParameterSetName = "Ai")]
+        [switch]$Ai,
+
+        [Parameter(ParameterSetName = "Project")]
+        [string]$Project,
+
+        [Parameter(ParameterSetName = "Theme")]
+        [switch]$Theme,
+
+        [Parameter(ParameterSetName = "Ssh")]
+        [switch]$Ssh,
+
+        [Parameter(ParameterSetName = "Manual")]
+        [switch]$Manual,
+
+        [Parameter(ValueFromRemainingArguments = $true)]
+        [string[]]$ArgsList
+    )
+
+    if ($Account -or $Agy) {
+        [AgyAccountManager]::ManageAccountsInteractive()
+        return
+    }
+
+    if ($Ai) {
+        Invoke-MultiAgent
+        return
+    }
+
+    if ($null -ne $Project -and $Project -ne "") {
+        Enter-Project $Project
+        return
+    }
+
+    if ($Theme) {
+        Select-ShellTheme
+        return
+    }
+
+    if ($Ssh) {
+        Get-SshConnectionInfo
+        return
+    }
+
+    if ($Manual) {
+        [ProfileHelp]::Show("")
+        return
+    }
+
+    if ($ArgsList) {
+        $argStr = $ArgsList -join " "
+        $matchedProj = [ProfileNavigator]::FindWorkspaces($argStr)
+        if ($matchedProj.Count -gt 0) {
+            Enter-Project $argStr
+        } else {
+            [ProfileHelp]::Show($argStr)
+        }
+        return
+    }
+
+    # Default TUI Control Center Loop
+    while ($true) {
+        $activeAcc = [AgyAccountManager]::GetActiveAccount()
+        if ($null -eq $Global:TuiColors) { [TerminalMenu]::InitializeTuiColors() }
+        $headerColor = $Global:TuiColors.Header
+
+        Clear-Host
+        Write-Host "  ▄████▄   ▄████▄     Powershell Profile CLI v2.0" -ForegroundColor $headerColor
+        Write-Host " █▀     ▀ █▀     ▀    System dashboard and control suite." -ForegroundColor $headerColor
+        Write-Host " █        █           " -ForegroundColor $headerColor
+        Write-Host " █▄     ▄ █▄     ▄    Active Account: $activeAcc" -ForegroundColor Gray
+        Write-Host "  ▀████▀   ▀████▀     Time:   $(Get-Date -Format 'yyyy-MM-dd HH:mm')" -ForegroundColor DarkGray
+        Write-Host "=============================================" -ForegroundColor $headerColor
+        Write-Host ""
+
+        $menuItems = @(
+            "[Account]  Manage Antigravity Accounts & Credentials",
+            "[AI Agent] Select and run local AI agents (Claude, Codex)",
+            "[Project]  Navigate to a registered project workspace",
+            "[Manual]   Interactive custom commands help reference",
+            "[Theme]    Select and apply Oh My Posh shell theme",
+            "[SSH Info] View Tailscale & active port 22 sessions",
+            "[Exit]     Exit Control Center"
+        )
+
+        $selected = ([type]"TerminalMenu")::Show("Profile Control Center Dashboard", $menuItems, 0)
+        if ($selected -lt 0 -or $selected -eq ($menuItems.Count - 1)) {
+            break
+        }
+
+        switch ($selected) {
+            0 {
+                [AgyAccountManager]::ManageAccountsInteractive()
+            }
+            1 {
+                Invoke-MultiAgent
+            }
+            2 {
+                Write-Host ""
+                $q = Read-Host "Enter project name / search query"
+                if (-not [string]::IsNullOrWhiteSpace($q)) {
+                    Enter-Project $q
+                    Write-Host "Press any key to return..." -ForegroundColor Gray
+                    [void][Console]::ReadKey($true)
+                }
+            }
+            3 {
+                [ProfileHelp]::Show("")
+            }
+            4 {
+                Select-ShellTheme
+            }
+            5 {
+                Clear-Host
+                Get-SshConnectionInfo
+                Write-Host ""
+                Write-Host "Press any key to return to Control Center..." -ForegroundColor Gray
+                [void][Console]::ReadKey($true)
+            }
+        }
+    }
 }
 function Get-SshConnectionInfo { [SshHelper]::GetConnectionInfo() }
 function Add-SshAuthorizedKey {
