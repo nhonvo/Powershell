@@ -1,4 +1,4 @@
-﻿#region CENTRALIZED SHELL ALIASES & WRAPPER FUNCTIONS
+#region CENTRALIZED SHELL ALIASES & WRAPPER FUNCTIONS
 # ==============================================================================
 #  Centralized routing layer bridging CLI commands to the static class helpers.
 # ==============================================================================
@@ -344,6 +344,12 @@ function Invoke-AgyAccount {
 }
 Set-Alias -Name agy-account -Value Invoke-AgyAccount -Force
 Set-Alias -Name agy-acc     -Value Invoke-AgyAccount -Force
+
+function Invoke-AgyMenu {
+    [AgyAccountManager]::ManageAccountsInteractive()
+}
+Set-Alias -Name agy-m -Value Invoke-AgyMenu -Force
+
 
 function agy {
     [CmdletBinding()]

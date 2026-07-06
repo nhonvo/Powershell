@@ -1,4 +1,4 @@
-﻿# C:\Users\TruongNhon\Documents\Powershell\Scripts\Profile-All.Tests.ps1
+# C:\Users\TruongNhon\Documents\Powershell\Scripts\Profile-All.Tests.ps1
 
 $ProfileDir = Join-Path $PSScriptRoot "..\..\Profile"
 
@@ -27,6 +27,7 @@ Describe "Core Profile Functions Validation" {
         . (Join-Path $ProfileDir "Helpers\DockerHelper.ps1")
         . (Join-Path $ProfileDir "Helpers\AwsHelper.ps1")
         . (Join-Path $ProfileDir "Helpers\AiHelper.ps1")
+        . (Join-Path $ProfileDir "Helpers\0_AgyKeyringHelper.ps1")
         . (Join-Path $ProfileDir "Helpers\AgyAccountManager.ps1")
         . (Join-Path $ProfileDir "Helpers\ThemeHelper.ps1")
         . (Join-Path $ProfileDir "Core\Projects.ps1")
@@ -149,9 +150,17 @@ Describe "Core Profile Functions Validation" {
             $active | Should Be "account1"
         }
 
+        It "GetAccountDirectory resolves default and custom accounts correctly" {
+            [AgyAccountManager]::GetAccountDirectory("default") | Should Be "C:\Users\Public\.gemini"
+            [AgyAccountManager]::GetAccountDirectory("fptvttnhon2026") | Should Be "C:\Users\Public\.gemini_fptvttnhon2026"
+        }
+
         It "Set-AgyActiveAccount switches account context" {
             $target = "C:\Users\Public\.gemini_account2"
             Mock Test-Path { return $true }
+            Mock Out-File { }
+            Mock ConvertTo-SecureString { }
+            Mock ConvertFrom-SecureString { }
             
             try {
                 [AgyAccountManager]::SetActiveAccount("account2", $true)
@@ -161,6 +170,17 @@ Describe "Core Profile Functions Validation" {
                     Remove-Item -Path $target -Recurse -Force -ErrorAction SilentlyContinue
                 }
             }
+        }
+
+        It "RestoreActiveToken handles missing files gracefully" {
+            Mock Test-Path { return $false }
+            { [AgyAccountManager]::RestoreActiveToken("nonexistent") } | Should Not Throw
+        }
+
+        It "BackupActiveToken handles uninitialized account folder gracefully" {
+            Mock Test-Path { return $false }
+            Mock New-Item { return $null }
+            { [AgyAccountManager]::BackupActiveToken() } | Should Not Throw
         }
     }
 

@@ -507,6 +507,101 @@ class AgyAccountManager {
         }
     }
 
+    static [void] ManageAccountsInteractive() {
+        while ($true) {
+            $accounts = [AgyAccountManager]::GetAccounts()
+            $active = [AgyAccountManager]::GetActiveAccount()
+
+            # Build TUI Menu items showing login status
+            $menuItems = @()
+            $defaultIdx = 0
+            for ($i = 0; $i -lt $accounts.Count; $i++) {
+                $acc = $accounts[$i]
+                $accDir = [AgyAccountManager]::GetAccountDirectory($acc)
+                $tokenFile = Join-Path $accDir "keyring_token.txt"
+                $status = "Not Logged In"
+                if (Test-Path $tokenFile) {
+                    $status = "Logged In"
+                }
+                
+                $label = ""
+                if ($acc -eq $active) {
+                    $label = "* $acc (Active, $status)"
+                    $defaultIdx = $i
+                } else {
+                    $label = "  $acc ($status)"
+                }
+                $menuItems += $label
+            }
+            $menuItems += "[+] Add New Account"
+            $menuItems += "[x] Exit Dashboard"
+
+            $selected = ([type]"TerminalMenu")::Show("Antigravity Multi-Account Manager", $menuItems, $defaultIdx)
+
+            if ($selected -lt 0 -or $selected -eq ($accounts.Count + 1)) {
+                break
+            }
+
+            if ($selected -lt $accounts.Count) {
+                # Account Selected -> Open Sub-menu of actions!
+                $targetAcc = $accounts[$selected]
+                $accDir = [AgyAccountManager]::GetAccountDirectory($targetAcc)
+                $tokenFile = Join-Path $accDir "keyring_token.txt"
+                $status = if (Test-Path $tokenFile) { "Logged In" } else { "Not Logged In" }
+
+                $subItems = @(
+                    "[Switch] Set as Active (Persistent)",
+                    "[Switch] Set as Active (Temporary)",
+                    "[Login] Sign In / Re-authenticate",
+                    "[Logout] Sign Out / Reset Credentials"
+                )
+                if ($targetAcc -ne "default") {
+                    $subItems += "[Delete] Remove Account"
+                }
+                $subItems += "[Back] Return to Main Menu"
+
+                $subSel = ([type]"TerminalMenu")::Show("Manage Account: $targetAcc ($status)", $subItems, 0)
+                if ($subSel -lt 0) { continue }
+
+                switch ($subItems[$subSel]) {
+                    "[Switch] Set as Active (Persistent)" {
+                        [AgyAccountManager]::SetActiveAccount($targetAcc, $false)
+                        Start-Sleep -Milliseconds 1000
+                    }
+                    "[Switch] Set as Active (Temporary)" {
+                        [AgyAccountManager]::SetActiveAccount($targetAcc, $true)
+                        Start-Sleep -Milliseconds 1000
+                    }
+                    "[Login] Sign In / Re-authenticate" {
+                        [AgyAccountManager]::ResetCredentials($targetAcc)
+                        Write-Host "Starting login process for '$targetAcc'..." -ForegroundColor Cyan
+                        [AgyAccountManager]::InvokeWithAccount($targetAcc, @("login"))
+                        Write-Host "Press any key to continue..." -ForegroundColor Gray
+                        [void][Console]::ReadKey($true)
+                    }
+                    "[Logout] Sign Out / Reset Credentials" {
+                        [AgyAccountManager]::ResetCredentials($targetAcc)
+                        Start-Sleep -Milliseconds 1000
+                    }
+                    "[Delete] Remove Account" {
+                        [AgyAccountManager]::RemoveAccount($targetAcc)
+                        Start-Sleep -Milliseconds 1000
+                    }
+                }
+            }
+            elseif ($selected -eq $accounts.Count) {
+                # Add Account
+                Write-Host ""
+                $name = Read-Host "Enter new account name"
+                if (-not [string]::IsNullOrWhiteSpace($name)) {
+                    [AgyAccountManager]::AddAccount($name)
+                    Start-Sleep -Milliseconds 1000
+                }
+            }
+        }
+    }
+
+
     static [void] InitializeManager() {
         Write-Host "[agy] Loading Antigravity Multi-Account Manager..." -ForegroundColor Cyan
 
