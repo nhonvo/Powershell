@@ -361,9 +361,7 @@ class AiHelper {
                     if ($env:GEMINI_API_KEY) {
                         if ($Query) { Invoke-GeminiChat $Query } else { Invoke-GeminiChat }
                     } else {
-                        $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
-                        Write-Warning "GEMINI_API_KEY is not set. Falling back to local Ollama model '$activeModel' (via OpenClaw)."
-                        [AiHelper]::InvokeOpenClaw(@(if ($activeModel) { "--model"; $activeModel }))
+                        Write-Warning "GEMINI_API_KEY is not set. Please configure it to use Gemini CLI."
                     }
                     return 
                 }
@@ -402,9 +400,7 @@ class AiHelper {
                 if ($env:GEMINI_API_KEY) {
                     if ($Query) { Invoke-GeminiChat $Query } else { Invoke-GeminiChat }
                 } else {
-                    $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
-                    Write-Warning "GEMINI_API_KEY is not set. Falling back to local Ollama model '$activeModel' (via OpenClaw)."
-                    [AiHelper]::InvokeOpenClaw(@(if ($activeModel) { "--model"; $activeModel }))
+                    Write-Warning "GEMINI_API_KEY is not set. Please configure it to use Gemini CLI."
                     Write-Host "Press any key to continue..." -ForegroundColor Gray
                     [void][Console]::ReadKey($true)
                 }
