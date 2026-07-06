@@ -188,17 +188,18 @@ class AiHelper {
         $oldOllamaHost = $env:OLLAMA_HOST
         try {
             $env:OLLAMA_HOST = "127.0.0.1:11434"
-            $flags = @()
-            if ($ArgsList -notcontains "--model") {
-                $flags += "--model", [AiHelper]::OllamaDefaultModel
+            
+            # Resolve model name from args list
+            $model = "hermes3"
+            for ($i = 0; $i -lt $ArgsList.Count; $i++) {
+                if ($ArgsList[$i] -eq "--model" -and $i -lt $ArgsList.Count - 1) {
+                    $model = $ArgsList[$i+1]
+                    break
+                }
             }
 
-            # Build argument list for Start-Process to preserve TTY state
-            $argList = @("launch", "hermes")
-            foreach ($f in $flags) { $argList += $f }
-            foreach ($a in $ArgsList) { $argList += $a }
-
-            $proc = Start-Process -FilePath "ollama.exe" -ArgumentList $argList -NoNewWindow -PassThru -Wait
+            # Start interactive Ollama run session
+            $proc = Start-Process -FilePath "ollama.exe" -ArgumentList @("run", $model) -NoNewWindow -PassThru -Wait
         } finally {
             $env:OLLAMA_HOST = $oldOllamaHost
         }
@@ -210,17 +211,18 @@ class AiHelper {
         $oldOllamaHost = $env:OLLAMA_HOST
         try {
             $env:OLLAMA_HOST = "127.0.0.1:11434"
-            $flags = @()
-            if ($ArgsList -notcontains "--model") {
-                $flags += "--model", [AiHelper]::OllamaDefaultModel
+            
+            # Resolve model name from args list
+            $model = "hermes3"
+            for ($i = 0; $i -lt $ArgsList.Count; $i++) {
+                if ($ArgsList[$i] -eq "--model" -and $i -lt $ArgsList.Count - 1) {
+                    $model = $ArgsList[$i+1]
+                    break
+                }
             }
 
-            # Build argument list for Start-Process to preserve TTY state
-            $argList = @("launch", "hermes-desktop")
-            foreach ($f in $flags) { $argList += $f }
-            foreach ($a in $ArgsList) { $argList += $a }
-
-            $proc = Start-Process -FilePath "ollama.exe" -ArgumentList $argList -NoNewWindow -PassThru -Wait
+            # Start interactive Ollama run session
+            $proc = Start-Process -FilePath "ollama.exe" -ArgumentList @("run", $model) -NoNewWindow -PassThru -Wait
         } finally {
             $env:OLLAMA_HOST = $oldOllamaHost
         }
@@ -410,15 +412,12 @@ class AiHelper {
 
         # Build list of options for the TUI agent menu
         $agents = @(
-            [PSCustomObject]@{ Label = "[Gemini] Gemini CLI -> support future"; Action = {} }
-            [PSCustomObject]@{ Label = "[Copilot] GitHub Copilot (explain) -> support future"; Action = {} }
             [PSCustomObject]@{ Label = "[Codex] Codex CLI (local Ollama)"; Action = {
                 $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
                 [AiHelper]::InvokeCodex(@(if ($activeModel) { "--model"; $activeModel }))
                 Write-Host "Press any key to continue..." -ForegroundColor Gray
                 [void][Console]::ReadKey($true)
             }}
-            [PSCustomObject]@{ Label = "[Claude] Claude (local Ollama) -> support future"; Action = {} }
             [PSCustomObject]@{ Label = "[Ollama] Ollama (interactive)";    Action = { 
                 [AiHelper]::InvokeOllamaNative($Model) 
                 Write-Host "Press any key to continue..." -ForegroundColor Gray
@@ -440,6 +439,9 @@ class AiHelper {
                 Write-Host "Press any key to continue..." -ForegroundColor Gray
                 [void][Console]::ReadKey($true)
             } }
+            [PSCustomObject]@{ Label = "[Gemini] Gemini CLI -> support future"; Action = {} }
+            [PSCustomObject]@{ Label = "[Copilot] GitHub Copilot (explain) -> support future"; Action = {} }
+            [PSCustomObject]@{ Label = "[Claude] Claude (local Ollama) -> support future"; Action = {} }
         )
 
         $labels = @()
