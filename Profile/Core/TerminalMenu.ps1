@@ -1,4 +1,4 @@
-﻿class ColoredLine {
+class ColoredLine {
     [string]$Text
     [string]$Color
 }
@@ -59,7 +59,15 @@ class TerminalMenu {
         # Ensure TUI colors are initialized
         if ($null -eq $Global:TuiColors) { [TerminalMenu]::InitializeTuiColors() }
 
-        $currentIndex = $DefaultIndex
+        # Resolve first selectable index
+        $firstSelectable = -1
+        for ($i = 0; $i -lt $count; $i++) {
+            if ($Items[$i] -notmatch "future|support future") {
+                $firstSelectable = $i
+                break
+            }
+        }
+        $currentIndex = if ($firstSelectable -ge 0) { $firstSelectable } else { $DefaultIndex }
         $filterText = ""
         $searchMode = $false
 
@@ -155,7 +163,11 @@ class TerminalMenu {
                         if ($i -eq $currentIndex) {
                             $null = $outputLines.Add([ColoredLine]@{ Text = "  >  $label"; Color = $Global:TuiColors.Selected })
                         } else {
-                            $null = $outputLines.Add([ColoredLine]@{ Text = "     $label"; Color = $Global:TuiColors.Regular })
+                            if ($label -match "future|support future") {
+                                $null = $outputLines.Add([ColoredLine]@{ Text = "     $label"; Color = "DarkGray" })
+                            } else {
+                                $null = $outputLines.Add([ColoredLine]@{ Text = "     $label"; Color = $Global:TuiColors.Regular })
+                            }
                         }
                     }
                     if ($end -lt $filteredCount - 1) {
@@ -225,12 +237,18 @@ class TerminalMenu {
                     }
                     elseif ($key.Key -eq [ConsoleKey]::UpArrow) {
                         if ($filteredCount -gt 0) {
-                            $currentIndex = ($currentIndex - 1 + $filteredCount) % $filteredCount
+                            $origIdx = $currentIndex
+                            do {
+                                $currentIndex = ($currentIndex - 1 + $filteredCount) % $filteredCount
+                            } while ($Items[$filteredIndices[$currentIndex]] -match "future|support future" -and $currentIndex -ne $origIdx)
                         }
                     }
                     elseif ($key.Key -eq [ConsoleKey]::DownArrow) {
                         if ($filteredCount -gt 0) {
-                            $currentIndex = ($currentIndex + 1) % $filteredCount
+                            $origIdx = $currentIndex
+                            do {
+                                $currentIndex = ($currentIndex + 1) % $filteredCount
+                            } while ($Items[$filteredIndices[$currentIndex]] -match "future|support future" -and $currentIndex -ne $origIdx)
                         }
                     }
                     elseif ($key.KeyChar -ge 32 -and $key.KeyChar -le 126) {
@@ -240,17 +258,27 @@ class TerminalMenu {
                 } else {
                     if ($key.Key -eq [ConsoleKey]::UpArrow) {
                         if ($filteredCount -gt 0) {
-                            $currentIndex = ($currentIndex - 1 + $filteredCount) % $filteredCount
+                            $origIdx = $currentIndex
+                            do {
+                                $currentIndex = ($currentIndex - 1 + $filteredCount) % $filteredCount
+                            } while ($Items[$filteredIndices[$currentIndex]] -match "future|support future" -and $currentIndex -ne $origIdx)
                         }
                     }
                     elseif ($key.Key -eq [ConsoleKey]::DownArrow) {
                         if ($filteredCount -gt 0) {
-                            $currentIndex = ($currentIndex + 1) % $filteredCount
+                            $origIdx = $currentIndex
+                            do {
+                                $currentIndex = ($currentIndex + 1) % $filteredCount
+                            } while ($Items[$filteredIndices[$currentIndex]] -match "future|support future" -and $currentIndex -ne $origIdx)
                         }
                     }
                     elseif ($key.Key -eq [ConsoleKey]::Enter) {
                         if ($filteredCount -gt 0) {
-                            return $filteredIndices[$currentIndex]
+                            $actualIdx = $filteredIndices[$currentIndex]
+                            if ($Items[$actualIdx] -match "future|support future") {
+                                continue # Block selection of future items
+                            }
+                            return $actualIdx
                         }
                         return -1
                     }
