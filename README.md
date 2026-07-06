@@ -118,6 +118,7 @@ Manages background server dependencies and proxy wrappers.
 | `hermes` | `Invoke-Hermes-By-Ollama` | Launch Hermes local reasoning LLM console |
 | `hermesd` | `Invoke-HermesDesktop-By-Ollama` | Launch Hermes reasoning LLM on Desktop screen |
 | `model` | `Set-OllamaModel` | View or change cached default model for local AI tools |
+| `ollama-logs` | `Invoke-OllamaLogs` | View the last 50 lines of the local Ollama server running log file |
 | `agy-m` | `Invoke-AgyMenu` | Launch the persistent interactive TUI account management dashboard |
 | `agy-account` / `agy-acc` | `Invoke-AgyAccount` | Manage isolated Antigravity accounts, credentials, and directories |
 | `agy` | `agy` | Invoke the native `agy` CLI under the active isolated account context |
