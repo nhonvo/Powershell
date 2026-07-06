@@ -57,6 +57,13 @@ class AiHelper {
         [AiHelper]::EnsureOllamaProxy()
     }
 
+    static [void] InvokeOllamaNative([string]$Model) {
+        Ensure-OllamaServer
+        $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
+        Write-Host "Starting native Ollama interactive session for '$activeModel'..." -ForegroundColor Cyan
+        $proc = Start-Process -FilePath "ollama" -ArgumentList "run", $activeModel -NoNewWindow -PassThru -Wait
+    }
+
     static [void] InvokeClaude([string[]]$ArgsList) {
         Ensure-OllamaServer
 
@@ -359,7 +366,8 @@ class AiHelper {
                     if ([string]::IsNullOrWhiteSpace($Query)) { Write-Warning "Copilot requires a prompt."; return }
                     Invoke-CopilotExplain -Command $Query; return
                 }
-                "Ollama"  { [AiHelper]::InvokeOpenClaw(@(if ($Model) { "--model"; $Model })); return }
+                "Ollama"    { [AiHelper]::InvokeOllamaNative($Model); return }
+                "OpenClaw"  { [AiHelper]::InvokeOpenClaw(@(if ($Model) { "--model"; $Model })); return }
                 "Claude"  {
                     $activeModel = if ($Model) { $Model } else { "qwen3-coder" }
                     [AiHelper]::InvokeClaude(@("--model", $activeModel))
@@ -416,6 +424,11 @@ class AiHelper {
                 [void][Console]::ReadKey($true)
             } }
             [PSCustomObject]@{ Label = "[Ollama] Ollama (interactive)";    Action = { 
+                [AiHelper]::InvokeOllamaNative($Model) 
+                Write-Host "Press any key to continue..." -ForegroundColor Gray
+                [void][Console]::ReadKey($true)
+            } }
+            [PSCustomObject]@{ Label = "[OpenClaw] OpenClaw (interactive)";  Action = { 
                 [AiHelper]::InvokeOpenClaw(@(if ($Model) { "--model"; $Model })) 
                 Write-Host "Press any key to continue..." -ForegroundColor Gray
                 [void][Console]::ReadKey($true)
