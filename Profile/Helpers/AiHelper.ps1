@@ -349,7 +349,9 @@ class AiHelper {
                     if ($env:GEMINI_API_KEY) {
                         if ($Query) { Invoke-GeminiChat $Query } else { Invoke-GeminiChat }
                     } else {
-                        Write-Warning "GEMINI_API_KEY is not set. Please configure it to use Gemini CLI."
+                        $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
+                        Write-Warning "GEMINI_API_KEY is not set. Falling back to local Ollama model '$activeModel' (via OpenClaw)."
+                        [AiHelper]::InvokeOpenClaw(@(if ($activeModel) { "--model"; $activeModel }))
                     }
                     return 
                 }
@@ -369,8 +371,8 @@ class AiHelper {
                         if ($Query) { Invoke-ChatGPT $Query } else { Invoke-ChatGPT }
                     } else {
                         $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
-                        Write-Warning "OPENAI_API_KEY is not set. Falling back to local Codex CLI via Ollama ('$activeModel')."
-                        [AiHelper]::InvokeCodex(@(if ($activeModel) { "--model"; $activeModel }))
+                        Write-Warning "OPENAI_API_KEY is not set. Falling back to local Ollama model '$activeModel' (via OpenClaw)."
+                        [AiHelper]::InvokeOpenClaw(@(if ($activeModel) { "--model"; $activeModel }))
                     }
                     return 
                 }
@@ -387,7 +389,9 @@ class AiHelper {
                 if ($env:GEMINI_API_KEY) {
                     if ($Query) { Invoke-GeminiChat $Query } else { Invoke-GeminiChat }
                 } else {
-                    Write-Warning "GEMINI_API_KEY is not set. Please configure it to use Gemini CLI."
+                    $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
+                    Write-Warning "GEMINI_API_KEY is not set. Falling back to local Ollama model '$activeModel' (via OpenClaw)."
+                    [AiHelper]::InvokeOpenClaw(@(if ($activeModel) { "--model"; $activeModel }))
                     Write-Host "Press any key to continue..." -ForegroundColor Gray
                     [void][Console]::ReadKey($true)
                 }
@@ -421,8 +425,8 @@ class AiHelper {
                     if ($Query) { Invoke-ChatGPT $Query } else { Invoke-ChatGPT }
                 } else {
                     $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
-                    Write-Warning "OPENAI_API_KEY is not set. Falling back to local Codex CLI via Ollama ('$activeModel')."
-                    [AiHelper]::InvokeCodex(@(if ($activeModel) { "--model"; $activeModel }))
+                    Write-Warning "OPENAI_API_KEY is not set. Falling back to local Ollama model '$activeModel' (via OpenClaw)."
+                    [AiHelper]::InvokeOpenClaw(@(if ($activeModel) { "--model"; $activeModel }))
                     Write-Host "Press any key to continue..." -ForegroundColor Gray
                     [void][Console]::ReadKey($true)
                 }
