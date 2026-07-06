@@ -73,8 +73,12 @@ sequenceDiagram
 
 ### 1. Multi-Account Manager (`agy` / `AgyAccountManager`)
 Isolates accounts by manipulating `$env:GEMINI_HOME` under `C:\Users\Public\.gemini_<name>`.
+* **TUI Dashboard Menu**: Type `agy-m` to open the persistent interactive management console to select, sign in/out, add, or delete accounts.
 * **Persistent Switch**: `agy-account use '<name>'` (survives shell reboots by writing to `active_account.txt`).
 * **Temporary Switch**: `agy-account use '<name>' -Temporary` (isolated for the current console session only).
+* **Keyring Token Syncing**: Automatically encrypts and backs up active tokens to `keyring_token.txt` in your isolated directory, swapping them in/out of the Windows Credential Manager when transitioning accounts.
+* **Self-Healing Sync**: Automatically scans and repairs junction links for `config` (custom skills) and `antigravity` (conversation history) back to the global primary folder.
+* **Dynamic Wrappers**: Custom wrapper commands (`agy-<name>`) and index-based alias shortcuts (`agy1`, `agy2`, etc.) allow one-off commands to run under a specific account without switching your shell context.
 * **Isolation Flow**:
 ```mermaid
 graph TD
@@ -114,8 +118,10 @@ Manages background server dependencies and proxy wrappers.
 | `hermes` | `Invoke-Hermes-By-Ollama` | Launch Hermes local reasoning LLM console |
 | `hermesd` | `Invoke-HermesDesktop-By-Ollama` | Launch Hermes reasoning LLM on Desktop screen |
 | `model` | `Set-OllamaModel` | View or change cached default model for local AI tools |
+| `agy-m` | `Invoke-AgyMenu` | Launch the persistent interactive TUI account management dashboard |
 | `agy-account` / `agy-acc` | `Invoke-AgyAccount` | Manage isolated Antigravity accounts, credentials, and directories |
 | `agy` | `agy` | Invoke the native `agy` CLI under the active isolated account context |
+| `agy1` / `agy2` ... | `agy-<name>` | Dyn-generated aliases to run single commands under a specific custom account |
 | `multigravity` | `multigravity` | Run the `multigravity` multi-profile orchestration CLI |
 
 ### 2. Project Navigation & System Shortcuts
