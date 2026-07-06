@@ -418,6 +418,7 @@ function Set-OllamaModel {
     [AiHelper]::SetOllamaModel($ModelName)
 }
 function Ensure-OllamaServer { [AiHelper]::EnsureOllamaServer() }
+function Invoke-OllamaLogs { [AiHelper]::ShowOllamaLogs() }
 function Invoke-Npm {
     param([string[]]$ArgsList)
     & npm @ArgsList
@@ -448,6 +449,7 @@ Set-Alias -Name clawdbot    -Value Invoke-Clawdbot-By-Ollama -Force
 Set-Alias -Name hermes      -Value Invoke-Hermes-By-Ollama   -Force
 Set-Alias -Name hermesd     -Value Invoke-HermesDesktop-By-Ollama -Force
 Set-Alias -Name model       -Value Set-OllamaModel          -Force
+Set-Alias -Name ollama-logs -Value Invoke-OllamaLogs         -Force
 
 # --- Antigravity Multi-Account Manager Wrappers ---
 function Invoke-AgyAccount {

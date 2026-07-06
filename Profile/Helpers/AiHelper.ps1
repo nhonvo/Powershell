@@ -1,4 +1,4 @@
-﻿#region AI HELPER
+#region AI HELPER
 # ==============================================================================
 #  Ollama and CLI wrappers for AI agents (Claude, Codex, Hermes, OpenClaw).
 # ==============================================================================
@@ -284,33 +284,116 @@ class AiHelper {
         }
     }
 
+    static [void] ShowOllamaLogs() {
+        $logPath = Join-Path $env:LOCALAPPDATA "Ollama\server.log"
+        if (Test-Path $logPath) {
+            Write-Host "--- Ollama Server Log (Last 50 lines) ---" -ForegroundColor Cyan
+            Get-Content -Path $logPath -Tail 50 -ErrorAction SilentlyContinue
+            Write-Host "----------------------------------------" -ForegroundColor Cyan
+        } else {
+            Write-Warning "Ollama server log not found at $logPath."
+        }
+    }
+
     static [void] InvokeMultiAgent([string]$Query, [string]$ParameterSetName, [string]$Model) {
         if ($ParameterSetName -and $ParameterSetName -ne "Menu") {
             switch ($ParameterSetName) {
-                "Gemini"  { if ($Query) { Invoke-GeminiChat $Query } else { Invoke-GeminiChat }; return }
+                "Gemini"  { 
+                    if ($env:GEMINI_API_KEY) {
+                        if ($Query) { Invoke-GeminiChat $Query } else { Invoke-GeminiChat }
+                    } else {
+                        $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
+                        Write-Warning "GEMINI_API_KEY is not set. Falling back to local Ollama model '$activeModel'."
+                        [AiHelper]::InvokeOpenClaw(@(if ($activeModel) { "--model"; $activeModel }))
+                    }
+                    return 
+                }
                 "Copilot" {
                     if ([string]::IsNullOrWhiteSpace($Query)) { Write-Warning "Copilot requires a prompt."; return }
                     Invoke-CopilotExplain -Command $Query; return
                 }
                 "Ollama"  { [AiHelper]::InvokeOpenClaw(@(if ($Model) { "--model"; $Model })); return }
-                "Claude"  { [AiHelper]::InvokeClaude(@()); return }
+                "Claude"  {
+                    if ($env:ANTHROPIC_API_KEY) {
+                        [AiHelper]::InvokeClaude(@())
+                    } else {
+                        $activeModel = if ($Model) { $Model } else { "qwen3-coder" }
+                        Write-Warning "ANTHROPIC_API_KEY is not set. Falling back to local Claude via Ollama ('$activeModel')."
+                        [AiHelper]::InvokeClaude(@("--model", $activeModel))
+                    }
+                    return
+                }
                 "Local"   { [AiHelper]::InvokeClaude(@("-Local", (if ($Model) { "--model"; $Model } else { "--model"; "qwen3-coder" }))); return }
-                "ChatGPT" { if ($Query) { Invoke-ChatGPT $Query } else { Invoke-ChatGPT }; return }
+                "ChatGPT" { 
+                    if ($env:OPENAI_API_KEY) {
+                        if ($Query) { Invoke-ChatGPT $Query } else { Invoke-ChatGPT }
+                    } else {
+                        $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
+                        Write-Warning "OPENAI_API_KEY is not set. Falling back to local Ollama model '$activeModel'."
+                        [AiHelper]::InvokeOpenClaw(@(if ($activeModel) { "--model"; $activeModel }))
+                    }
+                    return 
+                }
             }
         }
 
         # Build list of options for the TUI agent menu
         $agents = @(
-            [PSCustomObject]@{ Label = "[Gemini] Gemini CLI";              Action = { if ($Query) { Invoke-GeminiChat $Query } else { Invoke-GeminiChat } } }
+            [PSCustomObject]@{ Label = "[Gemini] Gemini CLI";              Action = { 
+                if ($env:GEMINI_API_KEY) {
+                    if ($Query) { Invoke-GeminiChat $Query } else { Invoke-GeminiChat }
+                } else {
+                    $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
+                    Write-Warning "GEMINI_API_KEY is not set. Falling back to local Ollama model '$activeModel'."
+                    [AiHelper]::InvokeOpenClaw(@(if ($activeModel) { "--model"; $activeModel }))
+                    Write-Host "Press any key to continue..." -ForegroundColor Gray
+                    [void][Console]::ReadKey($true)
+                }
+            } }
             [PSCustomObject]@{ Label = "[Copilot] GitHub Copilot (explain)"; Action = {
                 $prompt = $Query
                 if ([string]::IsNullOrWhiteSpace($prompt)) { $prompt = Read-Host "Copilot prompt" }
                 Invoke-CopilotExplain -Command $prompt
+                Write-Host "Press any key to continue..." -ForegroundColor Gray
+                [void][Console]::ReadKey($true)
             }}
-            [PSCustomObject]@{ Label = "[Claude] Claude (Antigravity proxy)"; Action = { [AiHelper]::InvokeClaude(@()) } }
-            [PSCustomObject]@{ Label = "[Local Claude] Claude (local Ollama)"; Action = { [AiHelper]::InvokeClaude(@("--model", (if ($Model) { $Model } else { "qwen3-coder" }))) } }
-            [PSCustomObject]@{ Label = "[Ollama] Ollama (interactive)";    Action = { [AiHelper]::InvokeOpenClaw(@(if ($Model) { "--model"; $Model })) } }
-            [PSCustomObject]@{ Label = "[ChatGPT] ChatGPT CLI";             Action = { if ($Query) { Invoke-ChatGPT $Query } else { Invoke-ChatGPT } } }
+            [PSCustomObject]@{ Label = "[Claude] Claude (Antigravity proxy)"; Action = { 
+                if ($env:ANTHROPIC_API_KEY) {
+                    [AiHelper]::InvokeClaude(@())
+                } else {
+                    $activeModel = if ($Model) { $Model } else { "qwen3-coder" }
+                    Write-Warning "ANTHROPIC_API_KEY is not set. Falling back to local Claude via Ollama ('$activeModel')."
+                    [AiHelper]::InvokeClaude(@("--model", $activeModel))
+                    Write-Host "Press any key to continue..." -ForegroundColor Gray
+                    [void][Console]::ReadKey($true)
+                }
+            } }
+            [PSCustomObject]@{ Label = "[Local Claude] Claude (local Ollama)"; Action = { 
+                [AiHelper]::InvokeClaude(@("--model", (if ($Model) { $Model } else { "qwen3-coder" }))) 
+                Write-Host "Press any key to continue..." -ForegroundColor Gray
+                [void][Console]::ReadKey($true)
+            } }
+            [PSCustomObject]@{ Label = "[Ollama] Ollama (interactive)";    Action = { 
+                [AiHelper]::InvokeOpenClaw(@(if ($Model) { "--model"; $Model })) 
+                Write-Host "Press any key to continue..." -ForegroundColor Gray
+                [void][Console]::ReadKey($true)
+            } }
+            [PSCustomObject]@{ Label = "[ChatGPT] ChatGPT CLI";             Action = { 
+                if ($env:OPENAI_API_KEY) {
+                    if ($Query) { Invoke-ChatGPT $Query } else { Invoke-ChatGPT }
+                } else {
+                    $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
+                    Write-Warning "OPENAI_API_KEY is not set. Falling back to local Ollama model '$activeModel'."
+                    [AiHelper]::InvokeOpenClaw(@(if ($activeModel) { "--model"; $activeModel }))
+                    Write-Host "Press any key to continue..." -ForegroundColor Gray
+                    [void][Console]::ReadKey($true)
+                }
+            } }
+            [PSCustomObject]@{ Label = "[Ollama Server Log] View running logs"; Action = {
+                [AiHelper]::ShowOllamaLogs()
+                Write-Host "Press any key to continue..." -ForegroundColor Gray
+                [void][Console]::ReadKey($true)
+            } }
         )
 
         $labels = @()
