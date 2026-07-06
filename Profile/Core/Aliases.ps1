@@ -107,12 +107,27 @@ function Get-CustomCommands {
     }
 
     # Default TUI Control Center Loop
+    $startRow = [Console]::CursorTop
+    $startCol = [Console]::CursorLeft
+
     while ($true) {
         $activeAcc = [AgyAccountManager]::GetActiveAccount()
         if ($null -eq $Global:TuiColors) { [TerminalMenu]::InitializeTuiColors() }
         $headerColor = $Global:TuiColors.Header
 
-        Clear-Host
+        # Move cursor back to starting position to redraw in-place (no full-screen clear!)
+        try {
+            [Console]::SetCursorPosition($startCol, $startRow)
+            $clearStr = " " * ([Console]::WindowWidth - 1)
+            for ($i = 0; $i -lt 20; $i++) {
+                if ($startRow + $i -lt [Console]::WindowHeight) {
+                    [Console]::SetCursorPosition(0, $startRow + $i)
+                    Write-Host $clearStr -NoNewline
+                }
+            }
+            [Console]::SetCursorPosition($startCol, $startRow)
+        } catch {}
+
         Write-Host "  ▄████▄   ▄████▄     Powershell Profile CLI v2.0" -ForegroundColor $headerColor
         Write-Host " █▀     ▀ █▀     ▀    System dashboard and control suite." -ForegroundColor $headerColor
         Write-Host " █        █           " -ForegroundColor $headerColor
@@ -133,6 +148,11 @@ function Get-CustomCommands {
 
         $selected = ([type]"TerminalMenu")::Show("Profile Control Center Dashboard", $menuItems, 0)
         if ($selected -lt 0 -or $selected -eq ($menuItems.Count - 1)) {
+            # Position cursor cleanly below the menu
+            try {
+                [Console]::SetCursorPosition(0, $startRow + 20)
+                Write-Host ""
+            } catch {}
             break
         }
 
@@ -378,6 +398,19 @@ function Invoke-OpenClaw-By-Ollama { [AiHelper]::InvokeOpenClaw($args) }
 function Invoke-Clawdbot-By-Ollama { [AiHelper]::InvokeClawdbot($args) }
 function Invoke-Hermes-By-Ollama { [AiHelper]::InvokeHermes($args) }
 function Invoke-HermesDesktop-By-Ollama { [AiHelper]::InvokeHermesDesktop($args) }
+function Invoke-CopilotExplain {
+    param([string]$Command)
+    if (Get-Command gh -ErrorAction SilentlyContinue) {
+        $extensions = gh extension list -ErrorAction SilentlyContinue
+        if ($extensions -notmatch "gh-copilot") {
+            Write-Host "Installing github/gh-copilot extension..." -ForegroundColor Cyan
+            gh extension install github/gh-copilot
+        }
+        gh copilot explain $Command
+    } else {
+        Write-Error "GitHub CLI (gh) is not installed. Please install it from https://cli.github.com/"
+    }
+}
 function Install-AIIntegrations { [AiHelper]::InstallAIIntegrations() }
 function Initialize-OllamaServer { [AiHelper]::InitializeOllamaServer() }
 function Set-OllamaModel {
