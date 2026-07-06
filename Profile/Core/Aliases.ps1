@@ -424,6 +424,16 @@ function Invoke-Npm {
     & npm @ArgsList
 }
 
+function Invoke-ChatGPT {
+    param([string]$Query)
+    if (Get-Command chatgpt -ErrorAction SilentlyContinue) {
+        if ($Query) { chatgpt $Query } else { chatgpt }
+    } else {
+        Write-Warning "ChatGPT CLI command 'chatgpt' is not installed. Routing to local OpenClaw instead."
+        [AiHelper]::InvokeOpenClaw(@())
+    }
+}
+
 # Unified AI Agent Selector
 function Invoke-MultiAgent {
     [CmdletBinding(DefaultParameterSetName="Menu")]
@@ -435,6 +445,7 @@ function Invoke-MultiAgent {
         [Parameter(ParameterSetName="Claude")][switch]$UseClaude,
         [Parameter(ParameterSetName="Local")][switch]$UseLocal,
         [Parameter(ParameterSetName="ChatGPT")][Alias("gpt")][switch]$UseChatGPT,
+        [Parameter(ParameterSetName="Codex")][Alias("cx")][switch]$UseCodex,
         [string]$Model
     )
     [AiHelper]::InvokeMultiAgent($Query, $PSCmdlet.ParameterSetName, $Model)

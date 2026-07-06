@@ -337,6 +337,10 @@ class AiHelper {
                     }
                     return 
                 }
+                "Codex"   {
+                    [AiHelper]::InvokeCodex(@(if ($Model) { "--model"; $Model }))
+                    return
+                }
             }
         }
 
@@ -357,6 +361,12 @@ class AiHelper {
                 $prompt = $Query
                 if ([string]::IsNullOrWhiteSpace($prompt)) { $prompt = Read-Host "Copilot prompt" }
                 Invoke-CopilotExplain -Command $prompt
+                Write-Host "Press any key to continue..." -ForegroundColor Gray
+                [void][Console]::ReadKey($true)
+            }}
+            [PSCustomObject]@{ Label = "[Codex] Codex CLI (local Ollama)"; Action = {
+                $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
+                [AiHelper]::InvokeCodex(@(if ($activeModel) { "--model"; $activeModel }))
                 Write-Host "Press any key to continue..." -ForegroundColor Gray
                 [void][Console]::ReadKey($true)
             }}
