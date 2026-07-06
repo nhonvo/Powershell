@@ -17,7 +17,7 @@ class ProfileNavigator {
             "$env:USERPROFILE\Desktop\back-up\1.project",
             "$env:USERPROFILE\Desktop\project",
             "C:\Users\sshuser\project",
-            "$env:USERPROFILE\Documents\Powershell"
+            "$env:USERPROFILE\Documents"
         ) | Where-Object { Test-Path $_ }
 
         $priorityProjects = @(
@@ -117,3 +117,6 @@ class ProfileNavigator {
     }
 }
 #endregion
+
+
+

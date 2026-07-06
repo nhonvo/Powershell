@@ -146,3 +146,6 @@ class ProfileEnvironment {
 # Auto-initialize session environment
 [ProfileEnvironment]::InitializeSession()
 #endregion
+
+
+

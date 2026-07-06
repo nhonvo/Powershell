@@ -153,8 +153,14 @@ Describe "Core Profile Functions Validation" {
             $target = "C:\Users\Public\.gemini_account2"
             Mock Test-Path { return $true }
             
-            [AgyAccountManager]::SetActiveAccount("account2", $true)
-            $env:GEMINI_HOME | Should Be $target
+            try {
+                [AgyAccountManager]::SetActiveAccount("account2", $true)
+                $env:GEMINI_HOME | Should Be $target
+            } finally {
+                if (Test-Path $target) {
+                    Remove-Item -Path $target -Recurse -Force -ErrorAction SilentlyContinue
+                }
+            }
         }
     }
 
@@ -177,3 +183,4 @@ Describe "Core Profile Functions Validation" {
         }
     }
 }
+
