@@ -1,4 +1,4 @@
-﻿#region PROFILE HELP
+#region PROFILE HELP
 # ==============================================================================
 #  Exposes interactive help documentation for all custom commands.
 # ==============================================================================
@@ -101,6 +101,7 @@ class ProfileHelp {
             [CommandDoc]@{ Alias = "hermes";   FullName = "hermes";   Desc = "Launch Hermes local reasoning LLM console"; Command = "Invoke-Hermes-By-Ollama" }
             [CommandDoc]@{ Alias = "hermesd";  FullName = "hermesd";  Desc = "Launch Hermes reasoning LLM on Desktop"; Command = "Invoke-HermesDesktop-By-Ollama" }
             [CommandDoc]@{ Alias = "model";    FullName = "model";    Desc = "Configure default local Ollama model"; Command = "Set-OllamaModel" }
+            [CommandDoc]@{ Alias = "ollama-logs"; FullName = "ollama-logs"; Desc = "Ensure local Ollama server is running and view logs"; Command = "Invoke-OllamaLogs" }
             [CommandDoc]@{ Alias = "agy-account"; FullName = "agy-account"; Desc = "Manage isolated Antigravity accounts, credentials, and directories"; Command = "Invoke-AgyAccount" }
             [CommandDoc]@{ Alias = "agy";      FullName = "agy";      Desc = "Invoke agy CLI under isolated context"; Command = "agy" }
             [CommandDoc]@{ Alias = "multigravity"; FullName = "multigravity"; Desc = "Run multigravity multi-profile orchestration CLI"; Command = "multigravity" }

@@ -187,7 +187,14 @@ class AiHelper {
         $ollamaCmd = Get-Command "ollama" -ErrorAction SilentlyContinue
         $ollamaPath = if ($ollamaCmd) { $ollamaCmd.Source } else { "ollama" }
 
-        Start-Process -FilePath $ollamaPath -ArgumentList "serve" -WindowStyle Normal -ErrorAction SilentlyContinue
+        $logPath = Join-Path $env:LOCALAPPDATA "Ollama\server.log"
+        $logParent = Split-Path $logPath -Parent
+        if (-not (Test-Path $logParent)) {
+            $null = New-Item -ItemType Directory -Path $logParent -Force -ErrorAction SilentlyContinue
+        }
+
+        # Start hidden and redirect all output/errors to standard log file
+        Start-Process -FilePath $ollamaPath -ArgumentList "serve" -WindowStyle Hidden -RedirectStandardOutput $logPath -RedirectStandardError $logPath -ErrorAction SilentlyContinue
 
         $retry = 0
         while ($retry -lt 10) {
@@ -390,7 +397,7 @@ class AiHelper {
                     [void][Console]::ReadKey($true)
                 }
             } }
-            [PSCustomObject]@{ Label = "[Ollama Server Log] View running logs"; Action = {
+            [PSCustomObject]@{ Label = "[Ollama Service] Start Server & View Logs"; Action = {
                 [AiHelper]::ShowOllamaLogs()
                 Write-Host "Press any key to continue..." -ForegroundColor Gray
                 [void][Console]::ReadKey($true)
