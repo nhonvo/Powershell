@@ -170,12 +170,16 @@ class ProfileNavigator {
         [ProfileNavigator]::PollGitStatusJobs()
 
         # Build labels array for TUI selection
-        $labels = @()
-        for ($i = 0; $i -lt $items.Count; $i++) {
-            $icon = if ($items[$i].Priority) { "★" } else { " " }
-            $gitStatusText = [ProfileNavigator]::GetGitStatusText($items[$i].Path)
-            $labels += "$icon $($items[$i].Label)$gitStatusText"
-        }
+        $labelsList = [LogHelper]::InvokeWithSpinner("[Project] Scanning workspaces & checking git status...", {
+            $lbls = [System.Collections.Generic.List[string]]::new()
+            for ($i = 0; $i -lt $items.Count; $i++) {
+                $icon = if ($items[$i].Priority) { "★" } else { " " }
+                $gitStatusText = [ProfileNavigator]::GetGitStatusText($items[$i].Path)
+                $null = $lbls.Add("$icon $($items[$i].Label)$gitStatusText")
+            }
+            return $lbls
+        })
+        $labels = $labelsList.ToArray()
 
         $cHalf = [char]0x2584
         $cFull = [char]0x2588
