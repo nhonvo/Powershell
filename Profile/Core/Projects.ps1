@@ -1,4 +1,4 @@
-#region ANTIGRAVITY PROJECTS LAUNCHERS
+﻿#region ANTIGRAVITY PROJECTS LAUNCHERS
 # ==============================================================================
 #  Development launchers for the Antigravity Manager and Claude Proxy projects.
 # ==============================================================================
@@ -11,7 +11,21 @@ $Global:ProfileWorkspaces = @(
     @{ Name = "test-road-map";               Short = "road";  AssociatedAccount = "default" }
 )
 
-if (-not $Global:AiMode) {
+# Dynamically resolve paths from the workspace cache at startup
+$cacheFile = Join-Path $env:USERPROFILE ".gemini\antigravity\workspace_cache.json"
+if (Test-Path $cacheFile) {
+    try {
+        $cachedProjects = Get-Content $cacheFile -Raw | ConvertFrom-Json
+        foreach ($pw in $Global:ProfileWorkspaces) {
+            $match = $cachedProjects | Where-Object { $_.Label -eq $pw.Name } | Select-Object -First 1
+            if ($match) {
+                $pw.Path = $match.Path
+            }
+        }
+    } catch {}
+}
+
+if (-not $Global:AiMode -and $Global:VerboseStartup) {
     Write-Host "🛸 Loading Antigravity Projects..." -ForegroundColor Cyan
 }
 

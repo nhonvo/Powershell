@@ -1,4 +1,4 @@
-#region ANTIGRAVITY MULTI-ACCOUNT MANAGER
+﻿#region ANTIGRAVITY MULTI-ACCOUNT MANAGER
 # ==============================================================================
 #  Dynamic Multi-Account Manager for Antigravity (agy) CLI.
 # ==============================================================================
@@ -44,9 +44,10 @@ class AgyAccountManager {
         $reqs5H = 0
         $reqsWeekly = 0
         
+        $dummy = [DateTime]::MinValue
         foreach ($ts in $history) {
-            if ($ts -and [DateTime]::TryParse($ts, [ref]$null)) {
-                $dt = [DateTime]::Parse($ts)
+            if ($ts -and [DateTime]::TryParse($ts, [ref]$dummy)) {
+                $dt = $dummy
                 if ($dt -ge $fiveHoursAgo) { $reqs5H++ }
                 if ($dt -ge $sevenDaysAgo) { $reqsWeekly++ }
             }
@@ -61,8 +62,8 @@ class AgyAccountManager {
         $oldest5H = $now
         $oldestWeekly = $now
         foreach ($ts in $history) {
-            if ($ts -and [DateTime]::TryParse($ts, [ref]$null)) {
-                $dt = [DateTime]::Parse($ts)
+            if ($ts -and [DateTime]::TryParse($ts, [ref]$dummy)) {
+                $dt = $dummy
                 if ($dt -ge $fiveHoursAgo -and $dt -lt $oldest5H) { $oldest5H = $dt }
                 if ($dt -ge $sevenDaysAgo -and $dt -lt $oldestWeekly) { $oldestWeekly = $dt }
             }
@@ -92,7 +93,7 @@ class AgyAccountManager {
 
     static [void] AutoSwitchOnDirectoryChange([string]$Path) {
         if ($null -eq $Global:ProfileWorkspaces) { return }
-        $matchedProject = $Global:ProfileWorkspaces | Where-Object { $Path -like "$($_.Path)*" }
+        $matchedProject = $Global:ProfileWorkspaces | Where-Object { $_.Path -and $Path -like "$($_.Path)*" } | Select-Object -First 1
         if ($null -ne $matchedProject -and $matchedProject.AssociatedAccount -ne [AgyAccountManager]::GetActiveAccount()) {
             if (-not $Global:AiMode) {
                 Write-Host "[Auto-Switch] Changing credentials to: $($matchedProject.AssociatedAccount)" -ForegroundColor Cyan
@@ -370,6 +371,14 @@ class AgyAccountManager {
     }
 
     static [void] SetActiveAccount([string]$AccountName, [bool]$Temporary) {
+        if ($AccountName -ne "default") {
+            $targetDir = [AgyAccountManager]::GetAccountDirectory($AccountName)
+            if (-not (Test-Path $targetDir)) {
+                Write-Error "Account '$AccountName' does not exist. Create it first using 'agy-account add $AccountName'."
+                return
+            }
+        }
+
         # Update usage metadata
         [AgyAccountManager]::UpdateAccountMetadata($AccountName)
 
@@ -390,10 +399,6 @@ class AgyAccountManager {
         }
 
         $targetDir = [AgyAccountManager]::GetAccountDirectory($AccountName)
-        if (-not (Test-Path $targetDir)) {
-            Write-Error "Account '$AccountName' does not exist. Create it first using 'agy-account add $AccountName'."
-            return
-        }
 
         # Self-healing unique installation ID
         $defaultIdFile = Join-Path ([AgyAccountManager]::AgySourceHome) "installation_id"
@@ -1173,9 +1178,10 @@ class AgyAccountManager {
         
         $history = @()
         if ($meta.RequestHistory) { $history = @($meta.RequestHistory) }
+        $dummy = [DateTime]::MinValue
         foreach ($ts in $history) {
-            if ($ts -and [DateTime]::TryParse($ts, [ref]$null)) {
-                $dt = [DateTime]::Parse($ts).ToLocalTime()
+            if ($ts -and [DateTime]::TryParse($ts, [ref]$dummy)) {
+                $dt = $dummy.ToLocalTime()
                 $dayName = $dt.ToString("ddd")
                 if ($daysData.ContainsKey($dayName)) {
                     $daysData[$dayName]++
@@ -1303,7 +1309,7 @@ class AgyAccountManager {
     static [void] InitializeManager() {
         $isOnline = [AgyAccountManager]::CheckNetworkStatus()
         $onlineTag = if ($isOnline) { "" } else { " [Offline]" }
-        if (-not $Global:AiMode) {
+        if (-not $Global:AiMode -and $Global:VerboseStartup) {
             Write-Host "[agy] Loading Antigravity Multi-Account Manager...$onlineTag" -ForegroundColor Cyan
         }
 
@@ -1325,7 +1331,7 @@ class AgyAccountManager {
             $targetPath = [AgyAccountManager]::GetAccountDirectory($savedAcc)
             if (Test-Path $targetPath) {
                 $env:GEMINI_HOME = $targetPath
-                if (-not $Global:AiMode) {
+                if (-not $Global:AiMode -and $Global:VerboseStartup) {
                     Write-Host "[agy] Active account configured to '$savedAcc' via persistent settings." -ForegroundColor Cyan
                 }
             } else {
@@ -1357,38 +1363,7 @@ class AgyAccountManager {
     }
 
     static [void] RegisterPromptHook() {
-        try {
-            # Check if current prompt definition already contains prompt_original
-            $promptCmd = Get-Command prompt -ErrorAction SilentlyContinue
-            if ($promptCmd -and $promptCmd.Definition -like "*prompt_original*") {
-                return
-            }
-
-            if (Test-Path Function:\prompt_original) {
-                Remove-Item Function:\prompt_original -Force -ErrorAction SilentlyContinue
-            }
-
-            if (Test-Path Function:\prompt) {
-                $definition = (Get-Command prompt).Definition
-                $null = New-Item -Path Function:\prompt_original -Value ([ScriptBlock]::Create($definition)) -Force
-                Remove-Item Function:\prompt -Force -ErrorAction SilentlyContinue
-            }
-
-            $scriptStr = @'
-                try {
-                    [AgyAccountManager]::AutoSwitchOnDirectoryChange($pwd.Path)
-                } catch {}
-                if (Test-Path Function:\prompt_original) {
-                    prompt_original
-                } else {
-                    $acc = [AgyAccountManager]::GetActiveAccount()
-                    $online = [AgyAccountManager]::CheckNetworkStatus()
-                    $tag = if ($online) { "" } else { " [Offline]" }
-                    "PS ($acc)$tag $($pwd.Path)> "
-                }
-'@
-            $null = New-Item -Path Function:\prompt -Value ([ScriptBlock]::Create($scriptStr)) -Force
-        } catch {}
+        Register-AgyPromptHook
     }
 
     static [void] InvokeAgy([string[]]$PassThruArgs) {
@@ -1462,7 +1437,44 @@ class AgyAccountManager {
         }
     }
 }
+function Register-AgyPromptHook {
+    try {
+        # Check if current prompt definition already contains prompt_original
+        $promptCmd = Get-Command prompt -ErrorAction SilentlyContinue
+        if ($promptCmd -and $promptCmd.Definition -like "*prompt_original*") {
+            return
+        }
+
+        if (Test-Path Function:\global:prompt_original) {
+            Remove-Item Function:\global:prompt_original -Force -ErrorAction SilentlyContinue
+        }
+
+        if ($promptCmd) {
+            $definition = $promptCmd.Definition
+            $null = New-Item -Path Function:\global:prompt_original -Value ([ScriptBlock]::Create($definition)) -Force
+            if (Test-Path Function:\global:prompt) {
+                Remove-Item Function:\global:prompt -Force -ErrorAction SilentlyContinue
+            }
+        }
+
+        $scriptStr = @'
+            try {
+                [AgyAccountManager]::AutoSwitchOnDirectoryChange($pwd.Path)
+            } catch {}
+            if (Test-Path Function:\global:prompt_original) {
+                global:prompt_original
+            } else {
+                $acc = [AgyAccountManager]::GetActiveAccount()
+                $online = [AgyAccountManager]::CheckNetworkStatus()
+                $tag = if ($online) { "" } else { " [Offline]" }
+                "PS ($acc)$tag $($pwd.Path)> "
+            }
+'@
+        $null = New-Item -Path Function:\global:prompt -Value ([ScriptBlock]::Create($scriptStr)) -Force
+    } catch {}
+}
 
 # Auto-initialize account manager
 [AgyAccountManager]::InitializeManager()
 #endregion
+

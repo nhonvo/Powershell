@@ -1,4 +1,4 @@
-#region DOCKER HELPER
+﻿#region DOCKER HELPER
 # ==============================================================================
 #  Shortcuts and prune utility wrappers for Docker and Docker Compose.
 # ==============================================================================

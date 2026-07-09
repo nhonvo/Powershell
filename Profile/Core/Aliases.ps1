@@ -1,4 +1,4 @@
-#region CENTRALIZED SHELL ALIASES & WRAPPER FUNCTIONS
+﻿#region CENTRALIZED SHELL ALIASES & WRAPPER FUNCTIONS
 # ==============================================================================
 #  Centralized routing layer bridging CLI commands to the static class helpers.
 # ==============================================================================
@@ -158,7 +158,11 @@ function Get-CustomCommands {
             [AiHelper]::ShowAiDashboard()
         }
         elseif ($action.StartsWith("[Project]")) {
+            $Global:ExitCcLoop = $false
             Enter-Project ""
+            if ($Global:ExitCcLoop) {
+                break
+            }
         }
         elseif ($action.StartsWith("[Theme]")) {
             Select-ShellTheme
@@ -263,7 +267,19 @@ function Add-SshAuthorizedKey {
     param([string]$Key, [string]$Account)
     [SshHelper]::AddAuthorizedKey($Key, $Account)
 }
-function Toggle-MobileMode { [ThemeHelper]::ToggleMobileMode() }
+function Toggle-MobileMode {
+    [ThemeHelper]::ToggleMobileMode()
+    if ($Global:NewThemeToApply) {
+        $themePath = $Global:NewThemeToApply
+        $Global:NewThemeToApply = $null
+        Remove-Module -Name "oh-my-posh-core" -Force -ErrorAction SilentlyContinue
+        Remove-Item -Path "Function:\prompt" -Force -ErrorAction SilentlyContinue
+        Remove-Item -Path "Function:\prompt_original" -Force -ErrorAction SilentlyContinue
+        oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
+        [AgyAccountManager]::RegisterPromptHook()
+        [TerminalMenu]::InitializeTuiColors()
+    }
+}
 function Start-MobileSshKeyReceiver { [SshHelper]::StartMobileSshKeyReceiver() }
 
 # Navigation & System Aliases
@@ -698,7 +714,19 @@ function cnav { [ProfileHelp]::Show("Navigation") }
 function cssh { [ProfileHelp]::Show("SSH") }
 
 # Theme Switcher
-function Select-ShellTheme { [ThemeHelper]::SelectThemeInteractive() }
+function Select-ShellTheme {
+    [ThemeHelper]::SelectThemeInteractive()
+    if ($Global:NewThemeToApply) {
+        $themePath = $Global:NewThemeToApply
+        $Global:NewThemeToApply = $null
+        Remove-Module -Name "oh-my-posh-core" -Force -ErrorAction SilentlyContinue
+        Remove-Item -Path "Function:\prompt" -Force -ErrorAction SilentlyContinue
+        Remove-Item -Path "Function:\prompt_original" -Force -ErrorAction SilentlyContinue
+        oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
+        [AgyAccountManager]::RegisterPromptHook()
+        [TerminalMenu]::InitializeTuiColors()
+    }
+}
 Set-Alias -Name theme -Value Select-ShellTheme -Force
 # Operations Dashboards & Shortcuts
 function Invoke-DockerDashboard { [DockerHelper]::Dkcl() }

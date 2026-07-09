@@ -1,4 +1,4 @@
-#region PROFILE HELP
+﻿#region PROFILE HELP
 # ==============================================================================
 #  Exposes interactive help documentation for all custom commands.
 # ==============================================================================

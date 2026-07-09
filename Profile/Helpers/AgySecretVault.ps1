@@ -1,4 +1,4 @@
-#region ANTIGRAVITY SECRET VAULT
+﻿#region ANTIGRAVITY SECRET VAULT
 # ==============================================================================
 #  DPAPI-encrypted local credential store for API keys and secrets.
 # ==============================================================================

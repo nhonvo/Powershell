@@ -1,4 +1,4 @@
-#region ANTIGRAVITY KEYRING HELPER
+﻿#region ANTIGRAVITY KEYRING HELPER
 # ==============================================================================
 #  Win32 Credential Manager API Wrapper for Antigravity CLI keyring session support.
 # ==============================================================================

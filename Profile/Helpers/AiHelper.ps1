@@ -19,11 +19,35 @@ class AiHelper {
         }
     }
 
+    static [bool] IsPortResponding([int]$Port, [string]$Pattern) {
+        $oldHttpProxy = $env:http_proxy
+        $oldHttpsProxy = $env:https_proxy
+        $oldAllProxy = $env:all_proxy
+        try {
+            Remove-Item env:http_proxy -ErrorAction SilentlyContinue
+            Remove-Item env:https_proxy -ErrorAction SilentlyContinue
+            Remove-Item env:all_proxy -ErrorAction SilentlyContinue
+            
+            $resp = Invoke-RestMethod -Uri "http://127.0.0.1:$Port/" -TimeoutSec 2 -ErrorAction Stop
+            if (-not $Pattern -or ($resp -like $Pattern)) {
+                return $true
+            }
+        } catch {
+            $connection = Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($connection) {
+                return $true
+            }
+        } finally {
+            if ($oldHttpProxy) { $env:http_proxy = $oldHttpProxy }
+            if ($oldHttpsProxy) { $env:https_proxy = $oldHttpsProxy }
+            if ($oldAllProxy) { $env:all_proxy = $oldAllProxy }
+        }
+        return $false
+    }
+
     static [void] EnsureOllamaProxy() {
         $proxyPort = 11435
-        try {
-            $null = Invoke-RestMethod -Uri "http://127.0.0.1:$proxyPort/" -TimeoutSec 1 -ErrorAction Stop
-        } catch {
+        if (-not [AiHelper]::IsPortResponding($proxyPort, $null)) {
             Write-Host "[AI] Ollama Proxy is not running on port $proxyPort. Starting..." -ForegroundColor Yellow
             $currentDir = $PSScriptRoot
             # Resolve repository root (up two levels from Profile/Helpers)
@@ -47,11 +71,13 @@ class AiHelper {
         }
     }
 
+    static [bool] IsOllamaRunning() {
+        return [AiHelper]::IsPortResponding(11434, "*Ollama is running*")
+    }
+
     static [void] EnsureOllamaServer() {
         if (Get-Command Describe -ErrorAction SilentlyContinue) {
-            try {
-                $null = Invoke-RestMethod -Uri "http://127.0.0.1:11434/" -TimeoutSec 1 -ErrorAction Stop
-            } catch {
+            if (-not [AiHelper]::IsOllamaRunning()) {
                 Initialize-OllamaServer
             }
             [AiHelper]::EnsureOllamaProxy()
@@ -59,9 +85,7 @@ class AiHelper {
         }
 
         $null = [LogHelper]::InvokeWithSpinner("[AI] Verifying local Ollama server status...", {
-            try {
-                $null = Invoke-RestMethod -Uri "http://127.0.0.1:11434/" -TimeoutSec 1 -ErrorAction Stop
-            } catch {
+            if (-not [AiHelper]::IsOllamaRunning()) {
                 Initialize-OllamaServer
             }
             [AiHelper]::EnsureOllamaProxy()
@@ -113,15 +137,24 @@ class AiHelper {
         $oldNodeOptions = $env:NODE_OPTIONS
         $oldCodexHome = $env:CODEX_HOME
         try {
-            $env:OLLAMA_HOST = "127.0.0.1:11434"
-            $env:OPENAI_BASE_URL = "http://127.0.0.1:11435/v1"
-            $env:OPENAI_API_KEY = "ollama"
+            # Route built-in Ollama provider to our proxy port 11435
+            $env:OLLAMA_HOST = "127.0.0.1:11435"
             $env:NODE_OPTIONS = if ($env:NODE_OPTIONS) { "$env:NODE_OPTIONS --dns-result-order=ipv4first" } else { "--dns-result-order=ipv4first" }
 
+            # Clear OpenAI environment variables to avoid conflicting settings
+            Remove-Item env:OPENAI_BASE_URL -ErrorAction SilentlyContinue
+            Remove-Item env:OPENAI_API_KEY -ErrorAction SilentlyContinue
+
             $model = [AiHelper]::OllamaDefaultModel
+            $newArgsList = [System.Collections.Generic.List[string]]::new()
             for ($i = 0; $i -lt $ArgsList.Count; $i++) {
-                if ($ArgsList[$i] -eq "--model" -and $i -lt $ArgsList.Count - 1) {
-                    $model = $ArgsList[$i+1]
+                if (($ArgsList[$i] -eq "--model" -or $ArgsList[$i] -eq "-m") -and $i -lt $ArgsList.Count - 1) {
+                    $model = $ArgsList[$i+1] -replace '^ollama_custom/', ''
+                    $newArgsList.Add($ArgsList[$i])
+                    $newArgsList.Add($model)
+                    $i++
+                } else {
+                    $newArgsList.Add($ArgsList[$i])
                 }
             }
 
@@ -137,27 +170,30 @@ class AiHelper {
             
             $configToml = @"
 # Temp sandbox configuration generated at $sandboxPath/config.toml
-[codex]
-model_provider = "ollama"
 model = "$model"
-api_base = "http://127.0.0.1:11434/v1"
-skills_directory = "$($emptySkillsDir.Replace('\', '/'))"
+
+[codex]
+skills_directory = "$emptySkillsDir"
 
 [mcp_servers]
 # Intentionally empty to disable external tool description loads
 "@
+            # Ensure path separators are forward slashes for TOML
+            $configToml = $configToml.Replace('\', '/')
             $configToml | Out-File -FilePath (Join-Path $sandboxPath "config.toml") -Force -Encoding utf8
 
             $env:CODEX_HOME = $sandboxPath
 
             $flags = @()
-            if ($ArgsList -notcontains "--model") {
+            if ($newArgsList -notcontains "--model" -and $newArgsList -notcontains "-m") {
                 $flags += "--model", $model
             }
+            $flags += "--oss"
+            $flags += "--local-provider", "ollama"
 
             $argList = @()
             foreach ($f in $flags) { $argList += $f }
-            foreach ($a in $ArgsList) { $argList += $a }
+            foreach ($a in $newArgsList) { $argList += $a }
             $proc = Start-Process -FilePath "codex.cmd" -ArgumentList $argList -NoNewWindow -PassThru -Wait
         } finally {
             $env:OLLAMA_HOST = $oldOllamaHost

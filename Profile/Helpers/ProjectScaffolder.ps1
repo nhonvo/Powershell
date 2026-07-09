@@ -1,4 +1,4 @@
-#region PROJECT SCAFFOLDER
+﻿#region PROJECT SCAFFOLDER
 # ==============================================================================
 #  Template-driven project scaffolder and registration wizard.
 # ==============================================================================

@@ -1,4 +1,4 @@
-class ColoredLine {
+﻿class ColoredLine {
     [string]$Text
     [string]$Color
 }
@@ -233,7 +233,25 @@ class TerminalMenu {
 
                 $key = $null
                 try {
-                    $key = [Console]::ReadKey($true)
+                    if ($null -ne $Global:TerminalMenuOnIdle) {
+                        $needsRedraw = $false
+                        while (-not [Console]::KeyAvailable) {
+                            $updatedItems = &$Global:TerminalMenuOnIdle
+                            if ($null -ne $updatedItems) {
+                                $Items = $updatedItems
+                                $count = $Items.Count
+                                $needsRedraw = $true
+                                break
+                            }
+                            Start-Sleep -Milliseconds 100
+                        }
+                        if ($needsRedraw) {
+                            continue
+                        }
+                        $key = [Console]::ReadKey($true)
+                    } else {
+                        $key = [Console]::ReadKey($true)
+                    }
                 } catch {
                     [Console]::CursorVisible = $true
                     $choice = Read-Host "Select index [1-$filteredCount]"
@@ -328,6 +346,7 @@ class TerminalMenu {
                 }
             }
         } finally {
+            $Global:TerminalMenuOnIdle = $null
             try {
                 [Console]::SetCursorPosition($startCol, $startRow)
                 for ($d = 0; $d -lt $lastLinesCount; $d++) {

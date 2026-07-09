@@ -1,73 +1,38 @@
-#region PROFILE NAVIGATOR
+﻿#region PROFILE NAVIGATOR
 # ==============================================================================
 #  Strongly-typed directory navigator class.
 # ==============================================================================
 
 class ProfileNavigator {
-    static [void] PollGitStatusJobs() {
+    static [bool] PollGitStatusJobs() {
         if ($null -eq $Global:GitStatusCache) {
             $Global:GitStatusCache = @{}
         }
-        $jobs = Get-Job -Name "GitStatus_*" -ErrorAction SilentlyContinue
-        foreach ($job in $jobs) {
-            if ($job.State -eq "Completed") {
-                $result = Receive-Job -Job $job -ErrorAction SilentlyContinue
-                $base64 = $job.Name.Substring("GitStatus_".Length)
-                try {
-                    $padLen = $base64.Length % 4
-                    if ($padLen -gt 0) { $base64 += "=" * (4 - $padLen) }
-                    $bytes = [Convert]::FromBase64String($base64)
-                    $decodedPath = [Text.Encoding]::UTF8.GetString($bytes)
-                    if ($decodedPath) {
-                        $Global:GitStatusCache[$decodedPath] = $result
-                    }
-                } catch {}
-                Remove-Job -Job $job -Force -ErrorAction SilentlyContinue
+        $job = Get-Job -Name "GitStatusScanner" -ErrorAction SilentlyContinue
+        if ($job -and $job.State -eq "Completed") {
+            $result = Receive-Job -Job $job -ErrorAction SilentlyContinue
+            if ($result -is [hashtable]) {
+                foreach ($key in $result.Keys) {
+                    $Global:GitStatusCache[$key] = $result[$key]
+                }
             }
+            Remove-Job -Job $job -Force -ErrorAction SilentlyContinue
+            return $true
         }
+        return $false
     }
 
     static [string] GetGitStatusText([string]$path) {
         if (-not (Test-Path (Join-Path $path ".git"))) {
-            return ""
+            return "|"
         }
         if ($null -eq $Global:GitStatusCache) {
             $Global:GitStatusCache = @{}
         }
-        if ($Global:GitStatusCache.ContainsKey($path) -and $Global:GitStatusCache[$path] -ne " (...)") {
+        if ($Global:GitStatusCache.ContainsKey($path)) {
             return $Global:GitStatusCache[$path]
         }
-        if ($Global:GitStatusCache[$path] -eq " (...)") {
-            return " (...)"
-        }
-        $Global:GitStatusCache[$path] = " (...)"
-        try {
-            $bytes = [Text.Encoding]::UTF8.GetBytes($path)
-            $safeName = [Convert]::ToBase64String($bytes).Replace('=', '')
-            $jobName = "GitStatus_$safeName"
-            Start-Job -Name $jobName -ScriptBlock {
-                param($p)
-                try {
-                    Set-Location $p
-                    $branch = (git rev-parse --abbrev-ref HEAD 2>$null)
-                    if (-not $branch) { return "" }
-                    $status = (git status --porcelain=v1 --ignore-submodules=all 2>$null)
-                    $changesCount = 0
-                    if ($null -ne $status) {
-                        $nonEmpty = $status | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
-                        $changesCount = ($nonEmpty | Measure-Object).Count
-                    }
-                    if ($changesCount -gt 0) {
-                        return " ($($branch.Trim())) [$changesCount files changed]"
-                    } else {
-                        return " ($($branch.Trim()))"
-                    }
-                } catch {
-                    return ""
-                }
-            } -ArgumentList $path | Out-Null
-        } catch {}
-        return " (...)"
+        return "...|"
     }
 
     static [void] GoParent() {
@@ -79,43 +44,66 @@ class ProfileNavigator {
     }
 
     static [void] EnterProject([string]$Name) {
-        $searchPaths = @(
-            "$env:USERPROFILE\Desktop\back-up\1.project",
-            "$env:USERPROFILE\Desktop\project",
-            "C:\Users\sshuser\project",
-            "$env:USERPROFILE\Documents"
-        ) | Where-Object { Test-Path $_ }
-
+        $cacheFile = Join-Path $env:USERPROFILE ".gemini\antigravity\workspace_cache.json"
         $priorityProjects = $Global:ProfileWorkspaces
-        $excludeFolders = @("My Music","My Pictures","My Videos","WindowsPowerShell",
-                            "Custom Office Templates","Visual Studio 2022","Modules",
-                            "vscode-config","typora-themes","img")
-
-        if (-not $searchPaths) {
-            Write-Host "No search paths found. Configure search paths in ProfileNavigator." -ForegroundColor Yellow
-            return
-        }
-
-        # Collect immediate-child directories
-        $allProjects = $searchPaths | ForEach-Object {
-            Get-ChildItem -Path $_ -Directory -ErrorAction SilentlyContinue |
-                Where-Object { $_.Name -notin $excludeFolders }
-        } | Sort-Object Name -Unique
-
-        if (-not $allProjects) {
-            Write-Host "No projects found in configured paths." -ForegroundColor Yellow
-            return
-        }
-
-        # Build ordered list: priorities first, then alphabetical
-        $priorityNames = $priorityProjects.Name
+        
         $items = @()
-        foreach ($p in $priorityProjects) {
-            $match = $allProjects | Where-Object { $_.Name -eq $p.Name } | Select-Object -First 1
-            if ($match) { $items += [PSCustomObject]@{ Label = $match.Name; Path = $match.FullName; Priority = $true } }
+        $needsScan = $true
+
+        if (-not $Name -and (Test-Path $cacheFile)) {
+            $cacheItem = Get-Item $cacheFile
+            if ($cacheItem.LastWriteTime -gt (Get-Date).AddHours(-24)) {
+                try {
+                    $items = Get-Content $cacheFile | ConvertFrom-Json
+                    $needsScan = $false
+                } catch {}
+            }
         }
-        foreach ($proj in ($allProjects | Where-Object { $_.Name -notin $priorityNames })) {
-            $items += [PSCustomObject]@{ Label = $proj.Name; Path = $proj.FullName; Priority = $false }
+
+        if ($needsScan) {
+            $searchPaths = @(
+                "$env:USERPROFILE\Desktop\back-up\1.project",
+                "$env:USERPROFILE\Desktop\project",
+                "C:\Users\sshuser\project",
+                "$env:USERPROFILE\Documents"
+            ) | Where-Object { Test-Path $_ }
+
+            $excludeFolders = @("My Music","My Pictures","My Videos","WindowsPowerShell",
+                                "Custom Office Templates","Visual Studio 2022","Modules",
+                                "vscode-config","typora-themes","img")
+
+            if (-not $searchPaths) {
+                Write-Host "No search paths found. Configure search paths in ProfileNavigator." -ForegroundColor Yellow
+                return
+            }
+
+            # Collect immediate-child directories
+            $allProjects = $searchPaths | ForEach-Object {
+                Get-ChildItem -Path $_ -Directory -ErrorAction SilentlyContinue |
+                    Where-Object { $_.Name -notin $excludeFolders }
+            } | Sort-Object Name -Unique
+
+            if (-not $allProjects) {
+                Write-Host "No projects found in configured paths." -ForegroundColor Yellow
+                return
+            }
+
+            # Build ordered list: priorities first, then alphabetical
+            $priorityNames = $priorityProjects.Name
+            foreach ($p in $priorityProjects) {
+                $match = $allProjects | Where-Object { $_.Name -eq $p.Name } | Select-Object -First 1
+                if ($match) { $items += [PSCustomObject]@{ Label = $match.Name; Path = $match.FullName; Priority = $true } }
+            }
+            foreach ($proj in ($allProjects | Where-Object { $_.Name -notin $priorityNames })) {
+                $items += [PSCustomObject]@{ Label = $proj.Name; Path = $proj.FullName; Priority = $false }
+            }
+            
+            try {
+                # Ensure dir exists
+                $cacheDir = Split-Path $cacheFile
+                if (-not (Test-Path $cacheDir)) { New-Item -ItemType Directory -Path $cacheDir -Force | Out-Null }
+                $items | ConvertTo-Json | Set-Content $cacheFile -Force
+            } catch {}
         }
 
         # Direct match/list checks in AI Mode
@@ -166,20 +154,78 @@ class ProfileNavigator {
             }
         }
 
-        # Poll completed status jobs
-        [ProfileNavigator]::PollGitStatusJobs()
+        # Trigger the Git status background scanner job if not already running/completed
+        $job = Get-Job -Name "GitStatusScanner" -ErrorAction SilentlyContinue
+        if (-not $job) {
+            $paths = $items.Path
+            Start-Job -Name "GitStatusScanner" -ScriptBlock {
+                param($pathsList)
+                $res = @{}
+                foreach ($p in $pathsList) {
+                    if (Test-Path (Join-Path $p ".git")) {
+                        try {
+                            Push-Location $p -ErrorAction SilentlyContinue
+                            $branch = (git rev-parse --abbrev-ref HEAD 2>$null)
+                            if ($branch) {
+                                $status = (git status --porcelain=v1 --ignore-submodules=all 2>$null)
+                                $changes = 0
+                                if ($status) {
+                                    $changes = ($status | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Measure-Object).Count
+                                }
+                                $res[$p] = "$($branch.Trim())|$changes"
+                            } else {
+                                $res[$p] = "|"
+                            }
+                        } catch {
+                            $res[$p] = "|"
+                        } finally {
+                            Pop-Location -ErrorAction SilentlyContinue
+                        }
+                    } else {
+                        $res[$p] = "|"
+                    }
+                }
+                return $res
+            } -ArgumentList @(,$paths) | Out-Null
+        }
 
-        # Build labels array for TUI selection
-        $labelsList = [LogHelper]::InvokeWithSpinner("[Project] Scanning workspaces & checking git status...", {
+        # Helper scriptblock to generate string labels for the table
+        $generateLabels = {
+            param($itemList)
             $lbls = [System.Collections.Generic.List[string]]::new()
-            for ($i = 0; $i -lt $items.Count; $i++) {
-                $icon = if ($items[$i].Priority) { "★" } else { " " }
-                $gitStatusText = [ProfileNavigator]::GetGitStatusText($items[$i].Path)
-                $null = $lbls.Add("$icon $($items[$i].Label)$gitStatusText")
+            for ($i = 0; $i -lt $itemList.Count; $i++) {
+                $icon = if ($itemList[$i].Priority) { "★" } else { " " }
+                $gitStatusText = [ProfileNavigator]::GetGitStatusText($itemList[$i].Path)
+                
+                $parts = $gitStatusText -split '\|'
+                $branch = if ($parts[0]) { $parts[0] } else { "" }
+                $changes = if ($parts.Count -gt 1) { $parts[1] } else { "" }
+                
+                $namePadded = $itemList[$i].Label.PadRight(35)
+                $branchStr = if ($branch -and $branch -ne "...") { "🌳 " + $branch } elseif ($branch -eq "...") { "🔄 checking..." } else { "" }
+                $branchPadded = $branchStr.PadRight(20)
+                
+                $changeStr = ""
+                if ($changes -ne "0" -and $changes -ne "") {
+                    $changeStr = "📝 $changes files"
+                }
+                
+                $null = $lbls.Add("$icon 📂 $namePadded │ $branchPadded │ $changeStr")
             }
-            return $lbls
-        })
-        $labels = $labelsList.ToArray()
+            return $lbls.ToArray()
+        }
+
+        # Build initial labels array for TUI selection
+        $labels = &$generateLabels $items
+
+        # Setup the global non-blocking update callback closure for TerminalMenu
+        $Global:TerminalMenuOnIdle = {
+            $updated = [ProfileNavigator]::PollGitStatusJobs()
+            if ($updated) {
+                return &$generateLabels $items
+            }
+            return $null
+        }.GetNewClosure()
 
         $cHalf = [char]0x2584
         $cFull = [char]0x2588
@@ -190,37 +236,66 @@ class ProfileNavigator {
             " $cFull        $cFull           ",
             " $cFull$cHalf     $cHalf $cFull$cHalf     $cHalf    Select a registered project workspace.",
             "  $cTop$cFull$cFull$cFull$cFull$cTop   $cTop$cFull$cFull$cFull$cFull$cTop     Esc to go back.",
-            "============================================="
+            "====================================================================================="
         )
-        $selected = ([type]"TerminalMenu")::ShowRobust($projHeaders, $labels, 0, $false, $true)
-        if ($selected -ge 0) {
-            $proj = $items[$selected]
-            $action = $Global:TerminalMenuLastKey
-            if ($null -eq $action) { $action = "enter" }
-
-            Write-Host ""
-            if ($action -eq "c") {
-                Write-Host "  Opening $($proj.Label) in VS Code..." -ForegroundColor Green
-                Start-Process code -ArgumentList "`"$($proj.Path)`"" -ErrorAction SilentlyContinue
+        
+        while ($true) {
+            $selected = ([type]"TerminalMenu")::ShowRobust($projHeaders, $labels, 0, $false, $true)
+            if ($selected -ge 0) {
+                $proj = $items[$selected]
+                $actionHeaders = @(
+                    "=====================================================================================",
+                    " Actions for: $($proj.Label)",
+                    "====================================================================================="
+                )
+                $actionLabels = @(
+                    "💻 Open in VS Code",
+                    "📝 Open in Terminal IDE (Micro/Nvim)",
+                    "🐳 Start Docker Compose",
+                    "🧪 Run Unit Tests",
+                    "📂 Navigate here in current terminal"
+                )
+                $actionSelected = ([type]"TerminalMenu")::ShowRobust($actionHeaders, $actionLabels, 0, $false, $false)
+                
+                Write-Host ""
+                if ($actionSelected -eq 0) {
+                    Write-Host "  Opening $($proj.Label) in VS Code..." -ForegroundColor Green
+                    Start-Process code -ArgumentList "`"$($proj.Path)`"" -ErrorAction SilentlyContinue
+                    $Global:ExitCcLoop = $true
+                    break
+                }
+                elseif ($actionSelected -eq 1) {
+                    [ProfileNavigator]::LaunchTerminalIde($proj.Path)
+                    $Global:ExitCcLoop = $true
+                    break
+                }
+                elseif ($actionSelected -eq 2) {
+                    Write-Host "  Starting Docker Compose in $($proj.Label)..." -ForegroundColor Green
+                    Start-Process pwsh -ArgumentList "-NoExit", "-Command", "Set-Location `"$($proj.Path)`"; docker-compose up" -ErrorAction SilentlyContinue
+                    $Global:ExitCcLoop = $true
+                    break
+                }
+                elseif ($actionSelected -eq 3) {
+                    Write-Host "  Running tests in $($proj.Label)..." -ForegroundColor Green
+                    Start-Process pwsh -ArgumentList "-NoExit", "-Command", "Set-Location `"$($proj.Path)`"; if (Test-Path .\run_tests.ps1) { .\run_tests.ps1 } else { dotnet test }" -ErrorAction SilentlyContinue
+                    $Global:ExitCcLoop = $true
+                    break
+                }
+                elseif ($actionSelected -eq 4) {
+                    Write-Host "  Navigating to: $($proj.Label)" -ForegroundColor Green
+                    Set-Location $proj.Path
+                    $Global:ExitCcLoop = $true
+                    break
+                }
+                elseif ($actionSelected -eq -1) {
+                    # Go back to Project List loop on Esc
+                    continue
+                }
+            } else {
+                Write-Host ""
+                Write-Host "  Cancelled." -ForegroundColor DarkGray
+                break
             }
-            elseif ($action -eq "i") {
-                [ProfileNavigator]::LaunchTerminalIde($proj.Path)
-            }
-            elseif ($action -eq "d") {
-                Write-Host "  Starting Docker Compose in $($proj.Label)..." -ForegroundColor Green
-                Start-Process pwsh -ArgumentList "-NoExit", "-Command", "Set-Location `"$($proj.Path)`"; docker-compose up" -ErrorAction SilentlyContinue
-            }
-            elseif ($action -eq "t") {
-                Write-Host "  Running tests in $($proj.Label)..." -ForegroundColor Green
-                Start-Process pwsh -ArgumentList "-NoExit", "-Command", "Set-Location `"$($proj.Path)`"; if (Test-Path .\run_tests.ps1) { .\run_tests.ps1 } else { dotnet test }" -ErrorAction SilentlyContinue
-            }
-            else {
-                Write-Host "  Navigating to: $($proj.Label)" -ForegroundColor Green
-                Set-Location $proj.Path
-            }
-        } else {
-            Write-Host ""
-            Write-Host "  Cancelled." -ForegroundColor DarkGray
         }
     }
 
@@ -249,45 +324,64 @@ class ProfileNavigator {
             }
         }
 
+        # Navigate to the project directory first for editor context
+        Set-Location $projectPath
+
         if ($microCmd) {
-            $microConfigDir = Join-Path $env:USERPROFILE ".config\micro"
+            # Use an isolated configuration directory specifically for our PowerShell Profile IDE
+            $microConfigDir = Join-Path $env:USERPROFILE ".gemini\antigravity\micro-ide"
             if (-not (Test-Path $microConfigDir)) {
                 $null = New-Item -ItemType Directory -Path $microConfigDir -Force
             }
             
-            # Install filemanager plugin if not present
+            # Install filemanager plugin into the isolated configuration dir
             $pluginDir = Join-Path $microConfigDir "plug/filemanager"
             if (-not (Test-Path $pluginDir)) {
                 Write-Host "  Installing Micro filemanager plugin..." -ForegroundColor Green
-                Start-Process micro -ArgumentList "-plugin install filemanager" -NoNewWindow -Wait
+                Start-Process micro -ArgumentList "-config-dir `"$microConfigDir`"", "-plugin install filemanager" -NoNewWindow -Wait
             }
 
-            # Map Ctrl+B to toggle filemanager in bindings.json
+            # Map Ctrl+B to toggle filemanager in bindings.json inside the isolated config
             $bindingsFile = Join-Path $microConfigDir "bindings.json"
             $hasBinding = $false
             if (Test-Path $bindingsFile) {
                 try {
                     $bindings = Get-Content $bindingsFile -Raw | ConvertFrom-Json
-                    if ($bindings -and $bindings.PSObject.Properties.Name -contains "Ctrl-b") {
+                    if ($bindings -and $bindings.PSObject.Properties.Name -contains "Ctrl-b" -and $bindings."Ctrl-b" -eq "command:filemanager") {
                         $hasBinding = $true
                     }
                 } catch {}
             }
             if (-not $hasBinding) {
-                $bindingObj = @{ "Ctrl-b" = "command-action:filemanager" }
+                $bindingObj = @{ "Ctrl-b" = "command:filemanager" }
                 $bindingObj | ConvertTo-Json | Set-Content $bindingsFile -Force
             }
 
+            # Configure Micro settings to open filemanager on start in the isolated config
+            $settingsFile = Join-Path $microConfigDir "settings.json"
+            $hasSettings = $false
+            if (Test-Path $settingsFile) {
+                try {
+                    $settings = Get-Content $settingsFile -Raw | ConvertFrom-Json
+                    if ($settings -and $settings.PSObject.Properties.Name -contains "filemanager.openonstart" -and $settings."filemanager.openonstart" -eq $true) {
+                        $hasSettings = $true
+                    }
+                } catch {}
+            }
+            if (-not $hasSettings) {
+                $settingsObj = @{ "filemanager.openonstart" = $true }
+                $settingsObj | ConvertTo-Json | Set-Content $settingsFile -Force
+            }
+
             Write-Host "  Launching Micro IDE with sidebar (Ctrl-B to toggle)..." -ForegroundColor Green
-            Start-Process micro -ArgumentList "`"$projectPath`"" -NoNewWindow -Wait
+            Start-Process micro -ArgumentList "-config-dir `"$microConfigDir`"" -NoNewWindow -Wait
         }
         elseif ($nvimCmd) {
             Write-Host "  Launching NeoVim..." -ForegroundColor Green
-            Start-Process nvim -ArgumentList "`"$projectPath`"" -NoNewWindow -Wait
+            Start-Process nvim -NoNewWindow -Wait
         }
         else {
-            Write-Warning "No Terminal IDE is available. Falling back to Set-Location."
-            Set-Location $projectPath
+            Write-Warning "No Terminal IDE is available."
         }
     }
 }

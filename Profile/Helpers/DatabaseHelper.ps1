@@ -1,4 +1,4 @@
-#region DATABASE HELPER
+﻿#region DATABASE HELPER
 # ==============================================================================
 #  SQLite database schema and TUI table inspector.
 # ==============================================================================

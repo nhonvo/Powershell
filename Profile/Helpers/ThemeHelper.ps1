@@ -1,4 +1,4 @@
-#region SHELL THEME SWITCHER UTILITY
+﻿#region SHELL THEME SWITCHER UTILITY
 # ==============================================================================
 #  Dynamic Oh My Posh style switcher using the existing TerminalMenu TUI select component.
 # ==============================================================================
@@ -36,13 +36,10 @@ class ThemeHelper {
             $activeThemeFile = Join-Path -Path $themesPath -ChildPath "active_theme.txt"
             Set-Content -Path $activeThemeFile -Value $selectedTheme -Force
 
-            # Re-initialize current session
             $themePath = Join-Path -Path $themesPath -ChildPath "$selectedTheme.omp.json"
             if (Test-Path $themePath) {
-                oh-my-posh init pwsh --config $themePath | Invoke-Expression
+                $Global:NewThemeToApply = $themePath
                 Write-Host "[Theme] Oh My Posh theme switched to '$selectedTheme' (Persistent)." -ForegroundColor Green
-                [AgyAccountManager]::RegisterPromptHook()
-                [TerminalMenu]::InitializeTuiColors()
             }
         }
     }
@@ -68,17 +65,14 @@ class ThemeHelper {
         Set-Content -Path $activeThemeFile -Value $themeName -Force
         $env:THEME = $themeName
         
-        # Re-initialize current session
         $themePath = Join-Path -Path $themesPath -ChildPath "$themeName.omp.json"
         if (Test-Path $themePath) {
-            oh-my-posh init pwsh --config $themePath | Invoke-Expression
+            $Global:NewThemeToApply = $themePath
             if ($newMobileState) {
                 Write-Host "[Theme] Mobile Prompt Theme activated (ASCII mode, stacked)." -ForegroundColor Cyan
             } else {
                 Write-Host "[Theme] Desktop Prompt Theme activated (Rich Unicode/Emoji mode)." -ForegroundColor Green
             }
-            [AgyAccountManager]::RegisterPromptHook()
-            [TerminalMenu]::InitializeTuiColors()
         }
     }
 }

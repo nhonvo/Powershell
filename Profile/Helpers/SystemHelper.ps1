@@ -1,4 +1,4 @@
-#region SYSTEM HELPER
+﻿#region SYSTEM HELPER
 # ==============================================================================
 #  Utility functions for system, disk, and process management.
 # ==============================================================================

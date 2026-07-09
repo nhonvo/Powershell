@@ -1,8 +1,8 @@
-if ($global:AgyProfileLoaded) { return }
-$global:AgyProfileLoaded = $true
+﻿if ($global:AgyUserProfileLoaded) { return }
+$global:AgyUserProfileLoaded = $true
 
-# Core context detection
 $Global:AiMode = $false
+$Global:VerboseStartup = $false
 $aiMarkers = @(
     "anthropic-code",   # Claude Code
     "vscode-copilot",   # GitHub Copilot CLI
@@ -59,5 +59,16 @@ try {
 } catch {}
 
 if (-not $Global:AiMode) {
-    Write-Host "🛸 Enhanced PowerShell Profile loaded." -ForegroundColor Green
+    if ($Global:VerboseStartup) {
+        Write-Host "🛸 Enhanced PowerShell Profile loaded." -ForegroundColor Green
+    } else {
+        $acc = "default"
+        $status = "Offline"
+        try {
+            $acc = [AgyAccountManager]::GetActiveAccount()
+            $isOnline = [AgyAccountManager]::CheckNetworkStatus()
+            $status = if ($isOnline) { "Online" } else { "Offline" }
+        } catch {}
+        Write-Host "🛸 Enhanced Profile Loaded | Account: $acc ($status)" -ForegroundColor Green
+    }
 }

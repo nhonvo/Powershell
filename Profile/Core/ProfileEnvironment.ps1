@@ -1,4 +1,4 @@
-#region PROFILE ENVIRONMENT
+﻿#region PROFILE ENVIRONMENT
 # ==============================================================================
 #  Shell environment setup, PSReadLine settings, and community modules loading.
 # ==============================================================================
@@ -8,29 +8,11 @@ class ProfileEnvironment {
         # Ensure UTF8 for Icons
         [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-        if (-not $Global:AiMode) {
+        if (-not $Global:AiMode -and $Global:VerboseStartup) {
             Write-Host "[*] Loading Enhanced PowerShell Profile... (Core)" -ForegroundColor Cyan
         }
 
-        # --- Oh My Posh Theme ---
-        if (-not $Global:AiMode) {
-            $env:POSH_THEMES_PATH = Join-Path -Path $env:USERPROFILE -ChildPath "Documents\PowerShell\asset\powershell-themes"
-            $activeThemeFile = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "active_theme.txt"
-            $theme = "neko"
-            if (Test-Path $activeThemeFile) {
-                $theme = (Get-Content $activeThemeFile -Raw | Out-String).Trim()
-            }
-            $env:THEME = $theme
-            $themePath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "$($env:THEME).omp.json"
-            if (Test-Path $themePath) {
-                if (-not $global:PoshInitialized) {
-                    oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
-                    $global:PoshInitialized = $true
-                }
-            } else {
-                Write-Warning "Oh My Posh theme '$($env:THEME)' not found at '$themePath'."
-            }
-        }
+
 
         # --- Module Loading & Auto-Healing ---
         $modules = @(
@@ -165,8 +147,27 @@ class ProfileEnvironment {
     }
 }
 
-# Auto-initialize session environment
 [ProfileEnvironment]::InitializeSession()
+
+# --- Oh My Posh Theme (Initialized in global script scope to bypass class method scoping constraints) ---
+if (-not $Global:AiMode) {
+    $env:POSH_THEMES_PATH = Join-Path -Path $env:USERPROFILE -ChildPath "Documents\PowerShell\asset\powershell-themes"
+    $activeThemeFile = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "active_theme.txt"
+    $theme = "neko"
+    if (Test-Path $activeThemeFile) {
+        $theme = (Get-Content $activeThemeFile -Raw | Out-String).Trim()
+    }
+    $env:THEME = $theme
+    $themePath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "$($env:THEME).omp.json"
+    if (Test-Path $themePath) {
+        if (-not $global:PoshInitialized) {
+            oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
+            $global:PoshInitialized = $true
+        }
+    } else {
+        Write-Warning "Oh My Posh theme '$($env:THEME)' not found at '$themePath'."
+    }
+}
 #endregion
 
 
