@@ -29,20 +29,34 @@ $orderedFiles = [System.Collections.Generic.List[System.IO.FileInfo]]::new()
 $menuFile = $files | Where-Object { $_.Name -eq 'TerminalMenu.ps1' } | Select-Object -First 1
 $envFile  = $files | Where-Object { $_.Name -eq 'ProfileEnvironment.ps1' } | Select-Object -First 1
 $projFile = $files | Where-Object { $_.Name -eq 'Projects.ps1' } | Select-Object -First 1
+$logHelperFile = $files | Where-Object { $_.Name -eq 'LogHelper.ps1' } | Select-Object -First 1
 
 if ($menuFile) { $orderedFiles.Add($menuFile) }
 if ($envFile)  { $orderedFiles.Add($envFile) }
 if ($projFile) { $orderedFiles.Add($projFile) }
+if ($logHelperFile) { $orderedFiles.Add($logHelperFile) }
 
 foreach ($f in ($files | Sort-Object Name)) {
-    if ($f.Name -notin @('TerminalMenu.ps1', 'ProfileEnvironment.ps1', 'Projects.ps1')) {
+    if ($f.Name -notin @('TerminalMenu.ps1', 'ProfileEnvironment.ps1', 'Projects.ps1', 'LogHelper.ps1')) {
         $orderedFiles.Add($f)
     }
 }
 
 foreach ($file in $orderedFiles) {
-    . $file.FullName
+    try {
+        . $file.FullName
+    } catch {
+        if ([type]"LogHelper" -as [type]) {
+            [LogHelper]::LogError("Failed to load script file: $($file.Name)", $_.Exception)
+        } else {
+            Write-Error "Failed to load script file: $($file.Name): $_"
+        }
+    }
 }
+
+try {
+    [LogHelper]::Log("Enhanced PowerShell Profile loaded successfully. (AiMode = $Global:AiMode)")
+} catch {}
 
 if (-not $Global:AiMode) {
     Write-Host "🛸 Enhanced PowerShell Profile loaded." -ForegroundColor Green
