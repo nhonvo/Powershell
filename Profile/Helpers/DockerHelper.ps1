@@ -88,27 +88,30 @@ class DockerHelper {
         }
 
         while ($true) {
-            $containers = @()
-            try {
-                $open = "{" + "{"
-                $close = "}" + "}"
-                $fmt = "$open.Names$close:::$open.State$close:::$open.Image$close:::$open.Label 'com.docker.compose.project'$close"
-                $raw = docker ps -a --format $fmt 2>$null
-                if ($null -ne $raw) {
-                    foreach ($line in $raw) {
-                        if ([string]::IsNullOrWhiteSpace($line)) { continue }
-                        $parts = $line -split ':::'
-                        $proj = "(Standalone)"
-                        if ($parts[3]) { $proj = $parts[3] }
-                        $containers += [PSCustomObject]@{
-                            Name = $parts[0]
-                            State = $parts[1]
-                            Image = $parts[2]
-                            Project = $proj
+            $containers = [LogHelper]::InvokeWithSpinner("[Docker] Querying active container configurations...", {
+                $cList = @()
+                try {
+                    $open = "{" + "{"
+                    $close = "}" + "}"
+                    $fmt = "$open.Names$close:::$open.State$close:::$open.Image$close:::$open.Label 'com.docker.compose.project'$close"
+                    $raw = docker ps -a --format $fmt 2>$null
+                    if ($null -ne $raw) {
+                        foreach ($line in $raw) {
+                            if ([string]::IsNullOrWhiteSpace($line)) { continue }
+                            $parts = $line -split ':::'
+                            $proj = "(Standalone)"
+                            if ($parts[3]) { $proj = $parts[3] }
+                            $cList += [PSCustomObject]@{
+                                Name = $parts[0]
+                                State = $parts[1]
+                                Image = $parts[2]
+                                Project = $proj
+                            }
                         }
                     }
-                }
-            } catch {}
+                } catch {}
+                return $cList
+            })
 
             $grouped = $containers | Group-Object Project
             $menuItems = @()

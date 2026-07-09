@@ -1,4 +1,4 @@
-﻿#region SHELL THEME SWITCHER UTILITY
+#region SHELL THEME SWITCHER UTILITY
 # ==============================================================================
 #  Dynamic Oh My Posh style switcher using the existing TerminalMenu TUI select component.
 # ==============================================================================
@@ -40,7 +40,8 @@ class ThemeHelper {
             $themePath = Join-Path -Path $themesPath -ChildPath "$selectedTheme.omp.json"
             if (Test-Path $themePath) {
                 oh-my-posh init pwsh --config $themePath | Invoke-Expression
-                Write-Host "🟢 Oh My Posh theme switched to '$selectedTheme' (Persistent)." -ForegroundColor Green
+                Write-Host "[Theme] Oh My Posh theme switched to '$selectedTheme' (Persistent)." -ForegroundColor Green
+                [AgyAccountManager]::RegisterPromptHook()
                 [TerminalMenu]::InitializeTuiColors()
             }
         }
@@ -72,10 +73,11 @@ class ThemeHelper {
         if (Test-Path $themePath) {
             oh-my-posh init pwsh --config $themePath | Invoke-Expression
             if ($newMobileState) {
-                Write-Host "📱 Mobile Prompt Theme activated (ASCII mode, stacked)." -ForegroundColor Cyan
+                Write-Host "[Theme] Mobile Prompt Theme activated (ASCII mode, stacked)." -ForegroundColor Cyan
             } else {
-                Write-Host "🟢 Desktop Prompt Theme activated (Rich Unicode/Emoji mode)." -ForegroundColor Green
+                Write-Host "[Theme] Desktop Prompt Theme activated (Rich Unicode/Emoji mode)." -ForegroundColor Green
             }
+            [AgyAccountManager]::RegisterPromptHook()
             [TerminalMenu]::InitializeTuiColors()
         }
     }

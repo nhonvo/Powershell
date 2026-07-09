@@ -151,6 +151,14 @@ class ProfileEnvironment {
                     $pr::AcceptLine()
                 }
             }
+            Set-PSReadLineKeyHandler -Key 'Ctrl+Spacebar' -ScriptBlock {
+                $pr = [Type]"Microsoft.PowerShell.PSConsoleReadLine"
+                if ($pr) {
+                    $pr::RevertLine()
+                    $pr::Insert('cc')
+                    $pr::AcceptLine()
+                }
+            }
             # Initialize TUI colors based on loaded prompt theme
             [TerminalMenu]::InitializeTuiColors()
         }

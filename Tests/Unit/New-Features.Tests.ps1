@@ -1,4 +1,6 @@
 Describe "New Profile Features Tests" {
+    . (Join-Path $PSScriptRoot "..\..\Profile\Core\TerminalMenu.ps1")
+    . (Join-Path $PSScriptRoot "..\..\Profile\Helpers\LogHelper.ps1")
     . (Join-Path $PSScriptRoot "..\..\Profile\Helpers\AgySecretVault.ps1")
     . (Join-Path $PSScriptRoot "..\..\Profile\Helpers\ProjectScaffolder.ps1")
     . (Join-Path $PSScriptRoot "..\..\Profile\Helpers\SystemHelper.ps1")

@@ -99,12 +99,22 @@ Runs quick transitions to registered workspace directories.
 * **Jump directly**: `proj <query>` (performs case-insensitive regex search; jumps immediately if query is unique).
 * **Conflict resolution**: Shows interactive TUI selection menu if multiple match your query.
 * **Star Indicators**: Star symbols `★` mark prioritized/active workspaces.
+* **Terminal IDE Sidebar:** Selecting the `i` (Terminal IDE) option inside the project picker boots the workspace directly into a local terminal IDE. If missing, it installs the `micro` editor via `winget`, configures the `filemanager` tree sidebar plugin, and maps `Ctrl+B` to toggle the explorer tree sidebar in-place.
 
-### 3. AI Integrations (`ai helper` / `AiHelper`)
-Manages background server dependencies and proxy wrappers.
+### 3. AI Integrations & Local AI Hub (`ai helper` / `AiHelper`)
+Manages background server dependencies, model selections, and proxy wrappers.
+* **Local AI Hub (`ai`):** Running `ai` without arguments opens the consolidated AI Agent Dashboard. It shows live Ollama server status (Running/Offline), lists downloaded local models, sets your default model, launches AI agent CLIs, and auto-installs missing dependencies.
 * **Autostart Server**: Running `claude`, `codex`, `openclaw`, or `hermes` checks port `11434` and starts the Ollama server if offline.
 * **Model Cache**: Caches your selected default model in `ollama_default_model.txt` to speed up CLI startups.
 * **Compatibility Proxy**: Launches Node-based `ollama-proxy.js` on port `11435` to rewrite OpenAPI schemas for legacy clients (like Codex CLI).
+
+### 4. Interactive Command Shell (`cc` / `Get-CustomCommands`)
+Launches a dedicated full-screen interactive command sub-shell.
+* **Direct Alias Runs:** Type command aliases (e.g. `gs`, `sysmon`, `sec list`) directly into the `cc> ` prompt to execute them.
+* **Slash Command Selector:** Type `/` to open the searchable Command Palette list view to search, filter, and run helper scripts interactively.
+* **Shell Utilities:** Supports `help` / `?` to list commands, `clear` / `cls` to clean the screen, and `exit` / `q` to quit back to PowerShell.
+* **Clean Screen transitions:** Exits and transitions between TUI panels cleanly calculate boundaries and wipe leftover screen lines to prevent artifacts or double border lines.
+* **Non-Blocking loading Spinners:** Slow operations (like checking Ollama port status or querying docker container lists) render interactive terminal loading spinners (`⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏`) instead of blocking the console thread.
 
 ---
 
@@ -114,7 +124,7 @@ Manages background server dependencies and proxy wrappers.
 
 | Alias / Command | Routing Target | Description |
 | :--- | :--- | :--- |
-| `ai` | `Invoke-MultiAgent` | Interactive TUI menu to select and launch configured AI agents |
+| `ai` | `Invoke-MultiAgent` | Launch the consolidated Local AI Hub Dashboard (status spinner, model selector, agent CLIs) |
 | `claude` | `Invoke-Claude-By-Ollama` | Launch Claude Code via Ollama local API wrapper |
 | `codex` | `Invoke-Codex-By-Ollama` | Launch Codex CLI routed through Ollama schema proxy (port 11435) |
 | `openclaw` | `Invoke-OpenClaw-By-Ollama` | Launch OpenClaw CLI local agent |
@@ -148,7 +158,7 @@ Manages background server dependencies and proxy wrappers.
 | `mkcd` | `New-DirAndEnter` | Create a new directory and navigate into it immediately |
 | `myip` | `Get-PublicIP` | Resolve and print the current public IPv4 address |
 | `tree` | `Get-FileTree` | Display printout of folder tree structure |
-| `commands` / `cc` | `Get-CustomCommands` | Access the main interactive TUI profile manual |
+| `cc` / `commands` | `Get-CustomCommands` | Launch the full-screen Interactive Command Shell Loop (type aliases directly or '/' to search) |
 | `cg` | `cg` | Display the Git helper commands manual |
 | `cnet` | `cnet` | Display the .NET SDK helper commands manual |
 | `csys` | `csys` | Display the System utility commands manual |

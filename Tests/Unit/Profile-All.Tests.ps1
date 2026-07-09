@@ -19,6 +19,7 @@ Describe "Core Profile Functions Validation" {
     BeforeAll {
         . (Join-Path $ProfileDir "Core\TerminalMenu.ps1")
         . (Join-Path $ProfileDir "Core\ProfileEnvironment.ps1")
+        . (Join-Path $ProfileDir "Helpers\LogHelper.ps1")
         . (Join-Path $ProfileDir "Helpers\ProfileNavigator.ps1")
         . (Join-Path $ProfileDir "Helpers\SystemHelper.ps1")
         . (Join-Path $ProfileDir "Helpers\SshHelper.ps1")
@@ -263,6 +264,23 @@ Describe "Core Profile Functions Validation" {
         It "Start-MobileSshKeyReceiver function and ssh-addkey-mobile alias exist" {
             (Get-Command Start-MobileSshKeyReceiver -ErrorAction SilentlyContinue) | Should Not Be $null
             (Get-Alias -Name ssh-addkey-mobile -ErrorAction SilentlyContinue) | Should Not Be $null
+        }
+    }
+
+    Context "New TUI Features Validation" {
+        It "LogHelper::InvokeWithSpinner runs and completes action successfully" {
+            $value = [LogHelper]::InvokeWithSpinner("Testing spinner", { return 42 })
+            $value | Should Be 42
+        }
+
+        It "AiHelper::ShowAiDashboard is defined as a static method" {
+            $method = [AiHelper].GetMethod("ShowAiDashboard")
+            $method | Should Not Be $null
+        }
+
+        It "ProfileNavigator::LaunchTerminalIde is defined as a static method" {
+            $method = [ProfileNavigator].GetMethod("LaunchTerminalIde")
+            $method | Should Not Be $null
         }
     }
 }

@@ -3,6 +3,7 @@
 Describe "AI Tools Wrapper Functions" {
     # Import functions under test
     . (Join-Path $PSScriptRoot "..\..\Profile\Core\TerminalMenu.ps1")
+    . (Join-Path $PSScriptRoot "..\..\Profile\Helpers\LogHelper.ps1")
     . (Join-Path $PSScriptRoot "..\..\Profile\Helpers\AiHelper.ps1")
     . (Join-Path $PSScriptRoot "..\..\Profile\Core\Aliases.ps1")
     

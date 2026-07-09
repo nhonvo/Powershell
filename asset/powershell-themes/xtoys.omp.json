@@ -2,53 +2,62 @@
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
   "blocks": [
     {
+      "type": "prompt",
       "alignment": "left",
       "segments": [
         {
-          "foreground": "#CECE04",
-          "style": "plain",
-          "template": "# ",
-          "type": "root"
-        },
-        {
-          "style": "plain",
-          "template": "{{ .UserName }}@{{ .HostName }} ",
-          "type": "session"
-        },
-        {
-          "foreground": "#7B68EE",
           "properties": {
+            "cache_duration": "none"
+          },
+          "template": "# ",
+          "foreground": "#CECE04",
+          "type": "root",
+          "style": "plain"
+        },
+        {
+          "properties": {
+            "cache_duration": "none"
+          },
+          "template": "{{ .UserName }}@{{ .HostName }} ",
+          "type": "session",
+          "style": "plain"
+        },
+        {
+          "properties": {
+            "cache_duration": "none",
             "style": "agnoster_short"
           },
-          "style": "plain",
           "template": "{{ .Path }} ",
-          "type": "path"
+          "foreground": "#7B68EE",
+          "type": "path",
+          "style": "plain"
         },
         {
-          "foreground": "#48D1CC",
           "properties": {
             "branch_icon": "",
+            "cache_duration": "none",
             "fetch_upstream_icon": false
           },
-          "style": "plain",
           "template": "HEAD:{{ .UpstreamIcon }}{{ .HEAD }} ",
-          "type": "git"
+          "foreground": "#48D1CC",
+          "type": "git",
+          "style": "plain"
         },
         {
+          "properties": {
+            "always_enabled": true,
+            "cache_duration": "none"
+          },
+          "template": "<#66CDAA>❯</><#76EEC6>❯</><foreground>❯</> ",
           "foreground": "#7FFFD4",
+          "type": "status",
+          "style": "plain",
           "foreground_templates": [
             "{{ if gt .Code 0 }}#E84855{{ end }}"
-          ],
-          "properties": {
-            "always_enabled": true
-          },
-          "style": "plain",
-          "template": "<#66CDAA>\u276f</><#76EEC6>\u276f</><foreground>\u276f</> ",
-          "type": "status"
+          ]
         }
-      ],
-      "type": "prompt"
+      ]
     }
   ],
-  "version": 2
+  "version": 3
 }
