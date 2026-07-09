@@ -243,6 +243,14 @@ class ProfileNavigator {
             $selected = ([type]"TerminalMenu")::ShowRobust($projHeaders, $labels, 0, $false, $true)
             if ($selected -ge 0) {
                 $proj = $items[$selected]
+                
+                # Auto-switch credentials associated with the project
+                $matchedWorkspace = $Global:ProfileWorkspaces | Where-Object { $_.Name -eq $proj.Label } | Select-Object -First 1
+                if ($matchedWorkspace) {
+                    Write-Host "  Activating credentials for account: $($matchedWorkspace.AssociatedAccount)..." -ForegroundColor Cyan
+                    [AgyAccountManager]::SetActiveAccount($matchedWorkspace.AssociatedAccount, $true)
+                }
+
                 $actionHeaders = @(
                     "=====================================================================================",
                     " Actions for: $($proj.Label)",

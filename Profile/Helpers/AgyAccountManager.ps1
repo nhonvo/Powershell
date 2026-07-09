@@ -1358,12 +1358,6 @@ class AgyAccountManager {
             }
         }
 
-        # 3. Register Directory Auto-Switch Hook in function prompt
-        [AgyAccountManager]::RegisterPromptHook()
-    }
-
-    static [void] RegisterPromptHook() {
-        Register-AgyPromptHook
     }
 
     static [void] InvokeAgy([string[]]$PassThruArgs) {
@@ -1437,42 +1431,7 @@ class AgyAccountManager {
         }
     }
 }
-function Register-AgyPromptHook {
-    try {
-        # Check if current prompt definition already contains prompt_original
-        $promptCmd = Get-Command prompt -ErrorAction SilentlyContinue
-        if ($promptCmd -and $promptCmd.Definition -like "*prompt_original*") {
-            return
-        }
 
-        if (Test-Path Function:\global:prompt_original) {
-            Remove-Item Function:\global:prompt_original -Force -ErrorAction SilentlyContinue
-        }
-
-        if ($promptCmd) {
-            $definition = $promptCmd.Definition
-            $null = New-Item -Path Function:\global:prompt_original -Value ([ScriptBlock]::Create($definition)) -Force
-            if (Test-Path Function:\global:prompt) {
-                Remove-Item Function:\global:prompt -Force -ErrorAction SilentlyContinue
-            }
-        }
-
-        $scriptStr = @'
-            try {
-                [AgyAccountManager]::AutoSwitchOnDirectoryChange($pwd.Path)
-            } catch {}
-            if (Test-Path Function:\global:prompt_original) {
-                global:prompt_original
-            } else {
-                $acc = [AgyAccountManager]::GetActiveAccount()
-                $online = [AgyAccountManager]::CheckNetworkStatus()
-                $tag = if ($online) { "" } else { " [Offline]" }
-                "PS ($acc)$tag $($pwd.Path)> "
-            }
-'@
-        $null = New-Item -Path Function:\global:prompt -Value ([ScriptBlock]::Create($scriptStr)) -Force
-    } catch {}
-}
 
 # Auto-initialize account manager
 [AgyAccountManager]::InitializeManager()
