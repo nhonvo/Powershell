@@ -26,7 +26,63 @@ class TerminalMenu {
             Alert     = "Red"
         }
 
-        if ($theme) {
+        $themesPath = $env:POSH_THEMES_PATH
+        if (-not $themesPath) {
+            $themesPath = Join-Path -Path $env:USERPROFILE -ChildPath "Documents\PowerShell\asset\powershell-themes"
+        }
+
+        # Try dynamic theme color extraction
+        $extractedColor = $null
+        if ($theme -and (Test-Path $themesPath)) {
+            $themePath = Join-Path -Path $themesPath -ChildPath "$theme.omp.json"
+            if (Test-Path $themePath) {
+                try {
+                    $json = Get-Content $themePath -Raw | ConvertFrom-Json
+                    $bgHex = $null
+                    if ($json.blocks) {
+                        foreach ($block in $json.blocks) {
+                            if ($block.segments) {
+                                foreach ($seg in $block.segments) {
+                                    if ($seg.background) {
+                                        $bgHex = $seg.background
+                                        break
+                                    }
+                                }
+                            }
+                            if ($bgHex) { break }
+                        }
+                    }
+                    if ($bgHex -match '^#?([0-9a-fA-F]{6})') {
+                        $clean = $Matches[1]
+                        $r = [System.Convert]::ToInt32($clean.Substring(0, 2), 16)
+                        $g = [System.Convert]::ToInt32($clean.Substring(2, 2), 16)
+                        $b = [System.Convert]::ToInt32($clean.Substring(4, 2), 16)
+                        
+                        $max = [Math]::Max($r, [Math]::Max($g, $b))
+                        $min = [Math]::Min($r, [Math]::Min($g, $b))
+                        
+                        if (($max - $min) -lt 35) {
+                            $extractedColor = if ($max -lt 80) { "DarkGray" } else { "White" }
+                        } elseif ($r -gt $g -and $r -gt $b) {
+                            $extractedColor = if ($g -gt 120 -and ($r - $g) -lt 60) { "Yellow" } else { "Red" }
+                        } elseif ($g -gt $r -and $g -gt $b) {
+                            $extractedColor = "Green"
+                        } elseif ($b -gt $r -and $b -gt $g) {
+                            $extractedColor = if (($r - $g) -gt 40) { "Magenta" } else { "Cyan" }
+                        } elseif ($g -gt $r -and $b -gt $r) {
+                            $extractedColor = "Cyan"
+                        }
+                    }
+                } catch {}
+            }
+        }
+
+        if ($extractedColor) {
+            $colors.Header = $extractedColor
+            $colors.Selected = $extractedColor
+            $colors.Search = $extractedColor
+            $colors.Suggest = if ($extractedColor -eq "Yellow") { "Cyan" } else { "Yellow" }
+        } elseif ($theme) {
             $themeLower = $theme.ToLower()
             if ($themeLower -like "*dracula*") {
                 $colors.Header = "Magenta"

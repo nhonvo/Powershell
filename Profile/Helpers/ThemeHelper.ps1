@@ -18,16 +18,70 @@ class ThemeHelper {
         }
 
         $themeNames = [System.Collections.Generic.List[string]]::new()
+        $displayLabels = [System.Collections.Generic.List[string]]::new()
+        
         foreach ($file in $files) {
             $name = $file.Name -replace "\.omp\.json$", ""
             $null = $themeNames.Add($name)
+            
+            # Extract segment visual previews
+            $preview = ""
+            try {
+                $json = Get-Content $file.FullName -Raw | ConvertFrom-Json
+                $segs = @()
+                if ($json.blocks) {
+                    foreach ($block in $json.blocks) {
+                        if ($block.segments) {
+                            $segs += $block.segments
+                        }
+                    }
+                }
+                
+                # Render color squares & segment types for the first 3 segments
+                $previewParts = @()
+                for ($i = 0; $i -lt [Math]::Min(3, $segs.Count); $i++) {
+                    $seg = $segs[$i]
+                    $bg = $seg.background
+                    $type = $seg.type
+                    
+                    # Map hex to emoji color block
+                    $emoji = "🔵"
+                    if ($bg -match '^#?([0-9a-fA-F]{6})') {
+                        $clean = $Matches[1]
+                        $r = [System.Convert]::ToInt32($clean.Substring(0, 2), 16)
+                        $g = [System.Convert]::ToInt32($clean.Substring(2, 2), 16)
+                        $b = [System.Convert]::ToInt32($clean.Substring(4, 2), 16)
+                        
+                        $max = [Math]::Max($r, [Math]::Max($g, $b))
+                        $min = [Math]::Min($r, [Math]::Min($g, $b))
+                        if (($max - $min) -lt 30) {
+                            $emoji = if ($max -lt 64) { "⚫" } elseif ($max -gt 192) { "⚪" } else { "🔘" }
+                        } elseif ($r -gt $g -and $r -gt $b) {
+                            $emoji = if (($g - $b) -gt 40) { "🟠" } else { "🔴" }
+                        } elseif ($g -gt $r -and $g -gt $b) {
+                            $emoji = "🟢"
+                        } elseif ($b -gt $r -and $b -gt $g) {
+                            $emoji = if (($r - $g) -gt 40) { "🟣" } else { "🔵" }
+                        } elseif ($r -gt $b -and $g -gt $b) {
+                            $emoji = if ([Math]::Abs($r - $g) -lt 40) { "🟡" } else { "🟠" }
+                        }
+                    }
+                    $previewParts += "$emoji $type"
+                }
+                if ($previewParts.Count -gt 0) {
+                    $preview = $previewParts -join "  "
+                }
+            } catch {}
+            
+            $namePadded = $name.PadRight(25)
+            $null = $displayLabels.Add("$namePadded │ $preview")
         }
 
         $currentTheme = $env:THEME
         $defaultIndex = $themeNames.IndexOf($currentTheme)
         if ($defaultIndex -lt 0) { $defaultIndex = 0 }
 
-        $selectedIndex = [TerminalMenu]::Show("Select Oh My Posh Theme", $themeNames.ToArray(), $defaultIndex)
+        $selectedIndex = [TerminalMenu]::Show("Select Oh My Posh Theme (Color segment preview)", $displayLabels.ToArray(), $defaultIndex)
         if ($selectedIndex -ge 0) {
             $selectedTheme = $themeNames[$selectedIndex]
             $env:THEME = $selectedTheme
@@ -39,6 +93,7 @@ class ThemeHelper {
             $themePath = Join-Path -Path $themesPath -ChildPath "$selectedTheme.omp.json"
             if (Test-Path $themePath) {
                 $Global:NewThemeToApply = $themePath
+                [TerminalMenu]::InitializeTuiColors()
                 Write-Host "[Theme] Oh My Posh theme switched to '$selectedTheme' (Persistent)." -ForegroundColor Green
             }
         }

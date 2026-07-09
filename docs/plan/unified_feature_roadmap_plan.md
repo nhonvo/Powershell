@@ -1,4 +1,4 @@
-# Unified Profile Feature Roadmap & Rebuild Plan
+﻿# Unified Profile Feature Roadmap & Rebuild Plan
 
 This document consolidates and unifies all planned features, specifications, and architectural details from all 14 plan files in the `docs/plan/` directory. All features are organized under logical flows and formatted using the standardized **Feature - User Story** structure.
 
@@ -21,6 +21,15 @@ This document consolidates and unifies all planned features, specifications, and
     - [x] Cache current cursor coordinates and calculate lines to redraw dynamically.
     - [x] Overwrite trailing items with blank spaces before redrawing.
     - [x] Add double-line empty spacing (`\n\n`) when launching shell processes to separate the menu loop outputs.
+
+### [Feature 1.3] Dynamic Theme Preview & Control Center Sync
+*   **Feature:** Enhance theme selection with table-formatted lists displaying segment type breakdowns and colored emojis mapping to hex values. Dynamically extract the dominant segment background color from the active theme's JSON to sync the Control Center's (`cc`) TUI color highlights automatically without shell reloads.
+*   **User Story:** As a developer switching themes, I want to quickly visualize theme layouts using segment lists and colored indicators, and have the Command Center colors automatically match the active theme.
+*   **Implementation Tasks:**
+    - [x] Extract Oh My Posh theme segment types and background colors to show visual table rows (e.g. `🔵 session  🟣 path`).
+    - [x] Dynamically parse background color hexes of the first block segment in the active theme config.
+    - [x] Map hex colors to standard ConsoleColor values.
+    - [x] Wire `InitializeTuiColors` to update `$Global:TuiColors` instantly upon selection.
 
 ---
 
