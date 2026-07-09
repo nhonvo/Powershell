@@ -48,13 +48,24 @@ class AiHelper {
     }
 
     static [void] EnsureOllamaServer() {
-        try {
-            $null = Invoke-RestMethod -Uri "http://127.0.0.1:11434/" -TimeoutSec 1 -ErrorAction Stop
-        } catch {
-            Write-Host "[AI] Ollama is not running. Auto-starting..." -ForegroundColor Yellow
-            Initialize-OllamaServer
+        if (Get-Command Describe -ErrorAction SilentlyContinue) {
+            try {
+                $null = Invoke-RestMethod -Uri "http://127.0.0.1:11434/" -TimeoutSec 1 -ErrorAction Stop
+            } catch {
+                Initialize-OllamaServer
+            }
+            [AiHelper]::EnsureOllamaProxy()
+            return
         }
-        [AiHelper]::EnsureOllamaProxy()
+
+        $null = [LogHelper]::InvokeWithSpinner("[AI] Verifying local Ollama server status...", {
+            try {
+                $null = Invoke-RestMethod -Uri "http://127.0.0.1:11434/" -TimeoutSec 1 -ErrorAction Stop
+            } catch {
+                Initialize-OllamaServer
+            }
+            [AiHelper]::EnsureOllamaProxy()
+        })
     }
 
     static [void] InvokeOllamaNative([string]$Model) {
@@ -100,21 +111,50 @@ class AiHelper {
         $oldBaseUrl = $env:OPENAI_BASE_URL
         $oldApiKey = $env:OPENAI_API_KEY
         $oldNodeOptions = $env:NODE_OPTIONS
+        $oldCodexHome = $env:CODEX_HOME
         try {
             $env:OLLAMA_HOST = "127.0.0.1:11434"
             $env:OPENAI_BASE_URL = "http://127.0.0.1:11435/v1"
             $env:OPENAI_API_KEY = "ollama"
             $env:NODE_OPTIONS = if ($env:NODE_OPTIONS) { "$env:NODE_OPTIONS --dns-result-order=ipv4first" } else { "--dns-result-order=ipv4first" }
 
-            $flags = @()
-            if ($ArgsList -notcontains "--model") {
-                $flags += "--model", [AiHelper]::OllamaDefaultModel
-            }
-            if ($ArgsList -notcontains "-c" -and $ArgsList -notcontains "--config") {
-                $flags += "-c", "model_provider=ollama_custom"
+            $model = [AiHelper]::OllamaDefaultModel
+            for ($i = 0; $i -lt $ArgsList.Count; $i++) {
+                if ($ArgsList[$i] -eq "--model" -and $i -lt $ArgsList.Count - 1) {
+                    $model = $ArgsList[$i+1]
+                }
             }
 
-            # Use Start-Process to preserve TTY state inside nested shell scripts
+            # Setup Sandbox
+            $sandboxPath = Join-Path $env:TEMP ".codex_local_ollama"
+            if (-not (Test-Path $sandboxPath)) {
+                $null = New-Item -ItemType Directory -Path $sandboxPath -Force
+            }
+            $emptySkillsDir = "C:\Users\TruongNhon\.gemini\antigravity\scratch\empty_skills"
+            if (-not (Test-Path $emptySkillsDir)) {
+                $null = New-Item -ItemType Directory -Path $emptySkillsDir -Force
+            }
+            
+            $configToml = @"
+# Temp sandbox configuration generated at $sandboxPath/config.toml
+[codex]
+model_provider = "ollama"
+model = "$model"
+api_base = "http://127.0.0.1:11434/v1"
+skills_directory = "$($emptySkillsDir.Replace('\', '/'))"
+
+[mcp_servers]
+# Intentionally empty to disable external tool description loads
+"@
+            $configToml | Out-File -FilePath (Join-Path $sandboxPath "config.toml") -Force -Encoding utf8
+
+            $env:CODEX_HOME = $sandboxPath
+
+            $flags = @()
+            if ($ArgsList -notcontains "--model") {
+                $flags += "--model", $model
+            }
+
             $argList = @()
             foreach ($f in $flags) { $argList += $f }
             foreach ($a in $ArgsList) { $argList += $a }
@@ -124,6 +164,7 @@ class AiHelper {
             $env:OPENAI_BASE_URL = $oldBaseUrl
             $env:OPENAI_API_KEY = $oldApiKey
             $env:NODE_OPTIONS = $oldNodeOptions
+            $env:CODEX_HOME = $oldCodexHome
         }
     }
 
@@ -459,55 +500,142 @@ base_url = "http://127.0.0.1:11434/v1"
             }
         }
 
-        # Build list of options for the TUI agent menu
-        $agents = @(
-            [PSCustomObject]@{ Label = "[Codex] Codex CLI (local Ollama)"; Action = {
-                $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
-                [AiHelper]::InvokeCodex(@(if ($activeModel) { "--model"; $activeModel }))
-                Write-Host "Press any key to continue..." -ForegroundColor Gray
-                [void][Console]::ReadKey($true)
-            }}
-            [PSCustomObject]@{ Label = "[Ollama] Ollama (interactive)";    Action = { 
-                [AiHelper]::InvokeOllamaNative($Model) 
-                Write-Host "Press any key to continue..." -ForegroundColor Gray
-                [void][Console]::ReadKey($true)
-            } }
-            [PSCustomObject]@{ Label = "[OpenClaw] OpenClaw (interactive)";  Action = { 
-                [AiHelper]::InvokeOpenClaw(@(if ($Model) { "--model"; $Model })) 
-                Write-Host "Press any key to continue..." -ForegroundColor Gray
-                [void][Console]::ReadKey($true)
-            } }
-            [PSCustomObject]@{ Label = "[Hermes] Hermes (local reasoning)"; Action = {
-                $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
-                [AiHelper]::InvokeHermes(@(if ($activeModel) { "--model"; $activeModel }))
-                Write-Host "Press any key to continue..." -ForegroundColor Gray
-                [void][Console]::ReadKey($true)
-            } }
-            [PSCustomObject]@{ Label = "[Ollama Service] Start Server & View Logs"; Action = {
-                [AiHelper]::ShowOllamaLogs()
-                Write-Host "Press any key to continue..." -ForegroundColor Gray
-                [void][Console]::ReadKey($true)
-            } }
-            [PSCustomObject]@{ Label = "[Gemini] Gemini CLI -> support future"; Action = {} }
-            [PSCustomObject]@{ Label = "[Copilot] GitHub Copilot (explain) -> support future"; Action = {} }
-            [PSCustomObject]@{ Label = "[Claude] Claude (local Ollama) -> support future"; Action = {} }
-        )
-
-        $labels = @()
-        foreach ($agent in $agents) {
-            $labels += $agent.Label
+        if ($Global:AiMode) {
+            Write-Host "Select AI Agent"
+            Write-Host "Usage: ai -Query <prompt> [-Gemini|-Copilot|-Ollama|-Claude|-Local|-ChatGPT|-Codex] [-Model <model>]"
+            Write-Host "Available Agents: Codex, Ollama, OpenClaw, Hermes, Claude"
+            return
         }
 
-        # Flush key buffer to prevent leftover keystrokes from causing automatic menu selections
-        while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
+        [AiHelper]::ShowAiDashboard()
+    }
 
-        $selected = ([type]"TerminalMenu")::Show("Select AI Agent", $labels, 0)
-        if ($selected -ge 0) {
-            Write-Host ""
-            & $agents[$selected].Action
+    static [void] ShowAiDashboard() {
+        while ($true) {
+            $statusInfo = [LogHelper]::InvokeWithSpinner("[AI] Loading Ollama server configuration...", {
+                $status = "Offline"
+                try {
+                    $null = Invoke-RestMethod -Uri "http://127.0.0.1:11434/" -TimeoutSec 1 -ErrorAction Stop
+                    $status = "Running"
+                } catch {}
+
+                $models = [System.Collections.Generic.List[string]]::new()
+                if ($status -eq "Running") {
+                    try {
+                        $list = ollama list 2>$null
+                        if ($list) {
+                            $lines = $list -split '\r?\n'
+                            for ($i = 1; $i -lt $lines.Count; $i++) {
+                                $parts = $lines[$i] -split '\s+'
+                                if ($parts[0]) { $null = $models.Add($parts[0]) }
+                            }
+                        }
+                    } catch {}
+                }
+                return [PSCustomObject]@{ Status = $status; Models = $models }
+            })
+
+            $cHalf = [char]0x2584
+            $cFull = [char]0x2588
+            $cTop  = [char]0x2580
+            $aiHeaders = @(
+                "  $cHalf$cFull$cFull$cFull$cFull$cHalf   $cHalf$cFull$cFull$cFull$cFull$cHalf     Powershell Profile CLI v2.0",
+                " $cFull$cTop     $cTop $cFull$cTop     $cTop    Ollama Local AI Hub",
+                " $cFull        $cFull           Ollama Status: $($statusInfo.Status)",
+                " $cFull$cHalf     $cHalf $cFull$cHalf     $cHalf    Active Model:  $([AiHelper]::OllamaDefaultModel)",
+                "  $cTop$cFull$cFull$cFull$cFull$cTop   $cTop$cFull$cFull$cFull$cFull$cTop     Select an agent to run. Esc to back.",
+                "============================================="
+            )
+
+            $menuItems = @()
+            $menuItems += "[Agent] Claude CLI (Interactive coding chat)"
+            $menuItems += "[Agent] Hermes TUI (Autonomous workspace assistant)"
+            $menuItems += "[Agent] Codex CLI (Natural language command tool)"
+            $menuItems += "[Agent] OpenClaw CLI (Local agent router)"
+            $menuItems += "[Agent] Clawdbot TUI (Interactive helper)"
+            $menuItems += "[Model] Select / Set Default Local Model"
+            $menuItems += "[Action] Auto-Install missing LLM CLI tools"
+            $menuItems += "[x] Return to Main Menu"
+
+            while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
+
+            $selected = [TerminalMenu]::ShowRobust($aiHeaders, $menuItems, 0, $false, $true)
+            if ($selected -lt 0 -or $selected -eq ($menuItems.Count - 1)) {
+                break
+            }
+
+            switch ($selected) {
+                0 {
+                    [AiHelper]::InvokeClaude(@())
+                }
+                1 {
+                    # Invoke-Hermes-By-Ollama
+                    $activeModel = [AiHelper]::OllamaDefaultModel
+                    [AiHelper]::InvokeHermes(@(if ($activeModel) { "--model"; $activeModel }))
+                }
+                2 {
+                    # Invoke-Codex-By-Ollama
+                    $activeModel = [AiHelper]::OllamaDefaultModel
+                    [AiHelper]::InvokeCodex(@(if ($activeModel) { "--model"; $activeModel }))
+                }
+                3 {
+                    [AiHelper]::InvokeOpenClaw(@())
+                }
+                4 {
+                    # Invoke-Clawdbot-By-Ollama
+                    $activeModel = [AiHelper]::OllamaDefaultModel
+                    [AiHelper]::InvokeClawdbot(@(if ($activeModel) { "--model"; $activeModel }))
+                }
+                5 {
+                    [AiHelper]::SetOllamaModel("")
+                }
+                6 {
+                    [AiHelper]::InstallAIIntegrations()
+                }
+            }
+        }
+    }
+
+    static [void] AskAi([string]$query) {
+        $errorMessage = $null
+        if ([string]::IsNullOrWhiteSpace($query)) {
+            if ($Global:Error -and $Global:Error.Count -gt 0) {
+                $lastErr = $Global:Error[0]
+                $errorMessage = "Last Shell Error:\n$($lastErr | Format-List * -Force | Out-String)"
+                if ($lastErr.InvocationInfo) {
+                    $errorMessage += "\nInvocation Line: $($lastErr.InvocationInfo.Line)"
+                }
+            } else {
+                Write-Host "No recent console errors found to explain." -ForegroundColor Yellow
+                return
+            }
         } else {
-            Write-Host ""
-            Write-Host "  Cancelled." -ForegroundColor DarkGray
+            $errorMessage = $query
+        }
+
+        Write-Host "🤖 Querying local AI for explanation/fix..." -ForegroundColor Cyan
+        
+        $prompt = @"
+Analyze the following PowerShell error or question and provide a brief explanation and a clear, copy-pasteable fix:
+
+$errorMessage
+"@
+        
+        $body = @{
+            model = [AiHelper]::OllamaDefaultModel
+            prompt = $prompt
+            stream = $false
+        } | ConvertTo-Json
+        
+        try {
+            $res = Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:11434/api/generate" -Body $body -ContentType "application/json" -TimeoutSec 10
+            if ($res.response) {
+                Write-Host ""
+                Write-Host "🤖 AI Explanation:" -ForegroundColor Green
+                Write-Host $res.response.Trim()
+            }
+        } catch {
+            Write-Error "Failed to connect to local Ollama. Ensure Ollama server is running."
         }
     }
 }

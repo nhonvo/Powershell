@@ -1,9 +1,19 @@
-﻿#region ANTIGRAVITY PROJECTS LAUNCHERS
+#region ANTIGRAVITY PROJECTS LAUNCHERS
 # ==============================================================================
 #  Development launchers for the Antigravity Manager and Claude Proxy projects.
 # ==============================================================================
 
-Write-Host "🛸 Loading Antigravity Projects..." -ForegroundColor Cyan
+$Global:ProfileWorkspaces = @(
+    @{ Name = "Powershell";                  Short = "pw";    AssociatedAccount = "fptvttnhon2026@gmail.com" }
+    @{ Name = "finance-dashboard";           Short = "fin";   AssociatedAccount = "personal@gmail.com" }
+    @{ Name = "clean-architecture-net-8.0";  Short = "clean"; AssociatedAccount = "default" }
+    @{ Name = "BinhDinhFood";                Short = "food";  AssociatedAccount = "default" }
+    @{ Name = "test-road-map";               Short = "road";  AssociatedAccount = "default" }
+)
+
+if (-not $Global:AiMode) {
+    Write-Host "🛸 Loading Antigravity Projects..." -ForegroundColor Cyan
+}
 
 class Projects {
     static [string]$AgBaseDir

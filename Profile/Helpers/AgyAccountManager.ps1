@@ -17,6 +17,90 @@ class AgyAccountManager {
         }
     }
 
+    static [bool] CheckNetworkStatus() {
+        if ($null -ne $Global:ProfileNetworkOnline) {
+            return $Global:ProfileNetworkOnline
+        }
+        try {
+            $hasNetwork = [System.Net.NetworkInformation.NetworkInterface]::GetIsNetworkAvailable()
+            $online = $hasNetwork -and (Test-Connection -ComputerName 8.8.8.8 -Count 1 -TimeoutMilliSeconds 200 -ErrorAction SilentlyContinue)
+            $Global:ProfileNetworkOnline = $online
+            return $online
+        } catch {
+            $Global:ProfileNetworkOnline = $false
+            return $false
+        }
+    }
+
+    static [hashtable] CalculateRollingQuotas([string]$AccountName) {
+        $meta = [AgyAccountManager]::GetAccountMetadata($AccountName)
+        $history = @()
+        if ($meta.RequestHistory) { $history = @($meta.RequestHistory) }
+        
+        $now = (Get-Date).ToUniversalTime()
+        $fiveHoursAgo = $now.AddHours(-5)
+        $sevenDaysAgo = $now.AddDays(-7)
+        
+        $reqs5H = 0
+        $reqsWeekly = 0
+        
+        foreach ($ts in $history) {
+            if ($ts -and [DateTime]::TryParse($ts, [ref]$null)) {
+                $dt = [DateTime]::Parse($ts)
+                if ($dt -ge $fiveHoursAgo) { $reqs5H++ }
+                if ($dt -ge $sevenDaysAgo) { $reqsWeekly++ }
+            }
+        }
+        
+        $limit5H = 50
+        $limitWeekly = 1000
+        
+        $remaining5H = [Math]::Max(0.0, 100.0 - [Math]::Round(($reqs5H / $limit5H) * 100.0, 2))
+        $remainingWeekly = [Math]::Max(0.0, 100.0 - [Math]::Round(($reqsWeekly / $limitWeekly) * 100.0, 2))
+        
+        $oldest5H = $now
+        $oldestWeekly = $now
+        foreach ($ts in $history) {
+            if ($ts -and [DateTime]::TryParse($ts, [ref]$null)) {
+                $dt = [DateTime]::Parse($ts)
+                if ($dt -ge $fiveHoursAgo -and $dt -lt $oldest5H) { $oldest5H = $dt }
+                if ($dt -ge $sevenDaysAgo -and $dt -lt $oldestWeekly) { $oldestWeekly = $dt }
+            }
+        }
+        
+        $refresh5H = [Math]::Max(0, [Math]::Round((($oldest5H.AddHours(5) - $now).TotalSeconds), 0))
+        $refreshWeekly = [Math]::Max(0, [Math]::Round((($oldestWeekly.AddDays(7) - $now).TotalSeconds), 0))
+        
+        $h5H = [Math]::Floor($refresh5H / 3600)
+        $m5H = [Math]::Floor(($refresh5H % 3600) / 60)
+        
+        $hW = [Math]::Floor($refreshWeekly / 3600)
+        $mW = [Math]::Floor(($refreshWeekly % 3600) / 60)
+        
+        $time5H = "$($h5H)h $($m5H)m"
+        $timeWeekly = "$($hW)h $($mW)m"
+        
+        return @{
+            RemainingWeekly = $remainingWeekly
+            Remaining5H = $remaining5H
+            TimeWeekly = $timeWeekly
+            Time5H = $time5H
+            CountWeekly = $reqsWeekly
+            Count5H = $reqs5H
+        }
+    }
+
+    static [void] AutoSwitchOnDirectoryChange([string]$Path) {
+        if ($null -eq $Global:ProfileWorkspaces) { return }
+        $matchedProject = $Global:ProfileWorkspaces | Where-Object { $Path -like "$($_.Path)*" }
+        if ($null -ne $matchedProject -and $matchedProject.AssociatedAccount -ne [AgyAccountManager]::GetActiveAccount()) {
+            if (-not $Global:AiMode) {
+                Write-Host "[Auto-Switch] Changing credentials to: $($matchedProject.AssociatedAccount)" -ForegroundColor Cyan
+            }
+            [AgyAccountManager]::SetActiveAccount($matchedProject.AssociatedAccount, $true)
+        }
+    }
+
     static [hashtable] GetAccountMetadata([string]$AccountName) {
         $accDir = [AgyAccountManager]::GetAccountDirectory($AccountName)
         $metaFile = Join-Path $accDir "account_metadata.json"
@@ -24,6 +108,7 @@ class AgyAccountManager {
             LastUsed = "Never"
             UsageCount = 0
             QuotaStatus = "OK"
+            RequestHistory = @()
         }
         if (Test-Path $metaFile) {
             try {
@@ -33,6 +118,9 @@ class AgyAccountManager {
                     if ($json.LastUsed) { $defaultMeta.LastUsed = $json.LastUsed }
                     if ($json.UsageCount) { $defaultMeta.UsageCount = $json.UsageCount }
                     if ($json.QuotaStatus) { $defaultMeta.QuotaStatus = $json.QuotaStatus }
+                    if ($json.RequestHistory) {
+                        $defaultMeta.RequestHistory = @($json.RequestHistory)
+                    }
                 }
             } catch {}
         }
@@ -49,6 +137,24 @@ class AgyAccountManager {
             $meta = [AgyAccountManager]::GetAccountMetadata($AccountName)
             $meta.LastUsed = (Get-Date).ToString("yyyy-MM-ddTHH:mm:sszzz")
             $meta.UsageCount = [int]($meta.UsageCount) + 1
+            
+            $now = (Get-Date).ToUniversalTime().ToString("o")
+            $history = @()
+            if ($meta.RequestHistory) { $history = @($meta.RequestHistory) }
+            $history += $now
+            $sevenDaysAgo = (Get-Date).AddDays(-7).ToUniversalTime()
+            $filteredHistory = @()
+            $dummyDate = [DateTime]::MinValue
+            foreach ($ts in $history) {
+                if ($ts -and [DateTime]::TryParse($ts, [ref]$dummyDate)) {
+                    $dt = [DateTime]::Parse($ts)
+                    if ($dt -ge $sevenDaysAgo) {
+                        $filteredHistory += $ts
+                    }
+                }
+            }
+            $meta.RequestHistory = $filteredHistory
+            
             try {
                 $json = ConvertTo-Json $meta
                 $json | Out-File -FilePath $metaFile -Force -Encoding utf8
@@ -152,9 +258,10 @@ class AgyAccountManager {
             $formattedSize = "$privateSize B"
         }
 
+        $quotaMetrics = [AgyAccountManager]::CalculateRollingQuotas($AccountName)
         $quotaStatus = if ($meta.QuotaStatus) { $meta.QuotaStatus } else { "OK" }
-        $geminiWeekly = if ($null -ne $meta.GeminiWeekly) { $meta.GeminiWeekly } else { 52.60 }
-        $geminiFiveHour = if ($null -ne $meta.GeminiFiveHour) { $meta.GeminiFiveHour } else { 100.00 }
+        $geminiWeekly = $quotaMetrics.RemainingWeekly
+        $geminiFiveHour = $quotaMetrics.Remaining5H
 
         return @{
             LastUsed = $meta.LastUsed
@@ -644,7 +751,7 @@ class AgyAccountManager {
         $menuItems += "[x] Delete Account"
         $menuItems += "[exit] Cancel / Exit"
 
-        $selected = ([type]"TerminalMenu")::Show("Select Antigravity Account", $menuItems, $defaultIdx)
+        $selected = ([type]"TerminalMenu")::ShowRobust(@("Select Antigravity Account"), $menuItems, $defaultIdx, $false, $true)
 
         if ($selected -lt 0) { return }
 
@@ -664,7 +771,7 @@ class AgyAccountManager {
                 Write-Warning "No secondary accounts available to delete."
                 return
             }
-            $selectedDel = ([type]"TerminalMenu")::Show("Delete Antigravity Account", $deletable, 0)
+            $selectedDel = ([type]"TerminalMenu")::ShowRobust(@("Delete Antigravity Account"), $deletable, 0, $false, $true)
             if ($selectedDel -ge 0) {
                 [AgyAccountManager]::RemoveAccount($deletable[$selectedDel])
             }
@@ -778,7 +885,7 @@ class AgyAccountManager {
             $menuItems += "[Stats] Show All Accounts Summary"
             $menuItems += "[x] Exit Dashboard"
 
-            $selected = ([type]"TerminalMenu")::Show("Antigravity Multi-Account Manager", $menuItems, $defaultIdx)
+            $selected = ([type]"TerminalMenu")::ShowRobust(@("Antigravity Multi-Account Manager"), $menuItems, $defaultIdx, $false, $true)
 
             if ($selected -lt 0 -or $selected -eq ($menuItems.Count - 1)) {
                 break
@@ -821,7 +928,7 @@ class AgyAccountManager {
                 }
                 $subItems += "[Back] Return to Main Menu"
 
-                $subSel = ([type]"TerminalMenu")::Show("Manage Account: $targetAcc ($status)", $subItems, 0)
+                $subSel = ([type]"TerminalMenu")::ShowRobust(@("Manage Account: $targetAcc ($status)"), $subItems, 0, $false, $true)
                 if ($subSel -lt 0) { continue }
 
                 switch ($subItems[$subSel]) {
@@ -976,21 +1083,17 @@ class AgyAccountManager {
     static [string[]] GetUsageLines([string]$AccountName) {
         $meta = [AgyAccountManager]::GetAccountMetadata($AccountName)
         
+        $quotaMetrics = [AgyAccountManager]::CalculateRollingQuotas($AccountName)
+        $meta.GeminiWeekly = $quotaMetrics.RemainingWeekly
+        $meta.GeminiFiveHour = $quotaMetrics.Remaining5H
+        $refreshStr = $quotaMetrics.TimeWeekly
+        $refresh5HStr = $quotaMetrics.Time5H
+
         # Ensure quota fields exist
         if ($null -eq $meta.GeminiWeekly) { $meta.GeminiWeekly = 52.60 }
         if ($null -eq $meta.GeminiFiveHour) { $meta.GeminiFiveHour = 100.00 }
         if ($null -eq $meta.ClaudeWeekly) { $meta.ClaudeWeekly = 100.00 }
         if ($null -eq $meta.ClaudeFiveHour) { $meta.ClaudeFiveHour = 100.00 }
-
-        # Dynamically calculate refresh time (next Sunday night)
-        $now = Get-Date
-        $daysToSunday = ([int][System.DayOfWeek]::Sunday - [int]$now.DayOfWeek)
-        if ($daysToSunday -le 0) { $daysToSunday += 7 }
-        $nextSunday = $now.Date.AddDays($daysToSunday).AddHours(23).AddMinutes(59).AddSeconds(59)
-        $diff = $nextSunday - $now
-        $hours = [Math]::Floor($diff.TotalHours)
-        $mins = $diff.Minutes
-        $refreshStr = "${hours}h ${mins}m"
 
         # Define encoding-safe Unicode characters
         $charLine = [char]0x2500     # ─
@@ -1021,7 +1124,7 @@ class AgyAccountManager {
         if ($meta.GeminiFiveHour -ge 100.0) {
             $lines += "    Quota available"
         } else {
-            $lines += "    $remGemini5h% remaining $charBullet Refreshes in 4h 12m"
+            $lines += "    $remGemini5h% remaining $charBullet Refreshes in $refresh5HStr"
         }
         $lines += ""
         $lines += ""
@@ -1053,7 +1156,48 @@ class AgyAccountManager {
         $lines += "  $charVertical limit smooths out aggregate demand to fairly distribute global capacity"
         $lines += "  $charVertical across all users, while your weekly limit is tied directly to your individual"
         $lines += "  $charVertical tier."
+
+        # Weekly Request Distribution Chart
+        $lines += ""
+        $lines += "  Weekly Request Distribution (Last 7 Days)"
+        $lines += "  ==========================================="
         
+        $now = Get-Date
+        $dayNames = @("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+        $daysData = @{}
+        for ($i = 0; $i -lt 7; $i++) {
+            $dayDate = $now.Date.AddDays(-$i)
+            $dayName = $dayDate.ToString("ddd")
+            $daysData[$dayName] = 0
+        }
+        
+        $history = @()
+        if ($meta.RequestHistory) { $history = @($meta.RequestHistory) }
+        foreach ($ts in $history) {
+            if ($ts -and [DateTime]::TryParse($ts, [ref]$null)) {
+                $dt = [DateTime]::Parse($ts).ToLocalTime()
+                $dayName = $dt.ToString("ddd")
+                if ($daysData.ContainsKey($dayName)) {
+                    $daysData[$dayName]++
+                }
+            }
+        }
+        
+        $charFilled = [char]0x2588
+        $charEmpty = [char]0x2591
+        for ($i = 6; $i -ge 0; $i--) {
+            $dayDate = $now.Date.AddDays(-$i)
+            $dayName = $dayDate.ToString("ddd")
+            $count = $daysData[$dayName]
+            $barLen = [int][Math]::Min(10, $count)
+            $barStr = [string]$charFilled * $barLen
+            $emptyStr = [string]$charEmpty * (10 - $barLen)
+            $lines += "  $dayName [$barStr$emptyStr] $count requests"
+        }
+        
+        $lines += "  -------------------------------------------"
+        $lines += "  Total Weekly Requests: $($quotaMetrics.CountWeekly) / 1000 limit"
+
         return $lines
     }
 
@@ -1101,16 +1245,18 @@ class AgyAccountManager {
                 # If no matching offline token was found, try online TokenInfo API lookup using Google OAuth
                 if (-not $matchedAcc) {
                     try {
-                        $json = ConvertFrom-Json $currentKeyringToken -ErrorAction SilentlyContinue
-                        $accessToken = $json.token.access_token
-                        if ($accessToken) {
-                            $tokenInfo = Invoke-RestMethod -Uri "https://oauth2.googleapis.com/tokeninfo?access_token=$accessToken" -TimeoutSec 3 -ErrorAction Stop
-                            if ($tokenInfo.email) {
-                                $email = $tokenInfo.email.Trim().ToLower()
-                                foreach ($acc in $availableAccounts) {
-                                    if ($acc.Trim().ToLower() -eq $email) {
-                                        $matchedAcc = $acc
-                                        break
+                        if ([AgyAccountManager]::CheckNetworkStatus()) {
+                            $json = ConvertFrom-Json $currentKeyringToken -ErrorAction SilentlyContinue
+                            $accessToken = $json.token.access_token
+                            if ($accessToken) {
+                                $tokenInfo = Invoke-RestMethod -Uri "https://oauth2.googleapis.com/tokeninfo?access_token=$accessToken" -TimeoutSec 3 -ErrorAction Stop
+                                if ($tokenInfo.email) {
+                                    $email = $tokenInfo.email.Trim().ToLower()
+                                    foreach ($acc in $availableAccounts) {
+                                        if ($acc.Trim().ToLower() -eq $email) {
+                                            $matchedAcc = $acc
+                                            break
+                                        }
                                     }
                                 }
                             }
@@ -1155,10 +1301,14 @@ class AgyAccountManager {
     }
 
     static [void] InitializeManager() {
-        Write-Host "[agy] Loading Antigravity Multi-Account Manager..." -ForegroundColor Cyan
+        $isOnline = [AgyAccountManager]::CheckNetworkStatus()
+        $onlineTag = if ($isOnline) { "" } else { " [Offline]" }
+        if (-not $Global:AiMode) {
+            Write-Host "[agy] Loading Antigravity Multi-Account Manager...$onlineTag" -ForegroundColor Cyan
+        }
 
         # Sync active account with keyring to auto-detect any changes from Agy Desktop
-        [AgyAccountManager]::SyncActiveAccountWithKeyring($false)
+        [AgyAccountManager]::SyncActiveAccountWithKeyring($true)
 
         # 1. Load active account selection from persistent settings file if available
         $savedAcc = "default"
@@ -1175,7 +1325,9 @@ class AgyAccountManager {
             $targetPath = [AgyAccountManager]::GetAccountDirectory($savedAcc)
             if (Test-Path $targetPath) {
                 $env:GEMINI_HOME = $targetPath
-                Write-Host "[agy] Active account configured to '$savedAcc' via persistent settings." -ForegroundColor Cyan
+                if (-not $Global:AiMode) {
+                    Write-Host "[agy] Active account configured to '$savedAcc' via persistent settings." -ForegroundColor Cyan
+                }
             } else {
                 $savedAcc = "default"
             }
@@ -1199,6 +1351,44 @@ class AgyAccountManager {
                 $idx++
             }
         }
+
+        # 3. Register Directory Auto-Switch Hook in function prompt
+        [AgyAccountManager]::RegisterPromptHook()
+    }
+
+    static [void] RegisterPromptHook() {
+        try {
+            # Check if current prompt definition already contains prompt_original
+            $promptCmd = Get-Command prompt -ErrorAction SilentlyContinue
+            if ($promptCmd -and $promptCmd.Definition -like "*prompt_original*") {
+                return
+            }
+
+            if (Test-Path Function:\prompt_original) {
+                Remove-Item Function:\prompt_original -Force -ErrorAction SilentlyContinue
+            }
+
+            if (Test-Path Function:\prompt) {
+                $definition = (Get-Command prompt).Definition
+                $null = New-Item -Path Function:\prompt_original -Value ([ScriptBlock]::Create($definition)) -Force
+                Remove-Item Function:\prompt -Force -ErrorAction SilentlyContinue
+            }
+
+            $scriptStr = @'
+                try {
+                    [AgyAccountManager]::AutoSwitchOnDirectoryChange($pwd.Path)
+                } catch {}
+                if (Test-Path Function:\prompt_original) {
+                    prompt_original
+                } else {
+                    $acc = [AgyAccountManager]::GetActiveAccount()
+                    $online = [AgyAccountManager]::CheckNetworkStatus()
+                    $tag = if ($online) { "" } else { " [Offline]" }
+                    "PS ($acc)$tag $($pwd.Path)> "
+                }
+'@
+            $null = New-Item -Path Function:\prompt -Value ([ScriptBlock]::Create($scriptStr)) -Force
+        } catch {}
     }
 
     static [void] InvokeAgy([string[]]$PassThruArgs) {

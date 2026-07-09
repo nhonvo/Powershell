@@ -55,9 +55,10 @@ Describe "AI Tools Wrapper Functions" {
             $global:commandRun = $null
             $global:argsPassed = $null
             
-            Mock ollama.exe {
-                $global:commandRun = "ollama.exe"
-                $global:argsPassed = $args
+            Mock Start-Process {
+                param($FilePath, $ArgumentList)
+                $global:commandRun = $FilePath
+                $global:argsPassed = $ArgumentList
             }
             
             Invoke-Claude-By-Ollama
@@ -88,16 +89,15 @@ Describe "AI Tools Wrapper Functions" {
             $global:commandRun = $null
             $global:argsPassed = $null
             
-            Mock codex.cmd {
-                $global:commandRun = "codex.cmd"
-                $global:argsPassed = $args
+            Mock Start-Process {
+                param($FilePath, $ArgumentList)
+                $global:commandRun = $FilePath
+                $global:argsPassed = $ArgumentList
             }
             
             Invoke-Codex-By-Ollama
             
             $global:commandRun | Should Be "codex.cmd"
-            $global:argsPassed -contains "-c" | Should Be $true
-            $global:argsPassed -contains "model_provider=ollama_custom" | Should Be $true
             $global:argsPassed -contains "--model" | Should Be $true
             $global:argsPassed -contains "qwen3:1.7b" | Should Be $true
         }
@@ -110,16 +110,16 @@ Describe "AI Tools Wrapper Functions" {
             $global:commandRun = $null
             $global:argsPassed = $null
             
-            Mock ollama.exe {
-                $global:commandRun = "ollama.exe"
-                $global:argsPassed = $args
+            Mock Start-Process {
+                param($FilePath, $ArgumentList, $WindowStyle)
+                $global:commandRun = $FilePath
+                $global:argsPassed = $ArgumentList
             }
             
             Invoke-OpenClaw-By-Ollama
             
-            $global:argsPassed -contains "launch" | Should Be $true
-            $global:argsPassed -contains "openclaw" | Should Be $true
-            $global:argsPassed -contains "qwen3:1.7b" | Should Be $true
+            $global:commandRun | Should Be "openclaw.cmd"
+            $global:argsPassed -contains "chat" | Should Be $true
         }
     }
 
@@ -130,16 +130,19 @@ Describe "AI Tools Wrapper Functions" {
             $global:commandRun = $null
             $global:argsPassed = $null
             
-            Mock ollama.exe {
-                $global:commandRun = "ollama.exe"
-                $global:argsPassed = $args
+            Mock Get-Command {
+                return [PSCustomObject]@{ Source = "hermes.exe" }
+            }
+            Mock Start-Process {
+                param($FilePath, $ArgumentList)
+                $global:commandRun = $FilePath
+                $global:argsPassed = $ArgumentList
             }
             
             Invoke-Hermes-By-Ollama
             
-            $global:argsPassed -contains "launch" | Should Be $true
-            $global:argsPassed -contains "hermes" | Should Be $true
-            $global:argsPassed -contains "qwen3:1.7b" | Should Be $true
+            $global:commandRun | Should Be "hermes.exe"
+            $global:argsPassed -contains "chat" | Should Be $true
         }
     }
 

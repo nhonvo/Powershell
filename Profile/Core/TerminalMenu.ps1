@@ -53,8 +53,300 @@ class TerminalMenu {
     }
 
     static [int] Show([string]$Header, [string[]]$Items, [int]$DefaultIndex) {
+        return [TerminalMenu]::Show($Header, $Items, $DefaultIndex, $false)
+    }
+    static [int] ShowRobust([string[]]$HeaderLines, [string[]]$Items, [int]$DefaultIndex, [bool]$SearchByDefault, [bool]$FullScreen) {
+        $method = [TerminalMenu].GetMethod("Show", [type[]]@([string[]], [string[]], [int], [bool], [bool]))
+        return $method.Invoke($null, @($HeaderLines, $Items, $DefaultIndex, $SearchByDefault, $FullScreen))
+    }
+    static [int] Show([string[]]$HeaderLines, [string[]]$Items, [int]$DefaultIndex, [bool]$SearchByDefault, [bool]$FullScreen) {
+        return [TerminalMenu]::Show($HeaderLines, $Items, [string[]]@(), $DefaultIndex, $SearchByDefault, $FullScreen)
+    }
+
+    static [int] Show([string[]]$HeaderLines, [string[]]$Items, [string[]]$Cmds, [int]$DefaultIndex, [bool]$SearchByDefault, [bool]$FullScreen) {
         $count = $Items.Count
         if ($count -eq 0) { return -1 }
+
+        $Global:TerminalMenuLastKey = $null
+        if ($null -eq $Global:TuiColors) { [TerminalMenu]::InitializeTuiColors() }
+
+        $currentIndex = $DefaultIndex
+        $filterText = ""
+        $searchMode = $SearchByDefault
+
+        if ($FullScreen) {
+            Clear-Host
+            $startRow = 0
+            $startCol = 0
+        } else {
+            $maxVisible = [Math]::Min(12, [Math]::Max(3, ([Console]::WindowHeight - 10)))
+            $estimatedLines = 7 + $maxVisible
+            if ($searchMode) { $estimatedLines += 3 }
+            
+            $visibleCursorRow = [Console]::CursorTop - [Console]::WindowTop
+            $remainingVisibleLines = [Console]::WindowHeight - $visibleCursorRow
+            $spaceNeeded = $estimatedLines - $remainingVisibleLines
+            if ($spaceNeeded -gt 0) {
+                for ($i = 0; $i -lt $spaceNeeded; $i++) { Write-Host "" }
+                $targetRow = [Math]::Max(0, [Console]::CursorTop - $spaceNeeded)
+                try { [Console]::SetCursorPosition([Console]::CursorLeft, $targetRow) } catch {}
+            }
+            $startRow = [Console]::CursorTop
+            $startCol = [Console]::CursorLeft
+        }
+
+        $lastLinesCount = 0
+        $width = 0
+
+        $oldCursorVisible = $null
+        try {
+            $oldCursorVisible = [Console]::CursorVisible
+            [Console]::CursorVisible = $false
+        } catch {}
+
+        try {
+            while ($true) {
+                $width = [Console]::WindowWidth - 1
+                $cleanFilter = $filterText
+                if ($filterText.StartsWith("/")) {
+                    $cleanFilter = $filterText.Substring(1)
+                }
+
+                $filteredIndices = [System.Collections.Generic.List[int]]::new()
+                for ($i = 0; $i -lt $count; $i++) {
+                    if ([string]::IsNullOrWhiteSpace($cleanFilter) -or $Items[$i] -like "*$cleanFilter*") {
+                        $null = $filteredIndices.Add($i)
+                    }
+                }
+
+                $filteredCount = $filteredIndices.Count
+                if ($filteredCount -gt 0) {
+                    if ($currentIndex -ge $filteredCount) { $currentIndex = 0 }
+                } else {
+                    $currentIndex = 0
+                }
+
+                $outputLines = [System.Collections.Generic.List[ColoredLine]]::new()
+                $null = $outputLines.Add([ColoredLine]@{ Text = ""; Color = "Gray" })
+
+                foreach ($hLine in $HeaderLines) {
+                    $null = $outputLines.Add([ColoredLine]@{ Text = $hLine; Color = $Global:TuiColors.Header })
+                }
+                $null = $outputLines.Add([ColoredLine]@{ Text = ""; Color = "Gray" })
+
+                if ($searchMode) {
+                    $null = $outputLines.Add([ColoredLine]@{ Text = "  [Search] query: $filterText"; Color = $Global:TuiColors.Search })
+                    if ($filteredCount -gt 0) {
+                        $null = $outputLines.Add([ColoredLine]@{ Text = "  [Suggest]: $($Items[$filteredIndices[0]])"; Color = $Global:TuiColors.Suggest })
+                    } else {
+                        $null = $outputLines.Add([ColoredLine]@{ Text = ""; Color = "Gray" })
+                    }
+                    $null = $outputLines.Add([ColoredLine]@{ Text = ""; Color = "Gray" })
+                } elseif (-not [string]::IsNullOrWhiteSpace($cleanFilter)) {
+                    $null = $outputLines.Add([ColoredLine]@{ Text = "  [Filter]: $cleanFilter (Press [Backspace] to clear, [/] to edit)"; Color = $Global:TuiColors.Search })
+                    $null = $outputLines.Add([ColoredLine]@{ Text = ""; Color = "Gray" })
+                }
+
+                # Display command definition details above alias list
+                $hasCmdLine = $false
+                if ($filteredCount -gt 0) {
+                    $highlightedActualIndex = $filteredIndices[$currentIndex]
+                    if ($Cmds -and $highlightedActualIndex -lt $Cmds.Count) {
+                        $cmdText = $Cmds[$highlightedActualIndex]
+                        if (-not [string]::IsNullOrWhiteSpace($cmdText)) {
+                            $null = $outputLines.Add([ColoredLine]@{ Text = "  [Cmd]: $cmdText"; Color = $Global:TuiColors.Suggest })
+                            $null = $outputLines.Add([ColoredLine]@{ Text = ""; Color = "Gray" })
+                            $hasCmdLine = $true
+                        }
+                    }
+                }
+
+                if ($filteredCount -eq 0) {
+                    $null = $outputLines.Add([ColoredLine]@{ Text = "     [No items matching filter]"; Color = $Global:TuiColors.Alert })
+                    $null = $outputLines.Add([ColoredLine]@{ Text = ""; Color = "Gray" })
+                } else {
+                    $nonItemLines = 6 + $HeaderLines.Count
+                    if ($searchMode) { $nonItemLines += 2 }
+                    if ($hasCmdLine) { $nonItemLines += 2 }
+                    $maxVisible = [Math]::Min(12, [Math]::Max(3, ([Console]::WindowHeight - $nonItemLines)))
+                    $start = 0
+                    if ($currentIndex -ge $maxVisible) {
+                        $start = $currentIndex - $maxVisible + 1
+                    }
+                    $end = [Math]::Min($start + $maxVisible - 1, $filteredCount - 1)
+                    if ($end - $start + 1 -lt $maxVisible -and $filteredCount -gt $maxVisible) {
+                        $start = [Math]::Max(0, $end - $maxVisible + 1)
+                    }
+
+                    if ($start -gt 0) {
+                        $null = $outputLines.Add([ColoredLine]@{ Text = "     ^ ... ($start more above) ..."; Color = $Global:TuiColors.Footer })
+                    }
+                    for ($i = $start; $i -le $end; $i++) {
+                        $actualIndex = $filteredIndices[$i]
+                        $label = $Items[$actualIndex]
+                        $maxLabelLen = $width - 6
+                        if ($maxLabelLen -gt 3 -and $label.Length -gt $maxLabelLen) {
+                            $label = $label.Substring(0, $maxLabelLen - 3) + "..."
+                        }
+                        if ($i -eq $currentIndex) {
+                            $null = $outputLines.Add([ColoredLine]@{ Text = "  >  $label"; Color = $Global:TuiColors.Selected })
+                        } else {
+                            if ($label -match "future|support future") {
+                                $null = $outputLines.Add([ColoredLine]@{ Text = "     $label"; Color = "DarkGray" })
+                            } else {
+                                $null = $outputLines.Add([ColoredLine]@{ Text = "     $label"; Color = $Global:TuiColors.Regular })
+                            }
+                        }
+                    }
+                    if ($end -lt $filteredCount - 1) {
+                        $remaining = $filteredCount - 1 - $end
+                        $null = $outputLines.Add([ColoredLine]@{ Text = "     v ... ($remaining more below) ..."; Color = $Global:TuiColors.Footer })
+                    }
+                    $null = $outputLines.Add([ColoredLine]@{ Text = ""; Color = "Gray" })
+                }
+
+                $helpStr = if ($width -lt 70) { "Arrows/Enter: select, [/] search, [Esc] exit" } else { "Type to filter. [Enter] to select suggestion, [Esc] to exit search mode." }
+                $null = $outputLines.Add([ColoredLine]@{ Text = $helpStr; Color = $Global:TuiColors.Footer })
+
+                try {
+                    [Console]::SetCursorPosition($startCol, $startRow)
+                } catch {
+                    Clear-Host
+                    $startRow = 0
+                    $startCol = 0
+                    try { [Console]::SetCursorPosition($startCol, $startRow) } catch {}
+                }
+
+                foreach ($line in $outputLines) {
+                    $txt = $line.Text
+                    $padded = if ($txt.Length -lt $width) { $txt + (" " * ($width - $txt.Length)) } else { $txt.Substring(0, $width) }
+                    Write-Host $padded -ForegroundColor $line.Color
+                }
+
+                $diff = $lastLinesCount - $outputLines.Count
+                if ($diff -gt 0) {
+                    for ($d = 0; $d -lt $diff; $d++) {
+                        Write-Host (" " * ([Console]::WindowWidth - 1))
+                    }
+                }
+                $lastLinesCount = $outputLines.Count
+
+                $key = $null
+                try {
+                    $key = [Console]::ReadKey($true)
+                } catch {
+                    [Console]::CursorVisible = $true
+                    $choice = Read-Host "Select index [1-$filteredCount]"
+                    $val = 0
+                    if ([int]::TryParse($choice, [ref]$val) -and $val -ge 1 -and $val -le $filteredCount) {
+                        return $filteredIndices[$val - 1]
+                    }
+                    return -1
+                }
+
+                if ($searchMode) {
+                    if ($key.Key -eq [ConsoleKey]::Escape) {
+                        $searchMode = $false
+                        $currentIndex = 0
+                    }
+                    elseif ($key.Key -eq [ConsoleKey]::Enter) {
+                        if ($filteredCount -gt 0) { return $filteredIndices[$currentIndex] }
+                        $searchMode = $false
+                    }
+                    elseif ($key.Key -eq [ConsoleKey]::Backspace) {
+                        if ($filterText.Length -gt 0) {
+                            $filterText = $filterText.Substring(0, $filterText.Length - 1)
+                        }
+                        $currentIndex = 0
+                    }
+                    elseif ($key.Key -eq [ConsoleKey]::UpArrow) {
+                        if ($filteredCount -gt 0) {
+                            $currentIndex = ($currentIndex - 1 + $filteredCount) % $filteredCount
+                        }
+                    }
+                    elseif ($key.Key -eq [ConsoleKey]::DownArrow) {
+                        if ($filteredCount -gt 0) {
+                            $currentIndex = ($currentIndex + 1) % $filteredCount
+                        }
+                    }
+                    elseif ($key.KeyChar -ge 32 -and $key.KeyChar -le 126) {
+                        $filterText += $key.KeyChar
+                        $currentIndex = 0
+                    }
+                } else {
+                    if ($key.Key -eq [ConsoleKey]::UpArrow) {
+                        if ($filteredCount -gt 0) {
+                            $origIdx = $currentIndex
+                            do {
+                                $currentIndex = ($currentIndex - 1 + $filteredCount) % $filteredCount
+                            } while ($Items[$filteredIndices[$currentIndex]] -match "future|support future" -and $currentIndex -ne $origIdx)
+                        }
+                    }
+                    elseif ($key.Key -eq [ConsoleKey]::DownArrow) {
+                        if ($filteredCount -gt 0) {
+                            $origIdx = $currentIndex
+                            do {
+                                $currentIndex = ($currentIndex + 1) % $filteredCount
+                            } while ($Items[$filteredIndices[$currentIndex]] -match "future|support future" -and $currentIndex -ne $origIdx)
+                        }
+                    }
+                    elseif ($HeaderLines -and $HeaderLines.Count -gt 0 -and $HeaderLines[0] -like "*Select Project*" -and $key.KeyChar.ToString().ToLower() -in @('c', 'i', 'd', 't')) {
+                        if ($filteredCount -gt 0) {
+                            $actualIdx = $filteredIndices[$currentIndex]
+                            if ($Items[$actualIdx] -match "future|support future") { continue }
+                            $Global:TerminalMenuLastKey = $key.KeyChar.ToString().ToLower()
+                            return $actualIdx
+                        }
+                    }
+                    elseif ($key.Key -eq [ConsoleKey]::Enter) {
+                        if ($filteredCount -gt 0) {
+                            $actualIdx = $filteredIndices[$currentIndex]
+                            if ($Items[$actualIdx] -match "future|support future") { continue }
+                            $Global:TerminalMenuLastKey = "enter"
+                            return $actualIdx
+                        }
+                        return -1
+                    }
+                    elseif ($key.Key -eq [ConsoleKey]::Escape) {
+                        if (-not [string]::IsNullOrWhiteSpace($filterText)) {
+                            $filterText = ""
+                            $currentIndex = 0
+                        } else {
+                            $Global:TerminalMenuLastKey = "escape"
+                            return -1
+                        }
+                    }
+                    elseif ($key.KeyChar -ge 32 -and $key.KeyChar -le 126) {
+                        $searchMode = $true
+                        $filterText += $key.KeyChar
+                        $currentIndex = 0
+                    }
+                    elseif ($key.Key -eq [ConsoleKey]::Backspace) {
+                        $filterText = ""
+                        $currentIndex = 0
+                    }
+                }
+            }
+        } finally {
+            try {
+                [Console]::SetCursorPosition($startCol, $startRow)
+                for ($d = 0; $d -lt $lastLinesCount; $d++) {
+                    Write-Host (" " * ([Console]::WindowWidth - 1))
+                }
+                [Console]::SetCursorPosition($startCol, $startRow)
+                if ($null -ne $oldCursorVisible) {
+                    [Console]::CursorVisible = $oldCursorVisible
+                }
+            } catch {}
+        }
+        return -1
+    }
+
+    static [int] Show([string]$Header, [string[]]$Items, [int]$DefaultIndex, [bool]$SearchByDefault) {
+        $count = $Items.Count
+        if ($count -eq 0) { return -1 }
+
+        $Global:TerminalMenuLastKey = $null
 
         # Ensure TUI colors are initialized
         if ($null -eq $Global:TuiColors) { [TerminalMenu]::InitializeTuiColors() }
@@ -69,7 +361,7 @@ class TerminalMenu {
         }
         $currentIndex = if ($firstSelectable -ge 0) { $firstSelectable } else { $DefaultIndex }
         $filterText = ""
-        $searchMode = $false
+        $searchMode = $SearchByDefault
 
         # Pre-scroll if drawing near the bottom to avoid repeated headers due to scroll shifts
         $maxVisible = [Math]::Min(12, [Math]::Max(3, ([Console]::WindowHeight - 10)))
@@ -203,8 +495,10 @@ class TerminalMenu {
                 try {
                     [Console]::SetCursorPosition($startCol, $startRow)
                 } catch {
-                    $startRow = [Console]::CursorTop
+                    Clear-Host
+                    $startRow = 0
                     $startCol = 0
+                    try { [Console]::SetCursorPosition($startCol, $startRow) } catch {}
                 }
                 foreach ($line in $outputLines) {
                     $txt = $line.Text
@@ -294,12 +588,25 @@ class TerminalMenu {
                             if ($Items[$actualIdx] -match "future|support future") {
                                 continue # Block selection of future items
                             }
+                            $Global:TerminalMenuLastKey = "enter"
                             return $actualIdx
                         }
                         return -1
                     }
-                    elseif ($key.KeyChar -eq '/') {
+                    elseif ($Header -eq "Select Project" -and $key.KeyChar.ToString().ToLower() -in @('c', 'i', 'd', 't')) {
+                        if ($filteredCount -gt 0) {
+                            $actualIdx = $filteredIndices[$currentIndex]
+                            if ($Items[$actualIdx] -match "future|support future") {
+                                continue
+                            }
+                            $Global:TerminalMenuLastKey = $key.KeyChar.ToString().ToLower()
+                            return $actualIdx
+                        }
+                    }
+                    elseif ($key.KeyChar -ge 32 -and $key.KeyChar -le 126) {
                         $searchMode = $true
+                        $filterText += $key.KeyChar
+                        $currentIndex = 0
                     }
                     elseif ($key.Key -eq [ConsoleKey]::Backspace) {
                         $filterText = ""
@@ -310,6 +617,7 @@ class TerminalMenu {
                             $filterText = ""
                             $currentIndex = 0
                         } else {
+                            $Global:TerminalMenuLastKey = "escape"
                             return -1
                         }
                     }
@@ -481,8 +789,10 @@ class TerminalMenu {
                 try {
                     [Console]::SetCursorPosition($startCol, $startRow)
                 } catch {
-                    $startRow = [Console]::CursorTop
+                    Clear-Host
+                    $startRow = 0
                     $startCol = 0
+                    try { [Console]::SetCursorPosition($startCol, $startRow) } catch {}
                 }
                 foreach ($line in $outputLines) {
                     $txt = $line.Text

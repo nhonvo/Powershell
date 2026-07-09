@@ -16,6 +16,8 @@ function Enter-Project {
     [ProfileNavigator]::EnterProject($Name)
 }
 function Reload-Profile {
+    $global:AgyProfileLoaded = $false
+    $global:PoshInitialized = $false
     . $PROFILE
     Write-Host "✅ Profile reloaded." -ForegroundColor Green
 }
@@ -103,38 +105,29 @@ function Get-CustomCommands {
         } else {
             [ProfileHelp]::Show($argStr)
         }
-        return
-    }
-
-    # Default TUI Control Center Loop
-    $startRow = [Console]::CursorTop
-    $startCol = [Console]::CursorLeft
+        return    }    # Default Command Palette TUI Database setup
+    $commandsMap = [ProfileHelp]::GetCommands()
+    
+    # 1. Main Dashboard TUI Loop
+    $defaultIndex = 0
+    $cHalf = [char]0x2584
+    $cFull = [char]0x2588
+    $cTop  = [char]0x2580
 
     while ($true) {
-        $activeAcc = [AgyAccountManager]::GetActiveAccount()
         if ($null -eq $Global:TuiColors) { [TerminalMenu]::InitializeTuiColors() }
-        $headerColor = $Global:TuiColors.Header
-
-        # Move cursor back to starting position to redraw in-place (no full-screen clear!)
-        try {
-            [Console]::SetCursorPosition($startCol, $startRow)
-            $clearStr = " " * ([Console]::WindowWidth - 1)
-            for ($i = 0; $i -lt 20; $i++) {
-                if ($startRow + $i -lt [Console]::WindowHeight) {
-                    [Console]::SetCursorPosition(0, $startRow + $i)
-                    Write-Host $clearStr -NoNewline
-                }
-            }
-            [Console]::SetCursorPosition($startCol, $startRow)
-        } catch {}
-
-        Write-Host "  ▄████▄   ▄████▄     Powershell Profile CLI v2.0" -ForegroundColor $headerColor
-        Write-Host " █▀     ▀ █▀     ▀    System dashboard and control suite." -ForegroundColor $headerColor
-        Write-Host " █        █           " -ForegroundColor $headerColor
-        Write-Host " █▄     ▄ █▄     ▄    Active Account: $activeAcc" -ForegroundColor Gray
-        Write-Host "  ▀████▀   ▀████▀     Time:   $(Get-Date -Format 'yyyy-MM-dd HH:mm')" -ForegroundColor DarkGray
-        Write-Host "=============================================" -ForegroundColor $headerColor
-        Write-Host ""
+        
+        $activeAcc = [AgyAccountManager]::GetActiveAccount()
+        $timeStr = Get-Date -Format 'yyyy-MM-dd HH:mm'
+        
+        $headers = @(
+            "  $cHalf$cFull$cFull$cFull$cFull$cHalf   $cHalf$cFull$cFull$cFull$cFull$cHalf     Powershell Profile CLI v2.0",
+            " $cFull$cTop     $cTop $cFull$cTop     $cTop    System dashboard and control suite.",
+            " $cFull        $cFull           ",
+            " $cFull$cHalf     $cHalf $cFull$cHalf     $cHalf    Active Account: $activeAcc",
+            "  $cTop$cFull$cFull$cFull$cFull$cTop   $cTop$cFull$cFull$cFull$cFull$cTop     Time:   $timeStr",
+            "============================================="
+        )
 
         $menuItems = @(
             "[Account]  Manage Antigravity Accounts & Credentials",
@@ -146,50 +139,124 @@ function Get-CustomCommands {
             "[Exit]     Exit Control Center"
         )
 
-        # Flush key buffer to prevent leftover keystrokes from causing automatic menu selections
         while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
 
-        $selected = ([type]"TerminalMenu")::Show("Profile Control Center Dashboard", $menuItems, 0)
+        $selected = [TerminalMenu]::ShowRobust($headers, $menuItems, $defaultIndex, $false, $true)
         if ($selected -lt 0 -or $selected -eq ($menuItems.Count - 1)) {
-            # Position cursor cleanly below the menu
-            try {
-                [Console]::SetCursorPosition(0, $startRow + 20)
-                Write-Host ""
-            } catch {}
             break
         }
 
-        switch ($selected) {
-            0 {
-                [AgyAccountManager]::ManageAccountsInteractive()
-            }
-            1 {
-                Invoke-MultiAgent
-            }
-            2 {
-                Write-Host ""
-                $q = Read-Host "Enter project name / search query"
-                if (-not [string]::IsNullOrWhiteSpace($q)) {
-                    Enter-Project $q
-                    Write-Host "Press any key to return..." -ForegroundColor Gray
+        # Remember selected item
+        $defaultIndex = $selected
+        $action = $menuItems[$selected]
+
+        Clear-Host
+        if ($action.StartsWith("[Account]")) {
+            [AgyAccountManager]::ManageAccountsInteractive()
+        }
+        elseif ($action.StartsWith("[AI Agent]")) {
+            [AiHelper]::ShowAiDashboard()
+        }
+        elseif ($action.StartsWith("[Project]")) {
+            Enter-Project ""
+        }
+        elseif ($action.StartsWith("[Theme]")) {
+            Select-ShellTheme
+        }
+        elseif ($action.StartsWith("[SSH Info]")) {
+            Get-SshConnectionInfo
+            Write-Host "`n----------------------------------------------------------" -ForegroundColor Gray
+            Write-Host "Press any key to return to Control Center..." -ForegroundColor Yellow
+            while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
+            [void][Console]::ReadKey($true)
+        }
+        elseif ($action.StartsWith("[Manual]")) {
+            # Open the Category-grouped Manual Sub-menu
+            $defaultCategoryIndex = 0
+            while ($true) {
+                $subHeaders = @(
+                    "  $cHalf$cFull$cFull$cFull$cFull$cHalf   $cHalf$cFull$cFull$cFull$cFull$cHalf     Powershell Profile CLI v2.0",
+                    " $cFull$cTop     $cTop $cFull$cTop     $cTop    Manual - Command Categories",
+                    " $cFull        $cFull           ",
+                    " $cFull$cHalf     $cHalf $cFull$cHalf     $cHalf    Select a category to view commands.",
+                    "  $cTop$cFull$cFull$cFull$cFull$cTop   $cTop$cFull$cFull$cFull$cFull$cTop     Esc to go back.",
+                    "============================================="
+                )
+
+                $categories = [System.Collections.Generic.List[string]]::new()
+                foreach ($cat in $commandsMap.Keys) {
+                    $null = $categories.Add($cat)
+                }
+                $categoriesList = $categories | Sort-Object
+                $catMenuItems = [System.Collections.Generic.List[string]]::new()
+                foreach ($cat in $categoriesList) {
+                    $null = $catMenuItems.Add("[Category] $cat")
+                }
+                $null = $catMenuItems.Add("[Back to Dashboard]")
+
+                while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
+
+                $selectedCat = [TerminalMenu]::ShowRobust($subHeaders, $catMenuItems.ToArray(), $defaultCategoryIndex, $false, $true)
+                if ($selectedCat -lt 0 -or $selectedCat -eq ($catMenuItems.Count - 1)) {
+                    break
+                }
+
+                $defaultCategoryIndex = $selectedCat
+                $selectedCatName = $categoriesList[$selectedCat]
+
+                # 3. Commands list sub-menu
+                $defaultCmdIndex = 0
+                while ($true) {
+                    $cmdHeaders = @(
+                        "  $cHalf$cFull$cFull$cFull$cFull$cHalf   $cHalf$cFull$cFull$cFull$cFull$cHalf     Powershell Profile CLI v2.0",
+                        " $cFull$cTop     $cTop $cFull$cTop     $cTop    Category: $selectedCatName",
+                        " $cFull        $cFull           ",
+                        " $cFull$cHalf     $cHalf $cFull$cHalf     $cHalf    Select a command to run.",
+                        "  $cTop$cFull$cFull$cFull$cFull$cTop   $cTop$cFull$cFull$cFull$cFull$cTop     Esc to go back.",
+                        "============================================="
+                    )
+
+                    $docs = $commandsMap[$selectedCatName] | Sort-Object Alias
+                    $cmdLabels = [System.Collections.Generic.List[string]]::new()
+                    $cmdDetails = [System.Collections.Generic.List[string]]::new()
+                    foreach ($doc in $docs) {
+                        $null = $cmdLabels.Add("$($doc.Alias.PadRight(12)) - $($doc.Desc)")
+                        $null = $cmdDetails.Add($doc.Command)
+                    }
+                    $null = $cmdLabels.Add("[Back to Categories]")
+                    $null = $cmdDetails.Add("")
+
+                    while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
+
+                    $selectedCmd = [TerminalMenu]::Show($cmdHeaders, $cmdLabels.ToArray(), $cmdDetails.ToArray(), $defaultCmdIndex, $false, $true)
+                    if ($selectedCmd -lt 0 -or $selectedCmd -eq ($cmdLabels.Count - 1)) {
+                        break
+                    }
+
+                    $defaultCmdIndex = $selectedCmd
+                    $selectedCmdObj = $docs[$selectedCmd]
+                    $cmdToRun = $selectedCmdObj.Command
+                    $aliasName = $selectedCmdObj.Alias
+
+                    Clear-Host
+                    Write-Host ">>> Running: $aliasName ($cmdToRun)" -ForegroundColor Green
+                    Write-Host "----------------------------------------------------------" -ForegroundColor Gray
+                    
+                    try {
+                        Invoke-Expression $aliasName
+                    } catch {
+                        Write-Error $_
+                    }
+
+                    Write-Host "`n----------------------------------------------------------" -ForegroundColor Gray
+                    Write-Host "Press any key to return to $selectedCatName..." -ForegroundColor Yellow
+                    while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
                     [void][Console]::ReadKey($true)
                 }
             }
-            3 {
-                [ProfileHelp]::Show("")
-            }
-            4 {
-                Select-ShellTheme
-            }
-            5 {
-                Clear-Host
-                Get-SshConnectionInfo
-                Write-Host ""
-                Write-Host "Press any key to return to Control Center..." -ForegroundColor Gray
-                [void][Console]::ReadKey($true)
-            }
         }
     }
+    Clear-Host
 }
 function Get-SshConnectionInfo { [SshHelper]::GetConnectionInfo() }
 function Add-SshAuthorizedKey {
@@ -529,6 +596,69 @@ function Invoke-AgyMenu {
 }
 Set-Alias -Name agy-m -Value Invoke-AgyMenu -Force
 
+function Invoke-AccountSession {
+    [CmdletBinding()]
+    param(
+        [Parameter(Position=0)][string]$Account,
+        [Parameter(Position=1)][ScriptBlock]$Command,
+        [Parameter()][switch]$Temp,
+        [Parameter()][switch]$Status
+    )
+
+    if ($Status) {
+        $active = [AgyAccountManager]::GetActiveAccount()
+        $quota = [AgyAccountManager]::CalculateRollingQuotas($active)
+        if ($Global:AiMode) {
+            Write-Host "Account:$active;Weekly:$($quota.RemainingWeekly)%;5H:$($quota.Remaining5H)%;Count5H:$($quota.Count5H)"
+        } else {
+            Write-Host "=============================================" -ForegroundColor Cyan
+            Write-Host " QUOTA STATUS: $active" -ForegroundColor Cyan
+            Write-Host "=============================================" -ForegroundColor Cyan
+            Write-Host "  * Weekly Quota:   $($quota.RemainingWeekly)% remaining ($($quota.CountWeekly)/1000)" -ForegroundColor Gray
+            Write-Host "  * Five Hour Limit: $($quota.Remaining5H)% remaining ($($quota.Count5H)/50)" -ForegroundColor Gray
+            Write-Host "=============================================" -ForegroundColor Cyan
+        }
+        return
+    }
+
+    if ([string]::IsNullOrWhiteSpace($Account)) {
+        if ($Global:AiMode) {
+            $accounts = [AgyAccountManager]::GetAccounts()
+            foreach ($acc in $accounts) {
+                $meta = [AgyAccountManager]::GetAccountMetadata($acc)
+                $tokenFile = Join-Path ([AgyAccountManager]::GetAccountDirectory($acc)) "keyring_token.txt"
+                $status = if (Test-Path $tokenFile) { "LoggedIn" } else { "LoggedOut" }
+                Write-Host "$acc,$status,$($meta.UsageCount)"
+            }
+        } else {
+            [AgyAccountManager]::ManageAccountsInteractive()
+        }
+        return
+    }
+
+    if ($Command) {
+        $targetPath = [AgyAccountManager]::GetAccountDirectory($Account)
+        if (-not (Test-Path $targetPath)) {
+            Write-Error "Account '$Account' does not exist."
+            return
+        }
+        $oldHome = $env:GEMINI_HOME
+        try {
+            $env:GEMINI_HOME = $targetPath
+            [AgyAccountManager]::RestoreActiveToken($Account)
+            $Command.Invoke()
+        } finally {
+            $env:GEMINI_HOME = $oldHome
+            $priorActive = [AgyAccountManager]::GetActiveAccount()
+            [AgyAccountManager]::RestoreActiveToken($priorActive)
+        }
+        return
+    }
+
+    [AgyAccountManager]::SetActiveAccount($Account, $Temp)
+}
+Set-Alias -Name acc -Value Invoke-AccountSession -Force
+
 
 function agy {
     [CmdletBinding()]
@@ -570,6 +700,96 @@ function cssh { [ProfileHelp]::Show("SSH") }
 # Theme Switcher
 function Select-ShellTheme { [ThemeHelper]::SelectThemeInteractive() }
 Set-Alias -Name theme -Value Select-ShellTheme -Force
+# Operations Dashboards & Shortcuts
+function Invoke-DockerDashboard { [DockerHelper]::Dkcl() }
+Set-Alias -Name dkcl -Value Invoke-DockerDashboard -Force
+
+function Invoke-KillPort {
+    param([Parameter(Mandatory=$true, Position=0)][int]$Port)
+    [SystemHelper]::KillPort($Port)
+}
+Set-Alias -Name killport -Value Invoke-KillPort -Force
+
+function Invoke-SystemMonitor { [SystemHelper]::SystemMonitor() }
+Set-Alias -Name sysmon -Value Invoke-SystemMonitor -Force
+
+# Scaffolding & Git TUI Shortcuts
+function Invoke-ProjectScaffolder {
+    param([string]$Template, [string]$Name, [int]$Port)
+    [ProjectScaffolder]::ScaffoldProject($Template, $Name, $Port)
+}
+Set-Alias -Name new-project -Value Invoke-ProjectScaffolder -Force
+
+function Invoke-GitBranchCheckout { [GitHelper]::BranchCheckoutTui() }
+Set-Alias -Name co -Value Invoke-GitBranchCheckout -Force
+
+function Invoke-GitCommitWizard {
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message)
+    $msg = $Message -join ' '
+    [GitHelper]::Gcmt($msg)
+}
+Set-Alias -Name gcmt -Value Invoke-GitCommitWizard -Force
+
+function Invoke-AskAi {
+    param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Query)
+    $q = $Query -join ' '
+    [AiHelper]::AskAi($q)
+}
+Set-Alias -Name ask-ai -Value Invoke-AskAi -Force
+
+function Invoke-SecretVault {
+    [CmdletBinding()]
+    param(
+        [Parameter(Position=0)]
+        [ValidateSet("set", "get", "list", "remove", "rm")]
+        [string]$Action = "list",
+        [Parameter(Position=1)]
+        [string]$Key,
+        [Parameter(Position=2)]
+        [string]$Value
+    )
+
+    switch ($Action) {
+        "set" {
+            if (-not $Key -or -not $Value) {
+                Write-Error "Usage: sec set <key> <value>"
+                return
+            }
+            [AgySecretVault]::SetSecret($Key, $Value)
+        }
+        "get" {
+            if (-not $Key) {
+                Write-Error "Usage: sec get <key>"
+                return
+            }
+            $val = [AgySecretVault]::GetSecret($Key)
+            if ($val) { Write-Host $val }
+        }
+        "list" {
+            [AgySecretVault]::ListSecrets()
+        }
+        { $_ -in "remove", "rm" } {
+            if (-not $Key) {
+                Write-Error "Usage: sec remove <key>"
+                return
+            }
+            [AgySecretVault]::RemoveSecret($Key)
+        }
+    }
+}
+Set-Alias -Name sec -Value Invoke-SecretVault -Force
+function Invoke-DbTui {
+    param([Parameter(Mandatory=$true, Position=0)][string]$DbPath)
+    [DatabaseHelper]::DbTui($DbPath)
+}
+Set-Alias -Name db-tui -Value Invoke-DbTui -Force
+
+function Invoke-LogStream {
+    param([Parameter(Position=0)][string]$LogPath)
+    [LogHelper]::StreamLogs($LogPath)
+}
+Set-Alias -Name logstream -Value Invoke-LogStream -Force
+
 #endregion
 
 

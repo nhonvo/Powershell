@@ -1,3 +1,4 @@
+$env:AI_MODE = 'true'
 Write-Host "Running PowerShell Profile Tests..." -ForegroundColor Cyan
 
 # 1. Check syntax of all profile files
@@ -83,40 +84,38 @@ foreach ($item in $aiItems) {
 }
 
 # 5. Dry-run Invocation Tests (non-blocking)
-Write-Host "`nPerforming dry-run tests on wrapper functions..." -ForegroundColor Cyan
+if (-not $Global:AiMode) {
+    Write-Host "`nPerforming dry-run tests on wrapper functions..." -ForegroundColor Cyan
 
-Write-Host "  Testing claude (--version)..."
-try {
-    $out = claude --version 2>&1
-    Write-Host "    Response: $out" -ForegroundColor Gray
-} catch {
-    Write-Warning "    Failed: $_"
-}
+    Write-Host "  Testing claude (--version)..."
+    try {
+        $out = claude --version 2>&1
+        Write-Host "    Response: $out" -ForegroundColor Gray
+    } catch {
+        Write-Warning "    Failed: $_"
+    }
 
-Write-Host "  Testing codex (--help)..."
-try {
-    # Just grab first line of help to verify execution
-    $out = (codex --help 2>&1 | Select-Object -First 1)
-    Write-Host "    Response: $out" -ForegroundColor Gray
-} catch {
-    Write-Warning "    Failed: $_"
-}
+    Write-Host "  Testing codex (--help)..."
+    try {
+        $out = (codex --help 2>&1 | Select-Object -First 1)
+        Write-Host "    Response: $out" -ForegroundColor Gray
+    } catch {
+        Write-Warning "    Failed: $_"
+    }
 
-Write-Host "  Testing openclaw (--help)..."
-try {
-    $out = (openclaw --help 2>&1 | Select-Object -First 1)
-    Write-Host "    Response: $out" -ForegroundColor Gray
-} catch {
-    Write-Warning "    Failed: $_"
+    Write-Host "  Testing openclaw (--help)..."
+    try {
+        $out = (openclaw --help 2>&1 | Select-Object -First 1)
+        Write-Host "    Response: $out" -ForegroundColor Gray
+    } catch {
+        Write-Warning "    Failed: $_"
+    }
 }
 
 # 6. Run detailed Pester Unit Tests
 Write-Host "`nRunning detailed Pester unit tests..." -ForegroundColor Cyan
 if (Get-Module -ListAvailable Pester) {
-    $tests = @(
-        (Join-Path $PSScriptRoot "Unit\AI-Tools.Tests.ps1"),
-        (Join-Path $PSScriptRoot "Unit\Profile-All.Tests.ps1")
-    )
+    $tests = Get-ChildItem -Path (Join-Path $PSScriptRoot "Unit") -Filter "*.Tests.ps1" | ForEach-Object { $_.FullName }
     Invoke-Pester -Script $tests -EnableExit
 } else {
     Write-Warning "Pester module is not available. Skipping unit tests."

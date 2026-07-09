@@ -1,6 +1,21 @@
 if ($global:AgyProfileLoaded) { return }
 $global:AgyProfileLoaded = $true
 
+# Core context detection
+$Global:AiMode = $false
+$aiMarkers = @(
+    "anthropic-code",   # Claude Code
+    "vscode-copilot",   # GitHub Copilot CLI
+    "codex-agent",      # Codex Agent
+    "cursor-terminal"   # Cursor AI terminal
+)
+
+if ($env:AI_MODE -eq "true" -or 
+    $env:TERM_PROGRAM -in $aiMarkers -or 
+    ($null -ne $env:GEMINI_API_KEY -and ($env:TERM -eq "dumb" -or $env:PAGER -eq "cat"))) {
+    $Global:AiMode = $true
+}
+
 # ==============================================================================
 #  Enhanced PowerShell Profile - Main Loader
 # ==============================================================================
@@ -29,4 +44,6 @@ foreach ($file in $orderedFiles) {
     . $file.FullName
 }
 
-Write-Host "🛸 Enhanced PowerShell Profile loaded." -ForegroundColor Green
+if (-not $Global:AiMode) {
+    Write-Host "🛸 Enhanced PowerShell Profile loaded." -ForegroundColor Green
+}

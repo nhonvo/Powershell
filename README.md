@@ -29,7 +29,11 @@ Powershell/
 │       ├── DockerHelper.ps1           # class DockerHelper (Docker Compose & cleanup)
 │       ├── AwsHelper.ps1              # class AwsHelper (LocalStack client queries)
 │       ├── AiHelper.ps1               # class AiHelper (Ollama CLI integrations)
-│       └── AgyAccountManager.ps1      # class AgyAccountManager (Multi-Account isolation)
+│       ├── AgyAccountManager.ps1      # class AgyAccountManager (Multi-Account isolation)
+│       ├── AgySecretVault.ps1         # class AgySecretVault (DPAPI Encrypted Secrets Vault)
+│       ├── DatabaseHelper.ps1         # class DatabaseHelper (SQLite Schema Viewer TUI)
+│       ├── ProjectScaffolder.ps1      # class ProjectScaffolder (Template Project Builder)
+│       └── LogHelper.ps1              # class LogHelper (Multiplexed Colorized Log Streamer)
 ├── Tests/                             # Consolidated Test Project
 │   ├── Unit/                          # Pester unit tests
 │   │   ├── AI-Tools.Tests.ps1         # AI wrappers mock unit tests
@@ -124,6 +128,9 @@ Manages background server dependencies and proxy wrappers.
 | `agy` | `agy` | Invoke the native `agy` CLI under the active isolated account context |
 | `agy1` / `agy2` ... | `agy-<name>` | Dyn-generated aliases to run single commands under a specific custom account |
 | `multigravity` | `multigravity` | Run the `multigravity` multi-profile orchestration CLI |
+| `ask-ai` | `Invoke-AskAi` | Ask local Ollama AI questions or explain code contexts |
+| `??` | `Invoke-AskAi` | Shortcut for `ask-ai` to explain the last console error (`$Error[0]`) |
+| `sec` | `Invoke-SecretVault` | Secure local secret manager using Windows DPAPI (set, get, list, remove) |
 
 ### 2. Project Navigation & System Shortcuts
 
@@ -151,6 +158,9 @@ Manages background server dependencies and proxy wrappers.
 | `cnav` | `cnav` | Display the Project Navigation helper commands manual |
 | `cssh` | `cssh` | Display the SSH helper commands manual |
 | `theme` | `Select-ShellTheme` | Interactive TUI menu to select and apply Oh My Posh shell prompt styles |
+| `new-project` | `Invoke-ProjectScaffolder` | Bootstrap a new project from layout templates (React, .NET, Node, etc.) |
+| `killport` | `Invoke-KillPort` | Identify and terminate process listening on a specific port |
+| `sysmon` | `Invoke-SystemMonitor` | Live CPU/RAM gauges (Human) or tab-separated utilization (AI Mode) |
 
 ### 3. Git Shortcuts
 
@@ -161,12 +171,12 @@ Manages background server dependencies and proxy wrappers.
 | `glo` / `glg` | `Get-GitLogGraph` | Print colorized branching layout using git log graph |
 | `glog` | `Get-GitLogPretty` | Print clean list of commits with author and date |
 | `gb` | `Get-GitBranches` | Display local and remote branches |
-| `co` | `Invoke-GitCheckout` | Safely switch branches |
+| `co` | `Invoke-GitBranchCheckout` | Interactive Git branch checkout TUI (or flat branch list in AI Mode) |
 | `cob` | `New-GitBranch` | Create and checkout a new branch |
 | `gbd` | `Remove-GitBranch` | Delete a local branch |
 | `ga` | `Invoke-GitAddAll` | Stage all unstaged and untracked changes |
 | `gunstage` | `Invoke-GitUnstage` | Unstage currently staged changes |
-| `gcmt` | `Invoke-GitCommit` | Commit changes with message arguments |
+| `gcmt` | `Invoke-GitCommitWizard` | Conventional Commit wizard with stage validation and AI description pre-fills |
 | `gca` | `Invoke-GitAmend` | Amend modifications into the last commit |
 | `gundo` | `Invoke-GitUndo` | Soft reset the previous commit (keeping local changes staged) |
 | `gr` | `Invoke-GitResetSoft` | Perform a soft reset on the HEAD branch |
@@ -204,7 +214,8 @@ Manages background server dependencies and proxy wrappers.
 
 | Alias / Command | Routing Target | Description |
 | :--- | :--- | :--- |
-| `dkcl` | `Get-DockerContainers` | Get active/inactive containers status |
+| `dkcl` | `Invoke-DockerDashboard` | Interactive container status manager & logs tailer with Compose grouping |
+| `dps` | `Get-DockerContainers` | Get active/inactive flat containers status table |
 | `dkrmac` | `Remove-AllDockerContainers` | Force delete all containers |
 | `dkstac` | `Stop-AllDockerContainers` | Force stop all running containers |
 | `dkcpu` | `Invoke-ComposeUp` | Run `docker compose up` |
@@ -234,7 +245,14 @@ Manages background server dependencies and proxy wrappers.
 | `ssh-info` | `Get-SshConnectionInfo` | Print network status and Tailscale SSH control guides |
 | `ssh-addkey` | `Add-SshAuthorizedKey` | Authorize public key for secure passwordless logins |
 
-### 8. Isolated Account Manager Action Reference
+### 8. Database & Log Streamer Shortcuts
+
+| Alias / Command | Routing Target | Description |
+| :--- | :--- | :--- |
+| `db-tui` | `Invoke-DbTui` | SQLite metadata viewer and table schema/rows inspector TUI |
+| `logstream` | `Invoke-LogStream` | Tail local log files with colored regex keyword highlights (error, warn, success) |
+
+### 9. Isolated Account Manager Action Reference
 
 The `agy-account` (aliased to `agy-acc`) wrapper supports interactive TUI selection as well as direct command-line arguments:
 

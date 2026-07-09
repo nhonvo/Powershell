@@ -17,5 +17,4 @@ jobs:
     - name: Run Profile Verification Tests
       shell: powershell
       run: |
-        # Run test runner script
-        ./Scripts/test_profile.ps1
+        ./Tests/run_tests.ps1
