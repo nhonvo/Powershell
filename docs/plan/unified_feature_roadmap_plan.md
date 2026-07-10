@@ -31,6 +31,14 @@ This document consolidates and unifies all planned features, specifications, and
     - [x] Map hex colors to standard ConsoleColor values.
     - [x] Wire `InitializeTuiColors` to update `$Global:TuiColors` instantly upon selection.
 
+### [Feature 1.4] Command Palette Slash Search & Suggestion Engine
+*   **Feature:** Build an enhanced search filter that triggers when a user types a slash `/` in the command palette, allowing them to search all custom commands and tool suggestions (e.g. `dotnet run`, `git status`, `git add .`, `docker-compose up`, etc.) directly inside the `cc` Control Center.
+*   **User Story:** As a power user, I want to type `/` inside the search bar to access and fuzzy-search all registered command shortcuts, system suggestions, and aliases, so that I can execute commands without leaving the dashboard.
+*   **Implementation Tasks:**
+    - [ ] Add a list of default command suggestions (`dotnet run`, `git status`, `git add .`, `docker-compose up`, etc.) to the Command Center list items.
+    - [ ] Intercept search queries starting with `/` to isolate the suggestion list.
+    - [ ] Enable fuzzy matching for all command suggestion items.
+
 ---
 
 ## 2. Workspace & Code Navigation Flow (Part 1)
@@ -77,6 +85,14 @@ This document consolidates and unifies all planned features, specifications, and
     - [ ] Update `ProfileNavigator.ps1` to read/write priority lists from a configuration file instead of hardcoded arrays.
     - [ ] Map a keyboard shortcut in `TerminalMenu` for pinning.
     - [ ] Create `clone-project <url>` wrapper that handles `git clone` and caches the new path.
+
+### [Feature 2.6] Enhanced Neovim Workspace Integration
+*   **Feature:** Enhance project opening inside Neovim by configuring fallback launch scripts, auto-setting the active working directory (`lcd`/`cd`) to the project root, and loading file drawer layouts or Neo-tree / Nvim-tree plugins instantly.
+*   **User Story:** As a modal editor enthusiast, I want Neovim to launch with its viewport focused on the selected project directory and with its file manager open, so that I can start editing files without manually setting up my editor buffers.
+*   **Implementation Tasks:**
+    - [ ] Create custom launch wrapper for Neovim (`nvim`) passing working directory flags.
+    - [ ] Check if `nvim` is installed and fallback to system standard text editors if missing.
+    - [ ] Auto-open directory trees when launching Neovim in a project folder.
 
 ---
 
