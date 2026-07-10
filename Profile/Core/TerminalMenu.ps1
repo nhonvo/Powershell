@@ -14,6 +14,41 @@ class MenuItem {
 }
 
 class TerminalMenu {
+    static [string] MapHexToConsoleColor([string]$hex) {
+        if (-not $hex -or $hex -notmatch '^#?([0-9a-fA-F]{6})') { return "Cyan" }
+        $clean = $Matches[1]
+        try {
+            $r = [System.Convert]::ToInt32($clean.Substring(0, 2), 16)
+            $g = [System.Convert]::ToInt32($clean.Substring(2, 2), 16)
+            $b = [System.Convert]::ToInt32($clean.Substring(4, 2), 16)
+            
+            $max = [Math]::Max($r, [Math]::Max($g, $b))
+            $min = [Math]::Min($r, [Math]::Min($g, $b))
+            
+            if (($max - $min) -lt 35) {
+                return if ($max -lt 80) { "DarkGray" } else { "White" }
+            }
+            if ($r -gt $g -and $r -gt $b) {
+                if ($b -gt 90 -and ($r - $b) -lt 110) { return "Magenta" }
+                return if ($g -gt 120 -and ($r - $g) -lt 60) { "Yellow" } else { "Red" }
+            }
+            if ($g -gt $r -and $g -gt $b) {
+                return "Green"
+            }
+            if ($b -gt $r -and $b -gt $g) {
+                if (($r - $g) -gt 40) { return "Magenta" }
+                return "Cyan"
+            }
+            if ($g -gt $r -and $b -gt $r) {
+                return "Cyan"
+            }
+            if ($r -gt $b -and $g -gt $b) {
+                return "Yellow"
+            }
+        } catch {}
+        return "Cyan"
+    }
+
     static [void] InitializeTuiColors() {
         $theme = $env:THEME
         $colors = @{
@@ -32,56 +67,46 @@ class TerminalMenu {
         }
 
         # Try dynamic theme color extraction
-        $extractedColor = $null
+        $firstColor = $null
+        $secondColor = $null
         if ($theme -and (Test-Path $themesPath)) {
             $themePath = Join-Path -Path $themesPath -ChildPath "$theme.omp.json"
             if (Test-Path $themePath) {
                 try {
                     $json = Get-Content $themePath -Raw | ConvertFrom-Json
-                    $bgHex = $null
                     if ($json.blocks) {
                         foreach ($block in $json.blocks) {
                             if ($block.segments) {
                                 foreach ($seg in $block.segments) {
-                                    if ($seg.background) {
-                                        $bgHex = $seg.background
-                                        break
+                                    $col = if ($seg.background) { $seg.background } else { $seg.foreground }
+                                    if ($col) {
+                                        if (-not $firstColor) {
+                                            $firstColor = $col
+                                        } elseif (-not $secondColor -and $col -ne $firstColor) {
+                                            $secondColor = $col
+                                            break
+                                        }
                                     }
                                 }
                             }
-                            if ($bgHex) { break }
-                        }
-                    }
-                    if ($bgHex -match '^#?([0-9a-fA-F]{6})') {
-                        $clean = $Matches[1]
-                        $r = [System.Convert]::ToInt32($clean.Substring(0, 2), 16)
-                        $g = [System.Convert]::ToInt32($clean.Substring(2, 2), 16)
-                        $b = [System.Convert]::ToInt32($clean.Substring(4, 2), 16)
-                        
-                        $max = [Math]::Max($r, [Math]::Max($g, $b))
-                        $min = [Math]::Min($r, [Math]::Min($g, $b))
-                        
-                        if (($max - $min) -lt 35) {
-                            $extractedColor = if ($max -lt 80) { "DarkGray" } else { "White" }
-                        } elseif ($r -gt $g -and $r -gt $b) {
-                            $extractedColor = if ($g -gt 120 -and ($r - $g) -lt 60) { "Yellow" } else { "Red" }
-                        } elseif ($g -gt $r -and $g -gt $b) {
-                            $extractedColor = "Green"
-                        } elseif ($b -gt $r -and $b -gt $g) {
-                            $extractedColor = if (($r - $g) -gt 40) { "Magenta" } else { "Cyan" }
-                        } elseif ($g -gt $r -and $b -gt $r) {
-                            $extractedColor = "Cyan"
+                            if ($firstColor -and $secondColor) { break }
                         }
                     }
                 } catch {}
             }
         }
 
-        if ($extractedColor) {
-            $colors.Header = $extractedColor
-            $colors.Selected = $extractedColor
-            $colors.Search = $extractedColor
-            $colors.Suggest = if ($extractedColor -eq "Yellow") { "Cyan" } else { "Yellow" }
+        if ($firstColor) {
+            $headerColor = [TerminalMenu]::MapHexToConsoleColor($firstColor)
+            $colors.Header = $headerColor
+            $colors.Search = $headerColor
+            $colors.Suggest = if ($headerColor -eq "Yellow") { "Cyan" } else { "Yellow" }
+            
+            if ($secondColor) {
+                $colors.Selected = [TerminalMenu]::MapHexToConsoleColor($secondColor)
+            } else {
+                $colors.Selected = $headerColor
+            }
         } elseif ($theme) {
             $themeLower = $theme.ToLower()
             if ($themeLower -like "*dracula*") {

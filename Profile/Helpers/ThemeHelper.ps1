@@ -41,7 +41,7 @@ class ThemeHelper {
                 $previewParts = @()
                 for ($i = 0; $i -lt [Math]::Min(3, $segs.Count); $i++) {
                     $seg = $segs[$i]
-                    $bg = $seg.background
+                    $bg = if ($seg.background) { $seg.background } else { $seg.foreground }
                     $type = $seg.type
                     
                     # Map hex to emoji color block
