@@ -5,7 +5,7 @@
 
 class ThemeHelper {
     static [void] SelectThemeInteractive() {
-        $themesPath = Join-Path -Path $env:USERPROFILE -ChildPath "Documents\PowerShell\asset\powershell-themes"
+        $themesPath = $env:POSH_THEMES_PATH
         if (-not (Test-Path $themesPath)) {
             Write-Error "Themes directory not found: $themesPath"
             return

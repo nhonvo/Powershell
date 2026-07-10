@@ -1,5 +1,7 @@
 ﻿if ($global:AgyUserProfileLoaded) { return }
 $global:AgyUserProfileLoaded = $true
+$Global:ProfileRepoRoot = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
+$env:POSH_THEMES_PATH = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "asset\powershell-themes"
 
 $Global:AiMode = $false
 $Global:VerboseStartup = $false

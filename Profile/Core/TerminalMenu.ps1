@@ -60,12 +60,7 @@ class TerminalMenu {
             Footer    = "DarkGray"
             Alert     = "Red"
         }
-
         $themesPath = $env:POSH_THEMES_PATH
-        if (-not $themesPath) {
-            $themesPath = Join-Path -Path $env:USERPROFILE -ChildPath "Documents\PowerShell\asset\powershell-themes"
-        }
-
         # Try dynamic theme color extraction
         $firstColor = $null
         $secondColor = $null
