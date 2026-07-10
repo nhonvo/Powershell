@@ -47,67 +47,12 @@ class ProfileNavigator {
         $cacheFile = Join-Path $env:USERPROFILE ".gemini\antigravity\workspace_cache.json"
         $priorityProjects = $Global:ProfileWorkspaces
         
-        $items = @()
-        $needsScan = $true
-
-        if (-not $Name -and (Test-Path $cacheFile)) {
-            $cacheItem = Get-Item $cacheFile
-            if ($cacheItem.LastWriteTime -gt (Get-Date).AddHours(-24)) {
-                try {
-                    $items = Get-Content $cacheFile | ConvertFrom-Json
-                    $needsScan = $false
-                } catch {}
-            }
-        }
-
-        if ($needsScan) {
-            $searchPaths = @(
-                "$env:USERPROFILE\Desktop\back-up\1.project",
-                "$env:USERPROFILE\Desktop\project",
-                "C:\Users\sshuser\project",
-                "$env:USERPROFILE\Documents"
-            ) | Where-Object { Test-Path $_ }
-
-            $excludeFolders = @("My Music","My Pictures","My Videos","WindowsPowerShell",
-                                "Custom Office Templates","Visual Studio 2022","Modules",
-                                "vscode-config","typora-themes","img")
-
-            if (-not $searchPaths) {
-                Write-Host "No search paths found. Configure search paths in ProfileNavigator." -ForegroundColor Yellow
-                return
-            }
-
-            # Collect immediate-child directories
-            $allProjects = $searchPaths | ForEach-Object {
-                Get-ChildItem -Path $_ -Directory -ErrorAction SilentlyContinue |
-                    Where-Object { $_.Name -notin $excludeFolders }
-            } | Sort-Object Name -Unique
-
-            if (-not $allProjects) {
-                Write-Host "No projects found in configured paths." -ForegroundColor Yellow
-                return
-            }
-
-            # Build ordered list: priorities first, then alphabetical
-            $priorityNames = $priorityProjects.Name
-            foreach ($p in $priorityProjects) {
-                $match = $allProjects | Where-Object { $_.Name -eq $p.Name } | Select-Object -First 1
-                if ($match) { $items += [PSCustomObject]@{ Label = $match.Name; Path = $match.FullName; Priority = $true } }
-            }
-            foreach ($proj in ($allProjects | Where-Object { $_.Name -notin $priorityNames })) {
-                $items += [PSCustomObject]@{ Label = $proj.Name; Path = $proj.FullName; Priority = $false }
-            }
-            
-            try {
-                # Ensure dir exists
-                $cacheDir = Split-Path $cacheFile
-                if (-not (Test-Path $cacheDir)) { New-Item -ItemType Directory -Path $cacheDir -Force | Out-Null }
-                $items | ConvertTo-Json | Set-Content $cacheFile -Force
-            } catch {}
-        }
-
-        # Direct match/list checks in AI Mode
+        # Direct match/list checks in AI Mode (non-interactive)
         if ($Global:AiMode -and -not $Name) {
+            $items = @()
+            if (Test-Path $cacheFile) {
+                try { $items = Get-Content $cacheFile | ConvertFrom-Json } catch {}
+            }
             foreach ($item in $items) {
                 Write-Host "$($item.Label) | $($item.Path)"
             }
@@ -116,6 +61,10 @@ class ProfileNavigator {
 
         # Direct match check
         if ($Name) {
+            $items = @()
+            if (Test-Path $cacheFile) {
+                try { $items = Get-Content $cacheFile | ConvertFrom-Json } catch {}
+            }
             # List projects on screen if requested
             if ($Name -eq '-list' -or $Name -eq '-l' -or $Name -eq '--list') {
                 Write-Host ""
@@ -154,154 +103,280 @@ class ProfileNavigator {
             }
         }
 
-        # Trigger the Git status background scanner job if not already running/completed
-        $job = Get-Job -Name "GitStatusScanner" -ErrorAction SilentlyContinue
-        if (-not $job) {
-            $paths = $items.Path
-            Start-Job -Name "GitStatusScanner" -ScriptBlock {
-                param($pathsList)
-                $res = @{}
-                foreach ($p in $pathsList) {
-                    if (Test-Path (Join-Path $p ".git")) {
-                        try {
-                            Push-Location $p -ErrorAction SilentlyContinue
-                            $branch = (git rev-parse --abbrev-ref HEAD 2>$null)
-                            if ($branch) {
-                                $status = (git status --porcelain=v1 --ignore-submodules=all 2>$null)
-                                $changes = 0
-                                if ($status) {
-                                    $changes = ($status | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Measure-Object).Count
-                                }
-                                $res[$p] = "$($branch.Trim())|$changes"
-                            } else {
-                                $res[$p] = "|"
-                            }
-                        } catch {
-                            $res[$p] = "|"
-                        } finally {
-                            Pop-Location -ErrorAction SilentlyContinue
-                        }
-                    } else {
-                        $res[$p] = "|"
-                    }
-                }
-                return $res
-            } -ArgumentList @(,$paths) | Out-Null
-        }
-
-        # Helper scriptblock to generate string labels for the table
-        $generateLabels = {
-            param($itemList)
-            $lbls = [System.Collections.Generic.List[string]]::new()
-            for ($i = 0; $i -lt $itemList.Count; $i++) {
-                $icon = if ($itemList[$i].Priority) { "★" } else { " " }
-                $gitStatusText = [ProfileNavigator]::GetGitStatusText($itemList[$i].Path)
-                
-                $parts = $gitStatusText -split '\|'
-                $branch = if ($parts[0]) { $parts[0] } else { "" }
-                $changes = if ($parts.Count -gt 1) { $parts[1] } else { "" }
-                
-                $namePadded = $itemList[$i].Label.PadRight(35)
-                $branchStr = if ($branch -and $branch -ne "...") { "🌳 " + $branch } elseif ($branch -eq "...") { "🔄 checking..." } else { "" }
-                $branchPadded = $branchStr.PadRight(20)
-                
-                $changeStr = ""
-                if ($changes -ne "0" -and $changes -ne "") {
-                    $changeStr = "📝 $changes files"
-                }
-                
-                $null = $lbls.Add("$icon 📂 $namePadded │ $branchPadded │ $changeStr")
-            }
-            return $lbls.ToArray()
-        }
-
-        # Build initial labels array for TUI selection
-        $labels = &$generateLabels $items
-
-        # Setup the global non-blocking update callback closure for TerminalMenu
-        $Global:TerminalMenuOnIdle = {
-            $updated = [ProfileNavigator]::PollGitStatusJobs()
-            if ($updated) {
-                return &$generateLabels $items
-            }
-            return $null
-        }.GetNewClosure()
-
-        $cHalf = [char]0x2584
-        $cFull = [char]0x2588
-        $cTop  = [char]0x2580
-        $projHeaders = @(
-            "  $cHalf$cFull$cFull$cFull$cFull$cHalf   $cHalf$cFull$cFull$cFull$cFull$cHalf     Powershell Profile CLI v2.0",
-            " $cFull$cTop     $cTop $cFull$cTop     $cTop    Workspace Projects",
-            " $cFull        $cFull           ",
-            " $cFull$cHalf     $cHalf $cFull$cHalf     $cHalf    Select a registered project workspace.",
-            "  $cTop$cFull$cFull$cFull$cFull$cTop   $cTop$cFull$cFull$cFull$cFull$cTop     Esc to go back.",
-            "====================================================================================="
-        )
-        
+        # Interactive selection dashboard TUI
+        $forceScan = $false
         while ($true) {
-            $selected = ([type]"TerminalMenu")::ShowRobust($projHeaders, $labels, 0, $false, $true)
-            if ($selected -ge 0) {
-                $proj = $items[$selected]
-                
-                # Auto-switch credentials associated with the project
-                $matchedWorkspace = $Global:ProfileWorkspaces | Where-Object { $_.Name -eq $proj.Label } | Select-Object -First 1
-                if ($matchedWorkspace) {
-                    Write-Host "  Activating credentials for account: $($matchedWorkspace.AssociatedAccount)..." -ForegroundColor Cyan
-                    [AgyAccountManager]::SetActiveAccount($matchedWorkspace.AssociatedAccount, $true)
+            $items = @()
+            $needsScan = $true
+
+            if ($forceScan) {
+                $needsScan = $true
+                $forceScan = $false
+            } elseif (Test-Path $cacheFile) {
+                try {
+                    $cacheItem = Get-Item $cacheFile
+                    if ($cacheItem.LastWriteTime -gt (Get-Date).AddHours(-24)) {
+                        $items = Get-Content $cacheFile | ConvertFrom-Json
+                        $needsScan = $false
+                    }
+                } catch {}
+            }
+
+            if ($needsScan) {
+                $searchPaths = @(
+                    "$env:USERPROFILE\Desktop\back-up\1.project",
+                    "$env:USERPROFILE\Desktop\project",
+                    "C:\Users\sshuser\project",
+                    "$env:USERPROFILE\Documents"
+                ) | Where-Object { Test-Path $_ }
+
+                $excludeFolders = @("My Music","My Pictures","My Videos","WindowsPowerShell",
+                                    "Custom Office Templates","Visual Studio 2022","Modules",
+                                    "vscode-config","typora-themes","img")
+
+                if (-not $searchPaths) {
+                    Write-Host "No search paths found. Configure search paths in ProfileNavigator." -ForegroundColor Yellow
+                    return
                 }
 
-                $actionHeaders = @(
-                    "=====================================================================================",
-                    " Actions for: $($proj.Label)",
-                    "====================================================================================="
-                )
-                $actionLabels = @(
-                    "💻 Open in VS Code",
-                    "📝 Open in Terminal IDE (Micro/Nvim)",
-                    "🐳 Start Docker Compose",
-                    "🧪 Run Unit Tests",
-                    "📂 Navigate here in current terminal"
-                )
-                $actionSelected = ([type]"TerminalMenu")::ShowRobust($actionHeaders, $actionLabels, 0, $false, $false)
+                $allProjects = $searchPaths | ForEach-Object {
+                    Get-ChildItem -Path $_ -Directory -ErrorAction SilentlyContinue |
+                        Where-Object { $_.Name -notin $excludeFolders }
+                } | Sort-Object Name -Unique
+
+                if (-not $allProjects) {
+                    Write-Host "No projects found in configured paths." -ForegroundColor Yellow
+                    return
+                }
+
+                # Build ordered list: priorities first, then alphabetical
+                $priorityNames = $Global:ProfileWorkspaces.Name
+                foreach ($p in $Global:ProfileWorkspaces) {
+                    $match = $allProjects | Where-Object { $_.Name -eq $p.Name } | Select-Object -First 1
+                    if ($match) { $items += [PSCustomObject]@{ Label = $match.Name; Path = $match.FullName; Priority = $true } }
+                }
+                foreach ($proj in ($allProjects | Where-Object { $_.Name -notin $priorityNames })) {
+                    $items += [PSCustomObject]@{ Label = $proj.Name; Path = $proj.FullName; Priority = $false }
+                }
                 
-                Write-Host ""
-                if ($actionSelected -eq 0) {
-                    Write-Host "  Opening $($proj.Label) in VS Code..." -ForegroundColor Green
-                    Start-Process code -ArgumentList "`"$($proj.Path)`"" -ErrorAction SilentlyContinue
-                    $Global:ExitCcLoop = $true
+                try {
+                    $cacheDir = Split-Path $cacheFile
+                    if (-not (Test-Path $cacheDir)) { New-Item -ItemType Directory -Path $cacheDir -Force | Out-Null }
+                    $items | ConvertTo-Json | Set-Content $cacheFile -Force
+                } catch {}
+            }
+
+            $job = Get-Job -Name "GitStatusScanner" -ErrorAction SilentlyContinue
+            if (-not $job) {
+                $paths = $items.Path
+                Start-Job -Name "GitStatusScanner" -ScriptBlock {
+                    param($pathsList)
+                    $res = @{}
+                    foreach ($p in $pathsList) {
+                        if (Test-Path (Join-Path $p ".git")) {
+                            try {
+                                Push-Location $p -ErrorAction SilentlyContinue
+                                $branch = (git rev-parse --abbrev-ref HEAD 2>$null)
+                                if ($branch) {
+                                    $status = (git status --porcelain=v1 --ignore-submodules=all 2>$null)
+                                    $changes = 0
+                                    if ($status) {
+                                        $changes = ($status | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Measure-Object).Count
+                                    }
+                                    $res[$p] = "$($branch.Trim())|$changes"
+                                } else {
+                                    $res[$p] = "|"
+                                }
+                            } catch {
+                                $res[$p] = "|"
+                            } finally {
+                                Pop-Location -ErrorAction SilentlyContinue
+                            }
+                        } else {
+                            $res[$p] = "|"
+                        }
+                    }
+                    return $res
+                } -ArgumentList @(,$paths) | Out-Null
+            }
+
+            $generateLabels = {
+                param($itemList)
+                $lbls = [System.Collections.Generic.List[string]]::new()
+                for ($i = 0; $i -lt $itemList.Count; $i++) {
+                    $icon = if ($itemList[$i].Priority) { "★" } else { " " }
+                    $gitStatusText = [ProfileNavigator]::GetGitStatusText($itemList[$i].Path)
+                    
+                    $parts = $gitStatusText -split '\|'
+                    $branch = if ($parts[0]) { $parts[0] } else { "" }
+                    $changes = if ($parts.Count -gt 1) { $parts[1] } else { "" }
+                    
+                    $namePadded = $itemList[$i].Label.PadRight(35)
+                    $branchStr = if ($branch -and $branch -ne "...") { "🌳 " + $branch } elseif ($branch -eq "...") { "🔄 checking..." } else { "" }
+                    $branchPadded = $branchStr.PadRight(20)
+                    
+                    $changeStr = ""
+                    if ($changes -ne "0" -and $changes -ne "") {
+                        $changeStr = "📝 $changes files"
+                    }
+                    
+                    $null = $lbls.Add("$icon 📂 $namePadded │ $branchPadded │ $changeStr")
+                }
+                return $lbls.ToArray()
+            }
+
+            $labels = &$generateLabels $items
+
+            $Global:TerminalMenuOnIdle = {
+                $updated = [ProfileNavigator]::PollGitStatusJobs()
+                if ($updated) {
+                    return &$generateLabels $items
+                }
+                return $null
+            }.GetNewClosure()
+
+            $cHalf = [char]0x2584
+            $cFull = [char]0x2588
+            $cTop  = [char]0x2580
+            $projHeaders = @(
+                "  $cHalf$cFull$cFull$cFull$cFull$cHalf   $cHalf$cFull$cFull$cFull$cFull$cHalf     Powershell Profile CLI v2.0",
+                " $cFull$cTop     $cTop $cFull$cTop     $cTop    Workspace Projects",
+                " $cFull        $cFull           ",
+                " $cFull$cHalf     $cHalf $cFull$cHalf     $cHalf    Select a registered project workspace.",
+                "  $cTop$cFull$cFull$cFull$cFull$cTop   $cTop$cFull$cFull$cFull$cFull$cTop     Esc to go back. (F5 refresh, Ctrl+P pin)",
+                "====================================================================================="
+            )
+            
+            $innerLoopExit = $false
+            while ($true) {
+                $selected = ([type]"TerminalMenu")::ShowRobust($projHeaders, $labels, 0, $false, $true)
+                
+                # F5 manual refresh
+                if ($selected -eq -5 -or $Global:TerminalMenuLastKey -eq "f5") {
+                    $Global:TerminalMenuLastKey = $null
+                    Remove-Job -Name "GitStatusScanner" -Force -ErrorAction SilentlyContinue
+                    $Global:GitStatusCache = @{}
+                    Remove-Item $cacheFile -Force -ErrorAction SilentlyContinue
+                    $forceScan = $true
+                    $innerLoopExit = $true
                     break
                 }
-                elseif ($actionSelected -eq 1) {
-                    [ProfileNavigator]::LaunchTerminalIde($proj.Path)
-                    $Global:ExitCcLoop = $true
+                
+                # Ctrl+P pin/unpin toggler
+                if ($Global:TerminalMenuLastKey -eq "ctrlp" -or $selected -ge 0 -and $Global:TerminalMenuLastKey -eq "ctrlp") {
+                    $Global:TerminalMenuLastKey = $null
+                    $proj = $items[$selected]
+                    
+                    $priorityFile = Join-Path $env:USERPROFILE ".gemini\antigravity\priority_workspaces.json"
+                    $isPinned = $false
+                    $matchIdx = -1
+                    for ($k = 0; $k -lt $Global:ProfileWorkspaces.Count; $k++) {
+                        if ($Global:ProfileWorkspaces[$k].Name -eq $proj.Label) {
+                            $isPinned = $true
+                            $matchIdx = $k
+                            break
+                        }
+                    }
+                    
+                    if ($isPinned) {
+                        $newPriority = @()
+                        for ($k = 0; $k -lt $Global:ProfileWorkspaces.Count; $k++) {
+                            if ($k -ne $matchIdx) { $newPriority += $Global:ProfileWorkspaces[$k] }
+                        }
+                        $Global:ProfileWorkspaces = $newPriority
+                        Write-Host "  Unpinned project: $($proj.Label)" -ForegroundColor Yellow
+                    } else {
+                        $short = $proj.Label.Substring(0, [Math]::Min(5, $proj.Label.Length)).ToLower()
+                        $newPin = @{
+                            Name = $proj.Label
+                            Short = $short
+                            AssociatedAccount = "default"
+                            Path = $proj.Path
+                        }
+                        $Global:ProfileWorkspaces += $newPin
+                        Write-Host "  Pinned project to priorities: $($proj.Label)" -ForegroundColor Green
+                    }
+                    
+                    try {
+                        $Global:ProfileWorkspaces | ConvertTo-Json | Set-Content $priorityFile -Force
+                    } catch {}
+                    
+                    $forceScan = $true
+                    $innerLoopExit = $true
                     break
                 }
-                elseif ($actionSelected -eq 2) {
-                    Write-Host "  Starting Docker Compose in $($proj.Label)..." -ForegroundColor Green
-                    Start-Process pwsh -ArgumentList "-NoExit", "-Command", "Set-Location `"$($proj.Path)`"; docker-compose up" -ErrorAction SilentlyContinue
-                    $Global:ExitCcLoop = $true
+
+                if ($selected -ge 0) {
+                    $proj = $items[$selected]
+                    
+                    # Auto-switch credentials associated with the project
+                    $matchedWorkspace = $Global:ProfileWorkspaces | Where-Object { $_.Name -eq $proj.Label } | Select-Object -First 1
+                    if ($matchedWorkspace) {
+                        Write-Host "  Activating credentials for account: $($matchedWorkspace.AssociatedAccount)..." -ForegroundColor Cyan
+                        [AgyAccountManager]::SetActiveAccount($matchedWorkspace.AssociatedAccount, $true)
+                    }
+
+                    $actionHeaders = @(
+                        "=====================================================================================",
+                        " Actions for: $($proj.Label)",
+                        "====================================================================================="
+                    )
+                    $actionLabels = @(
+                        "💻 Open in VS Code",
+                        "📝 Open in Terminal IDE (Micro/Nvim)",
+                        "🐳 Start Docker Compose",
+                        "🧪 Run Unit Tests",
+                        "📂 Navigate here in current terminal"
+                    )
+                    $actionSelected = ([type]"TerminalMenu")::ShowRobust($actionHeaders, $actionLabels, 0, $false, $false)
+                    
+                    Write-Host ""
+                    if ($actionSelected -eq 0) {
+                        Write-Host "  Opening $($proj.Label) in VS Code..." -ForegroundColor Green
+                        Start-Process code -ArgumentList "`"$($proj.Path)`"" -ErrorAction SilentlyContinue
+                        $Global:ExitCcLoop = $true
+                        $innerLoopExit = $true
+                        break
+                    }
+                    elseif ($actionSelected -eq 1) {
+                        [ProfileNavigator]::LaunchTerminalIde($proj.Path)
+                        $Global:ExitCcLoop = $true
+                        $innerLoopExit = $true
+                        break
+                    }
+                    elseif ($actionSelected -eq 2) {
+                        Write-Host "  Starting Docker Compose in $($proj.Label)..." -ForegroundColor Green
+                        Start-Process pwsh -ArgumentList "-NoExit", "-Command", "Set-Location `"$($proj.Path)`"; docker-compose up" -ErrorAction SilentlyContinue
+                        $Global:ExitCcLoop = $true
+                        $innerLoopExit = $true
+                        break
+                    }
+                    elseif ($actionSelected -eq 3) {
+                        Write-Host "  Running tests in $($proj.Label)..." -ForegroundColor Green
+                        Start-Process pwsh -ArgumentList "-NoExit", "-Command", "Set-Location `"$($proj.Path)`"; if (Test-Path .\run_tests.ps1) { .\run_tests.ps1 } else { dotnet test }" -ErrorAction SilentlyContinue
+                        $Global:ExitCcLoop = $true
+                        $innerLoopExit = $true
+                        break
+                    }
+                    elseif ($actionSelected -eq 4) {
+                        Write-Host "  Navigating to: $($proj.Label)" -ForegroundColor Green
+                        Set-Location $proj.Path
+                        $Global:ExitCcLoop = $true
+                        $innerLoopExit = $true
+                        break
+                    }
+                    elseif ($actionSelected -eq -1) {
+                        continue
+                    }
+                } else {
+                    Write-Host ""
+                    Write-Host "  Cancelled." -ForegroundColor DarkGray
+                    $innerLoopExit = $true
                     break
                 }
-                elseif ($actionSelected -eq 3) {
-                    Write-Host "  Running tests in $($proj.Label)..." -ForegroundColor Green
-                    Start-Process pwsh -ArgumentList "-NoExit", "-Command", "Set-Location `"$($proj.Path)`"; if (Test-Path .\run_tests.ps1) { .\run_tests.ps1 } else { dotnet test }" -ErrorAction SilentlyContinue
-                    $Global:ExitCcLoop = $true
-                    break
-                }
-                elseif ($actionSelected -eq 4) {
-                    Write-Host "  Navigating to: $($proj.Label)" -ForegroundColor Green
-                    Set-Location $proj.Path
-                    $Global:ExitCcLoop = $true
-                    break
-                }
-                elseif ($actionSelected -eq -1) {
-                    # Go back to Project List loop on Esc
-                    continue
-                }
-            } else {
-                Write-Host ""
-                Write-Host "  Cancelled." -ForegroundColor DarkGray
+            }
+
+            if ($innerLoopExit -and -not $forceScan) {
                 break
             }
         }
@@ -385,8 +460,8 @@ class ProfileNavigator {
             Start-Process micro -ArgumentList "-config-dir `"$microConfigDir`"" -NoNewWindow -Wait
         }
         elseif ($nvimCmd) {
-            Write-Host "  Launching NeoVim..." -ForegroundColor Green
-            Start-Process nvim -NoNewWindow -Wait
+            Write-Host "  Launching NeoVim IDE inside $projectPath..." -ForegroundColor Green
+            Start-Process nvim -ArgumentList "." -NoNewWindow -Wait
         }
         else {
             Write-Warning "No Terminal IDE is available."

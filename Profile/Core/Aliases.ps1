@@ -142,6 +142,22 @@ function Get-CustomCommands {
         while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
 
         $selected = [TerminalMenu]::ShowRobust($headers, $menuItems, $defaultIndex, $false, $true)
+        if ($selected -eq -10 -and $Global:TerminalMenuSlashCommand) {
+            $cmdToRun = $Global:TerminalMenuSlashCommand
+            $Global:TerminalMenuSlashCommand = $null
+            Clear-Host
+            Write-Host "[Control-Center] Executing suggested command: $cmdToRun" -ForegroundColor Cyan
+            Write-Host "--------------------------------------------------------" -ForegroundColor DarkGray
+            try {
+                Invoke-Expression $cmdToRun
+            } catch {
+                Write-Error $_
+            }
+            Write-Host "`nPress any key to return to Control Center..." -ForegroundColor DarkGray
+            [void][Console]::ReadKey($true)
+            continue
+        }
+
         if ($selected -lt 0 -or $selected -eq ($menuItems.Count - 1)) {
             break
         }
@@ -723,11 +739,45 @@ function Select-ShellTheme {
         Remove-Item -Path "Function:\prompt" -Force -ErrorAction SilentlyContinue
         Remove-Item -Path "Function:\prompt_original" -Force -ErrorAction SilentlyContinue
         oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
-        [AgyAccountManager]::RegisterPromptHook()
         [TerminalMenu]::InitializeTuiColors()
     }
 }
 Set-Alias -Name theme -Value Select-ShellTheme -Force
+
+function Clone-Project {
+    param(
+        [Parameter(Mandatory=$true, Position=0)][string]$Url,
+        [Parameter(Position=1)][string]$DestName
+    )
+    
+    $baseDir = if (Test-Path "C:\Users\sshuser\project") { "C:\Users\sshuser\project" } else { "$env:USERPROFILE\Desktop\project" }
+    if (-not (Test-Path $baseDir)) {
+        $baseDir = Join-Path $env:USERPROFILE "Documents"
+    }
+
+    if (-not $DestName) {
+        if ($Url -match '/([^/]+)\.git$') {
+            $DestName = $Matches[1]
+        } elseif ($Url -match '/([^/]+)$') {
+            $DestName = $Matches[1]
+        } else {
+            $DestName = "cloned-project-" + (Get-Random)
+        }
+    }
+
+    $targetPath = Join-Path $baseDir $DestName
+    Write-Host "Cloning project from $Url into $targetPath..." -ForegroundColor Cyan
+    git clone $Url $targetPath
+
+    if ($LASTEXITCODE -eq 0 -and (Test-Path $targetPath)) {
+        $cacheFile = Join-Path $env:USERPROFILE ".gemini\antigravity\workspace_cache.json"
+        Remove-Item $cacheFile -Force -ErrorAction SilentlyContinue
+        Write-Host "Project successfully cloned and registered to workspace cache!" -ForegroundColor Green
+    } else {
+        Write-Error "Failed to clone repository."
+    }
+}
+Set-Alias -Name clone-project -Value Clone-Project -Force
 # Operations Dashboards & Shortcuts
 function Invoke-DockerDashboard { [DockerHelper]::Dkcl() }
 Set-Alias -Name dkcl -Value Invoke-DockerDashboard -Force

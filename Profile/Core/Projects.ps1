@@ -3,13 +3,40 @@
 #  Development launchers for the Antigravity Manager and Claude Proxy projects.
 # ==============================================================================
 
-$Global:ProfileWorkspaces = @(
+$priorityFile = Join-Path $env:USERPROFILE ".gemini\antigravity\priority_workspaces.json"
+$defaultWorkspaces = @(
     @{ Name = "Powershell";                  Short = "pw";    AssociatedAccount = "fptvttnhon2026@gmail.com" }
     @{ Name = "finance-dashboard";           Short = "fin";   AssociatedAccount = "personal@gmail.com" }
     @{ Name = "clean-architecture-net-8.0";  Short = "clean"; AssociatedAccount = "default" }
     @{ Name = "BinhDinhFood";                Short = "food";  AssociatedAccount = "default" }
     @{ Name = "test-road-map";               Short = "road";  AssociatedAccount = "default" }
 )
+
+if (-not (Test-Path $priorityFile)) {
+    try {
+        $parent = Split-Path $priorityFile
+        if (-not (Test-Path $parent)) { New-Item -ItemType Directory -Path $parent -Force | Out-Null }
+        $defaultWorkspaces | ConvertTo-Json | Set-Content $priorityFile -Force
+    } catch {}
+}
+
+$Global:ProfileWorkspaces = @()
+if (Test-Path $priorityFile) {
+    try {
+        $loaded = Get-Content $priorityFile -Raw | ConvertFrom-Json
+        foreach ($item in $loaded) {
+            $ht = @{}
+            foreach ($prop in $item.psobject.Properties) {
+                $ht[$prop.Name] = $prop.Value
+            }
+            $Global:ProfileWorkspaces += $ht
+        }
+    } catch {
+        $Global:ProfileWorkspaces = $defaultWorkspaces
+    }
+} else {
+    $Global:ProfileWorkspaces = $defaultWorkspaces
+}
 
 # Dynamically resolve paths from the workspace cache at startup
 $cacheFile = Join-Path $env:USERPROFILE ".gemini\antigravity\workspace_cache.json"

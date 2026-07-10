@@ -168,9 +168,35 @@ class TerminalMenu {
                     $cleanFilter = $filterText.Substring(1)
                 }
 
+                $activeItems = $Items
+                $activeCount = $count
+                $activeCmds = $Cmds
+                
+                $isSlashSuggestion = $false
+                if ($filterText.StartsWith("/")) {
+                    $isSlashSuggestion = $true
+                    $slashSuggestions = @(
+                        "git status             - Show git working tree status",
+                        "git add .              - Stage all changes in workspace",
+                        "gcmt                   - conventional commits wizard",
+                        "git push               - Push commits to remote branch",
+                        "dotnet run             - Build and run active .NET project",
+                        "dotnet build           - Compile active .NET project",
+                        "dotnet test            - Run active .NET project unit tests",
+                        "docker-compose up      - Start Docker Compose services",
+                        "docker-compose down    - Stop Docker Compose services",
+                        "sysmon                 - Display resource diagnostics",
+                        "dkcl                   - Display Docker container manager",
+                        "killport               - Terminate port collision process"
+                    )
+                    $activeItems = $slashSuggestions
+                    $activeCount = $slashSuggestions.Count
+                    $activeCmds = $null
+                }
+
                 $filteredIndices = [System.Collections.Generic.List[int]]::new()
-                for ($i = 0; $i -lt $count; $i++) {
-                    if ([string]::IsNullOrWhiteSpace($cleanFilter) -or $Items[$i] -like "*$cleanFilter*") {
+                for ($i = 0; $i -lt $activeCount; $i++) {
+                    if ([string]::IsNullOrWhiteSpace($cleanFilter) -or $activeItems[$i] -like "*$cleanFilter*") {
                         $null = $filteredIndices.Add($i)
                     }
                 }
@@ -193,7 +219,7 @@ class TerminalMenu {
                 if ($searchMode) {
                     $null = $outputLines.Add([ColoredLine]@{ Text = "  [Search] query: $filterText"; Color = $Global:TuiColors.Search })
                     if ($filteredCount -gt 0) {
-                        $null = $outputLines.Add([ColoredLine]@{ Text = "  [Suggest]: $($Items[$filteredIndices[0]])"; Color = $Global:TuiColors.Suggest })
+                        $null = $outputLines.Add([ColoredLine]@{ Text = "  [Suggest]: $($activeItems[$filteredIndices[0]])"; Color = $Global:TuiColors.Suggest })
                     } else {
                         $null = $outputLines.Add([ColoredLine]@{ Text = ""; Color = "Gray" })
                     }
@@ -207,8 +233,8 @@ class TerminalMenu {
                 $hasCmdLine = $false
                 if ($filteredCount -gt 0) {
                     $highlightedActualIndex = $filteredIndices[$currentIndex]
-                    if ($Cmds -and $highlightedActualIndex -lt $Cmds.Count) {
-                        $cmdText = $Cmds[$highlightedActualIndex]
+                    if ($activeCmds -and $highlightedActualIndex -lt $activeCmds.Count) {
+                        $cmdText = $activeCmds[$highlightedActualIndex]
                         if (-not [string]::IsNullOrWhiteSpace($cmdText)) {
                             $null = $outputLines.Add([ColoredLine]@{ Text = "  [Cmd]: $cmdText"; Color = $Global:TuiColors.Suggest })
                             $null = $outputLines.Add([ColoredLine]@{ Text = ""; Color = "Gray" })
@@ -239,7 +265,7 @@ class TerminalMenu {
                     }
                     for ($i = $start; $i -le $end; $i++) {
                         $actualIndex = $filteredIndices[$i]
-                        $label = $Items[$actualIndex]
+                        $label = $activeItems[$actualIndex]
                         $maxLabelLen = $width - 6
                         if ($maxLabelLen -gt 3 -and $label.Length -gt $maxLabelLen) {
                             $label = $label.Substring(0, $maxLabelLen - 3) + "..."
@@ -324,8 +350,32 @@ class TerminalMenu {
                         $currentIndex = 0
                     }
                     elseif ($key.Key -eq [ConsoleKey]::Enter) {
-                        if ($filteredCount -gt 0) { return $filteredIndices[$currentIndex] }
+                        if ($filteredCount -gt 0) {
+                            $actualIdx = $filteredIndices[$currentIndex]
+                            if ($isSlashSuggestion) {
+                                $chosenSuggestion = $activeItems[$actualIdx]
+                                if ($chosenSuggestion -match '^([a-zA-Z0-9_\-]+(\s+[a-zA-Z0-9_\-\.]+)*)\s+-') {
+                                    $Global:TerminalMenuSlashCommand = $Matches[1].Trim()
+                                } else {
+                                    $Global:TerminalMenuSlashCommand = $chosenSuggestion.Trim()
+                                }
+                                $Global:TerminalMenuLastKey = "slashcmd"
+                                return -10
+                            }
+                            return $actualIdx
+                        }
                         $searchMode = $false
+                    }
+                    elseif ($key.Key -eq [ConsoleKey]::F5) {
+                        $Global:TerminalMenuLastKey = "f5"
+                        return -5
+                    }
+                    elseif ($key.Modifiers -eq [ConsoleModifiers]::Control -and $key.Key -eq [ConsoleKey]::P) {
+                        if ($filteredCount -gt 0) {
+                            $actualIdx = $filteredIndices[$currentIndex]
+                            $Global:TerminalMenuLastKey = "ctrlp"
+                            return $actualIdx
+                        }
                     }
                     elseif ($key.Key -eq [ConsoleKey]::Backspace) {
                         if ($filterText.Length -gt 0) {
@@ -375,11 +425,32 @@ class TerminalMenu {
                     elseif ($key.Key -eq [ConsoleKey]::Enter) {
                         if ($filteredCount -gt 0) {
                             $actualIdx = $filteredIndices[$currentIndex]
+                            if ($isSlashSuggestion) {
+                                $chosenSuggestion = $activeItems[$actualIdx]
+                                if ($chosenSuggestion -match '^([a-zA-Z0-9_\-]+(\s+[a-zA-Z0-9_\-\.]+)*)\s+-') {
+                                    $Global:TerminalMenuSlashCommand = $Matches[1].Trim()
+                                } else {
+                                    $Global:TerminalMenuSlashCommand = $chosenSuggestion.Trim()
+                                }
+                                $Global:TerminalMenuLastKey = "slashcmd"
+                                return -10
+                            }
                             if ($Items[$actualIdx] -match "future|support future") { continue }
                             $Global:TerminalMenuLastKey = "enter"
                             return $actualIdx
                         }
                         return -1
+                    }
+                    elseif ($key.Key -eq [ConsoleKey]::F5) {
+                        $Global:TerminalMenuLastKey = "f5"
+                        return -5
+                    }
+                    elseif ($key.Modifiers -eq [ConsoleModifiers]::Control -and $key.Key -eq [ConsoleKey]::P) {
+                        if ($filteredCount -gt 0) {
+                            $actualIdx = $filteredIndices[$currentIndex]
+                            $Global:TerminalMenuLastKey = "ctrlp"
+                            return $actualIdx
+                        }
                     }
                     elseif ($key.Key -eq [ConsoleKey]::Escape) {
                         if (-not [string]::IsNullOrWhiteSpace($filterText)) {
