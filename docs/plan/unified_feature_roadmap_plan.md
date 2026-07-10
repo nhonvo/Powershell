@@ -35,9 +35,9 @@ This document consolidates and unifies all planned features, specifications, and
 *   **Feature:** Build an enhanced search filter that triggers when a user types a slash `/` in the command palette, allowing them to search all custom commands and tool suggestions (e.g. `dotnet run`, `git status`, `git add .`, `docker-compose up`, etc.) directly inside the `cc` Control Center.
 *   **User Story:** As a power user, I want to type `/` inside the search bar to access and fuzzy-search all registered command shortcuts, system suggestions, and aliases, so that I can execute commands without leaving the dashboard.
 *   **Implementation Tasks:**
-    - [ ] Add a list of default command suggestions (`dotnet run`, `git status`, `git add .`, `docker-compose up`, etc.) to the Command Center list items.
-    - [ ] Intercept search queries starting with `/` to isolate the suggestion list.
-    - [ ] Enable fuzzy matching for all command suggestion items.
+    - [x] Add a list of default command suggestions (`dotnet run`, `git status`, `git add .`, `docker-compose up`, etc.) to the Command Center list items.
+    - [x] Intercept search queries starting with `/` to isolate the suggestion list.
+    - [x] Enable fuzzy matching for all command suggestion items.
 
 ---
 
@@ -67,32 +67,32 @@ This document consolidates and unifies all planned features, specifications, and
 *   **Feature:** After selecting a project from the workspace list, render a secondary interactive Action Submenu instead of triggering hidden hotkeys.
 *   **User Story:** As a developer, I want to see a clear list of actions after selecting a project (e.g., Open in VS Code, Open in Terminal IDE, Open in New Terminal Tab, Start Docker Compose), so that I don't have to memorize keyboard shortcuts to launch my environments.
 *   **Implementation Tasks:**
-    - [ ] Build a secondary `TerminalMenu` that appears when a project is pressed via `Enter`.
-    - [ ] Add explicit options: `[1] Open in VS Code`, `[2] Open in Terminal IDE (Micro/Nvim)`, `[3] Open in New Terminal Window`, `[4] Navigate here in current terminal`.
-    - [ ] Integrate Agy IDE bindings if applicable.
+    - [x] Build a secondary `TerminalMenu` that appears when a project is pressed via `Enter`.
+    - [x] Add explicit options: `[1] Open in VS Code`, `[2] Open in Terminal IDE (Micro/Nvim)`, `[3] Open in New Terminal Window`, `[4] Navigate here in current terminal`.
+    - [x] Integrate Agy IDE bindings if applicable.
 
 ### [Feature 2.4] High-Speed Workspace Directory Caching
 *   **Feature:** Cache the results of the filesystem `Get-ChildItem` directory scan to a local JSON/CSV file (`~/.gemini/antigravity/workspace_cache.json`) to dramatically reduce startup lag when opening the Project menu.
 *   **User Story:** As a power user with hundreds of nested directories, I want the project list to load instantly without waiting for disk I/O scans, so that context switching is instantaneous.
 *   **Implementation Tasks:**
-    - [ ] Implement a background job or cache-invalidation trigger to refresh the directory list daily or manually via a hotkey (`F5`).
-    - [ ] Read from the cache file first when `[Project]` is invoked.
+    - [x] Implement a background job or cache-invalidation trigger to refresh the directory list daily or manually via a hotkey (`F5`).
+    - [x] Read from the cache file first when `[Project]` is invoked.
 
 ### [Feature 2.5] Dynamic Project Pinning & TUI Git Cloner (Suggested Enhancements)
 *   **Feature:** Allow users to press `[Ctrl+P]` on a project row to dynamically pin it to the top of the list (Priority list), and add a `clone-project` command that clones a repo and auto-registers it.
 *   **User Story:** As an active developer, I want to quickly favorite my current active sprint projects to the top of my list, and have new Git clones automatically appear in my workspace navigator without editing profile scripts manually.
 *   **Implementation Tasks:**
-    - [ ] Update `ProfileNavigator.ps1` to read/write priority lists from a configuration file instead of hardcoded arrays.
-    - [ ] Map a keyboard shortcut in `TerminalMenu` for pinning.
-    - [ ] Create `clone-project <url>` wrapper that handles `git clone` and caches the new path.
+    - [x] Update `ProfileNavigator.ps1` to read/write priority lists from a configuration file instead of hardcoded arrays.
+    - [x] Map a keyboard shortcut in `TerminalMenu` for pinning.
+    - [x] Create `clone-project <url>` wrapper that handles `git clone` and caches the new path.
 
 ### [Feature 2.6] Enhanced Neovim Workspace Integration
 *   **Feature:** Enhance project opening inside Neovim by configuring fallback launch scripts, auto-setting the active working directory (`lcd`/`cd`) to the project root, and loading file drawer layouts or Neo-tree / Nvim-tree plugins instantly.
 *   **User Story:** As a modal editor enthusiast, I want Neovim to launch with its viewport focused on the selected project directory and with its file manager open, so that I can start editing files without manually setting up my editor buffers.
 *   **Implementation Tasks:**
-    - [ ] Create custom launch wrapper for Neovim (`nvim`) passing working directory flags.
-    - [ ] Check if `nvim` is installed and fallback to system standard text editors if missing.
-    - [ ] Auto-open directory trees when launching Neovim in a project folder.
+    - [x] Create custom launch wrapper for Neovim (`nvim`) passing working directory flags.
+    - [x] Check if `nvim` is installed and fallback to system standard text editors if missing.
+    - [x] Auto-open directory trees when launching Neovim in a project folder.
 
 ---
 
