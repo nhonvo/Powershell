@@ -105,70 +105,50 @@ function Get-CustomCommands {
         } else {
             [ProfileHelp]::Show($argStr)
         }
-        return    }    # Default Command Palette TUI Database setup
-    $commandsMap = [ProfileHelp]::GetCommands()
-    
-    # 1. Main Dashboard TUI Loop
-    $defaultIndex = 0
-    $cHalf = [char]0x2584
-    $cFull = [char]0x2588
-    $cTop  = [char]0x2580
-
-    $ShowCategoryMenu = {
-        param([string]$catName)
-        $defaultCmdIndex = 0
-        while ($true) {
-            $cmdHeaders = @(
-                "  $cHalf$cFull$cFull$cFull$cFull$cHalf   $cHalf$cFull$cFull$cFull$cFull$cHalf     Powershell Profile CLI v2.0",
-                " $cFull$cTop     $cTop $cFull$cTop     $cTop    Category: $catName",
-                " $cFull        $cFull           ",
-                " $cFull$cHalf     $cHalf $cFull$cHalf     $cHalf    Select a command to run.",
-                "  $cTop$cFull$cFull$cFull$cFull$cTop   $cTop$cFull$cFull$cFull$cFull$cTop     Esc to go back.",
-                "============================================="
-            )
-
-            $docs = $commandsMap[$catName] | Sort-Object Alias
-            $cmdLabels = [System.Collections.Generic.List[string]]::new()
-            $cmdDetails = [System.Collections.Generic.List[string]]::new()
-            foreach ($doc in $docs) {
-                $null = $cmdLabels.Add("$($doc.Alias.PadRight(15)) - $($doc.Desc)")
-                $null = $cmdDetails.Add($doc.Command)
-            }
-            $null = $cmdLabels.Add("[Back]")
-            $null = $cmdDetails.Add("")
-
-            while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
-
-            $selectedCmd = [TerminalMenu]::Show($cmdHeaders, $cmdLabels.ToArray(), $cmdDetails.ToArray(), $defaultCmdIndex, $false, $true)
-            if ($selectedCmd -lt 0 -or $selectedCmd -eq ($cmdLabels.Count - 1)) {
-                break
-            }
-
-            $defaultCmdIndex = $selectedCmd
-            $selectedCmdObj = $docs[$selectedCmd]
-            $cmdToRun = $selectedCmdObj.Command
-            $aliasName = $selectedCmdObj.Alias
-
-            Clear-Host
-            Write-Host ">>> Running: $aliasName ($cmdToRun)" -ForegroundColor Green
-            Write-Host "----------------------------------------------------------" -ForegroundColor Gray
-            
-            try {
-                if ($aliasName -eq "-") {
-                    Invoke-Expression $cmdToRun
-                } else {
-                    Invoke-Expression $aliasName
-                }
-            } catch {
-                Write-Error $_
-            }
-
-            Write-Host "`n----------------------------------------------------------" -ForegroundColor Gray
-            Write-Host "Press any key to return to $catName..." -ForegroundColor Yellow
-            while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
-            [void][Console]::ReadKey($true)
-        }
+        return
     }
+
+    # Load dynamic command database from JSON file
+    $commandsMap = [ProfileHelp]::GetCommands()
+
+    # Define 3-pane hierarchy mapping dynamically from loaded commandsMap
+    $hierarchy = [ordered]@{}
+    foreach ($k in $commandsMap.Keys) {
+        $hierarchy[$k] = [string[]]($commandsMap[$k].Keys)
+    }
+
+    $leftItems = @(
+        "1. Workspace & Navigation",
+        "2. Development Tools",
+        "3. System & Network Operations",
+        "4. AI & Profile Contexts",
+        "---------------------------",
+        "[Account] Manage Accounts",
+        "[AI Agent] Select AI Agent",
+        "[Project] Switch Project",
+        "[Theme] Select Theme",
+        "[SSH Info] System SSH Info",
+        "[Exit] Exit Control Center"
+    )
+
+    $adminDesc = @{
+        "[Account] Manage Accounts"   = "Manage isolated Antigravity accounts, credentials, and directories."
+        "[AI Agent] Select AI Agent"  = "Select and run local AI assistants (Claude, Codex, Hermes)."
+        "[Project] Switch Project"    = "Jump to project workspace (runs interactive TUI selector)."
+        "[Theme] Select Theme"        = "Select and apply Oh My Posh shell themes."
+        "[SSH Info] System SSH Info"  = "Display Tailscale connection details & active port 22 SSH sessions."
+        "[Exit] Exit Control Center"  = "Close and exit the Control Center interface."
+    }
+
+    $currentLeftIndex = 0
+    $currentMiddleIndex = 0
+    $currentRightIndex = 0
+    $focusPane = 0 # 0 = Left (Parent), 1 = Middle (Subcategory), 2 = Right (Commands)
+
+    # Initialize layout drawing
+    Clear-Host
+    $startTop = [Console]::CursorTop
+    $lastLinesCount = 0
 
     while ($true) {
         if ($null -eq $Global:TuiColors) { [TerminalMenu]::InitializeTuiColors() }
@@ -176,127 +156,329 @@ function Get-CustomCommands {
         $activeAcc = [AgyAccountManager]::GetActiveAccount()
         $timeStr = Get-Date -Format 'yyyy-MM-dd HH:mm'
         
-        $headers = @(
-            "  $cHalf$cFull$cFull$cFull$cFull$cHalf   $cHalf$cFull$cFull$cFull$cFull$cHalf     Powershell Profile CLI v2.0",
-            " $cFull$cTop     $cTop $cFull$cTop     $cTop    System dashboard and control suite.",
-            " $cFull        $cFull           ",
-            " $cFull$cHalf     $cHalf $cFull$cHalf     $cHalf    Active Account: $activeAcc",
-            "  $cTop$cFull$cFull$cFull$cFull$cTop   $cTop$cFull$cFull$cFull$cFull$cTop     Time:   $timeStr",
-            "============================================="
-        )
+        # Get selected parent category name
+        $selectedParentName = $leftItems[$currentLeftIndex]
+        $isCategory = $hierarchy.Contains($selectedParentName)
 
-        $menuItems = @(
-            "[Account]    Manage Antigravity Accounts & Credentials",
-            "[AI Agent]   Select and run local AI agents (Claude, Codex)",
-            "[Project]    Navigate to a registered project workspace",
-            "[Workspace]  Workspace & Navigation shortcuts",
-            "[Dev Tools]  Development Tools (Git, .NET, Docker, AWS)",
-            "[System/Net] System & Network Operations (utilities & SSH)",
-            "[AI Context] AI & Profile Contexts",
-            "[Manual]     Interactive custom commands help reference",
-            "[Theme]      Select and apply Oh My Posh shell theme",
-            "[SSH Info]   View Tailscale & active port 22 sessions",
-            "[Exit]       Exit Control Center"
-        )
+        # Resolve subcategories and commands list
+        $middleItems = @()
+        $rightItems = @()
+        if ($isCategory) {
+            $middleItems = $hierarchy[$selectedParentName]
+            # Ensure middle index is within bounds
+            if ($currentMiddleIndex -ge $middleItems.Count) { $currentMiddleIndex = 0 }
+            $selectedSubName = $middleItems[$currentMiddleIndex]
+            if ($commandsMap[$selectedParentName].ContainsKey($selectedSubName)) {
+                $rightItems = $commandsMap[$selectedParentName][$selectedSubName] | Sort-Object Alias
+            }
+        }
 
+        # Ensure right index is within bounds
+        if ($currentRightIndex -ge $rightItems.Count) { $currentRightIndex = 0 }
+
+        # Reset cursor position to the top of the visible console viewport to prevent screen scrolling
+        [Console]::SetCursorPosition(0, [Console]::WindowTop)
+
+        # Dynamic Responsive Header & Layout Width Calculation
+        $screenWidth = [Console]::WindowWidth
+        $tuiWidth = 110
+        if ($screenWidth -lt 110) { $tuiWidth = $screenWidth - 4 }
+        if ($tuiWidth -lt 65) { $tuiWidth = 65 } # safety floor
+        $borderWidth = $tuiWidth
+        $border = "=" * $borderWidth
+
+        # Draw Header
+        Write-Host $border -ForegroundColor $Global:TuiColors.Header
+        
+        $title = "🛸 Powershell Profile Control Center v3.0 🛸"
+        $titlePad = [Math]::Max(0, [Math]::Floor(($borderWidth - $title.Length) / 2))
+        Write-Host ((" " * $titlePad) + $title) -ForegroundColor $Global:TuiColors.Header
+        
+        $accInfo = "  Active Account: $activeAcc"
+        $timeInfo = "Time: $timeStr  "
+        $infoSpace = $borderWidth - $accInfo.Length - $timeInfo.Length
+        $infoLine = $accInfo + (" " * [Math]::Max(1, $infoSpace)) + $timeInfo
+        Write-Host $infoLine -ForegroundColor $Global:TuiColors.Footer
+        
+        Write-Host $border -ForegroundColor $Global:TuiColors.Header
+        
+        $helpStr = " [Tab/Right] Navigate Panes | [Left/Esc] Go Back | [Enter] Select & Run"
+        $helpPad = [Math]::Max(0, [Math]::Floor(($borderWidth - $helpStr.Length) / 2))
+        Write-Host ((" " * $helpPad) + $helpStr) -ForegroundColor $Global:TuiColors.Footer
+        
+        Write-Host $border -ForegroundColor $Global:TuiColors.Header
+
+        # Determine rows count to render
+        $maxRows = $leftItems.Count
+        if ($isCategory) {
+            $maxRows = [Math]::Max($leftItems.Count, [Math]::Max($middleItems.Count, $rightItems.Count))
+        } else {
+            $maxRows = [Math]::Max($leftItems.Count, 3) # padding for admin descriptions
+        }
+
+        for ($i = 0; $i -lt $maxRows; $i++) {
+            # --- PANE 0: LEFT COLUMN (MAIN CATEGORIES & ADMIN ACTIONS) ---
+            $leftPrefix = "   "
+            $leftColor = $Global:TuiColors.Regular
+            $leftTextColor = $Global:TuiColors.Regular
+            $leftText = ""
+
+            if ($i -lt $leftItems.Count) {
+                $item = $leftItems[$i]
+                if ($i -eq $currentLeftIndex) {
+                    if ($focusPane -eq 0) {
+                        $leftPrefix = " > "
+                        $leftColor = $Global:TuiColors.Selected
+                        $leftTextColor = $Global:TuiColors.Selected
+                    } else {
+                        $leftPrefix = "   "
+                        $leftColor = $Global:TuiColors.Search
+                        $leftTextColor = $Global:TuiColors.Search
+                    }
+                }
+                
+                if ($item -match '^-+$') {
+                    $leftTextColor = "DarkGray"
+                    $leftColor = "DarkGray"
+                } elseif ($item.StartsWith("[")) {
+                    if ($i -ne $currentLeftIndex) {
+                        $leftTextColor = "Cyan"
+                    }
+                }
+                # Strictly enforce exact width and truncation to keep separator line straight
+                $rawLeftText = $item.PadRight(30)
+                $leftText = if ($rawLeftText.Length -gt 30) { $rawLeftText.Substring(0, 30) } else { $rawLeftText }
+            } else {
+                $leftText = " " * 30
+            }
+
+            # Left total is prefix (3) + text (30) + separator (3) = 36 chars
+            Write-Host $leftPrefix -ForegroundColor $leftColor -NoNewline
+            Write-Host $leftText -ForegroundColor $leftTextColor -NoNewline
+            Write-Host " | " -ForegroundColor "DarkGray" -NoNewline
+
+            # --- PANE 1: MIDDLE COLUMN & PANE 2: RIGHT COLUMN ---
+            if ($isCategory) {
+                # --- PANE 1: MIDDLE COLUMN (SUBCATEGORIES) ---
+                $midPrefix = "   "
+                $midColor = $Global:TuiColors.Regular
+                $midTextColor = $Global:TuiColors.Regular
+                $midText = ""
+
+                if ($i -lt $middleItems.Count) {
+                    $subCat = $middleItems[$i]
+                    if ($i -eq $currentMiddleIndex) {
+                        if ($focusPane -eq 1) {
+                            $midPrefix = " > "
+                            $midColor = $Global:TuiColors.Selected
+                            $midTextColor = $Global:TuiColors.Selected
+                        } else {
+                            $midPrefix = "   "
+                            $midColor = $Global:TuiColors.Search
+                            $midTextColor = $Global:TuiColors.Search
+                        }
+                    }
+                    # Strictly enforce exact width and truncation to keep separator line straight
+                    $rawMidText = $subCat.PadRight(22)
+                    $midText = if ($rawMidText.Length -gt 22) { $rawMidText.Substring(0, 22) } else { $rawMidText }
+                } else {
+                    $midText = " " * 22
+                }
+                
+                # Middle total is prefix (3) + text (22) + separator (3) = 28 chars
+                Write-Host $midPrefix -ForegroundColor $midColor -NoNewline
+                Write-Host $midText -ForegroundColor $midTextColor -NoNewline
+                Write-Host " | " -ForegroundColor "DarkGray" -NoNewline
+
+                # --- PANE 2: RIGHT COLUMN (COMMANDS LIST) ---
+                $rightPrefix = "   "
+                $rightColor = $Global:TuiColors.Regular
+                $rightTextColor = $Global:TuiColors.Regular
+                $rightText = ""
+
+                if ($i -lt $rightItems.Count) {
+                    $doc = $rightItems[$i]
+                    if ($focusPane -eq 2 -and $i -eq $currentRightIndex) {
+                        $rightPrefix = " > "
+                        $rightColor = $Global:TuiColors.Selected
+                        $rightTextColor = $Global:TuiColors.Selected
+                    }
+                    $aliasStr = if ($doc.Alias -eq "-") { $doc.FullName } else { $doc.Alias }
+                    $rightText = "$($aliasStr.PadRight(15)) - $($doc.Desc)"
+                }
+                
+                # Mathematically calculate safe remaining width to prevent line-wrapping on narrow screens
+                # Columns before Right Text: 36 (left) + 28 (middle) + 3 (right prefix) = 67 chars
+                $maxRightWidth = $tuiWidth - 69
+                if ($maxRightWidth -lt 10) { $maxRightWidth = 10 }
+                $paddedRightText = $rightText.PadRight($maxRightWidth)
+                if ($paddedRightText.Length -gt $maxRightWidth) {
+                    $paddedRightText = $paddedRightText.Substring(0, $maxRightWidth)
+                }
+
+                Write-Host $rightPrefix -ForegroundColor $rightColor -NoNewline
+                Write-Host $paddedRightText -ForegroundColor $rightTextColor
+            } else {
+                # Admin action explanation: clear middle & right pane area safely to prevent wrap
+                # Left Column total is 36 characters
+                $remainingWidth = $tuiWidth - 38
+                if ($remainingWidth -lt 10) { $remainingWidth = 10 }
+                if ($i -eq 1) {
+                    $explainText = $adminDesc[$selectedParentName]
+                    $paddedExplain = $explainText.PadRight($remainingWidth)
+                    if ($paddedExplain.Length -gt $remainingWidth) {
+                        $paddedExplain = $paddedExplain.Substring(0, $remainingWidth)
+                    }
+                    Write-Host $paddedExplain -ForegroundColor $Global:TuiColors.Suggest
+                } else {
+                    Write-Host (" " * $remainingWidth)
+                }
+            }
+        }
+
+        # Erasure logic for trailing lines from previous iterations
+        $headerLines = 6
+        $linesWritten = $headerLines + $maxRows
+        if ($linesWritten -lt $lastLinesCount) {
+            $diff = $lastLinesCount - $linesWritten
+            for ($d = 0; $d -lt $diff; $d++) {
+                Write-Host (" " * ($tuiWidth - 2))
+            }
+        }
+        $lastLinesCount = $linesWritten
+
+        # Clear any extra keys in buffer
         while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
 
-        $selected = [TerminalMenu]::ShowRobust($headers, $menuItems, $defaultIndex, $false, $true)
-        if ($selected -eq -10 -and $Global:TerminalMenuSlashCommand) {
-            $cmdToRun = $Global:TerminalMenuSlashCommand
-            $Global:TerminalMenuSlashCommand = $null
-            Clear-Host
-            Write-Host "[Control-Center] Executing suggested command: $cmdToRun" -ForegroundColor Cyan
-            Write-Host "--------------------------------------------------------" -ForegroundColor DarkGray
-            try {
-                Invoke-Expression $cmdToRun
-            } catch {
-                Write-Error $_
+        # Read keystroke
+        $key = [Console]::ReadKey($true)
+        if ($key.Key -eq "UpArrow") {
+            if ($focusPane -eq 0) {
+                do {
+                    $currentLeftIndex = ($currentLeftIndex - 1 + $leftItems.Count) % $leftItems.Count
+                } while ($leftItems[$currentLeftIndex] -match '^-+$')
+                $currentMiddleIndex = 0
+                $currentRightIndex = 0
+            } elseif ($focusPane -eq 1) {
+                if ($middleItems.Count -gt 0) {
+                    $currentMiddleIndex = ($currentMiddleIndex - 1 + $middleItems.Count) % $middleItems.Count
+                    $currentRightIndex = 0
+                }
+            } elseif ($focusPane -eq 2) {
+                if ($rightItems.Count -gt 0) {
+                    $currentRightIndex = ($currentRightIndex - 1 + $rightItems.Count) % $rightItems.Count
+                }
             }
-            Write-Host "`nPress any key to return to Control Center..." -ForegroundColor DarkGray
-            [void][Console]::ReadKey($true)
-            continue
         }
-
-        if ($selected -lt 0 -or $selected -eq ($menuItems.Count - 1)) {
-            break
+        elseif ($key.Key -eq "DownArrow") {
+            if ($focusPane -eq 0) {
+                do {
+                    $currentLeftIndex = ($currentLeftIndex + 1) % $leftItems.Count
+                } while ($leftItems[$currentLeftIndex] -match '^-+$')
+                $currentMiddleIndex = 0
+                $currentRightIndex = 0
+            } elseif ($focusPane -eq 1) {
+                if ($middleItems.Count -gt 0) {
+                    $currentMiddleIndex = ($currentMiddleIndex + 1) % $middleItems.Count
+                    $currentRightIndex = 0
+                }
+            } elseif ($focusPane -eq 2) {
+                if ($rightItems.Count -gt 0) {
+                    $currentRightIndex = ($currentRightIndex + 1) % $rightItems.Count
+                }
+            }
         }
-
-        # Remember selected item
-        $defaultIndex = $selected
-        $action = $menuItems[$selected]
-
-        Clear-Host
-        if ($action.StartsWith("[Account]")) {
-            [AgyAccountManager]::ManageAccountsInteractive()
+        elseif ($key.Key -eq "RightArrow" -or $key.Key -eq "Tab") {
+            if ($focusPane -eq 0 -and $isCategory -and $middleItems.Count -gt 0) {
+                $focusPane = 1
+                $currentMiddleIndex = 0
+                $currentRightIndex = 0
+            } elseif ($focusPane -eq 1 -and $rightItems.Count -gt 0) {
+                $focusPane = 2
+                $currentRightIndex = 0
+            }
         }
-        elseif ($action.StartsWith("[AI Agent]")) {
-            [AiHelper]::ShowAiDashboard()
+        elseif ($key.Key -eq "LeftArrow") {
+            if ($focusPane -eq 2) {
+                $focusPane = 1
+            } elseif ($focusPane -eq 1) {
+                $focusPane = 0
+            }
         }
-        elseif ($action.StartsWith("[Project]")) {
-            $Global:ExitCcLoop = $false
-            Enter-Project ""
-            if ($Global:ExitCcLoop) {
+        elseif ($key.Key -eq "Escape") {
+            if ($focusPane -eq 2) {
+                $focusPane = 1
+            } elseif ($focusPane -eq 1) {
+                $focusPane = 0
+            } else {
                 break
             }
         }
-        elseif ($action.StartsWith("[Workspace]")) {
-            $ShowCategoryMenu.Invoke("Workspace & Navigation")
-        }
-        elseif ($action.StartsWith("[Dev Tools]")) {
-            $ShowCategoryMenu.Invoke("Development Tools")
-        }
-        elseif ($action.StartsWith("[System/Net]")) {
-            $ShowCategoryMenu.Invoke("System & Network Operations")
-        }
-        elseif ($action.StartsWith("[AI Context]")) {
-            $ShowCategoryMenu.Invoke("AI & Profile Contexts")
-        }
-        elseif ($action.StartsWith("[Theme]")) {
-            Select-ShellTheme
-        }
-        elseif ($action.StartsWith("[SSH Info]")) {
-            Get-SshConnectionInfo
-            Write-Host "`n----------------------------------------------------------" -ForegroundColor Gray
-            Write-Host "Press any key to return to Control Center..." -ForegroundColor Yellow
-            while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
-            [void][Console]::ReadKey($true)
-        }
-        elseif ($action.StartsWith("[Manual]")) {
-            # Open the Category-grouped Manual Sub-menu
-            $defaultCategoryIndex = 0
-            while ($true) {
-                $subHeaders = @(
-                    "  $cHalf$cFull$cFull$cFull$cFull$cHalf   $cHalf$cFull$cFull$cFull$cFull$cHalf     Powershell Profile CLI v2.0",
-                    " $cFull$cTop     $cTop $cFull$cTop     $cTop    Manual - Command Categories",
-                    " $cFull        $cFull           ",
-                    " $cFull$cHalf     $cHalf $cFull$cHalf     $cHalf    Select a category to view commands.",
-                    "  $cTop$cFull$cFull$cFull$cFull$cTop   $cTop$cFull$cFull$cFull$cFull$cTop     Esc to go back.",
-                    "============================================="
-                )
-
-                $categories = [System.Collections.Generic.List[string]]::new()
-                foreach ($cat in $commandsMap.Keys) {
-                    $null = $categories.Add($cat)
+        elseif ($key.Key -eq "Enter") {
+            if ($focusPane -eq 0) {
+                if ($isCategory) {
+                    if ($middleItems.Count -gt 0) {
+                        $focusPane = 1
+                        $currentMiddleIndex = 0
+                    }
+                } else {
+                    # Execute Admin actions directly!
+                    Clear-Host
+                    switch ($selectedParentName) {
+                        "[Account] Manage Accounts"   { [AgyAccountManager]::ManageAccountsInteractive() }
+                        "[AI Agent] Select AI Agent"  { [AiHelper]::ShowAiDashboard() }
+                        "[Project] Switch Project"    { $Global:ExitCcLoop = $false; Enter-Project ""; if ($Global:ExitCcLoop) { break } }
+                        "[Theme] Select Theme"        { Select-ShellTheme }
+                        "[SSH Info] System SSH Info"  { 
+                            Get-SshConnectionInfo 
+                            Write-Host "`n----------------------------------------------------------" -ForegroundColor Gray
+                            Write-Host "Press any key to return to Control Center..." -ForegroundColor Yellow
+                            while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
+                            [void][Console]::ReadKey($true)
+                        }
+                        "[Exit] Exit Control Center"  { break }
+                    }
+                    if ($selectedParentName -eq "[Exit] Exit Control Center") { break }
+                    
+                    # Reset redraw coordinates
+                    Clear-Host
+                    $startTop = [Console]::CursorTop
+                    $lastLinesCount = 0
                 }
-                $categoriesList = $categories | Sort-Object
-                $catMenuItems = [System.Collections.Generic.List[string]]::new()
-                foreach ($cat in $categoriesList) {
-                    $null = $catMenuItems.Add("[Category] $cat")
+            } elseif ($focusPane -eq 1) {
+                if ($rightItems.Count -gt 0) {
+                    $focusPane = 2
+                    $currentRightIndex = 0
                 }
-                $null = $catMenuItems.Add("[Back to Dashboard]")
+            } elseif ($focusPane -eq 2) {
+                # Execute selected command!
+                $selectedCmdObj = $rightItems[$currentRightIndex]
+                $cmdToRun = $selectedCmdObj.Command
+                $aliasName = $selectedCmdObj.Alias
 
+                Clear-Host
+                Write-Host ">>> Running: $aliasName ($cmdToRun)" -ForegroundColor Green
+                Write-Host "----------------------------------------------------------" -ForegroundColor Gray
+                
+                try {
+                    if ($aliasName -eq "-") {
+                        Invoke-Expression $cmdToRun
+                    } else {
+                        Invoke-Expression $aliasName
+                    }
+                } catch {
+                    Write-Error $_
+                }
+
+                Write-Host "`n----------------------------------------------------------" -ForegroundColor Gray
+                Write-Host "Press any key to return to Control Center..." -ForegroundColor Yellow
                 while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
+                [void][Console]::ReadKey($true)
 
-                $selectedCat = [TerminalMenu]::ShowRobust($subHeaders, $catMenuItems.ToArray(), $defaultCategoryIndex, $false, $true)
-                if ($selectedCat -lt 0 -or $selectedCat -eq ($catMenuItems.Count - 1)) {
-                    break
-                }
-
-                $defaultCategoryIndex = $selectedCat
-                $selectedCatName = $categoriesList[$selectedCat]
-
-                $ShowCategoryMenu.Invoke($selectedCatName)
+                # Reset redraw coordinates
+                Clear-Host
+                $startTop = [Console]::CursorTop
+                $lastLinesCount = 0
             }
         }
     }

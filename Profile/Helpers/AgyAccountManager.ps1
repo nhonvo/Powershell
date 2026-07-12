@@ -1,4 +1,4 @@
-﻿#region ANTIGRAVITY MULTI-ACCOUNT MANAGER
+#region ANTIGRAVITY MULTI-ACCOUNT MANAGER
 # ==============================================================================
 #  Dynamic Multi-Account Manager for Antigravity (agy) CLI.
 # ==============================================================================
@@ -1357,7 +1357,41 @@ class AgyAccountManager {
                 $idx++
             }
         }
+        [AgyAccountManager]::RegisterPromptHook()
+    }
 
+    static [void] RegisterPromptHook() {
+        try {
+            $promptCmd = Get-Command prompt -ErrorAction SilentlyContinue
+            if ($promptCmd -and $promptCmd.Definition -like "*prompt_original*") {
+                return
+            }
+
+            if (Test-Path Function:\prompt_original) {
+                Remove-Item Function:\prompt_original -Force -ErrorAction SilentlyContinue
+            }
+
+            if (Test-Path Function:\prompt) {
+                $definition = (Get-Command prompt).Definition
+                $null = New-Item -Path Function:\prompt_original -Value ([ScriptBlock]::Create($definition)) -Force
+                Remove-Item Function:\prompt -Force -ErrorAction SilentlyContinue
+            }
+
+            $scriptStr = @'
+                try {
+                    [AgyAccountManager]::AutoSwitchOnDirectoryChange($pwd.Path)
+                } catch {}
+                if (Test-Path Function:\prompt_original) {
+                    prompt_original
+                } else {
+                    $acc = [AgyAccountManager]::GetActiveAccount()
+                    $online = [AgyAccountManager]::CheckNetworkStatus()
+                    $tag = if ($online) { "" } else { " [Offline]" }
+                    "PS ($acc)$tag $($pwd.Path)> "
+                }
+'@
+            $null = New-Item -Path Function:\prompt -Value ([ScriptBlock]::Create($scriptStr)) -Force
+        } catch {}
     }
 
     static [void] InvokeAgy([string[]]$PassThruArgs) {
