@@ -1,4 +1,4 @@
-﻿#region CENTRALIZED SHELL ALIASES & WRAPPER FUNCTIONS
+#region CENTRALIZED SHELL ALIASES & WRAPPER FUNCTIONS
 # ==============================================================================
 #  Centralized routing layer bridging CLI commands to the static class helpers.
 # ==============================================================================
@@ -114,6 +114,62 @@ function Get-CustomCommands {
     $cFull = [char]0x2588
     $cTop  = [char]0x2580
 
+    $ShowCategoryMenu = {
+        param([string]$catName)
+        $defaultCmdIndex = 0
+        while ($true) {
+            $cmdHeaders = @(
+                "  $cHalf$cFull$cFull$cFull$cFull$cHalf   $cHalf$cFull$cFull$cFull$cFull$cHalf     Powershell Profile CLI v2.0",
+                " $cFull$cTop     $cTop $cFull$cTop     $cTop    Category: $catName",
+                " $cFull        $cFull           ",
+                " $cFull$cHalf     $cHalf $cFull$cHalf     $cHalf    Select a command to run.",
+                "  $cTop$cFull$cFull$cFull$cFull$cTop   $cTop$cFull$cFull$cFull$cFull$cTop     Esc to go back.",
+                "============================================="
+            )
+
+            $docs = $commandsMap[$catName] | Sort-Object Alias
+            $cmdLabels = [System.Collections.Generic.List[string]]::new()
+            $cmdDetails = [System.Collections.Generic.List[string]]::new()
+            foreach ($doc in $docs) {
+                $null = $cmdLabels.Add("$($doc.Alias.PadRight(15)) - $($doc.Desc)")
+                $null = $cmdDetails.Add($doc.Command)
+            }
+            $null = $cmdLabels.Add("[Back]")
+            $null = $cmdDetails.Add("")
+
+            while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
+
+            $selectedCmd = [TerminalMenu]::Show($cmdHeaders, $cmdLabels.ToArray(), $cmdDetails.ToArray(), $defaultCmdIndex, $false, $true)
+            if ($selectedCmd -lt 0 -or $selectedCmd -eq ($cmdLabels.Count - 1)) {
+                break
+            }
+
+            $defaultCmdIndex = $selectedCmd
+            $selectedCmdObj = $docs[$selectedCmd]
+            $cmdToRun = $selectedCmdObj.Command
+            $aliasName = $selectedCmdObj.Alias
+
+            Clear-Host
+            Write-Host ">>> Running: $aliasName ($cmdToRun)" -ForegroundColor Green
+            Write-Host "----------------------------------------------------------" -ForegroundColor Gray
+            
+            try {
+                if ($aliasName -eq "-") {
+                    Invoke-Expression $cmdToRun
+                } else {
+                    Invoke-Expression $aliasName
+                }
+            } catch {
+                Write-Error $_
+            }
+
+            Write-Host "`n----------------------------------------------------------" -ForegroundColor Gray
+            Write-Host "Press any key to return to $catName..." -ForegroundColor Yellow
+            while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
+            [void][Console]::ReadKey($true)
+        }
+    }
+
     while ($true) {
         if ($null -eq $Global:TuiColors) { [TerminalMenu]::InitializeTuiColors() }
         
@@ -130,13 +186,17 @@ function Get-CustomCommands {
         )
 
         $menuItems = @(
-            "[Account]  Manage Antigravity Accounts & Credentials",
-            "[AI Agent] Select and run local AI agents (Claude, Codex)",
-            "[Project]  Navigate to a registered project workspace",
-            "[Manual]   Interactive custom commands help reference",
-            "[Theme]    Select and apply Oh My Posh shell theme",
-            "[SSH Info] View Tailscale & active port 22 sessions",
-            "[Exit]     Exit Control Center"
+            "[Account]    Manage Antigravity Accounts & Credentials",
+            "[AI Agent]   Select and run local AI agents (Claude, Codex)",
+            "[Project]    Navigate to a registered project workspace",
+            "[Workspace]  Workspace & Navigation shortcuts",
+            "[Dev Tools]  Development Tools (Git, .NET, Docker, AWS)",
+            "[System/Net] System & Network Operations (utilities & SSH)",
+            "[AI Context] AI & Profile Contexts",
+            "[Manual]     Interactive custom commands help reference",
+            "[Theme]      Select and apply Oh My Posh shell theme",
+            "[SSH Info]   View Tailscale & active port 22 sessions",
+            "[Exit]       Exit Control Center"
         )
 
         while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
@@ -179,6 +239,18 @@ function Get-CustomCommands {
             if ($Global:ExitCcLoop) {
                 break
             }
+        }
+        elseif ($action.StartsWith("[Workspace]")) {
+            $ShowCategoryMenu.Invoke("Workspace & Navigation")
+        }
+        elseif ($action.StartsWith("[Dev Tools]")) {
+            $ShowCategoryMenu.Invoke("Development Tools")
+        }
+        elseif ($action.StartsWith("[System/Net]")) {
+            $ShowCategoryMenu.Invoke("System & Network Operations")
+        }
+        elseif ($action.StartsWith("[AI Context]")) {
+            $ShowCategoryMenu.Invoke("AI & Profile Contexts")
         }
         elseif ($action.StartsWith("[Theme]")) {
             Select-ShellTheme
@@ -224,55 +296,7 @@ function Get-CustomCommands {
                 $defaultCategoryIndex = $selectedCat
                 $selectedCatName = $categoriesList[$selectedCat]
 
-                # 3. Commands list sub-menu
-                $defaultCmdIndex = 0
-                while ($true) {
-                    $cmdHeaders = @(
-                        "  $cHalf$cFull$cFull$cFull$cFull$cHalf   $cHalf$cFull$cFull$cFull$cFull$cHalf     Powershell Profile CLI v2.0",
-                        " $cFull$cTop     $cTop $cFull$cTop     $cTop    Category: $selectedCatName",
-                        " $cFull        $cFull           ",
-                        " $cFull$cHalf     $cHalf $cFull$cHalf     $cHalf    Select a command to run.",
-                        "  $cTop$cFull$cFull$cFull$cFull$cTop   $cTop$cFull$cFull$cFull$cFull$cTop     Esc to go back.",
-                        "============================================="
-                    )
-
-                    $docs = $commandsMap[$selectedCatName] | Sort-Object Alias
-                    $cmdLabels = [System.Collections.Generic.List[string]]::new()
-                    $cmdDetails = [System.Collections.Generic.List[string]]::new()
-                    foreach ($doc in $docs) {
-                        $null = $cmdLabels.Add("$($doc.Alias.PadRight(12)) - $($doc.Desc)")
-                        $null = $cmdDetails.Add($doc.Command)
-                    }
-                    $null = $cmdLabels.Add("[Back to Categories]")
-                    $null = $cmdDetails.Add("")
-
-                    while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
-
-                    $selectedCmd = [TerminalMenu]::Show($cmdHeaders, $cmdLabels.ToArray(), $cmdDetails.ToArray(), $defaultCmdIndex, $false, $true)
-                    if ($selectedCmd -lt 0 -or $selectedCmd -eq ($cmdLabels.Count - 1)) {
-                        break
-                    }
-
-                    $defaultCmdIndex = $selectedCmd
-                    $selectedCmdObj = $docs[$selectedCmd]
-                    $cmdToRun = $selectedCmdObj.Command
-                    $aliasName = $selectedCmdObj.Alias
-
-                    Clear-Host
-                    Write-Host ">>> Running: $aliasName ($cmdToRun)" -ForegroundColor Green
-                    Write-Host "----------------------------------------------------------" -ForegroundColor Gray
-                    
-                    try {
-                        Invoke-Expression $aliasName
-                    } catch {
-                        Write-Error $_
-                    }
-
-                    Write-Host "`n----------------------------------------------------------" -ForegroundColor Gray
-                    Write-Host "Press any key to return to $selectedCatName..." -ForegroundColor Yellow
-                    while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
-                    [void][Console]::ReadKey($true)
-                }
+                $ShowCategoryMenu.Invoke($selectedCatName)
             }
         }
     }
@@ -867,6 +891,47 @@ function Invoke-LogStream {
     [LogHelper]::StreamLogs($LogPath)
 }
 Set-Alias -Name logstream -Value Invoke-LogStream -Force
+
+# --- Antigravity Projects Wrappers ---
+function Start-Manager { [Projects]::StartManager() }
+Set-Alias -Name mgr -Value Start-Manager -Force
+
+function Start-Proxy { [Projects]::StartProxy() }
+Set-Alias -Name prxy -Value Start-Proxy -Force
+
+# --- Antigravity Account Management Wrappers ---
+function Toggle-AutoSwitch { [AgyAccountManager]::ToggleAutoSwitch() }
+Set-Alias -Name autoswitch -Value Toggle-AutoSwitch -Force
+
+function Show-AccountsSummary { [AgyAccountManager]::ShowAllAccountsSummary() }
+Set-Alias -Name acc-sum -Value Show-AccountsSummary -Force
+
+# --- AI Session Dashboard Wrappers ---
+function Show-AiDashboard { [AiHelper]::ShowAiDashboard() }
+Set-Alias -Name ai-dash -Value Show-AiDashboard -Force
+
+# --- AWS LocalStack Aliases ---
+Set-Alias -Name s3ls      -Value Get-S3Buckets -Force
+Set-Alias -Name s3mb      -Value New-S3Bucket -Force
+Set-Alias -Name lbls      -Value Get-LambdaFunctions -Force
+Set-Alias -Name sqsls     -Value Get-LocalSQSQueues -Force
+Set-Alias -Name sqsmb     -Value New-LocalSQSQueue -Force
+Set-Alias -Name sqspurge  -Value Clear-LocalSQSQueue -Force
+Set-Alias -Name sqssend   -Value Send-LocalSQSMessage -Force
+Set-Alias -Name sqsrecv   -Value Get-LocalSQSMessage -Force
+Set-Alias -Name sqsattr   -Value Get-LocalSQSAttributes -Force
+
+# --- Terminal IDE Wrapper ---
+function Invoke-TerminalIde {
+    param([string]$Path)
+    $targetPath = if ($Path) { $Path } else { Get-Location }
+    [ProfileNavigator]::LaunchTerminalIde($targetPath)
+}
+Set-Alias -Name ide -Value Invoke-TerminalIde -Force
+
+# --- System History Wrapper ---
+function Clear-ShellHistory { [SystemHelper]::ClearHistory() }
+Set-Alias -Name clh -Value Clear-ShellHistory -Force
 
 #endregion
 
