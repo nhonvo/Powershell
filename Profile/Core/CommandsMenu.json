@@ -28,6 +28,18 @@
                                                          ],
                                            "Launchers":  [
                                                              {
+                                                                 "Alias":  "-",
+                                                                 "FullName":  "Set-DesktopThemeMode",
+                                                                 "Desc":  "PowerShell helper function",
+                                                                 "Command":  "Set-DesktopThemeMode"
+                                                             },
+                                                             {
+                                                                 "Alias":  "-",
+                                                                 "FullName":  "Set-MobileThemeMode",
+                                                                 "Desc":  "PowerShell helper function",
+                                                                 "Command":  "Set-MobileThemeMode"
+                                                             },
+                                                             {
                                                                  "Alias":  "clone-project",
                                                                  "FullName":  "Clone-Project",
                                                                  "Desc":  "Clone a repository and register it in the project workspace cache",
@@ -460,6 +472,12 @@
                                                                                   "FullName":  "csys",
                                                                                   "Desc":  "Quick category reference guide for System Utilities",
                                                                                   "Command":  "csys"
+                                                                              },
+                                                                              {
+                                                                                  "Alias":  "-",
+                                                                                  "FullName":  "Invoke-CcSearch",
+                                                                                  "Desc":  "PowerShell helper function",
+                                                                                  "Command":  "Invoke-CcSearch"
                                                                               },
                                                                               {
                                                                                   "Alias":  "-",

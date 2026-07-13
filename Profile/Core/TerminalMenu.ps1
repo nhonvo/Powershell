@@ -1,4 +1,4 @@
-﻿class ColoredLine {
+class ColoredLine {
     [string]$Text
     [string]$Color
 }
@@ -155,7 +155,7 @@ class TerminalMenu {
             $startRow = 0
             $startCol = 0
         } else {
-            $maxVisible = [Math]::Min(12, [Math]::Max(3, ([Console]::WindowHeight - 10)))
+            $maxVisible = if ($searchMode) { 3 } else { [Math]::Min(12, [Math]::Max(3, ([Console]::WindowHeight - 10))) }
             $estimatedLines = 7 + $maxVisible
             if ($searchMode) { $estimatedLines += 3 }
             
@@ -270,7 +270,7 @@ class TerminalMenu {
                     $nonItemLines = 6 + $HeaderLines.Count
                     if ($searchMode) { $nonItemLines += 2 }
                     if ($hasCmdLine) { $nonItemLines += 2 }
-                    $maxVisible = [Math]::Min(12, [Math]::Max(3, ([Console]::WindowHeight - $nonItemLines)))
+                    $maxVisible = if ($searchMode) { 3 } else { [Math]::Min(12, [Math]::Max(3, ([Console]::WindowHeight - $nonItemLines))) }
                     $start = 0
                     if ($currentIndex -ge $maxVisible) {
                         $start = $currentIndex - $maxVisible + 1

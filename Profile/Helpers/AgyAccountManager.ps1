@@ -1351,8 +1351,12 @@ class AgyAccountManager {
     static [void] RegisterPromptHook() {
         try {
             $promptCmd = Get-Command prompt -ErrorAction SilentlyContinue
-            if ($promptCmd -and $promptCmd.Definition -like "*prompt_original*") {
-                return
+            if ($promptCmd -and ($promptCmd.Definition -like "*AgyOriginalPromptCmd*" -or $promptCmd.Definition -like "*prompt_original*")) {
+                if (-not $Global:AgyOriginalPromptCmd) {
+                    # Allow re-binding if the session global command reference was cleared
+                } else {
+                    return
+                }
             }
 
             if (Test-Path Function:\prompt_original) {
@@ -1360,8 +1364,8 @@ class AgyAccountManager {
             }
 
             if (Test-Path Function:\prompt) {
-                $definition = (Get-Command prompt).Definition
-                $null = New-Item -Path Function:\prompt_original -Value ([ScriptBlock]::Create($definition)) -Force
+                $Global:AgyOriginalPromptCmd = Get-Command prompt
+                $null = New-Item -Path Function:\prompt_original -Value ([ScriptBlock]::Create("if (`$Global:AgyOriginalPromptCmd) { & `$Global:AgyOriginalPromptCmd }")) -Force
                 Remove-Item Function:\prompt -Force -ErrorAction SilentlyContinue
             }
 

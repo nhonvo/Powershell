@@ -16,6 +16,8 @@ Profile CLI Menu
 |   |   |__ f (Invoke-OpenExplorer) - Open current directory in Windows File Explorer
 |   |   |__ mkcd (New-DirAndEnter) - Create a new directory and navigate into it
 |   |__ Launchers
+|   |   |__ - (Set-DesktopThemeMode) - PowerShell helper function
+|   |   |__ - (Set-MobileThemeMode) - PowerShell helper function
 |   |   |__ clone-project (Clone-Project) - Clone a repository and register it in the project workspace cache
 |   |   |__ ide (Invoke-TerminalIde) - Launch Micro/NeoVim terminal IDE in current workspace
 |   |   |__ new-project (Invoke-ProjectScaffolder) - Scaffold a new project from pre-defined templates
@@ -93,6 +95,7 @@ Profile CLI Menu
 |   |   |__ - (cnav) - Quick category reference guide for Navigation commands
 |   |   |__ - (cnet) - Quick category reference guide for .NET commands
 |   |   |__ - (csys) - Quick category reference guide for System Utilities
+|   |   |__ - (Invoke-CcSearch) - PowerShell helper function
 |   |   |__ - (Invoke-Npm) - Wrapper running local npm client
 |   |   |__ ai (Invoke-MultiAgent) - Unified TUI AI Agent Selector menu
 |   |   |__ cc (Get-CustomCommands) - Access the interactive TUI profile manual
@@ -157,6 +160,8 @@ Profile CLI Menu
 
 | Alias | PowerShell Function (Full Name) | Description |
 |---|---|---|
+| `-` | `Set-DesktopThemeMode` | PowerShell helper function |
+| `-` | `Set-MobileThemeMode` | PowerShell helper function |
 | `clone-project` | `Clone-Project` | Clone a repository and register it in the project workspace cache |
 | `ide` | `Invoke-TerminalIde` | Launch Micro/NeoVim terminal IDE in current workspace |
 | `new-project` | `Invoke-ProjectScaffolder` | Scaffold a new project from pre-defined templates |
@@ -252,6 +257,7 @@ Profile CLI Menu
 | `-` | `cnav` | Quick category reference guide for Navigation commands |
 | `-` | `cnet` | Quick category reference guide for .NET commands |
 | `-` | `csys` | Quick category reference guide for System Utilities |
+| `-` | `Invoke-CcSearch` | PowerShell helper function |
 | `-` | `Invoke-Npm` | Wrapper running local npm client |
 | `ai` | `Invoke-MultiAgent` | Unified TUI AI Agent Selector menu |
 | `cc` | `Get-CustomCommands` | Access the interactive TUI profile manual |

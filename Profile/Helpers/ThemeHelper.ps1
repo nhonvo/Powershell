@@ -1,4 +1,4 @@
-﻿#region SHELL THEME SWITCHER UTILITY
+#region SHELL THEME SWITCHER UTILITY
 # ==============================================================================
 #  Dynamic Oh My Posh style switcher using the existing TerminalMenu TUI select component.
 # ==============================================================================
@@ -86,9 +86,14 @@ class ThemeHelper {
             $selectedTheme = $themeNames[$selectedIndex]
             $env:THEME = $selectedTheme
 
-            # Persist selection
-            $activeThemeFile = Join-Path -Path $themesPath -ChildPath "active_theme.txt"
-            Set-Content -Path $activeThemeFile -Value $selectedTheme -Force
+            # Centralized JSON Config
+            $configPath = Join-Path -Path $themesPath -ChildPath "config.json"
+            $cfg = @{ active_theme = $selectedTheme; enable_mobile = ($selectedTheme -like "*-mobile") }
+            $cfg | ConvertTo-Json | Out-File -FilePath $configPath -Force -Encoding utf8
+
+            # Cleanup legacy files
+            Remove-Item -Path (Join-Path -Path $themesPath -ChildPath "active_theme.txt") -Force -ErrorAction SilentlyContinue
+            Remove-Item -Path (Join-Path -Path $themesPath -ChildPath "mobile_mode_active.txt") -Force -ErrorAction SilentlyContinue
 
             $themePath = Join-Path -Path $themesPath -ChildPath "$selectedTheme.omp.json"
             if (Test-Path $themePath) {
@@ -99,31 +104,86 @@ class ThemeHelper {
         }
     }
 
-
     static [void] ToggleMobileMode() {
-        $themesPath = Join-Path -Path $env:USERPROFILE -ChildPath "Documents\PowerShell\asset\powershell-themes"
-        $mobileFlagFile = Join-Path -Path $themesPath -ChildPath "mobile_mode_active.txt"
+        $themesPath = $env:POSH_THEMES_PATH
+        if (-not (Test-Path $themesPath)) { return }
         
+        $configPath = Join-Path -Path $themesPath -ChildPath "config.json"
         $isMobile = $false
-        if (Test-Path $mobileFlagFile) {
-            $isMobile = (Get-Content $mobileFlagFile -Raw | Out-String).Trim() -eq "true"
+        $currentTheme = "neko"
+        if (Test-Path $configPath) {
+            try {
+                $json = Get-Content $configPath -Raw | ConvertFrom-Json
+                $isMobile = if ($null -ne $json.enable_mobile) { [bool]$json.enable_mobile } else { $false }
+                if ($json.active_theme) { $currentTheme = $json.active_theme }
+            } catch {}
         }
         
         $newMobileState = -not $isMobile
-        Set-Content -Path $mobileFlagFile -Value ($newMobileState.ToString().ToLower()) -Force
+        $baseTheme = $currentTheme -replace "-mobile$", ""
+        $themeName = $baseTheme
+        if ($newMobileState) {
+            $mobileCandidate = "$baseTheme-mobile"
+            if (Test-Path (Join-Path -Path $themesPath -ChildPath "$mobileCandidate.omp.json")) {
+                $themeName = $mobileCandidate
+            }
+        }
         
-        # Decide which theme file to load
-        $themeName = if ($newMobileState) { "neko-mobile" } else { "neko" }
-        
-        # Persist standard active theme
-        $activeThemeFile = Join-Path -Path $themesPath -ChildPath "active_theme.txt"
-        Set-Content -Path $activeThemeFile -Value $themeName -Force
+        # Save centralized json config
+        $cfg = @{ active_theme = $themeName; enable_mobile = $newMobileState }
+        $cfg | ConvertTo-Json | Out-File -FilePath $configPath -Force -Encoding utf8
         $env:THEME = $themeName
         
+        # Cleanup legacy files
+        Remove-Item -Path (Join-Path -Path $themesPath -ChildPath "active_theme.txt") -Force -ErrorAction SilentlyContinue
+        Remove-Item -Path (Join-Path -Path $themesPath -ChildPath "mobile_mode_active.txt") -Force -ErrorAction SilentlyContinue
+
         $themePath = Join-Path -Path $themesPath -ChildPath "$themeName.omp.json"
         if (Test-Path $themePath) {
             $Global:NewThemeToApply = $themePath
             if ($newMobileState) {
+                Write-Host "[Theme] Mobile Prompt Theme activated (ASCII mode, stacked)." -ForegroundColor Cyan
+            } else {
+                Write-Host "[Theme] Desktop Prompt Theme activated (Rich Unicode/Emoji mode)." -ForegroundColor Green
+            }
+        }
+    }
+
+    static [void] SetMobileMode([bool]$enableMobile) {
+        $themesPath = $env:POSH_THEMES_PATH
+        if (-not (Test-Path $themesPath)) { return }
+        
+        $configPath = Join-Path -Path $themesPath -ChildPath "config.json"
+        $currentTheme = "neko"
+        if (Test-Path $configPath) {
+            try {
+                $json = Get-Content $configPath -Raw | ConvertFrom-Json
+                if ($json.active_theme) { $currentTheme = $json.active_theme }
+            } catch {}
+        }
+        
+        $baseTheme = $currentTheme -replace "-mobile$", ""
+        $themeName = $baseTheme
+        if ($enableMobile) {
+            $mobileCandidate = "$baseTheme-mobile"
+            if (Test-Path (Join-Path -Path $themesPath -ChildPath "$mobileCandidate.omp.json")) {
+                $themeName = $mobileCandidate
+            }
+        }
+        
+        # Save centralized json config
+        $cfg = @{ active_theme = $themeName; enable_mobile = $enableMobile }
+        $cfg | ConvertTo-Json | Out-File -FilePath $configPath -Force -Encoding utf8
+        $env:THEME = $themeName
+        
+        # Cleanup legacy files
+        Remove-Item -Path (Join-Path -Path $themesPath -ChildPath "active_theme.txt") -Force -ErrorAction SilentlyContinue
+        Remove-Item -Path (Join-Path -Path $themesPath -ChildPath "mobile_mode_active.txt") -Force -ErrorAction SilentlyContinue
+
+        $themePath = Join-Path -Path $themesPath -ChildPath "$themeName.omp.json"
+        if (Test-Path $themePath) {
+            $Global:NewThemeToApply = $themePath
+            if ($enableMobile) {
                 Write-Host "[Theme] Mobile Prompt Theme activated (ASCII mode, stacked)." -ForegroundColor Cyan
             } else {
                 Write-Host "[Theme] Desktop Prompt Theme activated (Rich Unicode/Emoji mode)." -ForegroundColor Green

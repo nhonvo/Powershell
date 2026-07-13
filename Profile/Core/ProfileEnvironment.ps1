@@ -1,4 +1,4 @@
-﻿#region PROFILE ENVIRONMENT
+#region PROFILE ENVIRONMENT
 # ==============================================================================
 #  Shell environment setup, PSReadLine settings, and community modules loading.
 # ==============================================================================
@@ -151,17 +151,37 @@ class ProfileEnvironment {
 
 # --- Oh My Posh Theme (Initialized in global script scope to bypass class method scoping constraints) ---
 if (-not $Global:AiMode) {
-    $activeThemeFile = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "active_theme.txt"
     $theme = "neko"
-    if (Test-Path $activeThemeFile) {
-        $theme = (Get-Content $activeThemeFile -Raw | Out-String).Trim()
+    $configPath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "config.json"
+    if (Test-Path $configPath) {
+        try {
+            $json = Get-Content $configPath -Raw | ConvertFrom-Json
+            if ($json.active_theme) {
+                $theme = $json.active_theme
+            }
+        } catch {}
+    } else {
+        # Migrate from legacy active_theme.txt if exists
+        $activeThemeFile = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "active_theme.txt"
+        if (Test-Path $activeThemeFile) {
+            $theme = (Get-Content $activeThemeFile -Raw | Out-String).Trim()
+            # Clean up immediately
+            Remove-Item -Path $activeThemeFile -Force -ErrorAction SilentlyContinue
+            # Create config.json
+            $cfg = @{ active_theme = $theme; enable_mobile = ($theme -like "*-mobile") }
+            $cfg | ConvertTo-Json | Out-File -FilePath $configPath -Force -Encoding utf8
+        }
     }
     $env:THEME = $theme
     $themePath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "$($env:THEME).omp.json"
     if (Test-Path $themePath) {
         if (-not $global:PoshInitialized) {
-            oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
-            $global:PoshInitialized = $true
+            try {
+                oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
+                $global:PoshInitialized = $true
+            } catch {
+                Write-Warning "Failed to initialize oh-my-posh: $_"
+            }
         }
     } else {
         Write-Warning "Oh My Posh theme '$($env:THEME)' not found at '$themePath'."

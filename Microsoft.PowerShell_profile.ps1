@@ -48,7 +48,9 @@ foreach ($file in $orderedFiles) {
     try {
         . $file.FullName
     } catch {
-        if ([type]"LogHelper" -as [type]) {
+        $logHelperLoaded = $false
+        try { $logHelperLoaded = $null -ne ([type]"LogHelper") } catch {}
+        if ($logHelperLoaded) {
             [LogHelper]::LogError("Failed to load script file: $($file.Name)", $_.Exception)
         } else {
             Write-Error "Failed to load script file: $($file.Name): $_"
@@ -72,7 +74,4 @@ if (-not $Global:AiMode) {
     }
 }
 
-#f45873b3-b655-43a6-b217-97c00aa0db58 PowerToys CommandNotFound module
 
-Import-Module -Name Microsoft.WinGet.CommandNotFound
-#f45873b3-b655-43a6-b217-97c00aa0db58

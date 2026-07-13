@@ -110,39 +110,94 @@ function Get-CustomCommands {
 
     # 1. Run the heavy setup and keyring verification checks now when CC opens
     [AgyAccountManager]::RunHeavySetupCheck()
-
     # Load dynamic command database from JSON file
     $commandsMap = [ProfileHelp]::GetCommands()
 
-    # Define 3-pane hierarchy mapping dynamically from loaded commandsMap
+    # 2. Dynamically populate [Account] Manage Accounts
+    $accSubDict = [System.Collections.Generic.Dictionary[string, CommandDoc[]]]::new()
+    $accList = [System.Collections.Generic.List[CommandDoc]]::new()
+    foreach ($acc in [AgyAccountManager]::GetAccounts()) {
+        $null = $accList.Add([CommandDoc]@{
+            Alias = $acc
+            FullName = "acc $acc"
+            Desc = "Switch active context to $acc"
+            Command = "Invoke-AccountSession $acc"
+        })
+    }
+    $accSubDict["Select Active Account"] = $accList.ToArray()
+    $commandsMap["[Account] Manage Accounts"] = $accSubDict
+
+    # 3. Dynamically populate [AI Agent] Select AI Agent
+    $aiSubDict = [System.Collections.Generic.Dictionary[string, CommandDoc[]]]::new()
+    $aiSubDict["Launch AI Agent"] = @(
+        [CommandDoc]@{ Alias = "claude"; FullName = "Invoke-Claude-By-Ollama"; Desc = "Launch Anthropic Claude Code via Ollama"; Command = "Invoke-Claude-By-Ollama" }
+        [CommandDoc]@{ Alias = "codex"; FullName = "Invoke-Codex-By-Ollama"; Desc = "Launch Codex CLI via Ollama"; Command = "Invoke-Codex-By-Ollama" }
+        [CommandDoc]@{ Alias = "openclaw"; FullName = "Invoke-ChatGPT"; Desc = "Launch ChatGPT/OpenClaw client"; Command = "Invoke-ChatGPT" }
+        [CommandDoc]@{ Alias = "hermes"; FullName = "Invoke-Hermes-By-Ollama"; Desc = "Launch Hermes local reasoning LLM console"; Command = "Invoke-Hermes-By-Ollama" }
+    )
+    $commandsMap["[AI Agent] Select AI Agent"] = $aiSubDict
+
+    # 4. Dynamically populate [Project] Switch Project
+    $projSubDict = [System.Collections.Generic.Dictionary[string, CommandDoc[]]]::new()
+    $projList = [System.Collections.Generic.List[CommandDoc]]::new()
+    if ($null -ne $Global:ProfileWorkspaces) {
+        foreach ($p in $Global:ProfileWorkspaces) {
+            $null = $projList.Add([CommandDoc]@{
+                Alias = $p.Name
+                FullName = "proj $($p.Name)"
+                Desc = "Navigate to project: $($p.Path)"
+                Command = "Enter-Project $($p.Name)"
+            })
+        }
+    }
+    $projSubDict["Jump to Workspace"] = $projList.ToArray()
+    $commandsMap["[Project] Switch Project"] = $projSubDict
+
+    # 5. Dynamically populate [Theme] Select Theme
+    $themeSubDict = [System.Collections.Generic.Dictionary[string, CommandDoc[]]]::new()
+    $themeSubDict["Apply Shell Theme"] = @(
+        [CommandDoc]@{ Alias = "theme-desktop"; FullName = "Set-DesktopThemeMode"; Desc = "Apply Desktop theme (Unicode/Emoji)"; Command = "Set-DesktopThemeMode" }
+        [CommandDoc]@{ Alias = "theme-mobile"; FullName = "Set-MobileThemeMode"; Desc = "Apply Mobile theme (ASCII/Stacked)"; Command = "Set-MobileThemeMode" }
+        [CommandDoc]@{ Alias = "theme-tui"; FullName = "Select-ShellTheme"; Desc = "Launch interactive theme selector TUI"; Command = "Select-ShellTheme" }
+    )
+    $commandsMap["[Theme] Select Theme"] = $themeSubDict
+
+    # 6. Dynamically populate [SSH Info] System SSH Info
+    $sshSubDict = [System.Collections.Generic.Dictionary[string, CommandDoc[]]]::new()
+    $sshSubDict["SSH & Port Management"] = @(
+        [CommandDoc]@{ Alias = "ssh-info"; FullName = "Get-SshConnectionInfo"; Desc = "View Tailscale & active port 22 sessions"; Command = "Get-SshConnectionInfo" }
+        [CommandDoc]@{ Alias = "ssh-addkey"; FullName = "Add-SshAuthorizedKey"; Desc = "Authorize a public SSH key"; Command = "Add-SshAuthorizedKey" }
+        [CommandDoc]@{ Alias = "ssh-addkey-mobile"; FullName = "Start-MobileSshKeyReceiver"; Desc = "Start background key receiver"; Command = "Start-MobileSshKeyReceiver" }
+    )
+    $commandsMap["[SSH Info] System SSH Info"] = $sshSubDict
+
+    # 7. Dynamically populate [Exit] Exit Control Center
+    $exitSubDict = [System.Collections.Generic.Dictionary[string, CommandDoc[]]]::new()
+    $exitSubDict["Quit Control Center"] = @(
+        [CommandDoc]@{ Alias = "exit"; FullName = "Exit-ControlCenter"; Desc = "Close Control Center dashboard"; Command = "EXIT_TUI" }
+    )
+    $commandsMap["[Exit] Exit Control Center"] = $exitSubDict
+
+    # Define 3-pane hierarchy mapping dynamically from loaded commandsMap (including admin entries!)
     $hierarchy = [ordered]@{}
     foreach ($k in $commandsMap.Keys) {
         $hierarchy[$k] = [string[]]($commandsMap[$k].Keys)
     }
 
-    # 2. Dynamically populate [Account] Manage Accounts
     $leftItems = @(
-        "1. Workspace & Navigation",
-        "2. Development Tools",
-        "3. System & Network Operations",
-        "4. AI & Profile Contexts",
-        "---------------------------",
         "[Account] Manage Accounts",
         "[AI Agent] Select AI Agent",
         "[Project] Switch Project",
         "[Theme] Select Theme",
         "[SSH Info] System SSH Info",
+        "---------------------------",
+        "1. Workspace & Navigation",
+        "2. Development Tools",
+        "3. System & Network Operations",
+        "4. AI & Profile Contexts",
+        "---------------------------",
         "[Exit] Exit Control Center"
     )
-
-    $adminDesc = @{
-        "[Account] Manage Accounts"   = "Manage isolated Antigravity accounts, credentials, and directories."
-        "[AI Agent] Select AI Agent"  = "Select and run local AI assistants (Claude, Codex, Hermes)."
-        "[Project] Switch Project"    = "Jump to project workspace (runs interactive TUI selector)."
-        "[Theme] Select Theme"        = "Select and apply Oh My Posh shell themes."
-        "[SSH Info] System SSH Info"  = "Display Tailscale connection details & active port 22 SSH sessions."
-        "[Exit] Exit Control Center"  = "Close and exit the Control Center interface."
-    }
 
     $currentLeftIndex = 0
     $currentMiddleIndex = 0
@@ -152,6 +207,8 @@ function Get-CustomCommands {
     # Initialize layout drawing
     Clear-Host
     $lastLinesCount = 0
+    $lastWidth = 0
+    $lastHeight = 0
 
     while ($true) {
         if ($null -eq $Global:TuiColors) { [TerminalMenu]::InitializeTuiColors() }
@@ -179,13 +236,22 @@ function Get-CustomCommands {
         # Ensure right index is within bounds
         if ($currentRightIndex -ge $rightItems.Count) { $currentRightIndex = 0 }
 
+        # Detect window size change to force clear screen (responsiveness!)
+        $currentWidth = [Console]::WindowWidth
+        $currentHeight = [Console]::WindowHeight
+        if ($currentWidth -ne $lastWidth -or $currentHeight -ne $lastHeight) {
+            Clear-Host
+            $lastWidth = $currentWidth
+            $lastHeight = $currentHeight
+            $lastLinesCount = 0
+        }
+
         # Reset cursor position to the top of the visible console viewport to prevent screen scrolling
         [Console]::SetCursorPosition(0, [Console]::WindowTop)
 
         # Dynamic Responsive Header & Layout Width Calculation
-        $screenWidth = [Console]::WindowWidth
         $tuiWidth = 110
-        if ($screenWidth -lt 110) { $tuiWidth = $screenWidth - 4 }
+        if ($currentWidth -lt 110) { $tuiWidth = $currentWidth - 4 }
         if ($tuiWidth -lt 65) { $tuiWidth = 65 } # safety floor
         $borderWidth = $tuiWidth
         $border = "=" * $borderWidth
@@ -206,7 +272,7 @@ function Get-CustomCommands {
         Write-Host $border -ForegroundColor $Global:TuiColors.Header
 
         # Calculate scrollable viewport bounds to strictly prevent console scrolling
-        $viewportHeight = [Console]::WindowHeight - 11
+        $viewportHeight = $currentHeight - 11
         if ($viewportHeight -lt 6) { $viewportHeight = 6 }
 
         # Scroll viewport offsets so the selected item remains centered/visible
@@ -229,6 +295,18 @@ function Get-CustomCommands {
         $maxRows = [Math]::Min($viewportHeight, [Math]::Max($leftItems.Count, [Math]::Max($middleItems.Count, $rightItems.Count)))
         if (-not $isCategory) {
             $maxRows = [Math]::Min($viewportHeight, [Math]::Max($leftItems.Count, 3))
+        }
+
+        # Dynamic Responsive Column Width Scaling
+        $leftColWidth = 30
+        $midColWidth = 22
+        if ($tuiWidth -lt 95) {
+            $leftColWidth = 24
+            $midColWidth = 18
+        }
+        if ($tuiWidth -lt 75) {
+            $leftColWidth = 20
+            $midColWidth = 15
         }
 
         for ($i = 0; $i -lt $maxRows; $i++) {
@@ -262,13 +340,13 @@ function Get-CustomCommands {
                     }
                 }
                 # Strictly enforce exact width and truncation to keep separator line straight
-                $rawLeftText = $item.PadRight(30)
-                $leftText = if ($rawLeftText.Length -gt 30) { $rawLeftText.Substring(0, 30) } else { $rawLeftText }
+                $rawLeftText = $item.PadRight($leftColWidth)
+                $leftText = if ($rawLeftText.Length -gt $leftColWidth) { $rawLeftText.Substring(0, $leftColWidth) } else { $rawLeftText }
             } else {
-                $leftText = " " * 30
+                $leftText = " " * $leftColWidth
             }
 
-            # Left total is prefix (3) + text (30) + separator (3) = 36 chars
+            # Left total is prefix (3) + text ($leftColWidth) + separator (3) = $leftColWidth + 6
             Write-Host $leftPrefix -ForegroundColor $leftColor -NoNewline
             Write-Host $leftText -ForegroundColor $leftTextColor -NoNewline
             Write-Host " | " -ForegroundColor "DarkGray" -NoNewline
@@ -296,13 +374,13 @@ function Get-CustomCommands {
                         }
                     }
                     # Strictly enforce exact width and truncation to keep separator line straight
-                    $rawMidText = $subCat.PadRight(22)
-                    $midText = if ($rawMidText.Length -gt 22) { $rawMidText.Substring(0, 22) } else { $rawMidText }
+                    $rawMidText = $subCat.PadRight($midColWidth)
+                    $midText = if ($rawMidText.Length -gt $midColWidth) { $rawMidText.Substring(0, $midColWidth) } else { $rawMidText }
                 } else {
-                    $midText = " " * 22
+                    $midText = " " * $midColWidth
                 }
                 
-                # Middle total is prefix (3) + text (22) + separator (3) = 28 chars
+                # Middle total is prefix (3) + text ($midColWidth) + separator (3) = $midColWidth + 6
                 Write-Host $midPrefix -ForegroundColor $midColor -NoNewline
                 Write-Host $midText -ForegroundColor $midTextColor -NoNewline
                 Write-Host " | " -ForegroundColor "DarkGray" -NoNewline
@@ -326,8 +404,8 @@ function Get-CustomCommands {
                 }
                 
                 # Mathematically calculate safe remaining width to prevent line-wrapping on narrow screens
-                # Columns before Right Text: 36 (left) + 28 (middle) + 3 (right prefix) = 67 chars
-                $maxRightWidth = $tuiWidth - 69
+                # Columns before Right Text: LeftPrefix(3) + LeftText($leftColWidth) + LeftSeparator(3) + MidPrefix(3) + MidText($midColWidth) + MidSeparator(3) + RightPrefix(3) = $leftColWidth + $midColWidth + 15
+                $maxRightWidth = $tuiWidth - ($leftColWidth + $midColWidth + 17)
                 if ($maxRightWidth -lt 10) { $maxRightWidth = 10 }
                 $paddedRightText = $rightText.PadRight($maxRightWidth)
                 if ($paddedRightText.Length -gt $maxRightWidth) {
@@ -337,20 +415,10 @@ function Get-CustomCommands {
                 Write-Host $rightPrefix -ForegroundColor $rightColor -NoNewline
                 Write-Host $paddedRightText -ForegroundColor $rightTextColor
             } else {
-                # Admin action explanation: clear middle & right pane area safely to prevent wrap
-                # Left Column total is 36 characters
-                $remainingWidth = $tuiWidth - 38
+                # Placeholder for non-category items
+                $remainingWidth = $tuiWidth - ($leftColWidth + 8)
                 if ($remainingWidth -lt 10) { $remainingWidth = 10 }
-                if ($leftIdxToPrint -eq $currentLeftIndex) {
-                    $explainText = $adminDesc[$selectedParentName]
-                    $paddedExplain = $explainText.PadRight($remainingWidth)
-                    if ($paddedExplain.Length -gt $remainingWidth) {
-                        $paddedExplain = $paddedExplain.Substring(0, $remainingWidth)
-                    }
-                    Write-Host $paddedExplain -ForegroundColor $Global:TuiColors.Suggest
-                } else {
-                    Write-Host (" " * $remainingWidth)
-                }
+                Write-Host (" " * $remainingWidth)
             }
         }
 
@@ -370,6 +438,13 @@ function Get-CustomCommands {
 
         # Read keystroke
         $key = [Console]::ReadKey($true)
+        if ($key.KeyChar -eq '/') {
+            Invoke-CcSearch
+            # Reset redraw coordinates
+            Clear-Host
+            $lastLinesCount = 0
+            continue
+        }
         if ($key.Key -eq "UpArrow") {
             if ($focusPane -eq 0) {
                 do {
@@ -434,33 +509,9 @@ function Get-CustomCommands {
         }
         elseif ($key.Key -eq "Enter") {
             if ($focusPane -eq 0) {
-                if ($isCategory) {
-                    if ($middleItems.Count -gt 0) {
-                        $focusPane = 1
-                        $currentMiddleIndex = 0
-                    }
-                } else {
-                    # Execute Admin actions directly!
-                    Clear-Host
-                    switch ($selectedParentName) {
-                        "[Account] Manage Accounts"   { [AgyAccountManager]::ManageAccountsInteractive() }
-                        "[AI Agent] Select AI Agent"  { [AiHelper]::ShowAiDashboard() }
-                        "[Project] Switch Project"    { $Global:ExitCcLoop = $false; Enter-Project ""; if ($Global:ExitCcLoop) { break } }
-                        "[Theme] Select Theme"        { Select-ShellTheme }
-                        "[SSH Info] System SSH Info"  { 
-                            Get-SshConnectionInfo 
-                            Write-Host "`n----------------------------------------------------------" -ForegroundColor Gray
-                            Write-Host "Press any key to return to Control Center..." -ForegroundColor Yellow
-                            while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
-                            [void][Console]::ReadKey($true)
-                        }
-                        "[Exit] Exit Control Center"  { break }
-                    }
-                    if ($selectedParentName -eq "[Exit] Exit Control Center") { break }
-                    
-                    # Reset redraw coordinates
-                    Clear-Host
-                    $lastLinesCount = 0
+                if ($isCategory -and $middleItems.Count -gt 0) {
+                    $focusPane = 1
+                    $currentMiddleIndex = 0
                 }
             } elseif ($focusPane -eq 1) {
                 if ($rightItems.Count -gt 0) {
@@ -472,6 +523,10 @@ function Get-CustomCommands {
                 $selectedCmdObj = $rightItems[$currentRightIndex]
                 $cmdToRun = $selectedCmdObj.Command
                 $aliasName = $selectedCmdObj.Alias
+
+                if ($cmdToRun -eq "EXIT_TUI") {
+                    break
+                }
 
                 Clear-Host
                 Write-Host ">>> Running: $aliasName ($cmdToRun)" -ForegroundColor Green
@@ -496,6 +551,142 @@ function Get-CustomCommands {
     }
     Clear-Host
 }
+function Invoke-CcSearch {
+    # 1. Gather all commands from commandsMap
+    $commandsMap = [ProfileHelp]::GetCommands()
+    
+    # 2. Add extra admin entries dynamically
+    # [Account]
+    $accSubDict = [System.Collections.Generic.Dictionary[string, CommandDoc[]]]::new()
+    $accList = [System.Collections.Generic.List[CommandDoc]]::new()
+    foreach ($acc in [AgyAccountManager]::GetAccounts()) {
+        $null = $accList.Add([CommandDoc]@{
+            Alias = $acc
+            FullName = "acc $acc"
+            Desc = "Switch active context to $acc"
+            Command = "Invoke-AccountSession $acc"
+        })
+    }
+    $accSubDict["Select Active Account"] = $accList.ToArray()
+    $commandsMap["[Account] Manage Accounts"] = $accSubDict
+
+    # [AI Agent]
+    $aiSubDict = [System.Collections.Generic.Dictionary[string, CommandDoc[]]]::new()
+    $aiSubDict["Launch AI Agent"] = @(
+        [CommandDoc]@{ Alias = "claude"; FullName = "Invoke-Claude-By-Ollama"; Desc = "Launch Anthropic Claude Code via Ollama"; Command = "Invoke-Claude-By-Ollama" }
+        [CommandDoc]@{ Alias = "codex"; FullName = "Invoke-Codex-By-Ollama"; Desc = "Launch Codex CLI via Ollama"; Command = "Invoke-Codex-By-Ollama" }
+        [CommandDoc]@{ Alias = "openclaw"; FullName = "Invoke-ChatGPT"; Desc = "Launch ChatGPT/OpenClaw client"; Command = "Invoke-ChatGPT" }
+        [CommandDoc]@{ Alias = "hermes"; FullName = "Invoke-Hermes-By-Ollama"; Desc = "Launch Hermes local reasoning LLM console"; Command = "Invoke-Hermes-By-Ollama" }
+    )
+    $commandsMap["[AI Agent] Select AI Agent"] = $aiSubDict
+
+    # [Project]
+    $projSubDict = [System.Collections.Generic.Dictionary[string, CommandDoc[]]]::new()
+    $projList = [System.Collections.Generic.List[CommandDoc]]::new()
+    if ($null -ne $Global:ProfileWorkspaces) {
+        foreach ($p in $Global:ProfileWorkspaces) {
+            $null = $projList.Add([CommandDoc]@{
+                Alias = $p.Name
+                FullName = "proj $($p.Name)"
+                Desc = "Navigate to project: $($p.Path)"
+                Command = "Enter-Project $($p.Name)"
+            })
+        }
+    }
+    $projSubDict["Jump to Workspace"] = $projList.ToArray()
+    $commandsMap["[Project] Switch Project"] = $projSubDict
+
+    # [Theme]
+    $themeSubDict = [System.Collections.Generic.Dictionary[string, CommandDoc[]]]::new()
+    $themeSubDict["Apply Shell Theme"] = @(
+        [CommandDoc]@{ Alias = "theme-desktop"; FullName = "Set-DesktopThemeMode"; Desc = "Apply Desktop theme (Unicode/Emoji)"; Command = "Set-DesktopThemeMode" }
+        [CommandDoc]@{ Alias = "theme-mobile"; FullName = "Set-MobileThemeMode"; Desc = "Apply Mobile theme (ASCII/Stacked)"; Command = "Set-MobileThemeMode" }
+        [CommandDoc]@{ Alias = "theme-tui"; FullName = "Select-ShellTheme"; Desc = "Launch interactive theme selector TUI"; Command = "Select-ShellTheme" }
+    )
+    $commandsMap["[Theme] Select Theme"] = $themeSubDict
+
+    # [SSH Info]
+    $sshSubDict = [System.Collections.Generic.Dictionary[string, CommandDoc[]]]::new()
+    $sshSubDict["SSH & Port Management"] = @(
+        [CommandDoc]@{ Alias = "ssh-info"; FullName = "Get-SshConnectionInfo"; Desc = "View Tailscale & active port 22 sessions"; Command = "Get-SshConnectionInfo" }
+        [CommandDoc]@{ Alias = "ssh-addkey"; FullName = "Add-SshAuthorizedKey"; Desc = "Authorize a public SSH key"; Command = "Add-SshAuthorizedKey" }
+        [CommandDoc]@{ Alias = "ssh-addkey-mobile"; FullName = "Start-MobileSshKeyReceiver"; Desc = "Start background key receiver"; Command = "Start-MobileSshKeyReceiver" }
+    )
+    $commandsMap["[SSH Info] System SSH Info"] = $sshSubDict
+
+    # [Exit]
+    $exitSubDict = [System.Collections.Generic.Dictionary[string, CommandDoc[]]]::new()
+    $exitSubDict["Quit Control Center"] = @(
+        [CommandDoc]@{ Alias = "exit"; FullName = "Exit-ControlCenter"; Desc = "Close Control Center dashboard"; Command = "EXIT_TUI" }
+    )
+    $commandsMap["[Exit] Exit Control Center"] = $exitSubDict
+
+    $searchLabels = [System.Collections.Generic.List[string]]::new()
+    $searchCmds = [System.Collections.Generic.List[string]]::new()
+
+    # Add slash suggestions first
+    $slashSuggestions = @(
+        "git status             - Show git working tree status",
+        "git add .              - Stage all changes in workspace",
+        "gcmt                   - conventional commits wizard",
+        "git push               - Push commits to remote branch",
+        "dotnet run             - Build and run active .NET project",
+        "dotnet build           - Compile active .NET project",
+        "dotnet test            - Run active .NET project unit tests",
+        "docker-compose up      - Start Docker Compose services",
+        "docker-compose down    - Stop Docker Compose services",
+        "sysmon                 - Display resource diagnostics",
+        "dkcl                   - Display Docker container manager",
+        "killport               - Terminate port collision process"
+    )
+
+    $sep = [char]0x2502
+    foreach ($s in $slashSuggestions) {
+        if ($s -match '^([a-zA-Z0-9_\-]+(\s+[a-zA-Z0-9_\-\.]+)*)\s+-\s+(.*)$') {
+            $null = $searchLabels.Add("$($Matches[1].PadRight(25)) $sep $($Matches[3])")
+            $null = $searchCmds.Add($Matches[1].Trim())
+        }
+    }
+
+    # Add all commands from commandsMap
+    foreach ($parent in $commandsMap.Keys) {
+        foreach ($sub in $commandsMap[$parent].Keys) {
+            foreach ($doc in $commandsMap[$parent][$sub]) {
+                $aliasStr = if ($doc.Alias -eq "-") { $doc.FullName } else { $doc.Alias }
+                $label = "$($aliasStr.PadRight(25)) $sep $($doc.Desc)"
+                if ($searchLabels -notcontains $label) {
+                    $null = $searchLabels.Add($label)
+                    $null = $searchCmds.Add($doc.Command)
+                }
+            }
+        }
+    }
+
+    # Show the search TUI
+    $headers = @(
+        "==========================================================================",
+        "                       🛸 Command Center Search 🛸",
+        "=========================================================================="
+    )
+
+    $selectedIdx = [TerminalMenu]::Show($headers, $searchLabels.ToArray(), $searchCmds.ToArray(), 0, $true, $true)
+    if ($selectedIdx -ge 0) {
+        $cmdToRun = $searchCmds[$selectedIdx]
+        if ($cmdToRun -eq "EXIT_TUI") { return }
+        Clear-Host
+        Write-Host ">>> Running: $cmdToRun" -ForegroundColor Green
+        Write-Host "----------------------------------------------------------" -ForegroundColor Gray
+        try {
+            Invoke-Expression $cmdToRun
+        } catch {
+            Write-Error $_
+        }
+        Write-Host "`n----------------------------------------------------------" -ForegroundColor Gray
+        Write-Host "Press any key to return to Control Center..." -ForegroundColor Yellow
+        while ([Console]::KeyAvailable) { [void][Console]::ReadKey($true) }
+        [void][Console]::ReadKey($true)
+    }
+}
 function Get-SshConnectionInfo { [SshHelper]::GetConnectionInfo() }
 function Add-SshAuthorizedKey {
     param([string]$Key, [string]$Account)
@@ -506,6 +697,35 @@ function Toggle-MobileMode {
     if ($Global:NewThemeToApply) {
         $themePath = $Global:NewThemeToApply
         $Global:NewThemeToApply = $null
+        $Global:AgyOriginalPromptCmd = $null
+        Remove-Module -Name "oh-my-posh-core" -Force -ErrorAction SilentlyContinue
+        Remove-Item -Path "Function:\prompt" -Force -ErrorAction SilentlyContinue
+        Remove-Item -Path "Function:\prompt_original" -Force -ErrorAction SilentlyContinue
+        oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
+        [AgyAccountManager]::RegisterPromptHook()
+        [TerminalMenu]::InitializeTuiColors()
+    }
+}
+function Set-DesktopThemeMode {
+    [ThemeHelper]::SetMobileMode($false)
+    if ($Global:NewThemeToApply) {
+        $themePath = $Global:NewThemeToApply
+        $Global:NewThemeToApply = $null
+        $Global:AgyOriginalPromptCmd = $null
+        Remove-Module -Name "oh-my-posh-core" -Force -ErrorAction SilentlyContinue
+        Remove-Item -Path "Function:\prompt" -Force -ErrorAction SilentlyContinue
+        Remove-Item -Path "Function:\prompt_original" -Force -ErrorAction SilentlyContinue
+        oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
+        [AgyAccountManager]::RegisterPromptHook()
+        [TerminalMenu]::InitializeTuiColors()
+    }
+}
+function Set-MobileThemeMode {
+    [ThemeHelper]::SetMobileMode($true)
+    if ($Global:NewThemeToApply) {
+        $themePath = $Global:NewThemeToApply
+        $Global:NewThemeToApply = $null
+        $Global:AgyOriginalPromptCmd = $null
         Remove-Module -Name "oh-my-posh-core" -Force -ErrorAction SilentlyContinue
         Remove-Item -Path "Function:\prompt" -Force -ErrorAction SilentlyContinue
         Remove-Item -Path "Function:\prompt_original" -Force -ErrorAction SilentlyContinue
@@ -953,10 +1173,12 @@ function Select-ShellTheme {
     if ($Global:NewThemeToApply) {
         $themePath = $Global:NewThemeToApply
         $Global:NewThemeToApply = $null
+        $Global:AgyOriginalPromptCmd = $null
         Remove-Module -Name "oh-my-posh-core" -Force -ErrorAction SilentlyContinue
         Remove-Item -Path "Function:\prompt" -Force -ErrorAction SilentlyContinue
         Remove-Item -Path "Function:\prompt_original" -Force -ErrorAction SilentlyContinue
         oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
+        [AgyAccountManager]::RegisterPromptHook()
         [TerminalMenu]::InitializeTuiColors()
     }
 }
