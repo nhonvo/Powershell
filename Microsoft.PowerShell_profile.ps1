@@ -1,4 +1,4 @@
-﻿if ($global:AgyUserProfileLoaded) { return }
+if ($global:AgyUserProfileLoaded) { return }
 $global:AgyUserProfileLoaded = $true
 $Global:ProfileRepoRoot = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 $env:POSH_THEMES_PATH = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "asset\powershell-themes"
@@ -65,13 +65,10 @@ if (-not $Global:AiMode) {
         Write-Host "🛸 Enhanced PowerShell Profile loaded." -ForegroundColor Green
     } else {
         $acc = "default"
-        $status = "Offline"
         try {
             $acc = [AgyAccountManager]::GetActiveAccount()
-            $isOnline = [AgyAccountManager]::CheckNetworkStatus()
-            $status = if ($isOnline) { "Online" } else { "Offline" }
         } catch {}
-        Write-Host "🛸 Enhanced Profile Loaded | Account: $acc ($status)" -ForegroundColor Green
+        Write-Host "🛸 Enhanced Profile Loaded | Account: $acc" -ForegroundColor Green
     }
 }
 

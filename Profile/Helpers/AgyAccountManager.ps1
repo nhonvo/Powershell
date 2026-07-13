@@ -1306,45 +1306,33 @@ class AgyAccountManager {
         } catch {}
     }
 
+    static [bool]$AgyManagerInitialized = $false
+
     static [void] InitializeManager() {
-        $isOnline = [AgyAccountManager]::CheckNetworkStatus()
-        $onlineTag = if ($isOnline) { "" } else { " [Offline]" }
-        if (-not $Global:AiMode -and $Global:VerboseStartup) {
-            Write-Host "[agy] Loading Antigravity Multi-Account Manager...$onlineTag" -ForegroundColor Cyan
-        }
-
-        # Sync active account with keyring to auto-detect any changes from Agy Desktop
-        [AgyAccountManager]::SyncActiveAccountWithKeyring($true)
-
-        # 1. Load active account selection from persistent settings file if available
-        $savedAcc = "default"
+        # Light setup for terminal startup
         if (Test-Path ([AgyAccountManager]::AgyActiveAccountFile)) {
             try {
                 $content = (Get-Content ([AgyAccountManager]::AgyActiveAccountFile) -ErrorAction SilentlyContinue)
                 if ($content) {
                     $savedAcc = $content.Trim()
+                    $targetPath = [AgyAccountManager]::GetAccountDirectory($savedAcc)
+                    if (Test-Path $targetPath) {
+                        $env:GEMINI_HOME = $targetPath
+                    }
                 }
             } catch {}
         }
+        [AgyAccountManager]::RegisterPromptHook()
+    }
 
-        if ($savedAcc -and $savedAcc -ne "default") {
-            $targetPath = [AgyAccountManager]::GetAccountDirectory($savedAcc)
-            if (Test-Path $targetPath) {
-                $env:GEMINI_HOME = $targetPath
-                if (-not $Global:AiMode -and $Global:VerboseStartup) {
-                    Write-Host "[agy] Active account configured to '$savedAcc' via persistent settings." -ForegroundColor Cyan
-                }
-            } else {
-                $savedAcc = "default"
-            }
-        }
+    static [void] RunHeavySetupCheck() {
+        if ([AgyAccountManager]::AgyManagerInitialized) { return }
+        
+        # Heavy sync and verification checks
+        [AgyAccountManager]::SyncActiveAccountWithKeyring($true)
+        [AgyAccountManager]::CheckNetworkStatus()
 
-        # Sync/restore keyring token for the active account
-        try {
-            [AgyAccountManager]::RestoreActiveToken($savedAcc)
-        } catch {}
-
-        # 2. Dynamically scan all available accounts and generate wrapper functions and indexed aliases
+        # Dynamic wrappers & aliases
         $availableAccounts = [AgyAccountManager]::GetAccounts()
         $idx = 1
         foreach ($acc in $availableAccounts) {
@@ -1357,7 +1345,7 @@ class AgyAccountManager {
                 $idx++
             }
         }
-        [AgyAccountManager]::RegisterPromptHook()
+        [AgyAccountManager]::AgyManagerInitialized = $true
     }
 
     static [void] RegisterPromptHook() {

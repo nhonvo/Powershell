@@ -108,6 +108,9 @@ function Get-CustomCommands {
         return
     }
 
+    # 1. Run the heavy setup and keyring verification checks now when CC opens
+    [AgyAccountManager]::RunHeavySetupCheck()
+
     # Load dynamic command database from JSON file
     $commandsMap = [ProfileHelp]::GetCommands()
 
@@ -117,6 +120,7 @@ function Get-CustomCommands {
         $hierarchy[$k] = [string[]]($commandsMap[$k].Keys)
     }
 
+    # 2. Dynamically populate [Account] Manage Accounts
     $leftItems = @(
         "1. Workspace & Navigation",
         "2. Development Tools",
@@ -147,7 +151,6 @@ function Get-CustomCommands {
 
     # Initialize layout drawing
     Clear-Host
-    $startTop = [Console]::CursorTop
     $lastLinesCount = 0
 
     while ($true) {
@@ -187,19 +190,13 @@ function Get-CustomCommands {
         $borderWidth = $tuiWidth
         $border = "=" * $borderWidth
 
-        # Draw Header
+        # Draw Header with "CC" block ASCII logo
         Write-Host $border -ForegroundColor $Global:TuiColors.Header
-        
-        $title = "🛸 Powershell Profile Control Center v3.0 🛸"
-        $titlePad = [Math]::Max(0, [Math]::Floor(($borderWidth - $title.Length) / 2))
-        Write-Host ((" " * $titlePad) + $title) -ForegroundColor $Global:TuiColors.Header
-        
-        $accInfo = "  Active Account: $activeAcc"
-        $timeInfo = "Time: $timeStr  "
-        $infoSpace = $borderWidth - $accInfo.Length - $timeInfo.Length
-        $infoLine = $accInfo + (" " * [Math]::Max(1, $infoSpace)) + $timeInfo
-        Write-Host $infoLine -ForegroundColor $Global:TuiColors.Footer
-        
+        Write-Host "  ▄████▄   ▄████▄     🛸 Powershell Profile Control Center v3.0 🛸" -ForegroundColor $Global:TuiColors.Header
+        Write-Host " █▀     ▀ █▀     ▀    System dashboard and control suite." -ForegroundColor $Global:TuiColors.Header
+        Write-Host " █        █           " -ForegroundColor $Global:TuiColors.Header
+        Write-Host " █▄     ▄ █▄     ▄    Active Account: $activeAcc" -ForegroundColor $Global:TuiColors.Footer
+        Write-Host "  ▀████▀   ▀████▀     Time: $timeStr" -ForegroundColor $Global:TuiColors.Footer
         Write-Host $border -ForegroundColor $Global:TuiColors.Header
         
         $helpStr = " [Tab/Right] Navigate Panes | [Left/Esc] Go Back | [Enter] Select & Run"
@@ -208,12 +205,30 @@ function Get-CustomCommands {
         
         Write-Host $border -ForegroundColor $Global:TuiColors.Header
 
+        # Calculate scrollable viewport bounds to strictly prevent console scrolling
+        $viewportHeight = [Console]::WindowHeight - 11
+        if ($viewportHeight -lt 6) { $viewportHeight = 6 }
+
+        # Scroll viewport offsets so the selected item remains centered/visible
+        $startLeft = 0
+        if ($currentLeftIndex -ge $viewportHeight) {
+            $startLeft = $currentLeftIndex - $viewportHeight + 1
+        }
+
+        $startMiddle = 0
+        if ($currentMiddleIndex -ge $viewportHeight) {
+            $startMiddle = $currentMiddleIndex - $viewportHeight + 1
+        }
+
+        $startRight = 0
+        if ($currentRightIndex -ge $viewportHeight) {
+            $startRight = $currentRightIndex - $viewportHeight + 1
+        }
+
         # Determine rows count to render
-        $maxRows = $leftItems.Count
-        if ($isCategory) {
-            $maxRows = [Math]::Max($leftItems.Count, [Math]::Max($middleItems.Count, $rightItems.Count))
-        } else {
-            $maxRows = [Math]::Max($leftItems.Count, 3) # padding for admin descriptions
+        $maxRows = [Math]::Min($viewportHeight, [Math]::Max($leftItems.Count, [Math]::Max($middleItems.Count, $rightItems.Count)))
+        if (-not $isCategory) {
+            $maxRows = [Math]::Min($viewportHeight, [Math]::Max($leftItems.Count, 3))
         }
 
         for ($i = 0; $i -lt $maxRows; $i++) {
@@ -223,9 +238,10 @@ function Get-CustomCommands {
             $leftTextColor = $Global:TuiColors.Regular
             $leftText = ""
 
-            if ($i -lt $leftItems.Count) {
-                $item = $leftItems[$i]
-                if ($i -eq $currentLeftIndex) {
+            $leftIdxToPrint = $i + $startLeft
+            if ($leftIdxToPrint -lt $leftItems.Count) {
+                $item = $leftItems[$leftIdxToPrint]
+                if ($leftIdxToPrint -eq $currentLeftIndex) {
                     if ($focusPane -eq 0) {
                         $leftPrefix = " > "
                         $leftColor = $Global:TuiColors.Selected
@@ -241,7 +257,7 @@ function Get-CustomCommands {
                     $leftTextColor = "DarkGray"
                     $leftColor = "DarkGray"
                 } elseif ($item.StartsWith("[")) {
-                    if ($i -ne $currentLeftIndex) {
+                    if ($leftIdxToPrint -ne $currentLeftIndex) {
                         $leftTextColor = "Cyan"
                     }
                 }
@@ -265,9 +281,10 @@ function Get-CustomCommands {
                 $midTextColor = $Global:TuiColors.Regular
                 $midText = ""
 
-                if ($i -lt $middleItems.Count) {
-                    $subCat = $middleItems[$i]
-                    if ($i -eq $currentMiddleIndex) {
+                $midIdxToPrint = $i + $startMiddle
+                if ($midIdxToPrint -lt $middleItems.Count) {
+                    $subCat = $middleItems[$midIdxToPrint]
+                    if ($midIdxToPrint -eq $currentMiddleIndex) {
                         if ($focusPane -eq 1) {
                             $midPrefix = " > "
                             $midColor = $Global:TuiColors.Selected
@@ -296,9 +313,10 @@ function Get-CustomCommands {
                 $rightTextColor = $Global:TuiColors.Regular
                 $rightText = ""
 
-                if ($i -lt $rightItems.Count) {
-                    $doc = $rightItems[$i]
-                    if ($focusPane -eq 2 -and $i -eq $currentRightIndex) {
+                $rightIdxToPrint = $i + $startRight
+                if ($rightIdxToPrint -lt $rightItems.Count) {
+                    $doc = $rightItems[$rightIdxToPrint]
+                    if ($focusPane -eq 2 -and $rightIdxToPrint -eq $currentRightIndex) {
                         $rightPrefix = " > "
                         $rightColor = $Global:TuiColors.Selected
                         $rightTextColor = $Global:TuiColors.Selected
@@ -323,7 +341,7 @@ function Get-CustomCommands {
                 # Left Column total is 36 characters
                 $remainingWidth = $tuiWidth - 38
                 if ($remainingWidth -lt 10) { $remainingWidth = 10 }
-                if ($i -eq 1) {
+                if ($leftIdxToPrint -eq $currentLeftIndex) {
                     $explainText = $adminDesc[$selectedParentName]
                     $paddedExplain = $explainText.PadRight($remainingWidth)
                     if ($paddedExplain.Length -gt $remainingWidth) {
@@ -337,7 +355,7 @@ function Get-CustomCommands {
         }
 
         # Erasure logic for trailing lines from previous iterations
-        $headerLines = 6
+        $headerLines = 9
         $linesWritten = $headerLines + $maxRows
         if ($linesWritten -lt $lastLinesCount) {
             $diff = $lastLinesCount - $linesWritten
@@ -442,7 +460,6 @@ function Get-CustomCommands {
                     
                     # Reset redraw coordinates
                     Clear-Host
-                    $startTop = [Console]::CursorTop
                     $lastLinesCount = 0
                 }
             } elseif ($focusPane -eq 1) {
@@ -461,11 +478,7 @@ function Get-CustomCommands {
                 Write-Host "----------------------------------------------------------" -ForegroundColor Gray
                 
                 try {
-                    if ($aliasName -eq "-") {
-                        Invoke-Expression $cmdToRun
-                    } else {
-                        Invoke-Expression $aliasName
-                    }
+                    Invoke-Expression $cmdToRun
                 } catch {
                     Write-Error $_
                 }
@@ -477,7 +490,6 @@ function Get-CustomCommands {
 
                 # Reset redraw coordinates
                 Clear-Host
-                $startTop = [Console]::CursorTop
                 $lastLinesCount = 0
             }
         }
