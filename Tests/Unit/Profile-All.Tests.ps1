@@ -18,19 +18,19 @@ function tailscale { $global:tailscaleArgs = $args; return "100.115.92.12" }
 Describe "Core Profile Functions Validation" {
     BeforeAll {
         . (Join-Path $ProfileDir "Core\TerminalMenu.ps1")
-        . (Join-Path $ProfileDir "Core\ProfileEnvironment.ps1")
         . (Join-Path $ProfileDir "Helpers\LogHelper.ps1")
+        . (Join-Path $ProfileDir "Helpers\0_AgyKeyringHelper.ps1")
+        . (Join-Path $ProfileDir "Helpers\AgyAccountManager.ps1")
         . (Join-Path $ProfileDir "Helpers\ProfileNavigator.ps1")
+        . (Join-Path $ProfileDir "Helpers\ThemeHelper.ps1")
+        . (Join-Path $ProfileDir "Helpers\AiHelper.ps1")
+        . (Join-Path $ProfileDir "Helpers\GitHelper.ps1")
+        . (Join-Path $ProfileDir "Helpers\DockerHelper.ps1")
         . (Join-Path $ProfileDir "Helpers\SystemHelper.ps1")
         . (Join-Path $ProfileDir "Helpers\SshHelper.ps1")
         . (Join-Path $ProfileDir "Helpers\DotNetHelper.ps1")
-        . (Join-Path $ProfileDir "Helpers\GitHelper.ps1")
-        . (Join-Path $ProfileDir "Helpers\DockerHelper.ps1")
         . (Join-Path $ProfileDir "Helpers\AwsHelper.ps1")
-        . (Join-Path $ProfileDir "Helpers\AiHelper.ps1")
-        . (Join-Path $ProfileDir "Helpers\0_AgyKeyringHelper.ps1")
-        . (Join-Path $ProfileDir "Helpers\AgyAccountManager.ps1")
-        . (Join-Path $ProfileDir "Helpers\ThemeHelper.ps1")
+        . (Join-Path $ProfileDir "Core\ProfileEnvironment.ps1")
         . (Join-Path $ProfileDir "Core\Projects.ps1")
         . (Join-Path $ProfileDir "Core\ProfileHelp.ps1")
         . (Join-Path $ProfileDir "Core\Aliases.ps1")
@@ -216,7 +216,7 @@ Describe "Core Profile Functions Validation" {
             $testDir = [AgyAccountManager]::GetAccountDirectory($testAcc)
             $null = New-Item -ItemType Directory -Path $testDir -Force -ErrorAction SilentlyContinue
             $file1 = Join-Path $testDir "file1.txt"
-            "hello" | Out-File -FilePath $file1 -Encoding utf8
+            [System.IO.File]::WriteAllText($file1, "hello")
             
             $subPath = Join-Path $testDir "config"
             $srcPath = Join-Path ([AgyAccountManager]::AgySourceHome) "config"
@@ -228,7 +228,7 @@ Describe "Core Profile Functions Validation" {
             }
             
             $srcFile = Join-Path $srcPath "shared_file.txt"
-            "shared data" | Out-File -FilePath $srcFile -Encoding utf8
+            [System.IO.File]::WriteAllText($srcFile, "shared data")
             
             try {
                 $size = [AgyAccountManager]::GetPrivateDirectorySize($testDir)

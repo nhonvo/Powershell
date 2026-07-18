@@ -11,6 +11,14 @@ class AgyAccountManager {
     static [string]$GlobalBinDir = "C:\ProgramData\agy\bin"
 
     static AgyAccountManager() {
+        if ($Global:AgySourceHome) {
+            [AgyAccountManager]::AgySourceHome = $Global:AgySourceHome
+            [AgyAccountManager]::AgyAccountPrefix = $Global:AgySourceHome + "_"
+        }
+        if ($Global:GlobalBinDir) {
+            [AgyAccountManager]::GlobalBinDir = $Global:GlobalBinDir
+            [AgyAccountManager]::AgyBinaryPath = Join-Path ([AgyAccountManager]::GlobalBinDir) "agy.exe"
+        }
         [AgyAccountManager]::AgyActiveAccountFile = Join-Path ([AgyAccountManager]::AgySourceHome) "active_account.txt"
         if ($env:PATH -split ';' -notcontains [AgyAccountManager]::GlobalBinDir) {
             $env:PATH = [AgyAccountManager]::GlobalBinDir + ";" + $env:PATH
@@ -158,7 +166,7 @@ class AgyAccountManager {
             
             try {
                 $json = ConvertTo-Json $meta
-                $json | Out-File -FilePath $metaFile -Force -Encoding utf8
+                [System.IO.File]::WriteAllText($metaFile, $json)
             } catch {}
         }
     }
@@ -335,7 +343,7 @@ class AgyAccountManager {
                 try {
                     $secure = ConvertTo-SecureString $token -AsPlainText -Force
                     $encrypted = ConvertFrom-SecureString $secure
-                    $encrypted | Out-File -FilePath $tokenFile -Force -Encoding utf8
+                    [System.IO.File]::WriteAllText($tokenFile, $encrypted)
                 } catch {
                     Write-Warning "Failed to encrypt/save keyring token for '$activeAcc'."
                 }
@@ -418,7 +426,7 @@ class AgyAccountManager {
                 [void][System.IO.Directory]::CreateDirectory($targetDir)
             }
             $newId = [guid]::NewGuid().ToString()
-            $newId | Out-File -FilePath $targetIdFile -NoNewline -Force -Encoding utf8
+            [System.IO.File]::WriteAllText($targetIdFile, $newId)
             Write-Host "[config] Re-generated unique installation ID for '$AccountName' to separate credentials." -ForegroundColor Yellow
         }
 
@@ -430,7 +438,7 @@ class AgyAccountManager {
             if (-not (Test-Path ([AgyAccountManager]::AgySourceHome))) {
                 $null = New-Item -ItemType Directory -Path ([AgyAccountManager]::AgySourceHome) -Force
             }
-            $AccountName | Out-File -FilePath ([AgyAccountManager]::AgyActiveAccountFile) -Force -Encoding utf8
+            [System.IO.File]::WriteAllText(([AgyAccountManager]::AgyActiveAccountFile), $AccountName)
             Write-Host "[*] Switched to account '$AccountName' (Persistent)." -ForegroundColor Green
         } else {
             Write-Host "[!] Switched to account '$AccountName' (Temporary - current session only)." -ForegroundColor Yellow
@@ -470,7 +478,7 @@ class AgyAccountManager {
         }
 
         $uniqueId = [guid]::NewGuid().ToString()
-        $uniqueId | Out-File -FilePath (Join-Path $destDir "installation_id") -NoNewline -Force -Encoding utf8
+        [System.IO.File]::WriteAllText((Join-Path $destDir "installation_id"), $uniqueId)
         Write-Host "[file] Generated unique installation ID for account '$AccountName'." -ForegroundColor Gray
 
         $subDirsToShare = @("antigravity", "antigravity-cli", "config", "history", "antigravity-ide", "wf")
@@ -611,7 +619,7 @@ class AgyAccountManager {
                     [void][System.IO.Directory]::CreateDirectory($targetHome)
                 }
                 $newId = [guid]::NewGuid().ToString()
-                $newId | Out-File -FilePath $targetIdFile -NoNewline -Force -Encoding utf8
+            [System.IO.File]::WriteAllText($targetIdFile, $newId)
                 Write-Host "[config] Re-generated unique installation ID for '$AccountName' to separate credentials." -ForegroundColor Yellow
             }
         }
@@ -804,7 +812,7 @@ class AgyAccountManager {
             if (-not (Test-Path ([AgyAccountManager]::AgySourceHome))) {
                 $null = New-Item -ItemType Directory -Path ([AgyAccountManager]::AgySourceHome) -Force
             }
-            $newVal | Out-File -FilePath $file -Force -Encoding utf8
+            [System.IO.File]::WriteAllText($file, $newVal)
             Write-Host "[Settings] Auto-Switch is now: $(if ($current) { 'Disabled' } else { 'Enabled' })" -ForegroundColor Yellow
         } catch {
             Write-Error "Failed to update Auto-Switch setting."
@@ -1001,7 +1009,7 @@ class AgyAccountManager {
                 $meta.QuotaStatus = $newStatus
                 try {
                     $json = ConvertTo-Json $meta
-                    $json | Out-File -FilePath $metaFile -Force -Encoding utf8
+                [System.IO.File]::WriteAllText($metaFile, $json)
                 } catch {}
             }
         }
@@ -1279,7 +1287,7 @@ class AgyAccountManager {
                         if (-not (Test-Path ([AgyAccountManager]::AgySourceHome))) {
                             $null = New-Item -ItemType Directory -Path ([AgyAccountManager]::AgySourceHome) -Force
                         }
-                        $savedAcc | Out-File -FilePath ([AgyAccountManager]::AgyActiveAccountFile) -Force -Encoding utf8
+                        [System.IO.File]::WriteAllText(([AgyAccountManager]::AgyActiveAccountFile), $savedAcc)
                         $env:GEMINI_HOME = [AgyAccountManager]::GetAccountDirectory($savedAcc)
                     }
                     # Always backup the token to the matched account folder so it is updated and persistent
@@ -1290,7 +1298,7 @@ class AgyAccountManager {
                     $tokenFile = Join-Path $accDir "keyring_token.txt"
                     $secure = ConvertTo-SecureString $currentKeyringToken -AsPlainText -Force
                     $encrypted = ConvertFrom-SecureString $secure
-                    $encrypted | Out-File -FilePath $tokenFile -Force -Encoding utf8
+                    [System.IO.File]::WriteAllText($tokenFile, $encrypted)
                 } else {
                     # No account matched the keyring token. Backup to currently active account.
                     $accDir = [AgyAccountManager]::GetAccountDirectory($savedAcc)
@@ -1300,7 +1308,7 @@ class AgyAccountManager {
                     $tokenFile = Join-Path $accDir "keyring_token.txt"
                     $secure = ConvertTo-SecureString $currentKeyringToken -AsPlainText -Force
                     $encrypted = ConvertFrom-SecureString $secure
-                    $encrypted | Out-File -FilePath $tokenFile -Force -Encoding utf8
+                    [System.IO.File]::WriteAllText($tokenFile, $encrypted)
                 }
             }
         } catch {}

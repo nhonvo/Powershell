@@ -1,10 +1,13 @@
 Modules/
 
 **.bak
+*.log
 
 # .NET / C# Build and IDE outputs
 [Bb]in/
 [Oo]bj/
+[Dd]ist/
+[Pp]ublish/
 .vs/
 *.suo
 *.user

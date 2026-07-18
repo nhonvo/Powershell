@@ -1,11 +1,11 @@
-﻿#region ANTIGRAVITY SECRET VAULT
+#region ANTIGRAVITY SECRET VAULT
 # ==============================================================================
 #  DPAPI-encrypted local credential store for API keys and secrets.
 # ==============================================================================
 
 class AgySecretVault {
     static [string] GetSecretsFilePath() {
-        $dir = "C:\Users\Public\.gemini"
+        $dir = if ($Global:AgySourceHome) { $Global:AgySourceHome } else { "C:\Users\Public\.gemini" }
         if (-not (Test-Path $dir)) {
             $null = New-Item -ItemType Directory -Path $dir -Force
         }

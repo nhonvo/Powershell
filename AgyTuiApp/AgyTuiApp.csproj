@@ -9,7 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="Spectre.Console" Version="0.57.2" />
-    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="9.0.0" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="10.0.10" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.10" />
   </ItemGroup>
 
 </Project>

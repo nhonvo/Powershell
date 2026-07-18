@@ -1,4 +1,4 @@
-﻿#region ANTIGRAVITY PROJECTS LAUNCHERS
+#region ANTIGRAVITY PROJECTS LAUNCHERS
 # ==============================================================================
 #  Development launchers for the Antigravity Manager and Claude Proxy projects.
 # ==============================================================================
@@ -60,7 +60,7 @@ class Projects {
     static [string]$AgBaseDir
 
     static Projects() {
-        [Projects]::AgBaseDir = if (Test-Path "C:\Users\sshuser\project") { "C:\Users\sshuser\project" } else { "$env:USERPROFILE\Desktop\project" }
+        [Projects]::AgBaseDir = if ($Global:ProjectsBaseDir) { $Global:ProjectsBaseDir } else { if (Test-Path "C:\Users\sshuser\project") { "C:\Users\sshuser\project" } else { "$env:USERPROFILE\Desktop\project" } }
     }
 
     static [void] StartManager() {

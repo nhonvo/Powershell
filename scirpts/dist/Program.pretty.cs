@@ -22,6 +22,8 @@ using System.Net.Sockets;
 
 using System.Runtime.InteropServices;
 
+using System.Security.AccessControl;
+
 using System.Security.Cryptography;
 
 using System.Text;
@@ -145,7 +147,7 @@ public static class SpectrePager
                 for (var p=Math.Min(top+pageSize, totalLines);
                 p<top+pageSize;
                 p++)AnsiConsole.WriteLine();
-                AnsiConsole.MarkupLine($"[dim] ↑↓/jk scroll  d/u page  g/G ends  / search  q quit"+$"  ({top + 1}–{Math.Min(top + pageSize, totalLines)} of {totalLines})[/]");
+                AnsiConsole.MarkupLine($"[dim] ↑↓/jk scroll d/u page g/G ends / search q quit"+$" ({top + 1}–{Math.Min(top + pageSize, totalLines)} of {totalLines})[/]");
                 var key=Console.ReadKey(true);
                 switch (key.Key)
                 {
@@ -206,7 +208,19 @@ public static class SpectrePanel
 }
 public static class SpectreProgress
 {
-    public static void Spinner(string message, Action action) => AnsiConsole.Status().Spinner(Spectre.Console.Spinner.Known.Dots).SpinnerStyle(new Style(Color.Yellow)).Start(message, _ => action());
+    public static void Spinner(string message, Action action) => AnsiConsole.Status().Spinner(Spectre.Console.Spinner.Known.Dots).SpinnerStyle(new Style(Color.Yellow)).Start(message.EscapeMarkup(), _ => action());
+
+    public static object?SpinnerResult(string message, Func<object?>action)
+    {
+        object?result=null;
+        AnsiConsole.Status().Spinner(Spectre.Console.Spinner.Known.Dots).SpinnerStyle(new Style(Color.Yellow)).Start(message.EscapeMarkup(), _ =>
+        {
+            result=action();
+        }
+        );
+        return result;
+
+    }
 
     public static void BulkProgress(string label, string[]items, Action<int, string>action) => AnsiConsole.Progress().AutoClear(false).Columns(new TaskDescriptionColumn(), new ProgressBarColumn(), new PercentageColumn(), new ElapsedTimeColumn()).Start(ctx =>
     {
@@ -222,6 +236,91 @@ public static class SpectreProgress
 
     }
     );
+
+}
+public static class LogHelper
+{
+    public static string GetLogFilePath()
+    {
+        var logDir=System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),".gemini","antigravity");
+        Directory.CreateDirectory(logDir);
+        return System.IO.Path.Combine(logDir,"profile.log");
+
+    }
+
+    public static void Log(string message, string level="INFO")
+    {
+        try
+        {
+            var line=$"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [{level}] {message}";
+            File.AppendAllText(GetLogFilePath(), line+Environment.NewLine);
+        }
+        catch
+        {
+        }
+
+    }
+
+    public static void LogError(string message, Exception?exception=null)
+    {
+        var text=exception!=null?$"{message} - Exception: {exception.Message}\n{exception.StackTrace}":message;
+        Log(text,"ERROR");
+
+    }
+
+    public static void LogWarning(string message) => Log(message,"WARNING");
+
+    public static void StreamLogs(string?logPath=null)
+    {
+        if (string.IsNullOrWhiteSpace(logPath))
+        {
+            var candidates=Directory.GetFiles(".","*.log").Select(f => new FileInfo(f)).OrderByDescending(f => f.LastWriteTime).ToArray();
+            if (candidates.Length==0)candidates=Directory.GetFiles(System.IO.Path.GetTempPath(),"*.log").Select(f => new FileInfo(f)).OrderByDescending(f => f.LastWriteTime).ToArray();
+            if (candidates.Length>0)logPath=candidates[0].FullName;
+        }
+        if (string.IsNullOrWhiteSpace(logPath)||!File.Exists(logPath))
+        {
+            SpectrePanel.Error("No log files found to stream.");
+            return;
+        }
+        AnsiConsole.MarkupLine($"[cyan]Streaming logs from: {logPath.EscapeMarkup()}[/]");
+        AnsiConsole.MarkupLine("[dim]Press Ctrl+C to stop streaming.[/]");
+
+        using var stream=new FileStream(logPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+        using var reader=new StreamReader(stream);
+        stream.Seek(0, SeekOrigin.End);
+        var cancelled=false;
+        ConsoleCancelEventHandler handler=(_, e) =>
+        {
+            cancelled=true;
+            e.Cancel=true;
+        }
+        ;
+        Console.CancelKeyPress+=handler;
+
+        try
+        {
+            while (!cancelled)
+            {
+                var line=reader.ReadLine();
+                if (line==null)
+                {
+                    Thread.Sleep(300);
+                    continue;
+                }
+                var color=Regex.IsMatch(line,@"error|fail|exception|err\b|critical", RegexOptions.IgnoreCase)?"red":Regex.IsMatch(line,"warn|warning", RegexOptions.IgnoreCase)?"yellow":Regex.IsMatch(line,@"success|ok\b|complete|done", RegexOptions.IgnoreCase)?"green":null;
+                if (color!=null)AnsiConsole.MarkupLine($"[{color}]{line.EscapeMarkup()}[/]");
+
+                else AnsiConsole.WriteLine(line);
+            }
+        }
+        finally
+        {
+            Console.CancelKeyPress-=handler;
+        }
+
+    }
 
 }
 public static class SpectreTable
@@ -322,6 +421,202 @@ public sealed record QuotaMetrics(double RemainingWeekly, double Remaining5H, st
 
 public sealed record AccountStats(string LastUsed, int UsageCount, string PrivateSize, string JunctionStatus, int SkillsCount, int ConversationsCount, string TokenStatus, string QuotaStatus, double GeminiWeekly, double GeminiFiveHour);
 
+public static class AgyKeyringHelper
+{
+    [DllImport("advapi32.dll", EntryPoint="CredReadW", CharSet=CharSet.Unicode, SetLastError=true)]private static extern bool CredRead(string target, uint type, uint reserved, out IntPtr credentialPtr);
+
+    [DllImport("advapi32.dll", EntryPoint="CredWriteW", CharSet=CharSet.Unicode, SetLastError=true)]private static extern bool CredWrite(ref CREDENTIAL credential, uint flags);
+
+    [DllImport("advapi32.dll", EntryPoint="CredDeleteW", CharSet=CharSet.Unicode, SetLastError=true)]private static extern bool CredDelete(string target, uint type, uint flags);
+
+    [DllImport("advapi32.dll", EntryPoint="CredFree", SetLastError=true)]private static extern void CredFree(IntPtr buffer);
+
+    [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Unicode)]private struct CREDENTIAL
+    {
+        public uint Flags;
+        public uint Type;
+        public string?TargetName;
+        public string?Comment;
+        public System.Runtime.InteropServices.ComTypes.FILETIME LastWritten;
+        public uint CredentialBlobSize;
+        public IntPtr CredentialBlob;
+        public uint Persist;
+        public uint AttributeCount;
+        public IntPtr Attributes;
+        public string?TargetAlias;
+        public string?UserName;
+
+    }
+
+    public static string?ReadToken(string target)
+    {
+        if (!CredRead(target, 1, 0, out var credPtr))return null;
+
+        try
+        {
+            var cred=Marshal.PtrToStructure<CREDENTIAL>(credPtr);
+            if (cred.CredentialBlobSize>0&&cred.CredentialBlob!=IntPtr.Zero)
+            {
+                var blob=new byte[cred.CredentialBlobSize];
+                Marshal.Copy(cred.CredentialBlob, blob, 0, (int)cred.CredentialBlobSize);
+                return Encoding.UTF8.GetString(blob);
+            }
+        }
+        finally
+        {
+            CredFree(credPtr);
+        }
+        return null;
+
+    }
+
+    public static bool WriteToken(string target, string username, string token)
+    {
+        var cred=new CREDENTIAL
+        {
+            Type=1, TargetName=target, UserName=username, Persist=2
+        }
+        ;
+        var blob=Encoding.UTF8.GetBytes(token);
+        cred.CredentialBlobSize=(uint)blob.Length;
+        var blobPtr=Marshal.AllocHGlobal(blob.Length);
+
+        try
+        {
+            Marshal.Copy(blob, 0, blobPtr, blob.Length);
+            cred.CredentialBlob=blobPtr;
+            return CredWrite(ref cred, 0);
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(blobPtr);
+        }
+
+    }
+
+    public static bool DeleteToken(string target) => CredDelete(target, 1, 0);
+
+}
+public static class AgySecretVault
+{
+    public static string GetSecretsFilePath()
+    {
+        var dir=@"C:\Users\Public\.gemini";
+        Directory.CreateDirectory(dir);
+        return System.IO.Path.Combine(dir,"secrets.json");
+
+    }
+
+    public static Dictionary<string, string>LoadSecrets()
+    {
+        var file=GetSecretsFilePath();
+        if (!File.Exists(file))return new();
+
+        try
+        {
+            var raw=File.ReadAllText(file);
+            if (string.IsNullOrWhiteSpace(raw))return new();
+            return JsonSerializer.Deserialize<Dictionary<string, string>>(raw)??new();
+        }
+        catch
+        {
+            return new();
+        }
+
+    }
+
+    public static void SaveSecrets(Dictionary<string, string>secrets)
+    {
+        var file=GetSecretsFilePath();
+
+        try
+        {
+            File.WriteAllText(file, JsonSerializer.Serialize(secrets));
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Failed to save secrets: {ex.Message}");
+        }
+
+    }
+
+    public static void SetSecret(string key, string value)
+    {
+        if (string.IsNullOrWhiteSpace(key)||string.IsNullOrWhiteSpace(value))
+        {
+            SpectrePanel.Error("Key and Value cannot be empty.");
+            return;
+        }
+        var secrets=LoadSecrets();
+
+        try
+        {
+            var bytes=Encoding.Unicode.GetBytes(value);
+            var protectedBytes=ProtectedData.Protect(bytes, null, DataProtectionScope.CurrentUser);
+            secrets[key]=Convert.ToHexString(protectedBytes).ToLowerInvariant();
+            SaveSecrets(secrets);
+            AnsiConsole.MarkupLine($"[green]Secret '{key.EscapeMarkup()}' saved and encrypted successfully.[/]");
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Failed to encrypt/save secret: {ex.Message}");
+        }
+
+    }
+
+    public static string GetSecret(string key)
+    {
+        if (string.IsNullOrWhiteSpace(key))return"";
+        var secrets=LoadSecrets();
+        if (!secrets.TryGetValue(key, out var encrypted))
+        {
+            SpectrePanel.Warning($"Secret '{key}' not found.");
+            return"";
+        }
+        try
+        {
+            var bytes=Convert.FromHexString(encrypted);
+            var plain=ProtectedData.Unprotect(bytes, null, DataProtectionScope.CurrentUser);
+            return Encoding.Unicode.GetString(plain);
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Failed to decrypt secret '{key}': {ex.Message}");
+            return"";
+        }
+
+    }
+
+    public static void RemoveSecret(string key)
+    {
+        if (string.IsNullOrWhiteSpace(key))return;
+        var secrets=LoadSecrets();
+        if (secrets.Remove(key))
+        {
+            SaveSecrets(secrets);
+            AnsiConsole.MarkupLine($"[green]Secret '{key.EscapeMarkup()}' removed successfully.[/]");
+        }
+        else
+        {
+            SpectrePanel.Warning($"Secret '{key}' not found.");
+        }
+
+    }
+
+    public static void ListSecrets()
+    {
+        var secrets=LoadSecrets();
+        if (secrets.Count==0)
+        {
+            SpectrePanel.Warning("No secrets stored.");
+            return;
+        }
+        AnsiConsole.MarkupLine("[cyan]Stored Secret Keys:[/]");
+        foreach (var key in secrets.Keys)AnsiConsole.MarkupLine($" * {key.EscapeMarkup()}");
+
+    }
+
+}
 public static class AgyAccountCore
 {
     public static TimeProvider Clock
@@ -756,6 +1051,225 @@ public static class AgyAccountCore
     }
 
 }
+public static class AgyAccountMenu
+{
+    public enum MainMenuChoice
+    {
+        Exit, ManageAccount, AddAccount, ToggleAutoSwitch, ShowStats
+
+    }
+
+    public sealed record MainMenuResult(MainMenuChoice Choice, string?AccountName);
+
+    public static MainMenuResult ShowManageMenu()
+    {
+        var accounts=AgyAccountCore.GetAccounts();
+        var active=AgyAccountCore.GetActiveAccount();
+        var menuItems=new List<string>();
+        var defaultIdx=0;
+        for (var i=0;
+        i<accounts.Length;
+        i++)
+        {
+            var status=File.Exists(System.IO.Path.Combine(AgyAccountCore.GetAccountDirectory(accounts[i]),"keyring_token.txt"))?"Logged In":"Not Logged In";
+            if (accounts[i]==active)
+            {
+                menuItems.Add($"* {accounts[i]} (Active, {status})");
+                defaultIdx=i;
+            }
+            else menuItems.Add($" {accounts[i]} ({status})");
+        }
+        menuItems.Add("[+] Add New Account");
+        menuItems.Add($"[Settings] Toggle Auto-Switch (Currently: {(AgyAccountCore.IsAutoSwitchEnabled() ? "Enabled" : "Disabled")})");
+        menuItems.Add("[Stats] Show All Accounts Summary");
+        menuItems.Add("[x] Exit Dashboard");
+        var selected=SpectreMenu.ShowRobust(["Antigravity Multi-Account Manager"], menuItems.ToArray(), defaultIdx, false, true);
+        if (selected<0||selected==menuItems.Count-1)return new(MainMenuChoice.Exit, null);
+        if (selected<accounts.Length)return new(MainMenuChoice.ManageAccount, accounts[selected]);
+        if (selected==accounts.Length)return new(MainMenuChoice.AddAccount, null);
+        if (selected==accounts.Length+1)return new(MainMenuChoice.ToggleAutoSwitch, null);
+        return new(MainMenuChoice.ShowStats, null);
+
+    }
+    public enum AccountAction
+    {
+        Back, SetActivePersistent, SetActiveTemporary, ShowUsage, Login, Logout, Delete
+
+    }
+
+    public static void ShowAccountStatsCard(string accountName)
+    {
+        var stats=AgyAccountCore.GetAccountStats(accountName);
+        AnsiConsole.MarkupLine("[cyan]=============================================[/]");
+        AnsiConsole.MarkupLine($"[cyan] ACCOUNT STATS: {accountName.EscapeMarkup()}[/]");
+        AnsiConsole.MarkupLine("[cyan]=============================================[/]");
+        AnsiConsole.MarkupLine($" * Status: {stats.TokenStatus.EscapeMarkup()}");
+        AnsiConsole.MarkupLine($" * Quota Status: {stats.QuotaStatus.EscapeMarkup()}");
+        AnsiConsole.MarkupLine($" * Last Used: {stats.LastUsed.EscapeMarkup()}");
+        AnsiConsole.MarkupLine($" * Usage Count: {stats.UsageCount} sessions/calls");
+        AnsiConsole.MarkupLine($" * Private Size: {stats.PrivateSize.EscapeMarkup()} (excluding shared)");
+        AnsiConsole.MarkupLine($" * Sync Health: {stats.JunctionStatus.EscapeMarkup()}");
+        AnsiConsole.MarkupLine($" * Shared Skills: {stats.SkillsCount} skills");
+        AnsiConsole.MarkupLine($" * Shared History: {stats.ConversationsCount} conversations");
+        AnsiConsole.MarkupLine("[cyan]=============================================[/]");
+        AnsiConsole.WriteLine();
+
+    }
+
+    public static AccountAction ShowAccountSubMenu(string accountName)
+    {
+        AnsiConsole.Clear();
+        ShowAccountStatsCard(accountName);
+        var status=File.Exists(System.IO.Path.Combine(AgyAccountCore.GetAccountDirectory(accountName),"keyring_token.txt"))?"Logged In":"Not Logged In";
+        var subItems=new List<string>
+        {
+            "[Switch] Set as Active (Persistent)","[Switch] Set as Active (Temporary)","[Usage] Models & Quota","[Login] Sign In / Re-authenticate","[Logout] Sign Out / Reset Credentials"
+        }
+        ;
+        if (!string.Equals(accountName,"default", StringComparison.OrdinalIgnoreCase))subItems.Add("[Delete] Remove Account");
+        subItems.Add("[Back] Return to Main Menu");
+        var subSel=SpectreMenu.ShowRobust([$"Manage Account: {accountName} ({status})"], subItems.ToArray(), 0, false, true);
+        if (subSel<0)return AccountAction.Back;
+        return subItems[subSel]switch
+        {
+            "[Switch] Set as Active (Persistent)" => AccountAction.SetActivePersistent,"[Switch] Set as Active (Temporary)" => AccountAction.SetActiveTemporary,"[Usage] Models & Quota" => AccountAction.ShowUsage,"[Login] Sign In / Re-authenticate" => AccountAction.Login,"[Logout] Sign Out / Reset Credentials" => AccountAction.Logout,"[Delete] Remove Account" => AccountAction.Delete, _ => AccountAction.Back
+        }
+        ;
+
+    }
+    public enum SelectChoice
+    {
+        Cancel, Selected, AddAccount, DeleteAccount
+
+    }
+
+    public sealed record SelectResult(SelectChoice Choice, string?AccountName);
+
+    public static SelectResult ShowSelectAccountMenu()
+    {
+        var accounts=AgyAccountCore.GetAccounts();
+        var active=AgyAccountCore.GetActiveAccount();
+        var menuItems=new List<string>();
+        var defaultIdx=0;
+        for (var i=0;
+        i<accounts.Length;
+        i++)
+        {
+            if (accounts[i]==active)
+            {
+                menuItems.Add($"{accounts[i]} (Active)");
+                defaultIdx=i;
+            }
+            else menuItems.Add(accounts[i]);
+        }
+        menuItems.Add("[+] Add New Account");
+        menuItems.Add("[x] Delete Account");
+        menuItems.Add("[exit] Cancel / Exit");
+        var selected=SpectreMenu.ShowRobust(["Select Antigravity Account"], menuItems.ToArray(), defaultIdx, false, true);
+        if (selected<0)return new(SelectChoice.Cancel, null);
+        if (selected<accounts.Length)return new(SelectChoice.Selected, accounts[selected]);
+        if (selected==accounts.Length)return new(SelectChoice.AddAccount, null);
+        return new(SelectChoice.DeleteAccount, null);
+
+    }
+
+    public static string?ShowDeleteAccountMenu()
+    {
+        var deletable=AgyAccountCore.GetAccounts().Where(a => !string.Equals(a,"default", StringComparison.OrdinalIgnoreCase)).ToArray();
+        if (deletable.Length==0)
+        {
+            SpectrePanel.Warning("No secondary accounts available to delete.");
+            return null;
+        }
+        var idx=SpectreMenu.ShowRobust(["Delete Antigravity Account"], deletable, 0, false, true);
+        return idx>=0?deletable[idx]:null;
+
+    }
+
+}
+public static class Projects
+{
+    public static readonly string AgBaseDir=Directory.Exists(@"C:\Users\sshuser\project")?@"C:\Users\sshuser\project":System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),"Desktop","project");
+
+    public static string?StartManager()
+    {
+        var projectDir=System.IO.Path.Combine(AgBaseDir,"AntigravityManager");
+        if (!Directory.Exists(projectDir))
+        {
+            SpectrePanel.Error($"Project not found: {projectDir}");
+            return null;
+        }
+        RunNpmSetupAndStart(projectDir,"Antigravity Manager", null);
+        return projectDir;
+
+    }
+
+    public static string?StartProxy()
+    {
+        var projectDir=System.IO.Path.Combine(AgBaseDir,"antigravity-claude-proxy");
+        if (!Directory.Exists(projectDir))
+        {
+            SpectrePanel.Error($"Project not found: {projectDir}");
+            return null;
+        }
+        AnsiConsole.MarkupLine("[cyan]🛸 Proxy env set (BASE_URL=localhost:8080)[/]");
+        var env=new Dictionary<string, string?>
+        {
+            ["ANTHROPIC_BASE_URL"]="http://localhost:8080", ["ANTHROPIC_AUTH_TOKEN"]="test"
+        }
+        ;
+        RunNpmSetupAndStart(projectDir,"Antigravity Proxy", env);
+        return projectDir;
+
+    }
+
+    private static void RunNpmSetupAndStart(string projectDir, string label, IDictionary<string, string?>?env)
+    {
+        AnsiConsole.MarkupLine("[cyan][[1/2]] 📦 Checking dependencies...[/]");
+        if (!Directory.Exists(System.IO.Path.Combine(projectDir,"node_modules")))
+        {
+            AnsiConsole.MarkupLine("[yellow] -> Installing (npm install)...[/]");
+            RunNpm("install", projectDir, env);
+        }
+        else
+        {
+            AnsiConsole.MarkupLine("[green] -> node_modules OK.[/]");
+        }
+        AnsiConsole.MarkupLine($"[green][[2/2]] 🚀 Launching {label.EscapeMarkup()}...[/]");
+        RunNpm("start", projectDir, env);
+
+    }
+
+    private static void RunNpm(string args, string workingDir, IDictionary<string, string?>?env)
+    {
+        var npmPath=AiHelper.FindOnPath("npm.cmd")??"npm.cmd";
+        var psi=new ProcessStartInfo(npmPath, args)
+        {
+            UseShellExecute=false, WorkingDirectory=workingDir
+        }
+        ;
+        if (env!=null)
+        {
+            foreach (var kv in env)
+            {
+                if (kv.Value==null)psi.Environment.Remove(kv.Key);
+
+                else psi.Environment[kv.Key]=kv.Value;
+            }
+        }
+        try
+        {
+            using var p=Process.Start(psi);
+            p?.WaitForExit();
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Failed to run 'npm {args}': {ex.Message}");
+        }
+
+    }
+
+}
 
 public sealed record WorkspaceEntry(string Name, [property:JsonPropertyName("Path")]string WorkspacePath, string?AssociatedAccount, string[]?Tags);
 
@@ -897,28 +1411,191 @@ public static class SystemHelper
     public static bool KillPort(int port)
     {
         var result=RunProcess("netstat",$"-ano", capture:true);
+        var killedAny=false;
+        var seenPids=new HashSet<int>();
         foreach (var line in result.Split('\n'))
         {
             if (!line.Contains($":{port} ")&&!line.Contains($":{port}\t"))continue;
             var parts=line.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length<5)continue;
             if (!int.TryParse(parts[^1], out var pid))continue;
+            if (!seenPids.Add(pid))continue;
 
             try
             {
                 var proc=Process.GetProcessById(pid);
+                var name=proc.ProcessName;
                 proc.Kill(entireProcessTree:true);
-                SpectrePanel.Success($"Killed PID {pid} on port {port}.");
-                return true;
+                SpectrePanel.Success($"Killed process '{name}' (PID {pid}) listening on port {port}.");
+                killedAny=true;
             }
             catch (Exception ex)
             {
                 SpectrePanel.Error($"Failed to kill PID {pid}: {ex.Message}");
-                return false;
             }
         }
-        SpectrePanel.Warning($"No process found listening on port {port}.");
-        return false;
+        if (!killedAny)SpectrePanel.Warning($"No process found listening on port {port}.");
+        return killedAny;
+
+    }
+
+    public static void OpenExplorer(string?path=null) => Process.Start(new ProcessStartInfo("explorer.exe", path??Directory.GetCurrentDirectory())
+    {
+        UseShellExecute=true
+
+    }
+    );
+
+    public static void StopProcessFriendly(string?name=null)
+    {
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            var named=Process.GetProcessesByName(name);
+            if (named.Length==0)
+            {
+                SpectrePanel.Warning($"No process named '{name}' found.");
+                return;
+            }
+            foreach (var p in named)
+            {
+                try
+                {
+                    p.Kill();
+                    SpectrePanel.Success($"Stopped '{p.ProcessName}' (PID {p.Id}).");
+                }
+                catch (Exception ex)
+                {
+                    SpectrePanel.Error($"Failed to stop PID {p.Id}: {ex.Message}");
+                }
+            }
+            return;
+        }
+        var all=Process.GetProcesses().OrderBy(p => p.ProcessName).ToArray();
+        var labels=all.Select(p => $"{p.ProcessName,-30} PID {p.Id}").ToArray();
+        var idx=SpectreMenu.Show("Select process to kill", labels, 0, true);
+        if (idx<0)return;
+        var target=all[idx];
+
+        try
+        {
+            target.Kill();
+            SpectrePanel.Success($"Stopped '{target.ProcessName}' (PID {target.Id}).");
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Failed to stop PID {target.Id}: {ex.Message}");
+        }
+
+    }
+
+    public static void SystemMonitor()
+    {
+        AnsiConsole.MarkupLine("[dim]Press Escape or Enter to exit System Monitor...[/]");
+        PerformanceCounter?cpuCounter=null;
+        PerformanceCounter?diskCounter=null;
+
+        try
+        {
+            cpuCounter=new PerformanceCounter("Processor","% Processor Time","_Total");
+            diskCounter=new PerformanceCounter("PhysicalDisk","% Disk Time","_Total");
+            cpuCounter.NextValue();
+            diskCounter.NextValue();
+        }
+        catch
+        {
+        }
+        try
+        {
+            while (true)
+            {
+                var cpu=0.0;
+
+                try
+                {
+                    cpu=cpuCounter?.NextValue()??0.0;
+                }
+                catch
+                {
+                }
+                var disk=0.0;
+
+                try
+                {
+                    disk=Math.Min(100.0, diskCounter?.NextValue()??0.0);
+                }
+                catch
+                {
+                }
+                GetMemoryInfo(out var totalMb, out var availMb);
+                var usedMb=totalMb-availMb;
+                var ramPercent=totalMb>0?(usedMb/totalMb)*100.0:0.0;
+                AnsiConsole.MarkupLine($" CPU Usage: {Bar(cpu)} {cpu:F1}%".PadRight(60));
+                AnsiConsole.MarkupLine($" RAM Usage: {Bar(ramPercent)} {ramPercent:F1}% ({usedMb/1024.0:F2} GB / {totalMb/1024.0:F2} GB)".PadRight(60));
+                AnsiConsole.MarkupLine($" Disk I/O: {Bar(disk)} {disk:F1}%".PadRight(60));
+                var exit=false;
+                for (var s=0;
+                s<20;
+                s++)
+                {
+                    if (Console.KeyAvailable)
+                    {
+                        var key=Console.ReadKey(true);
+                        if (key.Key is ConsoleKey.Escape or ConsoleKey.Enter)
+                        {
+                            exit=true;
+                            break;
+                        }
+                    }
+                    Thread.Sleep(100);
+                }
+                if (exit)break;
+                AnsiConsole.Cursor.MoveUp(3);
+            }
+        }
+        finally
+        {
+            cpuCounter?.Dispose();
+            diskCounter?.Dispose();
+        }
+
+    }
+
+    private static string Bar(double percentage)
+    {
+        var filled=Math.Clamp((int)Math.Round(percentage/100.0*20), 0, 20);
+        return"["+new string('█', filled)+new string('░', 20-filled)+"]";
+
+    }
+    [DllImport("kernel32.dll", SetLastError=true)]private static extern bool GlobalMemoryStatusEx(ref MemoryStatusEx buffer);
+
+    [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Auto)]private struct MemoryStatusEx
+    {
+        public uint dwLength;
+        public uint dwMemoryLoad;
+        public ulong ullTotalPhys;
+        public ulong ullAvailPhys;
+        public ulong ullTotalPageFile;
+        public ulong ullAvailPageFile;
+        public ulong ullTotalVirtual;
+        public ulong ullAvailVirtual;
+        public ulong ullAvailExtendedVirtual;
+
+    }
+
+    private static void GetMemoryInfo(out double totalMb, out double availMb)
+    {
+        var status=new MemoryStatusEx();
+        status.dwLength=(uint)Marshal.SizeOf<MemoryStatusEx>();
+        if (GlobalMemoryStatusEx(ref status))
+        {
+            totalMb=status.ullTotalPhys/1024.0/1024.0;
+            availMb=status.ullAvailPhys/1024.0/1024.0;
+        }
+        else
+        {
+            totalMb=1.0;
+            availMb=1.0;
+        }
 
     }
 
@@ -1015,6 +1692,1156 @@ public static class SshHelper
         }
 
     }
+
+    public static void GetConnectionInfo()
+    {
+        AnsiConsole.MarkupLine("[bold cyan]🌐 Network Connection Status[/]");
+        AnsiConsole.MarkupLine("[cyan]===========================[/]");
+        string?tailscaleIp=null;
+        if (IsCommandAvailable("tailscale"))
+        {
+            tailscaleIp=SystemHelper.RunProcess("tailscale","ip -4", capture:true).Trim();
+            if (!string.IsNullOrWhiteSpace(tailscaleIp))AnsiConsole.MarkupLine($" Tailscale IPv4 Address: [green]{tailscaleIp.EscapeMarkup()}[/]");
+
+            else AnsiConsole.MarkupLine(" [yellow][[WARN]] Tailscale is installed but may not be logged in or connected.[/]");
+        }
+        else
+        {
+            AnsiConsole.MarkupLine(" [dim]Tailscale is not installed on this machine.[/]");
+        }
+        var localIps=NetworkInterface.GetAllNetworkInterfaces().Where(n => n.OperationalStatus==OperationalStatus.Up&&(n.Name.Contains("Wi-Fi", StringComparison.OrdinalIgnoreCase)||n.Name.Contains("Ethernet", StringComparison.OrdinalIgnoreCase))).SelectMany(n => n.GetIPProperties().UnicastAddresses).Where(a => a.Address.AddressFamily==AddressFamily.InterNetwork).Select(a => a.Address.ToString()).ToArray();
+        if (localIps.Length>0)AnsiConsole.MarkupLine($" Local IPv4 Address(es): [cyan]{string.Join(", ", localIps).EscapeMarkup()}[/]");
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine("[bold cyan]🔒 Active SSH Sessions[/]");
+        AnsiConsole.MarkupLine("[cyan]====================[/]");
+        var netstatOut=SystemHelper.RunProcess("netstat","-ano", capture:true);
+        var sshConns=netstatOut.Split('\n').Select(l => l.Trim()).Where(l => l.StartsWith("TCP", StringComparison.OrdinalIgnoreCase)).Select(l => l.Split(' ', StringSplitOptions.RemoveEmptyEntries)).Where(parts => parts.Length>=5&&parts[1].EndsWith(":22")&&parts[3].Equals("ESTABLISHED", StringComparison.OrdinalIgnoreCase)).ToArray();
+        if (sshConns.Length>0)
+        {
+            foreach (var parts in sshConns)
+            {
+                var procName="?";
+                if (int.TryParse(parts[4], out var pid))
+                {
+                    try
+                    {
+                        procName=Process.GetProcessById(pid).ProcessName;
+                    }
+                    catch
+                    {
+                    }
+                }
+                AnsiConsole.MarkupLine($" Established connection from [green]{parts[2].EscapeMarkup()}[/] (Process: {procName.EscapeMarkup()}, PID: {parts[4]})");
+            }
+        }
+        else
+        {
+            AnsiConsole.MarkupLine(" [dim]No active SSH connections on port 22.[/]");
+        }
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine("[bold cyan]📱 Phone to PC Control Quick Guide[/]");
+        AnsiConsole.MarkupLine("[cyan]================================[/]");
+        AnsiConsole.MarkupLine(" 1. On your phone (Termux), run: ssh sshuser@<IP>");
+        var displayIp=!string.IsNullOrWhiteSpace(tailscaleIp)?tailscaleIp:"100.x.y.z";
+        AnsiConsole.MarkupLine($" 2. Use your Tailscale IP ({displayIp.EscapeMarkup()}) for secure access anywhere.");
+        AnsiConsole.MarkupLine(" 3. To authorize a passwordless login key, run: ssh-addkey");
+
+    }
+
+    private static bool IsCommandAvailable(string exe)
+    {
+        try
+        {
+            using var p=Process.Start(new ProcessStartInfo("where", exe)
+            {
+                RedirectStandardOutput=true, RedirectStandardError=true, UseShellExecute=false, CreateNoWindow=true
+            }
+            );
+            p?.WaitForExit();
+            return p?.ExitCode==0;
+        }
+        catch
+        {
+            return false;
+        }
+
+    }
+
+    public static void AddAuthorizedKey(string key, string?account=null)
+    {
+        var targetUser=string.IsNullOrWhiteSpace(account)?Environment.UserName:account;
+        var userHome=Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        if (!string.Equals(targetUser, Environment.UserName, StringComparison.OrdinalIgnoreCase))
+        {
+            var usersRoot=Directory.GetParent(userHome)!.FullName;
+            userHome=System.IO.Path.Combine(usersRoot, targetUser!);
+        }
+        if (!Directory.Exists(userHome))
+        {
+            SpectrePanel.Error($"Home directory for user '{targetUser}' not found at {userHome}.");
+            return;
+        }
+        var sshDir=System.IO.Path.Combine(userHome,".ssh");
+        var authFile=System.IO.Path.Combine(sshDir,"authorized_keys");
+        if (!Directory.Exists(sshDir))
+        {
+            Directory.CreateDirectory(sshDir);
+            AnsiConsole.MarkupLine($"[cyan]📂 Created directory: {sshDir.EscapeMarkup()}[/]");
+        }
+        if (!File.Exists(authFile))
+        {
+            File.Create(authFile).Dispose();
+            AnsiConsole.MarkupLine($"[cyan]📄 Created file: {authFile.EscapeMarkup()}[/]");
+        }
+        var existingKeys=File.ReadAllLines(authFile);
+        if (existingKeys.Contains(key))
+        {
+            AnsiConsole.MarkupLine("[yellow]ℹ️ SSH Key is already authorized.[/]");
+            return;
+        }
+        File.AppendAllText(authFile, key+Environment.NewLine);
+        SpectrePanel.Success($"SSH key successfully authorized for user '{targetUser}'.");
+        AnsiConsole.MarkupLine("[cyan]🔒 Setting secure permissions on SSH files...[/]");
+        const string systemUser="NT AUTHORITY\\SYSTEM";
+        var targetIdentity=$"{Environment.UserDomainName}\\{targetUser}";
+        const FileSystemRights fullControl=FileSystemRights.FullControl;
+        const AccessControlType allow=AccessControlType.Allow;
+        var dirInfo=new DirectoryInfo(sshDir);
+        var dirSecurity=dirInfo.GetAccessControl();
+        dirSecurity.SetAccessRuleProtection(true, false);
+        foreach (FileSystemAccessRule rule in dirSecurity.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount)))dirSecurity.RemoveAccessRule(rule);
+        dirSecurity.AddAccessRule(new FileSystemAccessRule(targetIdentity, fullControl, InheritanceFlags.None, PropagationFlags.None, allow));
+        dirSecurity.AddAccessRule(new FileSystemAccessRule(systemUser, fullControl, InheritanceFlags.None, PropagationFlags.None, allow));
+        dirInfo.SetAccessControl(dirSecurity);
+        var fileInfo=new FileInfo(authFile);
+        var fileSecurity=fileInfo.GetAccessControl();
+        fileSecurity.SetAccessRuleProtection(true, false);
+        foreach (FileSystemAccessRule rule in fileSecurity.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount)))fileSecurity.RemoveAccessRule(rule);
+        fileSecurity.AddAccessRule(new FileSystemAccessRule(targetIdentity, fullControl, InheritanceFlags.None, PropagationFlags.None, allow));
+        fileSecurity.AddAccessRule(new FileSystemAccessRule(systemUser, fullControl, InheritanceFlags.None, PropagationFlags.None, allow));
+        fileInfo.SetAccessControl(fileSecurity);
+        SpectrePanel.Success("Secure OpenSSH file permissions applied.");
+
+    }
+
+    public static void StartMobileSshKeyReceiver(int port=8999)
+    {
+        var tsIp=IsCommandAvailable("tailscale")?SystemHelper.RunProcess("tailscale","ip -4", capture:true).Trim():null;
+        var localIps=NetworkInterface.GetAllNetworkInterfaces().Where(n => n.OperationalStatus==OperationalStatus.Up&&(n.Name.Contains("Wi-Fi", StringComparison.OrdinalIgnoreCase)||n.Name.Contains("Ethernet", StringComparison.OrdinalIgnoreCase))).SelectMany(n => n.GetIPProperties().UnicastAddresses).Where(a => a.Address.AddressFamily==AddressFamily.InterNetwork).Select(a => a.Address.ToString()).ToArray();
+        var displayIp=!string.IsNullOrWhiteSpace(tsIp)?tsIp:localIps.Length>0?localIps[0]:"localhost";
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine("[bold cyan]📱 Mobile SSH Key Authorizer[/]");
+        AnsiConsole.MarkupLine("[cyan]=============================[/]");
+        AnsiConsole.MarkupLine("[dim]Starting temporary local server to receive your public SSH key...[/]");
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine("[cyan]👉 Link to open in your phone's browser:[/]");
+        AnsiConsole.MarkupLine($" [green]http://{displayIp}:{port}/[/]");
+        AnsiConsole.MarkupLine($" [dim](or http://localhost:{port}/ if local)[/]");
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine("[yellow]Waiting for connection… (Timeout in 2 minutes. Press Ctrl+C to cancel)[/]");
+        AnsiConsole.WriteLine();
+        var listener=new HttpListener();
+        listener.Prefixes.Add($"http://*:{port}/");
+
+        try
+        {
+            listener.Start();
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Failed to start HTTP listener: {ex.Message}. Make sure port {port} is not in use and you have administrator permissions.");
+            return;
+        }
+        var timeout=TimeSpan.FromMinutes(2);
+        var start=DateTime.Now;
+        var success=false;
+
+        try
+        {
+            while (DateTime.Now-start<timeout)
+            {
+                var getContext=listener.BeginGetContext(null, null);
+                if (!getContext.AsyncWaitHandle.WaitOne(timeout-(DateTime.Now-start)))break;
+                var context=listener.EndGetContext(getContext);
+                var request=context.Request;
+                var response=context.Response;
+                if (request.HttpMethod=="GET")
+                {
+                    WriteHtml(response, FormHtml);
+                }
+                else if (request.HttpMethod=="POST")
+                {
+                    using var reader=new StreamReader(request.InputStream, Encoding.UTF8);
+                    var body=reader.ReadToEnd();
+                    var decoded=WebUtility.UrlDecode(body);
+                    var sshKey=decoded.StartsWith("key=")?decoded[4..]:decoded;
+                    sshKey=sshKey.Trim();
+                    var isValid=Regex.IsMatch(sshKey,@"^ssh-(ed25519|rsa|dss|ecdsa) [A-Za-z0-9+/=]+( .+)?$");
+                    if (isValid)
+                    {
+                        AddAuthorizedKey(sshKey);
+                        success=true;
+                        WriteHtml(response, SuccessHtml);
+                    }
+                    else
+                    {
+                        WriteHtml(response, InvalidHtml);
+                    }
+                    if (success)break;
+                }
+            }
+        }
+        finally
+        {
+            listener.Stop();
+            listener.Close();
+            AnsiConsole.MarkupLine("[dim]🛑 Mobile Key Authorizer server stopped.[/]");
+        }
+
+    }
+
+    private static void WriteHtml(HttpListenerResponse response, string html)
+    {
+        var buffer=Encoding.UTF8.GetBytes(html);
+        response.ContentLength64=buffer.Length;
+        response.ContentType="text/html";
+        response.OutputStream.Write(buffer, 0, buffer.Length);
+        response.OutputStream.Close();
+
+    }
+
+    private const string PageStyle="body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background-color:#0f141c;color:#abb2bf;margin:0;padding:20px;display:flex;justify-content:center;align-items:center;min-height:90vh}.container,.card{background-color:#161b22;border-radius:12px;padding:24px;max-width:500px;width:100%;box-shadow:0 4px 12px rgba(0,0,0,.3);border:1px solid #30363d}h2{color:#56b6c2;margin-top:0;font-size:1.5rem;text-align:center}p{font-size:.95rem;line-height:1.5;color:#8b949e}textarea{width:100%;height:120px;box-sizing:border-box;background-color:#0d1117;color:#c9d1d9;border:1px solid #30363d;border-radius:6px;padding:10px;font-family:monospace;font-size:.85rem;resize:vertical;margin-top:10px;margin-bottom:20px}button{width:100%;background-color:#238636;color:#fff;border:none;border-radius:6px;padding:12px;font-size:1rem;font-weight:bold;cursor:pointer}";
+
+    private static readonly string FormHtml=$"<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Mobile SSH Key Authorizer</title><style>{PageStyle}</style></head><body><div class=\"container\"><h2>📱 Add SSH Public Key</h2><p>Paste the public SSH key from your mobile phone (e.g. from Termux's <code>~/.ssh/id_ed25519.pub</code>) to authorize connection.</p><form method=\"POST\"><textarea name=\"key\" placeholder=\"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5...\" required></textarea><button type=\"submit\">Authorize Key</button></form></div></body></html>";
+    private static readonly string SuccessHtml=$"<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Success</title><style>{PageStyle}h2{{color:#2ea043}}</style></head><body><div class=\"card\"><h2>✅ Success!</h2><p>The SSH key has been added to authorized_keys and NTFS file permissions have been secured.</p><p>You can close this window now.</p></div></body></html>";
+    private static readonly string InvalidHtml=$"<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Invalid Key</title><style>{PageStyle}h2{{color:#f85149}}a{{color:#58a6ff}}</style></head><body><div class=\"card\"><h2>❌ Invalid SSH Key Format</h2><p>The key provided does not match a valid public SSH key format.</p><p><a href=\"/\">Go back and try again</a></p></div></body></html>";
+
+}
+public static class ThemeHelper
+{
+    private sealed record ThemeConfig(string?active_theme, bool?enable_mobile);
+
+    public static string?SelectThemeInteractive(string themesPath, string?currentTheme)
+    {
+        if (!Directory.Exists(themesPath))
+        {
+            SpectrePanel.Error($"Themes directory not found: {themesPath}");
+            return null;
+        }
+        var files=Directory.GetFiles(themesPath,"*.omp.json").OrderBy(f => f, StringComparer.OrdinalIgnoreCase).ToArray();
+        if (files.Length==0)
+        {
+            SpectrePanel.Error($"No Oh My Posh themes (.omp.json) found in {themesPath}.");
+            return null;
+        }
+        var themeNames=files.Select(f => System.IO.Path.GetFileName(f).Replace(".omp.json","")).ToArray();
+        var displayLabels=new string[files.Length];
+        for (var i=0;
+        i<files.Length;
+        i++)
+        {
+            var preview=BuildPreview(files[i]);
+            displayLabels[i]=$"{themeNames[i].PadRight(25)} │ {preview}";
+        }
+        var defaultIndex=currentTheme!=null?Array.IndexOf(themeNames, currentTheme):-1;
+        if (defaultIndex<0)defaultIndex=0;
+        var selectedIndex=SpectreMenu.Show("Select Oh My Posh Theme (Color segment preview)", displayLabels, defaultIndex);
+        if (selectedIndex<0)return null;
+        var selectedTheme=themeNames[selectedIndex];
+        PersistConfig(themesPath, selectedTheme, selectedTheme.EndsWith("-mobile"));
+        Environment.SetEnvironmentVariable("THEME", selectedTheme);
+        var themePath=System.IO.Path.Combine(themesPath,$"{selectedTheme}.omp.json");
+        if (!File.Exists(themePath))return null;
+        AnsiConsole.MarkupLine($"[green][[Theme]] Oh My Posh theme switched to '{selectedTheme}' (Persistent).[/]");
+        return themePath;
+
+    }
+
+    public static string?ToggleMobileMode(string themesPath) => ApplyMobileMode(themesPath, !ReadConfig(themesPath).IsMobile);
+
+    public static string?SetMobileMode(string themesPath, bool enableMobile) => ApplyMobileMode(themesPath, enableMobile);
+
+    private static string?ApplyMobileMode(string themesPath, bool enableMobile)
+    {
+        if (!Directory.Exists(themesPath))return null;
+        var current=ReadConfig(themesPath);
+        var baseTheme=Regex.Replace(current.ThemeName,"-mobile$","");
+        var themeName=baseTheme;
+        if (enableMobile)
+        {
+            var candidate=$"{baseTheme}-mobile";
+            if (File.Exists(System.IO.Path.Combine(themesPath,$"{candidate}.omp.json")))themeName=candidate;
+        }
+        PersistConfig(themesPath, themeName, enableMobile);
+        Environment.SetEnvironmentVariable("THEME", themeName);
+        var themePath=System.IO.Path.Combine(themesPath,$"{themeName}.omp.json");
+        if (!File.Exists(themePath))return null;
+        AnsiConsole.MarkupLine(enableMobile?"[cyan][[Theme]] Mobile Prompt Theme activated (ASCII mode, stacked).[/]":"[green][[Theme]] Desktop Prompt Theme activated (Rich Unicode/Emoji mode).[/]");
+        return themePath;
+
+    }
+
+    private static(string ThemeName, bool IsMobile)ReadConfig(string themesPath)
+    {
+        var configPath=System.IO.Path.Combine(themesPath,"config.json");
+        var themeName="neko";
+        var isMobile=false;
+        if (File.Exists(configPath))
+        {
+            try
+            {
+                var cfg=JsonSerializer.Deserialize<ThemeConfig>(File.ReadAllText(configPath));
+                if (!string.IsNullOrWhiteSpace(cfg?.active_theme))themeName=cfg!.active_theme!;
+                if (cfg?.enable_mobile is bool b)isMobile=b;
+            }
+            catch
+            {
+            }
+        }
+        return(themeName, isMobile);
+
+    }
+
+    public static string ResolveStartupTheme(string themesPath)
+    {
+        var configPath=System.IO.Path.Combine(themesPath,"config.json");
+        if (File.Exists(configPath))return ReadConfig(themesPath).ThemeName;
+        var legacyFile=System.IO.Path.Combine(themesPath,"active_theme.txt");
+        if (File.Exists(legacyFile))
+        {
+            var theme=File.ReadAllText(legacyFile).Trim();
+
+            try
+            {
+                File.Delete(legacyFile);
+            }
+            catch
+            {
+            }
+            PersistConfig(themesPath, theme, theme.EndsWith("-mobile"));
+            return theme;
+        }
+        return"neko";
+
+    }
+
+    private static void PersistConfig(string themesPath, string themeName, bool enableMobile)
+    {
+        var configPath=System.IO.Path.Combine(themesPath,"config.json");
+
+        try
+        {
+            File.WriteAllText(configPath, JsonSerializer.Serialize(new ThemeConfig(themeName, enableMobile)));
+        }
+        catch
+        {
+        }
+        try
+        {
+            File.Delete(System.IO.Path.Combine(themesPath,"active_theme.txt"));
+        }
+        catch
+        {
+        }
+        try
+        {
+            File.Delete(System.IO.Path.Combine(themesPath,"mobile_mode_active.txt"));
+        }
+        catch
+        {
+        }
+
+    }
+
+    private static string BuildPreview(string filePath)
+    {
+        try
+        {
+            using var doc=JsonDocument.Parse(File.ReadAllText(filePath));
+            if (!doc.RootElement.TryGetProperty("blocks", out var blocks))return"";
+            var parts=new List<string>();
+            foreach (var block in blocks.EnumerateArray())
+            {
+                if (parts.Count>=3)break;
+                if (!block.TryGetProperty("segments", out var segments))continue;
+                foreach (var seg in segments.EnumerateArray())
+                {
+                    if (parts.Count>=3)break;
+                    var color=seg.TryGetProperty("background", out var bg)?bg.GetString():seg.TryGetProperty("foreground", out var fg)?fg.GetString():null;
+                    var type=seg.TryGetProperty("type", out var t)?t.GetString():"";
+                    parts.Add($"{MapHexToEmoji(color)} {type}");
+                }
+            }
+            return string.Join(" ", parts);
+        }
+        catch
+        {
+            return"";
+        }
+
+    }
+
+    private static string MapHexToEmoji(string?hex)
+    {
+        var emoji="🔵";
+        if (string.IsNullOrWhiteSpace(hex))return emoji;
+        var m=Regex.Match(hex,@"^#?([0-9a-fA-F]{6})$");
+        if (!m.Success)return emoji;
+        var clean=m.Groups[1].Value;
+        var r=Convert.ToInt32(clean[..2], 16);
+        var g=Convert.ToInt32(clean.Substring(2, 2), 16);
+        var b=Convert.ToInt32(clean.Substring(4, 2), 16);
+        var max=Math.Max(r, Math.Max(g, b));
+        var min=Math.Min(r, Math.Min(g, b));
+        if (max-min<30)emoji=max<64?"⚫":max>192?"⚪":"🔘";
+
+        else if (r>g&&r>b)emoji=(g-b)>40?"🟠":"🔴";
+
+        else if (g>r&&g>b)emoji="🟢";
+
+        else if (b>r&&b>g)emoji=(r-g)>40?"🟣":"🔵";
+
+        else if (r>b&&g>b)emoji=Math.Abs(r-g)<40?"🟡":"🟠";
+        return emoji;
+
+    }
+
+}
+public static class AiHelper
+{
+    private static readonly string OllamaDefaultModelFile=System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),".ollama_default_model");
+
+    private static string _ollamaDefaultModel=LoadDefaultModel();
+    public static string OllamaDefaultModel => _ollamaDefaultModel;
+
+    private static string LoadDefaultModel()
+    {
+        try
+        {
+            if (File.Exists(OllamaDefaultModelFile))
+            {
+                var saved=File.ReadAllText(OllamaDefaultModelFile).Trim();
+                if (!string.IsNullOrWhiteSpace(saved))return saved;
+            }
+        }
+        catch
+        {
+        }
+        return"qwen3:1.7b";
+
+    }
+
+    private static void PersistDefaultModel(string model)
+    {
+        _ollamaDefaultModel=model;
+
+        try
+        {
+            File.WriteAllText(OllamaDefaultModelFile, model);
+        }
+        catch
+        {
+        }
+
+    }
+
+    private static string ResolveProxyScriptPath()
+    {
+        var asmDir=System.IO.Path.GetDirectoryName(typeof(AiHelper).Assembly.Location)??Directory.GetCurrentDirectory();
+        var dir=new DirectoryInfo(asmDir);
+        for (var i=0;
+        i<5&&dir!=null;
+        i++, dir=dir.Parent)
+        {
+            var candidate1=System.IO.Path.Combine(dir.FullName,"Tests","Mocks","ollama-proxy.js");
+            if (File.Exists(candidate1))return candidate1;
+            var candidate2=System.IO.Path.Combine(dir.FullName,"Tests","ollama-proxy.js");
+            if (File.Exists(candidate2))return candidate2;
+        }
+        return System.IO.Path.Combine(asmDir,"ollama-proxy.js");
+
+    }
+
+    private static bool IsPortListening(int port) => IPGlobalProperties.GetIPGlobalProperties().GetActiveTcpListeners().Any(e => e.Port==port);
+
+    private static bool IsPortResponding(int port, string?pattern)
+    {
+        try
+        {
+            using var handler=new HttpClientHandler
+            {
+                UseProxy=false
+            }
+            ;
+
+            using var client=new HttpClient(handler)
+            {
+                Timeout=TimeSpan.FromSeconds(2)
+            }
+            ;
+            var resp=client.GetStringAsync($"http://127.0.0.1:{port}/").GetAwaiter().GetResult();
+            return string.IsNullOrEmpty(pattern)||resp.Contains(pattern.Trim('*'), StringComparison.OrdinalIgnoreCase);
+        }
+        catch
+        {
+            return IsPortListening(port);
+        }
+
+    }
+
+    public static bool IsOllamaRunning() => IsPortResponding(11434,"*Ollama is running*");
+
+    public static void EnsureOllamaProxy()
+    {
+        const int proxyPort=11435;
+        if (IsPortResponding(proxyPort, null))return;
+        AnsiConsole.MarkupLine($"[yellow][[AI]] Ollama Proxy is not running on port {proxyPort}. Starting...[/]");
+        var proxyScriptPath=ResolveProxyScriptPath();
+        if (!File.Exists(proxyScriptPath))
+        {
+            SpectrePanel.Error($"Ollama proxy script not found at {proxyScriptPath}.");
+            return;
+        }
+        var stdoutPath=System.IO.Path.Combine(System.IO.Path.GetTempPath(),"ollama_proxy_out.log");
+        var stderrPath=System.IO.Path.Combine(System.IO.Path.GetTempPath(),"ollama_proxy_err.log");
+
+        try
+        {
+            File.Delete(stdoutPath);
+        }
+        catch
+        {
+        }
+        try
+        {
+            File.Delete(stderrPath);
+        }
+        catch
+        {
+        }
+        try
+        {
+            var psi=new ProcessStartInfo("node",$"\"{proxyScriptPath}\"")
+            {
+                UseShellExecute=false, CreateNoWindow=true, WindowStyle=ProcessWindowStyle.Hidden, RedirectStandardOutput=true, RedirectStandardError=true
+            }
+            ;
+            var proc=Process.Start(psi);
+            if (proc!=null)
+            {
+                _=Task.Run(() =>
+                {
+                    try
+                    {
+                        using var f=File.Create(stdoutPath);
+                        proc.StandardOutput.BaseStream.CopyTo(f);
+                    }
+                    catch
+                    {
+                    }
+                }
+                );
+                _=Task.Run(() =>
+                {
+                    try
+                    {
+                        using var f=File.Create(stderrPath);
+                        proc.StandardError.BaseStream.CopyTo(f);
+                    }
+                    catch
+                    {
+                    }
+                }
+                );
+            }
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.MarkupLine($"[red][[AI]] Failed to start Ollama Proxy: {ex.Message.EscapeMarkup()}[/]");
+        }
+        Thread.Sleep(1000);
+
+    }
+
+    public static void EnsureOllamaServer()
+    {
+        if (!IsOllamaRunning())InitializeOllamaServer();
+        EnsureOllamaProxy();
+
+    }
+
+    public static void InvokeOllamaNative(string?model)
+    {
+        EnsureOllamaServer();
+        var activeModel=string.IsNullOrWhiteSpace(model)?OllamaDefaultModel:model;
+        AnsiConsole.MarkupLine($"[cyan]Starting native Ollama interactive session for '{activeModel.EscapeMarkup()}'...[/]");
+        RunInteractive("ollama", ["run", activeModel]);
+
+    }
+
+    private static string AppendNodeOption(string?existing) => string.IsNullOrEmpty(existing)?"--dns-result-order=ipv4first":$"{existing} --dns-result-order=ipv4first";
+
+    public static void InvokeClaude(string[]argsList)
+    {
+        EnsureOllamaServer();
+        var env=new Dictionary<string, string?>
+        {
+            ["OLLAMA_HOST"]="127.0.0.1:11434", ["ANTHROPIC_BASE_URL"]="http://127.0.0.1:11434", ["NODE_OPTIONS"]=AppendNodeOption(Environment.GetEnvironmentVariable("NODE_OPTIONS"))
+        }
+        ;
+        var argList=new List<string>
+        {
+            "launch","claude"
+        }
+        ;
+        if (!argsList.Contains("--model"))
+        {
+            argList.Add("--model");
+            argList.Add(OllamaDefaultModel);
+        }
+        argList.AddRange(argsList);
+        RunInteractive("ollama.exe", argList, env);
+
+    }
+
+    public static void InvokeCodex(string[]argsList)
+    {
+        EnsureOllamaServer();
+        var model=OllamaDefaultModel;
+        var newArgsList=new List<string>();
+        for (var i=0;
+        i<argsList.Length;
+        i++)
+        {
+            if ((argsList[i]=="--model"||argsList[i]=="-m")&&i<argsList.Length-1)
+            {
+                model=Regex.Replace(argsList[i+1],"^ollama_custom/","");
+                newArgsList.Add(argsList[i]);
+                newArgsList.Add(model);
+                i++;
+            }
+            else newArgsList.Add(argsList[i]);
+        }
+        var sandboxPath=System.IO.Path.Combine(System.IO.Path.GetTempPath(),".codex_local_ollama");
+        Directory.CreateDirectory(sandboxPath);
+        var emptySkillsDir=@"C:\Users\TruongNhon\.gemini\antigravity\scratch\empty_skills";
+
+        try
+        {
+            Directory.CreateDirectory(emptySkillsDir);
+        }
+        catch
+        {
+        }
+        var configToml=$"# Temp sandbox configuration generated at {sandboxPath}/config.toml\nmodel = \"{model}\"\n\n[codex]\nskills_directory = \"{emptySkillsDir}\"\n\n[mcp_servers]\n# Intentionally empty to disable external tool description loads\n".Replace('\\','/');
+        File.WriteAllText(System.IO.Path.Combine(sandboxPath,"config.toml"), configToml);
+        var env=new Dictionary<string, string?>
+        {
+            ["OLLAMA_HOST"]="127.0.0.1:11435", ["NODE_OPTIONS"]=AppendNodeOption(Environment.GetEnvironmentVariable("NODE_OPTIONS")), ["OPENAI_BASE_URL"]=null, ["OPENAI_API_KEY"]=null, ["CODEX_HOME"]=sandboxPath
+        }
+        ;
+        var flags=new List<string>();
+        if (!newArgsList.Contains("--model")&&!newArgsList.Contains("-m"))
+        {
+            flags.Add("--model");
+            flags.Add(model);
+        }
+        flags.Add("--oss");
+        flags.Add("--local-provider");
+        flags.Add("ollama");
+        var argList=new List<string>(flags);
+        argList.AddRange(newArgsList);
+        RunInteractive("codex.cmd", argList, env);
+
+    }
+
+    public static void EnsureOpenClawGateway()
+    {
+        const int port=18789;
+        if (IsPortListening(port))return;
+        AnsiConsole.MarkupLine("[yellow][[AI]] OpenClaw Gateway is not running. Starting...[/]");
+
+        try
+        {
+            Process.Start(new ProcessStartInfo("openclaw","gateway start")
+            {
+                UseShellExecute=false, CreateNoWindow=true, WindowStyle=ProcessWindowStyle.Hidden
+            }
+            );
+        }
+        catch
+        {
+        }
+        Thread.Sleep(2000);
+
+    }
+
+    public static void InvokeOpenClaw(string[]argsList)
+    {
+        EnsureOllamaServer();
+        EnsureOpenClawGateway();
+        string?model=null;
+        var cleanArgs=new List<string>();
+        for (var i=0;
+        i<argsList.Length;
+        i++)
+        {
+            if (argsList[i]=="--model"&&i<argsList.Length-1)
+            {
+                model=argsList[i+1];
+                i++;
+            }
+            else cleanArgs.Add(argsList[i]);
+        }
+        model??=OllamaDefaultModel;
+        var cleanModel=Regex.Replace(model,"^ollama/","");
+        RunInteractive("openclaw.cmd", ["config","set","agents.defaults.model.primary",$"ollama/{cleanModel}"]);
+        var argList2=cleanArgs.Count==0?new List<string>
+        {
+            "chat"
+        }
+        :cleanArgs;
+        var env=new Dictionary<string, string?>
+        {
+            ["OLLAMA_HOST"]="127.0.0.1:11434"
+        }
+        ;
+        RunInteractive("openclaw.cmd", argList2, env);
+
+    }
+
+    public static void InvokeClawdbot(string[]argsList) => InvokeOpenClaw(argsList);
+
+    public enum HermesResult
+    {
+        Launched, NotInstalled
+
+    }
+
+    public static HermesResult InvokeHermes(string[]argsList)
+    {
+        EnsureOllamaServer();
+        var bin=FindHermesBinary("hermes", [System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),".hermes","bin","hermes.exe"), System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),".hermes","bin","hermes.cmd"), System.IO.Path.Combine(Environment.GetEnvironmentVariable("LOCALAPPDATA")??"","Programs","Hermes","bin","hermes.exe")]);
+        if (bin==null)return HermesResult.NotInstalled;
+        var configPath=System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),".hermes","config.toml");
+        if (!File.Exists(configPath))
+        {
+            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(configPath)!);
+            File.WriteAllText(configPath,"");
+        }
+        var configContent=File.ReadAllText(configPath);
+        if (!configContent.Contains("127.0.0.1:11434"))
+        {
+            AnsiConsole.MarkupLine("[yellow][[AI]] Configuring local Ollama endpoint in Hermes config.toml...[/]");
+            File.AppendAllText(configPath,"\n[model_providers.ollama_custom]\nname = \"Ollama Custom\"\nbase_url = \"http://127.0.0.1:11434/v1\"\n");
+        }
+        var argList=new List<string>
+        {
+            "chat"
+        }
+        ;
+        foreach (var a in argsList)if (a!="--model"&&a!=OllamaDefaultModel)argList.Add(a);
+        AnsiConsole.MarkupLine("[cyan]Starting Hermes Agent TUI...[/]");
+        RunInteractive(bin, argList);
+        return HermesResult.Launched;
+
+    }
+
+    public static HermesResult InvokeHermesDesktop(string[]argsList)
+    {
+        EnsureOllamaServer();
+        var bin=FindHermesBinary("hermes-desktop", [System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),".hermes","bin","hermes-desktop.exe"), System.IO.Path.Combine(Environment.GetEnvironmentVariable("LOCALAPPDATA")??"","Programs","Hermes","bin","hermes-desktop.exe")]);
+        if (bin!=null)
+        {
+            AnsiConsole.MarkupLine("[cyan]Starting Hermes Desktop...[/]");
+            RunInteractive(bin, []);
+            return HermesResult.Launched;
+        }
+        var cliBin=FindOnPath("hermes");
+        if (cliBin!=null)
+        {
+            AnsiConsole.MarkupLine("[cyan]Starting Hermes Desktop...[/]");
+            RunInteractive(cliBin, ["desktop"]);
+            return HermesResult.Launched;
+        }
+        return HermesResult.NotInstalled;
+
+    }
+
+    private static string?FindHermesBinary(string exeNameOnPath, string[]localPaths)
+    {
+        var onPath=FindOnPath(exeNameOnPath);
+        if (onPath!=null)return onPath;
+        foreach (var p in localPaths)if (File.Exists(p))return p;
+        return null;
+
+    }
+
+    internal static string?FindOnPath(string exe)
+    {
+        try
+        {
+            var psi=new ProcessStartInfo("where", exe)
+            {
+                RedirectStandardOutput=true, UseShellExecute=false, CreateNoWindow=true
+            }
+            ;
+
+            using var p=Process.Start(psi);
+            var output=p?.StandardOutput.ReadToEnd().Trim();
+            p?.WaitForExit();
+            if (p?.ExitCode==0&&!string.IsNullOrWhiteSpace(output))return output.Split('\n')[0].Trim();
+        }
+        catch
+        {
+        }
+        return null;
+
+    }
+
+    public static void InitializeOllamaServer()
+    {
+        const int port=11434;
+        AnsiConsole.MarkupLine("[cyan][[Ollama]] Resetting port 11434...[/]");
+        if (IsPortListening(port))
+        {
+            SystemHelper.KillPort(port);
+            Thread.Sleep(1000);
+        }
+        else
+        {
+            AnsiConsole.MarkupLine("[green][[Ollama]] Port 11434 is free.[/]");
+        }
+        AnsiConsole.MarkupLine("[cyan][[Ollama]] Starting Ollama server...[/]");
+        var logPath=System.IO.Path.Combine(Environment.GetEnvironmentVariable("LOCALAPPDATA")??System.IO.Path.GetTempPath(),"Ollama","server.log");
+        Directory.CreateDirectory(System.IO.Path.GetDirectoryName(logPath)!);
+
+        try
+        {
+            var psi=new ProcessStartInfo("ollama","serve")
+            {
+                UseShellExecute=false, CreateNoWindow=true, WindowStyle=ProcessWindowStyle.Hidden, RedirectStandardOutput=true, RedirectStandardError=true
+            }
+            ;
+            psi.Environment["OLLAMA_HOST"]=$"127.0.0.1:{port}";
+            var proc=Process.Start(psi);
+            if (proc!=null)
+            {
+                _=Task.Run(() =>
+                {
+                    try
+                    {
+                        using var f=File.Create(logPath);
+                        proc.StandardOutput.BaseStream.CopyTo(f);
+                    }
+                    catch
+                    {
+                    }
+                }
+                );
+                _=Task.Run(() =>
+                {
+                    try
+                    {
+                        proc.StandardError.BaseStream.CopyTo(Stream.Null);
+                    }
+                    catch
+                    {
+                    }
+                }
+                );
+            }
+        }
+        catch
+        {
+        }
+        for (var retry=0;
+        retry<10;
+        retry++)
+        {
+            Thread.Sleep(1000);
+            if (IsPortResponding(port,"*Ollama is running*"))
+            {
+                AnsiConsole.MarkupLine("[green][[Ollama]] Ollama server is running and ready![/]");
+                return;
+            }
+        }
+        AnsiConsole.MarkupLine("[yellow][[Ollama]] Failed to verify if Ollama started successfully after 10 seconds.[/]");
+
+    }
+
+    public static void InstallAIIntegrations()
+    {
+        InstallIfMissing("claude","@anthropic-ai/claude-code","Claude Code");
+        InstallIfMissing("codex","@openai/codex","Codex CLI");
+        InstallIfMissing("openclaw","openclaw","OpenClaw");
+
+    }
+
+    private static void InstallIfMissing(string command, string npmPackage, string label)
+    {
+        if (FindOnPath(command)!=null)
+        {
+            AnsiConsole.MarkupLine($"[green][[AI]] {label.EscapeMarkup()} is already installed.[/]");
+            return;
+        }
+        AnsiConsole.MarkupLine($"[cyan][[AI]] Installing {label.EscapeMarkup()} via npm...[/]");
+        RunInteractive(FindOnPath("npm.cmd")??"npm.cmd", ["install","-g", npmPackage]);
+
+    }
+
+    public static void SetOllamaModel(string?modelName)
+    {
+        if (FindOnPath("ollama")==null)
+        {
+            SpectrePanel.Error("Ollama is not installed or not in PATH.");
+            return;
+        }
+        var listOutput=RunCapture("ollama","list");
+        var localModels=listOutput.Split('\n').Skip(1).Select(l => Regex.Split(l.Trim(),@"\s+").FirstOrDefault()).Where(m => !string.IsNullOrWhiteSpace(m)).Select(m => m!).ToArray();
+        if (localModels.Length==0)
+        {
+            SpectrePanel.Error("No local Ollama models found. Please download one using 'ollama pull'.");
+            return;
+        }
+        if (!string.IsNullOrWhiteSpace(modelName))
+        {
+            if (localModels.Contains(modelName))
+            {
+                PersistDefaultModel(modelName);
+                AnsiConsole.MarkupLine($"[green]🟢 Default Ollama model set to '{modelName.EscapeMarkup()}'.[/]");
+            }
+            else
+            {
+                SpectrePanel.Error($"Model '{modelName}' is not available locally. Available models: {string.Join(", ", localModels)}");
+            }
+            return;
+        }
+        var menuItems=new string[localModels.Length];
+        var defaultIdx=0;
+        for (var i=0;
+        i<localModels.Length;
+        i++)
+        {
+            menuItems[i]=localModels[i]==OllamaDefaultModel?$"{localModels[i]} (Active)":localModels[i];
+            if (localModels[i]==OllamaDefaultModel)defaultIdx=i;
+        }
+        var selected=SpectreMenu.Show("Select Default Ollama Model", menuItems, defaultIdx);
+        if (selected>=0)
+        {
+            PersistDefaultModel(localModels[selected]);
+            AnsiConsole.MarkupLine($"[green]🟢 Default Ollama model set to '{localModels[selected].EscapeMarkup()}'.[/]");
+        }
+        else
+        {
+            AnsiConsole.MarkupLine("[yellow]Cancelled.[/]");
+        }
+
+    }
+
+    public static void ShowOllamaLogs()
+    {
+        EnsureOllamaServer();
+        var logPath=System.IO.Path.Combine(Environment.GetEnvironmentVariable("LOCALAPPDATA")??System.IO.Path.GetTempPath(),"Ollama","server.log");
+        if (File.Exists(logPath))
+        {
+            AnsiConsole.MarkupLine("[cyan]--- Ollama Server Log (Last 50 lines) ---[/]");
+            foreach (var line in File.ReadLines(logPath).TakeLast(50))Console.WriteLine(line);
+            AnsiConsole.MarkupLine("[cyan]----------------------------------------[/]");
+        }
+        else
+        {
+            SpectrePanel.Warning($"Ollama server log not found at {logPath}.");
+        }
+
+    }
+
+    public static void ShowAiDashboard()
+    {
+        while (true)
+        {
+            var statusInfo=(OllamaStatus)SpectreProgress.SpinnerResult("[AI] Loading Ollama server configuration...", () =>
+            {
+                var status="Offline";
+                var models=new List<string>();
+
+                try
+                {
+                    using var client=new HttpClient
+                    {
+                        Timeout=TimeSpan.FromSeconds(1)
+                    }
+                    ;
+                    client.GetStringAsync("http://127.0.0.1:11434/").GetAwaiter().GetResult();
+                    status="Running";
+                }
+                catch
+                {
+                }
+                if (status=="Running")
+                {
+                    t… list=RunCapture("ollama","list");
+                    var lines=list.Split('\n');
+                    for (var i=1;
+                    i<lines.Length;
+                    i++)
+                    {
+                        var parts=Regex.Split(lines[i].Trim(),@"\s+");
+                        if (parts.Length>0&&!string.IsNullOrWhiteSpace(parts[0]))models.Add(parts[0]);
+                    }
+                }
+                catch
+                {
+                }
+            }
+            return(object)new OllamaStatus(status, models);
+        }
+        )!;
+        var cHalf=(char)0x2584;
+        var cFull=(char)0x2588;
+        var cTop=(char)0x2580;
+        var aiHeaders=new[]
+        {
+            $" {cHalf}{cFull}{cFull}{cFull}{cFull}{cHalf} {cHalf}{cFull}{cFull}{cFull}{cFull}{cHalf} Powershell Profile CLI v2.0",$" {cFull}{cTop} {cTop} {cFull}{cTop} {cTop} Ollama Local AI Hub",$" {cFull} {cFull} Ollama Status: {statusInfo.Status}",$" {cFull}{cHalf} {cHalf} {cFull}{cHalf} {cHalf} Active Model: {OllamaDefaultModel}",$" {cTop}{cFull}{cFull}{cFull}{cFull}{cTop} {cTop}{cFull}{cFull}{cFull}{cFull}{cTop} Select an agent to run. Esc to back.","============================================="
+        }
+        ;
+        var menuItems=new[]
+        {
+            "[Agent] Claude CLI (Interactive coding chat)","[Agent] Hermes TUI (Autonomous workspace assistant)","[Agent] Codex CLI (Natural language command tool)","[Agent] OpenClaw CLI (Local agent router)","[Agent] Clawdbot TUI (Interactive helper)","[Model] Select / Set Default Local Model","[Action] Auto-Install missing LLM CLI tools","[x] Return to Main Menu"
+        }
+        ;
+        while (Console.KeyAvailable)Console.ReadKey(true);
+        var selected=SpectreMenu.ShowRobust(aiHeaders, menuItems, 0, false, true);
+        if (selected<0||selected==menuItems.Length-1)break;
+        switch (selected)
+        {
+            case 0:InvokeClaude([]);
+            break;
+            case 1:InvokeHermes(OllamaDefaultModel is
+            {
+                Length:>0
+            }
+            ?["--model", OllamaDefaultModel]:[]);
+            break;
+            case 2:InvokeCodex(OllamaDefaultModel is
+            {
+                Length:>0
+            }
+            ?["--model", OllamaDefaultModel]:[]);
+            break;
+            case 3:InvokeOpenClaw([]);
+            break;
+            case 4:InvokeClawdbot(OllamaDefaultModel is
+            {
+                Length:>0
+            }
+            ?["--model", OllamaDefaultModel]:[]);
+            break;
+            case 5:SetOllamaModel(null);
+            break;
+            case 6:InstallAIIntegrations();
+            break;
+        }
+
+    }
+
+}
+
+private sealed record OllamaStatus(string Status, List<string>Models);
+
+public static void AskAi(string resolvedQueryOrError)
+{
+    if (string.IsNullOrWhiteSpace(resolvedQueryOrError))
+    {
+        AnsiConsole.MarkupLine("[yellow]No recent console errors found to explain.[/]");
+        return;
+
+    }
+    AnsiConsole.MarkupLine("[cyan]🤖 Querying local AI for explanation/fix...[/]");
+    var prompt=$"Analyze the following PowerShell error or question and provide a brief explanation and a clear, copy-pasteable fix:\n\n{resolvedQueryOrError}";
+    var body=JsonSerializer.Serialize(new
+    {
+        model=OllamaDefaultModel, prompt, stream=false
+
+    }
+    );
+
+    try
+    {
+        using var client=new HttpClient
+        {
+            Timeout=TimeSpan.FromSeconds(10)
+        }
+        ;
+        var resp=client.PostAsync("http://127.0.0.1:11434/api/generate", new StringContent(body, Encoding.UTF8,"application/json")).GetAwaiter().GetResult();
+        var text=resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        var json=JsonDocument.Parse(text);
+        if (json.RootElement.TryGetProperty("response", out var respProp))
+        {
+            AnsiConsole.WriteLine();
+            AnsiConsole.MarkupLine("[green]🤖 AI Explanation:[/]");
+            Console.WriteLine(respProp.GetString()?.Trim());
+        }
+
+    }
+    catch
+    {
+        SpectrePanel.Error("Failed to connect to local Ollama. Ensure Ollama server is running.");
+
+    }
+
+}
+
+private static void RunInteractive(string exe, IEnumerable<string>args, IDictionary<string, string?>?env=null, string?workingDir=null)
+{
+    var resolvedExe=System.IO.Path.IsPathRooted(exe)?exe:FindOnPath(exe)??exe;
+    var psi=new ProcessStartInfo(resolvedExe)
+    {
+        UseShellExecute=false, WorkingDirectory=workingDir??Directory.GetCurrentDirectory()
+
+    }
+    ;
+    foreach (var a in args)psi.ArgumentList.Add(a);
+    if (env!=null)
+    {
+        foreach (var kv in env)
+        {
+            if (kv.Value==null)psi.Environment.Remove(kv.Key);
+
+            else psi.Environment[kv.Key]=kv.Value;
+        }
+
+    }
+    try
+    {
+        using var p=Process.Start(psi);
+        p?.WaitForExit();
+
+    }
+    catch (Exception ex)
+    {
+        SpectrePanel.Error($"Failed to launch '{exe}': {ex.Message}");
+
+    }
+
+}
+
+private static string RunCapture(string exe, string args)
+{
+    var psi=new ProcessStartInfo(exe, args)
+    {
+        RedirectStandardOutput=true, UseShellExecute=false, CreateNoWindow=true
+
+    }
+    ;
+
+    using var p=Process.Start(psi);
+    if (p==null)return"";
+    var output=p.StandardOutput.ReadToEnd();
+    p.WaitForExit();
+    return output;
+
+}
 
 }
 public static class DotNetHelper
@@ -1276,147 +3103,9 @@ public static class AwsHelper
     {
         AnsiConsole.MarkupLine($"\n[bold cyan]{section.EscapeMarkup()}[/]");
         var output=SystemHelper.RunProcess("aws",$"--endpoint-url {LocalStackEndpoint} {args}", capture:true);
-        if (string.IsNullOrWhiteSpace(output))AnsiConsole.MarkupLine("[dim]  (no results or LocalStack unavailable)[/]");
+        if (string.IsNullOrWhiteSpace(output))AnsiConsole.MarkupLine("[dim] (no results or LocalStack unavailable)[/]");
 
-        else foreach (var line in output.Trim().Split('\n'))AnsiConsole.MarkupLine($"  {line.EscapeMarkup()}");
-
-    }
-
-}
-public static class AiHelper
-{
-    private const int OllamaPort=11434;
-
-    public static bool EnsureOllamaDaemon()
-    {
-        if (IsPortListening(OllamaPort))return true;
-        AnsiConsole.MarkupLine("[yellow]Ollama not running — starting daemon in background…[/]");
-
-        try
-        {
-            Process.Start(new ProcessStartInfo("ollama","serve")
-            {
-                UseShellExecute=false, CreateNoWindow=true
-            }
-            );
-            Thread.Sleep(1500);
-            return IsPortListening(OllamaPort);
-        }
-        catch
-        {
-            SpectrePanel.Error("Failed to start Ollama daemon.");
-            return false;
-        }
-
-    }
-
-    public static void LaunchClaude()
-    {
-        Environment.SetEnvironmentVariable("NODE_NO_WARNINGS","1");
-        Environment.SetEnvironmentVariable("ANTHROPIC_MODEL","claude-sonnet-4-6");
-        RunInteractive("claude", string.Empty);
-
-    }
-
-    public static void LaunchCodex()
-    {
-        Environment.SetEnvironmentVariable("NODE_NO_WARNINGS","1");
-        RunInteractive("codex", string.Empty);
-
-    }
-
-    public static void LaunchOpenClaw()
-    {
-        if (!EnsureOllamaDaemon())return;
-        RunInteractive("ollama","run openclaw");
-
-    }
-
-    public static void LaunchHermes(bool debug=false)
-    {
-        if (!EnsureOllamaDaemon())return;
-        var model=debug?"hermes3:debug":"hermes3";
-        RunInteractive("ollama",$"run {model}");
-
-    }
-
-    private static bool IsPortListening(int port)
-    {
-        try
-        {
-            using var tcp=new TcpClient();
-            return tcp.ConnectAsync(IPAddress.Loopback, port).Wait(300);
-        }
-        catch
-        {
-            return false;
-        }
-
-    }
-
-    private static void RunInteractive(string exe, string args)
-    {
-        using var p=Process.Start(new ProcessStartInfo(exe, args)
-        {
-            UseShellExecute=false
-        }
-        );
-        p?.WaitForExit();
-
-    }
-
-}
-public static class AgySecretVault
-{
-    private static readonly string VaultDir=System.IO.Path.Combine(AgyAccountCore.AgySourceHome,"vault");
-
-    private static string KeyFile(string key) => System.IO.Path.Combine(VaultDir, Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(key.ToLowerInvariant())))+".enc");
-
-    public static void SetSecret(string key, string value)
-    {
-        try
-        {
-            Directory.CreateDirectory(VaultDir);
-            byte[]plain=Encoding.UTF8.GetBytes(value);
-            byte[]cipher=RuntimeInformation.IsOSPlatform(OSPlatform.Windows)?ProtectedData.Protect(plain, null, DataProtectionScope.CurrentUser):Convert.FromBase64String(Convert.ToBase64String(plain));
-            File.WriteAllBytes(KeyFile(key), cipher);
-            SpectrePanel.Success($"Secret '{key}' stored.");
-        }
-        catch (Exception ex)
-        {
-            SpectrePanel.Error($"Failed to store secret: {ex.Message}");
-        }
-
-    }
-
-    public static string?GetSecret(string key)
-    {
-        var file=KeyFile(key);
-        if (!File.Exists(file))return null;
-
-        try
-        {
-            byte[]cipher=File.ReadAllBytes(file);
-            byte[]plain=RuntimeInformation.IsOSPlatform(OSPlatform.Windows)?ProtectedData.Unprotect(cipher, null, DataProtectionScope.CurrentUser):cipher;
-            return Encoding.UTF8.GetString(plain);
-        }
-        catch
-        {
-            return null;
-        }
-
-    }
-
-    public static void RemoveSecret(string key)
-    {
-        var file=KeyFile(key);
-        if (!File.Exists(file))
-        {
-            SpectrePanel.Warning($"Secret '{key}' not found.");
-            return;
-        }
-        File.Delete(file);
-        SpectrePanel.Success($"Secret '{key}' removed.");
+        else foreach (var line in output.Trim().Split('\n'))AnsiConsole.MarkupLine($" {line.EscapeMarkup()}");
 
     }
 
@@ -1474,7 +3163,7 @@ public static class ProjectScaffolder
             if (template=="react (Vite)")
             {
                 Directory.CreateDirectory(System.IO.Path.Combine(outputDir, name));
-                SystemHelper.RunProcess("npm",$"create vite@latest {name} -- --template react-ts");
+                SystemHelper.RunProcess("npm.cmd",$"create vite@latest {name} -- --template react-ts");
             }
             else
             {
@@ -1576,9 +3265,9 @@ public static class CodeViewer
         var rawLines=File.ReadAllLines(filePath);
         var numbered=rawLines.Select((l, i) =>
         {
-            var num=$"{i + 1,4}  ";
+            var num=$"{i + 1,4} ";
             var colored=ColorizeToken(l, ext);
-            return highlightLines.Contains(i+1)?$"[yellow]{num}→[/] {colored}":$"[dim]{num}[/]  {colored}";
+            return highlightLines.Contains(i+1)?$"[yellow]{num}→[/] {colored}":$"[dim]{num}[/] {colored}";
         }
         ).ToArray();
         SpectrePager.Show(System.IO.Path.GetFileName(filePath), numbered);
@@ -1589,7 +3278,7 @@ public static class CodeViewer
     {
         var ext=System.IO.Path.GetExtension(filePath).ToLower();
         var lines=File.ReadAllLines(filePath);
-        return lines.Select((l, i) => $"[dim]{i + 1,4}[/]  {ColorizeToken(l, ext)}").ToArray();
+        return lines.Select((l, i) => $"[dim]{i + 1,4}[/] {ColorizeToken(l, ext)}").ToArray();
 
     }
 
@@ -1752,7 +3441,7 @@ public static class SymbolSearch
                 if (m.Success)
                 {
                     var name=m.Groups[m.Groups.Count-1].Value;
-                    if (name.Length>2)symbols.Add($"{name,-30}  ln {i + 1,4}");
+                    if (name.Length>2)symbols.Add($"{name,-30} ln {i + 1,4}");
                 }
             }
         }
@@ -2412,7 +4101,7 @@ public static class ProfileHelp
 {
     private static readonly FrozenDictionary<string, string[]>HelpTopics=new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase)
     {
-        ["Navigation"]=["proj <query>  — Navigate to a workspace matching <query>."," If multiple matches are found an interactive selector opens."," If exactly one matches, jumps immediately.","Alias: p",], ["Git"]=["gs            — Short git status (--short) with color coding.","gcmt          — Conventional commit wizard. Prompts for:"," 1. Type: feat | fix | docs | style | refactor | test | chore | ci"," 2. Scope (optional)"," 3. Short description (5–72 chars)"," 4. Breaking changes / issues closed","git-undo      — Soft-reset the last commit (keeps changes staged).",], [".NET"]=["dbld          — dotnet build in the active workspace.","dtst          — dotnet test in the active workspace.","clean-build   — Recursively delete all bin/ and obj/ folders.","add-migration — dotnet ef migrations add <name>","update-db     — dotnet ef database update",], ["Docker"]=["dkcl          — Docker cleanup TUI dashboard. Options:"," • Stop & remove all containers"," • Prune images and dangling layers"," • Delete unused volumes / networks"," • Full cleanup (all of the above)","dcup          — docker compose up -d","dcdown        — docker compose down",], ["AWS / LocalStack"]=["aws-local     — Query running LocalStack sandbox on http://localhost:4566."," Shows: S3 buckets, SQS queues, Lambda functions.",], ["AI / LLM"]=["claude        — Launch Claude Code CLI.","codex         — Launch Codex CLI.","openclaw      — Launch OpenClaw model via local Ollama daemon.","hermes        — Launch Hermes3 model via Ollama.","hermesd       — Launch Hermes3 in debug mode."," Note: Ollama daemon on port 11434 is started automatically if offline.",], ["System"]=["disk          — Disk partitions, free space ratios, health status.","public-ip     — Resolve external IPv4 via REST fallback chain.","kill-port <n> — Terminate the process listening on TCP port <n>.","ssh-info      — Local IPs, Tailscale address, active SSH connections.",], ["Database"]=["db-tui <path> — Open SQLite file in interactive schema/data viewer."," Requires sqlite3 CLI on PATH.",], ["Accounts"]=["agyswitch     — Switch the active AGY/Gemini account context.","agyquota      — Show quota usage summary for all accounts.",], ["Scaffold"]=["scaffold      — Interactive project boilerplate creator."," Templates: webapi · console · react (Vite) · blazorwasm · classlib · worker",],
+        ["Navigation"]=["proj <query> — Navigate to a workspace matching <query>."," If multiple matches are found an interactive selector opens."," If exactly one matches, jumps immediately.","Alias: p",], ["Git"]=["gs — Short git status (--short) with color coding.","gcmt — Conventional commit wizard. Prompts for:"," 1. Type: feat | fix | docs | style | refactor | test | chore | ci"," 2. Scope (optional)"," 3. Short description (5–72 chars)"," 4. Breaking changes / issues closed","git-undo — Soft-reset the last commit (keeps changes staged).",], [".NET"]=["dbld — dotnet build in the active workspace.","dtst — dotnet test in the active workspace.","clean-build — Recursively delete all bin/ and obj/ folders.","add-migration — dotnet ef migrations add <name>","update-db — dotnet ef database update",], ["Docker"]=["dkcl — Docker cleanup TUI dashboard. Options:"," • Stop & remove all containers"," • Prune images and dangling layers"," • Delete unused volumes / networks"," • Full cleanup (all of the above)","dcup — docker compose up -d","dcdown — docker compose down",], ["AWS / LocalStack"]=["aws-local — Query running LocalStack sandbox on http://localhost:4566."," Shows: S3 buckets, SQS queues, Lambda functions.",], ["AI / LLM"]=["claude — Launch Claude Code CLI.","codex — Launch Codex CLI.","openclaw — Launch OpenClaw model via local Ollama daemon.","hermes — Launch Hermes3 model via Ollama.","hermesd — Launch Hermes3 in debug mode."," Note: Ollama daemon on port 11434 is started automatically if offline.",], ["System"]=["disk — Disk partitions, free space ratios, health status.","public-ip — Resolve external IPv4 via REST fallback chain.","kill-port <n> — Terminate the process listening on TCP port <n>.","ssh-info — Local IPs, Tailscale address, active SSH connections.",], ["Database"]=["db-tui <path> — Open SQLite file in interactive schema/data viewer."," Requires sqlite3 CLI on PATH.",], ["Accounts"]=["agyswitch — Switch the active AGY/Gemini account context.","agyquota — Show quota usage summary for all accounts.",], ["Scaffold"]=["scaffold — Interactive project boilerplate creator."," Templates: webapi · console · react (Vite) · blazorwasm · classlib · worker",],
 
     }
     .ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
@@ -2428,23 +4117,91 @@ public static class ProfileHelp
 
     }
 
+    public static Dictionary<string, Dictionary<string, CommandDoc[]>>GetCommands(string jsonPath)
+    {
+        if (!File.Exists(jsonPath))return new();
+
+        try
+        {
+            var raw=File.ReadAllText(jsonPath);
+            var opts=new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive=true
+            }
+            ;
+            return JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, CommandDoc[]>>>(raw, opts)??new();
+        }
+        catch
+        {
+            return new();
+        }
+
+    }
+
+    public static CommandDoc?ShowInteractive(string jsonPath, string initialFilter)
+    {
+        var cmdsNested=GetCommands(jsonPath);
+        var cmds=new Dictionary<string, CommandDoc[]>();
+        foreach (var(_, subDict)in cmdsNested)foreach (var(sub, docs)in subDict)cmds[sub]=docs;
+        var categories=cmds.Keys.OrderBy(k => k, StringComparer.Ordinal).ToArray();
+        var allCommands=categories.SelectMany(c => cmds[c]).ToArray();
+        var categoryLookup=new Dictionary<string, string>();
+        foreach (var c in categories)categoryLookup[$"{c} ({cmds[c].Length} commands)"]=c;
+        var commandLookup=new Dictionary<string, CommandDoc>();
+        foreach (var c in allCommands)commandLookup[$"{c.Alias,-10} - {c.Desc}"]=c;
+        string[]TopResolver(string filter)
+        {
+            if (string.IsNullOrWhiteSpace(filter))return categories.Select(c => $"{c} ({cmds[c].Length} commands)").ToArray();
+            return allCommands.Where(c => c.Alias.Contains(filter, StringComparison.OrdinalIgnoreCase)||c.Desc.Contains(filter, StringComparison.OrdinalIgnoreCase)||c.Command.Contains(filter, StringComparison.OrdinalIgnoreCase)).Select(c => $"{c.Alias,-10} - {c.Desc}").ToArray();
+        }
+        var filter=initialFilter;
+        while (true)
+        {
+            var selectedLabel=SpectreMenu.ShowDynamic("Select Help Category", TopResolver, 0, filter);
+            filter="";
+            if (selectedLabel==null)return null;
+            if (commandLookup.TryGetValue(selectedLabel, out var cmdObj))return cmdObj;
+            if (categoryLookup.TryGetValue(selectedLabel, out var catName))
+            {
+                var catCmds=cmds[catName];
+                var subLookup=new Dictionary<string, CommandDoc>();
+                foreach (var c in catCmds)subLookup[$"{c.Alias,-10} - {c.Desc}"]=c;
+                string[]SubResolver(string subFilter) => catCmds.Where(c => string.IsNullOrWhiteSpace(subFilter)||c.Alias.Contains(subFilter, StringComparison.OrdinalIgnoreCase)||c.Desc.Contains(subFilter, StringComparison.OrdinalIgnoreCase)||c.Command.Contains(subFilter, StringComparison.OrdinalIgnoreCase)).Select(c => $"{c.Alias,-10} - {c.Desc}").ToArray();
+                while (true)
+                {
+                    var selectedSubLabel=SpectreMenu.ShowDynamic($"Category: {catName}", SubResolver, 0);
+                    if (selectedSubLabel==null)break;
+                    if (subLookup.TryGetValue(selectedSubLabel, out var subCmd))return subCmd;
+                }
+            }
+        }
+
+    }
+
 }
+
+public sealed record CommandDoc(string Alias, string FullName, string Desc, string Command);
+
 public static class AgyHeader
 {
     public static void ShowSplash()
     {
         AnsiConsole.Clear();
-        AnsiConsole.Write(new FigletText("AGY").Centered().Color(Color.Green));
-        AnsiConsole.Write(new Rule("[bold green]Antigravity Account Manager  v2.0[/]").RuleStyle("grey"));
+        var splashW=Math.Min(65, Math.Max(50, Console.WindowWidth-2));
+        var sep=new string('=', splashW);
+        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
+        AnsiConsole.Write(new FigletText("AGY TUI").Centered().Color(Color.Green));
+        AnsiConsole.Write(new Rule("[bold green]🛸 Powershell Profile Control Center v3.0 🛸[/]").RuleStyle("grey"));
+        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
         AnsiConsole.WriteLine();
         var active=AgyAccountCore.GetActiveAccount();
         var stats=AgyAccountCore.GetAccountStats(active);
         var quota=AgyAccountCore.CalculateRollingQuotas(active);
         var grid=new Grid();
         grid.AddColumn(new GridColumn().PadLeft(4));
-        grid.AddRow($"[cyan]Active account[/]  : [green bold]{active.EscapeMarkup()}[/]");
-        grid.AddRow($"[cyan]Login status[/]    : {(stats.TokenStatus == "Logged In" ? "[green]● Logged In[/]" : "[red]○ Not Logged In[/]")}");
-        grid.AddRow($"[cyan]Weekly quota[/]    : {AgyAccountCore.GetProgressBar(quota.RemainingWeekly)}");
+        grid.AddRow($"[cyan]Active account[/] : [green bold]{active.EscapeMarkup()}[/]");
+        grid.AddRow($"[cyan]Login status[/] : {(stats.TokenStatus == "Logged In" ? "[green]● Logged In[/]" : "[red]○ Not Logged In[/]")}");
+        grid.AddRow($"[cyan]Weekly quota[/] : {AgyAccountCore.GetProgressBar(quota.RemainingWeekly).EscapeMarkup()}");
         AnsiConsole.Write(grid);
         AnsiConsole.WriteLine();
 
@@ -2464,7 +4221,7 @@ public static class AgyHeader
         {
         }
         AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine("[dim]               Press Enter to continue[/]");
+        AnsiConsole.MarkupLine("[dim] Press Enter to continue[/]");
         Console.ReadKey(true);
         AnsiConsole.Clear();
 
@@ -2480,7 +4237,7 @@ public static class AgyAccountDisplay
         var chart=new BarChart().Width(60).Label($"[bold]Remaining Quota % — {accountName.EscapeMarkup()}[/]").CenterLabel().AddItem("Gemini Weekly", quota.RemainingWeekly, Color.Cyan1).AddItem("Gemini 5-Hour", quota.Remaining5H, Color.Yellow).AddItem("Claude Weekly", 100.0, Color.Green).AddItem("Claude 5-Hour", 100.0, Color.Blue);
         AnsiConsole.Write(chart);
         AnsiConsole.MarkupLine($"[dim] Weekly : {quota.CountWeekly,4} / 1000 requests · Refreshes in {quota.TimeWeekly}[/]");
-        AnsiConsole.MarkupLine($"[dim] 5-Hour : {quota.Count5H,4} / 50   requests · Refreshes in {quota.Time5H}[/]");
+        AnsiConsole.MarkupLine($"[dim] 5-Hour : {quota.Count5H,4} / 50 requests · Refreshes in {quota.Time5H}[/]");
 
     }
 
@@ -2494,10 +4251,10 @@ public static class AgyAccountDisplay
             var stats=AgyAccountCore.GetAccountStats(acc);
             var label=acc==active?$"[green bold]★ {acc.EscapeMarkup()} (Active)[/]":acc.EscapeMarkup();
             var node=tree.AddNode(label);
-            node.AddNode($"[dim]Login:[/]  {(stats.TokenStatus == "Logged In" ? "[green]Logged In[/]" : "[red]Not Logged In[/]")}");
-            node.AddNode($"[dim]Convos:[/] {stats.ConversationsCount}  [dim]Skills:[/] {stats.SkillsCount}");
-            node.AddNode($"[dim]Weekly:[/] {(int)Math.Round(stats.GeminiWeekly)}%  [dim]5h:[/] {(int)Math.Round(stats.GeminiFiveHour)}%");
-            node.AddNode($"[dim]Size:[/]   {stats.PrivateSize}  [dim]Junctions:[/] {stats.JunctionStatus.EscapeMarkup()}");
+            node.AddNode($"[dim]Login:[/] {(stats.TokenStatus == "Logged In" ? "[green]Logged In[/]" : "[red]Not Logged In[/]")}");
+            node.AddNode($"[dim]Convos:[/] {stats.ConversationsCount} [dim]Skills:[/] {stats.SkillsCount}");
+            node.AddNode($"[dim]Weekly:[/] {(int)Math.Round(stats.GeminiWeekly)}% [dim]5h:[/] {(int)Math.Round(stats.GeminiFiveHour)}%");
+            node.AddNode($"[dim]Size:[/] {stats.PrivateSize} [dim]Junctions:[/] {stats.JunctionStatus.EscapeMarkup()}");
         }
         AnsiConsole.Write(tree);
 
@@ -2691,14 +4448,14 @@ public static class FlashcardEngine
         {
             AnsiConsole.Clear();
             AnsiConsole.Write(new Rule($"[bold cyan]Flashcard: {deckName.EscapeMarkup()}[/]").RuleStyle("grey"));
-            AnsiConsole.MarkupLine($"[dim]Card {known + again + 1} / {queue.Count}  ·  ✓ {known} known  ·  ✗ {again} again[/]");
+            AnsiConsole.MarkupLine($"[dim]Card {known + again + 1} / {queue.Count} · ✓ {known} known · ✗ {again} again[/]");
             AnsiConsole.WriteLine();
             AnsiConsole.Write(new Panel($"[bold]{card.Front.EscapeMarkup()}[/]"+(card.Hint!=null?$"\n[dim]{card.Hint.EscapeMarkup()}[/]":""))
             {
                 Header=new PanelHeader("[dim]Front[/]"), Border=BoxBorder.Rounded, BorderStyle=new Style(Color.Cyan1), Padding=new Padding(1, 1)
             }
             );
-            AnsiConsole.MarkupLine("[dim]  Press Enter to reveal · Esc to exit[/]");
+            AnsiConsole.MarkupLine("[dim] Press Enter to reveal · Esc to exit[/]");
             var key=Console.ReadKey(true);
             if (key.Key==ConsoleKey.Escape)break;
             AnsiConsole.Clear();
@@ -2714,7 +4471,7 @@ public static class FlashcardEngine
             else again++;
         }
         AnsiConsole.Clear();
-        SpectrePanel.Success($"Session complete — ✓ {known} known  ✗ {again} missed  ({queue.Count} cards reviewed)");
+        SpectrePanel.Success($"Session complete — ✓ {known} known ✗ {again} missed ({queue.Count} cards reviewed)");
 
     }
 
@@ -2778,7 +4535,7 @@ public static class KanaQuiz
             AnsiConsole.WriteLine();
             var answer=AnsiConsole.Ask<string>("[cyan]Romaji:[/]").Trim().ToLower();
             bool ok=answer==entry.Romaji.ToLower();
-            AnsiConsole.MarkupLine(ok?$"[green]✓ Correct!  {entry.Char} = {entry.Romaji}[/]":$"[red]✗ Wrong — {entry.Char} = {entry.Romaji}  (you typed: {answer.EscapeMarkup()})[/]");
+            AnsiConsole.MarkupLine(ok?$"[green]✓ Correct! {entry.Char} = {entry.Romaji}[/]":$"[red]✗ Wrong — {entry.Char} = {entry.Romaji} (you typed: {answer.EscapeMarkup()})[/]");
             if (ok)correct++;
             rowStats.TryGetValue(entry.Row, out var stat);
             rowStats[entry.Row]=(stat.c+(ok?1:0), stat.t+1);
@@ -2839,7 +4596,7 @@ public static class KanjiLookup
                 SpectrePanel.Warning($"No kanji matched '{query}'");
                 continue;
             }
-            var items=results.Select(k => $"{k.Char}  {k.Meaning,-20}  {k.JlptLevel,-3}  {string.Join("、", k.Kunyomi)}").ToArray();
+            var items=results.Select(k => $"{k.Char} {k.Meaning,-20} {k.JlptLevel,-3} {string.Join("、", k.Kunyomi)}").ToArray();
             var idx=SpectreMenu.Show($"Results for '{query}'", items, 0, false);
             if (idx>=0)ShowDetail(results[idx]);
         }
@@ -2852,10 +4609,10 @@ public static class KanjiLookup
     {
         var lines=new List<string>
         {
-            $"Meaning   : {k.Meaning}",$"On-yomi   : {string.Join("、", k.Onyomi)}",$"Kun-yomi  : {string.Join("、", k.Kunyomi)}",$"JLPT      : {k.JlptLevel}",$"Strokes   : {k.StrokeCount}",$"Radicals  : {string.Join(" ", k.Radicals)}","","Example words", new string('─', 40)
+            $"Meaning : {k.Meaning}",$"On-yomi : {string.Join("、", k.Onyomi)}",$"Kun-yomi : {string.Join("、", k.Kunyomi)}",$"JLPT : {k.JlptLevel}",$"Strokes : {k.StrokeCount}",$"Radicals : {string.Join(" ", k.Radicals)}","","Example words", new string('─', 40)
         }
         ;
-        foreach (var ex in k.ExampleWords)lines.Add($"  {ex.Word}  {ex.Reading,-10}  {ex.Meaning}");
+        foreach (var ex in k.ExampleWords)lines.Add($" {ex.Word} {ex.Reading,-10} {ex.Meaning}");
         if (k.Mnemonic!=null)
         {
             lines.Add("");
@@ -2882,7 +4639,7 @@ public static class JlptVocabDrill
             SpectrePanel.Warning($"No JLPT {level} data found. Run: learn jp");
             return;
         }
-        var cards=data.Words.Where(w => SpacedRepetitionEngine.IsDueToday(w.Sr)).Select(w => new FlashCard(w.Id, w.Word,$"{w.Reading}  {w.Meaning}", w.Romaji, null, w.ExampleJp+" / "+w.ExampleEn, w.Tags, 3, w.Sr)).ToArray();
+        var cards=data.Words.Where(w => SpacedRepetitionEngine.IsDueToday(w.Sr)).Select(w => new FlashCard(w.Id, w.Word,$"{w.Reading} {w.Meaning}", w.Romaji, null, w.ExampleJp+" / "+w.ExampleEn, w.Tags, 3, w.Sr)).ToArray();
         FlashcardEngine.Run(cards,$"JLPT {level}");
 
     }
@@ -2989,7 +4746,7 @@ public static class AlgoVisualizer
     {
         AnsiConsole.Clear();
         AnsiConsole.Write(new Rule($"[bold cyan]AGY — Algo: {label.EscapeMarkup()}[/]").RuleStyle("grey"));
-        AnsiConsole.MarkupLine($"[dim]Step {step}  · Comparisons: {comps}  · Swaps: {swaps}[/]");
+        AnsiConsole.MarkupLine($"[dim]Step {step} · Comparisons: {comps} · Swaps: {swaps}[/]");
         AnsiConsole.WriteLine();
         var t=new Table
         {
@@ -3006,8 +4763,8 @@ public static class AlgoVisualizer
         }
         ).ToArray());
         AnsiConsole.Write(t);
-        if (lo>=0&&hi>=0&&lo<a.Length)AnsiConsole.MarkupLine($"[dim]  comparing indices {lo}–{hi}[/]");
-        AnsiConsole.MarkupLine("[dim]  Enter next step · Esc exit[/]");
+        if (lo>=0&&hi>=0&&lo<a.Length)AnsiConsole.MarkupLine($"[dim] comparing indices {lo}–{hi}[/]");
+        AnsiConsole.MarkupLine("[dim] Enter next step · Esc exit[/]");
 
     }
 
@@ -3065,7 +4822,7 @@ public static class ComplexitySheet
             ).ToArray();
             SpectreTable.Render(["Algorithm","Best","Average","Worst","Space","Notes"], rows);
         }
-        AnsiConsole.MarkupLine("[dim]  Press any key...[/]");
+        AnsiConsole.MarkupLine("[dim] Press any key...[/]");
         Console.ReadKey(true);
 
     }
@@ -3323,7 +5080,7 @@ public static class InterviewBank
         {
             AnsiConsole.Clear();
             AnsiConsole.Write(new Rule($"[bold cyan]Interview Bank — {all.Length} questions[/]").RuleStyle("grey"));
-            var items=all.Select(q => $"{q.Question,-55}  [dim]{q.Type}[/]").ToArray();
+            var items=all.Select(q => $"{q.Question,-55} [dim]{q.Type}[/]").ToArray();
             var actions=new[]
             {
                 "[r] Random question","[f] Filter by type","← Back"
@@ -3368,14 +5125,14 @@ public static class InterviewBank
     {
         var lines=new List<string>
         {
-            $"[bold cyan]{q.Type.EscapeMarkup()}  ·  {q.Category.EscapeMarkup()}  ·  {q.Difficulty.EscapeMarkup()}[/]", new string('─', 50),"",$"[bold]{q.Question.EscapeMarkup()}[/]","",$"[dim]Format: {q.Format.EscapeMarkup()}[/]",
+            $"[bold cyan]{q.Type.EscapeMarkup()} · {q.Category.EscapeMarkup()} · {q.Difficulty.EscapeMarkup()}[/]", new string('─', 50),"",$"[bold]{q.Question.EscapeMarkup()}[/]","",$"[dim]Format: {q.Format.EscapeMarkup()}[/]",
         }
         ;
         if (q.Hints.Length>0)
         {
             lines.Add("");
             lines.Add("[cyan]Hints:[/]");
-            foreach (var h in q.Hints)lines.Add($"  • {h.EscapeMarkup()}");
+            foreach (var h in q.Hints)lines.Add($" • {h.EscapeMarkup()}");
         }
         if (q.Companies.Length>0)lines.Add($"\n[dim]Companies: {string.Join(", ", q.Companies).EscapeMarkup()}[/]");
         SpectrePager.Show($"Interview: {q.Type}", [..lines]);
@@ -3482,8 +5239,8 @@ public static class MockInterviewTimer
                     }
                     );
                     int bars=(int)(pct/100.0*40);
-                    AnsiConsole.MarkupLine($"[cyan]{'█'.ToString().PadRight(bars, '█').PadRight(40, '░')}[/]  {pct:F0}%");
-                    AnsiConsole.MarkupLine("[dim]  Esc stop early · Enter mark done & next[/]");
+                    AnsiConsole.MarkupLine($"[cyan]{'█'.ToString().PadRight(bars, '█').PadRight(40, '░')}[/] {pct:F0}%");
+                    AnsiConsole.MarkupLine("[dim] Esc stop early · Enter mark done & next[/]");
                     Thread.Sleep(500);
                 }
                 if (Console.KeyAvailable)Console.ReadKey(true);
@@ -3523,18 +5280,18 @@ public static class VocabDrill
         {
             AnsiConsole.Clear();
             AnsiConsole.Write(new Rule($"[bold cyan]{difficulty} Vocab[/]").RuleStyle("grey"));
-            AnsiConsole.MarkupLine($"[dim]Word {total + 1} / {due.Length}  ·  Weak queue: {due.Length - total}[/]");
+            AnsiConsole.MarkupLine($"[dim]Word {total + 1} / {due.Length} · Weak queue: {due.Length - total}[/]");
             AnsiConsole.WriteLine();
             AnsiConsole.Write(new Panel($"[bold]{word.Word.EscapeMarkup()}[/]\n[dim]{word.Pronunciation.EscapeMarkup()}[/]")
             {
                 Header=new PanelHeader("[cyan]ℹ[/]"), Border=BoxBorder.Rounded, BorderStyle=new Style(Color.Cyan1), Padding=new Padding(1, 1)
             }
             );
-            AnsiConsole.MarkupLine("[dim]  Press Enter to reveal definition[/]");
+            AnsiConsole.MarkupLine("[dim] Press Enter to reveal definition[/]");
             if (Console.ReadKey(true).Key==ConsoleKey.Escape)break;
             AnsiConsole.Clear();
             AnsiConsole.Write(new Rule($"[bold cyan]{difficulty} Vocab[/]").RuleStyle("grey"));
-            var detail=$"[bold]{word.Word.EscapeMarkup()}[/]  [dim]{word.PartOfSpeech.EscapeMarkup()}[/]\n\n"+$"{word.Definition.EscapeMarkup()}\n\n"+$"[italic dim]\"{word.ExampleSentence.EscapeMarkup()}\"[/]";
+            var detail=$"[bold]{word.Word.EscapeMarkup()}[/] [dim]{word.PartOfSpeech.EscapeMarkup()}[/]\n\n"+$"{word.Definition.EscapeMarkup()}\n\n"+$"[italic dim]\"{word.ExampleSentence.EscapeMarkup()}\"[/]";
             if (word.Synonyms.Length>0)detail+=$"\n[dim]Synonyms: {string.Join(", ", word.Synonyms).EscapeMarkup()}[/]";
             AnsiConsole.Write(new Panel(detail)
             {
@@ -3615,7 +5372,7 @@ public static class StudySession
             AnsiConsole.Clear();
             AnsiConsole.Write(new Rule($"[bold]{label.EscapeMarkup()}[/]").RuleStyle("grey"));
             int bars=(int)(pct/100.0*40);
-            AnsiConsole.MarkupLine($"[{(barColor == Color.Green ? "green" : "yellow")}]{'█'.ToString().PadRight(bars, '█').PadRight(40, '░')}[/]  {pct:F0}%");
+            AnsiConsole.MarkupLine($"[{(barColor == Color.Green ? "green" : "yellow")}]{'█'.ToString().PadRight(bars, '█').PadRight(40, '░')}[/] {pct:F0}%");
             AnsiConsole.MarkupLine($"[dim]{elapsed / 60:00}:{elapsed % 60:00} elapsed · {remain:mm\\:ss} remaining[/]");
             AnsiConsole.MarkupLine("[dim]Esc to end early[/]");
             Thread.Sleep(1000);
@@ -3706,7 +5463,7 @@ public static class DailyGoals
         AnsiConsole.Write(new Rule($"[bold cyan]Daily Goals: {data.Date}[/]").RuleStyle("grey"));
         if (data.Targets.Length==0)
         {
-            AnsiConsole.MarkupLine("[dim]  No goals set today. Press n to add.[/]");
+            AnsiConsole.MarkupLine("[dim] No goals set today. Press n to add.[/]");
         }
         else
         {
@@ -3716,7 +5473,7 @@ public static class DailyGoals
                 bool done=t.Completed>=t.Count;
                 int bars=t.Count>0?(int)(t.Completed*16.0/t.Count):0;
                 var bar=new string('█', Math.Min(16, bars))+new string('░', Math.Max(0, 16-bars));
-                sb.AppendLine($"  {(done ? "[green]✓[/]" : "[red]✗[/]")}  {t.Topic,-12} {t.Activity,-12}  [{bar}] {t.Completed}/{t.Count}");
+                sb.AppendLine($" {(done ? "[green]✓[/]" : "[red]✗[/]")} {t.Topic,-12} {t.Activity,-12} [{bar}] {t.Completed}/{t.Count}");
             }
             int complete=data.Targets.Count(t => t.Completed>=t.Count);
             AnsiConsole.Write(new Panel(sb.ToString().TrimEnd())
@@ -3724,7 +5481,7 @@ public static class DailyGoals
                 Border=BoxBorder.Rounded, BorderStyle=new Style(Color.Cyan1), Padding=new Padding(1, 0)
             }
             );
-            AnsiConsole.MarkupLine($"[dim]  {complete} / {data.Targets.Length} goals complete[/]");
+            AnsiConsole.MarkupLine($"[dim] {complete} / {data.Targets.Length} goals complete[/]");
         }
 
     }
@@ -3820,7 +5577,7 @@ public static class StudyStreak
     public static void ShowPanel()
     {
         var s=Calculate();
-        AnsiConsole.Write(new Panel($"🔥 Current streak : [bold yellow]{s.Current} days[/]\n"+$"🏆 Best streak    : [bold green]{s.Best} days[/]\n"+$"📅 Last active    : [cyan]{s.LastActive}[/]\n"+$"📊 This week      : [dim]{s.DaysThisWeek} / 7 days active[/]")
+        AnsiConsole.Write(new Panel($"🔥 Current streak : [bold yellow]{s.Current} days[/]\n"+$"🏆 Best streak : [bold green]{s.Best} days[/]\n"+$"📅 Last active : [cyan]{s.LastActive}[/]\n"+$"📊 This week : [dim]{s.DaysThisWeek} / 7 days active[/]")
         {
             Header=new PanelHeader("[bold cyan]Study Streak[/]"), Border=BoxBorder.Rounded, BorderStyle=new Style(Color.Yellow), Padding=new Padding(1, 1)
         }
@@ -3861,7 +5618,7 @@ public static class DueReview
         }
         ).ToArray();
         SpectreTable.Render(["Topic","Due Today","Overdue","Next Due"], rows);
-        AnsiConsole.MarkupLine($"\n[dim]Total: {groups.Sum(g => g.Count())} items due  ·  {groups.Sum(g => g.Count(d => d.Overdue))} overdue[/]");
+        AnsiConsole.MarkupLine($"\n[dim]Total: {groups.Sum(g => g.Count())} items due · {groups.Sum(g => g.Count(d => d.Overdue))} overdue[/]");
 
     }
 
@@ -3913,7 +5670,7 @@ public static class ProgressDashboard
         ShowMasteryTree(sessions);
         AnsiConsole.WriteLine();
         StudyStats.ShowRecentTable(sessions, 5);
-        AnsiConsole.MarkupLine("[dim]  Press any key...[/]");
+        AnsiConsole.MarkupLine("[dim] Press any key...[/]");
         Console.ReadKey(true);
 
     }
@@ -3961,7 +5718,7 @@ public static class WeakItemsQueue
     {
         var items=GetWeakItems(topic);
         if (items.Length==0)return;
-        AnsiConsole.Write(new Panel($"You have [yellow]{items.Length}[/] weak items from your last session:\n\n"+string.Join("\n", items.Take(5).Select((w, i) => $"  {i + 1}. {w.FrontText.EscapeMarkup()}  [dim]({w.Topic} — failed {w.FailCount}x)[/]"))+(items.Length>5?$"\n  [dim]... and {items.Length - 5} more[/]":"")+"\n\n[dim]These will be shown first in your session.[/]")
+        AnsiConsole.Write(new Panel($"You have [yellow]{items.Length}[/] weak items from your last session:\n\n"+string.Join("\n", items.Take(5).Select((w, i) => $" {i + 1}. {w.FrontText.EscapeMarkup()} [dim]({w.Topic} — failed {w.FailCount}x)[/]"))+(items.Length>5?$"\n [dim]... and {items.Length - 5} more[/]":"")+"\n\n[dim]These will be shown first in your session.[/]")
         {
             Header=new PanelHeader("[yellow]⚠ Review Needed[/]"), Border=BoxBorder.Rounded, BorderStyle=new Style(Color.Yellow), Padding=new Padding(1, 1)
         }
@@ -4061,7 +5818,7 @@ public static class ObsidianBridge
                 SpectrePanel.Info($"No notes matched '{query}'.");
                 continue;
             }
-            var items=matches.Select(m => $"{m.Title,-40}  [dim]{m.RelativePath}[/]").ToArray();
+            var items=matches.Select(m => $"{m.Title,-40} [dim]{m.RelativePath}[/]").ToArray();
             var idx=SpectreMenu.Show($"Results for \"{query}\"", items, 0, false);
             if (idx>=0)ShowNote(matches[idx].FullPath, matches[idx].Title);
             return;
@@ -4196,7 +5953,7 @@ public static class ObsidianGraph
 
     public static void ShowFromRoot(NoteNode[]graph, string rootTitle, int depth=2)
     {
-        AnsiConsole.Write(new Rule($"[bold cyan]Obsidian Graph — root: {rootTitle.EscapeMarkup()}  depth: {depth}[/]").RuleStyle("grey"));
+        AnsiConsole.Write(new Rule($"[bold cyan]Obsidian Graph — root: {rootTitle.EscapeMarkup()} depth: {depth}[/]").RuleStyle("grey"));
         var root=graph.FirstOrDefault(n => n.Title.Equals(rootTitle, StringComparison.OrdinalIgnoreCase));
         if (root==null)
         {
@@ -4282,7 +6039,7 @@ public static class GitNexus
         }
         ;
         AnsiConsole.Write(new Rule("[bold cyan]AGY — Git Nexus[/]").RuleStyle("grey"));
-        AnsiConsole.MarkupLine("[dim]  Auto-refreshes · Press any key to exit[/]");
+        AnsiConsole.MarkupLine("[dim] Auto-refreshes · Press any key to exit[/]");
         var t=new Table
         {
             Border=TableBorder.Rounded
@@ -4387,12 +6144,12 @@ public static class RepoGraph
         var tree=new Tree("[bold cyan]Workspaces[/]");
         foreach (var node in graph)
         {
-            var n=tree.AddNode($"[bold]{node.Name.EscapeMarkup()}[/]  [dim]({node.Kind})[/]");
+            var n=tree.AddNode($"[bold]{node.Name.EscapeMarkup()}[/] [dim]({node.Kind})[/]");
             foreach (var dep in node.DependsOn)n.AddNode($"→ {dep.EscapeMarkup()}");
             if (node.DependsOn.Length==0)n.AddNode("[dim](no dependencies)[/]");
         }
         AnsiConsole.Write(tree);
-        AnsiConsole.MarkupLine("[dim]  Press any key...[/]");
+        AnsiConsole.MarkupLine("[dim] Press any key...[/]");
         Console.ReadKey(true);
 
     }
@@ -4446,7 +6203,7 @@ public static class GitNexusStats
         ShowCommitBarChart(commitsByRepo);
         AnsiConsole.WriteLine();
         ShowBranchTree(workspaces);
-        AnsiConsole.MarkupLine("[dim]  Press any key...[/]");
+        AnsiConsole.MarkupLine("[dim] Press any key...[/]");
         Console.ReadKey(true);
 
     }
@@ -4541,10 +6298,444 @@ public static class WordOfDay
     public static void Render(WordEntry word)
     {
         AnsiConsole.Write(new Rule("[bold cyan]📖 Word of the Day[/]").RuleStyle("grey"));
-        AnsiConsole.MarkupLine($"\n   [bold green]{word.Word.EscapeMarkup()}[/]  [dim]{word.Pronunciation.EscapeMarkup()}[/]  [yellow]{word.PartOfSpeech.EscapeMarkup()}[/]");
-        AnsiConsole.MarkupLine($"   {word.Definition.EscapeMarkup()}");
-        AnsiConsole.MarkupLine($"   [italic dim]\"{word.Example.EscapeMarkup()}\"[/]");
+        AnsiConsole.MarkupLine($"\n [bold green]{word.Word.EscapeMarkup()}[/] [dim]{word.Pronunciation.EscapeMarkup()}[/] [yellow]{word.PartOfSpeech.EscapeMarkup()}[/]");
+        AnsiConsole.MarkupLine($" {word.Definition.EscapeMarkup()}");
+        AnsiConsole.MarkupLine($" [italic dim]\"{word.Example.EscapeMarkup()}\"[/]");
         AnsiConsole.WriteLine();
+
+    }
+
+}
+public static class CcBanner
+{
+    public static void Print()
+    {
+        var acc=AgyAccountCore.GetActiveAccount();
+        var now=DateTime.Now;
+        var w=Math.Min(65, Math.Max(50, Console.WindowWidth-2));
+        var sep=new string('=', w);
+        AnsiConsole.Clear();
+        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
+        AnsiConsole.MarkupLine("[cyan] ▄████▄ ▄████▄[/] [bold green]🛸 Powershell Profile Control Center v3.0 🛸[/]");
+        AnsiConsole.MarkupLine("[cyan] █▀ ▀ █▀ ▀[/] [dim]System dashboard and control suite.[/]");
+        AnsiConsole.MarkupLine("[cyan] █ █[/]");
+        AnsiConsole.MarkupLine($"[cyan] █▄ ▄ █▄ ▄[/] [dim]Active Account:[/] [green bold]{acc.EscapeMarkup()}[/]");
+        AnsiConsole.MarkupLine($"[cyan] ▀████▀ ▀████▀[/] [dim]Time:[/] [yellow]{now:yyyy-MM-dd HH:mm}[/]");
+        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
+        AnsiConsole.MarkupLine("[dim] [[Tab/→]] Navigate Panes | [[←/Esc]] Go Back | [[Enter]] Select & Run[/]");
+        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
+        AnsiConsole.WriteLine();
+
+    }
+
+}
+public static class CcNavigator
+{
+    private sealed record Section(string Label, (string Display, string Alias)[]Items, string Desc);
+
+    private static readonly Section[]Sections=[new("[Account] Manage Accounts", [("Select Active Account","agyswitch"), ("View All Accounts","agyquota"), ("Account Tree","account-tree"), ("Quota Bar Chart","quota-chart"), ("Live Dashboard","live-dashboard")],"AGY account management, quota tracking and switching."), new("[AI Agent] Launch AI", [("Claude Code CLI","claude"), ("Codex CLI","codex"), ("OpenClaw (Ollama)","openclaw"), ("Hermes3 (Ollama)","hermes")],"Launch AI coding assistants and local LLM models via Ollama."), new("[Project] Switch Project", [("Navigate Workspace","proj"), ("Terminal IDE","ide"), ("Scaffold New Project","scaffold"), ("Git Status","gs"), ("Conventional Commit","gcmt"), ("Git Undo Last Commit","git-undo"), ("Repo Nexus / Graph","nexus")],"Project navigation, scaffolding, git, and terminal IDE."), new("[Theme] Settings & Help", [("Command Palette","cc"), ("Help Browser","help"), ("Toggle Auto-Switch","autoswitch")],"Settings, help, and profile control options."), new("[SSH Info] System SSH", [("SSH Connection Info","ssh-info"), ("Public IP Address","public-ip"), ("Disk Usage","disk"), ("Kill Port","kill-port")],"SSH details, public IP, disk health, and port management."), new("────────────────────────────", [],""), new("1. Workspace & Dev Tools", [("Navigate Workspace","proj"), ("Terminal IDE","ide"), ("Diff Viewer","ide-diff"), ("Search Across Files","ide-search"), ("Build .NET","dbld"), ("Test .NET","dtst"), ("Clean bin / obj","clean-build"), ("Add EF Migration","add-migration"), ("Update EF Database","update-db"), ("Scaffold New Project","scaffold"), ("Git Status","gs"), ("Conventional Commit","gcmt"), ("Git Undo Last Commit","git-undo"), ("Repo Nexus","nexus")],"IDE, build, test, EF Core, git, and project scaffolding."), new("2. Docker & Cloud", [("Docker Cleanup","dkcl"), ("Docker Compose Up","dcup"), ("Docker Compose Down","dcdown"), ("LocalStack Info","aws-local"), ("SQLite Browser","db-tui")],"Docker management, AWS LocalStack, and database tools."), new("3. System & Network", [("Disk Usage","disk"), ("Public IP","public-ip"), ("SSH Info","ssh-info"), ("Kill Port","kill-port")],"System utilities, network diagnostics, and port management."), new("4. AI & Accounts", [("Claude Code CLI","claude"), ("Codex CLI","codex"), ("OpenClaw (Ollama)","openclaw"), ("Hermes3 (Ollama)","hermes"), ("Switch Account","agyswitch"), ("View All Quotas","agyquota"), ("Account Tree","account-tree"), ("Quota Chart","quota-chart"), ("Live Dashboard","live-dashboard"), ("Toggle Auto-Switch","autoswitch")],"AI agents and AGY account management."), new("5. Learn & Study", [("Start Learning (auto)","learn"), ("Flashcard Deck Browser","flashcard"), ("English Vocab Drill","vocab"), ("Kana Quiz","kana"), ("Kanji Lookup","kanji"), ("JLPT Vocab Drill","jlpt"), ("Algorithm Visualizer","algo"), ("Big-O Complexity Sheet","complexity"), ("DSA Problem Tracker","problems"), ("Code Snippet Library","snippets"), ("Cheat Sheet Browser","sheets"), ("C# Quiz","quiz"), ("Interview Question Bank","interview"), ("STAR Answer Builder","star"), ("Mock Interview Timer","mock"), ("Word of the Day","word-of-day")],"Language learning, DSA, code quizzes, and interview prep."), new("6. Track & Progress", [("Start Pomodoro Session","session"), ("Study Statistics","stats"), ("Daily Goals","goals"), ("Study Streak","streak"), ("Due Reviews","due"), ("Progress Dashboard","progress"), ("Weak Items Queue","weak")],"Study sessions, stats, streaks, goals, and SR review queue."), new("7. Obsidian & Resources", [("Obsidian Vault Config","obsidian"), ("Obsidian Graph View","obs-graph"), ("Refresh Learning Data","refresh"), ("Add Resource","add-resource")],"Obsidian vault, wikilink graph, and resource registry."), new("────────────────────────────", [],""), new("[Exit] Exit Control Center", [],"Exit the Powershell Profile Control Center."),];
+
+    public static void Run()
+    {
+        var leftSel=0;
+        var midSel=0;
+        var midActive=false;
+        Console.CursorVisible=false;
+
+        try
+        {
+            while (true)
+            {
+                CcBanner.Print();
+                RenderPanes(leftSel, midSel, midActive);
+                var key=Console.ReadKey(true);
+                var section=Sections[leftSel];
+                if (!midActive)
+                {
+                    switch (key.Key)
+                    {
+                        case ConsoleKey.UpArrow:
+                        {
+                            var next=leftSel;
+
+                            do
+                            {
+                                next=Math.Max(0, next-1);
+                            }
+                            while (next>0&&IsSep(next));
+                            if (!IsSep(next))
+                            {
+                                leftSel=next;
+                                midSel=0;
+                            }
+                            break;
+                        }
+                        case ConsoleKey.DownArrow:
+                        {
+                            var next=leftSel;
+
+                            do
+                            {
+                                next=Math.Min(Sections.Length-1, next+1);
+                            }
+                            while (next<Sections.Length-1&&IsSep(next));
+                            if (!IsSep(next))
+                            {
+                                leftSel=next;
+                                midSel=0;
+                            }
+                            break;
+                        }
+                        case ConsoleKey.Enter:case ConsoleKey.RightArrow:case ConsoleKey.Tab:if (section.Label.Contains("Exit"))return;
+                        if (section.Items.Length>0)midActive=true;
+                        break;
+                        case ConsoleKey.Escape:case ConsoleKey.Q when key.Modifiers==0:return;
+                    }
+                }
+                else
+                {
+                    switch (key.Key)
+                    {
+                        case ConsoleKey.UpArrow:midSel=Math.Max(0, midSel-1);
+                        break;
+                        case ConsoleKey.DownArrow:midSel=Math.Min(section.Items.Length-1, midSel+1);
+                        break;
+                        case ConsoleKey.Enter:if (midSel<section.Items.Length)
+                        {
+                            Console.CursorVisible=true;
+                            Program.RunCommand(section.Items[midSel].Alias);
+                            Console.CursorVisible=false;
+                        }
+                        break;
+                        case ConsoleKey.LeftArrow:case ConsoleKey.Escape:midActive=false;
+                        break;
+                        case ConsoleKey.Q when key.Modifiers==0:return;
+                    }
+                }
+            }
+        }
+        finally
+        {
+            Console.CursorVisible=true;
+        }
+
+    }
+
+    private static bool IsSep(int idx) => Sections[idx].Label.Length>0&&Sections[idx].Label[0]=='─';
+
+    private static void RenderPanes(int leftSel, int midSel, bool midActive)
+    {
+        var leftSb=new StringBuilder();
+        for (var i=0;
+        i<Sections.Length;
+        i++)
+        {
+            var s=Sections[i];
+            if (s.Label.Length>0&&s.Label[0]=='─')
+            {
+                leftSb.AppendLine("[dim]────────────────────────────[/]");
+                continue;
+            }
+            if (i==leftSel)leftSb.AppendLine(midActive?$"[cyan bold]> {s.Label.EscapeMarkup()}[/]":$"[green bold]> {s.Label.EscapeMarkup()}[/]");
+
+            else leftSb.AppendLine($" {s.Label.EscapeMarkup()}");
+        }
+        var section=Sections[leftSel];
+        var midSb=new StringBuilder();
+        for (var i=0;
+        i<section.Items.Length;
+        i++)
+        {
+            var(display, _)=section.Items[i];
+            midSb.AppendLine(midActive&&i==midSel?$"[green bold]> {display.EscapeMarkup()}[/]":$" {display.EscapeMarkup()}");
+        }
+        if (section.Items.Length==0)midSb.AppendLine("[dim] (press Enter to select)[/]");
+        var rightSb=new StringBuilder();
+        var sectionTitle=section.Label.TrimStart('>',' ');
+        rightSb.AppendLine($"[bold cyan]{sectionTitle.EscapeMarkup()}[/]");
+        rightSb.AppendLine();
+        if (!string.IsNullOrWhiteSpace(section.Desc))rightSb.AppendLine($"[dim]{section.Desc.EscapeMarkup()}[/]");
+        if (midActive&&midSel<section.Items.Length)
+        {
+            var(display, alias)=section.Items[midSel];
+            rightSb.AppendLine();
+            rightSb.AppendLine($"[bold white]{display.EscapeMarkup()}[/]");
+            rightSb.AppendLine($"[dim]alias:[/] [yellow]{alias.EscapeMarkup()}[/]");
+            var cmd=CommandPalette.Commands.FirstOrDefault(c => string.Equals(c.Alias, alias, StringComparison.OrdinalIgnoreCase));
+            if (cmd!=null)
+            {
+                rightSb.AppendLine();
+                rightSb.AppendLine($"[dim]{cmd.Description.EscapeMarkup()}[/]");
+                rightSb.AppendLine();
+                rightSb.AppendLine($"[dim]Category: {cmd.Category.EscapeMarkup()}[/]");
+            }
+        }
+        else
+        {
+            rightSb.AppendLine();
+            rightSb.AppendLine("[dim]Press → or Enter to browse options[/]");
+        }
+        var leftPanel=new Panel(leftSb.ToString())
+        {
+            Header=new PanelHeader("[bold cyan]Menu[/]"), Border=BoxBorder.Rounded, BorderStyle=new Style(!midActive?Color.Cyan1:Color.Grey)
+        }
+        ;
+        var midPanel=new Panel(midSb.ToString())
+        {
+            Header=new PanelHeader("[bold cyan]Options[/]"), Border=BoxBorder.Rounded, BorderStyle=new Style(midActive?Color.Cyan1:Color.Grey)
+        }
+        ;
+        var rightPanel=new Panel(rightSb.ToString())
+        {
+            Header=new PanelHeader("[bold cyan]Details[/]"), Border=BoxBorder.Rounded, BorderStyle=new Style(Color.Grey)
+        }
+        ;
+        AnsiConsole.Write(new Columns(leftPanel, midPanel, rightPanel));
+
+    }
+
+}
+public static class Program
+{
+    public static void Main(string[]args)
+    {
+        if (args.Length>0)
+        {
+            RunCommand(args[0]);
+            return;
+        }
+        AgyHeader.ShowSplash();
+        CcNavigator.Run();
+
+        try
+        {
+            AnsiConsole.Clear();
+        }
+        catch
+        {
+        }
+        AnsiConsole.MarkupLine("[dim]Goodbye.[/]");
+
+    }
+
+    public static void RunCommand(string alias)
+    {
+        try
+        {
+            AnsiConsole.Clear();
+        }
+        catch
+        {
+        }
+        AnsiConsole.Write(new Rule($"[bold green]Running: {alias}[/]").RuleStyle("grey"));
+
+        try
+        {
+            switch (alias.ToLowerInvariant())
+            {
+                case"proj":case"prj":var projPath=ProfileNavigator.Navigate("");
+                if (!string.IsNullOrEmpty(projPath))
+                {
+                    AnsiConsole.MarkupLine($"Navigate target: [green]{projPath}[/]");
+                }
+                break;
+                case"gs":GitHelper.ShowStatus();
+                break;
+                case"gcmt":GitHelper.ConventionalCommitWizard();
+                break;
+                case"git-undo":GitHelper.InvokeGitUndo();
+                break;
+                case"dbld":DotNetHelper.Build();
+                break;
+                case"dtst":DotNetHelper.Test();
+                break;
+                case"clean-build":DotNetHelper.RemoveBinObj(Directory.GetCurrentDirectory());
+                break;
+                case"add-migration":var migName=AnsiConsole.Ask<string>("Migration name:");
+                DotNetHelper.AddMigration(migName);
+                break;
+                case"update-db":DotNetHelper.UpdateDatabase();
+                break;
+                case"dkcl":DockerHelper.ShowCleanupDashboard();
+                break;
+                case"dcup":DockerHelper.ComposeUp();
+                break;
+                case"dcdown":DockerHelper.ComposeDown();
+                break;
+                case"aws-local":AwsHelper.ShowLocalStackInfo();
+                break;
+                case"claude":AiHelper.InvokeClaude([]);
+                break;
+                case"codex":AiHelper.InvokeCodex([]);
+                break;
+                case"openclaw":AiHelper.InvokeOpenClaw([]);
+                break;
+                case"hermes":if (AiHelper.InvokeHermes([])==AiHelper.HermesResult.NotInstalled)SpectrePanel.Warning("Hermes is not installed. Run 'hermes' from PowerShell for install instructions.");
+                break;
+                case"hermesd":if (AiHelper.InvokeHermesDesktop([])==AiHelper.HermesResult.NotInstalled)SpectrePanel.Warning("Hermes Desktop is not installed. Run 'hermesd' from PowerShell for install instructions.");
+                break;
+                case"disk":SystemHelper.ShowDiskSpace();
+                break;
+                case"public-ip":AnsiConsole.MarkupLine($"Public IP: [green]{SystemHelper.GetPublicIP()}[/]");
+                break;
+                case"kill-port":var portStr=AnsiConsole.Ask<string>("Port number:");
+                if (int.TryParse(portStr, out var port))SystemHelper.KillPort(port);
+                break;
+                case"ssh-info":SshHelper.ShowSshInfo();
+                break;
+                case"db-tui":var dbPath=AnsiConsole.Ask<string>("SQLite DB path:");
+                DatabaseHelper.ShowDatabaseTui(dbPath);
+                break;
+                case"agyswitch":var accs=AgyAccountCore.GetAccounts();
+                var activeAcc=AgyAccountCore.GetActiveAccount();
+                var accItems=accs.Select(a => a==activeAcc?$"{a} (Active)":a).ToArray();
+                var accIdx=SpectreMenu.Show("Select Account to Switch", accItems, 0, false);
+                if (accIdx>=0)
+                {
+                    var targetAcc=accs[accIdx];
+                    Environment.SetEnvironmentVariable("GEMINI_HOME", AgyAccountCore.GetAccountDirectory(targetAcc));
+                    SpectrePanel.Success($"Switched process GEMINI_HOME to {targetAcc}");
+                }
+                break;
+                case"agyquota":AgyAccountCore.ShowAllAccountsSummary();
+                break;
+                case"account-tree":AgyAccountDisplay.ShowAccountTree();
+                break;
+                case"quota-chart":AgyAccountDisplay.ShowQuotaChart(AgyAccountCore.GetActiveAccount());
+                break;
+                case"live-dashboard":SpectreTable.Live(["Account","Login","Quota W","Quota 5h","Last Used"], () => AgyAccountCore.GetAccounts().Select(a =>
+                {
+                    var s=AgyAccountCore.GetAccountStats(a);
+                    var act=AgyAccountCore.GetActiveAccount();
+                    var n=a==act?$"[green bold]* {a}[/]":a;
+                    var st=s.TokenStatus=="Logged In"?"[green]●[/]":"[red]○[/]";
+                    var lu=s.LastUsed.Length>=10&&s.LastUsed!="Never"?s.LastUsed[..10]:"Never";
+                    return new[]
+                    {
+                        n, st,$"{(int)Math.Round(s.GeminiWeekly)}%",$"{(int)Math.Round(s.GeminiFiveHour)}%", lu
+                    }
+                    ;
+                }
+                ).ToArray(), 5000);
+                break;
+                case"autoswitch":AgyAccountCore.ToggleAutoSwitch();
+                break;
+                case"scaffold":ProjectScaffolder.Scaffold();
+                break;
+                case"help":ProfileHelp.Show();
+                break;
+                case"cc":CommandPalette.Show();
+                break;
+                case"learn":var topic=AnsiConsole.Ask<string>("Topic (jp/en/cs/dsa/interview):");
+                LearnRouter.StartLearning(topic);
+                break;
+                case"flashcard":FlashcardEngine.PickAndRun(LearnDataPaths.DecksDir);
+                break;
+                case"vocab":VocabDrill.Run("Intermediate");
+                break;
+                case"kana":KanaQuiz.Run("hiragana");
+                break;
+                case"kanji":KanjiLookup.Run();
+                break;
+                case"jlpt":JlptVocabDrill.Run("N5");
+                break;
+                case"algo":AlgoVisualizer.PickAndRun();
+                break;
+                case"complexity":ComplexitySheet.Run();
+                break;
+                case"problems":ProblemTracker.Run();
+                break;
+                case"snippets":SnippetLibrary.Run();
+                break;
+                case"sheets":CheatSheetBrowser.Run();
+                break;
+                case"quiz":CsharpQuiz.Run();
+                break;
+                case"interview":InterviewBank.Run();
+                break;
+                case"star":StarBuilder.Run();
+                break;
+                case"mock":MockInterviewTimer.Run();
+                break;
+                case"word-of-day":var word=WordOfDay.Pick();
+                if (word!=null)WordOfDay.Render(word);
+
+                else SpectrePanel.Warning("No word of the day available.");
+                break;
+                case"session":var sessionTopic=AnsiConsole.Ask<string>("Topic for study session:");
+                StudySession.Run(sessionTopic);
+                break;
+                case"stats":StudyStats.Run();
+                break;
+                case"goals":DailyGoals.Show();
+                break;
+                case"streak":StudyStreak.ShowPanel();
+                break;
+                case"due":LearnDataPaths.EnsureDirectories();
+                int dueCount=0;
+                if (Directory.Exists(LearnDataPaths.DecksDir))
+                {
+                    foreach (var deckFile in Directory.GetFiles(LearnDataPaths.DecksDir,"*.json"))
+                    {
+                        var deck=LearnDataPaths.LoadJson<DeckFile>(deckFile);
+                        if (deck!=null)
+                        {
+                            dueCount+=deck.Cards.Count(c => SpacedRepetitionEngine.IsDueToday(c.Sr));
+                        }
+                    }
+                }
+                AnsiConsole.MarkupLine($"Due spaced repetition reviews today: [yellow]{dueCount}[/]");
+                break;
+                case"progress":ProgressDashboard.Show();
+                break;
+                case"weak":var weakTopic=AnsiConsole.Ask<string>("Topic for weak items:");
+                WeakItemsQueue.ShowPreSessionReview(weakTopic);
+                break;
+                case"obsidian":ObsidianBridge.Run();
+                break;
+                case"obs-graph":var cfg=ObsidianBridge.LoadConfig();
+                if (cfg!=null&&Directory.Exists(cfg.VaultPath))ObsidianGraph.Run(cfg.VaultPath);
+
+                else SpectrePanel.Warning("Obsidian vault path not configured. Run 'obsidian' first.");
+                break;
+                case"nexus":case"repo-graph":RepoGraph.Show(RepoGraph.Build());
+                break;
+                case"nexus-stats":GitNexusStats.Run();
+                break;
+                case"ide":TerminalIde.Open();
+                break;
+                case"ide-diff":GitDiffViewer.ShowDiff(Directory.GetCurrentDirectory());
+                break;
+                case"ide-search":AnsiConsole.MarkupLine("IDE Search: Browse symbols for current directory files.");
+                break;
+                case"refresh":LearnRouter.RefreshData("all");
+                break;
+                case"add-resource":var path=AnsiConsole.Ask<string>("Resource path/URL:");
+                var tags=AnsiConsole.Ask<string>("Tags (comma separated):").Split(',').Select(t => t.Trim()).ToArray();
+                ResourceRegistry.AddResource(path, tags);
+                SpectrePanel.Success("Resource registered.");
+                break;
+                default:SpectrePanel.Warning($"Command alias '{alias}' is not implemented for direct TUI routing.");
+                break;
+            }
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Error running command: {ex.Message}");
+        }
+        AnsiConsole.WriteLine();
+        if (!Console.IsInputRedirected)
+        {
+            AnsiConsole.MarkupLine("[dim]Press any key to return to menu...[/]");
+
+            try
+            {
+                Console.ReadKey(true);
+            }
+            catch
+            {
+            }
+        }
 
     }
 
