@@ -177,6 +177,8 @@ public static class MenuNodeBuilder
             MenuNodeKind.Category,
             new[]
             {
+                CreateCommandNode(allCommands["tailscale-status"]),
+                CreateCommandNode(allCommands["ssh-qr"]),
                 CreateCommandNode(allCommands["disk"]),
                 CreateCommandNode(allCommands["public-ip"]),
                 CreateCommandNode(allCommands["ssh-info"]),

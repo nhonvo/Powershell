@@ -445,6 +445,10 @@ public static class Program
                 break;
                 case"hermesd":if (AgyAiCore.InvokeHermesDesktop([])==AgyAiCore.HermesResult.NotInstalled)SpectrePanel.Warning("Hermes Desktop is not installed. Run 'hermesd' from PowerShell for install instructions.");
                 break;
+                case"tailscale-status":SshHelper.ShowTailscaleStatus();
+                break;
+                case"ssh-qr":SshHelper.ShowSshQrCode();
+                break;
                 case"disk":SystemHelper.ShowDiskSpace();
                 break;
                 case"public-ip":AnsiConsole.MarkupLine($"Public IP: [green]{SystemHelper.GetPublicIP()}[/]");

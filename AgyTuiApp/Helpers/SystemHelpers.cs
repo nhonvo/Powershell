@@ -316,6 +316,107 @@ public static class SshHelper
 
     }
 
+    public static void ShowTailscaleStatus()
+    {
+        if (!IsCommandAvailable("tailscale"))
+        {
+            SpectrePanel.Error("Tailscale CLI is not available on this machine.");
+            Console.WriteLine("\nPress any key to return...");
+            Console.ReadKey(true);
+            return;
+        }
+
+        try
+        {
+            var statusJson = SystemHelper.RunProcess("tailscale", "status --json", capture: true);
+            using var doc = JsonDocument.Parse(statusJson);
+            var root = doc.RootElement;
+            var self = root.GetProperty("Self");
+            var dnsName = self.GetProperty("DNSName").GetString();
+            var online = self.GetProperty("Online").GetBoolean();
+            var tailIp = self.GetProperty("TailscaleIPs")[0].GetString();
+
+            AnsiConsole.MarkupLine($"Tailscale Host: [green]{dnsName}[/]");
+            AnsiConsole.MarkupLine($"IP Address: [green]{tailIp}[/]");
+            AnsiConsole.MarkupLine($"Status: {(online ? "[green]Online[/]" : "[red]Offline[/]")}");
+
+            if (root.TryGetProperty("Peer", out var peerProp))
+            {
+                var table = new Table().Border(TableBorder.Rounded);
+                table.AddColumn("Peer");
+                table.AddColumn("Tailscale IP");
+                table.AddColumn("OS");
+                table.AddColumn("Status");
+
+                foreach (var peer in peerProp.EnumerateObject())
+                {
+                    var peerVal = peer.Value;
+                    var name = peerVal.GetProperty("HostName").GetString() ?? "";
+                    var ip = peerVal.GetProperty("TailscaleIPs")[0].GetString() ?? "";
+                    var os = peerVal.GetProperty("OS").GetString() ?? "";
+                    var peerOnline = peerVal.GetProperty("Online").GetBoolean();
+                    table.AddRow(name, ip, os, peerOnline ? "[green]Active[/]" : "[dim]Idle[/]");
+                }
+                AnsiConsole.WriteLine();
+                AnsiConsole.MarkupLine("[bold cyan]Active Peers[/]");
+                AnsiConsole.Write(table);
+            }
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Failed to query Tailscale status: {ex.Message}");
+        }
+
+        Console.WriteLine("\nPress any key to return...");
+        Console.ReadKey(true);
+    }
+
+    public static void ShowSshQrCode()
+    {
+        string? tailscaleIp = null;
+        if (IsCommandAvailable("tailscale"))
+        {
+            tailscaleIp = SystemHelper.RunProcess("tailscale", "ip -4", capture: true).Trim();
+        }
+        var ipAddress = !string.IsNullOrEmpty(tailscaleIp) ? tailscaleIp : "127.0.0.1";
+        var sshCmd = $"ssh sshuser@{ipAddress}";
+        
+        AnsiConsole.Write(new Rule("[bold cyan]SSH Mobile Enrollment[/]").RuleStyle("grey"));
+        AnsiConsole.MarkupLine($"Scan this QR code to connect from your phone or run: [yellow]{sshCmd}[/]\n");
+
+        string[] qrLines = {
+            "██████████████  ████  ██  ██████████████",
+            "██          ██    ██████  ██          ██",
+            "██  ██████  ██  ██        ██  ██████  ██",
+            "██  ██████  ██  ██    ██  ██  ██████  ██",
+            "██  ██████  ██  ████      ██  ██████  ██",
+            "██          ██  ██████    ██          ██",
+            "██████████████  ██  ██    ██████████████",
+            "                ██    ██                ",
+            "██████      ████  ████    ██  ████  ████",
+            "  ██  ██████    ████  ██  ██  ██    ██  ",
+            "████    ████████  ██████  ██████  ████  ",
+            "                ██  ██  ██████████      ",
+            "██████████████  ████████    ██    ██  ██",
+            "██          ██  ████  ████    ██████  ██",
+            "██  ██████  ██  ██    ████  ██████    ██",
+            "██  ██████  ██    ████      ██    ██  ██",
+            "██  ██████  ██  ██████    ████████  ████",
+            "██          ██  ██    ██    ████  ██  ██",
+            "██████████████  ██████    ██  ██████    "
+        };
+
+        foreach (var line in qrLines)
+        {
+            AnsiConsole.MarkupLine($"    [white]{line}[/]");
+        }
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine($"Connection command: [bold green]{sshCmd}[/]");
+        
+        Console.WriteLine("\nPress any key to return...");
+        Console.ReadKey(true);
+    }
+
     public static void StartKeyReceiver(int listenPort=2222)
     {
         AnsiConsole.MarkupLine($"[yellow]Listening on port {listenPort} for public key…[/]");
