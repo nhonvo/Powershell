@@ -758,7 +758,7 @@ Everything in this document is still **📄 Planned** — this has been planning
 | Accounts & Quota (predictive ETA, low-quota webhook) | 📄 Planned | |
 | Mobile / Compact Density (`Density` config, auto-detect, combined mobile shortcut) | 📄 Planned | New this round — coordinates with existing `ThemeHelper` mobile toggle, doesn't replace it |
 | Performance & Smoothness (`Live`/`Layout` diffed rendering, async widgets, debounced search, precomputed search keys) | 📄 Planned | |
-| Icon System (`Icons.cs`, Nerd Font/emoji detection) | 📄 Planned | |
+| Icon System (`Icons.cs`, Nerd Font/emoji detection) | 🟢 Shipped | |
 
 ### CI/CD (§4) — one row per pipeline gap
 | Item | Status | Notes |
