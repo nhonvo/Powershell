@@ -237,7 +237,7 @@ public static class OllamaHelper
 
 public static class AntigravityDeckHelper
 {
-    private static readonly string DeckPath = @"C:\Users\TruongNhon\AppData\Local\AntigravityDeck";
+    private static readonly string DeckPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AntigravityDeck");
 
     private static bool EnsureDeckPathExists()
     {
@@ -630,7 +630,7 @@ public static class AgyAiCore
             }
             var sandboxPath=System.IO.Path.Combine(System.IO.Path.GetTempPath(),".codex_local_ollama");
             Directory.CreateDirectory(sandboxPath);
-            var emptySkillsDir=@"C:\Users\TruongNhon\.gemini\antigravity\scratch\empty_skills";
+            var emptySkillsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini", "antigravity", "scratch", "empty_skills");
 
             try
             {

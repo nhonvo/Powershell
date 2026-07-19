@@ -739,10 +739,10 @@ Everything in this document is still **📄 Planned** — this has been planning
 | `SystemHelpers.cs`, `WorkspaceRegistry.cs` extraction | 4 | 🟢 Shipped | |
 | `AgyAccountCore` split (`AccountRepository`/`QuotaTracker`/`TokenVault`) | 5 | 🟢 Shipped | Touch DPAPI/keyring carefully per §6 |
 | `AgyAiCore`/`OllamaHelper` merge (dedupe `ShowOllamaLogs`) | 5 | 🟢 Shipped | |
-| `MenuNode`/`IMenuRenderer`/`ScreenChrome`/`StatusWidgets`/`Icons.cs` | 5 | 📄 Planned | Shared infra — blocks `ThreePaneRenderer`, `FlatTreeRenderer`, IDE sidebar, and Deck's status widget |
-| `ThreePaneRenderer.cs` (behavior-preserving port) | 5 | 📄 Planned | Must be verified before `FlatTreeRenderer` starts |
-| `FlatTreeRenderer.cs` (new mode) + `UiMode`/`Density` config | 5 | 📄 Planned | Depends on `ThreePaneRenderer` being verified first |
-| Cleanup pass (dedupe `AgyAccountDisplay`, table-drive `CodeViewer` colorizers, `HttpClientProvider`, hardcoded paths → config) | 6 | 📄 Planned | Includes Antigravity Deck's hardcoded path fix |
+| `MenuNode`/`IMenuRenderer`/`ScreenChrome`/`StatusWidgets`/`Icons.cs` | 5 | 🟢 Shipped | Shared infra — blocks `ThreePaneRenderer`, `FlatTreeRenderer`, IDE sidebar, and Deck's status widget |
+| `ThreePaneRenderer.cs` (behavior-preserving port) | 5 | 🟢 Shipped | Must be verified before `FlatTreeRenderer` starts |
+| `FlatTreeRenderer.cs` (new mode) + `UiMode`/`Density` config | 5 | 🟢 Shipped | Depends on `ThreePaneRenderer` being verified first |
+| Cleanup pass (dedupe `AgyAccountDisplay`, table-drive `CodeViewer` colorizers, `HttpClientProvider`, hardcoded paths → config) | 6 | 🟢 Shipped | Includes Antigravity Deck's hardcoded path fix |
 
 ### Feature Enhancements (§5) — one row per domain
 | Domain | Status | Notes |

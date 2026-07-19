@@ -965,48 +965,36 @@ public static class AgyAccountCore
 
     }
 
-    private static readonly Dictionary<string, (long Size, DateTime CachedAt)> _sizeCache = new();
+    private static readonly TtlCache<string, long> _sizeCache = new(TimeSpan.FromSeconds(15));
 
     public static long GetPrivateDirectorySize(string path)
     {
-        if (!Directory.Exists(path))return 0;
-        lock (_sizeCache)
+        return _sizeCache.GetOrCompute(path, () =>
         {
-            if (_sizeCache.TryGetValue(path, out var cached) && (DateTime.UtcNow - cached.CachedAt).TotalSeconds < 15)
+            if (!Directory.Exists(path)) return 0;
+            long total = 0;
+            try
             {
-                return cached.Size;
-            }
-        }
-        long total=0;
-
-        try
-        {
-            foreach (var file in Directory.EnumerateFiles(path,"*", SearchOption.AllDirectories))
-            {
-                bool inJunction=false;
-                var parent=Path.GetDirectoryName(file);
-                while (parent!=null&&parent.Length>=path.Length)
+                foreach (var file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
                 {
-                    var di=new DirectoryInfo(parent);
-                    if (di.Exists&&di.LinkTarget!=null)
+                    bool inJunction = false;
+                    var parent = Path.GetDirectoryName(file);
+                    while (parent != null && parent.Length >= path.Length)
                     {
-                        inJunction=true;
-                        break;
+                        var di = new DirectoryInfo(parent);
+                        if (di.Exists && di.LinkTarget != null)
+                        {
+                            inJunction = true;
+                            break;
+                        }
+                        parent = Path.GetDirectoryName(parent);
                     }
-                    parent=Path.GetDirectoryName(parent);
+                    if (!inJunction) total += new FileInfo(file).Length;
                 }
-                if (!inJunction)total+=new FileInfo(file).Length;
             }
-        }
-        catch
-        {
-        }
-        lock (_sizeCache)
-        {
-            _sizeCache[path] = (total, DateTime.UtcNow);
-        }
-        return total;
-
+            catch {}
+            return total;
+        });
     }
 
     public static string GetJunctionStatus(string accountName)
@@ -1029,50 +1017,34 @@ public static class AgyAccountCore
 
     }
 
-    private static readonly Dictionary<string, (AccountStats Stats, DateTime CachedAt)> _statsCache = new();
+    private static readonly TtlCache<string, AccountStats> _statsCache = new(TimeSpan.FromSeconds(3));
 
     public static void ClearStatsCache()
     {
-        lock (_statsCache)
-        {
-            _statsCache.Clear();
-        }
+        _statsCache.InvalidateAll();
     }
 
     public static AccountStats GetAccountStats(string accountName)
     {
-        lock (_statsCache)
+        return _statsCache.GetOrCompute(accountName, () =>
         {
-            if (_statsCache.TryGetValue(accountName, out var cached) && (DateTime.UtcNow - cached.CachedAt).TotalSeconds < 3)
-            {
-                return cached.Stats;
-            }
-        }
-        var meta=GetAccountMetadata(accountName);
-        var dir=GetAccountDirectory(accountName);
-        var privateSize=GetPrivateDirectorySize(dir);
-        var junctionStatus=GetJunctionStatus(accountName);
-        int skillsCount=0, convCount=0;
-        var skillsPath=Path.Combine(AgySourceHome,"config","skills");
-        if (Directory.Exists(skillsPath))skillsCount=Directory.GetDirectories(skillsPath).Length;
-        var convPath=Path.Combine(AgySourceHome,"antigravity","brain");
-        if (Directory.Exists(convPath))convCount=Directory.GetDirectories(convPath).Length;
-        var tokenStatus=File.Exists(Path.Combine(dir,"keyring_token.txt"))?"Logged In":"Not Logged In";
-        string sizeStr;
-        if (privateSize>1_048_576)sizeStr=$"{Math.Round(privateSize / 1_048_576.0, 2)} MB";
-
-        else if (privateSize>1_024)sizeStr=$"{Math.Round(privateSize / 1_024.0, 2)} KB";
-
-        else sizeStr=$"{privateSize} B";
-        var quota=CalculateRollingQuotas(accountName);
-        var stats = new AccountStats(meta.LastUsed, meta.UsageCount, sizeStr, junctionStatus, skillsCount, convCount, tokenStatus, meta.QuotaStatus, quota.RemainingWeekly, quota.Remaining5H);
-
-        lock (_statsCache)
-        {
-            _statsCache[accountName] = (stats, DateTime.UtcNow);
-        }
-        return stats;
-
+            var meta = GetAccountMetadata(accountName);
+            var dir = GetAccountDirectory(accountName);
+            var privateSize = GetPrivateDirectorySize(dir);
+            var junctionStatus = GetJunctionStatus(accountName);
+            int skillsCount = 0, convCount = 0;
+            var skillsPath = Path.Combine(AgySourceHome, "config", "skills");
+            if (Directory.Exists(skillsPath)) skillsCount = Directory.GetDirectories(skillsPath).Length;
+            var convPath = Path.Combine(AgySourceHome, "antigravity", "brain");
+            if (Directory.Exists(convPath)) convCount = Directory.GetDirectories(convPath).Length;
+            var tokenStatus = File.Exists(Path.Combine(dir, "keyring_token.txt")) ? "Logged In" : "Not Logged In";
+            string sizeStr;
+            if (privateSize > 1_048_576) sizeStr = $"{Math.Round(privateSize / 1_048_576.0, 2)} MB";
+            else if (privateSize > 1_024) sizeStr = $"{Math.Round(privateSize / 1_024.0, 2)} KB";
+            else sizeStr = $"{privateSize} B";
+            var quota = CalculateRollingQuotas(accountName);
+            return new AccountStats(meta.LastUsed, meta.UsageCount, sizeStr, junctionStatus, skillsCount, convCount, tokenStatus, meta.QuotaStatus, quota.RemainingWeekly, quota.Remaining5H);
+        });
     }
 
     public static string GetProgressBar(double percentage)
@@ -1298,7 +1270,7 @@ public static class AgyAccountMenu
 }
 public static class Projects
 {
-    public static readonly string AgBaseDir=Directory.Exists(@"C:\Users\sshuser\project")?@"C:\Users\sshuser\project":System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),"Desktop","project");
+    public static readonly string AgBaseDir = !string.IsNullOrEmpty(Config.Current.ProjectsBaseDir) ? Config.Current.ProjectsBaseDir : (Directory.Exists(@"C:\Users\sshuser\project") ? @"C:\Users\sshuser\project" : System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop", "project"));
 
     public static string?StartManager()
     {

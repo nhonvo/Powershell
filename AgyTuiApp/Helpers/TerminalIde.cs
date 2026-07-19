@@ -70,6 +70,18 @@ public static class CodeViewer
 {
     private static readonly SearchValues<char> StringDelimiters = SearchValues.Create(['"', '\'', '`']);
 
+    private record SyntaxRule(string[] Keywords, string? CommentPattern);
+    private static readonly Dictionary<string, SyntaxRule> SyntaxRules = new()
+    {
+        { ".cs", new SyntaxRule(["public", "private", "protected", "internal", "class", "void", "string", "int", "var", "return", "if", "else", "foreach", "using", "namespace", "static", "new"], @"//.*$") },
+        { ".ps1", new SyntaxRule(["function", "param", "if", "else", "foreach", "return", "process"], @"#.*$") },
+        { ".js", new SyntaxRule(["const", "let", "var", "function", "return", "if", "else", "for", "while", "class", "import", "export", "default"], @"//.*$") },
+        { ".ts", new SyntaxRule(["const", "let", "var", "function", "return", "if", "else", "for", "while", "class", "import", "export", "default", "interface", "type", "public", "private"], @"//.*$") },
+        { ".json", new SyntaxRule(["true", "false", "null"], null) },
+        { ".py", new SyntaxRule(["def", "class", "return", "if", "elif", "else", "for", "while", "import", "from", "as", "in", "not", "and", "or"], @"#.*$") },
+        { ".sh", new SyntaxRule(["if", "then", "elif", "else", "fi", "for", "in", "do", "done", "echo", "exit", "return"], @"#.*$") }
+    };
+
     public static void Show(string filePath)
     {
         if (!File.Exists(filePath))
@@ -110,24 +122,16 @@ public static class CodeViewer
     {
         if (string.IsNullOrWhiteSpace(line)) return string.Empty;
         var escaped = line.EscapeMarkup();
-        if (ext == ".cs")
+        if (SyntaxRules.TryGetValue(ext, out var rule))
         {
-            // Simple syntax highlight heuristics
-            var keywords = new[] { "public", "private", "protected", "internal", "class", "void", "string", "int", "var", "return", "if", "else", "foreach", "using", "namespace", "static", "new" };
-            foreach (var kw in keywords)
+            foreach (var kw in rule.Keywords)
             {
                 escaped = Regex.Replace(escaped, $@"\b{kw}\b", $"[blue]{kw}[/]");
             }
-            escaped = Regex.Replace(escaped, @"//.*$", m => $"[green]{m.Value}[/]");
-        }
-        else if (ext == ".ps1")
-        {
-            var keywords = new[] { "function", "param", "if", "else", "foreach", "return", "process" };
-            foreach (var kw in keywords)
+            if (rule.CommentPattern != null)
             {
-                escaped = Regex.Replace(escaped, $@"\b{kw}\b", $"[blue]{kw}[/]");
+                escaped = Regex.Replace(escaped, rule.CommentPattern, m => $"[green]{m.Value}[/]");
             }
-            escaped = Regex.Replace(escaped, @"#.*$", m => $"[green]{m.Value}[/]");
         }
         return escaped;
     }
