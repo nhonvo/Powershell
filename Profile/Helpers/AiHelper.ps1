@@ -100,6 +100,11 @@ class AiHelper {
     }
 
     static [void] InvokeClaude([string[]]$ArgsList) {
+        if ([AiHelper]::GetEffectiveProviderMode() -eq "cloud") {
+            $proc = Start-Process -FilePath "claude.cmd" -ArgumentList $ArgsList -NoNewWindow -PassThru -Wait
+            return
+        }
+
         Ensure-OllamaServer
 
         $oldOllamaHost = $env:OLLAMA_HOST
@@ -129,6 +134,11 @@ class AiHelper {
     }
 
     static [void] InvokeCodex([string[]]$ArgsList) {
+        if ([AiHelper]::GetEffectiveProviderMode() -eq "cloud") {
+            $proc = Start-Process -FilePath "codex.cmd" -ArgumentList $ArgsList -NoNewWindow -PassThru -Wait
+            return
+        }
+
         Ensure-OllamaServer
 
         $oldOllamaHost = $env:OLLAMA_HOST
@@ -215,6 +225,12 @@ skills_directory = "$emptySkillsDir"
     }
 
     static [void] InvokeOpenClaw([string[]]$ArgsList) {
+        if ([AiHelper]::GetEffectiveProviderMode() -eq "cloud") {
+            $argList = if ($ArgsList.Count -eq 0) { @("chat") } else { $ArgsList }
+            $proc = Start-Process -FilePath "openclaw.cmd" -ArgumentList $argList -NoNewWindow -PassThru -Wait
+            return
+        }
+
         Ensure-OllamaServer
         [AiHelper]::EnsureOpenClawGateway()
 
@@ -494,15 +510,22 @@ base_url = "http://127.0.0.1:11434/v1"
         }
     }
 
+    static [string] GetEffectiveProviderMode() {
+        $mode = if ($Global:AiProviderMode) { $Global:AiProviderMode } else { "cloud" }
+        if ($mode -eq "auto") {
+            return if ([AiHelper]::IsOllamaRunning()) { "local" } else { "cloud" }
+        }
+        return $mode
+    }
+
     static [void] InvokeMultiAgent([string]$Query, [string]$ParameterSetName, [string]$Model) {
         if ($ParameterSetName -and $ParameterSetName -ne "Menu") {
             switch ($ParameterSetName) {
                 "Gemini"  { 
-                    if ($env:GEMINI_API_KEY) {
+                    if ([AiHelper]::GetEffectiveProviderMode() -eq "cloud") {
                         if ($Query) { Invoke-GeminiChat $Query } else { Invoke-GeminiChat }
                     } else {
                         $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
-                        Write-Warning "GEMINI_API_KEY is not set. Falling back to native local Ollama ('$activeModel')."
                         [AiHelper]::InvokeOllamaNative($activeModel)
                     }
                     return 
@@ -520,11 +543,10 @@ base_url = "http://127.0.0.1:11434/v1"
                 }
                 "Local"   { [AiHelper]::InvokeClaude(@("--model", (if ($Model) { $Model } else { "qwen3-coder" }))); return }
                 "ChatGPT" { 
-                    if ($env:OPENAI_API_KEY) {
+                    if ([AiHelper]::GetEffectiveProviderMode() -eq "cloud") {
                         if ($Query) { Invoke-ChatGPT $Query } else { Invoke-ChatGPT }
                     } else {
                         $activeModel = if ($Model) { $Model } else { [AiHelper]::OllamaDefaultModel }
-                        Write-Warning "OPENAI_API_KEY is not set. Falling back to local Ollama model '$activeModel' (via OpenClaw)."
                         [AiHelper]::InvokeOpenClaw(@(if ($activeModel) { "--model"; $activeModel }))
                     }
                     return 
@@ -583,12 +605,20 @@ base_url = "http://127.0.0.1:11434/v1"
                 "============================================="
             )
 
+            $providerMode = if ($Global:AiProviderMode) { $Global:AiProviderMode } else { "cloud" }
+            $modeLabel = switch ($providerMode) {
+                "cloud" { "Cloud API (Normal)" }
+                "local" { "Local Ollama" }
+                "auto"  { "Auto (Local if online, else Cloud)" }
+                default { "Cloud API (Normal)" }
+            }
             $menuItems = @()
             $menuItems += "[Agent] Claude CLI (Interactive coding chat)"
             $menuItems += "[Agent] Hermes TUI (Autonomous workspace assistant)"
             $menuItems += "[Agent] Codex CLI (Natural language command tool)"
             $menuItems += "[Agent] OpenClaw CLI (Local agent router)"
             $menuItems += "[Agent] Clawdbot TUI (Interactive helper)"
+            $menuItems += "[Setting] Provider Mode: $modeLabel"
             $menuItems += "[Model] Select / Set Default Local Model"
             $menuItems += "[Action] Auto-Install missing LLM CLI tools"
             $menuItems += "[x] Return to Main Menu"
@@ -623,9 +653,30 @@ base_url = "http://127.0.0.1:11434/v1"
                     [AiHelper]::InvokeClawdbot(@(if ($activeModel) { "--model"; $activeModel }))
                 }
                 5 {
-                    [AiHelper]::SetOllamaModel("")
+                    $choices = @("cloud", "local", "auto")
+                    $labels = @("Cloud API (Normal)", "Local Ollama", "Auto (Local if online, else Cloud)")
+                    $defaultIdx = $choices.IndexOf($providerMode)
+                    if ($defaultIdx -lt 0) { $defaultIdx = 0 }
+                    $chosenIdx = ([type]"TerminalMenu")::Show("Select AI Provider Mode", $labels, $defaultIdx)
+                    if ($chosenIdx -ge 0) {
+                        $chosenMode = $choices[$chosenIdx]
+                        $configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "profile.config.json"
+                        if (Test-Path $configPath) {
+                            try {
+                                $cfg = Get-Content $configPath -Raw | ConvertFrom-Json
+                                $cfg.AiProviderMode = $chosenMode
+                                ConvertTo-Json $cfg -Depth 4 | Set-Content $configPath -Force
+                                $Global:AiProviderMode = $chosenMode
+                                Write-Host "🟢 AI Provider Mode set to '$($labels[$chosenIdx])'." -ForegroundColor Green
+                                Start-Sleep -Seconds 1
+                            } catch {}
+                        }
+                    }
                 }
                 6 {
+                    [AiHelper]::SetOllamaModel("")
+                }
+                7 {
                     [AiHelper]::InstallAIIntegrations()
                 }
             }

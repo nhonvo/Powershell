@@ -520,7 +520,7 @@ class GitHelper {
         $prompt = "Generate a concise, one-line conventional commit description (excluding type/scope prefix) based on the following git diff. Output ONLY the description:`n`n$diff"
  
         $body = @{
-            model = [AgyTui.AiHelper]::OllamaDefaultModel
+            model = [AgyTui.AgyAiCore]::OllamaDefaultModel
             prompt = $prompt
             stream = $false
         } | ConvertTo-Json
@@ -1192,7 +1192,7 @@ Set-Item -Path Alias:\cls -Value Clear-Host -Force -Option AllScope
 
 # --- Navigation & System Wrappers ---
 function Set-LocationParent { Set-Location .. }
-function Set-LocationGrandParent { Set-Location ../.. }
+function Set-LocationGrandParent { Set-Location ..\.. }
 function Invoke-OpenExplorer { [AgyTui.SystemHelper]::OpenExplorer() }
 function Enter-Project {
  param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Name)
@@ -1455,12 +1455,12 @@ function Get-LocalSQSAttributes {
 }
 
 # --- AI Tools Wrappers ---
-function Invoke-Codex-By-Ollama { [AiHelper]::InvokeCodex($args) }
-function Invoke-Claude-By-Ollama { [AiHelper]::InvokeClaude($args) }
-function Invoke-OpenClaw-By-Ollama { [AiHelper]::InvokeOpenClaw($args) }
-function Invoke-Clawdbot-By-Ollama { [AiHelper]::InvokeClawdbot($args) }
-function Invoke-Hermes-By-Ollama { [AiHelper]::InvokeHermes($args) }
-function Invoke-HermesDesktop-By-Ollama { [AiHelper]::InvokeHermesDesktop($args) }
+function Invoke-Codex-By-Ollama { [AgyTui.AgyAiCore]::InvokeCodex($args) }
+function Invoke-Claude-By-Ollama { [AgyTui.AgyAiCore]::InvokeClaude($args) }
+function Invoke-OpenClaw-By-Ollama { [AgyTui.AgyAiCore]::InvokeOpenClaw($args) }
+function Invoke-Clawdbot-By-Ollama { [AgyTui.AgyAiCore]::InvokeClawdbot($args) }
+function Invoke-Hermes-By-Ollama { [AgyTui.AgyAiCore]::InvokeHermes($args) }
+function Invoke-HermesDesktop-By-Ollama { [AgyTui.AgyAiCore]::InvokeHermesDesktop($args) }
 function Invoke-CopilotExplain {
     param([string]$Command)
     if (Get-Command gh -ErrorAction SilentlyContinue) {
@@ -1474,14 +1474,14 @@ function Invoke-CopilotExplain {
         Write-Error "GitHub CLI (gh) is not installed. Please install it from https://cli.github.com/"
     }
 }
-function Install-AIIntegrations { [AiHelper]::InstallAIIntegrations() }
-function Initialize-OllamaServer { [AiHelper]::InitializeOllamaServer() }
+function Install-AIIntegrations { [AgyTui.AgyAiCore]::InstallAIIntegrations() }
+function Initialize-OllamaServer { [AgyTui.AgyAiCore]::InitializeOllamaServer() }
 function Set-OllamaModel {
     param([string]$ModelName)
-    [AiHelper]::SetOllamaModel($ModelName)
+    [AgyTui.AgyAiCore]::SetOllamaModel($ModelName)
 }
-function Ensure-OllamaServer { [AiHelper]::EnsureOllamaServer() }
-function Invoke-OllamaLogs { [AiHelper]::ShowOllamaLogs() }
+function Ensure-OllamaServer { [AgyTui.AgyAiCore]::EnsureOllamaServer() }
+function Invoke-OllamaLogs { [AgyTui.AgyAiCore]::ShowOllamaLogs() }
 function Invoke-Npm {
     param([string[]]$ArgsList)
     & npm @ArgsList
@@ -1493,7 +1493,7 @@ function Invoke-ChatGPT {
         if ($Query) { chatgpt $Query } else { chatgpt }
     } else {
         Write-Warning "ChatGPT CLI command 'chatgpt' is not installed. Routing to local OpenClaw instead."
-        [AiHelper]::InvokeOpenClaw(@())
+        [AgyTui.AgyAiCore]::InvokeOpenClaw(@())
     }
 }
 
@@ -1511,7 +1511,7 @@ function Invoke-MultiAgent {
         [Parameter(ParameterSetName="Codex")][Alias("cx")][switch]$UseCodex,
         [string]$Model
     )
-    [AiHelper]::InvokeMultiAgent($Query, $PSCmdlet.ParameterSetName, $Model)
+    [AgyTui.AgyAiCore]::InvokeMultiAgent($Query, $PSCmdlet.ParameterSetName, $Model)
 }
 
 # AI Tools Aliases
@@ -1539,8 +1539,114 @@ if (Get-Command multigravity -ErrorAction SilentlyContinue) {
  }
 }
 
+# --- AgyAccountManager Legacy Compatibility Layer ---
+try {
+    Invoke-Expression @'
+class AgyAccountManager {
+    static [void] RegisterPromptHook() {
+        try {
+            $promptCmd = Get-Command prompt -ErrorAction SilentlyContinue
+            if ($promptCmd -and ($promptCmd.Definition -like "*AgyOriginalPromptCmd*" -or $promptCmd.Definition -like "*prompt_original*")) {
+                if (-not $Global:AgyOriginalPromptCmd) {
+                    # Allow re-binding if the session global command reference was cleared
+                } else {
+                    return
+                }
+            }
+
+            if (Test-Path Function:\prompt_original) {
+                Remove-Item Function:\prompt_original -Force -ErrorAction SilentlyContinue
+            }
+
+            if (Test-Path Function:\prompt) {
+                $Global:AgyOriginalPromptCmd = Get-Command prompt
+                $null = New-Item -Path Function:\prompt_original -Value ([ScriptBlock]::Create("if (`$Global:AgyOriginalPromptCmd) { & `$Global:AgyOriginalPromptCmd }")) -Force
+                Remove-Item Function:\prompt -Force -ErrorAction SilentlyContinue
+            }
+
+            $scriptBlock = {
+                try {
+                    $activeAccFile = Join-Path -Path $Global:AgySourceHome -ChildPath "active_account.txt"
+                    if (Test-Path $activeAccFile) {
+                        $content = (Get-Content -Path $activeAccFile -ErrorAction SilentlyContinue)
+                        if ($content) {
+                            $savedAcc = $content.Trim()
+                            $currentHomeName = Split-Path $env:GEMINI_HOME -Leaf
+                            $expectedHomeName = if ($savedAcc -eq "default") { ".gemini" } else { ".gemini_$savedAcc" }
+                            if ($currentHomeName -ne $expectedHomeName) {
+                                $targetPath = if ($savedAcc -eq "default") {
+                                    $Global:AgySourceHome
+                                } else {
+                                    $p = "C:\Users\Public\.$expectedHomeName"
+                                    if (-not (Test-Path $p)) { $p = Join-Path -Path $env:USERPROFILE -ChildPath "$expectedHomeName" }
+                                    $p
+                                }
+                                if (Test-Path $targetPath) {
+                                    $env:GEMINI_HOME = $targetPath
+                                    [AgyTui.AgyAccountCore]::RestoreActiveToken($savedAcc)
+                                }
+                            }
+                        }
+                    }
+                } catch {}
+                try {
+                    [AgyAccountManager]::AutoSwitchOnDirectoryChange($pwd.Path)
+                } catch {}
+                if (Test-Path Function:\prompt_original) {
+                    prompt_original
+                } else {
+                    $acc = [AgyTui.AgyAccountCore]::GetActiveAccount()
+                    $tag = ""
+                    "PS ($acc)$tag $($pwd.Path)> "
+                }
+            }
+            $null = New-Item -Path Function:\prompt -Value $scriptBlock -Force
+        } catch {}
+    }
+
+    static [void] AutoSwitchOnDirectoryChange([string]$Path) {
+        if (-not [AgyTui.AgyAccountCore]::IsAutoSwitchEnabled()) { return }
+        $workspaces = [AgyTui.WorkspaceRegistry]::GetWorkspaces()
+        if (-not $workspaces) { return }
+        $matchedProject = $workspaces | Where-Object { $_.WorkspacePath -and $Path -like "$($_.WorkspacePath)*" } | Select-Object -First 1
+        if ($null -ne $matchedProject -and $matchedProject.AssociatedAccount -and $matchedProject.AssociatedAccount -ne [AgyTui.AgyAccountCore]::GetActiveAccount()) {
+            if (-not $Global:AiMode) {
+                Write-Host "[Auto-Switch] Changing credentials to: $($matchedProject.AssociatedAccount)" -ForegroundColor Cyan
+            }
+            [AgyTui.AgyAccountCore]::SetActiveAccount($matchedProject.AssociatedAccount, $true)
+        }
+    }
+
+    static [void] ToggleAutoSwitch() {
+        [AgyTui.AgyAccountCore]::ToggleAutoSwitch()
+    }
+
+    static [void] ShowAllAccountsSummary() {
+        [AgyTui.AgyAccountCore]::ShowAllAccountsSummary()
+    }
+
+    static [string] GetActiveAccount() {
+        return [AgyTui.AgyAccountCore]::GetActiveAccount()
+    }
+}
+'@
+} catch {
+    Write-Warning "Failed to define AgyAccountManager helper: $_"
+}
+
 # --- Help shortcuts ---
-function Invoke-ControlCenter { [AgyTui.CcNavigator]::Run() }
+function Invoke-ControlCenter {
+    [AgyTui.CcNavigator]::Run()
+    $selectedProjFile = Join-Path -Path $Global:AgySourceHome -ChildPath "selected_project.txt"
+    if (Test-Path $selectedProjFile) {
+        $projPath = Get-Content $selectedProjFile -Raw -ErrorAction SilentlyContinue
+        if ($projPath -and (Test-Path $projPath.Trim())) {
+            Write-Host "🛸 Navigating to selected workspace: $($projPath.Trim())" -ForegroundColor Cyan
+            Set-Location $($projPath.Trim())
+        }
+        Remove-Item $selectedProjFile -Force -ErrorAction SilentlyContinue
+    }
+}
 Set-Alias -Name cc -Value Invoke-ControlCenter -Force
 
 function cg { [ProfileHelp]::Show("Git") }
@@ -1640,7 +1746,7 @@ function Invoke-AskAi {
  }
  }
  }
- [AgyTui.AiHelper]::AskAi($q)
+ [AgyTui.AgyAiCore]::AskAi($q)
 }
 Set-Alias -Name ask-ai -Value Invoke-AskAi -Force
 
@@ -1717,7 +1823,7 @@ function Show-AccountsSummary { [AgyAccountManager]::ShowAllAccountsSummary() }
 Set-Alias -Name acc-sum -Value Show-AccountsSummary -Force
 
 # --- AI Session Dashboard Wrappers ---
-function Show-AiDashboard { if (-not (Test-AgyAiGate)) { return }; [AgyTui.AiHelper]::ShowAiDashboard() }
+function Show-AiDashboard { if (-not (Test-AgyAiGate)) { return }; [AgyTui.AgyAiCore]::ShowAiDashboard() }
 Set-Alias -Name ai-dash -Value Show-AiDashboard -Force
 
 # --- AWS LocalStack Aliases ---

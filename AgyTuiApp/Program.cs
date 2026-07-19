@@ -125,6 +125,58 @@ public static class SpectreMenu
 
     }
 
+    public static int ShowWithEscape(string title, string[] items, int defaultIndex)
+    {
+        if (items.Length == 0) return -1;
+        var selected = defaultIndex;
+        Console.CursorVisible = false;
+
+        while (true)
+        {
+            try
+            {
+                AnsiConsole.Clear();
+            }
+            catch {}
+
+            AnsiConsole.Write(new Rule($"[bold cyan]{title.EscapeMarkup()}[/]").RuleStyle("grey"));
+            AnsiConsole.WriteLine();
+
+            for (var i = 0; i < items.Length; i++)
+            {
+                if (i == selected)
+                {
+                    AnsiConsole.MarkupLine($"[green bold]> {items[i].EscapeMarkup()}[/]");
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine($"  {items[i].EscapeMarkup()}");
+                }
+            }
+
+            AnsiConsole.WriteLine();
+            AnsiConsole.Write(new Rule("[dim]↑/↓ Navigate  ·  Enter Select  ·  Esc/q Cancel[/]").RuleStyle("grey"));
+
+            var key = Console.ReadKey(true);
+            switch (key.Key)
+            {
+                case ConsoleKey.UpArrow:
+                case ConsoleKey.K:
+                    selected = (selected - 1 + items.Length) % items.Length;
+                    break;
+                case ConsoleKey.DownArrow:
+                case ConsoleKey.J:
+                    selected = (selected + 1) % items.Length;
+                    break;
+                case ConsoleKey.Enter:
+                    return selected;
+                case ConsoleKey.Escape:
+                case ConsoleKey.Q:
+                    return -1;
+            }
+        }
+    }
+
 }
 public static class SpectrePager
 {
@@ -687,10 +739,62 @@ public static class AgyAccountCore
 
     public static string GetActiveAccount()
     {
+        try
+        {
+            if (File.Exists(AgyActiveAccountFile))
+            {
+                var content = File.ReadAllText(AgyActiveAccountFile).Trim();
+                if (!string.IsNullOrEmpty(content)) return content;
+            }
+        }
+        catch {}
         var home=Environment.GetEnvironmentVariable("GEMINI_HOME")??"";
         var m=Regex.Match(home,@"\.gemini_(.+)$");
         return m.Success?m.Groups[1].Value:"default";
 
+    }
+
+    public static string? GetAccountEmail(string accountName)
+    {
+        var dir = GetAccountDirectory(accountName);
+        var googleAccountsFile = Path.Combine(dir, "google_accounts.json");
+        if (File.Exists(googleAccountsFile))
+        {
+            try
+            {
+                var content = File.ReadAllText(googleAccountsFile);
+                using var doc = JsonDocument.Parse(content);
+                if (doc.RootElement.ValueKind == JsonValueKind.Object)
+                {
+                    if (doc.RootElement.TryGetProperty("email", out var emailProp)) return emailProp.GetString();
+                    if (doc.RootElement.TryGetProperty("account", out var accProp)) return accProp.GetString();
+                }
+                else if (doc.RootElement.ValueKind == JsonValueKind.Array && doc.RootElement.GetArrayLength() > 0)
+                {
+                    var first = doc.RootElement[0];
+                    if (first.TryGetProperty("email", out var emailProp)) return emailProp.GetString();
+                    if (first.TryGetProperty("account", out var accProp)) return accProp.GetString();
+                }
+            }
+            catch {}
+        }
+        
+        var tokenFile = Path.Combine(dir, "keyring_token.txt");
+        if (File.Exists(tokenFile))
+        {
+            try
+            {
+                var encrypted = File.ReadAllText(tokenFile).Trim();
+                var decrypted = DecryptToken(encrypted);
+                if (!string.IsNullOrEmpty(decrypted))
+                {
+                    using var doc = JsonDocument.Parse(decrypted);
+                    if (doc.RootElement.TryGetProperty("email", out var emailProp)) return emailProp.GetString();
+                }
+            }
+            catch {}
+        }
+        return null;
     }
 
     public static string GetAccountDirectory(string accountName)
@@ -837,6 +941,394 @@ public static class AgyAccountCore
 
     }
 
+    public static string GlobalBinDir => @"C:\ProgramData\agy\bin";
+    public static string AgyBinaryPath => Path.Combine(GlobalBinDir, "agy.exe");
+
+    public static void BackupActiveToken(string accountName)
+    {
+        try
+        {
+            var token = AgyKeyringHelper.ReadToken("gemini:antigravity");
+            if (!string.IsNullOrEmpty(token))
+            {
+                var accDir = GetAccountDirectory(accountName);
+                Directory.CreateDirectory(accDir);
+                var tokenFile = Path.Combine(accDir, "keyring_token.txt");
+                var encrypted = EncryptToken(token);
+                File.WriteAllText(tokenFile, encrypted, Encoding.UTF8);
+            }
+        }
+        catch {}
+    }
+
+    public static void RestoreActiveToken(string accountName)
+    {
+        try
+        {
+            var accDir = GetAccountDirectory(accountName);
+            var tokenFile = Path.Combine(accDir, "keyring_token.txt");
+            if (File.Exists(tokenFile))
+            {
+                var encrypted = File.ReadAllText(tokenFile).Trim();
+                if (!string.IsNullOrEmpty(encrypted))
+                {
+                    var token = DecryptToken(encrypted);
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        AgyKeyringHelper.WriteToken("gemini:antigravity", "antigravity", token);
+                    }
+                }
+            }
+            else
+            {
+                AgyKeyringHelper.DeleteToken("gemini:antigravity");
+            }
+        }
+        catch {}
+    }
+
+    private static string EncryptToken(string token)
+    {
+        var data = Encoding.UTF8.GetBytes(token);
+        var encrypted = ProtectedData.Protect(data, null, DataProtectionScope.CurrentUser);
+        return Convert.ToBase64String(encrypted);
+    }
+
+    private static string? DecryptToken(string encrypted)
+    {
+        try
+        {
+            var data = Convert.FromBase64String(encrypted);
+            var decrypted = ProtectedData.Unprotect(data, null, DataProtectionScope.CurrentUser);
+            return Encoding.UTF8.GetString(decrypted);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public static void SetActiveAccount(string accountName, bool temporary)
+    {
+        if (!string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
+        {
+            var targetDir = GetAccountDirectory(accountName);
+            if (!Directory.Exists(targetDir))
+            {
+                throw new ArgumentException($"Account '{accountName}' does not exist.");
+            }
+        }
+
+        ClearStatsCache();
+        UpdateAccountMetadata(accountName);
+        BackupActiveToken(GetActiveAccount());
+
+        if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
+        {
+            Environment.SetEnvironmentVariable("GEMINI_HOME", AgySourceHome);
+            if (!temporary)
+            {
+                try
+                {
+                    Directory.CreateDirectory(AgySourceHome);
+                    File.WriteAllText(AgyActiveAccountFile, "default", Encoding.UTF8);
+                }
+                catch {}
+            }
+            RestoreActiveToken("default");
+            SpectrePanel.Success("Switched to default Antigravity account (Primary).");
+            return;
+        }
+
+        var targetDirLoc = GetAccountDirectory(accountName);
+        var defaultIdFile = Path.Combine(AgySourceHome, "installation_id");
+        var targetIdFile = Path.Combine(targetDirLoc, "installation_id");
+        string defaultId = "";
+        if (File.Exists(defaultIdFile)) defaultId = File.ReadAllText(defaultIdFile).Trim();
+        string targetId = "";
+        if (File.Exists(targetIdFile)) targetId = File.ReadAllText(targetIdFile).Trim();
+
+        if (string.IsNullOrWhiteSpace(targetId) || targetId == defaultId)
+        {
+            try
+            {
+                Directory.CreateDirectory(targetDirLoc);
+                var newId = Guid.NewGuid().ToString();
+                File.WriteAllText(targetIdFile, newId);
+                SpectrePanel.Warning($"Re-generated unique installation ID for '{accountName}' to separate credentials.");
+            }
+            catch {}
+        }
+
+        Environment.SetEnvironmentVariable("GEMINI_HOME", targetDirLoc);
+        RestoreActiveToken(accountName);
+
+        if (!temporary)
+        {
+            try
+            {
+                Directory.CreateDirectory(AgySourceHome);
+                File.WriteAllText(AgyActiveAccountFile, accountName, Encoding.UTF8);
+                SpectrePanel.Success($"Switched to account '{accountName}' (Persistent).");
+            }
+            catch
+            {
+                SpectrePanel.Error("Failed to update active account file.");
+            }
+        }
+        else
+        {
+            SpectrePanel.Warning($"Switched to account '{accountName}' (Temporary - current session only).");
+        }
+
+        try
+        {
+            foreach (var name in new[] { "agy", "antigravity-hub", "openclaw" })
+            {
+                foreach (var p in Process.GetProcessesByName(name))
+                {
+                    try { p.Kill(true); } catch {}
+                }
+            }
+        }
+        catch {}
+    }
+
+    public static void AddAccount(string accountName)
+    {
+        if (string.IsNullOrWhiteSpace(accountName))
+            throw new ArgumentException("Account name cannot be empty.");
+            
+        if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
+            throw new ArgumentException("Cannot create an account named 'default'.");
+
+        var destDir = GetAccountDirectory(accountName);
+        if (Directory.Exists(destDir))
+            throw new InvalidOperationException($"Account '{accountName}' already exists.");
+
+        Directory.CreateDirectory(destDir);
+
+        // Copy root files
+        var credentialsFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "google_accounts.json", "oauth_creds.json", "state.json", "installation_id", "keyring_token.txt"
+        };
+
+        if (Directory.Exists(AgySourceHome))
+        {
+            foreach (var file in Directory.GetFiles(AgySourceHome))
+            {
+                var fileName = Path.GetFileName(file);
+                if (!credentialsFiles.Contains(fileName))
+                {
+                    try
+                    {
+                        File.Copy(file, Path.Combine(destDir, fileName), true);
+                    }
+                    catch {}
+                }
+            }
+        }
+
+        // Generate installation ID
+        var installationIdFile = Path.Combine(destDir, "installation_id");
+        File.WriteAllText(installationIdFile, Guid.NewGuid().ToString());
+
+        // Create independent subdirectories (no symlinks or junctions, to keep accounts isolated!)
+        var subDirs = new[] { "antigravity", "antigravity-cli", "config", "history", "antigravity-ide", "wf", "learn" };
+        foreach (var sub in subDirs)
+        {
+            Directory.CreateDirectory(Path.Combine(destDir, sub));
+        }
+        ClearStatsCache();
+    }
+
+    public static void DeleteAccount(string accountName)
+    {
+        if (string.IsNullOrWhiteSpace(accountName))
+            throw new ArgumentException("Account name cannot be empty.");
+
+        var targetDir = GetAccountDirectory(accountName);
+        if (!Directory.Exists(targetDir))
+            throw new DirectoryNotFoundException($"Account '{accountName}' does not exist.");
+
+        // Recursively delete the directory
+        Directory.Delete(targetDir, true);
+
+        // If the active account was deleted, switch back to default
+        if (string.Equals(GetActiveAccount(), accountName, StringComparison.OrdinalIgnoreCase))
+        {
+            SetActiveAccount("default", false);
+        }
+        ClearStatsCache();
+    }
+
+    public static void LogoutAccount(string accountName)
+    {
+        var dir = GetAccountDirectory(accountName);
+        if (!Directory.Exists(dir)) return;
+
+        var files = new[] { "google_accounts.json", "oauth_creds.json", "state.json", "keyring_token.txt" };
+        foreach (var f in files)
+        {
+            var p = Path.Combine(dir, f);
+            if (File.Exists(p))
+            {
+                try { File.Delete(p); } catch {}
+            }
+        }
+    }
+
+    public static void SyncActiveAccountWithKeyring(bool silent)
+    {
+        if (!IsAutoSwitchEnabled()) return;
+        try
+        {
+            string savedAcc = GetActiveAccount();
+            string? keyringToken = AgyKeyringHelper.ReadToken("gemini:antigravity");
+            if (string.IsNullOrEmpty(keyringToken)) return;
+
+            string? matchedAcc = null;
+            var availableAccounts = GetAccounts();
+            foreach (var acc in availableAccounts)
+            {
+                var accDir = GetAccountDirectory(acc);
+                var tokenFile = Path.Combine(accDir, "keyring_token.txt");
+                if (File.Exists(tokenFile))
+                {
+                    try
+                    {
+                        var encrypted = File.ReadAllText(tokenFile).Trim();
+                        if (!string.IsNullOrEmpty(encrypted))
+                        {
+                            var savedToken = DecryptToken(encrypted);
+                            if (savedToken == keyringToken)
+                            {
+                                matchedAcc = acc;
+                                break;
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    using var savedJson = JsonDocument.Parse(savedToken);
+                                    using var currentJson = JsonDocument.Parse(keyringToken);
+                                    if (savedJson.RootElement.TryGetProperty("token", out var sToken) &&
+                                        currentJson.RootElement.TryGetProperty("token", out var cToken) &&
+                                        sToken.TryGetProperty("refresh_token", out var sRefresh) &&
+                                        cToken.TryGetProperty("refresh_token", out var cRefresh) &&
+                                        sRefresh.GetString() == cRefresh.GetString())
+                                    {
+                                        matchedAcc = acc;
+                                        break;
+                                    }
+                                }
+                                catch {}
+                            }
+                        }
+                    }
+                    catch {}
+                }
+            }
+
+            if (matchedAcc == null)
+            {
+                try
+                {
+                    if (CheckNetworkStatus())
+                    {
+                        using var json = JsonDocument.Parse(keyringToken);
+                        if (json.RootElement.TryGetProperty("token", out var tokenObj) && tokenObj.TryGetProperty("access_token", out var accessTok))
+                        {
+                            var accessToken = accessTok.GetString();
+                            if (!string.IsNullOrEmpty(accessToken))
+                            {
+                                using var client = new HttpClient();
+                                client.Timeout = TimeSpan.FromSeconds(3);
+                                var response = client.GetStringAsync($"https://oauth2.googleapis.com/tokeninfo?access_token={accessToken}").Result;
+                                using var info = JsonDocument.Parse(response);
+                                if (info.RootElement.TryGetProperty("email", out var emailProp))
+                                {
+                                    var email = emailProp.GetString()?.Trim().ToLower();
+                                    if (email != null)
+                                    {
+                                        foreach (var acc in availableAccounts)
+                                        {
+                                            if (string.Equals(acc.Trim(), email, StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                matchedAcc = acc;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch {}
+            }
+
+            if (matchedAcc != null)
+            {
+                if (!string.Equals(matchedAcc, savedAcc, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!silent)
+                    {
+                        SpectrePanel.Warning($"Keyring matches account '{matchedAcc}'. Auto-switching active account.");
+                    }
+                    savedAcc = matchedAcc;
+                    Directory.CreateDirectory(AgySourceHome);
+                    File.WriteAllText(AgyActiveAccountFile, savedAcc, Encoding.UTF8);
+                    Environment.SetEnvironmentVariable("GEMINI_HOME", GetAccountDirectory(savedAcc));
+                }
+                var accDir = GetAccountDirectory(savedAcc);
+                Directory.CreateDirectory(accDir);
+                var tokenFile = Path.Combine(accDir, "keyring_token.txt");
+                var encryptedToken = EncryptToken(keyringToken);
+                File.WriteAllText(tokenFile, encryptedToken, Encoding.UTF8);
+            }
+            else
+            {
+                var accDir = GetAccountDirectory(savedAcc);
+                Directory.CreateDirectory(accDir);
+                var tokenFile = Path.Combine(accDir, "keyring_token.txt");
+                var encryptedToken = EncryptToken(keyringToken);
+                File.WriteAllText(tokenFile, encryptedToken, Encoding.UTF8);
+            }
+        }
+        catch {}
+    }
+
+    public static void AutoSwitchOnQuotaExceeded()
+    {
+        if (!IsAutoSwitchEnabled()) return;
+        var active = GetActiveAccount();
+        var activeMeta = GetAccountMetadata(active);
+        if (string.Equals(activeMeta.QuotaStatus, "Exceeded", StringComparison.OrdinalIgnoreCase))
+        {
+            string? candidate = null;
+            foreach (var acc in GetAccounts())
+            {
+                if (string.Equals(acc, active, StringComparison.OrdinalIgnoreCase)) continue;
+                var accDir = GetAccountDirectory(acc);
+                if (!File.Exists(Path.Combine(accDir, "keyring_token.txt"))) continue;
+                var meta = GetAccountMetadata(acc);
+                if (string.Equals(meta.QuotaStatus, "OK", StringComparison.OrdinalIgnoreCase))
+                {
+                    candidate = acc;
+                    break;
+                }
+            }
+
+            if (candidate != null)
+            {
+                SpectrePanel.Warning($"Active account '{active}' exceeded quota. Auto-switching to candidate account '{candidate}' with available quota.");
+                SetActiveAccount(candidate, false);
+            }
+        }
+    }
+
     public static void ToggleAutoSwitch()
     {
         var current=IsAutoSwitchEnabled();
@@ -892,9 +1384,18 @@ public static class AgyAccountCore
 
     }
 
+    private static readonly Dictionary<string, (long Size, DateTime CachedAt)> _sizeCache = new();
+
     public static long GetPrivateDirectorySize(string path)
     {
         if (!Directory.Exists(path))return 0;
+        lock (_sizeCache)
+        {
+            if (_sizeCache.TryGetValue(path, out var cached) && (DateTime.UtcNow - cached.CachedAt).TotalSeconds < 15)
+            {
+                return cached.Size;
+            }
+        }
         long total=0;
 
         try
@@ -918,6 +1419,10 @@ public static class AgyAccountCore
         }
         catch
         {
+        }
+        lock (_sizeCache)
+        {
+            _sizeCache[path] = (total, DateTime.UtcNow);
         }
         return total;
 
@@ -943,8 +1448,25 @@ public static class AgyAccountCore
 
     }
 
+    private static readonly Dictionary<string, (AccountStats Stats, DateTime CachedAt)> _statsCache = new();
+
+    public static void ClearStatsCache()
+    {
+        lock (_statsCache)
+        {
+            _statsCache.Clear();
+        }
+    }
+
     public static AccountStats GetAccountStats(string accountName)
     {
+        lock (_statsCache)
+        {
+            if (_statsCache.TryGetValue(accountName, out var cached) && (DateTime.UtcNow - cached.CachedAt).TotalSeconds < 3)
+            {
+                return cached.Stats;
+            }
+        }
         var meta=GetAccountMetadata(accountName);
         var dir=GetAccountDirectory(accountName);
         var privateSize=GetPrivateDirectorySize(dir);
@@ -962,7 +1484,13 @@ public static class AgyAccountCore
 
         else sizeStr=$"{privateSize} B";
         var quota=CalculateRollingQuotas(accountName);
-        return new AccountStats(meta.LastUsed, meta.UsageCount, sizeStr, junctionStatus, skillsCount, convCount, tokenStatus, meta.QuotaStatus, quota.RemainingWeekly, quota.Remaining5H);
+        var stats = new AccountStats(meta.LastUsed, meta.UsageCount, sizeStr, junctionStatus, skillsCount, convCount, tokenStatus, meta.QuotaStatus, quota.RemainingWeekly, quota.Remaining5H);
+
+        lock (_statsCache)
+        {
+            _statsCache[accountName] = (stats, DateTime.UtcNow);
+        }
+        return stats;
 
     }
 
@@ -1242,7 +1770,7 @@ public static class Projects
 
     private static void RunNpm(string args, string workingDir, IDictionary<string, string?>?env)
     {
-        var npmPath=AiHelper.FindOnPath("npm.cmd")??"npm.cmd";
+        var npmPath=AgyAiCore.FindOnPath("npm.cmd")??"npm.cmd";
         var psi=new ProcessStartInfo(npmPath, args)
         {
             UseShellExecute=false, WorkingDirectory=workingDir
@@ -1275,7 +1803,9 @@ public sealed record WorkspaceEntry(string Name, [property:JsonPropertyName("Pat
 
 public static class WorkspaceRegistry
 {
-    private static readonly string ConfigFile=System.IO.Path.Combine(AgyAccountCore.AgySourceHome,"workspaces.json");
+    private static readonly string ConfigFile=System.IO.Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+        ".gemini", "antigravity", "priority_workspaces.json");
 
     public static WorkspaceEntry[]GetWorkspaces()
     {
@@ -1360,6 +1890,292 @@ public static class ProfileNavigator
     }
 
 }
+public static class OllamaHelper
+{
+    public static void ShowOllamaLogs()
+    {
+        var logPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ollama", "server.log");
+        if (!File.Exists(logPath))
+        {
+            SpectrePanel.Error($"Ollama log file not found at: {logPath}");
+            Console.WriteLine("Press any key to return...");
+            Console.ReadKey(true);
+            return;
+        }
+        
+        AnsiConsole.MarkupLine($"[bold cyan]Showing last 50 lines of Ollama Server Logs...[/]");
+        AnsiConsole.MarkupLine($"[dim]Log Path: {logPath}[/]\n");
+        
+        try
+        {
+            using var fs = new FileStream(logPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var sr = new StreamReader(fs);
+            var lines = new List<string>();
+            string? line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                lines.Add(line);
+            }
+            
+            var lastLines = lines.Skip(Math.Max(0, lines.Count - 50));
+            foreach (var l in lastLines)
+            {
+                Console.WriteLine(l);
+            }
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Failed to read logs: {ex.Message}");
+        }
+        
+        Console.WriteLine("\nPress any key to return...");
+        Console.ReadKey(true);
+    }
+
+    public static void ManageOllamaModels()
+    {
+        if (!AgyAiCore.IsOllamaRunning())
+        {
+            SpectrePanel.Error("Ollama daemon is offline.");
+            Thread.Sleep(1500);
+            return;
+        }
+        
+        try
+        {
+            using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(2) };
+            var response = client.GetStringAsync("http://127.0.0.1:11434/api/tags").Result;
+            using var doc = JsonDocument.Parse(response);
+            if (!doc.RootElement.TryGetProperty("models", out var modelsProp) || modelsProp.ValueKind != JsonValueKind.Array)
+            {
+                SpectrePanel.Warning("No local models found.");
+                Thread.Sleep(1500);
+                return;
+            }
+            
+            var models = new List<string>();
+            foreach (var m in modelsProp.EnumerateArray())
+            {
+                if (m.TryGetProperty("name", out var nameProp))
+                {
+                    models.Add(nameProp.GetString() ?? "");
+                }
+            }
+            
+            if (models.Count == 0)
+            {
+                SpectrePanel.Warning("No local models found.");
+                Thread.Sleep(1500);
+                return;
+            }
+            
+            var selection = SpectreMenu.ShowWithEscape("Manage Ollama Models", models.ToArray(), 0);
+            if (selection >= 0)
+            {
+                var modelName = models[selection];
+                var action = SpectreMenu.ShowWithEscape($"Model: {modelName}", ["Delete Model", "Show Info"], 0);
+                if (action == 0)
+                {
+                    if (AnsiConsole.Confirm($"Are you sure you want to delete model '{modelName}'?"))
+                    {
+                        AnsiConsole.MarkupLine($"[yellow]Deleting {modelName}...[/]");
+                        var request = new HttpRequestMessage(HttpMethod.Delete, "http://127.0.0.1:11434/api/delete");
+                        request.Content = new StringContent($"{{\"name\":\"{modelName}\"}}", Encoding.UTF8, "application/json");
+                        var delResp = client.SendAsync(request).Result;
+                        if (delResp.IsSuccessStatusCode)
+                        {
+                            SpectrePanel.Success($"Model '{modelName}' deleted successfully.");
+                        }
+                        else
+                        {
+                            SpectrePanel.Error($"Failed to delete model: {delResp.StatusCode}");
+                        }
+                        Thread.Sleep(1500);
+                    }
+                }
+                else if (action == 1)
+                {
+                    AnsiConsole.MarkupLine($"[cyan]Querying model info for {modelName}...[/]");
+                    var requestBody = $"{{\"name\":\"{modelName}\"}}";
+                    var infoResp = client.PostAsync("http://127.0.0.1:11434/api/show", new StringContent(requestBody, Encoding.UTF8, "application/json")).Result;
+                    if (infoResp.IsSuccessStatusCode)
+                    {
+                        var infoJson = infoResp.Content.ReadAsStringAsync().Result;
+                        AnsiConsole.Clear();
+                        AnsiConsole.MarkupLine($"[bold white]Model Details: {modelName}[/]\n");
+                        Console.WriteLine(infoJson);
+                    }
+                    else
+                    {
+                        SpectrePanel.Error("Failed to fetch model info.");
+                    }
+                    Console.WriteLine("\nPress any key to return...");
+                    Console.ReadKey(true);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Error managing models: {ex.Message}");
+            Thread.Sleep(1500);
+        }
+    }
+
+    public static void PullOllamaModel()
+    {
+        if (!AgyAiCore.IsOllamaRunning())
+        {
+            SpectrePanel.Error("Ollama daemon is offline.");
+            Thread.Sleep(1500);
+            return;
+        }
+        
+        var modelName = AnsiConsole.Ask<string>("Enter Ollama model name to pull (e.g. qwen2.5:coder, llama3):").Trim();
+        if (string.IsNullOrEmpty(modelName)) return;
+        
+        AnsiConsole.MarkupLine($"[yellow]Starting pull command: ollama pull {modelName}[/]");
+        try
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "ollama",
+                Arguments = $"pull {modelName}",
+                UseShellExecute = false,
+                CreateNoWindow = false
+            };
+            using var proc = Process.Start(psi);
+            if (proc != null)
+            {
+                proc.WaitForExit();
+                if (proc.ExitCode == 0)
+                {
+                    SpectrePanel.Success($"Model '{modelName}' pulled successfully.");
+                }
+                else
+                {
+                    SpectrePanel.Error($"Ollama pull exited with code {proc.ExitCode}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Failed to run pull command: {ex.Message}");
+        }
+        Console.WriteLine("\nPress any key to return...");
+        Console.ReadKey(true);
+    }
+
+    public static void StartOllamaDaemon()
+    {
+        if (AgyAiCore.IsOllamaRunning())
+        {
+            SpectrePanel.Success("Ollama daemon is already running!");
+            Thread.Sleep(1500);
+            return;
+        }
+        
+        AnsiConsole.MarkupLine("[yellow]Starting Ollama daemon in background...[/]");
+        try
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "ollama",
+                Arguments = "serve",
+                UseShellExecute = true,
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden
+            };
+            Process.Start(psi);
+            
+            for (var i = 0; i < 10; i++)
+            {
+                Thread.Sleep(500);
+                if (AgyAiCore.IsOllamaRunning())
+                {
+                    SpectrePanel.Success("Ollama daemon started successfully!");
+                    Thread.Sleep(1500);
+                    return;
+                }
+            }
+            SpectrePanel.Warning("Ollama process started, but status check timed out. Verify manually.");
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Failed to start Ollama: {ex.Message}");
+        }
+        Thread.Sleep(2000);
+    }
+}
+
+public static class AntigravityDeckHelper
+{
+    private static readonly string DeckPath = @"C:\Users\TruongNhon\AppData\Local\AntigravityDeck";
+
+    public static void Setup()
+    {
+        if (!Directory.Exists(DeckPath))
+        {
+            SpectrePanel.Error($"Antigravity Deck path not found at {DeckPath}. Please install it first.");
+            Thread.Sleep(2000);
+            return;
+        }
+        AnsiConsole.MarkupLine("[yellow]Running: npm run setup...[/]");
+        RunNpmCommand("run", "setup");
+    }
+
+    public static void StartLocal()
+    {
+        if (!Directory.Exists(DeckPath))
+        {
+            SpectrePanel.Error($"Antigravity Deck path not found at {DeckPath}. Please install it first.");
+            Thread.Sleep(2000);
+            return;
+        }
+        AnsiConsole.MarkupLine("[yellow]Starting Antigravity Deck (Local dev server on port 3000)...[/]");
+        AnsiConsole.MarkupLine("[dim]Press Ctrl+C to terminate the server.[/]");
+        RunNpmCommand("run", "dev");
+    }
+
+    public static void StartOnline()
+    {
+        if (!Directory.Exists(DeckPath))
+        {
+            SpectrePanel.Error($"Antigravity Deck path not found at {DeckPath}. Please install it first.");
+            Thread.Sleep(2000);
+            return;
+        }
+        AnsiConsole.MarkupLine("[yellow]Starting Antigravity Deck (Cloudflare Tunnel)...[/]");
+        AnsiConsole.MarkupLine("[dim]Press Ctrl+C to terminate the server.[/]");
+        RunNpmCommand("run", "online");
+    }
+
+    private static void RunNpmCommand(string cmd, string arg)
+    {
+        try
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "npm.cmd",
+                Arguments = $"{cmd} {arg}",
+                WorkingDirectory = DeckPath,
+                UseShellExecute = false,
+                CreateNoWindow = false
+            };
+            using var proc = Process.Start(psi);
+            if (proc != null)
+            {
+                proc.WaitForExit();
+            }
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Failed to run npm command: {ex.Message}");
+            Console.WriteLine("\nPress any key to return...");
+            Console.ReadKey(true);
+        }
+    }
+}
+
 public static class SystemHelper
 {
     public static void ShowDiskSpace()
@@ -2107,7 +2923,7 @@ public static class ThemeHelper
     }
 
 }
-public static class AiHelper
+public static class AgyAiCore
 {
     private static readonly string OllamaDefaultModelFile=System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),".ollama_default_model");
 
@@ -2145,9 +2961,106 @@ public static class AiHelper
 
     }
 
+    public static string GetProfileRepoRoot()
+    {
+        var asmPath = typeof(AgyAiCore).Assembly.Location;
+        if (string.IsNullOrEmpty(asmPath)) return Directory.GetCurrentDirectory();
+        var asmDir = Path.GetDirectoryName(asmPath);
+        if (string.IsNullOrEmpty(asmDir)) return Directory.GetCurrentDirectory();
+        var parent = Path.GetDirectoryName(asmDir);
+        if (parent == null) return asmDir;
+        var grandParent = Path.GetDirectoryName(parent);
+        return grandParent ?? parent;
+    }
+
+    private static string GetConfigPath()
+    {
+        return Path.Combine(GetProfileRepoRoot(), "profile.config.json");
+    }
+
+    public static string GetAiProviderMode()
+    {
+        var path = GetConfigPath();
+        if (!File.Exists(path)) return "cloud";
+        try
+        {
+            var content = File.ReadAllText(path);
+            using var doc = System.Text.Json.JsonDocument.Parse(content);
+            if (doc.RootElement.TryGetProperty("AiProviderMode", out var prop))
+            {
+                return prop.GetString() ?? "cloud";
+            }
+        }
+        catch {}
+        return "cloud";
+    }
+
+    public static bool IsAiOllamaEnabled()
+    {
+        var path = GetConfigPath();
+        if (!File.Exists(path)) return true;
+        try
+        {
+            var content = File.ReadAllText(path);
+            using var doc = System.Text.Json.JsonDocument.Parse(content);
+            if (doc.RootElement.TryGetProperty("EnableAiOllama", out var prop))
+            {
+                return prop.ValueKind != System.Text.Json.JsonValueKind.False;
+            }
+        }
+        catch {}
+        return true;
+    }
+
+    public static bool IsAgyEnabled()
+    {
+        var path = GetConfigPath();
+        if (!File.Exists(path)) return true;
+        try
+        {
+            var content = File.ReadAllText(path);
+            using var doc = System.Text.Json.JsonDocument.Parse(content);
+            if (doc.RootElement.TryGetProperty("EnableAgy", out var prop))
+            {
+                return prop.ValueKind != System.Text.Json.JsonValueKind.False;
+            }
+        }
+        catch {}
+        return true;
+    }
+
+    public static string GetEffectiveProviderMode()
+    {
+        var mode = GetAiProviderMode();
+        if (mode == "auto")
+        {
+            return IsOllamaRunning() ? "local" : "cloud";
+        }
+        return mode;
+    }
+
+    public static void SetAiProviderMode(string mode)
+    {
+        var path = GetConfigPath();
+        if (!File.Exists(path)) return;
+        try
+        {
+            var content = File.ReadAllText(path);
+            var options = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
+            var dict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(content);
+            if (dict != null)
+            {
+                dict["AiProviderMode"] = mode;
+                var updated = System.Text.Json.JsonSerializer.Serialize(dict, options);
+                File.WriteAllText(path, updated);
+            }
+        }
+        catch {}
+    }
+
     private static string ResolveProxyScriptPath()
     {
-        var asmDir=System.IO.Path.GetDirectoryName(typeof(AiHelper).Assembly.Location)??Directory.GetCurrentDirectory();
+        var asmDir=System.IO.Path.GetDirectoryName(typeof(AgyAiCore).Assembly.Location)??Directory.GetCurrentDirectory();
         var dir=new DirectoryInfo(asmDir);
         for (var i=0;
         i<5&&dir!=null;
@@ -2189,7 +3102,20 @@ public static class AiHelper
 
     }
 
-    public static bool IsOllamaRunning() => IsPortResponding(11434,"*Ollama is running*");
+    private static bool? _lastOllamaStatus;
+    private static DateTime _ollamaStatusCachedAt = DateTime.MinValue;
+
+    public static bool IsOllamaRunning()
+    {
+        if (_lastOllamaStatus.HasValue && (DateTime.UtcNow - _ollamaStatusCachedAt).TotalSeconds < 3)
+        {
+            return _lastOllamaStatus.Value;
+        }
+        var status = IsPortResponding(11434, "*Ollama is running*");
+        _lastOllamaStatus = status;
+        _ollamaStatusCachedAt = DateTime.UtcNow;
+        return status;
+    }
 
     public static void EnsureOllamaProxy()
     {
@@ -2281,77 +3207,93 @@ public static class AiHelper
 
     private static string AppendNodeOption(string?existing) => string.IsNullOrEmpty(existing)?"--dns-result-order=ipv4first":$"{existing} --dns-result-order=ipv4first";
 
-    public static void InvokeClaude(string[]argsList)
+    public static void InvokeClaude(string[]argsList, string? providerModeOverride = null)
     {
-        EnsureOllamaServer();
-        var env=new Dictionary<string, string?>
+        var mode = providerModeOverride ?? GetEffectiveProviderMode();
+        if (mode == "cloud")
         {
-            ["OLLAMA_HOST"]="127.0.0.1:11434", ["ANTHROPIC_BASE_URL"]="http://127.0.0.1:11434", ["NODE_OPTIONS"]=AppendNodeOption(Environment.GetEnvironmentVariable("NODE_OPTIONS"))
+            RunInteractive("claude.cmd", argsList);
         }
-        ;
-        var argList=new List<string>
+        else
         {
-            "launch","claude"
+            EnsureOllamaServer();
+            var env=new Dictionary<string, string?>
+            {
+                ["OLLAMA_HOST"]="127.0.0.1:11434", ["ANTHROPIC_BASE_URL"]="http://127.0.0.1:11434", ["NODE_OPTIONS"]=AppendNodeOption(Environment.GetEnvironmentVariable("NODE_OPTIONS"))
+            }
+            ;
+            var argList=new List<string>
+            {
+                "launch","claude"
+            }
+            ;
+            if (!argsList.Contains("--model"))
+            {
+                argList.Add("--model");
+                argList.Add(OllamaDefaultModel);
+            }
+            argList.AddRange(argsList);
+            RunInteractive("ollama.exe", argList, env);
         }
-        ;
-        if (!argsList.Contains("--model"))
-        {
-            argList.Add("--model");
-            argList.Add(OllamaDefaultModel);
-        }
-        argList.AddRange(argsList);
-        RunInteractive("ollama.exe", argList, env);
 
     }
 
-    public static void InvokeCodex(string[]argsList)
+    public static void InvokeCodex(string[]argsList, string? providerModeOverride = null)
     {
-        EnsureOllamaServer();
-        var model=OllamaDefaultModel;
-        var newArgsList=new List<string>();
-        for (var i=0;
-        i<argsList.Length;
-        i++)
+        var mode = providerModeOverride ?? GetEffectiveProviderMode();
+        if (mode == "cloud")
         {
-            if ((argsList[i]=="--model"||argsList[i]=="-m")&&i<argsList.Length-1)
+            RunInteractive("codex.cmd", argsList);
+        }
+        else
+        {
+            EnsureOllamaServer();
+            var model=OllamaDefaultModel;
+            var newArgsList=new List<string>();
+            for (var i=0;
+            i<argsList.Length;
+            i++)
             {
-                model=Regex.Replace(argsList[i+1],"^ollama_custom/","");
-                newArgsList.Add(argsList[i]);
-                newArgsList.Add(model);
-                i++;
+                if ((argsList[i]=="--model"||argsList[i]=="-m")&&i<argsList.Length-1)
+                {
+                    model=Regex.Replace(argsList[i+1],"^ollama_custom/","");
+                    newArgsList.Add(argsList[i]);
+                    newArgsList.Add(model);
+                    i++;
+                }
+                else newArgsList.Add(argsList[i]);
             }
-            else newArgsList.Add(argsList[i]);
-        }
-        var sandboxPath=System.IO.Path.Combine(System.IO.Path.GetTempPath(),".codex_local_ollama");
-        Directory.CreateDirectory(sandboxPath);
-        var emptySkillsDir=@"C:\Users\TruongNhon\.gemini\antigravity\scratch\empty_skills";
+            var sandboxPath=System.IO.Path.Combine(System.IO.Path.GetTempPath(),".codex_local_ollama");
+            Directory.CreateDirectory(sandboxPath);
+            var emptySkillsDir=@"C:\Users\TruongNhon\.gemini\antigravity\scratch\empty_skills";
 
-        try
-        {
-            Directory.CreateDirectory(emptySkillsDir);
+            try
+            {
+                Directory.CreateDirectory(emptySkillsDir);
+            }
+            catch
+            {
+            }
+            var configToml=$"# Temp sandbox configuration generated at {sandboxPath}/config.toml\nmodel = \"{model}\"\n\n[codex]\nskills_directory = \"{emptySkillsDir}\"\n\n[mcp_servers]\n# Intentionally empty to disable external tool description loads\n".Replace('\\','/');
+            File.WriteAllText(System.IO.Path.Combine(sandboxPath,"config.toml"), configToml);
+            var env=new Dictionary<string, string?>
+            {
+                ["OLLAMA_HOST"]="127.0.0.1:11435", ["NODE_OPTIONS"]=AppendNodeOption(Environment.GetEnvironmentVariable("NODE_OPTIONS")), ["OPENAI_BASE_URL"]=null, ["OPENAI_API_KEY"]=null, ["CODEX_HOME"]=sandboxPath
+            }
+            ;
+            var flags=new List<string>();
+            if (!newArgsList.Contains("--model")&&!newArgsList.Contains("-m"))
+            {
+                flags.Add("--model");
+                flags.Add(model);
+            }
+            flags.Add("--oss");
+            flags.Add("--local-provider");
+            flags.Add("ollama");
+            var argList=new List<string>(flags);
+            argList.AddRange(newArgsList);
+            RunInteractive("codex.cmd", argList, env);
         }
-        catch
-        {
-        }
-        var configToml=$"# Temp sandbox configuration generated at {sandboxPath}/config.toml\nmodel = \"{model}\"\n\n[codex]\nskills_directory = \"{emptySkillsDir}\"\n\n[mcp_servers]\n# Intentionally empty to disable external tool description loads\n".Replace('\\','/');
-        File.WriteAllText(System.IO.Path.Combine(sandboxPath,"config.toml"), configToml);
-        var env=new Dictionary<string, string?>
-        {
-            ["OLLAMA_HOST"]="127.0.0.1:11435", ["NODE_OPTIONS"]=AppendNodeOption(Environment.GetEnvironmentVariable("NODE_OPTIONS")), ["OPENAI_BASE_URL"]=null, ["OPENAI_API_KEY"]=null, ["CODEX_HOME"]=sandboxPath
-        }
-        ;
-        var flags=new List<string>();
-        if (!newArgsList.Contains("--model")&&!newArgsList.Contains("-m"))
-        {
-            flags.Add("--model");
-            flags.Add(model);
-        }
-        flags.Add("--oss");
-        flags.Add("--local-provider");
-        flags.Add("ollama");
-        var argList=new List<string>(flags);
-        argList.AddRange(newArgsList);
-        RunInteractive("codex.cmd", argList, env);
 
     }
 
@@ -2707,9 +3649,17 @@ public static class AiHelper
             $" {cHalf}{cFull}{cFull}{cFull}{cFull}{cHalf} {cHalf}{cFull}{cFull}{cFull}{cFull}{cHalf} Powershell Profile CLI v2.0",$" {cFull}{cTop} {cTop} {cFull}{cTop} {cTop} Ollama Local AI Hub",$" {cFull} {cFull} Ollama Status: {statusInfo.Status}",$" {cFull}{cHalf} {cHalf} {cFull}{cHalf} {cHalf} Active Model: {OllamaDefaultModel}",$" {cTop}{cFull}{cFull}{cFull}{cFull}{cTop} {cTop}{cFull}{cFull}{cFull}{cFull}{cTop} Select an agent to run. Esc to back.","============================================="
         }
         ;
+        var providerMode = GetAiProviderMode();
+        var modeLabel = providerMode switch
+        {
+            "cloud" => "Cloud API (Normal)",
+            "local" => "Local Ollama",
+            "auto" => "Auto (Local if online, else Cloud)",
+            _ => "Cloud API (Normal)"
+        };
         var menuItems=new[]
         {
-            "[Agent] Claude CLI (Interactive coding chat)","[Agent] Hermes TUI (Autonomous workspace assistant)","[Agent] Codex CLI (Natural language command tool)","[Agent] OpenClaw CLI (Local agent router)","[Agent] Clawdbot TUI (Interactive helper)","[Model] Select / Set Default Local Model","[Action] Auto-Install missing LLM CLI tools","[x] Return to Main Menu"
+            "[Agent] Claude CLI (Interactive coding chat)","[Agent] Hermes TUI (Autonomous workspace assistant)","[Agent] Codex CLI (Natural language command tool)","[Agent] OpenClaw CLI (Local agent router)","[Agent] Clawdbot TUI (Interactive helper)",$"[Setting] Provider Mode: {modeLabel}","[Model] Select / Set Default Local Model","[Action] Auto-Install missing LLM CLI tools","[x] Return to Main Menu"
         }
         ;
         while (Console.KeyAvailable)Console.ReadKey(true);
@@ -2739,9 +3689,23 @@ public static class AiHelper
             }
             ?["--model", OllamaDefaultModel]:[]);
             break;
-            case 5:SetOllamaModel(null);
+            case 5:
+            var choices = new[] { "cloud", "local", "auto" };
+            var labels = new[] { "Cloud API (Normal)", "Local Ollama", "Auto (Local if online, else Cloud)" };
+            var defaultIdx = Array.IndexOf(choices, providerMode);
+            if (defaultIdx < 0) defaultIdx = 0;
+            var chosenIdx = SpectreMenu.Show("Select AI Provider Mode", labels, defaultIdx);
+            if (chosenIdx >= 0)
+            {
+                var chosenMode = choices[chosenIdx];
+                SetAiProviderMode(chosenMode);
+                AnsiConsole.MarkupLine($"[green][[AI]] Switched Provider Mode to '{labels[chosenIdx]}'.[/]");
+                Thread.Sleep(1000);
+            }
             break;
-            case 6:InstallAIIntegrations();
+            case 6:SetOllamaModel(null);
+            break;
+            case 7:InstallAIIntegrations();
             break;
         }
 
@@ -4074,7 +5038,7 @@ public sealed record PaletteCommand(string Alias, string Description, string Cat
 
 public static class CommandPalette
 {
-    public static readonly PaletteCommand[]Commands=[new("proj","Navigate to a registered workspace","Navigation"), new("p","Alias for proj","Navigation"), new("gs","Git status summary","Git"), new("gcmt","Conventional commit wizard","Git"), new("git-undo","Soft-reset the last local commit","Git"), new("dbld","dotnet build in active workspace",".NET"), new("dtst","dotnet test in active workspace",".NET"), new("clean-build","Remove bin/ and obj/ recursively",".NET"), new("add-migration","EF Core: add migration",".NET"), new("update-db","EF Core: update database",".NET"), new("dkcl","Docker cleanup TUI dashboard","Docker"), new("dcup","docker compose up -d","Docker"), new("dcdown","docker compose down","Docker"), new("aws-local","LocalStack sandbox diagnostics","AWS"), new("claude","Launch Claude Code CLI","AI"), new("codex","Launch Codex CLI","AI"), new("openclaw","Launch OpenClaw via Ollama","AI"), new("hermes","Launch Hermes3 via Ollama","AI"), new("hermesd","Launch Hermes3 debug mode","AI"), new("disk","Show disk usage and health","System"), new("public-ip","Resolve public IPv4 address","System"), new("kill-port","Kill process by port number","System"), new("ssh-info","SSH connection summary","System"), new("db-tui","SQLite schema and data viewer","Database"), new("agyswitch","Switch AGY account context","Accounts"), new("agyquota","Show quota usage for all accounts","Accounts"), new("scaffold","Create new project from template","Scaffold"), new("help","Open interactive help browser","Help"), new("cc","Open this Command Palette","Help"), new("learn","Start learning for a topic (auto-refresh)","Learn"), new("flashcard","Open flashcard deck browser","Learn"), new("vocab","English vocabulary drill","Learn"), new("kana","Hiragana / katakana quiz","Learn"), new("kanji","Kanji lookup / stroke detail","Learn"), new("jlpt","JLPT vocabulary drill","Learn"), new("algo","Algorithm visualizer (sort / search)","Learn"), new("complexity","Big-O complexity cheat-sheet","Learn"), new("problems","DSA problem tracker","Learn"), new("snippets","Code snippet library browser","Learn"), new("sheets","Cheat-sheet browser (.txt files)","Learn"), new("quiz","C# multiple-choice quiz","Learn"), new("interview","Interview question bank","Learn"), new("star","STAR answer builder","Learn"), new("mock","Mock interview timer","Learn"), new("word-of-day","Show today's word of the day","Learn"), new("session","Start a Pomodoro study session","Tracking"), new("stats","Study statistics and weekly chart","Tracking"), new("goals","Daily learning goals","Tracking"), new("streak","Study streak display","Tracking"), new("due","Show due spaced-repetition reviews","Tracking"), new("progress","Progress dashboard (bar chart + tree)","Tracking"), new("weak","Weak items queue (pre-session review)","Tracking"), new("obsidian","Configure / browse Obsidian vault","Obsidian"), new("obs-graph","Obsidian wikilink graph","Obsidian"), new("nexus","Git Nexus multi-repo dashboard","Git"), new("repo-graph","Repository dependency graph","Git"), new("nexus-stats","Git Nexus commit stats","Git"), new("ide","Terminal IDE (browse, view, diff)","IDE"), new("ide-diff","Git diff viewer for current dir","IDE"), new("ide-search","Search pattern across files","IDE"), new("refresh","Refresh learning data from vault","Resources"), new("add-resource","Add a file/URL to resource registry","Resources"),];
+    public static readonly PaletteCommand[]Commands=[new("proj","Navigate to a registered workspace","Navigation"), new("p","Alias for proj","Navigation"), new("gs","Git status summary","Git"), new("gcmt","Conventional commit wizard","Git"), new("git-undo","Soft-reset the last local commit","Git"), new("dbld","dotnet build in active workspace",".NET"), new("dtst","dotnet test in active workspace",".NET"), new("clean-build","Remove bin/ and obj/ recursively",".NET"), new("add-migration","EF Core: add migration",".NET"), new("update-db","EF Core: update database",".NET"), new("dkcl","Docker cleanup TUI dashboard","Docker"), new("dcup","docker compose up -d","Docker"), new("dcdown","docker compose down","Docker"), new("aws-local","LocalStack sandbox diagnostics","AWS"), new("claude","Launch Claude Code CLI","AI"), new("codex","Launch Codex CLI","AI"), new("openclaw","Launch OpenClaw via Ollama","AI"), new("hermes","Launch Hermes3 via Ollama","AI"), new("hermesd","Launch Hermes3 debug mode","AI"), new("ollama-status","Check local Ollama server status and pulled models","AI"), new("disk","Show disk usage and health","System"), new("public-ip","Resolve public IPv4 address","System"), new("kill-port","Kill process by port number","System"), new("ssh-info","SSH connection summary","System"), new("db-tui","SQLite schema and data viewer","Database"), new("agyswitch","Switch AGY account context","Accounts"), new("agyquota","Show quota usage for all accounts","Accounts"), new("scaffold","Create new project from template","Scaffold"), new("help","Open interactive help browser","Help"), new("cc","Open this Command Palette","Help"), new("learn","Start learning for a topic (auto-refresh)","Learn"), new("flashcard","Open flashcard deck browser","Learn"), new("vocab","English vocabulary drill","Learn"), new("kana","Hiragana / katakana quiz","Learn"), new("kanji","Kanji lookup / stroke detail","Learn"), new("jlpt","JLPT vocabulary drill","Learn"), new("algo","Algorithm visualizer (sort / search)","Learn"), new("complexity","Big-O complexity cheat-sheet","Learn"), new("problems","DSA problem tracker","Learn"), new("snippets","Code snippet library browser","Learn"), new("sheets","Cheat-sheet browser (.txt files)","Learn"), new("quiz","C# multiple-choice quiz","Learn"), new("interview","Interview question bank","Learn"), new("star","STAR answer builder","Learn"), new("mock","Mock interview timer","Learn"), new("word-of-day","Show today's word of the day","Learn"), new("session","Start a Pomodoro study session","Tracking"), new("stats","Study statistics and weekly chart","Tracking"), new("goals","Daily learning goals","Tracking"), new("streak","Study streak display","Tracking"), new("due","Show due spaced-repetition reviews","Tracking"), new("progress","Progress dashboard (bar chart + tree)","Tracking"), new("weak","Weak items queue (pre-session review)","Tracking"), new("obsidian","Configure / browse Obsidian vault","Obsidian"), new("obs-graph","Obsidian wikilink graph","Obsidian"), new("nexus","Git Nexus multi-repo dashboard","Git"), new("repo-graph","Repository dependency graph","Git"), new("nexus-stats","Git Nexus commit stats","Git"), new("ide","Terminal IDE (browse, view, diff)","IDE"), new("ide-diff","Git diff viewer for current dir","IDE"), new("ide-search","Search pattern across files","IDE"), new("refresh","Refresh learning data from vault","Resources"), new("add-resource","Add a file/URL to resource registry","Resources"),];
 
     public static void Show()
     {
@@ -4296,7 +5260,7 @@ public static class AgyAccountDisplay
 }
 public static class LearnDataPaths
 {
-    public static string LearnRoot => System.IO.Path.Combine(AgyAccountCore.AgySourceHome,"learn");
+    public static string LearnRoot => System.IO.Path.Combine(AgyAccountCore.GetAccountDirectory(AgyAccountCore.GetActiveAccount()),"learn");
 
     public static string DecksDir => System.IO.Path.Combine(LearnRoot,"decks");
 
@@ -4326,9 +5290,9 @@ public static class LearnDataPaths
 
     public static string StudyLogFile => System.IO.Path.Combine(LearnRoot,"study_log.json");
 
-    public static string ObsidianCfgFile => System.IO.Path.Combine(AgyAccountCore.AgySourceHome,"obsidian_config.json");
+    public static string ObsidianCfgFile => System.IO.Path.Combine(AgyAccountCore.GetAccountDirectory(AgyAccountCore.GetActiveAccount()),"obsidian_config.json");
 
-    public static string ResourcesIndex => System.IO.Path.Combine(AgyAccountCore.AgySourceHome,"resources","index.json");
+    public static string ResourcesIndex => System.IO.Path.Combine(AgyAccountCore.GetAccountDirectory(AgyAccountCore.GetActiveAccount()),"resources","index.json");
 
     public static void EnsureDirectories()
     {
@@ -5418,6 +6382,11 @@ public static class StudyStats
         AnsiConsole.Write(new Rule("[bold cyan]Minutes studied (last 7 days)[/]").RuleStyle("grey"));
         var cutoff=DateTime.Today.AddDays(-7);
         var byTopic=logs.Where(s => DateTime.TryParse(s.Date, out var d)&&d>=cutoff).GroupBy(s => s.Topic).ToDictionary(g => g.Key, g => g.Sum(s => s.DurationMinutes));
+        if (byTopic.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[dim]  No study data recorded in the last 7 days.[/]");
+            return;
+        }
         var chart=new BarChart().Width(50).Label("[bold]Minutes[/]").CenterLabel();
         foreach (var(topic, mins)in byTopic.OrderByDescending(x => x.Value))chart.AddItem(topic, mins, Color.Cyan1);
         AnsiConsole.Write(chart);
@@ -6213,6 +7182,11 @@ public static class GitNexusStats
     public static void ShowCommitBarChart(Dictionary<string, int>commitsByRepo)
     {
         AnsiConsole.Write(new Rule("[bold cyan]Commits this week by repo[/]").RuleStyle("grey"));
+        if (commitsByRepo.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[dim]  No commit data recorded this week.[/]");
+            return;
+        }
         var chart=new BarChart().Width(50).Label("[bold]Commits[/]").CenterLabel();
         foreach (var(repo, count)in commitsByRepo.OrderByDescending(x => x.Value))chart.AddItem(repo, count, Color.Cyan1);
         AnsiConsole.Write(chart);
@@ -6313,6 +7287,12 @@ public static class CcBanner
     public static void Print()
     {
         var acc=AgyAccountCore.GetActiveAccount();
+        var displayAcc = acc;
+        if (string.Equals(acc, "default", StringComparison.OrdinalIgnoreCase))
+        {
+            var email = AgyAccountCore.GetAccountEmail("default");
+            if (!string.IsNullOrEmpty(email)) displayAcc = $"default ({email})";
+        }
         var now=DateTime.Now;
         var w=Math.Min(65, Math.Max(50, Console.WindowWidth-2));
         var sep=new string('=', w);
@@ -6321,7 +7301,7 @@ public static class CcBanner
         AnsiConsole.MarkupLine("[cyan] ▄████▄ ▄████▄[/] [bold green]🛸 Powershell Profile Control Center v3.0 🛸[/]");
         AnsiConsole.MarkupLine("[cyan] █▀ ▀ █▀ ▀[/] [dim]System dashboard and control suite.[/]");
         AnsiConsole.MarkupLine("[cyan] █ █[/]");
-        AnsiConsole.MarkupLine($"[cyan] █▄ ▄ █▄ ▄[/] [dim]Active Account:[/] [green bold]{acc.EscapeMarkup()}[/]");
+        AnsiConsole.MarkupLine($"[cyan] █▄ ▄ █▄ ▄[/] [dim]Active Account:[/] [green bold]{displayAcc.EscapeMarkup()}[/]");
         AnsiConsole.MarkupLine($"[cyan] ▀████▀ ▀████▀[/] [dim]Time:[/] [yellow]{now:yyyy-MM-dd HH:mm}[/]");
         AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
         AnsiConsole.MarkupLine("[dim] [[Tab/→]] Navigate Panes | [[←/Esc]] Go Back | [[Enter]] Select & Run[/]");
@@ -6335,23 +7315,343 @@ public static class CcNavigator
 {
     private sealed record Section(string Label, (string Display, string Alias)[]Items, string Desc);
 
-    private static readonly Section[]Sections=[new("[Account] Manage Accounts", [("Select Active Account","agyswitch"), ("View All Accounts","agyquota"), ("Account Tree","account-tree"), ("Quota Bar Chart","quota-chart"), ("Live Dashboard","live-dashboard")],"AGY account management, quota tracking and switching."), new("[AI Agent] Launch AI", [("Claude Code CLI","claude"), ("Codex CLI","codex"), ("OpenClaw (Ollama)","openclaw"), ("Hermes3 (Ollama)","hermes")],"Launch AI coding assistants and local LLM models via Ollama."), new("[Project] Switch Project", [("Navigate Workspace","proj"), ("Terminal IDE","ide"), ("Scaffold New Project","scaffold"), ("Git Status","gs"), ("Conventional Commit","gcmt"), ("Git Undo Last Commit","git-undo"), ("Repo Nexus / Graph","nexus")],"Project navigation, scaffolding, git, and terminal IDE."), new("[Theme] Settings & Help", [("Command Palette","cc"), ("Help Browser","help"), ("Toggle Auto-Switch","autoswitch")],"Settings, help, and profile control options."), new("[SSH Info] System SSH", [("SSH Connection Info","ssh-info"), ("Public IP Address","public-ip"), ("Disk Usage","disk"), ("Kill Port","kill-port")],"SSH details, public IP, disk health, and port management."), new("────────────────────────────", [],""), new("1. Workspace & Dev Tools", [("Navigate Workspace","proj"), ("Terminal IDE","ide"), ("Diff Viewer","ide-diff"), ("Search Across Files","ide-search"), ("Build .NET","dbld"), ("Test .NET","dtst"), ("Clean bin / obj","clean-build"), ("Add EF Migration","add-migration"), ("Update EF Database","update-db"), ("Scaffold New Project","scaffold"), ("Git Status","gs"), ("Conventional Commit","gcmt"), ("Git Undo Last Commit","git-undo"), ("Repo Nexus","nexus")],"IDE, build, test, EF Core, git, and project scaffolding."), new("2. Docker & Cloud", [("Docker Cleanup","dkcl"), ("Docker Compose Up","dcup"), ("Docker Compose Down","dcdown"), ("LocalStack Info","aws-local"), ("SQLite Browser","db-tui")],"Docker management, AWS LocalStack, and database tools."), new("3. System & Network", [("Disk Usage","disk"), ("Public IP","public-ip"), ("SSH Info","ssh-info"), ("Kill Port","kill-port")],"System utilities, network diagnostics, and port management."), new("4. AI & Accounts", [("Claude Code CLI","claude"), ("Codex CLI","codex"), ("OpenClaw (Ollama)","openclaw"), ("Hermes3 (Ollama)","hermes"), ("Switch Account","agyswitch"), ("View All Quotas","agyquota"), ("Account Tree","account-tree"), ("Quota Chart","quota-chart"), ("Live Dashboard","live-dashboard"), ("Toggle Auto-Switch","autoswitch")],"AI agents and AGY account management."), new("5. Learn & Study", [("Start Learning (auto)","learn"), ("Flashcard Deck Browser","flashcard"), ("English Vocab Drill","vocab"), ("Kana Quiz","kana"), ("Kanji Lookup","kanji"), ("JLPT Vocab Drill","jlpt"), ("Algorithm Visualizer","algo"), ("Big-O Complexity Sheet","complexity"), ("DSA Problem Tracker","problems"), ("Code Snippet Library","snippets"), ("Cheat Sheet Browser","sheets"), ("C# Quiz","quiz"), ("Interview Question Bank","interview"), ("STAR Answer Builder","star"), ("Mock Interview Timer","mock"), ("Word of the Day","word-of-day")],"Language learning, DSA, code quizzes, and interview prep."), new("6. Track & Progress", [("Start Pomodoro Session","session"), ("Study Statistics","stats"), ("Daily Goals","goals"), ("Study Streak","streak"), ("Due Reviews","due"), ("Progress Dashboard","progress"), ("Weak Items Queue","weak")],"Study sessions, stats, streaks, goals, and SR review queue."), new("7. Obsidian & Resources", [("Obsidian Vault Config","obsidian"), ("Obsidian Graph View","obs-graph"), ("Refresh Learning Data","refresh"), ("Add Resource","add-resource")],"Obsidian vault, wikilink graph, and resource registry."), new("────────────────────────────", [],""), new("[Exit] Exit Control Center", [],"Exit the Powershell Profile Control Center."),];
+    private static readonly Section[]AllSections=[
+        new("[Workspace & Dev]", [
+            ("Navigate Workspace","proj"),
+            ("Terminal IDE","ide"),
+            ("Diff Viewer","ide-diff"),
+            ("Search Across Files","ide-search"),
+            ("[.NET] Build Project","dbld"),
+            ("[.NET] Test Project","dtst"),
+            ("[.NET] Clean Build Artifacts","clean-build"),
+            ("[.NET] Add EF Migration","add-migration"),
+            ("[.NET] Update EF Database","update-db"),
+            ("Scaffold New Project","scaffold"),
+            ("Git Status","gs"),
+            ("Conventional Commit","gcmt"),
+            ("Git Undo Last Commit","git-undo"),
+            ("Repo Nexus Graph","nexus")
+        ],"Project navigation, terminal IDE, build/test tools, and git."),
+        
+        new("[AI Agent & Ollama]", [
+            ("Claude Code (Cloud)","claude-cloud"),
+            ("Claude Code (Ollama)","claude-ollama"),
+            ("Codex (Cloud)","codex-cloud"),
+            ("Codex (Ollama)","codex-ollama"),
+            ("OpenClaw (Ollama)","openclaw"),
+            ("Hermes3 (Ollama)","hermes"),
+            ("Ollama: Check Daemon Status","ollama-status"),
+            ("Ollama: Manage Models","ollama-models"),
+            ("Ollama: Pull New Model","ollama-pull"),
+            ("Ollama: Start Daemon","ollama-start"),
+            ("Ollama: View Server Logs","ollama-logs"),
+            ("Antigravity Deck: Setup/Initialize","deck-setup"),
+            ("Antigravity Deck: Start Local","deck-start"),
+            ("Antigravity Deck: Go Online (Tunnel)","deck-online"),
+            ("Launch Antigravity CLI (agy)","agy-cli")
+        ],"Launch AI coding agents, local/cloud models, Antigravity Deck, and agy CLI."),
+        
+        new("[AGY Account Switch]", [
+            ("Select Active Account","agyswitch"),
+            ("View All Accounts","agyquota"),
+            ("Account Tree","account-tree"),
+            ("Quota Bar Chart","quota-chart"),
+            ("Live Dashboard","live-dashboard"),
+            ("Toggle Auto-Switch","autoswitch")
+        ],"AGY account switch, tree, rolling quotas, and live status."),
+        
+        new("[Docker & Databases]", [
+            ("Docker Cleanup","dkcl"),
+            ("Docker Compose Up","dcup"),
+            ("Docker Compose Down","dcdown"),
+            ("LocalStack Info","aws-local"),
+            ("SQLite Browser","db-tui")
+        ],"Manage docker containers, LocalStack cloud sandbox, and SQLite."),
+        
+        new("[System & Network]", [
+            ("Disk Usage","disk"),
+            ("Public IP Address","public-ip"),
+            ("SSH Connection Info","ssh-info"),
+            ("Kill Port","kill-port")
+        ],"System health, external IP, SSH sessions, and port mapping."),
+        
+        new("[Learn & Study]", [
+            ("Start Learning (auto)","learn"),
+            ("Flashcard Deck Browser","flashcard"),
+            ("English Vocab Drill","vocab"),
+            ("Kana Quiz","kana"),
+            ("Kanji Lookup","kanji"),
+            ("JLPT Vocab Drill","jlpt"),
+            ("Algorithm Visualizer","algo"),
+            ("Big-O Complexity Sheet","complexity"),
+            ("DSA Problem Tracker","problems"),
+            ("Code Snippet Library","snippets"),
+            ("Cheat Sheet Browser","sheets"),
+            ("C# Quiz","quiz"),
+            ("Interview Question Bank","interview"),
+            ("STAR Answer Builder","star"),
+            ("Mock Interview Timer","mock"),
+            ("Word of the Day","word-of-day")
+        ],"Coding quiz, flashcards, language drills, algorithms, and interview prep."),
+        
+        new("[Track & Progress]", [
+            ("Start Pomodoro Session","session"),
+            ("Study Statistics","stats"),
+            ("Daily Goals","goals"),
+            ("Study Streak","streak"),
+            ("Due Reviews","due"),
+            ("Progress Dashboard","progress"),
+            ("Weak Items Queue","weak")
+        ],"Streak tracker, daily goals, Pomodoro focus session, and progress stats."),
+        
+        new("[Obsidian & Resources]", [
+            ("Obsidian Vault Config","obsidian"),
+            ("Obsidian Graph View","obs-graph"),
+            ("Refresh Learning Data","refresh"),
+            ("Add Resource","add-resource")
+        ],"Obsidian markdown vault integration, wikilink graph, and registries."),
+        
+        new("[Theme & Settings]", [
+            ("Command Palette","cc"),
+            ("Help Browser","help"),
+            ("Select Shell Theme","theme")
+        ],"Profile themes, Command Palette helper, and browser documentation."),
+        
+        new("────────────────────────────", [],""),
+        new("[Exit] Exit Control Center", [],"Exit the Powershell Profile Control Center.")
+    ];
+
+    private static Section[] GetActiveSections()
+    {
+        var enableAi = AgyAiCore.IsAiOllamaEnabled();
+        var enableAgy = AgyAiCore.IsAgyEnabled();
+
+        var list = new List<Section>();
+        foreach (var s in AllSections)
+        {
+            if (s.Label.Contains("AI Agent & Ollama") && !enableAi) continue;
+            if (s.Label.Contains("AGY Account Switch") && !enableAgy) continue;
+
+            list.Add(s);
+        }
+        return list.ToArray();
+    }
 
     public static void Run()
     {
-        var leftSel=0;
-        var midSel=0;
-        var midActive=false;
-        Console.CursorVisible=false;
-
         try
         {
+            var leftSel=0;
+            var midSel=0;
+            var midActive=false;
+            var detailsActive=false;
+            var detailsMode="";
+            var detailsSel=0;
+            try { Console.CursorVisible=false; } catch {}
             while (true)
             {
+                var sections = GetActiveSections();
+                if (leftSel >= sections.Length) leftSel = Math.Max(0, sections.Length - 1);
+
                 CcBanner.Print();
-                RenderPanes(leftSel, midSel, midActive);
+                RenderPanes(sections, leftSel, midSel, midActive, detailsActive, detailsSel, detailsMode);
                 var key=Console.ReadKey(true);
-                var section=Sections[leftSel];
+                var section=sections[leftSel];
+
+                if (detailsActive)
+                {
+                    int itemsCount = 0;
+                    if (detailsMode == "agyswitch")
+                    {
+                        itemsCount = AgyAccountCore.GetAccounts().Length;
+                    }
+                    else if (detailsMode == "theme")
+                    {
+                        itemsCount = GetThemeNames().Length;
+                    }
+                    else if (detailsMode == "learn" || detailsMode == "session" || detailsMode == "weak")
+                    {
+                        itemsCount = 6;
+                    }
+                    else if (detailsMode == "proj")
+                    {
+                        itemsCount = WorkspaceRegistry.GetWorkspaces().Length;
+                    }
+
+                    if (itemsCount == 0)
+                    {
+                        detailsActive = false;
+                        continue;
+                    }
+
+                    switch (key.Key)
+                    {
+                        case ConsoleKey.UpArrow:
+                        case ConsoleKey.K:
+                            detailsSel = (detailsSel - 1 + itemsCount) % itemsCount;
+                            break;
+                        case ConsoleKey.DownArrow:
+                        case ConsoleKey.J:
+                            detailsSel = (detailsSel + 1) % itemsCount;
+                            break;
+                        case ConsoleKey.Enter:
+                            if (detailsSel >= 0 && detailsSel < itemsCount)
+                            {
+                                if (detailsMode == "agyswitch")
+                                {
+                                    var accs = AgyAccountCore.GetAccounts();
+                                    var targetAcc = accs[detailsSel];
+                                    Console.CursorVisible = true;
+                                    AgyAccountCore.SetActiveAccount(targetAcc, false);
+                                    Console.CursorVisible = false;
+                                }
+                                else if (detailsMode == "theme")
+                                {
+                                    var themeNames = GetThemeNames();
+                                    var selectedTheme = themeNames[detailsSel];
+                                    var themesPath = Environment.GetEnvironmentVariable("POSH_THEMES_PATH");
+                                    if (string.IsNullOrEmpty(themesPath))
+                                    {
+                                        themesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "asset", "powershell-themes");
+                                        if (!Directory.Exists(themesPath))
+                                        {
+                                            themesPath = Path.Combine(Directory.GetCurrentDirectory(), "asset", "powershell-themes");
+                                        }
+                                    }
+                                    var configPath = Path.Combine(themesPath, "config.json");
+                                    try
+                                    {
+                                        File.WriteAllText(configPath, JsonSerializer.Serialize(new { active_theme = selectedTheme, enable_mobile = selectedTheme.EndsWith("-mobile") }));
+                                    }
+                                    catch {}
+                                    Environment.SetEnvironmentVariable("THEME", selectedTheme);
+                                    var themePath = Path.Combine(themesPath, $"{selectedTheme}.omp.json");
+                                    var selectedThemeFile = Path.Combine(AgyAccountCore.AgySourceHome, "selected_theme.txt");
+                                    File.WriteAllText(selectedThemeFile, themePath);
+                                }
+                                else if (detailsMode == "learn" || detailsMode == "session" || detailsMode == "weak")
+                                {
+                                    var topics = new[] { "jp", "en", "cs", "dsa", "interview", "[Type Custom Topic...]" };
+                                    var selectedTopic = topics[detailsSel];
+                                    if (selectedTopic == "[Type Custom Topic...]")
+                                    {
+                                        Console.CursorVisible = true;
+                                        selectedTopic = AnsiConsole.Ask<string>("Enter custom topic name:").Trim();
+                                        Console.CursorVisible = false;
+                                    }
+                                    if (!string.IsNullOrEmpty(selectedTopic))
+                                    {
+                                        Console.CursorVisible = true;
+                                        if (detailsMode == "learn") LearnRouter.StartLearning(selectedTopic);
+                                        else if (detailsMode == "session") StudySession.Run(selectedTopic);
+                                        else if (detailsMode == "weak") WeakItemsQueue.ShowPreSessionReview(selectedTopic);
+                                        Console.CursorVisible = false;
+                                    }
+                                }
+                                else if (detailsMode == "proj")
+                                {
+                                    var workspaces = WorkspaceRegistry.GetWorkspaces();
+                                    var selectedProj = workspaces[detailsSel].WorkspacePath;
+                                    var selectedProjFile = Path.Combine(AgyAccountCore.AgySourceHome, "selected_project.txt");
+                                    File.WriteAllText(selectedProjFile, selectedProj);
+                                    AnsiConsole.MarkupLine($"[green][[Workspace]] Selected workspace '{workspaces[detailsSel].Name}'. Switch will apply on exit.[/]");
+                                    Thread.Sleep(1000);
+                                }
+                                detailsActive = false;
+                            }
+                            break;
+                        case ConsoleKey.A:
+                            if (detailsMode == "agyswitch")
+                            {
+                                var accs = AgyAccountCore.GetAccounts();
+                                Console.CursorVisible = true;
+                                AnsiConsole.Clear();
+                                var newName = AnsiConsole.Ask<string>("Enter new account name:").Trim();
+                                if (!string.IsNullOrEmpty(newName))
+                                {
+                                    try
+                                    {
+                                        AgyAccountCore.AddAccount(newName);
+                                        SpectrePanel.Success($"Account '{newName}' created successfully!");
+                                        Thread.Sleep(1500);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        SpectrePanel.Error($"Failed to create account: {ex.Message}");
+                                        Thread.Sleep(2000);
+                                    }
+                                }
+                                Console.CursorVisible = false;
+                                detailsSel = 0;
+                            }
+                            break;
+                        case ConsoleKey.D:
+                            if (detailsMode == "agyswitch")
+                            {
+                                var accs = AgyAccountCore.GetAccounts();
+                                if (detailsSel >= 0 && detailsSel < accs.Length)
+                                {
+                                    var targetAcc = accs[detailsSel];
+                                    var activeAcc = AgyAccountCore.GetActiveAccount();
+                                    if (string.Equals(targetAcc, activeAcc, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        Console.CursorVisible = true;
+                                        SpectrePanel.Error($"Cannot delete '{targetAcc}' because it is the current active account.");
+                                        Thread.Sleep(1500);
+                                        Console.CursorVisible = false;
+                                        break;
+                                    }
+                                    Console.CursorVisible = true;
+                                    AnsiConsole.Clear();
+                                    var confirm = AnsiConsole.Confirm($"Are you sure you want to delete account '{targetAcc}'?");
+                                    if (confirm)
+                                    {
+                                        try
+                                        {
+                                            AgyAccountCore.DeleteAccount(targetAcc);
+                                            SpectrePanel.Success($"Account '{targetAcc}' deleted successfully!");
+                                            Thread.Sleep(1500);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            SpectrePanel.Error($"Failed to delete account: {ex.Message}");
+                                            Thread.Sleep(2000);
+                                        }
+                                    }
+                                    Console.CursorVisible = false;
+                                    detailsSel = 0;
+                                }
+                            }
+                            break;
+                        case ConsoleKey.O:
+                            if (detailsMode == "agyswitch")
+                            {
+                                var accs = AgyAccountCore.GetAccounts();
+                                if (detailsSel >= 0 && detailsSel < accs.Length)
+                                {
+                                    var targetAcc = accs[detailsSel];
+                                    Console.CursorVisible = true;
+                                    AnsiConsole.Clear();
+                                    var confirm = AnsiConsole.Confirm($"Are you sure you want to log out of '{targetAcc}'?");
+                                    if (confirm)
+                                    {
+                                        AgyAccountCore.LogoutAccount(targetAcc);
+                                        SpectrePanel.Success($"Logged out of '{targetAcc}' successfully!");
+                                        Thread.Sleep(1500);
+                                    }
+                                    Console.CursorVisible = false;
+                                }
+                            }
+                            break;
+                        case ConsoleKey.LeftArrow:
+                        case ConsoleKey.Escape:
+                        case ConsoleKey.Q:
+                            detailsActive = false;
+                            break;
+                    }
+                    continue;
+                }
+
                 if (!midActive)
                 {
                     switch (key.Key)
@@ -6364,8 +7664,8 @@ public static class CcNavigator
                             {
                                 next=Math.Max(0, next-1);
                             }
-                            while (next>0&&IsSep(next));
-                            if (!IsSep(next))
+                            while (next>0&&IsSep(sections, next));
+                            if (!IsSep(sections, next))
                             {
                                 leftSel=next;
                                 midSel=0;
@@ -6378,10 +7678,10 @@ public static class CcNavigator
 
                             do
                             {
-                                next=Math.Min(Sections.Length-1, next+1);
+                                next=Math.Min(sections.Length-1, next+1);
                             }
-                            while (next<Sections.Length-1&&IsSep(next));
-                            if (!IsSep(next))
+                            while (next<sections.Length-1&&IsSep(sections, next));
+                            if (!IsSep(sections, next))
                             {
                                 leftSel=next;
                                 midSel=0;
@@ -6402,11 +7702,58 @@ public static class CcNavigator
                         break;
                         case ConsoleKey.DownArrow:midSel=Math.Min(section.Items.Length-1, midSel+1);
                         break;
-                        case ConsoleKey.Enter:if (midSel<section.Items.Length)
+                        case ConsoleKey.Enter:
+                        case ConsoleKey.RightArrow:
+                        case ConsoleKey.Tab:
+                        if (midSel<section.Items.Length)
                         {
-                            Console.CursorVisible=true;
-                            Program.RunCommand(section.Items[midSel].Alias);
-                            Console.CursorVisible=false;
+                            var alias = section.Items[midSel].Alias;
+                            if (string.Equals(alias, "agyswitch", StringComparison.OrdinalIgnoreCase))
+                            {
+                                detailsActive = true;
+                                detailsMode = "agyswitch";
+                                var accs = AgyAccountCore.GetAccounts();
+                                var activeAcc = AgyAccountCore.GetActiveAccount();
+                                detailsSel = Array.IndexOf(accs, activeAcc);
+                                if (detailsSel < 0) detailsSel = 0;
+                            }
+                            else if (string.Equals(alias, "theme", StringComparison.OrdinalIgnoreCase))
+                            {
+                                detailsActive = true;
+                                detailsMode = "theme";
+                                var themeFiles = GetThemeNames();
+                                var currentTheme = Environment.GetEnvironmentVariable("THEME");
+                                detailsSel = Array.IndexOf(themeFiles, currentTheme);
+                                if (detailsSel < 0) detailsSel = 0;
+                            }
+                            else if (string.Equals(alias, "learn", StringComparison.OrdinalIgnoreCase) ||
+                                     string.Equals(alias, "session", StringComparison.OrdinalIgnoreCase) ||
+                                     string.Equals(alias, "weak", StringComparison.OrdinalIgnoreCase) ||
+                                     string.Equals(alias, "proj", StringComparison.OrdinalIgnoreCase))
+                            {
+                                detailsActive = true;
+                                detailsMode = alias.ToLowerInvariant();
+                                detailsSel = 0;
+                            }
+                            else if (string.Equals(alias, "account-tree", StringComparison.OrdinalIgnoreCase) ||
+                                     string.Equals(alias, "quota-chart", StringComparison.OrdinalIgnoreCase) ||
+                                     string.Equals(alias, "live-dashboard", StringComparison.OrdinalIgnoreCase) ||
+                                     string.Equals(alias, "disk", StringComparison.OrdinalIgnoreCase) ||
+                                     string.Equals(alias, "public-ip", StringComparison.OrdinalIgnoreCase) ||
+                                     string.Equals(alias, "ssh-info", StringComparison.OrdinalIgnoreCase) ||
+                                     string.Equals(alias, "proj", StringComparison.OrdinalIgnoreCase))
+                            {
+                                // Rendered directly in details, no execution needed on Enter/Right/Tab
+                            }
+                            else
+                            {
+                                Console.CursorVisible=true;
+                                Program.RunCommand(alias);
+                                AnsiConsole.WriteLine();
+                                AnsiConsole.MarkupLine("[dim]Press any key to return to Control Center...[/]");
+                                Console.ReadKey(true);
+                                Console.CursorVisible=false;
+                            }
                         }
                         break;
                         case ConsoleKey.LeftArrow:case ConsoleKey.Escape:midActive=false;
@@ -6416,6 +7763,15 @@ public static class CcNavigator
                 }
             }
         }
+        catch (Exception ex)
+        {
+            try
+            {
+                File.WriteAllText(@"C:\Users\TruongNhon\Documents\Powershell\tui_error.txt", ex.ToString());
+            }
+            catch {}
+            throw;
+        }
         finally
         {
             Console.CursorVisible=true;
@@ -6423,16 +7779,242 @@ public static class CcNavigator
 
     }
 
-    private static bool IsSep(int idx) => Sections[idx].Label.Length>0&&Sections[idx].Label[0]=='─';
+    private static bool IsSep(Section[] sections, int idx) => sections[idx].Label.Length>0&&sections[idx].Label[0]=='─';
 
-    private static void RenderPanes(int leftSel, int midSel, bool midActive)
+    private static string[] GetThemeNames()
+    {
+        var themesPath = Environment.GetEnvironmentVariable("POSH_THEMES_PATH");
+        if (string.IsNullOrEmpty(themesPath) || !Directory.Exists(themesPath))
+        {
+            themesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "asset", "powershell-themes");
+            if (!Directory.Exists(themesPath))
+            {
+                themesPath = Path.Combine(Directory.GetCurrentDirectory(), "asset", "powershell-themes");
+            }
+        }
+        if (!Directory.Exists(themesPath)) return Array.Empty<string>();
+        return Directory.GetFiles(themesPath, "*.omp.json").Select(f => Path.GetFileName(f).Replace(".omp.json", "")).OrderBy(f => f).ToArray();
+    }
+
+    private static Spectre.Console.Rendering.IRenderable GetDiskSpaceWidget()
+    {
+        var table = new Table().Border(TableBorder.Rounded).BorderColor(Color.Cyan1);
+        table.AddColumn("[bold cyan]Drive[/]");
+        table.AddColumn("[bold cyan]Type[/]");
+        table.AddColumn("[bold cyan]TotalSize[/]");
+        table.AddColumn("[bold cyan]FreeSpace[/]");
+        table.AddColumn("[bold cyan]Used%[/]");
+        table.AddColumn("[bold cyan]Health[/]");
+
+        foreach (var d in DriveInfo.GetDrives().Where(d => d.IsReady))
+        {
+            var usedPct = d.TotalSize > 0 ? Math.Round((1.0 - (double)d.AvailableFreeSpace / d.TotalSize) * 100.0, 1) : 0.0;
+            var health = usedPct >= 90 ? "[red]Critical[/]" : usedPct >= 75 ? "[yellow]Warning[/]" : "[green]Healthy[/]";
+
+            static string Fmt(long b) => b > 1_073_741_824 ? $"{Math.Round(b / 1_073_741_824.0, 2)} GB" : $"{Math.Round(b / 1_048_576.0, 2)} MB";
+            table.AddRow(d.Name.EscapeMarkup(), d.DriveType.ToString().EscapeMarkup(), Fmt(d.TotalSize), Fmt(d.AvailableFreeSpace), $"{usedPct}%", health);
+        }
+        return table;
+    }
+
+    private static string _cachedIp = null;
+    private static DateTime _lastIpFetch = DateTime.MinValue;
+    private static Spectre.Console.Rendering.IRenderable GetPublicIpWidget()
+    {
+        if (_cachedIp == null || (DateTime.Now - _lastIpFetch).TotalMinutes > 5)
+        {
+            _cachedIp = "Fetching...";
+            Task.Run(() => {
+                try {
+                    _cachedIp = SystemHelper.GetPublicIP();
+                } catch {
+                    _cachedIp = "Error fetching IP";
+                }
+                _lastIpFetch = DateTime.Now;
+            });
+        }
+        return new Panel(new Markup($"\n[bold cyan]Public IP Address:[/] [green]{_cachedIp.EscapeMarkup()}[/]\n\n[dim](Refreshes every 5 mins)[/]"))
+        {
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Cyan1)
+        };
+    }
+
+    private static Spectre.Console.Rendering.IRenderable GetSshInfoWidget()
+    {
+        var localIp = "127.0.0.1";
+        try
+        {
+            var host = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    localIp = ip.ToString();
+                    break;
+                }
+            }
+        }
+        catch {}
+
+        var user = Environment.UserName;
+        var hostName = Environment.MachineName;
+
+        var rightSb = new StringBuilder();
+        rightSb.AppendLine("[bold white]SSH Connection Info[/]");
+        rightSb.AppendLine();
+        rightSb.AppendLine("[dim]Local Network Address:[/]");
+        rightSb.AppendLine($"  [yellow]ssh {user.ToLowerInvariant()}@{localIp}[/]");
+        rightSb.AppendLine();
+        rightSb.AppendLine("[dim]Bonjour Hostname Address:[/]");
+        rightSb.AppendLine($"  [yellow]ssh {user.ToLowerInvariant()}@{hostName.ToLowerInvariant()}.local[/]");
+        rightSb.AppendLine();
+        rightSb.AppendLine("[dim]Ensure the Windows SSH service is running.[/]");
+        return new Panel(new Markup(rightSb.ToString()))
+        {
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Cyan1)
+        };
+    }
+
+    private static Spectre.Console.Rendering.IRenderable GetAccountTreeWidget()
+    {
+        var accounts=AgyAccountCore.GetAccounts();
+        var active=AgyAccountCore.GetActiveAccount();
+        var tree=new Tree("[bold cyan]Account Tree[/]");
+        foreach (var acc in accounts)
+        {
+            var stats=AgyAccountCore.GetAccountStats(acc);
+            var displayName = acc;
+            if (string.Equals(acc, "default", StringComparison.OrdinalIgnoreCase))
+            {
+                var email = AgyAccountCore.GetAccountEmail("default");
+                if (!string.IsNullOrEmpty(email)) displayName = $"default ({email})";
+            }
+            var label=acc==active?$"[green bold]★ {displayName.EscapeMarkup()} (Active)[/]":displayName.EscapeMarkup();
+            var node=tree.AddNode(label);
+            node.AddNode($"[dim]Login:[/] {(stats.TokenStatus == "Logged In" ? "[green]Logged In[/]" : "[red]Not Logged In[/]")}");
+            node.AddNode($"[dim]Convos:[/] {stats.ConversationsCount} [dim]Skills:[/] {stats.SkillsCount}");
+            node.AddNode($"[dim]Weekly:[/] {(int)Math.Round(stats.GeminiWeekly)}% [dim]5h:[/] {(int)Math.Round(stats.GeminiFiveHour)}%");
+            node.AddNode($"[dim]Size:[/] {stats.PrivateSize}");
+        }
+        return tree;
+    }
+
+    private static Spectre.Console.Rendering.IRenderable GetQuotaChartWidget(string accountName)
+    {
+        var quota=AgyAccountCore.CalculateRollingQuotas(accountName);
+        var chartLabel = accountName;
+        if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
+        {
+            var email = AgyAccountCore.GetAccountEmail("default");
+            if (!string.IsNullOrEmpty(email)) chartLabel = $"default ({email})";
+        }
+        var chart=new BarChart().Width(28).Label($"[bold cyan]{chartLabel.EscapeMarkup()} Quota Remaining %[/]").CenterLabel()
+            .AddItem("Gemini W", quota.RemainingWeekly, Color.Cyan1)
+            .AddItem("Gemini 5H", quota.Remaining5H, Color.Yellow)
+            .AddItem("Claude W", 100.0, Color.Green)
+            .AddItem("Claude 5H", 100.0, Color.Blue);
+
+        var lines = new List<Spectre.Console.Rendering.IRenderable>
+        {
+            chart,
+            new Markup("\n"),
+            new Markup($"[dim]Weekly: {quota.CountWeekly,4}/1000 reqs[/]"),
+            new Markup($"[dim]5-Hour: {quota.Count5H,4}/50 reqs[/]"),
+            new Markup($"[dim]Refreshes in {quota.TimeWeekly}[/]")
+        };
+        return new Rows(lines);
+    }
+
+    private static Spectre.Console.Rendering.IRenderable GetLiveDashboardWidget()
+    {
+        var table = new Table().Border(TableBorder.Rounded).BorderColor(Color.Grey);
+        table.AddColumn("[bold cyan]Account[/]");
+        table.AddColumn("[bold cyan]L[/]"); 
+        table.AddColumn("[bold cyan]W[/]"); 
+        table.AddColumn("[bold cyan]5h[/]"); 
+        
+        foreach (var a in AgyAccountCore.GetAccounts())
+        {
+            var s=AgyAccountCore.GetAccountStats(a);
+            var act=AgyAccountCore.GetActiveAccount();
+            var displayName = a;
+            if (string.Equals(a, "default", StringComparison.OrdinalIgnoreCase))
+            {
+                var email = AgyAccountCore.GetAccountEmail("default");
+                if (!string.IsNullOrEmpty(email)) displayName = $"default ({email})";
+            }
+            var n=a==act?$"[green bold]* {displayName.EscapeMarkup()}[/]":displayName.EscapeMarkup();
+            var st=s.TokenStatus=="Logged In"?"[green]●[/]":"[red]○[/]";
+            table.AddRow(n, st, $"{(int)Math.Round(s.GeminiWeekly)}%", $"{(int)Math.Round(s.GeminiFiveHour)}%");
+        }
+        return table;
+    }
+
+    public static Table? _cachedOllamaWidget = null;
+    public static DateTime _ollamaWidgetCachedAt = DateTime.MinValue;
+
+    private static Spectre.Console.Rendering.IRenderable GetOllamaStatusWidget()
+    {
+        if (_cachedOllamaWidget != null && (DateTime.UtcNow - _ollamaWidgetCachedAt).TotalSeconds < 3)
+        {
+            return _cachedOllamaWidget;
+        }
+
+        var isRunning = AgyAiCore.IsOllamaRunning();
+        var table = new Table().Border(TableBorder.Rounded).BorderColor(isRunning ? Color.Green : Color.Red);
+        table.AddColumn("[bold cyan]Ollama Daemon[/]");
+        table.AddColumn("[bold cyan]Value[/]");
+        
+        table.AddRow("Status", isRunning ? "[green bold]● Active (Running)[/]" : "[red bold]○ Offline (Stopped)[/]");
+        table.AddRow("Port", "11434");
+        
+        if (isRunning)
+        {
+            try
+            {
+                using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(1) };
+                var response = client.GetStringAsync("http://127.0.0.1:11434/api/tags").Result;
+                using var doc = JsonDocument.Parse(response);
+                if (doc.RootElement.TryGetProperty("models", out var modelsProp) && modelsProp.ValueKind == JsonValueKind.Array)
+                {
+                    var modelNames = new List<string>();
+                    foreach (var model in modelsProp.EnumerateArray())
+                    {
+                        if (model.TryGetProperty("name", out var nameProp))
+                        {
+                            modelNames.Add(nameProp.GetString() ?? "");
+                        }
+                    }
+                    if (modelNames.Count > 0)
+                    {
+                        table.AddRow("Local Models", string.Join(", ", modelNames));
+                    }
+                    else
+                    {
+                        table.AddRow("Local Models", "[yellow]None pulled yet[/]");
+                    }
+                }
+            }
+            catch
+            {
+                table.AddRow("Local Models", "[red]Error listing models[/]");
+            }
+        }
+        _cachedOllamaWidget = table;
+        _ollamaWidgetCachedAt = DateTime.UtcNow;
+        return table;
+    }
+
+    private static void RenderPanes(Section[] sections, int leftSel, int midSel, bool midActive, bool detailsActive, int detailsSel, string detailsMode)
     {
         var leftSb=new StringBuilder();
         for (var i=0;
-        i<Sections.Length;
+        i<sections.Length;
         i++)
         {
-            var s=Sections[i];
+            var s=sections[i];
             if (s.Label.Length>0&&s.Label[0]=='─')
             {
                 leftSb.AppendLine("[dim]────────────────────────────[/]");
@@ -6442,7 +8024,7 @@ public static class CcNavigator
 
             else leftSb.AppendLine($" {s.Label.EscapeMarkup()}");
         }
-        var section=Sections[leftSel];
+        var section=sections[leftSel];
         var midSb=new StringBuilder();
         for (var i=0;
         i<section.Items.Length;
@@ -6452,47 +8034,185 @@ public static class CcNavigator
             midSb.AppendLine(midActive&&i==midSel?$"[green bold]> {display.EscapeMarkup()}[/]":$" {display.EscapeMarkup()}");
         }
         if (section.Items.Length==0)midSb.AppendLine("[dim] (press Enter to select)[/]");
-        var rightSb=new StringBuilder();
+        
         var sectionTitle=section.Label.TrimStart('>',' ');
-        rightSb.AppendLine($"[bold cyan]{sectionTitle.EscapeMarkup()}[/]");
-        rightSb.AppendLine();
-        if (!string.IsNullOrWhiteSpace(section.Desc))rightSb.AppendLine($"[dim]{section.Desc.EscapeMarkup()}[/]");
+        Spectre.Console.Rendering.IRenderable detailsContent;
+
         if (midActive&&midSel<section.Items.Length)
         {
             var(display, alias)=section.Items[midSel];
-            rightSb.AppendLine();
-            rightSb.AppendLine($"[bold white]{display.EscapeMarkup()}[/]");
-            rightSb.AppendLine($"[dim]alias:[/] [yellow]{alias.EscapeMarkup()}[/]");
-            var cmd=CommandPalette.Commands.FirstOrDefault(c => string.Equals(c.Alias, alias, StringComparison.OrdinalIgnoreCase));
-            if (cmd!=null)
+            
+            if (string.Equals(alias, "account-tree", StringComparison.OrdinalIgnoreCase))
             {
+                detailsContent = GetAccountTreeWidget();
+            }
+            else if (string.Equals(alias, "quota-chart", StringComparison.OrdinalIgnoreCase))
+            {
+                detailsContent = GetQuotaChartWidget(AgyAccountCore.GetActiveAccount());
+            }
+            else if (string.Equals(alias, "live-dashboard", StringComparison.OrdinalIgnoreCase))
+            {
+                detailsContent = GetLiveDashboardWidget();
+            }
+            else if (string.Equals(alias, "disk", StringComparison.OrdinalIgnoreCase))
+            {
+                detailsContent = GetDiskSpaceWidget();
+            }
+            else if (string.Equals(alias, "public-ip", StringComparison.OrdinalIgnoreCase))
+            {
+                detailsContent = GetPublicIpWidget();
+            }
+            else if (string.Equals(alias, "ssh-info", StringComparison.OrdinalIgnoreCase))
+            {
+                detailsContent = GetSshInfoWidget();
+            }
+            else if (string.Equals(alias, "agyswitch", StringComparison.OrdinalIgnoreCase) && detailsActive && detailsMode == "agyswitch")
+            {
+                var rightSb = new StringBuilder();
+                rightSb.AppendLine($"[bold white]{display.EscapeMarkup()}[/]");
+                rightSb.AppendLine($"[dim]alias:[/] [yellow]{alias.EscapeMarkup()}[/]");
                 rightSb.AppendLine();
-                rightSb.AppendLine($"[dim]{cmd.Description.EscapeMarkup()}[/]");
+                rightSb.AppendLine("[cyan bold]Select Account to Switch:[/]");
                 rightSb.AppendLine();
-                rightSb.AppendLine($"[dim]Category: {cmd.Category.EscapeMarkup()}[/]");
+                var accs = AgyAccountCore.GetAccounts();
+                var activeAcc = AgyAccountCore.GetActiveAccount();
+                for (var i = 0; i < accs.Length; i++)
+                {
+                    var isSelected = (i == detailsSel);
+                    var isActive = (accs[i] == activeAcc);
+                    var prefix = isSelected ? "[green bold]> [/]" : "  ";
+                    var suffix = isActive ? " [green](Active)[/]" : "";
+                    var displayName = accs[i];
+                    if (string.Equals(accs[i], "default", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var email = AgyAccountCore.GetAccountEmail("default");
+                        if (!string.IsNullOrEmpty(email)) displayName = $"default ({email})";
+                    }
+                    var stats = AgyAccountCore.GetAccountStats(accs[i]);
+                    var loginStatus = stats.TokenStatus == "Logged In" ? "[green]✔[/]" : "[red]✘[/]";
+                    rightSb.AppendLine($"{prefix}{displayName.EscapeMarkup()} [dim]({loginStatus})[/]{suffix}");
+                }
+                rightSb.AppendLine();
+                rightSb.AppendLine("[dim]↑/↓ Navigate  ·  Enter Select  ·  Esc Cancel[/]");
+                rightSb.AppendLine("[dim]a Create Account  ·  d Delete  ·  o Log Out[/]");
+                detailsContent = new Markup(rightSb.ToString());
+            }
+            else if (string.Equals(alias, "theme", StringComparison.OrdinalIgnoreCase) && detailsActive && detailsMode == "theme")
+            {
+                var rightSb = new StringBuilder();
+                rightSb.AppendLine($"[bold white]{display.EscapeMarkup()}[/]");
+                rightSb.AppendLine($"[dim]alias:[/] [yellow]{alias.EscapeMarkup()}[/]");
+                rightSb.AppendLine();
+                rightSb.AppendLine("[cyan bold]Select Oh My Posh Theme (Color segment preview):[/]");
+                rightSb.AppendLine();
+                var themeNames = GetThemeNames();
+                var currentTheme = Environment.GetEnvironmentVariable("THEME");
+                for (var i = 0; i < themeNames.Length; i++)
+                {
+                    var isSelected = (i == detailsSel);
+                    var isActive = (themeNames[i] == currentTheme);
+                    var prefix = isSelected ? "[green bold]> [/]" : "  ";
+                    var suffix = isActive ? " [green](Active)[/]" : "";
+                    rightSb.AppendLine($"{prefix}{themeNames[i].EscapeMarkup()}{suffix}");
+                }
+                rightSb.AppendLine();
+                rightSb.AppendLine("[dim]↑/↓ Navigate  ·  Enter Select  ·  Esc Cancel[/]");
+                detailsContent = new Markup(rightSb.ToString());
+            }
+            else if ((string.Equals(alias, "learn", StringComparison.OrdinalIgnoreCase) ||
+                      string.Equals(alias, "session", StringComparison.OrdinalIgnoreCase) ||
+                      string.Equals(alias, "weak", StringComparison.OrdinalIgnoreCase)) && detailsActive && detailsMode == alias.ToLowerInvariant())
+            {
+                var rightSb = new StringBuilder();
+                rightSb.AppendLine($"[bold white]{display.EscapeMarkup()}[/]");
+                rightSb.AppendLine($"[dim]alias:[/] [yellow]{alias.EscapeMarkup()}[/]");
+                rightSb.AppendLine();
+                rightSb.AppendLine($"[cyan bold]Select Topic for {alias.EscapeMarkup()}:[/]");
+                rightSb.AppendLine();
+                var topics = new[] { "jp (Japanese / Language)", "en (English Vocabulary)", "cs (C# Quiz)", "dsa (Data Structures & Algorithms)", "interview (Question Bank & STAR)", "[Type Custom Topic...]" };
+                for (var i = 0; i < topics.Length; i++)
+                {
+                    var isSelected = (i == detailsSel);
+                    var prefix = isSelected ? "[green bold]> [/]" : "  ";
+                    rightSb.AppendLine($"{prefix}{topics[i].EscapeMarkup()}");
+                }
+                rightSb.AppendLine();
+                rightSb.AppendLine("[dim]↑/↓ Navigate  ·  Enter Select  ·  Esc Cancel[/]");
+                detailsContent = new Markup(rightSb.ToString());
+            }
+            else if (string.Equals(alias, "proj", StringComparison.OrdinalIgnoreCase) && detailsActive && detailsMode == "proj")
+            {
+                var rightSb = new StringBuilder();
+                rightSb.AppendLine($"[bold white]{display.EscapeMarkup()}[/]");
+                rightSb.AppendLine($"[dim]alias:[/] [yellow]{alias.EscapeMarkup()}[/]");
+                rightSb.AppendLine();
+                rightSb.AppendLine("[cyan bold]Select Workspace directory to switch to on exit:[/]");
+                rightSb.AppendLine();
+                var workspaces = WorkspaceRegistry.GetWorkspaces();
+                for (var i = 0; i < workspaces.Length; i++)
+                {
+                    var isSelected = (i == detailsSel);
+                    var prefix = isSelected ? "[green bold]> [/]" : "  ";
+                    rightSb.AppendLine($"{prefix}{workspaces[i].Name.EscapeMarkup()} [dim]({workspaces[i].WorkspacePath.EscapeMarkup()})[/]");
+                }
+                rightSb.AppendLine();
+                rightSb.AppendLine("[dim]↑/↓ Navigate  ·  Enter Select  ·  Esc Cancel[/]");
+                detailsContent = new Markup(rightSb.ToString());
+            }
+            else
+            {
+                var rightSb = new StringBuilder();
+                rightSb.AppendLine($"[bold white]{display.EscapeMarkup()}[/]");
+                rightSb.AppendLine($"[dim]alias:[/] [yellow]{alias.EscapeMarkup()}[/]");
+                
+                var cmd=CommandPalette.Commands.FirstOrDefault(c => string.Equals(c.Alias, alias, StringComparison.OrdinalIgnoreCase));
+                if (cmd!=null)
+                {
+                    rightSb.AppendLine();
+                    rightSb.AppendLine($"[dim]{cmd.Description.EscapeMarkup()}[/]");
+                    rightSb.AppendLine();
+                    rightSb.AppendLine($"[dim]Category: {cmd.Category.EscapeMarkup()}[/]");
+                }
+                if (alias == "ollama-status")
+                {
+                    detailsContent = new Rows(new Markup(rightSb.ToString()), new Markup("\n"), GetOllamaStatusWidget());
+                }
+                else
+                {
+                    detailsContent = new Markup(rightSb.ToString());
+                }
             }
         }
         else
         {
+            var rightSb = new StringBuilder();
+            rightSb.AppendLine($"[bold cyan]{sectionTitle.EscapeMarkup()}[/]");
+            rightSb.AppendLine();
+            if (!string.IsNullOrWhiteSpace(section.Desc))rightSb.AppendLine($"[dim]{section.Desc.EscapeMarkup()}[/]");
             rightSb.AppendLine();
             rightSb.AppendLine("[dim]Press → or Enter to browse options[/]");
+            detailsContent = new Markup(rightSb.ToString());
         }
+
         var leftPanel=new Panel(leftSb.ToString())
         {
             Header=new PanelHeader("[bold cyan]Menu[/]"), Border=BoxBorder.Rounded, BorderStyle=new Style(!midActive?Color.Cyan1:Color.Grey)
-        }
-        ;
+        };
         var midPanel=new Panel(midSb.ToString())
         {
-            Header=new PanelHeader("[bold cyan]Options[/]"), Border=BoxBorder.Rounded, BorderStyle=new Style(midActive?Color.Cyan1:Color.Grey)
-        }
-        ;
-        var rightPanel=new Panel(rightSb.ToString())
+            Header=new PanelHeader("[bold cyan]Options[/]"), Border=BoxBorder.Rounded, BorderStyle=new Style(midActive && !detailsActive?Color.Cyan1:Color.Grey)
+        };
+        var rightPanel=new Panel(detailsContent)
         {
-            Header=new PanelHeader("[bold cyan]Details[/]"), Border=BoxBorder.Rounded, BorderStyle=new Style(Color.Grey)
-        }
-        ;
-        AnsiConsole.Write(new Columns(leftPanel, midPanel, rightPanel));
+            Header=new PanelHeader("[bold cyan]Details[/]"), Border=BoxBorder.Rounded, BorderStyle=new Style(detailsActive?Color.Cyan1:Color.Grey)
+        };
+
+        var table = new Table().NoBorder().HideHeaders();
+        table.AddColumn(new TableColumn("").Width(30));
+        table.AddColumn(new TableColumn("").Width(30));
+        table.AddColumn(new TableColumn(""));
+        table.AddRow(leftPanel, midPanel, rightPanel);
+        AnsiConsole.Write(table);
 
     }
 
@@ -6506,7 +8226,6 @@ public static class Program
             RunCommand(args[0]);
             return;
         }
-        AgyHeader.ShowSplash();
         CcNavigator.Run();
 
         try
@@ -6520,6 +8239,21 @@ public static class Program
 
     }
 
+    public static string? SelectTopicInteractive(string promptTitle)
+    {
+        var topics = new[] { "jp (Japanese / Language)", "en (English Vocabulary)", "cs (C# Quiz)", "dsa (Data Structures & Algorithms)", "interview (Question Bank & STAR)", "[Type Custom Topic...]" };
+        var index = SpectreMenu.ShowWithEscape(promptTitle, topics, 0);
+        if (index < 0) return null;
+        if (index == topics.Length - 1)
+        {
+            Console.CursorVisible = true;
+            var custom = AnsiConsole.Ask<string>("Enter custom topic name:").Trim();
+            Console.CursorVisible = false;
+            return string.IsNullOrEmpty(custom) ? null : custom;
+        }
+        return topics[index].Split(' ')[0];
+    }
+
     public static void RunCommand(string alias)
     {
         try
@@ -6529,7 +8263,19 @@ public static class Program
         catch
         {
         }
-        AnsiConsole.Write(new Rule($"[bold green]Running: {alias}[/]").RuleStyle("grey"));
+        var lAlias = alias.ToLowerInvariant();
+        if ((lAlias == "claude" || lAlias == "codex" || lAlias == "openclaw" || lAlias == "hermes" || lAlias == "hermesd" || lAlias == "claude-cloud" || lAlias == "claude-ollama" || lAlias == "codex-cloud" || lAlias == "codex-ollama") && !AgyAiCore.IsAiOllamaEnabled())
+        {
+            SpectrePanel.Error("AI/Ollama features are disabled in config.");
+            Thread.Sleep(1500);
+            return;
+        }
+        if ((lAlias == "agyswitch" || lAlias == "agyquota" || lAlias == "account-tree" || lAlias == "quota-chart" || lAlias == "live-dashboard" || lAlias == "autoswitch") && !AgyAiCore.IsAgyEnabled())
+        {
+            SpectrePanel.Error("AGY Account features are disabled in config.");
+            Thread.Sleep(1500);
+            return;
+        }
 
         try
         {
@@ -6566,15 +8312,62 @@ public static class Program
                 break;
                 case"aws-local":AwsHelper.ShowLocalStackInfo();
                 break;
-                case"claude":AiHelper.InvokeClaude([]);
+                case"claude":AgyAiCore.InvokeClaude([]);
                 break;
-                case"codex":AiHelper.InvokeCodex([]);
+                case"claude-cloud":AgyAiCore.InvokeClaude([], "cloud");
                 break;
-                case"openclaw":AiHelper.InvokeOpenClaw([]);
+                case"claude-ollama":AgyAiCore.InvokeClaude([], "local");
                 break;
-                case"hermes":if (AiHelper.InvokeHermes([])==AiHelper.HermesResult.NotInstalled)SpectrePanel.Warning("Hermes is not installed. Run 'hermes' from PowerShell for install instructions.");
+                case"codex":AgyAiCore.InvokeCodex([]);
                 break;
-                case"hermesd":if (AiHelper.InvokeHermesDesktop([])==AiHelper.HermesResult.NotInstalled)SpectrePanel.Warning("Hermes Desktop is not installed. Run 'hermesd' from PowerShell for install instructions.");
+                case"codex-cloud":AgyAiCore.InvokeCodex([], "cloud");
+                break;
+                case"codex-ollama":AgyAiCore.InvokeCodex([], "local");
+                break;
+                case"openclaw":AgyAiCore.InvokeOpenClaw([]);
+                 break;
+                 case"ollama-models":OllamaHelper.ManageOllamaModels();
+                 break;
+                 case"ollama-pull":OllamaHelper.PullOllamaModel();
+                 break;
+                 case"ollama-start":OllamaHelper.StartOllamaDaemon();
+                 break;
+                 case"ollama-logs":OllamaHelper.ShowOllamaLogs();
+                break;
+                case"ollama-status":
+                    CcNavigator._cachedOllamaWidget = null;
+                    break;
+                case"deck-setup":AntigravityDeckHelper.Setup();
+                break;
+                case"deck-start":AntigravityDeckHelper.StartLocal();
+                break;
+                case"deck-online":AntigravityDeckHelper.StartOnline();
+                break;
+                case"agy-cli":
+                    try
+                    {
+                        var targetDirLoc = AgyAccountCore.GetAccountDirectory(AgyAccountCore.GetActiveAccount());
+                        var psi = new ProcessStartInfo
+                        {
+                            FileName = "cmd.exe",
+                            Arguments = "/c agy",
+                            UseShellExecute = false
+                        };
+                        psi.EnvironmentVariables["GEMINI_HOME"] = targetDirLoc;
+                        psi.EnvironmentVariables["HOME"] = targetDirLoc;
+                        psi.EnvironmentVariables["USERPROFILE"] = targetDirLoc;
+
+                        using var p = Process.Start(psi);
+                        p?.WaitForExit();
+                    }
+                    catch (Exception ex)
+                    {
+                        SpectrePanel.Error($"Failed to run agy CLI: {ex.Message}");
+                    }
+                    break;
+                case"hermes":if (AgyAiCore.InvokeHermes([])==AgyAiCore.HermesResult.NotInstalled)SpectrePanel.Warning("Hermes is not installed. Run 'hermes' from PowerShell for install instructions.");
+                break;
+                case"hermesd":if (AgyAiCore.InvokeHermesDesktop([])==AgyAiCore.HermesResult.NotInstalled)SpectrePanel.Warning("Hermes Desktop is not installed. Run 'hermesd' from PowerShell for install instructions.");
                 break;
                 case"disk":SystemHelper.ShowDiskSpace();
                 break;
@@ -6591,12 +8384,14 @@ public static class Program
                 case"agyswitch":var accs=AgyAccountCore.GetAccounts();
                 var activeAcc=AgyAccountCore.GetActiveAccount();
                 var accItems=accs.Select(a => a==activeAcc?$"{a} (Active)":a).ToArray();
-                var accIdx=SpectreMenu.Show("Select Account to Switch", accItems, 0, false);
+                var defaultIdx=Array.IndexOf(accs, activeAcc);
+                if (defaultIdx<0)defaultIdx=0;
+                var accIdx=SpectreMenu.ShowWithEscape("Select Account to Switch", accItems, defaultIdx);
                 if (accIdx>=0)
                 {
                     var targetAcc=accs[accIdx];
-                    Environment.SetEnvironmentVariable("GEMINI_HOME", AgyAccountCore.GetAccountDirectory(targetAcc));
-                    SpectrePanel.Success($"Switched process GEMINI_HOME to {targetAcc}");
+                    AgyAccountCore.SetActiveAccount(targetAcc, false);
+                    Thread.Sleep(1000);
                 }
                 break;
                 case"agyquota":AgyAccountCore.ShowAllAccountsSummary();
@@ -6626,10 +8421,30 @@ public static class Program
                 break;
                 case"help":ProfileHelp.Show();
                 break;
+                case"theme":
+                {
+                    var tPath = Environment.GetEnvironmentVariable("POSH_THEMES_PATH");
+                    if (string.IsNullOrEmpty(tPath))
+                    {
+                        tPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "asset", "powershell-themes");
+                        if (!Directory.Exists(tPath))
+                        {
+                            tPath = Path.Combine(Directory.GetCurrentDirectory(), "asset", "powershell-themes");
+                        }
+                    }
+                    var currTheme = Environment.GetEnvironmentVariable("THEME");
+                    var newThemePath = ThemeHelper.SelectThemeInteractive(tPath, currTheme);
+                    if (!string.IsNullOrEmpty(newThemePath))
+                    {
+                        var selThemeFile = Path.Combine(AgyAccountCore.AgySourceHome, "selected_theme.txt");
+                        File.WriteAllText(selThemeFile, newThemePath);
+                    }
+                }
+                break;
                 case"cc":CommandPalette.Show();
                 break;
-                case"learn":var topic=AnsiConsole.Ask<string>("Topic (jp/en/cs/dsa/interview):");
-                LearnRouter.StartLearning(topic);
+                case"learn":var learnTopic=SelectTopicInteractive("Select Topic to Learn");
+                if (!string.IsNullOrEmpty(learnTopic)) LearnRouter.StartLearning(learnTopic);
                 break;
                 case"flashcard":FlashcardEngine.PickAndRun(LearnDataPaths.DecksDir);
                 break;
@@ -6664,8 +8479,8 @@ public static class Program
 
                 else SpectrePanel.Warning("No word of the day available.");
                 break;
-                case"session":var sessionTopic=AnsiConsole.Ask<string>("Topic for study session:");
-                StudySession.Run(sessionTopic);
+                case"session":var sessionTopic=SelectTopicInteractive("Select Topic for Study Session");
+                if (!string.IsNullOrEmpty(sessionTopic)) StudySession.Run(sessionTopic);
                 break;
                 case"stats":StudyStats.Run();
                 break;
@@ -6690,8 +8505,8 @@ public static class Program
                 break;
                 case"progress":ProgressDashboard.Show();
                 break;
-                case"weak":var weakTopic=AnsiConsole.Ask<string>("Topic for weak items:");
-                WeakItemsQueue.ShowPreSessionReview(weakTopic);
+                case"weak":var weakTopic=SelectTopicInteractive("Select Topic for Weak Items");
+                if (!string.IsNullOrEmpty(weakTopic)) WeakItemsQueue.ShowPreSessionReview(weakTopic);
                 break;
                 case"obsidian":ObsidianBridge.Run();
                 break;

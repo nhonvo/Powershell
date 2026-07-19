@@ -309,7 +309,45 @@ class AgyAccountManager {
         return $accounts.ToArray()
     }
 
+    static [string] EncryptToken([string]$token) {
+        if (-not $token) { return "" }
+        try {
+            Add-Type -AssemblyName System.Security
+            $bytes = [System.Text.Encoding]::UTF8.GetBytes($token)
+            $encBytes = [System.Security.Cryptography.ProtectedData]::Protect($bytes, $null, [System.Security.Cryptography.DataProtectionScope]::CurrentUser)
+            return [System.Convert]::ToBase64String($encBytes)
+        } catch {
+            return ""
+        }
+    }
+
+    static [string] DecryptToken([string]$encrypted) {
+        if (-not $encrypted) { return "" }
+        try {
+            Add-Type -AssemblyName System.Security
+            $encBytes = [System.Convert]::FromBase64String($encrypted)
+            $decBytes = [System.Security.Cryptography.ProtectedData]::Unprotect($encBytes, $null, [System.Security.Cryptography.DataProtectionScope]::CurrentUser)
+            return [System.Text.Encoding]::UTF8.GetString($decBytes)
+        } catch {
+            try {
+                $secure = ConvertTo-SecureString $encrypted
+                $networkCred = [System.Net.NetworkCredential]::new("", $secure)
+                return $networkCred.Password
+            } catch {
+                return ""
+            }
+        }
+    }
+
     static [string] GetActiveAccount() {
+        if (Test-Path ([AgyAccountManager]::AgyActiveAccountFile)) {
+            try {
+                $content = (Get-Content ([AgyAccountManager]::AgyActiveAccountFile) -ErrorAction SilentlyContinue)
+                if ($content) {
+                    return $content.Trim()
+                }
+            } catch {}
+        }
         if ($env:GEMINI_HOME -and $env:GEMINI_HOME -match '\.gemini_(.+)$') {
             return $Matches[1]
         }
@@ -332,7 +370,7 @@ class AgyAccountManager {
 
     static [void] BackupActiveToken() {
         $activeAcc = [AgyAccountManager]::GetActiveAccount()
-        $token = [AgyKeyringHelper]::ReadToken("gemini:antigravity")
+        $token = [AgyTui.AgyKeyringHelper]::ReadToken("gemini:antigravity")
         $accDir = [AgyAccountManager]::GetAccountDirectory($activeAcc)
         if (-not (Test-Path $accDir)) {
             try { $null = New-Item -ItemType Directory -Path $accDir -Force } catch {}
@@ -341,8 +379,7 @@ class AgyAccountManager {
             $tokenFile = Join-Path $accDir "keyring_token.txt"
             if ($token) {
                 try {
-                    $secure = ConvertTo-SecureString $token -AsPlainText -Force
-                    $encrypted = ConvertFrom-SecureString $secure
+                    $encrypted = [AgyAccountManager]::EncryptToken($token)
                     [System.IO.File]::WriteAllText($tokenFile, $encrypted)
                 } catch {
                     Write-Warning "Failed to encrypt/save keyring token for '$activeAcc'."
@@ -363,18 +400,16 @@ class AgyAccountManager {
                 $encrypted = (Get-Content -Path $tokenFile -Raw -ErrorAction SilentlyContinue)
                 if ($encrypted) {
                     $encrypted = $encrypted.Trim()
-                    $secure = ConvertTo-SecureString $encrypted
-                    $networkCred = [System.Net.NetworkCredential]::new("", $secure)
-                    $token = $networkCred.Password
-                    $res = [AgyKeyringHelper]::WriteToken("gemini:antigravity", "antigravity", $token)
+                    $token = [AgyAccountManager]::DecryptToken($encrypted)
+                    $res = [AgyTui.AgyKeyringHelper]::WriteToken("gemini:antigravity", "antigravity", $token)
                 } else {
-                    $res = [AgyKeyringHelper]::DeleteToken("gemini:antigravity")
+                    $res = [AgyTui.AgyKeyringHelper]::DeleteToken("gemini:antigravity")
                 }
             } catch {
                 Write-Warning "Failed to decrypt/restore keyring token for '$AccountName'."
             }
         } else {
-            $res = [AgyKeyringHelper]::DeleteToken("gemini:antigravity")
+            $res = [AgyTui.AgyKeyringHelper]::DeleteToken("gemini:antigravity")
         }
     }
 
@@ -396,9 +431,10 @@ class AgyAccountManager {
         if ($AccountName -eq "default") {
             $env:GEMINI_HOME = [AgyAccountManager]::AgySourceHome
             if (-not $Temporary) {
-                if (Test-Path ([AgyAccountManager]::AgyActiveAccountFile)) {
-                    Remove-Item ([AgyAccountManager]::AgyActiveAccountFile) -Force
+                if (-not (Test-Path ([AgyAccountManager]::AgySourceHome))) {
+                    $null = New-Item -ItemType Directory -Path ([AgyAccountManager]::AgySourceHome) -Force
                 }
+                [System.IO.File]::WriteAllText(([AgyAccountManager]::AgyActiveAccountFile), "default")
             }
             # 2. Restore token for default account
             [AgyAccountManager]::RestoreActiveToken("default")
@@ -565,7 +601,7 @@ class AgyAccountManager {
 
         # Clear active keyring token if this is the active account
         if ($AccountName -eq [AgyAccountManager]::GetActiveAccount()) {
-            $deletedKeyring = [AgyKeyringHelper]::DeleteToken("gemini:antigravity")
+            $deletedKeyring = [AgyTui.AgyKeyringHelper]::DeleteToken("gemini:antigravity")
             if ($deletedKeyring) { $clearedAny = $true }
         }
 
@@ -1225,7 +1261,7 @@ class AgyAccountManager {
                 if ($content) { $savedAcc = $content.Trim() }
             }
 
-            $currentKeyringToken = [AgyKeyringHelper]::ReadToken("gemini:antigravity")
+            $currentKeyringToken = [AgyTui.AgyKeyringHelper]::ReadToken("gemini:antigravity")
             if ($currentKeyringToken) {
                 $matchedAcc = $null
                 $availableAccounts = [AgyAccountManager]::GetAccounts()
@@ -1236,9 +1272,7 @@ class AgyAccountManager {
                         $encrypted = (Get-Content -Path $tokenFile -Raw -ErrorAction SilentlyContinue)
                         if ($encrypted) {
                             $encrypted = $encrypted.Trim()
-                            $secure = ConvertTo-SecureString $encrypted
-                            $networkCred = [System.Net.NetworkCredential]::new("", $secure)
-                            $savedToken = $networkCred.Password
+                            $savedToken = [AgyAccountManager]::DecryptToken($encrypted)
                             if ($savedToken -eq $currentKeyringToken) {
                                 $matchedAcc = $acc
                                 break
@@ -1296,8 +1330,7 @@ class AgyAccountManager {
                         $null = New-Item -ItemType Directory -Path $accDir -Force
                     }
                     $tokenFile = Join-Path $accDir "keyring_token.txt"
-                    $secure = ConvertTo-SecureString $currentKeyringToken -AsPlainText -Force
-                    $encrypted = ConvertFrom-SecureString $secure
+                    $encrypted = [AgyAccountManager]::EncryptToken($currentKeyringToken)
                     [System.IO.File]::WriteAllText($tokenFile, $encrypted)
                 } else {
                     # No account matched the keyring token. Backup to currently active account.
@@ -1306,8 +1339,7 @@ class AgyAccountManager {
                         $null = New-Item -ItemType Directory -Path $accDir -Force
                     }
                     $tokenFile = Join-Path $accDir "keyring_token.txt"
-                    $secure = ConvertTo-SecureString $currentKeyringToken -AsPlainText -Force
-                    $encrypted = ConvertFrom-SecureString $secure
+                    $encrypted = [AgyAccountManager]::EncryptToken($currentKeyringToken)
                     [System.IO.File]::WriteAllText($tokenFile, $encrypted)
                 }
             }
@@ -1377,20 +1409,54 @@ class AgyAccountManager {
                 Remove-Item Function:\prompt -Force -ErrorAction SilentlyContinue
             }
 
-            $scriptStr = @'
+            $scriptBlock = {
                 try {
-                    [AgyAccountManager]::AutoSwitchOnDirectoryChange($pwd.Path)
+                    $activeAccFile = Join-Path -Path $Global:AgySourceHome -ChildPath "active_account.txt"
+                    if (Test-Path $activeAccFile) {
+                        $content = (Get-Content -Path $activeAccFile -ErrorAction SilentlyContinue)
+                        if ($content) {
+                            $savedAcc = $content.Trim()
+                            $currentHomeName = Split-Path $env:GEMINI_HOME -Leaf
+                            $expectedHomeName = if ($savedAcc -eq "default") { ".gemini" } else { ".gemini_$savedAcc" }
+                            if ($currentHomeName -ne $expectedHomeName) {
+                                $targetPath = if ($savedAcc -eq "default") {
+                                    $Global:AgySourceHome
+                                } else {
+                                    $p = "C:\Users\Public\.$expectedHomeName"
+                                    if (-not (Test-Path $p)) { $p = Join-Path -Path $env:USERPROFILE -ChildPath "$expectedHomeName" }
+                                    $p
+                                }
+                                if (Test-Path $targetPath) {
+                                    $env:GEMINI_HOME = $targetPath
+                                    if ($null -ne ('AgyAccountManager' -as [type])) {
+                                        [AgyAccountManager]::RestoreActiveToken($savedAcc)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch {}
+                try {
+                    if ($null -ne ('AgyAccountManager' -as [type])) {
+                        [AgyAccountManager]::AutoSwitchOnDirectoryChange($pwd.Path)
+                    }
                 } catch {}
                 if (Test-Path Function:\prompt_original) {
                     prompt_original
                 } else {
-                    $acc = [AgyAccountManager]::GetActiveAccount()
-                    $online = [AgyAccountManager]::CheckNetworkStatus()
+                    $acc = "default"
+                    if ($null -ne ('AgyAccountManager' -as [type])) {
+                        $acc = [AgyAccountManager]::GetActiveAccount()
+                    }
+                    $online = $true
+                    if ($null -ne ('AgyAccountManager' -as [type])) {
+                        $online = [AgyAccountManager]::CheckNetworkStatus()
+                    }
                     $tag = if ($online) { "" } else { " [Offline]" }
                     "PS ($acc)$tag $($pwd.Path)> "
                 }
-'@
-            $null = New-Item -Path Function:\prompt -Value ([ScriptBlock]::Create($scriptStr)) -Force
+            }
+            $null = New-Item -Path Function:\prompt -Value $scriptBlock -Force
         } catch {}
     }
 

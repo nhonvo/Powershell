@@ -1,24 +1,30 @@
 $env:AI_MODE = 'true'
 Write-Host "Running PowerShell Profile Tests..." -ForegroundColor Cyan
 
-# 1. Check syntax of all profile files
-$profileDir = Join-Path $PSScriptRoot "..\Profile"
-$files = Get-ChildItem -Path $profileDir -Filter "*.ps1" -Recurse
-
-Write-Host "Parsing file syntax via AST..." -ForegroundColor Cyan
-foreach ($file in $files) {
-    try {
-        $errors = $null
-        $tokens = $null
-        $ast = [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$tokens, [ref]$errors)
-        if ($errors) {
-            Write-Error "Syntax error in $($file.Name): $($errors.Message)"
-        } else {
-            Write-Host "  [OK] $($file.Name): Syntax OK" -ForegroundColor Green
-        }
-    } catch {
-        Write-Error "Failed to parse $($file.Name): $_"
+# Pre-load C# types assembly so the AST parser can resolve types during parsing
+$dllPath = "C:\Users\TruongNhon\Documents\Powershell\AgyTuiApp\dist\AgyTuiApp.dll"
+if (Test-Path $dllPath) {
+    Get-ChildItem -Path (Split-Path $dllPath) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
+        try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
     }
+    Add-Type -Path $dllPath -ErrorAction SilentlyContinue
+}
+
+# 1. Check syntax of the consolidated profile file
+$profilePath = "C:\Users\TruongNhon\Documents\Powershell\Microsoft.PowerShell_profile.ps1"
+
+Write-Host "Parsing profile syntax via AST..." -ForegroundColor Cyan
+try {
+    $errors = $null
+    $tokens = $null
+    $ast = [System.Management.Automation.Language.Parser]::ParseFile($profilePath, [ref]$tokens, [ref]$errors)
+    if ($errors) {
+        Write-Error "Syntax error in Microsoft.PowerShell_profile.ps1: $($errors.Message)"
+    } else {
+        Write-Host "  [OK] Microsoft.PowerShell_profile.ps1: Syntax OK" -ForegroundColor Green
+    }
+} catch {
+    Write-Error "Failed to parse Microsoft.PowerShell_profile.ps1: $_"
 }
 
 # 2. Check external tool dependencies
@@ -83,34 +89,7 @@ foreach ($item in $aiItems) {
     }
 }
 
-# 5. Dry-run Invocation Tests (non-blocking)
-if (-not $Global:AiMode) {
-    Write-Host "`nPerforming dry-run tests on wrapper functions..." -ForegroundColor Cyan
-
-    Write-Host "  Testing claude (--version)..."
-    try {
-        $out = claude --version 2>&1
-        Write-Host "    Response: $out" -ForegroundColor Gray
-    } catch {
-        Write-Warning "    Failed: $_"
-    }
-
-    Write-Host "  Testing codex (--help)..."
-    try {
-        $out = (codex --help 2>&1 | Select-Object -First 1)
-        Write-Host "    Response: $out" -ForegroundColor Gray
-    } catch {
-        Write-Warning "    Failed: $_"
-    }
-
-    Write-Host "  Testing openclaw (--help)..."
-    try {
-        $out = (openclaw --help 2>&1 | Select-Object -First 1)
-        Write-Host "    Response: $out" -ForegroundColor Gray
-    } catch {
-        Write-Warning "    Failed: $_"
-    }
-}
+# 5. Dry-run Invocation Tests (non-blocking) - Removed to prevent interactive hangs in compiled C# helper wrappers.
 
 # 6. Run detailed Pester Unit Tests
 Write-Host "`nRunning detailed Pester unit tests..." -ForegroundColor Cyan

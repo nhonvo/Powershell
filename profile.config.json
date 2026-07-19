@@ -1,16 +1,35 @@
 {
-  // "_Note_AiMode": "Terminal mode override: 'auto' (scans env), 'true' (force AI mode), or 'false' (force interactive TUI).",
-  "AiMode": "false",
-  // "_Note_VerboseStartup": "Set to true to show verbose load status messages during shell startup.",
+  "_Note_AiMode": "Terminal mode override: 'auto' (scans env), 'true' (force AI mode), or 'false' (force interactive TUI).",
+  "AiMode": "auto",
+  "_Note_AiProviderMode": "AI provider mode: 'cloud' (normal cloud APIs directly, default), 'local' (local Ollama models), or 'auto' (local if Ollama is online, else cloud).",
+  "AiProviderMode": "cloud",
+  "_Note_VerboseStartup": "Set to true to show verbose load status messages during shell startup.",
   "VerboseStartup": false,
-  // "_Note_StartupLogFile": "Path to the startup performance log. Leave empty for default: ~/.gemini/antigravity/profile.log",
+  "_Note_StartupLogFile": "Path to the startup performance log. Leave empty for default: ~/.gemini/antigravity/profile.log",
   "StartupLogFile": "C:\\Users\\TruongNhon\\.gemini\\antigravity\\profile.log",
-  // "_Note_PoshThemesPath": "Path to your oh-my-posh themes folder. Leave empty for default: <RepoRoot>/asset/powershell-themes",
+  "_Note_PoshThemesPath": "Path to your oh-my-posh themes folder. Leave empty for default: <RepoRoot>/asset/powershell-themes",
   "PoshThemesPath": "C:\\Users\\TruongNhon\\Documents\\Powershell\\asset\\powershell-themes",
-  // "_Note_ProjectsBaseDir": "Base directory for development projects. Leave empty to use 'C:\\Users\\sshuser\\project' or '~/Desktop/project'.",
+  "_Note_ProjectsBaseDir": "Base directory for development projects. Leave empty to use 'C:\\Users\\sshuser\\project' or '~/Desktop/project'.",
   "ProjectsBaseDir": "C:\\Users\\TruongNhon\\Desktop\\project",
-  // "_Note_AgySourceHome": "Base directory for Antigravity settings and accounts. Leave empty for default: C:\\Users\\Public\\.gemini",
+  "_Note_AgySourceHome": "Base directory for Antigravity settings and accounts. Leave empty for default: C:\\Users\\Public\\.gemini",
   "AgySourceHome": "C:\\Users\\Public\\.gemini",
-  // "_Note_GlobalBinDir": "Directory containing active Antigravity CLI binary symlinks. Leave empty for default: C:\\ProgramData\\agy\\bin",
-  "GlobalBinDir": "C:\\ProgramData\\agy\\bin"
+  "_Note_GlobalBinDir": "Directory containing active Antigravity CLI binary symlinks. Leave empty for default: C:\\ProgramData\\agy\\bin",
+  "GlobalBinDir": "C:\\ProgramData\\agy\\bin",
+  "_Note_EnableAiOllama": "Set to false to disable AI/Ollama agents and tools.",
+  "EnableAiOllama": true,
+  "_Note_EnableAgy": "Set to false to disable AGY Account management tools.",
+  "EnableAgy": true,
+  "_Note_ProjectSearchPaths": "List of directories to scan for development projects.",
+  "ProjectSearchPaths": [
+    "C:\\Users\\TruongNhon\\Desktop\\back-up\\1.project",
+    "C:\\Users\\TruongNhon\\Desktop\\project",
+    "C:\\Users\\sshuser\\project",
+    "C:\\Users\\TruongNhon\\Documents"
+  ],
+  "_Note_ProjectExcludeFolders": "List of directory names to exclude during project scans.",
+  "ProjectExcludeFolders": [
+    "My Music", "My Pictures", "My Videos", "WindowsPowerShell",
+    "Custom Office Templates", "Visual Studio 2022", "Modules",
+    "vscode-config", "typora-themes", "img"
+  ]
 }
