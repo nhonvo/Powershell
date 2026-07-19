@@ -58,7 +58,8 @@ public static class MenuNodeBuilder
                 CreateCommandNode(allCommands["ollama-models"]),
                 CreateCommandNode(allCommands["ollama-pull"]),
                 CreateCommandNode(allCommands["ollama-start"]),
-                CreateCommandNode(allCommands["ollama-logs"])
+                CreateCommandNode(allCommands["ollama-logs"]),
+                CreateCommandNode(allCommands["ollama-benchmark"])
             },
             null
         );
@@ -131,7 +132,8 @@ public static class MenuNodeBuilder
                 CreateCommandNode(allCommands["hermes"]),
                 ollamaTools,
                 deckTools,
-                CreateCommandNode(allCommands["agy-cli"])
+                CreateCommandNode(allCommands["agy-cli"]),
+                CreateCommandNode(allCommands["ai-history"])
             },
             null
         );

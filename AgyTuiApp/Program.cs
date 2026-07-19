@@ -346,8 +346,10 @@ public static class Program
                  case"ollama-start":OllamaHelper.StartOllamaDaemon();
                  break;
                  case"ollama-logs":OllamaHelper.ShowOllamaLogs();
-                break;
-                case"ollama-status":
+                 break;
+                 case"ollama-benchmark":OllamaHelper.BenchmarkOllamaModels();
+                 break;
+                 case"ollama-status":
                     OllamaStatusWidgetCache.Invalidate();
                     break;
                 case"deck-setup":AntigravityDeckHelper.Setup();
@@ -383,6 +385,48 @@ public static class Program
                         SpectrePanel.Error($"Failed to run agy CLI: {ex.Message}");
                     }
                     break;
+                case"ai-history":
+                {
+                    var logPath = Path.Combine(AgyAccountCore.AgySourceHome, "ai_activity_log.jsonl");
+                    if (!File.Exists(logPath))
+                    {
+                        AnsiConsole.MarkupLine("[yellow]No AI activity log found yet.[/]");
+                        Console.WriteLine("\nPress any key to return...");
+                        Console.ReadKey(true);
+                        break;
+                    }
+                    var lines = File.ReadAllLines(logPath);
+                    var table = new Table().Border(TableBorder.Rounded);
+                    table.AddColumn("Timestamp");
+                    table.AddColumn("Agent");
+                    table.AddColumn("Mode");
+                    table.AddColumn("Duration (s)");
+                    table.AddColumn("Status");
+                    table.AddColumn("Account");
+
+                    foreach (var line in lines.TakeLast(30))
+                    {
+                        if (string.IsNullOrWhiteSpace(line)) continue;
+                        try
+                        {
+                            using var doc = JsonDocument.Parse(line);
+                            var root = doc.RootElement;
+                            var ts = root.GetProperty("Timestamp").GetString() ?? "";
+                            if (ts.Length > 19) ts = ts[..19].Replace("T", " ");
+                            var agent = root.GetProperty("Agent").GetString() ?? "";
+                            var modeVal = root.GetProperty("Mode").GetString() ?? "";
+                            var dur = root.GetProperty("DurationMs").GetDouble() / 1000.0;
+                            var status = root.GetProperty("Success").GetBoolean() ? "[green]Success[/]" : "[red]Failed[/]";
+                            var acc = root.GetProperty("Account").GetString() ?? "";
+                            table.AddRow(ts, agent, modeVal, dur.ToString("F2"), status, acc);
+                        }
+                        catch {}
+                    }
+                    AnsiConsole.Write(table);
+                    Console.WriteLine("\nPress any key to return...");
+                    Console.ReadKey(true);
+                }
+                break;
                 case"hermes":if (AgyAiCore.InvokeHermes([])==AgyAiCore.HermesResult.NotInstalled)SpectrePanel.Warning("Hermes is not installed. Run 'hermes' from PowerShell for install instructions.");
                 break;
                 case"hermesd":if (AgyAiCore.InvokeHermesDesktop([])==AgyAiCore.HermesResult.NotInstalled)SpectrePanel.Warning("Hermes Desktop is not installed. Run 'hermesd' from PowerShell for install instructions.");

@@ -125,6 +125,8 @@ public static class CommandRegistry
             Array.Empty<string>(), RequiresAiOllama: true),
         new("ollama-logs", "Ollama: View Server Logs", "Show last 50 lines of server logs", "[AI Agent & Ollama]", "AI / LLM",
             Array.Empty<string>(), RequiresAiOllama: true),
+        new("ollama-benchmark", "Ollama: Benchmark Models", "Benchmark performance of local Ollama models", "[AI Agent & Ollama]", "AI / LLM",
+            Array.Empty<string>(), RequiresAiOllama: true),
         new("deck-setup", "Antigravity Deck: Setup/Initialize", "Setup local Antigravity Deck", "[AI Agent & Ollama]", "AI / LLM",
             Array.Empty<string>()),
         new("deck-start", "Antigravity Deck: Start Local", "Boot local Antigravity Deck", "[AI Agent & Ollama]", "AI / LLM",
@@ -132,6 +134,8 @@ public static class CommandRegistry
         new("deck-online", "Antigravity Deck: Go Online (Tunnel)", "Expose local Deck via tunnel", "[AI Agent & Ollama]", "AI / LLM",
             Array.Empty<string>()),
         new("agy-cli", "Launch Antigravity CLI (agy)", "Launch the google antigravity CLI tool terminal", "[AI Agent & Ollama]", "AI / LLM",
+            Array.Empty<string>()),
+        new("ai-history", "AI History Ledger", "Show ledger of past AI invocations", "[AI Agent & Ollama]", "AI / LLM",
             Array.Empty<string>()),
 
         // [AGY Account Switch]

@@ -149,6 +149,101 @@ public static class OllamaHelper
         }
     }
 
+    public static void BenchmarkOllamaModels()
+    {
+        if (!AgyAiCore.IsOllamaRunning())
+        {
+            SpectrePanel.Error("Ollama daemon is offline.");
+            Thread.Sleep(1500);
+            return;
+        }
+
+        try
+        {
+            var response = HttpClientProvider.Client.GetStringAsync("http://127.0.0.1:11434/api/tags").Result;
+            using var doc = JsonDocument.Parse(response);
+            if (!doc.RootElement.TryGetProperty("models", out var modelsProp) || modelsProp.ValueKind != JsonValueKind.Array || modelsProp.GetArrayLength() == 0)
+            {
+                SpectrePanel.Warning("No local models found to benchmark.");
+                Thread.Sleep(1500);
+                return;
+            }
+
+            AnsiConsole.Clear();
+            AnsiConsole.MarkupLine("[cyan bold]Ollama Model Benchmark[/]\n");
+            
+            var table = new Table().Border(TableBorder.Rounded);
+            table.AddColumn("[bold]Model[/]");
+            table.AddColumn("[bold]Size (GB)[/]");
+            table.AddColumn("[bold]Latency (s)[/]");
+            table.AddColumn("[bold]Status[/]");
+
+            AnsiConsole.MarkupLine("[dim]Starting benchmark run... this sends a short prompt to each model to measure latency.[/]\n");
+
+            foreach (var m in modelsProp.EnumerateArray())
+            {
+                var name = m.GetProperty("name").GetString() ?? "";
+                long sizeBytes = 0;
+                if (m.TryGetProperty("size", out var sizeProp)) sizeBytes = sizeProp.GetInt64();
+                var sizeGb = Math.Round(sizeBytes / (1024.0 * 1024.0 * 1024.0), 2);
+
+                AnsiConsole.Markup($"Testing [yellow]{name}[/]... ");
+                
+                var startTime = DateTime.UtcNow;
+                var requestBody = JsonSerializer.Serialize(new
+                {
+                    model = name,
+                    prompt = "Explain gravity in 5 words.",
+                    stream = false
+                });
+
+                try
+                {
+                    var postTask = HttpClientProvider.Client.PostAsync(
+                        "http://127.0.0.1:11434/api/generate",
+                        new StringContent(requestBody, Encoding.UTF8, "application/json")
+                    );
+                    
+                    if (postTask.Wait(TimeSpan.FromSeconds(10)))
+                    {
+                        var res = postTask.Result;
+                        if (res.IsSuccessStatusCode)
+                        {
+                            var elapsed = (DateTime.UtcNow - startTime).TotalSeconds;
+                            table.AddRow(name, sizeGb.ToString("F2"), elapsed.ToString("F2"), "[green]Success[/]");
+                            AnsiConsole.MarkupLine($"[green]Done ({elapsed:F2}s)[/]");
+                        }
+                        else
+                        {
+                            table.AddRow(name, sizeGb.ToString("F2"), "--", $"[red]HTTP {res.StatusCode}[/]");
+                            AnsiConsole.MarkupLine($"[red]Failed ({res.StatusCode})[/]");
+                        }
+                    }
+                    else
+                    {
+                        table.AddRow(name, sizeGb.ToString("F2"), "--", "[red]Timeout[/]");
+                        AnsiConsole.MarkupLine("[red]Timeout (10s)[/]");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    table.AddRow(name, sizeGb.ToString("F2"), "--", $"[red]Error[/]");
+                    AnsiConsole.MarkupLine($"[red]Error: {ex.Message}[/]");
+                }
+            }
+
+            AnsiConsole.WriteLine();
+            AnsiConsole.Write(table);
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Benchmark failed: {ex.Message}");
+        }
+
+        Console.WriteLine("\nPress any key to return...");
+        Console.ReadKey(true);
+    }
+
     public static void PullOllamaModel()
     {
         if (!AgyAiCore.IsOllamaRunning())
@@ -404,6 +499,70 @@ public static class AgyAiCore
         return mode;
     }
 
+    private static void InvokeWithPipeline(string agentName, string? providerModeOverride, Action<string> executeAction)
+    {
+        var activeAccount = AgyAccountCore.GetActiveAccount();
+        var mode = providerModeOverride ?? GetEffectiveProviderMode();
+
+        if (mode == "cloud" && AgyAiCore.IsAgyEnabled())
+        {
+            var stats = AgyAccountCore.GetAccountStats(activeAccount);
+            if (stats.QuotaStatus == "Exceeded" || stats.GeminiFiveHour >= 98.0)
+            {
+                AnsiConsole.MarkupLine($"[yellow]Warning: Account '{activeAccount}' quota is close to or has exceeded limits (5h: {stats.GeminiFiveHour}%).[/]");
+                if (AnsiConsole.Confirm("Would you like to auto-fallback to local Ollama execution?"))
+                {
+                    mode = "local";
+                    AnsiConsole.MarkupLine("[green]Falling back to local Ollama daemon...[/]");
+                    Thread.Sleep(1000);
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine("[cyan]Continuing with cloud execution...[/]");
+                }
+            }
+        }
+
+        var startTime = DateTime.UtcNow;
+        bool success = true;
+
+        try
+        {
+            executeAction(mode);
+        }
+        catch (Exception ex)
+        {
+            success = false;
+            SpectrePanel.Error($"Error running AI tool {agentName}: {ex.Message}");
+            throw;
+        }
+        finally
+        {
+            var duration = DateTime.UtcNow - startTime;
+            RecordAiActivity(agentName, mode, duration, success);
+        }
+    }
+
+    private static void RecordAiActivity(string agentName, string mode, TimeSpan duration, bool success)
+    {
+        try
+        {
+            var logPath = Path.Combine(AgyAccountCore.AgySourceHome, "ai_activity_log.jsonl");
+            var record = new
+            {
+                Timestamp = DateTime.UtcNow.ToString("o"),
+                Agent = agentName,
+                Mode = mode,
+                DurationMs = duration.TotalMilliseconds,
+                Success = success,
+                Account = AgyAccountCore.GetActiveAccount()
+            };
+            var line = JsonSerializer.Serialize(record) + "\n";
+            File.AppendAllText(logPath, line);
+        }
+        catch {}
+    }
+
     public static void SetAiProviderMode(string mode)
     {
         var path = GetConfigPath();
@@ -574,33 +733,34 @@ public static class AgyAiCore
 
     public static void InvokeClaude(string[]argsList, string? providerModeOverride = null)
     {
-        var mode = providerModeOverride ?? GetEffectiveProviderMode();
-        if (mode == "cloud")
+        InvokeWithPipeline("Claude", providerModeOverride, mode =>
         {
-            RunInteractive("claude.cmd", argsList);
-        }
-        else
-        {
-            EnsureOllamaServer();
-            var env=new Dictionary<string, string?>
+            if (mode == "cloud")
             {
-                ["OLLAMA_HOST"]="127.0.0.1:11434", ["ANTHROPIC_BASE_URL"]="http://127.0.0.1:11434", ["NODE_OPTIONS"]=AppendNodeOption(Environment.GetEnvironmentVariable("NODE_OPTIONS"))
+                RunInteractive("claude.cmd", argsList);
             }
-            ;
-            var argList=new List<string>
+            else
             {
-                "launch","claude"
+                EnsureOllamaServer();
+                var env=new Dictionary<string, string?>
+                {
+                    ["OLLAMA_HOST"]="127.0.0.1:11434", ["ANTHROPIC_BASE_URL"]="http://127.0.0.1:11434", ["NODE_OPTIONS"]=AppendNodeOption(Environment.GetEnvironmentVariable("NODE_OPTIONS"))
+                }
+                ;
+                var argList=new List<string>
+                {
+                    "launch","claude"
+                }
+                ;
+                if (!argsList.Contains("--model"))
+                {
+                    argList.Add("--model");
+                    argList.Add(OllamaDefaultModel);
+                }
+                argList.AddRange(argsList);
+                RunInteractive("ollama.exe", argList, env);
             }
-            ;
-            if (!argsList.Contains("--model"))
-            {
-                argList.Add("--model");
-                argList.Add(OllamaDefaultModel);
-            }
-            argList.AddRange(argsList);
-            RunInteractive("ollama.exe", argList, env);
-        }
-
+        });
     }
 
     public static void InvokeCodex(string[]argsList, string? providerModeOverride = null)
@@ -685,36 +845,38 @@ public static class AgyAiCore
 
     public static void InvokeOpenClaw(string[]argsList)
     {
-        EnsureOllamaServer();
-        EnsureOpenClawGateway();
-        string?model=null;
-        var cleanArgs=new List<string>();
-        for (var i=0;
-        i<argsList.Length;
-        i++)
+        InvokeWithPipeline("OpenClaw", "local", _ =>
         {
-            if (argsList[i]=="--model"&&i<argsList.Length-1)
+            EnsureOllamaServer();
+            EnsureOpenClawGateway();
+            string?model=null;
+            var cleanArgs=new List<string>();
+            for (var i=0;
+            i<argsList.Length;
+            i++)
             {
-                model=argsList[i+1];
-                i++;
+                if (argsList[i]=="--model"&&i<argsList.Length-1)
+                {
+                    model=argsList[i+1];
+                    i++;
+                }
+                else cleanArgs.Add(argsList[i]);
             }
-            else cleanArgs.Add(argsList[i]);
-        }
-        model??=OllamaDefaultModel;
-        var cleanModel=Regex.Replace(model,"^ollama/","");
-        RunInteractive("openclaw.cmd", ["config","set","agents.defaults.model.primary",$"ollama/{cleanModel}"]);
-        var argList2=cleanArgs.Count==0?new List<string>
-        {
-            "chat"
-        }
-        :cleanArgs;
-        var env=new Dictionary<string, string?>
-        {
-            ["OLLAMA_HOST"]="127.0.0.1:11434"
-        }
-        ;
-        RunInteractive("openclaw.cmd", argList2, env);
-
+            model??=OllamaDefaultModel;
+            var cleanModel=Regex.Replace(model,"^ollama/","");
+            RunInteractive("openclaw.cmd", ["config","set","agents.defaults.model.primary",$"ollama/{cleanModel}"]);
+            var argList2=cleanArgs.Count==0?new List<string>
+            {
+                "chat"
+            }
+            :cleanArgs;
+            var env=new Dictionary<string, string?>
+            {
+                ["OLLAMA_HOST"]="127.0.0.1:11434"
+            }
+            ;
+            RunInteractive("openclaw.cmd", argList2, env);
+        });
     }
 
     public static void InvokeClawdbot(string[]argsList) => InvokeOpenClaw(argsList);
@@ -749,9 +911,14 @@ public static class AgyAiCore
         ;
         foreach (var a in argsList)if (a!="--model"&&a!=OllamaDefaultModel)argList.Add(a);
         AnsiConsole.MarkupLine("[cyan]Starting Hermes Agent TUI...[/]");
-        RunInteractive(bin, argList);
-        return HermesResult.Launched;
-
+        
+        var result = HermesResult.NotInstalled;
+        InvokeWithPipeline("Hermes", "local", _ =>
+        {
+            RunInteractive(bin, argList);
+            result = HermesResult.Launched;
+        });
+        return result;
     }
 
     public static HermesResult InvokeHermesDesktop(string[]argsList)
