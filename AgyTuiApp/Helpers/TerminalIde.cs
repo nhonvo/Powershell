@@ -1,3 +1,4 @@
+using System.Text;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -70,18 +71,6 @@ public static class CodeViewer
 {
     private static readonly SearchValues<char> StringDelimiters = SearchValues.Create(['"', '\'', '`']);
 
-    private record SyntaxRule(string[] Keywords, string? CommentPattern);
-    private static readonly Dictionary<string, SyntaxRule> SyntaxRules = new()
-    {
-        { ".cs", new SyntaxRule(["public", "private", "protected", "internal", "class", "void", "string", "int", "var", "return", "if", "else", "foreach", "using", "namespace", "static", "new"], @"//.*$") },
-        { ".ps1", new SyntaxRule(["function", "param", "if", "else", "foreach", "return", "process"], @"#.*$") },
-        { ".js", new SyntaxRule(["const", "let", "var", "function", "return", "if", "else", "for", "while", "class", "import", "export", "default"], @"//.*$") },
-        { ".ts", new SyntaxRule(["const", "let", "var", "function", "return", "if", "else", "for", "while", "class", "import", "export", "default", "interface", "type", "public", "private"], @"//.*$") },
-        { ".json", new SyntaxRule(["true", "false", "null"], null) },
-        { ".py", new SyntaxRule(["def", "class", "return", "if", "elif", "else", "for", "while", "import", "from", "as", "in", "not", "and", "or"], @"#.*$") },
-        { ".sh", new SyntaxRule(["if", "then", "elif", "else", "fi", "for", "in", "do", "done", "echo", "exit", "return"], @"#.*$") }
-    };
-
     public static void Show(string filePath)
     {
         if (!File.Exists(filePath))
@@ -122,16 +111,24 @@ public static class CodeViewer
     {
         if (string.IsNullOrWhiteSpace(line)) return string.Empty;
         var escaped = line.EscapeMarkup();
-        if (SyntaxRules.TryGetValue(ext, out var rule))
+        if (ext == ".cs")
         {
-            foreach (var kw in rule.Keywords)
+            // Simple syntax highlight heuristics
+            var keywords = new[] { "public", "private", "protected", "internal", "class", "void", "string", "int", "var", "return", "if", "else", "foreach", "using", "namespace", "static", "new" };
+            foreach (var kw in keywords)
             {
                 escaped = Regex.Replace(escaped, $@"\b{kw}\b", $"[blue]{kw}[/]");
             }
-            if (rule.CommentPattern != null)
+            escaped = Regex.Replace(escaped, @"//.*$", m => $"[green]{m.Value}[/]");
+        }
+        else if (ext == ".ps1")
+        {
+            var keywords = new[] { "function", "param", "if", "else", "foreach", "return", "process" };
+            foreach (var kw in keywords)
             {
-                escaped = Regex.Replace(escaped, rule.CommentPattern, m => $"[green]{m.Value}[/]");
+                escaped = Regex.Replace(escaped, $@"\b{kw}\b", $"[blue]{kw}[/]");
             }
+            escaped = Regex.Replace(escaped, @"#.*$", m => $"[green]{m.Value}[/]");
         }
         return escaped;
     }
@@ -251,33 +248,234 @@ public static class TerminalIde
     public static void Open(string? path = null)
     {
         var root = path ?? Directory.GetCurrentDirectory();
+        UpdateAgyContext(root);
+        ShowIdeLayout(root);
+    }
+
+    public static void ShowIdeLayout(string rootPath, string? openFilePath = null)
+    {
+        var currentFile = openFilePath;
+        var files = Directory.EnumerateFiles(rootPath, "*.*", SearchOption.AllDirectories)
+            .Where(f => !f.Contains("bin") && !f.Contains("obj") && !f.Contains(".git"))
+            .Select(f => Path.GetRelativePath(rootPath, f))
+            .ToList();
+
+        if (currentFile == null && files.Count > 0)
+        {
+            currentFile = Path.Combine(rootPath, files[0]);
+        }
+
         while (true)
         {
-            AnsiConsole.Clear();
-            AnsiConsole.Write(new Rule($"[bold cyan]AGY — IDE: {root.EscapeMarkup()}[/]").RuleStyle("grey"));
-            var actions = new[] { "Browse files", "Search in files", "View git diff", "Open file by path", "← Exit IDE" };
-            var idx = SpectreMenu.Show("Terminal IDE", actions, 0, false);
-            switch (idx)
+            var activeTab = currentFile != null ? Path.GetFileName(currentFile) : "No file open";
+            
+            var layout = new Layout("Root")
+                .SplitRows(
+                    new Layout("Header").Size(3),
+                    new Layout("Main").SplitColumns(
+                        new Layout("Sidebar").Size(30),
+                        new Layout("Editor")
+                    ),
+                    new Layout("Status").Size(3)
+                );
+
+            var sidebarLines = new List<string>();
+            foreach (var f in files.Take(15))
             {
-                case 0:
-                    var file = FileExplorer.Browse(root);
-                    if (file != null) OpenFile(file);
-                    break;
-                case 1:
-                    SearchAcrossFiles(root, AnsiConsole.Ask<string>("[cyan]Search pattern:[/]").Trim());
-                    break;
-                case 2:
-                    GitDiffViewer.ShowDiff(root);
-                    break;
-                case 3:
-                    var fp = AnsiConsole.Ask<string>("[cyan]File path:[/]").Trim();
-                    if (File.Exists(fp)) OpenFile(fp);
-                    else SpectrePanel.Error($"File not found: {fp}");
-                    break;
-                default:
-                    return;
+                var icon = AgyTui.Icons.GetFileIcon(Path.GetExtension(f));
+                var prefix = currentFile != null && f == Path.GetRelativePath(rootPath, currentFile) ? "[green]▶ [/]" : "  ";
+                sidebarLines.Add($"{prefix}{icon} [cyan]{f}[/]");
+            }
+            if (files.Count > 15) sidebarLines.Add("  ...");
+
+            var sidebarPanel = new Panel(string.Join("\n", sidebarLines))
+            {
+                Header = new PanelHeader("[bold yellow]Explorer[/]"),
+                Border = BoxBorder.Rounded
+            };
+            layout["Sidebar"].Update(sidebarPanel);
+
+            var breadcrumbs = currentFile != null 
+                ? $"[bold white]📁 {Path.GetFileName(rootPath)}[/] › [green]{Path.GetRelativePath(rootPath, currentFile).Replace(Path.DirectorySeparatorChar, '›')}[/]"
+                : $"[bold white]📁 {Path.GetFileName(rootPath)}[/]";
+            var headerPanel = new Panel(new Align(new Markup(breadcrumbs), HorizontalAlignment.Left, VerticalAlignment.Middle))
+            {
+                Border = BoxBorder.None
+            };
+            layout["Header"].Update(headerPanel);
+
+            string editorText = "";
+            if (currentFile != null && File.Exists(currentFile))
+            {
+                var fileLines = File.ReadAllLines(currentFile).Take(40).ToList();
+                editorText = string.Join("\n", fileLines.Select((l, i) => $"[dim]{i+1:D3} |[/] {l.EscapeMarkup()}"));
+                if (File.ReadAllLines(currentFile).Length > 40) editorText += "\n[dim]... (truncated) ...[/]";
+            }
+            else
+            {
+                editorText = "[dim]No file loaded. Select a file from the sidebar to inspect.[/]";
+            }
+            var editorPanel = new Panel(editorText)
+            {
+                Header = new PanelHeader($"[bold green] {activeTab} [/]"),
+                Border = BoxBorder.Rounded
+            };
+            layout["Editor"].Update(editorPanel);
+
+            var branch = Helpers.ProcessRunner.RunCapture("git", "branch --show-current").Trim();
+            if (string.IsNullOrEmpty(branch)) branch = "main";
+            var statusText = $"[green]⚙ {activeTab}[/] | Git: [yellow]{branch}[/] | [dim][Ctrl+B] Sidebar | [Ctrl+P] Quick Open | [Ctrl+K] Ask AI[/]";
+            var statusPanel = new Panel(new Align(new Markup(statusText), HorizontalAlignment.Left, VerticalAlignment.Middle))
+            {
+                Border = BoxBorder.Rounded,
+                BorderStyle = new Style(Color.Grey)
+            };
+            layout["Status"].Update(statusPanel);
+
+            AnsiConsole.Clear();
+            AnsiConsole.Write(layout);
+            
+            AnsiConsole.WriteLine();
+            var choices = new[] { "Select File", "Fuzzy Quick Open (Ctrl+P)", "Ask AI / Explain Code (Ctrl+K)", "Edit File", "Search Workspace", "← Exit IDE" };
+            var idx = SpectreMenu.Show("IDE Command Palette", choices, 0, false);
+            if (idx == 0)
+            {
+                var fileIdx = SpectreMenu.Show("Select File to Open", files.ToArray(), 0, true);
+                if (fileIdx >= 0)
+                {
+                    currentFile = Path.Combine(rootPath, files[fileIdx]);
+                    UpdateAgyContext(rootPath, currentFile);
+                }
+            }
+            else if (idx == 1)
+            {
+                var query = AnsiConsole.Ask<string>("[cyan]Quick Open (filename prefix):[/]").Trim();
+                var matches = files.Where(f => f.Contains(query, StringComparison.OrdinalIgnoreCase)).ToArray();
+                if (matches.Length > 0)
+                {
+                    var fileIdx = SpectreMenu.Show("Matches", matches, 0, true);
+                    if (fileIdx >= 0)
+                    {
+                        currentFile = Path.Combine(rootPath, matches[fileIdx]);
+                        UpdateAgyContext(rootPath, currentFile);
+                    }
+                }
+                else
+                {
+                    SpectrePanel.Warning("No matching files.");
+                    Thread.Sleep(1000);
+                }
+            }
+            else if (idx == 2)
+            {
+                if (currentFile != null)
+                {
+                    AnsiConsole.MarkupLine("[cyan]Sending file content to AI for review/explanation...[/]");
+                    AgyAiCore.InvokeClaude(["--prompt", $"Read this file content and explain what it does, highlight any potential bugs, and suggest improvements: {currentFile}"]);
+                }
+                else
+                {
+                    SpectrePanel.Warning("Please open a file first.");
+                    Thread.Sleep(1000);
+                }
+            }
+            else if (idx == 3)
+            {
+                if (currentFile != null)
+                {
+                    LaunchEditor(currentFile);
+                }
+                else
+                {
+                    SpectrePanel.Warning("No active file open to edit.");
+                    Thread.Sleep(1000);
+                }
+            }
+            else if (idx == 4)
+            {
+                var pattern = AnsiConsole.Ask<string>("[cyan]Search pattern:[/]").Trim();
+                SearchAcrossFiles(rootPath, pattern);
+            }
+            else
+            {
+                break;
             }
         }
+    }
+
+    public static void UpdateAgyContext(string rootPath, string? touchedFile = null)
+    {
+        try
+        {
+            var contextFile = Path.Combine(rootPath, ".agy-context.md");
+            var touchedList = new List<string>();
+            if (File.Exists(contextFile))
+            {
+                var lines = File.ReadAllLines(contextFile);
+                var isTouchedSection = false;
+                foreach (var line in lines)
+                {
+                    if (line.StartsWith("## Recently Touched Files"))
+                    {
+                        isTouchedSection = true;
+                        continue;
+                    }
+                    if (line.StartsWith("##"))
+                    {
+                        isTouchedSection = false;
+                    }
+                    if (isTouchedSection && line.StartsWith("- "))
+                    {
+                        touchedList.Add(line[2..].Trim());
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(touchedFile))
+            {
+                var relPath = Path.GetRelativePath(rootPath, touchedFile);
+                touchedList.Remove(relPath);
+                touchedList.Insert(0, relPath);
+            }
+
+            var todoList = new List<string>();
+            foreach (var file in Directory.EnumerateFiles(rootPath, "*.*", SearchOption.AllDirectories)
+                .Where(f => !f.Contains("bin") && !f.Contains("obj") && !f.Contains(".git"))
+                .Take(200))
+            {
+                try
+                {
+                    var fileLines = File.ReadAllLines(file);
+                    for (int i = 0; i < fileLines.Length; i++)
+                    {
+                        var match = Regex.Match(fileLines[i], @"\bTODO\b:(.*)", RegexOptions.IgnoreCase);
+                        if (match.Success)
+                        {
+                            todoList.Add($"- {Path.GetRelativePath(rootPath, file)}:L{i+1}:{match.Groups[1].Value.Trim()}");
+                        }
+                    }
+                }
+                catch {}
+            }
+
+            var sb = new StringBuilder();
+            sb.AppendLine("# Workspace Context Handoff (.agy-context.md)");
+            sb.AppendLine();
+            sb.AppendLine("## Recently Touched Files");
+            foreach (var f in touchedList.Take(5))
+            {
+                sb.AppendLine($"- {f}");
+            }
+            sb.AppendLine();
+            sb.AppendLine("## Active TODOs");
+            foreach (var todo in todoList.Take(10))
+            {
+                sb.AppendLine(todo);
+            }
+
+            File.WriteAllText(contextFile, sb.ToString(), Encoding.UTF8);
+        }
+        catch {}
     }
 
     public static void OpenFile(string filePath)

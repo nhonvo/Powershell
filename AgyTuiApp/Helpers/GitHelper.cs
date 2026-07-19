@@ -44,13 +44,33 @@ public static class GitHelper
         var commitType = CommitTypes[typeIdx];
         var scope = AnsiConsole.Ask<string>("[dim]Scope[/] (optional, press Enter to skip):", string.Empty).Trim();
         var scopePart = string.IsNullOrWhiteSpace(scope) ? string.Empty : $"({scope})";
-        string description;
+
+        string description = "";
+        var draftWithClaude = AnsiConsole.Confirm("Would you like Claude to draft the description from staged diff?");
+        if (draftWithClaude)
+        {
+            var diff = RunGit("diff --cached").Trim();
+            if (string.IsNullOrEmpty(diff))
+            {
+                SpectrePanel.Warning("No staged diff found. Please stage changes first.");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[cyan]Sending staged diff to Claude to draft description...[/]");
+                var tempFile = Path.Combine(Path.GetTempPath(), "staged_diff.diff");
+                File.WriteAllText(tempFile, diff);
+                AgyAiCore.InvokeClaude(["--prompt", $"Read the diff in {tempFile} and output ONLY a short (under 72 chars), clear description of the changes (no prefix/boilerplate) suitable for a git commit message."]);
+                try { File.Delete(tempFile); } catch {}
+            }
+        }
+
         while (true)
         {
             description = AnsiConsole.Ask<string>("[cyan]Short description[/]:").Trim();
             if (description.Length is >= 5 and <= 72) break;
             SpectrePanel.Warning("Description must be 5–72 characters.");
         }
+
         var breaking = AnsiConsole.Ask<string>("[dim]Breaking changes[/] (optional):", string.Empty).Trim();
         var issues = AnsiConsole.Ask<string>("[dim]Issues closed[/] (e.g. #42, optional):", string.Empty).Trim();
         var sb = new StringBuilder($"{commitType}{scopePart}: {description}");

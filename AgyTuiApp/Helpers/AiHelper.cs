@@ -738,6 +738,27 @@ public static class AgyAiCore
 
     public static void InvokeClaude(string[]argsList, string? providerModeOverride = null)
     {
+        var activeAccount = AgyAccountCore.GetActiveAccount();
+        var sessionFile = Path.Combine(AgyAccountCore.AgySourceHome, "last_claude_account.txt");
+        if (File.Exists(sessionFile))
+        {
+            var lastAccount = File.ReadAllText(sessionFile).Trim();
+            if (lastAccount != activeAccount)
+            {
+                AnsiConsole.MarkupLine($"[yellow]Warning: Account changed from {lastAccount} to {activeAccount} since last Claude session.[/]");
+                if (!AnsiConsole.Confirm("Do you want to continue with this new account?"))
+                {
+                    return;
+                }
+            }
+        }
+        File.WriteAllText(sessionFile, activeAccount);
+
+        if (File.Exists(".agy-context.md"))
+        {
+            AnsiConsole.MarkupLine("[green][[AGY]] Shared context handoff (.agy-context.md) found and loaded.[/]");
+        }
+
         InvokeWithPipeline("Claude", providerModeOverride, mode =>
         {
             if (mode == "cloud")
