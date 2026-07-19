@@ -432,6 +432,12 @@ public static class AgyAccountCore
         var cutoff=now.AddDays(-7);
         meta.RequestHistory.Add(now.ToString("o"));
         meta.RequestHistory=meta.RequestHistory.Where(ts => DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt)&&dt>=cutoff).ToList();
+        
+        var rolling = CalculateRollingQuotas(accountName);
+        if (rolling.Remaining5H <= 10.0)
+        {
+            TriggerLowQuotaWebhook(accountName, rolling.Remaining5H);
+        }
 
         try
         {
@@ -470,6 +476,64 @@ public static class AgyAccountCore
         {
         }
 
+    }
+
+    public static List<(DateTime Time, int ReqsReleased, double QuotaGained)> GetQuotaReleaseForecast(string accountName)
+    {
+        var history = GetAccountMetadata(accountName).RequestHistory;
+        var now = Clock.GetUtcNow().UtcDateTime;
+        var fiveHoursAgo = now.AddHours(-5);
+        
+        var activeRequests = new List<DateTime>();
+        foreach (var ts in history)
+        {
+            if (DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt))
+            {
+                if (dt >= fiveHoursAgo) activeRequests.Add(dt);
+            }
+        }
+
+        activeRequests.Sort();
+        
+        var forecast = new List<(DateTime Time, int ReqsReleased, double QuotaGained)>();
+        const int limit5H = 50;
+        
+        var releases = activeRequests.Select(dt => dt.AddHours(5)).GroupBy(t => {
+            var min = (t.Minute / 15) * 15;
+            return new DateTime(t.Year, t.Month, t.Day, t.Hour, min, 0, DateTimeKind.Utc);
+        }).OrderBy(g => g.Key);
+
+        foreach (var group in releases)
+        {
+            int count = group.Count();
+            double gain = Math.Round((count / (double)limit5H) * 100.0, 2);
+            forecast.Add((group.Key, count, gain));
+        }
+
+        return forecast;
+    }
+
+    public static void TriggerLowQuotaWebhook(string accountName, double remaining5H)
+    {
+        var webhookFile = Path.Combine(AgySourceHome, "quota_webhook.txt");
+        if (!File.Exists(webhookFile)) return;
+
+        try
+        {
+            var url = File.ReadAllText(webhookFile).Trim();
+            if (string.IsNullOrEmpty(url)) return;
+
+            var client = new System.Net.Http.HttpClient();
+            var payload = new
+            {
+                text = $"[Agy Alert] Low quota warning for account {accountName}: Only {remaining5H}% of the 5-hour quota remaining."
+            };
+            var json = JsonSerializer.Serialize(payload);
+            var reqContent = new System.Net.Http.StringContent(json, Encoding.UTF8, "application/json");
+            
+            _ = client.PostAsync(url, reqContent);
+        }
+        catch {}
     }
 
     public static QuotaMetrics CalculateRollingQuotas(string accountName)
@@ -1070,6 +1134,19 @@ public static class AgyAccountCore
             bar,">", bar,"└ Models & Quota","",$" Account: {accountName}","","GEMINI MODELS"," Models within this group: Gemini Flash, Gemini Pro",""," Weekly Limit", GetProgressBar(geminiWeekly),$" {(int)Math.Round(geminiWeekly)}% remaining · Refreshes in {quota.TimeWeekly}",""," Five Hour Limit", GetProgressBar(geminiFiveHour), geminiFiveHour>=100.0?" Quota available":$" {(int)Math.Round(geminiFiveHour)}% remaining · Refreshes in {quota.Time5H}","","","CLAUDE AND GPT MODELS"," Models within this group: Claude Opus, Claude Sonnet, GPT-OSS",""," Weekly Limit", GetProgressBar(claudeWeekly), claudeWeekly>=100.0?" Quota available":$" {(int)Math.Round(claudeWeekly)}% remaining",""," Five Hour Limit", GetProgressBar(claudeFiveHour), claudeFiveHour>=100.0?" Quota available":$" {(int)Math.Round(claudeFiveHour)}% remaining","",""," │ Within each group, models share a weekly limit and a 5-hour limit. Quota is"," │ consumed proportionally to the cost of the tokens. The 5-hour limit smooths"," │ out aggregate demand to fairly distribute global capacity across all users.",""," Weekly Request Distribution (Last 7 Days)"," ==========================================="
         }
         ;
+        var forecast = GetQuotaReleaseForecast(accountName);
+        if (forecast.Count > 0)
+        {
+            lines.Add("");
+            lines.Add(" Quota Release Forecast (Next 5 Hours)");
+            lines.Add(" -------------------------------------");
+            foreach (var item in forecast.Take(10))
+            {
+                var localTime = item.Time.ToLocalTime();
+                lines.Add($"   * [{localTime:HH:mm}] +{item.QuotaGained}% (+{item.ReqsReleased} reqs)");
+            }
+        }
+
         var now=Clock.GetLocalNow().DateTime;
         var dayData=new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         for (int i=0;
