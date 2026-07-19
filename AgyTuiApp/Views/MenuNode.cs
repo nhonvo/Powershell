@@ -71,6 +71,7 @@ public static class MenuNodeBuilder
             MenuNodeKind.Group,
             new[]
             {
+                CreateCommandNode(allCommands["deck-status"]),
                 CreateCommandNode(allCommands["deck-setup"]),
                 CreateCommandNode(allCommands["deck-start"]),
                 CreateCommandNode(allCommands["deck-online"])
@@ -253,6 +254,7 @@ public static class MenuNodeBuilder
             {
                 CreateCommandNode(allCommands["cc"]),
                 CreateCommandNode(allCommands["help"]),
+                CreateCommandNode(allCommands["mobile-setup"]),
                 CreateCommandNode(allCommands["theme"]),
                 CreateCommandNode(allCommands["ui-mode"]),
                 CreateCommandNode(allCommands["density"])

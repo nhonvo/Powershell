@@ -629,6 +629,11 @@ public static class AgyAiCore
     private static bool? _lastOllamaStatus;
     private static DateTime _ollamaStatusCachedAt = DateTime.MinValue;
 
+    public static bool IsDeckRunning()
+    {
+        return IsPortListening(3000);
+    }
+
     public static bool IsOllamaRunning()
     {
         if (_lastOllamaStatus.HasValue && (DateTime.UtcNow - _ollamaStatusCachedAt).TotalSeconds < 3)

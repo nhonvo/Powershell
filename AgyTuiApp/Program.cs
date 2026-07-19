@@ -219,7 +219,8 @@ public static class CcNavigator
         renderer.Run(root);
     }
 }
-
+
+
 public static class Program
 {
     public static void Main(string[]args)
@@ -352,6 +353,19 @@ public static class Program
                  case"ollama-status":
                     OllamaStatusWidgetCache.Invalidate();
                     break;
+                case"deck-status":
+                {
+                    var running = AgyAiCore.IsDeckRunning();
+                    var statusStr = running ? "[green]Online (port 3000)[/]" : "[red]Offline[/]";
+                    AnsiConsole.MarkupLine($"Antigravity Deck Status: {statusStr}");
+                    if (running)
+                    {
+                        AnsiConsole.MarkupLine("Local App URL: [cyan]http://127.0.0.1:3000[/]");
+                    }
+                    Console.WriteLine("\nPress any key to return...");
+                    Console.ReadKey(true);
+                }
+                break;
                 case"deck-setup":AntigravityDeckHelper.Setup();
                 break;
                 case"deck-start":AntigravityDeckHelper.StartLocal();

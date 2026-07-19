@@ -751,12 +751,12 @@ Everything in this document is still **📄 Planned** — this has been planning
 | SSH × Tailscale (Tailscale Serve/Funnel, `status --json`, key lifecycle, QR enrollment, session visibility) | 📄 Planned | Biggest security-relevant cleanup in the plan |
 | AI Agent & Ollama (pre-flight quota check, provider auto-fallback, model benchmarking, shared `HttpClient`) | 🟢 Shipped | |
 | Agy × Claude Workflow (session continuity, unified `/ai-history` ledger, diff/commit handoff, `.agy-context.md`, scaffold handoff) | 📄 Planned | |
-| Antigravity Deck (path fix, dedupe guards, `deck-status`, in-TUI output capture, tunnel URL + QR) | 📄 Planned | New this round |
+| Antigravity Deck (path fix, dedupe guards, `deck-status`, in-TUI output capture, tunnel URL + QR) | 🟢 Shipped | New this round |
 | Terminal IDE — VS Code-style rewrite (sidebar, tabs, breadcrumbs, git gutter, Quick Open, AI panel, status bar) | 📄 Planned | Largest single enhancement by code volume |
 | Terminal IDE — Slash commands (17 commands, categorized) + Skills System | 📄 Planned | Depends on `MenuNode`/`CommandRegistry` |
 | Docker & Database (health dashboard, SQLite backup-before-write) | 📄 Planned | |
 | Accounts & Quota (predictive ETA, low-quota webhook) | 📄 Planned | |
-| Mobile / Compact Density (`Density` config, auto-detect, combined mobile shortcut) | 📄 Planned | New this round — coordinates with existing `ThemeHelper` mobile toggle, doesn't replace it |
+| Mobile / Compact Density (`Density` config, auto-detect, combined mobile shortcut) | 🟢 Shipped | New this round — coordinates with existing `ThemeHelper` mobile toggle, doesn't replace it |
 | Performance & Smoothness (`Live`/`Layout` diffed rendering, async widgets, debounced search, precomputed search keys) | 📄 Planned | |
 | Icon System (`Icons.cs`, Nerd Font/emoji detection) | 🟢 Shipped | |
 
