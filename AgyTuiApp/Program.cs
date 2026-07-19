@@ -5301,8 +5301,62 @@ public static class LearnDataPaths
             LearnRoot, DecksDir, VocabDir, JlptDir, SnippetsDir, SheetsDir
         }
         )Directory.CreateDirectory(d);
-
+        SeedDefaultData();
     }
+
+    public static void SeedDefaultData()
+    {
+        // 1. C# Quiz questions
+        if (!File.Exists(QuizFile))
+        {
+            var defaultQuestions = new[]
+            {
+                new QuizQuestion("cs-1", "C# Basics", 1, "What is the size of an int in C#?", new[] { "2 bytes", "4 bytes", "8 bytes", "Depends on platform" }, 1, "In C#, 'int' maps directly to System.Int32, which is always 32-bit (4 bytes) regardless of platform or architecture.", null, new[] { "basics", "types" }),
+                new QuizQuestion("cs-2", "C# Basics", 1, "Which keyword is used to declare a constant in C#?", new[] { "const", "readonly", "static", "let" }, 0, "The 'const' keyword declares a compile-time constant, whereas 'readonly' declares a run-time constant.", null, new[] { "basics", "keywords" }),
+                new QuizQuestion("cs-3", "OOP", 2, "Which access modifier allows access within the same assembly or subclass?", new[] { "private", "protected", "internal", "protected internal" }, 3, "The 'protected internal' modifier allows access within the defining assembly, or from derived classes in any assembly.", null, new[] { "oop", "access-modifiers" })
+            };
+            SaveJson(QuizFile, new QuizFile(defaultQuestions));
+        }
+
+        // 2. Flashcard deck
+        var defaultDeckFile = System.IO.Path.Combine(DecksDir, "general.json");
+        if (!File.Exists(defaultDeckFile))
+        {
+            var defaultMeta = new DeckMeta("deck-1", "General Developer Deck", "English", "General Dev", "Beginner", new[] { "internal" }, DateTime.UtcNow.ToString("o"), 1);
+            var defaultCards = new[]
+            {
+                new FlashCard("card-1", "What is SOLID?", "SOLID is an acronym for five design principles: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion.", "Software design acronym", "S-O-L-I-D principles", "Use SOLID principles to write clean code.", new[] { "oop", "architecture" }, 2, NewCardState()),
+                new FlashCard("card-2", "Explain Git merge vs. rebase.", "Merge keeps full commit history with merge commits. Rebase rewrites commit history on top of the target branch for a linear project history.", "Git workflow strategy", "Rebase = rewrite history, Merge = preserve history", "Rebasing keeps the commit tree clean.", new[] { "git" }, 2, NewCardState())
+            };
+            SaveJson(defaultDeckFile, new DeckFile(defaultMeta, defaultCards));
+        }
+
+        // 3. JLPT N5 words
+        var defaultJlptFile = System.IO.Path.Combine(JlptDir, "n5.json");
+        if (!File.Exists(defaultJlptFile))
+        {
+            var defaultWords = new[]
+            {
+                new JlptWord("jlpt-1", "日本語", "にほんご", "nihongo", "Japanese language", "Noun", "N5", "日本語を勉強します。", "I study Japanese.", new[] { "language" }, NewCardState()),
+                new JlptWord("jlpt-2", "食べる", "たべる", "taberu", "To eat", "Verb", "N5", "リンゴを食べます。", "I eat an apple.", new[] { "verbs" }, NewCardState())
+            };
+            SaveJson(defaultJlptFile, new JlptFile("N5", defaultWords));
+        }
+
+        // 4. Vocab Words (Intermediate)
+        var defaultVocabFile = System.IO.Path.Combine(VocabDir, "intermediate.json");
+        if (!File.Exists(defaultVocabFile))
+        {
+            var defaultWords = new[]
+            {
+                new VocabWord("vocab-1", "ubiquitous", "yoo-bik-wi-tuhs", "Adjective", "Existing or being everywhere at the same time; constantly encountered.", "Mobile phones are ubiquitous today.", new[] { "omnipresent", "pervasive" }, new[] { "rare", "scarce" }, 3, new[] { "adjectives" }, NewCardState()),
+                new VocabWord("vocab-2", "pragmatic", "prag-mat-ik", "Adjective", "Dealing with things sensibly and realistically in a way that is based on practical rather than theoretical considerations.", "We need to take a pragmatic approach to software development.", new[] { "practical", "realistic" }, new[] { "idealistic", "impractical" }, 2, new[] { "adjectives" }, NewCardState())
+            };
+            SaveJson(defaultVocabFile, new VocabFile("Intermediate", defaultWords));
+        }
+    }
+
+    private static SrState NewCardState() => new(2.5, 0, 0, null, null, "new");
 
     private static readonly JsonSerializerOptions _js=new()
     {
@@ -7429,7 +7483,18 @@ public static class CcNavigator
         var list = new List<Section>();
         foreach (var s in AllSections)
         {
-            if (s.Label.Contains("AI Agent & Ollama") && !enableAi) continue;
+            if (s.Label.Contains("AI Agent & Ollama"))
+            {
+                if (!enableAi) continue;
+                if (!enableAgy)
+                {
+                    var newItems = s.Items.Select(item => 
+                        item.Alias == "agy-cli" ? ("Launch Claude Code CLI (claude)", "agy-cli") : item
+                    ).ToArray();
+                    list.Add(new Section(s.Label, newItems, s.Desc));
+                    continue;
+                }
+            }
             if (s.Label.Contains("AGY Account Switch") && !enableAgy) continue;
 
             list.Add(s);
@@ -7441,6 +7506,7 @@ public static class CcNavigator
     {
         try
         {
+            LearnDataPaths.EnsureDirectories();
             var leftSel=0;
             var midSel=0;
             var midActive=false;
@@ -8344,6 +8410,11 @@ public static class Program
                 case"deck-online":AntigravityDeckHelper.StartOnline();
                 break;
                 case"agy-cli":
+                    if (!AgyAiCore.IsAgyEnabled())
+                    {
+                        AgyAiCore.InvokeClaude([]);
+                        break;
+                    }
                     try
                     {
                         var targetDirLoc = AgyAccountCore.GetAccountDirectory(AgyAccountCore.GetActiveAccount());
