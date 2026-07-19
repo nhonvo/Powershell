@@ -164,7 +164,7 @@ public static class SpacedRepetitionEngine
     public static SrResult UpdateCard(SrState current, int quality)
     {
         bool passed=quality>=3;
-        double ef=Math.Max(1.3, current.EaseFactor+0.1-(5-quality)*(0.08+(5-quality)*0.02));
+        double ef=Math.Max(1.3, current.EaseFactor+(0.1-(5-quality)*(0.08+(5-quality)*0.02)));
         int reps=passed?current.Repetitions+1:0;
         int interval=reps switch
         {
@@ -174,7 +174,6 @@ public static class SpacedRepetitionEngine
         if (!passed)
         {
             interval=1;
-            ef=current.EaseFactor;
         }
         string status=!passed?"learning":interval>21?"mastered":"review";
         var updated=new SrState(ef, interval, reps, DateTime.Now, DateTime.Today.AddDays(interval), status);
@@ -409,13 +408,31 @@ public static class StudyStats
 
     public static int GetCurrentStreak(StudyLogEntry[]logs)
     {
-        var dates=logs.Select(s => s.Date).Distinct().OrderByDescending(d => d).ToArray();
+        var dates=logs.Select(s => {
+            if (DateTime.TryParse(s.Date, out var dt)) return dt.Date;
+            return DateTime.MinValue;
+        }).Where(d => d != DateTime.MinValue).Distinct().OrderByDescending(d => d).ToArray();
+
+        if (dates.Length == 0) return 0;
+
         int streak=0;
         var check=DateTime.Today;
+
+        if (dates[0] != check)
+        {
+            if (dates[0] == check.AddDays(-1))
+            {
+                check = check.AddDays(-1);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         foreach (var d in dates)
         {
-            if (!DateTime.TryParse(d, out var dt))continue;
-            if (dt.Date==check.Date)
+            if (d == check)
             {
                 streak++;
                 check=check.AddDays(-1);

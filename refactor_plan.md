@@ -747,7 +747,7 @@ Everything in this document is still **📄 Planned** — this has been planning
 ### Feature Enhancements (§5) — one row per domain
 | Domain | Status | Notes |
 |---|---|---|
-| Learning & Study (streak fix, unified `/learn` flow, LLM content gen, Anki import, real SM-2, retention chart, subject/mastery icons) | 📄 Planned | |
+| Learning & Study (streak fix, unified `/learn` flow, LLM content gen, Anki import, real SM-2, retention chart, subject/mastery icons) | 🟢 Shipped | |
 | SSH × Tailscale (Tailscale Serve/Funnel, `status --json`, key lifecycle, QR enrollment, session visibility) | 🟢 Shipped | Biggest security-relevant cleanup in the plan |
 | AI Agent & Ollama (pre-flight quota check, provider auto-fallback, model benchmarking, shared `HttpClient`) | 🟢 Shipped | |
 | Agy × Claude Workflow (session continuity, unified `/ai-history` ledger, diff/commit handoff, `.agy-context.md`, scaffold handoff) | 📄 Planned | |
