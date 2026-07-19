@@ -735,10 +735,10 @@ Everything in this document is still **📄 Planned** — this has been planning
 | `ProcessRunner.cs` (dedupe 8 shell-out helpers) | 2 | 🟢 Shipped | Also fixes Antigravity Deck's `RunNpmCommand` |
 | Terminal IDE extraction (`FileExplorer`/`CodeViewer`/`SymbolSearch`/`GitDiffViewer`/`TerminalIde`) | 2 | 🟢 Shipped | Structural move only — VS Code-style rewrite tracked separately below |
 | `TtlCache<,>` + migrate 4 existing ad-hoc caches | 6 (cleanup) | 📄 Planned | Table of consumers in §3 |
-| Learning/study/tracking domain extraction | 3 | 📄 Planned | |
-| `SystemHelpers.cs`, `WorkspaceRegistry.cs` extraction | 4 | 📄 Planned | |
-| `AgyAccountCore` split (`AccountRepository`/`QuotaTracker`/`TokenVault`) | 5 | 📄 Planned | Touch DPAPI/keyring carefully per §6 |
-| `AgyAiCore`/`OllamaHelper` merge (dedupe `ShowOllamaLogs`) | 5 | 📄 Planned | |
+| Learning/study/tracking domain extraction | 3 | 🟢 Shipped | |
+| `SystemHelpers.cs`, `WorkspaceRegistry.cs` extraction | 4 | 🟢 Shipped | |
+| `AgyAccountCore` split (`AccountRepository`/`QuotaTracker`/`TokenVault`) | 5 | 🟢 Shipped | Touch DPAPI/keyring carefully per §6 |
+| `AgyAiCore`/`OllamaHelper` merge (dedupe `ShowOllamaLogs`) | 5 | 🟢 Shipped | |
 | `MenuNode`/`IMenuRenderer`/`ScreenChrome`/`StatusWidgets`/`Icons.cs` | 5 | 📄 Planned | Shared infra — blocks `ThreePaneRenderer`, `FlatTreeRenderer`, IDE sidebar, and Deck's status widget |
 | `ThreePaneRenderer.cs` (behavior-preserving port) | 5 | 📄 Planned | Must be verified before `FlatTreeRenderer` starts |
 | `FlatTreeRenderer.cs` (new mode) + `UiMode`/`Density` config | 5 | 📄 Planned | Depends on `ThreePaneRenderer` being verified first |
