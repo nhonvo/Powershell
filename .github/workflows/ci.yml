@@ -7,9 +7,8 @@ on:
     branches: [ main, master ]
 
 jobs:
-  test:
+  powershell-tests:
     runs-on: windows-latest
-
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
@@ -18,3 +17,51 @@ jobs:
       shell: powershell
       run: |
         ./Tests/run_tests.ps1
+
+  dotnet-build:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: nuget-${{ hashFiles('AgyTuiApp/AgyTuiApp.csproj') }}
+
+    - name: Restore dependencies
+      run: dotnet restore AgyTuiApp/AgyTuiApp.csproj
+
+    - name: Build project
+      run: dotnet build AgyTuiApp/AgyTuiApp.csproj -c Release --no-restore -p:TreatWarningsAsErrors=true
+
+    - name: Format verification
+      run: dotnet format AgyTuiApp/AgyTuiApp.csproj --verify-no-changes
+
+  publish-on-tag:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: dotnet-build
+    runs-on: windows-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Publish single-file binary
+      run: dotnet publish AgyTuiApp/AgyTuiApp.csproj -c Release -r win-x64 --self-contained -o dist
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: AgyTuiApp-win-x64
+        path: dist/AgyTuiApp.exe

@@ -764,9 +764,9 @@ Everything in this document is still **📄 Planned** — this has been planning
 | Item | Status | Notes |
 |---|---|---|
 | Fix hardcoded `TruongNhon` paths in `Tests/run_tests.ps1` | 🟢 Shipped | Do this **before** anything else in this table — CI is currently testing the wrong file location on this machine |
-| `dotnet-build` job (restore/build/format, `-warnaserror`) | 📄 Planned | |
-| xunit test project + first tests (`TtlCache`, `SpacedRepetitionEngine`, `QuotaMetrics`, `IdeCommandRegistry`) | 📄 Planned | Only possible once the relevant classes are extracted (Phases 3/5/6) |
-| `publish-on-tag` job (produces `AgyTuiApp.exe` artifact) | 📄 Planned | Feeds §4's DLL-lock fix |
+| `dotnet-build` job (restore/build/format, `-warnaserror`) | 🟢 Shipped | |
+| xunit test project + first tests (`TtlCache`, `SpacedRepetitionEngine`, `QuotaMetrics`, `IdeCommandRegistry`) | 🟢 Shipped | Only possible once the relevant classes are extracted (Phases 3/5/6) |
+| `publish-on-tag` job (produces `AgyTuiApp.exe` artifact) | 🟢 Shipped | Feeds §4's DLL-lock fix |
 | Branch protection requiring `dotnet-build` | 📄 Planned | Repo setting, not a file change — do manually once the job exists |
 
 ### How to use this table going forward
