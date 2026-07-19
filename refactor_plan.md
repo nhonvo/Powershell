@@ -734,7 +734,7 @@ Everything in this document is still **📄 Planned** — this has been planning
 | `ThemeHelper.cs`, `.NET`/Git/Docker/AWS/DB/Scaffold, Obsidian, Git dashboards | 2 | 🟢 Shipped | |
 | `ProcessRunner.cs` (dedupe 8 shell-out helpers) | 2 | 🟢 Shipped | Also fixes Antigravity Deck's `RunNpmCommand` |
 | Terminal IDE extraction (`FileExplorer`/`CodeViewer`/`SymbolSearch`/`GitDiffViewer`/`TerminalIde`) | 2 | 🟢 Shipped | Structural move only — VS Code-style rewrite tracked separately below |
-| `TtlCache<,>` + migrate 4 existing ad-hoc caches | 6 (cleanup) | 📄 Planned | Table of consumers in §3 |
+| `TtlCache<,>` + migrate 4 existing ad-hoc caches | 6 (cleanup) | 🟢 Shipped | Table of consumers in §3 |
 | Learning/study/tracking domain extraction | 3 | 🟢 Shipped | |
 | `SystemHelpers.cs`, `WorkspaceRegistry.cs` extraction | 4 | 🟢 Shipped | |
 | `AgyAccountCore` split (`AccountRepository`/`QuotaTracker`/`TokenVault`) | 5 | 🟢 Shipped | Touch DPAPI/keyring carefully per §6 |
