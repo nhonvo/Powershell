@@ -161,6 +161,7 @@ public static class MenuNodeBuilder
             MenuNodeKind.Category,
             new[]
             {
+                CreateCommandNode(allCommands["docker-health"]),
                 CreateCommandNode(allCommands["dkcl"]),
                 CreateCommandNode(allCommands["dcup"]),
                 CreateCommandNode(allCommands["dcdown"]),

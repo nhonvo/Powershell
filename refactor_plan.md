@@ -754,7 +754,7 @@ Everything in this document is still **📄 Planned** — this has been planning
 | Antigravity Deck (path fix, dedupe guards, `deck-status`, in-TUI output capture, tunnel URL + QR) | 🟢 Shipped | New this round |
 | Terminal IDE — VS Code-style rewrite (sidebar, tabs, breadcrumbs, git gutter, Quick Open, AI panel, status bar) | 📄 Planned | Largest single enhancement by code volume |
 | Terminal IDE — Slash commands (17 commands, categorized) + Skills System | 📄 Planned | Depends on `MenuNode`/`CommandRegistry` |
-| Docker & Database (health dashboard, SQLite backup-before-write) | 📄 Planned | |
+| Docker & Database (health dashboard, SQLite backup-before-write) | 🟢 Shipped | |
 | Accounts & Quota (predictive ETA, low-quota webhook) | 📄 Planned | |
 | Mobile / Compact Density (`Density` config, auto-detect, combined mobile shortcut) | 🟢 Shipped | New this round — coordinates with existing `ThemeHelper` mobile toggle, doesn't replace it |
 | Performance & Smoothness (`Live`/`Layout` diffed rendering, async widgets, debounced search, precomputed search keys) | 📄 Planned | |

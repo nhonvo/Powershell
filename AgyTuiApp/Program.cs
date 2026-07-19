@@ -318,6 +318,8 @@ public static class Program
                 break;
                 case"update-db":DotNetHelper.UpdateDatabase();
                 break;
+                case"docker-health":DockerHelper.ShowDockerHealthDashboard();
+                break;
                 case"dkcl":DockerHelper.ShowCleanupDashboard();
                 break;
                 case"dcup":DockerHelper.ComposeUp();

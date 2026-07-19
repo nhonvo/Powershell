@@ -63,6 +63,41 @@ public static class DockerHelper
         SpectrePanel.Success("Docker cleanup completed.");
     }
 
+    public static void ShowDockerHealthDashboard()
+    {
+        AnsiConsole.Clear();
+        AnsiConsole.Write(new Rule("[bold cyan]Docker Health Dashboard[/]").RuleStyle("grey"));
+        
+        try
+        {
+            var psOutput = Helpers.ProcessRunner.RunCapture("docker", "ps --format \"table {{.ID}}\\t{{.Names}}\\t{{.Status}}\\t{{.Ports}}\"");
+            if (string.IsNullOrWhiteSpace(psOutput) || psOutput.Contains("error during connect"))
+            {
+                SpectrePanel.Warning("Docker daemon is not running or not responding.");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[bold green]Running Containers:[/]");
+                AnsiConsole.WriteLine(psOutput);
+                
+                var statsOutput = Helpers.ProcessRunner.RunCapture("docker", "stats --no-stream --format \"table {{.Name}}\\t{{.CPUPerc}}\\t{{.MemUsage}}\\t{{.NetIO}}\"");
+                if (!string.IsNullOrWhiteSpace(statsOutput))
+                {
+                    AnsiConsole.WriteLine();
+                    AnsiConsole.MarkupLine("[bold green]Resource Usage Stats:[/]");
+                    AnsiConsole.WriteLine(statsOutput);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Failed to query Docker: {ex.Message}");
+        }
+
+        Console.WriteLine("\nPress any key to return...");
+        Console.ReadKey(true);
+    }
+
     public static int ComposeUp(string? composeFile = null)
     {
         var args = composeFile != null ? $"-f {composeFile} up -d" : "up -d";
