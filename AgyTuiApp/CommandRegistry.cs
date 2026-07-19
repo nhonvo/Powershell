@@ -264,6 +264,10 @@ public static class CommandRegistry
         new("help", "Help Browser", "Open interactive help browser", "[Theme & Settings]", "Help",
             Array.Empty<string>()),
         new("theme", "Select Shell Theme", "Select Shell Theme", "[Theme & Settings]", "Theme & Settings",
+            Array.Empty<string>()),
+        new("ui-mode", "Toggle UI Layout Mode", "Toggle between three-pane and flat-tree layouts", "[Theme & Settings]", "Theme & Settings",
+            Array.Empty<string>()),
+        new("density", "Toggle Console Density", "Toggle between comfortable and compact display densities", "[Theme & Settings]", "Theme & Settings",
             Array.Empty<string>())
     };
 

@@ -251,7 +251,9 @@ public static class MenuNodeBuilder
             {
                 CreateCommandNode(allCommands["cc"]),
                 CreateCommandNode(allCommands["help"]),
-                CreateCommandNode(allCommands["theme"])
+                CreateCommandNode(allCommands["theme"]),
+                CreateCommandNode(allCommands["ui-mode"]),
+                CreateCommandNode(allCommands["density"])
             },
             null
         );

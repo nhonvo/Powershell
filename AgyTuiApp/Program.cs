@@ -461,6 +461,24 @@ public static class Program
                 break;
                 case"cc":CommandPalette.Show();
                 break;
+                case"ui-mode":
+                {
+                    var currentMode = Config.Current.UiMode;
+                    var nextMode = currentMode == "three-pane" ? "flat-tree" : "three-pane";
+                    Config.SetUiMode(nextMode);
+                    AnsiConsole.MarkupLine($"[green]UI Mode toggled to '{nextMode}'. Switch will apply next time you launch Control Center.[/]");
+                    Thread.Sleep(1500);
+                }
+                break;
+                case"density":
+                {
+                    var currentDensity = Config.Current.Density;
+                    var nextDensity = currentDensity == "comfortable" ? "compact" : "comfortable";
+                    Config.SetDensity(nextDensity);
+                    AnsiConsole.MarkupLine($"[green]UI Density toggled to '{nextDensity}'. Switch will apply next time you launch Control Center.[/]");
+                    Thread.Sleep(1500);
+                }
+                break;
                 case"learn":var learnTopic=SelectTopicInteractive("Select Topic to Learn");
                 if (!string.IsNullOrEmpty(learnTopic)) LearnRouter.StartLearning(learnTopic);
                 break;
