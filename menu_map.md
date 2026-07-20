@@ -74,23 +74,34 @@ Local system health diagnostics, network settings, and network socket management
 ---
 
 ## 📖 6. `[Learn & Study]`
-Active learning dashboard, language drills, algorithms complexity cheat sheets, and technical interview preparation.
-*   **Start Learning (auto)** (`learn`) — Launch flashcard drills and algorithm reviews.
-*   **Flashcard Deck Browser** (`flashcard`) — Browse and study flashcard decks.
-*   **English Vocab Drill** (`vocab`) — Interactive vocabulary training.
-*   **Kana Quiz** (`kana`) — Japanese hiragana/katakana training.
-*   **Kanji Lookup** (`kanji`) — Search stroke orders and meanings of characters.
-*   **JLPT Vocab Drill** (`jlpt`) — JLPT vocabulary flashcards.
-*   **Algorithm Visualizer** (`algo`) — Sorting/searching algorithm execution.
-*   **Big-O Complexity Sheet** (`complexity`) — Standard algorithms complexity index.
-*   **DSA Problem Tracker** (`problems`) — Track solved LeetCode and HackerRank challenges.
-*   **Code Snippet Library** (`snippets`) — Manage reusable snippets.
-*   **Cheat Sheet Browser** (`sheets`) — Review dev cheat sheets.
-*   **C# Quiz** (`quiz`) — C# features and dotnet runtime quiz questions.
-*   **Interview Question Bank** (`interview`) — Behavioral and technical question pool.
-*   **STAR Answer Builder** (`star`) — Practice framing STAR format answers.
-*   **Mock Interview Timer** (`mock`) — Countdown timer for coding interviews.
-*   **Word of the Day** (`word-of-day`) — Display daily definition, pronunciation, and example.
+Active learning dashboard, Obsidian vault note sync, language drills, algorithms visualizers, complexity cheat sheets, and technical interview preparation.
+*   **Start Learning (auto)** (`learn`) — Launch master learning suite router.
+*   **[Obsidian Vault & Sync]** (Grouped Vault commands):
+    *   **Obsidian Vault Browser** (`obsidian`) — Search notes by keyword, browse tags, view daily notes, and render graph.
+    *   **Rescan & Sync Vault Datasets** (`refresh` / `sync`) — Rescan Obsidian Vault `C:\Users\sshuser\project\learning` and sync flashcards, quizzes, and cheat sheets to `learn/`.
+    *   **Open Vault Folder** (`vault-open`) — Open `C:\Users\sshuser\project\learning` directory in Windows File Explorer.
+*   **[Japanese Suite]** (Grouped Japanese tools):
+    *   **Kana Quiz** (`kana`) — Japanese hiragana/katakana training.
+    *   **Kanji Lookup** (`kanji`) — Search stroke orders, radicals, and meanings.
+    *   **JLPT Vocab Drill** (`jlpt`) — JLPT N5 & N4 vocabulary flashcards (1,653 words).
+    *   **Grammar Drills** (`grammar`) — N5, N4, N3 Japanese grammar points.
+*   **[English & Vocab]** (Grouped English tools):
+    *   **Word of the Day** (`word-of-day`) — Display daily developer definition and context.
+    *   **English Vocab Drill** (`vocab`) — Interactive intermediate & advanced vocabulary.
+    *   **Flashcard Deck Browser** (`flashcard`) — 94 flashcard decks with SM-2 spaced repetition scoring.
+    *   **Grammar Drills** (`grammar`) — English tenses, conditionals, and modals.
+*   **[C# & Dev Masterclass]** (Grouped C# tools):
+    *   **C# Quiz** (`quiz`) — C# features and .NET 9 runtime multiple-choice quiz.
+    *   **Code Snippet Library** (`snippets`) — Manage reusable snippets with clipboard copy.
+    *   **Cheat Sheet Browser** (`sheets`) — Review 978 developer cheat sheets (.txt files).
+*   **[DSA & System Design]** (Grouped DSA tools):
+    *   **Algorithm Visualizer** (`algo`) — Step-by-step terminal execution (Bubble, Quick, Merge, BFS, DP).
+    *   **Big-O Complexity Sheet** (`complexity`) — Standard algorithms time/space complexity index.
+    *   **DSA Problem Tracker** (`problems`) — Track solved LeetCode and HackerRank challenges.
+*   **[Career & Interview Prep]** (Grouped Career tools):
+    *   **Interview Question Bank** (`interview`) — 34 Behavioral and technical questions.
+    *   **STAR Answer Builder** (`star`) — Practice framing STAR format answers.
+    *   **Mock Interview Timer** (`mock`) — Countdown timer for coding interview sessions.
 
 ---
 
@@ -106,22 +117,14 @@ Session management, goals, streaks, progress analytics, and spaced-repetition du
 
 ---
 
-## 🕸️ 8. `[Obsidian & Resources]`
-Obsidian knowledge base syncing, graph visualization, and reference material indexes.
-*   **Obsidian Vault Config** (`obsidian`) — Update vault paths and configurations.
-*   **Obsidian Graph View** (`obs-graph`) — Display wikilinks network in active workspace.
-*   **Refresh Learning Data** (`refresh`) — Reload study files from directories.
-*   **Add Resource** (`add-resource`) — Register reference links and files.
-
----
-
-## ⚙️ 9. `[Theme & Settings]`
+## ⚙️ 8. `[Theme & Settings]`
 Profile themes, command palettes, and documentation help browser.
 *   **Command Palette** (`cc`) — Action switcher command palette.
 *   **Help Browser** (`help`) — In-terminal documentation reader.
 *   **Select Shell Theme** (`theme`) — Interactive oh-my-posh prompt theme selector.
+*   **Toggle Auto-Commit** (`no-auto-commit` / `autocommit`) — Toggle automatic git commits during multi-agent tasks.
 
 ---
 
-## 🚪 10. `[Exit]`
+## 🚪 9. `[Exit]`
 *   **[Exit] Exit Control Center** — Return to standard PowerShell prompt.
