@@ -37,6 +37,50 @@ public static class CommandRegistry
             Array.Empty<string>()),
         new("ide-search", "Search Across Files", "Search pattern across files", "[Workspace & Dev]", "IDE",
             Array.Empty<string>()),
+        new("scaffold", "Scaffold New Project", "Create new project from template", "[Workspace & Dev]", "Scaffold",
+            new[] {
+                "scaffold — Interactive project boilerplate creator.",
+                " Templates: webapi · console · react (Vite) · blazorwasm · classlib · worker"
+            }),
+        new("db-tui", "SQLite Browser", "SQLite schema and data viewer", "[Workspace & Dev]", "Database",
+            new[] {
+                "db-tui <path> — Open SQLite file in interactive schema/data viewer.",
+                " Requires sqlite3 CLI on PATH."
+            }),
+
+        // Git Tools (/git-tools & /repo-dashboards)
+        new("gs", "Git Status", "Git status summary", "[Workspace & Dev]", "Git",
+            new[] {
+                "gs — Short git status (--short) with color coding."
+            }),
+        new("gbr", "Git Branch Manager", "List local and remote branches sorted by recent activity with quick checkout", "[Workspace & Dev]", "Git",
+            Array.Empty<string>()),
+        new("gcmt", "Conventional Commit", "Conventional commit wizard", "[Workspace & Dev]", "Git",
+            new[] {
+                "gcmt — Conventional commit wizard. Prompts for:",
+                " 1. Type: feat | fix | docs | style | refactor | test | chore | ci",
+                " 2. Scope (optional)",
+                " 3. Short description (5–72 chars)",
+                " 4. Breaking changes / issues closed"
+            }),
+        new("glog", "Git Commit Log", "Paged single-repo commit log graph (--oneline --graph)", "[Workspace & Dev]", "Git",
+            Array.Empty<string>()),
+        new("gpull", "Git Pull Remote", "Pull latest commits from remote tracking branch", "[Workspace & Dev]", "Git",
+            Array.Empty<string>()),
+        new("gpush", "Git Push Remote", "Push local commits to remote tracking branch", "[Workspace & Dev]", "Git",
+            Array.Empty<string>()),
+        new("git-undo", "Git Undo Last Commit", "Soft-reset the last local commit", "[Workspace & Dev]", "Git",
+            new[] {
+                "git-undo — Soft-reset the last commit (keeps changes staged)."
+            }),
+        new("nexus", "Repo Nexus Graph", "Git Nexus multi-repo dashboard", "[Workspace & Dev]", "Git",
+            Array.Empty<string>()),
+        new("repo-graph", "Repository dependency graph", "Repository dependency graph", "[Workspace & Dev]", "Git",
+            Array.Empty<string>()),
+        new("nexus-stats", "Git Nexus commit stats", "Git Nexus commit stats", "[Workspace & Dev]", "Git",
+            Array.Empty<string>()),
+
+        // .NET Tools (/dotnet-tools)
         new("dbld", "[.NET] Build Project", "dotnet build in active workspace", "[Workspace & Dev]", ".NET",
             new[] {
                 "dbld — dotnet build in the active workspace."
@@ -45,6 +89,12 @@ public static class CommandRegistry
             new[] {
                 "dtst — dotnet test in the active workspace."
             }),
+        new("drestore", "[.NET] Restore Packages", "dotnet restore packages in active workspace", "[Workspace & Dev]", ".NET",
+            Array.Empty<string>()),
+        new("dpublish", "[.NET] Publish Release", "dotnet publish release binary in active workspace", "[Workspace & Dev]", ".NET",
+            Array.Empty<string>()),
+        new("dwatch", "[.NET] Watch Live-Reload", "dotnet watch run continuous dev loop", "[Workspace & Dev]", ".NET",
+            Array.Empty<string>()),
         new("clean-build", "[.NET] Clean Build Artifacts", "Remove bin/ and obj/ recursively", "[Workspace & Dev]", ".NET",
             new[] {
                 "clean-build — Recursively delete all bin/ and obj/ folders."
@@ -57,50 +107,56 @@ public static class CommandRegistry
             new[] {
                 "update-db — dotnet ef database update"
             }),
-        new("scaffold", "Scaffold New Project", "Create new project from template", "[Workspace & Dev]", "Scaffold",
-            new[] {
-                "scaffold — Interactive project boilerplate creator.",
-                " Templates: webapi · console · react (Vite) · blazorwasm · classlib · worker"
-            }),
-        new("gs", "Git Status", "Git status summary", "[Workspace & Dev]", "Git",
-            new[] {
-                "gs — Short git status (--short) with color coding."
-            }),
-        new("gcmt", "Conventional Commit", "Conventional commit wizard", "[Workspace & Dev]", "Git",
-            new[] {
-                "gcmt — Conventional commit wizard. Prompts for:",
-                " 1. Type: feat | fix | docs | style | refactor | test | chore | ci",
-                " 2. Scope (optional)",
-                " 3. Short description (5–72 chars)",
-                " 4. Breaking changes / issues closed"
-            }),
-        new("git-undo", "Git Undo Last Commit", "Soft-reset the last local commit", "[Workspace & Dev]", "Git",
-            new[] {
-                "git-undo — Soft-reset the last commit (keeps changes staged)."
-            }),
-        new("nexus", "Repo Nexus Graph", "Git Nexus multi-repo dashboard", "[Workspace & Dev]", "Git",
+
+        // Docker Tools (/docker-tools)
+        new("docker-health", "Docker Health Dashboard", "Show container health & resource utilization", "[Workspace & Dev]", "Docker",
             Array.Empty<string>()),
-        new("repo-graph", "Repository dependency graph", "Repository dependency graph", "[Workspace & Dev]", "Git",
+        new("dkcl", "Docker Cleanup", "Docker cleanup TUI dashboard", "[Workspace & Dev]", "Docker",
+            new[] {
+                "dkcl — Docker cleanup TUI dashboard. Options:",
+                " • Stop & remove all containers",
+                " • Prune images and dangling layers",
+                " • Delete unused volumes / networks",
+                " • Full cleanup (all of the above)"
+            }),
+        new("dimg", "Docker Image Manager", "List and inspect local Docker images and layer sizes", "[Workspace & Dev]", "Docker",
             Array.Empty<string>()),
-        new("nexus-stats", "Git Nexus commit stats", "Git Nexus commit stats", "[Workspace & Dev]", "Git",
+        new("dlogs", "Docker Container Logs", "Tail output logs for a selected running container", "[Workspace & Dev]", "Docker",
             Array.Empty<string>()),
+        new("dcup", "Docker Compose Up", "docker compose up -d", "[Workspace & Dev]", "Docker",
+            new[] {
+                "dcup — docker compose up -d"
+            }),
+        new("dcdown", "Docker Compose Down", "docker compose down", "[Workspace & Dev]", "Docker",
+            new[] {
+                "dcdown — docker compose down"
+            }),
+
+        // AWS Tools (/aws-tools)
+        new("aws-whoami", "AWS Identity Info", "Inspect active AWS STS caller identity, profile, and region", "[Workspace & Dev]", "AWS",
+            Array.Empty<string>()),
+        new("aws-local", "LocalStack Info", "LocalStack sandbox diagnostics", "[Workspace & Dev]", "AWS / LocalStack",
+            new[] {
+                "aws-local — Query running LocalStack sandbox on http://localhost:4566.",
+                " Shows: S3 buckets, SQS queues, Lambda functions."
+            }),
 
         // [AI Agent & Ollama]
-        new("claude", "Claude Code (Cloud Default)", "Launch Claude Code CLI", "[AI Agent & Ollama]", "AI / LLM",
+        new("claude", "Claude Code (Auto Mode)", "Launch Claude Code CLI (resolves Cloud vs Ollama via AiProviderMode)", "[AI Agent & Ollama]", "AI / LLM",
             new[] {
-                "claude — Launch Claude Code CLI."
+                "claude — Launch Claude Code CLI using runtime AiProviderMode setting."
             }, RequiresAiOllama: true),
-        new("claude-cloud", "Claude Code (Cloud)", "Launch Claude Code CLI utilizing cloud APIs", "[AI Agent & Ollama]", "AI / LLM",
+        new("claude-cloud", "Claude Code (Force Cloud)", "Launch Claude Code CLI utilizing cloud APIs directly", "[AI Agent & Ollama]", "AI / LLM",
             Array.Empty<string>(), RequiresAiOllama: true),
-        new("claude-ollama", "Claude Code (Ollama)", "Run Claude Code routed locally via Ollama", "[AI Agent & Ollama]", "AI / LLM",
+        new("claude-ollama", "Claude Code (Force Ollama)", "Run Claude Code routed locally via Ollama daemon", "[AI Agent & Ollama]", "AI / LLM",
             Array.Empty<string>(), RequiresAiOllama: true),
-        new("codex", "Codex (Cloud Default)", "Launch Codex CLI", "[AI Agent & Ollama]", "AI / LLM",
+        new("codex", "Codex (Auto Mode)", "Launch Codex CLI (resolves Cloud vs Ollama via AiProviderMode)", "[AI Agent & Ollama]", "AI / LLM",
             new[] {
-                "codex — Launch Codex CLI."
+                "codex — Launch Codex CLI using runtime AiProviderMode setting."
             }, RequiresAiOllama: true),
-        new("codex-cloud", "Codex (Cloud)", "Launch Gemini's Codex CLI (Cloud)", "[AI Agent & Ollama]", "AI / LLM",
+        new("codex-cloud", "Codex (Force Cloud)", "Launch Gemini's Codex CLI (Cloud API direct)", "[AI Agent & Ollama]", "AI / LLM",
             Array.Empty<string>(), RequiresAiOllama: true),
-        new("codex-ollama", "Codex (Ollama)", "Run Codex locally routed via Ollama", "[AI Agent & Ollama]", "AI / LLM",
+        new("codex-ollama", "Codex (Force Ollama)", "Run Codex locally routed via Ollama daemon", "[AI Agent & Ollama]", "AI / LLM",
             Array.Empty<string>(), RequiresAiOllama: true),
         new("openclaw", "OpenClaw (Ollama)", "Launch OpenClaw via Ollama", "[AI Agent & Ollama]", "AI / LLM",
             new[] {
@@ -158,36 +214,6 @@ public static class CommandRegistry
         new("autoswitch", "Toggle Auto-Switch", "Toggle automatic project account switching", "[AGY Account Switch]", "Accounts",
             Array.Empty<string>(), RequiresAgy: true),
 
-        // [Docker & Databases]
-        new("docker-health", "Docker Health Dashboard", "Show container health & resource utilization", "[Docker & Databases]", "Docker",
-            Array.Empty<string>()),
-        new("dkcl", "Docker Cleanup", "Docker cleanup TUI dashboard", "[Docker & Databases]", "Docker",
-            new[] {
-                "dkcl — Docker cleanup TUI dashboard. Options:",
-                " • Stop & remove all containers",
-                " • Prune images and dangling layers",
-                " • Delete unused volumes / networks",
-                " • Full cleanup (all of the above)"
-            }),
-        new("dcup", "Docker Compose Up", "docker compose up -d", "[Docker & Databases]", "Docker",
-            new[] {
-                "dcup — docker compose up -d"
-            }),
-        new("dcdown", "Docker Compose Down", "docker compose down", "[Docker & Databases]", "Docker",
-            new[] {
-                "dcdown — docker compose down"
-            }),
-        new("aws-local", "LocalStack Info", "LocalStack sandbox diagnostics", "[Docker & Databases]", "AWS / LocalStack",
-            new[] {
-                "aws-local — Query running LocalStack sandbox on http://localhost:4566.",
-                " Shows: S3 buckets, SQS queues, Lambda functions."
-            }),
-        new("db-tui", "SQLite Browser", "SQLite schema and data viewer", "[Docker & Databases]", "Database",
-            new[] {
-                "db-tui <path> — Open SQLite file in interactive schema/data viewer.",
-                " Requires sqlite3 CLI on PATH."
-            }),
-
         // [System & Network]
         new("disk", "Disk Usage", "Show disk usage and health", "[System & Network]", "System",
             new[] {
@@ -201,7 +227,7 @@ public static class CommandRegistry
             new[] {
                 "kill-port <n> — Terminate the process listening on TCP port <n>."
             }),
-        new("ssh-info", "SSH Connection Info", "SSH connection summary", "[System & Network]", "System",
+        new("ssh-info", "SSH Connection Info", "SSH connection summary", "[System & Network]", "SSH",
             new[] {
                 "ssh-info — Local IPs, Tailscale address, active SSH connections."
             }),
@@ -270,71 +296,44 @@ public static class CommandRegistry
         new("add-resource", "Add Resource", "Add a file/URL to resource registry", "[Obsidian & Resources]", "Resources",
             Array.Empty<string>()),
 
-        // [Theme & Settings]
-        new("cc", "Command Palette", "Open this Command Palette", "[Theme & Settings]", "Help",
+        // [Appearance & Layout]
+        new("mobile-setup", "Toggle Mobile Setup", "Toggle both prompt mobile mode and compact TUI layout mode", "[Appearance & Layout]", "Theme & Settings",
             Array.Empty<string>()),
-        new("help", "Help Browser", "Open interactive help browser", "[Theme & Settings]", "Help",
+        new("theme", "Select Shell Theme", "Select Shell Theme", "[Appearance & Layout]", "Theme & Settings",
             Array.Empty<string>()),
-        new("mobile-setup", "Toggle Mobile Setup", "Toggle both prompt mobile mode and compact TUI layout mode", "[Theme & Settings]", "Theme & Settings",
+        new("ui-mode", "Toggle UI Layout Mode", "Toggle between three-pane and flat-tree layouts", "[Appearance & Layout]", "Theme & Settings",
             Array.Empty<string>()),
-        new("theme", "Select Shell Theme", "Select Shell Theme", "[Theme & Settings]", "Theme & Settings",
+        new("density", "Toggle Console Density", "Toggle between comfortable and compact display densities", "[Appearance & Layout]", "Theme & Settings",
             Array.Empty<string>()),
-        new("ui-mode", "Toggle UI Layout Mode", "Toggle between three-pane and flat-tree layouts", "[Theme & Settings]", "Theme & Settings",
+
+        // [Help & Docs]
+        new("cc", "Command Palette", "Open this Command Palette", "[Help & Docs]", "Help",
             Array.Empty<string>()),
-        new("density", "Toggle Console Density", "Toggle between comfortable and compact display densities", "[Theme & Settings]", "Theme & Settings",
+        new("help", "Help Browser", "Open interactive help browser", "[Help & Docs]", "Help",
             Array.Empty<string>()),
-        new("hotkeys", "Profile Hotkeys Guide", "Show all PowerShell profile shortcut hotkeys grouped by domain", "[Theme & Settings]", "Help",
+        new("hotkeys", "Profile Hotkeys Guide", "Show all PowerShell profile shortcut hotkeys grouped by domain", "[Help & Docs]", "Help",
             Array.Empty<string>())
     };
 
     public static void AssertSwitchCases()
     {
         string[] searchPaths = {
-            "Program.cs",
-            "../Program.cs",
-            "../../Program.cs",
-            "../../../Program.cs",
-            "../AgyTuiApp/Program.cs",
-            "../../AgyTuiApp/Program.cs",
-            "AgyTuiApp/Program.cs"
+            Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Program.cs"),
+            Path.Combine(AppContext.BaseDirectory, "Program.cs"),
+            Path.Combine(Directory.GetCurrentDirectory(), "AgyTuiApp", "Program.cs")
         };
-        string? programCsPath = null;
-        foreach (var path in searchPaths)
-        {
-            var absolutePath = Path.GetFullPath(path);
-            if (File.Exists(absolutePath))
-            {
-                programCsPath = absolutePath;
-                break;
-            }
-        }
+
+        string? programCsPath = searchPaths.FirstOrDefault(File.Exists);
         if (programCsPath == null) return;
 
-        var content = File.ReadAllText(programCsPath);
-        var matches = Regex.Matches(content, @"case\s*""([^""]+)""\s*:");
-        var cases = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach (Match match in matches)
-        {
-            cases.Add(match.Groups[1].Value);
-        }
+        string code = File.ReadAllText(programCsPath);
+        var matches = Regex.Matches(code, @"case\s+""([^""]+)""\s*:");
+        var handledCases = matches.Select(m => m.Groups[1].Value).ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-        var missing = new List<string>();
-        foreach (var entry in All)
+        var unhandled = All.Where(c => !handledCases.Contains(c.Alias)).Select(c => c.Alias).ToList();
+        if (unhandled.Count > 0)
         {
-            // Skip alias 'p' because it is handled by 'proj'
-            if (entry.Alias == "p") continue;
-            // Skip repo-graph because it is handled by 'nexus'
-            if (entry.Alias == "repo-graph") continue;
-
-            if (!cases.Contains(entry.Alias))
-            {
-                missing.Add(entry.Alias);
-            }
-        }
-
-        if (missing.Count > 0)
-        {
-            throw new InvalidOperationException($"Drift detected: The following aliases in CommandRegistry.All are missing from Program.RunCommand switch: {string.Join(", ", missing)}");
+            throw new InvalidOperationException($"The following CommandRegistry aliases have no switch case in Program.cs: {string.Join(", ", unhandled)}");
         }
     }
 }

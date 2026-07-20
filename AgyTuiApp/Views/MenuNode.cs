@@ -31,15 +31,50 @@ public static class MenuNodeBuilder
     {
         var allCommands = CommandRegistry.All.ToDictionary(c => c.Alias, StringComparer.OrdinalIgnoreCase);
 
-        // Group 1: .NET Project Tools
+        // Group 1: Git Tools
+        var gitTools = new MenuNode(
+            "/git-tools",
+            " [/git-tools] Git Tools",
+            MenuNodeKind.Group,
+            new[]
+            {
+                CreateCommandNode(allCommands["gs"]),
+                CreateCommandNode(allCommands["gbr"]),
+                CreateCommandNode(allCommands["gcmt"]),
+                CreateCommandNode(allCommands["glog"]),
+                CreateCommandNode(allCommands["gpull"]),
+                CreateCommandNode(allCommands["gpush"]),
+                CreateCommandNode(allCommands["git-undo"])
+            },
+            null
+        );
+
+        // Group 2: Repo Dashboards
+        var repoDashboards = new MenuNode(
+            "/repo-dashboards",
+            " [/repo-dashboards] Repo Dashboards",
+            MenuNodeKind.Group,
+            new[]
+            {
+                CreateCommandNode(allCommands["nexus"]),
+                CreateCommandNode(allCommands["repo-graph"]),
+                CreateCommandNode(allCommands["nexus-stats"])
+            },
+            null
+        );
+
+        // Group 3: .NET Project Tools
         var dotnetTools = new MenuNode(
             "/dotnet-tools",
-            " [.NET Project Tools]",
+            " [/dotnet-tools] .NET Project Tools",
             MenuNodeKind.Group,
             new[]
             {
                 CreateCommandNode(allCommands["dbld"]),
                 CreateCommandNode(allCommands["dtst"]),
+                CreateCommandNode(allCommands["drestore"]),
+                CreateCommandNode(allCommands["dpublish"]),
+                CreateCommandNode(allCommands["dwatch"]),
                 CreateCommandNode(allCommands["clean-build"]),
                 CreateCommandNode(allCommands["add-migration"]),
                 CreateCommandNode(allCommands["update-db"])
@@ -47,7 +82,65 @@ public static class MenuNodeBuilder
             null
         );
 
-        // Group 2: Ollama Tools
+        // Group 4: Docker Tools
+        var dockerTools = new MenuNode(
+            "/docker-tools",
+            " [/docker-tools] Docker Tools",
+            MenuNodeKind.Group,
+            new[]
+            {
+                CreateCommandNode(allCommands["docker-health"]),
+                CreateCommandNode(allCommands["dkcl"]),
+                CreateCommandNode(allCommands["dimg"]),
+                CreateCommandNode(allCommands["dlogs"]),
+                CreateCommandNode(allCommands["dcup"]),
+                CreateCommandNode(allCommands["dcdown"])
+            },
+            null
+        );
+
+        // Group 5: AWS Tools
+        var awsTools = new MenuNode(
+            "/aws-tools",
+            " [/aws-tools] AWS Tools",
+            MenuNodeKind.Group,
+            new[]
+            {
+                CreateCommandNode(allCommands["aws-whoami"]),
+                CreateCommandNode(allCommands["aws-local"])
+            },
+            null
+        );
+
+        // Group 6: Claude Agents
+        var claudeAgents = new MenuNode(
+            "/claude-agents",
+            " [/claude] Claude Agents",
+            MenuNodeKind.Group,
+            new[]
+            {
+                CreateCommandNode(allCommands["claude"]),
+                CreateCommandNode(allCommands["claude-cloud"]),
+                CreateCommandNode(allCommands["claude-ollama"])
+            },
+            null
+        );
+
+        // Group 7: Codex Agents
+        var codexAgents = new MenuNode(
+            "/codex-agents",
+            " [/codex] Codex Agents",
+            MenuNodeKind.Group,
+            new[]
+            {
+                CreateCommandNode(allCommands["codex"]),
+                CreateCommandNode(allCommands["codex-cloud"]),
+                CreateCommandNode(allCommands["codex-ollama"])
+            },
+            null
+        );
+
+        // Group 8: Ollama Tools
         var ollamaTools = new MenuNode(
             "/ollama-tools",
             " [/ollama-tools] Ollama Tools",
@@ -64,7 +157,7 @@ public static class MenuNodeBuilder
             null
         );
 
-        // Group 3: Antigravity Deck
+        // Group 9: Antigravity Deck
         var deckTools = new MenuNode(
             "/antigravity-deck",
             " [/antigravity-deck] Antigravity Deck",
@@ -79,7 +172,21 @@ public static class MenuNodeBuilder
             null
         );
 
-        // Group 4: Quota Views
+        // Group 10: SSH & Tailscale
+        var sshTailscale = new MenuNode(
+            "/ssh-tailscale",
+            " [/ssh-tailscale] SSH & Tailscale",
+            MenuNodeKind.Group,
+            new[]
+            {
+                CreateCommandNode(allCommands["ssh-info"]),
+                CreateCommandNode(allCommands["tailscale-status"]),
+                CreateCommandNode(allCommands["ssh-qr"])
+            },
+            null
+        );
+
+        // Group 11: Quota Views
         var quotaViews = new MenuNode(
             "/quota-views",
             " [/quota-views] Quota Views",
@@ -104,14 +211,13 @@ public static class MenuNodeBuilder
                 CreateCommandNode(allCommands["ide"]),
                 CreateCommandNode(allCommands["ide-diff"]),
                 CreateCommandNode(allCommands["ide-search"]),
-                dotnetTools,
                 CreateCommandNode(allCommands["scaffold"]),
-                CreateCommandNode(allCommands["gs"]),
-                CreateCommandNode(allCommands["gcmt"]),
-                CreateCommandNode(allCommands["git-undo"]),
-                CreateCommandNode(allCommands["nexus"]),
-                CreateCommandNode(allCommands["repo-graph"]),
-                CreateCommandNode(allCommands["nexus-stats"])
+                gitTools,
+                repoDashboards,
+                dotnetTools,
+                dockerTools,
+                awsTools,
+                CreateCommandNode(allCommands["db-tui"])
             },
             null
         );
@@ -123,14 +229,11 @@ public static class MenuNodeBuilder
             MenuNodeKind.Category,
             new[]
             {
-                CreateCommandNode(allCommands["claude"]),
-                CreateCommandNode(allCommands["claude-cloud"]),
-                CreateCommandNode(allCommands["claude-ollama"]),
-                CreateCommandNode(allCommands["codex"]),
-                CreateCommandNode(allCommands["codex-cloud"]),
-                CreateCommandNode(allCommands["codex-ollama"]),
+                claudeAgents,
+                codexAgents,
                 CreateCommandNode(allCommands["openclaw"]),
                 CreateCommandNode(allCommands["hermes"]),
+                CreateCommandNode(allCommands["hermesd"]),
                 ollamaTools,
                 deckTools,
                 CreateCommandNode(allCommands["agy-cli"]),
@@ -154,41 +257,22 @@ public static class MenuNodeBuilder
             null
         );
 
-        // Category 4: [Docker & Databases]
-        var dockerDatabases = new MenuNode(
-            "docker-databases",
-            "[Docker & Databases]",
-            MenuNodeKind.Category,
-            new[]
-            {
-                CreateCommandNode(allCommands["docker-health"]),
-                CreateCommandNode(allCommands["dkcl"]),
-                CreateCommandNode(allCommands["dcup"]),
-                CreateCommandNode(allCommands["dcdown"]),
-                CreateCommandNode(allCommands["aws-local"]),
-                CreateCommandNode(allCommands["db-tui"])
-            },
-            null
-        );
-
-        // Category 5: [System & Network]
+        // Category 4: [System & Network]
         var systemNetwork = new MenuNode(
             "system-network",
             "[System & Network]",
             MenuNodeKind.Category,
             new[]
             {
-                CreateCommandNode(allCommands["tailscale-status"]),
-                CreateCommandNode(allCommands["ssh-qr"]),
                 CreateCommandNode(allCommands["disk"]),
                 CreateCommandNode(allCommands["public-ip"]),
-                CreateCommandNode(allCommands["ssh-info"]),
-                CreateCommandNode(allCommands["kill-port"])
+                CreateCommandNode(allCommands["kill-port"]),
+                sshTailscale
             },
             null
         );
 
-        // Category 6: [Learn & Study]
+        // Category 5: [Learn & Study]
         var learnStudy = new MenuNode(
             "learn-study",
             "[Learn & Study]",
@@ -215,7 +299,7 @@ public static class MenuNodeBuilder
             null
         );
 
-        // Category 7: [Track & Progress]
+        // Category 6: [Track & Progress]
         var trackProgress = new MenuNode(
             "track-progress",
             "[Track & Progress]",
@@ -233,7 +317,7 @@ public static class MenuNodeBuilder
             null
         );
 
-        // Category 8: [Obsidian & Resources]
+        // Category 7: [Obsidian & Resources]
         var obsidianResources = new MenuNode(
             "obsidian-resources",
             "[Obsidian & Resources]",
@@ -248,19 +332,30 @@ public static class MenuNodeBuilder
             null
         );
 
-        // Category 9: [Theme & Settings]
-        var themeSettings = new MenuNode(
-            "theme-settings",
-            "[Theme & Settings]",
+        // Category 8: [Appearance & Layout]
+        var appearanceLayout = new MenuNode(
+            "appearance-layout",
+            "[Appearance & Layout]",
+            MenuNodeKind.Category,
+            new[]
+            {
+                CreateCommandNode(allCommands["theme"]),
+                CreateCommandNode(allCommands["ui-mode"]),
+                CreateCommandNode(allCommands["density"]),
+                CreateCommandNode(allCommands["mobile-setup"])
+            },
+            null
+        );
+
+        // Category 9: [Help & Docs]
+        var helpDocs = new MenuNode(
+            "help-docs",
+            "[Help & Docs]",
             MenuNodeKind.Category,
             new[]
             {
                 CreateCommandNode(allCommands["cc"]),
                 CreateCommandNode(allCommands["help"]),
-                CreateCommandNode(allCommands["mobile-setup"]),
-                CreateCommandNode(allCommands["theme"]),
-                CreateCommandNode(allCommands["ui-mode"]),
-                CreateCommandNode(allCommands["density"]),
                 CreateCommandNode(allCommands["hotkeys"])
             },
             null
@@ -293,12 +388,12 @@ public static class MenuNodeBuilder
                 workspaceDev,
                 aiAgentOllama,
                 agyAccountSwitch,
-                dockerDatabases,
                 systemNetwork,
                 learnStudy,
                 trackProgress,
                 obsidianResources,
-                themeSettings,
+                appearanceLayout,
+                helpDocs,
                 sep,
                 exit
             },
@@ -306,14 +401,14 @@ public static class MenuNodeBuilder
         );
     }
 
-    private static MenuNode CreateCommandNode(CommandEntry cmd)
+    private static MenuNode CreateCommandNode(CommandEntry entry)
     {
         return new MenuNode(
-            cmd.Alias,
-            cmd.DisplayName,
+            entry.Alias,
+            $"/{entry.Alias} — {entry.DisplayName}",
             MenuNodeKind.Command,
             Array.Empty<MenuNode>(),
-            cmd
+            entry
         );
     }
 }

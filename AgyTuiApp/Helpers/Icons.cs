@@ -61,6 +61,8 @@ public static class Icons
         if (categoryLabel.Contains("learn") || categoryLabel.Contains("study")) return "📚";
         if (categoryLabel.Contains("track") || categoryLabel.Contains("progress")) return "📈";
         if (categoryLabel.Contains("obsidian") || categoryLabel.Contains("resource")) return "💎";
+        if (categoryLabel.Contains("appearance") || categoryLabel.Contains("layout")) return "🎨";
+        if (categoryLabel.Contains("help") || categoryLabel.Contains("docs")) return "🛸";
         if (categoryLabel.Contains("theme") || categoryLabel.Contains("setting")) return "🎨";
         return "📂";
     }
@@ -76,6 +78,8 @@ public static class Icons
         if (categoryLabel.Contains("learn") || categoryLabel.Contains("study")) return "learn";
         if (categoryLabel.Contains("track") || categoryLabel.Contains("progress")) return "stats";
         if (categoryLabel.Contains("obsidian") || categoryLabel.Contains("resource")) return "obsidian";
+        if (categoryLabel.Contains("appearance") || categoryLabel.Contains("layout")) return "theme";
+        if (categoryLabel.Contains("help") || categoryLabel.Contains("docs")) return "help";
         if (categoryLabel.Contains("theme") || categoryLabel.Contains("setting")) return "theme";
         return "";
     }
@@ -106,13 +110,13 @@ public static class Icons
                 "ide" => "󰨞",
                 "ide-diff" => "󰊢",
                 "ide-search" => "󰍉",
-                "dbld" => "⚙",
+                "dbld" or "drestore" or "dpublish" or "dwatch" => "⚙",
                 "dtst" => "󰙨",
                 "clean-build" => "󰃢",
                 "add-migration" => "󰆼",
                 "update-db" => "󰆼",
                 "scaffold" => "🏗",
-                "gs" => "󰊢",
+                "gs" or "gbr" or "glog" or "gpull" or "gpush" => "󰊢",
                 "gcmt" => "💬",
                 "git-undo" => "↩",
                 "nexus" or "repo-graph" or "nexus-stats" => "🕸",
@@ -121,8 +125,8 @@ public static class Icons
                 "agyquota" or "quota-chart" or "live-dashboard" => "📊",
                 "autoswitch" => "⚡",
 
-                "docker-health" or "dkcl" or "dcup" or "dcdown" => "🐳",
-                "aws-local" => "☁",
+                "docker-health" or "dkcl" or "dcup" or "dcdown" or "dimg" or "dlogs" => "🐳",
+                "aws-local" or "aws-whoami" => "☁",
                 "db-tui" => "🗄",
 
                 "tailscale-status" => "🔒",
@@ -160,11 +164,18 @@ public static class Icons
                 "ide-search" => "🔍",
                 "dbld" => "⚙",
                 "dtst" => "🧪",
+                "drestore" => "📦",
+                "dpublish" => "🚀",
+                "dwatch" => "👀",
                 "clean-build" => "🧹",
                 "add-migration" or "update-db" => "🗄",
                 "scaffold" => "🏗",
                 "gs" => "🌿",
+                "gbr" => "🌿",
                 "gcmt" => "💬",
+                "glog" => "📜",
+                "gpull" => "⬇",
+                "gpush" => "⬆",
                 "git-undo" => "↩",
                 "nexus" or "repo-graph" or "nexus-stats" => "🕸",
 
@@ -173,7 +184,10 @@ public static class Icons
                 "autoswitch" => "⚡",
 
                 "docker-health" or "dkcl" or "dcup" or "dcdown" => "🐳",
+                "dimg" => "🖼",
+                "dlogs" => "📄",
                 "aws-local" => "☁",
+                "aws-whoami" => "👤",
                 "db-tui" => "🗄",
 
                 "tailscale-status" => "🔒",

@@ -365,8 +365,20 @@ public static class Program
                 case "gs":
                     GitHelper.ShowStatus();
                     break;
+                case "gbr":
+                    GitHelper.ShowBranches();
+                    break;
                 case "gcmt":
                     GitHelper.ConventionalCommitWizard();
+                    break;
+                case "glog":
+                    GitHelper.ShowLog();
+                    break;
+                case "gpull":
+                    GitHelper.Pull();
+                    break;
+                case "gpush":
+                    GitHelper.Push();
                     break;
                 case "git-undo":
                     GitHelper.InvokeGitUndo();
@@ -376,6 +388,15 @@ public static class Program
                     break;
                 case "dtst":
                     DotNetHelper.Test();
+                    break;
+                case "drestore":
+                    DotNetHelper.Restore();
+                    break;
+                case "dpublish":
+                    DotNetHelper.Publish();
+                    break;
+                case "dwatch":
+                    DotNetHelper.Watch();
                     break;
                 case "clean-build":
                     DotNetHelper.RemoveBinObj(Directory.GetCurrentDirectory());
@@ -393,11 +414,20 @@ public static class Program
                 case "dkcl":
                     DockerHelper.ShowCleanupDashboard();
                     break;
+                case "dimg":
+                    DockerHelper.ShowImages();
+                    break;
+                case "dlogs":
+                    DockerHelper.ShowContainerLogs();
+                    break;
                 case "dcup":
                     DockerHelper.ComposeUp();
                     break;
                 case "dcdown":
                     DockerHelper.ComposeDown();
+                    break;
+                case "aws-whoami":
+                    AwsHelper.ShowCallerIdentity();
                     break;
                 case "aws-local":
                     AwsHelper.ShowLocalStackInfo();

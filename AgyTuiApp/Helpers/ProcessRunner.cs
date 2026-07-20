@@ -111,4 +111,14 @@ public static class ProcessRunner
             return -1;
         }
     }
+
+    public static string RunCapture(string exe, string[] args, string? workingDir = null)
+    {
+        return RunCapture(exe, string.Join(" ", args), workingDir);
+    }
+
+    public static int Run(string exe, string[] args, string? workingDir = null)
+    {
+        return Run(exe, string.Join(" ", args), workingDir);
+    }
 }

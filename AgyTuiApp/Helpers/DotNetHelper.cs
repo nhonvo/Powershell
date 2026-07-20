@@ -43,6 +43,12 @@ public static class DotNetHelper
 
     public static int Test(string? projectPath = null) => RunDotnet("test", projectPath);
 
+    public static int Restore(string? projectPath = null) => RunDotnet("restore", projectPath);
+
+    public static int Publish(string? projectPath = null) => RunDotnet("publish -c Release", projectPath);
+
+    public static int Watch(string? projectPath = null) => RunDotnet("watch run", projectPath);
+
     public static int AddMigration(string migrationName, string? project = null) => RunDotnet($"ef migrations add {migrationName}", project);
 
     public static int UpdateDatabase(string? project = null) => RunDotnet("ef database update", project);

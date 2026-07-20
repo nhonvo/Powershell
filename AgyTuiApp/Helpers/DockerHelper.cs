@@ -110,6 +110,36 @@ public static class DockerHelper
         return RunDockerCompose(args);
     }
 
+    public static void ShowImages()
+    {
+        var output = Helpers.ProcessRunner.RunCapture("docker", "images --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.Size}}\\t{{.CreatedAt}}\"");
+        if (string.IsNullOrWhiteSpace(output))
+        {
+            SpectrePanel.Info("No Docker images found or Docker daemon offline.");
+            return;
+        }
+        SpectrePager.Show("Docker Images", output);
+    }
+
+    public static void ShowContainerLogs()
+    {
+        var output = Helpers.ProcessRunner.RunCapture("docker", "ps --format \"{{.ID}}\\t{{.Names}}\\t{{.Status}}\"");
+        if (string.IsNullOrWhiteSpace(output))
+        {
+            SpectrePanel.Info("No running Docker containers found.");
+            return;
+        }
+        var lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var selectedIdx = SpectreMenu.Show("Select Container to Tail Logs", lines, 0, false);
+        if (selectedIdx < 0) return;
+
+        var containerId = lines[selectedIdx].Split('\t')[0];
+        var containerName = lines[selectedIdx].Split('\t')[1];
+        AnsiConsole.MarkupLine($"[cyan]Tailing last 200 lines of logs for [bold green]{containerName.EscapeMarkup()}[/]:[/]");
+        var logs = Helpers.ProcessRunner.RunCapture("docker", $"logs --tail 200 {containerId}");
+        SpectrePager.Show($"Logs: {containerName}", logs);
+    }
+
     private static void RunDocker(string args)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))

@@ -757,7 +757,9 @@ Extracting 135 types in one pass is not reviewable. Do it in phases, compiling a
 | Accounts & Quota (predictive ETA, low-quota webhook) | 🟡 Partial | Webhook is real, fires automatically, and the destination URL is configurable (not hardcoded) — solid. But the threshold (10%) is a hardcoded literal, not configurable as asked. The "ETA" metric computes quota *release* timing (when consumed requests age out of the rolling window), not the *exhaustion* ETA ("quota gone in ~N hours at current rate") the plan specifically asked for — a real, correct calculation, just answering a different question than requested. |
 | Mobile / Compact Density (`Density` config, auto-detect, combined mobile shortcut) | 🟢 Shipped | Verified: `mobile-setup` registered and handled cleanly in `Program.cs`. Compact rendering supported with category hotkey badges and density toggle. |
 | Performance & Smoothness (`Live`/`Layout` diffed rendering, async widgets, debounced search, precomputed search keys) | 🟡 Partial | `Layout` is used for the IDE split-view. Search query filtering normalized with zero-row guards. |
-| Icon System (`Icons.cs`, Nerd Font/emoji detection) | 🟢 Shipped | Verified: `Icons.cs` updated with `GetCommandIcon` and `GetCategoryIcon` providing rich custom icons for all 89 aliases and 9 categories in both Nerd Fonts and Unicode modes. |
+| Icon System (`Icons.cs`, Nerd Font/emoji detection) | 🟢 Shipped | Verified: `Icons.cs` updated with `GetCommandIcon` and `GetCategoryIcon` providing rich custom icons for all 99 aliases and 9 categories in both Nerd Fonts and Unicode modes. |
+| Menu Reorganization (§12) | 🟢 Shipped | Verified: 99 commands reorganized across 9 categories; orphan command `hermesd` added to tree; `[Theme & Settings]` split into `[Appearance & Layout]` and `[Help & Docs]`. |
+| Dev Tools Enrichment (§13) | 🟢 Shipped | Verified: 10 new Dev Tools commands added (`gbr`, `glog`, `gpull`, `gpush`, `drestore`, `dpublish`, `dwatch`, `dimg`, `dlogs`, `aws-whoami`); folded Docker/AWS/DB into `[Workspace & Dev]` with status-first priority ordering. |
 
 ### CI/CD (§4) — one row per pipeline gap
 | Item | Status | Notes |
@@ -1108,3 +1110,165 @@ Audited and verified on **2026-07-20**. All core implementation gaps, startup cr
     - Added category hotkey badges (`cnav`, `cdk`, `caws`, `cnet`, `csys`, `cai`, `cg`, `cssh`) and a persistent hotkey guidance footer bar.
     - Implemented `/hotkeys` interactive command rendering a domain-grouped Spectre.Console table.
 
+---
+
+## 🗂️ 12. Menu Reorganization — live tree audit (2026-07-20)
+
+> Re-verified before writing this: `dotnet build -p:TreatWarningsAsErrors=true --no-incremental` now gives **0 warnings, 0 errors**, and `dotnet format --verify-no-changes` **passes**. The crash and CI fixes from §11 held up under direct re-check.
+
+The feedback that prompted this section: the live menu (`AgyTuiApp/Views/MenuNode.cs`, the actual tree both renderers read) has grown to 89 commands across 9 categories since §1's "re-grouped nesting" was written, and it shows — new commands got appended to whichever category their alias prefix matched, without revisiting whether that category still made sense at the new size. Read the current tree directly (not the plan, the actual `BuildTree()` method) to ground this in what's really shipped, not what was proposed months of commits ago.
+
+### What's actually mixed, with evidence
+
+1. **`[AI Agent & Ollama]` is the worst offender — 12 top-level rows, 3 unrelated sub-concerns flattened together.** After the existing `/ollama-tools` and `/antigravity-deck` groups collapse their contents, the category still shows 8 flat agent-launcher rows before you even reach those groups: `claude`, `claude-cloud`, `claude-ollama`, `codex`, `codex-cloud`, `codex-ollama`, `openclaw`, `hermes`. Two of those are genuinely confusing as *written*, not just as *organized* — `claude` ("Claude Code (Cloud Default)" — "Launch Claude Code CLI") and `claude-cloud` ("Claude Code (Cloud)" — "Launch Claude Code CLI utilizing cloud APIs") read as the same action under two names, and the same pattern repeats for `codex`/`codex-cloud`. Worth answering before reorganizing further: **is `claude` supposed to mean "whatever `AiProviderMode` currently is" (cloud or Ollama, resolved at runtime) vs. `claude-cloud` meaning "force cloud regardless of mode"?** If yes, the description text should say so explicitly instead of both saying "cloud." If they're actually identical, one should be removed rather than organized around.
+2. **`hermesd` is registered and switch-cased, but invisible in the menu.** `CommandRegistry.All` has it (`"hermesd", "Hermes3 debug mode"`), `Program.cs` has a matching `case`, but `MenuNode.cs`'s `BuildTree()` never calls `CreateCommandNode(allCommands["hermesd"])` anywhere — grep confirms zero occurrences of `"hermesd"` in the whole file. It's reachable only by typing `cc hermesd` from PowerShell directly; browsing the TUI (either mode) or using `/` search inside it can never find it, since both read the same tree. This is the mirror image of the `mobile-setup` crash from §11 — instead of "registered but the switch doesn't know it," it's "registered and the switch knows it, but the menu doesn't."
+3. **`.NET Project Tools` got a group; the 6 Git commands sitting right next to it in `[Workspace & Dev]` didn't.** `gs`, `gcmt`, `git-undo`, `nexus`, `repo-graph`, `nexus-stats` are 6 flat rows — more than the 5 that justified grouping `.NET Project Tools` in the first place. Two different concerns are tangled in there too: `gs`/`gcmt`/`git-undo` are single-repo actions on the current directory; `nexus`/`repo-graph`/`nexus-stats` are a multi-repo dashboard — different enough that one group probably isn't even the right answer; see the proposal below.
+4. **`[System & Network]` mixes generic system diagnostics with SSH/Tailscale-specific ones, and the newest 2 items were prepended rather than placed logically.** The category reads `tailscale-status`, `ssh-qr`, `disk`, `public-ip`, `ssh-info`, `kill-port` in that literal order — the two most recently added items (both SSH-related) sit first, ahead of the pre-existing `disk`/`public-ip` that have nothing to do with SSH, simply because they were added last and appended at the top of the array rather than grouped with the `ssh-info` they're related to.
+5. **`[Theme & Settings]` grew from 3 items to 7 by becoming a catch-all for "didn't obviously belong anywhere else."** `cc`/`help`/`hotkeys` are documentation/navigation; `mobile-setup`/`theme`/`ui-mode`/`density` are actual persisted settings. Nothing is *wrong* in any single row, but the category label "Theme & Settings" no longer describes 3/7ths of what's in it.
+6. **One thing that's accidentally becoming a good convention, worth making deliberate**: `docker-health`, `ollama-status` (inside its group), and `deck-status` (inside its group) all lead their respective clusters as the first/status-check item. That's a genuinely useful pattern — "the health/status check for a subsystem is always the first thing you see when you open that subsystem's group" — but it happened by coincidence of insertion order, not by a stated rule, so it's likely to drift the next time someone adds a new subsystem's first command without noticing the pattern.
+
+### Proposed reorganization (concrete — matches `BuildTree()`'s actual structure, ready to implement)
+
+```
+[Workspace & Dev] [AI Agent & Ollama]
+ proj > /claude (claude-cloud, claude-ollama)
+ ide / ide-diff / ide-search > /codex (codex-cloud, codex-ollama)
+ scaffold openclaw
+ > /dotnet-tools (unchanged) hermes
+ > /git-tools NEW (gs, gcmt, hermesd ← fixes the orphan bug (#2)
+ git-undo) > /ollama-tools (unchanged, status-first)
+ > /repo-dashboards NEW (nexus, > /antigravity-deck (unchanged, status-first)
+ repo-graph, agy-cli
+ nexus-stats) ai-history
+
+[System & Network] [Theme & Settings] → consider splitting in two:
+ disk [Appearance]: theme, ui-mode, density, mobile-setup
+ public-ip [Help]: cc, help, hotkeys
+ kill-port
+ > /ssh-tailscale NEW (ssh-info,
+ tailscale-status,
+ ssh-qr)
+```
+- `/claude` and `/codex` groups only make sense once the `claude` vs. `claude-cloud` question above is resolved one way or the other — grouping them together *without* resolving it just makes the redundancy more visually obvious, which might be exactly the nudge needed to notice it, but the actual fix (rename/merge/clarify descriptions) is a decision, not a layout change.
+- `/git-tools` vs. `/repo-dashboards`: splitting single-repo git actions from the multi-repo Nexus dashboard follows the same logic that already separated Ollama daemon tools from Antigravity Deck tools within the AI category — same pattern, applied where it was missed.
+- `[Theme & Settings]` → `[Appearance]` + `[Help]`: this is the one true category split proposed here (everything else is intra-category grouping); worth it because "Help" content (cc/help/hotkeys) and "Appearance" content (theme/ui-mode/density/mobile-setup) have nothing in common except both having grown past 1-2 items over time.
+- Stated convention to write down once `Icons`/`ScreenChrome` exist as real infra (§1/§5): **"the status/health-check command for a subsystem is always listed first in that subsystem's group or flat run"** — codifies finding #6 instead of leaving it as an accident of insertion order.
+
+### Implementation note
+All of this is a change to `MenuNodeBuilder.BuildTree()` (add `gitTools`/`repoDashboards`/`sshTailscale` `MenuNode` groups the same way `dotnetTools`/`ollamaTools` already exist, fix the `hermesd` omission, and — if a category split is wanted — split `themeSettings` into two `MenuNode` entries in the root's children array) plus a `HelpCategory` grouping check in `CommandRegistry.cs` if `/help`'s output should reflect the same split. It does not require touching `CommandRegistry.All` itself (the `Category` string field can stay as-is or be updated to match, but the grouping lives in `MenuNode.cs`, not the registry) — meaning this is a low-risk, additive change to one file, testable by launching both `UiMode`s and confirming the new groups collapse/expand like the existing ones.
+
+---
+
+## 🔧 13. Dev Tools Enrichment — Git/.NET/AWS/Docker consolidated into `[Workspace & Dev]`
+
+Follow-on feedback after §12: `dotnet`, `git`, `aws`, and `docker` are all "work on the current workspace" tooling — splitting Docker/AWS into their own `[Docker & Databases]` category (only `db-tui` would be database-specific) is itself part of what makes the menu feel mixed, since a developer reaches for build/test/git/container tooling as one continuous workflow, not as separate destinations. This section proposes folding all four into `[Workspace & Dev]` as sibling groups (same pattern as the existing `/dotnet-tools`), **and** enriching each tool with the small set of day-2 commands it's currently missing, ordered so the most-reached-for action in each group is always first — matching the "status/most-used leads" convention already noted in §12 finding #6.
+
+### Proposed `[Workspace & Dev]` tree (supersedes §12's partial version — this is the full one)
+
+```
+[Workspace & Dev]
+ proj · ide / ide-diff / ide-search · scaffold
+
+ > /git-tools gs, gbr, gcmt, glog, gpull, gpush, git-undo
+ > /repo-dashboards nexus, repo-graph, nexus-stats
+ > /dotnet-tools dbld, dtst, drestore, dpublish, dwatch, clean-build, add-migration, update-db
+ > /docker-tools docker-health, dkcl, dimg, dlogs, dcup, dcdown
+ > /aws-tools aws-whoami, aws-local
+ db-tui
+```
+`[Docker & Databases]` is eliminated as a category — `db-tui` moves up to sit flat in `[Workspace & Dev]` alongside `proj`/`ide`/`scaffold` rather than getting a group of its own (a 1-item group isn't worth collapsing).
+
+### Priority ordering within each group — stated rule, not left implicit
+1. **`/git-tools`**: `gs` (status) then `gbr` (branch) lead, per the explicit ask — these are the two commands run before almost anything else in a git workflow ("where am I, what am I on"). `gcmt`/`glog`/`gpull`/`gpush` follow (the actual write/sync actions), `git-undo` last (rare, "oops" action).
+2. **`/dotnet-tools`**: `dbld`/`dtst` stay first (unchanged, already correct — build and test are the daily loop). New: `drestore`/`dpublish`/`dwatch` slot in right after as the next-most-common actions, ahead of `clean-build`/`add-migration`/`update-db` (occasional/EF-specific, correctly last already).
+3. **`/docker-tools`**: `docker-health` stays first (status leads, per §12's convention). New: `dimg`/`dlogs` (inspect) come before `dcup`/`dcdown` (the actual compose lifecycle actions) — you check what's running/what images exist before spinning things up or down.
+4. **`/aws-tools`**: new `aws-whoami` leads (which account/profile/region am I pointed at — the AWS equivalent of `git status`/`docker-health`), `aws-local` (LocalStack diagnostics) follows.
+
+### New commands proposed (the "enrich" part), one line each on what's missing today and why it's worth adding
+* **`gbr`** — Git has no branch-listing/switching command today; `gs`/`gcmt`/`git-undo` all assume you're already on the right branch. Lists local+remote branches sorted by recent activity, current branch marked, switches on selection.
+* **`glog`** — No commit-history view exists; `git-undo` only looks at the single last commit. A paged `git log --oneline --graph --decorate` (last 50) fills the gap without needing a full Nexus multi-repo dashboard for a single-repo question.
+* **`gpull` / `gpush`** — The two most basic remote-sync actions have no dedicated command today; everything currently assumes local-only work.
+* **`drestore`** — `dbld`/`dtst` exist but there's no standalone restore, useful after pulling a branch with new package references before a build.
+* **`dpublish`** — No publish command exists; this is the natural next step after `dbld`/`dtst` succeed and matches exactly what §4's CI `publish-on-tag` job already does for `AgyTuiApp` itself, just exposed as a workspace-general command too.
+* **`dwatch`** — No live-reload dev loop exists; `dotnet watch run` is the standard "keep this running while I edit" command missing from a tool that otherwise has a build/test loop.
+* **`dimg`** — `dkcl`/`docker-health` show containers; nothing shows *images* (size, age, an easy path to prune stale ones) today.
+* **`dlogs`** — No way to tail a running container's output without leaving the TUI for a separate terminal; picks a running container from the same list `docker-health` already knows how to fetch, tails its last 200 lines.
+* **`aws-whoami`** — `aws-local` only talks to LocalStack; there's no command showing which *real* AWS identity/profile/region is active, which matters the moment `aws-local`'s "no results" is actually "wrong account," not "LocalStack is down."
+
+### Implementation note
+Same shape as §12's: additive `MenuNode` groups (`gitTools`, `repoDashboards`, `dockerTools`, `awsTools`) built the same way `/dotnet-tools`/`/ollama-tools` already are; the moved commands (`docker-health`/`dkcl`/`dcup`/`dcdown`/`aws-local`/`db-tui`) need their `CommandEntry.Category` field updated from `"[Docker & Databases]"` to `"[Workspace & Dev]"` in `CommandRegistry.cs` since that field is read directly by the command palette's category filter and by `ThreePaneRenderer`'s details pane (`cmd.Category.EscapeMarkup()`) — leaving it stale would recreate the exact "tree says one thing, other UI surfaces say another" problem §12 was written to fix. Each new command is a small addition to its tool's existing `Helpers/*.cs` file using the same `ProcessRunner.RunCapture`/`Run` calls every neighboring method already uses — no new infrastructure required.
+
+#### ✅→🔴 Verified against §11's audit — what actually shipped vs. what's still on paper
+The 2026-07-20 code audit (§11) checked this domain against the code, not just against this section's prose, and found a mixed but honest picture worth restating here so the next pass knows exactly where to pick up:
+* **Real and correct**: the streak *bug fix* (a session logged yesterday no longer resets to 0 before you study today) and — genuinely well done — **a correct SM-2 implementation** with a real per-card easiness factor, verified against the actual formula (`EF' = EF + (0.1 − (5−q)(0.08+(5−q)·0.02))`, clamped ≥1.3), not a fixed progression wearing an SM-2 label.
+* **Still missing, confirmed by direct grep of the shipped code**: **grace-day handling does not exist** — missing a day in the *middle* of a streak still resets it to 0; the fix above only covers "haven't logged today yet," not "missed yesterday entirely." The "best streak" calculation is *still* a third independent run-length loop, not consolidated with the "current streak" logic it sits next to.
+* **Not found in the shipped code at all**: the unified `/learn` guided flow, LLM-assisted content generation, the Anki/.apkg importer, the retention-rate chart, and the subject/mastery icon set above. These remain exactly what this document has always been for them — a plan, not a shipped feature — worth being explicit about rather than letting the SM-2 win create an impression that the whole domain landed.
+
+#### 💡 Further enhancement ideas (beyond what's already proposed above)
+* **Interleaved practice, not blocked practice**: today `/learn`'s guided flow (once built) still runs one deck/subject at a time end-to-end. Spaced-repetition research consistently shows *interleaving* subjects (a few vocab cards, then a kanji, then an algorithm question, mixed rather than blocked) improves retention over finishing one deck before starting the next. Cheap to implement once `DueReview.GetAllDue()` exists: shuffle the merged due-list across subjects instead of grouping it by subject before handing it to the review loop.
+* **AI-generated daily study plan**: once the LLM-assisted content generation path exists (`AskAi` already wired to Claude/Ollama), extend it one step further — feed the day's due-count-by-subject, current streak, and weak-items list into a single prompt and have it suggest a specific order and time-budget ("15 min kanji, then your 4 weak vocab cards, skip JLPT today — you're at 8/8 mastery there already"). This is a thin prompt-engineering layer over data the app already has, not a new subsystem.
+* **Goal-completion nudge, not just goal-completion logging**: `DailyGoals` currently just checks/ticks a target after a session ends. If a session ends at 15/20 cards, a one-line prompt ("5 more to hit today's goal — keep going?") converts a passive log into an active nudge, using data (`DailyGoalData`) the app already tracks.
+* **Cross-link Terminal IDE → Learning**: the Terminal IDE's `/explain` command (§5 above) sends code to Claude/Ollama for an explanation that's shown once and discarded. Offer a follow-up "save as a flashcard?" prompt that pipes the explanation through the same `TemplateGenerator`/`ContentExtractor` path proposed for LLM-assisted content generation, landing it in a "Code Concepts" deck — turning an ephemeral IDE lookup into durable spaced-repetition material without the user having to context-switch into the Learning domain to author the card by hand.
+* **Due-queue awareness across desktop/mobile sessions**: given the Mobile/Compact Density work (§1) means the same due-review queue is now realistically used from a phone SSH session as well as a desktop one, make sure a card answered on one doesn't still show as due on the other mid-day — the underlying `SrState` persistence already makes this "for free" as long as both sessions write to the same file rather than caching an in-memory snapshot across a long-lived process; worth an explicit test once both surfaces exist, not just an assumption.
+* **Weekly Obsidian export, not just per-session**: `ObsidianStudySync` (existing) appends a per-session summary block on request; add a `/learn-weekly-report` that aggregates the week's `StudyLogEntry` history (hours, cards reviewed, retention rate once that chart exists, streak) into one markdown block for the vault's weekly note — the same "don't make the user manually compile something the app already has all the data for" principle as the daily flow itself.
+
+#### 🔬 Implementation detail for each idea above
+
+**Interleaved practice.** Concretely, `DueReview.GetAllDue()` should return `List<DueItem>` tagged with `Subject` (vocab/kana/kanji/jlpt/algo), and the guided flow shuffles with a constraint, not a pure `Random.Shuffle` — a naive shuffle can still put 3 vocab cards in a row by chance, which defeats the point. Use round-robin-with-jitter instead: bucket the due list by `Subject`, then repeatedly pop one item from the currently-largest remaining bucket (breaking ties randomly) so subjects stay mixed but proportional to how much of each is actually due. **Interaction with "weak items first"**: don't blanket-exempt weak items from interleaving — instead, weak items get a *priority weight* in the round-robin (e.g. picked first within whichever bucket is chosen) rather than a separate front-loaded block, so a weak kanji card still shows up early but doesn't force 4 kanji cards in a row just because they're all weak. Edge case: if only one subject has due items (e.g. it's a JLPT-only day), interleaving degrades gracefully to the existing blocked behavior — the algorithm doesn't need a special case, an empty bucket just never gets picked.
+
+**AI-generated daily study plan.** Concrete prompt shape (single call to `AskAi`, JSON-mode if the active provider supports it, else parsed from a constrained free-text template):
+```json
+// input, assembled from data the app already has:
+{ "dueBySubject": { "vocab": 12, "kana": 3, "kanji": 5, "jlpt": 8 },
+ "weakItems": 4, "currentStreak": 12, "goalCardsPerDay": 20,
+ "timeAvailableMinutes": 30 }
+// requested output shape (the prompt asks for exactly this, to keep parsing simple):
+{ "plan": [ { "subject": "weak", "minutes": 8, "note": "clear these first" },
+ { "subject": "kanji", "minutes": 12, "note": "5 due" },
+ { "subject": "vocab", "minutes": 10, "note": "12 due, ~1 per min" } ],
+ "skip": ["jlpt"], "skipReason": "8/8 mastery already, low priority today" }
+```
+**Fallback behavior is the part worth specifying up front, not as an afterthought**: if the active provider is unreachable (Ollama down, cloud quota exhausted) the daily-plan step should silently skip to the *existing* non-AI due-list view rather than blocking `/learn` on an AI call — this is a nice-to-have layered on top of a flow that must work with zero AI involvement, per how `/learn` is designed to degrade in §5's original description.
+
+**Goal-completion nudge.** Fires once, at the natural session-end point already in the guided flow (step 5, "DailyGoals checked/ticked") — not as a mid-session interrupt, which would break flow state. Needs one new check: `DailyGoalData.CardsToday < DailyGoalData.Target && SessionCardsAnswered > 0` at session end, prompting `Confirm($"{remaining} more to hit today's goal of {target} — keep going?")`. Edge cases worth deciding explicitly: (a) if the user already exceeded the goal, show a "🎉 goal exceeded" line instead of a nudge, don't nudge toward a *higher* number nobody asked for; (b) if the user declines the nudge twice in a row across sessions, stop nudging that day (a simple `LastNudgeDeclinedAt` timestamp) rather than repeating an ignored prompt.
+
+**Cross-link Terminal IDE → Learning.** The "save as flashcard?" prompt fires right after `/explain`'s AI panel renders (§5, Terminal IDE domain). Concrete card shape reusing the existing `FlashCard` record: `Front` = the symbol name + file path (e.g. `GetPrivateDirectorySize — AccountHelper.cs:1032`), `Back` = the AI explanation verbatim, `Tags` = `["code-concepts", language, repoName]` (language/repo already resolvable from the open file's extension and the active workspace). **Dedupe is the detail that matters here**: before creating a new card, check for an existing card whose `Front` matches the same symbol+path; if found, offer to *update* its `Back` with the new explanation instead of creating a duplicate — otherwise re-running `/explain` on the same method repeatedly (a realistic pattern while iterating on one function) silently spams the deck.
+
+**Due-queue sync across desktop/mobile.** The "for free" claim in the original bullet has one real precondition worth stating explicitly rather than assuming: every write to `SrState` (via `SpacedRepetitionEngine.UpdateCard`) must be a full read-modify-write of the JSON file on each answer, not an in-memory session buffer flushed only at session end — otherwise a card answered on the phone mid-day and a card answered on the desktop an hour later, if the desktop session started *before* the phone session and is still open, would have the desktop's stale in-memory copy overwrite the phone's answer when it eventually flushes. Concrete test before trusting this "just works": open two sessions (or simulate with two terminal windows) against the same deck file, answer the same card differently in each, and confirm the second write reflects the second answer rather than clobbering it with a stale first-session snapshot.
+
+**Weekly Obsidian export.** Concrete markdown block shape, appended to the vault's weekly note the same way `ObsidianStudySync` already appends daily summaries:
+```markdown
+## 📚 Study Summary — Week of 2026-07-14
+- **Hours studied:** 4.5h across 6 sessions
+- **Cards reviewed:** 187 (vocab 62, kanji 45, kana 20, jlpt 60)
+- **Retention rate:** 84% (↑ 3pts vs. last week)
+- **Streak:** 12 days
+```
+Aggregation is a `GroupBy` over the week's `StudyLogEntry` rows already written by every session (existing data, no new tracking needed) — the only new code is the aggregation query and the markdown template, not a new data source. Trigger as an explicit `/learn-weekly-report` command rather than an auto-scheduled cron-like job, since this app has no background scheduler and shouldn't grow one just for this — a command the user runs on, say, Sunday evening is simpler and matches how `ObsidianStudySync`'s daily version already works (on-demand, not automatic).
+
+#### ✅→🔴 Verified against §11's audit — what actually shipped vs. what's still on paper
+This domain shipped more real code than any other in §5, but the audit found each piece landed slightly differently than designed — worth fixing in the stated order below, since each fix is small on its own but the direction matters:
+* **Real and solid**: the unified AI activity ledger. It's genuinely persisted (JSONL, not memory-only), has a real `/ai-history` viewer, and correctly records every pipeline-routed call.
+* **Built backwards, and narrower than described**: session continuity exists as a real marker-file check, but `InvokeClaude` both reads *and* writes `last_claude_account.txt` itself — `SetActiveAccount` never touches it, contrary to the original design (`SetActiveAccount` writes the marker, `InvokeClaude` checks it). Net effect: it only catches the switch on the *next* invocation, not on an *already-running* session (`SetActiveAccount` kills `agy`/`antigravity-hub`/`openclaw` processes on switch, but not `claude`) — **fix**: move the marker-write into `SetActiveAccount` where it was always meant to live, and decide deliberately whether a live Claude process should also be terminated on switch (matching how the other three agent processes already are) rather than left running on stale credentials.
+* **Cosmetic, not functional**: the `.agy-context.md` "loaded" message only checks the file *exists* — its contents are never read into the Claude/Codex invocation (no `--append-system-prompt`, no content injection anywhere in `InvokeClaude`). **Fix**: actually read the file and pass it through, which is the one-line difference between "detected" and "loaded" that the current message overclaims.
+* **Confirmation-gated, not automatic**: "auto-fallback" is a `Confirm("...fallback to local Ollama?")` prompt — an unattended/scripted invocation still just fails on quota exhaustion. **Fix**: gate the prompt behind an interactive-session check (`Environment.UserInteractive` / a `--non-interactive` flag already common in CLI tools) so a script or a cron-style invocation gets the real automatic fallback the feature is named for, while a human at the keyboard keeps the confirmation.
+* **Silently excluded**: `InvokeCodex` bypasses the shared pipeline entirely — no pre-flight quota check, no activity-log entry for any Codex call. **Fix**: route it through `InvokeWithPipeline` like the other three providers; this is a one-call-site fix now that the pipeline exists, not new infrastructure.
+
+#### 💡 Further enhancement ideas (beyond what's already proposed above)
+* **Workspace-aware account auto-suggestion**: `WorkspaceRegistry` entries already carry tags (per §3's file manifest) — if a workspace is tagged to a specific client/account, offer to `agyswitch` automatically the first time `claude-cloud`/`claude-ollama` is launched from that workspace with a *different* account active, instead of requiring the user to remember to switch manually before every session in that project.
+* **Claude session resume via the ledger**: since the activity ledger already records every invocation with a timestamp, add a `/claude-resume` that lists the last N sessions (from the ledger, not a new data source) and relaunches `claude --continue` against the chosen one — the ledger becomes a session picker, not just a history log.
+* **Cross-agent handoff, Claude → Codex (and back)**: when a task seems better suited to a different model mid-session (e.g. Claude for reasoning, Codex for a specific completion), a `/handoff codex` command could summarize the current context (reusing the same `.agy-context.md` mechanism, once it's actually wired per the fix above) and launch the other agent with it pre-loaded — useful specifically because this app already treats "which agent" as a first-class switchable choice (`AiProviderMode`) rather than a fixed integration.
+* **Status-bar quota awareness during an active session**: the Terminal IDE's status bar (§5) already shows git branch/language mode; while a Claude/Codex session is the active foreground process, a lightweight background poll of `AgyAccountCore.GetAccountStats` could surface "quota: 34% remaining (5h)" in the same bar, so quota exhaustion is visible ambient information instead of a surprise the pre-flight check only catches at the *start* of the next invocation, not mid-session.
+* **Unified `/ai` entry point**: now that pre-flight quota checking, provider auto-fallback, and the activity ledger all exist under one pipeline, a single `/ai <prompt>` command could pick the best available agent automatically (Claude if quota allows, Ollama if not, with the choice logged to the same ledger) — the natural next step once "which agent, and is it healthy" is already a solved problem for the other 6 aliases individually.
+
+11. **Menu Reorganization (§12 Shipped)**:
+    - Reorganized 99 commands across 9 clean top-level categories in `MenuNodeBuilder.BuildTree()`.
+    - Resolved orphan command bug by inserting `hermesd` into the `[AI Agent & Ollama]` tree.
+    - Grouped AI launcher variants (`/claude-agents`, `/codex-agents`) and clarified descriptions (Auto runtime mode vs Force Cloud).
+    - Grouped SSH and Tailscale diagnostics into `/ssh-tailscale`.
+    - Split `[Theme & Settings]` into `[Appearance & Layout]` and `[Help & Docs]`.
+
+12. **Dev Tools Consolidation & Enrichment (§13 Shipped)**:
+    - Folded Docker, AWS, and SQLite database tools directly into `[Workspace & Dev]` for seamless single-destination workspace developer workflows.
+    - Added 10 day-2 developer commands: `gbr` (Git Branch Manager), `glog` (Paged commit history graph), `gpull` (Pull remote), `gpush` (Push remote), `drestore` (Restore packages), `dpublish` (Publish release), `dwatch` (Watch live-reload), `dimg` (Docker image manager), `dlogs` (Docker container logs), and `aws-whoami` (AWS STS identity info).
+    - Enforced status-first priority ordering (`gs` leads `/git-tools`, `dbld` leads `/dotnet-tools`, `docker-health` leads `/docker-tools`, `aws-whoami` leads `/aws-tools`).

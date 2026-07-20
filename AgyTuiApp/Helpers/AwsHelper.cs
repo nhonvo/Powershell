@@ -21,6 +21,18 @@ public static class AwsHelper
         });
     }
 
+    public static void ShowCallerIdentity()
+    {
+        AnsiConsole.Write(new Rule("[bold cyan]AWS Identity & Region[/]").RuleStyle("grey"));
+        var output = Helpers.ProcessRunner.RunCapture("aws", "sts get-caller-identity");
+        if (string.IsNullOrWhiteSpace(output))
+        {
+            SpectrePanel.Warning("AWS CLI returned no response or credentials not configured.");
+            return;
+        }
+        SpectrePanel.Info(output);
+    }
+
     private static void RunLocalAwsCli(string args, string section)
     {
         AnsiConsole.MarkupLine($"\n[bold cyan]{section.EscapeMarkup()}[/]");

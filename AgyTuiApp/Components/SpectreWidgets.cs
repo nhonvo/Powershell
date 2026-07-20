@@ -144,6 +144,12 @@ public static class SpectreMenu
 
 public static class SpectrePager
 {
+    public static void Show(string title, string content)
+    {
+        var lines = (content ?? string.Empty).Split('\n');
+        Show(title, lines);
+    }
+
     public static void Show(string title, string[] lines)
     {
         var pageSize = Math.Max(5, Console.WindowHeight - 8);

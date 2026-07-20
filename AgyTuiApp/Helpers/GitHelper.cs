@@ -98,6 +98,59 @@ public static class GitHelper
         else SpectrePanel.Error($"git reset failed (exit {exit}).");
     }
 
+    public static void ShowBranches()
+    {
+        var output = RunGit("branch -a --sort=-committerdate");
+        if (string.IsNullOrWhiteSpace(output))
+        {
+            SpectrePanel.Warning("Not a git repository or no branches found.");
+            return;
+        }
+        var branches = output.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        AnsiConsole.Write(new Rule("[bold cyan]Git Branches (Sorted by recent activity)[/]").RuleStyle("grey"));
+        var selectedIdx = SpectreMenu.Show("Select Branch to Checkout", branches, 0, false);
+        if (selectedIdx < 0) return;
+
+        var targetBranch = branches[selectedIdx].TrimStart('*', ' ').Trim();
+        if (targetBranch.StartsWith("remotes/"))
+        {
+            var parts = targetBranch.Split('/');
+            if (parts.Length >= 3) targetBranch = parts[^1];
+        }
+
+        AnsiConsole.MarkupLine($"[cyan]Checking out branch:[/] [bold green]{targetBranch.EscapeMarkup()}[/]");
+        var exitCode = RunGitDirect($"checkout \"{targetBranch}\"");
+        if (exitCode == 0) SpectrePanel.Success($"Checked out '{targetBranch}'.");
+        else SpectrePanel.Error($"git checkout failed (exit {exitCode}).");
+    }
+
+    public static void ShowLog()
+    {
+        var output = RunGit("log --oneline --graph --decorate -n 50");
+        if (string.IsNullOrWhiteSpace(output))
+        {
+            SpectrePanel.Info("No commit history found.");
+            return;
+        }
+        SpectrePager.Show("Git Commit Log (Last 50)", output);
+    }
+
+    public static void Pull()
+    {
+        AnsiConsole.MarkupLine("[cyan]Pulling latest changes from remote...[/]");
+        var exitCode = RunGitDirect("pull");
+        if (exitCode == 0) SpectrePanel.Success("Git pull completed successfully.");
+        else SpectrePanel.Error($"git pull failed (exit {exitCode}).");
+    }
+
+    public static void Push()
+    {
+        AnsiConsole.MarkupLine("[cyan]Pushing local commits to remote...[/]");
+        var exitCode = RunGitDirect("push");
+        if (exitCode == 0) SpectrePanel.Success("Git push completed successfully.");
+        else SpectrePanel.Error($"git push failed (exit {exitCode}).");
+    }
+
     private static string RunGit(string args) => Helpers.ProcessRunner.RunCapture("git", args);
 
     private static int RunGitDirect(string args)
