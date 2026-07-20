@@ -101,14 +101,35 @@ Runs quick transitions to registered workspace directories.
 * **Star Indicators**: Star symbols `★` mark prioritized/active workspaces.
 * **Terminal IDE Sidebar:** Selecting the `i` (Terminal IDE) option inside the project picker boots the workspace directly into a local terminal IDE. If missing, it installs the `micro` editor via `winget`, configures the `filemanager` tree sidebar plugin, and maps `Ctrl+B` to toggle the explorer tree sidebar in-place.
 
-### 3. AI Integrations & Local AI Hub (`ai helper` / `AiHelper`)
-Manages background server dependencies, model selections, and proxy wrappers.
+### 3. Master Learning Suite & Study Center (`learn` / `AgyTuiApp`)
+A built-in interactive learning suite powered by Spectre.Console, featuring spaced repetition (SuperMemo SM-2 algorithm), algorithm visualizers, and domain-organized resource vaults.
+
+* **Master Hub (`/learn`)**: Type `/learn` to launch the domain-organized learning console.
+* **Domain Folder Layout (`learn/`)**:
+  ```
+  Powershell/learn/
+  ├── 🎌 japanese/         # /kana, /kanji, /jlpt, /grammar (1,653 words & N5-N3 points)
+  ├── 📖 english/          # /vocab, /word-of-day, /grammar (tenses & conditionals)
+  ├── 💻 csharp/           # /quiz (C# & .NET 9), /snippets
+  ├── 🧩 dsa/              # /algo (Visualizer), /complexity (Big-O), /problems
+  ├── 💼 career/           # /interview (34 Qs), /star (STAR builder), /mock
+  ├── 🎴 certifications/   # /flashcard (94 decks: AWS SAA-C03, AZ-900, AZ-204, AI-102...)
+  ├── 📄 cheatsheets/      # /sheets (978 developer cheat sheets)
+  └── 📊 stats/            # /stats (Spaced repetition study logs)
+  ```
+* **Interactive Algorithm Visualizer (`/algo`)**: Visualizes sorting algorithms (Bubble, Selection, QuickSort, MergeSort), Graph Traversals (BFS), and Dynamic Programming (Fibonacci Table) step-by-step in terminal ASCII graphics.
+* **Obsidian Vault Ingestion Pipeline (`/refresh`)**: Scans local vault (`C:\Users\sshuser\project\learning`) containing 2,009 files, 3,600 cards, and 94 flashcard decks.
+
+### 4. AI Integrations & Local AI Hub (`ai helper` / `AiHelper`)
+Manages background server dependencies, model selections, multi-account isolation, and auto-commit toggles.
 * **Local AI Hub (`ai`):** Running `ai` without arguments opens the consolidated AI Agent Dashboard. It shows live Ollama server status (Running/Offline), lists downloaded local models, sets your default model, launches AI agent CLIs, and auto-installs missing dependencies.
+* **Multi-Account Credential Isolation (`/acc` / `agy-m`):** Isolates account tokens via per-process `$env:GEMINI_HOME` environments without disrupting background running agents.
+* **Multi-Agent Auto-Commit Toggle (`/no-auto-commit` / `/autocommit`):** Toggles automatic Git commits for background AGY multi-agent invocations (`AGY_AUTO_COMMIT=false`).
 * **Autostart Server**: Running `claude`, `codex`, `openclaw`, or `hermes` checks port `11434` and starts the Ollama server if offline.
 * **Model Cache**: Caches your selected default model in `ollama_default_model.txt` to speed up CLI startups.
 * **Compatibility Proxy**: Launches Node-based `ollama-proxy.js` on port `11435` to rewrite OpenAPI schemas for legacy clients (like Codex CLI).
 
-### 4. Interactive Command Shell (`cc` / `Get-CustomCommands`)
+### 5. Interactive Command Shell (`cc` / `Get-CustomCommands`)
 Launches a dedicated full-screen interactive command sub-shell.
 * **Direct Alias Runs:** Type command aliases (e.g. `gs`, `sysmon`, `sec list`) directly into the `cc> ` prompt to execute them.
 * **Slash Command Selector:** Type `/` to open the searchable Command Palette list view to search, filter, and run helper scripts interactively.
@@ -120,7 +141,29 @@ Launches a dedicated full-screen interactive command sub-shell.
 
 ## 🛠️ Quick Use Guide
 
-### 1. AI & Multi-Account Shortcuts
+### 1. Master Learning Suite Commands
+
+| Command / Alias | Domain Suite | Description & Resource Location |
+| :--- | :--- | :--- |
+| `/learn` | Master Hub | Opens the Master Learning Suite interactive menu connecting all 5 domains |
+| `/kana` | 🎌 Japanese | Hiragana & Katakana Spaced Repetition Quiz (`learn/japanese/kana.json`) |
+| `/kanji` | 🎌 Japanese | Kanji Radical & Stroke Count Search (`learn/japanese/kanji.json`) |
+| `/jlpt` | 🎌 Japanese | JLPT N5 & N4 Vocabulary Drills (`learn/japanese/N5.json`, `N4.json` — 1,653 words) |
+| `/grammar` | 🎌 JP & 📖 EN | Japanese N5–N3 & English Grammar Pattern Drills (`learn/japanese/grammar_*.json`) |
+| `/word-of-day` | 📖 English | Daily Featured Developer & General English Word (`learn/english/word_bank.json`) |
+| `/vocab` | 📖 English | Intermediate & Advanced Vocabulary Drills (`learn/english/vocab/`) |
+| `/flashcard` | 🎴 Certifications | Flashcard Engine with SM-2 Spaced Repetition (`learn/certifications/decks/` — 94 decks) |
+| `/quiz` | 💻 C# & Dev | Interactive C# & .NET 9 Knowledge Quiz (`learn/csharp/csharp_quiz.json`) |
+| `/snippets` | 💻 C# & Dev | Code Snippet Library with Clipboard Copy (`learn/csharp/snippets/`) |
+| `/sheets` | 💻 C# & Dev | 978 Developer Cheat Sheets — Docker, Git, SQL, PS (`learn/cheatsheets/`) |
+| `/algo` | 🧩 DSA | Interactive Algorithm Visualizer (Bubble, Quick, Merge, BFS, DP Fibonacci) |
+| `/complexity` | 🧩 DSA | Big-O Time & Space Complexity Reference Tables (`learn/dsa/complexity.json`) |
+| `/problems` | 🧩 DSA | LeetCode / Coding Problem Tracker (`learn/dsa/problems.json`) |
+| `/interview` | 💼 Career | 34 Technical & Behavioral Interview Questions (`learn/career/interview_questions.json`) |
+| `/star` | 💼 Career | STAR Method Answer Builder & Storage (`learn/career/star_answers.json`) |
+| `/mock` | 💼 Career | Interactive Timed Mock Interview Session Console |
+
+### 2. AI & Multi-Account Shortcuts
 
 | Alias / Command | Routing Target | Description |
 | :--- | :--- | :--- |
