@@ -132,27 +132,23 @@ function Write-AgyStartupCheckpoint {
 Write-AgyStartupCheckpoint "script start"
  
 # ==============================================================================
-#  AGY TUI — load the compiled C# Spectre.Console library (AgyTuiApp)
 # ==============================================================================
-$AgyTuiDistDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\dist"
-if (Test-Path $AgyTuiDistDir) {
-    Get-ChildItem -Path $AgyTuiDistDir -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
-        try { Add-Type -Path $_.FullName -ErrorAction Stop } catch {}
-    }
-    $agyTuiDll = Join-Path $AgyTuiDistDir "AgyTuiApp.dll"
-    if (Test-Path $agyTuiDll) {
-        try {
-            Add-Type -Path $agyTuiDll -ErrorAction Stop
-        } catch {
-            Write-Warning "[AGY TUI] Failed to load AgyTuiApp.dll: $_"
-        }
-    } else {
-        Write-Warning "[AGY TUI] AgyTuiApp.dll missing — run: AgyTuiApp\build.ps1 -Release"
-    }
-} else {
-    Write-Warning "[AGY TUI] AgyTuiApp\dist missing — run: AgyTuiApp\build.ps1 -Release"
+#  AGY TUI — compiled C# Spectre.Console application (AgyTuiApp)
+# ==============================================================================
+$AgyTuiBinDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\bin\Debug\net10.0"
+if (-not (Test-Path $AgyTuiBinDir)) {
+    $AgyTuiBinDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\dist"
 }
-Write-AgyStartupCheckpoint "AgyTuiApp.dll Add-Type done"
+if (Test-Path $AgyTuiBinDir) {
+    Get-ChildItem -Path $AgyTuiBinDir -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
+        try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
+    }
+    $agyTuiDll = Join-Path $AgyTuiBinDir "AgyTuiApp.dll"
+    if (Test-Path $agyTuiDll) {
+        try { Add-Type -Path $agyTuiDll -ErrorAction SilentlyContinue } catch {}
+    }
+}
+Write-AgyStartupCheckpoint "AgyTuiApp assembly loaded"
  
 # ==============================================================================
 #  Enhanced PowerShell Profile — single-file build
@@ -1636,7 +1632,15 @@ class AgyAccountManager {
 
 # --- Help shortcuts ---
 function Invoke-ControlCenter {
-    [AgyTui.CcNavigator]::Run()
+    $debugExe = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.exe"
+    $releaseExe = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\dist\AgyTuiApp.exe"
+    if (Test-Path $debugExe) {
+        & $debugExe @args
+    } elseif (Test-Path $releaseExe) {
+        & $releaseExe @args
+    } else {
+        dotnet run --project (Join-Path $Global:ProfileRepoRoot "AgyTuiApp\AgyTuiApp.csproj") -- $args
+    }
     $selectedProjFile = Join-Path -Path $Global:AgySourceHome -ChildPath "selected_project.txt"
     if (Test-Path $selectedProjFile) {
         $projPath = Get-Content $selectedProjFile -Raw -ErrorAction SilentlyContinue
@@ -1649,14 +1653,14 @@ function Invoke-ControlCenter {
 }
 Set-Alias -Name cc -Value Invoke-ControlCenter -Force
 
-function cg { [ProfileHelp]::Show("Git") }
-function cnet { [ProfileHelp]::Show("Net") }
-function csys { [ProfileHelp]::Show("Sys") }
-function cdk { [ProfileHelp]::Show("Docker") }
-function cai { [ProfileHelp]::Show("AI") }
-function caws { [ProfileHelp]::Show("AWS") }
-function cnav { [ProfileHelp]::Show("Navigation") }
-function cssh { [ProfileHelp]::Show("SSH") }
+function cg { Invoke-ControlCenter "gs" }
+function cnet { Invoke-ControlCenter "public-ip" }
+function csys { Invoke-ControlCenter "disk" }
+function cdk { Invoke-ControlCenter "dkcl" }
+function cai { Invoke-ControlCenter "claude" }
+function caws { Invoke-ControlCenter "aws-local" }
+function cnav { Invoke-ControlCenter "proj" }
+function cssh { Invoke-ControlCenter "ssh-info" }
 
 # Theme Switcher
 function Select-ShellTheme {
