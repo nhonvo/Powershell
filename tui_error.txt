@@ -1,5 +1,0 @@
-System.IO.IOException: The handle is invalid.
-   at System.ConsolePal.GetBufferInfo(Boolean throwOnNoConsole, Boolean& succeeded)
-   at System.ConsolePal.get_WindowWidth()
-   at AgyTui.CcBanner.Print() in C:\Users\TruongNhon\Documents\Powershell\AgyTuiApp\Program.cs:line 7245
-   at AgyTui.CcNavigator.Run() in C:\Users\TruongNhon\Documents\Powershell\AgyTuiApp\Program.cs:line 7403

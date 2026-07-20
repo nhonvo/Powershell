@@ -3,16 +3,18 @@
 
 function Invoke-MasterLearningSuite {
     param([string]$Topic)
-    $dllPath = Join-Path $global:AGY_WORKSPACE_ROOT "AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+    $root = if ($Global:ProfileRepoRoot) { $Global:ProfileRepoRoot } elseif ($global:AGY_WORKSPACE_ROOT) { $global:AGY_WORKSPACE_ROOT } else { Split-Path -Parent -Path $MyInvocation.MyCommand.Definition }
+    $dllPath = Join-Path $root "AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+    $projPath = Join-Path $root "AgyTuiApp\AgyTuiApp.csproj"
     if (Test-Path $dllPath) {
         if ($Topic) {
-            Start-Process -FilePath "dotnet" -ArgumentList "run --project `"$global:AGY_WORKSPACE_ROOT\AgyTuiApp\AgyTuiApp.csproj`" -- learn $Topic" -NoNewWindow -Wait
+            Start-Process -FilePath "dotnet" -ArgumentList "run --project `"$projPath`" -- learn $Topic" -NoNewWindow -Wait
         } else {
-            Start-Process -FilePath "dotnet" -ArgumentList "run --project `"$global:AGY_WORKSPACE_ROOT\AgyTuiApp\AgyTuiApp.csproj`" -- learn" -NoNewWindow -Wait
+            Start-Process -FilePath "dotnet" -ArgumentList "run --project `"$projPath`" -- learn" -NoNewWindow -Wait
         }
     } else {
         Write-Host "⚠️ AgyTuiApp binary not built. Building now..." -ForegroundColor Yellow
-        dotnet build "$global:AGY_WORKSPACE_ROOT\AgyTuiApp\AgyTuiApp.csproj" -c Release
+        dotnet build "$projPath"
     }
 }
 
