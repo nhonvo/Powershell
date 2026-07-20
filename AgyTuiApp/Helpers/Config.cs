@@ -57,8 +57,14 @@ public static class Config
 
         try
         {
+            var options = new JsonSerializerOptions
+            {
+                ReadCommentHandling = JsonCommentHandling.Skip,
+                AllowTrailingCommas = true,
+                PropertyNameCaseInsensitive = true
+            };
             var content = File.ReadAllText(ConfigPath);
-            var data = JsonSerializer.Deserialize<ConfigData>(content);
+            var data = JsonSerializer.Deserialize<ConfigData>(content, options);
             if (data != null)
             {
                 Current = data;
