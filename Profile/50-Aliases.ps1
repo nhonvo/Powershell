@@ -490,6 +490,15 @@ function Invoke-ControlCenter {
         }
         Remove-Item $selectedProjFile -Force -ErrorAction SilentlyContinue
     }
+    $selectedThemeFile = Join-Path -Path $agyHome -ChildPath "selected_theme.txt"
+    if ($selectedThemeFile -and (Test-Path $selectedThemeFile -ErrorAction SilentlyContinue)) {
+        $themePath = Get-Content $selectedThemeFile -Raw -ErrorAction SilentlyContinue
+        if ($themePath -and (Test-Path $themePath.Trim() -ErrorAction SilentlyContinue)) {
+            Write-Host "🎨 Applying selected theme: $(Split-Path $themePath.Trim() -Leaf)" -ForegroundColor Cyan
+            Apply-ThemePath $themePath.Trim()
+        }
+        Remove-Item $selectedThemeFile -Force -ErrorAction SilentlyContinue
+    }
 }
 Set-Alias -Name cc -Value Invoke-ControlCenter -Force
 

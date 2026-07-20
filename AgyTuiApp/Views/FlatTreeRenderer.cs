@@ -778,17 +778,52 @@ public sealed class FlatTreeRenderer : IMenuRenderer
         }
         else if (mode == "proj")
         {
-            grid.AddRow(new Markup("[cyan bold]Select Workspace directory (Enter for Actions: cd / IDE / Explorer):[/]\n"));
             var workspaces = WorkspaceRegistry.GetWorkspaces();
+            var currentDir = Directory.GetCurrentDirectory();
+
+            var table = new Table()
+                .Border(TableBorder.Rounded)
+                .BorderColor(Color.Cyan1)
+                .Expand()
+                .AddColumn(new TableColumn("[bold cyan]Sel[/]").Width(3).Centered())
+                .AddColumn(new TableColumn("[bold cyan]Status[/]").Width(10).Centered())
+                .AddColumn(new TableColumn("[bold cyan]Workspace Name[/]").Width(26))
+                .AddColumn(new TableColumn("[bold cyan]Git Branch[/]").Width(14))
+                .AddColumn(new TableColumn("[bold cyan]Directory Path[/]"));
+
             for (var i = 0; i < workspaces.Length; i++)
             {
                 var isSelected = (i == selIdx);
-                var prefix = isSelected ? "[green bold]> [/]" : "  ";
+                var isCurrent = string.Equals(workspaces[i].WorkspacePath.TrimEnd('\\', '/'), currentDir.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
+
+                var cursorMarkup = isSelected ? "[green bold]❯[/]" : " ";
+                var statusMarkup = isCurrent ? "[bold black on green] ACTIVE [/]" : "[dim cyan][READY][/]";
+                
+                var nameMarkup = isSelected 
+                    ? $"[bold green]📁 {workspaces[i].Name.EscapeMarkup()}[/]" 
+                    : $"[bold white]📁 {workspaces[i].Name.EscapeMarkup()}[/]";
+
                 var branch = WorkspaceRegistry.GetGitBranch(workspaces[i].WorkspacePath);
-                var branchMarkup = !string.IsNullOrEmpty(branch) ? $" [cyan]({branch})[/]" : "";
-                grid.AddRow(new Markup($"{prefix}{workspaces[i].Name.EscapeMarkup()}{branchMarkup} [dim]({workspaces[i].WorkspacePath.EscapeMarkup()})[/]"));
+                var branchMarkup = !string.IsNullOrEmpty(branch) 
+                    ? $"[yellow]🌿 {branch.EscapeMarkup()}[/]" 
+                    : "[dim]—[/]";
+
+                var pathMarkup = isSelected
+                    ? $"[cyan]{workspaces[i].WorkspacePath.EscapeMarkup()}[/]"
+                    : $"[dim]{workspaces[i].WorkspacePath.EscapeMarkup()}[/]";
+
+                table.AddRow(
+                    new Markup(cursorMarkup),
+                    new Markup(statusMarkup),
+                    new Markup(nameMarkup),
+                    new Markup(branchMarkup),
+                    new Markup(pathMarkup)
+                );
             }
-            grid.AddRow(new Markup("\n[dim]↑/↓ Navigate  ·  Enter Select Action  ·  Esc Cancel[/]"));
+
+            grid.AddRow(new Markup("[bold green]📁 Registered Workspace Navigator (cnav)[/] [dim]— Select target to trigger quick actions[/]\n"));
+            grid.AddRow(table);
+            grid.AddRow(new Markup("\n[bold cyan][Enter][/] Actions ([green]cd[/] / [cyan]/ide[/] / [yellow]Explorer[/] / [magenta]Git Diff[/])  ·  [bold cyan][Esc][/] Cancel"));
         }
 
         var panel = new Panel(grid)
