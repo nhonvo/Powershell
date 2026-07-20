@@ -19,13 +19,17 @@ public interface IStatusWidget
 
 public static class OllamaStatusWidgetCache
 {
-    public static Table? CachedOllamaWidget = null;
-    public static DateTime OllamaWidgetCachedAt = DateTime.MinValue;
+    private static readonly TtlCache<string, Table> _cache = new(TimeSpan.FromSeconds(30));
+
+    public static Table? CachedOllamaWidget
+    {
+        get => _cache.Get("ollama_widget");
+        set => _cache.Set("ollama_widget", value!);
+    }
 
     public static void Invalidate()
     {
-        CachedOllamaWidget = null;
-        OllamaWidgetCachedAt = DateTime.MinValue;
+        _cache.Clear();
     }
 }
 
@@ -58,28 +62,32 @@ public sealed class DiskSpaceWidget : IStatusWidget
 public sealed class PublicIpWidget : IStatusWidget
 {
     public string Alias => "public-ip";
-
-    private static string _cachedIp = null;
-    private static DateTime _lastIpFetch = DateTime.MinValue;
+    private static readonly TtlCache<string, string> _ipCache = new(TimeSpan.FromMinutes(5));
 
     public IRenderable Render()
     {
-        if (_cachedIp == null || (DateTime.Now - _lastIpFetch).TotalMinutes > 5)
+        var cached = _ipCache.Get("ip");
+        if (cached == null)
         {
-            _cachedIp = "Fetching...";
-            Task.Run(() => {
-                try {
-                    _cachedIp = SystemHelper.GetPublicIP();
-                } catch {
-                    _cachedIp = "Error fetching IP";
+            _ipCache.Set("ip", "Fetching...");
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var ip = await HttpClientProvider.Client.GetStringAsync("https://api.ipify.org");
+                    _ipCache.Set("ip", ip.Trim());
                 }
-                _lastIpFetch = DateTime.Now;
+                catch
+                {
+                    _ipCache.Set("ip", "Unavailable");
+                }
             });
+            cached = "Fetching...";
         }
-        return new Panel(new Markup($"\n[bold cyan]Public IP Address:[/] [green]{_cachedIp.EscapeMarkup()}[/]\n\n[dim](Refreshes every 5 mins)[/]"))
+        return new Panel($"[bold green]🌐 Public IP:[/] [yellow]{cached.EscapeMarkup()}[/]")
         {
             Border = BoxBorder.Rounded,
-            BorderStyle = new Style(Color.Cyan1)
+            BorderStyle = new Style(Color.Grey)
         };
     }
 }
@@ -103,7 +111,7 @@ public sealed class SshInfoWidget : IStatusWidget
                 }
             }
         }
-        catch {}
+        catch { }
 
         var user = Environment.UserName;
         var hostName = Environment.MachineName;
@@ -195,10 +203,10 @@ public sealed class LiveDashboardWidget : IStatusWidget
     {
         var table = new Table().Border(TableBorder.Rounded).BorderColor(Color.Grey);
         table.AddColumn("[bold cyan]Account[/]");
-        table.AddColumn("[bold cyan]L[/]"); 
-        table.AddColumn("[bold cyan]W[/]"); 
-        table.AddColumn("[bold cyan]5h[/]"); 
-        
+        table.AddColumn("[bold cyan]L[/]");
+        table.AddColumn("[bold cyan]W[/]");
+        table.AddColumn("[bold cyan]5h[/]");
+
         foreach (var a in AgyAccountCore.GetAccounts())
         {
             var s = AgyAccountCore.GetAccountStats(a);
@@ -223,7 +231,7 @@ public sealed class OllamaStatusWidget : IStatusWidget
 
     public IRenderable Render()
     {
-        if (OllamaStatusWidgetCache.CachedOllamaWidget != null && (DateTime.UtcNow - OllamaStatusWidgetCache.OllamaWidgetCachedAt).TotalSeconds < 3)
+        if (OllamaStatusWidgetCache.CachedOllamaWidget != null)
         {
             return OllamaStatusWidgetCache.CachedOllamaWidget;
         }
@@ -232,15 +240,15 @@ public sealed class OllamaStatusWidget : IStatusWidget
         var table = new Table().Border(TableBorder.Rounded).BorderColor(isRunning ? Color.Green : Color.Red);
         table.AddColumn("[bold cyan]Ollama Daemon[/]");
         table.AddColumn("[bold cyan]Value[/]");
-        
+
         table.AddRow("Status", isRunning ? "[green bold]● Active (Running)[/]" : "[red bold]○ Offline (Stopped)[/]");
         table.AddRow("Port", "11434");
-        
+
         if (isRunning)
         {
             try
             {
-                using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(1) };
+                var client = HttpClientProvider.Client;
                 var response = client.GetStringAsync("http://127.0.0.1:11434/api/tags").Result;
                 using var doc = JsonDocument.Parse(response);
                 if (doc.RootElement.TryGetProperty("models", out var modelsProp) && modelsProp.ValueKind == JsonValueKind.Array)
@@ -269,7 +277,6 @@ public sealed class OllamaStatusWidget : IStatusWidget
             }
         }
         OllamaStatusWidgetCache.CachedOllamaWidget = table;
-        OllamaStatusWidgetCache.OllamaWidgetCachedAt = DateTime.UtcNow;
         return table;
     }
 }

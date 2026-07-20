@@ -4,7 +4,7 @@ namespace AgyTui;
 
 public static class Icons
 {
-    public static bool UseNerdFonts { get; set; } = 
+    public static bool UseNerdFonts { get; set; } =
         string.Equals(Environment.GetEnvironmentVariable("AGY_NERD_FONTS"), "true", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(Environment.GetEnvironmentVariable("POSH_THEME_NERD_FONTS"), "true", StringComparison.OrdinalIgnoreCase);
 

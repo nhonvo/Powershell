@@ -50,9 +50,25 @@ public static class ThemeHelper
         return themePath;
     }
 
-    public static string? ToggleMobileMode(string themesPath) => ApplyMobileMode(themesPath, !ReadConfig(themesPath).IsMobile);
+    public static bool IsMobileModeActive(string? themesPath = null)
+    {
+        var path = ResolveThemesPath(themesPath);
+        return ReadConfig(path).IsMobile;
+    }
+
+    public static string? ToggleMobileMode(string? themesPath = null) => ApplyMobileMode(ResolveThemesPath(themesPath), !ReadConfig(ResolveThemesPath(themesPath)).IsMobile);
 
     public static string? SetMobileMode(string themesPath, bool enableMobile) => ApplyMobileMode(themesPath, enableMobile);
+
+    private static string ResolveThemesPath(string? themesPath)
+    {
+        if (!string.IsNullOrEmpty(themesPath) && Directory.Exists(themesPath)) return themesPath;
+        var env = Environment.GetEnvironmentVariable("POSH_THEMES_PATH");
+        if (!string.IsNullOrEmpty(env) && Directory.Exists(env)) return env;
+        var defaultPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "asset", "powershell-themes");
+        if (Directory.Exists(defaultPath)) return defaultPath;
+        return Directory.GetCurrentDirectory();
+    }
 
     private static string? ApplyMobileMode(string themesPath, bool enableMobile)
     {

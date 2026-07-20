@@ -268,7 +268,7 @@ public static class TerminalIde
         while (true)
         {
             var activeTab = currentFile != null ? Path.GetFileName(currentFile) : "No file open";
-            
+
             var layout = new Layout("Root")
                 .SplitRows(
                     new Layout("Header").Size(3),
@@ -295,7 +295,7 @@ public static class TerminalIde
             };
             layout["Sidebar"].Update(sidebarPanel);
 
-            var breadcrumbs = currentFile != null 
+            var breadcrumbs = currentFile != null
                 ? $"[bold white]📁 {Path.GetFileName(rootPath)}[/] › [green]{Path.GetRelativePath(rootPath, currentFile).Replace(Path.DirectorySeparatorChar, '›')}[/]"
                 : $"[bold white]📁 {Path.GetFileName(rootPath)}[/]";
             var headerPanel = new Panel(new Align(new Markup(breadcrumbs), HorizontalAlignment.Left, VerticalAlignment.Middle))
@@ -308,7 +308,7 @@ public static class TerminalIde
             if (currentFile != null && File.Exists(currentFile))
             {
                 var fileLines = File.ReadAllLines(currentFile).Take(40).ToList();
-                editorText = string.Join("\n", fileLines.Select((l, i) => $"[dim]{i+1:D3} |[/] {l.EscapeMarkup()}"));
+                editorText = string.Join("\n", fileLines.Select((l, i) => $"[dim]{i + 1:D3} |[/] {l.EscapeMarkup()}"));
                 if (File.ReadAllLines(currentFile).Length > 40) editorText += "\n[dim]... (truncated) ...[/]";
             }
             else
@@ -334,7 +334,7 @@ public static class TerminalIde
 
             AnsiConsole.Clear();
             AnsiConsole.Write(layout);
-            
+
             AnsiConsole.WriteLine();
             var choices = new[] { "Select File", "Fuzzy Quick Open (Ctrl+P)", "Ask AI / Explain Code (Ctrl+K)", "Edit File", "Search Workspace", "← Exit IDE" };
             var idx = SpectreMenu.Show("IDE Command Palette", choices, 0, false);
@@ -451,11 +451,11 @@ public static class TerminalIde
                         var match = Regex.Match(fileLines[i], @"\bTODO\b:(.*)", RegexOptions.IgnoreCase);
                         if (match.Success)
                         {
-                            todoList.Add($"- {Path.GetRelativePath(rootPath, file)}:L{i+1}:{match.Groups[1].Value.Trim()}");
+                            todoList.Add($"- {Path.GetRelativePath(rootPath, file)}:L{i + 1}:{match.Groups[1].Value.Trim()}");
                         }
                     }
                 }
-                catch {}
+                catch { }
             }
 
             var sb = new StringBuilder();
@@ -475,7 +475,7 @@ public static class TerminalIde
 
             File.WriteAllText(contextFile, sb.ToString(), Encoding.UTF8);
         }
-        catch {}
+        catch { }
     }
 
     public static void OpenFile(string filePath)

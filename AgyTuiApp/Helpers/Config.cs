@@ -18,7 +18,7 @@ public sealed class ConfigData
     public bool EnableAgy { get; set; } = true;
     public string[] ProjectSearchPaths { get; set; } = Array.Empty<string>();
     public string[] ProjectExcludeFolders { get; set; } = Array.Empty<string>();
-    
+
     // New settings
     public string UiMode { get; set; } = "flat-tree";
     public string Density { get; set; } = "comfortable";
@@ -78,8 +78,11 @@ public static class Config
             var content = JsonSerializer.Serialize(Current, options);
             File.WriteAllText(ConfigPath, content);
         }
-        catch {}
+        catch { }
     }
+
+    public static string GetUiMode() => Current.UiMode;
+    public static string GetDensity() => Current.Density;
 
     public static void SetUiMode(string uiMode)
     {
@@ -104,6 +107,6 @@ public static class Config
                 Current.UiMode = "flat-tree";
             }
         }
-        catch {}
+        catch { }
     }
 }

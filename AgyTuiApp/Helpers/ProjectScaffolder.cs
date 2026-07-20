@@ -35,7 +35,7 @@ public static class ProjectScaffolder
             }
         });
         SpectrePanel.Success($"Project '{name}' created at {Path.Combine(outputDir, name)}");
-        
+
         if (AnsiConsole.Confirm("Do you want to launch Claude immediately to write initial tests and features in this new project?"))
         {
             var targetDir = Path.Combine(outputDir, name);

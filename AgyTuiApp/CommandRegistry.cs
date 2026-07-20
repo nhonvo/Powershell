@@ -159,6 +159,8 @@ public static class CommandRegistry
             Array.Empty<string>(), RequiresAgy: true),
 
         // [Docker & Databases]
+        new("docker-health", "Docker Health Dashboard", "Show container health & resource utilization", "[Docker & Databases]", "Docker",
+            Array.Empty<string>()),
         new("dkcl", "Docker Cleanup", "Docker cleanup TUI dashboard", "[Docker & Databases]", "Docker",
             new[] {
                 "dkcl — Docker cleanup TUI dashboard. Options:",
@@ -203,6 +205,10 @@ public static class CommandRegistry
             new[] {
                 "ssh-info — Local IPs, Tailscale address, active SSH connections."
             }),
+        new("tailscale-status", "Tailscale Status", "Parse tailscale status --json for peer connectivity", "[System & Network]", "Network",
+            Array.Empty<string>()),
+        new("ssh-qr", "SSH Terminal QR Code", "Generate terminal QR code for SSH connection parameters", "[System & Network]", "SSH",
+            Array.Empty<string>()),
 
         // [Learn & Study]
         new("learn", "Start Learning (auto)", "Start learning for a topic (auto-refresh)", "[Learn & Study]", "Learn",

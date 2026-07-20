@@ -24,10 +24,10 @@ public static class DatabaseHelper
         {
             AnsiConsole.Clear();
             AnsiConsole.Write(new Rule($"[bold cyan]SQLite: {Path.GetFileName(dbPath).EscapeMarkup()}[/]").RuleStyle("grey"));
-            
+
             var options = new[] { "Inspect Tables", "Execute SQL Query (Backup-before-write)", "Exit" };
             var choice = SpectreMenu.Show("Database Options", options, 0);
-            
+
             if (choice == 0)
             {
                 var schemaOutput = Helpers.ProcessRunner.RunCapture("sqlite3", $"\"{dbPath}\" .schema");
@@ -50,7 +50,7 @@ public static class DatabaseHelper
                 }
                 var idx = SpectreMenu.Show("Select table to inspect", tables, 0, true);
                 if (idx < 0) continue;
-                
+
                 var tableData = Helpers.ProcessRunner.RunCapture("sqlite3", $"\"{dbPath}\" -header -column \"SELECT * FROM {tables[idx]} LIMIT 50;\"");
                 var lines = tableData.Split('\n').Where(l => !string.IsNullOrWhiteSpace(l)).ToArray();
                 if (lines.Length == 0)
@@ -118,7 +118,9 @@ public static class DatabaseHelper
             try
             {
                 File.Copy(dbPath, backupPath, true);
-                AnsiConsole.MarkupLine($"[green][[DB]] Backup created successfully at '{Path.GetFileName(backupPath)}' before executing write operation.[/]");
+                if (File.Exists(dbPath + "-wal")) File.Copy(dbPath + "-wal", backupPath + "-wal", true);
+                if (File.Exists(dbPath + "-shm")) File.Copy(dbPath + "-shm", backupPath + "-shm", true);
+                AnsiConsole.MarkupLine($"[green][[DB]] Backup created successfully at '{Path.GetFileName(backupPath)}' (including WAL/SHM files) before executing write operation.[/]");
             }
             catch (Exception ex)
             {

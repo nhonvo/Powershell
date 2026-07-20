@@ -67,7 +67,7 @@ public static class DockerHelper
     {
         AnsiConsole.Clear();
         AnsiConsole.Write(new Rule("[bold cyan]Docker Health Dashboard[/]").RuleStyle("grey"));
-        
+
         try
         {
             var psOutput = Helpers.ProcessRunner.RunCapture("docker", "ps --format \"table {{.ID}}\\t{{.Names}}\\t{{.Status}}\\t{{.Ports}}\"");
@@ -79,7 +79,7 @@ public static class DockerHelper
             {
                 AnsiConsole.MarkupLine("[bold green]Running Containers:[/]");
                 AnsiConsole.WriteLine(psOutput);
-                
+
                 var statsOutput = Helpers.ProcessRunner.RunCapture("docker", "stats --no-stream --format \"table {{.Name}}\\t{{.CPUPerc}}\\t{{.MemUsage}}\\t{{.NetIO}}\"");
                 if (!string.IsNullOrWhiteSpace(statsOutput))
                 {

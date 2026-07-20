@@ -42,7 +42,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
         var searching = false;
         var searchBuffer = "";
 
-        try { Console.CursorVisible = false; } catch {}
+        try { Console.CursorVisible = false; } catch { }
 
         while (true)
         {
@@ -63,7 +63,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                         if (child.Kind == MenuNodeKind.Group)
                         {
                             var groupMatches = GetActiveChildren(child)
-                                .Where(sub => sub.SearchKey.Contains(q) || 
+                                .Where(sub => sub.SearchKey.Contains(q) ||
                                               (sub.Command != null && sub.Command.Alias.ToLowerInvariant().Contains(q)))
                                 .ToList();
                             if (groupMatches.Count > 0)
@@ -253,7 +253,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                                 {
                                     File.WriteAllText(configPath, JsonSerializer.Serialize(new { active_theme = selectedTheme, enable_mobile = selectedTheme.EndsWith("-mobile") }));
                                 }
-                                catch {}
+                                catch { }
                                 Environment.SetEnvironmentVariable("THEME", selectedTheme);
                                 var themePath = Path.Combine(themesPath, $"{selectedTheme}.omp.json");
                                 var selectedThemeFile = Path.Combine(AgyAccountCore.AgySourceHome, "selected_theme.txt");
@@ -500,7 +500,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                 if (child.Command.RequiresAiOllama && !enableAi) continue;
                 if (child.Command.RequiresAgy && !enableAgy) continue;
             }
-            
+
             if (child.Id == "agy-cli" && !enableAgy)
             {
                 var originalCmd = child.Command!;
@@ -541,7 +541,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
             var row = rows[i];
             var isSelected = (i == selIdx);
             var prefix = isSelected ? "[green bold]> [/]" : "  ";
-            
+
             var treePrefix = "";
             if (row.Indent > 0)
             {
@@ -586,7 +586,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
 
                 var displayLabel = $"/{cmd.Alias} — {cmd.DisplayName}";
                 var desc = isCompact && !isSelected ? "" : $" [dim]· {cmd.Description}[/]";
-                
+
                 var label = $"{treePrefix}{icon} {displayLabel}{desc}";
                 label = isSelected ? $"[green bold]{label}[/]" : $"  {label}";
                 grid.AddRow(new Markup($"{prefix}{label}"));
@@ -604,12 +604,12 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                         BorderStyle = new Style(isSelected ? Color.Green : Color.Grey),
                         Header = new PanelHeader($"[bold cyan]{alias} status[/]")
                     };
-                    
+
                     var indentGrid = new Grid();
                     indentGrid.AddColumn(new GridColumn().Width(row.Indent * 3));
                     indentGrid.AddColumn(new GridColumn());
                     indentGrid.AddRow(new Markup(""), indentPanel);
-                    
+
                     grid.AddRow(indentGrid);
                 }
             }

@@ -38,7 +38,7 @@ public static class ScreenChrome
         AnsiConsole.MarkupLine("[cyan] █       █      [/]");
         AnsiConsole.MarkupLine($"[cyan] █▄  ▄   █▄  ▄  [/] [dim]Active Account:[/] [green bold]{displayAcc.EscapeMarkup()}[/]");
         AnsiConsole.MarkupLine($"[cyan] ▀████▀  ▀████▀ [/] [dim]Time:[/] [yellow]{now:yyyy-MM-dd HH:mm}[/]");
-        
+
         if (!string.IsNullOrEmpty(category))
         {
             var breadcrumb = $" [bold cyan]Home[/] [dim]>[/] [bold green]{category.EscapeMarkup()}[/]";
@@ -49,7 +49,7 @@ public static class ScreenChrome
             AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
             AnsiConsole.MarkupLine(breadcrumb);
         }
-        
+
         AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
         AnsiConsole.MarkupLine("[dim] [[Tab/→]] Navigate Panes | [[←/Esc]] Go Back | [[Enter]] Select & Run[/]");
         AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");

@@ -60,7 +60,7 @@ public static class GitHelper
                 var tempFile = Path.Combine(Path.GetTempPath(), "staged_diff.diff");
                 File.WriteAllText(tempFile, diff);
                 AgyAiCore.InvokeClaude(["--prompt", $"Read the diff in {tempFile} and output ONLY a short (under 72 chars), clear description of the changes (no prefix/boilerplate) suitable for a git commit message."]);
-                try { File.Delete(tempFile); } catch {}
+                try { File.Delete(tempFile); } catch { }
             }
         }
 

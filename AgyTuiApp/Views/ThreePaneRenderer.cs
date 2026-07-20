@@ -25,7 +25,7 @@ public sealed class ThreePaneRenderer : IMenuRenderer
         var detailsMode = "";
         var detailsSel = 0;
 
-        try { Console.CursorVisible = false; } catch {}
+        try { Console.CursorVisible = false; } catch { }
 
         while (true)
         {
@@ -119,7 +119,7 @@ public sealed class ThreePaneRenderer : IMenuRenderer
                                 {
                                     File.WriteAllText(configPath, JsonSerializer.Serialize(new { active_theme = selectedTheme, enable_mobile = selectedTheme.EndsWith("-mobile") }));
                                 }
-                                catch {}
+                                catch { }
                                 Environment.SetEnvironmentVariable("THEME", selectedTheme);
                                 var themePath = Path.Combine(themesPath, $"{selectedTheme}.omp.json");
                                 var selectedThemeFile = Path.Combine(AgyAccountCore.AgySourceHome, "selected_theme.txt");
@@ -252,35 +252,35 @@ public sealed class ThreePaneRenderer : IMenuRenderer
                 switch (key.Key)
                 {
                     case ConsoleKey.UpArrow:
-                    {
-                        var next = leftSel;
-                        do
                         {
-                            next = Math.Max(0, next - 1);
+                            var next = leftSel;
+                            do
+                            {
+                                next = Math.Max(0, next - 1);
+                            }
+                            while (next > 0 && IsSep(categories, next));
+                            if (!IsSep(categories, next))
+                            {
+                                leftSel = next;
+                                midSel = 0;
+                            }
+                            break;
                         }
-                        while (next > 0 && IsSep(categories, next));
-                        if (!IsSep(categories, next))
-                        {
-                            leftSel = next;
-                            midSel = 0;
-                        }
-                        break;
-                    }
                     case ConsoleKey.DownArrow:
-                    {
-                        var next = leftSel;
-                        do
                         {
-                            next = Math.Min(categories.Length - 1, next + 1);
+                            var next = leftSel;
+                            do
+                            {
+                                next = Math.Min(categories.Length - 1, next + 1);
+                            }
+                            while (next < categories.Length - 1 && IsSep(categories, next));
+                            if (!IsSep(categories, next))
+                            {
+                                leftSel = next;
+                                midSel = 0;
+                            }
+                            break;
                         }
-                        while (next < categories.Length - 1 && IsSep(categories, next));
-                        if (!IsSep(categories, next))
-                        {
-                            leftSel = next;
-                            midSel = 0;
-                        }
-                        break;
-                    }
                     case ConsoleKey.Enter:
                     case ConsoleKey.RightArrow:
                     case ConsoleKey.Tab:
@@ -388,7 +388,7 @@ public sealed class ThreePaneRenderer : IMenuRenderer
                 if (child.Command.RequiresAiOllama && !enableAi) continue;
                 if (child.Command.RequiresAgy && !enableAgy) continue;
             }
-            
+
             if (child.Id == "agy-cli" && !enableAgy)
             {
                 var originalCmd = child.Command!;
@@ -448,7 +448,7 @@ public sealed class ThreePaneRenderer : IMenuRenderer
         {
             var item = visibleItems[i];
             var display = item.Label;
-            
+
             // Check if group is expanded
             if (item.Kind == MenuNodeKind.Group)
             {
@@ -579,7 +579,7 @@ public sealed class ThreePaneRenderer : IMenuRenderer
                 var rightSb = new StringBuilder();
                 rightSb.AppendLine($"[bold white]{display.EscapeMarkup()}[/]");
                 rightSb.AppendLine($"[dim]alias:[/] [yellow]{alias.EscapeMarkup()}[/]");
-                
+
                 var cmd = CommandPalette.Commands.FirstOrDefault(c => string.Equals(c.Alias, alias, StringComparison.OrdinalIgnoreCase));
                 if (cmd != null)
                 {
@@ -608,15 +608,21 @@ public sealed class ThreePaneRenderer : IMenuRenderer
 
         var leftPanel = new Panel(leftSb.ToString())
         {
-            Header = new PanelHeader("[bold cyan]Menu[/]"), Border = BoxBorder.Rounded, BorderStyle = new Style(!midActive ? Color.Cyan1 : Color.Grey)
+            Header = new PanelHeader("[bold cyan]Menu[/]"),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(!midActive ? Color.Cyan1 : Color.Grey)
         };
         var midPanel = new Panel(midSb.ToString())
         {
-            Header = new PanelHeader("[bold cyan]Options[/]"), Border = BoxBorder.Rounded, BorderStyle = new Style(midActive && !detailsActive ? Color.Cyan1 : Color.Grey)
+            Header = new PanelHeader("[bold cyan]Options[/]"),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(midActive && !detailsActive ? Color.Cyan1 : Color.Grey)
         };
         var rightPanel = new Panel(detailsContent)
         {
-            Header = new PanelHeader("[bold cyan]Details[/]"), Border = BoxBorder.Rounded, BorderStyle = new Style(detailsActive ? Color.Cyan1 : Color.Grey)
+            Header = new PanelHeader("[bold cyan]Details[/]"),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(detailsActive ? Color.Cyan1 : Color.Grey)
         };
 
         var table = new Table().NoBorder().HideHeaders();
