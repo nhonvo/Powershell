@@ -615,7 +615,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
             }
         }
 
-        var headerText = searching ? $"Search (Esc to clear): [green]{searchBuffer}[/]_" : "Type [/] to search ...";
+        var headerText = searching ? $"Search (Esc to clear): [green]{searchBuffer.EscapeMarkup()}[/]_" : "Type [[/]] to search ...";
         IRenderable content = grid;
 
         if (isCompact && selIdx >= 0 && selIdx < rows.Count)
