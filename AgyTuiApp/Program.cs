@@ -356,6 +356,7 @@ public static class Program
             {
                 case "proj":
                 case "prj":
+                case "p":
                     var projPath = ProfileNavigator.Navigate("");
                     if (!string.IsNullOrEmpty(projPath))
                     {
