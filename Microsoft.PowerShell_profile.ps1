@@ -135,20 +135,8 @@ Write-AgyStartupCheckpoint "script start"
 # ==============================================================================
 #  AGY TUI — compiled C# Spectre.Console application (AgyTuiApp)
 # ==============================================================================
-$AgyTuiBinDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\bin\Debug\net10.0"
-if (-not (Test-Path $AgyTuiBinDir)) {
-    $AgyTuiBinDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\dist"
-}
-if (Test-Path $AgyTuiBinDir) {
-    Get-ChildItem -Path $AgyTuiBinDir -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
-        try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
-    }
-    $agyTuiDll = Join-Path $AgyTuiBinDir "AgyTuiApp.dll"
-    if (Test-Path $agyTuiDll) {
-        try { Add-Type -Path $agyTuiDll -ErrorAction SilentlyContinue } catch {}
-    }
-}
-Write-AgyStartupCheckpoint "AgyTuiApp assembly loaded"
+$Global:AgyTuiAppProject = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\AgyTuiApp.csproj"
+Write-AgyStartupCheckpoint "AgyTuiApp subprocess mode ready"
  
 # ==============================================================================
 #  Enhanced PowerShell Profile — single-file build
@@ -607,7 +595,6 @@ class GitHelper {
 }
 '@
 } catch {
-    Write-Warning "[Profile] GitHelper failed to load (git aliases will be unavailable until fixed): $_"
 }
 #endregion
  
@@ -897,7 +884,6 @@ class DockerHelper {
 }
 '@
 } catch {
- Write-Warning "[Profile] DockerHelper failed to load (docker aliases will be unavailable until fixed): $_"
 }
 #endregion
 
@@ -1171,7 +1157,6 @@ class ProfileHelp {
 }
 '@
 } catch {
-    Write-Warning "[Profile] ProfileHelp failed to load (cg/cnet/csys/etc. help shortcuts will be unavailable until fixed): $_"
 }
 #endregion
 
@@ -1627,7 +1612,6 @@ class AgyAccountManager {
 }
 '@
 } catch {
-    Write-Warning "Failed to define AgyAccountManager helper: $_"
 }
 
 # --- Help shortcuts ---

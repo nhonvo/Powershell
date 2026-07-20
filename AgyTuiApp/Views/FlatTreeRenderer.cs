@@ -556,7 +556,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
 
             if (row.Type == VisibleRowType.Exit)
             {
-                var label = isSelected ? $"[green bold]{row.Node.Label}[/]" : row.Node.Label;
+                var label = isSelected ? $"[green bold]{row.Node.Label.EscapeMarkup()}[/]" : row.Node.Label.EscapeMarkup();
                 grid.AddRow(new Markup($"{prefix}{label}"));
                 continue;
             }
@@ -565,16 +565,16 @@ public sealed class FlatTreeRenderer : IMenuRenderer
             {
                 var isExpanded = _expandedCategories.Contains(row.Node.Id) || !string.IsNullOrEmpty(searchBuffer);
                 var sign = isExpanded ? "[-]" : "[+]";
-                var label = $"{sign} {row.Node.Label}";
-                label = isSelected ? $"[green bold]{label}[/]" : $"[bold cyan]{label}[/]";
+                var safeText = $"{sign} {row.Node.Label}".EscapeMarkup();
+                var label = isSelected ? $"[green bold]{safeText}[/]" : $"[bold cyan]{safeText}[/]";
                 grid.AddRow(new Markup($"{prefix}{label}"));
             }
             else if (row.Type == VisibleRowType.Group)
             {
                 var isExpanded = _expandedGroups.Contains(row.Node.Id) || !string.IsNullOrEmpty(searchBuffer);
                 var sign = isExpanded ? "[-]" : "[+]";
-                var label = $"{treePrefix}{sign} {row.Node.Label.Trim()}";
-                label = isSelected ? $"[green bold]{label}[/]" : $"[bold yellow]{label}[/]";
+                var safeText = $"{treePrefix}{sign} {row.Node.Label.Trim()}".EscapeMarkup();
+                var label = isSelected ? $"[green bold]{safeText}[/]" : $"[bold yellow]{safeText}[/]";
                 grid.AddRow(new Markup($"{prefix}{label}"));
             }
             else if (row.Type == VisibleRowType.Command)
@@ -584,8 +584,8 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                 if (cmd.Category == "[AI Agent & Ollama]") icon = Icons.GetProviderIcon(cmd.Alias.Split('-')[0]);
                 if (cmd.Category == "[Learn & Study]") icon = Icons.GetSubjectIcon(cmd.Alias);
 
-                var displayLabel = $"/{cmd.Alias} — {cmd.DisplayName}";
-                var desc = isCompact && !isSelected ? "" : $" [dim]· {cmd.Description}[/]";
+                var displayLabel = $"/{cmd.Alias} — {cmd.DisplayName}".EscapeMarkup();
+                var desc = isCompact && !isSelected ? "" : $" [dim]· {cmd.Description.EscapeMarkup()}[/]";
 
                 var label = $"{treePrefix}{icon} {displayLabel}{desc}";
                 label = isSelected ? $"[green bold]{label}[/]" : $"  {label}";
