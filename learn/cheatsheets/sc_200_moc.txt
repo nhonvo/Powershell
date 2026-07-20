@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/sc-200
+  - sc200
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 SC-200: Microsoft Security Operations Analyst MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/SC-200/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/SC-200/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/SC-200/SC-200 Mindmap\|🗺️ SC-200 Mindmap]]
+- [[certifications/microsoft/SC-200/SC-200 Flashcards\|🃏 SC-200 Flashcards]]
+- [[certifications/microsoft/SC-200/SC-200_Scraped_Question_Bank\|🗃️ SC-200 Scraped Question Bank]]

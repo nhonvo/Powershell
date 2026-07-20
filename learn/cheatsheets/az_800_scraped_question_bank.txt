@@ -1,0 +1,127 @@
+# 🗃️ AZ-800 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Deploy and manage Active Directory Domain Services (AD DS) in on-premises and cloud environments (Testlet 1)
+
+You need to configure the Group Policy settings to ensure that the Azure Virtual Desktop session hosts meet the security requirements.
+
+What should you configure?
+
+### Options:
+- [x] **A)** loopback processing in GPO4 [Correct]
+- [ ] **B)** security filtering for the link of GPO1
+- [ ] **C)** loopback processing in GPO1
+- [ ] **D)** the Enforced property for the link of GPO4
+- [ ] **E)** the Enforced property for the link of GPO1
+- [ ] **F)** security filtering for the link of GPO4
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Deploy and manage Active Directory Domain Services (AD DS) in on-premises and cloud environments (Testlet 1)
+
+What should you implement for the deployment of DC3?
+
+### Options:
+- [ ] **A)** Azure Active Directory Domain Services (Azure AD DS)
+- [x] **B)** an Azure virtual machine [Correct]
+- [ ] **C)** an Azure AD administrative unit
+- [ ] **D)** Azure AD Application Proxy
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Create a domain controller named dc3.corp.fabrikam.com in Vnet1.
+In a hybrid network, you can configure Azure virtual machines as domain controllers. The domain controllers in Azure communicate with the on-premises domain controllers in the same way that on-premises domain controllers communicate with each other.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Deploy and manage Active Directory Domain Services (AD DS) in on-premises and cloud environments (Testlet 1)
+
+DRAG DROP (Drag and Drop is not supported)
+Which three actions should you perform in sequence to meet the security requirements for Webapp1? To answer, move the appropriate actions from the list of actions to the answer area and arrange them in the correct order.
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Deploy and manage Active Directory Domain Services (AD DS) in on-premises and cloud environments (Testlet 1)
+
+DRAG DROP (Drag and Drop is not supported)
+You need to meet the security requirements for passwords.
+Where should you configure the components for Azure AD Password Protection? To answer, drag the appropriate components to the correct locations. Each component may be used once, more than once, or not at all. You may need to drag the split bar between panes or scroll to view content.
+ 
+NOTE: Each correct selection is worth one point. 
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Deploy and manage Active Directory Domain Services (AD DS) in on-premises and cloud environments (Testlet 2 )
+
+You need to meet the technical requirements for Server1.
+Which users can currently perform the required tasks?
+
+### Options:
+- [ ] **A)** Admin3 only
+- [x] **B)** Admin1 and Admin3 only [Correct]
+- [ ] **C)** Admin1 only
+- [ ] **D)** Admin1, Admin2, and Admin3
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---

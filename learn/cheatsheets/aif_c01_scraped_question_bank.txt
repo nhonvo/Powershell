@@ -1,0 +1,211 @@
+# 🗃️ AIF-C01 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+A company makes forecasts each quarter to decide how to optimize operations to meet expected demand. The company uses ML models to make these forecasts.
+
+An AI practitioner is writing a report about the trained ML models to provide transparency and explainability to company stakeholders.
+
+What should the AI practitioner include in the report to meet the transparency and explainability requirements?
+
+### Options:
+- [ ] **A)** Code for model training
+- [x] **B)** Partial dependence plots (PDPs) [Correct]
+- [ ] **C)** Sample data for training
+- [ ] **D)** Model convergence tables
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Partial Dependence Plots (PDPs) are a powerful tool for understanding and explaining how the features in a machine learning model impact predictions. They are often used to meet transparency and explainability requirements for stakeholders. Let's go over why this is the correct choice, along with why the other options are less suitable:
+Partial Dependence Plots (PDPs)
+Purpose: PDPs show the relationship between a feature (or multiple features) and the model's predicted output, which helps to explain the effect of each feature on the model's predictions.
+Explainability: By visualizing how each feature influences the prediction, stakeholders can better understand how the model works and why it makes certain predictions. This level of interpretability is essential for gaining trust from non-technical stakeholders.
+Transparency: PDPs improve transparency by providing an intuitive way to analyze and present the effects of individual features.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+A law firm wants to build an AI application by using large language models (LLMs). The application will read legal documents and extract key points from the documents.
+
+Which solution meets these requirements?
+
+### Options:
+- [ ] **A)** Build an automatic named entity recognition system.
+- [ ] **B)** Create a recommendation engine.
+- [x] **C)** Develop a summarization chatbot. [Correct]
+- [ ] **D)** Develop a multi-language translation system.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+A summarization chatbot can effectively read legal documents and generate concise versions that highlight key points. This directly addresses the requirement of extracting essential information, unlike the other options, which focus on different tasks.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+A company wants to classify human genes into 20 categories based on gene characteristics. The company needs an ML algorithm to document how the inner mechanism of the model affects the output.
+
+Which ML algorithm meets these requirements?
+
+### Options:
+- [x] **A)** Decision trees [Correct]
+- [ ] **B)** Linear regression
+- [ ] **C)** Logistic regression
+- [ ] **D)** Neural networks
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Decision trees provide clear transparency into how the model makes decisions, allowing easy documentation of how the inner mechanism influences the output. The other options do not offer this level of interpretability.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+A company has built an image classification model to predict plant diseases from photos of plant leaves. The company wants to evaluate how many images the model classified correctly.
+
+Which evaluation metric should the company use to measure the model's performance?
+
+### Options:
+- [ ] **A)** R-squared score
+- [x] **B)** Accuracy [Correct]
+- [ ] **C)** Root mean squared error (RMSE)
+- [ ] **D)** Learning rate
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Accuracy measures how many images were correctly classified out of the total images, making it the appropriate metric for evaluating the performance of an image classification model. The other metrics are either not suitable for classification tasks or not used for performance evaluation.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+A company is using a pre-trained large language model (LLM) to build a chatbot for product recommendations. The company needs the LLM outputs to be short and written in a specific language.
+
+Which solution will align the LLM response quality with the company's expectations?
+
+### Options:
+- [x] **A)** Adjust the prompt. [Correct]
+- [ ] **B)** Choose an LLM of a different size.
+- [ ] **C)** Increase the temperature.
+- [ ] **D)** Increase the Top K value.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Adjusting the prompt allows you to specify the desired length and language of the LLM's responses, making it suitable for tailoring the output to meet the company's needs. The other options do not directly control response length or language.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: 
+
+A company uses Amazon SageMaker for its ML pipeline in a production environment. The company has large input data sizes up to 1 GB and processing times up to 1 hour. The company needs near real-time latency.
+
+Which SageMaker inference option meets these requirements?
+
+### Options:
+- [ ] **A)** Real-time inference
+- [ ] **B)** Serverless inference
+- [x] **C)** Asynchronous inference [Correct]
+- [ ] **D)** Batch transform
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Asynchronous inference is suitable for handling large input data and long processing times while still providing responses without blocking other requests. It allows for near real-time latency, whereas the other options are less suitable given the input size and processing time constraints.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: 
+
+A company is using domain-specific models. The company wants to avoid creating new models from the beginning. The company instead wants to adapt pre-trained models to create models for new, related tasks.
+
+Which ML strategy meets these requirements?
+
+### Options:
+- [ ] **A)** Increase the number of epochs.
+- [x] **B)** Use transfer learning. [Correct]
+- [ ] **C)** Decrease the number of epochs.
+- [ ] **D)** Use unsupervised learning.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Transfer learning allows the company to adapt pre-trained models for new, related tasks, saving time and resources compared to training models from scratch. The other options do not address the goal of reusing existing models.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: 
+
+A company is building a solution to generate images for protective eyewear. The solution must have high accuracy and must minimize the risk of incorrect annotations.
+
+Which solution will meet these requirements?
+
+### Options:
+- [x] **A)** Human-in-the-loop validation by using Amazon SageMaker Ground Truth Plus [Correct]
+- [ ] **B)** Data augmentation by using an Amazon Bedrock knowledge base
+- [ ] **C)** Image recognition by using Amazon Rekognition
+- [ ] **D)** Data summarization by using Amazon QuickSight Q
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Human-in-the-loop validation ensures high accuracy by involving human reviewers to verify and correct annotations, minimizing the risk of errors in the generated images. The other options are not directly relevant for ensuring annotation accuracy in image generation.
+</details>
+
+---

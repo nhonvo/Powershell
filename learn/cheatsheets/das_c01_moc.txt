@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/das-c01
+  - dasc01
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 DAS-C01 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/aws/DAS-C01/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/aws/DAS-C01/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/aws/DAS-C01/DAS-C01 Mindmap\|🗺️ DAS-C01 Mindmap]]
+- [[certifications/aws/DAS-C01/DAS-C01 Flashcards\|🃏 DAS-C01 Flashcards]]
+- [[certifications/aws/DAS-C01/DAS-C01_Scraped_Question_Bank\|🗃️ DAS-C01 Scraped Question Bank]]

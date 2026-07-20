@@ -1,0 +1,216 @@
+{
+  "Meta": {
+    "Id": "deck_2__binary_search",
+    "Topic": "2. Binary Search",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "2__binary_search"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 10
+  },
+  "Cards": [
+    {
+      "Id": "card_00611",
+      "Front": "Truong hop",
+      "Back": "Do phuc tap | Giai thich",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. binary search"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00612",
+      "Front": "**Best case**",
+      "Back": "O(1) | Phan tu o ngay giua",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. binary search"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00613",
+      "Front": "**Average case**",
+      "Back": "O(log n) | Trung binh can log2(n) buoc",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. binary search"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00614",
+      "Front": "**Worst case**",
+      "Back": "O(log n) | Target khong ton tai hoac o bien",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. binary search"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00615",
+      "Front": "**Space (iterative)**",
+      "Back": "O(1) | Chi dung bien con tro",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. binary search"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00616",
+      "Front": "**Space (recursive)**",
+      "Back": "O(log n) | Do call stack",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. binary search"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00617",
+      "Front": "Uu diem",
+      "Back": "Nhuoc diem",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. binary search"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00618",
+      "Front": "Cuc nhanh: O(log n)",
+      "Back": "Can mang da sap xep",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. binary search"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00619",
+      "Front": "De cai dat (iterative)",
+      "Back": "Khong phu hop cho linked list",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. binary search"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00620",
+      "Front": "Space O(1) (iterative)",
+      "Back": "Chi tim duoc 1 vi tri (khong phai tat ca vi tri)",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. binary search"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

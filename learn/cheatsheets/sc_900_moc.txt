@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/sc-900
+  - sc900
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 SC-900: Microsoft Security, Compliance, and Identity Fundamentals MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/SC-900/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/SC-900/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/SC-900/SC-900 Mindmap\|🗺️ SC-900 Mindmap]]
+- [[certifications/microsoft/SC-900/SC-900 Flashcards\|🃏 SC-900 Flashcards]]
+- [[certifications/microsoft/SC-900/SC-900_Scraped_Question_Bank\|🗃️ SC-900 Scraped Question Bank]]

@@ -1,0 +1,316 @@
+{
+  "Meta": {
+    "Id": "deck_11_5_top_k_elements_problems",
+    "Topic": "11.5 Top K Elements Problems",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "11_5_top_k_elements_problems"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 15
+  },
+  "Cards": [
+    {
+      "Id": "card_01244",
+      "Front": "Phần tử",
+      "Back": "Tần suất | Heap (freq, elem) | Hành động",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.5 top k elements problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01245",
+      "Front": "Điểm",
+      "Back": "d² | Heap (lưu -d²) | Hành động",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.5 top k elements problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01246",
+      "Front": "[3,3]",
+      "Back": "18 | `[(-18, [3,3])]` | Size < 3 → push",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.5 top k elements problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01247",
+      "Front": "[5,-1]",
+      "Back": "26 | `[(-26, [5,-1]), (-18, [3,3])]` | Size < 3 → push",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.5 top k elements problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01248",
+      "Front": "[-2,4]",
+      "Back": "20 | `[(-26, [5,-1]), (-18, [3,3]), (-20, [-2,4])]` | Size < 3 → push",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.5 top k elements problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01249",
+      "Front": "[1,1]",
+      "Back": "2 | `[(-20, [-2,4]), (-18, [3,3]), (-2, [1,1])]` | 2 < 26 → pop [5,-1], push [1,1]",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.5 top k elements problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01250",
+      "Front": "[0,2]",
+      "Back": "4 | `[(-18, [3,3]), (-4, [0,2]), (-2, [1,1])]` | 4 < 20 → pop [-2,4], push [0,2]",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.5 top k elements problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01251",
+      "Front": "Case",
+      "Back": "Time | Giải thích",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.5 top k elements problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01252",
+      "Front": "Best",
+      "Back": "O(n) | Bucket sort approach, hoặc k = m (số phần tử distinct)",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.5 top k elements problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01253",
+      "Front": "Average",
+      "Back": "O(n + m log k) | n đếm + m phần tử distinct duyệt heap",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.5 top k elements problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01254",
+      "Front": "Worst",
+      "Back": "O(n + m log k) | m ≤ n, worst khi tất cả phần tử distinct",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.5 top k elements problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01255",
+      "Front": "Case",
+      "Back": "Time | Giải thích",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.5 top k elements problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01256",
+      "Front": "Best",
+      "Back": "O(n) | k = 1, heap chỉ có 1 phần tử",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.5 top k elements problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01257",
+      "Front": "Average",
+      "Back": "O(n log k) | ",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.5 top k elements problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01258",
+      "Front": "Worst",
+      "Back": "O(n log n) | k = n",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.5 top k elements problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

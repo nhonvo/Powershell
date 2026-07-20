@@ -1,0 +1,20 @@
+# 13_Dynamic_Programming
+
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/🧠index_13_Dynamic_Programming|01_Algo_and_DSA_doc]]
+
+## 📄 Notes
+- [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/1. 1D DP — DP một chiều|1. 1D DP — DP một chiều]]
+- [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/10. LeetCode Practice — Luyện tập DP qua 10 bài kinh điển|10. LeetCode Practice — Luyện tập DP qua 10 bài kinh điển]]
+- [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/2. 2D DP — DP hai chiều|2. 2D DP — DP hai chiều]]
+- [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/3. DP on Subsequences — DP trên dãy con|3. DP on Subsequences — DP trên dãy con]]
+- [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/4. DP on Strings — DP trên chuỗi|4. DP on Strings — DP trên chuỗi]]
+- [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/5. DP on Trees — DP trên cây|5. DP on Trees — DP trên cây]]
+- [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/6. Space Optimization — Tối ưu bộ nhớ|6. Space Optimization — Tối ưu bộ nhớ]]
+- [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/7. DP Patterns — Các dạng DP kinh điển|7. DP Patterns — Các dạng DP kinh điển]]
+- [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/8. Memoization vs Tabulation|8. Memoization vs Tabulation]]
+- [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/9. State Transition Thinking — Tư duy chuyển trạng thái|9. State Transition Thinking — Tư duy chuyển trạng thái]]
+
+
+
+## 🛠️ Related Practices
+- [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/🧠index_13_Dynamic_Programming|🧠 Dynamic_Programming Practice Hub]]

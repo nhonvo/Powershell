@@ -1,0 +1,32 @@
+🔙 **Back to Parent**: [[interviewNote/08_MOCKS/📹index_08_MOCKS|08_MOCKS]]
+
+# Mock Interview Script (30–45 min)
+
+## Setup (2 min)
+- Role:
+- Company:
+- Level:
+
+## Section A — Intro (5 min)
+- Tell me about yourself.
+- Why this company?
+- Why this role?
+
+## Section B — Behavioral (10 min)
+- 2 questions from `04_INTERVIEW_QA/behavioral_question_bank.md`
+
+## Section C — Technical (15–20 min)
+- 1 coding problem (talk out loud)
+- 1 deep dive question (e.g., caching, DB indexing, concurrency, messaging)
+
+## Section D — Close (5 min)
+- Your questions to interviewer
+- Wrap-up summary (what you bring + next steps)
+
+## Scoring (after)
+- Clarity (1–5):
+- Structure (1–5):
+- Depth (1–5):
+- Communication (1–5):
+- Next actions:
+

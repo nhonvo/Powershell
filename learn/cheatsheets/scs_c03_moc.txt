@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/scs-c03
+  - scsc03
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 SCS-C03 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/aws/SCS-C03/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/aws/SCS-C03/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/aws/SCS-C03/SCS-C03 Mindmap\|🗺️ SCS-C03 Mindmap]]
+- [[certifications/aws/SCS-C03/SCS-C03 Flashcards\|🃏 SCS-C03 Flashcards]]
+- [[certifications/aws/SCS-C03/SCS-C03_Scraped_Question_Bank\|🗃️ SCS-C03 Scraped Question Bank]]

@@ -1,0 +1,166 @@
+# 🗃️ MS-700 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 1- Mixed Questions (Testlet 1)
+
+You work as a Systems Administrator for your company. The company has recently purchased a subscription to Microsoft 365.
+
+All users in your company have a Microsoft 365 E3 license.
+You are in the process of configuring Microsoft Teams.
+
+You need to configure Microsoft Teams to ensure that users within your company can collaborate with users in a partner company. You plan to create guest accounts for users in the partner company.
+
+Users with Guest accounts must not be able to invite other guests.
+Only users in the partner company must be able to collaborate with your users by using Microsoft Teams.
+
+Which of the following should you configure?
+
+### Options:
+- [ ] **A)** The external sharing settings in the SharePoint Admin Center.
+- [x] **B)** The external collaboration settings in Azure Active Directory. [Correct]
+- [ ] **C)** The Anonymous users can join a meeting setting the in the Teams Meeting Settings.
+- [ ] **D)** The Global Meeting Policy in the Teams Admin Center.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 1- Mixed Questions (Testlet 1)
+
+You work as a Systems Administrator for your company. The company has recently purchased a subscription to Microsoft 365.
+
+All users in your company have a Microsoft 365 E3 license.
+You are in the process of configuring Microsoft Teams.
+
+You enable Guest access in Microsoft Teams to allow users in your company to collaborate with external users.
+
+A company security policy states that guest users should not be able to use their cameras during Microsoft Teams meetings. Company users should be able to use their cameras during Microsoft Teams meetings.
+
+You need to configure Microsoft Teams to meet the security requirement.
+Which of the following actions should you perform in the Microsoft Teams Admin Center?
+
+### Options:
+- [ ] **A)** Configure the External access settings in Org-wide settings.
+- [ ] **B)** Configure the Teams settings in Org-wide settings.
+- [x] **C)** Configure the Guest access settings in Org-wide settings. [Correct]
+- [ ] **D)** Configure the Audio & Video settings in the default Meeting Policy
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 1- Mixed Questions (Testlet 1)
+
+You work as a Microsoft 365 Administrator for your company. All users have Microsoft 365 licenses.
+
+Users frequently collaborate by using private chats in Microsoft Teams.
+You need to ensure that a single user is unable to permanently delete private chats.
+
+Which of the following should you configure?
+
+### Options:
+- [ ] **A)** The user’s Microsoft 365 license options in the Microsoft 365 Admin Center.
+- [ ] **B)** A meeting policy in Microsoft Teams.
+- [x] **C)** A litigation hold on the user’s mailbox. [Correct]
+- [ ] **D)** A Sensitivity Label in the Security & Compliance Admin Center.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 1- Mixed Questions (Testlet 1)
+
+You work as a Systems Administrator for your company. The company has departments named Sales, Accounts, Research and Production.
+
+The company has recently purchased a subscription to Microsoft 365.
+All users in your company have a Microsoft 365 E3 license.
+
+You are in the process of configuring Microsoft Teams. You plan to create a team for each of the company departments.
+
+All users have the Microsoft Teams desktop client installed.
+
+You need to ensure that the Research team is labelled as Confidential when viewed in the Microsoft Teams client.
+
+Which of the following actions should you perform?
+
+### Options:
+- [x] **A)** Configure and publish a Sensitivity Label in the Security & Compliance admin center. [Correct]
+- [ ] **B)** Configure and publish a Retention Label in the Security & Compliance admin center.
+- [ ] **C)** Configure a Teams policy in the Microsoft Teams admin center.
+- [ ] **D)** Configure the Meeting Settings in the Microsoft Teams admin center.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 1- Mixed Questions (Testlet 1)
+
+You work as a Systems Administrator for your company. The company has departments named Sales, Accounts, Research and Production.
+
+The company has a subscription to Microsoft 365. All users in your company have a Microsoft 365 E5 license.
+
+You have configured a Team for each of the departments.
+
+Currently, users in any department can use Microsoft Teams to communicate with users from any other department.
+
+You need to configure the environment to ensure that users in the Research team can only communicate with other users in the Research team by using Microsoft Teams.
+
+What should you do?
+
+### Options:
+- [ ] **A)** Configure a Teams Meeting policy.
+- [x] **B)** Configure Information Barrier policies. [Correct]
+- [ ] **C)** Configure an App Protection policy.
+- [ ] **D)** Configure Conference Bridges.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---

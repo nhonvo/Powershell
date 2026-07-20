@@ -1,0 +1,256 @@
+{
+  "Meta": {
+    "Id": "deck_8__custom_comparator_sorting",
+    "Topic": "8. Custom Comparator Sorting",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "8__custom_comparator_sorting"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 12
+  },
+  "Cards": [
+    {
+      "Id": "card_00667",
+      "Front": "Thao tac",
+      "Back": "Do phuc tap",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. custom comparator sorting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00668",
+      "Front": "Sort voi comparator",
+      "Back": "O(n log n)",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. custom comparator sorting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00669",
+      "Front": "Moi phep so sanh",
+      "Back": "Tuy thuoc comparator (thuong O(1) hoac O(len_string))",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. custom comparator sorting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00670",
+      "Front": "Tong (voi string comparison)",
+      "Back": "O(n * k * log n) voi k la do dai trung binh cua string",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. custom comparator sorting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00671",
+      "Front": "Thuat toan",
+      "Back": "Best | Average | Worst | Space | Stable",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. custom comparator sorting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00672",
+      "Front": "Bubble Sort",
+      "Back": "O(n) | O(n^2) | O(n^2) | O(1) | Co",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. custom comparator sorting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00673",
+      "Front": "Selection Sort",
+      "Back": "O(n^2) | O(n^2) | O(n^2) | O(1) | Khong",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. custom comparator sorting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00674",
+      "Front": "Insertion Sort",
+      "Back": "O(n) | O(n^2) | O(n^2) | O(1) | Co",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. custom comparator sorting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00675",
+      "Front": "Merge Sort",
+      "Back": "O(n log n) | O(n log n) | O(n log n) | O(n) | Co",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. custom comparator sorting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00676",
+      "Front": "Quick Sort",
+      "Back": "O(n log n) | O(n log n) | O(n^2) | O(log n) | Khong",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. custom comparator sorting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00677",
+      "Front": "Heap Sort",
+      "Back": "O(n log n) | O(n log n) | O(n log n) | O(1) | Khong",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. custom comparator sorting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00678",
+      "Front": "Binary Search",
+      "Back": "O(1) | O(log n) | O(log n) | O(1) | -",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. custom comparator sorting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

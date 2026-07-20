@@ -1,0 +1,131 @@
+# 🗃️ Professional-Cloud-Network-Engineer Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+You need to restrict access to your Google Cloud load-balanced application so that only specific IP addresses can connect.
+
+What should you do?
+
+### Options:
+- [ ] **A)** Create a secure perimeter using the Access Context Manager feature of VPC Service Controls and restrict access to the source IP range of the allowed clients and Google health check IP ranges.
+- [ ] **B)** Create a secure perimeter using VPC Service Controls, and mark the load balancer as a service restricted to the source IP range of the allowed clients and Google health check IP ranges.
+- [x] **C)** Tag the backend instances "application," and create a firewall rule with target tag "application" and the source IP range of the allowed clients and Google health check IP ranges. [Correct]
+- [ ] **D)** Label the backend instances "application," and create a firewall rule with the target label "application" and the source IP range of the allowed clients and Google health check IP ranges.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+Your end users are located in close proximity to us-east1 and europe-west1. Their workloads need to communicate with each other. You want to minimize cost and increase network efficiency.
+
+How should you design this topology?
+
+### Options:
+- [ ] **A)** Create 2 VPCs, each with their own regions and individual subnets. Create 2 VPN gateways to establish connectivity between these regions.
+- [ ] **B)** Create 2 VPCs, each with their own region and individual subnets. Use external IP addresses on the instances to establish connectivity between these regions.
+- [ ] **C)** Create 1 VPC with 2 regional subnets. Create a global load balancer to establish connectivity between the regions.
+- [x] **D)** Create 1 VPC with 2 regional subnets. Deploy workloads in these subnets and have them communicate using private RFC1918 IP addresses. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+VPC Network Peering enables you to peer VPC networks so that workloads in different VPC networks can communicate in private RFC 1918 space. Traffic stays within Google's network and doesn't traverse the public internet.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+Your organization is deploying a single project for 3 separate departments. Two of these departments require network connectivity between each other, but the third department should remain in isolation. Your design should create separate network administrative domains between these departments. You want to minimize operational overhead.
+
+How should you design the topology?
+
+### Options:
+- [ ] **A)** Create a Shared VPC Host Project and the respective Service Projects for each of the 3 separate departments.
+- [ ] **B)** Create 3 separate VPCs, and use Cloud VPN to establish connectivity between the two appropriate VPCs.
+- [x] **C)** Create 3 separate VPCs, and use VPC peering to establish connectivity between the two appropriate VPCs. [Correct]
+- [ ] **D)** Create a single project, and deploy specific firewall rules. Use network tags to isolate access between the departments.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+You are migrating to Cloud DNS and want to import your BIND zone file.
+
+Which command should you use?
+
+### Options:
+- [ ] **A)** gcloud dns record-sets import ZONE_FILE --zone MANAGED_ZONE
+- [ ] **B)** gcloud dns record-sets import ZONE_FILE --replace-origin-ns --zone MANAGED_ZONE
+- [x] **C)** gcloud dns record-sets import ZONE_FILE --zone-file-format --zone MANAGED_ZONE [Correct]
+- [ ] **D)** gcloud dns record-sets import ZONE_FILE --delete-all-existing --zone MANAGED_ZONE
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Once you have the exported file from your other provider, you can use the gcloud dns record-sets import command to import it into your managed zone.
+To import record-sets, you use the dns record-sets import command. The --zone-file-format flag tells importto expect a BIND zone formatted file. If you omit this flag, import expects a YAML-formatted records file.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+You created a VPC network named Retail in auto mode. You want to create a VPC network named Distribution and peer it with the Retail VPC.
+
+How should you configure the Distribution VPC?
+
+### Options:
+- [ ] **A)** Create the Distribution VPC in auto mode. Peer both the VPCs via network peering.
+- [x] **B)** Create the Distribution VPC in custom mode. Use the CIDR range 10.0.0.0/9. Create the necessary subnets, and then peer them via network peering. [Correct]
+- [ ] **C)** Create the Distribution VPC in custom mode. Use the CIDR range 10.128.0.0/9. Create the necessary subnets, and then peer them via network peering.
+- [ ] **D)** Rename the default VPC as "Distribution" and peer it via network peering.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---

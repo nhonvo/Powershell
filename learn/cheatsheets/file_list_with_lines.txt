@@ -1,0 +1,104 @@
+1. 1D DP — DP một chiều.md: **DSA #13: Dynamic Programming**
+1. Activity Selection — Bài toán chọn hoạt động.md: **DSA #8: Greedy Algorithms**
+1. Arrays — Mảng.md: **DSA #2: Arrays & Strings**
+1. Basic Sorting.md: **DSA #3: Searching & Sorting**
+1. BST Basics — Nền tảng BST.md: **DSA #10: Binary Search Trees**
+1. Graph Representation.md: **DSA #12: Graphs**
+1. Hash Maps.md: **DSA #5: Hashing**
+1. Recursion Basics.md: **DSA #4: Recursion & Backtracking**
+1. Singly Linked List.md: **DSA #6: Linked List**
+1. Stack (LIFO).md: **DSA #7: Stack & Queue**
+1. Time & Space Complexity.md: **DSA #1: Nền tảng — Complexity, Toán học & Bit Manipulation**
+1. Tree Traversals (Duyệt cây).md: **DSA #9: Binary Trees**
+10. Floyd-Warshall Algorithm.md: **DSA #12: Graphs**
+10. LeetCode Practice — Giải chi tiết từng bài.md: **DSA #2: Arrays & Strings**
+10. LeetCode Practice — Luyện tập DP qua 10 bài kinh điển.md: **DSA #13: Dynamic Programming**
+11. LeetCode Practice — Giải chi tiết 10 bài kinh điển.md: **DSA #12: Graphs**
+11.1 Min Heap  Max Heap.md: **DSA #11: Heaps & Priority Queue**
+11.2 Priority Queue.md: **DSA #11: Heaps & Priority Queue**
+11.3 Kth Largest  Smallest.md: **DSA #11: Heaps & Priority Queue**
+11.4 Merge K Sorted Lists.md: **DSA #11: Heaps & Priority Queue**
+11.5 Top K Elements Problems.md: **DSA #11: Heaps & Priority Queue**
+11.6 Median in Data Stream.md: **DSA #11: Heaps & Priority Queue**
+2. 2D DP — DP hai chiều.md: **DSA #13: Dynamic Programming**
+2. BFS  DFS.md: **DSA #12: Graphs**
+2. Binary Search.md: **DSA #3: Searching & Sorting**
+2. Doubly Linked List.md: **DSA #6: Linked List**
+2. Frequency Counting.md: **DSA #5: Hashing**
+2. Height  Depth (Chiều cao  Chiều sâu).md: **DSA #9: Binary Trees**
+2. Insert  Delete — Chèn và Xóa node.md: **DSA #10: Binary Search Trees**
+2. Interval Problems — Các bài toán về đoạn.md: **DSA #8: Greedy Algorithms**
+2. Math Basics.md: **DSA #1: Nền tảng — Complexity, Toán học & Bit Manipulation**
+2. Queue (FIFO).md: **DSA #7: Stack & Queue**
+2. Strings — Chuỗi.md: **DSA #2: Arrays & Strings**
+2. Subsets  Subsequences.md: **DSA #4: Recursion & Backtracking**
+3. Binary Search on Answer.md: **DSA #3: Searching & Sorting**
+3. Bit Manipulation Basics.md: **DSA #1: Nền tảng — Complexity, Toán học & Bit Manipulation**
+3. Cycle Detection.md: **DSA #12: Graphs**
+3. Deque (Double-ended Queue).md: **DSA #7: Stack & Queue**
+3. Diameter (Đường kính cây).md: **DSA #9: Binary Trees**
+3. DP on Subsequences — DP trên dãy con.md: **DSA #13: Dynamic Programming**
+3. Fast & Slow Pointer.md: **DSA #6: Linked List**
+3. Floor  Ceil — Tìm giá trị sàn và trần.md: **DSA #10: Binary Search Trees**
+3. Job Scheduling — Lập lịch công việc.md: **DSA #8: Greedy Algorithms**
+3. Permutations.md: **DSA #4: Recursion & Backtracking**
+3. Prefix Hashing.md: **DSA #5: Hashing**
+3. Two Pointers — Kỹ thuật hai con trỏ.md: **DSA #2: Arrays & Strings**
+4. Backtracking (N-Queens, Sudoku).md: **DSA #4: Recursion & Backtracking**
+4. Bit Masking & XOR Tricks.md: **DSA #1: Nền tảng — Complexity, Toán học & Bit Manipulation**
+4. Cycle Detection.md: **DSA #6: Linked List**
+4. DP on Strings — DP trên chuỗi.md: **DSA #13: Dynamic Programming**
+4. Greedy with Sorting — Tham lam kết hợp sắp xếp.md: **DSA #8: Greedy Algorithms**
+4. Lowest Common Ancestor (Tổ tiên chung gần nhất).md: **DSA #9: Binary Trees**
+4. Merge Sort.md: **DSA #3: Searching & Sorting**
+4. Monotonic Stack.md: **DSA #7: Stack & Queue**
+4. Sliding Window — Cửa sổ trượt.md: **DSA #2: Arrays & Strings**
+4. Subarray  Substring Problems.md: **DSA #5: Hashing**
+4. Topological Sort.md: **DSA #12: Graphs**
+4. Validate BST — Kiểm tra cây BST hợp lệ.md: **DSA #10: Binary Search Trees**
+5. BST Problems — Các bài toán BST kinh điển.md: **DSA #10: Binary Search Trees**
+5. Combination Sum Problems.md: **DSA #4: Recursion & Backtracking**
+5. DP on Trees — DP trên cây.md: **DSA #13: Dynamic Programming**
+5. Gas Station Problem — Bài toán trạm xăng.md: **DSA #8: Greedy Algorithms**
+5. LeetCode Practice — Basics.md: ## 5. LeetCode Practice — Basics
+5. Next Greater Element.md: **DSA #7: Stack & Queue**
+5. Prefix Sum — Tổng tiền tố.md: **DSA #2: Arrays & Strings**
+5. Quick Sort.md: **DSA #3: Searching & Sorting**
+5. Reverse  Merge Linked List.md: **DSA #6: Linked List**
+5. Set vs Map.md: **DSA #5: Hashing**
+5. Shortest Path Algorithms — Tổng quan.md: **DSA #12: Graphs**
+5. Tree Views (Các góc nhìn của cây).md: **DSA #9: Binary Trees**
+6. Expression Evaluation.md: **DSA #7: Stack & Queue**
+6. Hashing cho Pair Sum  2Sum Variations.md: **DSA #5: Hashing**
+6. Heap Sort.md: **DSA #3: Searching & Sorting**
+6. Huffman Coding — Mã hóa Huffman.md: **DSA #8: Greedy Algorithms**
+6. Kadane's Algorithm.md: **DSA #2: Arrays & Strings**
+6. Kth Smallest  Largest — Tìm phần tử nhỏlớn thứ k.md: **DSA #10: Binary Search Trees**
+6. LRU Cache (Design Problem).md: **DSA #6: Linked List**
+6. Minimum Spanning Tree (Cây khung nhỏ nhất).md: **DSA #12: Graphs**
+6. Palindrome Partitioning.md: **DSA #4: Recursion & Backtracking**
+6. Serialization & Deserialization.md: **DSA #9: Binary Trees**
+6. Space Optimization — Tối ưu bộ nhớ.md: **DSA #13: Dynamic Programming**
+7. 2D Arrays — Ma trận.md: **DSA #2: Arrays & Strings**
+7. Disjoint Set (Union-Find).md: **DSA #12: Graphs**
+7. DP Patterns — Các dạng DP kinh điển.md: **DSA #13: Dynamic Programming**
+7. Giải chi tiết bài LeetCode về Linked List.md: **DSA #6: Linked List**
+7. LeetCode Practice — Giải chi tiết 8 bài kinh điển.md: **DSA #4: Recursion & Backtracking**
+7. LeetCode Practice — Luyện tập BST qua các bài LeetCode.md: **DSA #10: Binary Search Trees**
+7. LeetCode Practice — Luyện tập Hashing.md: **DSA #5: Hashing**
+7. Lower Bound  Upper Bound.md: **DSA #3: Searching & Sorting**
+7. Maximum Path Sum  Path-based Problems.md: **DSA #9: Binary Trees**
+7. Min Stack.md: **DSA #7: Stack & Queue**
+8. Custom Comparator Sorting.md: **DSA #3: Searching & Sorting**
+8. Dijkstra's Algorithm.md: **DSA #12: Graphs**
+8. Luyện tập LeetCode — Giải chi tiết từng bài.md: **DSA #9: Binary Trees**
+8. Memoization vs Tabulation.md: **DSA #13: Dynamic Programming**
+8. Moore's Voting Algorithm.md: **DSA #2: Arrays & Strings**
+8. Queue using Stack  Stack using Queue.md: **DSA #7: Stack & Queue**
+9. Bellman-Ford Algorithm.md: **DSA #12: Graphs**
+9. Dutch National Flag Algorithm.md: **DSA #2: Arrays & Strings**
+9. LeetCode Practice -- Luyen tap Searching & Sorting.md: **DSA #3: Searching & Sorting**
+9. LeetCode Practice — Giải chi tiết 8 bài kinh điển.md: **DSA #7: Stack & Queue**
+9. State Transition Thinking — Tư duy chuyển trạng thái.md: **DSA #13: Dynamic Programming**
+Giải chi tiết các bài LeetCode về Heaps  Priority Queue.md: **DSA #11: Heaps & Priority Queue**
+Lộ trình học DSA - Nền tảng thuật toán.md: [](https://code4func.com/)

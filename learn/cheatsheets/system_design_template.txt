@@ -1,0 +1,50 @@
+# System Design Case Study Template
+
+## 1) Requirements (5 min)
+
+**Functional**
+- 
+
+**Non-functional**
+- Latency:
+- Availability:
+- Consistency:
+- Scale:
+
+**Out of scope**
+- 
+
+## 2) API (5 min)
+
+- `POST /...`
+- `GET /...`
+
+## 3) Data model (5 min)
+
+- Entities:
+- Indexing:
+- TTL/retention:
+
+## 4) High-level architecture (10 min)
+
+- Clients → LB → API → Services → DB/Cache/Queue
+- Read path:
+- Write path:
+
+## 5) Scaling & reliability (10 min)
+
+- Caching:
+- Sharding/partitioning:
+- Backpressure:
+- Idempotency:
+- Retry + DLQ:
+
+## 6) Observability (3 min)
+
+- Logs/metrics/traces
+- Alerts
+
+## 7) Tradeoffs (2 min)
+
+- 
+

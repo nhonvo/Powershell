@@ -1,0 +1,382 @@
+# 🗃️ MO-201 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: National Parks
+
+SIMULATION
+Instructions
+
+Exam Environment
+
+Exam Interface and Controls
+
+The exam panel provides access to the project task(s). Each project has an associated file in which you will perform the project tasks.
+ 
+
+1. Project file 
+2. Split bar
+3. Exam panel
+
+You can modify the exam interface to fit your needs in the following ways:
+-To increase or decrease the exam panel font size, press Ctrl+Plus or Ctrl+Minus.
+-To change the height of the exam panel, drag the split bar between the project file and the exam panel.
+-To minimize the exam panel, click the Collapse Panel arrow in the upper-left corner of the exam panel. The minimized exam panel displays the Expand Panel button, the project number and name, the remaining time, and the Restart Project and Submit Project buttons. To move between tasks, you must expand the exam panel.
+
+-To restore the interface to the default appearance, click the Restore button near the upper-right corner of the exam panel.
+
+4. The Information bar at the top of the exam panel displays the current project and total number of projects, the remaining exam time, and the following commands: 
+-Collapse Panel. Minimizes the exam panel to provide more space for the project file.
+-Restart Project. Closes and reopens the current project file without saving your changes. Submit Project. Saves your changes, submits the project file, and moves to the next project. 
+-Calculator. A calculator is available in some exams. You are not required to use the calculator. Restore. Restores the size and position of the project file and exam panel to the defaults. Help.
+-Displays information about the exam interface.
+
+5. The Content area displays the task tabs and the current task description.
+
+6. The Navigation area at the bottom of the exam panel contains the following commands.
+-Previous Task/Next Task. Saves your response and moves to the previous or next task in the current project. 
+-Leave feedback after exam. Flags the task to indicate that you want to leave feedback about it after the exam.
+-Mark for review. Flags the task to indicate that you want to return to it before you finish the exam. 
+-Mark as complete. Flags the task to indicate that you feel you have completed the task.
+
+In projects that contain multiple tasks, you can switch between tasks by clicking the task tab, Next Task button, or Previous Task button.
+
+End of the instructions.
+
+You are analyzing data about the number of visitors to U.S. National Parks. Configure Excel so that you can edit content using Albanian as the editing language.
+Do not make Albanian the default editing language. If you are prompted to restart Office, dismiss the prompt but do not restart Excel.
+
+1 (exhibit):
+2 (exhibit):
+3 (exhibit):
+4 (exhibit):
+5 (exhibit):
+6 (exhibit):
+7 (exhibit):
+8 (exhibit):
+9 (exhibit):
+
+### Options:
+- [x] **A)** See explanation below. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+1. In the open document, click on File.
+2. Click on Options.
+3. Click on Language.
+4. Under the Choose Editing Languages section, use the drop-down menu to select a new language for Office to use to check spelling and grammar.
+5. Click the Add button.
+6. Click the OK button.
+7. Click the OK button again.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: National Parks
+
+SIMULATION
+Instructions
+
+Exam Environment
+
+Exam Interface and Controls
+
+The exam panel provides access to the project task(s). Each project has an associated file in which you will perform the project tasks.
+ 
+
+1. Project file 
+2. Split bar
+3. Exam panel
+
+You can modify the exam interface to fit your needs in the following ways:
+-To increase or decrease the exam panel font size, press Ctrl+Plus or Ctrl+Minus.
+-To change the height of the exam panel, drag the split bar between the project file and the exam panel.
+-To minimize the exam panel, click the Collapse Panel arrow in the upper-left corner of the exam panel. The minimized exam panel displays the Expand Panel button, the project number and name, the remaining time, and the Restart Project and Submit Project buttons. To move between tasks, you must expand the exam panel.
+
+-To restore the interface to the default appearance, click the Restore button near the upper-right corner of the exam panel.
+
+4. The Information bar at the top of the exam panel displays the current project and total number of projects, the remaining exam time, and the following commands: 
+-Collapse Panel. Minimizes the exam panel to provide more space for the project file.
+-Restart Project. Closes and reopens the current project file without saving your changes. Submit Project. Saves your changes, submits the project file, and moves to the next project. 
+-Calculator. A calculator is available in some exams. You are not required to use the calculator. Restore. Restores the size and position of the project file and exam panel to the defaults. Help.
+-Displays information about the exam interface.
+
+5. The Content area displays the task tabs and the current task description.
+
+6. The Navigation area at the bottom of the exam panel contains the following commands.
+-Previous Task/Next Task. Saves your response and moves to the previous or next task in the current project. 
+-Leave feedback after exam. Flags the task to indicate that you want to leave feedback about it after the exam.
+-Mark for review. Flags the task to indicate that you want to return to it before you finish the exam. 
+-Mark as complete. Flags the task to indicate that you feel you have completed the task.
+
+In projects that contain multiple tasks, you can switch between tasks by clicking the task tab, Next Task button, or Previous Task button.
+
+End of the instructions.
+
+On the “2019 Visitors” worksheet, modify the conditional formatting rule to format rows for parks that have a “Size” greater than 1,000 square miles.
+
+Exhibit 1 (exhibit):
+Exhibit 2 (exhibit):
+Exhibit 3 (exhibit):
+Exhibit 4 (exhibit):
+Exhibit 5 (exhibit):
+Exhibit 6 (exhibit):
+Exhibit 7 (exhibit):
+Exhibit 8 (exhibit):
+Exhibit 9 (exhibit):
+
+### Options:
+- [x] **A)** See explanation below. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+1. Select the entire dataset.
+2. Go to Home –> Conditional Formatting –> Highlighting Cell Rules –> Greater Than.. / Less Than..
+3. Select the ‘Greater than’ option. In the dialogue box, enter the number in the field on the left. The intent is to highlight cells that have a number greater than this specified number.
+4. Specify the format to be applied to the cells that meet the condition by using the drop-down on the right, or specify your own format using the Custom Format option.
+5. Click OK.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: National Parks
+
+SIMULATION
+Instructions
+
+Exam Environment
+
+Exam Interface and Controls
+
+The exam panel provides access to the project task(s). Each project has an associated file in which you will perform the project tasks.
+ 
+
+1. Project file 
+2. Split bar
+3. Exam panel
+
+You can modify the exam interface to fit your needs in the following ways:
+-To increase or decrease the exam panel font size, press Ctrl+Plus or Ctrl+Minus.
+-To change the height of the exam panel, drag the split bar between the project file and the exam panel.
+-To minimize the exam panel, click the Collapse Panel arrow in the upper-left corner of the exam panel. The minimized exam panel displays the Expand Panel button, the project number and name, the remaining time, and the Restart Project and Submit Project buttons. To move between tasks, you must expand the exam panel.
+
+-To restore the interface to the default appearance, click the Restore button near the upper-right corner of the exam panel.
+
+4. The Information bar at the top of the exam panel displays the current project and total number of projects, the remaining exam time, and the following commands: 
+-Collapse Panel. Minimizes the exam panel to provide more space for the project file.
+-Restart Project. Closes and reopens the current project file without saving your changes. Submit Project. Saves your changes, submits the project file, and moves to the next project. 
+-Calculator. A calculator is available in some exams. You are not required to use the calculator. Restore. Restores the size and position of the project file and exam panel to the defaults. Help.
+-Displays information about the exam interface.
+
+5. The Content area displays the task tabs and the current task description.
+
+6. The Navigation area at the bottom of the exam panel contains the following commands.
+-Previous Task/Next Task. Saves your response and moves to the previous or next task in the current project. 
+-Leave feedback after exam. Flags the task to indicate that you want to leave feedback about it after the exam.
+-Mark for review. Flags the task to indicate that you want to return to it before you finish the exam. 
+-Mark as complete. Flags the task to indicate that you feel you have completed the task.
+
+In projects that contain multiple tasks, you can switch between tasks by clicking the task tab, Next Task button, or Previous Task button.
+
+End of the instructions.
+
+On the “Summary” worksheet, starting in cell A4, consolidate data from the 2014-2018 “by Region” worksheets. Display the average number of the “Recreation Visits” for each “Region”. Use labels in both the top row and left column. Delete the blank “Park Name” column from the consolidated data.
+
+Exhibit 1 (exhibit):
+Exhibit 2 (exhibit):
+Exhibit 3 (exhibit):
+Exhibit 4 (exhibit):
+Exhibit 5 (exhibit):
+Exhibit 6 (exhibit):
+Exhibit 7 (exhibit):
+Exhibit 8 (exhibit):
+Exhibit 9 (exhibit):
+
+### Options:
+- [x] **A)** See explanation below. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+1. Open the worksheets you want to consolidate.
+2. Ensure the data in each spreadsheet is listed in a consistent format. Make sure the labels on each spreadsheet are listed in a consistent format. For example, if you have the date listed in the top row, and the product listed in the leftcolumn, make sure this is the same format for each spreadsheet. Make sure the rows and columns are in the same location for each spreadsheet. Delete any blank rows or columns in the spreadsheets.
+3. Open a the “Summary” worksheet.
+4. Click the cell that you want the consolidated rows and/or columns to start. Click the row and/or column that is consistent with where the tables are located in the other spreadsheets.
+5. Click Data. It's in the menu bar at the top of Excel. This displays the Data panel at the top of the page.
+6. Click the Consolidate icon. It's the icon that resembles two sheets with a blue arrow in between them pointing to a blue third sheet. This opens the consolidate menu.
+7. Select a function. Use the drop-down menu below "Function" to select the method that the data will be consolidated. For example, if you want to add all the data together, select Sum. You can also select Count, Average, Min, Max andother functions.
+8. Select a reference source. This is the first spreadsheet that you want to consolidate. If you want to consolidate sheets within the same file, click the arrow icon to the right of the bar below "References".
+9. Highlight the data you want to consolidate. If you are consolidating data from a separate sheet within the same file, click and drag to highlight data and labels you want to consolidate. This will display sheet name followed by anexclamation mark followed by the row and column range in the references column (For example: "Q1SalesSheet!$A$2:$F$5").
+10. Click Add. It's to the right of the "All References" list box. This adds the reference and range you select to the list of references. Repeat steps 6 through 10 for all sheets and files you want to consolidate.
+11. Select the row or column for the labels. Click one or both checkboxes next to "Top row" and/or "Left column" to select which row or column contains the labels.
+12. Click the checkbox next to "Create links to sources" (optional). By checking this option, the consolidated data will be updated automatically if one of the source references is updated
+13. Click Ok. This adds the consolidated data to the “Summary” worksheet. You can see the source data from the consolidated data by clicking the plus icons (+) to the left of the cell numbers on the left side.
+
+1. With your spreadsheet open, press F5 on the keyboard. The ‘Go To’ window will open. 2. Click on the ‘Special’ button 
+
+3. Click on ‘Blanks’ then click ‘OK’ 
+
+4. This will select all the empty fields within your table. 
+
+5. In the ‘Home’ ribbon, click on the arrow below the ‘Delete’ button then click on ‘Delete Sheet Columns’ 
+
+6. Your empty columns have now been removed.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: National Parks
+
+Instructions
+
+Exam Environment
+
+Exam Interface and Controls
+
+The exam panel provides access to the project task(s). Each project has an associated file in which you will perform the project tasks.
+ 
+
+1. Project file 
+2. Split bar
+3. Exam panel
+
+You can modify the exam interface to fit your needs in the following ways:
+-To increase or decrease the exam panel font size, press Ctrl+Plus or Ctrl+Minus.
+-To change the height of the exam panel, drag the split bar between the project file and the exam panel.
+-To minimize the exam panel, click the Collapse Panel arrow in the upper-left corner of the exam panel. The minimized exam panel displays the Expand Panel button, the project number and name, the remaining time, and the Restart Project and Submit Project buttons. To move between tasks, you must expand the exam panel.
+
+-To restore the interface to the default appearance, click the Restore button near the upper-right corner of the exam panel.
+
+4. The Information bar at the top of the exam panel displays the current project and total number of projects, the remaining exam time, and the following commands: 
+-Collapse Panel. Minimizes the exam panel to provide more space for the project file.
+-Restart Project. Closes and reopens the current project file without saving your changes. Submit Project. Saves your changes, submits the project file, and moves to the next project. 
+-Calculator. A calculator is available in some exams. You are not required to use the calculator. Restore. Restores the size and position of the project file and exam panel to the defaults. Help.
+-Displays information about the exam interface.
+
+5. The Content area displays the task tabs and the current task description.
+
+6. The Navigation area at the bottom of the exam panel contains the following commands.
+-Previous Task/Next Task. Saves your response and moves to the previous or next task in the current project. 
+-Leave feedback after exam. Flags the task to indicate that you want to leave feedback about it after the exam.
+-Mark for review. Flags the task to indicate that you want to return to it before you finish the exam. 
+-Mark as complete. Flags the task to indicate that you feel you have completed the task.
+
+In projects that contain multiple tasks, you can switch between tasks by clicking the task tab, Next Task button, or Previous Task button.
+
+End of the instructions.
+
+On the “Volunteer Analysis” chart sheet, drill down into the data to display the number of volunteer hours for each month.
+
+Exhibit 1 (exhibit):
+Exhibit 2 (exhibit):
+Exhibit 3 (exhibit):
+Exhibit 4 (exhibit):
+Exhibit 5 (exhibit):
+Exhibit 6 (exhibit):
+Exhibit 7 (exhibit):
+Exhibit 8 (exhibit):
+Exhibit 9 (exhibit):
+
+### Options:
+- [x] **A)** See explanation below. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+If a chart has multiple fields in the Axis box, you set it to show levels and you see only one level at a time, starting with the top level.
+To enable drill-down, access the Design tab > Show Levels > Enable Drill Down One Level at a Time. if you double-click on one of the bars, you will see the bars for the underlying data.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Southridge Video
+
+SIMULATION
+Instructions
+
+Exam Environment
+
+Exam Interface and Controls
+
+The exam panel provides access to the project task(s). Each project has an associated file in which you will perform the project tasks.
+ 
+
+1. Project file 
+2. Split bar
+3. Exam panel
+
+You can modify the exam interface to fit your needs in the following ways:
+-To increase or decrease the exam panel font size, press Ctrl+Plus or Ctrl+Minus.
+-To change the height of the exam panel, drag the split bar between the project file and the exam panel.
+-To minimize the exam panel, click the Collapse Panel arrow in the upper-left corner of the exam panel. The minimized exam panel displays the Expand Panel button, the project number and name, the remaining time, and the Restart Project and Submit Project buttons. To move between tasks, you must expand the exam panel.
+
+-To restore the interface to the default appearance, click the Restore button near the upper-right corner of the exam panel.
+
+4. The Information bar at the top of the exam panel displays the current project and total number of projects, the remaining exam time, and the following commands: 
+-Collapse Panel. Minimizes the exam panel to provide more space for the project file.
+-Restart Project. Closes and reopens the current project file without saving your changes. Submit Project. Saves your changes, submits the project file, and moves to the next project. 
+-Calculator. A calculator is available in some exams. You are not required to use the calculator. Restore. Restores the size and position of the project file and exam panel to the defaults. Help.
+-Displays information about the exam interface.
+
+5. The Content area displays the task tabs and the current task description.
+
+6. The Navigation area at the bottom of the exam panel contains the following commands.
+-Previous Task/Next Task. Saves your response and moves to the previous or next task in the current project. 
+-Leave feedback after exam. Flags the task to indicate that you want to leave feedback about it after the exam.
+-Mark for review. Flags the task to indicate that you want to return to it before you finish the exam. 
+-Mark as complete. Flags the task to indicate that you feel you have completed the task.
+
+In projects that contain multiple tasks, you can switch between tasks by clicking the task tab, Next Task button, or Previous Task button.
+
+End of the instructions.
+
+You are creating a workbook for the regional meeting of Southridge Video.
+
+On the “Regional Sales” worksheet, in cells D4:F7, use the Fill Series feature to complete the sales projections using a linear growth rate of 500,000 per year.
+
+Exhibit 1 (exhibit):
+Exhibit 2 (exhibit):
+Exhibit 3 (exhibit):
+Exhibit 4 (exhibit):
+Exhibit 5 (exhibit):
+
+### Options:
+- [x] **A)** See explanation below. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+1. Select all value cells for First-Year and Second-Year Sales.
+2. Drag the fill handle to the Fifth-Year Projections column.
+</details>
+
+---

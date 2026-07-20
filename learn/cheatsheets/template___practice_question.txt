@@ -1,0 +1,46 @@
+---
+tags:
+  - certification/gh-300
+  - copilot/practice-question
+  - domain/${domain-number}
+status: 🔁 needs-practice  # [✅ mastered, 🔁 needs-practice, ❌ incorrect-last-attempt]
+question_type: 💻 multiple-choice # [💻 multiple-choice, 🔧 scenario-based, ⌨️ CLI]
+last_attempt: 2026-05-26
+---
+
+# ❓ Question: [Insert Brief Title]
+
+## 📝 Problem Statement
+[Insert the clear, concise exam question or corporate scenario here]
+
+### Options
+- [ ] **A)** [Option A]
+- [ ] **B)** [Option B]
+- [ ] **C)** [Option C]
+- [ ] **D)** [Option D]
+
+---
+
+## 🔑 Answer & Explanation
+
+> [!tip] Hint
+> [Provide a subtle hint referencing specific plan differences, CA certificate variables, or filter size thresholds]
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **[Letter]**
+
+### Detailed Explanation
+- **Why it is correct**: [Detail the exact reason. E.g. "Because Node.js requires NODE_EXTRA_CA_CERTS for proxy certificate validation..."]
+- **Why other options are incorrect**:
+  - **Option [X]**: [Explanation]
+  - **Option [Y]**: [Explanation]
+  - **Option [Z]**: [Explanation]
+
+### 📖 Exam Relevance
+- **Domain**: [[GH-300-Copilot/Domain [Number] - [Name]|Domain [Number] - [Name]]]
+- **Related Cheat Sheet**: [[certifications/microsoft/GH-300-Copilot/Copilot Comparison Cheat Sheet|Copilot Comparison Cheat Sheet]]
+- **Official Docs Reference**: [Docs Link]
+
+</details>

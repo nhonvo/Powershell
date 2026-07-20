@@ -1,0 +1,191 @@
+    Category 1: The "Must-Know" Fundamentals (1–10) 
+1. Value vs. Reference Types: Which lives on the Stack and which on the Heap? 
+   1. value live on the stack 	
+   2. and references type on the heap which just manage by the address memory
+
+1. Boxing and Unboxing: Explain the performance cost of moving a value type to the heap. 
+   1. dont know
+   
+2. struct vs. class: When would you choose a struct over a class? 
+   1. when we don't oop
+   
+3. The readonly vs. const keywords: Which one is evaluated at runtime? 
+   1. readonly keyword make the fields just read not init 
+   2. const can not edit also but init when first time run prj
+   
+4. String Immutability: Why are strings immutable in C#, and what are the implications? 
+   1. string is reference type when edit it init new instance that why it immutable
+   
+5. String vs. StringBuilder: When does the overhead of StringBuilder become worth it? 
+   1. string builder help edit the string without create new memory that help save the memory
+   
+6. The enum type: Can an enum have methods? (No, but you can use Extension Methods). 
+   1. no. enum just a type user define and  use as a variable
+   
+7. Nullable Types: Explain int? and the nul-coalescing operator ??. 
+   1. the "?" make default value of int is null not 0 and "??" is  short if check null assign value
+   
+9. Access Modifiers: Explain protected internal vs. private protected. 
+
+   1. protceted internal just class in a project can access fields and method
+   2. the questino is not clear
+   3. private can not access out side class
+   4. public every class can access
+
+10. The using Statement: How does it ensure IDisposable objects are cleaned up? 
+
+   1. try acess after dispose the verify it clean up
+
+   Category 2: Object-Oriented Programming (11–20) 
+
+11. Interface vs. Abstract Class: When should you use one over the other? 
+
+    1. interface just has method use an prototpe high level of class
+    2. abstract class inlcude implement and not implment method
+
+12. Method Overloading vs. Overriding: Explain static vs. dynamic polymorphism. 
+
+    1. overload method can has more method which same name but must different input method
+    2. overriding override the method which the child class inheritant the parent
+
+13. The sealed keyword: Why seal a class or a method? 
+
+    1. sealed make the variable can not change value
+    2. public sealed int a =1;
+
+14. Constructor Chaining: How do you cal one constructor from another in the same class? 
+
+    1. need enter correctly input variable and the order to choose the contructor
+
+15. Virtual vs. Abstract: Can you have a body in a virtual method? (Yes). In an abstract one? 
+    (No). 
+
+    1. yes 
+    2. no
+
+16. Interface Default Methods: Can an interface have logic in modern C#? (Yes, since C# 
+    8.0). 
+
+    1. yes but i confuse if interface has logic so what differ abstracts 
+
+17. Composition over Inheritance: Why is this a preferred design principle?
+
+    1. more loosely than inheritance and can replace quick  
+
+18. The base keyword: How do you access a parent class's method that you’ve overridden?
+
+    1. base base.contructorName() 
+
+19. Deep Copy vs. Shallow Copy: How do you implement a Deep Copy in C#? 
+
+    1. don't know
+
+20. SOLID Principles: Can you explain what each letter stands for? 
+
+    1. S each class has a reposibility don't combine
+    2. O class can add new code can scale without broken
+    3. L forget
+    4. I inteface can replace
+    5. D class depend of big class these class depend each other
+
+    Category 3: Collections & LINQ (21–30) 
+
+21. Array vs. ArrayList vs. List<T>: Why is List<T> the standard today? 
+
+    1. array need init the number of item of array when create array
+    2. arraylist no need enter numberof item
+    3. list<T> can define data type and no need number of items that why it standard 
+
+22. IEnumerable vs. IQueryable: Which one handles filtering at the database level? 
+
+    1. ienumberable is abstract class of list this list init memory in ram we can query directly 
+    2. IQueryable is near with sql script can not query dirclty need to convert to ienumberable when return response and query
+
+23. Deferred Execution: Explain why a LINQ query doesn't run until you cal .ToList() or 
+    foreach. 
+
+    1. linq is systax can use with orm lib so we can filter, or group before it gen a script sql to interact with db
+
+24. Dictionary<K, V>: How does a dictionary handle colisions? 
+
+    1. may be the key i don't know
+
+25. IEnumerable vs. IEnumerator: What is the underlying mechanism of a foreach loop? 
+
+    1. IEnumerator is more underlying because IEnumerator is mechanism get get through collection
+
+26. yield return: How does it allow for custom iterations without storing the whole list in 
+    memory? 
+
+    1. don't know
+
+27. Any() vs. Count() > 0: Which is faster for checking if a colection has items? 
+
+    1. i think any() because both method loop the whole collection but any stop when find the value
+
+28. Select vs. SelectMany: When would you "flatten" a colection? 
+
+    1. selectmany() help flatten select() just choose the filelds 
+
+29. Anonymous Types: When are they useful in LINQ? 
+
+    1. when include more entity and select and just need at this time or select 
+
+30. ICollection vs. IList: Which one alows for index-based access? 
+
+    1. IList allow perfomce index base operation
+    2. icollection allow manipulate the collection
+
+    Category 4: Async & Threading (31–40) 
+
+31. async and await: How do they work without blocking the main thread? 
+
+    1. they not wait together like synchronous, c# create a more small task and has status and they work at same time
+
+32. Task vs. Thread: Why is the Thread Pool more efficient than manual threads? 
+
+    1. task as package thread is road C# control the thread keep the number of thread effective to handle more task  
+    2. Thread Pool idk
+
+33. Task.Run vs. Task.Factory.StartNew: Which is the modern preference? 
+
+    1. task.run but don't know why
+
+34. Deadlocks: How does await help avoid deadlocks compared to .Result? 
+
+    1. await make the method return variables in async method . it change the status of task to wait 
+
+35. CancellationToken: How do you stop a long-running async operation? 
+
+36. ValueTask: When would you return ValueTask instead of Task? (High-performance 
+    scenarios). 
+
+37. ConfigureAwait(false): Why is this used in library code? 
+
+38. lock keyword: How do you ensure thread safety on a shared resource? 
+
+39. Task.WhenAll vs. Task.WhenAny: Describe a use case for each. 
+
+40. Async Streams: What is IAsyncEnumerable<T>? 
+    Category 5: .NET Core & Advanced Topics (41–50) 
+
+41. Dependency Injection (DI): Explain Transient, Scoped, and Singleton. 
+
+42. Middleware: What is the Request Pipeline in ASP.NET Core? 
+
+43. Garbage Collection (GC): Explain Generations 0, 1, and 2. 
+
+44. Ref and Out: What is the difference, and what is the new in parameter? 
+
+45. Reflection: What is it, and why is it considered slow? 
+
+46. Delegates vs. Events: How does an event encapsulate a delegate? 
+
+47. Attributes: How do you create and use a custom attribute? 
+
+48. var keyword: Is C# stil strongly typed when using var? (Yes). 
+
+49. Error Handling: Why should you never use throw ex;? (Use throw; to preserve the stack 
+    trace). 
+
+50. Records (C# 9.0+): What makes a record different from a class? (Value-based equality).

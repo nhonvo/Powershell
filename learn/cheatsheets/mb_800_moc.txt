@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mb-800
+  - mb800
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MB-800: Microsoft Dynamics 365 Business Central Functional Consultant MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MB-800/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MB-800/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MB-800/MB-800 Mindmap\|🗺️ MB-800 Mindmap]]
+- [[certifications/microsoft/MB-800/MB-800 Flashcards\|🃏 MB-800 Flashcards]]
+- [[certifications/microsoft/MB-800/MB-800_Scraped_Question_Bank\|🗃️ MB-800 Scraped Question Bank]]

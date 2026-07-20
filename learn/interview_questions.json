@@ -1,0 +1,684 @@
+{
+  "Questions": [
+    {
+      "Id": "int_imp_001",
+      "Type": "Behavioral",
+      "Category": "behavioral",
+      "Difficulty": "Medium",
+      "Question": "Common questions",
+      "Format": "STAR Method",
+      "Hints": [
+        "- Tell me about yourself.\n- Why this role/company?\n- A time you handled conflict.\n- A time you failed.\n- A time you led "
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_002",
+      "Type": "Behavioral",
+      "Category": "behavioral",
+      "Difficulty": "Medium",
+      "Question": "“Tell me about yourself” (draft)",
+      "Format": "STAR Method",
+      "Hints": [
+        "Write a 60–90s story: Present → Past → Future."
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_003",
+      "Type": "Technical",
+      "Category": "README",
+      "Difficulty": "Medium",
+      "Question": "Imported resources",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- `interviewNote/general_questions/`\n- `interviewNote/notes_by_tech/`\n- `interviewNote/study_plans/`"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_004",
+      "Type": "Technical",
+      "Category": "system_design",
+      "Difficulty": "Medium",
+      "Question": "Checklist",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- Requirements (functional + non-functional)\n- API design\n- Data model\n- High-level architecture\n- Scalability / reliabi"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_005",
+      "Type": "Technical",
+      "Category": "technical",
+      "Difficulty": "Medium",
+      "Question": "Topics to prepare",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- Data structures & algorithms\n- OOP / SOLID\n- Testing\n- Concurrency\n- Databases\n- Networking\n\nAdd concise notes + pitfa"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_006",
+      "Type": "Technical",
+      "Category": "tell_me_about_yourself",
+      "Difficulty": "Medium",
+      "Question": "Version 1 (Backend/.NET/AWS)",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "**Present (1–2 sentences)**  \nI’m a backend engineer focused on building reliable APIs and event-driven services with C#"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_007",
+      "Type": "Technical",
+      "Category": "tell_me_about_yourself",
+      "Difficulty": "Medium",
+      "Question": "Customization checklist",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- [ ] Mention the company name and why them (1 line)\n- [ ] Match the role keywords (2–3 keywords)\n- [ ] Add one “proof” "
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_008",
+      "Type": "Technical",
+      "Category": "❓index_04_INTERVIEW_QA",
+      "Difficulty": "Medium",
+      "Question": "📁 Sub-Categories",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- [[interviewNote/❓index_04_INTERVIEW_QA|java_khoaminhi]]\n- [[interviewNote/mantu_amaris/📂index_mantu_amaris|mantu_amari"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_009",
+      "Type": "Technical",
+      "Category": "❓index_04_INTERVIEW_QA",
+      "Difficulty": "Medium",
+      "Question": "📄 Notes & Documents",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- [[interviewNote/README|README]]\n- [[interviewNote/behavioral|behavioral]]\n- [[interviewNote/behavioral_question_bank|b"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_010",
+      "Type": "Technical",
+      "Category": "feedback",
+      "Difficulty": "Medium",
+      "Question": "YYYY-MM-DD (Mock #)",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- What went well:\n- What to improve:\n- Next actions:"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_011",
+      "Type": "Technical",
+      "Category": "mock_script",
+      "Difficulty": "Medium",
+      "Question": "Setup (2 min)",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- Role:\n- Company:\n- Level:"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_012",
+      "Type": "Technical",
+      "Category": "mock_script",
+      "Difficulty": "Medium",
+      "Question": "Section A — Intro (5 min)",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- Tell me about yourself.\n- Why this company?\n- Why this role?"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_013",
+      "Type": "Technical",
+      "Category": "mock_script",
+      "Difficulty": "Medium",
+      "Question": "Section B — Behavioral (10 min)",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- 2 questions from `04_INTERVIEW_QA/behavioral_question_bank.md`"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_014",
+      "Type": "Technical",
+      "Category": "mock_script",
+      "Difficulty": "Medium",
+      "Question": "Section C — Technical (15–20 min)",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- 1 coding problem (talk out loud)\n- 1 deep dive question (e.g., caching, DB indexing, concurrency, messaging)"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_015",
+      "Type": "Technical",
+      "Category": "mock_script",
+      "Difficulty": "Medium",
+      "Question": "Section D — Close (5 min)",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- Your questions to interviewer\n- Wrap-up summary (what you bring + next steps)"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_016",
+      "Type": "Technical",
+      "Category": "mock_script",
+      "Difficulty": "Medium",
+      "Question": "Scoring (after)",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- Clarity (1–5):\n- Structure (1–5):\n- Depth (1–5):\n- Communication (1–5):\n- Next actions:"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_017",
+      "Type": "Technical",
+      "Category": "README",
+      "Difficulty": "Medium",
+      "Question": "What to do",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- Record mock sessions (audio/video link in `recordings.md`)\n- Write feedback and next improvements in `feedback.md`"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_018",
+      "Type": "Technical",
+      "Category": "README",
+      "Difficulty": "Medium",
+      "Question": "Script",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- Use `mock_script.md` to run a consistent mock"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_019",
+      "Type": "Technical",
+      "Category": "📹index_08_MOCKS",
+      "Difficulty": "Medium",
+      "Question": "📄 Notes & Documents",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- [[interviewNote/08_MOCKS/README|README]]\n- [[interviewNote/08_MOCKS/feedback|feedback]]\n- [[interviewNote/08_MOCKS/moc"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_020",
+      "Type": "Technical",
+      "Category": "MANTU - Tổng hợp và Phân tích Buổi Phỏng vấn",
+      "Difficulty": "Medium",
+      "Question": "**Tổng hợp và Phân tích Buổi Phỏng vấn**",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- **Công ty:** Mantu\n- **Ngày phỏng vấn:** (Ghi lại ngày bạn phỏng vấn)\n- **Vị trí ứng tuyển:** (Ghi lại vị trí)\n\n------"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_021",
+      "Type": "Technical",
+      "Category": "MANTU - Tổng hợp và Phân tích Buổi Phỏng vấn",
+      "Difficulty": "Medium",
+      "Question": "**Diễn biến**",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "Người phỏng vấn đã hỏi các câu hỏi chung để hiểu về kinh nghiệm làm việc:\n\n- Tổng quan về background, các dự án đã và đa"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_022",
+      "Type": "Technical",
+      "Category": "MANTU - Tổng hợp và Phân tích Buổi Phỏng vấn",
+      "Difficulty": "Medium",
+      "Question": "**Tự đánh giá và Điểm cần Cải thiện**",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- **Điểm yếu:** Khi được hỏi về kinh nghiệm thiết kế, đã trả lời lan man sang chủ đề CI/CD, không đi thẳng vào trọng tâm"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_023",
+      "Type": "Technical",
+      "Category": "MANTU - Tổng hợp và Phân tích Buổi Phỏng vấn",
+      "Difficulty": "Medium",
+      "Question": "**Phần 2: Thử thách Kỹ thuật (Technical Challenge)**",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "Đây là phần quan trọng nhất và cũng là phần thể hiện chưa tốt. Thử thách gồm 2 phần: Live Coding và Thiết kế Hệ thống."
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_024",
+      "Type": "Technical",
+      "Category": "MANTU - Tổng hợp và Phân tích Buổi Phỏng vấn",
+      "Difficulty": "Medium",
+      "Question": "**1. Live Coding**",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- **Đề bài:** Cho một bảng \"Bill of Materials\" (BOM - Danh sách nguyên vật liệu), viết một hàm để tính toán tổng số lượn"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_025",
+      "Type": "Technical",
+      "Category": "MANTU - Tổng hợp và Phân tích Buổi Phỏng vấn",
+      "Difficulty": "Medium",
+      "Question": "**2. Thiết kế Hệ thống (System Design)**",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- Đề bài:\n\n   Dựa trên bài toán coding ở trên, hãy:\n\n  1. Thiết kế một bộ REST API để quản lý các sản phẩm và mối quan h"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_026",
+      "Type": "Technical",
+      "Category": "MANTU - Tổng hợp và Phân tích Buổi Phỏng vấn",
+      "Difficulty": "Medium",
+      "Question": "**Diễn biến**",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "Các câu hỏi tiêu chuẩn cuối buổi phỏng vấn:\n\n- Mức lương mong muốn của bạn là bao nhiêu?\n- Tại sao bạn lại muốn tìm một "
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_027",
+      "Type": "Technical",
+      "Category": "MANTU - Tổng hợp và Phân tích Buổi Phỏng vấn",
+      "Difficulty": "Medium",
+      "Question": "**Tự đánh giá**",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "Phần này diễn ra bình thường, không có vấn đề gì đặc biệt."
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_028",
+      "Type": "Technical",
+      "Category": "MANTU problem - Programming Interview Question Bill of Materials (BOM) Calculation",
+      "Difficulty": "Medium",
+      "Question": "**Programming Interview Question: Bill of Materials (BOM) Calculation**",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "**Context**\n\nA manufacturing company maintains a list of materials required to produce a product. This list is known as "
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_029",
+      "Type": "Technical",
+      "Category": "MANTU problem - Programming Interview Question Bill of Materials (BOM) Calculation",
+      "Difficulty": "Medium",
+      "Question": "**Initial C# Code and Notes**",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "Here is the initial draft of the C# code provided for the solution.\n\n```c#\nusing System;\nusing System.Collections.Generi"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_030",
+      "Type": "Technical",
+      "Category": "MANTU problem - Programming Interview Question Bill of Materials (BOM) Calculation",
+      "Difficulty": "Medium",
+      "Question": "**Additional Design Notes (RESTful API & Database)**",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "These notes appear to be related to a broader system design involving the management of products and their components vi"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_031",
+      "Type": "Technical",
+      "Category": "MANTU solve - Programming Interview Question Bill of Materials (BOM) Calculation",
+      "Difficulty": "Medium",
+      "Question": "**Part 1: Solving the BOM Calculation Problem (C#)**",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "This solution needs to traverse the tree-like structure of the Bill of Materials. A recursive approach is a clean and ef"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_032",
+      "Type": "Technical",
+      "Category": "MANTU solve - Programming Interview Question Bill of Materials (BOM) Calculation",
+      "Difficulty": "Medium",
+      "Question": "**Part 2: REST API Design**",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "Here is a logical REST API design for managing products and their BOM components.\n\n**Resources:**\n\n- `/products`: Repres"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_033",
+      "Type": "Technical",
+      "Category": "MANTU solve - Programming Interview Question Bill of Materials (BOM) Calculation",
+      "Difficulty": "Medium",
+      "Question": "**Part 3: Database Schema Design**",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "A simple and robust relational database design would involve two main tables.\n\n**1. `Products` Table** Stores the master"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    },
+    {
+      "Id": "int_imp_034",
+      "Type": "Technical",
+      "Category": "📂index_mantu_amaris",
+      "Difficulty": "Medium",
+      "Question": "📄 Notes & Documents",
+      "Format": "Technical Q&A",
+      "Hints": [
+        "- [[interviewNote/mantu_amaris/MANTU - Tổng hợp và Phân tích Buổi Phỏng vấn|MANTU - Tổng hợp và Phân tích Buổi Phỏng vấn"
+      ],
+      "Companies": [
+        "Amazon",
+        "Google",
+        "Microsoft"
+      ],
+      "Tags": [
+        "interview",
+        "vault"
+      ]
+    }
+  ]
+}

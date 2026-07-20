@@ -1,0 +1,65 @@
+🔙 **Back to Parent**: [[technical_skills/06_Backend_Interview_Expert/📂index_06_Backend_Interview_Expert|06_Backend_Interview_Expert]]
+
+# 🔐 3. Web Security Deep Dive (The Guardian)
+
+Xây dựng hệ thống Backend không chỉ là code tính năng, đó là bảo vệ dữ liệu khách hàng. Chỉ cần một sai lầm nhỏ, hacker có thể đánh cắp toàn bộ database. Bạn phải học cách "Phòng thủ chiều sâu" (Defense in Depth).
+
+---
+
+### 🛡️ 3.1 Authentication vs Authorization (Xác thực vs Phân quyền)
+
+Đừng nhầm lẫn!
+- **Authentication**: "Bạn là ai?" (Check Passport).
+- **Authorization**: "Bạn được phép làm gì?" (Check Ticket).
+- **JWT (JSON Web Token)**: Tuyệt vời cho **Stateless API**. (Nhưng đừng bao giờ lưu mật khẩu, thông tin nhạy cảm ở Payload).
+
+---
+
+### 🧠 3.2 SQL Injection (Kinh điển nhất)
+
+Mọi dữ liệu người dùng nhập đều là "độc hại". Hacker có thể chèn câu lệnh SQL vào form để xóa sạch database.
+- **Phòng chống**: Luôn dùng **Parameterized Queries** (hoặc dùng ORM như EF Core/JPA). Tuyệt đối không cộng chuỗi SQL thủ công.
+
+---
+
+### 🚀 3.3 OWASP Top 10 (Mức độ bảo mật chuẩn thế giới)
+
+1.  **Broken Access Control**: User xem được profile của người khác bằng cách đổi ID trên URL.
+    - **Phòng chống**: Luôn check quyền sở hữu (IsOwner) của resource.
+2.  **Cryptographic Failures**: Lưu mật khẩu dạng text thô (Clear text).
+    - **Phòng chống**: Hashing mật khẩu bằng **BCrypt** hoặc **Argon2** với **Salt**.
+3.  **Cross-Site Scripting (XSS)**: Chèn mã JS vào Input/Comment.
+    - **Phòng chống**: Sanitize HTML, dùng các framework như React/NextJS đã bọc sẵn.
+
+---
+
+### ⚡ 3.4 Rate Limiting & Denial of Service (DoS)
+
+Làm sao để hệ thống không bị "đứng bóng" khi bị 1 triệu request spam vào 1 lỗ hồng?
+- **IP White/Blacklist**: Chặn các dải IP lạ.
+- **Token Bucket / Leaky Bucket**: Thuật toán giới hạn mỗi user chỉ được gọi tối đa 100 API/phút.
+
+---
+
+### 📝 3.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao chỉ HTTPS là chưa đủ để bảo mật ứng dụng của bạn?"
+<details><summary>Đáp án</summary>
+HTTPS chỉ bảo mật dữ liệu trên đường truyền (transit). Nếu code của bạn bị SQL Injection, hoặc server bị hổng cấu hình (Broken Config), hacker vẫn có thể đánh sập database thông qua đường truyền "được mã hóa" đó. Bảo mật là một chuỗi mắt xích: Network + Code + Infra.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết mã giả (C#/Java) để lưu mật khẩu của người dùng một cách an toàn nhất (Dùng Salt và Hashing).
+<details><summary>Solution</summary>
+```csharp
+string salt = BCrypt.GenerateSalt();
+string hashedPassword = BCrypt.HashPassword(password, salt);
+// Lưu cả Salt và HashedPassword vào DB
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [How to Implementing Robust Authentication & Authorization](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-auth-best-practices.md)
+- [Managing Passwords Securely: Hashing vs Encryption](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-password-security.md)
+- [Preventing Common Web Vulnerabilities - OWASP Guide](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-owasp-top-10.md)

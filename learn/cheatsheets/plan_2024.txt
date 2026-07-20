@@ -1,0 +1,147 @@
+# Tổng kết 
+
+
+
+[TOC]
+
+
+
+## 2024 - Tóm tắt năm
+
+### 🎯 **Đã làm được**
+
+- Thành tựu cá nhân:
+  - Tạo repo GitHub Clean Architecture đạt 80 ⭐.
+- Công việc và sự nghiệp:
+  - Hoàn thành khóa học Tiếng Anh Globish, bị commit 6 tháng 🥲.
+  - Thăng chức lên vị trí Middle Developer.
+  - Được gia hạn hợp đồng với mức tăng 32%. Cuối năm hình như được tăng thêm project bonus ⬆️.
+  - Pass chứng chỉ MongoDB (thưởng 1 triệu), Udacity AWS (1 triệu), Katalon & Dataiku (3 triệu), đứng thứ 3 cuộc thi Project Cert Hunter 🎯.
+  - Tốt nghiệp xuất sắc, đứng thứ 5 toàn trường.
+- Tài chính:
+  - Tiết kiệm được ~50 triệu đồng.
+  - Đầu tư vào quỹ mở ~13 triệu đồng.
+  - Mua tablet ~5 triệu + ~1 triệu bút, tổng ~6.5 triệu.
+  - Đầu tư vào thiết bị bếp: ~1 triệu (bếp), 1.4 triệu (nồi cơm), 1.2 triệu (bồn rửa chén), 1 triệu (chảo), 500k (đồ lặt vặt như chén bát, đồ vệ sinh), tổng ~5 triệu.
+  - Mua điện thoại ~9 triệu.
+  - Có bạn gái ~ chi phí ăn uống tăng gấp đôi, nhưng giảm khoản đi chơi nên cơ bản vẫn ổn.
+  - Lo nghĩa vụ quân sự 25 triệu (chát vãi).
+- Gia đình và bạn bè:
+  - Hàn gắn mối quan hệ với gia đình.
+  - Vẫn còn lạnh nhạt với bên nội.
+
+------
+
+### ❌ **Chưa làm tốt**
+
+- Thói quen:
+  - Không duy trì được thói quen tập thể dục đều đặn.
+  - Thường xuyên ngủ muộn.
+  - Hay buông bỏ các kế hoạch đã đặt ra, chỉ nằm mà không chịu làm.
+  - Không kiểm soát được bản thân, thẩm du quá độ.
+  - Nuông chiều cơ thể, ăn uống vô tội vạ dẫn đến tăng cân không kiểm soát.
+- Công việc:
+  - Vẫn thiếu kiến thức về business.
+  - Không chịu sáng tạo hoặc tìm hiểu các cuộc thi về innovation.
+  - Chưa thành thạo kỹ năng Frontend và cloud (deploy, monitor).
+  - Tiếng Anh nói vẫn chưa lưu loát (mua tablet nhưng lười học tiếng Anh).
+- Các khía cạnh khác:
+  - Vẫn còn cười lớn và thiếu kiểm soát ngôn từ, khiến người nghe phật lòng.
+
+------
+
+### 📌 **Mục tiêu 2025**
+
+1. Công việc và sự nghiệp:
+   - Thành thạo kỹ năng cloud (AWS, Azure, VPS).
+   - Khám phá nhiều hơn về AI (chatbot, xây dựng mô hình LLM,...).
+   - Đạt được level Senior C#.
+   - Xây dựng CV để apply công việc (part-time hoặc full-time với mức lương x2).
+   - Học thêm về business logistics.
+2. Thể chất:
+   - Tập gym 3 buổi/tuần.
+   - Chạy bộ hoàn thành cự ly 10km liên tục.
+3. Tài chính:
+   - Tiết kiệm 100 triệu đầu tiên.
+   - Mức lương ~30 triệu (thêm part-time hoặc công việc chính thức).
+4. Phát triển bản thân:
+   - Cải thiện khả năng viết tiếng Anh đúng ngữ pháp.
+   - Giao tiếp tiếng Anh lưu loát.
+5. Gia đình và xã hội:
+   - Gắn kết hơn với gia đình qua các hoạt động chung.
+   - Tham gia 2 hoạt động thiện nguyện.
+
+
+## năm 2023
+
+### Đi làm:
+
+1. Đậu phỏng vấn fresher
+2. pass fresher lên dự án và tốt nghiệp á khoa fresher 2/12
+
+### Bản thân
+
+1. Tự lo không xin tiền gia đình, Tự đóng học phí
+2. Mua những thứ mình thích: bàn phím, máy giặt, tủ lạnh, quần áo, ghế công thái học, laptop_ Chuyển sang nơi khác tốt hơn (thuê nhà ơ vinhome)
+3. Chuyển đi từ xe bus sang xe máy sau hơn 3 năm
+4. Đi du lịch Nha Trang, đi chơi khắp SG
+5. Làm răng sứ tại răng trám bị mẻ hồi lớp 5, Nhổ răng khôn(tự đi nhổ bệnh 1 tuần)
+6. Tập thể dục nhiều hơn
+7. Biết để dành có việc dùng ko nhờ vả ai.
+
+### Mục tiêu 2024
+
+- [x]: Học chứng chỉ: tiếng anh, mongo, aws => (lụm mongo, aws architechture udacity, xong globish) ko nên học toeic tập trung vào giao tiếp và viết đúng ngữ pháp
+- [x]: Viết tiếng anh nhiều hơn => cải thiện nhiều do a Trí support, học globish(commit 6 tháng :(( )
+- [x]: Tiếp tục duy trì cân bằng công việc và cuộc sống => siu cân bằng so vs bạn đồng lứa
+- [x]: Hướng ngoại hơn, đi chơi nhiều hơn, lo tốt cho bản thân: *Học nấu ăn* => đầu tư bộ nấu ăn chảo, bếp, bồn rửa, nầu cơm
+- [x]: Để dành 28 tuổi lập gia đình(300 tiền cưới xin) => loading 20% ~ 60 triệu (80 save  & 20 invest)
+- [x]: **Ôn tập phỏng vấn, chuẩn bị CV deal hợp đồng tháng 7, target 25m** => chốt sổ 21 triệu
+- [x]: Đã làm thì làm tới cùng => 80% có cố gắng không đồn task về khuya làm do wfh xiết lại, thay vào đó tự ở lại OT
+- [x]: Tập thể dục chuyên hơn kết hợp chạy bộ vào 7h tối => (thói quen 40%), hơi fail lên cân do nvqs max ~ 74kg
+- [x]: Chứng minh được năng lực => 70% vẫn còn bị xem là nhỏ, chưa đc tin tưởng nhiều
+- [x]: Có trách nhiệm hơn trong các mối quan hệ => có bạn gái, từ bỏ c Kim
+- [x]: để đành 6 tháng sinh hoạt phí 42 triệu => done
+- [x]: 2024 để dành 100 triệu đầu tiên => fail do mua dth, khám nvqs, có bạn gái, du lịch
+- [x]: tốt nghiệp loại xuất sắc sau tháng 12 => đứng thứ 5 toàn khóa 3.76
+- [x]: quản lý tài chính => build app py để quản lý tháng, năm
+- [x]: Học cánh đầu tư cổ phiếu => fail lỗ 30% khi invest vào HSG, HPG down trend ngành thép, nghe lùa gà
+
+### Những thứ làm chưa tốt
+
+1. Còn suy nghĩ bốc đồng mất bạn còn suy nghĩ vớ vẫn, overthinking => đã giảm bớt, nhưng vẫn nhiều như không lộ ra
+2. Dần thu mình lại sống cho bản thân, không chat nhiều trên fb(không bik là xấu hay tốt) => đã dãn ra, dần tư tin hơn
+3. còn chiều chuộng bản thân, chơi game, ... không theo plan đề ra => 80% theo plan bằng 1 cách nào đó
+
+---
+
+2024
+
+Năm 2024 vừa qua giờ mình mới rảnh viết vài dòng này, năm nay thật là dài mình đã trải qua quá nhiều chuyện có chuyện còn hơi over với mình, đã buông bỏ nhiều thứ những thứ vốn dĩ mình chẳng thể lo được thôi thì buông. Mình sẽ đi qua từng sự kiện trong năm này từ t1 -> t12. Sao đây ta mik là FPT chắc cx đc gần 3 năm rồi từ thời sv tới giờ, cảm ơn cty nhiều lắm, nơi đây từng là ước mơ thời sv phần nào là hs của mình hồi c3, từ cậu bé yêu thích khoa học và mt giờ đã thành kĩ sư hồi nào không hay. Mình sẽ để chủ đề này bài khác (#cậu bé nghèo tự tin hành trình vượt lên chính mình thành kĩ sư 😁)  
+
+T1: Lúc này mình vẫn còn thích c Kim nhiều lắm, cô nàng bên bộ phần QA mình vs chỉ nhắn tin nhiều lắm, mink từng dùng vài đồng lương ít ỏi mua chuột tặng c, c cx lì xì tặng quà mình lại mình vui lắm có thể chị cx có cảm tình vs mình. Nhưng do khác biệt hoàn cảnh gd và tôn giáo(đạo công giáo) mình vs chỉ dần có nhưng khoảng cách kô cách nào sang lấp mình dần nản, chỉ không nhắn tin nhiều nữa, chỉ rep rất chập. Phần lúc này mìnk cx nôn gần 21 tuổi đầu ko lấy 1 mảnh tình vác vai :) rồi chuyện gì đến cx đến má chị bệnh chị dần buông bớt những thứ ko cần thiết bao gồm mink, lo cho team mới, cho cv QA(mình rất mập mờ ko bik bên này họ như nào). Mình vs chỉ dần ko liên lạc nhiều và lần thứ 3 xóa lịch sử trong zalo :)) quyết tâm buông, xin lỗi c Trâm(SM cũ) ráng ghép mình vs chị, à còn mn nữa giờ thì mn bớt rồi những lần đi chơi ĐL mình vẫn đèo chị, lúc đó lòng vẫn còn vấn vưng nhưng lí trí thì bảo thôi rồi. Buông. Mình từng nhắn những gì nhỉ chị khoe đi chơi vs bạn, bé nào cx xinh, mình khoe mua lap mới, chỉ còn đòi chỉ chị mua, đi chơi vuifest ún say mìnk muốn lên xe bus chung về nhà sợ bị gì mà có a nào lo rồi về overtk 1 ngày má, sau này thấy tâm tình vs a nào trên cty giận ko thèm nói sau t buông rồi còn nhắn lại, qua chơi xem tình hình nữa chớ kkk. Đc cái học giỏi, tướng cao to, nói chuyện hơi dzo diên xíu nên nhiều chị gái cty thích lắm, mà lúc đó mình rén quá phải giờ thì chắc làm quen hết. Mình thích chụp ng mìnnh thích khúc này toàn chụp lén :). Thôi Buông rồi ko viết nữa.
+
+Tháng 1 còn chơi Vui fest, sn C Trang lúc này chị lên PO rồi xịn ghê vs mìnk chị Chang rất giỏi, sắc xảo phần nào lý do chị vẫn chưa yên bề gia thất. À lúc này mình vẫn còn là cẩu độc thân vẫn đi chơi lẻ vs C Nhàn, Quyên và a Minh nhiều hehe phần này đẩy thuyền cho c Q và a M nhưng sau này thuyền lại nhầm bến còn bến thì "bế quan tỏa cảng". Năm này mình chi ra mua món đồ mắc nhất từng mua laptop xixaoin 17 củ thề siu đáng, xài như phá mà vẫn bền, mượt. lúc này đi chơi ăn nhậu vs team nhiều lắm, mún hết tiền về quê luôn mà thề quả tết còn có mấy tiền muốn vay mà ăn tết luôn, quả lap báo ác. 
+
+T2: về quê dạo biển đi lòng vòng tp 1 mình lúc này non lắm ko bik ăn chơi gì :)) mà ko khi c ng xe cộ lúc này vui lắm ko đông đúc, bụi như giờ, thời tiết cx rét hơn nữa(cái này chịu rồi biển đổi khí hậu) về quê sĩ thôi r đi làm sớm nhất bọn dui lắm hơi làm quá mua ha ha. Khúc này bik lo vụ nvqs rồi rén vl. về quê chơi tết thăm bà, nội ngoại bị nội chửi mình cx ko thích nhà nội lắm như đc kể nội lúc nhỏ ko thích mình, ô nội bị tai nạn ở SG lúc gọi mink ko đc khúc đó mình đang chán đời ko nhận cuộc gọi gì giờ thấy mink sai quá sai bị trĩ chú 6 còn xún lo cho mình. :((( Quyên lớn như thôi ốm nhom nhìn già chát. Ngoại giờ cx lớn gồi ngoại ở 1 mình tộ ngoài ghê lun. Tết này còn giận gd ko nói gì nhiều, còn vài ngày cuối thì đi thăm cô rồi đi chơi bn r lên lại sG à mua quà lên mà đc vài ngày hư hết 200k bánh ít :((
+
+Cuối T2, T3, T4 Toàn là đi chơi vs team ăn sn, ngày phụ nữ, tiệc cty , ... Lên SG ăn sn a Thạnh khúc này còn phẻ ác ăn cx bn cx ko sợ mập :) khúc này lục lại thấy vẫn còn chuyện tình cảm vs c Kim kkk. Nhưng cx là lắm mối tối năm ko. :(( đi chơi đi ăn 1 mình rất nhiều tới phát sợ cuộc sống độc toàn thân :) thêm quả stress xe quả xe gần 10 năm tuổi hư đủ chổ lái nó mún sợ ko bik lúc nào nó ngã ra chết :)) có quả đi chơi lại thảo cầm viên lần 2 1 mình nắng vl đi khắp cái công viên chụp choẹt đủ chổ rồi đi cafe mèo sau này có bồ cx dẫn cổ ra đây rồi mất nụ hôn đầu cx đây lun 
+
+"Mình học được rằng việc buông bỏ những điều không thuộc về mình là cách tốt nhất để giải phóng bản thân."
+
+"Quan trọng nhất là biết trân trọng hiện tại, chăm sóc sức khỏe, và giữ cân bằng giữa công việc và cuộc sống."
+
+
+
+
+
+gặp bé Vy tình đầu
+
+thử thách(hoàn cảnh gd, công việc, học tập, tính cách, sinh lý cơ thể, quá khứ cả hai)
+
+​	tìm điểm chung
+
+đồng hành vượt qua(đi chơi, qua chơi cuối tuần)
+
+quả ngọt
+

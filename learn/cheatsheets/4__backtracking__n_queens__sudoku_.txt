@@ -1,0 +1,551 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/04_Recursion_Backtracking/🔄index_04_Recursion_Backtracking|04_Recursion_Backtracking]]
+
+## 4. Backtracking (N-Queens, Sudoku)
+
+### 4.1 Backtracking là gì?
+
+**Backtracking** (quay lui) là kỹ thuật giải bài toán bằng cách **thử từng khả năng**, và nếu phát hiện khả năng đó **không thể dẫn đến lời giải**, thì **quay lui** (undo) và thử khả năng khác.
+
+Công thức tổng quát:
+
+```
+def backtrack(state):
+    if is_solution(state):
+        record_solution(state)
+        return
+
+    for choice in get_choices(state):
+        if is_valid(choice, state):
+            make_choice(choice, state)     # tiến
+            backtrack(state)                # đệ quy
+            undo_choice(choice, state)      # quay lui
+```
+
+### 4.2 Ví von thực tế: Đi trong mê cung
+
+Bạn lạc trong mê cung. Ở mỗi ngã rẽ:
+
+1. Chọn một hướng đi
+2. Đi theo hướng đó
+3. Nếu gặp **ngõ cụt** → quay lại ngã rẽ trước, thử hướng khác
+4. Nếu **tìm thấy lối ra** → thành công!
+
+Đó chính là backtracking. Bạn "explore" một nhánh, nếu thất bại thì "backtrack" về điểm quyết định trước đó.
+
+### 4.3 Flowchart tổng quát
+
+CóChưaKhôngCóKhôngCóBắt đầuĐã tìm được lời giải?Lưu lời giảiCòn lựa chọn nào?Quay lui (Backtrack)Lựa chọn hợp lệ?Thử lựa chọn tiếp theoThực hiện lựa chọnĐệ quy với trạng thái mớiHoàn tác lựa chọn
+
+------
+
+### 4.4 N-Queens Problem
+
+#### Bài toán
+
+Đặt N quân hậu lên bàn cờ N×N sao cho **không có hai quân hậu nào tấn công lẫn nhau** (không cùng hàng, cùng cột, cùng đường chéo).
+
+#### Ví von: Xếp chỗ ngồi trong lớp
+
+Tưởng tượng bạn là giáo viên, cần xếp N học sinh "hay nói chuyện" vào N hàng ghế, mỗi hàng 1 người, sao cho không ai nhìn thấy ai (không cùng cột, không cùng đường chéo). Nếu xếp được → thành công. Nếu ở hàng nào đó không có ghế nào an toàn → quay lại hàng trước, đổi ghế.
+
+#### Thuật toán chi tiết
+
+1. Đặt quân hậu **từng hàng một** (hàng 0, 1, 2, ..., N-1)
+2. Ở mỗi hàng, thử đặt hậu vào **từng cột** (cột 0, 1, ..., N-1)
+3. Kiểm tra xem vị trí (row, col) có **bị tấn công** bởi hậu đã đặt trước đó không
+4. Nếu an toàn → đặt hậu, chuyển sang hàng tiếp theo
+5. Nếu không có cột nào an toàn → **backtrack** về hàng trước
+
+**Kiểm tra tấn công:** Quân hậu ở (r, c) tấn công:
+
+- Cùng cột: `col == c`
+- Đường chéo chính (↘): `row - col == r - c`
+- Đường chéo phụ (↙): `row + col == r + c`
+
+Hàng 0: Thử cột 0,1,2,3Đặt Q ở (0,0)Hàng 1: Thử cột 0,1,2,3(1,0) bị cột → skip(1,1) bị chéo → skipĐặt Q ở (1,2)Hàng 2: Thử cột 0,1,2,3(2,0) bị chéo → skip(2,1) bị chéo → skip(2,2) bị cột → skip(2,3) bị chéo → skipKhông có cột nào → BACKTRACKBỏ Q ở (1,2), thử (1,3)Hàng 2: Thử lại...Đặt Q ở (2,1)Hàng 3: Thử...(3,0) bị chéo → skip(3,1) bị cột → skip(3,2) bị chéo → skip(3,3) bị chéo → skipBACKTRACK lên hàng 2...
+
+#### Mô phỏng 4-Queens
+
+```
+Bàn cờ 4×4, đặt 4 hậu.
+
+Bước 1: Hàng 0, thử cột 0 → OK
+  Q . . .
+  . . . .
+  . . . .
+  . . . .
+
+Bước 2: Hàng 1, thử cột 0 → bị cột 0
+         thử cột 1 → bị chéo (0,0)
+         thử cột 2 → OK!
+  Q . . .
+  . . Q .
+  . . . .
+  . . . .
+
+Bước 3: Hàng 2, thử cột 0 → bị chéo (1,2) qua (2,1)... wait
+         cột 0: check cột 0 bị (0,0)? Có → skip
+         Thật ra check chéo: (0,0) chéo ↘ với (2,2), (1,2) chéo ↙ với (2,1)
+         cột 0: (0,0) cùng cột 0 → bị!
+         cột 1: (1,2) đường chéo 1+2=3, (2,1) → 2+1=3 → cùng chéo phụ → bị!
+         cột 2: (1,2) cùng cột → bị!
+         cột 3: (0,0) đường chéo: 0-0=0 vs 2-3=-1 OK. 0+0=0 vs 2+3=5 OK.
+                 (1,2) đường chéo: 1-2=-1 vs 2-3=-1 → CÙNG CHÉO → bị!
+         → Tất cả cột đều bị → BACKTRACK!
+
+Quay lại Bước 2: bỏ (1,2), thử cột 3
+  Q . . .
+  . . . Q
+  . . . .
+  . . . .
+
+Bước 3 (lại): Hàng 2
+  cột 0: (0,0) cùng cột → bị
+  cột 1: check (0,0): chéo 0-0=0 vs 2-1=1 OK, 0+0=0 vs 2+1=3 OK
+          check (1,3): chéo 1-3=-2 vs 2-1=1 OK, 1+3=4 vs 2+1=3 OK
+          → CẢ HAI ĐỀU OK → Đặt!
+  Q . . .
+  . . . Q
+  . Q . .
+  . . . .
+
+Bước 4: Hàng 3
+  cột 0: (0,0) cùng cột → bị
+  cột 1: (2,1) cùng cột → bị
+  cột 2: check (0,0): 0-0=0 vs 3-2=1 OK. (1,3): 1-3=-2 vs 3-2=1 OK.
+          (2,1): 2-1=1 vs 3-2=1 → CÙNG CHÉO → bị!
+  cột 3: (1,3) cùng cột → bị
+  → BACKTRACK!
+
+Quay lại: bỏ (2,1), thử cột 2, cột 3...
+(Quá trình tiếp tục...)
+
+Cuối cùng, quay lại Bước 1: thử cột 1
+  . Q . .
+  . . . .
+  . . . .
+  . . . .
+
+... (tiếp tục thử) ...
+
+KẾT QUẢ CUỐI CÙNG (2 lời giải cho N=4):
+
+  . Q . .       . . Q .
+  . . . Q       Q . . .
+  Q . . .       . . . Q
+  . . Q .       . Q . .
+```
+
+#### Code
+
+**Python:**
+
+```python
+def solve_n_queens(n):
+    result = []
+    board = [['.'] * n for _ in range(n)]
+
+    # Dùng set để kiểm tra O(1)
+    cols = set()          # cột đã có hậu
+    diag1 = set()         # đường chéo chính (row - col)
+    diag2 = set()         # đường chéo phụ (row + col)
+
+    def backtrack(row):
+        # Base case: đặt đủ N hậu
+        if row == n:
+            # Copy bàn cờ hiện tại vào result
+            result.append([''.join(r) for r in board])
+            return
+
+        for col in range(n):
+            # Kiểm tra vị trí (row, col) có an toàn
+            if col in cols or (row - col) in diag1 or (row + col) in diag2:
+                continue  # bị tấn công → skip
+
+            # Đặt hậu
+            board[row][col] = 'Q'
+            cols.add(col)
+            diag1.add(row - col)
+            diag2.add(row + col)
+
+            # Đệ quy sang hàng tiếp theo
+            backtrack(row + 1)
+
+            # Backtrack: bỏ hậu
+            board[row][col] = '.'
+            cols.remove(col)
+            diag1.remove(row - col)
+            diag2.remove(row + col)
+
+    backtrack(0)
+    return result
+
+# Test
+solutions = solve_n_queens(4)
+for sol in solutions:
+    for row in sol:
+        print(row)
+    print()
+
+# .Q..
+# ...Q
+# Q...
+# ..Q.
+#
+# ..Q.
+# Q...
+# ...Q
+# .Q..
+```
+
+**Python (class style - giống format LeetCode):**
+
+```python
+from typing import List
+
+class Solution:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        result = []
+        board = [['.'] * n for _ in range(n)]
+
+        # Dùng set để kiểm tra O(1)
+        cols = set()    # cột đã có hậu
+        diag1 = set()   # đường chéo chính (row - col)
+        diag2 = set()   # đường chéo phụ (row + col)
+
+        def backtrack(row: int):
+            # Base case: đặt đủ N hậu
+            if row == n:
+                result.append([''.join(r) for r in board])
+                return
+
+            for col in range(n):
+                # Kiểm tra vị trí (row, col) có an toàn
+                if col in cols or (row - col) in diag1 or (row + col) in diag2:
+                    continue  # bị tấn công → skip
+
+                # Đặt hậu
+                board[row][col] = 'Q'
+                cols.add(col)
+                diag1.add(row - col)
+                diag2.add(row + col)
+
+                # Đệ quy sang hàng tiếp theo
+                backtrack(row + 1)
+
+                # Backtrack: bỏ hậu
+                board[row][col] = '.'
+                cols.remove(col)
+                diag1.remove(row - col)
+                diag2.remove(row + col)
+
+        backtrack(0)
+        return result
+
+# Chạy thử
+sol = Solution()
+solutions = sol.solveNQueens(4)
+for board in solutions:
+    for row in board:
+        print(row)
+    print()
+# .Q..
+# ...Q
+# Q...
+# ..Q.
+#
+# ..Q.
+# Q...
+# ...Q
+# .Q..
+```
+
+#### Phân tích Complexity N-Queens
+
+**Time Complexity: O(N!)**
+
+**Chứng minh:**
+
+- Hàng 0: thử N cột
+- Hàng 1: tối đa N-1 cột (1 cột bị cấm do cùng cột)
+- Hàng 2: tối đa N-2 cột
+- ...
+
+Nhưng thật ra, do constraint đường chéo, số nhánh giảm nhanh hơn:
+
+Upper bound: $N \times (N-1) \times (N-2) \times \ldots \times 1 = N!$
+
+Thực tế, do pruning bởi đường chéo, số nhánh nhỏ hơn N! rất nhiều. Nhưng worst case vẫn là O(N!).
+
+**Space Complexity: O(N^2)** — cho bàn cờ. Hoặc O(N) nếu chỉ lưu mảng vị trí cột.
+
+------
+
+### 4.5 Sudoku Solver
+
+#### Bài toán
+
+Điền số 1-9 vào bảng 9×9 sao cho:
+
+- Mỗi **hàng** chứa 1-9 không trùng
+- Mỗi **cột** chứa 1-9 không trùng
+- Mỗi **ô 3×3** chứa 1-9 không trùng
+
+#### Ví von: Ghép puzzle
+
+Bạn đang chơi game puzzle. Mỗi ô trống, bạn thử đặt một mảnh ghép (số 1-9). Nếu mảnh ghép không khớp (vi phạm luật) → thử mảnh khác. Nếu không mảnh nào khớp → quay lại ô trước đó, đổi mảnh.
+
+#### Thuật toán chi tiết
+
+KhôngCóKhông hợp lệHợp lệCóKhôngHết số 1-9Tìm ô trống tiếp theoCó ô trống?Đã giải xong! Return TrueThử số 1-9Số num hợp lệ?Thử số tiếp theoĐặt num vào ôĐệ quy giải tiếpĐệ quy thành công?Return TrueXóa num khỏi ô (Backtrack)Return False (Backtrack)
+
+#### Mô phỏng
+
+```
+Sudoku ban đầu (0 = ô trống):
+5 3 0 | 0 7 0 | 0 0 0
+6 0 0 | 1 9 5 | 0 0 0
+0 9 8 | 0 0 0 | 0 6 0
+------+-------+------
+8 0 0 | 0 6 0 | 0 0 3
+4 0 0 | 8 0 3 | 0 0 1
+7 0 0 | 0 2 0 | 0 0 6
+------+-------+------
+0 6 0 | 0 0 0 | 2 8 0
+0 0 0 | 4 1 9 | 0 0 5
+0 0 0 | 0 8 0 | 0 7 9
+
+Bước 1: Ô trống đầu tiên = (0,2)
+  Thử 1: hàng 0 có 1? Không. Cột 2 có 1? Không. Box (0,0) có 1? Không → OK!
+  Đặt 1: board[0][2] = 1
+
+  5 3 1 | ...
+
+Bước 2: Ô trống tiếp = (0,3)
+  Thử 1: hàng 0 đã có 1 → skip
+  Thử 2: hàng 0 có 2? Không. Cột 3 có 2? Không. Box (0,1) có 2? Không → OK!
+  Đặt 2: board[0][3] = 2
+
+  ... tiếp tục ...
+
+(Nếu ở bước nào đó không có số nào hợp lệ → backtrack)
+```
+
+#### Code
+
+**Python:**
+
+```python
+def solve_sudoku(board):
+    """
+    Giải Sudoku in-place, modify board trực tiếp.
+    board: list of list of str, '.' là ô trống
+    """
+    def is_valid(board, row, col, num):
+        # Kiểm tra hàng
+        if num in board[row]:
+            return False
+
+        # Kiểm tra cột
+        for r in range(9):
+            if board[r][col] == num:
+                return False
+
+        # Kiểm tra box 3×3
+        box_row, box_col = 3 * (row // 3), 3 * (col // 3)
+        for r in range(box_row, box_row + 3):
+            for c in range(box_col, box_col + 3):
+                if board[r][c] == num:
+                    return False
+
+        return True
+
+    def backtrack():
+        # Tìm ô trống tiếp theo
+        for row in range(9):
+            for col in range(9):
+                if board[row][col] == '.':
+                    # Thử số 1-9
+                    for num in '123456789':
+                        if is_valid(board, row, col, num):
+                            board[row][col] = num  # Đặt
+
+                            if backtrack():        # Đệ quy
+                                return True
+
+                            board[row][col] = '.'  # Backtrack
+
+                    return False  # Không số nào hợp lệ → quay lui
+
+        return True  # Không còn ô trống → đã giải xong!
+
+    backtrack()
+
+# Test
+board = [
+    ['5','3','.','.','7','.','.','.','.'],
+    ['6','.','.','1','9','5','.','.','.'],
+    ['.','9','8','.','.','.','.','6','.'],
+    ['8','.','.','.','6','.','.','.','3'],
+    ['4','.','.','8','.','3','.','.','1'],
+    ['7','.','.','.','2','.','.','.','6'],
+    ['.','6','.','.','.','.','2','8','.'],
+    ['.','.','.','4','1','9','.','.','5'],
+    ['.','.','.','.','8','.','.','.','9']
+]
+
+solve_sudoku(board)
+for row in board:
+    print(' '.join(row))
+```
+
+**Python (class style - giống format LeetCode):**
+
+```python
+from typing import List
+
+class Solution:
+    def solveSudoku(self, board: List[List[str]]) -> None:
+        """Giải Sudoku in-place, modify board trực tiếp."""
+
+        def is_valid(row: int, col: int, num: str) -> bool:
+            for i in range(9):
+                # Check hàng
+                if board[row][i] == num:
+                    return False
+                # Check cột
+                if board[i][col] == num:
+                    return False
+                # Check box 3x3
+                box_row = 3 * (row // 3) + i // 3
+                box_col = 3 * (col // 3) + i % 3
+                if board[box_row][box_col] == num:
+                    return False
+            return True
+
+        def backtrack() -> bool:
+            for row in range(9):
+                for col in range(9):
+                    if board[row][col] == '.':
+                        for num in '123456789':
+                            if is_valid(row, col, num):
+                                board[row][col] = num  # Đặt số
+
+                                if backtrack():        # Đệ quy
+                                    return True
+
+                                board[row][col] = '.'  # Backtrack
+                        return False  # Hết số hợp lệ → quay lui
+            return True  # Không còn ô trống → giải xong!
+
+        backtrack()
+
+# Chạy thử
+board = [
+    ['5','3','.','.','7','.','.','.','.'],
+    ['6','.','.','1','9','5','.','.','.'],
+    ['.','9','8','.','.','.','.','6','.'],
+    ['8','.','.','.','6','.','.','.','3'],
+    ['4','.','.','8','.','3','.','.','1'],
+    ['7','.','.','.','2','.','.','.','6'],
+    ['.','6','.','.','.','.','2','8','.'],
+    ['.','.','.','4','1','9','.','.','5'],
+    ['.','.','.','.','8','.','.','.','9']
+]
+sol = Solution()
+sol.solveSudoku(board)
+for row in board:
+    print(' '.join(row))
+```
+
+#### Phiên bản tối ưu: Dùng bitmask
+
+```python
+def solve_sudoku_optimized(board):
+    """
+    Tối ưu: dùng bitmask thay vì duyệt để check valid.
+    rows[i] = set các số đã dùng ở hàng i
+    cols[j] = set các số đã dùng ở cột j
+    boxes[k] = set các số đã dùng ở box k (k = 3*(i//3) + j//3)
+    """
+    rows = [set() for _ in range(9)]
+    cols = [set() for _ in range(9)]
+    boxes = [set() for _ in range(9)]
+    empty = []  # danh sách các ô trống
+
+    # Khởi tạo
+    for i in range(9):
+        for j in range(9):
+            if board[i][j] != '.':
+                num = board[i][j]
+                rows[i].add(num)
+                cols[j].add(num)
+                boxes[3 * (i // 3) + j // 3].add(num)
+            else:
+                empty.append((i, j))
+
+    def backtrack(idx):
+        if idx == len(empty):
+            return True
+
+        row, col = empty[idx]
+        box_id = 3 * (row // 3) + col // 3
+
+        for num in '123456789':
+            if num not in rows[row] and num not in cols[col] and num not in boxes[box_id]:
+                board[row][col] = num
+                rows[row].add(num)
+                cols[col].add(num)
+                boxes[box_id].add(num)
+
+                if backtrack(idx + 1):
+                    return True
+
+                board[row][col] = '.'
+                rows[row].remove(num)
+                cols[col].remove(num)
+                boxes[box_id].remove(num)
+
+        return False
+
+    backtrack(0)
+```
+
+#### Phân tích Complexity Sudoku
+
+**Time Complexity: O(9^m)** (m = số ô trống)
+
+**Chứng minh:**
+
+Trong worst case, mỗi ô trống ta thử tối đa 9 số. Nếu có m ô trống, tổng số khả năng = $9^m$.
+
+Với bảng 9×9 chuẩn, $m \leq 81$, nên worst case = $O(9^{81})$. Nhưng trên thực tế, constraint pruning giảm đáng kể.
+
+Với bản tối ưu dùng set: check valid là O(1) thay vì O(9), nên nhanh hơn đáng kể trong thực tế (nhưng worst case complexity vẫn giống).
+
+**Space Complexity: O(m)** — cho call stack, hoặc O(81) = O(1) vì m ≤ 81.
+
+### 4.6 So sánh N-Queens và Sudoku
+
+|                 | N-Queens                | Sudoku                 |
+| :-------------- | :---------------------- | :--------------------- |
+| **Kích thước**  | N×N                     | Cố định 9×9            |
+| **Constraint**  | Hàng, cột, 2 đường chéo | Hàng, cột, box 3×3     |
+| **Số lời giải** | Nhiều (tăng theo N)     | Thường 1 (unique)      |
+| **Pruning**     | Set cho cột, 2 chéo     | Set cho hàng, cột, box |
+| **Complexity**  | O(N!)                   | O(9^m)                 |
+
+### 4.7 Best Case / Worst Case
+
+|              | Best Case                        | Worst Case |
+| :----------- | :------------------------------- | :--------- |
+| **N-Queens** | O(N) nếu may mắn đặt thẳng       | O(N!)      |
+| **Sudoku**   | O(m) nếu mỗi ô chỉ có 1 lựa chọn | O(9^m)     |
+
+### 4.8 Cải tiến cho Backtracking
+
+1. **Constraint Propagation** (Sudoku): Sau khi đặt số, loại bỏ luôn khả năng ở các ô liên quan
+2. **MRV Heuristic** (Minimum Remaining Values): Chọn ô có ít lựa chọn nhất trước — giảm branching factor
+3. **Forward Checking**: Kiểm tra trước xem việc đặt số có làm ô nào khác hết lựa chọn không
+4. **Arc Consistency** (AC-3): Loại bỏ các giá trị bất khả thi trước khi backtrack
+5. **Symmetry Breaking** (N-Queens): Chỉ thử nửa bàn cờ, sinh nửa còn lại bằng đối xứng

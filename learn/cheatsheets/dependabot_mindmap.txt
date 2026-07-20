@@ -1,0 +1,215 @@
+# 🤖 Dependabot — Complete Knowledge Mindmap
+
+```mermaid
+mindmap
+  root((🤖 Dependabot))
+    3 Pillars
+      Alerts
+        Notifies on vulnerable deps
+        Powered by GitHub Advisory DB
+        CVSS severity scoring
+        EPSS exploitation probability
+        Auto-triage rules
+      Security Updates
+        Auto-creates PRs to patch CVEs
+        Targets minimum safe version
+        Works without dependabot.yml
+        Requires Dependency Graph enabled
+      Version Updates
+        Keeps deps up-to-date proactively
+        Requires .github/dependabot.yml
+        Daily / Weekly / Monthly schedule
+    Configuration File
+      Location: .github/dependabot.yml
+      version: 2
+      Key Fields
+        package-ecosystem
+        directory
+        schedule.interval
+        open-pull-requests-limit
+        groups
+        ignore
+        allow
+        reviewers
+        assignees
+        labels
+        target-branch
+        rebase-strategy
+        registries (private)
+    Supported Ecosystems
+      JavaScript: npm / yarn
+      Python: pip / pipenv / poetry
+      Java: maven / gradle
+      Ruby: bundler
+      .NET: nuget
+      PHP: composer
+      Go: gomod
+      Rust: cargo
+      Swift: swift
+      Dart/Flutter: pub
+      Docker: dockerfile
+      GitHub Actions: github-actions
+      Terraform: terraform
+      Git submodules
+      Hex (Elixir)
+    Security Concepts
+      CVE: Common Vulnerability Exposure
+      CVSS: Severity Score 0-10
+      EPSS: Exploit Prediction Score
+      GHSA: GitHub Security Advisory
+      NVD: National Vulnerability DB
+      Severity Levels
+        Critical (9-10)
+        High (7-8.9)
+        Medium (4-7)
+        Low (0.1-3.9)
+    Automation with Actions
+      Trigger: dependabot event
+      Auto-approve patch PRs
+      Auto-merge passing tests
+      Label by severity
+      Enforce severity gates
+      Dependency Review Action
+        Blocks PRs with new CVEs
+        github/dependency-review-action
+    Best Practices
+      Group related updates
+      Limit open PRs (noise reduction)
+      Use daily for security only
+      Use weekly/monthly for versions
+      Set SLA: Critical=7d, High=30d
+      Least privilege for GITHUB_TOKEN
+      Review auto-merge rules carefully
+    Enabling Dependabot
+      Settings > Code Security & Analysis
+      Enable Dependency Graph first
+      Enable Dependabot Alerts
+      Enable Dependabot Security Updates
+      Create dependabot.yml for version updates
+```
+
+---
+
+## 🗺️ Quick Reference Map
+
+| Feature | Config Needed | Auto PR | Source |
+|---|---|---|---|
+| **Dependabot Alerts** | ❌ (repo settings) | ❌ (notification only) | GitHub Advisory DB |
+| **Security Updates** | ❌ (repo settings) | ✅ (auto-creates PR) | GHSA / NVD |
+| **Version Updates** | ✅ `dependabot.yml` | ✅ (auto-creates PR) | Registry (npm, pypi…) |
+
+---
+
+## 📐 Anatomy of dependabot.yml
+
+```yaml
+version: 2
+
+registries:
+  my-private-npm:
+    type: npm-registry
+    url: https://registry.company.com
+    token: ${{ secrets.NPM_TOKEN }}
+
+updates:
+  # ── JavaScript ──────────────────────────────
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Ho_Chi_Minh"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "security-team"
+    labels:
+      - "dependencies"
+      - "javascript"
+    groups:
+      react-ecosystem:
+        patterns:
+          - "react*"
+          - "@types/react*"
+    ignore:
+      - dependency-name: "lodash"
+        versions: ["4.x"]
+    registries:
+      - my-private-npm
+
+  # ── Python ──────────────────────────────────
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # ── Docker ──────────────────────────────────
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+
+  # ── GitHub Actions ───────────────────────────
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # ── Terraform ────────────────────────────────
+  - package-ecosystem: "terraform"
+    directory: "/infrastructure"
+    schedule:
+      interval: "monthly"
+```
+
+---
+
+## ⚡ GitHub Actions Integration
+
+```yaml
+# .github/workflows/dependabot-auto-merge.yml
+name: Dependabot Auto-Merge
+
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - name: Fetch Dependabot metadata
+        id: meta
+        uses: dependabot/fetch-metadata@v2
+
+      - name: Auto-merge patch updates
+        if: steps.meta.outputs.update-type == 'version-update:semver-patch'
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+---
+
+## 🔐 Dependency Review (Block Vulnerable PRs)
+
+```yaml
+# .github/workflows/dependency-review.yml
+name: Dependency Review
+
+on: [pull_request]
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high        # block High + Critical
+          deny-licenses: GPL-3.0, AGPL  # block specific licenses
+```

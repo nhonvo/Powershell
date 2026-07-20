@@ -1,0 +1,20 @@
+# 1.Interviewcake.com
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/🍰index_1.Interviewcake.com|Docs]]
+
+## 📁 Categories
+- [[dsa/1.Interviewcake.com/0. Algorithmic thinking/index_0. Algorithmic thinking|0. Algorithmic thinking]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/index_1. Array and string manipulation|1. Array and string manipulation]]
+- [[dsa/1.Interviewcake.com/10. General programming/index_10. General programming|10. General programming]]
+- [[dsa/1.Interviewcake.com/11 - 14/index_11 - 14|11 - 14]]
+- [[dsa/1.Interviewcake.com/2. Hashing and hash tables/index_2. Hashing and hash tables|2. Hashing and hash tables]]
+- [[dsa/1.Interviewcake.com/3. Greedy algorithms/index_3. Greedy algorithms|3. Greedy algorithms]]
+- [[dsa/1.Interviewcake.com/4. Sorting, searching, and logarithms/index_4. Sorting, searching, and logarithms|4. Sorting, searching, and logarithms]]
+- [[dsa/1.Interviewcake.com/5. Trees and graphs/index_5. Trees and graphs|5. Trees and graphs]]
+- [[dsa/1.Interviewcake.com/6. Dynamic programming and recursion/index_6. Dynamic programming and recursion|6. Dynamic programming and recursion]]
+- [[dsa/1.Interviewcake.com/7. Queues and stacks/index_7. Queues and stacks|7. Queues and stacks]]
+- [[dsa/1.Interviewcake.com/9. System design/index_9. System design|9. System design]]
+
+## 📄 Notes
+- [[dsa/1.Interviewcake.com/Readme|Readme]]
+

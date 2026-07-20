@@ -1,0 +1,11 @@
+# ASQL
+
+🔙 **Back to Parent**: [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/📂index_04_Database_and_SQL_Mastery|04_Database_and_SQL_Mastery]]
+
+## 📁 Sub-Categories
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/ASQL/Assignments/📂index_Assignments|Assignments]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/ASQL/Slides/📂index_Slides|Slides]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/ASQL/word/_rels/📂index__rels|_rels]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/ASQL/docProps/📂index_docProps|docProps]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/ASQL/word/📂index_word|word]]
+

@@ -1,0 +1,57 @@
+---
+tags:
+  - certification/ai-102
+  - ai-solution/study-notes/domain-2
+status: 📝 study-backlog
+created: 2026-06-15
+---
+
+# Domain 2: Implement Image and Video Processing Solutions (15-20%)
+
+Covers analyzing visual content using prebuilt and custom machine learning models on Azure.
+
+## 🎯 Exam Objectives
+- Analyze images using the Azure AI Vision service (OCR, spatial analysis, image tagging).
+- Implement custom image classification and object detection with Custom Vision.
+- Detect, analyze, and recognize faces using the Face service.
+- Extract structured data from documents using Azure AI Document Intelligence.
+
+## 📖 Key Study Topics
+
+### 1. Azure AI Vision
+*   **Image Analysis**: Generates tags, descriptions (captions), detects objects, and performs optical character recognition (OCR) via the Read API.
+*   **Spatial Analysis**: Analyzes real-time video to monitor physical spaces (e.g., counting people in a store, detecting social distancing, or measuring dwell time).
+
+### 2. Azure AI Custom Vision
+*   **Classification**: Assigns one or more labels to an entire image (Multi-label vs. Multi-class).
+*   **Object Detection**: Locates specific items in an image and provides their bounding box coordinates `[left, top, width, height]`.
+*   **Training & Export**: Requires at least 15 images per tag. Models can be exported to run offline (ONNX, TensorFlow, CoreML, Docker container).
+
+### 3. Face API
+*   **Detection**: Locates human faces in an image, returning landmarks (eyes, nose, mouth) and attributes (age, emotion, head pose).
+*   **Recognition**: Face Verification (1:1 match comparison) and Face Identification (1:N matching against a PersonGroup).
+*   **Liveness Detection**: Prevents spoofing attacks by ensuring the submitted face is a live person rather than a photo/video.
+
+### 4. Azure AI Document Intelligence (Form Recognizer)
+*   **Prebuilt Models**: Invoices, receipts, ID documents, business cards.
+*   **Layout Service**: Extracts text, tables, selection marks, and structure (headings).
+*   **Custom Models**:
+    *   *Template (neural/classification)*: For structured forms. Requires 5 documents.
+    *   *Neural (generative)*: For unstructured documents (contracts, letters). Requires 5 documents.
+
+---
+Back to **[[certifications/microsoft/AI-102/AI-102 MOC|AI-102 MOC]]**
+
+## 🔍 Practice Question Reference
+Here are key questions from the practice bank matching this domain:
+- **Q1**: Your company wants to reduce how long it takes for employees to log receipts in expense reports. All... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 2#Question 1|Practice Q1]])
+- **Q2**: You have the following C# method for creating Azure Cognitive Services resources programmatically.  ... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 2#Question 2|Practice Q2]])
+- **Q3**: You build a custom Form Recognizer model. You receive sample files to use for training the model as ... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 2#Question 3|Practice Q3]])
+- **Q4**: You have receipts that are accessible from a URL. You need to extract data from the receipts by usin... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 2#Question 4|Practice Q4]])
+- **Q5**: SIMULATION Use the following login credentials as needed:   To enter your username, place your curso... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 2#Question 5|Practice Q5]])
+- **Q6**: You have an Azure IoT hub that receives sensor data from machinery.   You need to build an app that ... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 2#Question 6|Practice Q6]])
+- **Q7**: You have an app that analyzes images by using the Computer Vision API.  You need to configure the ap... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 2#Question 7|Practice Q7]])
+- **Q8**: You are building a solution that will detect anomalies in sensor data from the previous 24 hours. Yo... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 2#Question 8|Practice Q8]])
+
+---
+Back to **[[certifications/microsoft/AI-102/AI-102 MOC|AI-102 MOC]]**

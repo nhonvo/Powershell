@@ -1,0 +1,176 @@
+{
+  "Meta": {
+    "Id": "deck_1__recursion_basics",
+    "Topic": "1. Recursion Basics",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "1__recursion_basics"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 8
+  },
+  "Cards": [
+    {
+      "Id": "card_00712",
+      "Front": "Ưu điểm",
+      "Back": "Nhược điểm",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. recursion basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00713",
+      "Front": "Code ngắn gọn, dễ đọc cho bài toán có cấu trúc đệ quy tự nhiên",
+      "Back": "Tốn bộ nhớ call stack (stack overflow nếu n quá lớn)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. recursion basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00714",
+      "Front": "Dễ chứng minh tính đúng đắn bằng quy nạp",
+      "Back": "Overhead lời gọi hàm (chậm hơn iteration)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. recursion basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00715",
+      "Front": "Nền tảng cho Divide & Conquer, Backtracking, DP",
+      "Back": "Có thể tính trùng lặp (như Fibonacci naive)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. recursion basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00716",
+      "Front": "Xử lý cấu trúc dữ liệu đệ quy (tree, graph) rất tự nhiên",
+      "Back": "Khó debug — stack trace dài",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. recursion basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00717",
+      "Front": "**Factorial**",
+      "Back": "O(1) khi n=0 | O(n)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. recursion basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00718",
+      "Front": "**Fibonacci naive**",
+      "Back": "O(1) khi n≤1 | O(φ^n) ≈ O(2^n)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. recursion basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00719",
+      "Front": "**Fibonacci memo**",
+      "Back": "O(1) khi đã cache | O(n) lần đầu",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. recursion basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

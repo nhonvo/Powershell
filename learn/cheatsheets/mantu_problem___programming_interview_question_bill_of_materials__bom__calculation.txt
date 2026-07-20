@@ -1,0 +1,181 @@
+🔙 **Back to Parent**: [[interviewNote/mantu_amaris/📂index_mantu_amaris|mantu_amaris]]
+
+### **Programming Interview Question: Bill of Materials (BOM) Calculation**
+
+**Context**
+
+A manufacturing company maintains a list of materials required to produce a product. This list is known as a Bill of Materials (BOM). The relationship between products and their components is provided in a table format.
+
+**BOM Table Example:**
+
+| Product | Component | Quantity |
+| ------- | --------- | -------- |
+| A       | B         | 1        |
+| B       | C         | 2        |
+| B       | D         | 3        |
+| C       | E         | 1        |
+| D       | F         | 3        |
+| D       | G         | 2        |
+
+Export to Sheets
+
+**Example Breakdown:**
+
+- To produce 1 unit of **Product A**, you need 1 unit of **Product B**.
+- To produce 1 unit of **Product B**, you need 2 units of **Product C** and 3 units of **Product D**.
+- To produce 1 unit of **Product C**, you need 1 unit of **Product E**.
+- ...and so on.
+
+------
+
+**Problem**
+
+The company needs to determine the complete list of raw materials (base components) and the total quantity of each required to manufacture a specific product.
+
+------
+
+**Requirement**
+
+Design and implement a class in .NET Core 8.0 that takes the BOM table as input. This class must include a mandatory function, `Calculate`, with the following specifications:
+
+- **Function Signature (Conceptual):** `Calculate(string productName)`
+- **Input:** The name of the product to be manufactured (e.g., "B").
+- **Output:** A summary of all the base components and their total quantities needed to produce the input product.
+
+**Example Calculation:**
+
+- **Input:** "B"
+- Expected Output:
+  - **E:** To make B, you need 2 of C. To make C, you need 1 of E. Total E: `2 * 1 = 2`.
+  - **F:** To make B, you need 3 of D. To make D, you need 3 of F. Total F: `3 * 3 = 9`.
+  - **G:** To make B, you need 3 of D. To make D, you need 2 of G. Total G: `3 * 2 = 6`.
+
+------
+
+### **Initial C# Code and Notes**
+
+Here is the initial draft of the C# code provided for the solution.
+
+```c#
+using System;
+using System.Collections.Generic;
+
+// To execute C#, please define "static void Main" on a class
+// named Solution.
+
+class Record
+{
+  public string Product;
+  public string Component;
+  public int Quantity;
+
+  public Record(string p, string c, int q)
+  {
+    Product = p;
+    Component = c;
+    Quantity = q;
+  }
+};
+
+class Solution
+{
+  static Record[] table = new Record[] {
+    new Record("A", "B", 1),
+    new Record("B", "C", 2),
+    new Record("B", "D", 3),
+    new Record("C", "E", 1),
+    new Record("D", "F", 3),
+    new Record("D", "G", 2)
+  };
+
+  public static List<Record> Produce(string name)
+  {
+    var result = new List<Record>();
+    foreach (var item in table)
+    {
+      if (item.Product == name)
+      {
+        result.Add(item);
+      }
+    }
+    // for
+    // {
+    //   Produce(xxx)
+    // }
+    
+    return result;
+  }
+
+  // b-> C2 -> E 1
+  // b -> D 3-> F3 -> g2
+
+  static void Main(string[] args)
+  {
+    var result = Produce("B");
+    int sum = 0;
+    foreach(var item in result){
+      sum += item.Quantity;
+      System.Console.WriteLine($"Component: {item.Component}, {item.Quantity}");
+    }
+    System.Console.WriteLine($"Total {sum}");
+  }
+}
+```
+
+### **Additional Design Notes (RESTful API & Database)**
+
+These notes appear to be related to a broader system design involving the management of products and their components via a RESTful API and a database.
+
+**RESTful API Design:**
+
+- CRUD Operations for Products:
+
+  - `GET /products` - Retrieve a list of all products.
+
+  - 
+
+  - `GET /products/{id}` - Retrieve a single product by its ID.
+
+  - 
+
+  - ```
+    POST /products
+    ```
+
+     \- Create a new
+
+     product.
+
+    - Request Body: `{ "id": "A", "Description": "New Product" }`
+    - Success Response: `200 OK` with the created product in the body.
+
+  - ```
+    POST /multiProducts/
+    ```
+
+     \- Create multiple products in a single request.
+
+    - Request Body: `[ { "id": "A", ... }, { "id": "B", ... } ]`
+
+  - ```
+    PUT /products
+    ```
+
+     \- Update an existing product.
+
+    - Request Body: `{ "id": "A", "Description": "Updated Description" }`
+
+  - `DELETE /products/{id}` - Delete a product by its ID.
+
+**Database Schema Design:**
+
+- **Product Table:**
+  - `id` (Primary Key): e.g., "A"
+  - `Description`: e.g., "Product A description"
+- **ProductLink Table (for BOM relationships):**
+  - `id` (Primary Key)
+  - `productid` (Foreign Key to Product table): The parent product (e.g., "A").
+  - `linkProducId` (Foreign Key to Product table): The component product (e.g., "B").
+  - `Quantity`: The number of `linkProducId` units required for `productid`.
+
+ Sources 

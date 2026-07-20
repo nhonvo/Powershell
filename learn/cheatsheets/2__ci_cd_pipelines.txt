@@ -1,0 +1,81 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/08_Deployment_DevOps/📂index_08_Deployment_DevOps|08_Deployment_DevOps]]
+
+# 🚀 2. CI/CD Pipelines (Automated Workflow)
+
+Việc cập nhật code mới lên Server bằng cách copy thủ công qua FTP là một hành trình đầy rẫy rủi ro. Chúng ta cần **CI/CD** để tự động hóa mọi thứ, từ lúc bạn nhấn "Push" code lên GitHub cho đến khi ứng dụng chạy trên Server.
+
+---
+
+### 🏛️ 2.1 Hiểu về CI & CD
+
+#### **CI - Continuous Integration (Tích hợp liên tục)**
+- **Mục tiêu**: Kiểm tra code mới ngay lập tức.
+- **Quy trình**: Kích hoạt mỗi khi bạn `Push` hoặc `Pull Request`. Tự động cài thư viện (Restore) → Biên dịch (Build) → Chạy Unit Test → Kiểm tra định dạng (Linting).
+- **Kết quả**: Bạn sẽ biết ngay nếu code của bạn làm "vỡ" dự án trước khi kịp Merge.
+
+#### **CD - Continuous Deployment / Delivery (Triển khai liên tục)**
+- **Mục tiêu**: Đưa code đã vượt qua CI lên môi trường chạy thực tế (Staging, Production).
+- **Quy trình**: Đóng gói thành Docker Image → Đẩy lên Registry (Docker Hub, AWS ECR) → Cập nhật lên Server (K8s, Docker Compose).
+
+---
+
+### 🧠 2.2 GitHub Actions (Công cụ phổ biến nhất)
+
+GitHub Actions cực kỳ mạnh mẽ và dễ dùng nhờ file cấu hình **YAML**.
+
+**Ví dụ một Workflow CI đơn giản cho .NET:**
+```yaml
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0'
+      - name: Build
+        run: dotnet build
+      - name: Test
+        run: dotnet test
+```
+
+---
+
+### 🚀 2.3 Chiến lược Triển khai (Deployment Strategies)
+
+Làm sao để cập nhật code mà không làm "gián đoạn" dịch vụ (**Zero Downtime**)?
+
+1.  **Blue-Green Deployment**: Duy trì 2 môi trường song song. Chuyển hướng lưu traffic sang môi trường mới (Green) sau khi test kỹ.
+2.  **Canary Deployment**: Chuyển 5% traffic sang server mới để thử nghiệm thực tế. Nếu không có lỗi, mới nâng lên 100%.
+3.  **Rolling Update**: Cập nhật từng server một trong cụm (Cluster). Các server khác vẫn phục vụ khách hàng bình thường.
+
+---
+
+### ⚡ 2.4 Secrets Management (Bảo mật CI/CD)
+
+Tuyệt đối **KHÔNG** lưu mật khẩu Database hay Secret Key trong file YAML hay Git.
+- Sử dụng tính năng **GitHub Secrets** hoặc **Azure Key Vault**.
+- CI/CD sẽ lấy mật khẩu từ nới an toàn này lồng vào trong lúc Build/Deploy.
+
+---
+
+### 📝 2.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao Unit Test là trái tim của CI/CD?"
+<details><summary>Đáp án</summary>
+Vì Unit Test là "người lính" bảo vệ code của bạn. Nếu CI/CD cho phép một đoạn code lỗi (Bug) lọt qua mà không có test ngăn lại, nó sẽ tự động triển khai lỗi đó lên hàng triệu người dùng trên Production. Do đó, CI/CD chỉ có ý nghĩa khi đi kèm với bộ Test chất lượng.
+</details>
+
+**Bài 2**: [Kỹ thuật] Giải thích cơ chế **Blue-Green Deployment** bằng một ví dụ thực tế khác.
+<details><summary>Gợi ý</summary>
+Giống như việc bạn xây một cái cầu mới (Green) ngay bên cạnh cái cầu cũ (Blue). Sau khi xe cộ chạy thử cầu mới ổn định, bạn đóng cầu cũ lại và phá bỏ. Nếu cầu mới có vấn đề, xe cộ lại quay về chạy cầu cũ ngay lập tức.
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Building a Modern CI/CD Pipeline with GitHub Actions and Docker](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-github-actions-docker.md)
+- [Deployment Strategies: Blue-Green vs Canary vs Rolling Updates](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-deployment-strategies.md)
+- [Managing Secrets in CI/CD Pipelines - Best Practices](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-secrets-management.md)

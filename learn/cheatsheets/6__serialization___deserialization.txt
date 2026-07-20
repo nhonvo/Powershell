@@ -1,0 +1,317 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/🌲index_09_Binary_Trees|09_Binary_Trees]]
+
+## 6. Serialization & Deserialization
+
+### Ý tưởng
+
+**Serialization** = chuyển binary tree thành string (hoặc array) để **lưu trữ** hoặc **truyền qua mạng**.
+
+**Deserialization** = từ string đó **khôi phục** lại cây ban đầu.
+
+Yêu cầu: `deserialize(serialize(tree)) == tree` — cây khôi phục phải **giống hệt** cây gốc.
+
+### Analogy — Đóng gói đồ đạc
+
+Tưởng tượng bạn cần **chuyển nhà**:
+
+- **Serialize** = tháo rời tất cả đồ đạc, đánh số thứ tự, đóng gói vào thùng theo thứ tự
+- **Deserialize** = mở thùng, đọc thứ tự, lắp ráp lại đúng như cũ
+
+Nếu bạn không đánh dấu đúng vị trí (bao gồm cả chỗ trống), khi lắp lại sẽ sai.
+
+### Tại sao phải lưu None?
+
+Nếu chỉ lưu preorder `[1, 2, 3]`, có thể tạo ra nhiều cây khác nhau. Phải lưu cả vị trí `None` để xác định duy nhất cây:
+
+```
+Cây 1:      Cây 2:
+   1           1
+  / \           \
+ 2   3           2
+                  \
+                   3
+```
+
+Cả hai đều có preorder `[1, 2, 3]` nhưng cấu trúc khác nhau.
+
+### Thuật toán — Preorder Serialization
+
+**Serialize**: Preorder traversal, ghi `"null"` cho node None, dùng dấu phẩy ngăn cách.
+
+**Deserialize**: Đọc lần lượt các giá trị, xây dựng cây theo preorder.
+
+#### Flowchart — Serialize
+
+CóKhôngserialize(node)node == None?Ghi 'null'Ghi node.valserialize(node.left)serialize(node.right)
+
+#### Flowchart — Deserialize
+
+CóKhôngdeserialize(data)Tách string thành list valuesGọi build()Lấy giá trị tiếp theo từ listval == 'null'?Return NoneTạo node = TreeNode(val)node.left = build()node.right = build()Return node
+
+### Mô phỏng từng bước
+
+#### Serialize
+
+```
+        1
+       / \
+      2   3
+         / \
+        4   5
+```
+
+| Bước | Node              | Hành động | String                                    |
+| :--- | :---------------- | :-------- | :---------------------------------------- |
+| 1    | 1                 | Ghi 1     | "1"                                       |
+| 2    | 2                 | Ghi 2     | "1,2"                                     |
+| 3    | None (left of 2)  | Ghi null  | "1,2,null"                                |
+| 4    | None (right of 2) | Ghi null  | "1,2,null,null"                           |
+| 5    | 3                 | Ghi 3     | "1,2,null,null,3"                         |
+| 6    | 4                 | Ghi 4     | "1,2,null,null,3,4"                       |
+| 7    | None (left of 4)  | Ghi null  | "1,2,null,null,3,4,null"                  |
+| 8    | None (right of 4) | Ghi null  | "1,2,null,null,3,4,null,null"             |
+| 9    | 5                 | Ghi 5     | "1,2,null,null,3,4,null,null,5"           |
+| 10   | None (left of 5)  | Ghi null  | "1,2,null,null,3,4,null,null,5,null"      |
+| 11   | None (right of 5) | Ghi null  | "1,2,null,null,3,4,null,null,5,null,null" |
+
+**Kết quả**: `"1,2,null,null,3,4,null,null,5,null,null"`
+
+#### Deserialize
+
+| Bước | Giá trị đọc | Hành động                | Cây đang xây |
+| :--- | :---------- | :----------------------- | :----------- |
+| 1    | "1"         | Tạo node(1), đệ quy left | node(1)      |
+| 2    | "2"         | Tạo node(2), đệ quy left | 1→left=2     |
+| 3    | "null"      | Return None              | 2.left=None  |
+| 4    | "null"      | Return None              | 2.right=None |
+| 5    | "3"         | Tạo node(3), đệ quy left | 1→right=3    |
+| 6    | "4"         | Tạo node(4), đệ quy left | 3→left=4     |
+| 7    | "null"      | Return None              | 4.left=None  |
+| 8    | "null"      | Return None              | 4.right=None |
+| 9    | "5"         | Tạo node(5), đệ quy left | 3→right=5    |
+| 10   | "null"      | Return None              | 5.left=None  |
+| 11   | "null"      | Return None              | 5.right=None |
+
+**Cây khôi phục thành công!**
+
+### Code — Preorder Serialization
+
+```python
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+class Codec:
+    """
+    Serialize và Deserialize binary tree dùng preorder traversal.
+    Dùng "null" để đánh dấu node None.
+    """
+
+    def serialize(self, root):
+        """
+        Chuyển tree thành string.
+        Format: "val1,val2,null,null,val3,..."
+        Time: O(n), Space: O(n)
+        """
+        result = []
+
+        def dfs(node):
+            if node is None:
+                result.append("null")
+                return
+            result.append(str(node.val))
+            dfs(node.left)
+            dfs(node.right)
+
+        dfs(root)
+        return ",".join(result)
+
+    def deserialize(self, data):
+        """
+        Khôi phục tree từ string.
+        Dùng iterator để đọc lần lượt các giá trị.
+        Time: O(n), Space: O(n)
+        """
+        values = iter(data.split(","))
+
+        def build():
+            val = next(values)
+            if val == "null":
+                return None
+
+            node = TreeNode(int(val))
+            node.left = build()
+            node.right = build()
+            return node
+
+        return build()
+
+
+# === Test ===
+#        1
+#       / \
+#      2   3
+#         / \
+#        4   5
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.right.left = TreeNode(4)
+root.right.right = TreeNode(5)
+
+codec = Codec()
+
+# Serialize
+serialized = codec.serialize(root)
+print("Serialized:", serialized)
+# Output: "1,2,null,null,3,4,null,null,5,null,null"
+
+# Deserialize
+restored = codec.deserialize(serialized)
+
+# Verify: serialize lại phải giống
+print("Re-serialized:", codec.serialize(restored))
+# Output: "1,2,null,null,3,4,null,null,5,null,null"
+
+# Verify bằng level-order
+from collections import deque
+
+def level_order(root):
+    if not root:
+        return []
+    result, queue = [], deque([root])
+    while queue:
+        level = []
+        for _ in range(len(queue)):
+            node = queue.popleft()
+            level.append(node.val)
+            if node.left: queue.append(node.left)
+            if node.right: queue.append(node.right)
+        result.append(level)
+    return result
+
+print("Original:", level_order(root))
+print("Restored:", level_order(restored))
+# Cả hai phải giống nhau
+```
+
+### Code — Level-order Serialization (BFS)
+
+```python
+class CodecBFS:
+    """
+    Serialize/Deserialize dùng BFS (level-order).
+    Ưu điểm: trực quan hơn, giống cách LeetCode biểu diễn cây.
+    """
+
+    def serialize(self, root):
+        """
+        BFS serialize — giống format [1,2,3,null,null,4,5] của LeetCode.
+        Time: O(n), Space: O(n)
+        """
+        if not root:
+            return ""
+
+        result = []
+        queue = deque([root])
+
+        while queue:
+            node = queue.popleft()
+
+            if node:
+                result.append(str(node.val))
+                queue.append(node.left)
+                queue.append(node.right)
+            else:
+                result.append("null")
+
+        # Xóa trailing "null" để tiết kiệm space
+        while result and result[-1] == "null":
+            result.pop()
+
+        return ",".join(result)
+
+    def deserialize(self, data):
+        """
+        BFS deserialize.
+        Time: O(n), Space: O(n)
+        """
+        if not data:
+            return None
+
+        values = data.split(",")
+        root = TreeNode(int(values[0]))
+        queue = deque([root])
+        i = 1
+
+        while queue and i < len(values):
+            node = queue.popleft()
+
+            # Left child
+            if i < len(values) and values[i] != "null":
+                node.left = TreeNode(int(values[i]))
+                queue.append(node.left)
+            i += 1
+
+            # Right child
+            if i < len(values) and values[i] != "null":
+                node.right = TreeNode(int(values[i]))
+                queue.append(node.right)
+            i += 1
+
+        return root
+
+
+# === Test ===
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.right.left = TreeNode(4)
+root.right.right = TreeNode(5)
+
+codec_bfs = CodecBFS()
+serialized = codec_bfs.serialize(root)
+print("BFS Serialized:", serialized)
+# Output: "1,2,3,null,null,4,5"
+
+restored = codec_bfs.deserialize(serialized)
+print("BFS Re-serialized:", codec_bfs.serialize(restored))
+# Output: "1,2,3,null,null,4,5"
+```
+
+### So sánh hai phương pháp
+
+| Tiêu chí    | Preorder (DFS)           | Level-order (BFS)        |
+| :---------- | :----------------------- | :----------------------- |
+| Dễ hiểu     | Trung bình               | Dễ hơn (trực quan)       |
+| Dài string  | Luôn ghi hết null        | Có thể cắt trailing null |
+| Deserialize | Đệ quy (đơn giản)        | Queue (phức tạp hơn)     |
+| Space       | O(n)                     | O(n)                     |
+| Time        | O(n)                     | O(n)                     |
+| Thực tế     | Phổ biến trong phỏng vấn | LeetCode format          |
+
+### Best case / Worst case
+
+| Trường hợp  | String length   | Ví dụ                          |
+| :---------- | :-------------- | :----------------------------- |
+| Best (BFS)  | ~n giá trị      | Complete binary tree (ít null) |
+| Worst (BFS) | ~2n giá trị     | Skewed tree (nhiều null)       |
+| DFS         | Luôn 2n+1 token | Mọi cây (n node + n+1 null)    |
+
+### Chứng minh tính đúng đắn
+
+**Claim**: Preorder + null markers xác định **duy nhất** 1 binary tree.
+
+**Chứng minh bằng quy nạp**:
+
+- **Base case**: Cây rỗng → `"null"` → duy nhất.
+- **Inductive step**: Giả sử preorder+null xác định duy nhất mọi cây có < n node. Cây n node có dạng `root, left_subtree, right_subtree`. Vì left_subtree có < n node → xác định duy nhất (giả thiết quy nạp). Tương tự cho right_subtree. Vì mỗi subtree kết thúc bằng đúng số null markers → ranh giới giữa left và right subtree rõ ràng. QED.
+
+### Cải tiến
+
+- **Nén**: Dùng binary format thay vì text (tiết kiệm 2-4x)
+- **Chỉ lưu structure**: Nếu giá trị node có pattern (ví dụ BST), chỉ cần lưu cấu trúc (0/1 cho mỗi node)
+- **Succinct encoding**: Dùng 2 bit/node — tối ưu về mặt information theory

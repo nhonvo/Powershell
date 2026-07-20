@@ -1,0 +1,365 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/04_N2/Course_39/📂index_Course_39|Course_39]]
+
+# Test 2
+
+## Part 1
+**Q1.** 昨日は　火曜日でした。
+- **A.** すいようび
+- **B.** もくようび
+- **C.** かようび
+- **D.** きんようび
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> 火曜日: Thứ 3昨日は　火曜日でした。H&ocirc;m qua l&agrave; thứ 3.</p>
+</details>
+
+---
+**Q2.** 氷は　なんですか。
+- **A.** こおり
+- **B.** ここり
+- **C.** おこり
+- **D.** ごこり
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 氷: đ&aacute; lạnh氷は　なんですか。&quot;Koori&quot; (đ&aacute; lạnh) l&agrave; c&aacute;i g&igrave;?</p>
+</details>
+
+---
+**Q3.** これは　水じゃないです。
+- **A.** ひ
+- **B.** みず
+- **C.** こめ
+- **D.** まめ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> 水: nước これは　水じゃないです。C&aacute;i n&agrave;y kh&ocirc;ng phải l&agrave; nước.</p>
+</details>
+
+---
+**Q4.** 今朝は　雨でした。
+- **A.** ゆき
+- **B.** くも
+- **C.** はれ
+- **D.** あめ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> 雨: mưa今朝は　雨でした。S&aacute;ng nay trời mưa.</p>
+</details>
+
+---
+**Q5.** 八月は　秋じゃありません。
+- **A.** あき
+- **B.** いえ
+- **C.** あさ
+- **D.** さけ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 秋: m&ugrave;a thu八月は　秋じゃありません。Th&aacute;ng 8 kh&ocirc;ng phải m&ugrave;a thu.</p>
+</details>
+
+---
+**Q6.** だれの　電話ですか。
+- **A.** でんわ
+- **B.** こんわ
+- **C.** うんわ
+- **D.** せんわ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 電話: điện thoạiだれの　電話ですか。Điện thoại của ai thế?</p>
+</details>
+
+---
+**Q7.** だれの　畑ですか。
+- **A.** ばたけ
+- **B.** はたけ
+- **C.** はだけ
+- **D.** はだげ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> 畑: ruộngだれの　畑ですか。Ruộng n&agrave;y của ai?</p>
+</details>
+
+---
+**Q8.** これは　水道です。
+- **A.** ゆうどう
+- **B.** さどう
+- **C.** すいどう
+- **D.** ほんどう
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n 水道: nước m&aacute;yこれは　水道です。Đ&acirc;y l&agrave; nước m&aacute;y.</p>
+</details>
+
+---
+**Q9.** 火事は　なんですか。
+- **A.** もくじ
+- **B.** すいじ
+- **C.** かじ
+- **D.** ひじ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> 火事: hỏa hoạn火事は　なんですか。&quot;Kaji&quot; (hỏa hoạn) l&agrave; g&igrave;?</p>
+</details>
+
+---
+**Q10.** 先週は　ずっと　曇りでした。
+- **A.** はり
+- **B.** ゆうり
+- **C.** うんり
+- **D.** くもり
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> 曇り: &acirc;m u, nhiều m&acirc;y先週は　ずっと　曇りでした。Tuần trước trời &acirc;m u suốt.</p>
+</details>
+
+---
+**Q1.** 今朝は　______でした。
+- **A.** 三日
+- **B.** 一日
+- **C.** 晴れ
+- **D.** 誕生日
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> 晴れ: nắng今朝は　晴れでした。S&aacute;ng nay trời nắng.</p>
+</details>
+
+---
+**Q2.** これは　誰の　_______ですか。
+- **A.** ゴールデンウィーク
+- **B.** 車
+- **C.** 雨
+- **D.** 昔
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> 車: xe &ocirc; t&ocirc;これは　誰の　車ですか。C&aacute;i n&agrave;y l&agrave; xe &ocirc; t&ocirc; của ai?</p>
+</details>
+
+---
+**Q3.** その________は　いくらですか。
+- **A.** テレビ
+- **B.** エンジニア
+- **C.** 曇り
+- **D.** 作家
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> テレビ: tiviそのテレビは　いくらですか。Ti vi đ&oacute; bao nhi&ecirc;u tiền?</p>
+</details>
+
+---
+**Q4.** これは　______の　お菓子です。
+- **A.** いくら
+- **B.** ずっと
+- **C.** だれ
+- **D.** 豆
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> 豆: đậuこれは　豆の　お菓子です。C&aacute;i n&agrave;y l&agrave; kẹo (l&agrave;m từ) đậu.</p>
+</details>
+
+---
+**Q5.** これは　だれの　______ですか。
+- **A.** アルバイト
+- **B.** ゴールデンウイーク
+- **C.** エンジニア
+- **D.** チョコレート
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> チョコレート: Socolaこれは　だれの　チョコレートですか。C&aacute;i n&agrave;y l&agrave; socola của ai thế?</p>
+</details>
+
+---
+**Q6.** 今週は　______　仕事でした。
+- **A.** ずっと
+- **B.** 豆
+- **C.** ぶどう
+- **D.** 一日
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> ずっと: suốt今週は　ずっと　仕事でした。Tuần n&agrave;y t&ocirc;i đ&atilde; l&agrave;m việc suốt.</p>
+</details>
+
+---
+**Q7.** 山田さんは　さくら大学の　______です。
+- **A.** 社員
+- **B.** 職員
+- **C.** 作家
+- **D.** 会社員
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> 職員: nh&acirc;n vi&ecirc;n, c&ocirc;ng chức, vi&ecirc;n chức山田さんは　さくら大学の　職員です。Yamada l&agrave; vi&ecirc;n chức của trường đại học Sakura.</p>
+</details>
+
+---
+**Q8.** 私は　TOMOTAの　______です。
+- **A.** エンジニア
+- **B.** オートバイ
+- **C.** ベトナム人
+- **D.** 会社員
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> エンジニア: kỹ sư私は　TOMOTAの　エンジニアです。T&ocirc;i l&agrave; kỹ sư của TOMOTA.* Đ&aacute;p &aacute;n 4 kh&ocirc;ng được v&igrave; 会社員 l&agrave; nh&acirc;n vi&ecirc;n c&ocirc;ng ty n&oacute;i chung. C&ograve;n để n&oacute;i nh&acirc;n vi&ecirc;n c&ocirc;ng ty n&agrave;o th&igrave; người Nhật sẽ n&oacute;i: t&ecirc;n c&ocirc;ng ty＋の社員です。</p>
+</details>
+
+---
+**Q9.** これは　誕生日の　＿＿＿＿です。
+- **A.** 人
+- **B.** アルバイト
+- **C.** 運転手
+- **D.** プレゼント
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> プレゼント: qu&agrave; tặngこれは　誕生日の　プレゼントです。Đ&acirc;y l&agrave; m&oacute;n qu&agrave; sinh nhật.</p>
+</details>
+
+---
+**Q10.** 昨日は　______でした。
+- **A.** アルバイト
+- **B.** うち
+- **C.** 職員
+- **D.** ゴールデンウイーク
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> アルバイト: việc l&agrave;m th&ecirc;m昨日は　アルバイトでした。H&ocirc;m qua t&ocirc;i đ&atilde; đi l&agrave;m th&ecirc;m.</p>
+</details>
+
+---
+**Q1.** A:　それは　________の　チョコレートですか。B:　日本の　チョコレートです。
+- **A.** どこ
+- **B.** なん
+- **C.** だれ
+- **D.** いくら
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> A:　それは　どこの　チョコレートですか。B:　日本の　チョコレートです。A: Đ&oacute; l&agrave; socola của nước n&agrave;o/h&atilde;ng n&agrave;o vậy?B: Socola của Nhật Bản.</p>
+</details>
+
+---
+**Q2.** A：ワインは　______の　お酒ですか。B：ぶどうの　お酒です。
+- **A.** だれ
+- **B.** どこ
+- **C.** どなた
+- **D.** なん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> A：ワインは　なんの　お酒ですか。B：ぶどうの　お酒です。A: Rượu vang l&agrave; loại rượu g&igrave;?B: L&agrave; rượu nho.</p>
+</details>
+
+---
+**Q3.** A:　日曜日は　アルバイトでしたか。B:　________________
+- **A.** はい、アルバイトです。
+- **B.** はい、アルバイトでした。
+- **C.** いいえ、アルバイトです。
+- **D.** いいえ、アルバイトでした。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> A:　日曜日は　アルバイトでしたか。B:　はい、アルバイトでした。A: Chủ nhật bạn đ&atilde; l&agrave;m th&ecirc;m phải kh&ocirc;ng?B: V&acirc;ng, t&ocirc;i đ&atilde; l&agrave;m th&ecirc;m.</p>
+</details>
+
+---
+**Q4.** マイさんは、ベトナム人______ 、日本語学校の　職員です。
+- **A.** は
+- **B.** も
+- **C.** で
+- **D.** の
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> マイさんは、ベトナムじんで 、日本語学校の　職員です。Mai l&agrave; người Việt Nam v&agrave; l&agrave; c&ocirc;ng chức của 1 trường Nhật ngữ.</p>
+</details>
+
+---
+**Q5.** A：昨日は　仕事でしたよね。B： ________________。休みでした。
+- **A.** はい、仕事でした
+- **B.** はい、仕事じゃありませんでした
+- **C.** いいえ、仕事でした
+- **D.** いいえ、仕事じゃありませんでした
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> A：昨日は　仕事でしたよね。B：いいえ、仕事じゃありませんでした。休みでした。A: H&ocirc;m qua bạn đ&atilde; đi l&agrave;m nhỉ?B: Kh&ocirc;ng, h&ocirc;m qua t&ocirc;i kh&ocirc;ng đi l&agrave;m. H&ocirc;m qua t&ocirc;i đ&atilde; nghỉ.</p>
+</details>
+
+---
+**Q6.** A：これは　なんの　ジュースですか。B：________________
+- **A.** タイの　ジュースです。
+- **B.** 私の　ジュースです。
+- **C.** りんごの　ジュースです。
+- **D.** リンさんの　会社の　ジュースです。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> A：これは　なんの　ジュースですか。B：りんごの　ジュースです。A: Đ&acirc;y l&agrave; nước hoa quả g&igrave; vậy?B: L&agrave; nước t&aacute;o.</p>
+</details>
+
+---
+**Q7.** A：誕生日の　プレンゼントは　なんでしたか。B： ________________
+- **A.** カメラですよね。
+- **B.** カメラでした。
+- **C.** カメラじゃありません。
+- **D.** カメラですか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> A：誕生日の　プレンゼントは　なんでしたか。B：カメラでした。A: Qu&agrave; sinh nhật của bạn l&agrave; g&igrave; v&acirc;y? (Hỏi về m&oacute;n qu&agrave; đối phương được tặng ng&agrave;y sinh nhật đ&atilde; tr&ocirc;i qua)B: L&agrave; m&aacute;y ảnh.</p>
+</details>
+
+---
+**Q8.** 一昨日は　日曜日____、休みでした。
+- **A.** で
+- **B.** も
+- **C.** は
+- **D.** の
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 一昨日は　日曜日で、休みでした。H&ocirc;m kia l&agrave; Chủ nhật v&agrave; l&agrave; ng&agrave;y nghỉ.</p>
+</details>
+
+---
+**Q9.** A：それは　______の　ビールですか。B：タイの　ビールです。
+- **A.** だれ
+- **B.** どなた
+- **C.** どこ
+- **D.** なん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> A：それは　どこの　ビールですか。B：タイの　ビールです。A: Đ&oacute; l&agrave; bia của nước n&agrave;o/ v&ugrave;ng n&agrave;o/ h&atilde;ng n&agrave;o vậy?B: L&agrave; bia của Th&aacute;i Lan.</p>
+</details>
+
+---
+**Q10.** A：これは　なんの　本ですか。B：__________　の　本です。
+- **A.** 図書館
+- **B.** 日本語
+- **C.** 私
+- **D.** チャンさん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> A：これは　なんの　本ですか。B：日本語　の本です。A: Đ&acirc;y l&agrave; s&aacute;ch g&igrave; vậy?B: L&agrave; s&aacute;ch tiếng Nhật.</p>
+</details>
+
+---

@@ -1,0 +1,85 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/03_REST_API/📂index_03_REST_API|03_REST_API]]
+
+# 🌐 1. REST API Principles (Deep Dive)
+
+REpresentational State Transfer (REST) là phong cách kiến trúc phổ biến nhất để xây dựng API. Tuy nhiên, việc hiểu sâu các nguyên lý REST giúp bạn thiết kế hệ thống có tính mở rộng (Scalability) và dễ tích hợp (Interoperability).
+
+---
+
+### 🏛️ 1.1 HTTP Methods: Thấu hiểu bản chất
+
+Đừng chỉ dừng lại ở CRUD (Create, Read, Update, Delete). Mỗi phương thức có triết lý riêng:
+
+- **GET**: Chỉ đọc dữ liệu (Safe - Không làm thay đổi trạng thái server). Có thể Caching.
+- **POST**: Tạo mới tài nguyên hoặc thực hiện hành động không định danh. (Không Idempotent).
+- **PUT**: Thay thế hoàn toàn một tài nguyên. (Idempotent).
+- **PATCH**: Cập nhật một phần tài nguyên (Dùng nhiều cho Patching JSON). (Thường Idempotent).
+- **DELETE**: Xóa tài nguyên. (Idempotent).
+
+> [!IMPORTANT]
+> **Idempotency (Tính lũy đẳng)**: Là khi bạn gọi một API nhiều lần (do mạng lag, retry) nhưng kết quả trạng thái trên server vẫn chỉ thay đổi 1 lần duy nhất.
+
+---
+
+### 🧠 1.2 HTTP Status Codes: "Biết nói"
+
+Đừng bao giờ luôn trả về `200 OK` và lỗi nằm trong body. Hãy để HTTP Header tự mô tả kết quả:
+
+- **2xx (Success)**: `200 OK`, `201 Created`, `204 No Content`.
+- **4xx (Client Error)**: `400 Bad Request`, `401 Unauthorized`, `403 Forbidden`, `404 Not Found`, `429 Too Many Requests`.
+- **5xx (Server Error)**: `500 Internal Server Error`, `502 Bad Gateway`, `503 Service Unavailable`.
+
+---
+
+### 🚀 1.3 Richardson Maturity Model (Mô hình Trưởng thành)
+
+Làm sao để biết API của bạn "Chuẩn REST" đến đâu?
+- **Level 0**: Một URL duy nhất (RPC style). Ví dụ: `POST /api/service` + body chứa action.
+- **Level 1**: Sử dụng Tài nguyên (Resources) riêng biệt. Ví dụ: `/api/users`, `/api/orders`.
+- **Level 2**: Sử dụng đúng HTTP Verbs (GET/POST/PUT...).
+- **Level 3 (HATEOAS)**: Tài liệu hóa động. Trả về cả các liên kết (Links) dẫn đến hành động tiếp theo. (Ít khi dùng thực tế nhưng là đỉnh cao của REST).
+
+---
+
+### ⚡ 1.4 Statelessness (Tính phi trạng thái)
+
+Đây là "linh hồn" của Scalability.
+- Server **không lưu trữ** bất kỳ thông tin gì về Client (Session).
+- Mỗi request phải chứa đầy đủ thông tin (Token, Context) để xử lý độc lập. Giúp bạn dễ dàng thêm hàng ngàn Server chạy song song mà không sợ "lệch" trạng thái người dùng.
+
+---
+
+### 🧤 1.5 Thiết kế Resource Naming (URL Design)
+
+- **Danh từ**: Dùng danh từ số nhiều `/users` thay vì động từ `/getUser`.
+- **Hệ phân cấp**: `/users/123/posts/456`.
+- **Lọc/Sắp xếp**: Dùng Query String `?status=active&sort=desc`.
+
+---
+
+### 📝 1.6 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] Phân biệt `401 Unauthorized` và `403 Forbidden`?
+<details><summary>Đáp án</summary>
+`401` là lỗi xác thực (Tôi không biết bạn là ai - Chưa đăng nhập). `403` là lỗi phân quyền (Tôi biết bạn là ai, nhưng bạn không có quyền thực hiện hành động này).
+</details>
+
+**Bài 2**: [Kỹ thuật] Thiết kế bộ API cho một hệ thống Giỏ hàng (Cart). Viết các Endpoint (URL + Method) cho:
+1. Thêm sản phẩm vào giỏ.
+2. Xóa 1 sản phẩm.
+3. Thay đổi số lượng sản phẩm.
+4. Lấy toàn bộ giỏ hàng.
+
+<details><summary>Solution (Standard REST)</summary>
+1. `POST /carts/{cart_id}/items`
+2. `DELETE /carts/{cart_id}/items/{item_id}`
+3. `PATCH /carts/{cart_id}/items/{item_id}` (Body: `{ "quantity": 5 }`)
+4. `GET /carts/{cart_id}`
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [REST API Best Practices - Real World Examples](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-rest-api-design.md)
+- [Mastering HTTP Methods & Idempotency](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-http-idempotency.md)
+- [HATEOAS: Why You Probably Don't Need It (But Should Know About It)](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-hateoas.md)

@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mb-220
+  - mb220
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MB-220: Microsoft Dynamics 365 Customer Insights (Journeys) Functional Consultant MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MB-220/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MB-220/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MB-220/MB-220 Mindmap\|🗺️ MB-220 Mindmap]]
+- [[certifications/microsoft/MB-220/MB-220 Flashcards\|🃏 MB-220 Flashcards]]
+- [[certifications/microsoft/MB-220/MB-220_Scraped_Question_Bank\|🗃️ MB-220 Scraped Question Bank]]

@@ -1,0 +1,22 @@
+# AWS Certified Solutions Architect Associate (SAA-C03)
+
+🔙 **Back to Parent**: [[certifications/aws/SAA-C03/AWS Certified Solutions Architect Associate (SAA-C03)/📂index_AWS Certified Solutions Architect Associate (SAA-C03)|SAA-C03]]
+
+## ⚡ Interactive Learning Assets
+- **Mindmap**: [[certifications/aws/SAA-C03/SAA-C03 Mindmap|🗺️ SAA-C03 Mindmap]]
+- **Spaced Repetition Flashcards**: [[certifications/aws/SAA-C03/SAA-C03 Flashcards|🃏 SAA-C03 Flashcards]]
+- **Interactive Quiz Script**: [Start-AWSStudySession.ps1](file:///C:/Users/TruongNhon/Desktop/back-up/interview/learning/certifications/aws/SAA-C03/Start-AWSStudySession.ps1)
+
+## 📁 Practice Questions by Domain
+- [[certifications/aws/SAA-C03/Practice Questions - Domain 1|Domain 1: Design Resilient Architectures]]
+- [[certifications/aws/SAA-C03/Practice Questions - Domain 2|Domain 2: Design High-Performing Architectures]]
+- [[certifications/aws/SAA-C03/Practice Questions - Domain 3|Domain 3: Design Secure Applications and Architectures]]
+- [[certifications/aws/SAA-C03/Practice Questions - Domain 4|Domain 4: Design Cost-Optimized Architectures]]
+
+## 📁 Sub-Categories
+- [[certifications/aws/SAA-C03/AWS Certified Solutions Architect Associate (SAA-C03)/📂index_AWS Certified Solutions Architect Associate (SAA-C03)|Guide]]
+- [[certifications/aws/SAA-C03/AWS Certified Solutions Architect Associate (SAA-C03)/Lab/📂index_Lab|Lab]]
+- [[certifications/aws/SAA-C03/AWS Certified Solutions Architect Associate (SAA-C03)/Lab Policy/📂index_Lab Policy|Lab Policy]]
+- [[certifications/aws/SAA-C03/AWS Certified Solutions Architect Associate (SAA-C03)/📂index_AWS Certified Solutions Architect Associate (SAA-C03)|Q&A]]
+- [[📂index_slide|Slide]]
+- [[certifications/aws/SAA-C03/AWS Certified Solutions Architect Associate (SAA-C03)/📂index_AWS Certified Solutions Architect Associate (SAA-C03)|eBook]]

@@ -1,0 +1,40 @@
+---
+tags:
+  - certification/az-204
+  - azure-dev/study-notes/domain-2
+status: todo
+created: 2026-06-15
+---
+
+# Domain 2: Develop for Azure Storage
+
+This domain covers core concepts for Develop for Azure Storage.
+
+## 🎯 Exam Objectives
+- Understand the core concepts under Develop for Azure Storage.
+- Study key Azure patterns and reference architectures.
+
+---
+
+## 📖 Key Study Topics
+
+### 1. Overview
+- Detail key Azure resources, patterns, and configurations.
+- Review official documentation links.
+
+---
+Back to **[[certifications/microsoft/AZ-204/AZ-204 MOC|AZ-204 MOC]]**
+
+## 🔍 Practice Question Reference
+Here are key questions from the practice bank matching this domain:
+- **Q1**: DRAG DROP (Drag and Drop is not supported)  You are creating an Azure Cosmos DB account that makes u... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 2#Question 1|Practice Q1]])
+- **Q2**: This question requires that you evaluate the underlined text to determine if it is correct. You comp... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 2#Question 2|Practice Q2]])
+- **Q3**: Note: The question is included in a number of questions that depicts the identical set-up. However, ... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 2#Question 3|Practice Q3]])
+- **Q4**: HOTSPOT (Drag and Drop is not supported) You are developing an application that includes two Docker ... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 2#Question 4|Practice Q4]])
+- **Q5**: HOTSPOT (Drag and Drop is not supported)  You are implementing a software as a service (SaaS) ASP.NE... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 2#Question 5|Practice Q5]])
+- **Q6**: Note: This question is part of a series of questions that present the same scenario. Each question i... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 2#Question 6|Practice Q6]])
+- **Q7**: Note: This question is part of a series of questions that present the same scenario. Each question i... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 2#Question 7|Practice Q7]])
+- **Q8**: HOTSPOT (Drag and Drop is not supported)  You have a web service that is used to pay for food delive... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 2#Question 8|Practice Q8]])
+
+---
+Back to **[[certifications/microsoft/AZ-204/AZ-204 MOC|AZ-204 MOC]]**

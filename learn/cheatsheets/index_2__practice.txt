@@ -1,0 +1,13 @@
+# 2. Practice
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/7. Queues and stacks/index_7. Queues and stacks|7. Queues and stacks]]
+
+## 📁 Categories
+- [[dsa/1.Interviewcake.com/7. Queues and stacks/2. Practice/1.Largest Stack/index_1.Largest Stack|1.Largest Stack]]
+- [[dsa/1.Interviewcake.com/7. Queues and stacks/2. Practice/2. Implement A Queue With Two Stacks/index_2. Implement A Queue With Two Stacks|2. Implement A Queue With Two Stacks]]
+- [[dsa/1.Interviewcake.com/7. Queues and stacks/2. Practice/3. Parenthesis Matching/index_3. Parenthesis Matching|3. Parenthesis Matching]]
+- [[dsa/1.Interviewcake.com/7. Queues and stacks/2. Practice/4. Bracket Validator/index_4. Bracket Validator|4. Bracket Validator]]
+
+## 📄 Notes
+- [[2. practice|2. Practice]]
+

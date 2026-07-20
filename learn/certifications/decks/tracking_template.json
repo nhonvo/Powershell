@@ -1,0 +1,176 @@
+{
+  "Meta": {
+    "Id": "deck_tracking_template",
+    "Topic": "TRACKING_TEMPLATE",
+    "Language": "English/Japanese",
+    "Domain": "study_plans",
+    "Level": "General",
+    "Tags": [
+      "tracking_template"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 8
+  },
+  "Cards": [
+    {
+      "Id": "card_03447",
+      "Front": "Day",
+      "Back": "Time | Task | Output (file) | Done",
+      "Hint": "study_plans",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "tracking_template"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03448",
+      "Front": "Mon",
+      "Back": " |  |  | [ ]",
+      "Hint": "study_plans",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "tracking_template"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03449",
+      "Front": "Tue",
+      "Back": " |  |  | [ ]",
+      "Hint": "study_plans",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "tracking_template"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03450",
+      "Front": "Wed",
+      "Back": " |  |  | [ ]",
+      "Hint": "study_plans",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "tracking_template"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03451",
+      "Front": "Thu",
+      "Back": " |  |  | [ ]",
+      "Hint": "study_plans",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "tracking_template"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03452",
+      "Front": "Fri",
+      "Back": " |  |  | [ ]",
+      "Hint": "study_plans",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "tracking_template"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03453",
+      "Front": "Sat",
+      "Back": " |  |  | [ ]",
+      "Hint": "study_plans",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "tracking_template"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03454",
+      "Front": "Sun",
+      "Back": " |  |  | [ ]",
+      "Hint": "study_plans",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "tracking_template"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

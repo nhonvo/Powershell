@@ -1,0 +1,23 @@
+# 01_Algo_and_DSA_doc
+
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/📜index_01_Algo_and_DSA_doc|Docs]]
+
+## 📁 Categories
+- [[dsa/01_Algo_and_DSA_doc/01_Basics/🔢index_01_Basics|01_Basics]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|02_Arrays_Strings]]
+- [[dsa/01_Algo_and_DSA_doc/03_Searching_Sorting/🔍index_03_Searching_Sorting|03_Searching_Sorting]]
+- [[dsa/01_Algo_and_DSA_doc/04_Recursion_Backtracking/🔄index_04_Recursion_Backtracking|04_Recursion_Backtracking]]
+- [[dsa/01_Algo_and_DSA_doc/05_Hashing/🔑index_05_Hashing|05_Hashing]]
+- [[dsa/01_Algo_and_DSA_doc/06_Linked_List/🔗index_06_Linked_List|06_Linked_List]]
+- [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/🥞index_07_Stack_Queue|07_Stack_Queue]]
+- [[dsa/01_Algo_and_DSA_doc/📜index_01_Algo_and_DSA_doc|08_Greedy]]
+- [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/🌲index_09_Binary_Trees|09_Binary_Trees]]
+- [[dsa/01_Algo_and_DSA_doc/📜index_01_Algo_and_DSA_doc|10_Binary_Search_Trees]]
+- [[dsa/01_Algo_and_DSA_doc/11_Heaps_Priority_Queue/🌲index_11_Heaps_Priority_Queue|11_Heaps_Priority_Queue]]
+- [[dsa/01_Algo_and_DSA_doc/12_Graphs/🕸️index_12_Graphs|12_Graphs]]
+- [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/🧠index_13_Dynamic_Programming|13_Dynamic_Programming]]
+
+## 📄 Notes
+- [[dsa/01_Algo_and_DSA_doc/Instructions|Instructions]]
+- [[dsa/01_Algo_and_DSA_doc/Lộ trình học DSA - Nền tảng thuật toán|Lộ trình học DSA - Nền tảng thuật toán]]
+

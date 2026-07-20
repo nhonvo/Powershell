@@ -1,0 +1,124 @@
+# 🃏 Dependabot Flashcards
+> Format: **Q :: A** — compatible with Obsidian Spaced Repetition plugin
+
+---
+
+## 🧩 Core Concepts
+
+What are the 3 main Dependabot features? :: **Dependabot Alerts** (notify), **Security Updates** (auto-fix CVEs), **Version Updates** (keep deps current)
+
+What does Dependabot Alerts do? :: Scans your dependency graph against the GitHub Advisory Database and notifies you of known vulnerabilities — no PRs created.
+
+What does Dependabot Security Updates do? :: Automatically opens a PR to update a vulnerable dependency to the minimum safe version when a CVE is found.
+
+What does Dependabot Version Updates do? :: Proactively opens PRs to keep all dependencies up-to-date with their latest releases, based on a schedule.
+
+Which Dependabot feature requires a `dependabot.yml` file? :: **Version Updates** only. Alerts and Security Updates are enabled via repository settings.
+
+What must be enabled BEFORE Dependabot can function? :: The **Dependency Graph** must be enabled (Settings → Code Security & Analysis).
+
+Where do you enable Dependabot Alerts and Security Updates? :: Repository **Settings → Code Security and Analysis** (no config file needed).
+
+---
+
+## 📁 Configuration
+
+Where must `dependabot.yml` be placed? :: In the `.github/` directory of the repository (`.github/dependabot.yml`).
+
+What is the required top-level key in `dependabot.yml`? :: `version: 2` — Dependabot only supports version 2.
+
+What are the 3 required keys under each `updates` entry? :: `package-ecosystem`, `directory`, and `schedule`
+
+What are the valid `schedule.interval` values? :: `daily`, `weekly`, `monthly`
+
+How do you disable version updates while keeping security updates active? :: Set `open-pull-requests-limit: 0` in `dependabot.yml`.
+
+What does the `groups` key do in `dependabot.yml`? :: Batches multiple dependency updates into a single PR (e.g., all `react*` packages together), reducing PR noise.
+
+What does the `ignore` key do? :: Tells Dependabot to skip updates for specific packages or version ranges.
+
+What is the `registries` key used for? :: Configuring credentials for **private package registries** (e.g., private npm, Maven, NuGet).
+
+What does `rebase-strategy: disabled` do? :: Prevents Dependabot from automatically rebasing open PRs when the base branch changes.
+
+What key controls which branch Dependabot targets for PRs? :: `target-branch`
+
+---
+
+## 📦 Supported Ecosystems
+
+What `package-ecosystem` value is used for JavaScript/Node.js? :: `npm`
+
+What `package-ecosystem` value is used for Python? :: `pip`
+
+What `package-ecosystem` value is used for Java (Maven)? :: `maven`
+
+What `package-ecosystem` value is used for Java (Gradle)? :: `gradle`
+
+What `package-ecosystem` value is used for Ruby? :: `bundler`
+
+What `package-ecosystem` value is used for .NET? :: `nuget`
+
+What `package-ecosystem` value is used for Docker images? :: `docker`
+
+What `package-ecosystem` value is used for GitHub Actions? :: `github-actions`
+
+What `package-ecosystem` value is used for Terraform modules? :: `terraform`
+
+What `package-ecosystem` value is used for Rust? :: `cargo`
+
+What `package-ecosystem` value is used for Go modules? :: `gomod`
+
+What `package-ecosystem` value is used for PHP? :: `composer`
+
+---
+
+## 🔐 Security Concepts
+
+What does CVE stand for? :: **Common Vulnerabilities and Exposures** — a unique ID for a specific security flaw.
+
+What does CVSS stand for? :: **Common Vulnerability Scoring System** — scores vulnerability severity from 0.0 to 10.0.
+
+What are the CVSS severity ranges? :: Low (0.1–3.9) · Medium (4.0–6.9) · High (7.0–8.9) · Critical (9.0–10.0)
+
+What does EPSS stand for? :: **Exploit Prediction Scoring System** — predicts the probability a vulnerability will be exploited in the wild.
+
+What does GHSA stand for? :: **GitHub Security Advisory** — GitHub's own advisory format feeding Dependabot.
+
+What database powers Dependabot Alerts? :: The **GitHub Advisory Database** (sourced from NVD, GHSA, and other feeds).
+
+What are **auto-triage rules**? :: Rules that automatically dismiss or snooze Dependabot alerts (e.g., dismiss if no fix available), reducing alert fatigue.
+
+---
+
+## ⚙️ GitHub Actions Integration
+
+What GitHub event triggers a Dependabot PR workflow? :: `pull_request` (from actor `dependabot[bot]`)
+
+What action provides Dependabot PR metadata (update type, severity)? :: `dependabot/fetch-metadata`
+
+What is the `update-type` value for a patch-level version bump? :: `version-update:semver-patch`
+
+What permissions does a workflow need to auto-merge Dependabot PRs? :: `contents: write` and `pull-requests: write`
+
+What does the `github/dependency-review-action` do? :: Scans incoming PRs for newly introduced vulnerable dependencies and blocks the PR if severity threshold is exceeded.
+
+What `fail-on-severity` value blocks only High and Critical vulnerabilities? :: `high`
+
+---
+
+## 🏆 Best Practices
+
+What is the recommended SLA for Critical vulnerabilities? :: Remediate within **7 days**.
+
+What is the recommended SLA for High vulnerabilities? :: Remediate within **30 days**.
+
+How can you reduce Dependabot PR noise? :: Use `groups`, set `open-pull-requests-limit`, use `monthly` schedule for stable deps.
+
+Why use `weekly` for `github-actions` ecosystem? :: Actions can introduce supply chain attacks; frequent checks reduce the window of exposure.
+
+What principle applies to `GITHUB_TOKEN` in Dependabot workflows? :: **Least Privilege** — grant only the minimum required scopes (`contents: write`, `pull-requests: write`).
+
+Should you auto-merge Major version updates? :: No — Major updates can introduce **breaking changes** and should always require human review.
+
+What is the **Dependency Review** workflow's role in security? :: Acts as a **gate** to prevent vulnerable dependencies from ever being merged — shift-left security.

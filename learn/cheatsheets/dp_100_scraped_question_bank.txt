@@ -1,0 +1,129 @@
+# 🗃️ DP-100 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: First Question sets
+
+DRAG DROP (Drag and Drop is not supported)
+You are planning to host practical training to acquaint staff with Docker for Windows.
+Staff devices must support the installation of Docker.
+Which of the following are requirements for this installation? Answer by dragging the correct options from the list to the answer area.
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: First Question sets
+
+HOTSPOT (Drag and Drop is not supported)
+Complete the sentence by selecting the correct option in the answer area.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+A Deep Learning Virtual Machine is a pre-configured environment for deep learning using GPU instances.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: First Question sets
+
+You need to implement a Data Science Virtual Machine (DSVM) that supports the Caffe2 deep learning framework.
+Which of the following DSVM should you create?
+
+### Options:
+- [ ] **A)** Windows Server 2012 DSVM
+- [ ] **B)** Windows Server 2016 DSVM
+- [x] **C)** Ubuntu 16.04 DSVM [Correct]
+- [ ] **D)** CentOS 7.4 DSVM
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Caffe2 is supported by Data Science Virtual Machine for Linux.
+Microsoft offers Linux editions of the DSVM on Ubuntu 16.04 LTS and CentOS 7.4.
+However, only the DSVM on Ubuntu is preconfigured for Caffe2.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: First Question sets
+
+This question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the recommendation satisfies the requirements.
+You have been tasked with employing a machine learning model, which makes use of a PostgreSQL database and needs GPU processing, to forecast prices.
+You are preparing to create a virtual machine that has the necessary tools built into it.
+You need to make use of the correct virtual machine type.
+Recommendation: You make use of a Geo AI Data Science Virtual Machine (Geo-DSVM) Windows edition.
+Will the requirements be satisfied?
+
+### Options:
+- [ ] **A)** Yes
+- [x] **B)** No [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+The Azure Geo AI Data Science VM (Geo-DSVM) delivers geospatial analytics capabilities from Microsoft's Data Science VM. Specifically, this VM extends the AI and data science toolkits in the Data Science VM by adding ESRI's market-leading ArcGIS Pro Geographic Information System.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: First Question sets
+
+This question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the recommendation satisfies the requirements.
+You have been tasked with employing a machine learning model, which makes use of a PostgreSQL database and needs GPU processing, to forecast prices.
+You are preparing to create a virtual machine that has the necessary tools built into it.
+You need to make use of the correct virtual machine type.
+Recommendation: You make use of a Deep Learning Virtual Machine (DLVM) Windows edition.
+Will the requirements be satisfied?
+
+### Options:
+- [x] **A)** Yes [Correct]
+- [ ] **B)** No
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+DLVM is a template on top of DSVM image. In terms of the packages, GPU drivers etc are all there in the DSVM image. Mostly it is for convenience during creation where we only allow DLVM to be created on GPU VM instances on Azure.
+</details>
+
+---

@@ -1,0 +1,89 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 7
+
+## Part 1
+**Q1.** りんごを　五つ　たべました。
+- **A.** いつつ
+- **B.** ななつ
+- **C.** やっつ
+- **D.** ここのつ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1五つ (NGŨ)：nămT&ocirc;i đ&atilde; ăn năm quả t&aacute;o.</p>
+</details>
+
+---
+**Q2.** 来週　くにへ　かえります。
+- **A.** らいしゅ
+- **B.** らいげつ
+- **C.** らいじゅう
+- **D.** らいしゅう
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4来週 (LAI - CHU)：tuần sauT&ocirc;i sẽ về nước v&agrave;o tuần sau.</p>
+</details>
+
+---
+**Q3.** きょうしつに　せいとが　十人　います。
+- **A.** じゅうじん
+- **B.** じゅじん
+- **C.** じゅにん
+- **D.** じゅうにん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4十人 (THẬP - NH&Acirc;N)：10 ngườiTrong lớp học, học sinh c&oacute; 10 người.</p>
+</details>
+
+---
+**Q4.** この　スカートは　長いです。
+- **A.** みじかい
+- **B.** ながい
+- **C.** やすい
+- **D.** たかい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2長い (TRƯỜNG)：d&agrave;iC&aacute;i v&aacute;y n&agrave;y d&agrave;i.</p>
+</details>
+
+---
+**Q5.** ちかくに　学校が　あります。
+- **A.** がこう
+- **B.** がっこう
+- **C.** がこお
+- **D.** がっこお
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2学校 (HỌC - HIỆU)：trường họcỞ gần đ&acirc;y c&oacute; trường học.</p>
+</details>
+
+---
+**Q6.** アパートの　北がわに　コンビニが　あります。
+- **A.** みなみがわ
+- **B.** ひがしがわ
+- **C.** きたがわ
+- **D.** にしがわ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3北がわ (BẮC)：ph&iacute;a BắcỞ ph&iacute;a Bắc căn hộ n&agrave;y c&oacute; một cửa h&agrave;ng tiện lợi.</p>
+</details>
+
+---
+**Q7.** ともだちと　いっしょに　図書館に　いきます。
+- **A.** としょかん
+- **B.** としょうかん
+- **C.** とうしょかん
+- **D.** としょがん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1図書館 (ĐỒ - THƯ - QU&Aacute;N)：thư việnT&ocirc;i sẽ đi thư viện c&ugrave;ng bạn.</p>
+</details>
+
+---

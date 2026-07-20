@@ -1,0 +1,516 @@
+{
+  "Meta": {
+    "Id": "deck_9__bellman_ford_algorithm",
+    "Topic": "9. Bellman-Ford Algorithm",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "9__bellman_ford_algorithm"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 25
+  },
+  "Cards": [
+    {
+      "Id": "card_01413",
+      "Front": "Cạnh",
+      "Back": "dist[u]+w | dist[v] cũ | Relax? | dist[v] mới",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01414",
+      "Front": "0→1 (6)",
+      "Back": "0+6=6 | ∞ | Yes | 6",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01415",
+      "Front": "0→2 (7)",
+      "Back": "0+7=7 | ∞ | Yes | 7",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01416",
+      "Front": "1→2 (5)",
+      "Back": "6+5=11 | 7 | No | 7",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01417",
+      "Front": "1→3 (-4)",
+      "Back": "6+(-4)=2 | ∞ | Yes | 2",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01418",
+      "Front": "2→3 (-3)",
+      "Back": "7+(-3)=4 | 2 | No | 2",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01419",
+      "Front": "3→1 (9)",
+      "Back": "2+9=11 | 6 | No | 6",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01420",
+      "Front": "2→4 (-2)",
+      "Back": "7+(-2)=5 | ∞ | Yes | 5",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01421",
+      "Front": "3→4 (7)",
+      "Back": "2+7=9 | 5 | No | 5",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01422",
+      "Front": "Cạnh",
+      "Back": "dist[u]+w | dist[v] cũ | Relax? | dist[v] mới",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01423",
+      "Front": "0→1 (6)",
+      "Back": "6 | 6 | No | 6",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01424",
+      "Front": "0→2 (7)",
+      "Back": "7 | 7 | No | 7",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01425",
+      "Front": "1→2 (5)",
+      "Back": "11 | 7 | No | 7",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01426",
+      "Front": "1→3 (-4)",
+      "Back": "2 | 2 | No | 2",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01427",
+      "Front": "2→3 (-3)",
+      "Back": "4 | 2 | No | 2",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01428",
+      "Front": "3→1 (9)",
+      "Back": "11 | 6 | No | 6",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01429",
+      "Front": "2→4 (-2)",
+      "Back": "5 | 5 | No | 5",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01430",
+      "Front": "3→4 (7)",
+      "Back": "9 | 5 | No | 5",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01431",
+      "Front": "Tiêu chí",
+      "Back": "Dijkstra | Bellman-Ford",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01432",
+      "Front": "**Trọng số âm**",
+      "Back": "KHÔNG | CÓ",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01433",
+      "Front": "**Negative cycle**",
+      "Back": "Không phát hiện | Phát hiện được",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01434",
+      "Front": "**Time**",
+      "Back": "O((V+E) log V) | O(V × E)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01435",
+      "Front": "**Chiến lược**",
+      "Back": "Greedy | Dynamic Programming",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01436",
+      "Front": "**Dùng khi**",
+      "Back": "Trọng số ≥ 0 | Trọng số âm, negative cycle",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01437",
+      "Front": "**Distributed**",
+      "Back": "Khó | Dễ (mỗi node chạy local)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. bellman-ford algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/01_Language_Basics/📂index_01_Language_Basics|01_Language_Basics]]
+
+# 📦 3. Collections & Generics (Deep Dive)
+
+Bộ sưu tập (Collections) là "xương sống" của hầu hết các cấu trúc dữ liệu trong Backend. Hiểu rõ cách chúng hoạt động ở mức bộ nhớ giúp bạn chọn đúng cấu trúc cho bài toán, tránh làm chậm ứng dụng (Performance bottleneck).
+
+---
+
+### 🏛️ 3.1 Collections Hierarchy (Phân cấp & Lựa chọn)
+
+#### **Java (JVM) Collections**
+- **List**: `ArrayList` (Duyệt nhanh O(1), chèn/xóa chậm O(n)) vs `LinkedList` (Chèn/xóa nhanh O(1), duyệt chậm O(n)).
+- **Set**: `HashSet` (Không trùng lặp, không thứ tự, O(1)) vs `TreeSet` (Sắp xếp, O(log n)).
+- **Map**: `HashMap` (Key-Value, O(1)) vs `ConcurrentHashMap` (An toàn khi đa luồng).
+
+#### **C# (.NET) Collections**
+- **List**: `List<T>` (Sử dụng mảng động, giống ArrayList).
+- **Set**: `HashSet<T>`, `SortedSet<T>`.
+- **Map**: `Dictionary<TKey, TValue>`, `ConcurrentDictionary<TKey, TValue>`.
+
+---
+
+### 🧠 3.2 Internals: HashMap / Dictionary hoạt động thế nào?
+
+> [!IMPORTANT]
+> Đây là câu hỏi phỏng vấn Senior cực phổ biến.
+
+**Cơ chế hoạt động (Hashing):**
+1.  **Tính Hash**: Khi bạn chèn (Key, Value), hệ thống gọi `GetHashCode()` (C#) hoặc `hashCode()` (Java) trên Key.
+2.  **Bucket**: Chuyển mã hash thành một chỉ số (Index) trong mảng nội bộ.
+3.  **Xử lý va chạm (Collision)**: Nếu 2 Key khác nhau có cùng 1 Index:
+    - **Separate Chaining**: Mỗi lồng (bucket) là một danh sách liên kết (LinkedList). Nếu danh sách quá dài, Java 8+ sẽ chuyển sang **Cây đỏ đen (Red-Black Tree)** để đảm bảo tìm kiếm là O(log n).
+    - **Open Addressing**: Tìm vị trí trống tiếp theo trong mảng (C# thường dùng cơ chế này).
+
+---
+
+### 🧬 3.3 Generics: Tính đa hình Compile-time
+
+Generics giúp tái sử dụng Code mà vẫn đảm bảo tính an toàn kiểu dữ liệu (Type Safety).
+
+#### 🧪 So sánh Generics Java vs C# (Cực quan trọng)
+
+| Đặc điểm | Java Generics | C# Generics |
+| :--- | :--- | :--- |
+| **Cơ chế** | **Type Erasure** (Xóa kiểu) | **Reification** (Giữ kiểu) |
+| **Runtime** | `List<String>` và `List<Integer>` đều là `List` thực thể duy nhất | Mỗi kiểu generic tạo ra một thực thể riêng biệt (`List<string>`, `List<int>`) |
+| **Hiệu năng** | Không cải thiện cho kiểu nguyên thủy (Phải Auto-boxing) | Cực nhanh cho kiểu nguyên thủy (Không Overhead) |
+
+**Ví dụ (C# Generics):**
+```csharp
+public class DataStore<T> {
+    public T Data { get; set; }
+}
+
+var store = new DataStore<int> { Data = 100 }; // Không tốn memory cho Boxing
+```
+
+---
+
+### 🚀 3.4 Performance: Array vs List
+
+- **Array**: Kích thước cố định. Truy cập địa chỉ bộ nhớ trực tiếp. Nhanh nhất.
+- **List**: Là mảng động (Dynamic Array). Khi đầy, nó sẽ tạo mảng mới lớn gấp đôi (Resize) và copy dữ liệu cũ. Chi phí **Amortized** là **O(1)**.
+
+---
+
+### 📝 3.5 Bài tập thực hành & Lời giải (Answer)
+
+**Bài 1**: [Lý thuyết] Khi nào nên dùng `HashSet` thay vì `List`?
+<details><summary>Đáp án</summary>
+Dùng `HashSet` khi bạn cần lưu dữ liệu duy nhất (không trùng lặp) và muốn kiểm tra sự tồn tại (`contains() / Contains()`) với tốc độ O(1). Nếu dùng List, việc kiểm tra tồn tại tốn O(n).
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết một đoạn code Java hoặc C# để đếm số lần xuất hiện của từng từ trong một chuỗi văn bản.
+<details><summary>Gợi ý Solution (C#)</summary>
+Dùng `Dictionary<string, int>`.
+```csharp
+var words = text.Split(' ');
+var counts = new Dictionary<string, int>();
+foreach (var w in words) {
+    if (counts.ContainsKey(w)) counts[w]++;
+    else counts[w] = 1;
+}
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [HashMap Internals - Visual Guide](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-hashmap-internals.md)
+- [Type Erasure vs Reification in Generics](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-generics-comparison.md)
+- [Collections Performance Benchmark](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-collections-performance.md)

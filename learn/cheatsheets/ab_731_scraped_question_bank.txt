@@ -1,0 +1,289 @@
+# 🗃️ AB-731 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+Your company plans to build a generative AI solution based on internal data.
+
+You recommend using Microsoft Foundry as a starting point to develop and manage the solution.
+
+What is a key benefit of using Microsoft Foundry for this project?
+
+### Options:
+- [ ] **A)** Provides a scalable platform for developing and deploying generative AI solutions.
+- [ ] **B)** Removes the need to select or configure the underlying AI model.
+- [x] **C)** Enables business users to build generative AI solutions. [Correct]
+- [ ] **D)** Offers a low-code platform for developing generative AI solutions.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Microsoft Foundry is an enterprise-grade platform specifically designed to help teams build, deploy, and manage generative AI solutions grounded in their own internal data.
+While it is a powerful tool for this purpose, its target audience and complexity are important to distinguish:
+*-> Building on Internal Data: The platform excels at this through Foundry IQ and Retrieval-Augmented Generation (RAG). It allows you to securely connect AI models to internal "knowledge bases"--such as SharePoint, OneLake, or custom databases--so the AI provides responses based specifically on your company's context and data.
+Target User: Contrary to being a tool solely for general business users, it is primarily an interoperable platform for developers, data scientists, and IT professionals. It provides deep technical tools like SDKs, CLI, and MLOps pipelines for scaling AI from a prototype to a full production application.
+*-> Accessibility for Business Users: While its primary focus is developers, it does include low-code/no-code interfaces and visual "playgrounds". These allow non-technical contributors to experiment with models, test prompts, and participate in the development process without deep coding knowledge.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+HOTSPOT
+
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Yes
+Yes - Microsoft Foundry helps organizations securely build and manage generative AI solutions governed environment.
+
+Microsoft Foundry is a unified, interoperable platform designed to help organizations build, optimize, and manage generative AI applications and autonomous agents within a secure, governed environment. It acts as a central "AI app and agent factory" that brings together models, data, and tools, allowing businesses to move from prototyping to production while maintaining safety and compliance.
+
+Box 2: Yes
+Yes - Microsoft Foundry provided built-in scalability to enable organizations to expand AI workloads as usage increases.
+
+Microsoft Foundry acts as an enterprise-grade, unified platform for AI app and agent development, designed to enable organizations to build, deploy, and scale AI workloads efficiently. It provides built-in, automated scalability through several key mechanisms that allow organizations to expand their AI usage without manual infrastructure management.
+
+Box 3: Yes
+Yes - Microsoft Foundry can be used for image recognition and computer vision tasks.
+
+Microsoft Foundry (part of Azure AI Services/Tools) offers Azure Vision, a comprehensive suite for image recognition and computer vision tasks. It provides prebuilt APIs and tools for analyzing images, detecting objects, OCR, and facial recognition, allowing developers to build intelligent, agentic applications without deep machine learning expertise.
+
+Key Capabilities in Microsoft Foundry (Azure Vision):
+Image Analysis: Automatically generates image captions, tags, and describes content in natural language.
+
+Object Detection & Recognition: Identifies and locates objects within an image, providing bounding box coordinates.
+
+Optical Character Recognition (OCR): Extracts printed or handwritten text from images, such as documents, signs, and, photos.
+
+Face Detection & Recognition: Identifies human faces, analyzes attributes (age, gender, expressions), and supports facial recognition.
+
+Spatial Analysis: Tracks movement and analyzes environments in real-time.
+
+Custom Vision: Allows users to train their own custom models for specialized image classification and object detection.
+
+Video Insights: Supports video summarization and analysis.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+HOTSPOT
+
+Select the answer that correctly completes the sentence.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box: Azure Machine Learning
+You use _________ to train a model that will forecast product demand based on historical sales data.
+
+Using Azure Machine Learning to forecast product demand based on historical sales data is best accomplished using Automated Machine Learning (AutoML) for Time-Series Forecasting. This approach allows you to train, evaluate, and deploy a high-quality model, often without writing extensive code, by automatically testing various algorithms and preprocessing data.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+Which business requirement most closely relates to grounding a generative AI model?
+
+### Options:
+- [ ] **A)** supporting multiple languages
+- [ ] **B)** measuring the number of user interactions per day
+- [ ] **C)** enabling users to interact by using natural language queries
+- [x] **D)** ensuring that verified company data sources are used for response generation [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+Ensuring that verified company data sources are used for response generation relates to grounding a generative AI model by anchoring its outputs in trusted, domain-specific, or enterprise-specific information. This process bridges the gap between the general knowledge a model has from its training data and the specific, up-to-date facts required for accurate, trustworthy business applications.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+You need to create a custom Azure Machine Learning model. The data used to train the model is consistent and uniform.
+
+What should you do first?
+
+### Options:
+- [x] **A)** Prepare the training data. [Correct]
+- [ ] **B)** Evaluate the model.
+- [ ] **C)** Train the model.
+- [ ] **D)** Tune hyperparameters.
+- [ ] **E)** Deploy the model.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+The first step in creating a custom Azure Machine Learning model trained on your data is to acquire and prepare the data. This involves activities such as:
+Data Collection: Gathering the relevant data from its sources, such as databases, streaming sources, or Azure Blob storage.
+Data Cleaning and Preprocessing: Even with consistent and uniform data, you will need to perform steps like handling missing values, removing duplicates, and ensuring standardization.
+Data Transformation and Feature Engineering: Converting the raw data into a format suitable for the chosen machine learning algorithm and creating new features that can improve model performance.
+Data Splitting: Dividing the dataset into separate training, validation, and testing sets so the model can be trained on one portion and evaluated on data it hasn't seen before.
+Note:
+Once the data is prepared and ready, the subsequent steps in Azure Machine Learning typically involve:
+1. Setting up an Azure Machine Learning workspace if you don't already have one.
+2. Creating a data asset within the workspace that points to your data in Azure storage.
+3. Configuring compute resources for training the model.
+4, Selecting an appropriate model algorithm and writing a training script (or using automated ML features).
+5. Training and tuning the model using the prepared data and compute resources
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: 
+
+Your company uses a non-reasoning generative AI model to create textual content.
+
+You discover that the model's responses are inconsistent and do NOT meet expectations.
+
+You need to improve the prompts.
+
+What should you do? More than one answer choice may achieve the goal. Select the BEST answer.
+
+### Options:
+- [ ] **A)** Provide the prompts with extensive examples of the expected output.
+- [x] **B)** Add the context, sources, and expectations to the prompts. [Correct]
+- [ ] **C)** Use technical terms in the prompts to enhance AI comprehension.
+- [ ] **D)** Add only a single concise requirement to the prompts.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+When a non-reasoning model produces inconsistent results, you can ground its output by transforming a vague request into a highly structured framework. Since these models rely on pattern prediction rather than true logical deduction, providing "missing" data directly in the prompt acts as a roadmap for the desired completion.
+To move from inconsistent to reliable content, focus on these specific additions:
+*-> Contextual Guardrails: Provide situational details, such as the intended audience (e.g., "tech-savvy software developers" vs. "elementary students") and domain-specific constraints. This narrows the model's focus to relevant training data patterns.
+*-> External Sources & Grounding: Include specific facts, background documents, or source material within the prompt to prevent the model from guessing or "hallucinating" facts.
+*-> Explicit Expectations: Clearly define the format (e.g., JSON, Markdown, bulleted list) and tone (e.g., professional, witty). Stating what "success" looks like--such as word count limits or mandatory sections-- reduces ambiguity.
+Few-Shot Prompting: Add 1­3 examples of the exact style and structure you want the model to mimic. This is often the most effective way to align a non-reasoning model's output with your expectations.
+Persona Assignment: Instruct the model to "act as" a specific professional (e.g., "Senior Copy Editor" or "Skeptical Venture Capitalist") to influence the vocabulary and perspective of the generated text.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: 
+
+HOTSPOT
+
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: No
+No - A generative AI model guarantees factually accurate responses if the model is trained on a large dataset.
+
+A large training dataset does not guarantee that a generative AI model will provide factually accurate responses. While larger, diverse datasets generally improve performance and reduce certain types of errors, they do not eliminate the fundamental tendency of these models to generate incorrect information, known as "hallucinations".
+
+Box 2: Yes
+Yes - Content filtering and responsible AI safeguards help a generative AI model generate safe an inoffensive content.
+
+Content filtering and responsible AI safeguards (e.g., in Azure AI Foundry or Amazon Bedrock ) act as essential, multi-layered, reactive mechanisms--covering both input and output--to detect and block harmful, illegal, or biased content. These systems use automated classifiers to, for example, filter for hate speech, sexual content, violence, and self-harm. They ensure safety by analyzing prompts and generating responses, often allowing for custom thresholds, to prevent models from generating unsafe or inappropriate output.
+
+Box 3: No
+No - A generative AI model always produce fair and unbiased results when the training data has been properly prepared and reviewed for fairness.
+
+Even with perfectly prepared and reviewed training data, generative AI models can still produce biased results. While high-quality data is foundational, bias is a persistent challenge that can emerge from multiple sources throughout the AI lifecycle.
+
+Key reasons why "perfect" data doesn't guarantee fairness include:
+Algorithmic Bias: The design of the model itself--such as its mathematical assumptions, optimization objectives, or hyperparameters--can inadvertently prioritize certain patterns or create discriminatory outcomes, even if the input data is neutral.
+
+Post-Training Feedback (RLHF): Models are often fine-tuned using Reinforcement Learning from Human Feedback (RLHF). This process can introduce the subjective prejudices and cultural biases of the human reviewers who rate the model's responses.
+
+Stochastic Nature: Generative models are probabilistic; they can produce varied outputs for the same prompt. A single unbiased result does not guarantee fairness across all possible scenarios or use cases.
+
+Emergent Biases in Deployment: Biases can appear only when a model is used in real-world contexts or paired with specific user prompts that were not anticipated during the data review phase.
+
+Trade-offs with Performance: Aggressively "correcting" for fairness can sometimes lead to reduced accuracy, lower utility, or even the creation of new, incongruous biases (such as ahistorical depictions in image generators).
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: 
+
+HOTSPOT
+
+Select the answer that correctly completes the sentence.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box: generative
+A _______ AI solution recognized patterns in large and complex datasets to create new and original content.
+
+Generative AI solutions represent a transformative class of artificial intelligence that analyzes large, complex, and often unstructured datasets to identify underlying statistical patterns and relationships. By learning these structures--such as language, style, or visual features--the AI can create entirely new, original, and high- quality content that mimics human expression, rather than just classifying or analyzing existing data.
+</details>
+
+---

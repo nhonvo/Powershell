@@ -1,0 +1,376 @@
+{
+  "Meta": {
+    "Id": "deck_eading_4_1_monitoring_on_aws",
+    "Topic": "eading 4.1 Monitoring on AWS",
+    "Language": "English/Japanese",
+    "Domain": "certifications",
+    "Level": "General",
+    "Tags": [
+      "eading_4_1_monitoring_on_aws"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 18
+  },
+  "Cards": [
+    {
+      "Id": "card_00104",
+      "Front": "Availability (%)",
+      "Back": "Downtime (per year)",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00105",
+      "Front": "90% (\"one nine\")",
+      "Back": "36.53 days",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00106",
+      "Front": "99% (\"two nines\")",
+      "Back": "3.65 days",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00107",
+      "Front": "99.9% (\"three nines\")",
+      "Back": "8.77 hours",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00108",
+      "Front": "99.95% (\"three and a half nines\")",
+      "Back": "4.38 hours",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00109",
+      "Front": "99.99% (\"four nines\")",
+      "Back": "52.60 minutes",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00110",
+      "Front": "99.995% (\"four and a half nines\")",
+      "Back": "26.30 minutes",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00111",
+      "Front": "99.999% (\"five nines\")",
+      "Back": "5.26 minutes",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00112",
+      "Front": "Feature",
+      "Back": "Application Load Balancer | Network Load Balancer",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00113",
+      "Front": "Protocols",
+      "Back": "HTTP, HTTPS | TCP, UDP, TLS",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00114",
+      "Front": "Connection draining (deregistration delay)",
+      "Back": "✔ | ",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00115",
+      "Front": "IP addresses as targets",
+      "Back": "✔ | ✔",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00116",
+      "Front": "Static IP and Elastic IP address",
+      "Back": " | ✔",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00117",
+      "Front": "Preserve Source IP address",
+      "Back": " | ✔",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00118",
+      "Front": "Routing based on Source IP address, path, host, HTTP headers, HTTP method, and query string",
+      "Back": "✔ | ",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00119",
+      "Front": "Redirects",
+      "Back": "✔ | ",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00120",
+      "Front": "Fixed response",
+      "Back": "✔ | ",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00121",
+      "Front": "User authentication",
+      "Back": "✔ | ",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "eading 4.1 monitoring on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

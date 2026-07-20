@@ -1,0 +1,16 @@
+# SolutionsAndExplanations
+
+🔙 **Back to Parent**: [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/index_2_ShowMeTheDataStructures|2_ShowMeTheDataStructures]]
+
+## 📁 Categories
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/SolutionsAndExplanations/testdir/index_testdir|testdir]]
+
+## 📄 Notes
+- [[solutionsandexplanations|SolutionsAndExplanations]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/SolutionsAndExplanations/explanation_1_LRUCache|explanation_1_LRUCache]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/SolutionsAndExplanations/explanation_2_FileRecursion|explanation_2_FileRecursion]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/SolutionsAndExplanations/explanation_3_HuffmanCoding|explanation_3_HuffmanCoding]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/SolutionsAndExplanations/explanation_4_ActiveDirectory|explanation_4_ActiveDirectory]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/SolutionsAndExplanations/explanation_5_BlockChain|explanation_5_BlockChain]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/SolutionsAndExplanations/explanation_6_UnionAndIntersection|explanation_6_UnionAndIntersection]]
+

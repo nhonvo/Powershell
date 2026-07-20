@@ -1,0 +1,11 @@
+# 5_DynamicProgramming
+
+🔙 **Back to Parent**: [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/Algorithms/index_Algorithms|Algorithms]]
+
+## 📄 Notes
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/Algorithms/5_DynamicProgramming/1_knapsack_problem|1_knapsack_problem]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/Algorithms/5_DynamicProgramming/2_longest_common_subsequence|2_longest_common_subsequence]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/Algorithms/5_DynamicProgramming/3_coin_change|3_coin_change]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/Algorithms/5_DynamicProgramming/4_stock_prices|4_stock_prices]]
+- [[5_dynamicprogramming|5_DynamicProgramming]]
+

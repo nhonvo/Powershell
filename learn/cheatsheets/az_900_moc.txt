@@ -1,0 +1,27 @@
+---
+tags:
+  - certification/az-900
+  - azure-fundamentals
+  - moc
+status: in-progress
+created: 2026-06-15
+updated: 2026-06-15
+---
+
+# 🎓 AZ-900: Microsoft Azure Fundamentals MOC
+
+Map of Content for your **AZ-900** exam study.
+
+## 📚 Study Domains
+
+| Domain | Topic | Weight | Practice |
+|:---|:---|:---:|:---|
+| **[[certifications/microsoft/AZ-900/Domain 1 - Cloud Concepts\|D1]]** | Cloud Concepts | ~30% | [[certifications/microsoft/AZ-900/Practice Questions - Domain 1\|Q&A D1 (95 qs)]] |
+| **[[certifications/microsoft/AZ-900/Domain 2 - Azure Architecture and Services\|D2]]** | Architecture & Services | ~40% | [[certifications/microsoft/AZ-900/Practice Questions - Domain 2\|Q&A D2 (61 qs)]] |
+| **[[certifications/microsoft/AZ-900/Domain 3 - Azure Management and Governance\|D3]]** | Management & Governance | ~30% | [[certifications/microsoft/AZ-900/Practice Questions - Domain 3\|Q&A D3 (4 qs)]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AZ-900/AZ-900 Mindmap|🗺️ AZ-900 Mindmap]]
+- [[certifications/microsoft/AZ-900/AZ-900 Flashcards|🃏 AZ-900 Flashcards]]
+- [[certifications/microsoft/AZ-900/AZ-900_Scraped_Question_Bank|🗃️ AZ-900 Scraped Question Bank (100 qs)]]
+- **Interactive PS Quiz**: `.\Start-StudySession.ps1`

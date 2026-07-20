@@ -1,0 +1,22 @@
+# AWS Certifications Index
+
+🔙 **Back to Parent**: [[📖index_learning|learning]]
+
+## 📁 Sub-Categories
+- [[certifications/aws/AIP-C01/AIP-C01 MOC|🎓 AIP-C01 - AWS Certified Generative AI Developer - Professional]]
+- [[certifications/aws/AIF-C01/AIF-C01 MOC|🎓 AIF-C01 - AWS Certified AI Practitioner]]
+- [[certifications/aws/SCS-C02/SCS-C02 MOC|🎓 SCS-C02 - AWS Certified Security - Specialty]]
+- [[certifications/aws/DOP-C02/DOP-C02 MOC|🎓 DOP-C02 - AWS Certified DevOps Engineer - Professional]]
+- [[certifications/aws/ANS-C01/ANS-C01 MOC|🎓 ANS-C01 - AWS Certified Advanced Networking - Specialty]]
+- [[certifications/aws/SOA-C03/SOA-C03 MOC|🎓 SOA-C03 - AWS Certified CloudOps Engineer - Associate]]
+- [[certifications/aws/SAA-C03/SAA-C03 MOC|🎓 SAA-C03 - AWS Certified Solutions Architect - Associate]]
+- [[certifications/aws/CLF-C02/CLF-C02 MOC|🎓 CLF-C02 - AWS Certified Cloud Practitioner]]
+- [[certifications/aws/SAP-C02/SAP-C02 MOC|🎓 SAP-C02 - AWS Certified Solutions Architect - Professional]]
+- [[certifications/aws/DVA-C02/DVA-C02 MOC|🎓 DVA-C02 - AWS Certified Developer - Associate]]
+- [[certifications/aws/MLS-C01/MLS-C01 MOC|🎓 MLS-C01 - AWS Certified Machine Learning - Specialty]]
+- [[certifications/aws/DAS-C01/DAS-C01 MOC|🎓 DAS-C01 - AWS Certified Data Analytics - Specialty]]
+- [[certifications/aws/DBS-C01/DBS-C01 MOC|🎓 DBS-C01 - AWS Certified Database - Specialty]]
+- [[certifications/aws/SCS-C03/SCS-C03 MOC|🎓 SCS-C03 - AWS Certified Security - Specialty SCS-C03]]
+- [[certifications/aws/DEA-C01/DEA-C01 MOC|🎓 DEA-C01 - AWS Certified Data Engineer - Associate DEA-C01]]
+- [[certifications/aws/PAS-C01/PAS-C01 MOC|🎓 PAS-C01 - AWS Certified SAP on AWS - Specialty PAS-C01]]
+- [[certifications/aws/MLA-C01/MLA-C01 MOC|🎓 MLA-C01 - AWS Certified Machine Learning Engineer - Associate MLA-C01]]

@@ -1,0 +1,136 @@
+{
+  "Meta": {
+    "Id": "deck_4__subarray__substring_problems",
+    "Topic": "4. Subarray  Substring Problems",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "4__subarray__substring_problems"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 6
+  },
+  "Cards": [
+    {
+      "Id": "card_00801",
+      "Front": "Bài toán",
+      "Back": "Time | Space | Technique",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. subarray  substring problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00802",
+      "Front": "Subarray Sum = K",
+      "Back": "O(n) | O(n) | Prefix sum + hash map",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. subarray  substring problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00803",
+      "Front": "Longest Substring No Repeat",
+      "Back": "O(n) | O(min(n,σ)) | Sliding window + hash map",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. subarray  substring problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00804",
+      "Front": "Subarray Sum (positive only)",
+      "Back": "O(n) | O(1) | Two pointers",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. subarray  substring problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00805",
+      "Front": "K Distinct Chars",
+      "Back": "O(n) | O(k) | Sliding window + hash map",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. subarray  substring problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00806",
+      "Front": "Minimum Window Substring",
+      "Back": "O(n) | O(σ) | Sliding window + 2 hash maps",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. subarray  substring problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

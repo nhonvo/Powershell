@@ -1,0 +1,154 @@
+# 🗃️ MB-330 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Question Set One (Mixed Questions)
+
+You are setting up Dynamics 365 Supply Chain Management for a client.
+
+The client plans to add several items to the Dynamics 365 Supply Chain Management system.
+
+You are required to ensure that the client can configure the items as either company owned or consignment when the client creates the items.
+
+Which two of the following actions should you take?
+
+Note: Each correct answer is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,D`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Question Set One (Mixed Questions)
+
+Your company uses a Dynamics 365 Supply Chain Management system.
+
+You have been tasked with configuring an agreement that gives clients a specified discount per unit if they buy a certain amount of a particular item.
+
+The parameters are as follows:
+
+51 to 100 10 %/unit
+
+101 and more 15 %/unit
+
+You configure a purchase agreement.
+
+Does the action achieve your objective?
+
+### Options:
+- [ ] **A)** Yes, it does
+- [x] **B)** No, it does not [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Question Set One (Mixed Questions)
+
+Your company uses a Dynamics 365 Supply Chain Management system.
+
+You have been tasked with configuring an agreement that gives clients a specified discount per unit if they buy a certain amount of a particular item.
+
+The parameters are as follows:
+
+51 to 100 10 %/unit
+101 and more 15 %/unit
+
+You configure a sales agreement.
+
+Does the action achieve your objective?
+
+### Options:
+- [ ] **A)** Yes, it does
+- [x] **B)** No, it does not [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Question Set One (Mixed Questions)
+
+Your company uses a Dynamics 365 Supply Chain Management system.
+
+You have been tasked with configuring an agreement that gives clients a specified discount per unit if they buy a certain amount of a particular item.
+
+The parameters are as follows:
+
+51 to 100 10 %/unit
+101 and more 15 %/unit
+
+You configure a trade agreement.
+
+Does the action achieve your objective?
+
+### Options:
+- [x] **A)** Yes, it does [Correct]
+- [ ] **B)** No, it does not
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Question Set One (Mixed Questions)
+
+Your company recently implemented a Dynamics 365 Supply Chain Management system.
+
+You are currently configuring costing methods for items in inventory. You need to make use of a method normally used for items that have a limited shelf life.
+
+Which of the following is the costing method you should use?
+
+### Options:
+- [ ] **A)** Standard
+- [x] **B)** FIFO [Correct]
+- [ ] **C)** Average
+- [ ] **D)** Specific
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---

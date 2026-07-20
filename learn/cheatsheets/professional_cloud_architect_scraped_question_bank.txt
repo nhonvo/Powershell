@@ -1,0 +1,131 @@
+# 🗃️ Professional-Cloud-Architect Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: JencoMart (Testlet 1)
+
+The JencoMart security team requires that all Google Cloud Platform infrastructure is deployed using a least privilege model with separation of duties for administration between production and development resources.
+
+What Google domain and project structure should you recommend?
+
+### Options:
+- [ ] **A)** Create two G Suite accounts to manage users: one for development/test/staging and one for production.
+Each account should contain one project for every application
+- [x] **B)** Create two G Suite accounts to manage users: one with a single project for all development applications and one with a single project for all production applications [Correct]
+- [ ] **C)** Create a single G Suite account to manage users with each stage of each application in its own project
+- [ ] **D)** Create a single G Suite account to manage users with one project for the development/test/staging environment and one project for the production environment
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Note: The principle of least privilege and separation of duties are concepts that, although semantically different, are intrinsically related from the standpoint of security. The intent behind both is to prevent people from having higher privilege levels than they actually need
+
+Principle of Least Privilege: Users should only have the least amount of privileges required to perform their job and no more. This reduces authorization exploitation by limiting access to resources such as targets, jobs, or monitoring templates for which they are not authorized.
+Separation of Duties: Beyond limiting user privilege level, you also limit user duties, or the specific jobs they can perform. No user should be given responsibility for more than one related function. This limits the ability of a user to perform a malicious action and then cover up that action.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: JencoMart (Testlet 1)
+
+A few days after JencoMart migrates the user credentials database to Google Cloud Platform and shuts down the old server, the new database server stops responding to SSH connections. It is still serving database requests to the application servers correctly.
+
+What three steps should you take to diagnose the problem? (Choose three.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C,D,E`
+
+**Explanation**:
+D: Handling "Unable to connect on port 22" error message
+Possible causes include:
+There is no firewall rule allowing SSH access on the port. SSH access on port 22 is enabled on all Compute Engine instances by default. If you have disabled access, SSH from the Browser will not work. If you run sshd on a port other than 22, you need to enable the access to that port with a custom firewall rule.
+The firewall rule allowing SSH access is enabled, but is not configured to allow connections from GCP Console services. Source IP addresses for browser-based SSH sessions are dynamically allocated by GCP Console and can vary from session to session.
+F: Handling "Could not connect, retrying..." error
+You can verify that the daemon is running by navigating to the serial console output page and looking for output lines prefixed with the accounts-from-metadata: string. If you are using a standard image but you do not see these output prefixes in the serial console output, the daemon might be stopped. Reboot the instance to restart the daemon.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: JencoMart (Testlet 1)
+
+JencoMart has decided to migrate user profile storage to Google Cloud Datastore and the application servers to Google Compute Engine (GCE). During the migration, the existing infrastructure will need access to Datastore to upload the data.
+
+What service account key-management strategy should you recommend?
+
+### Options:
+- [ ] **A)** Provision service account keys for the on-premises infrastructure and for the GCE virtual machines (VMs)
+- [ ] **B)** Authenticate the on-premises infrastructure with a user account and provision service account keys for the VMs
+- [x] **C)** Provision service account keys for the on-premises infrastructure and use Google Cloud Platform (GCP) managed keys for the VMs [Correct]
+- [ ] **D)** Deploy a custom authentication service on GCE/Google Kubernetes Engine (GKE) for the on-premises infrastructure and use GCP managed keys for the VMs
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Migrating data to Google Cloud Platform
+Let's say that you have some data processing that happens on another cloud provider and you want to transfer the processed data to Google Cloud Platform. You can use a service account from the virtual machines on the external cloud to push the data to Google Cloud Platform. To do this, you must create and download a service account key when you create the service account and then use that key from the external process to call the Cloud Platform APIs.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: JencoMart (Testlet 1)
+
+JencoMart has built a version of their application on Google Cloud Platform that serves traffic to Asia. You want to measure success against their business and technical goals.
+
+Which metrics should you track?
+
+### Options:
+- [ ] **A)** Error rates for requests from Asia
+- [x] **B)** Latency difference between US and Asia [Correct]
+- [ ] **C)** Total visits, error rates, and latency from Asia
+- [ ] **D)** Total visits and average latency for users from Asia
+- [ ] **E)** The number of character sets present in the database
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+From scenario:
+Business Requirements include: Expand services into Asia
+Technical Requirements include: Decrease latency in Asia
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: JencoMart (Testlet 1)
+
+The migration of JencoMart's application to Google Cloud Platform (GCP) is progressing too slowly. The infrastructure is shown in the diagram. You want to maximize throughput.
+
+What are three potential bottlenecks? (Choose three.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,C,F`
+
+**Explanation**:
+
+</details>
+
+---

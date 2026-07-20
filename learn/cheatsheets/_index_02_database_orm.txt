@@ -1,0 +1,10 @@
+# 02_Database_ORM
+
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/📂index_02_Backend_Development_Roadmap|02_Backend_Development_Roadmap]]
+
+## 📄 Notes & Documents
+- [[technical_skills/02_Backend_Development_Roadmap/02_Database_ORM/1. SQL Fundamentals & PostgreSQL|1. SQL Fundamentals & PostgreSQL]]
+- [[technical_skills/02_Backend_Development_Roadmap/02_Database_ORM/2. Entity Framework Core (CSharp)|2. Entity Framework Core (CSharp)]]
+- [[technical_skills/02_Backend_Development_Roadmap/02_Database_ORM/3. Hibernate & Spring Data JPA (Java)|3. Hibernate & Spring Data JPA (Java)]]
+- [[technical_skills/02_Backend_Development_Roadmap/02_Database_ORM/4. Database Design & Optimization|4. Database Design & Optimization]]
+

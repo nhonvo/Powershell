@@ -1,0 +1,613 @@
+🔙 **Back to Parent**: [[languages/english/English for work - globish/🇬🇧index_English for work - globish|English for work - globish]]
+
+# **Globish**
+
+**Expressions of Interest**
+
+- I am passionate about sth
+- I am into sth
+- Something is my cup of tea
+- I am fascinated about sth
+
+## Day 1 5/8/2024 Introduce yourself
+
+"My name is Truong Nhon. I have been working at FPT Software as a software engineer for about 2 years. In addition to my professional interests, I am also an anime lover, a passion I developed during my high school years."
+
+1. *How would you describe yourself?*
+
+"I am a technology-oriented person with a strong passion for **staying updated with new tech developments**. I enjoy myself in the latest tech, such as **ChatGPT, Ollama, AI developments, and innovative laptop, mobi technologies**. I also have interest in **setting up efficient workspaces** and exploring various keyboard options for optimal productivity. Additionally, I am always on the lookout for **new coding frameworks and programming languages** that can help me code faster and more efficiently. I frequently watch tech content on platforms like YouTube and participate in discussions on Reddit to stay informed and gain new insights."
+
+2. *What challenges are you facing at work?*
+
+"One of the main challenges I face at work is the **gap between new technology concepts and their implementation**. While these technologies are exciting, they often involve **complex concepts** that require significant **time and resources** to integrate effectively into real-world projects. This process can be both **time-consuming and costly**.
+
+Role Play
+
+**Role-Play 1:**
+
+**Manager:** Good morning, Robyn. How are you doing today?
+**Robyn:** Good morning, sir. I’m doing great today.
+**Manager:** This is your first one-on-one meeting with me, isn’t it?
+**Robyn:** Yes, it is.
+**Manager:** Even though you’ve just started working here, you have done a very good job. Hiring you to be a part of the team was indeed one of the best decisions our department has made. You did the best you can to help the team. I know you stayed late to complete all of the tasks assigned to you for the past few weeks. I’ve noticed your contribution and will keep this in mind for future projects.
+**Robyn:** Thank you. I really appreciate it. This means a lot to me.
+
+**Role-Play 2:**
+
+**Manager:** Hi, Martin. Your last project was completed efficiently and effectively. I know it wasn’t easy, was it? I’m quite certain that the board will be satisfied with your team’s performance this year and they'll set a new benchmark for other teams.
+**Martin:** Thank you for acknowledging my team's hard work. We all put in a lot of effort. I’m genuinely glad that it turned out well.
+**Manager:** Your hard work as leader of the dev team has paid off. Martin, I’m thinking about appointing you to oversee and supervise the IT division at our headquarters. Would you be willing to accept that challenge?
+
+Questions
+
+1. **Why did the manager appreciate them?**
+   - **Robyn:** The manager appreciated Robyn because she has done a very good job since starting, has helped the team significantly, and stayed late to complete tasks.
+   - **Martin:** The manager appreciated Martin because he completed the last project efficiently and effectively, and the team's performance set a new benchmark.
+2. **How did they respond to the positive feedback?**
+   - **Robyn:** She expressed gratitude, saying, "Thank you. I really appreciate it. This means a lot to me."
+   - **Martin:** He acknowledged the recognition of his team's hard work and expressed gladness that the project turned out well, saying, "Thank you for acknowledging my team's hard work. We all put in a lot of effort. I’m genuinely glad that it turned out well."
+3. **What does ‘paid off’ mean?**
+   - "Paid off" means that the hard work and effort put into something have resulted in success or a positive outcome.
+4. **What new words or phrases did you learn from the role play?**
+   - **Benchmark:** A standard or point of reference against which things may be compared or assessed.
+   - **Paid off:** Achieved a successful result due to effort.
+   - **Acknowledging:** Recognizing and expressing appreciation for something.
+
+Guideline for Giving Feedback
+
+- Describe behavior:
+
+  When you…/ You have…
+
+  - Example: "When you stayed late to complete your tasks…"
+
+- Describe the effect or result:
+
+  The project is…/ You did great on...
+
+  - Example: "The project was completed efficiently and effectively."
+
+- Describe emotions and acknowledgment:
+
+  I feel.../ I notice…/ I expect…
+
+  - Example: "I feel that your hard work has set a new benchmark for other teams."
+
+i consider myself at
+
+---
+
+## Day 2 HR department
+
+**1. How is the HR department perceived in your organization?**
+
+HR can be seen in different ways. In some places, people see HR as a key partner in shaping company culture and helping with career growth. In others, HR might be more about handling administrative tasks and making sure rules are followed.
+
+**2. Give examples of companies that you would love to work for. What attracts you to those companies?**
+
+I’d love to work for companies like Google, Apple, or Tesla. They attract me because they offer a great work environment, opportunities to grow, good pay, and cool perks like flexible work hours and fun office spaces.
+
+**3. How can the HR department influence the overall success of an organization?**
+
+HR helps by hiring and keeping great people, offering training to improve skills, creating a positive work culture, managing performance to meet goals, and making sure the company follows laws.
+
+**4. In what ways have technology and globalization changed the way HR works?**
+
+Technology has made HR tasks like hiring and managing employees more efficient with tools and software. Globalization has brought a diverse workforce and the need for HR to handle different cultures and international rules.
+
+**5. Suppose you are an HR manager, how would you react and respond to the following scenarios?**
+
+a. **Received a complaint of sexual harassment in the workplace:**
+
+- Take it seriously, keep it confidential, and follow the company’s procedures to investigate and resolve it. Support the affected person and take necessary actions.
+
+b. **Informed that the company is going through a financial crisis:**
+
+- Be open with employees about what’s happening, offer support, and work with leadership to manage any changes or layoffs carefully.
+
+c. **50% of your employees went on strike:**
+
+- Talk to the employees to understand their concerns, work with any representatives if needed, and try to find a solution that works for both the employees and the company.
+
+**6. Do you think an employer should have the right to monitor an employee’s computer? Why?**
+
+- **Yes:** Employers might need to monitor computers to ensure work gets done, protect company information, and follow legal rules. But it should be done transparently, with clear policies so employees know what’s being monitored.
+
+**7. What are the advantages and disadvantages of employee referrals?**
+
+- **Advantages:**
+  - **Better Candidates:** Referrals often bring in good candidates who fit the company well.
+  - **Faster Hiring:** The process can be quicker because referrals come with a recommendation.
+  - **Lower Costs:** Recruiting through referrals can be cheaper than other methods.
+- **Disadvantages:**
+  - **Bias:** Referrals might lead to less diversity or favoritism.
+  - **Tension:** If referred employees don’t work out, it might cause issues or perceptions of favoritism.
+
+**8. “Being successful is not about what you know, it is about who you know.” Do you think there is some truth in this expression?**
+
+- There is some truth to this. Knowing the right people can open doors and create opportunities. But having the right skills and knowledge is also really important. It’s usually a mix of both that leads to success.
+
+**9. In what areas should the HR department pay more attention to? Why?**
+
+- **Employee Well-being:** Focus more on mental health and work-life balance to keep employees happy and productive.
+- **Diversity and Inclusion:** Work on hiring from diverse backgrounds and creating an inclusive environment.
+- **Technology:** Use new tools and tech to make HR processes more efficient and effective.
+
+**10. What do you think is the hardest part of working in human resources?**
+
+- **Balancing Interests:** HR has to juggle what’s best for both the company and the employees, which can be tricky.
+- **Handling Sensitive Issues:** Dealing with conflicts or serious issues requires a lot of care and understanding.
+- **Keeping Up with Changes:** Staying current with new laws, technology, and company needs can be challenging.
+
+---
+
+## day 3 Constructive Criticism
+
+1. What is Constructive Criticism?
+
+Constructive criticism is feedback provided in a way that is intended to help someone improve their performance, skills, or behavior.
+
+The goal of constructive criticism is to encourage growth and development by offering positive guidance, rather than discouraging or demoralizing the person receiving the feedback.
+
+2. How Can Receiving Constructive Criticism Improve Your Performance?
+
+Receiving constructive criticism from your manager or peers can significantly improve your performance in several ways:
+
+1. **Identification of Weaknesses**: It helps you identify areas where you might not be meeting expectations or where there is room for improvement. This awareness is the first step in making positive changes.
+2. **Guidance for Improvement**: Constructive criticism often includes specific advice or strategies for how to improve. This guidance can direct your efforts more effectively, helping you develop the skills or behaviors that will enhance your performance.
+3. **Encouragement of Self-Reflection**: Constructive criticism encourages you to reflect on your actions and performance. This self-reflection can lead to a deeper understanding of your strengths and weaknesses, enabling you to set personal goals for improvement.
+4. **Building Resilience**: Learning to accept and act on constructive criticism can build your resilience and adaptability, helping you to handle future challenges more effectively.
+5. **Improved Relationships**: When delivered and received well, constructive criticism can strengthen relationships with managers and peers. It demonstrates that there is a mutual commitment to growth and success.
+6. **Increased Confidence**: As you act on constructive criticism and see improvements in your performance, your confidence can increase, which can lead to even greater achievements.
+
+Role play
+
+Manager: James, let me be honest with you. I’ve noticed lately that your team has been  struggling to manage overwhelming tasks. Some issues related to your responsibilities got out  of hand and were escalated to the board… which seems unnecessary and should not have  happened in the first place.  
+
+James: I apologize on behalf of my team members. Our schedule was way too packed to  handle everything at the same time. Actually, it was my fault as the team leader. I’m aware  that my quarterly performance will not be particularly good and that it could be better.
+
+Manager: I admire the fact that you keep high expectations for yourself, James. However, your  members could be pressured and too exhausted to reach your expectations. Personally, I think  you have set the bar too high for them. You assumed that they could complete all the tasks so  you gave them extra ones. Consequently, some tasks were not completed in a timely fashion.  James, you are a great leader. What can I do to help you get back on track? I know what you’re  capable of, and I’ve always been impressed by your work.
+
+James: It is true that I have neglected their mental welfare. I was supposed to realize their  stress before anyone else. Thank you for bringing this to my attention. I really appreciate it.
+
+1. What Happened with James’ Team?
+
+James' team struggled to manage overwhelming tasks, leading to some issues escalating to the board. The situation arose because James, as the team leader, set high expectations and gave his team additional tasks, assuming they could handle them. However, the team was overworked and stressed, which caused them to miss deadlines and fail to complete tasks on time.
+
+2. What Can James Do to Improve His Team Performance?
+
+James can take several steps to improve his team’s performance:
+
+1. **Prioritize Tasks**: James should focus on prioritizing tasks and ensuring that the most critical ones are completed first. This will help prevent tasks from becoming overwhelming.
+2. **Set Realistic Expectations**: He needs to set more realistic and achievable expectations for his team. Understanding the team's capacity and not overloading them with tasks will help in better time management.
+3. **Delegate Wisely**: James should delegate tasks based on team members' strengths and availability. This ensures that tasks are distributed fairly and according to each person's capacity.
+4. **Monitor Workload and Stress Levels**: Regularly checking in with his team to gauge their workload and stress levels can help James identify when his team is feeling overwhelmed. He can then adjust assignments as needed.
+5. **Provide Support**: Offering support and resources to his team can help them manage their tasks more effectively. This could include additional training, tools, or even bringing in temporary help during particularly busy periods.
+6. **Encourage Open Communication**: Encouraging his team to communicate openly about their workload and any challenges they’re facing can help James address issues before they escalate.
+7. **Focus on Well-being**: James should also make sure to prioritize the mental and physical well-being of his team members. This might involve adjusting work schedules, encouraging breaks, or even organizing team-building activities to reduce stress.
+
+8. What New Words or Phrases Did You Learn from the Role Play?
+
+- **Escalated**: This term means that a situation or issue was elevated to a higher level of authority or seriousness.
+- **Out of Hand**: This phrase means something became unmanageable or uncontrollable.
+- **Set the Bar Too High**: This phrase means setting expectations or goals that are too difficult or unrealistic for someone to achieve.
+- **Neglected**: This word means failing to care for or give proper attention to something or someone.
+
+Here are some examples for each step:
+
+1. **Giving Constructive Criticism**
+
+**a. Begin with Positive Comments:** "Sarah, I really appreciate the dedication you’ve shown on our recent project. Your commitment has been evident in the quality of work you’ve delivered."
+
+**b. Give Praise for the Strong Points:** "You’ve done a great job managing the team and keeping everyone on track, especially with those tight deadlines. Your attention to detail in the reports is particularly impressive."
+
+**c. Give the Criticism:** "However, I’ve noticed that the communication with clients has sometimes been delayed, which has caused some confusion. It would be helpful if we could respond more promptly to their inquiries to ensure they feel well-informed and valued."
+
+**d. Remind the Strong Points:** "I know you’re more than capable of handling this because your communication within the team has been excellent. Your ability to clarify tasks and expectations internally is one of your strengths."
+
+**e. Give Thanks and Offer Support:** "Thank you for your hard work. I’m here to support you in any way I can, whether that’s helping prioritize client communication or discussing ways to manage your workload more effectively."
+
+2. **Responding to Criticism**
+
+**a. Thank You for Feedback:** "Thank you for the feedback, Mark. I appreciate you bringing this to my attention."
+
+**b. Restate the Criticism:** "So, you’re saying that my reports have been thorough, but the formatting sometimes makes it difficult for others to follow the key points, right?"
+
+**c. Explain the Reasons:** "I understand that. I’ve been focusing a lot on the content and may have overlooked how it’s presented. I thought the detailed information was the most important, but I can see now that clarity and readability are just as crucial."
+
+**d. Describe the Solution:** "I’ll start simplifying the structure of the reports and use bullet points or headings to make the key points stand out more. I’ll also make sure to review the formatting before submitting."
+
+**e. Ask for Help and Suggestions:** "Do you have any suggestions on how I can improve in this area? Maybe there’s a template or style guide that I could follow to make the reports more consistent?"
+
+Challenges
+
+**How to Share Negative Feedback Retrospectively:**
+
+- **Be Specific and Objective:** Focus on the issue, not the person.
+- **Use "We" Language:** Frame it as a team challenge, not individual blame.
+- **Balance with Positives:** Start and end with positive observations.
+- **Offer Solutions:** Suggest ways to improve, showing support for future success.
+
+**Importance of Constructive Feedback from Users for Tech Teams:**
+
+- **Improves Product Quality:** Helps identify bugs and usability issues.
+- **Enhances User Experience:** Guides teams to better meet user needs.
+- **Drives Innovation:** Inspires new features and improvements.
+- **Builds Trust:** Shows users that their input is valued and acted upon.
+
+## day 4
+
+1. **Expected Skills for a New Graduate in Tech:**
+   - **Programming Proficiency:** Strong knowledge of at least one programming language (e.g., Python, Java, C++).
+   - **Problem-Solving:** Ability to break down complex problems and develop efficient solutions.
+   - **Teamwork and Communication:** Skills to collaborate effectively with others and communicate technical concepts clearly.
+   - **Continuous Learning:** A mindset focused on learning new tools, languages, and technologies as they evolve.
+   - **Understanding of Software Development Lifecycle:** Familiarity with concepts like version control (e.g., Git), testing, and deployment processes.
+2. **Agree/Disagree with "All tech people are incredibly genius":**
+   - **Disagree:** While many tech professionals are highly skilled, being a "genius" isn't a requirement for success. The industry values continuous learning, problem-solving, and collaboration more than innate brilliance. Many skills can be learned and improved with practice and experience, making tech accessible to a wide range of people, not just "geniuses."
+
+**ROLE PLAY**
+
+**What does Jerald mean by ‘go the extra mile’?**
+
+- Jerald means that he is willing to put in extra effort, work harder, and take additional steps beyond what is expected to achieve his goals or complete a task.
+
+**Views on Jerald’s Answer:**
+
+- Jerald’s response shows initiative and self-awareness. He knows what motivates him and is clear about where he can contribute best. If I were the manager, I’d appreciate his honesty and enthusiasm. I would encourage him to present his idea and support him in forming a team, while also discussing how he can balance this with his current responsibilities.
+
+**Jerald’s Plan to Reach His Goals:**
+
+- Jerald plans to reach his goals by actively participating in challenging projects and leading a new initiative for a product idea he has. He wants to take on a leadership role by setting up a team and taking responsibility for the project's success.
+
+**Importance of Setting Goals and Expectations:**
+
+- Setting goals and expectations is crucial because it provides direction and motivation, helps measure progress, and aligns personal objectives with the organization’s needs. Clear goals also enable individuals to focus their efforts and develop the skills necessary to succeed.
+
+**New Words or Phrases Learned:**
+
+- **"Go the extra mile":** To make an extra effort or do more than is expected.
+- **"Take the initiative":** To act independently and take charge of situations without waiting for others to direct you.
+
+Challenges
+
+1. Make sentences using ‘all of...’, ‘most of...’, and ‘none of...’.
+2. “Employee’s goals should be aligned with company’s goals”, do you agree or
+   disagree with this statement?
+3. What are your goals and expectations for this year?
+4. How can you set a goal for a massive project to be actionable and achievable?
+
+**Sentences Using ‘all of...’, ‘most of...’, and ‘none of...’:**
+
+- **All of** the team members completed their tasks on time.
+- **Most of** the employees prefer remote work over office work.
+- **None of** the proposed solutions addressed the main problem.
+
+**Agree/Disagree: "Employee’s goals should be aligned with company’s goals":**
+
+- **Agree:** When employees’ goals align with the company’s goals, it creates synergy, leading to better performance and job satisfaction. It ensures that individual efforts contribute directly to the organization’s success, fostering a cohesive and motivated workforce.
+
+**My Goals and Expectations for This Year:**
+
+- My goals include improving my technical skills, contributing to significant projects at work, and enhancing my leadership abilities. I also expect to expand my professional network and achieve a better work-life balance.
+
+**Setting a Goal for a Massive Project to Be Actionable and Achievable:**
+
+- Break the project into smaller, manageable tasks with specific deadlines. Set clear milestones and allocate resources effectively. Ensure the goals are SMART (Specific, Measurable, Achievable, Relevant, and Time-bound) and regularly review progress to make adjustments as needed.
+
+## day 5
+
+**Would you rather never be stuck in traffic again or never get another cold?**
+
+- **Never be stuck in traffic again.** Being stuck in traffic is a frequent inconvenience that can waste a lot of time, especially in busy cities. Eliminating traffic would save time and reduce stress, leading to a more efficient and enjoyable daily life.
+
+**Would you rather lose all your money and valuables or lose all the pictures you have ever taken?**
+
+- **Lose all the pictures.** While losing pictures would be emotionally difficult because they hold memories, losing money and valuables could have a much more immediate and practical impact on daily life, potentially causing severe financial hardship.
+
+**Would you rather speak to animals or speak 10 foreign languages?**
+
+- **Speak 10 foreign languages.** Being able to communicate in multiple languages would open up many opportunities for travel, work, and cultural exchange. Speaking to animals would be fascinating, but the practical benefits of speaking multiple languages are likely greater.
+
+**Would you rather go through life unable to ask any questions or unable to answer any questions?**
+
+- **Unable to ask any questions.** Not being able to ask questions would be challenging, but you could still learn and communicate in other ways. On the other hand, not being able to answer questions could make it difficult to help others or share knowledge.
+
+**Would you rather have no sense of smell or smell everything around you with extra ability?**
+
+- **Have no sense of smell.** While smell adds to the richness of experiences like enjoying food, losing it might be preferable to being overwhelmed by smells, which could be distracting or unpleasant in many situations.
+
+**Statement**
+
+EU lawmakers have reached an agreement on the new proposals that will mandate all smartphones sold within its border to feature a universal USB-C type charging port by the autumn of 2024. Other electronic devices, for example, tablets, headphones and headsets, and digital cameras will also have to comply with the rule. The purpose of this move is to cut down on electronic waste as well as customers’ unnecessary expenses on charger purchases because they can use the older ones for new devices. However, the new rule is likely to have the biggest impact on Apple’s iPhones, as it will force the company to replace the Lightning port on its products with the USB-C port.
+
+**Do you think that changing all Lightning to USB-C ports only in the EU will reduce the amount of electronic waste?**
+
+- Yes, it should reduce electronic waste by minimizing the need for multiple types of chargers. Consumers can reuse existing USB-C chargers for new devices, decreasing the number of discarded chargers.
+
+**Do you think that if Apple complies with this agreement, in what ways will the company be affected? Give an example with an explanation.**
+
+- Apple may face increased manufacturing costs initially due to redesigning their products to accommodate USB-C ports. However, this could also open up opportunities to streamline their product line globally, potentially leading to cost savings in the long run.
+
+**Apart from smartphones, do you think that having any electronic devices replaced with a USB-C port will make it more difficult for consumers to use that device? How?**
+
+- Initially, there might be some inconvenience for consumers who own accessories that are compatible only with the old ports. However, as USB-C becomes more standardized, it will likely become easier to use across various devices, enhancing compatibility and convenience.
+
+**Do you agree or disagree with the fact that the company will give you an adapter when you buy a new phone? Why?**
+
+- Agree, because providing an adapter ensures that consumers can continue using their existing accessories and chargers, reducing additional costs and electronic waste.
+
+**From your point of view, do you like it if the company replaces the Lightning port on its products with the USB-C port but still gives you a cable at no cost? Why?**
+
+- Yes, providing a USB-C cable at no cost is beneficial as it ensures consumers have what they need to charge their devices without any extra expense, making the transition smoother.
+
+**What type of charging ports on your smartphone have you used? Does each different type have advantages or disadvantages or not?**
+
+- I’ve used Micro-USB and USB-C. Micro-USB was widely used but often broke easily and was slow for data transfer. USB-C is more durable, supports faster charging, and is reversible, making it more user-friendly.
+
+**What do you think is the reason that Apple is the only smartphone company that still clings to the Lightning port?**
+
+- Apple likely sticks with the Lightning port because it generates significant revenue through accessory sales and licensing. Additionally, it provides them control over the ecosystem of their devices.
+
+**If you can propose three suggestions to the smartphone manufacturers, what will you propose?**
+
+- Ensure all devices are compatible with USB-C for consistency.
+- Focus on making devices more repairable to reduce electronic waste.
+- Develop wireless charging technology that is efficient and universal.
+
+**Do you think Apple will produce smartphones with USB-C charging ports in accordance with the rule? If not, what kind of smartphones do you think Apple will produce that can charge batteries without a charging port?**
+
+- Yes, Apple is likely to comply with the rule by producing smartphones with USB-C ports. If they don't, they might accelerate the development of fully wireless smartphones that rely on wireless charging and data transfer.
+
+**In your opinion, should this rule be applied to all smartphones sold in other regions?**
+
+- Yes, applying this rule globally would standardize charging ports, making it easier for consumers to use a single charger for all devices, reducing electronic waste on a larger scale.
+
+## day 6
+
+Not prepare the
+
+## day 7 1-1
+
+Lesson 5 - Self-reflection
+
+1. What did you do well during the last sprint/quarter?
+2. What did you fail to do during the last sprint/quarter and how can you improve that?
+3. How do you maximize your productivity?
+
+4. What did you do well during the last sprint/quarter?
+
+I effectively managed my time, delivered key tasks on schedule, and maintained clear communication with team members. I also improved my technical skills, particularly in areas where I was previously less confident, like creating financial reports and dashboard visualizations in Python.
+
+1. What did you fail to do during the last sprint/quarter and how can you improve that?
+
+I struggled with prioritizing tasks when unexpected issues arose. To improve, I'll focus on enhancing my task management strategies, like using more effective prioritization techniques (e.g., Eisenhower Matrix) and setting clearer boundaries for deep work sessions to minimize distractions.
+
+1. How do you maximize your productivity?
+
+I maximize productivity by breaking tasks into smaller, manageable chunks, using tools like time-blocking to focus on specific tasks, and taking regular short breaks to avoid burnout. Additionally, I continually refine my workflow to eliminate inefficiencies and automate repetitive tasks where possible.
+
+Please summarize the main ideas of the provided information by listening to the coach
+and relaying the main idea of the message. (For coach, please refer to the Coach Manual for the
+scripts.)
+a. Sharing feelings in a retrospective
+b. Giving peer feedback
+c. Commenting on a given task
+
+Main Ideas:
+
+**a. Sharing feelings in a retrospective**: The main idea is to encourage team members to express their emotions and thoughts openly during retrospectives. This helps in understanding different perspectives and fosters a supportive team environment.
+
+**b. Giving peer feedback**: The focus is on providing constructive feedback to peers. The main idea is to deliver feedback in a way that is helpful, respectful, and focused on specific behaviors or outcomes rather than personal attributes.
+
+**c. Commenting on a given task**: The main idea is to give clear, concise, and relevant comments on tasks, focusing on the task’s objectives, quality, and areas for improvement.
+
+2. What have you learnt from the task? (E.g. How do you find the main idea?)
+
+Learnings from the Task:
+
+I learned that finding the main idea involves identifying the key message or purpose behind the communication. It requires listening carefully to the speaker or reading the content thoroughly and then distilling it down to the core concept that the speaker intends to convey. This can be achieved by focusing on recurring themes, significant points, or the overall objective of the message.
+
+Challenges
+
+1. What are ways you feel you can improve your quality of life, both personally and
+   professionally?
+2. What do you do when you are dissatisfied with your job performance?
+3. Aristotle said that “pleasure in the job puts perfection in the work.” Do you agree
+   or disagree with the quote?
+
+4. Ways to Improve Quality of Life:
+   Personally: I can improve my quality of life by prioritizing self-care, such as exercising regularly, maintaining a balanced diet, and setting aside time for hobbies and relaxation. Building stronger relationships with family and friends and practicing mindfulness or meditation can also enhance overall well-being.
+
+Professionally: I can focus on continuous learning, setting clear professional goals, and seeking out opportunities for growth and development. Maintaining a healthy work-life balance and ensuring that I’m working in an environment that aligns with my values and strengths are also key to improving my professional quality of life.
+
+2. What to Do When Dissatisfied with Job Performance:
+   When I'm dissatisfied with my job performance, I start by identifying the root cause of the issue, such as lack of motivation, unclear goals, or external stressors. I then set specific, actionable steps to address these challenges, like seeking feedback from peers or mentors, breaking down tasks into smaller, manageable parts, or adjusting my work environment. Reflection and learning from mistakes also play a crucial role in improving future performance.
+
+3. Agreeing or Disagreeing with Aristotle’s Quote:
+   I agree with Aristotle’s quote that “pleasure in the job puts perfection in the work.” When we find joy and satisfaction in what we do, we are naturally more motivated, engaged, and dedicated to our work. This often leads to higher quality and a greater sense of fulfillment. Enjoying the process can make even challenging tasks more manageable, and it fosters a mindset of continuous improvement, which is essential for achieving excellence.
+
+## day 7 1-4
+
+**freedom**
+
+1. **What is the first thing that comes to your mind when you hear the word freedom?**
+   - The ability to make choices without external control.
+   - Having personal autonomy and independence in decision-making.
+   - The idea of breaking free from societal, cultural, or governmental constraints.
+   - Feeling liberated from fears or pressures that limit self-expression.
+2. **Have you ever read books or watched movies about people who fight for freedom?**
+   - Yes, many stories focus on the fight for freedom:
+     - *Braveheart*: William Wallace leads Scotland in its battle for independence from England.
+     - *The Kite Runner*: A story about redemption and freedom from personal guilt as well as social oppression in Afghanistan.
+     - *12 Years a Slave*: A heartbreaking account of a free man being sold into slavery, and his fight to regain freedom.
+     - *1984* by George Orwell: A dystopian novel about a man resisting a totalitarian regime that controls every aspect of life.
+3. **When you were a teenager, were you free to choose your field of study at university?**
+   - Yes, I had the freedom to choose my academic path.
+   - However, there were social expectations and parental advice that influenced my decision.
+   - I had to balance personal interests with practical concerns, like job security and societal norms.
+   - I appreciated the freedom, but there was also pressure to make "the right choice."
+4. **When was the last time you felt like you couldn't do something you wanted to do?**
+   - A recent situation was being constrained by work deadlines.
+   - I wanted to explore a creative project, but the demands of work took priority.
+   - It felt frustrating not having the freedom to manage my time as I wished.
+   - This made me reflect on how much external factors, like responsibilities, can limit personal freedom.
+5. **What is more important: safety or freedom?**
+   - Both are essential, but the importance depends on context:
+     - In extreme circumstances, like during a war, safety might take priority to protect life.
+     - In everyday life, freedom is crucial for personal growth, expression, and happiness.
+   - The balance between freedom and safety is often debated in politics, especially in areas like surveillance and national security.
+   - Ideally, society should find a way to protect safety without overly restricting freedom.
+6. **Do you think people should be free to own a gun?**
+   - This is a complex issue and highly dependent on cultural and legal context.
+     - In some countries, gun ownership is tied to personal freedom and self-defense.
+     - In others, strict gun control is seen as essential to maintaining public safety.
+   - Responsible ownership and regulation are key to preventing misuse.
+   - Personally, I believe there should be regulations in place to ensure that only those with proper training and a need for self-defense can own guns.
+7. **What do you think about arranged marriages?**
+   - Arranged marriages can work well in cultures where they are common, but:
+     - Personal choice is crucial—individuals should have the freedom to accept or reject the arrangement.
+     - In successful cases, families provide support, but the couple still has the freedom to grow and develop a relationship.
+     - Forced marriages, where there's no consent, are unethical and should be avoided.
+   - I believe love and compatibility are important, whether a marriage is arranged or not.
+8. **Who's the symbol of freedom in your mind? Why?**
+   - Nelson Mandela stands out as a symbol of freedom:
+     - He fought against apartheid and endured years in prison for standing up for equality.
+     - Mandela's peaceful transition from prisoner to leader of South Africa shows the strength of forgiveness and the quest for freedom for all, regardless of race.
+   - Other notable figures include:
+     - Mahatma Gandhi, for leading India’s non-violent struggle for independence.
+     - Martin Luther King Jr., for his fight for civil rights and equality in the U.S.
+9. **What do you think about this quote, “the most courageous act is still to think for yourself. Aloud.”?**
+   - I believe this quote emphasizes the importance of independent thought:
+     - In a world where societal norms, peer pressure, and expectations can influence thinking, it takes courage to break away and think freely.
+     - Speaking your mind, even when it contradicts popular opinions, is an act of bravery.
+     - It reminds me of historical figures like Galileo, who dared to challenge the established beliefs of their time.
+   - I agree with the sentiment that true freedom comes from expressing your unique perspective, even when it goes against the grain.
+10. **Do you have as much freedom as you want in your life?**
+
+- In many ways, I feel free to make my own choices, but there are limitations:
+  - Work commitments, financial responsibilities, and social expectations sometimes restrict my ability to act completely freely.
+  - There are moments when I wish I had more time and freedom to pursue personal passions or travel more.
+  - However, I recognize that freedom comes with responsibilities, and managing these is part of maintaining a balanced life.
+- Overall, I have a good amount of personal freedom but always seek more flexibility in certain areas.
+
+## day 8 **Practice and Evaluation**
+
+- I am able to recognize a speaker's feelings or attitudes.
+- I am able to briefly give explanations for opinions and plans.
+- I am able to understand feedback given to me as well as respond to them.
+- I am able to express their ideas on concerns, future plans, and expectations.
+- I am able to ask for ask for general feedback about works and projects.
+- I am able to use and differentiate to difference of 'at’, ‘during’, ‘on
+
+Evaluation Item 1:
+
+**Coach's question: Your working hours and workplace**
+
+- Use "at" for specific times or locations: "I start work **at** 9 AM **at** the office."
+- Use "during" for periods or events: "I take a break **during** lunch."
+- Use "on" for days: "I work from home **on** Fridays."
+
+**Example answer:** "I usually work from 9 AM to 6 PM **at** the office. **During** lunch, I go out to eat with colleagues. Sometimes, **on** Fridays, I work remotely."
+
+Evaluation Item 2:
+
+**Question: Do you agree or disagree with the statement about meetings?**
+
+- Agree: "I agree. Listening more allows us to understand different perspectives, which can lead to better solutions."
+- Disagree: "I disagree. I think everyone should have an equal chance to share ideas for better collaboration."
+
+**Recognizing feelings**: "It seems like the speaker feels that active listening is more important than speaking during meetings."
+
+**Pronunciation practice**: Focus on the initial sounds of "staff," "meetings," and "sharing."
+
+Evaluation Item 3:
+
+**Ask for feedback and summarize it**:
+
+- You: "Could you provide feedback on my performance so far?"
+- Coach's feedback: "You are improving, but you need to work on your grammar and pronunciation."
+- Your response: "Thank you for the feedback. I understand that I need to focus more on grammar and pronunciation, and I’ll work to improve these areas."
+
+**Handling negative feedback**: "I appreciate the constructive criticism. I'll take it as a chance to improve."
+
+Evaluation Item 4:
+
+**Question: Are problems obstacles or challenges?**
+
+- Obstacles: "I see problems as obstacles because they block progress and are difficult to overcome."
+- Challenges: "I see problems as challenges because they motivate me to find solutions and grow professionally."
+
+**Use confused words**: "Problems are often seen as challenges, not obstacles, because they push us to learn and develop."
+
+
+
+**Feedback Summary:**
+
+- **Strengths:**
+  - Clear and effective communication.
+  - Good general communication skills.
+- **Areas for Improvement:**
+  - Pay more attention to grammar, particularly sentence construction.
+  - Speak slower to give yourself time to structure sentences more effectively.
+  - Focus on vocabulary development, learning not only the meaning but also the function of new words (e.g., noun, verb, adjective).
+  - Improve clarity by being more mindful of the choice of words and their roles in sentences.
+
+**Actionable Steps:**
+
+1. Practice constructing sentences slowly and deliberately.
+2. Focus on understanding the function of each word in a sentence.
+3. Take time to review and correct grammar during conversations
+
+
+
+Your Strength
+
+- involved and fully participated in the activities
+- was thoughtful, insightful, and thorough in verbal communication
+- showed a conscientious effort to learn
+- listened to and followed directions precisely and attentively
+- followed directions promptly and accurately
+- asked questions when needed
+
+Suggestions from Coach
+
+- still needs extra work in comprehension
+- still needs extra work in speaking
+- needed a lot of repetition and practice in order to retain vocabulary
+- had difficulty using parts of speech correctly
+
+Messages from Coach
+
+Hello (Nolan) Nolan, well done today. Your general communication skill is good. Please focus on improving general grammar and practice using new words and phrases. You have good capacity :)
+
+
+
+**Lesson 7: Making Polite Excuses - Summary and Key Points**
+
+1. **How often do you attend meetings?**
+   - I attend meetings around 2-3 times a week, depending on the workload.
+2. **Have you ever left a meeting early? What was the reason?**
+   - Yes, I once had to leave a meeting early because of an urgent phone call.
+
+Role-Play Questions
+
+1. What happened?
+   - Clint interrupted the meeting to take a call.
+2. What was the issue?
+   - They discussed the software’s functionality, server limitations, and the need for more manpower.
+3. New phrases learned
+   - Example phrases: "Excuse me," "I'm sorry to interrupt," "Can I go outside for a few minutes?"
+
+**Challenges**
+
+1. **You sent an email to the wrong recipient:**
+   - "I’m terribly sorry, but I accidentally sent the email to the wrong person. I'll resend it to the correct recipient immediately."
+2. **You missed a bug during the testing and now the software does not function correctly:**
+   - "I’m afraid I missed a bug during the testing. I’ll address the issue right away and ensure it’s fixed as soon as possible."
+3. **You forgot to save a file before closing the program and now your boss is asking for it:**
+   - "Please excuse me, I forgot to save the file before closing the program. I’ll try to recover it, or if needed, I’ll recreate it quickly."
+4. **You neglected a software update for your laptop and now the laptop is freezing during a presentation:**
+   - "I’m terribly sorry, but my laptop is freezing because I missed a software update. I'll restart it and continue shortly."
+5. **You are late to a meeting with stakeholders:**
+   - "I apologize for being late to the meeting. There was an unexpected delay, but I’m ready to proceed now."

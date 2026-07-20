@@ -1,0 +1,496 @@
+{
+  "Meta": {
+    "Id": "deck_5__set_vs_map",
+    "Topic": "5. Set vs Map",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "5__set_vs_map"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 24
+  },
+  "Cards": [
+    {
+      "Id": "card_00807",
+      "Front": "**Lưu gì?**",
+      "Back": "Chỉ key | Cặp (key, value)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00808",
+      "Front": "**Mục đích**",
+      "Back": "Kiểm tra phần tử tồn tại hay không | Lưu trữ giá trị theo key",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00809",
+      "Front": "**Ví dụ**",
+      "Back": "\"Sinh viên A đã điểm danh chưa?\" | \"Sinh viên A được bao nhiêu điểm?\"",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00810",
+      "Front": "Operation",
+      "Back": "set | dict | list",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00811",
+      "Front": "`x in container`",
+      "Back": "O(1) avg | O(1) avg | O(n)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00812",
+      "Front": "Add/Insert",
+      "Back": "O(1) avg | O(1) avg | O(1) amortized (append)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00813",
+      "Front": "Remove",
+      "Back": "O(1) avg | O(1) avg | O(n)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00814",
+      "Front": "Iteration",
+      "Back": "O(n) | O(n) | O(n)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00815",
+      "Front": "Operation",
+      "Back": "unordered_set | unordered_map | set (ordered) | map (ordered)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00816",
+      "Front": "Insert",
+      "Back": "O(1) avg | O(1) avg | O(log n) | O(log n)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00817",
+      "Front": "Find",
+      "Back": "O(1) avg | O(1) avg | O(log n) | O(log n)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00818",
+      "Front": "Delete",
+      "Back": "O(1) avg | O(1) avg | O(log n) | O(log n)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00819",
+      "Front": "Ordered?",
+      "Back": "No | No | Yes | Yes",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00820",
+      "Front": "Underlying",
+      "Back": "Hash table | Hash table | Red-black tree | Red-black tree",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00821",
+      "Front": "Tình huống",
+      "Back": "Dùng Set | Dùng Map",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00822",
+      "Front": "Kiểm tra phần tử tồn tại",
+      "Back": "✓ | ",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00823",
+      "Front": "Loại bỏ duplicate",
+      "Back": "✓ | ",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00824",
+      "Front": "Tìm intersection/union",
+      "Back": "✓ | ",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00825",
+      "Front": "Detect cycle",
+      "Back": "✓ | ",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00826",
+      "Front": "Đếm frequency",
+      "Back": " | ✓",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00827",
+      "Front": "Lưu index/position",
+      "Back": " | ✓",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00828",
+      "Front": "Nhóm phần tử",
+      "Back": " | ✓",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00829",
+      "Front": "Cache/Memoize",
+      "Back": " | ✓",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00830",
+      "Front": "Mapping (key→value)",
+      "Back": " | ✓",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. set vs map"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

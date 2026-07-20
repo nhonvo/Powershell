@@ -1,0 +1,645 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/02_N4/Course_40/📂index_Course_40|Course_40]]
+
+# Test Tổng hợp (chương 15 - 20) (lỗi)
+
+## Part 1
+**Q1.** 6. 弟は私より力が強いです。
+- **A.** ちから
+- **B.** か
+- **C.** りき
+- **D.** りょく
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：1力：sức mạnhEm trai t&ocirc;i khỏe hơn t&ocirc;i.</p>
+</details>
+
+---
+**Q2.** 7. このズボンは、ちょっと短いです。
+- **A.** みじかい
+- **B.** あつい
+- **C.** ちいさい
+- **D.** ながい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：1短い：ngắnC&aacute;i quần d&agrave;i n&agrave;y hơi ngắn một ch&uacute;t.</p>
+</details>
+
+---
+**Q3.** 8. この飛行機は成田空港に2時に着きます。
+- **A.** ここう
+- **B.** こうこう
+- **C.** くうこう
+- **D.** くこう
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：3空港：s&acirc;n bayM&aacute;y bay n&agrave;y sẽ đến s&acirc;n bay Haneda l&uacute;c 2 giờ.</p>
+</details>
+
+---
+**Q4.** 9. お正月は家でゆっくりします。
+- **A.** おしょうげつ
+- **B.** おせいげつ
+- **C.** おせいがつ
+- **D.** おしょうがつ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：4お正月：TếtDịp Tết t&ocirc;i sẽ thong thả (nghỉ ngơi) ở nh&agrave;.</p>
+</details>
+
+---
+**Q5.** 10. 山田さんは外国語が話せません。
+- **A.** がいこくご
+- **B.** かいがいご
+- **C.** がいこくこ
+- **D.** かいがいこ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：1外国語：ngoại ngữYamada kh&ocirc;ng thể n&oacute;i ngoại ngữ.</p>
+</details>
+
+---
+**Q6.** 11. 私は毎晩1時間勉強しています。
+- **A.** べんこうして
+- **B.** べんきょうして
+- **C.** べんきよして
+- **D.** べんきおして
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：2勉強します：học tậpT&ocirc;i học mỗi tối 1 tiếng.</p>
+</details>
+
+---
+**Q7.** 12. ここから駅まで歩いて行きます。
+- **A.** ついて
+- **B.** きいて
+- **C.** かいて
+- **D.** あるいて
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：4歩きます：đi bộT&ocirc;i sẽ đi bộ từ đ&acirc;y ra ga.</p>
+</details>
+
+---
+**Q1.** 13. この薬はバナナのあじがする。
+- **A.** 未
+- **B.** 味
+- **C.** 末
+- **D.** 妹
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：2味：vịThuốc n&agrave;y c&oacute; vị chuối.</p>
+</details>
+
+---
+**Q2.** 14. 山田さんはしんせつで優しい人です。
+- **A.** 親刀
+- **B.** 親辺
+- **C.** 親近
+- **D.** 親切
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：4親切：th&acirc;n thiện, tốt bụngYamada l&agrave; người tốt bụng v&agrave; dịu d&agrave;ng.</p>
+</details>
+
+---
+**Q3.** 15. 引越ししたから、じゅうしょが変わりました。
+- **A.** 主近
+- **B.** 主所
+- **C.** 住所
+- **D.** 住近
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：3住所：địa chỉĐịa chỉ đ&atilde; thay đổi do đ&atilde; chuyển nh&agrave;.</p>
+</details>
+
+---
+**Q4.** 16. 今朝からコピー機がうごきません。
+- **A.** 動きません
+- **B.** 働きません
+- **C.** 重きません
+- **D.** 知きません
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：1動きます：hoạt động, chạy (m&aacute;y m&oacute;c)Từ buổi s&aacute;ng m&aacute;y photo kh&ocirc;ng hoạt động.</p>
+</details>
+
+---
+**Q5.** 17. 勉強のけいかくを立てよう。
+- **A.** 試画
+- **B.** 計画
+- **C.** 説画
+- **D.** 言画
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：2計画：kế hoạchC&ugrave;ng lập kế hoạch học tập n&agrave;o!</p>
+</details>
+
+---
+**Q1.** 18. 息子が＿＿＿から、病院に連れて行かなければいけません。
+- **A.** うそをついた
+- **B.** おすすめした
+- **C.** けがをした
+- **D.** カットした
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：3けがをした: bị thươngV&igrave; con trai bị thương n&ecirc;n t&ocirc;i phải đưa con đi bệnh viện.</p>
+</details>
+
+---
+**Q2.** 19. ＿＿＿にお金を入れてから、ボタンを押してください。
+- **A.** 結構
+- **B.** 最初
+- **C.** 場所
+- **D.** 電池
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：2最初: đầu ti&ecirc;nĐầu ti&ecirc;n, h&atilde;y cho tiền v&agrave;o, sau đ&oacute; nhấn n&uacute;t.</p>
+</details>
+
+---
+**Q3.** 20. スマホの電池がなくなりそうなら、あそこの＿＿＿＿を使ってもいいですよ。
+- **A.** ドライブ
+- **B.** エアコン
+- **C.** コンセント
+- **D.** チラシ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：3コンセント: ổ cắmNếu điện thoại sắp hết pin, bạn d&ugrave;ng c&aacute;i ổ cắm đằng kia cũng được.</p>
+</details>
+
+---
+**Q4.** 21. 彼は毎日＿＿＿＿に勉強しているから、きっと合格するでしょう。
+- **A.** 変
+- **B.** 複雑
+- **C.** 大切
+- **D.** 真面目
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：4真面目: nghi&ecirc;m t&uacute;c, chăm chỉV&igrave; cậu ấy ng&agrave;y n&agrave;o cũng học h&agrave;nh chăm chỉ n&ecirc;n chắc chắn sẽ đỗ nhỉ.</p>
+</details>
+
+---
+**Q5.** 22. 私は恋人からの手紙を ＿＿＿ 捨てました。
+- **A.** 破って
+- **B.** 貼って
+- **C.** 割って
+- **D.** 塗って
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：1破る: l&agrave;m r&aacute;chT&ocirc;i đ&atilde; x&eacute; rồi vứt bức thư người y&ecirc;u gửi.</p>
+</details>
+
+---
+**Q6.** 23. 誰かが私の財布を＿＿＿＿、交番に届けてくれたそうです。
+- **A.** 温めて
+- **B.** 見えて
+- **C.** 見つけて
+- **D.** 辞めて
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：3見つける: t&igrave;m thấyH&igrave;nh như c&oacute; ai đ&oacute; đ&atilde; nhặt được v&iacute; của t&ocirc;i rồi đem đến đồn cảnh s&aacute;t gi&uacute;p.</p>
+</details>
+
+---
+**Q7.** 24. 子供のころは、兄とよく ＿＿＿ をしました。
+- **A.** 緊張
+- **B.** けんか
+- **C.** 火事
+- **D.** 台風
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：2けんか: c&atilde;i nhauHồi c&ograve;n nhỏ, t&ocirc;i thường c&atilde;i nhau với anh trai.</p>
+</details>
+
+---
+**Q8.** 25. 今日は暖かいから、＿＿＿を着なくてもいいと思います。
+- **A.** 帽子
+- **B.** 上着
+- **C.** ズボン
+- **D.** マフラー
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：2上着: &aacute;o kho&aacute;cH&ocirc;m nay trời ấm n&ecirc;n t&ocirc;i nghĩ kh&ocirc;ng cần mặc &aacute;o kho&aacute;c cũng được.</p>
+</details>
+
+---
+**Q9.** 26. テストは＿＿＿ 難しかったから、合格できないかもしれない。
+- **A.** 結構
+- **B.** もっと
+- **C.** 将来
+- **D.** すぐに
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：1結構: kh&aacute; ～, tương đối ～V&igrave; b&agrave;i kiểm tra kh&aacute; kh&oacute; n&ecirc;n c&oacute; lẽ t&ocirc;i kh&ocirc;ng đỗ được.</p>
+</details>
+
+---
+**Q10.** 27. この前、道に迷っていた外国人を＿＿＿あげました。
+- **A.** 変えて
+- **B.** 止めて
+- **C.** おすすめして
+- **D.** 助けて
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：4助ける: gi&uacute;p đỡ, cứuH&ocirc;m trước t&ocirc;i đ&atilde; gi&uacute;p một người nước ngo&agrave;i bị lạc đường.</p>
+</details>
+
+---
+**Q11.** 28. 電車の中で、＿＿＿が悪くなったから、途中の駅で降りた。
+- **A.** 交通
+- **B.** 興味
+- **C.** 場所
+- **D.** 気分
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：4気分: t&acirc;m trạngV&igrave; l&uacute;c ở tr&ecirc;n t&agrave;u thấy kh&oacute; chịu n&ecirc;n t&ocirc;i đ&atilde; xuống ở ga giữa đường.</p>
+</details>
+
+---
+**Q12.** 29. 家の近くに雷が落ちて、＿＿＿。
+- **A.** 間違えた
+- **B.** ぶつかった
+- **C.** びっくりした
+- **D.** 負けた
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n：3びっくりする: giật m&igrave;nhT&ocirc;i bị giật m&igrave;nh v&igrave; s&eacute;t đ&aacute;nh ngay gần nh&agrave;.</p>
+</details>
+
+---
+## Part 2
+**Q1.** 1. 家の前に車が（　　）けど、誰の車だろう？
+- **A.** 止まってある
+- **B.** 止めてある
+- **C.** 止まった
+- **D.** 止めた
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2V（他）てある：diễn tả trạng th&aacute;i kết quả của một sự vật, sự việc.&rarr; Trước nh&agrave; c&oacute; &ocirc; t&ocirc; đang đỗ, nhưng &ocirc; t&ocirc; của ai ấy nhỉ?</p>
+</details>
+
+---
+**Q2.** 2. ここはうるさいから、ホアさんの声がよく（　　）。
+- **A.** 聞いていません
+- **B.** 聞けません
+- **C.** 聞きません
+- **D.** 聞こえません
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4聞こえません：kh&ocirc;ng thể nghe thấy&rarr; V&igrave; ở đ&acirc;y ồn &agrave;o n&ecirc;n t&ocirc;i kh&ocirc;ng nghe thấy giọng Hoa.</p>
+</details>
+
+---
+**Q3.** 3. （　　）だから、急がなきゃ。
+- **A.** 遅刻してそう
+- **B.** 遅刻したそう
+- **C.** 遅刻しそう
+- **D.** 遅刻するそう
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3V ます + そう: c&oacute; vẻV&igrave; c&oacute; vẻ sắp muộn n&ecirc;n phải khẩn trương.</p>
+</details>
+
+---
+**Q4.** 4. この紅茶は、リンゴの味（　　）ね。
+- **A.** がします
+- **B.** をします
+- **C.** にします
+- **D.** でします
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1~味がする：c&oacute; vị ~Hồng tr&agrave; n&agrave;y c&oacute; vị t&aacute;o nhỉ.</p>
+</details>
+
+---
+**Q5.** 5. A：今日は午後から晴れると思う？    B：テレビで、雪が降る（　　）よ。
+- **A.** と言っていた
+- **B.** と思う
+- **C.** らしい
+- **D.** そうだ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1と言っていた：đ&atilde; n&oacute;i rằng/ nghe n&oacute;i rằngA: Cậu c&oacute; nghĩ từ chiều nay trời sẽ c&oacute; nắng kh&ocirc;ng?B: Tr&ecirc;n TV đ&atilde; n&oacute;i l&agrave; sẽ c&oacute; tuyết rơi đấy.</p>
+</details>
+
+---
+**Q6.** 6. ナムさん（　　）作った料理はどれもおいしそうですね。
+- **A.** で
+- **B.** が
+- **C.** は
+- **D.** を
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2Những m&oacute;n ăn m&agrave; Nam l&agrave;m m&oacute;n n&agrave;o tr&ocirc;ng cũng ngon cả.</p>
+</details>
+
+---
+**Q7.** 7. A：テストに合格できるかな&hellip;。    B：たくさん勉強したから、きっと合格できる（　　）。
+- **A.** そうです
+- **B.** かもしれません
+- **C.** はずです
+- **D.** みたいです
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3はずです: Chắc chắn...A: Kh&ocirc;ng biết tớ c&oacute; đỗ kỳ thi kh&ocirc;ng nữa...B: V&igrave; cậu đ&atilde; học nhiều rồi n&ecirc;n chắc chắn sẽ đỗ th&ocirc;i!</p>
+</details>
+
+---
+**Q8.** 8. A：会議の資料はもう用意してくれましたか。    B：はい、用意して（　　　）。
+- **A.** そうです
+- **B.** はずです
+- **C.** います
+- **D.** あります
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4 V（他）てある: chuẩn bị sẵn, l&agrave;m sẵnA: Cậu đ&atilde; chuẩn bị t&agrave;i liệu cuộc họp gi&uacute;p t&ocirc;i chưa?B: Dạ, em đ&atilde; chuẩn bị sẵn rồi ạ.</p>
+</details>
+
+---
+**Q9.** 9. A：日本語の勉強をしたいんですが、いいアプリを知りませんか。   B：「おはよう日本語」はどうですか。（　　　）アプリです。
+- **A.** 日本人と話すが無料の
+- **B.** 無料で日本人と話せます
+- **C.** 日本人と話せる無料で
+- **D.** 無料で日本人と話せる
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A: Tớ muốn học tiếng Nhật, cậu c&oacute; biết ứng dụng n&agrave;o tốt kh&ocirc;ng?B: Ứng d&ugrave;ng &quot;Ohayou Nihongo&quot; th&igrave; sao? N&oacute; l&agrave; ứng dụng miễn ph&iacute; v&agrave; c&oacute; thể n&oacute;i chuyện với người Nhật.</p>
+</details>
+
+---
+**Q10.** 10. A：この前、うちで（　　　）んです。      B：6匹！多いですね！
+- **A.** 子犬がも6匹生まれた
+- **B.** 子犬が6匹も生まれた
+- **C.** 子犬6匹がも生まれた
+- **D.** 子犬も6匹が生まれた
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A: H&ocirc;m trước (ch&oacute;) nh&agrave; tớ đẻ tận 6 con.B: 6 con cơ &agrave;! Nhiều qu&aacute; nhỉ!</p>
+</details>
+
+---
+**Q1.** 11. ホアさんは明るい___　___　_★_　____、いい人ですね。
+- **A.** し
+- **B.** いい
+- **C.** だし
+- **D.** 親切
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3Thứ tự đ&uacute;ng: 1432 Hoa vừa cởi mở lại th&acirc;n thiện, thật l&agrave; một người tốt nhỉ.</p>
+</details>
+
+---
+**Q2.** 12. 私の祖母は、パソコン___　___　_★_　____  。
+- **A.** の
+- **B.** が
+- **C.** 使い方
+- **D.** わかりません
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2Thứ tự đ&uacute;ng: 1324B&agrave; t&ocirc;i kh&ocirc;ng biết c&aacute;ch sử dụng m&aacute;y t&iacute;nh.</p>
+</details>
+
+---
+**Q3.** 13. 隣の部屋___　___　_★_　____が聞こえます。
+- **A.** から
+- **B.** 歌っている
+- **C.** だれかが
+- **D.** 声
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2Thứ tự đ&uacute;ng: 1324T&ocirc;i nghe thấy tiếng ai đ&oacute; đang h&aacute;t từ ph&ograve;ng b&ecirc;n cạnh.</p>
+</details>
+
+---
+**Q4.** 14. スーツを着て、___　___　_★_　____は、カオさんです。
+- **A.** 高そうな
+- **B.** 腕時計を
+- **C.** 人
+- **D.** している
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4Thứ tự đ&uacute;ng: 1243Người đang mặc vest v&agrave; đeo chiếc đồng hồ c&oacute; vẻ đắt kia l&agrave; anh Cao.</p>
+</details>
+
+---
+**Q5.** 15. 私はいつも、コーヒーに砂糖を___　___　_★_　____飲みます。
+- **A.** して
+- **B.** 入れて
+- **C.** 甘く
+- **D.** から
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1Thứ tự đ&uacute;ng: 2314T&ocirc;i lu&ocirc;n cho đường v&agrave;o c&agrave; ph&ecirc; l&agrave;m cho n&oacute; ngọt rồi mới uống.</p>
+</details>
+
+---
+**Q6.** 16. この資料の準備___　___　__★__　____。
+- **A.** は
+- **B.** 時間が
+- **C.** かかりそう
+- **D.** です
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3Thứ tự đ&uacute;ng: 1234Việc chuẩn bị t&agrave;i liệu n&agrave;y c&oacute; vẻ mất thời gian.</p>
+</details>
+
+---
+**Q7.** 17. 誰がピアノを弾いていましたか。
+- **A.** ピアニストだったおばあさん
+- **B.** 音楽の学校に通っているおばあさん
+- **C.** ピアニストになりたかったおばあさん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3Ai l&agrave; người đ&atilde; chơi đ&agrave;n piano?Th&ocirc;ng tin nằm ở cuối đoạn 2: 「おばあさんは、昔、音楽の学校に通っていて、ピアニストになりたかったそうです。」&rarr; Đ&aacute;p &aacute;n đ&uacute;ng: 3</p>
+</details>
+
+---
+**Q1.** 18. 「私」は今、どこに住んでいますか。
+- **A.** 電車が1時間に1本しかない町
+- **B.** 便利でにぎやかな町
+- **C.** 生まれた町
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2Nh&acirc;n vật &quot;t&ocirc;i&quot; hiện đang sống ở đ&acirc;u?Th&ocirc;ng tin nằm ở c&acirc;u cuối c&ugrave;ng của b&agrave;i:「今住んでいる町は便利でにぎやかで楽しい町...」&rarr; Đ&aacute;p &aacute;n đ&uacute;ng l&agrave;: 2</p>
+</details>
+
+---
+**Q1.** 19. 山本さんは、妻と5歳の子供1人の3人でこのホテルを予約します。このホテルの食事はおいしいと会社の人が言っていたので、このホテルで夕食を食べます。子供はまだ体が小さいから、小さいベッドをツインの部屋に入れて、3人で同じ部屋に泊まります。子供が小さいから、温泉がついている部屋がいいです。ホテルに泊まる日は土曜日の1日です。どちらのタイプの部屋を、いくらで予約しますか。
+- **A.** Aタイプの部屋を58000円で予約する。
+- **B.** Aタイプの部屋を46000円で予約する。
+- **C.** Bタイプの部屋を48000円で予約する。
+- **D.** Bタイプの部屋を31000円で予約する。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+</details>
+
+---
+**Q2.** 20. 田中さんは日曜日に、1人でこのホテルのBタイプの部屋のシングルに1日泊まりました。夕飯は、友達と食べる約束があったから、ホテルの食事を予約しませんでした。ホテルに着いた後、疲れていたから、マッサージを60分利用しました。田中さんはこの日、ホテルとマッサージにいくら払いましたか。
+- **A.** 16500円
+- **B.** 19500円
+- **C.** 20500円
+- **D.** 22500円
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1T&igrave;nh huống:- Anh Yamada đ&atilde; ở 1 người tại ph&ograve;ng đơn, loại B, v&agrave;o Chủ Nhật.- Bữa tối kh&ocirc;ng ăn ở kh&aacute;ch sạn.- Đ&atilde; d&ugrave;ng dịch vụ massage 60 ph&uacute;t.Giải th&iacute;ch: + 1 người tại ph&ograve;ng đơn, loại B, v&agrave;o Chủ Nhật: 13,000 y&ecirc;n+ Kh&ocirc;ng ăn tối: trừ 2000 y&ecirc;n+ M&aacute;t xa 60 ph&uacute;t: 6500 y&ecirc;n. Ở kh&aacute;ch sạn n&ecirc;n chỉ c&ograve;n 5500 y&ecirc;n&rarr; Tổng cộng: 13000 - 2000 + 5500 = 16500 y&ecirc;n</p>
+</details>
+
+---
+## Part 3
+**Q1.** 1.
+- **A.** だめ。これから見るから、つけてあるんだ。
+- **B.** いいよ。つけてあるから、消して。
+- **C.** 消してあるから、つけてくれる？
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A: テレビを消してもいい？    B: だめ。これから見るから、つけてあるんだ。A: T&ocirc;i tắt TV được kh&ocirc;ng?B: Kh&ocirc;ng. T&ocirc;i sắp xem n&ecirc;n bật sẵn đấy.</p>
+</details>
+
+---
+**Q2.** 2.
+- **A.** 事務所はどうですか。
+- **B.** 食堂にいるはずです。
+- **C.** ホアさんには言ってありますよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A: ホアさんはどこですか？             B: 食堂にいるはずです。        A: Hoa ở đ&acirc;u vậy?B: Chắc l&agrave; ở nh&agrave; ăn.</p>
+</details>
+
+---
+**Q3.** 3.
+- **A.** いいえ、寒いんですよ。
+- **B.** 寒いでしょう？
+- **C.** そうだね、寒いと思う。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A: 東京は今、寒いだろうね。B: そうだね、寒いと思う。A: B&acirc;y giờ ở Tokyo chắc l&agrave; lạnh nhỉ.B: Ừ, tớ nghĩ l&agrave; lạnh.</p>
+</details>
+
+---
+**Q4.** 4.
+- **A.** 風邪なんです。
+- **B.** 薬を飲んだそうですよ。
+- **C.** 風邪かもしれないね。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A: 頭が痛い&hellip;。B: 風邪かもしれないね。A: Tớ đau đầu qu&aacute;...B: C&oacute; khi l&agrave; cậu bị cảm rồi.</p>
+</details>
+
+---
+**Q5.** 5.
+- **A.** こっちのほうが小さいですよ。
+- **B.** わかりました。小さく書きますね。
+- **C.** はい。小さいと思います。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A: ここに小さくサインしてください。        B: わかりました。小さく書きますね。        A: Vui l&ograve;ng k&yacute; nhỏ v&agrave;o đ&acirc;y.B: T&ocirc;i hiểu rồi. T&ocirc;i sẽ k&yacute; nhỏ.</p>
+</details>
+
+---
+**Q6.** 6.
+- **A.** はい、ダイエット中なんです。
+- **B.** はい、ダイエット中ですよ。
+- **C.** はい、ダイエット中なんですから。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A: 昼ご飯はそれだけですか。B: はい、ダイエット中なんです。A: Bữa trưa chỉ c&oacute; thể th&ocirc;i &aacute;?B: Ừ, v&igrave; t&ocirc;i đang giảm c&acirc;n.</p>
+</details>
+
+---
+**Q7.** 7.
+- **A.** そうですか。暑いはずですね。
+- **B.** 本当に。夏が来ましたね。
+- **C.** ええ、暑いでしょうね。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A: 最近、暑くなりましたね。        B: 本当に。夏が来ましたね。        A: Dạo n&agrave;y trời n&oacute;ng l&ecirc;n rồi nhỉ.B: Thật vậy. M&ugrave;a h&egrave; đ&atilde; đến rồi.</p>
+</details>
+
+---
+**Q1.** 8.
+- **A.** 火曜日の午前に大学の近くの映画館に行きます。
+- **B.** 火曜日の午後に隣の町の映画館に行きます。
+- **C.** 月曜日の午前に大学の近くの映画館に行きます。
+- **D.** 月曜日の午後に隣の町の映画館に行きます。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2男の人と女の人は、いつ、どこに行きますか。    Người đ&agrave;n &ocirc;ng v&agrave; người phụ nữ sẽ gặp nhau khi n&agrave;o, ở đ&acirc;u?M: Chủ Nhật n&agrave;y đi xem phim kh&ocirc;ng?F: &Ocirc;i, xin lỗi. Cuối tuần n&agrave;y tớ phải học cho b&agrave;i kiểm tra v&agrave;o thứ Hai.M: Vậy &agrave;. Thế thứ Ba th&igrave; sao?F: Nếu thứ Ba th&igrave; được. Những buổi s&aacute;ng tớ c&oacute; việc bận phải ra ngo&agrave;i, từ buổi chiều th&igrave; được.M: Tớ biết rồi. &Ocirc;i, nhưng m&agrave; rạp chiếu phim gần trường Đại học lại nghỉ thứ Tư.F: Rạp ở thị trấn b&ecirc;n cạnh chắc mở đấy.M: Vậy th&igrave; m&igrave;nh đến đ&oacute; đi.男：日曜日、映画を見に行かない？女：あ、ごめん。週末は、月曜日のテストの勉強をしなきゃいけないんだ。男：そうなんだ。じゃあ、火曜日はどう？女：火曜日なら大丈夫。でも午前中は出かける用事があるから、午後からがいいな。男：わかった。あ、でも大学の近くの映画館は火曜日、休みだね。女：隣の町の映画館ならやってるはずだよ。男：じゃ、そっちに行こう。</p>
+</details>
+
+---
+**Q2.** 9.
+- **A.** 飲み会でお酒をたくさん飲んだからです。
+- **B.** 昨日は寒かったからです。
+- **C.** 昨日あまり寝られなかったからです。
+- **D.** 風邪が治らなかったからです。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2男の人は、どうして頭が痛いのですか。    Tại sao người đ&agrave;n &ocirc;ng lại đau đầu?M: &Ocirc;i, đầu t&ocirc;i, đau qu&aacute;...F: Cậu lại bị cảm &agrave;. Trước đ&oacute; mới khỏi m&agrave; nhỉ.M: Kh&ocirc;ng, h&ocirc;m qua tớ đi nhậu đến 12h đ&ecirc;m.F: Vậy l&agrave; do uống nhiều rượu n&ecirc;n đau đầu &agrave;?M: Kh&ocirc;ng, h&ocirc;m qua v&igrave; tớ l&aacute;i xe n&ecirc;n kh&ocirc;ng uống.Nhưng h&ocirc;m qua lạnh qu&aacute;, rồi tớ lại kh&ocirc;ng ngủ được nữa...Chắc l&agrave; tớ lại bị cảm rồi.男の人と女の人が話しています。男の人は、どうして頭が痛いのですか。男：あー、頭、痛い&hellip;。女：また風邪ですか。この前治ったばかりですよね。男：いいえ、昨日、夜12時くらいまで、飲み会だったんです。女：お酒をたくさん飲んだから頭が痛いんですか。男：いいえ、私は昨日車だったから、飲まなかったんです。でも、昨日はすごく寒かったし、あまり寝られなかったし&hellip;。また風邪を引いたかもしれません。</p>
+</details>
+
+---
+**Q3.** 10.
+- **A.** みどり駅
+- **B.** ふじみ駅
+- **C.** もみじ駅
+- **D.** さくら駅
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1女の人は、どの駅の近くのアパートを捜しますか。    Người phụ nữ sẽ t&igrave;m căn hộ gần ga n&agrave;o?F: N&agrave;y, nếu chuyển nh&agrave; th&igrave; chỗ n&agrave;o gần ga vừa rẻ lại tiện nhỉ.M: Nếu gần trường Đại học th&igrave; chỗ ga Midori, ga Fujima th&igrave; sao? Chỗ n&agrave;o cũng gần fa, lại nhiều ph&ograve;ng rẻ.F: Đ&uacute;ng nhỉ. Nhưng gần ga Midori c&oacute; &iacute;t cửa h&agrave;ng qu&aacute;...Ga Fujimi th&igrave; đường tối, hơi sợ nhỉ.M: Vậy &agrave;. Vậy th&igrave; ga Momiji hoặc ga Sakura...Ga Momiji c&oacute; nhiều cửa h&agrave;ng, nhộn nhịp, c&ograve;n ga Sakura th&igrave; gần trường đại học n&ecirc;n tiện lắm.F:Ga Marui th&igrave; hơi xa trường Đại học, m&agrave; ga Sakura th&igrave; gi&aacute; hơi cao&hellip; D&ugrave; &iacute;t cửa h&agrave;ng, nhưng c&oacute; lẽ ga đ&oacute; l&agrave; lựa chọn tốt nhất.男の人と女の人がアパートの話をしています。女の人は、どの駅の近くのアパートを捜しますか。女：ねえ、引っ越すなら、どこの駅の近くが安くて便利かな。男：大学の近くなら、みどり駅とかふじみ駅とかはどう？どっちも駅から近くて、安いアパートが多いよ。女：そうだね&hellip;でも、みどり駅は近くに店が少ないからなぁ&hellip;。ふじみ駅は、道が暗くて怖いよね。男：そっか。じゃあ、もみじ駅かさくら駅かな&hellip;。もみじ駅は店が多くてにぎやかだし、さくら駅は大学から近いから便利だよね。女：まるい駅は大学からちょっと遠いし、さくら駅は、ちょっと高いんだよね&hellip;。やっぱり店は少ないけど、この駅が一番いいかもしれないね。</p>
+</details>
+
+---

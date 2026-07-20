@@ -1,0 +1,75 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/05_Logging_Tracing/📂index_05_Logging_Tracing|05_Logging_Tracing]]
+
+# 📊 3. ELK Stack (Centralized Logging Mastery)
+
+Khi ứng dụng Backend chạy trên hàng trăm server, việc đi vào từng server để đọc file log là điều không thể. Chúng ta cần một hệ thống quản lý Log tập trung. **ELK Stack** (Elasticsearch, Logstash, Kibana) là lựa chọn hàng đầu của thế giới.
+
+---
+
+### 🏛️ 3.1 Cấu trúc "Bộ ba huyền thoại" (The Three Pillars)
+
+#### **E - Elasticsearch (The Brain)**
+Hệ thống tìm kiếm và lưu trữ log cực mạnh dựa trên cấu trúc **Inverted Index**. Nó cho phép bạn tìm kiếm hàng tỷ dòng log trong miligiây.
+
+#### **L - Logstash (The Shipper/Transformer)**
+Lớp trung gian tiếp nhận log từ nhiều nguồn, chuyển đổi chúng (VD: Thành JSON), lọc bỏ thông tin nhạy cảm, sau đó đẩy vào Elasticsearch.
+> [!TIP]
+> **Beats**: Những agent siêu nhẹ chạy trên server (Filebeat) để đẩy log thô về cho Logstash.
+
+#### **K - Kibana (The Face)**
+Giao diện Web giúp bạn truy vấn, lọc dữ liệu (KQL - Kibana Query Language) và vẽ các biểu đồ trực quan (Dashboards).
+
+---
+
+### 🧠 3.2 Luồng dữ liệu Log chuẩn (Enterprise Architecture)
+
+`Log Sources (App) → Filebeat/Beats → Logstash (Filter/JSON) → Elasticsearch (Index) → Kibana (UI)`
+
+#### **Tại sao cần kiến trúc này?**
+1.  **Chống mất dữ liệu**: Logstash có thể tạo hàng đợi (Queue) nếu Elasticsearch đang bận.
+2.  **Chuẩn hóa**: JSON giúp việc tìm kiếm trên Kibana trở nên chuyên nghiệp hơn.
+3.  **Tập trung**: Bạn có một nơi duy nhất để kiểm tra lỗi trên toàn hệ thống.
+
+---
+
+### 🚀 3.3 Ghi Log JSON - Bí mật của tìm kiếm nhanh
+
+Nếu log chỉ là text thô, việc lọc theo `userId` trên Kibana sẽ rất chậm vì phải lùng sục từng ký tự. Nếu log là JSON:
+```json
+{
+    "level": "Error",
+    "userId": "123",
+    "message": "Payment failed"
+}
+```
+Bạn chỉ cần query trên Kibana bằng lệnh: `userId: 123`.
+
+---
+
+### ⚡ 3.4 Hiển thị và Giám sát (Kibana Dashboards)
+
+Bạn nên xây dựng một Dashboard để theo dõi các thông số quan trọng:
+- Biểu đồ số lượng lỗi (Error Count) theo thời gian.
+- Danh sách các ID người dùng gặp lỗi nhiều nhất.
+- Biểu đồ phân bổ tỷ lệ phản hồi (HTTP 200 vs 500).
+
+---
+
+### 📝 3.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao Filebeat lại quan trọng hơn việc để Application tự đẩy trực tiếp log vào Elasticsearch?"
+<details><summary>Đáp án</summary>
+1. Hiệu năng: Application không bị treo nếu Elasticsearch bị chậm. 2. Độ bền: Filebeat tự động ghi nhớ vị trí cuối cùng của file log và có thể gửi lại (Retry) nếu mất kết nối mạng. 3. Tách biệt: Code của bạn không cần quan tâm đến địa chỉ IP hay Cấu hình của hệ thống giám sát.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết một câu lệnh truy vấn Kibana đơn giản (KQL) để lọc ra mọi bản ghi có mức độ (Level) là `Error` và xảy ra trong 15 phút qua.
+<details><summary>Solution</summary>
+Gõ vào ô search của Kibana Discovery: `level: "Error"`. Sau đó chọn bộ lọc thời gian (Time picker) là `Last 15 minutes`.
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Managing Logs at Scale: Elasticsearch vs Graylog vs Loki](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-logging-stacks-comparison.md)
+- [How to Build a Centralized Logging Dashboard with ELK Stack](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-kibana-dashboards.md)
+- [Optimizing Elasticsearch Indices for Logs Retention](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-elasticsearch-index-lifecycle.md)

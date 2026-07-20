@@ -1,0 +1,40 @@
+---
+tags:
+  - certification/gh-300
+  - copilot
+  - study-notes/domain-2
+status: todo
+created: 2026-05-26
+---
+
+# Domain 2: Plans and Features
+
+This domain focuses on client setup, feature sets across pricing tiers, and administration tasks.
+
+## 🎯 Exam Objectives
+- Configure Copilot in various IDEs (VS Code, Visual Studio, JetBrains, Vim/Neovim).
+- Compare and select plans based on organizational requirements (Individual vs. Business vs. Enterprise).
+- Work with the GitHub Copilot CLI.
+- Manage policy configuration.
+
+---
+
+## 📖 Key Study Topics
+
+### 1. Plan Management
+- Comparison Matrix is located in **[[certifications/microsoft/GH-300-Copilot/Copilot Comparison Cheat Sheet|Copilot Comparison Cheat Sheet]]**.
+- **Copilot Enterprise** requires **GitHub Enterprise Cloud (GHEC)**.
+- **Seat Allocation**: Administrators can assign seats to entire orgs, specific teams, or specific users.
+
+### 2. Client & Environment Setup
+- Proxy configurations rely on standard environment variables: `HTTP_PROXY` and `HTTPS_PROXY`.
+- Corporate SSL intercepting proxies require configuring the `NODE_EXTRA_CA_CERTS` environment variable to point to the local PEM certificate file, as the IDE extensions run under Node.js.
+
+### 3. Copilot CLI Wrapper
+- Interactive Shell extensions:
+  - `?? <prompt>` - Asks Copilot to suggest a terminal command.
+  - `what? <command>` - Asks Copilot to explain the arguments/flags of a terminal command.
+  - Extension is installed via `gh extension install github/gh-copilot`.
+
+---
+Back to **[[certifications/microsoft/GH-300-Copilot/GH-300 Copilot MOC|GH-300 Copilot MOC]]**

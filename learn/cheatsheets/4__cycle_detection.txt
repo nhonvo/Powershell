@@ -1,0 +1,303 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/06_Linked_List/🔗index_06_Linked_List|06_Linked_List]]
+
+## 4. Cycle Detection
+
+### 4.1. Hình dung thực tế
+
+Hãy tưởng tượng bạn đang đi trên một con đường. Nếu con đường là thẳng, bạn sẽ đến cuối. Nhưng nếu ở đâu đó, con đường quặt lại và nối vào một điểm phía trước — bạn sẽ đi mãi trong **vòng lặp vô hạn**, như một chiếc **vòng xoay giao thông** mà bạn không tìm được lối ra!
+
+Trong Linked List, **cycle** xảy ra khi node cuối cùng trỏ ngược lại một node trước đó, tạo thành vòng lặp.
+
+12345
+
+Trong hình trên, node 5 trỏ ngược lại node 3, tạo cycle: `3 -> 4 -> 5 -> 3 -> 4 -> 5 -> ...`
+
+### 4.2. Tại sao Cycle Detection quan trọng?
+
+- **Memory leak:** Nếu bạn duyệt list có cycle mà không detect, chương trình sẽ chạy vô hạn
+- **Bug detection:** Cycle trong linked list thường là bug — ai đó vô tình gán `next` sai
+- **Bài phỏng vấn kinh điển:** LeetCode 141 (Linked List Cycle) và 142 (Linked List Cycle II)
+
+### 4.3. Cách naive: HashSet
+
+**Ý tưởng:** Duyệt list, lưu mỗi node đã thăm vào HashSet. Nếu gặp node đã có trong set → cycle!
+
+**Python:**
+
+```python
+def has_cycle_hashset(head):
+    visited = set()
+    current = head
+    while current is not None:
+        if id(current) in visited:  # Dùng id() vì so sánh object identity
+            return True
+        visited.add(id(current))
+        current = current.next
+    return False
+```
+
+**Complexity:** O(n) time, O(n) space — tốn thêm bộ nhớ cho HashSet.
+
+### 4.4. Floyd's Cycle Detection (Thuật toán Floyd)
+
+Đây là thuật toán kinh điển, dùng **Fast & Slow pointer** để detect cycle với **O(1) space**.
+
+**Thuật toán:**
+
+1. `slow = head`, `fast = head`
+2. Mỗi bước: `slow` đi 1 bước, `fast` đi 2 bước
+3. Nếu `fast` hoặc `fast.next` là null → KHÔNG có cycle
+4. Nếu `slow == fast` (hai pointer gặp nhau) → CÓ cycle
+
+KhôngCóCóKhôngBắt đầuslow = head
+fast = headfast != null
+AND
+fast.next != null?Không có cycleslow = slow.next
+fast = fast.next.nextslow == fast?CÓ cycle!
+
+**Mô phỏng từng bước:**
+
+List: `[1] -> [2] -> [3] -> [4] -> [5] -> [3]` (node 5 trỏ về node 3, tạo cycle)
+
+| Bước | slow (node) | fast (node)       | Gặp nhau?                       |
+| :--- | :---------- | :---------------- | :------------------------------ |
+| 0    | [1]         | [1]               | Không                           |
+| 1    | [2]         | [3]               | Không                           |
+| 2    | [3]         | [5]               | Không                           |
+| 3    | [4]         | [4] (fast: 5→3→4) | **CÓ! slow == fast ở node [4]** |
+
+Giải thích bước 3 cho fast:
+
+- Bước 2: fast ở [5]
+- Fast đi 2 bước: [5] → [3] (cycle!) → [4]
+- Slow đi 1 bước: [3] → [4]
+- Cả hai đều ở [4] → detect!
+
+**Python:**
+
+```python
+def has_cycle(head):
+    if head is None or head.next is None:
+        return False
+
+    slow = head
+    fast = head
+
+    while fast is not None and fast.next is not None:
+        slow = slow.next
+        fast = fast.next.next
+
+        if slow == fast:
+            return True
+
+    return False
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Tạo list có cycle: 1 -> 2 -> 3 -> 4 -> 5 -> 3 (cycle!)
+head = Node(1)
+n2 = Node(2)
+n3 = Node(3)
+n4 = Node(4)
+n5 = Node(5)
+head.next = n2
+n2.next = n3
+n3.next = n4
+n4.next = n5
+n5.next = n3  # Tạo cycle: 5 trỏ về 3
+
+print(has_cycle(head))  # Output: True
+
+# List không có cycle
+head2 = Node(1)
+head2.next = Node(2)
+head2.next.next = Node(3)
+print(has_cycle(head2))  # Output: False
+```
+
+### 4.5. Chứng minh toán học: Tại sao Floyd's Algorithm đúng?
+
+Đây là phần quan trọng nhất — hãy đọc kỹ.
+
+**Thiết lập:**
+
+Gọi:
+
+- L = khoảng cách từ head đến điểm bắt đầu cycle (tail length)
+- C = độ dài cycle (chu vi vòng)
+- Khi slow vào cycle (đi L bước), fast đã đi 2L bước → fast đã ở trong cycle
+
+**Khoảng cách fast-slow khi slow vào cycle:**
+
+Khi slow vừa vào cycle (ở vị trí 0 trong cycle):
+
+- Fast đã đi 2L bước → fast ở vị trí (2L - L) mod C = L mod C trong cycle
+- Khoảng cách giữa fast và slow (theo hướng đuổi): C - (L mod C)
+
+**Mỗi bước, khoảng cách giảm 1:**
+
+- Slow đi 1, fast đi 2 → fast tiến gần slow thêm 1 bước mỗi lượt
+- Khoảng cách ban đầu: d = C - (L mod C)
+- Sau d bước → khoảng cách = 0 → GẶP NHAU!
+
+**Số bước tối đa để gặp nhau:** d <= C (vì d = C - (L mod C) và L mod C >= 0).
+
+Vậy sau khi slow vào cycle, hai pointer gặp nhau trong tối đa C bước → tổng cộng O(L + C) = O(n). **QED.**
+
+### 4.6. Tìm điểm bắt đầu cycle (Floyd's Phase 2)
+
+Đây là bài LeetCode 142: không chỉ detect cycle, mà còn tìm chính xác node nào bắt đầu cycle.
+
+**Thuật toán (2 phase):**
+
+**Phase 1:** Chạy Floyd's Algorithm cho đến khi slow và fast gặp nhau tại điểm M.
+
+**Phase 2:**
+
+1. Đặt `entry = head`
+2. Giữ `slow` ở điểm gặp nhau M
+3. Cả `entry` và `slow` đều đi 1 bước mỗi lượt
+4. Khi `entry == slow` → đó chính là điểm bắt đầu cycle!
+
+KhôngCóPhase 1: DetectChạy Floyd
+slow & fast gặp nhau tại MPhase 2: Tìm điểm bắt đầuentry = head
+slow = M (điểm gặp nhau)entry == slow?entry = entry.next
+slow = slow.nextentry = điểm bắt đầu cycle!
+
+### 4.7. Chứng minh: Tại sao Phase 2 đúng?
+
+**Thiết lập:**
+
+Dùng ký hiệu:
+
+- L = khoảng cách từ head đến điểm bắt đầu cycle (tail)
+- C = chu vi cycle
+- K = khoảng cách từ đầu cycle đến điểm gặp nhau M (theo chiều duyệt)
+
+**Khi slow và fast gặp nhau:**
+
+- slow đã đi: L + K bước (L bước vào cycle, K bước trong cycle)
+- fast đã đi: 2(L + K) bước (gấp đôi slow)
+- fast đi thêm so với slow: 2(L + K) - (L + K) = L + K bước
+- Phần thêm này phải là bội của C (fast chạy vòng trong cycle): L + K = nC (với n >= 1)
+
+**Suy ra:** L + K = nC → L = nC - K
+
+**Phase 2:**
+
+- `entry` bắt đầu từ head, đi L bước → đến đầu cycle
+
+- ```
+  slow
+  ```
+
+   
+
+  bắt đầu từ M (cách đầu cycle K bước), đi L bước = nC - K bước
+
+  - Từ M (vị trí K trong cycle), đi thêm nC - K bước:
+  - Vị trí mới = (K + nC - K) mod C = nC mod C = 0
+  - Vị trí 0 = đầu cycle!
+
+Vậy sau đúng L bước, cả `entry` và `slow` đều ở đầu cycle → gặp nhau. **QED.**
+
+### 4.8. Code hoàn chỉnh
+
+**Python:**
+
+```python
+def detect_cycle_start(head):
+    """
+    Trả về node bắt đầu cycle, hoặc None nếu không có cycle.
+    LeetCode 142: Linked List Cycle II
+    """
+    if head is None or head.next is None:
+        return None
+
+    # Phase 1: Detect cycle
+    slow = head
+    fast = head
+    has_cycle = False
+
+    while fast is not None and fast.next is not None:
+        slow = slow.next
+        fast = fast.next.next
+        if slow == fast:
+            has_cycle = True
+            break
+
+    if not has_cycle:
+        return None
+
+    # Phase 2: Tìm điểm bắt đầu
+    entry = head
+    while entry != slow:
+        entry = entry.next
+        slow = slow.next
+
+    return entry  # Đây là node bắt đầu cycle
+
+
+# Sử dụng
+cycle_start = detect_cycle_start(head)
+if cycle_start:
+    print(f"Cycle bắt đầu tại node có giá trị: {cycle_start.data}")
+else:
+    print("Không có cycle")
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Tạo list có cycle: 1 -> 2 -> 3 -> 4 -> 5 -> 3
+head = Node(1)
+n2, n3, n4, n5 = Node(2), Node(3), Node(4), Node(5)
+head.next = n2
+n2.next = n3
+n3.next = n4
+n4.next = n5
+n5.next = n3  # Cycle bắt đầu tại node 3
+
+cycle_start = detect_cycle_start(head)
+if cycle_start:
+    print(f"Cycle bắt đầu tại: {cycle_start.data}")  # Output: 3
+```
+
+### 4.9. Tìm độ dài cycle
+
+Sau khi đã detect cycle (slow == fast tại M), ta đếm độ dài cycle dễ dàng:
+
+**Python:**
+
+```python
+def cycle_length(head):
+    """Trả về độ dài cycle, hoặc 0 nếu không có cycle"""
+    # Detect cycle trước
+    slow = head
+    fast = head
+
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow == fast:
+            # Đếm vòng
+            length = 1
+            runner = slow.next
+            while runner != slow:
+                length += 1
+                runner = runner.next
+            return length
+
+    return 0
+```
+
+**Complexity tổng hợp:**
+
+| Thao tác               | Time | Space |
+| :--------------------- | :--- | :---- |
+| Detect cycle (Floyd)   | O(n) | O(1)  |
+| Detect cycle (HashSet) | O(n) | O(n)  |
+| Tìm điểm bắt đầu cycle | O(n) | O(1)  |
+| Tìm độ dài cycle       | O(n) | O(1)  |

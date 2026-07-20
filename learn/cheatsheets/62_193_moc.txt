@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/62-193
+  - 62193
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 62-193: Technology Literacy for Educators MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/62-193/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/62-193/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/62-193/62-193 Mindmap\|🗺️ 62-193 Mindmap]]
+- [[certifications/microsoft/62-193/62-193 Flashcards\|🃏 62-193 Flashcards]]
+- [[certifications/microsoft/62-193/62-193_Scraped_Question_Bank\|🗃️ 62-193 Scraped Question Bank]]

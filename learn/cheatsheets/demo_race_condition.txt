@@ -1,0 +1,109 @@
+🔙 **Back to Parent**: [[technical_skills/04_PostgreSQL_Deep_Dive/05_Indexing_Mastery|04_PostgreSQL_Deep_Dive]]
+
+# Demo: Race Condition - Bài toán "Mua hàng cuối cùng" 🛒⚡
+
+Đây là kịch bản thực tế nhất khi phỏng vấn Senior Backend: "Khi chỉ còn 1 sản phẩm cuối cùng, 2 người dùng cùng bấm nút 'Mua ngay' đúng một thơì điểm. Làm sao để chỉ 1 người mua được?"
+
+---
+
+## 📈 1. Kịch bản lỗi (The Problem)
+
+Giả sử bảng `inventory` có `id=1` và `stock=1`.
+
+| Time | Transaction A (User 1) | Transaction B (User 2) | Note |
+| :--- | :--- | :--- | :--- |
+| T1 | `SELECT stock FROM inventory WHERE id=1;` | | Trả về: **1** |
+| T2 | | `SELECT stock FROM inventory WHERE id=1;` | Trả về: **1** |
+| T3 | `UPDATE inventory SET stock = 0 WHERE id=1;` | | Thành công |
+| T4 | | `UPDATE inventory SET stock = 0 WHERE id=1;` | **THẤT BẠI LOGIC**: Lẽ ra phải báo lỗi hết hàng. |
+| T5 | **COMMIT** | | |
+| T6 | | **COMMIT** | **KẾT QUẢ**: Xuất hiện 2 đơn hàng nhưng chỉ có 1 sản phẩm. |
+
+---
+
+## 🛠️ 2. Cách giải quyết 1: Pessimistic Locking (FOR UPDATE)
+
+Khóa hàng dữ liệu ngay khi đọc, không cho người khác "đụng" vào cho đến khi xong việc.
+
+### SQL Trace:
+```sql
+-- Transaction A
+BEGIN;
+SELECT stock FROM inventory WHERE id = 1 FOR UPDATE; -- Khóa hàng 1 lại
+-- Transaction B (Nếu chạy SELECT FOR UPDATE lúc này)
+-- Sẽ bị "TREO" (Hanging) vì đang đợi A nhả khóa.
+
+UPDATE inventory SET stock = stock - 1 WHERE id = 1;
+COMMIT; -- Nhúc này B mới được chạy tiếp.
+```
+
+### Code Implementation (C# EF Core):
+```csharp
+using (var transaction = context.Database.BeginTransaction()) {
+    // Sử dụng .FromSqlRaw để gọi SELECT FOR UPDATE
+    var item = context.Inventory
+                      .FromSqlRaw("SELECT * FROM inventory WHERE id = 1 FOR UPDATE")
+                      .Single();
+    
+    if (item.Stock > 0) {
+        item.Stock -= 1;
+        context.SaveChanges();
+    }
+    transaction.Commit();
+}
+```
+
+---
+
+## 🛠️ 3. Cách giải quyết 2: Optimistic Locking (Recommended)
+
+Dùng một "Cơ chế kiểm soát phiên bản" (Version/Timestamp). Không khóa hàng, chỉ kiểm tra lúc lưu.
+
+### SQL Trace:
+```sql
+-- Transaction A lấy dữ liệu: stock=1, version=5
+-- Transaction B lấy dữ liệu: stock=1, version=5
+
+-- Transaction A cập nhật:
+UPDATE inventory SET stock = 0, version = 6 WHERE id = 1 AND version = 5;
+-- Thành công! (Rows affected = 1)
+
+-- Transaction B cập nhật:
+UPDATE inventory SET stock = 0, version = 6 WHERE id = 1 AND version = 5;
+-- THẤT BẠI! (Rows affected = 0) vì version hiện tại đã là 6.
+```
+
+### Code Implementation (Java Spring Boot):
+```java
+@Service
+public class InventoryService {
+    @Transactional
+    public void buyProduct(Long id) {
+        Product p = repo.findById(id).orElseThrow();
+        
+        // Java JPA tự động xử lý version thông qua annotation @Version trong Entity
+        if (p.getStock() > 0) {
+            p.setStock(p.getStock() - 1);
+            repo.save(p); // Sẽ ném ra ObjectOptimisticLockingFailureException nếu version lệch
+        }
+    }
+}
+```
+
+---
+
+## ⚖️ 4. So sánh (Trade-offs)
+
+| Tiêu chí | Pessimistic Lock | Optimistic Lock |
+| :--- | :--- | :--- |
+| **Khi nào dùng** | Tỉ lệ tranh chấp cực cao (VD: Đấu giá) | Tỉ lệ tranh chấp thấp (Hầu hết App) |
+| **Hiệu năng** | Chậm (Gây hàng đợi/Deadlock) | Nhanh (Không khóa hàng) |
+| **Trải nghiệm** | User phải đợi | User có thể bị lỗi (Cần Retry) |
+
+> [!TIP]
+> **Lời khuyên**: Luôn ưu tiên **Optimistic Locking** trước. Chỉ dùng **Pessimistic** khi bắt buộc phải đảm bảo thứ tự tuyệt đối và chấp nhận đánh đổi hiệu năng.
+
+---
+## 🔗 Xem chi tiết tại
+- [Module 8: Transactions & Concurrency](file:///c:/Users/TruongNhon/Desktop/back-up/interview/04_PostgreSQL_Deep_Dive/08_Transactions_Concurrency.md)
+- [Database Concurrency Blog](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-database-concurrency-control.md)

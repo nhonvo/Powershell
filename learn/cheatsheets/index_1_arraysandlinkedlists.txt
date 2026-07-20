@@ -1,0 +1,24 @@
+# 1_ArraysAndLinkedLists
+
+🔙 **Back to Parent**: [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/index_DataStructures|DataStructures]]
+
+## 📁 Categories
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/1_StringExercises/index_1_StringExercises|1_StringExercises]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/2_LinkedListExercises/index_2_LinkedListExercises|2_LinkedListExercises]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/3_ArrayExercises/index_3_ArrayExercises|3_ArrayExercises]]
+
+## 📄 Notes
+- [[1_arraysandlinkedlists|1_ArraysAndLinkedLists]]
+
+## 🛠️ Related Practices (Arrays & Strings)
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/index_1_ArraysAndLinkedLists|1464.Maximum-Product-of-Two-Elements-in-an-Array]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/index_1_ArraysAndLinkedLists|3.Longest-Substring-Without-Repeating-Characters]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/index_1_ArraysAndLinkedLists|4.Median-of-Two-Sorted-Arrays]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/index_1_ArraysAndLinkedLists|5.Longest-Palindromic-Substring]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/index_1_ArraysAndLinkedLists|53.Maximum-Subarray]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/index_1_ArraysAndLinkedLists|912.Sort-an-Array-Bubble-sort]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/index_1_ArraysAndLinkedLists|912.Sort-an-Array-Insert-sort]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/index_1_ArraysAndLinkedLists|912.Sort-an-Array-Quick-sort]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/index_1_ArraysAndLinkedLists|912.Sort-an-Array-Selection-sort]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/index_1_ArraysAndLinkedLists|zArray-crud]]
+

@@ -83,7 +83,10 @@ public static class SpectreMenu
     private static SelectionPrompt<string> BuildPrompt(string[] items, bool searchEnabled)
     {
         var pageSize = Math.Min(15, Math.Max(5, Console.WindowHeight - 8));
-        var prompt = new SelectionPrompt<string>().PageSize(pageSize).HighlightStyle(new Style(Color.Green));
+        var prompt = new SelectionPrompt<string>()
+            .PageSize(pageSize)
+            .HighlightStyle(new Style(Color.Green, decoration: Decoration.Bold))
+            .MoreChoicesText("[dim cyan](Move ↑/↓ or j/k to reveal more items)[/]");
         if (searchEnabled) prompt.SearchEnabled = true;
         prompt.AddChoices(items);
         return prompt;
@@ -106,7 +109,11 @@ public static class SpectreMenu
             AnsiConsole.Write(new Rule($"[bold cyan]{title.EscapeMarkup()}[/]").RuleStyle("grey"));
             AnsiConsole.WriteLine();
 
-            for (var i = 0; i < items.Length; i++)
+            var pageSize = Math.Min(15, Math.Max(5, Console.WindowHeight - 8));
+            var top = Math.Max(0, Math.Min(selected - pageSize / 2, items.Length - pageSize));
+            var end = Math.Min(items.Length, top + pageSize);
+
+            for (var i = top; i < end; i++)
             {
                 if (i == selected)
                 {
@@ -119,7 +126,8 @@ public static class SpectreMenu
             }
 
             AnsiConsole.WriteLine();
-            AnsiConsole.Write(new Rule("[dim]↑/↓ Navigate  ·  Enter Select  ·  Esc/q Cancel[/]").RuleStyle("grey"));
+            AnsiConsole.Write(new Rule($"[dim cyan]Item {selected + 1}/{items.Length}[/]").RuleStyle("grey"));
+            AnsiConsole.MarkupLine("[bold green]↑/↓/j/k[/] [dim]Navigate[/]  [bold cyan]PgDn/PgUp[/] [dim]Page[/]  [bold yellow]Home/End[/] [dim]Ends[/]  [bold green]Enter[/] [dim]Select[/]  [bold red]Esc/q[/] [dim]Cancel[/]");
 
             var key = Console.ReadKey(true);
             switch (key.Key)
@@ -131,6 +139,20 @@ public static class SpectreMenu
                 case ConsoleKey.DownArrow:
                 case ConsoleKey.J:
                     selected = (selected + 1) % items.Length;
+                    break;
+                case ConsoleKey.PageUp:
+                case ConsoleKey.U:
+                    selected = Math.Max(0, selected - pageSize);
+                    break;
+                case ConsoleKey.PageDown:
+                case ConsoleKey.D:
+                    selected = Math.Min(items.Length - 1, selected + pageSize);
+                    break;
+                case ConsoleKey.Home:
+                    selected = 0;
+                    break;
+                case ConsoleKey.End:
+                    selected = items.Length - 1;
                     break;
                 case ConsoleKey.Enter:
                     return selected;
@@ -167,7 +189,14 @@ public static class SpectrePager
                     AnsiConsole.MarkupLine(lines[i].EscapeMarkup());
                 for (var p = Math.Min(top + pageSize, totalLines); p < top + pageSize; p++)
                     AnsiConsole.WriteLine();
-                AnsiConsole.MarkupLine($"[dim] ↑↓/jk scroll d/u page g/G ends / search q quit" + $" ({top + 1}–{Math.Min(top + pageSize, totalLines)} of {totalLines})[/]");
+
+                int currentEnd = Math.Min(top + pageSize, totalLines);
+                int currentPage = totalLines == 0 ? 0 : (top / pageSize) + 1;
+                int totalPages = totalLines == 0 ? 0 : (int)Math.Ceiling((double)totalLines / pageSize);
+
+                AnsiConsole.Write(new Rule($"[dim cyan]Page {currentPage}/{totalPages}[/] [dim]({(totalLines == 0 ? 0 : top + 1)}–{currentEnd} of {totalLines} lines)[/]").RuleStyle("grey"));
+                AnsiConsole.MarkupLine("[bold green]↑/↓/j/k[/] [dim]Scroll[/]  [bold cyan]PgDn/PgUp/d/u[/] [dim]Page[/]  [bold yellow]Home/End/g/G[/] [dim]Ends[/]  [bold magenta]/[/] [dim]Search[/]  [bold red]Esc/q[/] [dim]Back[/]");
+
                 var key = Console.ReadKey(true);
                 switch (key.Key)
                 {
@@ -189,12 +218,14 @@ public static class SpectrePager
                         top = Math.Max(0, top - pageSize);
                         break;
                     case ConsoleKey.Home:
-                    case ConsoleKey.G when key.Modifiers == ConsoleModifiers.Shift:
                         top = 0;
                         break;
                     case ConsoleKey.End:
-                    case ConsoleKey.G:
                         top = Math.Max(0, totalLines - pageSize);
+                        break;
+                    case ConsoleKey.G:
+                        if (key.Modifiers.HasFlag(ConsoleModifiers.Shift)) top = Math.Max(0, totalLines - pageSize);
+                        else top = 0;
                         break;
                     case ConsoleKey.Oem2:
                     case ConsoleKey.F:

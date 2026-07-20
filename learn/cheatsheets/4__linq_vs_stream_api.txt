@@ -1,0 +1,104 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/01_Language_Basics/📂index_01_Language_Basics|01_Language_Basics]]
+
+# 🌊 4. LINQ vs Stream API (Deep Dive)
+
+Trong phát triển Backend, 80% thời gian chúng ta dành cho việc lọc (Filtering), chuyển đổi (Mapping) và gộp nhóm (Grouping) dữ liệu từ Database hoặc API. Cả C# và Java đều cung cấp những công cụ "mạnh như súng" để thực hiện việc này: **LINQ** và **Stream API**.
+
+---
+
+### 🏛️ 4.1 Triết lý Declarative (Khai báo)
+
+Thay vì viết vòng lặp `for` lồng nhau (Imperative), chúng ta chỉ tập trung vào **KẾT QUẢ** mong muốn.
+
+- **LINQ (.NET)**: Language Integrated Query. Tích hợp sâu vào ngôn ngữ qua cú pháp query (giống SQL) hoặc extension methods.
+- **Stream API (Java 8+)**: Luồng dữ liệu cho phép xử lý nối tiếp hoặc song song (Parallel Streams).
+
+---
+
+### 🧠 4.2 Lazy Evaluation vs Eager Evaluation
+
+> [!IMPORTANT]
+> Đây là kiến thức sống còn để tối ưu hóa hiệu năng!
+
+**Bản chất**: Cả LINQ và Stream API đều không chạy ngay lập tức khi bạn gọi `Where()` hay `filter()`.
+- **Intermediate Operations**: Thêm "bước xử lý" vào pipeline. Trả về một `Enumerable` (C#) hoặc `Stream` (Java).
+- **Terminal Operations**: Kích hoạt việc thực thi pipeline. Trả về giá trị cuối cùng (`ToList()`, `collect()`, `count()`).
+
+**Ví dụ (C# Lazy):**
+```csharp
+var query = users.Where(u => u.Age > 18); // Chưa chạy gì cả!
+foreach (var u in query) { ... }          // Lúc này mới bắt đầu duyệt mảng.
+```
+
+---
+
+### 🧪 4.3 So sánh trực tiếp (Polyglot Snippets)
+
+#### **Bài toán**: Lấy danh sách Top 3 tên của các nhân viên có lương > 1000, sắp xếp theo tên.
+
+**C# (LINQ Method Syntax):**
+```csharp
+var result = employees.Where(e => e.Salary > 1000)
+                      .OrderBy(e => e.Name)
+                      .Take(3)
+                      .Select(e => e.Name)
+                      .ToList();
+```
+
+**Java (Stream API):**
+```java
+List<String> result = employees.stream()
+                               .filter(e -> e.getSalary() > 1000)
+                               .sorted(Comparator.comparing(Employee::getName))
+                               .limit(3)
+                               .map(Employee::getName)
+                               .collect(Collectors.toList());
+```
+
+---
+
+### ⚡ 4.4 Advanced: Parallel Processing
+
+#### **C# (PLINQ - Parallel LINQ)**
+Tự động chia dữ liệu thành nhiều mảnh và tận dụng toàn bộ nhân CPU.
+```csharp
+var result = data.AsParallel().Where(x => x % 2 == 0).ToList();
+```
+
+#### **Java (Parallel Stream)**
+Dùng chung `ForkJoinPool` để thực thi song song.
+```java
+List<Integer> result = data.parallelStream().filter(x -> x % 2 == 0).collect(Collectors.toList());
+```
+> [!WARNING]
+> Đừng lạm dụng Parallel Stream cho các mảng nhỏ! Overhead của việc chia mảnh (Splitting) và gộp mảnh (Merging) có thể làm ứng dụng chạy chậm hơn cả Single Thread.
+
+---
+
+### 📝 4.5 Phân biệt LINQ to Objects vs LINQ to SQL
+
+Trong .NET, LINQ cực kỳ mạnh mẽ vì nó có thể chuyển đổi C# code thành **Câu lệnh SQL** (thông qua Expression Trees). Java Stream API chỉ hoạt động trên bộ nhớ (In-memory). Để query database trong Java, bạn cần QueryDSL hoặc Specification API.
+
+---
+
+### 📝 4.6 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Chỉ lấy ra 5 bản ghi đầu tiên thỏa mãn điều kiện". Cách này có giúp ứng dụng chạy nhanh hơn không khi mảng có 1 triệu phần tử?
+<details><summary>Đáp án</summary>
+Có! Nhờ cơ chế Lazy Evaluation, thuật toán sẽ dừng ngay lập tức khi tìm thấy đủ 5 phần tử, không cần duyệt tiếp 999.995 phần tử còn lại. (Short-circuiting).
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh Java Stream hoặc C# LINQ để nhóm danh sách sinh viên theo tên Lớp (Group By) và tính điểm trung bình của mỗi lớp.
+<details><summary>Gợi ý Solution (C#)</summary>
+```csharp
+var result = students.GroupBy(s => s.ClassName)
+                     .Select(g => new { Class = g.Key, Avg = g.Average(s => s.Score) });
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [LINQ Internals - Expression Trees Explained](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-07-linq-internals.md)
+- [Java Stream API - Mastering Collectors](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-java-streams-collectors.md)
+- [Parallel Processing Benchmark: PLINQ vs ParallelStream](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-parallel-processing.md)

@@ -1,0 +1,25 @@
+# 🎤 Daily Interview Prep Template
+
+## 📅 Date: {{DATE}}
+## 🎯 Focus: {{INTERVIEW_FOCUS}} (e.g., STAR Behavioral, System Design, .NET Internals)
+
+---
+
+## 1. Behavioral Question (STAR Method)
+- **Question**: 
+- **Situation (S)**: 
+- **Task (T)**: 
+- **Action (A)**: 
+- **Result (R)**: 
+- **Key Takeaways/Core Values Demonstrated**:
+
+## 2. Technical / System Design Drill
+- **Topic**: 
+- **Key System Architecture Components**:
+- **Trade-offs Evaluated**: 
+- **OWASP/Security or Scale Considerations**:
+
+## 3. Mock Reflection
+- **What went well**:
+- **Where I stumbled**:
+- **Actionable feedback/Improvement**:

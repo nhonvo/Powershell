@@ -1,0 +1,280 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/03_Searching_Sorting/🔍index_03_Searching_Sorting|03_Searching_Sorting]]
+
+## 6. Heap Sort
+
+### Gioi thieu
+
+Heap Sort su dung cau truc du lieu **Binary Heap** de sap xep. No dam bao **O(n log n) trong moi truong hop** va **in-place** (khong can bo nho phu nhu Merge Sort). Day la su ket hop tuyet voi cua cau truc du lieu va thuat toan!
+
+### Binary Heap la gi?
+
+Binary Heap la mot **complete binary tree** (cay nhi phan hoan chinh) co tinh chat:
+
+- **Max Heap:** Moi node cha >= tat ca node con
+- **Min Heap:** Moi node cha <= tat ca node con
+
+**Bieu dien bang mang:** Mot binary heap co the bieu dien bang mang 1 chieu, voi node tai index `i`:
+
+- **Node cha:** `(i - 1) / 2`
+- **Node con trai:** `2 * i + 1`
+- **Node con phai:** `2 * i + 2`
+
+Vi du Max Heap:
+
+```
+        90
+       /  \
+     79    72
+    /  \   /
+  30   44 56
+
+Mang: [90, 79, 72, 30, 44, 56]
+Index:  0   1   2   3   4   5
+```
+
+### Vi du thuc te
+
+Tuong tuong ban la trong tai mot giai dau. Ban dung "vong loai" (heapify) de tim nguoi gioi nhat. Nguoi thang duoc lay ra (phan tu lon nhat), roi ban lai to chuc "vong loai" trong so nhung nguoi con lai de tim nguoi gioi nhat tiep theo. Cu the cho den khi het nguoi.
+
+### Nguyen ly Heap Sort
+
+```
+Heap Sort(arr):
+    1. BUILD MAX HEAP: Bien mang thanh max heap (O(n))
+    2. Lap n-1 lan:
+       a. Swap root (phan tu lon nhat) voi phan tu cuoi cua heap
+       b. Giam kich thuoc heap di 1 (phan tu cuoi da dung vi tri)
+       c. HEAPIFY root de khoi phuc tinh chat max heap (O(log n))
+```
+
+### Thao tac Heapify
+
+**Heapify(arr, n, i):** Dam bao cay con goc tai `i` thoa man tinh chat max heap.
+
+```
+1. Tim phan tu lon nhat trong 3 phan tu: arr[i], arr[left], arr[right]
+2. Neu phan tu lon nhat khong phai arr[i]:
+   a. Swap arr[i] voi phan tu lon nhat
+   b. Goi de quy heapify tai vi tri vua swap
+```
+
+### Mo phong chi tiet
+
+Cho mang: `[4, 10, 3, 5, 1]`
+
+**Buoc 1: Build Max Heap**
+
+Bat dau tu node khong la cuoi cung: index = `n/2 - 1` = 1
+
+```
+Ban dau:     4
+            / \
+          10    3
+         / \
+        5    1
+Mang: [4, 10, 3, 5, 1]
+
+Heapify tai index 1 (node 10):
+  Con trai = 5, Con phai = 1. 10 > 5 > 1. Da thoa man.
+
+Heapify tai index 0 (node 4):
+  Con trai = 10, Con phai = 3. Max = 10.
+  Swap 4 va 10:
+       10
+      / \
+     4    3
+    / \
+   5    1
+  Heapify tai index 1 (node 4):
+    Con trai = 5, Con phai = 1. Max = 5.
+    Swap 4 va 5:
+         10
+        / \
+       5    3
+      / \
+     4    1
+  Mang: [10, 5, 3, 4, 1] -- MAX HEAP da xong!
+```
+
+**Buoc 2: Sap xep**
+
+```
+Lan 1: Swap arr[0]=10 voi arr[4]=1 => [1, 5, 3, 4, 10]
+       Heap size = 4. Heapify root:
+       1 < 5 => swap => [5, 1, 3, 4 | 10]
+       1 < 4 => swap => [5, 4, 3, 1 | 10]
+
+Lan 2: Swap arr[0]=5 voi arr[3]=1 => [1, 4, 3, 5 | 10]
+       Heap size = 3. Heapify root:
+       1 < 4 => swap => [4, 1, 3 | 5, 10]
+
+Lan 3: Swap arr[0]=4 voi arr[2]=3 => [3, 1, 4 | 5, 10]
+       Heap size = 2. Heapify root:
+       3 > 1 => da thoa man => [3, 1 | 4, 5, 10]
+
+Lan 4: Swap arr[0]=3 voi arr[1]=1 => [1, 3 | 4, 5, 10]
+       Heap size = 1. Done!
+
+Ket qua: [1, 3, 4, 5, 10]
+```
+
+### Flowchart
+
+KhongCoheap_sort(arr)Build Max Heap: heapify tu n/2-1 ve 0i = n - 1i > 0?Ket thuc: Mang da sap xepSwap arr[0] va arr[i]Heapify(arr, i, 0)i = i - 1
+
+CoKhongCoKhongCoKhongheapify(arr, n, i)largest = ileft = 2*i+1, right = 2*i+2left < n AND arr[left] > arr[largest]?largest = leftright < n AND arr[right] > arr[largest]?largest = rightlargest != i?Swap arr[i] va arr[largest]heapify(arr, n, largest)Return
+
+### Code Python
+
+```python
+def heap_sort(arr):
+    n = len(arr)
+
+    # Buoc 1: Build Max Heap
+    # Bat dau tu node khong la cuoi cung (index n//2 - 1)
+    for i in range(n // 2 - 1, -1, -1):
+        heapify(arr, n, i)
+
+    # Buoc 2: Trich xuat phan tu lon nhat lan luot
+    for i in range(n - 1, 0, -1):
+        arr[0], arr[i] = arr[i], arr[0]  # Swap root voi phan tu cuoi
+        heapify(arr, i, 0)                # Heapify phan con lai
+
+def heapify(arr, n, i):
+    """Dam bao cay con goc tai i thoa man max heap"""
+    largest = i
+    left = 2 * i + 1
+    right = 2 * i + 2
+
+    if left < n and arr[left] > arr[largest]:
+        largest = left
+
+    if right < n and arr[right] > arr[largest]:
+        largest = right
+
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        heapify(arr, n, largest)  # De quy: tiep tuc heapify xuong duoi
+
+# Test
+arr = [4, 10, 3, 5, 1]
+heap_sort(arr)
+print(arr)  # Output: [1, 3, 4, 5, 10]
+
+arr2 = [12, 11, 13, 5, 6, 7]
+heap_sort(arr2)
+print(arr2)  # Output: [5, 6, 7, 11, 12, 13]
+```
+
+### Chay thu chuong trinh hoan chinh
+
+```python
+def heap_sort_verbose(arr):
+    """Heap Sort voi in chi tiet tung buoc"""
+    n = len(arr)
+    print(f"Mang ban dau: {arr}")
+
+    # Buoc 1: Build Max Heap
+    print("\n--- Build Max Heap ---")
+    for i in range(n // 2 - 1, -1, -1):
+        heapify_verbose(arr, n, i)
+    print(f"Max Heap: {arr}")
+
+    # Buoc 2: Trich xuat tung phan tu lon nhat
+    print("\n--- Sap xep ---")
+    for i in range(n - 1, 0, -1):
+        arr[0], arr[i] = arr[i], arr[0]
+        print(f"  Swap root={arr[i]} voi arr[{i}]={arr[0]} => {arr}")
+        heapify_verbose(arr, i, 0)
+
+    print(f"\nKet qua: {arr}")
+
+def heapify_verbose(arr, n, i):
+    """Heapify voi in chi tiet"""
+    largest = i
+    left = 2 * i + 1
+    right = 2 * i + 2
+
+    if left < n and arr[left] > arr[largest]:
+        largest = left
+    if right < n and arr[right] > arr[largest]:
+        largest = right
+
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        heapify_verbose(arr, n, largest)
+
+# Test
+heap_sort_verbose([4, 10, 3, 5, 1])
+# Ket qua: [1, 3, 4, 5, 10]
+
+print()
+arr2 = [12, 11, 13, 5, 6, 7]
+heap_sort_verbose(arr2)
+# Ket qua: [5, 6, 7, 11, 12, 13]
+```
+
+### Phan tich do phuc tap
+
+#### Chi phi Build Max Heap: O(n)
+
+Nhieu nguoi nghi build heap la O(n log n) (n node * heapify O(log n) moi node), nhung that ra la **O(n)**. Chung minh:
+
+Voi cay co chieu cao `h = floor(log2(n))`:
+
+- O level `h` (la): co `n/2` node, heapify chi phi `0` (la, khong can heapify)
+- O level `h-1`: co `n/4` node, heapify chi phi `1`
+- O level `h-2`: co `n/8` node, heapify chi phi `2`
+- ...
+- O level `0` (root): co `1` node, heapify chi phi `h`
+
+Tong chi phi:
+
+```
+T(n) = SUM(i=0 to h) [so_node_level_i * chi_phi_heapify_i]
+     = SUM(i=0 to h) [n/2^(i+1) * i]
+     = (n/2) * SUM(i=0 to h) [i / 2^i]
+```
+
+Chuoi `SUM(i=0 to inf) [i / 2^i] = 2` (hoi tu).
+
+Vay: `T(n) = (n/2) * 2 = n = O(n)`.
+
+#### Chi phi Sort: O(n log n)
+
+Sau khi build heap, ta thuc hien `n - 1` lan:
+
+- Swap: O(1)
+- Heapify: O(log n) (worst case, tu root xuong la)
+
+Tong: `(n - 1) * O(log n) = O(n log n)`
+
+#### Tong hop
+
+| Truong hop       | Do phuc tap | Giai thich                           |
+| :--------------- | :---------- | :----------------------------------- |
+| **Best case**    | O(n log n)  | Luon phai build heap + extract n lan |
+| **Average case** | O(n log n)  |                                      |
+| **Worst case**   | O(n log n)  | **Luon dam bao O(n log n)**          |
+| **Space**        | **O(1)**    | In-place! Khong can mang phu         |
+
+### Uu va nhuoc diem
+
+| Uu diem                                | Nhuoc diem                                             |
+| :------------------------------------- | :----------------------------------------------------- |
+| O(n log n) moi truong hop              | **Unstable** sort                                      |
+| **In-place** (O(1) space)              | Cham hon Quick Sort trong thuc te (cache locality kem) |
+| Khong co worst case xau nhu Quick Sort | Khong adaptive (khong nhanh hon voi mang gan sap xep)  |
+| Tot cho Priority Queue                 |                                                        |
+
+### So sanh Quick Sort, Merge Sort, Heap Sort
+
+| Tieu chi           | Quick Sort                           | Merge Sort         | Heap Sort           |
+| :----------------- | :----------------------------------- | :----------------- | :------------------ |
+| Average case       | **O(n log n)**                       | O(n log n)         | O(n log n)          |
+| Worst case         | O(n^2)                               | **O(n log n)**     | **O(n log n)**      |
+| Space              | O(log n)                             | O(n)               | **O(1)**            |
+| Stable             | Khong                                | **Co**             | Khong               |
+| Cache-friendly     | **Co**                               | Trung binh         | Khong               |
+| Thuc te nhanh nhat | **Co**                               | Khong              | Khong               |
+| Dung trong Python  | `list.sort()` / `sorted()` (TimSort) | TimSort (mac dinh) | `heapq.nsmallest()` |

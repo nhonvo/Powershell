@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/scs-c02
+  - scsc02
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 SCS-C02 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/aws/SCS-C02/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/aws/SCS-C02/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/aws/SCS-C02/SCS-C02 Mindmap\|🗺️ SCS-C02 Mindmap]]
+- [[certifications/aws/SCS-C02/SCS-C02 Flashcards\|🃏 SCS-C02 Flashcards]]
+- [[certifications/aws/SCS-C02/SCS-C02_Scraped_Question_Bank\|🗃️ SCS-C02 Scraped Question Bank]]

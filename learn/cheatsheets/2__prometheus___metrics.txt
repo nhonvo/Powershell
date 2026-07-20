@@ -1,0 +1,85 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/07_Monitoring_Metrics/📂index_07_Monitoring_Metrics|07_Monitoring_Metrics]]
+
+# 📈 2. Prometheus & Metrics (Data Mastering)
+
+Prometheus là hệ thống giám sát và cảnh báo mã nguồn mở phổ biến nhất. Nó lưu trữ dữ liệu dưới dạng **Time-Series** (Chuỗi thời gian), biến các tham số kỹ thuật thành các biểu đồ sống động.
+
+---
+
+### 🏛️ 2.1 Prometheus Architecture (Kiến trúc Pull-based)
+
+#### **1. Prometheus Server (The Heart)**
+- **TSDB**: Lưu trữ dữ liệu.
+- **HTTP Server**: Cung cấp **PromQL** (Ngôn ngữ truy vấn) để lấy số liệu.
+- **Scraper**: Định kỳ "gọi" vào APP để lấy `/metrics`.
+
+#### **2. Exporters (Người báo tin)**
+Nhiều hệ thống không có endpoint `/metrics` sẵn (như Redis, MySQL, Linux).
+- **Node Exporter**: Lấy CPU/RAM từ Hệ điều hành (OS).
+- **Postgres Exporter**: Lấy số lượng Connection, Query slow từ DB.
+
+#### **3. Alertmanager (Người báo động)**
+Khi 1 chỉ số vượt ngưỡng (VD: CPU > 95%), Prometheus gửi tin đến Alertmanager -> Alertmanager bắn tin sang **Slack, Email, SMS**.
+
+---
+
+### 🧠 2.2 Bốn kiểu Metrics (The Four Types)
+
+Đây là "vốn liếng" để bạn thiết kế hệ thống quan sát:
+
+1.  **Counter (Bộ đếm)**: Chỉ tăng, không giảm (trừ khi reset).
+    - **Ví dụ**: Tổng số request nhận được, Tổng số đơn hàng.
+2.  **Gauge (Thước đo)**: Có thể tăng hoặc giảm.
+    - **Ví dụ**: Số lượng User đang Online, % CPU hiện tại.
+3.  **Histogram (Bản đồ tần suất)**: Chia các quan sát vào các "hố" (Buckets).
+    - **Ví dụ**: Phân bổ Latency (Có bao nhiêu request < 10ms, bao nhiêu < 50ms, bao nhiêu > 500ms).
+4.  **Summary (Tóm tắt)**: Giống Histogram nhưng tính toán ngay lập tức các giá trị phân vị (Percentiles) như P95, P99.
+
+---
+
+### 🚀 2.3 PromQL (Ngôn ngữ truy vấn Prometheus)
+
+Bạn có thể thực hiện các phép tính toán phức tạp ngay trên thanh tìm kiếm.
+
+**Ví dụ lấy tỷ lệ request thành công (HTTP 2xx):**
+```promql
+sum(rate(http_requests_total{status=~"2.."}[5m])) / sum(rate(http_requests_total[5m]))
+```
+
+---
+
+### ⚡ 2.4 Scraping Config (Cấu hình lấy dữ liệu)
+
+Hãy đảm bảo server Prometheus biết chỗ để lấy dữ liệu.
+
+```yaml
+scrape_configs:
+  - job_name: 'backend_app'
+    scrape_interval: 15s   # Cứ 15s lấy 1 lần
+    static_configs:
+      - targets: ['localhost:5000']
+```
+
+---
+
+### 📝 2.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao nên dùng Counter cho số lượng Request thay vì dùng Gauge?"
+<details><summary>Đáp án</summary>
+Gauge rủi ro hơn vì nếu Prometheus bị lỗi 1 nhịp (miss scrape), bạn sẽ mất giá trị thực tế của thời điểm đó. Với Counter (Tổng số), nếu miss 1 nhịp, khi Prometheus quay lại, nó vẫn tính toán được sự chênh lệch (Delta) giữa lần trước và lần sau, đảm bảo tính chính xác cho các phép tính tỷ lệ (rate).
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh PromQL để lấy giá trị CPU trung bình của tất cả các server trong 5 phút qua.
+<details><summary>Solution</summary>
+```promql
+avg(rate(node_cpu_seconds_total{mode="idle"}[5m]))
+```
+(Lưu ý: Bạn lấy CPU idle rồi dùng `1 - idle` để ra CPU thực tế đang dùng).
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [How Prometheus Scrapes Data from Your Application](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-prometheus-scraping.md)
+- [PromQL Mastery: From Basic Queries to Complex Aggregations](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-promql-guide.md)
+- [Designing the Perfect Alerting Rules in Alertmanager](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-alertmanager-rules.md)

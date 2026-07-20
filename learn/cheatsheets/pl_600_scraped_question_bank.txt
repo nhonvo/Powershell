@@ -1,0 +1,160 @@
+# 🗃️ PL-600 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+A company uses two separate unlinked apps to manage sales leads; a Power Apps app and a third-party application.
+The client has the following requirements:
+-Manage all leads by using the Power Apps app.
+-Create a lead in the Power Apps app when a user creates a lead in the third-party application.
+-Update leads in the Power Apps app when a user updates a lead in the third-party application.
+-Connect to the third-party application by using an API.
+You need to recommend strategies to integrate the Power Apps app and the third-party application.
+Which three options can you use to achieve the goal? Each correct answer presents part of the solution.
+NOTE: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,D,E`
+
+**Explanation**:
+A: Customers should be able to adopt business applications from Microsoft and expect they speak the same language and seamlessly work together. Dual Write allows our customers to not think about these apps as different systems to write to independently; rather, the underlying infrastructure makes it seamless for these apps to write simultaneously.
+D: Use Custom APIs to create your own APIs in Dataverse. With a Custom API you can consolidate a group of operations into an API that you and other developers can call in their code. The Dataverse connector enables calling Custom APIs actions in Power Automate.
+E: Dataverse provides access to the environment database on the Microsoft Dataverse Service. It is available for Logic Apps, Power Automate, and Power Apps.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+DRAG DROP (Drag and Drop is not supported) 
+You are designing a business continuity strategy for a client who has a Microsoft Power Platform solution.
+The client works with critical data where any data loss creates a high risk.
+You need to document the retry process for the stakeholders.
+Which four actions should you perform in sequence? To answer, move the appropriate actions from the list of actions to the answer area and arrange them in the correct order.
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+A large company experiences high staff turnover rates. As a result, the company must add or remove multiple system user accounts daily.
+You need to recommend a security concept which will facilitate complex security profiles to entities for large groups of users across the Power Apps and Dynamics
+365 applications.
+What should you recommend?
+
+### Options:
+- [ ] **A)** Hierarchy security
+- [ ] **B)** Field-level security
+- [ ] **C)** User access management
+- [x] **D)** Team privileges [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+User and team management is the area of Microsoft Dataverse where you can create and maintain user accounts and profiles.
+A user is any person who works for a business unit who uses Dataverse. Each user has a user account.
+A team is a group of users. Teams let users across an organization collaborate and share information.
+Note: Why use Dataverse?
+- Easy to secure ג€" Data is securely stored so that users can see it only if you grant them access. Role-based security allows you to control access to tables for different users within your organization.
+- Data from your Dynamics 365 applications is also stored within Dataverse, allowing you to quickly build apps that use your Dynamics 365 data and extend your apps with Power Apps.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported) 
+You are designing a Power Platform solution for a company that provides in-home appliance maintenance. When a customer schedules a service appointment, a dispatcher assigns one technician for a specific time and location.
+The solution must capture information about the technician assigned to each appointment and the list of tools that the technician must bring to the appointment.
+You need to recommend the data type for the captured information.
+Which data type should you use? To answer, select the appropriate options in the answer area.
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Choice 
+Like Choices below, but can only select one of the option.
+Incorrect Answers:
+- Customer: A lookup column that you can use to specify a customer, which can be an account or contact.
+- Lookup: Data in one table often relates to data in another table. For example, you might have a Teachers table and a Class table, and the Class table might have a lookup relation to the Teachers table to show which teacher teaches the class. You can use a lookup column to show data from the Teachers table.
+This is commonly referred to as a lookup column.
+The LookUp function finds the first record in a table that satisfies a formula. Use LookUp to find a single record that matches one or more criteria. For both, the formula is evaluated for each record of the table
+Box 2: Choices 
+You can customize forms (main, quick create, and quick view) and email templates by adding multi-select columns that are called Choices. When you add a choices column, you can specify multiple values that will be available for users to select. When users fill out the form they can select one, multiple, or all the values displayed in a drop-down list.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported) 
+An animal welfare organization wants to track the movement of wolf packs in a region. Cameras at specific locations capture images when motion is detected within the camera sensor range. Staff upload the images manually to a shared drive and then analyze the images.
+The organization wants to automate image capture and analysis. The organization has the following requirements:
+-Save captured images in an appropriate location.
+-Analyze saved images by using an image recognition process.
+-Display data in real-time dashboards.
+You need to recommend the correct technology for the requirements.
+What should you recommend? To answer, select the appropriate options in the answer area.
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Automated cloud flow.
+Create a cloud flow when you want your automation to be triggered either automatically, instantly, or via a schedule.
+Automated flows: Create an automation that is triggered by an event such as arrival of an email from a specific person, or a mention of your company in social media.
+Incorrect Answers:
+- Business process flows provide a guide for people to get work done.
+- Desktop flows are used to automate tasks on the Web or the desktop.
+- Instant flows: Start an automation with a click of a button. Wide range of tasks such as requesting an approval, an action in Teams or SharePoint.
+Box 2: Desktop flow and AI Builder
+Desktop flows are used to automate tasks on the Web or the desktop. Using Power Automate Desktop you can automate tasks on the desktop as well as the
+Web.
+</details>
+
+---

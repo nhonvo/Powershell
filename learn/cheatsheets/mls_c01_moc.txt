@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mls-c01
+  - mlsc01
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MLS-C01 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/aws/MLS-C01/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/aws/MLS-C01/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/aws/MLS-C01/MLS-C01 Mindmap\|🗺️ MLS-C01 Mindmap]]
+- [[certifications/aws/MLS-C01/MLS-C01 Flashcards\|🃏 MLS-C01 Flashcards]]
+- [[certifications/aws/MLS-C01/MLS-C01_Scraped_Question_Bank\|🗃️ MLS-C01 Scraped Question Bank]]

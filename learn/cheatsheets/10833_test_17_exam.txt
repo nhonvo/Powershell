@@ -1,0 +1,365 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/02_N4/Course_40/📂index_Course_40|Course_40]]
+
+# Test 17
+
+## Part 1
+**Q1.** 毎朝家の近くの公園を走ります。
+- **A.** こうへん
+- **B.** こうえん
+- **C.** こうべん
+- **D.** こうけん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2公園：c&ocirc;ng vi&ecirc;n毎朝家の近くの公園を走ります。Mỗi s&aacute;ng t&ocirc;i chạy bộ ở c&ocirc;ng vi&ecirc;n gần nh&agrave;.</p>
+</details>
+
+---
+**Q2.** うちから駅まで、自転車で10分くらいです。
+- **A.** じとうしゃ
+- **B.** じどうしゃ
+- **C.** じでんしゃ
+- **D.** じてんしゃ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4自転車：xe đạpうちから駅まで、自転車で10分くらいです。Từ nh&agrave; đến ga mất khoảng 10 ph&uacute;t đi xe đạp.</p>
+</details>
+
+---
+**Q3.** その公園はどのくらい広いんですか。
+- **A.** ひろい
+- **B.** せまい
+- **C.** おおきい
+- **D.** たかい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1広い：rộngその公園はどのくらい広いんですか。C&ocirc;ng vi&ecirc;n đ&oacute; rộng khoảng bao nhi&ecirc;u?</p>
+</details>
+
+---
+**Q4.** お正月は毎年何をしますか。
+- **A.** おしょうがつ
+- **B.** おせいがつ
+- **C.** おしょうつき
+- **D.** おせいつき
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1お正月：Tếtお正月は毎年何をしますか。V&agrave;o dịp Tết mỗi năm bạn thường l&agrave;m g&igrave;?</p>
+</details>
+
+---
+**Q5.** 政治に興味がない人が多いです。
+- **A.** せじ
+- **B.** せいじ
+- **C.** せち
+- **D.** せいち
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2政治：ch&iacute;nh trị政治に興味がない人が多いです。C&oacute; nhiều người kh&ocirc;ng quan t&acirc;m đến ch&iacute;nh trị.</p>
+</details>
+
+---
+**Q6.** きょねんは10回も旅行に行きました。
+- **A.** 私年
+- **B.** 広年
+- **C.** 公年
+- **D.** 去年
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4去年：năm ngo&aacute;i去年は10回も旅行に行きました。Năm ngo&aacute;i t&ocirc;i đ&atilde; đi du lịch tận 10 lần.</p>
+</details>
+
+---
+**Q7.** コンビニはここから少しとおいです。
+- **A.** 達い
+- **B.** 園い
+- **C.** 遠い
+- **D.** 速い
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3遠い： xaコンビニはここから少し遠いです。Cửa h&agrave;ng tiện lợi c&aacute;ch đ&acirc;y hơi xa.</p>
+</details>
+
+---
+**Q8.** けががなかなかなおらないんです。
+- **A.** 台らない
+- **B.** 始らない
+- **C.** 治らない
+- **D.** 胎らない
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3治る： khỏiけががなかなか治らないんです。Vết thương m&atilde;i kh&ocirc;ng khỏi.</p>
+</details>
+
+---
+**Q9.** 父はタクシーのうんてんしゅです。
+- **A.** 運動手
+- **B.** 運転手
+- **C.** 運軽手
+- **D.** 運連手
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2運転手：t&agrave;i xế, người l&aacute;i xe父はタクシーの運転手です。Bố t&ocirc;i l&agrave; t&agrave;i xế xe taxi.</p>
+</details>
+
+---
+**Q10.** ミンさんなら、だいどころにいますよ。
+- **A.** 大所
+- **B.** 太所
+- **C.** 台所
+- **D.** 代所
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3台所：bếpミンさんなら、台所にいますよ。Nếu l&agrave; Minh th&igrave; bạn ấy đang ở bếp đấy.</p>
+</details>
+
+---
+**Q1.** 私はあまり服に_______がないんです。
+- **A.** 注文
+- **B.** 味
+- **C.** 意味
+- **D.** 興味
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4興味：hứng th&uacute;私はあまり服に興味がないんです。T&ocirc;i kh&ocirc;ng c&oacute; hứng th&uacute; với quần &aacute;o lắm.</p>
+</details>
+
+---
+**Q2.** このコーヒーはちょっと_______ですね。
+- **A.** 苦い
+- **B.** 悪い
+- **C.** 軽い
+- **D.** 細い
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1苦い：đắngこのコーヒーはちょっと苦いですね。C&agrave; ph&ecirc; n&agrave;y hơi đắng nhỉ.</p>
+</details>
+
+---
+**Q3.** 先週_______した服が、まだ届かないんです。
+- **A.** 注文
+- **B.** 貿易
+- **C.** 利用
+- **D.** 中止
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1注文：đặt h&agrave;ng, gọi đồ先週注文した服が、まだ届かないんです。 Bộ quần &aacute;o t&ocirc;i đặt tuần trước vẫn chưa được giao tới.</p>
+</details>
+
+---
+**Q4.** この図書館は、誰でも＿＿＿できます。
+- **A.** 優勝
+- **B.** 注文
+- **C.** 利用
+- **D.** 貿易
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3利用：sử dụngこの図書館は、誰でも利用できます。Thư viện n&agrave;y ai cũng c&oacute; thể sử dụng.</p>
+</details>
+
+---
+**Q5.** 友達と好きな女優の_______に行ってきた。
+- **A.** カット
+- **B.** チャット
+- **C.** デート
+- **D.** ミュージカル
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4ミュージカル： &acirc;m nhạc, nhạc kịch友達と好きな女優のミュージカルに行ってきた。T&ocirc;i đ&atilde; đi xem nhạc kịch của nữ diễn vi&ecirc;n y&ecirc;u th&iacute;ch c&ugrave;ng bạn.</p>
+</details>
+
+---
+**Q6.** 兄は_______の仕事をしています。
+- **A.** 同僚
+- **B.** 貿易
+- **C.** 選手
+- **D.** 場所
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2貿易：ngoại thương, thương mại兄は貿易の仕事をしています。Anh t&ocirc;i l&agrave;m c&ocirc;ng việc trong ng&agrave;nh thương mại.</p>
+</details>
+
+---
+**Q7.** 今は何も食べたくない_______だ。
+- **A.** 意味
+- **B.** 具合
+- **C.** 調子
+- **D.** 気分
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4気分：t&acirc;m trạng今は何も食べたくない気分だ。B&acirc;y giờ t&ocirc;i chẳng c&oacute; hứng ăn g&igrave; cả.</p>
+</details>
+
+---
+**Q8.** カットだけで7,000円も_______たんです。
+- **A.** し
+- **B.** 似合っ
+- **C.** 始め
+- **D.** 紹介し
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1（〜円）もする： tốn những (~ y&ecirc;n)カットだけで7,000円もしたんです。Chỉ cắt t&oacute;c th&ocirc;i m&agrave; tốn những 7000 y&ecirc;n.</p>
+</details>
+
+---
+**Q9.** _______、佐藤さんは英語が話せると言っていました。
+- **A.** 確か
+- **B.** だから
+- **C.** なんで
+- **D.** よろしい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1確か：h&igrave;nh như, nếu kh&ocirc;ng nhầm th&igrave; ~確か、佐藤さんは英語が話せると言っていました。H&igrave;nh như anh Satou đ&atilde; n&oacute;i l&agrave; c&oacute; thể n&oacute;i tiếng Anh.</p>
+</details>
+
+---
+**Q10.** その着物、_______ていますね。
+- **A.** 利用し
+- **B.** 始め
+- **C.** 似合っ
+- **D.** 紹介し
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3似合う：hợpその着物、似合っていますね。Bộ kimono đ&oacute; hợp với bạn đấy.</p>
+</details>
+
+---
+**Q1.** A：今朝、________________B：えーっ、怖いね。
+- **A.** 駅の近くで事故があったんだ。
+- **B.** 駅の近くで事故があるんだよ。
+- **C.** 駅の近くで事故があった？
+- **D.** 駅の近くで事故があるんだった。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A：今朝、駅の近くで事故があったんだ。B：えーっ、怖いね。A: S&aacute;ng nay, gần nh&agrave; ga đ&atilde; xảy ra tai nạn đấy.B: G&igrave; cơ, sợ nhỉ.</p>
+</details>
+
+---
+**Q2.** A：この映画、最近________________B：へえ、知りませんでした。
+- **A.** 日本で人気のなんですよ。
+- **B.** 日本で人気だなんですよ。
+- **C.** 日本で人気なんですよ。
+- **D.** 日本で人気ななんですよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A：この映画、最近日本で人気なんですよ。B：へえ、知りませんでした。A: Bộ phim n&agrave;y gần đ&acirc;y rất nổi tiếng ở Nhật đấy.B: Ồ, giờ t&ocirc;i mới biết đấy.</p>
+</details>
+
+---
+**Q3.** A：週末、一緒に映画を見に行かない？________________B：いいね、行きたい！
+- **A.** チケットが2枚あったんだった。
+- **B.** チケットが2枚あるんだった。
+- **C.** チケットが2枚あるんだ。
+- **D.** チケットが2枚あったんだ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A：週末、一緒に映画を見に行かない？チケットが2枚あるんだ。B：いいね、行きたい！A: Cuối tuần cậu đi xem phim c&ugrave;ng tớ kh&ocirc;ng? Tớ c&oacute; 2 v&eacute;.B: Được đấy nhỉ, tớ muốn đi!</p>
+</details>
+
+---
+**Q4.** A：ナムさん、具合が悪そうですね。B：実は、________________
+- **A.** 今朝から頭が痛かったんです。
+- **B.** 今朝から頭が痛いんです。
+- **C.** 今朝は頭が痛いんです。
+- **D.** 今朝は頭が痛かったんです。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A：ナムさん、具合が悪そうですね。B：実は、今朝から頭が痛いんです。A: Nam tr&ocirc;ng c&oacute; vẻ kh&ocirc;ng khỏe nhỉ.B: Thật ra t&ocirc;i bị đau đầu từ s&aacute;ng.</p>
+</details>
+
+---
+**Q5.** A：________________、どうやって行けばいいですか。B：もみじ公園に行くなら、バスが便利ですよ。
+- **A.** もみじ公園に行くんでしたが
+- **B.** もみじ公園に行きたかったんですが
+- **C.** もみじ公園に行ったんですが
+- **D.** もみじ公園に行きたいんですが
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A：もみじ公園に行きたいんですが、どうやって行けばいいですか。B：もみじ公園に行くなら、バスが便利ですよ。A: T&ocirc;i muốn đi c&ocirc;ng vi&ecirc;n Momiji, t&ocirc;i n&ecirc;n đi như thế n&agrave;o th&igrave; được?B: Nếu đi c&ocirc;ng vi&ecirc;n Momiji th&igrave; đi xe bu&yacute;t sẽ tiện đ&oacute;.</p>
+</details>
+
+---
+**Q6.** A：________________、すごく混んでたよ。B：ああ、あそこはいつも混んでいるよ。
+- **A.** 先月できた喫茶店に行くんだけど
+- **B.** 先月できた喫茶店に行ったんだけど
+- **C.** 先月できた喫茶店に行くんだったけど
+- **D.** 先月できた喫茶店に行ったんだったけど
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A：先月できた喫茶店に行ったんだけど、すごく混んでたよ。B：ああ、あそこはいつも混んでいるよ。A: T&ocirc;i đ&atilde; đến qu&aacute;n c&agrave; ph&ecirc; mới mở hồi th&aacute;ng trước, qu&aacute;n đ&ocirc;ng lắm.B: &Agrave;, qu&aacute;n đ&oacute; l&uacute;c n&agrave;o cũng đ&ocirc;ng m&agrave;.</p>
+</details>
+
+---
+**Q7.** A：さくら市には________________B：3年ぐらいですね。でも、来月もみじ市に引っ越すんですよ。
+- **A.** どのくらい住んでいるんですか。
+- **B.** どのくらい住むんですか。
+- **C.** どのくらい住んでいたんですか。
+- **D.** どのくらい住みたいんですか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A：さくら市にはどのくらい住んでいるんですか。B：3年ぐらいですね。でも、来月もみじ市に引っ越すんですよ。A: Bạn sống ở th&agrave;nh phố Sakura bao l&acirc;u rồi?B: Khoảng 3 năm rồi. Nhưng th&aacute;ng sau t&ocirc;i sẽ chuyển đến th&agrave;nh phố Momiji.</p>
+</details>
+
+---
+**Q8.** A：マイさん、駅前に喫茶店ができるらしいですよ。B：へえ、________________
+- **A.** いつできるんですか。
+- **B.** いつできたんですか。
+- **C.** どこにできるんですか。
+- **D.** どこにできたんですか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A：マイさん、駅前に喫茶店ができるらしいですよ。B：へえ、いつできるんですか。A: Mai n&agrave;y, nghe n&oacute;i trước nh&agrave; ga c&oacute; một qu&aacute;n c&agrave; ph&ecirc; chuẩn bị mở đấy.B: Thế &agrave;, khi n&agrave;o th&igrave; n&oacute; mở vậy.</p>
+</details>
+
+---
+**Q9.** A：マイさん、________________B：ええ、まだ仕事がありますから、今日は残業します。
+- **A.** もう帰ったんですか。
+- **B.** もう帰るんですか。
+- **C.** まだ帰らないんですか。
+- **D.** まだ帰るんじゃないんですか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A：マイさん、まだ帰らないんですか。B：ええ、まだ仕事がありますから、今日は残業します。A: Mai n&agrave;y, bạn vẫn chưa về &agrave;?B: V&acirc;ng, v&igrave; t&ocirc;i vẫn c&ograve;n c&ocirc;ng việc n&ecirc;n h&ocirc;m nay t&ocirc;i sẽ l&agrave;m th&ecirc;m giờ.</p>
+</details>
+
+---
+**Q10.** A：このジャケット、かっこいいけど________________B：そうだね。高くて買えないね&hellip;。
+- **A.** 20万円しかしないね。
+- **B.** 20万円もしないね。
+- **C.** 20万円しかするね。
+- **D.** 20万円もするね。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A：このジャケット、かっこいいけど20万円もするね。B：そうだね。高くて買えないね&hellip;。A: C&aacute;i &aacute;o kho&aacute;c n&agrave;y đẹp thật, nhưng m&agrave; tận 200.000 y&ecirc;n nhỉ.B: Đ&uacute;ng vậy nhỉ. Đắt qu&aacute;, kh&ocirc;ng mua nổi.</p>
+</details>
+
+---

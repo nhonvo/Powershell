@@ -1,0 +1,29 @@
+# 🗺️ AZ-204 Visual Mermaid Mindmap
+
+```mermaid
+mindmap
+  root((💻 AZ-204))
+    Compute Solutions
+      App Services Startup
+      Azure Functions config
+      Docker ACI AKS
+    Storage Solutions
+      Cosmos DB Consistency
+      Blob lifecycle tiers
+      Table partitioned keys
+    Security
+      Key Vault Secrets
+      Managed Identities
+      SAS Token generation
+    Monitor & Optimize
+      App Insights logs
+      Redis Cache policies
+      CDN cache rules
+    Connect & Consume
+      API Management policies
+      Event Grid PubSub
+      Service Bus Topics
+```
+
+---
+Back to **[[certifications/microsoft/AZ-204/AZ-204 MOC|AZ-204 MOC]]**

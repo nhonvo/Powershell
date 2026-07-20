@@ -1,0 +1,131 @@
+# 🗃️ PSPO-I Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+When should the Product Owner update the project plan? (choose the best answer)
+
+### Options:
+- [ ] **A)** Before the Sprint Planning to know how much work will have to be done in the Sprint.
+- [x] **B)** The Product Backlog is the plan in Scrum. It is updated as new information and insights emerge. [Correct]
+- [ ] **C)** After the Daily Scrum to ensure an accurate daily overview of project progress.
+- [ ] **D)** The project plan must be updated prior to the Sprint Retrospective.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+The Product Owner is responsible for managing and refining the Product Backlog, which is the single source of truth for the plan of the product development. The Product Backlog is a living artifact that changes as the product and the market evolve. The Product Owner updates the Product Backlog continuously based on feedback, learning, and stakeholder needs. There is no separate project plan document in Scrum.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+True or False: Dependencies could influence how the Product Owner orders Product Backlog items.
+
+### Options:
+- [x] **A)** True [Correct]
+- [ ] **B)** False
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Correct Answer : True
+Dependencies are relationships between Product Backlog items that affect their order of implementation. For example, a Product Backlog item may depend on another one to be completed first, or it may have a dependency on a third-party system or resource. Dependencies could influence how the Product Owner orders Product Backlog items, as they may introduce risks, constraints, or uncertainties that affect the value delivery. The Product Owner should try to minimize dependencies and order the Product Backlog items in a way that maximizes value and minimizes waste.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+Which are appropriate topics for discussion in a Sprint Retrospective? (choose the best three answers)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,C,D`
+
+**Explanation**:
+Correct Answers : A, C, and D .
+The Sprint Retrospective is an event where the Scrum Team reflects on how they worked together in the last Sprint and identifies ways to improve their collaboration, processes, and quality. Therefore, appropriate topics for discussion in a Sprint Retrospective are:
+Team relations: The Scrum Team should discuss how they communicated, interacted, and supported each other during the Sprint. They should celebrate their successes, acknowledge their challenges, and address any conflicts or issues that arose. They should also share feedback, appreciation, and suggestions for improvement with each other.
+
+How the Scrum Team does its work: The Scrum Team should inspect the methods, tools, and practices they used to deliver the product increment. They should evaluate what worked well and what could be improved. They should also identify any impediments, risks, or dependencies that affected their work and how they handled them.
+Definition of Done: The Scrum Team should review their Definition of Done and check if it is still relevant, clear, and achievable. They should also assess how well they adhered to it and if they delivered a potentially releasable product increment that meets the quality standards. They should also consider if they need to update or adapt their Definition of Done based on new insights or feedback.
+The following topics are not appropriate for discussion in a Sprint Retrospective:
+The value of work currently represented in the Product Backlog: The value of the Product Backlog items is the responsibility of the Product Owner, who should continuously refine and order them based on stakeholder needs and feedback. The value of the Product Backlog items is not directly related to how the Scrum Team works together and does not affect their improvement actions for the next Sprint.
+Arranging the Sprint Backlog for the next Sprint: The Sprint Backlog is the plan for the next Sprint that is created by the Scrum Team during the Sprint Planning event. The Sprint Backlog is based on the Product Backlog items that are selected for the next Sprint and how the Developers intend to accomplish them. The Sprint Retrospective is not a planning event but a reflection event that focuses on the past Sprint.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+Five new Scrum Teams have been created to build one product. A few of the Developers on one of the Scrum Teams ask the Scrum Master how to coordinate their work with the other teams. 
+What should the Scrum Master do?
+(choose the best answer)
+
+### Options:
+- [x] **A)** Teach them that it is their responsibility to work with the other teams to create an integrated Increment that is inclusive of all five team's work. [Correct]
+- [ ] **B)** Collect the Sprint tasks from the teams at the end of their Sprint Planning and merge that into a consolidated plan for the entire Sprint.
+- [ ] **C)** Visit the five teams each day to inspect that their Sprint Backlogs are aligned.
+- [ ] **D)** Teach the Product Owner to work with the lead developers on ordering Product Backlog in a way to avoid too much overlap during a Sprint.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Correct Answer : A) Teach them that it is their responsibility to work with the other teams to create an integrated Increment that is inclusive of all five team's work. According to the Scrum Guide, the Scrum Team is responsible for all product-related activities, including coordination and integration with other teams. The Scrum Master should teach the Developers how to work with the other teams to create a potentially releasable product increment that meets the Definition of Done and the Product Goal. One way to facilitate this coordination is to use a Scrum of Scrums meeting, which is a daily or periodic meeting where representatives from each team share their progress, plans, and impediments. The Scrum of Scrums meeting is not mandatory, but it can help the teams align their work and resolve dependencies.
+
+The other options are not correct because they violate the principles of Scrum, such as self- management, empiricism, and transparency:
+B) Collecting the Sprint tasks from the teams and merging them into a consolidated plan for the entire Sprint is a centralized and controlled way of coordination that undermines the self- management and autonomy of the teams. The Scrum Master should not act as a project manager or a coordinator, but as a servant-leader and a coach who enables the teams to manage their own work.
+C) Visiting the five teams each day to inspect that their Sprint Backlogs are aligned is a micromanagement and inspection approach that does not respect the trust and transparency of the teams. The Scrum Master should not interfere with the work of the teams, but support them in creating a shared understanding of the product vision, goals, and requirements. D) Teaching the Product Owner to work with the lead developers on ordering Product Backlog in a way to avoid too much overlap during a Sprint is a suboptimal and inefficient way of coordination that does not leverage the collective intelligence and creativity of the teams. The Product Owner should not rely on a few individuals to order the Product Backlog, but collaborate with all the teams and stakeholders to maximize value delivery.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+When does a Developer become accountable for the value of a Product Backlog item selected for the Sprint?
+(choose the best answer)
+
+### Options:
+- [ ] **A)** Whenever a team member can accommodate more work.
+- [ ] **B)** At the Sprint Planning Event.
+- [ ] **C)** During the Daily Scrum.
+- [x] **D)** Never. The entire Scrum Team is accountable for creating value every Sprint. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+Answer(s): D) Never. The entire Scrum Team is accountable for creating value every Sprint.
+According to the Scrum Guide, the Scrum Team consists of one Product Owner, one Scrum Master, and Developers. The Scrum Team is responsible for all product-related activities, including delivering a valuable, usable product increment every Sprint. The Product Owner is accountable for maximizing the value of the product and the work of the Developers. The Developers are accountable for creating a plan for the Sprint, the Sprint Backlog; instilling quality by adhering to a Definition of
+
+Done; and adapting their plan each day toward the Sprint Goal. The Scrum Master is accountable for establishing Scrum as defined in the Scrum Guide, helping everyone understand Scrum theory and practice, and removing impediments to the Scrum Team's progress. Therefore, the Developers are not individually accountable for the value of a Product Backlog item selected for the Sprint, but collectively accountable as part of the Scrum Team. The value of a Product Backlog item is determined by the Product Owner, who orders the Product Backlog items based on stakeholder needs and feedback. The Developers collaborate with the Product Owner to understand the value and requirements of each Product Backlog item and deliver a potentially releasable product increment that meets the Definition of Done and the Sprint Goal.
+</details>
+
+---

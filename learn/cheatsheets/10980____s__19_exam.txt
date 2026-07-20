@@ -1,0 +1,89 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 19
+
+## Part 1
+**Q1.** テーブルに　食べ物が　たくさん　あります。
+- **A.** たべもの
+- **B.** たべるもの
+- **C.** たべぶつ
+- **D.** たべぶつ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1食べ物 (THỰC - VẬT)：đồ ănTr&ecirc;n b&agrave;n c&oacute; rất nhiều đồ ăn.</p>
+</details>
+
+---
+**Q2.** あしたは　八日です。
+- **A.** はっか
+- **B.** はつか
+- **C.** よっか
+- **D.** ようか
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4八日 (B&Aacute;T - NHẬT)：m&ugrave;ng 8Mai l&agrave; ng&agrave;y m&ugrave;ng 8.</p>
+</details>
+
+---
+**Q3.** にほんは　東アジアに　あります。
+- **A.** きた
+- **B.** みなみ
+- **C.** にし
+- **D.** ひがし
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4東 (Đ&Ocirc;NG)：Đ&ocirc;ngNhật Bản nằm ở Đ&ocirc;ng &Aacute;.</p>
+</details>
+
+---
+**Q4.** らいねんの　六月に　けっこんします。
+- **A.** ろっがつ
+- **B.** ろくがつ
+- **C.** ろっかげつ
+- **D.** ろくげつ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2六月 (LỤC - NGUYỆT)：th&aacute;ng S&aacute;uT&ocirc;i sẽ kết h&ocirc;n v&agrave;o th&aacute;ng S&aacute;u năm sau.</p>
+</details>
+
+---
+**Q5.** あの　家は　おおきいですね。
+- **A.** まち
+- **B.** いえ
+- **C.** はし
+- **D.** にわ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2家 (GIA)：Ng&ocirc;i nh&agrave;Ng&ocirc;i nh&agrave; đ&oacute; to thật đấy.</p>
+</details>
+
+---
+**Q6.** わたしは　学生です。
+- **A.** かくうせい
+- **B.** かくせい
+- **C.** がくせい
+- **D.** がっせい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3学生 (HỌC - SINH)：học sinhT&ocirc;i l&agrave; học sinh.</p>
+</details>
+
+---
+**Q7.** 今年　くにへ　かえります。
+- **A.** ことし
+- **B.** きょねん
+- **C.** らいねん
+- **D.** おととし
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1今年 (KIM - NI&Ecirc;N)：Năm nayNăm nay t&ocirc;i sẽ về nước.</p>
+</details>
+
+---

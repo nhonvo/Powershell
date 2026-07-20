@@ -1,0 +1,247 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/🌲index_09_Binary_Trees|09_Binary_Trees]]
+
+## 2. Height / Depth (Chiều cao / Chiều sâu)
+
+### Ý tưởng
+
+Hai khái niệm **height** và **depth** thường bị nhầm lẫn. Hãy phân biệt rõ:
+
+- **Depth** của node X = số edge từ **root** đến X (đi **xuống** từ gốc). Root có depth = 0.
+- **Height** của node X = số edge từ X đến **leaf xa nhất** trong subtree của X (đi **xuống** xa nhất). Leaf có height = 0.
+- **Height của cây** = height của root = depth lớn nhất trong cây.
+
+### Analogy — Tòa nhà
+
+Tưởng tượng binary tree là một tòa nhà:
+
+- **Depth** = bạn đang ở **tầng** mấy (tính từ tầng trệt — root). Tầng trệt là depth 0, tầng 1 là depth 1...
+- **Height** = từ vị trí bạn đứng, tòa nhà còn **cao bao nhiêu tầng** xuống hầm sâu nhất (leaf xa nhất).
+- **Height của cả tòa** = tổng số tầng tính từ trệt đến hầm sâu nhất.
+
+1
+depth=0, height=32
+depth=1, height=13
+depth=1, height=24
+depth=2, height=05
+depth=2, height=06
+depth=2, height=18
+depth=3, height=0
+
+### Mối quan hệ toán học
+
+Với cây có `n` node:
+
+| Loại cây               | Height                  | Công thức     |
+| :--------------------- | :---------------------- | :------------ |
+| Perfect binary tree    | `floor(log2(n))`        | Tối ưu nhất   |
+| Complete binary tree   | `floor(log2(n))`        | Gần tối ưu    |
+| Cây bất kỳ             | `[floor(log2(n)), n-1]` | Tùy hình dạng |
+| Skewed tree (suy biến) | `n - 1`                 | Xấu nhất      |
+
+**Chứng minh**: Perfect binary tree level `k` có `2^k` node. Tổng node = `2^0 + 2^1 + ... + 2^h = 2^(h+1) - 1 = n`. Suy ra `h = log2(n+1) - 1 ≈ log2(n)`.
+
+### Thuật toán tính Height
+
+#### Cách 1: Đệ quy (bottom-up)
+
+Ý tưởng: Height của 1 node = 1 + max(height trái, height phải). Base case: node None có height = -1 (hoặc 0 tùy convention — mình dùng -1 để leaf có height = 0).
+
+#### Flowchart
+
+CóKhôngheight(node)node == None?Return -1left_h = height(node.left)right_h = height(node.right)Return 1 + max(left_h, right_h)
+
+#### Mô phỏng từng bước
+
+```
+        1
+       / \
+      2   3
+     / \
+    4   5
+```
+
+| Lời gọi     | left_h | right_h | Kết quả            |
+| :---------- | :----- | :------ | :----------------- |
+| `height(4)` | -1     | -1      | 1 + max(-1,-1) = 0 |
+| `height(5)` | -1     | -1      | 1 + max(-1,-1) = 0 |
+| `height(2)` | 0      | 0       | 1 + max(0,0) = 1   |
+| `height(3)` | -1     | -1      | 1 + max(-1,-1) = 0 |
+| `height(1)` | 1      | 0       | 1 + max(1,0) = 2   |
+
+**Height của cây = 2** (2 edge từ root 1 → node 2 → node 4)
+
+#### Code — Tính Height
+
+```python
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def height(root):
+    """
+    Tính height của cây (số edge từ root đến leaf xa nhất).
+    Convention: cây rỗng có height = -1, leaf có height = 0.
+    Time: O(n), Space: O(h)
+    """
+    if root is None:
+        return -1
+
+    left_h = height(root.left)
+    right_h = height(root.right)
+
+    return 1 + max(left_h, right_h)
+
+
+# === Test ===
+#        1
+#       / \
+#      2   3
+#     / \
+#    4   5
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+
+print("Height:", height(root))  # Output: 2
+
+# Test cây rỗng
+print("Height (rỗng):", height(None))  # Output: -1
+
+# Test chỉ có root
+print("Height (root only):", height(TreeNode(1)))  # Output: 0
+```
+
+#### Code — Tính Depth của một node
+
+```python
+def depth(root, target_val):
+    """
+    Tính depth của node có giá trị target_val.
+    Depth = số edge từ root đến node đó.
+    Trả về -1 nếu không tìm thấy.
+    Time: O(n), Space: O(h)
+    """
+    def find_depth(node, target, current_depth):
+        if node is None:
+            return -1
+
+        if node.val == target:
+            return current_depth
+
+        # Tìm trong cây trái
+        left_result = find_depth(node.left, target, current_depth + 1)
+        if left_result != -1:
+            return left_result
+
+        # Tìm trong cây phải
+        return find_depth(node.right, target, current_depth + 1)
+
+    return find_depth(root, target_val, 0)
+
+
+def all_depths(root):
+    """
+    Tính depth cho TẤT CẢ node trong cây.
+    Trả về dict {val: depth}.
+    """
+    depths = {}
+
+    def dfs(node, d):
+        if node is None:
+            return
+        depths[node.val] = d
+        dfs(node.left, d + 1)
+        dfs(node.right, d + 1)
+
+    dfs(root, 0)
+    return depths
+
+
+# === Test ===
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+
+print("Depth of node 4:", depth(root, 4))  # Output: 2
+print("Depth of node 1:", depth(root, 1))  # Output: 0
+print("Depth of node 3:", depth(root, 3))  # Output: 1
+print("Depth of node 99:", depth(root, 99))  # Output: -1
+
+print("All depths:", all_depths(root))
+# Output: {1: 0, 2: 1, 4: 2, 5: 2, 3: 1}
+```
+
+#### Code — Tính Height bằng BFS (Iterative)
+
+```python
+from collections import deque
+
+
+def height_bfs(root):
+    """
+    Tính height bằng BFS.
+    Đếm số level rồi trừ 1.
+    Time: O(n), Space: O(w)
+    """
+    if root is None:
+        return -1
+
+    queue = deque([root])
+    h = -1  # Bắt đầu từ -1, mỗi level tăng 1
+
+    while queue:
+        h += 1
+        level_size = len(queue)
+
+        for _ in range(level_size):
+            node = queue.popleft()
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+    return h
+
+
+# === Test ===
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+
+print("Height (BFS):", height_bfs(root))  # Output: 2
+```
+
+### Best case / Worst case
+
+| Trường hợp   | Height   | Khi nào                               |
+| :----------- | :------- | :------------------------------------ |
+| Best case    | O(log n) | Cây cân bằng (AVL, Red-Black)         |
+| Worst case   | O(n)     | Cây suy biến (chỉ có left hoặc right) |
+| Average case | O(log n) | Cây ngẫu nhiên                        |
+
+### Ưu điểm và nhược điểm
+
+**Phiên bản đệ quy:**
+
+- Ưu: Code ngắn gọn, dễ hiểu
+- Nhược: Stack overflow nếu cây quá sâu (Python mặc định giới hạn ~1000 recursive calls)
+
+**Phiên bản BFS:**
+
+- Ưu: Không bị stack overflow
+- Nhược: Tốn nhiều bộ nhớ hơn cho queue
+
+### Cải tiến
+
+- Dùng `sys.setrecursionlimit()` để tăng giới hạn đệ quy (nhưng không khuyến khích cho production)
+- Dùng iterative DFS với explicit stack để tránh stack overflow
+- Cache height nếu cần truy vấn nhiều lần (ví dụ: thêm attribute `height` vào mỗi node)

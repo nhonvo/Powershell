@@ -1,0 +1,65 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 13
+
+## Part 1
+**Q1.** けさ 　しゃわーを 　あびましたか。
+- **A.** シャウー
+- **B.** シャワー
+- **C.** ツャウー
+- **D.** ツャワー
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2シャワー: tắmS&aacute;ng nay bạn đ&atilde; tắm chưa?</p>
+</details>
+
+---
+**Q2.** この 　みちは 　くるまが　 すくないです。
+- **A.** 多ない
+- **B.** 大ない
+- **C.** 小ない
+- **D.** 少ない
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4少ない (THIỂU): &iacute;tCon đường n&agrave;y &iacute;t xe hơi.</p>
+</details>
+
+---
+**Q3.** まいとし 　かぞくと　 りょこうへ 　いきます。
+- **A.** 来年
+- **B.** 去年
+- **C.** 今年
+- **D.** 毎年
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4毎年 (MỖI - NI&Ecirc;N): h&agrave;ng nămH&agrave;ng năm, t&ocirc;i đi du lịch c&ugrave;ng gia đ&igrave;nh.</p>
+</details>
+
+---
+**Q4.** どうぞ 　さきに 　いって　 ください。
+- **A.** 生に
+- **B.** 矢に
+- **C.** 先に
+- **D.** 失に
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3先 (TI&Ecirc;N): trướcXin mời đi trước.</p>
+</details>
+
+---
+**Q5.** たなかさんは　 とうきょうで　 うまれました。
+- **A.** 右まれました
+- **B.** 生まれました
+- **C.** 主まれました
+- **D.** 左まれました
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2生まれる (SANH): sinh raTanaka sinh ra ở Tokyo.</p>
+</details>
+
+---

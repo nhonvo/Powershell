@@ -1,0 +1,32 @@
+🔙 **Back to Parent**: [[technical_skills/03_Design_Patterns_Mastery/📂index_03_Design_Patterns_Mastery|03_Design_Patterns_Mastery]]
+
+# Module 5: Structural Patterns (The Organizers) 🧩
+
+Nhóm bài học về cách tổ chức khối lượng lớn các đối tượng phức tạp thành một cấu trúc đồng nhất.
+
+---
+
+## 🧩 Các Pattern chính
+
+### 1. Composite (Hệ phân cấp)
+- Cho phép bạn đối xử với các đối tượng đơn lẻ và các nhóm đối tượng (Composition) một cách đồng nhất.
+- Ví dụ: Hệ thống quản lý tệp tin (File & Folder). Cả hai đều có thể thực hiện thao tác `getSize()`.
+
+### 2. Bridge (Cầu nối)
+- Tách biệt Abstraction khỏi Implementation để chúng có thể phát triển độc lập.
+- Ví dụ: Bạn có class `Remote` (Điều khiển) và `Device` (Thiết bị). Bạn có thể thêm Remote mới hoặc Device mới mà không cần sửa code cũ.
+
+### 3. Flyweight (Chia sẻ tài nguyên)
+- Dùng để hỗ trợ hàng triệu đối tượng nhỏ bằng cách chia sẻ các phần dữ liệu chung (Intrinsic state) thay vì lưu trữ chúng trong mỗi đối tượng.
+- Ví dụ: Render hàng triệu cái cây trong một game bằng cách chia sẻ chung Texture, chỉ lưu tọa độ `(X, Y)` riêng.
+
+---
+
+## 🛠️ Bài tập thực hành (Practice) - [Trích từ Data.csv ID 115/116]
+
+**Hệ thống tệp tin ảo**
+1. Triển khai **Composite Pattern** cho một hệ thống tệp tin bao gồm bài viết (File) và thư mục (Folder).
+2. Viết hàm `getTotalSize()` duyệt đệ quy qua các thư mục con.
+
+---
+*Tiếp tục học: [Module 6: Behavioral Patterns Mastery](./06_Behavioral_Patterns.md)*

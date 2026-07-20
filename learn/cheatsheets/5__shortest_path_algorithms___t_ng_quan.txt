@@ -1,0 +1,44 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/12_Graphs/🕸️index_12_Graphs|12_Graphs]]
+
+## 5. Shortest Path Algorithms — Tổng quan
+
+### 5.1. Bài toán đường đi ngắn nhất
+
+**Ví dụ thực tế:** Google Maps tìm đường đi ngắn nhất từ nhà bạn đến trường. Mỗi ngã tư là một vertex, mỗi con đường là một edge, khoảng cách (hoặc thời gian) là weight.
+
+**Phân loại bài toán:**
+
+1. **Single-Source Shortest Path (SSSP):** Tìm đường ngắn nhất từ 1 đỉnh nguồn đến tất cả đỉnh còn lại
+2. **All-Pairs Shortest Path (APSP):** Tìm đường ngắn nhất giữa MỌI cặp đỉnh
+3. **Single-Pair:** Tìm đường ngắn nhất giữa 2 đỉnh cụ thể (thực tế thường giải bằng SSSP)
+
+### 5.2. Bảng so sánh tổng quan
+
+| Thuật toán         | Loại        | Trọng số âm | Time Complexity  | Dùng khi nào          |
+| :----------------- | :---------- | :---------- | :--------------- | :-------------------- |
+| **BFS**            | SSSP        | Không       | O(V + E)         | Unweighted graph      |
+| **Dijkstra**       | SSSP        | Không       | O((V+E) log V)   | Non-negative weights  |
+| **Bellman-Ford**   | SSSP        | Có          | O(V × E)         | Có negative weights   |
+| **Floyd-Warshall** | APSP        | Có          | O(V³)            | All-pairs, graph nhỏ  |
+| **A***             | Single-pair | Không       | O(E) best case   | Có heuristic (bản đồ) |
+| **Johnson's**      | APSP        | Có          | O(V² log V + VE) | APSP, sparse graph    |
+
+### 5.3. Nguyên lý Relaxation
+
+Tất cả shortest path algorithm đều dựa trên một ý tưởng chung gọi là **relaxation** (nới lỏng).
+
+**Ý tưởng:** Nếu đường đi hiện tại từ source đến v dài hơn đường đi qua u, thì cập nhật:
+
+```
+if dist[u] + weight(u, v) < dist[v]:
+    dist[v] = dist[u] + weight(u, v)
+    parent[v] = u
+```
+
+**Ví dụ:** Bạn đang nghĩ đường đi từ nhà đến trường là 10km. Nhưng phát hiện đi qua quán cà phê chỉ mất 3km + 5km = 8km. Vậy cập nhật: đường ngắn nhất = 8km, đi qua quán cà phê.
+
+**Tại sao gọi là "relaxation"?** Vì ta "nới lỏng" upper bound của khoảng cách — ban đầu dist = infinity (rất lỏng), dần dần siết lại cho đến giá trị tối ưu.
+
+### 5.4. Hướng dẫn chọn thuật toán
+
+Single-sourceKhôngCóKhôngCóCóKhôngAll-pairsĐúngKhôngKhôngCóBài toán shortest pathSingle-source hay All-pairs?Graph có trọng số?BFS — O(V+E)Có trọng số âm?Dijkstra — O((V+E)logV)Cần phát hiện negative cycle?Bellman-Ford — O(VE)Graph nhỏ (V < 500)?Floyd-Warshall — O(V³)Có trọng số âm?Chạy Dijkstra V lần — O(V(V+E)logV)Johnson's Algorithm

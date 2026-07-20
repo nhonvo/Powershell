@@ -1,0 +1,188 @@
+# 🗃️ PL-500 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 1 Testlet 1
+
+You need to address the issue with the capacity planning flow.
+What should you do?
+
+### Options:
+- [ ] **A)** Configure the system to send alerts when the gateway fails.
+- [x] **B)** Create a gateway cluster. [Correct]
+- [ ] **C)** Create a machine group and add machines to the group to handle requests.
+- [ ] **D)** Increase the CPU and memory of the machine on which the gateway is hosted.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+An on-premises data gateway is software that you install in an on-premises network. The gateway facilitates access to data in that network.
+
+You can install a gateway either in personal mode, which applies to Power BI only, or in standard mode. We recommend standard mode. In that mode, you can install a standalone gateway or add a gateway to a cluster, which we recommend for high availability.
+
+Note: CapacityPlanning flow
+Developers within the company use cloud flows to access data from an on-premises capacity planning system.
+
+You observe significant increases to the volume of traffic that the on-premises data gateway processes each day. You must minimize gateway failures.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 1 Testlet 1
+
+HOTSPOT (Drag and Drop is not supported)
+You need to configure sharing for MaintenanceScheduler.
+Which sharing methods should you use? To answer, select the appropriate options in the answer area. NOTE: Each correct selection is worth one point.
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Share as co-owner
+User1 must be able to work with you to modify the desktop flow.
+
+Add a list as a co-owner
+You can add SharePoint lists as co-owners of a cloud flow so that everyone who has edit access to the list automatically gets edit access to the flow.
+
+Box 2: Share as owner
+User2 must be able to access and review the run history for the cloud flow.
+
+Owner
+Adding an owner to a cloud flow is the most common way to share a cloud flow. Any owner of a cloud flow can perform these actions:
+
+View the run history.
+Manage the properties of the flow (for example, start or stop the flow, add owners, or update credentials for a connection).
+Edit the definition of the flow (for example, add or remove an action or condition).
+Add or remove other owners (but not the flow's creator).
+Delete the flow.
+
+Box 3: Share as run-only user
+You must grant User3 permissions to run but not modify the desktop flow.
+
+Share a cloud flow with Share a cloud flow with run-only permissions
+Instant flows (that is, flows that use a manual trigger such as a button or an item being selected) can be shared by using run-only permissions. Any user who's added as a run-only user won't have access to edit or modify the flow in any way; they'll only have permissions to trigger the flow.permissions
+Instant flows (that is, flows that use a manual trigger such as a button or an item being selected) can be shared by using run-only permissions. Any user who's added as a run-only user won't have access to edit or modify the flow in any way; they'll only have permissions to trigger the flow.
+
+Note: You create a cloud MaintenanceScheduler flow that uses a desktop flow. The desktop flow connects to third-party services to fetch information. You must not permit the desktop flow to run for more than 20 minutes.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 1 Testlet 1
+
+HOTSPOT (Drag and Drop is not supported)
+You need to troubleshoot the issue saving ProdManager.
+
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+NOTE: Each correct selection is worth one point.
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: No
+Create the child flow in a solution
+If your flow uses anything other than built-in actions or the Microsoft Dataverse connector, you need to update the flow to use the connections embedded in the flow. To do this, go to the child flow's properties page, and then select Edit in the Run only users tile.
+
+In the pane that appears, for each connection used in the flow, you will need to select Use this connection (<connection name>) instead of Provided by run-only user.
+
+Select Save.
+
+Note:
+At this time, you cannot pass connections from the parent flow to the child flow. If you do not do this, you will receive an error that states that the name cannot be used as a child workflow because child workflows only support embedded connections.
+
+Box 2: No
+Box 3: No
+Box 4: Yes
+
+We see the error message: FlowA cannot be used as a child workflow because child workflows only support embedded connections.
+
+Important! To be able to call flow as a Child Flow, both the Parent and the Child Flow must be in a Solution.
+
+The reason? Simply – the connections you use and are defined inside the child flow are embedded. What it means? This means, that when calling that flow it would still try to get user context to execute the connections, not use the ones defined by the flow’s author. So in the end – the flow cannot be added as child flow because in such scenario user context is lost and the flow is expecting it to have. And embedded connections, by default, can only be executed by the flow owners. So you need to define, who can use them.
+
+The solution
+
+Go to your flow that you want to add as a child flow. Open its details page. Then hit “Edit” in the “Run only users” box:
+
+
+
+
+Each connection you have defined in your flow is by default set to be run by the current user (1). To fix the issue, change it to use one of the defined connections, so that it won’t need the user’s context (2):
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 1 Testlet 1
+
+You need to resolve the issue with the DataCollector flow.
+
+What are two possible ways to achieve the goal? Each correct answer presents a complete solution.
+NOTE: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D,E`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 1 Testlet 1
+
+You need to package the automations.
+What should you do?
+
+### Options:
+- [ ] **A)** Show dependencies within the solution.
+- [ ] **B)** Remove unmanaged layers.
+- [ ] **C)** Add existing components to the solution.
+- [x] **D)** Add required components to each item within the solution. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+Packaging
+You must package the automations in a solution. All required components must be included in the solution.
+
+Incorrect:
+* View dependencies for a component
+
+Solution components often depend on other solution components. You can’t delete any solution component that has dependencies from another solution component. You can view the dependent components from the Solutions area of Power Apps.
+
+1. Sign in to Power Apps and select Solutions from the left navigation.
+2. Open the solution you want, select the component you want, on the command bar select ..., and then select Show dependencies.
+</details>
+
+---

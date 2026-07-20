@@ -1,0 +1,156 @@
+{
+  "Meta": {
+    "Id": "deck_2__redis_deep_dive",
+    "Topic": "2. Redis Deep Dive",
+    "Language": "English/Japanese",
+    "Domain": "technical_skills",
+    "Level": "General",
+    "Tags": [
+      "2__redis_deep_dive"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 7
+  },
+  "Cards": [
+    {
+      "Id": "card_03557",
+      "Front": "Kiểu dữ liệu",
+      "Back": "Đặc điểm | Ví dụ thực tế",
+      "Hint": "04_Caching_Redis",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. redis deep dive"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03558",
+      "Front": "**String**",
+      "Back": "Nhị phân an toàn (Tối đa 512MB) | Cache HTML, Session, Auth Token",
+      "Hint": "04_Caching_Redis",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. redis deep dive"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03559",
+      "Front": "**Hash**",
+      "Back": "Bản đồ giữa các field và value | Lưu thông tin User (ID, Name, Age)",
+      "Hint": "04_Caching_Redis",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. redis deep dive"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03560",
+      "Front": "**List**",
+      "Back": "Danh sách liên kết (O(1) cho đầu/cuối) | Hệ thống Message Queue đơn giản",
+      "Hint": "04_Caching_Redis",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. redis deep dive"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03561",
+      "Front": "**Set**",
+      "Back": "Danh sách phần tử duy nhất, không thứ tự | Tìm bạn chung, đếm lượt view (Unique)",
+      "Hint": "04_Caching_Redis",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. redis deep dive"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03562",
+      "Front": "**Sorted Set**",
+      "Back": "List + Rank (O(log N)) | Bảng xếp hạng Game (Leaderboard)",
+      "Hint": "04_Caching_Redis",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. redis deep dive"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03563",
+      "Front": "**Bitmap**",
+      "Back": "Mảng bit siêu nén | Chấm công hàng ngày (Attendance)",
+      "Hint": "04_Caching_Redis",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. redis deep dive"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|02_Arrays_Strings]]
+
+## 2. Strings — Chuỗi
+
+### 2.1. String là gì?
+
+Hãy nghĩ String như một **xâu chuỗi hạt**, mỗi hạt là một ký tự. Bạn có thể đếm số hạt (length), tìm hạt màu xanh (search), cắt ra một đoạn (substring), hoặc nối thêm hạt vào (concatenation).
+
+Về bản chất, **String là một array of characters** — một mảng các ký tự. Tuy nhiên, tùy ngôn ngữ mà String có tính chất khác nhau:
+
+| Ngôn ngữ | Mutable?                 | Encoding                    |
+| :------- | :----------------------- | :-------------------------- |
+| Python   | **Immutable**            | UTF-8 (nội bộ: UTF-8/16/32) |
+| Java     | **Immutable**            | UTF-16                      |
+| C++      | **Mutable**              | phụ thuộc locale            |
+| C        | **Mutable** (char array) | ASCII / UTF-8               |
+| Go       | **Immutable**            | UTF-8                       |
+
+### 2.2. Tại sao String immutable lại quan trọng?
+
+Trong Python và Java, string là immutable — nghĩa là một khi tạo ra, bạn không thể thay đổi nội dung. Mỗi phép nối chuỗi tạo ra một string MỚI.
+
+```python
+s = "hello"
+s = s + " world"  # Tạo string mới "hello world", string cũ "hello" bị bỏ
+```
+
+**Hậu quả hiệu năng:**
+
+```python
+# SAI — O(n^2) vì mỗi lần nối tạo string mới
+result = ""
+for i in range(n):
+    result += str(i)  # copy toàn bộ result cũ + thêm str(i)
+
+# ĐÚNG — O(n) dùng list rồi join
+parts = []
+for i in range(n):
+    parts.append(str(i))
+result = "".join(parts)
+```
+
+**Chứng minh O(n^2) của cách nối string sai:**
+
+Mỗi lần nối, ta copy toàn bộ string hiện tại. Tổng chi phí:
+
+$$T(n) = 1 + 2 + 3 + \ldots + n = \frac{n(n+1)}{2} = O(n^2)$$
+
+### 2.3. Các thao tác cơ bản trên String
+
+```python
+s = "Hello, World!"
+
+# Truy cập ký tự — O(1)
+print(s[0])      # 'H'
+print(s[-1])     # '!'
+
+# Cắt chuỗi (slicing) — O(k) với k là độ dài đoạn cắt
+print(s[0:5])    # 'Hello'
+print(s[7:])     # 'World!'
+print(s[::-1])   # '!dlroW ,olleH' (reverse)
+
+# Tìm kiếm — O(n*m) worst case
+print(s.find("World"))   # 7 (index đầu tiên)
+print("World" in s)      # True
+
+# Thay thế — O(n)
+print(s.replace("World", "Vietnam"))  # 'Hello, Vietnam!'
+
+# Tách chuỗi — O(n)
+words = s.split(", ")    # ['Hello', 'World!']
+
+# Chuyển hoa/thường — O(n)
+print(s.lower())   # 'hello, world!'
+print(s.upper())   # 'HELLO, WORLD!'
+```
+
+### 2.4. Các bài toán String kinh điển
+
+#### Bài 1: Kiểm tra Palindrome
+
+**Palindrome** là chuỗi đọc xuôi hay ngược đều giống nhau: "racecar", "madam", "level".
+
+```python
+def is_palindrome(s: str) -> bool:
+    left, right = 0, len(s) - 1
+    while left < right:
+        if s[left] != s[right]:
+            return False
+        left += 1
+        right -= 1
+    return True
+```
+
+**Simulation:** `s = "racecar"`
+
+```
+Step 1: left=0 ('r'), right=6 ('r') → match ✓
+Step 2: left=1 ('a'), right=5 ('a') → match ✓
+Step 3: left=2 ('c'), right=4 ('c') → match ✓
+Step 4: left=3 ('e'), right=3 → left >= right → dừng
+→ return True
+```
+
+#### Bài 2: Kiểm tra Anagram
+
+**Anagram**: hai chuỗi có cùng tập ký tự với cùng số lần xuất hiện. Ví dụ: "listen" và "silent".
+
+```python
+from collections import Counter
+
+def is_anagram(s: str, t: str) -> bool:
+    if len(s) != len(t):
+        return False
+    return Counter(s) == Counter(t)
+
+# Cách thủ công — dùng mảng đếm
+def is_anagram_manual(s: str, t: str) -> bool:
+    if len(s) != len(t):
+        return False
+    count = [0] * 26  # chỉ cho lowercase English letters
+    for i in range(len(s)):
+        count[ord(s[i]) - ord('a')] += 1
+        count[ord(t[i]) - ord('a')] -= 1
+    return all(c == 0 for c in count)
+```
+
+#### Bài 3: Longest Common Prefix
+
+```python
+def longest_common_prefix(strs: list[str]) -> str:
+    if not strs:
+        return ""
+    prefix = strs[0]
+    for s in strs[1:]:
+        while not s.startswith(prefix):
+            prefix = prefix[:-1]
+            if not prefix:
+                return ""
+    return prefix
+```
+
+### 2.5. String Hashing (Rabin-Karp cơ bản)
+
+Khi cần so sánh nhiều substring, thay vì so từng ký tự O(m), ta dùng hash để so sánh trong O(1).
+
+**Rolling hash formula:**
+
+$$H(s[i..i+m-1]) = \sum_{j=0}^{m-1} s[i+j] \times p^{m-1-j} \mod M$$
+
+Khi trượt cửa sổ 1 ký tự:
+
+$$H(s[i+1..i+m]) = (H(s[i..i+m-1]) - s[i] \times p^{m-1}) \times p + s[i+m]$$
+
+```python
+def rabin_karp(text: str, pattern: str) -> int:
+    n, m = len(text), len(pattern)
+    if m > n:
+        return -1
+
+    BASE = 31
+    MOD = 10**9 + 7
+
+    # Tính hash của pattern
+    pattern_hash = 0
+    text_hash = 0
+    power = 1
+
+    for i in range(m - 1, -1, -1):
+        pattern_hash = (pattern_hash + (ord(pattern[i]) - ord('a') + 1) * power) % MOD
+        text_hash = (text_hash + (ord(text[i]) - ord('a') + 1) * power) % MOD
+        if i > 0:
+            power = (power * BASE) % MOD
+
+    if pattern_hash == text_hash and text[:m] == pattern:
+        return 0
+
+    # Trượt cửa sổ
+    for i in range(1, n - m + 1):
+        text_hash = (text_hash - (ord(text[i-1]) - ord('a') + 1) * power) % MOD
+        text_hash = (text_hash * BASE + (ord(text[i+m-1]) - ord('a') + 1)) % MOD
+        text_hash = (text_hash + MOD) % MOD
+
+        if text_hash == pattern_hash and text[i:i+m] == pattern:
+            return i
+
+    return -1
+```
+
+### 2.6. Ưu và nhược điểm của String
+
+**Ưu điểm:**
+
+- Biểu diễn text tự nhiên, dễ đọc.
+- Immutable string an toàn trong multi-threading (không cần lock).
+- String interning giúp tiết kiệm bộ nhớ cho các string trùng lặp.
+
+**Nhược điểm:**
+
+- Immutable → nối chuỗi lặp lại tốn O(n^2).
+- Unicode phức tạp: một "ký tự" có thể chiếm nhiều byte.
+- Substring trong một số ngôn ngữ tạo copy mới (tốn bộ nhớ).

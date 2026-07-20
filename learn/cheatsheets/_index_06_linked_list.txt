@@ -1,0 +1,17 @@
+# 06_Linked_List
+
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/06_Linked_List/🔗index_06_Linked_List|01_Algo_and_DSA_doc]]
+
+## 📄 Notes
+- [[dsa/01_Algo_and_DSA_doc/06_Linked_List/1. Singly Linked List|1. Singly Linked List]]
+- [[dsa/01_Algo_and_DSA_doc/06_Linked_List/2. Doubly Linked List|2. Doubly Linked List]]
+- [[dsa/01_Algo_and_DSA_doc/06_Linked_List/3. Fast & Slow Pointer|3. Fast & Slow Pointer]]
+- [[dsa/01_Algo_and_DSA_doc/06_Linked_List/4. Cycle Detection|4. Cycle Detection]]
+- [[dsa/01_Algo_and_DSA_doc/06_Linked_List/5. Reverse  Merge Linked List|5. Reverse  Merge Linked List]]
+- [[dsa/01_Algo_and_DSA_doc/06_Linked_List/6. LRU Cache (Design Problem)|6. LRU Cache (Design Problem)]]
+- [[dsa/01_Algo_and_DSA_doc/06_Linked_List/7. Giải chi tiết bài LeetCode về Linked List|7. Giải chi tiết bài LeetCode về Linked List]]
+
+
+
+## 🛠️ Related Practices
+- [[dsa/01_Algo_and_DSA_doc/06_Linked_List/🔗index_06_Linked_List|🔗 Linked_List Practice Hub]]

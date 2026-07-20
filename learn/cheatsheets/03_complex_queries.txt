@@ -1,0 +1,90 @@
+🔙 **Back to Parent**: [[technical_skills/04_PostgreSQL_Deep_Dive/05_Indexing_Mastery|04_PostgreSQL_Deep_Dive]]
+
+# 🧩 3. Complex Queries (Joins, Subqueries & CTEs)
+
+Dữ liệu trong Database thực tế luôn nằm ở nhiều bảng khác nhau. Học cách kết nối chúng lại để tạo ra các báo cáo thông minh là sự khác biệt giữa một "Coder" và một "Backend Engineer".
+
+---
+
+### 🏛️ 3.1 JOINs: "Sức mạnh của Sự kết nối"
+
+Hãy nhìn vào 2 bảng `Users` và `Orders`. 
+
+- **INNER JOIN**: Lấy các dòng có ở cả 2 bảng. (Cực kỳ an toàn, dùng nhiều nhất).
+- **LEFT JOIN**: Lấy TOÀN BỘ bên trái (`Users`), ngay cả khi người đó chưa có đơn hàng nào (`Orders` trả về `NULL`). (Dùng để tìm những người chưa mua gì).
+- **RIGHT JOIN**: Ngược lại với LEFT JOIN. (Ít dùng).
+- **FULL JOIN**: Lấy hết của 2 bên. (Dùng để đồng bộ dữ liệu).
+- **SELF JOIN**: Một bảng tự Join với chính nó. (Dùng cho cấu trúc Phân cấp: Nhân viên -> Quản lý).
+
+**Ví dụ (Inner Join):**
+```sql
+SELECT u.name, o.total
+FROM users u
+INNER JOIN orders o ON u.id = o.user_id;
+```
+
+---
+
+### 🧠 3.2 Subqueries (Truy vấn lồng)
+
+Sử dụng kết quả của 1 query làm đầu vào cho 1 query khác.
+- **Scalar Subquery**: Trả về 1 giá trị duy nhất.
+- **Correlated Subquery**: Lớp trong dựa vào dữ liệu lớp ngoài (Chạy Rất Chậm - Cẩn thận!).
+
+---
+
+### 🚀 3.3 CTE (Common Table Expressions - `WITH`)
+
+Đây là "vũ khí" giúp code SQL sạch sẽ, module hóa và dễ bảo trì. Hãy dùng CTE thay cho Subquery phức tạp.
+
+```sql
+WITH top_orders AS (
+    SELECT user_id, SUM(total) as amount
+    FROM orders
+    GROUP BY user_id
+    HAVING SUM(total) > 1000
+)
+SELECT u.name, t.amount
+FROM users u
+JOIN top_orders t ON u.id = t.user_id;
+```
+
+#### **Recursive CTE (Đệ quy)**:
+Dùng để duyệt Cây (Hierarchy) hoặc danh sách vô tận (VD: Tìm toàn bộ con cháu của một nút trong Graph).
+
+---
+
+### ⚡ 3.4 UNION vs UNION ALL
+
+- **UNION**: Gộp 2 kết quả và **loại bỏ bản ghi trùng lặp** (Tốn thời gian Sắp xếp/Unique).
+- **UNION ALL**: Gộp 2 kết quả và giữ nguyên tất cả bản ghi (Nhanh hơn rất nhiều).
+> [!TIP]
+> Luôn ưu tiên dùng **UNION ALL** nếu bạn chắc chắn 2 tập kết quả không trùng nhau hoặc bạn không quan tâm đến sự trùng lặp.
+
+---
+
+### 📝 3.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao `EXISTS` thường nhanh hơn `IN` khi lồng câu query?"
+<details><summary>Đáp án</summary>
+`EXISTS` chỉ cần tìm thấy **1 dòng đầu tiên** thỏa mãn là nó dừng lại và trả về `TRUE` (Short-circuiting). Còn `IN` thường phải quét hết và xây dựng toàn bộ danh sách kết quả ở câu lệnh lồng mới bắt đầu lọc ở câu lệnh chính.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh SQL (Dùng CTE) để lấy danh sách các nhân viên có lương cao hơn mức lương trung bình của TOÀN BỘ công ty.
+<details><summary>Solution</summary>
+```sql
+WITH avg_salary AS (
+    SELECT AVG(salary) as avg_val FROM employees
+)
+SELECT e.name, e.salary
+FROM employees e, avg_salary a
+WHERE e.salary > a.avg_val;
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [SQL Joins Visualized - Inner, Left, Right & Full](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-sql-joins-visualized.md)
+- [CTEs vs Subqueries: Which One Should You Use?](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-sql-ctes-vs-subqueries.md)
+- [How Recursive CTEs Powers Graph Queries in SQL](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-recursive-ctes.md)

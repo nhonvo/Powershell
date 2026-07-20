@@ -1,0 +1,399 @@
+# 🗃️ SC-100 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Design solutions that align with security best practices and priorities (Testlet 1)
+
+HOTSPOT
+
+You need to recommend a multi-tenant and hybrid security solution that meets to the business requirements and the hybrid requirements.
+
+What should you recommend? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Micrsoft Entra External ID
+Scenario: Provide centralized, cross-tenant subscription management without the overhead of maintaining guest accounts.
+
+Note: In an older version of this question the correct answer is Azure AD B2C (Micrsoft Entra External ID is not an option). Micrsoft Entra External ID is an improvement and replacement of AD B2C.
+
+Microsoft Entra External ID refers to all the ways you can securely interact with users outside of your organization. If you want to collaborate with partners, distributors, suppliers, or vendors, you can share your resources and define how your internal users can access external organizations. If you're a developer creating consumer-facing apps, you can manage your customers' identity experiences.
+
+With External ID, external users can "bring their own identities." Whether they have a corporate or government- issued digital identity, or an unmanaged social identity like Google or Facebook, they can use their own credentials to sign in. The external user's identity provider manages their identity, and you manage access to your apps with Microsoft Entra ID or Azure AD B2C to keep your resources protected.
+
+The following capabilities make up External Identities:
+
+* B2B collaboration
+* B2B direct connect
+* Azure AD B2C
+* Microsoft Entra multi-tenant organization
+
+Incorrect:
+* Microsoft Entra B2B
+B2B collaboration is a feature within Microsoft Entra External ID that lets you invite guest users to collaborate with your organization. With B2B collaboration, you can securely share your company's applications and services with external users, while maintaining control over your own corporate data. Work safely and securely with external partners, large or small, even if they don't have Microsoft Entra ID or an IT department.
+
+* Azure Lighthouse
+Cross-tenant management experiences
+As a service provider, you can use Azure Lighthouse to manage resources for multiple customers from within your own Microsoft Entra tenant.
+
+With Azure Lighthouse, the onboarding process specifies users within the service provider's tenant who will be able to work on delegated subscriptions and resource groups in the customer's tenant. These users can then sign in to the Azure portal using their own credentials. Within the Azure portal, they can manage resources belonging to all customers to which they have access.
+
+Box 2: Azure Arc
+Azure Arc simplifies governance and management by delivering a consistent multi-cloud and on-premises management platform.
+
+Note:
+Requirements. Hybrid Requirements
+
+Litware identifies the following hybrid cloud requirements:
+*Enable the management of on-premises resources from Azure, including the following:
+Use Azure Policy for enforcement and compliance evaluation.
+Provide change tracking and asset inventory.
+Implement patch management.
+
+Incorrect:
+
+* Azure Stack Edge acts as a cloud storage gateway and enables eyes-off data transfers to Azure, while retaining local access to files.
+* Microsoft Azure Stack Hub is a hybrid cloud platform that lets you deliver services from your datacenter.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Design solutions that align with security best practices and priorities (Testlet 1)
+
+HOTSPOT
+
+You need to recommend a strategy for securing the litware.com forest. The solution must meet the identity requirements.
+
+What should you include in the recommendation? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Microsoft defender for cloud
+Scenario: Prevent AD DS user accounts from being locked out by brute force attacks that target Microsoft Entra user accounts.
+
+When Microsoft Defender for Cloud detects a Brute-force attack, it triggers an alert to bring you awareness that a brute force attack took place. The automation uses this alert as a trigger to block the traffic of the IP by creating a security rule in the NSG attached to the VM to deny inbound traffic from the IP addresses attached to the alert. In the alerts of this type, you can find the attacking IP address appearing in the 'entities' field of the alert.
+
+Box 2: An account lockout policy in AD DS
+Scenario:
+Detect brute force attacks that directly target AD DS user accounts.
+
+Smart lockout helps lock out bad actors that try to guess your users' passwords or use brute-force methods to get in. Smart lockout can recognize sign-ins that come from valid users and treat them differently than ones of attackers and other unknown sources. Attackers get locked out, while your users continue to access their accounts and be productive.
+
+Verify on-premises account lockout policy
+To verify your on-premises AD DS account lockout policy, complete the following steps from a domain-joined system with administrator privileges:
+
+1. Open the Group Policy Management tool.
+2. Edit the group policy that includes your organization's account lockout policy, such as, the Default Domain Policy.
+3. Browse to Computer Configuration > Policies > Windows Settings > Security Settings > Account Policies > Account Lockout Policy.
+4. Verify your Account lockout threshold and Reset account lockout counter after values.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Design solutions that align with security best practices and priorities (Testlet 1)
+
+HOTSPOT
+
+You need to recommend a SIEM and SOAR strategy that meets the hybrid requirements, the Microsoft Sentinel requirements, and the regulatory compliance requirements.
+
+What should you recommend? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Microsoft Entra tenant
+Microsoft Sentinel multiple workspace architecture
+There are cases where a single SOC (Security Operations Center) needs to centrally manage and monitor multiple Microsoft Sentinel workspaces, potentially across Microsoft Entra tenants.
+
+An MSSP Microsoft Sentinel Service.
+A global SOC serving multiple subsidiaries, each having its own local SOC. A SOC monitoring multiple Microsoft Entra tenants within an organization.
+
+To address these cases, Microsoft Sentinel offers multiple-workspace capabilities that enable central monitoring, configuration, and management, providing a single pane of glass across everything covered by the SOC. This diagram shows an example architecture for such use cases.
+
+
+
+This model offers significant advantages over a fully centralized model in which all data is copied to a single workspace.
+
+Scenario:
+Requirements. Microsoft Sentinel Requirements
+
+Litware plans to leverage the security information and event management (SIEM) and security orchestration automated response (SOAR) capabilities of Microsoft Sentinel. The company wants to centralize Security Operations Center (SOC) by using Microsoft Sentinel.
+
+Hybrid Requirements
+Litware identifies the following hybrid cloud requirements:
+Provide centralized, cross-tenant subscription management without the overhead of maintaining guest accounts.
+
+Box 2: Azure Lighthouse subscription onboarding process
+You can use Azure Lighthouse to extend all cross-workspace activities across tenant boundaries, allowing users in your managing tenant to work on Microsoft Sentinel workspaces across all tenants.
+
+Azure Lighthouse enables you to see and manage Azure resources from different tenancies, in the one place, with the power of delegated administration. That tenancy may be a customer (for example, if you're a managed services provider with a support contract arrangement in place), or a separate Azure environment for legal or financial reasons (like franchisee groups or Enterprises with large brand groups).
+
+Incorrect:
+* not Microsoft Entra B2B
+Microsoft Entra B2B uses guest account, which goes against the requirements in this scenario,
+
+Note: Microsoft Entra B2B collaboration is a feature within External Identities that lets you invite guest users to collaborate with your organization.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Design solutions that align with security best practices and priorities (Testlet 1)
+
+HOTSPOT
+
+You need to recommend a multi-tenant and hybrid security solution that meets to the business requirements and the hybrid requirements.
+
+What should you recommend? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Azure AD B2C
+Scenario: Provide centralized, cross-tenant subscription management without the overhead of maintaining guest accounts.
+
+Note: In a newer version of this question the correct answer is Micrsoft Entra External ID (Azure AD B2C is not an option), which is an improvement and replacement of AD B2C.
+
+Azure AD B2C
+Azure Active Directory B2C provides business-to-customer identity as a service. Your customers use their preferred social, enterprise, or local account identities to get single sign-on access to your applications and
+
+APIs.
+
+By serving as the central authentication authority for your web applications, mobile apps, and APIs, Azure AD B2C enables you to build a single sign-on (SSO) solution for them all. Centralize the collection of user profile and preference information, and capture detailed analytics about sign-in behavior and sign-up conversion.
+
+Note: Azure AD B2C is a customer identity access management (CIAM) solution capable of supporting millions of users and billions of authentications per day. It takes care of the scaling and safety of the authentication platform, monitoring, and automatically handling threats like denial-of-service, password spray, or brute force attacks.
+
+Incorrect:
+Azure Lighthouse
+Cross-tenant management experiences
+As a service provider, you can use Azure Lighthouse to manage resources for multiple customers from within your own Microsoft Entra tenant.
+
+With Azure Lighthouse, the onboarding process specifies users within the service provider's tenant who will be able to work on delegated subscriptions and resource groups in the customer's tenant. These users can then sign in to the Azure portal using their own credentials. Within the Azure portal, they can manage resources belonging to all customers to which they have access.
+
+Box 2: Azure Arc
+Azure Arc simplifies governance and management by delivering a consistent multi-cloud and on-premises management platform.
+
+Note:
+Requirements. Hybrid Requirements
+
+Litware identifies the following hybrid cloud requirements:
+*Enable the management of on-premises resources from Azure, including the following:
+Use Azure Policy for enforcement and compliance evaluation.
+Provide change tracking and asset inventory.
+Implement patch management.
+
+Incorrect:
+* Azure Stack Edge acts as a cloud storage gateway and enables eyes-off data transfers to Azure, while retaining local access to files.
+* Microsoft Azure Stack Hub is a hybrid cloud platform that lets you deliver services from your datacenter.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Design solutions that align with security best practices and priorities (Testlet 1)
+
+You need to recommend a solution for securing the landing zones. The solution must meet the landing zone requirements and the business requirements.
+
+What should you configure for each landing zone?
+
+### Options:
+- [x] **A)** an ExpressRoute gateway [Correct]
+- [ ] **B)** Microsoft Defender for Cloud
+- [ ] **C)** an Azure Private DNS zone
+- [ ] **D)** Azure DDoS Protection Standard
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+ExpressRoute provides direct connectivity to Azure cloud services and connecting Microsoft's global network.
+All transferred data is not encrypted, and do not go over the public Internet. VPN Gateway provides secured connectivity to Azure cloud services over public Internet.
+Note:
+Litware identifies the following landing zone requirements:
+· Route all internet-bound traffic from landing zones through Azure Firewall in a dedicated Azure subscription.
+· Provide a secure score scoped to the landing zone.
+· Ensure that the Azure virtual machines in each landing zone communicate with Azure App Service web apps in the same zone over the Microsoft backbone network, rather than over public endpoints.
+· Minimize the possibility of data exfiltration.
+· Maximize network bandwidth.
+Litware identifies the following business requirements:
+· Minimize any additional on-premises infrastructure.
+· Minimize the operational costs associated with administrative overhead.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: Design solutions that align with security best practices and priorities (Testlet 2)
+
+HOTSPOT
+
+What should you create in Microsoft Entra ID to meet the Contoso developer requirements?
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: A synced user account
+Need to use a synched user account.
+
+Incorrect:
+* Not A user account in the fabrikam.onmicrosoft.com tenant
+The Contoso developers must use their existing contoso.onmicrosoft.com credentials to access the resources in Sub1.
+
+* Guest accounts would not meet the requirements.
+
+Note: Developers at Contoso will connect to the resources of Fabrikam to test or update applications. The developers will be added to a security group named ContosoDevelopers in fabrikam.onmicrosoft.com that will be assigned to roles in Sub1.
+The ContosoDevelopers group is assigned the db_owner role for the ClaimsDB database.
+
+Contoso Developers Requirements
+Fabrikam identifies the following requirements for the Contoso developers:
+Every month, the membership of the ContosoDevelopers group must be verified. The Contoso developers must use their existing contoso.onmicrosoft.com credentials to access the resources in Sub1.
+The Contoso developers must be prevented from viewing the data in a column named MedicalHistory in the ClaimDetails table.
+
+Box 2: An access review
+Scenario: Every month, the membership of the ContosoDevelopers group must be verified.
+
+Microsoft Entra ID access reviews enable organizations to efficiently manage group memberships, access to enterprise applications, and role assignments. User's access can be reviewed on a regular basis to make sure only the right people have continued access.
+
+Access review is part of Microsoft Entra ID governance.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: Design solutions that align with security best practices and priorities (Testlet 2)
+
+You need to recommend a solution to meet the security requirements for the InfraSec group.
+
+What should you use to delegate the access?
+
+### Options:
+- [ ] **A)** a subscription
+- [x] **B)** a custom role-based access control (RBAC) role [Correct]
+- [ ] **C)** a resource group
+- [ ] **D)** a management group
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Scenario: Requirements. Security Requirements include:
+Only members of a group named InfraSec must be allowed to configure network security groups (NSGs) and instances of Azure Firewall, WAF, and Front Door in Sub1.
+If the Azure built-in roles don't meet the specific needs of your organization, you can create your own custom roles. Just like built-in roles, you can assign custom roles to users, groups, and service principals at management group (in preview only), subscription, and resource group scopes.
+Incorrect:
+Not D: Management groups are useful when you have multiple subscriptions. This is not what is addressed in this question.
+Scenario: Fabrikam has a single Azure subscription named Sub1.
+Note: If your organization has many Azure subscriptions, you may need a way to efficiently manage access, policies, and compliance for those subscriptions. Management groups provide a governance scope above subscriptions. You organize subscriptions into management groups the governance conditions you apply cascade by inheritance to all associated subscriptions.
+Management groups give you enterprise-grade management at scale no matter what type of subscriptions you might have. However, all subscriptions within a single management group must trust the same Microsoft Entra tenant.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: Design solutions that align with security best practices and priorities (Testlet 2)
+
+Your company has a Microsoft 365 E5 subscription.
+
+The Chief Compliance Officer plans to enhance privacy management in the working environment.
+
+You need to recommend a solution to enhance the privacy management. The solution must meet the following requirements:
+
+Identify unused personal data and empower users to make smart data handling decisions.
+
+
+Provide users with notifications and guidance when a user sends personal data in Microsoft Teams.
+
+
+Provide users with recommendations to mitigate privacy risks.
+
+
+What should you include in the recommendation?
+
+### Options:
+- [ ] **A)** communication compliance in insider risk management
+- [ ] **B)** Microsoft Viva Insights
+- [x] **C)** Privacy Risk Management in Microsoft Priva [Correct]
+- [ ] **D)** Advanced eDiscovery
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Privacy Risk Management in Microsoft Priva gives you the capability to set up policies that identify privacy risks in your Microsoft 365 environment and enable easy remediation. Privacy Risk Management policies are meant to be internal guides and can help you:
+Detect overexposed personal data so that users can secure it.
+Spot and limit transfers of personal data across departments or regional borders.
+Help users identify and reduce the amount of unused personal data that you store.
+Incorrect:
+Not B: Microsoft Viva Insights provides personalized recommendations to help you do your best work. Get insights to build better work habits, such as following through on commitments made to collaborators and protecting focus time in the day for uninterrupted, individual work.
+Not D: The Microsoft Purview eDiscovery (Premium) solution builds on the existing Microsoft eDiscovery and analytics capabilities. eDiscovery (Premium) provides an end-to-end workflow to preserve, collect, analyze, review, and export content that's responsive to your organization's internal and external investigations.
+</details>
+
+---

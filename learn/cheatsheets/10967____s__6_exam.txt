@@ -1,0 +1,89 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 6
+
+## Part 1
+**Q1.** せんせいに　言って　ください。
+- **A.** いって
+- **B.** きって
+- **C.** まって
+- **D.** たって
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1言う (NG&Ocirc;N)：n&oacute;i H&atilde;y n&oacute;i với gi&aacute;o vi&ecirc;n.</p>
+</details>
+
+---
+**Q2.** これは　あなたの　くにの　お金ですか。
+- **A.** おかね
+- **B.** おかし
+- **C.** おがね
+- **D.** おがし
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1お金(KIM) ：tiềnĐ&acirc;y l&agrave; tiền của nước bạn đ&uacute;ng kh&ocirc;ng?</p>
+</details>
+
+---
+**Q3.** わたしの　弟は　10さいです。
+- **A.** いもうと
+- **B.** おとうと
+- **C.** いもおと
+- **D.** おとおと
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2弟 (ĐỆ)：Em traiEm trai t&ocirc;i 10 tuổi.</p>
+</details>
+
+---
+**Q4.** これは　外国の　くるまです。
+- **A.** そとくに
+- **B.** がいくに
+- **C.** そとこく
+- **D.** がいこく
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4外国 (NGOẠI - QUỐC)：nước ngo&agrave;iĐ&acirc;y l&agrave; xe &ocirc; t&ocirc; nước ngo&agrave;i.</p>
+</details>
+
+---
+**Q5.** 四月から　がっこうへ　いきます。
+- **A.** よんがつ
+- **B.** しちがつ
+- **C.** よんげつ
+- **D.** しがつ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4四月(TỨ - NGUYỆT)： th&aacute;ng TưT&ocirc;i sẽ đến trường từ th&aacute;ng Tư.</p>
+</details>
+
+---
+**Q6.** あの　女の子は　だれですか。
+- **A.** おんなのこう
+- **B.** おなのこ
+- **C.** おんなのこ
+- **D.** おなのこう
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3女の子 (NỮ - TỬ)：B&eacute; g&aacute;iB&eacute; g&aacute;i kia l&agrave; ai thế?</p>
+</details>
+
+---
+**Q7.** けさ　５じに　起きました。
+- **A.** いきました
+- **B.** あきました
+- **C.** おきました
+- **D.** はきました
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3起きる (KHỞI)：thức dậyT&ocirc;i đ&atilde; thức dậy v&agrave;o 5 giờ s&aacute;ng nay.</p>
+</details>
+
+---

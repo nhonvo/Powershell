@@ -1,0 +1,79 @@
+🔙 **Back to Parent**: [[technical_skills/05_Docker_Hero/📂index_05_Docker_Hero|05_Docker_Hero]]
+
+# 🚀 2. Dockerfile Optimization (Building Better Images)
+
+Viết Dockerfile chạy được là căn bản, viết Dockerfile tối ưu (nhẹ, nhanh, bảo mật) là kỹ năng của một Senior Backend Developer. Bạn sẽ học cách giảm kích thước Image từ 1GB xuống 100MB.
+
+---
+
+### 🏛️ 2.1 Cấu trúc Dockerfile (Các lớp)
+
+Mọi dòng lệnh trong Dockerfile đều tạo ra một **Layer (Lớp)**. 
+- **Caching**: Docker sẽ không chạy lại các lớp cũ nếu chúng không thay đổi.
+- **Quy tắc vàng**: Đặt các câu lệnh ít thay đổi (VD: `FROM`, `ENV`, `RUN apt-get update`) lên đầu. Đặt code hay thay đổi (`COPY . .`) xuống cuối.
+
+---
+
+### 🧠 2.2 Multi-stage Builds: "Phép màu của sự tinh gọn"
+
+Đây là kỹ thuật quan trọng nhất. Tách biệt môi trường **Build** (cần SDK nặng) và môi trường **Runtime** (chỉ cần thư viện chạy).
+
+**Ví dụ (C# .NET App):**
+```dockerfile
+# Giai đoạn 1: Build (Cần SDK 800MB)
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY . .
+RUN dotnet publish -c Release -o /app/publish
+
+# Giai đoạn 2: Runtime (Chỉ cần Runtime 200MB)
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "MyApp.dll"]
+```
+
+---
+
+### 🚀 2.3 Chọn Base Image thông minh
+
+Đừng luôn dùng `ubuntu` hay `debian`. Chúng chứa rất nhiều thứ bạn không bao giờ dùng tới (như `vim`, `python`, `bash`).
+- **Alpine Linux**: Chỉ ~5MB! Cực nhẹ, bảo mật cao vì ít thành phần để hacker tấn công.
+- **Distroless**: Chỉ chứa App và runtime, không có cả Shell. (Dành cho Security tuyệt đối).
+
+---
+
+### ⚡ 2.4 Chiến lược giảm kích thước
+
+1.  **Gộp các lệnh RUN**: Thay vì 5 lệnh `RUN`, hãy dùng `RUN apt-get update && apt-get install -y ... && rm -rf /var/lib/apt/lists/*`. (Xóa file rác ngay trong cùng 1 layer).
+2.  **.dockerignore**: Bỏ qua các file rác (như `node_modules`, `bin`, `obj`, `.git`) khi COPY code vào Image.
+3.  **No root user**: Luôn đổi sang user `app` hoặc `node` để tăng tính bảo mật cho container.
+
+---
+
+### 📝 2.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao `COPY . .` luôn được đặt ở gần cuối Dockerfile?"
+<details><summary>Đáp án</summary>
+Vì mã nguồn thay đổi mỗi giây. Nếu bạn đặt `COPY . .` lên đầu, Docker Cache của toàn bộ các lớp bên dưới (như `npm install` hay `dotnet restore`) sẽ bị mất hiệu lực (Busting cache). Bạn sẽ phải tải lại hàng trăm MB thư viện mỗi lần sửa 1 dòng code.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết một file `.dockerignore` cơ bản cho dự án Node.js hoặc .NET.
+<details><summary>Solution</summary>
+```text
+node_modules
+bin
+obj
+.git
+.vscode
+Dockerfile
+.dockerignore
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [How Multi-stage Builds Reduced Our Image Size by 90%](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-docker-multistage.md)
+- [Managing Layers & Caching Like a Pro in Docker](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-docker-caching.md)
+- [Best Practices for Securing Your Dockerfiles - No Root Access](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-dockerfile-security.md)

@@ -1,0 +1,8 @@
+# Slides
+
+🔙 **Back to Parent**: [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/ASQL/📂index_ASQL|ASQL]]
+
+## 📁 Sub-Categories
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/ASQL/Slides/Lesson01_Advanced DML Statements/📂index_Lesson01_Advanced DML Statements|Lesson01_Advanced DML Statements]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/ASQL/Slides/Lesson02_Common Database Objects/📂index_Lesson02_Common Database Objects|Lesson02_Common Database Objects]]
+

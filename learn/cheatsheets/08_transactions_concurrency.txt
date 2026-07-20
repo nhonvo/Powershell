@@ -1,0 +1,88 @@
+🔙 **Back to Parent**: [[technical_skills/04_PostgreSQL_Deep_Dive/05_Indexing_Mastery|04_PostgreSQL_Deep_Dive]]
+
+# 🔒 8. Transactions & Concurrency (Safety First)
+
+Hệ thống Backend không chỉ là code, nó là sự bảo vệ dữ liệu. Trong môi trường hàng ngàn người dùng tranh giành 1 vật phẩm duy nhất (Race Condition), Transactions và Concurrency chính là "bức tường lửa" cuối cùng.
+
+---
+
+### 🏛️ 8.1 ACID: Bộ khung an toàn tuyệt đối
+
+Một hệ thống Transaction chuẩn phải thỏa mãn 4 tính chất:
+1.  **Atomicity (Nguyên tử)**: "Tất cả hoặc không gì cả". (VD: Chuyển tiền từ A -> B phải cả 2 đều thành công hoặc cả 2 đều thất bại).
+2.  **Consistency (Nhất quán)**: Dữ liệu luôn đúng quy trình (Rules/Constraints). (VD: Số dư tài khoản không được âm).
+3.  **Isolation (Cô lập)**: Một Transaction đang chạy không được thấy dữ liệu của Transaction chưa Commit của người khác (Tránh Dirty Read).
+4.  **Durability (Bền vững)**: Khi đã Commit, dữ liệu BẮT BUỘC phải nằm an toàn trên Disk (WAL - Write Ahead Log).
+
+---
+
+### 🧠 8.2 MVCC (Multi-Version Concurrency Control) - "Vũ khí" của Postgres
+
+Tại sao Postgres hỗ trợ hàng ngàn người đọc/ghi đồng thời mà không bị "đá nhau"?
+- **Cơ chế**: Mỗi `UPDATE/DELETE` không sửa trực tiếp. Postgres tạo một bản sao mới (Version) của hàng đó.
+- **Lợi ích**: Người đọc không bao giờ phải đợi người ghi (Readers don't block Writers).
+
+#### **Hậu quả: Bloat & Vacuum**
+- Dữ liệu rác tích tụ làm phình to Database. Cần chạy `VACUUM` thường xuyên.
+
+---
+
+### 🚀 8.3 Isolation Levels (Mức độ bảo vệ)
+
+Mỗi cấp độ bảo vệ bạn khỏi những lỗi dữ liệu khác nhau:
+
+| Level | Dirty Read | Non-Repeatable Read | Phantom Read |
+| :--- | :--- | :--- | :--- |
+| **Read Committed** | No | Yes | Yes |
+| **Repeatable Read** | No | No | No (Postgres specific) |
+| **Serializable** | No | No | No |
+
+---
+
+### ⚡ 8.4 Locking: Pessimistic vs Optimistic
+
+Khi có 2 người cùng mua 1 cái bánh mỳ cuối cùng:
+
+#### **Pessimistic Locking (Khóa bi quan - `FOR UPDATE`)**
+Khóa hàng lại ngay lập tức. Người sau phải đứng đợi người trước làm xong (O(1)).
+```sql
+BEGIN;
+SELECT stock FROM products WHERE id = 1 FOR UPDATE; -- KHÓA!
+UPDATE products SET stock = stock - 1 WHERE id = 1;
+COMMIT; -- NHẢ KHÓA
+```
+
+#### **Optimistic Locking (Khóa lạc quan - Versioning)**
+Không khóa ai hết. Khi kết thúc mới kiểm tra xem version có thay đổi không? Nếu thay đổi -> Lỗi và yêu cầu thử lại.
+```sql
+UPDATE products SET stock = stock - 1, version = version + 1
+WHERE id = 1 AND version = 5; -- Nếu version đã lên 6, lệnh này trả về 0 hàng bị ảnh hưởng.
+```
+
+---
+
+### 📝 8.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao PostgreSQL không bao giờ bị lỗi Dirty Read?"
+<details><summary>Đáp án</summary>
+Do cơ chế MVCC! Một transaction đang chạy chỉ nhìn thấy các bản ghi đã được Commit ở thời điểm nó bắt đầu. Những gì đang sửa chưa Commit được lưu ở 1 Version bí mật khác.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh SQL (Pessimistic Locking) để thực hiện giao dịch: Trừ 100đ từ tài khoản A và cộng 100đ cho tài khoản B một cách an toàn nhất.
+<details><summary>Solution</summary>
+```sql
+BEGIN;
+-- Khóa cả 2 người lại
+SELECT balance FROM accounts WHERE id IN ('A', 'B') FOR UPDATE; 
+UPDATE accounts SET balance = balance - 100 WHERE id = 'A';
+UPDATE accounts SET balance = balance + 100 WHERE id = 'B';
+COMMIT;
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [PostgreSQL MVCC: The Performance Engine Behind Concurrent Transactions](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-postgresql-mvcc.md)
+- [Managing Race Conditions: Pessimistic vs Optimistic Locking](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-locking-strategies.md)
+- [Troubleshooting Database Bloat: The Role of AutoVacuum](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-postgresql-vacuum.md)

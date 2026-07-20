@@ -1,0 +1,239 @@
+# 🗃️ GH-500 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+­ [Configure and Use Code Scanning]
+
+After investigating a code scanning alert related to injection, you determine that the input is properly sanitized using custom logic. 
+What should be your next step?
+
+### Options:
+- [ ] **A)** Draft a pull request to update the open-source query.
+- [ ] **B)** Ignore the alert.
+- [ ] **C)** Open an issue in the CodeQL repository.
+- [x] **D)** Dismiss the alert with the reason "false positive." [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+When you identify that a code scanning alert is a false positive--such as when your code uses a custom sanitization method not recognized by the analysis--you should dismiss the alert with the reason "false positive." This action helps improve the accuracy of future analyses and maintains the relevance of your security alerts.
+
+As per GitHub's documentation:
+
+"If you dismiss a CodeQL alert as a false positive result, for example because the code uses a sanitization library that isn't supported, consider contributing to the CodeQL repository and improving the analysis."
+
+By dismissing the alert appropriately, you ensure that your codebase's security alerts remain actionable and relevant.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+­ [Configure and Use Dependency Management]
+
+When does Dependabot alert you of a vulnerability in your software development process?
+
+### Options:
+- [ ] **A)** When a pull request adding a vulnerable dependency is opened
+- [x] **B)** As soon as a vulnerable dependency is detected [Correct]
+- [ ] **C)** As soon as a pull request is opened by a contributor
+- [ ] **D)** When Dependabot opens a pull request to update a vulnerable dependency
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Dependabot alerts are generated as soon as GitHub detects a known vulnerability in one of your dependencies. GitHub does this by analyzing your repository's dependency graph and matching it against vulnerabilities listed in the GitHub Advisory Database. Once a match is found, the system raises an alert automatically without waiting for a PR or manual action.
+
+This allows organizations to proactively mitigate vulnerabilities as early as possible, based on real- time detection.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+­ [Configure and Use Dependency Management]
+
+Which of the following is the most complete method for Dependabot to find vulnerabilities in third- party dependencies?
+
+### Options:
+- [ ] **A)** Dependabot reviews manifest files in the repository
+- [ ] **B)** CodeQL analyzes the code and raises vulnerabilities in third-party dependencies
+- [x] **C)** A dependency graph is created, and Dependabot compares the graph to the GitHub Advisory database [Correct]
+- [ ] **D)** The build tool finds the vulnerable dependencies and calls the Dependabot API
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Dependabot builds a dependency graph by analyzing package manifests and lockfiles in your repository. This graph includes both direct and transitive dependencies. It then compares this graph against the GitHub Advisory Database, which includes curated, security-reviewed advisories.
+
+This method provides a comprehensive and automated way to discover all known vulnerabilities across your dependency tree.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+­ [Describe the GHAS Security Features and Functionality]
+
+What is a security policy?
+
+### Options:
+- [ ] **A)** An automatic detection of security vulnerabilities and coding errors in new or modified code
+- [ ] **B)** A security alert issued to a community in response to a vulnerability
+- [x] **C)** A file in a GitHub repository that provides instructions to users about how to report a security vulnerability [Correct]
+- [ ] **D)** An alert about dependencies that are known to contain security vulnerabilities
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+A security policy is defined by a SECURITY.md file in the root of your repository or .github/ directory. This file informs contributors and security researchers about how to responsibly report vulnerabilities. It improves your project's transparency and ensures timely communication and mitigation of any reported issues.
+
+Adding this file also enables a "Report a vulnerability" button in the repository's Security tab.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+­ [Configure GitHub Advanced Security Tools in GitHub Enterprise]
+
+As a repository owner, you want to receive specific notifications, including security alerts, for an individual repository. 
+Which repository notification setting should you use?
+
+### Options:
+- [ ] **A)** Ignore
+- [ ] **B)** Participating and @mentions
+- [ ] **C)** All Activity
+- [x] **D)** Custom [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+Using the Custom setting allows you to subscribe to specific event types, such as Dependabot alerts or vulnerability notifications, without being overwhelmed by all repository activity. This is essential for repository maintainers who need fine-grained control over what kinds of events trigger notifications.
+
+This setting is configurable per repository and allows users to stay aware of critical issues while minimizing notification noise.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: 
+
+­ [Configure GitHub Advanced Security Tools in GitHub Enterprise]
+
+Which of the following Watch settings could you use to get Dependabot alert notifications? (Each answer presents part of the solution. Choose two.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,C`
+
+**Explanation**:
+Comprehensive and Detailed Explanation;
+To receive Dependabot alert notifications for a repository, you can utilize the following Watch settings:
+
+Custom setting: Allows you to tailor your notifications, enabling you to subscribe specifically to security alerts, including those from Dependabot.
+
+All Activity setting: Subscribes you to all notifications for the repository, encompassing issues, pull requests, and security alerts like those from Dependabot.
+
+The Participating and @mentions setting limits notifications to conversations you're directly involved in or mentioned, which may not include security alerts. The Ignore setting unsubscribes you from all notifications, including critical security alerts.
+
+GitHub Docs
+
++1
+
+GitHub Docs
+
++1
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: 
+
+­ [Configure and Use Dependency Management]
+
+Which Dependabot configuration fields are required? (Each answer presents part of the solution.
+Choose three.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,B,D`
+
+**Explanation**:
+Comprehensive and Detailed Explanation;
+When configuring Dependabot via the dependabot.yml file, the following fields are mandatory for each update configuration:
+
+directory: Specifies the location of the package manifest within the repository. This tells Dependabot where to look for dependency files.
+
+package-ecosystem: Indicates the type of package manager (e.g., npm, pip, maven) used in the specified directory.
+
+schedule.interval: Defines how frequently Dependabot checks for updates (e.g., daily, weekly). This ensures regular scanning for outdated or vulnerable dependencies.
+
+The milestone field is optional and used for associating pull requests with milestones. The allow field is also optional and used to specify which dependencies to update.
+
+GitLab
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: 
+
+­ [Configure and Use Code Scanning]
+
+What is required to trigger code scanning on a specified branch?
+
+### Options:
+- [ ] **A)** The repository must be private.
+- [ ] **B)** Secret scanning must be enabled on the repository.
+- [ ] **C)** Developers must actively maintain the repository.
+- [x] **D)** The workflow file must exist in that branch. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+Comprehensive and Detailed Explanation;
+For code scanning to be triggered on a specific branch, the branch must contain the appropriate workflow file, typically located in the .github/workflows directory. This YAML file defines the code scanning configuration and specifies the events that trigger the scan (e.g., push, pull_request).
+
+Without the workflow file in the branch, GitHub Actions will not execute the code scanning process for that branch. The repository's visibility (private or public), the status of secret scanning, or the activity level of developers do not directly influence the triggering of code scanning.
+</details>
+
+---

@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/chromeos-administrator
+  - chromeosadministrator
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 ChromeOS-Administrator MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/google/ChromeOS-Administrator/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/google/ChromeOS-Administrator/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/google/ChromeOS-Administrator/ChromeOS-Administrator Mindmap\|🗺️ ChromeOS-Administrator Mindmap]]
+- [[certifications/google/ChromeOS-Administrator/ChromeOS-Administrator Flashcards\|🃏 ChromeOS-Administrator Flashcards]]
+- [[certifications/google/ChromeOS-Administrator/ChromeOS-Administrator_Scraped_Question_Bank\|🗃️ ChromeOS-Administrator Scraped Question Bank]]

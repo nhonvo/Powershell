@@ -1,0 +1,129 @@
+# 🗃️ MS-721 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported)
+You have a Microsoft Teams Phone deployment that contains a Session Border Controller (SBC) named SBC1.contoso.com.
+Direct Routing integrates with a PBX phone system that uses only four-digit dialing and is configured to use the SBC.
+Teams is configured to use dial plans that normalize any four-digit calls to E.164.
+You have the following translation rule.
+You need to ensure that calls to the legacy PBX pass only a four-digit extension.
+How should you complete the PowerShell command? To answer, select the appropriate options in the answer area.
+NOTE: Each correct selection is worth one point.
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+You have a Teams Phone deployment that uses Direct Routing on a single Session Border Controller (SBC).
+Users report that outbound PSTN calls are failing, but inbound PSTN calls are successful.
+When you review the SBC logs, you discover that Microsoft is responding to SIP option requests, but is NOT sending SIP option requests.
+What is the cause of the issue?
+
+### Options:
+- [x] **A)** The online PSTN gateway is disabled. [Correct]
+- [ ] **B)** An SBC certificate is expired.
+- [ ] **C)** An external DNS entry is missing from the FQDN of the SB
+- [ ] **D)** The phone numbers of the users are defined by running the New-csTeamsUnassignedNumberTreatment cmdlet.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+The sales department at your company needs to route a call to multiple users and have calls route differently after business hours.
+Which two features should you implement? Each correct answer presents part of the solution.
+NOTE: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,D`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+DRAG DROP (Drag and Drop is not supported)
+You have a Microsoft Teams Phone deployment.
+You need to create two call queues named CQ1 and CQ2. The solution must meet the following requirements:
+CQ1 must balance incoming calls so that each call agent receives the same number of calls
+Calls received by CQ2 must ring all call agents simultaneously
+What should you configure for each requirement? To answer, drag the appropriate routing methods to the correct requirements. Each routing method may be used once, more than once, or not at all. You may need to drag the split bar between panes or scroll to view content.
+NOTE: Each correct selection is worth one point.
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+You have a Microsoft Teams Phone deployment.
+You are deploying Direct Routing by using a certified Session Border Controller (SBC). The FQDN of the SBC is sbc1.contoso.com. You use signaling port 5067.
+You cannot place calls and receive an error message in the Microsoft Teams admin center as shown in the following exhibit.
+What is a possible cause of the issue?
+
+### Options:
+- [ ] **A)** Calling plan licenses are not assigned to users
+- [ ] **B)** The failover timer is set to 0 seconds
+- [ ] **C)** The Forward P-Asserted Identify (PAI) header is disabled
+- [x] **D)** The Baltimore or the Digicert root certificates are missing on the SBC. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+
+</details>
+
+---

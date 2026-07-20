@@ -1,0 +1,108 @@
+# 🗃️ Professional-Cloud-Security-Engineer Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+Your team needs to make sure that a Compute Engine instance does not have access to the internet or to any Google APIs or services.
+
+Which two settings must remain disabled to meet these requirements? (Choose two.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+Which two implied firewall rules are defined on a VPC network? (Choose two.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+A customer needs an alternative to storing their plain text secrets in their source-code management (SCM) system.
+
+How should the customer achieve this using Google Cloud Platform?
+
+### Options:
+- [ ] **A)** Use Cloud Source Repositories, and store secrets in Cloud SQL.
+- [x] **B)** Encrypt the secrets with a Customer-Managed Encryption Key (CMEK), and store them in Cloud Storage. [Correct]
+- [ ] **C)** Run the Cloud Data Loss Prevention API to scan the secrets, and store them in Cloud SQL.
+- [ ] **D)** Deploy the SCM to a Compute Engine VM with local SSDs, and enable preemptible VMs.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+Your team wants to centrally manage GCP IAM permissions from their on-premises Active Directory Service. Your team wants to manage permissions by AD group membership.
+
+What should your team do to meet these requirements?
+
+### Options:
+- [x] **A)** Set up Cloud Directory Sync to sync groups, and set IAM permissions on the groups. [Correct]
+- [ ] **B)** Set up SAML 2.0 Single Sign-On (SSO), and assign IAM permissions to the groups.
+- [ ] **C)** Use the Cloud Identity and Access Management API to create groups and IAM permissions from Active Directory.
+- [ ] **D)** Use the Admin SDK to create groups and assign IAM permissions from Active Directory.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+When creating a secure container image, which two items should you incorporate into the build if possible? (Choose two.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,C`
+
+**Explanation**:
+
+</details>
+
+---

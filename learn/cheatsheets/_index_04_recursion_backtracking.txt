@@ -1,0 +1,13 @@
+# 04_Recursion_Backtracking
+
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/04_Recursion_Backtracking/🔄index_04_Recursion_Backtracking|01_Algo_and_DSA_doc]]
+
+## 📄 Notes
+- [[dsa/01_Algo_and_DSA_doc/04_Recursion_Backtracking/1. Recursion Basics|1. Recursion Basics]]
+- [[dsa/01_Algo_and_DSA_doc/04_Recursion_Backtracking/2. Subsets  Subsequences|2. Subsets  Subsequences]]
+- [[dsa/01_Algo_and_DSA_doc/04_Recursion_Backtracking/3. Permutations|3. Permutations]]
+- [[dsa/01_Algo_and_DSA_doc/04_Recursion_Backtracking/4. Backtracking (N-Queens, Sudoku)|4. Backtracking (N-Queens, Sudoku)]]
+- [[dsa/01_Algo_and_DSA_doc/04_Recursion_Backtracking/5. Combination Sum Problems|5. Combination Sum Problems]]
+- [[dsa/01_Algo_and_DSA_doc/04_Recursion_Backtracking/6. Palindrome Partitioning|6. Palindrome Partitioning]]
+- [[dsa/01_Algo_and_DSA_doc/04_Recursion_Backtracking/7. LeetCode Practice — Giải chi tiết 8 bài kinh điển|7. LeetCode Practice — Giải chi tiết 8 bài kinh điển]]
+

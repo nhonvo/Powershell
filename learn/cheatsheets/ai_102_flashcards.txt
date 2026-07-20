@@ -1,0 +1,118 @@
+---
+tags:
+  - certification/ai-102
+  - ai-solution/flashcard
+  - spaced-repetition
+status: active
+created: 2026-06-15
+deck: AI-102 Azure AI Solution Certification
+---
+
+# 🃏 AI-102 Flashcard Deck (Source Scraped)
+
+## 🔵 Domain 1: Plan and Manage an Azure AI Solution
+
+What is the REST API verb and resource provider name used to create a new Azure Cognitive Services account programmatically?
+?
+**PUT** verb, using the provider **`Microsoft.CognitiveServices/accounts`**.
+
+---
+
+To allow a developer to rotate API keys for an Azure AI services resource but prevent them from changing other settings, what RBAC role should be assigned?
+?
+**Cognitive Services Contributor** (this role can view and rotate keys, whereas *Cognitive Services User* cannot view keys).
+
+---
+
+What Azure configuration must be created on an Azure AI resource to stream query logs, latency, and caller IPs to a Log Analytics Workspace?
+?
+**Diagnostic Settings** configuration.
+
+---
+
+## 🟢 Domain 2: Implement Image and Video Processing Solutions
+
+Which Azure AI Custom Vision project domain must be selected if the trained classification model needs to be exported for offline execution on an edge device?
+?
+**A compact domain** (such as *General (compact)*).
+
+---
+
+What is the minimum number of images required per tag to train a model in Azure AI Custom Vision?
+?
+**15 images** per tag.
+
+---
+
+Which Face API feature should be used to protect face identification systems from spoofing attacks (e.g. photos/videos of a user presented to the camera)?
+?
+**Liveness Detection**.
+
+---
+
+To extract key-value pairs, tables, and raw text from receipt documents with the least development effort, which Document Intelligence model should you use?
+?
+The prebuilt **Receipt model** (part of Azure AI Document Intelligence).
+
+---
+
+## 🟡 Domain 3: Implement Natural Language Processing Solutions
+
+Which Azure AI Translator service feature allows translating entire layout-heavy documents (like PDFs or Word docs) while preserving all styling, tables, and images?
+?
+**Document Translation API** (asynchronous translation).
+
+---
+
+In Conversational Language Understanding (CLU), what is the difference between an Intent and an Entity?
+?
+*   **Intent**: Represents the user's overall action or goal (e.g., *CheckBalance*).
+*   **Entity**: Represents specific parameter variables extracted from the utterance (e.g., *AccountType = Savings*).
+
+---
+
+Which Azure AI Language API allows dynamic masking or redacting of credit card numbers, email addresses, and phone numbers from customer text?
+?
+**PII (Personally Identifiable Information) Detection & Redaction**.
+
+---
+
+## 🟠 Domain 4: Implement Knowledge Mining and Document Intelligence
+
+What search engine component is responsible for retrieving raw document data from a data source, applying cognitive skillsets, and pushing index outputs?
+?
+The **Indexer**.
+
+---
+
+In Azure AI Search, what field property in the index schema is required if you want to use the field in a filter query (`$filter=`)?
+?
+The field must be marked as **`filterable`** (set to `true` in index schema).
+
+---
+
+Which secondary ranking feature in Azure AI Search applies advanced deep learning models to rerank the top BM25/Vector search results for contextual accuracy?
+?
+**Semantic Ranking** (L2 Ranker).
+
+---
+
+## 🔴 Domain 5: Implement Generative AI Solutions
+
+Which parameter in Azure OpenAI controls the cumulative probability selection threshold of tokens during generation (nucleus sampling)?
+?
+**Top_P** (controls vocabulary selection pool based on probability sum).
+
+---
+
+What is the primary role of the embeddings model in a Retrieval-Augmented Generation (RAG) architecture?
+?
+To convert text strings into **numerical vector arrays** representing semantic meaning, enabling quick similarity searches in a vector database.
+
+---
+
+To restrict Azure OpenAI responses to only use facts from a specific set of local documents and explicitly say "I don't know" for other topics, what prompt category is configured?
+?
+The **System Prompt** (defines model behavior, context grounding, and safety rules).
+
+---

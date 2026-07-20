@@ -1,0 +1,110 @@
+# 🗃️ MB-220 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Configure marketing applications (Testlet 2)
+
+Using the Case Study information, indicate which Staff is responsible for performing each of the Activities listed below.
+
+To answer, drag the Staff to the appropriate Activity. Each Staff item may be used once, more than once, or not at all. You may need to drag the split bar between panes or scroll to view content. 
+
+NOTE: Each correct selection is worth one point. 
+Select and Place:
+
+### Options:
+- [x] **A)** Please refer to Explanation below for the answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Each Business Unit has multiple Marketing Professionals, responsible for creating Customer Journeys and using Customer Insights for reporting. After content is approved, they are responsible for going live.
+Each Business Unit has a Marketing Administrator responsible for approval of content, subscription adherence and investigation of blocked emails and stopped Contacts. 
+Marketing Administration is responsible for ensuring each marketing page is used appropriately and contains the required field values. Analyzing page performance will be a key element.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Configure marketing applications (Testlet 2)
+
+Using the information in the Case Study, indicate which of the Leads below have enough points to be flagged as Sales Ready.
+
+To answer, drag the Assessment to the appropriate Lead. Each Assessment may be used once, more than once, or not at all. You may need to drag the split bar between panes or scroll to view content.
+NOTE: Each correct selection is worth one point. 
+Select and Place:
+
+### Options:
+- [x] **A)** Please refer to Explanation below for the answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Configure marketing applications (Testlet 2)
+
+In order to follow recommended guidelines, you will need to synchronize only those entities that are necessary to meet ProseWare’s business objectives.
+
+In addition to the typical entities synced automatically (contact, accounts, events, interactions, etc), which two additional entities will ProseWare need to enable for synchronization? Each answer represents a partial solution.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C,D`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Configure marketing applications (Testlet 2)
+
+The time is currently 6:30pm on Monday night. You have been tasked with creating and sending a LinkedIn post on the company’s account advertising an event.
+Following ProseWare’s standards, which two options will you choose when preparing this message? Each answer represents a partial solution.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,D`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Configure marketing applications (Testlet 2)
+
+Based on ProseWare’s licenses and subscriptions, which two items are within allowed limits? Each answer represents a complete solution.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,D`
+
+**Explanation**:
+
+</details>
+
+---

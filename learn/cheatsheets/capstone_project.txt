@@ -1,0 +1,86 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/09_Capstone_Project/📂index_09_Capstone_Project|09_Capstone_Project]]
+
+# 🏆 9. Dự án Capstone: Quản lý Quán Cà Phê (Coffee Shop Management)
+
+Chúc mừng bạn đã đi đến chặng đường cuối cùng! Đây là lúc bạn tổng hợp toàn bộ "võ công" đã học được từ Lập trình, Database, Caching, Logging đến DevOps để xây dựng một hệ thống Backend hoàn chỉnh có khả năng chịu tải (Scalability).
+
+---
+
+### 🏛️ 9.1 Yêu cầu Dự án (Core Requirements)
+
+Bạn sẽ xây dựng một API Backend phục vụ cho 2 đối tượng người dùng: **Nhân viên (Staff)** và **Quản lý (Manager)**.
+
+#### **1. Quản lý Thực đơn (Menu Management)**
+- Thêm/Xóa/Sửa món ăn. (Lưu trong PostgreSQL).
+- Tìm kiếm món ăn nhanh chóng qua tên. (Sử dụng Elasticsearch).
+- Cache danh sách thực đơn. (Sử dụng Redis).
+
+#### **2. Quản lý Đơn hàng (Ordering System)**
+- Tạo đơn hàng mới. (Sử dụng Transactions để trừ kho hàng - Inventory).
+- Tính tổng tiền tự động.
+
+#### **3. Quản lý Kho hàng (Inventory)**
+- Mỗi món ăn tương ứng với nguyên liệu (Hạt cafe, Sữa, Cốc).
+- Tự động cảnh báo nếu nguyên liệu trong kho sắp hết.
+
+#### **4. Báo cáo & Thống kê (Reports)**
+- Xem doanh thu theo ngày/tháng/năm. (Sử dụng Window Functions của SQL).
+
+---
+
+### 🧠 9.2 Kiến trúc Hệ thống (Clean Architecture)
+
+Dự án này bắt buộc phải sử dụng **Clean Architecture** (hoặc Hexagonal Architecture) để dễ dàng viết Unit Test và thay đổi Database nếu cần.
+
+- **Domain Layer**: Chứa các Entity (Product, Order, User).
+- **Application Layer**: Chứa các Use-cases (PlaceOrder, AddProduct). (Dùng MediatR trong .NET hoặc Service Layer trong Spring Boot).
+- **Infrastructure Layer**: Chứa code thực thi Database (EF Core / JPA), Elastic Client, Redis Client.
+- **API Layer**: Các Controller định nghĩa Endpoint RESTful.
+
+---
+
+### 🚀 9.3 Yêu cầu Kỹ thuật (Technical Standards)
+
+- **Database**: PostgreSQL (Có Indexing chuẩn).
+- **Caching**: Lưu các kết quả query nặng vào Redis (Cache-aside Pattern).
+- **Logging**: Ghi log JSON qua Serilog/Logback đẩy vào ELK Stack.
+- **Monitoring**: Deline sẵn Endpoint `/metrics` cho Prometheus.
+- **Deployment**: Đóng gói bằng **Dockerfile (Multi-stage)** và chạy qua **Docker Compose**.
+
+---
+
+### ⚡ 9.4 Các kịch bản "Khó" (Interview Challenges)
+
+Đây là những phần giúp bạn tỏa sáng trong buổi phỏng vấn:
+1.  **Lấy món ăn cực nhanh**: Nếu có 1 triệu món ăn, làm sao để tìm kiếm "Americano say mê" trong < 50ms? (Sử dụng Elasticsearch).
+2.  **Chống Race Condition**: Hai nhân viên cùng bán món 'Bánh mỳ' duy nhất cuối cùng đúng 1 thời điểm. Làm sao chỉ 1 người thành công? (Sử dụng **Optimistic Locking** hoặc **Redis Distributed Lock**).
+3.  **Tải trọng cao (Flash Sale)**: Quán giảm giá 90% lúc 12h trưa, 10.000 người cùng bấm 'Order'. Làm sao server không sập? (Sử dụng Message Queue và Rate Limiting).
+
+---
+
+### 📝 9.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao lại cần phải tách biệt Domain Layer (Entity) và DTO (Data Transfer Object)?"
+<details><summary>Đáp án</summary>
+Giúp bảo mật dữ liệu! Entity đại diện cho toàn bộ bảng trong DB (có cả Password, ID nội bộ). DTO chỉ phơi bày những thông tin cần thiết ra bên ngoài (như Tên, Giá, Ảnh). Việc này cũng giúp bạn thay đổi cấu trúc DB mà không làm vỡ các API đã cung cấp cho Frontend.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh SQL (PostgreSQL Window Function) để tính **Doanh thu tích lũy** (Running Total) theo từng ngày của tháng 03/2024.
+<details><summary>Solution</summary>
+```sql
+SELECT order_date, daily_revenue, 
+       SUM(daily_revenue) OVER(ORDER BY order_date) as running_total
+FROM (
+    SELECT DATE(created_at) as order_date, SUM(total) as daily_revenue
+    FROM orders
+    GROUP BY order_date
+) t WHERE order_date >= '2024-03-01' AND order_date <= '2024-03-31';
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Clean Architecture in .NET - Practical Implementation Guide](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-clean-architecture-dotnet.md)
+- [How to Implementing a Scalable Ordering System with Redis & SQL](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-ordering-system-design.md)
+- [Mastering System Design: From Coffee Shop to Starbucks Scale](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-system-design-coffee-shop.md)

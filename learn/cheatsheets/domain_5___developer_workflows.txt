@@ -1,0 +1,39 @@
+---
+tags:
+  - certification/gh-300
+  - copilot
+  - study-notes/domain-5
+status: todo
+created: 2026-05-26
+---
+
+# Domain 5: Developer Use Cases and Testing
+
+This domain covers code generation, test orchestration, code documentation, bug fixes, and modernization.
+
+## 🎯 Exam Objectives
+- Leverage Copilot to design unit tests, mock frameworks, and test boundaries.
+- Refactor code, reduce algorithmic complexity, and modernize legacy code bases.
+- Debug compiling and runtime errors.
+- Write documentation, JSDoc, and Markdown READMEs.
+- Utilize automated PR summary tools.
+
+---
+
+## 📖 Key Study Topics
+
+### 1. Generating Tests
+- Command: `/tests` (VS Code Chat) automatically creates unit tests for the selected code block.
+- Supported frameworks: JUnit, PyTest, NUnit, xUnit, Jest, Mocha, etc.
+- Always review assertions manually, as models can hallucinate expected mock behaviors.
+
+### 2. Refactoring & Legacy Migration
+- Translate code across programming languages (e.g. COBOL -> Java, Python -> C#).
+- Generate performance optimization suggestions (e.g. converting nested loops to hash maps).
+
+### 3. Pull Request Summaries
+- Feature exclusive to **[[certifications/microsoft/GH-300-Copilot/Copilot Comparison Cheat Sheet|Copilot Enterprise]]**.
+- Scans git diff when generating a PR on GitHub.com and automatically writes a structured description listing changes, files modified, and rationale.
+
+---
+Back to **[[certifications/microsoft/GH-300-Copilot/GH-300 Copilot MOC|GH-300 Copilot MOC]]**

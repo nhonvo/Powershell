@@ -1,0 +1,365 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/02_N4/Course_40/📂index_Course_40|Course_40]]
+
+# Test 22
+
+## Part 1
+**Q1.** 週末はお店が休みだと書いてある。
+- **A.** しょまつ
+- **B.** しょうまつ
+- **C.** しゅまつ
+- **D.** しゅうまつ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4 週末: cuối tuần週末はお店が休みだと書いてある。C&oacute; viết l&agrave; cuối tuần cửa h&agrave;ng sẽ nghỉ.</p>
+</details>
+
+---
+**Q2.** あの、係の人っていますか。
+- **A.** かかり
+- **B.** かがり
+- **C.** かっかり
+- **D.** がっかり
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1係の人: người phụ tr&aacute;chあの、係の人っていますか。Xin hỏi, c&oacute; người phụ tr&aacute;ch (ở đ&acirc;y) kh&ocirc;ng ạ?</p>
+</details>
+
+---
+**Q3.** あの人は走るのが速いですね。
+- **A.** わるい
+- **B.** とくい
+- **C.** おそい
+- **D.** はやい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4速い: nhanhあの人は走るのが速いですね。Người kia chạy nhanh nhỉ.</p>
+</details>
+
+---
+**Q4.** この図書館はだれでも利用できます。
+- **A.** みよう
+- **B.** きよう
+- **C.** りよう
+- **D.** しよう
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3利用: sử dụngこの図書館はだれでも利用できます。Thư viện n&agrave;y ai cũng c&oacute; thể sử dụng.</p>
+</details>
+
+---
+**Q5.** 宿題って教科書の何ページですか。
+- **A.** しゅうだい
+- **B.** しゅっくだい
+- **C.** しゅくだい
+- **D.** しゅうくだい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3宿題: b&agrave;i tập về nh&agrave;宿題って教科書の何ページですか。B&agrave;i tập về nh&agrave; ở trang bao nhi&ecirc;u s&aacute;ch gi&aacute;o khoa thế?</p>
+</details>
+
+---
+**Q6.** こうつう事故があったって書いてあるよ。
+- **A.** 交進
+- **B.** 交週
+- **C.** 交通
+- **D.** 交速
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3交通: giao th&ocirc;ng交通事故があったって書いてあるよ。C&oacute; viết l&agrave; đ&atilde; xảy ra tai nạn giao th&ocirc;ng đấy.</p>
+</details>
+
+---
+**Q7.** ゆうびんきょくってどこですか。
+- **A.** 郵更局
+- **B.** 郵使局
+- **C.** 郵吏局
+- **D.** 郵便局
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4郵便局: bưu điện郵便局ってどこですか。Bưu điện ở đ&acirc;u ạ?</p>
+</details>
+
+---
+**Q8.** 毎朝かおを洗います。
+- **A.** 題
+- **B.** 顔
+- **C.** 類
+- **D.** 頭
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2顔: khu&ocirc;n mặt毎朝顔を洗います。T&ocirc;i rửa mặt mỗi s&aacute;ng.</p>
+</details>
+
+---
+**Q9.** わたしの車にさわるな。
+- **A.** 払
+- **B.** 弘
+- **C.** 仏
+- **D.** 私
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4私: t&ocirc;i私の車にさわるな。Cấm sờ v&agrave;o &ocirc; t&ocirc; của t&ocirc;i.</p>
+</details>
+
+---
+**Q10.** かがくの授業って難しいですか。
+- **A.** 科学
+- **B.** 利学
+- **C.** 料学
+- **D.** 斗学
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1科学: khoa học科学の授業って難しいですか。Giờ học (m&ocirc;n) khoa học c&oacute; kh&oacute; kh&ocirc;ng?</p>
+</details>
+
+---
+**Q1.** 火事だ！　　　！
+- **A.** 逃げろ
+- **B.** 近づけ
+- **C.** 流せ
+- **D.** 合え
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1逃げる：bỏ chạy, chạy trốn火事だ！逃げろ！Ch&aacute;y rồi! Chạy đi!</p>
+</details>
+
+---
+**Q2.** 塩をたくさん入れたら、スープが　　　なった。
+- **A.** 熱く
+- **B.** しょっぱく
+- **C.** 逆に
+- **D.** 青く
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2しょっぱい: mặn塩をたくさん入れたら、スープがしょっぱくなった。Nếu cho qu&aacute; nhiều muối v&agrave;o, s&uacute;p sẽ trở n&ecirc;n mặn.</p>
+</details>
+
+---
+**Q3.** に予定が書いてある。
+- **A.** カレンダー
+- **B.** セロテープ
+- **C.** ソース
+- **D.** ラッピング
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1カレンダー: tờ lịch, lịchカレンダーに予定が書いてある。Tr&ecirc;n lịch c&oacute; ghi c&aacute;c kế hoạch.</p>
+</details>
+
+---
+**Q4.** この道は車が少ないから　　　です。
+- **A.** 避難
+- **B.** 方言
+- **C.** 出口
+- **D.** 安全
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4安全: an to&agrave;nこの道は車が少ないから安全です。V&igrave; con đường n&agrave;y &iacute;t &ocirc; t&ocirc; n&ecirc;n an to&agrave;n.</p>
+</details>
+
+---
+**Q5.** からさわるなって書いてあるよ。
+- **A.** 詳しい
+- **B.** 黒い
+- **C.** 青い
+- **D.** 熱い
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4熱い: n&oacute;ng (d&ugrave;ng cho cảm gi&aacute;c)熱いからさわるなって書いてあるよ。C&oacute; viết &quot;n&oacute;ng n&ecirc;n cấm sờ&quot; đấy!</p>
+</details>
+
+---
+**Q6.** お正月には家族と　　　に行きます。
+- **A.** 神社
+- **B.** 出口
+- **C.** 見合わせ
+- **D.** 伝統的
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1神社: đền (thờ thần)お正月には家族と神社に行きます。V&agrave;o dịp Tết t&ocirc;i sẽ đi đền c&ugrave;ng gia đ&igrave;nh.</p>
+</details>
+
+---
+**Q7.** トイレに紙を　　　なって書いてある。
+- **A.** 流す
+- **B.** 近づく
+- **C.** 避難する
+- **D.** 禁止する
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1流す: xả, l&agrave;m chảy điトイレに紙を流すなって書いてある。C&oacute; viết rằng &quot;Cấm xả giấy v&agrave;o trong toilet (bồn cầu)&quot;.</p>
+</details>
+
+---
+**Q8.** この　　　には使用禁止と書いてあります。
+- **A.** 方言
+- **B.** 道具
+- **C.** 寺
+- **D.** 消費税
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n :2道具: dụng cụこの道具には使用禁止と書いてあります。Tr&ecirc;n dụng cụ n&agrave;y c&oacute; ghi &quot;Cấm sử dụng&quot;.</p>
+</details>
+
+---
+**Q9.** 電車が　　　しているって書いてあるね。
+- **A.** 飲食
+- **B.** 無理
+- **C.** 遅延
+- **D.** 避難
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3遅延: tr&igrave; ho&atilde;n電車が遅延しているって書いてあるね。C&oacute; viết rằng &quot;T&agrave;u điện đang bị trễ&quot; nhỉ.</p>
+</details>
+
+---
+**Q10.** 「忙しい」の　　　は「暇」だ。
+- **A.** 税込み
+- **B.** 黒
+- **C.** 逆
+- **D.** 検索
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3逆: ngược lại「忙しい」の逆は「暇」だ。Ngược lại của 「忙しい」(bận rộn) l&agrave; 「暇」(rảnh).</p>
+</details>
+
+---
+**Q1.** A：もうすぐ電車が出るよ！B：________________！まだ間に合う！
+- **A.** 急げ
+- **B.** 急いだ
+- **C.** 急げる
+- **D.** 急ぐな
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1 A：もうすぐ電車が出るよ！B：急げ！まだ間に合う！A: T&agrave;u sắp chạy rồi đấy!B: Nhanh l&ecirc;n! Vẫn c&ograve;n kịp!</p>
+</details>
+
+---
+**Q2.** A：こら、そこでたばこを________________B：あ、すみません。
+- **A.** 吸う。
+- **B.** 吸うな。
+- **C.** 吸えな。
+- **D.** 吸うえ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2 A：こら、そこでたばこを吸うな。B：あ、すみません。A: N&agrave;y, cấm h&uacute;t thuốc ở đ&oacute;.B: &Agrave;, t&ocirc;i xin lỗi.</p>
+</details>
+
+---
+**Q3.** A：あれ、水が出ない。B：見てください。________________
+- **A.** 「使用禁止」を書いていますよ。
+- **B.** 「使用禁止」を書いてありますよ。
+- **C.** 「使用禁止」と書いていますよ。
+- **D.** 「使用禁止」と書いてありますよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4 A：あれ、水が出ない。B：見てください。「使用禁止」と書いてありますよ。A: Ơ, nước kh&ocirc;ng chảy.B: H&atilde;y nh&igrave;n đi. C&oacute; ghi rằng &quot;Cấm sử dụng&quot; đấy.</p>
+</details>
+
+---
+**Q4.** （「秋桜」という漢字を見る）A：あき、さくら&hellip;？B：これは「コスモス」と________________
+- **A.** あるんだよ。
+- **B.** 書くんだよ。
+- **C.** 言うんだよ。
+- **D.** 読むんだよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4 （「秋桜」という漢字を見る）A：あき、さくら&hellip;？B：これは「コスモス」と読むんだよ。(Bạn A nh&igrave;n v&agrave;o chữ H&aacute;n &quot; 秋桜&quot;)A: Aki, sakura...?B: C&aacute;i n&agrave;y đọc l&agrave; &quot;Kosumosu&quot; đấy.</p>
+</details>
+
+---
+**Q5.** A：「イートインスペース」?どういう意味ですか。B：________________
+- **A.** 店の中で食べる場所といって意味ですよ。
+- **B.** 店の中で食べる場所といっている意味ですよ。
+- **C.** 店の中で食べる場所という意味ですよ。
+- **D.** 店の中で食べる場所といった意味ですよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A：「イートインスペース」？どういう意味ですか。B：店の中で食べる場所という意味ですよ。A:「イートインスペース」 ? Nghĩa l&agrave; g&igrave; vậy?B: C&oacute; nghĩa l&agrave; chỗ ăn trong cửa h&agrave;ng.</p>
+</details>
+
+---
+**Q6.** （服屋で）A：すみません、________________B：はい、こちらです。
+- **A.** 子供用の服ってありますか。
+- **B.** 子供用の服てありますか。
+- **C.** 子供用の服っでありますか。
+- **D.** 子供用の服でありますか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1 （服屋で）A：すみません、子供用の服ってありますか。B：はい、こちらです。(Ở cửa h&agrave;ng quần &aacute;o) A: Cho hỏi c&oacute; quần &aacute;o trẻ con kh&ocirc;ng ạ?B: C&oacute;, ph&iacute;a n&agrave;y ạ.</p>
+</details>
+
+---
+**Q7.** （駅で）A：あの、________________B：あそこで買えますよ。
+- **A.** 新幹線の切符は、どこって買えますか。
+- **B.** 新幹線の切符って、どこで買えますか。
+- **C.** 新幹線の切符っては、どこで買えますか。
+- **D.** 新幹線っての切符は、どこで買えますか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2（駅で）A：あの、新幹線の切符って、どこで買えますか。B：あそこで買えますよ。 (Ở nh&agrave; ga)A: Xin hỏi, t&ocirc;i c&oacute; thể mua v&eacute; t&agrave;u shinkanzen ở đ&acirc;u ạ?B: Bạn c&oacute; thể mua ở chỗ kia đấy.</p>
+</details>
+
+---
+**Q8.** A：「やばい」ってどういう意味ですか。B：　　　　　　　　　　「すごい」とか、「危ない」とか&hellip;。
+- **A.** 「やばい」にで、色々な意味がありますよ。
+- **B.** 「やばい」ってに、色々な意味がありますよ。
+- **C.** 「やばい」には、色々な意味がありますよ。
+- **D.** 「やばい」にって、色々な意味がありますよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A：「やばい」ってどういう意味ですか。B：「やばい」には、色々な意味がありますよ。「すごい」とか、「危ない」とか&hellip;。A: 「やばい」c&oacute; nghĩa l&agrave; g&igrave;?B: &quot;Yabai&quot; c&oacute; nhiều nghĩa lắm đấy. Như l&agrave; &quot;đỉnh&quot; n&agrave;y, &quot;nguy rồi&quot; n&agrave;y...</p>
+</details>
+
+---
+**Q9.** A：「禁煙」って書いてありますね。どういう意味ですか。B：ここでたばこを吸うなって________________
+- **A.** どういう意味ですよ。
+- **B.** いっている意味ですよ。
+- **C.** いう意味ですよ。
+- **D.** いいます意味ですよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A：「禁煙」って書いてありますね。どういう意味ですか。B：ここでたばこを吸うなっていう意味ですよ。A: C&oacute; chữ &quot;禁煙&quot; (Kin&#39;en) ghi ở đ&acirc;y nhỉ. N&oacute; c&oacute; nghĩa l&agrave; g&igrave; vậy?B: N&oacute; c&oacute; nghĩa l&agrave;: Kh&ocirc;ng được h&uacute;t thuốc ở đ&acirc;y.</p>
+</details>
+
+---
+**Q10.** A：この料理、おいしいね。B：________________、ホイアンの料理だよ。
+- **A.** これはカオ・ラウっていう意味で
+- **B.** これはカオ・ラウって読んで
+- **C.** これはカオ・ラウって言って
+- **D.** これはカオ・ラウって書いて
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A：この料理、おいしいね。B：これはカオ・ラウって言って、ホイアンの料理だよ。A: M&oacute;n ăn n&agrave;y ngon nhỉ?!B: Đ&acirc;y l&agrave; m&oacute;n ăn của Hội An, gọi l&agrave; Cao Lầu đấy.</p>
+</details>
+
+---

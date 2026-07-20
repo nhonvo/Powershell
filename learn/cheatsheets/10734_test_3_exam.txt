@@ -1,0 +1,365 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/04_N2/Course_39/📂index_Course_39|Course_39]]
+
+# Test 3
+
+## Part 1
+**Q1.** この部屋は　明るいです。
+- **A.** あかるい
+- **B.** かあるい
+- **C.** おかるい
+- **D.** かおるい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 明るい: s&aacute;ng sủaこの部屋は　明るいです。Căn ph&ograve;ng n&agrave;y s&aacute;ng sủa.</p>
+</details>
+
+---
+**Q2.** 日本の　生活は　どうですか。
+- **A.** にはん
+- **B.** にいはん
+- **C.** にほん
+- **D.** にいほん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> 日本: Nhật Bản日本の　生活は　どうですか。Cuộc sống ở Nhật Bản như thế n&agrave;o?</p>
+</details>
+
+---
+**Q3.** あの建物は　すごく　大きいですね。
+- **A.** おきい
+- **B.** おおきい
+- **C.** おうきい
+- **D.** おいきい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> 大きい: to, lớnあの建物は　すごく　大きいですね。T&ograve;a nh&agrave; kia thật l&agrave; to nhỉ.</p>
+</details>
+
+---
+**Q4.** 私の　アパートは　小さいです。
+- **A.** しょうさい
+- **B.** しいさい
+- **C.** ちさい
+- **D.** ちいさい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> 小さい: nhỏ, b&eacute;私の　アパートは　小さいです。Chung cư của t&ocirc;i nhỏ.</p>
+</details>
+
+---
+**Q5.** この犬は　白いです。
+- **A.** しろい
+- **B.** くろい
+- **C.** あかい
+- **D.** おおい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 白い: trắngこの犬は　白いです。Con ch&oacute; n&agrave;y m&agrave;u trắng.</p>
+</details>
+
+---
+**Q6.** 今日は　少し　寒いですね。
+- **A.** ちいし
+- **B.** しょうし
+- **C.** すこし
+- **D.** すこうし
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> 少し: Một ch&uacute;t, một &iacute;t今日は　少し　寒いですね。H&ocirc;m nay hơi lạnh nhỉ.</p>
+</details>
+
+---
+**Q7.** この車は　あまり　早くないです。
+- **A.** ふるく
+- **B.** たかく
+- **C.** はやく
+- **D.** からく
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> 早い: nhanhこの車は　あまり　早くないです。Chiếc &ocirc; t&ocirc; n&agrave;y kh&ocirc;ng nhanh lắm.</p>
+</details>
+
+---
+**Q8.** マイさんの　犬は　どんな　犬ですか。
+- **A.** いぬ
+- **B.** だい
+- **C.** ふと
+- **D.** おお
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 犬: con ch&oacute;マイさんの　犬は　どんな　犬ですか。Con ch&oacute; của Mai l&agrave; con ch&oacute; như thế n&agrave;o?</p>
+</details>
+
+---
+**Q9.** 毎朝　忙しいです。
+- **A.** まいしゅう
+- **B.** まいにち
+- **C.** まいばん
+- **D.** まいあさ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> 毎朝: mỗi s&aacute;ng, h&agrave;ng s&aacute;ng毎朝　忙しいです。T&ocirc;i bận rộn mỗi s&aacute;ng.</p>
+</details>
+
+---
+**Q10.** 来月は　ひまです。
+- **A.** らいつき
+- **B.** らいげつ
+- **C.** らいづき
+- **D.** らいけつ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> 来月: th&aacute;ng sau来月は　ひまです。Th&aacute;ng sau th&igrave; t&ocirc;i rảnh.</p>
+</details>
+
+---
+**Q1.** テストは　_______でした。
+- **A.** 簡単
+- **B.** 親切
+- **C.** 静か
+- **D.** 残念
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 簡単: đơn giản, dễ d&agrave;ngテストは　簡単でした。B&agrave;i kiểm tra dễ.</p>
+</details>
+
+---
+**Q2.** マイさんの　_______は　広くて　明るいです。
+- **A.** 町
+- **B.** 一人暮らし
+- **C.** 部屋
+- **D.** 生活
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> 部屋: căn ph&ograve;ngマイさんの　部屋は　広くて　明るいです。Ph&ograve;ng của Mai rộng v&agrave; s&aacute;ng sủa.</p>
+</details>
+
+---
+**Q3.** あの　_______は　市役所です。
+- **A.** アパート
+- **B.** 建物
+- **C.** 店
+- **D.** 駅
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> 建物: t&ograve;a nh&agrave;あの　建物は　市役所です。T&ograve;a nh&agrave; kia l&agrave; t&ograve;a thị ch&iacute;nh.</p>
+</details>
+
+---
+**Q4.** _______が　山田さんの　かばんですか。
+- **A.** どこ
+- **B.** どれ
+- **C.** いつ
+- **D.** どんな
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> どれ: c&aacute;i n&agrave;oどれが　山田さんの　かばんですか。C&aacute;i n&agrave;o l&agrave; cặp của Yamada?</p>
+</details>
+
+---
+**Q5.** この　_______は　少し　大きいです。
+- **A.** ズボン
+- **B.** パーティー
+- **C.** バーベキュー
+- **D.** テスト
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> ズボン: c&aacute;i quầnこの　ズボンは　少し　大きいです。C&aacute;i quần n&agrave;y hơi to.</p>
+</details>
+
+---
+**Q6.** 田中先生は　あまり　_______じゃありません。
+- **A.** 残念
+- **B.** 便利
+- **C.** 複雑
+- **D.** 親切
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> 親切: th&acirc;n thiện, tốt bụng田中先生は　あまり　親切じゃありません。Thầy Tanaka kh&ocirc;ng th&acirc;n thiện lắm.</p>
+</details>
+
+---
+**Q7.** この漢字は　_______で　難しいです。
+- **A.** 簡単
+- **B.** 大変
+- **C.** 複雑
+- **D.** ていねい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> 複雑: phức tạp, rắc rốiこの漢字は　複雑で　難しいです。Chữ H&aacute;n n&agrave;y phức tạp v&agrave; kh&oacute;.</p>
+</details>
+
+---
+**Q8.** あの店の　店員は　とても　_______です。
+- **A.** おいしい
+- **B.** 難しい
+- **C.** ていねい
+- **D.** 一番
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> ていねい: lịch sựあの店の　店員は　とても　ていねいです。Nh&acirc;n vi&ecirc;n cửa h&agrave;ng kia rất lịch sự.</p>
+</details>
+
+---
+**Q9.** このラーメンは　_______おいしいです。
+- **A.** そんなに
+- **B.** あまり
+- **C.** でも
+- **D.** まあまあ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> まあまあ: t&agrave;m tạmこのラーメンは　まあまあ　おいしいです。B&aacute;t m&igrave; ramen n&agrave;y cũng được (ngon ở mức độ b&igrave;nh thường).</p>
+</details>
+
+---
+**Q10.** 私の　部屋は　少し　_______です。
+- **A.** 狭い
+- **B.** おいしい
+- **C.** 難しい
+- **D.** 辛い
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 狭い: chật, hẹp私の　部屋は　少し　狭いです。Ph&ograve;ng của t&ocirc;i hơi chật.</p>
+</details>
+
+---
+**Q1.** A:　山田さんの　アパートは　どうですか。B:　________________
+- **A.** 私の　アパートは　古いです。
+- **B.** 私の　アパートは　古かったです。
+- **C.** 私の　アパートは　新しいじゃないです。
+- **D.** 私の　アパートは　新しくなかったです。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> A:　山田さんの　アパートは　どうですか。B:　私の　アパートは　古いです。A: Chung cư của Yamada thế n&agrave;o?B: Chung cư của t&ocirc;i cũ.</p>
+</details>
+
+---
+**Q2.** A:　TOMOTAの　車は　安いですか。B:　いいえ、________________
+- **A.** 安いです。
+- **B.** 安いじゃありません。
+- **C.** 安くないです。
+- **D.** 安いくありません。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> A:　TOMOTAの　車は　安いですか。B:　いいえ、安くないです。A: &Ocirc; t&ocirc; của h&atilde;ng TOMOTA c&oacute; rẻ kh&ocirc;ng?B: Kh&ocirc;ng, kh&ocirc;ng rẻ.</p>
+</details>
+
+---
+**Q3.** A:　明日は　暇ですか。B:　はい、________________
+- **A.** 暇なです。
+- **B.** 暇じゃないです。
+- **C.** 暇でした。
+- **D.** 暇です。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> A:　明日は　暇ですか。B:　はい、暇です。A: Ng&agrave;y mai cậu c&oacute; rảnh kh&ocirc;ng?B: C&oacute;, tớ rảnh.</p>
+</details>
+
+---
+**Q4.** A:　あのレストランは　どうですか。B:　________________
+- **A.** 安くて　おいしいですよ。
+- **B.** 安い　おいしいですよ。
+- **C.** 安いくて　おいしいですよ。
+- **D.** 安いて　おいしいですよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> A:　あのレストランは　どうですか。B:　安くて　おいしいですよ。A: Nh&agrave; h&agrave;ng kia thế n&agrave;o?B: Rẻ v&agrave; ngon đấy.</p>
+</details>
+
+---
+**Q5.** A:　日本の　地下鉄は　どうですか。B:　________________
+- **A.** 便利ですが、とても　複雑です。
+- **B.** 便利な、とても　複雑です。
+- **C.** 便利ですよ、とても　複雑です。
+- **D.** 便利でしたが、とても　複雑です。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> A:　日本の　地下鉄は　どうですか。B:　便利ですが、とても　複雑です。A: T&agrave;u điện ngầm ở Nhật thế n&agrave;o?B: Tiện lợi nhưng rất phức tạp.</p>
+</details>
+
+---
+**Q6.** A:　テストは　簡単でしたか。B:　いいえ、________________
+- **A.** 簡単でした。
+- **B.** 簡単じゃありません。
+- **C.** 簡単くなかったです。
+- **D.** 簡単じゃなかったです。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> A:　テストは　簡単でしたか。B:　いいえ、簡単じゃなかったです。A: B&agrave;i kiểm tra dễ đ&uacute;ng kh&ocirc;ng?B: Kh&ocirc;ng, kh&ocirc;ng dễ.</p>
+</details>
+
+---
+**Q7.** A:　田中さんは　どんな　人ですか。B:　________________
+- **A.** 親切　人ですよ。
+- **B.** 親切な　人ですよ。
+- **C.** 親切い　人ですよ。
+- **D.** 親切だ　人ですよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> A:　田中さんは　どんな　人ですか。B:　親切な　人ですよ。A: Tanaka l&agrave; người như thế n&agrave;o?B: L&agrave; người tốt bụng đấy.</p>
+</details>
+
+---
+**Q8.** A:　日本で　________________B:　富士山が　一番　高いです。
+- **A.** 一番　どの　山が　高いですか。
+- **B.** どの　高い　山が　一番　ですか。
+- **C.** どの　一番　山が　高いですか。
+- **D.** どの　山が　一番　高いですか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> A:　日本で　どの　山が　一番　高いですか。B:　富士山が　一番　高いです。A: Ở Nhật Bản, ngọn n&uacute;i n&agrave;o cao nhất?B: N&uacute;i Ph&uacute; Sĩ l&agrave; cao nhất.</p>
+</details>
+
+---
+**Q9.** A:　________________B:　韓国料理のほうが　辛いです。
+- **A.** 日本料理と　韓国料理と　どちらが　辛いですか。
+- **B.** 日本料理と　韓国料理と　どの料理が　一番　辛いですか。
+- **C.** 日本料理と　韓国料理は　どちらが　辛いですか。
+- **D.** 日本料理と　韓国料理と　どちらが　一番　辛いですか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> A:　日本料理と　韓国料理と　どちらが　辛いですか。B:　韓国料理のほうが　辛いです。A: Đồ ăn Nhật v&agrave; đồ ăn H&agrave;n Quốc, c&aacute;i n&agrave;o cay hơn?B: Đồ ăn H&agrave;n Quốc cay hơn.</p>
+</details>
+
+---
+**Q10.** A:　東京は　寒いですか。B:　はい、________________
+- **A.** 東京は　ハノイより　寒いです。
+- **B.** 東京は　ハノイのほうが　寒いです。
+- **C.** 東京は　ハノイが　寒いです。
+- **D.** 東京は　ハノイと　寒いです。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> A:　東京は　寒いですか。B:　はい、東京は　ハノイより　寒いです。A: Tokyo c&oacute; lạnh kh&ocirc;ng?B: C&oacute;, Tokyo lạnh hơn H&agrave; Nội.</p>
+</details>
+
+---

@@ -1,0 +1,273 @@
+# 🗃️ AB-730 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+You are using Microsoft 365 Copilot to enhance your productivity in Microsoft Excel.
+
+Which two tasks can you achieve by using Copilot in Excel? Each correct answer presents a complete the solution.
+
+Note: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C,D`
+
+**Explanation**:
+Microsoft 365 Copilot in Excel enhances productivity by enabling users to analyze, format, and visualize data instantly using natural language prompts. It automates complex tasks like formula generation, trend identification, and data cleaning, significantly reducing manual effort and speeding up decision-making. Key capabilities include generating pivot tables, creating charts, and summarizing data effortlessly.
+Key Productivity Enhancements in Excel with Copilot:
+[C] Data Analysis and Insights: Copilot can analyze complex datasets, identify trends, and generate insights without requiring manual setup, helping users make data-driven decisions faster.
+Formula Generation and Manipulation: It suggests and creates complex formulas, functions, and data manipulation techniques, which speeds up calculations and analysis.
+Data Cleaning and Formatting: Copilot automates the cleaning of inconsistent entries, such as removing duplicates or handling missing values, and enhances table formatting for easier interpretation.
+[D] Visualization and Chart Creation: It can instantly generate charts and pivot tables based on conversational prompts, turning raw data into visual insights.
+Workflow Automation: By acting as an AI assistant, it automates routine, time
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+You are using Microsoft 365 Copilot to enhance your productivity in Microsoft Word.
+
+Which two tasks can you achieve by using Copilot in Word? Each correct answer presents a complete the solution.
+
+Note: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C,D`
+
+**Explanation**:
+Microsoft 365 Copilot in Word transforms the document creation process from a manual task into an AI- assisted partnership, potentially reducing drafting time by up to 50%. It helps break through writer's block, refines existing content, and automates formatting.
+Here is what can be done in Word to enhance productivity, categorized by function:
+1. Generate and Draft Content
+2. Edit, Rewrite, and Refine
+*-> 3. Summarize and Analyze
+[C] Summarize Documents: Instantly summarize long documents (up to 1.5 million words) into concise, key bullet points, making it easy to review lengthy reports.
+Chat with the Document: Ask specific questions about the content, such as "What are the main risks mentioned?" or "Find the section about the budget," and receive answers with citations.
+Create To-Do Lists: Extract action items and tasks from meeting notes or project plans.
+*-> 4. Transform and Format
+Convert Text to Table: Highlight a list of text and ask Copilot to "Visualize as a Table" to create a structured table instantly.
+[D] Add Formatting/Visuals: Ask Copilot to add images or apply consistent styles and layout changes throughout a document.
+Incorrect:
+[Not A] Insert a table of contents based on the headings in your document.
+This is standard in Word since long before AI.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+You are using Microsoft 365 Copilot to enhance your productivity in Microsoft Outlook.
+
+Which two tasks can you achieve by using Copilot in Outlook? Each correct answer presents a complete the solution.
+
+Note: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,C`
+
+**Explanation**:
+[B]
+Microsoft 365 Copilot in Outlook generates tailored email drafts based on conversation context, allowing users to quickly create, summarize, or adjust replies for tone and length. By clicking the Copilot icon, users can generate responses, customize them, and utilize features like Coaching Tips to improve communication.
+Key Features of Copilot in Outlook for Email Drafting:
+Draft with Copilot: Accessible in the ribbon, this allows for generating a new email or a reply from scratch based on a prompt.
+Context-Aware Responses: Copilot analyzes previous emails in a thread to ensure the response is relevant.
+
+Tone & Length Adjustment: Users can refine the draft to be more concise, confident, formal, or casual.
+"Reply with Copilot": Specifically in Outlook for Mac and web, this option provides fast, pre-generated, or custom replies.
+Coaching Tips: Provides suggestions to improve the clarity, tone, and sentiment of the email before sending.
+[C]
+Microsoft 365 Copilot in Outlook allows you to summarize unread emails and lengthy conversation threads to help you catch up quickly.
+How to Summarize in Outlook
+Summarize a Thread: Open a long email conversation and select Summary by Copilot (or Summarize) at the top of the email thread. Copilot will scan the key points and provide a concise summary with numbered citations that link back to specific emails.
+*-> Summarize Unread/Missed Emails: You can use the Copilot Chat pane (located in the navigation bar) to ask for broader summaries across your inbox.
+Prompt Example: "Summarize my unread emails from today" or "What did I miss from my manager last week?".
+Voice Catch-up (Mobile): On the Outlook mobile app, you can tap "voice catch-up" to have Copilot summarize your unread emails and guide you through actions hands-free.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+You have a Microsoft 365 Copilot license.
+
+You are preparing a business presentation by using Copilot in PowerPoint.
+
+Which two tasks can you achieve by using Copilot in PowerPoint? Each correct answer presents a complete the solution.
+
+Note: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,D`
+
+**Explanation**:
+[B]
+With a Microsoft 365 Copilot license, users can leverage AI in PowerPoint to automatically create, restructure, and design slide layouts based on prompt-driven content or existing documents. Copilot generates tailored, visually appealing slides, adds images, creates outlines, and maintains consistent, professional formatting.
+Key capabilities of Copilot in PowerPoint include:
+Content Creation: Generate full presentations or individual slides from text prompts, or by summarizing Word documents and PDFs.
+*-> Layout and Design: Automatically suggest and apply, appropriate layouts, themes, and visual elements, such as SmartArt or images.
+Editing and Refinement: Rewrite, restructure, and reformat existing slides to improve narrative flow.
+
+File Transformation: Convert, for example, a project proposal document directly into a structured slide deck.
+Efficiency Features: Summarize presentations, generate speaker notes, and translate content while preserving formatting.
+[D] Microsoft 365 Copilot in PowerPoint (requires a license) can instantly generate a summary slide, action items, or a high-level overview by analyzing up to 40,000 words in your presentation. By selecting the Copilot button on the Home tab and prompting it, users can instantly distill, reorganize, or summarize long, complex, or newly created decks.
+Key Capabilities of Copilot in PowerPoint for Summarization:
+*-> Generate Summary Slide: Use prompts like "Summarize this presentation" or "Summarize this presentation as a high-level overview" in the Copilot pane to create a summary slide based on key points.
+Identify Action Items: Copilot can pinpoint key takeaways and necessary actions from the deck.
+Tailor for Audience: Ask Copilot to customize the summary for specific audiences, such as executives.
+Contextual Analysis: Copilot reviews all slides, notes, and content to provide a concise, structured overview.
+Source Citations: Copilot provides references to indicate where it pulled information from in the presentation.
+Easy Copy/Paste: Summaries can be easily copied to the clipboard for use in emails or other documents.
+Incorrect:
+[Not C]
+While Microsoft 365 Copilot is incredibly powerful for generating content and layouts, its ability to "create" or "customize" a brand-new design theme from scratch is currently limited.
+Here is the breakdown of how Copilot interacts with company branding:
+1. It Uses Your Existing Templates
+Copilot cannot invent your brand colors or logos out of thin air. Instead, it works best when you start with a branded template.
+2. It Doesn't "Design" the Theme
+You cannot currently give Copilot a command like "Change the theme to match our company's blue and orange hex codes" if those aren't already in the slide master. You still need a human (or a designer) to set up the Slide Master first.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+You are using Microsoft 365 Copilot to enhance your productivity in Microsoft Teams.
+
+Which two tasks can you achieve by using Copilot in Teams? Each correct answer presents a complete the solution.
+
+Note: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C,D`
+
+**Explanation**:
+[C]
+Microsoft 365 Copilot in Teams enhances productivity by automatically generating real-time and post-meeting summaries, highlighting key discussion points, decisions, and action items. By leveraging transcription, it allows users to ask specific questions about the meeting, such as missed information or task assignments, directly within the Teams interface.
+[D]
+In Microsoft Teams, Microsoft 365 Copilot can indeed draft a response to a channel message by leveraging the context of the conversation. This capability is available within the immersive channel post view, where you can expand a thread to see all replies and then use Copilot to generate content based on that specific discussion.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: 
+
+A colleague from another company shares a link to a prompt.
+
+When you select the link, you receive the following response: "Prompt not found. Sorry, it looks like the prompt is no longer available."
+
+What is a possible cause of the response?
+
+### Options:
+- [ ] **A)** The prompt is outdated.
+- [ ] **B)** The prompt is outside of your organization.
+- [x] **C)** The prompt contains a reference to a file that you do NOT have access to. [Correct]
+- [ ] **D)** The prompt is a scheduled prompt.
+- [ ] **E)** The prompt contains a file that has a sensitivity label applied.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+The "Prompt not found" error when accessing a shared Microsoft 365 Copilot link from an external source typically stems from organizational security boundaries and licensing requirements.
+Key Reasons for the Error
+Cross-Tenant Restrictions: Microsoft 365 Copilot prompts are generally restricted to the organization (tenant) where they were created to maintain Enterprise Data Protection (EDP). Links shared from an external company often cannot be validated across different tenant boundaries.
+Licensing Requirements: To view or use a shared prompt, you must have an active Microsoft 365 Copilot license. If you are not signed in with a qualifying account, the prompt will appear unavailable.
+Prompt Privacy Settings: By default, new prompts are often private to the creator or their specific environment.
+If the sender hasn't correctly shared it with "Anyone" or if your organization blocks external content, the link will fail.
+Browser & Cookie Issues: Copilot requires third-party cookies to be enabled to validate your license and identity. If these are blocked, it may fail to find the prompt associated with your session.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: 
+
+You run a saved prompt and receive the following response: "You asked for a summary of File.docx. However, the file appears to be either empty, corrupted, or in a format that I cannot process."
+
+What is a possible cause of the response?
+
+### Options:
+- [ ] **A)** You did NOT schedule the prompt to run.
+- [ ] **B)** You ran the prompt from a web app instead of a desktop app.
+- [ ] **C)** You used the wrong agent to run the prompt.
+- [x] **D)** You do NOT have access to the file. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+This error typically occurs when Microsoft 365 Copilot cannot correctly access or parse the referenced file's content. The most likely problems include:
+File Location and Sync Issues: Copilot primarily summarizes files stored in OneDrive for Business or SharePoint Online. If the file is only on your local drive and not synced, or if there is a sync delay, Copilot may see a "placeholder" that it cannot read.
+Permissions and Authentication: You may lack the necessary Read permissions for the specific file or its parent folder. Additionally, if your session has timed out, Copilot may fail to validate your access.
+Unsupported Content or Corruption: While the extension is .docx, the file might contain complex elements like embedded videos, macros, or certain encrypted formats that Copilot cannot process. In some cases, the file's metadata may be corrupted, making it appear "unreadable" to the AI.
+Sensitivity Labels: If the document has a Sensitivity Label (e.g., "Confidential") that restricts programmatic access or data extraction, Copilot will be blocked from reading it.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: 
+
+You receive several images from a colleague.
+
+You suspect that the images were generated by using Microsoft 365 Copilot.
+
+What can you use to verify whether the images were AI-generated?
+
+### Options:
+- [ ] **A)** file names
+- [ ] **B)** watermarks
+- [x] **C)** content credentials [Correct]
+- [ ] **D)** file descriptions
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+You can determine if an image was created by Microsoft 365 Copilot by checking for embedded content credentials (metadata), looking for a visual watermark, using the Copilot Library in your Microsoft 365 account, or identifying telltale AI-generation artifacts. Microsoft utilizes the C2PA standard to add invisible watermarks to images created via DALL-E 3, which can be verified using specialized tools.
+Here are the specific methods to identify images created by Microsoft 365 Copilot:
+*-> 1. Check for Content Credentials (C2PA)
+Invisible Metadata: Copilot attaches cryptographically signed metadata to images it generates. This metadata includes information about the time, date, and tools used to create the image.
+Verification: You can use content credential verification sites to check if an image has been signed by Microsoft.
+
+Upcoming Features: Microsoft is adding the option to enable a visible watermark on all images generated or altered by AI within Microsoft 365 apps like Word and PowerPoint.
+2. Use the "Copilot Library"
+3. Check for Visual Watermarks
+Bing/Designer Branding: Historically, images created through Bing Image Creator (which powers much of Copilot) have included a small "b" or Microsoft Designer logo in the bottom corner, though this is not always present.
+Etc.
+</details>
+
+---

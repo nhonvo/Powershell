@@ -1,0 +1,109 @@
+# 🗃️ PSD Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+True or False: User Stories are required in the Product Backlog.
+
+### Options:
+- [ ] **A)** True
+- [x] **B)** False [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+User Stories are not required in the Product Backlog as per the Scrum Guide. The Product Backlog is a collection of all work to be done on the product, and it can include a variety of formats, such as tasks, features, and technical requirements, not just user stories.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+What are three ways Scrum promotes self-management? (choose the best three answers)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,C,D`
+
+**Explanation**:
+Scrum promotes self-management by empowering the team to decide what work they take on, removing hierarchical titles to foster equality and collaboration, and having the Scrum Master shield the team from external disruptions so they can focus on their goals.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+Who creates tests on a Scrum Team? (choose the best answer)
+
+### Options:
+- [ ] **A)** The Scrum Master.
+- [ ] **B)** The Product Owner.
+- [ ] **C)** Quality Assurance Specialists.
+- [x] **D)** The Developers. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+According to the Scrum Guide, Developers are responsible for all activities required to produce a Done Increment, including testing. 
+While other roles may contribute insights, the team ensures quality through their combined skills.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+True or False: Product documentation may be required as part of a working Increment.
+
+### Options:
+- [x] **A)** True [Correct]
+- [ ] **B)** False
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Product documentation can be part of a Done Increment if it adds value and meets the Definition of Done. Scrum does not prescribe documentation but emphasizes delivering value to stakeholders.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+True or False: A high-performance Scrum Team ensures that each Increment is complete by running a Release Sprint.
+
+### Options:
+- [ ] **A)** True
+- [x] **B)** False [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Scrum does not have a concept of a "Release Sprint." Each Sprint must result in a Done Increment, which may be released as required. The focus is on continuous delivery of value, not specific release cycles.
+</details>
+
+---

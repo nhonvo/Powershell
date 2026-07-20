@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mla-c01
+  - mlac01
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MLA-C01 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/aws/MLA-C01/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/aws/MLA-C01/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/aws/MLA-C01/MLA-C01 Mindmap\|🗺️ MLA-C01 Mindmap]]
+- [[certifications/aws/MLA-C01/MLA-C01 Flashcards\|🃏 MLA-C01 Flashcards]]
+- [[certifications/aws/MLA-C01/MLA-C01_Scraped_Question_Bank\|🗃️ MLA-C01 Scraped Question Bank]]

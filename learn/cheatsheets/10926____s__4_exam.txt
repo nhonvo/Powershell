@@ -1,0 +1,77 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 4
+
+## Part 1
+**Q1.** せんしゅう　デパートへ（　　　） に　いきました。
+- **A.** かいもの
+- **B.** たべもの
+- **C.** くだもの
+- **D.** のみもの
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1かいもの: mua sắmTuần trước t&ocirc;i đ&atilde; đi mua sắm ở trung t&acirc;m thương mại.くだもの: tr&aacute;i c&acirc;yたべもの: đồ ănのみもの: đồ uống</p>
+</details>
+
+---
+**Q2.** まいあさ　こうえんで　ペットと （　　　） を　します。
+- **A.** せんたく
+- **B.** りょこう
+- **C.** りょうり
+- **D.** さんぽ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4さんぽ: đi dạoH&agrave;ng s&aacute;ng, t&ocirc;i đều đi dạo c&ugrave;ng th&uacute; cưng của m&igrave;nh ở c&ocirc;ng vi&ecirc;n.せんたく: giặt giũりょうり: đồ ăn, nấu ănりょこう: du lịch</p>
+</details>
+
+---
+**Q3.** じかんが　ありませんから （　　　） で　いきましょう。
+- **A.** キッチン
+- **B.** アパート
+- **C.** シャワー
+- **D.** タクシー
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4タクシー: xe taxiKh&ocirc;ng c&oacute; thời gian n&ecirc;n h&atilde;y đi bằng taxi th&ocirc;i.キッチン: ph&ograve;ng bếpシャワー: v&ograve;i hoa senアパート: chung cư &iacute;t tầng</p>
+</details>
+
+---
+**Q4.** わたしは　うたが（　　　） ですから、うたいたくないです。
+- **A.** べんり
+- **B.** へた
+- **C.** にぎやか
+- **D.** めずらしい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2へた: dở, k&eacute;mT&ocirc;i h&aacute;t dở lắm n&ecirc;n kh&ocirc;ng muốn h&aacute;t.べんり: tiện lợiにぎやか: n&aacute;o nhiệt, s&ocirc;i nổi, huy&ecirc;n n&aacute;oめずらしい: hiếm</p>
+</details>
+
+---
+**Q5.** この　こうちゃは　さとうを　たくさん　いれましたから （　　　） です。
+- **A.** あまい
+- **B.** からい
+- **C.** まるい
+- **D.** かるい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1あまい: ngọtCốc hồng tr&agrave; n&agrave;y v&igrave; đ&atilde; cho rất nhiều đường v&agrave;o n&ecirc;n ngọt.まるい: tr&ograve;nからい: mặn, cayかるい: nhẹ</p>
+</details>
+
+---
+**Q6.** まいあさ　パンと　たまごを （　　　） 。
+- **A.** よびます
+- **B.** たべます
+- **C.** のみます
+- **D.** うまれます
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2たべる: ănT&ocirc;i ăn b&aacute;nh mỳ v&agrave; trứng mỗi buổi s&aacute;ng.よぶ: gọi, k&ecirc;uのむ: uốngうまれる: được sinh ra</p>
+</details>
+
+---

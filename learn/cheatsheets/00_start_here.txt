@@ -1,0 +1,21 @@
+﻿# Interview Prep — Start Here
+
+## Today (20–40 min)
+
+- [ ] Review `01_CV/cv_master.md` (imported from your legacy CV) and tighten summary + metrics
+- [ ] Add 2 STAR stories to `03_STORIES_STAR/star_bank.md`
+- [ ] Solve 1 problem and log it in `daily/tracking.csv` (DSA solutions imported under `dsa/Udacity-Data-Structures-and-Algorithms/`)
+- [ ] Practice 10 minutes EN + 10 minutes JP (see `languages/🌐index_03_Languages_Communication.md`)
+
+## Weekly focus
+
+- CV: 1 master + 2 targeted versions
+- Stories: 10 strong STAR stories
+- Coding: 15–25 problems + review notes
+- Language: daily speaking drills + interview phrases
+
+## Quick links
+
+- Progress tracker: `PROGRESS.md`
+- Folder map: `INTERVIEW_PREP_FOLDER_STRUCTURE.md`
+- Imported materials live under `*/legacy/` and `*/resources/`

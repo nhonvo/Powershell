@@ -1,0 +1,174 @@
+# 🗃️ MB-240 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Configure field service applications Questions
+
+Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.
+
+After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen.
+You are a Dynamics 365 for Field Service system administrator.
+You are configuring a new instance of Dynamics 365 for Field Service. The organization needs to accurately capture the cost of work order bookings.
+Solution: You implement the following configuration changes:
+
+1) Create Resource Pay Types for regular, holiday, overtime, travel, and breaks.
+2) Assign an Hourly Markup percentage to each Resource Pay Type.
+3) Assign Resource Pay Types to the applicable Pay Type.
+4) Create the Holiday Schedule. 
+
+Does this meet the goal?
+
+### Options:
+- [ ] **A)** Yes
+- [x] **B)** No [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Configure field service applications Questions
+
+Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.
+
+After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen.
+You are a Dynamics 365 for Field Service system administrator.
+You are configuring a new instance of Dynamics 365 for Field Service. The organization needs to accurately capture the cost of work order bookings.
+
+Solution: You implement the following configuration changes:
+
+1) Create Resource Pay Types for regular, holiday, overtime, travel, and breaks.
+2) Assign an Hourly Markup percentage to each Resource Pay Type.
+3) Assign Resource Pay Types to the applicable Pay Type.
+4) Create Business Closures.
+5) Create Bookable Resources with Hourly Rates.
+
+### Options:
+- [ ] **A)** Yes
+- [x] **B)** No [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Configure field service applications Questions
+
+Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.
+
+After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen.
+You are a Dynamics 365 for Field Service system administrator.
+You are configuring a new instance of Dynamics 365 for Field Service. The organization needs to accurately capture the cost of work order bookings.
+
+Solution: You implement the following configuration changes:
+
+1) Create Resource Pay Types for regular, holiday, overtime, travel, and breaks.
+2) Assign an Hourly Markup percentage to each Resource Pay Type.
+3) Assign Resource Pay Types to the applicable Pay Type.
+4) Create Business Closures.
+5) Create Bookable Resources with Hourly Rates and Work Hours. 
+
+Does this meet the goal?
+
+### Options:
+- [x] **A)** Yes [Correct]
+- [ ] **B)** No
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Configure field service applications Questions
+
+Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen.
+
+You are a Dynamics 365 for Field Service system administrator.
+You are configuring a new instance of Dynamics 365 for Field Service. The organization needs to automatically generate work orders based on agreements, and send invoices on a recurring basis by customer.
+
+Solution: You implement the following configuration changes.
+
+1) Create Agreement
+2) Define Agreement Products
+3) Set Booking Recurrence
+4) Create Invoice Setup
+5) Define Invoice Recurrence. 
+
+Does this meet the goal?
+
+### Options:
+- [ ] **A)** Yes
+- [x] **B)** No [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Configure field service applications Questions
+
+Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution. After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen.
+
+You are a Dynamics 365 for Field Service system administrator.
+You are configuring a new instance of Dynamics 365 for Field Service. The organization needs to automatically generate work orders based on agreements, and send invoices on a recurring basis by customer.
+
+Solution: You implement the following configuration changes.
+
+1) Create Agreement
+2) Define Booking Setup
+3) Create Invoice Setup
+4) Set Auto Generate Invoice = Yes
+5) Populate Generate Agreement Invoices X Days in Advance
+
+Does this meet the goal?
+
+### Options:
+- [ ] **A)** Yes
+- [x] **B)** No [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---

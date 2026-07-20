@@ -1,0 +1,133 @@
+# 🗃️ SPS Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+Scenario B: Six Team Nexus with complex dependencies
+
+A six team Nexus is developing a complex product, with different parts of the product that only certain Scrum Teams can work on. In fact, there are some highly specialized individuals outside the Nexus that are required for some of the work. In past Sprints the Nexus encountered challenges dealing with the many dependencies between Scrum Teams.
+
+Which of the following practices could this Nexus try in order to conduct Nexus Sprint Planning more effectively?
+
+(choose the best two answers)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,D`
+
+**Explanation**:
+The purpose of Nexus Sprint Planning is to coordinate the activities of all Scrum Teams within a Nexus for a single Sprint. To do this effectively, the Nexus needs to have a clear understanding of the dependencies between the teams and the work items, and to communicate and collaborate with each other and any outside experts as needed. Therefore, the best practices for this Nexus are:
+A) Ensure all Scrum Teams and outside experts are available during the Nexus Sprint Planning event and have a way of quickly communicating with each other. They should try to be together in the same room or use technology that makes it seem as if they are in the same room. This practice enables the Nexus to have a shared understanding of the Product Backlog, the Product Goal, and the Nexus Sprint Goal, and to resolve any issues or questions that may arise during the planning. It also allows the Nexus to leverage the expertise of the outside specialists who are required for some of the work.
+D) Visualize the known dependencies in the Product Backlog for all to see. As Scrum Teams select work for the Sprint, they can easily check for any dependent work and communicate with other teams. This practice helps the Nexus to identify and manage the dependencies between the teams and the work items, and to optimize the flow of value delivery. It also supports transparency and alignment within the Nexus.
+The other two practices are not effective for this Nexus because:
+B) Plan one Scrum Team's Sprint at a time before moving on to the next team. This way you can account for time zone differences and can communicate dependencies across all teams. This practice is not optimal because it does not allow the Nexus to plan the Sprint as a whole, and to adjust the work allocation and sequence based on the dependencies and the Nexus Sprint Goal. It also creates delays and inefficiencies in the planning process, and reduces the collaboration and feedback opportunities among the teams.
+C) Have the Nexus Integration Team select the work for each of the individual Scrum Teams. This allows the Nexus Integration Team to control the dependencies. This practice is not consistent with the Nexus framework, which states that the Nexus Integration Team does not select the work for the Scrum Teams, but rather facilitates the integration and delivery of the work done by the Scrum Teams. It also undermines the self-organization and empowerment of the Scrum Teams, and reduces their ownership and accountability for the work.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+Scenario B: Six Team Nexus with complex dependencies
+
+A six team Nexus is developing a complex product, with different parts of the product that only certain Scrum Teams can work on. In fact, there are some highly specialized individuals outside the Nexus that are required for some of the work. In past Sprints the Nexus encountered challenges dealing with the many dependencies between Scrum Teams.
+
+Some individual Scrum Teams in this Nexus have said that they do not see how the work they are doing is contributing to the product's progress. 
+What is the best remedy for this situation?
+
+(choose the best answer)
+
+### Options:
+- [ ] **A)** During Nexus Sprint Planning, have all the teams plan the Sprint together in one room, so they can see what other teams are working on.
+- [x] **B)** During Nexus Sprint Planning, ensure that all Scrum Teams understand the Nexus Sprint Goal. [Correct]
+- [ ] **C)** Ask the Scrum Master to explain to the teams that the Product Owner can choose which features to work on, as she has the final say.
+- [ ] **D)** During Nexus Sprint Planning, ask each Scrum Team to create a Sprint Goal that describes the purpose of the Sprint.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+The best remedy for this situation is to ensure that all Scrum Teams understand the Nexus Sprint Goal. The Nexus Sprint Goal is a commitment that describes the purpose that will be achieved by the Nexus during the Sprint. It aligns with the Product Goal and provides coherence and focus for the work of the Scrum Teams. By understanding the Nexus Sprint Goal, the Scrum Teams can see how their work contributes to the product's progress and value delivery 1234. The other answers are not effective for this situation because:
+A) During Nexus Sprint Planning, have all the teams plan the Sprint together in one room, so they can see what other teams are working on. This answer is not sufficient because it does not address the root cause of the problem, which is the lack of a clear and shared purpose for the Sprint. Having all the teams plan the Sprint together may help them coordinate their work and identify dependencies, but it does not necessarily help them understand how their work relates to the product's progress and value.
+C) Ask the Scrum Master to explain to the teams that the Product Owner can choose which features to work on, as she has the final say. This answer is not helpful because it does not foster collaboration and alignment among the Scrum Teams. It also undermines the self-organization and empowerment of the Scrum Teams, and reduces their ownership and accountability for the work. The Product Owner is responsible for managing and ordering the Product Backlog, but the Scrum Teams are responsible for selecting and delivering the work for the Sprint. 
+D) During Nexus Sprint Planning, ask each Scrum Team to create a Sprint Goal that describes the purpose of the Sprint. This answer is not optimal because it does not ensure that the Scrum Teams have a common objective and direction for the Sprint. Each Scrum Team may have a different Sprint Goal that may or may not align with the Nexus Sprint Goal and the Product Goal. This may lead to confusion, inconsistency, and sub-optimization of the product delivery.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+The purpose of the Nexus Sprint Backlog is:
+
+(choose the best two answers)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,D`
+
+**Explanation**:
+The purpose of the Nexus Sprint Backlog is to provide a view of dependent Product Backlog items in a Sprint and to make dependencies transparent to the Scrum Teams 15. The Nexus Sprint Backlog is a composite of the Product Backlog items from the Sprint Backlogs of the individual Scrum Teams, and it is used to highlight dependencies and the flow of work during the Sprint. It is updated throughout the Sprint as more is learned 21324354.
+The other answers are not correct for the following reasons:
+A) To make the work of the Nexus Integration Team transparent. This answer is not accurate because the Nexus Sprint Backlog does not only show the work of the Nexus Integration Team, but also the work of all the Scrum Teams in the Nexus. The Nexus Integration Team is responsible for facilitating the integration and delivery of the work done by the Scrum Teams, but it does not select or assign the work for them 15.
+C) To visualize all Product Backlog items. This answer is not true because the Nexus Sprint Backlog does not contain all the Product Backlog items, but only the ones that the developers in the Nexus believe are necessary to achieve the Nexus Sprint Goal. The Product Backlog is the single source of requirements for the product, and it is managed and ordered by the Product Owner 15.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+True or False: All Scrum Team members must attend the Nexus Daily Scrum.
+
+### Options:
+- [ ] **A)** True
+- [x] **B)** False [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+The answer is false because not all Scrum Team members are required to attend the Nexus Daily Scrum. According to the Online Nexus Guide1, the Nexus Daily Scrum is an event for appropriate representatives from individual Scrum Teams to inspect the current state of the Integrated Increment and to identify integration issues or newly discovered cross-team dependencies. The appropriate representatives are those who can best collaborate and communicate the progress and impediments of their Scrum Teams, and who can make and influence decisions regarding the integration and delivery of the product. The number and selection of the representatives may vary depending on the context and needs of the Nexus 234. The Nexus Daily Scrum does not replace the Daily Scrum of each Scrum Team, which is still held by all the Developers of the team to plan their work for the day 5.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+Which statements are true regarding using Scrum for large-scale product delivery?
+
+(choose the best two answers)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,D`
+
+**Explanation**:
+The true statements regarding using Scrum for large-scale product delivery are:
+A) Splitting a team member's time between multiple Scrum Teams is often less productive than focusing that team member on a single team's Sprint Backlog. This statement is true because splitting a team member's time between multiple teams can cause context switching, communication overhead, coordination challenges, and reduced commitment and accountability. It can also reduce the team's ability to self-organize and deliver a potentially releasable product increment at the end of each Sprint. Therefore, it is recommended that team members focus on one team's Sprint Backlog and work as a cross-functional and cohesive unit 1122. D) A well-structured and refined Product Backlog can minimize and often eliminate dependencies between multiple Scrum Teams working together on a product during a Sprint. This statement is true because a well-structured and refined Product Backlog can help the Product Owner and the Scrum Teams to identify and prioritize the most valuable and feasible work items, and to decompose them into smaller and independent pieces that can be delivered by one or more teams. This can reduce the complexity and risk of integration and dependency management, and increase the flow and quality of value delivery 3344.
+The other statements are false for the following reasons:
+B) Scrum requires all team members work full time on a single team. This statement is false because Scrum does not prescribe how team members allocate their time or effort. Scrum only defines the roles, events, artifacts, and rules that guide the empirical process of product development. However, as mentioned above, it is often more productive and effective for team members to focus on one team's Sprint Backlog and avoid splitting their time between multiple teams [5].
+
+C) Changes to the core Scrum framework are needed to be successful with Scrum at large-scale. This statement is false because Scrum is a lightweight and adaptable framework that can be applied to any complex product development context, regardless of the size or scale. Scrum does not need to be changed or modified to be successful at large-scale, but rather scaled up or down according to the needs and goals of the product organization. There are various frameworks and approaches that can help scale Scrum, such as Nexus, LeSS, SAFe, and Scrum@Scale, but they all adhere to the core principles and values of Scrum [6] [7].
+</details>
+
+---

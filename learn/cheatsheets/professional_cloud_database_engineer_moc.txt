@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/professional-cloud-database-engineer
+  - professionalclouddatabaseengineer
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 Professional-Cloud-Database-Engineer MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/google/Professional-Cloud-Database-Engineer/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/google/Professional-Cloud-Database-Engineer/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/google/Professional-Cloud-Database-Engineer/Professional-Cloud-Database-Engineer Mindmap\|🗺️ Professional-Cloud-Database-Engineer Mindmap]]
+- [[certifications/google/Professional-Cloud-Database-Engineer/Professional-Cloud-Database-Engineer Flashcards\|🃏 Professional-Cloud-Database-Engineer Flashcards]]
+- [[certifications/google/Professional-Cloud-Database-Engineer/Professional-Cloud-Database-Engineer_Scraped_Question_Bank\|🗃️ Professional-Cloud-Database-Engineer Scraped Question Bank]]

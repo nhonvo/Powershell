@@ -1,0 +1,9 @@
+# Computational Statistics and Applications
+
+🔙 **Back to Parent**: [[technical_skills/Computational Statistics and Applications/📂index_Computational Statistics and Applications|02_Computer_Science_Patterns]]
+
+## 📁 Sub-Categories
+- [[technical_skills/Computational Statistics and Applications/Exercise/📂index_Exercise|Exercise]]
+- [[technical_skills/Computational Statistics and Applications/Practical/📂index_Practical|Practical]]
+- [[technical_skills/Computational Statistics and Applications/Theory/📂index_Theory|Theory]]
+

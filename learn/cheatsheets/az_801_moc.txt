@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/az-801
+  - az801
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AZ-801: Configuring Windows Server Hybrid Advanced Services MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/AZ-801/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/AZ-801/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AZ-801/AZ-801 Mindmap\|🗺️ AZ-801 Mindmap]]
+- [[certifications/microsoft/AZ-801/AZ-801 Flashcards\|🃏 AZ-801 Flashcards]]
+- [[certifications/microsoft/AZ-801/AZ-801_Scraped_Question_Bank\|🗃️ AZ-801 Scraped Question Bank]]

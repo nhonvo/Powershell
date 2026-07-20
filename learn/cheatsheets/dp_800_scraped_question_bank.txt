@@ -1,0 +1,301 @@
+# 🗃️ DP-800 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Contoso Case Study
+
+You need to generate embeddings to resolve the issues identified by the analysts. Which column should you use?
+
+### Options:
+- [ ] **A)** vehicleLocation
+- [x] **B)** incidentDescrlption [Correct]
+- [ ] **C)** incidentType
+- [ ] **D)** SeverityScore
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+The correct column to use for generating embeddings is incidentDescrlption because embeddings are intended to represent the semantic meaning of rich textual content, not simple categorical, numeric, or location-only values. Microsoft's DP-800 study guide explicitly includes skills such as identifying which columns to include in embeddings, generating embeddings, and implementing semantic vector search for scenarios where users need to find similar records based on meaning rather than exact matches.
+
+In this scenario, analysts report that it is difficult to find similar incidents based on details such as weather, traffic conditions, and location. Those are descriptive context elements that are typically captured in a free-text incident description field. An embedding generated from incidentDescrlption can encode the semantic relationships among these narrative details, making it suitable for similarity search, semantic search, and RAG retrieval. Microsoft documentation on vectors and embeddings explains that embeddings are generated from text data and then stored for vector search to find semantically related items.
+
+The other options are weaker choices:
+
+vehicleLocation is too narrow and usually better handled with geospatial filtering, not embeddings.
+
+incidentType is likely categorical and too low in semantic richness.
+
+SeverityScore is numeric and not appropriate as the primary source for semantic embeddings.
+
+Microsoft also notes that when multiple useful attributes exist, you can either embed each text column separately or concatenate relevant text fields into one textual representation before generating the embedding. But among the options given, the best and most exam-aligned answer is the textual narrative column: incidentDescrlption.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Contoso Case Study
+
+You need to recommend a solution for the development team to retrieve the live metadata. The solution must meet the development requirements.
+
+What should you include in the recommendation?
+
+### Options:
+- [ ] **A)** Export the database schema as a .dacpac file and load the schema into a GitHub Copilot context window.
+- [ ] **B)** Add the schema to a GitHub Copilot instruction file.
+- [x] **C)** Use an MCP server [Correct]
+- [ ] **D)** Include the database project in the code repository.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+The best recommendation is to use an MCP server. In the official DP-800 study guide, Microsoft explicitly lists skills such as configuring Model Context Protocol (MCP) tool options in a GitHub Copilot session and connecting to MCP server endpoints, including Microsoft SQL Server and Fabric Lakehouse. That makes MCP the exam-aligned mechanism for enabling AI-assisted tools to work with live database context rather than static snapshots.
+
+This also matches the stated development requirement: the team will use Visual Studio Code and GitHub Copilot and needs to retrieve live metadata from the databases. Microsoft's documentation for GitHub Copilot with the MSSQL extension explains that Copilot works with an active database connection, provides schema-aware suggestions, supports chatting with a connected database, and adapts responses based on the current database context. Microsoft also documents MCP as the standard way for AI tools to connect to external systems and data sources through discoverable tools and endpoints.
+
+The other options do not satisfy the "live metadata" requirement as well:
+
+A .dacpac is a point-in-time schema artifact, not live metadata.
+
+A Copilot instruction file provides guidance, not live database discovery.
+
+Including the database project in the repository helps source control and deployment, but it still does not provide live database metadata by itself.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Contoso Case Study
+
+You need to recommend a solution that will resolve the ingestion pipeline failure issues. Which two actions should you recommend? Each correct answer presents part of the solution.
+NOTE: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D,E`
+
+**Explanation**:
+The two correct actions are D and E because the ingestion failures are caused by malformed JSON and duplicate payloads, and these two controls address those two problems directly. Microsoft's JSON documentation states that SQL Server and Azure SQL support validating JSON with ISJSON, and Microsoft specifically recommends using a CHECK constraint to ensure JSON text stored in a column is properly formatted.
+
+For the duplicate-payload issue, creating a unique index on a hash of the payload is the appropriate design. Microsoft documents using hashing functions such as HASHBYTES to hash column values, and SQL Server allows a deterministic computed column to be used as a key column in a UNIQUE constraint or unique index. That makes a persisted hash-based computed column plus a unique index a practical and exam-consistent way to reject duplicate payloads efficiently.
+
+The other options do not solve the stated root causes:
+
+Snapshot isolation addresses concurrency behavior, not malformed JSON or duplicate payload detection.
+
+A trigger to rewrite malformed JSON is not the right integrity control and is brittle.
+
+Foreign key constraints enforce referential integrity, not JSON validity or duplicate-payload prevention
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Contoso Case Study
+
+HOTSPOT
+
+You need to meet the development requirements for the FeedbackJson column
+
+How should you complete the Transact SQL query? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+### Options:
+- [x] **A)** See Explanation for the Answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+JSON_VALUE(f.FeedbackJson, '$.text') AS FeedbackText
+
+CONTAINS(FeedbackJson, @Keyword)
+
+SimilarityScore
+
+These three selections are the correct way to complete the query because they align exactly with the stated requirements for the FeedbackJson column.
+
+First, to extract the customer feedback text from the JSON document, the correct expression is JSON_VALUE(f.FeedbackJson, '$.text') AS FeedbackText. Microsoft documents that JSON_VALUE is used to extract a scalar value from JSON, while JSON_QUERY is used for returning an object or array. Since $.text is the textual feedback string, JSON_VALUE is the correct function.
+
+Second, to filter rows where the JSON text contains a keyword, the best choice is CONTAINS(FeedbackJson, @Keyword). The scenario explicitly states that FeedbackJson already has a full-text index, and Microsoft documents that CONTAINS is the full-text predicate used in the WHERE clause to search full-text indexed character data. That makes it more appropriate than using EDIT_DISTANCE for keyword filtering.
+
+Third, to order the results by similarity score, highest first, the correct item is SimilarityScore in the ORDER BY clause, which would be paired with DESC in the query. This matches the requirement to sort by the computed fuzzy similarity value. The DP-800 study guide specifically includes writing queries that use fuzzy string matching functions such as EDIT_DISTANCE, which supports the earlier computed SimilarityScore expression in the query.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Contoso Case Study
+
+DRAG DROP (Drag and Drop is not supported)
+
+You need to meet the database performance requirements for maintenance data
+
+How should you complete the Transact-SQL code? To answer, drag the appropriate values to the correct targets. Each value may be used once, more than once, or not at all. You may need to drag the split bar between panes or scroll to view content.
+
+Note: Each correct selection is worth one point.
+
+### Options:
+- [x] **A)** See Explanation for the Answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+ON m.maintenanceId = i.maintenanceId
+
+WHERE m.LastModifiedUtc <> i.LastModifiedUtc
+
+The correct drag-and-drop completion is:
+
+ON m.maintenanceId = i.maintenanceId
+
+WHERE m.LastModifiedUtc <> i.LastModifiedUtc
+
+This satisfies the requirement to ensure that when a row in MaintenanceEvents changes, the corresponding LastModifiedUtc value is updated to the current system time, while also helping avoid unnecessary repeat updates.
+
+The inserted pseudo-table in a SQL Server AFTER UPDATE trigger contains the rows that were just updated. To update the matching row in the base table correctly, the trigger must join the target table row to the corresponding row in inserted by the table's primary key. In this schema, MaintenanceId is the primary key for MaintenanceEvents, so the correct join is m.maintenanceId = i.maintenanceId. Joining on VehicleId would be incorrect because multiple maintenance rows could exist for the same vehicle, which could update unintended rows. Microsoft's trigger documentation explains that inserted and deleted are used to work with the affected rows and that multi-row logic should be based on proper key matching.
+
+The WHERE m.LastModifiedUtc <> i.LastModifiedUtc predicate is used to prevent the trigger from re- updating rows where the timestamp already matches the value in inserted. That reduces redundant writes and supports the requirement to avoid recursive or repeated update behavior. In practice, this means the trigger updates only rows whose current stored timestamp differs from the just-updated version. This is the exam-appropriate pattern for a self-updating timestamp column in an AFTER UPDATE trigger.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: Contoso Case Study
+
+You need to recommend a solution to lesolve the slow dashboard query issue. What should you recommend?
+
+### Options:
+- [ ] **A)** Create a clustered index on Lastupdatedutc.
+- [x] **B)** On Fleetid, create a nonclustered index that includes Lastupdatedutc. inginestatus, and BatteryHealth. [Correct]
+- [ ] **C)** On Lastupdatedutc. create a nonclustered index that includes Fleetid.
+- [ ] **D)** On Fleetid, create a filtered index where lastupdatedutc > DATEADD(DAV, -7, SYSuTCOATETIME()).
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+The best recommendation is B because the slow query filters on FleetId and returns LastUpdatedUtc, EngineStatus, and BatteryHealth. A nonclustered index with FleetId as the key column allows the optimizer to perform an index seek instead of a clustered index scan, and including the other selected columns makes the index covering, which reduces extra lookups and I/O. Microsoft's SQL Server indexing guidance states that a nonclustered index with included columns can significantly improve performance when all query columns are available in the index, because the optimizer can satisfy the query directly from the index.
+
+The query is:
+
+SELECT VehicleId, LastUpdatedUtc, EngineStatus, BatteryHealth FROM dbo.VehicleHealthSummary
+WHERE FleetId = @FleetId
+ORDER BY LastUpdatedUtc DESC;
+
+Among the given choices, FleetId is the most important search argument because it appears in the WHERE predicate. Microsoft's index design guidance recommends putting columns used for searching in the key and using nonkey included columns to cover the rest of the query efficiently.
+
+Why the other options are weaker:
+
+A is not appropriate because changing the clustered index to LastUpdatedUtc would not target the main filter predicate on FleetId, and a table can have only one clustered index.
+
+C makes LastUpdatedUtc the key, which is poor for a query whose primary filter is FleetId.
+
+D is not the right answer here because the query requirement does not specify only recent rows, and filtered indexes are meant for a well-defined subset; this option also uses a time-based expression that is not aligned to the stated query pattern.
+
+Strictly speaking, the most optimal design for both filtering and ordering would usually be a composite key like (FleetId, LastUpdatedUtc), but since that is not one of the available options, B is the correct exam answer.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: Contoso Case Study
+
+HOTSPOT
+
+You are creating a table that will store customer profiles.
+
+You have the following Transact-SQL code.
+
+
+
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+NOTE:
+Each correct selection Is worth one point.
+
+### Options:
+- [x] **A)** See Explanation for the Answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+The schema meets the security requirements for PII data. Yes
+
+Administrators of the Azure SQL server can see all the rows in dbo.CustomerProfiles when they use an application. No
+
+The masking rules will apply even when row-level security (RLS) filters out rows. No
+
+The first statement is Yes because the design combines two relevant SQL security controls for personally identifiable information: Dynamic Data Masking (DDM) on sensitive columns such as FullName, EmailAddress, and PhoneNumber, and Row-Level Security (RLS) to restrict which rows a user can access based on RegionCode. Microsoft documents that DDM limits sensitive data exposure for nonprivileged users, while RLS restricts row access according to the user executing the query. Together, these are valid and appropriate controls for protecting PII in Azure SQL Database.
+
+The second statement is No. Administrative users can view unmasked data because administrative roles effectively have CONTROL, which includes UNMASK. However, that does not mean they automatically see all rows through the application query path defined by the RLS policy. The security policy filters rows based on SUSER_SNAME() and matching RegionCode, so row visibility is governed by the predicate unless the policy is altered or bypassed administratively. DDM and RLS solve different problems: DDM affects how returned values are shown, while RLS affects which rows are returned at all.
+
+The third statement is No because masking only applies to data that is actually returned in the query result set. Microsoft describes DDM as hiding sensitive data in the result set of a query. If RLS filters a row out, that row is not returned, so there is nothing left for masking to act on. In other words, RLS eliminates inaccessible rows first from the user's perspective, and DDM masks sensitive column values only on rows the user is allowed to see.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: Contoso Case Study
+
+You need to enable similarity search to provide the analysts with the ability to retrieve the most relevant health summary reports. The solution must minimize latency.
+
+What should you include in the solution?
+
+### Options:
+- [ ] **A)** a computed column that manually compares vector values
+- [ ] **B)** a standard nonclustered index on the Fmbeddings (vector (1536)) column
+- [ ] **C)** a full-text index on the Fmbeddings (vector (1536)) column
+- [x] **D)** a vector index on the Embedding* (vector (1536)) column [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+The correct answer is D because the requirement is to enable similarity search over embedding vectors and to minimize latency. Microsoft documents that CREATE VECTOR INDEX is specifically used to create an index on vector data for approximate nearest neighbor (ANN) search, which is designed
+
+to accelerate vector similarity queries compared to exact k-nearest-neighbor scans.
+
+This matches the scenario exactly. The VehicleHealthSummary table already includes an Embeddings (vector(1536)) column. In Microsoft SQL platforms, embeddings are stored in vector columns and queried for semantic similarity. To improve performance and reduce response time, Microsoft recommends a vector index, not a regular B-tree nonclustered index and not a full-text index. A vector index is purpose-built for finding the most similar vectors efficiently.
+
+The other options are not appropriate:
+
+A would require manual comparison logic and would increase latency rather than minimize it.
+
+B is incorrect because a standard nonclustered index is not the index type used for vector similarity operations.
+
+C is incorrect because full-text indexes are for textual token-based search, not numeric vector embeddings.
+
+Microsoft's current documentation is explicit that vector indexes support approximate nearest neighbor search, and that the optimizer can use the ANN index automatically for vector queries. That is the exam-aligned design choice when the goal is fast retrieval of the most relevant health summary reports from an embeddings column.
+</details>
+
+---

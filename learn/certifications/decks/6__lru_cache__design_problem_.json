@@ -1,0 +1,896 @@
+{
+  "Meta": {
+    "Id": "deck_6__lru_cache__design_problem_",
+    "Topic": "6. LRU Cache (Design Problem)",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "6__lru_cache__design_problem_"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 44
+  },
+  "Cards": [
+    {
+      "Id": "card_00915",
+      "Front": "Cấu trúc",
+      "Back": "get O(1)? | Xoá LRU O(1)? | Cập nhật vị trí O(1)?",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00916",
+      "Front": "Array",
+      "Back": "Không (O(n)) | Không (O(n)) | Không (O(n))",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00917",
+      "Front": "HashMap",
+      "Back": "**Có** | Không (nào là LRU?) | Không",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00918",
+      "Front": "Linked List",
+      "Back": "Không (O(n)) | **Có** (xoá tail) | **Có** (di chuyển node)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00919",
+      "Front": "**HashMap + DLL**",
+      "Back": "**Có** | **Có** | **Có**",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00920",
+      "Front": "Policy",
+      "Back": "Evict ai? | Ưu điểm | Nhược điểm",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00921",
+      "Front": "**LRU**",
+      "Back": "Lâu nhất chưa dùng | Đơn giản, hiệu quả | Scan attack (duyệt 1 lần qua nhiều key)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00922",
+      "Front": "**LFU**",
+      "Back": "Ít lần dùng nhất | Tốt cho hot data | Cache pollution (item cũ frequency cao)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00923",
+      "Front": "**FIFO**",
+      "Back": "Vào trước ra trước | Rất đơn giản | Không quan tâm tần suất sử dụng",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00924",
+      "Front": "**Random**",
+      "Back": "Ngẫu nhiên | O(1), không overhead | Không thông minh",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00925",
+      "Front": "**ARC**",
+      "Back": "Adaptive (LRU + LFU) | Tự điều chỉnh | Phức tạp, patent issues",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00926",
+      "Front": "Cấu trúc / Thao tác",
+      "Back": "Time (Average) | Space",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00927",
+      "Front": "**Singly Linked List**",
+      "Back": " | ",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00928",
+      "Front": "- Insert at head",
+      "Back": "O(1) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00929",
+      "Front": "- Insert at tail",
+      "Back": "O(n) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00930",
+      "Front": "- Delete at head",
+      "Back": "O(1) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00931",
+      "Front": "- Search",
+      "Back": "O(n) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00932",
+      "Front": "**Doubly Linked List**",
+      "Back": " | ",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00933",
+      "Front": "- Insert at head/tail",
+      "Back": "O(1) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00934",
+      "Front": "- Delete (có pointer)",
+      "Back": "O(1) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00935",
+      "Front": "- Search",
+      "Back": "O(n) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00936",
+      "Front": "**Fast & Slow Pointer**",
+      "Back": " | ",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00937",
+      "Front": "- Find middle",
+      "Back": "O(n) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00938",
+      "Front": "- Kth from end",
+      "Back": "O(n) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00939",
+      "Front": "**Cycle Detection**",
+      "Back": " | ",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00940",
+      "Front": "- Floyd's algorithm",
+      "Back": "O(n) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00941",
+      "Front": "- Find cycle start",
+      "Back": "O(n) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00942",
+      "Front": "**Reverse Linked List**",
+      "Back": " | ",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00943",
+      "Front": "- Iterative",
+      "Back": "O(n) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00944",
+      "Front": "- Recursive",
+      "Back": "O(n) | O(n)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00945",
+      "Front": "**Merge 2 Sorted Lists**",
+      "Back": "O(n+m) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00946",
+      "Front": "**LRU Cache**",
+      "Back": " | ",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00947",
+      "Front": "- get / put",
+      "Back": "O(1) | O(capacity)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00948",
+      "Front": "206",
+      "Back": "Reverse Linked List | Easy | Reverse",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00949",
+      "Front": "21",
+      "Back": "Merge Two Sorted Lists | Easy | Merge",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00950",
+      "Front": "141",
+      "Back": "Linked List Cycle | Easy | Floyd's",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00951",
+      "Front": "876",
+      "Back": "Middle of the Linked List | Easy | Fast & Slow",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00952",
+      "Front": "19",
+      "Back": "Remove Nth Node From End | Medium | Two Pointer",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00953",
+      "Front": "142",
+      "Back": "Linked List Cycle II | Medium | Floyd's Phase 2",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00954",
+      "Front": "92",
+      "Back": "Reverse Linked List II | Medium | Reverse Between",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00955",
+      "Front": "146",
+      "Back": "LRU Cache | Medium | Design",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00956",
+      "Front": "23",
+      "Back": "Merge K Sorted Lists | Hard | Divide & Conquer",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00957",
+      "Front": "25",
+      "Back": "Reverse Nodes in k-Group | Hard | Reverse + Loop",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00958",
+      "Front": "460",
+      "Back": "LFU Cache | Hard | Design",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. lru cache (design problem)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

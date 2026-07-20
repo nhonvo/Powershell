@@ -1,0 +1,13 @@
+# Readings
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/1. Array and string manipulation/index_1. Array and string manipulation|1. Array and string manipulation]]
+
+## 📁 Categories
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Readings/Array/index_Array|Array]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Readings/Array Slicing/index_Array Slicing|Array Slicing]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Readings/Dynamic Array/index_Dynamic Array|Dynamic Array]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Readings/In-Place Algorithm/index_In-Place Algorithm|In-Place Algorithm]]
+
+## 📄 Notes
+- [[readings|Readings]]
+

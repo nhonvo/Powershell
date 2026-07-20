@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mb7-638
+  - mb7638
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MB7-638: NAV 5.0 Trade & Inventory MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MB7-638/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MB7-638/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MB7-638/MB7-638 Mindmap\|🗺️ MB7-638 Mindmap]]
+- [[certifications/microsoft/MB7-638/MB7-638 Flashcards\|🃏 MB7-638 Flashcards]]
+- [[certifications/microsoft/MB7-638/MB7-638_Scraped_Question_Bank\|🗃️ MB7-638 Scraped Question Bank]]

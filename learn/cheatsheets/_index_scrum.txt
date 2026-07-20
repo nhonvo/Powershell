@@ -1,0 +1,14 @@
+# SCRUM Certifications Index
+
+🔙 **Back to Parent**: [[📖index_learning|learning]]
+
+## 📁 Sub-Categories
+- [[certifications/scrum/PSM-I/PSM-I MOC|🎓 PSM-I - Professional Scrum Master I]]
+- [[certifications/scrum/PSM-II/PSM-II MOC|🎓 PSM-II - Professional Scrum Master II]]
+- [[certifications/scrum/PSPO-I/PSPO-I MOC|🎓 PSPO-I - Professional Scrum Product Owner I]]
+- [[certifications/scrum/PSPO-II/PSPO-II MOC|🎓 PSPO-II - Professional Scrum Product Owner II]]
+- [[certifications/scrum/PSD/PSD MOC|🎓 PSD - Professional Scrum Developer]]
+- [[certifications/scrum/SPS/SPS MOC|🎓 SPS - Scaled Professional Scrum]]
+- [[certifications/scrum/PAL-I/PAL-I MOC|🎓 PAL-I - Professional Agile Leadership Certification]]
+- [[certifications/scrum/PSK-I/PSK-I MOC|🎓 PSK-I - Professional Scrum with Kanban]]
+- [[certifications/scrum/SMC/SMC MOC|🎓 SMC - Scrum Master Certified]]

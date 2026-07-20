@@ -1,0 +1,377 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/06_Linked_List/🔗index_06_Linked_List|06_Linked_List]]
+
+## 5. Reverse / Merge Linked List
+
+### 5.1. Reverse Linked List — Hình dung thực tế
+
+Hãy tưởng tượng bạn có một chuỗi **mũi tên domino**. Mỗi mũi tên chỉ về bên phải. Bạn muốn đảo ngược toàn bộ: mỗi mũi tên bây giờ chỉ về bên trái.
+
+```
+Trước: [1] → [2] → [3] → [4] → null
+Sau:   null ← [1] ← [2] ← [3] ← [4]
+       Tức là: [4] → [3] → [2] → [1] → null
+```
+
+Đây là bài LeetCode 206 — một trong những bài phỏng vấn phổ biến nhất, và cũng là **building block** cho rất nhiều bài khác.
+
+### 5.2. Cách 1: Iterative Reverse (Vòng lặp)
+
+**Ý tưởng:** Duyệt list, tại mỗi node, đảo chiều pointer `next`.
+
+**Thuật toán:**
+
+Ta cần 3 pointer:
+
+- **prev**: node phía trước (ban đầu = null)
+- **current**: node hiện tại đang xử lý
+- **next_temp**: lưu tạm node tiếp theo (vì ta sắp đổi `current.next`)
+
+Mỗi bước:
+
+1. Lưu `next_temp = current.next` (giữ reference đến phần còn lại)
+2. Đảo chiều: `current.next = prev` (quay ngược mũi tên)
+3. Di chuyển: `prev = current`, `current = next_temp`
+4. Lặp lại cho đến khi `current = null`
+5. `head = prev` (node cuối cùng xử lý chính là head mới)
+
+KhôngCóBắt đầuprev = null
+current = headcurrent != null?head = prev
+Return headnext_temp = current.nextcurrent.next = prevprev = current
+current = next_temp
+
+**Mô phỏng từng bước (QUAN TRỌNG - đọc kỹ!):**
+
+List ban đầu: `[1] -> [2] -> [3] -> [4] -> null`
+
+| Bước | prev | current | next_temp | Hành động               | Trạng thái sau                  |
+| :--- | :--- | :------ | :-------- | :---------------------- | :------------------------------ |
+| Init | null | [1]     | -         | Khởi tạo                | `null [1]->[2]->[3]->[4]->null` |
+| 1    | null | [1]     | [2]       | `[1].next = null`       | `null<-[1] [2]->[3]->[4]->null` |
+| 1'   | [1]  | [2]     | -         | Di chuyển prev, current |                                 |
+| 2    | [1]  | [2]     | [3]       | `[2].next = [1]`        | `null<-[1]<-[2] [3]->[4]->null` |
+| 2'   | [2]  | [3]     | -         | Di chuyển               |                                 |
+| 3    | [2]  | [3]     | [4]       | `[3].next = [2]`        | `null<-[1]<-[2]<-[3] [4]->null` |
+| 3'   | [3]  | [4]     | -         | Di chuyển               |                                 |
+| 4    | [3]  | [4]     | null      | `[4].next = [3]`        | `null<-[1]<-[2]<-[3]<-[4]`      |
+| 4'   | [4]  | null    | -         | DỪNG! head = prev = [4] |                                 |
+
+Kết quả: `[4] -> [3] -> [2] -> [1] -> null`
+
+**Python:**
+
+```python
+def reverse_iterative(head):
+    prev = None
+    current = head
+
+    while current is not None:
+        next_temp = current.next   # 1. Lưu tạm
+        current.next = prev        # 2. Đảo chiều
+        prev = current             # 3. Di chuyển prev
+        current = next_temp        # 4. Di chuyển current
+
+    return prev  # prev bây giờ là head mới
+
+
+# Sử dụng
+# List: 1 -> 2 -> 3 -> 4 -> null
+new_head = reverse_iterative(head)
+# Kết quả: 4 -> 3 -> 2 -> 1 -> null
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Tạo list: 1 -> 2 -> 3 -> 4
+head = Node(1)
+current = head
+for val in [2, 3, 4]:
+    current.next = Node(val)
+    current = current.next
+
+new_head = reverse_iterative(head)
+# Kết quả: 4 -> 3 -> 2 -> 1 -> null
+
+# In kết quả
+current = new_head
+while current:
+    print(current.data, end=" -> ")
+    current = current.next
+print("null")
+# Output: 4 -> 3 -> 2 -> 1 -> null
+```
+
+**Complexity:** O(n) time, O(1) space — in-place, không dùng thêm bộ nhớ.
+
+### 5.3. Cách 2: Recursive Reverse (Đệ quy)
+
+**Ý tưởng:** Reverse phần còn lại của list trước, rồi nối node hiện tại vào cuối.
+
+**Thuật toán:**
+
+1. Base case: Nếu `head` là null hoặc chỉ có 1 node → return head
+2. Recursive call: `new_head = reverse(head.next)` — reverse phần từ node 2 trở đi
+3. Đảo chiều: `head.next.next = head` — node kế tiếp trỏ ngược lại head
+4. `head.next = null` — head bây giờ là node cuối
+5. Return `new_head` — head mới (đã được xác định trong recursive call)
+
+**Mô phỏng call stack:**
+
+List: `[1] -> [2] -> [3] -> null`
+
+```
+reverse([1])
+  → reverse([2])
+    → reverse([3])
+      → Base case: return [3]          // new_head = [3]
+    → [2].next.next = [2]  tức [3].next = [2]  // [3] -> [2]
+    → [2].next = null                            // [3] -> [2] -> null
+    → return [3]
+  → [1].next.next = [1]  tức [2].next = [1]    // [3] -> [2] -> [1]
+  → [1].next = null                              // [3] -> [2] -> [1] -> null
+  → return [3]
+```
+
+Kết quả: `[3] -> [2] -> [1] -> null`, head mới = [3].
+
+**Python:**
+
+```python
+def reverse_recursive(head):
+    # Base case: list rỗng hoặc chỉ 1 node
+    if head is None or head.next is None:
+        return head
+
+    # Recursive: reverse phần còn lại
+    new_head = reverse_recursive(head.next)
+
+    # Đảo chiều: node kế trỏ ngược lại head
+    head.next.next = head
+    head.next = None  # head bây giờ là cuối
+
+    return new_head
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Tạo list: 1 -> 2 -> 3
+head = Node(1)
+head.next = Node(2)
+head.next.next = Node(3)
+
+new_head = reverse_recursive(head)
+# Kết quả: 3 -> 2 -> 1 -> null
+```
+
+**Complexity:** O(n) time, O(n) space — call stack chiếm O(n) bộ nhớ.
+
+### 5.4. So sánh Iterative vs Recursive
+
+| Tiêu chí        | Iterative             | Recursive            |
+| :-------------- | :-------------------- | :------------------- |
+| Time            | O(n)                  | O(n)                 |
+| Space           | O(1)                  | O(n) — call stack    |
+| Code            | Dài hơn nhưng rõ ràng | Ngắn, elegant        |
+| Stack overflow  | Không                 | Có, nếu list rất dài |
+| Production code | Thường dùng           | Thi thoảng dùng      |
+
+**Khuyến nghị:** Dùng iterative cho production code. Dùng recursive khi cần code ngắn gọn hoặc trong phỏng vấn khi interviewer hỏi cả hai cách.
+
+### 5.5. Reverse một đoạn (Reverse Between)
+
+Bài toán nâng cao: Reverse list từ vị trí `left` đến `right` (LeetCode 92).
+
+**Python:**
+
+```python
+def reverse_between(head, left, right):
+    """
+    Reverse list từ vị trí left đến right (1-indexed)
+    VD: 1->2->3->4->5, left=2, right=4
+    Kết quả: 1->4->3->2->5
+    """
+    if head is None or left == right:
+        return head
+
+    # Dummy node để xử lý edge case left=1
+    dummy = Node(0)
+    dummy.next = head
+    prev = dummy
+
+    # Di chuyển prev đến node trước vị trí left
+    for _ in range(left - 1):
+        prev = prev.next
+
+    # Reverse đoạn [left, right]
+    current = prev.next
+    for _ in range(right - left):
+        next_node = current.next
+        current.next = next_node.next
+        next_node.next = prev.next
+        prev.next = next_node
+
+    return dummy.next
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Tạo list: 1 -> 2 -> 3 -> 4 -> 5
+head = Node(1)
+current = head
+for val in [2, 3, 4, 5]:
+    current.next = Node(val)
+    current = current.next
+
+new_head = reverse_between(head, 2, 4)
+# Kết quả: 1 -> 4 -> 3 -> 2 -> 5 -> null
+```
+
+**Mô phỏng (left=2, right=4):**
+
+List: `[1] -> [2] -> [3] -> [4] -> [5] -> null`
+
+prev = [1] (node trước vị trí 2), current = [2]
+
+| Vòng | Hành động                 | Trạng thái                        |
+| :--- | :------------------------ | :-------------------------------- |
+| 1    | Rút [3] ra, chèn sau prev | `[1] -> [3] -> [2] -> [4] -> [5]` |
+| 2    | Rút [4] ra, chèn sau prev | `[1] -> [4] -> [3] -> [2] -> [5]` |
+
+Kết quả: `[1] -> [4] -> [3] -> [2] -> [5] -> null`
+
+### 5.6. Merge Two Sorted Linked Lists
+
+**Đề bài (LeetCode 21):** Cho 2 sorted linked list, merge thành 1 sorted linked list.
+
+**Hình dung thực tế:** Bạn có 2 chồng bài đã sắp xếp úp trên bàn. Bạn lật lá trên cùng của mỗi chồng, lấy lá nhỏ hơn bỏ vào chồng mới. Lặp lại cho đến khi hết bài.
+
+**Thuật toán (Iterative):**
+
+1. Tạo dummy node làm head tạm
+2. So sánh node đầu của 2 list
+3. Nối node nhỏ hơn vào kết quả
+4. Di chuyển pointer của list vừa lấy
+5. Khi 1 list hết, nối phần còn lại của list kia
+
+KhôngCóCóKhôngMerge 2 sorted listsdummy = Node(0)
+tail = dummyl1 != null AND
+l2 != null?Nối phần còn lại:
+tail.next = l1 or l2l1.val <= l2.val?tail.next = l1
+l1 = l1.nexttail.next = l2
+l2 = l2.nexttail = tail.nextReturn dummy.next
+
+**Mô phỏng từng bước:**
+
+```
+L1: [1] -> [3] -> [5] -> null
+L2: [2] -> [4] -> [6] -> null
+```
+
+| Bước | L1 hiện tại | L2 hiện tại | So sánh | Lấy     | Kết quả                        |
+| :--- | :---------- | :---------- | :------ | :------ | :----------------------------- |
+| 1    | [1]         | [2]         | 1 <= 2  | L1: [1] | `[1]`                          |
+| 2    | [3]         | [2]         | 3 > 2   | L2: [2] | `[1]->[2]`                     |
+| 3    | [3]         | [4]         | 3 <= 4  | L1: [3] | `[1]->[2]->[3]`                |
+| 4    | [5]         | [4]         | 5 > 4   | L2: [4] | `[1]->[2]->[3]->[4]`           |
+| 5    | [5]         | [6]         | 5 <= 6  | L1: [5] | `[1]->[2]->[3]->[4]->[5]`      |
+| 6    | null        | [6]         | L1 hết  | Nối L2  | `[1]->[2]->[3]->[4]->[5]->[6]` |
+
+**Python (Iterative):**
+
+```python
+def merge_two_sorted(l1, l2):
+    dummy = Node(0)  # Dummy head
+    tail = dummy
+
+    while l1 is not None and l2 is not None:
+        if l1.data <= l2.data:
+            tail.next = l1
+            l1 = l1.next
+        else:
+            tail.next = l2
+            l2 = l2.next
+        tail = tail.next
+
+    # Nối phần còn lại
+    tail.next = l1 if l1 is not None else l2
+
+    return dummy.next
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Tạo L1: 1 -> 3 -> 5
+l1 = Node(1)
+l1.next = Node(3)
+l1.next.next = Node(5)
+
+# Tạo L2: 2 -> 4 -> 6
+l2 = Node(2)
+l2.next = Node(4)
+l2.next.next = Node(6)
+
+merged = merge_two_sorted(l1, l2)
+# Kết quả: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> null
+```
+
+**Complexity:** O(n + m) time (n, m là length của 2 list), O(1) space (in-place, chỉ thay đổi pointer).
+
+**Python (Recursive):**
+
+```python
+def merge_two_sorted_recursive(l1, l2):
+    # Base cases
+    if l1 is None:
+        return l2
+    if l2 is None:
+        return l1
+
+    if l1.data <= l2.data:
+        l1.next = merge_two_sorted_recursive(l1.next, l2)
+        return l1
+    else:
+        l2.next = merge_two_sorted_recursive(l1, l2.next)
+        return l2
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Sử dụng tương tự phiên bản iterative
+# Kết quả giống nhau, chỉ khác cách implement
+merged = merge_two_sorted_recursive(l1, l2)
+```
+
+**Complexity (Recursive):** O(n + m) time, O(n + m) space (call stack).
+
+### 5.7. Chứng minh: Merge tạo ra sorted list
+
+**Định lý:** Nếu L1 và L2 đều sorted (tăng dần), kết quả merge cũng sorted.
+
+**Chứng minh bằng quy nạp:**
+
+**Base case:** Nếu một trong hai list rỗng, kết quả là list còn lại (đã sorted). Đúng.
+
+**Bước quy nạp:** Giả sử merge đúng cho tổng n + m - 1 phần tử. Xét n + m phần tử:
+
+- Ta chọn min(L1.head, L2.head) làm phần tử đầu tiên của kết quả.
+- Phần còn lại được merge đệ quy → sorted (theo giả thiết quy nạp).
+- Phần tử đầu tiên <= mọi phần tử trong L1 (vì L1 sorted) và <= mọi phần tử trong L2 (vì nó là min).
+- Vậy phần tử đầu <= mọi phần tử phía sau → toàn bộ kết quả sorted. **QED.**
+
+**Complexity tối ưu:** Merge 2 sorted list trong O(n + m) là tối ưu, vì ta phải xem xét ít nhất n + m phần tử (lower bound Omega(n + m)).
+
+### 5.8. Bài tập mở rộng
+
+| Bài          | Mô tả                         | Kỹ thuật                        |
+| :----------- | :---------------------------- | :------------------------------ |
+| LeetCode 21  | Merge 2 sorted lists          | Merge (đã làm)                  |
+| LeetCode 23  | Merge K sorted lists          | Divide & Conquer hoặc Min Heap  |
+| LeetCode 206 | Reverse linked list           | Iterative / Recursive (đã làm)  |
+| LeetCode 92  | Reverse between [left, right] | Đã làm                          |
+| LeetCode 25  | Reverse nodes in k-group      | Reverse + Iteration             |
+| LeetCode 143 | Reorder list                  | Find middle + Reverse + Merge   |
+| LeetCode 234 | Palindrome linked list        | Find middle + Reverse + Compare |

@@ -1,0 +1,19 @@
+# 02_Backend_Development_Roadmap
+
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/📂index_02_Backend_Development_Roadmap|01_Career_Roadmaps]]
+
+## 📁 Sub-Categories
+- [[technical_skills/02_Backend_Development_Roadmap/01_Language_Basics/📂index_01_Language_Basics|01_Language_Basics]]
+- [[technical_skills/02_Backend_Development_Roadmap/02_Database_ORM/📂index_02_Database_ORM|02_Database_ORM]]
+- [[technical_skills/02_Backend_Development_Roadmap/03_REST_API/📂index_03_REST_API|03_REST_API]]
+- [[technical_skills/02_Backend_Development_Roadmap/04_Caching_Redis/📂index_04_Caching_Redis|04_Caching_Redis]]
+- [[technical_skills/02_Backend_Development_Roadmap/05_Logging_Tracing/📂index_05_Logging_Tracing|05_Logging_Tracing]]
+- [[technical_skills/02_Backend_Development_Roadmap/06_Search_Engine/📂index_06_Search_Engine|06_Search_Engine]]
+- [[technical_skills/02_Backend_Development_Roadmap/07_Monitoring_Metrics/📂index_07_Monitoring_Metrics|07_Monitoring_Metrics]]
+- [[technical_skills/02_Backend_Development_Roadmap/08_Deployment_DevOps/📂index_08_Deployment_DevOps|08_Deployment_DevOps]]
+- [[technical_skills/02_Backend_Development_Roadmap/09_Capstone_Project/📂index_09_Capstone_Project|09_Capstone_Project]]
+
+## 📄 Notes & Documents
+- [[technical_skills/02_Backend_Development_Roadmap/Instructions|Instructions]]
+- [[technical_skills/02_Backend_Development_Roadmap/Roadmap|Roadmap]]
+

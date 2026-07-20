@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/az-305
+  - az305
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AZ-305: Designing Microsoft Azure Infrastructure Solutions MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/AZ-305/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/AZ-305/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AZ-305/AZ-305 Mindmap\|🗺️ AZ-305 Mindmap]]
+- [[certifications/microsoft/AZ-305/AZ-305 Flashcards\|🃏 AZ-305 Flashcards]]
+- [[certifications/microsoft/AZ-305/AZ-305_Scraped_Question_Bank\|🗃️ AZ-305 Scraped Question Bank]]

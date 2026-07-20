@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/gh-500
+  - gh500
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 GH-500: GitHub Advanced Security MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/GH-500/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/GH-500/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/GH-500/GH-500 Mindmap\|🗺️ GH-500 Mindmap]]
+- [[certifications/microsoft/GH-500/GH-500 Flashcards\|🃏 GH-500 Flashcards]]
+- [[certifications/microsoft/GH-500/GH-500_Scraped_Question_Bank\|🗃️ GH-500 Scraped Question Bank]]

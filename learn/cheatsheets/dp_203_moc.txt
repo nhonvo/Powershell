@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/dp-203
+  - dp203
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 DP-203: Data Engineering on Microsoft Azure (Replaced with DP-700) MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/DP-203/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/DP-203/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/DP-203/DP-203 Mindmap\|🗺️ DP-203 Mindmap]]
+- [[certifications/microsoft/DP-203/DP-203 Flashcards\|🃏 DP-203 Flashcards]]
+- [[certifications/microsoft/DP-203/DP-203_Scraped_Question_Bank\|🗃️ DP-203 Scraped Question Bank]]

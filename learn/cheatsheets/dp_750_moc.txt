@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/dp-750
+  - dp750
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 DP-750: Implementing Data Engineering Solutions Using Azure Databricks MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/DP-750/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/DP-750/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/DP-750/DP-750 Mindmap\|🗺️ DP-750 Mindmap]]
+- [[certifications/microsoft/DP-750/DP-750 Flashcards\|🃏 DP-750 Flashcards]]
+- [[certifications/microsoft/DP-750/DP-750_Scraped_Question_Bank\|🗃️ DP-750 Scraped Question Bank]]

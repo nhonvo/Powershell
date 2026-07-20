@@ -1,0 +1,236 @@
+{
+  "Meta": {
+    "Id": "deck_demo_race_condition",
+    "Topic": "demo_race_condition",
+    "Language": "English/Japanese",
+    "Domain": "technical_skills",
+    "Level": "General",
+    "Tags": [
+      "demo_race_condition"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 11
+  },
+  "Cards": [
+    {
+      "Id": "card_03590",
+      "Front": "Time",
+      "Back": "Transaction A (User 1) | Transaction B (User 2) | Note",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "demo_race_condition"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03591",
+      "Front": "T1",
+      "Back": "`SELECT stock FROM inventory WHERE id=1;` |  | Trả về: **1**",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "demo_race_condition"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03592",
+      "Front": "T2",
+      "Back": " | `SELECT stock FROM inventory WHERE id=1;` | Trả về: **1**",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "demo_race_condition"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03593",
+      "Front": "T3",
+      "Back": "`UPDATE inventory SET stock = 0 WHERE id=1;` |  | Thành công",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "demo_race_condition"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03594",
+      "Front": "T4",
+      "Back": " | `UPDATE inventory SET stock = 0 WHERE id=1;` | **THẤT BẠI LOGIC**: Lẽ ra phải báo lỗi hết hàng.",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "demo_race_condition"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03595",
+      "Front": "T5",
+      "Back": "**COMMIT** |  | ",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "demo_race_condition"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03596",
+      "Front": "T6",
+      "Back": " | **COMMIT** | **KẾT QUẢ**: Xuất hiện 2 đơn hàng nhưng chỉ có 1 sản phẩm.",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "demo_race_condition"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03597",
+      "Front": "Tiêu chí",
+      "Back": "Pessimistic Lock | Optimistic Lock",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "demo_race_condition"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03598",
+      "Front": "**Khi nào dùng**",
+      "Back": "Tỉ lệ tranh chấp cực cao (VD: Đấu giá) | Tỉ lệ tranh chấp thấp (Hầu hết App)",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "demo_race_condition"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03599",
+      "Front": "**Hiệu năng**",
+      "Back": "Chậm (Gây hàng đợi/Deadlock) | Nhanh (Không khóa hàng)",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "demo_race_condition"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03600",
+      "Front": "**Trải nghiệm**",
+      "Back": "User phải đợi | User có thể bị lỗi (Cần Retry)",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "demo_race_condition"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

@@ -1,0 +1,295 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/03_Searching_Sorting/🔍index_03_Searching_Sorting|03_Searching_Sorting]]
+
+## 8. Custom Comparator Sorting
+
+### Gioi thieu
+
+Trong thuc te, ban se khong chi sort so nguyen tang dan. Ban se can sort theo nhieu tieu chi khac nhau: sort string theo chieu dai, sort object theo nhieu truong, sort theo thu tu dac biet... Tat ca dieu nay duoc thuc hien bang **Custom Comparator**.
+
+### Vi du thuc te
+
+Tuong tuong ban la co giao va can sap xep danh sach hoc sinh:
+
+- **Truong hop 1:** Sap xep theo diem giam dan
+- **Truong hop 2:** Sap xep theo diem giam dan, neu bang diem thi theo ten alphabet
+- **Truong hop 3:** Sap xep theo lop truoc, roi theo diem trong tung lop
+
+Moi truong hop can mot "tieu chi so sanh" khac nhau -- do chinh la custom comparator.
+
+### Comparator la gi?
+
+Comparator la mot **ham so sanh** nhan 2 phan tu va quyet dinh thu tu cua chung:
+
+- Trong Python: ham tra ve `True/False` (key function) hoac `-1/0/1` (cmp function)
+
+### Cac cach sort trong Python
+
+#### Cach 1: Dung `key` function (KHUYEN KHICH)
+
+```python
+# Sort theo gia tri tuyet doi
+arr = [-5, 3, -1, 4, -2]
+arr.sort(key=abs)
+print(arr)  # [-1, -2, 3, 4, -5]
+
+# Sort string theo chieu dai
+words = ["banana", "pie", "Washington", "book"]
+words.sort(key=len)
+print(words)  # ['pie', 'book', 'banana', 'Washington']
+
+# Sort theo nhieu tieu chi bang tuple
+students = [
+    ("An", 85),
+    ("Binh", 92),
+    ("Chi", 85),
+    ("Duc", 92),
+]
+# Sort theo diem giam dan, neu bang diem thi theo ten tang dan
+students.sort(key=lambda s: (-s[1], s[0]))
+print(students)
+# [('Binh', 92), ('Duc', 92), ('An', 85), ('Chi', 85)]
+```
+
+**Tai sao dung `-s[1]`?** Vi Python sort tang dan mac dinh. Muon sort diem giam dan, ta dung gia tri am. `-92 < -85` nen 92 se dung truoc 85.
+
+#### Cach 2: Dung `functools.cmp_to_key` (khi logic phuc tap)
+
+```python
+from functools import cmp_to_key
+
+def compare(a, b):
+    """
+    Tra ve:
+      - So am: a dung truoc b
+      - 0: bang nhau
+      - So duong: b dung truoc a
+    """
+    if a[1] != b[1]:
+        return b[1] - a[1]  # Diem giam dan
+    return (a[0] > b[0]) - (a[0] < b[0])  # Ten tang dan
+
+students = [("An", 85), ("Binh", 92), ("Chi", 85), ("Duc", 92)]
+students.sort(key=cmp_to_key(compare))
+print(students)
+# [('Binh', 92), ('Duc', 92), ('An', 85), ('Chi', 85)]
+```
+
+#### Cach 3: Dung class voi `__lt__` (OOP style)
+
+```python
+class Student:
+    def __init__(self, name, score):
+        self.name = name
+        self.score = score
+
+    def __lt__(self, other):
+        if self.score != other.score:
+            return self.score > other.score  # Diem giam dan
+        return self.name < other.name        # Ten tang dan
+
+    def __repr__(self):
+        return f"({self.name}, {self.score})"
+
+students = [Student("An", 85), Student("Binh", 92),
+            Student("Chi", 85), Student("Duc", 92)]
+students.sort()
+print(students)
+# [(Binh, 92), (Duc, 92), (An, 85), (Chi, 85)]
+```
+
+### Tong hop cac cach sort trong Python
+
+```python
+# === TONG HOP TAT CA CAC CACH SORT TRONG PYTHON ===
+
+# --- Cach 1: key function (KHUYEN KHICH) ---
+arr = [-5, 3, -1, 4, -2]
+arr.sort(key=abs)
+print(f"Sort theo abs: {arr}")  # [-1, -2, 3, 4, -5]
+
+# Sort string theo chieu dai
+words = ["banana", "pie", "Washington", "book"]
+words.sort(key=len)
+print(f"Sort theo len: {words}")  # ['pie', 'book', 'banana', 'Washington']
+
+# Sort theo nhieu tieu chi bang tuple
+students = [("An", 85), ("Binh", 92), ("Chi", 85), ("Duc", 92)]
+students.sort(key=lambda s: (-s[1], s[0]))
+print(f"Sort nhieu tieu chi: {students}")
+# [('Binh', 92), ('Duc', 92), ('An', 85), ('Chi', 85)]
+
+
+# --- Cach 2: cmp_to_key (khi logic phuc tap) ---
+from functools import cmp_to_key
+
+def compare(a, b):
+    if a[1] != b[1]:
+        return b[1] - a[1]  # Diem giam dan
+    return (a[0] > b[0]) - (a[0] < b[0])  # Ten tang dan
+
+students2 = [("An", 85), ("Binh", 92), ("Chi", 85), ("Duc", 92)]
+students2.sort(key=cmp_to_key(compare))
+print(f"Sort voi cmp_to_key: {students2}")
+# [('Binh', 92), ('Duc', 92), ('An', 85), ('Chi', 85)]
+
+
+# --- Cach 3: class voi __lt__ (OOP style) ---
+class Student:
+    def __init__(self, name, score):
+        self.name = name
+        self.score = score
+
+    def __lt__(self, other):
+        if self.score != other.score:
+            return self.score > other.score  # Diem giam dan
+        return self.name < other.name        # Ten tang dan
+
+    def __repr__(self):
+        return f"({self.name}, {self.score})"
+
+students3 = [Student("An", 85), Student("Binh", 92),
+             Student("Chi", 85), Student("Duc", 92)]
+students3.sort()
+print(f"Sort voi __lt__: {students3}")
+# [(Binh, 92), (Duc, 92), (An, 85), (Chi, 85)]
+```
+
+> **Luu y chon cach nao?**
+>
+> - **Cach 1 (key function):** Uu tien dung vi nhanh nhat -- key chi tinh 1 lan cho moi phan tu
+> - **Cach 2 (cmp_to_key):** Dung khi logic so sanh phuc tap, khong the bieu dien bang key don gian
+> - **Cach 3 (\**lt\**):** Dung khi ban co class rieng va muon sort tu nhien
+
+### Bai toan kinh dien: Largest Number (LeetCode 179)
+
+**De bai:** Cho mang so nguyen, sap xep chung de tao thanh so lon nhat co the.
+
+Vi du: `[3, 30, 34, 5, 9]` => `"9534330"`
+
+**Y tuong:** So sanh 2 so `a` va `b` bang cach ghep: neu `str(a) + str(b) > str(b) + str(a)` thi `a` dung truoc.
+
+```python
+from functools import cmp_to_key
+
+def largestNumber(nums):
+    # Chuyen sang string
+    strs = [str(x) for x in nums]
+
+    # Custom comparator: so sanh 2 cach ghep
+    strs.sort(key=cmp_to_key(lambda a, b: -1 if a + b > b + a else 1))
+
+    # Xu ly truong hop tat ca la 0
+    result = ''.join(strs)
+    return '0' if result[0] == '0' else result
+
+print(largestNumber([3, 30, 34, 5, 9]))  # "9534330"
+print(largestNumber([10, 2]))             # "210"
+# Chay thu day du voi nhieu test case
+print(largestNumber([3, 30, 34, 5, 9]))   # "9534330"
+print(largestNumber([10, 2]))              # "210"
+print(largestNumber([0, 0, 0]))            # "0" (edge case!)
+print(largestNumber([1]))                  # "1"
+print(largestNumber([999999998, 999999997, 999999999]))  # "999999999999999998999999997"
+```
+
+### Mo phong Largest Number
+
+```
+nums = [3, 30, 34, 5, 9]
+
+So sanh 3 va 30: "330" vs "303" => "330" > "303" => 3 truoc 30
+So sanh 3 va 34: "334" vs "343" => "334" < "343" => 34 truoc 3
+So sanh 5 va 9: "59" vs "95"   => "59" < "95"   => 9 truoc 5
+
+Sau khi sort: ["9", "5", "34", "3", "30"]
+Ghep lai: "9534330"
+```
+
+### Bai toan: Custom Sort String (LeetCode 791)
+
+**De bai:** Cho chuoi `order` dinh nghia thu tu uu tien. Sort chuoi `s` theo thu tu do.
+
+```python
+def customSortString(order, s):
+    # Tao bang priority
+    priority = {c: i for i, c in enumerate(order)}
+    # Ky tu khong co trong order co priority = len(order) (cuoi cung)
+    return ''.join(sorted(s, key=lambda c: priority.get(c, len(order))))
+
+print(customSortString("cba", "abcd"))  # "cbad"
+# Test them
+print(customSortString("cba", "abcd"))     # "cbad"
+print(customSortString("bcafg", "abcd"))   # "bcad"
+print(customSortString("kqep", "pekeq"))   # "kqeep"
+```
+
+### Flowchart: Lua chon Comparator phu hop
+
+CoCoKhongKhongCoKhongCan sort theo tieu chi riengTieu chi don gian?Co the dung key function?Dung key=lambdaDung cmp_to_keyNhieu tieu chi?Dung tuple lam key: key=lambda x: (tieu_chi_1, tieu_chi_2)Dung class voi __lt__
+
+### Phan tich do phuc tap
+
+Custom comparator khong thay doi do phuc tap cua thuat toan sort:
+
+| Thao tac                     | Do phuc tap                                            |
+| :--------------------------- | :----------------------------------------------------- |
+| Sort voi comparator          | O(n log n)                                             |
+| Moi phep so sanh             | Tuy thuoc comparator (thuong O(1) hoac O(len_string))  |
+| Tong (voi string comparison) | O(n * k * log n) voi k la do dai trung binh cua string |
+
+### Luu y quan trong
+
+1. **Consistency cua comparator:** Khi viet ham so sanh, phai dam bao tinh nhat quan:
+
+   - Neu `a < b` thi khong duoc `b < a` (asymmetry)
+   - Neu `a < b` va `b < c` thi `a < c` (transitivity)
+   - `cmp_to_key` can tra ve dung dau (am/duong/0), neu sai se cho ket qua khong dung
+
+   ```python
+   # SAI: comparator khong nhat quan
+   def bad_compare(a, b):
+       return 1  # Luon noi a > b => vo nghia!
+   
+   # DUNG: comparator ro rang
+   def good_compare(a, b):
+       if a < b: return -1
+       if a > b: return 1
+       return 0
+   ```
+
+2. **Stability:** Python `sort()` va `sorted()` luon la **stable sort** (TimSort). Cac phan tu bang nhau se giu nguyen thu tu tuong doi ban dau.
+
+3. **Key function vs cmp_to_key:**
+
+   - `key` function nhanh hon vi chi tinh 1 lan cho moi phan tu
+   - `cmp_to_key` goi ham so sanh O(n log n) lan
+   - Uu tien dung `key` khi co the
+
+------
+
+## Tong ket
+
+### Bang tong hop do phuc tap
+
+| Thuat toan     | Best       | Average    | Worst      | Space    | Stable |
+| :------------- | :--------- | :--------- | :--------- | :------- | :----- |
+| Bubble Sort    | O(n)       | O(n^2)     | O(n^2)     | O(1)     | Co     |
+| Selection Sort | O(n^2)     | O(n^2)     | O(n^2)     | O(1)     | Khong  |
+| Insertion Sort | O(n)       | O(n^2)     | O(n^2)     | O(1)     | Co     |
+| Merge Sort     | O(n log n) | O(n log n) | O(n log n) | O(n)     | Co     |
+| Quick Sort     | O(n log n) | O(n log n) | O(n^2)     | O(log n) | Khong  |
+| Heap Sort      | O(n log n) | O(n log n) | O(n log n) | O(1)     | Khong  |
+| Binary Search  | O(1)       | O(log n)   | O(log n)   | O(1)     | -      |
+
+### Chon thuat toan nao?
+
+CoKhongCoKhongCoKhongCan sortn nho (< 50)?Insertion SortCan stable?Merge Sort hoac Tim SortCan dam bao worst case?Merge Sort hoac Heap SortQuick Sort (nhanh nhat trung binh)
+
+### Loi khuyen cho hoc tap va thi cu
+
+1. **Hoc co ban truoc:** Nam vung Insertion Sort va Binary Search. Day la nen tang cua moi thu.
+2. **Hieu y tuong, khong hoc thuoc code:** Neu ban hieu tai sao thuat toan hoat dong, ban co the code lai bat ky luc nao.
+3. **Luyen mo phong bang tay:** Truoc khi code, thu chay thuat toan bang tay tren giay voi mang nho (5-7 phan tu). Dieu nay giup ban phat hien loi suy nghi.
+4. **Binary Search on Answer:** Day la ky thuat thi cu xuat hien cuc ky nhieu. Luyen nhieu bai de nhan ra pattern.
+5. **Trong competitive programming:** Dung `sort()` co san (O(n log n)) va tap trung vao logic bai toan. Chi tu cai dat sort khi bai yeu cau.
+6. **Trong phong van:** Biet giai thich tai sao chon thuat toan nay thay vi thuat toan kia. Hieu trade-off giua time, space, va stability.

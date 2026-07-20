@@ -1,0 +1,365 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/04_N2/Course_39/📂index_Course_39|Course_39]]
+
+# Test tổng hợp chương 6
+
+## Part 1
+**Q1.** 毎日　駅に　行きます。
+- **A.** いきます
+- **B.** いいきます
+- **C.** おきます
+- **D.** おおきます
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1行きます: đi毎日　駅に　行きます。H&agrave;ng ng&agrave;y, t&ocirc;i đi đến nh&agrave; ga.</p>
+</details>
+
+---
+**Q2.** お金が　ありません。
+- **A.** おかね
+- **B.** おがね
+- **C.** おきん
+- **D.** おぎん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1お金: tiềnお金が　ありません。T&ocirc;i kh&ocirc;ng c&oacute; tiền.</p>
+</details>
+
+---
+**Q3.** 来週　旅行します。
+- **A.** まいしゅう
+- **B.** こんしゅう
+- **C.** せんしゅう
+- **D.** らいしゅう
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4来週: Tuần sau来週　旅行します。Tuần sau, t&ocirc;i sẽ đi du lịch.</p>
+</details>
+
+---
+**Q4.** 今朝　銀行に　行きました。
+- **A.** ぎんいき
+- **B.** きんいき
+- **C.** ぎんこう
+- **D.** きんこう
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3銀行: ng&acirc;n h&agrave;ng今朝　銀行に　行きました。S&aacute;ng nay t&ocirc;i đ&atilde; đi đến ng&acirc;n h&agrave;ng.</p>
+</details>
+
+---
+**Q5.** 駅前で　お祭りが　あります。
+- **A.** えぎぜん
+- **B.** えぎまえ
+- **C.** えきぜん
+- **D.** えきまえ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4駅前: trước ga駅前で　お祭りが　あります。C&oacute; lễ hội ở trước ga.</p>
+</details>
+
+---
+**Q6.** 午前　9時から　午後　5時まで　働きます。
+- **A.** ごうぜん
+- **B.** ごぜん
+- **C.** ごうまえ
+- **D.** こうまえ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2午前: buổi s&aacute;ng午前　9時から　午後　5時まで　働きます。T&ocirc;i l&agrave;m việc từ 9 giờ s&aacute;ng đến 5 giờ chiều.</p>
+</details>
+
+---
+**Q7.** 飲み物を　飲みます。
+- **A.** のみぶつ
+- **B.** のみもの
+- **C.** めみぶつ
+- **D.** めみもの
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2飲み物: đồ uống飲み物を　飲みます。T&ocirc;i uống đồ uống.</p>
+</details>
+
+---
+**Q8.** 現金は　ありますか。
+- **A.** けんきん
+- **B.** けんかね
+- **C.** げんきん
+- **D.** げんかね
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3現金: tiền mặt現金は　ありますか。Bạn c&oacute; tiền mặt kh&ocirc;ng?</p>
+</details>
+
+---
+**Q9.** 毎朝　何を　食べますか。
+- **A.** たべます
+- **B.** だべます
+- **C.** しょくべます
+- **D.** しょぐべます
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1食べます: ăn毎朝　何を　食べますか。Bạn ăn g&igrave; h&agrave;ng s&aacute;ng?</p>
+</details>
+
+---
+**Q10.** 米を　食べます。
+- **A.** みず
+- **B.** さかな
+- **C.** にく
+- **D.** こめ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4米: gạo米を　食べます。T&ocirc;i ăn gạo.</p>
+</details>
+
+---
+**Q1.** _______を　食べます。
+- **A.** 魚
+- **B.** 水
+- **C.** 紅茶
+- **D.** もの
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1魚: c&aacute;魚を　食べます。T&ocirc;i ăn c&aacute;.</p>
+</details>
+
+---
+**Q2.** 今日の　_______は　ラーメンです。
+- **A.** お正月
+- **B.** 試合
+- **C.** 昼ごはん
+- **D.** 天気
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3昼ごはん: cơm trưa, bữa trưa今日の　昼ごはんは　ラーメンです。Bữa trưa h&ocirc;m nay l&agrave; mỳ ramen.</p>
+</details>
+
+---
+**Q3.** _______を　読みます。
+- **A.** 楽しみ
+- **B.** お土産
+- **C.** 雑誌
+- **D.** 音楽
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3雑誌: tạp ch&iacute;雑誌を　読みます。T&ocirc;i đọc tạp ch&iacute;.</p>
+</details>
+
+---
+**Q4.** 先週　家族と　_______へ　行きました。
+- **A.** デザイン
+- **B.** スケジュール
+- **C.** サッカー
+- **D.** デパート
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4デパート: trung t&acirc;m thương mại先週　家族と　デパートへ　行きました。Tuần trước t&ocirc;i đ&atilde; đi trung t&acirc;m thương mại với gia đ&igrave;nh.</p>
+</details>
+
+---
+**Q5.** 毎朝　_______を　食べます。
+- **A.** 昼ごはん
+- **B.** おにぎり
+- **C.** 晩ご飯
+- **D.** 夕飯
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2おにぎり: cơm nắm毎朝　おにぎりを　食べます。T&ocirc;i ăn cơm nắm mỗi s&aacute;ng.</p>
+</details>
+
+---
+**Q6.** 外で　友達と　_______。
+- **A.** 遊びます
+- **B.** 疲れます
+- **C.** 分かります
+- **D.** 来ます
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1遊びます: chơi外で　友達と　遊びます。T&ocirc;i chơi với bạn ở b&ecirc;n ngo&agrave;i.</p>
+</details>
+
+---
+**Q7.** _______　6時に　起きます。
+- **A.** 毎晩
+- **B.** 毎朝
+- **C.** 毎月
+- **D.** 毎週
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2毎朝: h&agrave;ng s&aacute;ng, mỗi s&aacute;ng毎朝　6時に　起きます。T&ocirc;i thức dậy v&agrave;o l&uacute;c 6 giờ h&agrave;ng s&aacute;ng.</p>
+</details>
+
+---
+**Q8.** 12時から　1時まで　_______。
+- **A.** 帰ります
+- **B.** 起きます
+- **C.** 旅行します
+- **D.** 休みます
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4休みます: nghỉ12時から　1時まで　休みます。T&ocirc;i nghỉ từ 12 giờ đến 1 giờ.</p>
+</details>
+
+---
+**Q9.** 月曜日から　金曜日まで　_______。
+- **A.** 働きます
+- **B.** 寝ます
+- **C.** 見ます
+- **D.** 疲れます
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1働きます: l&agrave;m việc月曜日から　金曜日まで　働きます。T&ocirc;i l&agrave;m việc từ thứ 2 đến thứ 6.</p>
+</details>
+
+---
+**Q10.** 駅から　大学まで　_______。
+- **A.** 歩きます
+- **B.** 旅行します
+- **C.** 来ます
+- **D.** 出かけます
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1歩きます: đi bộ駅から　大学まで　歩きます。T&ocirc;i đi bộ từ nh&agrave; ga đến trường đại học.</p>
+</details>
+
+---
+**Q1.** A:　毎朝　何を　食べますか。B:　________________
+- **A.** パンを　食べます。
+- **B.** パンが　食べます。
+- **C.** パンは　食べます。
+- **D.** パンに　食べます。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A:　毎朝　何を　食べますか。B:　パンを　食べます。A: Mỗi s&aacute;ng bạn ăn g&igrave; thế?B: T&ocirc;i ăn b&aacute;nh m&igrave;.</p>
+</details>
+
+---
+**Q2.** A:　毎朝　何時に　起きますか。B:　________________
+- **A.** 7時に　起きます。
+- **B.** 7時　起きます。
+- **C.** 7時に　起きました。
+- **D.** 7時　起きました。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A:　毎朝　何時に　起きますか。B:　7時に　起きます。A: Mỗi s&aacute;ng bạn thức dậy l&uacute;c mấy giờ?B: T&ocirc;i thức dậy l&uacute;c 7 giờ.</p>
+</details>
+
+---
+**Q3.** A:　毎日　何時間　勉強しますか。B:　________________
+- **A.** 2時間が　勉強します。
+- **B.** 2時間を　勉強します。
+- **C.** 2時間　勉強します。
+- **D.** 2時間に　勉強します。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A:　毎日　何時間　勉強しますか。B:　2時間　勉強します。A: Mỗi ng&agrave;y, bạn học bao nhi&ecirc;u tiếng?B: T&ocirc;i học 2 tiếng.</p>
+</details>
+
+---
+**Q4.** A:　昨日　働きましたか。B:　________________
+- **A.** はい、9時から　4時に　働きました。
+- **B.** はい、4時まで　9時から　働きました。
+- **C.** はい、9時に　4時まで　働きました。
+- **D.** はい、9時から　4時まで　働きました。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A:　昨日　働きましたか。B:　はい、9時から　4時まで　働きました。A: H&ocirc;m qua bạn c&oacute; l&agrave;m việc kh&ocirc;ng?B: C&oacute;, t&ocirc;i đ&atilde; l&agrave;m việc từ 9 giờ đến 4 giờ.</p>
+</details>
+
+---
+**Q5.** A:　今年は　実家に　帰りましたか。B:　________________
+- **A.** いいえ、帰りません。
+- **B.** いいえ、帰りませんでした。
+- **C.** いいえ、帰るじゃないです。
+- **D.** いいえ、帰るくないです。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A:　今年は　実家に　帰りましたか。B:　いいえ、帰りませんでした。A: Năm nay bạn c&oacute; về qu&ecirc; kh&ocirc;ng?B: Kh&ocirc;ng, tớ đ&atilde; kh&ocirc;ng về.</p>
+</details>
+
+---
+**Q6.** A:　お正月は　何を　しますか。B:　________________
+- **A.** 実家に　帰ります。
+- **B.** 実家を　行きます。
+- **C.** 実家に　来ます。
+- **D.** 実家に　出かけます。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A:　お正月は　何を　しますか。B:　実家に　帰ります。A: Tết bạn sẽ l&agrave;m g&igrave;?B: T&ocirc;i về qu&ecirc;.</p>
+</details>
+
+---
+**Q7.** A:　________________B:　家で　ゆっくり　休みました。
+- **A.** 明日は　何を　しますか。
+- **B.** 明日は　何を　しましたか。
+- **C.** 昨日は　何を　しますか。
+- **D.** 昨日は　何を　しましたか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A:　昨日は　何を　しましたか。B:　家で　ゆっくり　休みました。A: H&ocirc;m qua, bạn đ&atilde; l&agrave;m g&igrave; vậy?B: T&ocirc;i đ&atilde; thong thả nghỉ ngơi ở nh&agrave;.</p>
+</details>
+
+---
+**Q8.** A:　そのスマホ、どこで　買いましたか。B:　________________
+- **A.** 駅前の　お店が　買いました。
+- **B.** 駅前の　お店に　買いました。
+- **C.** 駅前の　お店で　買いました。
+- **D.** 駅前の　お店を　買いました。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A:　そのスマホ、どこで　買いましたか。B:　駅前の　お店で　買いました。A: Chiếc điện thoại đ&oacute; bạn đ&atilde; mua ở đ&acirc;u vậy?B: T&ocirc;i đ&atilde; mua ở cửa tiệm trước ga.</p>
+</details>
+
+---
+**Q9.** A:　いつも　だれと　晩ご飯を　食べますか。B:　________________
+- **A.** 家族を　食べます。
+- **B.** 家族を　食べました。
+- **C.** 家族と　食べます。
+- **D.** 家族と　食べました。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A:　いつも　だれと　晩ご飯を　食べますか。B:　家族と　食べます。A: Bạn thường ăn tối với ai thế?B: T&ocirc;i ăn c&ugrave;ng gia đ&igrave;nh.</p>
+</details>
+
+---
+**Q10.** A:　デパートで　何を　買いましたか。B:　________________
+- **A.** 肉や　野菜を　買いました。
+- **B.** 肉を　野菜を　買いました。
+- **C.** 肉の　野菜を　買いました。
+- **D.** 肉を　野菜と　買いました。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A:　デパートで　何を　買いましたか。B:　肉や　野菜を　買いました。A: Bạn đ&atilde; mua g&igrave; ở trung t&acirc;m thương mại vậy?B: T&ocirc;i đ&atilde; mua thịt v&agrave; rau.</p>
+</details>
+
+---

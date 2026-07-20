@@ -1,0 +1,176 @@
+{
+  "Meta": {
+    "Id": "deck_7__lower_bound__upper_bound",
+    "Topic": "7. Lower Bound  Upper Bound",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "7__lower_bound__upper_bound"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 8
+  },
+  "Cards": [
+    {
+      "Id": "card_00659",
+      "Front": "Truong hop",
+      "Back": "Do phuc tap",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. lower bound  upper bound"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00660",
+      "Front": "**Time**",
+      "Back": "O(log n)",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. lower bound  upper bound"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00661",
+      "Front": "**Space**",
+      "Back": "O(1)",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. lower bound  upper bound"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00662",
+      "Front": "Tieu chi",
+      "Back": "Lower Bound | Upper Bound",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. lower bound  upper bound"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00663",
+      "Front": "Tim gi?",
+      "Back": "Vi tri dau tien >= target | Vi tri dau tien > target",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. lower bound  upper bound"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00664",
+      "Front": "Dieu kien trong BS",
+      "Back": "`arr[mid] >= target` | `arr[mid] > target`",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. lower bound  upper bound"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00665",
+      "Front": "Python",
+      "Back": "`bisect.bisect_left` | `bisect.bisect_right`",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. lower bound  upper bound"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00666",
+      "Front": "Khi target khong co",
+      "Back": "Giong nhau | Giong nhau",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. lower bound  upper bound"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+---
+tags:
+  - certification/gh-300
+  - copilot
+  - moc
+status: in-progress
+created: 2026-05-26
+updated: 2026-06-01
+---
+
+# 🐱 GH-300: GitHub Copilot MOC
+
+Welcome to the central Map of Content (MOC) for your **GH-300: GitHub Copilot** certification prep. This structure is designed to integrate seamlessly into your **Obsidian Graph View**, interlinking topics, settings, and exam objectives.
+
+## 🗺️ Study Paths & Connections
+
+```mermaid
+graph TD
+    MOC["🐱 GH-300 Copilot MOC"] --> MM["🗺️ GH-300 Mindmap"]
+    MOC --> FC["🃏 GH-300 Flashcards"]
+    MOC --> D1["Domain 1: Responsible AI"]
+    MOC --> D2["Domain 2: Plans & Features"]
+    MOC --> D3["Domain 3: Data & Privacy"]
+    MOC --> D4["Domain 4: Prompt Engineering"]
+    MOC --> D5["Domain 5: Developer Workflows"]
+
+    D2 --> CS["Copilot Comparison Cheat Sheet"]
+    D3 --> CS
+    D3 --> D1
+    D4 --> D5
+
+    D1 --> PQ1["Practice Q: Domain 1"]
+    D2 --> PQ2["Practice Q: Domain 2"]
+    D3 --> PQ3["Practice Q: Domain 3"]
+    D4 --> PQ4["Practice Q: Domain 4"]
+    D5 --> PQ5["Practice Q: Domain 5"]
+```
+
+---
+
+## 📚 Study Domains
+
+| Domain | Topic | Weight | Notes | Practice |
+|:-------|:------|:------:|:------|:---------|
+| **[[certifications/microsoft/GH-300-Copilot/Domain 1 - Responsible AI\|D1]]** | Responsible AI | ~15% | AI Ethics, Filtering, Vulnerability Scanner, IP | [[certifications/microsoft/GH-300-Copilot/Practice Questions - Domain 1\|Q&A D1]] |
+| **[[certifications/microsoft/GH-300-Copilot/Domain 2 - Plans and Features\|D2]]** | Plans & Features | ~25% | Tiers, IDE Setup, Proxy, CLI | [[certifications/microsoft/GH-300-Copilot/Practice Questions - Domain 2\|Q&A D2]] |
+| **[[certifications/microsoft/GH-300-Copilot/Domain 3 - Data and Privacy\|D3]]** | Data & Privacy | ~20% | Context, Telemetry, Exclusions | [[certifications/microsoft/GH-300-Copilot/Practice Questions - Domain 3\|Q&A D3]] |
+| **[[certifications/microsoft/GH-300-Copilot/Domain 4 - Prompt Engineering\|D4]]** | Prompt Engineering | ~20% | 3 Cs, Shot Types, Anchors | [[certifications/microsoft/GH-300-Copilot/Practice Questions - Domain 4\|Q&A D4]] |
+| **[[certifications/microsoft/GH-300-Copilot/Domain 5 - Developer Workflows\|D5]]** | Developer Workflows | ~20% | Tests, Refactor, PR Summaries, Docs | [[certifications/microsoft/GH-300-Copilot/Practice Questions - Domain 5\|Q&A D5]] |
+
+---
+
+## ⚡ Study Assets
+
+| Asset | Description |
+|:------|:------------|
+| **[[certifications/microsoft/GH-300/GH-300 Mindmap\|🗺️ GH-300 Mindmap]]** | Full Mermaid mindmap — all 5 domains with key facts in one view |
+| **[[certifications/microsoft/GH-300-Copilot/GH-300 Markdown Mindmap\|🧠 GH-300 Markdown Mindmap]]** | Hierarchical markdown-only mind map covering all knowledge by domain branch |
+| **[[certifications/microsoft/GH-300-Copilot/GH-300 Flashcards\|🃏 GH-300 Flashcards]]** | 45+ spaced-repetition cards (Obsidian SR plugin compatible) |
+| **[[certifications/microsoft/GH-300-Copilot/Copilot Comparison Cheat Sheet\|📊 Copilot Comparison Cheat Sheet]]** | Individual vs Business vs Enterprise feature matrix |
+| **🖥️ Interactive PS Quiz** | Run `.\Start-StudySession.ps1` · Filter by domain · 30 questions across all 5 domains |
+
+### Quiz Usage
+
+```powershell
+# Full 30-question quiz (GH-300 Copilot)
+.\Start-StudySession.ps1
+
+# Focus on a weak domain (e.g., Domain 3)
+.\Start-StudySession.ps1 -Domain 3
+
+# Randomise question order
+.\Start-StudySession.ps1 -Shuffle
+```
+
+---
+
+## 🎯 Progress Tracker
+
+- [ ] Register for the GH-300 Exam (via Microsoft Learn)
+- [ ] Open **[[certifications/microsoft/GH-300/GH-300 Mindmap|🗺️ GH-300 Mindmap]]** — review full domain structure
+- [ ] Read **[[certifications/microsoft/GH-300-Copilot/Domain 1 - Responsible AI|Domain 1 Notes]]** → Answer **[[certifications/microsoft/GH-300-Copilot/Practice Questions - Domain 1|D1 Practice Q]]**
+- [ ] Read **[[certifications/microsoft/GH-300-Copilot/Domain 2 - Plans and Features|Domain 2 Notes]]** → Answer **[[certifications/microsoft/GH-300-Copilot/Practice Questions - Domain 2|D2 Practice Q]]**
+- [ ] Read **[[certifications/microsoft/GH-300-Copilot/Domain 2 - Plans and Features|Domain 2 Notes]]** → Run `.\Start-StudySession.ps1 -Domain 2`
+- [ ] Read **[[certifications/microsoft/GH-300-Copilot/Domain 3 - Data and Privacy|Domain 3 Notes]]** → Answer **[[certifications/microsoft/GH-300-Copilot/Practice Questions - Domain 3|D3 Practice Q]]**
+- [ ] Read **[[certifications/microsoft/GH-300-Copilot/Domain 4 - Prompt Engineering|Domain 4 Notes]]** → Answer **[[certifications/microsoft/GH-300-Copilot/Practice Questions - Domain 4|D4 Practice Q]]**
+- [ ] Read **[[certifications/microsoft/GH-300-Copilot/Domain 5 - Developer Workflows|Domain 5 Notes]]** → Answer **[[certifications/microsoft/GH-300-Copilot/Practice Questions - Domain 5|D5 Practice Q]]**
+- [ ] Memorise **[[certifications/microsoft/GH-300-Copilot/Copilot Comparison Cheat Sheet|Copilot Comparison Cheat Sheet]]**
+- [ ] Review **[[certifications/microsoft/GH-300-Copilot/GH-300 Flashcards|🃏 Flashcards]]** — focus on ⭐ High-Frequency Exam Traps section
+- [ ] Run full quiz: `.\Start-StudySession.ps1 -Shuffle` — target ≥ 80%
+- [ ] Complete the practice assessments on MS Learn
+- [ ] PASS THE EXAM! 🎓
+
+---
+
+## 📌 Exam-Day Quick Reference
+
+| Topic | Key Fact |
+|:------|:---------|
+| Public Code Filter threshold | **~150 characters** |
+| Snippet retention — Business/Enterprise | **NEVER retained** |
+| Snippet retention — Individual | **Retained by default** (must opt out) |
+| Engagement data | **Always retained** (no opt-out) |
+| PR Summaries | **Enterprise only** |
+| Knowledge Bases | **Enterprise only** |
+| Chat on GitHub.com | **Enterprise only** |
+| Proxy cert fix | `NODE_EXTRA_CA_CERTS` → PEM file |
+| Install Copilot CLI | `gh extension install github/gh-copilot` |
+| Suggest terminal cmd | `?? <prompt>` |
+| Explain terminal cmd | `what? <cmd>` |
+| Generate tests | `/tests` chat command |
+| Generate docs | `/doc` chat command |
+| Explain code | `/explain` chat command |
+| Exclusion file | `.github/copilot-exclusions.sha` |
+| Policy cascade | **Enterprise → Org → Repo → User** |

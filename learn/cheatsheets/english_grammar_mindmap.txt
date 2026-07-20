@@ -1,0 +1,26 @@
+🔙 **Back to Parent**: [[languages/english/🇬🇧index_english|english]]
+
+# 🗺️ English Grammar Mindmap
+
+> Visual Map of English Grammar categories based on the grammar guide.
+
+```mermaid
+mindmap
+  root((English Grammar))
+    Parts of Speech
+      Nouns (n)
+      Verbs (v)
+      Adjectives (adj)
+      Adverbs (adv)
+      Prepositions (pre)
+    Tenses (12 Thức)
+      Present Tenses
+      Past Tenses
+      Future Tenses
+    Structure (Cấu trúc)
+      Conditionals (1-2-3)
+      Passive Voice
+      Reported Speech
+      Relative Clauses
+      Comparison (So sánh)
+```

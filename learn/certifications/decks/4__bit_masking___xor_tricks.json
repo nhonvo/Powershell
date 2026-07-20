@@ -1,0 +1,216 @@
+{
+  "Meta": {
+    "Id": "deck_4__bit_masking___xor_tricks",
+    "Topic": "4. Bit Masking & XOR Tricks",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "4__bit_masking___xor_tricks"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 10
+  },
+  "Cards": [
+    {
+      "Id": "card_00500",
+      "Front": "Tính chất",
+      "Back": "Biểu thức | Ý nghĩa",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. bit masking & xor tricks"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00501",
+      "Front": "Self-inverse",
+      "Back": "a ^ a = 0 | XOR với chính mình = 0",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. bit masking & xor tricks"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00502",
+      "Front": "Identity",
+      "Back": "a ^ 0 = a | XOR với 0 = giữ nguyên",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. bit masking & xor tricks"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00503",
+      "Front": "Commutative",
+      "Back": "a ^ b = b ^ a | Giao hoán",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. bit masking & xor tricks"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00504",
+      "Front": "Associative",
+      "Back": "(a ^ b) ^ c = a ^ (b ^ c) | Kết hợp",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. bit masking & xor tricks"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00505",
+      "Front": "Chủ đề",
+      "Back": "Key Takeaway",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. bit masking & xor tricks"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00506",
+      "Front": "**Complexity**",
+      "Back": "Big O đo tốc độ tăng trưởng, không phải thời gian chạy thực tế. Luôn phân tích worst case.",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. bit masking & xor tricks"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00507",
+      "Front": "**Math**",
+      "Back": "GCD (Euclid) = O(log n). Sàng nguyên tố = O(n log log n). Fast pow = O(log n). Modular arithmetic tránh overflow.",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. bit masking & xor tricks"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00508",
+      "Front": "**Bit Basics**",
+      "Back": "`n & 1` kiểm tra chẵn/lẻ. `n & (n-1)` tắt bit thấp nhất. `n & (-n)` lấy bit thấp nhất.",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. bit masking & xor tricks"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00509",
+      "Front": "**Bitmask & XOR**",
+      "Back": "Bitmask biểu diễn tập con (2ⁿ). XOR triệt tiêu cặp giống nhau. Bitmask DP giải TSP trong O(2ⁿ·n²).",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. bit masking & xor tricks"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

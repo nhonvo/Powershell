@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mb-335
+  - mb335
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MB-335: Microsoft Dynamics 365 Supply Chain Management Functional Consultant Expert MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MB-335/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MB-335/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MB-335/MB-335 Mindmap\|🗺️ MB-335 Mindmap]]
+- [[certifications/microsoft/MB-335/MB-335 Flashcards\|🃏 MB-335 Flashcards]]
+- [[certifications/microsoft/MB-335/MB-335_Scraped_Question_Bank\|🗃️ MB-335 Scraped Question Bank]]

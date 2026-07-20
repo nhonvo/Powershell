@@ -1,0 +1,142 @@
+# 🗃️ PSPO-II Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+The most important thing a Product Owner can do is: (choose the best answer)
+
+### Options:
+- [ ] **A)** Determine the release schedule and contents.
+- [ ] **B)** Ensure that all stakeholder needs are met.
+- [ ] **C)** Function as the single source of truth for all requirements.
+- [x] **D)** Maximize the value delivered by the product. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+According to the Professional Scrum Product OwnerTM II certification guide1, the Product Owner is accountable for maximizing the value of the product resulting from the work of the Scrum Team. This means that the Product Owner is responsible for defining, ordering, and validating what the Scrum Team works on, and ensuring that the product delivers value to the customers, users, and the organization. The other options are not the most important thing a Product Owner can do, because they are either too narrow (A), too unrealistic (B), or too prescriptive ©.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+You are a Product Owner for a product that publishes customer usage rates by feature.
+
+An influential stakeholder does not believe the data showing the usage rates, and insists that a particular feature is essential, despite data showing low usage rates. The stakeholder believes that measuring feature usage is a waste of time.
+
+As Product Owner you have confirmed that the data is accurate and believe that the data is valuable to help you and your team. 
+What should you do?
+
+(choose the best answer)
+
+### Options:
+- [ ] **A)** Continue measuring feature usage and use it to inform your decisions, but do not publish it.
+- [x] **B)** Continue to measure and publish the data, to provide openness and transparency, and use it to inform your decisions. [Correct]
+- [ ] **C)** Stop measuring feature usage to appease the stakeholder.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+As a Product Owner, you are accountable for maximizing the value of the product and the work of the Scrum Team. To do this, you need to have a clear understanding of the product vision, the product value, and the product backlog management. Measuring feature usage is one way to gather empirical evidence of the value delivered by the product and the feedback from the customers and users. This data can help you validate or invalidate your assumptions, prioritize the product backlog items, and inspect and adapt the product strategy. Therefore, measuring feature usage is not a waste of time, but a valuable practice for agile product management.
+
+Moreover, as a Product Owner, you are also responsible for engaging with the stakeholders and customers, and providing them with transparency and openness. This means that you should share the data and the insights you gain from it with them, and invite them to collaborate with you and the Scrum Team. This can help you build trust and alignment, and foster a culture of experimentation and learning. Therefore, you should not hide the data or stop measuring it, but rather use it as a basis for constructive dialogue and decision making.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+A separate Product Backlog is needed for every:
+
+(choose the best answer)
+
+### Options:
+- [x] **A)** Product. [Correct]
+- [ ] **B)** Scrum Team.
+- [ ] **C)** Portfolio.
+- [ ] **D)** Program.
+- [ ] **E)** All of the above.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+According to the Professional Scrum Product OwnerTM II certification guide1, a Product Backlog is an ordered list of what is needed to improve the product. It is the single source of work undertaken by the Scrum Team. The Product Backlog is owned by the Product Owner, who is accountable for maximizing the value of the product resulting from the work of the Scrum Team. Therefore, a separate Product Backlog is needed for every product, not for every Scrum Team, portfolio, program, or all of the above. Multiple Scrum Teams can work on the same product and share the same Product Backlog. A portfolio or a program may consist of multiple products, each with its own Product Backlog.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+What is the role of the Product Owner in crafting the Sprint Goal?
+
+(choose the best answer)
+
+### Options:
+- [ ] **A)** The Product Owner defines the scope for a Sprint and therefore also the Sprint Goal.
+- [ ] **B)** The Product Owner must work with stakeholders to set each Sprint's Goal.
+- [x] **C)** The Product Owner collaborates as a member of the Scrum Team to define a Sprint Goal. [Correct]
+- [ ] **D)** The Product Owner has no role in it. This is the Developers responsibility.
+- [ ] **E)** The Product Owner should come to the Sprint Planning with a clearly defined Sprint Goal.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+The Sprint Goal is a summary statement of the Sprint objective, which ideally has a cohesive theme. The Sprint Goal also gives the Scrum Team guidance and flexibility on how to achieve the objective. The Sprint Goal is crafted by the entire Scrum Team during the Sprint Planning, based on the Product Owner's proposal of the most valuable Product Backlog items and the Development Team's forecast of the work that can be done in the Sprint. The Product Owner collaborates with the team to write the Sprint Goal and defines it on the basis of the value being sought. The Product Owner does not define the scope or the solution for the Sprint, but rather the outcome and the benefit. The Product Owner also does not work with stakeholders to set the Sprint Goal, but rather represents their interests and needs. The Product Owner has a role in crafting the Sprint Goal, but not the sole responsibility for it.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+The leading revenue-producing product in your portfolio has:
+
+. High Current Value
+
+. Low Unrealized Value
+
+The product has been losing customers for several years and revenues are down. Using those two data points and the options below, what is the first action you should take?
+
+(choose the best answer)
+
+### Options:
+- [ ] **A)** Increase investment in the product to create greater interest and bring old customers back.
+- [x] **B)** Maintain the product, but begin reducing investment; seek other opportunities for future growth. [Correct]
+- [ ] **C)** Drop the price for the product to attract new customers.
+- [ ] **D)** Increase marketing for the product.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+According to the PSPO II resources, a product with high current value and low unrealized value is in the harvest stage of the product lifecycle. This means that the product has reached its peak and is facing increasing competition and decreasing customer demand. The best strategy for this stage is to maintain the product quality and customer satisfaction, but reduce the investment in new features or enhancements. The product owner should seek other opportunities for future growth, such as developing new products or exploring new markets.
+</details>
+
+---

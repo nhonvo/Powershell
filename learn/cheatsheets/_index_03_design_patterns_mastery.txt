@@ -1,0 +1,15 @@
+# 03_Design_Patterns_Mastery
+
+🔙 **Back to Parent**: [[technical_skills/03_Design_Patterns_Mastery/📂index_03_Design_Patterns_Mastery|02_Computer_Science_Patterns]]
+
+## 📄 Notes & Documents
+- [[technical_skills/03_Design_Patterns_Mastery/01_Advanced_OOP_UML|01_Advanced_OOP_UML]]
+- [[technical_skills/03_Design_Patterns_Mastery/02_SOLID_Principles|02_SOLID_Principles]]
+- [[technical_skills/03_Design_Patterns_Mastery/03_Creational_Patterns|03_Creational_Patterns]]
+- [[technical_skills/03_Design_Patterns_Mastery/04_Structural_Patterns|04_Structural_Patterns]]
+- [[technical_skills/03_Design_Patterns_Mastery/05_Structural_Patterns_Advanced|05_Structural_Patterns_Advanced]]
+- [[technical_skills/03_Design_Patterns_Mastery/06_Behavioral_Patterns|06_Behavioral_Patterns]]
+- [[technical_skills/03_Design_Patterns_Mastery/07_Behavioral_Patterns_Advanced|07_Behavioral_Patterns_Advanced]]
+- [[technical_skills/03_Design_Patterns_Mastery/08_Decision_Framework|08_Decision_Framework]]
+- [[technical_skills/03_Design_Patterns_Mastery/README|README]]
+

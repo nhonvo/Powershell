@@ -1,0 +1,356 @@
+{
+  "Meta": {
+    "Id": "deck_6__serialization___deserialization",
+    "Topic": "6. Serialization & Deserialization",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "6__serialization___deserialization"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 17
+  },
+  "Cards": [
+    {
+      "Id": "card_01122",
+      "Front": "Bước",
+      "Back": "Node | Hành động | String",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01123",
+      "Front": "10",
+      "Back": "None (left of 5) | Ghi null | \"1,2,null,null,3,4,null,null,5,null\"",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01124",
+      "Front": "11",
+      "Back": "None (right of 5) | Ghi null | \"1,2,null,null,3,4,null,null,5,null,null\"",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01125",
+      "Front": "Bước",
+      "Back": "Giá trị đọc | Hành động | Cây đang xây",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01126",
+      "Front": "10",
+      "Back": "\"null\" | Return None | 5.left=None",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01127",
+      "Front": "11",
+      "Back": "\"null\" | Return None | 5.right=None",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01128",
+      "Front": "Tiêu chí",
+      "Back": "Preorder (DFS) | Level-order (BFS)",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01129",
+      "Front": "Dễ hiểu",
+      "Back": "Trung bình | Dễ hơn (trực quan)",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01130",
+      "Front": "Dài string",
+      "Back": "Luôn ghi hết null | Có thể cắt trailing null",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01131",
+      "Front": "Deserialize",
+      "Back": "Đệ quy (đơn giản) | Queue (phức tạp hơn)",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01132",
+      "Front": "Space",
+      "Back": "O(n) | O(n)",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01133",
+      "Front": "Time",
+      "Back": "O(n) | O(n)",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01134",
+      "Front": "Thực tế",
+      "Back": "Phổ biến trong phỏng vấn | LeetCode format",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01135",
+      "Front": "Trường hợp",
+      "Back": "String length | Ví dụ",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01136",
+      "Front": "Best (BFS)",
+      "Back": "~n giá trị | Complete binary tree (ít null)",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01137",
+      "Front": "Worst (BFS)",
+      "Back": "~2n giá trị | Skewed tree (nhiều null)",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01138",
+      "Front": "DFS",
+      "Back": "Luôn 2n+1 token | Mọi cây (n node + n+1 null)",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. serialization & deserialization"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

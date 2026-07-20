@@ -1,0 +1,347 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/🧠index_13_Dynamic_Programming|13_Dynamic_Programming]]
+
+## 3. DP on Subsequences — DP trên dãy con
+
+### Giới thiệu
+
+Subsequence (dãy con) khác subarray (dãy con liên tiếp). Dãy con **không cần liên tiếp** nhưng phải **giữ thứ tự**. Ví dụ: `[1, 3, 5]` là subsequence của `[1, 2, 3, 4, 5]`, nhưng `[3, 1]` thì không.
+
+------
+
+### 3.1. Longest Increasing Subsequence (LIS) — Dãy con tăng dài nhất
+
+#### Đặt bài toán
+
+Cho mảng `nums`. Tìm **độ dài dãy con tăng nghiêm ngặt dài nhất**.
+
+Ví dụ: `nums = [10, 9, 2, 5, 3, 7, 101, 18]` → LIS = `[2, 3, 7, 101]` hoặc `[2, 5, 7, 101]`, độ dài = 4.
+
+#### Analogie đời thực
+
+Bạn có bảng điểm qua các kỳ thi: `[6.0, 5.5, 4.0, 7.0, 6.5, 8.0, 9.5, 8.5]`. Bạn muốn tìm **chuỗi dài nhất các kỳ thi mà điểm liên tục tăng** (không cần liên tiếp). Đó chính là LIS!
+
+#### Recurrence Relation
+
+Gọi `dp[i]` = độ dài LIS **kết thúc tại** index `i`.
+
+$$dp[i] = 1 + \max(dp[j]) \quad \text{với mọi } j < i \text{ mà } nums[j] < nums[i]$$
+
+Nếu không có `j` nào thỏa mãn, `dp[i] = 1` (chỉ có phần tử `nums[i]` một mình).
+
+**Kết quả**: $\max(dp[0], dp[1], ..., dp[n-1])$
+
+CóKhôngVới mỗi iDuyệt tất cả j < inums[j] < nums[i]?dp[i] = max(dp[i], dp[j] + 1)Bỏ qua jKết quả = max(dp[0..n-1])
+
+#### Code
+
+```python
+from functools import lru_cache
+import bisect
+
+# ============================
+# Cách 1: DP O(n^2) — Tabulation
+# ============================
+def lis_dp(nums):
+    """LIS bằng DP — O(n^2) time"""
+    if not nums:
+        return 0
+
+    n = len(nums)
+    dp = [1] * n  # mỗi phần tử tự nó là LIS dài 1
+
+    for i in range(1, n):
+        for j in range(i):
+            if nums[j] < nums[i]:
+                dp[i] = max(dp[i], dp[j] + 1)
+
+    return max(dp)
+
+
+# ============================
+# Cách 2: Memoization
+# ============================
+def lis_memo(nums):
+    """LIS bằng memoization — O(n^2) time"""
+    if not nums:
+        return 0
+    n = len(nums)
+
+    @lru_cache(maxsize=None)
+    def dp(i):
+        """Độ dài LIS kết thúc tại index i"""
+        best = 1
+        for j in range(i):
+            if nums[j] < nums[i]:
+                best = max(best, dp(j) + 1)
+        return best
+
+    return max(dp(i) for i in range(n))
+
+
+# ============================
+# Cách 3: Binary Search — O(n log n)
+# ============================
+def lis_binary_search(nums):
+    """
+    LIS bằng binary search — O(n log n) time, O(n) space
+
+    Ý tưởng: Duy trì mảng 'tails' sao cho tails[i] = phần tử nhỏ nhất
+    có thể kết thúc LIS có độ dài i+1.
+
+    Mảng tails luôn được sắp xếp tăng dần!
+    """
+    if not nums:
+        return 0
+
+    tails = []
+
+    for num in nums:
+        # Tìm vị trí để chèn num vào tails (giữ tails tăng dần)
+        pos = bisect.bisect_left(tails, num)
+
+        if pos == len(tails):
+            # num lớn hơn tất cả → mở rộng LIS
+            tails.append(num)
+        else:
+            # Thay thế phần tử tại pos để tối ưu cho tương lai
+            tails[pos] = num
+
+    return len(tails)
+
+
+# ============================
+# Test
+# ============================
+test_cases = [
+    ([10, 9, 2, 5, 3, 7, 101, 18], 4),
+    ([0, 1, 0, 3, 2, 3], 4),
+    ([7, 7, 7, 7, 7], 1),
+    ([1, 3, 5, 4, 7], 4),
+]
+
+print("=== Longest Increasing Subsequence ===")
+for nums, expected in test_cases:
+    a = lis_dp(nums)
+    b = lis_memo(nums)
+    c = lis_binary_search(nums)
+    assert a == b == c == expected, f"Sai tại nums={nums}, got {a},{b},{c}"
+    print(f"nums={nums} -> LIS = {a}")
+```
+
+#### Simulation O(n^2) cho `nums = [10, 9, 2, 5, 3, 7, 101, 18]`
+
+```
+Index:    0    1    2    3    4    5    6    7
+nums:   [10,   9,   2,   5,   3,   7, 101,  18]
+dp:     [ 1,   1,   1,   2,   2,   3,   4,   4]
+
+i=0: dp[0] = 1 (phần tử 10 đứng một mình)
+
+i=1: nums[1]=9
+     j=0: nums[0]=10 > 9 → bỏ qua
+     → dp[1] = 1
+
+i=2: nums[2]=2
+     j=0: nums[0]=10 > 2 → bỏ qua
+     j=1: nums[1]=9 > 2 → bỏ qua
+     → dp[2] = 1
+
+i=3: nums[3]=5
+     j=0: nums[0]=10 > 5 → bỏ qua
+     j=1: nums[1]=9 > 5 → bỏ qua
+     j=2: nums[2]=2 < 5 → dp[3] = max(1, dp[2]+1) = max(1, 2) = 2
+     → dp[3] = 2 (dãy: [2, 5])
+
+i=4: nums[4]=3
+     j=2: nums[2]=2 < 3 → dp[4] = max(1, dp[2]+1) = 2
+     → dp[4] = 2 (dãy: [2, 3])
+
+i=5: nums[5]=7
+     j=2: nums[2]=2 < 7 → dp[5] = max(1, 2) = 2
+     j=3: nums[3]=5 < 7 → dp[5] = max(2, dp[3]+1) = max(2, 3) = 3
+     j=4: nums[4]=3 < 7 → dp[5] = max(3, dp[4]+1) = max(3, 3) = 3
+     → dp[5] = 3 (dãy: [2, 5, 7] hoặc [2, 3, 7])
+
+i=6: nums[6]=101
+     j=5: nums[5]=7 < 101 → dp[6] = max(1, dp[5]+1) = 4
+     → dp[6] = 4 (dãy: [2, 5, 7, 101])
+
+i=7: nums[7]=18
+     j=5: nums[5]=7 < 18 → dp[7] = max(1, dp[5]+1) = 4
+     → dp[7] = 4 (dãy: [2, 5, 7, 18])
+
+→ Kết quả: max(dp) = 4
+```
+
+#### Simulation Binary Search cho cùng input
+
+```
+tails = []
+
+num=10: tails=[] → pos=0, append → tails=[10]
+num=9:  tails=[10] → pos=0, replace → tails=[9]
+num=2:  tails=[9] → pos=0, replace → tails=[2]
+num=5:  tails=[2] → pos=1, append → tails=[2, 5]
+num=3:  tails=[2, 5] → pos=1, replace → tails=[2, 3]
+num=7:  tails=[2, 3] → pos=2, append → tails=[2, 3, 7]
+num=101: tails=[2, 3, 7] → pos=3, append → tails=[2, 3, 7, 101]
+num=18: tails=[2, 3, 7, 101] → pos=3, replace → tails=[2, 3, 7, 18]
+
+→ len(tails) = 4
+
+LƯU Ý: tails KHÔNG phải là LIS thực sự! Nó chỉ cho biết ĐỘ DÀI đúng.
+```
+
+#### Phân tích
+
+| Cách          | Time       | Space |
+| :------------ | :--------- | :---- |
+| DP O(n^2)     | O(n^2)     | O(n)  |
+| Binary Search | O(n log n) | O(n)  |
+
+------
+
+### 3.2. Subset Sum — Tổng tập con
+
+#### Đặt bài toán
+
+Cho mảng `nums` các số nguyên dương và giá trị `target`. Hỏi có tồn tại **tập con** nào của `nums` có tổng bằng `target` không?
+
+#### Analogie đời thực
+
+Bạn có mấy tờ tiền: 50k, 30k, 20k, 10k. Bạn cần trả đúng 80k. Bạn có thể chọn tổ hợp nào đó không? (50k + 30k = 80k → Có!)
+
+#### Recurrence Relation
+
+$$dp[i][s] = dp[i-1][s] ;\text{OR}; dp[i-1][s - nums[i]]$$
+
+- `dp[i][s]` = "có thể đạt tổng `s` bằng cách dùng các phần tử từ 0 đến i?"
+- Hai lựa chọn: **không dùng** phần tử `i` (giữ nguyên tổng), hoặc **dùng** phần tử `i` (trừ đi `nums[i]`)
+
+**Base case**: `dp[i][0] = True` (tổng 0 luôn đạt được bằng tập rỗng)
+
+Không dùngDùngCó thể đạt tổng s
+bằng phần tử 0..i?Dùng phần tử i?dp[i-1][s]dp[i-1][s - nums[i]]dp[i][s] = C OR D
+
+#### Code
+
+```python
+from functools import lru_cache
+
+# ============================
+# Cách 1: Memoization
+# ============================
+def subset_sum_memo(nums, target):
+    """Subset Sum — memoization"""
+    n = len(nums)
+
+    @lru_cache(maxsize=None)
+    def dp(i, s):
+        """Có thể đạt tổng s bằng các phần tử nums[0..i]?"""
+        if s == 0:
+            return True
+        if i < 0 or s < 0:
+            return False
+        # Không dùng nums[i] HOẶC dùng nums[i]
+        return dp(i - 1, s) or dp(i - 1, s - nums[i])
+
+    return dp(n - 1, target)
+
+
+# ============================
+# Cách 2: Tabulation
+# ============================
+def subset_sum_tab(nums, target):
+    """Subset Sum — tabulation 2D"""
+    n = len(nums)
+    # dp[i][s] = có thể đạt tổng s dùng nums[0..i-1]?
+    dp = [[False] * (target + 1) for _ in range(n + 1)]
+
+    # Base: tổng 0 luôn đạt được
+    for i in range(n + 1):
+        dp[i][0] = True
+
+    for i in range(1, n + 1):
+        for s in range(1, target + 1):
+            # Không dùng nums[i-1]
+            dp[i][s] = dp[i - 1][s]
+            # Dùng nums[i-1] (nếu đủ)
+            if s >= nums[i - 1]:
+                dp[i][s] = dp[i][s] or dp[i - 1][s - nums[i - 1]]
+
+    return dp[n][target]
+
+
+# ============================
+# Cách 3: Space Optimized — O(target)
+# ============================
+def subset_sum_opt(nums, target):
+    """Subset Sum — O(target) space"""
+    dp = [False] * (target + 1)
+    dp[0] = True
+
+    for num in nums:
+        # QUAN TRỌNG: duyệt từ phải sang trái để tránh dùng num nhiều lần!
+        for s in range(target, num - 1, -1):
+            if dp[s - num]:
+                dp[s] = True
+
+    return dp[target]
+
+
+# ============================
+# Test
+# ============================
+test_cases = [
+    ([3, 34, 4, 12, 5, 2], 9, True),     # 4 + 5 = 9
+    ([3, 34, 4, 12, 5, 2], 30, False),    # không có tổ hợp nào = 30
+    ([1, 2, 3], 6, True),                  # 1 + 2 + 3 = 6
+    ([1, 2, 3], 7, False),
+    ([2, 3, 7, 8, 10], 11, True),          # 3 + 8 = 11
+]
+
+print("=== Subset Sum ===")
+for nums, target, expected in test_cases:
+    a = subset_sum_memo(nums, target)
+    b = subset_sum_tab(nums, target)
+    c = subset_sum_opt(nums, target)
+    assert a == b == c == expected, f"Sai! nums={nums}, target={target}"
+    print(f"nums={nums}, target={target} -> {a}")
+```
+
+#### Simulation cho `nums = [3, 4, 5, 2]`, `target = 9`
+
+```
+Space-optimized dp (duyệt ngược):
+
+Ban đầu: dp = [T, F, F, F, F, F, F, F, F, F]
+                0  1  2  3  4  5  6  7  8  9
+
+Xét num=3: duyệt s từ 9 xuống 3
+  s=9: dp[9-3]=dp[6]=F → giữ F
+  s=3: dp[3-3]=dp[0]=T → dp[3]=T
+  dp = [T, F, F, T, F, F, F, F, F, F]
+
+Xét num=4: duyệt s từ 9 xuống 4
+  s=7: dp[7-4]=dp[3]=T → dp[7]=T
+  s=4: dp[4-4]=dp[0]=T → dp[4]=T
+  dp = [T, F, F, T, T, F, F, T, F, F]
+
+Xét num=5: duyệt s từ 9 xuống 5
+  s=9: dp[9-5]=dp[4]=T → dp[9]=T  ← TÌM THẤY!
+  s=8: dp[8-5]=dp[3]=T → dp[8]=T
+  s=5: dp[5-5]=dp[0]=T → dp[5]=T
+  dp = [T, F, F, T, T, T, F, T, T, T]
+
+→ dp[9] = True (tập con: {4, 5} hoặc {3, 4, 2})
+```
+
+#### Tại sao phải duyệt ngược trong space optimization?
+
+Nếu duyệt xuôi (từ trái sang phải), khi cập nhật `dp[s]`, nó có thể ảnh hưởng đến `dp[s + num]` trong cùng vòng lặp → phần tử `num` bị dùng **nhiều lần** (trở thành unbounded knapsack). Duyệt ngược đảm bảo mỗi phần tử chỉ dùng **1 lần**.
+
+#### Phân tích
+
+- **Time**: O(n x target)
+- **Space**: O(target) với space optimization
+- **Lưu ý**: Đây là bài toán **NP-Complete** khi `target` rất lớn (pseudo-polynomial)

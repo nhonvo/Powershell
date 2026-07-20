@@ -1,0 +1,338 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/06_Linked_List/🔗index_06_Linked_List|06_Linked_List]]
+
+## 2. Doubly Linked List
+
+### 2.1. Hình dung thực tế
+
+Nếu Singly Linked List là đoàn tàu chỉ kéo một chiều, thì **Doubly Linked List** là một **chuỗi xích xe đạp** — mỗi mắt xích nối với cả mắt xích trước lẫn mắt xích sau. Bạn có thể đi từ trái sang phải, hoặc từ phải sang trái đều được.
+
+Hoặc nghĩ về **trình duyệt web**: nút Back đưa bạn về trang trước, nút Forward đưa bạn đến trang sau. Mỗi trang web là một node, và bạn có thể di chuyển cả hai chiều.
+
+### 2.2. Cấu trúc (Structure)
+
+Mỗi node trong Doubly Linked List gồm 3 thành phần:
+
+```
++------+--------+------+
+| prev |  data  | next |
++------+--------+------+
+```
+
+- **prev**: pointer trỏ đến node phía trước. Node đầu tiên có `prev = null`
+- **data**: giá trị lưu trữ
+- **next**: pointer trỏ đến node phía sau. Node cuối cùng có `next = null`
+
+Ngoài **head**, ta thường giữ thêm **tail** để truy cập node cuối trong O(1).
+
+nullprev|10|nextheadprev|20|nextprev|30|nextnulltail
+
+### 2.3. Khai báo Node
+
+**Python:**
+
+```python
+class DNode:
+    def __init__(self, data):
+        self.data = data
+        self.prev = None
+        self.next = None
+
+
+class DoublyLinkedList:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+        self.size = 0
+```
+
+**Ghi chú:** So với Singly, mỗi DNode thêm một pointer `prev` — cho phép duyệt ngược.
+
+### 2.4. Các thao tác cơ bản
+
+#### 2.4.1. Insert at Head
+
+**Thuật toán:**
+
+1. Tạo `new_node`
+2. `new_node.next = head`
+3. Nếu `head != null`: `head.prev = new_node`
+4. `head = new_node`
+5. Nếu list chỉ có 1 phần tử: `tail = new_node`
+
+**Mô phỏng từng bước:**
+
+List hiện tại: `null <-> [10] <-> [20] <-> null`. Thêm 5 vào đầu:
+
+| Bước | Hành động              | Trạng thái                            |
+| :--- | :--------------------- | :------------------------------------ |
+| 1    | Tạo `new_node(5)`      | `[5|prev=null, next=null]` — node rời |
+| 2    | `new_node.next = head` | `[5].next -> [10]`                    |
+| 3    | `head.prev = new_node` | `[10].prev -> [5]` (bây giờ 2 chiều)  |
+| 4    | `head = new_node`      | `head -> [5]`                         |
+
+Kết quả: `null <-> [5] <-> [10] <-> [20] <-> null`
+
+**Python:**
+
+```python
+def insert_at_head(self, data):
+    new_node = DNode(data)
+    if self.head is None:
+        # List rỗng: new_node vừa là head vừa là tail
+        self.head = self.tail = new_node
+    else:
+        new_node.next = self.head
+        self.head.prev = new_node
+        self.head = new_node
+    self.size += 1
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Sử dụng
+dll = DoublyLinkedList()
+dll.insert_at_head(20)  # null <-> 20 <-> null
+dll.insert_at_head(10)  # null <-> 10 <-> 20 <-> null
+dll.insert_at_head(5)   # null <-> 5 <-> 10 <-> 20 <-> null
+```
+
+**Complexity:** O(1) time, O(1) space.
+
+#### 2.4.2. Insert at Tail
+
+Nhờ có pointer `tail`, thao tác này cũng là O(1) — khác biệt lớn so với Singly Linked List!
+
+**Python:**
+
+```python
+def insert_at_tail(self, data):
+    new_node = DNode(data)
+    if self.tail is None:
+        self.head = self.tail = new_node
+    else:
+        new_node.prev = self.tail
+        self.tail.next = new_node
+        self.tail = new_node
+    self.size += 1
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Sử dụng
+dll = DoublyLinkedList()
+dll.insert_at_tail(10)  # null <-> 10 <-> null
+dll.insert_at_tail(20)  # null <-> 10 <-> 20 <-> null
+dll.insert_at_tail(30)  # null <-> 10 <-> 20 <-> 30 <-> null
+```
+
+**Complexity:** O(1) time, O(1) space.
+
+#### 2.4.3. Insert at Position
+
+**Thuật toán (thông minh hơn Singly!):**
+
+Vì có thể duyệt 2 chiều, ta chọn duyệt từ đầu hoặc cuối tuỳ vị trí:
+
+- Nếu `pos <= size/2`: duyệt từ head
+- Nếu `pos > size/2`: duyệt từ tail
+
+CóKhôngInsert at positionpos <= size/2?Duyệt từ head
+(pos bước)Duyệt từ tail
+(size - pos bước)Chèn node:
+\1. new.next = current
+\2. new.prev = current.prev
+\3. current.prev.next = new
+\4. current.prev = newXong
+
+**Python:**
+
+```python
+def insert_at_position(self, data, pos):
+    if pos < 0 or pos > self.size:
+        raise IndexError("Position out of range")
+    if pos == 0:
+        self.insert_at_head(data)
+        return
+    if pos == self.size:
+        self.insert_at_tail(data)
+        return
+
+    new_node = DNode(data)
+
+    # Tối ưu: chọn duyệt từ đầu gần hơn
+    if pos <= self.size // 2:
+        current = self.head
+        for _ in range(pos):
+            current = current.next
+    else:
+        current = self.tail
+        for _ in range(self.size - 1 - pos):
+            current = current.prev
+
+    # Chèn new_node trước current
+    new_node.next = current
+    new_node.prev = current.prev
+    current.prev.next = new_node
+    current.prev = new_node
+    self.size += 1
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Sử dụng
+dll = DoublyLinkedList()
+for val in [10, 20, 30, 40]:
+    dll.insert_at_tail(val)
+# null <-> 10 <-> 20 <-> 30 <-> 40 <-> null
+
+dll.insert_at_position(25, 2)
+# null <-> 10 <-> 20 <-> 25 <-> 30 <-> 40 <-> null
+# Vì pos=2 <= size/2=2, ta duyệt từ head (nhanh hơn!)
+```
+
+**Complexity:** O(n/2) = O(n) worst case, nhưng thực tế nhanh gấp đôi Singly Linked List.
+
+#### 2.4.4. Delete Node
+
+Với Doubly Linked List, nếu bạn đã có pointer đến node cần xoá, xoá là O(1) — vì bạn có cả prev lẫn next!
+
+**Python:**
+
+```python
+def delete_node(self, node):
+    """Xoá node cụ thể (đã có pointer) — O(1)"""
+    if node == self.head:
+        self.head = node.next
+    if node == self.tail:
+        self.tail = node.prev
+    if node.prev:
+        node.prev.next = node.next
+    if node.next:
+        node.next.prev = node.prev
+    self.size -= 1
+
+
+def delete_at_head(self):
+    if self.head is None:
+        raise Exception("List is empty")
+    data = self.head.data
+    self.delete_node(self.head)
+    return data
+
+
+def delete_at_tail(self):
+    if self.tail is None:
+        raise Exception("List is empty")
+    data = self.tail.data
+    self.delete_node(self.tail)
+    return data
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Sử dụng
+dll = DoublyLinkedList()
+for val in [10, 20, 30]:
+    dll.insert_at_tail(val)
+# null <-> 10 <-> 20 <-> 30 <-> null
+
+dll.delete_at_head()   # Xoá 10, list: null <-> 20 <-> 30 <-> null
+dll.delete_at_tail()   # Xoá 30, list: null <-> 20 <-> null
+```
+
+**Complexity:** O(1) khi đã có pointer đến node.
+
+#### 2.4.5. Traverse (Duyệt hai chiều)
+
+**Python:**
+
+```python
+def traverse_forward(self):
+    """Duyệt từ head → tail"""
+    elements = []
+    current = self.head
+    while current:
+        elements.append(str(current.data))
+        current = current.next
+    print("null <-> " + " <-> ".join(elements) + " <-> null")
+
+
+def traverse_backward(self):
+    """Duyệt từ tail → head"""
+    elements = []
+    current = self.tail
+    while current:
+        elements.append(str(current.data))
+        current = current.prev
+    print("null <-> " + " <-> ".join(elements) + " <-> null")
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Sử dụng
+dll = DoublyLinkedList()
+for val in [10, 20, 30]:
+    dll.insert_at_tail(val)
+
+dll.traverse_forward()   # Output: null <-> 10 <-> 20 <-> 30 <-> null
+dll.traverse_backward()  # Output: null <-> 30 <-> 20 <-> 10 <-> null
+```
+
+### 2.5. So sánh chi tiết: Singly vs Doubly
+
+| Tiêu chí                 | Singly Linked List              | Doubly Linked List                   |
+| :----------------------- | :------------------------------ | :----------------------------------- |
+| Memory/node              | data + 1 pointer                | data + 2 pointers (gấp đôi overhead) |
+| Insert at head           | O(1)                            | O(1)                                 |
+| Insert at tail           | O(n) hoặc O(1) nếu có tail      | O(1) (luôn có tail)                  |
+| Delete at tail           | O(n) — phải tìm node trước tail | O(1) — có prev pointer               |
+| Delete node (có pointer) | O(n) — phải tìm node trước      | O(1) — có prev pointer               |
+| Duyệt ngược              | Không được (phải reverse trước) | O(n) — duyệt từ tail                 |
+| Implement phức tạp       | Đơn giản hơn                    | Phức tạp hơn (nhiều pointer)         |
+| Cache locality           | Tốt hơn một chút (ít pointer)   | Kém hơn (thêm 1 pointer/node)        |
+
+**Khi nào dùng Singly?**
+
+- Chỉ cần duyệt 1 chiều
+- Bộ nhớ hạn hẹp
+- Implement stack (chỉ push/pop ở đầu)
+
+**Khi nào dùng Doubly?**
+
+- Cần duyệt 2 chiều (undo/redo, browser history)
+- Cần xoá node nhanh khi đã có pointer (LRU Cache!)
+- Implement deque (double-ended queue)
+
+### 2.6. Chứng minh toán học
+
+**Định lý:** Delete node trong Doubly Linked List (khi đã có pointer) là O(1).
+
+**Chứng minh:**
+
+Giả sử node cần xoá là `N`, với `N.prev = P` và `N.next = Q`.
+
+Thao tác xoá gồm:
+
+1. `P.next = Q` (1 phép gán)
+2. `Q.prev = P` (1 phép gán)
+3. Free(N) (1 phép)
+
+Tổng: 3 phép toán, không phụ thuộc n → O(1). **QED.**
+
+**So sánh:** Trong Singly Linked List, để xoá node N, ta cần tìm node P sao cho `P.next = N`. Việc này yêu cầu duyệt từ head → O(n).
+
+### 2.7. Cải tiến: Circular Doubly Linked List
+
+Thay vì head.prev = null và tail.next = null, ta cho:
+
+- `head.prev = tail`
+- `tail.next = head`
+
+Lợi ích: Không cần xử lý edge case null, duyệt vòng tròn dễ dàng.
+
+102030

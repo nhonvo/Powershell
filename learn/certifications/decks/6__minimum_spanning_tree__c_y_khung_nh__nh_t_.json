@@ -1,0 +1,216 @@
+{
+  "Meta": {
+    "Id": "deck_6__minimum_spanning_tree__c_y_khung_nh__nh_t_",
+    "Topic": "6. Minimum Spanning Tree (Cây khung nhỏ nhất)",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "6__minimum_spanning_tree__c_y_khung_nh__nh_t_"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 10
+  },
+  "Cards": [
+    {
+      "Id": "card_01397",
+      "Front": "Bước",
+      "Back": "Heap (top) | Chọn cạnh | MST vertices | MST edges | Tổng cost",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. minimum spanning tree (cây khung nhỏ nhất)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01398",
+      "Front": "Init",
+      "Back": "- | - | {0} | [] | 0",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. minimum spanning tree (cây khung nhỏ nhất)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01399",
+      "Front": "Tiêu chí",
+      "Back": "Prim | Kruskal",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. minimum spanning tree (cây khung nhỏ nhất)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01400",
+      "Front": "**Chiến lược**",
+      "Back": "Mở rộng cây từ 1 đỉnh | Chọn cạnh nhẹ nhất toàn cục",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. minimum spanning tree (cây khung nhỏ nhất)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01401",
+      "Front": "**Cấu trúc dữ liệu**",
+      "Back": "Min-Heap (Priority Queue) | Sort + Union-Find",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. minimum spanning tree (cây khung nhỏ nhất)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01402",
+      "Front": "**Time (binary heap)**",
+      "Back": "O((V + E) log V) | O(E log E) = O(E log V)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. minimum spanning tree (cây khung nhỏ nhất)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01403",
+      "Front": "**Graph dày đặc**",
+      "Back": "Tốt hơn (E ≈ V²) | Chậm hơn (sort nhiều cạnh)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. minimum spanning tree (cây khung nhỏ nhất)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01404",
+      "Front": "**Graph thưa**",
+      "Back": "OK | Tốt hơn",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. minimum spanning tree (cây khung nhỏ nhất)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01405",
+      "Front": "**Disconnected graph**",
+      "Back": "Cần chạy nhiều lần | Tự xử lý (MST forest)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. minimum spanning tree (cây khung nhỏ nhất)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01406",
+      "Front": "**Triển khai**",
+      "Back": "Phức tạp hơn | Đơn giản hơn",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. minimum spanning tree (cây khung nhỏ nhất)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

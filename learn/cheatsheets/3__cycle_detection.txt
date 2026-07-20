@@ -1,0 +1,238 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/12_Graphs/🕸️index_12_Graphs|12_Graphs]]
+
+## 3. Cycle Detection
+
+### 3.1. Tại sao phát hiện chu trình quan trọng?
+
+**Ví dụ thực tế:**
+
+- **Deadlock:** Trong hệ điều hành, nếu process A chờ B, B chờ C, C chờ A → deadlock (chu trình trong đồ thị chờ)
+- **Dependency loop:** Package A phụ thuộc B, B phụ thuộc A → không thể cài đặt
+- **Infinite loop:** Trong workflow engine, nếu task A trigger B trigger A → loop vô hạn
+
+### 3.2. Cycle Detection trong Undirected Graph
+
+**Ý tưởng:** Dùng DFS. Nếu gặp một đỉnh đã visited mà KHÔNG phải parent của đỉnh hiện tại → có cycle.
+
+**Tại sao phải check parent?** Vì trong undirected graph, cạnh A-B nghĩa là khi duyệt từ A sang B, rồi từ B nhìn lại thấy A đã visited — nhưng đó không phải cycle mà chỉ là cạnh quay lại parent.
+
+ChưaRồiĐúngKhôngHết hàng xómDFS(u, parent)Đánh dấu u visitedXét hàng xóm v của uv đã visited?DFS(v, parent=u)v == parent?Bỏ qua (cạnh quay lại parent)CÓ CYCLE!Return False
+
+```python
+from collections import defaultdict
+
+
+def has_cycle_undirected(graph, num_vertices):
+    """
+    Phát hiện chu trình trong undirected graph bằng DFS.
+
+    Returns:
+        (has_cycle, cycle_path): True/False và đường đi chu trình nếu có
+    """
+    visited = set()
+    parent = {}
+
+    def dfs(u, par):
+        visited.add(u)
+        parent[u] = par
+
+        for v in graph[u]:
+            if v not in visited:
+                result = dfs(v, u)
+                if result is not None:
+                    return result
+            elif v != par:
+                # Tìm thấy cycle! Truy vết đường đi
+                cycle = [v]
+                current = u
+                while current != v:
+                    cycle.append(current)
+                    current = parent[current]
+                cycle.append(v)
+                return cycle
+
+        return None
+
+    for v in range(num_vertices):
+        if v not in visited:
+            cycle = dfs(v, -1)
+            if cycle is not None:
+                return True, cycle
+
+    return False, []
+
+
+# === TEST ===
+if __name__ == "__main__":
+    # Graph CÓ cycle: 0-1-2-0
+    g1 = defaultdict(list)
+    for u, v in [(0, 1), (1, 2), (2, 0), (2, 3)]:
+        g1[u].append(v)
+        g1[v].append(u)
+
+    has_cycle, cycle = has_cycle_undirected(g1, 4)
+    print(f"Graph 1 - Có cycle: {has_cycle}")
+    if has_cycle:
+        print(f"  Cycle: {' -> '.join(map(str, cycle))}")
+
+    # Graph KHÔNG cycle (tree)
+    g2 = defaultdict(list)
+    for u, v in [(0, 1), (1, 2), (1, 3)]:
+        g2[u].append(v)
+        g2[v].append(u)
+
+    has_cycle, cycle = has_cycle_undirected(g2, 4)
+    print(f"Graph 2 - Có cycle: {has_cycle}")
+```
+
+**Output:**
+
+```
+Graph 1 - Có cycle: True
+  Cycle: 0 -> 2 -> 1 -> 0
+Graph 2 - Có cycle: False
+```
+
+### 3.3. Cycle Detection trong Directed Graph
+
+**Ý tưởng:** Trong directed graph, không dùng cách check parent được. Thay vào đó, mình dùng **3 màu**:
+
+- **WHITE (0):** Chưa thăm
+- **GRAY (1):** Đang trong stack đệ quy (đang xử lý)
+- **BLACK (2):** Đã xử lý xong hoàn toàn
+
+Nếu DFS gặp đỉnh **GRAY** → đó là **back edge** → có cycle!
+
+**Tại sao?** Đỉnh GRAY nghĩa là nó đang trong call stack — tức là nó là ancestor của đỉnh hiện tại. Gặp ancestor → có đường đi ngược lên → cycle.
+
+WHITEGRAYBLACKHết hàng xómDFS(u)Tô u = GRAYXét hàng xóm v của uMàu của v?DFS(v)CÓ CYCLE! (back edge)Bỏ qua (đã xử lý xong)Tô u = BLACKReturn
+
+```python
+from collections import defaultdict
+
+WHITE, GRAY, BLACK = 0, 1, 2
+
+
+def has_cycle_directed(graph, num_vertices):
+    """
+    Phát hiện chu trình trong directed graph bằng DFS + 3 colors.
+
+    Returns:
+        (has_cycle, cycle_path)
+    """
+    color = [WHITE] * num_vertices
+    parent = [-1] * num_vertices
+
+    def dfs(u):
+        color[u] = GRAY
+
+        for v in graph[u]:
+            if color[v] == GRAY:
+                # Back edge → cycle! Truy vết
+                cycle = [v]
+                current = u
+                while current != v:
+                    cycle.append(current)
+                    current = parent[current]
+                cycle.append(v)
+                cycle.reverse()
+                return cycle
+
+            if color[v] == WHITE:
+                parent[v] = u
+                result = dfs(v)
+                if result is not None:
+                    return result
+
+        color[u] = BLACK
+        return None
+
+    for v in range(num_vertices):
+        if color[v] == WHITE:
+            cycle = dfs(v)
+            if cycle is not None:
+                return True, cycle
+
+    return False, []
+
+
+# === TEST ===
+if __name__ == "__main__":
+    # Directed graph CÓ cycle: 0 -> 1 -> 2 -> 0
+    g1 = defaultdict(list)
+    g1[0] = [1]
+    g1[1] = [2]
+    g1[2] = [0, 3]
+    g1[3] = []
+
+    has_cycle, cycle = has_cycle_directed(g1, 4)
+    print(f"Directed Graph 1 - Có cycle: {has_cycle}")
+    if has_cycle:
+        print(f"  Cycle: {' -> '.join(map(str, cycle))}")
+
+    # Directed graph KHÔNG cycle (DAG)
+    g2 = defaultdict(list)
+    g2[0] = [1, 2]
+    g2[1] = [3]
+    g2[2] = [3]
+    g2[3] = []
+
+    has_cycle, cycle = has_cycle_directed(g2, 4)
+    print(f"Directed Graph 2 - Có cycle: {has_cycle}")
+```
+
+### 3.4. Cycle Detection bằng Union-Find (Undirected)
+
+Một cách khác rất hiệu quả cho undirected graph: nếu hai đỉnh của một cạnh đã cùng nhóm (same component) → thêm cạnh đó sẽ tạo cycle.
+
+```python
+class UnionFind:
+    """Cấu trúc Union-Find cơ bản cho cycle detection."""
+
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])  # Path compression
+        return self.parent[x]
+
+    def union(self, x, y):
+        """Gộp hai nhóm. Return False nếu đã cùng nhóm (= có cycle)."""
+        px, py = self.find(x), self.find(y)
+        if px == py:
+            return False  # Cycle detected!
+        # Union by rank
+        if self.rank[px] < self.rank[py]:
+            px, py = py, px
+        self.parent[py] = px
+        if self.rank[px] == self.rank[py]:
+            self.rank[px] += 1
+        return True
+
+
+def has_cycle_union_find(edges, num_vertices):
+    """Phát hiện cycle bằng Union-Find."""
+    uf = UnionFind(num_vertices)
+    for u, v in edges:
+        if not uf.union(u, v):
+            return True, (u, v)  # Cạnh gây cycle
+    return False, None
+
+
+# === TEST ===
+if __name__ == "__main__":
+    edges = [(0, 1), (1, 2), (2, 0)]
+    has_cycle, edge = has_cycle_union_find(edges, 3)
+    print(f"Có cycle: {has_cycle}, cạnh gây cycle: {edge}")
+```
+
+### 3.5. So sánh các phương pháp
+
+| Phương pháp        | Graph type | Time      | Space | Ghi chú           |
+| :----------------- | :--------- | :-------- | :---- | :---------------- |
+| DFS + parent check | Undirected | O(V+E)    | O(V)  | Đơn giản          |
+| DFS + 3 colors     | Directed   | O(V+E)    | O(V)  | Chuẩn nhất        |
+| Union-Find         | Undirected | O(E·α(V)) | O(V)  | α gần như O(1)    |
+| BFS (Kahn's)       | Directed   | O(V+E)    | O(V)  | Kết hợp topo sort |

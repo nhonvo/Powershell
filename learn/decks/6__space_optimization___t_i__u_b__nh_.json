@@ -1,0 +1,216 @@
+{
+  "Meta": {
+    "Id": "deck_6__space_optimization___t_i__u_b__nh_",
+    "Topic": "6. Space Optimization — Tối ưu bộ nhớ",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "6__space_optimization___t_i__u_b__nh_"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 10
+  },
+  "Cards": [
+    {
+      "Id": "card_01550",
+      "Front": "Bài toán",
+      "Back": "Space gốc | Space tối ưu | Kỹ thuật",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. space optimization — tối ưu bộ nhớ"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01551",
+      "Front": "Fibonacci",
+      "Back": "O(n) | **O(1)** | 2 biến",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. space optimization — tối ưu bộ nhớ"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01552",
+      "Front": "Climbing Stairs",
+      "Back": "O(n) | **O(1)** | 2 biến",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. space optimization — tối ưu bộ nhớ"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01553",
+      "Front": "House Robber",
+      "Back": "O(n) | **O(1)** | 2 biến",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. space optimization — tối ưu bộ nhớ"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01554",
+      "Front": "LCS",
+      "Back": "O(m x n) | **O(min(m,n))** | 2 hàng",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. space optimization — tối ưu bộ nhớ"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01555",
+      "Front": "Edit Distance",
+      "Back": "O(m x n) | **O(n)** | 2 hàng + 1 biến tạm",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. space optimization — tối ưu bộ nhớ"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01556",
+      "Front": "Unique Paths",
+      "Back": "O(m x n) | **O(n)** | 1 hàng",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. space optimization — tối ưu bộ nhớ"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01557",
+      "Front": "0/1 Knapsack",
+      "Back": "O(n x W) | **O(W)** | 1 hàng, duyệt ngược",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. space optimization — tối ưu bộ nhớ"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01558",
+      "Front": "Unbounded Knapsack",
+      "Back": "O(n x W) | **O(W)** | 1 hàng, duyệt xuôi",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. space optimization — tối ưu bộ nhớ"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01559",
+      "Front": "Subset Sum",
+      "Back": "O(n x target) | **O(target)** | 1 hàng, duyệt ngược",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. space optimization — tối ưu bộ nhớ"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

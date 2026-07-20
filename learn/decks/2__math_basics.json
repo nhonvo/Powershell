@@ -1,0 +1,336 @@
+{
+  "Meta": {
+    "Id": "deck_2__math_basics",
+    "Topic": "2. Math Basics",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "2__math_basics"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 16
+  },
+  "Cards": [
+    {
+      "Id": "card_00483",
+      "Front": "Bước",
+      "Back": "a | b | a mod b | Giải thích",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. math basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00484",
+      "Front": "Kết quả",
+      "Back": "**6** | 0 | — | b = 0, trả về a = 6",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. math basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00485",
+      "Front": "Phương pháp",
+      "Back": "Ưu điểm | Nhược điểm",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. math basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00486",
+      "Front": "Vòng lặp",
+      "Back": "Không tốn stack, nhanh | Code dài hơn chút",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. math basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00487",
+      "Front": "Đệ quy",
+      "Back": "Code ngắn, dễ đọc | Tốn stack O(log n)",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. math basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00488",
+      "Front": "Bước",
+      "Back": "i | i × i | i ≤ √97 ≈ 9.8? | 97 % i | 97 % (i+2)",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. math basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00489",
+      "Front": "**Kết quả**",
+      "Back": "— | — | — | **97 là số nguyên tố** | ",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. math basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00490",
+      "Front": "Ưu điểm",
+      "Back": "Nhược điểm",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. math basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00491",
+      "Front": "Cực nhanh: O(n log log n)",
+      "Back": "Tốn bộ nhớ O(n)",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. math basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00492",
+      "Front": "Đơn giản, dễ code",
+      "Back": "Không dùng được khi n rất lớn (10¹²)",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. math basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00493",
+      "Front": "Tìm TẤT CẢ prime một lúc",
+      "Back": "Chỉ phù hợp khi cần nhiều prime",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. math basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00494",
+      "Front": "Bước",
+      "Back": "exp | exp (binary) | exp lẻ? | result | base",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. math basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00495",
+      "Front": "10³",
+      "Back": "1000 phép tính | 10 phép tính",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. math basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00496",
+      "Front": "10⁶",
+      "Back": "10⁶ | 20",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. math basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00497",
+      "Front": "10⁹",
+      "Back": "10⁹ (3 giây) | 30",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. math basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00498",
+      "Front": "10¹⁸",
+      "Back": "Không thể | 60",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. math basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

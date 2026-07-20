@@ -1,0 +1,495 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/05_Hashing/🔑index_05_Hashing|05_Hashing]]
+
+## 1. Hash Maps
+
+### 1.1. Hash Map là gì? — Ví dụ đời thực
+
+Bạn tưởng tượng mình có **một tủ đồ có 10 ngăn**, đánh số từ 0 đến 9. Mỗi khi mình muốn cất một món đồ (ví dụ quyển sách tên "DSA"), mình cần biết **nên bỏ vào ngăn nào**. Thay vì tìm ngăn trống, mình dùng một **công thức tính toán** (hash function) để tính ra số ngăn dựa trên tên món đồ.
+
+Ví dụ công thức đơn giản: lấy chữ cái đầu tiên, quy ra số (A=0, B=1, ..., Z=25), rồi chia dư cho 10.
+
+- "DSA" → D = 3 → 3 % 10 = **ngăn 3**
+- "Array" → A = 0 → 0 % 10 = **ngăn 0**
+- "Node" → N = 13 → 13 % 10 = **ngăn 3** ← trùng ngăn với DSA!
+
+Khi hai món đồ rơi vào cùng một ngăn → đó chính là **collision** (va chạm). Và cách xử lý collision chính là phần thú vị nhất của hash table!
+
+**Hash Map = cấu trúc dữ liệu lưu trữ cặp (key, value), cho phép tìm kiếm, thêm, xóa trung bình O(1).**
+
+### 1.2. Hash Function — Hàm băm
+
+Hash function là một hàm nhận input bất kỳ (string, number, object...) và trả về một **số nguyên** trong khoảng cố định.
+
+**Yêu cầu của một hash function tốt:**
+
+| Yêu cầu                  | Giải thích                          |
+| :----------------------- | :---------------------------------- |
+| **Deterministic**        | Cùng input luôn cho cùng output     |
+| **Uniform distribution** | Kết quả phân bố đều trên các bucket |
+| **Fast to compute**      | Tính nhanh, O(1) hoặc O(len(key))   |
+| **Minimize collisions**  | Ít va chạm nhất có thể              |
+
+**Toán học đằng sau hash function:**
+
+Với string key, một hash function phổ biến là **polynomial rolling hash**:
+
+```
+h(s) = (s[0] * p^(n-1) + s[1] * p^(n-2) + ... + s[n-1] * p^0) mod m
+```
+
+Trong đó:
+
+- `s[i]` là mã ASCII/Unicode của ký tự thứ i
+- `p` là một số nguyên tố (thường chọn 31 hoặc 37)
+- `m` là kích thước bảng (nên là số nguyên tố)
+- `n` là độ dài chuỗi
+
+**Tại sao chọn số nguyên tố?** Vì số nguyên tố giúp phân bố đều hơn. Nếu `m` là lũy thừa của 2 (ví dụ 1024), thì `h mod m` chỉ phụ thuộc vào các bit cuối → dễ collision. Số nguyên tố "trộn" các bit tốt hơn.
+
+**Xác suất collision (Birthday Paradox):**
+
+Nếu hash function phân bố đều trên `m` bucket, xác suất có ít nhất 1 collision khi chèn `n` phần tử:
+
+```
+P(collision) = 1 - m! / (m^n * (m-n)!)
+            ≈ 1 - e^(-n(n-1) / (2m))
+```
+
+Với `m = 365` và `n = 23`, P ≈ 50.7% — đây chính là **Birthday Paradox**! Nghĩa là chỉ cần 23 người trong phòng, xác suất 2 người trùng sinh nhật đã > 50%.
+
+Áp dụng cho hash table: nếu bảng có `m = 1000` slot, chỉ cần khoảng `√(2 * 1000) ≈ 45` phần tử là đã có > 50% xác suất xảy ra collision.
+
+**Code hash function:**
+
+**Python:**
+
+```python
+def polynomial_hash(key: str, table_size: int, p: int = 31) -> int:
+    """
+    Polynomial rolling hash function.
+    p = 31 phù hợp cho lowercase English letters.
+    """
+    hash_value = 0
+    p_power = 1  # p^0 = 1
+
+    for char in key:
+        hash_value = (hash_value + ord(char) * p_power) % table_size
+        p_power = (p_power * p) % table_size
+
+    return hash_value
+
+# Test
+print(polynomial_hash("hello", 1009))  # 1009 là số nguyên tố
+print(polynomial_hash("world", 1009))
+print(polynomial_hash("hello", 1009))  # Luôn trả về cùng giá trị
+```
+
+**Cách khác — dùng functools.reduce (gọn hơn):**
+
+```python
+from functools import reduce
+
+def polynomial_hash_v2(key: str, table_size: int, p: int = 31) -> int:
+    """
+    Phiên bản gọn hơn dùng reduce.
+    Mỗi bước: tích lũy hash = (hash_cũ * p + mã_ký_tự) % table_size
+    """
+    return reduce(
+        lambda h, c: (h * p + ord(c)) % table_size,
+        key,
+        0  # giá trị khởi tạo
+    )
+
+# Test — kết quả phải giống nhau mỗi lần gọi (deterministic)
+print(polynomial_hash_v2("hello", 1009))  # Luôn trả về cùng giá trị
+print(polynomial_hash_v2("world", 1009))
+```
+
+### 1.3. Collision Handling — Xử lý va chạm
+
+Khi hai key khác nhau cho ra cùng một index → collision. Có 2 chiến lược chính:
+
+#### 1.3.1. Chaining (Separate Chaining) — Nối chuỗi
+
+**Ý tưởng:** Mỗi bucket chứa một **linked list** (hoặc dynamic array). Khi collision xảy ra, ta thêm phần tử mới vào cuối list tại bucket đó.
+
+**Ví dụ đời thực:** Tưởng tượng mỗi ngăn tủ có một **cái móc**, bạn có thể treo nhiều túi lên cùng một móc. Khi cần tìm đồ, bạn phải lần lượt mở từng túi trên móc đó.
+
+Hash Table (size=7)Bucket 0Bucket 1Bucket 2Bucket 3Bucket 4Bucket 5Bucket 6('apple', 5)('banana', 3)('cherry', 7)('date', 2)('elderberry', 9)('fig', 1)
+
+**Mô phỏng từng bước — Chaining:**
+
+Giả sử hash table size = 7, hash function: `h(key) = sum(ord(c) for c in key) % 7`
+
+```
+Bước 1: Insert ("cat", 10)
+  h("cat") = (99+97+116) % 7 = 312 % 7 = 4
+  Bucket 4: [] → [("cat", 10)]
+
+Bước 2: Insert ("dog", 20)
+  h("dog") = (100+111+103) % 7 = 314 % 7 = 6
+  Bucket 6: [] → [("dog", 20)]
+
+Bước 3: Insert ("act", 30)      ← "act" có cùng tổng ASCII với "cat"!
+  h("act") = (97+99+116) % 7 = 312 % 7 = 4
+  Bucket 4: [("cat", 10)] → [("cat", 10), ("act", 30)]   ← COLLISION!
+
+Bước 4: Search("act")
+  h("act") = 4
+  Bucket 4: duyệt list → ("cat",10) key≠"act" → ("act",30) key=="act" ✓
+  Return 30
+
+Bước 5: Delete("cat")
+  h("cat") = 4
+  Bucket 4: duyệt list → ("cat",10) key=="cat" → xóa node
+  Bucket 4: [("act", 30)]
+```
+
+**Python — Chaining Hash Table:**
+
+```python
+class ChainingHashTable:
+    def __init__(self, size: int = 16):
+        self.size = size
+        self.count = 0
+        self.buckets = [[] for _ in range(size)]  # List of lists
+
+    def _hash(self, key: str) -> int:
+        """Simple polynomial hash."""
+        h = 0
+        for c in key:
+            h = (h * 31 + ord(c)) % self.size
+        return h
+
+    def load_factor(self) -> float:
+        """Tỷ lệ phần tử / số bucket."""
+        return self.count / self.size
+
+    def put(self, key: str, value):
+        """Thêm hoặc cập nhật key-value pair."""
+        index = self._hash(key)
+        bucket = self.buckets[index]
+
+        # Kiểm tra key đã tồn tại chưa → update
+        for i, (k, v) in enumerate(bucket):
+            if k == key:
+                bucket[i] = (key, value)  # Update
+                return
+
+        # Key chưa tồn tại → thêm mới
+        bucket.append((key, value))
+        self.count += 1
+
+        # Resize nếu load factor > 0.75
+        if self.load_factor() > 0.75:
+            self._resize()
+
+    def get(self, key: str):
+        """Tìm value theo key. Trả về None nếu không tìm thấy."""
+        index = self._hash(key)
+        for k, v in self.buckets[index]:
+            if k == key:
+                return v
+        return None
+
+    def remove(self, key: str) -> bool:
+        """Xóa key. Trả về True nếu xóa thành công."""
+        index = self._hash(key)
+        bucket = self.buckets[index]
+        for i, (k, v) in enumerate(bucket):
+            if k == key:
+                bucket.pop(i)
+                self.count -= 1
+                return True
+        return False
+
+    def _resize(self):
+        """Tăng gấp đôi kích thước bảng và rehash tất cả phần tử."""
+        old_buckets = self.buckets
+        self.size *= 2
+        self.count = 0
+        self.buckets = [[] for _ in range(self.size)]
+
+        for bucket in old_buckets:
+            for key, value in bucket:
+                self.put(key, value)
+
+# Sử dụng
+ht = ChainingHashTable(4)
+ht.put("name", "Code4Func")
+ht.put("age", 25)
+ht.put("city", "HCM")
+print(ht.get("name"))   # "Code4Func"
+print(ht.get("age"))    # 25
+ht.remove("age")
+print(ht.get("age"))    # None
+```
+
+**Cách sử dụng nâng cao — xem load factor và resize:**
+
+```python
+# Demo load factor và auto-resize
+ht = ChainingHashTable(4)  # Bắt đầu với 4 bucket
+
+# Thêm nhiều phần tử để trigger resize
+for i in range(10):
+    ht.put(f"key_{i}", i * 100)
+    print(f"Sau khi thêm key_{i}: size={ht.size}, count={ht.count}, "
+          f"load_factor={ht.load_factor():.2f}")
+
+# Kiểm tra get và remove
+print(ht.get("key_5"))    # 500
+print(ht.get("key_99"))   # None (không tồn tại)
+ht.remove("key_5")
+print(ht.get("key_5"))    # None (đã xóa)
+```
+
+#### 1.3.2. Open Addressing — Địa chỉ mở
+
+**Ý tưởng:** Không dùng linked list. Khi collision xảy ra, ta **tìm slot trống tiếp theo** trong chính mảng bucket. Có 3 chiến lược tìm slot:
+
+**Ví dụ đời thực:** Bạn đến rạp chiếu phim, ghế số 5 đã có người ngồi rồi. Thay vì xếp chồng lên (chaining), bạn tìm **ghế trống gần nhất**: ghế 6, rồi ghế 7... cho đến khi tìm được.
+
+**a) Linear Probing — Dò tuyến tính**
+
+```
+h(key, i) = (h(key) + i) mod m,    i = 0, 1, 2, ...
+```
+
+Nếu slot `h(key)` bị chiếm, thử `h(key)+1`, rồi `h(key)+2`...
+
+**Vấn đề: Primary Clustering** — Các phần tử bị "dồn cục" lại, tạo thành cụm dài. Khi cụm càng dài, collision càng dễ xảy ra → cụm càng dài hơn → vòng xoáy tồi tệ.
+
+**b) Quadratic Probing — Dò bậc hai**
+
+```
+h(key, i) = (h(key) + c1*i + c2*i²) mod m,    i = 0, 1, 2, ...
+```
+
+Thường dùng đơn giản: `h(key, i) = (h(key) + i²) mod m`
+
+Giảm primary clustering, nhưng có thể gặp **secondary clustering** (các key cùng hash value sẽ probe cùng sequence).
+
+**c) Double Hashing — Băm kép**
+
+```
+h(key, i) = (h1(key) + i * h2(key)) mod m
+```
+
+Dùng hash function thứ hai để tính bước nhảy. Tốt nhất trong 3 cách vì tránh cả primary và secondary clustering.
+
+`h2(key)` phải khác 0 và coprime với `m`. Thường chọn: `h2(key) = prime - (key mod prime)`.
+
+CóKhôngLinearQuadraticDouble HashCóKhôngInsert key, h(key) = 3Slot 3 trống?Chèn vào slot 3 ✓Probing strategy?Thử slot 4, 5, 6...Thử slot 4, 7, 12...Thử slot 3+h2, 3+2*h2...Slot trống?Chèn vào slot đó ✓Tiếp tục probe
+
+**Mô phỏng từng bước — Linear Probing:**
+
+```
+Hash table size = 7, h(key) = key % 7
+
+Bước 1: Insert 10
+  h(10) = 10 % 7 = 3
+  Slot 3 trống → chèn
+  Table: [_, _, _, 10, _, _, _]
+
+Bước 2: Insert 17
+  h(17) = 17 % 7 = 3 → COLLISION!
+  Probe: slot 4 trống → chèn
+  Table: [_, _, _, 10, 17, _, _]
+
+Bước 3: Insert 24
+  h(24) = 24 % 7 = 3 → COLLISION!
+  Probe: slot 4 đã chiếm, slot 5 trống → chèn
+  Table: [_, _, _, 10, 17, 24, _]
+
+Bước 4: Insert 31
+  h(31) = 31 % 7 = 3 → COLLISION!
+  Probe: slot 4 chiếm, slot 5 chiếm, slot 6 trống → chèn
+  Table: [_, _, _, 10, 17, 24, 31]
+
+  → Primary clustering! 4 phần tử liên tiếp từ slot 3-6.
+
+Bước 5: Search 24
+  h(24) = 3 → slot 3 có 10 ≠ 24
+  → slot 4 có 17 ≠ 24
+  → slot 5 có 24 == 24 ✓ Found! (3 lần probe)
+
+Bước 6: Delete 17
+  h(17) = 3 → slot 3 có 10 ≠ 17 → slot 4 có 17 == 17
+  → Đánh dấu slot 4 là DELETED (tombstone), không xóa trắng!
+  Table: [_, _, _, 10, DEL, 24, 31]
+
+  Tại sao dùng tombstone? Vì nếu xóa trắng slot 4, khi search 24:
+  h(24)=3 → slot 3 ≠ → slot 4 TRỐNG → dừng tìm → sai! (24 vẫn ở slot 5)
+```
+
+**Python — Open Addressing (Linear Probing):**
+
+```python
+class OpenAddressingHashTable:
+    EMPTY = None
+    DELETED = "__DELETED__"  # Tombstone marker
+
+    def __init__(self, size: int = 16):
+        self.size = size
+        self.count = 0
+        self.keys = [self.EMPTY] * size
+        self.values = [self.EMPTY] * size
+
+    def _hash(self, key: str) -> int:
+        h = 0
+        for c in key:
+            h = (h * 31 + ord(c)) % self.size
+        return h
+
+    def _probe(self, key: str):
+        """Generator: yield các index theo linear probing."""
+        index = self._hash(key)
+        for i in range(self.size):
+            yield (index + i) % self.size
+
+    def put(self, key: str, value):
+        if self.count >= self.size * 0.7:  # Load factor threshold
+            self._resize()
+
+        first_deleted = -1
+        for idx in self._probe(key):
+            if self.keys[idx] == self.EMPTY:
+                # Slot trống: chèn vào đây (hoặc vào deleted slot trước đó)
+                target = first_deleted if first_deleted != -1 else idx
+                self.keys[target] = key
+                self.values[target] = value
+                self.count += 1
+                return
+            elif self.keys[idx] == self.DELETED:
+                if first_deleted == -1:
+                    first_deleted = idx  # Nhớ vị trí deleted đầu tiên
+            elif self.keys[idx] == key:
+                self.values[idx] = value  # Update existing
+                return
+
+    def get(self, key: str):
+        for idx in self._probe(key):
+            if self.keys[idx] == self.EMPTY:
+                return None  # Chắc chắn không có
+            if self.keys[idx] == key:
+                return self.values[idx]
+            # Nếu DELETED → tiếp tục probe
+        return None
+
+    def remove(self, key: str) -> bool:
+        for idx in self._probe(key):
+            if self.keys[idx] == self.EMPTY:
+                return False
+            if self.keys[idx] == key:
+                self.keys[idx] = self.DELETED  # Tombstone
+                self.values[idx] = self.EMPTY
+                self.count -= 1
+                return True
+        return False
+
+    def _resize(self):
+        old_keys = self.keys
+        old_values = self.values
+        self.size *= 2
+        self.count = 0
+        self.keys = [self.EMPTY] * self.size
+        self.values = [self.EMPTY] * self.size
+
+        for i in range(len(old_keys)):
+            if old_keys[i] not in (self.EMPTY, self.DELETED):
+                self.put(old_keys[i], old_values[i])
+```
+
+**Demo Open Addressing — Thấy rõ tombstone:**
+
+```python
+# Demo cách tombstone hoạt động
+ht = OpenAddressingHashTable(8)
+
+ht.put("cat", 10)
+ht.put("dog", 20)
+ht.put("act", 30)   # "act" có thể collision với "cat"
+
+print(ht.get("cat"))  # 10
+print(ht.get("act"))  # 30
+
+# Xóa "cat" — slot sẽ thành DELETED (tombstone)
+ht.remove("cat")
+print(ht.get("cat"))  # None (đã xóa)
+print(ht.get("act"))  # 30 (vẫn tìm được nhờ tombstone!)
+
+# Nếu không dùng tombstone, sau khi xóa "cat",
+# probe sequence sẽ dừng sớm → không tìm được "act"
+### 1.4. Load Factor và Resizing
+
+**Load Factor (hệ số tải):**
+```
+
+α = n / m
+
+```
+Trong đó `n` = số phần tử, `m` = số bucket.
+
+| Load Factor | Chaining | Open Addressing |
+|------------|----------|-----------------|
+| α < 0.5 | Rất nhanh | Rất nhanh |
+| α ≈ 0.75 | Ổn | Bắt đầu chậm |
+| α > 1.0 | Vẫn hoạt động (list dài hơn) | KHÔNG thể (hết chỗ!) |
+
+**Amortized Analysis cho Resizing:**
+
+Khi resize, ta phải rehash tất cả `n` phần tử → O(n). Nhưng resize chỉ xảy ra khi bảng đầy.
+
+Giả sử bảng bắt đầu size 1, resize khi đầy (double size):
+- Insert 1: cost 1 (chèn) + 0 (không resize)
+- Insert 2: cost 1 + 1 (rehash 1 phần tử, resize từ 1→2)
+- Insert 3: cost 1 + 2 (rehash 2 phần tử, resize từ 2→4)
+- Insert 4: cost 1 + 0
+- Insert 5: cost 1 + 4 (rehash 4 phần tử, resize từ 4→8)
+- ...
+
+Tổng cost cho n insertions:
+```
+
+T(n) = n + (1 + 2 + 4 + 8 + ... + n/2 + n) = n + (2n - 1) = 3n - 1 = O(n)
+
+```
+Vì tổng cost là O(n) cho n operations → **amortized cost mỗi operation = O(n)/n = O(1)**.
+
+Đây là **aggregate method** của amortized analysis. Ta cũng có thể chứng minh bằng **accounting method**: mỗi insert "trả" 3 coins: 1 cho chính nó, 2 dự trữ cho lần resize tương lai. Khi resize xảy ra, ta dùng coins dự trữ → mỗi insert amortized O(1).
+
+### 1.5. Complexity Summary
+
+| Operation | Chaining (Average) | Chaining (Worst) | Open Addressing (Average) | Open Addressing (Worst) |
+|-----------|-------------------|------------------|--------------------------|------------------------|
+| Insert | O(1) | O(n) | O(1/(1-α)) | O(n) |
+| Search | O(1 + α) | O(n) | O(1/(1-α)) | O(n) |
+| Delete | O(1 + α) | O(n) | O(1/(1-α)) | O(n) |
+| Space | O(n + m) | | O(m) | |
+
+**Worst case O(n)** xảy ra khi tất cả key hash vào cùng 1 bucket (chaining → 1 linked list dài n; open addressing → probe toàn bộ bảng).
+
+### 1.6. Chaining vs Open Addressing — So sánh
+
+| Tiêu chí | Chaining | Open Addressing |
+|----------|----------|-----------------|
+| **Cài đặt** | Đơn giản hơn | Phức tạp hơn (tombstone, resize) |
+| **Cache performance** | Kém (linked list → random memory access) | Tốt (array → sequential access) |
+| **Load factor > 1** | Cho phép | Không cho phép |
+| **Delete** | Đơn giản (xóa node) | Cần tombstone |
+| **Memory overhead** | Pointer cho linked list | Không có overhead pointer |
+| **Clustering** | Không bị | Bị (linear/quadratic) |
+
+**Cải tiến thực tế:**
+
+1. **Robin Hood Hashing**: Khi insert, nếu probe distance của phần tử mới > probe distance của phần tử hiện tại → "cướp" vị trí (lấy từ kẻ giàu chia cho kẻ nghèo). Giúp giảm variance của probe length.
+
+2. **Cuckoo Hashing**: Dùng 2 hash function, 2 bảng. Insert vào bảng 1, nếu bị chiếm → "đá" phần tử cũ sang bảng 2, nếu bảng 2 cũng bị chiếm → "đá" tiếp... Worst case insert O(n) nhưng lookup luôn O(1).
+
+3. **Swiss Table (Google's flat_hash_map)**: Dùng SIMD instructions để probe 16 slot cùng lúc, metadata byte cho mỗi slot. Nhanh gấp 2-3x so với `std::unordered_map`.
+
+---
+```
+
+# Hash Maps

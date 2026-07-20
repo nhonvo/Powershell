@@ -1,0 +1,84 @@
+---
+tags:
+  - certification/ai-102
+  - ai-solution
+  - moc
+status: in-progress
+created: 2026-06-15
+updated: 2026-06-15
+---
+
+# 🎓 AI-102: Designing and Implementing a Microsoft Azure AI Solution MOC
+
+Welcome to the central Map of Content (MOC) for your **AI-102: Azure AI Engineer** certification prep.
+
+## 🗺️ Study Paths & Connections
+
+```mermaid
+graph TD
+    MOC["🎓 AI-102 MOC"] --> MM["🗺️ AI-102 Mindmap"]
+    MOC --> FC["🃏 AI-102 Flashcards"]
+    MOC --> D1["Domain 1: Plan & Manage"]
+    MOC --> D2["Domain 2: Vision & Docs"]
+    MOC --> D3["Domain 3: NLP"]
+    MOC --> D4["Domain 4: Knowledge Mining"]
+    MOC --> D5["Domain 5: Generative AI"]
+
+    D1 --> PQ1["Practice Q: Domain 1 (18 qs)"]
+    D2 --> PQ2["Practice Q: Domain 2 (17 qs)"]
+    D3 --> PQ3["Practice Q: Domain 3 (9 qs)"]
+    D4 --> PQ4["Practice Q: Domain 4 (14 qs)"]
+    D5 --> PQ5["Practice Q: Domain 5 (42 qs)"]
+```
+
+---
+
+## 📚 Study Domains
+
+| Domain | Topic | Weight | Notes | Practice |
+|:---|:---|:---:|:---|:---|
+| **[[certifications/microsoft/AI-102/Domain 1 - Plan and Manage an Azure AI Solution\|D1]]** | Plan & Manage Azure AI Solutions | ~15-20% | Security, managed identities, logging, Responsible AI | [[certifications/microsoft/AI-102/Practice Questions - Domain 1\|Q&A D1]] |
+| **[[certifications/microsoft/AI-102/Domain 2 - Implement Image and Video Processing Solutions\|D2]]** | Vision & Documents | ~15-20% | Custom Vision, Face, Document Intelligence | [[certifications/microsoft/AI-102/Practice Questions - Domain 2\|Q&A D2]] |
+| **[[certifications/microsoft/AI-102/Domain 3 - Implement Natural Language Processing Solutions\|D3]]** | NLP Solutions | ~30-35% | Sentiment analysis, translation, CLU intent mapping | [[certifications/microsoft/AI-102/Practice Questions - Domain 3\|Q&A D3]] |
+| **[[certifications/microsoft/AI-102/Domain 4 - Implement Knowledge Mining Solutions\|D4]]** | Knowledge Mining | ~15-20% | Indexes, indexers, skillsets, vector/hybrid search | [[certifications/microsoft/AI-102/Practice Questions - Domain 4\|Q&A D4]] |
+| **[[certifications/microsoft/AI-102/Domain 5 - Implement Generative AI Solutions\|D5]]** | Generative AI | ~25-30% | Azure OpenAI, prompt engineering, RAG architecture | [[certifications/microsoft/AI-102/Practice Questions - Domain 5\|Q&A D5]] |
+
+---
+
+## ⚡ Study Assets
+
+| Asset | Description |
+|:------|:------------|
+| **[[certifications/microsoft/AI-102/AI-102 Mindmap\|🗺️ AI-102 Mindmap]]** | Full visual mindmap node |
+| **[[certifications/microsoft/AI-102/AI-102 Markdown Mindmap\|🧠 AI-102 Markdown Mindmap]]** | Text-based hierarchical mindmap |
+| **[[certifications/microsoft/AI-102/AI-102 Flashcards\|🃏 AI-102 Flashcards]]** | Spaced-repetition active recall cards (Obsidian SR compatible) |
+| **[[certifications/microsoft/AI-102/AI-102 Reference Cheat Sheet\|📊 AI-102 Reference Cheat Sheet]]** | Key review matrix & hyperparameters |
+| **[[certifications/microsoft/AI-102/AI-102_Scraped_Question_Bank\|🗃️ AI-102 Scraped Question Bank]]** | 100 exam questions scraped from pages 2-21 |
+| **🖥️ Interactive PS Quiz** | Run `.\Start-StudySession.ps1` |
+
+### Quiz Usage
+
+```powershell
+# Full quiz
+.\Start-StudySession.ps1
+
+# Focus on a specific domain (e.g., Domain 5)
+.\Start-StudySession.ps1 -Domain 5
+
+# Randomise question order
+.\Start-StudySession.ps1 -Shuffle
+```
+
+---
+
+## 🎯 Progress Tracker
+
+- [ ] Register for the AI-102 Exam (Retires June 30, 2026)
+- [ ] Open **[[certifications/microsoft/AI-102/AI-102 Mindmap\|🗺️ AI-102 Mindmap]]**
+- [ ] Read **[[certifications/microsoft/AI-102/Domain 1 - Plan and Manage an Azure AI Solution\|Domain 1 Notes]]** → Answer **[[certifications/microsoft/AI-102/Practice Questions - Domain 1\|D1 Practice Q]]**
+- [ ] Read **[[certifications/microsoft/AI-102/Domain 2 - Implement Image and Video Processing Solutions\|Domain 2 Notes]]** → Answer **[[certifications/microsoft/AI-102/Practice Questions - Domain 2\|D2 Practice Q]]**
+- [ ] Read **[[certifications/microsoft/AI-102/Domain 3 - Implement Natural Language Processing Solutions\|Domain 3 Notes]]** → Answer **[[certifications/microsoft/AI-102/Practice Questions - Domain 3\|D3 Practice Q]]**
+- [ ] Read **[[certifications/microsoft/AI-102/Domain 4 - Implement Knowledge Mining Solutions\|Domain 4 Notes]]** → Answer **[[certifications/microsoft/AI-102/Practice Questions - Domain 4\|D4 Practice Q]]**
+- [ ] Read **[[certifications/microsoft/AI-102/Domain 5 - Implement Generative AI Solutions\|Domain 5 Notes]]** → Answer **[[certifications/microsoft/AI-102/Practice Questions - Domain 5\|D5 Practice Q]]**
+- [ ] Run full quiz: `.\Start-StudySession.ps1 -Shuffle`
+- [ ] PASS THE EXAM! 🎓

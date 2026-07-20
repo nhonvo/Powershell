@@ -1,0 +1,21 @@
+# 04_INTERVIEW_QA
+
+🔙 **Back to Parent**: [[interviewNote/❓index_04_INTERVIEW_QA|interview_prep]]
+
+## 📁 Sub-Categories
+- [[interviewNote/❓index_04_INTERVIEW_QA|java_khoaminhi]]
+- [[interviewNote/mantu_amaris/📂index_mantu_amaris|mantu_amaris]]
+- [[interviewNote/❓index_04_INTERVIEW_QA|refer_interviewnet]]
+- [[interviewNote/❓index_04_INTERVIEW_QA|resources]]
+- [[interviewNote/❓index_04_INTERVIEW_QA|suga_tech]]
+
+## 📄 Notes & Documents
+- [[interviewNote/README|README]]
+- [[interviewNote/behavioral|behavioral]]
+- [[interviewNote/behavioral_question_bank|behavioral_question_bank]]
+- [[interviewNote/questions_to_ask|questions_to_ask]]
+- [[interviewNote/system_design|system_design]]
+- [[interviewNote/technical|technical]]
+- [[interviewNote/tell_me_about_yourself|tell_me_about_yourself]]
+- [[interviewNote/worldquant math interview|worldquant math interview]]
+

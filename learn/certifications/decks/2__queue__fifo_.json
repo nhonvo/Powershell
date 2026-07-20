@@ -1,0 +1,216 @@
+{
+  "Meta": {
+    "Id": "deck_2__queue__fifo_",
+    "Topic": "2. Queue (FIFO)",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "2__queue__fifo_"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 10
+  },
+  "Cards": [
+    {
+      "Id": "card_01002",
+      "Front": "Thao tác",
+      "Back": "Mô tả | Độ phức tạp",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. queue (fifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01003",
+      "Front": "`enqueue(x)`",
+      "Back": "Thêm phần tử x vào cuối queue | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. queue (fifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01004",
+      "Front": "`dequeue()`",
+      "Back": "Xóa và trả về phần tử đầu queue | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. queue (fifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01005",
+      "Front": "`front()` / `peek()`",
+      "Back": "Xem phần tử đầu mà không xóa | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. queue (fifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01006",
+      "Front": "`isEmpty()`",
+      "Back": "Kiểm tra queue rỗng | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. queue (fifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01007",
+      "Front": "`size()`",
+      "Back": "Số phần tử trong queue | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. queue (fifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01008",
+      "Front": "**Ưu**",
+      "Back": "Cache-friendly, ít memory overhead | Không cần biết capacity trước",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. queue (fifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01009",
+      "Front": "**Ưu**",
+      "Back": "O(1) mọi thao tác (worst case) | O(1) mọi thao tác (worst case)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. queue (fifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01010",
+      "Front": "**Nhược**",
+      "Back": "Cần biết capacity trước | Mỗi node tốn thêm bộ nhớ cho pointer",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. queue (fifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01011",
+      "Front": "**Nhược**",
+      "Back": "Resize phức tạp (phải copy circular) | Cache performance kém hơn",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. queue (fifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

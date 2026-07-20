@@ -1,0 +1,17 @@
+# Day 05: SQL Mastery & Indexing
+**Goal:** Optimize data retrieval.
+
+### 📖 Reading (GitHub App)
+- Open `doc/postgresql_deep_dive/`.
+- Review **Index Types** (B-Tree, Hash, GIN).
+
+### 🤖 AI Drill (Copy & Paste to ChatGPT/Gemini)
+> "Explain how a B-Tree index works in PostgreSQL. Why is it faster for range queries (e.g., `WHERE age > 20`) than a Hash index? Also, explain the 'Explain Analyze' command and how to spot a 'Sequential Scan' that is killing performance."
+
+### 📝 Mobile Task
+- Open a **Markdown file** in your GitHub App.
+- Write a complex SQL query that involves:
+  - `JOIN` between 3 tables.
+  - `GROUP BY` and `HAVING`.
+  - A window function (e.g., `ROW_NUMBER()`).
+

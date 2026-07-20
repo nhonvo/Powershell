@@ -1,0 +1,89 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 11
+
+## Part 1
+**Q1.** この　山は　きれいですね。
+- **A.** やま
+- **B.** うみ
+- **C.** はな
+- **D.** かわ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1山 (SƠN)：Ngọn n&uacute;iNgọn n&uacute;i n&agrave;y đẹp nhỉ.</p>
+</details>
+
+---
+**Q2.** リーさんは　先月　くにへ　かえりました。
+- **A.** せんげつ
+- **B.** せんしゅう
+- **C.** こんげつ
+- **D.** こんしゅう
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1先月 (TI&Ecirc;N - NGUYỆT)：th&aacute;ng trướcLy đ&atilde; về nước th&aacute;ng trước.</p>
+</details>
+
+---
+**Q3.** ねこは　外に　います。
+- **A.** そと
+- **B.** なか
+- **C.** いえ
+- **D.** にわ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1外 (NGOẠI)：b&ecirc;n ngo&agrave;iC&oacute; con m&egrave;o ở b&ecirc;n ngo&agrave;i.</p>
+</details>
+
+---
+**Q4.** りんごを　四つ　ください。
+- **A.** みっつ
+- **B.** いつつ
+- **C.** やっつ
+- **D.** よっつ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4四つ (TỨ)：bốn(B&aacute;n) cho t&ocirc;i bốn quả t&aacute;o.</p>
+</details>
+
+---
+**Q5.** この　ほんは　古いです。
+- **A.** やすい
+- **B.** たかい
+- **C.** ふるい
+- **D.** うすい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3古い (CỔ)：cũCuốn s&aacute;ch n&agrave;y cũ.</p>
+</details>
+
+---
+**Q6.** どの　新聞を　かいますか。
+- **A.** しんむん
+- **B.** しぶん
+- **C.** しむん
+- **D.** しんぶん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4新聞 (T&Acirc;N - VĂN)：tờ b&aacute;oBạn sẽ mua tờ b&aacute;o n&agrave;o?</p>
+</details>
+
+---
+**Q7.** かぞくは　何人　いますか。
+- **A.** なにひと
+- **B.** なんにん
+- **C.** なににん
+- **D.** なんひと
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2何人 (H&Agrave; - NH&Acirc;N)：bao nhi&ecirc;u ngườiGia đ&igrave;nh bạn c&oacute; bao nhi&ecirc;u người?</p>
+</details>
+
+---

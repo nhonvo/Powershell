@@ -1,0 +1,128 @@
+﻿# DSA Plan — 28 Days (Interview Focus)
+
+Imported resources:
+- Existing solutions (not committed): `dsa/Udacity-Data-Structures-and-Algorithms/`
+- Legacy tracker: `dsa/Data structure and algorithms.md`
+
+## Goal
+
+Be consistent and fast: recognize patterns, write correct code on first attempt, and explain complexity clearly.
+
+## Targets (by Day 28)
+
+- [ ] 45 problems total (minimum)
+- [ ] 20 mediums (minimum)
+- [ ] 12 timed attempts
+- [ ] 20 reviewed with `problem_template.md`
+- [ ] 1 “pattern sheet” you can skim before interviews
+
+## Standard daily routine (60–100 min)
+
+1. Warm-up (10 min): review 1 old mistake
+2. Solve (35–50 min): 1 medium OR 2 easy
+3. Review (15–30 min): fill `problem_template.md` + update `patterns.md`
+
+Log everything in:
+- `daily/tracking.csv`
+
+---
+
+## Week 1 — Core patterns (Days 1–7)
+
+### Day 1: Arrays + HashMap
+- Problems: 2 easy
+- Pattern notes: prefix sums + hashmap counting
+
+### Day 2: Two pointers
+- Problems: 1 medium
+- Review: off-by-one checklist
+
+### Day 3: Sliding window
+- Problems: 1 medium
+- Notes: window expand/shrink rules
+
+### Day 4: Stack
+- Problems: 1 medium
+- Notes: monotonic stack template (indices vs values)
+
+### Day 5: Binary search
+- Problems: 1 medium
+- Notes: “first true” boundary template
+
+### Day 6 (Weekend): Timed set
+- Timed: 1 medium (45 min)
+- Post-review: write the clean solution from memory after 30 min break
+
+### Day 7 (Weekend): Weekly review
+- Redo: 2 wrong problems
+- Update: `patterns_common.md` with your mistakes
+
+---
+
+## Week 2 — Trees/Graphs + DP entry (Days 8–14)
+
+### Day 8: Trees traversal
+- Problems: 1 medium
+
+### Day 9: BFS/DFS
+- Problems: 1 medium
+
+### Day 10: Graph (BFS shortest path)
+- Problems: 1 medium
+
+### Day 11: DP basics (1D)
+- Problems: 1 easy + 1 medium
+
+### Day 12: Heaps / Top K
+- Problems: 1 medium
+
+### Day 13 (Weekend): Timed set
+- Timed: 2 problems (30 min each)
+
+### Day 14 (Weekend): Consolidate
+- Build a 1-page “pattern sheet” (bullets) in `patterns.md`
+
+---
+
+## Week 3 — Mixed practice + speed (Days 15–21)
+
+Do this pattern for Days 15–19:
+- 1 timed medium (30–45 min)
+- 15 min review + template
+
+### Day 20 (Weekend): Mock coding interview
+- Pick 1 medium you haven’t seen
+- Simulate: clarify → edge cases → code → test → complexity
+
+### Day 21 (Weekend): Weak topics day
+- From `topics.md`, pick lowest 2 confidence topics and do 2 problems each.
+
+---
+
+## Week 4 — Final polish (Days 22–28)
+
+### Day 22–25
+- Each day: 1 timed medium + review template
+- Focus: correctness + speed + explanation
+
+### Day 26
+- DP day: 2 DP problems (1 medium + 1 medium/easy)
+
+### Day 27
+- Mixed: 3 easy back-to-back (20 min each)
+
+### Day 28
+- Light review: only mistakes + pattern sheet
+
+---
+
+## Weekly tracker (copy)
+
+### Week of: YYYY-MM-DD
+
+- [ ] 10 problems solved
+- [ ] 3 mediums minimum
+- [ ] 2 timed attempts
+- [ ] 5 problems reviewed with template
+
+

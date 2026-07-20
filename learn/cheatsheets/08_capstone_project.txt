@@ -1,0 +1,43 @@
+🔙 **Back to Parent**: [[technical_skills/05_Docker_Hero/📂index_05_Docker_Hero|05_Docker_Hero]]
+
+# Module 8: Capstone Project (Lộ trình Thực chiến) 🏗️
+
+Đây là lúc bạn áp dụng tất cả những gì đã học để giải quyết một bài toán thực tế.
+
+---
+
+## 🎯 Đề bài: "The Micro-Blog Engine"
+
+Hệ thống cho phép người dùng đăng bài viết và bình luận, bao gồm:
+1. **Frontend**: Một trang đơn giản.
+2. **Backend**: Spring Boot / .NET API.
+3. **Database**: PostgreSQL.
+4. **Caching**: Redis.
+5. **Reverse Proxy**: Nginx.
+
+---
+
+## 📋 Yêu cầu kỹ thuật (Checklist)
+
+### 1. Optimization
+- Viết Dockerfile tối ưu (Multi-stage build).
+- Sử dụng Alpine làm base image.
+
+### 2. Configuration
+- Sử dụng Docker Compose điều phối 5 dịch vụ trên.
+- Cấu hình Environment Variables để linh hoạt chuyển đổi môi trường (Dev/Prod).
+
+### 3. Storage
+- Sử dụng Docker Volumes để đảm bảo dữ liệu Database không bị mất khi xóa container.
+
+### 4. CI/CD
+- Tích hợp GitHub Action tự động build và đẩy Image lên Docker Hub sau mỗi lần push.
+
+---
+
+## 📝 Tài liệu tham khảo
+- [Hosting Simple WebAPI with EC2 & Docker](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2024-12-21-hosting-simple-webapi-on-ec2.md)
+- [Containerization & Orchestration Deep Dive](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-containerization-orchestration.md)
+
+---
+*Chúc mừng bạn đã hoàn thành khóa học Docker Zero To Hero!*

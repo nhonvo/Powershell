@@ -1,0 +1,74 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/04_Caching_Redis/📂index_04_Caching_Redis|04_Caching_Redis]]
+
+# 🗝️ 3. Distributed Locking & PubSub (Advanced Redis)
+
+Khi hệ thống Backend có hàng trăm server chạy song song, việc đồng bộ giữa các server là một bài toán khó. Redis cung cấp các công cụ mạnh mẽ để giải quyết việc này: **Distributed Locking** và **Pub/Sub (Publish/Subscribe)**.
+
+---
+
+### 🏛️ 3.1 Distributed Locking (Khóa phân tán)
+
+> "Làm sao để đảm bảo tại một thời điểm, chỉ CÓ MỘT server thực hiện công việc Thanh toán (Payment) cho cùng một người dùng?"
+
+Trong bộ nhớ đệm nội bộ (Internal Memory), ta dùng `lock / synchronized`. Trong mạng lưới phân tán (Distributed), ta dùng Redis.
+
+#### **Thuật toán Redlock (Antirez)**
+- **SETNX** (Set if Not Exists): Thử tạo một khóa. Nếu đã có người khác tạo trước đó, bạn sẽ thất bại (Lock Failed).
+- **TTL** (Time To Live): Luôn gán thời gian chết cho khóa để đề phòng trường hợp Server giữ khóa bị sập giữa chừng, không bao giờ nhả ra (Deadlock).
+
+**Ví dụ (C# - StackExchange.Redis):**
+```csharp
+bool lockAcquired = db.LockTake("order_123", "server_hash", TimeSpan.FromSeconds(10));
+if (lockAcquired) {
+    try { /* Xử lý thanh toán */ }
+    finally { db.LockRelease("order_123", "server_hash"); }
+}
+```
+
+---
+
+### 🧠 3.2 Pub/Sub Pattern (Phát tin & Nhận tin)
+
+Redis hoạt động như một Message Broker siêu nhanh. Hệ thống "Bắn tin" (Publish) vào một "Kênh" (Channel), và các "Người nghe" (Subscriber) sẽ nhận được tin ngay lập tức.
+
+- **Ưu điểm**: Cực nhanh, hỗ trợ hàng triệu tin nhắn/giây.
+- **Nhược điểm**: **"Fire and Forget"** (Bắn rồi quên). Nếu người nghe đang bị sập (Offline) lúc tin nhắn bắn ra, họ sẽ **MẤT VĨNH VIỄN** tin nhắn đó.
+
+---
+
+### 🚀 3.3 Redis Streams (Message Queue Thực thụ)
+
+Để khắc phục nhược điểm của Pub/Sub, Redis 5.0+ giới thiệu **Streams**. Đây là một Message Queue có tính chất bền vững:
+- **Consumer Groups**: Chia tải cho nhiều server cùng xử lý danh sách tin nhắn.
+- **ACK (Acknowledgement)**: Tin nhắn chỉ biến mất khi server xác nhận đã xử lý xong. Nếu server bị sập giữa chừng, server khác có thể "nhận lại" tin nhắn đó (Claiming).
+
+---
+
+### ⚡ 3.4 Rate Limiting (Chặn Spam API)
+
+Dùng Redis để giới hạn số lần gọi API của người dùng (Ví dụ: 10 lần/phút).
+- **Thuật toán Token Bucket**: Mỗi request tiêu 1 token. Redis tự động bơm thêm token sau mỗi khoảng thời gian.
+
+---
+
+### 📝 3.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao luôn phải gán thời gian (TTL) cho một Distributed Lock?"
+<details><summary>Đáp án</summary>
+Phòng trường hợp Server đang giữ khóa bị sập (Crash, Out of Memory) mà chưa kịp thực thi đoạn code nhả khóa (Release). Nếu không có TTL, khóa đó sẽ tồn tại vĩnh viễn và không ai khác có thể thực hiện công việc đó được nữa (Deadlock toàn hệ thống).
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh Redis CLI để thực hiện đăng ký nhận tin nhắn từ kênh `chat_room_1` và bắn thử một tin nhắn vào kênh đó.
+<details><summary>Solution</summary>
+```bash
+SUBSCRIBE chat_room_1   # Ở terminal 1 (Lắng nghe)
+PUBLISH chat_room_1 "Hello mọi người!" # Ở terminal 2 (Bắn tin)
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Distributed Locks with Redis - Redlock Algorithm Explained](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-redlock-internals.md)
+- [Building a High Performance Rate Limiter with Redis](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-rate-limiting.md)
+- [Pub/Sub vs Redis Streams: Which one to choose?](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-pubsub-vs-streams.md)

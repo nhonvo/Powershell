@@ -1,0 +1,155 @@
+# 🗃️ AZ-700 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Design, implement, and manage connectivity services (Testlet 1)
+
+You need to connect Vnet2 and Vnet3. The solution must meet the virtual networking requirements and the business requirements.
+
+Which two actions should you include in the solution? Each correct answer presents part of the solution.
+
+Note: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,E`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Design, implement, and manage connectivity services (Testlet 1)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You need to recommend a configuration for the ExpressRoute connection from the Boston datacenter. The solution must meet the hybrid networking requirements and business requirements.
+
+What should you recommend? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Design, implement, and manage connectivity services (Testlet 2)
+
+You need to configure GW1 to meet the network security requirements for the P2S VPN users.
+
+Which Tunnel type should you select in the Point-to-site configuration settings of GW1?
+
+### Options:
+- [ ] **A)** IKEv2 and OpenVPN (SSL)
+- [ ] **B)** IKEv2
+- [ ] **C)** IKEv2 and SSTP (SSL)
+- [x] **D)** OpenVPN (SSL) [Correct]
+- [ ] **E)** SSTP (SSL)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Design, implement, and manage connectivity services (Testlet 3)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You need to configure the P2S VPN to meet the connectivity requirements.
+
+What should you do? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: OpenVPN (SSL)
+For VPNGW1, set tunnel type to:
+
+Scenario:
+VPNGW1 is a Virtual network gateway in HubVNet.
+*-> Ensure that remote users on Windows 11 devices can connect to HubVNet by using a Point-to-Site (P2S) VPN and their proseware.com credentials.
+
+Note: Microsoft Entra ID authentication
+You can configure your P2S gateway to allow VPN users to authenticate using Microsoft Entra ID credentials. With Microsoft Entra ID authentication, you can use Microsoft Entra Conditional Access and multifactor authentication (MFA) features for VPN.
+
+Microsoft Entra ID authentication is supported only for the OpenVPN protocol. To authenticate and connect, clients must use the Azure VPN Client.
+
+Box 2: Create an app registration
+For proseware.com:
+
+VPN Gateway now supports a new Microsoft-registered App ID and corresponding Audience values for the latest versions of the Azure VPN Client. 
+When you configure a P2S VPN gateway using the new Audience values, you skip the Azure VPN Client app manual registration process for your Microsoft Entra tenant.
+
+*-> Previously, you were required to manually register (integrate) the Azure VPN Client app with your Microsoft Entra tenant. Registering the client app creates an App ID representing the identity of the Azure VPN Client application and requires authorization using the Global Administrator role.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Design, implement, and manage connectivity services (Testlet 3)
+
+Your company has a single on-premises datacenter in Washington DC. The East US Azure region has a peering location in Washington DC.
+
+The company only has Azure resources in the East US region.
+
+You need to implement ExpressRoute to support up to 1 Gbps. You must use only ExpressRoute Unlimited data plans. The solution must minimize costs.
+
+Which type of ExpressRoute circuits should you create?
+
+### Options:
+- [x] **A)** ExpressRoute Local [Correct]
+- [ ] **B)** ExpressRoute Direct
+- [ ] **C)** ExpressRoute Premium
+- [ ] **D)** ExpressRoute Standard
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---

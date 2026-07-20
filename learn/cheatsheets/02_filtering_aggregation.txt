@@ -1,0 +1,86 @@
+🔙 **Back to Parent**: [[technical_skills/04_PostgreSQL_Deep_Dive/05_Indexing_Mastery|04_PostgreSQL_Deep_Dive]]
+
+# 📊 2. Filtering & Aggregation (Data Mastery)
+
+Lấy đúng dữ liệu bạn cần và tóm tắt thông tin từ hàng triệu bản ghi là kỹ năng quan trọng bậc nhất của một Backend Developer. PostgreSQL cung cấp các công cụ mạnh mẽ từ `WHERE` cơ bản đến `GROUP BY` nâng cao.
+
+---
+
+### 🏛️ 2.1 Filtering Data (Lọc) - "Tìm kiếm đúng mục tiêu"
+
+Sử dụng `WHERE` để giới hạn các dòng kết quả.
+
+- **Toán tử so sánh**: `=`, `<>`, `>`, `<=`.
+- **Logic**: `AND`, `OR`, `NOT`.
+- **Phạm vi**: `BETWEEN 18 AND 30`.
+- **Tìm kiếm mờ**: `LIKE '%nhon%'` (Phân biệt hoa thường) vs `ILIKE '%nhon%'` (Không phân biệt hoa thường - Postgres specific).
+- **Trùng khớp danh sách**: `IN (1, 2, 3)`.
+
+> [!WARNING]
+> Sử dụng `WHERE id IN (SELECT id FROM others)` với số lượng bản ghi lớn có thể làm chậm query. Hãy dùng `JOIN` hoặc `EXISTS`.
+
+---
+
+### 🧠 2.2 Aggregation (Tổng hợp) - "Tóm tắt sự thật"
+
+Các hàm tổng hợp thu gọn nhiều hàng thành 1 hàng duy nhất.
+
+- `COUNT(*)`: Đếm số hàng.
+- `SUM()`: Tổng cộng.
+- `AVG()`: Trung bình.
+- `MAX()` / `MIN()`: Lấy lớn nhất/nhỏ nhất.
+
+---
+
+### 🚀 2.3 GROUP BY & HAVING (Gom nhóm)
+
+Đây là nơi "ma thuật" bắt đầu. Bạn gom các bản ghi có chung đặc điểm (VD: Cùng phòng ban) để tính toán.
+
+**Quy trình thực thi của SQL:**
+1.  **FROM**: Xác định bảng.
+2.  **WHERE**: Lọc các hàng thô.
+3.  **GROUP BY**: Gom nhóm các hàng còn lại.
+4.  **HAVING**: Lọc kết quả TRÊN các nhóm đã gom. (VD: "Lấy các phòng ban có tổng lương > 1000").
+5.  **SELECT**: Chọn cột hiển thị.
+6.  **ORDER BY**: Sắp xếp.
+
+**Ví dụ (Group By):**
+```sql
+SELECT dept_id, COUNT(*) AS emp_count
+FROM employees
+GROUP BY dept_id
+HAVING COUNT(*) > 5; -- Lấy những phòng ban có trên 5 người
+```
+
+---
+
+### ⚡ 2.4 DISTINCT vs GROUP BY
+
+Cả 2 đều có thể dùng để lấy giá trị duy nhất, nhưng `DISTINCT` đơn giản hơn cho 1 cột duy nhất, còn `GROUP BY` mạnh mẽ khi đi kèm với các phép tính toán (`COUNT`, `SUM`).
+
+---
+
+### 📝 2.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao cột 'Name' không thể dùng trong SELECT nếu nó không có trong GROUP BY?"
+<details><summary>Đáp án</summary>
+Giả sử bạn gom nhóm theo `DeptId` (có 10 nhân viên). Nếu `SELECT Name`, SQL không biết phải hiển thị tên của ai trong số 10 người đó (Vì kết quả chỉ trả về 1 hàng duy nhất cho 1 nhóm). Bạn buộc phải dùng hàm tổng hợp như `MAX(Name)` hoặc `STRING_AGG(Name)`.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh SQL lấy số lượng đơn hàng (Orders) của từng khách hàng (Customers) trong tháng 03/2024. Chỉ lấy những người có trên 3 đơn hàng.
+<details><summary>Solution</summary>
+```sql
+SELECT customer_id, COUNT(*) AS total_orders
+FROM orders
+WHERE created_at >= '2024-03-01' AND created_at <= '2024-03-31'
+GROUP BY customer_id
+HAVING COUNT(*) > 3;
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [How PostgreSQL Aggregations Work - Behind the Scenes](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-postgresql-aggregations.md)
+- [Mastering GROUP BY & HAVING for Business Reports](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-group-by-mastery.md)
+- [Filtering Best Practices: LIKE vs ILIKE vs Full Text Search](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-postgresql-filtering.md)

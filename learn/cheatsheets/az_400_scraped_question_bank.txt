@@ -1,0 +1,140 @@
+# 🗃️ AZ-400 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 1- Mixed Questions Set
+
+You have created an Azure DevOps project for a new application that will be deployed to a number of Windows Server 2016 Azure virtual machines.
+
+You are preparing a deployment solution that allows for the virtual machines to maintain a uniform configuration, and also keep administrative effort with regards to configuring the virtual machines to a minimum.
+
+Which of the following should be part of your solution? (Choose two.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 1- Mixed Questions Set
+
+Your company has an application that contains a number of Azure App Service web apps and Azure functions.
+
+You would like to view recommendations with regards to the security of the web apps and functions. You plan to navigate to Compute and Apps to achieve your goal.
+
+Which of the following should you access to make use of Compute and Apps?
+
+### Options:
+- [ ] **A)** Azure Log Analytics
+- [ ] **B)** Azure Event Hubs
+- [ ] **C)** Azure Advisor
+- [x] **D)** Microsoft Defender for Cloud [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+Monitor compute and app services: Compute & apps include the App Services tab, which App services: list of your App service environments and current security state of each.
+Recommendations
+This section has a set of recommendations for each VM and computer, web and worker roles, Azure App Service Web Apps, and Azure App Service Environment that Security Center monitors. The first column lists the recommendation. The second column shows the total number of resources that are affected by that recommendation. The third column shows the severity of the issue.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 1- Mixed Questions Set
+
+You need to consider the underlined segment to establish whether it is accurate.
+
+Your company has a multi-tier application that has its front end hosted in Azure App Service.
+
+To pinpoint the average load times of the application pages, you should make use of Azure Event Hubs.
+
+Select "No adjustment required" if the underlined segment is accurate. If the underlined segment is inaccurate, select the accurate option.
+
+### Options:
+- [ ] **A)** No adjustment required.
+- [x] **B)** Azure Application Insights [Correct]
+- [ ] **C)** Azure Log Analytics
+- [ ] **D)** Azure Advisor
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Application Insights will tell you about any performance issues and exceptions, and help you find and diagnose the root causes.
+Application Insights can monitor both Java and ASP.NET web applications and services, WCF services. They can be hosted on-premises, on virtual machines, or as Microsoft Azure websites.
+On the client side, Application Insights can take telemetry from web pages and a wide variety of devices including iOS, Android, and Windows Store apps.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 1- Mixed Questions Set
+
+Your company makes use of Azure SQL Database Intelligent Insights and Azure Application Insights for monitoring purposes.
+
+You have been tasked with analyzing the monitoring using ad-hoc queries. You need to utilize the correct query language.
+
+Solution: You use the Contextual Query Language (CQL).
+
+Does the solution meet the goal?
+
+### Options:
+- [ ] **A)** Yes
+- [x] **B)** No [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 1- Mixed Questions Set
+
+Your company makes use of Azure SQL Database Intelligent Insights and Azure Application Insights for monitoring purposes.
+
+You have been tasked with analyzing the monitoring using ad-hoc queries. You need to utilize the correct query language.
+
+Solution: You use the Transact-SQL.
+
+Does the solution meet the goal?
+
+### Options:
+- [ ] **A)** Yes
+- [x] **B)** No [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---

@@ -1,0 +1,365 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/04_N2/Course_39/📂index_Course_39|Course_39]]
+
+# Test tổng hợp chương 7
+
+## Part 1
+**Q1.** 今週　どこかへ　行きますか。
+- **A.** こんしゅう
+- **B.** いましゅう
+- **C.** せんしゅう
+- **D.** らいしゅう
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1今週: Tuần n&agrave;y今週　どこかへ　行きますか。Tuần n&agrave;y, bạn c&oacute; đi đ&acirc;u đ&oacute; kh&ocirc;ng?</p>
+</details>
+
+---
+**Q2.** これ、忘れ物ですね。
+- **A.** わすれもの
+- **B.** わすれかた
+- **C.** わすれぶつ
+- **D.** わすれしな
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1忘れ物: Đồ bỏ qu&ecirc;nこれ、忘れ物ですね。C&agrave;i n&agrave;y l&agrave; đồ bỏ qu&ecirc;n nhỉ.</p>
+</details>
+
+---
+**Q3.** 8時の　バスに　間に合いますか。
+- **A.** まにごうい
+- **B.** まにかい
+- **C.** まにあい
+- **D.** まにとい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3間に合います: Kịp (giờ)8時の　バスに　間に合いますか。C&oacute; kịp chuyến xe bu&yacute;t l&uacute;c 8 giờ kh&ocirc;ng?</p>
+</details>
+
+---
+**Q4.** 日本の　社会
+- **A.** しゃがい
+- **B.** しゃかい
+- **C.** しゃっかい
+- **D.** しゃあい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2社会: x&atilde; hội日本の　社会X&atilde; hội Nhật Bản</p>
+</details>
+
+---
+**Q5.** 1ヶ月に　1回　友達と　買い物します。
+- **A.** かいしな
+- **B.** かいもん
+- **C.** かいぶつ
+- **D.** かいもの
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4買い物します: mua sắm1ヶ月に　1回　友達と　買い物します。T&ocirc;i đi mua sắm c&ugrave;ng bạn một lần một th&aacute;ng.</p>
+</details>
+
+---
+**Q6.** 牛肉を　買いました。
+- **A.** ぎゅうにく
+- **B.** ぎゅにく
+- **C.** うしにく
+- **D.** うしのにく
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1牛肉: Thịt b&ograve;牛肉を　買いました。T&ocirc;i đ&atilde; mua thịt b&ograve;.</p>
+</details>
+
+---
+**Q7.** 京都で　着物を　着たい。
+- **A.** きもうの
+- **B.** きもの
+- **C.** きふつ
+- **D.** きぶつ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2着物: kimono京都で　着物を　着たい。T&ocirc;i muốn mặc kimono ở Kyoto.</p>
+</details>
+
+---
+**Q8.** 誕生日は　いつですか。
+- **A.** たんじょうびい
+- **B.** たんじようび
+- **C.** たんじょび
+- **D.** たんじょうび
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4誕生日: ng&agrave;y sinh nhật誕生日は　いつですか。Sinh nhật của bạn l&agrave; khi n&agrave;o?</p>
+</details>
+
+---
+**Q9.** あの男の子は　小学生です。
+- **A.** しょうがくせ
+- **B.** しょうがくぜ
+- **C.** しょうがくせい
+- **D.** しょうがくぜい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3小学生: học sinh tiểu họcあの男の子は　小学生です。Cậu b&eacute; kia l&agrave; học sinh tiểu học.</p>
+</details>
+
+---
+**Q10.** 妹は　今　病気です。
+- **A.** びょういき
+- **B.** びょうぎ
+- **C.** びょうき
+- **D.** びょうけ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3病気: bệnh妹は　今　病気です。Em g&aacute;i t&ocirc;i b&acirc;y giờ đang bệnh.</p>
+</details>
+
+---
+**Q1.** 7月から　8月まで　________です。
+- **A.** 夏休み
+- **B.** 秋休み
+- **C.** 冬休み
+- **D.** 春休み
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1夏休み: kỳ nghỉ h&egrave;7月から　8月まで　夏休みです。Từ th&aacute;ng 7 đến th&aacute;ng 8 l&agrave; kỳ nghỉ h&egrave;.</p>
+</details>
+
+---
+**Q2.** ________に　行きます。
+- **A.** ペン
+- **B.** プリン
+- **C.** トイレ
+- **D.** パソコン
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3トイレ: nh&agrave; vệ sinhトイレに　行きます。Đi nh&agrave; vệ sinh.</p>
+</details>
+
+---
+**Q3.** ________　日本の　映画を　見ました。
+- **A.** ぜひ
+- **B.** どのくらい
+- **C.** 初めて
+- **D.** これから
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3初めて: lần đầu ti&ecirc;n初めて　日本の　映画を　見ました。Lần đầu ti&ecirc;n t&ocirc;i xem phim Nhật Bản.</p>
+</details>
+
+---
+**Q4.** スーパーで　________を　買います。
+- **A.** 切符
+- **B.** 野菜
+- **C.** 売り場
+- **D.** 食事
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2野菜: rauスーパーで　野菜を　買います。T&ocirc;i mua rau ở si&ecirc;u thị.</p>
+</details>
+
+---
+**Q5.** 新しい　________が　ほしい。
+- **A.** 週末
+- **B.** 冗談
+- **C.** ＣＭ
+- **D.** パソコン
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4パソコン: m&aacute;y t&iacute;nh新しい　パソコンが　ほしい。T&ocirc;i muốn một chiếc m&aacute;y t&iacute;nh mới.</p>
+</details>
+
+---
+**Q6.** その________、かっこいいですね。
+- **A.** スキューバダイビング
+- **B.** ラーメン屋
+- **C.** バナナ
+- **D.** ワイシャツ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4ワイシャツ: &aacute;o sơ mi d&agrave;i tayそのワイシャツ、かっこいいですね。Chiếc &aacute;o sơ mi d&agrave;i tay đ&oacute; ngầu nhỉ.</p>
+</details>
+
+---
+**Q7.** 本を　3______　買いました。
+- **A.** 冊
+- **B.** 枚
+- **C.** 個
+- **D.** 年
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1冊: quyển, cuốn (đơn vị đếm s&aacute;ch vở hay tập giấy)本を　3冊　買いました。T&ocirc;i đ&atilde; mua 3 cuốn s&aacute;ch.</p>
+</details>
+
+---
+**Q8.** ________が　すきました。
+- **A.** 顔
+- **B.** お腹
+- **C.** 手
+- **D.** 足
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2お腹: bụngお腹が　すきました。T&ocirc;i đ&oacute;i bụng rồi.</p>
+</details>
+
+---
+**Q9.** ________　友達と　サッカーを　します。
+- **A.** そんなに
+- **B.** ころ
+- **C.** よく
+- **D.** ぜひ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3よく: thường, hayよく　友達と　サッカーを　します。T&ocirc;i thường chơi b&oacute;ng đ&aacute; c&ugrave;ng bạn b&egrave;.</p>
+</details>
+
+---
+**Q10.** このえんぴつは　ちょっと　________。
+- **A.** 低い
+- **B.** 短い
+- **C.** せまい
+- **D.** 忙しい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2短い: ngắnこのえんぴつは　ちょっと　短い。Chiếc b&uacute;t ch&igrave; n&agrave;y hơi ngắn.</p>
+</details>
+
+---
+**Q1.** A:　________________B:　はい、プールへ　行きます。
+- **A.** 明日　どこかへ　行きますか。
+- **B.** 明日　どこへ　行きますか。
+- **C.** 明日　どこを　行きますか。
+- **D.** 明日　どこに　行きますか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A:　明日　どこかへ　行きますか。B:　はい、プールへ　行きます。A: Ng&agrave;y mai, bạn c&oacute; đi đ&oacute; đ&acirc;u kh&ocirc;ng?B: C&oacute;, tớ sẽ đi bể bơi.</p>
+</details>
+
+---
+**Q2.** A:　________________B:　猫が　います。
+- **A.** 窓の　外で　なにと　いますか。
+- **B.** 窓の　外に　なには　いますか。
+- **C.** 窓の　外に　なにが　いますか。
+- **D.** 窓の　外で　なにか　いますか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A:　窓の　外に　なにが　いますか。B:　猫が　います。A: Ở b&ecirc;n ngo&agrave;i cửa sổ c&oacute; g&igrave; thế?B: C&oacute; con m&egrave;o.</p>
+</details>
+
+---
+**Q3.** A:　冷蔵庫の　中に　何か　ありますか。B:　________________
+- **A.** はい、何か　ありません。
+- **B.** はい、何も　ないです。
+- **C.** いいえ、何も　ありません。
+- **D.** いいえ、何か　ありません。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A:　冷蔵庫の　中に　何か　ありますか。B:　いいえ、何も　ありません。A: Ở trong tủ lạnh c&oacute; g&igrave; kh&ocirc;ng?B: Kh&ocirc;ng, kh&ocirc;ng c&oacute; g&igrave; cả.</p>
+</details>
+
+---
+**Q4.** A:　すみません、________________B:　はい、分かりました。
+- **A.** 赤いペンを　2本を　お願いします。
+- **B.** 赤いペンを　2本　お願いしますか。
+- **C.** 赤いペンを　2本を　ください。
+- **D.** 赤いペンを　2本　ください。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A:　すみません、赤いペンを　2本　ください。B:　はい、分かりました。A: Xin lỗi, h&atilde;y cho t&ocirc;i 2 c&acirc;y b&uacute;t đỏ.B: V&acirc;ng, t&ocirc;i hiểu rồi.</p>
+</details>
+
+---
+**Q5.** A:　田中さんは　よく　旅行しますか。B:　はい、________________
+- **A.** 1年の　3回ぐらいに　旅行しますよ。
+- **B.** 1年に　3回ぐらいに　旅行しますよ。
+- **C.** 1年の　3回ぐらい　旅行しますよ。
+- **D.** 1年に　3回ぐらい　旅行しますよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A:　田中さんは　よく　旅行しますか。B:　はい、1年に　3回ぐらい　旅行しますよ。A: Anh Tanaka c&oacute; hay đi du lịch kh&ocirc;ng?B: C&oacute;, 1 năm t&ocirc;i đi du lịch khoảng 3 lần đấy.</p>
+</details>
+
+---
+**Q6.** A:　あの喫茶店に　行きませんか。B:　いいですね、________________
+- **A.** 行きませんか。
+- **B.** 行きましょう。
+- **C.** 行きませんね。
+- **D.** 喫茶店は　ちょっと&hellip;。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A:　あの喫茶店に　行きませんか。B:　いいですね、行きましょう。A: Bạn c&oacute; muốn đi qu&aacute;n giải kh&aacute;t kia kh&ocirc;ng?B: Được đấy nhỉ, c&ugrave;ng đi th&ocirc;i n&agrave;o.</p>
+</details>
+
+---
+**Q7.** A:　この電動自転車、いいね。B:　うーん、家の　近くに　駅が　あるから、______
+- **A.** 電動自転車は　欲しくない。
+- **B.** 電動自転車は　欲しい。
+- **C.** 電動自転車は　欲しかった。
+- **D.** 電動自転車は　欲しいじゃない。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A:　この電動自転車、いいね。B:　うーん、家の　近くに　駅が　あるから、電動自転車は　欲しくない。A: Chiếc xe đạp điện n&agrave;y tốt nhỉ?B: Ừm, v&igrave; c&oacute; nh&agrave; ga ở gần nh&agrave; n&ecirc;n t&ocirc;i kh&ocirc;ng muốn (mua) xe đạp điện.</p>
+</details>
+
+---
+**Q8.** A:　今度　うちへ　________________B:　いいですね。行きたいです。
+- **A.** 日本料理を　食べに　行​​​​​​​きませんか。
+- **B.** 日本料理を　食べに　来​​​​​​​ませんか。
+- **C.** 日本料理を　食べに　帰​​​​​​​りませんか。
+- **D.** 日本料理を　食べに　出かけませんか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A:　今度　うちへ　日本料理を　食べに　来ませんか。B:　いいですね。行​​​​​​​きたいです。A: Lần tới, bạn c&oacute; muốn đến nh&agrave; t&ocirc;i ăn m&oacute;n Nhật kh&ocirc;ng?B: Được đấy. T&ocirc;i muốn đi.</p>
+</details>
+
+---
+**Q9.** A:　外で　サッカーを　しませんか。B:　いえ、今日は　寒いから、________________
+- **A.** 外に　行きたくないです。
+- **B.** 外に　行きたいくないです。
+- **C.** 外に　行きたいじゃないです。
+- **D.** 外に　行きたいですね。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A:　外で　サッカーを　しませんか。B:　いえ、今日は　寒いから、外に　行きたくないです。A: Bạn c&oacute; muốn chơi b&oacute;ng đ&aacute; ở ngo&agrave;i kh&ocirc;ng?B: Kh&ocirc;ng, v&igrave; h&ocirc;m nay trời lạnh n&ecirc;n t&ocirc;i kh&ocirc;ng muốn đi ra ngo&agrave;i.</p>
+</details>
+
+---
+**Q10.** A:　________________　分かりません。B:　ちょっと　待ってください。
+- **A.** この機械の　使い方が
+- **B.** この機械の　使う方が
+- **C.** この機械の　使います方が
+- **D.** この機械の　使いに方が
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A:　この機械の　使い方が　分かりません。B:　ちょっと　待ってください。A: T&ocirc;i kh&ocirc;ng biết c&aacute;ch sử dụng của c&aacute;i m&aacute;y n&agrave;y.B: H&atilde;y đợi t&ocirc;i một ch&uacute;t.</p>
+</details>
+
+---

@@ -1,0 +1,359 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/05_Hashing/🔑index_05_Hashing|05_Hashing]]
+
+## 4. Subarray / Substring Problems
+
+### 4.1. Tổng quan
+
+Đây là **nhóm bài toán kinh điển nhất** sử dụng hashing trong interview. Ý tưởng chung: dùng hash map để **lưu trữ thông tin đã thấy trước đó**, giúp giảm complexity từ O(n²) xuống O(n).
+
+**Ví dụ đời thực:** Bạn đang đi trên đường, ghi lại tổng quãng đường đã đi tại mỗi cột mốc. Nếu bạn muốn biết quãng đường giữa cột mốc A và cột mốc B, bạn chỉ cần lấy **tổng tại B - tổng tại A**. Đó chính là ý tưởng **prefix sum + hash map**.
+
+### 4.2. Subarray Sum Equals K
+
+> Cho mảng nums và số nguyên k. Đếm số subarray có tổng bằng k. Input: nums = [1, 2, 1, -1, 1, 2], k = 3 → Output: 4
+
+**Brute Force: O(n²)**
+
+```python
+def subarray_sum_brute(nums, k):
+    count = 0
+    for i in range(len(nums)):
+        total = 0
+        for j in range(i, len(nums)):
+            total += nums[j]
+            if total == k:
+                count += 1
+    return count
+```
+
+**Optimal: Prefix Sum + Hash Map — O(n)**
+
+**Ý tưởng then chốt:**
+
+```
+sum(nums[i..j]) = prefix[j+1] - prefix[i]
+```
+
+Nếu `prefix[j+1] - prefix[i] == k`, tức là `prefix[i] == prefix[j+1] - k`.
+
+Vậy tại mỗi vị trí j, ta cần đếm có bao nhiêu prefix trước đó có giá trị `prefix[j] - k`. Dùng hash map lưu frequency của prefix sum!
+
+CóKhôngCóKhôngDuyệt mảng, tính prefix sumTại mỗi vị trí jcurrent_sum = prefix[j]target = current_sum - ktarget có trong hash map?count += freq[target]Bỏ quaCập nhật freq[current_sum]++Còn phần tử?Return count
+
+**Mô phỏng từng bước:**
+
+```
+nums = [1, 2, 1, -1, 1, 2], k = 3
+freq = {0: 1}  ← prefix sum = 0 xuất hiện 1 lần (trước khi bắt đầu)
+current_sum = 0, count = 0
+
+i=0: num=1
+  current_sum = 0 + 1 = 1
+  target = 1 - 3 = -2
+  freq[-2] → không có → count = 0
+  freq = {0:1, 1:1}
+
+i=1: num=2
+  current_sum = 1 + 2 = 3
+  target = 3 - 3 = 0
+  freq[0] = 1 → count = 0 + 1 = 1     ← subarray [1,2,1...] wait, subarray [1,2] ✗
+                                          Thực ra là nums[0..1] = [1,2] sum=3 ✓
+  freq = {0:1, 1:1, 3:1}
+
+i=2: num=1
+  current_sum = 3 + 1 = 4
+  target = 4 - 3 = 1
+  freq[1] = 1 → count = 1 + 1 = 2     ← subarray nums[1..2] = [2,1] sum=3 ✓
+  freq = {0:1, 1:1, 3:1, 4:1}
+
+i=3: num=-1
+  current_sum = 4 + (-1) = 3
+  target = 3 - 3 = 0
+  freq[0] = 1 → count = 2 + 1 = 3     ← subarray nums[0..3] = [1,2,1,-1] sum=3 ✓
+  freq = {0:1, 1:1, 3:2, 4:1}
+
+i=4: num=1
+  current_sum = 3 + 1 = 4
+  target = 4 - 3 = 1
+  freq[1] = 1 → count = 3 + 1 = 4     ← subarray nums[1..4] = [2,1,-1,1] sum=3 ✓
+  freq = {0:1, 1:1, 3:2, 4:2}
+
+i=5: num=2
+  current_sum = 4 + 2 = 6
+  target = 6 - 3 = 3
+  freq[3] = 2 → count = 4 + 2 = 6     ← 2 subarrays kết thúc tại i=5 có sum=3
+  freq = {0:1, 1:1, 3:2, 4:2, 6:1}
+
+Kết quả: count = 6
+Các subarrays: [1,2], [2,1], [1,2,1,-1], [2,1,-1,1], [1,2], [-1,1,2]
+```
+
+**Python:**
+
+```python
+def subarray_sum(nums: list[int], k: int) -> int:
+    """
+    Đếm số subarray có tổng bằng k.
+    Time: O(n), Space: O(n)
+    """
+    freq = {0: 1}  # prefix_sum → frequency
+    current_sum = 0
+    count = 0
+
+    for num in nums:
+        current_sum += num
+        # Có bao nhiêu prefix trước đó = current_sum - k?
+        target = current_sum - k
+        count += freq.get(target, 0)
+        # Cập nhật frequency
+        freq[current_sum] = freq.get(current_sum, 0) + 1
+
+    return count
+
+print(subarray_sum([1, 2, 1, -1, 1, 2], 3))  # 6
+print(subarray_sum([1, 1, 1], 2))              # 2
+```
+
+**Phiên bản trả về cả các subarray (không chỉ đếm):**
+
+```python
+def subarray_sum_with_indices(nums: list[int], k: int) -> list[tuple[int, int]]:
+    """
+    Trả về danh sách (start, end) của tất cả subarray có tổng = k.
+    Time: O(n), Space: O(n)
+    Lưu ý: freq lưu list các index thay vì chỉ đếm.
+    """
+    # prefix_sum → [list of indices có prefix_sum này]
+    from collections import defaultdict
+    prefix_indices = defaultdict(list)
+    prefix_indices[0].append(-1)  # prefix_sum = 0 tại index -1 (trước mảng)
+
+    current_sum = 0
+    result = []
+
+    for i, num in enumerate(nums):
+        current_sum += num
+        target = current_sum - k
+
+        # Tìm tất cả vị trí trước đó có prefix_sum = target
+        if target in prefix_indices:
+            for start_idx in prefix_indices[target]:
+                result.append((start_idx + 1, i))  # subarray [start+1 .. i]
+
+        prefix_indices[current_sum].append(i)
+
+    return result
+
+# Test
+subarrays = subarray_sum_with_indices([1, 2, 1, -1, 1, 2], 3)
+print(subarrays)
+# [(0, 1), (1, 2), (0, 3), (1, 4), (3, 5), (4, 5)]
+# Tức là: [1,2], [2,1], [1,2,1,-1], [2,1,-1,1], [-1,1,2+1?]...
+```
+
+### 4.3. Longest Substring Without Repeating Characters
+
+> Cho chuỗi s. Tìm độ dài substring dài nhất không có ký tự lặp. Input: "abcabcbb" → Output: 3 ("abc")
+
+**Ví dụ đời thực:** Bạn đang xem một dãy đèn LED nhiều màu. Bạn muốn tìm đoạn đèn **liên tiếp dài nhất** mà **không có 2 đèn cùng màu**. Bạn dùng mắt "quét" từ trái sang phải, và nhớ vị trí cuối cùng bạn thấy mỗi màu.
+
+Sliding WindowGặp 'a' lặpGặp 'b' lặpGặp 'c' lặpa b c a b c b b[a b c] a b c b b → len=3a [b c a] b c b b → len=3a b [c a b] c b b → len=3a b c [a b c] b b → len=3a b c a b [c b] b → len=2
+
+**Mô phỏng từng bước:**
+
+```
+s = "abcabcbb"
+last_seen = {}  (hash map: char → last index)
+left = 0, max_len = 0
+
+i=0: s[0]='a'
+  'a' chưa thấy
+  last_seen = {'a': 0}
+  window: [a], len = 0-0+1 = 1, max_len = 1
+
+i=1: s[1]='b'
+  'b' chưa thấy
+  last_seen = {'a': 0, 'b': 1}
+  window: [a,b], len = 2, max_len = 2
+
+i=2: s[2]='c'
+  'c' chưa thấy
+  last_seen = {'a': 0, 'b': 1, 'c': 2}
+  window: [a,b,c], len = 3, max_len = 3
+
+i=3: s[3]='a'
+  'a' đã thấy tại index 0, và 0 >= left(0)
+  → left = 0 + 1 = 1  (nhảy qua vị trí cũ của 'a')
+  last_seen = {'a': 3, 'b': 1, 'c': 2}
+  window: [b,c,a], len = 3-1+1 = 3, max_len = 3
+
+i=4: s[4]='b'
+  'b' đã thấy tại index 1, và 1 >= left(1)
+  → left = 1 + 1 = 2
+  last_seen = {'a': 3, 'b': 4, 'c': 2}
+  window: [c,a,b], len = 4-2+1 = 3, max_len = 3
+
+i=5: s[5]='c'
+  'c' đã thấy tại index 2, và 2 >= left(2)
+  → left = 2 + 1 = 3
+  last_seen = {'a': 3, 'b': 4, 'c': 5}
+  window: [a,b,c], len = 5-3+1 = 3, max_len = 3
+
+i=6: s[6]='b'
+  'b' đã thấy tại index 4, và 4 >= left(3)
+  → left = 4 + 1 = 5
+  last_seen = {'a': 3, 'b': 6, 'c': 5}
+  window: [c,b], len = 6-5+1 = 2, max_len = 3
+
+i=7: s[7]='b'
+  'b' đã thấy tại index 6, và 6 >= left(5)
+  → left = 6 + 1 = 7
+  last_seen = {'a': 3, 'b': 7, 'c': 5}
+  window: [b], len = 7-7+1 = 1, max_len = 3
+
+Kết quả: max_len = 3
+```
+
+**Python:**
+
+```python
+def length_of_longest_substring(s: str) -> int:
+    """
+    Sliding window + hash map.
+    Time: O(n), Space: O(min(n, alphabet_size))
+    """
+    last_seen = {}  # char → last index
+    left = 0
+    max_len = 0
+
+    for right, char in enumerate(s):
+        if char in last_seen and last_seen[char] >= left:
+            # Ký tự lặp nằm trong window hiện tại
+            left = last_seen[char] + 1
+
+        last_seen[char] = right
+        max_len = max(max_len, right - left + 1)
+
+    return max_len
+
+print(length_of_longest_substring("abcabcbb"))  # 3
+print(length_of_longest_substring("bbbbb"))      # 1
+print(length_of_longest_substring("pwwkew"))     # 3
+```
+
+**Biến thể — Trả về cả substring (không chỉ độ dài):**
+
+```python
+def longest_substring_no_repeat(s: str) -> str:
+    """
+    Trả về substring dài nhất không có ký tự lặp.
+    Lưu thêm vị trí bắt đầu của window tốt nhất.
+    """
+    last_seen = {}
+    left = 0
+    max_len = 0
+    best_start = 0  # Vị trí bắt đầu của kết quả
+
+    for right, char in enumerate(s):
+        if char in last_seen and last_seen[char] >= left:
+            left = last_seen[char] + 1
+        last_seen[char] = right
+
+        # Cập nhật kết quả nếu window hiện tại dài hơn
+        if right - left + 1 > max_len:
+            max_len = right - left + 1
+            best_start = left
+
+    return s[best_start:best_start + max_len]
+
+print(longest_substring_no_repeat("abcabcbb"))   # "abc"
+print(longest_substring_no_repeat("pwwkew"))      # "wke"
+print(longest_substring_no_repeat("dvdf"))        # "vdf"
+```
+
+### 4.4. Subarray with Given Sum (Positive numbers only)
+
+Khi mảng chỉ có số **dương**, ta có thể dùng **sliding window** (2 pointers) thay vì hash map, vì prefix sum tăng đơn điệu.
+
+```python
+def subarray_sum_positive(nums: list[int], target: int) -> list[int]:
+    """
+    Tìm subarray liên tiếp có tổng = target (nums chỉ có số dương).
+    Two pointers: O(n) time, O(1) space.
+    """
+    left = 0
+    current_sum = 0
+
+    for right in range(len(nums)):
+        current_sum += nums[right]
+
+        while current_sum > target and left <= right:
+            current_sum -= nums[left]
+            left += 1
+
+        if current_sum == target:
+            return nums[left:right+1]
+
+    return []  # Không tìm thấy
+```
+
+### 4.5. Longest Substring with At Most K Distinct Characters
+
+> Cho chuỗi s và số k. Tìm substring dài nhất chứa tối đa k ký tự phân biệt.
+
+```python
+def longest_k_distinct(s: str, k: int) -> int:
+    """
+    Sliding window + hash map (frequency counter).
+    Time: O(n), Space: O(k)
+    """
+    freq = {}  # char → count in current window
+    left = 0
+    max_len = 0
+
+    for right in range(len(s)):
+        # Mở rộng window: thêm ký tự bên phải
+        char = s[right]
+        freq[char] = freq.get(char, 0) + 1
+
+        # Thu hẹp window nếu distinct chars > k
+        while len(freq) > k:
+            left_char = s[left]
+            freq[left_char] -= 1
+            if freq[left_char] == 0:
+                del freq[left_char]
+            left += 1
+
+        max_len = max(max_len, right - left + 1)
+
+    return max_len
+
+print(longest_k_distinct("eceba", 2))     # 3 ("ece")
+print(longest_k_distinct("aabacbebebe", 3))  # 7 ("cbebebe")
+```
+
+### 4.6. Complexity Summary
+
+| Bài toán                     | Time | Space       | Technique                    |
+| :--------------------------- | :--- | :---------- | :--------------------------- |
+| Subarray Sum = K             | O(n) | O(n)        | Prefix sum + hash map        |
+| Longest Substring No Repeat  | O(n) | O(min(n,σ)) | Sliding window + hash map    |
+| Subarray Sum (positive only) | O(n) | O(1)        | Two pointers                 |
+| K Distinct Chars             | O(n) | O(k)        | Sliding window + hash map    |
+| Minimum Window Substring     | O(n) | O(σ)        | Sliding window + 2 hash maps |
+
+(σ = alphabet size)
+
+### 4.7. Ưu điểm và Nhược điểm
+
+**Ưu điểm:**
+
+- Giảm O(n²) → O(n) nhờ hash map lưu trạng thái
+- Pattern chung áp dụng cho nhiều biến thể bài toán
+- Code template khá giống nhau, dễ nhớ
+
+**Nhược điểm:**
+
+- Cần O(n) extra space
+- Prefix sum + hash map chỉ hoạt động cho **subarray liên tiếp**
+- Cần cẩn thận với edge case: mảng rỗng, tất cả phần tử giống nhau, số âm

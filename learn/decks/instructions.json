@@ -1,0 +1,156 @@
+{
+  "Meta": {
+    "Id": "deck_instructions",
+    "Topic": "Instructions",
+    "Language": "English/Japanese",
+    "Domain": "technical_skills",
+    "Level": "General",
+    "Tags": [
+      "instructions"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 7
+  },
+  "Cards": [
+    {
+      "Id": "card_03522",
+      "Front": "Thành phần",
+      "Back": "Công nghệ Đề xuất",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "instructions"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03523",
+      "Front": "**Hệ quản trị CSDL**",
+      "Back": "PostgreSQL (Open source mạnh nhất)",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "instructions"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03524",
+      "Front": "**ORM Framework**",
+      "Back": "EF Core (C#) / Hibernate (Java)",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "instructions"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03525",
+      "Front": "**Caching Layer**",
+      "Back": "Redis (Performance & Scalability)",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "instructions"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03526",
+      "Front": "**Search Engine**",
+      "Back": "Elasticsearch (Full-text search)",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "instructions"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03527",
+      "Front": "**Observability**",
+      "Back": "Prometheus, Grafana, ELK Stack",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "instructions"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03528",
+      "Front": "**Deployment**",
+      "Back": "Docker, Nginx, Linux (Ubuntu/CentOS)",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "instructions"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

@@ -1,0 +1,340 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/04_Recursion_Backtracking/🔄index_04_Recursion_Backtracking|04_Recursion_Backtracking]]
+
+## 1. Recursion Basics
+
+### 1.1 Recursion là gì?
+
+Chào bạn! Trước khi nhảy vào những bài toán "hack não" như N-Queens hay Sudoku, mình cần nắm thật chắc nền tảng — đó chính là **Recursion** (đệ quy).
+
+**Recursion** là kỹ thuật mà một hàm **gọi lại chính nó** để giải quyết một bài toán nhỏ hơn, cho đến khi gặp trường hợp đơn giản nhất (base case) thì dừng lại.
+
+Nói đơn giản: **"Muốn giải bài toán lớn? Hãy giải bài toán nhỏ hơn cùng dạng, rồi ghép kết quả lại."**
+
+### 1.2 Ví von thực tế: Búp bê Matryoshka
+
+Bạn biết búp bê lồng nhau của Nga (Matryoshka) không? Mở búp bê ngoài cùng ra, bên trong lại có một búp bê nhỏ hơn. Mở tiếp, lại có một cái nhỏ hơn nữa. Cứ thế cho đến khi gặp búp bê nhỏ nhất — không mở được nữa. Đó chính là **base case**!
+
+Hoặc tưởng tượng bạn đứng trong một hàng dài và muốn biết mình đứng thứ mấy:
+
+- Bạn hỏi người phía trước: "Anh/chị đứng thứ mấy?"
+- Người đó lại hỏi người phía trước họ
+- Cứ thế cho đến người đứng đầu tiên — người đó biết mình đứng thứ 1 (**base case**)
+- Rồi câu trả lời truyền ngược lại: "Tôi thứ 1" → "Vậy tôi thứ 2" → "Vậy tôi thứ 3" → ...
+
+### 1.3 Ba thành phần cốt lõi
+
+#### a) Base Case (Trường hợp cơ sở)
+
+Điều kiện dừng. Không có base case = **stack overflow** = chương trình crash.
+
+#### b) Recursive Case (Trường hợp đệ quy)
+
+Hàm gọi lại chính nó với input **nhỏ hơn / đơn giản hơn**.
+
+#### c) Call Stack (Ngăn xếp lời gọi)
+
+Mỗi lần gọi hàm, hệ thống tạo một **stack frame** chứa:
+
+- Tham số truyền vào
+- Biến cục bộ
+- Địa chỉ trả về (return address)
+
+Các frame xếp chồng lên nhau. Khi hàm return, frame trên cùng bị pop ra.
+
+### 1.4 Ví dụ kinh điển: Tính giai thừa
+
+**Công thức toán học:**
+
+$$n! = n \times (n-1)!$$ $$0! = 1$$
+
+```mermaid
+graph TD
+    A["factorial(4)"] --> B["4 * factorial(3)"]
+    B --> C["3 * factorial(2)"]
+    C --> D["2 * factorial(1)"]
+    D --> E["1 * factorial(0)"]
+    E --> F["Base case: return 1"]
+    F -.-> D
+    D -.-> C
+    C -.-> B
+    B -.-> A
+```
+
+**Python:**
+
+```python
+def factorial(n):
+    # Base case
+    if n == 0:
+        return 1
+    # Recursive case
+    return n * factorial(n - 1)
+
+# Simulation
+# factorial(4)
+# → 4 * factorial(3)
+# → 4 * (3 * factorial(2))
+# → 4 * (3 * (2 * factorial(1)))
+# → 4 * (3 * (2 * (1 * factorial(0))))
+# → 4 * (3 * (2 * (1 * 1)))       ← base case hit
+# → 4 * (3 * (2 * 1))             ← unwind starts
+# → 4 * (3 * 2)
+# → 4 * 6
+# → 24
+```
+
+**Python (chạy được ngay):**
+
+```python
+def factorial(n: int) -> int:
+    """Tính giai thừa bằng đệ quy."""
+    # Base case: 0! = 1
+    if n == 0:
+        return 1
+    # Recursive case: n! = n * (n-1)!
+    return n * factorial(n - 1)
+
+# Chạy thử
+print(factorial(4))  # 24
+print(factorial(0))  # 1
+print(factorial(5))  # 120
+```
+
+### 1.5 Call Stack — Mô phỏng chi tiết
+
+Mình sẽ vẽ ra call stack khi gọi `factorial(4)`:
+
+```
+Bước 1: Gọi factorial(4)
+┌─────────────────┐
+│ factorial(4)     │  ← top of stack
+│ n = 4            │
+│ return 4 * ???   │
+└─────────────────┘
+
+Bước 2: Gọi factorial(3)
+┌─────────────────┐
+│ factorial(3)     │  ← top of stack
+│ n = 3            │
+│ return 3 * ???   │
+├─────────────────┤
+│ factorial(4)     │
+│ n = 4            │
+│ return 4 * ???   │
+└─────────────────┘
+
+Bước 3: Gọi factorial(2)
+┌─────────────────┐
+│ factorial(2)     │  ← top of stack
+│ n = 2            │
+│ return 2 * ???   │
+├─────────────────┤
+│ factorial(3)     │
+│ n = 3            │
+│ return 3 * ???   │
+├─────────────────┤
+│ factorial(4)     │
+│ n = 4            │
+│ return 4 * ???   │
+└─────────────────┘
+
+Bước 4: Gọi factorial(1)
+┌─────────────────┐
+│ factorial(1)     │  ← top of stack
+│ n = 1            │
+│ return 1 * ???   │
+├─────────────────┤
+│ factorial(2)     │
+│ ...              │
+├─────────────────┤
+│ factorial(3)     │
+│ ...              │
+├─────────────────┤
+│ factorial(4)     │
+│ ...              │
+└─────────────────┘
+
+Bước 5: Gọi factorial(0) → Base case! Return 1
+Stack bắt đầu "unwind" (gỡ ngược):
+  factorial(1) nhận được 1, return 1*1 = 1  → pop
+  factorial(2) nhận được 1, return 2*1 = 2  → pop
+  factorial(3) nhận được 2, return 3*2 = 6  → pop
+  factorial(4) nhận được 6, return 4*6 = 24 → pop
+
+Kết quả cuối cùng: 24
+```
+
+### 1.6 Ví dụ 2: Fibonacci
+
+**Công thức:**
+
+$$F(n) = F(n-1) + F(n-2)$$ $$F(0) = 0, \quad F(1) = 1$$
+
+**Python:**
+
+```python
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n - 1) + fibonacci(n - 2)
+```
+
+**Python (chạy được ngay):**
+
+```python
+def fibonacci(n: int) -> int:
+    """Tính số Fibonacci thứ n bằng đệ quy naive."""
+    # Base case: F(0) = 0, F(1) = 1
+    if n <= 1:
+        return n
+    # Recursive case: F(n) = F(n-1) + F(n-2)
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+# Chạy thử
+print(fibonacci(5))   # 5
+print(fibonacci(10))  # 55
+```
+
+**Recursion tree cho fibonacci(5):**
+
+```mermaid
+graph TD
+    f5((fib 5)) --> f4((fib 4))
+    f5 --> f3((fib 3))
+    f4 --> f3_2((fib 3))
+    f4 --> f2((fib 2))
+    f3 --> f2_2((fib 2))
+    f3 --> f1((fib 1))
+    f3_2 --> f2_3((fib 2))
+    f3_2 --> f1_2((fib 1))
+    f2 --> f1_3((fib 1))
+    f2 --> f0((fib 0))
+    f2_2 --> f1_4((fib 1))
+    f2_2 --> f0_2((fib 0))
+```
+
+Bạn thấy vấn đề chưa? `fib(3)` bị tính **2 lần**, `fib(2)` bị tính **3 lần**! Đây là lý do Fibonacci đệ quy thuần rất chậm.
+
+### 1.7 Phân tích Complexity — Chứng minh toán học
+
+#### Factorial
+
+**Time Complexity:** O(n)
+
+**Chứng minh:** Gọi T(n) là số phép tính khi gọi `factorial(n)`:
+
+$$T(0) = O(1) \quad \text{(base case)}$$ $$T(n) = T(n-1) + O(1) \quad \text{(1 phép nhân + 1 lời gọi đệ quy)}$$
+
+Khai triển: $$T(n) = T(n-1) + c = T(n-2) + 2c = \ldots = T(0) + nc = O(n)$$
+
+**Space Complexity:** O(n) — vì call stack chứa n frame.
+
+#### Fibonacci (naive)
+
+**Time Complexity:** O(2^n)
+
+**Chứng minh:** Gọi T(n) là số lời gọi hàm:
+
+$$T(n) = T(n-1) + T(n-2) + O(1)$$
+
+Ta chứng minh $T(n) \geq 2^{n/2}$ bằng quy nạp:
+
+- **Cơ sở:** $T(1) = 1 \geq 2^{1/2} \approx 1.41$? Thật ra $T(1) = 1 < 1.41$, nên ta dùng bound chặt hơn.
+
+Chính xác hơn, $T(n) = O(\phi^n)$ với $\phi = \frac{1+\sqrt{5}}{2} \approx 1.618$ (tỷ lệ vàng).
+
+Ta chứng minh $T(n) \geq \phi^{n-2}$:
+
+- $T(0) = 1 \geq \phi^{-2} \approx 0.382$ ✓
+- $T(1) = 1 \geq \phi^{-1} \approx 0.618$ ✓
+- Giả sử đúng đến n-1. Với n: $$T(n) = T(n-1) + T(n-2) \geq \phi^{n-3} + \phi^{n-4} = \phi^{n-4}(\phi + 1) = \phi^{n-4} \cdot \phi^2 = \phi^{n-2}$$
+
+(Dùng tính chất $\phi^2 = \phi + 1$)
+
+Vậy $T(n) = \Theta(\phi^n) \approx O(1.618^n)$, thường ghi đơn giản là $O(2^n)$.
+
+**Space Complexity:** O(n) — chiều sâu tối đa của call stack.
+
+### 1.8 Cải tiến: Tail Recursion và Memoization
+
+#### Tail Recursion (Đệ quy đuôi)
+
+Trong tail recursion, lời gọi đệ quy là **thao tác cuối cùng** — không cần giữ stack frame.
+
+```python
+def factorial_tail(n, accumulator=1):
+    if n == 0:
+        return accumulator
+    return factorial_tail(n - 1, n * accumulator)
+
+# factorial_tail(4, 1)
+# → factorial_tail(3, 4)    ← không cần giữ frame cũ
+# → factorial_tail(2, 12)
+# → factorial_tail(1, 24)
+# → factorial_tail(0, 24)
+# → 24
+def factorial_tail(n: int, acc: int = 1) -> int:
+    """Đệ quy đuôi — lời gọi đệ quy là thao tác cuối cùng."""
+    if n == 0:
+        return acc
+    return factorial_tail(n - 1, n * acc)
+
+# Chạy thử
+print(factorial_tail(4))  # 24
+```
+
+> **Lưu ý:** Python KHÔNG hỗ trợ tail call optimization (TCO). C++ có thể TCO tùy compiler. Nhưng hiểu concept vẫn rất quan trọng!
+
+#### Memoization cho Fibonacci
+
+```python
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fib_memo(n):
+    if n <= 1:
+        return n
+    return fib_memo(n - 1) + fib_memo(n - 2)
+
+# Hoặc tự implement:
+def fib_memo_manual(n, memo={}):
+    if n in memo:
+        return memo[n]
+    if n <= 1:
+        return n
+    memo[n] = fib_memo_manual(n - 1, memo) + fib_memo_manual(n - 2, memo)
+    return memo[n]
+def fib_memo_dict(n: int, memo: dict = {}) -> int:
+    """Fibonacci với memoization dùng dictionary."""
+    # Nếu đã tính rồi → trả về luôn (O(1) lookup)
+    if n in memo:
+        return memo[n]
+    # Base case
+    if n <= 1:
+        return n
+    # Tính và lưu vào memo
+    memo[n] = fib_memo_dict(n - 1, memo) + fib_memo_dict(n - 2, memo)
+    return memo[n]
+
+# Chạy thử
+print(fib_memo_dict(50))  # 12586269025 — chạy cực nhanh!
+```
+
+Với memoization: **Time = O(n), Space = O(n)**. Nhanh hơn **gấp triệu lần** so với naive recursion khi n lớn!
+
+### 1.9 Ưu và nhược điểm của Recursion
+
+| Ưu điểm                                                      | Nhược điểm                                           |
+| :----------------------------------------------------------- | :--------------------------------------------------- |
+| Code ngắn gọn, dễ đọc cho bài toán có cấu trúc đệ quy tự nhiên | Tốn bộ nhớ call stack (stack overflow nếu n quá lớn) |
+| Dễ chứng minh tính đúng đắn bằng quy nạp                     | Overhead lời gọi hàm (chậm hơn iteration)            |
+| Nền tảng cho Divide & Conquer, Backtracking, DP              | Có thể tính trùng lặp (như Fibonacci naive)          |
+| Xử lý cấu trúc dữ liệu đệ quy (tree, graph) rất tự nhiên     | Khó debug — stack trace dài                          |
+
+### 1.10 Best Case / Worst Case
+
+|                     | Best Case         | Worst Case      |
+| :------------------ | :---------------- | :-------------- |
+| **Factorial**       | O(1) khi n=0      | O(n)            |
+| **Fibonacci naive** | O(1) khi n≤1      | O(φ^n) ≈ O(2^n) |
+| **Fibonacci memo**  | O(1) khi đã cache | O(n) lần đầu    |

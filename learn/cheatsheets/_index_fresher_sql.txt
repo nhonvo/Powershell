@@ -1,0 +1,14 @@
+# fresher_sql
+
+🔙 **Back to Parent**: [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/📂index_04_Database_and_SQL_Mastery|04_Database_and_SQL_Mastery]]
+
+## 📁 Sub-Categories
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/fresher_sql/PreTest/📂index_PreTest|PreTest]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/fresher_sql/📂index_fresher_sql|lecture1]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/fresher_sql/lecture2/📂index_lecture2|lecture2]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/fresher_sql/lecture3/📂index_lecture3|lecture3]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/fresher_sql/lecture4/📂index_lecture4|lecture4]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/fresher_sql/lecture5/📂index_lecture5|lecture5]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/fresher_sql/lecture6/📂index_lecture6|lecture6]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/fresher_sql/lecture7/📂index_lecture7|lecture7]]
+

@@ -1,0 +1,396 @@
+{
+  "Meta": {
+    "Id": "deck_7__leetcode_practice___gi_i_chi_ti_t_8_b_i_kinh__i_n",
+    "Topic": "7. LeetCode Practice — Giải chi tiết 8 bài kinh điển",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "7__leetcode_practice___gi_i_chi_ti_t_8_b_i_kinh__i_n"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 19
+  },
+  "Cards": [
+    {
+      "Id": "card_00750",
+      "Front": "**Cách 1 (Include/Exclude)**",
+      "Back": "O(n * 2^n) | O(n) call stack",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00751",
+      "Front": "**Cách 2 (Start-based)**",
+      "Back": "O(n * 2^n) | O(n) call stack",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00752",
+      "Front": "**Cách 1 (used array)**",
+      "Back": "O(n * n!) | O(n)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00753",
+      "Front": "**Cách 2 (swap)**",
+      "Back": "O(n * n!) | O(n) call stack",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00754",
+      "Front": "Chọn lại?",
+      "Back": "Được | Không | Không",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00755",
+      "Front": "Đệ quy start",
+      "Back": "`i` | `i + 1` | `i + 1`",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00756",
+      "Front": "Duplicate input?",
+      "Back": "Không | Có | Không (1-9)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00757",
+      "Front": "Cách",
+      "Back": "Time | Space",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00758",
+      "Front": "**Naive**",
+      "Back": "O(n * 2^n) — check palindrome O(n) mỗi lần | O(n) call stack",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00759",
+      "Front": "**DP tối ưu**",
+      "Back": "O(n * 2^n) — DP precompute O(n^2) + backtrack | O(n^2) cho bảng DP",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00760",
+      "Front": "C(n)",
+      "Back": "1 | 2 | 5 | 14 | 42 | 132 | 429 | 1430",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00761",
+      "Front": "78",
+      "Back": "Subsets | Medium | Include/Exclude | O(n * 2^n) | Mỗi phần tử: chọn hoặc không",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00762",
+      "Front": "46",
+      "Back": "Permutations | Medium | Used array / Swap | O(n * n!) | Thử tất cả vị trí chưa dùng",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00763",
+      "Front": "39",
+      "Back": "Combination Sum | Medium | Target-based pruning | O(N^(T/M)) | Sort + break khi > remaining",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00764",
+      "Front": "51",
+      "Back": "N-Queens | Hard | Constraint sets | O(N!) | 3 set: cols, diag1, diag2",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00765",
+      "Front": "37",
+      "Back": "Sudoku Solver | Hard | Constraint + early stop | O(9^m) | Return True khi tìm được → dừng",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00766",
+      "Front": "131",
+      "Back": "Palindrome Partition | Medium | Backtrack + DP | O(n * 2^n) | DP precompute palindrome O(1)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00767",
+      "Front": "22",
+      "Back": "Generate Parentheses | Medium | Count-based constraint | O(4^n/sqrt(n)) | open < n, close < open",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00768",
+      "Front": "79",
+      "Back": "Word Search | Medium | Grid DFS + backtrack | O(mn * 3^L) | Đánh dấu visited bằng thay ký tự",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

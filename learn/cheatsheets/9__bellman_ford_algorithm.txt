@@ -1,0 +1,264 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/12_Graphs/🕸️index_12_Graphs|12_Graphs]]
+
+## 9. Bellman-Ford Algorithm
+
+### 9.1. Tổng quan
+
+**Ví dụ thực tế:** Hệ thống chuyển đổi tiền tệ. USD → EUR → JPY → USD. Nếu tỷ giá không cân bằng, bạn có thể đổi vòng vòng và kiếm lời (arbitrage). Trọng số có thể ÂM (vì log của tỷ giá < 1 sẽ âm). Dijkstra không xử lý được → dùng Bellman-Ford!
+
+**Bellman-Ford giải quyết:**
+
+1. SSSP cho graph có trọng số **ÂM**
+2. **Phát hiện negative cycle** — chu trình có tổng trọng số âm (đi vòng vòng càng đi càng "ngắn")
+
+### 9.2. Ý tưởng cốt lõi
+
+**Cực kỳ đơn giản:** Lặp V-1 lần, mỗi lần relax TẤT CẢ các cạnh.
+
+**Tại sao V-1 lần?** Đường đi ngắn nhất trong graph V đỉnh có tối đa V-1 cạnh. Sau lần lặp thứ i, ta đã tìm được shortest path sử dụng tối đa i cạnh. Sau V-1 lần → tìm được tất cả shortest path.
+
+**Phát hiện negative cycle:** Sau V-1 lần, nếu vẫn có thể relax thêm → tồn tại negative cycle (vì đáng ra V-1 lần đã đủ).
+
+ĐúngKhôngHết cạnhĐúngKhôngCóKhôngKhởi tạo: dist[s]=0, dist[*]=∞Lặp i = 1 đến V-1Với mỗi cạnh (u, v, w)dist[u] + w < dist[v]?dist[v] = dist[u] + wparent[v] = ui < V-1?Kiểm tra negative cycleLặp lại tất cả cạnh 1 lần nữaCó cạnh nào relax được?CÓ NEGATIVE CYCLE!Trả về dist[] và parent[]
+
+### 9.3. Mô phỏng chi tiết
+
+```
+Graph (directed, có trọng số âm):
+    0 --6--> 1
+    0 --7--> 2
+    1 --5--> 2
+    1 --(-4)--> 3
+    2 --(-3)--> 3
+    3 --9--> 1
+    2 --(-2)--> 4
+    3 --7--> 4
+```
+
+Bellman-Ford từ đỉnh 0:
+
+**Vòng lặp 1 (i=1):**
+
+| Cạnh     | dist[u]+w | dist[v] cũ | Relax? | dist[v] mới |
+| :------- | :-------- | :--------- | :----- | :---------- |
+| 0→1 (6)  | 0+6=6     | ∞          | Yes    | 6           |
+| 0→2 (7)  | 0+7=7     | ∞          | Yes    | 7           |
+| 1→2 (5)  | 6+5=11    | 7          | No     | 7           |
+| 1→3 (-4) | 6+(-4)=2  | ∞          | Yes    | 2           |
+| 2→3 (-3) | 7+(-3)=4  | 2          | No     | 2           |
+| 3→1 (9)  | 2+9=11    | 6          | No     | 6           |
+| 2→4 (-2) | 7+(-2)=5  | ∞          | Yes    | 5           |
+| 3→4 (7)  | 2+7=9     | 5          | No     | 5           |
+
+dist sau vòng 1: [0, 6, 7, 2, 5]
+
+**Vòng lặp 2 (i=2):**
+
+| Cạnh     | dist[u]+w | dist[v] cũ | Relax? | dist[v] mới |
+| :------- | :-------- | :--------- | :----- | :---------- |
+| 0→1 (6)  | 6         | 6          | No     | 6           |
+| 0→2 (7)  | 7         | 7          | No     | 7           |
+| 1→2 (5)  | 11        | 7          | No     | 7           |
+| 1→3 (-4) | 2         | 2          | No     | 2           |
+| 2→3 (-3) | 4         | 2          | No     | 2           |
+| 3→1 (9)  | 11        | 6          | No     | 6           |
+| 2→4 (-2) | 5         | 5          | No     | 5           |
+| 3→4 (7)  | 9         | 5          | No     | 5           |
+
+Không có relax nào → thuật toán hội tụ sớm!
+
+**Kết quả:** dist = [0, 6, 7, 2, 5]
+
+### 9.4. Implementation đầy đủ
+
+```python
+def bellman_ford(edges, num_vertices, source):
+    """
+    Bellman-Ford Algorithm.
+    Hỗ trợ trọng số âm + phát hiện negative cycle.
+
+    Args:
+        edges: danh sách cạnh [(u, v, weight)]
+        num_vertices: số đỉnh
+        source: đỉnh nguồn
+
+    Returns:
+        dist: dict khoảng cách ngắn nhất
+        parent: dict đỉnh cha
+        has_negative_cycle: True nếu có negative cycle
+    """
+    INF = float('inf')
+    dist = [INF] * num_vertices
+    parent = [None] * num_vertices
+    dist[source] = 0
+
+    # Bước 1: Relax tất cả cạnh V-1 lần
+    for i in range(num_vertices - 1):
+        updated = False
+        for u, v, w in edges:
+            if dist[u] != INF and dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+                parent[v] = u
+                updated = True
+
+        # Tối ưu: nếu không có relax nào → đã hội tụ → dừng sớm
+        if not updated:
+            print(f"  Hội tụ sớm sau {i + 1} vòng lặp!")
+            break
+
+    # Bước 2: Kiểm tra negative cycle
+    # Nếu vẫn relax được → có negative cycle
+    has_negative_cycle = False
+    for u, v, w in edges:
+        if dist[u] != INF and dist[u] + w < dist[v]:
+            has_negative_cycle = True
+            break
+
+    return dist, parent, has_negative_cycle
+
+
+def find_negative_cycle(edges, num_vertices, source):
+    """
+    Tìm và trả về negative cycle cụ thể.
+    """
+    INF = float('inf')
+    dist = [INF] * num_vertices
+    parent = [-1] * num_vertices
+    dist[source] = 0
+
+    last_relaxed = -1
+
+    for i in range(num_vertices):
+        last_relaxed = -1
+        for u, v, w in edges:
+            if dist[u] != INF and dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+                parent[v] = u
+                last_relaxed = v
+
+    if last_relaxed == -1:
+        return None  # Không có negative cycle
+
+    # Truy vết negative cycle
+    # Đi ngược V lần từ last_relaxed để chắc chắn nằm trong cycle
+    v = last_relaxed
+    for _ in range(num_vertices):
+        v = parent[v]
+
+    # Bây giờ v chắc chắn trong cycle. Truy vết 1 vòng
+    cycle = []
+    current = v
+    while True:
+        cycle.append(current)
+        current = parent[current]
+        if current == v:
+            cycle.append(v)
+            break
+
+    cycle.reverse()
+    return cycle
+
+
+def reconstruct_path_bf(parent, source, target):
+    """Truy vết đường đi."""
+    if parent[target] is None and target != source:
+        return None
+    path = []
+    current = target
+    while current is not None:
+        path.append(current)
+        current = parent[current]
+    path.reverse()
+    return path
+
+
+# === TEST ===
+if __name__ == "__main__":
+    # Test 1: Graph có trọng số âm nhưng KHÔNG có negative cycle
+    print("=== Test 1: Graph với trọng số âm ===")
+    edges1 = [
+        (0, 1, 6), (0, 2, 7),
+        (1, 2, 5), (1, 3, -4),
+        (2, 3, -3), (3, 1, 9),
+        (2, 4, -2), (3, 4, 7),
+    ]
+
+    dist, parent, neg_cycle = bellman_ford(edges1, 5, 0)
+    print(f"Negative cycle: {neg_cycle}")
+    for v in range(5):
+        path = reconstruct_path_bf(parent, 0, v)
+        path_str = " → ".join(map(str, path)) if path else "N/A"
+        print(f"  0 → {v}: dist = {dist[v]}, path = {path_str}")
+
+    # Test 2: Graph CÓ negative cycle
+    print("\n=== Test 2: Graph CÓ negative cycle ===")
+    edges2 = [
+        (0, 1, 1),
+        (1, 2, -1),
+        (2, 3, -1),
+        (3, 1, -1),  # Cycle: 1 → 2 → 3 → 1, tổng = -1 -1 -1 = -3 < 0
+    ]
+
+    dist, parent, neg_cycle = bellman_ford(edges2, 4, 0)
+    print(f"Negative cycle detected: {neg_cycle}")
+
+    if neg_cycle:
+        cycle = find_negative_cycle(edges2, 4, 0)
+        if cycle:
+            print(f"Cycle: {' → '.join(map(str, cycle))}")
+```
+
+**Output:**
+
+```
+=== Test 1: Graph với trọng số âm ===
+  Hội tụ sớm sau 2 vòng lặp!
+Negative cycle: False
+  0 → 0: dist = 0, path = 0
+  0 → 1: dist = 6, path = 0 → 1
+  0 → 2: dist = 7, path = 0 → 2
+  0 → 3: dist = 2, path = 0 → 1 → 3
+  0 → 4: dist = 5, path = 0 → 2 → 4
+
+=== Test 2: Graph CÓ negative cycle ===
+Negative cycle detected: True
+Cycle: 1 → 2 → 3 → 1
+```
+
+### 9.5. Phân tích Complexity
+
+**Time:** O(V × E)
+
+- Vòng ngoài: V - 1 lần
+- Vòng trong: duyệt E cạnh
+- Check negative cycle: O(E)
+- Tổng: O(VE)
+
+**Space:** O(V) cho dist[] và parent[]
+
+**Chứng minh tính đúng:**
+
+**Bổ đề:** Sau vòng lặp thứ i, dist[v] ≤ trọng số đường đi ngắn nhất từ source đến v sử dụng ≤ i cạnh.
+
+**Chứng minh (quy nạp trên i):**
+
+- **i=0:** dist[source] = 0. Đúng (đường đi 0 cạnh).
+- **i → i+1:** Xét đường đi ngắn nhất P từ s đến v dùng ≤ i+1 cạnh. Gọi u là đỉnh trước v trên P. Thì P' = P \ {v} là đường từ s đến u dùng ≤ i cạnh. Theo giả thiết quy nạp, sau vòng i, dist[u] ≤ cost(P'). Ở vòng i+1, khi relax cạnh (u,v): dist[v] ≤ dist[u] + w(u,v) ≤ cost(P') + w(u,v) = cost(P). QED.
+
+**Hệ quả:** Đường đi ngắn nhất có ≤ V-1 cạnh (nếu không có negative cycle) → sau V-1 vòng, dist[] chính xác.
+
+### 9.6. So sánh Dijkstra vs Bellman-Ford
+
+| Tiêu chí           | Dijkstra        | Bellman-Ford                |
+| :----------------- | :-------------- | :-------------------------- |
+| **Trọng số âm**    | KHÔNG           | CÓ                          |
+| **Negative cycle** | Không phát hiện | Phát hiện được              |
+| **Time**           | O((V+E) log V)  | O(V × E)                    |
+| **Chiến lược**     | Greedy          | Dynamic Programming         |
+| **Dùng khi**       | Trọng số ≥ 0    | Trọng số âm, negative cycle |
+| **Distributed**    | Khó             | Dễ (mỗi node chạy local)    |
+
+**Cải tiến:**
+
+- **SPFA (Shortest Path Faster Algorithm):** Biến thể BFS của Bellman-Ford, trung bình nhanh hơn nhiều nhưng worst case vẫn O(VE)
+- **Early termination:** Nếu không có relax nào trong 1 vòng → dừng sớm (đã triển khai ở trên)

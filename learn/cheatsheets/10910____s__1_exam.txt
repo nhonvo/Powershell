@@ -1,0 +1,89 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 1
+
+## Part 1
+**Q1.** あしたも　雨です。
+- **A.** くも
+- **B.** みず
+- **C.** あめ
+- **D.** ゆき
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3雨 (VŨ)：mưa　Ng&agrave;y mai trời cũng mưa.</p>
+</details>
+
+---
+**Q2.** あそこに　キムさんの　お父さんが　います。
+- **A.** おかあさん
+- **B.** おとうさん
+- **C.** おにいさん
+- **D.** おねえさん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2お父さん (PHỤ)：bốỞ đằng kia c&oacute; bố của bạn Kim.</p>
+</details>
+
+---
+**Q3.** あなたの　なまえを　書いて　ください。
+- **A.** さいて
+- **B.** きいて
+- **C.** ひらいて
+- **D.** かいて
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4書く (THƯ): viếtH&atilde;y viết t&ecirc;n của bạn.</p>
+</details>
+
+---
+**Q4.** りんごを　二つ　ください。
+- **A.** ふたつ
+- **B.** いつつ
+- **C.** につ
+- **D.** ごつ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1二つ (NHỊ)：hai   H&atilde;y cho t&ocirc;i hai quả t&aacute;o.</p>
+</details>
+
+---
+**Q5.** かれの　かばんは　小さいです。
+- **A.** しさい
+- **B.** ちいさい
+- **C.** しいさい
+- **D.** ちさい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2小さい (TIỂU)：nhỏ    Cặp của anh ấy nhỏ.</p>
+</details>
+
+---
+**Q6.** あさごはんの　あとで　コーヒーを　飲みます。
+- **A.** よみます
+- **B.** のみます
+- **C.** たのみます
+- **D.** すみます
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2飲む (ẨM)：uốngSau bữa s&aacute;ng, t&ocirc;i thường uống c&agrave; ph&ecirc;.</p>
+</details>
+
+---
+**Q7.** えきは　南がわに　あります。
+- **A.** にし
+- **B.** ひがし
+- **C.** みなみ
+- **D.** きた
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3南がわ (NAM)：ph&iacute;a NamNh&agrave; ga nằm ở ph&iacute;a Nam.</p>
+</details>
+
+---

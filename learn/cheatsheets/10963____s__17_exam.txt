@@ -1,0 +1,41 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 17
+
+## Part 1
+**Q1.** ゆうべ 　すずきさんと　 あいました。
+- **A.** きのうの　あさ　すずきさんと　あいました。
+- **B.** きのうの　よる　すずきさんと　あいました。
+- **C.** おとといの　あさ　すずきさんと　あいました。
+- **D.** おとといの　よる　すずきさんと　あいました。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2T&ocirc;i đ&atilde; gặp Suzuki v&agrave;o buổi tối h&ocirc;m qua.1. T&ocirc;i đ&atilde; gặp Suzuki v&agrave;o buổi s&aacute;ng h&ocirc;m qua.2. T&ocirc;i đ&atilde; gặp Suzuki v&agrave;o buổi tối h&ocirc;m qua.3. T&ocirc;i đ&atilde; gặp Suzuki v&agrave;o buổi s&aacute;ng h&ocirc;m kia.4. T&ocirc;i đ&atilde; gặp Suzuki v&agrave;o buổi tối h&ocirc;m kia.</p>
+</details>
+
+---
+**Q2.** すずきさんは「いそがないで 　ください。」と　 いいました。
+- **A.** すずきさんは「すぐ 　きてください」と　 いいました。
+- **B.** すずきさんは「いまから 　きてください」と　 いいました。
+- **C.** すずきさんは「ゆっくり　 きてください」と　 いいました。
+- **D.** すずきさんは「はやく 　きてください」と　 いいました。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3Suzuki đ&atilde; n&oacute;i rằng: &rdquo;Đừng c&oacute; vội.&rdquo;1. Suzuki đ&atilde; n&oacute;i rằng: &rdquo;H&atilde;y đến ngay lập tức.&rdquo;2. Suzuki đ&atilde; n&oacute;i rằng: &rdquo;B&acirc;y giờ h&atilde;y đến đ&acirc;y.&rdquo;3. Suzuki đ&atilde; n&oacute;i rằng: &rdquo;Cứ thong thả đến đ&acirc;y.&rdquo;4. Suzuki đ&atilde; n&oacute;i rằng: &rdquo;Mau đến đ&acirc;y!&rdquo;</p>
+</details>
+
+---
+**Q3.** これは　 じしょです。
+- **A.** これは　 いえの 　ばしょが 　わかる 　ものです。
+- **B.** これは 　いまの　 じかんが　 わかる　 ものです。
+- **C.** これは 　ことばの　 いみが 　わかる 　ものです。
+- **D.** これは 　ともだちの　 なまえが　 わかる 　ものです。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3Đ&acirc;y l&agrave; cuốn từ điển.1. Đ&acirc;y l&agrave; thứ c&oacute; thể biết được địa chỉ nh&agrave;.2. Đ&acirc;y l&agrave; thứ c&oacute; thể biết được b&acirc;y giờ l&agrave; mấy giờ.3. Đ&acirc;y l&agrave; thứ c&oacute; thể biết được nghĩa của từ.4. Đ&acirc;y l&agrave; thứ c&oacute; thể biết được t&ecirc;n của bạn b&egrave;.</p>
+</details>
+
+---

@@ -1,0 +1,216 @@
+# 🗃️ AIP-C01 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+A retail company has a generative AI (GenAI) product recommendation application that uses Amazon Bedrock. The application suggests products to customers based on browsing history and demographics. The company needs to implement fairness evaluation across multiple demographic groups to detect and measure bias in recommendations between two prompt approaches. The company wants to collect and monitor fairness metrics in real time. The company must receive an alert if the fairness metrics show a discrepancy of more than 15% between demographic groups. The company must receive weekly reports that compare the performance of the two prompt approaches.
+
+Which solution will meet these requirements with the LEAST custom development effort?
+
+### Options:
+- [ ] **A)** Configure an Amazon CloudWatch dashboard to display default metrics from Amazon Bedrock API calls.
+Create custom metrics based on model outputs. Set up Amazon EventBridge rules to invoke AWS lambda functions that perform post-processing analysis on model responses and publish custom fairness metrics.
+- [ ] **B)** Create the two prompt variants in Amazon Bedrock Prompt Management. Use Amazon Bedrock Flows to deploy the prompt variants with defined traffic allocation. Configure Amazon Bedrock guardrails that have content filters to monitor demographic fairness. Set up Amazon CloudWatch alarms on the GuardrailContentSource dimension that use InvocationsIntervened metrics to detect recommendation discrepancy threshold violations.
+- [x] **C)** Set up Amazon SageMaker Clarify to analyze model outputs. Publish fairness metrics to Amazon CloudWatch. Create CloudWatch composite alarms that combine SageMaker Clarify bias metrics with Amazon Bedrock latency metrics to provide a comprehensive fairness evaluation dashboard. [Correct]
+- [ ] **D)** Create an Amazon Bedrock model evaluation job to compare fairness between the two prompt variants.
+Enable model invocation logging in Amazon CloudWatch. Set up CloudWatch alarms for InvocationsIntervened metrics with a dimension for each demographic group.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Amazon SageMaker Clarify provides built-in bias and fairness evaluation across demographic groups without requiring you to build custom scoring logic. Clarify can compute and publish fairness metrics to Amazon CloudWatch for near-real-time monitoring, where CloudWatch alarms can alert when group-to-group metric deltas exceed the 15% threshold. Clarify also produces periodic bias analysis outputs that can be used to generate weekly comparative reporting for the two prompt approaches with minimal additional implementation.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+A finance company is developing an AI assistant to help clients plan investments and manage their portfolios. The company identifies several high-risk conversation patterns such as requests for specific stock recommendations or guaranteed returns. High-risk conversation patterns could lead to regulatory violations if the company cannot implement appropriate controls.
+
+The company must ensure that the AI assistant does not provide inappropriate financial advice, generate content about competitors, or make claims that are not factually grounded in the company's approved financial guidance. The company wants to use Amazon Bedrock Guardrails to implement a solution.
+
+Which combination of steps will meet these requirements? (Choose three.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,D,F`
+
+**Explanation**:
+Adding high-risk financial requests as denied topics ensures the assistant blocks conversations that could result in regulatory violations or inappropriate advice. Custom word filters with competitor names and block actions prevent the model from generating or responding with competitor-related content. Setting a high grounding score threshold forces responses to stay closely aligned with approved, trusted financial guidance, reducing the risk of unsupported or non-factual claims.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+A company has deployed an AI assistant as a React application that uses AWS Amplify, an AWS AppSync GraphQL API, and Amazon Bedrock Knowledge Bases. The application uses the GraphQL API to call the Amazon Bedrock RetrieveAndGenerate API for knowledge base interactions. The company configures an AWS Lambda resolver to use the RequestResponse invocation type.
+
+Application users report frequent timeouts and slow response times. Users report these problems more frequently for complex questions that require longer processing.
+
+The company needs a solution to fix these performance issues and enhance the user experience.
+
+Which solution will meet these requirements?
+
+### Options:
+- [x] **A)** Use AWS Amplify AI Kit to implement streaming responses from the GraphQL API and to optimize client- side rendering. [Correct]
+- [ ] **B)** Increase the timeout value of the Lambda resolver. Implement retry logic with exponential backoff.
+- [ ] **C)** Update the application to send an API request to an Amazon SQS queue. Update the AWS AppSync resolver to poll and process the queue.
+- [ ] **D)** Change the RetrieveAndGenerate API to the InvokeModelWithResponseStream API. Update the application to use an Amazon API Gateway WebSocket API to support the streaming response.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+AWS Amplify AI Kit provides a higher-level implementation for streaming AI responses to the React client, which improves perceived latency for long-running Bedrock Knowledge Bases requests. Streaming reduces timeouts for complex questions by returning partial output as it is generated, and it enhances the user experience without requiring a custom WebSocket architecture or significant backend redesign.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+An ecommerce company operates a global product recommendation system that needs to switch between multiple foundation models (FM) in Amazon Bedrock based on regulations, cost optimization, and performance requirements. The company must apply custom controls based on proprietary business logic, including dynamic cost thresholds, AWS Region-specific compliance rules, and real-time A/B testing across multiple FMs. The system must be able to switch between FMs without deploying new code. The system must route user requests based on complex rules including user tier, transaction value, regulatory zone, and real-time cost metrics that change hourly and require immediate propagation across thousands of concurrent requests.
+
+Which solution will meet these requirements?
+
+### Options:
+- [ ] **A)** Deploy an AWS Lambda function that uses environment variables to store routing rules and Amazon Bedrock FM IDs. Use the Lambda console to update the environment variables when business requirements change. Configure an Amazon API Gateway REST API to read request parameters to make routing decisions.
+- [ ] **B)** Deploy Amazon API Gateway REST API request transformation templates to implement routing logic based on request attributes. Store Amazon Bedrock FM endpoints as REST API stage variables. Update the variables when the system switches between models.
+- [ ] **C)** Configure an AWS Lambda function to fetch routing configurations from the AWS AppConfig Agent for each user request. Run business logic in the Lambda function to select the appropriate FM for each request.
+Expose the FM through a single Amazon API Gateway REST API endpoint. [Correct]
+- [ ] **D)** Use AWS Lambda authorizers for an Amazon API Gateway REST API to evaluate routing rules that are stored in AWS AppConfig. Return authorization contexts based on business logic. Route requests to model- specific Lambda functions for each Amazon Bedrock FM.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+AWS AppConfig is designed for dynamic, centralized configuration with fast propagation, so routing rules can be updated without code deployments and take effect quickly across high concurrency. Having Lambda fetch the latest AppConfig configuration and apply proprietary logic allows complex routing based on user attributes, regulatory zone, and frequently changing hourly cost metrics. Exposing a single API endpoint keeps the client stable while the backend switches among multiple Bedrock foundation models purely through configuration changes.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+A company is developing an internal generative AI (GenAI) assistant that uses Amazon Bedrock to summarize corporate documents for multiple business units. The GenAI assistant must generate responses in a consistent format that includes a document summary, classification of business risks, and terms that are flagged for review. The GenAI assistant must adapt the tone of responses for each user's business unit, such as legal, human resources, or finance. The GenAI assistant must block hate speech, inappropriate topics, and sensitive information such as personal health information.
+
+The company needs a solution to centrally manage prompt variants across business units and teams. The company wants to minimize ongoing orchestration efforts and maintenance for post-processing logic. The company also wants to have the ability to adjust content moderation criteria for the GenAI assistant over time.
+
+Which solution will meet these requirements with the LEAST maintenance overhead?
+
+### Options:
+- [x] **A)** Use Amazon Bedrock Prompt Management to configure reusable templates and business unit-specific prompt variants. Apply Amazon Bedrock guardrails that have category filters and sensitive term lists to block prohibited content. [Correct]
+- [ ] **B)** Use Amazon Bedrock Prompt Management to define base templates. Enforce business unit-specific tone by using system prompt variables. Configure Amazon Bedrock guardrails to apply audience-based threshold tuning. Manage the guardrails by using an internal administration API.
+- [ ] **C)** Use Amazon Bedrock with business unit-based instruction injection in API calls. Store response formatting rules in Amazon DynamoDB. Use AWS Step functions to validate responses. Use Amazon Comprehend to apply content filters after the GenAI assistant generates responses.
+- [ ] **D)** Use Amazon Bedrock with custom prompt templates that are stored in Amazon DynamoDB. Create one AWS Lambda function to select business unit-specific prompts. Create a second Lambda function to call Amazon Comprehend to filter prohibited content from responses.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Amazon Bedrock Prompt Management centrally manages reusable prompt templates and business unit- specific variants, which enforces a consistent response structure while allowing tone differences per business unit without custom orchestration or post-processing. Amazon Bedrock guardrails provide managed moderation controls (for hate speech, inappropriate topics) and sensitive information handling using category filters and sensitive term lists, and these controls can be adjusted over time without building and maintaining separate moderation pipelines.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: 
+
+A financial services company is building a customer support application that retrieves relevant financial regulation documents from a database based on semantic similarities to user queries. The application must integrate with Amazon Bedrock to generate responses. The application must be able to search documents that are in English, Spanish, and Portuguese. The application must filter documents by metadata such as publication date, regulatory agency, and document type.
+
+The database stores approximately 10 million document embeddings. To minimize operational overhead, the company wants a solution that minimizes management and maintenance effort. The application must provide low-latency responses for real-time customer interactions.
+
+Which solution will meet these requirements?
+
+### Options:
+- [x] **A)** Use Amazon OpenSearch Serverless to provide vector search capabilities and metadata filtering. Connect to Amazon Bedrock Knowledge Bases to enable Retrieval Augmented Generation (RAG) capabilities that use an Anthropic Claude foundation model (FM). [Correct]
+- [ ] **B)** Deploy an Amazon Aurora PostgreSQL database with the pgvector extension. Define tables to store embeddings and metadata. Use SQL queries to perform similarity searches. Send retrieved documents to Amazon Bedrock to generate responses.
+- [ ] **C)** Use Amazon S3 Vectors to configure a vector index and non-filterable metadata fields. Integrate S3 Vectors with Amazon Bedrock to enable Retrieval Augmented Generation (RAG) capabilities.
+- [ ] **D)** Set up an Amazon Neptune Analytics graph database. Configure a vector index that has appropriate dimensionality to store document embeddings. Use Amazon Bedrock to perform graph-based retrieval and to generate responses.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Amazon OpenSearch Serverless provides managed, low-latency vector search at scale for millions of embeddings and supports metadata filtering for fields like publication date, agency, and document type.
+Integrating it with Amazon Bedrock Knowledge Bases delivers a managed RAG workflow with minimal operational overhead, while multilingual search is supported by using multilingual embedding generation for English, Spanish, and Portuguese and then retrieving semantically similar content from the vector index.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: 
+
+A medical company is building a generative AI (GenAI) application that uses RAG to provide evidence-based medical information. The application uses Amazon OpenSearch Service to retrieve vector embeddings. Users report that searches frequently miss results that contain exact medical terms and acronyms and return too many semantically similar but irrelevant documents. The company needs to improve retrieval quality and maintain low end user latency, even as the document collection grows to millions of documents.
+
+Which solution will meet these requirements with the LEAST operational overhead?
+
+### Options:
+- [x] **A)** Configure hybrid search by combining vector similarity with keyword matching to improve semantic understanding and exact term and acronym matching. [Correct]
+- [ ] **B)** Increase the dimensions of the vector embeddings from 384 to 1536. Use a post-processing AWS Lambda function to filter out irrelevant results after retrieval.
+- [ ] **C)** Replace OpenSearch Service with Amazon Kendra. Use query expansion to handle medical acronyms and terminology variants during pre-processing.
+- [ ] **D)** Implement a two-stage retrieval architecture in which initial vector search results are re-ranked by an ML model that is hosted on Amazon SageMaker AI.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Hybrid search combines vector similarity with traditional keyword matching, so the retriever can still match exact medical terms and acronyms while using embeddings for semantic recall. This reduces irrelevant "semantic-only" matches and improves precision without adding new managed services or custom re-ranking
+pipelines, keeping latency low and operational overhead minimal as the corpus scales to millions of documents.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: 
+
+A company runs a generative AI (GenAI)-powered summarization application in an application AWS account that uses Amazon Bedrock. The application architecture includes an Amazon API Gateway REST API that forwards requests to AWS Lambda functions that are attached to private VPC subnets. The application summarizes sensitive customer records that the company stores in a governed data lake in a centralized data storage account. The company has enabled Amazon S3, Amazon Athena, and AWS Glue in the data storage account.
+
+The company must ensure that calls that the application makes to Amazon Bedrock use only private connectivity between the company's application VPC and Amazon Bedrock. The company's data lake must provide fine-grained column-level access across the company's AWS accounts.
+
+Which solution will meet these requirements?
+
+### Options:
+- [x] **A)** In the application account, create interface VPC endpoints for Amazon Bedrock runtimes. Run Lambda functions in private subnets. Use IAM conditions on inference and data-plane policies to allow calls only to approved endpoints and roles. In the data storage account, use AWS Lake Formation LF-tag-based access control to create table and column-level cross-account grants. [Correct]
+- [ ] **B)** Run Lambda functions in private subnets. Configure a NAT gateway to provide access to Amazon Bedrock and the data lake. Use S3 bucket policies and ACLs to manage permissions. Export AWS CloudTrail logs to Amazon S3 to perform weekly reviews.
+- [ ] **C)** Create a gateway endpoint only for Amazon S3 in the application account. Invoke Amazon Bedrock through public endpoints. Use database-level grants in AWS Lake Formation to manage data access. Stream AWS CloudTrail logs to Amazon CloudWatch Logs. Do not set up metric filters or alarms.
+- [ ] **D)** Use VPC endpoints to provide access to Amazon Bedrock and Amazon S3 in the application account. Use only IAM path-based policies to manage data lake access. Send AWS CloudTrail logs to Amazon CloudWatch Logs. Periodically create dashboards and allow public fallback for cross-Region reads to reduce setup time.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Interface VPC endpoints for the Amazon Bedrock runtime provide private connectivity from the VPC to Bedrock without using the public internet, and IAM conditions can restrict Bedrock invocation to those specific VPC endpoints and approved roles to enforce private-only access. AWS Lake Formation LF-tag-based access control supports fine-grained cross-account permissions, including column-level grants on governed tables in S3/Athena/Glue, which satisfies the centralized data lake requirement.
+</details>
+
+---

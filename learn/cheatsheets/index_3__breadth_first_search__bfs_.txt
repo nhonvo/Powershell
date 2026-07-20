@@ -1,0 +1,11 @@
+# 3. Breadth-First Search (BFS)
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/5. Trees and graphs/1. Readings/index_1. Readings|1. Readings]]
+
+## 📄 Notes
+- [[3. breadth-first search (bfs)|3. Breadth-First Search (BFS)]]
+
+## 🛠️ Related Practices (Searching & Sorting)
+- [[dsa/1.Interviewcake.com/5. Trees and graphs/1. Readings/3. Breadth-First Search (BFS)/index_3. Breadth-First Search (BFS)|21.Merge-Two-Sorted-Lists]]
+- [[dsa/1.Interviewcake.com/5. Trees and graphs/1. Readings/3. Breadth-First Search (BFS)/index_3. Breadth-First Search (BFS)|23.Merge-k-Sorted-Lists]]
+

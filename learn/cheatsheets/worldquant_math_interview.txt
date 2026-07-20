@@ -1,0 +1,294 @@
+🔙 **Back to Parent**: [[interviewNote/❓index_04_INTERVIEW_QA|interviewNote]]
+
+\1. Cup Volume Complete the blanks in the following question with the appropriate answer. Find the volume of the space between the surfaces z = xA2 + yA2 and z = 1 .
+
+3. Number of digits
+  IComplete the blanks in the following question with the appropriate answer.
+  Assume that abcde is a number with the digits "a", "b", "c", "d" and "e", where different letters can denote the same number. How many such numbers
+  exist where it holds that among its digits #0=a (the number of 0s equals to "a"), #1 =b, #2=c, #3=d and #4=e?
+
+Complete the blanks in the following question with the appropriate answer.
+We fold a piece of paper in five along parallel lines (so that the lines form identical rectangles). Then we paint the 5 sections on each side in different
+colors (i.e. we use 10 colors). How many 2 color combinations could we create on the outside, assuming that we fold the paper along the same lines,
+but that the direction and the order of the folds can change.
+
+5. Pure Arithmetic
+How many digits would 2023A4A5 have in decimal system ? Choose the number which is the closest to the answer.
+6. Old book
+An old book has all pages numbered, starting from 1. One page was completely torn off, so the sum of all page number becomes 757. How many pages are there in the book?
+
+7. Number Puzzle
+Complete the blanks in the following question with the appropriate
+answer.
+What is the number closest to 2024 such that:
+when divided by 2 leaves a remainder of 1,
+when divided by 3 leaves a remainder of 2,
+when divided by 4 leaves a remainder of 3,
+when divided by 5 leaves a remainder of 4,
+when divided by 6 leaves a remainder of 5,
+and is divisible by 7 ?
+8. Ratio of product sum and difference
+Complete the blanks in the following question with the appropriate
+answer.
+What is the sum of the two numbers, where the ratio of their
+product, sum and difference is 24:7:1?
+9. Touching circles
+For which n>3 integers is it possible to draw n circles on the plane, such that
+each is tangent to exactly three others?
+Pick ONE option
+O
+All of them
+O
+All of the odd numbers
+All of the even numbers
+All but one of the odd numbers
+O
+All but one of the even numbers
+None of the above
+
+10. Number Genetics
+Complete the blanks in the following question with the appropriate
+answer.
+Let D(M) be the set of all the decimal integers that can be
+created from the digits of M. For example, D(2024) =
+20, 22, 24, 40, 42,
+202, 220, 204, 240, 224, 242,
+2024, 2042, 2240, 2204, 2420, 2402, 4022, 4202, 4220 }
+What is the largest number M, such that none of its D(M)
+numbers are divisible by 9 ?
+The answer is
+
+11. Cut Square Chocolate
+    eomplete the blanks in the following question with the appropriate
+    answer.
+    How many distinct ways are there to cut a 4*4 piece of
+    chocolate into squares with integer sides? Every 1 *1 chocolate
+    square must be whole, and we treat two ways of cutting that
+    differ by a rotation and/or a reflection as distinct. For example,
+    a 3*3 chocolate may be cut in six distinct ways: (1) a full 3*3
+    chocolate; (2) one 2*2 chocolate and five 1* 1 chocolates; and
+    (3) nine 1* 1 chocolates.
+12. Balancer
+    Let A be the set of all odd integers from 1 to 2023 (inclusive) and let B the set
+    of all even integers from 2 to 2024 (inclusive). We can either take a number a
+    from A, or alternatively take b from B in order for the two sets A and B to
+    have the same average (mean). What are the values of a and b?
+    Pick ONE option
+    O
+    (1 , 2024)
+    (1013,1012
+    O
+    (2023, 2024)
+    O
+    (2023,2)
+    O
+    there are no such a,b
+    O
+    there are more than 1 such pair (a,b)
+13. Square Date
+    Complete the blanks in the following question with the appropriate
+    answer.
+    It is known that, one date (with format YYYYMMDD) in year
+    2024 is a perfect square:
+    20241001 = 449+2.
+    What is the next year with this property (one date in such year
+    is a perfect square) after year 2024?
+    The answer is
+14. Point in Circle
+    What is the median distance from a point to the center of a circle of radius 1
+    ? Chose closest value.
+    Pick ONE option
+    0.25
+    0.33
+    0.50
+    0.70
+    0.67
+15. Triangle revisited
+    An isosceles triangle ABC has side BC = 6 and two side angles ABC = ACB
+    30 degree. A point X is placed randomly inside ABC. What is the expected
+    sum of distances from X to the three edges of ABC ?
+    Pick ONE option
+    O
+    2 + sqrt(3)/3
+    O
+    3 + sqrt(3)/3
+    O
+    3*sqrt(3)
+    3
+16. Distances in a Circle
+    tomplete the blanks in the following question with the appropriate
+    answer.
+    Mark a point randomly inside a circle with a radius of 2
+    meters. Let DI be the distance from the point to the center of
+    the circle, and D2 be the distance from the point to the
+    circumference.
+    Let D = min(D1 ,D2). Find the radius R (in centimetres) such that
+    The answer is
+17. Guests and Chairs
+    Complete the blanks in the following question with the appropriate
+    answer.
+    Ten guests take a seat at a table with ten chairs, without
+    noticing the nameplates that specify which guest should sit on
+    which chair. Assuming that each seating arrangement is equally
+    likely, find the variance of the number of guests who happen to
+    an a correct chair.
+    Please enter it as a decimal fraction using a point to denote the
+    whole and fractional parts (e.g., 0.123, 0.9 and so on).
+    The answer is
+18. Selfish seating
+    eomplete the blanks in the following question with the appropriate
+    answer.
+    A person is planning to seat 17 people around a circular table
+    with a random generator. However they want to sit next to
+    someone specific so they reruns the generator until the first
+    plan which puts them next to each other. Assume that the
+    generator functions in a way where each seating arrangement
+    is equally likely.
+    What is the expected value of the number of unsuccessful
+    plans?
+    Please enter it as a decimal fraction using a point to denote the
+    whole and fractional parts (e.g., 0.123, 0.9 and so on).
+    The answer is
+
+19. Windows
+tomplete the blanks in the following question with the appropriate
+answer.
+A big house has many windows. Each window is facing one of
+four directions: North, East, South, or West. Among any 99
+windows, there necessarily exist a window facing East, a
+window facing South, and a window facing West. What is the
+maximum number of windows that this house could have?
+Please enter an integer
+The answer is
+20. Counting square
+    complete the blanks in the following question with the appropriate
+    answer.
+    How many ways are there to fill the integers from 1 to 9 into a
+    3*3 square, such that numbers increase along each row and
+    increase down each column?
+    The answer is
+
+21. Ant: Turn Right Twice
+Complete the blanks in the following question with the appropriate
+answer.
+An ant crawls from the starting point (0,0) to the end point
+(1 0, 1 0) in a Cartesian coordinate system. With each step this ant
+can only move up or to the right by 1 unit (i.e. from point (x, y)
+to (x, y+l) or (x+l , y)). Suppose that the ant's head faces the
+positive direction of the x-axis at the beginning. What is the
+number of possible distinct routes where the ant's crawling
+path turns right exactly twice?
+22. Stone Game
+    Complete the blanks in the following question with the appropriate
+    answer.
+    A stone game is between two smart players (A and B) and is
+    played with three heaps of stones, each with 2023, 2024, 2025
+    stones respectively. The two players (A is making the first-move)
+    alternate taking some number of stones from the three heaps,
+    according to the below rule (*). The player who cannot do this
+    loses.
+    Rule (*): one player must take 2 stones from one heap, 1 stone
+    from another heap, and 0 stones from the third heap.
+    There are six (i.e. 3!) possible first-moves for A.
+    How many of the six moves can ensure A wins this game?
+    The answer is 
+23. Maximum Likelihood Bias
+eomplete the blanks in the following question with the appropriate
+answer.
+x_1 0) be a sample of ten independent
+Let X = (LI, ...,
+random variables drawn from a uniform distribution from 0 to
+A, where A is an unknown parameter. Let ML_A(X) be a
+maximum likelihood estimate of A based on sample X. Find the I
+expected bias of this estimate as a fraction of A (assume the
+bias is nonnegative).
+The answer is <blank 1>. Please enter an irreducible proper
+fraction, e.g. 1/2, 3/4. Please do not enter any spaces.
+The answer is
+
+24. Matrix Rank Expectation
+eomplete the blanks in the following question with the appropriate
+answer.
+Let A be a 2x2 random matrix with all its elements having
+independent normal distributions N(O;I). Find E(rank(A) I A =
+AA2).
+Please enter it as the decimal fraction using point to denote the
+decimal point (e.g., 0.123, 0.9 and so on)
+The answer is
+25. Quintuple Coin Perfection Game
+    In a QCP game, the goal is to flip 5 fair coins until they all have the same
+    face. On each round a player can choose any subset of the given 5 coins and
+    flip them. The game ends when all five coins show the same face (the player
+    wins in this case), or when player has played N rounds without the quintuple
+    have matching faces (the player loses in this case). What is the maximum
+    number of rounds, N, such that the shop owner can set for the game such
+    that it would still favour the game shop?
+    Pick ONE option
+    3
+    5
+    7
+    10
+    more than 10
+26. Aligned Priorities Game
+    Complete the blanks in the following question with the appropriate
+    answer.
+    Two players, A and B, play the following game. Each player
+    randomly draws a card from a deck, containing 1 00 different
+    cards with numbers from 1 to 100. After learning the value of
+    their card (but not the value of the other player's card), each
+    player can either pass or continue. If either player passes, the
+    game ends, and both players get 0. If both players continue,
+    their cards are revealed. If player A's card number is greater
+    than B's, both players get 1. If B's card number is greater, both
+    players get -1 . What is the expected value each player gets
+    assuming both players play optimally.
+    Please enter an irreducible proper fraction, eg 1/2, 3/4. Please
+    do not enter any spaces.
+    The answer is
+
+27. Point in the Triangle
+eomplete the blanks in the following question with the appropriate
+answer.
+Triangle ABC has sides of length AB = 45, AC = 60, and BC = 75.
+Place a point D randomly and uniformly inside the triangle.
+What is the probability that the largest perpendicular distance
+from point D to the triangle's three sides is the distance to side
+Please enter a proper irreducible fraction. Please separate
+numerator and denomination by '/' and do not use any spaces.
+Examples: 1/2, 2/3, 23/97
+The answer is
+28. Maximal Variance
+    Complete the blanks in the following question with the appropriate
+    answer.
+    Randomly sample 4 numbers from 1,2,3 .., 10 without
+    repetition. What is the largest possible variance of these 4
+    numbers? Write the answer accurate to 2 decimals.
+    The answer is
+
+29. Swap sort
+We have a sequence of numbers: 2 0 2 42 0 2 5.
+Each turn we can swap the positions of any two numbers. What is the
+minimum number of turns needed to sort this sequence to make it
+increasing?
+Pick ONE option
+6
+5
+4
+3
+2
+30. Coupon Exchange
+    Complete the blanks in the following question with the appropriate
+    answer.
+    A buyer and a seller each possess a collection of five unique
+    coupons, with each coupon having a face value of 1, 3, 9, 27, or
+    81 . The buyer wants to purchase an item from the seller, priced
+    at an integer 'x'. The buyer will use a combination of coupons to
+    pay for it, and the seller will use coupons for any change, if
+    necessary.
+    For example, if x = 5, the buyer can pay with coupon valued 9,
+    the seller then provides the gift with changes using coupons 3
+    and 1.
+    Determine the smallest positive value of 'x' that cannot be
+    transacted between the buyer and the seller using their
+    available coupons.
+    The answer is

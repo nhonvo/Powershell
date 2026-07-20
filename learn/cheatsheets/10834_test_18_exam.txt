@@ -1,0 +1,365 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/02_N4/Course_40/📂index_Course_40|Course_40]]
+
+# Test 18
+
+## Part 1
+**Q1.** どんな外国語が話せますか。
+- **A.** がいくにご
+- **B.** がいごくご
+- **C.** がいこくご
+- **D.** がいぐにご
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3外国語：ngoại ngữどんな外国語が話せますか。Bạn c&oacute; thể n&oacute;i những ngoại ngữ n&agrave;o?</p>
+</details>
+
+---
+**Q2.** 近所に新しいお店ができました。
+- **A.** ちかじょ
+- **B.** ちかどころ
+- **C.** きんじょ
+- **D.** きんどころ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3近所：gần đ&acirc;y, l&acirc;n cận, h&agrave;ng x&oacute;m近所に新しいお店ができました。Gần đ&acirc;y c&oacute; một cửa h&agrave;ng mới mở.</p>
+</details>
+
+---
+**Q3.** 兄の子供にお年玉をあげました。
+- **A.** おとしたま
+- **B.** おとしだま
+- **C.** おねんたま
+- **D.** おねんだま
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2お年玉：tiền l&igrave; x&igrave;兄の子供にお年玉をあげました。T&ocirc;i đ&atilde; l&igrave; x&igrave; cho con của anh trai.</p>
+</details>
+
+---
+**Q4.** 最近、暖かくなりました。
+- **A.** ざいきん
+- **B.** ざいぎん
+- **C.** さいきん
+- **D.** さいぎん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3最近：gần đ&acirc;y最近、暖かくなりました。G&acirc;n đ&acirc;y trời đ&atilde; ấm l&ecirc;n.</p>
+</details>
+
+---
+**Q5.** 郵便局で切手を買いました。
+- **A.** きって
+- **B.** きいて
+- **C.** きて
+- **D.** きりて
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1切手：tem郵便局で切手を買いました。T&ocirc;i đ&atilde; mua tem thư ở bưu điện.</p>
+</details>
+
+---
+**Q6.** じゅうしょはどこですか。
+- **A.** 主所
+- **B.** 主近
+- **C.** 住所
+- **D.** 住近
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3住所：địa chỉ住所はどこですか。 Địa chỉ của bạn ở đ&acirc;u?</p>
+</details>
+
+---
+**Q7.** 昔、このへんに映画館があった。
+- **A.** 近
+- **B.** 辺
+- **C.** 切
+- **D.** 場
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2この辺：khu n&agrave;y, v&ugrave;ng n&agrave;y昔、この辺に映画館があった。Ng&agrave;y xưa khu vực n&agrave;y từng c&oacute; rạp chiếu phim.</p>
+</details>
+
+---
+**Q8.** 野菜を小さくきってください。
+- **A.** 辺って
+- **B.** 切って
+- **C.** 動って
+- **D.** 所って
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2切る： cắt野菜を小さく切ってください。H&atilde;y cắt nhỏ rau.</p>
+</details>
+
+---
+**Q9.** ごしゅじんはいらっしゃいますか。
+- **A.** 玉人
+- **B.** 王人
+- **C.** 住人
+- **D.** 主人
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4ご主人：chồng (d&ugrave;ng khi n&oacute;i về chồng người kh&aacute;c)ご主人はいらっしゃいますか。Chồng chị c&oacute; ở đ&acirc;y kh&ocirc;ng?</p>
+</details>
+
+---
+**Q10.** だいどころをきれいにしてくれる？
+- **A.** 大近
+- **B.** 大所
+- **C.** 台近
+- **D.** 台所
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4台所：bếp台所をきれいにしてくれる？Bạn c&oacute; thể l&agrave;m sạch bếp cho t&ocirc;i kh&ocirc;ng?</p>
+</details>
+
+---
+**Q1.** 美容院で_______を短く切った。
+- **A.** ひも
+- **B.** 前髪
+- **C.** コンセント
+- **D.** 電気
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2前髪：t&oacute;c m&aacute;i美容院で前髪を短く切った。T&ocirc;i đ&atilde; cắt ngắn t&oacute;c m&aacute;i ở tiệm l&agrave;m t&oacute;c.</p>
+</details>
+
+---
+**Q2.** 夜は_______しないでください。
+- **A.** うるさく
+- **B.** うれしく
+- **C.** 暗く
+- **D.** 弱く
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1うるさい：ồn &agrave;o夜はうるさくしないでください。Buổi tối th&igrave; đừng l&agrave;m ồn.</p>
+</details>
+
+---
+**Q3.** 妹は彼氏と別れたので、_______そうだ。
+- **A.** 暖か
+- **B.** 暗
+- **C.** 弱
+- **D.** 悲し
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n:4悲しい： buồn妹は彼氏と別れたので、悲しそうだ。Em g&aacute;i t&ocirc;i mới chia tay người y&ecirc;u n&ecirc;n tr&ocirc;ng n&oacute; c&oacute; vẻ buồn.</p>
+</details>
+
+---
+**Q4.** 紅茶を甘くしたかったから、_______を入れた。
+- **A.** 砂糖
+- **B.** 塩
+- **C.** 温度
+- **D.** 砂
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1砂糖：đường紅茶を甘くしたかったから、砂糖を入れた。V&igrave; t&ocirc;i muốn l&agrave;m ngọt tr&agrave; n&ecirc;n đ&atilde; cho đường v&agrave;o.</p>
+</details>
+
+---
+**Q5.** あ、ボタンが_______そうですよ。
+- **A.** 取れ
+- **B.** 消え
+- **C.** 折れ
+- **D.** 切れ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1取れる：bung raあ、ボタンが取れそうですよ。Ơ, c&uacute;c sắp bung ra rồi đấy.</p>
+</details>
+
+---
+**Q6.** 水を40_______に温めてください。
+- **A.** 時
+- **B.** 市
+- **C.** 分
+- **D.** 度
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4度: độ C水を40度に温めてください。H&atilde;y l&agrave;m ấm nước đến 40 độ gi&uacute;p t&ocirc;i.</p>
+</details>
+
+---
+**Q7.** 部屋の_______が消えそうですね。
+- **A.** コンセント
+- **B.** エアコン
+- **C.** 地図
+- **D.** 電気
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4電気：đ&egrave;n điện部屋の電気が消えそうですね。Đ&egrave;n trong ph&ograve;ng c&oacute; vẻ sắp tắt rồi.</p>
+</details>
+
+---
+**Q8.** おかしを6つに_______てください。
+- **A.** 換え
+- **B.** 塗っ
+- **C.** 分け
+- **D.** 折っ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3分ける：chiaおかしを6つに分けてください。H&atilde;y chia b&aacute;nh kẹo l&agrave;m 6 phần.</p>
+</details>
+
+---
+**Q9.** あの二人は最近結婚したから、_______そうだ。
+- **A.** 幸せ
+- **B.** 真面目
+- **C.** 優し
+- **D.** 暖か
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1幸せ：hạnh ph&uacute;cあの二人は最近結婚したから、幸せそうだ。Hai người đ&oacute; mới kết h&ocirc;n gần đ&acirc;y n&ecirc;n tr&ocirc;ng c&oacute; vẻ rất hạnh ph&uacute;c.</p>
+</details>
+
+---
+**Q10.** 味が薄いので、_______塩を入れよう。
+- **A.** 確か
+- **B.** 特に
+- **C.** もっと
+- **D.** なかなか
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3もっと：hơn, nữa味が薄いので、もっと塩を入れよう。Vị nhạt qu&aacute;, cho th&ecirc;m muối v&agrave;o th&ocirc;i.</p>
+</details>
+
+---
+**Q1.** A：わあ、________________B：ああ、それは部長の車ですよ。
+- **A.** 高そう車ですね。
+- **B.** 高そうの車ですね。
+- **C.** 高いそうな車ですね。
+- **D.** 高そうな車ですね。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A：わあ、高そうな車ですね。B：ああ、それは部長の車ですよ。A: Ồ, xe tr&ocirc;ng c&oacute; vẻ đắt nhỉ.B: &Agrave;, đ&oacute; l&agrave; xe của trưởng ph&ograve;ng đấy.</p>
+</details>
+
+---
+**Q2.** A：新しい先生、どんな人かな。B：昨日会ったんだけど、________________
+- **A.** あんまり厳しいじゃなさそうな人だったよ。
+- **B.** あんまり厳しくなそうな人だったよ。
+- **C.** あんまり厳しくないそうな人だったよ。
+- **D.** あんまり厳しくなさそうな人だったよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A：新しい先生、どんな人かな。B：昨日会ったんだけど、あんまり厳しくなさそうな人だったよ。A: Gi&aacute;o vi&ecirc;n mới l&agrave; người thế n&agrave;o đ&acirc;y nhỉ?B: H&ocirc;m qua tớ đ&atilde; gặp rồi, l&agrave; người c&oacute; vẻ kh&ocirc;ng qu&aacute; nghi&ecirc;m khắc đ&acirc;u.</p>
+</details>
+
+---
+**Q3.** A：冷蔵庫の________________だから、買ってきてくれない？B：うん、いいよ。
+- **A.** 牛乳がなくならなさそう
+- **B.** 牛乳がなくなったそう
+- **C.** 牛乳がなくなりそう
+- **D.** 牛乳がなくなれそう
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A：冷蔵庫の牛乳がなくなりそうだから、買ってきてくれない？B：うん、いいよ。A: Sữa trong tủ lạnh sắp hết rồi, cậu đi mua gi&uacute;p tớ được kh&ocirc;ng?B: Ừ, được th&ocirc;i.</p>
+</details>
+
+---
+**Q4.** A：あ、見てください。________________B：本当だ。新しく換えないといけませんね。
+- **A.** 電気が消えそうですよ。
+- **B.** 電気が消えるそうですよ。
+- **C.** 電気が消えたそうですよ。
+- **D.** 電気が消えなさそうですよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A：あ、見てください。電気が消えそうですよ。B：本当だ。新しく換えないといけませんね。A: Ơ, nh&igrave;n k&igrave;a. Đ&egrave;n sắp tắt rồi.B: Đ&uacute;ng thật n&agrave;y. Phải thay c&aacute;i mới th&ocirc;i.</p>
+</details>
+
+---
+**Q5.** A：明日の試験、________________B：うーん、合格できないかもしれないな&hellip;。
+- **A.** 合格できそう？
+- **B.** 合格できるそう？
+- **C.** 合格できたそう？
+- **D.** 合格できそうだった？
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A：明日の試験、合格できそう？B：うーん、合格できないかもしれないな&hellip;。A: Kỳ thi ng&agrave;y mai, liệu c&oacute; thể đỗ kh&ocirc;ng?B: Ừm... C&oacute; lẽ kh&ocirc;ng thể đỗ được...</p>
+</details>
+
+---
+**Q6.** A：（電話で）今どこ？もうすぐ授業だよ。B：ごめん、バスが遅れているから、________________
+- **A.** 授業に間に合いそうにないよ。
+- **B.** 授業に間に合わないそうだよ。
+- **C.** 授業に間に合うそうだよ。
+- **D.** 授業に間に合いそうじゃないよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A：（電話で）今どこ？もうすぐ授業だよ。B：ごめん、バスが遅れているから、授業に間に合いそうにないよ。A: (Tr&ecirc;n điện thoại) Cậu đang ở đ&acirc;u? Sắp đến giờ học rồi đấy?B: Xin lỗi, v&igrave; xe bu&yacute;t bị trễ n&ecirc;n c&oacute; vẻ tớ kh&ocirc;ng kịp giờ học đ&acirc;u.</p>
+</details>
+
+---
+**Q7.** A：料理、手伝うよ。B：ありがとう。じゃあ、________________
+- **A.** 野菜を小さいに切​​​​​​​ってくれる？
+- **B.** 野菜を小さく切​​​​​​​ってくれる？
+- **C.** 野菜を小さそうに切​​​​​​​ってくれる？
+- **D.** 野菜を小さくて切ってくれる？
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A：料理、手伝うよ。B：ありがとう。じゃあ、野菜を小さく切ってくれる？A: Tớ gi&uacute;p cậu nấu ăn nh&eacute;.B: Cảm ơn nh&eacute;. Vậy th&igrave; cậu th&aacute;i nhỏ rau gi&uacute;p tớ được kh&ocirc;ng?</p>
+</details>
+
+---
+**Q8.** A：マイさんの部屋、きれいですね。B：ええ、昨日________________
+- **A.** きれいくしましたから。
+- **B.** きれいなにしましたから。
+- **C.** きれいしましたから。
+- **D.** きれいにしましたから。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A：マイさんの部屋、きれいですね。B：ええ、昨日きれいにしましたから。A: Ph&ograve;ng của Mai sạch sẽ nhỉ.B: Ừ, v&igrave; h&ocirc;m qua tớ đ&atilde; dọn sạch rồi.</p>
+</details>
+
+---
+**Q9.** A：4月になって、________________B：ええ、もうすぐ桜が咲きそうですね。
+- **A.** 暖かいになりましたね。
+- **B.** 暖かくなりましたね。
+- **C.** 暖かいにしましたね。
+- **D.** 暖かくしましたね。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A：4月になって、暖かくなりましたね。B：ええ、もうすぐ桜が咲きそうですね。A: Sang th&aacute;ng 4, trời đ&atilde; ấm l&ecirc;n rồi nhỉ.B: Đ&uacute;ng nhỉ, hoa anh đ&agrave;o sắp nở rồi.</p>
+</details>
+
+---
+**Q10.** A：佐藤さん、将来の夢はある？B：昔は________________けど、今はないな。
+- **A.** 医者になりたい
+- **B.** 医者になりたかった
+- **C.** 医者なりたい
+- **D.** 医者なりたかった
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A：佐藤さん、将来の夢はある？B：昔は医者になりたかったけど、今はないな。A: Satou n&agrave;y, cậu c&oacute; ước mơ trong tương lai kh&ocirc;ng?B: Ng&agrave;y xưa tớ từng muốn trở th&agrave;nh b&aacute;c sỹ, nhưng giờ th&igrave; kh&ocirc;ng c&oacute; ước mơ g&igrave;.</p>
+</details>
+
+---

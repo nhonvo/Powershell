@@ -1,0 +1,13 @@
+# AssignmentQuestions
+
+🔙 **Back to Parent**: [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/index_2_ShowMeTheDataStructures|2_ShowMeTheDataStructures]]
+
+## 📄 Notes
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/AssignmentQuestions/1_LeastRecentlyUsedCache|1_LeastRecentlyUsedCache]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/AssignmentQuestions/2_FindingFiles|2_FindingFiles]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/AssignmentQuestions/3_HuffmanCoding|3_HuffmanCoding]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/AssignmentQuestions/4_ActiveDirectory|4_ActiveDirectory]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/AssignmentQuestions/5_Blockchain|5_Blockchain]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/AssignmentQuestions/6_UnionandIntersectionofTwoLinkedLists|6_UnionandIntersectionofTwoLinkedLists]]
+- [[assignmentquestions|AssignmentQuestions]]
+

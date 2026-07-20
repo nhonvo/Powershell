@@ -1,0 +1,213 @@
+# 🗃️ Professional-Machine-Learning-Engineer Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+You are building an ML model to detect anomalies in real-time sensor data. You will use Pub/Sub to handle incoming requests. You want to store the results for analytics and visualization. How should you configure the pipeline?
+
+### Options:
+- [x] **A)** 1 = Dataflow, 2 = Vertex AI, 3 = BigQuery [Correct]
+- [ ] **B)** 1 = DataProc, 2 = AutoML, 3 = Cloud Bigtable
+- [ ] **C)** 1 = BigQuery, 2 = AutoML, 3 = Cloud Functions
+- [ ] **D)** 1 = BigQuery, 2 = Vertex AI, 3 = Cloud Storage
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Option A is correct because:
+- Dataflow handles real-time Pub/Sub streaming processing for anomaly detection pipelines.
+- Vertex AI can host and serve the anomaly detection model in near real-time.
+- BigQuery provides scalable analytics and visualization for stored results.
+B is incorrect because DataProc is Hadoop/Spark-based and less suited for real-time Pub/Sub streams; AutoML is not typically used for deployed real-time inference in streaming pipelines; Cloud Bigtable is a NoSQL store, not ideal for analytics/visualization of results.
+C is incorrect because BigQuery should be the analytics store, not the first stage; AutoML is not positioned for real-time inference in a streaming path; Cloud Functions lacks scalable, low-latency streaming processing.
+D is incorrect because while BigQuery can store results, Vertex AI is the proper model hosting component for real-time inference, and Cloud Storage is not optimal for immediate analytics/visualization.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+Your organization wants to make its internal shuttle service route more efficient. The shuttles currently stop at all pick-up points across the city every 30 minutes between 7 am and 10 am. The development team has already built an application on Google Kubernetes Engine that requires users to confirm their presence and shuttle station one day in advance. What approach should you take?
+
+### Options:
+- [ ] **A)** 1. Build a tree-based regression model that predicts how many passengers will be picked up at each shuttle station.
+2. Dispatch an appropriately sized shuttle and provide the map with the required stops based on the prediction.
+- [ ] **B)** 1. Build a tree-based classification model that predicts whether the shuttle should pick up passengers at each shuttle station.
+2. Dispatch an available shuttle and provide the map with the required stops based on the prediction.
+- [ ] **C)** 1. Define the optimal route as the shortest route that passes by all shuttle stations with confirmed attendance at the given time under capacity constraints.
+2. Dispatch an appropriately sized shuttle and indicate the required stops on the map. [Correct]
+- [ ] **D)** 1. Build a reinforcement learning model with tree-based classification models that predict the presence of passengers at shuttle stops as agents and a reward function around a distance-based metric.
+2. Dispatch an appropriately sized shuttle and provide the map with the required stops based on the simulated outcome.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Option C is correct because it defines the optimization objective as finding the shortest route that visits only confirmed stops within capacity constraints, aligning with the need to rely on pre-confirmed attendance and route efficiency under shuttle capacity. A) A tree-based regression model predicting passengers at each station does not directly optimize a constrained route. B) A tree-based classification model for whether to pick up at each station assumes unconditional stops rather than optimizing a schedule and capacity. D) A reinforcement learning approach with agents for passenger presence adds unnecessary complexity and lacks a clear, tractable objective function focused on a feasible route with confirmations.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+You were asked to investigate failures of a production line component based on sensor readings. After receiving the dataset, you discover that less than 1% of the readings are positive examples representing failure incidents. You have tried to train several classification models, but none of them converge. How should you resolve the class imbalance problem?
+
+### Options:
+- [ ] **A)** Use the class distribution to generate 10% positive examples.
+- [ ] **B)** Use a convolutional neural network with max pooling and softmax activation.
+- [x] **C)** Downsample the data with upweighting to create a sample with 10% positive examples. [Correct]
+- [ ] **D)** Remove negative examples until the numbers of positive and negative examples are equal.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Option C is correct because downsampling the majority class and applying upweighting to the minority class helps address severe class imbalance, stabilizing loss and improving recall for the rare failure events without introducing excessive synthetic data. It preserves information from negatives while making positives more influential during training.
+A is incorrect because synthetic oversampling to 10% positives risks overfitting and misrepresenting real-world distribution. B is incorrect because architecture choice (CNN, pooling, softmax) does not address class imbalance and may be inappropriate for tabular sensor data. D is incorrect because removing negatives discards information and biases the model toward predicting positives.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+You want to rebuild your ML pipeline for structured data on Google Cloud. You are using PySpark to conduct data transformations at scale, but your pipelines are taking over 12 hours to run. To speed up development and pipeline run time, you want to use a serverless tool and SQL syntax. You have already moved your raw data into Cloud Storage. How should you build the pipeline on Google Cloud while meeting the speed and processing requirements?
+
+### Options:
+- [ ] **A)** Use Data Fusion's GUI to build the transformation pipelines, and then write the data into BigQuery.
+- [ ] **B)** Convert your PySpark into SparkSQL queries to transform the data, and then run your pipeline on Dataproc to write the data into BigQuery.
+- [ ] **C)** Ingest your data into Cloud SQL, convert your PySpark commands into SQL queries to transform the data, and then use federated queries from BigQuery for machine learning.
+- [x] **D)** Ingest your data into BigQuery using BigQuery Load, convert your PySpark commands into BigQuery SQL queries to transform the data, and then write the transformations to a new table. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+Option D is correct because it leverages serverless, scalable BigQuery SQL for transformations directly on data already in Cloud Storage via BigQuery Load, avoiding managing Spark clusters and enabling faster development with standard SQL. It writes results to a new table for clean lineage and incremental updates, aligning with best practices for structured data pipelines on Google Cloud.
+A is incorrect because Data Fusion, while serverless, adds data movement and may not optimize for SQL-based transformations at scale as efficiently as native BigQuery SQL for this use case. B is incorrect because Dataproc involves managed Spark clusters, not serverless, and adds overhead compared to BigQuery SQL. C is incorrect because federated queries from BigQuery to Cloud SQL introduce latency and complexity; BigQuery Load + native SQL is a more direct serverless path.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+You manage a team of data scientists who use a cloud-based backend system to submit training jobs. This system has become very difficult to administer, and you want to use a managed service instead. The data scientists you work with use many different frameworks, including Keras, PyTorch, theano, Scikit-learn, and custom libraries. What should you do?
+
+### Options:
+- [x] **A)** Use the AI Platform custom containers feature to receive training jobs using any framework. [Correct]
+- [ ] **B)** Configure Kubeflow to run on Google Kubernetes Engine and receive training jobs through TF Job.
+- [ ] **C)** Create a library of VM images on Compute Engine, and publish these images on a centralized repository.
+- [ ] **D)** Set up Slurm workload manager to receive jobs that can be scheduled to run on your cloud infrastructure.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Option A is correct because AI Platform custom containers allow training on Google Cloud with any framework by packaging the code and dependencies in a container, providing a fully managed service for diverse frameworks.
+B is incorrect: Kubeflow on GKE with TFJob is not a fully managed service and TFJob limits to TensorFlow-focused workflows, not the wide framework support described.
+C is incorrect: VM image libraries require manual maintenance and aren’t a managed training service; scalability and lifecycle management are limited.
+D is incorrect: Slurm is an on-premises/workload manager; deploying it on cloud lacks the fully managed training service benefits and framework-agnostic support.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: 
+
+You work for an online retail company that is creating a visual search engine. You have set up an end-to-end ML pipeline on Google Cloud to classify whether an image contains your company's product. Expecting the release of new products in the near future, you configured a retraining functionality in the pipeline so that new data can be fed into your ML models. You also want to use AI Platform's continuous evaluation service to ensure that the models have high accuracy on your test dataset. What should you do?
+
+### Options:
+- [ ] **A)** Keep the original test dataset unchanged even if newer products are incorporated into retraining.
+- [x] **B)** Extend your test dataset with images of the newer products when they are introduced to retraining. [Correct]
+- [ ] **C)** Replace your test dataset with images of the newer products when they are introduced to retraining.
+- [ ] **D)** Update your test dataset with images of the newer products when your evaluation metrics drop below a pre- decided threshold.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Option B is correct because continuously evaluating the model with new product data ensures the test set reflects the current production distribution, preventing performance erosion as data shifts occur during retraining. It supports AI Platform Continuous Evaluation by keeping the evaluation representative of real-world data.
+A) Incorrect — Keeping the original test dataset unchanged fails to detect performance regressions caused by distribution shifts from new products, undermining continuous evaluation.
+C) Incorrect — Replacing the test dataset discards historical reference data, hindering anomaly detection and drift assessment across time.
+D) Incorrect — Updating only when metrics drop below a threshold can miss gradual degradation; continuous evaluation should monitor relevance as new data arrives, not wait for a drop.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: 
+
+You need to build classification workflows over several structured datasets currently stored in BigQuery. Because you will be performing the classification several times, you want to complete the following steps without writing code: exploratory data analysis, feature selection, model building, training, and hyperparameter tuning and serving. What should you do?
+
+### Options:
+- [x] **A)** Configure AutoML Tables to perform the classification task. [Correct]
+- [ ] **B)** Run a BigQuery ML task to perform logistic regression for the classification.
+- [ ] **C)** Use AI Platform Notebooks to run the classification model with pandas library.
+- [ ] **D)** Use AI Platform to run the classification model job configured for hyperparameter tuning.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Option A is correct because AutoML Tables supports end-to-end classification pipelines on structured data without code, including exploratory analysis, feature engineering, model selection, training, tuning, and deployment, directly within the UI and automated processes.
+B is incorrect because BigQuery ML logistic regression is a model type, not a full automated workflow; while suitable for simple pipelines, it does not provide integrated EDA, feature selection, or hyperparameter tuning in a no-code workflow.
+C is incorrect because AI Platform Notebooks require writing code (pandas) and do not offer a no-code end-to-end classification workflow over BigQuery.
+D is incorrect because AI Platform jobs with hyperparameter tuning involve custom code and explicit configuration, not a fully managed no-code classification workflow.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: 
+
+You work for a public transportation company and need to build a model to estimate delay times for multiple transportation routes. Predictions are served directly to users in an app in real time. Because different seasons and population increases impact the data relevance, you will retrain the model every month. You want to follow Google-recommended best practices. How should you configure the end-to-end architecture of the predictive model?
+
+### Options:
+- [x] **A)** Configure Vertex AI Pipelines to schedule your multi-step workflow from training to deploying your model. [Correct]
+- [ ] **B)** Use a model trained and deployed on BigQuery ML, and trigger retraining with the scheduled query feature in BigQuery.
+- [ ] **C)** Write a Cloud Functions script that launches a training and deploying job on Vertex AI that is triggered by Cloud Scheduler.
+- [ ] **D)** Use Cloud Composer to programmatically schedule a Dataflow job that executes the workflow from training to deploying your model.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Option A is correct because Vertex AI Pipelines provides end-to-end orchestration for ML workflows, enabling scheduled retraining, evaluation, and deployment in a single, reproducible pipeline that fits real-time serving with monthly retrain. It integrates with Vertex AI Training and Deployments, supports versioning, and can be triggered on a schedule.
+B is incorrect because BigQuery ML is for in-database ML and retraining via scheduled queries isn’t a full end-to-end pipeline with deployment and versioning in Vertex AI, which is needed for scalable production serving.
+C is incorrect because while Cloud Functions + Cloud Scheduler can trigger retraining, it adds manual orchestration complexity and lacks the native, managed pipeline semantics, reproducibility, and deployment controls of Vertex AI Pipelines.
+D is incorrect because Cloud Composer with Dataflow introduces an Apache Airflow-based orchestrator and a data-processing focus; it’s heavier for ML model lifecycle management and not as tightly integrated for model training, evaluation, and deployment as Vertex AI Pipelines.
+</details>
+
+---

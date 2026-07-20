@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/ab-100
+  - ab100
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AB-100: Agentic AI Business Solutions Architect MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/AB-100/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/AB-100/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AB-100/AB-100 Mindmap\|🗺️ AB-100 Mindmap]]
+- [[certifications/microsoft/AB-100/AB-100 Flashcards\|🃏 AB-100 Flashcards]]
+- [[certifications/microsoft/AB-100/AB-100_Scraped_Question_Bank\|🗃️ AB-100 Scraped Question Bank]]

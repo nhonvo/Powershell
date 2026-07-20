@@ -1,0 +1,99 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/02_Database_ORM/📂index_02_Database_ORM|02_Database_ORM]]
+
+# 🐘 1. SQL Fundamentals & PostgreSQL (Deep Dive)
+
+PostgreSQL không chỉ là một Cơ sở dữ liệu quan hệ (RDBMS), nó là "Swiss Army Knife" (Dao đa năng) của Backend. Hiểu sâu SQL và các kiến trúc bên trong Postgres giúp bạn viết query tối ưu, tránh treo server khi dữ liệu phình to.
+
+---
+
+### 🏛️ 1.1 SQL Lifecycle (Vòng đời câu lệnh)
+
+Khi bạn gửi một câu lệnh `SELECT`, Postgres thực tế làm gì?
+
+1.  **Parser**: Kiểm tra cú pháp (Syntax check).
+2.  **Analyzer/Rewriter**: Chuyển đổi query thành cấu trúc cây (Query Tree).
+3.  **Planner/Optimizer**: (Bước Quan Trọng Nhất) Thử nghiệm các con đường khác nhau để lấy dữ liệu (Index Scan vs Seq Scan) và chọn cái tốn ít chi phí (Cost) nhất.
+4.  **Executor**: Thực thi kế hoạch đã chọn và trả về kết quả.
+
+> [!TIP]
+> Sử dụng `EXPLAIN ANALYZE <Query>` để xem Planner đã chọn con đường nào và tốn bao nhiêu thời gian thực tế.
+
+---
+
+### 🧠 1.2 MVCC (Multi-Version Concurrency Control)
+
+Đây là bí mật giúp Postgres hỗ trợ hàng ngàn người đọc ghi đồng thời mà không bị "đá nhau" (Locking).
+
+- **Cơ chế**: Khi bạn `UPDATE` hoặc `DELETE` một hàng, Postgres **không sửa trực tiếp** trên hàng đó. Nó tạo ra một "phiên bản" mới của hàng đó và đánh dấu phiên bản cũ là rác.
+- **Lợi ích**: Người đọc không bao giờ phải đợi người ghi (Readers don't block Writers).
+
+#### 🚮 VACUUM - Kẻ dọn rác
+Vì cơ chế MVCC, dữ liệu rác (Dead Tuples) sẽ tích tụ làm phình to (Bloat) database.
+- `AutoVacuum`: Tiến trình ngầm định kỳ quét và thu hồi bộ nhớ từ các Dead Tuples.
+
+---
+
+### 🚀 1.3 Advanced Querying (Kỹ thuật SQL nâng cao)
+
+#### **1.3.1 Common Table Expressions (CTE - `WITH`)**
+Giúp code SQL sạch sẽ, module hóa và hỗ trợ đệ quy (Recursive CTE).
+
+```sql
+WITH top_customers AS (
+    SELECT customer_id, SUM(amount) as total
+    FROM orders
+    GROUP BY customer_id
+    HAVING SUM(amount) > 1000
+)
+SELECT u.name, tc.total
+FROM users u
+JOIN top_customers tc ON u.id = tc.customer_id;
+```
+
+#### **1.3.2 Window Functions (OVER)**
+Tính toán trên một "cửa sổ" dữ liệu mà không cần gộp nhóm (GROUP BY).
+- `ROW_NUMBER()`: Đánh số thứ tự.
+- `RANK()` / `DENSE_RANK()`: Xếp hạng.
+- `SUM(...) OVER(...)`: Tính tổng lũy kế.
+
+---
+
+### 🔒 1.4 Isolation Levels (Mức độ cô lập giao dịch)
+
+Trong môi trường đa luồng, các Transaction có thể gặp phải 3 hiện tượng lỗi:
+1.  **Dirty Read**: Đọc nhầm dữ liệu chưa Commit (Postgres **không bao giờ** bị).
+2.  **Non-Repeatable Read**: Đọc 2 lần ra 2 kết quả khác nhau (Do có Update ở giữa).
+3.  **Phantom Read**: Đọc 2 lần thấy số lượng hàng thay đổi (Do có Insert ở giữa).
+
+| Level | Dirty Read | Non-Repeatable Read | Phantom Read |
+| :--- | :--- | :--- | :--- |
+| **Read Committed** | No | Yes | Yes |
+| **Repeatable Read** | No | No | No (Postgres specific) |
+| **Serializable** | No | No | No |
+
+---
+
+### 📝 1.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] Tại sao `COUNT(*)` trong PostgreSQL thường chạy chậm hơn so với MySQL (MyISAM 엔진)?
+<details><summary>Đáp án</summary>
+Do MVCC! Mỗi transaction nhìn thấy một số lượng hàng khác nhau tùy vào thời điểm nó bắt đầu. Vì vậy, Postgres phải đếm thực tế (Scan) số lượng hàng "sống" thay vì lưu một biến hằng số trong metadata.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh SQL sử dụng Window Function để tìm Nhân viên có lương cao nhất trong từng Phòng ban (Department).
+<details><summary>Solution</summary>
+```sql
+SELECT * FROM (
+    SELECT name, salary, dept_id,
+           RANK() OVER(PARTITION BY dept_id ORDER BY salary DESC) as rank
+    FROM employees
+) t WHERE t.rank = 1;
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [PostgreSQL Internals - The MVCC Architecture](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-postgresql-mvcc.md)
+- [Advanced SQL: Window Functions in 10 minutes](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-sql-window-functions.md)
+- [Managing Database Bloat & Vacuuming Strategies](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-postgresql-bloat.md)

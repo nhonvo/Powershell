@@ -1,0 +1,14 @@
+# Day 07: Caching & Load Balancing
+**Goal:** Scale the system.
+
+### 📖 Reading (GitHub App)
+- Open `doc/02_Backend_Development_Roadmap/04_Caching_Redis/`.
+- Review **Cache Aside** vs **Write Through** patterns.
+
+### 🤖 AI Drill (Copy & Paste to ChatGPT/Gemini)
+> "I have a sudden surge of users (a 'Thundering Herd'). How do Redis and a Load Balancer work together to keep the database from crashing? Explain the difference between 'L4' and 'L7' load balancing."
+
+### 📝 Mobile Task
+- Go to your GitHub Repo -> **Issues**.
+- Draw a "Text-based Architecture Diagram" (use lines and boxes) for a system that uses:
+  - User -> Load Balancer -> Web Server -> Redis -> DB.

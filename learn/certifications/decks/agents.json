@@ -1,0 +1,256 @@
+{
+  "Meta": {
+    "Id": "deck_agents",
+    "Topic": "AGENTS",
+    "Language": "English/Japanese",
+    "Domain": "AGENTS.md",
+    "Level": "General",
+    "Tags": [
+      "agents"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 12
+  },
+  "Cards": [
+    {
+      "Id": "card_00001",
+      "Front": "Resource",
+      "Back": "Use for",
+      "Hint": "learning",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "agents"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00002",
+      "Front": "`gitnexus://repo/learning/context`",
+      "Back": "Codebase overview, check index freshness",
+      "Hint": "learning",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "agents"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00003",
+      "Front": "`gitnexus://repo/learning/clusters`",
+      "Back": "All functional areas",
+      "Hint": "learning",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "agents"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00004",
+      "Front": "`gitnexus://repo/learning/processes`",
+      "Back": "All execution flows",
+      "Hint": "learning",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "agents"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00005",
+      "Front": "`gitnexus://repo/learning/process/{name}`",
+      "Back": "Step-by-step execution trace",
+      "Hint": "learning",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "agents"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00006",
+      "Front": "Task",
+      "Back": "Read this skill file",
+      "Hint": "learning",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "agents"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00007",
+      "Front": "Understand architecture / \"How does X work?\"",
+      "Back": "`.claude/skills/gitnexus/gitnexus-exploring/SKILL.md`",
+      "Hint": "learning",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "agents"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00008",
+      "Front": "Blast radius / \"What breaks if I change X?\"",
+      "Back": "`.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md`",
+      "Hint": "learning",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "agents"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00009",
+      "Front": "Trace bugs / \"Why is X failing?\"",
+      "Back": "`.claude/skills/gitnexus/gitnexus-debugging/SKILL.md`",
+      "Hint": "learning",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "agents"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00010",
+      "Front": "Rename / extract / split / refactor",
+      "Back": "`.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md`",
+      "Hint": "learning",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "agents"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00011",
+      "Front": "Tools, resources, schema reference",
+      "Back": "`.claude/skills/gitnexus/gitnexus-guide/SKILL.md`",
+      "Hint": "learning",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "agents"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00012",
+      "Front": "Index, status, clean, wiki CLI commands",
+      "Back": "`.claude/skills/gitnexus/gitnexus-cli/SKILL.md`",
+      "Hint": "learning",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "agents"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

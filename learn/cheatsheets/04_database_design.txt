@@ -1,0 +1,72 @@
+🔙 **Back to Parent**: [[technical_skills/04_PostgreSQL_Deep_Dive/05_Indexing_Mastery|04_PostgreSQL_Deep_Dive]]
+
+# 🏗️ 4. Database Design (Modeling Mastery)
+
+Thiết kế cơ sở dữ liệu tốt không chỉ là vẽ vài cái bảng, mà là cách bạn cân bằng giữa tốc độ đọc (Read) và hiệu suất ghi (Write). Một sai lầm nhỏ trong thiết kế hôm nay sẽ làm nổ tung toàn bộ dự án 2 năm sau.
+
+---
+
+### 🏛️ 4.1 Quy trình chuẩn hóa (Normalization) - "Dữ liệu duy nhất"
+
+Mục tiêu: Loại bỏ dư thừa dữ liệu (Redundancy) và đảm bảo tính toàn vẹn (Integrity).
+
+#### **1NF (Tính nguyên tử)**
+Mỗi ô (Cell) chỉ chứa 1 giá trị duy nhất. Không lưu chuỗi `tags="c#,sql"` mà hãy tách thành nhiều hàng/bảng.
+
+#### **2NF (Phụ thuộc hoàn toàn)**
+Thỏa mãn 1NF và mọi thuộc tính không phải khóa phải phụ thuộc hoàn toàn (Fully Dependent) vào toàn bộ khóa chính (Primary Key). Không lưu `CustomerName` trong bảng `Orders` (vì Tên khách phụ thuộc vào CustomerId, không phụ thuộc vào OrderId).
+
+#### **3NF (Bắc cầu)**
+Thỏa mãn 2NF và không có thuộc tính nào phụ thuộc bắc cầu vào khóa chính. Ví dụ: `ZipCode` xác định được `CityName`. Trong bảng `Users` chỉ lưu `ZipCode`, không lưu `CityName` (Để tránh sửa 1 chỗ lòi 10 chỗ khác).
+
+> [!TIP]
+> **Thực tế**: 99% dự án Backend chỉ cần đến chuẩn 3NF. Nếu chuẩn hóa cao hơn nữa (4NF, 5NF), code của bạn sẽ bị "ngập lụt" trong hàng chục câu lệnh JOIN.
+
+---
+
+### 🧠 4.2 Denormalization (Phi chuẩn hóa) - "Đổi không gian lấy thời gian"
+
+Trong hệ thống High-Scale, bạn đôi khi cần vi phạm chuẩn 3NF.
+- **Tại sao?**: Để giảm số lượng JOIN phức tạp khi query báo cáo.
+- **Ví dụ**: Lưu tổng doanh thu `TotalSpent` trực tiếp vào bảng `Users`. Mỗi khi có Order mới, bạn cập nhật cả 2 bảng. Đổi lại, việc lấy Top 10 khách hàng chi tiêu nhiều nhất chỉ cần 1 câu SELECT O(1).
+
+---
+
+### 🚀 4.3 Phân tích quan hệ (ERD - Entities & Relationships)
+
+1.  **Một-Nhiều (1:N)**: (Dùng nhiều nhất). Ví dụ: Một Tác giả có nhiều Quyển sách. Khóa ngoại nằm ở bảng Sách (`author_id`).
+2.  **Nhiều-Nhiều (N:N)**: Ví dụ: Học sinh và Lớp học. Bạn BẮT BUỘC phải tạo bảng trung gian (`Student_Classes`).
+3.  **Một-Một (1:1)**: Dùng để tách bảng rộng (Nhiều cột) thành bảng chính và bảng thông tin mở rộng (Metadata).
+
+---
+
+### ⚡ 4.4 Ràng buộc (Integrity Constraints)
+
+Đừng để code ứng dụng (C#/Java) đi kiểm tra trùng email hay ID. Hãy để Database làm việc đó.
+
+- **Primary Key**: Định danh duy nhất.
+- **Unique**: Đảm bảo không trùng lặp (Email, Username).
+- **Foreign Key**: Đảm bảo mối quan hệ cha-con. Cấu hình **ON DELETE CASCADE** để tự động xóa con khi cha bị xóa.
+- **Check**: Ràng buộc logic (Số lượng > 0).
+
+---
+
+### 📝 4.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao khóa ngoại (Foreign Key) lại làm chậm việc ghi dữ liệu?"
+<details><summary>Đáp án</summary>
+Vì mỗi khi bạn chèn (Insert) một bản ghi con, Database phải thực hiện 1 câu query ngầm định (O(log N)) để kiểm tra ID cha có thực sự tồn tại ở bảng cha hay không. Nếu có 10 khóa ngoại, DB phải check 10 bảng khác nhau cho 1 lệnh Insert duy nhất.
+</details>
+
+**Bài 2**: [Kỹ thuật] Thiết kế cơ sở dữ liệu cho một hệ thống **Quản lý khóa học (LMS)** gồm các thực thể: Giảng viên, Khóa học, Học viên. Vẽ sơ đồ quan hệ đơn giản.
+<details><summary>Solution</summary>
+1. Giảng viên (1) -- (N) Khóa học.
+2. Học viên (N) -- (N) Khóa học (Dùng bảng trung gian: Enrollments).
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Database Normalization vs Denormalization: The Strategic Balance](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-db-normalization.md)
+- [ERD Best Practices: Designing Complex Business Microservices](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-erd-best-practices.md)
+- [The Hidden Cost of Foreign Keys on High-Performance Systems](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-db-constraints-performance.md)

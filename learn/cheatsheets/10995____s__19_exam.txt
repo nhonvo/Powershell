@@ -1,0 +1,65 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 19
+
+## Part 1
+**Q1.** この 　やまは 　3776めーとるです。
+- **A.** ナートル
+- **B.** メートル
+- **C.** ナータル
+- **D.** メータル
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2メートル: m&eacute;tNgọn n&uacute;i n&agrave;y cao 3776 m&eacute;t.</p>
+</details>
+
+---
+**Q2.** まいあさ 　でんしゃに 　のります。
+- **A.** 雷卓
+- **B.** 電卓
+- **C.** 雷車
+- **D.** 電車
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4電車(ĐIỆN - XA): t&agrave;u điệnT&ocirc;i đi t&agrave;u điện mỗi s&aacute;ng.</p>
+</details>
+
+---
+**Q3.** こんしゅうの 　どようびは 　やすみです。
+- **A.** 月よう日
+- **B.** 木よう日
+- **C.** 土よう日
+- **D.** 火よう日
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3土よう日 (THỔ - NHẬT): thứ bảyThứ bảy tuần n&agrave;y được nghỉ.</p>
+</details>
+
+---
+**Q4.** わたしは 　にほんの 　がくせいです。
+- **A.** 日木
+- **B.** 目木
+- **C.** 日本
+- **D.** 目本
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3日本 (NHẬT - BẢN) : học sinhT&ocirc;i l&agrave; học sinh Nhật Bản.</p>
+</details>
+
+---
+**Q5.** まいしゅう　さとうさんと　サッカーを　します。
+- **A.** 毎周
+- **B.** 毎週
+- **C.** 母周
+- **D.** 母週
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2毎週 (MỖI - CHU): h&agrave;ng tuầnT&ocirc;i đi đ&aacute; b&oacute;ng với Satou h&agrave;ng tuần.</p>
+</details>
+
+---

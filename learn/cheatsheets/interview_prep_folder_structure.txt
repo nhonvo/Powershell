@@ -1,0 +1,85 @@
+# Interview Prep Folder Structure (Suggested)
+
+Use this as a simple structure to organize interview preparation: CV, interview sections, coding gap-filling, and language practice (EN/JP).
+
+## Recommended folder tree
+
+```text
+interview/
+  00_START_HERE.md
+  PROGRESS.md
+  INTERVIEW_PREP_FOLDER_STRUCTURE.md
+
+  01_CV/
+    README.md
+    cv_master.md
+    cv_one_page.md
+    cv_targeted/
+      company-role.md
+    assets/
+      links.md
+
+  02_JD_AND_RESEARCH/
+    README.md
+    job_descriptions/
+    company_research/
+    notes/
+
+  03_STORIES_STAR/
+    README.md
+    star_bank.md
+    leadership.md
+    conflict.md
+    failure.md
+    achievements.md
+
+  04_INTERVIEW_QA/
+    README.md
+    behavioral.md
+    technical.md
+    system_design.md
+    questions_to_ask.md
+
+  05_CODING_GAPS/
+    README.md
+    topics.md
+    patterns.md
+    leetcode/
+      log.md
+      solutions/
+    projects/
+
+  06_SYSTEM_DESIGN/
+    README.md
+    fundamentals.md
+    case_studies/
+
+  07_LANGUAGE_EN_JP/
+    README.md
+    en/
+      daily_speaking.md
+      interview_phrases.md
+    jp/
+      daily_speaking.md
+      interview_phrases.md
+    glossary.md
+
+  08_MOCKS/
+    README.md
+    recordings.md
+    feedback.md
+```
+
+## Conventions (keep it easy)
+
+- One folder = one purpose; keep files small and specific.
+- Prefer `README.md` in each folder with: goal, checklist, and links.
+- Use dates in notes/logs: `YYYY-MM-DD`.
+- Keep “master” documents (`cv_master.md`, `star_bank.md`) and generate targeted copies under subfolders.
+
+## What to do first (15 minutes)
+
+1. Create folders `01_CV`, `03_STORIES_STAR`, `05_CODING_GAPS`, `07_LANGUAGE_EN_JP`.
+2. Create the `README.md` files and copy in the templates you like.
+3. Start tracking in `PROGRESS.md` (weekly goals + daily checkboxes).
+

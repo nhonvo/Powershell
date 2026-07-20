@@ -1,0 +1,65 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 6
+
+## Part 1
+**Q1.** あした 　がっこうへ 　きませんか。
+- **A.** 乗ません
+- **B.** 来ません
+- **C.** 木ません
+- **D.** 未ません
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2来る (LAI)：đếnNg&agrave;y mai bạn c&oacute; đến trường kh&ocirc;ng?</p>
+</details>
+
+---
+**Q2.** ケーキを　 はんぶん　 たべました。
+- **A.** 羊今
+- **B.** 羊分
+- **C.** 半今
+- **D.** 半分
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4半分 (B&Aacute;N - PH&Acirc;N):  nửaT&ocirc;i đ&atilde; ăn nửa c&aacute;i b&aacute;nh.</p>
+</details>
+
+---
+**Q3.** せんせいに　 れぽーとを　 だします。
+- **A.** レポート
+- **B.** リポート
+- **C.** レパート
+- **D.** リパート
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1レポート:  b&aacute;o c&aacute;oT&ocirc;i sẽ nộp b&aacute;o c&aacute;o cho gi&aacute;o vi&ecirc;n.</p>
+</details>
+
+---
+**Q4.** へやの　 そとに　 だれか 　いますか。
+- **A.** 外
+- **B.** 中
+- **C.** 後
+- **D.** 前
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1外 (NGOẠI)：B&ecirc;n ngo&agrave;iB&ecirc;n ngo&agrave;i ph&ograve;ng c&oacute; ai kh&ocirc;ng?</p>
+</details>
+
+---
+**Q5.** わたしの　 かぞくは 　がいこくに　 います。
+- **A.** 外団
+- **B.** 外風
+- **C.** 外国
+- **D.** 外周
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3外国 (NGOẠI - QUỐC): nước ngo&agrave;iGia đ&igrave;nh t&ocirc;i đang ở nước ngo&agrave;i.</p>
+</details>
+
+---

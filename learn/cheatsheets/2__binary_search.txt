@@ -1,0 +1,191 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/03_Searching_Sorting/🔍index_03_Searching_Sorting|03_Searching_Sorting]]
+
+## 2. Binary Search
+
+### Gioi thieu
+
+Binary Search (tim kiem nhi phan) la mot trong nhung thuat toan quan trong nhat ma bat ky lap trinh vien nao cung phai biet. No cho phep tim kiem tren mang **da sap xep** voi do phuc tap chi **O(log n)** -- nhanh hon rat nhieu so voi Linear Search O(n).
+
+### Vi du thuc te
+
+Tuong tuong ban muon tim mot tu trong tu dien giay (co 1000 trang). Ban se khong lat tung trang tu dau den cuoi. Thay vao do:
+
+1. Mo giua cuon tu dien
+2. Neu tu can tim nam truoc trang dang mo, mo giua nua dau
+3. Neu tu can tim nam sau trang dang mo, mo giua nua sau
+4. Lap lai cho den khi tim thay
+
+Moi buoc ban **loai bo mot nua** so trang con lai. Voi 1000 trang, ban chi can khoang **10 buoc** (vi 2^10 = 1024). Day chinh la suc manh cua Binary Search!
+
+### Dieu kien ap dung
+
+Binary Search chi hoat dong khi:
+
+1. **Du lieu da sap xep** (tang dan hoac giam dan)
+2. **Truy cap ngau nhien duoc** (random access, nhu array) -- khong phu hop cho linked list
+
+### Mo phong chi tiet
+
+**Tim so 23 trong mang da sap xep:** `[2, 5, 8, 12, 16, 23, 38, 56, 72, 91]`
+
+```
+Buoc 1: left=0, right=9, mid=(0+9)/2=4
+         arr[4]=16 < 23 => target nam ben phai
+         [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+                          ^mid
+         => left = mid + 1 = 5
+
+Buoc 2: left=5, right=9, mid=(5+9)/2=7
+         arr[7]=56 > 23 => target nam ben trai
+         [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+                                      ^mid
+         => right = mid - 1 = 6
+
+Buoc 3: left=5, right=6, mid=(5+6)/2=5
+         arr[5]=23 == 23 => TIM THAY! Tra ve index 5.
+         [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+                              ^mid -- Tim thay!
+```
+
+**Chi mat 3 buoc** de tim trong mang 10 phan tu! Linear search co the mat toi 10 buoc.
+
+### Flowchart
+
+KhongCoCoKhongCoKhongBat dau: left=0, right=n-1left <= right?Tra ve -1: Khong tim thaymid = left + (right-left)/2arr[mid] == target?Tra ve midarr[mid] < target?left = mid + 1right = mid - 1
+
+### Code Python
+
+```python
+def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
+
+    while left <= right:
+        # Tranh overflow: dung left + (right - left) // 2
+        # thay vi (left + right) // 2
+        mid = left + (right - left) // 2
+
+        if arr[mid] == target:
+            return mid         # Tim thay, tra ve index
+        elif arr[mid] < target:
+            left = mid + 1     # Target nam nua phai
+        else:
+            right = mid - 1    # Target nam nua trai
+
+    return -1  # Khong tim thay
+
+# Test
+arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+print(binary_search(arr, 23))   # Output: 5
+print(binary_search(arr, 20))   # Output: -1
+```
+
+#### Phien ban Recursive
+
+```python
+def binary_search_recursive(arr, target, left, right):
+    if left > right:
+        return -1
+
+    mid = left + (right - left) // 2
+
+    if arr[mid] == target:
+        return mid
+    elif arr[mid] < target:
+        return binary_search_recursive(arr, target, mid + 1, right)
+    else:
+        return binary_search_recursive(arr, target, left, mid - 1)
+
+# Test
+arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+print(binary_search_recursive(arr, 23, 0, len(arr) - 1))  # Output: 5
+```
+
+### Chay thu chuong trinh hoan chinh
+
+```python
+def binary_search_verbose(arr, target):
+    """Binary Search voi in chi tiet tung buoc"""
+    left, right = 0, len(arr) - 1
+    step = 0
+
+    print(f"Tim {target} trong {arr}")
+    while left <= right:
+        step += 1
+        mid = left + (right - left) // 2
+        print(f"  Buoc {step}: left={left}, right={right}, mid={mid}, arr[mid]={arr[mid]}", end="")
+
+        if arr[mid] == target:
+            print(f" == {target} => TIM THAY tai index {mid}!")
+            return mid
+        elif arr[mid] < target:
+            print(f" < {target} => tim nua phai")
+            left = mid + 1
+        else:
+            print(f" > {target} => tim nua trai")
+            right = mid - 1
+
+    print(f"  => KHONG TIM THAY {target}")
+    return -1
+
+# Test ca 2 truong hop
+arr = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+binary_search_verbose(arr, 23)
+# Tim 23 trong [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+#   Buoc 1: left=0, right=9, mid=4, arr[mid]=16 < 23 => tim nua phai
+#   Buoc 2: left=5, right=9, mid=7, arr[mid]=56 > 23 => tim nua trai
+#   Buoc 3: left=5, right=6, mid=5, arr[mid]=23 == 23 => TIM THAY tai index 5!
+
+print()
+binary_search_verbose(arr, 20)
+# Tim 20 trong [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+#   Buoc 1: left=0, right=9, mid=4, arr[mid]=16 < 20 => tim nua phai
+#   Buoc 2: left=5, right=9, mid=7, arr[mid]=56 > 20 => tim nua trai
+#   Buoc 3: left=5, right=6, mid=5, arr[mid]=23 > 20 => tim nua trai
+#   => KHONG TIM THAY 20
+```
+
+### Phan tich do phuc tap
+
+**Chung minh O(log n):**
+
+Moi buoc, ta chia doi khong gian tim kiem:
+
+- Sau buoc 1: con lai `n/2` phan tu
+- Sau buoc 2: con lai `n/4` phan tu
+- Sau buoc 3: con lai `n/8` phan tu
+- ...
+- Sau buoc k: con lai `n/2^k` phan tu
+
+Thuat toan dung khi chi con 1 phan tu: `n/2^k = 1`
+
+Giai phuong trinh:
+
+```
+n/2^k = 1
+=> n = 2^k
+=> k = log2(n)
+```
+
+Vay so buoc toi da la `log2(n)`. Do phuc tap: **O(log n)**.
+
+| Truong hop            | Do phuc tap | Giai thich                       |
+| :-------------------- | :---------- | :------------------------------- |
+| **Best case**         | O(1)        | Phan tu o ngay giua              |
+| **Average case**      | O(log n)    | Trung binh can log2(n) buoc      |
+| **Worst case**        | O(log n)    | Target khong ton tai hoac o bien |
+| **Space (iterative)** | O(1)        | Chi dung bien con tro            |
+| **Space (recursive)** | O(log n)    | Do call stack                    |
+
+### Luu y khi code Binary Search
+
+1. **Overflow khi tinh mid:** `(left + right) / 2` co the overflow neu `left + right` vuot qua `INT_MAX`. Dung `left + (right - left) / 2`.
+2. **Off-by-one error:** Day la loi pho bien nhat. Dac biet chu y dieu kien `left <= right` (co dau `=`).
+3. **Infinite loop:** Neu ban dung `left = mid` thay vi `left = mid + 1`, vong lap co the chay vinh vien khi `left == mid`.
+
+### Uu va nhuoc diem
+
+| Uu diem                | Nhuoc diem                                       |
+| :--------------------- | :----------------------------------------------- |
+| Cuc nhanh: O(log n)    | Can mang da sap xep                              |
+| De cai dat (iterative) | Khong phu hop cho linked list                    |
+| Space O(1) (iterative) | Chi tim duoc 1 vi tri (khong phai tat ca vi tri) |

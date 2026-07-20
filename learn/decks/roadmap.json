@@ -1,0 +1,236 @@
+{
+  "Meta": {
+    "Id": "deck_roadmap",
+    "Topic": "Roadmap",
+    "Language": "English/Japanese",
+    "Domain": "technical_skills",
+    "Level": "General",
+    "Tags": [
+      "roadmap"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 11
+  },
+  "Cards": [
+    {
+      "Id": "card_03529",
+      "Front": "STT",
+      "Back": "Học phần | Chi tiết Nội dung (C# & Java) | Ghi chú",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "roadmap"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03530",
+      "Front": "**1**",
+      "Back": "**Language Basics** | [1. Intro](01_Language_Basics/1. Introduction to CSharp & Java.md), [2. OOP](01_Language_Basics/2. OOP Concepts.md), [3. Generics](01_Language_Basics/3. Collections & Generics.md), [4. LINQ](01_Language_Basics/4. LINQ vs Stream API.md), [5. Async](01_Language_Basics/5. Asynchronous & Multithreading.md), [**Design Patterns Mastery**](../03_Design_Patterns_Mastery/README.md) | ",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "roadmap"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03531",
+      "Front": "**2**",
+      "Back": "**Database & ORM** | [1. SQL](02_Database_ORM/1. SQL Fundamentals & PostgreSQL.md), [2. EF Core](02_Database_ORM/2. Entity Framework Core (CSharp).md), [3. Hibernate](02_Database_ORM/3. Hibernate & Spring Data JPA (Java).md), [4. Design](02_Database_ORM/4. Database Design & Optimization.md), [**PostgreSQL Advanced**](../04_PostgreSQL_Deep_Dive/README.md) | [Dữ liệu]",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "roadmap"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03532",
+      "Front": "**3**",
+      "Back": "**REST API Framework** | [1. REST](03_REST_API/1. REST API Principles.md), [2. .NET API](03_REST_API/2. ASP.NET Core Web API.md), [3. Spring API](03_REST_API/3. Spring Boot Web API.md), [4. Security](03_REST_API/4. Security (JWT & RBAC).md) | [API Hub]",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "roadmap"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03533",
+      "Front": "**4**",
+      "Back": "**Caching & Redis** | [1. Fundamentals](04_Caching_Redis/1. Caching Fundamentals.md), [2. Redis Deep Dive](04_Caching_Redis/2. Redis Deep Dive.md), [3. Distributed Lock](04_Caching_Redis/3. Distributed Locking & PubSub.md) | [Tốc độ]",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "roadmap"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03534",
+      "Front": "**5**",
+      "Back": "**Logging & Tracing** | [1. Structured](05_Logging_Tracing/1. Structured Logging.md), [2. Tracing](05_Logging_Tracing/2. Distributed Tracing.md), [3. ELK Stack](05_Logging_Tracing/3. ELK Stack Integration.md) | [Gỡ lỗi]",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "roadmap"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03535",
+      "Front": "**6**",
+      "Back": "**Search Engine** | [1. Why?](06_Search_Engine/1. Search Engine vs DB.md), [2. Basics](06_Search_Engine/2. Elasticsearch Basics.md), [3. Advanced](06_Search_Engine/3. Advanced Search Features.md) | [Tìm kiếm]",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "roadmap"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03536",
+      "Front": "**7**",
+      "Back": "**Monitoring & Metrics** | [1. Pillars](07_Monitoring_Metrics/1. Observability Pillars.md), [2. Prometheus](07_Monitoring_Metrics/2. Prometheus & Metrics.md), [3. Grafana](07_Monitoring_Metrics/3. Grafana Visuals & Alerts.md) | [Giám sát]",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "roadmap"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03537",
+      "Front": "**8**",
+      "Back": "**Deployment & DevOps** | [1. Docker](08_Deployment_DevOps/1. Docker & Containers.md), [2. CI/CD](08_Deployment_DevOps/2. CI CD Pipelines.md), [3. Production](08_Deployment_DevOps/3. Production Deployment.md), [**Docker Hero**](../05_Docker_Hero/README.md) | [Triển khai]",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "roadmap"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03538",
+      "Front": "**9**",
+      "Back": "**Interview Prep** | [**Backend Interview Expert**](../06_Backend_Interview_Expert/README.md) | [Hành trang]",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "roadmap"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03539",
+      "Front": "**10**",
+      "Back": "**Capstone Project** | [Dự án Quản lý Tài chính](09_Capstone_Project/Capstone_Project.md) | [Dự án Cuối]",
+      "Hint": "02_Backend_Development_Roadmap",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "roadmap"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

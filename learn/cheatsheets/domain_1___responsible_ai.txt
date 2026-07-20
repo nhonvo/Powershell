@@ -1,0 +1,43 @@
+---
+tags:
+  - certification/gh-300
+  - copilot
+  - study-notes/domain-1
+status: todo
+created: 2026-05-26
+---
+
+# Domain 1: Responsible AI and Ethical Use
+
+This domain covers principles of Responsible AI, bias, safety, IP safety, and the limitations of Generative AI.
+
+## 🎯 Exam Objectives
+- Understand Microsoft & GitHub's Responsible AI principles.
+- Understand Intellectual Property (IP) safety, copyright, and how the public matching filter protects organizations.
+- Know the limitations of LLMs (hallucinations, non-determinism) and user responsibility.
+- Understand security filters (vulnerability blocking).
+
+---
+
+## 📖 Key Study Topics
+
+### 1. The Public Code Matching Filter
+- Scans completions against public code on GitHub.
+- If a completion matches ~150 characters of public code, it is blocked.
+- Admin setting cascades down from Enterprise -> Org.
+- See comparison of configurations in **[[certifications/microsoft/GH-300-Copilot/Copilot Comparison Cheat Sheet|Copilot Comparison Cheat Sheet]]**.
+
+### 2. Microsoft's Responsible AI Principles
+- **Fairness**: Ensure AI systems treat all people fairly.
+- **Reliability & Safety**: AI systems should perform reliably and safely.
+- **Privacy & Security**: AI systems should respect privacy and be secure.
+- **Inclusiveness**: Empower everyone and engage people.
+- **Transparency**: AI systems should be understandable.
+- **Accountability**: People should be accountable for AI systems.
+
+### 3. Vulnerability Filter
+- Prevents Copilot from suggesting known insecure patterns (SQL injection, hardcoded secrets, weak crypto).
+- Real-time LLM post-processing.
+
+---
+Back to **[[certifications/microsoft/GH-300-Copilot/GH-300 Copilot MOC|GH-300 Copilot MOC]]**

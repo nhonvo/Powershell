@@ -1,0 +1,186 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|02_Arrays_Strings]]
+
+## 4. Sliding Window — Cửa sổ trượt
+
+### 4.1. Ý tưởng
+
+Hãy tưởng tượng bạn đang ngồi trên **tàu hỏa** nhìn qua cửa sổ. Cửa sổ chỉ cho bạn thấy một đoạn cảnh vật nhất định. Khi tàu chạy, cảnh phía sau mất đi, cảnh mới phía trước hiện ra — nhưng bạn không cần nhìn lại toàn bộ cảnh, bạn chỉ cần cập nhật phần thay đổi (bỏ cảnh cũ, thêm cảnh mới).
+
+**Sliding Window** là kỹ thuật duy trì một "cửa sổ" (một đoạn liên tiếp) trên mảng/chuỗi, và trượt nó từ trái sang phải. Mỗi lần trượt, ta chỉ cập nhật phần thay đổi thay vì tính lại toàn bộ.
+
+### 4.2. Hai loại Sliding Window
+
+Sliding WindowFixed Size
+(Kích thước cố định)Variable Size
+(Kích thước thay đổi)Ví dụ: Max sum subarray
+kích thước kVí dụ: Smallest subarray
+with sum >= target
+
+### 4.3. Fixed-size Sliding Window
+
+#### Bài toán: Maximum Sum Subarray of Size K
+
+**Đề bài:** Cho mảng số nguyên và một số k. Tìm tổng lớn nhất của dãy con liên tiếp có đúng k phần tử.
+
+**Brute force:** Tính tổng mọi dãy con kích thước k → O(n*k).
+
+**Sliding Window:** Chỉ cần trừ phần tử ra khỏi cửa sổ, cộng phần tử mới vào → O(n).
+
+```python
+def max_sum_subarray_k(arr: list[int], k: int) -> int:
+    n = len(arr)
+    if n < k:
+        return -1
+
+    # Tính tổng cửa sổ đầu tiên
+    window_sum = sum(arr[:k])
+    max_sum = window_sum
+
+    # Trượt cửa sổ
+    for i in range(k, n):
+        window_sum += arr[i]       # thêm phần tử mới (bên phải)
+        window_sum -= arr[i - k]   # bỏ phần tử cũ (bên trái)
+        max_sum = max(max_sum, window_sum)
+
+    return max_sum
+```
+
+**Simulation:** `arr = [2, 1, 5, 1, 3, 2]`, `k = 3`
+
+```
+Cửa sổ đầu tiên: [2, 1, 5] → sum = 8, max = 8
+
+Bước 1: Trượt → bỏ arr[0]=2, thêm arr[3]=1
+   Cửa sổ: [1, 5, 1] → sum = 8 - 2 + 1 = 7, max = 8
+
+Bước 2: Trượt → bỏ arr[1]=1, thêm arr[4]=3
+   Cửa sổ: [5, 1, 3] → sum = 7 - 1 + 3 = 9, max = 9
+
+Bước 3: Trượt → bỏ arr[2]=5, thêm arr[5]=2
+   Cửa sổ: [1, 3, 2] → sum = 9 - 5 + 2 = 6, max = 9
+
+Kết quả: max_sum = 9 (cửa sổ [5, 1, 3])
+```
+
+NoYesTính tổng k phần tử đầuwindow_sum = sum(arr[0..k-1])
+max_sum = window_sumi < n?Return max_sumwindow_sum += arr[i]
+window_sum -= arr[i-k]max_sum = max(max_sum, window_sum)i += 1
+
+#### Chứng minh O(n)
+
+Mỗi phần tử được thêm vào cửa sổ đúng 1 lần và bị loại khỏi cửa sổ đúng 1 lần. Vậy tổng số thao tác là 2n = O(n).
+
+### 4.4. Variable-size Sliding Window
+
+#### Bài toán: Minimum Size Subarray Sum (LeetCode 209)
+
+**Đề bài:** Cho mảng số nguyên dương và target. Tìm dãy con liên tiếp ngắn nhất có tổng >= target.
+
+```python
+def min_subarray_len(target: int, nums: list[int]) -> int:
+    n = len(nums)
+    left = 0
+    window_sum = 0
+    min_len = float('inf')
+
+    for right in range(n):
+        window_sum += nums[right]          # mở rộng cửa sổ
+
+        while window_sum >= target:        # thu nhỏ cửa sổ
+            min_len = min(min_len, right - left + 1)
+            window_sum -= nums[left]
+            left += 1
+
+    return min_len if min_len != float('inf') else 0
+```
+
+**Simulation:** `target = 7`, `nums = [2, 3, 1, 2, 4, 3]`
+
+```
+right=0: sum=2,  sum<7
+right=1: sum=5,  sum<7
+right=2: sum=6,  sum<7
+right=3: sum=8,  sum>=7 → min_len=4 (window=[2,3,1,2])
+   shrink: left=1, sum=6, sum<7
+right=4: sum=10, sum>=7 → min_len=4 (window=[3,1,2,4])
+   shrink: left=2, sum=7, sum>=7 → min_len=3 (window=[1,2,4])
+   shrink: left=3, sum=6, sum<7
+right=5: sum=9,  sum>=7 → min_len=3 (window=[2,4,3])
+   shrink: left=4, sum=7, sum>=7 → min_len=2 (window=[4,3])
+   shrink: left=5, sum=3, sum<7
+
+Kết quả: min_len = 2 (subarray [4, 3])
+```
+
+NoYesYesNoleft = 0, window_sum = 0right < n?Return min_lenwindow_sum += nums[right]
+(mở rộng cửa sổ)window_sum >= target?min_len = min(min_len, right-left+1)window_sum -= nums[left]
+left += 1
+(thu nhỏ cửa sổ)right += 1
+
+#### Chứng minh O(n) cho Variable-size Window
+
+Thoạt nhìn có vẻ O(n^2) vì có while lồng trong for. Nhưng:
+
+- Con trỏ `right` di chuyển từ 0 đến n-1: tổng n bước.
+- Con trỏ `left` chỉ tăng, không bao giờ giảm. Tổng quãng đường `left` đi được tối đa là n (từ 0 đến n).
+- Mỗi phần tử được thêm vào cửa sổ (khi right tăng) đúng 1 lần, và bị loại (khi left tăng) tối đa 1 lần.
+
+Tổng thao tác: $n + n = 2n = O(n)$.
+
+### 4.5. Bài toán nâng cao: Longest Substring Without Repeating Characters (LeetCode 3)
+
+```python
+def length_of_longest_substring(s: str) -> int:
+    char_index = {}  # ký tự → index cuối cùng xuất hiện
+    left = 0
+    max_len = 0
+
+    for right in range(len(s)):
+        if s[right] in char_index and char_index[s[right]] >= left:
+            left = char_index[s[right]] + 1  # nhảy left qua vị trí trùng
+
+        char_index[s[right]] = right
+        max_len = max(max_len, right - left + 1)
+
+    return max_len
+```
+
+**Simulation:** `s = "abcabcbb"`
+
+```
+right=0 'a': char_index={'a':0}, left=0, len=1, max=1
+right=1 'b': char_index={'a':0,'b':1}, left=0, len=2, max=2
+right=2 'c': char_index={'a':0,'b':1,'c':2}, left=0, len=3, max=3
+right=3 'a': 'a' at 0 >= left(0) → left=1
+   char_index={'a':3,'b':1,'c':2}, len=3, max=3
+right=4 'b': 'b' at 1 >= left(1) → left=2
+   char_index={'a':3,'b':4,'c':2}, len=3, max=3
+right=5 'c': 'c' at 2 >= left(2) → left=3
+   char_index={'a':3,'b':4,'c':5}, len=3, max=3
+right=6 'b': 'b' at 4 >= left(3) → left=5
+   char_index={'a':3,'b':6,'c':5}, len=2, max=3
+right=7 'b': 'b' at 6 >= left(5) → left=7
+   char_index={'a':3,'b':7,'c':5}, len=1, max=3
+
+Kết quả: max_len = 3 (substring "abc")
+```
+
+### 4.6. Ưu và nhược điểm
+
+**Ưu điểm:**
+
+- Giảm O(n*k) hoặc O(n^2) xuống O(n).
+- Tận dụng overlap giữa các cửa sổ liên tiếp.
+- Trực quan, dễ hình dung.
+
+**Nhược điểm:**
+
+- Chỉ hoạt động trên dãy con **liên tiếp** (contiguous subarray), không dùng cho subsequence.
+- Variable-size window cần suy nghĩ kỹ điều kiện mở rộng/thu nhỏ.
+- Với bài toán phức tạp, cần kết hợp thêm Hash Map hoặc Deque.
+
+### 4.7. Cải tiến
+
+- **Sliding Window + Deque:** Dùng deque để duy trì max/min trong cửa sổ (bài Sliding Window Maximum).
+- **Sliding Window + Hash Map:** Đếm tần suất ký tự trong cửa sổ (bài Minimum Window Substring).
+- **Sliding Window + Two Counters:** Sử dụng hai biến đếm thay vì hash map khi bảng chữ cái nhỏ.

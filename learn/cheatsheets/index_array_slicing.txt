@@ -1,0 +1,19 @@
+# Array Slicing
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/1. Array and string manipulation/Readings/index_Readings|Readings]]
+
+## 📄 Notes
+- [[array slicing|Array Slicing]]
+
+## 🛠️ Related Practices (Arrays & Strings)
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Readings/Array Slicing/index_Array Slicing|1464.Maximum-Product-of-Two-Elements-in-an-Array]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Readings/Array Slicing/index_Array Slicing|3.Longest-Substring-Without-Repeating-Characters]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Readings/Array Slicing/index_Array Slicing|4.Median-of-Two-Sorted-Arrays]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Readings/Array Slicing/index_Array Slicing|5.Longest-Palindromic-Substring]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Readings/Array Slicing/index_Array Slicing|53.Maximum-Subarray]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Readings/Array Slicing/index_Array Slicing|912.Sort-an-Array-Bubble-sort]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Readings/Array Slicing/index_Array Slicing|912.Sort-an-Array-Insert-sort]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Readings/Array Slicing/index_Array Slicing|912.Sort-an-Array-Quick-sort]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Readings/Array Slicing/index_Array Slicing|912.Sort-an-Array-Selection-sort]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Readings/Array Slicing/index_Array Slicing|zArray-crud]]
+

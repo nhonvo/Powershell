@@ -1,0 +1,19 @@
+# Reverse String in Place
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/1. Array and string manipulation/Practice/index_Practice|Practice]]
+
+## 📄 Notes
+- [[reverse string in place|Reverse String in Place]]
+
+## 🛠️ Related Practices (Arrays & Strings)
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Practice/Reverse String in Place/index_Reverse String in Place|1464.Maximum-Product-of-Two-Elements-in-an-Array]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Practice/Reverse String in Place/index_Reverse String in Place|3.Longest-Substring-Without-Repeating-Characters]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Practice/Reverse String in Place/index_Reverse String in Place|4.Median-of-Two-Sorted-Arrays]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Practice/Reverse String in Place/index_Reverse String in Place|5.Longest-Palindromic-Substring]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Practice/Reverse String in Place/index_Reverse String in Place|53.Maximum-Subarray]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Practice/Reverse String in Place/index_Reverse String in Place|912.Sort-an-Array-Bubble-sort]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Practice/Reverse String in Place/index_Reverse String in Place|912.Sort-an-Array-Insert-sort]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Practice/Reverse String in Place/index_Reverse String in Place|912.Sort-an-Array-Quick-sort]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Practice/Reverse String in Place/index_Reverse String in Place|912.Sort-an-Array-Selection-sort]]
+- [[dsa/1.Interviewcake.com/1. Array and string manipulation/Practice/Reverse String in Place/index_Reverse String in Place|zArray-crud]]
+

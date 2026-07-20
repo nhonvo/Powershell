@@ -1,0 +1,53 @@
+---
+tags:
+  - certification/ai-102
+  - ai-solution/study-notes/domain-5
+status: 📝 study-backlog
+created: 2026-06-15
+---
+
+# Domain 5: Implement Generative AI Solutions (25-30%)
+
+Covers using Azure OpenAI models for text, code, image generation, embeddings, and implementing Retrieval-Augmented Generation (RAG).
+
+## 🎯 Exam Objectives
+- Deploy and configure Azure OpenAI Service resources and models.
+- Implement prompt engineering techniques (system prompts, few-shot learning).
+- Use embeddings to perform semantic search or clustering.
+- Build Retrieval-Augmented Generation (RAG) solutions using Azure OpenAI and Azure AI Search (On Your Data).
+- Manage API rate limits, tokens, and Content Safety.
+
+## 📖 Key Study Topics
+
+### 1. Azure OpenAI Model Deployments
+*   **Models**: GPT-4, GPT-4o, GPT-3.5-Turbo, DALL-E 3, Text-Embedding.
+*   **Tokens**: The base units of text processed by LLMs. Billing is based on total input + output tokens.
+*   **Rate Limits (TPM/RPM)**: Tokens Per Minute (TPM) and Requests Per Minute (RPM) limits are applied at the deployment level. Handling HTTP 429 (Too Many Requests) requires exponential backoff.
+
+### 2. Prompt Engineering
+*   **System Prompt**: Instructions injected at the start to define model behavior, tone, constraints, and safety guidelines.
+*   **Few-Shot Learning**: Providing 1-3 concrete examples of input-output pairs in the prompt to guide formatting.
+*   **Parameters**:
+    *   *Temperature*: Higher values (e.g., 0.8) increase creativity/randomness. Lower values (e.g., 0) make outputs deterministic.
+    *   *Top_P (Nucleus Sampling)*: Controls vocabulary pool based on cumulative probability. Choose *either* Temperature or Top_P, not both.
+
+### 3. Retrieval-Augmented Generation (RAG)
+*   **Concept**: Combines LLMs with external datastores (e.g., Azure AI Search index) to ground replies in specific source documentation and avoid hallucinations.
+*   **Azure OpenAI 'On Your Data'**: Natively links Azure OpenAI to Azure AI Search, automating the retrieval, prompt injection, and response steps.
+
+---
+Back to **[[certifications/microsoft/AI-102/AI-102 MOC|AI-102 MOC]]**
+
+## 🔍 Practice Question Reference
+Here are key questions from the practice bank matching this domain:
+- **Q1**: DRAG DROP (Drag and Drop is not supported) You have 100 chatbots that each has its own Language Unde... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 5#Question 1|Practice Q1]])
+- **Q2**: DRAG DROP (Drag and Drop is not supported) You plan to use a Language Understanding application name... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 5#Question 2|Practice Q2]])
+- **Q3**: HOTSPOT (Drag and Drop is not supported) You need to create a new resource that will be used to perf... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 5#Question 3|Practice Q3]])
+- **Q4**: DRAG DROP (Drag and Drop is not supported) You plan to use containerized versions of the Anomaly Det... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 5#Question 4|Practice Q4]])
+- **Q5**: HOTSPOT (Drag and Drop is not supported) You plan to deploy a containerized version of an Azure Cogn... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 5#Question 5|Practice Q5]])
+- **Q6**: HOTSPOT (Drag and Drop is not supported) You are developing a streaming Speech to Text solution that... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 5#Question 6|Practice Q6]])
+- **Q7**: HOTSPOT (Drag and Drop is not supported) You are developing an internet-based training solution for ... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 5#Question 7|Practice Q7]])
+- **Q8**: DRAG DROP (Drag and Drop is not supported) You need to develop an automated call handling system tha... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 5#Question 8|Practice Q8]])
+
+---
+Back to **[[certifications/microsoft/AI-102/AI-102 MOC|AI-102 MOC]]**

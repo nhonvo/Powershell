@@ -1,0 +1,1258 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/🌲index_09_Binary_Trees|09_Binary_Trees]]
+
+## 8. Luyện tập LeetCode — Giải chi tiết từng bài
+
+Phần này mình sẽ đi sâu vào 8 bài LeetCode kinh điển về Binary Tree. Mỗi bài mình sẽ phân tích **tư duy từng bước**, trình bày **nhiều cách giải** (từ brute force đến tối ưu), kèm **dry run chi tiết** để bạn thực sự hiểu bản chất. Đây là những bài mà bạn **chắc chắn sẽ gặp** trong phỏng vấn.
+
+------
+
+### Bài 1: #104 — Maximum Depth of Binary Tree (Easy)
+
+**Link**: https://leetcode.com/problems/maximum-depth-of-binary-tree/
+
+#### Đề bài
+
+Cho một binary tree, tìm **chiều sâu tối đa** (maximum depth) của cây. Chiều sâu tối đa là số node trên đường đi dài nhất từ root đến leaf xa nhất.
+
+```
+Ví dụ:
+    3
+   / \
+  9  20
+    /  \
+   15   7
+
+Output: 3
+(Đường dài nhất: 3 → 20 → 15 hoặc 3 → 20 → 7, gồm 3 node)
+```
+
+#### Phân tích tư duy
+
+Bạn hãy dừng lại và tự hỏi: **"Mình biết chiều sâu của cả cây khi nào?"**
+
+Câu trả lời: Mình biết chiều sâu của cây **khi mình đã biết chiều sâu của cây con trái và cây con phải**. Đây chính là tư duy **bottom-up** — mình giải từ dưới lên.
+
+**Bước 1 — Nhận diện pattern**: Đây là bài toán đệ quy kinh điển. Mỗi node cần thông tin từ 2 cây con.
+
+**Bước 2 — Xác định base case**: Khi `node is None`, chiều sâu = 0 (không có node nào).
+
+**Bước 3 — Xác định công thức đệ quy**: `depth(node) = 1 + max(depth(node.left), depth(node.right))`
+
+**Bước 4 — Tại sao cộng 1?** Vì bản thân node hiện tại cũng đóng góp 1 vào chiều sâu.
+
+#### Cách 1: Đệ quy (DFS Bottom-up)
+
+```python
+class Solution:
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+        # Base case: cây rỗng có depth = 0
+        if root is None:
+            return 0
+
+        # Đệ quy tìm depth của cây con trái
+        left_depth = self.maxDepth(root.left)
+
+        # Đệ quy tìm depth của cây con phải
+        right_depth = self.maxDepth(root.right)
+
+        # Depth của cây hiện tại = 1 (node hiện tại) + max(trái, phải)
+        return 1 + max(left_depth, right_depth)
+```
+
+#### Cách 2: BFS (Level-order Traversal)
+
+Ý tưởng: duyệt từng level, đếm số level. Số level chính là max depth.
+
+```python
+from collections import deque
+
+class Solution:
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+        if root is None:
+            return 0
+
+        queue = deque([root])  # Queue chứa các node ở level hiện tại
+        depth = 0              # Đếm số level
+
+        while queue:
+            depth += 1                    # Bắt đầu 1 level mới
+            level_size = len(queue)       # Số node ở level hiện tại
+
+            # Xử lý tất cả node ở level hiện tại
+            for _ in range(level_size):
+                node = queue.popleft()
+
+                # Thêm children vào queue cho level tiếp theo
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+
+        return depth
+```
+
+#### Dry run chi tiết
+
+```
+Cây:
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+**Cách 1 (DFS):**
+
+| Bước | Gọi hàm                               | left_depth | right_depth | Return               |
+| :--- | :------------------------------------ | :--------- | :---------- | :------------------- |
+| 1    | `maxDepth(3)`                         | chưa biết  | chưa biết   | chờ                  |
+| 2    | `maxDepth(9)`                         | chưa biết  | chưa biết   | chờ                  |
+| 3    | `maxDepth(None)` ← left của 9         | —          | —           | **0**                |
+| 4    | `maxDepth(None)` ← right của 9        | —          | —           | **0**                |
+| 5    | Quay về node 9                        | 0          | 0           | 1 + max(0,0) = **1** |
+| 6    | `maxDepth(20)`                        | chưa biết  | chưa biết   | chờ                  |
+| 7    | `maxDepth(15)` → left, right đều None | 0          | 0           | **1**                |
+| 8    | `maxDepth(7)` → left, right đều None  | 0          | 0           | **1**                |
+| 9    | Quay về node 20                       | 1          | 1           | 1 + max(1,1) = **2** |
+| 10   | Quay về node 3                        | 1          | 2           | 1 + max(1,2) = **3** |
+
+**Kết quả: 3** ✓
+
+#### Complexity
+
+|      | Time                        | Space                         |
+| :--- | :-------------------------- | :---------------------------- |
+| DFS  | O(n) — duyệt mỗi node 1 lần | O(h) — call stack, h = height |
+| BFS  | O(n) — duyệt mỗi node 1 lần | O(w) — w = max width của cây  |
+
+#### Sai lầm thường gặp
+
+1. **Quên base case**: Không xử lý `root is None` → crash khi cây rỗng.
+2. **Nhầm lẫn depth vs height**: Trong bài này, depth tính theo số node (LeetCode convention), không phải số edge.
+3. **Return 0 thay vì return 1 cho leaf**: Leaf node có depth = 1 (chính nó), không phải 0.
+
+------
+
+### Bài 2: #226 — Invert Binary Tree (Easy)
+
+**Link**: https://leetcode.com/problems/invert-binary-tree/
+
+#### Đề bài
+
+Cho một binary tree, **đảo ngược** (invert/mirror) cây đó. Tức là hoán đổi cây con trái và phải ở **mọi** node.
+
+```
+Input:           Output:
+     4                4
+   /   \            /   \
+  2     7          7     2
+ / \   / \        / \   / \
+1   3 6   9      9   6 3   1
+```
+
+#### Phân tích tư duy
+
+Đây là bài nổi tiếng vì Homebrew creator (Max Howell) đã từng fail bài này trong phỏng vấn Google! Nhưng thực ra nó rất đơn giản nếu bạn suy nghĩ đúng hướng.
+
+**Bước 1 — Quan sát**: "Đảo ngược" nghĩa là gì? Tại **mỗi** node, con trái thành con phải, con phải thành con trái.
+
+**Bước 2 — Tư duy top-down hay bottom-up?** Cả hai đều được! Bạn có thể swap trước rồi đệ quy (preorder), hoặc đệ quy xong rồi swap (postorder).
+
+**Bước 3 — Base case**: Node `None` → không cần làm gì, return `None`.
+
+**Bước 4 — Recursive step**: Swap `node.left` và `node.right`, rồi đệ quy vào cả hai con.
+
+#### Cách 1: Đệ quy (Postorder — Bottom-up)
+
+```python
+class Solution:
+    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        # Base case: cây rỗng → trả về None
+        if root is None:
+            return None
+
+        # Đệ quy đảo ngược cây con trái → nhận lại cây đã đảo
+        left_inverted = self.invertTree(root.left)
+
+        # Đệ quy đảo ngược cây con phải → nhận lại cây đã đảo
+        right_inverted = self.invertTree(root.right)
+
+        # Swap: con trái cũ giờ thành con phải, và ngược lại
+        root.left = right_inverted
+        root.right = left_inverted
+
+        # Trả lại root (cây đã đảo ngược)
+        return root
+```
+
+#### Cách 2: Đệ quy (Preorder — Top-down) — Gọn hơn
+
+```python
+class Solution:
+    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        if root is None:
+            return None
+
+        # Swap trước, rồi đệ quy sau
+        root.left, root.right = root.right, root.left
+
+        # Đệ quy vào 2 con (đã swap rồi)
+        self.invertTree(root.left)
+        self.invertTree(root.right)
+
+        return root
+```
+
+#### Cách 3: BFS (Iterative)
+
+```python
+from collections import deque
+
+class Solution:
+    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        if root is None:
+            return None
+
+        queue = deque([root])
+
+        while queue:
+            node = queue.popleft()
+
+            # Swap 2 con
+            node.left, node.right = node.right, node.left
+
+            # Thêm children vào queue để xử lý tiếp
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+        return root
+```
+
+#### Dry run chi tiết (Cách 1 — Postorder)
+
+```
+Input:
+     4
+   /   \
+  2     7
+ / \   / \
+1   3 6   9
+```
+
+| Bước | Gọi hàm                            | Hành động                             | Trạng thái cây  |
+| :--- | :--------------------------------- | :------------------------------------ | :-------------- |
+| 1    | `invert(4)` → đi trái              | Đệ quy vào node 2                     | Chưa đổi        |
+| 2    | `invert(2)` → đi trái              | Đệ quy vào node 1                     | Chưa đổi        |
+| 3    | `invert(1)` → left, right đều None | Return 1 (leaf, ko cần swap)          | Chưa đổi        |
+| 4    | `invert(3)` → leaf                 | Return 3                              | Chưa đổi        |
+| 5    | Quay về node 2                     | Swap: left=3, right=1                 | Node 2: `3←2→1` |
+| 6    | `invert(7)` → đi trái              | Đệ quy vào node 6                     |                 |
+| 7    | `invert(6)` → leaf                 | Return 6                              |                 |
+| 8    | `invert(9)` → leaf                 | Return 9                              |                 |
+| 9    | Quay về node 7                     | Swap: left=9, right=6                 | Node 7: `9←7→6` |
+| 10   | Quay về node 4                     | Swap: left=7(đã đảo), right=2(đã đảo) | Hoàn tất!       |
+
+```
+Output:
+     4
+   /   \
+  7     2
+ / \   / \
+9   6 3   1
+```
+
+#### Complexity
+
+|      | Time                       | Space             |
+| :--- | :------------------------- | :---------------- |
+| DFS  | O(n) — thăm mỗi node 1 lần | O(h) — call stack |
+| BFS  | O(n)                       | O(w) — max width  |
+
+#### Sai lầm thường gặp
+
+1. **Chỉ swap ở root**: Quên đệ quy vào các con → chỉ đảo level 1.
+2. **Swap sai thứ tự trong inorder**: Nếu dùng inorder (left → process → right), sau khi swap, `root.right` lúc này là cây con trái cũ → đệ quy lại sẽ đảo ngược lại! **Không nên dùng inorder cho bài này.**
+3. **Không return root**: LeetCode yêu cầu return root của cây đã đảo.
+
+------
+
+### Bài 3: #543 — Diameter of Binary Tree (Easy)
+
+**Link**: https://leetcode.com/problems/diameter-of-binary-tree/
+
+#### Đề bài
+
+Cho một binary tree, tìm **đường kính** (diameter) của cây. Đường kính là **số edge** trên đường đi dài nhất giữa hai node **bất kỳ** trong cây. Đường đi này có thể đi qua hoặc không đi qua root.
+
+```
+Ví dụ:
+          1
+         / \
+        2   3
+       / \
+      4   5
+
+Output: 3
+Đường đi dài nhất: 4 → 2 → 1 → 3 (hoặc 5 → 2 → 1 → 3), có 3 edge.
+```
+
+#### Phân tích tư duy — Cực kỳ quan trọng!
+
+Đây là bài **kinh điển** về pattern "global result + return khác nhau". Bạn cần phân biệt rõ:
+
+**Câu hỏi mấu chốt**: Diameter đi qua một node X bất kỳ = bao nhiêu?
+
+**Trả lời**: Nếu đường kính đi qua node X, nó sẽ đi từ leaf dưới cây con trái, lên X, rồi xuống leaf dưới cây con phải. Vậy:
+
+- `diameter_qua_X = height(X.left) + height(X.right)`
+
+**Nhưng** diameter của cả cây có thể **không đi qua root**! Ví dụ:
+
+```
+        1
+       /
+      2
+     / \
+    4   5
+   /     \
+  8       9
+```
+
+Ở đây diameter = 4 (đường 8 → 4 → 2 → 5 → 9), đi qua node 2 chứ không qua root 1.
+
+**Vì vậy**, mình cần một biến global (`self.result`) để lưu max diameter trong quá trình duyệt, còn hàm đệ quy return **height** cho parent sử dụng.
+
+**Pattern quan trọng**:
+
+- **Return cho parent**: height (để parent tính diameter qua nó)
+- **Cập nhật global result**: max diameter tìm được
+
+#### Giải pháp: DFS Bottom-up + Global Variable
+
+```python
+class Solution:
+    def diameterOfBinaryTree(self, root: Optional[TreeNode]) -> int:
+        self.result = 0  # Biến global lưu diameter lớn nhất
+
+        def height(node):
+            """
+            Tính height của cây con tại node.
+            ĐỒNG THỜI cập nhật self.result = max diameter tìm được.
+            Return: height (số edge từ node đến leaf xa nhất)
+            """
+            # Base case: không có node → height = 0
+            # (mình dùng convention: height tính bằng số edge,
+            #  nên None → 0, leaf → 0)
+            if node is None:
+                return 0
+
+            # Tính height cây con trái (số edge)
+            left_h = height(node.left)
+
+            # Tính height cây con phải (số edge)
+            right_h = height(node.right)
+
+            # Diameter đi qua node hiện tại = left_h + right_h
+            # Cập nhật global result nếu tìm được diameter lớn hơn
+            self.result = max(self.result, left_h + right_h)
+
+            # Return height cho parent:
+            # height = 1 (edge nối node → parent) + max(trái, phải)
+            return 1 + max(left_h, right_h)
+
+        height(root)
+        return self.result
+```
+
+#### Dry run chi tiết
+
+```
+Cây:
+          1
+         / \
+        2   3
+       / \
+      4   5
+```
+
+| Bước | Gọi hàm            | left_h        | right_h       | diameter qua node | self.result    | Return (height)  |
+| :--- | :----------------- | :------------ | :------------ | :---------------- | :------------- | :--------------- |
+| 1    | `height(4)` → leaf | 0             | 0             | 0+0=0             | max(0,0)=**0** | 1+max(0,0)=**1** |
+| 2    | `height(5)` → leaf | 0             | 0             | 0+0=0             | max(0,0)=**0** | 1+max(0,0)=**1** |
+| 3    | `height(2)`        | 1 (từ node 4) | 1 (từ node 5) | 1+1=2             | max(0,2)=**2** | 1+max(1,1)=**2** |
+| 4    | `height(3)` → leaf | 0             | 0             | 0+0=0             | max(2,0)=**2** | 1+max(0,0)=**1** |
+| 5    | `height(1)`        | 2 (từ node 2) | 1 (từ node 3) | 2+1=3             | max(2,3)=**3** | 1+max(2,1)=**3** |
+
+**Kết quả: self.result = 3** ✓
+
+Chú ý: height return cho parent là 3, nhưng mình không dùng giá trị đó. Kết quả nằm trong `self.result`.
+
+#### Complexity
+
+| Time                        | Space                         |
+| :-------------------------- | :---------------------------- |
+| O(n) — duyệt mỗi node 1 lần | O(h) — call stack, h = height |
+
+#### Sai lầm thường gặp
+
+1. **Chỉ tính diameter qua root**: `height(root.left) + height(root.right)` → SAI! Diameter có thể không đi qua root.
+2. **Nhầm height vs depth**: Cần tính height (từ node xuống leaf), không phải depth (từ root xuống node).
+3. **Convention sai**: LeetCode #543 đếm **số edge**, không phải số node. Nếu bạn tính height bằng số node (leaf = 1), phải trừ đi 1 khi return diameter.
+4. **Quên khởi tạo self.result = 0**: Nếu dùng float('-inf'), cây rỗng sẽ return sai.
+
+------
+
+### Bài 4: #236 — Lowest Common Ancestor of a Binary Tree (Medium)
+
+**Link**: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
+
+#### Đề bài
+
+Cho một binary tree và 2 node `p`, `q` trong cây, tìm **tổ tiên chung gần nhất** (Lowest Common Ancestor — LCA) của p và q.
+
+LCA của 2 node p và q là node **thấp nhất** (xa root nhất) mà có cả p và q là con cháu (hoặc chính nó).
+
+```
+Ví dụ:
+        3
+       / \
+      5   1
+     / \ / \
+    6  2 0  8
+      / \
+     7   4
+
+p = 5, q = 1 → LCA = 3
+p = 5, q = 4 → LCA = 5 (5 là tổ tiên của 4, và cũng là chính nó)
+```
+
+#### Phân tích tư duy
+
+**Bước 1 — Hiểu bài toán**: LCA là node "gặp nhau" khi bạn đi từ p lên root và từ q lên root.
+
+**Bước 2 — Brute force**: Tìm đường đi từ root → p và root → q, rồi so sánh 2 đường đi. Node chung cuối cùng là LCA. Nhưng cách này cần duyệt cây 2 lần + lưu đường đi → không tối ưu.
+
+**Bước 3 — Tư duy đệ quy**: Với mỗi node, mình hỏi:
+
+- p nằm ở cây con trái hay phải?
+- q nằm ở cây con trái hay phải?
+
+**3 trường hợp**:
+
+1. p và q nằm ở **2 bên khác nhau** (1 trái, 1 phải) → node hiện tại chính là LCA
+2. p và q đều nằm ở **cây con trái** → LCA nằm ở bên trái
+3. p và q đều nằm ở **cây con phải** → LCA nằm ở bên phải
+
+**Bước 4 — Trick thông minh**: Hàm đệ quy return gì?
+
+- Return `None` nếu cây con không chứa p hoặc q
+- Return `node` nếu tìm thấy p hoặc q
+- Nếu cả left và right đều return non-None → node hiện tại là LCA
+
+#### Giải pháp: DFS Recursive
+
+```python
+class Solution:
+    def lowestCommonAncestor(self, root: TreeNode, p: TreeNode, q: TreeNode) -> TreeNode:
+        """
+        Return:
+        - None: cây con này không chứa p cũng không chứa q
+        - p hoặc q: tìm thấy 1 trong 2
+        - LCA: nếu cả 2 bên đều tìm thấy
+        """
+        # Base case 1: đi quá leaf → không tìm thấy
+        if root is None:
+            return None
+
+        # Base case 2: tìm thấy p hoặc q → return ngay
+        # (không cần tìm tiếp bên dưới vì dù sao node này cũng là
+        #  tổ tiên của tất cả con cháu nó)
+        if root == p or root == q:
+            return root
+
+        # Tìm trong cây con trái
+        left_result = self.lowestCommonAncestor(root.left, p, q)
+
+        # Tìm trong cây con phải
+        right_result = self.lowestCommonAncestor(root.right, p, q)
+
+        # Case 1: Tìm thấy ở CẢ HAI bên → node hiện tại là LCA
+        if left_result is not None and right_result is not None:
+            return root
+
+        # Case 2: Chỉ tìm thấy ở 1 bên → trả kết quả bên đó lên
+        # (Nếu cả 2 đều None thì return None — đúng luôn)
+        return left_result if left_result is not None else right_result
+```
+
+#### Dry run chi tiết
+
+```
+Cây:
+        3
+       / \
+      5   1
+     / \ / \
+    6  2 0  8
+      / \
+     7   4
+
+Tìm LCA(5, 4):
+```
+
+| Bước | Gọi hàm         | Kiểm tra        | left_result        | right_result | Return       |
+| :--- | :-------------- | :-------------- | :----------------- | :----------- | :----------- |
+| 1    | `LCA(3, 5, 4)`  | 3 ≠ 5, 3 ≠ 4    | Đi trái...         |              |              |
+| 2    | `LCA(5, 5, 4)`  | **5 == p!**     | —                  | —            | **Return 5** |
+| 3    | Quay lại bước 1 | left_result = 5 | Đi phải...         |              |              |
+| 4    | `LCA(1, 5, 4)`  | 1 ≠ 5, 1 ≠ 4    | Đi trái...         |              |              |
+| 5    | `LCA(0, 5, 4)`  | 0 ≠ 5, 0 ≠ 4    | None               | None         | **None**     |
+| 6    | `LCA(8, 5, 4)`  | 8 ≠ 5, 8 ≠ 4    | None               | None         | **None**     |
+| 7    | Quay lại bước 4 |                 | None               | None         | **None**     |
+| 8    | Quay lại bước 1 |                 | left=5, right=None |              | **Return 5** |
+
+**Kết quả: node 5** ✓
+
+**Giải thích**: Khi gặp node 5 (chính là p), mình return 5 ngay. Mình **không** cần đi tiếp xuống tìm node 4 bên dưới, vì dù node 4 nằm ở đâu dưới node 5, thì LCA vẫn là 5 (vì 5 là tổ tiên của 4).
+
+```
+Tìm LCA(5, 1):
+```
+
+| Bước | Gọi hàm                     | left_result       | right_result       | Return |
+| :--- | :-------------------------- | :---------------- | :----------------- | :----- |
+| 1    | `LCA(3, 5, 1)`              | Đi trái...        |                    |        |
+| 2    | `LCA(5, 5, 1)` → **5 == p** | —                 | —                  | **5**  |
+| 3    | Quay lại node 3, left = 5   | Đi phải...        |                    |        |
+| 4    | `LCA(1, 5, 1)` → **1 == q** | —                 | —                  | **1**  |
+| 5    | Quay lại node 3             | left=5 (not None) | right=1 (not None) | **3**  |
+
+**Kết quả: node 3** ✓ (p và q ở 2 bên khác nhau → LCA là node cha chung)
+
+#### Complexity
+
+| Time                            | Space             |
+| :------------------------------ | :---------------- |
+| O(n) — worst case duyệt hết cây | O(h) — call stack |
+
+#### Sai lầm thường gặp
+
+1. **Quên case node là chính nó**: `p = 5, q = 4` (4 là con cháu của 5) → LCA = 5. Nhiều người quên xử lý case `root == p or root == q`.
+2. **Tiếp tục duyệt sau khi tìm thấy**: Khi tìm thấy p hoặc q, return ngay! Nếu duyệt tiếp là thừa.
+3. **Nhầm BST vs Binary Tree**: Bài #235 (BST) có thể dùng so sánh giá trị, nhưng bài #236 (general Binary Tree) phải dùng cách này.
+
+------
+
+### Bài 5: #102 — Binary Tree Level Order Traversal (Medium)
+
+**Link**: https://leetcode.com/problems/binary-tree-level-order-traversal/
+
+#### Đề bài
+
+Cho một binary tree, trả về **level order traversal** — tức là giá trị các node theo từng level, từ trái sang phải, gom thành list of lists.
+
+```
+Ví dụ:
+    3
+   / \
+  9  20
+    /  \
+   15   7
+
+Output: [[3], [9, 20], [15, 7]]
+```
+
+#### Phân tích tư duy
+
+**Bước 1 — Nhận diện**: "Duyệt theo level" = BFS. Đây là bài **mẫu** cho BFS trên tree.
+
+**Bước 2 — Khác gì BFS thông thường?** BFS thường chỉ duyệt qua từng node. Ở đây, mình cần **biết node nào thuộc level nào** để gom nhóm. Cách làm: xử lý **tất cả** node ở level hiện tại trước khi chuyển sang level kế.
+
+**Bước 3 — Cách biết "hết 1 level"?** Trước khi bắt đầu xử lý, `len(queue)` cho biết số node ở level hiện tại. Duyệt đúng bấy nhiêu node là xong 1 level.
+
+**Bước 4 — Thuật toán**:
+
+1. Khởi tạo queue với root
+2. Trong mỗi vòng lặp:
+   - `level_size = len(queue)` — số node ở level hiện tại
+   - Duyệt `level_size` node, lấy giá trị gom vào list
+   - Thêm children vào queue cho level tiếp theo
+3. Lặp đến khi queue rỗng
+
+#### Cách 1: BFS (Chuẩn)
+
+```python
+from collections import deque
+
+class Solution:
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        # Cây rỗng → trả list rỗng
+        if root is None:
+            return []
+
+        result = []                # Kết quả: list of lists
+        queue = deque([root])      # BFS queue, bắt đầu với root
+
+        while queue:
+            level_size = len(queue)    # Số node ở level hiện tại
+            current_level = []         # List chứa giá trị level hiện tại
+
+            # Xử lý TẤT CẢ node ở level hiện tại
+            for _ in range(level_size):
+                node = queue.popleft()          # Lấy node ra
+                current_level.append(node.val)  # Ghi giá trị
+
+                # Thêm children vào queue (cho level tiếp theo)
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+
+            # Xong 1 level → thêm vào kết quả
+            result.append(current_level)
+
+        return result
+```
+
+#### Cách 2: DFS với depth tracking
+
+Ý tưởng: dùng DFS nhưng truyền thêm tham số `depth`. Khi duyệt đến node ở depth `d`, thêm giá trị vào `result[d]`.
+
+```python
+class Solution:
+    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:
+        result = []
+
+        def dfs(node, depth):
+            if node is None:
+                return
+
+            # Nếu đây là depth mới (chưa có list cho depth này)
+            # → tạo list mới
+            if depth == len(result):
+                result.append([])
+
+            # Thêm giá trị node vào list của depth tương ứng
+            result[depth].append(node.val)
+
+            # Đệ quy vào con trái, con phải (depth + 1)
+            dfs(node.left, depth + 1)
+            dfs(node.right, depth + 1)
+
+        dfs(root, 0)
+        return result
+```
+
+#### Dry run chi tiết (Cách 1 — BFS)
+
+```
+Cây:
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+
+| Vòng lặp | Queue trước | level_size | Xử lý                                     | Queue sau | current_level | result                  |
+| :------- | :---------- | :--------- | :---------------------------------------- | :-------- | :------------ | :---------------------- |
+| 1        | [3]         | 1          | Pop 3, thêm 9, 20                         | [9, 20]   | [3]           | [[3]]                   |
+| 2        | [9, 20]     | 2          | Pop 9 (no children), Pop 20 (thêm 15, 7)  | [15, 7]   | [9, 20]       | [[3], [9, 20]]          |
+| 3        | [15, 7]     | 2          | Pop 15 (no children), Pop 7 (no children) | []        | [15, 7]       | [[3], [9, 20], [15, 7]] |
+| —        | []          | —          | Queue rỗng → dừng                         | —         | —             | —                       |
+
+**Kết quả: [[3], [9, 20], [15, 7]]** ✓
+
+#### Complexity
+
+|      | Time                        | Space                                      |
+| :--- | :-------------------------- | :----------------------------------------- |
+| BFS  | O(n) — mỗi node xử lý 1 lần | O(w) — w = max width (queue) + O(n) result |
+| DFS  | O(n)                        | O(h) call stack + O(n) result              |
+
+#### Sai lầm thường gặp
+
+1. **Quên level_size**: Nếu không lưu `level_size` mà duyệt `while queue`, mình sẽ trộn lẫn các level với nhau.
+2. **Dùng list thay deque**: `list.pop(0)` là O(n), `deque.popleft()` là O(1). Với cây lớn, sai lầm này làm chậm đáng kể.
+3. **Quên xử lý root is None**: Trả về `[]` chứ không phải `[[]]`.
+
+#### Biến thể hay gặp
+
+- **#107 Level Order Traversal II**: Trả về từ level cuối lên → `return result[::-1]`
+- **#103 Zigzag Level Order**: Level chẵn từ trái sang, level lẻ từ phải sang → đảo `current_level` ở level lẻ
+- **#637 Average of Levels**: Tính trung bình mỗi level → `sum(current_level) / len(current_level)`
+
+------
+
+### Bài 6: #124 — Binary Tree Maximum Path Sum (Hard)
+
+**Link**: https://leetcode.com/problems/binary-tree-maximum-path-sum/
+
+#### Đề bài
+
+Cho một binary tree (giá trị node có thể **âm**), tìm **path sum lớn nhất**. Path là đường đi liên tục từ node bất kỳ đến node bất kỳ (đi theo edge, mỗi node chỉ xuất hiện 1 lần). Path không nhất thiết phải đi qua root.
+
+```
+Ví dụ 1:
+    1
+   / \
+  2   3
+Output: 6 (path: 2 → 1 → 3)
+
+Ví dụ 2:
+   -10
+   /  \
+  9   20
+     /  \
+    15   7
+Output: 42 (path: 15 → 20 → 7)
+```
+
+#### Phân tích tư duy — Bài này KHÁC bài Diameter ở đâu?
+
+Bài này tương tự bài Diameter (#543) nhưng khó hơn vì:
+
+1. Giá trị node có thể **âm** → phải quyết định có lấy hay không
+2. Tính **tổng giá trị** chứ không chỉ đếm edge
+
+**Bước 1 — Khái niệm "gain" (đóng góp)**: Từ một node, mình đi xuống cây con trái HOẶC phải (hoặc không đi) để thu thập "gain". Gain âm thì **bỏ** (lấy 0 — tức là không đi hướng đó).
+
+**Bước 2 — Path đi qua node X**: `path_sum = left_gain + node.val + right_gain`
+
+**Bước 3 — Gain return cho parent**: Khi return cho parent, mình chỉ được chọn **1 hướng** (trái HOẶC phải), vì path không được rẽ nhánh (nếu rẽ thì parent không thể đi tiếp).
+
+- `gain_cho_parent = node.val + max(left_gain, right_gain)`
+
+**Bước 4 — Tại sao max với 0?** Nếu cả 2 cây con đều cho gain âm, tốt hơn là **không đi** hướng nào (gain = 0).
+
+**Tóm lại**:
+
+- **Global result**: `max(left_gain + node.val + right_gain)` ← path có thể rẽ nhánh
+- **Return cho parent**: `node.val + max(left_gain, right_gain)` ← chỉ 1 hướng
+
+#### Giải pháp: DFS Bottom-up + Global Variable
+
+```python
+class Solution:
+    def maxPathSum(self, root: Optional[TreeNode]) -> int:
+        # Khởi tạo bằng -inf vì giá trị có thể âm
+        # (cây chỉ có 1 node giá trị -5 thì answer = -5)
+        self.result = float('-inf')
+
+        def max_gain(node):
+            """
+            Tính max gain khi đi từ node xuống 1 hướng (trái hoặc phải).
+            ĐỒNG THỜI cập nhật self.result = max path sum toàn cục.
+            Return: max gain mà node này đóng góp cho parent
+            """
+            if node is None:
+                return 0  # Không có node → gain = 0
+
+            # Tính gain từ cây con trái
+            # max(..., 0): nếu gain âm → bỏ (không đi hướng đó)
+            left_gain = max(max_gain(node.left), 0)
+
+            # Tính gain từ cây con phải
+            right_gain = max(max_gain(node.right), 0)
+
+            # Path đi qua node hiện tại (có thể rẽ cả 2 hướng)
+            # Đây là "candidate" cho max path sum
+            path_through_node = left_gain + node.val + right_gain
+
+            # Cập nhật global result
+            self.result = max(self.result, path_through_node)
+
+            # Return gain cho parent: chỉ được chọn 1 hướng
+            # (vì path phải liên tục, không rẽ nhánh ở parent)
+            return node.val + max(left_gain, right_gain)
+
+        max_gain(root)
+        return self.result
+```
+
+#### Dry run chi tiết
+
+```
+Cây:
+   -10
+   /  \
+  9   20
+     /  \
+    15   7
+```
+
+| Bước | Node      | left_gain    | right_gain   | path qua node     | self.result        | Return (gain cho parent) |
+| :--- | :-------- | :----------- | :----------- | :---------------- | :----------------- | :----------------------- |
+| 1    | 9 (leaf)  | max(0,0)=0   | max(0,0)=0   | 0+9+0=9           | max(-inf, 9)=**9** | 9+max(0,0)=**9**         |
+| 2    | 15 (leaf) | 0            | 0            | 0+15+0=15         | max(9,15)=**15**   | **15**                   |
+| 3    | 7 (leaf)  | 0            | 0            | 0+7+0=7           | max(15,7)=**15**   | **7**                    |
+| 4    | 20        | max(15,0)=15 | max(7,0)=7   | 15+20+7=**42**    | max(15,42)=**42**  | 20+max(15,7)=**35**      |
+| 5    | -10       | max(9,0)=9   | max(35,0)=35 | 9+(-10)+35=**34** | max(42,34)=**42**  | -10+max(9,35)=**25**     |
+
+**Kết quả: self.result = 42** ✓
+
+**Giải thích bước 4**: Tại node 20, path qua nó là 15 → 20 → 7, tổng = 42. Đây là max path sum.
+
+**Giải thích bước 5**: Tại node -10, path qua nó là 9 → (-10) → 20 → 15, tổng = 34. Nhỏ hơn 42, nên self.result vẫn là 42.
+
+#### Complexity
+
+| Time                        | Space             |
+| :-------------------------- | :---------------- |
+| O(n) — mỗi node duyệt 1 lần | O(h) — call stack |
+
+#### Sai lầm thường gặp
+
+1. **Khởi tạo `self.result = 0`**: SAI! Nếu tất cả node đều âm (ví dụ: chỉ có node -3), answer phải là -3, không phải 0. Dùng `float('-inf')`.
+2. **Quên `max(..., 0)`**: Gain âm phải bỏ. Nếu không, mình có thể "kéo tổng xuống" một cách vô ích.
+3. **Return rẽ 2 hướng cho parent**: `return node.val + left_gain + right_gain` → SAI! Cho parent, chỉ được chọn 1 hướng. Return 2 hướng chỉ dùng để cập nhật global result.
+4. **Nhầm với Path Sum (#112)**: Bài #112 tìm path từ root → leaf, bài này tìm path bất kỳ.
+
+------
+
+### Bài 7: #297 — Serialize and Deserialize Binary Tree (Hard)
+
+**Link**: https://leetcode.com/problems/serialize-and-deserialize-binary-tree/
+
+#### Đề bài
+
+Thiết kế thuật toán để **serialize** (chuyển binary tree thành string) và **deserialize** (chuyển string ngược lại thành binary tree). Không giới hạn format — miễn là serialize rồi deserialize ra đúng cây ban đầu.
+
+```
+Ví dụ:
+    1
+   / \
+  2   3
+     / \
+    4   5
+
+Serialize → "1,2,None,None,3,4,None,None,5,None,None"
+Deserialize → cây ban đầu
+```
+
+#### Phân tích tư duy
+
+**Bước 1 — Tại sao cần serialize?**
+
+- Lưu cây vào file/database
+- Gửi cây qua network (API, message queue)
+- Cache cây vào Redis
+
+**Bước 2 — Tại sao không chỉ dùng inorder/preorder?**
+
+Bẫy kiến thức! Chỉ preorder hoặc inorder **không đủ** để tái tạo cây (trừ khi kết hợp cả 2). Nhưng nếu mình **ghi cả node None** (null marker), thì preorder **một mình đủ**!
+
+```
+Cây:        Preorder (không có None): [1, 2, 3, 4, 5]
+    1       → Không biết 2 là con trái hay phải, 3 ở đâu...
+   / \
+  2   3     Preorder (CÓ None): [1, 2, None, None, 3, 4, None, None, 5, None, None]
+     / \    → Biết chính xác cấu trúc cây!
+    4   5
+```
+
+**Bước 3 — Cách serialize**: DFS preorder, gặp None thì ghi "None".
+
+**Bước 4 — Cách deserialize**: Đọc lần lượt từng giá trị:
+
+- Nếu = "None" → return None
+- Nếu khác → tạo node, đệ quy gán left và right
+
+#### Cách 1: DFS Preorder
+
+```python
+class Codec:
+
+    def serialize(self, root: Optional[TreeNode]) -> str:
+        """
+        Chuyển tree thành string bằng preorder DFS.
+        None nodes được ghi là "None".
+        Các giá trị cách nhau bằng dấu phẩy.
+        """
+        result = []
+
+        def dfs(node):
+            if node is None:
+                result.append("None")  # Đánh dấu vị trí trống
+                return
+
+            result.append(str(node.val))  # Ghi giá trị node
+            dfs(node.left)                # Đệ quy trái
+            dfs(node.right)               # Đệ quy phải
+
+        dfs(root)
+        return ",".join(result)  # Nối bằng dấu phẩy
+
+    def deserialize(self, data: str) -> Optional[TreeNode]:
+        """
+        Chuyển string thành tree.
+        Dùng iterator để đọc lần lượt từng giá trị.
+        """
+        values = iter(data.split(","))  # Tạo iterator
+
+        def dfs():
+            val = next(values)  # Lấy giá trị tiếp theo
+
+            if val == "None":
+                return None  # Gặp None → không có node ở đây
+
+            # Tạo node mới
+            node = TreeNode(int(val))
+
+            # Đệ quy tạo cây con trái (lấy giá trị tiếp theo từ iterator)
+            node.left = dfs()
+
+            # Đệ quy tạo cây con phải
+            node.right = dfs()
+
+            return node
+
+        return dfs()
+```
+
+#### Cách 2: BFS (Level-order)
+
+```python
+from collections import deque
+
+class Codec:
+
+    def serialize(self, root: Optional[TreeNode]) -> str:
+        """Serialize bằng BFS level-order."""
+        if root is None:
+            return "None"
+
+        result = []
+        queue = deque([root])
+
+        while queue:
+            node = queue.popleft()
+
+            if node is None:
+                result.append("None")
+            else:
+                result.append(str(node.val))
+                queue.append(node.left)    # Thêm cả None
+                queue.append(node.right)   # Thêm cả None
+
+        return ",".join(result)
+
+    def deserialize(self, data: str) -> Optional[TreeNode]:
+        """Deserialize từ BFS format."""
+        values = data.split(",")
+
+        if values[0] == "None":
+            return None
+
+        root = TreeNode(int(values[0]))
+        queue = deque([root])
+        i = 1  # Index trong values
+
+        while queue and i < len(values):
+            node = queue.popleft()
+
+            # Xử lý left child
+            if values[i] != "None":
+                node.left = TreeNode(int(values[i]))
+                queue.append(node.left)
+            i += 1
+
+            # Xử lý right child
+            if i < len(values) and values[i] != "None":
+                node.right = TreeNode(int(values[i]))
+                queue.append(node.right)
+            i += 1
+
+        return root
+```
+
+#### Dry run chi tiết (Cách 1 — DFS)
+
+**Serialize:**
+
+```
+Cây:
+    1
+   / \
+  2   3
+     / \
+    4   5
+```
+
+| Bước | Gọi `dfs(node)`        | node.val | result                          |
+| :--- | :--------------------- | :------- | :------------------------------ |
+| 1    | dfs(1)                 | 1        | ["1"]                           |
+| 2    | dfs(2) — left of 1     | 2        | ["1", "2"]                      |
+| 3    | dfs(None) — left of 2  | None     | ["1", "2", "None"]              |
+| 4    | dfs(None) — right of 2 | None     | ["1", "2", "None", "None"]      |
+| 5    | dfs(3) — right of 1    | 3        | ["1", "2", "None", "None", "3"] |
+| 6    | dfs(4) — left of 3     | 4        | [..., "3", "4"]                 |
+| 7    | dfs(None) — left of 4  | None     | [..., "4", "None"]              |
+| 8    | dfs(None) — right of 4 | None     | [..., "None", "None"]           |
+| 9    | dfs(5) — right of 3    | 5        | [..., "None", "5"]              |
+| 10   | dfs(None) — left of 5  | None     | [..., "5", "None"]              |
+| 11   | dfs(None) — right of 5 | None     | [..., "None", "None"]           |
+
+**Output**: `"1,2,None,None,3,4,None,None,5,None,None"`
+
+**Deserialize** (đọc từ trái sang phải):
+
+| Bước | Đọc giá trị | Hành động                             | Cây đang xây          |
+| :--- | :---------- | :------------------------------------ | :-------------------- |
+| 1    | "1"         | Tạo node(1), đệ quy left              | `1`                   |
+| 2    | "2"         | Tạo node(2) = left of 1, đệ quy left  | `1 ← 2`               |
+| 3    | "None"      | Return None = left of 2               | `2` không có con trái |
+| 4    | "None"      | Return None = right of 2              | `2` không có con phải |
+| 5    | "3"         | Tạo node(3) = right of 1, đệ quy left | `1 → 3`               |
+| 6    | "4"         | Tạo node(4) = left of 3, đệ quy left  | `3 ← 4`               |
+| 7    | "None"      | Return None = left of 4               |                       |
+| 8    | "None"      | Return None = right of 4              |                       |
+| 9    | "5"         | Tạo node(5) = right of 3, đệ quy left | `3 → 5`               |
+| 10   | "None"      | Return None = left of 5               |                       |
+| 11   | "None"      | Return None = right of 5              |                       |
+
+**Cây tái tạo đúng!** ✓
+
+#### Complexity
+
+|             | Time                         | Space                     |
+| :---------- | :--------------------------- | :------------------------ |
+| Serialize   | O(n) — duyệt mỗi node 1 lần  | O(n) — lưu string kết quả |
+| Deserialize | O(n) — đọc mỗi giá trị 1 lần | O(n) — tạo n nodes        |
+
+#### Sai lầm thường gặp
+
+1. **Không ghi None markers**: Nếu chỉ ghi giá trị node (bỏ qua None), sẽ không thể tái tạo đúng cấu trúc cây.
+2. **Dùng list index thay iterator**: `values[self.i]; self.i += 1` cũng được nhưng dễ bug hơn. `iter()` + `next()` là cách Pythonic nhất.
+3. **Quên xử lý cây rỗng**: `serialize(None)` phải trả về string hợp lệ (ví dụ: `"None"`), và `deserialize("None")` phải trả về `None`.
+4. **Dùng dấu phân cách trùng với giá trị**: Nếu node.val chứa dấu phẩy thì sao? Trong LeetCode, val luôn là integer nên không sao. Nhưng thực tế cần escape.
+
+------
+
+### Bài 8: #199 — Binary Tree Right Side View (Medium)
+
+**Link**: https://leetcode.com/problems/binary-tree-right-side-view/
+
+#### Đề bài
+
+Cho một binary tree, tưởng tượng bạn đứng ở **phía bên phải** của cây. Trả về giá trị các node bạn nhìn thấy, theo thứ tự từ trên xuống dưới.
+
+```
+Ví dụ:
+     1
+    / \
+   2   3
+    \   \
+     5   4
+
+Output: [1, 3, 4]
+
+Nhìn từ bên phải:
+- Level 0: thấy node 1
+- Level 1: thấy node 3 (node 2 bị node 3 che)
+- Level 2: thấy node 4 (node 5 bị node 4 che)
+```
+
+#### Phân tích tư duy
+
+**Bước 1 — "Node bên phải nhất" ở mỗi level**: Đây chính là node **cuối cùng** ở mỗi level khi duyệt từ trái sang phải.
+
+**Bước 2 — Hai cách tiếp cận**:
+
+- **BFS**: Duyệt từng level, lấy node cuối cùng
+- **DFS**: Duyệt phải trước trái, node đầu tiên gặp ở mỗi depth chính là "right side view"
+
+**Bước 3 — Cẩn thận edge case**:
+
+```
+     1
+    /
+   2
+  /
+ 3
+```
+
+Output: [1, 2, 3] — mặc dù tất cả node đều ở bên TRÁI, nhưng vì không có node nào bên phải che, nên nhìn từ bên phải vẫn thấy chúng!
+
+#### Cách 1: BFS — Lấy node cuối mỗi level
+
+```python
+from collections import deque
+
+class Solution:
+    def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
+        if root is None:
+            return []
+
+        result = []
+        queue = deque([root])
+
+        while queue:
+            level_size = len(queue)
+
+            for i in range(level_size):
+                node = queue.popleft()
+
+                # Node cuối cùng trong level → đây là node nhìn thấy
+                if i == level_size - 1:
+                    result.append(node.val)
+
+                # Thêm children cho level tiếp theo
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+
+        return result
+```
+
+#### Cách 2: DFS — Duyệt phải trước
+
+Ý tưởng: Duyệt DFS theo thứ tự **Root → Right → Left**. Ở mỗi depth, node **đầu tiên** mình gặp chính là node nhìn thấy từ bên phải.
+
+```python
+class Solution:
+    def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
+        result = []
+
+        def dfs(node, depth):
+            if node is None:
+                return
+
+            # Nếu đây là lần đầu tiên đến depth này
+            # → node này là node nhìn thấy từ bên phải
+            if depth == len(result):
+                result.append(node.val)
+
+            # Duyệt PHẢI trước, rồi mới TRÁI
+            # Như vậy node bên phải luôn được thêm trước
+            dfs(node.right, depth + 1)
+            dfs(node.left, depth + 1)
+
+        dfs(root, 0)
+        return result
+```
+
+**Tại sao cách này hoạt động?**
+
+- `depth == len(result)` kiểm tra: "Đã có node nào ở depth này chưa?"
+- Vì duyệt phải trước, node bên phải nhất luôn được thêm đầu tiên
+- Khi gặp node bên trái cùng depth, `depth < len(result)` → bỏ qua
+
+#### Dry run chi tiết (Cách 2 — DFS)
+
+```
+Cây:
+     1
+    / \
+   2   3
+    \   \
+     5   4
+```
+
+| Bước | Gọi hàm                              | depth | len(result) | depth == len? | Hành động | result |
+| :--- | :----------------------------------- | :---- | :---------- | :------------ | :-------- | :----- |
+| 1    | `dfs(1, 0)`                          | 0     | 0           | Yes ✓         | Thêm 1    | [1]    |
+| 2    | `dfs(3, 1)` ← right first            | 1     | 1           | Yes ✓         | Thêm 3    | [1, 3] |
+| 3    | `dfs(None, 2)` ← right of 3 is None  | —     | —           | —             | Return    | [1, 3] |
+| 4    | `dfs(4, 2)` ← left of 3... wait, no! |       |             |               |           |        |
+
+Chú ý: trong cây đề bài, node 4 là **right child** của node 3. Mình sửa lại:
+
+```
+Cây đúng:
+     1
+    / \
+   2   3
+    \   \
+     5   4
+- Node 2: left=None, right=5
+- Node 3: left=None, right=4
+```
+
+| Bước | Gọi hàm                     | depth | len(result) | depth == len? | Hành động | result    |
+| :--- | :-------------------------- | :---- | :---------- | :------------ | :-------- | :-------- |
+| 1    | `dfs(1, 0)`                 | 0     | 0           | Yes ✓         | Thêm 1    | [1]       |
+| 2    | `dfs(3, 1)` ← right of 1    | 1     | 1           | Yes ✓         | Thêm 3    | [1, 3]    |
+| 3    | `dfs(4, 2)` ← right of 3    | 2     | 2           | Yes ✓         | Thêm 4    | [1, 3, 4] |
+| 4    | `dfs(None, 3)` ← right of 4 | —     | —           | —             | Return    | [1, 3, 4] |
+| 5    | `dfs(None, 3)` ← left of 4  | —     | —           | —             | Return    | [1, 3, 4] |
+| 6    | `dfs(None, 2)` ← left of 3  | —     | —           | —             | Return    | [1, 3, 4] |
+| 7    | `dfs(2, 1)` ← left of 1     | 1     | 3           | No (1 < 3)    | Bỏ qua    | [1, 3, 4] |
+| 8    | `dfs(5, 2)` ← right of 2    | 2     | 3           | No (2 < 3)    | Bỏ qua    | [1, 3, 4] |
+| 9    | `dfs(None, 3)`              | —     | —           | —             | Return    | [1, 3, 4] |
+| 10   | `dfs(None, 3)`              | —     | —           | —             | Return    | [1, 3, 4] |
+| 11   | `dfs(None, 2)` ← left of 2  | —     | —           | —             | Return    | [1, 3, 4] |
+
+**Kết quả: [1, 3, 4]** ✓
+
+Node 2 và 5 đều bị "che" bởi node 3 và 4 khi nhìn từ bên phải.
+
+#### Edge case quan trọng
+
+```
+Cây lệch trái:
+     1
+    /
+   2
+  /
+ 3
+
+DFS sẽ duyệt:
+dfs(1, 0) → thêm 1, result = [1]
+dfs(None, 1) ← right of 1 = None, return
+dfs(2, 1) ← left of 1, depth(1) == len(result)(1) → thêm 2, result = [1, 2]
+dfs(None, 2) ← right of 2, return
+dfs(3, 2) ← left of 2, depth(2) == len(result)(2) → thêm 3, result = [1, 2, 3]
+
+Kết quả: [1, 2, 3] ✓ (dù tất cả ở bên trái, vẫn nhìn thấy từ phải)
+```
+
+#### Complexity
+
+|      | Time | Space             |
+| :--- | :--- | :---------------- |
+| BFS  | O(n) | O(w) — max width  |
+| DFS  | O(n) | O(h) — call stack |
+
+#### Sai lầm thường gặp
+
+1. **Chỉ duyệt cây con phải**: Sai! Node bên trái vẫn có thể nhìn thấy nếu bên phải không có node ở level đó (xem edge case phía trên).
+2. **Lấy nhầm node đầu thay vì node cuối (BFS)**: Phải lấy node **cuối cùng** ở mỗi level, không phải node đầu.
+3. **Duyệt Left trước Right (DFS)**: Nếu duyệt trái trước, node trái sẽ được thêm trước → cho ra "left side view" thay vì "right side view".
+
+#### Biến thể
+
+- **Left Side View**: Đổi thành duyệt **Left trước Right** trong DFS, hoặc lấy node **đầu tiên** ở mỗi level trong BFS.
+- **Top View / Bottom View**: Phức tạp hơn, cần dùng horizontal distance (cột dọc).
+
+------
+
+### Tổng kết 8 bài LeetCode
+
+| #    | Bài             | Difficulty | Pattern chính    | Trick cốt lõi                              |
+| :--- | :-------------- | :--------- | :--------------- | :----------------------------------------- |
+| 104  | Max Depth       | Easy       | DFS bottom-up    | `1 + max(left, right)`                     |
+| 226  | Invert Tree     | Easy       | DFS/BFS + swap   | Swap left, right ở mỗi node                |
+| 543  | Diameter        | Easy       | DFS + global var | Return height, update diameter             |
+| 236  | LCA             | Medium     | DFS postorder    | Return None/node, cả 2 bên non-None → LCA  |
+| 102  | Level Order     | Medium     | BFS template     | `level_size = len(queue)`                  |
+| 124  | Max Path Sum    | Hard       | DFS + global var | `max(gain, 0)`, return 1 hướng cho parent  |
+| 297  | Serialize       | Hard       | DFS preorder     | None markers + iterator                    |
+| 199  | Right Side View | Medium     | BFS/DFS          | Lấy node cuối mỗi level / duyệt phải trước |
+
+#### Thứ tự luyện tập đề xuất
+
+1. **#104 Max Depth** → làm quen đệ quy trên cây
+2. **#226 Invert Tree** → thao tác thay đổi cây
+3. **#102 Level Order** → nắm vững BFS template
+4. **#199 Right Side View** → ứng dụng BFS/DFS
+5. **#543 Diameter** → pattern "return ≠ result"
+6. **#236 LCA** → đệ quy phức tạp hơn
+7. **#124 Max Path Sum** → tổng hợp Diameter + giá trị âm
+8. **#297 Serialize** → thiết kế thuật toán hoàn chỉnh
+
+> **Lời khuyên**: Đừng chỉ đọc lời giải — hãy tự code từng bài. Khi stuck quá 30 phút, xem hint rồi thử lại. Mục tiêu là mỗi bài bạn có thể **giải lại từ đầu** mà không nhìn lời giải.

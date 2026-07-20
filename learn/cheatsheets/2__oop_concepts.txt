@@ -1,0 +1,113 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/01_Language_Basics/📂index_01_Language_Basics|01_Language_Basics]]
+
+# 🧩 2. OOP Concepts (Hướng đối tượng nâng cao)
+
+Lập trình hướng đối tượng (OOP) là nền tảng của Java và C#. Tuy nhiên, việc hiểu 4 tính chất chỉ là bước đầu. Trong Backend, chúng ta cần vận dụng chúng để giải quyết các bài toán về Khả năng mở rộng (Scalability) và Tái sử dụng (Reusability).
+
+---
+
+### 🏛️ 2.1 4 Trụ cột của OOP (Thấu hiểu bản chất)
+
+#### 🛡️ 2.1.1 Encapsulation (Tính đóng gói)
+> "Đừng cho phép người ngoài thay đổi dữ liệu bên trong một cách tùy tiện."
+
+**Bản chất**: Che giấu các chi tiết cài đặt và chỉ phơi bày các hành vi (Behavior) thông qua `public methods`.
+- **Level 1**: Dùng Property/Getter/Setter.
+- **Level 2 (Deep Dive)**: Tránh trạng thái bị lỗi (Invalid state). Ví dụ: `Age` không được phép âm.
+
+```csharp
+// C# - Tránh Invalid State
+public class BankAccount {
+    private decimal _balance;
+    public decimal Balance => _balance; // Read-only từ bên ngoài
+
+    public void Deposit(decimal amount) {
+        if (amount <= 0) throw new ArgumentException("Amount must be positive");
+        _balance += amount;
+    }
+}
+```
+
+#### 🎭 2.1.2 Inheritance (Tính kế thừa)
+> "Quan hệ IS-A (Là một)."
+
+Kế thừa giúp tái sử dụng mã nguồn, nhưng hãy cẩn thận với "Kim tự tháp kế thừa" quá sâu khiến code khó bảo trì.
+- **Java**: Chỉ hỗ trợ đơn kế thừa (Single Inheritance).
+- **C#**: Giống Java, nhưng hỗ trợ **Interface Default Implementations** (C# 8+).
+
+#### 🧪 2.1.3 Abstraction (Tính trừu tượng)
+> "Tập trung vào 'CáI GÌ' (What) thay vì 'NÀO' (How)."
+
+Sử dụng **Abstract Class** và **Interface** để tạo ra các bản thiết kế chung.
+
+| Đặc điểm | Interface | Abstract Class |
+| :--- | :--- | :--- |
+| **Đa hình** | Một class thực thi nhiều Interface (N:N) | Một class chỉ kế thừa 1 Abstract Class (1:1) |
+| **Dấu hiệu** | Hành vi (Can-do) - `IPayable`, `ILoggable` | Bản thể (Is-a) - `Vehicle`, `Animal` |
+| **Fields** | Chỉ chứa hằng số (Java) | Có thể chứa thuộc tính (State) |
+
+#### 🌈 2.1.4 Polymorphism (Tính đa hình)
+> "Một giao diện, nhiều hình thái."
+
+- **Overloading (Static)**: Cùng tên hàm, khác tham số (Compile-time).
+- **Overriding (Dynamic)**: Ghi đè phương thức lớp cha (Runtime).
+
+```java
+// Java - Dynamic Polymorphism
+public interface Payment { void process(double amount); }
+
+public class Paypal implements Payment { 
+    public void process(double amt) { System.out.println("Paypal: " + amt); }
+}
+
+public class Stripe implements Payment { 
+    public void process(double amt) { System.out.println("Stripe: " + amt); }
+}
+
+// Chạy Runtime linh hoạt
+Payment p = new Paypal(); 
+p.process(100); // In ra "Paypal: 100"
+```
+
+---
+
+### 🚀 2.2 Advanced: Composition over Inheritance
+
+Đừng quá lạm dụng kế thừa! Nếu kế thừa quá 3 cấp, hãy cân nhắc **Composition (Bao hàm)**.
+> "Hãy lắp ghép các đối tượng (Has-a) thay vì tạo ra một dòng họ phức tạp (Is-a)."
+
+**Ví dụ**: Một `SuperDog` vừa có thể `Run`, vừa có thể `Fly`. Thay vì kế thừa `Bird`, hãy đưa `FlightModule` vào `Dog`.
+
+---
+
+### 🛡️ 2.3 Virtual/Override vs New (C# Specific)
+
+Trong C#, bạn cần từ khóa `virtual` để cho phép ghi đè và `override` để xác nhận việc ghi đè. Từ khóa `new` (Hiding) sẽ làm ẩn phương thức lớp cha mà không ghi đè thực sự (Cẩn thận lỗi logic).
+
+---
+
+### 📝 2.4 Bài tập thực hành & Lời giải (Answer)
+
+**Bài 1**: [Lý thuyết] Khi nào nên dùng Interface thay vì Abstract Class?
+<details><summary>Đáp án</summary>
+Dùng Interface khi muốn định nghĩa các hành vi chung cho các lớp không có quan hệ họ hàng (Ví dụ: `Fly()` cho cả `Máy bay` và `Chim`). Dùng Abstract Class khi có một nhóm class cùng bản chất và muốn chia sẻ code chung (Ví dụ: `Mèo` và `Chó` đều kế thừa `Animal` để dùng chung hàm `Eat()`).
+</details>
+
+**Bài 2**: [Kỹ thuật] Thiết kế hệ thống thông báo (Notification) hỗ trợ SMS và Email. 
+- Yêu cầu: Dùng **Interface** để đảm bảo sau này thêm Zalo/Facebook dễ dàng mà không sửa code cũ.
+
+```java
+// Java Solution
+public interface Notifier { void send(String msg); }
+public class SmsNotifier implements Notifier { public void send(String m) { ... } }
+public class EmailNotifier implements Notifier { public void send(String m) { ... } }
+
+// Cách dùng linh hoạt
+public void alert(Notifier n) { n.send("Cảnh báo bảo mật!"); }
+```
+
+---
+
+### 🔗 Tài liệu bổ trợ (Blog)
+- [OOP Deep Dive - Principles & Pitfalls](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-oop-deep-dive.md)
+- [Composition vs Inheritance - The Final Battle](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-inheritance-vs-composition.md)

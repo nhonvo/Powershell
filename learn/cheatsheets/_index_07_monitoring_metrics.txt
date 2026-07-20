@@ -1,0 +1,9 @@
+# 07_Monitoring_Metrics
+
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/📂index_02_Backend_Development_Roadmap|02_Backend_Development_Roadmap]]
+
+## 📄 Notes & Documents
+- [[technical_skills/02_Backend_Development_Roadmap/07_Monitoring_Metrics/1. Observability Pillars|1. Observability Pillars]]
+- [[technical_skills/02_Backend_Development_Roadmap/07_Monitoring_Metrics/2. Prometheus & Metrics|2. Prometheus & Metrics]]
+- [[technical_skills/02_Backend_Development_Roadmap/07_Monitoring_Metrics/3. Grafana Visuals & Alerts|3. Grafana Visuals & Alerts]]
+

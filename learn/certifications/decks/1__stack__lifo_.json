@@ -1,0 +1,256 @@
+{
+  "Meta": {
+    "Id": "deck_1__stack__lifo_",
+    "Topic": "1. Stack (LIFO)",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "1__stack__lifo_"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 12
+  },
+  "Cards": [
+    {
+      "Id": "card_00990",
+      "Front": "Thao tác",
+      "Back": "Mô tả | Độ phức tạp",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. stack (lifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00991",
+      "Front": "`push(x)`",
+      "Back": "Thêm phần tử `x` vào đỉnh stack | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. stack (lifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00992",
+      "Front": "`pop()`",
+      "Back": "Xóa và trả về phần tử ở đỉnh stack | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. stack (lifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00993",
+      "Front": "`top()` / `peek()`",
+      "Back": "Xem phần tử ở đỉnh mà không xóa | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. stack (lifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00994",
+      "Front": "`isEmpty()`",
+      "Back": "Kiểm tra stack có rỗng không | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. stack (lifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00995",
+      "Front": "`size()`",
+      "Back": "Trả về số phần tử trong stack | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. stack (lifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00996",
+      "Front": "Tiêu chí",
+      "Back": "Array-based | Linked List-based",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. stack (lifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00997",
+      "Front": "push/pop",
+      "Back": "O(1) amortized (nếu dynamic array) | O(1) worst case",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. stack (lifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00998",
+      "Front": "Bộ nhớ",
+      "Back": "Liên tục, cache-friendly | Phân tán, mỗi node cần thêm pointer",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. stack (lifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00999",
+      "Front": "Kích thước",
+      "Back": "Cố định hoặc cần resize | Linh hoạt, không cần biết trước",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. stack (lifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01000",
+      "Front": "Memory overhead",
+      "Back": "Ít (chỉ mảng + biến top) | Nhiều hơn (mỗi node có pointer next)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. stack (lifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01001",
+      "Front": "Cache performance",
+      "Back": "Tốt hơn (spatial locality) | Kém hơn (nodes nằm rải rác)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. stack (lifo)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

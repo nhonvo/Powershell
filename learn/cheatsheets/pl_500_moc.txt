@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/pl-500
+  - pl500
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 PL-500: Microsoft Power Automate RPA Developer MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/PL-500/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/PL-500/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/PL-500/PL-500 Mindmap\|🗺️ PL-500 Mindmap]]
+- [[certifications/microsoft/PL-500/PL-500 Flashcards\|🃏 PL-500 Flashcards]]
+- [[certifications/microsoft/PL-500/PL-500_Scraped_Question_Bank\|🗃️ PL-500 Scraped Question Bank]]

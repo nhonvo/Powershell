@@ -1,0 +1,13 @@
+# DataStructures
+
+🔙 **Back to Parent**: [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/index_Problems|Problems]]
+
+## 📁 Categories
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/index_1_ArraysAndLinkedLists|1_ArraysAndLinkedLists]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/2_StacksAndQueues/index_2_StacksAndQueues|2_StacksAndQueues]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/3_Trees/index_3_Trees|3_Trees]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/4_HashMaps/index_4_HashMaps|4_HashMaps]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/5_Tries/index_5_Tries|5_Tries]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/6_Heaps/index_6_Heaps|6_Heaps]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/7_Graphs/index_7_Graphs|7_Graphs]]
+

@@ -1,0 +1,74 @@
+---
+tags:
+  - certification/ai-102
+  - ai-solution/mindmap
+created: 2026-06-15
+---
+
+# 🗺️ AI-102 Visual Mermaid Mindmap
+
+```mermaid
+mindmap
+  root((🤖 AI-102 Exam))
+    Plan and Manage
+      Security
+        Entra ID RBAC
+        Managed Identities
+        Private Endpoints
+      Monitoring
+        Diagnostic Logging
+        Log Analytics
+        Metrics Alerts
+      Ethics
+        Responsible AI
+        Content Filters
+    Vision and Docs
+      Azure AI Vision
+        OCR Read API
+        Spatial Analysis
+      Custom Vision
+        Compact domains
+        Object detection
+      Face API
+        Liveness
+        PersonGroups
+      Document Intelligence
+        Prebuilt invoices
+        Custom templates
+    NLP Solutions
+      AI Language
+        Sentiment analysis
+        PII masking
+      Translator
+        Text translation
+        Document layout
+      CLU
+        Intents utterances
+        Entities variables
+    Knowledge Mining
+      Pipeline
+        Data Source
+        Indexer
+        Search Index
+      Skillsets
+        Cognitive skills
+        Custom Web API
+      Retrieval
+        Vector Search
+        Hybrid BM25
+        Semantic Ranker
+    Generative AI
+      OpenAI Deployments
+        GPT models
+        Rate limits TPM
+      Prompt Engineering
+        System prompts
+        Few-shot tuning
+        Temp and Top_P
+      RAG Pattern
+        Vector Search RAG
+        On Your Data
+```
+
+---
+Back to **[[certifications/microsoft/AI-102/AI-102 MOC|AI-102 MOC]]**

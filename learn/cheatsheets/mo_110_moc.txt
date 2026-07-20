@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mo-110
+  - mo110
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MO-110: Microsoft Word (Microsoft 365 Apps) MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MO-110/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MO-110/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MO-110/MO-110 Mindmap\|🗺️ MO-110 Mindmap]]
+- [[certifications/microsoft/MO-110/MO-110 Flashcards\|🃏 MO-110 Flashcards]]
+- [[certifications/microsoft/MO-110/MO-110_Scraped_Question_Bank\|🗃️ MO-110 Scraped Question Bank]]

@@ -1,0 +1,281 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/03_Searching_Sorting/🔍index_03_Searching_Sorting|03_Searching_Sorting]]
+
+## 4. Merge Sort
+
+### Gioi thieu
+
+Merge Sort la thuat toan sorting dau tien minh gioi thieu trong nhom "thuat toan nhanh" voi do phuc tap **O(n log n)**. No su dung chien luoc **Divide and Conquer** (chia de tri): chia bai toan lon thanh cac bai toan nho, giai tung bai toan nho, roi gop ket qua lai.
+
+### Vi du thuc te
+
+Tuong tuong ban la giao vien va can sap xep 100 bai kiem tra theo diem. Mot minh ban lam se rat lau. Thay vao do:
+
+1. **Chia:** Chia dong bai thanh 2 phan, moi phan 50 bai
+2. **Tri:** Nho 2 tro giang, moi nguoi sap xep 50 bai cua minh (ho lai co the chia tiep cho nguoi khac)
+3. **Gop:** Khi 2 dong bai da sap xep, ban gop chung lai bang cach so sanh bai dau tien cua moi dong, lay bai nho hon truoc
+
+Day chinh la Merge Sort!
+
+### Nguyen ly Divide and Conquer
+
+```
+Merge Sort(arr):
+    1. Neu mang co <= 1 phan tu: da sap xep, tra ve
+    2. CHIA: Cat mang lam doi tai vi tri giua
+    3. TRI: Goi de quy Merge Sort cho nua trai va nua phai
+    4. GOP: Tron (merge) 2 nua da sap xep thanh 1 mang sap xep
+```
+
+### Mo phong chi tiet
+
+Cho mang: `[38, 27, 43, 3, 9, 82, 10]`
+
+```
+Buoc CHIA:
+[38, 27, 43, 3, 9, 82, 10]
+         /              \
+  [38, 27, 43, 3]    [9, 82, 10]
+     /       \          /      \
+ [38, 27]  [43, 3]   [9, 82]  [10]
+  /   \     /   \     /   \      |
+[38] [27] [43]  [3] [9]  [82]  [10]
+
+Buoc GOP (Merge):
+[38] [27] => so sanh 27<38 => [27, 38]
+[43] [3]  => so sanh 3<43  => [3, 43]
+[9] [82]  => so sanh 9<82  => [9, 82]
+[10]      => [10]
+
+[27, 38] + [3, 43]:
+  So sanh 27 va 3:  3 < 27  => lay 3
+  So sanh 27 va 43: 27 < 43 => lay 27
+  So sanh 38 va 43: 38 < 43 => lay 38
+  Con lai: 43                => lay 43
+  Ket qua: [3, 27, 38, 43]
+
+[9, 82] + [10]:
+  So sanh 9 va 10:  9 < 10  => lay 9
+  So sanh 82 va 10: 10 < 82 => lay 10
+  Con lai: 82                => lay 82
+  Ket qua: [9, 10, 82]
+
+[3, 27, 38, 43] + [9, 10, 82]:
+  So sanh 3 va 9:   3 < 9   => lay 3
+  So sanh 27 va 9:  9 < 27  => lay 9
+  So sanh 27 va 10: 10 < 27 => lay 10
+  So sanh 27 va 82: 27 < 82 => lay 27
+  So sanh 38 va 82: 38 < 82 => lay 38
+  So sanh 43 va 82: 43 < 82 => lay 43
+  Con lai: 82                => lay 82
+  Ket qua: [3, 9, 10, 27, 38, 43, 82]
+```
+
+### Flowchart
+
+CoKhongmerge_sort(arr)len(arr) <= 1?Tra ve arrmid = len(arr) // 2left = merge_sort(arr[:mid])right = merge_sort(arr[mid:])merge(left, right)Tra ve mang da merge
+
+KhongCoCoKhongmerge(left, right)i=0, j=0, result=emptyi < len(left) AND j < len(right)?Them phan con lai cua left va right vao resultleft[i] <= right[j]?result.append(left[i]), i++result.append(right[j]), j++Tra ve result
+
+### Code Python
+
+```python
+def merge_sort(arr):
+    # Base case: mang co 0 hoac 1 phan tu da sap xep
+    if len(arr) <= 1:
+        return arr
+
+    # Divide: chia doi mang
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+
+    # Conquer: merge 2 nua da sap xep
+    return merge(left, right)
+
+def merge(left, right):
+    result = []
+    i = j = 0
+
+    # So sanh tung phan tu cua 2 mang
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:  # <= de dam bao stable
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+
+    # Them phan con lai
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result
+
+# Test
+print(merge_sort([38, 27, 43, 3, 9, 82, 10]))
+# Output: [3, 9, 10, 27, 38, 43, 82]
+```
+
+#### Phien ban In-place (tiet kiem bo nho)
+
+```python
+def merge_sort_inplace(arr, left, right):
+    if left >= right:
+        return
+
+    mid = (left + right) // 2
+    merge_sort_inplace(arr, left, mid)
+    merge_sort_inplace(arr, mid + 1, right)
+    merge_inplace(arr, left, mid, right)
+
+def merge_inplace(arr, left, mid, right):
+    # Tao ban sao cua 2 nua
+    left_copy = arr[left:mid + 1]
+    right_copy = arr[mid + 1:right + 1]
+
+    i = j = 0
+    k = left
+
+    while i < len(left_copy) and j < len(right_copy):
+        if left_copy[i] <= right_copy[j]:
+            arr[k] = left_copy[i]
+            i += 1
+        else:
+            arr[k] = right_copy[j]
+            j += 1
+        k += 1
+
+    while i < len(left_copy):
+        arr[k] = left_copy[i]
+        i += 1
+        k += 1
+
+    while j < len(right_copy):
+        arr[k] = right_copy[j]
+        j += 1
+        k += 1
+
+# Test
+arr = [38, 27, 43, 3, 9, 82, 10]
+merge_sort_inplace(arr, 0, len(arr) - 1)
+print(arr)  # Output: [3, 9, 10, 27, 38, 43, 82]
+```
+
+### Chay thu chuong trinh hoan chinh
+
+```python
+def merge_sort_verbose(arr, depth=0):
+    """Merge Sort voi in chi tiet qua trinh chia va gop"""
+    indent = "  " * depth
+    print(f"{indent}merge_sort({arr})")
+
+    if len(arr) <= 1:
+        print(f"{indent}  => Base case, tra ve {arr}")
+        return arr
+
+    mid = len(arr) // 2
+    print(f"{indent}  Chia: {arr[:mid]} | {arr[mid:]}")
+
+    left = merge_sort_verbose(arr[:mid], depth + 1)
+    right = merge_sort_verbose(arr[mid:], depth + 1)
+
+    # Merge
+    result = []
+    i = j = 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+    result.extend(left[i:])
+    result.extend(right[j:])
+
+    print(f"{indent}  Gop {left} + {right} => {result}")
+    return result
+
+# Test
+print("=== MERGE SORT DEMO ===")
+result = merge_sort_verbose([38, 27, 43, 3, 9, 82, 10])
+print(f"\nKet qua cuoi cung: {result}")
+# Ket qua cuoi cung: [3, 9, 10, 27, 38, 43, 82]
+```
+
+### Phan tich do phuc tap
+
+#### Chung minh bang Master Theorem
+
+Merge Sort co cong thuc de quy:
+
+```
+T(n) = 2 * T(n/2) + O(n)
+```
+
+Trong do:
+
+- `2 * T(n/2)`: goi de quy 2 lan tren mang kich thuoc `n/2`
+- `O(n)`: chi phi merge 2 mang
+
+**Ap dung Master Theorem** voi `a = 2, b = 2, f(n) = O(n)`:
+
+```
+n^(log_b(a)) = n^(log_2(2)) = n^1 = n
+```
+
+Vi `f(n) = O(n) = O(n^(log_b(a)))`, ta roi vao **Case 2** cua Master Theorem:
+
+```
+T(n) = O(n^(log_b(a)) * log n) = O(n * log n) = O(n log n)
+```
+
+#### Chung minh truc quan bang cay de quy
+
+```
+Level 0: 1 mang kich thuoc n              => chi phi merge: n
+Level 1: 2 mang kich thuoc n/2            => chi phi merge: 2*(n/2) = n
+Level 2: 4 mang kich thuoc n/4            => chi phi merge: 4*(n/4) = n
+...
+Level k: 2^k mang kich thuoc n/2^k        => chi phi merge: n
+...
+Level log(n): n mang kich thuoc 1          => chi phi merge: n
+
+Tong: n * log(n) level = O(n log n)
+```
+
+Moi level ton dung `n` chi phi merge. Co `log(n)` level. Nen tong la **O(n log n)**.
+
+| Truong hop       | Do phuc tap | Giai thich                                            |
+| :--------------- | :---------- | :---------------------------------------------------- |
+| **Best case**    | O(n log n)  | Luon chia va merge, khong co truong hop nao nhanh hon |
+| **Average case** | O(n log n)  |                                                       |
+| **Worst case**   | O(n log n)  | **Luon la O(n log n) bat ke input**                   |
+| **Space**        | O(n)        | Can mang tam de merge                                 |
+
+### Uu va nhuoc diem
+
+| Uu diem                                        | Nhuoc diem                                                  |
+| :--------------------------------------------- | :---------------------------------------------------------- |
+| **Luon O(n log n)** -- khong co worst case xau | Can **O(n) extra space**                                    |
+| **Stable** sort                                | Cham hon Quick Sort trong thuc te (constant factor lon hon) |
+| Tot cho external sorting (du lieu tren disk)   | De quy co the gay stack overflow voi mang cuc lon           |
+| Tot cho sorting linked list                    |                                                             |
+| Co the dem so inversions                       |                                                             |
+
+### Cai tien
+
+1. **Dung Insertion Sort cho mang nho:** Khi kich thuoc mang <= 15-20, chuyen sang Insertion Sort (nhanh hon do overhead cua de quy).
+
+```python
+def merge_sort_optimized(arr, left, right):
+    if right - left <= 15:
+        # Dung insertion sort cho mang nho
+        insertion_sort(arr, left, right)
+        return
+    mid = (left + right) // 2
+    merge_sort_optimized(arr, left, mid)
+    merge_sort_optimized(arr, mid + 1, right)
+    merge_inplace(arr, left, mid, right)
+```
+
+1. **Kiem tra truoc khi merge:** Neu `arr[mid] <= arr[mid+1]`, 2 nua da dung thu tu, khong can merge.
+2. **Natural Merge Sort (Tim Sort):** Thay vi chia doi co hoc, tim cac "run" (doan da sap xep san) trong mang va merge chung. Day chinh la co so cua Tim Sort -- thuat toan sort mac dinh trong Python va Java.

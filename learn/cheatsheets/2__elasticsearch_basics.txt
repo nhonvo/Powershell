@@ -1,0 +1,87 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/06_Search_Engine/📂index_06_Search_Engine|06_Search_Engine]]
+
+# 🚀 2. Elasticsearch Basics (Concepts Mastery)
+
+Elasticsearch là một search engine phân tán (Distributed), xây dựng dựa trên Apache Lucene. Hiểu các khái niệm lõi giúp bạn thiết kế kiến trúc tìm kiếm (Cluster) chịu tải tốt và an toàn dữ liệu.
+
+---
+
+### 🏛️ 2.1 Cluster, Node & Index (Kiến trúc phân tầng)
+
+- **Cluster (Cụm)**: Hệ thống gồm nhiều Server (Nodes) phối hợp với nhau. Mỗi Cluster có một ID duy nhất.
+- **Node (Nút)**: Một server/instance riêng lẻ. Một Node có thể lưu dữ liệu và thực thi query.
+- **Index (Chỉ mục)**: Giống như một "Bảng" trong Database, nhưng lưu dữ liệu dạng JSON Documents. (VD: `products_index`).
+
+---
+
+### 🧠 2.2 Shards & Replicas (Bí mật của Scalability)
+
+Đây là cách Elasticsearch xử lý hàng tỷ bản ghi trên nhiều server.
+
+#### **A. Shards (Mảnh)**
+- Mỗi Index có thể chia nhỏ thành nhiều **Primary Shards**.
+- **Lợi ích**: Chia để trị. Bạn có thể lưu 100GB dữ liệu vào 5 Shards, mỗi Shard nằm trên 1 Node khác nhau. Việc tìm kiếm diễn ra song song trên cả 5 Node.
+
+#### **B. Replicas (Bản sao)**
+- Mỗi Shard có thể có hàng chục **Replica Shards**.
+- **Lợi ích**: Nếu 1 Node sập, dữ liệu vẫn an toàn vì đã có bản sao trên Node khác. Hỗ trợ tăng khả năng đọc đồng thời.
+
+> [!WARNING]
+> Số lượng **Primary Shards** không thể thay đổi sau khi khởi tạo Index (Bạn phải Re-index). Nhưng số lượng **Replicas** có thể thay đổi bất cứ lúc nào.
+
+---
+
+### 🚀 2.3 Query DSL (Domain Specific Language)
+
+Elasticsearch không dùng SQL. Nó truyền query qua cơ chế **REST API** với nội dung JSON.
+
+**Ví dụ lấy sản phẩm có tên liên quan đến "Laptop" và giá < 1000:**
+```json
+GET /products/_search
+{
+  "query": {
+    "bool": {
+      "must": { "match": { "name": "Laptop" } },
+      "filter": { "range": { "price": { "lt": 1000 } } }
+    }
+  }
+}
+```
+
+---
+
+### ⚡ 2.4 Document Lifecycle (Vòng đời của Document)
+
+1.  **Index Request**: Client đẩy JSON lên Elasticsearch.
+2.  **Routing**: Elasticsearch tính toán ID này thuộc về Shard nào (`routing = hash(id) % number_of_shards`).
+3.  **Writing**: Ghi vào Primary Shard trước, sau đó đồng bộ sang các Replica Shards.
+4.  **Refresh**: Mặc định cứ sau 1s, dữ liệu mới ghi mới có thể được tìm thấy (Near Real-time).
+
+---
+
+### 📝 2.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao số lượng Primary Shards của một Index lại không thể tăng thêm sau khi đã tạo xong?"
+<details><summary>Đáp án</summary>
+Do cơ chế Routing (`hash(id) % number_of_shards`). Nếu bạn tăng số lượng Shards, kết quả tính toán vị trí của các bản ghi cũ sẽ bị sai lệch (Lệnh GET một ID đã lưu sẽ trỏ vào sai Shard), dẫn đến việc không tìm thấy dữ liệu cũ.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh cURL đơn giản để tạo một Index mới tên là `users` với 3 Primary Shards và 2 Replicas.
+<details><summary>Solution</summary>
+```bash
+PUT /users
+{
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 2
+  }
+}
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Elasticsearch Architecture: Clusters, Shards & Replicas](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-elasticsearch-architecture.md)
+- [How Sharding and Replication Powers High Availability](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-sharding-replicas.md)
+- [Query DSL: Filters vs Queries - Performance Comparison](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-query-dsl-filters.md)

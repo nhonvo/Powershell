@@ -1,0 +1,122 @@
+# 🗃️ Cloud-Digital-Leader Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+What does the shift toward cloud computing represent for an organization's transformation?
+
+### Options:
+- [ ] **A)** An opportunity that is limited to large enterprises
+- [x] **B)** An opportunity to redefine existing business processes and services [Correct]
+- [ ] **C)** An opportunity that is only relevant to the IT department
+- [ ] **D)** An opportunity to continue business as usual with new cost savings
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+An organization is using new technologies to change its business processes and culture to develop new customer experiences and adapt to market dynamics.
+
+What is the name of this approach?
+
+### Options:
+- [x] **A)** Digital transformation [Correct]
+- [ ] **B)** Data center migration
+- [ ] **C)** Operations optimization
+- [ ] **D)** User personalization
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+An organization is deploying applications to the cloud using platform as a service.
+
+In the shared responsibility model, what remains the responsibility of the customer organization?
+
+### Options:
+- [ ] **A)** Operations
+- [x] **B)** Data access policies [Correct]
+- [ ] **C)** Physical security
+- [ ] **D)** Network security
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+In the shared responsibility model, while the cloud provider manages the underlying infrastructure and platform security, the customer organization is responsible for data access policies, ensuring that only authorized users have access to their data and applications.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+An organization decides to migrate their on-premises environment to the cloud. They need to determine which resource components still need to be assigned ownership.
+
+Which two functions does a public cloud provider own? (Choose two.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,D`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+Your multinational organization has servers running mission-critical workloads on its premises around the world. You want to be able to manage these workloads consistently and centrally, and you want to stop managing infrastructure.
+
+What should your organization do?
+
+### Options:
+- [x] **A)** Migrate the workloads to a public cloud [Correct]
+- [ ] **B)** Migrate the workloads to a central office building
+- [ ] **C)** Migrate the workloads to multiple local co-location facilities
+- [ ] **D)** Migrate the workloads to multiple local private clouds
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---

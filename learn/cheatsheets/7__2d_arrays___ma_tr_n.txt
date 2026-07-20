@@ -1,0 +1,255 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|02_Arrays_Strings]]
+
+## 7. 2D Arrays — Ma trận
+
+### 7.1. Ma trận là gì?
+
+Hãy tưởng tượng một **bàn cờ vua**: 8 hàng, 8 cột, mỗi ô có thể chứa quân cờ hoặc để trống. Đó là một 2D array 8x8.
+
+**Ma trận** (2D Array) là mảng của mảng — mỗi phần tử được xác định bằng hai chỉ số: hàng (row) và cột (col).
+
+```python
+# Ma trận 3x4
+matrix = [
+    [1,  2,  3,  4],
+    [5,  6,  7,  8],
+    [9, 10, 11, 12]
+]
+# matrix[1][2] = 7 (hàng 1, cột 2)
+```
+
+### 7.2. Duyệt ma trận
+
+```python
+rows = len(matrix)
+cols = len(matrix[0])
+
+# Duyệt theo hàng
+for r in range(rows):
+    for c in range(cols):
+        print(matrix[r][c], end=" ")
+    print()
+
+# Duyệt theo cột
+for c in range(cols):
+    for r in range(rows):
+        print(matrix[r][c], end=" ")
+    print()
+
+# Duyệt đường chéo chính (top-left → bottom-right)
+for i in range(min(rows, cols)):
+    print(matrix[i][i])
+
+# Duyệt đường chéo phụ (top-right → bottom-left)
+for i in range(min(rows, cols)):
+    print(matrix[i][cols - 1 - i])
+```
+
+### 7.3. Bài toán: Spiral Matrix (LeetCode 54)
+
+**Đề bài:** In các phần tử của ma trận theo hình xoắn ốc.
+
+```
+Input:
+1  2  3
+4  5  6
+7  8  9
+
+Output: [1, 2, 3, 6, 9, 8, 7, 4, 5]
+def spiral_order(matrix: list[list[int]]) -> list[int]:
+    if not matrix:
+        return []
+
+    result = []
+    top, bottom = 0, len(matrix) - 1
+    left, right = 0, len(matrix[0]) - 1
+
+    while top <= bottom and left <= right:
+        # Đi sang phải (hàng top)
+        for c in range(left, right + 1):
+            result.append(matrix[top][c])
+        top += 1
+
+        # Đi xuống (cột right)
+        for r in range(top, bottom + 1):
+            result.append(matrix[r][right])
+        right -= 1
+
+        # Đi sang trái (hàng bottom) — nếu còn hàng
+        if top <= bottom:
+            for c in range(right, left - 1, -1):
+                result.append(matrix[bottom][c])
+            bottom -= 1
+
+        # Đi lên (cột left) — nếu còn cột
+        if left <= right:
+            for r in range(bottom, top - 1, -1):
+                result.append(matrix[r][left])
+            left += 1
+
+    return result
+```
+
+NoYesYesNoYesNotop=0, bottom=m-1
+left=0, right=n-1top <= bottom AND
+left <= right?Return result→ Đi phải: hàng top,
+từ left đến right
+top += 1↓ Đi xuống: cột right,
+từ top đến bottom
+right -= 1top <= bottom?← Đi trái: hàng bottom,
+từ right đến left
+bottom -= 1left <= right?↑ Đi lên: cột left,
+từ bottom đến top
+left += 1
+
+**Simulation:** Ma trận 3x3:
+
+```
+Vòng 1:
+  → Phải: [1, 2, 3], top = 1
+  ↓ Xuống: [6, 9], right = 1
+  ← Trái: [8, 7], bottom = 1
+  ↑ Lên:   [4], left = 1
+
+Vòng 2:
+  → Phải: [5], top = 2
+  top > bottom → dừng
+
+result = [1, 2, 3, 6, 9, 8, 7, 4, 5]
+```
+
+### 7.4. Bài toán: Rotate Matrix 90 Degrees (LeetCode 48)
+
+**Đề bài:** Xoay ma trận vuông 90 độ theo chiều kim đồng hồ, in-place.
+
+**Trick:** Transpose (đổi hàng thành cột) rồi reverse mỗi hàng.
+
+```python
+def rotate(matrix: list[list[int]]) -> None:
+    n = len(matrix)
+
+    # Bước 1: Transpose — hoán đổi matrix[i][j] và matrix[j][i]
+    for i in range(n):
+        for j in range(i + 1, n):
+            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+
+    # Bước 2: Reverse mỗi hàng
+    for row in matrix:
+        row.reverse()
+```
+
+**Simulation:**
+
+```
+Ban đầu:        Transpose:       Reverse hàng:
+1 2 3           1 4 7            7 4 1
+4 5 6    →      2 5 8    →       8 5 2
+7 8 9           3 6 9            9 6 3
+```
+
+**Chứng minh:** Phần tử ở vị trí (i, j) sau khi xoay 90 độ sẽ ở vị trí (j, n-1-i).
+
+- Transpose: (i, j) → (j, i).
+- Reverse hàng: (j, i) → (j, n-1-i). Trùng khớp.
+
+### 7.5. 2D Prefix Sum
+
+Mở rộng Prefix Sum cho ma trận. Tính tổng hình chữ nhật bất kỳ trong O(1).
+
+```python
+def build_2d_prefix(matrix: list[list[int]]) -> list[list[int]]:
+    if not matrix:
+        return []
+    m, n = len(matrix), len(matrix[0])
+    prefix = [[0] * (n + 1) for _ in range(m + 1)]
+
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            prefix[i][j] = (matrix[i-1][j-1]
+                           + prefix[i-1][j]
+                           + prefix[i][j-1]
+                           - prefix[i-1][j-1])
+
+    return prefix
+
+def range_sum_2d(prefix, r1, c1, r2, c2):
+    """Tổng submatrix từ (r1,c1) đến (r2,c2) (0-indexed)"""
+    return (prefix[r2+1][c2+1]
+           - prefix[r1][c2+1]
+           - prefix[r2+1][c1]
+           + prefix[r1][c1])
+```
+
+**Công thức Inclusion-Exclusion:**
+
+$$\text{sum}(r1,c1,r2,c2) = P[r2+1][c2+1] - P[r1][c2+1] - P[r2+1][c1] + P[r1][c1]$$
+
+Hình dung bằng sơ đồ Venn:
+
+```
+Tổng vùng lớn:       P[r2+1][c2+1]
+Trừ vùng phía trên: -P[r1][c2+1]
+Trừ vùng bên trái:  -P[r2+1][c1]
+Cộng lại góc trùng: +P[r1][c1]    (vì bị trừ 2 lần)
+```
+
+Xây dựng prefix 2D
+O(m × n)Truy vấn tổng
+hình chữ nhật bất kỳ
+O(1) per queryInclusion-Exclusion
+P[r2+1][c2+1] - P[r1][c2+1]
+\- P[r2+1][c1] + P[r1][c1]
+
+### 7.6. Bài toán: Set Matrix Zeroes (LeetCode 73)
+
+**Đề bài:** Nếu một phần tử là 0, set toàn bộ hàng và cột chứa nó thành 0. Yêu cầu in-place.
+
+**O(1) space solution:** Dùng hàng đầu và cột đầu làm marker.
+
+```python
+def set_zeroes(matrix: list[list[int]]) -> None:
+    m, n = len(matrix), len(matrix[0])
+    first_row_zero = any(matrix[0][j] == 0 for j in range(n))
+    first_col_zero = any(matrix[i][0] == 0 for i in range(m))
+
+    # Đánh dấu: nếu matrix[i][j] == 0, mark hàng 0 và cột 0
+    for i in range(1, m):
+        for j in range(1, n):
+            if matrix[i][j] == 0:
+                matrix[i][0] = 0
+                matrix[0][j] = 0
+
+    # Set zero dựa trên marker
+    for i in range(1, m):
+        for j in range(1, n):
+            if matrix[i][0] == 0 or matrix[0][j] == 0:
+                matrix[i][j] = 0
+
+    # Xử lý hàng đầu và cột đầu
+    if first_row_zero:
+        for j in range(n):
+            matrix[0][j] = 0
+    if first_col_zero:
+        for i in range(m):
+            matrix[i][0] = 0
+```
+
+### 7.7. Ưu và nhược điểm
+
+**Ưu điểm:**
+
+- Biểu diễn tự nhiên cho dữ liệu 2 chiều (bản đồ, hình ảnh, bảng).
+- Truy cập O(1) cho mọi ô.
+- 2D Prefix Sum cho phép truy vấn vùng O(1).
+
+**Nhược điểm:**
+
+- Tốn bộ nhớ O(m*n) — ma trận thưa (sparse) lãng phí.
+- Thao tác trên toàn bộ hàng/cột tốn O(n) hoặc O(m).
+- Cache performance phụ thuộc vào hướng duyệt (row-major vs column-major).
+
+### 7.8. Cải tiến
+
+- **Sparse Matrix:** Dùng dictionary hoặc CSR/CSC format cho ma trận thưa.
+- **Cache-friendly traversal:** Duyệt theo hàng (row-major) trên C/C++/Python vì bộ nhớ lưu theo hàng.
+- **Block decomposition:** Chia ma trận thành block nhỏ để tăng cache hit.

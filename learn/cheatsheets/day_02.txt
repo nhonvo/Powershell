@@ -1,0 +1,15 @@
+# Day 02: Linked List & Two Pointers
+**Goal:** Visualize pointer manipulation without a debugger.
+
+### 📖 Reading (GitHub App)
+- Open `dsa/21.Merge-Two-Sorted-Lists/Program.cs`.
+- Trace the logic of the `dummy` node. Why is it necessary?
+
+### 🤖 AI Drill (Copy & Paste to ChatGPT/Gemini)
+> "Explain the 'Slow and Fast Pointer' (Tortoise and Hare) algorithm for detecting cycles in a Linked List. Why does it work mathematically? Can this be used to find the middle of a list in one pass?"
+
+### 📝 Mobile Task
+- Go to your GitHub Repo -> **Issues**.
+- Create a new Issue: "Day 2: Linked List Thoughts".
+- Type out the pseudocode for **Reversing a Linked List** using 3 pointers: `prev`, `curr`, `next`.
+

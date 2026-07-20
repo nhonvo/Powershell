@@ -1,0 +1,200 @@
+# 🗃️ MS-102 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Deploy and manage a Microsoft 365 tenant Testlet 1
+
+HOTSPOT (Drag and Drop is not supported)
+You need to configure the Microsoft 365 service status notifications and limit access to the service and feature updates. The solution must meet the technical requirements.
+What should you configure in the Microsoft 365 admin center? To answer, select the appropriate options in the answer area.
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Briefing email
+You need to configure the Office 365 service status notifications and.. Scenario: Office 365 service status notifications must be sent to Admin2.
+To sign up for email notifications of new incidents that affect your tenant and status changes for an active incident, select Preferences > Email, click Send me service heath notifications in email, and then specify: Up to two email addresses. Whether you want notifications for incidents or advisories.
+Note: As the admin, you can configure Briefing email for your organization at the user or tenant level. You can set the default state for all users in your tenant as opted in or opted out in the Microsoft 365 admin center, or you can enable or disable the Briefing email for a specific user or multiple users with PowerShell.
+Box 2: Release preferences
+.. limit access to the service and feature updates. Set up the Standard or Targeted release options.
+Set up the release option in the admin center.
+You can change how your organization receives Microsoft 365 updates by following these steps. You have to be a global admin in Microsoft 365 to opt in.
+In the admin center, go to the Settings > Org Setting, and under the Organization profile tab, choose Release preferences.
+To disable targeted release, select Standard release, then select Save changes.
+To enable targeted release for all users in your organization, select Targeted release for everyone, then select Save changes.
+To enable targeted release for some people in your organization, select Targeted release for selected users, then select Save changes.
+Choose Select users to add users one at a time, or Upload users to add them in bulk.
+6. When you're done adding users, select Save changes.
+Scenario:
+Users access new Office 365 service and feature updates before the updates are reviewed by Admin2. Implement Microsoft Defender for Office 365.
+Administrators must be able to specify which version of an Office 365 desktop app will be available to users and to roll back to previous versions.
+Only Admin2 must have access to new Office 365 service and feature updates before they are released to the company.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Deploy and manage a Microsoft 365 tenant Testlet 1
+
+You need to configure Microsoft Entra Connect Sync to support the planned changes for the Montreal Users and Seattle Users OUs.
+What should you do?
+
+### Options:
+- [ ] **A)** From PowerShell, run the Add-ADSyncConnectorAttributeInclusion cmdlet.
+- [ ] **B)** From the Microsoft Entra Connect wizard, select Manage federation.
+- [x] **C)** From the Microsoft Entra Connect wizard, select Customize synchronization options. [Correct]
+- [ ] **D)** From PowerShell, run the Start-ADSyncSyncCycle cmdlet.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Scenario: Configure Microsoft Entra Connect to sync the Montreal Users OU and the Seattle Users OU.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Deploy and manage a Microsoft 365 tenant Testlet 2
+
+You are evaluating the required processes for Project1.
+You need to recommend which DNS record must be created while adding a domain name to the tenant for the project.
+Which DNS record should you recommend?
+
+### Options:
+- [ ] **A)** alias (CNAME)
+- [ ] **B)** host information (HINFO)
+- [ ] **C)** host (A)
+- [x] **D)** text (TXT) [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+For this question these are the correct answers:
+* mail exchanger (MX)
+text (TXT)
+When you add a custom domain to Office 365, you need to verify that you own the domain. You can do this by adding either an MX record or a TXT record to the DNS for that domain.
+For this question these are the incorrect answers:
+* alias (CNAME)
+* host (A)
+* host (AAAA)
+* host information (HINFO)
+* name server (NS)
+pointer (PTR)
+Scenario: Each office contains two domain controllers. All domain controllers are configured as DNS servers. The public zone for fabrikam.com is managed by an external DNS server.
+Project1: During Project1, the mailboxes of 100 users in the sales department will be moved to Microsoft 365. All users must be able to exchange email messages successfully during Project1 by using their current email address.
+Explanations for correct answers:
+mail exchanger (MX)
+A DNS 'mail exchange' (MX) record directs email to a mail server. The MX record indicates how email messages should be routed in accordance with the Simple Mail Transfer Protocol (SMTP, the standard protocol for all email). Like CNAME records, an MX record must always point to another domain.
+Example of an MX record:
+
+
+text (TXT)
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Deploy and manage a Microsoft 365 tenant Testlet 2
+
+You are evaluating the required processes for Project1.
+You need to recommend which DNS record must be created while adding a domain name for the project. Which DNS record should you recommend?
+
+### Options:
+- [x] **A)** mail exchanger (MX) [Correct]
+- [ ] **B)** alias (CNAME)
+- [ ] **C)** host information (HINFO)
+- [ ] **D)** host (AAAA)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+For this question these are the correct answers:
+* mail exchanger (MX)
+text (TXT)
+When you add a custom domain to Office 365, you need to verify that you own the domain. You can do this by adding either an MX record or a TXT record to the DNS for that domain.
+For this question these are the incorrect answers:
+* alias (CNAME)
+* host (A)
+* host (AAAA)
+* host information (HINFO)
+* name server (NS)
+pointer (PTR)
+Scenario: Each office contains two domain controllers. All domain controllers are configured as DNS servers. The public zone for fabrikam.com is managed by an external DNS server.
+Project1: During Project1, the mailboxes of 100 users in the sales department will be moved to Microsoft 365. All users must be able to exchange email messages successfully during Project1 by using their current email address.
+Explanations for correct answers:
+mail exchanger (MX)
+A DNS 'mail exchange' (MX) record directs email to a mail server. The MX record indicates how email messages should be routed in accordance with the Simple Mail Transfer Protocol (SMTP, the standard protocol for all email). Like CNAME records, an MX record must always point to another domain.
+Example of an MX record:
+
+
+text (TXT)
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Deploy and manage a Microsoft 365 tenant Testlet 2
+
+You are evaluating the required processes for Project1.
+You need to recommend which DNS record must be created while adding a domain name for the project. Which DNS record should you recommend?
+
+### Options:
+- [ ] **A)** host (A)
+- [ ] **B)** alias (CNAME)
+- [x] **C)** text (TXT) [Correct]
+- [ ] **D)** host (AAAA)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+For this question these are the correct answers:
+* mail exchanger (MX)
+text (TXT)
+When you add a custom domain to Office 365, you need to verify that you own the domain. You can do this by adding either an MX record or a TXT record to the DNS for that domain.
+For this question these are the incorrect answers:
+* alias (CNAME)
+* host (A)
+* host (AAAA)
+* host information (HINFO)
+* name server (NS)
+pointer (PTR)
+Scenario: Each office contains two domain controllers. All domain controllers are configured as DNS servers. The public zone for fabrikam.com is managed by an external DNS server.
+Project1: During Project1, the mailboxes of 100 users in the sales department will be moved to Microsoft 365. All users must be able to exchange email messages successfully during Project1 by using their current email address.
+Explanations for correct answers:
+mail exchanger (MX)
+A DNS 'mail exchange' (MX) record directs email to a mail server. The MX record indicates how email messages should be routed in accordance with the Simple Mail Transfer Protocol (SMTP, the standard protocol for all email). Like CNAME records, an MX record must always point to another domain.
+Example of an MX record:
+
+
+text (TXT)
+</details>
+
+---

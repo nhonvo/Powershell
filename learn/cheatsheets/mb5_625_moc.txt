@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mb5-625
+  - mb5625
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MB5-625: C5 4.0 Project MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MB5-625/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MB5-625/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MB5-625/MB5-625 Mindmap\|🗺️ MB5-625 Mindmap]]
+- [[certifications/microsoft/MB5-625/MB5-625 Flashcards\|🃏 MB5-625 Flashcards]]
+- [[certifications/microsoft/MB5-625/MB5-625_Scraped_Question_Bank\|🗃️ MB5-625 Scraped Question Bank]]

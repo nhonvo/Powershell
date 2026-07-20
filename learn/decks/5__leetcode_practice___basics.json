@@ -1,0 +1,216 @@
+{
+  "Meta": {
+    "Id": "deck_5__leetcode_practice___basics",
+    "Topic": "5. LeetCode Practice — Basics",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "5__leetcode_practice___basics"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 10
+  },
+  "Cards": [
+    {
+      "Id": "card_00510",
+      "Front": "Approach",
+      "Back": "Time | Space | Ưu điểm | Nhược điểm",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. leetcode practice — basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00511",
+      "Front": "Gauss",
+      "Back": "O(n) | O(1) | Đơn giản, trực quan | Có thể tràn số với n rất lớn (trong C++)",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. leetcode practice — basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00512",
+      "Front": "XOR",
+      "Back": "O(n) | O(1) | Không lo tràn số | Khó hiểu hơn",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. leetcode practice — basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00513",
+      "Front": "231",
+      "Back": "Power of Two | Easy | Bit: `n & (n-1)` | O(1) | O(1)",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. leetcode practice — basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00514",
+      "Front": "191",
+      "Back": "Number of 1 Bits | Easy | Bit: Brian Kernighan | O(k) | O(1)",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. leetcode practice — basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00515",
+      "Front": "136",
+      "Back": "Single Number | Easy | XOR triệt tiêu | O(n) | O(1)",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. leetcode practice — basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00516",
+      "Front": "268",
+      "Back": "Missing Number | Easy | XOR hoac Gauss | O(n) | O(1)",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. leetcode practice — basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00517",
+      "Front": "338",
+      "Back": "Counting Bits | Easy | DP + bit shift | O(n) | O(n)",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. leetcode practice — basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00518",
+      "Front": "50",
+      "Back": "Pow(x, n) | Medium | Binary Exponentiation | O(log n) | O(1)",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. leetcode practice — basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00519",
+      "Front": "204",
+      "Back": "Count Primes | Medium | Sàng Eratosthenes | O(n log log n) | O(n)",
+      "Hint": "01_Basics",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. leetcode practice — basics"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/google-cloud-certified-professional-data-engineer
+  - googlecloudcertifiedprofessionaldataengineer
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 Google-Cloud-Certified-Professional-Data-Engineer MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/google/Google-Cloud-Certified-Professional-Data-Engineer/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/google/Google-Cloud-Certified-Professional-Data-Engineer/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/google/Google-Cloud-Certified-Professional-Data-Engineer/Google-Cloud-Certified-Professional-Data-Engineer Mindmap\|🗺️ Google-Cloud-Certified-Professional-Data-Engineer Mindmap]]
+- [[certifications/google/Google-Cloud-Certified-Professional-Data-Engineer/Google-Cloud-Certified-Professional-Data-Engineer Flashcards\|🃏 Google-Cloud-Certified-Professional-Data-Engineer Flashcards]]
+- [[certifications/google/Google-Cloud-Certified-Professional-Data-Engineer/Google-Cloud-Certified-Professional-Data-Engineer_Scraped_Question_Bank\|🗃️ Google-Cloud-Certified-Professional-Data-Engineer Scraped Question Bank]]

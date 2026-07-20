@@ -1,0 +1,556 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/03_Searching_Sorting/🔍index_03_Searching_Sorting|03_Searching_Sorting]]
+
+## 1. Basic Sorting
+
+### Tai sao phai hoc Sorting?
+
+Chao ban! Truoc khi nhay vao code, minh muon ban hieu tai sao sorting lai quan trong den the. Tuong tuong ban co mot dong sach lon be bon tren ke -- muon tim mot cuon sach cu the se rat kho. Nhung neu sach duoc sap xep theo ten tac gia hoac the loai, viec tim kiem tro nen de dang hon rat nhieu.
+
+Trong Computer Science cung vay: **rat nhieu thuat toan khac chi hoat dong hieu qua khi du lieu da duoc sap xep** (Binary Search, Merge intervals, Two pointers...). Vi vay, sorting la nen tang cua moi thu.
+
+Minh se bat dau voi 3 thuat toan sorting co ban nhat. Chung khong phai la nhanh nhat, nhung chung giup ban hieu **tu duy thiet ke thuat toan** -- va do chinh la dieu quan trong nhat.
+
+------
+
+### 1.1 Bubble Sort
+
+#### Y tuong chinh
+
+Bubble Sort hoat dong giong nhu cach **bong khi noi len mat nuoc**. Phan tu lon nhat se "noi" len cuoi mang sau moi luot duyet.
+
+**Nguyen ly:**
+
+- Duyet qua mang, so sanh tung cap phan tu ke nhau
+- Neu phan tu truoc lon hon phan tu sau, doi cho chung
+- Sau moi luot duyet, phan tu lon nhat "noi" ve cuoi mang
+- Lap lai cho den khi mang duoc sap xep
+
+#### Vi du thuc te
+
+Tuong tuong ban dang xep hang hoc sinh theo chieu cao. Ban di tu dau hang, so sanh 2 nguoi dung canh nhau. Neu nguoi truoc cao hon nguoi sau, doi cho ho. Lam nhu vay tu dau den cuoi hang -- nguoi cao nhat se o cuoi. Roi ban quay lai lam tuong tu, nhung lan nay chi can lam den vi tri ap cuoi (vi nguoi cao nhat da dung dung cho roi).
+
+#### Mo phong chi tiet
+
+Cho mang: `[5, 3, 8, 1, 2]`
+
+**Luot 1:** (Tim phan tu lon nhat, day ve cuoi)
+
+```
+[5, 3, 8, 1, 2]  -- So sanh 5 va 3: 5 > 3, doi cho
+[3, 5, 8, 1, 2]  -- So sanh 5 va 8: 5 < 8, giu nguyen
+[3, 5, 8, 1, 2]  -- So sanh 8 va 1: 8 > 1, doi cho
+[3, 5, 1, 8, 2]  -- So sanh 8 va 2: 8 > 2, doi cho
+[3, 5, 1, 2, 8]  -- Ket thuc luot 1. Phan tu 8 da "noi" len dung vi tri cuoi.
+```
+
+**Luot 2:** (Tim phan tu lon thu 2, day ve vi tri ap cuoi)
+
+```
+[3, 5, 1, 2, 8]  -- So sanh 3 va 5: 3 < 5, giu nguyen
+[3, 5, 1, 2, 8]  -- So sanh 5 va 1: 5 > 1, doi cho
+[3, 1, 5, 2, 8]  -- So sanh 5 va 2: 5 > 2, doi cho
+[3, 1, 2, 5, 8]  -- Ket thuc luot 2. Phan tu 5 da dung vi tri.
+```
+
+**Luot 3:**
+
+```
+[3, 1, 2, 5, 8]  -- So sanh 3 va 1: 3 > 1, doi cho
+[1, 3, 2, 5, 8]  -- So sanh 3 va 2: 3 > 2, doi cho
+[1, 2, 3, 5, 8]  -- Ket thuc luot 3. Phan tu 3 da dung vi tri.
+```
+
+**Luot 4:**
+
+```
+[1, 2, 3, 5, 8]  -- So sanh 1 va 2: 1 < 2, giu nguyen
+[1, 2, 3, 5, 8]  -- Ket thuc luot 4. Khong co doi cho nao => Mang da sap xep!
+```
+
+**Ket qua:** `[1, 2, 3, 5, 8]`
+
+#### Flowchart
+
+KhongCoKhongCoKhongCoCoKhongBat daui = 0i < n-1?Ket thuc: Mang da sap xepj = 0, swapped = falsej < n-1-i?swapped == false?i = i + 1arr[j] > arr[j+1]?Swap arr[j] va arr[j+1], swapped = truej = j + 1
+
+#### Code Python
+
+```python
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n - 1):
+        swapped = False
+        for j in range(n - 1 - i):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                swapped = True
+        # Toi uu: neu khong co doi cho nao trong luot nay,
+        # mang da sap xep => dung som
+        if not swapped:
+            break
+    return arr
+
+# Test
+print(bubble_sort([5, 3, 8, 1, 2]))
+# Output: [1, 2, 3, 5, 8]
+```
+
+#### Chay thu chuong trinh hoan chinh
+
+```python
+def bubble_sort_demo():
+    """Chuong trinh demo day du Bubble Sort"""
+    arr = [5, 3, 8, 1, 2]
+    print(f"Mang ban dau: {arr}")
+
+    n = len(arr)
+    for i in range(n - 1):
+        swapped = False
+        for j in range(n - 1 - i):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                swapped = True
+        print(f"  Luot {i + 1}: {arr}")
+        if not swapped:
+            print("  => Khong co doi cho, dung som!")
+            break
+
+    print(f"Ket qua: {arr}")
+
+# Chay thu
+bubble_sort_demo()
+# Output:
+# Mang ban dau: [5, 3, 8, 1, 2]
+#   Luot 1: [3, 5, 1, 2, 8]
+#   Luot 2: [3, 1, 2, 5, 8]
+#   Luot 3: [1, 2, 3, 5, 8]
+#   Luot 4: [1, 2, 3, 5, 8]
+#   => Khong co doi cho, dung som!
+# Ket qua: [1, 2, 3, 5, 8]
+```
+
+#### Phan tich do phuc tap
+
+**Chung minh bang toan hoc:**
+
+Vong lap ngoai chay `n - 1` luot. Vong lap trong chay:
+
+- Luot 1: `n - 1` phep so sanh
+- Luot 2: `n - 2` phep so sanh
+- ...
+- Luot k: `n - k` phep so sanh
+
+Tong so phep so sanh:
+
+```
+T(n) = (n-1) + (n-2) + ... + 1
+     = n(n-1) / 2
+     = (n^2 - n) / 2
+```
+
+Day la cong thuc tong cap so cong. Khi n lon, `n^2` chiem uu the nen: **T(n) = O(n^2)**.
+
+| Truong hop       | Do phuc tap | Giai thich                                                   |
+| :--------------- | :---------- | :----------------------------------------------------------- |
+| **Best case**    | O(n)        | Mang da sap xep san. Chi can 1 luot duyet, khong doi cho => `swapped = false` => dung. |
+| **Average case** | O(n^2)      | Trung binh can n(n-1)/4 phep doi cho.                        |
+| **Worst case**   | O(n^2)      | Mang sap xep nguoc. Moi luot phai doi cho het.               |
+| **Space**        | O(1)        | Chi dung bien tam, khong can mang phu.                       |
+
+#### Uu va nhuoc diem
+
+| Uu diem                                    | Nhuoc diem                         |
+| :----------------------------------------- | :--------------------------------- |
+| De hieu, de code                           | Cham voi du lieu lon (O(n^2))      |
+| Stable sort (giu thu tu tuong doi)         | Nhieu phep doi cho khong can thiet |
+| In-place (khong can bo nho phu)            | Khong phu hop cho production       |
+| Phat hien mang da sap xep (toi uu swapped) |                                    |
+
+#### Cai tien
+
+1. **Co swapped:** Nhu da lam o tren -- dung som khi khong co doi cho.
+2. **Ghi nho vi tri swap cuoi cung:** Thay vi giam `n-1-i`, ghi nho vi tri swap cuoi cung cua luot truoc. Tat ca phan tu sau vi tri do da dung cho => khong can duyet nua.
+
+```python
+def bubble_sort_optimized(arr):
+    n = len(arr)
+    new_n = n
+    while new_n > 1:
+        last_swap = 0
+        for j in range(new_n - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                last_swap = j + 1
+        new_n = last_swap  # Chi duyet den vi tri swap cuoi cung
+    return arr
+```
+
+------
+
+### 1.2 Selection Sort
+
+#### Y tuong chinh
+
+Selection Sort hoat dong theo nguyen tac **chon phan tu nho nhat** va dat vao dau mang. Giong nhu cach ban choi bai -- ban **tim la bai nho nhat** trong cac la tren tay roi dat no ve dau.
+
+**Nguyen ly:**
+
+- Tim phan tu nho nhat trong phan chua sap xep cua mang
+- Doi cho no voi phan tu dau tien cua phan chua sap xep
+- Mo rong phan da sap xep them 1 phan tu
+- Lap lai cho den khi toan bo mang duoc sap xep
+
+#### Vi du thuc te
+
+Tuong tuong ban dang xep mot dong tien xu. Ban quet mat toan bo dong tien, tim dong xu nho nhat, lay ra dat sang trai. Roi lai quet phan con lai, tim dong xu nho nhat tiep theo, dat canh dong xu truoc. Cu the cho den het.
+
+#### Mo phong chi tiet
+
+Cho mang: `[29, 10, 14, 37, 13]`
+
+**Luot 1:** Tim min trong `[29, 10, 14, 37, 13]`
+
+```
+Min = 10 (o vi tri 1)
+Doi cho arr[0] va arr[1]: 29 <-> 10
+Ket qua: [10 | 29, 14, 37, 13]
+          ^da sap xep
+```
+
+**Luot 2:** Tim min trong `[29, 14, 37, 13]`
+
+```
+Min = 13 (o vi tri 4)
+Doi cho arr[1] va arr[4]: 29 <-> 13
+Ket qua: [10, 13 | 14, 37, 29]
+          ^^^^^da sap xep
+```
+
+**Luot 3:** Tim min trong `[14, 37, 29]`
+
+```
+Min = 14 (o vi tri 2)
+14 da o dung vi tri, khong can doi cho
+Ket qua: [10, 13, 14 | 37, 29]
+          ^^^^^^^^da sap xep
+```
+
+**Luot 4:** Tim min trong `[37, 29]`
+
+```
+Min = 29 (o vi tri 4)
+Doi cho arr[3] va arr[4]: 37 <-> 29
+Ket qua: [10, 13, 14, 29 | 37]
+          ^^^^^^^^^^^da sap xep
+```
+
+**Ket qua:** `[10, 13, 14, 29, 37]`
+
+#### Flowchart
+
+KhongCoKhongCoKhongCoCoKhongBat daui = 0i < n-1?Ket thucmin_idx = i, j = i+1j < n?min_idx != i?Swap arr[i] va arr[min_idx]i = i + 1arr[j] < arr[min_idx]?min_idx = jj = j + 1
+
+#### Code Python
+
+```python
+def selection_sort(arr):
+    n = len(arr)
+    for i in range(n - 1):
+        # Tim vi tri phan tu nho nhat trong phan chua sap xep
+        min_idx = i
+        for j in range(i + 1, n):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        # Doi cho phan tu nho nhat voi phan tu dau phan chua sap xep
+        if min_idx != i:
+            arr[i], arr[min_idx] = arr[min_idx], arr[i]
+    return arr
+
+# Test
+print(selection_sort([29, 10, 14, 37, 13]))
+# Output: [10, 13, 14, 29, 37]
+```
+
+#### Chay thu chuong trinh hoan chinh
+
+```python
+def selection_sort_demo():
+    """Chuong trinh demo day du Selection Sort"""
+    arr = [29, 10, 14, 37, 13]
+    print(f"Mang ban dau: {arr}")
+
+    n = len(arr)
+    for i in range(n - 1):
+        min_idx = i
+        for j in range(i + 1, n):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        if min_idx != i:
+            arr[i], arr[min_idx] = arr[min_idx], arr[i]
+            print(f"  Luot {i + 1}: Swap arr[{i}]={arr[min_idx]} <-> arr[{min_idx}]={arr[i]} => {arr}")
+        else:
+            print(f"  Luot {i + 1}: Khong can swap, {arr[i]} da o dung vi tri => {arr}")
+
+    print(f"Ket qua: {arr}")
+
+# Chay thu
+selection_sort_demo()
+# Output:
+# Mang ban dau: [29, 10, 14, 37, 13]
+#   Luot 1: Swap arr[0]=29 <-> arr[1]=10 => [10, 29, 14, 37, 13]
+#   Luot 2: Swap arr[1]=29 <-> arr[4]=13 => [10, 13, 14, 37, 29]
+#   Luot 3: Khong can swap, 14 da o dung vi tri => [10, 13, 14, 37, 29]
+#   Luot 4: Swap arr[3]=37 <-> arr[4]=29 => [10, 13, 14, 29, 37]
+# Ket qua: [10, 13, 14, 29, 37]
+```
+
+#### Phan tich do phuc tap
+
+**Chung minh bang toan hoc:**
+
+So phep so sanh o moi luot:
+
+- Luot 1: `n - 1` phep so sanh
+- Luot 2: `n - 2` phep so sanh
+- ...
+- Luot n-1: `1` phep so sanh
+
+Tong:
+
+```
+T(n) = (n-1) + (n-2) + ... + 1 = n(n-1)/2 = O(n^2)
+```
+
+**Diem dac biet:** So phep so sanh LUON la `n(n-1)/2` bat ke mang da sap xep hay chua. Nhung so phep **swap** luon la `O(n)` (toi da `n - 1` lan swap).
+
+| Truong hop       | Do phuc tap | Giai thich                                        |
+| :--------------- | :---------- | :------------------------------------------------ |
+| **Best case**    | O(n^2)      | Van phai duyet het de tim min, du mang da sap xep |
+| **Average case** | O(n^2)      | Luon la n(n-1)/2 phep so sanh                     |
+| **Worst case**   | O(n^2)      | Tuong tu                                          |
+| **Space**        | O(1)        | In-place                                          |
+
+#### Uu va nhuoc diem
+
+| Uu diem                                           | Nhuoc diem                                           |
+| :------------------------------------------------ | :--------------------------------------------------- |
+| De hieu, de cai dat                               | O(n^2) ca 3 truong hop                               |
+| So lan swap it (toi da n-1 lan)                   | **Unstable** sort (co the thay doi thu tu tuong doi) |
+| Tot khi chi phi swap dat (vi du: swap object lon) | Khong toi uu duoc cho mang gan sap xep               |
+
+#### Cai tien: Double Selection Sort
+
+Tim dong thoi ca min va max trong moi luot, dat min vao dau va max vao cuoi:
+
+```python
+def double_selection_sort(arr):
+    n = len(arr)
+    left, right = 0, n - 1
+    while left < right:
+        min_idx = left
+        max_idx = left
+        for i in range(left, right + 1):
+            if arr[i] < arr[min_idx]:
+                min_idx = i
+            if arr[i] > arr[max_idx]:
+                max_idx = i
+        # Dat min vao dau
+        arr[left], arr[min_idx] = arr[min_idx], arr[left]
+        # Neu max_idx bi anh huong boi swap tren, cap nhat lai
+        if max_idx == left:
+            max_idx = min_idx
+        # Dat max vao cuoi
+        arr[right], arr[max_idx] = arr[max_idx], arr[right]
+        left += 1
+        right -= 1
+    return arr
+```
+
+------
+
+### 1.3 Insertion Sort
+
+#### Y tuong chinh
+
+Insertion Sort hoat dong giong cach ban **xep bai tren tay**. Moi khi rut 1 la bai moi, ban tim dung vi tri de chen no vao phan bai da sap xep tren tay.
+
+**Nguyen ly:**
+
+- Bat dau tu phan tu thu 2 (coi phan tu dau tien da "sap xep")
+- Lay phan tu hien tai, so sanh nguoc lai voi phan da sap xep
+- Dich cac phan tu lon hon sang phai de tao cho trong
+- Chen phan tu hien tai vao dung vi tri
+
+#### Vi du thuc te
+
+Ban dang choi bai Tien Len. Moi khi duoc chia 1 la bai moi, ban khong bo dai no vao cuoi roi sap xep lai toan bo. Thay vao do, ban nhin cac la bai tren tay (da sap xep), tim dung vi tri va **chen** la bai moi vao. Nguyen ly nay chinh la Insertion Sort!
+
+#### Mo phong chi tiet
+
+Cho mang: `[7, 3, 5, 1, 9]`
+
+**Buoc 1:** Xet phan tu `3` (index 1)
+
+```
+Phan da sap xep: [7]
+Chen 3 vao dau vi: 3 < 7, dich 7 sang phai
+[3, 7 | 5, 1, 9]
+ ^^^^da sap xep
+```
+
+**Buoc 2:** Xet phan tu `5` (index 2)
+
+```
+Phan da sap xep: [3, 7]
+Chen 5 vao vi tri giua vi: 3 < 5 < 7, dich 7 sang phai
+[3, 5, 7 | 1, 9]
+ ^^^^^^^da sap xep
+```
+
+**Buoc 3:** Xet phan tu `1` (index 3)
+
+```
+Phan da sap xep: [3, 5, 7]
+Chen 1 vao dau vi: 1 < 3 < 5 < 7, dich tat ca sang phai
+[1, 3, 5, 7 | 9]
+ ^^^^^^^^^^da sap xep
+```
+
+**Buoc 4:** Xet phan tu `9` (index 4)
+
+```
+Phan da sap xep: [1, 3, 5, 7]
+9 > 7, khong can dich gi, 9 o dung vi tri
+[1, 3, 5, 7, 9]
+ ^^^^^^^^^^^^^da sap xep
+```
+
+**Ket qua:** `[1, 3, 5, 7, 9]`
+
+#### Flowchart
+
+KhongCoCoKhongBat daui = 1i < n?Ket thuckey = arr[i], j = i - 1j >= 0 AND arr[j] > key?arr[j+1] = arr[j], j = j - 1arr[j+1] = keyi = i + 1
+
+#### Code Python
+
+```python
+def insertion_sort(arr):
+    n = len(arr)
+    for i in range(1, n):
+        key = arr[i]  # Phan tu can chen
+        j = i - 1
+        # Dich cac phan tu lon hon key sang phai
+        while j >= 0 and arr[j] > key:
+            arr[j + 1] = arr[j]
+            j -= 1
+        # Chen key vao vi tri dung
+        arr[j + 1] = key
+    return arr
+
+# Test
+print(insertion_sort([7, 3, 5, 1, 9]))
+# Output: [1, 3, 5, 7, 9]
+```
+
+#### Chay thu chuong trinh hoan chinh
+
+```python
+def insertion_sort_demo():
+    """Chuong trinh demo day du Insertion Sort"""
+    arr = [7, 3, 5, 1, 9]
+    print(f"Mang ban dau: {arr}")
+
+    n = len(arr)
+    for i in range(1, n):
+        key = arr[i]
+        j = i - 1
+        # Dich cac phan tu lon hon key sang phai
+        while j >= 0 and arr[j] > key:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+        print(f"  Buoc {i}: Chen {key} vao vi tri {j + 1} => {arr}")
+
+    print(f"Ket qua: {arr}")
+
+# Chay thu
+insertion_sort_demo()
+# Output:
+# Mang ban dau: [7, 3, 5, 1, 9]
+#   Buoc 1: Chen 3 vao vi tri 0 => [3, 7, 5, 1, 9]
+#   Buoc 2: Chen 5 vao vi tri 1 => [3, 5, 7, 1, 9]
+#   Buoc 3: Chen 1 vao vi tri 0 => [1, 3, 5, 7, 9]
+#   Buoc 4: Chen 9 vao vi tri 4 => [1, 3, 5, 7, 9]
+# Ket qua: [1, 3, 5, 7, 9]
+```
+
+#### Phan tich do phuc tap
+
+**Chung minh Worst case:**
+
+Khi mang sap xep nguoc, phan tu thu `i` phai dich `i` lan:
+
+```
+T(n) = 1 + 2 + 3 + ... + (n-1) = n(n-1)/2 = O(n^2)
+```
+
+**Chung minh Best case:**
+
+Khi mang da sap xep, vong `while` khong chay lan nao (vi `arr[j] <= key`). Chi con vong `for` ngoai:
+
+```
+T(n) = (n-1) * O(1) = O(n)
+```
+
+| Truong hop       | Do phuc tap | Giai thich                                |
+| :--------------- | :---------- | :---------------------------------------- |
+| **Best case**    | O(n)        | Mang da sap xep, chi can duyet 1 luot     |
+| **Average case** | O(n^2)      | Trung binh phai dich n/4 phan tu moi buoc |
+| **Worst case**   | O(n^2)      | Mang sap xep nguoc, phai dich toan bo     |
+| **Space**        | O(1)        | In-place                                  |
+
+#### Uu va nhuoc diem
+
+| Uu diem                                    | Nhuoc diem              |
+| :----------------------------------------- | :---------------------- |
+| **Stable** sort                            | O(n^2) worst case       |
+| **Adaptive** -- nhanh voi mang gan sap xep | Cham voi mang lon       |
+| Hieu qua voi mang nho (n < 50)             | Nhieu phep dich phan tu |
+| Online -- co the sort khi data den dan     |                         |
+
+#### Cai tien: Binary Insertion Sort
+
+Thay vi tim vi tri chen bang linear search, dung binary search:
+
+```python
+import bisect
+
+def binary_insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        # Tim vi tri chen bang binary search
+        pos = bisect.bisect_left(arr, key, 0, i)
+        # Dich phan tu va chen
+        arr.pop(i)
+        arr.insert(pos, key)
+    return arr
+```
+
+> **Luu y:** Binary insertion sort giam so phep so sanh xuong O(n log n), nhung so phep dich van la O(n^2). Nen tong the van la O(n^2).
+
+------
+
+### So sanh 3 thuat toan Basic Sorting
+
+| Tieu chi     | Bubble Sort           | Selection Sort     | Insertion Sort        |
+| :----------- | :-------------------- | :----------------- | :-------------------- |
+| Best case    | O(n)                  | O(n^2)             | **O(n)**              |
+| Average case | O(n^2)                | O(n^2)             | O(n^2)                |
+| Worst case   | O(n^2)                | O(n^2)             | O(n^2)                |
+| Space        | O(1)                  | O(1)               | O(1)                  |
+| Stable       | Co                    | **Khong**          | Co                    |
+| Adaptive     | Co (voi swapped flag) | Khong              | **Co**                |
+| So lan swap  | Nhieu                 | **It nhat** (O(n)) | Trung binh            |
+| Dung khi nao | Hoc tap, debug        | Chi phi swap dat   | Mang nho, gan sap xep |
+
+> **Ket luan:** Trong 3 thuat toan co ban, **Insertion Sort** thuong la lua chon tot nhat trong thuc te. No nhanh voi mang nho va gan sap xep. Tim Sort (sort mac dinh cua Python) va IntroSort (sort mac dinh cua C++) deu dung Insertion Sort cho cac mang nho.

@@ -1,0 +1,136 @@
+{
+  "Meta": {
+    "Id": "deck_4__lowest_common_ancestor__t__ti_n_chung_g_n_nh_t_",
+    "Topic": "4. Lowest Common Ancestor (Tổ tiên chung gần nhất)",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "4__lowest_common_ancestor__t__ti_n_chung_g_n_nh_t_"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 6
+  },
+  "Cards": [
+    {
+      "Id": "card_01111",
+      "Front": "Bước",
+      "Back": "Lời gọi | Kết quả | Giải thích",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. lowest common ancestor (tổ tiên chung gần nhất)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01112",
+      "Front": "10",
+      "Back": "Quay về `lca(3,...)` | 5, None | left=5, right=None → return **5**",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. lowest common ancestor (tổ tiên chung gần nhất)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01113",
+      "Front": "Trường hợp",
+      "Back": "Time | Ví dụ",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. lowest common ancestor (tổ tiên chung gần nhất)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01114",
+      "Front": "Best case",
+      "Back": "O(1) | Root là LCA (hoặc p, q ở gần root)",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. lowest common ancestor (tổ tiên chung gần nhất)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01115",
+      "Front": "Worst case",
+      "Back": "O(n) | p, q ở leaf sâu nhất, cây suy biến",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. lowest common ancestor (tổ tiên chung gần nhất)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01116",
+      "Front": "Average case",
+      "Back": "O(n) | Cần duyệt phần lớn cây",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. lowest common ancestor (tổ tiên chung gần nhất)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

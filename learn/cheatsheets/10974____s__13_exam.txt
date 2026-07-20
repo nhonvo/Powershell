@@ -1,0 +1,89 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 13
+
+## Part 1
+**Q1.** あした　先生に　ききます。
+- **A.** せんせい
+- **B.** せんせえ
+- **C.** せんせ
+- **D.** せいせい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1先生 (TI&Ecirc;N - SINH)：gi&aacute;o vi&ecirc;nS&aacute;ng mai t&ocirc;i sẽ hỏi gi&aacute;o vi&ecirc;n.</p>
+</details>
+
+---
+**Q2.** 三十日に　ともだちと　あそびます。
+- **A.** さんじゅうにち
+- **B.** さんじゅにち
+- **C.** さんじゅうび
+- **D.** さんじゅび
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1 三十日 (TAM - THẬP - NHẬT)：ng&agrave;y 30T&ocirc;i sẽ đi chơi với bạn v&agrave;o ng&agrave;y 30.</p>
+</details>
+
+---
+**Q3.** 鳥が　そらを　とんでいます。
+- **A.** ぶた
+- **B.** とり
+- **C.** うし
+- **D.** いぬ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2 鳥 (ĐIỂU)：ChimChim đang bay tr&ecirc;n bầu trời.</p>
+</details>
+
+---
+**Q4.** レストランの　前に　こうえんが　あります。
+- **A.** した
+- **B.** うえ
+- **C.** よこ
+- **D.** まえ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4前 (TIỀN)：Ph&iacute;a trướcPh&iacute;a trước nh&agrave; h&agrave;ng c&oacute; c&ocirc;ng vi&ecirc;n.</p>
+</details>
+
+---
+**Q5.** おかしを　七つ　とって　ください。
+- **A.** しちつ
+- **B.** ななつ
+- **C.** ごつ
+- **D.** いつつ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2七つ (THẤT)：7 vi&ecirc;nH&atilde;y lấy 7 vi&ecirc;n kẹo.</p>
+</details>
+
+---
+**Q6.** この　へやは　暗いです。
+- **A.** あかるい
+- **B.** せまい
+- **C.** くらい
+- **D.** ひろい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3暗い (&Aacute;M)：tốiCăn ph&ograve;ng n&agrave;y tối.</p>
+</details>
+
+---
+**Q7.** いっしょに　ひるごはんを　食べて　ください。
+- **A.** のべて
+- **B.** くらべて
+- **C.** たべて
+- **D.** ならべて
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3食べる (THỰC)：ănH&atilde;y c&ugrave;ng nhau ăn trưa.</p>
+</details>
+
+---

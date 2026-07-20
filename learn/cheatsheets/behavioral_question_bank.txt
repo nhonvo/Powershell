@@ -1,0 +1,20 @@
+🔙 **Back to Parent**: [[interviewNote/❓index_04_INTERVIEW_QA|interviewNote]]
+
+# Behavioral Question Bank (with your story mapping)
+
+Fill the table by linking to STAR stories in `03_STORIES_STAR/`.
+
+| Question | Best story | Backup story | Notes (1 line) |
+|---------|------------|--------------|----------------|
+| Tell me about yourself | `tell_me_about_yourself.md` |  | Present/Past/Future |
+| Why this company? |  |  | Product + team + growth |
+| Why this role? |  |  | Skills match + motivation |
+| Biggest achievement |  |  | Metric + ownership |
+| Biggest failure |  |  | Learning + change |
+| Conflict with teammate |  |  | De-escalate + align |
+| Tight deadline |  |  | prioritize + communicate |
+| Ambiguous requirements |  |  | clarify + iterate |
+| Technical disagreement |  |  | data + tradeoffs |
+| Leadership example |  |  | lead without authority |
+| Handling feedback |  |  | receptive + action |
+

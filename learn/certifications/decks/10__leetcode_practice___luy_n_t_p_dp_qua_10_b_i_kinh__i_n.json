@@ -1,0 +1,2016 @@
+{
+  "Meta": {
+    "Id": "deck_10__leetcode_practice___luy_n_t_p_dp_qua_10_b_i_kinh__i_n",
+    "Topic": "10. LeetCode Practice — Luyện tập DP qua 10 bài kinh điển",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "10__leetcode_practice___luy_n_t_p_dp_qua_10_b_i_kinh__i_n"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 100
+  },
+  "Cards": [
+    {
+      "Id": "card_01443",
+      "Front": "10",
+      "Back": "#416 Partition Equal Subset Sum | 0/1 Knapsack | Medium",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01444",
+      "Front": "Thành phần",
+      "Back": "Giá trị",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01445",
+      "Front": "**State**",
+      "Back": "`dp[i]` = số cách để leo lên bậc thứ `i`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01446",
+      "Front": "**Transition**",
+      "Back": "`dp[i] = dp[i-1] + dp[i-2]`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01447",
+      "Front": "**Base case**",
+      "Back": "`dp[1] = 1, dp[2] = 2`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01448",
+      "Front": "**Answer**",
+      "Back": "`dp[n]`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01449",
+      "Front": "Approach",
+      "Back": "Time | Space",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01450",
+      "Front": "Brute Force",
+      "Back": "O(2^n) | O(n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01451",
+      "Front": "Memoization",
+      "Back": "O(n) | O(n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01452",
+      "Front": "Tabulation",
+      "Back": "O(n) | O(n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01453",
+      "Front": "Space Optimized",
+      "Back": "O(n) | O(1)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01454",
+      "Front": "Thành phần",
+      "Back": "Giá trị",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01455",
+      "Front": "**State**",
+      "Back": "`dp[i]` = số tiền tối đa khi xét từ nhà 0 đến nhà i",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01456",
+      "Front": "**Transition**",
+      "Back": "`dp[i] = max(dp[i-1], nums[i] + dp[i-2])`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01457",
+      "Front": "**Base case**",
+      "Back": "`dp[0] = nums[0]`, `dp[1] = max(nums[0], nums[1])`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01458",
+      "Front": "**Answer**",
+      "Back": "`dp[n-1]`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01459",
+      "Front": "Approach",
+      "Back": "Time | Space",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01460",
+      "Front": "Brute Force",
+      "Back": "O(2^n) | O(n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01461",
+      "Front": "Memoization",
+      "Back": "O(n) | O(n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01462",
+      "Front": "Tabulation",
+      "Back": "O(n) | O(n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01463",
+      "Front": "Space Optimized",
+      "Back": "O(n) | O(1)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01464",
+      "Front": "Thành phần",
+      "Back": "Giá trị",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01465",
+      "Front": "**State**",
+      "Back": "`min_price` = giá thấp nhất từ ngày 0 đến ngày i",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01466",
+      "Front": "**Transition**",
+      "Back": "`min_price = min(min_price, prices[i])`, `max_profit = max(max_profit, prices[i] - min_price)`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01467",
+      "Front": "**Base case**",
+      "Back": "`min_price = prices[0]`, `max_profit = 0`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01468",
+      "Front": "**Answer**",
+      "Back": "`max_profit`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01469",
+      "Front": "Approach",
+      "Back": "Time | Space",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01470",
+      "Front": "Brute Force",
+      "Back": "O(n^2) | O(1)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01471",
+      "Front": "Memo (State Machine)",
+      "Back": "O(n) | O(n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01472",
+      "Front": "One Pass (Optimal)",
+      "Back": "O(n) | O(1)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01473",
+      "Front": "Thành phần",
+      "Back": "Giá trị",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01474",
+      "Front": "**State**",
+      "Back": "`dp[i][j]` = số đường đi từ (0,0) đến (i,j)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01475",
+      "Front": "**Transition**",
+      "Back": "`dp[i][j] = dp[i-1][j] + dp[i][j-1]`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01476",
+      "Front": "**Base case**",
+      "Back": "`dp[0][j] = 1` (hàng đầu), `dp[i][0] = 1` (cột đầu)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01477",
+      "Front": "**Answer**",
+      "Back": "`dp[m-1][n-1]`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01478",
+      "Front": "Approach",
+      "Back": "Time | Space",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01479",
+      "Front": "Brute Force",
+      "Back": "O(2^(m+n)) | O(m+n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01480",
+      "Front": "Memoization",
+      "Back": "O(m*n) | O(m*n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01481",
+      "Front": "Tabulation",
+      "Back": "O(m*n) | O(m*n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01482",
+      "Front": "Space Optimized",
+      "Back": "O(m*n) | O(n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01483",
+      "Front": "Thành phần",
+      "Back": "Giá trị",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01484",
+      "Front": "**State**",
+      "Back": "`dp[i]` = số đồng xu ít nhất để tạo ra số tiền `i`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01485",
+      "Front": "**Transition**",
+      "Back": "`dp[i] = min(dp[i - c] + 1)` với mọi coin `c` mà `c <= i`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01486",
+      "Front": "**Base case**",
+      "Back": "`dp[0] = 0`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01487",
+      "Front": "**Answer**",
+      "Back": "`dp[amount]` (nếu = ∞ thì return -1)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01488",
+      "Front": "Approach",
+      "Back": "Time | Space",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01489",
+      "Front": "Brute Force",
+      "Back": "O(S^n) | O(S)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01490",
+      "Front": "Memoization",
+      "Back": "O(S * n) | O(S)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01491",
+      "Front": "Tabulation",
+      "Back": "O(S * n) | O(S)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01492",
+      "Front": "Hỏi gì?",
+      "Back": "Số đồng xu **ít nhất** | Số **cách** khác nhau",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01493",
+      "Front": "DP value",
+      "Back": "min | count (sum)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01494",
+      "Front": "Thứ tự?",
+      "Back": "Không quan trọng | Không quan trọng (combination)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01495",
+      "Front": "Thành phần",
+      "Back": "Giá trị",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01496",
+      "Front": "**State**",
+      "Back": "`dp[i]` = số cách tạo ra số tiền `i` bằng các coins đã xét",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01497",
+      "Front": "**Transition**",
+      "Back": "`dp[i] += dp[i - coin]` (với mỗi coin)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01498",
+      "Front": "**Base case**",
+      "Back": "`dp[0] = 1` (1 cách tạo ra 0: không dùng đồng nào)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01499",
+      "Front": "**Answer**",
+      "Back": "`dp[amount]`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01500",
+      "Front": "Approach",
+      "Back": "Time | Space",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01501",
+      "Front": "Memoization",
+      "Back": "O(S * n) | O(S * n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01502",
+      "Front": "Tabulation 2D",
+      "Back": "O(S * n) | O(S * n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01503",
+      "Front": "Space Optimized",
+      "Back": "O(S * n) | O(S)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01504",
+      "Front": "Thành phần",
+      "Back": "Giá trị",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01505",
+      "Front": "**State**",
+      "Back": "`dp[i]` = độ dài LIS **kết thúc tại** `nums[i]`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01506",
+      "Front": "**Transition**",
+      "Back": "`dp[i] = max(dp[j] + 1)` với mọi `j < i` mà `nums[j] < nums[i]`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01507",
+      "Front": "**Base case**",
+      "Back": "`dp[i] = 1` (mỗi phần tử tự nó là LIS dài 1)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01508",
+      "Front": "**Answer**",
+      "Back": "`max(dp[i])` với mọi i",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01509",
+      "Front": "Approach",
+      "Back": "Time | Space",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01510",
+      "Front": "Brute Force",
+      "Back": "O(2^n) | O(n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01511",
+      "Front": "DP (O(n^2))",
+      "Back": "O(n^2) | O(n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01512",
+      "Front": "Binary Search",
+      "Back": "O(n log n) | O(n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01513",
+      "Front": "Thành phần",
+      "Back": "Giá trị",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01514",
+      "Front": "**State**",
+      "Back": "`dp[i][j]` = LCS của `text1[0..i-1]` và `text2[0..j-1]`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01515",
+      "Front": "**Transition**",
+      "Back": "Nếu `text1[i-1] == text2[j-1]`: `dp[i][j] = dp[i-1][j-1] + 1`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01516",
+      "Front": "**Base case**",
+      "Back": "`dp[0][j] = 0`, `dp[i][0] = 0` (chuỗi rỗng → LCS = 0)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01517",
+      "Front": "**Answer**",
+      "Back": "`dp[m][n]` (m = len(text1), n = len(text2))",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01518",
+      "Front": "Approach",
+      "Back": "Time | Space",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01519",
+      "Front": "Brute Force",
+      "Back": "O(2^(m+n)) | O(m+n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01520",
+      "Front": "Memoization",
+      "Back": "O(m*n) | O(m*n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01521",
+      "Front": "Tabulation",
+      "Back": "O(m*n) | O(m*n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01522",
+      "Front": "Space Optimized",
+      "Back": "O(m*n) | O(n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01523",
+      "Front": "Thành phần",
+      "Back": "Giá trị",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01524",
+      "Front": "**State**",
+      "Back": "`dp[i][j]` = edit distance giữa `word1[0..i-1]` và `word2[0..j-1]`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01525",
+      "Front": "**Transition**",
+      "Back": "Nếu `word1[i-1] == word2[j-1]`: `dp[i][j] = dp[i-1][j-1]`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01526",
+      "Front": "**Base case**",
+      "Back": "`dp[i][0] = i` (xóa i ký tự), `dp[0][j] = j` (chèn j ký tự)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01527",
+      "Front": "**Answer**",
+      "Back": "`dp[m][n]`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01528",
+      "Front": "Approach",
+      "Back": "Time | Space",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01529",
+      "Front": "Brute Force",
+      "Back": "O(3^(m+n)) | O(m+n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01530",
+      "Front": "Memoization",
+      "Back": "O(m*n) | O(m*n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01531",
+      "Front": "Tabulation",
+      "Back": "O(m*n) | O(m*n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01532",
+      "Front": "Space Optimized",
+      "Back": "O(m*n) | O(n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01533",
+      "Front": "Thành phần",
+      "Back": "Giá trị",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01534",
+      "Front": "**State**",
+      "Back": "`dp[i][j]` = True nếu dùng `nums[0..i-1]` có thể tạo ra tổng `j`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01535",
+      "Front": "**Transition**",
+      "Back": "`dp[i][j] = dp[i-1][j] OR dp[i-1][j - nums[i-1]]` (nếu `j >= nums[i-1]`)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01536",
+      "Front": "**Base case**",
+      "Back": "`dp[i][0] = True` (tổng 0 luôn đạt được = không chọn gì)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01537",
+      "Front": "**Answer**",
+      "Back": "`dp[n][target]`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01538",
+      "Front": "Approach",
+      "Back": "Time | Space",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01539",
+      "Front": "Brute Force",
+      "Back": "O(2^n) | O(n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01540",
+      "Front": "Memoization",
+      "Back": "O(n * target) | O(n * target)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01541",
+      "Front": "Tabulation 2D",
+      "Back": "O(n * target) | O(n * target)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01542",
+      "Front": "Space Optimized",
+      "Back": "O(n * target) | O(target)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — luyện tập dp qua 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

@@ -1,0 +1,236 @@
+{
+  "Meta": {
+    "Id": "deck_1__singly_linked_list",
+    "Topic": "1. Singly Linked List",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "1__singly_linked_list"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 11
+  },
+  "Cards": [
+    {
+      "Id": "card_00852",
+      "Front": "Bước",
+      "Back": "Hành động | Trạng thái",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. singly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00853",
+      "Front": "Bước",
+      "Back": "current | current.next | Hành động",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. singly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00854",
+      "Front": "Bước",
+      "Back": "Hành động | Trạng thái",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. singly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00855",
+      "Front": "Thao tác",
+      "Back": "Time (Best) | Time (Worst) | Space",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. singly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00856",
+      "Front": "Insert at head",
+      "Back": "O(1) | O(1) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. singly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00857",
+      "Front": "Insert at tail",
+      "Back": "O(1) nếu có tail ptr | O(n) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. singly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00858",
+      "Front": "Insert at position k",
+      "Back": "O(1) nếu k=0 | O(n) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. singly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00859",
+      "Front": "Delete at head",
+      "Back": "O(1) | O(1) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. singly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00860",
+      "Front": "Delete at position k",
+      "Back": "O(1) nếu k=0 | O(n) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. singly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00861",
+      "Front": "Search",
+      "Back": "O(1) nếu ở đầu | O(n) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. singly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00862",
+      "Front": "Traverse",
+      "Back": "O(n) | O(n) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. singly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

@@ -1,0 +1,312 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/11_Heaps_Priority_Queue/🌲index_11_Heaps_Priority_Queue|11_Heaps_Priority_Queue]]
+
+## 11.4 Merge K Sorted Lists
+
+### Bài toán
+
+Cho `k` danh sách đã sắp xếp, merge tất cả thành **một** danh sách sắp xếp duy nhất.
+
+**Ví dụ thực tế — Hợp nhất bảng điểm:** Trường đại học có 10 khoa, mỗi khoa đã có bảng điểm sorted theo GPA giảm dần. Bạn cần hợp nhất thành một bảng xếp hạng toàn trường. Thay vì dump tất cả vào rồi sort lại (tốn kém), bạn lấy đầu mỗi danh sách, chọn GPA cao nhất, rồi tiến đến phần tử tiếp theo trong danh sách đó.
+
+### Tại sao dùng Heap?
+
+| Cách giải                         | Time           | Space    | Nhận xét                                       |
+| :-------------------------------- | :------------- | :------- | :--------------------------------------------- |
+| Merge từng cặp (brute force)      | O(kN)          | O(N)     | N = tổng phần tử. Merge k-1 lần, mỗi lần duyệt |
+| Merge từng cặp (divide & conquer) | O(N log k)     | O(N)     | Tốt nhưng phức tạp hơn                         |
+| **Min Heap**                      | **O(N log k)** | **O(k)** | Luôn giữ k phần tử trong heap                  |
+
+### Ý tưởng thuật toán
+
+Giữ một **min heap kích thước k**, mỗi phần tử trong heap là head hiện tại của mỗi danh sách. Mỗi lần:
+
+1. Pop phần tử nhỏ nhất từ heap → thêm vào kết quả.
+2. Nếu danh sách chứa phần tử vừa pop còn phần tử tiếp theo → push phần tử tiếp theo vào heap.
+
+CóKhôngCóKhôngKhởi tạo min heap
+với head của k danh sáchHeap rỗng?Trả về kết quả
+(danh sách đã merge)Pop phần tử nhỏ nhất
+từ heapThêm vào kết quảDanh sách chứa phần tử
+vừa pop còn phần tử tiếp?Push phần tử tiếp
+vào heap
+
+### Mô phỏng chi tiết
+
+Merge 3 danh sách:
+
+```
+List 0: [1, 4, 7]
+List 1: [2, 5, 8]
+List 2: [3, 6, 9]
+```
+
+**Bước 0**: Push head của mỗi list vào heap
+
+```
+Heap: [(1, list_0, idx_0), (2, list_1, idx_0), (3, list_2, idx_0)]
+Result: []
+```
+
+**Bước 1**: Pop min = 1 (từ list 0), push phần tử tiếp theo list 0[1] = 4
+
+```
+Heap: [(2, list_1, idx_0), (3, list_2, idx_0), (4, list_0, idx_1)]
+Result: [1]
+```
+
+**Bước 2**: Pop min = 2 (từ list 1), push list 1[1] = 5
+
+```
+Heap: [(3, list_2, idx_0), (4, list_0, idx_1), (5, list_1, idx_1)]
+Result: [1, 2]
+```
+
+**Bước 3**: Pop min = 3 (từ list 2), push list 2[1] = 6
+
+```
+Heap: [(4, list_0, idx_1), (5, list_1, idx_1), (6, list_2, idx_1)]
+Result: [1, 2, 3]
+```
+
+**Bước 4**: Pop min = 4 (từ list 0), push list 0[2] = 7
+
+```
+Heap: [(5, list_1, idx_1), (6, list_2, idx_1), (7, list_0, idx_2)]
+Result: [1, 2, 3, 4]
+```
+
+**Bước 5**: Pop min = 5, push 8
+
+```
+Heap: [(6, list_2, idx_1), (7, list_0, idx_2), (8, list_1, idx_2)]
+Result: [1, 2, 3, 4, 5]
+```
+
+**Bước 6**: Pop min = 6, push 9
+
+```
+Heap: [(7, list_0, idx_2), (8, list_1, idx_2), (9, list_2, idx_2)]
+Result: [1, 2, 3, 4, 5, 6]
+```
+
+**Bước 7**: Pop 7, list 0 hết → không push
+
+```
+Heap: [(8, list_1, idx_2), (9, list_2, idx_2)]
+Result: [1, 2, 3, 4, 5, 6, 7]
+```
+
+**Bước 8**: Pop 8, list 1 hết
+
+```
+Heap: [(9, list_2, idx_2)]
+Result: [1, 2, 3, 4, 5, 6, 7, 8]
+```
+
+**Bước 9**: Pop 9, list 2 hết, heap rỗng
+
+```
+Result: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
+
+Tổng: 9 lần pop, mỗi lần heap có tối đa 3 phần tử → O(9 × log 3) = O(N log k).
+
+### Python code hoàn chỉnh
+
+```python
+"""
+Merge K Sorted Lists — Sử dụng Min Heap
+LeetCode 23: Merge k Sorted Lists
+"""
+import heapq
+from typing import List, Optional
+
+
+# ========================
+#  Phiên bản 1: Merge k sorted arrays
+# ========================
+def merge_k_sorted_arrays(lists: List[List[int]]) -> List[int]:
+    """
+    Merge k sorted arrays thành 1 sorted array.
+    Time: O(N log k) — N = tổng phần tử, k = số danh sách
+    Space: O(k) cho heap + O(N) cho kết quả
+    """
+    result = []
+    min_heap = []
+
+    # Khởi tạo: push phần tử đầu tiên của mỗi list vào heap
+    # Tuple: (giá trị, index_list, index_trong_list)
+    for i, lst in enumerate(lists):
+        if lst:  # Bỏ qua list rỗng
+            heapq.heappush(min_heap, (lst[0], i, 0))
+
+    while min_heap:
+        val, list_idx, elem_idx = heapq.heappop(min_heap)
+        result.append(val)
+
+        # Nếu list này còn phần tử tiếp theo → push vào heap
+        next_idx = elem_idx + 1
+        if next_idx < len(lists[list_idx]):
+            next_val = lists[list_idx][next_idx]
+            heapq.heappush(min_heap, (next_val, list_idx, next_idx))
+
+    return result
+
+
+# ========================
+#  Phiên bản 2: Merge k sorted linked lists (LeetCode style)
+# ========================
+class ListNode:
+    """Node cho linked list."""
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+    def __repr__(self):
+        vals = []
+        node = self
+        while node:
+            vals.append(str(node.val))
+            node = node.next
+        return " -> ".join(vals)
+
+
+def merge_k_sorted_linked_lists(lists: List[Optional[ListNode]]) -> Optional[ListNode]:
+    """
+    Merge k sorted linked lists.
+    Time: O(N log k), Space: O(k)
+    """
+    min_heap = []
+    counter = 0  # Tiebreaker — vì ListNode không so sánh được
+
+    # Khởi tạo: push head của mỗi list
+    for node in lists:
+        if node:
+            heapq.heappush(min_heap, (node.val, counter, node))
+            counter += 1
+
+    # Dummy head để dễ xử lý
+    dummy = ListNode(0)
+    current = dummy
+
+    while min_heap:
+        val, _, node = heapq.heappop(min_heap)
+        current.next = node
+        current = current.next
+
+        if node.next:
+            counter += 1
+            heapq.heappush(min_heap, (node.next.val, counter, node.next))
+
+    return dummy.next
+
+
+# ========================
+#  Phiên bản 3: heapq.merge — cách dễ nhất
+# ========================
+def merge_k_sorted_easy(lists: List[List[int]]) -> List[int]:
+    """
+    Dùng heapq.merge — Python built-in, gọn nhất.
+    Bên trong nó cũng dùng min heap giống cách mình làm.
+    """
+    return list(heapq.merge(*lists))
+
+
+# ========================
+#  Helper: tạo linked list từ array
+# ========================
+def make_linked_list(arr):
+    if not arr:
+        return None
+    head = ListNode(arr[0])
+    curr = head
+    for val in arr[1:]:
+        curr.next = ListNode(val)
+        curr = curr.next
+    return head
+
+
+# ========================
+#  Test & Demo
+# ========================
+if __name__ == "__main__":
+    print("=" * 55)
+    print("TEST 1: Merge k sorted arrays")
+    print("=" * 55)
+
+    lists = [
+        [1, 4, 7],
+        [2, 5, 8],
+        [3, 6, 9],
+    ]
+    for i, lst in enumerate(lists):
+        print(f"  List {i}: {lst}")
+
+    result = merge_k_sorted_arrays(lists)
+    print(f"  Merged: {result}")
+
+    print(f"\n{'=' * 55}")
+    print("TEST 2: Merge k sorted linked lists")
+    print("=" * 55)
+
+    linked_lists = [
+        make_linked_list([1, 4, 5]),
+        make_linked_list([1, 3, 4]),
+        make_linked_list([2, 6]),
+    ]
+    for i, ll in enumerate(linked_lists):
+        print(f"  List {i}: {ll}")
+
+    merged = merge_k_sorted_linked_lists(linked_lists)
+    print(f"  Merged: {merged}")
+
+    print(f"\n{'=' * 55}")
+    print("TEST 3: heapq.merge (cách dễ nhất)")
+    print("=" * 55)
+
+    lists2 = [[1, 3, 5], [2, 4, 6], [0, 7, 8]]
+    result2 = merge_k_sorted_easy(lists2)
+    print(f"  Input:  {lists2}")
+    print(f"  Merged: {result2}")
+
+    print(f"\n{'=' * 55}")
+    print("TEST 4: Edge cases")
+    print("=" * 55)
+
+    # List rỗng
+    print(f"  Có list rỗng: {merge_k_sorted_arrays([[1, 3], [], [2, 4]])}")
+    # Tất cả rỗng
+    print(f"  Tất cả rỗng: {merge_k_sorted_arrays([[], [], []])}")
+    # Chỉ 1 list
+    print(f"  Một list:     {merge_k_sorted_arrays([[1, 2, 3]])}")
+```
+
+### Phân tích độ phức tạp
+
+|                  | Time       | Space                    |
+| :--------------- | :--------- | :----------------------- |
+| **Overall**      | O(N log k) | O(k) cho heap            |
+| **Khởi tạo**     | O(k log k) | Push k phần tử đầu       |
+| **Mỗi pop+push** | O(log k)   | Heap luôn có ≤ k phần tử |
+| **Best case**    | O(N)       | Khi k = 1 (chỉ 1 list)   |
+| **Worst case**   | O(N log k) | Mọi trường hợp k > 1     |
+
+N = tổng số phần tử trong tất cả các list, k = số danh sách.
+
+### Ưu và nhược điểm
+
+**Ưu điểm:**
+
+- Heap chỉ giữ k phần tử → space O(k) rất nhỏ khi k << N
+- Hoạt động tốt với linked list (không cần random access)
+- `heapq.merge` trả về iterator → có thể xử lý lazy, không cần load toàn bộ vào bộ nhớ
+
+**Nhược điểm:**
+
+- Khi k rất lớn (hàng triệu list), mỗi pop/push tốn O(log k) đáng kể
+- Không tận dụng được locality như merge sort (merge 2 list liên tiếp)
+
+### Cải tiến
+
+- **Divide and Conquer Merge**: Merge từng cặp list, giống merge sort. Time vẫn O(N log k) nhưng tận dụng cache tốt hơn.
+- **Tournament Tree**: Biến thể của heap, giảm số so sánh cần thiết — dùng trong external sorting (sort dữ liệu lớn trên disk).

@@ -1,0 +1,196 @@
+{
+  "Meta": {
+    "Id": "deck_5__quick_sort",
+    "Topic": "5. Quick Sort",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "5__quick_sort"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 9
+  },
+  "Cards": [
+    {
+      "Id": "card_00633",
+      "Front": "Truong hop",
+      "Back": "Do phuc tap | Giai thich",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. quick sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00634",
+      "Front": "**Best case**",
+      "Back": "O(n log n) | Pivot luon chia doi mang",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. quick sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00635",
+      "Front": "**Average case**",
+      "Back": "O(n log n) | Voi randomized pivot",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. quick sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00636",
+      "Front": "**Worst case**",
+      "Back": "O(n^2) | Pivot luon o bien (da sap xep + pivot co dinh)",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. quick sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00637",
+      "Front": "**Space**",
+      "Back": "O(log n) avg, O(n) worst | Do call stack cua de quy",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. quick sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00638",
+      "Front": "Uu diem",
+      "Back": "Nhuoc diem",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. quick sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00639",
+      "Front": "**Nhanh nhat trong thuc te** (constant factor nho)",
+      "Back": "Worst case O(n^2)",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. quick sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00640",
+      "Front": "In-place (space O(log n) cho call stack)",
+      "Back": "**Unstable** sort",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. quick sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00641",
+      "Front": "Cache-friendly (truy cap lien tiep)",
+      "Back": "De quy co the gay stack overflow",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. quick sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

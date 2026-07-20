@@ -1,0 +1,40 @@
+---
+tags:
+  - certification/az-900
+  - azure-fundamentals/study-notes/domain-2
+status: todo
+created: 2026-06-15
+---
+
+# Domain 2: Azure Architecture and Services
+
+This domain covers core concepts for Azure Architecture and Services.
+
+## 🎯 Exam Objectives
+- Understand the core concepts under Azure Architecture and Services.
+- Study key Azure patterns and reference architectures.
+
+---
+
+## 📖 Key Study Topics
+
+### 1. Overview
+- Detail key Azure resources, patterns, and configurations.
+- Review official documentation links.
+
+---
+Back to **[[certifications/microsoft/AZ-900/AZ-900 MOC|AZ-900 MOC]]**
+
+## 🔍 Practice Question Reference
+Here are key questions from the practice bank matching this domain:
+- **Q1**: Your company has datacenters in Los Angeles and New York. The company has a Microsoft Azure subscrip... (See [[certifications/microsoft/AZ-900/Practice Questions - Domain 2#Question 1|Practice Q1]])
+- **Q2**: Note: The question is included in a number of questions that depicts the identical set-up. However, ... (See [[certifications/microsoft/AZ-900/Practice Questions - Domain 2#Question 2|Practice Q2]])
+- **Q3**: Note: The question is included in a number of questions that depicts the identical set-up. However, ... (See [[certifications/microsoft/AZ-900/Practice Questions - Domain 2#Question 3|Practice Q3]])
+- **Q4**: Note: The question is included in a number of questions that depicts the identical set-up. However, ... (See [[certifications/microsoft/AZ-900/Practice Questions - Domain 2#Question 4|Practice Q4]])
+- **Q5**: Note: The question is included in a number of questions that depicts the identical set-up. However, ... (See [[certifications/microsoft/AZ-900/Practice Questions - Domain 2#Question 5|Practice Q5]])
+- **Q6**: Note: The question is included in a number of questions that depicts the identical set-up. However, ... (See [[certifications/microsoft/AZ-900/Practice Questions - Domain 2#Question 6|Practice Q6]])
+- **Q7**: Note: The question is included in a number of questions that depicts the identical set-up. However, ... (See [[certifications/microsoft/AZ-900/Practice Questions - Domain 2#Question 7|Practice Q7]])
+- **Q8**: Note: The question is included in a number of questions that depicts the identical set-up. However, ... (See [[certifications/microsoft/AZ-900/Practice Questions - Domain 2#Question 8|Practice Q8]])
+
+---
+Back to **[[certifications/microsoft/AZ-900/AZ-900 MOC|AZ-900 MOC]]**

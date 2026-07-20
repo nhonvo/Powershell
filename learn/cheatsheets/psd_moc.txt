@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/psd
+  - psd
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 PSD MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/scrum/PSD/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/scrum/PSD/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/scrum/PSD/PSD Mindmap\|🗺️ PSD Mindmap]]
+- [[certifications/scrum/PSD/PSD Flashcards\|🃏 PSD Flashcards]]
+- [[certifications/scrum/PSD/PSD_Scraped_Question_Bank\|🗃️ PSD Scraped Question Bank]]

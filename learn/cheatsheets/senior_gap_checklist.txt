@@ -1,0 +1,75 @@
+# Senior Backend Engineer — Gap Checklist (from your current CV)
+
+You already have strong signals: **.NET 8**, AWS ECS + SQS/SNS + DLQ, observability, CI/CD, integration testing, and an AI internal product (Bedrock + PGVector).
+
+Use this checklist to identify what to learn, what to *do at work*, and what to *write on the CV* to look senior.
+
+## 1) System design depth (must-have)
+
+- [ ] Capacity planning: estimate RPS, storage, bandwidth, cost (back-of-the-envelope)
+- [ ] Data architecture: partitioning strategy, hot keys, read/write patterns, retention
+- [ ] Consistency tradeoffs: strong vs eventual, exactly-once illusion, idempotency scope
+- [ ] Multi-region thinking: failover, DR, RTO/RPO, data replication tradeoffs
+- [ ] Performance: profiling, latency budgets, tail latency, caching strategy with invalidation
+
+Evidence to add (CV/interview):
+- 1–2 bullets with **numbers**: p95 latency, error rate, cost reduction, throughput.
+
+## 2) Reliability engineering (senior marker)
+
+- [ ] SLO/SLI definitions for your APIs (availability, latency, correctness)
+- [ ] Incident response: on-call, runbooks, postmortems (blameless + action items)
+- [ ] Resiliency patterns: timeouts, retries, circuit breakers, bulkheads
+- [ ] Backpressure: queue depth alarms, throttling, shedding, adaptive concurrency
+
+Evidence:
+- “Reduced incident count by X%” or “cut MTTR from X to Y” style outcomes.
+
+## 3) Engineering leadership (senior marker)
+
+- [ ] Mentoring: onboarding plan + measurable ramp-up improvements
+- [ ] Technical direction: RFCs/ADR docs, tradeoff decisions, alignment across teams
+- [ ] Quality bar: coding standards, PR templates, testing strategy, CI gates
+- [ ] Stakeholder influence: explain tradeoffs to PO/customer, drive buy-in
+
+Evidence:
+- “Led migration”, “introduced standard”, “unblocked teams”, “authored RFC”.
+
+## 4) .NET depth (senior marker)
+
+- [ ] Performance: allocations, GC basics, spans, async pitfalls, pooling
+- [ ] Testing: contract tests, testcontainers, hermetic integration tests, flaky test strategy
+- [ ] Security: authn/authz, secrets, OWASP, threat modeling basics
+- [ ] Observability: structured logs, correlation IDs, tracing, redaction policy
+
+## 5) Data & SQL (senior marker)
+
+- [ ] Query tuning: explain indexes, query plans, slow query analysis
+- [ ] Transactions + isolation levels
+- [ ] Schema evolution: migrations, backward compatibility, zero-downtime DB changes
+- [ ] Caching + DB correctness: cache invalidation patterns
+
+## 6) Cloud maturity (AWS)
+
+- [ ] IAM least privilege + role boundaries
+- [ ] Networking basics: VPC, subnets, security groups, NAT, private endpoints
+- [ ] Cost: know the cost drivers for ECS, Aurora, SQS/SNS, Redis
+- [ ] Deployment strategies: canary/blue-green + rollback safety
+
+## 7) What to add to your CV to look “senior”
+
+- Add a **“Scope/Impact” line** per major project:
+  - traffic, revenue risk, latency, availability target, #services, #teams.
+- Convert “did X” bullets into “did X → for reason → result metric”.
+- Add 1–2 bullets that show you made **tradeoffs**:
+  - “Chose A over B because…, mitigated risk by…”
+- Add 1 bullet showing **ownership**:
+  - runbook, on-call, incident, CI gate, testing standard.
+
+## 8) Suggested next learning focus (practical)
+
+Pick 1 per month:
+- Month A: Reliability + SLOs + incident response (write runbooks/postmortem template)
+- Month B: Deep SQL + performance (indexing + isolation + query plans)
+- Month C: System design practice (2 case studies/week + capacity planning)
+

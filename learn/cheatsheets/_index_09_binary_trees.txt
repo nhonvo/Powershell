@@ -1,0 +1,17 @@
+# 09_Binary_Trees
+
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/🌲index_09_Binary_Trees|01_Algo_and_DSA_doc]]
+
+## 📄 Notes
+- [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/1. Tree Traversals (Duyệt cây)|1. Tree Traversals (Duyệt cây)]]
+- [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/2. Height  Depth (Chiều cao  Chiều sâu)|2. Height  Depth (Chiều cao  Chiều sâu)]]
+- [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/3. Diameter (Đường kính cây)|3. Diameter (Đường kính cây)]]
+- [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/4. Lowest Common Ancestor (Tổ tiên chung gần nhất)|4. Lowest Common Ancestor (Tổ tiên chung gần nhất)]]
+- [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/5. Tree Views (Các góc nhìn của cây)|5. Tree Views (Các góc nhìn của cây)]]
+- [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/6. Serialization & Deserialization|6. Serialization & Deserialization]]
+- [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/7. Maximum Path Sum  Path-based Problems|7. Maximum Path Sum  Path-based Problems]]
+- [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/8. Luyện tập LeetCode — Giải chi tiết từng bài|8. Luyện tập LeetCode — Giải chi tiết từng bài]]
+
+## 🛠️ Related Practices (Trees & Heaps)
+- [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/🌲index_09_Binary_Trees|637.Average-of-Levels-in-Binary-Tree]]
+

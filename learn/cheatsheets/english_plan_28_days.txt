@@ -1,0 +1,142 @@
+﻿# English Improvement Plan — 28 Days (Interview + Work English)
+
+Resource imported:
+- `languages/english/`
+
+## Goal
+
+Speak clearly and confidently for behavioral + technical interviews: structured answers, fewer fillers, better pacing.
+
+## Targets (by Day 28)
+
+- [ ] 20 speaking sessions (10–20 min)
+- [ ] 8 recordings + self-review notes
+- [ ] 12 “short answers” written (2–4 sentences each)
+- [ ] 8 STAR stories rehearsed in English
+- [ ] 4 mock interviews (use `interviewNote/interviewNote/08_MOCKS/mock_script.md`)
+
+## Standard daily routine (30–60 min)
+
+1. Warm-up (3 min): read 1 paragraph out loud
+2. Speak (10–20 min): answer prompts (record 2–3x/week)
+3. Improve (10–20 min): rewrite 3 sentences to be shorter/clearer
+
+Where to log:
+- Daily speaking notes: `languages/english/daily_speaking.md`
+- Interview phrases: `languages/english/interview_phrases.md`
+
+---
+
+## Week 1 — Clarity + structure
+
+### Day 1
+- Record: read your `interviewNote/tell_me_about_yourself.md` (EN) twice
+- Write: 5 sentence starters you will reuse:
+  - “To clarify the requirement…”
+  - “The tradeoff is…”
+  - “My approach would be…”
+  - “One risk is…, and the mitigation is…”
+  - “The root cause was…”
+
+### Day 2
+- Behavioral: answer 2 questions using STAR (2 minutes each)
+- Rewrite each answer into a 6–8 bullet outline
+
+### Day 3
+- Technical: explain Redis caching (60–90s) + idempotency (60–90s)
+- Remove filler words: “actually”, “basically”, “like”
+
+### Day 4
+- Explain your Quoting API project (90s) with 1 metric
+- Add 5 terms to `glossary.md` (EN ⇄ JP if helpful)
+
+### Day 5
+- Rapid fire: 10 short answers (2–3 sentences):
+  - retries/backoff, DLQ, ECS scaling, DB indexing, integration testing
+
+### Day 6 (Weekend)
+- Mock interview #1 (20–30 min)
+- Fill `interviewNote/interviewNote/08_MOCKS/feedback.md` (English section)
+
+### Day 7 (Weekend)
+- Review recordings: note 3 improvements (pacing, clarity, structure)
+- Re-record self intro
+
+---
+
+## Week 2 — Interview depth
+
+### Day 8
+- System design: explain “SQS/SNS pipeline with DLQ” (2–3 min)
+- Write a 10-line outline first, then speak.
+
+### Day 9
+- Behavioral: conflict + failure stories (2 mins each)
+
+### Day 10
+- Technical: async/await + cancellation tokens (2 mins)
+
+### Day 11
+- Testing: unit vs integration vs contract tests (2 mins)
+
+### Day 12
+- Debug story: explain a production issue and how you fixed it (2 mins)
+
+### Day 13 (Weekend)
+- Mock interview #2 (30–45 min) using `mock_script.md`
+
+### Day 14 (Weekend)
+- Consolidate: update `behavioral_question_bank.md` with best stories
+
+---
+
+## Week 3 — Fluency + speed
+
+### Days 15–19 (repeat daily)
+- 1 behavioral question (2 min)
+- 1 technical question (2 min)
+- 1 “why company/role” (1 min)
+- Rewrite 3 sentences to be more direct
+
+### Day 20 (Weekend)
+- Mock #3 (full)
+
+### Day 21 (Weekend)
+- Review: pick top 5 phrases you want to sound natural saying
+
+---
+
+## Week 4 — Final polish
+
+### Day 22
+- “Tell me about yourself” final version + record
+
+### Day 23
+- “Biggest achievement” + “Biggest failure” + record
+
+### Day 24
+- System design summary (3 min) + record
+
+### Day 25
+- Q&A with interviewer: practice asking 8 questions naturally
+
+### Day 26
+- Mock #4 (final)
+
+### Day 27
+- Fix list: your top 10 recurring mistakes
+
+### Day 28
+- Light review + confidence run
+
+---
+
+## Weekly tracker (copy)
+
+### Week of: YYYY-MM-DD
+
+- [ ] 5 speaking sessions
+- [ ] 2 recordings
+- [ ] 3 short answers written
+- [ ] 2 STAR stories rehearsed
+

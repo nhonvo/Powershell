@@ -1,0 +1,14 @@
+# Day 10: STAR Stories (English)
+**Goal:** Master the behavioral interview.
+
+### 📖 Reading (GitHub App)
+- Open `learning/interview_prep/03_STORIES_STAR/`.
+- Pick one story you have already written.
+
+### 🤖 AI Drill (Copy & Paste to ChatGPT/Gemini)
+> "I want to practice my STAR stories. I will tell you a story via Voice Mode. I want you to critique it based on: 1. Clarity of the 'Situation'. 2. Impact of the 'Result'. 3. Technical depth of the 'Action'. Are you ready?"
+
+### 📝 Mobile Task
+- Use **Voice-to-Text** in a new Markdown file or GitHub Issue.
+- Record a 2-minute version of your "Most Difficult Technical Challenge" story.
+- Refine it based on AI feedback.

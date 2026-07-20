@@ -1,0 +1,300 @@
+# 🗃️ GH-900 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+How are commits related to pull requests?
+
+### Options:
+- [x] **A)** Commits are made on a branch that can have a linked pull request. [Correct]
+- [ ] **B)** Commits can only be made after a pull request is created.
+- [ ] **C)** Commits can only be made before a pull request is created.
+- [ ] **D)** Commits are made on a pull request that can have a linked branch.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Commits and pull requests (PRs) are fundamental concepts in Git and GitHub workflows, particularly in collaborative software development.
+
+Commits:
+
+Commits are individual changes or updates made to the codebase. Each commit is identified by a unique SHA-1 hash and typically includes a commit message describing the changes.
+
+Commits are made to a specific branch in the repository. The branch could be the main branch, or more commonly, a feature branch created for specific work or a feature.
+
+Pull Requests (PRs):
+
+A pull request is a mechanism for developers to notify team members that a branch is ready to be merged into another branch, usually the main branch.
+
+PRs are used to review code, discuss changes, and make improvements before the branch is merged into the target branch.
+
+Relationship Between Commits and PRs:
+
+Option A is correct because commits are made on a branch, and this branch can have a pull request associated with it. The pull request tracks the branch's commits and allows for code review before merging into the target branch.
+
+Commits can be added to the branch both before and after the pull request is created. Any new commits pushed to the branch are automatically included in the pull request.
+
+Incorrect Options:
+
+Option B is incorrect because commits can be made both before and after a pull request is created.
+
+Option C is incorrect because it suggests that commits can only be made before a pull request is created, which is not true.
+
+Option D is incorrect because commits are not made on a pull request; they are made on a branch. The pull request links a branch to another branch (e.g., feature branch to the main branch).
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+What is the difference between an organization member and an outside collaborator?
+
+### Options:
+- [x] **A)** Organization base permissions do not apply to outside collaborators. [Correct]
+- [ ] **B)** Two-factor authentication (2FA) is not required for outside collaborators.
+- [ ] **C)** Outside collaborators cannot be given the admin role on a repository.
+- [ ] **D)** Outside collaborators do not consume paid licenses.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+In GitHub, an organization member is a user who has been added to an organization and is subject to the organization's base permissions and policies. An outside collaborator is a user who is not a member of the organization but has been granted access to one or more repositories within the organization.
+
+Here's the difference between an organization member and an outside collaborator:
+
+Organization Members:
+
+Members are subject to the organization's base permissions, which apply across all repositories within the organization. These permissions might include read, write, or admin access, depending on what has been set as the default.
+
+Members consume paid licenses if the organization is on a paid plan.
+
+Members are required to have two-factor authentication (2FA) if the organization enforces it.
+
+Outside Collaborators:
+
+Outside collaborators do not have organization-wide permissions. They only have access to specific repositories to which they have been granted permission. This means organization base permissions do not apply to them (making option A correct).
+
+Outside collaborators do not consume paid licenses. They are only counted toward the license if they are made organization members.
+
+Outside collaborators can be granted any level of permission, including the admin role on specific repositories.
+
+Two-factor authentication (2FA) can be enforced for outside collaborators at the repository level, depending on the organization's security settings.
+
+Given this information, option A is the correct answer: "Organization base permissions do not apply to outside collaborators."
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+What are the defining features of Git?
+
+### Options:
+- [x] **A)** Distributed version control, open source software, and being designed for handling projects of any size with efficiency [Correct]
+- [ ] **B)** Sequential version control, cloud-based hosting service, and being designed for collaboration on large projects
+- [ ] **C)** Low-cost local branching, convenient staging areas, multiple workflows, and being designed for managing small projects
+- [ ] **D)** Centralized version control, proprietary software, and being designed for small projects
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Git is a widely-used version control system that has several defining features:
+
+Distributed Version Control:
+
+Git is a distributed version control system, meaning that every developer has a full copy of the entire repository, including its history, on their local machine. This enables greater flexibility, as work can be done offline and each user has access to the full project history.
+
+Open Source Software:
+
+Git is open-source, meaning its source code is freely available for use, modification, and distribution. This fosters a large community of users and contributors who continuously improve the software.
+
+Efficiency with Large Projects:
+
+Git is designed to handle projects of any size with speed and efficiency. It can manage large codebases and many contributors without significant performance degradation, making it suitable for everything from small personal projects to large, complex software systems.
+
+Incorrect Options:
+
+Option B is incorrect because Git is not a sequential version control system, nor is it inherently tied to cloud-based services. GitHub, GitLab, and other platforms offer cloud hosting for Git repositories, but Git itself is a version control tool.
+
+Option C is incorrect because Git is not limited to small projects; it is designed to scale efficiently, and the other features mentioned are only partial descriptions of Git's capabilities.
+
+Option D is incorrect because Git is not a centralized version control system; it is distributed. Additionally, Git is open-source, not proprietary, and is used for projects of all sizes.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+Who can be assigned to an Issue or pull request?
+
+(Each answer presents a complete solution. Choose two.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,D`
+
+**Explanation**:
+In GitHub, issues and pull requests (PRs) are essential tools for managing work and collaboration in a project. Assigning individuals to these issues or PRs is a way to indicate responsibility for addressing the issue or completing the PR.
+
+Anyone with write permissions to the repository:
+
+Users who have write permissions to a repository can be assigned to issues and pull requests. Write permissions allow users to push changes to the repository, create branches, and modify issues and pull requests. Assigning them to an issue or PR ensures they are recognized as responsible for the task.
+
+Anyone who has commented on the Issue or pull request:
+
+GitHub allows you to assign issues or pull requests to users who have already engaged with the discussion by commenting on it. This feature is particularly useful for quickly assigning tasks to those who are already involved in the conversation.
+
+Incorrect Options:
+
+Option A is incorrect because having an enterprise GitHub account alone does not necessarily grant the ability to be assigned to issues or PRs. Permission to assign is based on repository-specific roles and permissions.
+
+Option C is incorrect because not all personal GitHub accounts can be assigned to issues or PRs. The user needs either write permissions to the repository or must have commented on the issue or PR.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+Which of the following is the best GitHub feature for long-form documentation for a project?
+
+### Options:
+- [ ] **A)** Insights
+- [ ] **B)** Pull Requests
+- [ ] **C)** Projects
+- [x] **D)** Wikis [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+GitHub offers a variety of features for different aspects of project management and documentation. For long-form documentation, the best feature is Wikis. Wikis in GitHub allow you to create detailed, structured documentation that is easy to navigate and edit. Each repository in GitHub can have its own Wiki, which acts as a space for collaborators to maintain project documentation, guides, manuals, or any other long-form content.
+
+Wikis are specifically designed to host extensive documentation in a way that is easy to reference and edit over time. They support Markdown, allowing you to format your documentation effectively. Unlike the other options, Wikis are explicitly intended for the purpose of long-form content, making them the best choice for this use case.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: 
+
+Which of the following is a key characteristic of GitHub Projects?
+
+### Options:
+- [ ] **A)** Ability to visualize the commit history
+- [ ] **B)** Ability to import Gantt charts from Microsoft Project
+- [x] **C)** Ability to create and customize multiple views [Correct]
+- [ ] **D)** Ability to enforce required fields
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+GitHub Projects is a flexible and powerful tool for project management that allows users to manage their work with ease. One of the key characteristics of GitHub Projects is the ability to create and customize multiple views. This feature enables teams to tailor the project management experience to their specific workflow needs, offering various ways to visualize tasks, issues, and work items.
+
+Custom Views: You can set up different views like Kanban boards, tables, or timelines, and apply filters to show only what is relevant for a particular aspect of the project. This customization allows teams to organize their work in a way that best suits their processes, making it a highly adaptable project management tool.
+
+Other options, such as visualizing commit history (which would fall under the 'Insights' feature), importing Gantt charts (which GitHub Projects does not natively support), or enforcing required fields (which might relate to form-based tools but not to GitHub Projects specifically), do not align with the key characteristics of GitHub Projects.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: 
+
+Which of the following is an Innersource development practice?
+
+### Options:
+- [ ] **A)** Adopting open source code into the organization
+- [x] **B)** Sharing code between teams within the organization [Correct]
+- [ ] **C)** Removing open source code from the organization
+- [ ] **D)** Making all repositories publicly accessible
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Innersource is a development practice where an organization adopts open-source development methodologies within its own internal environment. The primary goal of innersource is to break down silos and encourage collaboration across different teams within the organization.
+
+Sharing Code Between Teams:
+
+Option B is correct because innersource involves sharing code between teams within the organization, similar to how open-source communities share code across the public domain. This practice fosters collaboration, improves code quality, and allows for reuse of code, reducing duplication of efforts.
+
+Incorrect Options:
+
+Option A is incorrect because adopting open-source code into the organization is related to using open-source software, not specifically to innersource practices.
+
+Option C is incorrect because removing open-source code from the organization is contrary to the principles of both open source and innersource.
+
+Option D is incorrect because making all repositories publicly accessible refers to open source, not innersource. Innersource typically involves keeping code internal to the organization.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: 
+
+Which of the following GitHub syntax formats is consistent with the associated text?
+
+### Options:
+- [ ] **A)** * This is a heading
+- [ ] **B)** This is a link
+- [x] **C)** <!-- This is a comment --> [Correct]
+- [ ] **D)** This is bolded text
+- [ ] **E)** 1. This is an ordered list
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+GitHub supports various syntax formats that align with Markdown and HTML conventions. Here's a breakdown of the provided options:
+
+Comment Syntax:
+
+Option C is correct. The syntax <!-- This is a comment --> is used in Markdown files to insert comments. These comments will not be rendered in the final output, making them useful for adding notes or instructions within the code or documentation.
+
+Incorrect Options:
+
+Option A (* This is a heading) is incorrect because an asterisk (*) denotes an unordered list item, not a heading. A heading in Markdown is typically created with one or more hash symbols (#).
+
+Option B (This is a link) is incorrect because this is plain text and not the syntax for creating a link. The correct syntax would be [This is a link](URL).
+
+Option D (This is bolded text) is incorrect because this is plain text, not the correct Markdown syntax for bold text, which should be **This is bolded text** or __This is bolded text__.
+
+Option E (1. This is an ordered list) is incorrect as it does represent an ordered list item, but it was not the syntax format asked about in the question. The question specifically focuses on matching associated text with syntax, where only the comment option is correct.
+</details>
+
+---

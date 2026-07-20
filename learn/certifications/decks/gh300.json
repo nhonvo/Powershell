@@ -1,0 +1,142 @@
+{
+  "Meta": {
+    "Id": "deck_gh300",
+    "Topic": "GH300",
+    "Language": "English",
+    "Domain": "Cloud Certifications",
+    "Level": "Professional",
+    "Tags": [
+      "gh300"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 6
+  },
+  "Cards": [
+    {
+      "Id": "gh300_001",
+      "Front": "🔵 Domain 1: Responsible AI (~15%)",
+      "Back": "What is the main purpose of the duplication detection filter in GitHub Copilot?\nA. To compare user-generated code against a private repository for potential matches.\nB. To allow administrators to control which suggestions are visible to developers based on custom\ncriteria.\nC. To encourage the user t",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh300",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "gh300_002",
+      "Front": "🟢 Domain 2: Plans & Features (~25%)",
+      "Back": "If you are working on open source projects, GitHub Copilot Individual can be paid:\nA. Through an invoice or a credit card\nB. N/A - Copilot Individual is a free service for all open source projects\nC. Through an Azure Subscription\nD. Based on the payment method in your user profile\n?\n**Correct Answer",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh300",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "gh300_003",
+      "Front": "🟡 Domain 3: Data & Privacy (~20%)",
+      "Back": "When can GitHub Copilot still use content that was excluded using content exclusion?\nA. When the user prompts with @workspace.\nB. When the repository-level settings allow overrides by the user.\nC. If the contents of an excluded file are referenced in code that is not excluded, for example\nfunction c",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh300",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "gh300_004",
+      "Front": "🟠 Domain 4: Prompt Engineering (~20%)",
+      "Back": "When crafting prompts for GitHub Copilot, what is a recommended strategy to enhance the relevance of the generated code?\nA. Keep the prompt as short as possible, using single words or brief phrases.\nB. Write the prompt in natural language without any programming language.\nC. Avoid mentioning the pro",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh300",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "gh300_005",
+      "Front": "🔴 Domain 5: Developer Workflows (~20%)",
+      "Back": "What is the impact of the \" Fill-In-the-Middle \" (FIM) technique on GitHub Copilot ' s code suggestions?\nA. Restricts Copilot to use only external databases for generating code suggestions.\nB. Allows Copilot to generate suggestions based only on the prefix of the code.\nC. Ignores both the prefix and",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh300",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "gh300_006",
+      "Front": "⭐ High-Frequency Exam Traps",
+      "Back": "?\nWhich plan is needed for PR Summaries on GitHub.com?\n%%\n**Enterprise** — not Business, not Individual.\n\n?\nDoes the Public Code Matching Filter block user's local code or Copilot's suggestions?\n%%\nIt blocks **Copilot's generated suggestions** — NOT the user's local workspace files.\n\n?\nDoes installi",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh300",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

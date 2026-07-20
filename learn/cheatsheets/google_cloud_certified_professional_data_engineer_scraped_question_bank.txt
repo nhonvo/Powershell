@@ -1,0 +1,124 @@
+# 🗃️ Google-Cloud-Certified-Professional-Data-Engineer Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 1, Main Questions Set A
+
+Your company built a TensorFlow neural-network model with a large number of neurons and layers.
+The model fits well for the training dat
+
+### Options:
+- [ ] **A)** However, when tested against new data, it performs poorly. 
+What method can you employ to address this?
+- [ ] **B)** Threading
+- [x] **C)** Serialization [Correct]
+- [ ] **D)** Dropout Methods
+- [ ] **E)** Dimensionality Reduction
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 1, Main Questions Set A
+
+You are building a model to make clothing recommendations. You know a user's fashion preference is likely to change over time, so you build a data pipeline to stream new data back to the model as it becomes available. How should you use this data to train the model?
+
+### Options:
+- [ ] **A)** Continuously retrain the model on just the new data.
+- [ ] **B)** Continuously retrain the model on a combination of existing data and the new data.
+- [x] **C)** Train on the existing data while using the new data as your test set. [Correct]
+- [ ] **D)** Train on the new data while using the existing data as your test set.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+https://cloud.google.com/automl-tables/docs/prepare
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 1, Main Questions Set A
+
+You designed a database for patient records as a pilot project to cover a few hundred patients in three clinics. Your design used a single database table to represent all patients and their visits, and you used self-joins to generate reports. The server resource utilization was at 50%. Since then, the scope of the project has expanded. The database must now store 100 times more patient records. You can no longer run the reports, because they either take too long or they encounter errors with insufficient compute resources. How should you adjust the database design?
+
+### Options:
+- [ ] **A)** Add capacity (memory and disk space) to the database server by the order of 200.
+- [ ] **B)** Shard the tables into smaller ones based on date ranges, and only generate reports with prespecified date ranges.
+- [x] **C)** Normalize the master patient-record table into the patient table and the visits table, and create other necessary tables to avoid self-join. [Correct]
+- [ ] **D)** Partition the table into smaller tables, with one for each clinic. Run queries against the smaller table pairs, and use unions for consolidated reports.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 1, Main Questions Set A
+
+You create an important report for your large team in Google Data Studio 360. The report uses Google BigQuery as its data source. You notice that visualizations are not showing data that is less than 1 hour old. 
+What should you do?
+
+### Options:
+- [x] **A)** Disable caching by editing the report settings. [Correct]
+- [ ] **B)** Disable caching in BigQuery by editing table details.
+- [ ] **C)** Refresh your browser tab showing the visualizations.
+- [ ] **D)** Clear your browser history for the past hour then reload the tab showing the virtualizations.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 1, Main Questions Set A
+
+An external customer provides you with a daily dump of data from their database. The data flows into Google Cloud Storage GCS as comma-separated values (CSV) files. You want to analyze this data in Google BigQuery, but the data could have rows that are formatted incorrectly or corrupted. How should you build this pipeline?
+
+### Options:
+- [ ] **A)** Use federated data sources, and check data in the SQL query.
+- [ ] **B)** Enable BigQuery monitoring in Google Stackdriver and create an alert.
+- [ ] **C)** Import the data into BigQuery using the gcloud CLI and set max_bad_records to 0.
+- [x] **D)** Run a Google Cloud Dataflow batch pipeline to import the data into BigQuery, and push errors to another dead-letter table for analysis. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+
+</details>
+
+---

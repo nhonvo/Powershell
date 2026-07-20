@@ -1,0 +1,236 @@
+{
+  "Meta": {
+    "Id": "deck_behavioral_question_bank",
+    "Topic": "behavioral_question_bank",
+    "Language": "English/Japanese",
+    "Domain": "interviewNote",
+    "Level": "General",
+    "Tags": [
+      "behavioral_question_bank"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 11
+  },
+  "Cards": [
+    {
+      "Id": "card_01600",
+      "Front": "Tell me about yourself",
+      "Back": "`tell_me_about_yourself.md` |  | Present/Past/Future",
+      "Hint": "interviewNote",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "behavioral_question_bank"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01601",
+      "Front": "Why this company?",
+      "Back": " |  | Product + team + growth",
+      "Hint": "interviewNote",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "behavioral_question_bank"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01602",
+      "Front": "Why this role?",
+      "Back": " |  | Skills match + motivation",
+      "Hint": "interviewNote",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "behavioral_question_bank"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01603",
+      "Front": "Biggest achievement",
+      "Back": " |  | Metric + ownership",
+      "Hint": "interviewNote",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "behavioral_question_bank"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01604",
+      "Front": "Biggest failure",
+      "Back": " |  | Learning + change",
+      "Hint": "interviewNote",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "behavioral_question_bank"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01605",
+      "Front": "Conflict with teammate",
+      "Back": " |  | De-escalate + align",
+      "Hint": "interviewNote",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "behavioral_question_bank"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01606",
+      "Front": "Tight deadline",
+      "Back": " |  | prioritize + communicate",
+      "Hint": "interviewNote",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "behavioral_question_bank"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01607",
+      "Front": "Ambiguous requirements",
+      "Back": " |  | clarify + iterate",
+      "Hint": "interviewNote",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "behavioral_question_bank"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01608",
+      "Front": "Technical disagreement",
+      "Back": " |  | data + tradeoffs",
+      "Hint": "interviewNote",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "behavioral_question_bank"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01609",
+      "Front": "Leadership example",
+      "Back": " |  | lead without authority",
+      "Hint": "interviewNote",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "behavioral_question_bank"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01610",
+      "Front": "Handling feedback",
+      "Back": " |  | receptive + action",
+      "Hint": "interviewNote",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "behavioral_question_bank"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

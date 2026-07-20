@@ -1,0 +1,177 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|02_Arrays_Strings]]
+
+## 1. Arrays — Mảng
+
+### 1.1. Array là gì?
+
+Tưởng tượng bạn có một dãy tủ đồ ở trường, mỗi tủ được đánh số từ 0, 1, 2, ... Mỗi tủ chứa đúng một món đồ. Khi bạn biết số tủ, bạn mở ngay cái tủ đó ra lấy đồ — không cần đi dọc hành lang tìm. Đó chính là **Array**.
+
+**Array** (mảng) là cấu trúc dữ liệu cơ bản nhất trong lập trình:
+
+- Lưu trữ các phần tử **cùng kiểu dữ liệu** trong các ô nhớ **liên tiếp** (contiguous memory).
+- Truy cập phần tử bằng **index** (chỉ số) trong thời gian O(1).
+- Kích thước cố định khi khởi tạo (static array) hoặc co giãn được (dynamic array).
+
+### 1.2. Cấu trúc bộ nhớ
+
+Khi bạn khai báo `int arr[5]`, hệ điều hành cấp cho bạn 5 ô nhớ liên tiếp. Mỗi ô có kích thước bằng `sizeof(int)` = 4 bytes.
+
+```
+Địa chỉ bộ nhớ:
+┌─────────┬─────────┬─────────┬─────────┬─────────┐
+│ arr[0]  │ arr[1]  │ arr[2]  │ arr[3]  │ arr[4]  │
+│  0x100  │  0x104  │  0x108  │  0x10C  │  0x110  │
+└─────────┴─────────┴─────────┴─────────┴─────────┘
+```
+
+**Công thức tính địa chỉ:**
+
+$$\text{address}(arr[i]) = \text{base_address} + i \times \text{sizeof(element)}$$
+
+Vì phép nhân và cộng chạy trong O(1), nên truy cập `arr[i]` là **O(1)** — đây là ưu điểm lớn nhất của array so với linked list.
+
+### 1.3. Các thao tác cơ bản và độ phức tạp
+
+| Thao tác          | Mô tả                           | Time Complexity |
+| :---------------- | :------------------------------ | :-------------- |
+| Access `arr[i]`   | Truy cập phần tử tại index i    | O(1)            |
+| Search            | Tìm kiếm tuần tự                | O(n)            |
+| Binary Search     | Tìm kiếm trên mảng đã sắp xếp   | O(log n)        |
+| Insert at end     | Thêm vào cuối (dynamic array)   | Amortized O(1)  |
+| Insert at index i | Chèn vào vị trí i, dịch phần tử | O(n)            |
+| Delete at end     | Xóa cuối                        | O(1)            |
+| Delete at index i | Xóa vị trí i, dịch phần tử      | O(n)            |
+
+### 1.4. Static Array vs Dynamic Array
+
+**Static Array** (C/C++): Kích thước cố định lúc compile time.
+
+```python
+# Python không có static array thực sự, nhưng ta có thể dùng tuple (immutable)
+arr = (1, 2, 3, 4, 5)  # cố định 5 phần tử, không thể thay đổi
+
+# Hoặc dùng array module cho mảng cùng kiểu dữ liệu
+from array import array
+arr = array('i', [1, 2, 3, 4, 5])  # mảng số nguyên, kích thước cố định
+```
+
+**Dynamic Array** (Python list, C++ vector, Java ArrayList): Tự động mở rộng khi đầy.
+
+```python
+arr = [1, 2, 3, 4, 5]
+arr.append(6)  # tự mở rộng
+```
+
+#### Cơ chế mở rộng của Dynamic Array
+
+Khi mảng đầy, hệ thống:
+
+1. Cấp phát vùng nhớ mới có kích thước **gấp đôi** (doubling strategy).
+2. Copy toàn bộ phần tử cũ sang vùng mới.
+3. Giải phóng vùng nhớ cũ.
+
+```mermaid
+sequenceDiagram
+    participant M as Mảng cũ (Cap 4)
+    participant N as Mảng mới (Cap 8)
+    M->>M: Mảng đầy (4/4)
+    Note over N: Cấp phát vùng nhớ mới
+    M->>N: Copy 4 phần tử
+    M->>M: Giải phóng vùng nhớ
+    Note over N: Thêm phần tử mới vào vị trí 4
+```
+
+#### Chứng minh Amortized O(1) cho append
+
+Gọi n là số phần tử cần thêm. Với chiến lược doubling (nhân đôi), các lần resize xảy ra khi size = 1, 2, 4, 8, ..., n.
+
+Tổng chi phí copy qua tất cả các lần resize:
+
+$$T(n) = 1 + 2 + 4 + 8 + \ldots + n = \sum_{k=0}^{\log_2 n} 2^k = 2n - 1$$
+
+Tổng chi phí cho n phép insert (gồm cả n lần ghi bình thường):
+
+$$T_{total}(n) = n + (2n - 1) = 3n - 1$$
+
+Amortized cost per operation:
+
+$$\frac{T_{total}(n)}{n} = \frac{3n - 1}{n} \approx 3 = O(1)$$
+
+**QED**: Mỗi phép `append` có chi phí trung bình là O(1).
+
+### 1.5. Các pattern thường gặp với Array
+
+#### Pattern 1: Duyệt mảng (Traversal)
+
+```python
+# Duyệt xuôi
+for i in range(len(arr)):
+    print(arr[i])
+
+# Duyệt ngược
+for i in range(len(arr) - 1, -1, -1):
+    print(arr[i])
+
+# Duyệt với enumerate (Pythonic)
+for index, value in enumerate(arr):
+    print(f"Index {index}: {value}")
+```
+
+#### Pattern 2: In-place swap
+
+Hoán đổi hai phần tử mà không cần biến tạm (Python):
+
+```python
+arr[i], arr[j] = arr[j], arr[i]
+```
+
+Trong các ngôn ngữ khác (C++, Java, ...) ta cần biến tạm hoặc hàm `swap()`. Python thì đẹp hơn nhiều:
+
+```python
+# Python swap — gọn gàng, không cần biến tạm
+arr[i], arr[j] = arr[j], arr[i]
+
+# Nếu muốn hiểu cơ chế bên dưới (cách swap thủ công với biến tạm):
+temp = arr[i]
+arr[i] = arr[j]
+arr[j] = temp
+```
+
+#### Pattern 3: Tìm min/max
+
+```python
+def find_min_max(arr):
+    min_val = max_val = arr[0]
+    for x in arr[1:]:
+        if x < min_val:
+            min_val = x
+        if x > max_val:
+            max_val = x
+    return min_val, max_val
+```
+
+#### Pattern 4: Reverse mảng in-place
+
+```python
+def reverse_array(arr):
+    left, right = 0, len(arr) - 1
+    while left < right:
+        arr[left], arr[right] = arr[right], arr[left]
+        left += 1
+        right -= 1
+```
+
+### 1.6. Ưu và nhược điểm
+
+**Ưu điểm:**
+
+- Truy cập ngẫu nhiên O(1) — nhanh nhất trong các cấu trúc dữ liệu.
+- Cache-friendly: các phần tử nằm liên tiếp trong bộ nhớ, CPU cache hit rate cao.
+- Đơn giản, dễ hiểu, dễ implement.
+
+**Nhược điểm:**
+
+- Chèn/xóa giữa mảng tốn O(n) vì phải dịch phần tử.
+- Static array không thay đổi kích thước được.
+- Dynamic array tốn thêm bộ nhớ dự phòng (thường gấp đôi).
+- Không hiệu quả khi cần insert/delete thường xuyên ở giữa.

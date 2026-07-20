@@ -1,0 +1,365 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/04_N2/Course_39/📂index_Course_39|Course_39]]
+
+# Test Tổng hợp chương 11
+
+## Part 1
+**Q1.** とり肉を　買わないといけない。
+- **A.** とりにいく
+- **B.** とりにぐ
+- **C.** とりにっく
+- **D.** とりにく
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4とり肉: thịt g&agrave;とり肉を　買わないといけない。Phải mua thịt g&agrave;.</p>
+</details>
+
+---
+**Q2.** 娘が　高校に　入学した。
+- **A.** りゅうがく
+- **B.** りゅがく
+- **C.** にゅうがく
+- **D.** にゅがく
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3入学します: nhập học娘が　高校に　入学した。Con g&aacute;i t&ocirc;i đ&atilde; v&agrave;o cấp 3.</p>
+</details>
+
+---
+**Q3.** レポートで　この本の　内容を　書かなければいけない。
+- **A.** にっくよう
+- **B.** ないよう
+- **C.** にくよう
+- **D.** うちよう
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2内容: nội dungレポートで　この本の　内容を　書かなければいけない。Phải viết nội dung của cuốn s&aacute;ch n&agrave;y trong bản b&aacute;o c&aacute;o.</p>
+</details>
+
+---
+**Q4.** 大学を　出たら、国へ　帰ります。
+- **A.** でったら
+- **B.** でたら
+- **C.** でるたら
+- **D.** でいたら
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2出ます: ra, ra khỏi大学を　出たら、国へ　帰ります。Sau khi tốt nghiệp đại học t&ocirc;i sẽ về nước.</p>
+</details>
+
+---
+**Q5.** 英語が　話せば、アメリカで　働けます。
+- **A.** はなせ
+- **B.** ごせ
+- **C.** いせ
+- **D.** わせ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1話します: n&oacute;i chuyện英語が　話せば、アメリカで　働けます。Nếu n&oacute;i được tiếng Anh th&igrave; c&oacute; thể l&agrave;m việc ở Mỹ.</p>
+</details>
+
+---
+**Q6.** 両親に　電話しなきゃいけない。
+- **A.** でんわ
+- **B.** でんご
+- **C.** でんごん
+- **D.** でんわん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1電話します: gọi điện両親に　電話しなきゃいけない。Phải gọi điện cho bố mẹ.</p>
+</details>
+
+---
+**Q7.** このアニメは　ベトナムで　人気です。
+- **A.** いりき
+- **B.** じんき
+- **C.** にんき
+- **D.** にゅうき
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3人気: sự y&ecirc;u th&iacute;chこのアニメは　ベトナムで　人気です。Bộ anime n&agrave;y được y&ecirc;u th&iacute;ch tại Việt Nam.</p>
+</details>
+
+---
+**Q8.** 日本には　山が　たくさん　あります。
+- **A.** かわ
+- **B.** やま
+- **C.** き
+- **D.** もり
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2山: n&uacute;i日本には　山が　たくさん　あります。Ở Nhật c&oacute; rất nhiều n&uacute;i.</p>
+</details>
+
+---
+**Q9.** 毎日　日本語で　会話します。
+- **A.** あいわ
+- **B.** かいわ
+- **C.** あいご
+- **D.** かいご
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2会話: hội thoại毎日　日本語で　会話します。T&ocirc;i n&oacute;i chuyện bằng tiếng Nhật mỗi ng&agrave;y.</p>
+</details>
+
+---
+**Q10.** 英語が　話せなければ、この会社で　働けません。
+- **A.** えいこう
+- **B.** えいごう
+- **C.** えいわ
+- **D.** えいご
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4英語: tiếng Anh英語が　話せなければ、この会社で　働けません。Nếu kh&ocirc;ng n&oacute;i được tiếng Anh th&igrave; bạn kh&ocirc;ng thể l&agrave;m việc tại c&ocirc;ng ty n&agrave;y.</p>
+</details>
+
+---
+**Q1.** 毎日　息子を　　　　しなければ　ならない。
+- **A.** 世話
+- **B.** 生活
+- **C.** 予約
+- **D.** 出張
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1世話: chăm s&oacute;c毎日　息子を　世話しなければ　ならない。H&agrave;ng ng&agrave;y, t&ocirc;i phải chăm s&oacute;c con trai.</p>
+</details>
+
+---
+**Q2.** 病気だから、　　　を　飲まないと　いけない。
+- **A.** 広告
+- **B.** 薬
+- **C.** お風呂
+- **D.** 健康診断
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2薬: thuốc病気だから、薬を　飲まないと　いけない。V&igrave; bị bệnh n&ecirc;n t&ocirc;i phải uống thuốc.</p>
+</details>
+
+---
+**Q3.** 明日までに　お金を　　　　なきゃ　いけない。
+- **A.** 吸わ
+- **B.** 洗わ
+- **C.** 間に合わ
+- **D.** 払わ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4払います: trả明日までに　お金を　払わなきゃ　いけない。Phải trả tiền trước ng&agrave;y mai.</p>
+</details>
+
+---
+**Q4.** 今晩は　　　　しなければ　いけないから、7時に　家に　帰れない。
+- **A.** 注意
+- **B.** 生活
+- **C.** 安心
+- **D.** 残業
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4残業します: tăng ca今晩は　残業しなければ　いけないから、7時に　家に　帰れない。Tối nay t&ocirc;i phải tăng ca n&ecirc;n kh&ocirc;ng thể về nh&agrave; l&uacute;c 7 giờ.</p>
+</details>
+
+---
+**Q5.** 来週　アメリカに　　　　します。
+- **A.** 生活
+- **B.** 合格
+- **C.** 出張
+- **D.** 勉強
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3出張します: c&ocirc;ng t&aacute;c来週　アメリカに　出張します。Tuần sau t&ocirc;i sẽ đi c&ocirc;ng t&aacute;c ở Mỹ.</p>
+</details>
+
+---
+**Q6.** 自分の　会社を　作りたいです。
+- **A.** さっき
+- **B.** いつか
+- **C.** よく
+- **D.** どの
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2いつか: một l&uacute;c n&agrave;o đ&oacute;いつか　自分の　会社を　作りたいです。Một l&uacute;c n&agrave;o đ&oacute; t&ocirc;i muốn mở c&ocirc;ng ty của ch&iacute;nh m&igrave;nh.</p>
+</details>
+
+---
+**Q7.** 毎日　　　　時間まで　残業しないと　いけない。
+- **A.** しょうがない
+- **B.** 偉い
+- **C.** 遅い
+- **D.** だめな
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3遅い: chậm, muộn毎日　遅い時間まで　残業しないと　いけない。H&agrave;ng ng&agrave;y, t&ocirc;i phải tăng ca đến tối muộn.</p>
+</details>
+
+---
+**Q8.** もうすぐ　バスが　出るから、　　　なきゃ。
+- **A.** 晴れ
+- **B.** 慣れ
+- **C.** 間に合わ
+- **D.** 急が
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4急ぎます: vội もうすぐ　バスが　出るから、急がなきゃ。V&igrave; xe bus sắp chạy rồi n&ecirc;n phải nhanh l&ecirc;n th&ocirc;i.</p>
+</details>
+
+---
+**Q9.** もっと　勉強を　　　　なきゃ、試験に　合格できないよ。
+- **A.** 気を付け
+- **B.** 練習し
+- **C.** がんばら
+- **D.** 連れて行か
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3がんばります: cố gắngもっと　勉強を　がんばらなきゃ、試験に　合格できないよ。Phải cố gắng học hơn nữa, kh&ocirc;ng th&igrave; kh&ocirc;ng đỗ được k&igrave; thi mất đấy.</p>
+</details>
+
+---
+**Q10.** 早く　予約しなきゃ、_______が　なくなるよ。
+- **A.** 席
+- **B.** 手
+- **C.** 言葉
+- **D.** 両親
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1席: chỗ ngồi早く　予約しなきゃ、席が　なくなるよ。Kh&ocirc;ng đặt trước sớm th&igrave; sẽ hết chỗ đấy.</p>
+</details>
+
+---
+**Q1.** A:　もうすぐ　電車が　出るよ！B:　大丈夫。______________、間に　合うよ。
+- **A.** 急げば
+- **B.** 急ぐば
+- **C.** 急ぎれば
+- **D.** 急いげば
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A:　もうすぐ　電車が　出るよ！B:　大丈夫。急げば、間に　合うよ。A: T&agrave;u sắp chạy rồi đấy.B: Kh&ocirc;ng sao đ&acirc;u. Nếu nhanh th&igrave; vẫn kịp đấy.</p>
+</details>
+
+---
+**Q2.** A:　週末は　何を　するの？B:　____________、家で　ゲームを　するよ。
+- **A.** 寒いければ
+- **B.** 寒ければ
+- **C.** 寒かったければ
+- **D.** 寒くければ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A:　週末は　何を　するの？B:　寒ければ、家で　ゲームを　するよ。A: Cuối tuần bạn sẽ l&agrave;m g&igrave;?B: Nếu trời lạnh th&igrave; t&ocirc;i sẽ ở nh&agrave; chơi game.</p>
+</details>
+
+---
+**Q3.** A:　どのバスに　________________。B:　うーん、分かりません&hellip;。
+- **A.** 乗るれば、さくら駅に　行けます
+- **B.** 乗れば、さくら駅に　行けます
+- **C.** 乗るれば、さくら駅に　行けますか
+- **D.** 乗れば、さくら駅に　行けますか
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A:　どのバスに　乗れば、さくら駅に　行けますか。B:　うーん、分かりません&hellip;。A: L&ecirc;n chiếc xe bus n&agrave;o th&igrave; sẽ đến được ga Sakura nhỉ?B: Ờ~, tớ kh&ocirc;ng biết.</p>
+</details>
+
+---
+**Q4.** A:　一生懸命　________________、次の　試験に　合格できませんよ。B:　分かりました。がんばります。
+- **A.** 勉強しませんければ
+- **B.** 勉強しなれば
+- **C.** 勉強しなければ
+- **D.** 勉強しないければ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A:　一生懸命　勉強しなければ、次の　試験に　合格できませんよ。B:　分かりました。がんばります。A: Nếu kh&ocirc;ng học chăm chỉ th&igrave; kh&ocirc;ng thể đỗ k&igrave; thi tới đ&acirc;u đấy.B: Em biết rồi ạ. Em sẽ cố gắng.</p>
+</details>
+
+---
+**Q5.** A:　あの店は　________________、入れませんよ。B:　そうですか。じゃあ、予約しましょう。
+- **A.** 予約すれば
+- **B.** 予約しれば
+- **C.** 予約するなければ
+- **D.** 予約しなければ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A:　あの店は　予約しなければ、入れませんよ。B:　そうですか。じゃあ、予約しましょう。A: Qu&aacute;n đ&oacute; nếu kh&ocirc;ng đặt trước th&igrave; kh&ocirc;ng v&agrave;o được đ&acirc;u.B: Vậy &agrave;?! Vậy th&igrave; đặt chỗ th&ocirc;i.</p>
+</details>
+
+---
+**Q6.** A:　もうすぐ　会議ですね。B:　そうですね。あ、会議の　前に、机と　いすを　________________　いけませんよ。
+- **A.** 準備すれば
+- **B.** 準備したら
+- **C.** 準備しないければ
+- **D.** 準備しなければ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A:　もうすぐ　会議ですね。B:　そうですね。あ、会議の　前に、机と　いすを　準備しなければ　いけませんよ。A: Sắp đến giờ họp rồi nhỉ.B: Đ&uacute;ng nhỉ. &Agrave;, trước cuộc họp ch&uacute;ng ta phải chuẩn bị b&agrave;n v&agrave; ghế đấy.</p>
+</details>
+
+---
+**Q7.** A:　マイさん、お正月は　何を　しますか。B:　母が　病気ですから、国に　______________。
+- **A.** 帰るなければ　いけません
+- **B.** 帰らなければ　なりません
+- **C.** 帰られなければ　いけません
+- **D.** 帰れば　なりません
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A:　マイさん、お正月は　何を　しますか。B:　母が　病気ですから、国に　帰らなければ　なりません。A: Mai ơi, Tết cậu sẽ l&agrave;m g&igrave;?B: V&igrave; mẹ bị bệnh n&ecirc;n tớ phải về nước.</p>
+</details>
+
+---
+**Q8.** A:　冬休みは　何を　しますか。B:　お金が　ないから、たくさん　アルバイトを　________________。
+- **A.** しないと　なりません
+- **B.** すると　いけません
+- **C.** しないと　いけません
+- **D.** すれば　いけません
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A:　冬休みは　何を　しますか。B:　お金が　ないから、たくさん　アルバイトを　しないと　いけません。A: Nghỉ đ&ocirc;ng cậu sẽ l&agrave;m g&igrave;?B: V&igrave; kh&ocirc;ng c&oacute; tiền n&ecirc;n tớ phải đi l&agrave;m th&ecirc;m nhiều.</p>
+</details>
+
+---
+**Q9.** A:　あ、お金が　ないから、ATMに　______________。B:　あそこの　コンビニの　中に　あるよ。
+- **A.** 行かないきゃ
+- **B.** 行かなければ
+- **C.** 行かなきゃ
+- **D.** 行けば
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A:　あ、お金が　ないから、ATMに　行かなきゃ。B:　あそこの　コンビニの　中に　あるよ。A: &Agrave;, v&igrave; kh&ocirc;ng c&oacute; tiền n&ecirc;n tớ phải đi ATM (c&acirc;y r&uacute;t tiền) đ&acirc;y.B: B&ecirc;n trong cửa h&agrave;ng tiện lợi đằng kia c&oacute; đấy.</p>
+</details>
+
+---
+**Q10.** A:　日本の　会社で　働きたいな。B:　じゃ、日本語を　たくさん　________________。
+- **A.** 勉強しなきゃ　いけないね
+- **B.** 勉強しなきゃ　なるね
+- **C.** 勉強しなきゃ　ないね
+- **D.** 勉強しないと　ないね
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A:　日本の　会社で　働きたいな。B:　じゃ、日本語を　たくさん　勉強しなきゃ　いけないね。A: M&igrave;nh muốn l&agrave;m việc ở c&ocirc;ng ty Nhật.B: Vậy th&igrave; cậu phải học thật nhiều tiếng Nhật nhỉ.</p>
+</details>
+
+---

@@ -1,0 +1,154 @@
+# 🗃️ MB-820 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 1 , Case Study XyzCom Ski House
+
+HOTSPOT (Drag and Drop is not supported)
+You need to download a stored picture from the Room Incident page. How should you complete the code segment? To answer, select the appropriate options in the answer area.
+Note: Each correct selection is worth one point.
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+var
+TempBlob: Codeunit "Temp Blob";
+
+IncidentOutStream: OutStream;
+IncidentInStream: InStream;
+ImageFilter, FileName: Text;
+begin
+// Initialize the TempBlob and streams
+TempBlob.CreateOutStream(IncidentOutStream);
+Rec.Image.ExportStream(IncidentOutStream); // 'Rec' refers to the current Room Incident record TempBlob.CreateInStream(IncidentInStream);
+
+// Set the filters and filename for the image
+ImageFilter := 'Image Files (*.bmp,*.jpg,*.jpeg,*.gif)|*.bmp;*.jpg;*.jpeg;*.gif'; FileName := 'Customer Picture';
+
+// Prompt the user to download the image if not DownloadFromStream(IncidentInStream, '', 'Download Incident Picture', '', ImageFilter, FileName) then
+Error('Unable to download the image.');
+end;
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 1 , Case Study XyzCom Ski House
+
+HOTSPOT (Drag and Drop is not supported)
+You need to create the codeunit to read the POS terminal APIs. How should you complete the code segment? To answer, select the appropriate options in the answer area.
+NOTE; Each correct selection is worth one point.
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+codeunit 52102 "POS API Management"
+{
+Access = Public;
+Permissions = TableData "POS Information" = rwdx;
+
+trigger OnRun()
+begin readAPI();
+end;
+
+procedure readAPI()
+
+begin
+// Your code here to read from the POS API
+end;
+}
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 1 , Case Study XyzCom Ski House
+
+HOTSPOT (Drag and Drop is not supported)
+You need to define the properties of the comments field of the Non-conformity page. How should you complete the code segment? To answer, select the appropriate options in the answer area.
+NOTE; Each correct selection is worth one point.
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 1 , Case Study XyzCom Ski House
+
+You need to define the data types for the fields of the N on-conformity table.
+
+Which two data types should you use? Each correct answer presents part of the solution.
+Note: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D,E`
+
+**Explanation**:
+In Business Central, fields in tables are assigned specific data types that determine the kind of data they can store. For the Non-conformity table mentioned in the case study, the following data types should be used:
+Date for the Non-Conformity Date field: This is because the Non-conformity Date field is required to store only the date when the non-conformity was recorded. The Date data type is appropriate for storing dates without times.
+Code for the Non-Conformity Number field: The Non-conformity Number field is described to use alphanumeric values with a format that includes "NC" and the year, like "NC24-001". In Business Central, the Code data type is used for fields that store alphanumeric keys. It is a text field with a limited length, which makes it suitable for number series that contain letters and numbers.
+Other options are not suitable:
+A) Integer for the Non-conformity Number field: This would not be appropriate because the Non- conformity Number includes alphanumeric characters and not just integers. 
+B) DateTime for the Non-Conformity Date field: This is not correct because there is no requirement to store the time alongside the date.
+C) Char for the Non-Conformity Number field: Char data type is not typically used in Business Central for number series or identifiers. The Code data type is preferred for this purpose.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 1 , Case Study XyzCom Ski House
+
+HOTSPOT (Drag and Drop is not supported)
+You need to create the Install codeunit that is requited in the extension used for installing or updating the Housekeeping app.
+Which data type or declaration should you use? To answer, select the appropriate options in the answer area.
+NOTE; Each correct selection is worth one point.
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+For the Install codeunit required for the extension used for installing or updating the Housekeeping app, you should use the following data type and declaration:
+Data type for information: ModuleInfo
+Start of the declaration of the method or procedure to perform the tasks: local procedure
+
+In AL language, which is used for developing extensions in Business Central, an Install codeunit is a special type of codeunit that is used to handle installation or upgrade logic for an extension. ModuleInfo is a data type that contains information about the current extension, such as its version. It is typically used within the OnInstallAppPerCompany or OnUpgradePerCompany triggers of an Install codeunit to determine if the app is being installed for the first time or upgraded. A local procedure within an Install codeunit is a method that is only accessible within the codeunit itself. It is not visible to other objects or extensions. This is suitable for tasks that are internal to the installation process and should not be exposed globally. These selections align with the requirements of handling installation and update procedures in a controlled and encapsulated manner within Business Central extensions.
+</details>
+
+---

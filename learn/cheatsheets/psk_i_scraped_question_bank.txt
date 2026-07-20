@@ -1,0 +1,146 @@
+# 🗃️ PSK-I Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+What qualitative information can you get from a Cycle Time Scatterplot?
+
+(choose the best answer)
+
+### Options:
+- [ ] **A)** General Cycle Time trends.
+- [ ] **B)** Single Cycle Time outliers.
+- [ ] **C)** Clusters of Cycle Time outliers.
+- [x] **D)** All of the answers. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+A Cycle Time Scatterplot is a visualization tool used to display the cycle times for individual work items over time. This scatterplot provides several types of qualitative information:
+
+1. General Cycle Time Trends (Option A): The scatterplot can show general trends over time, such as whether the cycle times are decreasing, increasing, or staying stable. This helps teams understand the overall direction in which their workflow efficiency is moving.
+
+2. Single Cycle Time Outliers (Option B): The scatterplot also helps identify individual outliers -- work items that took significantly longer or shorter than usual to complete. These outliers can be further investigated to understand why they occurred and to prevent similar situations in the future.
+
+3. Clusters of Cycle Time Outliers (Option C): In addition to single outliers, the scatterplot may reveal clusters of outliers. These clusters can indicate systemic issues, such as bottlenecks or recurring problems in a specific part of the process.
+
+Since a Cycle Time Scatterplot provides all these types of information (general trends, single outliers, and clusters of outliers), the correct answer is D.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+A Scrum Team's service level expectation (SLE) is an input into the various Scrum events. In which event will SLE provide the most benefit towards maintaining good flow?
+
+(choose the best answer)
+
+### Options:
+- [ ] **A)** Sprint Review.
+- [ ] **B)** Sprint Planning.
+- [ ] **C)** Sprint Retrospective.
+- [x] **D)** Daily Scrum. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+The Service Level Expectation (SLE) provides the most benefit during the Daily Scrum. This is because the Daily Scrum is focused on inspecting the progress towards the Sprint Goal and adapting the plan to optimize the flow of work for the day. The SLE helps the Scrum Team understand if work items are on track to be completed within the expected time frames. If the actual cycle times are exceeding the SLE, the team can discuss and make adjustments during the Daily Scrum to address any impediments or to rebalance work, thereby maintaining a steady flow.
+
+By using the SLE in the Daily Scrum, the team gets a daily, empirical measure of their workflow, allowing them to make quick decisions to keep work moving smoothly and predictably. This aligns well with the goal of the Daily Scrum, which is to ensure that the team is on track to achieve the Sprint Goal by the end of the Sprint(
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+How does Kanban for Scrum Teams maximize value delivered?
+
+(choose the best two answers)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,C`
+
+**Explanation**:
+Kanban for Scrum Teams maximizes value delivered by:
+
+1. Enabling Tighter Empirical Feedback Loops via Faster Cycle Times (Option B):
+
+Kanban practices help Scrum Teams reduce Cycle Times, which is the time it takes for a work item to move from "start" to "finish." Faster Cycle Times mean that feedback on work done is received more quickly, allowing the team to make necessary adjustments sooner. This rapid feedback loop enhances the empirical process control central to Scrum, thus ensuring that the team is always delivering value in line with the needs of stakeholders(
+
+2. Optimizing the Flow of Value (Option C):
+
+Kanban focuses on optimizing the flow of work through the team's process. This is achieved by limiting Work in Progress (WIP) and actively managing flow metrics such as throughput and cycle time. By optimizing flow, teams can ensure that work items are completed efficiently and effectively, minimizing waste and maximizing the delivery of value to the customer(
+
+The other options are less accurate:
+
+· Option A: Minimizing time spent in meetings/events is not the primary goal of Kanban; rather, it is about optimizing flow and value delivery.
+
+· Option D: Minimizing transaction costs is more related to Lean principles, but it does not directly address the value delivered as effectively as options B and C. · Option E: Choosing higher-value items to deliver is part of prioritization, which is more related to Product Backlog management than to Kanban's specific practices
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+True or False: If Scrum is used with Kanban then having a Scrum Master is optional.
+
+### Options:
+- [ ] **A)** True
+- [x] **B)** False [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Kanban does not eliminate the need for a Scrum Master when used with Scrum. The Scrum Master remains an essential role to facilitate the Scrum framework, help the team adopt both Scrum and Kanban practices effectively, and ensure the team understands and adheres to Scrum principles.
+
+The role of the Scrum Master includes coaching the team on both Scrum and Kanban practices, removing impediments, and promoting continuous improvement. Therefore, even when Scrum is used with Kanban, the Scrum Master is not optional but a critical role in ensuring that the integration of these practices is successful(
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+For a specific Sprint Backlog item that has been started, what is the best chart (analytic) to determine when it will be finished?
+
+(choose the best answer)
+
+### Options:
+- [ ] **A)** Throughput Run Chart.
+- [ ] **B)** Cumulative Flow diagram (CFD).
+- [x] **C)** Work Item Aging Chart. [Correct]
+- [ ] **D)** Control chart.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+The Work Item Aging Chart is the best chart to determine when a specific Sprint Backlog item that has been started will be finished. This chart provides a visual representation of how long each work item has been in progress, without being completed. It focuses on items that are currently active and helps teams identify which items are aging too much in the workflow, which might require attention to ensure they are completed promptly. The Work Item Aging Chart helps to quickly identify items that might be taking longer than expected, making it ideal for forecasting when a started item will be finished
+</details>
+
+---

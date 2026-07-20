@@ -1,0 +1,236 @@
+{
+  "Meta": {
+    "Id": "deck_6__palindrome_partitioning",
+    "Topic": "6. Palindrome Partitioning",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "6__palindrome_partitioning"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 11
+  },
+  "Cards": [
+    {
+      "Id": "card_00739",
+      "Front": "**Partition I**",
+      "Back": "O(n^2) khi không ký tự nào tạo palindrome dài | O(n * 2^n) khi toàn ký tự giống nhau",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. palindrome partitioning"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00740",
+      "Front": "**Partition II**",
+      "Back": "O(n^2) — luôn O(n^2) | O(n^2)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. palindrome partitioning"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00741",
+      "Front": "Bài toán",
+      "Back": "Kỹ thuật | Time Complexity | Space | Số lời giải",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. palindrome partitioning"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00742",
+      "Front": "Subsets",
+      "Back": "Include/Exclude | O(n * 2^n) | O(n) | 2^n",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. palindrome partitioning"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00743",
+      "Front": "Permutations",
+      "Back": "Used array / Swap | O(n * n!) | O(n) | n!",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. palindrome partitioning"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00744",
+      "Front": "N-Queens",
+      "Back": "Backtracking + pruning | O(N!) | O(N) | Xem bảng dưới",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. palindrome partitioning"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00745",
+      "Front": "Sudoku",
+      "Back": "Backtracking + constraint | O(9^m) | O(1) | 1 (unique)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. palindrome partitioning"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00746",
+      "Front": "Combination Sum I",
+      "Back": "Backtracking | O(N^(T/M)) | O(T/M) | Tùy input",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. palindrome partitioning"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00747",
+      "Front": "Combination Sum II",
+      "Back": "Sort + skip duplicate | O(2^N) | O(N) | Tùy input",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. palindrome partitioning"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00748",
+      "Front": "Palindrome Partition",
+      "Back": "Backtracking + DP | O(n * 2^n) | O(n^2) | Tùy input",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. palindrome partitioning"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00749",
+      "Front": "Số lời giải",
+      "Back": "1 | 0 | 0 | 2 | 10 | 4 | 40 | 92 | 352 | 724",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. palindrome partitioning"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

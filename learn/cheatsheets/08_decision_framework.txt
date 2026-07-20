@@ -1,0 +1,37 @@
+🔙 **Back to Parent**: [[technical_skills/03_Design_Patterns_Mastery/📂index_03_Design_Patterns_Mastery|03_Design_Patterns_Mastery]]
+
+# Module 8: Decision Framework & Capstone 🏗️
+
+Design Pattern không phải là một danh sách để bạn "sưu tầm" và áp dụng mù quáng.
+
+---
+
+## 🛑 Những sai lầm phổ biến
+
+### 1. Over-Engineering (Làm quá)
+- Áp dụng pattern cho những bài toán cực kỳ đơn giản.
+- Ví dụ: Dùng Abstract Factory chỉ để tạo ra 2 loại chuỗi text.
+- **Lời khuyên**: Hãy áp dụng YAGNI (You Ain't Gonna Need It). Chỉ áp dụng pattern khi hệ thống bắt đầu phình to và khó quản lý.
+
+### 2. Golden Hammer (Cái búa vàng)
+- Khi bạn đã thành thạo Singleton hoặc Factory, bạn nhìn đâu cũng thấy chỗ để áp dụng chúng.
+
+---
+
+## 🏗️ Dự án Kết khóa (Capstone Project)
+
+### Đề bài: Xây dựng hệ thống quản lý Đơn hàng E-commerce (Order Management)
+
+Yêu cầu thực hiện các tính năng bằng pattern tương ứng:
+1. **Khởi tạo đơn hàng**: Sử dụng **Builder Pattern** (Vì đơn hàng có hàng chục thông tin: địa chỉ, thuế, phí ship, danh mục hàng, v.v.).
+2. **Thanh toán**: Sử dụng **Strategy Pattern** (Cho phép thanh toán qua MOMO, VNPay, Card).
+3. **Trình trạng đơn hàng**: Sử dụng **State Pattern** (Pending -> Shipping -> Completed -> Cancelled).
+4. **Hệ thống Log/Audit**: Sử dụng **Singleton** hoặc **Observer** để lưu vết mọi thay đổi của đơn hàng.
+
+---
+
+## 📝 Tài liệu hướng dẫn
+- [Design Patterns Implementation Guide](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-design-patterns.md)
+
+---
+*Chúc mừng bạn đã trở thành một High-Level Architect!*

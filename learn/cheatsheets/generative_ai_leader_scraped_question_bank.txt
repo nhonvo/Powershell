@@ -1,0 +1,127 @@
+# 🗃️ Generative-AI-Leader Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+A logistics company wants to use a generative AI (gen AI) agent to automatically check real-time inventory levels across its warehouses and adjust delivery schedules. The gen AI agent needs access to internal inventory dat
+
+### Options:
+- [ ] **A)** They want the most cost-effective solution. 
+What should the organization do?
+- [ ] **B)** Build a custom API instead of using the gen AI agent.
+- [ ] **C)** Use pre-built gen AI chatbots for inventory questions.
+- [x] **D)** Use Vertex AI Studio to fine-tune a model with sample inventory data. [Correct]
+- [ ] **E)** Use Google Cloud databases and Vertex AI for the agent to get live data.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+To achieve real-time inventory checks and adjust delivery schedules, the generative AI agent needs live access to the company's internal inventory data. Google Cloud databases provide the structured storage for this data, and Vertex AI offers the platform to build, deploy, and manage the AI agent, including connecting it to these live data sources. This approach allows the agent to make informed decisions based on current information. Building a custom API for every interaction might be less cost-effective in the long run for dynamic inventory data. Pre-built chatbots might not have the direct integration needed for real-time adjustments, and fine-tuning with sample data wouldn't provide the live data access required.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+A pharmaceutical company's research and development department spends significant time manually reviewing new scientific papers to identify potential drug targets. They need a solution that can answer questions about these documents and provide summarized insights to researchers without requiring extensive coding expertise. 
+What should the organization do?
+
+### Options:
+- [ ] **A)** Use Gemini for Google Workspace to facilitate collaborative document review.
+- [ ] **B)** Use Vertex AI Search to index the papers and enable keyword-based searches.
+- [ ] **C)** Use Vertex AI AutoML to train a model that classifies papers into predefined research areas.
+- [x] **D)** Use Vertex AI Agent Builder to create a custom AI agent. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+The requirement is to answer questions about the documents and provide summarized insights without requiring extensive coding expertise. Vertex AI Agent Builder is designed precisely for creating custom AI agents, often with low-code or no-code capabilities, that can interact with and process large volumes of information like scientific papers. 
+While Vertex AI Search could index papers for keyword searches, it doesn't directly answer questions or provide summarized insights in the same way a generative AI agent built with Agent Builder could. Gemini for Google Workspace is for collaborative work, not specifically for building custom AI agents for document analysis. Vertex AI AutoML is for training classification models, which is different from answering questions and summarizing.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+The office of the CISO wants to use generative AI (gen AI) to help automate tasks like summarizing case information, researching threats, and taking actions like creating detection rules. 
+What agent should they use?
+
+### Options:
+- [x] **A)** Security agent [Correct]
+- [ ] **B)** Data agent
+- [ ] **C)** Code agent
+- [ ] **D)** Customer service agent
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Given the tasks involve researching threats and creating detection rules, the most appropriate and specialized agent would be a Security agent. This type of agent would be pre-configured or easily adaptable to understand security-specific contexts, data, and actions within a CISO's domain.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+A development team is configuring a generative AI model for a customer-facing application and wants to ensure the generated content is appropriate and harmless. 
+What is the primary function of the safety settings parameter in a generative AI model?
+
+### Options:
+- [ ] **A)** To limit the maximum text length that the model generates by ensuring concise responses.
+- [ ] **B)** To determine the number of tokens the model can process at once by influencing the complexity and length of inputs and outputs.
+- [x] **C)** To filter out potentially harmful or inappropriate content from the model's output based on the desired level of filtering. [Correct]
+- [ ] **D)** To control the creativity and randomness of the model's output by adjusting the diversity of word choices.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Safety settings in generative AI models are specifically designed to prevent the generation of content that could be harmful, offensive, or inappropriate. This includes filtering for categories like hate speech, sexually explicit content, self-harm, and violence, based on predefined thresholds. Options A, B, and D refer to other parameters like max_output_tokens or temperature, which control output length, input/output processing, and creativity, respectively, not safety.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+What is a characteristic of Google Cloud as a generative AI company?
+
+### Options:
+- [ ] **A)** Google Cloud provides fully autonomous AI agents that require zero configuration or management overhead.
+- [x] **B)** Google Cloud has an AI-first focus that enables innovation, with continuous updates and broad integration across its platform. [Correct]
+- [ ] **C)** Google Cloud ensures that all generative AI models and data are completely secured and isolated from external networks.
+- [ ] **D)** Google Cloud relies on proprietary, closed-source AI technologies for maximum security benefits.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Google Cloud emphasizes an AI-first approach, integrating AI capabilities across its services and consistently innovating with new models and features. 
+While security is a high priority, fully autonomous AI agents requiring zero configuration are generally not the norm, and "completely secured and isolated from external networks" is an oversimplification of cloud security models. Google also contributes to and supports open-source AI initiatives, not solely relying on proprietary closed-source technologies.
+</details>
+
+---

@@ -1,0 +1,452 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/04_Recursion_Backtracking/🔄index_04_Recursion_Backtracking|04_Recursion_Backtracking]]
+
+## 6. Palindrome Partitioning
+
+### 6.1 Bài toán
+
+Cho một chuỗi `s`, hãy tìm tất cả cách **chia chuỗi thành các phần** sao cho **mỗi phần đều là palindrome** (chuỗi đối xứng).
+
+Ví dụ: `s = "aab"`
+
+Kết quả: `[["a","a","b"], ["aa","b"]]`
+
+### 6.2 Ví von thực tế: Cắt bánh mì
+
+Bạn có một ổ bánh mì dài (chuỗi s). Bạn cần cắt nó thành nhiều phần, nhưng có quy tắc: **mỗi phần khi đọc xuôi và ngược phải giống nhau** (palindrome). Bạn cần tìm tất cả cách cắt hợp lệ.
+
+Ví dụ: ổ bánh "aab":
+
+- Cắt thành "a" | "a" | "b" → mỗi phần 1 ký tự → luôn palindrome ✓
+- Cắt thành "aa" | "b" → "aa" đối xứng ✓, "b" đối xứng ✓
+- Cắt thành "a" | "ab" → "ab" không đối xứng ✗
+- Cắt thành "aab" → "aab" không đối xứng ✗
+
+### 6.3 Thuật toán chi tiết
+
+**Ý tưởng:** Dùng backtracking. Ở mỗi bước, thử cắt prefix có độ dài 1, 2, 3, ..., n. Nếu prefix là palindrome → cắt, đệ quy với phần còn lại.
+
+partition('aab')Cắt 'a' → palindrome ✓Cắt 'aa' → palindrome ✓Cắt 'aab' → không palindrome ✗partition('ab')Cắt 'a' → palindrome ✓Cắt 'ab' → không palindrome ✗partition('b')Cắt 'b' → palindrome ✓partition('') → Kết quả: ['a','a','b'] ✓partition('b')Cắt 'b' → palindrome ✓partition('') → Kết quả: ['aa','b'] ✓
+
+### 6.4 Mô phỏng từng bước
+
+```
+Input: s = "aab"
+
+partition(start=0, current=[])
+│
+├── Thử cắt s[0:1] = "a" → palindrome? "a" → YES
+│   partition(start=1, current=["a"])
+│   │
+│   ├── Thử cắt s[1:2] = "a" → palindrome? YES
+│   │   partition(start=2, current=["a", "a"])
+│   │   │
+│   │   ├── Thử cắt s[2:3] = "b" → palindrome? YES
+│   │   │   partition(start=3, current=["a", "a", "b"])
+│   │   │   → start == len(s) → KẾT QUẢ! ["a", "a", "b"] ✓
+│   │   │   Backtrack: bỏ "b"
+│   │   │
+│   │   (Hết ký tự để cắt tiếp)
+│   │   Backtrack: bỏ "a"
+│   │
+│   ├── Thử cắt s[1:3] = "ab" → palindrome? "ab" ≠ "ba" → NO → skip
+│   │
+│   Backtrack: bỏ "a"
+│
+├── Thử cắt s[0:2] = "aa" → palindrome? "aa" → YES
+│   partition(start=2, current=["aa"])
+│   │
+│   ├── Thử cắt s[2:3] = "b" → palindrome? YES
+│   │   partition(start=3, current=["aa", "b"])
+│   │   → start == len(s) → KẾT QUẢ! ["aa", "b"] ✓
+│   │   Backtrack: bỏ "b"
+│   │
+│   Backtrack: bỏ "aa"
+│
+├── Thử cắt s[0:3] = "aab" → palindrome? "aab" ≠ "baa" → NO → skip
+│
+
+Kết quả cuối cùng: [["a","a","b"], ["aa","b"]]
+```
+
+### 6.5 Code — Naive Approach
+
+**Python:**
+
+```python
+def partition(s):
+    result = []
+
+    def is_palindrome(sub):
+        return sub == sub[::-1]
+
+    def backtrack(start, current):
+        # Base case: đã xét hết chuỗi
+        if start == len(s):
+            result.append(current[:])
+            return
+
+        # Thử tất cả prefix bắt đầu từ start
+        for end in range(start + 1, len(s) + 1):
+            substring = s[start:end]
+
+            if is_palindrome(substring):
+                current.append(substring)
+                backtrack(end, current)
+                current.pop()  # Backtrack
+
+    backtrack(0, [])
+    return result
+
+print(partition("aab"))
+# [['a', 'a', 'b'], ['aa', 'b']]
+
+print(partition("aaba"))
+# [['a', 'a', 'b', 'a'], ['a', 'aba'], ['aa', 'b', 'a']]
+```
+
+**Python (class style - giống format LeetCode):**
+
+```python
+from typing import List
+
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        result = []
+
+        def is_palindrome(sub: str) -> bool:
+            """Kiểm tra chuỗi đối xứng."""
+            return sub == sub[::-1]
+
+        def backtrack(start: int, current: List[str]):
+            # Base case: đã xét hết chuỗi
+            if start == len(s):
+                result.append(current[:])
+                return
+
+            # Thử cắt prefix có độ dài 1, 2, ..., n
+            for end in range(start + 1, len(s) + 1):
+                substring = s[start:end]
+                if is_palindrome(substring):
+                    current.append(substring)
+                    backtrack(end, current)
+                    current.pop()  # Backtrack
+
+        backtrack(0, [])
+        return result
+
+# Chạy thử
+sol = Solution()
+print(sol.partition("aab"))
+# [['a', 'a', 'b'], ['aa', 'b']]
+
+print(sol.partition("aaba"))
+# [['a', 'a', 'b', 'a'], ['a', 'aba'], ['aa', 'b', 'a']]
+```
+
+### 6.6 Tối ưu: DP Precomputation cho Palindrome Check
+
+Vấn đề: Mỗi lần check palindrome là O(n). Nếu ta **tiền xử lý** một bảng `dp[i][j]` cho biết `s[i..j]` có phải palindrome không, thì mỗi lần check chỉ O(1).
+
+**Công thức DP:**
+
+$$dp[i][j] = \begin{cases} \text{true} & \text{nếu } i \geq j \ s[i] == s[j] \text{ AND } dp[i+1][j-1] & \text{nếu } i < j \end{cases}$$
+
+**Python — Tối ưu:**
+
+```python
+def partition_optimized(s):
+    n = len(s)
+    result = []
+
+    # Bước 1: Tiền xử lý bảng palindrome
+    # dp[i][j] = True nếu s[i..j] là palindrome
+    dp = [[False] * n for _ in range(n)]
+
+    for i in range(n - 1, -1, -1):  # duyệt ngược
+        for j in range(i, n):
+            if s[i] == s[j] and (j - i <= 2 or dp[i + 1][j - 1]):
+                dp[i][j] = True
+
+    # Bước 2: Backtrack với O(1) palindrome check
+    def backtrack(start, current):
+        if start == n:
+            result.append(current[:])
+            return
+
+        for end in range(start, n):
+            if dp[start][end]:  # O(1) check!
+                current.append(s[start:end + 1])
+                backtrack(end + 1, current)
+                current.pop()
+
+    backtrack(0, [])
+    return result
+
+print(partition_optimized("aab"))
+# [['a', 'a', 'b'], ['aa', 'b']]
+```
+
+**Python — Tối ưu (class style):**
+
+```python
+from typing import List
+
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        n = len(s)
+        result = []
+
+        # Bước 1: Tiền xử lý bảng palindrome bằng DP
+        # dp[i][j] = True nếu s[i..j] là palindrome
+        dp = [[False] * n for _ in range(n)]
+        for i in range(n - 1, -1, -1):  # duyệt ngược
+            for j in range(i, n):
+                if s[i] == s[j] and (j - i <= 2 or dp[i + 1][j - 1]):
+                    dp[i][j] = True
+
+        # Bước 2: Backtrack với O(1) palindrome check
+        def backtrack(start: int, current: List[str]):
+            if start == n:
+                result.append(current[:])
+                return
+
+            for end in range(start, n):
+                if dp[start][end]:  # O(1) check thay vì O(n)!
+                    current.append(s[start:end + 1])
+                    backtrack(end + 1, current)
+                    current.pop()
+
+        backtrack(0, [])
+        return result
+
+# Chạy thử
+sol = Solution()
+print(sol.partition("aab"))
+# [['a', 'a', 'b'], ['aa', 'b']]
+```
+
+### 6.7 Mô phỏng bảng DP palindrome
+
+```
+s = "aab"
+n = 3
+
+Bảng dp[i][j]:
+
+     j=0  j=1  j=2
+i=0 [ T    T    F ]    s[0..0]="a" ✓, s[0..1]="aa" ✓, s[0..2]="aab" ✗
+i=1 [ -    T    F ]    s[1..1]="a" ✓, s[1..2]="ab" ✗
+i=2 [ -    -    T ]    s[2..2]="b" ✓
+
+Cách tính:
+- dp[2][2]: s[2]='b', i==j → True
+- dp[1][1]: s[1]='a', i==j → True
+- dp[1][2]: s[1]='a', s[2]='b', 'a' ≠ 'b' → False
+- dp[0][0]: s[0]='a', i==j → True
+- dp[0][1]: s[0]='a', s[1]='a', j-i=1 ≤ 2 → True
+- dp[0][2]: s[0]='a', s[2]='b', 'a' ≠ 'b' → False
+```
+
+### 6.8 Biến thể: Palindrome Partitioning II (Minimum Cuts)
+
+Bài toán: Tìm **số lần cắt ít nhất** để mỗi phần là palindrome.
+
+Đây là bài **Dynamic Programming**, không cần liệt kê tất cả partition.
+
+```python
+def min_cut(s):
+    """
+    dp[i] = số lần cắt ít nhất cho s[0..i]
+    """
+    n = len(s)
+
+    # Bước 1: Bảng palindrome
+    is_pal = [[False] * n for _ in range(n)]
+    for i in range(n - 1, -1, -1):
+        for j in range(i, n):
+            if s[i] == s[j] and (j - i <= 2 or is_pal[i + 1][j - 1]):
+                is_pal[i][j] = True
+
+    # Bước 2: DP
+    dp = [float('inf')] * n
+    for i in range(n):
+        if is_pal[0][i]:
+            dp[i] = 0  # s[0..i] đã là palindrome, không cần cắt
+        else:
+            for j in range(i):
+                if is_pal[j + 1][i]:
+                    dp[i] = min(dp[i], dp[j] + 1)
+
+    return dp[n - 1]
+
+print(min_cut("aab"))  # 1 (cắt thành "aa" | "b")
+print(min_cut("a"))    # 0
+print(min_cut("ab"))   # 1
+class Solution:
+    def minCut(self, s: str) -> int:
+        n = len(s)
+
+        # Bước 1: Bảng palindrome
+        is_pal = [[False] * n for _ in range(n)]
+        for i in range(n - 1, -1, -1):
+            for j in range(i, n):
+                if s[i] == s[j] and (j - i <= 2 or is_pal[i + 1][j - 1]):
+                    is_pal[i][j] = True
+
+        # Bước 2: DP — dp[i] = số lần cắt ít nhất cho s[0..i]
+        dp = [float('inf')] * n
+        for i in range(n):
+            if is_pal[0][i]:
+                dp[i] = 0  # toàn bộ s[0..i] là palindrome → 0 lần cắt
+            else:
+                for j in range(i):
+                    if is_pal[j + 1][i]:
+                        dp[i] = min(dp[i], dp[j] + 1)
+
+        return dp[n - 1]
+
+# Chạy thử
+sol = Solution()
+print(sol.minCut("aab"))  # 1 (cắt thành "aa" | "b")
+print(sol.minCut("a"))    # 0
+print(sol.minCut("ab"))   # 1
+```
+
+### 6.9 Phân tích Complexity
+
+#### Palindrome Partitioning I (liệt kê tất cả)
+
+**Time Complexity: O(n \* 2^n)**
+
+**Chứng minh:**
+
+Worst case (ví dụ `s = "aaa...a"` — toàn ký tự giống nhau): mọi substring đều là palindrome.
+
+Số cách partition = số cách chọn vị trí cắt. Có n-1 vị trí có thể cắt, mỗi vị trí cắt hoặc không → $2^{n-1}$ cách.
+
+Mỗi partition cần O(n) để copy, nên tổng = $O(n \cdot 2^{n-1}) = O(n \cdot 2^n)$.
+
+**DP precomputation** cho palindrome check: $O(n^2)$ (tính 1 lần, dùng nhiều lần).
+
+Tổng: $O(n^2 + n \cdot 2^n) = O(n \cdot 2^n)$.
+
+**Space Complexity:** $O(n^2)$ cho bảng DP + O(n) cho call stack = $O(n^2)$.
+
+#### Palindrome Partitioning II (minimum cuts)
+
+**Time Complexity:** $O(n^2)$ — cho cả bảng palindrome và mảng dp.
+
+**Space Complexity:** $O(n^2)$.
+
+### 6.10 Best Case / Worst Case
+
+|                  | Best Case                                     | Worst Case                           |
+| :--------------- | :-------------------------------------------- | :----------------------------------- |
+| **Partition I**  | O(n^2) khi không ký tự nào tạo palindrome dài | O(n * 2^n) khi toàn ký tự giống nhau |
+| **Partition II** | O(n^2) — luôn O(n^2)                          | O(n^2)                               |
+
+### 6.11 Cải tiến
+
+1. **DP Precomputation** — tránh check palindrome lặp đi lặp lại, O(n^2) → O(1) mỗi lần
+2. **Expand Around Center** — thay vì bảng DP, dùng kỹ thuật mở rộng từ tâm
+3. **Manacher's Algorithm** — tìm tất cả palindrome substring trong O(n), nhưng phức tạp implementation
+4. **Pruning sớm** — nếu phần còn lại không thể tạo palindrome partition hợp lệ → skip
+
+------
+
+## Tổng kết Phần 4
+
+### Bảng so sánh tổng quan
+
+| Bài toán             | Kỹ thuật                  | Time Complexity | Space  | Số lời giải   |
+| :------------------- | :------------------------ | :-------------- | :----- | :------------ |
+| Subsets              | Include/Exclude           | O(n * 2^n)      | O(n)   | 2^n           |
+| Permutations         | Used array / Swap         | O(n * n!)       | O(n)   | n!            |
+| N-Queens             | Backtracking + pruning    | O(N!)           | O(N)   | Xem bảng dưới |
+| Sudoku               | Backtracking + constraint | O(9^m)          | O(1)   | 1 (unique)    |
+| Combination Sum I    | Backtracking              | O(N^(T/M))      | O(T/M) | Tùy input     |
+| Combination Sum II   | Sort + skip duplicate     | O(2^N)          | O(N)   | Tùy input     |
+| Palindrome Partition | Backtracking + DP         | O(n * 2^n)      | O(n^2) | Tùy input     |
+
+### Số lời giải N-Queens cho N nhỏ
+
+| N           | 1    | 2    | 3    | 4    | 5    | 6    | 7    | 8    | 9    | 10   |
+| :---------- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Số lời giải | 1    | 0    | 0    | 2    | 10   | 4    | 40   | 92   | 352  | 724  |
+
+### Template Backtracking tổng quát
+
+Dù bài toán có thay đổi, pattern backtracking luôn giống nhau:
+
+```python
+def backtrack_template(state, choices):
+    """
+    Template backtracking tổng quát.
+    Áp dụng cho: Subsets, Permutations, N-Queens,
+    Sudoku, Combination Sum, Palindrome Partition, ...
+    """
+    # 1. Base case: đã tìm được lời giải
+    if is_solution(state):
+        result.append(copy(state))
+        return
+
+    # 2. Duyệt tất cả lựa chọn có thể
+    for choice in get_available_choices(state):
+
+        # 3. Pruning: skip lựa chọn không hợp lệ
+        if not is_valid(choice, state):
+            continue
+
+        # 4. Make choice (tiến)
+        apply_choice(choice, state)
+
+        # 5. Đệ quy
+        backtrack_template(state, updated_choices)
+
+        # 6. Undo choice (quay lui)
+        undo_choice(choice, state)
+# Template Python — áp dụng trực tiếp vào bất kỳ bài backtracking nào
+def backtrack(state, start):
+    if is_solution(state):
+        result.append(copy(state))
+        return
+
+    for i in range(start, len(choices)):
+        if not is_valid(choices[i], state):
+            continue
+
+        apply_choice(choices[i], state)
+        backtrack(state, next_start)
+        undo_choice(choices[i], state)
+```
+
+### Mẹo nhận dạng bài Backtracking trong phỏng vấn
+
+1. **"Liệt kê tất cả..."** → Backtracking
+2. **"Tìm tất cả tổ hợp/hoán vị/cách chia..."** → Backtracking
+3. **"Đặt N quân... sao cho..."** → Backtracking + Constraint
+4. **"Tìm đường đi trong mê cung"** → Backtracking / BFS
+5. **"Giải Sudoku/Crossword"** → Backtracking + Constraint Propagation
+
+### Lời khuyên luyện tập
+
+Bạn nên luyện theo thứ tự này:
+
+1. **Subsets** (LeetCode 78) → hiểu include/exclude pattern
+2. **Subsets II** (LeetCode 90) → học cách xử lý duplicate
+3. **Permutations** (LeetCode 46) → hiểu used array
+4. **Permutations II** (LeetCode 47) → kết hợp sort + skip
+5. **Combination Sum** (LeetCode 39) → hiểu target-based pruning
+6. **Combination Sum II** (LeetCode 40) → kết hợp mọi kỹ thuật
+7. **Palindrome Partitioning** (LeetCode 131) → backtrack + DP
+8. **N-Queens** (LeetCode 51) → constraint-based backtracking
+9. **Sudoku Solver** (LeetCode 37) → tổng hợp mọi thứ
+
+Mỗi bài, hãy:
+
+- Vẽ recursion tree trên giấy trước khi code
+- Xác định rõ: base case là gì, choices là gì, pruning ở đâu
+- Code xong chạy thử rồi debug bằng print
+- Phân tích complexity và tự chứng minh
+
+Chúc bạn học tốt! Backtracking ban đầu có thể "hack não" nhưng khi đã hiểu pattern, bạn sẽ thấy tất cả các bài đều tuân theo cùng một khung sườn. Cứ luyện đều đặn, sẽ thành thạo thôi!

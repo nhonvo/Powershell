@@ -1,0 +1,153 @@
+# 🗃️ SC-300 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+You have an Azure Active Directory (Azure AD) tenant that contains the following objects:
+-A device named Device1
+-Users named User1, User2, User3, User4, and User5
+-Groups named Group1, Group2, Group3, Group4, and Group5
+The groups are configured as shown in the following table.
+To which groups can you assign a Microsoft Office 365 Enterprise E5 license directly?
+
+### Options:
+- [ ] **A)** Group1 and Group4 only
+- [x] **B)** Group1, Group2, Group3, Group4, and Group5 [Correct]
+- [ ] **C)** Group1 and Group2 only
+- [ ] **D)** Group1 only
+- [ ] **E)** Group1, Group2, Group4, and Group5 only
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+You have a Microsoft Exchange organization that uses an SMTP address space of contoso.com.
+Several users use their contoso.com email address for self-service sign-up to Azure Active Directory (Azure AD).
+You gain global administrator privileges to the Azure AD tenant that contains the self-signed users.
+You need to prevent the users from creating user accounts in the contoso.com Azure AD tenant for self-service sign-up to Microsoft 365 services.
+Which PowerShell cmdlet should you run?
+
+### Options:
+- [x] **A)** Set-MsolCompanySettings [Correct]
+- [ ] **B)** Set-MsolDomainFederationSettings
+- [ ] **C)** Update-MsolfederatedDomain
+- [ ] **D)** Set-MsolDomain
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+You have a Microsoft 365 tenant that uses the domain named fabrikam.com. The Guest invite settings for Azure Active Directory (Azure AD) are configured as shown in the exhibit. (Click the Exhibit tab.)
+A user named bsmith@fabrikam.com shares a Microsoft SharePoint Online document library to the users shown in the following table.
+Which users will be emailed a passcode?
+
+### Options:
+- [ ] **A)** User2 only
+- [x] **B)** User1 only [Correct]
+- [ ] **C)** User1 and User2 only
+- [ ] **D)** User1, User2, and User3
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+You have 2,500 users who are assigned Microsoft Office 365 Enterprise E3 licenses. The licenses are assigned to individual users.
+From the Groups blade in the Azure Active Directory admin center, you assign Microsoft 365 Enterprise E5 licenses to the users.
+You need to remove the Office 365 Enterprise E3 licenses from the users by using the least amount of administrative effort.
+What should you use?
+
+### Options:
+- [ ] **A)** the Identity Governance blade in the Azure Active Directory admin center
+- [ ] **B)** the Set-AzureAdUser cmdlet
+- [x] **C)** the Licenses blade in the Azure Active Directory admin center [Correct]
+- [ ] **D)** the Set-WindowsProductKey cmdlet
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+You can unassign licenses from users on either the Active users page, or on the Licenses page. The method you use depends on whether you want to unassign product licenses from specific users or unassign users licenses from a specific product.
+Note:
+There are several versions of this question in the exam. The question has two possible correct answers:
+1. the Licenses blade in the Azure Active Directory admin center
+2. the Set-MsolUserLicense cmdlet
+Other incorrect answer options you may see on the exam include the following:
+- the Administrative units blade in the Azure Active Directory admin center
+- the Groups blade in the Azure Active Directory admin center
+- the Set-AzureAdGroup cmdlet
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported) 
+You have a Microsoft 365 tenant named contoso.com.
+Guest user access is enabled.
+Users are invited to collaborate with contoso.com as shown in the following table.
+From the External collaboration settings in the Azure Active Directory admin center, you configure the Collaboration restrictions settings as shown in the following exhibit.
+From a Microsoft SharePoint Online site, a user invites user3@adatum.com to the site.
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Yes 
+Invitations can only be sent to outlook.com. Therefore, User1 can accept the invitation and access the application.
+Box 2. Yes 
+Invitations can only be sent to outlook.com. However, User2 has already received and accepted an invitation so User2 can access the application.
+Box 3. No 
+Invitations can only be sent to outlook.com. Therefore, User3 will not receive an invitation.
+</details>
+
+---

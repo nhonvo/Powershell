@@ -1,0 +1,95 @@
+🔙 **Back to Parent**: [[technical_skills/03_Design_Patterns_Mastery/📂index_03_Design_Patterns_Mastery|03_Design_Patterns_Mastery]]
+
+# 🏗️ 3. Creational Patterns (The Factory of Objects)
+
+Nhóm bài học về cách khởi tạo đối tượng một cách linh hoạt, che giấu logic khởi tạo phức tạp. Trong Backend, việc dùng `new Object()` trực tiếp trong logic (Business Logic) là một thảm họa vì nó "khóa" code của bạn vào 1 loại Class duy nhất.
+
+---
+
+### 🏛️ 3.1 Singleton (Duy nhất) - "Vị vua chỉ có một"
+
+> "Đảm bảo một Class chỉ có duy nhất 1 thực thể (Instance) xuyên suốt vòng đời ứng dụng."
+
+- **Ví dụ đời thực**: Tổng thống nước Việt Nam, Bộ điều khiển trung tâm (Central Controller) của 1 hệ thống IoT.
+- **Dùng khi**: Kết nối Database (`DBConnection`), Quản lý Cấu hình (`Config`), Ghi Log (`Logger`).
+
+**Ví dụ (C# Thread-safe Singleton):**
+```csharp
+public sealed class Database {
+    private static Database? _instance;
+    private static readonly object _lock = new object();
+    private Database() { } // Private Constructor!
+
+    public static Database GetInstance() {
+        if (_instance == null) {
+            lock (_lock) { // Thread-safe!
+                _instance ??= new Database();
+            }
+        }
+        return _instance;
+    }
+}
+```
+
+---
+
+### 🧠 3.2 Factory Method (Xưởng sản xuất)
+
+> "Định nghĩa một interface để tạo object nhưng cho phép lớp con quyết định loại object nào sẽ được tạo."
+
+- **Ví dụ đời thực**: Xưởng sản xuất Log. Tùy theo cấu hình (Database hay File) mà xưởng sẽ "đẻ" ra `DbLogger` hay `FileLogger`.
+
+---
+
+### 🚀 3.3 Abstract Factory (Siêu xưởng - Factory của Factory)
+
+> "Cung cấp một interface để tạo ra các 'nhóm' đối tượng liên quan mà không cần chỉ định cụ thể Class của chúng."
+
+- **Ví dụ đời thực**: Một xưởng nội thất (Furniture Factory). Khi bạn chọn phong cách **Modern**, nó sẽ trả về (Modern Chair + Modern Table). Khi chọn phong cách **Classic**, nó trả về (Classic Chair + Classic Table). Bạn không bao giờ bị tình trạng ghế hiện đại đi với bàn cổ điển.
+
+---
+
+### ⚡ 3.4 Builder (Xây dựng từng bước)
+
+> "Cho phép tạo ra các đối tượng phức tạp một cách từng bước một."
+
+- **Dùng khi**: Một đối tượng có quá nhiều tham số truyền vào Constructor (VD: 10 tham số, có cái dùng có cái không).
+
+**Ví dụ (Java Fluent Builder):**
+```java
+Order o = new OrderBuilder()
+             .setCustomer("Nhon")
+             .addProduct("Coffee", 2)
+             .addShipping("Nha Trang")
+             .build();
+```
+
+---
+
+### 📝 3.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao Singleton thường bị coi là **Anti-pattern** (mẫu thiết kế xấu) nếu lạm dụng?"
+<details><summary>Đáp án</summary>
+1. Khó viết Unit Test (Do trạng thái dùng chung toàn cục). 2. Vi phạm nguyên tắc SRP (Class tự quản lý vòng đời của chính mình). 3. Che giấu sự phụ thuộc (Dependencies) làm code khó hiểu. Thay vì dùng Singleton, hãy dùng **Dependency Injection (DI)** với vòng đời **Singleton Lifetime**.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết mã giả (Pseudo-code) cho **Factory Method** tạo ra các loại vé xem phim: `VipTicket`, `RegularTicket`.
+<details><summary>Solution (C# Style)</summary>
+```csharp
+public interface ITicket { string Info(); }
+public class VipTicket : ITicket { public string Info() => "Vip 50$. Seats A1-A5."; }
+public class TicketFactory {
+    public static ITicket GetTicket(string type) => type switch {
+        "Vip" => new VipTicket(),
+        _ => new RegularTicket()
+    };
+}
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Singleton Pattern: The Good, The Bad, and The Ugly](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-singleton-deep-dive.md)
+- [Factory Method vs Abstract Factory - When to use what?](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-factories-comparison.md)
+- [Mastering the Builder Pattern for Clean Model Definitions](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-builder-pattern.md)

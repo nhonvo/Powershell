@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/professional-cloud-developer
+  - professionalclouddeveloper
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 Professional-Cloud-Developer MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/google/Professional-Cloud-Developer/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/google/Professional-Cloud-Developer/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/google/Professional-Cloud-Developer/Professional-Cloud-Developer Mindmap\|🗺️ Professional-Cloud-Developer Mindmap]]
+- [[certifications/google/Professional-Cloud-Developer/Professional-Cloud-Developer Flashcards\|🃏 Professional-Cloud-Developer Flashcards]]
+- [[certifications/google/Professional-Cloud-Developer/Professional-Cloud-Developer_Scraped_Question_Bank\|🗃️ Professional-Cloud-Developer Scraped Question Bank]]

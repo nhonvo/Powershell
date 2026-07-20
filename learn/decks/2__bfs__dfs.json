@@ -1,0 +1,236 @@
+{
+  "Meta": {
+    "Id": "deck_2__bfs__dfs",
+    "Topic": "2. BFS  DFS",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "2__bfs__dfs"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 11
+  },
+  "Cards": [
+    {
+      "Id": "card_01365",
+      "Front": "Bước",
+      "Back": "Queue (trước) | Lấy ra | Thăm hàng xóm | Queue (sau) | Visited",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. bfs  dfs"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01366",
+      "Front": "Bước",
+      "Back": "Stack ngầm | Đỉnh hiện tại | Hành động | Visited",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. bfs  dfs"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01367",
+      "Front": "Tiêu chí",
+      "Back": "BFS | DFS",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. bfs  dfs"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01368",
+      "Front": "**Cấu trúc dữ liệu**",
+      "Back": "Queue (FIFO) | Stack (LIFO) / Đệ quy",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. bfs  dfs"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01369",
+      "Front": "**Cách duyệt**",
+      "Back": "Theo lớp (level by level) | Đi sâu rồi backtrack",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. bfs  dfs"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01370",
+      "Front": "**Tìm đường ngắn nhất**",
+      "Back": "Có (unweighted) | Không đảm bảo",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. bfs  dfs"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01371",
+      "Front": "**Bộ nhớ**",
+      "Back": "O(V) — có thể lớn nếu graph rộng | O(h) — h là chiều sâu",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. bfs  dfs"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01372",
+      "Front": "**Phát hiện chu trình**",
+      "Back": "Được | Được (thường dùng hơn)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. bfs  dfs"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01373",
+      "Front": "**Topological Sort**",
+      "Back": "Kahn's Algorithm | DFS-based",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. bfs  dfs"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01374",
+      "Front": "**Connected Components**",
+      "Back": "Được | Được",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. bfs  dfs"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01375",
+      "Front": "**Dùng khi nào**",
+      "Back": "Đường ngắn nhất, level-order | Backtracking, cycle, topo sort",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. bfs  dfs"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

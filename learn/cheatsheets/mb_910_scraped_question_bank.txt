@@ -1,0 +1,129 @@
+# 🗃️ MB-910 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+Which two components are included in Dynamics 365 Marketing? Each correct answer presents a complete solution.
+
+NOTE: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,D`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+DRAG DROP (Drag and Drop is not supported)
+A company uses Dynamics 365 Marketing.
+
+Marketing team members must be able to group related customers for campaigns, market research, and surveys.
+
+What should you recommend? To answer, drag the appropriate features to the correct requirements. Each feature may be used once, more than once, or not at all. You may need to drag the split bar between panes or scroll to view content.
+
+NOTE: Each correct selection is worth one point.
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1:
+You cannot use marketing segments in a campaign.
+
+Box 2:
+You can only use one type of marketing list (a subscription list) for customer journeys. You can use any type of marketing segment for customer journeys.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported)
+A company plans to implement Dynamics 365 Marketing.
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported)
+A company has implemented Dynamics 365 Marketing.
+
+You need to implement apps to meet the company’s business requirements.
+Which app should you use? To answer, select the appropriate options in the answer area.
+
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+A company integrates LinkedIn Campaign Manager with Dynamics 365 Marketing.
+
+Which two actions can the company perform using out-of-the-box features? Each correct answer presents a complete solution.
+
+NOTE: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,C`
+
+**Explanation**:
+
+</details>
+
+---

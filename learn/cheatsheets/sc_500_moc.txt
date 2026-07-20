@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/sc-500
+  - sc500
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 SC-500: Implementing End-to-End Security Controls for Cloud and AI Workloads MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/SC-500/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/SC-500/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/SC-500/SC-500 Mindmap\|🗺️ SC-500 Mindmap]]
+- [[certifications/microsoft/SC-500/SC-500 Flashcards\|🃏 SC-500 Flashcards]]
+- [[certifications/microsoft/SC-500/SC-500_Scraped_Question_Bank\|🗃️ SC-500 Scraped Question Bank]]

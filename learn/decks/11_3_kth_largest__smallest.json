@@ -1,0 +1,216 @@
+{
+  "Meta": {
+    "Id": "deck_11_3_kth_largest__smallest",
+    "Topic": "11.3 Kth Largest  Smallest",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "11_3_kth_largest__smallest"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 10
+  },
+  "Cards": [
+    {
+      "Id": "card_01225",
+      "Front": "Cách giải",
+      "Back": "Time | Space | Nhận xét",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.3 kth largest  smallest"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01226",
+      "Front": "Sort toàn bộ",
+      "Back": "O(n log n) | O(n) | Lãng phí — sort cả mảng chỉ để lấy 1 phần tử",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.3 kth largest  smallest"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01227",
+      "Front": "Min Heap kích thước k",
+      "Back": "**O(n log k)** | **O(k)** | Tối ưu khi k << n",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.3 kth largest  smallest"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01228",
+      "Front": "QuickSelect",
+      "Back": "O(n) average | O(1) | Nhanh nhất trung bình, nhưng worst case O(n²)",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.3 kth largest  smallest"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01229",
+      "Front": "Bước",
+      "Back": "Phần tử | Heap (min → max) | Hành động",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.3 kth largest  smallest"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01230",
+      "Front": "Case",
+      "Back": "Điều kiện | Time | Giải thích",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.3 kth largest  smallest"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01231",
+      "Front": "**Best**",
+      "Back": "k = 1 | O(n) | Heap chỉ giữ 1 phần tử, mỗi phần tử push/pop O(1)",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.3 kth largest  smallest"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01232",
+      "Front": "**Average**",
+      "Back": "k << n | O(n log k) | Đa số phần tử chỉ so sánh với root O(1), ít phần tử cần push/pop",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.3 kth largest  smallest"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01233",
+      "Front": "**Worst**",
+      "Back": "k = n/2 | O(n log n) | log k ≈ log n, gần như sort",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.3 kth largest  smallest"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01234",
+      "Front": "QuickSelect avg",
+      "Back": "— | O(n) | Nhưng worst case O(n²) nếu pivot xấu",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.3 kth largest  smallest"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

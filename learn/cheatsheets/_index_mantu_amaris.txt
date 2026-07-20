@@ -1,0 +1,9 @@
+# mantu_amaris
+
+🔙 **Back to Parent**: [[interviewNote/❓index_04_INTERVIEW_QA|04_INTERVIEW_QA]]
+
+## 📄 Notes & Documents
+- [[interviewNote/mantu_amaris/MANTU - Tổng hợp và Phân tích Buổi Phỏng vấn|MANTU - Tổng hợp và Phân tích Buổi Phỏng vấn]]
+- [[interviewNote/mantu_amaris/MANTU problem - Programming Interview Question Bill of Materials (BOM) Calculation|MANTU problem - Programming Interview Question Bill of Materials (BOM) Calculation]]
+- [[interviewNote/mantu_amaris/MANTU solve - Programming Interview Question Bill of Materials (BOM) Calculation|MANTU solve - Programming Interview Question Bill of Materials (BOM) Calculation]]
+

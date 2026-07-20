@@ -1,0 +1,42 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/📂index_02_Backend_Development_Roadmap|02_Backend_Development_Roadmap]]
+
+# Hướng dẫn Học lộ trình Backend Developer Chuyên Nghiệp
+
+Chào mừng bạn đến với lộ trình Backend bài bản. Bộ tài liệu này được thiết kế để bạn làm chủ toàn bộ hệ sinh thái C# (.NET Core) hoặc Java (Spring Boot) từ trình độ Beginner đến Production-Ready.
+
+## 1. Cách sử dụng bộ tài liệu
+
+-   **Học theo thứ tự**: Các module được đánh số từ **01 đến 09**. Hãy học theo trình tự này để đảm bảo kiến thức được tích lũy một cách vững chắc nhất.
+-   **Chọn một ngôn ngữ**: Bạn nên chọn một trong hai ngôi ngữ (C# hoặc Java) để chuyên sâu trước khi chuyển sang ngôn ngữ khác.
+-   **Thực hành song song**: Với mỗi phần lý thuyết, hãy tự tạo một project thực tế (Sử dụng Visual Studio/Rider cho C# hoặc IntelliJ IDEA cho Java).
+-   **Capstone Project**: Dự án **Personal Finance App** ở chương cuối là bài kiểm tra tổng hợp tất cả kiến thức đã học.
+
+## 2. Các thành phần trong mỗi module
+
+Mỗi file Markdown `.md` trong các thư mục sẽ bao gồm:
+1.  **Mục tiêu học tập**: Những kiến thức cốt lõi bạn sẽ đạt được.
+2.  **Phân tích kỹ thuật (C# vs Java)**: So sánh sự khác biệt về cú pháp và cách áp dụng.
+3.  **Code Examples**: Các đoạn code mẫu thực tế và tối ưu.
+4.  **Best Practices**: Các lời khuyên từ kinh nghiệm làm việc thực tế (Logging, Performance, Security).
+
+## 3. Hệ sinh thái Công nghệ (Tech Stack)
+
+| Thành phần | Công nghệ Đề xuất |
+| :--- | :--- |
+| **Hệ quản trị CSDL** | PostgreSQL (Open source mạnh nhất) |
+| **ORM Framework** | EF Core (C#) / Hibernate (Java) |
+| **Caching Layer** | Redis (Performance & Scalability) |
+| **Search Engine** | Elasticsearch (Full-text search) |
+| **Observability** | Prometheus, Grafana, ELK Stack |
+| **Deployment** | Docker, Nginx, Linux (Ubuntu/CentOS) |
+
+---
+
+## 4. Liên hệ hỗ trợ
+
+Nếu bạn có bất kỳ thắc mắc nào trong quá trình học tập, đừng ngần ngại:
+-   **Group Discord**: Cộng đồng học tập Code4Func.
+-   **Hỏi đáp**: Comment trực tiếp dưới các bài học trên hệ thống.
+
+---
+*Chúc bạn học tập hiệu quả và sớm trở thành một Backend Developer chuyên nghiệp!*

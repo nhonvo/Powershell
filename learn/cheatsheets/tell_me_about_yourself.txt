@@ -1,0 +1,24 @@
+🔙 **Back to Parent**: [[interviewNote/❓index_04_INTERVIEW_QA|interviewNote]]
+
+# “Tell me about yourself” (60–90s)
+
+Use: **Present → Past → Future**. Keep it crisp and role-aligned.
+
+## Version 1 (Backend/.NET/AWS)
+
+**Present (1–2 sentences)**  
+I’m a backend engineer focused on building reliable APIs and event-driven services with C#/.NET and AWS. Recently I’ve been working on systems around notifications and logistics workflows, with emphasis on performance and reliability.
+
+**Past (2–4 sentences)**  
+At FPT Software, I built and maintained REST APIs and messaging flows using AWS services like SQS/SNS, and data stores like DynamoDB/PostgreSQL. I also improved response time with Redis caching and worked with Docker/LocalStack to speed up development and testing. During my fresher program, I led a small team project using CQRS and learned how to ship in a structured engineering process.
+
+**Future (1–2 sentences)**  
+Now I want to join a team where I can build scalable backend systems, own features end-to-end, and keep improving in architecture, testing, and system design.
+
+## Customization checklist
+
+- [ ] Mention the company name and why them (1 line)
+- [ ] Match the role keywords (2–3 keywords)
+- [ ] Add one “proof” metric (latency, cost, reliability, time saved)
+- [ ] End with what you want next (growth + impact)
+

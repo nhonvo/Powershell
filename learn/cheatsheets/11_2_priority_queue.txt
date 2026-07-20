@@ -1,0 +1,263 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/11_Heaps_Priority_Queue/🌲index_11_Heaps_Priority_Queue|11_Heaps_Priority_Queue]]
+
+## 11.2 Priority Queue
+
+### Khái niệm
+
+**Priority Queue** (hàng đợi ưu tiên) là một abstract data type (ADT) — nghĩa là nó định nghĩa **hành vi** chứ không phải cách triển khai cụ thể.
+
+**Ví dụ thực tế — Hàng đợi tại quầy check-in sân bay:**
+
+- Hàng đợi thường (queue) thì ai đến trước phục vụ trước (FIFO).
+- Nhưng hành khách hạng thương gia (business class) được ưu tiên lên trước, dù họ đến sau.
+- Trong các hành khách thương gia, người có chuyến bay sớm hơn lại được ưu tiên hơn.
+
+Đó chính là **Priority Queue**: mỗi phần tử có một **priority** (mức ưu tiên), và phần tử có priority cao nhất được lấy ra trước.
+
+### Interface của Priority Queue
+
+```
+insert(item, priority)    — Thêm phần tử với mức ưu tiên
+extract_min() / extract_max()  — Lấy ra phần tử ưu tiên nhất
+peek()                    — Xem phần tử ưu tiên nhất (không xóa)
+is_empty()                — Kiểm tra hàng đợi có rỗng không
+```
+
+### Các cách triển khai Priority Queue
+
+| Cách triển khai     | insert         | extract_min        | peek     |
+| :------------------ | :------------- | :----------------- | :------- |
+| Mảng chưa sắp xếp   | O(1)           | O(n)               | O(n)     |
+| Mảng đã sắp xếp     | O(n)           | O(1)               | O(1)     |
+| Linked list đã sort | O(n)           | O(1)               | O(1)     |
+| **Binary Heap**     | **O(log n)**   | **O(log n)**       | **O(1)** |
+| Fibonacci Heap      | O(1) amortized | O(log n) amortized | O(1)     |
+
+Binary Heap là cách triển khai **phổ biến nhất** vì cân bằng tốt giữa các phép toán.
+
+### Flowchart hoạt động
+
+insert(item, priority)extract_min()peek()Priority QueuePhép toán?Thêm item vào heap
+với key = priorityHeapify Up
+để duy trì heap propertyLấy root (min)
+thay root bằng node cuốiHeapify Down
+để duy trì heap propertyTrả về root
+không thay đổi heapPriority Queue
+đã cập nhật
+
+### Mô phỏng chi tiết
+
+Giả sử mình có một hệ thống xử lý task với priority (số nhỏ = ưu tiên cao):
+
+```
+insert("Email báo cáo", priority=3)
+insert("Fix bug production", priority=1)
+insert("Code review", priority=2)
+insert("Họp team", priority=4)
+extract_min()  → ?
+extract_min()  → ?
+```
+
+**Bước 1**: insert("Email báo cáo", 3)
+
+```
+Heap: [(3, "Email báo cáo")]
+```
+
+**Bước 2**: insert("Fix bug production", 1)
+
+```
+Heap trước heapify: [(3, "Email"), (1, "Fix bug")]
+1 < 3 → swap
+Heap: [(1, "Fix bug"), (3, "Email")]
+```
+
+**Bước 3**: insert("Code review", 2)
+
+```
+Heap trước heapify: [(1, "Fix bug"), (3, "Email"), (2, "Code review")]
+2 so với parent (1): 2 > 1 → không swap
+Heap: [(1, "Fix bug"), (3, "Email"), (2, "Code review")]
+
+Cây:
+         (1, Fix bug)
+        /            \
+  (3, Email)    (2, Code review)
+```
+
+**Bước 4**: insert("Họp team", 4)
+
+```
+Thêm vào cuối: index 3, parent = index 1 (giá trị 3)
+4 > 3 → không swap
+Heap: [(1, "Fix bug"), (3, "Email"), (2, "Code review"), (4, "Họp team")]
+
+Cây:
+             (1, Fix bug)
+            /            \
+      (3, Email)    (2, Code review)
+       /
+  (4, Họp team)
+```
+
+**Bước 5**: extract_min()
+
+```
+Lấy root: (1, "Fix bug production") ← ĐÂY LÀ KẾT QUẢ
+
+Swap root với node cuối: (4, "Họp team") lên root
+Xóa node cuối
+Heap: [(4, "Họp team"), (3, "Email"), (2, "Code review")]
+
+Heapify down:
+- Con nhỏ nhất: (2, "Code review") tại index 2
+- 4 > 2 → swap
+
+Heap: [(2, "Code review"), (3, "Email"), (4, "Họp team")]
+```
+
+**Bước 6**: extract_min()
+
+```
+Lấy root: (2, "Code review") ← ĐÂY LÀ KẾT QUẢ
+
+Swap root với node cuối: (4, "Họp team") lên root
+Xóa node cuối
+Heap: [(4, "Họp team"), (3, "Email")]
+
+Heapify down:
+- Con trái: (3, "Email")
+- 4 > 3 → swap
+
+Heap: [(3, "Email"), (4, "Họp team")]
+```
+
+Thứ tự xử lý: Fix bug → Code review → Email → Họp team. Đúng theo priority!
+
+### Python code hoàn chỉnh
+
+```python
+"""
+Priority Queue — Triển khai bằng Min Heap + sử dụng heapq
+"""
+import heapq
+
+
+class PriorityQueue:
+    """
+    Priority Queue triển khai bằng Min Heap.
+    Số priority nhỏ hơn = ưu tiên cao hơn.
+    """
+
+    def __init__(self):
+        self._heap = []
+        self._counter = 0  # Để phân biệt khi priority bằng nhau (FIFO)
+
+    def insert(self, item, priority):
+        """
+        Thêm item với mức ưu tiên.
+        Counter đảm bảo khi priority bằng nhau → item thêm trước ra trước.
+        """
+        # Tuple comparison: so sánh priority trước, rồi counter, rồi item
+        heapq.heappush(self._heap, (priority, self._counter, item))
+        self._counter += 1
+
+    def extract_min(self):
+        """Lấy và xóa item có priority cao nhất (số nhỏ nhất)."""
+        if self.is_empty():
+            raise IndexError("Priority Queue rỗng!")
+        priority, _, item = heapq.heappop(self._heap)
+        return item, priority
+
+    def peek(self):
+        """Xem item có priority cao nhất mà không xóa."""
+        if self.is_empty():
+            raise IndexError("Priority Queue rỗng!")
+        priority, _, item = self._heap[0]
+        return item, priority
+
+    def is_empty(self):
+        return len(self._heap) == 0
+
+    def size(self):
+        return len(self._heap)
+
+    def __repr__(self):
+        items = [(item, pri) for pri, _, item in sorted(self._heap)]
+        return f"PQ({items})"
+
+
+# ========================
+#  Test & Demo
+# ========================
+if __name__ == "__main__":
+    print("=" * 55)
+    print("DEMO: Priority Queue — Hệ thống xử lý task")
+    print("=" * 55)
+
+    pq = PriorityQueue()
+
+    # Thêm các task với priority (số nhỏ = ưu tiên cao)
+    tasks = [
+        ("Email báo cáo", 3),
+        ("Fix bug production", 1),
+        ("Code review", 2),
+        ("Họp team", 4),
+        ("Deploy hotfix", 1),  # Cùng priority với Fix bug
+    ]
+
+    for task, pri in tasks:
+        pq.insert(task, pri)
+        print(f"  Thêm: '{task}' (priority={pri})")
+
+    print(f"\n  Trạng thái: {pq}")
+    print(f"\n  Xử lý theo thứ tự ưu tiên:")
+
+    while not pq.is_empty():
+        task, pri = pq.extract_min()
+        print(f"    → [{pri}] {task}")
+
+    print("\n" + "=" * 55)
+    print("DEMO: Priority Queue với heapq trực tiếp")
+    print("=" * 55)
+
+    # Cách nhanh khi không cần class riêng
+    pq_simple = []
+    heapq.heappush(pq_simple, (2, "Giặt đồ"))
+    heapq.heappush(pq_simple, (1, "Nấu cơm"))
+    heapq.heappush(pq_simple, (3, "Dọn nhà"))
+
+    print("  Xử lý việc nhà theo priority:")
+    while pq_simple:
+        pri, task = heapq.heappop(pq_simple)
+        print(f"    → [{pri}] {task}")
+```
+
+### Phân tích độ phức tạp
+
+| Phép toán   | Time     | Space              |
+| :---------- | :------- | :----------------- |
+| insert      | O(log n) | O(1) per operation |
+| extract_min | O(log n) | O(1) per operation |
+| peek        | O(1)     | O(1)               |
+| Tổng space  | —        | O(n)               |
+
+### Ưu và nhược điểm
+
+**Ưu điểm:**
+
+- Luôn lấy được phần tử ưu tiên nhất trong O(log n)
+- Thêm phần tử nhanh O(log n)
+- Dùng counter trick để đảm bảo FIFO khi priority bằng nhau
+- `heapq` của Python rất nhanh (implement bằng C)
+
+**Nhược điểm:**
+
+- Không thể cập nhật priority của item đã có sẵn một cách hiệu quả (cần lazy deletion)
+- Không hỗ trợ tìm kiếm item bất kỳ trong O(1)
+- Python chỉ có min heap — cần negate trick cho max priority
+
+### Cải tiến
+
+- **Indexed Priority Queue**: Cho phép decrease-key/increase-key trong O(log n) — dùng thêm dictionary để map item → index trong heap. Rất hữu ích cho Dijkstra, Prim's algorithm.
+- **Lazy Deletion**: Thay vì xóa item, đánh dấu "đã xóa". Khi extract_min gặp item đã đánh dấu → bỏ qua. Trade-off: không gian bộ nhớ tăng nhưng thao tác nhanh hơn.

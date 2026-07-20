@@ -1,0 +1,9 @@
+# Unit_2. SQL Basic
+
+🔙 **Back to Parent**: [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/0.BSQL/📂index_0.BSQL|0.BSQL]]
+
+## 📁 Sub-Categories
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/0.BSQL/Unit_2. SQL Basic/Lecture_2.1. DML Statements/📂index_Lecture_2.1. DML Statements|Lecture_2.1. DML Statements]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/0.BSQL/Unit_2. SQL Basic/Lecture_2.2. SELECT Options/📂index_Lecture_2.2. SELECT Options|Lecture_2.2. SELECT Options]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/0.BSQL/Unit_2. SQL Basic/Lecture_2.3. Built-in Functions/📂index_Lecture_2.3. Built-in Functions|Lecture_2.3. Built-in Functions]]
+

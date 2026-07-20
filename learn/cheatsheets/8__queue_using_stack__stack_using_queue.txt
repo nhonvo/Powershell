@@ -1,0 +1,416 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/🥞index_07_Stack_Queue|07_Stack_Queue]]
+
+## 8. Queue using Stack / Stack using Queue
+
+### 8.1 Bài toán
+
+Hai bài toán thiết kế kinh điển:
+
+1. **Cài đặt Queue chỉ dùng Stack** (không dùng array hay linked list trực tiếp)
+2. **Cài đặt Stack chỉ dùng Queue**
+
+Đây là bài phỏng vấn rất phổ biến ở Google, Amazon, Meta.
+
+### 8.2 Queue using Two Stacks
+
+**Ví dụ thực tế**: Hình dung bạn có **2 cái hộp** (stack). Hộp `inbox` để nhận thư mới (enqueue). Khi cần lấy thư cũ nhất (dequeue), bạn đổ hết `inbox` sang `outbox` — thư cũ nhất giờ nằm trên cùng `outbox`.
+
+**Ý tưởng:**
+
+- `stack_in`: chứa phần tử mới (enqueue push vào đây)
+- `stack_out`: chứa phần tử chờ dequeue (đã đảo ngược thứ tự)
+- Khi dequeue mà `stack_out` rỗng → đổ hết `stack_in` sang `stack_out`
+
+**Flowchart:**
+
+dequeue()CóKhôngstack_out rỗng?Đổ hết stack_in sang stack_out
+while stack_in not empty:
+  stack_out.push(stack_in.pop())stack_out.pop()enqueue(x)Push x vào stack_in
+
+### 8.3 Mô phỏng chi tiết — Queue using Two Stacks
+
+```
+enqueue(1): stack_in=[1],      stack_out=[]
+enqueue(2): stack_in=[1,2],    stack_out=[]
+enqueue(3): stack_in=[1,2,3],  stack_out=[]
+
+dequeue():  stack_out rỗng → đổ stack_in sang stack_out
+            pop 3 từ in, push 3 vào out → in=[1,2], out=[3]
+            pop 2 từ in, push 2 vào out → in=[1],   out=[3,2]
+            pop 1 từ in, push 1 vào out → in=[],     out=[3,2,1]
+            Giờ pop stack_out → trả về 1 ✓
+            stack_in=[], stack_out=[3,2]
+
+enqueue(4): stack_in=[4],      stack_out=[3,2]
+
+dequeue():  stack_out KHÔNG rỗng → pop trực tiếp
+            trả về 2 ✓
+            stack_in=[4], stack_out=[3]
+
+dequeue():  trả về 3 ✓
+            stack_in=[4], stack_out=[]
+
+dequeue():  stack_out rỗng → đổ stack_in sang stack_out
+            out=[4]
+            pop → trả về 4 ✓
+
+Thứ tự ra: 1, 2, 3, 4 → Đúng FIFO! ✓
+```
+
+### 8.4 Code — Queue using Two Stacks
+
+#### Python
+
+```python
+class QueueUsingStacks:
+    """
+    Queue cài đặt bằng 2 stacks.
+    enqueue: O(1)
+    dequeue: O(1) amortized, O(n) worst case
+    """
+
+    def __init__(self):
+        self.stack_in = []    # Nhận phần tử mới
+        self.stack_out = []   # Phục vụ dequeue
+
+    def enqueue(self, x):
+        """Luôn O(1)."""
+        self.stack_in.append(x)
+
+    def dequeue(self):
+        """O(1) amortized."""
+        if not self.stack_out:
+            # Đổ hết stack_in sang stack_out
+            if not self.stack_in:
+                raise IndexError("Queue rỗng!")
+            while self.stack_in:
+                self.stack_out.append(self.stack_in.pop())
+        return self.stack_out.pop()
+
+    def peek(self):
+        """O(1) amortized."""
+        if not self.stack_out:
+            if not self.stack_in:
+                raise IndexError("Queue rỗng!")
+            while self.stack_in:
+                self.stack_out.append(self.stack_in.pop())
+        return self.stack_out[-1]
+
+    def is_empty(self):
+        return not self.stack_in and not self.stack_out
+
+    def size(self):
+        return len(self.stack_in) + len(self.stack_out)
+
+
+# --- Test ---
+q = QueueUsingStacks()
+q.enqueue(1)
+q.enqueue(2)
+q.enqueue(3)
+print(q.dequeue())  # 1
+print(q.dequeue())  # 2
+q.enqueue(4)
+print(q.dequeue())  # 3
+print(q.dequeue())  # 4
+```
+
+#### Python — LeetCode #232 format
+
+```python
+class MyQueue:
+    """
+    LeetCode #232: Implement Queue using Stacks.
+    Dùng 2 list làm 2 stack.
+    """
+
+    def __init__(self):
+        self.stack_in = []    # Nhận phần tử mới (enqueue)
+        self.stack_out = []   # Phục vụ dequeue/peek
+
+    def push(self, x: int) -> None:
+        """Enqueue — luôn O(1)."""
+        self.stack_in.append(x)
+
+    def pop(self) -> int:
+        """Dequeue — O(1) amortized."""
+        self.peek()  # Đảm bảo stack_out có phần tử
+        return self.stack_out.pop()
+
+    def peek(self) -> int:
+        """Xem phần tử đầu queue — O(1) amortized."""
+        if not self.stack_out:
+            # Đổ hết stack_in sang stack_out
+            while self.stack_in:
+                self.stack_out.append(self.stack_in.pop())
+        return self.stack_out[-1]
+
+    def empty(self) -> bool:
+        return not self.stack_in and not self.stack_out
+
+
+# --- Test (giống LeetCode) ---
+q = MyQueue()
+q.push(1)
+q.push(2)
+print(q.peek())   # 1
+print(q.pop())    # 1
+print(q.empty())  # False
+```
+
+### 8.5 Chứng minh Amortized O(1) cho dequeue
+
+**Phương pháp Aggregate Analysis:**
+
+Mỗi phần tử trong suốt vòng đời của nó trong queue:
+
+1. Được push vào `stack_in` đúng **1 lần**: cost = 1
+2. Được pop từ `stack_in` đúng **1 lần** (khi transfer): cost = 1
+3. Được push vào `stack_out` đúng **1 lần** (khi transfer): cost = 1
+4. Được pop từ `stack_out` đúng **1 lần** (khi dequeue): cost = 1
+
+Tổng cost cho 1 phần tử = 4. Cho n phần tử = 4n.
+
+Tổng cost cho n thao tác enqueue + n thao tác dequeue = 4n = O(n).
+
+Amortized cost mỗi thao tác = 4n / (2n) = 2 = **O(1)**.
+
+**Phương pháp Potential (Phi function):**
+
+Đặt hàm thế năng Phi = 2 * |stack_in|.
+
+- **enqueue(x)**: actual cost = 1 (push), Delta Phi = 2. Amortized = 1 + 2 = 3.
+- **dequeue() khi stack_out không rỗng**: actual cost = 1 (pop), Delta Phi = 0. Amortized = 1.
+- **dequeue() khi stack_out rỗng, stack_in có k phần tử**: actual cost = 2k + 1 (k pop + k push + 1 pop), Delta Phi = -2k. Amortized = 2k + 1 - 2k = 1.
+
+Amortized cost cho mọi trường hợp <= 3 = **O(1)**.
+
+### 8.6 Stack using Two Queues
+
+Ngược lại: cài đặt Stack dùng 2 Queue.
+
+**Cách 1: Push tốn kém (O(n) push, O(1) pop)**
+
+Khi push x:
+
+1. Enqueue x vào `q2` (queue phụ)
+2. Đổ hết `q1` sang `q2`
+3. Swap `q1` và `q2`
+
+Như vậy `q1` luôn có phần tử mới nhất ở đầu.
+
+**Cách 2: Pop tốn kém (O(1) push, O(n) pop)**
+
+Khi pop:
+
+1. Dequeue hết `q1` sang `q2`, **trừ phần tử cuối cùng**
+2. Phần tử cuối cùng chính là top → trả về
+3. Swap `q1` và `q2`
+
+**Mô phỏng Cách 1:**
+
+```
+push(1): q2=[1], đổ q1 (rỗng) sang q2, swap → q1=[1], q2=[]
+push(2): q2=[2], đổ q1=[1] sang q2 → q2=[2,1], swap → q1=[2,1], q2=[]
+push(3): q2=[3], đổ q1=[2,1] sang q2 → q2=[3,2,1], swap → q1=[3,2,1], q2=[]
+
+pop(): dequeue q1 → trả về 3 ✓   q1=[2,1]
+pop(): dequeue q1 → trả về 2 ✓   q1=[1]
+top(): peek q1 → 1 ✓
+```
+
+#### Python — Stack using Two Queues
+
+```python
+from collections import deque
+
+class StackUsingQueues:
+    """
+    Stack cài đặt bằng 2 queues.
+    push: O(n) — đổ hết q1 sang q2
+    pop:  O(1)
+    top:  O(1)
+    """
+
+    def __init__(self):
+        self.q1 = deque()  # Queue chính
+        self.q2 = deque()  # Queue phụ
+
+    def push(self, x):
+        """O(n) - đổ q1 sang q2 để x nằm đầu."""
+        # Bước 1: x vào q2
+        self.q2.append(x)
+
+        # Bước 2: đổ hết q1 sang q2
+        while self.q1:
+            self.q2.append(self.q1.popleft())
+
+        # Bước 3: swap q1, q2
+        self.q1, self.q2 = self.q2, self.q1
+
+    def pop(self):
+        """O(1)"""
+        if not self.q1:
+            raise IndexError("Stack rỗng!")
+        return self.q1.popleft()
+
+    def top(self):
+        """O(1)"""
+        if not self.q1:
+            raise IndexError("Stack rỗng!")
+        return self.q1[0]
+
+    def is_empty(self):
+        return len(self.q1) == 0
+
+    def size(self):
+        return len(self.q1)
+
+
+# --- Test ---
+s = StackUsingQueues()
+s.push(1)
+s.push(2)
+s.push(3)
+print(s.top())   # 3
+print(s.pop())   # 3
+print(s.pop())   # 2
+print(s.pop())   # 1
+```
+
+#### Python — LeetCode #225 format (Stack using ONE Queue)
+
+```python
+from collections import deque
+
+class MyStack:
+    """
+    LeetCode #225: Implement Stack using Queues.
+    Dùng CHỈ 1 queue (deque).
+    Mỗi khi push x, xoay queue để x lên đầu.
+    """
+
+    def __init__(self):
+        self.q = deque()
+
+    def push(self, x: int) -> None:
+        """O(n) — xoay queue để x lên đầu."""
+        self.q.append(x)
+        # Xoay (n-1) phần tử: đưa x lên front
+        for _ in range(len(self.q) - 1):
+            self.q.append(self.q.popleft())
+
+    def pop(self) -> int:
+        """O(1)"""
+        return self.q.popleft()
+
+    def top(self) -> int:
+        """O(1)"""
+        return self.q[0]
+
+    def empty(self) -> bool:
+        return len(self.q) == 0
+
+
+# --- Test (giống LeetCode) ---
+s = MyStack()
+s.push(1)
+s.push(2)
+print(s.top())   # 2
+print(s.pop())   # 2
+print(s.empty()) # False
+```
+
+### 8.7 Stack using ONE Queue
+
+Thực ra chỉ cần **1 queue** cũng cài được stack.
+
+**Ý tưởng**: Khi push x, enqueue x rồi **xoay** queue: dequeue rồi enqueue lại (n-1) lần. Như vậy x nằm ở front.
+
+```python
+from collections import deque
+
+class StackUsingOneQueue:
+    """Stack dùng chỉ 1 queue. push O(n), pop O(1)."""
+
+    def __init__(self):
+        self.q = deque()
+
+    def push(self, x):
+        """O(n) — xoay queue sau khi thêm x."""
+        self.q.append(x)
+        # Xoay n-1 phần tử: đưa x lên front
+        for _ in range(len(self.q) - 1):
+            self.q.append(self.q.popleft())
+
+    def pop(self):
+        """O(1)"""
+        if not self.q:
+            raise IndexError("Stack rỗng!")
+        return self.q.popleft()
+
+    def top(self):
+        """O(1)"""
+        if not self.q:
+            raise IndexError("Stack rỗng!")
+        return self.q[0]
+
+    def is_empty(self):
+        return len(self.q) == 0
+```
+
+### 8.8 Tổng kết độ phức tạp
+
+| Cấu trúc                           | enqueue/push | dequeue/pop        | Ghi chú          |
+| :--------------------------------- | :----------- | :----------------- | :--------------- |
+| Queue using 2 Stacks               | O(1)         | **O(1) amortized** | Cách tối ưu nhất |
+| Stack using 2 Queues (push costly) | O(n)         | O(1)               |                  |
+| Stack using 2 Queues (pop costly)  | O(1)         | O(n)               |                  |
+| Stack using 1 Queue                | O(n)         | O(1)               | Tiết kiệm bộ nhớ |
+
+**Best/Worst case cho Queue using 2 Stacks:**
+
+- **Best case dequeue**: O(1) — khi `stack_out` không rỗng
+- **Worst case dequeue**: O(n) — khi phải transfer n phần tử
+- **Amortized**: O(1) — như đã chứng minh ở trên
+
+### 8.9 Ưu nhược điểm
+
+**Queue using Stacks:**
+
+- Ưu: Amortized O(1) cho mọi thao tác — rất hiệu quả
+- Nhược: Worst case dequeue vẫn là O(n), không phù hợp cho real-time systems
+
+**Stack using Queues:**
+
+- Ưu: Là bài tập tư duy tốt
+- Nhược: Luôn có 1 thao tác O(n), không thực sự hữu ích trong thực tế (vì stack đã có sẵn)
+
+------
+
+## Tổng kết
+
+### Bảng so sánh tổng hợp
+
+| Cấu trúc        | Insert          | Delete          | Peek            | Min/Max         | Use case chính             |
+| :-------------- | :-------------- | :-------------- | :-------------- | :-------------- | :------------------------- |
+| Stack           | O(1) push       | O(1) pop        | O(1) top        | O(n)            | DFS, Undo, Expression eval |
+| Queue           | O(1) enqueue    | O(1) dequeue    | O(1) front      | O(n)            | BFS, Task scheduling       |
+| Deque           | O(1) cả hai đầu | O(1) cả hai đầu | O(1) cả hai đầu | O(n)            | Sliding window, Palindrome |
+| Min Stack       | O(1) push       | O(1) pop        | O(1) top        | **O(1)** getMin | Bài toán cần theo dõi min  |
+| Monotonic Stack | O(1) amortized  | O(1) amortized  | O(1)            | —               | NGE, Histogram, Rain water |
+
+### Lời khuyên khi luyện tập
+
+1. **Bắt đầu từ cơ bản**: Cài đặt Stack và Queue bằng cả array và linked list. Đảm bảo hiểu rõ trước khi qua bài nâng cao.
+2. **Monotonic Stack là chìa khóa**: Đây là kỹ thuật xuất hiện nhiều nhất trong competitive programming và phỏng vấn. Luyện ít nhất 10-15 bài.
+3. **Nhớ pattern**: Hầu hết bài Stack/Queue đều thuộc một trong các pattern sau:
+   - Matching (ngoặc, HTML tags)
+   - Monotonic (tìm phần tử lớn/nhỏ hơn gần nhất)
+   - Simulation (Queue using Stack, Min Stack)
+   - Expression (Shunting-yard)
+4. **Trong kỳ thi**: Dùng thư viện có sẵn (`collections.deque`, `list` trong Python) thay vì tự cài đặt từ đầu.
+5. **Bài tập đề xuất** (LeetCode):
+   - Easy: #20 Valid Parentheses, #155 Min Stack, #232 Queue using Stacks
+   - Medium: #150 Evaluate RPN, #739 Daily Temperatures, #503 Next Greater Element II
+   - Hard: #84 Largest Rectangle in Histogram, #42 Trapping Rain Water

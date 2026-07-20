@@ -1,0 +1,536 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/01_Basics/🔢index_01_Basics|01_Basics]]
+
+## 4. Bit Masking & XOR Tricks
+
+### Ví dụ đời thực
+
+**Bitmask giống như form khảo sát có checkbox:**
+
+Bạn có form đăng ký khóa học với 5 môn: Toán, Lý, Hóa, Sinh, Tin. Mỗi sinh viên chọn một tập hợp các môn. Thay vì lưu 5 biến boolean, bạn lưu 1 số 5-bit:
+
+```
+Toán=1, Lý=0, Hóa=1, Sinh=0, Tin=1 → 10101₂ = 21
+```
+
+Chỉ 1 số duy nhất mà biểu diễn được mọi tổ hợp!
+
+### 4.1 Bit Mask là gì?
+
+Bitmask là kỹ thuật dùng một số nguyên để biểu diễn **tập hợp con** của một tập hợp.
+
+Với tập hợp n phần tử, mỗi phần tử tương ứng với 1 bit:
+
+- Bit = 1: phần tử thuộc tập con
+- Bit = 0: phần tử không thuộc tập con
+
+```python
+# Tập hợp: {a, b, c, d} (4 phần tử, index 0-3)
+
+# Tập con {a, c} → bit 0 và bit 2 bật → 0101₂ = 5
+# Tập con {b, d} → bit 1 và bit 3 bật → 1010₂ = 10
+# Tập rỗng {} → 0000₂ = 0
+# Tập đầy đủ {a,b,c,d} → 1111₂ = 15
+
+# Tổng số tập con của n phần tử = 2^n
+```
+
+**Các phép toán trên tập hợp:**
+
+```python
+# Cho A = 0b1010 (tập {b, d})
+#     B = 0b1100 (tập {c, d})
+
+union       = A | B    # Hợp:      1110 → {b, c, d}
+intersection = A & B   # Giao:     1000 → {d}
+difference  = A & ~B   # Hiệu A\B: 0010 → {b}
+sym_diff    = A ^ B    # Đối xứng: 0110 → {b, c}
+complement  = ~A & 0xF # Bù:       0101 → {a, c}
+
+# Thêm phần tử thứ k
+A |= (1 << k)
+
+# Xóa phần tử thứ k
+A &= ~(1 << k)
+
+# Kiểm tra phần tử thứ k
+has_k = (A >> k) & 1
+
+# Đếm phần tử
+size = bin(A).count('1')
+```
+
+Phép toán tập hợp bằng BitmaskA = 1010
+{b, d}A | B = 1110
+Hợp: {b, c, d}B = 1100
+{c, d}A & B = 1000
+Giao: {d}A & ~B = 0010
+Hiệu: {b}A ^ B = 0110
+Đối xứng: {b, c}
+
+### 4.2 Duyệt tập con bằng Bitmask
+
+**Bài toán kinh điển**: Cho tập hợp n phần tử, duyệt qua tất cả 2ⁿ tập con.
+
+```python
+def enumerate_subsets(arr):
+    n = len(arr)
+    for mask in range(1 << n):  # 0 đến 2^n - 1
+        subset = []
+        for i in range(n):
+            if mask & (1 << i):  # bit thứ i bật → phần tử i thuộc tập con
+                subset.append(arr[i])
+        print(f"mask={mask:0{n}b} → {subset}")
+
+enumerate_subsets(['a', 'b', 'c'])
+```
+
+**Output:**
+
+```
+mask=000 → []
+mask=001 → ['a']
+mask=010 → ['b']
+mask=011 → ['a', 'b']
+mask=100 → ['c']
+mask=101 → ['a', 'c']
+mask=110 → ['b', 'c']
+mask=111 → ['a', 'b', 'c']
+```
+
+**Bài toán: Subset Sum** — Cho mảng n số, kiểm tra có tập con nào có tổng bằng target không.
+
+```python
+def subset_sum(arr, target):
+    n = len(arr)
+    for mask in range(1 << n):
+        total = 0
+        for i in range(n):
+            if mask & (1 << i):
+                total += arr[i]
+        if total == target:
+            return True
+    return False
+
+# subset_sum([3, 1, 4, 2], 6) → True (3+1+2 hoặc 4+2)
+```
+
+**Complexity:** O(n × 2ⁿ). Chỉ dùng khi n ≤ 20!
+
+SaiĐúngĐúngSaimask = 0mask < 2^n?Không tìm thấy
+return FalseTính tổng phần tử
+có bit = 1 trong masktổng == target?return Truemask += 1
+
+**Duyệt tập con của một tập con:**
+
+Bạn có mask S và muốn duyệt tất cả tập con của S:
+
+```python
+def enumerate_submasks(S):
+    """Duyệt tất cả tập con của bitmask S (bao gồm S và 0)"""
+    sub = S
+    while sub > 0:
+        print(f"  submask = {sub:b}")
+        sub = (sub - 1) & S  # trick: giảm 1 rồi AND với S
+    print(f"  submask = 0")
+
+# Ví dụ: S = 0b1010 (tập {b, d})
+# Submasks: 1010, 1000, 0010, 0000
+# Tức là: {b,d}, {d}, {b}, {}
+```
+
+**Tại sao `(sub - 1) & S` hoạt động?**
+
+```
+sub - 1: tắt bit thấp nhất và bật tất cả bit thấp hơn
+& S: chỉ giữ lại các bit thuộc S
+
+Ví dụ: S = 1010, sub = 1010
+sub - 1 = 1001
+(sub-1) & S = 1001 & 1010 = 1000
+
+sub = 1000
+sub - 1 = 0111
+(sub-1) & S = 0111 & 1010 = 0010
+
+sub = 0010
+sub - 1 = 0001
+(sub-1) & S = 0001 & 1010 = 0000 → dừng
+```
+
+**Complexity**: O(3ⁿ) cho tổng tất cả submask (theo lý thuyết tổ hợp, mỗi phần tử có 3 lựa chọn: thuộc S nhưng không thuộc sub, thuộc cả hai, không thuộc cả hai).
+
+### 4.3 XOR Tricks
+
+XOR có những tính chất toán học cực kỳ đẹp:
+
+| Tính chất    | Biểu thức                 | Ý nghĩa                |
+| :----------- | :------------------------ | :--------------------- |
+| Self-inverse | a ^ a = 0                 | XOR với chính mình = 0 |
+| Identity     | a ^ 0 = a                 | XOR với 0 = giữ nguyên |
+| Commutative  | a ^ b = b ^ a             | Giao hoán              |
+| Associative  | (a ^ b) ^ c = a ^ (b ^ c) | Kết hợp                |
+
+**Chứng minh a ^ a = 0:**
+
+```
+Xét từng bit:
+- Nếu bit = 0: 0 ^ 0 = 0
+- Nếu bit = 1: 1 ^ 1 = 0
+→ Mọi bit đều = 0 → kết quả = 0  ∎
+```
+
+**Trick 1: Tìm số xuất hiện lẻ lần**
+
+Bài toán: Mảng có n số, mỗi số xuất hiện 2 lần, trừ đúng 1 số xuất hiện 1 lần. Tìm số đó.
+
+```python
+def find_single(arr):
+    result = 0
+    for x in arr:
+        result ^= x
+    return result
+
+# Ví dụ: [4, 1, 2, 1, 2]
+# 0 ^ 4 = 4
+# 4 ^ 1 = 5
+# 5 ^ 2 = 7
+# 7 ^ 1 = 6   (1 ^ 1 = 0, triệt tiêu)
+# 6 ^ 2 = 4   (2 ^ 2 = 0, triệt tiêu)
+# Kết quả: 4
+```
+
+**Chứng minh:**
+
+```
+Gọi mảng chứa các số: a₁, a₁, a₂, a₂, ..., aₖ, aₖ, x
+(mỗi số ai xuất hiện 2 lần, x xuất hiện 1 lần)
+
+XOR tất cả = (a₁ ^ a₁) ^ (a₂ ^ a₂) ^ ... ^ (aₖ ^ aₖ) ^ x
+           = 0 ^ 0 ^ ... ^ 0 ^ x     (vì a ^ a = 0)
+           = x  ∎
+
+Time: O(n)
+Space: O(1)  ← cực tốt!
+```
+
+result = 0XOR 4
+result = 4XOR 1
+result = 5XOR 2
+result = 7XOR 1
+result = 6XOR 2
+result = 4Kết quả: 4
+
+**Trick 2: Tìm 2 số xuất hiện lẻ lần**
+
+Bài toán: Mảng có n số, mỗi số xuất hiện 2 lần, trừ đúng 2 số a, b xuất hiện 1 lần. Tìm a và b.
+
+```python
+def find_two_singles(arr):
+    # Bước 1: XOR tất cả → được a ^ b
+    xor_all = 0
+    for x in arr:
+        xor_all ^= x
+    # xor_all = a ^ b (≠ 0 vì a ≠ b)
+
+    # Bước 2: Tìm bit phân biệt (bit mà a và b khác nhau)
+    diff_bit = xor_all & (-xor_all)  # bit 1 thấp nhất
+
+    # Bước 3: Chia mảng thành 2 nhóm theo bit đó
+    group1 = group2 = 0
+    for x in arr:
+        if x & diff_bit:
+            group1 ^= x
+        else:
+            group2 ^= x
+
+    return group1, group2
+
+# find_two_singles([1, 2, 3, 2, 1, 4])
+# xor_all = 3 ^ 4 = 7 = 111₂
+# diff_bit = 1 (bit 0)
+# Nhóm bit 0 = 1: [1, 3, 1] → 1^3^1 = 3
+# Nhóm bit 0 = 0: [2, 2, 4] → 2^2^4 = 4
+# Kết quả: (3, 4)
+```
+
+**Giải thích chi tiết:**
+
+```
+Vì a ≠ b, nên a ^ b ≠ 0 → phải có ít nhất 1 bit khác nhau.
+
+Lấy bit khác nhau đó (diff_bit). Chia tất cả số thành 2 nhóm:
+- Nhóm 1: các số có bit đó = 1
+- Nhóm 2: các số có bit đó = 0
+
+Vì a và b khác nhau ở bit này → a vào 1 nhóm, b vào nhóm kia.
+Các cặp số giống nhau (xuất hiện 2 lần) luôn vào CÙNG nhóm.
+→ XOR mỗi nhóm sẽ cho ra a và b riêng biệt.  ∎
+
+Time: O(n), Space: O(1)
+```
+
+**Trick 3: XOR từ 0 đến n**
+
+```python
+def xor_0_to_n(n):
+    """Tính 0 ^ 1 ^ 2 ^ ... ^ n"""
+    # Pattern lặp mỗi 4 số:
+    # n % 4 == 0 → n
+    # n % 4 == 1 → 1
+    # n % 4 == 2 → n + 1
+    # n % 4 == 3 → 0
+    r = n % 4
+    if r == 0: return n
+    if r == 1: return 1
+    if r == 2: return n + 1
+    return 0
+
+# Tại sao?
+# 0^1 = 1, 0^1^2 = 3, 0^1^2^3 = 0, 0^1^2^3^4 = 4
+# 0^...^5 = 1, 0^...^6 = 7, 0^...^7 = 0, 0^...^8 = 8
+# Pattern: n, 1, n+1, 0 lặp lại mỗi 4 số
+```
+
+**Chứng minh pattern:**
+
+```
+Xét 4 số liên tiếp bắt đầu từ 4k:
+4k, 4k+1, 4k+2, 4k+3
+
+Bit thấp nhất (bit 0): 0, 1, 0, 1 → XOR = 0
+Bit thứ 1:             0, 0, 1, 1 → XOR = 0
+
+→ 4k ^ (4k+1) ^ (4k+2) ^ (4k+3) = 0
+
+Vậy XOR của mỗi nhóm 4 số liên tiếp = 0.
+
+XOR(0..n) = XOR(0..4⌊n/4⌋-1) ^ XOR(4⌊n/4⌋..n)
+           = 0 ^ XOR(4⌊n/4⌋..n)
+
+Tùy thuộc n%4, ta chỉ cần XOR 0-3 số cuối.  ∎
+```
+
+**Trick 4: Tìm XOR trong đoạn [L, R]**
+
+```python
+def xor_range(L, R):
+    """Tính L ^ (L+1) ^ ... ^ R"""
+    return xor_0_to_n(R) ^ xor_0_to_n(L - 1)
+
+# Vì: XOR(L..R) = XOR(0..R) ^ XOR(0..L-1)
+# (các số 0..L-1 xuất hiện 2 lần → triệt tiêu)
+
+# Time: O(1)!
+```
+
+### 4.4 Bài toán kinh điển
+
+**Bài 1: Traveling Salesman Problem (TSP) bằng Bitmask DP**
+
+Bài toán người bán hàng: Đi thăm tất cả n thành phố đúng 1 lần rồi quay về, tổng quãng đường ngắn nhất.
+
+```python
+import sys
+
+def tsp(dist):
+    """
+    dist[i][j] = khoảng cách từ thành phố i đến j
+    Trả về tổng quãng đường ngắn nhất
+    """
+    n = len(dist)
+    INF = sys.maxsize
+
+    # dp[mask][i] = chi phí nhỏ nhất để đi qua tập thành phố 'mask'
+    #               và đang ở thành phố i
+    dp = [[INF] * n for _ in range(1 << n)]
+    dp[1][0] = 0  # Bắt đầu từ thành phố 0
+
+    for mask in range(1 << n):
+        for u in range(n):
+            if dp[mask][u] == INF:
+                continue
+            if not (mask & (1 << u)):
+                continue
+            # Thử đi đến thành phố v chưa thăm
+            for v in range(n):
+                if mask & (1 << v):
+                    continue  # đã thăm v rồi
+                new_mask = mask | (1 << v)
+                new_cost = dp[mask][u] + dist[u][v]
+                dp[new_mask][v] = min(dp[new_mask][v], new_cost)
+
+    # Quay về thành phố 0
+    full_mask = (1 << n) - 1
+    result = INF
+    for u in range(n):
+        if dp[full_mask][u] + dist[u][0] < result:
+            result = dp[full_mask][u] + dist[u][0]
+
+    return result
+```
+
+**Simulation — TSP 4 thành phố:**
+
+```
+Khoảng cách:
+     0   1   2   3
+0 [  0, 10, 15, 20]
+1 [ 10,  0, 35, 25]
+2 [ 15, 35,  0, 30]
+3 [ 20, 25, 30,  0]
+
+dp[0001][0] = 0       (ở thành phố 0, đã thăm {0})
+
+Từ (0001, 0):
+  → thăm 1: dp[0011][1] = 0 + 10 = 10
+  → thăm 2: dp[0101][2] = 0 + 15 = 15
+  → thăm 3: dp[1001][3] = 0 + 20 = 20
+
+Từ (0011, 1):
+  → thăm 2: dp[0111][2] = min(∞, 10+35) = 45
+  → thăm 3: dp[1011][3] = min(∞, 10+25) = 35
+
+... (tiếp tục cho tất cả mask)
+
+Kết quả: dp[1111][u] + dist[u][0] → chọn min
+Đáp án: 80 (đường 0→1→3→2→0: 10+25+30+15 = 80)
+```
+
+dp[0001][0] = 0
+Ở TP 0, đã thăm {'{0}'}dp[0011][1] = 10
+Đi 0→1dp[0101][2] = 15
+Đi 0→2dp[1001][3] = 20
+Đi 0→3dp[0111][2] = 45
+Đi 0→1→2dp[1011][3] = 35
+Đi 0→1→3dp[1011][3] = 20+25?
+So sánh với 35dp[1111][2] = 35+30=65
+Đi 0→1→3→2Quay về: 65+15 = 80
+
+**Complexity:**
+
+- **Time**: O(2ⁿ × n²) — với mỗi mask (2ⁿ), mỗi thành phố u (n), thử n thành phố v.
+- **Space**: O(2ⁿ × n) — bảng DP.
+- **So sánh**: Brute force (thử mọi hoán vị) = O(n!). Với n=20: n! ≈ 2.4×10¹⁸ vs 2²⁰ × 400 ≈ 4×10⁸ → nhanh hơn **hàng tỷ lần**!
+
+**Bài 2: Counting bits — Đếm số bit 1 cho mỗi số từ 0 đến n**
+
+```python
+def count_bits_range(n):
+    """
+    Trả về mảng ans[i] = số bit 1 của i, cho i = 0..n
+    LeetCode 338 - Counting Bits
+    """
+    ans = [0] * (n + 1)
+    for i in range(1, n + 1):
+        # Trick: i có cùng số bit 1 như i>>1, cộng thêm bit cuối
+        ans[i] = ans[i >> 1] + (i & 1)
+    return ans
+
+# count_bits_range(7) → [0, 1, 1, 2, 1, 2, 2, 3]
+# i=0: 000 → 0 bit
+# i=1: 001 → 1 bit
+# i=2: 010 → 1 bit
+# i=3: 011 → 2 bit
+# i=4: 100 → 1 bit
+# i=5: 101 → 2 bit
+# i=6: 110 → 2 bit
+# i=7: 111 → 3 bit
+```
+
+**Chứng minh công thức `ans[i] = ans[i >> 1] + (i & 1)`:**
+
+```
+Biểu diễn nhị phân: i = bₖbₖ₋₁...b₁b₀
+
+i >> 1 = bₖbₖ₋₁...b₁  (bỏ bit cuối)
+i & 1 = b₀              (lấy bit cuối)
+
+Số bit 1 của i = số bit 1 của (i >> 1) + b₀
+              = ans[i >> 1] + (i & 1)  ∎
+```
+
+### 4.5 Bài tập thực hành
+
+**Bài 1:** Cho tập hợp S = {0, 1, 2, 3}. Dùng bitmask, tìm tất cả tập con có đúng 2 phần tử.
+
+<details style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);"><summary style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); display: list-item;">Đáp án</summary><pre style="box-sizing: border-box; border: 1px solid rgba(255, 255, 255, 0.08); margin: 1.5rem 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: 0.875rem; color: rgb(205, 214, 244) !important; background: rgb(30, 30, 46) !important; border-radius: 0.5rem; font-weight: 400; line-height: 1.7; overflow-x: auto; padding-inline: 1.14286em; padding: 1.25rem;"><code class="hljs language-python" style="box-sizing: border-box; border: none; margin: 0px; padding: 0px !important; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: &quot;Geist Mono&quot;, &quot;Geist Mono Fallback&quot;, ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: inherit; color: inherit !important; font-weight: inherit; line-height: inherit; background: 0px 0px !important; border-radius: 0px;">n = <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">4</span>
+<span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">for</span> mask <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">in</span> <span class="hljs-built_in" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">range</span>(<span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">1</span> &lt;&lt; n):
+    <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">if</span> <span class="hljs-built_in" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">bin</span>(mask).count(<span class="hljs-string" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(166, 227, 161);">'1'</span>) == <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">2</span>:
+        subset = [i <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">for</span> i <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">in</span> <span class="hljs-built_in" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">range</span>(n) <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">if</span> mask &amp; (<span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">1</span> &lt;&lt; i)]
+        <span class="hljs-built_in" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">print</span>(subset)
+
+<span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># Output:</span>
+<span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># [0, 1] → mask = 0011</span>
+<span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># [0, 2] → mask = 0101</span>
+<span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># [1, 2] → mask = 0110</span>
+<span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># [0, 3] → mask = 1001</span>
+<span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># [1, 3] → mask = 1010</span>
+<span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># [2, 3] → mask = 1100</span>
+<span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># C(4,2) = 6 tập con ✓</span>
+</code></pre></details>
+
+**Bài 2:** Mảng [2, 3, 7, 6, 8, 1]. Dùng bitmask tìm tập con có tổng = 10.
+
+<details style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);"><summary style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); display: list-item;">Đáp án</summary><pre style="box-sizing: border-box; border: 1px solid rgba(255, 255, 255, 0.08); margin: 1.5rem 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: 0.875rem; color: rgb(205, 214, 244) !important; background: rgb(30, 30, 46) !important; border-radius: 0.5rem; font-weight: 400; line-height: 1.7; overflow-x: auto; padding-inline: 1.14286em; padding: 1.25rem;"><code class="hljs language-python" style="box-sizing: border-box; border: none; margin: 0px; padding: 0px !important; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: &quot;Geist Mono&quot;, &quot;Geist Mono Fallback&quot;, ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: inherit; color: inherit !important; font-weight: inherit; line-height: inherit; background: 0px 0px !important; border-radius: 0px;">arr = [<span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">2</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">3</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">7</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">6</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">8</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">1</span>]
+n = <span class="hljs-built_in" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">len</span>(arr)
+<span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">for</span> mask <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">in</span> <span class="hljs-built_in" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">range</span>(<span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">1</span> &lt;&lt; n):
+    total = <span class="hljs-built_in" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">sum</span>(arr[i] <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">for</span> i <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">in</span> <span class="hljs-built_in" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">range</span>(n) <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">if</span> mask &amp; (<span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">1</span> &lt;&lt; i))
+    <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">if</span> total == <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">10</span>:
+        subset = [arr[i] <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">for</span> i <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">in</span> <span class="hljs-built_in" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">range</span>(n) <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">if</span> mask &amp; (<span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">1</span> &lt;&lt; i)]
+        <span class="hljs-built_in" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">print</span>(<span class="hljs-string" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(166, 227, 161);">f"mask=<span class="hljs-subst" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);">{mask:06b}</span>, subset=<span class="hljs-subst" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);">{subset}</span>"</span>)
+
+<span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># Có thể tìm được: {2, 8}, {3, 7}, {2, 7, 1}, {3, 6, 1}, ...</span>
+</code></pre></details>
+
+**Bài 3:** Cho mảng [5, 3, 5, 7, 3, 7, 9]. Dùng XOR tìm số xuất hiện 1 lần.
+
+<details style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);"><summary style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); display: list-item;">Đáp án</summary><pre style="box-sizing: border-box; border: 1px solid rgba(255, 255, 255, 0.08); margin: 1.5rem 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: 0.875rem; color: rgb(205, 214, 244) !important; background: rgb(30, 30, 46) !important; border-radius: 0.5rem; font-weight: 400; line-height: 1.7; overflow-x: auto; padding-inline: 1.14286em; padding: 1.25rem;"><code style="box-sizing: border-box; border: none; margin: 0px; padding: 0px !important; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: &quot;Geist Mono&quot;, &quot;Geist Mono Fallback&quot;, ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: inherit; color: inherit !important; font-weight: inherit; line-height: inherit; background: 0px 0px !important; border-radius: 0px;">5 ^ 3 ^ 5 ^ 7 ^ 3 ^ 7 ^ 9
+= (5 ^ 5) ^ (3 ^ 3) ^ (7 ^ 7) ^ 9
+= 0 ^ 0 ^ 0 ^ 9
+= 9
+
+Kết quả: 9
+</code></pre></details>
+
+**Bài 4:** Tính 5 ^ 6 ^ 7 ^ 8 ^ 9 ^ 10 bằng trick XOR range.
+
+<details style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);"><summary style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); display: list-item;">Đáp án</summary><pre style="box-sizing: border-box; border: 1px solid rgba(255, 255, 255, 0.08); margin: 1.5rem 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: 0.875rem; color: rgb(205, 214, 244) !important; background: rgb(30, 30, 46) !important; border-radius: 0.5rem; font-weight: 400; line-height: 1.7; overflow-x: auto; padding-inline: 1.14286em; padding: 1.25rem;"><code class="hljs language-python" style="box-sizing: border-box; border: none; margin: 0px; padding: 0px !important; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: &quot;Geist Mono&quot;, &quot;Geist Mono Fallback&quot;, ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: inherit; color: inherit !important; font-weight: inherit; line-height: inherit; background: 0px 0px !important; border-radius: 0px;"><span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">def</span> <span class="hljs-title function_" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(137, 180, 250);">xor_0_to_n</span>(<span class="hljs-params" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(205, 214, 244);">n</span>):
+    r = n % <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">4</span>
+    <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">if</span> r == <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">0</span>: <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">return</span> n
+    <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">if</span> r == <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">1</span>: <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">return</span> <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">1</span>
+    <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">if</span> r == <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">2</span>: <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">return</span> n + <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">1</span>
+    <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">return</span> <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">0</span>
+
+<span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># XOR(5..10) = XOR(0..10) ^ XOR(0..4)</span>
+<span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># XOR(0..10): 10 % 4 = 2 → 10 + 1 = 11</span>
+<span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># XOR(0..4):  4 % 4 = 0 → 4</span>
+
+<span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># Kết quả: 11 ^ 4 = 1011 ^ 0100 = 1111 = 15</span>
+
+<span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># Kiểm tra: 5^6 = 3, 3^7 = 4, 4^8 = 12, 12^9 = 5, 5^10 = 15 ✓</span>
+</code></pre></details>
+
+**Bài 5 (Nâng cao):** Viết code TSP bằng bitmask DP cho 5 thành phố. Tự tạo ma trận khoảng cách và chạy thử.
+
+<details style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);"><summary style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); display: list-item;">Gợi ý</summary><p style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 1.25em 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);">Dùng code ở mục 4.4, thay<span>&nbsp;</span><code style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0.15rem 0.4rem; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: &quot;Geist Mono&quot;, &quot;Geist Mono Fallback&quot;, ui-monospace, SFMono-Regular, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: 0.85em; color: lab(69.4152 15.3545 -53.5513); font-weight: 500; background: lab(13 0 0); border-radius: 0.25rem;">dist</code><span>&nbsp;</span>bằng ma trận 5×5. Nhớ rằng n=5 thì chỉ có 2⁵=32 mask, rất nhanh.</p><pre style="box-sizing: border-box; border: 1px solid rgba(255, 255, 255, 0.08); margin: 1.5rem 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: 0.875rem; color: rgb(205, 214, 244) !important; background: rgb(30, 30, 46) !important; border-radius: 0.5rem; font-weight: 400; line-height: 1.7; overflow-x: auto; padding-inline: 1.14286em; padding: 1.25rem;"><code class="hljs language-python" style="box-sizing: border-box; border: none; margin: 0px; padding: 0px !important; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: &quot;Geist Mono&quot;, &quot;Geist Mono Fallback&quot;, ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: inherit; color: inherit !important; font-weight: inherit; line-height: inherit; background: 0px 0px !important; border-radius: 0px;">dist = [
+    [<span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">0</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">3</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">4</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">2</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">7</span>],
+    [<span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">3</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">0</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">4</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">6</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">3</span>],
+    [<span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">4</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">4</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">0</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">5</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">8</span>],
+    [<span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">2</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">6</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">5</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">0</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">6</span>],
+    [<span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">7</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">3</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">8</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">6</span>, <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">0</span>],
+]
+<span class="hljs-built_in" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">print</span>(tsp(dist))  <span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># Tự chạy và kiểm tra</span>
+</code></pre></details>
+
+------
+
+## Tổng kết Section 1
+
+| Chủ đề            | Key Takeaway                                                 |
+| :---------------- | :----------------------------------------------------------- |
+| **Complexity**    | Big O đo tốc độ tăng trưởng, không phải thời gian chạy thực tế. Luôn phân tích worst case. |
+| **Math**          | GCD (Euclid) = O(log n). Sàng nguyên tố = O(n log log n). Fast pow = O(log n). Modular arithmetic tránh overflow. |
+| **Bit Basics**    | `n & 1` kiểm tra chẵn/lẻ. `n & (n-1)` tắt bit thấp nhất. `n & (-n)` lấy bit thấp nhất. |
+| **Bitmask & XOR** | Bitmask biểu diễn tập con (2ⁿ). XOR triệt tiêu cặp giống nhau. Bitmask DP giải TSP trong O(2ⁿ·n²). |
+
+**Tiếp theo:** Section 2 sẽ đi vào **Arrays & Sorting** — nền tảng của mọi cấu trúc dữ liệu.

@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/sps
+  - sps
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 SPS MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/scrum/SPS/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/scrum/SPS/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/scrum/SPS/SPS Mindmap\|🗺️ SPS Mindmap]]
+- [[certifications/scrum/SPS/SPS Flashcards\|🃏 SPS Flashcards]]
+- [[certifications/scrum/SPS/SPS_Scraped_Question_Bank\|🗃️ SPS Scraped Question Bank]]

@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/ab-900
+  - ab900
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AB-900: Microsoft 365 Copilot and Agent Administration Fundamentals MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/AB-900/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/AB-900/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AB-900/AB-900 Mindmap\|🗺️ AB-900 Mindmap]]
+- [[certifications/microsoft/AB-900/AB-900 Flashcards\|🃏 AB-900 Flashcards]]
+- [[certifications/microsoft/AB-900/AB-900_Scraped_Question_Bank\|🗃️ AB-900 Scraped Question Bank]]

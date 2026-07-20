@@ -1,0 +1,89 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 3
+
+## Part 1
+**Q1.** はこの　中に　ねこが　います。
+- **A.** うち
+- **B.** にわ
+- **C.** なか
+- **D.** そと
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3中 (TRUNG)：TrongTrong hộp c&oacute; con m&egrave;o.</p>
+</details>
+
+---
+**Q2.** せんせいは　ぜんいんで　百人　います。
+- **A.** ひゃくじん
+- **B.** ひゃくにん
+- **C.** びゃくじん
+- **D.** びゃくにん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2百人 (B&Aacute;CH - NH&Acirc;N)：100 ngườiGi&aacute;o vi&ecirc;n c&oacute; tất cả 100 người.</p>
+</details>
+
+---
+**Q3.** ちかくに　高校が　あります。
+- **A.** こうこう
+- **B.** こうこ
+- **C.** ここう
+- **D.** ここ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1高校 (CAO - HIỆU)：trường cấp 3C&oacute; một trường cấp 3 ở gần đ&acirc;y.</p>
+</details>
+
+---
+**Q4.** けさは　九じに　おきました。
+- **A.** くじ
+- **B.** きゅうじ
+- **C.** よじ
+- **D.** よんじ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1九じ (CỬU)：9 giờS&aacute;ng nay t&ocirc;i dậy l&uacute;c 9 giờ.</p>
+</details>
+
+---
+**Q5.** すぐ　ここに　来て　ください。
+- **A.** でて
+- **B.** きて
+- **C.** きいて
+- **D.** だして
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2来る (LAI)：đếnH&atilde;y đến đ&acirc;y ngay lập tức.</p>
+</details>
+
+---
+**Q6.** この　とけいは　安いです。
+- **A.** たかい
+- **B.** かるい
+- **C.** やすい
+- **D.** おもい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3安い (AN)：rẻ tiềnC&aacute;i đồng hồ n&agrave;y rẻ tiền.</p>
+</details>
+
+---
+**Q7.** あそこで　やまださんが　歌って　います。
+- **A.** わらって
+- **B.** うたって
+- **C.** はしって
+- **D.** おこって
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2歌う (CA)：h&aacute;tAnh Yamada đang h&aacute;t ở chỗ kia.</p>
+</details>
+
+---

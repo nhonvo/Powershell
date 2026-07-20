@@ -1,0 +1,236 @@
+{
+  "Meta": {
+    "Id": "deck_3__diameter_____ng_k_nh_c_y_",
+    "Topic": "3. Diameter (Đường kính cây)",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "3__diameter_____ng_k_nh_c_y_"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 11
+  },
+  "Cards": [
+    {
+      "Id": "card_01100",
+      "Front": "Lời gọi",
+      "Back": "left_h | right_h | Diameter qua node | max_diameter | Return",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. diameter (đường kính cây)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01101",
+      "Front": "`dfs(8)`",
+      "Back": "-1 | -1 | -1+(-1)+2=0 | 0 | 0",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. diameter (đường kính cây)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01102",
+      "Front": "`dfs(4)`",
+      "Back": "0 | -1 | 0+(-1)+2=1 | 1 | 1",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. diameter (đường kính cây)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01103",
+      "Front": "`dfs(5)`",
+      "Back": "-1 | -1 | -1+(-1)+2=0 | 1 | 0",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. diameter (đường kính cây)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01104",
+      "Front": "`dfs(2)`",
+      "Back": "1 | 0 | 1+0+2=**3** | **3** | 2",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. diameter (đường kính cây)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01105",
+      "Front": "`dfs(3)`",
+      "Back": "-1 | -1 | -1+(-1)+2=0 | 3 | 0",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. diameter (đường kính cây)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01106",
+      "Front": "`dfs(1)`",
+      "Back": "2 | 0 | 2+0+2=4 | **4** | 3",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. diameter (đường kính cây)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01107",
+      "Front": "Trường hợp",
+      "Back": "Diameter | Ví dụ",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. diameter (đường kính cây)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01108",
+      "Front": "Best case",
+      "Back": "0 | Chỉ có 1 node",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. diameter (đường kính cây)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01109",
+      "Front": "Worst case cho giá trị",
+      "Back": "n - 1 | Cây suy biến (linked list)",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. diameter (đường kính cây)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01110",
+      "Front": "Cây cân bằng",
+      "Back": "~2 * log(n) | Perfect binary tree",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. diameter (đường kính cây)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/dp-420
+  - dp420
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 DP-420: Designing and Implementing Cloud-Native Applications Using Microsoft Azure Cosmos DB MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/DP-420/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/DP-420/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/DP-420/DP-420 Mindmap\|🗺️ DP-420 Mindmap]]
+- [[certifications/microsoft/DP-420/DP-420 Flashcards\|🃏 DP-420 Flashcards]]
+- [[certifications/microsoft/DP-420/DP-420_Scraped_Question_Bank\|🗃️ DP-420 Scraped Question Bank]]

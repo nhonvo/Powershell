@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/ai-300
+  - ai300
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AI-300: Operationalizing Machine Learning and Generative AI Solutions MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/AI-300/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/AI-300/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AI-300/AI-300 Mindmap\|🗺️ AI-300 Mindmap]]
+- [[certifications/microsoft/AI-300/AI-300 Flashcards\|🃏 AI-300 Flashcards]]
+- [[certifications/microsoft/AI-300/AI-300_Scraped_Question_Bank\|🗃️ AI-300 Scraped Question Bank]]

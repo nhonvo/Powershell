@@ -1,0 +1,369 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/01_Basics/🔢index_01_Basics|01_Basics]]
+
+## 3. Bit Manipulation Basics
+
+### Ví dụ đời thực
+
+Hãy tưởng tượng bạn có 8 công tắc đèn trên tường. Mỗi công tắc chỉ có 2 trạng thái: BẬT (1) hoặc TẮT (0). Tổ hợp 8 công tắc = 1 byte = 256 trạng thái khác nhau.
+
+Tại sao cần biết Bit Manipulation?
+
+1. **Nhanh hơn**: Phép toán bit nhanh hơn phép toán số học vì CPU xử lý trực tiếp trên bit.
+2. **Tiết kiệm bộ nhớ**: Dùng 1 số int 32 bit để lưu 32 cờ true/false thay vì 32 biến boolean.
+3. **Trick hay**: Nhiều bài toán có lời giải cực kỳ đẹp bằng bit manipulation.
+
+### 3.1 Hệ nhị phân — Binary
+
+Mọi dữ liệu trong máy tính đều là dãy bit 0 và 1.
+
+**Chuyển đổi thập phân → nhị phân:**
+
+```
+Ví dụ: 13₁₀ = ?₂
+
+13 / 2 = 6 dư 1   ←
+ 6 / 2 = 3 dư 0   ←
+ 3 / 2 = 1 dư 1   ← đọc từ dưới lên
+ 1 / 2 = 0 dư 1   ←
+
+13₁₀ = 1101₂
+```
+
+**Chuyển đổi nhị phân → thập phân:**
+
+```
+1101₂ = 1×2³ + 1×2² + 0×2¹ + 1×2⁰
+      = 8 + 4 + 0 + 1
+      = 13₁₀
+```
+
+**Bảng lũy thừa 2 cần nhớ:**
+
+| 2⁰   | 2¹   | 2²   | 2³   | 2⁴   | 2⁵   | 2⁶   | 2⁷   | 2⁸   | 2⁹   | 2¹⁰  |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1    | 2    | 4    | 8    | 16   | 32   | 64   | 128  | 256  | 512  | 1024 |
+
+**Biểu diễn số âm — Two's complement:**
+
+Máy tính biểu diễn số âm bằng phương pháp bù 2 (two's complement):
+
+```
+Với 8-bit:
+ 5 = 00000101
+-5 = NOT(00000101) + 1 = 11111010 + 1 = 11111011
+
+Kiểm tra: 00000101 + 11111011 = 100000000 (bit tràn bị bỏ) = 0 ✓
+```
+
+### 3.2 Các phép toán Bitwise
+
+**AND ( & ) — Cả hai bit đều 1 thì kết quả mới là 1**
+
+```
+  1 0 1 1   (11)
+& 1 1 0 1   (13)
+---------
+  1 0 0 1   (9)
+```
+
+**OR ( | ) — Chỉ cần một bit là 1 thì kết quả là 1**
+
+```
+  1 0 1 1   (11)
+| 1 1 0 1   (13)
+---------
+  1 1 1 1   (15)
+```
+
+**XOR ( ^ ) — Hai bit khác nhau thì kết quả là 1**
+
+```
+  1 0 1 1   (11)
+^ 1 1 0 1   (13)
+---------
+  0 1 1 0   (6)
+```
+
+**NOT ( ~ ) — Đảo ngược tất cả bit**
+
+```
+~ 1 0 1 1   (11)
+---------
+  0 1 0 0   (-12 trong two's complement 32-bit)
+```
+
+**Left Shift ( << ) — Dịch trái, thêm 0 vào bên phải**
+
+```
+1011 << 2 = 101100
+
+Tổng quát: a << k = a × 2^k
+Ví dụ: 5 << 3 = 5 × 8 = 40
+```
+
+**Right Shift ( >> ) — Dịch phải, bỏ bit bên phải**
+
+```
+1011 >> 2 = 10
+
+Tổng quát: a >> k = a / 2^k (chia nguyên)
+Ví dụ: 40 >> 3 = 40 / 8 = 5
+```
+
+**Bảng tổng hợp:**
+
+| A    | B    | A & B | A \| B | A ^ B |
+| :--- | :--- | :---- | :----- | :---- |
+| 0    | 0    | 0     | 0      | 0     |
+| 0    | 1    | 0     | 1      | 1     |
+| 1    | 0    | 0     | 1      | 1     |
+| 1    | 1    | 1     | 1      | 0     |
+
+XOR (^)1 ^ 1 = 01 ^ 0 = 10 ^ 1 = 10 ^ 0 = 0OR (|)1 | 1 = 11 | 0 = 10 | 1 = 10 | 0 = 0AND (&)1 & 1 = 11 & 0 = 00 & 1 = 00 & 0 = 0
+
+### 3.3 Các trick cơ bản
+
+**Trick 1: Kiểm tra số chẵn/lẻ**
+
+```python
+# Cách truyền thống
+if n % 2 == 0:  # chẵn
+
+# Cách dùng bit — nhanh hơn!
+if (n & 1) == 0:  # chẵn (bit cuối = 0)
+if (n & 1) == 1:  # lẻ  (bit cuối = 1)
+```
+
+Tại sao? Vì số chẵn có bit cuối = 0, số lẻ có bit cuối = 1:
+
+```
+4 = 100  → bit cuối = 0 → chẵn
+5 = 101  → bit cuối = 1 → lẻ
+6 = 110  → bit cuối = 0 → chẵn
+7 = 111  → bit cuối = 1 → lẻ
+```
+
+**Trick 2: Nhân/chia cho lũy thừa 2**
+
+```python
+x * 2   == x << 1
+x * 4   == x << 2
+x * 8   == x << 3
+x * 2^k == x << k
+
+x // 2   == x >> 1
+x // 4   == x >> 2
+x // 2^k == x >> k
+```
+
+**Trick 3: Lấy bit thứ k (0-indexed từ phải)**
+
+```python
+def get_bit(n, k):
+    return (n >> k) & 1
+
+# Ví dụ: n = 13 = 1101₂
+# get_bit(13, 0) = 1  (bit cuối)
+# get_bit(13, 1) = 0
+# get_bit(13, 2) = 1
+# get_bit(13, 3) = 1  (bit đầu)
+```
+
+**Trick 4: Bật bit thứ k (set bit)**
+
+```python
+def set_bit(n, k):
+    return n | (1 << k)
+
+# Ví dụ: n = 9 = 1001₂, k = 2
+# 1 << 2 = 100₂
+# 1001 | 0100 = 1101₂ = 13
+```
+
+**Trick 5: Tắt bit thứ k (clear bit)**
+
+```python
+def clear_bit(n, k):
+    return n & ~(1 << k)
+
+# Ví dụ: n = 13 = 1101₂, k = 2
+# 1 << 2 = 0100₂
+# ~0100 = ...1011₂
+# 1101 & 1011 = 1001₂ = 9
+```
+
+**Trick 6: Toggle bit thứ k (đảo bit)**
+
+```python
+def toggle_bit(n, k):
+    return n ^ (1 << k)
+
+# Nếu bit k = 0 → thành 1
+# Nếu bit k = 1 → thành 0
+```
+
+**Trick 7: Kiểm tra n là lũy thừa 2**
+
+```python
+def is_power_of_two(n):
+    return n > 0 and (n & (n - 1)) == 0
+
+# Tại sao?
+# 8 = 1000, 7 = 0111 → 1000 & 0111 = 0000 → True
+# 6 = 0110, 5 = 0101 → 0110 & 0101 = 0100 ≠ 0 → False
+```
+
+**Chứng minh:**
+
+```
+Nếu n = 2^k: n chỉ có đúng 1 bit = 1 (bit thứ k)
+  n     = 100...0  (k bit 0)
+  n - 1 = 011...1  (k bit 1)
+  n & (n-1) = 0
+
+Nếu n ≠ 2^k: n có ít nhất 2 bit = 1
+  Khi trừ 1, chỉ bit thấp nhất bị thay đổi
+  → n & (n-1) ≠ 0  ∎
+```
+
+**Trick 8: Tắt bit 1 thấp nhất (lowest set bit)**
+
+```python
+n = n & (n - 1)    # tắt bit 1 thấp nhất
+
+# 12 = 1100 → 1100 & 1011 = 1000 = 8  (tắt bit thứ 2)
+# 10 = 1010 → 1010 & 1001 = 1000 = 8  (tắt bit thứ 1)
+```
+
+**Trick 9: Lấy bit 1 thấp nhất**
+
+```python
+lowest_bit = n & (-n)
+
+# 12 = 1100, -12 = ...0100 → 1100 & 0100 = 0100 = 4
+# 10 = 1010, -10 = ...0110 → 1010 & 0110 = 0010 = 2
+```
+
+**Trick 10: Đếm số bit 1 (popcount / Hamming weight)**
+
+```python
+def count_bits(n):
+    count = 0
+    while n:
+        n &= (n - 1)   # tắt bit 1 thấp nhất
+        count += 1
+    return count
+
+# count_bits(13) = count_bits(1101₂) = 3
+# Complexity: O(số bit 1) — thường rất nhanh!
+
+# Python built-in:
+bin(13).count('1')  # = 3
+```
+
+n = 13 = 1101₂
+count = 0n & (n-1)
+1101 & 1100 = 1100
+n=12, count=1n & (n-1)
+1100 & 1011 = 1000
+n=8, count=2n & (n-1)
+1000 & 0111 = 0000
+n=0, count=3n == 0 → return 3
+
+### 3.4 Ứng dụng thực tế
+
+**Ứng dụng 1: Swap hai số không dùng biến tạm**
+
+```python
+a = 5  # 101
+b = 3  # 011
+
+a ^= b  # a = 101 ^ 011 = 110
+b ^= a  # b = 011 ^ 110 = 101 = 5
+a ^= b  # a = 110 ^ 101 = 011 = 3
+
+# Bây giờ a = 3, b = 5
+```
+
+**Chứng minh:**
+
+```
+Đặt a₀, b₀ là giá trị ban đầu.
+
+Bước 1: a = a₀ ^ b₀
+Bước 2: b = b₀ ^ (a₀ ^ b₀) = a₀     (vì b₀ ^ b₀ = 0)
+Bước 3: a = (a₀ ^ b₀) ^ a₀ = b₀     (vì a₀ ^ a₀ = 0)
+
+Kết quả: a = b₀, b = a₀  ∎
+```
+
+**Ứng dụng 2: Quyền truy cập (Permission flags)**
+
+```python
+READ    = 0b001  # 1
+WRITE   = 0b010  # 2
+EXECUTE = 0b100  # 4
+
+# Gán quyền
+user_perm = READ | WRITE  # 011 = 3
+
+# Kiểm tra quyền
+can_read  = bool(user_perm & READ)      # True
+can_exec  = bool(user_perm & EXECUTE)   # False
+
+# Thêm quyền
+user_perm |= EXECUTE  # 111 = 7
+
+# Bỏ quyền
+user_perm &= ~WRITE   # 101 = 5
+```
+
+**Ứng dụng 3: Biểu diễn tập hợp bằng bitmask** (chi tiết ở phần 4)
+
+### 3.5 Bài tập thực hành
+
+**Bài 1:** Tính 25 & 19, 25 | 19, 25 ^ 19 bằng tay.
+
+<details style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);"><summary style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); display: list-item;">Đáp án</summary><pre style="box-sizing: border-box; border: 1px solid rgba(255, 255, 255, 0.08); margin: 1.5rem 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: 0.875rem; color: rgb(205, 214, 244) !important; background: rgb(30, 30, 46) !important; border-radius: 0.5rem; font-weight: 400; line-height: 1.7; overflow-x: auto; padding-inline: 1.14286em; padding: 1.25rem;"><code style="box-sizing: border-box; border: none; margin: 0px; padding: 0px !important; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: &quot;Geist Mono&quot;, &quot;Geist Mono Fallback&quot;, ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: inherit; color: inherit !important; font-weight: inherit; line-height: inherit; background: 0px 0px !important; border-radius: 0px;">25 = 11001
+19 = 10011
+
+25 &amp; 19 = 10001 = 17
+25 | 19 = 11011 = 27
+25 ^ 19 = 01010 = 10
+</code></pre></details>
+
+**Bài 2:** Viết hàm kiểm tra bit thứ k của n có bật hay không. Không dùng string.
+
+<details style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);"><summary style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); display: list-item;">Đáp án</summary><pre style="box-sizing: border-box; border: 1px solid rgba(255, 255, 255, 0.08); margin: 1.5rem 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: 0.875rem; color: rgb(205, 214, 244) !important; background: rgb(30, 30, 46) !important; border-radius: 0.5rem; font-weight: 400; line-height: 1.7; overflow-x: auto; padding-inline: 1.14286em; padding: 1.25rem;"><code class="hljs language-python" style="box-sizing: border-box; border: none; margin: 0px; padding: 0px !important; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: &quot;Geist Mono&quot;, &quot;Geist Mono Fallback&quot;, ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: inherit; color: inherit !important; font-weight: inherit; line-height: inherit; background: 0px 0px !important; border-radius: 0px;"><span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">def</span> <span class="hljs-title function_" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(137, 180, 250);">is_bit_set</span>(<span class="hljs-params" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(205, 214, 244);">n, k</span>):
+    <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">return</span> (n &gt;&gt; k) &amp; <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">1</span> == <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">1</span>
+
+<span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># hoặc</span>
+<span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">def</span> <span class="hljs-title function_" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(137, 180, 250);">is_bit_set</span>(<span class="hljs-params" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(205, 214, 244);">n, k</span>):
+    <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">return</span> (n &amp; (<span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">1</span> &lt;&lt; k)) != <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">0</span>
+</code></pre></details>
+
+**Bài 3:** Cho n, tìm số lớn nhất có dạng 2^k mà ≤ n. Ví dụ: n=13 → 8, n=16 → 16.
+
+<details style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);"><summary style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); display: list-item;">Đáp án</summary><pre style="box-sizing: border-box; border: 1px solid rgba(255, 255, 255, 0.08); margin: 1.5rem 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: 0.875rem; color: rgb(205, 214, 244) !important; background: rgb(30, 30, 46) !important; border-radius: 0.5rem; font-weight: 400; line-height: 1.7; overflow-x: auto; padding-inline: 1.14286em; padding: 1.25rem;"><code class="hljs language-python" style="box-sizing: border-box; border: none; margin: 0px; padding: 0px !important; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: &quot;Geist Mono&quot;, &quot;Geist Mono Fallback&quot;, ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: inherit; color: inherit !important; font-weight: inherit; line-height: inherit; background: 0px 0px !important; border-radius: 0px;"><span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">def</span> <span class="hljs-title function_" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(137, 180, 250);">highest_power_of_2</span>(<span class="hljs-params" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(205, 214, 244);">n</span>):
+    <span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># Cách 1: dịch phải cho đến khi còn 1 bit</span>
+    p = <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">1</span>
+    <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">while</span> p * <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">2</span> &lt;= n:
+        p *= <span class="hljs-number" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(250, 179, 135);">2</span>
+    <span class="hljs-keyword" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(203, 166, 247);">return</span> p
+
+    <span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># Cách 2: dùng bit manipulation</span>
+    <span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># n |= n &gt;&gt; 1; n |= n &gt;&gt; 2; n |= n &gt;&gt; 4; ...</span>
+    <span class="hljs-comment" style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); color: rgb(108, 112, 134); font-style: italic;"># return (n + 1) &gt;&gt; 1</span>
+</code></pre></details>
+
+**Bài 4:** Giải thích tại sao `~0` bằng `-1` trong two's complement.
+
+<details style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);"><summary style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); display: list-item;">Đáp án</summary><pre style="box-sizing: border-box; border: 1px solid rgba(255, 255, 255, 0.08); margin: 1.5rem 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: 0.875rem; color: rgb(205, 214, 244) !important; background: rgb(30, 30, 46) !important; border-radius: 0.5rem; font-weight: 400; line-height: 1.7; overflow-x: auto; padding-inline: 1.14286em; padding: 1.25rem;"><code style="box-sizing: border-box; border: none; margin: 0px; padding: 0px !important; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: &quot;Geist Mono&quot;, &quot;Geist Mono Fallback&quot;, ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: inherit; color: inherit !important; font-weight: inherit; line-height: inherit; background: 0px 0px !important; border-radius: 0px;">Trong 32-bit two's complement:
+ 0 = 00000000 00000000 00000000 00000000
+~0 = 11111111 11111111 11111111 11111111
+
+Đây chính là biểu diễn two's complement của -1:
+- Lấy bù: ~(-1) = ~(1111...1) = 0000...0 = 0
+- Cộng 1: 0 + 1 = 1
+- Vậy số gốc = -1 ✓
+</code></pre></details>

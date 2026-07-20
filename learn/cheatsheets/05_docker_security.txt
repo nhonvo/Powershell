@@ -1,0 +1,35 @@
+🔙 **Back to Parent**: [[technical_skills/05_Docker_Hero/📂index_05_Docker_Hero|05_Docker_Hero]]
+
+# Module 5: Docker Security & Best Practices 🛡️
+
+Môi trường container không mặc nhiên an toàn. Một Docker Image bị rò rỉ secret có thể làm sụp đổ toàn bộ hệ thống.
+
+---
+
+## 🔒 Các quy tắc bảo mật vàng
+
+### 1. Đừng bao giờ chạy với quyền Root (Non-root user)
+Mặc định container chạy quyền root. Nếu container bị hack, hacker có khả năng truy cập tài nguyên máy chủ.
+- **Giải pháp**: Sử dụng lệnh `USER <username>` trong Dockerfile.
+
+### 2. Không lưu Secrets trong Dockerfile
+Tuyệt đối không dùng `ENV PASSWORD=123`. Mọi người đều có thể thấy nó qua lệnh `docker inspect` hoặc `docker history`.
+- **Giải pháp**: Dùng `.env` (Docker Compose) hoặc **Docker Secrets / Vault**.
+
+### 3. Giới hạn tài nguyên (Resource Limits)
+Ngăn chặn container "ăn sạch" CPU/RAM của máy chủ (DoS).
+- Sử dụng flag: `--memory="512m"` và `--cpus="0.5"`.
+
+### 4. Quét lỗ hổng Image
+Sử dụng công cụ `docker scan` (Trivy) trước khi đẩy lên production.
+
+---
+
+## 🛠️ Bài tập thực hành (Practice)
+
+1. Sửa lại Dockerfile của bạn để ứng dụng chạy dưới quyền một user khác (không phải root).
+2. Viết một tệp `docker-compose.yaml` có giới hạn RAM cho mỗi dịch vụ.
+3. [Xem blog: Cloud & Container Security Best Practices](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-cloud-security-best-practices.md)
+
+---
+*Tiếp tục học: [Module 6: CI/CD Pipeline Automation](./06_CICD_Pipeline.md)*

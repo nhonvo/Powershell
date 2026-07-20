@@ -1,0 +1,30 @@
+---
+tags:
+  - certification/az-900
+  - azure-fundamentals/flashcard
+  - spaced-repetition
+status: active
+created: 2026-06-15
+deck: AZ-900 Azure Fundamentals Certification
+---
+
+# 🃏 AZ-900 Flashcards
+
+## 🔵 Domain 1: Cloud Concepts
+What cloud computing model offers raw VMs and network capabilities under user control?
+?
+**Infrastructure as a Service (IaaS)**.
+
+---
+
+## 🟢 Domain 2: Azure Architecture and Services
+Which Azure compute resource should be used to run containerized microservices without managing any container orchestrator servers?
+?
+**Azure Container Instances (ACI)** or serverless containers.
+
+---
+
+## 🟡 Domain 3: Azure Management and Governance
+What tool enforces organizational policies and evaluates automatic compliance across Azure resources?
+?
+**Azure Policy**.

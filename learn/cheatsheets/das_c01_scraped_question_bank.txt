@@ -1,0 +1,215 @@
+# 🗃️ DAS-C01 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+A nancial services company needs to aggregate daily stock trade data from the exchanges into a data store. The company requires that data be streamed directly into the data store, but also occasionally allows data to be modi ed using SQL. The solution should integrate complex, analytic queries running with minimal latency. The solution must provide a business intelligence dashboard that enables viewing of the top contributors to anomalies in stock prices.
+Which solution meets the company's requirements?
+
+### Options:
+- [ ] **A)** Use Amazon Kinesis Data Firehose to stream data to Amazon S3. Use Amazon Athena as a data source for Amazon QuickSight to create a business intelligence dashboard.
+- [ ] **B)** Use Amazon Kinesis Data Streams to stream data to Amazon Redshift. Use Amazon Redshift as a data source for Amazon QuickSight to create a business intelligence dashboard.
+- [x] **C)** Use Amazon Kinesis Data Firehose to stream data to Amazon Redshift. Use Amazon Redshift as a data source for Amazon QuickSight to create a business intelligence dashboard. [Correct]
+- [ ] **D)** Use Amazon Kinesis Data Streams to stream data to Amazon S3. Use Amazon Athena as a data source for Amazon QuickSight to create a business intelligence dashboard.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Using Kinesis Data Firehose to load into Redshift provides near-real-time streaming into a data warehouse with SQL analytics and low-latency BI dashboards via QuickSight. Redshift supports complex analytic queries with high performance, satisfying both streaming ingestion and SQL modification needs, plus BI capabilities for anomaly contributor dashboards.
+A) Firehose to S3 with Athena/QuickSight: stores data in S3 and queries with Athena; not a data warehouse with low-latency analytical queries or seamless SQL updates in the store.
+B) Kinesis Data Streams to Redshift: slightly more complex setup; Firehose is preferred for managed delivery into Redshift with simpler maintenance.
+D) Data Streams to S3 and Athena: lacks a data warehouse layer and direct streaming into a query-optimized store, increasing latency for analytics.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+A nancial company hosts a data lake in Amazon S3 and a data warehouse on an Amazon Redshift cluster. The company uses Amazon QuickSight to build dashboards and wants to secure access from its on-premises Active Directory to Amazon QuickSight.
+How should the data be secured?
+
+### Options:
+- [x] **A)** Use an Active Directory connector and single sign-on (SSO) in a corporate network environment. [Correct]
+- [ ] **B)** Use a VPC endpoint to connect to Amazon S3 from Amazon QuickSight and an IAM role to authenticate Amazon Redshift.
+- [ ] **C)** Establish a secure connection by creating an S3 endpoint to connect Amazon QuickSight and a VPC endpoint to connect to Amazon Redshift.
+- [ ] **D)** Place Amazon QuickSight and Amazon Redshift in the security group and use an Amazon S3 endpoint to connect Amazon QuickSight to Amazon S3.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+A) Using an Active Directory connector and single sign-on (SSO) in a corporate network environment.
+ DAS-C01 emphasizes integrating on-premises identity with AWS services. AD Connector enables federated SSO to QuickSight, simplifying secure access from on-prem AD. Other options are incorrect: B) SSO alone via IAM roles does not address AD integration; Redshift authentication via IAM lacks AD federation. C) S3 and VPC endpoints do not provide AD-backed SSO for QuickSight access. D) Security groups and S3 endpoint alone do not establish AD-based authentication or SSO to QuickSight; requires identity federation rather than network controls.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+A real estate company has a mission-critical application using Apache HBase in Amazon EMR. Amazon EMR is con gured with a single master node. The company has over 5 TB of data stored on an Hadoop Distributed File System (HDFS). The company wants a cost-effective solution to make its HBase data highly available.
+Which architectural pattern meets company's requirements?
+
+### Options:
+- [ ] **A)** Use Spot Instances for core and task nodes and a Reserved Instance for the EMR master node. Con gure the EMR cluster with multiple master nodes. Schedule automated snapshots using Amazon EventBridge.
+- [ ] **B)** Store the data on an EMR File System (EMRFS) instead of HDFS. Enable EMRFS consistent view. Create an EMR HBase cluster with multiple master nodes. Point the HBase root directory to an Amazon S3 bucket.
+- [ ] **C)** Store the data on an EMR File System (EMRFS) instead of HDFS and enable EMRFS consistent view. Run two separate EMR clusters in two different Availability Zones. Point both clusters to the same HBase root directory in the same Amazon S3 bucket.
+- [x] **D)** Store the data on an EMR File System (EMRFS) instead of HDFS and enable EMRFS consistent view. Create a primary EMR HBase cluster with multiple master nodes. Create a secondary EMR HBase read-replica cluster in a separate Availability Zone. Point both clusters to the same HBase root directory in the same Amazon S3 bucket. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+A robust high-availability pattern for HBase on EMR is to deploy a primary multi-master HBase cluster and a separate read-replica cluster in another AZ, both backed by EMRFS with consistent view and using the same S3-based root. This enables failover and read-scale redundancy without duplicating write paths, while cost-effectively leveraging S3 as durable storage.
+A) Uses spot instances and multiple masters but mentions automated snapshots; does not provide a dedicated read-replica architecture and cross-AZ resilience for HBase writes. B) EMRFS with S3 root for HBase is not sufficient for high availability of the HBase masters or writes. C) Two clusters in different AZs pointing to same HBase root does not specify a synchronized write-capable replica; may risk data consistency. D) Correct: primary plus read-replica in separate AZ with shared S3-backed root ensures HA and read scalability.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+A software company hosts an application on AWS, and new features are released weekly. As part of the application testing process, a solution must be developed that analyzes logs from each Amazon EC2 instance to ensure that the application is working as expected after each deployment. The collection and analysis solution should be highly available with the ability to display new information with minimal delays.
+Which method should the company use to collect and analyze the logs?
+
+### Options:
+- [ ] **A)** Enable detailed monitoring on Amazon EC2, use Amazon CloudWatch agent to store logs in Amazon S3, and use Amazon Athena for fast, interactive log analytics.
+- [ ] **B)** Use the Amazon Kinesis Producer Library (KPL) agent on Amazon EC2 to collect and send data to Kinesis Data Streams to further push the data to Amazon OpenSearch Service (Amazon Elasticsearch Service) and visualize using Amazon QuickSight.
+- [x] **C)** Use the Amazon Kinesis Producer Library (KPL) agent on Amazon EC2 to collect and send data to Kinesis Data Firehose to further push the data to Amazon OpenSearch Service (Amazon Elasticsearch Service) and OpenSearch Dashboards (Kibana). [Correct]
+- [ ] **D)** Use Amazon CloudWatch subscriptions to get access to a real-time feed of logs and have the logs delivered to Amazon Kinesis Data Streams to further push the data to Amazon OpenSearch Service (Amazon Elasticsearch Service) and OpenSearch Dashboards (Kibana).
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+A) Incorrect: Detailed monitoring+CloudWatch agent→S3+Athena adds latency and is not as near-real-time as OpenSearch dashboards; S3/Athena are not optimized for continuous streaming analytics.
+B) Incorrect: KPL→Kinesis Data Streams→OpenSearch with QuickSight introduces extra visualization step and potential latency; QuickSight is not the typical near-real-time OpenSearch visualization path.
+C) Correct: KPL on EC2 sends to Kinesis Data Firehose, which streams to OpenSearch Service and OpenSearch Dashboards, providing low-latency, highly available log analytics with real-time visualization.
+D) Incorrect: CloudWatch Logs subscriptions to Kinesis Data Streams adds unnecessary hops; OpenSearch Dashboards are best paired with Firehose for direct ingestion.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+A data analyst is using AWS Glue to organize, cleanse, validate, and format a 200 GB dataset. The data analyst triggered the job to run with the Standard worker type. After 3 hours, the AWS Glue job status is still RUNNING. Logs from the job run show no error codes. The data analyst wants to improve the job execution time without overprovisioning.
+Which actions should the data analyst take?
+
+### Options:
+- [ ] **A)** Enable job bookmarks in AWS Glue to estimate the number of data processing units (DPUs). Based on the pro led metrics, increase the value of the executor- cores job parameter.
+- [x] **B)** Enable job metrics in AWS Glue to estimate the number of data processing units (DPUs). Based on the pro led metrics, increase the value of the maximum capacity job parameter. [Correct]
+- [ ] **C)** Enable job metrics in AWS Glue to estimate the number of data processing units (DPUs). Based on the pro led metrics, increase the value of the spark.yarn.executor.memoryOverhead job parameter.
+- [ ] **D)** Enable job bookmarks in AWS Glue to estimate the number of data processing units (DPUs). Based on the pro led metrics, increase the value of the num- executors job parameter.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+The correct answer is B. Enabling job metrics helps estimate DPUs required, and increasing the maximum capacity (DPUs) allows Glue to allocate more resources for parallelism, reducing overall runtime without overprovisioning when tuned to actual workload.
+A) Incorrect: Job bookmarks track data lineage and state, not resource estimation; increasing executor-cores is not the direct lever for Glue Spark parallelism since the recommended knob is DPUs (capacity).
+C) Incorrect: spark.yarn.executor.memoryOverhead is a Spark/YARN tuning parameter for driver/executor memory overhead, not the primary lever in Glue’s serverless/managed environment where DPUs determine capacity.
+D) Incorrect: Job bookmarks do not inform resource estimation, and num-executors is not a Glue parameter; Glue uses DPUs (capacity) rather than explicit executor counts.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: 
+
+A company has a business unit uploading .csv les to an Amazon S3 bucket. The company's data platform team has set up an AWS Glue crawler to do discovery, and create tables and schemas. An AWS Glue job writes processed data from the created tables to an Amazon Redshift database. The AWS Glue job handles column mapping and creating the Amazon Redshift table appropriately. When the AWS Glue job is rerun for any reason in a day, duplicate records are introduced into the Amazon Redshift table.
+Which solution will update the Redshift table without duplicates when jobs are rerun?
+
+### Options:
+- [x] **A)** Modify the AWS Glue job to copy the rows into a staging table. Add SQL commands to replace the existing rows in the main table as postactions in the DynamicFrameWriter class. [Correct]
+- [ ] **B)** Load the previously inserted data into a MySQL database in the AWS Glue job. Perform an upsert operation in MySQL, and copy the results to the Amazon Redshift table.
+- [ ] **C)** Use Apache Spark's DataFrame dropDuplicates() API to eliminate duplicates and then write the data to Amazon Redshift.
+- [ ] **D)** Use the AWS Glue ResolveChoice built-in transform to select the most recent value of the column.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+A) The staging-and-merge approach ensures idempotent loads: load into a staging table, then use postactions to upsert/replace into the main Redshift table, preventing duplicates on reruns. This aligns with ETL patterns for Redshift where you apply a controlled merge or replace of the target to maintain uniqueness.
+B) Introducing MySQL adds cross-system complexity and latency; Redshift is the target, and this approach is not idiomatic for AWS Glue/Redshift pipelines, plus it risks integrity and consistency.
+C) DataFrame.dropDuplicates() eliminates duplicates in Spark but does not guarantee deduplication against existing target rows in Redshift across reruns; it only affects in-memory/partitioned data before write.
+D) ResolveChoice selects a single schema type for conflicting columns, not deduplicating data or preventing repeated inserts into Redshift.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: 
+
+A streaming application is reading data from Amazon Kinesis Data Streams and immediately writing the data to an Amazon S3 bucket every 10 seconds. The application is reading data from hundreds of shards. The batch interval cannot be changed due to a separate requirement. The data is being accessed by Amazon
+Athena. Users are seeing degradation in query performance as time progresses.
+Which action can help improve query performance?
+
+### Options:
+- [x] **A)** Merge the les in Amazon S3 to form larger les. [Correct]
+- [ ] **B)** Increase the number of shards in Kinesis Data Streams.
+- [ ] **C)** Add more memory and CPU capacity to the streaming application.
+- [ ] **D)** Write the les to multiple S3 buckets.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+The correct answer is A: Merge the files in Amazon S3 to form larger files. Smaller, many small objects lead to suboptimal Athena query performance due to increased metadata handling and partition pruning overhead; larger files improve scan efficiency and reduce per-object overhead.
+B) Increasing Kinesis shards does not directly improve Athena query performance; it affects ingest parallelism, not how data is stored or scanned in S3.
+C) Adding memory/CPU to the streaming app does not influence how Athena reads S3 data or file layout.
+D) Writing to multiple S3 buckets adds cross-bucket query complexity and does not inherently enhance performance.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: 
+
+A company uses Amazon OpenSearch Service (Amazon Elasticsearch Service) to store and analyze its website clickstream data. The company ingests 1 TB of data daily using Amazon Kinesis Data Firehose and stores one day's worth of data in an Amazon ES cluster. The company has very slow query performance on the Amazon ES index and occasionally sees errors from Kinesis Data Firehose when attempting to write to the index. The Amazon ES cluster has 10 nodes running a single index and 3 dedicated master nodes. Each data node has 1.5 TB of Amazon EBS storage attached and the cluster is con gured with 1,000 shards. Occasionally, JVMMemoryPressure errors are found in the cluster logs.
+Which solution will improve the performance of Amazon ES?
+
+### Options:
+- [ ] **A)** Increase the memory of the Amazon ES master nodes.
+- [ ] **B)** Decrease the number of Amazon ES data nodes.
+- [x] **C)** Decrease the number of Amazon ES shards for the index. [Correct]
+- [ ] **D)** Increase the number of Amazon ES shards for the index.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+The bottleneck is too many shards for the given data and node resources, causing high overhead, JVM memory pressure, and slower queries. Reducing shards improves search performance and reduces JVM GC pressure, making better use of available heap and I/O. C) Decrease the number of shards for the index aligns with best practices for small-to-moderate datasets per node and reduces overhead, improving query latency and stability. A) Increasing master node memory has negligible impact on data-node JVM pressure and query performance. B) Decreasing data nodes reduces parallelism and throughput, worsening latency. D) Increasing shards would worsen JVM pressure and overhead, not improve performance.
+</details>
+
+---

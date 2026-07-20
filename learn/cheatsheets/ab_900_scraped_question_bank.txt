@@ -1,0 +1,272 @@
+# 🗃️ AB-900 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported)
+
+You want to view the administrative actions taken by a service administrator in Microsoft 365.
+
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Yes
+Yes - You can use Search & Intelligence in the Microsoft 365 admin center.
+
+The Search & Intelligence feature in the Microsoft 365 admin center allows administrators to manage and customize search experiences, view usage analytics, and configure content sources. Accessed via Settings > Search & intelligence, it enables creating bookmarks, acronyms, and Q&As to improve search relevance across Microsoft 365.
+
+Box 2: Yes
+Yes - You can use Audit in the Microsoft Defender portal.
+
+The Audit feature in the Microsoft Defender portal (security.microsoft.com) allows security teams to track and investigate user and administrator activities across Microsoft 365, including Defender for Endpoint, Office 365, and Cloud Apps. It records actions like data retention changes, role modifications, and device isolation, with data searchable for up to 10 years.
+
+Box 3: Yes
+Yes - You can use Audit in the Microsoft Purview portal.
+
+Microsoft Purview Audit allows you to track user and administrator actions across Microsoft 365 services to support forensic, compliance, and legal investigations. It is enabled by default for most organizations, with standard logs retained for 180 days, while Premium offers longer retention and higher bandwidth.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported)
+
+Select the answer that correctly completes the sentence.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box: time_bound role activation
+Microsoft Entra Privileged Identity Management (PIM) provides ____________.
+
+Microsoft Entra Privileged Identity Management (PIM) provides time-bound role activation as a core feature to enforce Just-In-Time (JIT) access. This mechanism ensures users have elevated privileges only for the specific duration needed to complete a task, significantly reducing the risks associated with standing or permanent administrative access.
+
+Key Time-Bound Activation Features
+Activation Maximum Duration: Administrators can set a specific limit (typically between 1 and 24 hours) for how long a role remains active once a user elevates their privileges.
+
+Start and End Dates: Assignments themselves can be time-bound, meaning a user is only eligible to activate a role within a specific date range.
+
+Automatic Revocation: Once the pre-configured activation period expires, PIM automatically removes the active assignment, reverting the user to their standard level of access within seconds.
+
+Extension and Renewal: If a task takes longer than expected, users can request to extend an active assignment or renew an expired one, both of which typically require administrative approval.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+Your organization has a Microsoft 365 E5 subscription.
+
+You need to ensure that a third-party cloud service can authenticate to Microsoft Entra.
+
+What should you configure?
+
+### Options:
+- [ ] **A)** a Microsoft 365 Copilot connector
+- [ ] **B)** multifactor authentication (MFA)
+- [ ] **C)** a Conditional Access policy
+- [x] **D)** an app registration [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+To enable a third-party cloud service to authenticate with Microsoft Entra ID in an E5 subscription, you should create an App Registration in the Entra admin center. This creates a service principal, assigning a unique identity, client secrets/certificates, and API permissions (OAuth) for secure token-based authentication.
+Key Steps and Considerations:
+Create Registration: In the Azure Portal, go to Microsoft Entra ID > App registrations > New registration.
+Configure Auth: Define supported account types (e.g., single or multi-tenant) and Redirect URIs.
+Secure Access: Generate a client secret or upload a certificate for the application to identify itself securely.
+Permissions: Configure API permissions to define what organizational data the third-party app can access.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported)
+
+Select the answer that correctly completes the sentence.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box: provide control how users can access cloud apps
+Conditional Access policies ________________.
+
+Conditional Access (CA) policies in Microsoft Entra ID act as an automated "if-then" risk engine, evaluating signals like user identity, location, and device health to grant, block, or limit access to cloud apps in real-time. These policies enforce Zero Trust by restricting sensitive actions--such as blocking downloads on unmanaged devices--and requiring MFA or compliant devices.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported)
+
+Select the answer that correctly completes the sentence.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box: accountability
+The Microsoft responsible AI principle of _______________requires the oversight of AI systems to ensure that humans remain in control.
+
+Microsoft's principle of Accountability in its Responsible AI framework mandates that people--not algorithms-- remain responsible for AI outcomes, ensuring that AI systems remain under meaningful human control.
+
+This principle requires that organizations implement oversight, governance, and audit trails to ensure AI systems are not the final authority on decisions that significantly affect people's lives.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported)
+
+A user named User5 navigates to https://myapps.microsoft.com. After entering their username and password, User5 receives the following message on their mobile device.
+
+
+
+Use the drop-down menus to select the answer choice that completes the statement based on the information presented in the graphic.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box: the Microsoft Authenticator app
+
+When you sign in to a Microsoft app or website, you are prompted with a two-digit number on the login screen that you must then enter into the Microsoft Authenticator app to approve the request. This process is known as number matching and is designed to enhance security by preventing accidental approvals and countering "MFA fatigue" attacks.
+
+How Number Matching Works
+Triggering the Request: After entering your username and password on the login screen (e.g., in a web browser like Chrome or Edge), a unique two-digit number is displayed.
+
+Receiving the Notification: You will receive a push notification on your mobile device from the Microsoft Authenticator app asking, "Are you trying to sign in?".
+
+Entering the Number: To approve the sign-in, you must type the specific number shown on your login screen into the text box provided in the Authenticator app and then tap Yes or Approve.
+
+Contextual Information: Along with the number prompt, the app often displays additional context, such as the application name being accessed and the geographic location of the sign-in attempt, helping you verify the request's legitimacy.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: 
+
+Your organization has a Microsoft 365 subscription.
+
+You need to evaluate your organization's Identity Secure Score.
+
+Which two factors affect the score? Each correct answer presents a complete the solution.
+
+Note: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,C`
+
+**Explanation**:
+[B]
+The number of Global Administrators directly affects your Identity Secure Score.
+The score is impacted by two primary recommendations regarding these roles:
+Designate more than one Global Administrator:
+Microsoft requires at least two Global Admins to prevent a total lockout if one account is lost or compromised.
+One of these should ideally be a "break-glass" emergency access account.
+Limit Global Administrators to fewer than five:
+Your score may decrease if you have five or more Global Admins.
+Having too many increases the attack surface and "privilege creep".
+[C]
+Enabling "passwords never expire" (specifically, removing mandatory expiration) positively affects your Microsoft 365 Identity Secure Score. Microsoft considers this a best practice, as forcing regular password changes often leads to users choosing weaker, predictable passwords.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: 
+
+Your organization has a Microsoft 365 subscription.
+
+You need to review the impact of a recent phishing incident that targeted email users.
+
+What should you use?
+
+### Options:
+- [x] **A)** the Microsoft Defender portal [Correct]
+- [ ] **B)** the Microsoft 365 admin center
+- [ ] **C)** the Microsoft Entra admin center
+- [ ] **D)** the Microsoft Exchange admin center
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+To check the impact of a phishing incident in your Microsoft 365 subscription using the Microsoft Defender portal, you should focus on the Incidents, Email & collaboration reports, and Threat Explorer sections.
+1. Identify and Analyze the Incident
+2. Investigate Email Details and Exposure
+3. Review Remediation Status
+</details>
+
+---

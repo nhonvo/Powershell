@@ -1,0 +1,14 @@
+# Algorithms
+
+🔙 **Back to Parent**: [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/index_Problems|Problems]]
+
+## 📁 Categories
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/Algorithms/1_Recursions/index_1_Recursions|1_Recursions]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/Algorithms/2_BasicAlgorithms/index_2_BasicAlgorithms|2_BasicAlgorithms]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/Algorithms/3_Sorting/index_3_Sorting|3_Sorting]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/Algorithms/4_GreedyAlgorithms/index_4_GreedyAlgorithms|4_GreedyAlgorithms]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/Algorithms/5_DynamicProgramming/index_5_DynamicProgramming|5_DynamicProgramming]]
+
+## 📄 Notes
+- [[algorithms|Algorithms]]
+

@@ -1,0 +1,185 @@
+# 🗃️ GH-100 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+You have subscribed to GitHub Premium Support, and you need to submit a support ticket. GitHub Premium Support can help you with:
+
+### Options:
+- [ ] **A)** writing scripts.
+- [x] **B)** installing GitHub Enterprise Server. [Correct]
+- [ ] **C)** setting up hardware.
+- [ ] **D)** integrating with third-party applications.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+GitHub Premium Support includes assistance with installing and using GitHub Enterprise Server, ensuring your deployment is configured correctly and any installation issues are resolved.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+You need to contact GitHub Premium Support. 
+What are valid reasons for submitting a support ticket? (Each answer presents a complete solution. Choose two.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C,D`
+
+**Explanation**:
+Business-impact security issues (for example, a critical vulnerability affecting your organization) are classified as High-priority tickets and are covered under your Premium Support SLA. Outages on GitHub.com that disrupt core Git or web application functionality trigger Urgent-priority responses under Premium Support's SLA.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+Which of the following is a key benefit of using GitHub Marketplace Apps in an enterprise?
+
+### Options:
+- [ ] **A)** They guarantee no downtime during enterprise GitHub maintenance windows
+- [x] **B)** They often include integrations with external services, reducing the need for custom code [Correct]
+- [ ] **C)** Apps eliminate the need for GitHub Actions entirely
+- [ ] **D)** All apps come pre-approved by GitHub's internal security team
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+GitHub Marketplace Apps come with built-in integrations to external services - so you can plug in things like CI servers, code-quality scanners, or deployment tools without writing and maintaining custom connectors.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+You need to create a support bundle for your GitHub Enterprise Server instance with the hostname ghe.avocado.corp. 
+What command should you use to create a support bundle?
+
+### Options:
+- [x] **A)** ssh -p 122 adming@ghe.avocado.corp -- 'ghe-support-bundle -o' > support-bundle.tgz [Correct]
+- [ ] **B)** ssh -p 122 adming@ghe.avocado.corp ­ 'ghe-diagnostics' > support-bundle.tgz
+- [ ] **C)** curl -u admin https://ghe.avocado.corp/diagnostics/support-bundle.tgz -o
+- [ ] **D)** ssh -p 122 adming@ghe.avocado.corp -- 'ghe-config generate-support-bundle' > support- bundle.tgz
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Run the ghe-support-bundle command over SSH on your appliance and redirect its output to a file.
+For example:
+ssh -p 122 admin@ghe.avocado.corp -- 'ghe-support-bundle -o' > support-bundle.tgz This invokes the built-in support-bundle utility on your GitHub Enterprise Server instance and captures the resulting archive locally.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+What do you need to successfully generate a support bundle on a GitHub Enterprise Server?
+
+### Options:
+- [ ] **A)** Approval from GitHub Support
+- [ ] **B)** A custom GitHub Action in the root repo
+- [x] **C)** Administrator SSH access to the appliance [Correct]
+- [ ] **D)** A GitHub App with read:org permissions
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+You must have administrator-level SSH access to the GitHub Enterprise Server appliance so you can run the ghe-support-bundle command over SSH and capture the bundle locally.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: 
+
+A financial services company is evaluating GitHub account types. 
+Which of the following is a key distinction between GitHub Enterprise Managed Users and Personal Accounts?
+
+### Options:
+- [ ] **A)** Enterprise Managed Users can collaborate across both personal and enterprise repositories.
+- [x] **B)** Personal Accounts are owned by users and can be used for both personal and professional work. [Correct]
+- [ ] **C)** Personal Accounts provide stricter control over repositories and user activity.
+- [ ] **D)** Enterprise Managed Users require the organization to manage their own authentication server.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Personal Accounts are owned and controlled by individual users and can serve both their personal projects and professional work, whereas Enterprise Managed Users exist solely within the enterprise context and cannot be used for personal repositories.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: 
+
+Which THREE of the following accurately describe how the SCIM protocol enhances user management in GitHub Enterprise Cloud? (Choose three.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,B`
+
+**Explanation**:
+SCIM automatically updates a user's account on GitHub whenever their profile attributes change in the identity provider.
+
+When a user is removed or deactivated in the IdP, SCIM deactivates (soft-deprovisions) their GitHub account and disables access.
+SCIM provisions new GitHub Enterprise Cloud accounts automatically when users are added in the identity provider.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: 
+
+When comparing a partner identity provider integration with a non-partner identity management solution for GitHub Enterprise Managed Users, which statement is Correct?
+
+### Options:
+- [ ] **A)** The non-partner identity provider integrations can utilize OIDC for authentication.
+- [x] **B)** The non-partner identity provider integrations require manual configuration of SAML 2.0 details. [Correct]
+- [ ] **C)** The partner identity provider integrations support fewer GitHub-supported authentication methods.
+- [ ] **D)** The partner identity provider integrations rely on the partner to support the application on the partner IdP.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Non-partner identity provider integrations require you to enter SAML2.0 configuration details by hand - such as the Sign-on URL, Issuer, and X.509 certificate - whereas partner IdPs supply a pre- configured application integration.
+</details>
+
+---

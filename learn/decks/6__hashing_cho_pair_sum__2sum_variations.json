@@ -1,0 +1,356 @@
+{
+  "Meta": {
+    "Id": "deck_6__hashing_cho_pair_sum__2sum_variations",
+    "Topic": "6. Hashing cho Pair Sum  2Sum Variations",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "6__hashing_cho_pair_sum__2sum_variations"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 17
+  },
+  "Cards": [
+    {
+      "Id": "card_00831",
+      "Front": "Bài toán",
+      "Back": "Time | Space | Approach",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00832",
+      "Front": "2Sum (unsorted)",
+      "Back": "O(n) | O(n) | Hash map",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00833",
+      "Front": "2Sum (sorted)",
+      "Back": "O(n) | O(1) | Two pointers",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00834",
+      "Front": "2Sum (count pairs)",
+      "Back": "O(n) | O(n) | Hash map",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00835",
+      "Front": "3Sum",
+      "Back": "O(n²) | O(1) | Sort + two pointers",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00836",
+      "Front": "4Sum",
+      "Back": "O(n³) | O(1) | Sort + kSum recursive",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00837",
+      "Front": "4Sum II (4 arrays)",
+      "Back": "O(n²) | O(n²) | Hash map split",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00838",
+      "Front": "kSum (general)",
+      "Back": "O(n^(k-1)) | O(n) | Sort + recursive",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00839",
+      "Front": "Kỹ thuật",
+      "Back": "Khi nào dùng | Time | Space",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00840",
+      "Front": "Hash Map cơ bản",
+      "Back": "Lookup/insert/delete O(1) | O(1) avg | O(n)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00841",
+      "Front": "Frequency Counting",
+      "Back": "Đếm số lần xuất hiện | O(n) | O(k)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00842",
+      "Front": "Prefix Hashing",
+      "Back": "So sánh substring O(1) | O(1) query | O(n)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00843",
+      "Front": "Rabin-Karp",
+      "Back": "Pattern matching | O(n+m) avg | O(1)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00844",
+      "Front": "Prefix Sum + Hash Map",
+      "Back": "Subarray sum = k | O(n) | O(n)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00845",
+      "Front": "Sliding Window + Hash Map",
+      "Back": "Longest substring | O(n) | O(k)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00846",
+      "Front": "Set",
+      "Back": "Kiểm tra tồn tại, deduplicate | O(1) avg | O(n)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00847",
+      "Front": "2Sum Hash Map",
+      "Back": "Pair sum | O(n) | O(n)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "6. hashing cho pair sum  2sum variations"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

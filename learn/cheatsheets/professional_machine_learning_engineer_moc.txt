@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/professional-machine-learning-engineer
+  - professionalmachinelearningengineer
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 Professional-Machine-Learning-Engineer MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/google/Professional-Machine-Learning-Engineer/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/google/Professional-Machine-Learning-Engineer/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/google/Professional-Machine-Learning-Engineer/Professional-Machine-Learning-Engineer Mindmap\|🗺️ Professional-Machine-Learning-Engineer Mindmap]]
+- [[certifications/google/Professional-Machine-Learning-Engineer/Professional-Machine-Learning-Engineer Flashcards\|🃏 Professional-Machine-Learning-Engineer Flashcards]]
+- [[certifications/google/Professional-Machine-Learning-Engineer/Professional-Machine-Learning-Engineer_Scraped_Question_Bank\|🗃️ Professional-Machine-Learning-Engineer Scraped Question Bank]]

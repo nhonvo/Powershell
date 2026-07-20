@@ -1,0 +1,110 @@
+# 🗃️ MO-200 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 1 Clothing Orders
+
+CORRECT TEXT - (Topic 1)
+On the `'Prices'' worksheet, in the `'inventory Notice'' column, use a function to display `'Low'' if the `' inventory Level % is below 15%. Otherwise, leave the `'Inventory Notice'' blank.
+
+### Options:
+- [x] **A)** Please refer to Explanation below for the answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+=IF(inventory level<15%), "low", ""). Select and drag to apply to other rows
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 1 Clothing Orders
+
+CORRECT TEXT - (Topic 1)
+On the `'Prices'' worksheet, apply the Title style to cell A1.
+
+### Options:
+- [x] **A)** Please refer to Explanation below for the answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Home Tab/ Styles group/ cell styles
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 1 Clothing Orders
+
+CORRECT TEXT - (Topic 1)
+On the `'Orders'' worksheet, filter the table data to display only the orders from `'Alpine SKI House.''
+
+### Options:
+- [x] **A)** Please refer to Explanation below for the answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+On the data tab, click filter. Display only alpine.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 1 Clothing Orders
+
+CORRECT TEXT - (Topic 1)
+On the `'Prices'' worksheet, in the `'Tax column, enter a formula that multiples the value in the `'Unit Price'' column by cell L2.
+
+### Options:
+- [x] **A)** Please refer to Explanation below for the answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 1 Clothing Orders
+
+CORRECT TEXT - (Topic 1)
+On the `'Inventory' chart sheet, insert a chart title above the chart, at the top of the plot area. Display the percentage values as data labels to the right of each data bar.
+
+### Options:
+- [x] **A)** Please refer to Explanation below for the answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Click chart, press layout, click chart title and add it. Press add chart element, data labels, more detailed options, uncheck value and check percentage.
+</details>
+
+---

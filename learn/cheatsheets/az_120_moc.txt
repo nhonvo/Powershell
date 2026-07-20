@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/az-120
+  - az120
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AZ-120: Planning and Administering Microsoft Azure for SAP Workloads MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/AZ-120/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/AZ-120/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AZ-120/AZ-120 Mindmap\|🗺️ AZ-120 Mindmap]]
+- [[certifications/microsoft/AZ-120/AZ-120 Flashcards\|🃏 AZ-120 Flashcards]]
+- [[certifications/microsoft/AZ-120/AZ-120_Scraped_Question_Bank\|🗃️ AZ-120 Scraped Question Bank]]

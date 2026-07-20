@@ -1,0 +1,155 @@
+# 🗃️ MB-700 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Architect solutions (Question Set 1)
+
+A company uses a legacy finance application that runs on a single SQL Server instance. The company plans to implement Dynamics 365 Finance. The following table describes the current implementation and design decisions for the new implementation:
+
+
+
+You need to identify the gap in the migration plan.
+
+Which requirement should you identify as a gap?
+
+### Options:
+- [ ] **A)** Business logic
+- [ ] **B)** Users
+- [x] **C)** User Interface [Correct]
+- [ ] **D)** Reports
+- [ ] **E)** Data
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Architect solutions (Question Set 1)
+
+An organization is planning a new Dynamics 365 Finance + Operations (on-premises) implementation.
+
+The business process demands a huge volume of transactions to be imported during peak hours. Users can always access the system.
+
+You need to do proper hardware sizing to ensure expected performance.
+
+Which two factors should be considered for sizing? Each correct answer presents a complete solution.
+
+Note: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,E`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Architect solutions (Question Set 1)
+
+HOTSPOT (Drag and Drop is not supported)
+
+A United States-based company has a cloud-based Dynamics 365 Finance implementation. The company plans to open a new location in Mexico.
+
+Electronic invoicing is mandated in Mexico.
+
+You need to recommend a solution that meets Mexican localization reporting requirements.
+
+What should you recommend? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Architect solutions (Question Set 1)
+
+A company uses Dynamics 365 Business Central.
+
+The company identifies the following issues:
+
+Users report they cannot perform planning and dispatching of service orders or track bills of material in the system.
+The finance department says that licensing costs are higher than budgeted.
+
+You need to recommend a solution to address the issues.
+
+What should you recommend?
+
+### Options:
+- [ ] **A)** Use the Lifecycle Services business process modeler to create service order management and manufacturing tasks in the BPM Library.
+- [x] **B)** Perform a fit-gap analysis. Implement service order management and manufacturing business processes and license changes. [Correct]
+- [ ] **C)** Configure all users as Business Central Premium users.
+- [ ] **D)** Ensure that the service order management and manufacturing processes steps are documented in a flow chart.
+- [ ] **E)** Configure all users as Business Central Essentials users.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Architect solutions (Question Set 1)
+
+A holding company with three independently managed and operated subsidiaries is implementing Dynamics 365 Finance.
+
+The company needs to ensure the restriction of data for each company from subsidiary counterparts.
+
+You need to determine an organization structure.
+
+Which structure should you recommend?
+
+### Options:
+- [ ] **A)** single legal entity with security policies
+- [x] **B)** separate legal entities [Correct]
+- [ ] **C)** single legal entity with custom business unit financial dimension
+- [ ] **D)** single entity that consolidates legal entities
+- [ ] **E)** single legal entity with default business unit financial dimension
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---

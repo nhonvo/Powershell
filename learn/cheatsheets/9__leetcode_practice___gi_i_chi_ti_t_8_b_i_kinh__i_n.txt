@@ -1,0 +1,1035 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/🥞index_07_Stack_Queue|07_Stack_Queue]]
+
+## 9. LeetCode Practice — Giải chi tiết 8 bài kinh điển
+
+Phần này mình sẽ cùng bạn giải **8 bài LeetCode** kinh điển về Stack và Queue. Mỗi bài mình phân tích **cực kỳ chi tiết** — từ tư duy brute force, tối ưu dần, đến lời giải hoàn chỉnh với dry run từng bước. Mục tiêu là bạn không chỉ biết code, mà **hiểu tại sao** code đó hoạt động.
+
+------
+
+### 9.1 LeetCode #20 — Valid Parentheses (Easy)
+
+**Link**: https://leetcode.com/problems/valid-parentheses/
+
+**Đề bài**: Cho một chuỗi `s` chỉ chứa các ký tự `(`, `)`, `{`, `}`, `[`, `]`. Xác định xem chuỗi có hợp lệ không.
+
+Chuỗi hợp lệ khi:
+
+1. Mỗi ngoặc mở phải có ngoặc đóng **cùng loại** tương ứng
+2. Mỗi ngoặc mở phải được đóng **đúng thứ tự**
+
+**Ví dụ:**
+
+```
+Input: s = "()"       → Output: True
+Input: s = "()[]{}"   → Output: True
+Input: s = "(]"       → Output: False
+Input: s = "([)]"     → Output: False  ← đúng loại nhưng sai thứ tự!
+Input: s = "{[]}"     → Output: True   ← lồng nhau đúng thứ tự
+```
+
+#### Phân tích tư duy
+
+**Tại sao Stack phù hợp?**
+
+Hãy tưởng tượng bạn đang đọc biểu thức toán học có ngoặc lồng nhau. Khi gặp ngoặc mở, bạn "ghi nhớ" nó. Khi gặp ngoặc đóng, bạn kiểm tra xem ngoặc mở **gần nhất** (ghi nhớ cuối cùng) có khớp không. Đây chính là LIFO — và Stack sinh ra để làm việc này.
+
+**Cách 1: Brute Force — Replace lặp lại**
+
+Ý tưởng: liên tục tìm và xóa các cặp `()`, `[]`, `{}` cho đến khi không còn. Nếu chuỗi rỗng → hợp lệ.
+
+```python
+def isValid_brute(s: str) -> bool:
+    """Brute force: liên tục xóa cặp ngoặc. O(n^2) time."""
+    while '()' in s or '[]' in s or '{}' in s:
+        s = s.replace('()', '')
+        s = s.replace('[]', '')
+        s = s.replace('{}', '')
+    return s == ''
+
+# Hoạt động nhưng chậm!
+# Mỗi lần replace là O(n), lặp tối đa n/2 lần → O(n^2)
+```
+
+**Cách 2: Stack — Tối ưu O(n)**
+
+Ý tưởng:
+
+1. Gặp ngoặc mở → push vào stack
+2. Gặp ngoặc đóng → kiểm tra top stack có phải ngoặc mở tương ứng không
+3. Cuối cùng stack phải rỗng
+
+```python
+def isValid(s: str) -> bool:
+    """
+    Kiểm tra chuỗi ngoặc hợp lệ bằng Stack.
+    Time: O(n) — duyệt chuỗi 1 lần
+    Space: O(n) — stack chứa tối đa n/2 ngoặc mở
+    """
+    stack = []
+    # Map: ngoặc đóng → ngoặc mở tương ứng
+    matching = {')': '(', ']': '[', '}': '{'}
+
+    for char in s:
+        if char in matching:
+            # Gặp ngoặc đóng → kiểm tra stack
+            if not stack or stack[-1] != matching[char]:
+                return False  # Stack rỗng hoặc không khớp
+            stack.pop()  # Khớp → pop ngoặc mở ra
+        else:
+            # Gặp ngoặc mở → push vào stack
+            stack.append(char)
+
+    # Hợp lệ khi và chỉ khi stack rỗng (mọi ngoặc mở đều đã đóng)
+    return len(stack) == 0
+```
+
+#### Dry run từng bước
+
+```
+Input: s = "{[()]}"
+
+Ký tự '{': ngoặc mở → push       Stack: ['{']
+Ký tự '[': ngoặc mở → push       Stack: ['{', '[']
+Ký tự '(': ngoặc mở → push       Stack: ['{', '[', '(']
+Ký tự ')': ngoặc đóng
+           matching[')'] = '('
+           stack[-1] = '(' ✓ → pop  Stack: ['{', '[']
+Ký tự ']': ngoặc đóng
+           matching[']'] = '['
+           stack[-1] = '[' ✓ → pop  Stack: ['{']
+Ký tự '}': ngoặc đóng
+           matching['}'] = '{'
+           stack[-1] = '{' ✓ → pop  Stack: []
+
+Stack rỗng → return True ✓
+Input: s = "([)]"
+
+Ký tự '(': push                   Stack: ['(']
+Ký tự '[': push                   Stack: ['(', '[']
+Ký tự ')': ngoặc đóng
+           matching[')'] = '('
+           stack[-1] = '[' ≠ '(' → return False ✗
+
+Ngoặc đóng ')' gặp ngoặc mở '[' → sai thứ tự!
+```
+
+#### Complexity Analysis
+
+- **Time**: O(n) — mỗi ký tự được xử lý đúng 1 lần
+- **Space**: O(n) — worst case `(((((...` stack chứa n/2 phần tử
+
+#### Common Mistakes / Edge Cases
+
+- **Chuỗi rỗng** `""` → True (không có ngoặc nào cần đóng)
+- **Chỉ có ngoặc đóng** `")"` → False (stack rỗng khi gặp ngoặc đóng)
+- **Chỉ có ngoặc mở** `"("` → False (stack không rỗng cuối cùng)
+- **Quên kiểm tra stack rỗng** khi gặp ngoặc đóng → IndexError
+
+------
+
+### 9.2 LeetCode #155 — Min Stack (Easy)
+
+**Link**: https://leetcode.com/problems/min-stack/
+
+**Đề bài**: Thiết kế stack hỗ trợ push, pop, top, và **getMin** — tất cả đều O(1).
+
+```
+MinStack()      — khởi tạo
+push(val)       — thêm val vào đỉnh stack
+pop()           — xóa phần tử đỉnh
+top()           — trả về phần tử đỉnh
+getMin()        — trả về phần tử nhỏ nhất trong stack
+```
+
+#### Phân tích tư duy
+
+**Tại sao bài này khó?**
+
+push, pop, top đều O(1) là bình thường. Nhưng getMin thường cần duyệt toàn bộ stack → O(n). Làm sao giảm xuống O(1)?
+
+**Ý tưởng chính**: Tại mỗi thời điểm, mình cần biết "min hiện tại là bao nhiêu". Khi pop một phần tử, min có thể thay đổi → mình cần **nhớ min trước đó**.
+
+**Cách 1: Dùng 2 Stack**
+
+Stack chính lưu giá trị. Stack phụ (`min_stack`) lưu min tại mỗi trạng thái.
+
+**Cách 2: Lưu tuple (value, current_min)** — đơn giản hơn, dễ code hơn.
+
+```python
+class MinStack:
+    """
+    Min Stack — mỗi phần tử lưu kèm min tại thời điểm đó.
+    Tất cả thao tác O(1) time, O(n) space.
+    """
+
+    def __init__(self):
+        # Mỗi phần tử là tuple (value, min_tại_thời_điểm_này)
+        self.stack = []
+
+    def push(self, val: int) -> None:
+        # Min mới = min(val, min_hiện_tại)
+        if self.stack:
+            current_min = min(val, self.stack[-1][1])
+        else:
+            current_min = val
+        self.stack.append((val, current_min))
+
+    def pop(self) -> None:
+        self.stack.pop()
+
+    def top(self) -> int:
+        return self.stack[-1][0]
+
+    def getMin(self) -> int:
+        return self.stack[-1][1]
+```
+
+#### Dry run từng bước
+
+```
+push(-2): stack = [(-2, -2)]          ← min = -2
+push(0):  stack = [(-2,-2), (0,-2)]   ← min = min(0,-2) = -2
+push(-3): stack = [(-2,-2), (0,-2), (-3,-3)]  ← min = min(-3,-2) = -3
+
+getMin() → stack[-1][1] = -3 ✓
+
+pop():    stack = [(-2,-2), (0,-2)]   ← bỏ (-3,-3)
+
+top()    → stack[-1][0] = 0 ✓
+getMin() → stack[-1][1] = -2 ✓       ← min tự động quay lại -2!
+```
+
+**Tại sao nó hoạt động?** Mỗi phần tử "nhớ" min tại thời điểm nó được push. Khi pop, phần tử bên dưới vẫn giữ nguyên min đúng của nó → không cần tính lại.
+
+#### Cách 3: Tiết kiệm bộ nhớ — chỉ push min_stack khi min thay đổi
+
+```python
+class MinStack2:
+    """
+    Tiết kiệm bộ nhớ hơn: min_stack chỉ push khi min thay đổi.
+    Worst case vẫn O(n) space, nhưng thường tốt hơn.
+    """
+
+    def __init__(self):
+        self.main_stack = []
+        self.min_stack = []  # Chỉ push khi val <= min hiện tại
+
+    def push(self, val: int) -> None:
+        self.main_stack.append(val)
+        if not self.min_stack or val <= self.min_stack[-1]:
+            self.min_stack.append(val)
+
+    def pop(self) -> None:
+        val = self.main_stack.pop()
+        if val == self.min_stack[-1]:
+            self.min_stack.pop()
+
+    def top(self) -> int:
+        return self.main_stack[-1]
+
+    def getMin(self) -> int:
+        return self.min_stack[-1]
+```
+
+#### Complexity Analysis
+
+- **Time**: O(1) cho mọi thao tác — không có loop hay đệ quy
+- **Space**: O(n) — cách tuple tốn 2n, cách 2-stack tốn n + k (k <= n)
+
+#### Common Mistakes / Edge Cases
+
+- **Pop phần tử min rồi quên cập nhật min** → dùng stack để tự động handle
+- **Nhiều phần tử cùng giá trị min**: `push(-2), push(-2)` → min_stack phải push **cả hai** lần (dùng `<=` không phải `<`)
+- **Stack rỗng**: getMin khi stack rỗng → nên throw error
+
+------
+
+### 9.3 LeetCode #232 — Implement Queue using Stacks (Easy)
+
+**Link**: https://leetcode.com/problems/implement-queue-using-stacks/
+
+**Đề bài**: Cài đặt Queue FIFO chỉ dùng **hai Stack**. Queue phải hỗ trợ: push, peek, pop, empty.
+
+#### Phân tích tư duy
+
+**Bài toán cốt lõi**: Stack là LIFO (vào sau ra trước), Queue là FIFO (vào trước ra trước). Làm sao **đảo ngược** thứ tự?
+
+**Phát hiện quan trọng**: Nếu đổ hết stack A sang stack B (pop từ A, push vào B), thứ tự sẽ bị **đảo ngược**. Đảo ngược LIFO = FIFO!
+
+```
+Stack A (push order): [1, 2, 3]  ← 3 ở top
+Đổ A → B:
+  pop 3 từ A, push vào B
+  pop 2 từ A, push vào B
+  pop 1 từ A, push vào B
+Stack B: [3, 2, 1]  ← 1 ở top = phần tử vào đầu tiên!
+```
+
+**Cách tối ưu: Lazy transfer**
+
+Không đổ ngay khi enqueue. Chỉ đổ khi cần dequeue mà `stack_out` rỗng.
+
+```python
+class MyQueue:
+    """
+    Queue cài đặt bằng 2 Stack.
+    push: O(1)
+    pop/peek: O(1) amortized (mỗi phần tử chỉ transfer 1 lần)
+    """
+
+    def __init__(self):
+        self.stack_in = []    # Nhận phần tử mới
+        self.stack_out = []   # Phục vụ pop/peek (đã đảo thứ tự)
+
+    def push(self, x: int) -> None:
+        """Luôn O(1) — chỉ push vào stack_in."""
+        self.stack_in.append(x)
+
+    def pop(self) -> int:
+        """O(1) amortized — đổ stack_in → stack_out nếu cần."""
+        self.peek()  # Đảm bảo stack_out có phần tử
+        return self.stack_out.pop()
+
+    def peek(self) -> int:
+        """O(1) amortized — xem phần tử đầu queue."""
+        if not self.stack_out:
+            # Đổ hết stack_in sang stack_out
+            while self.stack_in:
+                self.stack_out.append(self.stack_in.pop())
+        return self.stack_out[-1]
+
+    def empty(self) -> bool:
+        """O(1)"""
+        return not self.stack_in and not self.stack_out
+```
+
+#### Dry run từng bước
+
+```
+push(1): stack_in=[1], stack_out=[]
+push(2): stack_in=[1,2], stack_out=[]
+push(3): stack_in=[1,2,3], stack_out=[]
+
+peek():  stack_out rỗng → transfer!
+         pop 3 từ in, push vào out → in=[1,2], out=[3]
+         pop 2 từ in, push vào out → in=[1], out=[3,2]
+         pop 1 từ in, push vào out → in=[], out=[3,2,1]
+         return out[-1] = 1 ✓ (FIFO: 1 vào trước nên ra trước)
+
+pop():   stack_out=[3,2,1] → pop → return 1 ✓
+         stack_out=[3,2]
+
+push(4): stack_in=[4], stack_out=[3,2]
+
+pop():   stack_out KHÔNG rỗng → pop trực tiếp
+         return 2 ✓
+         stack_out=[3]
+
+pop():   return 3 ✓. stack_out=[]
+
+pop():   stack_out rỗng → transfer stack_in=[4] → stack_out=[4]
+         return 4 ✓
+
+Thứ tự ra: 1, 2, 3, 4 → FIFO! ✓
+```
+
+#### Complexity Analysis
+
+- **push**: O(1) — chỉ append
+
+- pop/peek
+
+  :
+
+   
+
+  O(1) amortized
+
+   
+
+  — mỗi phần tử được transfer đúng 1 lần trong đời
+
+  - Worst case 1 lần pop: O(n) khi phải transfer n phần tử
+  - Nhưng n phần tử đó sẽ được pop O(1) trong n-1 lần tiếp theo
+  - Tổng cho n thao tác pop = n transfer + n pop = 2n → amortized O(1)
+
+- **Space**: O(n)
+
+#### Common Mistakes / Edge Cases
+
+- **Quên kiểm tra stack_out trước khi transfer** → transfer không cần thiết
+- **Pop khi cả 2 stack rỗng** → cần handle error
+- **Transfer khi stack_out CHƯA rỗng** → sai thứ tự! Chỉ transfer khi stack_out rỗng
+
+------
+
+### 9.4 LeetCode #739 — Daily Temperatures (Medium)
+
+**Link**: https://leetcode.com/problems/daily-temperatures/
+
+**Đề bài**: Cho mảng `temperatures` — nhiệt độ mỗi ngày. Trả về mảng `answer` trong đó `answer[i]` là số ngày bạn phải đợi để gặp ngày có nhiệt độ **cao hơn**. Nếu không có ngày nào cao hơn, `answer[i] = 0`.
+
+**Ví dụ:**
+
+```
+Input:  temperatures = [73, 74, 75, 71, 69, 72, 76, 73]
+Output: answer       = [1,  1,  4,  2,  1,  1,  0,  0]
+
+Giải thích:
+- Ngày 0 (73°): ngày 1 (74°) cao hơn → đợi 1 ngày
+- Ngày 2 (75°): ngày 6 (76°) mới cao hơn → đợi 4 ngày
+- Ngày 6 (76°): không có ngày nào cao hơn → 0
+```
+
+#### Phân tích tư duy
+
+**Nhận ra pattern**: Đây chính là bài **Next Greater Element** nhưng thay vì trả về giá trị, trả về **khoảng cách index**!
+
+**Cách 1: Brute Force O(n^2)**
+
+```python
+def dailyTemperatures_brute(temperatures):
+    """Brute force: với mỗi ngày, duyệt các ngày sau. O(n^2)"""
+    n = len(temperatures)
+    answer = [0] * n
+    for i in range(n):
+        for j in range(i + 1, n):
+            if temperatures[j] > temperatures[i]:
+                answer[i] = j - i
+                break
+    return answer
+```
+
+**Cách 2: Monotonic Stack O(n)**
+
+Dùng stack lưu **index** (không phải giá trị). Stack duy trì tính chất: nhiệt độ tại các index trong stack **giảm dần** từ đáy lên đỉnh.
+
+Khi gặp ngày có nhiệt độ cao hơn top → top đã tìm được ngày ấm hơn!
+
+```python
+def dailyTemperatures(temperatures):
+    """
+    Monotonic Stack — lưu index, stack giảm dần theo nhiệt độ.
+    Time: O(n) — mỗi index push/pop tối đa 1 lần
+    Space: O(n) — stack chứa tối đa n index
+    """
+    n = len(temperatures)
+    answer = [0] * n
+    stack = []  # Lưu INDEX của các ngày chưa tìm được ngày ấm hơn
+
+    for i in range(n):
+        # Ngày i ấm hơn các ngày trong stack?
+        while stack and temperatures[i] > temperatures[stack[-1]]:
+            prev_day = stack.pop()
+            answer[prev_day] = i - prev_day  # Khoảng cách ngày
+        stack.append(i)
+
+    # Các index còn lại trong stack: không có ngày ấm hơn → answer = 0 (default)
+    return answer
+```
+
+#### Dry run từng bước
+
+```
+temperatures = [73, 74, 75, 71, 69, 72, 76, 73]
+
+i=0, temp=73: stack=[] → push 0               Stack: [0]
+i=1, temp=74: 74 > 73(idx0) → pop 0
+              answer[0] = 1-0 = 1              Stack: []
+              push 1                           Stack: [1]
+i=2, temp=75: 75 > 74(idx1) → pop 1
+              answer[1] = 2-1 = 1              Stack: []
+              push 2                           Stack: [2]
+i=3, temp=71: 71 < 75(idx2) → push 3          Stack: [2, 3]
+i=4, temp=69: 69 < 71(idx3) → push 4          Stack: [2, 3, 4]
+i=5, temp=72: 72 > 69(idx4) → pop 4
+              answer[4] = 5-4 = 1              Stack: [2, 3]
+              72 > 71(idx3) → pop 3
+              answer[3] = 5-3 = 2              Stack: [2]
+              72 < 75(idx2) → stop, push 5     Stack: [2, 5]
+i=6, temp=76: 76 > 72(idx5) → pop 5
+              answer[5] = 6-5 = 1              Stack: [2]
+              76 > 75(idx2) → pop 2
+              answer[2] = 6-2 = 4              Stack: []
+              push 6                           Stack: [6]
+i=7, temp=73: 73 < 76(idx6) → push 7          Stack: [6, 7]
+
+Kết thúc: idx 6 và 7 còn trong stack → answer[6]=0, answer[7]=0
+
+answer = [1, 1, 4, 2, 1, 1, 0, 0] ✓
+```
+
+#### Complexity Analysis
+
+- **Time**: O(n) — mỗi index được push 1 lần, pop tối đa 1 lần → tổng 2n thao tác
+- **Space**: O(n) — stack + answer array
+
+#### Common Mistakes / Edge Cases
+
+- **Stack lưu index, KHÔNG lưu giá trị** — vì cần tính khoảng cách
+- **Mảng tăng dần** `[1,2,3,4]` → answer = `[1,1,1,0]` — stack luôn rỗng khi pop
+- **Mảng giảm dần** `[4,3,2,1]` → answer = `[0,0,0,0]` — không pop lần nào
+- **Nhiệt độ bằng nhau** `[73,73,73]` → answer = `[0,0,0]` — dùng `>` (strict), không phải `>=`
+
+------
+
+### 9.5 LeetCode #84 — Largest Rectangle in Histogram (Hard)
+
+**Link**: https://leetcode.com/problems/largest-rectangle-in-histogram/
+
+**Đề bài**: Cho mảng `heights` — chiều cao của các thanh trong biểu đồ histogram (mỗi thanh có chiều rộng = 1). Tìm diện tích hình chữ nhật lớn nhất có thể tạo được trong histogram.
+
+**Ví dụ:**
+
+```
+Input:  heights = [2, 1, 5, 6, 2, 3]
+Output: 10
+
+Giải thích: Hình chữ nhật lớn nhất có height=5, width=2
+(từ index 2 đến index 3) → 5 * 2 = 10
+```
+
+#### Phân tích tư duy
+
+**Tại sao bài này Hard?**
+
+Với mỗi thanh, hình chữ nhật lớn nhất mà nó tham gia có height = chính nó, width = mở rộng sang trái và phải cho đến khi gặp thanh **thấp hơn**. Vấn đề là tìm **biên trái** và **biên phải** hiệu quả.
+
+**Cách 1: Brute Force O(n^2)**
+
+```python
+def largestRectangleArea_brute(heights):
+    """
+    Brute force: với mỗi thanh, mở rộng sang 2 bên.
+    O(n^2) time.
+    """
+    n = len(heights)
+    max_area = 0
+
+    for i in range(n):
+        h = heights[i]
+        # Mở rộng sang trái
+        left = i
+        while left > 0 and heights[left - 1] >= h:
+            left -= 1
+        # Mở rộng sang phải
+        right = i
+        while right < n - 1 and heights[right + 1] >= h:
+            right += 1
+        # Diện tích = height * width
+        area = h * (right - left + 1)
+        max_area = max(max_area, area)
+
+    return max_area
+```
+
+**Cách 2: Monotonic Stack O(n)**
+
+**Ý tưởng then chốt**: Dùng monotonic increasing stack (tăng dần). Khi gặp thanh thấp hơn top, top bị "giới hạn" bên phải → tính diện tích cho top.
+
+Với mỗi thanh bị pop ra khỏi stack:
+
+- **Height** = heights[popped_index]
+- **Width** = khoảng cách từ phần tử bên dưới trong stack (biên trái) đến thanh hiện tại (biên phải)
+
+```python
+def largestRectangleArea(heights):
+    """
+    Monotonic Stack — tìm hình chữ nhật lớn nhất.
+    Thêm thanh ảo height=0 ở cuối để ép pop hết stack.
+    Time: O(n), Space: O(n)
+    """
+    stack = []  # Lưu INDEX, heights tăng dần
+    max_area = 0
+    heights.append(0)  # Thanh ảo để ép pop hết cuối cùng
+
+    for i in range(len(heights)):
+        # Khi gặp thanh thấp hơn → tính diện tích cho các thanh bị pop
+        while stack and heights[i] < heights[stack[-1]]:
+            h = heights[stack.pop()]  # Chiều cao thanh bị pop
+
+            # Chiều rộng: từ phần tử dưới stack đến i
+            if stack:
+                w = i - stack[-1] - 1  # Biên trái = stack[-1], biên phải = i
+            else:
+                w = i  # Không có biên trái → mở rộng đến đầu mảng
+
+            max_area = max(max_area, h * w)
+
+        stack.append(i)
+
+    heights.pop()  # Khôi phục mảng gốc
+    return max_area
+```
+
+#### Dry run từng bước
+
+```
+heights = [2, 1, 5, 6, 2, 3] + [0]  (thêm thanh ảo)
+
+i=0, h=2: stack=[] → push 0           Stack: [0]
+i=1, h=1: 1 < 2(idx0) → pop 0
+           height = 2, width = 1 (stack rỗng → w=i=1)
+           area = 2*1 = 2, max_area = 2
+           push 1                      Stack: [1]
+i=2, h=5: 5 > 1(idx1) → push 2       Stack: [1, 2]
+i=3, h=6: 6 > 5(idx2) → push 3       Stack: [1, 2, 3]
+i=4, h=2: 2 < 6(idx3) → pop 3
+           height=6, w = 4-2-1 = 1
+           area = 6*1 = 6, max_area = 6
+           2 < 5(idx2) → pop 2
+           height=5, w = 4-1-1 = 2
+           area = 5*2 = 10, max_area = 10  ← KẾT QUẢ!
+           2 >= 1(idx1) → stop, push 4    Stack: [1, 4]
+i=5, h=3: 3 > 2(idx4) → push 5       Stack: [1, 4, 5]
+i=6, h=0: 0 < 3(idx5) → pop 5         (thanh ảo ép pop hết)
+           height=3, w = 6-4-1 = 1
+           area = 3*1 = 3
+           0 < 2(idx4) → pop 4
+           height=2, w = 6-1-1 = 4
+           area = 2*4 = 8
+           0 < 1(idx1) → pop 1
+           height=1, w = 6 (stack rỗng → w=i=6)
+           area = 1*6 = 6
+
+max_area = 10 ✓
+```
+
+#### Tại sao thêm thanh ảo height=0?
+
+Nếu mảng tăng dần `[1, 2, 3, 4, 5]`, không có thanh nào trigger pop. Thêm thanh ảo 0 ở cuối đảm bảo **mọi thanh đều được pop** và tính diện tích.
+
+#### Complexity Analysis
+
+- **Time**: O(n) — mỗi index push 1 lần, pop 1 lần → 2n thao tác
+- **Space**: O(n) — stack
+
+#### Common Mistakes / Edge Cases
+
+- **Quên thêm thanh ảo** → các thanh cuối không được xử lý
+- **Tính width sai**: width = `i - stack[-1] - 1` (KHÔNG phải `i - popped_index`)
+- **Stack rỗng khi tính width**: width = i (thanh mở rộng đến đầu mảng)
+- **Mảng 1 phần tử** `[5]` → area = 5
+- **Mảng tất cả bằng nhau** `[3,3,3]` → area = 3*3 = 9
+
+------
+
+### 9.6 LeetCode #150 — Evaluate Reverse Polish Notation (Medium)
+
+**Link**: https://leetcode.com/problems/evaluate-reverse-polish-notation/
+
+**Đề bài**: Tính giá trị biểu thức dạng **Reverse Polish Notation** (Postfix). Các toán tử hợp lệ: `+`, `-`, `*`, `/`. Phép chia **làm tròn về 0** (truncate toward zero).
+
+**Ví dụ:**
+
+```
+Input:  tokens = ["2","1","+","3","*"]
+Output: 9
+Giải thích: ((2 + 1) * 3) = 9
+
+Input:  tokens = ["4","13","5","/","+"]
+Output: 6
+Giải thích: (4 + (13 / 5)) = (4 + 2) = 6
+
+Input:  tokens = ["10","6","9","3","+","-11","*","/","*","17","+","5","+"]
+Output: 22
+```
+
+#### Phân tích tư duy
+
+**RPN (Reverse Polish Notation)** là gì?
+
+Toán tử đặt **sau** hai toán hạng. Ưu điểm: không cần ngoặc, không cần xét ưu tiên. Máy tính xử lý rất dễ bằng Stack.
+
+**Thuật toán:**
+
+1. Duyệt từ trái sang phải
+2. Gặp **số** → push vào stack
+3. Gặp **toán tử** → pop 2 số, tính, push kết quả
+4. Cuối cùng stack còn 1 phần tử = kết quả
+
+**Lưu ý quan trọng về phép chia**: Python `//` chia floor (làm tròn xuống), nhưng bài yêu cầu **truncate toward zero**. Ví dụ: `-7 / 2 = -3` (truncate), không phải `-4` (floor).
+
+```python
+def evalRPN(tokens):
+    """
+    Tính giá trị biểu thức RPN (Postfix).
+    Dùng stack, duyệt 1 lần.
+    Time: O(n), Space: O(n)
+    """
+    stack = []
+    operators = {'+', '-', '*', '/'}
+
+    for token in tokens:
+        if token in operators:
+            # Pop 2 toán hạng (chú ý thứ tự!)
+            b = stack.pop()  # Toán hạng phải (pop trước)
+            a = stack.pop()  # Toán hạng trái (pop sau)
+
+            if token == '+':
+                stack.append(a + b)
+            elif token == '-':
+                stack.append(a - b)
+            elif token == '*':
+                stack.append(a * b)
+            elif token == '/':
+                # Truncate toward zero: dùng int(a/b)
+                # KHÔNG dùng a // b vì Python floor division
+                # Ví dụ: int(-7/2) = -3, nhưng -7//2 = -4
+                stack.append(int(a / b))
+        else:
+            # Là số (có thể âm, ví dụ "-11")
+            stack.append(int(token))
+
+    return stack.pop()
+```
+
+#### Dry run từng bước
+
+```
+tokens = ["4", "13", "5", "/", "+"]
+
+Token "4":  là số → push 4            Stack: [4]
+Token "13": là số → push 13           Stack: [4, 13]
+Token "5":  là số → push 5            Stack: [4, 13, 5]
+Token "/":  là toán tử
+            pop b=5, pop a=13
+            13 / 5 = 2.6 → int = 2
+            push 2                     Stack: [4, 2]
+Token "+":  là toán tử
+            pop b=2, pop a=4
+            4 + 2 = 6
+            push 6                     Stack: [6]
+
+Kết quả: 6 ✓
+tokens = ["10","6","9","3","+","-11","*","/","*","17","+","5","+"]
+
+Token "10":  push 10                   Stack: [10]
+Token "6":   push 6                    Stack: [10, 6]
+Token "9":   push 9                    Stack: [10, 6, 9]
+Token "3":   push 3                    Stack: [10, 6, 9, 3]
+Token "+":   pop 3, pop 9 → 9+3=12    Stack: [10, 6, 12]
+Token "-11": push -11                  Stack: [10, 6, 12, -11]
+Token "*":   pop -11, pop 12 → 12*(-11)=-132  Stack: [10, 6, -132]
+Token "/":   pop -132, pop 6 → int(6/(-132))=0  Stack: [10, 0]
+Token "*":   pop 0, pop 10 → 10*0=0   Stack: [0]
+Token "17":  push 17                   Stack: [0, 17]
+Token "+":   pop 17, pop 0 → 0+17=17  Stack: [17]
+Token "5":   push 5                    Stack: [17, 5]
+Token "+":   pop 5, pop 17 → 17+5=22  Stack: [22]
+
+Kết quả: 22 ✓
+```
+
+#### Complexity Analysis
+
+- **Time**: O(n) — duyệt n tokens, mỗi token xử lý O(1)
+- **Space**: O(n) — stack chứa tối đa (n+1)/2 số (khi tất cả là số)
+
+#### Common Mistakes / Edge Cases
+
+- **Thứ tự toán hạng**: `a = stack.pop()` trước, `b = stack.pop()` sau? **SAI!** Pop trước là b (toán hạng phải), pop sau là a (toán hạng trái). `"6 2 /"` = 6/2 = 3, không phải 2/6
+- **Phép chia truncate**: `int(-7/2) = -3` (đúng), `(-7)//2 = -4` (sai cho bài này)
+- **Số âm trong input**: `"-11"` phải parse thành -11, không nhầm với toán tử `-`
+- **Chỉ 1 token** `["42"]` → kết quả = 42
+
+------
+
+### 9.7 LeetCode #496 — Next Greater Element I (Easy)
+
+**Link**: https://leetcode.com/problems/next-greater-element-i/
+
+**Đề bài**: Cho hai mảng `nums1` và `nums2`. `nums1` là tập con của `nums2`. Với mỗi phần tử trong `nums1`, tìm **Next Greater Element** của nó trong `nums2`. Nếu không có thì trả về -1.
+
+Next Greater Element của `nums1[i]` trong `nums2`: tìm vị trí của `nums1[i]` trong `nums2`, rồi tìm phần tử lớn hơn đầu tiên bên phải.
+
+**Ví dụ:**
+
+```
+Input:  nums1 = [4, 1, 2], nums2 = [1, 3, 4, 2]
+Output: [-1, 3, -1]
+
+Giải thích:
+- 4 ở nums2 tại index 2. Bên phải chỉ có [2]. Không có ai > 4 → -1
+- 1 ở nums2 tại index 0. Bên phải có [3, 4, 2]. Phần tử > 1 đầu tiên = 3
+- 2 ở nums2 tại index 3. Bên phải không có ai → -1
+```
+
+#### Phân tích tư duy
+
+**Bước 1**: Tìm NGE cho **tất cả** phần tử trong `nums2` (dùng monotonic stack). **Bước 2**: Lưu kết quả vào hash map. Query cho từng phần tử trong `nums1`.
+
+**Cách 1: Brute Force O(m\*n)**
+
+```python
+def nextGreaterElement_brute(nums1, nums2):
+    """Brute force: với mỗi phần tử nums1, tìm trong nums2. O(m*n)"""
+    result = []
+    for num in nums1:
+        # Tìm vị trí của num trong nums2
+        idx = nums2.index(num)
+        # Tìm phần tử lớn hơn đầu tiên bên phải
+        found = -1
+        for j in range(idx + 1, len(nums2)):
+            if nums2[j] > num:
+                found = nums2[j]
+                break
+        result.append(found)
+    return result
+```
+
+**Cách 2: Monotonic Stack + Hash Map O(m+n)**
+
+```python
+def nextGreaterElement(nums1, nums2):
+    """
+    Bước 1: Dùng monotonic stack tìm NGE cho mọi phần tử trong nums2.
+    Bước 2: Lưu vào hash map, query cho nums1.
+    Time: O(m + n), Space: O(n)
+    """
+    # Bước 1: Tìm NGE cho tất cả phần tử trong nums2
+    nge_map = {}  # {value: next_greater_element}
+    stack = []    # Monotonic decreasing stack (lưu giá trị)
+
+    for num in nums2:
+        # num là NGE cho tất cả phần tử trong stack nhỏ hơn num
+        while stack and stack[-1] < num:
+            nge_map[stack.pop()] = num
+        stack.append(num)
+
+    # Các phần tử còn trong stack: không có NGE → -1
+    while stack:
+        nge_map[stack.pop()] = -1
+
+    # Bước 2: Query cho nums1
+    return [nge_map[num] for num in nums1]
+```
+
+#### Dry run từng bước
+
+```
+nums2 = [1, 3, 4, 2]
+
+num=1: stack=[] → push 1              Stack: [1]
+num=3: 3 > 1 → pop 1, nge_map[1]=3   Stack: []
+       push 3                         Stack: [3]
+num=4: 4 > 3 → pop 3, nge_map[3]=4   Stack: []
+       push 4                         Stack: [4]
+num=2: 2 < 4 → push 2                Stack: [4, 2]
+
+Còn trong stack: pop 2 → nge_map[2]=-1
+                 pop 4 → nge_map[4]=-1
+
+nge_map = {1: 3, 3: 4, 4: -1, 2: -1}
+
+nums1 = [4, 1, 2]
+→ [nge_map[4], nge_map[1], nge_map[2]]
+→ [-1, 3, -1] ✓
+```
+
+#### Complexity Analysis
+
+- **Time**: O(m + n) — duyệt nums2 là O(n), query nums1 là O(m)
+- **Space**: O(n) — hash map + stack
+
+#### Common Mistakes / Edge Cases
+
+- **nums2 không có phần tử trùng** (đề bài đảm bảo) → hash map key duy nhất
+- **nums1 là tập con** → mọi phần tử nums1 đều có trong nge_map
+- **Nhầm lẫn**: tìm NGE trong nums2, KHÔNG phải trong nums1
+
+------
+
+### 9.8 LeetCode #239 — Sliding Window Maximum (Hard)
+
+**Link**: https://leetcode.com/problems/sliding-window-maximum/
+
+**Đề bài**: Cho mảng `nums` và kích thước cửa sổ `k`. Trượt cửa sổ từ trái sang phải, mỗi lần trượt 1 vị trí. Trả về phần tử **lớn nhất** trong mỗi cửa sổ.
+
+**Ví dụ:**
+
+```
+Input:  nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3
+Output: [3, 3, 5, 5, 6, 7]
+
+Giải thích:
+Cửa sổ [1, 3, -1]     → max = 3
+Cửa sổ [3, -1, -3]    → max = 3
+Cửa sổ [-1, -3, 5]    → max = 5
+Cửa sổ [-3, 5, 3]     → max = 5
+Cửa sổ [5, 3, 6]      → max = 6
+Cửa sổ [3, 6, 7]      → max = 7
+```
+
+#### Phân tích tư duy
+
+**Cách 1: Brute Force O(n\*k)**
+
+```python
+def maxSlidingWindow_brute(nums, k):
+    """Brute force: với mỗi cửa sổ, tìm max. O(n*k)"""
+    n = len(nums)
+    result = []
+    for i in range(n - k + 1):
+        result.append(max(nums[i:i+k]))
+    return result
+```
+
+**Tại sao Brute Force chậm?** Mỗi cửa sổ tốn O(k) để tìm max. Có (n-k+1) cửa sổ → O(n*k). Khi n = 10^5, k = 10^4 → 10^9 phép tính → TLE!
+
+**Cách 2: Monotonic Deque O(n)**
+
+**Ý tưởng then chốt**: Dùng deque lưu **index** của các phần tử "có tiềm năng" làm max. Deque duy trì tính chất **giảm dần** (monotonic decreasing) → phần tử đầu deque luôn là max của cửa sổ hiện tại.
+
+**Tại sao deque giảm dần?**
+
+- Nếu `nums[i] >= nums[j]` và `i > j` (i mới hơn j), thì j **không bao giờ** có thể là max trong bất kỳ cửa sổ nào chứa i → loại j
+- Phần tử đầu deque luôn là max → O(1) để lấy max
+
+**Hai thao tác quan trọng:**
+
+1. **Xóa phần tử hết hạn** (đầu deque): nếu index ở đầu deque nằm ngoài cửa sổ
+2. **Duy trì monotonic**: xóa phần tử cuối deque nếu nhỏ hơn phần tử mới
+
+```python
+from collections import deque
+
+def maxSlidingWindow(nums, k):
+    """
+    Monotonic Deque — sliding window maximum.
+    Deque lưu INDEX, giá trị giảm dần từ đầu → cuối.
+    Time: O(n) — mỗi phần tử vào/ra deque tối đa 1 lần
+    Space: O(k) — deque chứa tối đa k index
+    """
+    n = len(nums)
+    dq = deque()  # Lưu INDEX, nums[index] giảm dần
+    result = []
+
+    for i in range(n):
+        # 1. Xóa phần tử hết hạn (nằm ngoài cửa sổ [i-k+1, i])
+        while dq and dq[0] < i - k + 1:
+            dq.popleft()
+
+        # 2. Duy trì monotonic decreasing:
+        #    Xóa phần tử cuối deque nếu nhỏ hơn nums[i]
+        #    (vì chúng không bao giờ có thể là max nữa)
+        while dq and nums[dq[-1]] <= nums[i]:
+            dq.pop()
+
+        # 3. Thêm index hiện tại vào cuối deque
+        dq.append(i)
+
+        # 4. Ghi nhận max khi cửa sổ đã đủ k phần tử
+        if i >= k - 1:
+            result.append(nums[dq[0]])  # Đầu deque = max
+
+    return result
+```
+
+#### Dry run từng bước
+
+```
+nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3
+
+i=0, num=1:
+  Hết hạn: dq=[] → skip
+  Monotonic: dq=[] → skip
+  Append 0                           Deque: [0]        (values: [1])
+  i < 2 → chưa đủ cửa sổ
+
+i=1, num=3:
+  Hết hạn: dq[0]=0 >= 1-3+1=-1 → ok
+  Monotonic: nums[0]=1 <= 3 → pop 0  Deque: []
+  Append 1                           Deque: [1]        (values: [3])
+  i < 2 → chưa đủ cửa sổ
+
+i=2, num=-1:
+  Hết hạn: dq[0]=1 >= 2-3+1=0 → ok
+  Monotonic: nums[1]=3 > -1 → stop
+  Append 2                           Deque: [1, 2]     (values: [3, -1])
+  i=2 >= 2 → result.append(nums[1]) = 3
+  result: [3]
+
+i=3, num=-3:
+  Hết hạn: dq[0]=1 >= 3-3+1=1 → ok
+  Monotonic: nums[2]=-1 > -3 → stop
+  Append 3                           Deque: [1, 2, 3]  (values: [3, -1, -3])
+  result.append(nums[1]) = 3
+  result: [3, 3]
+
+i=4, num=5:
+  Hết hạn: dq[0]=1 < 4-3+1=2 → popleft!  Deque: [2, 3]
+  Monotonic: nums[3]=-3 <= 5 → pop 3     Deque: [2]
+             nums[2]=-1 <= 5 → pop 2     Deque: []
+  Append 4                               Deque: [4]     (values: [5])
+  result.append(nums[4]) = 5
+  result: [3, 3, 5]
+
+i=5, num=3:
+  Hết hạn: dq[0]=4 >= 5-3+1=3 → ok
+  Monotonic: → skip (deque cuối nums[4]=5 > 3)
+  Append 5                               Deque: [4, 5]  (values: [5, 3])
+  result.append(nums[4]) = 5
+  result: [3, 3, 5, 5]
+
+i=6, num=6:
+  Hết hạn: dq[0]=4 >= 6-3+1=4 → ok
+  Monotonic: nums[5]=3 <= 6 → pop 5     Deque: [4]
+             nums[4]=5 <= 6 → pop 4     Deque: []
+  Append 6                               Deque: [6]     (values: [6])
+  result.append(nums[6]) = 6
+  result: [3, 3, 5, 5, 6]
+
+i=7, num=7:
+  Hết hạn: dq[0]=6 >= 7-3+1=5 → ok
+  Monotonic: nums[6]=6 <= 7 → pop 6     Deque: []
+  Append 7                               Deque: [7]     (values: [7])
+  result.append(nums[7]) = 7
+  result: [3, 3, 5, 5, 6, 7] ✓
+```
+
+#### Tại sao O(n) mà không phải O(n*k)?
+
+Mỗi phần tử trong mảng:
+
+- Được **append** vào deque đúng **1 lần**
+- Được **pop** khỏi deque tối đa **1 lần** (bị monotonic loại) hoặc **popleft 1 lần** (hết hạn)
+
+Tổng thao tác trên deque: 2n = O(n). Không phụ thuộc vào k!
+
+#### Complexity Analysis
+
+- **Time**: O(n) — mỗi phần tử vào/ra deque tối đa 1 lần
+- **Space**: O(k) — deque chứa tối đa k index
+
+#### Common Mistakes / Edge Cases
+
+- **Deque lưu INDEX, không lưu giá trị** — vì cần kiểm tra hết hạn (index nằm ngoài cửa sổ)
+- **Dùng `<=` khi pop monotonic**: `nums[dq[-1]] <= nums[i]` — loại cả phần tử **bằng** vì phần tử mới hơn sẽ ở lại lâu hơn
+- **Kiểm tra hết hạn TRƯỚC monotonic** — thứ tự quan trọng
+- **k = 1** → mỗi cửa sổ chỉ 1 phần tử → trả về chính mảng
+- **k = n** → 1 cửa sổ duy nhất → trả về `[max(nums)]`
+- **Mảng tất cả bằng nhau** `[5,5,5,5], k=2` → `[5,5,5]`
+
+------
+
+### Bảng tổng kết 8 bài LeetCode
+
+| #    | Bài                    | Difficulty | Pattern                | Time           | Space |
+| :--- | :--------------------- | :--------- | :--------------------- | :------------- | :---- |
+| 20   | Valid Parentheses      | Easy       | Stack matching         | O(n)           | O(n)  |
+| 155  | Min Stack              | Easy       | Stack + auxiliary data | O(1) mỗi op    | O(n)  |
+| 232  | Queue using Stacks     | Easy       | Stack simulation       | O(1) amortized | O(n)  |
+| 739  | Daily Temperatures     | Medium     | Monotonic Stack        | O(n)           | O(n)  |
+| 84   | Largest Rectangle      | Hard       | Monotonic Stack        | O(n)           | O(n)  |
+| 150  | Evaluate RPN           | Medium     | Stack evaluation       | O(n)           | O(n)  |
+| 496  | Next Greater Element I | Easy       | Monotonic Stack + Hash | O(m+n)         | O(n)  |
+| 239  | Sliding Window Max     | Hard       | Monotonic Deque        | O(n)           | O(k)  |
+
+### Tips khi giải bài Stack/Queue trên LeetCode
+
+1. **Nhận diện pattern**: Nếu bài yêu cầu "matching" (ngoặc, tags) → Stack. Nếu "tìm phần tử lớn/nhỏ hơn gần nhất" → Monotonic Stack. Nếu "sliding window" + max/min → Monotonic Deque.
+2. **Stack lưu gì?** Lưu **index** khi cần tính khoảng cách. Lưu **giá trị** khi chỉ cần so sánh.
+3. **Monotonic increasing hay decreasing?** Tìm Next Greater → decreasing (pop phần tử nhỏ hơn). Tìm Next Smaller → increasing (pop phần tử lớn hơn).
+4. **Thêm sentinel (lính canh)**: Histogram thêm height=0 cuối. Sliding window kiểm tra hết hạn. Sentinel giúp code sạch hơn, tránh if-else rối.
+5. **Phép chia trong Python**: `int(a/b)` truncate toward zero (giống C++/Java). `a//b` floor division (khác!). LeetCode thường yêu cầu truncate.

@@ -1,0 +1,79 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/08_Deployment_DevOps/📂index_08_Deployment_DevOps|08_Deployment_DevOps]]
+
+# 🏗️ 3. Production Deployment (Running Your App)
+
+Khi ứng dụng của bạn đã hoàn thiện, việc đưa nó lên **Production** (Máy chủ thật) đòi hỏi kiến thức về bảo mật, hiệu năng và tính sẵn sàng cao. Một server Backend đơn lẻ là chưa đủ.
+
+---
+
+### 🏛️ 3.1 Nginx & Reverse Proxy (Lớp bảo vệ vòng ngoài)
+
+Đừng phơi bày trực tiếp Server (.NET / Java) ra Internet. Hãy dùng **Nginx** làm lớp trung gian.
+
+- **Reverse Proxy**: Tiếp nhận request từ client và chuyển tiếp (Forward) vào server của bạn.
+- **SSL Termination**: Cài đặt HTTPS ngay tại Nginx để Server Backend nhẹ gánh (chỉ cần chạy HTTP nội bộ).
+- **Load Balancing**: Chia tải cho nhiều server con đằng sau.
+
+**Cấu hình Nginx cơ bản:**
+```nginx
+server {
+    listen 80;
+    server_name api.code4func.com;
+    location / {
+        proxy_pass http://localhost:5000; # Forward vào .NET/Java App
+        proxy_set_header Host $host;
+    }
+}
+```
+
+---
+
+### 🧠 3.2 Hosting Models (Lựa chọn máy chủ)
+
+#### **1. VPS (Virtual Private Server)**
+Tự thuê server (DigitalOcean, Vultr) và cài đặt mọi thứ bằng tay. (Học được nhiều nhưng tốn công bảo trì).
+
+#### **2. PaaS (Platform as Code)**
+Dùng **Render**, **Heroku**, **Railway**. Bạn chỉ cần đẩy code, họ lo hết phần server. (Nhanh, gọn nhưng chi phí cao hơn).
+
+#### **3. Serverless (AWS Lambda / Azure Functions)**
+Code của bạn chỉ chạy khi có request. **Thanh toán theo lượt gọi API**. (Cực rẻ cho ứng dụng ít người dùng, nhưng rủi ro Cold Start).
+
+---
+
+### 🚀 3.3 Zero Downtime Deployment (Không làm khách hàng chờ)
+
+Hầu hết apps cần chạy 24/7. Làm sao để update code mà không làm "sập" app?
+- **Rolling Update**: Nếu bạn có 4 server, bạn update lần lượt server 1 -> server 2... Server còn lại vẫn phục vụ khách bình thường.
+- **Docker Swarm / Kubernetes**: Những công cụ này tự động hóa hoàn toàn việc Rolling Update cho bạn.
+
+---
+
+### ⚡ 3.4 Monitoring & Health Checks (Hệ thống tự cứu mình)
+
+Server Backend phải có endpoint `/health` để báo cáo tình trạng:
+- Nếu Database kết nối được -> Trả về `200 OK`.
+- Nếu Database sập -> Trả về `500 Server Error`.
+> [!TIP]
+> **Self-Healing**: Docker/K8s sẽ tự động khởi động lại (Restart) container nếu `/health` trả về mã lỗi liên tục.
+
+---
+
+### 📝 3.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao cần Reverse Proxy (như Nginx) nếu server của bạn đã tự chạy được ở cổng 80?"
+<details><summary>Đáp án</summary>
+1. Bảo mật: Ẩn địa chỉ IP thực của server Backend. 2. Load Balancing: Dễ dàng mở rộng lên 10 server đằng sau mà không phải đổi URL của ứng dụng. 3. Hiệu năng: Nginx xử lý các file tĩnh (Hình ảnh, CSS) cực nhanh, để server .NET/Java tập trung xử lý logic.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh Docker Compose để thiết lập một server Nginx làm Reverse Proxy cho một ứng dụng Backend.
+<details><summary>Gợi ý</summary>
+Dùng `depends_on` để đảm bảo app chạy trước Nginx. Sau đó mount file `nginx.conf` từ máy thật vào trong container.
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Managing Nginx for High Traffic Applications](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-nginx-mastery.md)
+- [Zero Downtime Deployment with Docker Compose & Nginx](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-zero-downtime-deployment.md)
+- [How to Implementing Health Checks for Your Backend Services](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-health-checks.md)

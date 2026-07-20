@@ -1,0 +1,195 @@
+﻿# Japanese Review Plan (N5 → N4) — 28 Days
+
+Resources already imported:
+- Flashcards: `languages/07_Japanese_Flashcards/`
+- JLPT exams: `languages/08_Japanese_Exams/`
+- Roadmap: `languages/09_Japanese_Roadmap/`
+
+## Goal
+
+Rebuild N5 fundamentals quickly and push N4 grammar/vocab/listening so you can answer interview small talk and daily-work conversations confidently.
+
+## Targets (by Day 28)
+
+- [ ] Flashcards: 20–40 min/day (minimum 20 days)
+- [ ] Grammar: finish **N5 recap** + **N4 core grammar** notes
+- [ ] Listening: 12 sessions (20–30 min)
+- [ ] Speaking: 16 short speaking sessions (10–15 min), recorded 8 times
+- [ ] Mock JLPT: 2 mini-tests from `08_Japanese_Exams`
+
+## Standard daily routine (45–75 min)
+
+1. Flashcards (20–40 min) — N5 first 7 days, then N4
+2. Grammar (15–25 min) — write 3 example sentences
+3. Speaking (10–15 min) — shadow + short answers (record if possible)
+
+Output each day:
+- Update `07_LANGUAGE_EN_JP/jp/daily_speaking.md` (1–3 bullets)
+- Add 3–8 terms to `07_LANGUAGE_EN_JP/glossary.md` (optional but recommended)
+
+---
+
+## Week 1 — N5 reset (Days 1–7)
+
+Focus: particles, verb forms, basic sentence patterns, survival vocab.
+
+### Day 1
+- Flashcards: N5 set (20–40 min)
+- Grammar: N5 roadmap section 1 (from `09_Japanese_Roadmap`)
+- Speaking prompt: 自己紹介（30秒） + 好きなこと（アニメ/勉強）
+- Output: write 10 lines in `07_LANGUAGE_EN_JP/jp/daily_speaking.md`
+
+### Day 2
+- Flashcards: N5
+- Grammar: です/ます, ありません, 形容詞(い/な)
+- Speaking: “昨日/今日/明日” で5文
+
+### Day 3
+- Flashcards: N5
+- Grammar: particles (は/が/を/に/で/へ)
+- Speaking: “仕事で使うツール” を説明（5文）
+
+### Day 4
+- Flashcards: N5
+- Grammar: て形 + ください/います/いません
+- Speaking: request + permission (ください/てもいいですか)
+
+### Day 5
+- Flashcards: N5
+- Grammar: past tense, 〜ました/〜ませんでした
+- Listening: 20 min (pick 1 short N5 clip/test)
+
+### Day 6
+- Flashcards: N5
+- Grammar: 〜たい, 〜ましょう, 〜ませんか
+- Speaking: plans for weekend (7 sentences)
+
+### Day 7 (Review + mini test)
+- Review: flashcards hardest 30 words
+- Grammar review: rewrite 10 sentences
+- Mini test: 15–20 min (from `08_Japanese_Exams`)
+
+---
+
+## Week 2 — N4 grammar core (Days 8–14)
+
+Focus: common N4 structures you can reuse in answers.
+
+Daily (same routine) + add:
+- Write 1 “work story” using N4 grammar (5–8 sentences).
+
+### Day 8
+- Grammar: 〜ながら, 〜てから, 〜ので/〜から
+- Speaking: explain a work task (5–7 sentences)
+
+### Day 9
+- Grammar: 〜ようになる, 〜ようにする
+- Listening: 20–30 min
+
+### Day 10
+- Grammar: 〜そうだ (appearance), 〜らしい
+- Speaking: status update style (今〜しています / 次に〜します)
+
+### Day 11
+- Grammar: 〜てしまう, 〜ておく
+- Write: “ミス→対応→学び”
+
+### Day 12
+- Grammar: 〜すぎる, 〜やすい/にくい
+- Speaking: strengths/weaknesses (得意/苦手)
+
+### Day 13
+- Grammar: 〜しか〜ない, 〜ほど
+- Listening: 20–30 min
+
+### Day 14 (Review + mini test)
+- Mini test: 20–30 min
+- Fix list: 10 mistakes → write correct forms
+
+---
+
+## Week 3 — N4 vocab + speaking (Days 15–21)
+
+Focus: “work talk” + interview small talk.
+
+### Day 15
+- Speaking: 自己紹介（60秒） (use `jp/self_intro.md`)
+- Grammar: N4 review (pick weakest 2)
+
+### Day 16
+- Speaking: プロジェクト説明（60秒）
+- Listening: 20–30 min
+
+### Day 17
+- Speaking: “なぜこの会社？” (simple)
+- Write: 8 sentences + 5 keywords
+
+### Day 18
+- Speaking: “失敗経験” (STAR short)
+- Grammar: connectors (しかし/それに/それで/つまり)
+
+### Day 19
+- Speaking: “強み/弱み”
+- Flashcards: add 30 new words (N4)
+
+### Day 20
+- Listening: 30 min + shadow
+- Speaking: 10 Q&A quick answers
+
+### Day 21 (Review)
+- Record: 2 minutes free talk
+- Fix: pronunciation / fillers list
+
+---
+
+## Week 4 — Test + consolidation (Days 22–28)
+
+### Day 22
+- Mini mock JLPT (30–45 min)
+- Review mistakes
+
+### Day 23
+- Speaking: 2-minute “work story”
+- Flashcards: hardest 50
+
+### Day 24
+- Listening: 30 min
+- Grammar: final review list (top 10)
+
+### Day 25
+- Speaking: interview phrases (from `jp/interview_phrases.md`)
+- Write: 10 reusable sentence starters
+
+### Day 26
+- Mock interview JP (15–20 min): intro + 3 questions
+- Fill `interviewNote/interviewNote/08_MOCKS/feedback.md` (JP section)
+
+### Day 27
+- Review everything (light)
+- Re-record self intro
+
+### Day 28
+- Final mini test + confidence review
+- Decide next month focus (N4 listening vs vocab vs grammar)
+
+---
+
+## Progress tracker (copy weekly)
+
+### Week of: YYYY-MM-DD
+
+**Flashcards**
+- [ ] 5 sessions
+- [ ] Hard words list updated
+
+**Grammar**
+- [ ] 3 grammar points mastered
+- [ ] 20 example sentences written
+
+**Listening**
+- [ ] 2 sessions
+
+**Speaking**
+- [ ] 4 sessions
+- [ ] 2 recordings
+

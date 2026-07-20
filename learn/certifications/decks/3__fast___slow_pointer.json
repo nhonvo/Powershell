@@ -1,0 +1,276 @@
+{
+  "Meta": {
+    "Id": "deck_3__fast___slow_pointer",
+    "Topic": "3. Fast & Slow Pointer",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "3__fast___slow_pointer"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 13
+  },
+  "Cards": [
+    {
+      "Id": "card_00874",
+      "Front": "Bước",
+      "Back": "slow (vị trí) | fast (vị trí) | Ghi chú",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. fast & slow pointer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00875",
+      "Front": "Bước",
+      "Back": "slow (vị trí) | fast (vị trí) | Ghi chú",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. fast & slow pointer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00876",
+      "Front": "Bước",
+      "Back": "slow | fast | Ghi chú",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. fast & slow pointer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00877",
+      "Front": "Init",
+      "Back": "[10] | [10] | ",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. fast & slow pointer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00878",
+      "Front": "Prep 1",
+      "Back": "[10] | [20] | fast đi trước 1",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. fast & slow pointer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00879",
+      "Front": "Prep 2",
+      "Back": "[10] | [30] | fast đi trước 2. Gap = 2",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. fast & slow pointer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00880",
+      "Front": "Bài toán",
+      "Back": "Cách dùng",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. fast & slow pointer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00881",
+      "Front": "Tìm giữa list",
+      "Back": "slow x1, fast x2",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. fast & slow pointer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00882",
+      "Front": "Node thứ k từ cuối",
+      "Back": "Gap k bước",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. fast & slow pointer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00883",
+      "Front": "Detect cycle",
+      "Back": "Phần tiếp theo!",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. fast & slow pointer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00884",
+      "Front": "Tìm điểm bắt đầu cycle",
+      "Back": "Phần tiếp theo!",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. fast & slow pointer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00885",
+      "Front": "Palindrome check",
+      "Back": "Tìm giữa + reverse nửa sau",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. fast & slow pointer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00886",
+      "Front": "Happy Number (LeetCode 202)",
+      "Back": "Số thay vì node",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. fast & slow pointer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

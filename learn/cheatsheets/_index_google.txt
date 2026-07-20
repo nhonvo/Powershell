@@ -1,0 +1,19 @@
+# GOOGLE Certifications Index
+
+🔙 **Back to Parent**: [[📖index_learning|learning]]
+
+## 📁 Sub-Categories
+- [[certifications/google/Generative-AI-Leader/Generative-AI-Leader MOC|🎓 Generative-AI-Leader - Generative AI Leader]]
+- [[certifications/google/Professional-Cloud-Architect/Professional-Cloud-Architect MOC|🎓 Professional-Cloud-Architect - Google Cloud Certified - Professional Cloud Architect]]
+- [[certifications/google/Associate-Cloud-Engineer/Associate-Cloud-Engineer MOC|🎓 Associate-Cloud-Engineer - Associate Cloud Engineer]]
+- [[certifications/google/Google-Cloud-Certified-Professional-Data-Engineer/Google-Cloud-Certified-Professional-Data-Engineer MOC|🎓 Google-Cloud-Certified-Professional-Data-Engineer - Google Cloud Data Engineer Professional]]
+- [[certifications/google/Cloud-Digital-Leader/Cloud-Digital-Leader MOC|🎓 Cloud-Digital-Leader - Cloud Digital Leader]]
+- [[certifications/google/Professional-Machine-Learning-Engineer/Professional-Machine-Learning-Engineer MOC|🎓 Professional-Machine-Learning-Engineer - Professional Machine Learning Engineer]]
+- [[certifications/google/Professional-Cloud-Security-Engineer/Professional-Cloud-Security-Engineer MOC|🎓 Professional-Cloud-Security-Engineer - Professional Cloud Security Engineer]]
+- [[certifications/google/Professional-Cloud-Network-Engineer/Professional-Cloud-Network-Engineer MOC|🎓 Professional-Cloud-Network-Engineer - Professional Cloud Network Engineer]]
+- [[certifications/google/Professional-Cloud-DevOps-Engineer/Professional-Cloud-DevOps-Engineer MOC|🎓 Professional-Cloud-DevOps-Engineer - Professional Cloud DevOps Engineer]]
+- [[certifications/google/Google-Workspace-Administrator/Google-Workspace-Administrator MOC|🎓 Google-Workspace-Administrator - Professional Google Workspace Administrator]]
+- [[certifications/google/Professional-Cloud-Database-Engineer/Professional-Cloud-Database-Engineer MOC|🎓 Professional-Cloud-Database-Engineer - Professional Cloud Database Engineer]]
+- [[certifications/google/Professional-Cloud-Developer/Professional-Cloud-Developer MOC|🎓 Professional-Cloud-Developer - Professional Cloud Developer]]
+- [[certifications/google/ChromeOS-Administrator/ChromeOS-Administrator MOC|🎓 ChromeOS-Administrator - Professional ChromeOS Administrator]]
+- [[certifications/google/Associate-Google-Workspace-Administrator/Associate-Google-Workspace-Administrator MOC|🎓 Associate-Google-Workspace-Administrator - Associate Google Workspace Administrator]]

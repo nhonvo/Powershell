@@ -1,0 +1,9 @@
+# 04_Caching_Redis
+
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/📂index_02_Backend_Development_Roadmap|02_Backend_Development_Roadmap]]
+
+## 📄 Notes & Documents
+- [[technical_skills/02_Backend_Development_Roadmap/04_Caching_Redis/1. Caching Fundamentals|1. Caching Fundamentals]]
+- [[technical_skills/02_Backend_Development_Roadmap/04_Caching_Redis/2. Redis Deep Dive|2. Redis Deep Dive]]
+- [[technical_skills/02_Backend_Development_Roadmap/04_Caching_Redis/3. Distributed Locking & PubSub|3. Distributed Locking & PubSub]]
+

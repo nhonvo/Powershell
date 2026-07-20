@@ -1,0 +1,35 @@
+# Tracking Template (Standard)
+
+Copy this template when you start any new plan/week.
+
+## Goal (1–2 sentences)
+
+- 
+
+## Targets (measurable)
+
+- [ ] Target 1
+- [ ] Target 2
+- [ ] Target 3
+
+## Weekly schedule
+
+| Day | Time | Task | Output (file) | Done |
+|-----|------|------|---------------|------|
+| Mon |  |  |  | [ ] |
+| Tue |  |  |  | [ ] |
+| Wed |  |  |  | [ ] |
+| Thu |  |  |  | [ ] |
+| Fri |  |  |  | [ ] |
+| Sat |  |  |  | [ ] |
+| Sun |  |  |  | [ ] |
+
+## Daily log (repeat)
+
+### YYYY-MM-DD
+
+- What I did:
+- What I learned:
+- Mistake / gap:
+- Next step (1 small action):
+

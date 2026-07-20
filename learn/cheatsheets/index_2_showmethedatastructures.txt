@@ -1,0 +1,11 @@
+# 2_ShowMeTheDataStructures
+
+🔙 **Back to Parent**: [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/index_2_ShowMeTheDataStructures|Udacity-Data-Structures-and-Algorithms]]
+
+## 📁 Categories
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/AssignmentQuestions/index_AssignmentQuestions|AssignmentQuestions]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/SolutionsAndExplanations/index_SolutionsAndExplanations|SolutionsAndExplanations]]
+
+## 📄 Notes
+- [[2_showmethedatastructures|2_ShowMeTheDataStructures]]
+

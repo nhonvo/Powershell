@@ -1,0 +1,996 @@
+{
+  "Meta": {
+    "Id": "deck_11__leetcode_practice___gi_i_chi_ti_t_10_b_i_kinh__i_n",
+    "Topic": "11. LeetCode Practice — Giải chi tiết 10 bài kinh điển",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "11__leetcode_practice___gi_i_chi_ti_t_10_b_i_kinh__i_n"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 49
+  },
+  "Cards": [
+    {
+      "Id": "card_01316",
+      "Front": "Cách",
+      "Back": "Time | Space",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01317",
+      "Front": "**DFS**",
+      "Back": "O(m x n) | O(m x n) worst case call stack",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01318",
+      "Front": "**BFS**",
+      "Back": "O(m x n) | O(min(m, n)) cho queue",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01319",
+      "Front": "**Union-Find**",
+      "Back": "O(m x n x a(mn)) ~ O(m x n) | O(m x n)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01320",
+      "Front": "Cách",
+      "Back": "Time | Space",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01321",
+      "Front": "**BFS**",
+      "Back": "O(V + E) | O(V)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01322",
+      "Front": "**DFS**",
+      "Back": "O(V + E) | O(V) call stack + hash map",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01323",
+      "Front": "Cách",
+      "Back": "Thuật toán | Ý tưởng",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01324",
+      "Front": "**Kahn's (BFS)**",
+      "Back": "Topological Sort | Lần lượt loại bỏ node có in-degree = 0",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01325",
+      "Front": "**DFS + coloring**",
+      "Back": "Cycle Detection | 3 màu: WHITE (chưa visit), GRAY (đang visit), BLACK (xong)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01326",
+      "Front": "Cách",
+      "Back": "Time | Space",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01327",
+      "Front": "**Kahn's (BFS)**",
+      "Back": "O(V + E) | O(V + E)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01328",
+      "Front": "**DFS 3-Color**",
+      "Back": "O(V + E) | O(V + E)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01329",
+      "Front": "Course Schedule I (#207)",
+      "Back": "Course Schedule II (#210)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01330",
+      "Front": "Return `bool`",
+      "Back": "Return `List[int]` (thứ tự)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01331",
+      "Front": "Chỉ cần biết có cycle không",
+      "Back": "Cần xuất thứ tự topological",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01332",
+      "Front": "Cách",
+      "Back": "Time | Space",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01333",
+      "Front": "**Kahn's**",
+      "Back": "O(V + E) | O(V + E)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01334",
+      "Front": "**DFS**",
+      "Back": "O(V + E) | O(V + E)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01335",
+      "Front": "**Dijkstra + Min-Heap**",
+      "Back": "O(E log V) | O(V + E)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01336",
+      "Front": "Cách",
+      "Back": "Ý tưởng | Khi nào dùng",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01337",
+      "Front": "**Bellman-Ford biến thể**",
+      "Back": "Relax tối đa k+1 lần | Đơn giản, dễ hiểu",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01338",
+      "Front": "**BFS + pruning**",
+      "Back": "BFS theo level (mỗi level = 1 stop) | Trực quan",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01339",
+      "Front": "**Modified Dijkstra**",
+      "Back": "Thêm chiều \"số stops\" vào state | Nhanh hơn thực tế",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01340",
+      "Front": "Cách",
+      "Back": "Time | Space",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01341",
+      "Front": "**Bellman-Ford**",
+      "Back": "O(k x E) | O(V)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01342",
+      "Front": "**BFS**",
+      "Back": "O(k x E) worst case | O(V + E)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01343",
+      "Front": "**Union-Find**",
+      "Back": "O(n x a(n)) ~ O(n) | O(n)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01344",
+      "Front": "Cách",
+      "Back": "Time | Space",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01345",
+      "Front": "**BFS + Pattern**",
+      "Back": "O(M^2 x N) | O(M^2 x N)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01346",
+      "Front": "**BFS + 26 chars**",
+      "Back": "O(M x 26 x N) = O(M x N) | O(M x N)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01347",
+      "Front": "**Multi-source BFS**",
+      "Back": "O(m x n) | O(m x n)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01348",
+      "Front": "Cách",
+      "Back": "Ý tưởng | Time",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01349",
+      "Front": "**DFS/BFS**",
+      "Back": "Duyệt từ mỗi unvisited node, đếm số lần bắt đầu mới | O(V + E)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01350",
+      "Front": "**Union-Find**",
+      "Back": "Union các edges, đếm số roots | O(V + E x a(V))",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01351",
+      "Front": "Cách",
+      "Back": "Time | Space",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01352",
+      "Front": "**DFS**",
+      "Back": "O(V + E) | O(V + E)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01353",
+      "Front": "**BFS**",
+      "Back": "O(V + E) | O(V + E)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01354",
+      "Front": "**Union-Find**",
+      "Back": "O(V + E x a(V)) ~ O(V + E) | O(V)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01355",
+      "Front": "200",
+      "Back": "Number of Islands | DFS/BFS trên grid | Medium | Connected Components",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01356",
+      "Front": "133",
+      "Back": "Clone Graph | BFS/DFS + HashMap | Medium | Graph Traversal",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01357",
+      "Front": "207",
+      "Back": "Course Schedule | Topological Sort / Cycle Detection | Medium | Directed Graph",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01358",
+      "Front": "210",
+      "Back": "Course Schedule II | Topological Sort (output order) | Medium | Directed Graph",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01359",
+      "Front": "743",
+      "Back": "Network Delay Time | Dijkstra | Medium | Shortest Path",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01360",
+      "Front": "787",
+      "Back": "Cheapest Flights K Stops | Bellman-Ford biến thể | Medium | Shortest Path + Constraint",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01361",
+      "Front": "684",
+      "Back": "Redundant Connection | Union-Find | Medium | Cycle Detection",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01362",
+      "Front": "127",
+      "Back": "Word Ladder | BFS + Pattern matching | Hard | Shortest Path (unweighted)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01363",
+      "Front": "994",
+      "Back": "Rotting Oranges | Multi-source BFS | Medium | BFS trên grid",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01364",
+      "Front": "323",
+      "Back": "Connected Components | DFS/BFS/Union-Find | Medium | Connected Components",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11. leetcode practice — giải chi tiết 10 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

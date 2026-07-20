@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/az-800
+  - az800
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AZ-800: Administering Windows Server Hybrid Core Infrastructure MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/AZ-800/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/AZ-800/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AZ-800/AZ-800 Mindmap\|🗺️ AZ-800 Mindmap]]
+- [[certifications/microsoft/AZ-800/AZ-800 Flashcards\|🃏 AZ-800 Flashcards]]
+- [[certifications/microsoft/AZ-800/AZ-800_Scraped_Question_Bank\|🗃️ AZ-800 Scraped Question Bank]]

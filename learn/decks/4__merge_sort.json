@@ -1,0 +1,196 @@
+{
+  "Meta": {
+    "Id": "deck_4__merge_sort",
+    "Topic": "4. Merge Sort",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "4__merge_sort"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 9
+  },
+  "Cards": [
+    {
+      "Id": "card_00624",
+      "Front": "Truong hop",
+      "Back": "Do phuc tap | Giai thich",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. merge sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00625",
+      "Front": "**Best case**",
+      "Back": "O(n log n) | Luon chia va merge, khong co truong hop nao nhanh hon",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. merge sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00626",
+      "Front": "**Average case**",
+      "Back": "O(n log n) | ",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. merge sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00627",
+      "Front": "**Worst case**",
+      "Back": "O(n log n) | **Luon la O(n log n) bat ke input**",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. merge sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00628",
+      "Front": "**Space**",
+      "Back": "O(n) | Can mang tam de merge",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. merge sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00629",
+      "Front": "Uu diem",
+      "Back": "Nhuoc diem",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. merge sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00630",
+      "Front": "**Luon O(n log n)** -- khong co worst case xau",
+      "Back": "Can **O(n) extra space**",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. merge sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00631",
+      "Front": "**Stable** sort",
+      "Back": "Cham hon Quick Sort trong thuc te (constant factor lon hon)",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. merge sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00632",
+      "Front": "Tot cho external sorting (du lieu tren disk)",
+      "Back": "De quy co the gay stack overflow voi mang cuc lon",
+      "Hint": "03_Searching_Sorting",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. merge sort"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

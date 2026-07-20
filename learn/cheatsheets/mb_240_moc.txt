@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mb-240
+  - mb240
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MB-240: Microsoft Dynamics 365 for Field Service MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MB-240/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MB-240/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MB-240/MB-240 Mindmap\|🗺️ MB-240 Mindmap]]
+- [[certifications/microsoft/MB-240/MB-240 Flashcards\|🃏 MB-240 Flashcards]]
+- [[certifications/microsoft/MB-240/MB-240_Scraped_Question_Bank\|🗃️ MB-240 Scraped Question Bank]]

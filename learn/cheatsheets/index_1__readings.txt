@@ -1,0 +1,12 @@
+# 1. Readings
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/6. Dynamic programming and recursion/index_6. Dynamic programming and recursion|6. Dynamic programming and recursion]]
+
+## 📁 Categories
+- [[dsa/1.Interviewcake.com/6. Dynamic programming and recursion/1. Readings/1. Overlapping Subproblems/index_1. Overlapping Subproblems|1. Overlapping Subproblems]]
+- [[dsa/1.Interviewcake.com/6. Dynamic programming and recursion/1. Readings/2. Memoization/index_2. Memoization|2. Memoization]]
+- [[dsa/1.Interviewcake.com/6. Dynamic programming and recursion/1. Readings/3. Bottom-Up Algorithms/index_3. Bottom-Up Algorithms|3. Bottom-Up Algorithms]]
+
+## 📄 Notes
+- [[1. readings|1. Readings]]
+

@@ -1,0 +1,69 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/07_Monitoring_Metrics/📂index_07_Monitoring_Metrics|07_Monitoring_Metrics]]
+
+# 📊 3. Grafana & Alerts (The Visual Dashboard)
+
+Nếu Prometheus là "Đầu não", ELK là "Máy quét", thì Grafana chính là "Cửa sổ" của Backend. Nó giúp chúng ta thấy được toàn bộ sức khỏe của hệ thống qua các Dashboard rực rỡ và chuyên nghiệp.
+
+---
+
+### 🏛️ 3.1 Grafana Dashboards (Giao diện Giám sát)
+
+Grafana không lưu trữ dữ liệu. Nó kết nối với các **Data Sources** như:
+- **Prometheus**: Lấy metrics.
+- **Elasticsearch/Loki**: Lấy log.
+- **PostgreSQL/MySQL**: Lấy dữ liệu kinh doanh (Biểu đồ doanh thu).
+
+> [!TIP]
+> **Dashboard Marketplace**: Bạn có thể tải hàng ngàn mẫu Dashboard miễn phí (VD: Dashboard cho Linux, cho Spring Boot, cho Postgres) từ website `grafana.com`.
+
+---
+
+### 🧠 3.2 Các Panes phổ biến (Visual Types)
+
+Một Dashboard tốt nên có ít nhất 4 kiểu biểu đồ sau:
+1.  **Stat (Con số)**: VD: 100 User Online. (Rõ ràng, trực quan).
+2.  **Graph (Đường kẻ)**: VD: CPU Usage theo thời gian. (Biết được xu hướng tăng/giảm).
+3.  **Gauge (Đồng hồ)**: VD: Tốc độ xử lý. (Dễ thấy ngưỡng nguy hiểm).
+4.  **Heatmap (Bản đồ nhiệt)**: VD: Phân bổ Latency (P95, P99).
+
+---
+
+### 🚀 3.3 Alerting (Đặt chuông Cảnh báo)
+
+Đừng để User báo lỗi trước Admin! Cần đặt Alert ngay trên Grafana hoặc Prometheus.
+
+#### **Quy trình Cảnh báo:**
+1.  **Rule**: Nếu `CPU > 80%` trong vòng `5 phút`.
+2.  **Notification Channel**: Gửi thông báo đến Slack, Telegram, Email.
+3.  **Silence Mode**: Tắt thông báo tạm thời khi server đang được bảo trì.
+
+> [!WARNING]
+> **Alert Fatigue** (Mệt mỏi vì cảnh báo): Đừng bắn quá nhiều cảnh báo không quan trọng (VD: CPU 50% cũng báo). Admin sẽ bỏ qua chúng và lỡ mất cảnh báo thực sự nguy hiểm.
+
+---
+
+### ⚡ 3.4 Variable & Filter (Lọc linh hoạt)
+
+Một Dashboard có thể dùng cho hàng chục server khác nhau nhờ tính năng **Variables**.
+- Bạn chọn Server A từ danh sách thả xuống -> Toàn bộ Dashboard cập nhật số liệu của Server A ngay lập tức.
+
+---
+
+### 📝 3.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao biểu đồ P95 Latency quan trọng hơn Average Latency (Trung bình)?"
+<details><summary>Đáp án</summary>
+Giả sử có 100 request: 95 cái cực nhanh (10ms) nhưng 5 cái cực chậm (2000ms). Trung bình sẽ là ~110ms (Nghe có vẻ vẫn ổn). Nhưng với P95 = 2000ms, bạn sẽ thấy ngay 5% người dùng đang gặp sự cố cực kỳ chậm.
+</details>
+
+**Bài 2**: [Kỹ thuật] Thiết lập một quy tắc cảnh báo trên Grafana cho chỉ số `Available Memory` khi bộ nhớ trống xuống dưới 10%. Giải thích tại sao cần dùng thời gian chờ (For 5m)?
+<details><summary>Gợi ý</summary>
+Dùng "For 5m" để tránh các trường hợp CPU/RAM tăng đột biến (Spikes) trong 1-2 giây rồi hết ngay. Chúng ta chỉ cần cảnh báo khi tình trạng quá tải xảy ra liên tục và ổn định.
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Building the Ultimate Backend Dashboard with Grafana](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-grafana-dashboards.md)
+- [P95, P99 Percentiles: Measuring Real-world Performance](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-percentiles-guide.md)
+- [Integrating Grafana with Slack for Instant Alerts](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-grafana-slack.md)

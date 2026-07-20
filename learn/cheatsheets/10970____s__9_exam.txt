@@ -1,0 +1,89 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 9
+
+## Part 1
+**Q1.** こうえんに　男の子が　います。
+- **A.** おんなのこう
+- **B.** おんなのこ
+- **C.** おとこのこう
+- **D.** おとこのこ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4男の子 (NAM - TỬ)：cậu b&eacute;C&oacute; một cậu b&eacute; ở c&ocirc;ng vi&ecirc;n.</p>
+</details>
+
+---
+**Q2.** この　まちの　たてものは　高いです。
+- **A.** やすい
+- **B.** たかい
+- **C.** こわい
+- **D.** あつい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2高い (CAO)：caoNhững to&agrave; nh&agrave; ở thị trấn n&agrave;y cao.</p>
+</details>
+
+---
+**Q3.** まいにち　お米を　たべます。
+- **A.** おいも
+- **B.** おこめ
+- **C.** おかし
+- **D.** おもち
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2お米 (MỄ)：cơmT&ocirc;i ăn cơm mỗi ng&agrave;y.</p>
+</details>
+
+---
+**Q4.** あした　すずきさんに　話します。
+- **A.** はなします
+- **B.** かえします
+- **C.** かします
+- **D.** わたします
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1話します (THOẠI)：n&oacute;i chuyệnNg&agrave;y mai sẽ n&oacute;i chuyện với Suzuki.</p>
+</details>
+
+---
+**Q5.** お国は　どちらですか。
+- **A.** おぐに
+- **B.** おくに
+- **C.** おこく
+- **D.** おごく
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2お国 (QUỐC)：nướcBạn l&agrave; người nước n&agrave;o vậy?</p>
+</details>
+
+---
+**Q6.** ちかくに　空港は　ありますか。
+- **A.** こうじょう
+- **B.** やくしょ
+- **C.** くうこう
+- **D.** ぎんこう
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3空港 (KH&Ocirc;NG - CẢNG)：s&acirc;n bayỞ gần đ&acirc;y c&oacute; c&aacute;i s&acirc;n bay n&agrave;o kh&ocirc;ng?</p>
+</details>
+
+---
+**Q7.** あの　ぼうしは　八百円です。
+- **A.** はちひゃくえん
+- **B.** はっびゃくえん
+- **C.** はっぴゃくえん
+- **D.** はちびゃくえん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3八百円 (B&Aacute;T - B&Aacute;CH - VI&Ecirc;N)：800 y&ecirc;nC&aacute;i mũ đ&oacute; gi&aacute; 800 y&ecirc;n.</p>
+</details>
+
+---

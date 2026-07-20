@@ -1,0 +1,79 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/04_Caching_Redis/📂index_04_Caching_Redis|04_Caching_Redis]]
+
+# 🚀 2. Redis Deep Dive (Mastering In-Memory Storage)
+
+Redis (Remote Dictionary Server) không chỉ là một Cache Engine. Nó là một cấu trúc dữ liệu trên RAM đa năng, hỗ trợ từ Chat Real-time, Ranking Board đến Distributed Locking.
+
+---
+
+### 🏛️ 2.1 Cấu trúc dữ liệu phong phú (The Power of Data Types)
+
+Đừng chỉ dùng `GET/SET` chuỗi (Strings). Redis thực sự mạnh ở các kiểu dữ liệu nâng cao:
+
+| Kiểu dữ liệu | Đặc điểm | Ví dụ thực tế |
+| :--- | :--- | :--- |
+| **String** | Nhị phân an toàn (Tối đa 512MB) | Cache HTML, Session, Auth Token |
+| **Hash** | Bản đồ giữa các field và value | Lưu thông tin User (ID, Name, Age) |
+| **List** | Danh sách liên kết (O(1) cho đầu/cuối) | Hệ thống Message Queue đơn giản |
+| **Set** | Danh sách phần tử duy nhất, không thứ tự | Tìm bạn chung, đếm lượt view (Unique) |
+| **Sorted Set** | List + Rank (O(log N)) | Bảng xếp hạng Game (Leaderboard) |
+| **Bitmap** | Mảng bit siêu nén | Chấm công hàng ngày (Attendance) |
+
+---
+
+### 🧠 2.2 Redis Internals (Tại sao Redis cực nhanh?)
+
+Có 3 lý do chính khiến Redis có thể chịu được hàng triệu request/giây:
+1.  **Sử dụng RAM hoàn toàn**: Không có độ trễ của ổ đĩa.
+2.  **Cơ chế Single-threaded**: (Redis < 6.0) Sử dụng **Event Loop (I/O Multiplexing)**. Không bao giờ tốn thời gian cho việc khóa đa luồng (Locks) hay chuyển ngữ cảnh (Context switching).
+3.  **Tối ưu hóa cấu trúc dữ liệu**: Được viết bằng C thuần, mọi thao tác đều được tối ưu từng Byte.
+
+---
+
+### 🚀 2.3 Persistence: RDB vs AOF (Lưu dữ liệu vào đĩa cứng)
+
+Redis là bộ nhớ RAM, nếu mất điện, dữ liệu sẽ sạch. Vậy nó lưu vào disk thế nào?
+
+- **RDB (Snapshotting)**: Cứ sau một khoảng thời gian, chụp ảnh toàn bộ RAM lưu vào file. (Nhanh, gọn nhưng mất dữ liệu nếu sập giữa 2 lần chụp).
+- **AOF (Append Only File)**: Mỗi lệnh ghi được ghi ngay vào file nhật ký. (Cực an toàn nhưng file rất lớn và ghi chậm hơn chút).
+> [!TIP]
+> **Hiện nay (Redis 4.0+)**: Khuyên dùng kết hợp cả RDB và AOF để cân bằng giữa Tốc độ và An toàn.
+
+---
+
+### ⚡ 2.4 Transaction trong Redis (`MULTI/EXEC`)
+
+Redis hỗ trợ các giao dịch cơ bản, đảm bảo các câu lệnh trong 1 khối `MULTI` được chạy liên tục mà không bị chen ngang.
+
+```bash
+MULTI
+SET key1 "val1"
+INCR counter
+EXEC
+```
+> [!WARNING]
+> Redis Transaction **không hỗ trợ Rollback** hoàn toàn nếu có lỗi logic giữa chừng! Mọi lệnh đúng đều được thực thi.
+
+---
+
+### 📝 2.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao Redis đơn luồng (Single-thread) lại chạy nhanh hơn một số Database đa luồng?"
+<details><summary>Đáp án</summary>
+Việc xử lý đa luồng (Multi-threading) tốn rất nhiều tài nguyên cho việc tranh chấp khóa (Locks) và chuyển đổi ngữ cảnh CPU (Context Switching). Vì dữ liệu của Redis nằm trên RAM, I/O không phải là nút thắt cổ chai, do đó Single-thread + I/O Multiplexing (Event Loop) sẽ tối ưu hơn nhiều.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh Redis để tạo một Bảng xếp hạng (Leaderboard) cho người chơi có tên "Nhon" với 500 điểm, sau đó lấy ra Top 3 người chơi cao điểm nhất.
+<details><summary>Solution</summary>
+```bash
+ZADD leaderboard 500 "Nhon"
+ZREVRANGE leaderboard 0 2 WITHSCORES
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Redis Data Structures - Beyond Strings](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-redis-data-types.md)
+- [Why Redis is Single-Threaded (and when it is not)](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-redis-single-threaded.md)
+- [Configuring RDB & AOF for Maximum Reliability](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-redis-persistence.md)

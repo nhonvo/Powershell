@@ -1,0 +1,89 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 2
+
+## Part 1
+**Q1.** きょうは　くるまが　少ないです。
+- **A.** すぐない
+- **B.** すこない
+- **C.** すくない
+- **D.** すごない
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3少ない (THIỂU)：&iacute;t H&ocirc;m nay &iacute;t xe &ocirc; t&ocirc;.</p>
+</details>
+
+---
+**Q2.** 土よう日に　デパートへ　いきました。
+- **A.** かようび
+- **B.** すいようび
+- **C.** どようび
+- **D.** にちようび
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3土よう日 (THỔ - NHẬT)：thứ BảyT&ocirc;i đ&atilde; đi đến trung t&acirc;m thương mại v&agrave;o thứ Bảy.</p>
+</details>
+
+---
+**Q3.** あしたは　がっこうを　休みます。
+- **A.** やすみます
+- **B.** よみます
+- **C.** のみます
+- **D.** すみます
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1休む (HƯU)：nghỉ Ng&agrave;y mai, t&ocirc;i sẽ nghỉ học.</p>
+</details>
+
+---
+**Q4.** この　道は　とても　せまいです。
+- **A.** いえ
+- **B.** まち
+- **C.** へや
+- **D.** みち
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4道 (ĐẠO)：Con đườngCon đường n&agrave;y rất hẹp.</p>
+</details>
+
+---
+**Q5.** さとうさんの　後ろに　ひとが　います。
+- **A.** ごろ
+- **B.** ほうろ
+- **C.** ころ
+- **D.** うしろ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4後ろ (HẬU)：Đằng sauĐằng sau anh Satou c&oacute; người.</p>
+</details>
+
+---
+**Q6.** どうぞ　ここに　立って　ください。
+- **A.** いって
+- **B.** たって
+- **C.** まって
+- **D.** きって
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2立つ (LẬP)：đứngXin h&atilde;y đứng ở đ&acirc;y.</p>
+</details>
+
+---
+**Q7.** こちらは　リンさんの　お姉さんです。
+- **A.** おねえさん
+- **B.** おかあさん
+- **C.** おにいさん
+- **D.** おとうさん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1お姉さん (TỈ)：chị g&aacute;iĐ&acirc;y l&agrave; chị g&aacute;i của Linh.</p>
+</details>
+
+---

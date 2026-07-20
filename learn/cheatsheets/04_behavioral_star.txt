@@ -1,0 +1,55 @@
+🔙 **Back to Parent**: [[technical_skills/06_Backend_Interview_Expert/📂index_06_Backend_Interview_Expert|06_Backend_Interview_Expert]]
+
+# 🌟 4. Behavioral Interview (The STAR Method)
+
+Kỹ năng giải quyết vấn đề bằng code là hữu hạn, kỹ năng giao tiếp và làm việc nhóm là vô hạn. Với vị trí Senior Backend, bạn phải chứng minh được khả năng giải quyết xung đột, quản trị rủi ro và tư duy lãnh đạo (Leadership Mindset).
+
+---
+
+### 🏛️ 4.1 STAR Method (Cách kể chuyện chuyên nghiệp)
+
+Khi nhà tuyển dụng hỏi: "Kể về một lần bạn xử lý sự cố nghiêm trọng?", hãy dùng khung này:
+
+- **S - Situation (Tình huống)**: Bối cảnh của sự việc. (Dự án gì? Quy mô? Khi nào?).
+- **T - Task (Nhiệm vụ)**: Mục tiêu bạn cần đạt được. (Khắc phục lỗi thanh toán? Phục hồi dữ liệu?).
+- **A - Action (Hành động)**: Bạn ĐÃ LÀM GÌ? (Đây là phần quan trọng nhất).
+- **R - Result (Kết quả)**: Con số cụ thể. (Phòng tránh lỗi cho 10k user, giảm thời gian down-time xuống 50%).
+
+---
+
+### 🧠 4.2 Top 3 câu hỏi "Khoai" nhất
+
+1.  **Xung đột đồng nghiệp**: "Kể về 1 lần bạn bất đồng ý kiến với Senior/Manager về giải pháp kỹ thuật?"
+    - **Mấu chốt**: Đừng nói xấu ai. Hãy nói về cách bạn dùng **Số liệu (Data)** và **Prototype (Demo)** để thuyết phục họ một cách khách quan.
+2.  **Sửa lỗi nghiêm trọng**: "Làm gì nếu bạn vô tình `DROP DATABASE` trên Production?"
+    - **Mấu chốt**: Sự trung thực và quy trình. Báo cáo ngay lập tức, tìm bản Backup gần nhất và viết tài liệu (Post-mortem) để lỗi đó không bao giờ lặp lại.
+3.  **Tư duy học tập**: "Tại sao bạn lại chọn công nghệ X thay vì Y cho dự án?"
+    - **Mấu chốt**: Chứng minh sự thực dụng. Không chọn công nghệ vì "Hype", chọn vì nó giải quyết đúng bài toán của khách hàng.
+
+---
+
+### 🚀 4.3 Leadership & Mentoring (Cho vị trí Senior)
+
+- Một Senior Backend thực thụ không giải quyết mọi ticket 1 mình. 
+- Bạn phải biết cách **Delegate** (Giao việc), **Code Review** một cách tinh tế (Khen trước chê sau) và đào tạo (Mentoring) cho các bạn Junior.
+
+---
+
+### 📝 4.4 Các kịch bản tình huống (Practice)
+
+**Bài 1**: [Tình huống] Dự án sắp đến ngày Release (Deadline) nhưng vẫn còn 1 số Bug nhỏ. Bạn sẽ làm gì?
+<details><summary>Đáp án</summary>
+1. Phân loại Bug (Critical vs Minor). 2. Giải phóng các Bug nghiêm trọng ảnh hưởng đến luồng chính. 3. Để các Bug nhỏ vào "Technical Debt" (Nợ kỹ thuật) và lên kế hoạch sửa chữa ngay sau Release. Luôn thảo luận trung thực với khách hàng/Manager.
+</details>
+
+**Bài 2**: [Tình huống] "Giải thích một công nghệ phức tạp (như Docker hoặc JWT) cho một người không biết gì về kỹ thuật (non-tech person)."
+<details><summary>Gợi ý</summary>
+Dùng phép ẩn dụ (Analogy). (Ví dụ: Docker giống như cái thùng Container chở hàng trên biển. JWT giống như cái vé xem phim, bạn cầm nó đi khắp rạp mà không cần quay lại quầy vé mỗi lần vào phòng chiếu).
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [How to Ace the Leadership Rounds in High-Growth Startups](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-behavioral-interviews.md)
+- [Managing Conflict with Data & Empathy as a Senior Developer](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-conflict-management.md)
+- [The Art of Mentoring Junior Engineers - Lessons Learned](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-mentoring-guide.md)

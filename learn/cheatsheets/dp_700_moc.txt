@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/dp-700
+  - dp700
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 DP-700: Implementing Data Engineering Solutions Using Microsoft Fabric MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/DP-700/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/DP-700/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/DP-700/DP-700 Mindmap\|🗺️ DP-700 Mindmap]]
+- [[certifications/microsoft/DP-700/DP-700 Flashcards\|🃏 DP-700 Flashcards]]
+- [[certifications/microsoft/DP-700/DP-700_Scraped_Question_Bank\|🗃️ DP-700 Scraped Question Bank]]

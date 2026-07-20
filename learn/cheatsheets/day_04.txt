@@ -1,0 +1,14 @@
+# Day 04: Java/C# Async & Memory
+**Goal:** Deep dive into high-performance backend patterns.
+
+### 📖 Reading (GitHub App)
+- Open `doc/02_Backend_Development_Roadmap/01_Language_Basics/`.
+- Review notes on **Garbage Collection (GC)**.
+
+### 🤖 AI Drill (Copy & Paste to ChatGPT/Gemini)
+> "In .NET and Java, what is the difference between 'Thread' and 'Task' (or Virtual Threads in Java 21)? Why is `async/await` better for I/O bound operations than just starting a new thread? Use a military 'Dispatch' analogy."
+
+### 📝 Mobile Task
+- Open **GitHub Codespaces**.
+- Create a small C# snippet using `Task.WhenAll()`.
+- Check if you understand how to handle exceptions in a background task.

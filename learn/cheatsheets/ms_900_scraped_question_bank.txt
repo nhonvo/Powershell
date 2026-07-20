@@ -1,0 +1,125 @@
+# 🗃️ MS-900 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+DRAG DROP (Drag and Drop is not supported)
+Your company plans to migrate from on-premises to a hybrid cloud deployment.
+You are required to make sure that the Microsoft platform used for the migration offers hybrid abilities. Which of the following options meet the requirement? Answer by dragging the correct option/s from the list to the answer area.
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+References:
+https://docs.microsoft.com/en-us/office365/enterprise/architecture-of-microsoft-hybrid-cloud-scenarios
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+DRAG DROP (Drag and Drop is not supported)
+You are implementing Azure cloud services.
+Match each scenario to its service. To answer, drag the appropriate scenario from the column on the left to its clod service on the right. Each scenario may be used only once.
+NOTE: Each correct selection is worth one point. 
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+References: 
+https://docs.microsoft.com/en-us/office365/enterprise/hybrid-cloud-overview
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+You need to consider the underlined segment to establish whether it is accurate.
+All applications will remain in a hybrid environment after migrating to Microsoft Azure.
+Select “No adjustment required” if the underlined segment is accurate. If the underlined segment is inaccurate, select the accurate option.
+
+### Options:
+- [ ] **A)** No adjustment required.
+- [ ] **B)** Applications that manage sensitive information
+- [ ] **C)** Applications where access requires a USB-token device
+- [x] **D)** All legacy applications [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+You need to identify which Microsoft platforms provide hybrid capabilities for migrating from an on-premises deployment.
+
+Which two platforms provide hybrid capabilities for migration? Each correct answer provides a complete solution. (Choose two.)
+
+NOTE: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+Note: The question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the solution satisfies the requirements.
+
+Your company plans to move their Server environment to the cloud.
+You have been tasked with identifying a cloud model that allows for the current email environment to be upgraded, while also reducing server and application maintenance. You need to make sure that the requirements are met.
+Solution: You recommend the Platform as a service (PaaS) model. Does the solution meet the goal?
+
+### Options:
+- [ ] **A)** Yes
+- [x] **B)** No [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---

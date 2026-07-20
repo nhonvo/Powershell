@@ -1,0 +1,148 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|02_Arrays_Strings]]
+
+## 5. Prefix Sum — Tổng tiền tố
+
+### 5.1. Ý tưởng
+
+Hãy tưởng tượng bạn là nhân viên thu phí trên **đường cao tốc**. Mỗi trạm bạn thu một khoản. Thay vì mỗi lần sếp hỏi "tổng phí từ trạm i đến trạm j" bạn phải cộng lại từ đầu, bạn ghi sổ: "Tổng phí từ đầu đến trạm k" cho mỗi trạm k. Khi sếp hỏi, bạn chỉ cần trừ: tổng(j) - tổng(i-1).
+
+**Prefix Sum** là kỹ thuật tiền xử lý mảng, tạo mảng mới `prefix[i]` = tổng các phần tử từ index 0 đến i. Sau đó, tổng đoạn [l, r] = `prefix[r] - prefix[l-1]`.
+
+### 5.2. Xây dựng Prefix Sum
+
+```python
+def build_prefix_sum(arr: list[int]) -> list[int]:
+    n = len(arr)
+    prefix = [0] * (n + 1)  # prefix[0] = 0 để xử lý biên
+    for i in range(n):
+        prefix[i + 1] = prefix[i] + arr[i]
+    return prefix
+
+def range_sum(prefix: list[int], l: int, r: int) -> int:
+    """Tổng arr[l..r] (0-indexed)"""
+    return prefix[r + 1] - prefix[l]
+```
+
+**Tại sao `prefix` có n+1 phần tử?** Để tránh xử lý biên khi l = 0. Với `prefix[0] = 0`, ta luôn có:
+
+$$\text{sum}(l, r) = \text{prefix}[r+1] - \text{prefix}[l]$$
+
+### 5.3. Simulation
+
+```
+arr = [3, 1, 4, 1, 5, 9, 2, 6]
+Xây dựng prefix sum:
+prefix[0] = 0
+prefix[1] = 0 + 3 = 3
+prefix[2] = 3 + 1 = 4
+prefix[3] = 4 + 4 = 8
+prefix[4] = 8 + 1 = 9
+prefix[5] = 9 + 5 = 14
+prefix[6] = 14 + 9 = 23
+prefix[7] = 23 + 2 = 25
+prefix[8] = 25 + 6 = 31
+
+arr:    [ 3,  1,  4,  1,  5,  9,  2,  6]
+prefix: [0, 3, 4, 8, 9, 14, 23, 25, 31]
+
+Query: tổng arr[2..5] = ?
+= prefix[6] - prefix[2] = 23 - 4 = 19
+Kiểm tra: 4 + 1 + 5 + 9 = 19 ✓
+
+Query: tổng arr[0..3] = ?
+= prefix[4] - prefix[0] = 9 - 0 = 9
+Kiểm tra: 3 + 1 + 4 + 1 = 9 ✓
+```
+
+Input: arr[0..n-1]Xây dựng prefix[0..n]
+prefix[0] = 0
+prefix[i+1] = prefix[i] + arr[i]Truy vấn tổng arr[l..r]result = prefix[r+1] - prefix[l]Return result — O(1) per query
+
+### 5.4. Chứng minh toán học
+
+**Mệnh đề:** `prefix[r+1] - prefix[l]` = tổng arr[l..r].
+
+**Chứng minh:**
+
+$$\text{prefix}[k] = \sum_{i=0}^{k-1} arr[i]$$
+
+$$\text{prefix}[r+1] - \text{prefix}[l] = \sum_{i=0}^{r} arr[i] - \sum_{i=0}^{l-1} arr[i] = \sum_{i=l}^{r} arr[i]$$
+
+**QED**.
+
+**Độ phức tạp:**
+
+- Tiền xử lý: O(n) time, O(n) space.
+- Mỗi truy vấn: O(1).
+- m truy vấn: O(n + m) thay vì O(n * m) brute force.
+
+### 5.5. Bài toán kinh điển: Subarray Sum Equals K (LeetCode 560)
+
+**Đề bài:** Cho mảng số nguyên (có thể âm) và target k. Đếm số dãy con liên tiếp có tổng bằng k.
+
+**Ý tưởng then chốt:** Nếu `prefix[j] - prefix[i] = k` thì dãy con `arr[i..j-1]` có tổng k. Vậy khi đang ở vị trí j, ta cần đếm có bao nhiêu prefix trước đó có giá trị `prefix[j] - k`.
+
+```python
+from collections import defaultdict
+
+def subarray_sum(nums: list[int], k: int) -> int:
+    count = 0
+    prefix_sum = 0
+    prefix_count = defaultdict(int)
+    prefix_count[0] = 1  # base case: prefix sum = 0 xuất hiện 1 lần
+
+    for num in nums:
+        prefix_sum += num
+        # Có bao nhiêu prefix sum trước đó = prefix_sum - k?
+        count += prefix_count[prefix_sum - k]
+        prefix_count[prefix_sum] += 1
+
+    return count
+```
+
+**Simulation:** `nums = [1, 1, 1]`, `k = 2`
+
+```
+Khởi tạo: prefix_sum=0, prefix_count={0:1}, count=0
+
+i=0, num=1:
+  prefix_sum = 1
+  Tìm prefix_count[1 - 2] = prefix_count[-1] = 0 → count = 0
+  prefix_count = {0:1, 1:1}
+
+i=1, num=1:
+  prefix_sum = 2
+  Tìm prefix_count[2 - 2] = prefix_count[0] = 1 → count = 1
+  (subarray [1,1] từ index 0 đến 1)
+  prefix_count = {0:1, 1:1, 2:1}
+
+i=2, num=1:
+  prefix_sum = 3
+  Tìm prefix_count[3 - 2] = prefix_count[1] = 1 → count = 2
+  (subarray [1,1] từ index 1 đến 2)
+  prefix_count = {0:1, 1:1, 2:1, 3:1}
+
+Kết quả: count = 2 (hai subarray [1,1])
+```
+
+### 5.6. Ưu và nhược điểm
+
+**Ưu điểm:**
+
+- Truy vấn tổng đoạn O(1) — cực nhanh.
+- Đơn giản, dễ implement.
+- Mở rộng được cho 2D (xem phần Ma trận).
+
+**Nhược điểm:**
+
+- Tốn O(n) bộ nhớ phụ.
+- Không hỗ trợ cập nhật phần tử (nếu arr[i] thay đổi, phải tính lại prefix từ i). Dùng Fenwick Tree hoặc Segment Tree nếu cần update.
+- Chỉ hỗ trợ phép cộng. Không trực tiếp áp dụng cho min/max (cần Sparse Table hoặc Segment Tree).
+
+### 5.7. Cải tiến
+
+- **Prefix XOR:** Thay cộng bằng XOR → tìm subarray có XOR bằng k.
+- **Prefix Product:** Tích tiền tố (cẩn thận chia cho 0).
+- **2D Prefix Sum:** Mở rộng cho ma trận (xem phần 7).
+- **Fenwick Tree / BIT:** Prefix Sum + update phần tử trong O(log n).
+- **Difference Array:** "Ngược" của prefix sum — ghi nhận sự thay đổi, sau đó tính prefix sum để lấy giá trị thực.

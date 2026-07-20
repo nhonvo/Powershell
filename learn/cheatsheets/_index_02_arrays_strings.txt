@@ -1,0 +1,28 @@
+# 02_Arrays_Strings
+
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|01_Algo_and_DSA_doc]]
+
+## 📄 Notes
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/1. Arrays — Mảng|1. Arrays — Mảng]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/10. LeetCode Practice — Giải chi tiết từng bài|10. LeetCode Practice — Giải chi tiết từng bài]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/2. Strings — Chuỗi|2. Strings — Chuỗi]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/3. Two Pointers — Kỹ thuật hai con trỏ|3. Two Pointers — Kỹ thuật hai con trỏ]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/4. Sliding Window — Cửa sổ trượt|4. Sliding Window — Cửa sổ trượt]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/5. Prefix Sum — Tổng tiền tố|5. Prefix Sum — Tổng tiền tố]]
+- [[dsa/docs/01_Algo_and_DSA_doc/02_Arrays_Strings/6. Kadane's Algorithm.md|6. Kadane's Algorithm]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/7. 2D Arrays — Ma trận|7. 2D Arrays — Ma trận]]
+- [[dsa/docs/01_Algo_and_DSA_doc/02_Arrays_Strings/8. Moore's Voting Algorithm.md|8. Moore's Voting Algorithm]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/9. Dutch National Flag Algorithm|9. Dutch National Flag Algorithm]]
+
+## 🛠️ Related Practices (Arrays & Strings)
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|1464.Maximum-Product-of-Two-Elements-in-an-Array]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|3.Longest-Substring-Without-Repeating-Characters]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|4.Median-of-Two-Sorted-Arrays]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|5.Longest-Palindromic-Substring]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|53.Maximum-Subarray]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|912.Sort-an-Array-Bubble-sort]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|912.Sort-an-Array-Insert-sort]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|912.Sort-an-Array-Quick-sort]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|912.Sort-an-Array-Selection-sort]]
+- [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|zArray-crud]]
+

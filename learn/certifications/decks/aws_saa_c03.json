@@ -1,0 +1,100 @@
+{
+  "Meta": {
+    "Id": "deck_aws_saa_c03",
+    "Topic": "AWS SAA C03",
+    "Language": "English",
+    "Domain": "Cloud Certifications",
+    "Level": "Professional",
+    "Tags": [
+      "aws_saa_c03"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 4
+  },
+  "Cards": [
+    {
+      "Id": "aws_saa_c03_001",
+      "Front": "Domain 1: Design Resilient Architectures",
+      "Back": "A Big Data analytics company wants to set up an AWS cloud architecture that throttles requests in case of sudden traffic spikes. The company is looking for AWS services that can be used for buffering or throttling to handle such traffic variations. Which of the following services can be used to supp",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "aws_saa_c03",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "aws_saa_c03_002",
+      "Front": "Domain 2: Design High-Performing Architectures",
+      "Back": "A leading online gaming company is migrating its flagship application to AWS Cloud for delivering its online games to users across the world. The company would like to use a Network Load Balancer to handle millions of requests per second. The engineering team has provisioned multiple instances in a ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "aws_saa_c03",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "aws_saa_c03_003",
+      "Front": "Domain 3: Design Secure Applications and Architectures",
+      "Back": "You have been hired as a Solutions Architect to advise a company on the various authentication/authorization mechanisms that AWS offers to authorize an API call within the Amazon API Gateway. The company would prefer a solution that offers built-in user management. Which of the following solutions w",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "aws_saa_c03",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "aws_saa_c03_004",
+      "Front": "Domain 4: Design Cost-Optimized Architectures",
+      "Back": "A retail company has developed a REST API which is deployed in an Auto Scaling group behind an Application Load Balancer. The REST API stores the user data in Amazon DynamoDB and any static content, such as images, are served via Amazon Simple Storage Service (Amazon S3). On analyzing the usage tren",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "aws_saa_c03",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

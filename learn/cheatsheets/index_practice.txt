@@ -1,0 +1,13 @@
+# Practice
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/2. Hashing and hash tables/index_2. Hashing and hash tables|2. Hashing and hash tables]]
+
+## 📁 Categories
+- [[dsa/1.Interviewcake.com/2. Hashing and hash tables/Practice/1. Inflight Entertainment/index_1. Inflight Entertainment|1. Inflight Entertainment]]
+- [[dsa/1.Interviewcake.com/2. Hashing and hash tables/Practice/2. Permutation Palindrome/index_2. Permutation Palindrome|2. Permutation Palindrome]]
+- [[dsa/1.Interviewcake.com/2. Hashing and hash tables/Practice/3. Word Cloud Data/index_3. Word Cloud Data|3. Word Cloud Data]]
+- [[dsa/1.Interviewcake.com/2. Hashing and hash tables/Practice/4. Top Scores/index_4. Top Scores|4. Top Scores]]
+
+## 📄 Notes
+- [[practice|Practice]]
+

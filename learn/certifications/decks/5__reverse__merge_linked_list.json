@@ -1,0 +1,456 @@
+{
+  "Meta": {
+    "Id": "deck_5__reverse__merge_linked_list",
+    "Topic": "5. Reverse  Merge Linked List",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "5__reverse__merge_linked_list"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 22
+  },
+  "Cards": [
+    {
+      "Id": "card_00893",
+      "Front": "Bước",
+      "Back": "prev | current | next_temp | Hành động | Trạng thái sau",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00894",
+      "Front": "Init",
+      "Back": "null | [1] | - | Khởi tạo | `null [1]->[2]->[3]->[4]->null`",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00895",
+      "Front": "1'",
+      "Back": "[1] | [2] | - | Di chuyển prev, current | ",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00896",
+      "Front": "2'",
+      "Back": "[2] | [3] | - | Di chuyển | ",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00897",
+      "Front": "3'",
+      "Back": "[3] | [4] | - | Di chuyển | ",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00898",
+      "Front": "4'",
+      "Back": "[4] | null | - | DỪNG! head = prev = [4] | ",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00899",
+      "Front": "Tiêu chí",
+      "Back": "Iterative | Recursive",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00900",
+      "Front": "Time",
+      "Back": "O(n) | O(n)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00901",
+      "Front": "Space",
+      "Back": "O(1) | O(n) — call stack",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00902",
+      "Front": "Code",
+      "Back": "Dài hơn nhưng rõ ràng | Ngắn, elegant",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00903",
+      "Front": "Stack overflow",
+      "Back": "Không | Có, nếu list rất dài",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00904",
+      "Front": "Production code",
+      "Back": "Thường dùng | Thi thoảng dùng",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00905",
+      "Front": "Vòng",
+      "Back": "Hành động | Trạng thái",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00906",
+      "Front": "Bước",
+      "Back": "L1 hiện tại | L2 hiện tại | So sánh | Lấy | Kết quả",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00907",
+      "Front": "Bài",
+      "Back": "Mô tả | Kỹ thuật",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00908",
+      "Front": "LeetCode 21",
+      "Back": "Merge 2 sorted lists | Merge (đã làm)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00909",
+      "Front": "LeetCode 23",
+      "Back": "Merge K sorted lists | Divide & Conquer hoặc Min Heap",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00910",
+      "Front": "LeetCode 206",
+      "Back": "Reverse linked list | Iterative / Recursive (đã làm)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00911",
+      "Front": "LeetCode 92",
+      "Back": "Reverse between [left, right] | Đã làm",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00912",
+      "Front": "LeetCode 25",
+      "Back": "Reverse nodes in k-group | Reverse + Iteration",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00913",
+      "Front": "LeetCode 143",
+      "Back": "Reorder list | Find middle + Reverse + Merge",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00914",
+      "Front": "LeetCode 234",
+      "Back": "Palindrome linked list | Find middle + Reverse + Compare",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. reverse  merge linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

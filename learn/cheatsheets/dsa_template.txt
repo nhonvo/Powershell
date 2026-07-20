@@ -1,0 +1,28 @@
+# 🎯 Daily DSA Learning Template
+
+## 📅 Date: {{DATE}}
+## 💡 Topic: {{DSA_TOPIC}} (e.g., Arrays, Trees, Sorting)
+## 🔗 LeetCode / Practice Link: {{PRACTICE_LINK}}
+
+---
+
+## 1. Concept Summary (15 mins)
+- **Key Idea**: 
+- **Time Complexity**: $O(\dots)$
+- **Space Complexity**: $O(\dots)$
+
+## 2. Implementation & Code (30 mins)
+```csharp
+// Paste C# solution code here
+```
+
+## 3. Key Gaps & Hard Parts
+- What was tricky about this problem?
+- Common edge cases to watch out for:
+  - [ ] Empty/Null inputs
+  - [ ] Single element/Node
+  - [ ] Extremely large values
+
+## 4. Next Actions
+- [ ] Review complexity in 3 days
+- [ ] Try a related variant problem

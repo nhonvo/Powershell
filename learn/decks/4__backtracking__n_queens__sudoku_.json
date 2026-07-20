@@ -1,0 +1,156 @@
+{
+  "Meta": {
+    "Id": "deck_4__backtracking__n_queens__sudoku_",
+    "Topic": "4. Backtracking (N-Queens, Sudoku)",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "4__backtracking__n_queens__sudoku_"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 7
+  },
+  "Cards": [
+    {
+      "Id": "card_00724",
+      "Front": "**Kích thước**",
+      "Back": "N×N | Cố định 9×9",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. backtracking (n-queens, sudoku)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00725",
+      "Front": "**Constraint**",
+      "Back": "Hàng, cột, 2 đường chéo | Hàng, cột, box 3×3",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. backtracking (n-queens, sudoku)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00726",
+      "Front": "**Số lời giải**",
+      "Back": "Nhiều (tăng theo N) | Thường 1 (unique)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. backtracking (n-queens, sudoku)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00727",
+      "Front": "**Pruning**",
+      "Back": "Set cho cột, 2 chéo | Set cho hàng, cột, box",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. backtracking (n-queens, sudoku)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00728",
+      "Front": "**Complexity**",
+      "Back": "O(N!) | O(9^m)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. backtracking (n-queens, sudoku)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00729",
+      "Front": "**N-Queens**",
+      "Back": "O(N) nếu may mắn đặt thẳng | O(N!)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. backtracking (n-queens, sudoku)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00730",
+      "Front": "**Sudoku**",
+      "Back": "O(m) nếu mỗi ô chỉ có 1 lựa chọn | O(9^m)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "4. backtracking (n-queens, sudoku)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mb-820
+  - mb820
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MB-820: Microsoft Dynamics 365 Business Central Developer MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MB-820/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MB-820/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MB-820/MB-820 Mindmap\|🗺️ MB-820 Mindmap]]
+- [[certifications/microsoft/MB-820/MB-820 Flashcards\|🃏 MB-820 Flashcards]]
+- [[certifications/microsoft/MB-820/MB-820_Scraped_Question_Bank\|🗃️ MB-820 Scraped Question Bank]]

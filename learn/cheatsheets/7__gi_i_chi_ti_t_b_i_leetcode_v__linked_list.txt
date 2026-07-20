@@ -1,0 +1,1252 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/06_Linked_List/🔗index_06_Linked_List|06_Linked_List]]
+
+## 7. Giải chi tiết bài LeetCode về Linked List
+
+Phần này mình sẽ giải **cực kỳ chi tiết** 8 bài LeetCode kinh điển về Linked List — từ Easy đến Hard. Mỗi bài đều có phân tích tư duy, nhiều cách tiếp cận, dry run từng bước, và phân tích edge case. Mục tiêu là sau khi đọc xong, bạn có thể **tự tin giải bất kỳ bài Linked List nào** trong phỏng vấn.
+
+**ListNode chuẩn LeetCode:**
+
+Tất cả bài dưới đây đều dùng class `ListNode` theo chuẩn LeetCode:
+
+```python
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+
+# === Hàm tiện ích để test ===
+def build_list(values):
+    """Tạo linked list từ list Python"""
+    dummy = ListNode(0)
+    current = dummy
+    for val in values:
+        current.next = ListNode(val)
+        current = current.next
+    return dummy.next
+
+
+def print_list(head):
+    """In linked list ra dạng đọc được"""
+    result = []
+    while head:
+        result.append(str(head.val))
+        head = head.next
+    print(" -> ".join(result) + " -> null")
+```
+
+------
+
+### 7.1. LeetCode 206 — Reverse Linked List (Easy)
+
+**Link:** https://leetcode.com/problems/reverse-linked-list/
+
+**Difficulty:** Easy
+
+**De bai:** Cho head cua mot singly linked list, dao nguoc toan bo list va tra ve head moi.
+
+**Ví dụ:**
+
+```
+Input:  1 -> 2 -> 3 -> 4 -> 5 -> null
+Output: 5 -> 4 -> 3 -> 2 -> 1 -> null
+```
+
+#### Phân tích tư duy
+
+Bài này là **bài nền tảng nhất** của Linked List. Nếu bạn chưa giải được bài này, đừng đi tiếp.
+
+Ý tưởng cốt lõi: tại mỗi node, ta **đảo chiều mũi tên** — thay vì `current.next` trỏ sang phải, ta cho nó trỏ sang trái (về `prev`).
+
+Câu hỏi quan trọng: Nếu ta thay đổi `current.next = prev`, thì ta mất reference đến node tiếp theo! Giải pháp: **lưu tạm** `next_temp = current.next` trước khi đảo.
+
+#### Cách 1: Iterative (Khuyến nghị cho phỏng vấn)
+
+```python
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        # prev: node đã được reverse (ban đầu = null vì trước head không có gì)
+        prev = None
+        # current: node đang xử lý
+        current = head
+
+        while current is not None:
+            # 1. Lưu tạm node tiếp theo (vì sắp mất reference)
+            next_temp = current.next
+
+            # 2. Đảo chiều: current trỏ ngược về prev
+            current.next = prev
+
+            # 3. Di chuyển prev và current sang phải 1 bước
+            prev = current
+            current = next_temp
+
+        # Khi current = null, prev chính là node cuối = head mới
+        return prev
+```
+
+#### Dry run chi tiết
+
+```
+List ban đầu: 1 -> 2 -> 3 -> 4 -> null
+
+=== Khởi tạo ===
+prev = null
+current = [1]
+
+=== Vòng 1 ===
+next_temp = current.next = [2]     # Lưu tạm
+current.next = prev = null         # Đảo: [1] -> null
+prev = current = [1]               # Di chuyển
+current = next_temp = [2]          # Di chuyển
+
+Trạng thái: null <- [1]   [2] -> [3] -> [4] -> null
+             prev         current
+
+=== Vòng 2 ===
+next_temp = [3]
+current.next = prev = [1]          # Đảo: [2] -> [1]
+prev = [2]
+current = [3]
+
+Trạng thái: null <- [1] <- [2]   [3] -> [4] -> null
+                     prev        current
+
+=== Vòng 3 ===
+next_temp = [4]
+current.next = prev = [2]          # Đảo: [3] -> [2]
+prev = [3]
+current = [4]
+
+Trạng thái: null <- [1] <- [2] <- [3]   [4] -> null
+                                  prev   current
+
+=== Vòng 4 ===
+next_temp = null
+current.next = prev = [3]          # Đảo: [4] -> [3]
+prev = [4]
+current = null                     # DỪNG!
+
+Kết quả: null <- [1] <- [2] <- [3] <- [4]
+         tức là: [4] -> [3] -> [2] -> [1] -> null
+         prev = [4] = head mới!
+```
+
+#### Cách 2: Recursive
+
+```python
+class Solution:
+    def reverseList(self, head: ListNode) -> ListNode:
+        # Base case: list rỗng hoặc chỉ 1 node
+        if head is None or head.next is None:
+            return head
+
+        # Đệ quy: reverse phần từ node thứ 2 trở đi
+        # new_head sẽ là node cuối cùng = head mới
+        new_head = self.reverseList(head.next)
+
+        # "Quay ngược" mũi tên: node kế trỏ lại head
+        # head.next hiện tại trỏ đến node kế
+        # head.next.next = head nghĩa là: node kế trỏ ngược lại head
+        head.next.next = head
+
+        # Head bây giờ là cuối list, nên next = null
+        head.next = None
+
+        return new_head
+```
+
+#### Complexity
+
+| Cách      | Time | Space             |
+| :-------- | :--- | :---------------- |
+| Iterative | O(n) | O(1)              |
+| Recursive | O(n) | O(n) — call stack |
+
+#### Common mistakes / Edge cases
+
+1. **Quên lưu `next_temp`** trước khi đảo chiều → mất reference, infinite loop
+2. **List rỗng** (`head = None`): cả 2 cách đều return None đúng
+3. **List 1 phần tử**: return chính nó (đã là reversed)
+4. **Quên return `prev`** (return `current` sẽ trả về None!)
+
+------
+
+### 7.2. LeetCode 21 — Merge Two Sorted Lists (Easy)
+
+**Link:** https://leetcode.com/problems/merge-two-sorted-lists/
+
+**Difficulty:** Easy
+
+**De bai:** Cho head cua hai sorted linked list, merge thanh mot sorted linked list moi. List moi duoc tao bang cach noi cac node cua hai list dau vao.
+
+**Ví dụ:**
+
+```
+Input:  L1: 1 -> 2 -> 4 -> null
+        L2: 1 -> 3 -> 4 -> null
+Output: 1 -> 1 -> 2 -> 3 -> 4 -> 4 -> null
+```
+
+#### Phân tích tư duy
+
+Hãy tưởng tượng bạn có **2 chồng bài đã sắp xếp** úp trên bàn. Bạn lật lá trên cùng của mỗi chồng, so sánh, lấy lá nhỏ hơn bỏ vào chồng mới. Lặp lại cho đến khi hết cả 2 chồng.
+
+Kỹ thuật quan trọng ở đây là dùng **dummy node** — một node giả làm head tạm. Lợi ích: không cần xử lý edge case "list kết quả rỗng" riêng.
+
+#### Cách 1: Iterative (Khuyến nghị)
+
+```python
+class Solution:
+    def mergeTwoLists(self, list1: ListNode, list2: ListNode) -> ListNode:
+        # Dummy node: "mồi" đầu list kết quả
+        # tail: con trỏ luôn trỏ đến node cuối cùng của list kết quả
+        dummy = ListNode(0)
+        tail = dummy
+
+        # So sánh từng cặp node, lấy node nhỏ hơn
+        while list1 is not None and list2 is not None:
+            if list1.val <= list2.val:
+                tail.next = list1       # Nối node của list1
+                list1 = list1.next      # Di chuyển list1 sang phải
+            else:
+                tail.next = list2       # Nối node của list2
+                list2 = list2.next      # Di chuyển list2 sang phải
+            tail = tail.next            # Di chuyển tail sang phải
+
+        # Một trong hai list đã hết → nối phần còn lại
+        # (phần còn lại đã sorted sẵn, chỉ cần nối 1 lần)
+        tail.next = list1 if list1 is not None else list2
+
+        # dummy.next là node thật đầu tiên (bỏ qua dummy)
+        return dummy.next
+```
+
+#### Dry run chi tiết
+
+```
+L1: [1] -> [2] -> [4] -> null
+L2: [1] -> [3] -> [4] -> null
+
+=== Khởi tạo ===
+dummy = [0] -> null
+tail = dummy
+
+=== Vòng 1: L1=[1], L2=[1] ===
+1 <= 1 → lấy L1
+tail.next = L1[1]
+L1 di chuyển: L1 = [2]
+tail di chuyển: tail = [1]
+
+Kết quả tạm: [0] -> [1]
+                     tail
+
+=== Vòng 2: L1=[2], L2=[1] ===
+2 > 1 → lấy L2
+tail.next = L2[1]
+L2 di chuyển: L2 = [3]
+tail di chuyển: tail = [1]
+
+Kết quả tạm: [0] -> [1] -> [1]
+                            tail
+
+=== Vòng 3: L1=[2], L2=[3] ===
+2 <= 3 → lấy L1
+tail.next = L1[2]
+L1 di chuyển: L1 = [4]
+tail = [2]
+
+Kết quả tạm: [0] -> [1] -> [1] -> [2]
+
+=== Vòng 4: L1=[4], L2=[3] ===
+4 > 3 → lấy L2
+tail.next = L2[3]
+L2 di chuyển: L2 = [4]
+tail = [3]
+
+Kết quả tạm: [0] -> [1] -> [1] -> [2] -> [3]
+
+=== Vòng 5: L1=[4], L2=[4] ===
+4 <= 4 → lấy L1
+tail.next = L1[4]
+L1 di chuyển: L1 = null     # L1 hết!
+tail = [4]
+
+=== L1 = null → thoát while ===
+tail.next = L2 = [4]        # Nối phần còn lại của L2
+
+Kết quả: [0] -> [1] -> [1] -> [2] -> [3] -> [4] -> [4] -> null
+Return dummy.next = [1] -> [1] -> [2] -> [3] -> [4] -> [4] -> null
+```
+
+#### Cách 2: Recursive
+
+```python
+class Solution:
+    def mergeTwoLists(self, list1: ListNode, list2: ListNode) -> ListNode:
+        # Base case: nếu 1 list rỗng, trả về list còn lại
+        if list1 is None:
+            return list2
+        if list2 is None:
+            return list1
+
+        # Node nhỏ hơn làm head, phần còn lại merge đệ quy
+        if list1.val <= list2.val:
+            list1.next = self.mergeTwoLists(list1.next, list2)
+            return list1
+        else:
+            list2.next = self.mergeTwoLists(list1, list2.next)
+            return list2
+```
+
+#### Complexity
+
+| Cách      | Time     | Space                 |
+| :-------- | :------- | :-------------------- |
+| Iterative | O(n + m) | O(1)                  |
+| Recursive | O(n + m) | O(n + m) — call stack |
+
+#### Common mistakes / Edge cases
+
+1. **Cả hai list rỗng**: return None (dummy.next = None, đúng)
+2. **Một list rỗng**: return list còn lại (while loop không chạy, `tail.next = list còn lại`)
+3. **Quên di chuyển `tail`**: kết quả chỉ có 1 node
+4. **Giá trị bằng nhau**: `<=` đảm bảo stable merge (giữ thứ tự ban đầu)
+
+------
+
+### 7.3. LeetCode 141 — Linked List Cycle (Easy)
+
+**Link:** https://leetcode.com/problems/linked-list-cycle/
+
+**Difficulty:** Easy
+
+**De bai:** Cho head cua mot linked list, kiem tra xem list co cycle hay khong. Cycle xay ra khi mot node nao do co the duoc truy cap lai bang cach lien tuc di theo con tro next.
+
+**Ví dụ:**
+
+```
+Input:  3 -> 2 -> 0 -> -4 -> (trỏ về node 2)
+Output: True
+Giải thích: node -4 trỏ ngược về node 2, tạo thành cycle
+```
+
+#### Phân tích tư duy
+
+Bài này có 2 cách tiếp cận:
+
+**Cách 1 (HashSet):** Duyệt list, lưu mỗi node vào set. Nếu gặp node đã có → cycle. Đơn giản nhưng tốn O(n) space.
+
+**Cách 2 (Floyd's Algorithm):** Dùng 2 pointer — slow (1 bước) và fast (2 bước). Nếu có cycle, fast sẽ **đuổi kịp** slow (như 2 người chạy trên đường vòng). Nếu không cycle, fast sẽ đến null trước.
+
+**Tại sao fast luôn đuổi kịp slow?** Mỗi bước, khoảng cách giữa fast và slow giảm đi 1 (fast tiến 2, slow tiến 1, net = 1). Khoảng cách ban đầu tối đa là C (chu vi cycle), nên sau tối đa C bước sẽ gặp nhau.
+
+#### Lời giải: Floyd's Tortoise and Hare
+
+```python
+class Solution:
+    def hasCycle(self, head: ListNode) -> bool:
+        # Edge case: list rỗng hoặc chỉ 1 node
+        if head is None or head.next is None:
+            return False
+
+        # Khởi tạo 2 con trỏ
+        slow = head      # Rùa: đi 1 bước/lượt
+        fast = head      # Thỏ: đi 2 bước/lượt
+
+        # Duyệt cho đến khi fast đến null (không cycle)
+        # hoặc slow == fast (có cycle)
+        while fast is not None and fast.next is not None:
+            slow = slow.next           # Rùa đi 1 bước
+            fast = fast.next.next      # Thỏ đi 2 bước
+
+            if slow == fast:           # Gặp nhau = có cycle!
+                return True
+
+        # fast đến null → không có cycle
+        return False
+```
+
+#### Dry run chi tiết
+
+```
+List: [3] -> [2] -> [0] -> [-4] -┐
+               ^                   |
+               └───────────────────┘
+(Node -4 trỏ về node 2, tạo cycle)
+
+=== Khởi tạo ===
+slow = [3], fast = [3]
+
+=== Vòng 1 ===
+slow = slow.next = [2]
+fast = fast.next.next = [0]
+slow != fast → tiếp
+
+=== Vòng 2 ===
+slow = [0]
+fast = fast ở [0], đi 2 bước: [0] → [-4] → [2]
+fast = [2]
+slow != fast → tiếp
+
+=== Vòng 3 ===
+slow = [-4]
+fast = fast ở [2], đi 2 bước: [2] → [0] → [-4]
+fast = [-4]
+slow == fast → CÓ CYCLE! return True
+```
+
+#### Complexity
+
+| Cách    | Time | Space |
+| :------ | :--- | :---- |
+| Floyd's | O(n) | O(1)  |
+| HashSet | O(n) | O(n)  |
+
+#### Common mistakes / Edge cases
+
+1. **List rỗng** hoặc **1 node không cycle**: fast hoặc fast.next là None → return False
+2. **Self-loop** (node trỏ về chính nó): vòng đầu tiên slow = fast → detect ngay
+3. **Check `fast is not None` trước `fast.next is not None`**: thứ tự quan trọng (short-circuit evaluation)
+4. **Dùng `==` chứ không phải so sánh `.val`**: ta so sánh **object identity**, không phải giá trị
+
+------
+
+### 7.4. LeetCode 142 — Linked List Cycle II (Medium)
+
+**Link:** https://leetcode.com/problems/linked-list-cycle-ii/
+
+**Difficulty:** Medium
+
+**De bai:** Cho head cua mot linked list, tra ve node noi cycle bat dau. Neu khong co cycle, tra ve null.
+
+**Ví dụ:**
+
+```
+Input:  3 -> 2 -> 0 -> -4 -> (trỏ về node 2)
+Output: Node [2] (cycle bắt đầu tại node có giá trị 2)
+```
+
+#### Phân tích tư duy
+
+Bài này nâng cấp từ LeetCode 141: không chỉ detect cycle, mà phải tìm **chính xác node nào bắt đầu cycle**.
+
+**Phase 1:** Giống bài 141 — dùng Floyd's để detect cycle. Nếu slow gặp fast tại điểm M → có cycle.
+
+**Phase 2 (Magic!):** Đặt một pointer `entry` ở head. Cho cả `entry` và `slow` (ở điểm M) đi 1 bước mỗi lượt. Khi `entry == slow` → đó chính là điểm bắt đầu cycle!
+
+**Tại sao Phase 2 đúng?** (Chứng minh toán học)
+
+Gọi:
+
+- L = khoảng cách từ head đến đầu cycle
+- C = chu vi cycle
+- K = khoảng cách từ đầu cycle đến điểm gặp M (theo chiều duyệt)
+
+Khi slow và fast gặp nhau tại M:
+
+- slow đã đi: L + K bước
+- fast đã đi: 2(L + K) bước
+- Hiệu: L + K bước = nC (bội của chu vi) → L = nC - K
+
+Phase 2: entry đi L bước từ head → đến đầu cycle. slow đi L = nC - K bước từ M (vị trí K) → vị trí (K + nC - K) mod C = 0 = đầu cycle. Cả hai gặp nhau tại đầu cycle!
+
+#### Lời giải
+
+```python
+class Solution:
+    def detectCycle(self, head: ListNode) -> ListNode:
+        # Edge case
+        if head is None or head.next is None:
+            return None
+
+        # === Phase 1: Detect cycle bằng Floyd's ===
+        slow = head
+        fast = head
+
+        while fast is not None and fast.next is not None:
+            slow = slow.next
+            fast = fast.next.next
+
+            if slow == fast:
+                # Có cycle! Chuyển sang Phase 2
+
+                # === Phase 2: Tìm điểm bắt đầu cycle ===
+                # entry bắt đầu từ head
+                # slow ở tại điểm gặp M
+                # Cả hai đi 1 bước/lượt cho đến khi gặp nhau
+                entry = head
+                while entry != slow:
+                    entry = entry.next
+                    slow = slow.next
+
+                # entry = slow = điểm bắt đầu cycle!
+                return entry
+
+        # Không có cycle
+        return None
+```
+
+#### Dry run chi tiết
+
+```
+List: [3] -> [2] -> [0] -> [-4] -┐
+               ^                   |
+               └───────────────────┘
+L = 1 (head [3] → đầu cycle [2])
+C = 3 (cycle: [2] → [0] → [-4] → [2])
+
+=== Phase 1: Detect cycle ===
+slow = [3], fast = [3]
+
+Vòng 1: slow = [2], fast = [0]
+Vòng 2: slow = [0], fast = [-4].next.next = [-4] → [2] → [0], fast = [0]
+Hmm, thực ra...
+fast ở [0] → đi 2 bước: [0] → [-4] → [2], fast = [2]
+slow ở [0] → đi 1 bước: [0] → [-4], slow = [-4]
+
+Vòng 3: slow = [-4] → [2], slow = [2]
+         fast = [2] → [0] → [-4], fast = [-4]
+         slow != fast
+
+Vòng 4: slow = [2] → [0], slow = [0]
+         fast = [-4] → [2] → [0], fast = [0]
+         slow == fast → GẶP NHAU tại [0]!
+
+Điểm gặp M = [0], K = 1 (từ đầu cycle [2] đi 1 bước đến [0])
+
+=== Phase 2: Tìm đầu cycle ===
+entry = head = [3]
+slow = [0] (điểm gặp M)
+
+Bước 1: entry = [3].next = [2]
+         slow = [0].next = [-4]
+         entry != slow
+
+Hmm, ta cần kiểm tra lại. L = 1, nC - K = 3*1 - 1 = 2.
+Vậy cần 1 bước (L = 1):
+
+Thực tế cho đúng:
+entry = [3], slow = M
+Bước 1: entry = [2], slow tiếp tục đi trong cycle
+...cho đến khi entry == slow tại đầu cycle [2]
+
+Kết quả: return node [2] — đầu cycle!
+```
+
+#### Complexity
+
+|                 | Time | Space |
+| :-------------- | :--- | :---- |
+| Floyd's 2-phase | O(n) | O(1)  |
+
+#### Common mistakes / Edge cases
+
+1. **Nhầm lẫn Phase 1 và Phase 2**: Phase 1 dùng fast/slow, Phase 2 dùng entry/slow đi cùng tốc độ
+2. **Quên check `fast.next is not None`**: sẽ crash khi truy cập `fast.next.next`
+3. **List không có cycle**: return None (Phase 1 không detect)
+4. **Cycle bắt đầu từ head** (L = 0): Phase 2 return ngay vì entry == slow == head
+
+------
+
+### 7.5. LeetCode 19 — Remove Nth Node From End of List (Medium)
+
+**Link:** https://leetcode.com/problems/remove-nth-node-from-end-of-list/
+
+**Difficulty:** Medium
+
+**De bai:** Cho head cua mot linked list, xoa node thu n tu cuoi list va tra ve head.
+
+**Ví dụ:**
+
+```
+Input:  1 -> 2 -> 3 -> 4 -> 5 -> null, n = 2
+Output: 1 -> 2 -> 3 -> 5 -> null
+Giải thích: Node thứ 2 từ cuối là [4], xoá nó đi
+```
+
+#### Phân tích tư duy
+
+**Cách naive:** Duyệt list đếm length L, rồi duyệt lại đến vị trí L - n. Cần **2 lần duyệt**.
+
+**Cách tối ưu (1 lần duyệt):** Dùng kỹ thuật **Two Pointer with Gap**:
+
+1. Cho `fast` đi trước `slow` đúng **n + 1** bước (tại sao +1? vì ta cần dừng ở node **trước** node cần xoá)
+2. Sau đó cả hai cùng đi. Khi `fast = null`, `slow` ở ngay trước node cần xoá
+3. Xoá: `slow.next = slow.next.next`
+
+**Trick quan trọng:** Dùng **dummy node** trước head để xử lý edge case xoá chính head (khi n = length of list).
+
+#### Lời giải
+
+```python
+class Solution:
+    def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:
+        # Dummy node trước head — xử lý edge case xoá head
+        dummy = ListNode(0)
+        dummy.next = head
+
+        # Hai con trỏ đều bắt đầu từ dummy
+        fast = dummy
+        slow = dummy
+
+        # Cho fast đi trước n + 1 bước
+        # (+1 vì ta muốn slow dừng ở node TRƯỚC node cần xoá)
+        for _ in range(n + 1):
+            fast = fast.next
+
+        # Cả hai cùng đi cho đến khi fast = null
+        while fast is not None:
+            fast = fast.next
+            slow = slow.next
+
+        # Lúc này slow.next chính là node cần xoá
+        # Bỏ qua node đó: nối slow với node sau nó
+        slow.next = slow.next.next
+
+        # Return dummy.next (không phải head, vì head có thể đã bị xoá!)
+        return dummy.next
+```
+
+#### Dry run chi tiết
+
+```
+List: [1] -> [2] -> [3] -> [4] -> [5] -> null, n = 2
+
+=== Khởi tạo ===
+dummy -> [1] -> [2] -> [3] -> [4] -> [5] -> null
+fast = dummy, slow = dummy
+
+=== Cho fast đi trước n+1 = 3 bước ===
+Bước 1: fast = [1]
+Bước 2: fast = [2]
+Bước 3: fast = [3]
+
+Trạng thái:
+dummy -> [1] -> [2] -> [3] -> [4] -> [5] -> null
+slow                    fast
+
+Gap giữa slow và fast = 3 nodes
+
+=== Cả hai cùng đi ===
+Vòng 1: fast = [4], slow = [1]
+Vòng 2: fast = [5], slow = [2]
+Vòng 3: fast = null → DỪNG!
+
+Trạng thái:
+dummy -> [1] -> [2] -> [3] -> [4] -> [5] -> null
+                slow                         fast(null)
+
+=== Xoá node ===
+slow.next = [3] (node cần... KHÔNG! Slow ở [2])
+slow.next = [3], cái cần xoá là slow.next.next... KHÔNG!
+
+Hmm, sửa lại: slow ở [3], vì:
+dummy -> [1] -> [2] -> [3] -> [4] -> [5] -> null
+
+Cho fast đi 3 bước từ dummy: dummy → [1] → [2] → [3], fast = [3]
+
+Cùng đi:
+Vòng 1: fast = [4], slow = [1]
+Vòng 2: fast = [5], slow = [2]
+Vòng 3: fast = null, slow = [3]
+
+slow = [3], slow.next = [4] (node thứ 2 từ cuối = node cần xoá!)
+slow.next = slow.next.next = [5]
+
+Kết quả: dummy -> [1] -> [2] -> [3] -> [5] -> null
+Return dummy.next = [1] -> [2] -> [3] -> [5] -> null
+```
+
+#### Complexity
+
+|             | Time | Space |
+| :---------- | :--- | :---- |
+| Two Pointer | O(n) | O(1)  |
+
+#### Common mistakes / Edge cases
+
+1. **Xoá head** (n = length): không có dummy → crash. Dummy node giải quyết vấn đề này
+2. **n = 1** (xoá node cuối): slow dừng ở node áp cuối, slow.next = null
+3. **List chỉ có 1 node, n = 1**: xoá node duy nhất → return None (dummy.next = None)
+4. **Gap sai**: nếu cho fast đi n bước (thay vì n+1), slow sẽ dừng **ngay tại** node cần xoá → không xoá được vì cần node trước nó
+
+------
+
+### 7.6. LeetCode 146 — LRU Cache (Medium)
+
+**Link:** https://leetcode.com/problems/lru-cache/
+
+**Difficulty:** Medium
+
+**De bai:** Thiet ke cau truc du lieu LRU (Least Recently Used) cache ho tro 2 thao tac:
+
+- `get(key)`: Tra ve value neu key ton tai, nguoc lai tra -1
+- `put(key, value)`: Them/cap nhat key-value. Neu cache day, xoa entry it duoc su dung gan day nhat truoc khi them moi
+
+Ca hai thao tac phai chay trong O(1) time.
+
+#### Phân tích tư duy
+
+Đây là bài **design** kinh điển nhất. Yêu cầu O(1) cho cả get và put, ta cần kết hợp:
+
+1. **HashMap (dict)**: O(1) lookup theo key
+2. **Doubly Linked List**: O(1) di chuyển node, O(1) xoá node cuối
+
+**Nguyên tắc:**
+
+- **Đầu list** (sau dummy head) = Most Recently Used (MRU)
+- **Cuối list** (trước dummy tail) = Least Recently Used (LRU)
+- Mỗi khi `get` hoặc `put`, di chuyển node lên đầu
+- Khi cache đầy, xoá node cuối (LRU)
+
+**Tại sao phải Doubly?** Vì khi xoá 1 node ở giữa list, ta cần biết node trước nó (prev) để nối lại. Singly không có prev → phải duyệt O(n).
+
+**Tại sao lưu key trong DLL node?** Khi evict node cuối, ta cần biết key để xoá entry tương ứng trong HashMap.
+
+#### Lời giải
+
+```python
+class DLLNode:
+    """Node cho Doubly Linked List"""
+    def __init__(self, key=0, val=0):
+        self.key = key
+        self.val = val
+        self.prev = None
+        self.next = None
+
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.cache = {}  # HashMap: key → DLLNode
+
+        # Hai dummy node — sentinel head và tail
+        # Mọi node thật nằm giữa head và tail
+        # head <-> [MRU] <-> ... <-> [LRU] <-> tail
+        self.head = DLLNode()  # Dummy head (MRU side)
+        self.tail = DLLNode()  # Dummy tail (LRU side)
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def _remove(self, node: DLLNode):
+        """
+        Tách node ra khỏi DLL — O(1)
+        Trước: ... <-> A <-> node <-> B <-> ...
+        Sau:   ... <-> A <-> B <-> ...
+        """
+        node.prev.next = node.next
+        node.next.prev = node.prev
+
+    def _add_after_head(self, node: DLLNode):
+        """
+        Chèn node ngay sau dummy head — O(1)
+        Trước: head <-> first <-> ...
+        Sau:   head <-> node <-> first <-> ...
+        """
+        node.prev = self.head
+        node.next = self.head.next
+        self.head.next.prev = node
+        self.head.next = node
+
+    def _move_to_front(self, node: DLLNode):
+        """Di chuyển node lên đầu (= vừa sử dụng) — O(1)"""
+        self._remove(node)
+        self._add_after_head(node)
+
+    def get(self, key: int) -> int:
+        """
+        Lấy value theo key — O(1)
+        - Có key → di chuyển lên đầu (MRU), return value
+        - Không có → return -1
+        """
+        if key not in self.cache:
+            return -1
+
+        node = self.cache[key]
+        self._move_to_front(node)  # Đánh dấu "vừa sử dụng"
+        return node.val
+
+    def put(self, key: int, value: int):
+        """
+        Thêm/cập nhật key-value — O(1)
+        - Key đã tồn tại → cập nhật value, di chuyển lên đầu
+        - Key mới → tạo node, thêm vào head. Nếu đầy → evict LRU (cuối)
+        """
+        if key in self.cache:
+            # Cập nhật value và di chuyển lên đầu
+            node = self.cache[key]
+            node.val = value
+            self._move_to_front(node)
+        else:
+            # Tạo node mới
+            new_node = DLLNode(key, value)
+            self.cache[key] = new_node
+            self._add_after_head(new_node)
+
+            # Kiểm tra capacity
+            if len(self.cache) > self.capacity:
+                # Xoá node LRU (ngay trước dummy tail)
+                lru_node = self.tail.prev
+                self._remove(lru_node)
+                del self.cache[lru_node.key]  # Xoá khỏi HashMap
+```
+
+#### Dry run chi tiết
+
+```
+LRUCache(capacity=2)
+
+=== put(1, 1) ===
+Key 1 chưa có → tạo node(1,1), thêm sau head
+DLL: head <-> [1:1] <-> tail
+Map: {1: node_1}
+size = 1 <= 2 → OK
+
+=== put(2, 2) ===
+Key 2 chưa có → tạo node(2,2), thêm sau head
+DLL: head <-> [2:2] <-> [1:1] <-> tail
+               MRU                 LRU
+Map: {1: node_1, 2: node_2}
+size = 2 <= 2 → OK
+
+=== get(1) → return 1 ===
+Key 1 có → move node_1 lên đầu
+Trước: head <-> [2:2] <-> [1:1] <-> tail
+_remove([1:1]): head <-> [2:2] <-> tail
+_add_after_head([1:1]): head <-> [1:1] <-> [2:2] <-> tail
+                                  MRU         LRU
+Return node_1.val = 1
+
+=== put(3, 3) ===
+Key 3 chưa có → tạo node(3,3), thêm sau head
+DLL: head <-> [3:3] <-> [1:1] <-> [2:2] <-> tail
+Map: {1: node_1, 2: node_2, 3: node_3}
+size = 3 > 2 → PHẢI EVICT!
+
+LRU = tail.prev = node_2 (key=2)
+_remove(node_2): head <-> [3:3] <-> [1:1] <-> tail
+del cache[2]: Map = {1: node_1, 3: node_3}
+size = 2
+
+=== get(2) → return -1 ===
+Key 2 không có trong cache (đã bị evict!) → return -1
+
+=== put(4, 4) ===
+Key 4 chưa có → tạo node(4,4), thêm sau head
+DLL: head <-> [4:4] <-> [3:3] <-> [1:1] <-> tail
+size = 3 > 2 → EVICT!
+LRU = node_1 (key=1)
+Sau evict: head <-> [4:4] <-> [3:3] <-> tail
+Map: {3: node_3, 4: node_4}
+
+=== get(1) → return -1 ===
+Key 1 đã bị evict
+
+=== get(3) → return 3 ===
+Move node_3 lên đầu
+DLL: head <-> [3:3] <-> [4:4] <-> tail
+
+=== get(4) → return 4 ===
+Move node_4 lên đầu
+DLL: head <-> [4:4] <-> [3:3] <-> tail
+```
+
+#### Complexity
+
+| Thao tác | Time | Space       |
+| :------- | :--- | :---------- |
+| get      | O(1) | O(capacity) |
+| put      | O(1) | O(capacity) |
+
+#### Common mistakes / Edge cases
+
+1. **Quên xoá key trong HashMap khi evict**: memory leak, size tính sai
+2. **Quên lưu key trong DLL node**: khi evict, không biết key nào cần xoá trong HashMap
+3. **Không dùng dummy node**: phải xử lý rất nhiều edge case (list rỗng, xoá head, xoá tail)
+4. **put key đã tồn tại nhưng quên move lên đầu**: thứ tự LRU sai
+5. **Capacity = 0**: nên check đặc biệt (mặc dù LeetCode đảm bảo capacity >= 1)
+
+------
+
+### 7.7. LeetCode 23 — Merge k Sorted Lists (Hard)
+
+**Link:** https://leetcode.com/problems/merge-k-sorted-lists/
+
+**Difficulty:** Hard
+
+**De bai:** Cho mot mang gom k sorted linked list, merge tat ca thanh mot sorted linked list duy nhat va tra ve.
+
+**Ví dụ:**
+
+```
+Input:  lists = [
+    1 -> 4 -> 5,
+    1 -> 3 -> 4,
+    2 -> 6
+]
+Output: 1 -> 1 -> 2 -> 3 -> 4 -> 4 -> 5 -> 6 -> null
+```
+
+#### Phân tích tư duy
+
+Có nhiều cách tiếp cận, hãy phân tích complexity từng cách:
+
+| Cách                 | Time           | Space        | Ý tưởng                                      |
+| :------------------- | :------------- | :----------- | :------------------------------------------- |
+| Brute force          | O(N log N)     | O(N)         | Gom hết vào array, sort, tạo list mới        |
+| Merge 1-by-1         | O(kN)          | O(1)         | Merge list 1 với 2, kết quả merge với 3, ... |
+| **Divide & Conquer** | **O(N log k)** | **O(log k)** | Merge từng cặp, giống Merge Sort             |
+| **Min Heap**         | **O(N log k)** | **O(k)**     | Heap chứa k node nhỏ nhất                    |
+
+(N = tổng số node, k = số list)
+
+#### Cách 1: Divide and Conquer (Khuyến nghị)
+
+Ý tưởng giống **Merge Sort**: chia k list thành 2 nửa, merge đệ quy từng nửa, rồi merge 2 kết quả.
+
+```
+Vòng 1: [L1, L2, L3, L4] → merge(L1,L2), merge(L3,L4) → [M1, M2]
+Vòng 2: [M1, M2] → merge(M1, M2) → [Result]
+```
+
+Mỗi vòng xử lý N node, có log(k) vòng → O(N log k).
+
+```python
+class Solution:
+    def mergeKLists(self, lists: list) -> ListNode:
+        # Edge case: danh sách rỗng
+        if not lists:
+            return None
+
+        # Merge từng cặp cho đến khi chỉ còn 1 list
+        while len(lists) > 1:
+            merged = []
+            # Duyệt từng cặp (0,1), (2,3), (4,5), ...
+            for i in range(0, len(lists), 2):
+                l1 = lists[i]
+                # Nếu i+1 vượt quá → l2 = None
+                l2 = lists[i + 1] if i + 1 < len(lists) else None
+                merged.append(self._merge_two(l1, l2))
+            lists = merged
+
+        return lists[0]
+
+    def _merge_two(self, l1: ListNode, l2: ListNode) -> ListNode:
+        """Merge 2 sorted list — giống LeetCode 21"""
+        dummy = ListNode(0)
+        tail = dummy
+
+        while l1 and l2:
+            if l1.val <= l2.val:
+                tail.next = l1
+                l1 = l1.next
+            else:
+                tail.next = l2
+                l2 = l2.next
+            tail = tail.next
+
+        tail.next = l1 if l1 else l2
+        return dummy.next
+```
+
+#### Cách 2: Min Heap (Priority Queue)
+
+Ý tưởng: duy trì một **heap nhỏ nhất** chứa k node (mỗi list đóng góp 1 node). Mỗi bước, lấy node nhỏ nhất từ heap, nối vào kết quả, rồi thêm node tiếp theo của list đó vào heap.
+
+```python
+import heapq
+
+class Solution:
+    def mergeKLists(self, lists: list) -> ListNode:
+        # Dummy head cho kết quả
+        dummy = ListNode(0)
+        tail = dummy
+
+        # Min heap: (giá trị, index, node)
+        # index dùng để break tie khi 2 node cùng giá trị
+        # (vì ListNode không hỗ trợ so sánh <)
+        heap = []
+
+        # Khởi tạo: thêm node đầu tiên của mỗi list vào heap
+        for i, head in enumerate(lists):
+            if head:
+                heapq.heappush(heap, (head.val, i, head))
+
+        while heap:
+            # Lấy node nhỏ nhất
+            val, idx, node = heapq.heappop(heap)
+
+            # Nối vào kết quả
+            tail.next = node
+            tail = tail.next
+
+            # Nếu list này còn node tiếp theo, thêm vào heap
+            if node.next:
+                heapq.heappush(heap, (node.next.val, idx, node.next))
+
+        return dummy.next
+```
+
+#### Dry run chi tiết (Divide & Conquer)
+
+```
+Input: lists = [
+    L0: [1] -> [4] -> [5],
+    L1: [1] -> [3] -> [4],
+    L2: [2] -> [6]
+]
+
+=== Vòng 1: len(lists) = 3 > 1 ===
+Cặp (0,1): merge(L0, L1)
+  [1] vs [1] → lấy [1](L0), [1] vs [1](L1) → lấy [1](L1)
+  [4] vs [3] → lấy [3], [4] vs [4] → lấy [4](L0)
+  [4](L1) vs [5] → lấy [4](L1), nối [5]
+  M0 = [1] -> [1] -> [3] -> [4] -> [4] -> [5]
+
+Cặp (2, ?): i=2, i+1=3 >= len → l2 = None
+  merge(L2, None) = L2 = [2] -> [6]
+  M1 = [2] -> [6]
+
+lists = [M0, M1]
+
+=== Vòng 2: len(lists) = 2 > 1 ===
+Cặp (0,1): merge(M0, M1)
+  [1] vs [2] → lấy [1]
+  [1] vs [2] → lấy [1]
+  [3] vs [2] → lấy [2]
+  [3] vs [6] → lấy [3]
+  [4] vs [6] → lấy [4]
+  [4] vs [6] → lấy [4]
+  [5] vs [6] → lấy [5]
+  nối [6]
+  Result = [1] -> [1] -> [2] -> [3] -> [4] -> [4] -> [5] -> [6]
+
+lists = [Result]
+
+=== len(lists) = 1 → return lists[0] ===
+Output: [1] -> [1] -> [2] -> [3] -> [4] -> [4] -> [5] -> [6] -> null
+```
+
+#### Complexity
+
+| Cách             | Time       | Space                      |
+| :--------------- | :--------- | :------------------------- |
+| Divide & Conquer | O(N log k) | O(log k) — recursion depth |
+| Min Heap         | O(N log k) | O(k) — heap size           |
+
+(N = tổng số node, k = số list)
+
+#### Common mistakes / Edge cases
+
+1. **lists rỗng** (`[]`): return None
+2. **lists chứa list rỗng** (`[None, [1,2], None]`): cần check `if head` trước khi thêm vào heap
+3. **Heap comparison error**: `ListNode` không hỗ trợ `<`, phải thêm `index` vào tuple để break tie
+4. **k = 1**: chỉ có 1 list → return luôn
+5. **k lẻ**: ở Divide & Conquer, list cuối không có cặp → merge với None (return chính nó)
+
+------
+
+### 7.8. LeetCode 25 — Reverse Nodes in k-Group (Hard)
+
+**Link:** https://leetcode.com/problems/reverse-nodes-in-k-group/
+
+**Difficulty:** Hard
+
+**De bai:** Cho head cua mot linked list, reverse tung nhom k node. Neu so node con lai khong du k, giu nguyen thu tu.
+
+**Ví dụ:**
+
+```
+Input:  1 -> 2 -> 3 -> 4 -> 5 -> null, k = 2
+Output: 2 -> 1 -> 4 -> 3 -> 5 -> null
+(Nhóm [1,2] reverse → [2,1], nhóm [3,4] reverse → [4,3], node [5] không đủ k → giữ nguyên)
+
+Input:  1 -> 2 -> 3 -> 4 -> 5 -> null, k = 3
+Output: 3 -> 2 -> 1 -> 4 -> 5 -> null
+(Nhóm [1,2,3] reverse → [3,2,1], nhóm [4,5] chỉ 2 node < k=3 → giữ nguyên)
+```
+
+#### Phân tích tư duy
+
+Đây là bài **kết hợp** nhiều kỹ thuật:
+
+1. **Đếm xem có đủ k node không** — nếu không đủ, giữ nguyên
+2. **Reverse k node** — dùng kỹ thuật reverse iterative đã học
+3. **Nối đoạn đã reverse với phần còn lại** — cần theo dõi pointer cẩn thận
+4. **Lặp lại** cho nhóm tiếp theo
+
+**Khó ở đâu?** Quản lý pointer. Ta cần biết:
+
+- `group_prev`: node **trước** nhóm hiện tại (để nối vào đầu nhóm sau reverse)
+- `group_end`: node **cuối** nhóm hiện tại (sau reverse, node này thành đầu nhóm)
+- Sau reverse, node đầu cũ trở thành node cuối → nối với nhóm tiếp theo
+
+#### Lời giải
+
+```python
+class Solution:
+    def reverseKGroup(self, head: ListNode, k: int) -> ListNode:
+        # Dummy node trước head
+        dummy = ListNode(0)
+        dummy.next = head
+        group_prev = dummy  # Node ngay trước nhóm hiện tại
+
+        while True:
+            # === Bước 1: Kiểm tra còn đủ k node không ===
+            kth_node = self._get_kth(group_prev, k)
+            if kth_node is None:
+                # Không đủ k node → giữ nguyên, thoát
+                break
+
+            # group_next: node đầu tiên của nhóm tiếp theo
+            group_next = kth_node.next
+
+            # === Bước 2: Reverse k node ===
+            # Reverse đoạn từ group_prev.next đến kth_node
+            prev = kth_node.next  # prev bắt đầu = node sau nhóm
+            current = group_prev.next  # Node đầu tiên của nhóm
+
+            while current != group_next:
+                next_temp = current.next
+                current.next = prev     # Đảo chiều
+                prev = current
+                current = next_temp
+
+            # === Bước 3: Nối lại ===
+            # Sau reverse:
+            # - kth_node là đầu nhóm (đã reverse)
+            # - group_prev.next (node đầu cũ) là cuối nhóm
+            old_group_first = group_prev.next  # Node đầu cũ = cuối mới
+            group_prev.next = kth_node         # Nối prev → đầu mới
+
+            # === Bước 4: Chuẩn bị cho nhóm tiếp theo ===
+            # group_prev = cuối nhóm hiện tại = node đầu cũ
+            group_prev = old_group_first
+
+        return dummy.next
+
+    def _get_kth(self, start: ListNode, k: int) -> ListNode:
+        """
+        Từ start, đi k bước. Trả về node thứ k.
+        Nếu không đủ k node → return None.
+        """
+        current = start
+        for _ in range(k):
+            current = current.next
+            if current is None:
+                return None
+        return current
+```
+
+#### Dry run chi tiết
+
+```
+List: [1] -> [2] -> [3] -> [4] -> [5] -> null, k = 2
+
+=== Khởi tạo ===
+dummy -> [1] -> [2] -> [3] -> [4] -> [5] -> null
+group_prev = dummy
+
+=== Nhóm 1: [1] -> [2] ===
+
+Bước 1: _get_kth(dummy, 2)
+  dummy → [1] → [2] → return [2] (kth_node)
+  group_next = [2].next = [3]
+
+Bước 2: Reverse [1] -> [2]
+  prev = [3] (group_next)
+  current = [1] (group_prev.next)
+
+  Vòng 1: current=[1] != [3]
+    next_temp = [2]
+    [1].next = prev = [3]     →  [1] -> [3]
+    prev = [1]
+    current = [2]
+
+  Vòng 2: current=[2] != [3]
+    next_temp = [3]
+    [2].next = prev = [1]     →  [2] -> [1] -> [3]
+    prev = [2]
+    current = [3]
+
+  current=[3] == group_next=[3] → DỪNG
+
+Bước 3: Nối lại
+  old_group_first = dummy.next = [1]  (node đầu cũ)
+  dummy.next = kth_node = [2]         (nối: dummy -> [2])
+
+  Trạng thái: dummy -> [2] -> [1] -> [3] -> [4] -> [5] -> null
+
+Bước 4: group_prev = old_group_first = [1]
+
+=== Nhóm 2: [3] -> [4] ===
+
+Bước 1: _get_kth([1], 2)
+  [1] → [3] → [4] → return [4] (kth_node)
+  group_next = [4].next = [5]
+
+Bước 2: Reverse [3] -> [4]
+  prev = [5], current = [3]
+
+  Vòng 1: [3].next = [5], prev = [3], current = [4]
+  Vòng 2: [4].next = [3], prev = [4], current = [5]
+
+Bước 3: Nối lại
+  old_group_first = [1].next = [3]
+  [1].next = [4]
+
+  Trạng thái: dummy -> [2] -> [1] -> [4] -> [3] -> [5] -> null
+
+Bước 4: group_prev = [3]
+
+=== Nhóm 3: [5] ===
+
+Bước 1: _get_kth([3], 2)
+  [3] → [5] → null → return None (không đủ k=2 node!)
+
+→ BREAK!
+
+=== Kết quả ===
+dummy.next = [2] -> [1] -> [4] -> [3] -> [5] -> null
+```
+
+#### Complexity
+
+|           | Time | Space |
+| :-------- | :--- | :---- |
+| Iterative | O(n) | O(1)  |
+
+Mỗi node được xử lý tối đa 2 lần (1 lần đếm, 1 lần reverse) → O(2n) = O(n).
+
+#### Common mistakes / Edge cases
+
+1. **k = 1**: không cần reverse gì, return head nguyên vẹn (vòng while vẫn chạy nhưng reverse 1 node = không đổi)
+2. **k = length**: reverse toàn bộ list (giống LeetCode 206)
+3. **k > length**: `_get_kth` return None ngay → giữ nguyên list
+4. **Quên cập nhật `group_prev`**: nhóm tiếp theo sẽ nối sai
+5. **Nhầm lẫn `prev` ban đầu**: prev phải = `group_next` (node sau nhóm), không phải None (vì phần reverse cuối phải nối với nhóm tiếp theo, không phải null)
+
+------
+
+### Bảng tổng hợp 8 bài LeetCode
+
+| #    | Bài                      | Difficulty | Kỹ thuật chính                | Time       | Space       |
+| :--- | :----------------------- | :--------- | :---------------------------- | :--------- | :---------- |
+| 206  | Reverse Linked List      | Easy       | Iterative / Recursive reverse | O(n)       | O(1) / O(n) |
+| 21   | Merge Two Sorted Lists   | Easy       | Two pointer + Dummy node      | O(n+m)     | O(1)        |
+| 141  | Linked List Cycle        | Easy       | Floyd's (Fast & Slow)         | O(n)       | O(1)        |
+| 142  | Linked List Cycle II     | Medium     | Floyd's 2-phase               | O(n)       | O(1)        |
+| 19   | Remove Nth From End      | Medium     | Two pointer gap               | O(n)       | O(1)        |
+| 146  | LRU Cache                | Medium     | HashMap + Doubly Linked List  | O(1)       | O(cap)      |
+| 23   | Merge k Sorted Lists     | Hard       | Divide & Conquer / Min Heap   | O(N log k) | O(log k)    |
+| 25   | Reverse Nodes in k-Group | Hard       | Reverse + Count + Link        | O(n)       | O(1)        |
+
+**Thu tu giải đề xuất:** 206 → 21 → 141 → 142 → 19 → 146 → 23 → 25
+
+> **Mẹo phỏng vấn:** Khi gặp bài Linked List, luôn hỏi bản thân:
+>
+> 1. Có cần **dummy node** không? (hầu hết câu trả lời là CÓ)
+> 2. Có dùng **two pointer** (fast/slow) không?
+> 3. Có cần **reverse** một phần hoặc toàn bộ list không?
+> 4. Edge case: list rỗng? 1 node? cycle?

@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mb-310
+  - mb310
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MB-310: Microsoft Dynamics 365 Finance Functional Consultant MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MB-310/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MB-310/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MB-310/MB-310 Mindmap\|🗺️ MB-310 Mindmap]]
+- [[certifications/microsoft/MB-310/MB-310 Flashcards\|🃏 MB-310 Flashcards]]
+- [[certifications/microsoft/MB-310/MB-310_Scraped_Question_Bank\|🗃️ MB-310 Scraped Question Bank]]

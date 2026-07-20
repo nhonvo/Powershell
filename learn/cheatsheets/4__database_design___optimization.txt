@@ -1,0 +1,75 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/02_Database_ORM/📂index_02_Database_ORM|02_Database_ORM]]
+
+# 🚀 4. Database Design & Optimization (Deep Dive)
+
+Thiết kế cơ sở dữ liệu (Database Design) tốt là nền tảng để ứng dụng chạy ổn định và dễ mở rộng. Bước chân vào ngưỡng Senior, bạn phải biết cách "chiến đấu" với dữ liệu hàng triệu bản ghi (Big Data).
+
+---
+
+### 🏛️ 4.1 Indexing Mastery: B-Tree vs GIN
+
+Đánh index là con dao hai lưỡi. Một index tốt giúp query chạy từ 10s xuống 10ms, nhưng quá nhiều index sẽ làm chậm việc ghi dữ liệu (`INSERT/UPDATE`).
+
+#### **Cơ chế hoạt động (B-Tree)**
+PostgreSQL và hầu hết DB sử dụng cây **B-Tree**. Khi bạn tìm kiếm, nó sẽ duyệt cây theo nguyên lý nhị phân $O(log N)$.
+
+- **Composite Index**: Index trên nhiều cột. Thứ tự cột `(A, B)` tốn ít chi phí hơn `(B, A)` tùy theo cách query.
+- **GIN Index**: Dùng cho dữ liệu không cấu trúc như JSONB hoặc mảng.
+- **Index Only Scan**: Cực nhanh vì không cần truy cập vào ổ đĩa đọc dữ liệu (Heap). Lấy dữ liệu ngay trong index.
+
+---
+
+### 🧠 4.2 Denormalization: Tại sao và khi nào?
+
+Chuẩn hóa (Normalization) giúp tránh dư thừa dữ liệu, nhưng trong High-Scale, bạn đôi khi cần **Phi chuẩn hóa (Denormalization)**.
+> "Lưu kết quả đã tính toán sẵn hoặc copy cột sang bảng khác để giảm thiểu JOIN."
+
+**Ví dụ**: Lưu `Username` trực tiếp vào bảng `Posts` thay vì chỉ lưu `UserId`. Bạn tiết kiệm được 1 câu lệnh JOIN khi hiển thị danh sách bài viết.
+
+---
+
+### 🚀 4.3 Partitioning (Phân mảnh bảng cực lớn)
+
+Khi một bảng đạt 100 triệu hàng, hiệu năng bắt đầu tuột dốc.
+- **Table Partitioning**: Chia một bảng khổng lồ thành nhiều bảng nhỏ (theo năm, theo vùng, hoặc theo ID).
+- **Lợi ích**: Postgres chỉ cần quét trên mảnh (Partition) chứa dữ liệu đó, tăng tốc độ query lên gấp nhiều lần.
+
+---
+
+### 🔒 4.4 Replication & High Availability (HA)
+
+Đừng bao giờ để Database chạy độc lập trên một server duy nhất.
+
+- **Master-Slave Replication**: Một server ghi (Master) đồng bộ dữ liệu sang server đọc (Slave). Giúp chia tải và dự phòng rủi ro.
+- **Active-Active**: Cả 2 server đều hỗ trợ đọc ghi (Cực kỳ phức tạp về đồng bộ).
+
+---
+
+### ⚡ 4.5 Caching Layer with Redis
+
+Trước khi query Database, hãy kiểm tra Bộ nhớ đệm (Cache).
+- **Cache-Aside Pattern**: Ứng dụng kiểm tra Cache -> Có (Hit) -> Trả về. Không có (Miss) -> Đọc DB -> Ghi vào Cache.
+
+---
+
+### 📝 4.6 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Đánh index cho tất cả các cột để mọi query đều nhanh?" Đưa ra nhận định của bạn.
+<details><summary>Đáp án</summary>
+Sai lầm chí mạng! Mỗi Index là một "quyển sổ mục lục" tốn dung lượng ổ đĩa. Khi bạn `INSERT` 1 hàng mới, DB phải cập nhật toàn bộ Index liên quan. Quá nhiều index làm giảm hiệu năng ghi và độ phình to của DB (Bloat).
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh PostgreSQL để tạo một **Composite Index** trên cột `(Email, Status)` cho bảng `Users`. Giải thích thứ tự `Email` lên trước có lợi gì?
+<details><summary>Solution</summary>
+```sql
+CREATE INDEX idx_user_email_status ON users(email, status);
+```
+**Giải thích**: Vì `Email` có độ phân tán (Cardinality) cao hơn `Status` (chỉ có Active/Inactive). Việc lọc theo Email trước giúp loại bỏ 99.9% dữ liệu ngay bước đầu tiên, làm cây index nông hơn và tìm kiếm nhanh hơn.
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Database Performance Tunings: Indexing & Partitioning](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-database-optimization.md)
+- [Mastering Redis Caching Scenarios - Zero Downtime](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-caching-strategies.md)
+- [Managing 100M+ Rows in PostgreSQL - Table Partitioning](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-postgresql-partitioning.md)

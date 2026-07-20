@@ -1,0 +1,15 @@
+# 08_Japanese_Exams
+
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/🇯🇵index_08_Japanese_Exams|03_Languages_Communication]]
+
+## 📁 Sub-Categories
+- [[languages/08_Japanese_Exams/🇯🇵index_08_Japanese_Exams|01_N5]]
+- [[languages/08_Japanese_Exams/02_N4/📂index_02_N4|02_N4]]
+- [[📂index_03_n3|03_N3]]
+- [[languages/08_Japanese_Exams/04_N2/📂index_04_N2|04_N2]]
+- [[📂index_05_n1|05_N1]]
+- [[languages/08_Japanese_Exams/06_Other/📂index_06_Other|06_Other]]
+
+## 📄 Notes & Documents
+- [[languages/08_Japanese_Exams/Instructions|Instructions]]
+

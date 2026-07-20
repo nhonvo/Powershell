@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/gh-200
+  - gh200
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 GH-200: GitHub Actions MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/GH-200/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/GH-200/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/GH-200/GH-200 Mindmap\|🗺️ GH-200 Mindmap]]
+- [[certifications/microsoft/GH-200/GH-200 Flashcards\|🃏 GH-200 Flashcards]]
+- [[certifications/microsoft/GH-200/GH-200_Scraped_Question_Bank\|🗃️ GH-200 Scraped Question Bank]]

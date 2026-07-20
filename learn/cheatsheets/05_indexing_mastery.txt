@@ -1,0 +1,68 @@
+# 🚀 5. Indexing Mastery (Performance Optimization)
+
+Đánh Index là "công pháp" mạnh nhất giúp bạn tối ưu hóa tốc độ tìm kiếm từ 10 giây xuống 10 miligiây. Tuy nhiên, nếu dùng sai, Index sẽ trở thành "kẻ thù" hút cạn tài nguyên ổ đĩa và làm chậm việc ghi dữ liệu (INSERT/UPDATE).
+
+---
+
+### 🏛️ 5.1 B-Tree Index: "Vị vua không đối thủ"
+
+Mặc định, PostgreSQL (và hầu hết DB khác) sử dụng cấu trúc cây **B-Tree** (Balanced Tree). 
+
+- **Cơ chế**: Dữ liệu được sắp xếp và phân nhánh. Việc tìm kiếm chỉ tốn độ phức tạp $O(log N)$.
+- **Thế mạnh**: 
+    - Tìm chính xác (`=`).
+    - Tìm theo phạm vi (`BETWEEN`, `>`, `<`).
+    - Tìm theo tiền tố (`LIKE 'nhon%'`).
+    - Sắp xếp (`ORDER BY`).
+
+---
+
+### 🧠 5.2 Các loại Index nâng cao trong PostgreSQL
+
+1.  **Unique Index**: Đảm bảo không trùng lặp và cực nhanh.
+2.  **Multicolumn (Composite) Index**: Đánh Index trên nhiều cột cùng lúc (VD: `(LastName, FirstName)`).
+    > **Quy tắc**: "Cột nào hay dùng lọc nhất phải nằm đầu tiên".
+3.  **Partial Index**: Chỉ đánh Index cho 1 phần dữ liệu.
+    - VD: `INDEX users_active ON users(id) WHERE status = 'active'`. (Tiết kiệm ổ đĩa, chỉ quan tâm tới user đang hoạt động).
+4.  **Expression Index**: Đánh Index cho kết quả của một hàm.
+    - VD: `INDEX idx_upper_email ON users(lower(email))`. (Tìm kiếm email không phân biệt hoa thường sẽ cực nhanh).
+5.  **GIN Index (Generalized Inverted Index)**: Dùng cho dữ liệu JSONB hoặc Mảng (Array). Cần thiết cho Full Text Search.
+
+---
+
+### 🚀 5.3 Index-Only Scan: Tốc độ ánh sáng
+
+Nếu toàn bộ dữ liệu bạn cần (SELECT) đều nằm trong Index, PostgreSQL sẽ không bao giờ phải truy cập vào dữ liệu thật (Heap/Disk). Nó lấy trực tiếp từ Index.
+- VD: Bạn SELECT `id` WHERE `id = ?`. Vì `id` chính là Index, tốc độ sẽ nhanh vô đối.
+
+---
+
+### ⚡ 5.4 Sự đánh đổi (The Trade-off)
+
+- **Write Performance**: Mỗi Index là 1 tệp tin phụ. Khi bạn `INSERT` 1 hàng, DB phải cập nhật đồng thời tất cả Index liên quan. Quá nhiều Index làm chậm việc ghi 2-3 lần.
+- **Disk Usage**: Index tốn dung lượng ổ đĩa. Đôi khi Index còn to hơn cả Bảng dữ liệu chính.
+- **Bloat**: Cơ chế MVCC của Postgres làm sinh ra rác trong Index. Cần chạy `VACUUM` thường xuyên.
+
+---
+
+### 📝 5.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao Index không hoạt động khi dùng `LIKE '%nhon%'` (Dấu % ở đầu)?"
+<details><summary>Đáp án</summary>
+Giống như quyển danh bạ điện thoại, Index được sắp xếp theo Chữ cái đầu tiên. Nếu bạn tìm theo "Cái gì đó kết thúc bằng 'nhon'", bạn buộc phải lật từng trang của quyển danh bạ để kiểm tra từ đầu tới cuối (Full Table Scan).
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh tạo một **Partial Index** cho bảng `Orders` chỉ đánh Index cho những đơn hàng có số tiền trên 1,000,000đ. Giải thích lợi ích.
+<details><summary>Solution</summary>
+```sql
+CREATE INDEX idx_orders_high_value ON orders(id) WHERE total_amount > 1000000;
+```
+**Lợi ích**: Tiết kiệm dung lượng ổ đĩa cực lớn (vì chỉ index 1 phần nhỏ dữ liệu) và Query báo cáo cho nhóm khác hàng VIP sẽ cực nhanh mà không làm chậm các hoạt động khác.
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [B-Tree Internals: Why it Powers Modern Databases](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-btree-internals.md)
+- [PostgreSQL Index Types: B-Tree, GIN, GiST & BRIN Explained](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-postgresql-index-types.md)
+- [How to Optimize Query Performance with Composite Indexes](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-composite-indexes.md)

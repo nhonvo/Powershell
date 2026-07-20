@@ -1,0 +1,365 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/02_N4/Course_40/📂index_Course_40|Course_40]]
+
+# Test 20
+
+## Part 1
+**Q1.** 私は山口さんが研究していることに興味があります。
+- **A.** きょうみ
+- **B.** きょうあじ
+- **C.** きょうむ
+- **D.** きょうじ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1興味: hứng th&uacute;私は山口さんが研究していることに興味があります。T&ocirc;i c&oacute; hứng th&uacute; đến thứ chị Yamaguchi đang nghi&ecirc;n cứu.</p>
+</details>
+
+---
+**Q2.** このトイレは使用できません。
+- **A.** しよう
+- **B.** しいよう
+- **C.** じよう
+- **D.** しんよう
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1使用: sử dụngこのトイレは使用できません。Nh&agrave; vệ sinh n&agrave;y kh&ocirc;ng thể sử dụng được.</p>
+</details>
+
+---
+**Q3.** 私は船に乗るのが好きです。
+- **A.** せん
+- **B.** ぜん
+- **C.** ふね
+- **D.** ふうね
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3船: con thuyền私は船に乗るのが好きです。T&ocirc;i th&iacute;ch đi thuyền.</p>
+</details>
+
+---
+**Q4.** あそこに丸い建物が見えます。
+- **A.** たかい
+- **B.** まるい
+- **C.** しろい
+- **D.** ふるい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2丸い: tr&ograve;nあそこに丸い建物が見えます。C&oacute; thể nh&igrave;n thấy t&ograve;a nh&agrave; h&igrave;nh tr&ograve;n ở kia.</p>
+</details>
+
+---
+**Q5.** あの谷にはキャンプ場がたくさんある。
+- **A.** もり
+- **B.** かわ
+- **C.** たに
+- **D.** やま
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3谷: thung lũngあの谷にはキャンプ場がたくさんある。Ở thung lũng kia c&oacute; nhiều khu cắm trại.</p>
+</details>
+
+---
+**Q6.** 私は日本のれきしに興味があります。
+- **A.** 歴史
+- **B.** 歴更
+- **C.** 歴使
+- **D.** 歴吏
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1歴史: lịch sử私は日本の歴史に興味があります。T&ocirc;i c&oacute; hứng th&uacute; với lịch sử Nhật Bản.</p>
+</details>
+
+---
+**Q7.** このことばのいみが分かりますか。
+- **A.** 思味
+- **B.** 調味
+- **C.** 興味
+- **D.** 意味
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4意味: &yacute; nghĩaこのことばの意味が分かりますか。Bạn c&oacute; hiểu &yacute; nghĩa của từ vựng n&agrave;y kh&ocirc;ng?</p>
+</details>
+
+---
+**Q8.** 先週注文したしょうひんが届いた。
+- **A.** 商晶
+- **B.** 商口
+- **C.** 商器
+- **D.** 商品
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4商品: h&agrave;ng h&oacute;a先週注文した商品が届いた。M&oacute;n h&agrave;ng t&ocirc;i đặt tuần trước đ&atilde; được gửi đến.</p>
+</details>
+
+---
+**Q9.** このペンをつかってください。
+- **A.** 使って
+- **B.** 更って
+- **C.** 住って
+- **D.** 主って
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1使う: d&ugrave;ng, sử dụngこのペンを使ってください。H&atilde;y d&ugrave;ng c&aacute;i b&uacute;t n&agrave;y.</p>
+</details>
+
+---
+**Q10.** あそこにしんごうがあるのが見えますか。
+- **A.** 信名
+- **B.** 信号
+- **C.** 信呼
+- **D.** 信高
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2信号: đ&egrave;n t&iacute;n hiệu あそこに信号があるのが見えますか。Bạn c&oacute; thấy đ&egrave;n giao th&ocirc;ng ở đằng kia kh&ocirc;ng?</p>
+</details>
+
+---
+**Q1.** 花火の______が聞こえるね。
+- **A.** 感じ
+- **B.** におい
+- **C.** 音
+- **D.** 味
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3音: &acirc;m thanh花火の音が聞こえるね。Nghe thấy tiếng ph&aacute;o hoa nhỉ.</p>
+</details>
+
+---
+**Q2.** あのサングラスを______いる人は私の弟です。
+- **A.** 被って
+- **B.** つけて
+- **C.** かけて
+- **D.** 履いて
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3かける: đeo (k&iacute;nh)あのサングラスをかけている人は私の弟です。Người đang đeo k&iacute;nh r&acirc;m kia l&agrave; em trai t&ocirc;i.</p>
+</details>
+
+---
+**Q3.** あの黄色い______を被っている人はだれですか。
+- **A.** 靴下
+- **B.** 上着
+- **C.** ネックレス
+- **D.** 帽子
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4帽子: c&aacute;i mũあの黄色い帽子を被っている人はだれですか。Người đội chiếc mũ v&agrave;ng kia l&agrave; ai vậy?</p>
+</details>
+
+---
+**Q4.** 山田さんは大学で歴史を______います。
+- **A.** 輸入して
+- **B.** 輸出して
+- **C.** 入れて
+- **D.** 研究して
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4研究する: nghi&ecirc;n cứu山田さんは大学で歴史を研究しています。Anh Yamada đang nghi&ecirc;n cứu lịch sử tại trường đại học.</p>
+</details>
+
+---
+**Q5.** この牛乳、変な______がする。
+- **A.** 声
+- **B.** におい
+- **C.** 色
+- **D.** 音
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2におい: m&ugrave;iこの牛乳、変なにおいがする。Sữa b&ograve; n&agrave;y c&oacute; m&ugrave;i lạ.</p>
+</details>
+
+---
+**Q6.** 今くつを______いるから、ちょっと待って。
+- **A.** 被って
+- **B.** 着て
+- **C.** つけて
+- **D.** 履いて
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4履く: xỏ (giầy, tất), mặc (quần, v&aacute;y,... )今くつを履いているから、ちょっと待って。B&acirc;y giờ tớ đang xỏ gi&agrave;y n&ecirc;n h&atilde;y đợi một ch&uacute;t.</p>
+</details>
+
+---
+**Q7.** 毎晩寝る前に、子供に______を読んであげる。
+- **A.** 美術館
+- **B.** 法律
+- **C.** 歴史
+- **D.** 絵本
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4絵本: truyện tranh, truyện ehon毎晩寝る前に、子供に絵本を読んであげる。Mỗi tối trước khi đi ngủ, t&ocirc;i đọc truyện tranh cho con.</p>
+</details>
+
+---
+**Q8.** 私の会社は外国から食べ物を______しています。
+- **A.** 輸入
+- **B.** 輸出
+- **C.** 研究
+- **D.** 開始
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1輸入する: nhập khẩu私の会社は外国から食べ物を輸入しています。C&ocirc;ng ty t&ocirc;i nhập khẩu thực phẩm từ nước ngo&agrave;i.</p>
+</details>
+
+---
+**Q9.** 窓からきれいな______海が見えます。
+- **A.** 黄色い
+- **B.** 青い
+- **C.** 茶色い
+- **D.** 白い
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2青い: m&agrave;u xanh da trời窓からきれいな青い海が見えます。Từ cửa sổ c&oacute; thể nh&igrave;n thấy biển xanh đẹp.</p>
+</details>
+
+---
+**Q10.** 昨日、彼氏と映画館で______した。
+- **A.** ドラッグストア
+- **B.** デート
+- **C.** メイド
+- **D.** ピアス
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2デート: hẹn h&ograve;昨日、彼氏と映画館でデートした。H&ocirc;m qua, t&ocirc;i đ&atilde; hẹn h&ograve; với bạn trai ở rạp chiếu phim.</p>
+</details>
+
+---
+**Q1.** A：その写真の猫、かわいいね。B：この猫は________________
+- **A.** 私が猫を飼っているよ。
+- **B.** 私が飼っている猫だよ。
+- **C.** 猫を飼っている私だよ。
+- **D.** 猫を私が飼っているよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A：その写真の猫、かわいいね。B：この猫は私が飼っている猫だよ。A: Con m&egrave;o trong bức ảnh đ&oacute; dễ thương nhỉ?A: Con m&egrave;o n&agrave;y l&agrave; con m&egrave;o m&agrave; t&ocirc;i đang nu&ocirc;i đấy.</p>
+</details>
+
+---
+**Q2.** A：部長はどの人ですか。B：________________
+- **A.** あの女の人は髪が短くて、青いスーツを着ていますよ。
+- **B.** あの髪が短くて、女の人が青いスーツを着ていますよ。
+- **C.** あの髪が短くて、青いスーツを着ている女の人ですよ。
+- **D.** あの髪が短くて、青いスーツを着ています女の人ですよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A：部長はどの人ですか。B：あの髪が短くて、青いスーツを着ている女の人ですよ。A: Trưởng ban l&agrave; người n&agrave;o thế?B: L&agrave; người phụ nữ t&oacute;c ngắn, mặc bộ vest xanh đ&oacute;.</p>
+</details>
+
+---
+**Q3.** A：マイさんが育った町はどんな町ですか。B：________________
+- **A.** 古い建物が町にたくさんありますよ。
+- **B.** 町にはたくさんある古い建物ですよ。
+- **C.** 町にたくさんある建物は古いですよ。
+- **D.** 古い建物がたくさんある町ですよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A：マイさんが育った町はどんな町ですか。B：古い建物がたくさんある町ですよ。A: Thị trấn nơi Mai lớn l&ecirc;n l&agrave; thị trấn như thế n&agrave;o?B: L&agrave; một thị trấn c&oacute; rất nhiều t&ograve;a nh&agrave; cổ.</p>
+</details>
+
+---
+**Q4.** A：________________B：ゲームの音楽をよく聞きますよ。
+- **A.** 最近よく音楽を聞く佐藤さんは何ですか。
+- **B.** 佐藤さんが最近よく音楽を聞くは何ですか。
+- **C.** 佐藤さんが最近よく聞く音楽は何ですか。
+- **D.** 最近よく聞く音楽の佐藤さんは何ですか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A：佐藤さんが最近よく聞く音楽は何ですか。B：ゲームの音楽をよく聞きますよ。A: Gần đ&acirc;y anh Satou thường nghe nhạc g&igrave;?B: T&ocirc;i hay nghe nhạc trong tr&ograve; chơi điện tử.</p>
+</details>
+
+---
+**Q5.** A：________________B：「Cafe de Momiji」がおすすめだよ。
+- **A.** コーヒーが飲めるおいしい場所を知ってる？
+- **B.** おいしい場所が飲めるコーヒーを知ってる？
+- **C.** 場所でおいしいコーヒーが飲めるを知ってる？
+- **D.** おいしいコーヒーが飲める場所を知ってる？
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A：おいしいコーヒーが飲める場所を知ってる？B：「Cafe de Momiji」がおすすめだよ。A: Bạn c&oacute; biết chỗ n&agrave;o uống c&agrave; ph&ecirc; ngon kh&ocirc;ng?B: M&igrave;nh gợi &yacute; &quot;Cafe de Momiji&quot; đấy.</p>
+</details>
+
+---
+**Q6.** A：アルバイトの後にみんなでカラオケに行くけど、来ない？B：ごめん、この後________________
+- **A.** 友達と会う約束があるから。
+- **B.** 友達と会う理由があるから。
+- **C.** 友達と会う時間があるから。
+- **D.** 友達と会う話があるから。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A：アルバイトの後にみんなでカラオケに行くけど、来ない？B：ごめん、この後友達と会う約束があるから。A: Sau giờ l&agrave;m th&ecirc;m mọi người sẽ đi h&aacute;t karaoke, bạn đến nh&eacute;?B: Xin lỗi, v&igrave; sau đ&oacute; m&igrave;nh c&oacute; hẹn với bạn rồi.</p>
+</details>
+
+---
+**Q7.** A：________________B：この会社の社長ですよ！
+- **A.** あのサングラスをかけて、赤いスーツを着た人はだれですか。
+- **B.** あの人はサングラスをかけて、赤いスーツを着ているはだれですか。
+- **C.** あのサングラスをかけて、赤いスーツを着ての人はだれですか。
+- **D.** あのサングラスをかけた人、赤いスーツを着たのはだれですか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A：あのサングラスをかけて、赤いスーツを着た人はだれですか。B：この会社の社長ですよ！A: Người đeo k&iacute;nh r&acirc;m v&agrave; mặc bộ vest đỏ kia l&agrave; ai vậy?B: L&agrave; gi&aacute;m đốc c&ocirc;ng ty n&agrave;y đấy.</p>
+</details>
+
+---
+**Q8.** A：あのお店から________________B：ああ、あそこは有名なパン屋ですよ。
+- **A.** パンを焼く味をしますね。
+- **B.** パンを焼く味がしますね。
+- **C.** パンを焼くにおいをしますね。
+- **D.** パンを焼くにおいがしますね。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4 A：あのお店からパンを焼くにおいがしますね。B：ああ、あそこは有名なパン屋ですよ。A: C&oacute; m&ugrave;i b&aacute;nh m&igrave; nướng từ cửa h&agrave;ng kia nhỉ?B: &Agrave;, đ&oacute; l&agrave; tiệm b&aacute;nh nổi tiếng đấy.</p>
+</details>
+
+---
+**Q9.** A：新しい部屋はどう？B：広くてきれいだよ。それから、________________
+- **A.** 窓からきれいな海が聞こえるよ。
+- **B.** 窓からきれいな海が見えるよ。
+- **C.** 窓からきれいな海を聞こえるよ。
+- **D.** 窓からきれいな海を見えるよ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A：新しい部屋はどう？B：広くてきれいだよ。それから、窓からきれいな海が見えるよ。A: Căn ph&ograve;ng mới thế n&agrave;o?B: Rộng v&agrave; sạch sẽ đấy. Ngo&agrave;i ra, từ cửa sổ c&ograve;n nh&igrave;n thấy biển đẹp nữa.</p>
+</details>
+
+---
+**Q10.** A：英語は話せますか。B：________________
+- **A.** 話せませんが、少し分かりますよ。
+- **B.** 話せませんが、あまり分かりません。
+- **C.** 話せますが、少し分かりますよ。
+- **D.** 話せますが、全然分かりません。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A：英語は話せますか。B：話せませんが、少し分かりますよ。A: Bạn c&oacute; thể n&oacute;i tiếng Anh kh&ocirc;ng?B: T&ocirc;i kh&ocirc;ng n&oacute;i được, nhưng c&oacute; hiểu một ch&uacute;t đấy.</p>
+</details>
+
+---

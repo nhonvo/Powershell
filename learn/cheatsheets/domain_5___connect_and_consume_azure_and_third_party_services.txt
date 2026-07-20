@@ -1,0 +1,40 @@
+---
+tags:
+  - certification/az-204
+  - azure-dev/study-notes/domain-5
+status: todo
+created: 2026-06-15
+---
+
+# Domain 5: Connect and Consume Azure and Third-Party Services
+
+This domain covers core concepts for Connect and Consume Azure and Third-Party Services.
+
+## 🎯 Exam Objectives
+- Understand the core concepts under Connect and Consume Azure and Third-Party Services.
+- Study key Azure patterns and reference architectures.
+
+---
+
+## 📖 Key Study Topics
+
+### 1. Overview
+- Detail key Azure resources, patterns, and configurations.
+- Review official documentation links.
+
+---
+Back to **[[certifications/microsoft/AZ-204/AZ-204 MOC|AZ-204 MOC]]**
+
+## 🔍 Practice Question Reference
+Here are key questions from the practice bank matching this domain:
+- **Q1**: Your company has a web app named WebApp1. You use the WebJobs SDK to design a triggered App Service ... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 5#Question 1|Practice Q1]])
+- **Q2**: You are a developer at your company. You need to update the definitions for an existing Logic App. W... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 5#Question 2|Practice Q2]])
+- **Q3**: Note: The question is included in a number of questions that depicts the identical set-up. However, ... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 5#Question 3|Practice Q3]])
+- **Q4**: Note: The question is included in a number of questions that depicts the identical set-up. However, ... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 5#Question 4|Practice Q4]])
+- **Q5**: Note: The question is included in a number of questions that depicts the identical set-up. However, ... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 5#Question 5|Practice Q5]])
+- **Q6**: Note: The question is included in a number of questions that depicts the identical set-up. However, ... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 5#Question 6|Practice Q6]])
+- **Q7**: You are a developer at your company. You need to edit the workflows for an existing Logic App. What ... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 5#Question 7|Practice Q7]])
+- **Q8**: You are developing an application that applies a set of governance policies for internal and externa... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 5#Question 8|Practice Q8]])
+
+---
+Back to **[[certifications/microsoft/AZ-204/AZ-204 MOC|AZ-204 MOC]]**

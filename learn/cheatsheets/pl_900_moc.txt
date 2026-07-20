@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/pl-900
+  - pl900
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 PL-900: Microsoft Power Platform Fundamentals MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/PL-900/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/PL-900/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/PL-900/PL-900 Mindmap\|🗺️ PL-900 Mindmap]]
+- [[certifications/microsoft/PL-900/PL-900 Flashcards\|🃏 PL-900 Flashcards]]
+- [[certifications/microsoft/PL-900/PL-900_Scraped_Question_Bank\|🗃️ PL-900 Scraped Question Bank]]

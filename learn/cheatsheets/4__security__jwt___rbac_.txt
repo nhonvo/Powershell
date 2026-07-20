@@ -1,0 +1,86 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/03_REST_API/📂index_03_REST_API|03_REST_API]]
+
+# 🔐 4. Security (JWT & RBAC) - Backend Security Deep Dive
+
+Bảo mật là con dao hai lưỡi. Một cấu hình sai lầm nhỏ trong cơ chế Xác thực (Authentication) hay Phân quyền (Authorization) có thể làm lộ dữ liệu của hàng triệu người dùng.
+
+---
+
+### 🛡️ 4.1 Authentication vs Authorization (Xác thực vs Phân quyền)
+
+Đừng nhầm lẫn!
+- **Authentication**: "Bạn là ai?" (Check Passport). Ví dụ: Đăng nhập bằng Email/Password.
+- **Authorization**: "Bạn được phép làm gì?" (Check Tickets). Ví dụ: User được xem bài, nhưng chỉ Admin mới được xóa bài.
+
+---
+
+### 🧠 4.2 JWT (JSON Web Token) - Phân tích cấu trúc
+
+JWT là lựa chọn số 1 cho các hệ thống **Stateless** (Phi trạng thái). Nó giúp Server không cần lưu Session trong Memory hay DB.
+
+#### **Cấu trúc gồm 3 phần (Cách nhau bằng dấu chấm `.`)**:
+1.  **Header**: Chứa thuật toán mã hóa (VD: HS256).
+2.  **Payload (Linh hồn)**: Chứa thông tin người dùng (**Claims**) như `userId`, `roles`, `expiryTime`. (Tuyệt đối không lưu mật khẩu ở đây).
+3.  **Signature**: Chữ ký dùng để xác minh Token không bị sửa đổi. (Được tạo bằng `Header + Payload + Secret Key`).
+
+> [!WARNING]
+> Mọi người đều có thể Decode phần Payload để xem dữ liệu (Base64). JWT chỉ đảm bảo tính **Toàn vẹn** (Integrity), không phải tính **Bí mật** (Confidentiality).
+
+---
+
+### 🚀 4.3 RBAC vs ABAC (Mô hình Phân quyền)
+
+#### **RBAC (Role-Based Access Control)**
+Gán quyền dựa trên Vai trò.
+- **Admin**: Full quyền.
+- **User**: Read/Write cơ bản.
+- **Guest**: Read-only.
+
+#### **ABAC (Attribute-Based Access Control)**
+Phức tạp hơn, dựa trên các thuộc tính (Policy).
+- Ví dụ: "Chỉ được sửa bài viết của CHIẾNH MÌNH (Owner) trong giờ hành chính".
+
+---
+
+### ⚡ 4.4 Refresh Token & Security Best Practices
+
+> [!IMPORTANT]
+> **Access Token** nên có thời gian sống ngắn (VD: 15-30 phút).
+> **Refresh Token** dùng để cấp lại Access Token mới mà không cần đăng nhập lại.
+
+**Bảo mật JWT tốt nhất:**
+1.  Sử dụng HTTPS (Bắt buộc).
+2.  Lưu Refresh Token trong **HttpOnly / Secure Cookie** (Tránh lỗi XSS).
+3.  Sử dụng chuẩn mã hóa RS256 (Private/Public Key) thay cho HS256 (Shared Secret).
+
+---
+
+### 📝 4.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Hacker đánh cắp được JWT của bạn và sửa Role thành 'Admin' trong Payload. Tại sao Server vẫn phát hiện được?"
+<details><summary>Đáp án</summary>
+Vì Signature! Khi Server nhận Token, nó sẽ lấy Header và Payload (vừa bị sửa) kết hợp với Secret Key của nó để tính lại Signature. Khi thấy Signature mới này không khớp với Signature cũ trong Token, Server sẽ bác bỏ ngay.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết một đoạn code Java (Spring Security) hoặc C# (ASP.NET Core) để đánh dấu một API chỉ dành cho `Admin`.
+<details><summary>Solution (C#)</summary>
+```csharp
+[Authorize(Roles = "Admin")]
+[HttpGet("/admin/dashboard")]
+public IActionResult GetDashboard() { ... }
+```
+</details>
+<details><summary>Solution (Java)</summary>
+```java
+@PreAuthorize("hasRole('ADMIN')")
+@GetMapping("/admin/dashboard")
+public ResponseEntity<?> getDashboard() { ... }
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [JWT Internals - Why it is the Industry Standard](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-jwt-architecture.md)
+- [Mastering Refresh Tokens - Security vs Convenience](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-refresh-tokens.md)
+- [Building a Custom Role-Based System in ASP.NET Core](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-dotnet-rbac.md)

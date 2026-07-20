@@ -1,0 +1,9 @@
+# 06_Search_Engine
+
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/📂index_02_Backend_Development_Roadmap|02_Backend_Development_Roadmap]]
+
+## 📄 Notes & Documents
+- [[technical_skills/02_Backend_Development_Roadmap/06_Search_Engine/1. Search Engine vs DB|1. Search Engine vs DB]]
+- [[technical_skills/02_Backend_Development_Roadmap/06_Search_Engine/2. Elasticsearch Basics|2. Elasticsearch Basics]]
+- [[technical_skills/02_Backend_Development_Roadmap/06_Search_Engine/3. Advanced Search Features|3. Advanced Search Features]]
+

@@ -1,0 +1,75 @@
+🔙 **Back to Parent**: [[interviewNote/mantu_amaris/📂index_mantu_amaris|mantu_amaris]]
+
+### **Tổng hợp và Phân tích Buổi Phỏng vấn**
+
+- **Công ty:** Mantu
+- **Ngày phỏng vấn:** (Ghi lại ngày bạn phỏng vấn)
+- **Vị trí ứng tuyển:** (Ghi lại vị trí)
+
+------
+
+### **Phần 1: Trao đổi về Kinh nghiệm và Nền tảng (Behavioral Questions)**
+
+#### **Diễn biến**
+
+Người phỏng vấn đã hỏi các câu hỏi chung để hiểu về kinh nghiệm làm việc:
+
+- Tổng quan về background, các dự án đã và đang làm.
+- Dự án nào bạn tham gia nhiều nhất và đóng vai trò chính?
+- Công nghệ (tech stack) bạn đang sử dụng là gì?
+- Bạn có tham gia vào quá trình thiết kế (design) API và ứng dụng không?
+- Bạn có sử dụng tiếng Anh trong công việc và làm việc trực tiếp với khách hàng không?
+
+#### **Tự đánh giá và Điểm cần Cải thiện**
+
+- **Điểm yếu:** Khi được hỏi về kinh nghiệm thiết kế, đã trả lời lan man sang chủ đề CI/CD, không đi thẳng vào trọng tâm câu hỏi.
+- **Bài học:** Cần lắng nghe kỹ câu hỏi để đảm bảo câu trả lời đi đúng hướng, tập trung và súc tích. Nên chuẩn bị sẵn các câu chuyện/ví dụ theo phương pháp STAR (Situation, Task, Action, Result) cho các câu hỏi về kinh nghiệm để trình bày một cách logic và thuyết phục.
+
+------
+
+### **Phần 2: Thử thách Kỹ thuật (Technical Challenge)**
+
+Đây là phần quan trọng nhất và cũng là phần thể hiện chưa tốt. Thử thách gồm 2 phần: Live Coding và Thiết kế Hệ thống.
+
+#### **1. Live Coding**
+
+- **Đề bài:** Cho một bảng "Bill of Materials" (BOM - Danh sách nguyên vật liệu), viết một hàm để tính toán tổng số lượng của tất cả các nguyên vật liệu thô (không thể phân rã thêm) cần thiết để sản xuất một sản phẩm đầu vào.
+- **Đáp án đúng:** Sử dụng thuật toán đệ quy (recursion) để duyệt qua cây cấu trúc sản phẩm và cộng dồn số lượng.
+- Diễn biến & Tự đánh giá:
+  - **Tâm lý:** Gặp áp lực tâm lý ("bị choke"), dẫn đến việc không thể suy nghĩ thông suốt và code không hiệu quả.
+  - **Kết quả:** Không hoàn thành được bài code, không giải thích được hướng giải quyết một cách rõ ràng.
+  - **Đánh giá:** **Thất bại (Fail)**. Đây là điểm yếu chí mạng trong buổi phỏng vấn.
+
+#### **2. Thiết kế Hệ thống (System Design)**
+
+- Đề bài:
+
+   Dựa trên bài toán coding ở trên, hãy:
+
+  1. Thiết kế một bộ REST API để quản lý các sản phẩm và mối quan hệ giữa chúng.
+  2. Thiết kế cấu trúc bảng trong cơ sở dữ liệu (database) để lưu trữ dữ liệu này.
+
+- Diễn biến & Tự đánh giá:
+
+  - REST API Design:
+    - `POST`: Đã thiết kế sai khi yêu cầu client tự truyền ID vào trong body của request `POST`. Đây là một anti-pattern, vì server phải là nơi tạo ra ID cho resource mới. **Bị đánh giá là chưa đạt.**
+    - `PUT`: Giải thích ý nghĩa của `PUT` chưa chính xác, có thể đã nhầm lẫn về việc cập nhật toàn bộ resource (idempotency).
+  - Database Design:
+    - Đã thiết kế bảng `Product` với các trường `id`, `description` và `linkProductId`. Trường `linkProductId` trong bảng này là **thừa và sai nguyên tắc chuẩn hóa**.
+    - Thiết kế đúng chỉ cần 2 bảng: `Products(id, description)` và một bảng nối `ProductComponents(productId, componentId, quantity)`.
+  - **Đánh giá:** **Thiết kế chưa đúng**. Cho thấy sự thiếu sót về kiến thức nền tảng trong thiết kế API và cơ sở dữ liệu quan hệ.
+
+------
+
+### **Phần 3: Hỏi và Đáp (Q&A)**
+
+#### **Diễn biến**
+
+Các câu hỏi tiêu chuẩn cuối buổi phỏng vấn:
+
+- Mức lương mong muốn của bạn là bao nhiêu?
+- Tại sao bạn lại muốn tìm một công việc mới?
+
+#### **Tự đánh giá**
+
+Phần này diễn ra bình thường, không có vấn đề gì đặc biệt.

@@ -1,0 +1,86 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/04_Caching_Redis/📂index_04_Caching_Redis|04_Caching_Redis]]
+
+# 🏎️ 1. Caching Fundamentals (Deep Dive)
+
+Bộ nhớ đệm (Caching) là "phép thuật" giúp hệ thống Backend chịu được tải trọng khổng lồ. Tuy nhiên, việc sử dụng Cache không đúng cách có thể dẫn đến **Sử dụng Dữ liệu cũ (Stale Data)** hoặc thảm họa **Cache Stampede**.
+
+---
+
+### 🏛️ 1.1 Tại sao chúng ta cần Caching?
+
+Trong Backend, việc đọc dữ liệu từ Disk (Database) tốn hàng chục miligiây (ms), trong khi đọc từ RAM (Cache) chỉ tốn microgiây (µs).
+- **Phản hồi nhanh**: Giảm thời gian chờ cho người dùng (Latency).
+- **Giảm tải Database**: DB được rảnh tay để xử lý các tác vụ ghi quan trọng.
+
+---
+
+### 🧠 1.2 Cache Hit vs Cache Miss
+
+- **Cache Hit**: Tìm thấy dữ liệu trong Cache. (Lý tưởng nhất).
+- **Cache Miss**: Không tìm thấy dữ liệu. Ứng dụng phải truy cập Database và ghi lại vào Cache.
+
+> [!TIP]
+> **Hit Ratio = (Số lần Hit) / (Tổng số lần Request)**. Mục tiêu là duy trì Hit Ratio trên **80%**.
+
+---
+
+### 🚀 1.3 Cache Eviction Policies (Chính sách Thu hồi)
+
+Vì RAM có giới hạn, khi Cache đầy, chúng ta phải "đuổi" các khóa cũ đi. Các thuật toán phổ biến:
+
+- **LRU (Least Recently Used)**: (Phổ biến nhất) Loại bỏ khóa nào lâu rồi không được truy cập.
+- **LFU (Least Frequently Used)**: Loại bỏ khóa được truy cập ít lần nhất.
+- **FIFO (First In First Out)**: Loại bỏ khóa được chèn trước nhất.
+- **TTL (Time To Live)**: Xóa khóa dựa trên thời gian hết hạn cố định.
+
+---
+
+### ⚡ 1.4 Write Strategies (Chiến lược Ghi dữ liệu)
+
+Làm sao để đồng bộ dữ liệu giữa Cache và Database?
+
+1.  **Cache Aside (Khuyên dùng)**: Ứng dụng tự quản lý việc đọc/ghi Cache. Cực kỳ linh hoạt.
+2.  **Read-Through**: Cache tự động nạp dữ liệu từ DB nếu có Miss.
+3.  **Write-Through**: Khi ghi dữ liệu, ứng dụng ghi vào Cache TRƯỚC, sau đó Cache tự ghi vào DB. (Cực an toàn dữ liệu).
+4.  **Write-Back (Write-Behind)**: Ghi vào Cache trước, sau 1 khoảng thời gian mới tổng hợp ghi vào DB. (Tốc độ ghi cực nhanh, nhưng rủi ro mất dữ liệu nếu Cache sập).
+
+---
+
+### 🧤 1.5 Các thảm họa thường gặp & Cách phòng tránh
+
+#### **A. Cache Avalanche (Tuyết lở)**:
+Khi hàng ngàn khóa cùng hết hạn vào một thời điểm, làm Database bị dội ngược một lượng request khổng lồ.
+> **Giải pháp**: Thêm **Jitter (Số ngẫu nhiên)** vào thời gian TTL của mỗi khóa để chúng không hết hạn cùng lúc.
+
+#### **B. Cache Penetration (Xuyên thấu)**:
+Hacker truy vấn liên tục các khóa không tồn tại cả trong Cache lẫn DB (Ví dụ: `ID=-99`).
+> **Giải pháp**: Dùng **Bloom Filter** hoặc **Lưu khóa Null** vào Cache với TTL ngắn.
+
+---
+
+### 📝 1.6 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao chúng ta không nên Cache toàn bộ dữ liệu của Database vào RAM?"
+<details><summary>Đáp án</summary>
+1. Chi phí RAM cực đắt so với Disk. 2. Phần lớn dữ liệu chỉ được truy cập 1-2 lần rồi không dùng lại (Dữ liệu rác). 3. Vấn đề đồng bộ: Dữ liệu thay đổi liên tục sẽ làm Cache nhanh chóng bị cũ (Stale).
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết một đoạn mã mã giả để thực hiện cơ chế **Cache Aside**.
+<details><summary>Solution (Pseudo Code)</summary>
+```python
+def get_user(id):
+    user = cache.get(id)
+    if user is None: # Cache Miss
+        user = db.query(id)
+        if user:
+            cache.set(id, user, ttl=3600)
+    return user
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Caching Strategies: Cache-Aside vs Write-Through](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-caching-strategies.md)
+- [Managing High Scale Traffic: Cache stampede and solutions](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-cache-stampede.md)
+- [Advanced Redis: Bloom Filters for Cache Penetration](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-bloom-filters-redis.md)

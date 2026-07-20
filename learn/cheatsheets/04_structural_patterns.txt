@@ -1,0 +1,90 @@
+🔙 **Back to Parent**: [[technical_skills/03_Design_Patterns_Mastery/📂index_03_Design_Patterns_Mastery|03_Design_Patterns_Mastery]]
+
+# 🎁 4. Structural Patterns (The Wrappers)
+
+Nhóm bài học về cách tổ chức class và object để tạo ra các cấu trúc lớn hơn, linh hoạt và tách biệt (Layered). Trong Backend, chúng ta dùng Structural Patterns để "gắn kết" những thứ vốn dĩ không thuộc về nhau (như API cũ và Code mới).
+
+---
+
+### 🏛️ 4.1 Adapter (Bộ chuyển đổi) - "Lỗ tròn, Khối vuông"
+
+> "Dùng cực nhiều khi tích hợp với thư viện Legacy hoặc API bên thứ 3."
+
+- **Ví dụ đời thực**: Đầu chuyển từ USB-C sang HDMI.
+- **Dùng khi**: Hệ thống cũ chỉ nhận XML, hệ thống của bạn dùng JSON. Bạn tạo 1 Class Adapter dịch JSON thành XML rồi gọi hàm cũ.
+
+---
+
+### 🧠 4.2 Decorator (Trang trí - Wrapper)
+
+> "Thêm tính năng mà không sửa class gốc. Ví dụ: Logger, Cache Wrapper, Compression."
+
+- **Ví dụ đời thực**: Ly cafe sữa. Bạn có ly `Cafe Đen` (Class gốc), sau thêm `Sữa` (Decorator 1) rồi thêm `Đá` (Decorator 2). Bản chất vẫn là Ly cafe nhưng có thêm thuộc tính/hành vi mới.
+
+**Ví dụ (C# Security Wrapper):**
+```csharp
+public interface IPayment { void Process(); }
+public class BasicPayment : IPayment { public void Process() { ... } }
+
+// Lớp trang trí Ghi Log (LogDecorator)
+public class LogDecorator : IPayment {
+    private readonly IPayment _inner;
+    public LogDecorator(IPayment inner) => _inner = inner;
+    public void Process() {
+        Console.WriteLine("Bắt đầu xử lý...");
+        _inner.Process();
+        Console.WriteLine("Xử lý xong!");
+    }
+}
+```
+
+---
+
+### 🚀 4.3 Proxy (Người đại diện)
+
+> "Cung cấp đối tượng thay thế (Placeholder) để kiểm soát việc truy cập vào đối tượng thật."
+
+- **Ví dụ đời thực**: Thẻ tín dụng là Proxy của tiền mặt trong ngân hàng.
+- **Dùng khi**:
+    - **Virtual Proxy**: Delay việc tạo object nặng nề cho tới khi thực sự cần.
+    - **Protection Proxy**: Kiểm tra quyền hạn (Auth) trước khi gọi hàm thật.
+    - **Logging/Caching Proxy**: Lưu kết quả query tránh gọi DB nhiều lần.
+
+---
+
+### ⚡ 4.4 Façade (Cửa chính - Mặt tiền)
+
+> "Cung cấp 1 giao diện đơn giản nhất cho 1 hệ thống con cực kỳ phức tạp."
+
+- **Ví dụ đời thực**: Nút "Bắt đầu nấu" trên nồi cơm điện. Bên trong nó phải kiểm tra nhiệt độ, cài đặt thời gian, áp suất... nhưng bạn chỉ cần nhấn 1 nút duy nhất.
+- **Dùng khi**: Một `OrderService` phải làm việc với `StockService`, `PaymentService`, `SmsService`. Bạn tạo 1 hàm `CheckOut()` gom tất cả lại cho người dùng gọi cho sướng.
+
+---
+
+### 📝 4.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Phân biệt Decorator và Proxy?"
+<details><summary>Đáp án</summary>
+Giống nhau về cấu trúc (hầu hết đều bọc object thật). Khác nhau về mục đích: **Decorator** dùng để "Thêm tính năng" một cách linh hoạt. **Proxy** dùng để "Kiểm soát truy cập" (Lazy load, Auth, Cache).
+</details>
+
+**Bài 2**: [Kỹ thuật] Thiết kế hệ thống tính toán Phí (Fee) đơn hàng. Mọi đơn hàng có `BaseFee`. Tùy trường hợp sẽ cộng thêm `VatDecorator` (10%) và `ShippingDecorator` (5$). Dùng **Decorator Pattern**.
+<details><summary>Solution (C# Style)</summary>
+```csharp
+public interface IFee { double GetCost(); }
+public class BaseFee : IFee { public double GetCost() => 100; }
+public class VatDecorator : IFee {
+    private IFee _fee;
+    public VatDecorator(IFee f) => _fee = f;
+    public double GetCost() => _fee.GetCost() * 1.1; // + 10%
+}
+// Cách dùng: IFee myFee = new ShippingFee(new VatDecorator(new BaseFee()));
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Adapter Pattern in Modern C# Legacy Integrations](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-adapter-pattern.md)
+- [Decorator vs Proxy: The Wrapper War Explored](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-structural-wrappers.md)
+- [Facade Pattern for Clean Domain Services Design](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-facade-pattern.md)

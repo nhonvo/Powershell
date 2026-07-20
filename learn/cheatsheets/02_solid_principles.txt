@@ -1,0 +1,79 @@
+🔙 **Back to Parent**: [[technical_skills/03_Design_Patterns_Mastery/📂index_03_Design_Patterns_Mastery|03_Design_Patterns_Mastery]]
+
+# 🛡️ 2. SOLID Principles (The Five Golden Rules)
+
+SOLID không chỉ là những chữ cái viết tắt, đó là "Tấm khiên" bảo vệ mã nguồn dự án khỏi việc trở thành "Mớ hỗn độn (Spaghetti Code)". Nếu bạn không làm chủ SOLID, Design Patterns chỉ là những mảnh ghép rời rạc.
+
+---
+
+### 🏛️ 2.1 S - Single Responsibility (Đơn trách nhiệm)
+
+> "Một Class chỉ nên có MỘT và CHỈ MỘT lý do duy nhất để thay đổi."
+
+- **Vi phạm**: Class `Report` vừa định dạng dữ liệu, vừa gửi email, vừa in ra máy in. 
+- **Lợi ích**: Khi bạn muốn đổi cách gửi email (từ SMTP sang API), Class `Report` (chỉ xử lý dữ liệu) sẽ không bao giờ bị ảnh hưởng.
+
+---
+
+### 🧠 2.2 O - Open/Closed (Mở để mở rộng, Đóng để sửa đổi)
+
+> "Bạn có thể thêm tính năng mới mà không phải sửa lại code cũ đã chạy ổn định."
+
+- **Cơ chế**: Dùng Interface hoặc Abstract Class.
+- **Ví dụ (C#)**:
+```csharp
+// Sai: Phải dùng IF/ELSE mỗi khi thêm Method thanh toán mới
+public class Payment { public void Pay(string type) { if (type == "Momo") ... } }
+
+// Đúng: Thêm ví mới chỉ cần tạo Class mới kế thừa IPayment
+public interface IPayment { void Process(); }
+public class Momo : IPayment { public void Process() { ... } }
+public class Zalopay : IPayment { public void Process() { ... } }
+```
+
+---
+
+### 🚀 2.3 L - Liskov Substitution (Phát biểu về Tính Đa Hình)
+
+> "Lớp con phải hoàn toàn có thể thay thế lớp cha mà không làm hỏng tính đúng đắn của chương trình."
+
+- **Vi phạm kinh điển**: `Chim cánh cụt` kế thừa `Chim` nhưng `Chim cánh cụt` không biết `Bay()`.
+- **Hệ quả**: Nếu bạn ném một con `Chim cánh cụt` vào hàm `InTheSky(Chim c) { c.Bay(); }`, chương trình sẽ lỗi (Exception).
+
+---
+
+### ⚡ 2.4 I - Interface Segregation (Tách biệt giao diện)
+
+> "Đừng ép khách hàng (Client) phải thực thi các phương thức mà họ không dùng đến."
+
+- **Giải pháp**: Hãy chia nhỏ một Interface khổng lồ (Fat Interface) thành nhiều Interface tí hon (Skinny Interfaces). 
+- **Ví dụ**: Thay vì `IWorkers` (Work, Eat, Sleep), hãy chia thành `IWorkable` và `IEatable`. Người máy (Robot) chỉ cần thực thi `IWorkable`.
+
+---
+
+### 🧤 2.5 D - Dependency Inversion (Đảo ngược phụ thuộc)
+
+> "Class bậc cao (High-level) không được phụ thuộc trực tiếp vào Class bậc thấp (Low-level). Cả hai phải phụ thuộc thông qua Trừu tượng (Abstractions)."
+
+- **Ví dụ**: Đừng để `OrderService` gọi trực tiếp đến `SqlServerClient`. Hãy để nó gọi qua `IDatabase`. Mai sau bạn đổi sang MongoDB, code của `OrderService` vẫn giữ nguyên 100%.
+
+---
+
+### 📝 2.6 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "SOLID làm Code dài hơn (nhiều Class hơn), tốn thời gian hơn. Khi nào thì KHÔNG nên áp dụng SOLID?"
+<details><summary>Đáp án</summary>
+Nguyên tắc YAGNI (You Ain't Gonna Need It). Đừng áp dụng SOLID khi dự án cực nhỏ, code chỉ dùng 1 lần (Disposable), hoặc khi bạn chắc chắn 100% logic đó sẽ không bao giờ thay đổi (VD: Thuật toán tính lãi suất cố định của NHNN trong 50 năm). Tuy nhiên, với 95% trường hợp Backend, SOLID là bắt buộc.
+</details>
+
+**Bài 2**: [Kỹ thuật] Một `ElectricCar` kế thừa `Car`. Lớp `Car` có phương thức `FillNitro()`. Xe điện không dùng Nitro nên bạn ném ra lỗi `NotImplementedException()`. Vi phạm nguyên tắc gì trong SOLID?
+<details><summary>Solution</summary>
+Vi phạm **Liskov Substitution (L)**. Lớp con Xe điện đã làm "vỡ" hợp đồng của lớp cha là xe nào cũng phải dùng được Nitro. Giải pháp: Tách `Nitro` ra một Interface riêng hoặc 1 loại xe `RacingCar`.
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [SOLID Principles: The Ultimate Guide for Clean Code Architecture](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-solid-principles.md)
+- [Mastering Dependency Injection in C# - The D in SOLID](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-dependency-injection.md)
+- [Liskov Substitution: Why it matters more than you think](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-liskov-substitution.md)

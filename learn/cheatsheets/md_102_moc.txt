@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/md-102
+  - md102
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MD-102: Endpoint Administrator MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MD-102/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MD-102/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MD-102/MD-102 Mindmap\|🗺️ MD-102 Mindmap]]
+- [[certifications/microsoft/MD-102/MD-102 Flashcards\|🃏 MD-102 Flashcards]]
+- [[certifications/microsoft/MD-102/MD-102_Scraped_Question_Bank\|🗃️ MD-102 Scraped Question Bank]]

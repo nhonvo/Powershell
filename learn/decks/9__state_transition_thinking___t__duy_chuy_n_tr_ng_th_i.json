@@ -1,0 +1,316 @@
+{
+  "Meta": {
+    "Id": "deck_9__state_transition_thinking___t__duy_chuy_n_tr_ng_th_i",
+    "Topic": "9. State Transition Thinking — Tư duy chuyển trạng thái",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "9__state_transition_thinking___t__duy_chuy_n_tr_ng_th_i"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 15
+  },
+  "Cards": [
+    {
+      "Id": "card_01585",
+      "Front": "Bài toán",
+      "Back": "State | Ý nghĩa",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. state transition thinking — tư duy chuyển trạng thái"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01586",
+      "Front": "Fibonacci",
+      "Back": "`dp[i]` | F(i)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. state transition thinking — tư duy chuyển trạng thái"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01587",
+      "Front": "Knapsack",
+      "Back": "`dp[i][w]` | Max value dùng items 0..i với balo w kg",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. state transition thinking — tư duy chuyển trạng thái"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01588",
+      "Front": "LCS",
+      "Back": "`dp[i][j]` | LCS của text1[0..i-1] và text2[0..j-1]",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. state transition thinking — tư duy chuyển trạng thái"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01589",
+      "Front": "Edit Distance",
+      "Back": "`dp[i][j]` | Min ops biến word1[0..i-1] thành word2[0..j-1]",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. state transition thinking — tư duy chuyển trạng thái"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01590",
+      "Front": "Stock with cooldown",
+      "Back": "`dp[i][holding]` | Max profit đến ngày i, đang giữ/không giữ cổ phiếu",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. state transition thinking — tư duy chuyển trạng thái"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01591",
+      "Front": "10",
+      "Back": "Edit Distance | LCS Pattern | O(m x n) | O(n)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. state transition thinking — tư duy chuyển trạng thái"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01592",
+      "Front": "11",
+      "Back": "Longest Palindromic Substring | Interval DP | O(n^2) | O(1)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. state transition thinking — tư duy chuyển trạng thái"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01593",
+      "Front": "12",
+      "Back": "Tree Diameter | Tree DP | O(n) | O(h)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. state transition thinking — tư duy chuyển trạng thái"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01594",
+      "Front": "13",
+      "Back": "Max Path Sum | Tree DP | O(n) | O(h)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. state transition thinking — tư duy chuyển trạng thái"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01595",
+      "Front": "14",
+      "Back": "House Robber III | Tree DP | O(n) | O(h)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. state transition thinking — tư duy chuyển trạng thái"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01596",
+      "Front": "15",
+      "Back": "0/1 Knapsack | 0/1 Knapsack | O(n x W) | O(W)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. state transition thinking — tư duy chuyển trạng thái"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01597",
+      "Front": "16",
+      "Back": "Unbounded Knapsack | Unbounded Knapsack | O(n x W) | O(W)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. state transition thinking — tư duy chuyển trạng thái"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01598",
+      "Front": "17",
+      "Back": "Stock with Cooldown | State Machine DP | O(n) | O(1)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. state transition thinking — tư duy chuyển trạng thái"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01599",
+      "Front": "18",
+      "Back": "Partition Equal Subset | 0/1 Knapsack | O(n x sum) | O(sum)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. state transition thinking — tư duy chuyển trạng thái"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

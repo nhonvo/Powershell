@@ -1,0 +1,48 @@
+# 🧠 AI-102: Azure AI Solution Text-Based Mind Map
+
+A hierarchical Markdown mind map of AI-102 certification knowledge based on the 100 scraped questions.
+
+---
+
+```
+                              🤖 Azure AI Solution Associate (AI-102)
+                                                │
+         ┌──────────────────────────────────────┼──────────────────────────────────────┐
+         │                                      │                                      │
+        ▼                                      ▼                                      ▼
+Domain 1: Plan & Manage                Domain 2: Vision & Docs                Domain 3: NLP
+ ├─🔑 Resource Auth                     ├─🖼️ Azure AI Vision                    ├─🗣️ Language API
+ │  ├─Multi vs Single Service           │  ├─OCR: Read API                      │  ├─Sentiment & Opinions
+ │  ├─Entra ID RBAC                     │  └─Spatial Analysis                   │  ├─NER & Entity extraction
+ │  └─Managed Identities                ├─🎯 Custom Vision                      │  └─PII Masking / Redaction
+ ├─🛡️ Network Security                  │  ├─Compact (Edge Export)              ├─🌐 Translator
+ │  ├─VNet rules                        │  └─15 images / tag minimum            │  ├─Text Translation API
+ │  └─Private Endpoints                 ├─👤 Face API                           │  └─Doc Translation (PDF layout)
+ ├─📈 Monitoring & Cost                 │  ├─Identification (1:N)               └─💬 CLU
+ │  ├─Diagnostic logs                   │  ├─Verification (1:1)                    ├─Utterance examples
+ │  ├─Log Analytics                     │  └─Liveness anti-spoofing                ├─Intents (Goals)
+ │  └─TPM/RPM limits                    └─📄 Document Intelligence                 └─Entities (Variables)
+ └─⚖️ Responsible AI                        ├─Prebuilt Invoice/Receipt
+    └─Content Safety Filters                └─Custom neural / templates
+```
+
+```
+                              🤖 Azure AI Solution Associate (AI-102)
+                                                │
+                                    ┌───────────┴───────────┐
+                                    │                       │
+                                   ▼                       ▼
+                        Domain 4: Knowledge Mining       Domain 5: Generative AI
+                            ├─🏗️ Search Pipeline            ├─🧠 Azure OpenAI Service
+                            │  ├─Data Source connection     │  ├─Model Deployments
+                            │  ├─Indexer engine             │  ├─TPM/RPM Rate Limits
+                            │  └─Index schema properties    │  └─Security & Private Endpoints
+                            ├─🔌 Cognitive Enrichment        ├─🎨 Prompt Engineering
+                            │  ├─Enrichment Skillset        │  ├─System Prompts
+                            │  ├─Custom Web API Skills      │  ├─Few-shot Examples
+                            │  └─Knowledge Store export     │  └─Temp & Top_P values
+                            └─🔍 Search Retrieval Types     └─🏗️ RAG Architecture
+                               ├─Vector Search (embeddings)    ├─Embeddings text vectors
+                               ├─Hybrid (Vector + Keyword)     ├─Azure OpenAI On Your Data
+                               └─Semantic Ranking (L2)         └─Hallucination avoidance
+```

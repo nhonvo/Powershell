@@ -1,0 +1,20 @@
+# 1_StringExercises
+
+🔙 **Back to Parent**: [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/index_1_ArraysAndLinkedLists|1_ArraysAndLinkedLists]]
+
+## 📄 Notes
+- [[1_stringexercises|1_StringExercises]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/1_StringExercises/string-exercises-intro|string-exercises-intro]]
+
+## 🛠️ Related Practices (Arrays & Strings)
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/1_StringExercises/index_1_StringExercises|1464.Maximum-Product-of-Two-Elements-in-an-Array]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/1_StringExercises/index_1_StringExercises|3.Longest-Substring-Without-Repeating-Characters]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/1_StringExercises/index_1_StringExercises|4.Median-of-Two-Sorted-Arrays]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/1_StringExercises/index_1_StringExercises|5.Longest-Palindromic-Substring]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/1_StringExercises/index_1_StringExercises|53.Maximum-Subarray]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/1_StringExercises/index_1_StringExercises|912.Sort-an-Array-Bubble-sort]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/1_StringExercises/index_1_StringExercises|912.Sort-an-Array-Insert-sort]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/1_StringExercises/index_1_StringExercises|912.Sort-an-Array-Quick-sort]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/1_StringExercises/index_1_StringExercises|912.Sort-an-Array-Selection-sort]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/1_StringExercises/index_1_StringExercises|zArray-crud]]
+

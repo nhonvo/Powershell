@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/sc-400
+  - sc400
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 SC-400: Microsoft Information Protection Administrator MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/SC-400/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/SC-400/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/SC-400/SC-400 Mindmap\|🗺️ SC-400 Mindmap]]
+- [[certifications/microsoft/SC-400/SC-400 Flashcards\|🃏 SC-400 Flashcards]]
+- [[certifications/microsoft/SC-400/SC-400_Scraped_Question_Bank\|🗃️ SC-400 Scraped Question Bank]]

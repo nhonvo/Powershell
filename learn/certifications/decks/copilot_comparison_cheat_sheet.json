@@ -1,0 +1,256 @@
+{
+  "Meta": {
+    "Id": "deck_copilot_comparison_cheat_sheet",
+    "Topic": "Copilot Comparison Cheat Sheet",
+    "Language": "English/Japanese",
+    "Domain": "certifications",
+    "Level": "General",
+    "Tags": [
+      "copilot_comparison_cheat_sheet"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 12
+  },
+  "Cards": [
+    {
+      "Id": "card_00338",
+      "Front": "Feature",
+      "Back": "Copilot Individual | Copilot Business | Copilot Enterprise",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "copilot comparison cheat sheet"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00339",
+      "Front": "**Pricing**",
+      "Back": "$10/mo or $100/yr | $19/user/mo | $39/user/mo",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "copilot comparison cheat sheet"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00340",
+      "Front": "**Management**",
+      "Back": "Personal | Org/Enterprise level | Enterprise level",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "copilot comparison cheat sheet"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00341",
+      "Front": "**Telemetry Retention**",
+      "Back": "**Opt-in / Opt-out** | **Blocked by default** | **Blocked by default**",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "copilot comparison cheat sheet"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00342",
+      "Front": "**Content Exclusions**",
+      "Back": "No | Yes | Yes (Multi-level)",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "copilot comparison cheat sheet"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00343",
+      "Front": "**IP Indemnification**",
+      "Back": "Yes | Yes | Yes",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "copilot comparison cheat sheet"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00344",
+      "Front": "**Copilot Chat in IDE**",
+      "Back": "Yes | Yes | Yes",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "copilot comparison cheat sheet"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00345",
+      "Front": "**Chat in GitHub.com**",
+      "Back": "No | No | **Yes**",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "copilot comparison cheat sheet"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00346",
+      "Front": "**Knowledge Bases**",
+      "Back": "No | No | **Yes**",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "copilot comparison cheat sheet"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00347",
+      "Front": "**PR Summaries**",
+      "Back": "No | No | **Yes**",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "copilot comparison cheat sheet"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00348",
+      "Front": "**Custom Models**",
+      "Back": "No | No | **Yes** (Beta/Preview)",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "copilot comparison cheat sheet"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00349",
+      "Front": "**Policy Control**",
+      "Back": "Personal Settings | Org Settings | Enterprise Settings",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "copilot comparison cheat sheet"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

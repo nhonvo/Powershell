@@ -1,0 +1,89 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 17
+
+## Part 1
+**Q1.** これは　だれの　上着ですか。
+- **A.** うわぎ
+- **B.** うわき
+- **C.** うえぎ
+- **D.** うえき
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1上着 (THƯỢNG - TRỨ)：&aacute;o kho&aacute;cĐ&acirc;y l&agrave; &aacute;o kho&aacute;c của ai vậy?</p>
+</details>
+
+---
+**Q2.** 電車で　がっこうへ　いきます。
+- **A.** じどしゃ
+- **B.** でんしゃ
+- **C.** じどうしゃ
+- **D.** てんしゃ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2電車 (ĐIỆN - XA)：t&agrave;u điệnT&ocirc;i đến trường bằng t&agrave;u điện.</p>
+</details>
+
+---
+**Q3.** きょうしつに　入って　ください。
+- **A.** はらって
+- **B.** はいって
+- **C.** はしって
+- **D.** いりって
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2入る (NHẬP)：v&agrave;oXin h&atilde;y v&agrave;o ph&ograve;ng học.</p>
+</details>
+
+---
+**Q4.** この町は　とても　にぎやかです。
+- **A.** いえ
+- **B.** にわ
+- **C.** みせ
+- **D.** まち
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4町 (ĐINH)：Thị trấnThị trấn n&agrave;y rất n&aacute;o nhiệt.</p>
+</details>
+
+---
+**Q5.** 九日に　ともだちに　あいます。
+- **A.** くにち
+- **B.** ようか
+- **C.** きゅうにち
+- **D.** ここのか
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4九日 (CỬU - NHẬT)：ng&agrave;y m&ugrave;ng 9T&ocirc;i sẽ gặp bạn v&agrave;o ng&agrave;y m&ugrave;ng 9.</p>
+</details>
+
+---
+**Q6.** デパートへ　買い物に　いきます。
+- **A.** ばいもの
+- **B.** ばいぶつ
+- **C.** かいもの
+- **D.** かいぶつ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3買い物 (M&Atilde;I - VẬT)：mua sắmT&ocirc;i đến trung t&acirc;m thương mại để mua sắm.</p>
+</details>
+
+---
+**Q7.** きょうは　くるまが　多いですね。
+- **A.** おもい
+- **B.** おっきい
+- **C.** おおい
+- **D.** おおきい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3多い (ĐA)：nhiềuH&ocirc;m nay nhiều &ocirc; t&ocirc; gh&ecirc;.</p>
+</details>
+
+---

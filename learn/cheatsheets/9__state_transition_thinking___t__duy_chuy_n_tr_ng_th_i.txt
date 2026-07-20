@@ -1,0 +1,378 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/🧠index_13_Dynamic_Programming|13_Dynamic_Programming]]
+
+## 9. State Transition Thinking — Tư duy chuyển trạng thái
+
+### Giới thiệu
+
+Đây là phần **QUAN TRỌNG NHẤT** của toàn bộ bài viết. Kỹ thuật và pattern có thể học thuộc, nhưng **tư duy** mới là thứ giúp bạn giải bài DP **chưa bao giờ gặp**.
+
+Mình sẽ dạy bạn framework 5 bước để giải BẤT KỲ bài DP nào.
+
+------
+
+### 9.1. Framework 5 bước
+
+\1. Xác định
+STATE2. Xác định
+TRANSITION3. Xác định
+BASE CASE4. Xác định
+THỨ TỰ tính5. Xác định
+KẾT QUẢ
+
+#### Bước 1: Xác định STATE (Trạng thái)
+
+**State** trả lời câu hỏi: "Cần biết gì để mô tả hoàn toàn bài toán con?"
+
+**Kỹ thuật**: Tự hỏi "Nếu mình đang ở giữa chừng bài toán, mình cần nhớ những thông tin gì?"
+
+| Bài toán            | State            | Ý nghĩa                                            |
+| :------------------ | :--------------- | :------------------------------------------------- |
+| Fibonacci           | `dp[i]`          | F(i)                                               |
+| Knapsack            | `dp[i][w]`       | Max value dùng items 0..i với balo w kg            |
+| LCS                 | `dp[i][j]`       | LCS của text1[0..i-1] và text2[0..j-1]             |
+| Edit Distance       | `dp[i][j]`       | Min ops biến word1[0..i-1] thành word2[0..j-1]     |
+| Stock with cooldown | `dp[i][holding]` | Max profit đến ngày i, đang giữ/không giữ cổ phiếu |
+
+#### Bước 2: Xác định TRANSITION (Chuyển trạng thái)
+
+**Transition** trả lời: "Từ bài toán con nhỏ hơn, làm sao tính bài toán con lớn hơn?"
+
+**Kỹ thuật**: Liệt kê TẤT CẢ **quyết định** có thể tại state hiện tại:
+
+- Chọn / không chọn (knapsack)
+- Đi trái / đi phải (grid)
+- Match / insert / delete / replace (edit distance)
+
+#### Bước 3: Xác định BASE CASE
+
+**Base case** = các state **nhỏ nhất** mà ta biết đáp án ngay, không cần tính.
+
+**Kỹ thuật**: Tự hỏi "Khi nào bài toán trở nên trivial?"
+
+- Mảng rỗng?
+- Index = 0?
+- Capacity = 0?
+
+#### Bước 4: Xác định THỨ TỰ tính
+
+Cho tabulation: phải tính bài toán con **nhỏ trước, lớn sau**.
+
+**Kỹ thuật**: Nhìn vào transition — `dp[i]` phụ thuộc gì?
+
+- Phụ thuộc `dp[i-1]` → tính từ trái sang phải
+- Phụ thuộc `dp[i+1]` → tính từ phải sang trái
+- Phụ thuộc `dp[i-1][j-1]` → tính theo hàng, từ trái sang
+
+#### Bước 5: Xác định KẾT QUẢ
+
+Đáp án nằm ở đâu trong bảng DP?
+
+- `dp[n]`? (Fibonacci, Climbing Stairs)
+- `dp[m][n]`? (LCS, Edit Distance)
+- `max(dp[...])`? (LIS)
+- `dp[0]`? (khi tính ngược)
+
+------
+
+### 9.2. Áp dụng Framework — Ví dụ: Best Time to Buy and Sell Stock with Cooldown
+
+#### Đặt bài toán
+
+Cho mảng `prices[i]` = giá cổ phiếu ngày `i`. Bạn có thể mua/bán nhiều lần, nhưng sau khi bán phải **nghỉ 1 ngày** trước khi mua lại. Tìm lợi nhuận tối đa.
+
+#### Áp dụng Framework
+
+**Bước 1 — STATE**: Tại mỗi ngày `i`, mình cần biết:
+
+- Đang **giữ** cổ phiếu hay **không giữ**?
+- Nếu không giữ, có phải vừa bán **hôm qua** không? (cooldown)
+
+→ State: `dp[i][state]` với state = {hold, sold, rest}
+
+- `hold[i]`: max profit ngày i, đang **giữ** cổ phiếu
+- `sold[i]`: max profit ngày i, vừa **bán** cổ phiếu hôm nay
+- `rest[i]`: max profit ngày i, đang **nghỉ** (không giữ, không bán)
+
+**Bước 2 — TRANSITION**:
+
+```
+hold[i] = max(hold[i-1],    # giữ tiếp
+              rest[i-1] - prices[i])  # mua mới (chỉ mua khi đang rest)
+
+sold[i] = hold[i-1] + prices[i]  # bán cổ phiếu đang giữ
+
+rest[i] = max(rest[i-1],    # nghỉ tiếp
+              sold[i-1])    # hôm qua bán, hôm nay nghỉ
+```
+
+**Bước 3 — BASE CASE**:
+
+```
+hold[0] = -prices[0]  # mua ngày 0
+sold[0] = 0            # không thể bán ngày 0 (chưa mua)
+rest[0] = 0            # không làm gì
+```
+
+**Bước 4 — THỨ TỰ**: Tính từ ngày 0 → ngày n-1 (trái → phải)
+
+**Bước 5 — KẾT QUẢ**: `max(sold[n-1], rest[n-1])` (ngày cuối không nên giữ cổ phiếu)
+
+Mua: -priceBán: +priceCooldownGiữ tiếpNghỉ tiếpRest
+(nghỉ ngơi)Hold
+(giữ cổ phiếu)Sold
+(vừa bán)
+
+#### Code
+
+```python
+def max_profit_cooldown(prices):
+    """
+    Best Time to Buy and Sell Stock with Cooldown
+    State machine DP — O(n) time, O(1) space
+    """
+    if len(prices) <= 1:
+        return 0
+
+    n = len(prices)
+
+    # ============================
+    # Cách 1: Tabulation đầy đủ
+    # ============================
+    hold = [0] * n  # max profit, đang giữ cổ phiếu
+    sold = [0] * n  # max profit, vừa bán hôm nay
+    rest = [0] * n  # max profit, đang nghỉ
+
+    hold[0] = -prices[0]
+    sold[0] = 0  # không thể bán ngày 0
+    rest[0] = 0
+
+    for i in range(1, n):
+        hold[i] = max(hold[i - 1], rest[i - 1] - prices[i])
+        sold[i] = hold[i - 1] + prices[i]
+        rest[i] = max(rest[i - 1], sold[i - 1])
+
+    return max(sold[n - 1], rest[n - 1])
+
+
+def max_profit_cooldown_opt(prices):
+    """Space optimized — O(1) space"""
+    if len(prices) <= 1:
+        return 0
+
+    hold = -prices[0]
+    sold = 0
+    rest = 0
+
+    for i in range(1, len(prices)):
+        new_hold = max(hold, rest - prices[i])
+        new_sold = hold + prices[i]
+        new_rest = max(rest, sold)
+
+        hold = new_hold
+        sold = new_sold
+        rest = new_rest
+
+    return max(sold, rest)
+
+
+# ============================
+# Test
+# ============================
+test_cases = [
+    ([1, 2, 3, 0, 2], 3),     # Mua 1, bán 3, nghỉ, mua 0, bán 2 → 2+2=4? Hmm
+                                # Thực ra: mua 1, bán 3 (profit 2), nghỉ, mua 0, bán 2 (profit 2) → 2+2=...
+                                # Nhưng kết quả đúng là 3. Kiểm tra:
+                                # Mua ngày 0 ($1), bán ngày 2 ($3) → profit 2, nghỉ ngày 3, mua ngày 3 ($0), bán ngày 4 ($2) → profit 2+2=4?
+                                # Hmm, leetcode cho 3. Kiểm tra lại...
+                                # Mua ngày 0 ($1), bán ngày 1 ($2) → profit 1
+                                # Nghỉ ngày 2
+                                # Mua ngày 3 ($0), bán ngày 4 ($2) → profit 2
+                                # Tổng: 3 ✓
+    ([1], 0),
+]
+
+print("=== Stock with Cooldown ===")
+for prices, expected in test_cases:
+    a = max_profit_cooldown(prices)
+    b = max_profit_cooldown_opt(prices)
+    print(f"prices={prices} -> max profit = {a}")
+```
+
+#### Simulation cho `prices = [1, 2, 3, 0, 2]`
+
+```
+Day:    0      1      2      3      4
+Price:  1      2      3      0      2
+
+hold:  -1     -1     -1      1      1
+sold:   0      1      2     -1      3
+rest:   0      0      1      2      2
+
+Day 0: hold=-1 (mua $1), sold=0, rest=0
+
+Day 1: hold = max(-1, 0-2) = max(-1, -2) = -1 (giữ tiếp)
+       sold = -1+2 = 1 (bán, profit = 1)
+       rest = max(0, 0) = 0 (nghỉ)
+
+Day 2: hold = max(-1, 0-3) = -1 (giữ tiếp)
+       sold = -1+3 = 2 (bán, profit = 2)
+       rest = max(0, 1) = 1 (hôm qua bán, hôm nay nghỉ)
+
+Day 3: hold = max(-1, 1-0) = 1 (mua mới tại $0, profit trước đó = 1)
+       sold = -1+0 = -1 (bán tại $0, lỗ)
+       rest = max(1, 2) = 2 (hôm qua bán $3, hôm nay nghỉ)
+
+Day 4: hold = max(1, 2-2) = 1 (giữ tiếp)
+       sold = 1+2 = 3 (bán $2, profit = 3)
+       rest = max(2, -1) = 2 (nghỉ tiếp)
+
+→ max(sold[4], rest[4]) = max(3, 2) = 3
+  Chiến lược: Mua $1 → Bán $2 (profit 1) → Nghỉ → Mua $0 → Bán $2 (profit 2) → Tổng = 3
+```
+
+------
+
+### 9.3. Checklist tự kiểm tra trước khi code
+
+Trước khi viết code DP, hãy trả lời **5 câu hỏi** này:
+
+-  **State**: `dp[???]` đại diện cho cái gì? Viết ra bằng lời.
+-  **Transition**: `dp[???] = ???` — công thức chuyển trạng thái là gì?
+-  **Base case**: Giá trị ban đầu của dp là gì? Tại sao?
+-  **Thứ tự**: Điền bảng theo thứ tự nào? Tại sao thứ tự đó đúng?
+-  **Kết quả**: Đáp án nằm ở vị trí nào trong bảng dp?
+
+Nếu bạn trả lời được cả 5, code chỉ là **chuyện nhỏ**.
+
+------
+
+### 9.4. Cách nhận diện bài DP
+
+Không phải bài nào cũng cần DP. Đây là các **dấu hiệu** cho thấy bài toán cần DP:
+
+1. **"Đếm số cách"**: How many ways to...? → DP (hoặc combinatorics)
+2. **"Tìm min/max"**: Minimum cost, maximum profit → DP (hoặc greedy)
+3. **"Có thể hay không"**: Can you...? Is it possible...? → DP (boolean)
+4. **"Optimal substructure"**: Lời giải tối ưu chứa lời giải tối ưu con
+5. **"Overlapping subproblems"**: Tính đi tính lại cùng bài toán con
+
+**Dấu hiệu KHÔNG phải DP**:
+
+- "Tìm TẤT CẢ đáp án" → Backtracking (DP chỉ đếm/tối ưu)
+- Không có overlapping subproblems → Divide & Conquer
+- Greedy choice property được chứng minh → Greedy
+
+### 9.5. Bài tập tổng hợp — Partition Equal Subset Sum
+
+Áp dụng framework 5 bước cho bài toán: "Cho mảng `nums`, hỏi có thể chia thành 2 tập con có tổng bằng nhau không?"
+
+```python
+def can_partition(nums):
+    """
+    Partition Equal Subset Sum — áp dụng framework 5 bước
+
+    Bước 1 - STATE: dp[s] = "có thể tạo tổng s từ tập con của nums?"
+    Bước 2 - TRANSITION: dp[s] = dp[s] OR dp[s - nums[i]]
+    Bước 3 - BASE CASE: dp[0] = True (tổng 0 = tập rỗng)
+    Bước 4 - THỨ TỰ: Với mỗi num, duyệt s từ target xuống num (0/1 knapsack)
+    Bước 5 - KẾT QUẢ: dp[total_sum // 2]
+    """
+    total = sum(nums)
+
+    # Nếu tổng lẻ → không thể chia đều
+    if total % 2 != 0:
+        return False
+
+    target = total // 2
+
+    # DP: Subset Sum problem!
+    dp = [False] * (target + 1)
+    dp[0] = True
+
+    for num in nums:
+        # Duyệt ngược (0/1 Knapsack — mỗi num dùng 1 lần)
+        for s in range(target, num - 1, -1):
+            dp[s] = dp[s] or dp[s - num]
+
+    return dp[target]
+
+
+# ============================
+# Test
+# ============================
+test_cases = [
+    ([1, 5, 11, 5], True),     # [1,5,5] và [11], tổng = 11
+    ([1, 2, 3, 5], False),     # tổng = 11, lẻ → False
+    ([1, 2, 5], False),        # tổng = 8, target = 4, không thể
+    ([3, 3, 3, 4, 5], True),   # [3,3,3] và [4,5], tổng = 9
+    ([1, 1], True),
+]
+
+print("=== Partition Equal Subset Sum ===")
+for nums, expected in test_cases:
+    result = can_partition(nums)
+    assert result == expected, f"Sai! nums={nums}, got {result}"
+    print(f"nums={nums} -> {result}")
+```
+
+------
+
+## Tổng kết
+
+### Bảng tổng hợp tất cả bài đã học
+
+| #    | Bài toán                      | Pattern            | Time          | Space (opt) |
+| :--- | :---------------------------- | :----------------- | :------------ | :---------- |
+| 1    | Fibonacci                     | Linear DP          | O(n)          | O(1)        |
+| 2    | Climbing Stairs               | Linear DP          | O(n)          | O(1)        |
+| 3    | House Robber                  | Linear DP          | O(n)          | O(1)        |
+| 4    | Coin Change                   | Unbounded Knapsack | O(n x amount) | O(amount)   |
+| 5    | Unique Paths                  | Grid DP            | O(m x n)      | O(n)        |
+| 6    | Minimum Path Sum              | Grid DP            | O(m x n)      | O(n)        |
+| 7    | LIS                           | LIS Pattern        | O(n log n)    | O(n)        |
+| 8    | Subset Sum                    | 0/1 Knapsack       | O(n x target) | O(target)   |
+| 9    | LCS                           | LCS Pattern        | O(m x n)      | O(min(m,n)) |
+| 10   | Edit Distance                 | LCS Pattern        | O(m x n)      | O(n)        |
+| 11   | Longest Palindromic Substring | Interval DP        | O(n^2)        | O(1)        |
+| 12   | Tree Diameter                 | Tree DP            | O(n)          | O(h)        |
+| 13   | Max Path Sum                  | Tree DP            | O(n)          | O(h)        |
+| 14   | House Robber III              | Tree DP            | O(n)          | O(h)        |
+| 15   | 0/1 Knapsack                  | 0/1 Knapsack       | O(n x W)      | O(W)        |
+| 16   | Unbounded Knapsack            | Unbounded Knapsack | O(n x W)      | O(W)        |
+| 17   | Stock with Cooldown           | State Machine DP   | O(n)          | O(1)        |
+| 18   | Partition Equal Subset        | 0/1 Knapsack       | O(n x sum)    | O(sum)      |
+
+### Lộ trình học DP
+
+Bắt đầu:
+Fibonacci
+Climbing Stairs1D DP:
+House Robber
+Coin Change2D DP:
+Unique Paths
+Min Path SumKnapsack:
+0/1 Knapsack
+Subset Sum
+PartitionStrings:
+LCS
+Edit Distance
+PalindromeTrees:
+Diameter
+Max Path Sum
+House Robber IIIAdvanced:
+Stock problems
+Interval DP
+Bitmask DP
+
+### Lời khuyên cuối
+
+1. **Đừng sợ DP**. Nó chỉ là "đệ quy + ghi nhớ". Không có phép thuật nào cả.
+2. **Luyện framework 5 bước**. Mỗi bài DP, hãy viết ra 5 bước trước khi code. Sau 20-30 bài, bạn sẽ thấy nó trở thành bản năng.
+3. **Nhận diện pattern**. Phần lớn bài DP trong phỏng vấn rơi vào 7-8 pattern. Học thuộc pattern → giải nhanh hơn.
+4. **Memoization trước, tabulation sau**. Đừng cố viết tabulation ngay. Memoization dễ nghĩ hơn và đảm bảo đúng.
+5. **Vẽ bảng DP bằng tay**. Trước khi code, hãy vẽ bảng DP cho ví dụ nhỏ bằng tay. Nếu bạn không thể điền bảng bằng tay, bạn chưa hiểu bài toán.
+6. **Luyện trên LeetCode**. Bắt đầu với tag "Dynamic Programming", sort theo "Easy", rồi lên "Medium". Mỗi ngày 1-2 bài, kiên trì 2-3 tháng sẽ thấy sự khác biệt rõ rệt.
+
+> **"DP là nghệ thuật của việc ghi nhớ. Và ghi nhớ là nghệ thuật của việc không lãng phí."**
+
+Chúc bạn chinh phục DP thành công! Hẹn gặp lại ở phần tiếp theo.

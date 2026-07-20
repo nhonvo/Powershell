@@ -1,0 +1,175 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|02_Arrays_Strings]]
+
+## 8. Moore's Voting Algorithm
+
+### 8.1. Bài toán
+
+**Majority Element:** Cho mảng n phần tử, tìm phần tử xuất hiện **hơn n/2 lần** (majority element). Đảm bảo majority element luôn tồn tại.
+
+### 8.2. Ý tưởng — Analogy cuộc bầu cử
+
+Hãy tưởng tượng một cuộc **bầu cử trong lớp học**. Có nhiều ứng viên, mỗi học sinh giơ tay bầu. Quy tắc đặc biệt: mỗi khi có hai học sinh bầu cho hai người KHÁC nhau, cả hai bị loại (cancel out). Cuối cùng, người còn lại trên "sân đấu" chính là ứng viên chiến thắng.
+
+Tại sao đúng? Vì majority element chiếm **hơn 50%** phiếu. Dù bị cancel với tất cả phiếu khác, nó vẫn còn dư.
+
+### 8.3. Thuật toán
+
+Thuật toán gồm 2 phase:
+
+**Phase 1 — Tìm ứng viên (candidate):**
+
+- Duy trì một `candidate` và một `count`.
+- Duyệt mảng: nếu `count == 0`, chọn phần tử hiện tại làm candidate mới.
+- Nếu phần tử hiện tại == candidate: `count++`.
+- Ngược lại: `count--` (cancel out).
+
+**Phase 2 — Xác nhận** (nếu đề không đảm bảo majority element tồn tại):
+
+- Đếm lại số lần candidate xuất hiện.
+- Nếu > n/2 → đó là majority element.
+
+```python
+def majority_element(nums: list[int]) -> int:
+    # Phase 1: Tìm ứng viên
+    candidate = None
+    count = 0
+
+    for num in nums:
+        if count == 0:
+            candidate = num
+            count = 1
+        elif num == candidate:
+            count += 1
+        else:
+            count -= 1
+
+    # Phase 2: Xác nhận (nếu cần)
+    # actual_count = nums.count(candidate)
+    # if actual_count > len(nums) // 2:
+    #     return candidate
+    # return -1  # không có majority element
+
+    return candidate
+```
+
+### 8.4. Simulation chi tiết
+
+```
+nums = [2, 2, 1, 1, 1, 2, 2]
+Bước 1: num=2, count=0 → candidate=2, count=1
+   Giải thích: Chưa có ứng viên, chọn 2.
+
+Bước 2: num=2, num==candidate(2) → count=2
+   Giải thích: Phiếu cho 2, tích lũy.
+
+Bước 3: num=1, num!=candidate(2) → count=1
+   Giải thích: Phiếu cho 1, cancel 1 phiếu của 2.
+
+Bước 4: num=1, num!=candidate(2) → count=0
+   Giải thích: Cancel thêm 1 phiếu của 2. Count = 0.
+
+Bước 5: num=1, count=0 → candidate=1, count=1
+   Giải thích: Không còn ai trên sân, chọn 1 làm ứng viên mới.
+
+Bước 6: num=2, num!=candidate(1) → count=0
+   Giải thích: Cancel phiếu. Count = 0.
+
+Bước 7: num=2, count=0 → candidate=2, count=1
+   Giải thích: Chọn ứng viên mới là 2.
+
+Kết quả: candidate = 2
+
+Xác nhận: 2 xuất hiện 4 lần trong 7 phần tử → 4 > 7/2 = 3.5 ✓
+```
+
+NoYesYesNoYesNocandidate = None
+count = 0Còn phần tử?Return candidateĐọc numcount == 0?candidate = num
+count = 1
+(Ứng viên mới)num == candidate?count += 1
+(Thêm phiếu)count -= 1
+(Cancel out)
+
+### 8.5. Chứng minh tính đúng đắn
+
+**Mệnh đề:** Nếu phần tử x xuất hiện hơn n/2 lần, sau Phase 1 candidate = x.
+
+**Chứng minh:**
+
+Gọi $f(x)$ là số lần x xuất hiện. Ta có $f(x) > n/2$.
+
+Trong Phase 1, mỗi lần count giảm 1, đó là một "cancel" — một phần tử x bị ghép với một phần tử khác. Gọi số lần cancel xảy ra khi candidate = x là $C_x$.
+
+Tổng số lần cancel (bất kể candidate là ai) tối đa là $\lfloor n/2 \rfloor$ vì mỗi cancel loại 2 phần tử.
+
+Số lần x "sống sót" (xuất hiện mà không bị cancel):
+
+$$\text{survive}(x) \geq f(x) - \lfloor n/2 \rfloor > n/2 - n/2 = 0$$
+
+Vì survive(x) > 0, x sẽ là ứng viên cuối cùng còn lại trên "sân đấu". **QED**.
+
+### 8.6. Phân tích độ phức tạp
+
+- **Time:** O(n) — duyệt mảng 1 lần (Phase 1) + 1 lần xác nhận (Phase 2) = O(2n) = O(n).
+- **Space:** O(1) — chỉ dùng 2 biến.
+- **Best case:** O(n).
+- **Worst case:** O(n).
+
+So sánh với các cách khác:
+
+| Phương pháp         | Time       | Space    |
+| :------------------ | :--------- | :------- |
+| Sort rồi lấy middle | O(n log n) | O(1)     |
+| Hash Map đếm        | O(n)       | O(n)     |
+| **Moore's Voting**  | **O(n)**   | **O(1)** |
+
+### 8.7. Biến thể: Majority Element II (LeetCode 229)
+
+**Đề bài:** Tìm tất cả phần tử xuất hiện hơn n/3 lần.
+
+**Quan sát:** Tối đa có 2 phần tử xuất hiện hơn n/3 lần (vì 3 * (n/3 + 1) > n).
+
+```python
+def majority_element_ii(nums: list[int]) -> list[int]:
+    # Phase 1: Tìm tối đa 2 ứng viên
+    candidate1 = candidate2 = None
+    count1 = count2 = 0
+
+    for num in nums:
+        if num == candidate1:
+            count1 += 1
+        elif num == candidate2:
+            count2 += 1
+        elif count1 == 0:
+            candidate1 = num
+            count1 = 1
+        elif count2 == 0:
+            candidate2 = num
+            count2 = 1
+        else:
+            count1 -= 1
+            count2 -= 1
+
+    # Phase 2: Xác nhận
+    result = []
+    for c in [candidate1, candidate2]:
+        if c is not None and nums.count(c) > len(nums) // 3:
+            result.append(c)
+
+    return result
+```
+
+**Tổng quát:** Tìm phần tử xuất hiện hơn n/k lần → dùng k-1 ứng viên.
+
+### 8.8. Ưu và nhược điểm
+
+**Ưu điểm:**
+
+- O(n) time, O(1) space — tối ưu cả hai.
+- Ý tưởng elegant, dễ nhớ.
+- Mở rộng được cho n/k.
+
+**Nhược điểm:**
+
+- Bắt buộc phải có Phase 2 xác nhận nếu đề không đảm bảo majority exists.
+- Không cho biết frequency — chỉ cho candidate.
+- Khó mở rộng trực tiếp cho bài toán "top-K frequent elements".

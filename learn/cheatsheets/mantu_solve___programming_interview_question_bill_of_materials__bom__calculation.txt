@@ -1,0 +1,252 @@
+🔙 **Back to Parent**: [[interviewNote/mantu_amaris/📂index_mantu_amaris|mantu_amaris]]
+
+### **Part 1: Solving the BOM Calculation Problem (C#)**
+
+This solution needs to traverse the tree-like structure of the Bill of Materials. A recursive approach is a clean and effective way to solve this. The goal is to break down a product until we are left only with "raw materials" (components that are not also products in the list).
+
+Here is a complete, production-ready class that solves the problem efficiently.
+
+**Completed C# Solution**
+
+```C#
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+// Represents a single line in the Bill of Materials (BOM) table.
+public class BomRecord
+{
+    public string Product { get; }
+    public string Component { get; }
+    public int Quantity { get; }
+
+    public BomRecord(string product, string component, int quantity)
+    {
+        Product = product;
+        Component = component;
+        Quantity = quantity;
+    }
+}
+
+// The main calculator class. It's designed to be instantiated once with the BOM data.
+public class BomCalculator
+{
+    // A lookup for efficient access to a product's direct components.
+    // Key: ProductName, Value: List of components for that product.
+    private readonly ILookup<string, BomRecord> _componentLookup;
+    
+    // A set of all items that are defined as products for quick checks.
+    private readonly HashSet<string> _allProducts;
+
+    public BomCalculator(IEnumerable<BomRecord> bomRecords)
+    {
+        // Pre-processing the data into a lookup is much more efficient than iterating the full list every time.
+        _componentLookup = bomRecords.ToLookup(record => record.Product);
+        _allProducts = new HashSet<string>(bomRecords.Select(r => r.Product));
+    }
+
+    /// <summary>
+    /// Calculates the total quantity of all raw materials required to produce a given product.
+    /// </summary>
+    /// <param name="productName">The name of the final product.</param>
+    /// <param name="quantity">The number of final products to create.</param>
+    /// <returns>A dictionary where the key is the raw material and the value is the total quantity required.</returns>
+    public Dictionary<string, int> Calculate(string productName, int quantity = 1)
+    {
+        var finalBill = new Dictionary<string, int>();
+        CalculateRecursive(productName, quantity, finalBill);
+        return finalBill;
+    }
+
+    // The private recursive helper method that does the heavy lifting.
+    private void CalculateRecursive(string currentItem, int requiredQuantity, Dictionary<string, int> finalBill)
+    {
+        // Check if the current item is a product that can be broken down further.
+        if (_allProducts.Contains(currentItem))
+        {
+            // If it is, find its direct components and recurse.
+            foreach (var record in _componentLookup[currentItem])
+            {
+                // Multiply the quantity needed at this level by the quantity from the parent level.
+                CalculateRecursive(record.Component, record.Quantity * requiredQuantity, finalBill);
+            }
+        }
+        else
+        {
+            // This is a raw material (a "leaf" node). Add it to our final list.
+            if (finalBill.ContainsKey(currentItem))
+            {
+                // If we've already seen this material, add to its total.
+                finalBill[currentItem] += requiredQuantity;
+            }
+            else
+            {
+                // Otherwise, add it to the list for the first time.
+                finalBill.Add(currentItem, requiredQuantity);
+            }
+        }
+    }
+}
+
+// Main program to demonstrate the solution.
+public class Solution
+{
+    public static void Main(string[] args)
+    {
+        // The initial BOM table provided in the problem.
+        var bomTable = new List<BomRecord> {
+            new BomRecord("A", "B", 1),
+            new BomRecord("B", "C", 2),
+            new BomRecord("B", "D", 3),
+            new BomRecord("C", "E", 1),
+            new BomRecord("D", "F", 3),
+            new BomRecord("D", "G", 2)
+        };
+
+        // 1. Create an instance of the calculator.
+        var calculator = new BomCalculator(bomTable);
+
+        // 2. Specify the product to calculate and run the calculation.
+        string productToBuild = "B";
+        var requiredMaterials = calculator.Calculate(productToBuild);
+
+        // 3. Print the results.
+        Console.WriteLine($"Final material requirements for Product '{productToBuild}':");
+        foreach (var material in requiredMaterials)
+        {
+            Console.WriteLine($"  - {material.Key}: {material.Value}");
+        }
+        
+        // Example for Product "A" to show deeper recursion
+        Console.WriteLine("\n--- Another Example ---");
+        productToBuild = "A";
+        requiredMaterials = calculator.Calculate(productToBuild);
+        Console.WriteLine($"Final material requirements for Product '{productToBuild}':");
+        foreach (var material in requiredMaterials)
+        {
+            Console.WriteLine($"  - {material.Key}: {material.Value}");
+        }
+    }
+}
+```
+
+**Expected Output:**
+
+```markdown
+Final material requirements for Product 'B':
+  - E: 2
+  - F: 9
+  - G: 6
+
+--- Another Example ---
+Final material requirements for Product 'A':
+  - E: 2
+  - F: 9
+  - G: 6
+```
+
+------
+
+### **Part 2: REST API Design**
+
+Here is a logical REST API design for managing products and their BOM components.
+
+**Resources:**
+
+- `/products`: Represents the product entities themselves.
+- `/products/{productId}/components`: Represents the list of components for a specific product.
+- `/analysis/material-requirements`: A "task" resource to perform the BOM calculation.
+
+**Endpoints:**
+
+| Method                         | Endpoint                                                     | Description                                                  |
+| ------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| **Product Management**         |                                                              |                                                              |
+| `GET`                          | `/products`                                                  | Retrieves a list of all products. Supports filtering by name (`?name=...`). |
+| `POST`                         | `/products`                                                  | Creates a new product. Body: `{ "id": "X", "name": "Product X", "description": "..." }`. |
+| `GET`                          | `/products/{productId}`                                      | Retrieves the details of a single product.                   |
+| `PUT`                          | `/products/{productId}`                                      | Updates the details (name, description) of a product.        |
+| `DELETE`                       | `/products/{productId}`                                      | Deletes a product. This should also remove any BOM entries where it is a parent. |
+| **BOM (Component) Management** |                                                              |                                                              |
+| `GET`                          | `/products/{productId}/components`                           | Retrieves the list of direct components for a product.       |
+| `POST`                         | `/products/{productId}/components`                           | Adds a component to a product's BOM. Body: `{ "componentId": "Y", "quantity": 5 }`. |
+| `PUT`                          | `/products/{productId}/components/{componentId}`             | Updates the quantity of a specific component in a product's BOM. Body: `{ "quantity": 10 }`. |
+| `DELETE`                       | `/products/{productId}/components/{componentId}`             | Removes a component from a product's BOM.                    |
+| **Calculation**                |                                                              |                                                              |
+| `GET`                          | `/analysis/material-requirements/{productId}?quantity={qty}` | **Calculates the final list of raw materials**. `quantity` is an optional query parameter (defaults to 1). |
+
+Export to Sheets
+
+**Example API Flow:**
+
+1. **Create Products:** `POST /products` to create "E", "F", "G", "C", "D", "B".
+
+2. Build BOM for Product D:
+
+   - `POST /products/D/components` with body `{ "componentId": "F", "quantity": 3 }`
+   - `POST /products/D/components` with body `{ "componentId": "G", "quantity": 2 }`
+
+3. Build BOM for Product B:
+
+   - `POST /products/B/components` with body `{ "componentId": "C", "quantity": 2 }`
+   - `POST /products/B/components` with body `{ "componentId": "D", "quantity": 3 }`
+
+4. Analyze Requirements:
+
+   - Make a `GET` request to `/analysis/material-requirements/B?quantity=1`.
+
+   - The API will respond with a 
+
+     ```
+     200 OK
+     ```
+
+      and a body like:
+
+     JSON
+
+     ```json
+     {
+       "product": "B",
+       "requestedQuantity": 1,
+       "requiredRawMaterials": [
+         { "componentId": "E", "totalQuantity": 2 },
+         { "componentId": "F", "totalQuantity": 9 },
+         { "componentId": "G", "totalQuantity": 6 }
+       ]
+     }
+     ```
+
+------
+
+### **Part 3: Database Schema Design**
+
+A simple and robust relational database design would involve two main tables.
+
+**1. `Products` Table** Stores the master list of all items, whether they are final products or raw materials.
+
+| Column Name   | Data Type      | Constraints                             | Description                                                  |
+| ------------- | -------------- | --------------------------------------- | ------------------------------------------------------------ |
+| `ProductId`   | `VARCHAR(50)`  | `PRIMARY KEY`, `NOT NULL`               | The unique identifier for the product (e.g., "A", "B", "CPU-i9"). |
+| `Name`        | `VARCHAR(255)` | `NOT NULL`                              | The human-readable name of the product.                      |
+| `Description` | `TEXT`         | `NULL`                                  | A longer description of the product.                         |
+| `CreatedAt`   | `DATETIME`     | `NOT NULL`, `DEFAULT CURRENT_TIMESTAMP` | Timestamp of when the record was created.                    |
+| `UpdatedAt`   | `DATETIME`     | `NOT NULL`, `DEFAULT CURRENT_TIMESTAMP` | Timestamp of the last update.                                |
+
+Export to Sheets
+
+**2. `BillOfMaterials` Table** This is a linking table that defines the direct parent-child relationships and quantities.
+
+| Column Name       | Data Type     | Constraints                                       | Description                                                  |
+| ----------------- | ------------- | ------------------------------------------------- | ------------------------------------------------------------ |
+| `ParentProductId` | `VARCHAR(50)` | `PRIMARY KEY`, `FOREIGN KEY (Products.ProductId)` | The ID of the product being assembled. Part of a composite key. |
+| `ComponentId`     | `VARCHAR(50)` | `PRIMARY KEY`, `FOREIGN KEY (Products.ProductId)` | The ID of the component required. Part of a composite key.   |
+| `Quantity`        | `INT`         | `NOT NULL`, `CHECK (Quantity > 0)`                | The number of units of the component required for one unit of the parent. |
+
+Export to Sheets
+
+**Relationships and Indexes:**
+
+- The combination of `(ParentProductId, ComponentId)` forms the **composite primary key** for the `BillOfMaterials` table. This ensures that you cannot add the same component to the same product more than once.
+- **Foreign Key Constraints** on `ParentProductId` and `ComponentId` ensure data integrity. It's recommended to use `ON DELETE CASCADE` for the `ParentProductId` foreign key, so that if a parent product is deleted, all its BOM definitions are automatically cleaned up.
+- **Indexes** should be created on both `ParentProductId` and `ComponentId` to ensure that lookups (which will be frequent during BOM calculations) are extremely fast.

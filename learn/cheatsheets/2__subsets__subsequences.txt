@@ -1,0 +1,258 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/04_Recursion_Backtracking/🔄index_04_Recursion_Backtracking|04_Recursion_Backtracking]]
+
+## 2. Subsets / Subsequences
+
+### 2.1 Bài toán
+
+Cho một tập hợp gồm n phần tử, hãy **liệt kê tất cả các tập con** (subsets) của nó.
+
+Ví dụ: `nums = [1, 2, 3]`
+
+Kết quả: `[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]`
+
+### 2.2 Ví von thực tế: Thực đơn buffet
+
+Tưởng tượng bạn đi buffet và có 3 món: **sushi, pizza, phở**. Với mỗi món, bạn có 2 lựa chọn: **lấy** hoặc **không lấy**. Tổng số cách chọn = $2 \times 2 \times 2 = 2^3 = 8$ cách.
+
+```
+Không lấy gì cả    → []
+Chỉ lấy sushi      → [sushi]
+Chỉ lấy pizza      → [pizza]
+Chỉ lấy phở        → [phở]
+Sushi + pizza       → [sushi, pizza]
+Sushi + phở         → [sushi, phở]
+Pizza + phở         → [pizza, phở]
+Lấy hết            → [sushi, pizza, phở]
+```
+
+### 2.3 Thuật toán chi tiết
+
+**Ý tưởng cốt lõi:** Với mỗi phần tử, ta có 2 lựa chọn:
+
+1. **Chọn** phần tử đó (include)
+2. **Không chọn** phần tử đó (exclude)
+
+Ta duyệt từ phần tử đầu tiên đến cuối cùng, ở mỗi bước chia thành 2 nhánh.
+
+start: index=0, current=[]Include 1Exclude 1Include 2 → [1,2]Exclude 2 → [1]Include 2 → [2]Exclude 2 → []Include 3 → [1,2,3] ✓Exclude 3 → [1,2] ✓Include 3 → [1,3] ✓Exclude 3 → [1] ✓Include 3 → [2,3] ✓Exclude 3 → [2] ✓Include 3 → [3] ✓Exclude 3 → [] ✓
+
+### 2.4 Mô phỏng từng bước
+
+Input: `nums = [1, 2, 3]`
+
+```
+Gọi generate(index=0, current=[])
+│
+├── Chọn 1 → generate(index=1, current=[1])
+│   ├── Chọn 2 → generate(index=2, current=[1,2])
+│   │   ├── Chọn 3 → generate(index=3, current=[1,2,3])
+│   │   │   → index == n → Thêm [1,2,3] vào kết quả ✓
+│   │   └── Bỏ 3 → generate(index=3, current=[1,2])
+│   │       → index == n → Thêm [1,2] vào kết quả ✓
+│   └── Bỏ 2 → generate(index=2, current=[1])
+│       ├── Chọn 3 → generate(index=3, current=[1,3])
+│       │   → Thêm [1,3] ✓
+│       └── Bỏ 3 → generate(index=3, current=[1])
+│           → Thêm [1] ✓
+│
+└── Bỏ 1 → generate(index=1, current=[])
+    ├── Chọn 2 → generate(index=2, current=[2])
+    │   ├── Chọn 3 → ... → Thêm [2,3] ✓
+    │   └── Bỏ 3 → ... → Thêm [2] ✓
+    └── Bỏ 2 → generate(index=2, current=[])
+        ├── Chọn 3 → ... → Thêm [3] ✓
+        └── Bỏ 3 → ... → Thêm [] ✓
+
+Kết quả: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]]
+```
+
+### 2.5 Code
+
+**Python — Cách 1: Include/Exclude**
+
+```python
+def subsets(nums):
+    result = []
+
+    def backtrack(index, current):
+        # Base case: đã xét hết tất cả phần tử
+        if index == len(nums):
+            result.append(current[:])  # copy current vào result
+            return
+
+        # Lựa chọn 1: Chọn nums[index]
+        current.append(nums[index])
+        backtrack(index + 1, current)
+
+        # Lựa chọn 2: Không chọn nums[index] (backtrack)
+        current.pop()  # ← ĐÂY là bước backtrack!
+        backtrack(index + 1, current)
+
+    backtrack(0, [])
+    return result
+
+# Test
+print(subsets([1, 2, 3]))
+# [[1, 2, 3], [1, 2], [1, 3], [1], [2, 3], [2], [3], []]
+```
+
+**Python — Cách 2: Iterative (cascading)**
+
+```python
+def subsets_iterative(nums):
+    result = [[]]
+    for num in nums:
+        # Mỗi phần tử mới, nhân đôi tất cả subsets hiện có
+        result += [subset + [num] for subset in result]
+    return result
+
+# nums = [1, 2, 3]
+# Bắt đầu: [[]]
+# Thêm 1: [[], [1]]
+# Thêm 2: [[], [1], [2], [1,2]]
+# Thêm 3: [[], [1], [2], [1,2], [3], [1,3], [2,3], [1,2,3]]
+```
+
+**Python — Cách 3: Bitmask**
+
+```python
+def subsets_bitmask(nums):
+    n = len(nums)
+    result = []
+    for mask in range(1 << n):  # 0 đến 2^n - 1
+        subset = []
+        for i in range(n):
+            if mask & (1 << i):  # bit thứ i bật → chọn nums[i]
+                subset.append(nums[i])
+        result.append(subset)
+    return result
+
+# mask = 0b000 → []
+# mask = 0b001 → [1]
+# mask = 0b010 → [2]
+# mask = 0b011 → [1, 2]
+# mask = 0b100 → [3]
+# mask = 0b101 → [1, 3]
+# mask = 0b110 → [2, 3]
+# mask = 0b111 → [1, 2, 3]
+```
+
+**Python (class style - giống format LeetCode):**
+
+```python
+from typing import List
+
+class Solution:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        result = []
+
+        def backtrack(index: int, current: List[int]):
+            # Base case: đã xét hết tất cả phần tử
+            if index == len(nums):
+                result.append(current[:])  # copy current vào result
+                return
+
+            # Lựa chọn 1: Include nums[index]
+            current.append(nums[index])
+            backtrack(index + 1, current)
+
+            # Lựa chọn 2: Exclude nums[index] (backtrack)
+            current.pop()  # ← ĐÂY là bước backtrack!
+            backtrack(index + 1, current)
+
+        backtrack(0, [])
+        return result
+
+# Chạy thử
+sol = Solution()
+print(sol.subsets([1, 2, 3]))
+# [[1, 2, 3], [1, 2], [1, 3], [1], [2, 3], [2], [3], []]
+```
+
+### 2.6 Subsets II — Có phần tử trùng
+
+Khi mảng có phần tử trùng nhau (ví dụ `[1, 2, 2]`), ta cần **tránh sinh ra subset trùng**.
+
+**Ý tưởng:** Sort mảng trước, rồi khi skip một phần tử, skip luôn tất cả các phần tử giống nó.
+
+```python
+def subsets_with_dup(nums):
+    nums.sort()  # QUAN TRỌNG: sort trước
+    result = []
+
+    def backtrack(index, current):
+        result.append(current[:])
+
+        for i in range(index, len(nums)):
+            # Skip duplicate: nếu nums[i] == nums[i-1] và i > index
+            if i > index and nums[i] == nums[i - 1]:
+                continue
+            current.append(nums[i])
+            backtrack(i + 1, current)
+            current.pop()
+
+    backtrack(0, [])
+    return result
+
+# subsets_with_dup([1, 2, 2])
+# → [[], [1], [1,2], [1,2,2], [2], [2,2]]
+# Không có trùng! (nếu không skip sẽ có 2 cái [2])
+from typing import List
+
+class Solution:
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+        nums.sort()  # QUAN TRỌNG: sort trước để phát hiện duplicate
+        result = []
+
+        def backtrack(index: int, current: List[int]):
+            result.append(current[:])  # thêm subset hiện tại vào kết quả
+
+            for i in range(index, len(nums)):
+                # Skip duplicate: nếu nums[i] giống nums[i-1] ở cùng level
+                if i > index and nums[i] == nums[i - 1]:
+                    continue
+                current.append(nums[i])
+                backtrack(i + 1, current)
+                current.pop()  # backtrack
+
+        backtrack(0, [])
+        return result
+
+# Chạy thử
+sol = Solution()
+print(sol.subsetsWithDup([1, 2, 2]))
+# [[], [1], [1, 2], [1, 2, 2], [2], [2, 2]]
+```
+
+### 2.7 Phân tích Complexity — Chứng minh toán học
+
+**Time Complexity: O(n \* 2^n)**
+
+**Chứng minh:**
+
+Tổng số subsets của tập n phần tử = $2^n$ (mỗi phần tử có 2 lựa chọn: chọn hoặc không).
+
+Bằng tổ hợp: $$\sum_{k=0}^{n} \binom{n}{k} = 2^n$$
+
+Mỗi subset trung bình có độ dài $n/2$, và ta cần O(k) để copy một subset có k phần tử:
+
+$$\sum_{k=0}^{n} k \cdot \binom{n}{k} = n \cdot 2^{n-1}$$
+
+(Chứng minh: đạo hàm hai vế của $(1+x)^n = \sum \binom{n}{k} x^k$ theo x, rồi thế x=1)
+
+Vậy tổng thời gian = $O(n \cdot 2^n)$.
+
+**Space Complexity: O(n)** — cho call stack (không tính output).
+
+### 2.8 Best Case / Worst Case
+
+|                | Best Case                      | Worst Case                   |
+| :------------- | :----------------------------- | :--------------------------- |
+| **Subsets**    | O(2^n) — luôn phải sinh tất cả | O(n * 2^n) — copy mỗi subset |
+| **Subsets II** | O(2^n) khi không có duplicate  | O(n * 2^n) worst case giống  |
+
+### 2.9 Cải tiến
+
+1. **Bitmask approach** — tránh overhead recursion, chạy nhanh hơn trên thực tế
+2. **Iterative cascading** — không dùng call stack, phù hợp khi n lớn
+3. **Pruning cho Subsets II** — sort + skip giúp giảm đáng kể nhánh thừa

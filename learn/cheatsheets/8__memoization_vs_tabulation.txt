@@ -1,0 +1,176 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/🧠index_13_Dynamic_Programming|13_Dynamic_Programming]]
+
+## 8. Memoization vs Tabulation
+
+### Giới thiệu
+
+Đây là câu hỏi **kinh điển** trong phỏng vấn: "Memoization và tabulation khác nhau như thế nào? Khi nào dùng cái nào?" Nhiều bạn biết cả hai cách nhưng không giải thích rõ được sự khác biệt. Phần này sẽ giúp bạn hiểu **thấu đáo**.
+
+------
+
+### 8.1. Memoization — Top-down
+
+#### Cách hoạt động
+
+1. Bắt đầu từ bài toán **lớn** (top)
+2. Đệ quy xuống bài toán **nhỏ** (down)
+3. Kết quả được **cache** (lru_cache, dict) để không tính lại
+
+#### Ưu điểm
+
+- **Dễ nghĩ**: Viết công thức đệ quy trước, thêm cache sau → xong
+- **Lazy computation**: Chỉ tính các bài toán con **thực sự cần** (không tính thừa)
+- **Trực quan**: Code gần giống công thức toán
+
+#### Nhược điểm
+
+- **Stack overflow**: Đệ quy sâu (n > ~1000 trong Python) → crash
+- **Function call overhead**: Mỗi lần gọi hàm có chi phí
+- **Cache overhead**: `lru_cache` dùng thêm bộ nhớ cho dict
+
+```python
+import sys
+from functools import lru_cache
+
+# Tăng giới hạn đệ quy nếu cần (mặc định Python = 1000)
+sys.setrecursionlimit(10000)
+
+@lru_cache(maxsize=None)
+def fib_topdown(n):
+    """Top-down: bắt đầu từ n, đệ quy xuống 0"""
+    if n <= 1:
+        return n
+    return fib_topdown(n - 1) + fib_topdown(n - 2)
+
+# Hoạt động tốt cho n nhỏ
+print(fib_topdown(100))  # 354224848179261915075
+
+# Nhưng n = 5000 sẽ cần tăng recursion limit!
+# fib_topdown(5000)  # RecursionError nếu không tăng limit
+```
+
+------
+
+### 8.2. Tabulation — Bottom-up
+
+#### Cách hoạt động
+
+1. Bắt đầu từ bài toán **nhỏ nhất** (bottom = base case)
+2. Dùng vòng lặp, xây dần lên bài toán **lớn** (up)
+3. Kết quả lưu trong **bảng** (array/matrix)
+
+#### Ưu điểm
+
+- **Không stack overflow**: Dùng vòng lặp, không đệ quy
+- **Nhanh hơn**: Không có function call overhead
+- **Dễ tối ưu space**: Dễ nhìn ra dependency để dùng rolling array
+
+#### Nhược điểm
+
+- **Tính thừa**: Tính TẤT CẢ bài toán con, kể cả những cái không cần
+- **Khó nghĩ thứ tự**: Phải xác định thứ tự điền bảng đúng
+- **Khó hơn cho bài phức tạp**: Với state nhiều chiều, tabulation khó code hơn
+
+```python
+def fib_bottomup(n):
+    """Bottom-up: bắt đầu từ 0, xây lên n"""
+    if n <= 1:
+        return n
+    dp = [0] * (n + 1)
+    dp[1] = 1
+    for i in range(2, n + 1):
+        dp[i] = dp[i - 1] + dp[i - 2]
+    return dp[n]
+
+# Hoạt động tốt cho MỌI n (miễn đủ bộ nhớ)
+print(fib_bottomup(100))    # 354224848179261915075
+print(fib_bottomup(10000))  # Vẫn tính được! Không stack overflow
+```
+
+------
+
+### 8.3. So sánh chi tiết
+
+| Tiêu chí               | Memoization (Top-down) | Tabulation (Bottom-up) |
+| :--------------------- | :--------------------- | :--------------------- |
+| **Hướng**              | Lớn → nhỏ              | Nhỏ → lớn              |
+| **Cấu trúc**           | Đệ quy + cache         | Vòng lặp + bảng        |
+| **Bài toán con**       | Chỉ tính khi cần       | Tính tất cả            |
+| **Stack overflow**     | Có thể (đệ quy sâu)    | Không bao giờ          |
+| **Tốc độ**             | Chậm hơn (overhead)    | Nhanh hơn              |
+| **Space optimization** | Khó                    | Dễ                     |
+| **Dễ code**            | Dễ hơn                 | Cần suy nghĩ thứ tự    |
+| **Debug**              | Khó hơn (đệ quy)       | Dễ hơn (in bảng)       |
+| **Khi n lớn**          | Stack overflow risk    | Ổn định                |
+
+### 8.4. Khi nào dùng cái nào?
+
+CóKhôngCóKhôngContestPhỏng vấnBài DP mớiBước 1:
+Viết recurrenceBước 2:
+Chọn approachState space lớn
+nhưng chỉ dùng
+một phần nhỏ?Memoization
+(lazy, chỉ tính cần)Cần tối ưu space
+hoặc n rất lớn?Tabulation
+(+ space optimization)Contest hay
+phỏng vấn?Memoization
+(code nhanh hơn)Cả hai!
+(thể hiện hiểu sâu)
+
+**Quy tắc ngón tay cái**:
+
+1. **Bước 1**: Luôn viết memoization trước (dễ nghĩ, dễ code)
+2. **Bước 2**: Nếu cần tối ưu → chuyển sang tabulation
+3. **Bước 3**: Nếu cần tối ưu space → thêm rolling array
+
+### 8.5. Ví dụ minh họa: Cùng bài, 2 cách
+
+```python
+from functools import lru_cache
+
+# ============================
+# Bài: Minimum Cost Climbing Stairs
+# Cho mảng cost[i] = chi phí đứng tại bậc i
+# Leo 1 hoặc 2 bậc. Tìm chi phí tối thiểu lên đỉnh.
+# ============================
+
+cost = [10, 15, 20]
+
+# --- Memoization ---
+@lru_cache(maxsize=None)
+def min_cost_memo(i):
+    """Chi phí tối thiểu để đến bậc i"""
+    if i < 0:
+        return 0
+    if i <= 1:
+        return cost[i]
+    return cost[i] + min(min_cost_memo(i - 1), min_cost_memo(i - 2))
+
+n = len(cost)
+# Đến đỉnh = bậc n, có thể từ bậc n-1 hoặc n-2
+print(f"Memo: {min(min_cost_memo(n - 1), min_cost_memo(n - 2))}")  # 15
+
+
+# --- Tabulation ---
+def min_cost_tab(cost):
+    n = len(cost)
+    dp = [0] * n
+    dp[0] = cost[0]
+    dp[1] = cost[1]
+    for i in range(2, n):
+        dp[i] = cost[i] + min(dp[i - 1], dp[i - 2])
+    return min(dp[n - 1], dp[n - 2])
+
+print(f"Tab:  {min_cost_tab(cost)}")  # 15
+
+
+# --- Space Optimized ---
+def min_cost_opt(cost):
+    n = len(cost)
+    a, b = cost[0], cost[1]
+    for i in range(2, n):
+        a, b = b, cost[i] + min(a, b)
+    return min(a, b)
+
+print(f"Opt:  {min_cost_opt(cost)}")  # 15
+```

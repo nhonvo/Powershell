@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/google-workspace-administrator
+  - googleworkspaceadministrator
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 Google-Workspace-Administrator MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/google/Google-Workspace-Administrator/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/google/Google-Workspace-Administrator/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/google/Google-Workspace-Administrator/Google-Workspace-Administrator Mindmap\|🗺️ Google-Workspace-Administrator Mindmap]]
+- [[certifications/google/Google-Workspace-Administrator/Google-Workspace-Administrator Flashcards\|🃏 Google-Workspace-Administrator Flashcards]]
+- [[certifications/google/Google-Workspace-Administrator/Google-Workspace-Administrator_Scraped_Question_Bank\|🗃️ Google-Workspace-Administrator Scraped Question Bank]]

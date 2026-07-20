@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mb-330
+  - mb330
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MB-330: Microsoft Dynamics 365 Supply Chain Management MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MB-330/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MB-330/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MB-330/MB-330 Mindmap\|🗺️ MB-330 Mindmap]]
+- [[certifications/microsoft/MB-330/MB-330 Flashcards\|🃏 MB-330 Flashcards]]
+- [[certifications/microsoft/MB-330/MB-330_Scraped_Question_Bank\|🗃️ MB-330 Scraped Question Bank]]

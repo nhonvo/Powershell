@@ -1,0 +1,38 @@
+🔙 **Back to Parent**: [[technical_skills/04_PostgreSQL_Deep_Dive/05_Indexing_Mastery|04_PostgreSQL_Deep_Dive]]
+
+# Module 7: PL/pgSQL & Stored Procedures 🧩
+
+Khi logic nghiệp vụ quá phức tạp để viết bằng SQL thuần, chúng ta cần đến PL/pgSQL (Ngôn ngữ lập trình thủ tục).
+
+---
+
+## 🏗️ Kiến thức cốt lõi
+
+### 1. Function vs Stored Procedure
+- **Function**: Phải trả về giá trị, không thể chạy `COMMIT/ROLLBACK` bên trong. Dùng trong `SELECT`.
+- **Procedure**: Có thể chạy `COMMIT/ROLLBACK` bên trong (Khuyên dùng từ Postgres 11+). Dùng lệnh `CALL`.
+
+### 2. Triggers (Bẫy dữ liệu)
+Tự động kích hoạt function khi có sự kiện `INSERT`, `UPDATE` hoặc `DELETE`.
+- Ví dụ: Tự động cập nhật `updated_at` hoặc lưu lịch sử thay đổi `audit_logs`.
+
+### 3. Cấu trúc Block
+```sql
+CREATE OR REPLACE FUNCTION update_log() RETURNS trigger AS $$
+BEGIN
+    NEW.updated_at := NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+---
+
+## 🛠️ Bài tập thực hành (Practice) - [Trích từ Data.csv ID 63/64]
+
+**Ứng dụng thực tế: Ví điện tử**
+1. Viết một `Stored Procedure` thực hiện việc chuyển tiền giữa hai tài khoản. Yêu cầu: Kiểm tra số dư và chạy trong một giao dịch (Transaction) an toàn.
+2. Tạo một `Trigger` trên bảng `users` để mỗi khi thông tin email thay đổi, hệ thống sẽ tự động ghi log vào bảng `profile_history`.
+
+---
+*Tiếp tục học: [Module 8: Transactions & Concurrency](./08_Transactions_Concurrency.md)*

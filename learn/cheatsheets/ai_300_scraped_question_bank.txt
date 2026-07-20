@@ -1,0 +1,229 @@
+# 🗃️ AI-300 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Fabrikam Inc.
+
+You need to standardize how Fabrikam Inc. manages machine learning assets.
+
+Which action should you perform first?
+
+### Options:
+- [ ] **A)** Register assets in the Azure Machine Learning registry.
+- [x] **B)** Create a shared Azure Machine Learning workspace. [Correct]
+- [ ] **C)** Deploy a managed online endpoint.
+- [ ] **D)** Create a new Microsoft Foundry project.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Fabrikam Inc.
+
+You need to isolate training workloads while remaining cost-aware to address Fabrikam Inc.'s issues, constraints, and technical requirements.
+
+What should you implement?
+
+### Options:
+- [ ] **A)** Training jobs that run on a single shared compute cluster
+- [ ] **B)** Fixed-size compute cluster
+- [ ] **C)** Dedicated compute clusters per experiment
+- [x] **D)** Managed compute targets with autoscaling [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Fabrikam Inc.
+
+You need to recommend an experiment-tracking strategy that ensures consistent experiment results.
+
+What should you recommend?
+
+### Options:
+- [ ] **A)** Azure Machine Learning job output logs
+- [x] **B)** MLflow experiment tracking [Correct]
+- [ ] **C)** Application Insights logs
+- [ ] **D)** Azure Monitor alerts
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Misc Questions
+
+HOTSPOT
+
+A team trains an MLflow model that scores customer churn risk. The model will be consumed by different downstream systems.
+
+One system requests predictions synchronously during customer interactions.
+
+Another system submits files containing millions of records for scheduled scoring.
+
+You need to deploy the model by using managed inference options that match each usage pattern.
+
+Which option should you use for each usage pattern? To answer, select the appropriate options in the answer area.
+NOTE: Each correct selection is worth one point.
+
+### Options:
+- [x] **A)** See Explanation for the Answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Misc Questions
+
+You manage an Azure Machine learning workspace. You develop a machine learning model.
+
+You must deploy the model to use a low-priority VM with a pricing discount.
+
+You need to deploy the model.
+
+Which compute target should you use?
+
+### Options:
+- [ ] **A)** Azure Container Instances (ACI)
+- [x] **B)** Azure Machine Learning compute clusters [Correct]
+- [ ] **C)** Local deployment
+- [ ] **D)** Azure Kubernetes Service (AKS)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: Misc Questions
+
+A team manages an Azure Machine Learning workspace where they deploy models to online endpoints.
+
+The team needs to introduce a new version of a model to production without disrupting existing users.
+
+The team must validate the new version before full rollout.
+
+You need to reduce risk during deployment.
+
+What should you do?
+
+### Options:
+- [ ] **A)** Deploy the model to a batch endpoint.
+- [x] **B)** Split traffic between deployments. [Correct]
+- [ ] **C)** Replace the existing endpoint.
+- [ ] **D)** Route all traffic to the new deployment.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: Misc Questions
+
+You have a deployment of an Azure OpenAI Service base model.
+
+You plan to fine-tune the model.
+
+You need to prepare a file that contains training data.
+
+Which file format should you use?
+
+### Options:
+- [ ] **A)** CSV
+- [ ] **B)** TSV
+- [x] **C)** JSONL [Correct]
+- [ ] **D)** JSON
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: Misc Questions
+
+You have a deployment of an Azure OpenAI Service base model.
+
+You plan to fine-tune the model.
+
+You need to prepare a file that contains training data for multi-turn chat.
+
+Which file encoding method should you use?
+
+### Options:
+- [ ] **A)** ISO-8859-1
+- [ ] **B)** UTF-16
+- [x] **C)** UTF-8 [Correct]
+- [ ] **D)** ASCII
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---

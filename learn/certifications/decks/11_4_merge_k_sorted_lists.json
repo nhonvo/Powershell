@@ -1,0 +1,196 @@
+{
+  "Meta": {
+    "Id": "deck_11_4_merge_k_sorted_lists",
+    "Topic": "11.4 Merge K Sorted Lists",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "11_4_merge_k_sorted_lists"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 9
+  },
+  "Cards": [
+    {
+      "Id": "card_01235",
+      "Front": "Cách giải",
+      "Back": "Time | Space | Nhận xét",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.4 merge k sorted lists"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01236",
+      "Front": "Merge từng cặp (brute force)",
+      "Back": "O(kN) | O(N) | N = tổng phần tử. Merge k-1 lần, mỗi lần duyệt",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.4 merge k sorted lists"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01237",
+      "Front": "Merge từng cặp (divide & conquer)",
+      "Back": "O(N log k) | O(N) | Tốt nhưng phức tạp hơn",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.4 merge k sorted lists"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01238",
+      "Front": "**Min Heap**",
+      "Back": "**O(N log k)** | **O(k)** | Luôn giữ k phần tử trong heap",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.4 merge k sorted lists"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01239",
+      "Front": "**Overall**",
+      "Back": "O(N log k) | O(k) cho heap",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.4 merge k sorted lists"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01240",
+      "Front": "**Khởi tạo**",
+      "Back": "O(k log k) | Push k phần tử đầu",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.4 merge k sorted lists"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01241",
+      "Front": "**Mỗi pop+push**",
+      "Back": "O(log k) | Heap luôn có ≤ k phần tử",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.4 merge k sorted lists"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01242",
+      "Front": "**Best case**",
+      "Back": "O(N) | Khi k = 1 (chỉ 1 list)",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.4 merge k sorted lists"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01243",
+      "Front": "**Worst case**",
+      "Back": "O(N log k) | Mọi trường hợp k > 1",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.4 merge k sorted lists"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

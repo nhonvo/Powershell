@@ -1,0 +1,21 @@
+# AWS Cloud Technical Essentials- udacity - research
+
+🔙 **Back to Parent**: [[certifications/aws/AWS Cloud Technical Essentials- udacity - research/📂index_AWS Cloud Technical Essentials- udacity - research|10_AWS_Cloud_Expert]]
+
+## 📁 Sub-Categories
+- [[certifications/aws/AWS Cloud Technical Essentials- udacity - research/📂index_AWS Cloud Technical Essentials- udacity - research|Reading 2 Networking on AWS.assets]]
+- [[certifications/aws/AWS Cloud Technical Essentials- udacity - research/📂index_AWS Cloud Technical Essentials- udacity - research|Reading 3.1 Storage on AWS.assets]]
+- [[certifications/aws/AWS Cloud Technical Essentials- udacity - research/📂index_AWS Cloud Technical Essentials- udacity - research|eading 4.1 Monitoring on AWS.assets]]
+
+## 📄 Notes & Documents
+- [[certifications/aws/AWS Cloud Technical Essentials- udacity - research/AWS Certified Cloud Practitioner Exam CLF-C02|AWS Certified Cloud Practitioner Exam CLF-C02]]
+- [[certifications/aws/AWS Cloud Technical Essentials- udacity - research/Reading 1.2 What is AWS|Reading 1.2 What is AWS]]
+- [[certifications/aws/AWS Cloud Technical Essentials- udacity - research/Reading 1.3 AWS Global Infrastructure|Reading 1.3 AWS Global Infrastructure]]
+- [[certifications/aws/AWS Cloud Technical Essentials- udacity - research/Reading 1.5 Security and the AWS Shared Responsibility Model|Reading 1.5 Security and the AWS Shared Responsibility Model]]
+- [[certifications/aws/AWS Cloud Technical Essentials- udacity - research/Reading 1.6 Protect the AWS Root User|Reading 1.6 Protect the AWS Root User]]
+- [[certifications/aws/AWS Cloud Technical Essentials- udacity - research/Reading 1.7 Introduction to AWS Identity and Access Management|Reading 1.7 Introduction to AWS Identity and Access Management]]
+- [[certifications/aws/AWS Cloud Technical Essentials- udacity - research/Reading 1.8 Role Based Access in AWS|Reading 1.8 Role Based Access in AWS]]
+- [[certifications/aws/AWS Cloud Technical Essentials- udacity - research/Reading 2 AWS Compute|Reading 2 AWS Compute]]
+- [[certifications/aws/AWS Cloud Technical Essentials- udacity - research/Reading 2 Networking on AWS|Reading 2 Networking on AWS]]
+- [[certifications/aws/AWS Cloud Technical Essentials- udacity - research/Reading 3.1 Storage on AWS|Reading 3.1 Storage on AWS]]
+- [[certifications/aws/AWS Cloud Technical Essentials- udacity - research/eading 4.1 Monitoring on AWS|eading 4.1 Monitoring on AWS]]

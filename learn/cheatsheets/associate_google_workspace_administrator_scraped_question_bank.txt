@@ -1,0 +1,125 @@
+# 🗃️ Associate-Google-Workspace-Administrator Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+Your company is undergoing a regulatory compliance audit. As part of the audit, you are required to demonstrate that you can preserve all electronic communications related to a specific project for a potential legal discovery process. You need to configure Google Vault to accomplish this goal. 
+What should you do?
+
+### Options:
+- [ ] **A)** Use the security investigation report to show Vault log events.
+- [ ] **B)** Use the search and export functionality to identify all relevant communications within the project timeframe.
+- [x] **C)** Create a matter and a hold on all project-related data sources such as Email. Chat, and Drive within Google Workspace. [Correct]
+- [ ] **D)** Create a custom retention policy for the project data. Ensure that the policy covers the required retention period.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Creating a matter and placing a hold on the relevant data sources ensures that all communications related to the specific project are preserved, even if users try to delete them. This will help in maintaining compliance with legal or regulatory requirements for e-discovery, and it ensures that data cannot be modified or deleted during the audit process.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+Several employees from your finance department are collaborating on a long-term, multi-phase project. You need to create a confidential group for this project as quickly as possible. You also want to minimize management overhead. 
+What should you do?
+
+### Options:
+- [ ] **A)** Create a Google Group by using Google Cloud Directory Sync (GCDS) to automatically sync the members.
+- [x] **B)** Create a dynamic group and define the Department user attribute as a condition for membership with the value as the finance department. [Correct]
+- [ ] **C)** Create a Google Group and update the settings to allow anyone in the organization to join the group.
+- [ ] **D)** Create a Google Group and appoint a group admin to manage the membership of this group.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+A dynamic group automatically updates membership based on user attributes, such as department, ensuring that only relevant employees (e.g., those in the finance department) are added to the group. This minimizes management overhead because the membership is updated automatically, without the need for manual intervention. It also ensures that the group remains up to date as employees join or leave the department.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+Today your company signed up for Google Workspace Business Starter with an existing domain name. You want to add team members and manage their access to email and other services. However, you are unable to create new user accounts or change user settings. You need to fix this problem. 
+What should you do?
+
+### Options:
+- [ ] **A)** Run the Transfer tool to bring unmanaged users to your Workspace account.
+- [x] **B)** Check domain ownership in the DNS settings. [Correct]
+- [ ] **C)** Wait 24 hours after signing up for the features to become active.
+- [ ] **D)** Upgrade to a Google Workspace Enterprise edition.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+To manage users and settings in Google Workspace, you must verify domain ownership. If the domain is not verified, you won't be able to create new user accounts or modify user settings. Checking the DNS settings and completing the domain verification process will resolve the issue and allow you to manage users and services in Google Workspace.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+A team of temporary employees left your organization after completing a shared project. Per company policy, you need to disable their Google Workspace accounts while preserving all project data and related communications in Google Vault for a minimum of two years. You want to comply with this policy while minimizing cost. 
+What should you do?
+
+### Options:
+- [x] **A)** Purchase and assign Archived User licenses to the former employees. [Correct]
+- [ ] **B)** Transfer the former employees' files and data to active user accounts. Delete the former employees' Workspace accounts.
+- [ ] **C)** Purchase additional user licenses and suspend the former employees' accounts.
+- [ ] **D)** Move the former employees to their own organizational unit (OU) and disable access to Google services for that OU.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Google Workspace offers Archived User licenses, which allow you to retain access to the data and communications of former employees without paying for a full user license. This option ensures compliance with the policy of retaining project data and communications in Google Vault while minimizing costs by avoiding unnecessary full user licenses.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+The legal department at your organization is working on a time-critical merger and acquisition (M&A) deal. They urgently require access to specific email communications from an employee who is currently on leave. The organization's current retention policy is set to indefinite. You need to retrieve the required emails for the legal department in a manner that ensures data privacy. 
+What should you do?
+
+### Options:
+- [ ] **A)** Instruct the IT department to directly access and forward the relevant emails to the legal department.
+- [ ] **B)** Temporarily grant the legal department access to the employee's email account with a restricted scope that is limited to the M&A-related emails.
+- [ ] **C)** Ask a colleague with delegate access to the employee's mailbox to identify and forward the relevant emails to the legal department.
+- [x] **D)** Use Google Vault to create a matter specific to the M&A deal. Search for relevant emails within the employee's mailbox. Export and share relevant emails with your legal department. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+Using Google Vault to create a matter specific to the M&A deal allows for legal, secure, and privacy- compliant retrieval of emails. You can search for the specific emails related to the merger and acquisition, export them, and share them with the legal department without granting direct access to the employee's mailbox. This approach ensures both data privacy and compliance with organizational policies.
+</details>
+
+---

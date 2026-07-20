@@ -1,0 +1,880 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/01_Basics/🔢index_01_Basics|01_Basics]]
+
+## 5. LeetCode Practice — Basics
+
+> Phần này mình tổng hợp các bài LeetCode kinh điển liên quan đến Basics (Math, Bit Manipulation, Complexity). Mỗi bài mình sẽ phân tích **cực kỳ chi tiết** — từ cách suy nghĩ, các approach khác nhau, cho đến dry run từng bước. Bạn nên tự code trước rồi mới xem lời giải nhé!
+
+------
+
+### 5.1 Power of Two — LeetCode #231 (Easy)
+
+[Link bài](https://leetcode.com/problems/power-of-two/)
+
+**Đề bài:** Cho một số nguyên `n`, kiểm tra xem `n` có phải là lũy thừa của 2 hay không.
+
+Noi cach khac: tồn tại số nguyên `k >= 0` sao cho `n = 2^k`?
+
+**Ví dụ:**
+
+- `n = 1` → `True` (2^0 = 1)
+- `n = 16` → `True` (2^4 = 16)
+- `n = 3` → `False`
+- `n = -1` → `False`
+
+#### Phân tích tư duy
+
+Khi gặp bài này, mình nghĩ đến mấy cách:
+
+1. **Cách 1 — Chia liên tục cho 2**: Neu `n` la luy thua 2, thì chia cho 2 liên tục sẽ về 1. Nếu giữa chừng có số lẻ (không phải 1) thì không phải.
+2. **Cách 2 — Bit manipulation**: Luy thua 2 chi co **dừng 1 bit = 1** trong biểu diễn nhị phân. Ví dụ: `1 = 1`, `2 = 10`, `4 = 100`, `8 = 1000`. Vậy trick `n & (n - 1) == 0` sẽ hoạt động!
+3. **Cách 3 — Đếm bit**: Đếm số bit 1, nếu bằng 1 thì là lũy thừa 2.
+
+#### Approach 1: Chia lien tuc (Brute Force)
+
+```python
+def is_power_of_two_v1(n: int) -> bool:
+    """
+    Cách 1: Chia liên tục cho 2.
+    Nếu n là lũy thừa 2, chia đến khi còn 1.
+    Neu gặp số lẻ (khác 1) giữa chừng thi khong phai.
+    """
+    # Số âm hoặc 0 không phải lũy thừa 2
+    if n <= 0:
+        return False
+
+    # Chia cho 2 cho đến khi không chia hết
+    while n % 2 == 0:
+        n //= 2
+
+    # Nếu còn lại là 1 thì là lũy thừa 2
+    return n == 1
+
+
+# === Test ===
+print(is_power_of_two_v1(1))    # True  (2^0)
+print(is_power_of_two_v1(16))   # True  (2^4)
+print(is_power_of_two_v1(3))    # False
+print(is_power_of_two_v1(0))    # False
+print(is_power_of_two_v1(-8))   # False
+```
+
+**Complexity:** Time O(log n), Space O(1)
+
+#### Approach 2: Bit Manipulation (Tối ưu nhat)
+
+```python
+def is_power_of_two(n: int) -> bool:
+    """
+    Cách 2: Dùng bit manipulation.
+
+    Lũy thừa 2 có đúng 1 bit = 1:
+      n     = 1000...0  (k bit 0)
+      n - 1 = 0111...1  (k bit 1)
+      n & (n-1) = 0
+
+    Chỉ cần kiểm tra: n > 0 va n & (n-1) == 0
+    """
+    return n > 0 and (n & (n - 1)) == 0
+
+
+# === Test ===
+print(is_power_of_two(1))    # True
+print(is_power_of_two(16))   # True
+print(is_power_of_two(3))    # False
+print(is_power_of_two(0))    # False
+print(is_power_of_two(-8))   # False
+```
+
+**Complexity:** Time O(1), Space O(1) — tối ưu nhất!
+
+#### Dry Run — `is_power_of_two(16)`
+
+```
+n = 16 = 10000 (nhị phân)
+
+Bước 1: n > 0? → 16 > 0 → True ✓
+Bước 2: n & (n - 1) = 16 & 15
+         = 10000 & 01111
+         = 00000
+         = 0 → True ✓
+
+Kết quả: True — 16 là lũy thừa 2 ✓
+```
+
+#### Dry Run — `is_power_of_two(6)`
+
+```
+n = 6 = 110 (nhị phân)
+
+Bước 1: n > 0? → 6 > 0 → True ✓
+Bước 2: n & (n - 1) = 6 & 5
+         = 110 & 101
+         = 100
+         = 4 ≠ 0 → False ✗
+
+Kết quả: False — 6 KHÔNG phải lũy thừa 2 ✓
+```
+
+#### Lỗi thường gặp / Edge cases
+
+- **Quên kiểm tra `n > 0`**: Số âm và 0 không phải lũy thừa 2, nhung `0 & (-1)` = 0 nen se sai neu khong kiem tra.
+- **n = 1**: Day la 2^0 = 1, can tra ve `True`.
+- **n = Integer.MIN_VALUE**: Số âm rất lớn, bit đầu = 1 nhưng không phải lũy thừa 2.
+
+------
+
+### 5.2 Number of 1 Bits — LeetCode #191 (Easy)
+
+[Link bai](https://leetcode.com/problems/number-of-1-bits/)
+
+**Đề bài:** Cho một số nguyên không âm `n`, dem so bit `1` trong biểu diễn nhị phân cua no (còn gọi là **Hamming weight**).
+
+**Ví dụ:**
+
+- `n = 11` (1011₂) → `3` (có 3 bit 1)
+- `n = 128` (10000000₂) → `1`
+- `n = 2147483645` (1111111111111111111111111111101₂) → `30`
+
+#### Phân tích tư duy
+
+Co 3 cach tiep can chinh:
+
+1. **Cách 1 — Kiem tra tung bit**: Dịch phải và kiểm tra bit cuối.
+2. **Cách 2 — Brian Kernighan's trick**: Dung `n & (n-1)` de tắt bit 1 thấp nhất, đếm số lần tắt.
+3. **Cách 3 — Python built-in**: `bin(n).count('1')` — đơn giản nhất.
+
+#### Approach 1: Kiem tra tung bit
+
+```python
+def hamming_weight_v1(n: int) -> int:
+    """
+    Cách 1: Kiểm tra từng bit một.
+    Dịch phải n và kiểm tra bit cuối bằng AND với 1.
+    """
+    count = 0
+    while n:
+        count += n & 1   # cộng 1 nếu bit cuối = 1
+        n >>= 1          # dịch phải 1 bit (bỏ bit cuối)
+    return count
+
+
+# === Test ===
+print(hamming_weight_v1(11))   # 3  (1011 → 3 bit 1)
+print(hamming_weight_v1(128))  # 1  (10000000 → 1 bit 1)
+print(hamming_weight_v1(0))    # 0
+```
+
+**Complexity:** Time O(32) = O(1), Space O(1) — luôn lặp tối đa 32 lần (so 32-bit).
+
+#### Approach 2: Brian Kernighan (Tối ưu nhat)
+
+```python
+def hamming_weight(n: int) -> int:
+    """
+    Cách 2: Brian Kernighan's Algorithm.
+
+    Trick: n & (n - 1) tắt bit 1 thấp nhất của n.
+    Mỗi lần thực hiện, đếm tăng 1. Lặp cho đến n = 0.
+
+    Số lần lặp = số bit 1 (thay vì luôn 32 lần).
+    """
+    count = 0
+    while n:
+        n &= (n - 1)    # tắt bit 1 thấp nhất
+        count += 1       # tăng bộ đếm
+    return count
+
+
+# === Test ===
+print(hamming_weight(11))   # 3
+print(hamming_weight(128))  # 1
+print(hamming_weight(0))    # 0
+print(hamming_weight(7))    # 3  (111)
+```
+
+**Complexity:** Time O(k) voi k = số bit 1, Space O(1). Truong hop tot nhat O(1), xau nhat O(32).
+
+#### Dry Run — `hamming_weight(11)`
+
+```
+n = 11 = 1011₂, count = 0
+
+Vòng 1: n = 1011, n-1 = 1010
+        n & (n-1) = 1011 & 1010 = 1010 = 10
+        count = 1
+
+Vòng 2: n = 1010, n-1 = 1001
+        n & (n-1) = 1010 & 1001 = 1000 = 8
+        count = 2
+
+Vòng 3: n = 1000, n-1 = 0111
+        n & (n-1) = 1000 & 0111 = 0000 = 0
+        count = 3
+
+n = 0 → dừng vòng lặp
+
+Kết quả: 3 ✓ (11 = 1011₂ có 3 bit 1)
+```
+
+#### Lỗi thường gặp / Edge cases
+
+- **n = 0**: Khong co bit 1 nao, tra ve 0. Vòng while không chạy lần nào.
+- **So am**: Trong Python, số âm có biểu diễn nhị phân vô hạn (vi du: -1 = ...1111111). LeetCode thuong cho n la unsigned 32-bit, nên không gặp vấn đề này.
+- **Nham `n &= (n - 1)` voi `n &= (n + 1)`**: Hai thao tác hoàn toàn khác nhau!
+
+------
+
+### 5.3 Single Number — LeetCode #136 (Easy)
+
+[Link bai](https://leetcode.com/problems/single-number/)
+
+**Đề bài:** Cho mot mang so nguyen `nums`, trong do moi phan tu xuat hien **dừng 2 lan**, tru **mot phan tu** xuat hien **dừng 1 lan**. Tìm phần tử đó.
+
+Yeu cau: Giải trong O(n) time và O(1) space.
+
+**Ví dụ:**
+
+- `nums = [2, 2, 1]` → `1`
+- `nums = [4, 1, 2, 1, 2]` → `4`
+- `nums = [1]` → `1`
+
+#### Phân tích tư duy
+
+Bai nay co nhieu cach giai, nhưng yêu cầu O(1) space loại bỏ hầu hết:
+
+1. **Cách 1 — Hash Map**: Đếm tần suất mỗi số, tìm số có tần suất 1. Time O(n), Space **O(n)** — không đạt yêu cầu!
+2. **Cách 2 — Sorting**: Sắp xếp rồi kiểm tra từng cấp. Time **O(n log n)** — không đạt yêu cầu!
+3. **Cách 3 — XOR**: Tinh chất `a ^ a = 0` va `a ^ 0 = a`. XOR tất cả cac so, cac cap giong nhau triet tieu, còn lại là số xuất hiện 1 lần. Time O(n), Space O(1) — **hoàn hảo!**
+
+#### Approach 1: Hash Map (Khong toi uu)
+
+```python
+def single_number_hashmap(nums: list[int]) -> int:
+    """
+    Cách 1: Dung hash map dem tan suat.
+    Don gian nhung ton O(n) bo nho.
+    """
+    freq = {}
+    for num in nums:
+        freq[num] = freq.get(num, 0) + 1
+
+    # Tim so co tan suat = 1
+    for num, count in freq.items():
+        if count == 1:
+            return num
+
+
+# === Test ===
+print(single_number_hashmap([2, 2, 1]))        # 1
+print(single_number_hashmap([4, 1, 2, 1, 2]))  # 4
+```
+
+**Complexity:** Time O(n), Space O(n) — không đạt yêu cầu bai toan!
+
+#### Approach 2: XOR (Tối ưu nhat)
+
+```python
+def single_number(nums: list[int]) -> int:
+    """
+    Cách 2: XOR tất cả cac so.
+
+    Tính chất XOR:
+    - a ^ a = 0        (hai số giống nhau triệt tiêu)
+    - a ^ 0 = a        (XOR với 0 giữ nguyên)
+    - Giao hoán + kết hợp (thứ tự không quan trọng)
+
+    Tất cả cặp giống nhau triệt tiêu → con lai so xuat hien 1 lan.
+    """
+    result = 0
+    for num in nums:
+        result ^= num
+    return result
+
+
+# === Test ===
+print(single_number([2, 2, 1]))        # 1
+print(single_number([4, 1, 2, 1, 2]))  # 4
+print(single_number([1]))              # 1
+```
+
+**Complexity:** Time O(n), Space O(1) — **hoàn hảo!**
+
+#### Dry Run — `single_number([4, 1, 2, 1, 2])`
+
+```
+result = 0
+
+Bước 1: result = 0 ^ 4 = 4        (nhị phân: 000 ^ 100 = 100)
+Bước 2: result = 4 ^ 1 = 5        (100 ^ 001 = 101)
+Buoc 3: result = 5 ^ 2 = 7        (101 ^ 010 = 111)
+Buoc 4: result = 7 ^ 1 = 6        (111 ^ 001 = 110)  ← số 1 triệt tiêu
+Buoc 5: result = 6 ^ 2 = 4        (110 ^ 010 = 100)  ← số 2 triệt tiêu
+
+Kết quả: 4 ✓
+
+Giải thích: (4) ^ (1 ^ 1) ^ (2 ^ 2) = 4 ^ 0 ^ 0 = 4
+```
+
+#### Lỗi thường gặp / Edge cases
+
+- **Mảng chỉ có 1 phần tử**: `[1]` → tra ve 1. XOR của 1 phần tử là chính nó.
+- **Số âm trong mảng**: XOR hoạt động bình thường với số âm, vì nó làm việc trên bit.
+- **Quên rằng yêu cầu O(1) space**: Nhiều người dùng HashMap làm xong rồi quên đọc yêu cầu!
+
+------
+
+### 5.4 Missing Number — LeetCode #268 (Easy)
+
+[Link bai](https://leetcode.com/problems/missing-number/)
+
+**Đề bài:** Cho mot mang `nums` chua `n` so phan biet tu doan `[0, n]`. Tim so **duy nhat** trong doan `[0, n]` ma **khong co** trong mang.
+
+**Ví dụ:**
+
+- `nums = [3, 0, 1]` → `2` (doan [0,3], thiếu 2)
+- `nums = [0, 1]` → `2` (doan [0,2], thiếu 2)
+- `nums = [9, 6, 4, 2, 3, 5, 7, 0, 1]` → `8`
+
+#### Phân tích tư duy
+
+Bai nay co nhieu cach hay:
+
+1. **Cách 1 — Sorting**: Sắp xếp rồi tìm phần tử thiếu. O(n log n).
+2. **Cách 2 — Hash Set**: Bỏ mảng vào set, kiểm tra từng số từ 0 đến n. O(n) time, O(n) space.
+3. **Cách 3 — Tong (Gauss)**: Tổng 0+1+...+n = n(n+1)/2. Trừ đi tổng mảng → số thiếu. O(n) time, O(1) space.
+4. **Cach 4 — XOR**: XOR tất cả số từ 0 đến n với tất cả phần tử mảng. Các số xuất hiện 2 lần triệt tiêu, còn lại số thiếu.
+
+#### Approach 1: Cong thuc Gauss
+
+```python
+def missing_number_gauss(nums: list[int]) -> int:
+    """
+    Cách 1: Dùng công thức Gauss.
+
+    Tổng của 0 + 1 + 2 + ... + n = n * (n + 1) / 2
+    So thieu = tổng kỳ vọng - tổng thực tế
+    """
+    n = len(nums)
+    expected_sum = n * (n + 1) // 2   # tổng từ 0 đến n
+    actual_sum = sum(nums)             # tổng mảng
+    return expected_sum - actual_sum
+
+
+# === Test ===
+print(missing_number_gauss([3, 0, 1]))  # 2
+print(missing_number_gauss([0, 1]))     # 2
+print(missing_number_gauss([9, 6, 4, 2, 3, 5, 7, 0, 1]))  # 8
+```
+
+**Complexity:** Time O(n), Space O(1)
+
+#### Approach 2: XOR
+
+```python
+def missing_number(nums: list[int]) -> int:
+    """
+    Cách 2: Dùng XOR.
+
+    XOR tất cả chỉ số (0 đến n) và tất cả phần tử mảng.
+    Số nào xuất hiện 2 lần (1 lần ở chỉ số, 1 lần ở mảng) → triet tieu.
+    Còn lại duy nhất số thiếu (chỉ xuất hiện ở chỉ số, không có ở mảng).
+    """
+    result = len(nums)  # bat dau voi n (vi chi so chi tu 0 den n-1)
+    for i, num in enumerate(nums):
+        result ^= i      # XOR voi chi so i
+        result ^= num    # XOR voi phan tu nums[i]
+    return result
+
+
+# === Test ===
+print(missing_number([3, 0, 1]))  # 2
+print(missing_number([0, 1]))     # 2
+print(missing_number([9, 6, 4, 2, 3, 5, 7, 0, 1]))  # 8
+```
+
+**Complexity:** Time O(n), Space O(1)
+
+#### Dry Run — `missing_number([3, 0, 1])`
+
+```
+n = 3, result = 3 (= len(nums))
+
+i=0: result = 3 ^ 0 ^ 3 = 0     (3 ^ 3 triệt tiêu = 0, 0 ^ 0 = 0)
+i=1: result = 0 ^ 1 ^ 0 = 1     (0 ^ 0 triet tieu, còn 1)
+i=2: result = 1 ^ 2 ^ 1 = 2     (1 ^ 1 triet tieu, còn 2)
+
+Kết quả: 2 ✓
+
+Chi tiết từng XOR:
+- Các số xuất hiện ở chỉ số: 0, 1, 2 (va n=3 o result ban dau)
+- Các số xuất hiện ở mảng:   3, 0, 1
+- XOR tất cả: (0^0) ^ (1^1) ^ (3^3) ^ 2 = 0 ^ 0 ^ 0 ^ 2 = 2
+```
+
+#### So sánh hai cách
+
+| Approach | Time | Space | Ưu điểm             | Nhược điểm                               |
+| :------- | :--- | :---- | :------------------ | :--------------------------------------- |
+| Gauss    | O(n) | O(1)  | Đơn giản, trực quan | Có thể tràn số với n rất lớn (trong C++) |
+| XOR      | O(n) | O(1)  | Không lo tràn số    | Khó hiểu hơn                             |
+
+#### Lỗi thường gặp / Edge cases
+
+- **Mảng rỗng `[]`**: n = 0, đoạn [0, 0], thiếu số 0. Cả 2 cách đều đúng.
+- **Số thiếu là 0**: `nums = [1]` → thieu 0. Cần xử lý đúng.
+- **Số thiếu là n**: `nums = [0, 1, 2]` → thieu 3 = n. Approach XOR xu ly nho `result = len(nums)`.
+- **Cách Gauss có thể tràn số**: Voi n rat lon, `n*(n+1)/2` co the tran 32-bit (trong C++). Python không gặp vấn đề này.
+
+------
+
+### 5.5 Counting Bits — LeetCode #338 (Easy)
+
+[Link bai](https://leetcode.com/problems/counting-bits/)
+
+**Đề bài:** Cho so nguyen `n`, tra ve mang `ans` do dai `n + 1`, trong do `ans[i]` la **số bit 1** trong biểu diễn nhị phân cua `i`, voi `0 <= i <= n`.
+
+Yeu cau: Giai trong O(n) time (không dùng built-in như `bin().count()`).
+
+**Ví dụ:**
+
+- `n = 2` → `[0, 1, 1]` (0=0bit, 1=1bit, 10=1bit)
+- `n = 5` → `[0, 1, 1, 2, 1, 2]`
+
+#### Phân tích tư duy
+
+Cach brute force: với mỗi số từ 0 đến n, đếm bit 1 bang Brian Kernighan → O(n log n).
+
+Nhung de bai yeu cau O(n)! Minh can tim **cong thuc truy hoi** (recurrence):
+
+1. **Cách 1 — Dùng bit cuối**: `ans[i] = ans[i >> 1] + (i & 1)`
+   - `i >> 1` bỏ bit cuối → đã tính trước
+   - `i & 1` là bit cuối (0 hoac 1)
+2. **Cách 2 — Dùng lowest set bit**: `ans[i] = ans[i & (i-1)] + 1`
+   - `i & (i-1)` tắt bit 1 thấp nhất → số bit 1 giam 1
+
+#### Approach 1: Dịch phải (Most Significant Bit)
+
+```python
+def count_bits_v1(n: int) -> list[int]:
+    """
+    Cách 1: Cong thuc ans[i] = ans[i >> 1] + (i & 1)
+
+    Y tuong:
+    - i >> 1: bỏ bit cuối của i → so nho hon, đã tính trước
+    - i & 1: bit cuoi cua i (0 hoac 1)
+    - Số bit 1 của i = số bit 1 của (i bỏ bit cuối) + giá trị bit cuối
+    """
+    ans = [0] * (n + 1)
+    for i in range(1, n + 1):
+        ans[i] = ans[i >> 1] + (i & 1)
+    return ans
+
+
+# === Test ===
+print(count_bits_v1(2))   # [0, 1, 1]
+print(count_bits_v1(5))   # [0, 1, 1, 2, 1, 2]
+print(count_bits_v1(8))   # [0, 1, 1, 2, 1, 2, 2, 3, 1]
+```
+
+#### Approach 2: Lowest Set Bit
+
+```python
+def count_bits(n: int) -> list[int]:
+    """
+    Cách 2: Cong thuc ans[i] = ans[i & (i-1)] + 1
+
+    Y tuong:
+    - i & (i-1): tắt bit 1 thấp nhất của i
+    - Kết quả là số nhỏ hơn i và có ít hơn 1 bit 1
+    - Nen: số bit 1 của i = số bit 1 của (i & (i-1)) + 1
+    """
+    ans = [0] * (n + 1)
+    for i in range(1, n + 1):
+        ans[i] = ans[i & (i - 1)] + 1
+    return ans
+
+
+# === Test ===
+print(count_bits(2))   # [0, 1, 1]
+print(count_bits(5))   # [0, 1, 1, 2, 1, 2]
+print(count_bits(8))   # [0, 1, 1, 2, 1, 2, 2, 3, 1]
+```
+
+**Complexity:** Time O(n), Space O(n) (cho mảng kết quả) — ca 2 approach.
+
+#### Dry Run — `count_bits(5)` (Approach 1)
+
+```
+ans = [0, 0, 0, 0, 0, 0]
+
+i=1: 1 >> 1 = 0, 1 & 1 = 1 → ans[1] = ans[0] + 1 = 0 + 1 = 1
+     1 = 1₂ → 1 bit 1 ✓
+
+i=2: 2 >> 1 = 1, 2 & 1 = 0 → ans[2] = ans[1] + 0 = 1 + 0 = 1
+     2 = 10₂ → 1 bit 1 ✓
+
+i=3: 3 >> 1 = 1, 3 & 1 = 1 → ans[3] = ans[1] + 1 = 1 + 1 = 2
+     3 = 11₂ → 2 bit 1 ✓
+
+i=4: 4 >> 1 = 2, 4 & 1 = 0 → ans[4] = ans[2] + 0 = 1 + 0 = 1
+     4 = 100₂ → 1 bit 1 ✓
+
+i=5: 5 >> 1 = 2, 5 & 1 = 1 → ans[5] = ans[2] + 1 = 1 + 1 = 2
+     5 = 101₂ → 2 bit 1 ✓
+
+Kết quả: [0, 1, 1, 2, 1, 2] ✓
+```
+
+#### Lỗi thường gặp / Edge cases
+
+- **Quên khởi tạo `ans[0] = 0`**: Số 0 có 0 bit 1. Nếu khởi tạo sai sẽ lỗi toàn bộ.
+- **Nham `i >> 1` voi `i << 1`**: Dịch phải là chia 2, dịch trái là nhân 2!
+- **n = 0**: Tra ve `[0]` — mảng chỉ có 1 phần tử.
+
+------
+
+### 5.6 Pow(x, n) — LeetCode #50 (Medium)
+
+[Link bai](https://leetcode.com/problems/powx-n/)
+
+**Đề bài:** Tinh `x^n` (x lũy thừa n).
+
+**Ví dụ:**
+
+- `x = 2.0, n = 10` → `1024.0`
+- `x = 2.1, n = 3` → `9.261`
+- `x = 2.0, n = -2` → `0.25` (= 1/4)
+
+#### Phân tích tư duy
+
+Bai nay la ung dừng truc tiep cua **Binary Exponentiation** (lũy thừa nhanh) đã học ở phần 2.6!
+
+**Nhưng có mấy "bẫy":**
+
+1. **n có thể âm**: `x^(-n) = 1 / x^n`. Cần xử lý trước.
+2. **n có thể là `-2^31`**: Nếu chuyển thành dương (`-n`), sẽ tràn 32-bit integer (vi `2^31` vượt qua `INT_MAX = 2^31 - 1`). Trick: dừng `abs()` cua Python (Python xử lý số lớn tự động).
+3. **x = 0 va n < 0**: Chia cho 0 → undefined. LeetCode dam bao khong co case nay.
+
+#### Approach 1: Đệ quy (top-down)
+
+```python
+def my_pow_recursive(x: float, n: int) -> float:
+    """
+    Cách 1: Đệ quy — Binary Exponentiation.
+
+    x^n = (x^(n/2))^2        neu n chẵn
+    x^n = x * (x^(n/2))^2    neu n lẻ
+    x^(-n) = 1 / x^n
+    """
+    # Base case
+    if n == 0:
+        return 1.0
+
+    # Xử lý số mũ âm
+    if n < 0:
+        x = 1 / x
+        n = -n
+
+    # Đệ quy: tính x^(n//2) trước
+    half = my_pow_recursive(x, n // 2)
+
+    # Kết hợp
+    if n % 2 == 0:
+        return half * half          # n chẵn: (x^(n/2))^2
+    else:
+        return half * half * x      # n lẻ: (x^(n/2))^2 * x
+
+
+# === Test ===
+print(my_pow_recursive(2.0, 10))   # 1024.0
+print(my_pow_recursive(2.1, 3))    # 9.261...
+print(my_pow_recursive(2.0, -2))   # 0.25
+```
+
+**Complexity:** Time O(log n), Space O(log n) — do đệ quy tạo call stack.
+
+#### Approach 2: Vòng lặp (bottom-up, toi uu)
+
+```python
+def my_pow(x: float, n: int) -> float:
+    """
+    Cách 2: Vòng lặp — Binary Exponentiation iterative.
+
+    Duyệt từng bit của n (từ bit thấp đến cao).
+    Nếu bit = 1, nhân result với x hiện tại.
+    Mỗi bước, x bình phương lên (x → x² → x⁴ → x⁸ → ...)
+    """
+    # Xử lý số mũ âm
+    if n < 0:
+        x = 1 / x
+        n = -n
+
+    result = 1.0
+    current_product = x  # x^(2^k) — bắt đầu là x^1
+
+    while n > 0:
+        if n & 1:                           # bit cuối = 1 → nhân vào kết quả
+            result *= current_product
+        current_product *= current_product   # bình phương: x^1 → x^2 → x^4 → ...
+        n >>= 1                              # dịch phải = chia 2
+
+    return result
+
+
+# === Test ===
+print(my_pow(2.0, 10))   # 1024.0
+print(my_pow(2.1, 3))    # 9.261...
+print(my_pow(2.0, -2))   # 0.25
+print(my_pow(0.5, -2))   # 4.0
+print(my_pow(1.0, 2147483647))  # 1.0
+```
+
+**Complexity:** Time O(log n), Space O(1) — tối ưu nhất!
+
+#### Dry Run — `my_pow(2.0, 10)`
+
+```
+x = 2.0, n = 10 = 1010₂
+result = 1.0, current_product = 2.0
+
+Vòng 1: n = 10 = 1010₂
+  bit cuối = 0 → không nhân
+  current_product = 2.0 * 2.0 = 4.0     (x²)
+  n = 5 = 101₂
+
+Vòng 2: n = 5 = 101₂
+  bit cuoi = 1 → result = 1.0 * 4.0 = 4.0
+  current_product = 4.0 * 4.0 = 16.0    (x⁴)
+  n = 2 = 10₂
+
+Vòng 3: n = 2 = 10₂
+  bit cuối = 0 → không nhân
+  current_product = 16.0 * 16.0 = 256.0 (x⁸)
+  n = 1 = 1₂
+
+Vong 4: n = 1 = 1₂
+  bit cuoi = 1 → result = 4.0 * 256.0 = 1024.0
+  current_product = 256.0 * 256.0 = 65536.0 (x¹⁶)
+  n = 0
+
+n = 0 → dừng
+
+Kết quả: 1024.0 ✓ (2^10 = 2^8 * 2^2 = 256 * 4 = 1024)
+```
+
+#### Lỗi thường gặp / Edge cases
+
+- **Quen xu ly `n < 0`**: `2^(-2) = 1/2^2 = 0.25`, khong phai `-4`!
+- **n = 0**: Mọi số mũ 0 đều bằng 1 (ke ca 0^0 = 1 theo convention).
+- **x = 1 hoac x = -1 voi n cuc lon**: Cần chạy nhanh (O(log n)), không được O(n).
+- **Tràn số với `n = -2^31`**: Trong Python khong bi, nhung trong C++/Java cần cẩn thận khi đối dấu `-n`.
+
+------
+
+### 5.7 Count Primes — LeetCode #204 (Medium)
+
+[Link bai](https://leetcode.com/problems/count-primes/)
+
+**Đề bài:** Cho so nguyen `n`, đếm số lượng số nguyên tố **nho hon** `n`.
+
+**Ví dụ:**
+
+- `n = 10` → `4` (các số nguyên tố: 2, 3, 5, 7)
+- `n = 0` → `0`
+- `n = 1` → `0`
+- `n = 2` → `0` (khong co số nguyên tố nao **nho hon** 2)
+
+#### Phân tích tư duy
+
+1. **Cách 1 — Brute force**: Với mỗi số từ 2 đến n-1, kiểm tra có phải số nguyên tố không → O(n√n). Quá chậm khi n lớn!
+2. **Cách 2 — Sàng Eratosthenes**: Da hoc o phan 2.4! Đánh dấu tất cả bội số → O(n log log n). Đây là cách tối ưu nhất.
+
+#### Approach 1: Brute Force
+
+```python
+def count_primes_brute(n: int) -> int:
+    """
+    Cách 1: Brute force — kiểm tra từng số.
+    Với mỗi số từ 2 đến n-1, kiểm tra i có phải số nguyên tố không.
+    """
+    def is_prime(num):
+        if num < 2:
+            return False
+        if num < 4:
+            return True
+        if num % 2 == 0 or num % 3 == 0:
+            return False
+        i = 5
+        while i * i <= num:
+            if num % i == 0 or num % (i + 2) == 0:
+                return False
+            i += 6
+        return True
+
+    count = 0
+    for i in range(2, n):
+        if is_prime(i):
+            count += 1
+    return count
+
+
+# === Test ===
+print(count_primes_brute(10))   # 4
+print(count_primes_brute(0))    # 0
+print(count_primes_brute(1))    # 0
+```
+
+**Complexity:** Time O(n√n), Space O(1). Sẽ bị TLE (Time Limit Exceeded) với n lớn!
+
+#### Approach 2: Sàng Eratosthenes (Tối ưu)
+
+```python
+def count_primes(n: int) -> int:
+    """
+    Cách 2: Sàng Eratosthenes.
+
+    1. Tạo mảng boolean is_prime[0..n-1], khởi tạo = True
+    2. Đánh dấu 0, 1 là không phải số nguyên tố
+    3. Với mỗi số nguyên tố p (từ 2), gạch bỏ tất cả bội của p
+       bắt đầu từ p*p (vì các bội nhỏ hơn đã bị gạch bởi số nguyên tố nhỏ hơn)
+    4. Chỉ cần duyệt p đến √n
+    5. Đếm các số còn True
+    """
+    if n < 2:
+        return 0
+
+    # Bước 1: Khởi tạo — giả sử tất cả là số nguyên tố
+    is_prime = [True] * n
+    is_prime[0] = is_prime[1] = False
+
+    # Bước 2: Sàng — gạch bỏ bội số
+    p = 2
+    while p * p < n:
+        if is_prime[p]:
+            # Gạch bỏ bội của p, bắt đầu từ p*p
+            for multiple in range(p * p, n, p):
+                is_prime[multiple] = False
+        p += 1
+
+    # Bước 3: Đếm số True còn lại
+    return sum(is_prime)
+
+
+# === Test ===
+print(count_primes(10))        # 4
+print(count_primes(0))         # 0
+print(count_primes(1))         # 0
+print(count_primes(2))         # 0
+print(count_primes(3))         # 1 (chi co so 2)
+print(count_primes(100))       # 25
+print(count_primes(5000000))   # 348513
+```
+
+**Complexity:** Time O(n log log n), Space O(n)
+
+#### Dry Run — `count_primes(20)`
+
+```
+n = 20
+is_prime = [F, F, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T]
+            0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19
+
+p = 2 (la số nguyên tố):
+  Gạch bỏ: 4, 6, 8, 10, 12, 14, 16, 18
+  is_prime = [F, F, T, T, F, T, F, T, F, T, F, T, F, T, F, T, F, T, F, T]
+
+p = 3 (la số nguyên tố):
+  Gạch bỏ tu 9: 9, 12, 15, 18 (12, 18 đã bị gạch)
+  is_prime = [F, F, T, T, F, T, F, T, F, F, F, T, F, T, F, F, F, T, F, T]
+
+p = 4: 4*4 = 16 < 20, nhung is_prime[4] = False → bỏ qua
+
+p = 5: 5*5 = 25 >= 20 → dừng sàng
+
+Đếm True: 2, 3, 5, 7, 11, 13, 17, 19 → 8 số nguyên tố
+
+Kết quả: 8 ✓
+```
+
+```mermaid
+flowchart TD
+    Start([count_primes n]) --> CheckN{n < 2?}
+    CheckN -- Đúng --> Return0[return 0]
+    CheckN -- Sai --> Init["Khởi tạo is_prime[0..n-1] = True<br/>is_prime[0] = is_prime[1] = False"]
+    Init --> SetP[p = 2]
+    SetP --> LoopP{p * p < n?}
+    LoopP -- Sai --> ReturnSum["return sum(is_prime)<br/>(Đếm số True còn lại)"]
+    LoopP -- Đúng --> CheckPrime{is_prime[p]?}
+    CheckPrime -- Sai --> IncP[p += 1]
+    CheckPrime -- Đúng --> MarkMultiples["Gạch bỏ các bội của p:<br/>p*p, p*p+p, p*p+2p, ... < n"]
+    MarkMultiples --> IncP
+    IncP --> LoopP
+```
+
+#### Tối ưu thêm: Sàng chỉ xét số lẻ
+
+```python
+def count_primes_optimized(n: int) -> int:
+    """
+    Cách 2b: Sàng Eratosthenes toi uu — chi xet so le.
+
+    Số 2 là số nguyên tố chẵn duy nhất.
+    Tất cả số chẵn > 2 đều không phải số nguyên tố.
+    → Chỉ cần sàng các số lẻ, tiet kiem 1/2 bo nho va thoi gian.
+    """
+    if n < 3:
+        return 0 if n < 3 else 1
+
+    # Đếm số 2 trước
+    count = 1  # số 2 là số nguyên tố
+
+    # Chỉ sàng số lẻ: 3, 5, 7, 9, ...
+    is_prime = [True] * (n // 2)  # index i ung voi so 2*i + 1
+
+    # Sang tu 3 (chi xet so le)
+    p = 3
+    while p * p < n:
+        if is_prime[p // 2]:
+            # Gạch bỏ bội lẻ của p: p*p, p*p+2p, p*p+4p, ...
+            for j in range(p * p // 2, n // 2, p):
+                is_prime[j] = False
+        p += 2  # chi xet so le
+
+    # Dem (bỏ qua index 0 = số 1)
+    count += sum(is_prime[1:])
+    return count
+
+
+# === Test ===
+print(count_primes_optimized(10))   # 4
+print(count_primes_optimized(100))  # 25
+```
+
+#### Lỗi thường gặp / Edge cases
+
+- **Đề bài nói "nhỏ hơn n"**: `count_primes(10)` = 4 (không đếm 10 vì 10 không nhỏ hơn 10). Nhiều người nhầm là "nhỏ hơn hoặc bằng".
+- **n = 0 hoac n = 1**: Khong co số nguyên tố nao, tra ve 0.
+- **n = 2**: Khong co số nguyên tố nao **nho hon** 2, tra ve 0.
+- **n = 3**: Chi co so 2, tra ve 1.
+- **Sang tu `2\*p` thay vi `p\*p`**: Dung nhung cham hon. Bat dau tu `p*p` la toi uu vi cac boi nho hon `p*p` đã bị gạch boi số nguyên tố nho hon `p`.
+- **Bộ nhớ với n rất lớn**: Sàng chuẩn cần O(n) bộ nhớ. Voi n = 10^9 co the can ~1GB. Dùng Segmented Sieve để giảm.
+
+------
+
+### Bảng tổng hợp LeetCode
+
+| #    | Bai              | Độ khó | Kỹ thuật chính        | Time           | Space |
+| :--- | :--------------- | :----- | :-------------------- | :------------- | :---- |
+| 231  | Power of Two     | Easy   | Bit: `n & (n-1)`      | O(1)           | O(1)  |
+| 191  | Number of 1 Bits | Easy   | Bit: Brian Kernighan  | O(k)           | O(1)  |
+| 136  | Single Number    | Easy   | XOR triệt tiêu        | O(n)           | O(1)  |
+| 268  | Missing Number   | Easy   | XOR hoac Gauss        | O(n)           | O(1)  |
+| 338  | Counting Bits    | Easy   | DP + bit shift        | O(n)           | O(n)  |
+| 50   | Pow(x, n)        | Medium | Binary Exponentiation | O(log n)       | O(1)  |
+| 204  | Count Primes     | Medium | Sàng Eratosthenes     | O(n log log n) | O(n)  |
+
+> **Lời khuyên**: Trước khi xem lời giải, hãy tự code ít nhất 15-20 phút. Nếu bị kẹt, đọc phần "Phân tích tư duy" để lấy gợi ý, rồi tự code lại. Đây là cách học hiệu quả nhất!
+
+------
+
+*Tài liệu được tạo cho Code4Func — Vietnamese micro-learning platform.* *Nếu có thắc mắc, hãy comment bên dưới hoặc hỏi trong group Discord nhé!*

@@ -1,0 +1,189 @@
+# 🗃️ Professional-Cloud-DevOps-Engineer Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+You support a Node.js application running on Google Kubernetes Engine (GKE) in production. The application makes several HTTP requests to dependent applications. You want to anticipate which dependent applications might cause performance issues. What should you do?
+
+### Options:
+- [ ] **A)** Instrument all applications with Cloud Profiler.
+- [x] **B)** Instrument all applications with Cloud Trace and review inter-service HTTP requests. [Correct]
+- [ ] **C)** Use Cloud Debugger to review the execution of logic within each application to instrument all applications.
+- [ ] **D)** Modify the Node.js application to log HTTP request and response times to dependent applications. Use Cloud Logging to find dependent applications that are performing poorly.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+You created a Cloud Monitoring chart for CPU utilization in a dashboard within your workspace project. You want to share the chart with your Site Reliability Engineering (SRE) team only. You want to ensure you follow the principle of least privilege. What should you do?
+
+### Options:
+- [ ] **A)** Share the workspace Project ID with the SRE team. Assign the SRE team the Monitoring Viewer IAM role in the workspace project.
+- [ ] **B)** Share the workspace Project ID with the SRE team. Assign the SRE team the Dashboard Viewer IAM role in the workspace project.
+- [x] **C)** Click "Share chart by URL" and provide the URL to the SRE team. Assign the SRE team the Monitoring Viewer IAM role in the workspace project. [Correct]
+- [ ] **D)** Click "Share chart by URL" and provide the URL to the SRE team. Assign the SRE team the Dashboard Viewer IAM role in the workspace project.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+Your organization wants to implement Site Reliability Engineering (SRE) culture and principles. Recently, a service that you support had a limited outage. A manager on another team asks you to provide a formal explanation of what happened so they can action remediations. What should you do?
+
+### Options:
+- [ ] **A)** Develop a postmortem that includes the root causes, resolution, lessons learned, and a prioritized list of action items. Share it with the manager only.
+- [x] **B)** Develop a postmortem that includes the root causes, resolution, lessons learned, and a prioritized list of action items. Share it on the engineering organization's document portal. [Correct]
+- [ ] **C)** Develop a postmortem that includes the root causes, resolution, lessons learned, the list of people responsible, and a list of action items for each person. Share it with the manager only.
+- [ ] **D)** Develop a postmortem that includes the root causes, resolution, lessons learned, the list of people responsible, and a list of action items for each person. Share it on the engineering organization's document portal.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+You have a set of applications running on a Google Kubernetes Engine (GKE) cluster, and you are using Cloud Operations for GKE. You are bringing a new containerized application required by your company into production. This application is written by a third party and cannot be modified or reconfigured. The application writes its log information to /var/log/app_messages.log, and you want to send these log entries to Cloud Logging. What should you do?
+
+### Options:
+- [ ] **A)** Use the default Cloud Operations for GKE agent configuration.
+- [x] **B)** Deploy a Fluentd daemonset to GKE. Then create a customized input and output configuration to tail the log file in the application's pods and write to Cloud Logging. [Correct]
+- [ ] **C)** Install Kubernetes on Compute Engine and redeploy your applications. Then customize the built-in Cloud Logging configuration to tail the log file in the application's pods and write to Cloud Logging.
+- [ ] **D)** Write a script to tail the log file within the pod and write entries to standard output. Run the script as a sidecar container with the application's pod. Configure a shared volume between the containers to allow the script to have read access to /var/log in the application container.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+You are running an application in a virtual machine (VM) using a custom Debian image. The image has the Cloud Logging agent installed. The VM has the cloud-platform scope. The application is logging information via syslog. You want to use Cloud Logging in the Google Cloud Platform Console to visualize the logs. You notice that syslog is not showing up in the "All logs" dropdown list of the Logs Viewer. What is the first thing you should do?
+
+### Options:
+- [ ] **A)** Look for the agent's test log entry in the Logs Viewer.
+- [ ] **B)** Install the most recent version of the Cloud Logging agent.
+- [ ] **C)** Verify the VM service account access scope includes the monitoring.write scope.
+- [x] **D)** SSH to the VM and execute the following commands on your VM: ps ax | grep fluentd. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: 
+
+You use a multiple step Cloud Build pipeline to build and deploy your application to Google Kubernetes Engine (GKE). You want to integrate with a third-party monitoring platform by performing a HTTP POST of the build information to a webhook. You want to minimize the development effort. What should you do?
+
+### Options:
+- [ ] **A)** Add logic to each Cloud Build step to HTTP POST the build information to a webhook.
+- [ ] **B)** Add a new step at the end of the pipeline in Cloud Build to HTTP POST the build information to a webhook.
+- [ ] **C)** Use Cloud Logging to create a logs-based metric from the Cloud Build logs. Create an Alert with a Webhook notification type.
+- [x] **D)** Create a Pub/Sub push subscription to the Cloud Build cloud-builds PubSub topic to HTTP POST the build information to a webhook. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: 
+
+You use Spinnaker to deploy your application and have created a canary deployment stage in the pipeline. Your application has an in-memory cache that loads objects at start time. You want to automate the comparison of the canary version against the production version. How should you configure the canary analysis?
+
+### Options:
+- [x] **A)** Compare the canary with a new deployment of the current production version. [Correct]
+- [ ] **B)** Compare the canary with a new deployment of the previous production version.
+- [ ] **C)** Compare the canary with the existing deployment of the current production version.
+- [ ] **D)** Compare the canary with the average performance of a sliding window of previous production versions.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: 
+
+You support a high-traffic web application and want to ensure that the home page loads in a timely manner. As a first step, you decide to implement a Service Level Indicator (SLI) to represent home page request latency with an acceptable page load time set to 100 ms. What is the Google-recommended way of calculating this SLI?
+
+### Options:
+- [ ] **A)** Bucketize the request latencies into ranges, and then compute the percentile at 100 ms.
+- [ ] **B)** Bucketize the request latencies into ranges, and then compute the median and 90th percentiles.
+- [x] **C)** Count the number of home page requests that load in under 100 ms, and then divide by the total number of home page requests. [Correct]
+- [ ] **D)** Count the number of home page requests that load in under 100 ms, and then divide by the total number of all web application requests.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---

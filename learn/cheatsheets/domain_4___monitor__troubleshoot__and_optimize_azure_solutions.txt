@@ -1,0 +1,40 @@
+---
+tags:
+  - certification/az-204
+  - azure-dev/study-notes/domain-4
+status: todo
+created: 2026-06-15
+---
+
+# Domain 4: Monitor, Troubleshoot, and Optimize Azure Solutions
+
+This domain covers core concepts for Monitor, Troubleshoot, and Optimize Azure Solutions.
+
+## 🎯 Exam Objectives
+- Understand the core concepts under Monitor, Troubleshoot, and Optimize Azure Solutions.
+- Study key Azure patterns and reference architectures.
+
+---
+
+## 📖 Key Study Topics
+
+### 1. Overview
+- Detail key Azure resources, patterns, and configurations.
+- Review official documentation links.
+
+---
+Back to **[[certifications/microsoft/AZ-204/AZ-204 MOC|AZ-204 MOC]]**
+
+## 🔍 Practice Question Reference
+Here are key questions from the practice bank matching this domain:
+- **Q1**: Note: The question is included in a number of questions that depicts the identical set-up. However, ... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 4#Question 1|Practice Q1]])
+- **Q2**: Note: The question is included in a number of questions that depicts the identical set-up. However, ... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 4#Question 2|Practice Q2]])
+- **Q3**: Your company's Azure subscription includes an Azure Log Analytics workspace. Your company has a hund... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 4#Question 3|Practice Q3]])
+- **Q4**: DRAG DROP (Drag and Drop is not supported)  You are developing a solution for a hospital to support ... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 4#Question 4|Practice Q4]])
+- **Q5**: You are developing a web application that runs as an Azure Web App. The web application stores data ... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 4#Question 5|Practice Q5]])
+- **Q6**: HOTSPOT (Drag and Drop is not supported)  You are developing an Azure Durable Function based applica... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 4#Question 6|Practice Q6]])
+- **Q7**: HOTSPOT (Drag and Drop is not supported)  You are developing an Azure Durable Function based applica... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 4#Question 7|Practice Q7]])
+- **Q8**: HOTSPOT (Drag and Drop is not supported)  You are developing an Azure Durable Function based applica... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 4#Question 8|Practice Q8]])
+
+---
+Back to **[[certifications/microsoft/AZ-204/AZ-204 MOC|AZ-204 MOC]]**

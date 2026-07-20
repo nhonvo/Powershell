@@ -1,0 +1,89 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 4
+
+## Part 1
+**Q1.** さいきんは　ずっと　天気が　いいですね。
+- **A.** でんき
+- **B.** てんき
+- **C.** げんき
+- **D.** けんき
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2天気 (THI&Ecirc;N - KH&Iacute;)：Thời tiết Thời tiết dạo n&agrave;y l&uacute;c n&agrave;o cũng đẹp.</p>
+</details>
+
+---
+**Q2.** やまださんは　いつも　忙しいです。
+- **A.** やさしい
+- **B.** かなしい
+- **C.** さびしい
+- **D.** いそがしい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4忙しい (MANG)：bận rộnAnh Yamada l&uacute;c n&agrave;o cũng bận rộn.</p>
+</details>
+
+---
+**Q3.** つくえの　上に　ほんが　あります。
+- **A.** うえ
+- **B.** した
+- **C.** まえ
+- **D.** よこ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1上 (THƯỢNG)：Tr&ecirc;nTr&ecirc;n b&agrave;n c&oacute; một cuốn s&aacute;ch.</p>
+</details>
+
+---
+**Q4.** この　ノートは　六百円です。
+- **A.** ろっひゃくえん
+- **B.** ろっぴゃくえん
+- **C.** ろくひゃくえん
+- **D.** ろくびゃくえん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2六百円 (LỤC - B&Aacute;CH - VI&Ecirc;N)： 600 y&ecirc;nQuyển sổ n&agrave;y gi&aacute; 600 y&ecirc;n.</p>
+</details>
+
+---
+**Q5.** リーさんは　黒い　ふくを　きています。
+- **A.** しろい
+- **B.** くろい
+- **C.** あおい
+- **D.** あかい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2黒い (HẮC)：m&agrave;u đenBạn Ly đang mặc bộ quần &aacute;o m&agrave;u đen.</p>
+</details>
+
+---
+**Q6.** ともだちと　いっしょに　行って　ください。
+- **A.** きって
+- **B.** いって
+- **C.** まって
+- **D.** たって
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2行く (H&Agrave;NH)：điH&atilde;y đi c&ugrave;ng với bạn b&egrave;.</p>
+</details>
+
+---
+**Q7.** どうぞ　ここから　取って　ください。
+- **A.** かって
+- **B.** やって
+- **C.** とって
+- **D.** もって
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3取る (THỦ)：lấyH&atilde;y lấy n&oacute; từ đ&acirc;y.</p>
+</details>
+
+---

@@ -1,0 +1,267 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/🥞index_07_Stack_Queue|07_Stack_Queue]]
+
+## 2. Queue (FIFO)
+
+### 2.1 Khái niệm
+
+Hình dung bạn đang xếp hàng mua trà sữa. Người đến **trước** được phục vụ **trước**, người đến **sau** phải đợi ở cuối hàng. Đó là nguyên tắc **FIFO (First In, First Out)**.
+
+Queue có **hai đầu**:
+
+- **front** (đầu hàng): nơi phần tử được lấy ra (dequeue)
+- **rear** (cuối hàng): nơi phần tử mới được thêm vào (enqueue)
+
+**Ví dụ thực tế:**
+
+- Hàng đợi tại ngân hàng, bệnh viện
+- Print queue: các tài liệu xếp hàng chờ in
+- Message queue trong hệ thống phân tán (RabbitMQ, Kafka)
+- BFS (Breadth-First Search) trong đồ thị
+
+### 2.2 Các thao tác cơ bản
+
+| Thao tác             | Mô tả                           | Độ phức tạp |
+| :------------------- | :------------------------------ | :---------- |
+| `enqueue(x)`         | Thêm phần tử x vào cuối queue   | O(1)        |
+| `dequeue()`          | Xóa và trả về phần tử đầu queue | O(1)        |
+| `front()` / `peek()` | Xem phần tử đầu mà không xóa    | O(1)        |
+| `isEmpty()`          | Kiểm tra queue rỗng             | O(1)        |
+| `size()`             | Số phần tử trong queue          | O(1)        |
+
+### 2.3 Mô phỏng từng bước
+
+```
+Bắt đầu: Queue rỗng []
+
+Bước 1: enqueue(5)  → [5]           ← 5 vào cuối
+Bước 2: enqueue(3)  → [5, 3]        ← 3 vào cuối
+Bước 3: enqueue(8)  → [5, 3, 8]     ← 8 vào cuối
+Bước 4: front()     → trả về 5      ← queue không đổi
+Bước 5: dequeue()   → trả về 5      ← 5 ra khỏi đầu, queue = [3, 8]
+Bước 6: dequeue()   → trả về 3      ← 3 ra khỏi đầu, queue = [8]
+Bước 7: enqueue(1)  → [8, 1]        ← 1 vào cuối
+Bước 8: size()      → 2
+```
+
+Queue sau enqueue 5, 3, 8front538rear
+
+### 2.4 Cài đặt bằng Array đơn giản (có vấn đề)
+
+Cách đơn giản nhất: dùng mảng, `front_index` chỉ đầu, `rear_index` chỉ cuối.
+
+**Vấn đề**: sau nhiều lần dequeue, `front_index` tăng dần, phần đầu mảng bị lãng phí. Mình gọi đây là vấn đề **"mảng trôi"**.
+
+```
+Capacity = 5
+Sau enqueue 1,2,3,4,5: [1, 2, 3, 4, 5]  front=0, rear=4
+Sau dequeue 3 lần:     [_, _, _, 4, 5]  front=3, rear=4
+
+Mảng còn 3 ô trống ở đầu nhưng không thể enqueue thêm
+vì rear đã ở cuối mảng! → Lãng phí bộ nhớ.
+```
+
+**Giải pháp**: **Circular Queue** (Queue vòng).
+
+### 2.5 Circular Queue (Queue vòng)
+
+Ý tưởng: coi mảng như một **vòng tròn**. Khi `rear` đến cuối mảng, nó quay lại đầu mảng (nếu có chỗ trống). Dùng phép `%` (modulo) để wrap around.
+
+Circular Queue - capacity 5rear quay về [0][0]: 'trống'[1]: 'trống'[2]: 'trống'[3]: 4[4]: 5front = 3rear = 4
+
+**Công thức quan trọng:**
+
+- Vị trí tiếp theo: `(index + 1) % capacity`
+- Kiểm tra đầy: `(rear + 1) % capacity == front`
+- Kiểm tra rỗng: `front == -1` hoặc dùng biến `size`
+
+**Flowchart enqueue:**
+
+CóKhôngCóKhôngBắt đầu enqueue(x)Queue đầy?
+(rear+1) % cap == frontBáo lỗi Queue FullQueue rỗng?
+front == -1front = 0, rear = 0rear = (rear + 1) % caparr[rear] = xKết thúc
+
+**Flowchart dequeue:**
+
+CóKhôngCóKhôngBắt đầu dequeue()Queue rỗng?
+front == -1Báo lỗi Queue Emptyval = arr[front]front == rear?
+Chỉ còn 1 phần tửfront = -1, rear = -1
+Queue trở thành rỗngfront = (front + 1) % capTrả về valKết thúc
+
+#### Python — Circular Queue
+
+```python
+class CircularQueue:
+    """Queue vòng cài đặt bằng mảng."""
+
+    def __init__(self, capacity=1000):
+        self.capacity = capacity
+        self.arr = [None] * capacity
+        self.front = -1
+        self.rear = -1
+        self._size = 0
+
+    def enqueue(self, x):
+        """Thêm phần tử vào cuối queue. O(1)"""
+        if self._size == self.capacity:
+            raise OverflowError("Queue đầy!")
+
+        if self.is_empty():
+            self.front = 0
+            self.rear = 0
+        else:
+            self.rear = (self.rear + 1) % self.capacity
+
+        self.arr[self.rear] = x
+        self._size += 1
+
+    def dequeue(self):
+        """Xóa và trả về phần tử đầu queue. O(1)"""
+        if self.is_empty():
+            raise IndexError("Queue rỗng!")
+
+        val = self.arr[self.front]
+        self.arr[self.front] = None
+        self._size -= 1
+
+        if self._size == 0:
+            self.front = -1
+            self.rear = -1
+        else:
+            self.front = (self.front + 1) % self.capacity
+
+        return val
+
+    def peek(self):
+        """Xem phần tử đầu. O(1)"""
+        if self.is_empty():
+            raise IndexError("Queue rỗng!")
+        return self.arr[self.front]
+
+    def is_empty(self):
+        return self._size == 0
+
+    def size(self):
+        return self._size
+
+
+# --- Sử dụng ---
+q = CircularQueue(5)
+q.enqueue(1)
+q.enqueue(2)
+q.enqueue(3)
+print(q.dequeue())  # 1
+print(q.dequeue())  # 2
+q.enqueue(4)
+q.enqueue(5)
+q.enqueue(6)        # rear wrap around về đầu mảng!
+print(q.peek())     # 3
+print(q.size())     # 4
+```
+
+#### Cách dùng nhanh với collections.deque
+
+> Trong Python, `collections.deque` là cách tốt nhất để dùng Queue. `append()` thêm cuối, `popleft()` lấy đầu — cả hai đều O(1).
+
+```python
+from collections import deque
+
+# --- Dùng deque làm queue ---
+q = deque()
+
+q.append(1)     # enqueue 1
+q.append(2)     # enqueue 2
+q.append(3)     # enqueue 3
+
+print(q.popleft())  # dequeue → 1 (FIFO: vào trước ra trước)
+print(q.popleft())  # dequeue → 2
+
+q.append(4)     # enqueue 4
+q.append(5)     # enqueue 5
+q.append(6)     # enqueue 6
+
+print(q[0])     # peek front → 3
+print(len(q))   # size → 4
+
+# Lưu ý: KHÔNG dùng list.pop(0) làm queue vì nó là O(n)!
+# list.pop(0) phải dịch toàn bộ phần tử sang trái.
+# deque.popleft() mới thực sự O(1).
+```
+
+### 2.6 Cài đặt Queue bằng Linked List
+
+```python
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+class LinkedListQueue:
+    """Queue cài đặt bằng linked list."""
+
+    def __init__(self):
+        self.head = None   # front
+        self.tail = None   # rear
+        self._size = 0
+
+    def enqueue(self, x):
+        """Thêm vào cuối (tail). O(1)"""
+        new_node = Node(x)
+        if self.is_empty():
+            self.head = new_node
+            self.tail = new_node
+        else:
+            self.tail.next = new_node
+            self.tail = new_node
+        self._size += 1
+
+    def dequeue(self):
+        """Xóa từ đầu (head). O(1)"""
+        if self.is_empty():
+            raise IndexError("Queue rỗng!")
+        val = self.head.data
+        self.head = self.head.next
+        if self.head is None:
+            self.tail = None
+        self._size -= 1
+        return val
+
+    def peek(self):
+        if self.is_empty():
+            raise IndexError("Queue rỗng!")
+        return self.head.data
+
+    def is_empty(self):
+        return self.head is None
+
+    def size(self):
+        return self._size
+```
+
+### 2.7 Chứng minh độ phức tạp
+
+**Circular Queue — Mọi thao tác O(1):**
+
+Chứng minh rất đơn giản vì mỗi thao tác chỉ gồm:
+
+- Tính toán index mới bằng phép modulo: O(1)
+- Gán giá trị vào mảng tại index: O(1)
+- Cập nhật biến `size`: O(1)
+
+Tổng cộng: hằng số phép tính = O(1).
+
+**Không có loop, không có đệ quy** → Worst case = Best case = O(1).
+
+### 2.8 Ưu điểm và nhược điểm
+
+|           | Circular Queue (Array)               | Linked List Queue                    |
+| :-------- | :----------------------------------- | :----------------------------------- |
+| **Ưu**    | Cache-friendly, ít memory overhead   | Không cần biết capacity trước        |
+| **Ưu**    | O(1) mọi thao tác (worst case)       | O(1) mọi thao tác (worst case)       |
+| **Nhược** | Cần biết capacity trước              | Mỗi node tốn thêm bộ nhớ cho pointer |
+| **Nhược** | Resize phức tạp (phải copy circular) | Cache performance kém hơn            |
+
+### 2.9 Cải tiến
+
+- **Dynamic circular queue**: tự resize khi đầy (gấp đôi capacity, copy các phần tử theo đúng thứ tự)
+- **Priority Queue**: mỗi phần tử có priority, phần tử priority cao ra trước (sẽ học ở bài Heap)
+- **Blocking Queue**: thread an toàn, block khi queue rỗng/đầy (dùng trong producer-consumer pattern)

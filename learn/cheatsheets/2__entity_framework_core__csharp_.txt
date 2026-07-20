@@ -1,0 +1,87 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/02_Database_ORM/📂index_02_Database_ORM|02_Database_ORM]]
+
+# 🏗️ 2. Entity Framework Core (CSharp) - EF Core Mastery
+
+Entity Framework Core (EF Core) là ORM (Object-Relational Mapper) phổ biến nhất của .NET. Nó giúp lập trình viên thao tác với Database như với một tập hợp các đối tượng C#, nhưng "phép màu" này đi kèm với cái giá về hiệu năng nếu không biết cách tối ưu.
+
+---
+
+### 🏛️ 2.1 Kiến trúc lõi: DBContext & Change Tracker
+
+`DBContext` là trung tâm của mọi hoạt động. Nó chứa:
+- **DbSet<T>**: Đại diện cho một bảng trong Database.
+- **Change Tracker**: Tự động theo dõi các thay đổi (`Modified`, `Added`, `Deleted`) trên các đối tượng. Khi gọi `SaveChanges()`, EF Core sẽ tổng hợp các thay đổi này và gửi 1 loạt lệnh SQL đến DB.
+
+> [!WARNING]
+> Change Tracker tiêu tốn nhiều bộ nhớ và CPU. Với các câu lệnh chỉ để hiển thị (Read-only), hãy dùng `.AsNoTracking()`.
+
+---
+
+### 🚀 2.2 Performance: N+1 Problem & Liên kết dữ liệu
+
+Lỗi phổ biến nhất của Junior là vô tình gây ra hàng trăm query dư thừa (N+1 Problem).
+
+#### **3 Cách lấy dữ liệu liên quan:**
+1.  **Eager Loading**: Lấy dữ liệu ngay lập tức bằng `.Include()`. (Khuyên dùng).
+2.  **Explicit Loading**: Lấy dữ liệu khi cần bằng `.Entry(e).Collection(c).Load()`.
+3.  **Lazy Loading**: Chỉ lấy dữ liệu khi gọi đến thuộc tính (Thường bị tắt mặc định hoặc dùng qua `virtual` properties). (Cẩn thận: Dễ gây N+1).
+
+**Ví dụ Eager Loading:**
+```csharp
+var users = context.Users.Include(u => u.Posts).ToList(); // Chỉ 1 Câu query dùng JOIN
+```
+
+---
+
+### 🧬 2.3 Migration: Quản lý cấu trúc Database
+
+Migrations cho phép bạn thay đổi code C# (Entity) và tự động đồng bộ cấu trúc Database (Table, Column).
+
+**Quy trình làm việc:**
+1.  **Add-Migration**: Tạo ra file code C# mô tả sự thay đổi.
+2.  **Update-Database**: Thực thi file đó lên Database thật (Thành SQL DDL).
+
+> [!TIP]
+> Luôn kiểm tra file Migration được sinh ra trước khi chạy Update! EF Core có thể xóa nhầm dữ liệu nếu bạn đổi tên cột không đúng cách.
+
+---
+
+### ⚡ 2.4 SQL Translation: LINQ to SQL
+
+EF Core biên dịch LINQ thành SQL bằng **Expression Trees**. Tuy nhiên, không phải hàm C# nào cũng có thể chuyển sang SQL.
+
+- **C# Native**: `users.Where(u => u.Name.ToUpper() == "NHON")` → SQL `WHERE UPPER(Name) = 'NHON'`. (Tốt).
+- **Client-side Evaluation**: Nếu bạn dùng một hàm phức tạp, EF Core sẽ phải lấy TOÀN BỘ dữ liệu về Server mới lọc (Query `SELECT *`). (Thảm họa hiệu năng).
+
+---
+
+### 📝 2.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Database-First" vs "Code-First"? Bạn chọn cái nào cho dự án mới và tại sao?
+<details><summary>Đáp án</summary>
+Code-First là lựa chọn số 1 hiện nay. Nó giúp bạn quản lý Version của Database đồng nhất với Git, dễ dàng triển khai CI/CD và định nghĩa logic ngay trong code C#. Database-First chỉ dùng khi bạn phải kế thừa một hệ thống DB cũ (Legacy) đã tồn tại từ trước.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh LINQ hiệu quả nhất để lấy danh sách 10 bài viết mới nhất, bao gồm thông tin Tác giả và số lượng Bình luận (Comments).
+<details><summary>Solution</summary>
+```csharp
+var posts = context.Posts
+                    .AsNoTracking() // Tối ưu: Chỉ đọc
+                    .Include(p => p.Author)
+                    .Select(p => new {
+                        p.Title,
+                        AuthorName = p.Author.Name,
+                        CommentCount = p.Comments.Count()
+                    })
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Take(10)
+                    .ToList();
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [EF Core Performance Optimization Guide](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-ef-core-performance.md)
+- [Managing Database Migrations in Team Project](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-migrations-best-practices.md)
+- [Client-side Evaluation: The Silent Performance Killer](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-07-client-side-evaluation.md)

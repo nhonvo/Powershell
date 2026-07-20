@@ -1,0 +1,46 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/📂index_02_Backend_Development_Roadmap|02_Backend_Development_Roadmap]]
+
+# Lộ trình Backend Developer Chuyên Nghiệp (C# & Java)
+
+Lộ trình học Backend bài bản từ zero đến production-ready. Bạn sẽ thành thạo các ngôn ngữ mạnh mẽ nhất thị trường hiện nay (C#/.NET & Java/Spring Boot), PostgreSQL, EF Core/Hibernate, Redis, Elasticsearch, Prometheus, Grafana và triển khai hệ thống thực tế. Kết thúc bằng dự án thực hành **Personal Finance App (Quản lý tài chính cá nhân)** áp dụng tất cả kiến thức đã học.
+
+## Tổng quan Lộ trình
+
+| STT | Học phần | Chi tiết Nội dung (C# & Java) | Ghi chú |
+| :-- | :--- | :--- | :--- |
+| **1** | **Language Basics** | [1. Intro](01_Language_Basics/1. Introduction to CSharp & Java.md), [2. OOP](01_Language_Basics/2. OOP Concepts.md), [3. Generics](01_Language_Basics/3. Collections & Generics.md), [4. LINQ](01_Language_Basics/4. LINQ vs Stream API.md), [5. Async](01_Language_Basics/5. Asynchronous & Multithreading.md), [**Design Patterns Mastery**](../03_Design_Patterns_Mastery/README.md) | [Nền tảng] |
+| **2** | **Database & ORM** | [1. SQL](02_Database_ORM/1. SQL Fundamentals & PostgreSQL.md), [2. EF Core](02_Database_ORM/2. Entity Framework Core (CSharp).md), [3. Hibernate](02_Database_ORM/3. Hibernate & Spring Data JPA (Java).md), [4. Design](02_Database_ORM/4. Database Design & Optimization.md), [**PostgreSQL Advanced**](../04_PostgreSQL_Deep_Dive/README.md) | [Dữ liệu] |
+| **3** | **REST API Framework** | [1. REST](03_REST_API/1. REST API Principles.md), [2. .NET API](03_REST_API/2. ASP.NET Core Web API.md), [3. Spring API](03_REST_API/3. Spring Boot Web API.md), [4. Security](03_REST_API/4. Security (JWT & RBAC).md) | [API Hub] |
+| **4** | **Caching & Redis** | [1. Fundamentals](04_Caching_Redis/1. Caching Fundamentals.md), [2. Redis Deep Dive](04_Caching_Redis/2. Redis Deep Dive.md), [3. Distributed Lock](04_Caching_Redis/3. Distributed Locking & PubSub.md) | [Tốc độ] |
+| **5** | **Logging & Tracing** | [1. Structured](05_Logging_Tracing/1. Structured Logging.md), [2. Tracing](05_Logging_Tracing/2. Distributed Tracing.md), [3. ELK Stack](05_Logging_Tracing/3. ELK Stack Integration.md) | [Gỡ lỗi] |
+| **6** | **Search Engine** | [1. Why?](06_Search_Engine/1. Search Engine vs DB.md), [2. Basics](06_Search_Engine/2. Elasticsearch Basics.md), [3. Advanced](06_Search_Engine/3. Advanced Search Features.md) | [Tìm kiếm] |
+| **7** | **Monitoring & Metrics** | [1. Pillars](07_Monitoring_Metrics/1. Observability Pillars.md), [2. Prometheus](07_Monitoring_Metrics/2. Prometheus & Metrics.md), [3. Grafana](07_Monitoring_Metrics/3. Grafana Visuals & Alerts.md) | [Giám sát] |
+| **8** | **Deployment & DevOps** | [1. Docker](08_Deployment_DevOps/1. Docker & Containers.md), [2. CI/CD](08_Deployment_DevOps/2. CI CD Pipelines.md), [3. Production](08_Deployment_DevOps/3. Production Deployment.md), [**Docker Hero**](../05_Docker_Hero/README.md) | [Triển khai] |
+| **9** | **Interview Prep** | [**Backend Interview Expert**](../06_Backend_Interview_Expert/README.md) | [Hành trang] |
+| **10** | **Capstone Project** | [Dự án Quản lý Tài chính](09_Capstone_Project/Capstone_Project.md) | [Dự án Cuối] |
+
+---
+
+## 📂 Tài liệu Chuyên sâu (Blog & Deep Dives)
+
+Dưới đây là các tài liệu bổ trợ từ hệ thống Blog giúp bạn nắm vững kiến thức nâng cao:
+
+- **Ngôn ngữ**: [Memory Management](../blog/2025-09-06-memory-management.md), [SOLID Principles](../blog/2025-09-06-solid-principles.md), [Async/Await State Machine](../blog/2025-09-06-async-await-deep-dive.md).
+- **Dữ liệu**: [SQL Optimization](../blog/2025-09-06-sql-query-optimization.md), [Transaction Isolation](../blog/2025-09-06-transaction-isolation-levels.md), [EF Core Performance](../blog/2025-09-06-ef-core-performance-tuning.md).
+- **Hệ thống**: [Caching Strategies](../blog/2025-09-06-caching-strategies.md), [Microservices Patterns](../blog/2025-09-06-event-driven-architecture-messaging-patterns.md), [Scalability Patterns](../blog/2025-09-06-scalability-patterns.md).
+- **DevOps**: [CI/CD Pipelines](../blog/2025-09-06-ci-cd-pipelines.md), [Containerization](../blog/2025-09-06-containerization-orchestration.md).
+
+---
+
+## 🎯 Mục tiêu đầu ra
+✓ Làm chủ tư duy lập trình hướng đối tượng (OOP) và song song (Concurrency).  
+✓ Thiết kế Database chuẩn hóa và tối ưu hiệu suất với Index/EXPLAIN.  
+✓ Xây dựng REST API bảo mật với JWT, RBAC và Swagger documentation.  
+✓ Triển khai hệ thống Logging, Monitoring và Search chuyên nghiệp.  
+✓ Tự động hóa quy trình CI/CD và triển khai **Zero-downtime** lên Production.
+
+---
+*Người hướng dẫn: Nguyễn Văn Kiên (Code4Func) - Phiên bản C# & Java*
+
+---
+*Tài liệu này giúp duy trì tính nhất quán cho toàn bộ hệ thống học tập.*

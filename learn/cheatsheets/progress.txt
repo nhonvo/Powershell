@@ -1,0 +1,63 @@
+﻿# Progress Tracker
+
+## Current status (edit these)
+
+- Target role(s):
+- Target companies:
+- Interview date(s):
+- Weekly available hours:
+
+## Current plan
+
+- Study plan: `STUDY_PLAN_28_DAYS.md`
+- Japanese (N5→N4): `JP_N4_N5_PLAN_28_DAYS.md`
+- English: `ENGLISH_PLAN_28_DAYS.md`
+- DSA: `DSA_PLAN_28_DAYS.md`
+- Daily entrypoint: `00_START_HERE.md`
+- Tracking format: `TRACKING_TEMPLATE.md`
+
+## Imported trackers / references
+
+- Legacy DSA tracker: `dsa/Data structure and algorithms.md`
+- Legacy interview notes: `interviewNote/`
+- Legacy CV build: `01_CV/legacy/career_CV/`
+
+---
+
+## Weekly plan (copy/paste each week)
+
+### Week of: YYYY-MM-DD
+
+**CV**
+- [ ] Master CV updated
+- [ ] 1 targeted CV
+- [ ] 1 more targeted CV
+
+**STAR stories**
+- [ ] +3 new stories
+- [ ] Improve 2 stories (metrics + clarity)
+
+**Coding**
+- [ ] 5 problems (mix easy/medium)
+- [ ] 1 topic review (notes + patterns)
+
+**System design (if needed)**
+- [ ] 1 case study (write + rehearse)
+
+**Language (EN/JP)**
+- [ ] 5x EN speaking (10 min)
+- [ ] 5x JP speaking (10 min)
+- [ ] Add 10 glossary terms
+
+---
+
+## Daily log
+
+### YYYY-MM-DD
+
+- CV:
+- Stories:
+- Coding:
+- Language (EN/JP):
+- Notes / blockers:
+

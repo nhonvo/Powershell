@@ -1,0 +1,369 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/🥞index_07_Stack_Queue|07_Stack_Queue]]
+
+## 6. Expression Evaluation
+
+### 6.1 Tổng quan
+
+Khi bạn gõ `2 + 3 * 4` vào máy tính, kết quả là 14 (không phải 20) vì phép nhân có **độ ưu tiên** cao hơn phép cộng. Vậy máy tính xử lý biểu thức như thế nào? Đó là bài toán **Expression Evaluation** — và Stack đóng vai trò cực kỳ quan trọng.
+
+### 6.2 Ba dạng biểu thức
+
+| Dạng        | Tên          | Ví dụ       | Đặc điểm                                                     |
+| :---------- | :----------- | :---------- | :----------------------------------------------------------- |
+| **Infix**   | Trung tố     | `A + B * C` | Toán tử ở **giữa** hai toán hạng. Con người đọc dễ nhưng máy xử lý khó |
+| **Postfix** | Hậu tố (RPN) | `A B C * +` | Toán tử ở **sau** hai toán hạng. Không cần ngoặc, không cần ưu tiên |
+| **Prefix**  | Tiền tố (PN) | `+ A * B C` | Toán tử ở **trước** hai toán hạng                            |
+
+**Ví dụ thực tế**: Máy tính HP dùng **Reverse Polish Notation (RPN)** — dạng postfix. Bạn nhập `2 3 4 * +` thay vì `2 + 3 * 4`.
+
+### 6.3 Tính biểu thức Postfix bằng Stack
+
+**Thuật toán:**
+
+1. Duyệt từ trái sang phải
+2. Nếu gặp **số** → push vào stack
+3. Nếu gặp **toán tử** → pop 2 phần tử, tính kết quả, push kết quả vào stack
+4. Kết thúc: phần tử cuối cùng trong stack là kết quả
+
+**Flowchart:**
+
+CóKhông - là toán tử opCóKhôngDuyệt từng tokenToken là số?push(token) vào stackb = stack.pop()a = stack.pop()result = a op bpush(result) vào stackCòn token?Trả về stack.pop()
+Đó là kết quả
+
+**Mô phỏng**: Tính `2 3 4 * +` (tương đương `2 + 3 * 4 = 14`)
+
+```
+Token '2': là số → push 2           Stack: [2]
+Token '3': là số → push 3           Stack: [2, 3]
+Token '4': là số → push 4           Stack: [2, 3, 4]
+Token '*': là toán tử
+           pop b = 4, pop a = 3
+           tính 3 * 4 = 12
+           push 12                   Stack: [2, 12]
+Token '+': là toán tử
+           pop b = 12, pop a = 2
+           tính 2 + 12 = 14
+           push 14                   Stack: [14]
+
+Kết quả: 14 ✓
+```
+
+#### Python — Evaluate Postfix
+
+```python
+def evaluate_postfix(expression):
+    """
+    Tính giá trị biểu thức postfix.
+    expression: chuỗi các token cách nhau bởi dấu cách.
+    Time: O(n), Space: O(n)
+    """
+    stack = []
+    operators = {'+', '-', '*', '/'}
+
+    for token in expression.split():
+        if token not in operators:
+            # Là số (có thể âm)
+            stack.append(float(token))
+        else:
+            # Là toán tử: pop 2 phần tử
+            b = stack.pop()  # Toán hạng phải
+            a = stack.pop()  # Toán hạng trái
+
+            if token == '+':
+                stack.append(a + b)
+            elif token == '-':
+                stack.append(a - b)
+            elif token == '*':
+                stack.append(a * b)
+            elif token == '/':
+                stack.append(a / b)  # Chú ý chia cho 0
+
+    return stack.pop()
+
+
+# --- Test ---
+print(evaluate_postfix("2 3 4 * +"))        # 14.0 (= 2 + 3*4)
+print(evaluate_postfix("5 1 2 + 4 * + 3 -"))  # 14.0 (= 5 + (1+2)*4 - 3)
+print(evaluate_postfix("3 4 + 2 * 7 /"))    # 2.0 (= (3+4)*2/7)
+```
+
+#### Python — Evaluate Postfix (phiên bản dùng int, cho LeetCode)
+
+```python
+def evaluate_postfix_int(expression):
+    """
+    Phiên bản dùng int — phù hợp cho LeetCode #150.
+    Phép chia làm tròn về 0 (truncate toward zero).
+    """
+    stack = []
+    operators = {'+', '-', '*', '/'}
+
+    for token in expression.split():
+        if token not in operators:
+            stack.append(int(token))
+        else:
+            b = stack.pop()  # Toán hạng phải
+            a = stack.pop()  # Toán hạng trái
+
+            if token == '+':
+                stack.append(a + b)
+            elif token == '-':
+                stack.append(a - b)
+            elif token == '*':
+                stack.append(a * b)
+            elif token == '/':
+                # int(a/b) làm tròn về 0 (giống C++/Java)
+                stack.append(int(a / b))
+
+    return stack.pop()
+
+
+# --- Test ---
+print(evaluate_postfix_int("2 3 4 * +"))         # 14 (= 2 + 3*4)
+print(evaluate_postfix_int("5 1 2 + 4 * + 3 -")) # 14 (= 5 + (1+2)*4 - 3)
+print(evaluate_postfix_int("6 -3 /"))             # -2 (= 6 / (-3), truncate)
+```
+
+### 6.4 Shunting-yard Algorithm — Chuyển Infix sang Postfix
+
+Thuật toán **Shunting-yard** do **Edsger Dijkstra** phát minh, dùng để chuyển biểu thức infix sang postfix, xử lý đúng **độ ưu tiên** và **dấu ngoặc**.
+
+**Ví dụ thực tế**: Giống như nhân viên ga tàu (shunting-yard) điều phối tàu vào đúng đường ray.
+
+**Quy tắc ưu tiên:**
+
+| Toán tử  | Ưu tiên | Kết hợp     |
+| :------- | :------ | :---------- |
+| `^`      | 3       | Phải → Trái |
+| `*`, `/` | 2       | Trái → Phải |
+| `+`, `-` | 1       | Trái → Phải |
+| `(`      | 0       | —           |
+
+**Thuật toán:**
+
+1. Duyệt từ trái sang phải
+
+2. Nếu **số** → thêm vào output
+
+3. Nếu **`(`** → push vào operator stack
+
+4. Nếu **`)`** → pop từ stack ra output cho đến khi gặp `(`, bỏ `(`
+
+5. Nếu
+
+    
+
+   toán tử
+
+    
+
+   ```
+   op
+   ```
+
+   :
+
+   - Trong khi stack không rỗng VÀ top stack có ưu tiên >= `op` (hoặc > nếu `op` kết hợp phải): pop ra output
+   - Push `op` vào stack
+
+6. Kết thúc: pop hết stack ra output
+
+**Flowchart:**
+
+Số()Toán tử opCóKhôngCóKhôngĐọc token tiếp theoLoại token?Thêm vào outputPush vào op stackPop op stack ra output
+cho đến khi gặp (Bỏ dấu (op stack không rỗng
+VÀ top có ưu tiên >= op?Pop top ra outputPush op vào stackCòn token?Pop hết op stack ra output
+
+**Mô phỏng**: Chuyển `3 + 4 * 2 / ( 1 - 5 ) ^ 2` sang postfix
+
+```
+Token '3':  số       → output: [3]                    op_stack: []
+Token '+':  op(1)    → stack rỗng, push               op_stack: [+]
+Token '4':  số       → output: [3, 4]                 op_stack: [+]
+Token '*':  op(2)    → +(1) < *(2), push               op_stack: [+, *]
+Token '2':  số       → output: [3, 4, 2]              op_stack: [+, *]
+Token '/':  op(2)    → *(2) >= /(2), pop * ra output
+                       output: [3, 4, 2, *]            op_stack: [+]
+                       +(1) < /(2), push                op_stack: [+, /]
+Token '(':  dấu (    → push                            op_stack: [+, /, (]
+Token '1':  số       → output: [3, 4, 2, *, 1]        op_stack: [+, /, (]
+Token '-':  op(1)    → top là (, push                   op_stack: [+, /, (, -]
+Token '5':  số       → output: [3, 4, 2, *, 1, 5]     op_stack: [+, /, (, -]
+Token ')':  dấu )    → pop cho đến '('
+                       pop '-': output: [3, 4, 2, *, 1, 5, -]
+                       bỏ '('                          op_stack: [+, /]
+Token '^':  op(3)    → /(2) < ^(3), push               op_stack: [+, /, ^]
+Token '2':  số       → output: [3, 4, 2, *, 1, 5, -, 2]
+
+Kết thúc: pop hết stack
+  pop '^': output: [3, 4, 2, *, 1, 5, -, 2, ^]
+  pop '/': output: [3, 4, 2, *, 1, 5, -, 2, ^, /]
+  pop '+': output: [3, 4, 2, *, 1, 5, -, 2, ^, /, +]
+
+Postfix: 3 4 2 * 1 5 - 2 ^ / +
+```
+
+Kiểm tra: `3 + (4*2) / ((1-5)^2) = 3 + 8/16 = 3 + 0.5 = 3.5` ✓
+
+#### Python — Shunting-yard
+
+```python
+def infix_to_postfix(expression):
+    """
+    Chuyển biểu thức infix sang postfix bằng Shunting-yard algorithm.
+    expression: chuỗi token cách nhau bởi dấu cách.
+    Time: O(n), Space: O(n)
+    """
+    precedence = {'+': 1, '-': 1, '*': 2, '/': 2, '^': 3}
+    right_assoc = {'^'}  # Toán tử kết hợp phải
+
+    output = []
+    op_stack = []
+
+    for token in expression.split():
+        if token not in precedence and token not in ('(', ')'):
+            # Là số hoặc biến
+            output.append(token)
+        elif token == '(':
+            op_stack.append(token)
+        elif token == ')':
+            # Pop cho đến khi gặp '('
+            while op_stack and op_stack[-1] != '(':
+                output.append(op_stack.pop())
+            if op_stack:
+                op_stack.pop()  # Bỏ '('
+        else:
+            # Là toán tử
+            while (op_stack and
+                   op_stack[-1] != '(' and
+                   op_stack[-1] in precedence and
+                   (precedence[op_stack[-1]] > precedence[token] or
+                    (precedence[op_stack[-1]] == precedence[token] and
+                     token not in right_assoc))):
+                output.append(op_stack.pop())
+            op_stack.append(token)
+
+    # Pop hết stack
+    while op_stack:
+        output.append(op_stack.pop())
+
+    return ' '.join(output)
+
+
+# --- Test ---
+print(infix_to_postfix("3 + 4 * 2"))
+# Output: 3 4 2 * +
+
+print(infix_to_postfix("3 + 4 * 2 / ( 1 - 5 ) ^ 2"))
+# Output: 3 4 2 * 1 5 - 2 ^ / +
+
+print(infix_to_postfix("( 1 + 2 ) * ( 3 + 4 )"))
+# Output: 1 2 + 3 4 + *
+```
+
+#### Python — Kết hợp: Tính biểu thức Infix trực tiếp
+
+```python
+def evaluate_infix(expression):
+    """
+    Tính giá trị biểu thức infix trực tiếp.
+    Kết hợp Shunting-yard + Evaluate Postfix trong 1 lần duyệt.
+    Hỗ trợ: +, -, *, /, ^, (, )
+    Time: O(n), Space: O(n)
+    """
+    precedence = {'+': 1, '-': 1, '*': 2, '/': 2, '^': 3}
+    right_assoc = {'^'}
+
+    num_stack = []   # Stack lưu số
+    op_stack = []    # Stack lưu toán tử
+
+    def apply_op():
+        """Pop 1 toán tử, 2 số, tính rồi push kết quả."""
+        op = op_stack.pop()
+        b = num_stack.pop()
+        a = num_stack.pop()
+        if op == '+': num_stack.append(a + b)
+        elif op == '-': num_stack.append(a - b)
+        elif op == '*': num_stack.append(a * b)
+        elif op == '/': num_stack.append(a / b)
+        elif op == '^': num_stack.append(a ** b)
+
+    for token in expression.split():
+        if token not in precedence and token not in ('(', ')'):
+            # Là số
+            num_stack.append(float(token))
+        elif token == '(':
+            op_stack.append(token)
+        elif token == ')':
+            while op_stack and op_stack[-1] != '(':
+                apply_op()
+            op_stack.pop()  # Bỏ '('
+        else:
+            # Là toán tử
+            while (op_stack and
+                   op_stack[-1] != '(' and
+                   op_stack[-1] in precedence and
+                   (precedence[op_stack[-1]] > precedence[token] or
+                    (precedence[op_stack[-1]] == precedence[token] and
+                     token not in right_assoc))):
+                apply_op()
+            op_stack.append(token)
+
+    while op_stack:
+        apply_op()
+
+    return num_stack.pop()
+
+
+# --- Test ---
+print(evaluate_infix("3 + 4 * 2"))                       # 11.0
+print(evaluate_infix("( 1 + 2 ) * ( 3 + 4 )"))           # 21.0
+print(evaluate_infix("3 + 4 * 2 / ( 1 - 5 ) ^ 2"))      # 3.5
+```
+
+### 6.5 Tính biểu thức Prefix
+
+Duyệt từ **phải sang trái**, quy tắc giống postfix nhưng thứ tự toán hạng a, b đảo ngược.
+
+```python
+def evaluate_prefix(expression):
+    """Tính giá trị biểu thức prefix. Duyệt từ phải sang trái."""
+    stack = []
+    operators = {'+', '-', '*', '/'}
+    tokens = expression.split()
+
+    for token in reversed(tokens):
+        if token not in operators:
+            stack.append(float(token))
+        else:
+            a = stack.pop()  # Toán hạng trái (pop trước)
+            b = stack.pop()  # Toán hạng phải (pop sau)
+            if token == '+': stack.append(a + b)
+            elif token == '-': stack.append(a - b)
+            elif token == '*': stack.append(a * b)
+            elif token == '/': stack.append(a / b)
+
+    return stack.pop()
+
+print(evaluate_prefix("+ 2 * 3 4"))    # 14.0 (= 2 + 3*4)
+print(evaluate_prefix("* + 1 2 + 3 4"))  # 21.0 (= (1+2)*(3+4))
+```
+
+### 6.6 Chứng minh độ phức tạp
+
+**Shunting-yard Algorithm — O(n):**
+
+Mỗi token được xử lý đúng 1 lần (duyệt qua 1 lần). Mỗi toán tử được push vào stack 1 lần và pop ra tối đa 1 lần. Bằng aggregate analysis:
+
+$$T_{total} = T_{scan} + T_{push} + T_{pop} \leq n + n + n = 3n = O(n)$$
+
+**Evaluate Postfix — O(n):**
+
+Duyệt n token, mỗi token thực hiện O(1) thao tác (push hoặc pop+tính+push). Tổng = O(n).
+
+### 6.7 Cải tiến
+
+- **Hỗ trợ hàm**: sin, cos, log... → push vào op_stack, pop khi gặp `)`
+- **Hỗ trợ unary minus**: phân biệt `-3` (unary) vs `5 - 3` (binary)
+- **Xử lý lỗi**: thiếu toán hạng, thiếu ngoặc đóng/mở, chia cho 0
+- **Tối ưu**: dùng biểu thức cây (expression tree) cho các trường hợp phức tạp

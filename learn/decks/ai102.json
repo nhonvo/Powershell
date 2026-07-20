@@ -1,0 +1,4132 @@
+{
+  "Meta": {
+    "Id": "deck_ai102",
+    "Topic": "AI102",
+    "Language": "English",
+    "Domain": "Cloud Certifications",
+    "Level": "Professional",
+    "Tags": [
+      "ai102"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 196
+  },
+  "Cards": [
+    {
+      "Id": "ai102_001",
+      "Front": "❓ Question 1 (Page 2, Q 1)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nDRAG DROP (Drag and Drop is not supported)\nYou have 100 chatbots that each has its own Language Understanding model. Frequently, you must add the same phrases to each model.\nYou need to programmatically update the Language Understanding mode",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_002",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: AddPhraseListAsync\nExample: Add phraselist feature\n\nvar phraselistId = await client.Features.AddPhraseListAsync(appId, version",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_003",
+      "Front": "❓ Question 2 (Page 2, Q 2)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nDRAG DROP (Drag and Drop is not supported)\nYou plan to use a Language Understanding application named app1 that is deployed to a container. App1 was developed by using a Language Understanding authoring resource named lu1.\nApp1 has the versi",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_004",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nStep 1: Export the model using the Export for containers (GZIP) option. \nExport versioned app's package from LUIS portal\nThe versione",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_005",
+      "Front": "❓ Question 3 (Page 2, Q 3)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou need to build a chatbot that meets the following requirements:\n\n-Supports chit-chat, knowledge base, and multilingual models \n-Performs sentiment analysis on user messages\n-Selects the best language model automatically \n\nWhat should you ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_006",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** QnA Maker, Language Understanding, and Dispatch\n- [ ] **B)** Translator, Speech, and Dispatch\n- [x] **C)** Language Understanding, Text Analytics, and QnA Maker [Correct]\n- [ ] **D)** Text Analytics, Translator, and Dispatch\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summar",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_007",
+      "Front": "❓ Question 4 (Page 2, Q 4)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYour company wants to reduce how long it takes for employees to log receipts in expense reports. All the receipts are in English.\n\nYou need to extract top-level information from the receipts, such as the vendor and the transaction total. The",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_008",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Custom Vision\n- [ ] **B)** Personalizer\n- [x] **C)** Form Recognizer [Correct]\n- [ ] **D)** Computer Vision\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `C`\n\n**Explanation**:\nAzure Form Recognizer is a cognitive service that lets you build automa",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_009",
+      "Front": "❓ Question 5 (Page 2, Q 5)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported)\nYou need to create a new resource that will be used to perform sentiment analysis and optical character recognition (OCR). The solution must meet the following requirements:\n\n-Use a single key and end",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_010",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: PUT\nSample Request: PUT https://management.azure.com/subscriptions/00000000-0000-0000-0000- 000000000000/resourceGroups/test-r",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_011",
+      "Front": "❓ Question 6 (Page 3, Q 6)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou are developing a new sales system that will process the video and text from a public-facing website.\n\nYou plan to monitor the sales system to ensure that it provides equitable results regardless of the user's location or background.\n\nWhi",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_012",
+      "Front": "❓ Question 7 (Page 3, Q 7)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nDRAG DROP (Drag and Drop is not supported)\nYou plan to use containerized versions of the Anomaly Detector API on local devices for testing and in on- premises datacenters.\n\nYou need to ensure that the containerized deployments meet the follo",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_013",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nStep 1: Pull the Anomaly Detector container image. \nStep 2: Create a custom Dockerfile\nStep 3: Push the image to an Azure container r",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_014",
+      "Front": "❓ Question 8 (Page 3, Q 8)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported)\nYou plan to deploy a containerized version of an Azure Cognitive Services service that will be used for text analysis.\n\nYou configure https://contoso.cognitiveservices.azure.com as the endpoint URI fo",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_015",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: mcr.microsoft.com/azure-cognitive-services/textanalytics/sentiment\nTo run the Sentiment Analysis v3 container, execute the fol",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_016",
+      "Front": "❓ Question 9 (Page 3, Q 9)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have the following C# method for creating Azure Cognitive Services resources programmatically.\n\n\nYou need to call the method to create a free Azure resource in the West US Azure region. The resource will be used to generate captions of i",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_017",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** create_resource(client, \"res1\", \"ComputerVision\", \"F0\", \"westus\")\n- [x] **B)** create_resource(client, \"res1\", \"CustomVision.Prediction\", \"F0\", \"westus\") [Correct]\n- [ ] **C)** create_resource(client, \"res1\", \"ComputerVision\", \"S0\", \"westus\")\n- [ ] **D)** create_resource(client, \"res1\",",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_018",
+      "Front": "❓ Question 10 (Page 3, Q 10)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou successfully run the following HTTP request.\n\nPOST https://management.azure.com/subscriptions/18c51a87-3a69-47a8-aedc-a54745f708a1/resourceGroups/RG1/providers/Microsoft.CognitiveServices/accounts/contosol/regenerateKey?api-version=2017-",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_019",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** A key for Azure Cognitive Services was generated in Azure Key Vault.\n- [x] **B)** A new query key was generated. [Correct]\n- [ ] **C)** The primary subscription key and the secondary subscription key were rotated.\n- [ ] **D)** The secondary subscription key was reset.\n\n<details>\n<summar",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_020",
+      "Front": "❓ Question 11 (Page 4, Q 11)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou build a custom Form Recognizer model.\nYou receive sample files to use for training the model as shown in the following table.\n\n\nWhich three files can you use to train the model? Each correct answer presents a complete solution. (Chooseth",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_021",
+      "Front": "❓ Question 12 (Page 4, Q 12)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nA customer uses Azure Cognitive Search.\nThe customer plans to enable a server-side encryption and use customer-managed keys (CMK) stored in Azure.\n\nWhat are three implications of the planned change? Each correct answer presents a complete so",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_022",
+      "Front": "❓ Question 13 (Page 4, Q 13)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou are developing a new sales system that will process the video and text from a public-facing website. You plan to notify users that their data has been processed by the sales system.\nWhich responsible AI principle does this help meet?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_023",
+      "Front": "Options:",
+      "Back": "- [x] **A)** transparency [Correct]\n- [ ] **B)** fairness\n- [ ] **C)** inclusiveness\n- [ ] **D)** reliability and safety\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_024",
+      "Front": "❓ Question 14 (Page 4, Q 14)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_025",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nThe Azure Private Link should use a private endpoint, not a public endpoint.\nPrivate Link service can be accessed from approved private endpoints in ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_026",
+      "Front": "❓ Question 15 (Page 4, Q 15)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_027",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nInstead deploy service1 and a private (not public) endpoint to a new virtual network, and you configure Azure Private Link.\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_028",
+      "Front": "❓ Question 16 (Page 5, Q 16)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_029",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nInstead deploy service1 and a private (not public) endpoint to a new virtual network, and you configure Azure Private Link.\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_030",
+      "Front": "❓ Question 17 (Page 5, Q 17)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou plan to perform predictive maintenance.\nYou collect IoT sensor data from 100 industrial machines for a year. Each machine has 50 different sensors that generate data at one-minute intervals. In total, you have 5,000 time series datasets.",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_031",
+      "Front": "Options:",
+      "Back": "- [x] **A)** Anomaly Detector [Correct]\n- [ ] **B)** Cognitive Search\n- [ ] **C)** Form Recognizer\n- [ ] **D)** Custom Vision\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_032",
+      "Front": "❓ Question 18 (Page 5, Q 18)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported)\nYou are developing a streaming Speech to Text solution that will use the Speech SDK and MP3 encoding. You need to develop a method to convert speech to text for streaming MP3 data.\n\nHow should you com",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_033",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_034",
+      "Front": "❓ Question 19 (Page 5, Q 19)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported)\nYou are developing an internet-based training solution for remote learners.\nYour company identifies that during the training, some learners leave their desk for long periods or become distracted.\n\nYou",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_035",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_036",
+      "Front": "❓ Question 20 (Page 5, Q 20)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou plan to provision a QnA Maker service in a new resource group named RG1. In RG1, you create an App Service plan named AP1.\nWhich two Azure resources are automatically created in RG1 when you provision the QnA Maker service? Each correct ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_037",
+      "Front": "❓ Question 21 (Page 6, Q 21)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou are building a language model by using a Language Understanding service. You create a new Language Understanding resource.\nYou need to add more contributors. What should you use?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_038",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** a conditional access policy in Azure Active Directory (Azure AD)\n- [x] **B)** the Access control (IAM) page for the authoring resources in the Azure portal [Correct]\n- [ ] **C)** the Access control (IAM) page for the prediction resources in the Azure portal\n\n<details>\n<summary><b>Reveal",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_039",
+      "Front": "❓ Question 22 (Page 6, Q 22)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_040",
+      "Front": "Options:",
+      "Back": "- [x] **A)** Yes [Correct]\n- [ ] **B)** No\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nA simple fix to most throttling issues is to throw more resources at the search service (typically replicas for query-based throttling, or partitions",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_041",
+      "Front": "❓ Question 23 (Page 6, Q 23)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nDRAG DROP (Drag and Drop is not supported)\nYou need to develop an automated call handling system that can respond to callers in their own language. The system will support only French and English.\n\nWhich Azure Cognitive Services service shou",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_042",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: Text Analytics\nThe Language Detection feature of the Azure Text Analytics REST API evaluates text input for each document and ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_043",
+      "Front": "❓ Question 24 (Page 6, Q 24)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have receipts that are accessible from a URL.\nYou need to extract data from the receipts by using Form Recognizer and the SDK. The solution must use a prebuilt model.\nWhich client and method should you use?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_044",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** the FormRecognizerClient client and the StartRecognizeContentFromUri method\n- [ ] **B)** the FormTrainingClient client and the StartRecognizeContentFromUri method\n- [x] **C)** the FormRecognizerClient client and the StartRecognizeReceiptsFromUri method [Correct]\n- [ ] **D)** the FormTra",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_045",
+      "Front": "❓ Question 25 (Page 6, Q 25)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have a collection of 50,000 scanned documents that contain text. You plan to make the text available through Azure Cognitive Search.\nYou need to configure an enrichment pipeline to perform optical character recognition (OCR) and text ana",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_046",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** a new Computer Vision resource\n- [ ] **B)** a free (Limited enrichments) Cognitive Services resource\n- [ ] **C)** an Azure Machine Learning pipeline\n- [x] **D)** a new Cognitive Services resource that uses the S0 pricing tier [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation<",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_047",
+      "Front": "❓ Question 26 (Page 7, Q 26)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_048",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nInstead, you could migrate to a Cognitive Search service that uses a higher tier.\nNote: A simple fix to most throttling issues is to throw more resou",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_049",
+      "Front": "❓ Question 27 (Page 7, Q 27)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_050",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nCustomer-managed key (CMK) encryption does not affect throttling.\nInstead, you could migrate to a Cognitive Search service that uses a higher tier.\nN",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_051",
+      "Front": "❓ Question 28 (Page 7, Q 28)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_052",
+      "Front": "Options:",
+      "Back": "- [x] **A)** Yes [Correct]\n- [ ] **B)** No\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nA private endpoint is a network interface that uses a private IP address from your virtual network. This network interface connects you privately and",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_053",
+      "Front": "❓ Question 29 (Page 7, Q 29)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have a Language Understanding resource named lu1. You build and deploy an Azure bot named bot1 that uses lu1.\nYou need to ensure that bot1 adheres to the Microsoft responsible AI principle of inclusiveness. How should you extend bot1?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_054",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Implement authentication for bot1.\n- [ ] **B)** Enable active learning for lu1.\n- [ ] **C)** Host lu1 in a container.\n- [x] **D)** Add Direct Line Speech to bot1. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `D`\n\n**Explanation**:\nInclus",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_055",
+      "Front": "❓ Question 30 (Page 7, Q 30)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported)\nYou are building an app that will process incoming email and direct messages to either French or English language support teams.\n\nWhich Azure Cognitive Services API should you use? To answer, select t",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_056",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: api/cognitive.microsofttranslator.com is used for translations.\n\nIncorrect:\neastus.api.cognitive.microsoft.com is used for Fac",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_057",
+      "Front": "❓ Question 31 (Page 8, Q 31)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have an Azure Cognitive Search instance that indexes purchase orders by using Form Recognizer.\n\nYou need to analyze the extracted information by using Microsoft Power BI. The solution must minimize development effort.\n\nWhat should you ad",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_058",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** a projection group\n- [x] **B)** a table projection [Correct]\n- [ ] **C)** a file projection\n- [ ] **D)** an object projection\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nProjections are the physical tables, objects, and fil",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_059",
+      "Front": "❓ Question 32 (Page 8, Q 32)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_060",
+      "Front": "Options:",
+      "Back": "- [x] **A)** Yes [Correct]\n- [ ] **B)** No\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nA simple fix to most throttling issues is to throw more resources at the search service (typically replicas for query-based throttling, or partitions",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_061",
+      "Front": "❓ Question 33 (Page 8, Q 33)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nSIMULATION\nYou need to create a Text Analytics service named Text12345678, and then enable logging for Text12345678. The solution must ensure that any changes to Text12345678 will be stored in a Log Analytics workspace.\n\nTo complete this tas",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_062",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nStep 1: Sign in to the QnA portal.\n\nStep 2: Create an Azure Cognitive multi-service resource:\n\n\nStep 3: On the Create page, provide t",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_063",
+      "Front": "❓ Question 34 (Page 8, Q 34)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nSIMULATION\nYou need to create a search service named search12345678 that will index a sample Azure Cosmos DB database named hotels-sample. The solution must ensure that only English language fields are retrievable.\n\nTo complete this task, si",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_064",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nPart 1: Create a search service search12345678\nStep 1: Sign in to the QnA portal.\n\nStep 2: Create an Azure Cognitive multi-service re",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_065",
+      "Front": "❓ Question 35 (Page 8, Q 35)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nSIMULATION\nYou plan to create a solution to generate captions for images that will be read from Azure Blob Storage.\n\nYou need to create a service in Azure Cognitive Services for the solution. The service must be named captions12345678 and mu",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_066",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nPart 1: Create a search service captions12345678\nStep 1: Sign in to the QnA portal.\n\nStep 2: Create an Azure Cognitive multi-service ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_067",
+      "Front": "❓ Question 36 (Page 9, Q 36)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nSIMULATION\nYou need to create a Form Recognizer resource named fr12345678.\n\nUse the Form Recognizer sample labeling tool at https://fott-2-1.azurewebsites.net/ to analyze the invoice located in the C:\\Resources\\Invoices folder.\n\nSave the res",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_068",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nStep 1: Sign in to the Azure Portal.\nStep 2: Navigate to the Form Recognizer Sample Tool (at https://fott-2-1.azurewebsites.net)\nStep",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_069",
+      "Front": "❓ Question 37 (Page 9, Q 37)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have a factory that produces food products.\n\nYou need to build a monitoring solution for staff compliance with personal protective equipment (PPE) requirements. The solution must meet the following requirements: \n\n•Identify staff who hav",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_070",
+      "Front": "Options:",
+      "Back": "- [x] **A)** Face [Correct]\n- [ ] **B)** Computer Vision\n- [ ] **C)** Azure Video Analyzer for Media (formerly Video Indexer)\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nFace API is an AI service that analyzes faces in images.\nEmbed fac",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_071",
+      "Front": "❓ Question 38 (Page 9, Q 38)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have an Azure Cognitive Search solution and a collection of blog posts that include a category field. \nYou need to index the posts. The solution must meet the following requirements: \n\n•Include the category field in the search results.\n•",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_072",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** searchable, sortable, and retrievable\n- [ ] **B)** searchable, facetable, and retrievable\n- [x] **C)** retrievable, filterable, and sortable [Correct]\n- [ ] **D)** retrievable, facetable, and key\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `C`\n\n",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_073",
+      "Front": "❓ Question 39 (Page 9, Q 39)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nSIMULATION\nUse the following login credentials as needed: \n\nTo enter your username, place your cursor in the Sign in box and click on the username below. \nTo enter your password, place your cursor in the Enter password box and click on the p",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_074",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nStep 1: In the Azure dashboard, click Create a resource.\n\nStep 2: In the search bar, type \"Cognitive Services.\" \nYou'll get informati",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_075",
+      "Front": "❓ Question 40 (Page 9, Q 40)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nSIMULATION\nUse the following login credentials as needed: \n\nTo enter your username, place your cursor in the Sign in box and click on the username below. \nTo enter your password, place your cursor in the Enter password box and click on the p",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_076",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nStep 1: In the Azure dashboard, click Create a resource.\n\nStep 2: In the search bar, type \"Cognitive Services.\" \nYou'll get informati",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_077",
+      "Front": "❓ Question 41 (Page 10, Q 41)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nSIMULATION\nUse the following login credentials as needed: \n\nTo enter your username, place your cursor in the Sign in box and click on the username below. \nTo enter your password, place your cursor in the Enter password box and click on the p",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_078",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nStep 1: Login\nBrowse to the Azure Video Indexer website and sign in.\nURL: https://www.videoindexer.ai/ \nLogin admin@abc.com\n\nStep 2: ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_079",
+      "Front": "❓ Question 42 (Page 10, Q 42)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nSIMULATION\nUse the following login credentials as needed: \n\nTo enter your username, place your cursor in the Sign in box and click on the username below. \nTo enter your password, place your cursor in the Enter password box and click on the p",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_080",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nStep 1: Provision a Cognitive Services resource\nIf you don’t already have one in your subscription, you’ll need to provision a Cognit",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_081",
+      "Front": "❓ Question 43 (Page 10, Q 43)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nSIMULATION\nUse the following login credentials as needed: \n\nTo enter your username, place your cursor in the Sign in box and click on the username below. \nTo enter your password, place your cursor in the Enter password box and click on the p",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_082",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nStep 1: Create private endpoint for your web app\n1. In the left-hand menu, select All Resources > caption12345678 - the name of your ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_083",
+      "Front": "❓ Question 44 (Page 10, Q 44)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nSIMULATION\nUse the following login credentials as needed: \n\nTo enter your username, place your cursor in the Sign in box and click on the username below. \nTo enter your password, place your cursor in the Enter password box and click on the p",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_084",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nManually rotate subscription keys\n1. (Update your application code to reference the secondary key for the Azure account and deploy.)\n",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_085",
+      "Front": "❓ Question 45 (Page 10, Q 45)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have an Azure IoT hub that receives sensor data from machinery. \n\nYou need to build an app that will perform the following actions: \n•Perform anomaly detection across multiple correlated sensors. \n•Identify the root cause of process stop",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_086",
+      "Front": "Options:",
+      "Back": "- [x] **A)** Azure Metrics Advisor [Correct]\n- [ ] **B)** Form Recognizer\n- [ ] **C)** Azure Machine Learning\n- [ ] **D)** Anomaly Detector\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nMetrics Advisor is a part of Azure Applied AI Servic",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_087",
+      "Front": "❓ Question 46 (Page 11, Q 46)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have an app that analyzes images by using the Computer Vision API.\n\nYou need to configure the app to provide an output for users who are vision impaired. The solution must provide the output in complete sentences.\n\nWhich API call should ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_088",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** readInStreamAsync\n- [ ] **B)** analyzeImagesByDomainInStreamAsync\n- [ ] **C)** tagImageInStreamAsync\n- [x] **D)** describeImageInStreamAsync [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `D`\n\n**Explanation**:\ndescribeImageInStreamAsync \n",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_089",
+      "Front": "❓ Question 47 (Page 11, Q 47)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nDRAG DROP (Drag and Drop is not supported)\nYou have a Custom Vision service project that performs object detection. The project uses the General domain for classification and contains a trained model.\n\nYou need to export the model for use on",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_090",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nStep 1: Change the Domains to General (compact)\nSelect a domain for a Custom Vision project, Compact domains\nThe models generated by ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_091",
+      "Front": "❓ Question 48 (Page 11, Q 48)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou are building an AI solution that will use Sentiment Analysis results from surveys to calculate bonuses for customer service staff.\n\nYou need to ensure that the solution meets the Microsoft responsible AI principles.\nWhat should you do?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_092",
+      "Front": "Options:",
+      "Back": "- [x] **A)** Add a human review and approval step before making decisions that affect the staff's financial situation. [Correct]\n- [ ] **B)** Include the Sentiment Analysis results when surveys return a low confidence score.\n- [ ] **C)** Use all the surveys, including surveys by customers who reques",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_093",
+      "Front": "❓ Question 49 (Page 11, Q 49)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have an Azure subscription that contains a Language service resource named ta1 and a virtual network named vnet1.\n\nYou need to ensure that only resources in vnet1 can access ta1.\nWhat should you configure?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_094",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** a network security group (NSG) for vnet1\n- [ ] **B)** Azure Firewall for vnet1\n- [x] **C)** the virtual network settings for ta1 [Correct]\n- [ ] **D)** a Language service container for ta1\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `C`\n\n**Expla",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_095",
+      "Front": "❓ Question 50 (Page 11, Q 50)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou are developing a monitoring system that will analyze engine sensor data, such as rotation speed, angle, temperature, and pressure. The system must generate an alert in response to atypical values.\n\nWhat should you include in the solution",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_096",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Application Insights in Azure Monitor\n- [ ] **B)** metric alerts in Azure Monitor\n- [x] **C)** Multivariate Anomaly Detection [Correct]\n- [ ] **D)** Univariate Anomaly Detection\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `C`\n\n**Explanation**:\nT",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_097",
+      "Front": "❓ Question 51 (Page 12, Q 51)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have an app named App1 that uses an Azure Cognitive Services model to identify anomalies in a time series data stream.\n\nYou need to run App1 in a location that has limited connectivity. The solution must minimize costs.\nWhat should you u",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_098",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Azure Kubernetes Service (AKS)\n- [ ] **B)** Azure Container Instances\n- [ ] **C)** a Kubernetes cluster hosted in an Azure Stack Hub integrated system\n- [x] **D)** the Docker Engine [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `D`\n\n**Ex",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_099",
+      "Front": "❓ Question 52 (Page 12, Q 52)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported) \nYou have an Azure Cognitive Search resource named Search1 that is used by multiple apps.You need to secure Search1. The solution must meet the following requirements: \n-Prevent access to Search1 from",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_100",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_101",
+      "Front": "❓ Question 53 (Page 12, Q 53)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou are building a solution that will detect anomalies in sensor data from the previous 24 hours.\nYou need to ensure that the solution scans the entire dataset, at the same time, for anomalies.\nWhich type of detection should you use?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_102",
+      "Front": "Options:",
+      "Back": "- [x] **A)** batch [Correct]\n- [ ] **B)** streaming\n- [ ] **C)** change points\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_103",
+      "Front": "❓ Question 54 (Page 12, Q 54)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nDRAG DROP (Drag and Drop is not supported)\nYou are building an app that will scan confidential documents and use the Language service to analyze the contents.\n\nYou provision an Azure Cognitive Services resource.\n\nYou need to ensure that the ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_104",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nhttps://learn.microsoft.com/en-us/azure/cognitive-services/containers/disconnected-containers\nContainers enable you to run Cognitive ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_105",
+      "Front": "❓ Question 55 (Page 12, Q 55)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported)\nYou have an Azure subscription that has the following configurations:\n\n•Subscription ID: 8d3591aa-96b8-4737-ad09-00f9b1ed35ad\n•Tenant ID: 3edfe572-cb54-3ced-ae12-c5c177f39a12\n\nYou plan to create a res",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_106",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_107",
+      "Front": "❓ Question 56 (Page 13, Q 51)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have an app named App1 that uses an Azure Cognitive Services model to identify anomalies in a time series data stream.\n\nYou need to run App1 in a location that has limited connectivity. The solution must minimize costs.\nWhat should you u",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_108",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Azure Kubernetes Service (AKS)\n- [ ] **B)** Azure Container Instances\n- [ ] **C)** a Kubernetes cluster hosted in an Azure Stack Hub integrated system\n- [x] **D)** the Docker Engine [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `D`\n\n**Ex",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_109",
+      "Front": "❓ Question 57 (Page 13, Q 52)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported) \nYou have an Azure Cognitive Search resource named Search1 that is used by multiple apps.You need to secure Search1. The solution must meet the following requirements: \n-Prevent access to Search1 from",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_110",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_111",
+      "Front": "❓ Question 58 (Page 13, Q 53)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou are building a solution that will detect anomalies in sensor data from the previous 24 hours.\nYou need to ensure that the solution scans the entire dataset, at the same time, for anomalies.\nWhich type of detection should you use?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_112",
+      "Front": "Options:",
+      "Back": "- [x] **A)** batch [Correct]\n- [ ] **B)** streaming\n- [ ] **C)** change points\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_113",
+      "Front": "❓ Question 59 (Page 13, Q 54)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nDRAG DROP (Drag and Drop is not supported)\nYou are building an app that will scan confidential documents and use the Language service to analyze the contents.\n\nYou provision an Azure Cognitive Services resource.\n\nYou need to ensure that the ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_114",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nhttps://learn.microsoft.com/en-us/azure/cognitive-services/containers/disconnected-containers\nContainers enable you to run Cognitive ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_115",
+      "Front": "❓ Question 60 (Page 13, Q 55)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported)\nYou have an Azure subscription that has the following configurations:\n\n•Subscription ID: 8d3591aa-96b8-4737-ad09-00f9b1ed35ad\n•Tenant ID: 3edfe572-cb54-3ced-ae12-c5c177f39a12\n\nYou plan to create a res",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_116",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_117",
+      "Front": "❓ Question 61 (Page 14, Q 51)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have an app named App1 that uses an Azure Cognitive Services model to identify anomalies in a time series data stream.\n\nYou need to run App1 in a location that has limited connectivity. The solution must minimize costs.\nWhat should you u",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_118",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Azure Kubernetes Service (AKS)\n- [ ] **B)** Azure Container Instances\n- [ ] **C)** a Kubernetes cluster hosted in an Azure Stack Hub integrated system\n- [x] **D)** the Docker Engine [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `D`\n\n**Ex",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_119",
+      "Front": "❓ Question 62 (Page 14, Q 52)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported) \nYou have an Azure Cognitive Search resource named Search1 that is used by multiple apps.You need to secure Search1. The solution must meet the following requirements: \n-Prevent access to Search1 from",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_120",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_121",
+      "Front": "❓ Question 63 (Page 14, Q 53)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou are building a solution that will detect anomalies in sensor data from the previous 24 hours.\nYou need to ensure that the solution scans the entire dataset, at the same time, for anomalies.\nWhich type of detection should you use?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_122",
+      "Front": "Options:",
+      "Back": "- [x] **A)** batch [Correct]\n- [ ] **B)** streaming\n- [ ] **C)** change points\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_123",
+      "Front": "❓ Question 64 (Page 14, Q 54)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nDRAG DROP (Drag and Drop is not supported)\nYou are building an app that will scan confidential documents and use the Language service to analyze the contents.\n\nYou provision an Azure Cognitive Services resource.\n\nYou need to ensure that the ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_124",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nhttps://learn.microsoft.com/en-us/azure/cognitive-services/containers/disconnected-containers\nContainers enable you to run Cognitive ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_125",
+      "Front": "❓ Question 65 (Page 14, Q 55)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported)\nYou have an Azure subscription that has the following configurations:\n\n•Subscription ID: 8d3591aa-96b8-4737-ad09-00f9b1ed35ad\n•Tenant ID: 3edfe572-cb54-3ced-ae12-c5c177f39a12\n\nYou plan to create a res",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_126",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_127",
+      "Front": "❓ Question 66 (Page 15, Q 51)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have an app named App1 that uses an Azure Cognitive Services model to identify anomalies in a time series data stream.\n\nYou need to run App1 in a location that has limited connectivity. The solution must minimize costs.\nWhat should you u",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_128",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Azure Kubernetes Service (AKS)\n- [ ] **B)** Azure Container Instances\n- [ ] **C)** a Kubernetes cluster hosted in an Azure Stack Hub integrated system\n- [x] **D)** the Docker Engine [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `D`\n\n**Ex",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_129",
+      "Front": "❓ Question 67 (Page 15, Q 52)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported) \nYou have an Azure Cognitive Search resource named Search1 that is used by multiple apps.You need to secure Search1. The solution must meet the following requirements: \n-Prevent access to Search1 from",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_130",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_131",
+      "Front": "❓ Question 68 (Page 15, Q 53)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou are building a solution that will detect anomalies in sensor data from the previous 24 hours.\nYou need to ensure that the solution scans the entire dataset, at the same time, for anomalies.\nWhich type of detection should you use?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_132",
+      "Front": "Options:",
+      "Back": "- [x] **A)** batch [Correct]\n- [ ] **B)** streaming\n- [ ] **C)** change points\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_133",
+      "Front": "❓ Question 69 (Page 15, Q 54)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nDRAG DROP (Drag and Drop is not supported)\nYou are building an app that will scan confidential documents and use the Language service to analyze the contents.\n\nYou provision an Azure Cognitive Services resource.\n\nYou need to ensure that the ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_134",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nhttps://learn.microsoft.com/en-us/azure/cognitive-services/containers/disconnected-containers\nContainers enable you to run Cognitive ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_135",
+      "Front": "❓ Question 70 (Page 15, Q 55)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported)\nYou have an Azure subscription that has the following configurations:\n\n•Subscription ID: 8d3591aa-96b8-4737-ad09-00f9b1ed35ad\n•Tenant ID: 3edfe572-cb54-3ced-ae12-c5c177f39a12\n\nYou plan to create a res",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_136",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_137",
+      "Front": "❓ Question 71 (Page 16, Q 51)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have an app named App1 that uses an Azure Cognitive Services model to identify anomalies in a time series data stream.\n\nYou need to run App1 in a location that has limited connectivity. The solution must minimize costs.\nWhat should you u",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_138",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Azure Kubernetes Service (AKS)\n- [ ] **B)** Azure Container Instances\n- [ ] **C)** a Kubernetes cluster hosted in an Azure Stack Hub integrated system\n- [x] **D)** the Docker Engine [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `D`\n\n**Ex",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_139",
+      "Front": "❓ Question 72 (Page 16, Q 52)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported) \nYou have an Azure Cognitive Search resource named Search1 that is used by multiple apps.You need to secure Search1. The solution must meet the following requirements: \n-Prevent access to Search1 from",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_140",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_141",
+      "Front": "❓ Question 73 (Page 16, Q 53)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou are building a solution that will detect anomalies in sensor data from the previous 24 hours.\nYou need to ensure that the solution scans the entire dataset, at the same time, for anomalies.\nWhich type of detection should you use?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_142",
+      "Front": "Options:",
+      "Back": "- [x] **A)** batch [Correct]\n- [ ] **B)** streaming\n- [ ] **C)** change points\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_143",
+      "Front": "❓ Question 74 (Page 16, Q 54)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nDRAG DROP (Drag and Drop is not supported)\nYou are building an app that will scan confidential documents and use the Language service to analyze the contents.\n\nYou provision an Azure Cognitive Services resource.\n\nYou need to ensure that the ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_144",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nhttps://learn.microsoft.com/en-us/azure/cognitive-services/containers/disconnected-containers\nContainers enable you to run Cognitive ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_145",
+      "Front": "❓ Question 75 (Page 16, Q 55)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported)\nYou have an Azure subscription that has the following configurations:\n\n•Subscription ID: 8d3591aa-96b8-4737-ad09-00f9b1ed35ad\n•Tenant ID: 3edfe572-cb54-3ced-ae12-c5c177f39a12\n\nYou plan to create a res",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_146",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_147",
+      "Front": "❓ Question 76 (Page 17, Q 51)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have an app named App1 that uses an Azure Cognitive Services model to identify anomalies in a time series data stream.\n\nYou need to run App1 in a location that has limited connectivity. The solution must minimize costs.\nWhat should you u",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_148",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Azure Kubernetes Service (AKS)\n- [ ] **B)** Azure Container Instances\n- [ ] **C)** a Kubernetes cluster hosted in an Azure Stack Hub integrated system\n- [x] **D)** the Docker Engine [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `D`\n\n**Ex",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_149",
+      "Front": "❓ Question 77 (Page 17, Q 52)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported) \nYou have an Azure Cognitive Search resource named Search1 that is used by multiple apps.You need to secure Search1. The solution must meet the following requirements: \n-Prevent access to Search1 from",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_150",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_151",
+      "Front": "❓ Question 78 (Page 17, Q 53)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou are building a solution that will detect anomalies in sensor data from the previous 24 hours.\nYou need to ensure that the solution scans the entire dataset, at the same time, for anomalies.\nWhich type of detection should you use?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_152",
+      "Front": "Options:",
+      "Back": "- [x] **A)** batch [Correct]\n- [ ] **B)** streaming\n- [ ] **C)** change points\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_153",
+      "Front": "❓ Question 79 (Page 17, Q 54)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nDRAG DROP (Drag and Drop is not supported)\nYou are building an app that will scan confidential documents and use the Language service to analyze the contents.\n\nYou provision an Azure Cognitive Services resource.\n\nYou need to ensure that the ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_154",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nhttps://learn.microsoft.com/en-us/azure/cognitive-services/containers/disconnected-containers\nContainers enable you to run Cognitive ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_155",
+      "Front": "❓ Question 80 (Page 17, Q 55)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported)\nYou have an Azure subscription that has the following configurations:\n\n•Subscription ID: 8d3591aa-96b8-4737-ad09-00f9b1ed35ad\n•Tenant ID: 3edfe572-cb54-3ced-ae12-c5c177f39a12\n\nYou plan to create a res",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_156",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_157",
+      "Front": "❓ Question 81 (Page 18, Q 51)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have an app named App1 that uses an Azure Cognitive Services model to identify anomalies in a time series data stream.\n\nYou need to run App1 in a location that has limited connectivity. The solution must minimize costs.\nWhat should you u",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_158",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Azure Kubernetes Service (AKS)\n- [ ] **B)** Azure Container Instances\n- [ ] **C)** a Kubernetes cluster hosted in an Azure Stack Hub integrated system\n- [x] **D)** the Docker Engine [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `D`\n\n**Ex",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_159",
+      "Front": "❓ Question 82 (Page 18, Q 52)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported) \nYou have an Azure Cognitive Search resource named Search1 that is used by multiple apps.You need to secure Search1. The solution must meet the following requirements: \n-Prevent access to Search1 from",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_160",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_161",
+      "Front": "❓ Question 83 (Page 18, Q 53)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou are building a solution that will detect anomalies in sensor data from the previous 24 hours.\nYou need to ensure that the solution scans the entire dataset, at the same time, for anomalies.\nWhich type of detection should you use?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_162",
+      "Front": "Options:",
+      "Back": "- [x] **A)** batch [Correct]\n- [ ] **B)** streaming\n- [ ] **C)** change points\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_163",
+      "Front": "❓ Question 84 (Page 18, Q 54)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nDRAG DROP (Drag and Drop is not supported)\nYou are building an app that will scan confidential documents and use the Language service to analyze the contents.\n\nYou provision an Azure Cognitive Services resource.\n\nYou need to ensure that the ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_164",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nhttps://learn.microsoft.com/en-us/azure/cognitive-services/containers/disconnected-containers\nContainers enable you to run Cognitive ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_165",
+      "Front": "❓ Question 85 (Page 18, Q 55)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported)\nYou have an Azure subscription that has the following configurations:\n\n•Subscription ID: 8d3591aa-96b8-4737-ad09-00f9b1ed35ad\n•Tenant ID: 3edfe572-cb54-3ced-ae12-c5c177f39a12\n\nYou plan to create a res",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_166",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_167",
+      "Front": "❓ Question 86 (Page 19, Q 51)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have an app named App1 that uses an Azure Cognitive Services model to identify anomalies in a time series data stream.\n\nYou need to run App1 in a location that has limited connectivity. The solution must minimize costs.\nWhat should you u",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_168",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Azure Kubernetes Service (AKS)\n- [ ] **B)** Azure Container Instances\n- [ ] **C)** a Kubernetes cluster hosted in an Azure Stack Hub integrated system\n- [x] **D)** the Docker Engine [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `D`\n\n**Ex",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_169",
+      "Front": "❓ Question 87 (Page 19, Q 52)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported) \nYou have an Azure Cognitive Search resource named Search1 that is used by multiple apps.You need to secure Search1. The solution must meet the following requirements: \n-Prevent access to Search1 from",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_170",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_171",
+      "Front": "❓ Question 88 (Page 19, Q 53)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou are building a solution that will detect anomalies in sensor data from the previous 24 hours.\nYou need to ensure that the solution scans the entire dataset, at the same time, for anomalies.\nWhich type of detection should you use?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_172",
+      "Front": "Options:",
+      "Back": "- [x] **A)** batch [Correct]\n- [ ] **B)** streaming\n- [ ] **C)** change points\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_173",
+      "Front": "❓ Question 89 (Page 19, Q 54)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nDRAG DROP (Drag and Drop is not supported)\nYou are building an app that will scan confidential documents and use the Language service to analyze the contents.\n\nYou provision an Azure Cognitive Services resource.\n\nYou need to ensure that the ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_174",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nhttps://learn.microsoft.com/en-us/azure/cognitive-services/containers/disconnected-containers\nContainers enable you to run Cognitive ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_175",
+      "Front": "❓ Question 90 (Page 19, Q 55)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported)\nYou have an Azure subscription that has the following configurations:\n\n•Subscription ID: 8d3591aa-96b8-4737-ad09-00f9b1ed35ad\n•Tenant ID: 3edfe572-cb54-3ced-ae12-c5c177f39a12\n\nYou plan to create a res",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_176",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_177",
+      "Front": "❓ Question 91 (Page 20, Q 51)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have an app named App1 that uses an Azure Cognitive Services model to identify anomalies in a time series data stream.\n\nYou need to run App1 in a location that has limited connectivity. The solution must minimize costs.\nWhat should you u",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_178",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Azure Kubernetes Service (AKS)\n- [ ] **B)** Azure Container Instances\n- [ ] **C)** a Kubernetes cluster hosted in an Azure Stack Hub integrated system\n- [x] **D)** the Docker Engine [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `D`\n\n**Ex",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_179",
+      "Front": "❓ Question 92 (Page 20, Q 52)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported) \nYou have an Azure Cognitive Search resource named Search1 that is used by multiple apps.You need to secure Search1. The solution must meet the following requirements: \n-Prevent access to Search1 from",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_180",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_181",
+      "Front": "❓ Question 93 (Page 20, Q 53)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou are building a solution that will detect anomalies in sensor data from the previous 24 hours.\nYou need to ensure that the solution scans the entire dataset, at the same time, for anomalies.\nWhich type of detection should you use?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_182",
+      "Front": "Options:",
+      "Back": "- [x] **A)** batch [Correct]\n- [ ] **B)** streaming\n- [ ] **C)** change points\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_183",
+      "Front": "❓ Question 94 (Page 20, Q 54)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nDRAG DROP (Drag and Drop is not supported)\nYou are building an app that will scan confidential documents and use the Language service to analyze the contents.\n\nYou provision an Azure Cognitive Services resource.\n\nYou need to ensure that the ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_184",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nhttps://learn.microsoft.com/en-us/azure/cognitive-services/containers/disconnected-containers\nContainers enable you to run Cognitive ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_185",
+      "Front": "❓ Question 95 (Page 20, Q 55)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported)\nYou have an Azure subscription that has the following configurations:\n\n•Subscription ID: 8d3591aa-96b8-4737-ad09-00f9b1ed35ad\n•Tenant ID: 3edfe572-cb54-3ced-ae12-c5c177f39a12\n\nYou plan to create a res",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_186",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_187",
+      "Front": "❓ Question 96 (Page 21, Q 51)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou have an app named App1 that uses an Azure Cognitive Services model to identify anomalies in a time series data stream.\n\nYou need to run App1 in a location that has limited connectivity. The solution must minimize costs.\nWhat should you u",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_188",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Azure Kubernetes Service (AKS)\n- [ ] **B)** Azure Container Instances\n- [ ] **C)** a Kubernetes cluster hosted in an Azure Stack Hub integrated system\n- [x] **D)** the Docker Engine [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `D`\n\n**Ex",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_189",
+      "Front": "❓ Question 97 (Page 21, Q 52)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported) \nYou have an Azure Cognitive Search resource named Search1 that is used by multiple apps.You need to secure Search1. The solution must meet the following requirements: \n-Prevent access to Search1 from",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_190",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_191",
+      "Front": "❓ Question 98 (Page 21, Q 53)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nYou are building a solution that will detect anomalies in sensor data from the previous 24 hours.\nYou need to ensure that the solution scans the entire dataset, at the same time, for anomalies.\nWhich type of detection should you use?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_192",
+      "Front": "Options:",
+      "Back": "- [x] **A)** batch [Correct]\n- [ ] **B)** streaming\n- [ ] **C)** change points\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_193",
+      "Front": "❓ Question 99 (Page 21, Q 54)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nDRAG DROP (Drag and Drop is not supported)\nYou are building an app that will scan confidential documents and use the Language service to analyze the contents.\n\nYou provision an Azure Cognitive Services resource.\n\nYou need to ensure that the ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_194",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nhttps://learn.microsoft.com/en-us/azure/cognitive-services/containers/disconnected-containers\nContainers enable you to run Cognitive ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_195",
+      "Front": "❓ Question 100 (Page 21, Q 55)",
+      "Back": "**Topic**: Plan and manage an Azure AI solution questions\n\nHOTSPOT (Drag and Drop is not supported)\nYou have an Azure subscription that has the following configurations:\n\n•Subscription ID: 8d3591aa-96b8-4737-ad09-00f9b1ed35ad\n•Tenant ID: 3edfe572-cb54-3ced-ae12-c5c177f39a12\n\nYou plan to create a res",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "ai102_196",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai102",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

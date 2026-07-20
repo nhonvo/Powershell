@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/dp-600
+  - dp600
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 DP-600: Implementing Analytics Solutions Using Microsoft Fabric MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/DP-600/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/DP-600/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/DP-600/DP-600 Mindmap\|🗺️ DP-600 Mindmap]]
+- [[certifications/microsoft/DP-600/DP-600 Flashcards\|🃏 DP-600 Flashcards]]
+- [[certifications/microsoft/DP-600/DP-600_Scraped_Question_Bank\|🗃️ DP-600 Scraped Question Bank]]

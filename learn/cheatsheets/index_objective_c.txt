@@ -1,0 +1,13 @@
+# objective-c
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/11 - 14/index_11 - 14|11 - 14]]
+
+## 📁 Categories
+- [[dsa/1.Interviewcake.com/11 - 14/objective-c/11. Bit manipulation/index_11. Bit manipulation|11. Bit manipulation]]
+- [[dsa/1.Interviewcake.com/11 - 14/objective-c/12. Combinatorics, probability, and other math/index_12. Combinatorics, probability, and other math|12. Combinatorics, probability, and other math]]
+- [[dsa/1.Interviewcake.com/11 - 14/objective-c/13. JavaScript/index_13. JavaScript|13. JavaScript]]
+- [[dsa/1.Interviewcake.com/11 - 14/objective-c/14. Coding Interview Tips/index_14. Coding Interview Tips|14. Coding Interview Tips]]
+
+## 📄 Notes
+- [[objective-c|objective-c]]
+

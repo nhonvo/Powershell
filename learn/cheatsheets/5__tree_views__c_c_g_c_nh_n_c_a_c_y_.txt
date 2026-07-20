@@ -1,0 +1,307 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/🌲index_09_Binary_Trees|09_Binary_Trees]]
+
+## 5. Tree Views (Các góc nhìn của cây)
+
+### Ý tưởng
+
+Tưởng tượng bạn đứng ở các góc khác nhau nhìn vào cây và ghi lại **những node bạn thấy**:
+
+- **Left view**: Đứng bên trái nhìn sang → thấy node **đầu tiên** ở mỗi level
+- **Right view**: Đứng bên phải nhìn sang → thấy node **cuối cùng** ở mỗi level
+- **Top view**: Nhìn từ trên xuống → thấy node **đầu tiên** ở mỗi vertical column
+- **Bottom view**: Nhìn từ dưới lên → thấy node **cuối cùng** ở mỗi vertical column
+
+### Analogy — Chụp ảnh cây thật
+
+Nếu bạn chụp ảnh một cây thật:
+
+- Chụp từ **bên trái** → bạn chỉ thấy mặt ngoài cùng bên trái
+- Chụp từ **trên cao** (drone) → bạn thấy node trên cùng ở mỗi cột
+- Node bị che khuất bởi node khác sẽ không xuất hiện trong ảnh
+
+### Ví dụ minh họa
+
+12345678
+
+- **Left view**: [1, 2, 4, 8] (node đầu tiên mỗi level)
+- **Right view**: [1, 3, 7, 8] (node cuối cùng mỗi level)
+- **Top view**: [4, 2, 1, 3, 7] (nhìn từ trên, mỗi cột 1 node)
+- **Bottom view**: [4, 8, 6, 3, 7] (nhìn từ dưới, mỗi cột 1 node)
+
+### 5.1 Left View và Right View
+
+#### Thuật toán
+
+Dùng **BFS (level-order)**:
+
+- Left view = phần tử **đầu tiên** ở mỗi level
+- Right view = phần tử **cuối cùng** ở mỗi level
+
+Hoặc dùng **DFS**: Với mỗi level, lần đầu tiên visit → đó là left view.
+
+#### Flowchart — Left View bằng BFS
+
+CóKhôngBắt đầuĐưa root vào queueQueue rỗng?Return resultlevel_size = len(queue)Duyệt level_size nodeNode đầu tiên → thêm vào resultThêm children vào queue
+
+#### Code
+
+```python
+from collections import deque
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def left_view(root):
+    """
+    Left view: node đầu tiên ở mỗi level (nhìn từ bên trái).
+    Dùng BFS, lấy phần tử đầu tiên mỗi level.
+    Time: O(n), Space: O(w)
+    """
+    if not root:
+        return []
+
+    result = []
+    queue = deque([root])
+
+    while queue:
+        level_size = len(queue)
+
+        for i in range(level_size):
+            node = queue.popleft()
+
+            # Phần tử đầu tiên của level
+            if i == 0:
+                result.append(node.val)
+
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+    return result
+
+
+def right_view(root):
+    """
+    Right view: node cuối cùng ở mỗi level (nhìn từ bên phải).
+    Dùng BFS, lấy phần tử cuối mỗi level.
+    Time: O(n), Space: O(w)
+    """
+    if not root:
+        return []
+
+    result = []
+    queue = deque([root])
+
+    while queue:
+        level_size = len(queue)
+
+        for i in range(level_size):
+            node = queue.popleft()
+
+            # Phần tử cuối cùng của level
+            if i == level_size - 1:
+                result.append(node.val)
+
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+    return result
+
+
+def left_view_dfs(root):
+    """
+    Left view bằng DFS.
+    Dùng preorder (root → left → right).
+    Lần đầu tiên visit 1 level → đó là left view.
+    Time: O(n), Space: O(h)
+    """
+    result = []
+
+    def dfs(node, level):
+        if node is None:
+            return
+
+        # Nếu đây là lần đầu visit level này
+        if level == len(result):
+            result.append(node.val)
+
+        dfs(node.left, level + 1)   # Đi trái trước
+        dfs(node.right, level + 1)
+
+    dfs(root, 0)
+    return result
+
+
+# === Test ===
+#        1
+#       / \
+#      2   3
+#     / \   \
+#    4   5   7
+#        |
+#        8
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+root.right.right = TreeNode(7)
+root.left.right.left = TreeNode(8)
+
+print("Left view (BFS):", left_view(root))
+# Output: [1, 2, 4, 8]
+
+print("Left view (DFS):", left_view_dfs(root))
+# Output: [1, 2, 4, 8]
+
+print("Right view:", right_view(root))
+# Output: [1, 3, 7, 8]
+```
+
+### 5.2 Top View và Bottom View
+
+#### Khái niệm Horizontal Distance (HD)
+
+Để tính Top view và Bottom view, mình cần khái niệm **Horizontal Distance (HD)**:
+
+- Root có HD = 0
+- Đi sang left child → HD giảm 1
+- Đi sang right child → HD tăng 1
+
+```
+        1 (HD=0)
+       / \
+      2   3 (HD=-1, HD=1)
+     / \   \
+    4   5   7 (HD=-2, HD=0, HD=2)
+```
+
+- **Top view**: với mỗi HD, lấy node **đầu tiên** được visit (gần root nhất)
+- **Bottom view**: với mỗi HD, lấy node **cuối cùng** được visit (xa root nhất)
+
+#### Flowchart — Top View
+
+CóKhôngChưaRồiBắt đầuBFS với queue chứa (node, hd)Queue rỗng?Sắp xếp theo HD, return giá trịLấy (node, hd) từ queuehd đã có trong map?map[hd] = node.valBỏ qua (đã bị node trên che)Thêm children:
+(left, hd-1), (right, hd+1)
+
+#### Code
+
+```python
+from collections import deque, OrderedDict
+
+
+def top_view(root):
+    """
+    Top view: nhìn từ trên xuống, mỗi cột (horizontal distance) lấy node đầu tiên.
+
+    Dùng BFS + horizontal distance (HD):
+    - Root: HD = 0
+    - Left child: HD - 1
+    - Right child: HD + 1
+
+    BFS đảm bảo node gần root nhất được xét trước.
+    Time: O(n), Space: O(n)
+    """
+    if not root:
+        return []
+
+    # Map: HD → giá trị node (chỉ lưu node đầu tiên ở mỗi HD)
+    hd_map = {}
+    queue = deque([(root, 0)])  # (node, horizontal_distance)
+
+    while queue:
+        node, hd = queue.popleft()
+
+        # Chỉ lưu nếu HD chưa có (node đầu tiên = gần root nhất)
+        if hd not in hd_map:
+            hd_map[hd] = node.val
+
+        if node.left:
+            queue.append((node.left, hd - 1))
+        if node.right:
+            queue.append((node.right, hd + 1))
+
+    # Sắp xếp theo HD từ trái sang phải
+    return [hd_map[hd] for hd in sorted(hd_map.keys())]
+
+
+def bottom_view(root):
+    """
+    Bottom view: nhìn từ dưới lên, mỗi cột lấy node cuối cùng.
+
+    Giống top view nhưng luôn CẬP NHẬT (node cuối = xa root nhất).
+    BFS đảm bảo level tăng dần → node sau overwrite node trước.
+    Time: O(n), Space: O(n)
+    """
+    if not root:
+        return []
+
+    hd_map = {}
+    queue = deque([(root, 0)])
+
+    while queue:
+        node, hd = queue.popleft()
+
+        # Luôn cập nhật → node cuối cùng ở mỗi HD sẽ được giữ
+        hd_map[hd] = node.val
+
+        if node.left:
+            queue.append((node.left, hd - 1))
+        if node.right:
+            queue.append((node.right, hd + 1))
+
+    return [hd_map[hd] for hd in sorted(hd_map.keys())]
+
+
+# === Test ===
+#         1 (hd=0)
+#        / \
+#       2   3 (hd=-1, hd=1)
+#      / \   \
+#     4   5   7 (hd=-2, hd=0, hd=2)
+#         |
+#         8 (hd=-1)
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+root.right.right = TreeNode(7)
+root.left.right.left = TreeNode(8)
+
+print("Top view:", top_view(root))
+# Output: [4, 2, 1, 3, 7]
+# HD: -2→4, -1→2, 0→1, 1→3, 2→7
+
+print("Bottom view:", bottom_view(root))
+# Output: [4, 8, 5, 3, 7]
+# HD: -2→4, -1→8 (overwrite 2), 0→5 (overwrite 1), 1→3, 2→7
+```
+
+### So sánh các loại Tree View
+
+| View        | Ý nghĩa             | Key technique | Space |
+| :---------- | :------------------ | :------------ | :---- |
+| Left view   | Node đầu mỗi level  | BFS hoặc DFS  | O(h)  |
+| Right view  | Node cuối mỗi level | BFS hoặc DFS  | O(h)  |
+| Top view    | Node đầu mỗi HD     | BFS + HD map  | O(n)  |
+| Bottom view | Node cuối mỗi HD    | BFS + HD map  | O(n)  |
+
+### Ưu điểm và nhược điểm
+
+- **Ưu**: Tất cả đều O(n) time — tối ưu
+- **Ưu**: BFS cho kết quả tự nhiên theo level
+- **Nhược**: Top/Bottom view cần thêm HD map → O(n) space
+
+### Cải tiến
+
+- **Vertical Order Traversal**: Mở rộng top/bottom view — liệt kê **tất cả** node ở mỗi HD (không chỉ 1 node)
+- **Boundary Traversal**: Kết hợp left boundary + leaves + right boundary → viền ngoài của cây

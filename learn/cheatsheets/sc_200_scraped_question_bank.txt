@@ -1,0 +1,127 @@
+# 🗃️ SC-200 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Mitigate threats using Microsoft 365 Defender (Testlet 1)
+
+You need to minimize the effort required to investigate the Microsoft Defender for Identity false positive alerts. What should you review?
+
+### Options:
+- [ ] **A)** the status update time
+- [ ] **B)** the resolution method of the source computer
+- [ ] **C)** the alert status
+- [x] **D)** the certainty of the source computer [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+Scenario: Microsoft Defender for Identity Requirements: Minimize the administrative effort required to investigate the false positive alerts.
+Defender for Identity raises a high volume of Suspected DCSync attack alerts that are false positives.
+Note: Suspected DCSync attack (replication of directory services) (external ID 2006) Previous name: Malicious replication of directory services.
+Description
+Active Directory replication is the process by which changes that are made on one domain controller are synchronized with all other domain controllers. Given necessary permissions, attackers can initiate a replication request, allowing them to retrieve the data stored in Active Directory, including password hashes.
+In this detection, an alert is triggered when a replication request is initiated from a computer that isn't a domain controller.
+If the source computer is a domain controller, failed or low certainty resolution can prevent Defender for Identity from being able to confirm identification.
+Check if the source computer is a domain controller? If the answer is yes, Close the alert as a B-TP activity.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Mitigate threats using Microsoft 365 Defender (Testlet 2)
+
+The issue for which team can be resolved by using Microsoft Defender for Endpoint?
+
+### Options:
+- [ ] **A)** executive
+- [x] **B)** sales [Correct]
+- [ ] **C)** marketing
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Mitigate threats using Microsoft 365 Defender (Testlet 2)
+
+The issue for which team can be resolved by using Microsoft Defender for Office 365?
+
+### Options:
+- [ ] **A)** executive
+- [x] **B)** marketing [Correct]
+- [ ] **C)** security
+- [ ] **D)** sales
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Mitigate threats using Microsoft 365 Defender (Testlet 3)
+
+You need to implement the Azure Information Protection requirements. What should you configure first?
+
+### Options:
+- [ ] **A)** Device health and compliance reports settings in Microsoft 365 Defender portal
+- [ ] **B)** scanner clusters in Azure Information Protection from the Azure portal
+- [ ] **C)** content scan jobs in Azure Information Protection from the Azure portal
+- [x] **D)** Advanced features from Settings in Microsoft 365 Defender portal [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Mitigate threats using Microsoft 365 Defender (Testlet 3)
+
+You need to modify the anomaly detection policy settings to meet the Microsoft Defender for Cloud Apps requirements and resolve the reported problem.
+Which policy should you modify?
+
+### Options:
+- [ ] **A)** Activity from suspicious IP addresses
+- [ ] **B)** Activity from anonymous IP addresses
+- [x] **C)** Impossible travel [Correct]
+- [ ] **D)** Risky sign-in
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---

@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mb-500
+  - mb500
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MB-500: Microsoft Dynamics 365: Finance and Operations Apps Developer MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MB-500/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MB-500/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MB-500/MB-500 Mindmap\|🗺️ MB-500 Mindmap]]
+- [[certifications/microsoft/MB-500/MB-500 Flashcards\|🃏 MB-500 Flashcards]]
+- [[certifications/microsoft/MB-500/MB-500_Scraped_Question_Bank\|🗃️ MB-500 Scraped Question Bank]]

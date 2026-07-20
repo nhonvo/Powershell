@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/az-700
+  - az700
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AZ-700: Designing and Implementing Microsoft Azure Networking Solutions MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/AZ-700/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/AZ-700/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AZ-700/AZ-700 Mindmap\|🗺️ AZ-700 Mindmap]]
+- [[certifications/microsoft/AZ-700/AZ-700 Flashcards\|🃏 AZ-700 Flashcards]]
+- [[certifications/microsoft/AZ-700/AZ-700_Scraped_Question_Bank\|🗃️ AZ-700 Scraped Question Bank]]

@@ -1,0 +1,177 @@
+# 🗃️ GH-300 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+Which of the following describes role prompting?
+
+### Options:
+- [x] **A)** Describing in your prompt what your role is to get a better suggestion [Correct]
+- [ ] **B)** Tell GitHub Copilot in what tone of voice it should respond
+- [ ] **C)** Prompt GitHub Copilot to explain what was the role of a suggestion
+- [ ] **D)** Giving GitHub Copilot multiple examples of the form of the data you want to use
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Role prompting involves explicitly stating your role or the persona you want GitHub Copilot to adopt within your prompt. This helps Copilot provide more contextually relevant and accurate suggestions. By defining your role (e.g., "As a senior software engineer," "As a technical writer"), you guide Copilot to tailor its responses to align with the expertise and perspective associated with that role. This improves the quality and relevance of the generated code and explanations.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+Which of the following scenarios best describes the intended use of GitHub Copilot Chat as a tool?
+
+### Options:
+- [ ] **A)** A complete replacement for developers generating code.
+- [x] **B)** A productivity tool that provides suggestions, but relying on human judgment. [Correct]
+- [ ] **C)** A solution for software development, requiring no additional input or oversight.
+- [ ] **D)** A tool solely designed for debugging and error correction.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+GitHub Copilot Chat is designed to be a productivity enhancer, not a replacement for human developers. It provides suggestions and assists with coding tasks, but the final decision and validation always rest with the developer. Copilot Chat is meant to augment the developer's workflow, making it faster and more efficient, but it does not remove the need for human oversight and judgment.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+How long does GitHub retain Copilot data for Business and Enterprise? (Each correct answer presents part of the solution. Choose two.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,C`
+
+**Explanation**:
+For GitHub Copilot Business and Enterprise, prompts and suggestions are retained for 28 days to provide context and improve the service. User engagement data, which includes usage patterns and interactions, is kept for two years. This data retention policy is designed to balance service improvement with user privacy.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+What types of prompts or code snippets might be flagged by the GitHub Copilot toxicity filter? (Each correct answer presents part of the solution. Choose two.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,B`
+
+**Explanation**:
+GitHub Copilot includes a toxicity filter to prevent the generation of harmful or inappropriate content. This filter flags prompts or code snippets that contain hate speech, discriminatory language, or sexually suggestive or explicit content. This ensures a safe and respectful coding environment.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+What is a benefit of using custom models in GitHub Copilot?
+
+### Options:
+- [ ] **A)** Responses are faster to produce and appear sooner
+- [x] **B)** Responses use practices and patterns in your repositories [Correct]
+- [ ] **C)** Responses use the organization's LLM engine
+- [ ] **D)** Responses are guaranteed to be correct
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Custom models in GitHub Copilot allow the tool to learn from the specific code patterns and practices within your repositories. This results in suggestions that are more aligned with your organization's coding standards and conventions, improving the relevance and accuracy of the generated code.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: 
+
+How does GitHub Copilot Chat ensure that a function works correctly?
+
+### Options:
+- [x] **A)** By suggesting assertions based on the code's context and semantics. [Correct]
+- [ ] **B)** By automatically writing all the tests for the function.
+- [ ] **C)** By writing the implementation code for the function.
+- [ ] **D)** By executing the test cases to validate the correctness of the code.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+GitHub Copilot Chat can suggest assertions based on the code's context and semantics to help developers verify the correctness of their functions. These assertions serve as checks that the function behaves as expected under various conditions.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: 
+
+What is a key consideration when relying on GitHub Copilot Chat's explanations of code functionality and proposed improvements?
+
+### Options:
+- [ ] **A)** The explanations are dynamically updated based on user feedback.
+- [x] **B)** Reviewing and validating the generated output for accuracy and completeness. [Correct]
+- [ ] **C)** GitHub Copilot Chat uses a static database for generating explanations.
+- [ ] **D)** The explanations are primarily derived from user-provided documentation.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+While GitHub Copilot Chat can provide helpful explanations and suggestions, it's crucial to review and validate the generated output. Copilot's suggestions are based on its training data, and they may not always be perfectly accurate or complete. Human judgment is essential to ensure the quality and correctness of the code.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: 
+
+How can GitHub Copilot assist with code refactoring tasks?
+
+### Options:
+- [ ] **A)** GitHub Copilot can fix syntax errors without user input.
+- [ ] **B)** GitHub Copilot can automatically rewrite code to follow best practices.
+- [x] **C)** GitHub Copilot can suggest refactoring improvements for better code quality. [Correct]
+- [ ] **D)** GitHub Copilot can remove unnecessary files from the project directory.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+GitHub Copilot can analyze existing code and suggest refactoring improvements to enhance code quality, readability, and maintainability. It can propose changes to improve code structure, reduce complexity, and follow best practices.
+</details>
+
+---

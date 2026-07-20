@@ -1,0 +1,1274 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/04_Recursion_Backtracking/🔄index_04_Recursion_Backtracking|04_Recursion_Backtracking]]
+
+## 7. LeetCode Practice — Giải chi tiết 8 bài kinh điển
+
+Phần này mình sẽ đi sâu vào **8 bài LeetCode kinh điển** về Recursion & Backtracking. Mỗi bài mình sẽ phân tích cực kỹ: từ tư duy tiếp cận, nhiều cách giải, dry run từng bước, đến phân tích complexity và các lỗi thường gặp. Nếu bạn nắm vững 8 bài này, bạn có thể tự tin handle hầu hết bài backtracking trong phỏng vấn!
+
+------
+
+### 7.1 LeetCode #78 — Subsets
+
+**Difficulty:** Medium | [Link bài](https://leetcode.com/problems/subsets/)
+
+#### Đề bài
+
+Cho một mảng số nguyên `nums` gồm các phần tử **phân biệt**, trả về tất cả các **tập con** (subsets) có thể. Tập kết quả **không được chứa subset trùng**.
+
+**Ví dụ:**
+
+```
+Input: nums = [1, 2, 3]
+Output: [[], [1], [2], [1,2], [3], [1,3], [2,3], [1,2,3]]
+```
+
+#### Phân tích tư duy
+
+Bài này là bài **nền tảng** của backtracking. Ý tưởng cốt lõi:
+
+**Cách nghĩ 1 — Include/Exclude:** Với mỗi phần tử, ta có đúng 2 lựa chọn: **chọn** hoặc **không chọn**. Duyệt qua từng phần tử, tại mỗi bước chia thành 2 nhánh. Khi duyệt hết → thu được 1 subset.
+
+**Cách nghĩ 2 — Iterative (cascading):** Bắt đầu với `[[]]`. Mỗi khi thêm phần tử mới, nhân đôi tất cả subset hiện có rồi thêm phần tử mới vào bản copy.
+
+**Cách nghĩ 3 — Bitmask:** Mỗi subset tương ứng với một số nhị phân n bit. Bit thứ i bật = chọn `nums[i]`.
+
+#### Cách 1: Backtracking (Include/Exclude)
+
+```python
+from typing import List
+
+class Solution:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        result = []
+
+        def backtrack(index: int, current: List[int]):
+            # Base case: đã xét hết tất cả phần tử
+            if index == len(nums):
+                result.append(current[:])  # copy vào result
+                return
+
+            # Nhánh 1: CHỌN nums[index]
+            current.append(nums[index])
+            backtrack(index + 1, current)
+
+            # Nhánh 2: KHÔNG CHỌN nums[index]
+            current.pop()  # ← bước backtrack: bỏ phần tử vừa thêm
+            backtrack(index + 1, current)
+
+        backtrack(0, [])
+        return result
+```
+
+#### Cách 2: Backtracking (dạng "chọn từ vị trí start")
+
+```python
+from typing import List
+
+class Solution:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        result = []
+
+        def backtrack(start: int, current: List[int]):
+            # Mỗi trạng thái hiện tại đều là 1 subset hợp lệ
+            result.append(current[:])
+
+            # Thử thêm từng phần tử từ vị trí start trở đi
+            for i in range(start, len(nums)):
+                current.append(nums[i])
+                backtrack(i + 1, current)  # i+1 để không chọn lại
+                current.pop()  # backtrack
+
+        backtrack(0, [])
+        return result
+```
+
+#### Dry run chi tiết
+
+```
+nums = [1, 2, 3]
+
+Cách 1 (Include/Exclude):
+
+backtrack(0, [])
+├── Chọn 1 → backtrack(1, [1])
+│   ├── Chọn 2 → backtrack(2, [1,2])
+│   │   ├── Chọn 3 → backtrack(3, [1,2,3]) → index==3 → THÊM [1,2,3] ✓
+│   │   └── Bỏ 3   → backtrack(3, [1,2])   → index==3 → THÊM [1,2] ✓
+│   └── Bỏ 2   → backtrack(2, [1])
+│       ├── Chọn 3 → backtrack(3, [1,3])    → THÊM [1,3] ✓
+│       └── Bỏ 3   → backtrack(3, [1])      → THÊM [1] ✓
+└── Bỏ 1   → backtrack(1, [])
+    ├── Chọn 2 → backtrack(2, [2])
+    │   ├── Chọn 3 → backtrack(3, [2,3])    → THÊM [2,3] ✓
+    │   └── Bỏ 3   → backtrack(3, [2])      → THÊM [2] ✓
+    └── Bỏ 2   → backtrack(2, [])
+        ├── Chọn 3 → backtrack(3, [3])       → THÊM [3] ✓
+        └── Bỏ 3   → backtrack(3, [])        → THÊM [] ✓
+
+Kết quả: [[1,2,3], [1,2], [1,3], [1], [2,3], [2], [3], []]
+Tổng: 2^3 = 8 subsets ✓
+```
+
+#### Complexity
+
+|                              | Time       | Space           |
+| :--------------------------- | :--------- | :-------------- |
+| **Cách 1 (Include/Exclude)** | O(n * 2^n) | O(n) call stack |
+| **Cách 2 (Start-based)**     | O(n * 2^n) | O(n) call stack |
+
+**Giải thích:** Có 2^n subsets, mỗi subset trung bình dài n/2, copy mất O(n/2). Tổng = O(n * 2^n).
+
+#### Lỗi thường gặp
+
+1. **Quên copy:** Viết `result.append(current)` thay vì `result.append(current[:])` → tất cả subset trỏ về cùng 1 list → kết quả sai.
+2. **Quên pop:** Không backtrack sau khi đệ quy → subset cứ dài mãi.
+3. **Nhầm index:** Dùng `index` thay vì `index + 1` khi đệ quy → vòng lặp vô tận.
+
+------
+
+### 7.2 LeetCode #46 — Permutations
+
+**Difficulty:** Medium | [Link bài](https://leetcode.com/problems/permutations/)
+
+#### Đề bài
+
+Cho một mảng `nums` gồm các số nguyên **phân biệt**, trả về tất cả các **hoán vị** (permutations) có thể. Có thể trả kết quả theo bất kỳ thứ tự nào.
+
+**Ví dụ:**
+
+```
+Input: nums = [1, 2, 3]
+Output: [[1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]]
+```
+
+#### Phân tích tư duy
+
+Khác với Subsets (chọn hoặc không chọn), Permutations yêu cầu **sắp xếp lại thứ tự** tất cả phần tử. Mọi phần tử đều phải xuất hiện, chỉ khác **vị trí**.
+
+**Cách nghĩ:** Ở mỗi vị trí (slot), thử đặt từng phần tử **chưa được sử dụng**. Dùng mảng `used[]` hoặc kỹ thuật swap để theo dõi.
+
+**So sánh với Subsets:**
+
+- Subsets: n phần tử, mỗi cái chọn/không → 2^n kết quả
+- Permutations: n phần tử, sắp thứ tự → n! kết quả
+
+#### Cách 1: Dùng mảng `used`
+
+```python
+from typing import List
+
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        result = []
+        n = len(nums)
+        used = [False] * n  # đánh dấu phần tử đã dùng
+
+        def backtrack(current: List[int]):
+            # Base case: đã chọn đủ n phần tử → 1 hoán vị hoàn chỉnh
+            if len(current) == n:
+                result.append(current[:])
+                return
+
+            # Thử đặt từng phần tử chưa dùng vào vị trí hiện tại
+            for i in range(n):
+                if used[i]:
+                    continue  # phần tử đã dùng → skip
+
+                # Chọn nums[i]
+                used[i] = True
+                current.append(nums[i])
+
+                backtrack(current)
+
+                # Backtrack: bỏ chọn nums[i]
+                current.pop()
+                used[i] = False
+
+        backtrack([])
+        return result
+```
+
+#### Cách 2: Swap (không cần mảng `used`)
+
+```python
+from typing import List
+
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        result = []
+
+        def backtrack(start: int):
+            # Base case: đã cố định tất cả vị trí
+            if start == len(nums):
+                result.append(nums[:])
+                return
+
+            for i in range(start, len(nums)):
+                # Đặt nums[i] vào vị trí start bằng cách swap
+                nums[start], nums[i] = nums[i], nums[start]
+                backtrack(start + 1)
+                # Swap lại (backtrack)
+                nums[start], nums[i] = nums[i], nums[start]
+
+        backtrack(0)
+        return result
+```
+
+#### Dry run chi tiết
+
+```
+nums = [1, 2, 3], used = [F, F, F]
+
+backtrack(current=[])
+│
+├── i=0: chọn 1, used=[T,F,F], current=[1]
+│   ├── i=0: used[0]=T → skip
+│   ├── i=1: chọn 2, used=[T,T,F], current=[1,2]
+│   │   ├── i=0,1: đã dùng → skip
+│   │   └── i=2: chọn 3 → current=[1,2,3] → len==3 → THÊM [1,2,3] ✓
+│   │       Backtrack: bỏ 3, used=[T,T,F]
+│   │   Backtrack: bỏ 2, used=[T,F,F]
+│   │
+│   └── i=2: chọn 3, used=[T,F,T], current=[1,3]
+│       └── i=1: chọn 2 → current=[1,3,2] → THÊM [1,3,2] ✓
+│       Backtrack...
+│   Backtrack: bỏ 1, used=[F,F,F]
+│
+├── i=1: chọn 2, used=[F,T,F], current=[2]
+│   ├── i=0: chọn 1 → [2,1] → chọn 3 → [2,1,3] ✓
+│   └── i=2: chọn 3 → [2,3] → chọn 1 → [2,3,1] ✓
+│
+└── i=2: chọn 3, used=[F,F,T], current=[3]
+    ├── i=0: chọn 1 → [3,1] → chọn 2 → [3,1,2] ✓
+    └── i=1: chọn 2 → [3,2] → chọn 1 → [3,2,1] ✓
+
+Tổng: 3! = 6 hoán vị ✓
+```
+
+#### Complexity
+
+|                         | Time      | Space           |
+| :---------------------- | :-------- | :-------------- |
+| **Cách 1 (used array)** | O(n * n!) | O(n)            |
+| **Cách 2 (swap)**       | O(n * n!) | O(n) call stack |
+
+#### Lỗi thường gặp
+
+1. **Dùng `start` thay vì `used`:** Permutations khác Subsets! Ở Permutations, ta cần xét **tất cả** phần tử (không chỉ từ start trở đi), trừ những phần tử đã dùng.
+2. **Quên reset `used[i] = False`:** Phần tử bị "khoá" vĩnh viễn, chỉ sinh được 1 hoán vị.
+3. **Swap method không swap lại:** Mảng `nums` bị thay đổi vĩnh viễn → kết quả sai.
+
+------
+
+### 7.3 LeetCode #39 — Combination Sum
+
+**Difficulty:** Medium | [Link bài](https://leetcode.com/problems/combination-sum/)
+
+#### Đề bài
+
+Cho một mảng `candidates` (các phần tử phân biệt) và một số `target`, tìm tất cả các **tổ hợp duy nhất** trong `candidates` mà tổng bằng `target`. Cùng một số có thể được chọn **không giới hạn** số lần. Hai tổ hợp là khác nhau nếu frequency của ít nhất 1 số khác nhau.
+
+**Ví dụ:**
+
+```
+Input: candidates = [2, 3, 6, 7], target = 7
+Output: [[2, 2, 3], [7]]
+```
+
+#### Phân tích tư duy
+
+Bài này kết hợp **Subsets** + **target constraint**:
+
+- Giống Subsets: ta duyệt qua các phần tử
+- Khác Subsets: có thể chọn lại phần tử (start = `i`, không phải `i+1`)
+- Thêm constraint: tổng phải bằng target
+
+**Chiến lược pruning:** Sort mảng trước. Khi `candidates[i] > remaining`, mọi phần tử sau cũng lớn hơn → `break` luôn (không cần thử tiếp).
+
+**So sánh 3 biến thể Combination Sum:**
+
+|                  | CS I (#39) | CS II (#40) | CS III (#216) |
+| :--------------- | :--------- | :---------- | :------------ |
+| Chọn lại?        | Được       | Không       | Không         |
+| Đệ quy start     | `i`        | `i + 1`     | `i + 1`       |
+| Duplicate input? | Không      | Có          | Không (1-9)   |
+
+#### Solution
+
+```python
+from typing import List
+
+class Solution:
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        result = []
+        candidates.sort()  # Sort để pruning hiệu quả
+
+        def backtrack(start: int, current: List[int], remaining: int):
+            # Base case: tìm được tổ hợp hợp lệ
+            if remaining == 0:
+                result.append(current[:])
+                return
+
+            for i in range(start, len(candidates)):
+                # Pruning: candidates đã sort, nếu candidates[i] > remaining
+                # thì tất cả phần tử phía sau cũng > remaining → dừng
+                if candidates[i] > remaining:
+                    break
+
+                current.append(candidates[i])
+                # QUAN TRỌNG: start = i (KHÔNG phải i+1)
+                # vì cùng phần tử được chọn lại nhiều lần
+                backtrack(i, current, remaining - candidates[i])
+                current.pop()  # Backtrack
+
+        backtrack(0, [], target)
+        return result
+```
+
+#### Dry run chi tiết
+
+```
+candidates = [2, 3, 6, 7], target = 7
+
+backtrack(start=0, current=[], remaining=7)
+│
+├── i=0, chọn 2: remaining=5, current=[2]
+│   ├── i=0, chọn 2: remaining=3, current=[2,2]
+│   │   ├── i=0, chọn 2: remaining=1, current=[2,2,2]
+│   │   │   ├── i=0, 2 > 1 → BREAK (pruning!)
+│   │   │   Backtrack: bỏ 2
+│   │   │
+│   │   ├── i=1, chọn 3: remaining=0 → THÊM [2,2,3] ✓
+│   │   │   Backtrack: bỏ 3
+│   │   │
+│   │   ├── i=2, 6 > 3 → BREAK
+│   │   Backtrack: bỏ 2
+│   │
+│   ├── i=1, chọn 3: remaining=2, current=[2,3]
+│   │   ├── i=1, 3 > 2 → BREAK
+│   │   Backtrack: bỏ 3
+│   │
+│   ├── i=2, 6 > 5 → BREAK
+│   Backtrack: bỏ 2
+│
+├── i=1, chọn 3: remaining=4, current=[3]
+│   ├── i=1, chọn 3: remaining=1, current=[3,3]
+│   │   ├── i=1, 3 > 1 → BREAK
+│   │   Backtrack
+│   ├── i=2, 6 > 4 → BREAK
+│   Backtrack
+│
+├── i=2, chọn 6: remaining=1, current=[6]
+│   ├── i=2, 6 > 1 → BREAK
+│   Backtrack
+│
+└── i=3, chọn 7: remaining=0 → THÊM [7] ✓
+
+Kết quả: [[2, 2, 3], [7]]
+```
+
+#### Complexity
+
+- **Time:** O(N^(T/M)) — N = len(candidates), T = target, M = min(candidates)
+- **Space:** O(T/M) — chiều sâu tối đa của call stack
+
+#### Lỗi thường gặp
+
+1. **Dùng `i+1` thay vì `i`:** Sẽ không cho phép chọn lại phần tử → thiếu kết quả.
+2. **Quên sort + pruning:** Code vẫn đúng nhưng chậm hơn rất nhiều vì thử cả những nhánh chắc chắn thất bại.
+3. **Dùng `remaining < 0` thay vì `break`:** Kiểm tra `< 0` vẫn đúng nhưng kém hiệu quả vì phải đi sâu vào đệ quy rồi mới phát hiện.
+
+------
+
+### 7.4 LeetCode #51 — N-Queens
+
+**Difficulty:** Hard | [Link bài](https://leetcode.com/problems/n-queens/)
+
+#### Đề bài
+
+Bài toán **N-Queens**: Đặt `n` quân hậu lên bàn cờ `n x n` sao cho **không có hai quân hậu nào tấn công lẫn nhau** (không cùng hàng, cùng cột, cùng đường chéo).
+
+Cho một số nguyên `n`, trả về tất cả các cách đặt hợp lệ. Mỗi cách đặt biểu diễn bằng list các string, trong đó `'Q'` là hậu và `'.'` là ô trống.
+
+**Ví dụ:**
+
+```
+Input: n = 4
+Output: [
+  [".Q..","...Q","Q...","..Q."],
+  ["..Q.","Q...","...Q",".Q.."]
+]
+```
+
+#### Phân tích tư duy
+
+Đây là bài **constraint-based backtracking** kinh điển.
+
+**Tại sao không brute force?** Nếu thử tất cả cách đặt n hậu lên n*n ô → C(n^2, n) cách. Với n=8: C(64,8) = 4,426,165,368 cách. Quá chậm!
+
+**Ý tưởng backtracking:**
+
+1. Đặt hậu **từng hàng một** (mỗi hàng chắc chắn phải có đúng 1 hậu)
+2. Ở mỗi hàng, thử từng cột
+3. Kiểm tra 3 constraint: cùng cột, cùng đường chéo chính (row-col), cùng đường chéo phụ (row+col)
+4. Dùng **set** để check O(1)
+
+**Trick nhận biết đường chéo:**
+
+- Các ô trên cùng đường chéo `\` (đi xuống bên phải) có `row - col` bằng nhau
+- Các ô trên cùng đường chéo `/` (đi xuống bên trái) có `row + col` bằng nhau
+
+#### Solution
+
+```python
+from typing import List
+
+class Solution:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        result = []
+        board = [['.'] * n for _ in range(n)]
+
+        # Ba set theo dõi các vị trí bị "cấm"
+        cols = set()    # cột đã có hậu
+        diag1 = set()   # đường chéo chính: row - col
+        diag2 = set()   # đường chéo phụ: row + col
+
+        def backtrack(row: int):
+            # Base case: đã đặt hậu ở tất cả n hàng
+            if row == n:
+                # Copy bàn cờ thành list of string
+                result.append([''.join(r) for r in board])
+                return
+
+            # Thử đặt hậu vào từng cột của hàng hiện tại
+            for col in range(n):
+                # Kiểm tra 3 constraint
+                if col in cols or (row - col) in diag1 or (row + col) in diag2:
+                    continue  # vị trí bị tấn công → skip
+
+                # Đặt hậu
+                board[row][col] = 'Q'
+                cols.add(col)
+                diag1.add(row - col)
+                diag2.add(row + col)
+
+                # Đệ quy sang hàng tiếp theo
+                backtrack(row + 1)
+
+                # Backtrack: bỏ hậu
+                board[row][col] = '.'
+                cols.remove(col)
+                diag1.remove(row - col)
+                diag2.remove(row + col)
+
+        backtrack(0)
+        return result
+```
+
+#### Dry run chi tiết (n=4)
+
+```
+Bàn cờ 4x4, đặt 4 hậu.
+
+backtrack(row=0)
+├── col=0: cols={}, diag1={}, diag2={} → OK
+│   Đặt Q ở (0,0). cols={0}, diag1={0}, diag2={0}
+│   ┌─────────┐
+│   │ Q . . . │
+│   │ . . . . │
+│   │ . . . . │
+│   │ . . . . │
+│   └─────────┘
+│
+│   backtrack(row=1)
+│   ├── col=0: 0 in cols → skip
+│   ├── col=1: 1-1=0 in diag1 → skip (cùng chéo \)
+│   ├── col=2: 2∉cols, 1-2=-1∉diag1, 1+2=3∉diag2 → OK
+│   │   Đặt Q ở (1,2). cols={0,2}, diag1={0,-1}, diag2={0,3}
+│   │   ┌─────────┐
+│   │   │ Q . . . │
+│   │   │ . . Q . │
+│   │   │ . . . . │
+│   │   │ . . . . │
+│   │   └─────────┘
+│   │
+│   │   backtrack(row=2) → thử tất cả 4 cột → đều bị cấm → return
+│   │   Backtrack: bỏ (1,2)
+│   │
+│   ├── col=3: 3∉cols, 1-3=-2∉diag1, 1+3=4∉diag2 → OK
+│   │   Đặt Q ở (1,3)
+│   │   ┌─────────┐
+│   │   │ Q . . . │
+│   │   │ . . . Q │
+│   │   │ . . . . │
+│   │   │ . . . . │
+│   │   └─────────┘
+│   │
+│   │   backtrack(row=2)
+│   │   ├── col=0: 0 in cols → skip
+│   │   ├── col=1: 1∉cols, 2-1=1∉diag1, 2+1=3 in diag2 → skip (chéo /)
+│   │   ├── col=2: 2∉cols(wait, {0,3}), 2-2=0 in diag1 → skip
+│   │   ├── col=3: 3 in cols → skip
+│   │   → Tất cả bị cấm → return. Backtrack bỏ (1,3)
+│   │
+│   backtrack(row=1) hết cột → return. Backtrack bỏ (0,0)
+│
+├── col=1: → OK, đặt Q ở (0,1)
+│   ┌─────────┐
+│   │ . Q . . │
+│   │ . . . . │
+│   │ . . . . │
+│   │ . . . . │
+│   └─────────┘
+│
+│   backtrack(row=1)
+│   ├── col=3: → OK, đặt Q ở (1,3)
+│   │   backtrack(row=2)
+│   │   ├── col=0: → OK, đặt Q ở (2,0)
+│   │   │   backtrack(row=3)
+│   │   │   ├── col=2: → OK, đặt Q ở (3,2)
+│   │   │   │   row==4 → THÊM KẾT QUẢ! ✓
+│   │   │   │   ┌─────────┐
+│   │   │   │   │ . Q . . │
+│   │   │   │   │ . . . Q │
+│   │   │   │   │ Q . . . │
+│   │   │   │   │ . . Q . │
+│   │   │   │   └─────────┘
+│   ... (tiếp tục tìm lời giải thứ 2)
+
+Kết quả: 2 lời giải cho n=4
+```
+
+#### Complexity
+
+- **Time:** O(N!) — Hàng 0 thử N cột, hàng 1 tối đa N-1, hàng 2 tối đa N-2, ...
+- **Space:** O(N^2) cho bàn cờ, hoặc O(N) nếu chỉ lưu mảng cột
+
+#### Lỗi thường gặp
+
+1. **Quên check cả 2 đường chéo:** Chỉ check cột mà quên chéo → hậu vẫn tấn công nhau.
+2. **Nhầm công thức chéo:** `row - col` và `row + col` dễ bị nhầm. Trick: vẽ bàn cờ ra giấy, ghi giá trị `row-col` và `row+col` cho từng ô.
+3. **Không dùng set:** Dùng loop check thay vì set → O(N) mỗi lần check thay vì O(1).
+
+------
+
+### 7.5 LeetCode #37 — Sudoku Solver
+
+**Difficulty:** Hard | [Link bài](https://leetcode.com/problems/sudoku-solver/)
+
+#### Đề bài
+
+Giải một bảng Sudoku 9x9. Điền số `'1'` đến `'9'` vào các ô trống (ký hiệu `'.'`) sao cho:
+
+- Mỗi **hàng** chứa 1-9 không trùng
+- Mỗi **cột** chứa 1-9 không trùng
+- Mỗi **box 3x3** chứa 1-9 không trùng
+
+Bài toán đảm bảo có **đúng 1 lời giải duy nhất**.
+
+#### Phân tích tư duy
+
+Sudoku là bài backtracking **"tìm 1 lời giải"** (khác N-Queens tìm tất cả).
+
+**Brute force:** Thử tất cả 9^81 khả năng → quá chậm.
+
+**Backtracking + Constraint Checking:**
+
+1. Tìm ô trống đầu tiên
+2. Thử đặt số 1-9
+3. Nếu hợp lệ (check hàng + cột + box) → đặt, đệ quy
+4. Nếu đệ quy thành công → trả True (dừng luôn!)
+5. Nếu thất bại → xóa số (backtrack), thử số tiếp
+6. Nếu hết 9 số → trả False
+
+**Tối ưu quan trọng:** Pre-compute danh sách ô trống + dùng set cho 3 constraint → check O(1).
+
+#### Cách 1: Basic Backtracking
+
+```python
+from typing import List
+
+class Solution:
+    def solveSudoku(self, board: List[List[str]]) -> None:
+        """Giải Sudoku in-place."""
+
+        def is_valid(row: int, col: int, num: str) -> bool:
+            """Kiểm tra đặt num vào (row, col) có hợp lệ không."""
+            # Check hàng
+            if num in board[row]:
+                return False
+
+            # Check cột
+            for r in range(9):
+                if board[r][col] == num:
+                    return False
+
+            # Check box 3x3
+            box_row, box_col = 3 * (row // 3), 3 * (col // 3)
+            for r in range(box_row, box_row + 3):
+                for c in range(box_col, box_col + 3):
+                    if board[r][c] == num:
+                        return False
+
+            return True
+
+        def backtrack() -> bool:
+            # Tìm ô trống tiếp theo
+            for row in range(9):
+                for col in range(9):
+                    if board[row][col] == '.':
+                        # Thử số 1-9
+                        for num in '123456789':
+                            if is_valid(row, col, num):
+                                board[row][col] = num  # Đặt
+
+                                if backtrack():        # Đệ quy
+                                    return True        # Thành công → dừng!
+
+                                board[row][col] = '.'  # Backtrack
+
+                        return False  # Hết số → quay lui
+            return True  # Không còn ô trống → giải xong!
+
+        backtrack()
+```
+
+#### Cách 2: Tối ưu với Set (nhanh hơn 5-10x)
+
+```python
+from typing import List
+
+class Solution:
+    def solveSudoku(self, board: List[List[str]]) -> None:
+        """Giải Sudoku tối ưu: pre-compute ô trống + dùng set check O(1)."""
+        # Khởi tạo 3 loại constraint
+        rows = [set() for _ in range(9)]    # rows[i] = set số đã có ở hàng i
+        cols = [set() for _ in range(9)]    # cols[j] = set số đã có ở cột j
+        boxes = [set() for _ in range(9)]   # boxes[k] = set số đã có ở box k
+        empty = []  # danh sách tọa độ ô trống
+
+        # Scan bảng: điền thông tin ban đầu
+        for i in range(9):
+            for j in range(9):
+                if board[i][j] != '.':
+                    num = board[i][j]
+                    rows[i].add(num)
+                    cols[j].add(num)
+                    boxes[3 * (i // 3) + j // 3].add(num)
+                else:
+                    empty.append((i, j))
+
+        def backtrack(idx: int) -> bool:
+            # Base case: đã điền hết tất cả ô trống
+            if idx == len(empty):
+                return True
+
+            row, col = empty[idx]
+            box_id = 3 * (row // 3) + col // 3
+
+            for num in '123456789':
+                # Check 3 constraint trong O(1) nhờ set
+                if num in rows[row] or num in cols[col] or num in boxes[box_id]:
+                    continue  # vi phạm → skip
+
+                # Đặt số
+                board[row][col] = num
+                rows[row].add(num)
+                cols[col].add(num)
+                boxes[box_id].add(num)
+
+                # Đệ quy ô trống tiếp theo
+                if backtrack(idx + 1):
+                    return True  # Tìm được lời giải → dừng!
+
+                # Backtrack: xóa số
+                board[row][col] = '.'
+                rows[row].remove(num)
+                cols[col].remove(num)
+                boxes[box_id].remove(num)
+
+            return False  # Hết 9 số mà không số nào hợp lệ
+
+        backtrack(0)
+```
+
+#### Dry run chi tiết
+
+```
+Sudoku ban đầu (chỉ hiện 3x3 đầu tiên để minh hoạ):
+5 3 . | ...
+6 . . | ...
+. 9 8 | ...
+
+rows[0] = {'5','3','7'}  (hàng 0 có sẵn 5,3,7)
+cols[2] = {'8'}           (cột 2 có sẵn 8)
+boxes[0] = {'5','3','6','9','8'}  (box trên-trái)
+
+Ô trống đầu tiên: (0, 2)
+  Thử '1': '1' ∉ rows[0]? ✓, '1' ∉ cols[2]? ✓, '1' ∉ boxes[0]? ✓ → OK
+  Đặt board[0][2] = '1'
+
+  Ô trống tiếp theo: (0, 3)
+    Thử '1': '1' in rows[0] (vừa thêm!) → skip
+    Thử '2': '2' ∉ rows[0]? ✓, check cột 3... → tiếp tục
+
+  ... (nếu ở bước nào đó return False → quay lại (0,2), bỏ '1', thử '2')
+
+  Cứ thế cho đến khi điền hết tất cả ô trống → return True
+```
+
+#### Complexity
+
+- **Time:** O(9^m) worst case, m = số ô trống (tối đa 81). Thực tế nhanh hơn rất nhiều nhờ constraint pruning.
+- **Space:** O(m) cho call stack + O(81) cho 3 set = O(1) (vì m <= 81)
+
+#### Lỗi thường gặp
+
+1. **Quên `return True` khi đệ quy thành công:** Không dừng sớm → tiếp tục backtrack → xóa hết lời giải!
+2. **Quên `return False` khi hết 9 số:** Hàm không báo thất bại → không backtrack đúng cách.
+3. **Check box sai:** Công thức `box_id = 3 * (row // 3) + col // 3` dễ nhầm. Nhớ: `// 3` để tìm box nào, `* 3` để nhảy qua box.
+4. **Modify board mà không backtrack:** Khi thử số tiếp, quên xóa số trước đó.
+
+------
+
+### 7.6 LeetCode #131 — Palindrome Partitioning
+
+**Difficulty:** Medium | [Link bài](https://leetcode.com/problems/palindrome-partitioning/)
+
+#### Đề bài
+
+Cho một chuỗi `s`, trả về tất cả các cách **chia chuỗi thành các phần** sao cho **mỗi phần đều là palindrome** (chuỗi đọc xuôi ngược giống nhau).
+
+**Ví dụ:**
+
+```
+Input: s = "aab"
+Output: [["a","a","b"], ["aa","b"]]
+```
+
+#### Phân tích tư duy
+
+Bài này kết hợp **backtracking** + **palindrome checking**.
+
+**Ý tưởng:** Tại mỗi vị trí, thử cắt prefix có độ dài 1, 2, 3, ..., n. Nếu prefix là palindrome → cắt, rồi đệ quy giải phần còn lại.
+
+**Tối ưu:** Pre-compute bảng DP cho palindrome check: `dp[i][j] = True` nếu `s[i..j]` là palindrome. Sau đó mỗi lần check chỉ O(1) thay vì O(n).
+
+**Khác biệt với Subsets:**
+
+- Subsets: chọn/không chọn từng phần tử riêng lẻ
+- Palindrome Partition: chọn "cắt ở đâu" — mỗi phần có thể gồm nhiều ký tự liên tiếp
+
+#### Cách 1: Naive (check palindrome mỗi lần)
+
+```python
+from typing import List
+
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        result = []
+
+        def is_palindrome(sub: str) -> bool:
+            """Kiểm tra chuỗi có đối xứng không."""
+            return sub == sub[::-1]
+
+        def backtrack(start: int, current: List[str]):
+            # Base case: đã duyệt hết chuỗi
+            if start == len(s):
+                result.append(current[:])  # tìm được 1 cách chia hợp lệ
+                return
+
+            # Thử cắt prefix từ start đến end
+            for end in range(start + 1, len(s) + 1):
+                substring = s[start:end]
+                if is_palindrome(substring):
+                    current.append(substring)
+                    backtrack(end, current)
+                    current.pop()  # backtrack
+
+        backtrack(0, [])
+        return result
+```
+
+#### Cách 2: Tối ưu với DP precomputation
+
+```python
+from typing import List
+
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        n = len(s)
+        result = []
+
+        # Bước 1: Tính trước bảng palindrome bằng DP
+        # dp[i][j] = True nếu s[i..j] là palindrome
+        dp = [[False] * n for _ in range(n)]
+        for i in range(n - 1, -1, -1):
+            for j in range(i, n):
+                # s[i..j] là palindrome nếu:
+                # 1. s[i] == s[j], VÀ
+                # 2. j - i <= 2 (chuỗi <= 3 ký tự) HOẶC s[i+1..j-1] cũng palindrome
+                if s[i] == s[j] and (j - i <= 2 or dp[i + 1][j - 1]):
+                    dp[i][j] = True
+
+        # Bước 2: Backtrack với O(1) palindrome check
+        def backtrack(start: int, current: List[str]):
+            if start == n:
+                result.append(current[:])
+                return
+
+            for end in range(start, n):
+                if dp[start][end]:  # ← O(1) check!
+                    current.append(s[start:end + 1])
+                    backtrack(end + 1, current)
+                    current.pop()
+
+        backtrack(0, [])
+        return result
+```
+
+#### Dry run chi tiết
+
+```
+s = "aab"
+
+Bước 1: Bảng DP palindrome
+     j=0  j=1  j=2
+i=0 [ T    T    F ]    "a"=palindrome, "aa"=palindrome, "aab"≠palindrome
+i=1 [ -    T    F ]    "a"=palindrome, "ab"≠palindrome
+i=2 [ -    -    T ]    "b"=palindrome
+
+Bước 2: Backtracking
+
+backtrack(start=0, current=[])
+│
+├── end=0: dp[0][0]=T → cắt "a"
+│   backtrack(start=1, current=["a"])
+│   │
+│   ├── end=1: dp[1][1]=T → cắt "a"
+│   │   backtrack(start=2, current=["a","a"])
+│   │   │
+│   │   └── end=2: dp[2][2]=T → cắt "b"
+│   │       backtrack(start=3, current=["a","a","b"])
+│   │       → start==3==len(s) → THÊM ["a","a","b"] ✓
+│   │       Backtrack: bỏ "b"
+│   │   Backtrack: bỏ "a"
+│   │
+│   └── end=2: dp[1][2]=F → skip ("ab" không palindrome)
+│   Backtrack: bỏ "a"
+│
+├── end=1: dp[0][1]=T → cắt "aa"
+│   backtrack(start=2, current=["aa"])
+│   │
+│   └── end=2: dp[2][2]=T → cắt "b"
+│       backtrack(start=3, current=["aa","b"])
+│       → THÊM ["aa","b"] ✓
+│   Backtrack: bỏ "aa"
+│
+└── end=2: dp[0][2]=F → skip ("aab" không palindrome)
+
+Kết quả: [["a","a","b"], ["aa","b"]]
+```
+
+#### Complexity
+
+| Cách          | Time                                          | Space              |
+| :------------ | :-------------------------------------------- | :----------------- |
+| **Naive**     | O(n * 2^n) — check palindrome O(n) mỗi lần    | O(n) call stack    |
+| **DP tối ưu** | O(n * 2^n) — DP precompute O(n^2) + backtrack | O(n^2) cho bảng DP |
+
+**Worst case:** s = "aaa...a" (n ký tự giống nhau) → mọi substring đều palindrome → 2^(n-1) cách partition.
+
+#### Lỗi thường gặp
+
+1. **DP range sai:** Phải duyệt `i` từ n-1 về 0 (bottom-up). Nếu duyệt xuôi, `dp[i+1][j-1]` chưa được tính.
+2. **Nhầm index khi cắt chuỗi:** `s[start:end+1]` (Python slice exclusive) vs `dp[start][end]` (inclusive cả 2 đầu).
+3. **Quên backtrack:** Thêm substring vào current mà không pop → current cứ dài mãi.
+
+------
+
+### 7.7 LeetCode #22 — Generate Parentheses
+
+**Difficulty:** Medium | [Link bài](https://leetcode.com/problems/generate-parentheses/)
+
+#### Đề bài
+
+Cho `n` cặp ngoặc đơn, sinh ra tất cả các chuỗi ngoặc **hợp lệ** (well-formed).
+
+**Ví dụ:**
+
+```
+Input: n = 3
+Output: ["((()))","(()())","(())()","()(())","()()()"]
+```
+
+#### Phân tích tư duy
+
+Đây là bài backtracking **"sinh chuỗi có ràng buộc"**.
+
+**Ràng buộc để chuỗi ngoặc hợp lệ:**
+
+1. Số dấu `(` không vượt quá `n`
+2. Số dấu `)` không vượt quá số dấu `(` đã đặt (tại mọi thời điểm)
+3. Tổng chiều dài = 2n
+
+**Tại sao không sinh tất cả rồi filter?** Tổng chuỗi gồm 2n ký tự `(` hoặc `)` = 2^(2n). Với n=10: 2^20 = 1,048,576 chuỗi. Nhưng chỉ khoảng 16,796 chuỗi hợp lệ (số Catalan). Backtracking chỉ sinh chuỗi hợp lệ → nhanh hơn nhiều.
+
+**Hai biến theo dõi:**
+
+- `open_count`: số dấu `(` đã đặt
+- `close_count`: số dấu `)` đã đặt
+
+**Quy tắc:**
+
+- Nếu `open_count < n` → có thể thêm `(`
+- Nếu `close_count < open_count` → có thể thêm `)`
+
+#### Solution
+
+```python
+from typing import List
+
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        result = []
+
+        def backtrack(current: List[str], open_count: int, close_count: int):
+            # Base case: chuỗi đủ 2n ký tự → hoàn chỉnh
+            if len(current) == 2 * n:
+                result.append(''.join(current))
+                return
+
+            # Lựa chọn 1: Thêm dấu '(' nếu chưa dùng hết n cái
+            if open_count < n:
+                current.append('(')
+                backtrack(current, open_count + 1, close_count)
+                current.pop()  # backtrack
+
+            # Lựa chọn 2: Thêm dấu ')' nếu close < open
+            # (đảm bảo mọi ')' đều có '(' tương ứng)
+            if close_count < open_count:
+                current.append(')')
+                backtrack(current, open_count, close_count + 1)
+                current.pop()  # backtrack
+
+        backtrack([], 0, 0)
+        return result
+```
+
+#### Cách 2: Dùng string thay vì list (ngắn gọn hơn)
+
+```python
+from typing import List
+
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        result = []
+
+        def backtrack(s: str, open_count: int, close_count: int):
+            # Base case
+            if len(s) == 2 * n:
+                result.append(s)
+                return
+
+            # Thêm '(' nếu còn quota
+            if open_count < n:
+                backtrack(s + '(', open_count + 1, close_count)
+
+            # Thêm ')' nếu hợp lệ
+            if close_count < open_count:
+                backtrack(s + ')', open_count, close_count + 1)
+
+        backtrack('', 0, 0)
+        return result
+```
+
+#### Dry run chi tiết (n=2)
+
+```
+n = 2, cần sinh chuỗi ngoặc hợp lệ có 4 ký tự.
+
+backtrack("", open=0, close=0)
+│
+├── Thêm '(' → backtrack("(", open=1, close=0)
+│   │
+│   ├── Thêm '(' → backtrack("((", open=2, close=0)
+│   │   │
+│   │   ├── open==n=2 → KHÔNG thêm '(' được nữa
+│   │   └── close(0) < open(2) → Thêm ')' → backtrack("(()", open=2, close=1)
+│   │       │
+│   │       ├── KHÔNG thêm '(' (open==n)
+│   │       └── close(1) < open(2) → Thêm ')' → backtrack("(())", open=2, close=2)
+│   │           → len==4 → THÊM "(())" ✓
+│   │
+│   └── close(0) < open(1) → Thêm ')' → backtrack("()", open=1, close=1)
+│       │
+│       ├── open(1) < n(2) → Thêm '(' → backtrack("()(", open=2, close=1)
+│       │   │
+│       │   ├── KHÔNG thêm '(' (open==n)
+│       │   └── close(1) < open(2) → Thêm ')' → backtrack("()()", open=2, close=2)
+│       │       → len==4 → THÊM "()()" ✓
+│       │
+│       └── close(1) == open(1) → KHÔNG thể thêm ')' (sẽ tạo ")(" sai thứ tự)
+│
+└── close(0) == open(0) → KHÔNG thể thêm ')'
+
+Kết quả: ["(())", "()()"]
+Tổng: C(2) = 2 (số Catalan thứ 2) ✓
+
+Với n=3: ["((()))","(()())","(())()","()(())","()()()"] → C(3) = 5 ✓
+```
+
+#### Complexity
+
+- **Time:** O(4^n / sqrt(n)) — Số chuỗi hợp lệ = số Catalan thứ n = C(2n,n)/(n+1). Mỗi chuỗi dài 2n.
+- **Space:** O(n) cho call stack (chiều sâu tối đa = 2n)
+
+**Số Catalan cho vài giá trị n:**
+
+| n    | 1    | 2    | 3    | 4    | 5    | 6    | 7    | 8    |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| C(n) | 1    | 2    | 5    | 14   | 42   | 132  | 429  | 1430 |
+
+#### Lỗi thường gặp
+
+1. **Chỉ check `open < n` mà quên `close < open`:** Sinh ra chuỗi như `)(` — ngoặc đóng trước ngoặc mở.
+2. **Dùng `close < n` thay vì `close < open`:** Sẽ sinh chuỗi dạng `())(` — có `))` liền nhau khi chưa đủ `(`.
+3. **Nhầm base case:** Dùng `len == n` thay vì `len == 2*n` → chỉ sinh nửa chuỗi.
+4. **Performance:** Dùng string concatenation `s + '('` trong Python tạo string mới mỗi lần (O(n)). Dùng list + join hiệu quả hơn cho n lớn.
+
+------
+
+### 7.8 LeetCode #79 — Word Search
+
+**Difficulty:** Medium | [Link bài](https://leetcode.com/problems/word-search/)
+
+#### Đề bài
+
+Cho một lưới `m x n` gồm các ký tự (`board`) và một chuỗi `word`, kiểm tra xem `word` có tồn tại trong lưới hay không. Word có thể được tạo thành bằng cách nối các ký tự **liền kề theo chiều ngang hoặc dọc**. Mỗi ô chỉ được dùng **tối đa 1 lần**.
+
+**Ví dụ:**
+
+```
+Input:
+board = [["A","B","C","E"],
+         ["S","F","C","S"],
+         ["A","D","E","E"]]
+word = "ABCCED"
+Output: true
+Đường đi: A → B → C → C → E → D
+    [A] [B] [C]  E
+     S   F  [C]  S
+     A  [D] [E]  E
+```
+
+#### Phân tích tư duy
+
+Đây là bài **backtracking trên grid** (lưới 2D). Khác với các bài trước (duyệt mảng 1D), ở đây ta di chuyển theo **4 hướng** (lên, xuống, trái, phải).
+
+**Ý tưởng:**
+
+1. Duyệt tất cả ô trên grid, thử bắt đầu từ mỗi ô
+2. Từ mỗi ô, dùng DFS/backtracking để tìm xem có thể tạo thành word không
+3. Đánh dấu ô đã visit (tránh dùng lại)
+4. Nếu match hết word → return True
+5. Nếu đi vào ngõ cụt → backtrack (bỏ đánh dấu)
+
+**Trick tối ưu:**
+
+- Check ký tự đầu tiên trước khi bắt đầu DFS
+- Đánh dấu visited bằng cách thay ký tự (tiết kiệm bộ nhớ, không cần mảng visited riêng)
+
+#### Solution
+
+```python
+from typing import List
+
+class Solution:
+    def exist(self, board: List[List[str]], word: str) -> bool:
+        m, n = len(board), len(board[0])
+
+        def backtrack(row: int, col: int, index: int) -> bool:
+            """
+            Kiểm tra từ vị trí (row, col) có thể match word[index:] không.
+            """
+            # Base case: đã match hết tất cả ký tự
+            if index == len(word):
+                return True
+
+            # Kiểm tra biên + ký tự có khớp không
+            if (row < 0 or row >= m or
+                col < 0 or col >= n or
+                board[row][col] != word[index]):
+                return False
+
+            # Đánh dấu ô đã visit bằng cách thay ký tự
+            # (trick: không cần mảng visited riêng)
+            original = board[row][col]
+            board[row][col] = '#'  # đánh dấu đã dùng
+
+            # Thử 4 hướng: lên, xuống, trái, phải
+            found = (backtrack(row + 1, col, index + 1) or  # xuống
+                     backtrack(row - 1, col, index + 1) or  # lên
+                     backtrack(row, col + 1, index + 1) or  # phải
+                     backtrack(row, col - 1, index + 1))    # trái
+
+            # Backtrack: khôi phục ký tự gốc
+            board[row][col] = original
+
+            return found
+
+        # Thử bắt đầu từ mỗi ô trên grid
+        for i in range(m):
+            for j in range(n):
+                if board[i][j] == word[0]:  # tối ưu: chỉ thử ô khớp ký tự đầu
+                    if backtrack(i, j, 0):
+                        return True
+
+        return False
+```
+
+#### Cách 2: Tối ưu với pruning thông minh
+
+```python
+from typing import List
+from collections import Counter
+
+class Solution:
+    def exist(self, board: List[List[str]], word: str) -> bool:
+        m, n = len(board), len(board[0])
+
+        # Tối ưu 1: Đếm tần suất ký tự — nếu board thiếu ký tự → False ngay
+        board_count = Counter()
+        for row in board:
+            board_count.update(row)
+        word_count = Counter(word)
+        for ch, cnt in word_count.items():
+            if board_count[ch] < cnt:
+                return False  # không đủ ký tự → chắc chắn False
+
+        # Tối ưu 2: Nếu ký tự đầu word xuất hiện nhiều hơn ký tự cuối
+        # → đảo ngược word (bắt đầu từ ký tự ít hơn sẽ pruning sớm hơn)
+        if board_count[word[0]] > board_count[word[-1]]:
+            word = word[::-1]
+
+        def backtrack(row: int, col: int, index: int) -> bool:
+            if index == len(word):
+                return True
+            if (row < 0 or row >= m or
+                col < 0 or col >= n or
+                board[row][col] != word[index]):
+                return False
+
+            original = board[row][col]
+            board[row][col] = '#'
+
+            # Thử 4 hướng
+            for dr, dc in [(1,0), (-1,0), (0,1), (0,-1)]:
+                if backtrack(row + dr, col + dc, index + 1):
+                    board[row][col] = original  # khôi phục trước khi return
+                    return True
+
+            board[row][col] = original  # backtrack
+            return False
+
+        for i in range(m):
+            for j in range(n):
+                if board[i][j] == word[0] and backtrack(i, j, 0):
+                    return True
+        return False
+```
+
+#### Dry run chi tiết
+
+```
+board = [["A","B","C","E"],     word = "ABCCED"
+         ["S","F","C","S"],
+         ["A","D","E","E"]]
+
+Bắt đầu từ ô (0,0) = 'A' == word[0] ✓
+
+backtrack(0, 0, index=0)  — 'A' == word[0]='A' ✓
+│ Đánh dấu: board[0][0] = '#'
+│
+├── Xuống (1,0): board[1][0]='S' ≠ word[1]='B' → False
+├── Lên (-1,0): ngoài biên → False
+├── Phải (0,1): board[0][1]='B' == word[1]='B' ✓
+│
+│   backtrack(0, 1, index=1) — 'B' match ✓
+│   │ Đánh dấu: board[0][1] = '#'
+│   │
+│   ├── Phải (0,2): board[0][2]='C' == word[2]='C' ✓
+│   │
+│   │   backtrack(0, 2, index=2) — 'C' match ✓
+│   │   │ Đánh dấu: board[0][2] = '#'
+│   │   │
+│   │   ├── Xuống (1,2): board[1][2]='C' == word[3]='C' ✓
+│   │   │
+│   │   │   backtrack(1, 2, index=3) — 'C' match ✓
+│   │   │   │ Đánh dấu: board[1][2] = '#'
+│   │   │   │
+│   │   │   ├── Xuống (2,2): board[2][2]='E' == word[4]='E' ✓
+│   │   │   │
+│   │   │   │   backtrack(2, 2, index=4) — 'E' match ✓
+│   │   │   │   │ Đánh dấu: board[2][2] = '#'
+│   │   │   │   │
+│   │   │   │   ├── Trái (2,1): board[2][1]='D' == word[5]='D' ✓
+│   │   │   │   │
+│   │   │   │   │   backtrack(2, 1, index=5) — 'D' match ✓
+│   │   │   │   │   │ index+1 = 6 == len(word) → return True!
+│   │   │   │   │   └── ✓✓✓ TÌM ĐƯỢC! ✓✓✓
+│   │   │   │   │
+│   │   │   │   return True → tất cả unwind → return True
+
+Đường đi: (0,0)A → (0,1)B → (0,2)C → (1,2)C → (2,2)E → (2,1)D
+```
+
+#### Complexity
+
+- **Time:** O(m * n * 3^L) — m*n ô khởi đầu, mỗi bước có tối đa 3 hướng (trừ hướng vừa đi), L = len(word)
+- **Space:** O(L) cho call stack (chiều sâu đệ quy = độ dài word)
+
+**Tại sao 3^L mà không phải 4^L?** Vì ta đánh dấu ô đã visit, nên không quay lại ô vừa đến. Trừ bước đầu tiên (4 hướng), mỗi bước sau chỉ có tối đa 3 hướng mới.
+
+#### Lỗi thường gặp
+
+1. **Quên khôi phục ký tự:** Board bị "hỏng" vĩnh viễn → các lần tìm kiếm sau bị ảnh hưởng.
+2. **Dùng set/visited riêng nhưng quên remove:** Giống trên, ô bị "khoá" vĩnh viễn.
+3. **Quên check biên trước khi truy cập `board[row][col]`:** IndexError.
+4. **Short-circuit evaluation:** Dùng `or` giữa 4 hướng → Python sẽ dừng ngay khi 1 hướng True. Đây là feature tốt (nhanh hơn)! Nhưng cẩn thận nếu cần backtrack trước khi return.
+5. **Không tối ưu frequency check:** Với test case lớn, kiểm tra tần suất ký tự trước giúp reject sớm nhiều trường hợp.
+
+------
+
+### Bảng tổng hợp 8 bài LeetCode
+
+| #    | Bài                  | Difficulty | Pattern                 | Time           | Key Insight                      |
+| :--- | :------------------- | :--------- | :---------------------- | :------------- | :------------------------------- |
+| 78   | Subsets              | Medium     | Include/Exclude         | O(n * 2^n)     | Mỗi phần tử: chọn hoặc không     |
+| 46   | Permutations         | Medium     | Used array / Swap       | O(n * n!)      | Thử tất cả vị trí chưa dùng      |
+| 39   | Combination Sum      | Medium     | Target-based pruning    | O(N^(T/M))     | Sort + break khi > remaining     |
+| 51   | N-Queens             | Hard       | Constraint sets         | O(N!)          | 3 set: cols, diag1, diag2        |
+| 37   | Sudoku Solver        | Hard       | Constraint + early stop | O(9^m)         | Return True khi tìm được → dừng  |
+| 131  | Palindrome Partition | Medium     | Backtrack + DP          | O(n * 2^n)     | DP precompute palindrome O(1)    |
+| 22   | Generate Parentheses | Medium     | Count-based constraint  | O(4^n/sqrt(n)) | open < n, close < open           |
+| 79   | Word Search          | Medium     | Grid DFS + backtrack    | O(mn * 3^L)    | Đánh dấu visited bằng thay ký tự |
+
+### Chiến lược luyện tập
+
+Nếu bạn mới bắt đầu, mình khuyên luyện **theo thứ tự tăng dần**:
+
+1. **#78 Subsets** → nắm pattern cơ bản nhất
+2. **#46 Permutations** → hiểu sự khác biệt subset vs permutation
+3. **#22 Generate Parentheses** → backtracking "sinh chuỗi" với constraint
+4. **#39 Combination Sum** → thêm target constraint + pruning
+5. **#131 Palindrome Partitioning** → kết hợp backtracking + DP
+6. **#79 Word Search** → backtracking trên grid 2D
+7. **#51 N-Queens** → constraint phức tạp hơn (3 loại)
+8. **#37 Sudoku Solver** → tổng hợp mọi kỹ thuật
+
+Mỗi bài, hãy:
+
+- Vẽ recursion tree **trên giấy** trước khi code
+- Xác định rõ: **base case** là gì, **choices** là gì, **pruning** ở đâu
+- Code xong chạy thử với ví dụ nhỏ, rồi tự viết thêm edge case
+- Tự chứng minh **complexity** — đây là kỹ năng rất quan trọng trong phỏng vấn!

@@ -1,0 +1,117 @@
+# 🗃️ DP-900 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported)
+To complete the sentence, select the appropriate option in the answer area.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported)
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported)
+To complete the sentence, select the appropriate option in the answer area.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Extract, transform, and load (ETL) is a data pipeline used to collect data from various sources, transform the data according to business rules, and load it into a destination data store.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported)
+To complete the sentence, select the appropriate option in the answer area.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+When to use batch processing.
+You might expect latencies when using batch processing. For many situations, however, this type of delay before the transfer of data begins is not a big issue - the processes that use this function are not mission critical at the exact moment.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported)
+To complete the sentence, select the appropriate option in the answer area.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---

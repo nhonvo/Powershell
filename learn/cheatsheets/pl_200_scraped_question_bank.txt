@@ -1,0 +1,270 @@
+# 🗃️ PL-200 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Configure Microsoft Dataverse (Question Set 1)
+
+HOTSPOT (Drag and Drop is not supported)
+
+The owner of a company needs to know who signs into the system.
+
+You need to ensure that the owner can view the user audit logs.
+
+Where does each action need to be performed? To answer, select the appropriate options in the answer area.
+
+NOTE: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Configure Microsoft Dataverse (Question Set 1)
+
+Your organization does not permit the use of custom code for solutions.
+
+You need to create a view that can be viewed by all users in an organization.
+
+Where should you create the view?
+
+### Options:
+- [x] **A)** List view of the entity [Correct]
+- [ ] **B)** Microsoft Visual Studio
+- [ ] **C)** Templates area
+- [ ] **D)** Maker portal
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Correct answers include:
+
+* Entities component of a solution
+* Maker portal
+Incorrect answers include:
+
+* Advanced Find
+* List view of the entity
+* Microsoft Excel template
+* Microsoft Visual Studio
+* System Settings
+* Templates area
+Explanations of correct answers:
+
+* Entities component of a solution
+Entity: Refers to a table in Dataverse. Table and entity are often used interchangeably for data access.
+Edit public views through tables
+In the solution create a new table or find an existing table that where the public views need to be edited.
+Expand Data, select Tables, select the table you want, and then select the Views area.
+On the toolbar, select Add view. Add view to table
+On the Create a view dialog, enter a name and, optionally, a description, and then select Create.
+* Maker portal
+We create a view by opening the table designer from the Maker Portal. Here, we find the option to add a new view from the view tab. From the view designer, we can specify the filter criteria and the sort order of the output.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Configure Microsoft Dataverse (Question Set 1)
+
+You create a Power Apps portal to provide training and documentation for students. Students create a profile on the portal and then select and pay for courses.
+
+You plan to add free courses to the training portfolio. Free courses must be automatically available to all students after they sign in.
+
+You need to assign default permissions to students.
+
+What should you do?
+
+### Options:
+- [ ] **A)** Create a Students web role and set the Authenticated Users Role option to true. Assign the web role to each registered user.
+- [ ] **B)** Create an entity for managing free courses. Create entity permission records to provide access to entity records for free courses and assign the entity permissions to users when they register on the portal for the first time.
+- [x] **C)** Create an entity for managing free courses. Create a Students web role and set the Authenticated Users role option to true. Create appropriate entity permissions to access the free course entity records and assign the entity permissions to the web role. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Configure Microsoft Dataverse (Question Set 1)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You create workflows to automate business processes.
+
+You need to configure a workflow to meet the following requirements:
+
+Be triggered when a condition is met.
+
+Run immediately.
+
+Perform an action when a condition is met.
+
+You need to create a workflow that automatically sends emails based on a mail merge template. To answer, select the appropriate configuration in the answer area.
+
+NOTE: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Configure Microsoft Dataverse (Question Set 1)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You are a Dynamics 365 Customer Service administrator.
+
+You need to configure the following automation for the sales team:
+
+Send an email when the status changes on an Opportunity.
+
+Text the sales manager when an Opportunity is created.
+
+Create a Wunderlist task when an Opportunity is open for 30 days.
+
+Which tool should you use for each requirement? To answer, select the appropriate options in the answer area.
+
+NOTE: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: Configure Microsoft Dataverse (Question Set 1)
+
+A company uses Microsoft Dataverse to manage prospects. The company has a business process flow named BPFA that is associated with the Prospect entity to streamline the prospect management process.
+
+You add a field named Category to the Prospect entity. You create additional business process flows. You apply the business process flows to Prospect records based on the selected category. Users can switch to any other newly configured business process flows but must not use BPFA.
+
+You need to configure the solution.
+
+What are two possible ways to achieve this goal? Each correct answer presents a complete solution.
+
+NOTE: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: Configure Microsoft Dataverse (Question Set 1)
+
+You are creating a business rule to implement new business logic.
+
+You must apply the business logic to a canvas app that has a single screen named Screen1.
+
+You need to configure the scope for the business rule.
+
+Which scope should you use?
+
+### Options:
+- [ ] **A)** Screen1
+- [x] **B)** Entity [Correct]
+- [ ] **C)** All Forms
+- [ ] **D)** Global
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Note: Some terminology has changed. Entity is now Table. If you're building a Canvas app, you must use table (entity) as the scope.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: Configure Microsoft Dataverse (Question Set 1)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You are a Dynamics 365 Customer Services administrator. You have a Production instance and Sandbox instance.
+
+Users record Production instance data in the Sandbox instance.
+
+You need to ensure that the users only record data in the Production instance.
+
+Which security function needs to be edited to prevent access to the Sandbox? To answer, select the appropriate options in the answer area.
+
+NOTE: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---

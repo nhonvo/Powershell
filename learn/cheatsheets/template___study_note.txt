@@ -1,0 +1,72 @@
+---
+tags:
+  - certification/gh-300
+  - copilot/study-note
+  - domain/${domain-number}
+status: 📝 study-backlog  # [📝 study-backlog, ⏳ in-progress, ✅ mastered, 🔁 review-needed]
+difficulty: 🟡 medium      # [🟢 easy, 🟡 medium, 🔴 hard]
+last_reviewed: 
+next_review: 
+created: 2026-05-26
+---
+
+# 📚 Study Topic: [Insert Topic Name]
+
+> [!abstract] Overview
+> Brief description of the concept and its significance in the GH-300 exam.
+> Keep it to 2-3 sentences.
+
+---
+
+## 🎯 Exam Objectives Covered
+- [ ] [Objective 1 from MOC]
+- [ ] [Objective 2 from MOC]
+
+---
+
+## 📖 Core Concepts
+
+### 1. Key Terminology / Definitions
+*   **[Term 1]**: [Definition / Explanation]
+*   **[Term 2]**: [Definition / Explanation]
+
+### 2. Architecture / Flow
+```mermaid
+graph TD
+    A[Trigger / Input] --> B[Processing / Proxy]
+    B --> C[Model Inference]
+    C --> D[Vulnerability Filter / Output]
+```
+
+### 3. Implementation Details / Commands
+```bash
+# Example command (e.g. installing CLI extensions, proxy configurations)
+gh extension install github/gh-copilot
+```
+
+---
+
+## 🔒 Security & Data Privacy Impact
+*   **Snippet Retention**: [Does this feature retain data? Yes/No, details]
+*   **Exclusion Support**: [Can this be excluded via .github/copilot-exclusions.sha?]
+
+---
+
+## 💡 Active Recall & Practice Scenarios
+
+> [!question] Concept Check: [Question Topic]
+> **Question**: [Insert a scenario-based question here]
+> <details>
+> <summary><b>Reveal Answer & Explanation</b></summary>
+> 
+> **Correct Answer**: `[Answer Option]`
+> 
+> **Explanation**: [Detail explanation of why the answer is correct and others are incorrect, linking back to documentation]
+> </details>
+
+---
+
+## 🔗 References & Connections
+- **MOC**: [[certifications/microsoft/GH-300-Copilot/GH-300 Copilot MOC|GH-300 Copilot MOC]]
+- **Cheat Sheets**: [[certifications/microsoft/GH-300-Copilot/Copilot Comparison Cheat Sheet|Copilot Comparison Cheat Sheet]]
+- **Official Docs**: [GitHub Copilot Documentation](https://docs.github.com/en/copilot)

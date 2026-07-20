@@ -1,0 +1,41 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 4
+
+## Part 1
+**Q1.** あそこは　 としょかんです。
+- **A.** あそこは 　ほんや 　ざっしを　 かりる 　ところです。
+- **B.** あそこは　 にくや 　さかなを　 かう　 ところです。
+- **C.** あそこは 　てがみや 　はがきを　 だす　 ところです。
+- **D.** あそこは 　コーヒーや　 ジュースを 　のむ　 ところです。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1Đằng kia l&agrave; thư viện.1. Đằng kia l&agrave; nơi mượn s&aacute;ch v&agrave; tạp ch&iacute;.2. Đằng kia l&agrave; nơi mua thịt v&agrave; c&aacute;.3. Đằng kia l&agrave; nơi gửi thư v&agrave; bưu thiếp.4. Đằng kia l&agrave; nơi uống c&agrave; ph&ecirc; v&agrave; nước hoa quả.</p>
+</details>
+
+---
+**Q2.** きのうの　 テストは　 むずかしかったです。
+- **A.** きのうの 　テストは　 かえしませんでした。
+- **B.** きのうの　 テストは 　たいへんでした。
+- **C.** きのうの 　テストは 　やすみませんでした。
+- **D.** きのうの 　テストは　 ありませんでした。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2　B&agrave;i kiểm tra của ng&agrave;y h&ocirc;m qua kh&oacute;.1. T&ocirc;i đ&atilde; kh&ocirc;ng trả lại b&agrave;i kiểm tra của ng&agrave;y h&ocirc;m qua.2. B&agrave;i kiểm tra h&ocirc;m qua rất kh&oacute; khăn.3. T&ocirc;i đ&atilde; kh&ocirc;ng nghỉ trong b&agrave;i kiểm tra của ng&agrave;y h&ocirc;m qua.4. Kh&ocirc;ng c&oacute; b&agrave;i kiểm tra n&agrave;o trong ng&agrave;y h&ocirc;m qua.</p>
+</details>
+
+---
+**Q3.** これは　 かびんです。
+- **A.** これは　 はなを　 いれる　 ものです。
+- **B.** これは　 おかねを 　いれる　 ものです。
+- **C.** これは 　さとうを　 いれる 　ものです。
+- **D.** これは　 やさいを 　いれる　 ものです。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1Đ&acirc;y l&agrave; b&igrave;nh cắm hoa.1. Đ&acirc;y l&agrave; thứ để cắm hoa v&agrave;o.2. Đ&acirc;y l&agrave; thứ để cho tiền v&agrave;o.3. Đ&acirc;y l&agrave; thứ để cho đường v&agrave;o.4. Đ&acirc;y l&agrave; thứ để cho rau củ v&agrave;o.</p>
+</details>
+
+---

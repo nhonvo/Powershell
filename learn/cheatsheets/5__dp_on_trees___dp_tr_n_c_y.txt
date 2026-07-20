@@ -1,0 +1,391 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/🧠index_13_Dynamic_Programming|13_Dynamic_Programming]]
+
+## 5. DP on Trees — DP trên cây
+
+### Giới thiệu
+
+DP trên cây kết hợp **cấu trúc cây** (đệ quy tự nhiên) với DP. Thường dùng DFS (post-order) để tính từ lá lên gốc. Mỗi node tổng hợp kết quả từ các node con.
+
+Đây là dạng DP thường gặp trong phỏng vấn mà nhiều bạn hay bỏ qua. Hãy chú ý nhé!
+
+------
+
+### 5.1. Diameter of Binary Tree — Đường kính cây nhị phân
+
+#### Đặt bài toán
+
+**Đường kính** của cây nhị phân là **đường đi dài nhất** giữa hai node bất kỳ (tính theo số cạnh). Đường đi này có thể đi qua hoặc không đi qua gốc.
+
+#### Analogie đời thực
+
+Hãy tưởng tượng cây là hệ thống ống nước. Đường kính là đoạn ống dài nhất mà nước có thể chảy từ đầu này đến đầu kia (không quay lại).
+
+#### Ý tưởng
+
+Tại mỗi node, đường đi dài nhất **đi qua node đó** = chiều cao cây con trái + chiều cao cây con phải.
+
+Đường kính = max của tất cả các đường đi đi qua mỗi node.
+
+Node gốcCây con trái
+height = h_leftCây con phải
+height = h_rightĐường đi qua gốc
+= h_left + h_rightdiameter = max(
+diameter cũ,
+h_left + h_right
+)
+
+#### Code
+
+```python
+class TreeNode:
+    """Node cây nhị phân"""
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def diameter_of_binary_tree(root):
+    """
+    Đường kính cây nhị phân — DP trên cây
+    Time: O(n), Space: O(h) với h = chiều cao cây
+    """
+    diameter = 0
+
+    def height(node):
+        """Trả về chiều cao cây con gốc tại node"""
+        nonlocal diameter
+        if not node:
+            return 0
+
+        # Post-order: tính con trước, gốc sau
+        left_h = height(node.left)
+        right_h = height(node.right)
+
+        # Cập nhật đường kính: đường đi qua node này
+        diameter = max(diameter, left_h + right_h)
+
+        # Trả về chiều cao cho node cha
+        return 1 + max(left_h, right_h)
+
+    height(root)
+    return diameter
+
+
+# ============================
+# Test
+# ============================
+# Xây cây:
+#        1
+#       / \
+#      2   3
+#     / \
+#    4   5
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+
+print(f"Diameter = {diameter_of_binary_tree(root)}")  # 3 (4→2→1→3 hoặc 5→2→1→3)
+
+# Cây lệch:
+#    1
+#   /
+#  2
+# /
+# 3
+root2 = TreeNode(1)
+root2.left = TreeNode(2)
+root2.left.left = TreeNode(3)
+print(f"Diameter = {diameter_of_binary_tree(root2)}")  # 2 (3→2→1)
+```
+
+#### Simulation
+
+```
+Cây:      1
+         / \
+        2   3
+       / \
+      4   5
+
+DFS post-order:
+  height(4): left=0, right=0 → diameter=max(0, 0+0)=0 → return 1
+  height(5): left=0, right=0 → diameter=max(0, 0+0)=0 → return 1
+  height(2): left=1, right=1 → diameter=max(0, 1+1)=2 → return 2
+  height(3): left=0, right=0 → diameter=max(2, 0+0)=2 → return 1
+  height(1): left=2, right=1 → diameter=max(2, 2+1)=3 → return 3
+
+→ Diameter = 3 (đường: 4→2→1→3 hoặc 5→2→1→3)
+```
+
+------
+
+### 5.2. Binary Tree Maximum Path Sum — Tổng đường đi lớn nhất
+
+#### Đặt bài toán
+
+Cho cây nhị phân với các giá trị **có thể âm**. Tìm **tổng đường đi lớn nhất**. Đường đi không cần đi qua gốc, không cần bắt đầu/kết thúc ở lá.
+
+#### Analogie đời thực
+
+Mỗi node là một trạm có "điểm thưởng" (có thể âm = bị phạt). Bạn muốn đi một đường trong cây sao cho tổng điểm thưởng cao nhất. Bạn có thể bắt đầu và kết thúc ở bất kỳ đâu.
+
+#### Ý tưởng
+
+Tại mỗi node, ta tính:
+
+1. **max_gain(node)**: đóng góp tốt nhất mà cây con gốc tại node có thể "đi lên" cho node cha = `node.val + max(0, max(left_gain, right_gain))`
+2. **Cập nhật kết quả**: đường đi tốt nhất đi qua node = `node.val + max(0, left_gain) + max(0, right_gain)`
+
+Lưu ý `max(0, ...)` vì nếu gain âm, tốt hơn là không đi vào nhánh đó.
+
+Node có valleft_gain = max(0, gain từ con trái)right_gain = max(0, gain từ con phải)Đường qua node = val + left_gain + right_gainCập nhật max_sumĐóng góp lên cha = val + max(left_gain, right_gain)
+
+#### Code
+
+```python
+import math
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def max_path_sum(root):
+    """
+    Maximum Path Sum trong cây nhị phân
+    Time: O(n), Space: O(h)
+    """
+    max_sum = -math.inf
+
+    def max_gain(node):
+        """
+        Trả về max gain mà cây con gốc tại node
+        có thể đóng góp cho đường đi đi qua node cha.
+        """
+        nonlocal max_sum
+        if not node:
+            return 0
+
+        # Gain từ con trái/phải (bỏ qua nếu âm)
+        left_gain = max(0, max_gain(node.left))
+        right_gain = max(0, max_gain(node.right))
+
+        # Đường đi tốt nhất ĐI QUA node này (có thể là đáp án)
+        path_through = node.val + left_gain + right_gain
+        max_sum = max(max_sum, path_through)
+
+        # Đóng góp lên node cha: chỉ được chọn 1 nhánh
+        return node.val + max(left_gain, right_gain)
+
+    max_gain(root)
+    return max_sum
+
+
+# ============================
+# Test
+# ============================
+# Cây 1:   -10
+#          /    \
+#         9      20
+#               /  \
+#              15    7
+root1 = TreeNode(-10)
+root1.left = TreeNode(9)
+root1.right = TreeNode(20)
+root1.right.left = TreeNode(15)
+root1.right.right = TreeNode(7)
+print(f"Max path sum = {max_path_sum(root1)}")  # 42 (15→20→7)
+
+# Cây 2: -3
+root2 = TreeNode(-3)
+print(f"Max path sum = {max_path_sum(root2)}")  # -3
+
+# Cây 3:  1
+#         / \
+#        2   3
+root3 = TreeNode(1)
+root3.left = TreeNode(2)
+root3.right = TreeNode(3)
+print(f"Max path sum = {max_path_sum(root3)}")  # 6 (2→1→3)
+```
+
+#### Simulation cho cây `[-10, 9, 20, null, null, 15, 7]`
+
+```
+Cây:      -10
+         /    \
+        9      20
+              /  \
+             15    7
+
+DFS post-order:
+  max_gain(9):
+    left=0, right=0
+    path_through = 9 + 0 + 0 = 9 → max_sum = 9
+    return 9
+
+  max_gain(15):
+    left=0, right=0
+    path_through = 15 → max_sum = 15
+    return 15
+
+  max_gain(7):
+    left=0, right=0
+    path_through = 7 → max_sum = 15
+    return 7
+
+  max_gain(20):
+    left_gain = max(0, 15) = 15
+    right_gain = max(0, 7) = 7
+    path_through = 20 + 15 + 7 = 42 → max_sum = 42 ← MỚI!
+    return 20 + max(15, 7) = 35
+
+  max_gain(-10):
+    left_gain = max(0, 9) = 9
+    right_gain = max(0, 35) = 35
+    path_through = -10 + 9 + 35 = 34 → max_sum = max(42, 34) = 42
+    return -10 + max(9, 35) = 25
+
+→ Max path sum = 42 (đường: 15 → 20 → 7)
+```
+
+------
+
+### 5.3. House Robber III — Cướp nhà trên cây
+
+#### Đặt bài toán
+
+Giống House Robber, nhưng lần này các nhà **xếp theo cấu trúc cây**. Nếu cướp một node, **không được cướp node con trực tiếp** của nó. Tìm tổng tiền tối đa.
+
+#### Analogie đời thực
+
+Bạn là Robin Hood trong khu rừng. Các lâu đài xếp theo cấu trúc cây (mỗi lâu đài có tối đa 2 lâu đài con). Nếu bạn cướp lâu đài cha, các lâu đài con sẽ bật báo động. Cướp sao cho tổng vàng nhiều nhất?
+
+#### Ý tưởng
+
+Tại mỗi node, trả về 2 giá trị:
+
+- `rob`: tổng tối đa nếu **cướp** node này
+- `not_rob`: tổng tối đa nếu **không cướp** node này
+
+$$rob = node.val + left_not_rob + right_not_rob$$ $$not_rob = \max(left_rob, left_not_rob) + \max(right_rob, right_not_rob)$$
+
+CướpKhông cướpNode valCướp node này?val + con_trái.not_rob + con_phải.not_robmax(con_trái.rob, con_trái.not_rob)
+\+ max(con_phải.rob, con_phải.not_rob)Trả (rob, not_rob) cho node cha
+
+#### Code
+
+```python
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def rob_tree(root):
+    """
+    House Robber III — DP trên cây
+    Time: O(n), Space: O(h)
+    """
+
+    def dfs(node):
+        """Trả về (rob_this, skip_this)"""
+        if not node:
+            return (0, 0)
+
+        left_rob, left_skip = dfs(node.left)
+        right_rob, right_skip = dfs(node.right)
+
+        # Cướp node này → con phải bị bỏ qua
+        rob_this = node.val + left_skip + right_skip
+
+        # Không cướp node này → con có thể cướp hoặc không
+        skip_this = max(left_rob, left_skip) + max(right_rob, right_skip)
+
+        return (rob_this, skip_this)
+
+    rob, skip = dfs(root)
+    return max(rob, skip)
+
+
+# ============================
+# Test
+# ============================
+# Cây 1:     3
+#            / \
+#           2   3
+#            \   \
+#             3   1
+root1 = TreeNode(3)
+root1.left = TreeNode(2)
+root1.right = TreeNode(3)
+root1.left.right = TreeNode(3)
+root1.right.right = TreeNode(1)
+print(f"Max rob = {rob_tree(root1)}")  # 7 (3 + 3 + 1)
+
+# Cây 2:     3
+#            / \
+#           4   5
+#          / \   \
+#         1   3   1
+root2 = TreeNode(3)
+root2.left = TreeNode(4)
+root2.right = TreeNode(5)
+root2.left.left = TreeNode(1)
+root2.left.right = TreeNode(3)
+root2.right.right = TreeNode(1)
+print(f"Max rob = {rob_tree(root2)}")  # 9 (4 + 5)
+```
+
+#### Simulation cho cây 1
+
+```
+Cây:      3
+         / \
+        2   3
+         \   \
+          3   1
+
+DFS post-order:
+  dfs(3 - lá trái):  return (3, 0)
+  dfs(2):
+    left = (0, 0)  (null)
+    right = (3, 0)
+    rob = 2 + 0 + 0 = 2
+    skip = max(0,0) + max(3,0) = 3
+    return (2, 3)
+
+  dfs(1 - lá phải):  return (1, 0)
+  dfs(3 - phải):
+    left = (0, 0)  (null)
+    right = (1, 0)
+    rob = 3 + 0 + 0 = 3
+    skip = max(0,0) + max(1,0) = 1
+    return (3, 1)
+
+  dfs(3 - gốc):
+    left = (2, 3)
+    right = (3, 1)
+    rob = 3 + 3 + 1 = 7    ← cướp gốc + skip con
+    skip = max(2,3) + max(3,1) = 3 + 3 = 6
+    return (7, 6)
+
+→ max(7, 6) = 7 (cướp gốc=3, lá trái=3, lá phải=1)
+```
+
+#### Phân tích DP trên cây
+
+- **Time**: O(n) — mỗi node duyệt 1 lần
+
+- Space
+
+  : O(h) — call stack, h = chiều cao cây
+
+  - **Best case**: O(log n) — cây cân bằng
+  - **Worst case**: O(n) — cây suy biến thành danh sách

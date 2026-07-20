@@ -1,0 +1,72 @@
+🔙 **Back to Parent**: [[technical_skills/05_Docker_Hero/📂index_05_Docker_Hero|05_Docker_Hero]]
+
+# 🐳 1. Container Fundamentals (The Docker Revolution)
+
+Trong kỷ nguyên Cloud Native, Docker đã trở thành kỹ năng bắt buộc của mọi Backend Developer. Nó thay đổi cách chúng ta đóng gói, vận chuyển và chạy ứng dụng - biến việc cài đặt server từ hàng giờ thành hàng giây.
+
+---
+
+### 🏛️ 1.1 Docker là gì? (Container vs VM)
+
+Đừng nhầm lẫn Docker với VMWare hay VirtualBox! Docker không giả lập toàn bộ phần cứng và hệ điều hành.
+
+- **Virtual Machine (Máy ảo)**: Chạy trên Hypervisor. Mỗi máy ảo có 1 hệ điều hành (OS) riêng biệt nặng nề (Vài GB).
+- **Docker Container**: Chạy trên Docker Engine. Mỗi container dùng chung nhân (Kernel) của máy chủ (Host OS). Cực nhẹ (Vài MB).
+
+> [!TIP]
+> **Dễ hiểu**: VM giống như bạn thuê 1 căn nhà nguyên căn (Tự lo điện nước, bảo trì). Container giống như bạn thuê 1 căn hộ trong chung cư (Dùng chung điện nước, móng nhà, nhưng phòng bạn vẫn riêng tư).
+
+---
+
+### 🧠 1.2 Image vs Container (Lớp thiết kế & Thực thể)
+
+- **Docker Image**: Là file chỉ đọc (Read-only) chứa mã nguồn, thư viện (Libs) và cấu hình môi trường. (Giống như đĩa cài đặt hoặc Class trong OOP).
+- **Docker Container**: Là một thực thể (Instance) đang chạy thực tế từ Image. (Giống như Object trong OOP).
+
+---
+
+### 🚀 1.3 Kiến trúc nội bộ (Docker Engine)
+
+1.  **Docker Client**: Nơi bạn gõ lệnh (VD: `docker build`, `docker run`).
+2.  **Docker Host**: Máy tính/Server thực tế đang chạy **Docker Daemon**.
+3.  **Docker Registry**: "Cái kho" chứa các Image (VD: Docker Hub).
+
+---
+
+### ⚡ 1.4 Các câu lệnh "Thần thánh" (The Commands)
+
+#### **A. Chạy ứng dụng**
+```bash
+docker run -d -p 8080:80 --name my-nginx nginx
+```
+- `-d`: Chạy ngầm (Detached).
+- `-p 8080:80`: Ánh xạ cổng 8080 của máy thật vào cổng 80 của container.
+- `--name`: Đặt tên dễ nhớ cho container.
+
+#### **B. Quản lý**
+- `docker ps`: Liệt kê các container đang chạy.
+- `docker stop [id]`: Dừng container.
+- `docker rm [id]`: Xóa container.
+
+---
+
+### 📝 1.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao Docker không thể chạy trực tiếp trên Windows (Kernel Windows) mà phải dùng WSL2 hoặc VM nhẹ?"
+<details><summary>Đáp án</summary>
+Vì bản chất Docker dùng các tính năng lõi của Linux Kernel như **Namespaces** (Cô lập tiến trình) và **Cgroups** (Giới hạn tài nguyên). Trên Windows/Mac, Docker phải chạy thông qua 1 lớp ảo hóa Linux siêu nhẹ để có được Kernel này.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh Docker để chạy một container PostgreSQL phiên bản 15, đặt mật khẩu là `admin123` và mapping ra cổng `5432`.
+<details><summary>Solution</summary>
+```bash
+docker run -d -p 5432:5432 -e POSTGRES_PASSWORD=admin123 postgres:15
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [How Docker Revolutionized Software Development & Deployment](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-docker-revolution.md)
+- [Docker Architecture: Client, Daemon & Registry Explained](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-docker-architecture.md)
+- [Containers vs Virtual Machines: The Ultimate Performance Guide](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-containers-vs-vms.md)

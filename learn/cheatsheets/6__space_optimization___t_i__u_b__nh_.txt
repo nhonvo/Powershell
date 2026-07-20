@@ -1,0 +1,122 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/🧠index_13_Dynamic_Programming|13_Dynamic_Programming]]
+
+## 6. Space Optimization — Tối ưu bộ nhớ
+
+### Giới thiệu
+
+Trong nhiều bài DP, bảng DP 2D có thể được **giảm xuống 1D** (hoặc thậm chí O(1)). Kỹ thuật này gọi là **rolling array** (mảng cuộn). Đây là kỹ thuật **cực kỳ quan trọng** trong phỏng vấn — nó cho thấy bạn hiểu sâu về DP, không chỉ áp dụng máy móc.
+
+#### Analogie đời thực — Bảng tính Excel
+
+Tưởng tượng bạn có bảng Excel 1000 hàng x 1000 cột. Nhưng mỗi ô chỉ phụ thuộc vào **hàng trước đó**. Vậy bạn có cần giữ cả 1000 hàng không? Không! Chỉ cần **2 hàng** (hàng hiện tại và hàng trước) là đủ. Sau khi tính xong hàng mới, xóa hàng cũ.
+
+------
+
+### 6.1. Nguyên tắc Rolling Array
+
+**Quy tắc vàng**: Nếu `dp[i][j]` chỉ phụ thuộc vào hàng `i-1` (và có thể cả hàng `i`), thì ta chỉ cần **1 hoặc 2 hàng**.
+
+Bảng DP 2D
+m x n
+Space: O(m*n)Quan sát:
+dp[i] chỉ phụ thuộc dp[i-1]Rolling Array
+2 hàng
+Space: O(n)Tối ưu thêm?
+1 hàng + biến tạm
+Space: O(n) hoặc O(1)
+
+### 6.2. Ví dụ: LCS từ O(mn) xuống O(n)
+
+```python
+def lcs_space_optimized(text1, text2):
+    """
+    LCS với space O(min(m,n))
+    Trick: dùng 2 hàng thay vì bảng 2D đầy đủ
+    """
+    # Đảm bảo text2 ngắn hơn để tiết kiệm space
+    if len(text1) < len(text2):
+        text1, text2 = text2, text1
+
+    m, n = len(text1), len(text2)
+    prev = [0] * (n + 1)  # hàng i-1
+
+    for i in range(1, m + 1):
+        curr = [0] * (n + 1)  # hàng i
+        for j in range(1, n + 1):
+            if text1[i - 1] == text2[j - 1]:
+                curr[j] = prev[j - 1] + 1
+            else:
+                curr[j] = max(prev[j], curr[j - 1])
+        prev = curr  # "cuộn" — hàng hiện tại trở thành hàng trước
+
+    return prev[n]
+
+
+# Test
+print(lcs_space_optimized("ABCBDAB", "BDCAB"))  # 4
+```
+
+### 6.3. Ví dụ: 0/1 Knapsack từ O(nW) xuống O(W)
+
+```python
+def knapsack_01_optimized(weights, values, W):
+    """
+    0/1 Knapsack — O(W) space
+    QUAN TRỌNG: Duyệt NGƯỢC từ W xuống 0 để mỗi item chỉ dùng 1 lần!
+    """
+    n = len(weights)
+    dp = [0] * (W + 1)
+
+    for i in range(n):
+        # Duyệt ngược! Nếu duyệt xuôi, item i sẽ bị dùng nhiều lần
+        for w in range(W, weights[i] - 1, -1):
+            dp[w] = max(dp[w], dp[w - weights[i]] + values[i])
+
+    return dp[W]
+
+
+# Test
+weights = [1, 3, 4, 5]
+values = [1, 4, 5, 7]
+W = 7
+print(f"Max value = {knapsack_01_optimized(weights, values, W)}")  # 9 (item 1 + item 2: 4+5)
+```
+
+### 6.4. Ví dụ: Fibonacci từ O(n) xuống O(1)
+
+Đây là ví dụ cực đoan nhất — `dp[i]` chỉ phụ thuộc `dp[i-1]` và `dp[i-2]`, nên chỉ cần **2 biến**:
+
+```python
+def fib_o1_space(n):
+    """Fibonacci — O(1) space, chỉ cần 2 biến"""
+    if n <= 1:
+        return n
+    a, b = 0, 1       # F(0), F(1)
+    for _ in range(2, n + 1):
+        a, b = b, a + b  # Python swap đồng thời
+    return b
+
+# Test
+for n in [0, 1, 5, 10, 50]:
+    print(f"F({n}) = {fib_o1_space(n)}")
+```
+
+### 6.5. Bảng tóm tắt Space Optimization
+
+| Bài toán           | Space gốc     | Space tối ưu    | Kỹ thuật            |
+| :----------------- | :------------ | :-------------- | :------------------ |
+| Fibonacci          | O(n)          | **O(1)**        | 2 biến              |
+| Climbing Stairs    | O(n)          | **O(1)**        | 2 biến              |
+| House Robber       | O(n)          | **O(1)**        | 2 biến              |
+| LCS                | O(m x n)      | **O(min(m,n))** | 2 hàng              |
+| Edit Distance      | O(m x n)      | **O(n)**        | 2 hàng + 1 biến tạm |
+| Unique Paths       | O(m x n)      | **O(n)**        | 1 hàng              |
+| 0/1 Knapsack       | O(n x W)      | **O(W)**        | 1 hàng, duyệt ngược |
+| Unbounded Knapsack | O(n x W)      | **O(W)**        | 1 hàng, duyệt xuôi  |
+| Subset Sum         | O(n x target) | **O(target)**   | 1 hàng, duyệt ngược |
+
+### 6.6. Khi nào KHÔNG nên tối ưu space?
+
+1. **Cần truy vết** (backtrack): Nếu cần tìm đường đi/chuỗi thực sự (không chỉ giá trị tối ưu), bạn cần giữ nguyên bảng 2D để truy vết ngược.
+2. **Debug**: Bảng 2D dễ debug hơn rất nhiều. Trong contest, code đúng trước, tối ưu sau.
+3. **Space không phải bottleneck**: Nếu input nhỏ, space optimization không cần thiết và chỉ làm code khó đọc hơn.

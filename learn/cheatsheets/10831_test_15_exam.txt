@@ -1,0 +1,365 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/02_N4/Course_40/📂index_Course_40|Course_40]]
+
+# Test 15
+
+## Part 1
+**Q1.** マイさんは田中さんを知らないようだ。
+- **A.** ちらない
+- **B.** しらない
+- **C.** たらない
+- **D.** わからない
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n しらない： kh&ocirc;ng biếtマイさんは田中さんを知らないようだ。H&igrave;nh như Mai kh&ocirc;ng biết anh Tanaka.</p>
+</details>
+
+---
+**Q2.** 何の動物が好きですか。
+- **A.** どぶうつ
+- **B.** どうぶつう
+- **C.** どぶつ
+- **D.** どうぶつ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n どうぶつ：động vật何の動物が好きですか。Bạn th&iacute;ch con vật n&agrave;o?</p>
+</details>
+
+---
+**Q3.** 田中さんが協力してくれて、やっと仕事が終わった。
+- **A.** きょうりく
+- **B.** きょうりくう
+- **C.** きょうりょく
+- **D.** きょうりょうく
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n きょうりょく：hợp t&aacute;c, chung sức田中さんが協力してくれて、やっと仕事が終わった。Nhờ anh Tanaka chung sức, cuối c&ugrave;ng c&ocirc;ng việc đ&atilde; ho&agrave;n th&agrave;nh.</p>
+</details>
+
+---
+**Q4.** 兄は医学を勉強しています。
+- **A.** いいかく
+- **B.** いかく
+- **C.** いがく
+- **D.** いいがく
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n いがく：y học兄は医学を勉強しています。Anh trai t&ocirc;i đang học ng&agrave;nh y.</p>
+</details>
+
+---
+**Q5.** 毎日働くのは大変でしょう？
+- **A.** はたらく
+- **B.** うごく
+- **C.** どうく
+- **D.** はらたく
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n はたらく： l&agrave;m việc毎日働くのは大変でしょう？L&agrave;m việc mỗi ng&agrave;y chắc vất vả lắm nhỉ?</p>
+</details>
+
+---
+**Q6.** このペンはちょっと短いでしょう？
+- **A.** ちいさい
+- **B.** かるい
+- **C.** ながい
+- **D.** みじかい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n みじかい：ngắnこのペンはちょっと短いでしょう？C&aacute;i b&uacute;t n&agrave;y hơi ngắn phải kh&ocirc;ng?</p>
+</details>
+
+---
+**Q7.** 私はちからが弱い。
+- **A.** 知
+- **B.** 力
+- **C.** 体
+- **D.** 男
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n 力：sức mạnh, sức lực私は力が弱い。T&ocirc;i sức yếu.</p>
+</details>
+
+---
+**Q8.** あの人は田中さんのしりあいのはずです。
+- **A.** 短り合い
+- **B.** 知り合い
+- **C.** 矢り合い
+- **D.** 医り合い
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n 知り合い： quen biết, người quenあの人は田中さんの知り合いのはずです。Người kia chắc chắn l&agrave; người quen của anh Tanaka.</p>
+</details>
+
+---
+**Q9.** このおさら、きれいでしょう？
+- **A.** お器
+- **B.** お品
+- **C.** お血
+- **D.** お皿
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n お皿：c&aacute;i đĩaこのお皿、きれいでしょう？C&aacute;i đĩa n&agrave;y đẹp đ&uacute;ng kh&ocirc;ng?</p>
+</details>
+
+---
+**Q10.** 怪我をして、ちが出た。
+- **A.** 血
+- **B.** 皿
+- **C.** 目
+- **D.** 耳
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n 血：m&aacute;u怪我をして、血が出た。Bị thương n&ecirc;n m&aacute;u chảy ra.</p>
+</details>
+
+---
+**Q1.** 風邪を________かもしれない。
+- **A.** 下げた
+- **B.** 引いた
+- **C.** 差した
+- **D.** 返した
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 引いた風邪を引く： bị cảm風邪を引いたかもしれない。C&oacute; lẽ t&ocirc;i đ&atilde; bị cảm.</p>
+</details>
+
+---
+**Q2.** みんな傘を_______いるから、雨が降っているはずだ。
+- **A.** 差して
+- **B.** 返して
+- **C.** 上げて
+- **D.** 止んで
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 差して傘を差す: giương &ocirc;, che &ocirc;みんな傘を差しているから、雨が降っているはずだ。V&igrave; mọi người đều đang che &ocirc; n&ecirc;n chắc hẳn l&agrave; trời đang mưa.</p>
+</details>
+
+---
+**Q3.** 雨が降っているから、_______が乾かない。
+- **A.** 洗濯物
+- **B.** 風邪
+- **C.** 台風
+- **D.** 雷
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n 洗濯物：đồ giặt雨が降っているから、洗濯物が乾かない。V&igrave; trời đang mưa n&ecirc;n đồ giặt kh&ocirc;ng kh&ocirc; được.</p>
+</details>
+
+---
+**Q4.** 家の中が_______だから、だれもいないはずだ。
+- **A.** 旅館
+- **B.** 真っ暗
+- **C.** 留守
+- **D.** 中止
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n 真っ暗：tối om家の中が真っ暗だから、だれもいないはずだ。V&igrave; trong nh&agrave; tối om n&ecirc;n chắc chắn kh&ocirc;ng c&oacute; ai.</p>
+</details>
+
+---
+**Q5.** _______は毎日仕事です。
+- **A.** 遊園地
+- **B.** 本物
+- **C.** 旅行客
+- **D.** 平日
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n 平日：ng&agrave;y thường, ng&agrave;y trong tuần平日は毎日仕事です。Ng&agrave;y trong tuần th&igrave; t&ocirc;i l&agrave;m việc mỗi ng&agrave;y.</p>
+</details>
+
+---
+**Q6.** 車が動かない。_______がなくなったようだ。
+- **A.** ガソリン
+- **B.** ハイキング
+- **C.** イベント
+- **D.** レベル
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n ガソリン：xăng車が動かない。ガソリンがなくなったようだ。&Ocirc; t&ocirc; kh&ocirc;ng chạy được. H&igrave;nh như l&agrave; hết xăng rồi.</p>
+</details>
+
+---
+**Q7.** あの先生は_______から、あまり人気がない。
+- **A.** 彼な
+- **B.** なくなる
+- **C.** 厳しい
+- **D.** できる
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n 厳しい： nghi&ecirc;m khắcあの先生は厳しいから、あまり人気がない。Gi&aacute;o vi&ecirc;n đ&oacute; nghi&ecirc;m khắc n&ecirc;n kh&ocirc;ng được y&ecirc;u th&iacute;ch lắm.</p>
+</details>
+
+---
+**Q8.** あ、救急車だ。_______があったみたいだね。
+- **A.** 中止
+- **B.** 失敗
+- **C.** 事故
+- **D.** 病気
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n 事故：tai nạnあ、救急車だ。事故があったみたいだね。&Ocirc;, xe cấp cứu k&igrave;a. H&igrave;nh như c&oacute; tai nạn.</p>
+</details>
+
+---
+**Q9.** _______、山田さんは病気かもしれない。
+- **A.** だいぶ
+- **B.** すぐに
+- **C.** きっと
+- **D.** もしかしたら
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n もしかしたら： c&oacute; thể ~ kh&ocirc;ng chừng (thường đi k&egrave;m với かもしれない）もしかしたら、山田さんは病気かもしれない。C&oacute; thể l&agrave; Yamada bị bệnh.</p>
+</details>
+
+---
+**Q10.** 家の中が真っ暗だから、ナムさんは_______のはずだ。
+- **A.** 有名人
+- **B.** 留守
+- **C.** 旅行客
+- **D.** 雷
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n 留守：vắng nh&agrave;家の中が真っ暗だから、ナムさんは留守のはずだ。V&igrave; trong nh&agrave; tối om n&ecirc;n chắc chắn Nam vắng nh&agrave;.</p>
+</details>
+
+---
+**Q1.** A：週末、________________何かした？B：家でずっとゲームをしていたよ。
+- **A.** 暇でしょう。
+- **B.** 暇でしょう？
+- **C.** 暇だったでしょう？
+- **D.** 暇だったでしょう。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A：週末、暇だったでしょう？何かした？B：家でずっとゲームをしていたよ。A: Cuối tuần vừa rồi cậu rảnh đ&uacute;ng kh&ocirc;ng? Cậu đ&atilde; l&agrave;m g&igrave; thế?B: Tớ ở nh&agrave; chơi game suốt.</p>
+</details>
+
+---
+**Q2.** A：宿題、_______________教えてあげるよ。B：本当？ありがとう。
+- **A.** 難しいでしょうじゃない？
+- **B.** 難しいでしょう？
+- **C.** 難しくないでしょう？
+- **D.** 難しかったじゃない？
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A：宿題、難しいでしょう？教えてあげるよ。B：本当？ありがとう。A: B&agrave;i tập về nh&agrave; kh&oacute; phải kh&ocirc;ng? Để tớ chỉ cho cậu nh&eacute;.B: Thật &aacute;? Cảm ơn cậu.</p>
+</details>
+
+---
+**Q3.** A：ゴールデンウィークに旅行したいけど、ホテルの予約が_____________だろうなあ。B：じゃあ、車で旅行したら？車の中で寝られるでしょう。
+- **A.** 取れなかった
+- **B.** 取れた
+- **C.** 取れる
+- **D.** 取れない
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A：ゴールデンウィークに旅行したいけど、ホテルの予が取れないだろうなあ。B：じゃあ、車で旅行したら？車の中で寝られるでしょう。A: Tuần lễ v&agrave;ng n&agrave;y tớ muốn đi du lịch, nhưng chắc l&agrave; kh&ocirc;ng đặt được kh&aacute;ch sạn đ&acirc;u nhỉ.B: Vậy... hay l&agrave; cậu thử đi du lịch bằng &ocirc; t&ocirc; xem? Cậu c&oacute; thể ngủ trong &ocirc; t&ocirc; đ&uacute;ng kh&ocirc;ng?</p>
+</details>
+
+---
+**Q4.** A：明後日は漢字のテストがあるね。B：ああ、明後日は台風が来るから、学校が___________かもしれないよ。
+- **A.** 休みの
+- **B.** 休みな
+- **C.** 休みだ
+- **D.** 休み
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A：明後日は漢字のテストがあるね。B：ああ、明後日は台風が来るから、学校が休みかもしれないよ。A: Ng&agrave;y kia c&oacute; b&agrave;i kiểm tra chữ H&aacute;n nhỉ.B: &Agrave;, ng&agrave;y kia b&atilde;o tới n&ecirc;n c&oacute; thể trường học sẽ nghỉ đ&oacute;.</p>
+</details>
+
+---
+**Q5.** A：明日の飲み会、行く？B：アルバイトが忙しいから、_______________。
+- **A.** 行けるかもしれない
+- **B.** 行けないかもしれない
+- **C.** 行けるかもしれないじゃない
+- **D.** 行けないかもしれなかった
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A：明日の飲み会、行く？B：アルバイトが忙しいから、行けないかもしれない。A: Buổi nhậu ng&agrave;y mai cậu c&oacute; đi kh&ocirc;ng?B: Tớ bận l&agrave;m th&ecirc;m n&ecirc;n chắc kh&ocirc;ng đi được.</p>
+</details>
+
+---
+**Q6.** A：午後から_________みたいだよ。B：本当？じゃあ、傘を持っていくよ。
+- **A.** 雨
+- **B.** 雨だ
+- **C.** 雨な
+- **D.** 雨の
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A：午後から雨みたいだよ。B：本当？じゃあ、傘を持っていくよ。A: H&igrave;nh như trời sẽ mưa từ chiều nay đấy.B: Thật &aacute;? Vậy tớ sẽ mang &ocirc; theo.</p>
+</details>
+
+---
+**Q7.** A：あの店、いつも客がいないよね。B：そうだね。_______________。
+- **A.** まあまあ人気なだろうね
+- **B.** 全然人気じゃなかったようだね
+- **C.** すごく人気かもしれないね
+- **D.** あんまり人気じゃないみたいだね
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A：あの店、いつも客がいないよね。B：そうだね。あんまり人気じゃないみたいだね。A: Cửa h&agrave;ng đ&oacute; l&uacute;c n&agrave;o cũng kh&ocirc;ng c&oacute; kh&aacute;ch nhỉ.B: Ừ. H&igrave;nh như kh&ocirc;ng được y&ecirc;u th&iacute;ch lắm nhỉ.</p>
+</details>
+
+---
+**Q8.** A：ねえ、あの人、ベトナム人じゃない？B：ううん、タイ語を話しているから、__________ようだね。
+- **A.** タイ人
+- **B.** タイ人だ
+- **C.** タイ人なの
+- **D.** タイ人の
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A：ねえ、あの人、ベトナム人じゃない？B：ううん、タイ語を話しているから、タイ人のようだね。A: N&agrave;y, người kia kh&ocirc;ng phải l&agrave; người Việt Nam sao?B: Kh&ocirc;ng đ&acirc;u, v&igrave; người đ&oacute; n&oacute;i tiếng Th&aacute;i n&ecirc;n c&oacute; vẻ l&agrave; người Th&aacute;i đấy.</p>
+</details>
+
+---
+**Q9.** A：ミンさんがまだいないね。B：ミンさんは風邪を引いているから、今日は_______________。
+- **A.** 来るはずじゃないよ
+- **B.** 来ないはずだったよ
+- **C.** 来ないはずだよ
+- **D.** 来なかったはずだよ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A：ミンさんがまだいないね。B：ミンさんは風邪を引いているから、今日は来ないはずだよ。A: Minh vẫn chưa đến nhỉ.B: Minh đang bị cảm n&ecirc;n chắc h&ocirc;m nay sẽ kh&ocirc;ng đến đ&acirc;u.</p>
+</details>
+
+---
+**Q10.** A：田中さんは今部屋にいるかな？B：さっき自転車でどこかへ行ったから、部屋にはいない__________。
+- **A.** でしょうね
+- **B.** かもしれないよ
+- **C.** ようだよ
+- **D.** はずだよ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A：田中さんは今部屋にいるかな？B：さっき自転車でどこかへ行ったから、部屋にはいないはずだよ。A: Anh Tanaka hiện giờ c&oacute; ở trong ph&ograve;ng kh&ocirc;ng nhỉ?B: Vừa n&atilde;y anh ấy đi đ&acirc;u đ&oacute; bằng xe đạp rồi n&ecirc;n chắc chắn kh&ocirc;ng c&oacute; ở trong ph&ograve;ng đ&acirc;u.</p>
+</details>
+
+---

@@ -1,0 +1,30 @@
+---
+tags:
+  - certification/az-204
+  - azure-dev/flashcard
+  - spaced-repetition
+status: active
+created: 2026-06-15
+deck: AZ-204 Azure Developer Certification
+---
+
+# 🃏 AZ-204 Flashcards
+
+## 🔵 Domain 1: Develop Azure Compute Solutions
+Which file configures local settings and environment variables for Azure Functions?
+?
+**local.settings.json**.
+
+---
+
+## 🟢 Domain 2: Develop for Azure Storage
+What Cosmos DB consistency level provides read-your-writes, monotonic read/write guarantees within a client session?
+?
+**Session Consistency**.
+
+---
+
+## 🟡 Domain 3: Implement Azure Security
+What is the best configuration to allow App Services to pull secrets from Key Vault without storing local credentials in code?
+?
+**Managed Identity** combined with Key Vault access policies.

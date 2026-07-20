@@ -1,0 +1,230 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|02_Arrays_Strings]]
+
+## 3. Two Pointers — Kỹ thuật hai con trỏ
+
+### 3.1. Ý tưởng
+
+Hãy tưởng tượng bạn đang ở trong một **đường hầm dài** và cần tìm hai cánh cửa mà tổng khoảng cách từ hai cửa đến đầu hầm bằng một giá trị cho trước. Thay vì thử mọi cặp cửa (O(n^2)), bạn đặt một người ở đầu hầm, một người ở cuối hầm. Nếu tổng khoảng cách lớn quá → người cuối tiến vào. Nếu nhỏ quá → người đầu tiến ra. Mỗi bước ít nhất một người di chuyển → tối đa n bước.
+
+**Two Pointers** là kỹ thuật dùng hai biến con trỏ (thường gọi `left` và `right`) di chuyển trên mảng/chuỗi theo một quy tắc nhất định, nhằm giảm bài toán từ O(n^2) xuống O(n).
+
+### 3.2. Hai dạng chính
+
+Two PointersOpposite Direction
+(ngược chiều)Same Direction
+(cùng chiều)left → ← right
+Ví dụ: Two Sum sorted,
+Palindrome, Containerslow → fast →
+Ví dụ: Remove duplicates,
+Fast & Slow pointer
+
+### 3.3. Dạng 1: Opposite Direction (Ngược chiều)
+
+#### Bài toán kinh điển: Two Sum (mảng đã sắp xếp)
+
+**Đề bài:** Cho mảng đã sắp xếp tăng dần và một giá trị target. Tìm hai phần tử có tổng bằng target.
+
+**Brute force:** Thử mọi cặp → O(n^2).
+
+**Two Pointers:**
+
+```python
+def two_sum_sorted(arr: list[int], target: int) -> tuple[int, int]:
+    left, right = 0, len(arr) - 1
+
+    while left < right:
+        current_sum = arr[left] + arr[right]
+        if current_sum == target:
+            return (left, right)
+        elif current_sum < target:
+            left += 1   # cần tổng lớn hơn → tăng left
+        else:
+            right -= 1  # cần tổng nhỏ hơn → giảm right
+
+    return (-1, -1)  # không tìm thấy
+```
+
+**Simulation:** `arr = [1, 3, 5, 7, 9, 11]`, `target = 12`
+
+```
+Step 1: left=0(1), right=5(11) → sum=12 = target → return (0, 5)
+```
+
+Ví dụ phức tạp hơn: `arr = [2, 3, 5, 8, 11, 15]`, `target = 13`
+
+```
+Step 1: left=0(2),  right=5(15) → sum=17 > 13 → right--
+Step 2: left=0(2),  right=4(11) → sum=13 = 13 → return (0, 4)
+```
+
+Ví dụ nữa: `arr = [1, 2, 4, 6, 10]`, `target = 8`
+
+```
+Step 1: left=0(1),  right=4(10) → sum=11 > 8  → right--
+Step 2: left=0(1),  right=3(6)  → sum=7  < 8  → left++
+Step 3: left=1(2),  right=3(6)  → sum=8  = 8  → return (1, 3)
+```
+
+NoYessum == targetsum < targetsum > targetStart: left = 0, right = n-1left < right?Return -1 (không tìm thấy)sum = arr[left] + arr[right]So sánh sum với targetReturn (left, right)left += 1
+(cần tổng lớn hơn)right -= 1
+(cần tổng nhỏ hơn)
+
+#### Chứng minh tính đúng đắn
+
+**Mệnh đề:** Nếu tồn tại cặp (i, j) với i < j sao cho arr[i] + arr[j] = target, thuật toán sẽ tìm được.
+
+**Chứng minh bằng phản chứng:**
+
+Giả sử thuật toán không tìm được cặp (i, j). Điều đó có nghĩa là:
+
+- Tại một thời điểm nào đó, `left` đã vượt qua i (left > i) TRƯỚC KHI `right` đạt j, HOẶC
+- `right` đã giảm qua j (right < j) TRƯỚC KHI `left` đạt i.
+
+Xét trường hợp 1: `left` vượt qua i trước. Khi `left = i`, vì `right > j` (right chưa giảm qua j), ta có:
+
+$$arr[i] + arr[right] \geq arr[i] + arr[j] = target$$
+
+Nếu `arr[i] + arr[right] > target` → thuật toán giảm right, không tăng left. Mâu thuẫn vì ta giả sử left tăng.
+
+Nếu `arr[i] + arr[right] = target` → thuật toán trả về kết quả. Mâu thuẫn vì ta giả sử không tìm được.
+
+Trường hợp 2 tương tự. Vậy giả sử sai. **QED**.
+
+#### Chứng minh độ phức tạp O(n)
+
+Mỗi bước, ít nhất một trong hai con trỏ di chuyển: `left` tăng hoặc `right` giảm. Ban đầu `left = 0`, `right = n-1`. Thuật toán dừng khi `left >= right`.
+
+Tổng khoảng cách di chuyển:
+
+$$\Delta_{left} + \Delta_{right} \leq (n-1) - 0 = n - 1$$
+
+Vậy tổng số bước tối đa là n - 1 = **O(n)**.
+
+### 3.4. Dạng 2: Same Direction (Cùng chiều) — Fast & Slow
+
+#### Bài toán: Remove Duplicates from Sorted Array (in-place)
+
+**Đề bài:** Cho mảng đã sắp xếp, xóa các phần tử trùng lặp tại chỗ. Trả về số phần tử còn lại.
+
+```python
+def remove_duplicates(arr: list[int]) -> int:
+    if not arr:
+        return 0
+
+    slow = 0  # con trỏ ghi — vị trí cuối cùng ghi giá trị unique
+    for fast in range(1, len(arr)):
+        if arr[fast] != arr[slow]:
+            slow += 1
+            arr[slow] = arr[fast]
+
+    return slow + 1
+```
+
+**Simulation:** `arr = [1, 1, 2, 2, 3, 4, 4]`
+
+```
+Khởi tạo: slow=0
+
+fast=1: arr[1]=1 == arr[0]=1  → skip
+fast=2: arr[2]=2 != arr[0]=1  → slow=1, arr[1]=2  → arr = [1,2,2,2,3,4,4]
+fast=3: arr[3]=2 == arr[1]=2  → skip
+fast=4: arr[4]=3 != arr[1]=2  → slow=2, arr[2]=3  → arr = [1,2,3,2,3,4,4]
+fast=5: arr[5]=4 != arr[2]=3  → slow=3, arr[3]=4  → arr = [1,2,3,4,3,4,4]
+fast=6: arr[6]=4 == arr[3]=4  → skip
+
+Return slow+1 = 4 → arr[:4] = [1,2,3,4]
+```
+
+NoYesYes (giá trị mới)No (trùng lặp)Start: slow = 0fast < n?Return slow + 1arr[fast] != arr[slow]?slow += 1
+arr[slow] = arr[fast]Bỏ quafast += 1
+
+### 3.5. Container With Most Water (LeetCode 11)
+
+Một bài toán kinh điển khác của Two Pointers ngược chiều.
+
+**Đề bài:** Cho mảng height[0..n-1], mỗi phần tử là chiều cao của một thanh. Tìm hai thanh tạo thành container chứa nhiều nước nhất.
+
+$$\text{water}(i, j) = \min(\text{height}[i], \text{height}[j]) \times (j - i)$$
+
+```python
+def max_area(height: list[int]) -> int:
+    left, right = 0, len(height) - 1
+    max_water = 0
+
+    while left < right:
+        width = right - left
+        h = min(height[left], height[right])
+        max_water = max(max_water, h * width)
+
+        # Di chuyển con trỏ ở phía cột thấp hơn
+        if height[left] < height[right]:
+            left += 1
+        else:
+            right -= 1
+
+    return max_water
+```
+
+**Tại sao di chuyển cột thấp?** Vì diện tích bị giới hạn bởi cột thấp hơn. Nếu giữ cột thấp và di chuyển cột cao, width giảm mà height không tăng → diện tích chắc chắn giảm. Ngược lại, di chuyển cột thấp có thể tìm được cột cao hơn → diện tích có thể tăng.
+
+### 3.6. Three Sum (LeetCode 15)
+
+**Đề bài:** Tìm tất cả bộ ba (a, b, c) trong mảng có tổng bằng 0.
+
+**Ý tưởng:** Sort mảng + cố định một phần tử + Two Sum cho hai phần tử còn lại.
+
+```python
+def three_sum(nums: list[int]) -> list[list[int]]:
+    nums.sort()
+    result = []
+
+    for i in range(len(nums) - 2):
+        # Skip duplicate cho phần tử đầu
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue
+
+        # Nếu phần tử nhỏ nhất > 0 → không thể có tổng 0
+        if nums[i] > 0:
+            break
+
+        left, right = i + 1, len(nums) - 1
+        while left < right:
+            total = nums[i] + nums[left] + nums[right]
+            if total == 0:
+                result.append([nums[i], nums[left], nums[right]])
+                # Skip duplicates
+                while left < right and nums[left] == nums[left + 1]:
+                    left += 1
+                while left < right and nums[right] == nums[right - 1]:
+                    right -= 1
+                left += 1
+                right -= 1
+            elif total < 0:
+                left += 1
+            else:
+                right -= 1
+
+    return result
+```
+
+**Complexity:** O(n^2) — vòng ngoài O(n), Two Pointers bên trong O(n). Space O(1) ngoài output.
+
+### 3.7. Ưu và nhược điểm
+
+**Ưu điểm:**
+
+- Giảm O(n^2) xuống O(n) cho nhiều bài toán.
+- Không cần bộ nhớ phụ (in-place).
+- Dễ implement, code ngắn gọn.
+
+**Nhược điểm:**
+
+- Thường yêu cầu mảng đã **sắp xếp** (dạng opposite direction).
+- Không phải bài nào cũng áp dụng được — cần điều kiện monotonic.
+- Cần suy nghĩ kỹ để xác định quy tắc di chuyển con trỏ.
+
+### 3.8. Cải tiến
+
+- **Kết hợp với Binary Search:** Thay vì Two Pointers, cố định một đầu rồi binary search đầu còn lại → O(n log n). Hữu ích khi không thể sắp xếp.
+- **Kết hợp với Hash Map:** Thay vì sort + Two Pointers, dùng hash map cho Two Sum → O(n) time, O(n) space. Trade-off: nhanh hơn nhưng tốn bộ nhớ.
+- **Multi-pointer:** Mở rộng thành 3, 4 con trỏ cho bài toán phức tạp hơn (K-Sum).

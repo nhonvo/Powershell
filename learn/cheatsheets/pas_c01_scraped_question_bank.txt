@@ -1,0 +1,130 @@
+# 🗃️ PAS-C01 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+A global enterprise is running SAP ERP Central Component (SAP ECC) workloads on Oracle in an on-premises environment. The enterprise plans to migrate to SAP S 4HANA on AWS.
+
+The enterprise recently acquired two other companies One of the acquired companies is running SAP ECC on Oracle as its ERP system The other acquired company is running an ERP system that is not from SAP The enterprise wants to consolidate the three ERP systems into one ERP system on SAP S 4HANA on AWS Not all the data from the acquired companies needs to be migrated to the final ERP system The enterprise needs to complete this migration with a solution that minimizes cost and maximizes operational efficiency.
+
+Which solution will meet these requirements?
+
+### Options:
+- [ ] **A)** Perform a lift-and-shift migration of all the systems to AWS Migrate the ERP system that is not from SAP to SAP ECC Convert all three systems to SAP S/4HANA by using SAP Software Update Manager (SUM) Database Migration Option (DMO) Consolidate all three SAP S4HANA systems into a final SAP &4HANAsystem Decommission the other systems
+- [ ] **B)** Perform a lift-and-shift migration of an the systems to AWS Migrate the enterprise's initial system to SAP HANA, and then perform a conversion to SAP S/4HANA Consolidate the two systems from the acquired companies with this SAP S4HANA system by using the Selective Data Transition approach with SAP Data Management and Landscape Transformation (DMLT)
+- [x] **C)** Use SAP Software Update Manager (SUM) Database Migration Option (DMO) with System Move to re-architect the enterprise initial system to SAP S'4HANA and to change the platform to AWS Consolidate the two systems from the acquired companies with this SAP S 4HANA system by using the Selective Data Transition approach with SAP Data Management and Landscape Transformation (DMLT) [Correct]
+- [ ] **D)** Use SAP Software Update Manager (SUM) Database Migration Option (DMO) with System Move to re-architect all the systems to SAP S/4HANA and to change the platform to AWS Consolidate all three SAP S-4HANA systems two a final SAP S/4HANA system Decommission the other systems
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+A global retail company is running its SAP landscape on AWS Recently the company made changes to its SAP Web Dispatcher architecture The company added an additional SAP Web Dispatcher for high availability with an Application Load Balancer (ALB) to balance the load between the two SAP Web Dispatchers When users try to access SAP through the ALB the system is reachable However the SAP backend system is showing an error message An investigation reveals that the issue is related to SAP session handling and distribution of requests . The company confirmed that the system was working as expected with one SAP Web Dispatcher. The company replicated the configuration of that SAP Web Dispatcher to the new SAP Web Dispatcher How can the company resolve the error?
+
+### Options:
+- [ ] **A)** Maintain persistence by using session cookies Enable session stickiness (session affinity) on the SAP Web Dispatchers by setting the wdisp/HTTP/esid_support parameter to True
+- [x] **B)** Maintain persistence by using session cookies Enable session stickiness (session affinity) on the ALB [Correct]
+- [ ] **C)** Turn on host-based routing on the ALB to route traffic between the SAP Web Dispatchers
+- [ ] **D)** Turn on URL-based routing on the ALB to route traffic to the application based on URL
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+A company hosts its SAP NetWeaver workload on SAP HANA m the AWS Cloud. The SAP NetWeaver application is protected by a cluster solution that uses Red Hat Enterprise Linux High Availability Add- On The duster solution uses an overlay IP address to ensure that the high availability cluster is still accessible during failover scenarios.
+
+An SAP solutions architect needs to facilitate the network connection to this overlay IP address from multiple locations These locations include more than 25 VPCs other AWS Regions and the onpremises environment The company already has set up an AWS Direct Connect connection between the on-premises environment and AWS.
+
+What should the SAP solutions architect do to meet these requirements in the MOST scalable manner?
+
+### Options:
+- [ ] **A)** Use VPC peering between the VPCs to route traffic between them
+- [x] **B)** Use AWS Transit Gateway to connect the VPCs and on-premises networks together [Correct]
+- [ ] **C)** Use a Network Load Balancer to route connections to various targets within VPCs
+- [ ] **D)** Deploy a Direct Connect gateway to connect the Direct Connect connection over a private VIF to one or more VPCs in any accounts
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+A company is implementing SAP HANA on AWS According 10 the company's security policy SAP backups must be encrypted Only authorized team members can have the ability to decrypt the SAP backups What is the MOST operationally efficient solution that meets these requirements?
+
+### Options:
+- [ ] **A)** Configure AWS Backint Agent for SAP HANA to create SAP backups in an Amazon S3 bucket After a backup is created encrypt the backup by using client-side encryption Share the encryption key with authorized team members only
+- [x] **B)** Configure AWS Backint Agent for SAP HANA to use AWS Key Management Service (AWS KMS) for SAP backups Create a key policy to grant decryption permission to authorized team members only [Correct]
+- [ ] **C)** Configure AWS Storage Gateway to transfer SAP backups from a file system to an Amazon S3 bucket Use an S3 bucket policy to grant decryption permission to authorized team members only
+- [ ] **D)** Configure AWS Backint Agent for SAP HANA to use AWS Key Management Service (AWS KMS) for SAP backups Grant object ACL decryption permission to authorized team members only
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+A data analysis company has two SAP landscapes that consist of sandbox development QA, preproduction and production servers. One landscape is on Windows and the other landscape is on Red Hat Enterprise Linux. The servers reside in a room m a building that other tenants share.
+An SAP solutions architect proposes to migrate the SAP applications to AWS The SAP solutions architect wants to move the production backups to AWS and wants to make the backups highly available to restore >n case of unavailability of an on-premises server.
+Which solution will meet these requirements MOST cost-effectively?
+
+### Options:
+- [ ] **A)** Take a backup of the production servers Implement an AWS Storage Gateway Volume Gateway Create file shares by using the Storage Gateway Volume Gateway Copy the backup files to the file shares through NFS and 9MB.
+- [ ] **B)** Take a backup of the production servers Send those backups to tape drives implement an AWS Storage Gateway Tape Gateway Send the backups to Amazon S3 Standard-Infrequent Access (S3 Standard-IA) through the S3 console Move the backups immediately to S3 Glacier Deep Archive
+- [ ] **C)** Implement a third-party tool to take images of the SAP application servers and database server Take regular snapshots at 1-hour intervals send the snapshots to Amazon S3 Glacier directly through the S3 Glacier console Store the same images in different S3 buckets in different AWS Regions
+- [x] **D)** Take a backup of the production servers Implement an Amazon S3 File Gateway Create file shares by using the S3 File Gateway Copy the backup files lo the file shares through NFS and SMB Map backup files directly to Amazon S3 Configure an S3 Lifecycle policy to send the backup files to S3 Glacier based on the company's data retention policy [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+
+</details>
+
+---

@@ -1,0 +1,176 @@
+{
+  "Meta": {
+    "Id": "deck_reading_1_5_security_and_the_aws_shared_responsibility_model",
+    "Topic": "Reading 1.5 Security and the AWS Shared Responsibility Model",
+    "Language": "English/Japanese",
+    "Domain": "certifications",
+    "Level": "General",
+    "Tags": [
+      "reading_1_5_security_and_the_aws_shared_responsibility_model"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 8
+  },
+  "Cards": [
+    {
+      "Id": "card_00122",
+      "Front": "Category",
+      "Back": "Examples of AWS Services in the Category | AWS Responsibility",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 1.5 security and the aws shared responsibility model"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00123",
+      "Front": "Infrastructure services",
+      "Back": "Compute services, such as Amazon Elastic Compute Cloud (Amazon EC2) | AWS manages the underlying infrastructure and foundation services.",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 1.5 security and the aws shared responsibility model"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00124",
+      "Front": "Container services",
+      "Back": "Services that require less management from the customer, such as Amazon Relational Database Service (Amazon RDS) | AWS manages the underlying infrastructure and foundation services, operating system, and application platform.",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 1.5 security and the aws shared responsibility model"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00125",
+      "Front": "Abstracted services",
+      "Back": "Services that require very little management from the customer, such as Amazon Simple Storage Service (Amazon S3) | AWS operates the infrastructure layer, operating system, and platforms, as well as server-side encryption and data protection.",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 1.5 security and the aws shared responsibility model"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00126",
+      "Front": "Category",
+      "Back": "AWS Responsibility | Customer Responsibility",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 1.5 security and the aws shared responsibility model"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00127",
+      "Front": "Infrastructure services",
+      "Back": "AWS manages the infrastructure and foundation services. | You control the operating system and application platform, as well as encrypting, protecting, and managing customer data.",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 1.5 security and the aws shared responsibility model"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00128",
+      "Front": "Container services",
+      "Back": "AWS manages the infrastructure and foundation services, operating system, and application platform. | You are responsible for customer data, encrypting that data, and protecting it through network firewalls and backups.",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 1.5 security and the aws shared responsibility model"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00129",
+      "Front": "Abstracted services",
+      "Back": "AWS operates the infrastructure layer, operating system, and platforms, as well as server-side encryption and data protection. | You are responsible for managing customer data and protecting it through client-side encryption.",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 1.5 security and the aws shared responsibility model"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

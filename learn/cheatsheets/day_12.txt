@@ -1,0 +1,15 @@
+# Day 12: Final Prep & Back to PC
+**Goal:** Audit your 12 days and prepare for "Laptop Mode."
+
+### 📖 Reading (GitHub App)
+- Open `learning/interview_prep/PROGRESS.md`.
+- Look at the "Senior Gap Checklist".
+
+### 🤖 AI Drill (Copy & Paste to ChatGPT/Gemini)
+> "I have been away from my laptop for 12 days. I've focused on System Design, DSA logic, and Soft Skills. Give me a 'Warm-up' coding challenge that combines a HashMap and a Linked List (like an LRU Cache) to get my brain ready for coding tomorrow."
+
+### 📝 Mobile Task
+- Create a "Welcome Back" list of tasks.
+- What is the first bug you want to fix?
+- What is the first feature you want to implement?
+- **Final Action:** `git commit -m "Military Training Complete. Mental models updated."` (via Codespaces).

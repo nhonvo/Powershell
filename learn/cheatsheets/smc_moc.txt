@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/smc
+  - smc
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 SMC MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/scrum/SMC/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/scrum/SMC/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/scrum/SMC/SMC Mindmap\|🗺️ SMC Mindmap]]
+- [[certifications/scrum/SMC/SMC Flashcards\|🃏 SMC Flashcards]]
+- [[certifications/scrum/SMC/SMC_Scraped_Question_Bank\|🗃️ SMC Scraped Question Bank]]

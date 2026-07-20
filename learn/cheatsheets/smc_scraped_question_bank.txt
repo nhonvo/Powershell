@@ -1,0 +1,127 @@
+# 🗃️ SMC Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+All of the following statements about Risk Communications are true, EXCEPT:
+
+### Options:
+- [ ] **A)** The Stakeholders should be continuously informed about risks, including the potential impact of these risks
+and the plans for responding to each risk.
+- [ ] **B)** The Scrum Team may also discuss specific risks related to their Tasks with the Product Owner during
+Daily Standup Meetings. [Correct]
+- [ ] **C)** The Product Owner is responsible for the prioritization of risks and for communicating the prioritized list to
+the Scrum Team.
+- [ ] **D)** Information related to risks is maintained and updated through the Risk Burndown Chart.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Because stakeholders have an interest in the project, it is important to communicate with them regarding risks.
+Information provided to stakeholders related to risk should include potential impact and the plans for responding to each risk. This communication is on-going and should occur in parallel with the four sequential steps discussed thus far--risk identification, assessment, prioritization and mitigation. The Scrum Team may also discuss specific risks related to their Tasks with the Scrum Master during Daily Standup Meetings. 
+The Product Owner is responsible for the prioritization of risks and for communicating the prioritized list to the Scrum Team. An important tool which can be used for communicating information related to risks is the Risk Burndown Chart.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+During a Retrospect Sprint Meeting, the Scrum team conducted an Explorer-Shopper-Vacationer- Prisoner exercise. One of the participants indicated that he feels like an Explorer. 
+Which of the following best describes who an Explorer is?
+
+### Options:
+- [ ] **A)** One who wants to listen to everything and choose what he takes away from the retrospective
+- [x] **B)** One who wants to participate in and learn everything discussed in the retrospective [Correct]
+- [ ] **C)** One who wants to relax and be a tourist during the retrospective
+- [ ] **D)** One who wants to explore how other project tackled similar issues and improved processes
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+Scrum can easily be scaled for effective use in large projects with multiple small teams working on the project.
+Which of the following facilitates coordination among scrum teams?
+
+### Options:
+- [x] **A)** Scrum of Scrums Meeting [Correct]
+- [ ] **B)** Daily Standup Meeting
+- [ ] **C)** Sprint Review Meeting
+- [ ] **D)** Sprint Planning Meeting
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+There are a lot of people who say "Scrum can be used to improve the team productivity but is not scalable". In fact, it can easily be scaled for effective use in large projects. Multiple Scrum Teams can be formed to work on the project where the Scrum Team size exceeds ten people. The Convene Scrum of Scrums process facilitates coordination among the Scrum Teams, enabling effective implementation in larger projects. Multiple Scrum Teams work in parallel in large projects, making it necessary to synchronize and facilitate the flow of information and enhance communication. The Convene Scrum of Scrums is the process ensuring this synchronization. The various Scrum Teams are represented in this meeting and the objectives are to provide updates about progress, discuss challenges faced during the project, and coordinate activities.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+Which of the following activities is NOT a part of the implementation phase in Scrum?
+
+### Options:
+- [ ] **A)** Daily Standup Meeting.
+- [ ] **B)** Updating the Product Backlog.
+- [x] **C)** Release Planning Meeting. [Correct]
+- [ ] **D)** Creating deliverables.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+Which of the following is a tool that can be used for communicating information related to risks?
+
+### Options:
+- [ ] **A)** Risk Burnup chart.
+- [x] **B)** Risk Burndown chart. [Correct]
+- [ ] **C)** Risk Progress chart.
+- [ ] **D)** Risk Tracking chart.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+An important tool which can be used for communicating information related to risks is the Risk Burndown Chart.
+</details>
+
+---

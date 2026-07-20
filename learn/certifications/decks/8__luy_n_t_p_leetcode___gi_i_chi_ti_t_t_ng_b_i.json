@@ -1,0 +1,876 @@
+{
+  "Meta": {
+    "Id": "deck_8__luy_n_t_p_leetcode___gi_i_chi_ti_t_t_ng_b_i",
+    "Topic": "8. Luyện tập LeetCode — Giải chi tiết từng bài",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "8__luy_n_t_p_leetcode___gi_i_chi_ti_t_t_ng_b_i"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 43
+  },
+  "Cards": [
+    {
+      "Id": "card_01165",
+      "Front": "Bước",
+      "Back": "Gọi hàm | left_depth | right_depth | Return",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01166",
+      "Front": "10",
+      "Back": "Quay về node 3 | 1 | 2 | 1 + max(1,2) = **3**",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01167",
+      "Front": "DFS",
+      "Back": "O(n) — duyệt mỗi node 1 lần | O(h) — call stack, h = height",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01168",
+      "Front": "BFS",
+      "Back": "O(n) — duyệt mỗi node 1 lần | O(w) — w = max width của cây",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01169",
+      "Front": "Bước",
+      "Back": "Gọi hàm | Hành động | Trạng thái cây",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01170",
+      "Front": "10",
+      "Back": "Quay về node 4 | Swap: left=7(đã đảo), right=2(đã đảo) | Hoàn tất!",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01171",
+      "Front": "DFS",
+      "Back": "O(n) — thăm mỗi node 1 lần | O(h) — call stack",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01172",
+      "Front": "BFS",
+      "Back": "O(n) | O(w) — max width",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01173",
+      "Front": "Bước",
+      "Back": "Gọi hàm | left_h | right_h | diameter qua node | self.result | Return (height)",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01174",
+      "Front": "Time",
+      "Back": "Space",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01175",
+      "Front": "O(n) — duyệt mỗi node 1 lần",
+      "Back": "O(h) — call stack, h = height",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01176",
+      "Front": "Bước",
+      "Back": "Gọi hàm | Kiểm tra | left_result | right_result | Return",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01177",
+      "Front": "Bước",
+      "Back": "Gọi hàm | left_result | right_result | Return",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01178",
+      "Front": "Time",
+      "Back": "Space",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01179",
+      "Front": "O(n) — worst case duyệt hết cây",
+      "Back": "O(h) — call stack",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01180",
+      "Front": "Vòng lặp",
+      "Back": "Queue trước | level_size | Xử lý | Queue sau | current_level | result",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01181",
+      "Front": "BFS",
+      "Back": "O(n) — mỗi node xử lý 1 lần | O(w) — w = max width (queue) + O(n) result",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01182",
+      "Front": "DFS",
+      "Back": "O(n) | O(h) call stack + O(n) result",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01183",
+      "Front": "Bước",
+      "Back": "Node | left_gain | right_gain | path qua node | self.result | Return (gain cho parent)",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01184",
+      "Front": "Time",
+      "Back": "Space",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01185",
+      "Front": "O(n) — mỗi node duyệt 1 lần",
+      "Back": "O(h) — call stack",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01186",
+      "Front": "Bước",
+      "Back": "Gọi `dfs(node)` | node.val | result",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01187",
+      "Front": "10",
+      "Back": "dfs(None) — left of 5 | None | [..., \"5\", \"None\"]",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01188",
+      "Front": "11",
+      "Back": "dfs(None) — right of 5 | None | [..., \"None\", \"None\"]",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01189",
+      "Front": "Bước",
+      "Back": "Đọc giá trị | Hành động | Cây đang xây",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01190",
+      "Front": "10",
+      "Back": "\"None\" | Return None = left of 5 | ",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01191",
+      "Front": "11",
+      "Back": "\"None\" | Return None = right of 5 | ",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01192",
+      "Front": "Serialize",
+      "Back": "O(n) — duyệt mỗi node 1 lần | O(n) — lưu string kết quả",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01193",
+      "Front": "Deserialize",
+      "Back": "O(n) — đọc mỗi giá trị 1 lần | O(n) — tạo n nodes",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01194",
+      "Front": "Bước",
+      "Back": "Gọi hàm | depth | len(result) | depth == len? | Hành động | result",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01195",
+      "Front": "Bước",
+      "Back": "Gọi hàm | depth | len(result) | depth == len? | Hành động | result",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01196",
+      "Front": "10",
+      "Back": "`dfs(None, 3)` | — | — | — | Return | [1, 3, 4]",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01197",
+      "Front": "11",
+      "Back": "`dfs(None, 2)` ← left of 2 | — | — | — | Return | [1, 3, 4]",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01198",
+      "Front": "BFS",
+      "Back": "O(n) | O(w) — max width",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01199",
+      "Front": "DFS",
+      "Back": "O(n) | O(h) — call stack",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01200",
+      "Front": "104",
+      "Back": "Max Depth | Easy | DFS bottom-up | `1 + max(left, right)`",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01201",
+      "Front": "226",
+      "Back": "Invert Tree | Easy | DFS/BFS + swap | Swap left, right ở mỗi node",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01202",
+      "Front": "543",
+      "Back": "Diameter | Easy | DFS + global var | Return height, update diameter",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01203",
+      "Front": "236",
+      "Back": "LCA | Medium | DFS postorder | Return None/node, cả 2 bên non-None → LCA",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01204",
+      "Front": "102",
+      "Back": "Level Order | Medium | BFS template | `level_size = len(queue)`",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01205",
+      "Front": "124",
+      "Back": "Max Path Sum | Hard | DFS + global var | `max(gain, 0)`, return 1 hướng cho parent",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01206",
+      "Front": "297",
+      "Back": "Serialize | Hard | DFS preorder | None markers + iterator",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01207",
+      "Front": "199",
+      "Back": "Right Side View | Medium | BFS/DFS | Lấy node cuối mỗi level / duyệt phải trước",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. luyện tập leetcode — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

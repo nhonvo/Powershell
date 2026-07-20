@@ -1,0 +1,567 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/13_Dynamic_Programming/🧠index_13_Dynamic_Programming|13_Dynamic_Programming]]
+
+## 1. 1D DP — DP một chiều
+
+### Giới thiệu
+
+1D DP là dạng đơn giản nhất — state chỉ phụ thuộc vào **một biến** (thường là index `i`). Đây là nơi tuyệt vời để bắt đầu hành trình DP của bạn.
+
+------
+
+### 1.1. Fibonacci — Bài toán khởi đầu
+
+#### Đặt bài toán
+
+Dãy Fibonacci: `F(0) = 0, F(1) = 1, F(n) = F(n-1) + F(n-2)` với `n >= 2`.
+
+Tính `F(n)`.
+
+#### Analogie đời thực — Đàn thỏ của Fibonacci
+
+Năm 1202, nhà toán học Fibonacci đặt câu hỏi: "Nếu một cặp thỏ mỗi tháng sinh ra một cặp thỏ mới, và thỏ mới cần 1 tháng để trưởng thành, thì sau `n` tháng có bao nhiêu cặp thỏ?"
+
+- Tháng 0: 0 cặp → Tháng 1: 1 cặp → Tháng 2: 1 cặp → Tháng 3: 2 cặp → Tháng 4: 3 cặp → Tháng 5: 5 cặp...
+
+#### Toán học — Recurrence Relation
+
+$$F(n) = F(n-1) + F(n-2)$$
+
+**Base cases**: $F(0) = 0$, $F(1) = 1$
+
+**Chứng minh bằng quy nạp** rằng $F(n) < 2^n$:
+
+- **Base**: $F(0) = 0 < 1 = 2^0$ ✓, $F(1) = 1 < 2 = 2^1$ ✓
+
+- Inductive step
+
+  : Giả sử $F(k) < 2^k$ với mọi $k \leq n-1$.
+
+  - $F(n) = F(n-1) + F(n-2) < 2^{n-1} + 2^{n-2} = 2^{n-2}(2+1) = 3 \cdot 2^{n-2} < 4 \cdot 2^{n-2} = 2^n$ ✓
+
+#### Cách 1: Đệ quy thông thường (CHẬM — đừng dùng!)
+
+```python
+def fib_naive(n):
+    """Cách đệ quy thông thường — O(2^n), RẤT CHẬM"""
+    if n <= 1:
+        return n
+    return fib_naive(n - 1) + fib_naive(n - 2)
+
+# Thử nghiệm — đừng thử n > 35 nếu không muốn đợi lâu!
+print(fib_naive(10))  # 55
+print(fib_naive(30))  # 832040 (đã bắt đầu chậm)
+```
+
+**Tại sao chậm?** Vì tính lại bài toán con rất nhiều lần:
+
+F(5)F(4)F(3)F(3)F(2)F(2)F(1)F(2)F(1)F(1)F(0)F(1)F(0)F(1)F(0)
+
+Nhìn thấy không? `F(3)` bị tính **2 lần**, `F(2)` bị tính **3 lần**! Với `n` lớn, số lần tính lại tăng theo cấp số nhân.
+
+#### Cách 2: Memoization (Top-down DP)
+
+```python
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fib_memo(n):
+    """
+    Fibonacci với memoization — O(n) time, O(n) space
+    @lru_cache tự động cache kết quả đã tính
+    """
+    if n <= 1:
+        return n
+    return fib_memo(n - 1) + fib_memo(n - 2)
+
+# Test
+print(fib_memo(10))   # 55
+print(fib_memo(50))   # 12586269025 — tính cực nhanh!
+print(fib_memo(100))  # 354224848179261915075
+```
+
+**Cách hoạt động**: Lần đầu gọi `fib_memo(5)`, nó sẽ đệ quy xuống `fib_memo(4)` và `fib_memo(3)`. Nhưng khi `fib_memo(4)` cần `fib_memo(3)`, kết quả đã có trong cache → trả về ngay, không tính lại!
+
+#### Cách 3: Tabulation (Bottom-up DP)
+
+```python
+def fib_tab(n):
+    """
+    Fibonacci với tabulation — O(n) time, O(n) space
+    Xây bảng từ dưới lên
+    """
+    if n <= 1:
+        return n
+
+    # Tạo bảng DP
+    dp = [0] * (n + 1)
+    dp[0] = 0  # base case
+    dp[1] = 1  # base case
+
+    # Điền bảng từ nhỏ đến lớn
+    for i in range(2, n + 1):
+        dp[i] = dp[i - 1] + dp[i - 2]
+
+    return dp[n]
+
+# Test
+print(fib_tab(10))   # 55
+print(fib_tab(50))   # 12586269025
+print(fib_tab(100))  # 354224848179261915075
+```
+
+**Simulation bảng DP** cho `n = 7`:
+
+```
+Index:  0   1   2   3   4   5   6   7
+dp:   [ 0,  1,  1,  2,  3,  5,  8, 13]
+              ↑   ↑
+              |   |
+        dp[2] = dp[1] + dp[0] = 1 + 0 = 1
+                  ↑   ↑
+                  |   |
+            dp[3] = dp[2] + dp[1] = 1 + 1 = 2
+                      ↑   ↑
+                      |   |
+                dp[4] = dp[3] + dp[2] = 2 + 1 = 3
+                ... và cứ thế tiếp tục
+```
+
+#### Cách 4: Space Optimization — O(1) space
+
+```python
+def fib_optimized(n):
+    """
+    Fibonacci tối ưu bộ nhớ — O(n) time, O(1) space
+    Chỉ cần 2 biến vì dp[i] chỉ phụ thuộc dp[i-1] và dp[i-2]
+    """
+    if n <= 1:
+        return n
+
+    prev2 = 0  # F(i-2)
+    prev1 = 1  # F(i-1)
+
+    for i in range(2, n + 1):
+        curr = prev1 + prev2
+        prev2 = prev1
+        prev1 = curr
+
+    return prev1
+
+# Test
+print(fib_optimized(10))   # 55
+print(fib_optimized(100))  # 354224848179261915075
+```
+
+#### Phân tích độ phức tạp
+
+| Cách            | Time   | Space                   | Ghi chú                              |
+| :-------------- | :----- | :---------------------- | :----------------------------------- |
+| Đệ quy thường   | O(2^n) | O(n) stack              | **KHÔNG BAO GIỜ** dùng trong thực tế |
+| Memoization     | O(n)   | O(n) cache + O(n) stack | Dễ code, nhưng có thể stack overflow |
+| Tabulation      | O(n)   | O(n) bảng               | Ổn định, không stack overflow        |
+| Space optimized | O(n)   | O(1)                    | **Tốt nhất** cho bài này             |
+
+**Chứng minh O(2^n) cho đệ quy thường:**
+
+Gọi $T(n)$ là số phép cộng khi tính $F(n)$ bằng đệ quy:
+
+- $T(0) = 0, T(1) = 0$
+- $T(n) = T(n-1) + T(n-2) + 1$
+
+Ta chứng minh $T(n) = F(n+1) - 1$ bằng quy nạp:
+
+- Base: $T(0) = 0 = F(1) - 1 = 1 - 1$ ✓
+- Inductive: $T(n) = T(n-1) + T(n-2) + 1 = (F(n) - 1) + (F(n-1) - 1) + 1 = F(n+1) - 1$ ✓
+
+Vì $F(n) \approx \phi^n / \sqrt{5}$ (với $\phi = (1+\sqrt{5})/2 \approx 1.618$), nên $T(n) = \Theta(\phi^n) = O(2^n)$.
+
+------
+
+### 1.2. Climbing Stairs — Leo cầu thang
+
+#### Đặt bài toán
+
+Bạn đang đứng dưới chân cầu thang có `n` bậc. Mỗi lần bạn có thể leo **1 bậc** hoặc **2 bậc**. Hỏi có bao nhiêu **cách khác nhau** để leo lên đỉnh?
+
+#### Analogie đời thực
+
+Bạn đang leo lên tầng 5 ký túc xá. Mỗi bước chân bạn có thể bước **1 bậc** hoặc **nhảy 2 bậc**. Có bao nhiêu "kiểu di chuyển" khác nhau để lên đến tầng 5?
+
+#### Recurrence Relation
+
+Gọi `ways(n)` = số cách leo `n` bậc.
+
+Để đến bậc `n`, bạn phải đến từ bậc `n-1` (bước 1 bậc) hoặc bậc `n-2` (bước 2 bậc):
+
+$$ways(n) = ways(n-1) + ways(n-2)$$
+
+**Base cases**: $ways(0) = 1$ (đứng yên = 1 cách), $ways(1) = 1$.
+
+Nhận ra gì không? Đây chính là **dãy Fibonacci**!
+
+Bậc nĐến từ bậc n-1
+(bước 1 bậc)Đến từ bậc n-2
+(bước 2 bậc)ways(n-1) cáchways(n-2) cáchways(n) = ways(n-1) + ways(n-2)
+
+#### Code — Đầy đủ 3 cách
+
+```python
+from functools import lru_cache
+
+# ============================
+# Cách 1: Memoization (Top-down)
+# ============================
+@lru_cache(maxsize=None)
+def climb_stairs_memo(n):
+    """Số cách leo n bậc cầu thang — memoization"""
+    if n <= 1:
+        return 1
+    return climb_stairs_memo(n - 1) + climb_stairs_memo(n - 2)
+
+
+# ============================
+# Cách 2: Tabulation (Bottom-up)
+# ============================
+def climb_stairs_tab(n):
+    """Số cách leo n bậc cầu thang — tabulation"""
+    if n <= 1:
+        return 1
+
+    dp = [0] * (n + 1)
+    dp[0] = 1  # 1 cách để "ở yên"
+    dp[1] = 1  # 1 cách để leo 1 bậc
+
+    for i in range(2, n + 1):
+        dp[i] = dp[i - 1] + dp[i - 2]
+
+    return dp[n]
+
+
+# ============================
+# Cách 3: Space Optimized — O(1)
+# ============================
+def climb_stairs_opt(n):
+    """Số cách leo n bậc cầu thang — O(1) space"""
+    if n <= 1:
+        return 1
+
+    prev2 = 1  # ways(0)
+    prev1 = 1  # ways(1)
+
+    for i in range(2, n + 1):
+        curr = prev1 + prev2
+        prev2 = prev1
+        prev1 = curr
+
+    return prev1
+
+
+# ============================
+# Test tất cả các cách
+# ============================
+print("=== Climbing Stairs ===")
+for n in [1, 2, 3, 5, 10, 20]:
+    m = climb_stairs_memo(n)
+    t = climb_stairs_tab(n)
+    o = climb_stairs_opt(n)
+    assert m == t == o, f"Kết quả không khớp tại n={n}!"
+    print(f"n={n}: {m} cách")
+
+# Output:
+# n=1: 1 cách
+# n=2: 2 cách
+# n=3: 3 cách
+# n=5: 8 cách
+# n=10: 89 cách
+# n=20: 10946 cách
+```
+
+#### Simulation cho n = 5
+
+```
+Bậc:    0    1    2    3    4    5
+dp:   [ 1,   1,   2,   3,   5,   8]
+
+Bậc 0: 1 cách (đứng yên)
+Bậc 1: 1 cách (0→1)
+Bậc 2: dp[1] + dp[0] = 1 + 1 = 2 cách (0→1→2 hoặc 0→2)
+Bậc 3: dp[2] + dp[1] = 2 + 1 = 3 cách (0→1→2→3, 0→2→3, 0→1→3)
+Bậc 4: dp[3] + dp[2] = 3 + 2 = 5 cách
+Bậc 5: dp[4] + dp[3] = 5 + 3 = 8 cách
+
+→ Kết quả: 8 cách leo 5 bậc cầu thang
+```
+
+------
+
+### 1.3. House Robber — Tên trộm thông minh
+
+#### Đặt bài toán
+
+Bạn là một tên trộm "có tâm". Có `n` ngôi nhà xếp thành hàng, mỗi nhà có `nums[i]` tiền. Bạn **không thể cướp hai nhà liền kề** (vì hệ thống báo động sẽ kích hoạt). Hỏi số tiền **tối đa** bạn có thể cướp?
+
+#### Analogie đời thực
+
+Bạn đi dọc phố ăn vặt. Có 6 quán, mỗi quán có điểm ngon khác nhau. Nhưng bạn ăn quán này thì quán kế bên sẽ đóng cửa (vì... phép thuật). Bạn muốn tổng "điểm ngon" cao nhất có thể.
+
+#### Recurrence Relation
+
+Gọi `dp[i]` = số tiền tối đa khi xét đến nhà thứ `i`.
+
+Tại nhà `i`, bạn có **2 lựa chọn**:
+
+1. **Cướp nhà `i`**: lấy `nums[i]` + tiền tốt nhất đến nhà `i-2` (vì không được cướp nhà `i-1`)
+2. **Bỏ qua nhà `i`**: tiền tốt nhất đến nhà `i-1`
+
+$$dp[i] = \max(dp[i-1], , dp[i-2] + nums[i])$$
+
+**Base cases**: $dp[0] = nums[0]$, $dp[1] = \max(nums[0], nums[1])$
+
+CướpKhông cướpTại nhà iCướp hay không?nums[i] + dp[i-2]dp[i-1]dp[i] = max(cướp, không cướp)
+
+#### Code
+
+```python
+from functools import lru_cache
+
+# ============================
+# Cách 1: Memoization
+# ============================
+def house_robber_memo(nums):
+    """House Robber — memoization"""
+    n = len(nums)
+    if n == 0:
+        return 0
+
+    @lru_cache(maxsize=None)
+    def rob(i):
+        """Số tiền max khi xét từ nhà 0 đến nhà i"""
+        if i < 0:
+            return 0
+        if i == 0:
+            return nums[0]
+        # Cướp nhà i hoặc bỏ qua
+        return max(rob(i - 1), rob(i - 2) + nums[i])
+
+    return rob(n - 1)
+
+
+# ============================
+# Cách 2: Tabulation
+# ============================
+def house_robber_tab(nums):
+    """House Robber — tabulation"""
+    n = len(nums)
+    if n == 0:
+        return 0
+    if n == 1:
+        return nums[0]
+
+    dp = [0] * n
+    dp[0] = nums[0]
+    dp[1] = max(nums[0], nums[1])
+
+    for i in range(2, n):
+        dp[i] = max(dp[i - 1], dp[i - 2] + nums[i])
+
+    return dp[n - 1]
+
+
+# ============================
+# Cách 3: Space Optimized — O(1)
+# ============================
+def house_robber_opt(nums):
+    """House Robber — O(1) space"""
+    if not nums:
+        return 0
+
+    prev2 = 0        # dp[i-2]
+    prev1 = nums[0]  # dp[i-1], bắt đầu từ nhà 0
+
+    for i in range(1, len(nums)):
+        curr = max(prev1, prev2 + nums[i])
+        prev2 = prev1
+        prev1 = curr
+
+    return prev1
+
+
+# ============================
+# Test
+# ============================
+test_cases = [
+    ([1, 2, 3, 1], 4),       # Cướp nhà 0 và 2: 1+3=4
+    ([2, 7, 9, 3, 1], 12),    # Cướp nhà 0, 2, 4: 2+9+1=12
+    ([2, 1, 1, 2], 4),        # Cướp nhà 0 và 3: 2+2=4
+    ([5], 5),                  # Chỉ có 1 nhà
+    ([], 0),                   # Không có nhà nào
+]
+
+print("=== House Robber ===")
+for nums, expected in test_cases:
+    m = house_robber_memo(nums)
+    t = house_robber_tab(nums)
+    o = house_robber_opt(nums)
+    assert m == t == o == expected, f"Sai tại nums={nums}"
+    print(f"nums={nums} -> max={m}")
+```
+
+#### Simulation cho `nums = [2, 7, 9, 3, 1]`
+
+```
+Index:    0    1    2    3    4
+nums:   [ 2,   7,   9,   3,   1]
+dp:     [ 2,   7,  11,  11,  12]
+
+i=0: dp[0] = nums[0] = 2
+     (Chỉ có nhà 0, cướp nó → 2)
+
+i=1: dp[1] = max(dp[0], nums[1]) = max(2, 7) = 7
+     (Nhà 0 hoặc nhà 1? Nhà 1 ngon hơn → 7)
+
+i=2: dp[2] = max(dp[1], dp[0] + nums[2]) = max(7, 2 + 9) = max(7, 11) = 11
+     (Không cướp nhà 2 → 7, Cướp nhà 2 → 2+9=11. Cướp ngon hơn!)
+
+i=3: dp[3] = max(dp[2], dp[1] + nums[3]) = max(11, 7 + 3) = max(11, 10) = 11
+     (Không cướp nhà 3 → 11, Cướp nhà 3 → 7+3=10. Không cướp ngon hơn!)
+
+i=4: dp[4] = max(dp[3], dp[2] + nums[4]) = max(11, 11 + 1) = max(11, 12) = 12
+     (Không cướp nhà 4 → 11, Cướp nhà 4 → 11+1=12. Cướp ngon hơn!)
+
+→ Kết quả: 12 (cướp nhà 0, 2, 4 → 2+9+1=12)
+```
+
+------
+
+### 1.4. Coin Change — Đổi tiền xu
+
+#### Đặt bài toán
+
+Cho một tập các loại tiền xu `coins` (mỗi loại có vô hạn). Tìm **số lượng xu ít nhất** để đổi ra đúng `amount`. Nếu không thể, trả về `-1`.
+
+#### Analogie đời thực
+
+Bạn đi mua trà sữa giá 37.000d. Bạn có các loại xu: 1k, 5k, 10k, 20k. Bạn muốn đưa **ít xu nhất** có thể. Greedy (luôn chọn xu lớn nhất) sẽ cho: 20k + 10k + 5k + 1k + 1k = 5 xu. Nhưng nếu loại xu là [1, 3, 4] và amount = 6? Greedy cho 4+1+1 = 3 xu, nhưng DP tìm ra 3+3 = 2 xu!
+
+#### Recurrence Relation
+
+Gọi `dp[a]` = số xu ít nhất để đổi ra `a` đồng.
+
+Với mỗi loại xu `c`, nếu ta dùng xu `c`, thì cần thêm `dp[a - c]` xu nữa:
+
+$$dp[a] = \min_{c \in coins} (dp[a - c] + 1) \quad \text{với } a - c \geq 0$$
+
+**Base case**: $dp[0] = 0$ (đổi 0 đồng cần 0 xu)
+
+Cần đổi amount aThử từng loại xu cXu 1: dp[a-1] + 1Xu 3: dp[a-3] + 1Xu 4: dp[a-4] + 1dp[a] = min tất cả
+
+#### Code
+
+```python
+from functools import lru_cache
+import math
+
+# ============================
+# Cách 1: Memoization
+# ============================
+def coin_change_memo(coins, amount):
+    """Coin Change — memoization, trả về số xu ít nhất"""
+
+    @lru_cache(maxsize=None)
+    def dp(a):
+        """Số xu ít nhất để đổi ra a đồng"""
+        if a == 0:
+            return 0
+        if a < 0:
+            return math.inf
+
+        # Thử từng loại xu, lấy min
+        result = math.inf
+        for c in coins:
+            sub = dp(a - c)
+            if sub != math.inf:
+                result = min(result, sub + 1)
+
+        return result
+
+    ans = dp(amount)
+    return ans if ans != math.inf else -1
+
+
+# ============================
+# Cách 2: Tabulation
+# ============================
+def coin_change_tab(coins, amount):
+    """Coin Change — tabulation"""
+    # dp[a] = số xu ít nhất để đổi ra a đồng
+    dp = [math.inf] * (amount + 1)
+    dp[0] = 0  # base case: 0 đồng → 0 xu
+
+    for a in range(1, amount + 1):
+        for c in coins:
+            if a - c >= 0 and dp[a - c] != math.inf:
+                dp[a] = min(dp[a], dp[a - c] + 1)
+
+    return dp[amount] if dp[amount] != math.inf else -1
+
+
+# ============================
+# Test
+# ============================
+test_cases = [
+    ([1, 5, 10], 11, 2),      # 10 + 1 = 2 xu
+    ([1, 3, 4], 6, 2),         # 3 + 3 = 2 xu (greedy sẽ sai: 4+1+1=3 xu)
+    ([2], 3, -1),              # Không thể đổi 3 từ xu 2
+    ([1], 0, 0),               # 0 đồng → 0 xu
+    ([1, 2, 5], 11, 3),        # 5 + 5 + 1 = 3 xu
+]
+
+print("=== Coin Change ===")
+for coins, amount, expected in test_cases:
+    m = coin_change_memo(tuple(coins), amount)  # tuple vì lru_cache cần hashable
+    t = coin_change_tab(coins, amount)
+    assert m == t == expected, f"Sai! coins={coins}, amount={amount}"
+    print(f"coins={coins}, amount={amount} -> {m} xu")
+```
+
+#### Simulation cho `coins = [1, 3, 4]`, `amount = 6`
+
+```
+a:     0    1    2    3    4    5    6
+dp:  [ 0,   1,   2,   1,   1,   2,   2]
+
+a=0: dp[0] = 0 (base case)
+
+a=1: thử xu 1 → dp[1-1] + 1 = dp[0] + 1 = 1
+     thử xu 3 → 1-3 < 0 → bỏ qua
+     thử xu 4 → 1-4 < 0 → bỏ qua
+     → dp[1] = 1
+
+a=2: thử xu 1 → dp[2-1] + 1 = dp[1] + 1 = 2
+     thử xu 3 → 2-3 < 0 → bỏ qua
+     → dp[2] = 2
+
+a=3: thử xu 1 → dp[3-1] + 1 = dp[2] + 1 = 3
+     thử xu 3 → dp[3-3] + 1 = dp[0] + 1 = 1  ← TỐT HƠN!
+     → dp[3] = 1
+
+a=4: thử xu 1 → dp[4-1] + 1 = dp[3] + 1 = 2
+     thử xu 3 → dp[4-3] + 1 = dp[1] + 1 = 2
+     thử xu 4 → dp[4-4] + 1 = dp[0] + 1 = 1  ← TỐT HƠN!
+     → dp[4] = 1
+
+a=5: thử xu 1 → dp[5-1] + 1 = dp[4] + 1 = 2
+     thử xu 3 → dp[5-3] + 1 = dp[2] + 1 = 3
+     thử xu 4 → dp[5-4] + 1 = dp[1] + 1 = 2
+     → dp[5] = 2
+
+a=6: thử xu 1 → dp[6-1] + 1 = dp[5] + 1 = 3
+     thử xu 3 → dp[6-3] + 1 = dp[3] + 1 = 2  ← TỐT HƠN!
+     thử xu 4 → dp[6-4] + 1 = dp[2] + 1 = 3
+     → dp[6] = 2 (dùng 2 xu: 3 + 3)
+```
+
+#### Phân tích độ phức tạp
+
+- **Time**: O(amount x len(coins)) — mỗi ô trong bảng dp thử tất cả các loại xu
+- **Space**: O(amount) — bảng dp 1 chiều

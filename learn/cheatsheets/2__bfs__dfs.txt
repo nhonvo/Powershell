@@ -1,0 +1,289 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/12_Graphs/🕸️index_12_Graphs|12_Graphs]]
+
+## 2. BFS / DFS
+
+### 2.1. BFS (Breadth-First Search) — Duyệt theo chiều rộng
+
+**Ví dụ thực tế:** Bạn đang ở giữa hồ ném một viên đá xuống. Sóng lan tỏa ra đều theo vòng tròn — gần trước, xa sau. BFS cũng vậy: duyệt hết các đỉnh cách 1 bước, rồi cách 2 bước, rồi cách 3 bước...
+
+**Ý tưởng cốt lõi:**
+
+1. Bắt đầu từ đỉnh nguồn, cho vào **queue**
+2. Lấy đỉnh đầu queue ra, duyệt tất cả hàng xóm chưa thăm
+3. Đánh dấu đã thăm, cho vào queue
+4. Lặp lại cho đến khi queue rỗng
+
+CóKhôngCóKhôngBắt đầu: chọn đỉnh nguồnĐưa đỉnh nguồn vào QueueĐánh dấu đỉnh nguồn đã visitedQueue rỗng?Kết thúcLấy đỉnh u ra khỏi QueueXử lý đỉnh uCòn hàng xóm v chưa visited?Đánh dấu v đã visitedĐưa v vào Queue
+
+**Mô phỏng từng bước:**
+
+Cho graph:
+
+```
+0 -- 1 -- 3
+|    |
+2    4
+```
+
+BFS từ đỉnh 0:
+
+| Bước | Queue (trước) | Lấy ra | Thăm hàng xóm  | Queue (sau) | Visited         |
+| :--- | :------------ | :----- | :------------- | :---------- | :-------------- |
+| 0    | [0]           | -      | -              | [0]         | {0}             |
+| 1    | [0]           | 0      | 1, 2           | [1, 2]      | {0, 1, 2}       |
+| 2    | [1, 2]        | 1      | 3, 4           | [2, 3, 4]   | {0, 1, 2, 3, 4} |
+| 3    | [2, 3, 4]     | 2      | (không có mới) | [3, 4]      | {0, 1, 2, 3, 4} |
+| 4    | [3, 4]        | 3      | (không có mới) | [4]         | {0, 1, 2, 3, 4} |
+| 5    | [4]           | 4      | (không có mới) | []          | {0, 1, 2, 3, 4} |
+
+**Thứ tự duyệt: 0 → 1 → 2 → 3 → 4**
+
+```python
+from collections import deque, defaultdict
+
+
+def bfs(graph, start):
+    """
+    BFS — Duyệt đồ thị theo chiều rộng.
+
+    Args:
+        graph: dict, adjacency list {vertex: [neighbors]}
+        start: đỉnh bắt đầu
+
+    Returns:
+        order: thứ tự duyệt
+        distance: dict khoảng cách từ start đến mỗi đỉnh
+        parent: dict cha của mỗi đỉnh (dùng để truy vết đường đi)
+    """
+    visited = set()
+    queue = deque([start])
+    visited.add(start)
+
+    order = []           # Thứ tự duyệt
+    distance = {start: 0}  # Khoảng cách từ start
+    parent = {start: None}  # Đỉnh cha (truy vết path)
+
+    while queue:
+        u = queue.popleft()
+        order.append(u)
+
+        for v in graph[u]:
+            if v not in visited:
+                visited.add(v)
+                queue.append(v)
+                distance[v] = distance[u] + 1
+                parent[v] = u
+
+    return order, distance, parent
+
+
+def bfs_shortest_path(graph, start, end):
+    """Tìm đường đi ngắn nhất (unweighted) bằng BFS."""
+    _, _, parent = bfs(graph, start)
+
+    if end not in parent:
+        return None  # Không có đường đi
+
+    # Truy vết ngược từ end về start
+    path = []
+    current = end
+    while current is not None:
+        path.append(current)
+        current = parent[current]
+
+    path.reverse()
+    return path
+
+
+# === TEST ===
+if __name__ == "__main__":
+    graph = defaultdict(list)
+    edges = [(0, 1), (0, 2), (1, 3), (1, 4), (2, 4), (3, 5), (4, 5)]
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+
+    print("=== BFS từ đỉnh 0 ===")
+    order, distance, parent = bfs(graph, 0)
+    print(f"Thứ tự duyệt: {order}")
+    print(f"Khoảng cách từ 0: {distance}")
+
+    print(f"\n=== Đường đi ngắn nhất 0 -> 5 ===")
+    path = bfs_shortest_path(graph, 0, 5)
+    print(f"Path: {' -> '.join(map(str, path))}")
+    print(f"Độ dài: {len(path) - 1} bước")
+```
+
+**Output:**
+
+```
+=== BFS từ đỉnh 0 ===
+Thứ tự duyệt: [0, 1, 2, 3, 4, 5]
+Khoảng cách từ 0: {0: 0, 1: 1, 2: 1, 3: 2, 4: 2, 5: 3}
+
+=== Đường đi ngắn nhất 0 -> 5 ===
+Path: 0 -> 1 -> 3 -> 5
+Độ dài: 3 bước
+```
+
+**Phân tích độ phức tạp BFS:**
+
+- **Time:** O(V + E) — mỗi đỉnh vào queue đúng 1 lần, mỗi cạnh xét đúng 1 lần
+- **Space:** O(V) — cho visited set và queue
+- **Best case:** O(1) — đỉnh cần tìm chính là đỉnh nguồn
+- **Worst case:** O(V + E) — phải duyệt hết toàn bộ graph
+
+**Chứng minh O(V + E):** Mỗi đỉnh được enqueue và dequeue đúng 1 lần (vì check visited trước khi enqueue) → O(V) cho việc xử lý đỉnh. Khi xử lý đỉnh u, ta duyệt qua tất cả cạnh kề của u. Tổng số cạnh kề của tất cả đỉnh = 2|E| (mỗi cạnh đếm 2 lần) → O(E) cho việc duyệt cạnh. Tổng: O(V + E).
+
+### 2.2. DFS (Depth-First Search) — Duyệt theo chiều sâu
+
+**Ví dụ thực tế:** Bạn đang ở trong mê cung. Chiến lược: cứ đi thẳng cho đến khi gặp ngõ cụt, rồi quay lại và thử ngã rẽ khác. Đó chính là DFS — đi sâu hết mức có thể rồi mới quay lui (backtrack).
+
+**Ý tưởng cốt lõi:**
+
+1. Bắt đầu từ đỉnh nguồn
+2. Đi sâu vào một hàng xóm chưa thăm
+3. Tiếp tục đi sâu cho đến khi không còn đỉnh nào chưa thăm
+4. Backtrack và thử hàng xóm khác
+
+CóKhôngBắt đầu: DFS(u)Đánh dấu u đã visitedXử lý đỉnh uCòn hàng xóm v chưa visited?Gọi đệ quy DFS(v)Quay lui (backtrack)
+
+**Mô phỏng từng bước:**
+
+Cho graph giống trên, DFS từ đỉnh 0:
+
+| Bước | Stack ngầm   | Đỉnh hiện tại | Hành động                              | Visited         |
+| :--- | :----------- | :------------ | :------------------------------------- | :-------------- |
+| 1    | [0]          | 0             | Thăm 0, đi vào hàng xóm 1              | {0}             |
+| 2    | [0, 1]       | 1             | Thăm 1, đi vào hàng xóm 3              | {0, 1}          |
+| 3    | [0, 1, 3]    | 3             | Thăm 3, không hàng xóm mới → backtrack | {0, 1, 3}       |
+| 4    | [0, 1]       | 1             | Thử hàng xóm 4                         | {0, 1, 3}       |
+| 5    | [0, 1, 4]    | 4             | Thăm 4, đi vào 2                       | {0, 1, 3, 4}    |
+| 6    | [0, 1, 4, 2] | 2             | Thăm 2, không mới → backtrack          | {0, 1, 3, 4, 2} |
+| 7    | Unwind       | -             | Backtrack hết → Xong                   | {0, 1, 3, 4, 2} |
+
+**Thứ tự duyệt: 0 → 1 → 3 → 4 → 2**
+
+```python
+from collections import defaultdict
+
+
+def dfs_recursive(graph, start, visited=None):
+    """
+    DFS đệ quy.
+
+    Args:
+        graph: adjacency list
+        start: đỉnh bắt đầu
+        visited: set các đỉnh đã thăm
+
+    Returns:
+        order: thứ tự duyệt
+    """
+    if visited is None:
+        visited = set()
+
+    visited.add(start)
+    order = [start]
+
+    for neighbor in graph[start]:
+        if neighbor not in visited:
+            order.extend(dfs_recursive(graph, neighbor, visited))
+
+    return order
+
+
+def dfs_iterative(graph, start):
+    """
+    DFS dùng stack (không đệ quy) — tránh stack overflow với graph lớn.
+    """
+    visited = set()
+    stack = [start]
+    order = []
+
+    while stack:
+        u = stack.pop()
+        if u in visited:
+            continue
+
+        visited.add(u)
+        order.append(u)
+
+        # Thêm hàng xóm vào stack (đảo ngược để duyệt đúng thứ tự)
+        for v in reversed(graph[u]):
+            if v not in visited:
+                stack.append(v)
+
+    return order
+
+
+def dfs_with_timestamps(graph, vertices):
+    """
+    DFS với discovery time và finish time.
+    Rất quan trọng cho Topological Sort và phát hiện chu trình.
+    """
+    visited = set()
+    discovery = {}  # Thời gian phát hiện
+    finish = {}     # Thời gian hoàn thành
+    parent = {}     # Đỉnh cha
+    time = [0]      # Dùng list để mutable trong nested function
+
+    def dfs_visit(u):
+        time[0] += 1
+        discovery[u] = time[0]
+        visited.add(u)
+
+        for v in graph[u]:
+            if v not in visited:
+                parent[v] = u
+                dfs_visit(v)
+
+        time[0] += 1
+        finish[u] = time[0]
+
+    for v in vertices:
+        if v not in visited:
+            parent[v] = None
+            dfs_visit(v)
+
+    return discovery, finish, parent
+
+
+# === TEST ===
+if __name__ == "__main__":
+    graph = defaultdict(list)
+    edges = [(0, 1), (0, 2), (1, 3), (1, 4), (2, 4), (3, 5), (4, 5)]
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+
+    print("=== DFS đệ quy từ đỉnh 0 ===")
+    print(f"Thứ tự: {dfs_recursive(graph, 0)}")
+
+    print("\n=== DFS iterative từ đỉnh 0 ===")
+    print(f"Thứ tự: {dfs_iterative(graph, 0)}")
+
+    print("\n=== DFS với timestamps ===")
+    disc, fin, par = dfs_with_timestamps(graph, range(6))
+    print(f"Discovery: {disc}")
+    print(f"Finish:    {fin}")
+```
+
+### 2.3. So sánh BFS vs DFS
+
+| Tiêu chí                 | BFS                              | DFS                            |
+| :----------------------- | :------------------------------- | :----------------------------- |
+| **Cấu trúc dữ liệu**     | Queue (FIFO)                     | Stack (LIFO) / Đệ quy          |
+| **Cách duyệt**           | Theo lớp (level by level)        | Đi sâu rồi backtrack           |
+| **Tìm đường ngắn nhất**  | Có (unweighted)                  | Không đảm bảo                  |
+| **Bộ nhớ**               | O(V) — có thể lớn nếu graph rộng | O(h) — h là chiều sâu          |
+| **Phát hiện chu trình**  | Được                             | Được (thường dùng hơn)         |
+| **Topological Sort**     | Kahn's Algorithm                 | DFS-based                      |
+| **Connected Components** | Được                             | Được                           |
+| **Dùng khi nào**         | Đường ngắn nhất, level-order     | Backtracking, cycle, topo sort |
+
+**Cải tiến:**
+
+- **Bidirectional BFS:** Chạy BFS đồng thời từ start và end, gặp nhau ở giữa → giảm từ O(b^d) xuống O(b^(d/2))
+- **Iterative Deepening DFS (IDDFS):** Kết hợp ưu điểm của cả hai — DFS với giới hạn độ sâu tăng dần
+- **DFS với memo:** Tránh duyệt lại subproblem đã giải

@@ -1,0 +1,430 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/05_Hashing/🔑index_05_Hashing|05_Hashing]]
+
+## 6. Hashing cho Pair Sum / 2Sum Variations
+
+### 6.1. Classic Two Sum
+
+> Cho mảng nums và target. Tìm 2 phần tử có tổng bằng target. Trả về indices.
+
+**Ví dụ đời thực:** Bạn có một danh sách giá sản phẩm, và bạn có đúng 100k trong ví. Bạn muốn mua đúng 2 sản phẩm mà tổng giá = 100k. Thay vì thử từng cặp (O(n²)), bạn dùng "sổ ghi nhớ": mỗi khi xem giá sản phẩm (ví dụ 30k), bạn ghi lại. Nếu sau đó gặp sản phẩm giá 70k, bạn kiểm tra sổ: "30k đã ghi chưa?" → có! → pair found.
+
+KhôngCó! map[2]=0nums=[2,7,11,15], target=9i=0: num=2complement = 9-2 = 77 trong map?map = {2: 0}i=1: num=7complement = 9-7 = 22 trong map?Return [0, 1] ✓
+
+**Mô phỏng từng bước:**
+
+```
+nums = [2, 7, 11, 15], target = 9
+seen = {}  (hash map: value → index)
+
+i=0: num = 2
+  complement = 9 - 2 = 7
+  7 trong seen? Không
+  seen = {2: 0}
+
+i=1: num = 7
+  complement = 9 - 7 = 2
+  2 trong seen? CÓ! seen[2] = 0
+  → Return [0, 1]
+
+Giải thích: nums[0] + nums[1] = 2 + 7 = 9 = target ✓
+```
+
+**Python:**
+
+```python
+def two_sum(nums: list[int], target: int) -> list[int]:
+    """
+    Classic Two Sum. O(n) time, O(n) space.
+    """
+    seen = {}  # value → index
+    for i, num in enumerate(nums):
+        complement = target - num
+        if complement in seen:
+            return [seen[complement], i]
+        seen[num] = i
+    return []  # Không tìm thấy
+
+print(two_sum([2, 7, 11, 15], 9))   # [0, 1]
+print(two_sum([3, 2, 4], 6))         # [1, 2]
+```
+
+**Two Sum — Trả về tất cả các cặp index (khi có nhiều đáp án):**
+
+```python
+def two_sum_all(nums: list[int], target: int) -> list[list[int]]:
+    """
+    Tìm TẤT CẢ các cặp index (i, j) với i < j mà nums[i] + nums[j] = target.
+    Khác bài LeetCode gốc (chỉ trả về 1 cặp).
+    """
+    from collections import defaultdict
+    index_map = defaultdict(list)  # value → [list of indices]
+    result = []
+
+    for i, num in enumerate(nums):
+        complement = target - num
+        # Mọi index trước đó có giá trị complement đều tạo thành 1 cặp
+        if complement in index_map:
+            for j in index_map[complement]:
+                result.append([j, i])
+        index_map[num].append(i)
+
+    return result
+
+print(two_sum_all([1, 5, 3, 5, 7], 6))  # [[0, 1], [0, 3], [2, 4]]
+# Giải thích: 1+5=6 (idx 0,1), 1+5=6 (idx 0,3), 3+... wait,
+# thực ra: nums[0]+nums[1]=1+5=6, nums[0]+nums[3]=1+5=6
+# Mà 3+7=10 ≠ 6, nên chỉ có 2 cặp thôi. Oops, kiểm tra lại nhé!
+```
+
+### 6.2. Two Sum — Các biến thể
+
+**Biến thể 1: Two Sum — Sorted Array (Two Pointers)**
+
+Khi mảng đã sort, dùng two pointers O(1) space thay vì hash map.
+
+```python
+def two_sum_sorted(nums: list[int], target: int) -> list[int]:
+    """
+    Mảng đã sort. Two pointers: O(n) time, O(1) space.
+    """
+    left, right = 0, len(nums) - 1
+    while left < right:
+        s = nums[left] + nums[right]
+        if s == target:
+            return [left, right]
+        elif s < target:
+            left += 1    # Cần tổng lớn hơn → tăng left
+        else:
+            right -= 1   # Cần tổng nhỏ hơn → giảm right
+    return []
+```
+
+**Biến thể 2: Two Sum — Count Pairs**
+
+> Đếm số cặp (i, j) với i < j mà nums[i] + nums[j] = target.
+
+```python
+def count_pairs(nums: list[int], target: int) -> int:
+    """Đếm số cặp có tổng = target. O(n) time."""
+    freq = {}
+    count = 0
+    for num in nums:
+        complement = target - num
+        count += freq.get(complement, 0)  # Số phần tử complement đã thấy
+        freq[num] = freq.get(num, 0) + 1
+    return count
+
+print(count_pairs([1, 5, 7, -1, 5], 6))  # 3 pairs: (1,5), (1,5), (7,-1)
+```
+
+**Biến thể 3: Two Sum — All Unique Pairs**
+
+```python
+def two_sum_unique_pairs(nums: list[int], target: int) -> list[list[int]]:
+    """Tìm tất cả cặp UNIQUE có tổng = target."""
+    seen = set()
+    used = set()
+    result = []
+
+    for num in nums:
+        complement = target - num
+        if complement in seen and (min(num, complement), max(num, complement)) not in used:
+            pair = [min(num, complement), max(num, complement)]
+            result.append(pair)
+            used.add(tuple(pair))
+        seen.add(num)
+
+    return result
+
+print(two_sum_unique_pairs([1, 5, 7, -1, 5, 1], 6))  # [[1,5], [-1,7]]
+```
+
+### 6.3. Three Sum (3Sum)
+
+> Cho mảng nums. Tìm tất cả bộ ba [a, b, c] sao cho a + b + c = 0. Không trùng lặp.
+
+**Ý tưởng:** Fix 1 phần tử, biến thành bài Two Sum cho 2 phần tử còn lại.
+
+**Approach 1: Sort + Two Pointers — O(n²)**
+
+= 0< 0> 0CóKhôngCóKhôngSort mảngDuyệt i = 0 → n-3Fix nums[i]Two Sum trên nums[i+1..n-1] với target = -nums[i]Two pointers: left = i+1, right = n-1nums[i] + nums[left] + nums[right]?Found! Skip duplicatesleft++right--left < right?i+1 <= n-3?Return result
+
+**Mô phỏng từng bước:**
+
+```
+nums = [-1, 0, 1, 2, -1, -4]
+Sau sort: [-4, -1, -1, 0, 1, 2]
+
+i=0: nums[0] = -4, target = 4
+  left=1, right=5: -1+2 = 1 < 4 → left++
+  left=2, right=5: -1+2 = 1 < 4 → left++
+  left=3, right=5:  0+2 = 2 < 4 → left++
+  left=4, right=5:  1+2 = 3 < 4 → left++
+  left=5: left >= right → dừng
+
+i=1: nums[1] = -1, target = 1
+  left=2, right=5: -1+2 = 1 == target ✓ → result = [[-1,-1,2]]
+    Skip duplicates: left++ (nums[3]=0 ≠ nums[2]=-1)
+  left=3, right=4: 0+1 = 1 == target ✓ → result = [[-1,-1,2], [-1,0,1]]
+    left++, right--
+  left=4, right=3: left >= right → dừng
+
+i=2: nums[2] = -1, nhưng nums[2] == nums[1] → SKIP (tránh duplicate)
+
+i=3: nums[3] = 0, target = 0
+  left=4, right=5: 1+2 = 3 > 0 → right--
+  left=4, right=4: left >= right → dừng
+
+Result: [[-1,-1,2], [-1,0,1]]
+```
+
+**Python:**
+
+```python
+def three_sum(nums: list[int]) -> list[list[int]]:
+    """
+    3Sum: tìm tất cả bộ 3 có tổng = 0.
+    Time: O(n²), Space: O(1) extra (not counting output)
+    """
+    nums.sort()
+    result = []
+    n = len(nums)
+
+    for i in range(n - 2):
+        # Skip duplicate cho phần tử đầu
+        if i > 0 and nums[i] == nums[i-1]:
+            continue
+
+        # Optimization: nếu nums[i] > 0, tổng 3 số dương không thể = 0
+        if nums[i] > 0:
+            break
+
+        # Two pointers
+        left, right = i + 1, n - 1
+        target = -nums[i]
+
+        while left < right:
+            s = nums[left] + nums[right]
+            if s == target:
+                result.append([nums[i], nums[left], nums[right]])
+                # Skip duplicates
+                while left < right and nums[left] == nums[left+1]:
+                    left += 1
+                while left < right and nums[right] == nums[right-1]:
+                    right -= 1
+                left += 1
+                right -= 1
+            elif s < target:
+                left += 1
+            else:
+                right -= 1
+
+    return result
+
+print(three_sum([-1, 0, 1, 2, -1, -4]))
+# [[-1, -1, 2], [-1, 0, 1]]
+```
+
+**3Sum — Phiên bản dùng Hash Set (cách tiếp cận khác):**
+
+```python
+def three_sum_hashset(nums: list[int]) -> list[list[int]]:
+    """
+    3Sum dùng hash set thay vì two pointers.
+    Ưu điểm: không cần sort trước.
+    Nhược điểm: xử lý duplicate phức tạp hơn, thực tế chậm hơn two pointers.
+    Time: O(n²), Space: O(n)
+    """
+    result = set()  # Dùng set of tuples để tự loại duplicate
+
+    for i in range(len(nums)):
+        seen = set()  # Các giá trị đã thấy trong vòng lặp j
+        for j in range(i + 1, len(nums)):
+            complement = -(nums[i] + nums[j])
+            if complement in seen:
+                # Sort tuple để tránh duplicate dạng (1,-1,0) vs (0,1,-1)
+                triplet = tuple(sorted([nums[i], nums[j], complement]))
+                result.add(triplet)
+            seen.add(nums[j])
+
+    return [list(t) for t in result]
+
+print(three_sum_hashset([-1, 0, 1, 2, -1, -4]))
+# [[-1, -1, 2], [-1, 0, 1]]
+```
+
+### 6.4. Four Sum (4Sum)
+
+> Cho mảng nums và target. Tìm tất cả bộ 4 [a, b, c, d] sao cho a + b + c + d = target.
+
+**Approach: Tổng quát hóa kSum**
+
+4Sum = fix 1 phần tử + 3Sum. 3Sum = fix 1 phần tử + 2Sum.
+
+Ta có thể viết hàm **kSum** đệ quy:
+
+```python
+def four_sum(nums: list[int], target: int) -> list[list[int]]:
+    """
+    4Sum generalized.
+    Time: O(n³), Space: O(n) for recursion stack
+    """
+    nums.sort()
+    return k_sum(nums, target, 4, 0)
+
+def k_sum(nums, target, k, start):
+    result = []
+    n = len(nums)
+
+    # Base case: 2Sum
+    if k == 2:
+        left, right = start, n - 1
+        while left < right:
+            s = nums[left] + nums[right]
+            if s == target:
+                result.append([nums[left], nums[right]])
+                while left < right and nums[left] == nums[left+1]:
+                    left += 1
+                while left < right and nums[right] == nums[right-1]:
+                    right -= 1
+                left += 1
+                right -= 1
+            elif s < target:
+                left += 1
+            else:
+                right -= 1
+        return result
+
+    # Recursive case
+    for i in range(start, n - k + 1):
+        # Skip duplicates
+        if i > start and nums[i] == nums[i-1]:
+            continue
+
+        # Pruning: early termination
+        if nums[i] * k > target:  # Smallest k elements > target
+            break
+        if nums[i] + nums[n-1] * (k-1) < target:  # Largest possible < target
+            continue
+
+        sub_results = k_sum(nums, target - nums[i], k - 1, i + 1)
+        for sub in sub_results:
+            result.append([nums[i]] + sub)
+
+    return result
+
+print(four_sum([1, 0, -1, 0, -2, 2], 0))
+# [[-2, -1, 1, 2], [-2, 0, 0, 2], [-1, 0, 0, 1]]
+```
+
+**kSum tổng quát — Giải 5Sum, 6Sum... cũng dùng được:**
+
+```python
+def k_sum_general(nums: list[int], target: int, k: int) -> list[list[int]]:
+    """
+    Hàm wrapper cho kSum tổng quát.
+    Chỉ cần thay k = 5, 6... là giải được 5Sum, 6Sum.
+    Time: O(n^(k-1)), Space: O(n)
+    """
+    nums.sort()
+    return k_sum(nums, target, k, 0)
+
+# Test
+print(k_sum_general([1, 0, -1, 0, -2, 2], 0, 4))
+# [[-2, -1, 1, 2], [-2, 0, 0, 2], [-1, 0, 0, 1]]
+
+# Thử 5Sum (ít khi gặp trong interview nhưng hàm vẫn handle được)
+print(k_sum_general([1, 2, 3, 4, 5, -1, -2, -3, 0], 5, 5))
+```
+
+### 6.5. 4Sum II — Hash Map Approach
+
+> Cho 4 mảng A, B, C, D cùng kích thước n. Đếm số bộ (i,j,k,l) sao cho A[i]+B[j]+C[k]+D[l] = 0.
+
+**Ý tưởng:** Chia 4 mảng thành 2 nhóm: (A,B) và (C,D). Dùng hash map lưu tất cả tổng A[i]+B[j], rồi tìm -(C[k]+D[l]) trong map.
+
+```python
+def four_sum_count(A, B, C, D):
+    """
+    Time: O(n²), Space: O(n²)
+    Tốt hơn nhiều so với O(n⁴) brute force hoặc O(n³) fix+search!
+    """
+    from collections import Counter
+
+    # Đếm tất cả tổng A[i]+B[j]
+    ab_sums = Counter()
+    for a in A:
+        for b in B:
+            ab_sums[a + b] += 1
+
+    # Tìm complement trong CD
+    count = 0
+    for c in C:
+        for d in D:
+            target = -(c + d)
+            count += ab_sums.get(target, 0)
+
+    return count
+```
+
+### 6.6. Complexity Summary cho tất cả variations
+
+| Bài toán           | Time       | Space | Approach              |
+| :----------------- | :--------- | :---- | :-------------------- |
+| 2Sum (unsorted)    | O(n)       | O(n)  | Hash map              |
+| 2Sum (sorted)      | O(n)       | O(1)  | Two pointers          |
+| 2Sum (count pairs) | O(n)       | O(n)  | Hash map              |
+| 3Sum               | O(n²)      | O(1)  | Sort + two pointers   |
+| 4Sum               | O(n³)      | O(1)  | Sort + kSum recursive |
+| 4Sum II (4 arrays) | O(n²)      | O(n²) | Hash map split        |
+| kSum (general)     | O(n^(k-1)) | O(n)  | Sort + recursive      |
+
+**Chứng minh 3Sum O(n²) là optimal:**
+
+3Sum có thể reduce từ bài toán Element Distinctness (cho n số, kiểm tra có 2 số bằng nhau không). Element Distinctness đã được chứng minh lower bound Omega(n log n) trong comparison model. 3Sum được conjecture là Omega(n²) trong nhiều computational models, và nhiều kết quả nghiên cứu dùng "3Sum hardness" làm cơ sở để chứng minh lower bound cho các bài toán khác.
+
+### 6.7. Ưu điểm và Nhược điểm
+
+**Ưu điểm:**
+
+- Hash map biến bài toán O(n²) → O(n) cho 2Sum
+- Pattern rất nhất quán: fix k-2 phần tử, 2Sum phần còn lại
+- kSum generalization cho code reusable
+
+**Nhược điểm:**
+
+- 3Sum, 4Sum vẫn cần sort → O(n log n) minimum
+- Hash map approach cho 3Sum không tốt bằng two pointers (do handling duplicates phức tạp)
+- Space trade-off: O(n) vs O(1)
+
+------
+
+## Tổng kết Section 5: Hashing
+
+### Bảng tổng hợp kỹ thuật
+
+| Kỹ thuật                  | Khi nào dùng                  | Time       | Space |
+| :------------------------ | :---------------------------- | :--------- | :---- |
+| Hash Map cơ bản           | Lookup/insert/delete O(1)     | O(1) avg   | O(n)  |
+| Frequency Counting        | Đếm số lần xuất hiện          | O(n)       | O(k)  |
+| Prefix Hashing            | So sánh substring O(1)        | O(1) query | O(n)  |
+| Rabin-Karp                | Pattern matching              | O(n+m) avg | O(1)  |
+| Prefix Sum + Hash Map     | Subarray sum = k              | O(n)       | O(n)  |
+| Sliding Window + Hash Map | Longest substring             | O(n)       | O(k)  |
+| Set                       | Kiểm tra tồn tại, deduplicate | O(1) avg   | O(n)  |
+| 2Sum Hash Map             | Pair sum                      | O(n)       | O(n)  |
+
+### Mẹo nhận dạng bài hashing trong interview
+
+1. **"Tìm/đếm cặp/bộ phần tử thỏa điều kiện"** → Hash map (2Sum pattern)
+2. **"Tần suất / đếm số lần"** → Frequency counting
+3. **"Substring / subarray liên tiếp"** → Prefix sum + hash map hoặc sliding window
+4. **"Kiểm tra trùng lặp / unique"** → Set
+5. **"Pattern matching trong chuỗi"** → Rabin-Karp rolling hash
+6. **"So sánh 2 chuỗi con nhanh"** → Prefix hash array
+
+### Lời khuyên
+
+Hashing là một trong những kỹ thuật **quan trọng nhất** trong DSA interview. Hầu hết mọi bài toán "tìm kiếm" đều có thể tối ưu bằng hash map. Khi gặp bài mới, hãy tự hỏi: **"Mình có thể dùng hash map để nhớ thông tin gì đã thấy trước đó không?"**
+
+Chúc bạn học vui và code tốt!

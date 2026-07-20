@@ -1,0 +1,91 @@
+🔙 **Back to Parent**: [[technical_skills/05_Docker_Hero/📂index_05_Docker_Hero|05_Docker_Hero]]
+
+# 🛠️ 4. Docker Compose (The Orchard of Services)
+
+Một dự án Backend hoàn chỉnh gồm ít nhất 3 thành phần: **Web API**, **PostgreSQL** và **Redis**. Thay vì gõ 3 lệnh `docker run` loằng ngoằng, bạn chỉ cần 1 file `docker-compose.yaml` và 1 lệnh duy nhất.
+
+---
+
+### 🏛️ 4.1 Khái niệm Composition (Tổ hợp)
+
+Docker Compose là công cụ để định nghĩa và chạy nhiều container ứng dụng Docker. Nó sử dụng file YAML để cấu hình các dịch vụ của ứng dụng (Services).
+
+#### **Cấu trúc file YAML:**
+1.  **Version**: Phiên bản docker-compose.
+2.  **Services**: Danh sách các container cần chạy (VD: `web`, `db`, `cache`).
+3.  **Networks**: Các mạng dùng chung giữa các services.
+4.  **Volumes**: Các phân vùng lưu trữ dùng chung.
+
+---
+
+### 🧠 4.2 Viết file Compose chuẩn Production
+
+```yaml
+version: '3.8'
+services:
+  api:
+    build: .
+    ports: ["8080:80"]
+    depends_on: ["postgres"]
+    environment:
+      - DATABASE_URL=postgres://user:pass@postgres:5432/mydb
+  
+  postgres:
+    image: postgres:15
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=pass
+
+volumes: # Định nghĩa các volume dùng chung
+  pg_data:
+```
+
+> [!IMPORTANT]
+> **`depends_on`**: Đảm bảo service `postgres` phải được tạo TRƯỚC service `api`. Tuy nhiên, nó không đảm bảo postgres đã sẵn sàng nhận kết nối (Ready). Bạn cần thêm code `retry` bên trong ứng dụng.
+
+---
+
+### 🚀 4.3 Quản lý Service bằng Compose
+
+- **`docker-compose up -d`**: Khởi động toàn bộ các service (chạy ngầm).
+- **`docker-compose down`**: Dừng và XOÁ sạch các container và network. (Dữ liệu trong Volume vẫn còn).
+- **`docker-compose logs -f [service_name]`**: Xem log theo lồng của 1 service cụ thể.
+
+---
+
+### ⚡ 4.4 Override Config (Dev vs Prod)
+
+Docker Compose cho phép bạn ghi đè cấu hình.
+- `docker-compose.yml`: Cấu hình chung.
+- `docker-compose.override.yml`: Cấu hình riêng cho môi trường Dev (VD: Mount code từ ngoài vào).
+
+---
+
+### 📝 4.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao Docker Compose lại giúp việc làm việc nhóm (Teamwork) dễ dàng hơn?"
+<details><summary>Đáp án</summary>
+Bạn không cần phải viết file hướng dẫn `Để chạy được app hãy cài Postgres 15 rồi cấu hình cổng 5432...`. Bạn chỉ cần đẩy file `docker-compose.yaml` lên Git. Đồng nghiệp chỉ cần gõ đúng 1 lệnh `docker-compose up` là có ngay môi trường giống hệt ý bạn 100%.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết cấu hình `networks` trong Docker Compose để `web` và `db` nằm chung 1 mạng tên là `my-backend`.
+<details><summary>Solution</summary>
+```yaml
+services:
+  web:
+    networks: [backend]
+  db:
+    networks: [backend]
+networks:
+  backend:
+    driver: bridge
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Mastering Docker Compose: From Zero to Microservices Mastery](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-docker-compose-guide.md)
+- [Docker Compose vs Kubernetes: When to Choose What?](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-compose-vs-k8s.md)
+- [Managing Environment Variables Securely with Docker Compose](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-docker-env-vars.md)

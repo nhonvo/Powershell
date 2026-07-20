@@ -1,0 +1,74 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/06_Search_Engine/📂index_06_Search_Engine|06_Search_Engine]]
+
+# 🔍 1. Search Engine vs Database (Deep Dive)
+
+Trong phát triển Backend, khi bạn muốn tìm kiếm một chuỗi văn bản (VD: "Lập trình C#") trong hàng triệu bản ghi, việc dùng `SELECT * FROM table WHERE column LIKE '%C#%'` là một "thảm họa" hiệu năng. Đó là lý do chúng ta cần **Search Engine** (Elasticsearch, Solr, Meilisearch).
+
+---
+
+### 🏛️ 1.1 Tại sao Database (RDBMS) lại chậm cho việc tìm kiếm văn bản?
+
+Database quan hệ (PostgreSQL, MySQL) được thiết kế cho việc lưu trữ dữ liệu có cấu trúc và truy vấn theo Index (B-Tree).
+
+- **Hạn chế của `LIKE '%text%'`**:
+    - Nó không thể dùng Index. Database phải duyệt từng ký tự của TOÀN BỘ các hàng (Full Table Scan). Độ phức tạp là $O(N)$.
+    - Không hiểu về ngôn ngữ: Tìm "đá bóng" sẽ không ra kết quả "đá banh" hay "đá cầu".
+
+---
+
+### 🧠 1.2 Bí mật của Search Engine: Inverted Index (Chỉ mục đảo)
+
+Search Engine không lưu dữ liệu theo "Hàng" (Row). Nó lưu theo "Từ khóa" (Token).
+
+**Ví dụ**:
+- Doc 1: "Học lập trình C#"
+- Doc 2: "Học lập trình Java"
+
+**Inverted Index sẽ trông như sau:**
+- **Học**: Doc 1, Doc 2
+- **lập trình**: Doc 1, Doc 2
+- **C#**: Doc 1
+- **Java**: Doc 2
+
+> [!TIP]
+> Khi bạn tìm từ "Java", Search Engine chỉ cần nhìn vào mục "Java" và trả về Doc 2 ngay lập tức ($O(1)$). Đây là lý do tại sao nó cực nhanh.
+
+---
+
+### 🚀 1.3 So sánh trực tiếp (Feature Matrix)
+
+| Đặc điểm | Relational DB (SQL) | Search Engine (Elasticsearch) |
+| :--- | :--- | :--- |
+| **Logic tìm kiếm** | Khớp chính xác (Exact match) | Khớp gần đúng (Fuzzy match), Sắp xếp theo độ liên quan (Relevance Scoring) |
+| **Index** | B-Tree (Tốt cho số, ngày tháng) | Inverted Index (Tốt cho văn bản) |
+| **Mục đích** | Lưu trữ nguồn sự thật (Source of Truth) | Tìm kiếm và Phân tích (Search & Analytics) |
+| **Dữ liệu** | Row-based | Document-based (JSON) |
+
+---
+
+### ⚡ 1.4 Relevance Scoring (Tính điểm liên quan)
+
+Search Engine không chỉ trả về đúng/sai. Nó tính toán xem kết quả nào "giống" nhất với từ khóa bạn nhập dựa trên các thuật toán như **TF-IDF** hoặc **BM25**.
+- **TF (Term Frequency)**: Từ khóa xuất hiện bao nhiêu lần trong văn bản?
+- **IDF (Inverse Document Frequency)**: Từ khóa này có phải là từ phổ biến (như "là", "và") hay từ hiếm? (Từ hiếm có điểm cao hơn).
+
+---
+
+### 📝 1.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Hệ thống Search Engine có thể thay thế hoàn toàn Database (như PostgreSQL) được không?"
+<details><summary>Đáp án</summary>
+Không! Search Engine tuyệt vời cho tìm kiếm nhưng không mạnh về Tính nhất quán (ACID), Ràng buộc dữ liệu (Constraints) và Transaction. Cách làm chuẩn nhất là lưu "Dữ liệu gốc" trong Database và "Dữ liệu để tìm kiếm" trong Search Engine (Cơ chế Sync).
+</details>
+
+**Bài 2**: [Kỹ thuật] Giải thích cơ chế **Inverted Index** bằng một ví dụ đời thực khác (ngoài ví dụ sách vở).
+<details><summary>Gợi ý</summary>
+Giống như mục lục ở cuối một quyển sách kỹ thuật: Bạn tìm từ khóa "Pointer", nó chỉ ra các trang 12, 45, 89 chứa từ đó.
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [How Inverted Indexing Revolutionized Speed of Search](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-inverted-indexing.md)
+- [TF-IDF vs BM25: Which one is better for Ranking?](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-ranking-algorithms.md)
+- [Syncing PostgreSQL with Elasticsearch - The Real Challenges](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-syncing-db-to-search.md)

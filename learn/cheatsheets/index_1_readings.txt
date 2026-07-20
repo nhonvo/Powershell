@@ -1,0 +1,13 @@
+# 1.Readings
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/10. General programming/index_10. General programming|10. General programming]]
+
+## 📁 Categories
+- [[dsa/1.Interviewcake.com/10. General programming/1.Readings/1. Short Circuit Evaluation/index_1. Short Circuit Evaluation|1. Short Circuit Evaluation]]
+- [[dsa/1.Interviewcake.com/10. General programming/1.Readings/2. Garbage Collection/index_2. Garbage Collection|2. Garbage Collection]]
+- [[dsa/1.Interviewcake.com/10. General programming/1.Readings/3. Closures/index_3. Closures|3. Closures]]
+- [[dsa/1.Interviewcake.com/10. General programming/1.Readings/4. Mutable vs Immutable Objects/index_4. Mutable vs Immutable Objects|4. Mutable vs Immutable Objects]]
+
+## 📄 Notes
+- [[1.readings|1.Readings]]
+

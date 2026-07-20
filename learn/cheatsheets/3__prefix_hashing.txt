@@ -1,0 +1,300 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/05_Hashing/🔑index_05_Hashing|05_Hashing]]
+
+## 3. Prefix Hashing
+
+### 3.1. Khái niệm
+
+**Prefix hashing** (hay **rolling hash**) là kỹ thuật tính hash cho mọi substring của một chuỗi trong O(1) mỗi query, sau O(n) preprocessing.
+
+**Ví dụ đời thực:** Tưởng tượng bạn có một chuỗi DNA dài 1 triệu ký tự, cần tìm xem một đoạn DNA ngắn (pattern) có xuất hiện ở đâu không. So sánh từng vị trí bằng brute force mất O(n*m). Nhưng nếu bạn đã "tóm tắt" mỗi đoạn con thành một con số (hash), bạn chỉ cần so sánh số thay vì so sánh từng ký tự.
+
+### 3.2. Rabin-Karp Algorithm
+
+**Ý tưởng:** Tính hash của pattern, rồi "lăn" (roll) hash qua từng vị trí trong text. Nếu hash trùng → so sánh ký tự để xác nhận (tránh false positive do collision).
+
+**Rolling hash formula:**
+
+Xem chuỗi như số trong hệ cơ số `p`:
+
+```
+hash("abc") = a*p² + b*p¹ + c*p⁰  (mod m)
+```
+
+Khi cửa sổ trượt sang phải (bỏ ký tự trái, thêm ký tự phải):
+
+```
+hash_new = (hash_old - s[i] * p^(len-1)) * p + s[i+len]  (mod m)
+```
+
+Rolling Hash WindowBỏ 'a', thêm 'd'Bỏ 'b', thêm 'e'text: a b c d e fWindow 1: [a b c] → hash1Window 2: [b c d] → hash2Window 3: [c d e] → hash3
+
+**Mô phỏng từng bước:**
+
+```
+Text:    "abcabcabc"
+Pattern: "cab"
+p = 31, m = 10^9 + 7
+
+Step 1: Tính hash(pattern)
+  hash("cab") = 99*31² + 97*31¹ + 98*31⁰
+              = 99*961 + 97*31 + 98
+              = 95139 + 3007 + 98
+              = 98244
+
+Step 2: Tính hash window đầu tiên
+  hash("abc") = 97*961 + 98*31 + 99 = 93217 + 3038 + 99 = 96354
+  96354 ≠ 98244 → không match
+
+Step 3: Roll window sang phải
+  hash("bca") = (96354 - 97*961) * 31 + 97
+              = (96354 - 93217) * 31 + 97
+              = 3137 * 31 + 97
+              = 97247 + 97
+              = 97344
+  97344 ≠ 98244 → không match
+
+Step 4: Roll tiếp
+  hash("cab") = (97344 - 98*961) * 31 + 98
+              = (97344 - 94178) * 31 + 98
+              = 3166 * 31 + 98
+              = 98146 + 98
+              = 98244
+  98244 == 98244 → hash match!
+  → So sánh ký tự: "cab" == "cab" ✓ Found at index 2!
+```
+
+**Python — Rabin-Karp:**
+
+```python
+def rabin_karp(text: str, pattern: str) -> list[int]:
+    """
+    Tìm tất cả vị trí pattern xuất hiện trong text.
+    Returns: list of starting indices.
+    """
+    n, m = len(text), len(pattern)
+    if m > n:
+        return []
+
+    MOD = 10**9 + 7
+    BASE = 31
+
+    # Tính BASE^(m-1) mod MOD (dùng để bỏ ký tự trái)
+    power = pow(BASE, m - 1, MOD)
+
+    # Tính hash cho pattern và window đầu tiên
+    pattern_hash = 0
+    window_hash = 0
+    for i in range(m):
+        pattern_hash = (pattern_hash * BASE + ord(pattern[i])) % MOD
+        window_hash = (window_hash * BASE + ord(text[i])) % MOD
+
+    result = []
+
+    for i in range(n - m + 1):
+        if i > 0:
+            # Roll hash: bỏ text[i-1], thêm text[i+m-1]
+            window_hash = (window_hash - ord(text[i-1]) * power) % MOD
+            window_hash = (window_hash * BASE + ord(text[i + m - 1])) % MOD
+            window_hash = (window_hash + MOD) % MOD  # Đảm bảo không âm
+
+        # So sánh hash
+        if window_hash == pattern_hash:
+            # Verify bằng cách so sánh ký tự (tránh false positive)
+            if text[i:i+m] == pattern:
+                result.append(i)
+
+    return result
+
+# Test
+text = "abcabcabc"
+pattern = "cab"
+print(rabin_karp(text, pattern))  # [2, 5]
+```
+
+**Rabin-Karp — Tìm nhiều pattern cùng lúc (mở rộng):**
+
+```python
+def rabin_karp_multi(text: str, patterns: list[str]) -> dict[str, list[int]]:
+    """
+    Tìm nhiều pattern trong text cùng lúc.
+    Hữu ích khi cần search nhiều từ khóa (ví dụ: antivirus, spam filter).
+    Returns: dict {pattern: [list of positions]}
+    """
+    MOD = 10**9 + 7
+    BASE = 31
+    result = {p: [] for p in patterns}
+
+    # Nhóm patterns theo độ dài (vì rolling hash chỉ so được cùng length)
+    from collections import defaultdict
+    by_length = defaultdict(list)
+    for p in patterns:
+        by_length[len(p)].append(p)
+
+    for m, pats in by_length.items():
+        if m > len(text):
+            continue
+
+        # Tính hash cho tất cả pattern cùng độ dài
+        pat_hashes = {}
+        for p in pats:
+            h = 0
+            for c in p:
+                h = (h * BASE + ord(c)) % MOD
+            pat_hashes[h] = pat_hashes.get(h, []) + [p]
+
+        # Rolling hash trên text
+        power = pow(BASE, m - 1, MOD)
+        win_hash = 0
+        for i in range(m):
+            win_hash = (win_hash * BASE + ord(text[i])) % MOD
+
+        for i in range(len(text) - m + 1):
+            if i > 0:
+                win_hash = (win_hash - ord(text[i-1]) * power) % MOD
+                win_hash = (win_hash * BASE + ord(text[i + m - 1])) % MOD
+                win_hash = (win_hash + MOD) % MOD
+
+            if win_hash in pat_hashes:
+                for p in pat_hashes[win_hash]:
+                    if text[i:i+m] == p:  # Verify tránh false positive
+                        result[p].append(i)
+
+    return result
+
+# Test
+text = "abcabcabc"
+print(rabin_karp_multi(text, ["abc", "cab", "bca"]))
+# {'abc': [0, 3, 6], 'cab': [2, 5], 'bca': [1, 4]}
+```
+
+### 3.3. Prefix Hash Array — Tính hash bất kỳ substring trong O(1)
+
+Thay vì rolling hash (chỉ cho window liên tiếp), ta có thể xây **prefix hash array** để query hash của BẤT KỲ substring `s[l..r]` trong O(1).
+
+**Công thức:**
+
+```
+prefix_hash[i] = s[0]*p^(i-1) + s[1]*p^(i-2) + ... + s[i-1]*p^0
+
+hash(s[l..r]) = prefix_hash[r+1] - prefix_hash[l] * p^(r-l+1)  (mod m)
+```
+
+**Python:**
+
+```python
+class PrefixHash:
+    """
+    Cho phép query hash của bất kỳ substring s[l..r] trong O(1).
+    Preprocessing: O(n)
+    """
+    def __init__(self, s: str, base: int = 31, mod: int = 10**9 + 7):
+        self.mod = mod
+        self.base = base
+        n = len(s)
+
+        # prefix_hash[i] = hash of s[0..i-1]
+        self.h = [0] * (n + 1)
+        # power[i] = base^i mod mod
+        self.pw = [1] * (n + 1)
+
+        for i in range(n):
+            self.h[i+1] = (self.h[i] * base + ord(s[i])) % mod
+            self.pw[i+1] = (self.pw[i] * base) % mod
+
+    def query(self, l: int, r: int) -> int:
+        """Trả về hash của s[l..r] (inclusive)."""
+        return (self.h[r+1] - self.h[l] * self.pw[r - l + 1]) % self.mod
+
+# Sử dụng
+s = "abcabc"
+ph = PrefixHash(s)
+
+# hash("abc") tại vị trí 0-2 và 3-5 phải giống nhau
+print(ph.query(0, 2))  # hash of "abc"
+print(ph.query(3, 5))  # hash of "abc" — cùng giá trị!
+print(ph.query(1, 3))  # hash of "bcab" — khác
+```
+
+**Ứng dụng — So sánh 2 substring có giống nhau không (O(1)):**
+
+```python
+def are_substrings_equal(s: str, l1: int, r1: int, l2: int, r2: int) -> bool:
+    """
+    Kiểm tra s[l1..r1] == s[l2..r2] trong O(1) nhờ prefix hash.
+    Hữu ích khi cần so sánh substring rất nhiều lần.
+    """
+    if r1 - l1 != r2 - l2:
+        return False  # Độ dài khác → chắc chắn khác
+    ph = PrefixHash(s)
+    return ph.query(l1, r1) == ph.query(l2, r2)
+
+# Test
+s = "abcabc"
+print(are_substrings_equal(s, 0, 2, 3, 5))  # True: "abc" == "abc"
+print(are_substrings_equal(s, 0, 2, 1, 3))  # False: "abc" != "bca"
+```
+
+### 3.4. Double Hashing — Giảm xác suất false positive
+
+Dùng 2 hash function với base/mod khác nhau. Hai chuỗi chỉ "match" khi CẢ HAI hash đều bằng nhau.
+
+Xác suất false positive:
+
+- 1 hash: ~1/m ≈ 10^(-9)
+- 2 hash: ~1/m² ≈ 10^(-18) — gần như không thể xảy ra!
+
+```python
+class DoubleHash:
+    def __init__(self, s: str):
+        self.h1 = PrefixHash(s, base=31, mod=10**9 + 7)
+        self.h2 = PrefixHash(s, base=37, mod=10**9 + 9)
+
+    def query(self, l: int, r: int) -> tuple:
+        return (self.h1.query(l, r), self.h2.query(l, r))
+
+    def equal(self, l1: int, r1: int, l2: int, r2: int) -> bool:
+        """Kiểm tra s[l1..r1] == s[l2..r2] không cần so sánh ký tự."""
+        if r1 - l1 != r2 - l2:
+            return False
+        return self.query(l1, r1) == self.query(l2, r2)
+```
+
+### 3.5. Ứng dụng: Đếm substring distinct
+
+> Cho chuỗi s, đếm số substring phân biệt có độ dài k.
+
+```python
+def count_distinct_substrings(s: str, k: int) -> int:
+    """Đếm số substring phân biệt có độ dài k. O(n) time."""
+    ph = PrefixHash(s)
+    seen = set()
+    for i in range(len(s) - k + 1):
+        h = ph.query(i, i + k - 1)
+        seen.add(h)
+    return len(seen)
+
+print(count_distinct_substrings("aababc", 2))  # "aa","ab","ba","bc" → 4
+```
+
+### 3.6. Complexity Analysis
+
+| Operation                             | Time                        | Space |
+| :------------------------------------ | :-------------------------- | :---- |
+| Build prefix hash                     | O(n)                        | O(n)  |
+| Query hash(s[l..r])                   | O(1)                        | -     |
+| Rabin-Karp search                     | O(n+m) average, O(nm) worst | O(1)  |
+| Count distinct substrings of length k | O(n) average                | O(n)  |
+
+### 3.7. Ưu điểm và Nhược điểm
+
+**Ưu điểm:**
+
+- So sánh substring trong O(1) thay vì O(len)
+- Dễ implement, code ngắn
+- Kết hợp tốt với binary search (tìm longest common prefix, etc.)
+
+**Nhược điểm:**
+
+- False positive (hash collision) — cần verify hoặc dùng double hash
+- Modular arithmetic có thể overflow nếu không cẩn thận
+- Không tốt cho chuỗi rất ngắn (overhead preprocessing)

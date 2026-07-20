@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/sc-100
+  - sc100
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 SC-100: Microsoft Cybersecurity Architect MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/SC-100/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/SC-100/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/SC-100/SC-100 Mindmap\|🗺️ SC-100 Mindmap]]
+- [[certifications/microsoft/SC-100/SC-100 Flashcards\|🃏 SC-100 Flashcards]]
+- [[certifications/microsoft/SC-100/SC-100_Scraped_Question_Bank\|🗃️ SC-100 Scraped Question Bank]]

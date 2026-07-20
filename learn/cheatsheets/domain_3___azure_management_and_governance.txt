@@ -1,0 +1,36 @@
+---
+tags:
+  - certification/az-900
+  - azure-fundamentals/study-notes/domain-3
+status: todo
+created: 2026-06-15
+---
+
+# Domain 3: Azure Management and Governance
+
+This domain covers core concepts for Azure Management and Governance.
+
+## 🎯 Exam Objectives
+- Understand the core concepts under Azure Management and Governance.
+- Study key Azure patterns and reference architectures.
+
+---
+
+## 📖 Key Study Topics
+
+### 1. Overview
+- Detail key Azure resources, patterns, and configurations.
+- Review official documentation links.
+
+---
+Back to **[[certifications/microsoft/AZ-900/AZ-900 MOC|AZ-900 MOC]]**
+
+## 🔍 Practice Question Reference
+Here are key questions from the practice bank matching this domain:
+- **Q1**: Your developers have created 10 web applications that must be host on Azure. You need to determine w... (See [[certifications/microsoft/AZ-900/Practice Questions - Domain 3#Question 1|Practice Q1]])
+- **Q2**: Your developers have created a portal web app for users in the Miami branch office. The web app will... (See [[certifications/microsoft/AZ-900/Practice Questions - Domain 3#Question 2|Practice Q2]])
+- **Q3**: Your company hosts an accounting named App1 that is used by all the customers of the company.  App1 ... (See [[certifications/microsoft/AZ-900/Practice Questions - Domain 3#Question 3|Practice Q3]])
+- **Q4**: You have an on-premises network that contains 100 servers. You need to recommend a solution that pro... (See [[certifications/microsoft/AZ-900/Practice Questions - Domain 3#Question 4|Practice Q4]])
+
+---
+Back to **[[certifications/microsoft/AZ-900/AZ-900 MOC|AZ-900 MOC]]**

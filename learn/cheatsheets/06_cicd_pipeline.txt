@@ -1,0 +1,45 @@
+🔙 **Back to Parent**: [[technical_skills/05_Docker_Hero/📂index_05_Docker_Hero|05_Docker_Hero]]
+
+# Module 6: CI/CD Pipeline Automation 🤖
+
+Đưa ứng dụng lên Production một cách tự động, liên tục và an toàn.
+
+---
+
+## 🚀 Quy trình cơ bản
+
+### 1. Liên tục tích hợp (CI - Continuous Integration)
+Mỗi khi bạn `git push`, hệ thống tự động:
+- Build Docker Image.
+- Chạy Unit Test / Integration Test.
+- Kiểm tra lỗi bảo mật (Security Scan).
+
+### 2. Liên tục triển khai (CD - Continuous Deployment)
+Nếu vượt qua bước CI, tự động:
+- Đẩy Image lên Registry (Docker Hub / AWS ECR).
+- Deploy lên Server (K8s, EC2, Azure).
+
+---
+
+## 🛠️ Ví dụ với GitHub Actions
+
+```yaml
+steps:
+  - name: Build Docker Image
+    run: docker build -t my-app:${{ github.sha }} .
+  - name: Login to DockerHub
+    run: docker login ...
+  - name: Push to DockerHub
+    run: docker push my-app:${{ github.sha }}
+```
+
+---
+
+## 📝 Bài tập thực hành (Practice) - [Trích từ Data.csv ID 42/43/83]
+
+1. Thiết lập một GitLab CI hoặc GitHub Action đơn giản để build Docker Image cho dự án cá nhân của bạn.
+2. Tích hợp chạy **Unit Test** trước khi build Image. Nếu test fail, Image không được build.
+3. [Xem blog: CI/CD Pipelines Guide](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-ci-cd-pipelines.md)
+
+---
+*Tiếp tục học: [Module 7: Orchestration with Docker Swarm](./07_Docker_Swarm.md)*

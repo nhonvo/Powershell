@@ -1,0 +1,11 @@
+# 2_StacksAndQueues
+
+🔙 **Back to Parent**: [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/index_DataStructures|DataStructures]]
+
+## 📁 Categories
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/2_StacksAndQueues/1_StackExercises/index_1_StackExercises|1_StackExercises]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/2_StacksAndQueues/2_QueueExercises/index_2_QueueExercises|2_QueueExercises]]
+
+## 📄 Notes
+- [[2_stacksandqueues|2_StacksAndQueues]]
+

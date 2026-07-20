@@ -1,0 +1,77 @@
+🔙 **Back to Parent**: [[technical_skills/06_Backend_Interview_Expert/📂index_06_Backend_Interview_Expert|06_Backend_Interview_Expert]]
+
+# 🐘 1. Database Deep Dive (Interview Edition)
+
+Đây là nơi 90% ứng viên Backend bị loại. Đừng chỉ trả lời "Tôi biết dùng SQL". Hãy chứng minh bạn hiểu cách dữ liệu được lưu trữ, khóa (locking) và tối ưu hóa ở quy mô hàng triệu bản ghi.
+
+---
+
+### 🏛️ 1.1 ACID vs BASE (The Core Theory)
+
+#### **ACID (SQL databases)**
+- **Mục tiêu**: Tuyệt đối an toàn dữ liệu.
+- **Thế mạnh**: Giao dịch ngân hàng, Đơn hàng, Ví tiền.
+- **Điểm yếu**: Khó mở rộng theo chiều ngang (Vertical vs Horizontal Scaling).
+
+#### **BASE (NoSQL databases)**
+- **Mục tiêu**: Tính sẵn sàng cao (Availability) và Phân mảnh (Partitioning).
+- **Thế mạnh**: Feed mạng xã hội, Log thô, To-do list.
+- **Tính chất**: Nhất quán sau cùng (Eventual Consistency).
+
+> [!TIP]
+> **Câu hỏi phỏng vấn**: "Hệ thống của bạn có cần Consistency ngay lập tức không hay chỉ cần sau 1 vài giây?"
+
+---
+
+### 🧠 1.2 Isolation Levels (Lỗi dữ liệu thực tế)
+
+Bạn phải giải thích được 3 hiện tượng lỗi:
+1.  **Dirty Read**: Đọc nhầm dữ liệu đang sửa nhưng chưa Save (Commit).
+2.  **Non-Repeatable Read**: Cùng 1 Transaction, đọc 2 lần ra 2 kết quả khác nhau (Do có người khác Update).
+3.  **Phantom Read**: Đọc 2 lần thấy số lượng hàng thay đổi (Do có người khác Insert).
+
+> [!WARNING]
+> PostgreSQL sử dụng **Read Committed** làm mặc định. Nó không bao giờ bị Dirty Read!
+
+---
+
+### 🚀 1.3 Indexing (B-Tree Internals)
+
+Hãy mô tả Index như một quyển danh bạ (B-Tree). 
+- **Câu hỏi khó**: "Tại sao đánh Index cho mọi cột lại là thảm họa?"
+    - Trả lời: Tốn dung lượng Disk + Chậm việc Ghi (INSERT/UPDATE/DELETE) vì DB phải cập nhật đồng thời nhiều bộ mục lục (Index).
+
+---
+
+### ⚡ 1.4 Database Optimization Checklist
+
+1.  **Analyze Query**: Dùng `EXPLAIN ANALYZE` để xem DB thực sự làm gì.
+2.  **Indexing**: Thêm Index cho các cột hay lọc (`WHERE`) và sắp xếp (`ORDER BY`).
+3.  **Partitioning**: Chia bảng khổng lồ theo thời gian/khu vực.
+4.  **Connection Pooling**: Giới hạn số lượng kết nối đồng thời để tránh treo RAM của server DB.
+
+---
+
+### 📝 1.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Hệ thống của bạn đang bị chậm, bước đầu tiên bạn làm gì để tìm ra nguyên nhân?"
+<details><summary>Đáp án</summary>
+1. Check tài nguyên (CPU, RAM, Disk I/O). 2. Kiểm tra Slow Query Log (Postgres). 3. Sử dụng `EXPLAIN ANALYZE` trên các câu query chậm để xem nó có dùng Index không? Nếu có Seq Scan thì phải đánh Index ngay.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh SQL xử lý **Race Condition** khi 2 người cùng rút 100đ từ tài khoản (Pessimistic Locking).
+<details><summary>Solution</summary>
+```sql
+BEGIN;
+SELECT balance FROM accounts WHERE id = 'user_a' FOR UPDATE; -- Khóa hàng
+UPDATE accounts SET balance = balance - 100 WHERE id = 'user_a';
+COMMIT; -- Nhả khóa
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [PostgreSQL Indexing: From Basics to Advanced Techniques](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-postgresql-indexing.md)
+- [Mastering Database Transactions: Isolation Levels Explained](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-db-transactions.md)
+- [Optimization Strategies for Large Scale SQL Databases](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-sql-optimization.md)

@@ -1,0 +1,46 @@
+---
+tags:
+  - certification/gh-300
+  - copilot
+  - study-notes/domain-3
+status: todo
+created: 2026-05-26
+---
+
+# Domain 3: Data, Architecture, and Privacy
+
+This domain covers how context is collected, how prompts are built, and policies on data governance, telemetry, and exclusions.
+
+## 🎯 Exam Objectives
+- Understand how Copilot builds prompts using active context (neighboring files, open tabs, pathing).
+- Distinguish between telemetry data types (Engagement vs. Snippets).
+- Configure and manage content exclusions at all levels.
+- Understand tenant data isolation.
+
+---
+
+## 📖 Key Study Topics
+
+### 1. Prompt Assembly Architecture
+- The IDE extension runs local heuristics to construct a **Prompt**:
+  1. Gathers context from the active file (lines above/below the cursor).
+  2. Analyzes open tabs in the IDE workspace (relies on path similarity, file names, import mappings).
+  3. Packages context and sends it via TLS to the Copilot Proxy.
+  4. Proxy forwards it to the OpenAI API model for completion.
+
+### 2. Telemetry and Snippet Retention
+- **Engagement Data**: Includes usage duration, accepted/rejected suggestions, click events, configuration stats. This is *always* retained to measure service SLA.
+- **Code Snippets**: Represents the actual code context of the prompt.
+  - **Copilot Business & Enterprise**: Never retained under any circumstances.
+  - **Copilot Individual**: Retained by default unless the user opts out under settings.
+  - Refer to **[[certifications/microsoft/GH-300-Copilot/Copilot Comparison Cheat Sheet|Copilot Comparison Cheat Sheet]]** for plan policies.
+
+### 3. Content Exclusions
+- Configured via `.github/copilot-exclusions.sha` file.
+- When an excluded file is open:
+  - Suggestions are disabled.
+  - Copilot Chat features are disabled for that file.
+  - Exclusions cascade from Enterprise Settings -> Org Settings -> Repo file patterns.
+
+---
+Back to **[[certifications/microsoft/GH-300-Copilot/GH-300 Copilot MOC|GH-300 Copilot MOC]]**

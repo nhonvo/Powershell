@@ -1,0 +1,65 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 4
+
+## Part 1
+**Q1.** たくしーで　いって　ください。
+- **A.** タクミー
+- **B.** タクシー
+- **C.** タクソー
+- **D.** タクツー
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n : 2タクシー : taxiH&atilde;y đi bằng taxi.</p>
+</details>
+
+---
+**Q2.** いえの　ちかくに　えきが　あります。
+- **A.** 駅
+- **B.** 験
+- **C.** 駄
+- **D.** 駐
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1駅 (DỊCH) : nh&agrave; ga Gần nh&agrave; t&ocirc;i c&oacute; một c&aacute;i nh&agrave; ga.</p>
+</details>
+
+---
+**Q3.** まいあさ　しんぶんを　よみます。
+- **A.** 親間
+- **B.** 新間
+- **C.** 親聞
+- **D.** 新聞
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n : 4新聞 (T&Acirc;N - VĂN) : b&aacute;oT&ocirc;i đọc b&aacute;o mỗi s&aacute;ng.</p>
+</details>
+
+---
+**Q4.** この　えいがを　みましたか?
+- **A.** 貝ました
+- **B.** 耳ました
+- **C.** 目ました
+- **D.** 見ました
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n : 4見る (KIẾN) : xemCậu đ&atilde; xem bộ phim n&agrave;y chưa?</p>
+</details>
+
+---
+**Q5.** いもうとと　いっしょに　がっこうへ　いきます。
+- **A.** 姉
+- **B.** 妹
+- **C.** 姪
+- **D.** 始
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n : 2妹 (MUỘI) : em g&aacute;iT&ocirc;i c&ugrave;ng em g&aacute;i đi đến trường.</p>
+</details>
+
+---

@@ -1,0 +1,35 @@
+🔙 **Back to Parent**: [[technical_skills/03_Design_Patterns_Mastery/📂index_03_Design_Patterns_Mastery|03_Design_Patterns_Mastery]]
+
+# Module 7: Behavioral Communication Patterns 🏃‍♂️
+
+Nhóm bài học về cách các đối tượng giao tiếp với nhau mà không bị phụ thuộc quá chặt chẽ (Decoupling).
+
+---
+
+## 🧩 Các Pattern chính
+
+### 1. Chain of Responsibility (Chuỗi trách nhiệm)
+- Cho phép chuyển yêu cầu qua một chuỗi các lớp xử lý. Mỗi lớp sẽ quyết định xử lý yêu cầu hoặc chuyển cho lớp kế tiếp.
+- Ví dụ: Hệ thống phê duyệt ngân sách (Nhân viên -> Trưởng phòng -> Giám đốc).
+
+### 2. Command (Lệnh)
+- Đóng gói một yêu cầu dưới dạng một đối tượng độc lập, cho phép bạn truyền vào phương thức, lưu hàng đợi (Queue) hoặc hỗ trợ tính năng **Undo/Redo**.
+- Ví dụ: Nút bấm trên Remote TV hoặc các thao tác trong trình soạn thảo.
+
+### 3. Mediator (Người trung gian)
+- Giảm thiểu sự phụ thuộc trực tiếp giữa các class bằng cách buộc chúng giao tiếp qua một đối tượng trung gian.
+- Ví dụ: Tháp điều khiển tại sân bay (Air Traffic Control). Các máy bay không nói chuyện trực tiếp với nhau mà qua Tháp.
+
+### 4. Iterator (Trình lặp)
+- Cung cấp cách thức truy cập tuần tự các phần tử của một tập hợp mà không cần biết cấu trúc bên dưới của nó (List, Tree, Array).
+
+---
+
+## 🛠️ Bài tập thực hành (Practice) - [Trích từ Data.csv ID 5/6]
+
+**Hệ thống Log/Progress**
+1. Triển khai **Chain of Responsibility** cho một hệ thống Logging có 3 mức độ: `INFO` -> `WARNING` -> `ERROR`.
+2. Sử dụng **Command Pattern** để thực hiện thao tác tính toán đơn giản có hỗ trợ **Undo**.
+
+---
+*Tiếp tục học: [Module 8: Decision Framework](./08_Decision_Framework.md)*

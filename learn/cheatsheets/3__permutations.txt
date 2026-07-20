@@ -1,0 +1,300 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/04_Recursion_Backtracking/🔄index_04_Recursion_Backtracking|04_Recursion_Backtracking]]
+
+## 3. Permutations
+
+### 3.1 Bài toán
+
+Cho một tập hợp n phần tử **phân biệt**, hãy sinh ra **tất cả hoán vị** (permutations).
+
+Ví dụ: `nums = [1, 2, 3]`
+
+Kết quả: `[1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]` — tổng cộng 3! = 6 hoán vị.
+
+### 3.2 Ví von thực tế: Xếp hàng chụp ảnh
+
+Bạn có 3 người bạn — An, Bình, Cường — cần xếp hàng chụp ảnh. Có bao nhiêu cách xếp?
+
+- Vị trí 1: 3 người có thể đứng
+- Vị trí 2: còn 2 người
+- Vị trí 3: còn 1 người
+
+Tổng: $3 \times 2 \times 1 = 6$ cách.
+
+### 3.3 Thuật toán chi tiết
+
+**Ý tưởng:** Ở mỗi vị trí, thử đặt từng phần tử **chưa được sử dụng** vào. Dùng mảng `used[]` để đánh dấu phần tử nào đã dùng.
+
+permute([], used={})Chọn 1 → [1]Chọn 2 → [2]Chọn 3 → [3]Chọn 2 → [1,2]Chọn 3 → [1,3]Chọn 1 → [2,1]Chọn 3 → [2,3]Chọn 1 → [3,1]Chọn 2 → [3,2]Chọn 3 → [1,2,3] ✓Chọn 2 → [1,3,2] ✓Chọn 3 → [2,1,3] ✓Chọn 1 → [2,3,1] ✓Chọn 2 → [3,1,2] ✓Chọn 1 → [3,2,1] ✓
+
+### 3.4 Mô phỏng từng bước
+
+```
+Input: [1, 2, 3]
+
+permute(current=[], used=[F,F,F])
+│
+├── Chọn nums[0]=1, used=[T,F,F]
+│   permute(current=[1], used=[T,F,F])
+│   │
+│   ├── nums[0]=1 đã dùng → skip
+│   ├── Chọn nums[1]=2, used=[T,T,F]
+│   │   permute(current=[1,2], used=[T,T,F])
+│   │   │
+│   │   ├── nums[0]=1 đã dùng → skip
+│   │   ├── nums[1]=2 đã dùng → skip
+│   │   └── Chọn nums[2]=3, used=[T,T,T]
+│   │       permute(current=[1,2,3]) → len == n → KẾT QUẢ! ✓
+│   │       Backtrack: bỏ 3, used=[T,T,F]
+│   │
+│   │   Backtrack: bỏ 2, used=[T,F,F]
+│   │
+│   └── Chọn nums[2]=3, used=[T,F,T]
+│       permute(current=[1,3], used=[T,F,T])
+│       └── Chọn nums[1]=2 → [1,3,2] ✓
+│       Backtrack...
+│
+│   Backtrack: bỏ 1, used=[F,F,F]
+│
+├── Chọn nums[1]=2, used=[F,T,F]
+│   ... → [2,1,3] ✓, [2,3,1] ✓
+│
+└── Chọn nums[2]=3, used=[F,F,T]
+    ... → [3,1,2] ✓, [3,2,1] ✓
+
+Tổng: 6 hoán vị
+```
+
+### 3.5 Code
+
+**Python — Cách 1: Dùng mảng used**
+
+```python
+def permute(nums):
+    result = []
+    n = len(nums)
+    used = [False] * n
+
+    def backtrack(current):
+        # Base case: đã chọn đủ n phần tử
+        if len(current) == n:
+            result.append(current[:])
+            return
+
+        for i in range(n):
+            if used[i]:
+                continue  # skip phần tử đã dùng
+
+            # Chọn nums[i]
+            used[i] = True
+            current.append(nums[i])
+
+            backtrack(current)
+
+            # Backtrack: bỏ chọn nums[i]
+            current.pop()
+            used[i] = False
+
+    backtrack([])
+    return result
+
+print(permute([1, 2, 3]))
+# [[1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]]
+```
+
+**Python — Cách 2: Swap (in-place, không cần mảng used)**
+
+```python
+def permute_swap(nums):
+    result = []
+
+    def backtrack(start):
+        if start == len(nums):
+            result.append(nums[:])
+            return
+
+        for i in range(start, len(nums)):
+            # Swap nums[start] với nums[i]
+            nums[start], nums[i] = nums[i], nums[start]
+            backtrack(start + 1)
+            # Swap lại (backtrack)
+            nums[start], nums[i] = nums[i], nums[start]
+
+    backtrack(0)
+    return result
+```
+
+**Python (class style - giống format LeetCode):**
+
+```python
+from typing import List
+
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        result = []
+        n = len(nums)
+        used = [False] * n  # đánh dấu phần tử nào đã dùng
+
+        def backtrack(current: List[int]):
+            # Base case: đã chọn đủ n phần tử
+            if len(current) == n:
+                result.append(current[:])
+                return
+
+            for i in range(n):
+                if used[i]:
+                    continue  # skip phần tử đã dùng
+
+                # Chọn nums[i]
+                used[i] = True
+                current.append(nums[i])
+
+                backtrack(current)
+
+                # Backtrack: bỏ chọn nums[i]
+                current.pop()
+                used[i] = False
+
+        backtrack([])
+        return result
+
+# Chạy thử
+sol = Solution()
+print(sol.permute([1, 2, 3]))
+# [[1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]]
+```
+
+### 3.6 Permutations II — Có phần tử trùng
+
+Khi mảng có phần tử trùng (ví dụ `[1, 1, 2]`), ta cần tránh sinh hoán vị trùng.
+
+**Mẹo:** Sort mảng + skip khi `nums[i] == nums[i-1]` và `used[i-1] == false`.
+
+```python
+def permute_unique(nums):
+    nums.sort()  # QUAN TRỌNG
+    result = []
+    n = len(nums)
+    used = [False] * n
+
+    def backtrack(current):
+        if len(current) == n:
+            result.append(current[:])
+            return
+
+        for i in range(n):
+            if used[i]:
+                continue
+            # Skip duplicate: nếu nums[i] == nums[i-1]
+            # và nums[i-1] CHƯA được dùng (đã backtrack)
+            if i > 0 and nums[i] == nums[i - 1] and not used[i - 1]:
+                continue
+
+            used[i] = True
+            current.append(nums[i])
+            backtrack(current)
+            current.pop()
+            used[i] = False
+
+    backtrack([])
+    return result
+
+print(permute_unique([1, 1, 2]))
+# [[1,1,2], [1,2,1], [2,1,1]]  — chỉ 3, không phải 6
+from typing import List
+
+class Solution:
+    def permuteUnique(self, nums: List[int]) -> List[List[int]]:
+        nums.sort()  # QUAN TRỌNG: sort để phát hiện duplicate
+        result = []
+        n = len(nums)
+        used = [False] * n
+
+        def backtrack(current: List[int]):
+            if len(current) == n:
+                result.append(current[:])
+                return
+
+            for i in range(n):
+                if used[i]:
+                    continue
+                # Skip duplicate: nums[i] == nums[i-1] và nums[i-1] CHƯA dùng
+                if i > 0 and nums[i] == nums[i - 1] and not used[i - 1]:
+                    continue
+
+                used[i] = True
+                current.append(nums[i])
+                backtrack(current)
+                current.pop()
+                used[i] = False
+
+        backtrack([])
+        return result
+
+# Chạy thử
+sol = Solution()
+print(sol.permuteUnique([1, 1, 2]))
+# [[1, 1, 2], [1, 2, 1], [2, 1, 1]]  — chỉ 3, không phải 6
+```
+
+### 3.7 Giải thích điều kiện skip duplicate
+
+Tại sao `not used[i-1]` mà không phải `used[i-1]`?
+
+Giả sử `nums = [1a, 1b, 2]` (hai số 1 phân biệt bằng a, b):
+
+- Nếu `1a` đã được chọn (`used[i-1] = True`), thì chọn `1b` tiếp là hợp lệ → `[1a, 1b, ...]`
+- Nếu `1a` KHÔNG được chọn (`used[i-1] = False`), nghĩa là ta đã backtrack bỏ `1a`, giờ thử `1b` ở cùng vị trí → sẽ tạo ra duplicate!
+
+Nói cách khác: ta chỉ cho phép chọn phần tử trùng theo **thứ tự từ trái sang phải**. Nếu `1a` bị bỏ mà ta chọn `1b`, thì kết quả giống hệt trường hợp chọn `1a` bỏ `1b` → trùng!
+
+### 3.8 Phân tích Complexity
+
+**Time Complexity: O(n \* n!)**
+
+**Chứng minh:**
+
+Tổng số hoán vị = $n!$
+
+Ở level 0 của recursion tree: n nhánh Level 1: mỗi nhánh có n-1 nhánh con ... Level k: mỗi nhánh có n-k nhánh con
+
+Tổng số node trong cây: $$\sum_{k=0}^{n} \frac{n!}{k!} = n! \sum_{k=0}^{n} \frac{1}{k!} \leq n! \cdot e \approx 2.718 \cdot n!$$
+
+Vậy tổng node = $O(n!)$.
+
+Nhưng ở mỗi leaf node, ta copy mảng kết quả (O(n)), nên tổng = $O(n \cdot n!)$.
+
+**Space Complexity: O(n)** — cho call stack + mảng `used` + mảng `current` (không tính output).
+
+### 3.9 Best Case / Worst Case
+
+|                     | Best Case                         | Worst Case                                                   |
+| :------------------ | :-------------------------------- | :----------------------------------------------------------- |
+| **Permutations**    | O(n * n!) — luôn phải sinh tất cả | O(n * n!)                                                    |
+| **Permutations II** | O(n * n!) worst case              | Tốt hơn khi nhiều duplicate — ví dụ [1,1,1] chỉ có 1 hoán vị |
+
+### 3.10 Cải tiến
+
+1. **Swap method** — không cần mảng `used`, tiết kiệm bộ nhớ
+2. **Next permutation** — sinh hoán vị tiếp theo trong O(n), hữu ích khi chỉ cần hoán vị kế tiếp
+3. **Heap's algorithm** — sinh hoán vị chỉ bằng swap liền kề, tối ưu số swap
+
+```python
+# Next Permutation - O(n) per permutation
+def next_permutation(nums):
+    n = len(nums)
+    # Bước 1: Tìm i lớn nhất sao cho nums[i] < nums[i+1]
+    i = n - 2
+    while i >= 0 and nums[i] >= nums[i + 1]:
+        i -= 1
+
+    if i >= 0:
+        # Bước 2: Tìm j lớn nhất sao cho nums[j] > nums[i]
+        j = n - 1
+        while nums[j] <= nums[i]:
+            j -= 1
+        # Bước 3: Swap nums[i] và nums[j]
+        nums[i], nums[j] = nums[j], nums[i]
+
+    # Bước 4: Reverse phần từ i+1 đến hết
+    nums[i + 1:] = reversed(nums[i + 1:])
+```

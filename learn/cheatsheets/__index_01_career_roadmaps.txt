@@ -1,0 +1,15 @@
+# 01_Career_Roadmaps
+
+🔙 **Back to Parent**: [[📖index_learning|learning]]
+
+## 📁 Sub-Categories
+- [[technical_skills/02_Backend_Development_Roadmap/📂index_02_Backend_Development_Roadmap|02_Backend_Development_Roadmap]]
+- [[technical_skills/📂index_05_Web_Blog|02_Frontend_Professional_React_JS]]
+- [[technical_skills/05_Docker_Hero/📂index_05_Docker_Hero|05_Docker_Hero]]
+- [[technical_skills/06_Backend_Interview_Expert/📂index_06_Backend_Interview_Expert|06_Backend_Interview_Expert]]
+- [[certifications/aws/📖index_aws|10_AWS_Cloud_Expert]]
+
+## 📄 Notes & Documents
+- [[technical_skills/ai path|ai path]]
+- [[technical_skills/skill-create-course-builder|skill-create-course-builder]]
+

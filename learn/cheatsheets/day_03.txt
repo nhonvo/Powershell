@@ -1,0 +1,14 @@
+# Day 03: Sorting & Binary Search
+**Goal:** Understand 'Divide & Conquer' at a high level.
+
+### 📖 Reading (GitHub App)
+- Open `dsa/912.Sort-an-Array-Bubble-sort/`.
+- Compare it mentally to Quick Sort. Which one uses more memory?
+
+### 🤖 AI Drill (Copy & Paste to ChatGPT/Gemini)
+> "Compare QuickSort and MergeSort. If I have a system with very limited memory (like an embedded military device), which sorting algorithm is better and why? Explain the 'Pivot' selection strategy in QuickSort."
+
+### 📝 Mobile Task
+- Use the **Voice Mode** of your AI app.
+- "Explain to me the steps of Binary Search as if I am a junior developer. Correct me if I miss the base case (low > high)."
+

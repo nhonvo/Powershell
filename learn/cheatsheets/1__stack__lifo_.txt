@@ -1,0 +1,281 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/🥞index_07_Stack_Queue|07_Stack_Queue]]
+
+## 1. Stack (LIFO)
+
+### 1.1 Khái niệm
+
+Bạn hình dung một **chồng đĩa** trong nhà bếp. Khi bạn rửa xong một cái đĩa, bạn đặt nó lên **trên cùng** chồng đĩa. Khi cần lấy đĩa ra dùng, bạn cũng lấy cái **trên cùng** nhất. Cái đĩa bạn đặt vào **cuối cùng** lại là cái được lấy ra **đầu tiên** — đó chính là nguyên tắc **LIFO (Last In, First Out)**.
+
+Stack là một cấu trúc dữ liệu tuyến tính tuân theo nguyên tắc LIFO. Mình chỉ thao tác ở **một đầu** duy nhất gọi là **top** (đỉnh stack).
+
+**Ví dụ thực tế khác:**
+
+- Nút **Undo** (Ctrl+Z) trong Word: mỗi thao tác được push vào stack, khi Undo thì pop thao tác gần nhất
+- **Lịch sử duyệt web**: mỗi trang bạn truy cập được push vào stack, nút Back sẽ pop trang hiện tại
+- **Gọi hàm đệ quy**: mỗi lần gọi hàm, hệ thống push frame vào call stack; khi hàm return thì pop ra
+
+### 1.2 Các thao tác cơ bản
+
+| Thao tác           | Mô tả                              | Độ phức tạp |
+| :----------------- | :--------------------------------- | :---------- |
+| `push(x)`          | Thêm phần tử `x` vào đỉnh stack    | O(1)        |
+| `pop()`            | Xóa và trả về phần tử ở đỉnh stack | O(1)        |
+| `top()` / `peek()` | Xem phần tử ở đỉnh mà không xóa    | O(1)        |
+| `isEmpty()`        | Kiểm tra stack có rỗng không       | O(1)        |
+| `size()`           | Trả về số phần tử trong stack      | O(1)        |
+
+### 1.3 Mô phỏng từng bước
+
+Mình cùng mô phỏng các thao tác trên stack nhé:
+
+```
+Bắt đầu: Stack rỗng []
+
+Bước 1: push(5)   → [5]           ← 5 vào đỉnh
+Bước 2: push(3)   → [5, 3]        ← 3 vào đỉnh, 5 ở dưới
+Bước 3: push(8)   → [5, 3, 8]     ← 8 vào đỉnh
+Bước 4: top()     → trả về 8      ← stack không đổi [5, 3, 8]
+Bước 5: pop()     → trả về 8      ← 8 bị xóa, stack = [5, 3]
+Bước 6: pop()     → trả về 3      ← 3 bị xóa, stack = [5]
+Bước 7: push(1)   → [5, 1]        ← 1 vào đỉnh
+Bước 8: size()    → trả về 2      ← stack có 2 phần tử
+Bước 9: isEmpty() → trả về False  ← stack không rỗng
+```
+
+push(1)pop() → 8push(8)push(3)push(5)push(3)push(8)pop()push(1)| 5 || 3 |
+| 5 || 8 |
+| 3 |
+| 5 || 3 |
+| 5 || 1 |
+| 3 |
+| 5 |
+
+### 1.4 Cài đặt bằng Array (Mảng)
+
+Ý tưởng: dùng một mảng và một biến `top_index` để theo dõi vị trí đỉnh stack.
+
+**Flowchart thao tác push:**
+
+CóKhôngBắt đầu push(x)Stack đầy?
+top_index == capacity - 1Báo lỗi Stack Overflow
+hoặc resize mảngtop_index += 1arr[top_index] = xKết thúc
+
+**Flowchart thao tác pop:**
+
+CóKhôngBắt đầu pop()Stack rỗng?
+top_index == -1Báo lỗi Stack Underflowval = arr[top_index]top_index -= 1Trả về valKết thúc
+
+#### Python — Array-based Stack
+
+```python
+class ArrayStack:
+    """Stack cài đặt bằng mảng (list trong Python)."""
+
+    def __init__(self, capacity=1000):
+        self.capacity = capacity
+        self.arr = [None] * capacity  # Cấp phát mảng cố định
+        self.top_index = -1           # -1 nghĩa là stack rỗng
+
+    def push(self, x):
+        """Thêm phần tử x vào đỉnh stack. O(1)"""
+        if self.top_index == self.capacity - 1:
+            raise OverflowError("Stack Overflow - stack đã đầy!")
+        self.top_index += 1
+        self.arr[self.top_index] = x
+
+    def pop(self):
+        """Xóa và trả về phần tử đỉnh stack. O(1)"""
+        if self.is_empty():
+            raise IndexError("Stack Underflow - stack rỗng!")
+        val = self.arr[self.top_index]
+        self.arr[self.top_index] = None  # Giải phóng tham chiếu
+        self.top_index -= 1
+        return val
+
+    def top(self):
+        """Xem phần tử đỉnh mà không xóa. O(1)"""
+        if self.is_empty():
+            raise IndexError("Stack rỗng!")
+        return self.arr[self.top_index]
+
+    def is_empty(self):
+        """Kiểm tra stack rỗng. O(1)"""
+        return self.top_index == -1
+
+    def size(self):
+        """Số phần tử trong stack. O(1)"""
+        return self.top_index + 1
+
+
+# --- Sử dụng ---
+stack = ArrayStack()
+stack.push(10)
+stack.push(20)
+stack.push(30)
+print(stack.top())   # 30
+print(stack.pop())   # 30
+print(stack.size())  # 2
+```
+
+> **Lưu ý thực tế**: Trong Python, bạn thường dùng `list` có sẵn làm stack vì `list.append()` và `list.pop()` đều là O(1) amortized. Cài đặt ở trên là để hiểu nguyên lý.
+
+#### Cách dùng nhanh với list Python
+
+> Trong thực tế, bạn chỉ cần dùng `list` có sẵn của Python làm stack. `append()` là push, `pop()` là pop — cả hai đều O(1) amortized.
+
+```python
+# --- Cách nhanh: dùng list làm stack ---
+stack = []
+
+stack.append(10)   # push 10
+stack.append(20)   # push 20
+stack.append(30)   # push 30
+
+print(stack[-1])   # top → 30 (xem đỉnh mà không xóa)
+print(stack.pop()) # pop → 30 (xóa và trả về đỉnh)
+print(len(stack))  # size → 2
+
+# Kiểm tra rỗng
+if not stack:
+    print("Stack rỗng")
+else:
+    print(f"Stack có {len(stack)} phần tử")  # Stack có 2 phần tử
+```
+
+### 1.5 Cài đặt bằng Linked List
+
+Ý tưởng: dùng singly linked list, push/pop ở **đầu** danh sách (head) để đảm bảo O(1).
+
+Stack = Linked Listtop (head)Node 8Node 3Node 5null
+
+#### Python — Linked List Stack
+
+```python
+class Node:
+    """Node cho linked list."""
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+class LinkedListStack:
+    """Stack cài đặt bằng linked list."""
+
+    def __init__(self):
+        self.head = None   # Đỉnh stack = head của linked list
+        self._size = 0
+
+    def push(self, x):
+        """Thêm node mới vào đầu linked list. O(1)"""
+        new_node = Node(x)
+        new_node.next = self.head  # Node mới trỏ tới head cũ
+        self.head = new_node       # Head mới = node mới
+        self._size += 1
+
+    def pop(self):
+        """Xóa và trả về node đầu. O(1)"""
+        if self.is_empty():
+            raise IndexError("Stack rỗng!")
+        val = self.head.data
+        self.head = self.head.next  # Head mới = node tiếp theo
+        self._size -= 1
+        return val
+
+    def top(self):
+        """Xem phần tử đỉnh. O(1)"""
+        if self.is_empty():
+            raise IndexError("Stack rỗng!")
+        return self.head.data
+
+    def is_empty(self):
+        return self.head is None
+
+    def size(self):
+        return self._size
+
+
+# --- Sử dụng ---
+stack = LinkedListStack()
+stack.push(5)
+stack.push(3)
+stack.push(8)
+print(stack.top())   # 8
+print(stack.pop())   # 8
+print(stack.top())   # 3
+```
+
+#### So sánh Linked List Stack vs List Stack
+
+```python
+# --- So sánh cách dùng ---
+
+# 1. Linked List Stack (tự cài đặt ở trên):
+#    - push/pop luôn O(1) worst case
+#    - Tốn thêm bộ nhớ cho pointer (next)
+#    - Dùng khi cần hiểu nguyên lý
+
+# 2. Python list làm stack:
+#    - append/pop là O(1) amortized (đôi khi resize → O(n))
+#    - Cache-friendly hơn (bộ nhớ liên tục)
+#    - Dùng trong thực tế và thi cử
+
+# Kết luận: Trong Python, hầu như luôn dùng list.
+# LinkedListStack chỉ để học nguyên lý hoạt động.
+```
+
+### 1.6 So sánh Array vs Linked List
+
+| Tiêu chí          | Array-based                        | Linked List-based                    |
+| :---------------- | :--------------------------------- | :----------------------------------- |
+| push/pop          | O(1) amortized (nếu dynamic array) | O(1) worst case                      |
+| Bộ nhớ            | Liên tục, cache-friendly           | Phân tán, mỗi node cần thêm pointer  |
+| Kích thước        | Cố định hoặc cần resize            | Linh hoạt, không cần biết trước      |
+| Memory overhead   | Ít (chỉ mảng + biến top)           | Nhiều hơn (mỗi node có pointer next) |
+| Cache performance | Tốt hơn (spatial locality)         | Kém hơn (nodes nằm rải rác)          |
+
+### 1.7 Chứng minh độ phức tạp
+
+**Trường hợp Array-based với Dynamic Resizing (Amortized Analysis):**
+
+Khi mảng đầy, mình tạo mảng mới gấp đôi kích thước rồi copy toàn bộ sang. Mình chứng minh push vẫn là **O(1) amortized** bằng phương pháp **Aggregate Analysis**.
+
+Giả sử bắt đầu với mảng capacity = 1. Sau n thao tác push, mình resize tại các thao tác thứ 1, 2, 4, 8, 16, ..., 2^k (với 2^k <= n).
+
+Tổng chi phí:
+
+$$\text{Total cost} = n + \sum_{i=0}^{\lfloor \log_2 n \rfloor} 2^i = n + (2^{\lfloor \log_2 n \rfloor + 1} - 1) < n + 2n = 3n$$
+
+Chi phí amortized mỗi thao tác:
+
+$$\text{Amortized cost} = \frac{3n}{n} = 3 = O(1)$$
+
+**Phương pháp Banker's (Accounting Method):**
+
+Mỗi lần push, mình "trả" 3 đồng:
+
+- 1 đồng cho thao tác push thực tế
+- 2 đồng "gửi tiết kiệm" cho phần tử hiện tại
+
+Khi resize từ capacity k lên 2k: cần copy k phần tử. Nhưng k/2 phần tử mới (được push sau lần resize trước) mỗi cái đã gửi 2 đồng, tổng = k đồng — đủ trả cho việc copy k phần tử.
+
+Vậy mỗi push tốn tối đa 3 đồng = **O(1) amortized**.
+
+### 1.8 Ưu điểm và nhược điểm
+
+**Ưu điểm:**
+
+- Đơn giản, dễ cài đặt
+- Tất cả thao tác cơ bản đều O(1)
+- Rất hữu ích trong nhiều thuật toán (DFS, expression evaluation, backtracking...)
+
+**Nhược điểm:**
+
+- Chỉ truy cập được phần tử đỉnh (không random access)
+- Array-based có thể lãng phí bộ nhớ nếu capacity quá lớn
+- Linked-list-based tốn thêm bộ nhớ cho pointer
+
+### 1.9 Cải tiến
+
+- **Dynamic array**: tự resize khi đầy (như `list` trong Python — tự động resize khi `append`)
+- **Shrinking**: khi stack chỉ còn 1/4 capacity, co mảng lại còn 1/2 để tiết kiệm bộ nhớ
+- **Thread-safe stack**: thêm mutex/lock cho multi-threading
+- **Lock-free stack**: dùng CAS (Compare-And-Swap) atomic operations

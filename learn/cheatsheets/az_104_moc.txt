@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/az-104
+  - az104
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AZ-104: Microsoft Azure Administrator MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/AZ-104/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/AZ-104/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AZ-104/AZ-104 Mindmap\|🗺️ AZ-104 Mindmap]]
+- [[certifications/microsoft/AZ-104/AZ-104 Flashcards\|🃏 AZ-104 Flashcards]]
+- [[certifications/microsoft/AZ-104/AZ-104_Scraped_Question_Bank\|🗃️ AZ-104 Scraped Question Bank]]

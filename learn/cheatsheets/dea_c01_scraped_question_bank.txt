@@ -1,0 +1,213 @@
+# 🗃️ DEA-C01 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+A data engineer is configuring an AWS Glue job to read data from an Amazon S3 bucket. The data engineer has set up the necessary AWS Glue connection details and an associated IAM role. However, when the data engineer attempts to run the AWS Glue job, the data engineer receives an error message that indicates that there are problems with the Amazon S3 VPC gateway endpoint.
+The data engineer must resolve the error and connect the AWS Glue job to the S3 bucket.
+Which solution will meet this requirement?
+
+### Options:
+- [ ] **A)** Update the AWS Glue security group to allow inbound traffic from the Amazon S3 VPC gateway endpoint.
+- [ ] **B)** Configure an S3 bucket policy to explicitly grant the AWS Glue job permissions to access the S3 bucket.
+- [ ] **C)** Review the AWS Glue job code to ensure that the AWS Glue connection details include a fully qualified domain name.
+- [x] **D)** Verify that the VPC's route table includes inbound and outbound routes for the Amazon S3 VPC gateway endpoint. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+The correct answer is D because ensuring the VPC route table contains routes to the S3 VPC gateway endpoint is essential for private connectivity from Glue to S3 without internet access, resolving gateway endpoint issues.
+A is incorrect because security groups for Glue do not manage VPC endpoint connectivity to S3; gateway endpoints are routed via route tables, not inbound SG rules for S3 access.
+B is incorrect because bucket policies control object-level permissions, not the network path or endpoint configuration needed for VPC gateway endpoint connectivity.
+C is incorrect because the issue is network routing to the gateway endpoint, not the domain name resolution in the Glue connection details.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+A retail company has a customer data hub in an Amazon S3 bucket. Employees from many countries use the data hub to support company-wide analytics. A governance team must ensure that the company's data analysts can access data only for customers who are within the same country as the analysts.
+Which solution will meet these requirements with the LEAST operational effort?
+
+### Options:
+- [ ] **A)** Create a separate table for each country's customer data. Provide access to each analyst based on the country that the analyst serves.
+- [x] **B)** Register the S3 bucket as a data lake location in AWS Lake Formation. Use the Lake Formation row-level security features to enforce the company's access policies. [Correct]
+- [ ] **C)** Move the data to AWS Regions that are close to the countries where the customers are. Provide access to each analyst based on the country that the analyst serves.
+- [ ] **D)** Load the data into Amazon Redshift. Create a view for each country. Create separate IAM roles for each country to provide access to data from each country. Assign the appropriate roles to the analysts.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+A short, scalable access control is achieved by using Lake Formation with row-level security on an S3 data lake location. This enforces per-country data access without duplicating data or managing multiple catalogs.
+A) Creating separate tables per country adds data silos and manual access management; increases maintenance and operational overhead.
+C) Moving data to regionalized storage does not inherently restrict access; it complicates data access governance and may trigger data transfer concerns.
+D) Redshift-based solution involves data duplication, complex IAM role management, and per-country views, increasing operational burden.
+B) Lake Formation provides centralized, policy-based row-level security for S3 data with minimal manual administration.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+A media company wants to improve a system that recommends media content to customer based on user behavior and preferences. To improve the recommendation system, the company needs to incorporate insights from third-party datasets into the company's existing analytics platform.
+The company wants to minimize the effort and time required to incorporate third-party datasets.
+Which solution will meet these requirements with the LEAST operational overhead?
+
+### Options:
+- [x] **A)** Use API calls to access and integrate third-party datasets from AWS Data Exchange. [Correct]
+- [ ] **B)** Use API calls to access and integrate third-party datasets from AWS DataSync.
+- [ ] **C)** Use Amazon Kinesis Data Streams to access and integrate third-party datasets from AWS CodeCommit repositories.
+- [ ] **D)** Use Amazon Kinesis Data Streams to access and integrate third-party datasets from Amazon Elastic Container Registry (Amazon ECR).
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+AWS Data Exchange allows subscribing to third-party datasets and integrates them with minimal operational overhead and automated data refreshes, aligning with the requirement to minimize effort/time. A) Correct: provides managed data access via API, reducing ETL setup. B) DataSync is for automated on-premises/cloud data movement, not third-party data cataloging; it adds integration overhead. C) Kinesis Data Streams requires building ingestion from CodeCommit repositories, increasing complexity and maintenance. D) Kinesis Data Streams with ECR is unrelated to pulling third-party datasets; ECR is for container images, not data ingestion.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+A financial company wants to implement a data mesh. The data mesh must support centralized data governance, data analysis, and data access control. The company has decided to use AWS Glue for data catalogs and extract, transform, and load (ETL) operations.
+Which combination of AWS services will implement a data mesh? (Choose two.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,E`
+
+**Explanation**:
+A data mesh with centralized governance and access control aligns with S3 as storage and Athena for analysis, enabling data product thinking across domains while serverless query and catalog integration. Option B correctly pairs a data lake (S3) with serverless analytics (Athena) suitable for a mesh approach. Option E correctly brings in AWS Lake Formation to centralize governance and access control for data in S3, fulfilling governance requirements across domains. 
+A) Aurora and Redshift are traditional operational/analytic engines but do not inherently support mesh governance or centralized access control across domains. C) Glue DataBrew focuses on preparation, not centralized governance. D) RDS/EMR do not directly provide centralized governance and access control for a mesh.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+A data engineer maintains custom Python scripts that perform a data formatting process that many AWS Lambda functions use. When the data engineer needs to modify the Python scripts, the data engineer must manually update all the Lambda functions.
+The data engineer requires a less manual way to update the Lambda functions.
+Which solution will meet this requirement?
+
+### Options:
+- [ ] **A)** Store a pointer to the custom Python scripts in the execution context object in a shared Amazon S3 bucket.
+- [x] **B)** Package the custom Python scripts into Lambda layers. Apply the Lambda layers to the Lambda functions. [Correct]
+- [ ] **C)** Store a pointer to the custom Python scripts in environment variables in a shared Amazon S3 bucket.
+- [ ] **D)** Assign the same alias to each Lambda function. Call reach Lambda function by specifying the function's alias.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+A concise explanation: Packaging the shared Python scripts into Lambda layers and applying the layers to the Lambda functions centralizes the script versioning; updating the layer updates all functions that reference it without modifying each function. A) Pointer in execution context is not a durable, scalable mechanism and does not enforce consistent updates. C) Environment variables pointing to a script in S3 still requires manual updates to multiple functions if the path or version changes. D) Using aliases does not propagate code updates; aliases route to different versions, but code changes require new versions and redeployments. B) provides centralized, reusable code management across multiple Lambdas.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: 
+
+A company created an extract, transform, and load (ETL) data pipeline in AWS Glue. A data engineer must crawl a table that is in Microsoft SQL Server. The data engineer needs to extract, transform, and load the output of the crawl to an Amazon S3 bucket. The data engineer also must orchestrate the data pipeline.
+Which AWS service or feature will meet these requirements MOST cost-effectively?
+
+### Options:
+- [ ] **A)** AWS Step Functions
+- [x] **B)** AWS Glue workflows [Correct]
+- [ ] **C)** AWS Glue Studio
+- [ ] **D)** Amazon Managed Workflows for Apache Airflow (Amazon MWAA)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+A) AWS Step Functions
+B) AWS Glue workflows
+C) AWS Glue Studio
+D) Amazon Managed Workflows for Apache Airflow (Amazon MWAA)
+AWS Glue workflows is correct because it coordinates ETL jobs, crawlers, and data transformations within a single cost-effective, serverless Glue environment, ideal for crawling SQL Server data, transforming, and loading to S3, plus native orchestration of Glue jobs and crawlers. Step Functions can orchestrate but adds extra state management and may incur higher overhead. Glue Studio is a UI for authoring jobs but not the orchestration backbone for multiple Glue components. Amazon MWAA is an external Airflow service with higher management overhead and cost for simple Glue-based pipelines.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: 
+
+A financial services company stores financial data in Amazon Redshift. A data engineer wants to run real-time queries on the financial data to support a web-based trading application. The data engineer wants to run the queries from within the trading application.
+Which solution will meet these requirements with the LEAST operational overhead?
+
+### Options:
+- [ ] **A)** Establish WebSocket connections to Amazon Redshift.
+- [x] **B)** Use the Amazon Redshift Data API. [Correct]
+- [ ] **C)** Set up Java Database Connectivity (JDBC) connections to Amazon Redshift.
+- [ ] **D)** Store frequently accessed data in Amazon S3. Use Amazon S3 Select to run the queries.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Real-time query capability with minimal operational overhead is achieved by the Redshift Data API, which enables SQL queries from applications over HTTPS without managing database connections or drivers.
+A) WebSocket connections to Redshift are not a managed, serverless API and require ongoing connection handling.
+B) Redshift Data API provides serverless, stateless access suitable for web apps, reducing connection management.
+C) JDBC connections require managing connection pools and drivers, adding operational burden.
+D) S3 Select queries on data in S3 do not directly query Redshift data and are not suitable for real-time, transactional querying needs.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: 
+
+A company uses Amazon Athena for one-time queries against data that is in Amazon S3. The company has several use cases. The company must implement permission controls to separate query processes and access to query history among users, teams, and applications that are in the same AWS account.
+Which solution will meet these requirements?
+
+### Options:
+- [ ] **A)** Create an S3 bucket for each use case. Create an S3 bucket policy that grants permissions to appropriate individual IAM users. Apply the S3 bucket policy to the S3 bucket.
+- [x] **B)** Create an Athena workgroup for each use case. Apply tags to the workgroup. Create an IAM policy that uses the tags to apply appropriate permissions to the workgroup. [Correct]
+- [ ] **C)** Create an IAM role for each use case. Assign appropriate permissions to the role for each use case. Associate the role with Athena.
+- [ ] **D)** Create an AWS Glue Data Catalog resource policy that grants permissions to appropriate individual IAM users for each use case. Apply the resource policy to the specific tables that Athena uses.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Athena workgroups with tags enable separate permission scopes for query execution and query history per use case, allowing granular control via IAM policies tied to those tags.
+A) Incorrect: Creating separate S3 buckets and policies mixes storage isolation with query access; it’s not scalable for managing Athena query history or per-use-case access across users/teams. 
+C) Incorrect: Per-use-case IAM roles require explicit role assumption management for each user/application and do not natively partition query history within Athena across cases. 
+D) Incorrect: Glue Data Catalog resource policies control access to catalogs, not per-use-case query execution or history in Athena; it doesn’t granularly partition by use case.
+</details>
+
+---

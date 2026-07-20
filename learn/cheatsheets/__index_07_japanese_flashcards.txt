@@ -1,0 +1,14 @@
+# 07_Japanese_Flashcards
+
+🔙 **Back to Parent**: [[languages/07_Japanese_Flashcards/🇯🇵index_07_Japanese_Flashcards|03_Languages_Communication]]
+
+## 📄 Notes & Documents
+- [[languages/07_Japanese_Flashcards/01_Flashcards_N5|01_Flashcards_N5 (Bảng từ vựng N5)]]
+- [[languages/07_Japanese_Flashcards/02_Flashcards_N4|02_Flashcards_N4 (Bảng từ vựng N4)]]
+- [[languages/07_Japanese_Flashcards/N5_Spaced_Repetition|N5_Spaced_Repetition (Flashcard N5)]]
+- [[languages/07_Japanese_Flashcards/N4_Spaced_Repetition|N4_Spaced_Repetition (Flashcard N4)]]
+- [[languages/07_Japanese_Flashcards/Japanese_Vocab_Mindmap|Japanese_Vocab_Mindmap (Sơ đồ tư duy từ vựng)]]
+- [[languages/07_Japanese_Flashcards/Instructions|Instructions]]
+
+## 🛠️ Interactive Tools
+- [Start-JPStudySession.ps1](file:///C:/Users/TruongNhon/Desktop/back-up/interview/learning/languages/07_Japanese_Flashcards/Start-JPStudySession.ps1) (Interactive vocabulary testing tool)

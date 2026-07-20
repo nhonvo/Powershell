@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/professional-cloud-architect
+  - professionalcloudarchitect
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 Professional-Cloud-Architect MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/google/Professional-Cloud-Architect/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/google/Professional-Cloud-Architect/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/google/Professional-Cloud-Architect/Professional-Cloud-Architect Mindmap\|🗺️ Professional-Cloud-Architect Mindmap]]
+- [[certifications/google/Professional-Cloud-Architect/Professional-Cloud-Architect Flashcards\|🃏 Professional-Cloud-Architect Flashcards]]
+- [[certifications/google/Professional-Cloud-Architect/Professional-Cloud-Architect_Scraped_Question_Bank\|🗃️ Professional-Cloud-Architect Scraped Question Bank]]

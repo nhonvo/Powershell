@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/ab-730
+  - ab730
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AB-730: AI Business Professional MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/AB-730/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/AB-730/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AB-730/AB-730 Mindmap\|🗺️ AB-730 Mindmap]]
+- [[certifications/microsoft/AB-730/AB-730 Flashcards\|🃏 AB-730 Flashcards]]
+- [[certifications/microsoft/AB-730/AB-730_Scraped_Question_Bank\|🗃️ AB-730 Scraped Question Bank]]

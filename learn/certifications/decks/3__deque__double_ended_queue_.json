@@ -1,0 +1,196 @@
+{
+  "Meta": {
+    "Id": "deck_3__deque__double_ended_queue_",
+    "Topic": "3. Deque (Double-ended Queue)",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "3__deque__double_ended_queue_"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 9
+  },
+  "Cards": [
+    {
+      "Id": "card_01012",
+      "Front": "Thao tác",
+      "Back": "Mô tả | Độ phức tạp",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. deque (double-ended queue)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01013",
+      "Front": "`push_front(x)`",
+      "Back": "Thêm x vào đầu | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. deque (double-ended queue)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01014",
+      "Front": "`push_back(x)`",
+      "Back": "Thêm x vào cuối | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. deque (double-ended queue)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01015",
+      "Front": "`pop_front()`",
+      "Back": "Xóa phần tử đầu | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. deque (double-ended queue)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01016",
+      "Front": "`pop_back()`",
+      "Back": "Xóa phần tử cuối | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. deque (double-ended queue)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01017",
+      "Front": "`front()`",
+      "Back": "Xem phần tử đầu | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. deque (double-ended queue)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01018",
+      "Front": "`back()`",
+      "Back": "Xem phần tử cuối | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. deque (double-ended queue)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01019",
+      "Front": "`isEmpty()`",
+      "Back": "Kiểm tra rỗng | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. deque (double-ended queue)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01020",
+      "Front": "`size()`",
+      "Back": "Số phần tử | O(1)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "3. deque (double-ended queue)"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

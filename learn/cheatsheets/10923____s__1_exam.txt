@@ -1,0 +1,77 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 1
+
+## Part 1
+**Q1.** （　　　） が　はじまりますから、きょうしつに　はいって　ください。
+- **A.** じゅぎょう
+- **B.** しつもん
+- **C.** もんだい
+- **D.** しゅくだい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1じゅぎょう： giờ họcGiờ học sẽ bắt đầu n&ecirc;n bạn h&atilde;y v&agrave;o lớp đi!しつもん： c&acirc;u hỏiもんだい： vấn đề, b&agrave;i tậpしゅくだい： b&agrave;i tập về nh&agrave;</p>
+</details>
+
+---
+**Q2.** かぜが　つめたいですから、まどを（　　 ）ください。
+- **A.** しめて
+- **B.** かえして
+- **C.** つけて
+- **D.** けして
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1しめる： đ&oacute;ngV&igrave; gi&oacute; lạnh n&ecirc;n h&atilde;y đ&oacute;ng cửa v&agrave;o.かえす： trả lạiつける： bậtけす： tắt</p>
+</details>
+
+---
+**Q3.** すずきさんの　へやは　あの（　　）の　3かいです。
+- **A.** レストラン
+- **B.** テーブル
+- **C.** アパート
+- **D.** エアコン
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3アパート： chung cư &iacute;t tầngPh&ograve;ng của Suzuki l&agrave; ở tầng 3 chung cư &iacute;t tầng kia.レストラン： nh&agrave; h&agrave;ngテーブル： c&aacute;i b&agrave;nエアコン： điều ho&agrave;</p>
+</details>
+
+---
+**Q4.** へやが　さむいですから　エアコンを（　　）ください。
+- **A.** あけて
+- **B.** けして
+- **C.** かけて
+- **D.** しめて
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2けす： tắtV&igrave; trời lạnh n&ecirc;n h&atilde;y tắt điều ho&agrave; đi.あける： mởかける： treo, đeo, ngồi,...しめる： đ&oacute;ng</p>
+</details>
+
+---
+**Q5.** かぜが（　　）ですから、うちへ　かえりましょう。
+- **A.** おもい
+- **B.** たかい
+- **C.** ひろい
+- **D.** つよい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4つよい： mạnhV&igrave; gi&oacute; thổi mạnh n&ecirc;n về nh&agrave; th&ocirc;i.おもい： nặngひろい： rộngたかい： cao, đắt</p>
+</details>
+
+---
+**Q6.** この　レストランは（　　）ですから　いつも　にぎやかです。
+- **A.** ふとい
+- **B.** せまい
+- **C.** ゆうめい
+- **D.** きたない
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3ゆうめい： nổi tiếngV&igrave; nh&agrave; h&agrave;ng n&agrave;y nổi tiếng n&ecirc;n l&uacute;c n&agrave;o cũng n&aacute;o nhiệt.ふとい： b&eacute;oせまい： gầyきたない： bẩn</p>
+</details>
+
+---

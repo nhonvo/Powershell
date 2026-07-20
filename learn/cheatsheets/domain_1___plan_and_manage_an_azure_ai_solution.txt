@@ -1,0 +1,54 @@
+---
+tags:
+  - certification/ai-102
+  - ai-solution/study-notes/domain-1
+status: 📝 study-backlog
+created: 2026-06-15
+---
+
+# Domain 1: Plan and Manage an Azure AI Solution (15-20%)
+
+This domain focuses on setting up, securing, monitoring, and managing costs for Azure AI services, along with implementing Responsible AI frameworks.
+
+## 🎯 Exam Objectives
+- Select the appropriate Azure AI service or resource type.
+- Configure security for Azure AI resources (keys, Entra ID, Managed Identities, network security).
+- Monitor Azure AI services (diagnostic logging, metrics, alerts).
+- Manage costs (pricing tiers, spending limits, scaling).
+- Operationalize Responsible AI principles (bias detection, safety filters).
+
+## 📖 Key Study Topics
+
+### 1. Resource Provisioning
+*   **Single-Service Resource**: Dedicated endpoint and key for a single service (e.g., *Azure AI Translator*). Better for billing isolation and fine-grained access control.
+*   **Multi-Service Resource (Azure AI Services)**: Single key and endpoint for multiple services (Vision, Language, Translator, etc.). Simplifies key management. *Note: Azure OpenAI requires its own dedicated resource and cannot be accessed via a multi-service resource.*
+
+### 2. Security & Networking
+*   **Authentication**: API keys (primary/secondary for rotation) and Microsoft Entra ID (role-based access control - RBAC).
+*   **Managed Identities**: Allows Azure resources (e.g., VMs, App Services) to authenticate to Azure AI services securely without hardcoding credentials.
+*   **Network Security**: Restrict access using firewalls, virtual networks (VNs), and Private Endpoints (Private Link) to bypass the public internet.
+
+### 3. Monitoring & Analytics
+*   **Diagnostic Logs**: Stream logs to Log Analytics workspace, Azure Storage, or Event Hub to capture query inputs, output sizes, and caller IPs.
+*   **Metrics**: Track latency, total transactions, errors (e.g., HTTP 429 Too Many Requests due to rate limits), and active connections in Azure Monitor.
+
+### 4. Responsible AI
+*   **Six Principles**: Fairness, Reliability & Safety, Privacy & Security, Inclusiveness, Transparency, and Accountability.
+*   **Content Filtering**: Configure blocklists and severity thresholds (Low, Medium, High) in Azure OpenAI for categories like Hate, Sexual, Violence, and Self-harm.
+
+---
+Back to **[[certifications/microsoft/AI-102/AI-102 MOC|AI-102 MOC]]**
+
+## 🔍 Practice Question Reference
+Here are key questions from the practice bank matching this domain:
+- **Q1**: You are developing a new sales system that will process the video and text from a public-facing webs... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 1#Question 1|Practice Q1]])
+- **Q2**: You successfully run the following HTTP request.  POST https://management.azure.com/subscriptions/18... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 1#Question 2|Practice Q2]])
+- **Q3**: You are developing a new sales system that will process the video and text from a public-facing webs... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 1#Question 3|Practice Q3]])
+- **Q4**: You plan to perform predictive maintenance. You collect IoT sensor data from 100 industrial machines... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 1#Question 4|Practice Q4]])
+- **Q5**: SIMULATION You need to create a Text Analytics service named Text12345678, and then enable logging f... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 1#Question 5|Practice Q5]])
+- **Q6**: You have a factory that produces food products.  You need to build a monitoring solution for staff c... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 1#Question 6|Practice Q6]])
+- **Q7**: SIMULATION Use the following login credentials as needed:   To enter your username, place your curso... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 1#Question 7|Practice Q7]])
+- **Q8**: SIMULATION Use the following login credentials as needed:   To enter your username, place your curso... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 1#Question 8|Practice Q8]])
+
+---
+Back to **[[certifications/microsoft/AI-102/AI-102 MOC|AI-102 MOC]]**

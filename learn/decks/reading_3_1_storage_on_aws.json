@@ -1,0 +1,196 @@
+{
+  "Meta": {
+    "Id": "deck_reading_3_1_storage_on_aws",
+    "Topic": "Reading 3.1 Storage on AWS",
+    "Language": "English/Japanese",
+    "Domain": "certifications",
+    "Level": "General",
+    "Tags": [
+      "reading_3_1_storage_on_aws"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 9
+  },
+  "Cards": [
+    {
+      "Id": "card_00163",
+      "Front": "**Description**",
+      "Back": "Highest performance SSD designed for latency-sensitive transactional workloads | General purpose SSD that balances price and performance for a wide variety of transactional workloads | Low-cost HDD designed for frequently accessed, throughput intensive workloads | Lowest cost HDD designed for less frequently accessed workloads",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 3.1 storage on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00164",
+      "Front": "**Use Cases**",
+      "Back": "I/O-intensive NoSQL and relational databases | Boot volumes, low-latency interactive apps, development, and test | Big data, data warehouses, log processing | Colder data requiring fewer scans per day",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 3.1 storage on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00165",
+      "Front": "**Volume Size**",
+      "Back": "4 GB-16 TB | 1 GB-16 TB | 500 GB-16 TB | 500 GB-16 TB",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 3.1 storage on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00166",
+      "Front": "**Max IOPS/Volume**",
+      "Back": "64,000 | 16,000 | 500 | 250",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 3.1 storage on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00167",
+      "Front": "**Max Throughput/Volume**",
+      "Back": "1,000 MB/s | 250 MB/s | 500 MB/s | 250 MB/s",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 3.1 storage on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00168",
+      "Front": "Service",
+      "Back": "Characteristic | More Information",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 3.1 storage on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00169",
+      "Front": "Amazon Elastic File System (EFS)",
+      "Back": "Fully managed NFS file system. | [EFS FAQs](https://aws.amazon.com/efs/faq/)",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 3.1 storage on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00170",
+      "Front": "Amazon FSx for Windows File Server",
+      "Back": "Fully managed file server built on Windows Server that supports the SMB protocol. | [FSx for Windows File Server FAQs](https://aws.amazon.com/fsx/windows/faqs/?nc=sn&loc=8)",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 3.1 storage on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00171",
+      "Front": "Amazon FSx for Lustre",
+      "Back": "Fully managed Lustre file system that integrates with S3. | [FSx for Lustre FAQs](https://aws.amazon.com/fsx/lustre/faqs/?nc=sn&loc=5)",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 3.1 storage on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

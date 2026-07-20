@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mb2-228
+  - mb2228
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MB2-228: MB2-228 Microsoft CRM Extending MS CRM 1.2 with .NET MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MB2-228/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MB2-228/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MB2-228/MB2-228 Mindmap\|🗺️ MB2-228 Mindmap]]
+- [[certifications/microsoft/MB2-228/MB2-228 Flashcards\|🃏 MB2-228 Flashcards]]
+- [[certifications/microsoft/MB2-228/MB2-228_Scraped_Question_Bank\|🗃️ MB2-228 Scraped Question Bank]]

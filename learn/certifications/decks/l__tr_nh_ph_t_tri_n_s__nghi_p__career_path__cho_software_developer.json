@@ -1,0 +1,176 @@
+{
+  "Meta": {
+    "Id": "deck_l__tr_nh_ph_t_tri_n_s__nghi_p__career_path__cho_software_developer",
+    "Topic": "Lộ Trình Phát Triển Sự Nghiệp (Career Path) cho Software Developer",
+    "Language": "English/Japanese",
+    "Domain": "study_plans",
+    "Level": "General",
+    "Tags": [
+      "l__tr_nh_ph_t_tri_n_s__nghi_p__career_path__cho_software_developer"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 8
+  },
+  "Cards": [
+    {
+      "Id": "card_03439",
+      "Front": "Tiêu chí",
+      "Back": "**Dev 3 (Senior Developer)** | **Dev 4 (Lead Developer)** | **SA / Dev 5-6 (Architect / Principal)**",
+      "Hint": "study_plans",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "lộ trình phát triển sự nghiệp (career path) cho software developer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03440",
+      "Front": "**Phạm vi Trách nhiệm**",
+      "Back": "**Feature-level:** Chịu trách nhiệm hoàn thành một hoặc nhiều tính năng từ đầu đến cuối. | **System/Module-level:** Chịu trách nhiệm về một module lớn hoặc một phần của hệ thống. | **Project/Organization-level:** Chịu trách nhiệm về toàn bộ kiến trúc và định hướng kỹ thuật của dự án.",
+      "Hint": "study_plans",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "lộ trình phát triển sự nghiệp (career path) cho software developer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03441",
+      "Front": "**Kỹ năng Cốt lõi**",
+      "Back": "**Execution & Coding:** Viết code sạch, áp dụng Design Patterns, thiết kế API & Database. | **System Design & Optimization:** Thiết kế hệ thống con, tối ưu hiệu năng (caching, query), DevOps cơ bản. | **Architecture & Strategy:** Thiết kế kiến trúc high-level, lựa chọn công nghệ, chiến lược về hạ tầng và bảo mật.",
+      "Hint": "study_plans",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "lộ trình phát triển sự nghiệp (career path) cho software developer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03442",
+      "Front": "**Mức độ Tự chủ**",
+      "Back": "**Làm việc độc lập:** Có khả năng tự quản lý công việc, tự giải quyết các vấn đề trong phạm vi feature được giao. | **Dẫn dắt một nhóm nhỏ:** Tự chủ trong việc thiết kế và quản lý một module, hướng dẫn các thành viên khác. | **Định hướng kỹ thuật:** Độc lập đưa ra các quyết định về công nghệ và kiến trúc, có tầm ảnh hưởng lớn.",
+      "Hint": "study_plans",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "lộ trình phát triển sự nghiệp (career path) cho software developer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03443",
+      "Front": "**Tư duy & Mục tiêu**",
+      "Back": "**\"Làm đúng và làm tốt\"**: Hoàn thành task với chất lượng cao nhất, đúng deadline, code dễ bảo trì. | **\"Làm cho hệ thống ổn định và hiệu quả\"**: Đảm bảo module mình phụ trách chạy nhanh, ổn định và dễ mở rộng. | **\"Đảm bảo thành công dài hạn cho dự án\"**: Đưa ra quyết định giúp dự án có thể phát triển bền vững, đáp ứng mục tiêu kinh doanh.",
+      "Hint": "study_plans",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "lộ trình phát triển sự nghiệp (career path) cho software developer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03444",
+      "Front": "**Giải quyết Vấn đề**",
+      "Back": "**Cấp độ \"How\":** Tìm ra giải pháp kỹ thuật tốt nhất để hiện thực hóa một yêu cầu đã có. | **Cấp độ \"What & Why\":** Phân tích yêu cầu, đề xuất giải pháp hệ thống và giải thích lý do lựa chọn. | **Cấp độ \"Strategic Why\":** Xác định vấn đề cốt lõi của bài toán kinh doanh và thiết kế một giải pháp kỹ thuật tổng thể.",
+      "Hint": "study_plans",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "lộ trình phát triển sự nghiệp (career path) cho software developer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03445",
+      "Front": "**Tương tác & Giao tiếp**",
+      "Back": "Chủ yếu trong team (BA, QA, Devs khác). | Team của mình, SA, và các team liên quan (DevOps, các team dev khác). | Ban lãnh đạo, khách hàng, các team lead, và các bên liên quan (stakeholders).",
+      "Hint": "study_plans",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "lộ trình phát triển sự nghiệp (career path) cho software developer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03446",
+      "Front": "**Kết quả Đầu ra**",
+      "Back": "Code, Unit Test, các API/Feature hoàn chỉnh. | Các module hệ thống, tài liệu thiết kế chi tiết, các buổi review code, các thành viên được mentored. | Sơ đồ kiến trúc (Architecture Diagram), tài liệu kỹ thuật, Proof of Concept (PoC), tiêu chuẩn coding chung.",
+      "Hint": "study_plans",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "lộ trình phát triển sự nghiệp (career path) cho software developer"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

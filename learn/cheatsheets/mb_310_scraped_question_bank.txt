@@ -1,0 +1,214 @@
+# 🗃️ MB-310 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 1 - Set up and configure financial management (Question Set 1)
+
+Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.
+
+After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen.
+
+You are configuring the year-end setup in Dynamics 365 Finance.
+
+You need to configure the year-end setup to meet the following requirements:
+
+The accounting adjustments that are received in the first quarter must be able to be posted into the previous year's Period 13.
+The fiscal year closing can be run again, but only the most recent closing entry will remain in the transactions.
+All dimensions from profit and loss must carry over into the retained earnings.
+
+All future and previous periods must have an On Hold status.
+
+Solution:
+
+Configure General ledger parameters.
+
+- Set the Delete close of year transactions option to Yes.
+- Set the Create closing transactions during transfer option to Yes.
+- Set the Fiscal year status to permanently closed option to No.
+- Define the Year-end close template.
+
+- Designate a retained earnings main account for each legal entity.
+- Set the Financial dimensions will be used on the Opening transactions option to No.
+- Set the Transfer profit and loss dimensions option to Close All. Set all prior and future Ledger periods to a status of On Hold.
+
+Does the solution meet the goal?
+
+### Options:
+- [x] **A)** Yes [Correct]
+- [ ] **B)** No
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 1 - Set up and configure financial management (Question Set 1)
+
+Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.
+
+After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen.
+
+You are configuring the year-end setup in Dynamics 365 Finance.
+
+You need to configure the year-end setup to meet the following requirements:
+
+The accounting adjustments that are received in the first quarter must be able to be posted into the previous year's Period 13.
+The fiscal year closing can be run again, but only the most recent closing entry will remain in the transactions.
+All dimensions from profit and loss must carry over into the retained earnings.
+
+All future and previous periods must have an On Hold status.
+
+Solution:
+
+Configure General ledger parameters.
+
+- Set the Delete close of year transactions option to Yes.
+- Set the Create closing transactions during transfer option to Yes.
+- Set the Fiscal year status to permanently closed option to Yes.
+- Define the Year-end close template.
+
+- Designate a retained earnings main account for each legal entity.
+- Set the Financial dimensions will be used on the Opening transactions option to Yes.
+- Set the Transfer profit and loss dimensions to Close All.
+- Set all prior and future Ledger periods to a status of On Hold.
+
+Does the solution meet the goal?
+
+### Options:
+- [ ] **A)** Yes
+- [x] **B)** No [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 1 - Set up and configure financial management (Question Set 1)
+
+Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.
+
+After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen.
+
+You are configuring the year-end setup in Dynamics 365 Finance.
+
+You need to configure the year-end setup to meet the following requirements:
+
+The accounting adjustments that are received in the first quarter must be able to be posted into the previous year's Period 13.
+The fiscal year closing can be run again, but only the most recent closing entry will remain in the transactions.
+All dimensions from profit and loss must carry over into the retained earnings.
+
+All future and previous periods must have an On Hold status.
+
+Solution:
+
+Configure General ledger parameters.
+
+- Set the Delete close of year transactions option to No.
+- Set the Create closing transactions during transfer option to No.
+- Set the Fiscal year status to permanently closed option to No.
+- Define the Year-end close template.
+
+- Designate a retained earnings main account for each legal entity.
+- Set the Financial dimensions will be used on the Opening transactions option to No.
+- Set the Transfer profit and loss dimensions to Close All.
+- Set all prior and future Ledger periods to a status of On Hold.
+
+Does the solution meet the goal?
+
+### Options:
+- [ ] **A)** Yes
+- [x] **B)** No [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 1 - Set up and configure financial management (Question Set 1)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You are implementing a Dynamics 365 Finance general ledger module for a client that has multiple legal entities.
+
+The client has the following requirements:
+
+Configure automatic creation of due to/due from transactions based on when LegalEntityA transacts with
+
+LegalEntityB.
+Automatically split the dollar amount in half between DimensionA and DimensionB when the journal is posted.
+Set up fixed or variable allocations, and then review the allocations in a journal before posting.
+
+Automatically post year-end results to account 30016 during year-end close.
+
+You need to configure the system.
+
+Which system capability should you configure? To answer, select the appropriate configuration in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 1 - Set up and configure financial management (Question Set 1)
+
+A company is preparing to complete a year-end close process.
+
+You need to configure the Dynamics 365 Finance general ledger module.
+
+Which three configurations actions should you perform? Each correct answer presents part of the solution.
+
+Note: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,C,E`
+
+**Explanation**:
+
+</details>
+
+---

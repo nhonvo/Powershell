@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mo-500
+  - mo500
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MO-500: Microsoft Access Expert MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MO-500/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MO-500/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MO-500/MO-500 Mindmap\|🗺️ MO-500 Mindmap]]
+- [[certifications/microsoft/MO-500/MO-500 Flashcards\|🃏 MO-500 Flashcards]]
+- [[certifications/microsoft/MO-500/MO-500_Scraped_Question_Bank\|🗃️ MO-500 Scraped Question Bank]]

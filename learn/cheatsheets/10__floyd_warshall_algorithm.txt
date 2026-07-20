@@ -1,0 +1,387 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/12_Graphs/🕸️index_12_Graphs|12_Graphs]]
+
+## 10. Floyd-Warshall Algorithm
+
+### 10.1. Tổng quan
+
+**Ví dụ thực tế:** Bạn đang xây dựng app bản đồ cho một thành phố nhỏ với 50 địa điểm. Bạn muốn **precalculate** khoảng cách ngắn nhất giữa MỌI cặp địa điểm để khi user hỏi "từ A đến B bao xa?" thì trả lời ngay lập tức O(1). Floyd-Warshall giải quyết bài toán **All-Pairs Shortest Path (APSP)** này.
+
+**Bài toán:** Cho weighted graph G = (V, E), có thể có trọng số âm (nhưng KHÔNG có negative cycle). Tìm đường đi ngắn nhất giữa MỌI cặp đỉnh (u, v).
+
+**Robert Floyd** và **Stephen Warshall** phát triển thuật toán này độc lập năm 1962. Warshall giải bài toán transitive closure, Floyd mở rộng cho shortest path.
+
+### 10.2. Ý tưởng cốt lõi — Dynamic Programming
+
+**Ý tưởng DP cực kỳ elegant:** Xét đường đi từ i đến j. Đường đi này có thể đi qua các đỉnh trung gian {0, 1, 2, ..., V-1}.
+
+Gọi `dp[k][i][j]` = khoảng cách ngắn nhất từ i đến j chỉ sử dụng các đỉnh trung gian trong {0, 1, ..., k}.
+
+**Recurrence:**
+
+```
+dp[k][i][j] = min(
+    dp[k-1][i][j],                       # Không đi qua đỉnh k
+    dp[k-1][i][k] + dp[k-1][k][j]        # Đi qua đỉnh k
+)
+```
+
+**Giải thích:** Đường đi ngắn nhất từ i đến j dùng đỉnh trung gian {0..k} hoặc:
+
+1. Không đi qua k — giống như chỉ dùng {0..k-1}
+2. Đi qua k — chia thành: i tới k (dùng {0..k-1}) + k tới j (dùng {0..k-1})
+
+**Tối ưu không gian:** Vì dp[k] chỉ phụ thuộc dp[k-1], ta có thể dùng chỉ 1 ma trận 2D và update in-place!
+
+ĐúngKhôngHết jHết iHết kKhởi tạo ma trận dist V x Vdist[i][j] = weight(i,j) nếu có cạnh, INF nếu khôngdist[i][i] = 0 cho mọi iLặp k = 0 đến V-1 (đỉnh trung gian)Lặp i = 0 đến V-1 (nguồn)Lặp j = 0 đến V-1 (đích)dist[i][k] + dist[k][j] < dist[i][j]?dist[i][j] = dist[i][k] + dist[k][j]next_v[i][j] = next_v[i][k]Kiểm tra negative cycle: dist[i][i] < 0?Trả về dist và next_v
+
+### 10.3. Mô phỏng chi tiết
+
+```
+Graph:
+    0 --3--> 1
+    0 --7--> 2
+    1 --2--> 2
+    2 --1--> 0
+    1 --(-5)--> 3
+    3 --10--> 2
+```
+
+**Ma trận ban đầu (k = -1):**
+
+```
+     0    1    2    3
+0 [  0,   3,   7,  INF]
+1 [INF,   0,   2,  -5 ]
+2 [  1, INF,   0,  INF]
+3 [INF, INF,  10,   0 ]
+```
+
+**Sau k=0 (cho phép đi qua đỉnh 0):**
+
+```
+Xét i=2, j=1: min(INF, 1+3) = 4  -- CẬP NHẬT!
+Các ô khác: không đổi hoặc không cải thiện.
+
+     0    1    2    3
+0 [  0,   3,   7,  INF]
+1 [INF,   0,   2,  -5 ]
+2 [  1,   4,   0,  INF]   <-- 2 tới 1 = 4 (qua 0)
+3 [INF, INF,  10,   0 ]
+```
+
+**Sau k=1 (cho phép đi qua đỉnh 0, 1):**
+
+```
+Xét i=0, j=2: min(7, 3+2) = 5  -- CẬP NHẬT!
+Xét i=0, j=3: min(INF, 3+(-5)) = -2  -- CẬP NHẬT!
+Xét i=2, j=3: min(INF, 4+(-5)) = -1  -- CẬP NHẬT!
+
+     0    1    2    3
+0 [  0,   3,   5,  -2 ]   <-- 0 tới 2=5, 0 tới 3=-2
+1 [INF,   0,   2,  -5 ]
+2 [  1,   4,   0,  -1 ]   <-- 2 tới 3=-1
+3 [INF, INF,  10,   0 ]
+```
+
+**Sau k=2 (cho phép đi qua đỉnh 0, 1, 2):**
+
+```
+Xét i=1, j=0: min(INF, 2+1) = 3  -- CẬP NHẬT!
+Xét i=3, j=0: min(INF, 10+1) = 11  -- CẬP NHẬT!
+Xét i=3, j=1: min(INF, 10+4) = 14  -- CẬP NHẬT!
+
+     0    1    2    3
+0 [  0,   3,   5,  -2 ]
+1 [  3,   0,   2,  -5 ]   <-- 1 tới 0=3
+2 [  1,   4,   0,  -1 ]
+3 [ 11,  14,  10,   0 ]   <-- 3 tới 0=11, 3 tới 1=14
+```
+
+**Sau k=3 (cho phép đi qua tất cả đỉnh):** Không có cải thiện nào thêm.
+
+**Kết quả cuối cùng — khoảng cách ngắn nhất giữa mọi cặp đỉnh.**
+
+### 10.4. Implementation đầy đủ
+
+```python
+def floyd_warshall(graph_matrix, num_vertices):
+    """
+    Floyd-Warshall Algorithm — All-Pairs Shortest Path.
+
+    Args:
+        graph_matrix: ma trận kề V x V (INF nếu không có cạnh)
+        num_vertices: số đỉnh
+
+    Returns:
+        dist: ma trận khoảng cách ngắn nhất V x V
+        next_vertex: ma trận truy vết đường đi
+        has_negative_cycle: True nếu có negative cycle
+    """
+    INF = float('inf')
+    V = num_vertices
+
+    # Khởi tạo ma trận dist và next_vertex
+    dist = [[INF] * V for _ in range(V)]
+    next_vertex = [[None] * V for _ in range(V)]
+
+    # Copy ma trận kề vào dist
+    for i in range(V):
+        for j in range(V):
+            if i == j:
+                dist[i][j] = 0
+            elif graph_matrix[i][j] != INF:
+                dist[i][j] = graph_matrix[i][j]
+                next_vertex[i][j] = j  # Đường đi trực tiếp i tới j
+
+    # === DP: 3 vòng lặp k-i-j ===
+    for k in range(V):
+        for i in range(V):
+            for j in range(V):
+                if dist[i][k] != INF and dist[k][j] != INF:
+                    if dist[i][k] + dist[k][j] < dist[i][j]:
+                        dist[i][j] = dist[i][k] + dist[k][j]
+                        next_vertex[i][j] = next_vertex[i][k]
+
+    # Kiểm tra negative cycle
+    has_negative_cycle = False
+    for i in range(V):
+        if dist[i][i] < 0:
+            has_negative_cycle = True
+            break
+
+    return dist, next_vertex, has_negative_cycle
+
+
+def reconstruct_path_fw(next_vertex, start, end):
+    """Truy vết đường đi từ start đến end."""
+    if next_vertex[start][end] is None:
+        return None
+
+    path = [start]
+    current = start
+    while current != end:
+        current = next_vertex[current][end]
+        if current is None:
+            return None
+        path.append(current)
+        # Phòng trường hợp infinite loop (negative cycle)
+        if len(path) > len(next_vertex) + 1:
+            return None
+    return path
+
+
+def print_matrix(matrix, label="Matrix"):
+    """In ma trận đẹp."""
+    print(f"\n{label}:")
+    V = len(matrix)
+    INF = float('inf')
+
+    # Header
+    print("     ", end="")
+    for j in range(V):
+        print(f"{j:>6}", end="")
+    print()
+
+    for i in range(V):
+        print(f"  {i}: ", end="")
+        for j in range(V):
+            val = matrix[i][j]
+            if val == INF:
+                print(f"{'INF':>6}", end="")
+            else:
+                print(f"{val:>6}", end="")
+        print()
+
+
+# === TEST ===
+if __name__ == "__main__":
+    INF = float('inf')
+
+    # Test 1: Graph cơ bản
+    print("=== Floyd-Warshall Test 1 ===")
+    graph = [
+        [0,   3,   7, INF],
+        [INF, 0,   2,  -5],
+        [1, INF,   0, INF],
+        [INF, INF, 10,  0],
+    ]
+
+    dist, next_v, neg_cycle = floyd_warshall(graph, 4)
+
+    print(f"Negative cycle: {neg_cycle}")
+    print_matrix(dist, "Shortest Distances")
+
+    print("\nDuong di:")
+    for i in range(4):
+        for j in range(4):
+            if i != j:
+                path = reconstruct_path_fw(next_v, i, j)
+                if path:
+                    print(f"  {i} -> {j}: dist={dist[i][j]}, "
+                          f"path={' -> '.join(map(str, path))}")
+
+    # Test 2: Phát hiện negative cycle
+    print("\n=== Floyd-Warshall Test 2: Negative cycle ===")
+    graph2 = [
+        [0,   1, INF],
+        [INF, 0,  -1],
+        [-1, INF,  0],
+    ]
+    _, _, neg_cycle2 = floyd_warshall(graph2, 3)
+    print(f"Negative cycle detected: {neg_cycle2}")
+```
+
+**Output:**
+
+```
+=== Floyd-Warshall Test 1 ===
+Negative cycle: False
+
+Shortest Distances:
+          0     1     2     3
+  0:      0     3     5    -2
+  1:      3     0     2    -5
+  2:      1     4     0    -1
+  3:     11    14    10     0
+
+Duong di:
+  0 -> 1: dist=3, path=0 -> 1
+  0 -> 2: dist=5, path=0 -> 1 -> 2
+  0 -> 3: dist=-2, path=0 -> 1 -> 3
+  1 -> 0: dist=3, path=1 -> 2 -> 0
+  1 -> 2: dist=2, path=1 -> 2
+  1 -> 3: dist=-5, path=1 -> 3
+  2 -> 0: dist=1, path=2 -> 0
+  2 -> 1: dist=4, path=2 -> 0 -> 1
+  2 -> 3: dist=-1, path=2 -> 0 -> 1 -> 3
+  3 -> 0: dist=11, path=3 -> 2 -> 0
+  3 -> 1: dist=14, path=3 -> 2 -> 0 -> 1
+  3 -> 2: dist=10, path=3 -> 2
+```
+
+### 10.5. Transitive Closure (Bao đóng bắc cầu)
+
+Biến thể của Floyd-Warshall: thay vì tìm shortest path, chỉ hỏi "từ i có ĐẾN ĐƯỢC j không?".
+
+```python
+def transitive_closure(adj_matrix, num_vertices):
+    """
+    Warshall's Algorithm — Transitive Closure.
+    reach[i][j] = True nếu có đường đi từ i đến j.
+    """
+    V = num_vertices
+    reach = [[False] * V for _ in range(V)]
+
+    # Khởi tạo
+    for i in range(V):
+        reach[i][i] = True  # Mọi đỉnh đến được chính nó
+        for j in range(V):
+            if adj_matrix[i][j] != float('inf') and adj_matrix[i][j] != 0:
+                reach[i][j] = True
+
+    # Floyd-Warshall nhưng dùng OR thay vì min
+    for k in range(V):
+        for i in range(V):
+            for j in range(V):
+                reach[i][j] = reach[i][j] or (reach[i][k] and reach[k][j])
+
+    return reach
+
+
+# === TEST ===
+if __name__ == "__main__":
+    INF = float('inf')
+    graph = [
+        [0,   1, INF, INF],
+        [INF, 0,   1, INF],
+        [INF, INF, 0,   1],
+        [INF, INF, INF, 0],
+    ]
+
+    reach = transitive_closure(graph, 4)
+    print("Transitive Closure:")
+    for i in range(4):
+        print(f"  {i}: {['T' if reach[i][j] else 'F' for j in range(4)]}")
+```
+
+### 10.6. Phân tích Complexity
+
+**Time:** O(V^3) — ba vòng lặp lồng nhau, mỗi vòng V lần.
+
+**Space:** O(V^2) cho ma trận dist và next_vertex.
+
+**Chứng minh tính đúng:**
+
+**Bất biến:** Sau khi xử lý k, `dist[i][j]` chứa trọng số đường đi ngắn nhất từ i đến j chỉ sử dụng đỉnh trung gian trong {0, 1, ..., k}.
+
+**Chứng minh bằng quy nạp trên k:**
+
+- **k = -1 (base):** dist[i][j] = weight(i,j) nếu có cạnh, INF nếu không. Đây là đường đi không dùng đỉnh trung gian nào. Đúng.
+
+- k-1 tới k:
+
+   
+
+  Đường đi ngắn nhất từ i đến j dùng đỉnh trung gian {0..k} hoặc:
+
+  - Không đi qua k: dist[k-1][i][j] (đã có từ bước trước)
+  - Đi qua k: dist[k-1][i][k] + dist[k-1][k][j]
+  - Ta lấy min, chính xác. QED.
+
+**Tại sao update in-place đúng?** Khi tính dist[i][j] ở vòng k, ta cần dist[i][k] và dist[k][j]. Nhưng dist[i][k] không thay đổi ở vòng k (vì dist[k][k] = 0, đường đi qua k đến k = dist[k-1][i][k] + 0 = dist[k-1][i][k]). Tương tự cho dist[k][j]. Nên update in-place an toàn.
+
+### 10.7. So sánh tổng hợp các thuật toán Shortest Path
+
+| Thuật toán         | Loại | Time             | Space  | Trọng số âm | Negative cycle | Dùng khi             |
+| :----------------- | :--- | :--------------- | :----- | :---------- | :------------- | :------------------- |
+| **BFS**            | SSSP | O(V+E)           | O(V)   | Không       | Không          | Unweighted           |
+| **Dijkstra**       | SSSP | O((V+E)logV)     | O(V+E) | Không       | Không          | Non-negative weights |
+| **Bellman-Ford**   | SSSP | O(VE)            | O(V)   | Có          | Phát hiện      | Negative weights     |
+| **Floyd-Warshall** | APSP | O(V^3)           | O(V^2) | Có          | Phát hiện      | All-pairs, V nhỏ     |
+| **Johnson's**      | APSP | O(V^2 logV + VE) | O(V^2) | Có          | Phát hiện      | All-pairs, sparse    |
+
+### 10.8. Cải tiến và ứng dụng
+
+**Cải tiến:**
+
+1. **Parallelization:** Vòng i-j có thể chạy song song trên GPU (blocked Floyd-Warshall)
+2. **Space optimization:** Nếu chỉ cần distance (không cần path), bỏ ma trận next_vertex
+3. **Sparse graph:** Nếu E << V^2, dùng Johnson's (Bellman-Ford + V lần Dijkstra) thay vì Floyd-Warshall
+
+**Ứng dụng:**
+
+1. **Routing protocols:** OSPF, RIP dùng biến thể shortest path
+2. **Social network:** Khoảng cách giữa 2 người (degrees of separation)
+3. **Game AI:** Tính trước khoảng cách trên bản đồ nhỏ
+4. **Arbitrage detection:** Phát hiện cơ hội chênh lệch tỷ giá (negative cycle trên log weights)
+5. **Transitive closure:** Kiểm tra reachability trong dependency graph
+
+------
+
+## Tổng kết
+
+Phần 12 này đã cover toàn bộ các thuật toán graph quan trọng nhất. Dưới đây là bảng tóm tắt để bạn dễ ôn tập:
+
+| #    | Chủ đề               | Key Algorithm | Time         | Ghi nhớ                  |
+| :--- | :------------------- | :------------ | :----------- | :----------------------- |
+| 1    | Graph Representation | Adj List      | -            | 90% dùng adjacency list  |
+| 2    | BFS                  | Queue         | O(V+E)       | Shortest path unweighted |
+| 3    | DFS                  | Stack/Đệ quy  | O(V+E)       | Backtracking, cycle      |
+| 4    | Cycle Detection      | DFS + colors  | O(V+E)       | 3 colors cho directed    |
+| 5    | Topological Sort     | Kahn / DFS    | O(V+E)       | Chỉ cho DAG              |
+| 6    | MST - Prim           | Min-Heap      | O((V+E)logV) | Dense graph              |
+| 7    | MST - Kruskal        | Sort + UF     | O(ElogV)     | Sparse graph             |
+| 8    | Union-Find           | PC + Rank     | O(alpha(n))  | Gần O(1)                 |
+| 9    | Dijkstra             | Min-Heap      | O((V+E)logV) | Non-negative only        |
+| 10   | Bellman-Ford         | Relax V-1     | O(VE)        | Negative weights         |
+| 11   | Floyd-Warshall       | DP 3 loops    | O(V^3)       | All-pairs                |
+
+**Lời khuyên học tập:**
+
+1. **Hiểu trước, code sau** — nắm rõ ý tưởng và mô phỏng bằng tay trước khi viết code
+2. **Vẽ graph** — luôn vẽ ra giấy hoặc dùng tool để visualize
+3. **Chạy bằng tay** — trace từng bước trên ví dụ nhỏ
+4. **So sánh** — hiểu khi nào dùng thuật toán nào
+5. **Luyện tập** — LeetCode, Codeforces có rất nhiều bài graph hay
+
+Chúc bạn học tốt!

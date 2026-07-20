@@ -1,0 +1,444 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/06_Linked_List/🔗index_06_Linked_List|06_Linked_List]]
+
+## 6. LRU Cache (Design Problem)
+
+### 6.1. Bối cảnh thực tế
+
+Hãy tưởng tượng bạn có một **kệ sách nhỏ trên bàn làm việc** chỉ vừa đủ 5 cuốn sách. Khi bạn cần đọc cuốn mới mà kệ đã đầy, bạn phải bỏ đi cuốn nào? Đương nhiên là cuốn **lâu nhất chưa đọc** — đây chính là chiến lược **LRU (Least Recently Used)**.
+
+Trong thế giới phần mềm, LRU Cache xuất hiện ở khắp nơi:
+
+- **CPU cache**: bỏ cache line ít dùng nhất
+- **Browser cache**: xoá trang web lâu nhất chưa truy cập
+- **Database buffer pool**: giải phóng page ít truy cập nhất
+- **CDN**: xoá file ít request nhất
+- **Redis key eviction**: chính sách `allkeys-lru`
+
+Đây là bài LeetCode 146 — một trong những bài design phỏng vấn phổ biến nhất tại FAANG.
+
+### 6.2. Yêu cầu
+
+Thiết kế cấu trúc dữ liệu LRU Cache hỗ trợ 2 thao tác:
+
+- **`get(key)`**: Trả về value nếu key tồn tại (và đánh dấu key vừa được sử dụng), ngược lại trả -1.
+- **`put(key, value)`**: Thêm cặp key-value. Nếu cache đầy, xoá entry **ít được sử dụng gần đây nhất** (Least Recently Used) trước khi thêm mới.
+
+**Yêu cầu quan trọng:** Cả `get` và `put` phải chạy trong **O(1) time**!
+
+### 6.3. Phân tích: Tại sao cần HashMap + Doubly Linked List?
+
+Hãy xem xét từng cấu trúc dữ liệu:
+
+| Cấu trúc          | get O(1)?    | Xoá LRU O(1)?       | Cập nhật vị trí O(1)?   |
+| :---------------- | :----------- | :------------------ | :---------------------- |
+| Array             | Không (O(n)) | Không (O(n))        | Không (O(n))            |
+| HashMap           | **Có**       | Không (nào là LRU?) | Không                   |
+| Linked List       | Không (O(n)) | **Có** (xoá tail)   | **Có** (di chuyển node) |
+| **HashMap + DLL** | **Có**       | **Có**              | **Có**                  |
+
+Riêng lẻ, không cấu trúc nào đáp ứng được. Nhưng **kết hợp** HashMap và Doubly Linked List:
+
+- **HashMap** `{key → DLL_node}`: lookup O(1) theo key
+
+- Doubly Linked List
+
+  : duy trì thứ tự sử dụng
+
+  - **Head** (đầu list): node vừa được sử dụng gần nhất (Most Recently Used)
+  - **Tail** (cuối list): node lâu nhất chưa được sử dụng (Least Recently Used)
+  - Di chuyển node lên đầu: O(1) (vì có prev & next pointer)
+  - Xoá node cuối: O(1) (vì có tail pointer)
+
+Doubly Linked List (MRU ← → LRU)HashMapkey: 1key:1
+val:10key: 2key:2
+val:20key: 3key:3
+val:30HEAD
+(dummy)TAIL
+(dummy)
+
+### 6.4. Thiết kế chi tiết
+
+**Node structure:**
+
+```
+DLL Node = {key, value, prev, next}
+```
+
+Tại sao lưu `key` trong node? Vì khi xoá node LRU (cuối list), ta cần biết key để xoá entry tương ứng trong HashMap.
+
+**Dummy head & tail:**
+
+Ta dùng 2 sentinel (dummy) node — head và tail — để tránh xử lý edge case null:
+
+```
+[DUMMY_HEAD] <-> [node1] <-> [node2] <-> ... <-> [DUMMY_TAIL]
+```
+
+Mọi node thật nằm giữa DUMMY_HEAD và DUMMY_TAIL.
+
+### 6.5. Thuật toán chi tiết
+
+#### get(key):
+
+KhôngCóget(key)key có trong
+HashMap?return -1node = map[key]Di chuyển node
+lên đầu listreturn node.value
+
+#### put(key, value):
+
+CóKhôngCóKhôngput(key, value)key có trong
+HashMap?Cập nhật node.value
+Di chuyển lên đầuTạo node mớiThêm vào HashMap
+Chèn vào đầu listsize > capacity?Xoá node cuối (LRU)
+Xoá khỏi HashMapXong
+
+### 6.6. Mô phỏng từng bước (QUAN TRỌNG!)
+
+Capacity = 3. Thao tác: put(1,1), put(2,2), put(3,3), get(2), put(4,4), get(1), get(3)
+
+**Bước 1: put(1, 1)**
+
+```
+HashMap: {1: node_1}
+DLL: [HEAD] <-> [1:1] <-> [TAIL]
+Size: 1
+```
+
+**Bước 2: put(2, 2)**
+
+```
+HashMap: {1: node_1, 2: node_2}
+DLL: [HEAD] <-> [2:2] <-> [1:1] <-> [TAIL]
+Size: 2
+(2 vừa thêm → ở đầu = MRU)
+```
+
+**Bước 3: put(3, 3)**
+
+```
+HashMap: {1: node_1, 2: node_2, 3: node_3}
+DLL: [HEAD] <-> [3:3] <-> [2:2] <-> [1:1] <-> [TAIL]
+Size: 3 (= capacity, đầy!)
+```
+
+**Bước 4: get(2) → return 2**
+
+Key 2 tồn tại → lấy giá trị (2) và di chuyển node_2 lên đầu:
+
+```
+HashMap: {1: node_1, 2: node_2, 3: node_3}
+DLL: [HEAD] <-> [2:2] <-> [3:3] <-> [1:1] <-> [TAIL]
+                 ↑ MRU                  ↑ LRU
+```
+
+**Bước 5: put(4, 4) — Cache đầy! Phải evict LRU**
+
+LRU = node cuối trước TAIL = node_1 (key=1). Xoá nó:
+
+```
+Trước evict: [HEAD] <-> [2:2] <-> [3:3] <-> [1:1] <-> [TAIL]
+                                              ↑ Xoá!
+
+Sau evict:   [HEAD] <-> [2:2] <-> [3:3] <-> [TAIL]
+HashMap: {2: node_2, 3: node_3}  (key 1 đã bị xoá)
+
+Thêm key 4:  [HEAD] <-> [4:4] <-> [2:2] <-> [3:3] <-> [TAIL]
+HashMap: {2: node_2, 3: node_3, 4: node_4}
+```
+
+**Bước 6: get(1) → return -1**
+
+Key 1 đã bị evict ở bước trước → không tìm thấy → return -1.
+
+**Bước 7: get(3) → return 3**
+
+Key 3 tồn tại → di chuyển lên đầu:
+
+```
+DLL: [HEAD] <-> [3:3] <-> [4:4] <-> [2:2] <-> [TAIL]
+                 ↑ MRU                  ↑ LRU
+```
+
+### 6.7. Code hoàn chỉnh
+
+**Python:**
+
+```python
+class LRUNode:
+    """Node cho Doubly Linked List trong LRU Cache"""
+    def __init__(self, key=0, value=0):
+        self.key = key
+        self.value = value
+        self.prev = None
+        self.next = None
+
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.cache = {}  # HashMap: key → LRUNode
+
+        # Dummy head và tail — tránh edge case
+        self.head = LRUNode()  # Dummy head (MRU side)
+        self.tail = LRUNode()  # Dummy tail (LRU side)
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def _remove(self, node: LRUNode):
+        """
+        Tách node ra khỏi list — O(1)
+        Trước: ... <-> prev <-> node <-> next <-> ...
+        Sau:   ... <-> prev <-> next <-> ...
+        """
+        prev_node = node.prev
+        next_node = node.next
+        prev_node.next = next_node
+        next_node.prev = prev_node
+
+    def _add_to_front(self, node: LRUNode):
+        """
+        Chèn node ngay sau dummy head (= MRU) — O(1)
+        Trước: HEAD <-> first <-> ...
+        Sau:   HEAD <-> node <-> first <-> ...
+        """
+        node.prev = self.head
+        node.next = self.head.next
+        self.head.next.prev = node
+        self.head.next = node
+
+    def _move_to_front(self, node: LRUNode):
+        """Di chuyển node lên đầu (= vừa sử dụng) — O(1)"""
+        self._remove(node)
+        self._add_to_front(node)
+
+    def _evict_lru(self):
+        """Xoá node LRU (cuối list, ngay trước dummy tail) — O(1)"""
+        lru_node = self.tail.prev  # Node ngay trước dummy tail
+        self._remove(lru_node)
+        del self.cache[lru_node.key]  # Xoá khỏi HashMap
+
+    def get(self, key: int) -> int:
+        """
+        Lấy value theo key — O(1)
+        Nếu key tồn tại: di chuyển lên đầu (MRU) và return value
+        Nếu không: return -1
+        """
+        if key not in self.cache:
+            return -1
+
+        node = self.cache[key]
+        self._move_to_front(node)  # Đánh dấu vừa sử dụng
+        return node.value
+
+    def put(self, key: int, value: int):
+        """
+        Thêm/cập nhật key-value — O(1)
+        Nếu key đã tồn tại: cập nhật value, di chuyển lên đầu
+        Nếu key mới:
+          - Tạo node, thêm vào HashMap và đầu list
+          - Nếu vượt capacity: evict LRU
+        """
+        if key in self.cache:
+            # Key đã tồn tại: cập nhật value
+            node = self.cache[key]
+            node.value = value
+            self._move_to_front(node)
+        else:
+            # Key mới
+            new_node = LRUNode(key, value)
+            self.cache[key] = new_node
+            self._add_to_front(new_node)
+
+            if len(self.cache) > self.capacity:
+                self._evict_lru()  # Cache đầy → evict LRU
+
+
+# === Sử dụng ===
+cache = LRUCache(3)
+
+cache.put(1, 1)    # Cache: {1=1}
+cache.put(2, 2)    # Cache: {1=1, 2=2}
+cache.put(3, 3)    # Cache: {1=1, 2=2, 3=3} — đầy
+
+print(cache.get(2))  # Return 2. Cache order: 2, 3, 1
+
+cache.put(4, 4)    # Evict key 1 (LRU). Cache: {2=2, 3=3, 4=4}
+
+print(cache.get(1))  # Return -1 (đã bị evict)
+print(cache.get(3))  # Return 3. Cache order: 3, 4, 2
+```
+
+**Ghi chú:** Trong Python, ta dùng `dict` (tương đương HashMap/unordered_map). Python dict giữ thứ tự insert từ Python 3.7+, nhưng ta vẫn dùng DLL riêng để control thứ tự MRU/LRU. Ngoài ra, Python có `collections.OrderedDict` có thể dùng để implement LRU Cache đơn giản hơn — nhưng hiểu bản chất HashMap + DLL mới là mục đích của bài này.
+
+```python
+# Phiên bản "cheat" dùng OrderedDict (chỉ để tham khảo)
+from collections import OrderedDict
+
+class LRUCacheSimple:
+    def __init__(self, capacity: int):
+        self.cache = OrderedDict()
+        self.capacity = capacity
+
+    def get(self, key: int) -> int:
+        if key not in self.cache:
+            return -1
+        # move_to_end đưa key lên cuối (= MRU)
+        self.cache.move_to_end(key)
+        return self.cache[key]
+
+    def put(self, key: int, value: int):
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        if len(self.cache) > self.capacity:
+            # popitem(last=False) xoá item đầu (= LRU)
+            self.cache.popitem(last=False)
+```
+
+### 6.8. Chứng minh tất cả thao tác O(1)
+
+**Định lý:** Mọi thao tác get() và put() của LRU Cache đều là O(1) amortized.
+
+**Chứng minh:**
+
+**get(key):**
+
+1. HashMap lookup: O(1) average (hash table)
+
+2. ```
+   _move_to_front(node)
+   ```
+
+   :
+
+   - `_remove(node)`: 2 phép gán pointer → O(1)
+   - `_add_to_front(node)`: 4 phép gán pointer → O(1)
+
+3. Tổng: O(1) + O(1) + O(1) = O(1). **QED.**
+
+**put(key, value):**
+
+- Trường hợp key tồn tại: O(1) lookup + O(1) move = O(1)
+- Trường hợp key mới, không evict: O(1) tạo node + O(1) insert HashMap + O(1) add_to_front = O(1)
+- Trường hợp key mới, có evict: O(1) + O(1) evict (O(1) remove + O(1) delete HashMap) = O(1)
+- Tổng: O(1) trong mọi trường hợp. **QED.**
+
+**Space:** O(capacity) — HashMap và DLL mỗi cái lưu tối đa `capacity` entries.
+
+### 6.9. Tại sao dùng Dummy Head/Tail?
+
+Không dùng dummy node, mọi thao tác phải xử lý edge case:
+
+```python
+# KHÔNG dùng dummy — code phức tạp
+def remove(self, node):
+    if node.prev:
+        node.prev.next = node.next
+    else:
+        self.head = node.next  # Edge case: xoá head
+
+    if node.next:
+        node.next.prev = node.prev
+    else:
+        self.tail = node.prev  # Edge case: xoá tail
+```
+
+Với dummy node, code sạch hơn rất nhiều vì luôn có node trước và sau:
+
+```python
+# CÓ dùng dummy — code sạch
+def remove(self, node):
+    node.prev.next = node.next  # Luôn có prev (ít nhất là dummy head)
+    node.next.prev = node.prev  # Luôn có next (ít nhất là dummy tail)
+```
+
+### 6.10. Biến thể và cải tiến
+
+#### LFU Cache (Least Frequently Used)
+
+Thay vì xoá item ít dùng **gần đây** nhất, xoá item dùng **ít lần** nhất. Cần thêm frequency counter cho mỗi node.
+
+#### Time-based LRU (TTL)
+
+Mỗi entry có thời gian hết hạn (TTL — Time To Live). Entry hết hạn tự động bị xoá, bất kể có được sử dụng gần đây hay không.
+
+#### Thread-safe LRU
+
+Trong môi trường multi-thread, cần thêm lock (mutex) hoặc dùng concurrent data structure.
+
+#### Sized LRU
+
+Thay vì giới hạn số lượng entry, giới hạn tổng kích thước bộ nhớ. Mỗi entry có weight khác nhau.
+
+### 6.11. So sánh các Cache Eviction Policy
+
+| Policy     | Evict ai?            | Ưu điểm              | Nhược điểm                              |
+| :--------- | :------------------- | :------------------- | :-------------------------------------- |
+| **LRU**    | Lâu nhất chưa dùng   | Đơn giản, hiệu quả   | Scan attack (duyệt 1 lần qua nhiều key) |
+| **LFU**    | Ít lần dùng nhất     | Tốt cho hot data     | Cache pollution (item cũ frequency cao) |
+| **FIFO**   | Vào trước ra trước   | Rất đơn giản         | Không quan tâm tần suất sử dụng         |
+| **Random** | Ngẫu nhiên           | O(1), không overhead | Không thông minh                        |
+| **ARC**    | Adaptive (LRU + LFU) | Tự điều chỉnh        | Phức tạp, patent issues                 |
+
+------
+
+## Tổng kết
+
+### Bảng tổng hợp Complexity
+
+| Cấu trúc / Thao tác      | Time (Average) | Space       |
+| :----------------------- | :------------- | :---------- |
+| **Singly Linked List**   |                |             |
+| - Insert at head         | O(1)           | O(1)        |
+| - Insert at tail         | O(n)           | O(1)        |
+| - Delete at head         | O(1)           | O(1)        |
+| - Search                 | O(n)           | O(1)        |
+| **Doubly Linked List**   |                |             |
+| - Insert at head/tail    | O(1)           | O(1)        |
+| - Delete (có pointer)    | O(1)           | O(1)        |
+| - Search                 | O(n)           | O(1)        |
+| **Fast & Slow Pointer**  |                |             |
+| - Find middle            | O(n)           | O(1)        |
+| - Kth from end           | O(n)           | O(1)        |
+| **Cycle Detection**      |                |             |
+| - Floyd's algorithm      | O(n)           | O(1)        |
+| - Find cycle start       | O(n)           | O(1)        |
+| **Reverse Linked List**  |                |             |
+| - Iterative              | O(n)           | O(1)        |
+| - Recursive              | O(n)           | O(n)        |
+| **Merge 2 Sorted Lists** | O(n+m)         | O(1)        |
+| **LRU Cache**            |                |             |
+| - get / put              | O(1)           | O(capacity) |
+
+### Khi nào dùng Linked List?
+
+**NÊN dùng khi:**
+
+- Insert/Delete ở đầu/cuối thường xuyên
+- Không biết trước kích thước dữ liệu
+- Implement Stack, Queue, Deque
+- Cần xoá node nhanh khi đã có pointer (LRU Cache)
+
+**KHÔNG NÊN dùng khi:**
+
+- Cần truy cập random (dùng array)
+- Cần binary search (dùng sorted array)
+- Bộ nhớ rất hạn chế (mỗi node thêm overhead pointer)
+- Data nhỏ, cache locality quan trọng (dùng array)
+
+### LeetCode Practice List
+
+| #    | Bài                       | Difficulty | Kỹ thuật         |
+| :--- | :------------------------ | :--------- | :--------------- |
+| 206  | Reverse Linked List       | Easy       | Reverse          |
+| 21   | Merge Two Sorted Lists    | Easy       | Merge            |
+| 141  | Linked List Cycle         | Easy       | Floyd's          |
+| 876  | Middle of the Linked List | Easy       | Fast & Slow      |
+| 19   | Remove Nth Node From End  | Medium     | Two Pointer      |
+| 2    | Add Two Numbers           | Medium     | Traverse         |
+| 142  | Linked List Cycle II      | Medium     | Floyd's Phase 2  |
+| 92   | Reverse Linked List II    | Medium     | Reverse Between  |
+| 146  | LRU Cache                 | Medium     | Design           |
+| 23   | Merge K Sorted Lists      | Hard       | Divide & Conquer |
+| 25   | Reverse Nodes in k-Group  | Hard       | Reverse + Loop   |
+| 460  | LFU Cache                 | Hard       | Design           |

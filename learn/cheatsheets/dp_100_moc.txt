@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/dp-100
+  - dp100
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 DP-100: Designing and Implementing a Data Science Solution on Azure MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/DP-100/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/DP-100/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/DP-100/DP-100 Mindmap\|🗺️ DP-100 Mindmap]]
+- [[certifications/microsoft/DP-100/DP-100 Flashcards\|🃏 DP-100 Flashcards]]
+- [[certifications/microsoft/DP-100/DP-100_Scraped_Question_Bank\|🗃️ DP-100 Scraped Question Bank]]

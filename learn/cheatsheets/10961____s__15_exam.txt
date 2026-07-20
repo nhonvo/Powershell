@@ -1,0 +1,41 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 15
+
+## Part 1
+**Q1.** すずきさんは　 みずを　 たくさん　 かいます。
+- **A.** すずきさんは　 みずを　 ちょっと 　かいます。
+- **B.** すずきさんは 　みずを　 ときどき 　かいます。
+- **C.** すずきさんは　 みずを　 いっぱい 　かいます。
+- **D.** すずきさんは 　みずを　 すこし　 かいます。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3Suzuki mua nhiều nước.1. Suzuki mua một ch&uacute;t nước.2. Suzuki thỉnh thoảng mua nước.3. Suzuki mua nhiều nước.4. Suzuki mua &iacute;t nước.</p>
+</details>
+
+---
+**Q2.** おととし　 にほんへ 　きました。
+- **A.** さんねんまえに 　にほんへ 　きました。
+- **B.** にねんまえに 　にほんへ　 きました。
+- **C.** みっかまえに 　にほんへ 　きました。
+- **D.** ふつかまえに 　にほんへ 　きました。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2Năm kia t&ocirc;i đ&atilde; đến Nhật.1. T&ocirc;i đ&atilde; đến Nhật ba năm trước.2. T&ocirc;i đ&atilde; đến Nhật hai năm trước.3. T&ocirc;i đ&atilde; đến Nhật ba ng&agrave;y trước.4. T&ocirc;i đ&atilde; đến Nhật hai ng&agrave;y trước.</p>
+</details>
+
+---
+**Q3.** おとうとは　 あした 　がっこうへ　 いきません。
+- **A.** おとうとは　 あした 　ひるごはんを　 たべません。
+- **B.** おとうとは　 あした　 きょうしつで　 べんきょう しません。
+- **C.** おとうとは　 あした　 かいものを　 しません。
+- **D.** おとうとは 　あした 　うんどうを　 しません。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2Em trai t&ocirc;i ng&agrave;y mai kh&ocirc;ng đi học.1. Em trai t&ocirc;i ng&agrave;y mai kh&ocirc;ng ăn trưa.2. Em trai t&ocirc;i ng&agrave;y mai kh&ocirc;ng học ở lớp học.3. Em trai t&ocirc;i ng&agrave;y mai kh&ocirc;ng mua sắm.4. Em trai t&ocirc;i ng&agrave;y mai kh&ocirc;ng tập thể dục.</p>
+</details>
+
+---

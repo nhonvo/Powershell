@@ -1,0 +1,13 @@
+# Day 11: Japanese N4/N5 Review
+**Goal:** Maintain language flow.
+
+### 📖 Reading (GitHub App)
+- Open `doc/07_Japanese_Flashcards/` or your Japanese notes.
+- Review **Verb Conjugations** (~te form, ~nai form).
+
+### 🤖 AI Drill (Copy & Paste to ChatGPT/Gemini)
+> "Let's practice Japanese. Speak to me in simple N4/N5 Japanese about my time at a military camp. Ask me what I ate and what time I woke up. Correct my grammar if I make a mistake."
+
+### 📝 Mobile Task
+- Write 5 sentences in Japanese about your day in the GitHub App or a mobile note.
+- Try to use at least one "Conditional" form (e.g., ~tara or ~ba).

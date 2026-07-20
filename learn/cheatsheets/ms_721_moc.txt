@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/ms-721
+  - ms721
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MS-721: Collaboration Communications Systems Engineer MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MS-721/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MS-721/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MS-721/MS-721 Mindmap\|🗺️ MS-721 Mindmap]]
+- [[certifications/microsoft/MS-721/MS-721 Flashcards\|🃏 MS-721 Flashcards]]
+- [[certifications/microsoft/MS-721/MS-721_Scraped_Question_Bank\|🗃️ MS-721 Scraped Question Bank]]

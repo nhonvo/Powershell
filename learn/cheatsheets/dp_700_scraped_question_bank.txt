@@ -1,0 +1,288 @@
+# 🗃️ DP-700 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Implement and manage an analytics solution (Testlet 1)
+
+You need to ensure that processes for the bronze and silver layers run in isolation.
+How should you configure the Apache Spark settings?
+
+### Options:
+- [ ] **A)** Disable high concurrency.
+- [x] **B)** Create a custom pool. [Correct]
+- [ ] **C)** Modify the number of executors.
+- [ ] **D)** Set the default environment.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Isolated Compute
+The Isolated Compute option provides more security to Spark compute resources from untrusted services by dedicating the physical compute resource to a single customer. Isolated compute option is best suited for workloads that require a high degree of isolation from other customer's workloads for reasons that include meeting compliance and regulatory requirements. The Isolate Compute option is only available with the XXXLarge (80 vCPU / 504 GB) node size and only available in the following regions. *The isolated compute option can be enabled or disabled after pool creation although the instance might need to be restarted*.
+Scenario:
+
+Existing Environment. Data Processing
+Litware implements a medallion architecture by using the following three layers: bronze, silver, and gold. The sales data is ingested from the ERP system as Parquet files that land in the Files folder in a lakehouse.
+Notebooks are used to transform the files in a Delta table for the bronze and silver layers. The gold layer is in a warehouse that has V-Order disabled.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Implement and manage an analytics solution (Testlet 1)
+
+DRAG DROP (Drag and Drop is not supported)
+You need to ensure that the authors can see only their respective sales data.
+How should you complete the statement? To answer, drag the appropriate values the correct targets. Each value may be used once, more than once, or not at all. You may need to drag the split bar between panes or scroll to view content.
+Note: Each correct selection is worth one point.
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: SCHEMABINDING
+CREATE FUNCTION (Azure Synapse Analytics and Microsoft Fabric) Creates a user-defined function (UDF) in Azure Synapse Analytics, Analytics Platform System (PDW), or Microsoft Fabric. A user-defined function is a Transact-SQL routine that accepts parameters, performs an action, such as a complex calculation, and returns the result of that action as a value.
+In Microsoft Fabric and serverless SQL pools in Azure Synapse Analytics, CREATE FUNCTION can create inline table-value functions but not scalar functions. User-defined table-valued functions (TVFs) return a table data type.
+Inline table-valued function syntax
+-- Transact-SQL Inline Table-Valued Function Syntax
+-- Preview in dedicated SQL pools in Azure Synapse Analytics -- Available in the serverless SQL pools in Azure Synapse Analytics and Microsoft Fabric CREATE FUNCTION [ schema_name. ] function_name
+( [ { @parameter_name [ AS ] parameter_data_type
+[ = default ] }
+[ ,...n ]
+]
+)
+RETURNS TABLE
+[ WITH SCHEMABINDING ]
+[ AS ]
+RETURN [ ( ] select_stmt [ ) ]
+[ ; ]
+--
+SCHEMABINDING
+Specifies that the function is bound to the database objects that it references.
+When SCHEMABINDING is specified, the base objects cannot be modified in a way that would affect the function definition. The function definition itself must first be modified or dropped to remove dependencies on the object that is to be modified.
+Box 2: USER_NAME()
+USER_NAME (Transact-SQL)
+Returns a database user name from a specified identification number, or the current user name.
+Box 3: AuthorSales
+We specify the table name, table_schema_name.table_name below.
+.
+Scenario:
+Litware also manages an online advertising business for the authors it represents.
+
+Existing Environment. Sales Data
+A table named AuthorSales stores the sales data that relates to each author. The table contains a column named AuthorEmail. Authors authenticate to a guest Fabric tenant by using their email address.
+Note: CREATE SECURITY POLICY (Transact-SQL)
+Create a security policy
+The following syntax creates a security policy with a filter predicate for the dbo.Customer table, and leaves the security policy disabled.
+SQL
+CREATE SECURITY POLICY [FederatedSecurityPolicy]
+ADD FILTER PREDICATE [rls].[fn_securitypredicate]([CustomerId]) ON [dbo].[Customer];
+--
+table_schema_name.table_name
+Is the target table to which the security predicate will be applied. Multiple disabled security policies can target a single table for a particular DML operation, but only one can be enabled at any given time.
+Full Syntax:
+CREATE SECURITY POLICY [schema_name. ] security_policy_name
+{ ADD [ FILTER | BLOCK ] } PREDICATE tvf_schema_name.security_predicate_function_name ( { column_name | expression } [ , ...n] ) ON table_schema_name. table_name [ <block_dml_operation> ] , [ , ...n]
+[ WITH ( STATE = { ON | OFF } [,] [ SCHEMABINDING = { ON | OFF } ] ) ] [ NOT FOR REPLICATION ]
+[;]
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Implement and manage an analytics solution (Testlet 2)
+
+You need to ensure that the data analysts can access the gold layer lakehouse.
+What should you do?
+
+### Options:
+- [ ] **A)** Add the DataAnalyst group to the Viewer role for Workspace
+- [ ] **B)** Share the lakehouse with the DataAnalysts group and grant the Build reports on the default semantic model permission.
+- [x] **C)** Share the lakehouse with the DataAnalysts group and grant the Read all SQL Endpoint data permission. [Correct]
+- [ ] **D)** Share the lakehouse with the DataAnalysts group and grant the Read all Apache Spark permission.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Data Analysts' Access Requirements must only have read access to the Delta tables in the gold layer and not have access to the bronze and silver layers.
+The gold layer data is typically queried via SQL Endpoints. Granting the Read all SQL Endpoint data permission allows data analysts to query the data using familiar SQL-based tools while restricting access to the underlying files.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Implement and manage an analytics solution (Testlet 2)
+
+You need to ensure that WorkspaceA can be configured for source control.
+Which two actions should you perform? Each correct answer presents part of the solution.
+Note: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,D`
+
+**Explanation**:
+A F64 capacity is a Microsoft Fabric Capacity (Pay-as-you-go or Reservation).
+Note: Microsoft Fabric, Get started with Git integration
+Prerequisites
+To integrate Git with your Microsoft Fabric workspace, you need to set up the following prerequisites for both Fabric and Git.
+Fabric prerequisites
+To access the Git integration feature, you need a Fabric capacity. A Fabric capacity is required to use all supported Fabric items [D]. If you don't have one yet, sign up for a free trial. Customers that already have a Power BI Premium capacity, can use that capacity, but keep in mind that certain Power BI SKUs only support Power BI items.
+In addition, the following tenant switches must be enabled from the Admin portal:
+* Users can create Fabric items
+*-> Users can synchronize workspace items with their Git repositories [A, not B] For GitHub users only: Users can synchronize workspace items with GitHub repositories Scenario:
+
+Existing Environment. Fabric
+Contoso has an F64 capacity named Cap1 [D]. All Fabric users are allowed to create items.
+Contoso has two workspaces named WorkspaceA and WorkspaceB that currently use Pro license mode.
+
+Requirements. Planned Changes
+Contoso plans to use Azure Repos for source control in Fabric.
+
+Requirements. Technical Requirements
+Items that relate to data ingestion must meet the following requirements:
+*-> The items must be source controlled alongside other workspace items.
+
+Requirements. Data Security
+Security in Fabric must meet the following requirements:
+*-> The data engineers must be able to commit changes to source control in WorkspaceA.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Implement and manage an analytics solution (Question Set 3)
+
+You have a Fabric workspace.
+You have semi-structured data.
+You need to read the data by using T-SQL, KQL, and Apache Spark. The data will only be written by using Spark.
+What should you use to store the data?
+
+### Options:
+- [x] **A)** a lakehouse [Correct]
+- [ ] **B)** an eventhouse
+- [ ] **C)** a datamart
+- [ ] **D)** a warehouse
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+A lakehouse is the best option for storing semi-structured data when you need to read it using T-SQL, KQL, and Apache Spark. A lakehouse combines the flexibility of a data lake (which can handle semi-structured and unstructured data) with the performance features of a data warehouse. It allows data to be written using Apache Spark and can be queried using different technologies such as T-SQL (for SQL-based querying), KQL (Kusto Query Language for querying), and Apache Spark (for distributed processing). This solution is ideal when dealing with semi-structured data and requiring a versatile querying approach.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: Implement and manage an analytics solution (Question Set 3)
+
+You have a Fabric workspace that contains a warehouse named Warehouse1.
+You have an on-premises Microsoft SQL Server database named Database1 that is accessed by using an on- premises data gateway.
+You need to copy data from Database1 to Warehouse1.
+Which item should you use?
+
+### Options:
+- [ ] **A)** a Dataflow Gen1 dataflow
+- [x] **B)** a data pipeline [Correct]
+- [ ] **C)** a KQL queryset
+- [ ] **D)** a notebook
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+To copy data from an on-premises Microsoft SQL Server database (Database1) to a warehouse (Warehouse1) in Microsoft Fabric, the best option is to use a data pipeline. A data pipeline in Fabric allows for the orchestration of data movement, from source to destination, using connectors, transformations, and scheduled workflows. Since the data is being transferred from an on-premises database and requires the use of a data gateway, a data pipeline provides the appropriate framework to facilitate this data movement efficiently and reliably.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: Implement and manage an analytics solution (Question Set 3)
+
+You have a Fabric workspace that contains a warehouse named Warehouse1.
+You have an on-premises Microsoft SQL Server database named Database1 that is accessed by using an on- premises data gateway.
+You need to copy data from Database1 to Warehouse1.
+Which item should you use?
+
+### Options:
+- [ ] **A)** an Apache Spark job definition
+- [x] **B)** a data pipeline [Correct]
+- [ ] **C)** a Dataflow Gen1 dataflow
+- [ ] **D)** an eventstream
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+To copy data from an on-premises Microsoft SQL Server database (Database1) to a warehouse (Warehouse1) in Fabric, a data pipeline is the most appropriate tool. A data pipeline in Fabric is designed to move data between various data sources and destinations, including on-premises databases like SQL Server, and cloud- based storage like Fabric warehouses. The data pipeline can handle the connection through an on-premises data gateway, which is required to access on-premises data. This solution facilitates the orchestration of data movement and transformations if needed.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: Implement and manage an analytics solution (Question Set 3)
+
+You have a Fabric F32 capacity that contains a workspace. The workspace contains a warehouse named DW1 that is modelled by using MD5 hash surrogate keys.
+DW1 contains a single fact table that has grown from 200 million rows to 500 million rows during the past year.
+You have Microsoft Power BI reports that are based on Direct Lake. The reports show year-over-year values.
+Users report that the performance of some of the reports has degraded over time and some visuals show errors.
+You need to resolve the performance issues. The solution must meet the following requirements:
+Provide the best query performance.
+Minimize operational costs.
+Which should you do?
+
+### Options:
+- [ ] **A)** Change the MD5 hash to SHA256.
+- [x] **B)** Increase the capacity. [Correct]
+- [ ] **C)** Enable V-Order.
+- [ ] **D)** Modify the surrogate keys to use a different data type.
+- [ ] **E)** Create views.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Correct:
+* Increase the capacity.
+We need to upgrade the capacity.
+Direct Lake in Fabric F32 Capacity supports tables up to 300 million rows. F64 can handle 500 million rows.
+Incorrect:
+* Change the MD5 hash to SHA256.
+* Create views.
+* Disable V-Order on the warehouse.
+* Enable V-Order.
+* Modify the surrogate keys to use a different data type.
+</details>
+
+---

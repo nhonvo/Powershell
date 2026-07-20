@@ -1,0 +1,616 @@
+{
+  "Meta": {
+    "Id": "deck_11_6_median_in_data_stream",
+    "Topic": "11.6 Median in Data Stream",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "11_6_median_in_data_stream"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 30
+  },
+  "Cards": [
+    {
+      "Id": "card_01259",
+      "Front": "Cách giải",
+      "Back": "addNum | findMedian | Nhận xét",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01260",
+      "Front": "Mảng + sort mỗi lần",
+      "Back": "O(n log n) | O(1) | Quá chậm khi n lớn",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01261",
+      "Front": "Mảng sorted + binary search insert",
+      "Back": "O(n) | O(1) | Insert vào giữa mảng tốn O(n) do dịch",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01262",
+      "Front": "**Two Heaps**",
+      "Back": "**O(log n)** | **O(1)** | Tối ưu nhất!",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01263",
+      "Front": "Phép toán",
+      "Back": "Time | Giải thích",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01264",
+      "Front": "addNum",
+      "Back": "**O(log n)** | 3 lần push/pop trên heap, mỗi lần O(log n)",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01265",
+      "Front": "findMedian",
+      "Back": "**O(1)** | Chỉ đọc root của 1 hoặc 2 heap",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01266",
+      "Front": "Space",
+      "Back": "**O(n)** | Lưu tất cả n phần tử đã thêm",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01267",
+      "Front": "Case",
+      "Back": "addNum | findMedian",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01268",
+      "Front": "Best",
+      "Back": "O(1) — khi heap kích thước nhỏ | O(1) luôn",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01269",
+      "Front": "Worst",
+      "Back": "O(log n) — khi heap đầy | O(1) luôn",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01270",
+      "Front": "Amortized",
+      "Back": "O(log n) | O(1)",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01271",
+      "Front": "Bài toán",
+      "Back": "Loại Heap | Time | Space | Key Insight",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01272",
+      "Front": "Min/Max Heap",
+      "Back": "Min hoặc Max | Build O(n) | O(n) | Bottom-up heapify",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01273",
+      "Front": "Priority Queue",
+      "Back": "Min Heap | O(log n) per op | O(n) | Counter trick cho FIFO",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01274",
+      "Front": "Kth Largest",
+      "Back": "Min Heap kích thước k | O(n log k) | O(k) | Min heap cho Kth largest!",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01275",
+      "Front": "Merge K Lists",
+      "Back": "Min Heap kích thước k | O(N log k) | O(k) | Luôn giữ k head",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01276",
+      "Front": "Top K Frequent",
+      "Back": "Min Heap kích thước k | O(n log k) | O(k) | Count + Heap",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01277",
+      "Front": "Median Stream",
+      "Back": "Two Heaps | O(log n) add | O(n) | Max heap + Min heap",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01278",
+      "Front": "10",
+      "Back": "[LeetCode 1046](https://leetcode.com/problems/last-stone-weight/) | Easy | Max heap",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01279",
+      "Front": "Approach",
+      "Back": "Time (trung bình) | Time (worst) | Space",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01280",
+      "Front": "Sort",
+      "Back": "O(n log n) | O(n log n) | O(1) hoặc O(n)",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01281",
+      "Front": "Min Heap kích thước k",
+      "Back": "O(n log k) | O(n log k) | O(k)",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01282",
+      "Front": "Max Heap + pop k lần",
+      "Back": "O(n + k log n) | O(n + k log n) | O(n)",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01283",
+      "Front": "Quickselect",
+      "Back": "O(n) | O(n²) | O(1)",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01284",
+      "Front": "Cách",
+      "Back": "Ý tưởng | Time | Space",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01285",
+      "Front": "Sort theo frequency",
+      "Back": "Sort Counter, lấy top k | O(n log n) | O(n)",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01286",
+      "Front": "Max Heap",
+      "Back": "Heap tất cả, pop k lần | O(n + k log n) | O(n)",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01287",
+      "Front": "Min Heap kích thước k",
+      "Back": "Giữ k phần tử freq lớn nhất | O(n log k) | O(k)",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01288",
+      "Front": "Bucket Sort",
+      "Back": "Bucket theo frequency | O(n) | O(n)",
+      "Hint": "11_Heaps_Priority_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "11.6 median in data stream"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

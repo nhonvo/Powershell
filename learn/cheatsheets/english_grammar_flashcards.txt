@@ -1,0 +1,275 @@
+---
+tags:
+  - language/english
+  - english/grammar
+  - spaced-repetition
+status: active
+deck: English Grammar
+---
+🔙 **Back to Parent**: [[languages/english/🇬🇧index_english|english]]
+
+# 🇬🇧 English Grammar Spaced Repetition Decks
+
+> Review English grammar rules, tenses, and sentence patterns using Obsidian Spaced Repetition.
+
+
+## Parts of Speech
+
+Noun (Danh từ) - Định nghĩa, hậu tố và vị trí/ví dụ?
+?
+- **Định nghĩa:** Chỉ tên người, đồ vật, sự việc, địa điểm.
+- **Hậu tố:** `-tion` (information), `-sion` (question), `-ment` (environment), `-ce` (peace), `-ness` (kindness), `-y` (beauty), `-er/or` (teacher, visitor).
+- **Vị trí & Ví dụ:**
+  - Chủ ngữ: *London is the capital of England.*
+  - Sau tính từ/tính từ sở hữu: *Her mother is a good doctor.*
+  - Tân ngữ sau động từ: *I drink milk.*
+  - Sau a/an/the, this/that/these/those, some, enough: *They want some oranges. / My sister buys enough food.*
+
+---
+
+Verb (Động từ) - Định nghĩa, hậu tố và vị trí/ví dụ?
+?
+- **Định nghĩa:** Diễn tả hành động, tình trạng hoặc cảm xúc.
+- **Hậu tố:** `-ate`, `-ize` (organize).
+- **Vị trí & Ví dụ:**
+  - Đứng sau chủ ngữ: *I read a book.*
+  - Đứng sau trạng từ tần suất (always, usually...): *He usually sleeps after dinner.*
+
+---
+
+Adjective (Tính từ) - Hậu tố, vị trí và ví dụ?
+?
+- **Hậu tố:** `-al` (cultural), `-ful` (useful), `-ive` (active), `-able` (comfortable), `-ous` (famous), `-y` (healthy), `-ish` (childish), `-ed` (interested), `-ing` (interesting).
+- **Vị trí & Ví dụ:**
+  - Trước danh từ: *He is a strong man.*
+  - Sau linking verbs (be/look/seem): *Candy is so sweet.*
+  - Trước enough: *He is tall enough to play basketball.*
+  - Sau too: *She is too short to play volleyball.*
+  - So sánh: *She is as beautiful as her mother.*
+
+---
+
+Adverb (Trạng từ) - Đặc điểm, vị trí và ví dụ?
+?
+- **Đặc điểm:** Thường kết thúc bằng `-ly` (fluently, carefully). Trạng từ đặc biệt: *late/lately, well, fast, ill*.
+- **Vị trí & Ví dụ:**
+  - Trước động từ thường: *I sometimes go to the restaurant.*
+  - Đứng trước enough: *He speaks slowly enough for his son to understand.*
+  - Sau too: *He writes too slowly.*
+  - Cấu trúc So...that: *An eats so fast that he has a stomachache.*
+
+---
+
+Preposition (Giới từ) - Vị trí và phân loại chính?
+?
+- **Vị trí:** Sau giới từ thường là Tân ngữ, V-ing, cụm danh từ. Đứng sau to be, đứng sau tính từ.
+- **Ví dụ phân loại:**
+  - Chỉ thời gian: *at 5pm, on Monday (ngày), in July (tháng/năm)*
+  - Chỉ nơi chốn: *at 135 Le Lai (số nhà), on Le Lai street, in France (quốc gia)*
+  - Chỉ thể cách/nguyên nhân: *without, instead of, because of, thanks to*
+
+---
+
+
+## Tenses
+
+Thì Present Simple (Hiện tại đơn) - Công thức, cách dùng và ví dụ?
+?
+- **Công thức:**
+  `(+) S + V(s/es) / BE(am/is/are)
+(-) S + don't/doesn't + V
+(?) Do/Does + S + V?`
+- **Cách dùng:**
+  Diễn tả thói quen, chân lý, lịch trình biểu.
+Dấu hiệu: always, every, often, usually, sometimes...
+- **Ví dụ:**
+  *The Olympic Games take place every four years.*
+
+---
+
+Thì Present Continuous (Hiện tại tiếp diễn) - Công thức, cách dùng và ví dụ?
+?
+- **Công thức:**
+  `(+) S + am/is/are + V-ing`
+- **Cách dùng:**
+  Hành động đang xảy ra tại thời điểm nói, kế hoạch tương lai gần, hành động lặp đi lặp lại gây bực mình (với always).
+Dấu hiệu: now, at present, look!, listen!
+- **Ví dụ:**
+  *I am flying to Kyoto tomorrow. / He is always coming late.*
+
+---
+
+Thì Present Perfect (Hiện tại hoàn thành) - Công thức, cách dùng và ví dụ?
+?
+- **Công thức:**
+  `(+) S + have/has + V3/ed`
+- **Cách dùng:**
+  Hành động đã xảy ra không rõ thời gian, hành động kéo dài từ quá khứ đến hiện tại, trải nghiệm.
+Dấu hiệu: for, since, so far, just, already, yet, ever, never...
+- **Ví dụ:**
+  *I have been a teacher since 2014.*
+
+---
+
+Thì Present Perfect Continuous (Hiện tại hoàn thành tiếp diễn) - Công thức, cách dùng và ví dụ?
+?
+- **Công thức:**
+  `(+) S + have/has + been + V-ing`
+- **Cách dùng:**
+  Nhấn mạnh tính liên tục của hành động bắt đầu trong quá khứ kéo dài đến hiện tại.
+Dấu hiệu: all day, for a long time, recently...
+- **Ví dụ:**
+  *He has been working here for two years.*
+
+---
+
+Thì Past Simple (Quá khứ đơn) - Công thức, cách dùng và ví dụ?
+?
+- **Công thức:**
+  `(+) S + V2/ed / BE(was/were)`
+- **Cách dùng:**
+  Hành động đã xảy ra và chấm dứt trong quá khứ.
+Dấu hiệu: yesterday, ago, last week, in 1999...
+- **Ví dụ:**
+  *I bought this book yesterday.*
+
+---
+
+Thì Past Continuous (Quá khứ tiếp diễn) - Công thức, cách dùng và ví dụ?
+?
+- **Công thức:**
+  `(+) S + was/were + V-ing`
+- **Cách dùng:**
+  Hành động đang xảy ra tại một thời điểm cụ thể trong quá khứ, hoặc đang xảy ra thì hành động khác xen vào.
+Dấu hiệu: while, when, at that moment...
+- **Ví dụ:**
+  *Last night, I was listening to music while my sister was reading.*
+
+---
+
+Thì Past Perfect (Quá khứ hoàn thành) - Công thức, cách dùng và ví dụ?
+?
+- **Công thức:**
+  `(+) S + had + V3/ed`
+- **Cách dùng:**
+  Hành động xảy ra và kết thúc trước một hành động khác hoặc một thời điểm khác trong quá khứ.
+Dấu hiệu: before, after, by the time...
+- **Ví dụ:**
+  *We had had lunch when she arrived.*
+
+---
+
+Thì Past Perfect Continuous (Quá khứ hoàn thành tiếp diễn) - Công thức, cách dùng và ví dụ?
+?
+- **Công thức:**
+  `(+) S + had + been + V-ing`
+- **Cách dùng:**
+  Nhấn mạnh tính liên tục của hành động diễn ra trước một hành động khác trong quá khứ.
+Dấu hiệu: prior to that time, before, after...
+- **Ví dụ:**
+  *They had been working since dawn before they stopped.*
+
+---
+
+Thì Future Simple (Tương lai đơn) - Công thức, cách dùng và ví dụ?
+?
+- **Công thức:**
+  `(+) S + will + V(bare)`
+- **Cách dùng:**
+  Quyết định tức thời, dự đoán không căn cứ, lời hứa/đề nghị.
+Dấu hiệu: tomorrow, next week, in the future...
+- **Ví dụ:**
+  *I will help you with this project.*
+
+---
+
+Thì Future Continuous (Tương lai tiếp diễn) - Công thức, cách dùng và ví dụ?
+?
+- **Công thức:**
+  `(+) S + will + be + V-ing`
+- **Cách dùng:**
+  Hành động đang diễn ra tại một thời điểm cụ thể trong tương lai.
+Dấu hiệu: this time tomorrow, at 9am next Sunday...
+- **Ví dụ:**
+  *This time tomorrow, we will be lying on the beach.*
+
+---
+
+Thì Future Perfect (Tương lai hoàn thành) - Công thức, cách dùng và ví dụ?
+?
+- **Công thức:**
+  `(+) S + will + have + V3/ed`
+- **Cách dùng:**
+  Hành động sẽ hoàn thành trước một thời điểm hoặc một hành động khác trong tương lai.
+Dấu hiệu: by, before + thời gian tương lai...
+- **Ví dụ:**
+  *By bath time, I shall have eaten and watched TV.*
+
+---
+
+
+## Verb Forms
+
+Những động từ nào theo sau bởi V-ING?
+?
+Các động từ phổ biến đi với V-ING:
+- `admit` (thừa nhận), `avoid` (tránh), `consider` (cân nhắc), `delay/postpone/put off` (hoãn)
+- `enjoy` (yêu thích), `finish` (hoàn thành), `give up` (từ bỏ), `mind` (phiền)
+- `practice` (luyện tập), `recommend` (khuyên), `suggest` (đề xuất), `tolerated` (chịu đựng)
+- Cụm từ: `can't help` (không thể không), `feel like` (muốn).
+
+---
+
+Những động từ nào theo sau bởi TO-V?
+?
+Các động từ phổ biến đi với TO-V:
+- `afford` (chi trả), `agree` (đồng ý), `arrange` (sắp xếp), `decide` (quyết định)
+- `demand` (yêu cầu), `expect` (kỳ vọng), `fail` (thất bại), `hope` (hy vọng)
+- `manage` (xoay sở), `offer` (đề nghị), `prepare` (chuẩn bị), `promise` (hứa)
+- `refuse` (từ chối), `seem/appear` (có vẻ), `want` (muốn), `would like` (muốn).
+
+---
+
+Sự khác nhau giữa V-ING và TO-V với các động từ: Remember, Forget, Regret, Stop, Try?
+?
+- **Remember / Forget / Regret:**
+  - `+ V-ing`: Nhớ/quên/tiếc một việc **đã làm** trong quá khứ.
+  - `+ To-V`: Nhớ/quên/tiếc một việc **phải làm** (nhiệm vụ).
+- **Stop:**
+  - `+ V-ing`: Dừng hẳn việc đang làm.
+  - `+ To-V`: Dừng lại để làm việc khác.
+- **Try:**
+  - `+ V-ing`: Thử làm gì.
+  - `+ To-V`: Cố gắng làm gì.
+
+---
+
+
+## Conditionals
+
+Cấu trúc 3 loại Câu điều kiện (Conditional sentences)?
+?
+- **Loại 1 (Có thể xảy ra ở hiện tại/tương lai):**
+  `If + S + V(s/es), S + will/can/may + V(bare)`
+- **Loại 2 (Trái thực tế ở hiện tại):**
+  `If + S + V2/ed (tobe dùng were), S + would/could + V(bare)`
+- **Loại 3 (Trái thực tế ở quá khứ):**
+  `If + S + had + V3/ed, S + would/could + have + V3/ed`
+
+---
+
+
+## Passive Voice
+
+Công thức tổng quát và cách biến đổi sang Câu bị động (Passive voice)?
+?
+- **Công thức chung:** `S + BE + V3/ed (+ by O)`
+- **Biến đổi các thì tiêu biểu:**
+  - Hiện tại đơn: `am/is/are + V3/ed`
+  - Hiện tại tiếp diễn: `am/is/are + being + V3/ed`
+  - Hiện tại hoàn thành: `have/has + been + V3/ed`
+  - Quá khứ đơn: `was/were + V3/ed`
+  - Tương lai đơn: `will + be + V3/ed`
+
+---
+

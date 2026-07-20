@@ -1,0 +1,132 @@
+# 🗃️ MB-230 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Mixed Questions
+
+DRAG DROP (Drag and Drop is not supported) 
+Your company makes use of Dynamics 365 for Customer Service.
+
+You have been tasked with generating business process flows. You need to make use of the necessary entities.
+
+Which of the following options would you use? Answer by dragging the correct options from the list to the answer area.
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Mixed Questions
+
+You need to consider the underlined segment to establish whether it is accurate.
+When categorizing cases via queues, cases should be categorized as Products.
+
+### Options:
+- [x] **A)** No adjustment required. [Correct]
+- [ ] **B)** Services
+- [ ] **C)** Managed solutions
+- [ ] **D)** Unmanaged solutions
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Mixed Questions
+
+Which of the following statements is TRUE when designing a business process flow?
+
+### Options:
+- [ ] **A)** You can use up to 40 steps for each stage.
+- [ ] **B)** Each branch can be no more than 10 levels deep.
+- [x] **C)** You can select an entity relationship when defining a process flow. [Correct]
+- [ ] **D)** You can use a minimum of 30 stages per process, as well as a minimum of 30 steps per stage.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Mixed Questions
+
+You are employed as an administrator for your company’s Dynamics 365 for Customer Service implementation.
+
+Your company has several business process flows for managing contracts.
+You want to specify the default process flow.
+
+You configure the order of the business process flows.
+Does the action achieve your objective?
+
+### Options:
+- [x] **A)** Yes, it does [Correct]
+- [ ] **B)** No, it does not
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Mixed Questions
+
+You are employed as an administrator for your company’s Dynamics 365 for Customer Service implementation.
+
+Your company has several business process flows for managing contracts.
+You want to specify the default process flow.
+
+You configure the steps of the business process flows.
+Does the action achieve your objective?
+
+### Options:
+- [ ] **A)** Yes, it does
+- [x] **B)** No, it does not [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---

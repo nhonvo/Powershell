@@ -1,0 +1,33 @@
+---
+tags:
+  - certification/ai-102
+  - ai-solution/reference
+created: 2026-06-15
+---
+
+# AI-102 Reference Cheat Sheet
+
+High-density summary of configurations, endpoints, and parameters.
+
+## 🔑 Endpoint Summary
+
+| Service | Protocol / Base Path | Purpose |
+|:---|:---|:---|
+| **Azure AI Multi-Service** | `https://<region>.api.cognitive.microsoft.com/` | Generic endpoint for Vision, Translator, Language |
+| **Azure OpenAI** | `https://<resource>.openai.azure.com/openai/deployments/...` | Specialized LLM/Generative endpoint |
+| **Azure AI Search** | `https://<service-name>.search.windows.net` | Knowledge mining indexing & query API |
+
+## ⚙️ Custom Vision & Face Details
+
+*   **Custom Vision Minimums**: 15 images per tag for classification, 15 images per tag for object detection.
+*   **Custom Vision Compact Domains**: Required to export models (ONNX, TF, CoreML) for local edge execution.
+*   **Face PersonGroup Limit**: Up to 1 million persons in a single PersonGroup or LargePersonGroup.
+
+## 🧠 Azure OpenAI Hyper-parameters
+
+*   **Temperature (0.0 to 2.0)**: Low values = deterministic/focused; High values = creative/random.
+*   **Top_P (0.0 to 1.0)**: Nucleus sampling. Filters candidate tokens to the top cumulative probability threshold.
+*   **Best Practice**: Choose either Temperature or Top_P to adjust randomness. Never vary both simultaneously.
+
+---
+Back to **[[certifications/microsoft/AI-102/AI-102 MOC|AI-102 MOC]]**

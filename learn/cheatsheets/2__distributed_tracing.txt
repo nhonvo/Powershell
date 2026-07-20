@@ -1,0 +1,68 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/05_Logging_Tracing/📂index_05_Logging_Tracing|05_Logging_Tracing]]
+
+# 🌐 2. Distributed Tracing (Truy dấu phân tán)
+
+Trong kiến trúc Microservices, một request của người dùng có thể đi qua hàng chục service khác nhau. Khi xảy ra lỗi hoặc hệ thống chạy chậm, việc tìm ra "Thủ phạm" ở service nào là cực kỳ khó khăn. Đó là lý do chúng ta cần **Distributed Tracing**.
+
+---
+
+### 🏛️ 2.1 Trace vs Span
+
+- **Trace**: Là bản ghi ghi lại toàn bộ "Hành trình" của một request từ đầu đến cuối. Một Trace chứa nhiều Span.
+- **Span**: Đơn vị công việc nhỏ nhất bên trong một Trace. Mỗi Span đại diện cho một tác vụ đơn lẻ (VD: Gọi Database, Gọi API khác, Tính toán logic).
+
+> [!TIP]
+> **Correlation ID (ID tương quan)**: Là "sợi dây" kết nối (Trace ID) được truyền qua Header giữa các Service để hệ thống Tracing (Jeager, Zipkin) gộp chúng lại thành 1 Trace hoàn chỉnh.
+
+---
+
+### 🧠 2.2 OpenTelemetry (Tiêu chuẩn công nghiệp)
+
+Đây là chuẩn chung (Framework-agnostic) giúp bạn không bị bó buộc vào bất kỳ nhà cung cấp dịch vụ (Vendor) nào.
+
+#### **Cấu trúc OpenTelemetry:**
+1.  **Traces**: Ghi lại luồng request.
+2.  **Metrics**: Ghi lại hiệu năng (CPU, RAM, Số request/s).
+3.  **Logs**: Các dòng nhật ký (Nối với Trace ID).
+
+---
+
+### 🚀 2.3 Cách triển khai Tracing (Polyglot)
+
+#### **C# (.NET) - OpenTelemetry SDK**
+.NET hỗ trợ sẵn lớp `ActivitySource` để tạo Trace.
+```csharp
+using var activity = MyActivitySource.StartActivity("FetchData");
+activity?.SetTag("user.id", 123);
+// Thực hiện công việc
+```
+
+#### **Java (JVM) - Spring Cloud Sleuth / OpenTelemetry**
+Spring Boot (nay dùng Micrometer Tracing) tự động truyền Trace ID qua các request HTTP thông qua `RestTemplate` hay `WebClient`.
+
+---
+
+### ⚡ 2.4 Jaeger & Zipkin - Công cụ hiển thị (UI)
+
+- **Jaeger**: Hệ thống phân tích trace cực mạnh từ Uber. Giúp bạn thấy biểu đồ "Thác nước" (Waterfall chart) của các request. Bạn sẽ biết ngay tại sao request tống 2s (VD: Do DB query mất 1.8s).
+
+---
+
+### 📝 2.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Điều quan trọng nhất cần làm khi một Service gọi một Service khác trong Tracing là gì?"
+<details><summary>Đáp án</summary>
+Phải truyền (Propagate) được **Trace ID (Correlation ID)** thông qua HTTP Header (Thường là `X-correlation-id` hoặc `traceparent`). Nếu không truyền ID này, Service thứ 2 sẽ tạo một Trace ID mới và chúng ta sẽ không bao giờ gộp được 2 service lại trên hệ thống giám sát.
+</details>
+
+**Bài 2**: [Kỹ thuật] Giải thích ý nghĩa của biểu đồ **Waterfall** trong hệ thống Jaeger.
+<details><summary>Gợi ý</summary>
+Nó cho thấy thời gian bắt đầu, thời gian kết thúc và sự phụ thuộc (Dependency) giữa các bước xử lý của một request. Bước nào dài nhất chính là **Nút thắt cổ chai (Bottleneck)**.
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Microservices Monitoring: OpenTelemetry & Jaeger Deep Dive](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-distributed-tracing.md)
+- [Distributed Tracing in ASP.NET Core with OpenTelemetry](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-dotnet-tracing.md)
+- [The Importance of Correlation ID in Monitoring & Debugging](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-correlation-id.md)

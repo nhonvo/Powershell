@@ -1,0 +1,77 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 6
+
+## Part 1
+**Q1.** ここに　 やまださんの　(   　　　 )が　 あります。
+- **A.** にもつ
+- **B.** りょこう
+- **C.** ねつ
+- **D.** べんきょう
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1にもつ: h&agrave;nh l&yacute;C&oacute; h&agrave;nh l&yacute; của anh Yamada ở chỗ n&agrave;y.ねつ: sốtりょこう: du lịchべんきょう: học</p>
+</details>
+
+---
+**Q2.** このへやは　(            )　ですから　 ストーブを 　つけましょう。
+- **A.** あつい
+- **B.** さむい
+- **C.** ぬるい
+- **D.** あたたかい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2さむい: lạnhV&igrave; ph&ograve;ng n&agrave;y lạnh n&ecirc;n h&atilde;y bật l&ograve; sưởi l&ecirc;n th&ocirc;i.あつい: n&oacute;ngぬるい: nguộiあたたかい: ấm</p>
+</details>
+
+---
+**Q3.** なつやすみに 　ともだちと　( 　　) で 　およぎました。
+- **A.** カレンダー
+- **B.** シャワー
+- **C.** プール
+- **D.** ゲーム
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3プール: hồ bơi, bể bơiV&agrave;o kỳ nghỉ h&egrave; t&ocirc;i đ&atilde; c&ugrave;ng bạn bơi ở bể bơi.カレンダー: lịchシャワー: v&ograve;i hoa senゲーム: tr&ograve; chơi (game)</p>
+</details>
+
+---
+**Q4.** しごとが 　ありますから　 まいあさ　 7じに　( 　　　)。
+- **A.** たちます
+- **B.** おきます
+- **C.** すわります
+- **D.** おぼえます
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n:  2おきる: thức dậyV&igrave; c&oacute; c&ocirc;ng việc n&ecirc;n t&ocirc;i thức dậy v&agrave;o 7 giờ mỗi s&aacute;ng.たつ: đứng dậyすわる: ngồiおぼえる: nhớ</p>
+</details>
+
+---
+**Q5.** この　 としょかんは　 いつも　 ひとが　(　　　 )　います。
+- **A.** ゆっくり
+- **B.** はじめて
+- **C.** だんだん
+- **D.** いっぱい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4いっぱい: đầy, đ&ocirc;ngThư viện n&agrave;y l&uacute;c n&agrave;o cũng đ&ocirc;ng người.ゆっくり: từ từ, thong thả, chầm chậmだんだん: dần dầnはじめて: đầu ti&ecirc;n</p>
+</details>
+
+---
+**Q6.** あぶないですから　 きょうしつで　( 　　　)　ください。
+- **A.** まよわないで
+- **B.** まがらないで
+- **C.** つかわないで
+- **D.** はしらないで
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4はしる: chạyV&igrave; nguy hiểm n&ecirc;n đừng chạy trong ph&ograve;ng học.まよう: lạcつかう: sử dụngまがる: rẽ</p>
+</details>
+
+---

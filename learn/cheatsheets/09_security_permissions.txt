@@ -1,0 +1,32 @@
+🔙 **Back to Parent**: [[technical_skills/04_PostgreSQL_Deep_Dive/05_Indexing_Mastery|04_PostgreSQL_Deep_Dive]]
+
+# Module 9: Database Security & Permissions 🛡️
+
+Database của bạn là mục tiêu hàng đầu của hacker. Bảo mật CSDL không chỉ là đổi mật khẩu.
+
+---
+
+## ⚙️ Các lớp bảo mật
+
+### 1. Role-Based Access Control (RBAC)
+- Khác với MySQL, PostgreSQL quản lý User/Group thông qua các **Roles**.
+- Nguyên tắc: Cấp quyền tối thiểu (Least Privilege). `Admin` != `Developer` != `App_User`.
+
+### 2. Row Level Security (RLS)
+Tính năng cực mạnh cho phép lọc dữ liệu ở mức hàng (Row).
+- Ví dụ: `User A` chỉ có thể nhìn thấy các bài viết do chính mình tạo ra, mặc dù cùng truy vấn vào 1 bảng `posts`.
+
+### 3. Phòng chống SQL Injection
+- Tuyệt đối không cộng chuỗi SQL. Sử dụng **Prepared Statements** hoặc tham số hóa.
+- [Xem blog: API Security & Prevent Injection](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-api-security.md)
+
+---
+
+## 🛠️ Bài tập thực hành (Practice) - [Trích từ Data.csv ID 19/107]
+
+1. Tạo một Role `readonly_user` chỉ có quyền `SELECT` trên các bảng của database.
+2. Thiết lập chính sách **Row Level Security (RLS)** trên bảng `accounts` để đảm bảo mỗi khách hàng chỉ thấy số dư của riêng họ.
+3. Giải thích tại sao việc dùng `POSTGRES` user cho ứng dụng là cực kỳ nguy hiểm.
+
+---
+*Tiếp tục học: [Module 10: DBA & DevOps](./10_PostgreSQL_Administration.md)*

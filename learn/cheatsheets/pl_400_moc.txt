@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/pl-400
+  - pl400
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 PL-400: Microsoft Power Platform Developer MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/PL-400/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/PL-400/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/PL-400/PL-400 Mindmap\|🗺️ PL-400 Mindmap]]
+- [[certifications/microsoft/PL-400/PL-400 Flashcards\|🃏 PL-400 Flashcards]]
+- [[certifications/microsoft/PL-400/PL-400_Scraped_Question_Bank\|🗃️ PL-400 Scraped Question Bank]]

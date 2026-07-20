@@ -1,0 +1,39 @@
+---
+tags:
+  - certification/gh-300
+  - copilot
+  - cheat-sheet
+status: active
+created: 2026-05-26
+---
+
+# 🐱 Copilot Comparison Cheat Sheet
+
+This note compares the administrative and governance capabilities across all three GitHub Copilot tiers. It is highly referenced by **[[certifications/microsoft/GH-300-Copilot/Domain 2 - Plans and Features|Domain 2 - Plans and Features]]** and **[[certifications/microsoft/GH-300-Copilot/Domain 3 - Data and Privacy|Domain 3 - Data and Privacy]]**.
+
+## 📊 Comparison Matrix
+
+| Feature | Copilot Individual | Copilot Business | Copilot Enterprise |
+| :--- | :--- | :--- | :--- |
+| **Pricing** | $10/mo or $100/yr | $19/user/mo | $39/user/mo |
+| **Management** | Personal | Org/Enterprise level | Enterprise level |
+| **Telemetry Retention** | **Opt-in / Opt-out** | **Blocked by default** | **Blocked by default** |
+| **Content Exclusions** | No | Yes | Yes (Multi-level) |
+| **IP Indemnification** | Yes | Yes | Yes |
+| **Copilot Chat in IDE** | Yes | Yes | Yes |
+| **Chat in GitHub.com** | No | No | **Yes** |
+| **Knowledge Bases** | No | No | **Yes** |
+| **PR Summaries** | No | No | **Yes** |
+| **Custom Models** | No | No | **Yes** (Beta/Preview) |
+| **Policy Control** | Personal Settings | Org Settings | Enterprise Settings |
+
+---
+
+## 🔒 Deep Dive Links
+
+- **Telemetry & Privacy**: For details on prompt lifecycle and token processing, see **[[certifications/microsoft/GH-300-Copilot/Domain 3 - Data and Privacy|Domain 3 - Data and Privacy]]**.
+- **Features Setup**: For IDE configs and CLI wrappers, see **[[certifications/microsoft/GH-300-Copilot/Domain 2 - Plans and Features|Domain 2 - Plans and Features]]**.
+- **Responsible AI**: For details on how matching filters work under the hood, see **[[certifications/microsoft/GH-300-Copilot/Domain 1 - Responsible AI|Domain 1 - Responsible AI]]**.
+
+---
+Back to **[[certifications/microsoft/GH-300-Copilot/GH-300 Copilot MOC|GH-300 Copilot MOC]]**

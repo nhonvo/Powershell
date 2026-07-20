@@ -1,0 +1,80 @@
+🔙 **Back to Parent**: [[technical_skills/03_Design_Patterns_Mastery/📂index_03_Design_Patterns_Mastery|03_Design_Patterns_Mastery]]
+
+# 🏃‍♂️ 6. Behavioral Patterns (The Interaction Mastery)
+
+Tập trung vào sự tương tác và phân chia trách nhiệm giữa các đối tượng. Trong Backend, chúng ta dùng Behavioral Patterns để xử lý các thuật toán linh hoạt, trạng thái phức tạp (State) và truyền tin (Messaging).
+
+---
+
+### 🏛️ 6.1 Strategy (Chiến lược) - "Chọn súng để bắn"
+
+> "Định nghĩa một họ thuật toán, bọc chúng lại và cho phép thay đổi thuật toán đó lúc runtime."
+
+- **Ví dụ đời thực**: Chế độ đi chơi. Bạn có thể chọn **Xe máy**, **Ô tô**, hay **Đi bộ**.
+- **Dùng khi**: Hệ thống thanh toán (Paypal, Stripe, Visa). Bạn chỉ cần gọi `payment.Pay()` và ném chiến thuật tương ứng vào.
+
+**Ví dụ (C# Strategy):**
+```csharp
+public interface IPaymentStrategy { void Pay(decimal amount); }
+public class Momo : IPaymentStrategy { public void Pay(decimal a) { ... } }
+public class Visa : IPaymentStrategy { public void Pay(decimal a) { ... } }
+
+// Chạy Runtime linh hoạt
+context.SetStrategy(new Momo());
+context.Pay(100);
+```
+
+---
+
+### 🧠 6.2 Observer (Người quan sát) - "Hóng hớt tin tức"
+
+> "Định nghĩa mối quan hệ 1-N. Khi 1 đối tượng thay đổi, tất cả đối tượng đăng ký quan tâm sẽ được thông báo ngay lập tức."
+
+- **Ví dụ đời thực**: Bạn đăng ký (Subscribe) kênh YouTube. Khi kênh có Video mới, bạn nhận được Notification.
+- **Dùng khi**: Hệ thống thông báo, Log sự kiện, Xử lý WebSockets.
+
+---
+
+### 🚀 6.3 State (Trạng thái) - "Mỗi lúc một tâm trạng"
+
+> "Cho phép một đối tượng thay đổi hành vi của nó khi trạng thái nội bộ của nó thay đổi."
+
+- **Ví dụ đời thực**: Nút nguồn đèn Pin. Đang **Tắt** -> Nhấn -> **Bật**. Đang **Bật** -> Nhấn -> **Chớp**.
+- **Dùng khi**: Một đơn hàng (Order) chuyển từ `Pending` -> `Confirmed` -> `Paid` -> `Shipped`. Mỗi trạng thái có logic xử lý khác nhau.
+
+---
+
+### ⚡ 6.4 Template Method (Bộ khung thuật toán)
+
+> "Định nghĩa một bộ khung thuật toán trong 1 hàm. Cho phép lớp con ghi đè các bước cụ thể mà không làm đổi cấu trúc chung."
+
+- **Dùng khi**: Quy trình làm Báo cáo (Report). Mọi báo cáo đều có chung 3 bước: 1. Lấy dữ liệu -> 2. Tính toán -> 3. Định dạng. 
+- Lớp con chỉ cần ghi đè cách lấy dữ liệu (từ SQL hay API).
+
+---
+
+### 📝 6.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Phân biệt Strategy và State? (Cơ chế giống nhau nhưng ý nghĩa khác nhau)."
+<details><summary>Đáp án</summary>
+**Strategy** dùng để thay đổi "Cách thức thực hiện" một hành động (VD: Thay đổi thuật toán sắp xếp). **State** dùng để thay đổi "Hành vi dựa trên tình trạng" của đối tượng (VD: Đơn hàng đã giao thì không cho phép Cancel nữa).
+</details>
+
+**Bài 2**: [Kỹ thuật] Thiết kế hệ thống thông báo cho một App tin tức. Khi có tin mới, hệ thống tự gửi SMS cho User A và Email cho User B. Dùng **Observer Pattern**.
+<details><summary>Solution (C# Style)</summary>
+```csharp
+public interface ISubscriber { void Update(string msg); }
+public class SmsSubscriber : ISubscriber { public void Update(string m) { ... } }
+public class NewsPublisher {
+    private List<ISubscriber> _subs = new();
+    public void Notify(string msg) => _subs.ForEach(s => s.Update(msg));
+}
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Strategy Pattern: How to Implement Dynamic High-Performance Algorithms](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-strategy-pattern.md)
+- [Observer Pattern: The Core of Event-Driven Architecture](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-observer-pattern.md)
+- [Managing Order Lifecycle with State Pattern - Pro Techniques](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-state-pattern.md)

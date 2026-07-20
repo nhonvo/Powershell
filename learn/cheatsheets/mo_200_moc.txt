@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mo-200
+  - mo200
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MO-200: Microsoft Excel (Excel and Excel 2019) MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MO-200/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MO-200/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MO-200/MO-200 Mindmap\|🗺️ MO-200 Mindmap]]
+- [[certifications/microsoft/MO-200/MO-200 Flashcards\|🃏 MO-200 Flashcards]]
+- [[certifications/microsoft/MO-200/MO-200_Scraped_Question_Bank\|🗃️ MO-200 Scraped Question Bank]]

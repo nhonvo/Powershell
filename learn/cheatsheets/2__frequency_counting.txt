@@ -1,0 +1,243 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/05_Hashing/🔑index_05_Hashing|05_Hashing]]
+
+## 2. Frequency Counting
+
+### 2.1. Khái niệm
+
+**Frequency counting** = đếm số lần xuất hiện của mỗi phần tử trong một tập hợp. Đây là một trong những ứng dụng **phổ biến nhất** của hash map.
+
+**Ví dụ đời thực:** Bạn làm thầy giáo, muốn biết trong lớp có bao nhiêu bạn tên Minh, bao nhiêu bạn tên Hùng. Bạn lấy một tờ giấy, đọc từng tên trong danh sách: gặp tên mới thì ghi xuống đánh số 1, gặp tên cũ thì tăng số lên 1. Tờ giấy đó chính là hash map, tên là key, số lần xuất hiện là value.
+
+### 2.2. Đếm tần suất cơ bản
+
+Input: [3, 1, 2, 3, 1, 3]Duyệt từng phần tửGặp 3 → freq[3] = 1Gặp 1 → freq[1] = 1Gặp 2 → freq[2] = 1Gặp 3 → freq[3] = 2Gặp 1 → freq[1] = 2Gặp 3 → freq[3] = 3Output: {3:3, 1:2, 2:1}
+
+**Mô phỏng từng bước:**
+
+```
+Input: arr = [3, 1, 2, 3, 1, 3]
+freq = {}  (hash map rỗng)
+
+i=0: arr[0]=3 → 3 chưa có trong freq → freq = {3: 1}
+i=1: arr[1]=1 → 1 chưa có             → freq = {3: 1, 1: 1}
+i=2: arr[2]=2 → 2 chưa có             → freq = {3: 1, 1: 1, 2: 1}
+i=3: arr[3]=3 → 3 đã có, freq[3]++    → freq = {3: 2, 1: 1, 2: 1}
+i=4: arr[4]=1 → 1 đã có, freq[1]++    → freq = {3: 2, 1: 2, 2: 1}
+i=5: arr[5]=3 → 3 đã có, freq[3]++    → freq = {3: 3, 1: 2, 2: 1}
+
+Kết quả: 3 xuất hiện 3 lần, 1 xuất hiện 2 lần, 2 xuất hiện 1 lần.
+```
+
+**Python:**
+
+```python
+from collections import Counter, defaultdict
+
+# Cách 1: Thủ công
+def frequency_count(arr):
+    freq = {}
+    for x in arr:
+        freq[x] = freq.get(x, 0) + 1
+    return freq
+
+# Cách 2: defaultdict
+def frequency_count_v2(arr):
+    freq = defaultdict(int)
+    for x in arr:
+        freq[x] += 1
+    return freq
+
+# Cách 3: Counter (Pythonic nhất)
+def frequency_count_v3(arr):
+    return Counter(arr)
+
+arr = [3, 1, 2, 3, 1, 3]
+print(frequency_count(arr))      # {3: 3, 1: 2, 2: 1}
+print(Counter(arr).most_common(2))  # [(3, 3), (1, 2)] — top 2 phổ biến nhất
+```
+
+**Ứng dụng thực tế — Đếm từ trong đoạn văn:**
+
+```python
+from collections import Counter
+
+def word_frequency(text: str) -> dict:
+    """
+    Đếm tần suất từng từ trong đoạn văn bản.
+    Chuyển về lowercase để 'Hello' và 'hello' coi là 1 từ.
+    """
+    # Tách từ + chuyển lowercase
+    words = text.lower().split()
+    # Loại bỏ dấu câu ở cuối mỗi từ
+    words = [w.strip(".,!?;:\"'()") for w in words]
+    return Counter(words)
+
+# Test
+text = "Python rất hay. Python dễ học. Mình thích Python vì Python rất mạnh."
+freq = word_frequency(text)
+
+# In top 3 từ phổ biến nhất
+for word, count in freq.most_common(3):
+    print(f"'{word}' xuất hiện {count} lần")
+# 'python' xuất hiện 4 lần
+# 'rất' xuất hiện 2 lần
+# 'hay' xuất hiện 1 lần
+```
+
+### 2.3. Character Frequency — Đếm tần suất ký tự
+
+Một biến thể rất hay gặp trong interview: đếm tần suất ký tự trong chuỗi.
+
+**Bài toán kinh điển: Valid Anagram**
+
+> Cho 2 chuỗi s và t. Kiểm tra t có phải là anagram của s không? Anagram: cùng các ký tự, chỉ khác thứ tự. Ví dụ: "listen" và "silent".
+
+CóKhôngInput: s='listen', t='silent'Đếm freq mỗi ký tự trong sfreq = {l:1, i:1, s:1, t:1, e:1, n:1}Duyệt t, giảm freq mỗi ký tự's' → freq[s]=0, 'i' → freq[i]=0, ...Tất cả freq = 0?Là Anagram ✓Không phải Anagram ✗
+
+**Python:**
+
+```python
+def is_anagram(s: str, t: str) -> bool:
+    """
+    Kiểm tra 2 chuỗi có phải anagram không.
+    Time: O(n), Space: O(1) vì chỉ có 26 ký tự.
+    """
+    if len(s) != len(t):
+        return False
+
+    freq = {}
+    for c in s:
+        freq[c] = freq.get(c, 0) + 1
+
+    for c in t:
+        if c not in freq or freq[c] == 0:
+            return False
+        freq[c] -= 1
+
+    return True
+
+# Cách Pythonic hơn:
+def is_anagram_v2(s: str, t: str) -> bool:
+    return Counter(s) == Counter(t)
+
+print(is_anagram("listen", "silent"))  # True
+print(is_anagram("hello", "world"))    # False
+```
+
+**Cách tối ưu dùng array[26] (khi chỉ có lowercase letters):**
+
+```python
+def is_anagram_array(s: str, t: str) -> bool:
+    """
+    Dùng array 26 phần tử thay vì hash map.
+    Nhanh hơn vì:
+    - Không cần hash function
+    - Memory liên tục → cache-friendly
+    - Space luôn O(26) = O(1)
+    """
+    if len(s) != len(t):
+        return False
+
+    freq = [0] * 26  # Mỗi index tương ứng 1 chữ cái a-z
+    for c in s:
+        freq[ord(c) - ord('a')] += 1
+    for c in t:
+        freq[ord(c) - ord('a')] -= 1
+        if freq[ord(c) - ord('a')] < 0:
+            return False  # t có ký tự thừa so với s
+    return True
+
+print(is_anagram_array("listen", "silent"))  # True
+print(is_anagram_array("hello", "world"))    # False
+```
+
+**Trick tối ưu:** Khi input chỉ gồm lowercase English letters (26 ký tự), dùng array[26] thay vì hash map sẽ nhanh hơn vì:
+
+- Không cần hash function
+- Cache-friendly (memory liên tục)
+- Constant space O(26) = O(1)
+
+### 2.4. Ứng dụng nâng cao: Top K Frequent Elements
+
+> Cho mảng nums và số nguyên k. Tìm k phần tử xuất hiện nhiều nhất. Input: nums = [1,1,1,2,2,3], k = 2 → Output: [1,2]
+
+**Approach 1: Sort by frequency — O(n log n)**
+
+```python
+def topKFrequent_sort(nums, k):
+    freq = Counter(nums)
+    return [x for x, _ in freq.most_common(k)]
+```
+
+**Approach 2: Bucket Sort — O(n)**
+
+Ý tưởng: tạo array of lists, index = frequency. Vì frequency max = n, ta tạo array size n+1.
+
+```python
+def topKFrequent_bucket(nums, k):
+    freq = Counter(nums)
+    # buckets[i] = list of elements with frequency i
+    buckets = [[] for _ in range(len(nums) + 1)]
+
+    for num, count in freq.items():
+        buckets[count].append(num)
+
+    result = []
+    # Duyệt từ frequency cao nhất
+    for i in range(len(buckets) - 1, 0, -1):
+        for num in buckets[i]:
+            result.append(num)
+            if len(result) == k:
+                return result
+    return result
+```
+
+**Mô phỏng:**
+
+```
+nums = [1,1,1,2,2,3], k = 2
+
+Step 1: freq = {1: 3, 2: 2, 3: 1}
+
+Step 2: buckets (index = frequency):
+  buckets[0] = []
+  buckets[1] = [3]      ← 3 xuất hiện 1 lần
+  buckets[2] = [2]      ← 2 xuất hiện 2 lần
+  buckets[3] = [1]      ← 1 xuất hiện 3 lần
+  buckets[4] = []
+  buckets[5] = []
+  buckets[6] = []
+
+Step 3: Duyệt từ cuối:
+  i=6: rỗng
+  i=5: rỗng
+  i=4: rỗng
+  i=3: result = [1]     (k=2, chưa đủ)
+  i=2: result = [1, 2]  (đủ k=2, dừng!)
+
+Output: [1, 2]
+```
+
+### 2.5. Complexity Analysis
+
+| Bài toán                | Time       | Space                       | Note            |
+| :---------------------- | :--------- | :-------------------------- | :-------------- |
+| Đếm frequency           | O(n)       | O(k), k = distinct elements | 1 pass          |
+| Valid Anagram           | O(n)       | O(1) nếu 26 ký tự           | 2 pass          |
+| Top K Frequent (sort)   | O(n log n) | O(n)                        |                 |
+| Top K Frequent (bucket) | O(n)       | O(n)                        | Optimal         |
+| Top K Frequent (heap)   | O(n log k) | O(n)                        | Good khi k << n |
+
+### 2.6. Ưu điểm và Nhược điểm
+
+**Ưu điểm:**
+
+- O(1) lookup/update cho mỗi phần tử
+- Code ngắn gọn, dễ hiểu
+- Nhiều ngôn ngữ có built-in (Python Counter, C++ unordered_map)
+
+**Nhược điểm:**
+
+- Tốn thêm O(k) space cho hash map
+- Không giữ thứ tự insert (dùng OrderedDict nếu cần)
+- Hash collision có thể làm chậm worst case

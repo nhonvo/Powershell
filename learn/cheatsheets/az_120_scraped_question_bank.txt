@@ -1,0 +1,169 @@
+# 🗃️ AZ-120 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Migrate SAP Workloads to Azure (Testlet 1)
+
+You are evaluating which migration method Litware can implement based on the current environment and the business goals.
+
+Which migration method will cause the least amount of downtime?
+
+### Options:
+- [ ] **A)** Migrate SAP ECC to SAP Business Suite in HANA, and then migrate SAP to Azure.
+- [ ] **B)** Use Near-Zero Downtime (NZDT) to migrate to SAP HANA and Azure during the same maintenance window.
+- [x] **C)** Use the Database Migration Option (DMO) to migrate to SAP HANA and Azure during the same maintenance window. [Correct]
+- [ ] **D)** Migrate SAP to Azure, and then migrate SAP ECC to SAP Business Suite on HANA.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+The SAP Database Migration Option (DMO) with System Move option of SUM, used as part of the migration allows customer the options to perform the migration in a single step, from source system on-premises, or to the target system residing in Microsoft Azure, minimizing overall downtime.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Migrate SAP Workloads to Azure (Testlet 2)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You are evaluating the proposed backup policy.
+
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+
+NOTE: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation for the Answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Yes
+Scenario: Technical requirements: Ensure that an application server can be restored from a backup created during the last five days within 15 minutes.
+
+Instant Restore has 'The instance recovery snapshot(s) for 5 Day(s)'.
+
+Box 2: No
+Scenario: Ensure that all the production application servers can restore daily backups from the last 21 days.
+
+The Retention of daily backup point is set to for 14 days only.
+
+Box 3: Yes
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Migrate SAP Workloads to Azure (Testlet 2)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You are planning replication of the SAP HANA database for the disaster recovery environment in Azure.
+
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+
+NOTE: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation for the Answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: No
+SAP HANA Replication consists of one primary node and at least one secondary node. Changes to the data on the primary node are replicated to the secondary node synchronously or asynchronously.
+
+Box 2: No
+Since SPS11 SAP HANA system replication can be run in two different operation modes:
+delta_datashipping
+
+logreplay
+
+Box 3: Yes
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Migrate SAP Workloads to Azure (Testlet 2)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You are evaluating the proposed backup policy.
+
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+
+NOTE: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation for the Answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Yes
+Scenario: Technical requirements: Ensure that an application server can be restored from a backup created during the last five days within 15 minutes.
+
+Instant Restore has 'The instance recovery snapshot(s) for 5 Day(s)'.
+
+Box 2: No
+Scenario: Ensure that all the production application servers can restore daily backups from the last 21 days.
+
+The Retention of daily backup point is set to for 14 days only.
+
+Box 3: Yes
+Yes, the early backups are retained for 7 years.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Migrate SAP Workloads to Azure (Question Set 3)
+
+You are migrating SAP to Azure. The ASCS application servers are in one Azure zone, and the SAP database server in in a different Azure zone. ASCS/ERS is configured for high availability.
+
+During performance testing, you discover increased response times in Azure, even though the Azure environment has better computer and memory configurations than the on-premises environment.
+
+During the initial analysis, you discover an increased wait time for Enqueue.
+
+What are three possible causes of the increased wait time? Each correct answer presents a complete solution.
+
+NOTE: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C,D,E`
+
+**Explanation**:
+E: The network latency across Availability Zones is not the same in all Azure regions. In some cases, you can deploy and run the SAP application layer across different zones because the network latency from one zone to the active DBMS VM is acceptable. But in some Azure regions, the latency between the active DBMS VM and the SAP application instance, when deployed in different zones, might not be acceptable for SAP business processes.
+</details>
+
+---

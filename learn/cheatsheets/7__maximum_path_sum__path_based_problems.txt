@@ -1,0 +1,429 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/🌲index_09_Binary_Trees|09_Binary_Trees]]
+
+## 7. Maximum Path Sum / Path-based Problems
+
+### Ý tưởng
+
+**Path** trong binary tree là dãy node liên tiếp nối với nhau bằng edge. Path **không bắt buộc** đi qua root và **không bắt buộc** đi từ trên xuống dưới.
+
+**Maximum Path Sum** = tìm path có tổng giá trị lớn nhất. Node có thể có giá trị **âm**.
+
+Đây là bài toán khó nhất trong chương này — kết hợp kỹ thuật từ Height và Diameter.
+
+### Analogy — Đường đi trong thành phố
+
+Tưởng tượng mỗi node là 1 **trạm thu phí** trên đường. Giá trị node là **lợi nhuận** (dương) hoặc **chi phí** (âm) khi đi qua trạm đó. Bạn muốn tìm tuyến đường có **lợi nhuận ròng cao nhất**.
+
+Bạn có thể:
+
+- Bắt đầu và kết thúc ở **bất kỳ** trạm nào
+- Đi qua trạm lỗ nếu phía sau có lãi lớn
+- Nhưng cũng có thể **dừng lại** sớm nếu phía sau toàn lỗ
+
+### Ví dụ
+
+-10920157
+
+- Path `15 → 20 → 7` có sum = 42
+- Path `9 → -10 → 20 → 15` có sum = 34
+- **Maximum path sum = 42** (path: 15 → 20 → 7)
+
+### Thuật toán
+
+**Nhận xét**: Giống bài Diameter, với mỗi node, path sum lớn nhất đi qua node đó = `node.val + max_gain(left) + max_gain(right)`.
+
+Nhưng khác Diameter ở chỗ:
+
+- `max_gain(subtree)` = max gain nếu đi **một hướng** (không rẽ nhánh) — vì khi "đóng góp" cho node cha, chỉ được đi 1 hướng
+- Nếu gain từ subtree < 0, chọn không đi = gain 0 (bỏ qua nhánh lỗ)
+
+#### Flowchart
+
+CóKhôngmax_path_sum(root)Khởi tạo max_sum = -infinityGọi max_gain(root)node == None?Return 0left_gain = max(0, max_gain(left))right_gain = max(0, max_gain(right))path_sum = node.val + left_gain + right_gainCập nhật max_sum = max(max_sum, path_sum)Return node.val + max(left_gain, right_gain)(Chỉ chọn 1 hướng để đóng góp cho parent)
+
+### Mô phỏng từng bước
+
+```
+       -10
+       / \
+      9   20
+         / \
+        15   7
+```
+
+| Bước | Node | left_gain | right_gain | path_sum qua node | max_sum | Return (cho parent) |
+| :--- | :--- | :-------- | :--------- | :---------------- | :------ | :------------------ |
+| 1    | 9    | 0         | 0          | 9+0+0=9           | 9       | 9+max(0,0)=9        |
+| 2    | 15   | 0         | 0          | 15+0+0=15         | 15      | 15                  |
+| 3    | 7    | 0         | 0          | 7+0+0=7           | 15      | 7                   |
+| 4    | 20   | 15        | 7          | 20+15+7=**42**    | **42**  | 20+max(15,7)=35     |
+| 5    | -10  | 9         | 35         | -10+9+35=34       | 42      | -10+max(9,35)=25    |
+
+**Maximum Path Sum = 42** (path: 15 → 20 → 7)
+
+### Giải thích chi tiết bước 4 và 5
+
+**Bước 4 (node 20)**:
+
+- `left_gain = 15` (từ node 15)
+- `right_gain = 7` (từ node 7)
+- Path qua node 20: `15 → 20 → 7` = 42 → cập nhật max_sum = 42
+- **Return 35** cho parent (chọn 20 + 15 vì 15 > 7). Tại sao không return 42? Vì khi đóng góp cho parent, chỉ được đi **một hướng** (trái HOẶC phải), không thể rẽ nhánh.
+
+**Bước 5 (node -10)**:
+
+- `left_gain = max(0, 9) = 9`
+- `right_gain = max(0, 35) = 35`
+- Path qua node -10: `-10 + 9 + 35 = 34` → không lớn hơn 42
+- max_sum vẫn = 42
+
+### Code
+
+```python
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def max_path_sum(root):
+    """
+    Tìm path sum lớn nhất trong binary tree.
+    Path = dãy node liên tiếp, không bắt buộc qua root.
+    Node có thể có giá trị âm.
+
+    Ý tưởng:
+    - Với mỗi node, tính max gain nếu bắt đầu từ node đó đi xuống 1 hướng
+    - Path sum qua node = val + left_gain + right_gain
+    - Nếu gain < 0, chọn 0 (không đi hướng đó)
+
+    Time: O(n), Space: O(h)
+    """
+    max_sum = float('-inf')
+
+    def max_gain(node):
+        """
+        Return max gain nếu bắt đầu từ node đi xuống (1 hướng).
+        Side effect: cập nhật max_sum.
+        """
+        nonlocal max_sum
+
+        if node is None:
+            return 0
+
+        # Max gain từ cây trái và phải (chọn 0 nếu âm)
+        left_gain = max(0, max_gain(node.left))
+        right_gain = max(0, max_gain(node.right))
+
+        # Path sum đi qua node hiện tại (rẽ nhánh cả 2 bên)
+        path_sum = node.val + left_gain + right_gain
+        max_sum = max(max_sum, path_sum)
+
+        # Return cho parent: chỉ chọn 1 hướng (hướng có gain lớn hơn)
+        return node.val + max(left_gain, right_gain)
+
+    max_gain(root)
+    return max_sum
+
+
+# === Test 1: Path không qua root ===
+#       -10
+#       / \
+#      9   20
+#         / \
+#        15   7
+root1 = TreeNode(-10)
+root1.left = TreeNode(9)
+root1.right = TreeNode(20)
+root1.right.left = TreeNode(15)
+root1.right.right = TreeNode(7)
+
+print("Max path sum 1:", max_path_sum(root1))  # Output: 42
+# Path: 15 → 20 → 7
+
+# === Test 2: Tất cả dương ===
+#      1
+#     / \
+#    2   3
+root2 = TreeNode(1)
+root2.left = TreeNode(2)
+root2.right = TreeNode(3)
+
+print("Max path sum 2:", max_path_sum(root2))  # Output: 6
+# Path: 2 → 1 → 3
+
+# === Test 3: Tất cả âm ===
+#      -3
+#      /
+#    -2
+root3 = TreeNode(-3)
+root3.left = TreeNode(-2)
+
+print("Max path sum 3:", max_path_sum(root3))  # Output: -2
+# Path: chỉ node -2 (ít âm nhất)
+
+# === Test 4: Cây phức tạp ===
+#        5
+#       / \
+#      4   8
+#     /   / \
+#    11  13  4
+#   / \       \
+#  7   2       1
+root4 = TreeNode(5)
+root4.left = TreeNode(4)
+root4.right = TreeNode(8)
+root4.left.left = TreeNode(11)
+root4.left.left.left = TreeNode(7)
+root4.left.left.right = TreeNode(2)
+root4.right.left = TreeNode(13)
+root4.right.right = TreeNode(4)
+root4.right.right.right = TreeNode(1)
+
+print("Max path sum 4:", max_path_sum(root4))  # Output: 48
+# Path: 7 → 11 → 4 → 5 → 8 → 13
+```
+
+### Code — Tìm path cụ thể (không chỉ sum)
+
+```python
+def max_path_sum_with_path(root):
+    """
+    Tìm max path sum VÀ trả về path cụ thể.
+    Phức tạp hơn nhưng hữu ích khi cần debug.
+    Time: O(n), Space: O(n)
+    """
+    max_sum = float('-inf')
+    best_path = []
+
+    def max_gain(node):
+        """
+        Return: (max_gain_value, path_from_node_downward)
+        """
+        nonlocal max_sum, best_path
+
+        if node is None:
+            return (0, [])
+
+        left_gain, left_path = max_gain(node.left)
+        right_gain, right_path = max_gain(node.right)
+
+        # Chọn 0 nếu gain âm
+        left_gain = max(0, left_gain)
+        right_gain = max(0, right_gain)
+
+        if left_gain == 0:
+            left_path = []
+        if right_gain == 0:
+            right_path = []
+
+        # Path qua node hiện tại
+        path_sum = node.val + left_gain + right_gain
+
+        if path_sum > max_sum:
+            max_sum = path_sum
+            # Path: left_path (đảo) + node + right_path
+            best_path = left_path[::-1] + [node.val] + right_path
+
+        # Return cho parent: chọn hướng tốt hơn
+        if left_gain >= right_gain:
+            return (node.val + left_gain, [node.val] + left_path)
+        else:
+            return (node.val + right_gain, [node.val] + right_path)
+
+    max_gain(root)
+    return max_sum, best_path
+
+
+# === Test ===
+root = TreeNode(-10)
+root.left = TreeNode(9)
+root.right = TreeNode(20)
+root.right.left = TreeNode(15)
+root.right.right = TreeNode(7)
+
+result_sum, result_path = max_path_sum_with_path(root)
+print(f"Max sum: {result_sum}, Path: {result_path}")
+# Output: Max sum: 42, Path: [15, 20, 7]
+```
+
+### Best case / Worst case
+
+| Trường hợp | Time | Space    | Max sum                              |
+| :--------- | :--- | :------- | :----------------------------------- |
+| Best case  | O(n) | O(log n) | Cây cân bằng, tất cả dương           |
+| Worst case | O(n) | O(n)     | Cây suy biến                         |
+| Tất cả âm  | O(n) | O(h)     | = giá trị node lớn nhất (ít âm nhất) |
+
+### Chứng minh Time Complexity
+
+Mỗi node được visit đúng 1 lần. Tại mỗi node, thực hiện O(1) phép toán (max, cộng). Tổng: n * O(1) = **O(n)**.
+
+### Chứng minh tính đúng đắn
+
+**Claim**: Thuật toán tìm được max path sum đúng.
+
+**Chứng minh**: Mọi path trong tree đều đi qua đúng 1 node "đỉnh" (node cao nhất trên path). Thuật toán xét **mọi node** làm "đỉnh" và tính path sum tốt nhất qua node đó. Vì xét hết → chắc chắn tìm được max. Tại mỗi node, gain từ mỗi bên = max(0, best_gain_from_child) là đúng vì:
+
+- Gain = 0 nghĩa là không đi hướng đó (path dừng lại)
+- Gain > 0 nghĩa là đi hướng đó có lợi
+
+### Ưu điểm và nhược điểm
+
+- **Ưu**: O(n) time — tối ưu
+- **Ưu**: Xử lý đúng giá trị âm
+- **Nhược**: Logic `max(0, gain)` dễ quên → sai kết quả
+- **Nhược**: Phân biệt "return cho parent" vs "path qua node" cần hiểu kỹ
+
+### Cải tiến
+
+- **Path với ràng buộc**: Path phải đi qua root, path chỉ từ root đến leaf, path có đúng k node
+- **All paths with sum = target**: Dùng prefix sum + hashmap (giống Two Sum trên array)
+- **Longest path**: Thay vì max sum, tìm path dài nhất
+
+### Bài tập mở rộng — Path Sum từ Root đến Leaf
+
+```python
+def has_path_sum(root, target_sum):
+    """
+    Kiểm tra có path nào từ root → leaf có tổng = target_sum không.
+    Time: O(n), Space: O(h)
+    """
+    if root is None:
+        return False
+
+    # Nếu đây là leaf
+    if root.left is None and root.right is None:
+        return root.val == target_sum
+
+    # Đệ quy: trừ giá trị node hiện tại
+    remaining = target_sum - root.val
+    return (has_path_sum(root.left, remaining) or
+            has_path_sum(root.right, remaining))
+
+
+def all_root_to_leaf_paths(root):
+    """
+    Liệt kê tất cả path từ root đến leaf.
+    Time: O(n), Space: O(n * h) cho kết quả
+    """
+    paths = []
+
+    def dfs(node, current_path):
+        if node is None:
+            return
+
+        current_path.append(node.val)
+
+        # Nếu là leaf → lưu path
+        if node.left is None and node.right is None:
+            paths.append(current_path[:])  # Copy list
+        else:
+            dfs(node.left, current_path)
+            dfs(node.right, current_path)
+
+        # Backtrack
+        current_path.pop()
+
+    dfs(root, [])
+    return paths
+
+
+# === Test ===
+#        5
+#       / \
+#      4   8
+#     /   / \
+#    11  13  4
+#   / \       \
+#  7   2       1
+root = TreeNode(5)
+root.left = TreeNode(4)
+root.right = TreeNode(8)
+root.left.left = TreeNode(11)
+root.left.left.left = TreeNode(7)
+root.left.left.right = TreeNode(2)
+root.right.left = TreeNode(13)
+root.right.right = TreeNode(4)
+root.right.right.right = TreeNode(1)
+
+print("Has path sum 22?", has_path_sum(root, 22))
+# Output: True (path: 5 → 4 → 11 → 2)
+
+print("All root-to-leaf paths:", all_root_to_leaf_paths(root))
+# Output: [[5,4,11,7], [5,4,11,2], [5,8,13], [5,8,4,1]]
+```
+
+------
+
+## Tổng kết
+
+### Bảng tóm tắt toàn bộ
+
+| Bài toán        | Time | Space       | Kỹ thuật chính         |
+| :-------------- | :--- | :---------- | :--------------------- |
+| Tree Traversals | O(n) | O(h) / O(w) | DFS / BFS              |
+| Height / Depth  | O(n) | O(h)        | DFS bottom-up          |
+| Diameter        | O(n) | O(h)        | DFS + kết hợp height   |
+| LCA             | O(n) | O(h)        | DFS phân nhánh         |
+| Tree Views      | O(n) | O(n)        | BFS + HD map           |
+| Serialization   | O(n) | O(n)        | DFS/BFS + null markers |
+| Max Path Sum    | O(n) | O(h)        | DFS + gain concept     |
+
+### Pattern chung
+
+Nếu bạn để ý, hầu hết bài toán tree đều follow 1 pattern:
+
+```python
+def solve(root):
+    result = initial_value
+
+    def dfs(node):
+        nonlocal result
+        if node is None:
+            return base_case
+
+        left = dfs(node.left)
+        right = dfs(node.right)
+
+        # Cập nhật result dựa trên left, right, node.val
+        result = update(result, left, right, node.val)
+
+        # Return giá trị cho parent
+        return compute(left, right, node.val)
+
+    dfs(root)
+    return result
+```
+
+**Mẹo phỏng vấn**: Khi gặp bài tree, hãy tự hỏi:
+
+1. **Return gì cho parent?** (height? gain? True/False?)
+2. **Cập nhật global result khi nào?** (khi nào node hiện tại "tốt"?)
+3. **Base case là gì?** (None → return gì?)
+
+### Lộ trình luyện tập
+
+1. **Tuần 1**: Nắm vững 4 loại traversal — code cả recursive và iterative
+2. **Tuần 2**: Height, Depth, Diameter — hiểu pattern bottom-up DFS
+3. **Tuần 3**: LCA, Tree Views — kết hợp BFS/DFS với data structures phụ
+4. **Tuần 4**: Serialization, Max Path Sum — bài toán tổng hợp
+
+### Bài tập thêm (LeetCode)
+
+| #    | Tên bài                           | Difficulty | Liên quan         |
+| :--- | :-------------------------------- | :--------- | :---------------- |
+| 94   | Binary Tree Inorder Traversal     | Easy       | Traversal         |
+| 104  | Maximum Depth of Binary Tree      | Easy       | Height            |
+| 543  | Diameter of Binary Tree           | Easy       | Diameter          |
+| 236  | Lowest Common Ancestor            | Medium     | LCA               |
+| 199  | Binary Tree Right Side View       | Medium     | Tree Views        |
+| 297  | Serialize and Deserialize         | Hard       | Serialization     |
+| 124  | Binary Tree Maximum Path Sum      | Hard       | Max Path Sum      |
+| 112  | Path Sum                          | Easy       | Path problems     |
+| 113  | Path Sum II                       | Medium     | Path problems     |
+| 437  | Path Sum III                      | Medium     | Path + prefix sum |
+| 110  | Balanced Binary Tree              | Easy       | Height variant    |
+| 226  | Invert Binary Tree                | Easy       | Tree manipulation |
+| 105  | Construct from Preorder + Inorder | Medium     | Tree construction |

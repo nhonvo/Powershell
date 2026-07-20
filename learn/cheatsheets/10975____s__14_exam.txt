@@ -1,0 +1,89 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 14
+
+## Part 1
+**Q1.** ５じに　うちへ　帰って　ください。
+- **A.** むかって
+- **B.** かえって
+- **C.** いって
+- **D.** はしって
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2帰る (QUY)：vềH&atilde;y về nh&agrave; l&uacute;c 5 giờ.</p>
+</details>
+
+---
+**Q2.** お寺の　しゃしんを　とりました。
+- **A.** うち
+- **B.** みせ
+- **C.** てら
+- **D.** くに
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3寺 (TỰ)：ng&ocirc;i ch&ugrave;aT&ocirc;i đ&atilde; chụp ảnh ng&ocirc;i ch&ugrave;a.</p>
+</details>
+
+---
+**Q3.** あの　小学校の　なまえは　なんですか。
+- **A.** しょうがっこ
+- **B.** しょうがっこお
+- **C.** しょうがっこう
+- **D.** しょうがこう
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n:  3 小学校 (TIỂU - HỌC - HIỆU)：trường tiểu họcT&ecirc;n của trường tiểu học kia l&agrave; g&igrave; vậy.</p>
+</details>
+
+---
+**Q4.** この　飲み物は　いくらですか。
+- **A.** のみぶつ
+- **B.** のみこと
+- **C.** のみみず
+- **D.** のみもの
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4飲み物 (ẨM - VẬT)：Đồ uốngĐồ uống n&agrave;y gi&aacute; bao nhi&ecirc;u vậy?</p>
+</details>
+
+---
+**Q5.** この　あたりは　とても　明るいです。
+- **A.** あかるい
+- **B.** かるい
+- **C.** めいるい
+- **D.** ふるい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1明るい (MINH)：s&aacute;ngXung quanh đ&acirc;y rất s&aacute;ng.</p>
+</details>
+
+---
+**Q6.** 今週は　やすみが　おおいです。
+- **A.** こんしゅう
+- **B.** こんしゅ
+- **C.** いましゅう
+- **D.** いましゅ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1今週 (KIM - CHU)：Tuần n&agrave;yTuần n&agrave;y ng&agrave;y nghỉ nhiều nhỉ.</p>
+</details>
+
+---
+**Q7.** いもうとが　四人　います。
+- **A.** よんにん
+- **B.** よにん
+- **C.** よんじん
+- **D.** よじん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2四人 (TỨ - NH&Acirc;N)：bốn ngườiT&ocirc;i c&oacute; bốn người em g&aacute;i.</p>
+</details>
+
+---

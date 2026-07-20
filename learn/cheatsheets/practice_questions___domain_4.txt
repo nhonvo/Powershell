@@ -1,0 +1,254 @@
+---
+tags:
+  - certification/gh-300
+  - copilot/practice-question
+  - domain/4
+status: 🔁 needs-practice
+question_type: 💻 multiple-choice
+last_attempt: 2026-06-01
+---
+
+# ❓ Practice Questions: Domain 4 — Prompt Engineering
+
+---
+
+---
+
+## 📝 Q1: Prompt Relevance — Providing Input/Output Examples
+
+When crafting prompts for GitHub Copilot, what is a recommended strategy to enhance the relevance of the generated code?
+
+### Options
+- [ ] **A)** Keep the prompt as short as possible, using single words.
+- [ ] **B)** Write the prompt in natural language without referencing any programming language.
+- [ ] **C)** Avoid mentioning the programming language to allow for more flexible suggestions.
+- [ ] **D)** Provide examples of expected input and output within the prompt.
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **D**
+
+### Detailed Explanation
+- **Why it is correct**: Including examples of expected inputs and outputs (few-shot prompting) is a key strategy for guiding the model to produce output that conforms to your specific format and data structure constraints.
+- **Why other options are incorrect**:
+  - **Option A**: Vague or overly short prompts lead to generic and often irrelevant completions.
+  - **Options B and C**: Explicitly specifying the programming language and coding framework helps scope the context window and reduces model hallucinations.
+
+### 📖 Exam Relevance
+- **Domain**: [[certifications/microsoft/GH-300-Copilot/Domain 4 - Prompt Engineering|Domain 4 - Prompt Engineering]]
+
+</details>
+
+---
+
+---
+
+## 📝 Q2: Select a strategy to
+
+Select a strategy to increase the performance of GitHub Copilot Chat.
+
+### Options
+- [ ] **A)** Optimize the usage of memory-intensive operations within generated code
+- [ ] **B)** Apply prompt engineering techniques to be more specific
+- [ ] **C)** Use a single GitHub Copilot Chat query to find resolutions for the collection of technical requirements
+- [ ] **D)** Limit the number of concurrent users accessing GitHub Copilot Chat
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **B**
+
+### Detailed Explanation
+- **Why it is correct**: "Performance of Copilot Chat can be improved with prompt engineering. More specific prompts give more relevant and accurate answers." This confirms that applying prompt engineering techniques is the valid strategy.
+
+### 📖 Exam Relevance
+- **Official Docs Reference**: GitHub Copilot Chat best practices documentation.
+
+</details>
+
+---
+
+## 📝 Q3: Role Prompting Description
+
+Which of the following describes role prompting?
+
+### Options
+- [ ] **A)** Describing in your prompt what your role is (or adopting a persona) to get a better suggestion.
+- [ ] **B)** Telling GitHub Copilot in what tone of voice it should respond.
+- [ ] **C)** Prompting GitHub Copilot to explain what the role of a suggestion was.
+- [ ] **D)** Giving GitHub Copilot multiple examples of the form of the data you want to use.
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **A**
+
+### Detailed Explanation
+- **Why it is correct**: Role prompting involves assigning a persona or stating a developer's specific role (e.g., "Act as a Senior Database Administrator") to narrow down the target context and guide the model toward expert-level practices.
+- **Why other options are incorrect**:
+  - **Option B**: Tone of voice is style prompting, not role prompting.
+  - **Option C**: Asking Copilot to explain a role is code explanation.
+  - **Option D**: Providing multiple data format examples is few-shot prompting.
+
+### 📖 Exam Relevance
+- **Domain**: [[certifications/microsoft/GH-300-Copilot/Domain 4 - Prompt Engineering|Domain 4 - Prompt Engineering]]
+
+</details>
+
+---
+
+---
+
+## 📝 Q4: Copilot Chat Context Sources
+
+How does GitHub Copilot Chat utilize its training data and external sources to generate responses when answering coding questions?
+
+### Options
+- [ ] **A)** It relies solely on the model's training data.
+- [ ] **B)** It uses search results from Bing exclusively.
+- [ ] **C)** It combines its training dataset, code in user repositories, and external sources like Bing to generate responses.
+- [ ] **D)** It uses user-provided documentation files exclusively.
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **C**
+
+### Detailed Explanation
+- **Why it is correct**: Copilot Chat combines the baseline LLM training weights, the active code context of your repository files, and real-time search results (e.g., via Bing, if enabled) to resolve queries.
+- **Why other options are incorrect**:
+  - **Options A, B, and D**: These represent overly restrictive context sources and do not match Copilot Chat's multi-source prompt construction architecture.
+
+### 📖 Exam Relevance
+- **Domain**: [[certifications/microsoft/GH-300-Copilot/Domain 4 - Prompt Engineering|Domain 4 - Prompt Engineering]]
+
+</details>
+
+---
+
+---
+
+## 📝 Q5: Few-Shot Prompting Definition
+
+Which of the following best defines few-shot prompting?
+
+### Options
+- [ ] **A)** Telling GitHub Copilot to iterate several times on the answer before returning it to you.
+- [ ] **B)** Telling GitHub Copilot to try multiple times to answer the prompt.
+- [ ] **C)** Telling GitHub Copilot about the mechanism you want it to use and how to incorporate that into the response, by providing a few examples.
+- [ ] **D)** Telling GitHub Copilot from which sources it should base the response on.
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **C**
+
+### Detailed Explanation
+- **Why it is correct**: Few-shot prompting is the technique where you provide a few input/output examples of the desired format or pattern to guide the model's completions.
+- **Why other options are incorrect**:
+  - **Options A and B**: These describe model inference iterations or retries.
+  - **Option D**: This describes context anchoring or sourcing.
+
+### 📖 Exam Relevance
+- **Domain**: [[certifications/microsoft/GH-300-Copilot/Domain 4 - Prompt Engineering|Domain 4 - Prompt Engineering]]
+
+</details>
+
+---
+
+---
+
+## 📝 Q6: Techniques to Improve Prompt Specifications
+
+What are two techniques that can be used to improve prompts to GitHub Copilot? (Choose two)
+
+### Options
+- [ ] **A)** Provide specific success criteria.
+- [ ] **B)** Provide all information about all files in the system path.
+- [ ] **C)** Provide insight on where to get the content from to get a response.
+- [ ] **D)** Provide links to supporting documentation.
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **A and D**
+
+### Detailed Explanation
+- **Why it is correct**: Providing clear constraints/success criteria (e.g., "The function must run in O(n) time") and pasting links to API documentation (so the model can match patterns) are recommended methods for structuring prompts.
+- **Why other options are incorrect**:
+  - **Option B**: Flooding the prompt with system paths leads to token limits and reduced suggestion relevance.
+  - **Option C**: The model cannot browse local file paths dynamically unless they are open in the active editor workspace.
+
+### 📖 Exam Relevance
+- **Domain**: [[certifications/microsoft/GH-300-Copilot/Domain 4 - Prompt Engineering|Domain 4 - Prompt Engineering]]
+
+</details>
+
+---
+
+Back to **[[certifications/microsoft/GH-300-Copilot/GH-300 Copilot MOC|GH-300 Copilot MOC]]**
+
+---
+
+## 📝 Q7: What is zeroshot prompting
+
+What is zero-shot prompting?
+
+### Options
+- [ ] **A)** Only giving GitHub Copilot a question as a prompt and no examples
+- [ ] **B)** Giving GitHub Copilot examples of the problem you want to solve
+- [ ] **C)** Telling GitHub Copilot it needs to show only the correct answer
+- [ ] **D)** Giving GitHub Copilot examples of the algorithm and outcome you want to use
+- [ ] **E)** Giving as little context to GitHub Copilot as possible
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **A**
+
+### Detailed Explanation
+- **Why it is correct**: "Zero-shot prompting means asking the model to perform a task without providing examples-only the question or task description is given." This confirms that the correct definition of zero-shot prompting is providing no examples, only a direct prompt.
+
+### 📖 Exam Relevance
+- **Official Docs Reference**: GitHub Copilot and AI prompting documentation.
+
+</details>
+
+---
+
+## 📝 Q8: Enhancing Prompt Quality with Context and Constraints
+
+Which practices enhance the quality of suggestions provided by GitHub Copilot? (Choose three)
+
+### Options
+- [ ] **A)** Clearly defining the problem or task.
+- [ ] **B)** Including personal credentials and API keys in comments to authenticate requests.
+- [ ] **C)** Using meaningful variable names.
+- [ ] **D)** Providing examples of desired output.
+- [ ] **E)** Using a .gitignore file to exclude files.
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **A, C, and D**
+
+### Detailed Explanation
+- **Why it is correct**: Best practices for prompt engineering include setting clear task parameters (A), using meaningful variable names to establish context in the active editor file (C), and using shot prompting with examples of output formats (D).
+- **Why other options are incorrect**:
+  - **Option B**: Including credentials is a major security risk and is blocked by security/vulnerability filters.
+  - **Option E**: `.gitignore` files are not read by the Copilot client to build contextual prompts.
+
+### 📖 Exam Relevance
+- **Domain**: [[certifications/microsoft/GH-300-Copilot/Domain 4 - Prompt Engineering|Domain 4 - Prompt Engineering]]
+
+</details>
+
+---
+
+---
+
+Back to **[[certifications/microsoft/GH-300-Copilot/GH-300 Copilot MOC|GH-300 Copilot MOC]]**
+
+[learning/GH-300-Copilot/Domains/Domain 4 - Prompt Engineering|Domain 4 - Prompt Engineering]: <../Domains/Domain 4 - Prompt Engineering.md> "Domain 4 - Prompt Engineering"
+[learning/GH-300-Copilot/GH-300 Copilot MOC|GH-300 Copilot MOC]: <../GH-300 Copilot MOC.md> "🐱 GH-300: GitHub Copilot MOC"

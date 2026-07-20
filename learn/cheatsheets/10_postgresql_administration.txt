@@ -1,0 +1,62 @@
+🔙 **Back to Parent**: [[technical_skills/04_PostgreSQL_Deep_Dive/05_Indexing_Mastery|04_PostgreSQL_Deep_Dive]]
+
+# Module 10: PostgreSQL Administration (Deep Dive) 🛠️🛡️
+
+Khi bạn đã làm chủ query và thiết kế, bước tiếp theo là đảm bảo Database của bạn sống sót được trong môi trường Production High-Availability.
+
+---
+
+## 📦 1. Backup & Recovery - "Đừng để tiền rơi"
+
+### A. Logical Backup (`pg_dump`)
+- Dùng cho Database cỡ vừa (dưới 100GB). Xuất ra tệp SQL hoặc Binary.
+```bash
+pg_dump -U username -d mydb > backup.sql
+```
+
+### B. Physical Backup & PITR (Point-In-Time Recovery)
+- Dùng cho Database cực lớn. Lưu trữ các **WAL files** (Write Ahead Logs) để khôi phục đến từng giây bất kỳ trong quá khứ. Cực kỳ an toàn.
+
+---
+
+## 🐜 2. Replication & High Availability (HA)
+
+"Không bao giờ để Database chạy độc lập trên một server duy nhất."
+
+### A. Streaming Replication (Master-Slave)
+- **Master (Read-Write)**: Chấp nhận mọi thay đổi dữ liệu.
+- **Slave (Read-Only)**: Bản sao thời gian thực của Master. Khi Master sập, Slave được thăng cấp lên làm Master mới.
+
+### B. High Availability với Patroni & HAProxy
+Sử dụng công cụ bên ngoài để tự động hóa việc thăng cấp Slave khi Master lỗi mà không làm gián đoạn ứng dụng.
+
+---
+
+## 📈 3. Monitoring & Maintenance (Bảo trì)
+
+### VACUUM - Bí kíp trọn đời của Postgres
+PostgreSQL dùng MVCC nên khi bạn `UPDATE`, nó sẽ **không sửa** trên hàng đó mà tạo ra 1 hàng mới. Hàng cũ trở thành "Dead tuple" (Rác).
+- **VACUUM**: Thu hồi rác và giải phóng bộ nhớ. Cần cấu hình `AutoVacuum` chuẩn.
+
+---
+
+## 📝 4. Bài tập thực hành & Lời giải (Answer)
+
+### Đề bài:
+"Tình huống: Database của bạn bỗng dưng chạy cực kỳ chậm sau 3 tháng sử dụng dù query không thay đổi. Bạn nghi ngờ do dữ liệu rác (Bloat). Làm sao để kiểm tra và xử lý?"
+
+### 💡 Lời giải (Solution):
+
+1. **Bước 1**: Kiểm tra thống kê của bảng thông qua bảng hệ thống.
+```sql
+SELECT relname, n_dead_tup, last_vacuum FROM pg_stat_user_tables;
+```
+2. **Bước 2**: Nếu `n_dead_tup` (hàng chết) quá cao, hãy chạy thủ công (chỉ dùng khi thực sự cần thiết vì nó sẽ khóa bảng).
+```sql
+VACUUM ANALYZE users;
+```
+3. **Bước 3**: Cấu hình `autovacuum_vacuum_threshold` thấp hơn để Postgres tự dọn dẹp thường xuyên hơn.
+
+---
+## 🔗 Tài liệu chuyên sâu
+- [Cloud & DevOps Services Guide](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-database-services.md)

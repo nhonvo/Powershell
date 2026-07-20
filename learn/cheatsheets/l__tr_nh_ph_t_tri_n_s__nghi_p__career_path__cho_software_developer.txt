@@ -1,0 +1,100 @@
+# Lộ Trình Phát Triển Sự Nghiệp (Career Path) cho Software Developer
+
+### **Level: Dev 3 (Senior Developer / Strong Mid-level)**
+
+**Mục tiêu chính:** Làm chủ việc thực thi (Master of Execution). Có khả năng làm việc độc lập, tự chủ trong các task lớn và chịu trách nhiệm về chất lượng của một feature hoàn chỉnh.
+
+#### **1. Kỹ năng Kỹ thuật & Thiết kế (Technical & Design Skills)**
+
+- **Thành thạo Design Patterns:**
+  - Hiểu và áp dụng thành thạo các design pattern phổ biến (Singleton, Factory, Observer, Decorator, v.v.).
+  - Có khả năng phân tích và lựa chọn pattern phù hợp cho bài toán cụ thể, ví dụ: khi nào nên dùng **CQRS**, khi nào dùng **Mediator** để giảm sự phụ thuộc trong business logic.
+- **Thiết kế & Xây dựng Feature Hoàn chỉnh:**
+  - **API Design:** Tự thiết kế một bộ API hoàn chỉnh cho một feature, tuân thủ các tiêu chuẩn như RESTful, và có thể cân nhắc các kiến trúc như CQRS.
+  - **Database Design:** Tự thiết kế cấu trúc database cho feature đó (chọn đúng kiểu dữ liệu, xác định Primary/Foreign Key, Index, và các mối quan hệ).
+  - **Khả năng hoàn thành độc lập:** Có thể hoàn thành một feature từ A-Z (API, logic, database) trong khoảng 1-2 ngày mà không cần giám sát nhiều.
+
+#### **2. Quy trình & Chất lượng (Process & Quality)**
+
+- **Tự kiểm thử (Self-testing):** Chủ động viết Unit Test, Integration Test để đảm bảo code chạy đúng và ổn định trước khi bàn giao cho QA.
+- **Hiểu và Tái sử dụng Kiến trúc có sẵn:** Khi tham gia dự án mới, nhanh chóng nắm bắt được kiến trúc tổng thể (ví dụ: **Clean Architecture, MVC, Layered**) và áp dụng đúng pattern đó để phát triển feature mới, đảm bảo tính nhất quán của codebase.
+
+#### **3. Giải quyết Vấn đề & Tư duy (Problem Solving & Mindset)**
+
+- **Phân tích và làm rõ Yêu cầu:**
+  - Khi nhận một yêu cầu mới, có khả năng tự phân tích, đặt câu hỏi để làm rõ các logic nghiệp vụ còn mập mờ với BA (Business Analyst) hoặc PO (Product Owner).
+  - Chủ động xác định các trường hợp biên (edge cases).
+- **Tự đề xuất Giải pháp:** Không chỉ code theo yêu cầu, mà còn có thể đưa ra 2-3 phương án giải quyết cho một vấn đề và phân tích ưu/nhược điểm của từng phương án.
+- **Tư duy Làm việc Nhóm:**
+  - **Clear Scope:** Hiểu rõ phạm vi công việc của mình, biết khi nào cần dừng lại để tránh làm "lan man" sang các task khác.
+  - **Chủ động Hỗ trợ:** Sẵn sàng hỗ trợ, review code và "cover" cho các thành viên khác trong team khi cần thiết.
+
+### **Level: Dev 4 (Lead Developer / Senior Engineer II)**
+
+**Mục tiêu chính:** Mở rộng tầm nhìn từ "feature" lên "system" (From Feature to System). Không chỉ code tốt mà còn phải hiểu cách hệ thống vận hành và tối ưu nó.
+
+#### **1. Thiết kế Hệ thống (System Design)**
+
+- **Đề xuất Giải pháp ở cấp độ Hệ thống:**
+  - Hiểu sâu hơn về các khái niệm trong System Design: sự khác biệt giữa Monolith và Microservices, khi nào nên dùng Message Queue (RabbitMQ, Kafka), cân nhắc về trade-offs giữa performance và consistency.
+  - Có thể tham gia vào các buổi thảo luận và đóng góp ý kiến về thiết kế hệ thống.
+- **Hiểu sâu về Lựa chọn Công nghệ:**
+  - Không chỉ biết *cách dùng* một framework/công nghệ mà còn phải hiểu *lý do tại sao* SA/Architect lại chọn nó cho dự án (ví dụ: Tại sao dùng .NET Core thay vì Node.js? Tại sao chọn Kubernetes?).
+  - Có khả năng truyền đạt lại lý do này cho các thành viên khác trong team.
+
+#### **2. Kỹ năng về Vận hành & Hạ tầng (DevOps Mindset)**
+
+- **Deployment & Vận hành:**
+  - Có khả năng tự đẩy code lên môi trường server (ví dụ: **AWS EC2, Docker**) và đảm bảo nó hoạt động ổn định.
+  - Hiểu và xử lý được các vấn đề cơ bản khi deploy: quản lý biến môi trường, xử lý lỗi kết nối database, v.v.
+- **Tối ưu Hóa (Optimization):**
+  - Xác định được các điểm "nóng" (bottlenecks) trong hệ thống và đề xuất giải pháp.
+  - Biết áp dụng các kỹ thuật **Caching** (In-memory, Redis) một cách hợp lý để tăng hiệu năng.
+- **Giám sát và Gỡ lỗi (Monitoring & Debugging):**
+  - Hiểu tầm quan trọng của logging, biết cách đọc log để truy vết lỗi trên môi trường production.
+  - Biết sử dụng các công cụ monitoring cơ bản để theo dõi sức khỏe của hệ thống.
+
+#### **3. Dẫn dắt & Cố vấn (Leadership & Mentorship)**
+
+- **Chịu trách nhiệm về một module lớn:** Dẫn dắt một nhóm nhỏ (2-3 người) để phát triển một module phức tạp của dự án.
+- **Cố vấn (Mentor):** Hướng dẫn và giúp đỡ các developer ở level thấp hơn (Dev 1, 2, 3) để cùng phát triển.
+
+### **Level: SA / Dev 5, 6 (Solutions Architect / Principal Engineer)**
+
+**Mục tiêu chính:** Chịu trách nhiệm về bức tranh tổng thể (The Big Picture). Đưa ra các quyết định về kiến trúc và công nghệ để đảm bảo dự án thành công về mặt kỹ thuật và đáp ứng được mục tiêu kinh doanh.
+
+#### **1. Thiết kế Kiến trúc (Architecture Design)**
+
+- **Thiết kế High-Level:**
+  - Vẽ ra được kiến trúc tổng quan của toàn bộ hệ thống, bao gồm các service, luồng dữ liệu, và cách chúng tương tác với nhau.
+  - Quyết định các mô hình kiến trúc (Microservices, Event-Driven, Serverless, v.v.) dựa trên yêu cầu của dự án.
+- **Lựa chọn Công nghệ chiến lược (Tech Stack Selection):**
+  - **Ngôn ngữ & Framework:** Quyết định ngôn ngữ lập trình, framework chính cho dự án dựa trên các yếu tố như hệ sinh thái, hiệu năng, và kỹ năng của đội ngũ.
+  - **Cơ sở dữ liệu:** Lựa chọn loại database phù hợp (SQL vs. NoSQL, ví dụ: PostgreSQL, MongoDB, Cassandra) dựa trên đặc tính của dữ liệu và yêu cầu về truy vấn.
+- **Thiết kế Hạ tầng (Infrastructure Design):**
+  - Phối hợp với DevOps/Infra team để thiết kế hạ tầng trên cloud (AWS, Azure, GCP).
+  - Cân nhắc các yếu tố quan trọng như: Khả năng mở rộng (Scalability), Độ tin cậy (Reliability), Bảo mật (Security), và Chi phí (Cost Optimization).
+
+#### **2. Chiến lược & Tầm nhìn (Strategy & Vision)**
+
+- **Giao tiếp với các bên liên quan (Stakeholders):** Có khả năng trình bày và bảo vệ các quyết định kỹ thuật với khách hàng, ban giám đốc, và các team khác.
+- **Định hướng và Tiêu chuẩn hóa:** Xây dựng các tiêu chuẩn về coding (coding convention), quy trình review code, và các best practice để áp dụng trong toàn bộ tổ chức.
+- **Phân chia công việc và Dẫn dắt:**
+  - Chia nhỏ hệ thống thành các module/service và phân công cho các team hoặc các Lead Developer (Dev 4).
+  - Là người dẫn dắt kỹ thuật cao nhất trong dự án, đảm bảo các team đi đúng hướng đã đề ra.
+
+
+
+### **Bảng So Sánh Lộ Trình Phát Triển Sự Nghiệp**
+
+
+
+| Tiêu chí                  | **Dev 3 (Senior Developer)**                                 | **Dev 4 (Lead Developer)**                                   | **SA / Dev 5-6 (Architect / Principal)**                     |
+| ------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| **Phạm vi Trách nhiệm**   | **Feature-level:** Chịu trách nhiệm hoàn thành một hoặc nhiều tính năng từ đầu đến cuối. | **System/Module-level:** Chịu trách nhiệm về một module lớn hoặc một phần của hệ thống. | **Project/Organization-level:** Chịu trách nhiệm về toàn bộ kiến trúc và định hướng kỹ thuật của dự án. |
+| **Kỹ năng Cốt lõi**       | **Execution & Coding:** Viết code sạch, áp dụng Design Patterns, thiết kế API & Database. | **System Design & Optimization:** Thiết kế hệ thống con, tối ưu hiệu năng (caching, query), DevOps cơ bản. | **Architecture & Strategy:** Thiết kế kiến trúc high-level, lựa chọn công nghệ, chiến lược về hạ tầng và bảo mật. |
+| **Mức độ Tự chủ**         | **Làm việc độc lập:** Có khả năng tự quản lý công việc, tự giải quyết các vấn đề trong phạm vi feature được giao. | **Dẫn dắt một nhóm nhỏ:** Tự chủ trong việc thiết kế và quản lý một module, hướng dẫn các thành viên khác. | **Định hướng kỹ thuật:** Độc lập đưa ra các quyết định về công nghệ và kiến trúc, có tầm ảnh hưởng lớn. |
+| **Tư duy & Mục tiêu**     | **"Làm đúng và làm tốt"**: Hoàn thành task với chất lượng cao nhất, đúng deadline, code dễ bảo trì. | **"Làm cho hệ thống ổn định và hiệu quả"**: Đảm bảo module mình phụ trách chạy nhanh, ổn định và dễ mở rộng. | **"Đảm bảo thành công dài hạn cho dự án"**: Đưa ra quyết định giúp dự án có thể phát triển bền vững, đáp ứng mục tiêu kinh doanh. |
+| **Giải quyết Vấn đề**     | **Cấp độ "How":** Tìm ra giải pháp kỹ thuật tốt nhất để hiện thực hóa một yêu cầu đã có. | **Cấp độ "What & Why":** Phân tích yêu cầu, đề xuất giải pháp hệ thống và giải thích lý do lựa chọn. | **Cấp độ "Strategic Why":** Xác định vấn đề cốt lõi của bài toán kinh doanh và thiết kế một giải pháp kỹ thuật tổng thể. |
+| **Tương tác & Giao tiếp** | Chủ yếu trong team (BA, QA, Devs khác).                      | Team của mình, SA, và các team liên quan (DevOps, các team dev khác). | Ban lãnh đạo, khách hàng, các team lead, và các bên liên quan (stakeholders). |
+| **Kết quả Đầu ra**        | Code, Unit Test, các API/Feature hoàn chỉnh.                 | Các module hệ thống, tài liệu thiết kế chi tiết, các buổi review code, các thành viên được mentored. | Sơ đồ kiến trúc (Architecture Diagram), tài liệu kỹ thuật, Proof of Concept (PoC), tiêu chuẩn coding chung. |

@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/dp-900
+  - dp900
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 DP-900: Microsoft Azure Data Fundamentals MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/DP-900/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/DP-900/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/DP-900/DP-900 Mindmap\|🗺️ DP-900 Mindmap]]
+- [[certifications/microsoft/DP-900/DP-900 Flashcards\|🃏 DP-900 Flashcards]]
+- [[certifications/microsoft/DP-900/DP-900_Scraped_Question_Bank\|🗃️ DP-900 Scraped Question Bank]]

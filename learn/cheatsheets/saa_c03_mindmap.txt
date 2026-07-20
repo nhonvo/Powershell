@@ -1,0 +1,34 @@
+---
+tags:
+  - certification/aws-saa-c03
+  - aws/mindmap
+status: active
+created: 2026-06-01
+---
+
+# 🗺️ AWS SAA-C03: Solutions Architect Associate Mindmap
+
+```mermaid
+mindmap
+  root((AWS SAA-C03))
+    D1[Domain 1: Resilient Architectures]
+      Multi-AZ Deployments
+      Auto Scaling Groups
+      Decoupling with SQS / SNS / EventBridge
+      High Availability for RDS and EFS
+    D2[Domain 2: High-Performing Architectures]
+      Caching with CloudFront / ElastiCache / DAX
+      Storage Performance (EBS types, EFS, S3)
+      Network Performance (Direct Connect, Global Accelerator)
+      Database Scaling (Redshift, DynamoDB)
+    D3[Domain 3: Secure Applications & Architectures]
+      Identity and Access Management (IAM)
+      Data Encryption (KMS key policies, Encryption in transit/rest)
+      Network Security (Security Groups, NACLs, VPC endpoints)
+      Shield / WAF / GuardDuty
+    D4[Domain 4: Cost-Optimized Architectures]
+      S3 Storage Lifecycle Policies
+      Savings Plans and Reserved Instances
+      DynamoDB On-Demand vs Provisioned Capacity
+      Compute Optimizer and Spot Instances
+```

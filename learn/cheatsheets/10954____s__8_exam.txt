@@ -1,0 +1,41 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 8
+
+## Part 1
+**Q1.** ミンさんは　 キムさんに　 ほんを　 かりました。
+- **A.** キムさんは　 ミンさんに　 ほんを　 だしました。
+- **B.** キムさんは 　ミンさんに 　ほんを 　あげました。
+- **C.** キムさんは　 ミンさんに　 ほんを 　かしました。
+- **D.** キムさんは　 ミンさんに　 ほんを 　もらいました。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3Minh đ&atilde; mượn s&aacute;ch từ Kim.1. Kim đ&atilde; gửi s&aacute;ch cho Minh.2. Kim đ&atilde; cho Minh s&aacute;ch.3. Kim đ&atilde; cho Minh mượn s&aacute;ch.4. Kim đ&atilde; nhận được s&aacute;ch từ Minh.</p>
+</details>
+
+---
+**Q2.** すいようびは　 ひまです。
+- **A.** すいようびは 　しごとが 　つまらなく 　ないです。
+- **B.** すいようびは 　しごとが　 いそがしく　 ないです。
+- **C.** すいようびは 　しごとが　 すくなく　 ないです。
+- **D.** すいようびは 　しごとが 　やさしく　 ないです。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2Thứ Tư t&ocirc;i rảnh.1. Thứ Tư c&ocirc;ng việc kh&ocirc;ng nh&agrave;m ch&aacute;n.2. Thứ Tư c&ocirc;ng việc kh&ocirc;ng bận.3. Thứ Tư c&ocirc;ng việc kh&ocirc;ng &iacute;t.4. Thứ Tư c&ocirc;ng việc kh&ocirc;ng dễ.</p>
+</details>
+
+---
+**Q3.** もう 　じかんが 　おそいですから　 ねましょう。
+- **A.** もう　 あめですから　 ねましょう。
+- **B.** もう 　あさですから　 ねましょう。
+- **C.** もう 　よるですから　 ねましょう。
+- **D.** もう 　ひるですから 　ねましょう。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3V&igrave; đ&atilde; trễ rồi n&ecirc;n ngủ th&ocirc;i.1. V&igrave; mưa n&ecirc;n ngủ th&ocirc;i.2. V&igrave; s&aacute;ng rồi n&ecirc;n ngủ th&ocirc;i.3. V&igrave; đ&atilde; tối rồi n&ecirc;n ngủ th&ocirc;i.4. V&igrave; đ&atilde; trưa rồi n&ecirc;n ngủ th&ocirc;i.</p>
+</details>
+
+---

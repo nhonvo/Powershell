@@ -1,0 +1,10 @@
+# Unit_1. Database Basics
+
+🔙 **Back to Parent**: [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/0.BSQL/📂index_0.BSQL|0.BSQL]]
+
+## 📁 Sub-Categories
+- [[📂index_lecture_1.1. database concepts and er model|Lecture_1.1. Database Concepts and ER Model]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/0.BSQL/Unit_1. Database Basics/Lecture_1.2. SQL Data Types and Operations/📂index_Lecture_1.2. SQL Data Types and Operations|Lecture_1.2. SQL Data Types and Operations]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/0.BSQL/Unit_1. Database Basics/Lecture_1.3. DDL Statements/📂index_Lecture_1.3. DDL Statements|Lecture_1.3. DDL Statements]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/04_Database_and_SQL_Mastery/0.BSQL/Unit_1. Database Basics/Lecture_1.4. Table Indexes_Sequences_View/📂index_Lecture_1.4. Table Indexes_Sequences_View|Lecture_1.4. Table Indexes_Sequences_View]]
+

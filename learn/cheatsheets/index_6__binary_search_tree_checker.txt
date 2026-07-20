@@ -1,0 +1,11 @@
+# 6. Binary Search Tree Checker
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/6. Dynamic programming and recursion/2. Practice/index_2. Practice|2. Practice]]
+
+## 📄 Notes
+- [[6. binary search tree checker|6. Binary Search Tree Checker]]
+
+## 🛠️ Related Practices (Searching & Sorting)
+- [[dsa/1.Interviewcake.com/6. Dynamic programming and recursion/2. Practice/6. Binary Search Tree Checker/index_6. Binary Search Tree Checker|21.Merge-Two-Sorted-Lists]]
+- [[dsa/1.Interviewcake.com/6. Dynamic programming and recursion/2. Practice/6. Binary Search Tree Checker/index_6. Binary Search Tree Checker|23.Merge-k-Sorted-Lists]]
+

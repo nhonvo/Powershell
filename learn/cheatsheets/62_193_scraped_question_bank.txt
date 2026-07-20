@@ -1,0 +1,129 @@
+# 🗃️ 62-193 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: History Teacher
+
+What is the primary benefit of increasing the use of ICT resources during the history lessons?
+
+This item is part of a case study. To view the case study information, click on the Case Study button below.
+
+### Options:
+- [x] **A)** The students will have access to a greater range of learning resources. [Correct]
+- [ ] **B)** The students will more easily and quickly submit their assignments.
+- [ ] **C)** The students will stay on task throughout the lessons.
+- [ ] **D)** The students will deliver assignments that are clearer and more presentable.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: History Teacher
+
+You plan to have an expert speaker address the students about a recent historical event.
+
+Which two possible ICT resources should you recommend that the students use to create an accurate record of the speaker’s statements? (Each correct answer presents a complete solution. Choose two.)
+
+This item is part of a case study. To view the case study information, click on the Case Study button below.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,E`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: History Teacher
+
+You have to recommend a solution to help the students solve their problem regarding the historical sources. The problem must be solved as quickly as possible.
+
+What should you recommend?
+This item is part of a case study. To view the case study information, click on the Case Study button below.
+
+### Options:
+- [ ] **A)** Modify the language settings on the students’ desktop or laptop computers.
+- [ ] **B)** Email the source text to a language teacher at the school.
+- [x] **C)** Use an Internet-based translation tool. [Correct]
+- [ ] **D)** Use a social networking site to connect with students in other countries and upload the text to the social networking site.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: History Teacher
+
+You want to identify which tasks in the planned learning activity incorporate the use of the computer lab. Which task should you identify?
+This item is part of a case study. To view the case study information, click on the Case Study button below.
+
+### Options:
+- [ ] **A)** The students must hang the posters in the entrance hall of the school.
+- [ ] **B)** The students must assemble the images on a wall poster.
+- [x] **C)** The students must select and edit digital images that illustrate the theme or the event. [Correct]
+- [ ] **D)** The students must split into small groups and each group must identify a theme or a historical event.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: History Teacher
+
+As an extension activity to the planned learning activity, you ask some of the students to contact external experts to gather additional information about the historical events.
+
+You want to ensure that the students use an appropriate means of communication when they contact the experts.
+
+What should you advise the students to use?
+This item is part of a case study. To view the case study information, click on the Case Study button below.
+
+### Options:
+- [ ] **A)** their personal mobile phone
+- [ ] **B)** an anonymous online forum
+- [x] **C)** a generic email account of the school [Correct]
+- [ ] **D)** their social network account
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---

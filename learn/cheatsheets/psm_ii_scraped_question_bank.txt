@@ -1,0 +1,110 @@
+# 🗃️ PSM-II Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+Scrum Master is a management position because the Scrum Master is accountable for the following three management activities: (Choose three.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,D,F`
+
+**Explanation**:
+The Scrum Master must understand the principles and values behind agility as well as the Scrum theory. He/ she also must act in ways that reflects the values of Scrum and creates an environment for others to also embrace those values. He/she is responsible for ensuring the team's process stays within the boundaries of the Scrum framework as well as helping and supporting the team with continuous improvement.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+An organization has just hired you as a new Scrum Master to help them transition their teams from their current traditional process to Scrum. The teams are currently structured to specialize in a single function. This is also known as component teams where a team would only address a single layer (i.e. design, frontend, backend, database, testing, etc.). You've introduced the concept of cross-functional teams where all the skills needed to produce business functionality, from end to end, are inside of a single team.
+
+What should you keep in mind when transitioning from siloed teams to cross-functional teams? (Choose two.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,D`
+
+**Explanation**:
+Forming a team takes time, and members often go through recognizable stages as they change from being a collection of strangers to a united group with common goals. Bruce Tuckman's Forming, Storming, Norming, and Performing model describes these stages. 
+When you understand it, you can help your new team become effective more quickly.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+Paul is a Product Owner for multiple products. Each product is allocated a dedicated Scrum Team and a set budget. Based on the average velocity of a previous product release, Paul had estimated a new product to take 9 Sprints to complete. The average velocity of the previous product release was 50 completed units of work per Sprint. Over the first 3 Sprints, the Development Team reported an average velocity of 40 completed units per Sprint, while not fully completing the required integration tests. The Development Team estimates that integration testing would require additional effort to make the increments shippable. The Development Team is unsure if the required velocity is achievable.
+
+What is the most effective way to recover?
+
+### Options:
+- [ ] **A)** In the next Sprints, the Development Team strives to make the selected work as close to `done' as possible and at the minimum 90% completed. Any undone work is divided into new Product Backlog Items that will be deferred to the last Sprint in order to maintain stable velocity.
+- [x] **B)** The Development Team informs Paul that the progress he has perceived to date is not correct. The Increment is not releasable. They give Paul their estimate of the effort it would take to get the previous work `done', and suggest doing that work first before proceeding with new features. The team also re-estimates the effort to make the remaining Product Backlog items `done', including all integration effort. In the end, it is Paul's call to continue the project or to cancel. [Correct]
+- [ ] **C)** The Scrum Master will manage the Sprint Backlog and assign work to the Development Team members to ensure maximum utilization of each member. He/she will keep track of unused resources so that it does not impact the budget. Unused budget can be allocated for additional Sprints if needed.
+- [ ] **D)** The Scrum Master sets the open work aside to be performed in one or more release Sprints. They remind Paul to find funding for enough Release Sprints in which this remaining work can be done. Up to one release Sprint per three development Sprints may be required. It is Paul's role to inform users and stakeholders of the impact on the release date.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Scrum is founded on empirical process control and asserts that knowledge comes from experience and making decisions based on what is known. Scrum employs an iterative, incremental approach to optimize predictability and control risk. At the end of every Sprint, an increment of `done' work must be available in order to inspect and adapt accordingly.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+A Scrum Team has been using the Daily Scrum to report Sprint progress to the Product Owner, because the Product Owner wants to track what every Developer is working on every day. 
+What is the best thing for the Scrum Master to do?
+
+### Options:
+- [ ] **A)** Ask the Product Owner to stop attending the Daily Scrum.
+- [x] **B)** Coach the Product Owner and the Developers on the purpose of Scrum events and let them figure out how to deal with this situation. [Correct]
+- [ ] **C)** Nothing. The Product Owner can continue to track progress at the Daily Scrum.
+- [ ] **D)** Start attending the Daily Scrum so that whenever the Developers have a conflict with the Product Owner, the Scrum Master can resolve the conflict.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Because the Development Team is the ones doing the work, they are best suited to inspect and adapt the progress toward the Sprint Goal. At minimum, this is done every 24 hours through the Daily Scrum. It is the Scrum Master's responsibility to teach the Scrum Team the value and objective of each Scrum event in order for them to optimize the benefits of each event. Because the Daily Scrum is owned by the Development Team, it is up to them on how they should run it but the Scrum Master can provide guidance to ensure it adheres to the Scrum guidelines.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+Steven, the Scrum Master, is approached by one of the Development Team members saying that they are not completing regression tests for all of the work they are performing to the level defined in the Definition of Done. They have discussed this with the Product Owner and decided to remove regression testing from the Definition of Done.
+
+Which two actions are the most appropriate for Steven to take? (Choose two.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C,D`
+
+**Explanation**:
+As a servant/leader, the Scrum Master facilitates conversations through open ended questions in order to help the team members make the best possible decisions according to what is known at the time. He/she does not approve or reject team decisions but ensures the team stays within the boundaries of the Scrum framework.
+</details>
+
+---

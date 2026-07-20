@@ -1,0 +1,153 @@
+# 🗃️ MB-335 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Configure products (Testlet 1)
+
+HOTSPOT
+
+You need to resolve the production manager issue.
+
+How should you configure manufacturing execution? To answer, select the appropriate option in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Flushing principle
+
+Box 2: Flushing principle
+
+Box 3: Never
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Configure products (Testlet 1)
+
+You need to configure production operations for the pine and orange scent solutions.
+
+Which three actions should you perform? Each correct answer presents part of the solution.
+
+Note: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,C,E`
+
+**Explanation**:
+Subcontracting of route operations
+To use subcontracting of route operations for production or batch orders, the service product that is used for the procurement of the service must be defined as a product of the Service type. Additionally, it must have an item model group that has the Stocked product option under Inventory policy set to Yes. This option defines whether a product is accounted as inventory on product receipt (Stocked product = Yes), or whether the product is expensed on a profit and loss account (Stocked product = No). Although this behavior might seem contradictory, it's based on the fact that only products that have this policy will create inventory transactions that can be used in cost control to calculate planned cost and determine the actual cost when a production order is ended.
+To be considered in planning and cost calculation, the service must be added to the BOM. The BOM line must be of the Vendor type, and it must be allocated to the route operation that the service is allocated to. This route operation must have a costing resource and resource requirement that point to a resource of the Vendor type that connects the operation and the related service to the corresponding vendor account.
+Note:
+There are two methods for modeling subcontracting work for production operations. These methods differ in the way that the subcontracting process can be modeled, the way that semi-finished products are represented in the process, and the way that cost control is managed.
+* Subcontracting of route operations in production orders or batch orders The service product must be a stocked product, and it must be part of the BOM.
+This method supports first in, first out (FIFO) or standard cost.
+Semi-finished products are represented by the service product in the process.
+Cost control allocates the costs that are associated with subcontracted work to the material costs.
+* Subcontracting of production flow activities in a lean production flow Scenario: Liquid cleaning solutions:
+No scent
+Orange scent (subcontracted to a vendor named VendorA)
+Pine scent (subcontracted to a vendor named VendorA)
+You must set up production operations for sub-contracting of Pine scent and Orange scent solution to VendorA to ensure that a purchase order is automatically created based on estimation of a production order.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Configure products (Testlet 1)
+
+You need to configure lot number control for inventory.
+
+Which option should you use?
+
+### Options:
+- [ ] **A)** Physical inventory
+- [x] **B)** Blank receipt allowed [Correct]
+- [ ] **C)** Blank issue allowed
+- [ ] **D)** Primary stocking
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Blank receipt allowed: If the Primary stocking check box is not selected, then you can select the Blank receipt allowed check box to prevent specification of the dimension when physical receipts are updated. This functionality is useful if, for example, you do not want to specify the serial/lot number upon input but you do for picking and output.
+Scenario: Inventory control
+Scenario: You must not be required to track the lot number for items when you enter inventory information into the system. Lot numbers for items must be entered when items are picked from inventory.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Configure products (Testlet 1)
+
+You need to configure the system to meet the order requirements for unscented cleaning solution.
+
+Which three actions should you perform? Each correct answer presents part of the solution.
+
+Note: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,C,D`
+
+**Explanation**:
+B: The inventory parameters (path: Inventory management Setup> Inventory and warehouse management parameters) allow you to govern the rules in the management of the product safety data sheet. These parameters are stored in an exclusive Product compliance section and are set within each legal entity. In this form you can outline:
+* Whether to automatically print safety data sheets when shipping.
+* Etc.
+C: Regulated items are identified once they are listed as a regulated item. It is common that material may be regulated in just certain regions, countries, or states. Therefore, the restricted items are entered for each region. If items are not on a Regional regulated item list, they are assumed to be not regulated. This list can be accessed either through Inventory management or the released products form.
+D: Expiry advice defines the number of days before the expiration date of product safety data sheets that the system should begin presenting messages.
+Requirements, Liquid cleaning solution manufacturing, include:
+An ingredient used to manufacture unscented cleaning solution is defined as a restricted product. You must be able to automatically print a product safety data sheet (PSDS) with the packing slip for any order that includes unscented cleaning solution.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Configure products (Testlet 2)
+
+HOTSPOT
+
+You need to configure system attributes.
+
+Which attribute types should you use? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---

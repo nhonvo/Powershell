@@ -1,0 +1,98 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/01_Language_Basics/📂index_01_Language_Basics|01_Language_Basics]]
+
+# ⚡ 5. Asynchronous & Multithreading (Deep Dive)
+
+Trong phát triển Backend hiện đại, việc xử lý hàng ngàn request đồng thời là yêu cầu bắt buộc. Nếu mỗi request chiếm dụng 1 luồng vật lý (Thread) và chờ đợi I/O (Database, API bên thứ 3), server sẽ nhanh chóng cạn kiệt tài nguyên (Thread Exhaustion). Đó là lý do chúng ta cần lập trình Bất đồng bộ (Asynchronous).
+
+---
+
+### 🏛️ 5.1 Phân biệt Concurrency vs Parallelism
+
+- **Concurrency (Đồng thời)**: Nhiều tác vụ cùng được thực thi trong một khoảng thời gian (nhưng không nhất thiết cùng lúc). Giống như việc bạn vừa nghe nhạc, vừa gõ code trên 1 CPU core.
+- **Parallelism (Song song)**: Các tác vụ chạy thực sự cùng lúc trên các nhân CPU khác nhau.
+
+---
+
+### 🧠 5.2 Async/Await: Cách mạng của .NET & Java
+
+Cơ chế `async/await` giúp viết mã bất đồng bộ trông giống hệt như mã đồng bộ (Linear code style), tránh tình trạng "Callback Hell".
+
+#### **Kiến trúc của .NET (Task Parallel Library)**
+- `Task<T>`: Đại diện cho một công việc sắp hoàn thành.
+- `await`: Giải phóng Thread hiện tại để làm việc khác trong khi chờ tác vụ I/O hoàn tất.
+
+**Ví dụ (C#):**
+```csharp
+public async Task<string> FetchDataAsync() {
+    using var client = new HttpClient();
+    // Thread không bị block ở đây! Nó quay lại Pool để xử lý request khác.
+    var result = await client.GetStringAsync("https://api.code4func.com");
+    return result;
+}
+```
+
+#### **Kiến trúc của Java (CompletableFuture)**
+Trước đây Java dùng `Future` (Hơi thô), Java 8+ dùng `CompletableFuture` (Rất mạnh).
+
+**Ví dụ (Java):**
+```java
+CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+    return fetchDataFromDb();
+});
+
+// Chạy callback khi có kết quả
+future.thenAccept(result -> System.out.println(result));
+```
+
+---
+
+### 🚀 5.3 Modern Trend: Virtual Threads vs Async/Await
+
+Một xu hướng mới đang làm thay đổi cách chúng ta nghĩ về Threading: **Virtual Threads (Project Loom - Java 21)**.
+
+- **Async/Await (.NET)**: Cần từ khóa `async/await` ở khắp mọi nơi (Infectious code). Lập trình viên phải quản lý trạng thái máy (State machine) của Task.
+- **Virtual Threads (Java 21)**: Tạo ra hàng triệu luồng siêu nhẹ bên trên luồng vật lý. Bạn viết code đồng bộ bình thường nhưng JVM tự động chuyển đổi nó sang cơ chế bất đồng bộ bên dưới. Không còn `async/await`.
+
+---
+
+### 🧤 5.4 Multithreading: Race Condition & Lock
+
+Khi nhiều luồng cùng truy cập một biến dùng chung (Shared Resources), lỗi dữ liệu sẽ xảy ra (Race Condition).
+
+#### **Cách phòng tránh (C# & Java)**
+1.  **Lock (C#)** / **Synchronized (Java)**: Khóa một đoạn code chỉ cho 1 luồng chạy tại một thời điểm.
+2.  **Thread-safe Collections**: Dùng `ConcurrentDictionary` hay `ConcurrentHashMap`.
+3.  **Atomic Operations**: Sử dụng `Interlocked` (.NET) hoặc `AtomicInteger` (Java).
+
+**Ví dụ Lock (C#):**
+```csharp
+private static readonly object _lockObj = new object();
+private int _counter = 0;
+
+public void Increment() {
+    lock (_lockObj) {
+        _counter++; // Chỉ 1 thread vào đây tại 1 thời điểm
+    }
+}
+```
+
+---
+
+### 📝 5.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Async/Await làm code chạy nhanh hơn?" Đưa ra nhận định của bạn.
+<details><summary>Đáp án</summary>
+Sai! Async/Await không làm 1 tác vụ chạy nhanh hơn. Nó giúp server xử lý được **NHIỀU request hơn** cùng lúc bằng cách không để Thread rảnh rỗi ngồi chờ (Tăng throughput).
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết một đoạn code Java hoặc C# để chạy đồng thời 3 hàm (FETCH API 1, FETCH API 2, FETCH API 3) và lấy kết quả cuối cùng khi cả 3 đều hoàn thành.
+<details><summary>Gợi ý Solution (C#)</summary>
+Dùng `await Task.WhenAll(task1, task2, task3);`.
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Async/Await Internals - The State Machine Explained](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-async-await-internals.md)
+- [Java Virtual Threads vs Platform Threads - Benchmarking](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-java-virtual-threads.md)
+- [Multithreading Best Practices in Enterprise Apps](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-multithreading-best-practices.md)

@@ -1,0 +1,11 @@
+# 1. Binary Search Algorithm
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/4. Sorting, searching, and logarithms/1.Readings/index_1.Readings|1.Readings]]
+
+## 📄 Notes
+- [[1. binary search algorithm|1. Binary Search Algorithm]]
+
+## 🛠️ Related Practices (Searching & Sorting)
+- [[dsa/1.Interviewcake.com/4. Sorting, searching, and logarithms/1.Readings/1. Binary Search Algorithm/index_1. Binary Search Algorithm|21.Merge-Two-Sorted-Lists]]
+- [[dsa/1.Interviewcake.com/4. Sorting, searching, and logarithms/1.Readings/1. Binary Search Algorithm/index_1. Binary Search Algorithm|23.Merge-k-Sorted-Lists]]
+

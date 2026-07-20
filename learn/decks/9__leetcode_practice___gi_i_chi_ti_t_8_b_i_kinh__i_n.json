@@ -1,0 +1,176 @@
+{
+  "Meta": {
+    "Id": "deck_9__leetcode_practice___gi_i_chi_ti_t_8_b_i_kinh__i_n",
+    "Topic": "9. LeetCode Practice — Giải chi tiết 8 bài kinh điển",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "9__leetcode_practice___gi_i_chi_ti_t_8_b_i_kinh__i_n"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 8
+  },
+  "Cards": [
+    {
+      "Id": "card_01050",
+      "Front": "20",
+      "Back": "Valid Parentheses | Easy | Stack matching | O(n) | O(n)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01051",
+      "Front": "155",
+      "Back": "Min Stack | Easy | Stack + auxiliary data | O(1) mỗi op | O(n)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01052",
+      "Front": "232",
+      "Back": "Queue using Stacks | Easy | Stack simulation | O(1) amortized | O(n)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01053",
+      "Front": "739",
+      "Back": "Daily Temperatures | Medium | Monotonic Stack | O(n) | O(n)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01054",
+      "Front": "84",
+      "Back": "Largest Rectangle | Hard | Monotonic Stack | O(n) | O(n)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01055",
+      "Front": "150",
+      "Back": "Evaluate RPN | Medium | Stack evaluation | O(n) | O(n)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01056",
+      "Front": "496",
+      "Back": "Next Greater Element I | Easy | Monotonic Stack + Hash | O(m+n) | O(n)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01057",
+      "Front": "239",
+      "Back": "Sliding Window Max | Hard | Monotonic Deque | O(n) | O(k)",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. leetcode practice — giải chi tiết 8 bài kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/pspo-ii
+  - pspoii
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 PSPO-II MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/scrum/PSPO-II/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/scrum/PSPO-II/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/scrum/PSPO-II/PSPO-II Mindmap\|🗺️ PSPO-II Mindmap]]
+- [[certifications/scrum/PSPO-II/PSPO-II Flashcards\|🃏 PSPO-II Flashcards]]
+- [[certifications/scrum/PSPO-II/PSPO-II_Scraped_Question_Bank\|🗃️ PSPO-II Scraped Question Bank]]

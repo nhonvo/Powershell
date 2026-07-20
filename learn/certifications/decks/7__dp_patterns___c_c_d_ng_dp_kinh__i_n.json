@@ -1,0 +1,316 @@
+{
+  "Meta": {
+    "Id": "deck_7__dp_patterns___c_c_d_ng_dp_kinh__i_n",
+    "Topic": "7. DP Patterns — Các dạng DP kinh điển",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "7__dp_patterns___c_c_d_ng_dp_kinh__i_n"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 15
+  },
+  "Cards": [
+    {
+      "Id": "card_01560",
+      "Front": "Đặc điểm",
+      "Back": "0/1 Knapsack | Unbounded Knapsack",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. dp patterns — các dạng dp kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01561",
+      "Front": "Mỗi item",
+      "Back": "Dùng tối đa 1 lần | Dùng vô hạn lần",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. dp patterns — các dạng dp kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01562",
+      "Front": "Recurrence",
+      "Back": "`dp[i-1][w-w_i]` | `dp[i][w-w_i]`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. dp patterns — các dạng dp kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01563",
+      "Front": "Space opt",
+      "Back": "Duyệt **ngược** | Duyệt **xuôi**",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. dp patterns — các dạng dp kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01564",
+      "Front": "Ví dụ thực tế",
+      "Back": "Chọn dự án đầu tư | Mua đồ ở cửa hàng",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. dp patterns — các dạng dp kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01565",
+      "Front": "Pattern",
+      "Back": "Ví dụ bài toán | State | Transition",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. dp patterns — các dạng dp kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01566",
+      "Front": "**Linear DP**",
+      "Back": "Fibonacci, Climbing Stairs, House Robber | `dp[i]` | `dp[i] = f(dp[i-1], dp[i-2])`",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. dp patterns — các dạng dp kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01567",
+      "Front": "**0/1 Knapsack**",
+      "Back": "Subset Sum, Partition Equal Subset Sum, Target Sum | `dp[i][w]` | Chọn/không chọn item i",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. dp patterns — các dạng dp kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01568",
+      "Front": "**Unbounded Knapsack**",
+      "Back": "Coin Change, Rod Cutting | `dp[w]` | Thử tất cả items",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. dp patterns — các dạng dp kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01569",
+      "Front": "**LIS**",
+      "Back": "Longest Increasing Subsequence, Russian Doll | `dp[i]` | Duyệt j < i",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. dp patterns — các dạng dp kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01570",
+      "Front": "**LCS**",
+      "Back": "LCS, Edit Distance, Shortest Common Supersequence | `dp[i][j]` | So sánh 2 ký tự",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. dp patterns — các dạng dp kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01571",
+      "Front": "**Grid DP**",
+      "Back": "Unique Paths, Min Path Sum, Dungeon Game | `dp[i][j]` | Từ ô kề",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. dp patterns — các dạng dp kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01572",
+      "Front": "**Interval DP**",
+      "Back": "Matrix Chain, Palindrome Partition, Burst Balloons | `dp[i][j]` | Thử tất cả điểm chia k",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. dp patterns — các dạng dp kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01573",
+      "Front": "**Tree DP**",
+      "Back": "Diameter, Max Path Sum, House Robber III | Post-order DFS | Kết hợp từ con",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. dp patterns — các dạng dp kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01574",
+      "Front": "**Bitmask DP**",
+      "Back": "Travelling Salesman, Assign Tasks | `dp[mask][i]` | Thêm/bỏ bit",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. dp patterns — các dạng dp kinh điển"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

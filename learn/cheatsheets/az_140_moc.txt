@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/az-140
+  - az140
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AZ-140: Configuring and Operating Microsoft Azure Virtual Desktop MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/AZ-140/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/AZ-140/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AZ-140/AZ-140 Mindmap\|🗺️ AZ-140 Mindmap]]
+- [[certifications/microsoft/AZ-140/AZ-140 Flashcards\|🃏 AZ-140 Flashcards]]
+- [[certifications/microsoft/AZ-140/AZ-140_Scraped_Question_Bank\|🗃️ AZ-140 Scraped Question Bank]]

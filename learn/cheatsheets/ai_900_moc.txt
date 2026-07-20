@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/ai-900
+  - ai900
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AI-900: Microsoft Azure AI Fundamentals MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/AI-900/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/AI-900/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AI-900/AI-900 Mindmap\|🗺️ AI-900 Mindmap]]
+- [[certifications/microsoft/AI-900/AI-900 Flashcards\|🃏 AI-900 Flashcards]]
+- [[certifications/microsoft/AI-900/AI-900_Scraped_Question_Bank\|🗃️ AI-900 Scraped Question Bank]]

@@ -1,0 +1,189 @@
+﻿# Study Plan (28 Days) — Backend Engineer (.NET + AWS)
+
+Based on your CV: **3+ years**, C#/.NET 8, AWS (ECS, SQS/SNS, DynamoDB, Aurora PostgreSQL), Redis, observability (Splunk/New Relic), CI/CD (CodeBuild/GitHub Actions), Hangfire, event-driven systems, integration testing, and GenAI (Bedrock + PGVector).
+
+## How to use this plan
+
+- Time budget: **2–3 hours/day** (weekday) + **4–6 hours/weekend**.
+- Daily structure (recommended):
+  - **Coding**: 60–90 min (DSA + patterns)
+  - **Backend deep dive**: 45–60 min (design + .NET/AWS)
+  - **Communication**: 15–30 min (behavioral + EN/JP speaking)
+- Always write something: solutions notes, STAR story bullets, or a design write-up.
+
+## Outcomes by Day 28
+
+- **DSA**: 40–60 problems + strong pattern notes + timed practice.
+- **System design**: 6–8 case studies written with tradeoffs.
+- **Backend**: crisp answers for caching, queues, DB indexing, resiliency, testing.
+- **Behavioral**: 12–15 STAR stories mapped to common questions.
+- **Language**: stable 60s self-intro in **EN** and **JP**, plus common phrases.
+
+---
+
+## Week 1 — Foundation + quick wins
+
+### Day 1: Setup + baseline
+- Coding: 2 easy (arrays/hashmap). Write notes in `05_CODING_GAPS/problem_template.md`.
+- Backend: review your strongest projects from CV; list 5 metrics you can speak to.
+- Behavioral: finalize `interviewNote/tell_me_about_yourself.md` (EN) + `07_LANGUAGE_EN_JP/en/self_intro.md`.
+- Output:
+  - 2 filled problem templates
+  - 1 polished “tell me about yourself”
+
+### Day 2: HashMap + API design basics
+- Coding: 1 easy + 1 medium (hashmap/prefix sums).
+- Backend: REST design (idempotency, pagination, error model, versioning).
+- Behavioral: STAR story #1 (impact) + #2 (conflict).
+
+### Day 3: Two pointers + PostgreSQL indexing
+- Coding: 2 mediums (two pointers).
+- Backend: PostgreSQL indexes (btree), query plan basics, N+1, transactions.
+- Behavioral: STAR story #3 (failure) + map it in `behavioral_question_bank.md`.
+
+### Day 4: Sliding window + caching
+- Coding: 2 mediums (sliding window).
+- Backend: caching (Redis) — cache-aside vs write-through, TTL, stampede, invalidation.
+- Language: 10 min EN speaking (record) + 10 min JP shadowing.
+
+### Day 5: Stack + messaging fundamentals
+- Coding: 1 medium (stack/monotonic) + 1 easy.
+- Backend: queues/topics (SQS/SNS), retries, DLQ, idempotency keys, ordering, dedup.
+- Behavioral: STAR story #4 (leadership/mentoring).
+
+### Day 6 (Weekend): Mini mock #1 + design template
+- Coding: 1 timed medium (35–45 min).
+- System design: write 1 case study using `06_SYSTEM_DESIGN/case_studies/TEMPLATE.md`:
+  - “Notification/Job processing pipeline” (matches your experience).
+- Mock: run `interviewNote/interviewNote/08_MOCKS/mock_script.md` and fill `interviewNote/interviewNote/08_MOCKS/feedback.md`.
+
+### Day 7 (Weekend): Review + consolidate
+- Coding: redo 2 problems you got wrong this week.
+- Backend: write a “battle card” for Quoting API: problem → approach → metric → tradeoff.
+- Behavioral: ensure 5 stories are complete.
+
+---
+
+## Week 2 — Interview core: .NET + AWS + design
+
+### Day 8: BFS/DFS + distributed job processing
+- Coding: 1 BFS/DFS medium + 1 easy.
+- Backend: job workers (Hangfire / background services), retries/backoff, poison messages.
+- System design: “Job gateway + workers + DLQ” (short write-up).
+
+### Day 9: Binary search + resiliency patterns
+- Coding: 2 mediums (binary search + “first true”).
+- Backend: timeouts, retries, circuit breaker, bulkhead; what you used and why.
+- Behavioral: STAR story #6 (ambiguity/requirements).
+
+### Day 10: Trees + observability
+- Coding: 1 tree medium + 1 easy.
+- Backend: logs/metrics/traces; SLO/SLI; dashboards (Splunk/New Relic examples).
+- Language: practice explaining “DLQ” and “idempotency” in EN for 60 seconds.
+
+### Day 11: DP intro + architecture (Clean Architecture/CQRS)
+- Coding: 1 DP easy/medium + 1 easy.
+- Backend: Clean Architecture, CQRS tradeoffs; when not to use it.
+- Output: 1 page “Architecture choices I made” notes.
+
+### Day 12: Graphs + ECS + deployment
+- Coding: 1 graph medium (topology/shortest path style) OR union-find if relevant.
+- Backend: AWS ECS basics, scaling, config, secrets, envs, blue/green or rolling deploy.
+- Behavioral: STAR story #7 (deadline).
+
+### Day 13 (Weekend): Mock #2 (technical)
+- Coding: 1 timed medium (45 min) + talk aloud.
+- System design: “Pricing engine / Quoting service” case study:
+  - data model, caching, hot keys, external dependencies, rate limiting.
+- Output: `case_studies/quoting_service.md` (create from template).
+
+### Day 14 (Weekend): Review + target weaknesses
+- Review mistake patterns, update `05_CODING_GAPS/patterns_common.md` with your pitfalls.
+- Write 10 “rapid fire” answers (2–3 sentences each):
+  - CAP, consistency, indexing, caching, retries, idempotency, DI, testing.
+
+---
+
+## Week 3 — Polish + breadth (real interview simulation)
+
+### Day 15: Timed sets + SQL
+- Coding: 2 problems back-to-back timed (30 min each).
+- Backend: SQL practice (joins, group by, window functions basics).
+
+### Day 16: Testing focus (unit/integration/contract)
+- Coding: 1 medium.
+- Backend: testing strategy, test pyramid, mocking vs integration, test data, flakiness.
+- Output: 1 page “Testing framework I built/migrated” talking points.
+
+### Day 17: Concurrency in .NET
+- Coding: 1 medium.
+- Backend: async/await, Task, cancellation tokens, thread safety, rate limiting.
+- Behavioral: STAR story #9 (technical disagreement).
+
+### Day 18: System design drill (30-min design)
+- Coding: 1 easy (warm-up).
+- System design: 30-minute design sprint: “Webhook processing system” or “Order tracking”.
+- Output: 1 case study write-up.
+
+### Day 19: Security basics
+- Coding: 1 medium.
+- Backend: authn/authz (JWT/OAuth), secrets, least privilege, OWASP basics.
+- Behavioral: STAR story #10 (customer/stakeholder management).
+
+### Day 20 (Weekend): Full mock #3 (end-to-end)
+- 45–60 min mock:
+  - intro, behavioral, coding, deep dive, questions
+- Record + fill `interviewNote/interviewNote/08_MOCKS/feedback.md`.
+
+### Day 21 (Weekend): Language day + story rehearsal
+- EN: rehearse 6 stories (2 mins each).
+- JP: rehearse self intro + 5 interview phrases.
+- Update `behavioral_question_bank.md` to have best/backup story for each row.
+
+---
+
+## Week 4 — Close gaps + company targeting
+
+### Day 22: Company targeting pack (1)
+- Pick 1 company + role.
+- Import JD into `02_JD_AND_RESEARCH/job_descriptions/` (link + notes).
+- Create targeted CV file: `01_CV/cv_targeted/company-role.md` (keywords + reordering).
+- Coding: 1 medium.
+
+### Day 23: Company targeting pack (2)
+- Repeat for another company/role.
+- Behavioral: “Why company” answer (product, team, growth, alignment).
+
+### Day 24: Review core architecture topics
+- Caching, queues, DB, scaling, reliability — 1 page each (bullet notes).
+- Coding: 1 timed medium.
+
+### Day 25: System design final (hard)
+- Do 1 full case:
+  - “Design a rate-limited notification platform” or “Design a pricing engine at scale”.
+- Output: case study write-up.
+
+### Day 26: Behavioral final pass
+- Tighten each STAR:
+  - add metric, remove fluff, one clear “your action”.
+- Rehearse aloud (EN).
+
+### Day 27 (Weekend): Mock #4 (final)
+- Full mock + record.
+- Fix top 3 recurring issues.
+
+### Day 28 (Weekend): Light review + confidence
+- Review only your notes and mistakes.
+- Prepare “closing questions” list and negotiation basics.
+- Sleep + schedule.
+
+---
+
+## Fast reference: what to emphasize (from your CV)
+
+- Event-driven reliability: retries, DLQ, idempotency, monitoring.
+- Scale signals: “200k+ daily requests”, ECS scaling, Redis caching.
+- Ownership: CI/CD, environments, wiki/docs, onboarding.
+- Testing: migration of integration tests + reporting automation.
+- GenAI project: Bedrock + PGVector + onboarding/search (great differentiator).
+

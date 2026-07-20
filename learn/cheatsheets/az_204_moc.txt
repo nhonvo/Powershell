@@ -1,0 +1,29 @@
+---
+tags:
+  - certification/az-204
+  - azure-dev
+  - moc
+status: in-progress
+created: 2026-06-15
+updated: 2026-06-15
+---
+
+# 🎓 AZ-204: Developing Solutions for Microsoft Azure MOC
+
+Map of Content for your **AZ-204** exam study.
+
+## 📚 Study Domains
+
+| Domain | Topic | Weight | Practice |
+|:---|:---|:---:|:---|
+| **[[certifications/microsoft/AZ-204/Domain 1 - Develop Azure Compute Solutions\|D1]]** | Compute Solutions | ~25% | [[certifications/microsoft/AZ-204/Practice Questions - Domain 1\|Q&A D1 (54 qs)]] |
+| **[[certifications/microsoft/AZ-204/Domain 2 - Develop for Azure Storage\|D2]]** | Storage Solutions | ~15% | [[certifications/microsoft/AZ-204/Practice Questions - Domain 2\|Q&A D2 (20 qs)]] |
+| **[[certifications/microsoft/AZ-204/Domain 3 - Implement Azure Security\|D3]]** | Azure Security | ~20% | [[certifications/microsoft/AZ-204/Practice Questions - Domain 3\|Q&A D3 (6 qs)]] |
+| **[[certifications/microsoft/AZ-204/Domain 4 - Monitor, Troubleshoot, and Optimize Azure Solutions\|D4]]** | Monitor & Optimize | ~15% | [[certifications/microsoft/AZ-204/Practice Questions - Domain 4\|Q&A D4 (9 qs)]] |
+| **[[certifications/microsoft/AZ-204/Domain 5 - Connect and Consume Azure and Third-Party Services\|D5]]** | Connect & Consume | ~25% | [[certifications/microsoft/AZ-204/Practice Questions - Domain 5\|Q&A D5 (11 qs)]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AZ-204/AZ-204 Mindmap|🗺️ AZ-204 Mindmap]]
+- [[certifications/microsoft/AZ-204/AZ-204 Flashcards|🃏 AZ-204 Flashcards]]
+- [[certifications/microsoft/AZ-204/AZ-204_Scraped_Question_Bank|🗃️ AZ-204 Scraped Question Bank (100 qs)]]
+- **Interactive PS Quiz**: `.\Start-StudySession.ps1`

@@ -1,0 +1,176 @@
+# 🗃️ MB-800 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Set up Business Central (Question Set 1)
+
+DRAG DROP
+
+A company adds a user to Microsoft 365.
+
+Existing user groups do not have the required permission sets for newly added users.
+
+You need to assign a Dynamics 365 Business Central user group and permissions to the user and the company.
+
+Which five actions should you perform in sequence? To answer, move the appropriate actions from the list of actions to the answer area and arrange them in the correct order.
+
+Note: More than one order of answer choices is correct. You will receive credit for any of the correct orders you select.
+
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Step 1: Select Get New Users from Microsoft 365/ Update Users from Microsoft 365 After you add users or change user information in the Microsoft 365 Admin Center, you can quickly import the user information to Business Central.
+
+Sign in to Business Central using an administrator account.
+Choose the Lightbulb that opens the Tell Me feature. icon, enter Users, and then choose the related link.
+Choose Update Users from Microsoft 365.
+
+Step 2: Create a user group.
+When you create users in Business Central you can assign specific permissions to them through permission sets and organize users in user groups. User groups make it easier to manage permissions for multiple users at the same time.
+
+Step 3: Select the user from the user list.
+
+Step 4: Assign the user group to the user.
+In Business Central you can add users to user groups. This makes it easier to assign the same permission sets to multiple users.
+
+Step 5: Assign the company to the user.
+We add the user to the Company role.
+
+Note: After you create users, you must assign security roles for them to use. In the Manage User Roles dialog box, select the security role or roles you want for the user or users, and then choose OK.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Set up Business Central (Question Set 1)
+
+A company uses Dynamics 365 Business Central.
+
+When users create sales documents, the system must display an alert that shows the customer's remaining credit. The alert must also notify the user if the customer has any overdue payments.
+
+You need to configure a credit limit and overdue payment warning.
+
+What should you do?
+
+### Options:
+- [ ] **A)** Configure the Block Customer field.
+- [ ] **B)** Configure the Late Payment Predict extension.
+- [x] **C)** Select Both Warnings in the Credit Warnings field. [Correct]
+- [ ] **D)** Enable the Exact Cost Reversing Mandatory field.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Business Central enables you to determine how you want users to be informed when a customer is over their credit limit. To begin, search for and pull up the Sales & Receivables Setup. Under the General FastTab, locate `Credit Warnings.' Within this field, you can determine if you want a notification to display at the top of the Sales Order for:
+(1) Credit Limits
+(2) Overdue Balance
+(3) Credit Limits and Overdue Balance
+(4) No notifications
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Set up Business Central (Question Set 1)
+
+You configure a cloud-based printer in Dynamics 365 Business Central.
+
+Purchase orders printed by users must automatically print to the cloud-based printer.
+
+You need to create a setup record for the user, report, and printer combination.
+
+On which page should you create the setup record?
+
+### Options:
+- [x] **A)** Printer Selections [Correct]
+- [ ] **B)** Printer Management
+- [ ] **C)** Report Layout Selection
+- [ ] **D)** Report Selection Purchase
+- [ ] **E)** Document Sending Profiles
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Set up Business Central (Question Set 1)
+
+You are implementing Dynamics 365 Business Central Online.
+
+Users must be added to Business Central for the first time.
+
+You need to add the users.
+
+Which action should you use?
+
+### Options:
+- [ ] **A)** Get New Users from Microsoft 365
+- [ ] **B)** Create a new entry on the User Setup page
+- [x] **C)** Update Users from Microsoft 365 [Correct]
+- [ ] **D)** Import User Groups
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Set up Business Central (Question Set 1)
+
+DRAG DROP
+
+You set up a new company for a customer.
+
+The customer provides you with a Microsoft Excel file that contains master data.
+
+You need to import the master data by using configuration packages.
+
+Which four actions should you perform in sequence? To answer, move the appropriate actions from the list of actions to the answer area and arrange them in the correct order.
+
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---

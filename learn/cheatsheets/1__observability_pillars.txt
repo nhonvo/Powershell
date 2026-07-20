@@ -1,0 +1,75 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/07_Monitoring_Metrics/📂index_07_Monitoring_Metrics|07_Monitoring_Metrics]]
+
+# 📈 1. Observability Pillars (3 Trụ cột Giám sát)
+
+Khi hệ thống Backend phình to và trở nên phức tạp, việc biết hệ thống "đang sống" hay "đang chết" là chưa đủ. Bạn cần khả năng quan sát (Observability) để thấu hiểu tại sao nó lại chậm, tại sao nó lại tốn tài nguyên.
+
+---
+
+### 🏛️ 1.1 Ba Trụ cột lõi (The Three Pillars)
+
+#### **1. Logs (Nhật ký sự kiện)**
+- **Mục tiêu**: Mô tả chi tiết 1 sự kiện riêng lẻ xảy ra vào 1 thời điểm.
+- **Ví dụ**: `User 123 logged in`, `Order 456 failed due to Insufficient Funds`.
+- **Thế mạnh**: Gỡ lỗi (Debug) các trường hợp cụ thể.
+
+#### **2. Metrics (Số liệu thống kê)**
+- **Mục tiêu**: Dữ liệu định lượng được tổng hợp qua thời gian.
+- **Ví dụ**: CPU Usage: 85%, Số request/giây: 100, RAM Free: 512MB.
+- **Thế mạnh**: Nhận biết xu hướng (Trend) và Cảnh báo (Alerting) sớm khi hệ thống bất ổn.
+
+#### **3. Tracing (Truy dấu yêu cầu)**
+- **Mục tiêu**: Theo dõi hành trình của 1 single request xuyên suốt các microservices.
+- **Ví dụ**: Request APP -> DB -> REDIS -> PAYMENT.
+- **Thế mạnh**: Tìm ra nút thắt cổ chai (Bottleneck) về thời gian xử lý (Latency).
+
+---
+
+### 🧠 1.2 Tại sao Metrics là Quan trọng nhất cho Cảnh báo (Alerting)?
+
+Logging tốn rất nhiều ổ đĩa và khó để tổng hợp con số trong thời gian thực. Metrics là những con số (Numbers) cực nhẹ, cho phép bạn thiết lập các quy tắc cảnh báo nhanh chóng:
+> "Nếu tỷ lệ lỗi HTTP 500 > 5% trong vòng 1 phút, hãy bắn tin nhắn lên Slack cho Admin!"
+
+---
+
+### 🚀 1.3 Push vs Pull Model (Mô hình Giám sát)
+
+Làm sao để hệ thống giám sát lấy được số liệu từ Server của bạn?
+
+1.  **Pull Model (Ưu thế của Prometheus)**:
+    - Prometheus chủ động "gọi" vào server của bạn (Endpoint `/metrics`) để lấy dữ liệu định kỳ.
+    - **Ưu điểm**: Server không bị treo nếu Prometheus sập. Kiểm soát được tần suất lấy dữ liệu.
+2.  **Push Model (Mô hình StatsD / Graphite)**:
+    - Server của bạn chủ động "đẩy" dữ liệu sang cho hệ thống giám sát.
+    - **Ưu điểm**: Phù hợp cho các Short-lived jobs (Serverless / Lambda).
+
+---
+
+### ⚡ 1.4 Golden Signals (Tín hiệu vàng trong Giám sát)
+
+Theo Google, bạn cần giám sát 4 tín hiệu này để biết hệ thống "khỏe" hay "yếu":
+1.  **Latency (Độ trễ)**: Thời gian xử lý 1 request.
+2.  **Traffic (Lưu lượng)**: Số lượng request đang nhận.
+3.  **Errors (Lỗi)**: Tỷ lệ request thất bại.
+4.  **Saturation (Độ bão hòa)**: Tài nguyên còn lại (CPU, RAM, Disk).
+
+---
+
+### 📝 1.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao chúng ta không dùng DB SQL để lưu trữ Metrics mà lại dùng Time-series Database (Prometheus)?"
+<details><summary>Đáp án</summary>
+1. Tốc độ ghi (Write High Throughput): Metrics sinh ra hàng triệu bản ghi mỗi giây, SQL DB không chịu được tải trọng ghi khổng lồ này. 2. Truy vấn theo thời gian: TSDB tối ưu hóa cho việc tính toán trung bình (Avg), tổng (Sum) dữ liệu trong 1 khoảng thời gian cực nhanh. 3. Tự động xóa (Retention): TSDB tự động dọn dẹp dữ liệu cũ (VD sau 15 ngày) một cách mượt mà.
+</details>
+
+**Bài 2**: [Kỹ thuật] Giải thích ý nghĩa của chỉ số **Saturation (Độ bão hòa)** trong giám sát server.
+<details><summary>Gợi ý</summary>
+Nó cho biết hệ thống còn "chịu đựng" được thêm bao nhiêu request nữa trước khi "sập". Ví dụ: CPU đang 95%, dù latency vẫn tốt nhưng Saturation đã chạm ngưỡng đỏ.
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Observability vs Monitoring - What's the Real Difference?](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-observability-fundamentals.md)
+- [The Four Golden Signals: How to Monitoring Microservices](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-golden-signals.md)
+- [Prometheus vs InfluxDB: Which TSDB fits your Architecture?](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-tsdb-comparison.md)

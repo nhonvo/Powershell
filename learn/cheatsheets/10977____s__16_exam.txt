@@ -1,0 +1,89 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 16
+
+## Part 1
+**Q1.** 左に　まがって　ください。
+- **A.** うえ
+- **B.** ひだり
+- **C.** みぎ
+- **D.** した
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2左 (TẢ)：tr&aacute;iH&atilde;y rẽ sang tr&aacute;i.</p>
+</details>
+
+---
+**Q2.** もういちど　読んで　ください。
+- **A.** たのんで
+- **B.** あそんで
+- **C.** よんで
+- **D.** やすんで
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3読む (ĐỘC)：đọcH&atilde;y đọc lại một lần nữa đi.</p>
+</details>
+
+---
+**Q3.** わたしは　秋が　いちばん　すきです。
+- **A.** なつ
+- **B.** はる
+- **C.** あき
+- **D.** ふゆ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3秋 (THU)：m&ugrave;a thuT&ocirc;i th&iacute;ch m&ugrave;a thu nhất.</p>
+</details>
+
+---
+**Q4.** えきの　北口は　どこですか。
+- **A.** にしぐち
+- **B.** にしくち
+- **C.** きたぐち
+- **D.** きたくち
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3北口 (BẮC - KHẨU)：Cổng BắcCổng Bắc của nh&agrave; ga ở đ&acirc;u vậy?</p>
+</details>
+
+---
+**Q5.** あなたの　友だちは　どこに　いますか。
+- **A.** ともだち
+- **B.** どもだち
+- **C.** ゆうだち
+- **D.** ゆだち
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1友だち (HỮU)：BạnBạn của cậu đang ở đ&acirc;u?</p>
+</details>
+
+---
+**Q6.** いまは　午前　７じ　です。
+- **A.** ごまえ
+- **B.** ごぜん
+- **C.** ごご
+- **D.** ごうご
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2午前 (NGỌ - TIỀN)：s&aacute;ngB&acirc;y giờ l&agrave; 7 giờ s&aacute;ng.</p>
+</details>
+
+---
+**Q7.** わたしの　ちちは　医者です。
+- **A.** さっか
+- **B.** せんせい
+- **C.** きょうし
+- **D.** いしゃ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4医者 (Y GIẢ)：b&aacute;c sĩBố t&ocirc;i l&agrave; b&aacute;c sĩ.</p>
+</details>
+
+---

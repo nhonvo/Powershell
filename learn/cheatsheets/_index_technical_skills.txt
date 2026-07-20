@@ -1,0 +1,17 @@
+# 🛠️ Technical Skills & Roadmaps
+
+🔙 **Back to Parent**: [[📖index_learning|learning]]
+
+## 📁 Sub-Categories
+- [[technical_skills/02_Backend_Development_Roadmap/📂index_02_Backend_Development_Roadmap|02_Backend_Development_Roadmap]]
+- [[technical_skills/03_Design_Patterns_Mastery/📂index_03_Design_Patterns_Mastery|03_Design_Patterns_Mastery]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/05_Indexing_Mastery|04_PostgreSQL_Deep_Dive]]
+- [[technical_skills/05_Docker_Hero/📂index_05_Docker_Hero|05_Docker_Hero]]
+- [[technical_skills/06_Backend_Interview_Expert/📂index_06_Backend_Interview_Expert|06_Backend_Interview_Expert]]
+- [[technical_skills/Computational Statistics and Applications/📂index_Computational Statistics and Applications|Computational Statistics and Applications]]
+- [[📈index_introduction_to_data_analysis|Introduction to Data Analysis]]
+- [[technical_skills/📂index_05_Web_Blog|Blog Content]]
+
+## 📄 Notes & Guides
+- [[technical_skills/ai path|AI Path]]
+- [[technical_skills/skill-create-course-builder|Course Builder Skill]]

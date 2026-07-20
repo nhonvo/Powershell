@@ -1,0 +1,282 @@
+# 🗃️ AI-103 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Plan and manage an Azure AI solution (Testlet 1)
+
+HOTSPOT (Drag and Drop is not supported)
+You need to configure the model deployment for Agent1 to meet the technical requirements.
+What should you configure? To answer, select the appropriate options in the answer area.
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Scenario: Technical Requirements The model deployment used by Agent1 must support scalable, high-throughput generative AI workloads and dynamically scale to handle variable customer support traffic, without requiring reserved throughput capacity. The data processed by the model must remain within the EU.
+Environment Project1 contains a customer support agent named Agent1 that assists customers with product inquiries and troubleshooting requests. Project1 is deployed to an Azure region located in the European Union (EU).
+Box 1: Standard Deployment type
+The best deployment type among the choices provided is Standard.
+Data Residency: A Standard deployment ensures that both data at rest and inferencing/processing remain strictly within the chosen local Azure region. Because your agent is located in an EU Azure region, selecting a Standard deployment guarantees that data processing does not leave the EU boundary.
+No Reserved Capacity: Standard deployments operate on a flexible, pay-as-you-go, on-demand token model. They dynamically scale to accommodate variable customer support traffic without requiring pre-purchased or reserved capacity.
+Incorrect: Here is why Standard is the correct choice, along with explanations of why the other options do not meet the requirements:
+Global Standard & Global Provisioned: While global deployments offer the highest initial throughput and leverage Microsoft Azure's global infrastructure to dynamically route traffic, they do not guarantee that data processing stays within the EU. Microsoft specifies that prompts and completions sent to "Global" deployment types can be processed in any global Azure region where capacity is available. This violates your strict requirement that data processed by the model must remain within the EU.
+Incorrect: Standard: This deployment type restricts model inference strictly to a single, local Azure region. It is highly susceptible to regional capacity limits and does not support the massive, highly scalable throughput needed for variable customer traffic compared to global routing.
+Global Provisioned: This deployment type requires reserved throughput capacity. It forces you to pre-purchase a fixed number of Provisioned Throughput Units (PTUs), making it poorly suited for scenarios where avoiding reserved capacity is a strict requirement
+Box 2: Opt out of automatic model version upgrades Version update policy 
+Scenario: Planned changes: Update the base model deployment used by Agent1 and standardize the model version to ensure continuity and consistent responses.
+Technical requirements: *-> The model version used by Agent1 must remain consistent to ensure stable responses.
+The best version update policy for this scenario is Opt out of automatic model version upgrades (also known as specifying a Specific model version or setting to manual upgrade).
+Why This Policy Is Best Ensures Consistent and Stable Responses: By locking the deployment to a exact, specific model version, you prevent sudden shifts in the agent's behavior, latency, reasoning, or tone that naturally occur during automated model switches.
+Provides Deployment Control: This policy guarantees that the model will never automatically upgrade behind the scenes. The model version remains pinned until you manually decide to test, validate, and migrate to a newer version.
+Protects Customer-Facing Production: Because your agent interacts directly with public users via digital support channels, spontaneous upgrades under an automated policy could accidentally break prompt formatting, alter content safety guardrails, or introduce unexpected hallucinations.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Plan and manage an Azure AI solution (Testlet 1)
+
+You need to configure Agent1 to meet the security and compliance requirements.
+What should you use?
+
+### Options:
+- [ ] **A)** self-harm content filtering
+- [ ] **B)** prompt shields
+- [x] **C)** Personally identifiable information (PII) Detection [Correct]
+- [ ] **D)** violence content filtering
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+To prevent an AI agent from revealing customer data even when sensitive information is accidentally uploaded to the underlying storage, you must configure Agent Guardrails with PII Detection and Tool Response Filtering.
+Because the data repository contains unstructured product sheets and could accidentally ingest unstructured customer data, relying solely on access controls at the storage level is not enough.
+Scenario: Security and Compliance Requirements *-> Agent1 must never reveal customer information, even if a document that contains customer data is added erroneously to the product sheet repository in storage1.
+The product sheets might contain images that include embedded text. Agent1 must be protected from malicious instructions potentially hidden within the images.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Plan and manage an Azure AI solution (Question Set 2)
+
+You are planning a Microsoft Foundry project named Project1 that will contain multiple agents. Each agent will access the same Azure AI Search resource.
+You need to recommend a solution to centrally manage the Azure AI Search credentials within Project1. The solution must be implemented across all the agents.
+What should you recommend?
+
+### Options:
+- [ ] **A)** Enable role-based access control (RBAC) for the Azure AI Search resource.
+- [ ] **B)** Disable key-based access control on the Azure AI Search resource.
+- [x] **C)** Add a connection to the Azure AI Search resource. [Correct]
+- [ ] **D)** Create a managed private endpoint that connects to the Azure AI Search resource.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+To best manage security and centrally handle credentials across multiple agents, you should add a connection to the Azure AI Search resource at the Azure AI Foundry project level.
+Why This Works Central Hub: The project acts as the single security perimeter for all your agents.
+Credential Masking: Agents inherit access without hardcoding secrets, API keys, or connection strings in their code.
+Identity Management: It allows you to leverage Microsoft Entra ID (formerly Azure AD) for role-based access control (RBAC).
+How to Implement It 1. Navigate to your Azure AI Foundry portal. 2. Select your specific project from the dashboard. 3. Open the "Management Center" or "Project settings" tab. 4. Click on "Connected resources" or "Connections". 5. Add the Azure AI Search resource. 6. Choose Entra ID (managed identity) over API keys for maximum security.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Plan and manage an Azure AI solution (Question Set 2)
+
+HOTSPOT (Drag and Drop is not supported)
+Your company is piloting a customer support agent in a Microsoft Foundry project name Project1. Project1 is connected to an existing Application Insights resource, and the company’s support team reviews runs in the Traces tab.
+The Foundry Agent Service is configured to perform the following actions:
+-Retrieve the Application Insights connection string by calling project_client.telemetry.get_application_insights_connection_string().
+-Call configure_azure_monitor(connection_string=...) to enable telemetry.
+A separate LangChain service is configured to use OpenTelemetry and has the following configurations:
+-Uses AzureAIOpenTelemetryTracer(connection_string=..., enable_content_recording=False)
+-Passes the tracer by using config={“callbacks”:[azure_tracer]}
+Company policy has the following requirements:
+-Telemetry from LangChain and OpenTelemetry must be distinguishable within the same Application Insights resource.
+-Secrets and credentials must NOT be stored in prompts, tool arguments, or span attributes.
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: No No - The LangChain service will appear in Traces without configuring a tracer. The LangChain service will not appear in Traces without configuring a tracer.
+Because OpenTelemetry requires an explicit exporter or tracer provider to collect and send data, you must provide a valid tracer registration. However, since configure_azure_monitor() sets up a global OpenTelemetry tracer provider under the hood, any standard OpenTelemetry-instrumented service sharing the same process could theoretically export traces globally. Despite this, LangChain specifically relies on explicit callback
+handlers (like AzureAIOpenTelemetryTracer) passed in the config to map LangChain-specific execution blocks (chains, tools, and prompts) into OpenTelemetry spans. Without configuring and passing this tracer, your LangChain orchestrations will not emit telemetry to Application Insights.
+Box 2: Yes Yes - Setting different OTEL_SERVICE_NAME values separates the services in Application Insights.
+Setting different OTEL_SERVICE_NAME values distinguishes the services within the same Application Insights resource.
+In Azure Monitor and Application Insights, the OpenTelemetry service.name attribute automatically maps to the cloud_RoleName property on your telemetry logs and spans. By specifying distinct names via OTEL_SERVICE_NAME (or setting it in the tracer providers), you can isolate and filter telemetry originating from the core Foundry Agent Service versus the LangChain components.
+Box 3: No No - When using enable_content_recording=False, prompts and tool data will be captured in the telemetry.
+Prompt text and tool data will not be captured in the telemetry.
+Setting enable_content_recording=False specifically instructs the AzureAIOpenTelemetryTracer to redact and mask user prompts, LLM responses, and tool call arguments from being emitted into span attributes. This configuration successfully prevents credentials, secrets, or sensitive PII residing inside the text from bleeding into your Azure Application Insights resource.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Plan and manage an Azure AI solution (Question Set 2)
+
+DRAG DROP (Drag and Drop is not supported)
+You have a Microsoft Foundry project that processes procurement documents submitted by suppliers.
+You need to implement two pipelines by using Azure Content Understanding in Foundry Tools. The solution must meet the following requirements:
+-Include a pipeline named Pipeline1 that supports cost-effective, high-volume processing of standalone PDF invoices.
+-Include a pipeline named Pipeline2 that supports cross-document validation by using multi-step reasoning and reference data.
+How should you configure each pipeline? To answer, drag the appropriate configurations to the correct pipelines. Each configuration may be used once, more than once, of not at all. You may need to drag the split bar between panes or scroll to view content.
+NOTE: Each correct selection is worth one point.
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Single-file task running in Standard mode Pipeline1 To meet the requirements for a cost-effective, high-volume processing pipeline of standalone PDF invoices using Azure Content Understanding in Foundry Tools, you should configure the pipeline with a Single-file task running in Standard mode.
+1. Task Type: Single-file task The scenario involves processing standalone PDF invoices. A Single-file task is designed to process individual files independently, drawing structured field extractions schema-by-schema.
+When to avoid Multi-file: Multi-file tasks are intended for advanced use cases where you need to pass multiple distinct documents in a single request to cross-reference data, aggregate statistics, or run complex cross-file validation logic. Using it for high-volume standalone extraction would add unnecessary technical overhead.
+2. Analysis Mode: Standard mode
+Standard mode explicitly emphasizes cost-effectiveness and reduced latency. It is optimized for straightforward field extraction (such as gathering invoice numbers, dates, line items, and totals) from individual documents.
+Cost Difference: Standard mode features lower pricing for Contextualization tokens ($1.00 per 1M tokens) compared to Pro mode ($1.50 per 1M tokens).
+When to avoid Pro mode: Pro mode is built for multi-step reasoning, drawing inferences, and comparing input files against a pre-uploaded knowledge base/reference data. For simple high-volume extraction, Pro mode adds unnecessary cost and latency.
+Box 2: Multi-file task in Pro mode Pipeline2
+To implement cross-document validation using multi-step reasoning and reference data in Azure Content Understanding, your pipeline must be configured as a Multi-file task in Pro mode.
+Here is the breakdown of why this exact configuration is required:
+1. Task Type: Multi-file task Single-task (Single-file task) configurations are restricted to processing one isolated document per request.
+Capability: A Multi-file task allows Azure Content Understanding to accept multiple input files in a single request, enabling the system to collectively reason, validate results, and aggregate schemas across distinct documents.
+2. Processing Mode: Pro Mode Standard mode is built strictly for straightforward field extraction from single files without complex cognitive overhead.
+Capability: Pro mode unlocks advanced generative AI agentic capabilities. It allows you to inject an external
+knowledge base for reference data, run multi-step semantic reasoning, and perform cross-document data validation to flag errors before producing a final unified schema.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: Plan and manage an Azure AI solution (Question Set 2)
+
+HOTSPOT (Drag and Drop is not supported)
+You have a Python application named App1 that integrates with a Microsoft Foundry project named Project1.
+You need to ensure that App1 meets the following requirements:
+-Authenticates by using a Microsoft Entra managed identity
+-Sends prompts to a deployed model by using the Azure OpenAI Responses API
+How should you complete the Python code? To answer, select the appropriate options in the answer area.
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: DefaultAzureCredential The azure.identity package provides DefaultAzureCredential, which automatically evaluates the environment to find a valid authentication mechanism. When deployed in Azure, it natively picks up the configured Microsoft Entra managed identity without requiring hardcoded secrets.
+Box 2: create¨ The get_openai_client() context manager returns an OpenAI-compatible instance pre-configured for your project endpoint. To generate responses using Microsoft Foundry's Responses API protocol, you interact with the .responses resource and call its create method.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: Plan and manage an Azure AI solution (Question Set 2)
+
+HOTSPOT (Drag and Drop is not supported)
+You have a Microsoft Foundry project that contains a workflow for a customer support triage process.
+You have an Ask a question node that stores user responses in a local variable named Var01.
+You need to create the following Power Fx expressions:
+-An if/else condition expression that ensures that Var01 contains a value
+-A Send message expression that returns the stored user response in uppercase
+How should you configure the expressions? To answer, select the appropriate options in the answer area.
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Not(IsBlank(Topic.Var01) An if/else condition expression that ensures that Var01 contains a value
+To validate that a local variable has a value in Microsoft Foundry workflows (which use the Power Fx expression language), the most adequate expression is: If(Not(IsBlank(Topic.VariableName)), "Has Value Action", "Is Blank Action")
+Expression BreakdownTopic. VariableName: Refers to a local variable scoped to the current workflow topic.
+IsBlank(): Checks if the variable is completely null or contains an empty string ("").
+Not(): Inverts the boolean result so that a variable with contents evaluates to true.
+If(): Executes the first action path if the condition is true (contains a value) and the second action path if it is false (blank).
+Box 2: {Upper(Local.Var01)} A Send message expression that returns the stored user response in uppercase
+The adequate Power Fx expression to use in the Message to send area is {Upper(Local.Var01)}.
+Key Implementation Rules Variable Scope Prefix: In Microsoft Foundry Workflows, all variables defined within the scope of the workflow must use the Local. 
+prefix.Uppercase Function: The Upper() function converts text strings to all capital letters.
+Message Interpolation: In a Send message node, Power Fx expressions must be enclosed in curly braces { } to be dynamically evaluated at runtime.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: Plan and manage an Azure AI solution (Question Set 2)
+
+HOTSPOT (Drag and Drop is not supported)
+You have a Microsoft Foundry project that contains a customer support agent built by using the Foundry Agent Service.
+The agent uploads user-provided screenshots to Azure Storage through a ticketing tool and receives a blob URL for additional reasoning.
+You need to use image moderation during agent runs and prevent harmful content from being returned during runs. Azure AI Content Safety must access the images by using the blob URL. The solution must follow the principle of least privilege.
+What should you configure for Content Safety? To answer, select the appropriate options in the answer area.
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Select user input, output, tool response, and Tool call and set Action to Block. Guardrails
+The correct configuration is option is: Select user input, output, tool response, and Tool call and set Action to Block.
+Points Coverage: Microsoft Foundry Guardrails support four key intervention points: User input, Tool call, Tool response, and Output. To thoroughly secure an agent run from harmful inputs, hidden instructions, or generated vulnerabilities, every stage of the lifecycle must be scanned.
+Tool Call and Tool Response: Because the customer support agent uploads files and processes blob URLs dynamically via a ticketing tool, evaluating both Tool call (what the agent sends) and PM/Tool response (what the tool sends back to the agent) is critical to prevent indirect prompt injections or malicious content processing at runtime.
+Action Mode: Setting the action to Block ensures that if any harmful content or policy violation is detected at any point in the cycle, the application aggressively prevents it from executing or returning to the user, satisfying the strict safety mandate.
+Incorrect: * Select Tool call and set Action to Block Selecting only Tool call leaves the primary user prompt, tool output, and final agent response completely unmoderated. Furthermore, "Black" is not a valid configuration action.
+* Select user input and Output and Set action to Annotate and * Select user input and Tool response and set Action to Annotate Setting the action to Annotate flags or labels content with safety metadata/severity scores but does not proactively block the run or prevent harmful content from being returned. Additionally, these options omit necessary intervention points (such as Tool call), violating the security constraints of the agentic workflow.
+Box 2: A system-assigned managed identity that is assigned the Storage Blob Data Reader role Storage access To best configure storage access for image moderation, you should enable a system-assigned managed identity on the Azure AI Content Safety instance and assign it the Storage Blob Data Reader role on the Azure Storage account. This eliminates the security risk of passing raw storage account keys or generating insecure Shared Access Signature (SAS) tokens during agent execution.
+</details>
+
+---

@@ -1,0 +1,89 @@
+🔙 **Back to Parent**: [[technical_skills/📂index_05_Web_Blog|technical_skills]]
+
+# Hướng dẫn Chuẩn hóa và Tổ chức Tài liệu (DSA)
+
+Tài liệu này quy định các tiêu chuẩn về cấu trúc, định dạng và quy trình để xây dựng một bộ tài liệu học tập chuyên nghiệp (như bộ DSA hiện tại).
+
+## 1. Cấu trúc Thư mục (Directory Structure)
+
+Tổ chức thư mục theo lộ trình học tập logic, sử dụng tiền tố số thứ tự để đảm bảo thứ tự hiển thị:
+
+- **Quy tắc đặt tên folder**: `[Số thứ tự]_[Tên_Học_Phần]` (Ví dụ: `01_Basics`, `02_Arrays_Strings`).
+- **File Index**: Luôn có một file tổng quan (như `Lộ trình học DSA.md`) ở thư mục gốc để điều hướng.
+- **File Hướng dẫn**: Có file `Instructions.md` giải thích cách sử dụng bộ tài liệu.
+
+## 2. Tiêu chuẩn Nội dung File Markdown
+
+### 2.1. Làm sạch Metadata (Cleanup)
+
+Loại bỏ hoàn toàn các thành phần dư thừa từ quá trình crawl dữ liệu:
+
+- Xóa header (links điều hướng web, banner).
+- Xóa footer (link mạng xã hội, các nút "Next/Previous", thông tin bản quyền dư thừa).
+- Mỗi file phải bắt đầu bằng tiêu đề cấp 1 hoặc cấp 2 (`#` hoặc `##`).
+
+### 2.2. Trực quan hóa (Visualizations)
+
+Không sử dụng sơ đồ bằng ký tự văn bản. Hãy thay thế bằng **Mermaid diagrams**:
+
+- **Cấu trúc dữ liệu/Quy trình**: Dùng `flowchart TD` hoặc `graph LR`.
+- **Mô phỏng đệ quy (Recursion Tree)**: Dùng `graph TD`.
+- **Trình tự thực hiện**: Dùng `sequenceDiagram`.
+
+### 2.3. Ngôn ngữ và Chính tả
+
+- **Tiếng Việt**: Bắt buộc phải có đầy đủ dấu.
+- **Thuật ngữ chuyên ngành**: Có thể giữ nguyên thuật ngữ tiếng Anh nhưng cần được bôi đậm (Ví dụ: **Binary Search**, **Two Pointers**).
+- **Phần phân tích tư duy**: Chia rõ các bước (Bước 1, Bước 2, Bước 3) để người học dễ theo dõi.
+
+## 3. Quy chuẩn Định dạng và Thẩm mỹ (Style & Formatting)
+
+Để đảm bảo các tài liệu mới tạo ra có cùng "look and feel", hãy tuân thủ các quy tắc sau:
+
+### 3.1. Cấu trúc Tiêu đề (Heading Hierarchy)
+
+- **H1 (`#`)**: Chỉ dùng cho tiêu đề chính của toàn bộ file hoặc học phần.
+- **H2 (`##`)**: Dùng cho các phần lý thuyết lớn hoặc các bài toán riêng biệt (Ví dụ: `## 5.1. Power of Two`).
+- **H3 (`###`)**: Dùng cho các mục con như "Phân tích tư duy", "Lời giải", "Độ phức tạp".
+
+### 3.2. Chú thích và Nhấn mạnh
+
+- **Blockquotes (`>`)**: Dùng để tóm tắt nội dung học phần hoặc đưa ra lời khuyên/lưu ý quan trọng.
+- **Bold (`**text**`)**: Dùng cho thuật ngữ chính, độ phức tạp $O(1)$ và các từ khóa quan trọng trong câu.
+- **Tables**: Luôn dùng bảng để tổng hợp kết quả (Ví dụ: Bảng so sánh Time/Space Complexity).
+
+### 3.3. Kỹ thuật Code
+
+- **Ngôn ngữ**: Mặc định dùng Python (dễ đọc, gần với mã giả).
+- **Kích thước Code**: Tránh viết các hàm quá dài (> 50 dòng). Chia nhỏ logic nếu cần.
+- **Ghi chú trong Code**: Sử dụng Docstrings cho hàm để giải thích tham số (`Args`) và kết quả trả về (`Returns`).
+
+## 4. Quy chuẩn Trực quan (Visual Guidelines)
+
+### 4.1. Mermaid Diagrams Style
+
+- Sử dụng màu sắc để phân biệt trạng thái (Ví dụ: `style Node fill:#f9f`).
+- Định dạng sơ đồ nên căn giữa (Mặc định của Markdown renderers).
+- Kích thước hình ảnh nên vừa phải, không quá phức tạp để có thể hiển thị tốt trên cả mobile và desktop.
+
+### 4.2. Công thức Toán học
+
+- Công thức quan trọng nên viết ở dòng riêng (dùng `$$ ... $$`).
+- Công thức trong dòng văn bản dùng `$ ... $`.
+
+## 5. Quy trình Thực hiện (Workflow)
+
+Để xử lý số lượng lớn file (100+ file), thực hiện theo các bước sau:
+
+1. **Phân loại**: Sử dụng script (Python/PowerShell) để di chuyển file vào các folder dựa trên nội dung tiêu đề.
+2. **Lọc dữ liệu**: Sử dụng regex hoặc script để xóa bỏ các đoạn text giống nhau (footer/header) ở quy mô hàng loạt.
+3. **Hậu kiểm**: Rà soát các sơ đồ văn bản để vẽ lại bằng Mermaid.
+4. **Bổ sung dấu**: Sử dụng các công cụ hoặc script hỗ trợ nếu file gốc bị thiếu dấu tiếng Việt.
+
+---
+
+*Tài liệu này là "Sách hướng dẫn phong cách" (Style Guide) để duy trì tính chuyên nghiệp của hệ thống tài liệu.*
+
+---
+
+*Tài liệu này giúp duy trì tính nhất quán cho toàn bộ hệ thống học tập.*

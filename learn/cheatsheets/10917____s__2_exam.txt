@@ -1,0 +1,65 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 2
+
+## Part 1
+**Q1.** この　わいしゃつは　あたらしいです。
+- **A.** フイシャツ
+- **B.** ワイシャツ
+- **C.** フイシャシ
+- **D.** ワイシャシ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n : 2ワイシャツ: &Aacute;o sơ mi trắng C&aacute;i &aacute;o sơ mi trắng n&agrave;y mới.</p>
+</details>
+
+---
+**Q2.** きのう　りんごを　かいました。
+- **A.** 見いました
+- **B.** 書いました
+- **C.** 買いました
+- **D.** 会いました
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n : 3買う (M&Atilde;I) : MuaH&ocirc;m qua t&ocirc;i đ&atilde; mua t&aacute;o.</p>
+</details>
+
+---
+**Q3.** わたしは　だいがくせいです。
+- **A.** 大宇先
+- **B.** 大学先
+- **C.** 大学生
+- **D.** 大宇生
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n : 3大学生 (ĐẠI - HỌC - SINH): sinh vi&ecirc;n đại học  T&ocirc;i l&agrave; sinh vi&ecirc;n đại học.</p>
+</details>
+
+---
+**Q4.** みぎの　あしが　いたいです。
+- **A.** 手
+- **B.** 耳
+- **C.** 足
+- **D.** 目
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n : 3足 (T&Uacute;C): ch&acirc;nCh&acirc;n b&ecirc;n phải đang bị đau.</p>
+</details>
+
+---
+**Q5.** この　ふくは　せんえんです。
+- **A.** 万円
+- **B.** 千円
+- **C.** 万年
+- **D.** 千年
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n : 2千円 (THI&Ecirc;N - VI&Ecirc;N) : 1000 y&ecirc;nBộ quần &aacute;o n&agrave;y gi&aacute; 1000 y&ecirc;n.</p>
+</details>
+
+---

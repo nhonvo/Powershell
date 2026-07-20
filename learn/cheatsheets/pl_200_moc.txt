@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/pl-200
+  - pl200
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 PL-200: Microsoft Power Platform Functional Consultant MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/PL-200/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/PL-200/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/PL-200/PL-200 Mindmap\|🗺️ PL-200 Mindmap]]
+- [[certifications/microsoft/PL-200/PL-200 Flashcards\|🃏 PL-200 Flashcards]]
+- [[certifications/microsoft/PL-200/PL-200_Scraped_Question_Bank\|🗃️ PL-200 Scraped Question Bank]]

@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/aip-c01
+  - aipc01
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AIP-C01 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/aws/AIP-C01/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/aws/AIP-C01/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/aws/AIP-C01/AIP-C01 Mindmap\|🗺️ AIP-C01 Mindmap]]
+- [[certifications/aws/AIP-C01/AIP-C01 Flashcards\|🃏 AIP-C01 Flashcards]]
+- [[certifications/aws/AIP-C01/AIP-C01_Scraped_Question_Bank\|🗃️ AIP-C01 Scraped Question Bank]]

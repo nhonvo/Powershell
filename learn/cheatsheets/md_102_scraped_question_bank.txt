@@ -1,0 +1,267 @@
+# 🗃️ MD-102 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Deploy Windows client (Testlet 1)
+
+You need to prepare for the deployment of the Phoenix office computers.
+
+What should you do first?
+
+### Options:
+- [ ] **A)** Generalize the computers and configure the Device settings from the Microsoft Entra admin center.
+- [ ] **B)** Extract the serial number of each computer to an XML file and upload the file from the Microsoft Intune admin center.
+- [x] **C)** Extract the hardware ID information of each computer to a CSV file and upload the file from the Microsoft Intune admin center. [Correct]
+- [ ] **D)** Generalize the computers and configure the Mobility (MDM and MAM) settings from the Microsoft Entra admin center.
+- [ ] **E)** Extract the serial number information of each computer to a CSV file and upload the file from the Microsoft Intune admin center.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+To manage devices through Microsoft Store for Business and Education, you'll need a .csv file that contains specific information about the devices. You should be able to get this from your Microsoft account contact, or the store where you purchased the devices. Upload the .csv file to Microsoft Store to add the devices.
+Note:
+Provide new computers to the Phoenix office users. The new computers have Windows 10 Pro preinstalled and were purchased already.
+Deploy Windows 10 Enterprise to the computers of the Phoenix office users by using Windows Autopilot.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Deploy Windows client (Testlet 1)
+
+HOTSPOT (Drag and Drop is not supported)
+
+What is the maximum number of devices that User1 and User2 can enroll in Intune? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: 10 devices
+User1 is a member of GroupA. GroupA device limit is 10.
+
+Box 2: 15 devices
+User2 is a member of GroupB. GroupB device limit is 15.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Deploy Windows client (Testlet 2)
+
+HOTSPOT (Drag and Drop is not supported)
+
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: No
+User1 is a Cloud device administrator.
+
+Local administrative privileges are required when enrolling an already configured Windows 10 device in Intune.
+
+Cloud Device Administrator
+Users in this role can enable, disable, and delete devices in Microsoft Entra and read Windows 10 BitLocker keys (if present) in the Azure portal. The role does not grant permissions to manage any other properties on the device.
+
+Note: The Windows 10 devices are joined to Microsoft Entra and enrolled in Microsoft Intune.
+
+Box 2: Yes
+User2 is a Microsoft Entra joined device local administrator.
+
+Microsoft Entra Joined Device Local Administrator
+This role is available for assignment only as an additional local administrator in Device settings. Users with this role become local machine administrators on all Windows 10 devices that are joined to Azure Active Directory. They do not have the ability to manage devices objects in Azure Active Directory.
+
+Box 3: No
+User3 is a Global reader.
+
+Global Reader
+Users in this role can read settings and administrative information across Microsoft 365 services but can't take management actions.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Deploy Windows client (Testlet 2)
+
+You need to ensure that computer objects can be created as part of the Windows Autopilot deployment. The solution must meet the technical requirements.
+
+To what should you grant the right to create the computer objects?
+
+### Options:
+- [x] **A)** Server1 [Correct]
+- [ ] **B)** DC1
+- [ ] **C)** GroupA
+- [ ] **D)** Server2
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Scenario:
+The Intune connector for Active Directory is installed on Server1.
+Contoso must meet the following technical requirements:
+Users in GroupA must be able to deploy new computers.
+Administrative effort must be minimized.
+Note: To be clear, the entire domain join process will work without any direct connection to the on-premise network and domain controllers. The computer object is created on-premises through the Intune Connector for Active Directory triggered by the Windows Autopilot and Intune.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Deploy Windows client (Testlet 2)
+
+Which user can enroll Device6 in Intune?
+
+### Options:
+- [x] **A)** User4 and User1 only [Correct]
+- [ ] **B)** User4 and User2 only
+- [ ] **C)** User4, User1, and User2 only
+- [ ] **D)** User1, User2, User3, and User4
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: Deploy Windows client (Question Set 3)
+
+You have a Microsoft 365 E5 subscription. The subscription contains 25 computers that run Windows 11 and are enrolled in Microsoft Intune.
+
+You need to onboard the devices to Microsoft Defender for Endpoint.
+
+What should you create in the Microsoft Intune admin center?
+
+### Options:
+- [ ] **A)** an attack surface reduction (ASR) policy
+- [ ] **B)** a security baseline
+- [x] **C)** an endpoint detection and response (EDR) policy [Correct]
+- [ ] **D)** an account protection policy
+- [ ] **E)** an antivirus policy
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Onboard Windows devices to Defender for Endpoint using Intune Enable Microsoft Defender for Endpoint in Intune
+The first step you take is to set up the service-to-service connection between Intune and Microsoft Defender for Endpoint. Set up requires administrative access to both the Microsoft Defender Security Center, and to Intune.
+Onboard Windows devices
+(After you connect Intune and Microsoft Defender for Endpoint, Intune receives an onboarding configuration package from Microsoft Defender for Endpoint. You use a device configuration profile for Microsoft Defender for Endpoint to deploy the package to your Windows devices.
+The configuration package configures devices to communicate with Microsoft Defender for Endpoint services to scan files and detect threats. The device also reports its risk level to Microsoft Defender for Endpoint based on your compliance policies.
+After onboarding a device using the configuration package, you don't need to do it again.) You can also onboard devices using:
+*-> Endpoint detection and response (EDR) policy. Intune EDR policy is part of endpoint security in Intune. Use EDR policies to configure device security without the overhead of the larger body of settings found in device configuration profiles. You can also use EDR policy with tenant attached devices, which are devices you manage with Configuration Manager.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: Deploy Windows client (Question Set 3)
+
+Your company uses Microsoft Intune to manage devices.
+
+You need to ensure that only Android devices that use Android work profiles can enroll in Intune.
+
+Which two configurations should you perform in the device enrollment restrictions? Each correct answer presents part of the solution.
+
+Note: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,D`
+
+**Explanation**:
+Set up enrollment of Android Enterprise personally-owned work profile devices Set up enrollment for bring-your-own-device (BYOD) and personal device scenarios using the Android Enterprise personally-owned work profile management solution. During enrollment, a work profile is created on the device to house work apps and work data. The work profile can be managed by Microsoft Intune policies.
+Personal apps and data stay separate in another part of the device and remain unaffected by Intune.
+Set up enrollment
+Complete these steps to set up enrollment for Android Enterprise devices in BYOD scenarios.
+1. Sign in to the Microsoft Intune admin center.
+2. Go to Devices > Enrollment device platform restrictions to set up enrollment restrictions. By default, Android Enterprise work profile is marked as allowed for personal devices enrolling in Intune. You can allow or block enrollment in device platform restrictions. Your options:
+Block: Personal devices that enroll will use the Android device administrator management solution, unless device administrator enrollment is also blocked.
+Allow (set by default): Personal devices that support the work profile management solution will enroll with a work profile. Android devices that don't support Android Enterprise are enrolled using the Android device administrator solution, unless device administrator enrollment is blocked.
+Any device that supports Android Enterprise personal work profiles also supports the Android device administrator management solution, so if you don't want Android device administrator to be a part of enrollments, make sure to block the platform.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: Deploy Windows client (Question Set 3)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You have 100 Windows 11 devices enrolled in Microsoft Intune.
+
+You need to configure the devices to retrieve Windows updates from the internet and from other computers on a local network.
+
+Which Delivery Optimization setting should you configure, and which type of Intune object should you create? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Download mode
+Delivery Optimization settings for Windows devices in Intune
+
+Delivery Optimization
+* Download mode
+Download mode dictates which download sources clients are allowed to use when downloading Windows updates in addition to Windows Update servers.
+* Etc.
+
+Box 2: A configuration profile
+With Intune, use Delivery Optimization settings for your Windows devices to reduce bandwidth consumption when those devices download applications and updates. Configure Delivery Optimization as part of your device cs.
+</details>
+
+---

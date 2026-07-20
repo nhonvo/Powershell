@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/dop-c02
+  - dopc02
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 DOP-C02 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/aws/DOP-C02/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/aws/DOP-C02/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/aws/DOP-C02/DOP-C02 Mindmap\|🗺️ DOP-C02 Mindmap]]
+- [[certifications/aws/DOP-C02/DOP-C02 Flashcards\|🃏 DOP-C02 Flashcards]]
+- [[certifications/aws/DOP-C02/DOP-C02_Scraped_Question_Bank\|🗃️ DOP-C02 Scraped Question Bank]]

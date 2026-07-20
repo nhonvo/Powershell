@@ -1,0 +1,214 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/12_Graphs/🕸️index_12_Graphs|12_Graphs]]
+
+## 4. Topological Sort
+
+### 4.1. Topological Sort là gì?
+
+**Ví dụ thực tế:** Bạn đang lên kế hoạch học các môn ở trường. Muốn học "Cấu trúc dữ liệu" thì phải học "Nhập môn lập trình" trước. Muốn học "Thuật toán" thì phải học "Cấu trúc dữ liệu" trước. Topological Sort giúp bạn sắp xếp thứ tự các môn sao cho mọi prerequisite đều được học trước.
+
+**Định nghĩa:** Cho directed acyclic graph (DAG) G = (V, E). Topological sort là cách sắp xếp tất cả đỉnh thành một hàng sao cho: nếu có cạnh u → v thì u phải đứng trước v.
+
+**Lưu ý quan trọng:** Topological sort chỉ tồn tại khi graph **KHÔNG có cycle** (tức là DAG). Nếu có cycle thì không thể sắp xếp được (vì A trước B trước C trước A → mâu thuẫn).
+
+**Topological sort KHÔNG duy nhất** — một DAG có thể có nhiều topological order khác nhau.
+
+### 4.2. Kahn's Algorithm (BFS-based)
+
+**Ý tưởng:** Liên tục tìm đỉnh có **in-degree = 0** (không ai phụ thuộc vào ai), xóa nó ra, giảm in-degree của các hàng xóm.
+
+Giống như xây nhà: cứ làm việc nào không cần chờ việc khác trước → xong rồi thì bỏ nó ra → lại tìm việc tiếp theo không cần chờ ai.
+
+CóĐúngKhôngKhôngĐúngKhôngHết hàng xómTính in-degree cho tất cả đỉnhĐưa tất cả đỉnh có in-degree=0 vào QueueQueue rỗng?Đã xử lý đủ V đỉnh?Trả về topological orderGraph CÓ CYCLE!Lấy đỉnh u ra khỏi QueueThêm u vào resultVới mỗi hàng xóm v của uGiảm in-degree(v) đi 1in-degree(v) == 0?Đưa v vào Queue
+
+**Mô phỏng từng bước:**
+
+Cho DAG (các môn học):
+
+```
+NMLT(0) → CTDL(2)
+NMLT(0) → MMT(3)
+ToanCC(1) → CTDL(2)
+CTDL(2) → ThuatToan(4)
+MMT(3) → ThuatToan(4)
+ThuatToan(4) → DoAn(5)
+```
+
+| Bước | Queue | Lấy ra | Giảm in-degree | in-degree hiện tại | Result        |
+| :--- | :---- | :----- | :------------- | :----------------- | :------------ |
+| Init | -     | -      | -              | [0,0,2,1,2,1]      | []            |
+| 0    | [0,1] | -      | -              | [0,0,2,1,2,1]      | []            |
+| 1    | [1]   | 0      | 2→1, 3→0       | [0,0,1,0,2,1]      | [0]           |
+| 2    | [3]   | 1      | 2→0            | [0,0,0,0,2,1]      | [0,1]         |
+| 3    | [2]   | 3      | 4→1            | [0,0,0,0,1,1]      | [0,1,3]       |
+| 4    | []    | 2      | 4→0            | [0,0,0,0,0,1]      | [0,1,3,2]     |
+| 5    | []    | 4      | 5→0            | [0,0,0,0,0,0]      | [0,1,3,2,4]   |
+| 6    | []    | 5      | -              | [0,0,0,0,0,0]      | [0,1,3,2,4,5] |
+
+**Kết quả:** NMLT → ToanCC → MMT → CTDL → ThuatToan → DoAn
+
+```python
+from collections import deque, defaultdict
+
+
+def topological_sort_kahn(graph, num_vertices):
+    """
+    Topological Sort bằng Kahn's Algorithm (BFS).
+
+    Args:
+        graph: adjacency list (directed)
+        num_vertices: số đỉnh
+
+    Returns:
+        result: topological order, hoặc None nếu có cycle
+    """
+    # Bước 1: Tính in-degree cho tất cả đỉnh
+    in_degree = [0] * num_vertices
+    for u in range(num_vertices):
+        for v in graph[u]:
+            in_degree[v] += 1
+
+    # Bước 2: Đưa tất cả đỉnh có in-degree = 0 vào queue
+    queue = deque()
+    for v in range(num_vertices):
+        if in_degree[v] == 0:
+            queue.append(v)
+
+    result = []
+
+    # Bước 3: BFS
+    while queue:
+        u = queue.popleft()
+        result.append(u)
+
+        for v in graph[u]:
+            in_degree[v] -= 1
+            if in_degree[v] == 0:
+                queue.append(v)
+
+    # Bước 4: Kiểm tra cycle
+    if len(result) != num_vertices:
+        print("Graph có cycle! Không thể topological sort.")
+        return None
+
+    return result
+
+
+# === TEST ===
+if __name__ == "__main__":
+    subjects = {0: "NMLT", 1: "ToanCC", 2: "CTDL", 3: "MMT", 4: "ThuatToan", 5: "DoAn"}
+
+    g = defaultdict(list)
+    g[0] = [2, 3]   # NMLT → CTDL, MMT
+    g[1] = [2]       # ToanCC → CTDL
+    g[2] = [4]       # CTDL → ThuatToan
+    g[3] = [4]       # MMT → ThuatToan
+    g[4] = [5]       # ThuatToan → DoAn
+    g[5] = []        # DoAn
+
+    result = topological_sort_kahn(g, 6)
+    if result:
+        print("Topological Order (Kahn):")
+        print(" → ".join(subjects[v] for v in result))
+
+    # Test với graph có cycle
+    print("\n--- Test graph có cycle ---")
+    g_cycle = defaultdict(list)
+    g_cycle[0] = [1]
+    g_cycle[1] = [2]
+    g_cycle[2] = [0]  # Cycle!
+    topological_sort_kahn(g_cycle, 3)
+```
+
+**Output:**
+
+```
+Topological Order (Kahn):
+NMLT → ToanCC → MMT → CTDL → ThuatToan → DoAn
+
+--- Test graph có cycle ---
+Graph có cycle! Không thể topological sort.
+```
+
+### 4.3. DFS-based Topological Sort
+
+**Ý tưởng:** Chạy DFS, khi một đỉnh hoàn thành (tất cả hàng xóm đã duyệt xong), đẩy nó vào stack. Cuối cùng đảo ngược stack → topological order.
+
+**Tại sao điều này đúng?** Trong DFS, một đỉnh u chỉ "hoàn thành" khi tất cả đỉnh v (mà u → v) đều đã hoàn thành trước. Nên u sẽ có finish time lớn hơn v → khi đảo ngược theo finish time → u đứng trước v.
+
+```python
+from collections import defaultdict
+
+
+def topological_sort_dfs(graph, num_vertices):
+    """
+    Topological Sort bằng DFS.
+    Dùng finish time: đỉnh hoàn thành sau → đứng trước.
+    """
+    visited = set()
+    stack = []  # Lưu kết quả (đảo ngược ở cuối)
+    has_cycle = [False]
+
+    # 3 trạng thái: UNVISITED, IN_PROGRESS, DONE
+    state = [0] * num_vertices  # 0: unvisited, 1: in_progress, 2: done
+
+    def dfs(u):
+        if has_cycle[0]:
+            return
+
+        state[u] = 1  # IN_PROGRESS (đang xử lý)
+
+        for v in graph[u]:
+            if state[v] == 1:
+                # Gặp đỉnh đang trong stack → back edge → cycle!
+                has_cycle[0] = True
+                return
+            if state[v] == 0:
+                dfs(v)
+
+        state[u] = 2  # DONE
+        stack.append(u)  # Đỉnh hoàn thành → push vào stack
+
+    for v in range(num_vertices):
+        if state[v] == 0:
+            dfs(v)
+
+    if has_cycle[0]:
+        print("Graph có cycle! Không thể topological sort.")
+        return None
+
+    stack.reverse()  # Đảo ngược để được topological order
+    return stack
+
+
+# === TEST ===
+if __name__ == "__main__":
+    subjects = {0: "NMLT", 1: "ToanCC", 2: "CTDL", 3: "MMT", 4: "ThuatToan", 5: "DoAn"}
+
+    g = defaultdict(list)
+    g[0] = [2, 3]
+    g[1] = [2]
+    g[2] = [4]
+    g[3] = [4]
+    g[4] = [5]
+    g[5] = []
+
+    result = topological_sort_dfs(g, 6)
+    if result:
+        print("Topological Order (DFS):")
+        print(" → ".join(subjects[v] for v in result))
+```
+
+### 4.4. So sánh Kahn vs DFS
+
+| Tiêu chí                | Kahn's (BFS)                  | DFS-based                  |
+| :---------------------- | :---------------------------- | :------------------------- |
+| **Phát hiện cycle**     | Có (đếm đỉnh đã xử lý)        | Có (back edge)             |
+| **Time**                | O(V + E)                      | O(V + E)                   |
+| **Space**               | O(V) cho in-degree + queue    | O(V) cho stack đệ quy      |
+| **Lexicographic order** | Dễ (dùng min-heap thay queue) | Khó hơn                    |
+| **Ưu điểm**             | Trực quan, dễ hiểu            | Tự nhiên khi đã có DFS     |
+| **Nhược điểm**          | Cần tính in-degree trước      | Đệ quy sâu có thể overflow |
+
+**Cải tiến:** Nếu cần topological order theo thứ tự từ điển nhỏ nhất, thay `deque` trong Kahn's bằng `heapq` (min-heap).
+
+**Chứng minh tính đúng (Kahn's):** Tại mỗi bước, đỉnh có in-degree = 0 không phụ thuộc vào đỉnh nào chưa xử lý. Khi xóa đỉnh này và các cạnh đi ra, in-degree của các đỉnh kề giảm. Nếu về 0, chúng cũng an toàn để xử lý. Bằng quy nạp: thứ tự xử lý thỏa mãn mọi constraint u → v.

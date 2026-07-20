@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/associate-google-workspace-administrator
+  - associategoogleworkspaceadministrator
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 Associate-Google-Workspace-Administrator MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/google/Associate-Google-Workspace-Administrator/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/google/Associate-Google-Workspace-Administrator/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/google/Associate-Google-Workspace-Administrator/Associate-Google-Workspace-Administrator Mindmap\|🗺️ Associate-Google-Workspace-Administrator Mindmap]]
+- [[certifications/google/Associate-Google-Workspace-Administrator/Associate-Google-Workspace-Administrator Flashcards\|🃏 Associate-Google-Workspace-Administrator Flashcards]]
+- [[certifications/google/Associate-Google-Workspace-Administrator/Associate-Google-Workspace-Administrator_Scraped_Question_Bank\|🗃️ Associate-Google-Workspace-Administrator Scraped Question Bank]]

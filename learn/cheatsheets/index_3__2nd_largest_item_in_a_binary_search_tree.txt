@@ -1,0 +1,11 @@
+# 3. 2nd Largest Item in a Binary Search Tree
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/5. Trees and graphs/2. Practice/index_2. Practice|2. Practice]]
+
+## 📄 Notes
+- [[3. 2nd largest item in a binary search tree|3. 2nd Largest Item in a Binary Search Tree]]
+
+## 🛠️ Related Practices (Searching & Sorting)
+- [[dsa/1.Interviewcake.com/5. Trees and graphs/2. Practice/3. 2nd Largest Item in a Binary Search Tree/index_3. 2nd Largest Item in a Binary Search Tree|21.Merge-Two-Sorted-Lists]]
+- [[dsa/1.Interviewcake.com/5. Trees and graphs/2. Practice/3. 2nd Largest Item in a Binary Search Tree/index_3. 2nd Largest Item in a Binary Search Tree|23.Merge-k-Sorted-Lists]]
+

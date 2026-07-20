@@ -1,0 +1,165 @@
+# 🗃️ DP-203 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Design and implement data storage (Testlet 1)
+
+HOTSPOT (Drag and Drop is not supported)
+You need to design a data storage structure for the product sales transactions. The solution must meet the sales transaction dataset requirements.
+
+What should you include in the solution? To answer, select the appropriate options in the answer area. NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Hash
+Scenario: 
+Ensure that queries joining and filtering sales transaction records based on product ID complete as quickly as possible.
+
+A hash distributed table can deliver the highest query performance for joins and aggregations on large tables.
+
+Box 2: Set the distribution column to the sales date.
+
+Scenario: Partition data that contains sales transaction records. Partitions must be designed to provide efficient loads by month. Boundary values must belong to the partition on the right.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Design and implement data storage (Testlet 1)
+
+DRAG DROP (Drag and Drop is not supported)
+You need to ensure that the Twitter feed data can be analyzed in the dedicated SQL pool. The solution must meet the customer sentiment analytic requirements.
+
+Which three Transact-SQL DDL commands should you run in sequence? To answer, move the appropriate commands from the list of commands to the answer area and arrange them in the correct order.
+
+NOTE: More than one order of answer choices is correct. You will receive credit for any of the correct orders you select.
+
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Scenario: Allow Contoso users to use PolyBase in an Azure Synapse Analytics dedicated SQL pool to query the content of the data records that host the Twitter feeds. Data must be protected by using row-level security (RLS). The users must be authenticated by using their own Azure AD credentials.
+
+Box 1: CREATE EXTERNAL DATA SOURCE
+External data sources are used to connect to storage accounts.
+
+Box 2: CREATE EXTERNAL FILE FORMAT
+CREATE EXTERNAL FILE FORMAT creates an external file format object that defines external data stored in Azure Blob Storage or Azure Data Lake Storage. Creating an external file format is a prerequisite for creating an external table.
+
+Box 3: CREATE EXTERNAL TABLE AS SELECT
+When used in conjunction with the CREATE TABLE AS SELECT statement, selecting from an external table imports data into a table within the SQL pool. In addition to the COPY statement, external tables are useful for loading data.
+
+Incorrect Answers:
+CREATE EXTERNAL TABLE
+The CREATE EXTERNAL TABLE command creates an external table for Synapse SQL to access data stored in Azure Blob Storage or Azure Data Lake Storage.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Design and implement data storage (Testlet 1)
+
+HOTSPOT (Drag and Drop is not supported)
+You need to design the partitions for the product sales transactions. The solution must meet the sales transaction dataset requirements. What should you include in the solution? To answer, select the appropriate options in the answer area.
+
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Sales date
+Scenario: Contoso requirements for data integration include:
+Partition data that contains sales transaction records. Partitions must be designed to provide efficient loads by month. Boundary values must belong to the partition on the right.
+
+Box 2: An Azure Synapse Analytics Dedicated SQL pool Scenario: Contoso requirements for data integration include: Ensure that data storage costs and performance are predictable.
+
+The size of a dedicated SQL pool (formerly SQL DW) is determined by Data Warehousing Units (DWU).
+Dedicated SQL pool (formerly SQL DW) stores data in relational tables with columnar storage. This format significantly reduces the data storage costs, and improves query performance.
+Synapse analytics dedicated sql pool
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Design and implement data storage (Testlet 1)
+
+You need to implement the surrogate key for the retail store table. The solution must meet the sales transaction dataset requirements. What should you create?
+
+### Options:
+- [x] **A)** a table that has an IDENTITY property [Correct]
+- [ ] **B)** a system-versioned temporal table
+- [ ] **C)** a user-defined SEQUENCE object
+- [ ] **D)** a table that has a FOREIGN KEY constraint
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Scenario: Implement a surrogate key to account for changes to the retail store addresses.
+
+A surrogate key on a table is a column with a unique identifier for each row. The key is not generated from the table data. Data modelers like to create surrogate keys on their tables when they design data warehouse models. You can use the IDENTITY property to achieve this goal simply and effectively without affecting load performance.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Design and implement data storage (Testlet 1)
+
+HOTSPOT (Drag and Drop is not supported)
+You need to design an analytical storage solution for the transactional data. The solution must meet the sales transaction dataset requirements. What should you include in the solution? To answer, select the appropriate options in the answer area.
+
+NOTE: Each correct selection is worth one point. 
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Round-robin
+Round-robin tables are useful for improving loading speed.
+Scenario: Partition data that contains sales transaction records. Partitions must be designed to provide efficient loads by month. Box 2: Hash
+Hash-distributed tables improve query performance on large fact tables.
+
+Scenario:
+You plan to create a promotional table that will contain a promotion ID. The promotion ID will be associated to a specific product. The product will be identified by a product ID. The table will be approximately 5 GB.
+Ensure that queries joining and filtering sales transaction records based on product ID complete as quickly as possible.
+</details>
+
+---

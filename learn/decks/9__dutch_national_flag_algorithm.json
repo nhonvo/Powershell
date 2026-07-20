@@ -1,0 +1,176 @@
+{
+  "Meta": {
+    "Id": "deck_9__dutch_national_flag_algorithm",
+    "Topic": "9. Dutch National Flag Algorithm",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "9__dutch_national_flag_algorithm"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 8
+  },
+  "Cards": [
+    {
+      "Id": "card_00567",
+      "Front": "Kỹ thuật",
+      "Back": "Time | Space | Khi nào dùng",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. dutch national flag algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00568",
+      "Front": "Two Pointers",
+      "Back": "O(n) | O(1) | Mảng sorted, tìm cặp/bộ ba thỏa điều kiện",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. dutch national flag algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00569",
+      "Front": "Sliding Window",
+      "Back": "O(n) | O(1)-O(k) | Dãy con liên tiếp, chuỗi con, window optimization",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. dutch national flag algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00570",
+      "Front": "Prefix Sum",
+      "Back": "O(n) build, O(1) query | O(n) | Truy vấn tổng đoạn nhiều lần",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. dutch national flag algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00571",
+      "Front": "Kadane's",
+      "Back": "O(n) | O(1) | Maximum/Minimum subarray sum",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. dutch national flag algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00572",
+      "Front": "Moore's Voting",
+      "Back": "O(n) | O(1) | Tìm majority element (> n/2 hoặc > n/k)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. dutch national flag algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00573",
+      "Front": "Dutch National Flag",
+      "Back": "O(n) | O(1) | Phân loại 3 nhóm, 3-way partition",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. dutch national flag algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00574",
+      "Front": "2D Prefix Sum",
+      "Back": "O(mn) build, O(1) query | O(mn) | Tổng vùng hình chữ nhật trong ma trận",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "9. dutch national flag algorithm"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

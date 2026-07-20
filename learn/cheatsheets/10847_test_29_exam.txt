@@ -1,0 +1,365 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/02_N4/Course_40/📂index_Course_40|Course_40]]
+
+# Test 29
+
+## Part 1
+**Q1.** 明日、荷物をお宅にお届けします。
+- **A.** おたく
+- **B.** おたっく
+- **C.** おか
+- **D.** おいえ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1お宅: nh&agrave; (khi n&oacute;i đến nh&agrave; của người bề tr&ecirc;n)明日、荷物をお宅にお届けします。Ng&agrave;y mai, em sẽ giao h&agrave;ng đến nh&agrave; chị ạ.</p>
+</details>
+
+---
+**Q2.** あの人は最低だから、友達になっちゃだめだよ。
+- **A.** さいでい
+- **B.** さいてい
+- **C.** さいで
+- **D.** さいて
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2最低: thấp nhất, &iacute;t nhất, tệ nhấtあの人は最低だから、友達になっちゃだめだよ。Người đ&oacute; tệ lắm n&ecirc;n kh&ocirc;ng được l&agrave;m bạn đ&acirc;u đấy.</p>
+</details>
+
+---
+**Q3.** お客様、どうぞお入りください。
+- **A.** きゃくうさま
+- **B.** きゃっくさま
+- **C.** きやくさま
+- **D.** きゃくさま
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4お客様: kh&aacute;ch h&agrave;ngお客様、どうぞお入りください。Qu&yacute; kh&aacute;ch, xin mời v&agrave;o.</p>
+</details>
+
+---
+**Q4.** 今度の会議の資料は、私に作らせていただけませんか。
+- **A.** つくらせて
+- **B.** つっくらせて
+- **C.** つぐらせて
+- **D.** つぐうらせて
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1作らせる: bắt/ cho l&agrave;m今度の会議の資料は、私に作らせていただけませんか。T&agrave;i liệu cuộc họp lần n&agrave;y c&oacute; thể cho ph&eacute;p t&ocirc;i l&agrave;m được kh&ocirc;ng ạ?</p>
+</details>
+
+---
+**Q5.** 旅館まで荷物をお持ちします。
+- **A.** りょかい
+- **B.** りょがい
+- **C.** りょかん
+- **D.** りょがん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3旅館: lữ qu&aacute;n, nh&agrave; trọ kiểu Nhật旅館まで荷物をお持ちします。T&ocirc;i sẽ mang h&agrave;nh l&iacute; đến nh&agrave; trọ (kiểu Nhật).</p>
+</details>
+
+---
+**Q6.** お正月はじっかにお帰りになりますか。
+- **A.** 実定
+- **B.** 実客
+- **C.** 実宅
+- **D.** 実家
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4実家: nh&agrave; (bố mẹ đẻ)お正月は実家にお帰りになりますか。Tết bạn c&oacute; về nh&agrave; kh&ocirc;ng?</p>
+</details>
+
+---
+**Q7.** 明日は6時に起きるから、こんやは早く寝なさい。
+- **A.** 今晩
+- **B.** 今昼
+- **C.** 今夜
+- **D.** 今朝
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3今夜: tối nay明日は6時に起きるから、今夜は早く寝なさい。V&igrave; ng&agrave;y mai con sẽ dậy l&uacute;c 6 giờ n&ecirc;n tối nay h&atilde;y ngủ sớm đi.</p>
+</details>
+
+---
+**Q8.** 私は背がひくいです。
+- **A.** 低い
+- **B.** 安い
+- **C.** 高い
+- **D.** 弱い
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1低い: thấp私は背が低いです。T&ocirc;i thấp (l&ugrave;n).</p>
+</details>
+
+---
+**Q9.** 毎月27日までにやちんをお支払いください。
+- **A.** 豪賃
+- **B.** 室賃
+- **C.** 家賃
+- **D.** 冡賃
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3家賃: tiền nh&agrave;, tiền ph&ograve;ng毎月27日までに家賃をお支払いください。H&atilde;y trả tiền thu&ecirc; nh&agrave; trước ng&agrave;y 27 h&agrave;ng th&aacute;ng.</p>
+</details>
+
+---
+**Q10.** 子供の時、毎日さくぶんを書かされました。
+- **A.** 伝文
+- **B.** 作文
+- **C.** 仵文
+- **D.** 低文
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2作文: b&agrave;i văn子供の時、毎日作文を書かされました。Hồi nhỏ, t&ocirc;i bị bắt viết văn mỗi ng&agrave;y.</p>
+</details>
+
+---
+**Q1.** 家族とよく＿＿＿＿してからアパートを決めます。
+- **A.** 満席
+- **B.** 相談
+- **C.** 工場
+- **D.** 見学
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2相談する: b&agrave;n bạc家族とよく相談してからアパートを決めます。Sau khi b&agrave;n bạc kĩ với gia đ&igrave;nh t&ocirc;i sẽ quyết định căn hộ.</p>
+</details>
+
+---
+**Q2.** 600円ですね。千円札しかないから、＿＿＿＿を400円ください。
+- **A.** お客様
+- **B.** おつり
+- **C.** 金額
+- **D.** 保険証
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2おつり: tiền thừa600円ですね。千円札しかないから、おつりを400円ください。600 y&ecirc;n nhỉ. V&igrave; t&ocirc;i chỉ c&oacute; tờ 1000 y&ecirc;n th&ocirc;i n&ecirc;n h&atilde;y đưa t&ocirc;i 400 y&ecirc;n tiền thừa.</p>
+</details>
+
+---
+**Q3.** 遊んだ後は、おもちゃを＿＿＿＿なさい！
+- **A.** 確かめ
+- **B.** つけ
+- **C.** しまい
+- **D.** 選び
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3しまう: cất đi遊んだ後は、おもちゃをしまいなさい！Sau khi chơi xong h&atilde;y cất đồ chơi đi.</p>
+</details>
+
+---
+**Q4.** ＿＿＿＿になる前に、レストランをご予約ください。
+- **A.** 満席
+- **B.** 丸
+- **C.** 連絡先
+- **D.** 発表会
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1満席: k&iacute;n chỗ, hết chỗ満席になる前に、レストランをご予約ください。H&atilde;y đặt nh&agrave; h&agrave;ng trước khi hết chỗ.</p>
+</details>
+
+---
+**Q5.** （お店のレジで）今日は私に＿＿＿＿ください。
+- **A.** つけさせて
+- **B.** 選ばせて
+- **C.** 支払わせて
+- **D.** 過ごさせて
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3支払わせる: bắt/ cho thanh to&aacute;n（お店のレジで）今日は私に支払わせてください。(Tại quầy thanh to&aacute;n)H&ocirc;m nay h&atilde;y cho ph&eacute;p t&ocirc;i thanh to&aacute;n.</p>
+</details>
+
+---
+**Q6.** ここに＿＿＿＿を貼らせていただけませんか。
+- **A.** ポスター
+- **B.** フロント
+- **C.** コート
+- **D.** ニックネーム
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1ポスター: &Aacute;p ph&iacute;ch, posterここにポスターを貼らせていただけませんか。Anh c&oacute; thể cho ph&eacute;p t&ocirc;i d&aacute;n &aacute;p ph&iacute;ch ở đ&acirc;y được kh&ocirc;ng?</p>
+</details>
+
+---
+**Q7.** 私が＿＿＿＿をご案内します。
+- **A.** 見学
+- **B.** 答え
+- **C.** 発表
+- **D.** 工場
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4工場: nh&agrave; m&aacute;y私が工場をご案内します。T&ocirc;i sẽ dẫn bạn tham quan nh&agrave; m&aacute;y.</p>
+</details>
+
+---
+**Q8.** 部長は1時からご＿＿＿＿になるそうです。
+- **A.** 契約
+- **B.** 自慢
+- **C.** 購入
+- **D.** 発表
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4発表: ph&aacute;t biểu部長は1時からご発表になるそうです。Nghe n&oacute;i trưởng ban sẽ ph&aacute;t biểu từ 1 giờ.</p>
+</details>
+
+---
+**Q9.** あの人は、自分の意見がいつも＿＿＿＿と思っているようです。
+- **A.** 自慢
+- **B.** 正しい
+- **C.** 満席
+- **D.** 答え
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2正しい: đ&uacute;ng, ch&iacute;nh x&aacute;cあの人は、自分の意見がいつも正しいと思っているようです。Người đ&oacute; c&oacute; vẻ lu&ocirc;n nghĩ rằng &yacute; kiến của m&igrave;nh l&agrave; đ&uacute;ng.</p>
+</details>
+
+---
+**Q10.** 私の名前は健太郎ですが、＿＿＿＿はケンです。
+- **A.** サービス
+- **B.** フロント
+- **C.** コート
+- **D.** ニックネーム
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4ニックネーム: nickname, biệt danh私の名前は健太郎ですが、ニックネームはケンです。T&ecirc;n t&ocirc;i l&agrave; Kentaro, biệt danh l&agrave; Ken.</p>
+</details>
+
+---
+**Q1.** A：今度の会議の通訳、誰かやってくれませんか。B：私に________________ください。
+- **A.** やって
+- **B.** やらせて
+- **C.** やらされて
+- **D.** やらせてもらって
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A：今度の会議の通訳、誰かやってくれませんか。B：私にやらせてください。A: Ai sẽ l&agrave;m phi&ecirc;n dịch cho cuộc họp lần n&agrave;y?B: H&atilde;y cho t&ocirc;i l&agrave;m.</p>
+</details>
+
+---
+**Q2.** A：もう少しで駅だから、急ぎましょう！B：ごめん、もう走れない。ちょっと___________
+- **A.** 休ませられて。
+- **B.** 休まれて。
+- **C.** 休んでもらって。
+- **D.** 休ませて。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A：もう少しで駅だから、急ぎましょう！B：ごめん、もう走れない。ちょっと休ませて。A: V&igrave; c&ograve;n ch&uacute;t nữa l&agrave; đến ga rồi, n&ecirc;n nhanh l&ecirc;n th&ocirc;i!B: Xin lỗi, tớ kh&ocirc;ng thể chạy được nữa. Cho tớ nghỉ ch&uacute;t đi!</p>
+</details>
+
+---
+**Q3.** A：顔色が悪いね。大丈夫？B：朝から気持ちが悪くて&hellip;。申し訳ありませんが、____________いただけませんか。
+- **A.** 帰って
+- **B.** 帰らないで
+- **C.** 帰らせて
+- **D.** 帰られて
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A：顔色が悪いね。大丈夫？B：朝から気持ちが悪くて&hellip;。申し訳ありませんが、帰らせていただけませんか。A: Sắc mặt em kh&ocirc;ng ổn nhỉ. Em c&oacute; sao kh&ocirc;ng?B: Em thấy kh&ocirc;ng khỏe từ s&aacute;ng... Rất xin lỗi chị, chị c&oacute; thể cho ph&eacute;p em về được kh&ocirc;ng ạ?</p>
+</details>
+
+---
+**Q4.** A：すみませんが、ちょっとここに荷物を置かせて________________。すぐに取りにきますから。B：ああ、いいですよ。
+- **A.** いただきました
+- **B.** いただけませんね
+- **C.** いただけませんか
+- **D.** いただきますか
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A：すみませんが、ちょっとここに荷物を置かせていただけませんか。すぐに取りにきますから。B：ああ、いいですよ。A: Xin lỗi, c&oacute; thể cho ph&eacute;p t&ocirc;i để h&agrave;nh l&iacute; ở đ&acirc;y một ch&uacute;t kh&ocirc;ng? V&igrave; t&ocirc;i sẽ đến lấy ngay ạ.B: &Agrave;, được ạ.</p>
+</details>
+
+---
+**Q5.** A：これって、どうやって使うんですか。B：はい、使い方を______________
+- **A.** 説明しなさい。
+- **B.** ご説明になります。
+- **C.** ご説明します。
+- **D.** ご説明ください。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3A：これって、どうやって使うんですか。B：はい、使い方をご説明します。A: C&aacute;i n&agrave;y sử dụng như thế n&agrave;o?B: V&acirc;ng, t&ocirc;i sẽ hướng dẫn c&aacute;ch sử dụng ạ.</p>
+</details>
+
+---
+**Q6.** A：資料のコピーを________________。こちらです。B：ありがとう。
+- **A.** 渡していただけませんか
+- **B.** 渡させていただけませんか
+- **C.** ご渡しします
+- **D.** お渡しします
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A：資料のコピーをお渡しします。こちらです。B：ありがとう。A: Em đưa bản ph&ocirc; t&ocirc; t&agrave;i liệu ạ. C&aacute;i n&agrave;y ạ.B: Cảm ơn em.</p>
+</details>
+
+---
+**Q7.** A：ここではカードは使えますか。B：はい、カードか現金で________________
+- **A.** お支払いになれます。
+- **B.** お支払いします。
+- **C.** お支払いできますか。
+- **D.** 支払いなさい。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A：ここではカードは使えますか。B：はい、カードか現金でお支払いになれます。A: Ở đ&acirc;y c&oacute; thể sử dụng thẻ kh&ocirc;ng?B: C&oacute; ạ, chị c&oacute; thể thanh to&aacute;n bằng thẻ hoặc tiền mặt ạ.</p>
+</details>
+
+---
+**Q8.** A：雨が降りそうですから、こちらの傘を________________B：ありがとう。借りるよ。
+- **A.** お持ちください。
+- **B.** お持ちになります。
+- **C.** 持ちなさい。
+- **D.** 持たせてくれませんか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1A：雨が降りそうですから、こちらの傘をお持ちください。B：ありがとう。借りるよ。A: Trời c&oacute; vẻ sắp mưa n&ecirc;n h&atilde;y cầm chiếc &ocirc; ở đ&acirc;y đi nh&eacute;.B: V&acirc;ng. Em mượn nh&eacute;.</p>
+</details>
+
+---
+**Q9.** A：今朝の新聞は、もう________________B：まだ見ていないけど．．．何かニュースがあったの？
+- **A.** お覧ください。
+- **B.** お覧になりましたか。
+- **C.** ご覧ください。
+- **D.** ご覧になりましたか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4A：今朝の新聞は、もうご覧になりましたか。B：まだ見ていないけど．．．何かニュースがあったの？A: Anh đ&atilde; xem b&aacute;o s&aacute;ng nay chưa ạ?B: Anh vẫn chưa xem, c&oacute; tin tức g&igrave; &agrave;?</p>
+</details>
+
+---
+**Q10.** A：ねえ、お父さん。この野菜、好きじゃないんだけど&hellip;。B：だめだよ。________________
+- **A.** お食べください。
+- **B.** 食べなさい。
+- **C.** お食べになれ。
+- **D.** 野菜もお食べしろ。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2A：ねえ、お父さん。この野菜、好きじゃないんだけど&hellip;。B：だめだよ。食べなさい。A: Bố n&agrave;y, con kh&ocirc;ng th&iacute;ch rau n&agrave;y đ&acirc;u...B: Kh&ocirc;ng được đ&acirc;u đấy. Con ăn đi!</p>
+</details>
+
+---

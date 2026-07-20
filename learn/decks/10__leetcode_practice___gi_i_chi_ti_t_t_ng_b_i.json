@@ -1,0 +1,616 @@
+{
+  "Meta": {
+    "Id": "deck_10__leetcode_practice___gi_i_chi_ti_t_t_ng_b_i",
+    "Topic": "10. LeetCode Practice — Giải chi tiết từng bài",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "10__leetcode_practice___gi_i_chi_ti_t_t_ng_b_i"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 30
+  },
+  "Cards": [
+    {
+      "Id": "card_00528",
+      "Front": "Brute Force",
+      "Back": "O(n^2) | O(1)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00529",
+      "Front": "**Hash Map**",
+      "Back": "**O(n)** | **O(n)**",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00530",
+      "Front": "Brute Force",
+      "Back": "O(n^2) | O(1)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00531",
+      "Front": "**One Pass**",
+      "Back": "**O(n)** | **O(1)**",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00532",
+      "Front": "Brute Force O(n^3)",
+      "Back": "O(n^3) | O(1)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00533",
+      "Front": "Brute Force O(n^2)",
+      "Back": "O(n^2) | O(1)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00534",
+      "Front": "**Kadane's**",
+      "Back": "**O(n)** | **O(1)**",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00535",
+      "Front": "Divide & Conquer",
+      "Back": "O(n log n) | O(log n)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00536",
+      "Front": "Brute Force",
+      "Back": "O(n^3) | O(min(n, m))",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00537",
+      "Front": "Sliding Window + Set",
+      "Back": "O(2n) = O(n) | O(min(n, m))",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00538",
+      "Front": "**Sliding Window + Map**",
+      "Back": "**O(n)** | **O(min(n, m))**",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00539",
+      "Front": "Brute Force",
+      "Back": "O(n^3) | O(n)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00540",
+      "Front": "**Sort + Two Pointers**",
+      "Back": "**O(n^2)** | **O(1)** (ngoài output)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00541",
+      "Front": "Brute Force (tích từng phần tử)",
+      "Back": "O(n^2) | O(1)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00542",
+      "Front": "Dùng phép chia",
+      "Back": "O(n) | O(1)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00543",
+      "Front": "Hai mảng prefix + suffix",
+      "Back": "O(n) | O(n)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00544",
+      "Front": "**Một mảng + biến suffix**",
+      "Back": "**O(n)** | **O(1)**",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00545",
+      "Front": "Phương pháp",
+      "Back": "Time | Space",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00546",
+      "Front": "Hash Map",
+      "Back": "O(n) | O(n)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00547",
+      "Front": "Sort",
+      "Back": "O(n log n) | O(1)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00548",
+      "Front": "**Moore's Voting**",
+      "Back": "**O(n)** | **O(1)**",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00549",
+      "Front": "Sort thư viện",
+      "Back": "O(n log n) | O(1)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00550",
+      "Front": "Counting Sort (2 pass)",
+      "Back": "O(n) | O(1)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00551",
+      "Front": "**Dutch National Flag (1 pass)**",
+      "Back": "**O(n)** | **O(1)**",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00552",
+      "Front": "Brute Force",
+      "Back": "O(n^2) | O(1)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00553",
+      "Front": "**Prefix Sum + Hash Map**",
+      "Back": "**O(n)** | **O(n)**",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00554",
+      "Front": "Brute Force",
+      "Back": "O(n^2) | O(1)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00555",
+      "Front": "Prefix Max",
+      "Back": "O(n) | O(n)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00556",
+      "Front": "Stack",
+      "Back": "O(n) | O(n)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00557",
+      "Front": "**Two Pointers**",
+      "Back": "**O(n)** | **O(1)**",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "10. leetcode practice — giải chi tiết từng bài"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

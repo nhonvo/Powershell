@@ -1,0 +1,10 @@
+# Exercise
+
+🔙 **Back to Parent**: [[technical_skills/Computational Statistics and Applications/📂index_Computational Statistics and Applications|Computational Statistics and Applications]]
+
+## 📁 Sub-Categories
+- [[technical_skills/Computational Statistics and Applications/Exercise/GK/📂index_GK|GK]]
+- [[technical_skills/Computational Statistics and Applications/Exercise/📂index_Exercise|TH1]]
+- [[technical_skills/Computational Statistics and Applications/Exercise/TH2/📂index_TH2|TH2]]
+- [[technical_skills/Computational Statistics and Applications/Exercise/data/📂index_data|data]]
+

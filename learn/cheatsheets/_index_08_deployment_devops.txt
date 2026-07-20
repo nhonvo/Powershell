@@ -1,0 +1,9 @@
+# 08_Deployment_DevOps
+
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/📂index_02_Backend_Development_Roadmap|02_Backend_Development_Roadmap]]
+
+## 📄 Notes & Documents
+- [[technical_skills/02_Backend_Development_Roadmap/08_Deployment_DevOps/1. Docker & Containers|1. Docker & Containers]]
+- [[technical_skills/02_Backend_Development_Roadmap/08_Deployment_DevOps/2. CI CD Pipelines|2. CI CD Pipelines]]
+- [[technical_skills/02_Backend_Development_Roadmap/08_Deployment_DevOps/3. Production Deployment|3. Production Deployment]]
+

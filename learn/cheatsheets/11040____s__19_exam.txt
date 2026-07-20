@@ -1,0 +1,53 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 19
+
+## Part 1
+**Q1.** [1]
+- **A.** にも
+- **B.** では
+- **C.** とは
+- **D.** へは
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1わたしの　国の　レストラン　にも　うどんが　あります。Ở c&aacute;c nh&agrave; h&agrave;ng của nước t&ocirc;i cũng c&oacute; m&oacute;n mỳ udon.N (địa điểm) には + N がある: Trong địa điểm c&oacute; N; C&ograve;n にも nhấn mạnh ở địa điểm n&agrave;y cũng c&oacute; N</p>
+</details>
+
+---
+**Q2.** [2]
+- **A.** 食べたいです
+- **B.** 食べて　います
+- **C.** 食べたかったです
+- **D.** 食べて　いました
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2日本に　来てからは　いろいろな　お店で　うどんを　食べて　います。Sau khi đến Nhật t&ocirc;i ăn udon ở nhiều qu&aacute;n kh&aacute;c nhau.1. 食べたいです: muốn ăn2. 食べています: đang ăn3. 食べたかったです: đ&atilde; muốn ăn4. 食べていました: đ&atilde; thường ăn (1) B&agrave;i văn của Isaac 　  H&ocirc;m qua, t&ocirc;i đ&atilde; c&ugrave;ng bạn ăn mỳ udon. Ở Nhật c&oacute; rất nhiều qu&aacute;n udon. Ở c&aacute;c nh&agrave; h&agrave;ng của nước t&ocirc;i cũng c&oacute; m&oacute;n mỳ udon. V&igrave; vậy, trước khi đến Nhật t&ocirc;i cũng đ&atilde; ăn mỳ udon rồi. Sau khi đến Nhật t&ocirc;i ăn udon ở nhiều qu&aacute;n kh&aacute;c nhau. Qu&aacute;n nằm ở b&ecirc;n cạnh c&ocirc;ng vi&ecirc;n vừa rẻ vừa ngon. Lần tới bạn c&oacute; muốn đi ăn c&ugrave;ng t&ocirc;i kh&ocirc;ng?</p>
+</details>
+
+---
+**Q3.** [3]
+- **A.** だけど
+- **B.** だから
+- **C.** そして
+- **D.** しかし
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2だから　わたしの　大学の　学生は　みんな　この　スーパーで　買いものを　します。V&igrave; vậy, sinh vi&ecirc;n trường đại học của t&ocirc;i mọi người đều mua đồ ở si&ecirc;u thị n&agrave;y.1. だけど: tuy nhi&ecirc;n, nhưng2. だから: v&igrave; vậy, do vậy3. そして: sau đ&oacute;, v&agrave; rồi4. しかし: tuy nhi&ecirc;n, nhưng</p>
+</details>
+
+---
+**Q4.** [4]
+- **A.** どうやって
+- **B.** なんで
+- **C.** どれくらい
+- **D.** どこで
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3みなさんは　いっしゅうかんに　どれくらい　スーパーへ　行きますか。C&ograve;n mọi người đi si&ecirc;u thị khoảng bao lần trong một tuần?1. どうやって: bằng c&aacute;ch n&agrave;o2. なんで: tại sao3. どれくらい: bao l&acirc;u, bao xa, bao nhi&ecirc;u4. どこで: ở đ&acirc;u(2) B&agrave;i văn của Tee　  Ở gần trường đại học của t&ocirc;i c&oacute; một c&aacute;i si&ecirc;u thị. Ở si&ecirc;u thị n&agrave;y gi&aacute; rất rẻ. V&igrave; vậy, sinh vi&ecirc;n trường đại học của t&ocirc;i mọi người đều mua đồ ở si&ecirc;u thị n&agrave;y. T&ocirc;i đi si&ecirc;u thị mua sắm 1 tuần 1 lần. Bạn của t&ocirc;i th&igrave; ng&agrave;y n&agrave;o cũng đi si&ecirc;u thị n&agrave;y mua đồ. C&ograve;n mọi người đi si&ecirc;u thị khoảng bao nhi&ecirc;u lần trong một tuần?</p>
+</details>
+
+---

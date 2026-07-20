@@ -1,0 +1,121 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/01_Language_Basics/📂index_01_Language_Basics|01_Language_Basics]]
+
+# 📋 1. Nhập môn .NET (C#) & Java (JVM)
+
+Trong thế giới phát triển Backend, C# (.NET) và Java (JVM) là hai "người khổng lồ" thống trị môi trường doanh nghiệp (Enterprise). Dù có nhiều điểm tương đồng, chúng có triết lý và kiến trúc bộ máy thực thi khác nhau.
+
+---
+
+### 🏛️ 1.1 Kiến trúc & Triết lý thực thi
+
+Cả hai đều không biên dịch trực tiếp ra mã máy (Binary) mà qua một bước trung gian để đảm bảo tính "Viết một lần, chạy mọi nơi".
+
+| Đặc điểm | Java (JVM) | C# (.NET) |
+| :--- | :--- | :--- |
+| **Compiler** | `javac` → Bytecode (.class) | `csc` → CIL / MSIL (.dll, .exe) |
+| **Runtime** | **JVM** (Java Virtual Machine) | **CLR** (Common Language Runtime) |
+| **Quản lý bộ nhớ** | Garbage Collection (Bản địa) | Garbage Collection (Bản địa) |
+| **Triết lý** | "Write Once, Run Anywhere" | "Modern, Fast, Open Source" |
+
+#### 🔄 Luồng thực thi:
+1.  **Code** (.java / .cs) → biên dịch bằng **Compiler** → **Mã trung gian** (Bytecode / MSIL).
+2.  Khi chạy, **Runtime** (JVM / CLR) sử dụng **JIT (Just-In-Time) Compiler** để chuyển mã trung gian thành **Machine Code** tối ưu cho CPU hiện tại.
+
+---
+
+### 🧠 1.2 Memory Model & Garbage Collection (GC)
+
+Hiểu về bộ nhớ là chìa khóa để viết code High-Performance. Cả hai đều chia bộ nhớ thành **Stack** và **Heap**.
+
+#### 🧱 Stack vs Heap
+- **Stack**: Lưu biến cục bộ (primitive Types), tham chiếu (reference). Hoạt động theo cơ chế LIFO. Cực nhanh.
+- **Heap**: Lưu trữ các Đối tượng (Object). Được quản lý bởi Garbage Collector.
+
+#### 🚮 Cơ chế Garbage Collection (GC)
+> [!NOTE]
+> GC giúp lập trình viên không cần `free()` hay `delete()` tay, tránh lỗi Memory Leak.
+
+**Cơ chế hoạt động chung (Mark-and-Sweep):**
+1.  **Mark**: GC bắt đầu từ các "Root" (biến tĩnh, stack) và đánh dấu mọi đối tượng có thể truy cập được.
+2.  **Sweep**: Mọi đối tượng **không** được đánh dấu sẽ bị coi là rác và bị thu hồi vùng nhớ.
+3.  **Compact**: Dồn các vùng nhớ còn lại sát nhau để tránh "mảnh vụn" (Fragmentation).
+
+---
+
+### 💻 1.3 So sánh Cú pháp (Syntax) - Real-time Example
+
+Dưới đây là ví dụ về một Class quản lý Nhân viên cơ bản.
+
+#### **C# (.NET)**
+```csharp
+using System;
+
+namespace EnterpriseApp {
+    public class Employee {
+        // Auto-implemented Properties (Cực kỳ gọn)
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+
+        public void Work() => Console.WriteLine($"{Name} is working...");
+    }
+}
+```
+
+#### **Java (JVM)**
+```java
+package com.enterprise;
+
+public class Employee {
+    private int id;
+    private String name;
+
+    // Phải viết Getter/Setter thủ công (hoặc dùng Lombok)
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public void work() {
+        System.out.println(name + " is working...");
+    }
+}
+```
+
+---
+
+### ⚡ 1.4 Phân biệt JIT vs AOT
+
+Trong Backend hiện đại, việc chọn cách biên dịch ảnh hưởng trực tiếp đến thời gian khởi động (Startup Time).
+
+- **JIT (Just-In-Time)**:
+    - Biên dịch trong lúc chạy.
+    - **Ưu điểm**: Tối ưu hóa dựa trên tài nguyên thực tế của server (Profile-guided optimization).
+    - **Nhược điểm**: Làm chậm lần chạy đầu tiên (Warm-up).
+- **AOT (Ahead-of-Time)**:
+    - Biên dịch sẵn ra mã máy trước khi chạy.
+    - **Ưu điểm**: Khởi động cực nhanh, kích thước binary nhỏ (Tốt cho Serverless / Cloud Native).
+    - **Nhược điểm**: Không thể tối ưu động lúc runtime.
+
+---
+
+### 📝 1.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] Giải thích tại sao một ứng dụng Java/C# thường tốn nhiều RAM hơn ứng dụng C++ tương đương?
+<details><summary>Đáp án</summary>
+Do overhead của Virtual Machine (JVM/CLR) và cơ chế Garbage Collection cần giữ một lượng bộ nhớ dự phòng để quét dọn rác mà không làm gián đoạn chương trình quá nhiều.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết một đoạn code nhỏ bằng cả 2 ngôn ngữ thực hiện việc đọc dữ liệu từ một mảng số nguyên và in ra các số chẵn.
+<details><summary>Gợi ý C#</summary>
+Dùng `foreach` và `if (n % 2 == 0)`.
+</details>
+<details><summary>Gợi ý Java</summary>
+Dùng `for-each` loop và `System.out.println`.
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog & Resources)
+- [C# vs Java: The Internal Architecture Deep Dive](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-csharp-java-internals.md)
+- [Garbage Collection in .NET & JVM - Comparison](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-garbage-collection.md)

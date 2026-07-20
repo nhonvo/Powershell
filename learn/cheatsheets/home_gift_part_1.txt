@@ -1,0 +1,93 @@
+/*
+
+Lưu ý: 
+- khi nộp bài: Copy toàn bộ lệnh SQL vào file .txt. Và nộp file này nhớ ghi lại đề nhé
+- chạy 1 lần là được không bị lỗi.
+- Bấm chạy lại lần nữa cũng không được lỗi(học cách drop view if exists)
+
+*/
+
+USE MASTER
+GO
+DROP DATABASE IF EXISTS OnlineBookstore
+GO
+-- Create database
+CREATE DATABASE OnlineBookstore
+GO
+
+-- Use database
+USE OnlineBookstore;
+
+-- Create Books table
+CREATE TABLE Books (
+  ID INT PRIMARY KEY IDENTITY(1, 1),
+  Title VARCHAR(255) NOT NULL,
+  Author VARCHAR(255) NOT NULL,
+  Price DECIMAL(10,2) NOT NULL CHECK (Price > 0),
+  PublishedDate DATE NOT NULL
+);
+
+-- Create Customers table
+CREATE TABLE Customers (
+  ID INT PRIMARY KEY IDENTITY(1, 1),
+  FirstName VARCHAR(255) NOT NULL,
+  LastName VARCHAR(255) NOT NULL,
+  Email VARCHAR(255) UNIQUE NOT NULL,
+  Phone VARCHAR(20) NOT NULL,
+  DOB DATE NOT NULL
+);
+
+-- Create Orders table
+CREATE TABLE Orders (
+  ID INT PRIMARY KEY IDENTITY(1, 1),
+  CustomerID INT FOREIGN KEY REFERENCES Customers(ID),
+  OrderDate DATE NOT NULL,
+  TotalAmount DECIMAL(10,2) NOT NULL CHECK (TotalAmount > 0),
+  FOREIGN KEY (CustomerID) REFERENCES Customers(ID)
+);
+
+-- Create OrderDetail table
+CREATE TABLE OrderDetail (
+  OrderID INT FOREIGN KEY REFERENCES Orders(ID),
+  BookID INT FOREIGN KEY REFERENCES Books(ID),
+  NumberOfBook INT NOT NULL DEFAULT 1,
+  CONSTRAINT PK_OrderID_BookID PRIMARY KEY(OrderID, BookID)
+);
+
+--1 insert to each tables 10 records(use command insert multiple row) becareful with IDENTITY
+--SELECT
+--a. Retrieve all books from the Books table.
+--b. Retrieve all customers from the Customers table.
+--c. Retrieve all orders from the Orders table.
+--d. Retrieve all order details from the OrderDetail table.
+--e. Retrieve the book with ID 10 from the Books table.
+--f. Retrieve the customer with ID 10 from the Customers table.
+--g. Retrieve the order with ID 10 from the Orders table.
+--h. Retrieve the order detail with OrderID 1 from the OrderDetail table.
+
+--3. UPDATE
+--a. Update the price of the book with ID 5 to 14.99.
+--b. Update the email of the customer with ID 2 to "newemail@gmail.com".
+--c. Update the total amount of the order with ID 4 to 30.99.
+
+--4.DELETE
+--a. Delete the book with ID 10 from the Books table.
+--b. Delete the customer with ID 10 from the Customers table.
+--c. Delete the order with ID 10 from the Orders table.(include order detail)
+
+
+--ADDITIONAL
+--Write a SELECT statement to retrieve the top 10 most expensive books from the Books table.
+--Write a SELECT statement to retrieve the "Title and Price" of all books, using the alias "BookName" for the Title column.
+--Write a SELECT statement to retrieve all distinct Author names from the Books table.
+--Write a VIEW that displays the BookID, Book Title, Author, and Published Date for all books in the Books table.
+--Write a SELECT INTO statement to create a new table called "ExpensiveBooks" that contains the BookID, Title, and Price columns of all books with a price greater than $50.00
+
+--Authentic operators:
+--Write a query that retrieves all customers whose name contains the string "John".(hint LIKE)
+--Comparison operators:
+--Write a query that retrieves all books with a price greater than or equal to $20.
+--Write a query that retrieves all customers whose phone number is not equal to "555-1234".
+--Write a query that retrieves all orders with a total amount less than $100.
+--Logical operators:
+--Write a query that retrieves all customers whose name contains the string "John" and whose email address contains the string "gmail.com".

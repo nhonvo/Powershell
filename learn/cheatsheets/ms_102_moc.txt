@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/ms-102
+  - ms102
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MS-102: Microsoft 365 Administrator MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MS-102/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MS-102/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MS-102/MS-102 Mindmap\|🗺️ MS-102 Mindmap]]
+- [[certifications/microsoft/MS-102/MS-102 Flashcards\|🃏 MS-102 Flashcards]]
+- [[certifications/microsoft/MS-102/MS-102_Scraped_Question_Bank\|🗃️ MS-102 Scraped Question Bank]]

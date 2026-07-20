@@ -1,0 +1,276 @@
+{
+  "Meta": {
+    "Id": "deck_ai_102_moc",
+    "Topic": "AI-102 MOC",
+    "Language": "English/Japanese",
+    "Domain": "certifications",
+    "Level": "General",
+    "Tags": [
+      "ai_102_moc"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 13
+  },
+  "Cards": [
+    {
+      "Id": "card_00263",
+      "Front": "Domain",
+      "Back": "Topic | Weight | Notes | Practice",
+      "Hint": "AI-102",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai-102 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00264",
+      "Front": "**[[certifications/microsoft/AI-102/Domain 1 - Plan and Manage an Azure AI Solution\\",
+      "Back": "D1]]** | Plan & Manage Azure AI Solutions | ~15-20% | Security, managed identities, logging, Responsible AI | [[certifications/microsoft/AI-102/Practice Questions - Domain 1\\ | Q&A D1]]",
+      "Hint": "AI-102",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai-102 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00265",
+      "Front": "**[[certifications/microsoft/AI-102/Domain 2 - Implement Image and Video Processing Solutions\\",
+      "Back": "D2]]** | Vision & Documents | ~15-20% | Custom Vision, Face, Document Intelligence | [[certifications/microsoft/AI-102/Practice Questions - Domain 2\\ | Q&A D2]]",
+      "Hint": "AI-102",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai-102 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00266",
+      "Front": "**[[certifications/microsoft/AI-102/Domain 3 - Implement Natural Language Processing Solutions\\",
+      "Back": "D3]]** | NLP Solutions | ~30-35% | Sentiment analysis, translation, CLU intent mapping | [[certifications/microsoft/AI-102/Practice Questions - Domain 3\\ | Q&A D3]]",
+      "Hint": "AI-102",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai-102 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00267",
+      "Front": "**[[certifications/microsoft/AI-102/Domain 4 - Implement Knowledge Mining Solutions\\",
+      "Back": "D4]]** | Knowledge Mining | ~15-20% | Indexes, indexers, skillsets, vector/hybrid search | [[certifications/microsoft/AI-102/Practice Questions - Domain 4\\ | Q&A D4]]",
+      "Hint": "AI-102",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai-102 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00268",
+      "Front": "**[[certifications/microsoft/AI-102/Domain 5 - Implement Generative AI Solutions\\",
+      "Back": "D5]]** | Generative AI | ~25-30% | Azure OpenAI, prompt engineering, RAG architecture | [[certifications/microsoft/AI-102/Practice Questions - Domain 5\\ | Q&A D5]]",
+      "Hint": "AI-102",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai-102 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00269",
+      "Front": "Asset",
+      "Back": "Description",
+      "Hint": "AI-102",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai-102 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00270",
+      "Front": "**[[certifications/microsoft/AI-102/AI-102 Mindmap\\",
+      "Back": "🗺️ AI-102 Mindmap]]** | Full visual mindmap node",
+      "Hint": "AI-102",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai-102 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00271",
+      "Front": "**[[certifications/microsoft/AI-102/AI-102 Markdown Mindmap\\",
+      "Back": "🧠 AI-102 Markdown Mindmap]]** | Text-based hierarchical mindmap",
+      "Hint": "AI-102",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai-102 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00272",
+      "Front": "**[[certifications/microsoft/AI-102/AI-102 Flashcards\\",
+      "Back": "🃏 AI-102 Flashcards]]** | Spaced-repetition active recall cards (Obsidian SR compatible)",
+      "Hint": "AI-102",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai-102 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00273",
+      "Front": "**[[certifications/microsoft/AI-102/AI-102 Reference Cheat Sheet\\",
+      "Back": "📊 AI-102 Reference Cheat Sheet]]** | Key review matrix & hyperparameters",
+      "Hint": "AI-102",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai-102 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00274",
+      "Front": "**[[certifications/microsoft/AI-102/AI-102_Scraped_Question_Bank\\",
+      "Back": "🗃️ AI-102 Scraped Question Bank]]** | 100 exam questions scraped from pages 2-21",
+      "Hint": "AI-102",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai-102 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00275",
+      "Front": "**🖥️ Interactive PS Quiz**",
+      "Back": "Run `.\\Start-StudySession.ps1`",
+      "Hint": "AI-102",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai-102 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

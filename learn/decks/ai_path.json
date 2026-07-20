@@ -1,0 +1,1356 @@
+{
+  "Meta": {
+    "Id": "deck_ai_path",
+    "Topic": "ai path",
+    "Language": "English/Japanese",
+    "Domain": "technical_skills",
+    "Level": "General",
+    "Tags": [
+      "ai_path"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 67
+  },
+  "Cards": [
+    {
+      "Id": "card_03455",
+      "Front": "Name",
+      "Back": "Description",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03456",
+      "Front": "**Course Name**",
+      "Back": "AI Elevate: AI Application Engineer",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03457",
+      "Front": "**Overview**",
+      "Back": "Develop expertise in building and deploying AI-Powered real-world applications",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03458",
+      "Front": "**Outcome:**",
+      "Back": "Integrate retrieval-augmented generation (RAG) in AI-Powered Applications",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03459",
+      "Front": "**Tags**",
+      "Back": "AI, OpenAI, LLM, Generative AI, LangChain, Hugging Face",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03460",
+      "Front": "Type",
+      "Back": "Name | Link | Mode | Class 01 | Class 02,03 | Class 04 | Class 05 | Class 06",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03461",
+      "Front": "Course Link",
+      "Back": "Understanding Artificial Intelligence | Understanding Artificial Intelligence | Self-Learning | Optional | Optional | Optional | Optional | Optional",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03462",
+      "Front": "Course Link",
+      "Back": "Large Language Models (LLMs) Concepts | Large Language Models (LLMs) Concepts | Self-Learning |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03463",
+      "Front": "Course Link",
+      "Back": "Generative AI Concepts | Generative AI Concepts | Self-Learning |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03464",
+      "Front": "Course Link",
+      "Back": "LLMOps Concepts | LLMOps Concepts | Self-Learning |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03465",
+      "Front": "Course Link",
+      "Back": "AI Ethics | AI Ethics | Self-Learning |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03466",
+      "Front": "Type",
+      "Back": "Name | Link | Mode | Class 01 | Class 02,03 | Class 04 | Class 05 | Class 06",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03467",
+      "Front": "Assessment",
+      "Back": "Pre-Assessment | iMocha | Assessment | 09 - 14 Jun | 10 - 14 Jul | 10 - 14 Jul | 10 - 14 Jul | 10 - 14 Jul",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03468",
+      "Front": "Type",
+      "Back": "Name | Link | Mode | Class 01 | Class 02,03 | Class 04 | Class 05 | Class 06",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03469",
+      "Front": "Course Link",
+      "Back": "Introduction to Python for Developers | Introduction to Python for Developers | Self-Learning | 16 - 20 Jun | 10 - 18 Jul | 10 - 25 Jul | 10 Jul - 1 Aug | 10 Jul - 8 Aug",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03470",
+      "Front": "Assignment",
+      "Back": "Assignment 01 - Build a Command-Line Task Manager in Python | Assignment 01 - Build a Command-Line Task Manager in Python | Assignment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03471",
+      "Front": "Course Link",
+      "Back": "Working with the OpenAI API | Working with the OpenAI API | Self-Learning |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03472",
+      "Front": "Assignment",
+      "Back": "Assignment 02 - Automotive: Prompt-Driven Agent for Generating Work Instructions for New Car Models | Assignment 02 - Automotive Prompt-Driven Agent for Generating Work Instructions for New Car Models | Assignment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03473",
+      "Front": "Assignment",
+      "Back": "Assignment 03 - AI-Powered Meeting Summarizer Using Azure OpenAI API | Assignment 03 - AI-Powered Meeting Summarizer Using Azure OpenAI API | Assignment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03474",
+      "Front": "Quiz",
+      "Back": "Quiz | Quiz 01 - Python & OpenAI - LevelUp | Accessment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03475",
+      "Front": "Mock Interview",
+      "Back": "Mock Interview | - Mock Interview 1 Coverage: + AI Fundamentals: Types of AI (Narrow, General, Super), ML vs DL, supervised vs unsupervised learning, basic models (e.g., Decision Trees, CNNs, RNNs) + GenAI Concepts: What is Generative AI, real-world applications, transformer architecture, hallucination risks, ethical concerns + LLM Concepts: Tokenization, self-attention mechanism, pretraining vs f",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03476",
+      "Front": "Workshop",
+      "Back": "Workshop - Building Real-World AI-Powered Apps Using Python and OpenAI API | Duration: 9:00 -17:00 | Classroom | 21-Jun | 19-Jul | 26-Jul | 2-Aug | 9-Aug",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03477",
+      "Front": "Type",
+      "Back": "Name | Link | Mode | Class 01 | Class 02,03 | Class 04 | Class 05 | Class 06",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03478",
+      "Front": "Course Link",
+      "Back": "ChatGPT Prompt Engineering for Developers | ChatGPT Prompt Engineering for Developers | Self-Learning | 23 - 27 Jun | 21 - 25 Jul | 28 Jul - 1 Aug | 4 - 8 Aug | 11 - 15 Aug",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03479",
+      "Front": "Assignment",
+      "Back": "Assignment 04 - Building an AI-Powered Conversational Assistant with Advanced Prompting Techniques | Assignment 04 - Building an AI-Powered Conversational Assistant with Advanced Prompting Techniques | Assignment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03480",
+      "Front": "Course Link",
+      "Back": "Developing AI Systems with the OpenAI API | Developing AI Systems with the OpenAI API | Self-Learning |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03481",
+      "Front": "Assignment",
+      "Back": "Assignment 05 - Efficient Azure OpenAI API Usage with Function Calling, Batching, and Robust Retry Mechanisms | Assignment 05 - Efficient Azure OpenAI API Usage with Function Calling, Batching, and Robust Retry Mechanisms | Assignment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03482",
+      "Front": "Assignment",
+      "Back": "Assignment 06 - Logistics: Delay Reason Classification using Maintenance Logs | Assignment 06 - Logistics: Delay Reason Classification using Maintenance Logs | Assignment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03483",
+      "Front": "Quiz",
+      "Back": "Quiz | Quiz 02 - Prompt Engineering & OpenAI API - LevelUp | Accessment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03484",
+      "Front": "Mock Interview",
+      "Back": "Mock Interview | - Mock Interview 2 Coverage: + ChatGPT: Use cases, prompt history, limitations, best practices for productive usage. + OpenAI Platform: API endpoints (completion, chat, embeddings), function calling, fine-tuning basics, pricing and limits. + Prompt Engineering: Zero-shot vs few-shot prompting, role-based prompting, temperature and top_p, prompt chaining, output. - Duration: 10 - 1",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03485",
+      "Front": "Workshop",
+      "Back": "Workshop - Building chatbot systems using Azure OpenAI API | Duration: 9:00-10:00 | Virtual | 28-Jun | 26-Jul | 2-Aug | 9-Aug | 16-Aug",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03486",
+      "Front": "Type",
+      "Back": "Name | Link | Mode | Class 01 | Class 02,03 | Class 04 | Class 05 | Class 06",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03487",
+      "Front": "Course Link",
+      "Back": "Working with Hugging Face | Working with Hugging Face | Self-Learning | 30 Jun - 04 Jul | 28 Jul - 1 Aug | 4 - 8 Aug | 11 - 15 Aug | 18 - 22 Aug",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03488",
+      "Front": "Assignment",
+      "Back": "Assignment 07 - Clone and Perform Inference with Hugging Face Text-to-Speech Model | Assignment 07 - Clone and Perform Inference with Hugging Face Text-to-Speech Model | Assignment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03489",
+      "Front": "Course Link",
+      "Back": "Introduction to Embeddings with the OpenAI API | Introduction to Embeddings with the OpenAI API | Self-Learning |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03490",
+      "Front": "Assignment",
+      "Back": "Assignment 08 - Building a Semantic Search Engine with Text Embeddings for Clothing Products | Assignment 08 - Building a Semantic Search Engine with Text Embeddings for Clothing Products | Assignment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03491",
+      "Front": "Assignment",
+      "Back": "Assignment 09 - Build a Laptop Consultant Chatbot Using OpenAI | Assignment 09 - Build a Laptop Consultant Chatbot Using Azure OpenAI | Assignment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03492",
+      "Front": "Quiz",
+      "Back": "Quiz | Quiz 03 -Hugging Face & Embeddings with OpenAI - LevelUp | Accessment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03493",
+      "Front": "Mock Interview",
+      "Back": "Mock Interview | - Mock Interview 3 Coverage: + Hugging Face: Transformers library, model loading (e.g., BERT, T5), pipeline usage, using model cards, inference demos + Embeddings: What embeddings are, how they’re generated, cosine similarity, vector representations, use in semantic search and clustering - Duration: 10 - 15 minutes/ learner - Format: Virtual via Teams | Interview | 4-Jul | 1-Aug |",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03494",
+      "Front": "Workshop",
+      "Back": "Workshop - Building a Text-to-Speech Chatbot Using OpenAI SDK + Hugging Face TTS | Duration: 9:00 -17:00 | Classroom | 5-Jul | 2-Aug | 9-Aug | 16-Aug | 23-Aug",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03495",
+      "Front": "Type",
+      "Back": "Name | Link | Mode | Class 01 | Class 02,03 | Class 04 | Class 05 | Class 06",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03496",
+      "Front": "Course Link",
+      "Back": "Vector Databases for Embeddings with Pinecone | Vector Databases for Embeddings with Pinecone | Self-Learning | 07 Jul - 11 Jul | 4 - 8 Aug | 11 - 15 Aug | 18 - 22 Aug | 25-29 aug",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03497",
+      "Front": "Assignment",
+      "Back": "Assignment 10 - Using Pinecone to Retrieve Top 3 Most Similar Product Records | Assignment 10 - Using Pinecone to Retrieve Top 3 Most Similar Product Records | Assignment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03498",
+      "Front": "Course Link",
+      "Back": "Developing LLM Applications with LangChain | Developing LLM Applications with LangChain | Self-Learning |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03499",
+      "Front": "Assignment",
+      "Back": "Assignment 11 - Build an AI Agent for Weather & Search Queries | Assignment 11 - Build an AI Agent for Weather & Search Queries | Assignment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03500",
+      "Front": "Assignment",
+      "Back": "Assignment 12 - Aviation & Aerospace: Satellite Image Cloud Detection via AzureOpenAI Inference | Assignment 12 - Aviation & Aerospace - Satellite Image Cloud Detection via AzureOpenAI Inference | Assignment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03501",
+      "Front": "Quiz",
+      "Back": "Quiz | Quiz 04 - Pipecone & LangChain - LevelUp | Accessment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03502",
+      "Front": "Mock Interview",
+      "Back": "Mock Interview | - Mock Interview 4 Coverage: + RAG: End-to-end architecture, retriever vs generator roles, prompt injection defense, evaluation metrics (precision, latency) + LangChain: Chains vs agents, memory integration, loading tools (e.g., Google Search, Calculator), LangChain Expression Language (LCEL) + Open Source LLMs: Popular models (LLaMA, Mistral, Falcon), licensing types (Apache vs n",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03503",
+      "Front": "Workshop",
+      "Back": "Workshop - Building Chatbot RAG Systems with Vector Store, Langchain & Function Calling | Duration: 9:00-10:00 | Virtual | 12-Jul | 9-Aug | 16-Aug | 23-Aug | 30-Aug",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03504",
+      "Front": "Type",
+      "Back": "Name | Link | Mode | Class 01 | Class 02,03 | Class 04 | Class 05 | Class 06",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03505",
+      "Front": "Course Link",
+      "Back": "Working with Llama 3 | Working with Llama 3 | Self-Learning | 14 - 18 Jul | 11 - 15 Aug | 18 - 22 Aug | 25-29 Aug | 1 - 5 Aug",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03506",
+      "Front": "Assignment",
+      "Back": "Assignment 13 - Build Resume Generation Using LLaMA3 | Assignment 13 - Build Resume Generation Using LLaMA3 | Assignment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03507",
+      "Front": "Course Link",
+      "Back": "Designing Agentic Systems with LangChain | Designing Agentic Systems with LangChain | Self-Learning |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03508",
+      "Front": "Assignment",
+      "Back": "Assignment 14 - Building a Patient Information Collection and Advisory Chatbot Agent | Assignment 14 - Building a Patient Information Collection and Advisory Chatbot Agent.docx | Assignment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03509",
+      "Front": "Assignment",
+      "Back": "Assignment 15 - Retail: Building a RAG Chatbot for Product and Policy Support in Retail | Assignment 15 - Retail - Building a RAG Chatbot for Product and Policy Support in Retail.docx | Assignment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03510",
+      "Front": "Quiz",
+      "Back": "Quiz | Quiz 05 - Llama 3 & LangChain- LevelUp | Accessment |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03511",
+      "Front": "Mock Interview",
+      "Back": "Mock Interview | - Final Mock Interview Coverage: + LangGraph: Stateful graph execution, node branching, tool use within graphs, async flow management + Agent Orchestration: Difference between LangChain agents and LangGraph flows, tool invocation, memory strategies, long-running task handling + System Design: Designing an LLM app using RAG, embeddings, observability, logging, feedback loops, fallb",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03512",
+      "Front": "Hackathon",
+      "Back": "Hackathon | Duration: 9:00 -17:00 | Classroom | 19-Jul | 16-Aug | 23-Aug | 30-Aug | 6-Sep",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03513",
+      "Front": "Type",
+      "Back": "Name | Link | Mode | Class 01 | Class 02,03 | Class 04 | Class 05 | Class 06",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03514",
+      "Front": "Assessment",
+      "Back": "Final Assessment | iMocha | Assessment | 18 - 22 Jul | 18 - 21 Aug | 25 - 28 Aug | 3 - 5 Sep | 8 - 10 Sep",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03515",
+      "Front": "Type",
+      "Back": "Name | Link | Mode | Class 01 | Class 02,03 | Class 04 | Class 05 | Class 06",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03516",
+      "Front": "Course Link",
+      "Back": "Azure AI Fundamentals | https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-fundamentals/ | Self-Learning | Optional | Optional | Optional | Optional | Optional",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03517",
+      "Front": "Assignment",
+      "Back": "Assignment - Azure AI Fundamentals | Azure AI Fundamentals https://microsoftlearning.github.io/AI-900-AIFundamentals/ |  |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03518",
+      "Front": "Course Link",
+      "Back": "Designing and Implementing a Microsoft Azure AI Solution | https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-engineer/ |  |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03519",
+      "Front": "Assignment",
+      "Back": "Assignment - Azure AI Solution | Azure AI Services: https://microsoftlearning.github.io/mslearn-ai-services/ Azure AI Vision: https://microsoftlearning.github.io/mslearn-ai-vision/ Azure AI Language: https://microsoftlearning.github.io/mslearn-ai-language/ Azure AI Document Intelligence: https://microsoftlearning.github.io/mslearn-ai-document-intelligence/ Azure AI Knowledge Mining: https://micros",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03520",
+      "Front": "Type",
+      "Back": "Name | Link | Mode | Class 01 | Class 02,03 | Class 04 | Class 05 | Class 06",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03521",
+      "Front": "Survey",
+      "Back": "Survey Standard của FSA |  |  |  |  |  |  | ",
+      "Hint": "technical_skills",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "ai path"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+# 🗃️ SC-400 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Implement Information Protection questions
+
+You create three sensitivity labels named Sensitivity1, Sensitivity2, and Sensitivity3 and perform the following actions:
+
+-Publish Sensitivity1.
+-Create an auto-labeling policy for Sensitivity2.
+
+You plan to create a file policy named Policy1 in Microsoft Cloud App Security. 
+Which sensitivity labels can you apply to Microsoft SharePoint Online in Policy1?
+
+### Options:
+- [x] **A)** Sensitivity1 only [Correct]
+- [ ] **B)** Sensitivity1, Sensitivity2, and Sensitivity3
+- [ ] **C)** Sensitivity2 only
+- [ ] **D)** Sensitivity1 and Sensitivity2 only
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Implement Information Protection questions
+
+You have a Microsoft OneDrive for Business folder that contains the files shown in the following table.
+
+
+In Microsoft Cloud App Security, you create a file policy to automatically apply a classification. What is the effect of applying the policy?
+
+### Options:
+- [ ] **A)** The policy will apply to only the .docx and .txt files. The policy will classify the files within 24 hours.
+- [ ] **B)** The policy will apply to all the files. The policy will classify only 100 files daily.
+- [x] **C)** The policy will apply to only the .docx files. The policy will classify only 100 files daily. [Correct]
+- [ ] **D)** The policy will apply to only the .docx and .txt files. The policy will classify the files immediately.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Implement Information Protection questions
+
+HOTSPOT (Drag and Drop is not supported)
+You have a Microsoft 365 tenant named contoso.com that contains two users named User1 and User2. The tenant uses Microsoft Office 365 Message Encryption (OME).
+
+User1 plans to send emails that contain attachments as shown in the following table.
+
+
+User2 plans to send emails that contain attachments as shown in the following table.
+
+
+For which emails will the attachments be protected? To answer, select the appropriate options in the answer area.
+
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Implement Information Protection questions
+
+HOTSPOT (Drag and Drop is not supported)
+You use project codes that have a format of three alphabetical characters that represent the project type, followed by three digits, for example Abc123.
+
+You need to create a new sensitive info type for the project codes.
+
+How should you configure the regular expression to detect the content? To answer, select the appropriate options in the answer area.
+
+NOTE: Each correct selection is worth one point. 
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Implement Information Protection questions
+
+HOTSPOT (Drag and Drop is not supported)
+You have a Microsoft SharePoint Online site named Site1 and a sensitivity label named Sensitivity1. Sensitivity1 adds a watermark and a header to content.
+
+You create a policy to automatically apply Sensitivity1 to emails in Microsoft Exchange Online and Site1.
+How will Sensitivity1 mark matching emails and Site1 documents? To answer, select the appropriate options in the answer area.
+
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---

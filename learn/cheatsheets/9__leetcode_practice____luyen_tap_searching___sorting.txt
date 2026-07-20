@@ -1,0 +1,1244 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/03_Searching_Sorting/🔍index_03_Searching_Sorting|03_Searching_Sorting]]
+
+## 9. LeetCode Practice -- Luyện tập Searching & Sorting
+
+> Bạn đã học xong lý thuyết rồi! Bây giờ là lúc "ra trận" với các bài LeetCode kinh điển. Mình sẽ giải chi tiết từng bài, từ phân tích tư duy, brute force, cho đến lời giải tối ưu. Mỗi bài đều có dry run cụ thể để bạn hiểu rõ từng bước.
+
+------
+
+### 9.1 LeetCode #704 -- Binary Search (Easy)
+
+**Link:** https://leetcode.com/problems/binary-search/
+
+#### Đề bài
+
+Cho mot mang so nguyen `nums` da sap xep tang dan va mot so nguyen `target`. Viet ham tim `target` trong `nums`. Neu tim thay, trả về index cua no. Nếu không, trả về `-1`.
+
+**Yêu cầu:** Thuật toán phải có độ phức tạp O(log n).
+
+#### Phân tích tư duy
+
+**Bước 1: Đọc đề và nhận diện pattern**
+
+- Mang da sap xep + tim kiem => nghĩ ngay đến Binary Search
+- Đề bài con yeu cau O(log n) => CHẮC CHẮN là Binary Search
+
+**Bước 2: Xác định cách tiếp cận**
+
+- Đây là bài Binary Search "nguyên bản" (vanilla binary search)
+- Duy trì 2 con trỏ `left` va `right`
+- Tinh `mid`, so sanh `nums[mid]` với `target`
+- Thu hẹp không gian tìm kiếm mỗi bước
+
+**Bước 3: Xử lý edge cases**
+
+- Mảng rỗng => trả về -1
+- Mảng 1 phần tử => kiểm tra trực tiếp
+- Target nhỏ hơn phần tử đầu hoặc lớn hơn phần tử cuối => trả về -1
+
+#### Lời giải
+
+```python
+def search(nums, target):
+    """
+    Binary Search cơ bản.
+    Tìm target trong mảng đã sắp xếp nums.
+
+    Args:
+        nums: Mảng số nguyên đã sắp xếp tăng dần
+        target: Giá trị cần tìm
+
+    Returns:
+        Index cua target, hoặc -1 nếu không tìm thấy
+    """
+    left, right = 0, len(nums) - 1
+
+    while left <= right:
+        # Tính mid, tránh overflow (quan trọng với ngôn ngữ khác)
+        mid = left + (right - left) // 2
+
+        if nums[mid] == target:
+            return mid              # Tìm thấy!
+        elif nums[mid] < target:
+            left = mid + 1          # Target nằm nửa phải
+        else:
+            right = mid - 1         # Target nằm nửa trái
+
+    return -1  # Không tìm thấy
+
+# === TEST ===
+print(search([-1, 0, 3, 5, 9, 12], 9))    # Output: 4
+print(search([-1, 0, 3, 5, 9, 12], 2))    # Output: -1
+print(search([5], 5))                       # Output: 0
+print(search([], 5))                        # Output: -1
+```
+
+#### Dry run
+
+```
+nums = [-1, 0, 3, 5, 9, 12], target = 9
+
+Bước 1: left=0, right=5, mid=2
+  nums[2]=3 < 9 => left = 3
+
+Bước 2: left=3, right=5, mid=4
+  nums[4]=9 == 9 => TIM THAY! Tra ve 4
+
+Kết quả: 4 (chỉ mất 2 bước cho mảng 6 phần tử)
+```
+
+#### Độ phức tạp
+
+|           | Độ phức tạp                   |
+| :-------- | :---------------------------- |
+| **Time**  | O(log n) -- chia đôi mỗi bước |
+| **Space** | O(1) -- chỉ dùng biến con tro |
+
+#### Lỗi thường gặp
+
+1. **Dùng `left + right` thay vì `left + (right - left)`:** Có thể overflow trong ngôn ngữ khác (C++, Java). Python khong overflow nhưng nên giữ thói quen tốt.
+2. **Dùng `left < right` thay vì `left <= right`:** Sẽ bỏ sót trường hợp mang 1 phan tu hoặc target nằm ở biên.
+3. **Dùng `left = mid` thay vì `left = mid + 1`:** Gây vòng lập vô hạn!
+
+------
+
+### 9.2 LeetCode #34 -- Find First and Last Position of Element in Sorted Array (Medium)
+
+**Link:** https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/
+
+#### Đề bài
+
+Cho mot mang so nguyen `nums` da sap xep tang dan. Tim vi tri **dau tien** va **cuoi cung** cua `target` trong mang. Neu `target` khong ton tai, trả về `[-1, -1]`.
+
+**Yêu cầu:** Thuật toán phải có độ phức tạp O(log n).
+
+#### Phân tích tư duy
+
+**Bước 1: Tại sao không dùng binary search thông thường?**
+
+- Binary search thông thường tim **mot** vi tri bat ky cua target
+- Nhưng đề bài yêu cầu tim vi tri **dau tien** va **cuoi cung**
+- Ví dụ: `[5, 7, 7, 8, 8, 8, 10]`, target=8. Binary search co the trả về index 3, 4, hoặc 5 -- nhưng ta cần [3, 5]
+
+**Bước 2: Kỹ thuật Lower Bound va Upper Bound**
+
+- **Vi tri dau tien:** Dùng lower_bound -- tìm vị trí nhỏ nhất mà `nums[i] >= target`
+- **Vi tri cuoi cung:** Dùng upper_bound - 1 -- tìm vị trí lớn nhất mà `nums[i] <= target`
+- Hoac: viet 2 ham binary search rieng, một tìm "vi tri trái nhất", một tìm "vi tri phải nhất"
+
+**Bước 3: Cách modify binary search**
+
+- Tìm vị trí đầu tiên: khi `nums[mid] == target`, KHÔNG return ngay. Thay vào đó, tiếp tục tìm bên trái (`right = mid - 1`) để xem có phần tử nào bằng target ở trước không
+- Tìm vị trí cuối cùng: khi `nums[mid] == target`, tiếp tục tìm bên phải (`left = mid + 1`)
+
+#### Cách 1: Brute Force O(n)
+
+```python
+def searchRange_brute(nums, target):
+    """Brute force: duyệt toàn bộ mảng"""
+    first = -1
+    last = -1
+    for i in range(len(nums)):
+        if nums[i] == target:
+            if first == -1:
+                first = i      # Lần đầu tiên gặp target
+            last = i           # Cập nhật vị trí cuối cùng
+    return [first, last]
+
+# Chạy được nhưng O(n), không đạt yêu cầu đề bài
+```
+
+#### Cach 2: Tối ưu với Binary Search O(log n)
+
+```python
+def searchRange(nums, target):
+    """
+    Tim vị trí đầu tiên và cuối cùng cua target.
+    Dùng 2 lan binary search: 1 lần tìm trái, 1 lần tìm phải.
+
+    Args:
+        nums: Mang da sap xep tang dan
+        target: Giá trị cần tìm
+
+    Returns:
+        [first_index, last_index] hoặc [-1, -1]
+    """
+    def find_first(nums, target):
+        """Tìm vị trí đầu tiên (trái nhất) cua target"""
+        left, right = 0, len(nums) - 1
+        result = -1
+
+        while left <= right:
+            mid = left + (right - left) // 2
+            if nums[mid] == target:
+                result = mid        # Ghi nhớ vị trí
+                right = mid - 1     # Tiếp tục tìm bên trái
+            elif nums[mid] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+
+        return result
+
+    def find_last(nums, target):
+        """Tìm vị trí cuối cùng (phải nhất) cua target"""
+        left, right = 0, len(nums) - 1
+        result = -1
+
+        while left <= right:
+            mid = left + (right - left) // 2
+            if nums[mid] == target:
+                result = mid        # Ghi nhớ vị trí
+                left = mid + 1      # Tiếp tục tìm bên phải
+            elif nums[mid] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+
+        return result
+
+    return [find_first(nums, target), find_last(nums, target)]
+
+# === TEST ===
+print(searchRange([5, 7, 7, 8, 8, 10], 8))    # [3, 4]
+print(searchRange([5, 7, 7, 8, 8, 10], 6))    # [-1, -1]
+print(searchRange([], 0))                       # [-1, -1]
+print(searchRange([1], 1))                      # [0, 0]
+print(searchRange([2, 2], 2))                   # [0, 1]
+print(searchRange([1, 2, 2, 2, 2, 3], 2))      # [1, 4]
+```
+
+#### Cach 3: Dùng bisect (ngắn gọn nhất)
+
+```python
+import bisect
+
+def searchRange_bisect(nums, target):
+    """Dùng thu vien bisect cua Python"""
+    left = bisect.bisect_left(nums, target)
+    right = bisect.bisect_right(nums, target) - 1
+
+    if left <= right and left < len(nums) and nums[left] == target:
+        return [left, right]
+    return [-1, -1]
+
+# Test
+print(searchRange_bisect([5, 7, 7, 8, 8, 10], 8))  # [3, 4]
+```
+
+#### Dry run
+
+```
+nums = [5, 7, 7, 8, 8, 10], target = 8
+
+=== find_first(8) ===
+Bước 1: left=0, right=5, mid=2, nums[2]=7 < 8 => left=3
+Bước 2: left=3, right=5, mid=4, nums[4]=8 == 8 => result=4, right=3
+Bước 3: left=3, right=3, mid=3, nums[3]=8 == 8 => result=3, right=2
+left > right => return result = 3
+
+=== find_last(8) ===
+Bước 1: left=0, right=5, mid=2, nums[2]=7 < 8 => left=3
+Bước 2: left=3, right=5, mid=4, nums[4]=8 == 8 => result=4, left=5
+Bước 3: left=5, right=5, mid=5, nums[5]=10 > 8 => right=4
+left > right => return result = 4
+
+Kết quả: [3, 4]
+```
+
+#### Độ phức tạp
+
+|           | Độ phức tạp                                       |
+| :-------- | :------------------------------------------------ |
+| **Time**  | O(log n) -- 2 lần binary search, mỗi lần O(log n) |
+| **Space** | O(1)                                              |
+
+#### Lỗi thường gặp
+
+1. **Dùng 1 binary search roi expand:** Tìm 1 vị trí bát kỳ rồi mở rộng trai/phai. Worst case O(n) khi toàn bộ mảng là target!
+2. **Quên kiểm tra target có tồn tại:** Lower bound trả về vi tri chen, phải kiểm tra `nums[lb] == target`.
+
+------
+
+### 9.3 LeetCode #33 -- Search in Rotated Sorted Array (Medium)
+
+**Link:** https://leetcode.com/problems/search-in-rotated-sorted-array/
+
+#### Đề bài
+
+Cho mot mang so nguyen `nums` da sap xep tang dan, nhung bi **xoay** (rotated) tại một vị trí nào đó. Ví dụ: `[0,1,2,4,5,6,7]` co the bi xoay thanh `[4,5,6,7,0,1,2]`.
+
+Cho `target`, tìm index của nó trong mang. Nếu không ton tai, trả về -1.
+
+**Yêu cầu:** O(log n).
+
+#### Phân tích tư duy
+
+**Bước 1: Hiểu mảng rotated**
+
+- Mảng ban đầu đã sắp xếp: `[0, 1, 2, 4, 5, 6, 7]`
+- Sau khi rotate tại index 4: `[4, 5, 6, 7, 0, 1, 2]`
+- Mảng bị "gập" thành 2 nửa, **mỗi nửa đều đã sắp xếp**
+
+**Bước 2: Binary search tren mang rotated**
+
+- Khi tinh `mid`, **ít nhất 1 nửa (trái hoặc phải) sẽ đã sắp xếp**
+- Ta xác định nửa nào đã sắp xếp, rồi kiểm tra xem target có nằm trong nửa đó không
+- Nếu target nằm trong nửa đã sắp xếp => tìm ở đó
+- Nếu không => tìm ở nửa còn lai
+
+**Bước 3: Cách xác định nửa nào đã sắp xếp**
+
+- Neu `nums[left] <= nums[mid]`: nửa trái đã sắp xếp
+- Ngược lại: nửa phai đã sắp xếp
+
+#### Lời giải
+
+```python
+def search(nums, target):
+    """
+    Tìm target trong mảng sorted nhung bi rotated.
+
+    Ý tưởng: Tại mỗi bước binary search, xac dinh nua nao da sap xep,
+    rồi kiểm tra target có nằm trong nửa đó hay không.
+
+    Args:
+        nums: Mang da sap xep bi rotated
+        target: Giá trị cần tìm
+
+    Returns:
+        Index cua target, hoặc -1
+    """
+    left, right = 0, len(nums) - 1
+
+    while left <= right:
+        mid = left + (right - left) // 2
+
+        # Tìm thấy target
+        if nums[mid] == target:
+            return mid
+
+        # Xac dinh nua nao da sap xep
+        if nums[left] <= nums[mid]:
+            # Nua trai [left..mid] da sap xep
+            if nums[left] <= target < nums[mid]:
+                # Target nam trong nửa trái đã sắp xếp
+                right = mid - 1
+            else:
+                # Target nằm ở nửa phải
+                left = mid + 1
+        else:
+            # Nua phai [mid..right] da sap xep
+            if nums[mid] < target <= nums[right]:
+                # Target nằm trong nửa phai đã sắp xếp
+                left = mid + 1
+            else:
+                # Target nằm ở nửa trái
+                right = mid - 1
+
+    return -1
+
+# === TEST ===
+print(search([4, 5, 6, 7, 0, 1, 2], 0))    # 4
+print(search([4, 5, 6, 7, 0, 1, 2], 3))    # -1
+print(search([1], 0))                        # -1
+print(search([1], 1))                        # 0
+print(search([3, 1], 1))                     # 1
+print(search([1, 3], 3))                     # 1
+```
+
+#### Dry run
+
+```
+nums = [4, 5, 6, 7, 0, 1, 2], target = 0
+
+Bước 1: left=0, right=6, mid=3
+  nums[3] = 7, không phải target
+  nums[0]=4 <= nums[3]=7 => Nửa trái [4,5,6,7] đã sắp xếp
+  target=0 có nằm trong [4, 7)? KHÔNG (0 < 4)
+  => Tìm nửa phải: left = 4
+
+Bước 2: left=4, right=6, mid=5
+  nums[5] = 1, không phải target
+  nums[4]=0 <= nums[5]=1 => Nửa trái [0,1] đã sắp xếp
+  target=0 có nằm trong [0, 1)? CÓ (0 >= 0 va 0 < 1)
+  => Tìm nửa trái: right = 4
+
+Bước 3: left=4, right=4, mid=4
+  nums[4] = 0 == target => TIM THAY! Tra ve 4
+
+Kết quả: 4
+```
+
+#### Độ phức tạp
+
+|           | Độ phức tạp                       |
+| :-------- | :-------------------------------- |
+| **Time**  | O(log n) -- van chia đôi mỗi bước |
+| **Space** | O(1)                              |
+
+#### Lỗi thường gặp
+
+1. **Quên dấu `=` trong `nums[left] <= nums[mid]`:** Khi `left == mid` (2 phan tu), cần dấu `=` để xác định đúng nửa trái chỉ có 1 phần tử và đã "sắp xếp".
+2. **Nhầm điều kiện boundary:** Chú ý `nums[left] <= target < nums[mid]` (KHONG co `=` o `nums[mid]` vì đã kiểm tra `nums[mid] == target` trước đó).
+3. **Mảng có phần tử trùng lặp:** Bài này giả định KHÔNG có trùng lặp. Neu co (LeetCode #81), worst case se la O(n).
+
+------
+
+### 9.4 LeetCode #153 -- Tìm phần tử nhỏ nhất in Rotated Sorted Array (Medium)
+
+**Link:** https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/
+
+#### Đề bài
+
+Cho mot mang so nguyen **không trùng lặp** da sap xep tang dan va bi rotated. Tim phan tu **nho nhat** trong mang.
+
+**Yêu cầu:** O(log n).
+
+#### Phân tích tư duy
+
+**Bước 1: Nhận diện đặc điểm mảng rotated**
+
+```mermaid
+graph TD
+    subgraph "Trước khi xoay"
+    A["[1, 2, 3, 4, 5, 6, 7]"]
+    end
+    subgraph "Sau khi xoay (tại index 4)"
+    B["[4, 5, 6, 7, 1, 2, 3]"]
+    style B fill:#f9f,stroke:#333
+    end
+    C["^ điểm gập (phần tử nhỏ nhất)"]
+```
+
+- Phan tu nho nhat nam o **điểm "gập"** -- noi mang chuyen tu lon sang nho
+- Neu mang KHONG bi rotate (hoặc rotate n lan), phần tử nhỏ nhất o dau
+
+**Bước 2: Binary Search**
+
+- So sánh
+
+   
+
+  ```
+  nums[mid]
+  ```
+
+   
+
+  với
+
+   
+
+  ```
+  nums[right]
+  ```
+
+  :
+
+  - Neu `nums[mid] > nums[right]`: điểm gập nằm bên phải mid => `left = mid + 1`
+  - Neu `nums[mid] <= nums[right]`: điểm gập nằm bên trái (hoặc tại mid) => `right = mid`
+
+- Khi `left == right`, do chinh la phần tử nhỏ nhất
+
+**Bước 3: Tai sao so sanh với `nums[right]` ma khong phai `nums[left]`?**
+
+- So sánh với `nums[left]` sẽ thất bại khi mảng không bị rotate
+- Ví dụ: `[1, 2, 3]`, `nums[mid]=2 > nums[left]=1` => ta se di sang phai, nhưng min ở bên trái!
+
+#### Lời giải
+
+```python
+def findMin(nums):
+    """
+    Tìm phần tử nhỏ nhất trong mảng sorted bi rotated.
+
+    Y tuong: Binary search, so sanh nums[mid] với nums[right]
+    de xac dinh điểm "gập" (vi tri phần tử nhỏ nhất).
+
+    Args:
+        nums: Mang sorted bi rotated, không trùng lặp
+
+    Returns:
+        Phan tu nho nhat
+    """
+    left, right = 0, len(nums) - 1
+
+    while left < right:
+        mid = left + (right - left) // 2
+
+        if nums[mid] > nums[right]:
+            # Điểm gập nằm bên phải mid
+            # nums[mid] KHÔNG thể là min vì nó lớn hơn nums[right]
+            left = mid + 1
+        else:
+            # nums[mid] <= nums[right]
+            # Diem gap nam ben trai hoặc tại mid
+            # nums[mid] CÓ THỂ là min nên giữ lại
+            right = mid
+
+    # Khi left == right, do la phần tử nhỏ nhất
+    return nums[left]
+
+# === TEST ===
+print(findMin([3, 4, 5, 1, 2]))           # 1
+print(findMin([4, 5, 6, 7, 0, 1, 2]))     # 0
+print(findMin([11, 13, 15, 17]))           # 11 (không bị rotate)
+print(findMin([2, 1]))                      # 1
+print(findMin([1]))                         # 1
+print(findMin([3, 1, 2]))                   # 1
+```
+
+#### Dry run
+
+```
+nums = [4, 5, 6, 7, 0, 1, 2]
+
+Bước 1: left=0, right=6, mid=3
+  nums[3]=7 > nums[6]=2 => Điểm gập bên phải
+  left = 4
+
+Bước 2: left=4, right=6, mid=5
+  nums[5]=1 <= nums[6]=2 => Diem gap ben trai hoặc tại mid
+  right = 5
+
+Bước 3: left=4, right=5, mid=4
+  nums[4]=0 <= nums[5]=1 => Diem gap ben trai hoặc tại mid
+  right = 4
+
+left == right == 4 => return nums[4] = 0
+
+Kết quả: 0
+```
+
+#### Độ phức tạp
+
+|           | Độ phức tạp |
+| :-------- | :---------- |
+| **Time**  | O(log n)    |
+| **Space** | O(1)        |
+
+#### Lỗi thường gặp
+
+1. **So sánh với `nums[left]` thay vì `nums[right]`:** Nhu da giai thich, sẽ thất bại khi mảng không bị rotate.
+2. **Dùng `left <= right` thay vì `left < right`:** Bai nay `left < right` la dung vi ta can dung khi chi con 1 phan tu.
+3. **Dùng `right = mid - 1` thay vì `right = mid`:** Sẽ bỏ sót trường hợp `mid` chinh la phần tử nhỏ nhất!
+
+------
+
+### 9.5 LeetCode #875 -- Koko ăn chuối (Medium)
+
+**Link:** https://leetcode.com/problems/koko-eating-bananas/
+
+#### Đề bài
+
+Koko thich an chuoi. Co `n` đống chuối, dong thu `i` co `piles[i]` qua. Người bảo vệ sẽ quay lại sau `h` gio. Koko chọn tốc độ ăn `k` qua/gio. Moi gio, Koko chon 1 dong va an `k` qua. Nếu đống có ít hơn `k` qua, ăn hết rồi nghỉ cho hết giờ đó.
+
+Tim `k` **nho nhat** de Koko an het chuoi trong `h` gio.
+
+#### Phân tích tư duy
+
+**Bước 1: Nhận diện pattern Binary Search on Answer**
+
+- Đề bài yeu cau tim **gia tri nho nhat** thoa man dieu kien => Binary Search on Answer
+
+- Answer space:
+
+   
+
+  k tu 1 den max(piles)
+
+  - k = 1: ăn chậm nhất, mất nhiều giờ nhất
+  - k = max(piles): ăn nhanh nhất, mỗi đống mất 1 giờ
+
+- **Tính monotonic:** Nếu k hợp lệ (ăn kịp), thi moi k' > k cung hop le
+
+**Bước 2: Xây dựng hàm kiểm tra**
+
+- Với tốc độ k, tính tổng số giờ cần: `sum(ceil(pile / k) for pile in piles)`
+- Neu tong <= h => k hợp lệ
+- Mẹo tính ceil không dùng math: `(pile + k - 1) // k`
+
+**Bước 3: Binary search template**
+
+- Tim **gia tri nho nhat** ma `check(k) == True`
+- Dùng template: `right = mid` khi hop le, `left = mid + 1` khi khong
+
+#### Lời giải
+
+```python
+import math
+
+def minEatingSpeed(piles, h):
+    """
+    Tìm tốc độ ăn chuối nhỏ nhất để Koko ăn hết trong h gio.
+
+    Binary Search on Answer:
+    - Answer space: [1, max(piles)]
+    - Check function: với toc do k, tinh tong gio va so với h
+
+    Args:
+        piles: Danh sach so chuoi moi dong
+        h: So gio toi da
+
+    Returns:
+        Toc do an nho nhat (k)
+    """
+    def can_finish(k):
+        """Kiểm tra Koko có ăn hết trong h gio với toc do k"""
+        total_hours = 0
+        for pile in piles:
+            # ceil(pile / k) = (pile + k - 1) // k
+            total_hours += (pile + k - 1) // k
+        return total_hours <= h
+
+    # Binary search trên answer space [1, max(piles)]
+    left, right = 1, max(piles)
+
+    while left < right:
+        mid = left + (right - left) // 2
+        if can_finish(mid):
+            right = mid       # mid hop le, thử tìm nhỏ hơn
+        else:
+            left = mid + 1    # mid không đủ, cần lớn hơn
+
+    return left
+
+# === TEST ===
+print(minEatingSpeed([3, 6, 7, 11], 8))           # 4
+print(minEatingSpeed([30, 11, 23, 4, 20], 5))     # 30
+print(minEatingSpeed([30, 11, 23, 4, 20], 6))     # 23
+print(minEatingSpeed([312884470], 312884469))       # 2
+print(minEatingSpeed([1, 1, 1, 999999999], 10))    # 142857143
+```
+
+#### Dry run
+
+```
+piles = [3, 6, 7, 11], h = 8
+Answer space: [1, 11]
+
+Bước 1: left=1, right=11, mid=6
+  k=6: ceil(3/6)=1 + ceil(6/6)=1 + ceil(7/6)=2 + ceil(11/6)=2 = 6 <= 8
+  => Hop le! right = 6
+
+Bước 2: left=1, right=6, mid=3
+  k=3: ceil(3/3)=1 + ceil(6/3)=2 + ceil(7/3)=3 + ceil(11/3)=4 = 10 > 8
+  => Khong du! left = 4
+
+Bước 3: left=4, right=6, mid=5
+  k=5: ceil(3/5)=1 + ceil(6/5)=2 + ceil(7/5)=2 + ceil(11/5)=3 = 8 <= 8
+  => Hop le! right = 5
+
+Buoc 4: left=4, right=5, mid=4
+  k=4: ceil(3/4)=1 + ceil(6/4)=2 + ceil(7/4)=2 + ceil(11/4)=3 = 8 <= 8
+  => Hop le! right = 4
+
+left == right == 4 => Đáp án: k = 4
+
+Kiem tra: với k=3 thi cần 10 giờ > 8 => k=3 khong du
+         với k=4 thi can 8 gio <= 8  => k=4 vừa đủ!
+```
+
+#### Độ phức tạp
+
+|           | Độ phức tạp                                               |
+| :-------- | :-------------------------------------------------------- |
+| **Time**  | O(n * log M), với M = max(piles). Log M ~ 30 với M = 10^9 |
+| **Space** | O(1)                                                      |
+
+#### Lỗi thường gặp
+
+1. **Answer space sai:** `left` phải bắt đầu từ 1 (không phải 0, vì k=0 vô nghĩa). `right` la `max(piles)` (khong phai `sum(piles)`).
+2. **Tinh ceil sai:** `pile // k` là floor division. Phải dùng `(pile + k - 1) // k` hoặc `math.ceil(pile / k)`.
+3. **Overflow trong ngôn ngữ khác:** Tổng số giờ có thể rất lớn. Python khong lo, nhung C++/Java can dung `long long`.
+
+------
+
+### 9.6 LeetCode #912 -- Sắp xếp mảng (Medium)
+
+**Link:** https://leetcode.com/problems/sort-an-array/
+
+#### Đề bài
+
+Cho mot mang so nguyen `nums`. Sap xep mang tang dan va trả về. **Không được dùng hàm sort có sẵn.** Phải cài đặt thuật toán O(n log n).
+
+#### Phân tích tư duy
+
+**Bước 1: Chọn thuật toán O(n log n)**
+
+- Merge Sort: luôn O(n log n), stable, nhưng tốn O(n) space
+- Quick Sort: trung bình O(n log n), nhưng worst case O(n^2)
+- Heap Sort: luon O(n log n), in-place
+
+**Bước 2: Tại sao Merge Sort là lựa chọn an toàn?**
+
+- Merge Sort **luon** O(n log n), không có worst case xấu
+- Quick Sort có thể bị TLE (Time Limit Exceeded) với test case cau y (mảng đã sắp xếp + pivot cố định)
+- Đề bài nay tren LeetCode thuong co test case cau y de "giet" Quick Sort ngu ngoc
+
+**Bước 3: Nếu vẫn muốn dùng Quick Sort?**
+
+- BẮT BUỘC dùng randomized pivot
+- Hoac dung 3-way partition (Dutch National Flag) để xử lý phần tử trùng lặp
+
+#### Cách 1: Merge Sort (An toàn nhất)
+
+```python
+def sortArray(nums):
+    """
+    Sort mảng bằng Merge Sort.
+    Luon O(n log n), stable, nhung can O(n) space.
+
+    Args:
+        nums: Mảng cần sắp xếp
+
+    Returns:
+        Mảng đã sắp xếp
+    """
+    if len(nums) <= 1:
+        return nums
+
+    mid = len(nums) // 2
+    left = sortArray(nums[:mid])
+    right = sortArray(nums[mid:])
+
+    return merge(left, right)
+
+def merge(left, right):
+    """Merge 2 mảng đã sắp xếp thành 1"""
+    result = []
+    i = j = 0
+
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result
+
+# === TEST ===
+print(sortArray([5, 2, 3, 1]))           # [1, 2, 3, 5]
+print(sortArray([5, 1, 1, 2, 0, 0]))     # [0, 0, 1, 1, 2, 5]
+print(sortArray([1]))                      # [1]
+print(sortArray([]))                       # []
+print(sortArray([3, 3, 3]))               # [3, 3, 3]
+```
+
+#### Cach 2: Quick Sort với Randomized Pivot + 3-Way Partition
+
+```python
+import random
+
+def sortArray_quicksort(nums):
+    """
+    Sort mang bang Quick Sort với 3-way partition.
+    Xử lý tốt mảng có nhiều phần tử trùng lặp.
+    Randomized pivot để tránh worst case.
+    """
+    def quick_sort(arr, low, high):
+        if low >= high:
+            return
+
+        # 3-way partition (Dutch National Flag)
+        # Chia mảng thành 3 phần: [< pivot | == pivot | > pivot]
+        pivot = arr[random.randint(low, high)]
+        lt = low      # arr[low..lt-1]  < pivot
+        i = low       # arr[lt..i-1]   == pivot
+        gt = high     # arr[gt+1..high] > pivot
+
+        while i <= gt:
+            if arr[i] < pivot:
+                arr[lt], arr[i] = arr[i], arr[lt]
+                lt += 1
+                i += 1
+            elif arr[i] > pivot:
+                arr[gt], arr[i] = arr[i], arr[gt]
+                gt -= 1
+                # Khong tang i vi phan tu swap ve chua kiem tra
+            else:
+                i += 1
+
+        # Phần == pivot đã đứng vị trí, chỉ cần sort 2 phần còn lại
+        quick_sort(arr, low, lt - 1)
+        quick_sort(arr, gt + 1, high)
+
+    quick_sort(nums, 0, len(nums) - 1)
+    return nums
+
+# === TEST ===
+print(sortArray_quicksort([5, 2, 3, 1]))           # [1, 2, 3, 5]
+print(sortArray_quicksort([5, 1, 1, 2, 0, 0]))     # [0, 0, 1, 1, 2, 5]
+print(sortArray_quicksort([2, 2, 2, 2, 2]))         # [2, 2, 2, 2, 2]
+```
+
+#### Cach 3: Heap Sort (Trực tiếp, O(1) space)
+
+```python
+def sortArray_heapsort(nums):
+    """
+    Sort mảng bằng Heap Sort.
+    Luon O(n log n), in-place (O(1) extra space).
+    """
+    def heapify(arr, n, i):
+        """Đảm bảo cây con gốc tại i thỏa mãn max heap"""
+        largest = i
+        left = 2 * i + 1
+        right = 2 * i + 2
+
+        if left < n and arr[left] > arr[largest]:
+            largest = left
+        if right < n and arr[right] > arr[largest]:
+            largest = right
+
+        if largest != i:
+            arr[i], arr[largest] = arr[largest], arr[i]
+            heapify(arr, n, largest)
+
+    n = len(nums)
+
+    # Build max heap
+    for i in range(n // 2 - 1, -1, -1):
+        heapify(nums, n, i)
+
+    # Trich xuat tung phan tu lon nhat
+    for i in range(n - 1, 0, -1):
+        nums[0], nums[i] = nums[i], nums[0]
+        heapify(nums, i, 0)
+
+    return nums
+
+# === TEST ===
+print(sortArray_heapsort([5, 2, 3, 1]))  # [1, 2, 3, 5]
+```
+
+#### Độ phức tạp
+
+| Cach                        | Time           | Space    | Ghi chu               |
+| :-------------------------- | :------------- | :------- | :-------------------- |
+| Merge Sort                  | O(n log n)     | O(n)     | An toàn nhất, luon AC |
+| Quick Sort (3-way + random) | O(n log n) avg | O(log n) | Nhanh nhat trung binh |
+| Heap Sort                   | O(n log n)     | O(1)     | Tiet kiem bo nho nhat |
+
+------
+
+### 9.7 LeetCode #148 -- Sort List (Medium)
+
+**Link:** https://leetcode.com/problems/sort-list/
+
+#### Đề bài
+
+Cho head cua mot linked list. Sort linked list theo thu tu tang dan va trả về head moi.
+
+**Follow-up:** Ban co the sort trong O(n log n) time va **O(1) space** (khong tinh call stack)?
+
+#### Phân tích tư duy
+
+**Bước 1: Tai sao Merge Sort phu hop cho Linked List?**
+
+- Quick Sort can random access (truy cap index i trong O(1)) => khong phu hop cho linked list
+- Merge Sort chi can truy cap tuan tu => **hoan hao cho linked list**
+- Merge 2 sorted linked list la thao tac O(n) va rat tu nhien
+
+**Bước 2: Cac buoc chinh**
+
+1. **Tim diem giua:** Dùng ky thuat **slow & fast pointer** (tortoise and hare)
+2. **Chia doi:** Cat linked list thanh 2 nua
+3. **De quy:** Sort tung nua
+4. **Merge:** Gop 2 sorted list thanh 1
+
+**Bước 3: Tim diem giua cua linked list**
+
+- `slow` di 1 buoc, `fast` di 2 buoc
+- Khi `fast` den cuoi, `slow` o giua
+- Meo: dung `fast.next` va `fast.next.next` de `slow` dung o **nua dau** (can thiet de cat list)
+
+#### Lời giải
+
+```python
+class ListNode:
+    """Node cua linked list"""
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def sortList(head):
+    """
+    Sort linked list bang Merge Sort.
+
+    Cac buoc:
+    1. Tim diem giua bang slow/fast pointer
+    2. Cat thanh 2 nua
+    3. De quy sort tung nua
+    4. Merge 2 sorted list
+
+    Args:
+        head: Node dau cua linked list
+
+    Returns:
+        Node dau cua linked list da sort
+    """
+    # Base case: list rong hoặc 1 node
+    if not head or not head.next:
+        return head
+
+    # Bước 1: Tim diem giua bang slow/fast pointer
+    slow, fast = head, head.next
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+
+    # Bước 2: Cat thanh 2 nua
+    mid = slow.next
+    slow.next = None    # Cat lien ket
+
+    # Bước 3: De quy sort tung nua
+    left = sortList(head)
+    right = sortList(mid)
+
+    # Buoc 4: Merge 2 sorted list
+    return merge_lists(left, right)
+
+def merge_lists(l1, l2):
+    """Merge 2 sorted linked list thanh 1"""
+    dummy = ListNode(0)     # Node gia lam dau
+    current = dummy
+
+    while l1 and l2:
+        if l1.val <= l2.val:
+            current.next = l1
+            l1 = l1.next
+        else:
+            current.next = l2
+            l2 = l2.next
+        current = current.next
+
+    # Noi phan con lai
+    current.next = l1 if l1 else l2
+    return dummy.next
+
+# === HELPER: Tao linked list tu array va in ra ===
+def create_list(arr):
+    """Tao linked list tu array"""
+    dummy = ListNode(0)
+    current = dummy
+    for val in arr:
+        current.next = ListNode(val)
+        current = current.next
+    return dummy.next
+
+def list_to_array(head):
+    """Chuyen linked list thanh array de in"""
+    result = []
+    while head:
+        result.append(head.val)
+        head = head.next
+    return result
+
+# === TEST ===
+# Test 1: [4, 2, 1, 3]
+head = create_list([4, 2, 1, 3])
+result = sortList(head)
+print(list_to_array(result))  # [1, 2, 3, 4]
+
+# Test 2: [-1, 5, 3, 4, 0]
+head = create_list([-1, 5, 3, 4, 0])
+result = sortList(head)
+print(list_to_array(result))  # [-1, 0, 3, 4, 5]
+
+# Test 3: List rong
+result = sortList(None)
+print(list_to_array(result))  # []
+
+# Test 4: 1 phan tu
+head = create_list([1])
+result = sortList(head)
+print(list_to_array(result))  # [1]
+```
+
+#### Dry run
+
+```
+Linked list: 4 -> 2 -> 1 -> 3
+
+=== sortList(4 -> 2 -> 1 -> 3) ===
+Tim giua: slow=4, fast=2
+  slow=2, fast=None => mid sau slow la node 1
+  Cat: [4 -> 2] va [1 -> 3]
+
+  === sortList(4 -> 2) ===
+  Tim giua: slow=4, fast=None => mid = node 2
+  Cat: [4] va [2]
+    sortList(4) => 4 (base case)
+    sortList(2) => 2 (base case)
+  merge(4, 2):
+    2 < 4 => lay 2, roi lay 4
+    => 2 -> 4
+
+  === sortList(1 -> 3) ===
+  Tim giua: slow=1, fast=None => mid = node 3
+  Cat: [1] va [3]
+    sortList(1) => 1 (base case)
+    sortList(3) => 3 (base case)
+  merge(1, 3):
+    1 < 3 => lay 1, roi lay 3
+    => 1 -> 3
+
+merge(2 -> 4, 1 -> 3):
+  1 < 2 => lay 1
+  2 < 3 => lay 2
+  3 < 4 => lay 3
+  lay 4
+  => 1 -> 2 -> 3 -> 4
+
+Kết quả: 1 -> 2 -> 3 -> 4
+```
+
+#### Độ phức tạp
+
+|           | Độ phức tạp                               |
+| :-------- | :---------------------------------------- |
+| **Time**  | O(n log n) -- giong Merge Sort tren array |
+| **Space** | O(log n) cho call stack de quy            |
+
+> **Luu y:** Bai nay co the giai với O(1) space (khong tinh call stack) bang bottom-up merge sort, nhung code se phuc tap hon nhieu. Trong phong van, phien ban top-down (de quy) la du.
+
+#### Lỗi thường gặp
+
+1. **Khong cat dut lien ket:** Quen `slow.next = None` => 2 nua van noi với nhau => vong lap vo han!
+2. **Slow/fast khong dung:** Dùng `slow, fast = head, head` thay vì `slow, fast = head, head.next` => slow se dung o giua thay vì truoc giua, gay ra loi với list 2 phan tu.
+3. **Khong xu ly list 1 phan tu:** Quen base case => de quy vo han.
+
+------
+
+### 9.8 LeetCode #215 -- Kth Largest Element in an Array (Medium)
+
+**Link:** https://leetcode.com/problems/kth-largest-element-in-an-array/
+
+#### Đề bài
+
+Cho mot mang so nguyen `nums` va mot so nguyen `k`. Tra ve phan tu **lon thu k** trong mang.
+
+Luu y: la phan tu lon thu k theo thu tu **da sap xep**, KHONG phai phan tu lon thu k không trùng lặp.
+
+**Ví dụ:** `nums = [3,2,1,5,6,4], k = 2` => Output: `5` (sap xep giam dan: [6, **5**, 4, 3, 2, 1])
+
+#### Phân tích tư duy
+
+**Bước 1: Cac cach tiep can**
+
+| Cach               | Time       | Space | Ghi chu        |
+| :----------------- | :--------- | :---- | :------------- |
+| Sort roi lay index | O(n log n) | O(n)  | Don gian nhat  |
+| Min Heap size k    | O(n log k) | O(k)  | Tot khi k << n |
+| Quick Select       | O(n) avg   | O(1)  | Nhanh nhat!    |
+
+**Bước 2: Quick Select la gi?**
+
+- Bien the cua Quick Sort, nhung chi de quy 1 phia (thay vì 2 phia)
+- Sau partition, pivot o vi tri chinh xac cua no trong mang da sort
+- Neu pivot o vi tri can tim => done!
+- Neu pivot o truoc vi tri can tim => chi can tim o nua phai
+- Neu pivot o sau vi tri can tim => chi can tim o nua trai
+
+**Bước 3: Chuyen doi "lon thu k" thanh index**
+
+- Phan tu lon thu k = phan tu o index `n - k` trong mang sap xep tang dan
+- Ví dụ: mang 6 phan tu, k=2 => can phan tu o index 4
+
+#### Cách 1: Sort (Don gian nhat)
+
+```python
+def findKthLargest_sort(nums, k):
+    """Cach don gian: sort roi lay phan tu"""
+    nums.sort()
+    return nums[-k]  # Phan tu lon thu k = index -k tu cuoi
+
+# O(n log n) time, O(n) space (TimSort)
+```
+
+#### Cach 2: Min Heap (Tot khi k nho)
+
+```python
+import heapq
+
+def findKthLargest_heap(nums, k):
+    """
+    Dùng min heap co kich thuoc k.
+    Giu k phan tu lon nhat trong heap.
+    Root cua heap = phần tử nhỏ nhất trong k phan tu lon nhat
+                  = phan tu lon thu k.
+
+    Args:
+        nums: Mang so nguyen
+        k: Tim phan tu lon thu k
+
+    Returns:
+        Phan tu lon thu k
+    """
+    # heapq la min heap, giu k phan tu lon nhat
+    heap = []
+    for num in nums:
+        heapq.heappush(heap, num)
+        if len(heap) > k:
+            heapq.heappop(heap)  # Loai phần tử nhỏ nhất
+
+    return heap[0]  # Root = phan tu lon thu k
+
+# === TEST ===
+print(findKthLargest_heap([3, 2, 1, 5, 6, 4], 2))      # 5
+print(findKthLargest_heap([3, 2, 3, 1, 2, 4, 5, 5, 6], 4))  # 4
+```
+
+#### Cach 3: Quick Select (Toi uu nhat)
+
+```python
+import random
+
+def findKthLargest(nums, k):
+    """
+    Quick Select -- tim phan tu lon thu k trong O(n) trung binh.
+
+    Tuong tu Quick Sort nhung chi de quy 1 phia.
+    Chuyen bai toan thanh: tim phan tu o index (n - k) trong mang sorted.
+
+    Args:
+        nums: Mang so nguyen
+        k: Tim phan tu lon thu k
+
+    Returns:
+        Phan tu lon thu k
+    """
+    target_index = len(nums) - k  # Chuyen "lon thu k" thanh index
+
+    def quick_select(left, right):
+        # Chon pivot ngau nhien de tranh worst case
+        pivot_idx = random.randint(left, right)
+        nums[pivot_idx], nums[right] = nums[right], nums[pivot_idx]
+
+        pivot = nums[right]
+        store = left  # Vi tri se dat pivot
+
+        # Partition: dua cac phan tu < pivot sang trai
+        for i in range(left, right):
+            if nums[i] < pivot:
+                nums[store], nums[i] = nums[i], nums[store]
+                store += 1
+
+        # Dat pivot vao dung vi tri
+        nums[store], nums[right] = nums[right], nums[store]
+
+        # Pivot gio o vi tri `store` -- day la vi tri chinh xac cua no
+        if store == target_index:
+            return nums[store]         # Tìm thấy!
+        elif store < target_index:
+            return quick_select(store + 1, right)  # Tìm nửa phải
+        else:
+            return quick_select(left, store - 1)   # Tìm nửa trái
+
+    return quick_select(0, len(nums) - 1)
+
+# === TEST ===
+print(findKthLargest([3, 2, 1, 5, 6, 4], 2))           # 5
+print(findKthLargest([3, 2, 3, 1, 2, 4, 5, 5, 6], 4))  # 4
+print(findKthLargest([1], 1))                             # 1
+print(findKthLargest([7, 6, 5, 4, 3, 2, 1], 5))          # 3
+print(findKthLargest([2, 1], 1))                          # 2
+```
+
+#### Cach 4: Dùng heapq.nlargest (Pythonic nhat)
+
+```python
+import heapq
+
+def findKthLargest_pythonic(nums, k):
+    """Cach ngắn gọn nhất dung thu vien Python"""
+    return heapq.nlargest(k, nums)[-1]
+
+# Luu y: heapq.nlargest dung heap, do phuc tap O(n log k)
+```
+
+#### Dry run Quick Select
+
+```
+nums = [3, 2, 1, 5, 6, 4], k = 2
+target_index = 6 - 2 = 4 (can phan tu o index 4 trong mang sorted)
+Mang sorted: [1, 2, 3, 4, 5, 6] => index 4 = 5
+
+=== quick_select(0, 5) ===
+Gia su chon pivot = nums[5] = 4
+
+Partition với pivot = 4:
+  i=0: nums[0]=3 < 4 => swap nums[0] va nums[0], store=1
+  i=1: nums[1]=2 < 4 => swap nums[1] va nums[1], store=2
+  i=2: nums[2]=1 < 4 => swap nums[2] va nums[2], store=3
+  i=3: nums[3]=5 >= 4 => bo qua
+  i=4: nums[4]=6 >= 4 => bo qua
+
+Dat pivot tai store=3: nums = [3, 2, 1, 4, 6, 5]
+                                         ^pivot tai index 3
+
+store=3 < target_index=4 => tim nua phai
+
+=== quick_select(4, 5) ===
+Gia su chon pivot = nums[5] = 5
+
+Partition với pivot = 5:
+  i=4: nums[4]=6 >= 5 => bo qua
+
+Dat pivot tai store=4: nums = [..., 5, 6]
+                                   ^pivot tai index 4
+
+store=4 == target_index=4 => TIM THAY! Tra ve nums[4] = 5
+
+Kết quả: 5
+```
+
+#### Độ phức tạp
+
+| Cach           | Time (Average) | Time (Worst) | Space |
+| :------------- | :------------- | :----------- | :---- |
+| Sort           | O(n log n)     | O(n log n)   | O(n)  |
+| Min Heap       | O(n log k)     | O(n log k)   | O(k)  |
+| Quick Select   | **O(n)**       | O(n^2)       | O(1)  |
+| heapq.nlargest | O(n log k)     | O(n log k)   | O(k)  |
+
+> **Tai sao Quick Select la O(n) trung binh?** Sau partition, ta chi de quy 1 phia. So phep so sanh: `n + n/2 + n/4 + ... = 2n = O(n)` (Day la tong cap so nhan với cong boi 1/2, hoi tu ve 2n)
+
+#### Lỗi thường gặp
+
+1. **Nham "lon thu k" với "index k":** Phan tu lon thu 1 la MAX (index n-1), khong phai index 0!
+2. **Quick Select khong dung randomized pivot:** Voi mang da sort, worst case se la O(n^2). LUON dung random!
+3. **Dùng heap sai loai:** `heapq` la MIN heap. Muon max heap, push `-num` hoặc dung `heapq.nlargest`.
+4. **Quen truong hop k = n:** Phan tu lon thu n = phan tu NHO NHAT. Dam bao code xu ly dung.
+
+------
+
+### Tong ket bai tap LeetCode
+
+| #    | Bai                            | Do kho | Kỹ thuật chinh            | Meo ghi nho                       |
+| :--- | :----------------------------- | :----- | :------------------------ | :-------------------------------- |
+| 704  | Binary Search                  | Easy   | Binary Search cơ bản      | Vanilla BS, chu y `<=` va `mid+1` |
+| 34   | Find First and Last Position   | Medium | Lower Bound / Upper Bound | 2 lan BS: tim trai + tim phai     |
+| 33   | Search in Rotated Sorted Array | Medium | Modified Binary Search    | Xac dinh nua nao sorted           |
+| 153  | Tìm phần tử nhỏ nhất in Rotated        | Medium | Binary Search             | So sánh với `nums[right]`         |
+| 875  | Koko ăn chuối            | Medium | Binary Search on Answer   | Template min hop le               |
+| 912  | Sắp xếp mảng                  | Medium | Merge Sort / Quick Sort   | Merge Sort an toan nhat           |
+| 148  | Sort List                      | Medium | Merge Sort on Linked List | Slow/fast pointer + merge         |
+| 215  | Kth Largest Element            | Medium | Quick Select / Heap       | Quick Select O(n) avg             |
+
+#### Loi khuyen khi luyen LeetCode Searching & Sorting
+
+1. **Bat dau với #704:** Bai nay la nen tang. Neu ban chua viet duoc Binary Search "nham mat", hay luyen cho den khi thuoc.
+2. **Hoc pattern, khong hoc thuoc bai:** Binary Search co 3 pattern chinh:
+   - Tim chinh xac (`left <= right`, return khi `nums[mid] == target`)
+   - Tim vi tri dau/cuoi (`left < right`, `right = mid` hoặc `left = mid`)
+   - Binary Search on Answer (`left < right`, check function)
+3. **Moi bai, viet ra giay truoc:** Dry run với vi du nho truoc khi code. 90% loi binary search la off-by-one.
+4. **Quick Select la "vu khi bi mat":** Phong van rat thich hoi bai #215. Biet Quick Select la diem cong lon.
+5. **Sort List (#148) la bai classic:** No kiem tra ban hieu Merge Sort + Linked List. Luyen ky bai nay.

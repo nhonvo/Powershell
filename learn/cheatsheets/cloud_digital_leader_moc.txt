@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/cloud-digital-leader
+  - clouddigitalleader
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 Cloud-Digital-Leader MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/google/Cloud-Digital-Leader/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/google/Cloud-Digital-Leader/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/google/Cloud-Digital-Leader/Cloud-Digital-Leader Mindmap\|🗺️ Cloud-Digital-Leader Mindmap]]
+- [[certifications/google/Cloud-Digital-Leader/Cloud-Digital-Leader Flashcards\|🃏 Cloud-Digital-Leader Flashcards]]
+- [[certifications/google/Cloud-Digital-Leader/Cloud-Digital-Leader_Scraped_Question_Bank\|🗃️ Cloud-Digital-Leader Scraped Question Bank]]

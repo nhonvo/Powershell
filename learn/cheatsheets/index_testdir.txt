@@ -1,0 +1,14 @@
+# testdir
+
+🔙 **Back to Parent**: [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/SolutionsAndExplanations/index_SolutionsAndExplanations|SolutionsAndExplanations]]
+
+## 📁 Categories
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/SolutionsAndExplanations/testdir/subdir1/index_subdir1|subdir1]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/SolutionsAndExplanations/testdir/subdir2/index_subdir2|subdir2]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/SolutionsAndExplanations/testdir/subdir3/index_subdir3|subdir3]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/SolutionsAndExplanations/testdir/subdir4/index_subdir4|subdir4]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/SolutionsAndExplanations/testdir/subdir5/index_subdir5|subdir5]]
+
+## 📄 Notes
+- [[testdir|testdir]]
+

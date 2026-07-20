@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mo-100
+  - mo100
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MO-100: Microsoft Word (Word and Word 2019) MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MO-100/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MO-100/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MO-100/MO-100 Mindmap\|🗺️ MO-100 Mindmap]]
+- [[certifications/microsoft/MO-100/MO-100 Flashcards\|🃏 MO-100 Flashcards]]
+- [[certifications/microsoft/MO-100/MO-100_Scraped_Question_Bank\|🗃️ MO-100 Scraped Question Bank]]

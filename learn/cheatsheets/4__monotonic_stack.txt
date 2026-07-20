@@ -1,0 +1,148 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/🥞index_07_Stack_Queue|07_Stack_Queue]]
+
+## 4. Monotonic Stack
+
+### 4.1 Khái niệm
+
+Monotonic Stack là một stack đặc biệt mà các phần tử trong nó luôn duy trì **thứ tự đơn điệu** (tăng dần hoặc giảm dần) từ đáy lên đỉnh.
+
+**Ví dụ thực tế**: Hãy tưởng tượng bạn xếp hàng và có quy tắc: "Ai cao hơn người phía trước thì người phía trước phải rời hàng." Kết quả là hàng luôn có chiều cao **giảm dần** từ đầu đến cuối — đó là monotonic decreasing.
+
+**Hai loại:**
+
+- **Monotonic Increasing Stack**: phần tử tăng dần từ đáy lên đỉnh. Khi push phần tử mới nhỏ hơn top → pop cho đến khi thỏa mãn.
+- **Monotonic Decreasing Stack**: phần tử giảm dần từ đáy lên đỉnh. Khi push phần tử mới lớn hơn top → pop cho đến khi thỏa mãn.
+
+### 4.2 Cách duy trì tính đơn điệu
+
+**Flowchart — Monotonic Increasing Stack (push x):**
+
+CóKhôngBắt đầu push(x)Stack rỗng
+HOẶC
+x >= stack.top()stack.push(x)Xử lý stack.top()
+trước khi popstack.pop()Kết thúc
+
+### 4.3 Mô phỏng — Monotonic Increasing Stack
+
+Cho mảng `[3, 1, 4, 1, 5, 9, 2, 6]`, mình duy trì monotonic increasing stack (từ đáy lên đỉnh tăng dần):
+
+```
+Phần tử 3: stack rỗng → push 3          Stack: [3]
+Phần tử 1: 1 < 3 (top) → pop 3, push 1  Stack: [1]
+Phần tử 4: 4 >= 1 (top) → push 4        Stack: [1, 4]
+Phần tử 1: 1 < 4 → pop 4, 1 >= 1 → push 1  Stack: [1, 1]
+Phần tử 5: 5 >= 1 → push 5              Stack: [1, 1, 5]
+Phần tử 9: 9 >= 5 → push 9              Stack: [1, 1, 5, 9]
+Phần tử 2: 2 < 9 → pop 9
+           2 < 5 → pop 5
+           2 >= 1 → push 2              Stack: [1, 1, 2]
+Phần tử 6: 6 >= 2 → push 6              Stack: [1, 1, 2, 6]
+```
+
+### 4.4 Code
+
+#### Python — Monotonic Increasing Stack
+
+```python
+def build_monotonic_increasing_stack(arr):
+    """
+    Xây dựng monotonic increasing stack.
+    Các phần tử trong stack tăng dần từ đáy lên đỉnh.
+    Trả về danh sách các phần tử bị pop tại mỗi bước.
+    """
+    stack = []
+    popped_at_step = []  # Ghi lại phần tử bị pop
+
+    for i, x in enumerate(arr):
+        popped = []
+        # Pop tất cả phần tử lớn hơn x
+        while stack and stack[-1] > x:
+            popped.append(stack.pop())
+        stack.append(x)
+        popped_at_step.append((x, popped, list(stack)))
+        print(f"Phần tử {x}: popped {popped}, stack = {stack}")
+
+    return stack
+
+
+# --- Chạy thử ---
+arr = [3, 1, 4, 1, 5, 9, 2, 6]
+result = build_monotonic_increasing_stack(arr)
+print(f"Stack cuối cùng: {result}")
+```
+
+#### Python — Monotonic Decreasing Stack
+
+```python
+def build_monotonic_decreasing_stack(arr):
+    """
+    Xây dựng monotonic decreasing stack.
+    Các phần tử trong stack giảm dần từ đáy lên đỉnh.
+    Khi push phần tử mới lớn hơn top → pop cho đến khi thỏa mãn.
+    """
+    stack = []
+
+    for x in arr:
+        popped = []
+        # Pop tất cả phần tử nhỏ hơn x (giữ stack giảm dần)
+        while stack and stack[-1] < x:
+            popped.append(stack.pop())
+        stack.append(x)
+        print(f"Phần tử {x}: popped {popped}, stack = {stack}")
+
+    return stack
+
+
+# --- Chạy thử ---
+arr = [3, 1, 4, 1, 5, 9, 2, 6]
+result = build_monotonic_decreasing_stack(arr)
+print(f"Stack cuối cùng: {result}")
+# Phần tử 3: popped [], stack = [3]
+# Phần tử 1: popped [], stack = [3, 1]
+# Phần tử 4: popped [1, 3], stack = [4]
+# Phần tử 1: popped [], stack = [4, 1]
+# Phần tử 5: popped [1, 4], stack = [5]
+# Phần tử 9: popped [5], stack = [9]
+# Phần tử 2: popped [], stack = [9, 2]
+# Phần tử 6: popped [2], stack = [9, 6]
+# Stack cuối cùng: [9, 6]
+```
+
+### 4.5 Chứng minh độ phức tạp — Amortized O(n)
+
+**Định lý**: Duyệt qua mảng n phần tử và duy trì monotonic stack tốn tổng cộng O(n).
+
+**Chứng minh (Aggregate Analysis):**
+
+Quan sát rằng mỗi phần tử trong mảng:
+
+- Được **push vào stack đúng 1 lần**
+- Được **pop khỏi stack tối đa 1 lần**
+
+Gọi T_push = tổng số lần push = n (mỗi phần tử push 1 lần). Gọi T_pop = tổng số lần pop <= n (mỗi phần tử pop tối đa 1 lần).
+
+Tổng chi phí: T_push + T_pop <= n + n = 2n = O(n).
+
+Amortized cost mỗi phần tử: O(n) / n = **O(1)**.
+
+Mặc dù tại một bước cụ thể có thể pop nhiều phần tử (worst case O(n) cho 1 bước), nhưng tính trung bình trên toàn bộ n bước, mỗi bước chỉ tốn O(1).
+
+### 4.6 Ứng dụng
+
+- **Next Greater Element** (phần 5)
+- **Largest Rectangle in Histogram** (LeetCode 84)
+- **Trapping Rain Water** (LeetCode 42)
+- **Stock Span Problem**
+- **Sliding Window Maximum** (kết hợp deque)
+
+### 4.7 Ưu nhược điểm
+
+**Ưu điểm:**
+
+- Giải quyết nhiều bài toán "tìm phần tử lớn/nhỏ hơn gần nhất" trong O(n)
+- Thay thế cho brute force O(n^2)
+
+**Nhược điểm:**
+
+- Khó hiểu lúc mới học (cần luyện nhiều bài)
+- Chỉ áp dụng được cho một lớp bài toán cụ thể

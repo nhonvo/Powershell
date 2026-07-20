@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/az-400
+  - az400
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AZ-400: Designing and Implementing Microsoft DevOps Solutions MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/AZ-400/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/AZ-400/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AZ-400/AZ-400 Mindmap\|🗺️ AZ-400 Mindmap]]
+- [[certifications/microsoft/AZ-400/AZ-400 Flashcards\|🃏 AZ-400 Flashcards]]
+- [[certifications/microsoft/AZ-400/AZ-400_Scraped_Question_Bank\|🗃️ AZ-400 Scraped Question Bank]]

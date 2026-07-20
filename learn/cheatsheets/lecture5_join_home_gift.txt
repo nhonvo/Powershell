@@ -1,0 +1,87 @@
+/*
+
+Lưu ý: 
+- khi nộp bài: Copy toàn bộ lệnh SQL vào file .txt. Và nộp file này nhớ ghi lại đề nhé
+- chạy 1 lần là được không bị lỗi.
+- Bấm chạy lại lần nữa cũng không được lỗi(học cách drop if exists)
+
+*/
+
+USE MASTER
+GO
+DROP DATABASE IF EXISTS ExampleDatabase1
+GO
+
+CREATE DATABASE ExampleDatabase1;
+GO
+
+USE ExampleDatabase1;
+GO
+
+CREATE TABLE Departments (
+    ID INT PRIMARY KEY,
+    Name VARCHAR(50) NOT NULL,
+    ManagerId INT 
+);
+
+-- Create tables
+CREATE TABLE Employees (
+    Id INT PRIMARY KEY,
+    Name VARCHAR(50) NOT NULL,
+    DepartmentId INT FOREIGN KEY REFERENCES Departments(ID),
+    Salary INT NOT NULL,
+    ManagerId INT 
+);
+
+
+-- Insert data into Departments table
+INSERT INTO Departments (ID, Name, ManagerId) VALUES
+(1, 'Marketing', 1),
+(2, 'Sales', 2),
+(3, 'IT', 3),
+(4, 'HR', 4);
+
+-- Insert data into Employees table
+INSERT INTO Employees (Id, Name, DepartmentId, Salary, ManagerId) VALUES
+(1, 'John', 1, 50000, 1),
+(2, 'Jane', 2, 60000, 2),
+(3, 'Bob', 3, 70000, 3),
+(4, 'Sue', 4, 55000, 4),
+(5, 'Dave', 1, 45000, 1),
+(6, 'Alice', 2, 65000, 2),
+(7, 'Fred', 3, 80000, 3),
+(8, 'Mary', 4, 50000, 4),
+(9, 'Tom', 1, 55000, 1),
+(10, 'Kate', 2, 70000, 2);
+
+
+--INNER JOIN
+
+--Retrieve the name and department of each employee, along with the name of the department's manager.
+--Retrieve the name and salary of each employee, along with the name of the department they work in.
+--Retrieve the name and salary of each employee who works in the IT department.
+--Retrieve the name of each department and the total salary of all employees who work in that department.
+--OUTER JOIN
+
+--Retrieve the name and department of each employee, along with the name of the department's manager (including employees with no manager).
+--Retrieve the name and salary of each employee, along with the name of the department they work in (including employees with no department).
+--Retrieve the name and salary of each employee who works in the IT department (including employees with no department).
+--Retrieve the name of each department and the total salary of all employees who work in that department (including departments with no employees).
+--EXCLUDING JOIN:
+
+--Write a query to retrieve all the employees that do not have a department.
+--Write a query to retrieve all the departments that do not have any employees.
+--Write a query to retrieve all the employees that do not have a manager.
+--Write a query to retrieve all the managers that do not have any employees in their department.
+--SELF JOIN:
+
+--Write a query to retrieve all the employees and their manager's name.
+--Write a query to retrieve all the employees and their co-workers in the same department.
+--Write a query to retrieve all the departments and their managers' names.
+--Write a query to retrieve all the departments and their employees' names.
+--UNION and UNION ALL:
+
+--Write a query to retrieve all the employees in the Marketing department and all the employees in the Sales department using the UNION operator.
+--Write a query to retrieve all the employees in the Marketing department and all the employees in the Sales department using the UNION ALL operator.
+--Write a query to retrieve all the employees in the Marketing department and all the employees in the Sales department and sort them by salary in descending order.
+--Write a query to retrieve all the employees in the Marketing department and all the employees in the Sales department and remove any duplicates using the UNION operator.

@@ -1,0 +1,96 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/03_REST_API/📂index_03_REST_API|03_REST_API]]
+
+# 🌿 3. Spring Boot Web API (Deep Dive)
+
+Trong thế giới Java Backend, **Spring Boot** là sự kết hợp hoàn hảo giữa quy chuẩn cao (Convention over Configuration) và sự linh hoạt vô hạn. Nó biến việc xây dựng API phức tạp thành những đoạn code Annotation cực ngắn gọn.
+
+---
+
+### 🏛️ 3.1 Spring Context & Bean Lifecycle
+
+`ApplicationContext` là cái đầu não của Spring, quản lý vòng đời của mọi thành phần (**Beans**).
+
+- **@Component**: Đánh dấu 1 class là Bean.
+- **@Service, @Repository, @Controller**: Các biến thể mang tính ngữ nghĩa (Semantics).
+- **@Autowired**: Cơ chế **Dependency Injection** tự động tiêm Bean vào. (Khuyên dùng: **Constructor Injection** thay vì Field Injection).
+
+---
+
+### 🧠 3.2 Spring Web (MVC) Pipeline
+
+Mọi Request trong Spring Boot đi qua một cửa duy nhất: **DispatcherServlet**.
+
+#### **Luồng xử lý:**
+1.  **Request** → DispatcherServlet.
+2.  **Handler Mapping**: Phân tích URL để tìm `@RestController` và phương thức tương ứng.
+3.  **Handler Adapter**: Gọi phương thức thực thi (Lúc này các tham số `@RequestBody`, `@PathVariable` được chuyển đổi bởi `Jackson`).
+4.  **Response**: Trả về `ResponseEntity<T>` (JSON).
+
+---
+
+### 🚀 3.3 Exception Handling - Global Controller Advice
+
+Đừng lạm dụng `try-catch` trong từng hàm logic. Hãy dùng **@ControllerAdvice** để bắt lỗi toàn cục.
+
+**Ví dụ (Java):**
+```java
+@ControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleNotFound(ResourceNotFoundException ex) {
+        return new ResponseEntity<>(new Error(ex.getMessage()), HttpStatus.NOT_FOUND);
+    }
+}
+```
+
+---
+
+### ⚡ 3.4 Request Validation & DTO Pattern
+
+Sử dụng `spring-boot-starter-validation` để kiểm tra đầu vào mượt mà.
+
+```java
+public class UserDto {
+    @Email(message = "Email không hợp lệ")
+    private String email;
+
+    @Min(value = 18, message = "Bạn phải trên 18 tuổi")
+    private int age;
+}
+// Trong Controller: @PostMapping("/users") public void save(@Valid @RequestBody UserDto user)
+```
+
+---
+
+### 🧤 3.5 Interceptors vs Filters
+
+- **Filters (Servlet Level)**: Làm việc trước khi Request vào Spring. Dùng cho: Bảo mật (Security), Log thô, Nén.
+- **Interceptors (Spring Level)**: Làm việc với các Spring Bean (Handler). Dùng cho: Kiểm tra quyền (Authorization), Thống kê logic xử lý.
+
+---
+
+### 📝 3.6 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao Field Injection (`@Autowired` trên biến) bị coi là một hành vi xấu (Bad Practice)?"
+<details><summary>Đáp án</summary>
+Nó vi phạm tính đóng gói, làm cho class khó viết Unit Test (Vì bạn không thể thay thế bean đó bằng Mock object mà không dùng Reflection). Constructor Injection là lựa chọn tốt nhất vì nó đảm bảo Object luôn ở trạng thái hợp lệ ngay khi được tạo ra.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết một bộ lọc `@RequestMapping` để tạo API lấy thông tin người dùng theo `ID` linh hoạt từ URL. (Dùng Java Spring Boot).
+<details><summary>Solution</summary>
+```java
+@GetMapping("/users/{id}")
+public ResponseEntity<User> getUser(@PathVariable Long id) {
+    return repo.findById(id)
+               .map(ResponseEntity::ok)
+               .orElse(ResponseEntity.notFound().build());
+}
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Spring Bean Lifecycle and Configuration Scopes](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-spring-bean-lifecycle.md)
+- [Exception Handling in Spring Boot - The Cleanest Way](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-spring-exceptions.md)
+- [Mastering Spring Security - Filter Chain Architecture](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-spring-security.md)

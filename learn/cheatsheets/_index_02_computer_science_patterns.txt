@@ -1,0 +1,10 @@
+# 02_Computer_Science_Patterns
+
+🔙 **Back to Parent**: [[📖index_learning|learning]]
+
+## 📁 Sub-Categories
+- [[technical_skills/03_Design_Patterns_Mastery/📂index_03_Design_Patterns_Mastery|03_Design_Patterns_Mastery]]
+- [[technical_skills/04_PostgreSQL_Deep_Dive/📂index_04_PostgreSQL_Deep_Dive|04_PostgreSQL_Deep_Dive]]
+- [[technical_skills/Computational Statistics and Applications/📂index_Computational Statistics and Applications|Computational Statistics and Applications]]
+- [[technical_skills/Introduction to Data Analysis/📂index_Introduction to Data Analysis|Introduction to Data Analysis]]
+

@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/pspo-i
+  - pspoi
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 PSPO-I MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/scrum/PSPO-I/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/scrum/PSPO-I/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/scrum/PSPO-I/PSPO-I Mindmap\|🗺️ PSPO-I Mindmap]]
+- [[certifications/scrum/PSPO-I/PSPO-I Flashcards\|🃏 PSPO-I Flashcards]]
+- [[certifications/scrum/PSPO-I/PSPO-I_Scraped_Question_Bank\|🗃️ PSPO-I Scraped Question Bank]]

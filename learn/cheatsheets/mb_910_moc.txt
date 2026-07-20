@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mb-910
+  - mb910
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MB-910: Microsoft Dynamics 365 Fundamentals Customer Engagement Apps (CRM) MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MB-910/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MB-910/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MB-910/MB-910 Mindmap\|🗺️ MB-910 Mindmap]]
+- [[certifications/microsoft/MB-910/MB-910 Flashcards\|🃏 MB-910 Flashcards]]
+- [[certifications/microsoft/MB-910/MB-910_Scraped_Question_Bank\|🗃️ MB-910 Scraped Question Bank]]

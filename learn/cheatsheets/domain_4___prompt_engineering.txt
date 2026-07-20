@@ -1,0 +1,42 @@
+---
+tags:
+  - certification/gh-300
+  - copilot
+  - study-notes/domain-4
+status: todo
+created: 2026-05-26
+---
+
+# Domain 4: Prompt Engineering
+
+This domain covers techniques for optimizing Copilot completions, managing context, and directing responses.
+
+## 🎯 Exam Objectives
+- Apply prompt engineering best practices (the 3 Cs).
+- Differentiate between Zero-shot, One-shot, and Few-shot prompting.
+- Use context anchors and system targets in Copilot Chat (`@workspace`, `#file`).
+- Structure custom configuration instructions.
+
+---
+
+## 📖 Key Study Topics
+
+### 1. The 3 Cs of Prompting
+1. **Clear**: Avoid vague terminology. Be explicit about expected outputs.
+2. **Concise**: Keep constraints clear and distinct without redundant sentences.
+3. **Contextual**: Supply relevant code framework, patterns, and parameters.
+
+### 2. Shot Prompting Styles
+- **Zero-shot**: Asking a question directly without providing examples.
+  - *Example*: `"Write a function to validate an email in PowerShell."*
+- **One-shot**: Providing one example of expected input/output.
+- **Few-shot**: Providing multiple examples of input/output to establish a distinct template structure. Excellent for custom domain parsing.
+
+### 3. Context Anchors in Chat
+- `@workspace`: Context includes files, structure, and dependencies across the active IDE workspace.
+- `@terminal`: Context includes terminal buffer history, run errors, and shell suggestions.
+- `#file:<path>`: Explicitly attaches the file's content as part of the context window.
+- `#selection`: Focuses context solely on the highlighted text block.
+
+---
+Back to **[[certifications/microsoft/GH-300-Copilot/GH-300 Copilot MOC|GH-300 Copilot MOC]]**

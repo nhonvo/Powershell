@@ -1,0 +1,236 @@
+{
+  "Meta": {
+    "Id": "deck_8__queue_using_stack__stack_using_queue",
+    "Topic": "8. Queue using Stack  Stack using Queue",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "8__queue_using_stack__stack_using_queue"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 11
+  },
+  "Cards": [
+    {
+      "Id": "card_01039",
+      "Front": "Cấu trúc",
+      "Back": "enqueue/push | dequeue/pop | Ghi chú",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. queue using stack  stack using queue"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01040",
+      "Front": "Queue using 2 Stacks",
+      "Back": "O(1) | **O(1) amortized** | Cách tối ưu nhất",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. queue using stack  stack using queue"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01041",
+      "Front": "Stack using 2 Queues (push costly)",
+      "Back": "O(n) | O(1) | ",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. queue using stack  stack using queue"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01042",
+      "Front": "Stack using 2 Queues (pop costly)",
+      "Back": "O(1) | O(n) | ",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. queue using stack  stack using queue"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01043",
+      "Front": "Stack using 1 Queue",
+      "Back": "O(n) | O(1) | Tiết kiệm bộ nhớ",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. queue using stack  stack using queue"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01044",
+      "Front": "Cấu trúc",
+      "Back": "Insert | Delete | Peek | Min/Max | Use case chính",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. queue using stack  stack using queue"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01045",
+      "Front": "Stack",
+      "Back": "O(1) push | O(1) pop | O(1) top | O(n) | DFS, Undo, Expression eval",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. queue using stack  stack using queue"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01046",
+      "Front": "Queue",
+      "Back": "O(1) enqueue | O(1) dequeue | O(1) front | O(n) | BFS, Task scheduling",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. queue using stack  stack using queue"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01047",
+      "Front": "Deque",
+      "Back": "O(1) cả hai đầu | O(1) cả hai đầu | O(1) cả hai đầu | O(n) | Sliding window, Palindrome",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. queue using stack  stack using queue"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01048",
+      "Front": "Min Stack",
+      "Back": "O(1) push | O(1) pop | O(1) top | **O(1)** getMin | Bài toán cần theo dõi min",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. queue using stack  stack using queue"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01049",
+      "Front": "Monotonic Stack",
+      "Back": "O(1) amortized | O(1) amortized | O(1) | — | NGE, Histogram, Rain water",
+      "Hint": "07_Stack_Queue",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. queue using stack  stack using queue"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

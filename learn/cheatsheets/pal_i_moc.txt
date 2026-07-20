@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/pal-i
+  - pali
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 PAL-I MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/scrum/PAL-I/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/scrum/PAL-I/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/scrum/PAL-I/PAL-I Mindmap\|🗺️ PAL-I Mindmap]]
+- [[certifications/scrum/PAL-I/PAL-I Flashcards\|🃏 PAL-I Flashcards]]
+- [[certifications/scrum/PAL-I/PAL-I_Scraped_Question_Bank\|🗃️ PAL-I Scraped Question Bank]]

@@ -1,0 +1,236 @@
+{
+  "Meta": {
+    "Id": "deck_2__doubly_linked_list",
+    "Topic": "2. Doubly Linked List",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "2__doubly_linked_list"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 11
+  },
+  "Cards": [
+    {
+      "Id": "card_00863",
+      "Front": "prev",
+      "Back": "data | next",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. doubly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00864",
+      "Front": "Bước",
+      "Back": "Hành động | Trạng thái",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. doubly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00865",
+      "Front": "Tiêu chí",
+      "Back": "Singly Linked List | Doubly Linked List",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. doubly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00866",
+      "Front": "Memory/node",
+      "Back": "data + 1 pointer | data + 2 pointers (gấp đôi overhead)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. doubly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00867",
+      "Front": "Insert at head",
+      "Back": "O(1) | O(1)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. doubly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00868",
+      "Front": "Insert at tail",
+      "Back": "O(n) hoặc O(1) nếu có tail | O(1) (luôn có tail)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. doubly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00869",
+      "Front": "Delete at tail",
+      "Back": "O(n) — phải tìm node trước tail | O(1) — có prev pointer",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. doubly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00870",
+      "Front": "Delete node (có pointer)",
+      "Back": "O(n) — phải tìm node trước | O(1) — có prev pointer",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. doubly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00871",
+      "Front": "Duyệt ngược",
+      "Back": "Không được (phải reverse trước) | O(n) — duyệt từ tail",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. doubly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00872",
+      "Front": "Implement phức tạp",
+      "Back": "Đơn giản hơn | Phức tạp hơn (nhiều pointer)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. doubly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00873",
+      "Front": "Cache locality",
+      "Back": "Tốt hơn một chút (ít pointer) | Kém hơn (thêm 1 pointer/node)",
+      "Hint": "06_Linked_List",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. doubly linked list"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

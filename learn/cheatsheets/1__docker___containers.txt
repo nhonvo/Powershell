@@ -1,0 +1,93 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/08_Deployment_DevOps/📂index_08_Deployment_DevOps|08_Deployment_DevOps]]
+
+# 🐳 1. Docker & Containers (The Infrastructure Revolution)
+
+Trong phát triển Backend, việc "Trên máy tôi chạy tốt nhưng trên server thì không" là một vấn đề nhức nhối. **Docker** giải quyết vấn đề này bằng cách "đóng gói" toàn bộ ứng dụng, thư viện và cấu hình vào một cái hộp duy nhất: **Container**.
+
+---
+
+### 🏛️ 1.1 Khái niệm Container vs Virtual Machine (Máy ảo)
+
+Đừng nhầm lẫn Docker với VMWare hay VirtualBox!
+
+| Đặc điểm | Virtual Machine (VM) | Container (Docker) |
+| :--- | :--- | :--- |
+| **Kích thước** | Vài GB (Gồm cả OS) | Vài MB (Chỉ gồm App và Libs) |
+| **Hiệu năng** | Chậm (Phải khởi động hệ điều hành ảo) | Cực nhanh (Dùng chung nhân OS với máy host) |
+| **Tài nguyên** | Chiếm dụng RAM/CPU cố định | Chia sẻ tài nguyên linh hoạt |
+
+> [!TIP]
+> **"Docker là tiến trình (Process), VM là hệ điều hành (OS)".**
+
+---
+
+### 🧠 1.2 Docker Image & Container
+
+- **Image (Lớp thiết kế)**: Là file chỉ đọc (Read-only) chứa mã nguồn và môi trường chạy. Giống như lớp `Class` trong OOP.
+- **Container (Thực thể)**: Là một instance của Image đang chạy thực tế. Giống như một `Object` trong OOP.
+
+---
+
+### 🚀 1.3 Viết Dockerfile tối ưu (Best Practices)
+
+Một Dockerfile tốt giúp quá trình Build nhanh và Image nhẹ.
+
+**Ví dụ (C# .NET App):**
+```dockerfile
+# Stage 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /app
+COPY . .
+RUN dotnet publish -c Release -o out
+
+# Stage 2: Runtime (Cực nhẹ)
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app/out .
+ENTRYPOINT ["dotnet", "MyApp.dll"]
+```
+
+> [!IMPORTANT]
+> **Multi-stage Build**: Giúp tách biệt môi trường Build (cần nhiều tool nặng) và môi trường Chạy (chỉ cần runtime nhẹ). Giảm kích thước Image từ 1GB xuống còn < 200MB.
+
+---
+
+### ⚡ 1.4 Docker Compose (Chạy nhiều Container)
+
+Dùng để cấu hình đồng thời nhiều dịch vụ (App, DB, Redis) chỉ bằng 1 file `docker-compose.yaml`.
+
+```yaml
+services:
+  web:
+    build: .
+    ports: ["8080:80"]
+    depends_on: ["db"]
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+```
+
+---
+
+### 📝 1.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Điều chỉnh file Dockerfile để tận dụng Docker Cache?"
+<details><summary>Đáp án</summary>
+Luôn đặt các lệnh ít thay đổi lên trên cùng. VD: `COPY package.json` và `RUN npm install` nên đặt trước `COPY source_code`. Khi bạn sửa code, Docker sẽ không phải tải lại thư viện nữa (vì cache vẫn còn).
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh Docker để chạy một container Nginx ở cổng 8080 của máy thật trỏ vào cổng 80 của container.
+<details><summary>Solution</summary>
+```bash
+docker run -d -p 8080:80 nginx
+```
+(-d: Detached mode, chạy ngầm).
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Docker Fundamentals: From Hero to Zero in 1 Hour](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-docker-fundamentals.md)
+- [How Multi-stage Builds Reduce Your Docker Images by 90%](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-docker-multistage.md)
+- [Optimizing Docker Cache Layers - Why the Order of Commands Matters](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-docker-cache-layers.md)

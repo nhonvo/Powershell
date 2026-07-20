@@ -1,0 +1,176 @@
+{
+  "Meta": {
+    "Id": "deck_1__arrays___m_ng",
+    "Topic": "1. Arrays — Mảng",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "1__arrays___m_ng"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 8
+  },
+  "Cards": [
+    {
+      "Id": "card_00520",
+      "Front": "Thao tác",
+      "Back": "Mô tả | Time Complexity",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. arrays — mảng"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00521",
+      "Front": "Access `arr[i]`",
+      "Back": "Truy cập phần tử tại index i | O(1)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. arrays — mảng"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00522",
+      "Front": "Search",
+      "Back": "Tìm kiếm tuần tự | O(n)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. arrays — mảng"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00523",
+      "Front": "Binary Search",
+      "Back": "Tìm kiếm trên mảng đã sắp xếp | O(log n)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. arrays — mảng"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00524",
+      "Front": "Insert at end",
+      "Back": "Thêm vào cuối (dynamic array) | Amortized O(1)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. arrays — mảng"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00525",
+      "Front": "Insert at index i",
+      "Back": "Chèn vào vị trí i, dịch phần tử | O(n)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. arrays — mảng"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00526",
+      "Front": "Delete at end",
+      "Back": "Xóa cuối | O(1)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. arrays — mảng"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00527",
+      "Front": "Delete at index i",
+      "Back": "Xóa vị trí i, dịch phần tử | O(n)",
+      "Hint": "02_Arrays_Strings",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. arrays — mảng"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

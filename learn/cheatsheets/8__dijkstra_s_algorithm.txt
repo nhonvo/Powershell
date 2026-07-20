@@ -1,0 +1,278 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/12_Graphs/🕸️index_12_Graphs|12_Graphs]]
+
+## 8. Dijkstra's Algorithm
+
+### 8.1. Tổng quan
+
+**Ví dụ thực tế:** Bạn mở Google Maps, gõ "Từ nhà đến trường". Google Maps tìm đường đi ngắn nhất qua mạng lưới đường phố, mỗi con đường có độ dài (trọng số) khác nhau. Dijkstra là thuật toán nền tảng cho việc này.
+
+**Bài toán:** Cho weighted directed graph G = (V, E) với trọng số KHÔNG ÂM. Tìm đường đi ngắn nhất từ đỉnh nguồn s đến tất cả đỉnh còn lại.
+
+**Edsger Dijkstra** phát minh thuật toán này năm 1956. Ông kể rằng ông nghĩ ra nó trong 20 phút khi đang ngồi uống cà phê ở quán!
+
+### 8.2. Ý tưởng cốt lõi
+
+Dijkstra dùng chiến lược **greedy**: luôn chọn đỉnh chưa xử lý có khoảng cách nhỏ nhất, rồi cập nhật (relax) các hàng xóm.
+
+**Tại sao greedy đúng ở đây?** Vì trọng số KHÔNG ÂM, nên khi một đỉnh được chọn (có dist nhỏ nhất), không có đường nào khác ngắn hơn đến nó được (vì bất kỳ đường nào khác cũng phải đi qua đỉnh có dist lớn hơn, rồi cộng thêm trọng số ≥ 0).
+
+**Thuật toán:**
+
+1. Khởi tạo: dist[s] = 0, dist[v] = infinity cho tất cả v khác
+2. Dùng min-heap chứa (dist, vertex)
+3. Lặp: lấy đỉnh u có dist nhỏ nhất từ heap
+4. Với mỗi hàng xóm v: nếu dist[u] + weight(u,v) < dist[v] → cập nhật dist[v], push vào heap
+5. Lặp lại đến khi heap rỗng
+
+CóKhôngĐúngKhôngĐúngKhôngHết hàng xómKhởi tạo: dist[s]=0, dist[*]=∞Push (0, s) vào Min-HeapMin-Heap rỗng?Trả về dist[] và parent[]Pop (d, u) có d nhỏ nhấtd > dist[u]? (đã xử lý rồi)Với mỗi hàng xóm (v, w) của udist[u] + w < dist[v]?dist[v] = dist[u] + wparent[v] = uPush (dist[v], v) vào Heap
+
+### 8.3. Mô phỏng chi tiết từng bước
+
+```
+Graph:
+         1
+    0 ------→ 1
+    |         / |
+   4|       /   | 2
+    |     /3    |
+    ↓   ↙      ↓
+    2 ------→ 3
+         5      |
+                | 1
+                ↓
+                4
+```
+
+Edges: 0→1(1), 0→2(4), 1→2(3), 1→3(2), 2→3(5), 3→4(1)
+
+Dijkstra từ đỉnh 0:
+
+| Bước | Heap (pop) | Đỉnh u | dist[] trước | Relax                          | dist[] sau  | parent         |
+| :--- | :--------- | :----- | :----------- | :----------------------------- | :---------- | :------------- |
+| Init | -          | -      | [0,∞,∞,∞,∞]  | -                              | [0,∞,∞,∞,∞] | [None,-,-,-,-] |
+| 1    | (0,0)      | 0      | [0,∞,∞,∞,∞]  | 0→1: 0+1=1<∞, 0→2: 0+4=4<∞     | [0,1,4,∞,∞] | [None,0,0,-,-] |
+| 2    | (1,1)      | 1      | [0,1,4,∞,∞]  | 1→2: 1+3=4=4(no), 1→3: 1+2=3<∞ | [0,1,4,3,∞] | [None,0,0,1,-] |
+| 3    | (3,3)      | 3      | [0,1,4,3,∞]  | 3→4: 3+1=4<∞                   | [0,1,4,3,4] | [None,0,0,1,3] |
+| 4    | (4,2)      | 2      | [0,1,4,3,4]  | 2→3: 4+5=9>3(no)               | [0,1,4,3,4] | (no change)    |
+| 5    | (4,4)      | 4      | [0,1,4,3,4]  | (no neighbors)                 | [0,1,4,3,4] | (no change)    |
+
+**Kết quả:**
+
+- 0 → 0 (cost 0)
+- 0 → 1 (cost 1): 0 → 1
+- 0 → 2 (cost 4): 0 → 2
+- 0 → 3 (cost 3): 0 → 1 → 3
+- 0 → 4 (cost 4): 0 → 1 → 3 → 4
+
+### 8.4. Implementation đầy đủ
+
+```python
+import heapq
+from collections import defaultdict
+
+
+def dijkstra(graph, source, num_vertices):
+    """
+    Dijkstra's Algorithm — Tìm shortest path từ source đến mọi đỉnh.
+    Dùng min-heap (priority queue) cho hiệu quả O((V+E) log V).
+
+    QUAN TRỌNG: Chỉ hoạt động đúng với trọng số KHÔNG ÂM.
+
+    Args:
+        graph: adjacency list {u: [(v, weight), ...]}
+        source: đỉnh nguồn
+        num_vertices: số đỉnh
+
+    Returns:
+        dist: dict khoảng cách ngắn nhất từ source
+        parent: dict đỉnh cha (để truy vết path)
+    """
+    # Khởi tạo
+    INF = float('inf')
+    dist = {v: INF for v in range(num_vertices)}
+    parent = {v: None for v in range(num_vertices)}
+    dist[source] = 0
+
+    # Min-heap: (distance, vertex)
+    heap = [(0, source)]
+
+    # Tập đỉnh đã xử lý xong (đã có shortest path chính xác)
+    processed = set()
+
+    while heap:
+        d, u = heapq.heappop(heap)
+
+        # Nếu đỉnh đã xử lý → bỏ qua (lazy deletion)
+        if u in processed:
+            continue
+
+        processed.add(u)
+
+        # Relaxation: cập nhật khoảng cách cho các hàng xóm
+        for v, weight in graph[u]:
+            if v not in processed and dist[u] + weight < dist[v]:
+                dist[v] = dist[u] + weight
+                parent[v] = u
+                heapq.heappush(heap, (dist[v], v))
+
+    return dist, parent
+
+
+def reconstruct_path(parent, source, target):
+    """Truy vết đường đi từ source đến target."""
+    if parent.get(target) is None and target != source:
+        return None  # Không có đường đi
+
+    path = []
+    current = target
+    while current is not None:
+        path.append(current)
+        current = parent[current]
+
+    path.reverse()
+    return path
+
+
+def dijkstra_with_target(graph, source, target, num_vertices):
+    """
+    Dijkstra dừng sớm khi tìm được đường đến target.
+    Tối ưu hơn khi chỉ cần tìm đường giữa 2 đỉnh.
+    """
+    INF = float('inf')
+    dist = {v: INF for v in range(num_vertices)}
+    parent = {v: None for v in range(num_vertices)}
+    dist[source] = 0
+    heap = [(0, source)]
+    processed = set()
+
+    while heap:
+        d, u = heapq.heappop(heap)
+
+        if u == target:
+            # Tìm thấy! Truy vết và trả về
+            path = reconstruct_path(parent, source, target)
+            return dist[target], path
+
+        if u in processed:
+            continue
+        processed.add(u)
+
+        for v, weight in graph[u]:
+            if v not in processed and dist[u] + weight < dist[v]:
+                dist[v] = dist[u] + weight
+                parent[v] = u
+                heapq.heappush(heap, (dist[v], v))
+
+    return INF, None  # Không có đường đi
+
+
+# === TEST ===
+if __name__ == "__main__":
+    g = defaultdict(list)
+    edges = [
+        (0, 1, 1), (0, 2, 4),
+        (1, 2, 3), (1, 3, 2),
+        (2, 3, 5), (3, 4, 1),
+    ]
+    for u, v, w in edges:
+        g[u].append((v, w))
+
+    print("=== Dijkstra từ đỉnh 0 ===")
+    dist, parent = dijkstra(g, 0, 5)
+
+    for v in range(5):
+        path = reconstruct_path(parent, 0, v)
+        path_str = " → ".join(map(str, path)) if path else "Không có"
+        print(f"  0 → {v}: dist = {dist[v]}, path = {path_str}")
+
+    print("\n=== Dijkstra với target = 4 (dừng sớm) ===")
+    cost, path = dijkstra_with_target(g, 0, 4, 5)
+    print(f"  Cost: {cost}, Path: {' → '.join(map(str, path))}")
+
+    # Test thêm: graph lớn hơn
+    print("\n=== Test graph lớn hơn ===")
+    g2 = defaultdict(list)
+    edges2 = [
+        (0, 1, 7), (0, 2, 9), (0, 5, 14),
+        (1, 2, 10), (1, 3, 15),
+        (2, 3, 11), (2, 5, 2),
+        (3, 4, 6),
+        (4, 5, 9),
+    ]
+    for u, v, w in edges2:
+        g2[u].append((v, w))
+        g2[v].append((u, w))  # Undirected
+
+    dist2, parent2 = dijkstra(g2, 0, 6)
+    for v in range(6):
+        path = reconstruct_path(parent2, 0, v)
+        path_str = " → ".join(map(str, path)) if path else "Không có"
+        print(f"  0 → {v}: dist = {dist2[v]}, path = {path_str}")
+```
+
+**Output:**
+
+```
+=== Dijkstra từ đỉnh 0 ===
+  0 → 0: dist = 0, path = 0
+  0 → 1: dist = 1, path = 0 → 1
+  0 → 2: dist = 4, path = 0 → 2
+  0 → 3: dist = 3, path = 0 → 1 → 3
+  0 → 4: dist = 4, path = 0 → 1 → 3 → 4
+
+=== Dijkstra với target = 4 (dừng sớm) ===
+  Cost: 4, Path: 0 → 1 → 3 → 4
+
+=== Test graph lớn hơn ===
+  0 → 0: dist = 0, path = 0
+  0 → 1: dist = 7, path = 0 → 1
+  0 → 2: dist = 9, path = 0 → 2
+  0 → 3: dist = 20, path = 0 → 2 → 3
+  0 → 4: dist = 20, path = 0 → 1 → 3 → 4
+  0 → 5: dist = 11, path = 0 → 2 → 5
+```
+
+### 8.5. Tại sao Dijkstra KHÔNG hoạt động với trọng số âm?
+
+**Ví dụ phản chứng:**
+
+```
+0 --5--> 1 --(-3)--> 2
+0 --2--> 2
+```
+
+- Dijkstra xử lý đỉnh 0 trước (dist=0), relax 1 (dist=5) và 2 (dist=2)
+- Pop đỉnh 2 (dist=2), đánh dấu DONE
+- Pop đỉnh 1 (dist=5), relax 2: 5 + (-3) = 2... nhưng 2 đã DONE!
+- Kết quả Dijkstra: dist[2] = 2
+- Kết quả đúng: 0 → 1 → 2 = 5 + (-3) = 2 (trùng hợp ở đây, nhưng thay -3 bằng -4 thì Dijkstra sai: trả về 2 thay vì 1)
+
+### 8.6. Phân tích Complexity
+
+**Time Complexity:**
+
+- **Với binary heap (heapq):** O((V + E) log V)
+  - Mỗi đỉnh pop khỏi heap: O(V log V)
+  - Mỗi cạnh có thể push vào heap: O(E log V)
+  - Tổng: O((V + E) log V)
+- **Với Fibonacci heap:** O(V log V + E) — tối ưu lý thuyết nhưng constant factor lớn, ít dùng trong thực tế
+- **Với array (không heap):** O(V²) — tốt hơn cho graph dày đặc (E ≈ V²)
+
+**Space:** O(V + E) cho adjacency list + O(V) cho dist, parent, heap
+
+**Chứng minh tính đúng (sketch):**
+
+Dùng quy nạp. Gọi S là tập đỉnh đã processed.
+
+**Bất biến:** Với mọi u thuộc S, dist[u] là khoảng cách ngắn nhất thực sự từ source đến u.
+
+**Base:** S = {source}, dist[source] = 0. Đúng.
+
+**Inductive step:** Giả sử bất biến đúng cho S. Dijkstra chọn u ngoài S có dist[u] nhỏ nhất. Giả sử phản chứng: tồn tại đường đi P từ source đến u ngắn hơn dist[u]. P phải đi qua ít nhất 1 đỉnh x ngoài S (ngoài u). Nhưng dist[x] ≥ dist[u] (vì u được chọn có dist nhỏ nhất). Và trọng số ≥ 0 nên đoạn x → u ≥ 0. Vậy cost(P) ≥ dist[x] ≥ dist[u] — mâu thuẫn. QED.
+
+### 8.7. Cải tiến và biến thể
+
+1. **Bidirectional Dijkstra:** Chạy đồng thời từ source và target, gặp nhau ở giữa → nhanh gấp ~2 lần
+2. **A\* Search:** Dijkstra + heuristic function → ưu tiên các đỉnh "gần" target hơn
+3. **Dial's Algorithm:** Khi trọng số là số nguyên nhỏ → dùng bucket thay heap → O(V + E + W)
+4. **0-1 BFS:** Khi trọng số chỉ có 0 hoặc 1 → dùng deque → O(V + E)

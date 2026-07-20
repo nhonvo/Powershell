@@ -1,0 +1,81 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/05_Logging_Tracing/📂index_05_Logging_Tracing|05_Logging_Tracing]]
+
+# 📋 1. Structured Logging (Ghi nhật ký có cấu trúc)
+
+Trong phát triển Backend, việc ghi nhật ký (Logging) là công cụ quan trọng nhất để gỡ lỗi (Debug) và phát hiện vấn đề trên Production. Tuy nhiên, "Ghi Log" không chỉ đơn thuần là in ra một dòng văn bản thô.
+
+---
+
+### 🏛️ 1.1 Khái niệm Structured Logging (Log theo cấu trúc)
+
+Trong thế giới hiện đại, log được dùng cho **máy đọc** (Elasticsearch, Loki) chứ không chỉ **người đọc**.
+
+- **Unstructured Log**: `"User 123 logged in from 192.168.1.1 at 10:00 AM"`
+- **Structured Log (JSON)**: `{"userId": 123, "ip": "192.168.1.1", "action": "login", "timestamp": "2024-03-22T10:00:00Z"}`
+
+> [!TIP]
+> **Ưu điểm**: Bạn có thể dễ dàng tìm kiếm (Query) mọi request của một User cụ thể, hoặc lọc ra mọi lỗi xảy ra trên một server cụ thể.
+
+---
+
+### 🧠 1.2 Log Levels (Mức độ ghi log)
+
+Sử dụng đúng mức độ log giúp bạn không bị "ngập lụt" trong hàng triệu dòng log rác.
+
+- **TRACE / VERBOSE**: Chi tiết nhất (Từng dòng code chạy). Chỉ dùng lúc dev.
+- **DEBUG**: Thông tin hữu ích để gỡ lỗi (VD: Giá trị biến, Payload).
+- **INFO**: Ghi lại các sự kiện bình thường (VD: "Server started", "Job finished").
+- **WARN**: Sự cố nhẹ, hệ thống vẫn chạy được (VD: API gọi chậm, Kết nối DB bị ngắt nhưng đã thử lại).
+- **ERROR**: Lỗi xảy ra, cần can thiệp (VD: "Database connection failed", "NullPointerException").
+- **FATAL / CRITICAL**: Hệ thống sập (VD: "Out of memory", "Disk full").
+
+---
+
+### 🚀 1.3 Thư viện Log phổ biến (Polyglot)
+
+#### **C# (.NET) - Serilog**
+Thư viện log mạnh mẽ nhất cho .NET, hỗ trợ ghi log dạng cấu trúc (Destructuring) mặc định.
+```csharp
+Log.Information("User {UserId} logged in from {IP}", 123, "192.168.1.1");
+```
+
+#### **Java (JVM) - Log4j2 / SLF4J / Logback**
+Cặp bài trùng SLF4J (Giao diện) + Logback (Thực thi) là tiêu chuẩn trong Spring Boot.
+```java
+logger.info("User {} logged in from {}", 123, "192.168.1.1");
+```
+
+---
+
+### ⚡ 1.4 Enrich Logging (Làm giàu thông tin)
+
+Bạn nên tự động thêm các thông tin ngữ cảnh vào mỗi dòng log:
+- **Environment**: Dev, Staging, Production.
+- **MachineName**: Tên server.
+- **ThreadId**: Luồng đang chạy.
+- **CorrelationId**: ID duy nhất đi theo 1 request từ lúc vào đến lúc ra (Dùng cho Distributed Tracing).
+
+---
+
+### 📝 1.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao không nên ghi log mọi thông tin (Full Payload) của API vào Production?"
+<details><summary>Đáp án</summary>
+1. Bảo mật: Có thể lộ thông tin nhạy cảm của User (Mật khẩu, Thẻ tín dụng, OTP). 2. Dung lượng: Ghi quá nhiều log tốn ổ đĩa và tốn chi phí lưu trữ (Elasticsearch/S3). 3. Hiệu năng: Thao tác ghi log (I/O) dù bất đồng bộ vẫn chiếm dụng tài nguyên CPU/Memory.
+</details>
+
+**Bài 2**: [Kỹ thuật] Cấu hình Serilog (hoặc Logback) để ghi log ra file dạng JSON.
+<details><summary>Solution (C#)</summary>
+```csharp
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.File(new JsonFormatter(), "logs/log.json")
+    .CreateLogger();
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Mastering Structured Logging with Serilog and Elasticsearch](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-structured-logging-serilog.md)
+- [Log Levels Best Practices - Not Everything is an Error](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-log-levels.md)
+- [Masking Sensitive Data in Logs - Security First](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-logging-security.md)

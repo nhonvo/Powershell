@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/dp-300
+  - dp300
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 DP-300: Administering Microsoft Azure SQL Solutions MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/DP-300/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/DP-300/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/DP-300/DP-300 Mindmap\|🗺️ DP-300 Mindmap]]
+- [[certifications/microsoft/DP-300/DP-300 Flashcards\|🃏 DP-300 Flashcards]]
+- [[certifications/microsoft/DP-300/DP-300_Scraped_Question_Bank\|🗃️ DP-300 Scraped Question Bank]]

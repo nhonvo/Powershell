@@ -1,0 +1,38 @@
+---
+tags:
+  - certification/az-204
+  - azure-dev/study-notes/domain-3
+status: todo
+created: 2026-06-15
+---
+
+# Domain 3: Implement Azure Security
+
+This domain covers core concepts for Implement Azure Security.
+
+## 🎯 Exam Objectives
+- Understand the core concepts under Implement Azure Security.
+- Study key Azure patterns and reference architectures.
+
+---
+
+## 📖 Key Study Topics
+
+### 1. Overview
+- Detail key Azure resources, patterns, and configurations.
+- Review official documentation links.
+
+---
+Back to **[[certifications/microsoft/AZ-204/AZ-204 MOC|AZ-204 MOC]]**
+
+## 🔍 Practice Question Reference
+Here are key questions from the practice bank matching this domain:
+- **Q1**: You are developing an e-Commerce Web App. You want to use Azure Key Vault to ensure that sign-ins to... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 3#Question 1|Practice Q1]])
+- **Q2**: This question requires that you evaluate the underlined text to determine if it is correct. Your Azu... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 3#Question 2|Practice Q2]])
+- **Q3**: You are creating an Azure key vault using PowerShell. Objects deleted from the key vault must be kep... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 3#Question 3|Practice Q3]])
+- **Q4**: You are developing an application to transfer data between on-premises file servers and Azure Blob s... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 3#Question 4|Practice Q4]])
+- **Q5**: DRAG DROP (Drag and Drop is not supported)  You are developing a serverless Java application on Azur... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 3#Question 5|Practice Q5]])
+- **Q6**: HOTSPOT (Drag and Drop is not supported)  You are developing an application that needs access to an ... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 3#Question 6|Practice Q6]])
+
+---
+Back to **[[certifications/microsoft/AZ-204/AZ-204 MOC|AZ-204 MOC]]**

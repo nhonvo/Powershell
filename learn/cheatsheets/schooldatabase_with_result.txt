@@ -1,0 +1,112 @@
+USE MASTER
+GO 
+DROP DATABASE IF EXISTS DATABASE_TABLES
+GO 
+CREATE DATABASE DATABASE_TABLES
+GO 
+USE DATABASE_TABLES
+GO 
+CREATE TABLE Courses (
+  ID INT PRIMARY KEY IDENTITY(1, 1),
+  CourseName VARCHAR(50),
+  Instructor VARCHAR(50),
+  CreateDate DATE
+);
+
+CREATE TABLE Students (
+  ID INT PRIMARY KEY IDENTITY(1, 1),
+  FirstName VARCHAR(50),
+  LastName VARCHAR(50),
+  Birthdate DATE
+);
+
+CREATE TABLE Enrollments (
+  StudentID INT,
+  CourseID INT,
+  PRIMARY KEY (StudentID, CourseID),
+  FOREIGN KEY (StudentID) REFERENCES Students(ID),
+  FOREIGN KEY (CourseID) REFERENCES Courses(ID)
+);
+
+CREATE TABLE Assignments (
+  ID INT PRIMARY KEY IDENTITY(1, 1),
+  CourseID INT,
+  AssignmentName VARCHAR(50),
+  MaxPoints INT,
+  DueDate DATE,
+  FOREIGN KEY (CourseID) REFERENCES Courses(ID)
+);
+
+-- Insert into Courses table
+INSERT INTO Courses (CourseName, Instructor, CreateDate) VALUES
+('Math', 'John Doe', '2022-01-01'),
+('English', 'Jane Smith', '2022-02-01'),
+('Science', 'Bob Johnson', '2022-03-01'),
+('History', 'Alice Brown', '2022-04-01'),
+('Art', 'Sara Lee', '2022-05-01'),
+('Music', 'Tom Jones', '2022-06-01'),
+('Physical Education', 'Mark Williams', '2022-07-01'),
+('Computer Science', 'David Wilson', '2022-08-01'),
+('Social Studies', 'Emily Davis', '2022-09-01'),
+('Foreign Language', 'Maria Garcia', '2022-10-01');
+
+-- Insert into Students table
+INSERT INTO Students (FirstName, LastName, Birthdate) VALUES
+('John', 'Doe', '2000-01-01'),
+('Jane', 'Smith', '2001-02-01'),
+('Bob', 'Johnson', '2002-03-01'),
+('Alice', 'Brown', '2003-04-01'),
+('Sara', 'Lee', '2004-05-01'),
+('Tom', 'Jones', '2005-06-01'),
+('Mark', 'Williams', '2006-07-01'),
+('David', 'Wilson', '2007-08-01'),
+('Emily', 'Davis', '2008-09-01'),
+('Maria', 'Garcia', '2009-10-01');
+
+-- Insert into Enrollments table
+INSERT INTO Enrollments (StudentID, CourseID) VALUES
+(1, 1), (1, 3), (1, 5), (2, 2), (2, 4), (2, 6), (3, 1), (3, 2), (4, 3), (4, 4);
+
+-- Insert into Assignments table
+INSERT INTO Assignments (CourseID, AssignmentName, MaxPoints, DueDate) VALUES
+(1, 'Homework 1', 100, '2022-01-15'), (1, 'Homework 2', 100, '2022-01-30'), (1, 'Midterm', 200, '2022-02-15'),
+(2, 'Essay', 100, '2022-02-28'), (2, 'Quiz', 50, '2022-03-15'), (2, 'Midterm', 100, '2022-04-01'),
+(3, 'Lab Report', 100, '2022-02-28')
+
+-- 3. Update the "Courses" table to change the instructor of the course with ID = 3 to "John Smith".
+UPDATE Courses
+SET Instructor = 'John Smith'
+WHERE ID = 3;
+
+-- 4. Select FullName, Age of all students whose Age is greater than or equal to 18
+-- ordered by age (descending) and last name in ascending order. 
+-- FullName(include FirstName, LastName and space between)
+SELECT CONCAT(FirstName, ' ', LastName) AS FullName, DATEDIFF(YEAR, Birthdate, GETDATE()) AS Age
+FROM Students
+WHERE DATEDIFF(YEAR, Birthdate, GETDATE()) >= 18
+ORDER BY Age DESC, LastName ASC;
+
+-- 5. Select the FirstName, LastName of all students who are enrolled in a course taught by "John Smith".
+-- Include the name of the course they are enrolled in.
+SELECT s.FirstName, s.LastName, c.CourseName
+FROM Students s
+JOIN Enrollments e ON s.ID = e.StudentID
+JOIN Courses c ON e.CourseID = c.ID
+WHERE c.Instructor = 'John Smith';
+
+
+-- 6. Select the course name and the average grade for each course
+-- but only include courses with an average grade of 80 or higher.
+SELECT c.CourseName, AVG(a.MaxPoints) AS AverageGrade
+FROM Courses c
+JOIN Assignments a ON c.ID = a.CourseID
+GROUP BY c.CourseName
+HAVING AVG(a.MaxPoints) >= 80;
+
+-- 7. Select the course name and the number of students enrolled in each course taught by "John Smith" and order by number of students enrolled.
+SELECT c.CourseName, COUNT(*) AS NumStudentsEnrolled
+FROM Courses c
+JOIN Enrollments e ON c.ID = e.CourseID
+WHERE c.Instructor = 'John Smith'
+GROUP BY c.CourseName
+ORDER BY NumStudentsEnrolled ASC;

@@ -1,0 +1,165 @@
+# 🗃️ DP-420 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 1 - Question Set 1
+
+HOTSPOT (Drag and Drop is not supported).
+You have an Azure Cosmos DB Core (SQL) API account named account1 that has the disableKeyBasedMetadataWriteAccess property enabled. You are developing an app named App1 that will be used by a user named DevUser1 to create containers in account1. DevUser1 has a non- privileged user account in the Azure Active Directory (Azure AD) tenant.
+You need to ensure that DevUser1 can use App1 to create containers in account1. What should you do? To answer, select the appropriate options in the answer area.
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Resource tokens
+Resource tokens provide access to the application resources within a database. Resource tokens:
+Provide access to speci c containers, partition keys, documents, attachments, stored procedures, triggers, and UDFs.
+Box 2: Azure Resource Manager API
+You can use Azure Resource Manager to help deploy and manage your Azure Cosmos DB accounts, databases, and containers.
+Incorrect Answers:
+The Microsoft Graph API is a RESTful web API that enables you to access Microsoft Cloud service resources.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 1 - Question Set 1
+
+HOTSPOT (Drag and Drop is not supported).
+You have an Azure Cosmos DB Core (SQL) account that has a single write region in West Europe.
+You run the following Azure CLI script.
+
+
+
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Yes
+The Automatic failover option allows Azure Cosmos DB to failover to the region with the highest failover priority with no user action should a region become unavailable.
+
+Box 2: No
+West Europe is used for failover. Only North Europe is writable.
+To Con gure multi-region set UseMultipleWriteLocations to true.
+
+Box 3: Yes
+Provisioned throughput with single write region costs $0.008/hour per 100 RU/s and provisioned throughput with multiple writable regions costs $0.016/per hour per 100 RU/s.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 1 - Question Set 1
+
+You are developing an application that will use an Azure Cosmos DB Core (SQL) API account as a data source. You need to create a report that displays the top ve most ordered fruits as shown in the following table.
+
+
+
+A collection that contains aggregated data already exists. The following is a sample document:
+
+
+
+Which two queries can you use to retrieve data for the report? Each correct answer presents a complete solution.
+NOTE: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,D`
+
+**Explanation**:
+ARRAY_CONTAINS returns a Boolean indicating whether the array contains the speci ed value. You can check for a partial or full match of an object by using a boolean expression within the command.
+Incorrect Answers:
+A: Default sorting ordering is Ascending. Must use Descending order.
+C: Order on Orders not on Type.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 1 - Question Set 1
+
+HOTSPOT (Drag and Drop is not supported).
+You have a database in an Azure Cosmos DB Core (SQL) API account.
+You plan to create a container that will store employee data for 5,000 small businesses. Each business will have up to 25 employees. Each employee item will have an emailAddress value.
+You need to ensure that the emailAddress value for each employee within the same company is unique. To what should you set the partition key and the unique key? To answer, select the appropriate options in the answer area.
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: CompanyID
+After you create a container with a unique key policy, the creation of a new or an update of an existing item resulting in a duplicate within a logical partition is prevented, as speci ed by the unique key constraint. The partition key combined with the unique key guarantees the uniqueness of an item within the scope of the container.
+For example, consider an Azure Cosmos container with Email address as the unique key constraint and CompanyID as the partition key. When you con gure the user's email address with a unique key, each item has a unique email address within a given CompanyID. Two items can't be created with duplicate email addresses and with the same partition key value.
+
+Box 2: emailAddress
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 1 - Question Set 1
+
+HOTSPOT (Drag and Drop is not supported).
+You have a container named container1 in an Azure Cosmos DB Core (SQL) API account. The container1 container has 120 GB of data.
+The following is a sample of a document in container1.
+
+
+
+The orderId property is used as the partition key.
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Yes
+Records with different OrderIDs will match.
+
+Box 2: Yes
+Records with different OrderIDs will match.
+
+Box 3: No
+Only records with one speci c OrderId will match
+</details>
+
+---

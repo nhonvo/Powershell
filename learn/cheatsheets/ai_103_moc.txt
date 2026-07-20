@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/ai-103
+  - ai103
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AI-103: Developing AI Apps and Agents on Azure MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/AI-103/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/AI-103/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AI-103/AI-103 Mindmap\|🗺️ AI-103 Mindmap]]
+- [[certifications/microsoft/AI-103/AI-103 Flashcards\|🃏 AI-103 Flashcards]]
+- [[certifications/microsoft/AI-103/AI-103_Scraped_Question_Bank\|🗃️ AI-103 Scraped Question Bank]]

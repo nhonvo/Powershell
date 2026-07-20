@@ -1,0 +1,11 @@
+# 06_Backend_Interview_Expert
+
+🔙 **Back to Parent**: [[technical_skills/06_Backend_Interview_Expert/📂index_06_Backend_Interview_Expert|01_Career_Roadmaps]]
+
+## 📄 Notes & Documents
+- [[technical_skills/06_Backend_Interview_Expert/01_Database_Deep_Dive|01_Database_Deep_Dive]]
+- [[technical_skills/06_Backend_Interview_Expert/02_System_Design_Scalability|02_System_Design_Scalability]]
+- [[technical_skills/06_Backend_Interview_Expert/03_Web_Security_Deep_Dive|03_Web_Security_Deep_Dive]]
+- [[technical_skills/06_Backend_Interview_Expert/04_Behavioral_STAR|04_Behavioral_STAR]]
+- [[technical_skills/06_Backend_Interview_Expert/README|README]]
+

@@ -1,0 +1,240 @@
+# 🗃️ DP-300 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Plan and Implement Data Platform Resources (Testlet 1)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You are planning the migration of the SERVER1 databases. The solution must meet the business requirements.
+
+What should you include in the migration plan? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Scenario:
+Existing
+An on-premises server named SERVER1 hosts an instance of Microsoft SQL Server 2012 and two 1-TB databases.
+
+Planned changes
+Migrate the SERVER1 databases to the Azure SQL Database platform.
+
+Business Requirements
+Minimize downtime during the migration of the SERVER1 databases.
+
+Box 1: Premium 4-vCore
+Azure Database Migration Service price tier
+
+To minimize migration time with Azure Database Migration Service (DMS), the Premium pricing tier should be used. The Premium tier, with its higher vCore options (e.g., 4 vCore), allows for faster data transfer and parallel processing, leading to quicker migration completion. 
+While the Standard tier is free and suitable for offline migrations, it may take longer for large databases due to slower processing speed.
+
+Incorrect:
+* Standard 2-vCore
+* Standard 4-vCore
+
+Box 2: A VPN gateway
+Required Azure resource.
+
+A VPN gateway (specifically a Site-to-Site VPN or ExpressRoute) is generally needed for migrating on- premises Microsoft SQL Server databases to Azure SQL Database using the Azure Database Migration Service (DMS). This is because DMS needs a secure and reliable connection between the on-premises SQL Server and the Azure environment where the Azure SQL Database resides.
+
+Security:
+A VPN gateway provides a secure and encrypted tunnel for data transmission between your on-premises network and Azure.
+
+Connectivity:
+DMS relies on a network connection to access the source database during the migration process. A VPN gateway ensures this connectivity.
+
+Hybrid Environments:
+Many migration scenarios involve migrating data between on-premises and cloud environments, requiring a VPN or ExpressRoute to establish a connection between them.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Plan and Implement Data Platform Resources (Testlet 2)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You need to recommend which service and target endpoint to use when migrating the databases from SVR1 to Instance1. The solution must meet the availability requirements.
+
+What should you recommend? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Managed Instance link
+Migration service
+
+Managed Instance link feature, which enables near real-time data replication between SQL Server and Azure SQL Managed Instance. The link provides hybrid flexibility and database mobility as it unlocks several scenarios, such as scaling read-only workloads, offloading analytics and reporting to Azure, and migrating to Azure. And, with SQL Server 2022, the link enables online disaster recovery with fail back to SQL Server (currently in preview), as well as configuring the link from SQL Managed Instance to SQL Server 2022.
+
+Incorrect:
+* log Replay Service (LRS)
+Log Replay Service (LRS), which you can use to migrate databases from SQL Server to Azure SQL Managed Instance. LRS is a free cloud service that's available for Azure SQL Managed Instance and based on SQL Server log-shipping technology.
+
+Consider using LRS in the following cases, when:
+
+You need more control for your database migration project.
+*-> There's little tolerance for downtime during migration cutover.
+Etc.
+
+However, Tip:
+If you require a database to be read-only accessible during the migration, with a much longer time frame for performing the migration and with minimal downtime, consider using the Azure SQL Managed Instance link feature as a recommended migration solution.
+
+* SQL Data Sync
+Azure SQL Data Sync does not support Azure SQL Managed Instance or Azure Synapse Analytics at this time.
+
+Box 2: A VNet-local endpoint
+Target endpoint
+
+Only VNet-local endpoint is supported to establish a link with SQL Managed Instance.
+
+Scenario:
+Availability Requirements
+Minimize downtime during the migration of DB1 and DB2.
+
+Planned Changes
+Deploy an Azure SQL managed instance named Instance1 to Network1.
+Migrate DB1 and DB2 to Instance1.
+
+Existing Environment. Network Infrastructure
+ADatum has an on-premises datacenter
+ADatum has an on-premises datacenter and an Azure subscription named Sub1. Sub1 contains a virtual network named Network1 in the East US Azure region. The datacenter is connected to Network1 by using a Site-to-Site (S2S) VPN.
+
+Existing Environment. Database Environment
+SVR1: Windows Server 2016 with SQL Server 2016 Enterprise, and has Always On availability group containing databases DB1 and Db2.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Plan and Implement Data Platform Resources (Testlet 2)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You need to recommend a service tier and a method to offload analytical workloads for the databases migrated from SVR1. The solution must meet the availability and business requirements.
+
+What should you recommend? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Premium
+Service tier
+
+The read scale-out feature allows you to offload read-only workloads using the compute capacity of one of the read-only replicas, instead of running them on the read-write replica. This way, some read-only workloads can be isolated from the read-write workloads, and don't affect their performance. The feature is intended for the applications that include logically separated read-only workloads, such as analytics. In the Premium and Business Critical service tiers, applications could gain performance benefits using this additional capacity at no extra cost.
+
+Incorrect:
+* Business Critical more expensive.
+
+Box 2: Read-scale-out
+
+Incorrect:
+* Geo-replicated secondary replicas
+Scenario: For DB1 and DB2, offload analytical workloads to a read-only database replica in the *same Azure region*.
+
+* A failover group read-only listener
+
+Scenario:
+Requirements. Availability Requirements
+ADatum identifies the following post-migration availability requirements:
+For DB1 and DB2, offload analytical workloads to a read-only database replica in the same Azure region.
+
+Business Requirements
+Minimize costs whenever possible, without affecting other requirements.
+Minimize administrative effort.
+
+Existing Environment. Database Environment
+SVR1: Windows Server 2016 with SQL Server 2016 Enterprise, and has Always On availability group containing databases DB1 and Db2.
+DB1 and DB2 are used for transactional and analytical workloads by an application named App1.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Plan and Implement Data Platform Resources (Question Set 3)
+
+You have 20 Azure SQL databases provisioned by using the vCore purchasing model.
+
+You plan to create an Azure SQL Database elastic pool and add the 20 databases.
+
+Which three metrics should you use to size the elastic pool to meet the demands of your workload? Each correct answer presents part of the solution.
+
+Note: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,C,E`
+
+**Explanation**:
+CE: Estimate the vCores needed for the pool as follows:
+For vCore-based purchasing model: MAX(<Total number of DBs X average vCore utilization per DB>, <Number of concurrently peaking DBs X Peak vCore utilization per DB)
+A: Estimate the storage space needed for the pool by adding the number of bytes needed for all the databases in the pool.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Plan and Implement Data Platform Resources (Question Set 3)
+
+DRAG DROP (Drag and Drop is not supported)
+
+You have a resource group named App1Dev that contains an Azure SQL Database server named DevServer1. DevServer1 contains an Azure SQL database named DB1. The schema and permissions for DB1 are saved in a Microsoft SQL Server Data Tools (SSDT) database project.
+
+You need to populate a new resource group named App1Test with the DB1 database and an Azure SQL Server named TestServer1. The resources in App1Test must have the same configurations as the resources in App1Dev.
+
+Which four actions should you perform in sequence? To answer, move the appropriate actions from the list of actions to the answer area and arrange them in the correct order.
+
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---

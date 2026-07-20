@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/dva-c02
+  - dvac02
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 DVA-C02 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/aws/DVA-C02/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/aws/DVA-C02/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/aws/DVA-C02/DVA-C02 Mindmap\|🗺️ DVA-C02 Mindmap]]
+- [[certifications/aws/DVA-C02/DVA-C02 Flashcards\|🃏 DVA-C02 Flashcards]]
+- [[certifications/aws/DVA-C02/DVA-C02_Scraped_Question_Bank\|🗃️ DVA-C02 Scraped Question Bank]]

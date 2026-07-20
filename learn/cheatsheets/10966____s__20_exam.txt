@@ -1,0 +1,41 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 20
+
+## Part 1
+**Q1.** かれは　 あの 　がっこうの　 せいとです。
+- **A.** かれは 　あの　 がっこうに 　かよって　 います。
+- **B.** かれは　 あの 　がっこうで　 おしえて 　います。
+- **C.** かれは 　あの 　がっこうで 　はたらいて 　います。
+- **D.** かれは 　あの 　がっこうで 　はしって 　います。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1Anh ấy l&agrave; học sinh của ng&ocirc;i trường kia.1. Anh ấy đang theo học tại ng&ocirc;i trường kia.2. Anh ấy đang dạy tại ng&ocirc;i trường kia.3. Anh ấy đang l&agrave;m việc tại ng&ocirc;i trường kia.4. Anh ấy đang chạy ở ng&ocirc;i trường kia.</p>
+</details>
+
+---
+**Q2.** あそこは 　やおやです。
+- **A.** あそこで　 やさいを　 うって　 います。
+- **B.** あそこで　 さかなを　 うって 　います。
+- **C.** あそこで　 ざっしを　 うって　 います。
+- **D.** あそこで　 にくを 　うって　 います。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1Đằng kia l&agrave; cửa h&agrave;ng rau.1. Ở kia đang b&aacute;n rau.2. Ở kia đang b&aacute;n c&aacute;.3. Ở đ&oacute; đang b&aacute;n tạp ch&iacute;.4. Ở kia đang b&aacute;n thịt.</p>
+</details>
+
+---
+**Q3.** さらいしゅう　 きょうとへ 　いきます。
+- **A.** つぎの　 しゅう 　おわりに 　きょうとへ 　いきます。
+- **B.** つぎの 　しゅうの 　にちようびに　 きょうとへ　 いきます。
+- **C.** つぎの　 つぎの　 しゅうに 　きょうとへ　 いきます。
+- **D.** つぎの 　しゅうの　 はじめに 　きょうとへ　 いきます。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3T&ocirc;i sẽ đi đến Kyoto v&agrave;o tuần sau nữa.1. T&ocirc;i sẽ đi đến Kyoto v&agrave;o cuối tuần tới.2. T&ocirc;i sẽ đi đến Kyoto v&agrave;o Chủ nhật tuần tới.3. T&ocirc;i sẽ đi đến Kyoto v&agrave;o tuần tiếp theo của tuần tới.4. T&ocirc;i sẽ đi đến Kyoto v&agrave;o đầu tuần tới.</p>
+</details>
+
+---

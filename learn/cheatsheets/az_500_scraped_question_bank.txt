@@ -1,0 +1,137 @@
+# 🗃️ AZ-500 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Mixed Questions
+
+Your company recently created an Azure subscription.
+You have been tasked with making sure that a specified user is able to implement Azure AD Privileged Identity Management (PIM).
+Which of the following is the role you should assign to the user?
+
+### Options:
+- [x] **A)** The Global administrator role. [Correct]
+- [ ] **B)** The Security administrator role.
+- [ ] **C)** The Password administrator role.
+- [ ] **D)** The Compliance administrator role.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+To start using PIM in your directory, you must first enable PIM.
+1. Sign in to the Azure portal as a Global Administrator of your directory.
+You must be a Global Administrator with an organizational account (for example, @yourdomain.com), not a Microsoft account (for example, @outlook.com), to enable PIM for a directory.
+Scenario: Technical requirements include: Enable Azure AD Privileged Identity Management (PIM) for contoso.com
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Mixed Questions
+
+Note: The question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the solution satisfies the requirements.
+Your company has an Active Directory forest with a single domain, named weylandindustries.com. They also have an Azure Active Directory (Azure AD) tenant with the same name.
+You have been tasked with integrating Active Directory and the Azure AD tenant. You intend to deploy Azure AD Connect.
+Your strategy for the integration must make sure that password policies and user logon limitations affect user accounts that are synced to the Azure AD tenant, and that the amount of necessary servers are reduced.
+Solution: You recommend the use of pass-through authentication and seamless SSO with password hash synchronization.
+Does the solution meet the goal?
+
+### Options:
+- [x] **A)** Yes [Correct]
+- [ ] **B)** No
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+For pass-through authentication, you need one or more (we recommend three) lightweight agents installed on existing servers. These agents must have access to your on-premises Active Directory Domain Services, including your on-premises AD domain controllers. They need outbound access to the Internet and access to your domain controllers. For this reason, it's not supported to deploy the agents in a perimeter network.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Mixed Questions
+
+Note: The question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the solution satisfies the requirements.
+Your company has an Active Directory forest with a single domain, named weylandindustries.com. They also have an Azure Active Directory (Azure AD) tenant with the same name.
+You have been tasked with integrating Active Directory and the Azure AD tenant. You intend to deploy Azure AD Connect.
+Your strategy for the integration must make sure that password policies and user logon limitations affect user accounts that are synced to the Azure AD tenant, and that the amount of necessary servers are reduced.
+Solution: You recommend the use of federation with Active Directory Federation Services (AD FS).
+Does the solution meet the goal?
+
+### Options:
+- [ ] **A)** Yes
+- [x] **B)** No [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+A federated authentication system relies on an external trusted system to authenticate users. Some companies want to reuse their existing federated system investment with their Azure AD hybrid identity solution. The maintenance and management of the federated system falls outside the control of Azure AD. It's up to the organization by using the federated system to make sure it's deployed securely and can handle the authentication load.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Mixed Questions
+
+Note: The question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the solution satisfies the requirements.
+Your company has an Active Directory forest with a single domain, named weylandindustries.com. They also have an Azure Active Directory (Azure AD) tenant with the same name.
+You have been tasked with integrating Active Directory and the Azure AD tenant. You intend to deploy Azure AD Connect.
+Your strategy for the integration must make sure that password policies and user logon limitations affect user accounts that are synced to the Azure AD tenant, and that the amount of necessary servers are reduced.
+Solution: You recommend the use of password hash synchronization and seamless SSO.
+Does the solution meet the goal?
+
+### Options:
+- [ ] **A)** Yes
+- [x] **B)** No [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Password hash synchronization requires the least effort regarding deployment, maintenance, and infrastructure. This level of effort typically applies to organizations that only need their users to sign in to Office 365, SaaS apps, and other Azure AD-based resources. When turned on, password hash synchronization is part of the Azure AD Connect sync process and runs every two minutes.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Mixed Questions
+
+Your company has an Active Directory forest with a single domain, named weylandindustries.com. They also have an Azure Active Directory (Azure AD) tenant with the same name.
+After syncing all on-premises identities to Azure AD, you are informed that users with a givenName attribute starting with LAB should not be allowed to sync to
+Azure AD.
+Which of the following actions should you take?
+
+### Options:
+- [x] **A)** You should make use of the Synchronization Rules Editor to create an attribute-based filtering rule. [Correct]
+- [ ] **B)** You should configure a DNAT rule on the Firewall.
+- [ ] **C)** You should configure a network traffic filtering rule on the Firewall.
+- [ ] **D)** You should make use of Active Directory Users and Computers to create an attribute-based filtering rule.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Use the Synchronization Rules Editor and write attribute-based filtering rule.
+</details>
+
+---

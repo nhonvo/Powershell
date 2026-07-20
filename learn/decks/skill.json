@@ -1,0 +1,196 @@
+{
+  "Meta": {
+    "Id": "deck_skill",
+    "Topic": "SKILL",
+    "Language": "English/Japanese",
+    "Domain": ".claude",
+    "Level": "General",
+    "Tags": [
+      "skill"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 9
+  },
+  "Cards": [
+    {
+      "Id": "card_00084",
+      "Front": "Depth",
+      "Back": "Risk Level | Meaning",
+      "Hint": "gitnexus-impact-analysis",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "skill"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00085",
+      "Front": "d=1",
+      "Back": "**WILL BREAK** | Direct callers/importers",
+      "Hint": "gitnexus-impact-analysis",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "skill"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00086",
+      "Front": "d=2",
+      "Back": "LIKELY AFFECTED | Indirect dependencies",
+      "Hint": "gitnexus-impact-analysis",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "skill"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00087",
+      "Front": "d=3",
+      "Back": "MAY NEED TESTING | Transitive effects",
+      "Hint": "gitnexus-impact-analysis",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "skill"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00088",
+      "Front": "Affected",
+      "Back": "Risk",
+      "Hint": "gitnexus-impact-analysis",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "skill"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00089",
+      "Front": "<5 symbols, few processes",
+      "Back": "LOW",
+      "Hint": "gitnexus-impact-analysis",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "skill"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00090",
+      "Front": "5-15 symbols, 2-5 processes",
+      "Back": "MEDIUM",
+      "Hint": "gitnexus-impact-analysis",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "skill"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00091",
+      "Front": ">15 symbols or many processes",
+      "Back": "HIGH",
+      "Hint": "gitnexus-impact-analysis",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "skill"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00092",
+      "Front": "Critical path (auth, payments)",
+      "Back": "CRITICAL",
+      "Hint": "gitnexus-impact-analysis",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "skill"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

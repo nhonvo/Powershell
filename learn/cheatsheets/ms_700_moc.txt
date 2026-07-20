@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/ms-700
+  - ms700
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MS-700: Managing Microsoft Teams MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MS-700/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MS-700/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MS-700/MS-700 Mindmap\|🗺️ MS-700 Mindmap]]
+- [[certifications/microsoft/MS-700/MS-700 Flashcards\|🃏 MS-700 Flashcards]]
+- [[certifications/microsoft/MS-700/MS-700_Scraped_Question_Bank\|🗃️ MS-700 Scraped Question Bank]]

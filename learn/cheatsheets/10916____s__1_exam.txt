@@ -1,0 +1,65 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 1
+
+## Part 1
+**Q1.** わたしは　まいあさ　たまごを　たべます。
+- **A.** 飲べます
+- **B.** 食べます
+- **C.** 飯べます
+- **D.** 倉べます
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2食べる (THỰC): Ăn T&ocirc;i ăn trứng mỗi s&aacute;ng.</p>
+</details>
+
+---
+**Q2.** この　てーぶるを　ください。
+- **A.** テーブリ
+- **B.** テーブル
+- **C.** ケーブル
+- **D.** ケーブリ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2テーブル: c&aacute;i b&agrave;nH&atilde;y cho t&ocirc;i c&aacute;i b&agrave;n n&agrave;y.</p>
+</details>
+
+---
+**Q3.** これが　いちばん　ふるいです。
+- **A.** 多い
+- **B.** 安い
+- **C.** 高い
+- **D.** 古い
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n : 4古い (CỔ) : Cũ C&aacute;i n&agrave;y l&agrave; cũ nhất.</p>
+</details>
+
+---
+**Q4.** わたしの 　ははは　 やさしいです。
+- **A.** 姉
+- **B.** 兄
+- **C.** 母
+- **D.** 父
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n : 3母 (MẪU): MẹMẹ của t&ocirc;i rất dịu d&agrave;ng.</p>
+</details>
+
+---
+**Q5.** やまださんの　がっこうは　どこですか。
+- **A.** 労校
+- **B.** 学校
+- **C.** 労枚
+- **D.** 学枚
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2学校 (HỌC - HIỆU): Trường Trường của Yamada ở đ&acirc;u vậy?</p>
+</details>
+
+---

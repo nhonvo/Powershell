@@ -1,0 +1,136 @@
+{
+  "Meta": {
+    "Id": "deck_az_204_moc",
+    "Topic": "AZ-204 MOC",
+    "Language": "English/Japanese",
+    "Domain": "certifications",
+    "Level": "General",
+    "Tags": [
+      "az_204_moc"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 6
+  },
+  "Cards": [
+    {
+      "Id": "card_00292",
+      "Front": "Domain",
+      "Back": "Topic | Weight | Practice",
+      "Hint": "AZ-204",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az-204 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00293",
+      "Front": "**[[certifications/microsoft/AZ-204/Domain 1 - Develop Azure Compute Solutions\\",
+      "Back": "D1]]** | Compute Solutions | ~25% | [[certifications/microsoft/AZ-204/Practice Questions - Domain 1\\ | Q&A D1 (54 qs)]]",
+      "Hint": "AZ-204",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az-204 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00294",
+      "Front": "**[[certifications/microsoft/AZ-204/Domain 2 - Develop for Azure Storage\\",
+      "Back": "D2]]** | Storage Solutions | ~15% | [[certifications/microsoft/AZ-204/Practice Questions - Domain 2\\ | Q&A D2 (20 qs)]]",
+      "Hint": "AZ-204",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az-204 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00295",
+      "Front": "**[[certifications/microsoft/AZ-204/Domain 3 - Implement Azure Security\\",
+      "Back": "D3]]** | Azure Security | ~20% | [[certifications/microsoft/AZ-204/Practice Questions - Domain 3\\ | Q&A D3 (6 qs)]]",
+      "Hint": "AZ-204",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az-204 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00296",
+      "Front": "**[[certifications/microsoft/AZ-204/Domain 4 - Monitor, Troubleshoot, and Optimize Azure Solutions\\",
+      "Back": "D4]]** | Monitor & Optimize | ~15% | [[certifications/microsoft/AZ-204/Practice Questions - Domain 4\\ | Q&A D4 (9 qs)]]",
+      "Hint": "AZ-204",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az-204 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00297",
+      "Front": "**[[certifications/microsoft/AZ-204/Domain 5 - Connect and Consume Azure and Third-Party Services\\",
+      "Back": "D5]]** | Connect & Consume | ~25% | [[certifications/microsoft/AZ-204/Practice Questions - Domain 5\\ | Q&A D5 (11 qs)]]",
+      "Hint": "AZ-204",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az-204 moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

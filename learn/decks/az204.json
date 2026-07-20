@@ -1,0 +1,4069 @@
+{
+  "Meta": {
+    "Id": "deck_az204",
+    "Topic": "AZ204",
+    "Language": "English",
+    "Domain": "Cloud Certifications",
+    "Level": "Professional",
+    "Tags": [
+      "az204"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 193
+  },
+  "Cards": [
+    {
+      "Id": "az204_001",
+      "Front": "❓ Question 1 (Page 2, Q 1)",
+      "Back": "**Topic**: \n\nYou have two Hyper-V hosts named Host1 and Host2. Host1 has an Azure virtual machine named VM1 that was deployed by using a custom Azure Resource\nManager template.\nYou need to move VM1 to Host2.\nWhat should you do?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_002",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** From the Update management blade, click Enable.\n- [ ] **B)** From the Overview blade, move VM1 to a different subscription.\n- [x] **C)** From the Redeploy blade, click Redeploy. [Correct]\n- [ ] **D)** From the Profile blade, modify the usage location.\n\n<details>\n<summary><b>Reveal Answe",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_003",
+      "Front": "❓ Question 2 (Page 2, Q 2)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nYou have downloaded an Azure Resource Manager template to deploy numerous virtual machines. The template is based on a current virtual machine, but must be adapted to reference an administrative password.\nYou need to make sure that the passwor",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_004",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_005",
+      "Front": "❓ Question 3 (Page 2, Q 3)",
+      "Back": "**Topic**: \n\nYour company has an Azure Kubernetes Service (AKS) cluster that you manage from an Azure AD-joined device. The cluster is located in a resource group.\nDevelopers have created an application named MyApp. MyApp was packaged into a container image.\nYou need to deploy the YAML manifest file",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_006",
+      "Front": "Options:",
+      "Back": "- [x] **A)** Yes [Correct]\n- [ ] **B)** No\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nkubectl apply -f myapp.yaml applies a configuration change to a resource from a file or stdin.\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_007",
+      "Front": "❓ Question 4 (Page 2, Q 4)",
+      "Back": "**Topic**: \n\nYour company has an Azure Kubernetes Service (AKS) cluster that you manage from an Azure AD-joined device. The cluster is located in a resource group.\nDevelopers have created an application named MyApp. MyApp was packaged into a container image.\nYou need to deploy the YAML manifest file",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_008",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_009",
+      "Front": "❓ Question 5 (Page 2, Q 5)",
+      "Back": "**Topic**: \n\nYour company has a web app named WebApp1.\nYou use the WebJobs SDK to design a triggered App Service background task that automatically invokes a function in the code every time new data is received in a queue.\nYou are preparing to configure the service processes a queue data item.\nWhich",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_010",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Logic Apps\n- [x] **B)** WebJobs [Correct]\n- [ ] **C)** Flow\n- [ ] **D)** Functions\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_011",
+      "Front": "❓ Question 6 (Page 3, Q 6)",
+      "Back": "**Topic**: \n\nYour company has an Azure subscription.\nYou need to deploy a number of Azure virtual machines to the subscription by using Azure Resource Manager (ARM) templates. The virtual machines will be included in a single availability set.\nYou need to ensure that the ARM template allows for as m",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_012",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** 10\n- [ ] **B)** 30\n- [ ] **C)** Min Value\n- [x] **D)** Max Value [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `D`\n\n**Explanation**:\nThe number of fault domains for managed availability sets varies by region - either two or three per reg",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_013",
+      "Front": "❓ Question 7 (Page 3, Q 7)",
+      "Back": "**Topic**: \n\nYour company has an Azure subscription.\nYou need to deploy a number of Azure virtual machines to the subscription by using Azure Resource Manager (ARM) templates. The virtual machines will be included in a single availability set.\nYou need to ensure that the ARM template allows for as m",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_014",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** 10\n- [x] **B)** 20 [Correct]\n- [ ] **C)** 30\n- [ ] **D)** 40\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nEach virtual machine in your availability set is assigned an update domain and a fault domain by the underlying Azure ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_015",
+      "Front": "❓ Question 8 (Page 3, Q 8)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nYou are creating an Azure Cosmos DB account that makes use of the SQL API. Data will be added to the account every day by a web application.\nYou need to ensure that an email notification is sent when information is received from IoT devices, a",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_016",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_017",
+      "Front": "❓ Question 9 (Page 3, Q 9)",
+      "Back": "**Topic**: \n\nThis question requires that you evaluate the underlined text to determine if it is correct.\nYou company has an on-premises deployment of MongoDB, and an Azure Cosmos DB account that makes use of the MongoDB API.\nYou need to devise a strategy to migrate MongoDB to the Azure Cosmos DB acc",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_018",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** No change required\n- [x] **B)** mongorestore [Correct]\n- [ ] **C)** Azure Storage Explorer\n- [ ] **D)** AzCopy\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_019",
+      "Front": "❓ Question 10 (Page 3, Q 10)",
+      "Back": "**Topic**: \n\nYou are developing an e-Commerce Web App.\nYou want to use Azure Key Vault to ensure that sign-ins to the e-Commerce Web App are secured by using Azure App Service authentication and Azure Active\nDirectory (AAD).\nWhat should you do on the e-Commerce Web App?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_020",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Run the az keyvault secret command.\n- [ ] **B)** Enable Azure AD Connect.\n- [x] **C)** Enable Managed Service Identity (MSI). [Correct]\n- [ ] **D)** Create an Azure AD service principal.\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `C`\n\n**Explana",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_021",
+      "Front": "❓ Question 11 (Page 4, Q 11)",
+      "Back": "**Topic**: \n\nThis question requires that you evaluate the underlined text to determine if it is correct.\nYour Azure Active Directory Azure (Azure AD) tenant has an Azure subscription linked to it.\nYour developer has created a mobile application that obtains Azure AD access tokens using the OAuth 2 i",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_022",
+      "Front": "Options:",
+      "Back": "- [x] **A)** No change required. [Correct]\n- [ ] **B)** a secret\n- [ ] **C)** a login hint\n- [ ] **D)** a client ID\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nFor Native Applications you need to provide a Redirect URI, which Azure AD w",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_023",
+      "Front": "❓ Question 12 (Page 4, Q 12)",
+      "Back": "**Topic**: \n\nYou are creating an Azure key vault using PowerShell. Objects deleted from the key vault must be kept for a set period of 90 days.\nWhich two of the following parameters must be used in conjunction to meet the requirement? (Choose two.)\n\n<details>\n<summary><b>Reveal Answer & Explanation<",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_024",
+      "Front": "❓ Question 13 (Page 4, Q 13)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou have an Azure Active Directory (Azure AD) tenant.\nYou want to implement multi-factor authentication by making use of a conditional access policy. The conditional access policy must be applied to all users when they access the Azure portal.\nW",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_025",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1:\nThe conditional access policy must be applied or assigned to Users and Groups.\nBox 2:\nThe conditional access policy must be ap",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_026",
+      "Front": "❓ Question 14 (Page 4, Q 14)",
+      "Back": "**Topic**: \n\nYou manage an Azure SQL database that allows for Azure AD authentication.\nYou need to make sure that database developers can connect to the SQL database via Microsoft SQL Server Management Studio (SSMS). You also need to make sure the developers use their on-premises Active Directory ac",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_027",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Azure AD token.\n- [ ] **B)** Azure Multi-Factor authentication.\n- [x] **C)** Active Directory integrated authentication. [Correct]\n- [ ] **D)** OATH software tokens.\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `C`\n\n**Explanation**:\nAzure AD can ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_028",
+      "Front": "❓ Question 15 (Page 4, Q 15)",
+      "Back": "**Topic**: \n\nYou are developing an application to transfer data between on-premises file servers and Azure Blob storage. The application stores keys, secrets, and certificates in Azure Key Vault and makes use of the Azure Key Vault APIs.\nYou want to configure the application to allow recovery of an ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_029",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Run the Add-AzKeyVaultKey cmdlet.\n- [x] **B)** Run the az keyvault update --enable-soft-delete true --enable-purge-protection true CLI. [Correct]\n- [ ] **C)** Implement virtual network service endpoints for Azure Key Vault.\n- [ ] **D)** Run the az keyvault update --enable-soft-delete fa",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_030",
+      "Front": "❓ Question 16 (Page 5, Q 16)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou have developed a Web App for your company. The Web App provides services and must run in multiple regions.\nYou want to be notified whenever the Web App uses more than 85 percent of the available CPU cores over a 5 minute period. Your solutio",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_031",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_032",
+      "Front": "❓ Question 17 (Page 5, Q 17)",
+      "Back": "**Topic**: \n\nNote: The question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the solution satisfies the requirements.\nYou are configuring a web app that delivers streaming video to users. The application makes ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_033",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_034",
+      "Front": "❓ Question 18 (Page 5, Q 18)",
+      "Back": "**Topic**: \n\nNote: The question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the solution satisfies the requirements.\nYou are configuring a web app that delivers streaming video to users. The application makes ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_035",
+      "Front": "Options:",
+      "Back": "- [x] **A)** Yes [Correct]\n- [ ] **B)** No\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_036",
+      "Front": "❓ Question 19 (Page 5, Q 19)",
+      "Back": "**Topic**: \n\nNote: The question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the solution satisfies the requirements.\nYou are configuring a web app that delivers streaming video to users. The application makes ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_037",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_038",
+      "Front": "❓ Question 20 (Page 5, Q 20)",
+      "Back": "**Topic**: \n\nYou develop a Web App on a tier D1 app service plan.\nYou notice that page load times increase during periods of peak traffic.\nYou want to implement automatic scaling when CPU load is above 80 percent. Your solution must minimize costs.\nWhat should you do first?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_039",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Enable autoscaling on the Web App.\n- [ ] **B)** Switch to the Premium App Service tier plan.\n- [x] **C)** Switch to the Standard App Service tier plan. [Correct]\n- [ ] **D)** Switch to the Azure App Services consumption plan.\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summa",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_040",
+      "Front": "❓ Question 21 (Page 6, Q 21)",
+      "Back": "**Topic**: \n\nYour company's Azure subscription includes an Azure Log Analytics workspace.\nYour company has a hundred on-premises servers that run either Windows Server 2012 R2 or Windows Server 2016, and is linked to the Azure Log Analytics workspace. The Azure Log Analytics workspace is set up to g",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_041",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** The Activity log signal type.\n- [ ] **B)** The Application Log signal type.\n- [x] **C)** The Metric signal type. [Correct]\n- [ ] **D)** The Audit Log signal type.\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `C`\n\n**Explanation**:\nMetric alerts in",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_042",
+      "Front": "❓ Question 22 (Page 6, Q 22)",
+      "Back": "**Topic**: \n\nYou are developing a .NET Core MVC application that allows customers to research independent holiday accommodation providers.\nYou want to implement Azure Search to allow the application to search the index by using various criteria to locate documents related to accommodation.\nYou want ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_043",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Configure the SearchMode property of the SearchParameters class.\n- [x] **B)** Configure the QueryType property of the SearchParameters class. [Correct]\n- [ ] **C)** Configure the Facets property of the SearchParameters class.\n- [ ] **D)** Configure the Filter property of the SearchParam",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_044",
+      "Front": "❓ Question 23 (Page 6, Q 23)",
+      "Back": "**Topic**: \n\nYou are a developer at your company.\nYou need to update the definitions for an existing Logic App.\nWhat should you use?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_045",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** the Enterprise Integration Pack (EIP)\n- [x] **B)** the Logic App Code View [Correct]\n- [ ] **C)** the API Connections\n- [ ] **D)** the Logic Apps Designer\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nEdit JSON - Azure portal",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_046",
+      "Front": "❓ Question 24 (Page 6, Q 24)",
+      "Back": "**Topic**: \n\nNote: The question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the solution satisfies the requirements.\nYou are developing a solution for a public facing API.\nThe API back end is hosted in an Azur",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_047",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nAPI Management allows to secure access to the back-end service of an API using client certificates.\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_048",
+      "Front": "❓ Question 25 (Page 6, Q 25)",
+      "Back": "**Topic**: \n\nNote: The question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the solution satisfies the requirements.\nYou are developing a solution for a public facing API.\nThe API back end is hosted in an Azur",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_049",
+      "Front": "Options:",
+      "Back": "- [x] **A)** Yes [Correct]\n- [ ] **B)** No\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nThe API back end is hosted in an Azure App Service instance. It is an Azure resource and not an HTTP(s) endpoint.\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_050",
+      "Front": "❓ Question 26 (Page 7, Q 26)",
+      "Back": "**Topic**: \n\nNote: The question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the solution satisfies the requirements.\nYou are developing a solution for a public facing API.\nThe API back end is hosted in an Azur",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_051",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nAPI Management allows to secure access to the back-end service of an API using client certificates. Furthermore, the API back end is hosted in an Azu",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_052",
+      "Front": "❓ Question 27 (Page 7, Q 27)",
+      "Back": "**Topic**: \n\nNote: The question is included in a number of questions that depicts the identical set-up. However, every question has a distinctive result. Establish if the solution satisfies the requirements.\nYou are developing a solution for a public facing API.\nThe API back end is hosted in an Azur",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_053",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nAPI Management allows to secure access to the back-end service of an API using client certificates.\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_054",
+      "Front": "❓ Question 28 (Page 7, Q 28)",
+      "Back": "**Topic**: \n\nYou are developing a .NET Core MVC application that allows customers to research independent holiday accommodation providers.\nYou want to implement Azure Search to allow the application to search the index by using various criteria to locate documents related to accommodation venues.\nYo",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_055",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Configure the SearchMode property of the SearchParameters class.\n- [ ] **B)** Configure the QueryType property of the SearchParameters class.\n- [ ] **C)** Configure the Facets property of the SearchParameters class.\n- [x] **D)** Configure the Filter property of the SearchParameters clas",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_056",
+      "Front": "❓ Question 29 (Page 7, Q 29)",
+      "Back": "**Topic**: \n\nYou are a developer at your company.\nYou need to edit the workflows for an existing Logic App.\nWhat should you use?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_057",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** the Enterprise Integration Pack (EIP)\n- [ ] **B)** the Logic App Code View\n- [ ] **C)** the API Connections\n- [x] **D)** the Logic Apps Designer [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `D`\n\n**Explanation**:\nFor business-to-business",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_058",
+      "Front": "❓ Question 30 (Page 7, Q 30)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nYou are a developer for a company that provides a bookings management service in the tourism industry. You are implementing Azure Search for the tour agencies listed in your company's solution.\nYou create the index in Azure Search. You now nee",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_059",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n1. The index needs to be populated. To do this, we will need a SearchIndexClient. There are two ways to obtain one: by constructing i",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_060",
+      "Front": "❓ Question 31 (Page 8, Q 31)",
+      "Back": "**Topic**: \n\nYou are developing an application that applies a set of governance policies for internal and external services, as well as for applications.\nYou develop a stateful ASP.NET Core 2.1 web application named PolicyApp and deploy it to an Azure App Service Web App. The PolicyApp reacts to eve",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_061",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Create a new Azure Event Grid subscription for all authentication events. Use the subscription to process sign-out events.\n- [ ] **B)** Create a separate Azure Event Grid handler for sign-in and sign-out events.\n- [x] **C)** Create separate Azure Event Grid topics and subscriptions for ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_062",
+      "Front": "❓ Question 32 (Page 8, Q 32)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou are developing a C++ application that compiles to a native application named process.exe. The application accepts images as input and returns images in one of the following image formats: GIF, PNG, or JPEG.\nYou must deploy the application as",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_063",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: \"type\": \"http\"\nBox 2: \"customHandler\": { \"description\":{\nA custom handler is defined by configuring the host.json file with de",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_064",
+      "Front": "❓ Question 33 (Page 8, Q 33)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported)\nYou are developing an Azure Static Web app that contains training materials for a tool company. Each tool’s training material is contained in a static web page that is linked from the tool’s publicly available description page.\nA user must be aut",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_065",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_066",
+      "Front": "❓ Question 34 (Page 8, Q 34)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported)\nYou are authoring a set of nested Azure Resource Manager templates to deploy Azure resources. You author an Azure Resource Manager template named mainTemplate.json that contains the following linked templates: linkedTemplate1.json, linkedTemplate",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_067",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_068",
+      "Front": "❓ Question 35 (Page 8, Q 35)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported)\nYou are developing a service where customers can report news events from a browser using Azure Web PubSub. The service is implemented as an Azure Function App that uses the JSON WebSocket subprotocol to receive news events.\nYou need to implement ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_069",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_070",
+      "Front": "❓ Question 36 (Page 9, Q 36)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported)\nYou are building a software-as-a-service (SaaS) application that analyzes DNA data that will run on Azure virtual machines (VMs) in an availability zone. The data is stored on managed disks attached to the VM. The performance of the analysis is d",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_071",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_072",
+      "Front": "❓ Question 37 (Page 9, Q 37)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported)\nYou are developing an application that includes two Docker containers.\nThe application must meet the following requirements:\n• The containers must not run as root.\n• The containers must be deployed to Azure Container Instances by using a YAML fil",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_073",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_074",
+      "Front": "❓ Question 38 (Page 9, Q 38)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported)\nYou have a Dockerfile that builds a container image named image1. The container image and its base image are stored in separate repositories of an Azure Container registry named registry1. The codebase of image1 is stored in a GitHub repo named a",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_075",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_076",
+      "Front": "❓ Question 39 (Page 9, Q 39)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou are implementing a software as a service (SaaS) ASP.NET Core web service that will run as an Azure Web App. The web service will use an on-premises\nSQL Server database for storage. The web service also includes a WebJob that processes data u",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_077",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nNumber of VM instances: 4 \nYou are not charged extra for deployment slots.\nPricing tier: Isolated \nThe App Service Environment (ASE) ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_078",
+      "Front": "❓ Question 40 (Page 9, Q 40)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nYou are a developer for a software as a service (SaaS) company that uses an Azure Function to process orders. The Azure Function currently runs on an Azure\nFunction app that is triggered by an Azure Storage queue.\nYou are preparing to migrate ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_079",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: Deployment \nTo deploy Azure Functions to Kubernetes use the func kubernetes deploy command has several attributes that directl",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_080",
+      "Front": "❓ Question 41 (Page 10, Q 41)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou are creating a CLI script that creates an Azure web app and related services in Azure App Service. The web app uses the following variables:\nYou need to automatically deploy code from GitHub to the newly created web app.\nHow should you compl",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_081",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: az appservice plan create\nThe azure group creates command successfully returns JSON result. Now we can use resource group to c",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_082",
+      "Front": "❓ Question 42 (Page 10, Q 42)",
+      "Back": "**Topic**: \n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.\nAft",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_083",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nYou need to catch the triggered event, so move the photo processing to an Azure Function triggered from the blob upload.\nNote: Azure Storage events a",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_084",
+      "Front": "❓ Question 43 (Page 10, Q 43)",
+      "Back": "**Topic**: \n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.\nAft",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_085",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** No\n- [x] **B)** Yes [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nSpecify custom warm-up.\nSome apps might require custom warm-up actions before the swap. The applicationInitialization configuration element in web.co",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_086",
+      "Front": "❓ Question 44 (Page 10, Q 44)",
+      "Back": "**Topic**: \n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.\nAft",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_087",
+      "Front": "Options:",
+      "Back": "- [x] **A)** No [Correct]\n- [ ] **B)** Yes\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nInstead update the web.config file to include the applicationInitialization configuration element. Specify custom initialization actions to run the s",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_088",
+      "Front": "❓ Question 45 (Page 10, Q 45)",
+      "Back": "**Topic**: \n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.\nAft",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_089",
+      "Front": "Options:",
+      "Back": "- [x] **A)** No [Correct]\n- [ ] **B)** Yes\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nInstead update the web.config file to include the applicationInitialization configuration element. Specify custom initialization actions to run the s",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_090",
+      "Front": "❓ Question 46 (Page 11, Q 46)",
+      "Back": "**Topic**: \n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.\nAft",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_091",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nNot necessary to convert the account, instead move photo processing to an Azure Function triggered from the blob upload..\nAzure Storage events allow ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_092",
+      "Front": "❓ Question 47 (Page 11, Q 47)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou are developing an Azure Web App. You configure TLS mutual authentication for the web app.\nYou need to validate the client certificate in the web app. To answer, select the appropriate options in the answer area.\nNOTE: Each correct selection ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_093",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nAccessing the client certificate from App Service.\nIf you are using ASP.NET and configure your app to use client certificate authenti",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_094",
+      "Front": "❓ Question 48 (Page 11, Q 48)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nYou are developing a Docker/Go using Azure App Service Web App for Containers. You plan to run the container in an App Service on Linux. You identify a\nDocker container image to use.\nNone of your current resource groups reside in a location th",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_095",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nYou can host native Linux applications in the cloud by using Azure Web Apps. To create a Web App for Containers, you must run Azure C",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_096",
+      "Front": "❓ Question 49 (Page 11, Q 49)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nFourth Coffee has an ASP.NET Core web app that runs in Docker. The app is mapped to the www.fourthcoffee.com domain.\nFourth Coffee is migrating this application to Azure.\nYou need to provision an App Service Web App to host this docker image a",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_097",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nStep 1: #bin/bash \nThe appName is used when the webapp-name is created in step 2.\nStep 2: az webapp create \nCreate a web app. In the ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_098",
+      "Front": "❓ Question 50 (Page 11, Q 50)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nYou are developing a serverless Java application on Azure. You create a new Azure Key Vault to work with secrets from a new Azure Functions application.\nThe application must meet the following requirements:\n-Reference the Azure Key Vault witho",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_099",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nStep 1: Create the Azure Functions app with a Consumption plan type.\nUse the Consumption plan for serverless.\nStep 2: Create a system",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_100",
+      "Front": "❓ Question 51 (Page 12, Q 51)",
+      "Back": "**Topic**: \n\nYou develop a website. You plan to host the website in Azure. You expect the website to experience high traffic volumes after it is published.\nYou must ensure that the website remains available and responsive while minimizing cost.\nYou need to deploy the website.\nWhat should you do?",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_101",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Deploy the website to a virtual machine. Configure the virtual machine to automatically scale when the CPU load is high.\n- [ ] **B)** Deploy the website to an App Service that uses the Shared service tier. Configure the App Service plan to automatically scale when the CPU load is high.\n",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_102",
+      "Front": "❓ Question 52 (Page 12, Q 52)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nA company is developing a Java web app. The web app code is hosted in a GitHub repository located at https://github.com/Contoso/webapp.\nThe web app must be evaluated before it is moved to production. You must deploy the initial code release to a",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_103",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: group \n# Create a resource group.\naz group create --location westeurope --name myResourceGroup\nBox 2: appservice plan \n# Creat",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_104",
+      "Front": "❓ Question 53 (Page 12, Q 53)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou have a web service that is used to pay for food deliveries. The web service uses Azure Cosmos DB as the data store.\nYou plan to add a new feature that allows users to set a tip amount. The new feature requires that a property named tip on th",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_105",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_106",
+      "Front": "❓ Question 54 (Page 12, Q 54)",
+      "Back": "**Topic**: \n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.\nAft",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_107",
+      "Front": "Options:",
+      "Back": "- [x] **A)** Yes [Correct]\n- [ ] **B)** No\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nInstead pass the HTTP trigger payload into an Azure Service Bus queue to be processed by a queue trigger function and return an immediate HTTP succes",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_108",
+      "Front": "❓ Question 55 (Page 12, Q 55)",
+      "Back": "**Topic**: \n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.\nAft",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_109",
+      "Front": "Options:",
+      "Back": "- [x] **A)** Yes [Correct]\n- [ ] **B)** No\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nLarge, long-running functions can cause unexpected timeout issues. General best practices include:\nWhenever possible, refactor large functions into s",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_110",
+      "Front": "❓ Question 56 (Page 13, Q 56)",
+      "Back": "**Topic**: \n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.\nAft",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_111",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nInstead pass the HTTP trigger payload into an Azure Service Bus queue to be processed by a queue trigger function and return an immediate HTTP succes",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_112",
+      "Front": "❓ Question 57 (Page 13, Q 57)",
+      "Back": "**Topic**: \n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.\nAft",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_113",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nAzure Storage events allow applications to react to events. Common Blob storage event scenarios include image or video processing, search indexing, o",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_114",
+      "Front": "❓ Question 58 (Page 13, Q 58)",
+      "Back": "**Topic**: \n\nYou are developing an application that uses Azure Blob storage.\nThe application must read the transaction logs of all the changes that occur to the blobs and the blob metadata in the storage account for auditing purposes. The changes must be in the order in which they occurred, include ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_115",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Process all Azure Blob storage events by using Azure Event Grid with a subscriber Azure Function app.\n- [x] **B)** Enable the change feed on the storage account and process all changes for available events. [Correct]\n- [ ] **C)** Process all Azure Storage Analytics logs for successful b",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_116",
+      "Front": "❓ Question 59 (Page 13, Q 59)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nYou plan to create a Docker image that runs an ASP.NET Core application named ContosoApp. You have a setup script named setupScript.ps1 and a series of application files including ContosoApp.dll.\nYou need to create a Dockerfile document that m",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_117",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: CMD [..]\nCmd starts a new instance of the command interpreter, Cmd.exe.\nSyntax: CMD <string>\nSpecifies the command you want to",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_118",
+      "Front": "❓ Question 60 (Page 13, Q 60)",
+      "Back": "**Topic**: \n\nYou are developing an Azure Function App that processes images that are uploaded to an Azure Blob container.\nImages must be processed as quickly as possible after they are uploaded, and the solution must minimize latency. You create code to process images when the\nFunction App is trigge",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_119",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Use an App Service plan. Configure the Function App to use an Azure Blob Storage input trigger.\n- [ ] **B)** Use a Consumption plan. Configure the Function App to use an Azure Blob Storage trigger.\n- [ ] **C)** Use a Consumption plan. Configure the Function App to use a Timer trigger.\n-",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_120",
+      "Front": "❓ Question 61 (Page 14, Q 61)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou are configuring a new development environment for a Java application.\nThe environment requires a Virtual Machine Scale Set (VMSS), several storage accounts, and networking components.\nThe VMSS must not be created until the storage accounts h",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_121",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: copyIndex \nNotice that the name of each resource includes the copyIndex() function, which returns the current iteration in the",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_122",
+      "Front": "❓ Question 62 (Page 14, Q 62)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou are developing an Azure Function App by using Visual Studio. The app will process orders input by an Azure Web App. The web app places the order information into Azure Queue Storage.\nYou need to review the Azure Function App code shown below",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_123",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: No \nExpirationTime - The time that the message expires.\nInsertionTime - The time that the message was added to the queue.\nBox ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_124",
+      "Front": "❓ Question 63 (Page 14, Q 63)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nYou are developing a solution for a hospital to support the following use cases:\n-The most recent patient status details must be retrieved even if multiple users in different locations have updated the patient record.\n-Patient health monitorin",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_125",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: Strong \nStrong: Strong consistency offers a linearizability guarantee. The reads are guaranteed to return the most recent comm",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_126",
+      "Front": "❓ Question 64 (Page 14, Q 64)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou are configuring a development environment for your team. You deploy the latest Visual Studio image from the Azure Marketplace to your Azure subscription.\nThe development environment requires several software development kits (SDKs) and third",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_127",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: Azure Powershell \nCreating an image directly from the VM ensures that the image includes all of the disks associated with the ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_128",
+      "Front": "❓ Question 65 (Page 14, Q 65)",
+      "Back": "**Topic**: \n\nYou are preparing to deploy a website to an Azure Web App from a GitHub repository. The website includes static content generated by a script.\nYou plan to use the Azure Web App continuous deployment feature.\nYou need to run the static generation script before the website starts serving ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_129",
+      "Front": "❓ Question 66 (Page 15, Q 66)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nYou are developing an application to use Azure Blob storage. You have configured Azure Blob storage to include change feeds.\nA copy of your storage account must be created in another region. Data must be copied from the current storage account",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_130",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nTo move a storage account, create a copy of your storage account in another region. Then, move your data to that account by using AzC",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_131",
+      "Front": "❓ Question 67 (Page 15, Q 67)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nYou are preparing to deploy an Azure virtual machine (VM)-based application.\nThe VMs that run the application have the following requirements:\n-When a VM is provisioned the firewall must be automatically configured before it can access Azure r",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_132",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_133",
+      "Front": "❓ Question 68 (Page 15, Q 68)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nA company is developing a Node.js web app. The web app code is hosted in a GitHub repository located at https://github.com/TailSpinToys/webapp.\nThe web app must be reviewed before it is moved to production. You must deploy the initial code relea",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_134",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: New-AzResourceGroup \nThe New-AzResourceGroup cmdlet creates an Azure resource group.\nBox 2: New-AzAppServicePlan \nThe New-AzAp",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_135",
+      "Front": "❓ Question 69 (Page 15, Q 69)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou are developing an application that needs access to an Azure virtual machine (VM).\nThe access lifecycle for the application must be associated with the VM service instance.\nYou need to enable managed identity for the VM.\nHow should you comple",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_136",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: -IdentityType \nEnable system-assigned managed identity on an existing Azure VM:\nTo enable a system-assigned managed identity, ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_137",
+      "Front": "❓ Question 70 (Page 15, Q 70)",
+      "Back": "**Topic**: \n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.\nAft",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_138",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nIn the Consumption hosting plan, resources are added dynamically as required by your functions.\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_139",
+      "Front": "❓ Question 71 (Page 16, Q 71)",
+      "Back": "**Topic**: \n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.\nAft",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_140",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** No\n- [x] **B)** Yes [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nThese are valid warm-up behavior options, but are not helpful in fixing swap problems.\nInstead update the web.config file to include the applicationI",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_141",
+      "Front": "❓ Question 72 (Page 16, Q 72)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou create the following PowerShell script:\nFor each of the following statements, select Yes if the statement is true. Otherwise, select No.\nNOTE: Each correct selection is worth one point.\nHot Area:",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_142",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: No \nThe AzScheduledQueryRuleSource is Heartbeat, not CPU.\nBox 2: Yes \nThe AzScheduledQueryRuleSource is Heartbeat!\nNote: New-A",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_143",
+      "Front": "❓ Question 73 (Page 16, Q 73)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nYou are developing an Azure Function app.\nThe app must meet the following requirements:\n-Enable developers to write the functions by using the Rust language.\n-Declaratively connect to an Azure Blob Storage account.\nYou need to implement the ap",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_144",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: Custom handler \nCustom handlers can be used to create functions in any language or runtime by running an HTTP server process, ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_145",
+      "Front": "❓ Question 74 (Page 16, Q 74)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou are developing an ASP.NET Core web application. You plan to deploy the application to Azure Web App for Containers.\nThe application needs to store runtime diagnostic data that must be persisted across application restarts. You have the follo",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_146",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: If WEBSITES_ENABLE_APP_SERVICE_STORAGE\nIf WEBSITES_ENABLE_APP_SERVICE_STORAGE setting is unspecified or set to true, the /home",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_147",
+      "Front": "❓ Question 75 (Page 16, Q 75)",
+      "Back": "**Topic**: \n\nYou are developing a web app that is protected by Azure Web Application Firewall (WAF). All traffic to the web app is routed through an Azure Application\nGateway instance that is used by multiple web apps. The web app address is contoso.azurewebsites.net.\nAll traffic must be secured wit",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_148",
+      "Front": "❓ Question 76 (Page 17, Q 76)",
+      "Back": "**Topic**: \n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.\nAft",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_149",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nThe change feed is a log of changes that are organized into hourly segments but appended to and updated every few minutes. These segments are created",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_150",
+      "Front": "❓ Question 77 (Page 17, Q 77)",
+      "Back": "**Topic**: \n\nYou are developing a web application that runs as an Azure Web App. The web application stores data in Azure SQL Database and stores files in an Azure\nStorage account. The web application makes HTTP requests to external services as part of normal operations.\nThe web application is instr",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_151",
+      "Front": "Options:",
+      "Back": "- [x] **A)** Add the customer ID for the signed in user to the CorrelationContext in the web application [Correct]\n- [ ] **B)** On the current SpanContext, set the TraceId to the customer ID for the signed in user\n- [ ] **C)** Set the header Ocp-Apim-Trace to the customer ID for the signed in user\n-",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_152",
+      "Front": "❓ Question 78 (Page 17, Q 78)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou are developing an Azure Function App. You develop code by using a language that is not supported by the Azure Function App host. The code language supports HTTP primitives.\nYou must deploy the code to a production Azure Function App environm",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_153",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: Docker container \nA custom handler can be deployed to every Azure Functions hosting option. If your handler requires operating",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_154",
+      "Front": "❓ Question 79 (Page 17, Q 79)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nYou provision virtual machines (VMs) as development environments.\nOne VM does not start. The VM is stuck in a Windows update process. You attach the OS disk for the affected VM to a recovery VM.\nYou need to correct the issue.\nIn which order sh",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_155",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nRemove the update that causes the problem\n1. Take a snapshot of the OS disk of the affected VM as a backup.\n2. Attach the OS disk to ",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_156",
+      "Front": "❓ Question 80 (Page 17, Q 80)",
+      "Back": "**Topic**: \n\nNote: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than one correct solution, while others might not have a correct solution.\nAft",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_157",
+      "Front": "Options:",
+      "Back": "- [ ] **A)** Yes\n- [x] **B)** No [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `B`\n\n**Explanation**:\nInstead pass the HTTP trigger payload into an Azure Service Bus queue to be processed by a queue trigger function and return an immediate HTTP succes",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_158",
+      "Front": "❓ Question 81 (Page 18, Q 81)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou are developing an Azure Durable Function based application that processes a list of input values. The application is monitored using a console application that retrieves JSON data from an Azure Function diagnostic endpoint.\nDuring processing",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_159",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: await context.CallEntityAsync(input[errindex],\"error\")\nOrchestration signals and calls an entity\nOrchestrator functions can ac",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_160",
+      "Front": "❓ Question 82 (Page 18, Q 82)",
+      "Back": "**Topic**: \n\nYou are developing an Azure Durable Function to manage an online ordering process.\nThe process must call an external API to gather product discount information.\nYou need to implement the Azure Durable Function.\nWhich Azure Durable Function types should you use? Each correct answer prese",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_161",
+      "Front": "❓ Question 83 (Page 18, Q 83)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nYou are authoring a set of nested Azure Resource Manager templates to deploy multiple Azure resources.\nThe templates must be tested before deployment and must follow recommended practices.\nYou need to validate and test the templates before dep",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_162",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: Azure Resource Manager test toolkit\nUse ARM template test toolkit \nThe Azure Resource Manager template (ARM template) test too",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_163",
+      "Front": "❓ Question 84 (Page 18, Q 84)",
+      "Back": "**Topic**: \n\nYou develop Azure Durable Functions to manage vehicle loans.\nThe loan process includes multiple actions that must be run in a specified order. One of the actions includes a customer credit check process, which may require multiple days to process.\nYou need to implement Azure Durable Fun",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_164",
+      "Front": "Options:",
+      "Back": "- [x] **A)** orchestrator [Correct]\n- [ ] **B)** client\n- [ ] **C)** entity\n- [ ] **D)** activity\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_165",
+      "Front": "❓ Question 85 (Page 18, Q 85)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported)\nYou are developing an Azure Function app.\nAll functions in the app meet the following requirements:\n• Run until either a successful run or until 10 run attempts occur.\n• Ensure that there are at least 20 seconds between attempts for up to 15 minu",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_166",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_167",
+      "Front": "❓ Question 86 (Page 19, Q 81)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou are developing an Azure Durable Function based application that processes a list of input values. The application is monitored using a console application that retrieves JSON data from an Azure Function diagnostic endpoint.\nDuring processing",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_168",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: await context.CallEntityAsync(input[errindex],\"error\")\nOrchestration signals and calls an entity\nOrchestrator functions can ac",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_169",
+      "Front": "❓ Question 87 (Page 19, Q 82)",
+      "Back": "**Topic**: \n\nYou are developing an Azure Durable Function to manage an online ordering process.\nThe process must call an external API to gather product discount information.\nYou need to implement the Azure Durable Function.\nWhich Azure Durable Function types should you use? Each correct answer prese",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_170",
+      "Front": "❓ Question 88 (Page 19, Q 83)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nYou are authoring a set of nested Azure Resource Manager templates to deploy multiple Azure resources.\nThe templates must be tested before deployment and must follow recommended practices.\nYou need to validate and test the templates before dep",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_171",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: Azure Resource Manager test toolkit\nUse ARM template test toolkit \nThe Azure Resource Manager template (ARM template) test too",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_172",
+      "Front": "❓ Question 89 (Page 19, Q 84)",
+      "Back": "**Topic**: \n\nYou develop Azure Durable Functions to manage vehicle loans.\nThe loan process includes multiple actions that must be run in a specified order. One of the actions includes a customer credit check process, which may require multiple days to process.\nYou need to implement Azure Durable Fun",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_173",
+      "Front": "Options:",
+      "Back": "- [x] **A)** orchestrator [Correct]\n- [ ] **B)** client\n- [ ] **C)** entity\n- [ ] **D)** activity\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_174",
+      "Front": "❓ Question 90 (Page 19, Q 85)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported)\nYou are developing an Azure Function app.\nAll functions in the app meet the following requirements:\n• Run until either a successful run or until 10 run attempts occur.\n• Ensure that there are at least 20 seconds between attempts for up to 15 minu",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_175",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_176",
+      "Front": "❓ Question 91 (Page 20, Q 81)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou are developing an Azure Durable Function based application that processes a list of input values. The application is monitored using a console application that retrieves JSON data from an Azure Function diagnostic endpoint.\nDuring processing",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_177",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: await context.CallEntityAsync(input[errindex],\"error\")\nOrchestration signals and calls an entity\nOrchestrator functions can ac",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_178",
+      "Front": "❓ Question 92 (Page 20, Q 82)",
+      "Back": "**Topic**: \n\nYou are developing an Azure Durable Function to manage an online ordering process.\nThe process must call an external API to gather product discount information.\nYou need to implement the Azure Durable Function.\nWhich Azure Durable Function types should you use? Each correct answer prese",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_179",
+      "Front": "❓ Question 93 (Page 20, Q 83)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nYou are authoring a set of nested Azure Resource Manager templates to deploy multiple Azure resources.\nThe templates must be tested before deployment and must follow recommended practices.\nYou need to validate and test the templates before dep",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_180",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: Azure Resource Manager test toolkit\nUse ARM template test toolkit \nThe Azure Resource Manager template (ARM template) test too",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_181",
+      "Front": "❓ Question 94 (Page 20, Q 84)",
+      "Back": "**Topic**: \n\nYou develop Azure Durable Functions to manage vehicle loans.\nThe loan process includes multiple actions that must be run in a specified order. One of the actions includes a customer credit check process, which may require multiple days to process.\nYou need to implement Azure Durable Fun",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_182",
+      "Front": "Options:",
+      "Back": "- [x] **A)** orchestrator [Correct]\n- [ ] **B)** client\n- [ ] **C)** entity\n- [ ] **D)** activity\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_183",
+      "Front": "❓ Question 95 (Page 20, Q 85)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported)\nYou are developing an Azure Function app.\nAll functions in the app meet the following requirements:\n• Run until either a successful run or until 10 run attempts occur.\n• Ensure that there are at least 20 seconds between attempts for up to 15 minu",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_184",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_185",
+      "Front": "❓ Question 96 (Page 21, Q 81)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported) \nYou are developing an Azure Durable Function based application that processes a list of input values. The application is monitored using a console application that retrieves JSON data from an Azure Function diagnostic endpoint.\nDuring processing",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_186",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: await context.CallEntityAsync(input[errindex],\"error\")\nOrchestration signals and calls an entity\nOrchestrator functions can ac",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_187",
+      "Front": "❓ Question 97 (Page 21, Q 82)",
+      "Back": "**Topic**: \n\nYou are developing an Azure Durable Function to manage an online ordering process.\nThe process must call an external API to gather product discount information.\nYou need to implement the Azure Durable Function.\nWhich Azure Durable Function types should you use? Each correct answer prese",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_188",
+      "Front": "❓ Question 98 (Page 21, Q 83)",
+      "Back": "**Topic**: \n\nDRAG DROP (Drag and Drop is not supported) \nYou are authoring a set of nested Azure Resource Manager templates to deploy multiple Azure resources.\nThe templates must be tested before deployment and must follow recommended practices.\nYou need to validate and test the templates before dep",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_189",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\nBox 1: Azure Resource Manager test toolkit\nUse ARM template test toolkit \nThe Azure Resource Manager template (ARM template) test too",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_190",
+      "Front": "❓ Question 99 (Page 21, Q 84)",
+      "Back": "**Topic**: \n\nYou develop Azure Durable Functions to manage vehicle loans.\nThe loan process includes multiple actions that must be run in a specified order. One of the actions includes a customer credit check process, which may require multiple days to process.\nYou need to implement Azure Durable Fun",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_191",
+      "Front": "Options:",
+      "Back": "- [x] **A)** orchestrator [Correct]\n- [ ] **B)** client\n- [ ] **C)** entity\n- [ ] **D)** activity\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_192",
+      "Front": "❓ Question 100 (Page 21, Q 85)",
+      "Back": "**Topic**: \n\nHOTSPOT (Drag and Drop is not supported)\nYou are developing an Azure Function app.\nAll functions in the app meet the following requirements:\n• Run until either a successful run or until 10 run attempts occur.\n• Ensure that there are at least 20 seconds between attempts for up to 15 minu",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "az204_193",
+      "Front": "Options:",
+      "Back": "- [x] **A)** See Explanation section for answer. [Correct]\n\n<details>\n<summary><b>Reveal Answer & Explanation</b></summary>\n\n**Correct Answer**: `A`\n\n**Explanation**:\n\n</details>\n\n---",
+      "Hint": "Certification Flashcard",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "az204",
+        "certification"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

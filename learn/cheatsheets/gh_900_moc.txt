@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/gh-900
+  - gh900
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 GH-900: GitHub Foundations MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/GH-900/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/GH-900/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/GH-900/GH-900 Mindmap\|🗺️ GH-900 Mindmap]]
+- [[certifications/microsoft/GH-900/GH-900 Flashcards\|🃏 GH-900 Flashcards]]
+- [[certifications/microsoft/GH-900/GH-900_Scraped_Question_Bank\|🗃️ GH-900 Scraped Question Bank]]

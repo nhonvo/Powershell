@@ -1,0 +1,216 @@
+{
+  "Meta": {
+    "Id": "deck_8__memoization_vs_tabulation",
+    "Topic": "8. Memoization vs Tabulation",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "8__memoization_vs_tabulation"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 10
+  },
+  "Cards": [
+    {
+      "Id": "card_01575",
+      "Front": "Tiêu chí",
+      "Back": "Memoization (Top-down) | Tabulation (Bottom-up)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. memoization vs tabulation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01576",
+      "Front": "**Hướng**",
+      "Back": "Lớn → nhỏ | Nhỏ → lớn",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. memoization vs tabulation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01577",
+      "Front": "**Cấu trúc**",
+      "Back": "Đệ quy + cache | Vòng lặp + bảng",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. memoization vs tabulation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01578",
+      "Front": "**Bài toán con**",
+      "Back": "Chỉ tính khi cần | Tính tất cả",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. memoization vs tabulation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01579",
+      "Front": "**Stack overflow**",
+      "Back": "Có thể (đệ quy sâu) | Không bao giờ",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. memoization vs tabulation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01580",
+      "Front": "**Tốc độ**",
+      "Back": "Chậm hơn (overhead) | Nhanh hơn",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. memoization vs tabulation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01581",
+      "Front": "**Space optimization**",
+      "Back": "Khó | Dễ",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. memoization vs tabulation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01582",
+      "Front": "**Dễ code**",
+      "Back": "Dễ hơn | Cần suy nghĩ thứ tự",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. memoization vs tabulation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01583",
+      "Front": "**Debug**",
+      "Back": "Khó hơn (đệ quy) | Dễ hơn (in bảng)",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. memoization vs tabulation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01584",
+      "Front": "**Khi n lớn**",
+      "Back": "Stack overflow risk | Ổn định",
+      "Hint": "13_Dynamic_Programming",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "8. memoization vs tabulation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

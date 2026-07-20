@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mo-101
+  - mo101
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MO-101: Microsoft Word Expert (Word and Word 2019) MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MO-101/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MO-101/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MO-101/MO-101 Mindmap\|🗺️ MO-101 Mindmap]]
+- [[certifications/microsoft/MO-101/MO-101 Flashcards\|🃏 MO-101 Flashcards]]
+- [[certifications/microsoft/MO-101/MO-101_Scraped_Question_Bank\|🗃️ MO-101 Scraped Question Bank]]

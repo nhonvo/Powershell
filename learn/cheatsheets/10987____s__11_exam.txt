@@ -1,0 +1,65 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 11
+
+## Part 1
+**Q1.** リンさんは　 きょうだいが　 いますか。
+- **A.** 姉妹
+- **B.** 妹姉
+- **C.** 兄弟
+- **D.** 弟兄
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3兄弟 (HUYNH - ĐỆ): anh emLinh c&oacute; anh em kh&ocirc;ng?</p>
+</details>
+
+---
+**Q2.** きょうは 　そらが　 きれいですね。
+- **A.** 風
+- **B.** 空
+- **C.** 月
+- **D.** 天
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2空(KH&Ocirc;NG): bầu trờiH&ocirc;m nay bầu trời đẹp nhỉ.</p>
+</details>
+
+---
+**Q3.** きのうから　 あめが　 ふっています。
+- **A.** 雪
+- **B.** 雲
+- **C.** 雨
+- **D.** 雷
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3雨(VŨ): mưaTrời vẫn mưa từ h&ocirc;m qua.</p>
+</details>
+
+---
+**Q4.** だれにも 　いわないで 　ください。
+- **A.** 行ないで
+- **B.** 言ないで
+- **C.** 行わないで
+- **D.** 言わないで
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4言う (NG&Ocirc;N):  n&oacute;iĐừng n&oacute;i với bất k&igrave; ai nh&eacute;.</p>
+</details>
+
+---
+**Q5.** あちらに 　えれべーたーが 　あります。
+- **A.** エレベーター
+- **B.** エレベークー
+- **C.** エルベーター
+- **D.** エレベークー
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1エレベーター: thang m&aacute;yỞ đằng kia c&oacute; thang m&aacute;y.</p>
+</details>
+
+---

@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/gh-100
+  - gh100
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 GH-100: GitHub Administration MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/GH-100/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/GH-100/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/GH-100/GH-100 Mindmap\|🗺️ GH-100 Mindmap]]
+- [[certifications/microsoft/GH-100/GH-100 Flashcards\|🃏 GH-100 Flashcards]]
+- [[certifications/microsoft/GH-100/GH-100_Scraped_Question_Bank\|🗃️ GH-100 Scraped Question Bank]]

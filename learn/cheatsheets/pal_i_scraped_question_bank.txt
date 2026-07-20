@@ -1,0 +1,126 @@
+# 🗃️ PAL-I Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+What traditionally "good" behavior can impede the adoption of an agile culture? (choose the best answer)
+
+### Options:
+- [ ] **A)** Encouraging specialization
+- [ ] **B)** Rewarding outstanding individual performance
+- [ ] **C)** Enforcing organization-level technology standards
+- [ ] **D)** Rewarding high utilization
+- [ ] **E)** Managing to: fixed-scope, schedule, and budget goals
+- [x] **F)** All the above [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `F`
+
+**Explanation**:
+Agile principles emphasize collaboration, flexibility, and delivering customer value over strict adherence to processes or individual achievements. Rewarding individual performance or focusing on fixed goals can create silos and hinder collaboration, which is key to Agile. Encouraging specialization can also limit cross-functional teamwork, reducing agility. All the behaviors mentioned can slow down or impede an Agile culture by promoting practices that are at odds with Agile values of teamwork, adaptability, and customer collaboration.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+You manage a product delivery organization. Your manager asks you to create a plan for the next fiscal year describing what will be delivered. 
+What is the best way to proceed? (choose the best answer)
+
+### Options:
+- [x] **A)** Work with the Product Owner(s) to analyze current delivery capabilities against demand, then use that data to build a probabilistic forecast that serves to illustrate what might be achieved. [Correct]
+- [ ] **B)** Use your knowledge to make the plan and later negotiate its implementation with the Scrum Team.
+- [ ] **C)** Work with specialists from each team to build an estimated backlog that you can translate into a Gantt chart.
+- [ ] **D)** Ask each Scrum Team to estimate the current backlog and make a plan against the story points previously delivered. Then normalize story points across teams to combine the estimates.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+In Agile, future planning should be based on empirical evidence, using past performance to inform what might be realistically achieved in the future. Probabilistic forecasting gives a more realistic view by accounting for variability in team performance and aligning with Agile's iterative, adaptive approach. It avoids overcommitment and provides transparency, promoting better stakeholder communication.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+You are a manager responsible for a product being developed by a Scrum Team. A sales representative wants a particular feature in the product. They believe that it will help close a deal. The Product Owner understands the need but believes that there are more valuable things on the Product Backlog that will lead to more long-term business. The sales representative appeals to you to intervene. How do you respond? (choose the best answer)
+
+### Options:
+- [ ] **A)** Ask the Product Owner to implement the feature anyway since it will close a deal.
+- [ ] **B)** Reach out to Developers who you think may support your position, in the hope of gaining more support for the idea.
+- [x] **C)** Support the Product Owner's decision to focus on broader market needs in the long run, even though it may mean loss of short-term business. [Correct]
+- [ ] **D)** Lobby other stakeholders to express support for adding the feature, to put more pressure on the Product Owner.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+The Product Owner is responsible for maximizing the value of the product, and prioritization is key to that responsibility. Even though losing a short-term business opportunity may seem detrimental, the Product Owner's long-term focus is more in line with the Agile principle of delivering sustainable value. Supporting the Product Owner's prioritization fosters respect for the role and the overall Agile process.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+You manage a development organization. The organization currently rewards individual performance bonuses to only a few top-performers on a yearly basis. As a result, only one member of a team might get a bonus, while all others get nothing. Some of your teams feel that this is unfair since everyone on a team contributes to the success or failure to achieve goals. They would like to move toward team bonuses. 
+What do you think needs to be done? (choose the best answer)
+
+### Options:
+- [x] **A)** Allocate the bonus to the team and let them decide how to split-up the bonus. [Correct]
+- [ ] **B)** Nothing: you value high-performers and want to reward their contributions.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+In Agile, success is the result of collective effort, and team-based rewards encourage collaboration and a shared sense of responsibility. 
+When bonuses are allocated based on individual performance, it can create competition within teams, which may lead to disengagement or reduced teamwork.
+
+Allowing the team to split the bonus reinforces the Agile values of collaboration, trust, and transparency.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+Of the following choices, what is the most effective way a Scrum Master can keep a Scrum Team working at its highest level of productivity? (choose the best answer)
+
+### Options:
+- [ ] **A)** Prevent changes to the backlogs once the Sprint begins.
+- [ ] **B)** Keep high value features high in the Product Backlog.
+- [x] **C)** Facilitate Scrum Team decisions and remove impediments. [Correct]
+- [ ] **D)** Ensure the meetings start and end at the proper time.
+- [ ] **E)** Run the Daily Scrum.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+The Scrum Master's primary role is to help the Scrum Team be as productive as possible by facilitating decision-making and removing any obstacles or impediments that slow the team's progress. This role ensures that the team can focus on delivering value without distractions, which is essential for maintaining high productivity levels.
+</details>
+
+---

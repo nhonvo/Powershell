@@ -1,0 +1,13 @@
+# Day 08: Messaging (Kafka/RabbitMQ)
+**Goal:** Decouple components with events.
+
+### 📖 Reading (GitHub App)
+- Open your Roadmap notes on **Event-Driven Architecture**.
+
+### 🤖 AI Drill (Copy & Paste to ChatGPT/Gemini)
+> "Compare Kafka and RabbitMQ. When should I use 'Push' (RabbitMQ) vs 'Pull' (Kafka)? Explain the concept of a 'Consumer Group' in Kafka using a military hierarchy analogy."
+
+### 📝 Mobile Task
+- Open **GitHub Codespaces**.
+- If you have a project with messaging, look at the `Producer` code. 
+- Try to explain to the AI: "How do we ensure a message is delivered exactly once (Exactly-Once Semantics)?"

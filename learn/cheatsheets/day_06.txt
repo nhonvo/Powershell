@@ -1,0 +1,13 @@
+# Day 06: REST API & Error Handling
+**Goal:** Build resilient interfaces.
+
+### 📖 Reading (GitHub App)
+- Open `doc/02_Backend_Development_Roadmap/03_REST_API/`.
+- Look at the **Idempotency** notes.
+
+### 🤖 AI Drill (Copy & Paste to ChatGPT/Gemini)
+> "What makes an API 'Idempotent'? Why are `GET`, `PUT`, and `DELETE` idempotent, but `POST` is not? How do you design a system where a user accidentally clicks 'Buy Now' twice, but they are only charged once?"
+
+### 📝 Mobile Task
+- Open your AI app.
+- "Roleplay as a Senior Engineer. I am going to propose a REST API design for a 'Camp Supply Inventory'. Critique my use of HTTP status codes and resource naming."

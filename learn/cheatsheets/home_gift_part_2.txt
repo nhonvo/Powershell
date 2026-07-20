@@ -1,0 +1,139 @@
+/*
+
+Lưu ý: 
+- khi nộp bài: Copy toàn bộ lệnh SQL vào file .txt. Và nộp file này nhớ ghi lại đề nhé
+- chạy 1 lần là được không bị lỗi.
+- Bấm chạy lại lần nữa cũng không được lỗi(học cách drop view if exists)
+
+*/
+
+--- EX 2
+USE MASTER
+GO
+DROP DATABASE IF EXISTS OnlineStore
+GO
+CREATE DATABASE OnlineStore
+GO
+
+USE OnlineStore
+GO
+
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY IDENTITY(1, 1),
+    FirstName VARCHAR(50) NOT NULL,
+    LastName VARCHAR(50) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Address VARCHAR(200) NOT NULL
+);
+
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY IDENTITY(1, 1),
+    OrderDate DATE NOT NULL,
+    CustomerID INT FOREIGN KEY REFERENCES Customers(CustomerID),
+	TotalAmount DECIMAL(10, 2) NOT NULL CHECK (TotalAmount > 100)
+    
+);
+
+CREATE TABLE Product (
+    ProductID INT PRIMARY KEY IDENTITY(1, 1),
+    Name VARCHAR(100) NOT NULL,
+    Description VARCHAR(200),
+    Price DECIMAL(10, 2) NOT NULL CHECK (Price > 100)
+);
+
+CREATE TABLE Category (
+    CategoryID INT PRIMARY KEY IDENTITY(1, 1),
+    Name VARCHAR(50) NOT NULL,
+    Description VARCHAR(200)
+);
+
+CREATE TABLE OrderItem (
+    OrderID INT FOREIGN KEY REFERENCES Orders(OrderID),
+    ProductID INT FOREIGN KEY REFERENCES Product(ProductID),
+    Quantity INT NOT NULL DEFAULT 1,
+    CONSTRAINT PK_OrderID_ProductID PRIMARY KEY (OrderID, ProductID),
+);
+
+CREATE TABLE ProductCategory (
+    ProductID INT FOREIGN KEY REFERENCES Product(ProductID),
+    CategoryID INT FOREIGN KEY REFERENCES Category(CategoryID),
+    CONSTRAINT PK_ProductID_CategoryID PRIMARY KEY (ProductID, CategoryID)
+);
+
+--1 insert to each tables 10 records(use command insert multiple row) becareful with IDENTITY
+
+--SELECT:
+
+--Write a SQL query to select all the records from the "Customers" table.
+
+--Write a SQL query to select the customer ID, first name, and last name of the customer whose email is 'example@example.com'.
+
+--TOP:
+
+--Write a SQL query to select the top 10 records from the "Product" table.
+
+--Write a SQL query to select the top 5 records from the "Customers" table where the address is '123 Main Street'.
+
+--PERCENT:
+
+--Write a SQL query to select the top 25 percent of records from the "Product" table based on the price ascending.
+
+--Write a SQL query to select the top 50 percent of records from the "Orders" table based on the order date descending.
+
+--ORDER:
+
+--Write a SQL query to select all records from the "Product" table, ordered by price in ascending order.
+
+--Write a SQL query to select all records from the "Orders" table, ordered by order date in descending order.
+
+--ALIAS:
+
+--Write a SQL query to select the first name and last name of all customers, and display the results with column aliases "First Name" and "Last Name".
+
+--Write a SQL query to select the product ID and price of all products, and display the results with the column aliases "Product ID" and "Price (USD)".
+
+--DISTINCT:
+
+--Write a SQL query to select all unique values of the "Address" column from the "Customers" table.
+
+--Write a SQL query to select all unique values of the "Name" column from the "Category" table.
+
+--WHERE:
+
+--Write a SQL query to select the product name and price of all products that have a price greater than 200.
+
+--Write a SQL query to select the first name and last name of all customers who have an address containing the word "Avenue".
+
+--VIEW:
+
+--Write a SQL query to create a view named "HighPricedProducts" that displays all products with a price greater than 1000.
+
+--Write a SQL query to create a view named "AllOrders" that displays orders.
+
+--SELECT INTO:
+
+--Write a SQL query to create a new table named "CopyProduct" that includes the product name, price, and description columns from the "Product" table.
+
+--Write a SQL query to create a new table named "CustomersFromNY" that includes the first name, last name, and email columns from the "Customers" table, for customers with an address in New York.
+
+--Authentic Operators:
+
+--Write a SQL query to select all records from the "Product" table where the description is not null.
+
+--Write a SQL query to select all records from the "Category" table where the description is null.
+
+--Compare Operators
+
+--Write a SQL query to select all records from the "Product" table where the price is greater than or equal to 500.
+
+--Write a SQL query to select all records from the "Orders" table where the TotalAmount greater than or equal to 500.
+
+--Logical Operators:
+
+--Write a SQL query to select all records from the "Product" table where the price is greater than 1000 and the description is not null.
+
+--Write a SQL query to select all records from the "Orders" table where TotalAmount value is greater than 1000.
+
+
+--Note: Please make sure to use appropriate SQL syntax and follow proper data manipulation rules to perform these exercises.
+

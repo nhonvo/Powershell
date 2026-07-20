@@ -1,0 +1,318 @@
+# 🗃️ AB-100 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Plan AI-powered business solutions (Testlet 1)
+
+Which two components in the custom AI agent design should the CFO evaluate in the quarterly agent analysis? Each correct answer presents part of the solution.
+
+Note: Each correct selection is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C,D`
+
+**Explanation**:
+Scenario:
+The CFO will analyze all the AI solutions quarterly to compare the estimated ROI against actual measured efficiencies and adoption. The CFO will use the Copilot Studio agent usage estimator to perform this analysis.
+--
+Quarterly Estimated ROI (Forecasting)
+Use the Microsoft Agent Usage Estimator to model quarterly expectations before each period.
+Orchestration Method Input: Select between Classic (logic-driven) or Generative (AI-driven) orchestration.
+Generative orchestration typically consumes more credits but reduces manual development time.
+Session Time Variables: Model the average session time per agent to estimate total message volume. The estimator uses this to project credit consumption based on interaction depth.
+Target ROI Formula: Define the benchmark as:
+Estimated Savings = (Projected Deflection × Human Agent Cost) - Estimated Credit Cost.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Plan AI-powered business solutions (Testlet 1)
+
+What should you configure for the custom AI agent?
+
+### Options:
+- [ ] **A)** AI-assisted evaluators
+- [ ] **B)** classic orchestration
+- [x] **C)** generative orchestration [Correct]
+- [ ] **D)** Azure OpenAI reasoning models
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Generative orchestration is the most appropriate choice for this Microsoft Dynamics 365 AI agent solution.
+This selection directly addresses your requirements for a low-code, conversational, and interconnected agent ecosystem within the Microsoft Power Platform and Dynamics 365 environment.
+Why Generative Orchestration?
+Generative orchestration (available in Microsoft Copilot Studio) is specifically designed to move away from rigid, trigger-phrase-based logic toward a flexible, intent-based model.
+Mapping to Your Requirements
+Intent-Based Selection: Unlike "Classic" orchestration which relies on exact trigger phrases, generative orchestration uses Natural Language Understanding (NLU). It selects the correct topic or "sub-agent" based on a description of the purpose, allowing for the conversational flow you requested.
+Low-Code Integration: Copilot Studio is the primary low-code tool for Dynamics 365. It provides native connectors to Supply Chain Management (SCM) data and can be embedded directly into the SCM interface or deployed to Microsoft Teams.
+External Business Logic: It can trigger Power Automate flows or API calls to execute business logic stored in external databases or legacy systems, bringing that data back into the conversation.
+Product Specifications: By using Generative Answers, the agent can crawl "existing technologies" like SharePoint libraries, internal wikis, or SCM data tables to answer complex spec questions without manual topic authoring.
+
+Incorrect:
+[Not A]
+AI-Assisted Evaluators are testing and diagnostic tools, not runtime execution engines.
+You would use these to measure how well your agent is performing, but they cannot be the agent or manage the logic flow.
+[Not B]
+Classic Orchestration is entirely dependent on trigger phrases.
+It creates a "command-and-control" feel rather than the fluid, conversational interaction you are looking for. It also scales poorly when trying to connect multiple agents.
+[Not D]
+Azure OpenAI Models (Reasoning Models) while powerful, this is a pro-code path (API-heavy).
+Using raw Azure OpenAI models would require significant custom development, missing the "low-code" requirement. While Generative Orchestration uses these models under the hood, the orchestration layer itself is what manages the "which agent to call" logic.
+Scenario: Custom AI Agent
+Contoso has identified the following custom AI agent requirements:
+*-> The custom AI agent will use data from Dynamics 365 Supply Chain Management to answer questions for the manufacturing team as a low-code solution.
+The custom AI agent will be accessible from within Microsoft Teams.
+The custom AI agent must be designed to eventually connect to other agents that can be selected based on their description.
+*-> The topics used in the custom AI agent will be selected based NOT on a trigger phrase, but on a description of the purpose of the query, to make the interactions more conversational.
+The custom AI agent must be able to answer questions about product specifications by using existing technologies. The product specifications are maintained by the R&D department.
+*-> The custom AI agent must be integrated with and accessible from Dynamics 365 Supply Chain Management.
+*-> The custom AI agent must be able to use Dynamics 365 Supply Chain Management business logic that is stored outside of the application.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Plan AI-powered business solutions (Testlet 2)
+
+HOTSPOT
+
+Which framework should you use to meet the AI agent requirements for the sales cycle enablement? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: the ALM Accelerator for Microsoft Power Platform
+For Microsoft Copilot Studio best practices
+
+Using the ALM Accelerator for Microsoft Power Platform is a recommended approach for managing the lifecycle of a low-code AI agent (Copilot Studio) that relies on Dataverse. It enables source control, versioning, and automated deployment of AI agents to ensure they follow Microsoft's best practices.
+
+Box 2: Microsoft Power Platform Well-Architected framework
+For conversational user experience
+
+Utilizing the Microsoft Power Platform Well-Architected framework for a low-code AI agent (built in Copilot Studio) with Dataverse as the core data component ensures the solution is secure, reliable, and provides a high-quality conversational user experience (CUX). The framework helps align the agent with Microsoft's best practices for responsible AI, efficiency, and user satisfaction.
+
+Scenario:
+Sales Cycle Enablement
+Fabrikam has identified the following requirements for sales cycle enablement:
+*-> The final AI agent must follow Microsoft recommendations for a conversational user experience.
+
+Sales Cycle Enablement
+To achieve the company's objectives, Fabrikam intends to implement the following strategies to enhance the sales cycle
+*-> Use low-code development to create a single AI agent that has Dataverse as its core component.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Plan AI-powered business solutions (Testlet 2)
+
+Which framework should you use for the infrastructure migration?
+
+### Options:
+- [x] **A)** Microsoft Cloud Adoption Framework for Azure [Correct]
+- [ ] **B)** Success by Design
+- [ ] **C)** Microsoft Power Platform Center of Excellence (CoE)
+- [ ] **D)** Microsoft Power Platform Project Setup Wizard
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+For migrating a legacy on-premises infrastructure to Microsoft Dynamics 365 Sales with Dataverse as the Single Source of Truth (SSOT), the recommended framework is the Microsoft Cloud Adoption Framework for Azure (CAF), specifically utilized in conjunction with the Data Management Framework (DMF) for Dynamics 365.
+This combined approach ensures a structured transition by focusing on both the strategic adoption of cloud technology and the technical, granular migration of data.
+Recommended Framework: Microsoft Cloud Adoption Framework (CAF) The CAF provides a holistic structure to ensure the migration is secure, compliant, and aligned with business goals.
+Plan: Assess legacy data, prioritize workloads, and define the SSOT requirements.
+Ready: Set up the Dataverse environment (landing zone) and configure security (Azure Active Directory/ Microsoft Entra ID).
+Adopt (Migrate): Perform the technical migration of data using ETL (Extract, Transform, Load) processes.
+Scenario:
+Infrastructure Migration
+Fabrikam plans to migrate from its current on-premises infrastructure to a completely cloud-based topology; this will include user authentication, the security framework, and, primarily, the adoption of the services by end users.
+All the data from the different systems will be consolidated into a single data source - a common data model that will use a Microsoft Dataverse environment as a single source of truth (SSOT) for the sales team.
+Background
+
+Fabrikam, Inc., is a global consumer goods company that is undergoing a digital transformation initiative to migrate its entire infrastructure to the Microsoft cloud. As a key element of this cloud migration, the company will implement Microsoft Dynamics 365 Sales, moving away from the current on-premises proprietary technologies used by its business-to-business (B2B) sales team.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Plan AI-powered business solutions (Question Set 3)
+
+A company uses Microsoft Dynamics 365 Sales to manage leads that are stored in a Microsoft Dataverse table named Lead and use non-standard terminology and custom columns.
+
+You need to configure business terms in the Lead table so that Microsoft Copilot controls can summarize the leads efficiently. The solution must minimize administrative effort.
+
+How should you configure the business terms?
+
+### Options:
+- [ ] **A)** Combine all the fields into one custom field.
+- [x] **B)** Map the field display names as business terms. [Correct]
+- [ ] **C)** Add the schema names as business terms.
+- [ ] **D)** Create new business terms for each field.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+To configure Microsoft Copilot to efficiently summarize leads with non-standard terminology and custom columns in Microsoft Dynamics 365 Sales, you must map these unique fields to business terms within the Sales AI Glossary in Microsoft Copilot Studio.
+Note:
+To map your field display names as business terms:
+1. Access Copilot Studio: Open Microsoft Copilot Studio and select the environment containing your Dynamics 365 Sales instance.
+2. Select the Sales Agent: Navigate to Agents and select the agent named Copilot in Dynamics 365 Sales (formerly Sales Copilot Power Virtual Agents Bot).
+3. Navigate to Knowledge: Under the Knowledge section, select the SalesSpecificQnA knowledge source.
+4. Add Glossary Entries:
+Go to the Glossary tab.
+Term: Enter the non-standard or custom field display name (e.g., your custom business term).
+Description: Define how this term relates to the Dataverse schema. This helps Copilot understand the logic behind the custom column.
+5. Configure Synonyms: In the Synonyms section, map your custom field to alternative names that sellers might use in natural language queries (e.g., mapping "Custom Revenue" to "Opportunity Revenue").
+6. Publish Changes: Select Publish to apply these mappings, allowing Copilot to use the newly defined terms when generating lead summaries.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: Plan AI-powered business solutions (Question Set 3)
+
+DRAG DROP (Drag and Drop is not supported)
+
+You are designing two Microsoft Copilot Studio agents named Agent1 and Agent2. Each agent must meet the following requirements:
+
+Each agent must use a standard model.
+
+Each agent must NOT use generative orchestration.
+
+Agent1 must support simple and short phrases for a given topic.
+
+Agent2 must integrate with Microsoft Dynamics 365 Contact Center voice channel.
+
+You need to recommend language models for the agents.
+
+What should you recommend for each agent? To answer, drag the appropriate language models to the correct agents. Each language model may be used once, more than once, or not at all. You may need to drag the split bar between panes or scroll to view content.
+
+Note: Each correct selection is worth one point.
+
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Natural Language Understanding (NLU)
+Agent1 must support simple and short phrases for a given topic.
+
+For a Microsoft Copilot Studio agent that must not use generative orchestration and requires support for simple, short trigger phrases, the best choice is the Classic NLU (Natural Language Understanding) model.
+
+When you disable generative orchestration (also known as "Generative mode" or "Generative AI" orchestration), the agent reverts to Classic orchestration. In this mode, the agent relies on predefined trigger phrases to map user input directly to specific topics.
+
+Box 2: Natural Language Understanding + (NLU +)
+Agent2 must integrate with Microsoft Dynamics 365 Contact Center voice channel.
+
+For a Microsoft Copilot Studio agent using classic orchestration (no generative orchestration) and integrating with the Dynamics 365 Contact Center voice channel, the best language model is NLU+.
+
+Why NLU+ is the Best Choice
+While standard agents offer three "classic" Natural Language Understanding (NLU) options, NLU+ is specifically designed for high-performance, enterprise-grade scenarios like voice channels.
+
+Note:
+Comparison of Classic Models
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: Plan AI-powered business solutions (Question Set 3)
+
+A company uses Microsoft Dynamics 365 finance and operations apps.
+
+The company plans to use Microsoft Copilot in-app help and guidance to generate responses for internal business processes.
+
+You need to add an additional knowledge source for the business processes. The solution must NOT add new topics to the Copilot agent for the finance and operations apps.
+
+Which knowledge source should you add?
+
+### Options:
+- [ ] **A)** Microsoft Dataverse
+- [ ] **B)** a public website
+- [ ] **C)** Azure AI Search
+- [x] **D)** a file upload [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+To add an additional knowledge source for internal business processes to the Microsoft Copilot in-app experience for Dynamics 365 finance and operations apps--without creating new topics--you should add File Uploads (such as PDF, Word, or text documents) to the "Copilot for finance and operations apps" agent in Copilot Studio.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: Plan AI-powered business solutions (Question Set 3)
+
+A company has an AI business solution.
+
+You need to extend the solution so that Microsoft 365 Copilot can invoke external logic hosted in Azure services.
+
+What should you include in the solution?
+
+### Options:
+- [ ] **A)** Microsoft Copilot Studio skills
+- [x] **B)** Microsoft Power Platform connectors [Correct]
+- [ ] **C)** custom engine agents
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+To enhance an AI business solution with Microsoft 365 Copilot and integrate external logic hosted in Azure, you should use Copilot Studio to create Actions. These actions act as plugins that allow Copilot to invoke external services through Power Platform components.
+Implementation Strategy
+Azure Logic Hosting: Host your external logic in Azure using services like Azure Functions or Azure Logic Apps. These provide the API endpoints that Copilot will ultimately call.
+*-> Power Platform Connector: Create a Custom Connector in the Power Platform to wrap your Azure service's API. This connector acts as the bridge, translating Copilot's requests into API calls your Azure logic understands.
+Copilot Studio Integration: Within Microsoft Copilot Studio, add the custom connector as a Tool or Action. This makes the logic discoverable and invokable by Microsoft 365 Copilot.
+Deployment: Deploy the action through the Microsoft 365 admin center under Integrated Apps to make it available to users in Teams or other Microsoft 365 apps.
+Key Components
+*-> Connector: Wraps the Azure API using an OpenAPI definition or Postman collection.
+Plugin/Action: Defines how Copilot identifies when to use the connector based on user prompts.
+Authentication: Ensure the connector is configured with appropriate security (e.g., OAuth 2.0) to safely access your Azure resources.
+</details>
+
+---

@@ -1,0 +1,53 @@
+---
+tags:
+  - certification/gh-300
+  - copilot/lab-exercise
+  - domain/${domain-number}
+status: 🛠️ pending  # [🛠️ pending, 🏃 running, 🟢 verified]
+difficulty: 🔴 hard   # [🟢 easy, 🟡 medium, 🔴 hard]
+created: 2026-05-26
+---
+
+# 🛠️ Lab Scenario: [Insert Lab Title]
+
+> [!important] Goal
+> [Describe what you are trying to configure, e.g. "Simulate a corporate proxy environment and configure custom CA certs for VS Code Copilot extension."]
+
+## 📋 Prerequisites
+- [ ] VS Code / Visual Studio installed
+- [ ] Active GitHub Copilot subscription
+- [ ] [Any environment tools e.g. PowerShell/Git]
+
+---
+
+## 🚶 Step-by-Step Guide
+
+### Step 1: Environment Setup
+```powershell
+# Commands to prepare the local test environment
+$env:NODE_EXTRA_CA_CERTS = "C:\path\to\your\cert.pem"
+```
+
+### Step 2: Configuration Verification
+[Explain what configuration changes need to be made in the IDE settings or config files]
+
+### Step 3: Test Scenario execution
+- Run a completion test or try loading Copilot Chat.
+- Check extension logs (in VS Code: `Ctrl+Shift+U` -> select `GitHub Copilot` in the dropdown).
+
+---
+
+## 🔍 Validation Checklist
+- [ ] Verify that Copilot does not throw SSL/certificate warning logs.
+- [ ] Confirm settings are correctly applied at user/system level.
+
+---
+
+## 🧠 Retrospective & Lessons Learned
+*   *What went wrong during configuration?*
+    *   [E.g., "PEM certificate formatting was incorrect (needs to be Base64 encoded)."]
+*   *Key exam takeaway:*
+    *   [E.g., "The IDE extension runs on Node.js, meaning general system proxy settings might not be sufficient; Node environment variables must be populated."]
+
+---
+Back to **[[certifications/microsoft/GH-300-Copilot/GH-300 Copilot MOC|GH-300 Copilot MOC]]**

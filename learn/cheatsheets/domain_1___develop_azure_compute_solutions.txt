@@ -1,0 +1,40 @@
+---
+tags:
+  - certification/az-204
+  - azure-dev/study-notes/domain-1
+status: todo
+created: 2026-06-15
+---
+
+# Domain 1: Develop Azure Compute Solutions
+
+This domain covers core concepts for Develop Azure Compute Solutions.
+
+## 🎯 Exam Objectives
+- Understand the core concepts under Develop Azure Compute Solutions.
+- Study key Azure patterns and reference architectures.
+
+---
+
+## 📖 Key Study Topics
+
+### 1. Overview
+- Detail key Azure resources, patterns, and configurations.
+- Review official documentation links.
+
+---
+Back to **[[certifications/microsoft/AZ-204/AZ-204 MOC|AZ-204 MOC]]**
+
+## 🔍 Practice Question Reference
+Here are key questions from the practice bank matching this domain:
+- **Q1**: You have two Hyper-V hosts named Host1 and Host2. Host1 has an Azure virtual machine named VM1 that ... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 1#Question 1|Practice Q1]])
+- **Q2**: DRAG DROP (Drag and Drop is not supported)  You have downloaded an Azure Resource Manager template t... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 1#Question 2|Practice Q2]])
+- **Q3**: Your company has an Azure Kubernetes Service (AKS) cluster that you manage from an Azure AD-joined d... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 1#Question 3|Practice Q3]])
+- **Q4**: Your company has an Azure Kubernetes Service (AKS) cluster that you manage from an Azure AD-joined d... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 1#Question 4|Practice Q4]])
+- **Q5**: Your company has an Azure subscription. You need to deploy a number of Azure virtual machines to the... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 1#Question 5|Practice Q5]])
+- **Q6**: Your company has an Azure subscription. You need to deploy a number of Azure virtual machines to the... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 1#Question 6|Practice Q6]])
+- **Q7**: HOTSPOT (Drag and Drop is not supported)  You have an Azure Active Directory (Azure AD) tenant. You ... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 1#Question 7|Practice Q7]])
+- **Q8**: You manage an Azure SQL database that allows for Azure AD authentication. You need to make sure that... (See [[certifications/microsoft/AZ-204/Practice Questions - Domain 1#Question 8|Practice Q8]])
+
+---
+Back to **[[certifications/microsoft/AZ-204/AZ-204 MOC|AZ-204 MOC]]**

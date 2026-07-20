@@ -1,0 +1,52 @@
+---
+tags:
+  - certification/ai-102
+  - ai-solution/study-notes/domain-3
+status: 📝 study-backlog
+created: 2026-06-15
+---
+
+# Domain 3: Implement Natural Language Processing Solutions (30-35%)
+
+Deals with text analysis, translation, language understanding, and conversational agent creation.
+
+## 🎯 Exam Objectives
+- Analyze text using Azure AI Language (sentiment, NER, PII detection, key phrase extraction).
+- Translate text and documents using Azure AI Translator.
+- Build custom conversational language models using Conversational Language Understanding (CLU).
+- Design and implement custom question answering solutions.
+
+## 📖 Key Study Topics
+
+### 1. Azure AI Language
+*   **Sentiment Analysis**: Returns positive, negative, neutral, or mixed sentiment scores at sentence and document levels. Includes opinion mining.
+*   **Named Entity Recognition (NER)**: Identifies entities like locations, people, organizations, dates, and numbers.
+*   **PII Detection**: Detects and redacts Personally Identifiable Information (SSNs, emails, phone numbers, credit cards).
+
+### 2. Azure AI Translator
+*   **Text Translation**: Translates text in real-time across over 100 languages. Supports auto-detection of source language.
+*   **Document Translation**: Asynchronously translates entire complex layout documents (PDF, DOCX, XLSX) while retaining their original design and layout.
+*   **Custom Translator**: Allows building customized translation models using industry-specific terminology.
+
+### 3. Conversational Language Understanding (CLU)
+*   **Intents**: Action/intent representing user goals (e.g., `BookFlight`, `CheckWeather`).
+*   **Utterances**: Examples of what a user might say (e.g., "Book a flight to Paris tomorrow").
+*   **Entities**: Variables extracted from utterances (e.g., `Destination = Paris`, `Date = tomorrow`).
+*   **Deployment**: Train models and deploy them to endpoints for consumption by client applications or bots.
+
+---
+Back to **[[certifications/microsoft/AI-102/AI-102 MOC|AI-102 MOC]]**
+
+## 🔍 Practice Question Reference
+Here are key questions from the practice bank matching this domain:
+- **Q1**: You need to build a chatbot that meets the following requirements:  -Supports chit-chat, knowledge b... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 3#Question 1|Practice Q1]])
+- **Q2**: You plan to provision a QnA Maker service in a new resource group named RG1. In RG1, you create an A... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 3#Question 2|Practice Q2]])
+- **Q3**: You are building a language model by using a Language Understanding service. You create a new Langua... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 3#Question 3|Practice Q3]])
+- **Q4**: You have a Language Understanding resource named lu1. You build and deploy an Azure bot named bot1 t... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 3#Question 4|Practice Q4]])
+- **Q5**: SIMULATION You need to create a Form Recognizer resource named fr12345678.  Use the Form Recognizer ... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 3#Question 5|Practice Q5]])
+- **Q6**: SIMULATION Use the following login credentials as needed:   To enter your username, place your curso... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 3#Question 6|Practice Q6]])
+- **Q7**: SIMULATION Use the following login credentials as needed:   To enter your username, place your curso... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 3#Question 7|Practice Q7]])
+- **Q8**: You are building an AI solution that will use Sentiment Analysis results from surveys to calculate b... (See [[certifications/microsoft/AI-102/Practice Questions - Domain 3#Question 8|Practice Q8]])
+
+---
+Back to **[[certifications/microsoft/AI-102/AI-102 MOC|AI-102 MOC]]**

@@ -1,0 +1,16 @@
+# 09_Japanese_Roadmap
+
+🔙 **Back to Parent**: [[languages/09_Japanese_Roadmap/🇯🇵index_09_Japanese_Roadmap|03_Languages_Communication]]
+
+## 📁 Sub-Categories
+- [[languages/09_Japanese_Roadmap/🇯🇵index_09_Japanese_Roadmap|dungmori-storage]]
+
+## 📄 Notes & Documents
+- [[languages/09_Japanese_Roadmap/01_Roadmap_N5|01_Roadmap_N5]]
+- [[languages/09_Japanese_Roadmap/02_Roadmap_N4|02_Roadmap_N4]]
+- [[languages/09_Japanese_Roadmap/03_Roadmap_N3|03_Roadmap_N3]]
+- [[languages/09_Japanese_Roadmap/04_Roadmap_N2|04_Roadmap_N2]]
+- [[languages/09_Japanese_Roadmap/05_Roadmap_N1|05_Roadmap_N1]]
+- [[languages/09_Japanese_Roadmap/06_Roadmap_Uncategorized|06_Roadmap_Uncategorized]]
+- [[languages/09_Japanese_Roadmap/Instructions|Instructions]]
+

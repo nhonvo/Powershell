@@ -1,0 +1,84 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/03_REST_API/📂index_03_REST_API|03_REST_API]]
+
+# 🏗️ 2. ASP.NET Core Web API (Deep Dive)
+
+ASP.NET Core là "cỗ máy" Backend mạnh mẽ nhất thế giới hiện nay. Nó kết hợp tính linh hoạt của Middleware, sức mạnh của Dependency Injection và tốc độ thực thi vượt trội (Top đầu Tenchempower benchmarks).
+
+---
+
+### 🏛️ 2.1 Middleware Pipeline (Trái tim luồng Request)
+
+Mọi Request đi qua ứng dụng ASP.NET Core đều được xử lý bởi một chuỗi các **Middleware**.
+
+#### **Quy trình hoạt động:**
+- Request đi từ ngoài vào (Inward): Auth → Routing → Controller.
+- Response đi từ trong ra (Outward): Sau khi Controller trả về, đi qua Logging → Compression.
+
+> [!NOTE]
+> Bạn có thể viết Middleware tùy chỉnh để xử lý: Ghi Log toàn bộ request, Nén response, hoặc Bắt lỗi toàn cục (Global Exception Handling).
+
+---
+
+### 🧠 2.2 Dependency Injection (DI) - Linh hồn của Ứng dụng
+
+ASP.NET Core tích hợp sẵn bộ quản lý DI cực mạnh. Đừng bao giờ khởi tạo Object bằng `new` trong Controller. Hãy tiêm nó vào Constructor.
+
+**3 Kiểu vòng đời (Lifetimes) - PHẢI NHỚ:**
+1.  **Transient**: Tạo mới mỗi khi được yêu cầu. Dùng cho các Service nhẹ, không có trạng thái.
+2.  **Scoped**: Tạo 1 instance duy nhất cho **1 Request**. (Dùng nhiều nhất cho `DBContext`, `Repository`).
+3.  **Singleton**: Tạo 1 lần duy nhất khi ứng dụng khởi chạy và dùng chung cho mọi Request. (Dùng cho `Cache`, `Config`).
+
+---
+
+### 🚀 2.3 Controller & Model Validation (FluentValidation)
+
+Đừng lạm dụng thuộc tính `[Required]` hay `[MaxLength]` trực tiếp trong Model. Hãy tách biệt logic kiểm tra dữ liệu bằng **FluentValidation**.
+
+**Ví dụ (C#):**
+```csharp
+public class UserValidator : AbstractValidator<UserDto> {
+    public UserValidator() {
+        RuleFor(x => x.Email).EmailAddress();
+        RuleFor(x => x.Age).InclusiveBetween(18, 100);
+    }
+}
+```
+
+---
+
+### ⚡ 2.4 Filters & Action Results
+
+- **Action Results**: Trả về `Ok()`, `NotFound()`, `BadRequest()` để chuẩn hóa HTTP Status Code.
+- **Filters**: Cho phép bạn thực hiện logic GIA TRỊ sau khi Routing nhưng trước khi Controller Action chạy (Ví dụ: `[Authorize]`, `[ServiceFilter]`).
+
+---
+
+### 📝 2.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Điều gì xảy ra nếu bạn tiêm một 'Scoped Service' vào một 'Singleton Service'?"
+<details><summary>Đáp án</summary>
+Lỗi (InvalidOperationException)! Đây gọi là **Captive Dependency**. Vì Singleton sống suốt đời, nó sẽ giữ chặt lấy Scoped Service của request đầu tiên mãi mãi. Điều này làm Scoped Service không thể được thu hồi, gây rò rỉ bộ nhớ hoặc dữ liệu sai lệch (như DBContext bị treo).
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết một Custom Middleware đơn giản để ghi log thời gian xử lý (Execution Time) của mỗi request.
+<details><summary>Solution (C#)</summary>
+```csharp
+public class StopwatchMiddleware {
+    private readonly RequestDelegate _next;
+    public StopwatchMiddleware(RequestDelegate next) => _next = next;
+
+    public async Task Invoke(HttpContext context) {
+        var sw = Stopwatch.StartNew();
+        await _next(context); // Chạy request tiếp theo
+        Console.WriteLine($"Requested: {context.Request.Path} took {sw.ElapsedMilliseconds}ms");
+    }
+}
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [ASP.NET Core Performance Mastery - Beyond Fundamentals](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-dotnet-performance.md)
+- [Mastering Dependency Injection Lifetimes - Captive Dependency](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-dotnet-di-lifetimes.md)
+- [FluentValidation vs DataAnnotations: Which One to Choose?](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-fluentvalidation.md)

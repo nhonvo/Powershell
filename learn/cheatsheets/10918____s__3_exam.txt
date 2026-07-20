@@ -1,0 +1,65 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 3
+
+## Part 1
+**Q1.** いもうとが　ひとり　います。
+- **A.** 入一
+- **B.** 一入
+- **C.** 人一
+- **D.** 一人
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n : 4一人 (NHẤT - NH&Acirc;N) ：một ngườiT&ocirc;i c&oacute; một người em g&aacute;i.</p>
+</details>
+
+---
+**Q2.** この　かわは　きれいです。
+- **A.** 花
+- **B.** 田
+- **C.** 川
+- **D.** 山
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n : 3川 (XUY&Ecirc;N) : D&ograve;ng s&ocirc;ng D&ograve;ng s&ocirc;ng n&agrave;y rất đẹp.</p>
+</details>
+
+---
+**Q3.** きのう　ともだちと　あいました。
+- **A.** 遊いました
+- **B.** 見いました
+- **C.** 会いました
+- **D.** 話いました
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3会う (HỘI) : gặp H&ocirc;m qua t&ocirc;i đ&atilde; gặp bạn.</p>
+</details>
+
+---
+**Q4.** えきの　にしがわに　こうえんが　あります。
+- **A.** 東がわ
+- **B.** 西がわ
+- **C.** 南がわ
+- **D.** 北がわ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2西がわ (T&Acirc;Y) : ph&iacute;a T&acirc;yPh&iacute;a T&acirc;y nh&agrave; ga c&oacute; c&ocirc;ng vi&ecirc;n.</p>
+</details>
+
+---
+**Q5.** あしたは　かいしゃを　やすみます。
+- **A.** 公仕
+- **B.** 会仕
+- **C.** 公社
+- **D.** 会社
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n : 4会社 (HỘI - X&Atilde;) : c&ocirc;ng ty T&ocirc;i sẽ nghỉ l&agrave;m c&ocirc;ng ty v&agrave;o ng&agrave;y mai.</p>
+</details>
+
+---

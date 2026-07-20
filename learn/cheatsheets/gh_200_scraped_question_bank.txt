@@ -1,0 +1,198 @@
+# 🗃️ GH-200 Scraped Question Bank (Page 2)
+
+This contains 8 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+As a developer, you want to run a workflow from the Actions tab in GitHub. 
+Which YAML snippet should you use to match the interface in this image?
+
+
+
+A)
+
+
+
+B)
+
+
+
+C)
+
+
+
+D)
+
+### Options:
+- [ ] **A)** Option A
+- [ ] **B)** Option B
+- [x] **C)** Option C [Correct]
+- [ ] **D)** Option D
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+The first image shows a workflow trigger with an option for the test suite, and the chosen YAML configuration matches this interface. Specifically, the test suite input is defined with type: choice and includes the option value: functional, which aligns with the visible UI elements in the first image.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+How many jobs will result from the following matrix configuration?
+
+### Options:
+- [ ] **A)** 3 jobs
+- [ ] **B)** 4 jobs
+- [ ] **C)** 5 jobs
+- [x] **D)** 6 jobs [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+The matrix configuration specifies two variables: color and animal. The color variable has 2 values (green and pink), and the animal variable has 2 values (owl and magpie). This would result in 4 more combinations (color: blue and animal: owl; color: pink and animal: magpie).
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+As a developer, which workflow steps should you perform to publish an image to the GitHub Container Registry? (Choose three.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,B,D`
+
+**Explanation**:
+A . Use the actions/setup-docker action
+B . Authenticate to the GitHub Container Registry.
+C . Build the container image.
+D . Push the image to the GitHub Container Registry
+E . Pull the image from the GitHub Container Registry.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+As a developer, you have a 10-MB data set that is required in a specific workflow. 
+Which steps should you perform so the dataset is stored encrypted and can be decrypted during the workflow? (Choose three.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,C,D`
+
+**Explanation**:
+First, the dataset should be encrypted before being stored. This ensures that the data is protected when stored in a repository.
+
+The encrypted dataset can be stored in a GitHub secret, ensuring it is securely kept and not exposed publicly.
+The encryption key needed to decrypt the dataset should also be stored in a GitHub secret to maintain security during the workflow, allowing access only when needed.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+Which statement is true about using default environment variables?
+
+### Options:
+- [ ] **A)** The environment variables can be read in workflows using the ENV: variable_name syntax.
+- [ ] **B)** The environment variables created should be prefixed with GITHUB_ to ensure they can be accessed in workflows
+- [ ] **C)** The environment variables can be set in the defaults: sections of the workflow
+- [x] **D)** The GITHUB_WORKSPACE environment variable should be used to access files from within the runner. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+GITHUB_WORKSPACE is a default environment variable in GitHub Actions that points to the directory on the runner where your repository is checked out. This variable allows you to access files within your repository during the workflow.
+</details>
+
+---
+
+## ❓ Question 6
+
+**Topic**: 
+
+Which of the following commands will set the $FOO environment variable within a script, so that it may be used in subsequent workflow job steps?
+
+### Options:
+- [ ] **A)** run: echo "::set-env name=FOO::bar"
+- [x] **B)** run: echo "FOO=bar" >> $GITHUB_ENV [Correct]
+- [ ] **C)** run: echo ${{ $FOO=bar }}
+- [ ] **D)** run: export FOO=bar
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+The $GITHUB_ENV environment variable is used to set environment variables that persist across steps in a workflow job. By echoing FOO=bar into $GITHUB_ENV, the variable FOO will be available in subsequent steps within the same job.
+</details>
+
+---
+
+## ❓ Question 7
+
+**Topic**: 
+
+You are reaching your organization's storage limit for GitHub artifacts and packages. 
+What should you do to prevent the storage limit from being reached?
+
+### Options:
+- [ ] **A)** via the .github repository owned by the organization
+- [x] **B)** via repositories owned by the organization [Correct]
+- [ ] **C)** via the GitHub Marketplace
+- [ ] **D)** via a repository owned by a third party
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+To prevent reaching the storage limit for GitHub artifacts and packages, you should manage and clean up artifacts and packages stored in repositories owned by your organization. This includes deleting unnecessary artifacts and managing the lifecycle of packages, as they contribute directly to your organization's storage quota.
+</details>
+
+---
+
+## ❓ Question 8
+
+**Topic**: 
+
+Based on the YAML below, which two statements are correct? (Choose two.)
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A,D`
+
+**Explanation**:
+The publish-npm job includes the JS-DevTools/npm-publish action, which is used to publish an npm package to an npm registry.
+The publish-npm job has the needs: build directive, meaning it will only run after the build job successfully completes.
+</details>
+
+---

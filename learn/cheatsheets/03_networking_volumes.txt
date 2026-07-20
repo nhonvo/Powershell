@@ -1,0 +1,70 @@
+🔙 **Back to Parent**: [[technical_skills/05_Docker_Hero/📂index_05_Docker_Hero|05_Docker_Hero]]
+
+# 🔗 3. Networking & Volumes (Data & Conn Mastery)
+
+Docker Container là các ốc đảo độc lập (Isolated). Một Backend Developer tuyệt vời phải biết cách "xây cầu" (Networking) để các container nói chuyện được với nhau, và "xây kho" (Volumes) để dữ liệu không bị mất khi container sập.
+
+---
+
+### 🏛️ 3.1 Docker Networking (Giao tiếp giữa các Container)
+
+Tại sao App có thể gọi Database trong khi cả 2 chạy độc lập?
+- **Bridge Network**: (Mặc định) Tạo 1 mạng ảo riêng cho các container. Chúng có thể gọi nhau qua IP nội bộ hoặc tốt hơn là qua **Service Name** (Tên container).
+- **Host Network**: Container dùng chung IP/Cổng của máy host. (Cực nhanh nhưng kém bảo mật).
+- **None Network**: Container hoàn toàn bị cô lập khỏi Internet. (Dùng cho các App tính toán bảo mật).
+
+> [!TIP]
+> **DNS của Docker**: Trong cùng 1 Bridge network, bạn chỉ cần gọi `http://database:5432` thay vì nhớ địa chỉ IP loằng ngoằng.
+
+---
+
+### 🧠 3.2 Docker Volumes (Lưu trữ bền vững)
+
+> "Mọi thứ bạn tạo ra BÊN TRONG container sẽ bị XOÁ SẠCH khi container bị remove."
+
+Để lưu dữ liệu (như Database PostgreSQL, Ảnh người dùng), chúng ta dùng Volumes.
+
+1.  **Named Volume** (Khuyên dùng cho Database): `docker run -v pg_data:/var/lib/postgresql/data ...`. Docker tự quản lý vị trí lưu file (An toàn, tốc độ cao).
+2.  **Bind Mount** (Dùng lúc Dev): `docker run -v /c/my-code:/app ...`. Gắn trực tiếp 1 thư mục từ máy thật vào container. (Bạn sửa code bên ngoài, bên trong container đổi ngay lập tức).
+3.  **Tmpfs Mount**: Lưu dữ liệu trực tiếp vào RAM. (Cực nhanh nhưng mất sạch dữ liệu khi tắt máy).
+
+---
+
+### 🚀 3.3 Port Mapping (Cửa sổ ra thế giới)
+
+Cổng mặc định của PostgreSQL là `5432`. Bạn có thể mở cổng `6000` ở máy thật để Map vào: `-p 6000:5432`.
+- **Máy thật**: `localhost:6000`
+- **Docker**: `container:5432`
+
+---
+
+### ⚡ 3.4 Docker Network Inspection
+
+Làm sao để biết container đang dùng IP nào hay các container nào đang chung 1 mạng?
+```bash
+docker network ls
+docker network inspect [network_name]
+```
+
+---
+
+### 📝 3.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao Database postgres CHƯA BAO GIỜ được chạy mà thiếu Volume gắn kèm?"
+<details><summary>Đáp án</summary>
+Vì bản chất container là "Vô gia cư" (Ephemeral). Nếu bạn chạy DB mà không có Volume, khi bạn nâng cấp (Upgrade) image lên version mới hoặc khi container bị lỗi phải khởi động lại sạch sẽ, toàn bộ dữ liệu (Người dùng, Đơn hàng, Mật khẩu...) sẽ **MẤT VĨNH VIỄN**.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết lệnh chạy 1 container Nginx có gắn **Bind Mount** thư mục `C:/html` vào `/usr/share/nginx/html`.
+<details><summary>Solution</summary>
+```bash
+docker run -d -p 80:80 -v C:/html:/usr/share/nginx/html nginx
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [How Docker Networking Powers Microservices Communication](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-docker-networking.md)
+- [Data Persistence Mastery with Docker Volumes & Bind Mounts](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-docker-volumes.md)
+- [Troubleshooting Network Issues in Docker Containers](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-docker-network-troubleshoot.md)

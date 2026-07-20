@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/dea-c01
+  - deac01
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 DEA-C01 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/aws/DEA-C01/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/aws/DEA-C01/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/aws/DEA-C01/DEA-C01 Mindmap\|🗺️ DEA-C01 Mindmap]]
+- [[certifications/aws/DEA-C01/DEA-C01 Flashcards\|🃏 DEA-C01 Flashcards]]
+- [[certifications/aws/DEA-C01/DEA-C01_Scraped_Question_Bank\|🗃️ DEA-C01 Scraped Question Bank]]

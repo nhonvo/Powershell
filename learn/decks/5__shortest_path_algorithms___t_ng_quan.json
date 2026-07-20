@@ -1,0 +1,156 @@
+{
+  "Meta": {
+    "Id": "deck_5__shortest_path_algorithms___t_ng_quan",
+    "Topic": "5. Shortest Path Algorithms — Tổng quan",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "5__shortest_path_algorithms___t_ng_quan"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 7
+  },
+  "Cards": [
+    {
+      "Id": "card_01390",
+      "Front": "Thuật toán",
+      "Back": "Loại | Trọng số âm | Time Complexity | Dùng khi nào",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. shortest path algorithms — tổng quan"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01391",
+      "Front": "**BFS**",
+      "Back": "SSSP | Không | O(V + E) | Unweighted graph",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. shortest path algorithms — tổng quan"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01392",
+      "Front": "**Dijkstra**",
+      "Back": "SSSP | Không | O((V+E) log V) | Non-negative weights",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. shortest path algorithms — tổng quan"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01393",
+      "Front": "**Bellman-Ford**",
+      "Back": "SSSP | Có | O(V × E) | Có negative weights",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. shortest path algorithms — tổng quan"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01394",
+      "Front": "**Floyd-Warshall**",
+      "Back": "APSP | Có | O(V³) | All-pairs, graph nhỏ",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. shortest path algorithms — tổng quan"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01395",
+      "Front": "**A***",
+      "Back": "Single-pair | Không | O(E) best case | Có heuristic (bản đồ)",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. shortest path algorithms — tổng quan"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01396",
+      "Front": "**Johnson's**",
+      "Back": "APSP | Có | O(V² log V + VE) | APSP, sparse graph",
+      "Hint": "12_Graphs",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. shortest path algorithms — tổng quan"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

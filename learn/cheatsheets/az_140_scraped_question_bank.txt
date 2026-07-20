@@ -1,0 +1,173 @@
+# 🗃️ AZ-140 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Plan an Azure Virtual Desktop Architecture (Question Set 1)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You have an Azure Virtual Desktop deployment.
+
+Many users have iOS devices that have the Remote Desktop Mobile app installed.
+
+You need to ensure that the users can connect to the feed URL by using email discovery instead of entering the feed URL manually.
+
+How should you configure the _msradc DNS record? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Plan an Azure Virtual Desktop Architecture (Question Set 1)
+
+You have a Microsoft Entra tenant named contoso.com and an Azure virtual network named VNET1.
+
+You deploy a Microsoft Entra Domain Services managed domain named litwareinc.com to VNET1.
+
+You plan to deploy an Azure Virtual Desktop host pool named Pool1 to VNET1.
+
+You need to ensure that you can deploy Windows 10 Enterprise session hosts to Pool1.
+
+What should you do first?
+
+### Options:
+- [ ] **A)** Modify the settings of the litwareinc.com DNS zone.
+- [x] **B)** Modify the DNS settings of VNET1. [Correct]
+- [ ] **C)** Add a custom domain name to contoso.com.
+- [ ] **D)** Implement Microsoft Entra Connect cloud sync.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Plan an Azure Virtual Desktop Architecture (Question Set 1)
+
+You have the devices shown in the following table.
+
+
+
+You plan to deploy Azure Virtual Desktop for client access to remove virtualized apps.
+
+Which devices support the Remote Desktop client?
+
+### Options:
+- [ ] **A)** Device1 and Device2 only
+- [x] **B)** Device1 and Device3 only [Correct]
+- [ ] **C)** Device1, Device2, and Device3
+- [ ] **D)** Device1 only
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Connect to Azure Virtual Desktop with the Remote Desktop client for Windows Prerequisites
+Before you can access your resources, you'll need to meet the prerequisites:
+Internet access.
+A device running one of the following supported versions of Windows:
+Windows 11
+Windows 11 IoT Enterprise
+(Device 1) Windows 10
+(Device 3) Windows 10 IoT Enterprise
+Windows Server 2019
+Windows Server 2016
+Windows Server 2012 R2
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Plan an Azure Virtual Desktop Architecture (Question Set 1)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You plan to deploy Azure Virtual Desktop.
+
+Users have the devices shown in the following table.
+
+
+
+From which device types can the users connect to Azure Virtual Desktop resources by using the Remote Desktop client app and the Remote Desktop web client? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Plan an Azure Virtual Desktop Architecture (Question Set 1)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You have an Azure Virtual Desktop deployment.
+
+You plan to create the host pools shown in the following table.
+
+
+
+You need to recommend the virtual machine size for each host pool. The solution must minimize costs.
+
+Which size should you recommend for each pool? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---

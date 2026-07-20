@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/psk-i
+  - pski
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 PSK-I MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/scrum/PSK-I/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/scrum/PSK-I/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/scrum/PSK-I/PSK-I Mindmap\|🗺️ PSK-I Mindmap]]
+- [[certifications/scrum/PSK-I/PSK-I Flashcards\|🃏 PSK-I Flashcards]]
+- [[certifications/scrum/PSK-I/PSK-I_Scraped_Question_Bank\|🗃️ PSK-I Scraped Question Bank]]

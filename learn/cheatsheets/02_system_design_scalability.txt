@@ -1,0 +1,64 @@
+🔙 **Back to Parent**: [[technical_skills/06_Backend_Interview_Expert/📂index_06_Backend_Interview_Expert|06_Backend_Interview_Expert]]
+
+# 🏗️ 2. System Design & Scalability (The Senior Edge)
+
+Thiết kế hệ thống không có đáp án đúng tuyệt đối, chỉ có sự đánh đổi (Trade-off). Bạn phải chứng minh được tại sao bạn chọn **Microservices** thay vì **Monolith**, chọn **Redis** thay vì **Memcached**.
+
+---
+
+### 🏛️ 2.1 Monolith vs Microservices (Thiết kế kiến trúc)
+
+- **Monolith**: Mọi thứ nằm chung 1 dự án. (Dễ code, dễ deploy giai đoạn đầu).
+- **Microservices**: Mỗi chức năng (User, Order, Payment) là 1 app riêng biệt. (Linh hoạt, mở rộng tốt nhưng cực kỳ phức tạp về vận hành, network, logging).
+
+> [!TIP]
+> **Quy tắc**: Đừng chia nhỏ hệ thống nếu bạn chưa thực sự bị "Đau" (Pain) về hiệu năng hoặc quy mô team.
+
+---
+
+### 🧠 2.2 Load Balancing (Cân bằng tải)
+
+Làm sao để chia tải cho 10 server Backend?
+- **Round Robin**: Chia đều lần lượt (1, 2, 3...).
+- **Least Connection**: Chuyển request tới server đang rảnh nhất.
+- **Sticky Session**: Đảm bảo 1 user luôn truy cập vào đúng 1 server (Dùng khi server lưu session trong RAM).
+
+---
+
+### 🚀 2.3 Caching Strategy (Chiến lược bộ nhớ đệm)
+
+Caching là cách rẻ tiền nhất để tăng tốc hệ thống.
+- **Cache-Aside**: App tự check cache -> DB. (Dễ dùng nhất).
+- **Read-Through**: Cache tự nạp từ DB.
+- **Write-Through**: Ghi vào cả Cache và DB cùng lúc.
+- **Write-Back**: Ghi vào Cache trước, ghi vào DB sau (Async).
+
+---
+
+### ⚡ 2.4 Scalability: Vertical vs Horizontal
+
+- **Vertical Scaling (Mở rộng theo chiều dọc)**: Mua thêm RAM, CPU cho server cũ. (Nhanh nhưng có giới hạn phần cứng).
+- **Horizontal Scaling (Mở rộng theo chiều ngang)**: Thuê thêm nhiều server rẻ tiền chạy song song. (Phù hợp cho Microservices, mở rộng vô tận).
+
+---
+
+### 📝 2.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Hệ thống của bạn bị chậm, bước đầu tiên bạn làm gì để tìm ra nguyên nhân?"
+<details><summary>Đáp án</summary>
+1. Check tài nguyên (CPU, RAM, Disk I/O). 2. Kiểm tra Slow Query Log (Postgres). 3. Sử dụng `EXPLAIN ANALYZE` trên các câu query chậm để xem nó có dùng Index không? Nếu có Seq Scan thì phải đánh Index ngay.
+</details>
+
+**Bài 2**: [Kỹ thuật] Thiết kế một hệ thống cho phép 100 ngàn người dùng bình chọn (Voted) cho 1 Idol duy nhất trong 1 phút mà không làm sập Database.
+<details><summary>Solution (High-Level Design)</summary>
+1. **Rate Limiting**: Chặn các request spam. 
+2. **Buffer Queue**: Gửi yêu cầu bình chọn vào **Message Queue (Redis/RabbitMQ)**. 
+3. **Async Processing**: Cho 1 Worker hì hục lấy từ queue ra để cập nhật vào DB một cách thong thả. DB sẽ không bị dội bom 100k request 1 lúc.
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [System Design: How to Scales from 1 to 10 Million Users](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-system-design-scaling.md)
+- [Monolith vs Microservices: Making the Right Architecture Choice](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-monolith-vs-microservices.md)
+- [Caching Best Practices for Modern Backend Applications](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-caching-mastery.md)

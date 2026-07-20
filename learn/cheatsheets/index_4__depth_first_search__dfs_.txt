@@ -1,0 +1,11 @@
+# 4. Depth-First Search (DFS)
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/5. Trees and graphs/1. Readings/index_1. Readings|1. Readings]]
+
+## 📄 Notes
+- [[4. depth-first search (dfs)|4. Depth-First Search (DFS)]]
+
+## 🛠️ Related Practices (Searching & Sorting)
+- [[dsa/1.Interviewcake.com/5. Trees and graphs/1. Readings/4. Depth-First Search (DFS)/index_4. Depth-First Search (DFS)|21.Merge-Two-Sorted-Lists]]
+- [[dsa/1.Interviewcake.com/5. Trees and graphs/1. Readings/4. Depth-First Search (DFS)/index_4. Depth-First Search (DFS)|23.Merge-k-Sorted-Lists]]
+

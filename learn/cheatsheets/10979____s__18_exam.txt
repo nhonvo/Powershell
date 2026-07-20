@@ -1,0 +1,89 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 18
+
+## Part 1
+**Q1.** きのうは　月が　きれいでしたね。
+- **A.** つき
+- **B.** ゆき
+- **C.** そら
+- **D.** うみ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1月 (NGUYỆT)：trăngH&ocirc;m qua trăng đẹp nhỉ.</p>
+</details>
+
+---
+**Q2.** きょうは　日よう日です。
+- **A.** にちようび
+- **B.** げつようび
+- **C.** もくようび
+- **D.** きんようび
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1日よう日 (NHẬT - NHẬT)：Chủ nhậtH&ocirc;m nay l&agrave; Chủ nhật.</p>
+</details>
+
+---
+**Q3.** こどもの　声は　おおきいです。
+- **A.** くち
+- **B.** こえ
+- **C.** おと
+- **D.** あし
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2声 (THANH)：TiếngTiếng của trẻ con rất to.</p>
+</details>
+
+---
+**Q4.** 八時に　がっこうへ　いきます。
+- **A.** はつじ
+- **B.** はちじ
+- **C.** はちゅじ
+- **D.** はっじ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2八時 (B&Aacute;T - THỜI)： 8 giờT&ocirc;i đến trường l&uacute;c 8 giờ.</p>
+</details>
+
+---
+**Q5.** こうえんの　西がわに　スーパーが　あります。
+- **A.** ひがしがわ
+- **B.** きたがわ
+- **C.** みなみがわ
+- **D.** にしがわ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4西がわ (T&Acirc;Y)：Ph&iacute;a T&acirc;yPh&iacute;a T&acirc;y của c&ocirc;ng vi&ecirc;n c&oacute; một c&aacute;i si&ecirc;u thị.</p>
+</details>
+
+---
+**Q6.** この　お店は　とても　きれいです。
+- **A.** おはな
+- **B.** おみず
+- **C.** おうち
+- **D.** おみせ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4お店 (ĐIẾM)：Cửa h&agrave;ngCửa h&agrave;ng n&agrave;y rất đẹp.</p>
+</details>
+
+---
+**Q7.** あそこに　きれいな　花が　あります。
+- **A.** うみ
+- **B.** やま
+- **C.** はな
+- **D.** かわ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3花 (HOA)：hoaỞ đằng kia c&oacute; những b&ocirc;ng hoa đẹp.</p>
+</details>
+
+---

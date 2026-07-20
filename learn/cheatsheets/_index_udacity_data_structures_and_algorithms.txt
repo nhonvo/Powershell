@@ -1,0 +1,11 @@
+# Udacity-Data-Structures-and-Algorithms
+
+🔙 **Back to Parent**: [[dsa/Udacity-Data-Structures-and-Algorithms/🎓index_Udacity-Data-Structures-and-Algorithms|Docs]]
+
+## 📁 Categories
+- [[dsa/Udacity-Data-Structures-and-Algorithms/1_UnscrambleComputerScienceProblems/index_1_UnscrambleComputerScienceProblems|1_UnscrambleComputerScienceProblems]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/2_ShowMeTheDataStructures/index_2_ShowMeTheDataStructures|2_ShowMeTheDataStructures]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/3_ProblemsVsAlgorithms/index_3_ProblemsVsAlgorithms|3_ProblemsVsAlgorithms]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/4_RoutePlanner/index_4_RoutePlanner|4_RoutePlanner]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/index_Problems|Problems]]
+

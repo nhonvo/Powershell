@@ -1,0 +1,11 @@
+# 01_Language_Basics
+
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/📂index_02_Backend_Development_Roadmap|02_Backend_Development_Roadmap]]
+
+## 📄 Notes & Documents
+- [[technical_skills/02_Backend_Development_Roadmap/01_Language_Basics/1. Introduction to CSharp & Java|1. Introduction to CSharp & Java]]
+- [[technical_skills/02_Backend_Development_Roadmap/01_Language_Basics/2. OOP Concepts|2. OOP Concepts]]
+- [[technical_skills/02_Backend_Development_Roadmap/01_Language_Basics/3. Collections & Generics|3. Collections & Generics]]
+- [[technical_skills/02_Backend_Development_Roadmap/01_Language_Basics/4. LINQ vs Stream API|4. LINQ vs Stream API]]
+- [[technical_skills/02_Backend_Development_Roadmap/01_Language_Basics/5. Asynchronous & Multithreading|5. Asynchronous & Multithreading]]
+

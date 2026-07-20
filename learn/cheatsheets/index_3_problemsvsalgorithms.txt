@@ -1,0 +1,15 @@
+# 3_ProblemsVsAlgorithms
+
+🔙 **Back to Parent**: [[dsa/Udacity-Data-Structures-and-Algorithms/3_ProblemsVsAlgorithms/index_3_ProblemsVsAlgorithms|Udacity-Data-Structures-and-Algorithms]]
+
+## 📄 Notes
+- [[3_problemsvsalgorithms|3_ProblemsVsAlgorithms]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/3_ProblemsVsAlgorithms/HTTPRouterUsingATrie|HTTPRouterUsingATrie]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/3_ProblemsVsAlgorithms/explanation_1_SquareRootOfAnInteger|explanation_1_SquareRootOfAnInteger]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/3_ProblemsVsAlgorithms/explanation_2_SearchInARotatedSortedArray|explanation_2_SearchInARotatedSortedArray]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/3_ProblemsVsAlgorithms/explanation_3_RearrangeArrayDigits|explanation_3_RearrangeArrayDigits]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/3_ProblemsVsAlgorithms/explanation_4_DutchNationalFlagProblem|explanation_4_DutchNationalFlagProblem]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/3_ProblemsVsAlgorithms/explanation_5_AutocompleteWithTries|explanation_5_AutocompleteWithTries]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/3_ProblemsVsAlgorithms/explanation_6_UnsortedIntegerArray|explanation_6_UnsortedIntegerArray]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/3_ProblemsVsAlgorithms/explanation_7_RequestRoutingInAWebServerwithATrie|explanation_7_RequestRoutingInAWebServerwithATrie]]
+

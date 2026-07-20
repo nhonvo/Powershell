@@ -1,0 +1,14 @@
+# 5. Trees and graphs
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/5. Trees and graphs/index_5. Trees and graphs|1.Interviewcake.com]]
+
+## 📁 Categories
+- [[dsa/1.Interviewcake.com/5. Trees and graphs/1. Readings/index_1. Readings|1. Readings]]
+- [[dsa/1.Interviewcake.com/5. Trees and graphs/2. Practice/index_2. Practice|2. Practice]]
+
+## 📄 Notes
+- [[5. trees and graphs|5. Trees and graphs]]
+
+## 🛠️ Related Practices (Trees & Heaps)
+- [[dsa/1.Interviewcake.com/5. Trees and graphs/index_5. Trees and graphs|637.Average-of-Levels-in-Binary-Tree]]
+

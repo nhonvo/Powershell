@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/dbs-c01
+  - dbsc01
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 DBS-C01 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/aws/DBS-C01/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/aws/DBS-C01/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/aws/DBS-C01/DBS-C01 Mindmap\|🗺️ DBS-C01 Mindmap]]
+- [[certifications/aws/DBS-C01/DBS-C01 Flashcards\|🃏 DBS-C01 Flashcards]]
+- [[certifications/aws/DBS-C01/DBS-C01_Scraped_Question_Bank\|🗃️ DBS-C01 Scraped Question Bank]]

@@ -1,0 +1,185 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/🌲index_09_Binary_Trees|09_Binary_Trees]]
+
+## 3. Diameter (Đường kính cây)
+
+### Ý tưởng
+
+**Diameter** của binary tree là **đường đi dài nhất** (tính bằng số edge) giữa hai node **bất kỳ** trong cây. Đường đi này **có thể** đi qua root hoặc **không**.
+
+Đây là bài toán kinh điển trong phỏng vấn — trông đơn giản nhưng nhiều bạn bị sai vì nghĩ diameter luôn đi qua root.
+
+### Analogy — Mạng lưới đường phố
+
+Tưởng tượng binary tree là một mạng lưới đường phố hình cây. Diameter là **quãng đường xa nhất** mà bạn có thể đi giữa hai ngã ba bất kỳ mà không đi lặp lại đường.
+
+### Ví dụ minh họa
+
+1234589
+
+Trong cây trên:
+
+- Đường đi dài nhất: `8 → 4 → 2 → 5` hoặc `9 → 4 → 2 → 5` = **3 edge**
+- Đường đi **không** qua root!
+- Diameter = 3
+
+### Thuật toán
+
+**Nhận xét quan trọng**: Với mỗi node, đường đi dài nhất đi qua node đó = `height(left) + height(right) + 2` (tức là đi từ leaf xa nhất bên trái, qua node, đến leaf xa nhất bên phải).
+
+Diameter = max trên tất cả node của giá trị trên.
+
+**Tối ưu**: Thay vì tính height riêng cho từng node (O(n) mỗi lần → tổng O(n^2)), mình kết hợp tính height và cập nhật diameter trong **cùng 1 lần duyệt**.
+
+#### Flowchart
+
+CóKhôngdiameter(root)Khởi tạo max_diameter = 0Gọi dfs(root)node == None?Return -1left_h = dfs(node.left)right_h = dfs(node.right)Cập nhật max_diameter =
+max(max_diameter, left_h + right_h + 2)Return 1 + max(left_h, right_h)
+
+### Mô phỏng từng bước
+
+```
+        1
+       / \
+      2   3
+     / \
+    4   5
+   /
+  8
+```
+
+| Lời gọi  | left_h | right_h | Diameter qua node | max_diameter | Return |
+| :------- | :----- | :------ | :---------------- | :----------- | :----- |
+| `dfs(8)` | -1     | -1      | -1+(-1)+2=0       | 0            | 0      |
+| `dfs(4)` | 0      | -1      | 0+(-1)+2=1        | 1            | 1      |
+| `dfs(5)` | -1     | -1      | -1+(-1)+2=0       | 1            | 0      |
+| `dfs(2)` | 1      | 0       | 1+0+2=**3**       | **3**        | 2      |
+| `dfs(3)` | -1     | -1      | -1+(-1)+2=0       | 3            | 0      |
+| `dfs(1)` | 2      | 0       | 2+0+2=4           | **4**        | 3      |
+
+Hmm, kết quả diameter = 4? Hãy kiểm tra: đường `8 → 4 → 2 → 1 → 3` = 4 edge. Đúng! Diameter = 4.
+
+### Code
+
+```python
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def diameter_of_binary_tree(root):
+    """
+    Tính diameter (đường kính) của binary tree.
+    Diameter = đường đi dài nhất giữa 2 node bất kỳ (tính bằng số edge).
+
+    Ý tưởng: Với mỗi node, đường đi dài nhất qua node đó
+    = height(left) + height(right) + 2.
+    Kết hợp tính height và cập nhật diameter trong cùng 1 DFS.
+
+    Time: O(n) — mỗi node visit 1 lần
+    Space: O(h) — call stack
+    """
+    max_diameter = 0
+
+    def dfs(node):
+        nonlocal max_diameter
+
+        if node is None:
+            return -1  # Height của cây rỗng = -1
+
+        left_h = dfs(node.left)
+        right_h = dfs(node.right)
+
+        # Đường đi dài nhất qua node này
+        diameter_through_node = left_h + right_h + 2
+        max_diameter = max(max_diameter, diameter_through_node)
+
+        # Return height của subtree gốc tại node
+        return 1 + max(left_h, right_h)
+
+    dfs(root)
+    return max_diameter
+
+
+# === Test 1: Diameter đi qua root ===
+#        1
+#       / \
+#      2   3
+#     / \
+#    4   5
+root1 = TreeNode(1)
+root1.left = TreeNode(2)
+root1.right = TreeNode(3)
+root1.left.left = TreeNode(4)
+root1.left.right = TreeNode(5)
+
+print("Diameter 1:", diameter_of_binary_tree(root1))  # Output: 3
+
+# === Test 2: Diameter KHÔNG đi qua root ===
+#        1
+#       /
+#      2
+#     / \
+#    4   5
+#   /     \
+#  8       9
+root2 = TreeNode(1)
+root2.left = TreeNode(2)
+root2.left.left = TreeNode(4)
+root2.left.right = TreeNode(5)
+root2.left.left.left = TreeNode(8)
+root2.left.right.right = TreeNode(9)
+
+print("Diameter 2:", diameter_of_binary_tree(root2))  # Output: 4
+# Đường đi: 8 → 4 → 2 → 5 → 9
+
+# === Test 3: Chỉ có root ===
+print("Diameter 3:", diameter_of_binary_tree(TreeNode(1)))  # Output: 0
+
+# === Test 4: Cây rỗng ===
+print("Diameter 4:", diameter_of_binary_tree(None))  # Output: 0
+```
+
+### Best case / Worst case
+
+| Trường hợp             | Diameter    | Ví dụ                      |
+| :--------------------- | :---------- | :------------------------- |
+| Best case              | 0           | Chỉ có 1 node              |
+| Worst case cho giá trị | n - 1       | Cây suy biến (linked list) |
+| Cây cân bằng           | ~2 * log(n) | Perfect binary tree        |
+
+### Chứng minh Time Complexity O(n)
+
+Hàm `dfs` được gọi đúng 1 lần cho mỗi node (do đệ quy đi qua từng node). Mỗi lời gọi thực hiện O(1) phép toán (so sánh, cộng). Tổng: O(n) * O(1) = O(n).
+
+### Ưu điểm và nhược điểm
+
+- **Ưu**: O(n) time — tối ưu (bắt buộc phải visit mọi node ít nhất 1 lần)
+- **Ưu**: O(h) space — chỉ tốn bộ nhớ cho call stack
+- **Nhược**: Dùng `nonlocal` — có thể gây khó đọc cho người mới
+
+### Cải tiến
+
+- Nếu cần biết **đường đi cụ thể** (không chỉ độ dài), lưu thêm path trong quá trình DFS
+- Có thể trả về tuple `(height, diameter)` thay vì dùng `nonlocal` để code "thuần" hơn
+
+```python
+def diameter_no_nonlocal(root):
+    """Phiên bản không dùng nonlocal — return tuple (height, diameter)."""
+
+    def dfs(node):
+        if node is None:
+            return (-1, 0)  # (height, diameter)
+
+        left_h, left_d = dfs(node.left)
+        right_h, right_d = dfs(node.right)
+
+        current_h = 1 + max(left_h, right_h)
+        current_d = max(left_d, right_d, left_h + right_h + 2)
+
+        return (current_h, current_d)
+
+    _, result = dfs(root)
+    return result
+```

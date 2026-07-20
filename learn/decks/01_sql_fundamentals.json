@@ -1,0 +1,156 @@
+{
+  "Meta": {
+    "Id": "deck_01_sql_fundamentals",
+    "Topic": "01_SQL_Fundamentals",
+    "Language": "English/Japanese",
+    "Domain": "technical_skills",
+    "Level": "General",
+    "Tags": [
+      "01_sql_fundamentals"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 7
+  },
+  "Cards": [
+    {
+      "Id": "card_03579",
+      "Front": "Kiểu dữ liệu",
+      "Back": "Đặc điểm | Chọn khi nào?",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "01_sql_fundamentals"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03580",
+      "Front": "**VARCHAR(n)**",
+      "Back": "Chuỗi có giới hạn độ dài. | Tên, Email, Địa chỉ.",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "01_sql_fundamentals"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03581",
+      "Front": "**TEXT**",
+      "Back": "Chuỗi không giới hạn. | Mô tả sản phẩm, Nội dung bài viết.",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "01_sql_fundamentals"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03582",
+      "Front": "**INTEGER / BIGINT**",
+      "Back": "Số nguyên 4 / 8 bytes. | ID, Số lượng, Điểm số.",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "01_sql_fundamentals"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03583",
+      "Front": "**NUMERIC(p, s)**",
+      "Back": "Số thập phân chính xác tuyệt đối. | **Tiền tệ (Money)**, Tỷ giá hối đoái.",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "01_sql_fundamentals"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03584",
+      "Front": "**TIMESTAMPTZ**",
+      "Back": "Thời gian có múi giờ. | Ngày tạo, Ngày cập nhật. (Luôn dùng loại có TZ).",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "01_sql_fundamentals"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03585",
+      "Front": "**BOOLEAN**",
+      "Back": "True/False. | Trạng thái IsActive, IsDeleted.",
+      "Hint": "04_PostgreSQL_Deep_Dive",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "01_sql_fundamentals"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/ans-c01
+  - ansc01
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 ANS-C01 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/aws/ANS-C01/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/aws/ANS-C01/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/aws/ANS-C01/ANS-C01 Mindmap\|🗺️ ANS-C01 Mindmap]]
+- [[certifications/aws/ANS-C01/ANS-C01 Flashcards\|🃏 ANS-C01 Flashcards]]
+- [[certifications/aws/ANS-C01/ANS-C01_Scraped_Question_Bank\|🗃️ ANS-C01 Scraped Question Bank]]

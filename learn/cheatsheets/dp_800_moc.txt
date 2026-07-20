@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/dp-800
+  - dp800
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 DP-800: Developing AI-Enabled Database Solutions MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/DP-800/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/DP-800/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/DP-800/DP-800 Mindmap\|🗺️ DP-800 Mindmap]]
+- [[certifications/microsoft/DP-800/DP-800 Flashcards\|🃏 DP-800 Flashcards]]
+- [[certifications/microsoft/DP-800/DP-800_Scraped_Question_Bank\|🗃️ DP-800 Scraped Question Bank]]

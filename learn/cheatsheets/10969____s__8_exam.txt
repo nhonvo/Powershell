@@ -1,0 +1,89 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 8
+
+## Part 1
+**Q1.** わたしは　目が　わるいです。
+- **A.** みみ
+- **B.** くち
+- **C.** め
+- **D.** はな
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3目 (MỤC)：Mắt Mắt của t&ocirc;i k&eacute;m.</p>
+</details>
+
+---
+**Q2.** やまださんの　お兄さんは　せんせいです。
+- **A.** おにさん
+- **B.** おにいさん
+- **C.** おあにさん
+- **D.** おとうさん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2お兄さん (HUYNH)：AnhAnh của Yamada l&agrave; gi&aacute;o vi&ecirc;n.</p>
+</details>
+
+---
+**Q3.** かさが　三本　あります。
+- **A.** さんぽん
+- **B.** さんほん
+- **C.** さんぷん
+- **D.** さんぼん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4三本 (TAM - BẢN)：3 c&aacute;iC&oacute; 3 c&aacute;i &ocirc;.</p>
+</details>
+
+---
+**Q4.** この　魚の　なまえは　なんですか。
+- **A.** いぬ
+- **B.** とり
+- **C.** さかな
+- **D.** ねこ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3魚 (NGƯ)：con c&aacute;T&ecirc;n con c&aacute; n&agrave;y l&agrave; g&igrave; vậy?</p>
+</details>
+
+---
+**Q5.** リーさんは　にほんの　大学で　べんきょうします。
+- **A.** たいがく
+- **B.** だいはく
+- **C.** だいがく
+- **D.** たいかく
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 3大学 (ĐẠI - HỌC)：đại họcLy sẽ học tại đại học của Nhật Bản.</p>
+</details>
+
+---
+**Q6.** 白い　ぼうしを　かぶっています。
+- **A.** あおい
+- **B.** しろい
+- **C.** あかい
+- **D.** くろい
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2白い (BẠCH) ：m&agrave;u trắngT&ocirc;i đang đội c&aacute;i mũ m&agrave;u trắng.</p>
+</details>
+
+---
+**Q7.** この　えきの　入口は　どこですか。
+- **A.** いりくち
+- **B.** にゅうぐち
+- **C.** にゅうくち
+- **D.** いりぐち
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4入口 (NHẬP - KHẨU)：Cổng v&agrave;oCổng v&agrave;o của nh&agrave; ga n&agrave;y ở đ&acirc;u vậy?</p>
+</details>
+
+---

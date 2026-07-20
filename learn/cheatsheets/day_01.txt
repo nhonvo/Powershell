@@ -1,0 +1,15 @@
+# Day 01: Array & String Logic
+**Goal:** Refresh mental models for O(n) and O(1) space optimizations.
+
+### 📖 Reading (GitHub App)
+- Open `dsa/1.two-sum/Program.cs`.
+- Observe the HashMap approach. Why is it O(n)?
+
+### 🤖 AI Drill (Copy & Paste to ChatGPT/Gemini)
+> "I am practicing DSA on mobile. Explain the 'Sliding Window' technique for strings using an analogy of a military patrol team moving through a line of soldiers. Then, give me a 'Medium' level Array problem to solve in pseudocode."
+
+### 📝 Mobile Task
+1. Open **GitHub Codespaces** in your browser.
+2. Create a new file `dsa/Practice_Day1.cs`.
+3. Try to implement `Two Sum` from memory without looking at your previous solution.
+

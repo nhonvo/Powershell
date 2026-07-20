@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/saa-c03
+  - saac03
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 SAA-C03 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/aws/SAA-C03/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/aws/SAA-C03/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/aws/SAA-C03/SAA-C03 Mindmap\|🗺️ SAA-C03 Mindmap]]
+- [[certifications/aws/SAA-C03/SAA-C03 Flashcards\|🃏 SAA-C03 Flashcards]]
+- [[certifications/aws/SAA-C03/SAA-C03_Scraped_Question_Bank\|🗃️ SAA-C03 Scraped Question Bank]]

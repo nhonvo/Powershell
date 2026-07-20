@@ -1,0 +1,123 @@
+# 🗃️ PSM-I Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+When many Scrum Teams are working on the same product, should all of their increments be integrated every Sprint?
+
+### Options:
+- [ ] **A)** Yes, but only for Scrum Teams whose work has dependencies.
+- [x] **B)** Yes, otherwise the Product Owners (and stakeholders) may not be able to accurately inspect what is done. [Correct]
+- [ ] **C)** No, each Scrum Team stands alone.
+- [ ] **D)** No, that is far too hard and must be done in a hardening Sprint.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+The correct answer is B, because the Scrum Guide states that "at the end of a Sprint, the new Increment must be `Done, ' which means it must be in useable condition and meet the Scrum Team's definition of `Done'. An increment is a body of inspectable, done work that supports empiricism at the end of the Sprint. The increment is a step toward a vision or goal." Therefore, all the increments from different Scrum Teams working on the same product should be integrated every Sprint to enable inspection and adaptation by the Product Owner and stakeholders.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+When can a Development Team cancel a Sprint?
+
+### Options:
+- [x] **A)** It can't. Only Product Owners can cancel Sprints. [Correct]
+- [ ] **B)** When functional expectations are not well understood.
+- [ ] **C)** When the Product Owner is absent too often.
+- [ ] **D)** When the selected Product Backlog items for the Sprint become unachievable.
+- [ ] **E)** When a technical dependency cannot be resolved.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+The correct answer is A, because the Scrum Guide states that "a Sprint can be cancelled before the Sprint time-box is over. Only the Product Owner has the authority to cancel the Sprint, although he or she may do so under influence from the stakeholders, the Development Team, or the Scrum Master."
+
+Therefore, a Development Team cannot cancel a Sprint by itself.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+Which output from Sprint Planning provides the Development Team with a target and overarching direction for the Sprint?
+
+### Options:
+- [ ] **A)** The Sprint Backlog.
+- [x] **B)** The Sprint Goal [Correct]
+- [ ] **C)** The release plan.
+- [ ] **D)** Sprint Review minutes.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+The correct answer is B, because the Scrum Guide states that "the Sprint Goal is an objective set for the Sprint that can be met through the implementation of Product Backlog. It provides guidance to the Development Team on why it is building the Increment." Therefore, the Sprint Goal provides the Development Team with a target and overarching direction for the Sprint.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+How should a Development Team deal with non-functional requirements?
+
+### Options:
+- [x] **A)** Ensure every Increment meets them. [Correct]
+- [ ] **B)** Make sure the release department understands these requirements, but it is not the Development Team's responsibility.
+- [ ] **C)** Handle them during the Integration Sprint preceding the Release Sprint.
+- [ ] **D)** Assign them to the lead developers on the team.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+The correct answer is A, because the Scrum Guide states that "the definition of `Done' is a formal description of the state of the Increment when it meets the quality measures required for the product." Therefore, non-functional requirements should be part of the definition of `Done' and ensure every Increment meets them.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+When is a Sprint over?
+
+### Options:
+- [ ] **A)** When the Product Owner says it is done.
+- [ ] **B)** When all Product Backlog items meet their definition of "Done".
+- [ ] **C)** When all the tasks are completed.
+- [x] **D)** When the time-box expires. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+The correct answer is D, because the Scrum Guide states that "a Sprint is a container for all other events. Each event in Scrum is a formal opportunity to inspect and adapt something. These events are specifically designed to enable critical transparency and inspection. Failure to include any of these events results in reduced transparency and is a lost opportunity to inspect and adapt." Therefore, a Sprint is over when its time-box expires, regardless of whether all Product Backlog items or tasks are completed or not.
+</details>
+
+---

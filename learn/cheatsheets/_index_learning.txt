@@ -1,0 +1,16 @@
+# learning
+
+🔙 **Back to Parent**: [[🌐index_workspace|WORKSPACE]]
+
+## 📁 Sub-Categories
+- [[technical_skills/📂index_technical_skills|🛠️ Technical Skills & Roadmaps]]
+- [[languages/🌐index_03_Languages_Communication|🌐 Languages & Communication]]
+- [[certifications/aws/📖index_aws|☁️ AWS Certifications]]
+- [[certifications/google/📖index_google|☁️ Google Certifications]]
+- [[certifications/microsoft/📖index_microsoft|💻 Microsoft Certifications]]
+- [[certifications/scrum/📖index_scrum|📂 Scrum Certifications]]
+- [[study_plans/00_START_HERE|📅 Study Plans]]
+
+## 📄 Notes & Documents
+- [[README|README]]
+

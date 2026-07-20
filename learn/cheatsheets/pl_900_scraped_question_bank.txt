@@ -1,0 +1,153 @@
+# 🗃️ PL-900 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Describe the business value of Power Platform
+
+This question requires that you evaluate the underlined text to determine if it is correct.
+
+You have a Power Apps app. You create a new version of the app and then publish the new version. A customer goes through the process of restoring the previous version of the app. In the Version tab for the app, you will see two versions of the app.
+
+Review the underlined text. If it makes the statement correct, select “No change is needed.” If the statement is incorrect, select the answer choice that makes the statement correct.
+
+### Options:
+- [ ] **A)** No change is needed.
+- [ ] **B)** one
+- [x] **C)** three [Correct]
+- [ ] **D)** four
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+Restore a canvas app to a previous version in PowerApps.
+1. Open powerapps.com, and then click or tap Apps in the left navigation bar.
+2. Near the right edge, click or tap the info icon for the app that you want to restore.
+3. Click or tap the Versions tab, and then click or tap Restore for the version that you want to restore.
+
+
+4. In the confirmation dialog box, click or tap Restore.
+A new version is added to your list.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Describe the business value of Power Platform
+
+A company uses Dynamics 365 Sales. The company uses a browser-based app named Sales Hub. You need ensure that users can access data from mobile devices.
+Which app should users install?
+
+### Options:
+- [ ] **A)** Dynamics 365 Remote Assist
+- [ ] **B)** Dynamics 365 Finance
+- [ ] **C)** Dynamics 365 Business Central
+- [x] **D)** Dynamics 365 for Phones [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+Use the Dynamics 365 for phones and Dynamics 365 for tablets apps for your sales, customer service, field service, and other tasks when you're on the go. With one download from your app store, you’ll automatically have access to all the apps you need for your role. You will see apps with the new Unified Interface on your mobile device.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Describe the business value of Power Platform
+
+You are a customer service manager.
+You need to implement a Power Apps portal that allows customers to submit cases. 
+Which type of data source is used?
+
+### Options:
+- [ ] **A)** Dynamics 365 Connector
+- [ ] **B)** Microsoft SharePoint
+- [ ] **C)** Microsoft Azure Storage
+- [x] **D)** Common Data Service [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+D: PowerApps Portals, the ability to build low-code, responsive websites which allow external users to interact with the data stored in the Common Data Service.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Describe the business value of Power Platform
+
+HOTSPOT (Drag and Drop is not supported)
+You create a user-owned custom entity by using Common Data Service.
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+Note: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: No
+Common Data Service supports two types of record ownership. Organization owned, and User or Team owned. This is a choice that happens at the time the entity is created and can’t be changed.
+
+Box 2: Yes
+By combining conditions and actions, you can do any of the following with business rules:
+
+Set field values Clear field values
+Set field requirement levels Show or hide fields
+Enable or disable fields
+Validate data and show error messages
+Create business recommendations based on business intelligence.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Describe the business value of Power Platform
+
+DRAG DROP (Drag and Drop is not supported)
+You need to explain the major components of the Common Data Model (CDM) and their functions. Match each term to its definition.
+
+Instructions: To answer, drag the appropriate term from the column on the left to its definition on the right. Each term may be used once, more than once, or not at all. Each correct match is worth one point.
+
+Note: Each correct selection is worth one point.
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Microsoft Power Platform
+Power Platform combines the robust power of PowerApps, PowerBI, and Microsoft Flow into one powerful business application platform – providing quick and easy app building and data insights. Each component of the Microsoft Power Platform is built on the Common Data Service for Apps. Each component is dynamic by itself, but brilliant and masterful when combined.
+The Microsoft Power platform brings all your data together into a common data model.
+
+Box 2: Entities
+An entity is a set of records used to store data, similar to how a table stores data within a database.
+</details>
+
+---

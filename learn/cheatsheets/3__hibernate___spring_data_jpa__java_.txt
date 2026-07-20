@@ -1,0 +1,71 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/02_Database_ORM/📂index_02_Database_ORM|02_Database_ORM]]
+
+# 🌿 3. Hibernate & Spring Data JPA (JVM Mastery)
+
+Trong hệ sinh thái Java, **Hibernate** (Mã nguồn mở phổ biến nhất) và **Spring Data JPA** (Bản chất là lớp bọc Hibernate) là cái kết của mọi bài toán ORM. Hiểu sâu Hibernate là hiểu về **Persistence Context** và cuộc chiến chống lại lỗi **N+1 Problem**.
+
+---
+
+### 🏛️ 3.1 Persistence Context & EntityManager
+
+Trong Java, `EntityManager` là trung tâm của mọi hoạt động. Nó tạo ra một "phiên làm việc" (**Session**) bao bọc Database.
+
+**Các trạng thái của Entity:**
+1.  **Transient**: Object vừa tạo bằng `new`, chưa liên quan gì tới Hibernate.
+2.  **Managed (Persistent)**: Hibernate đang theo dõi Object. Mọi thay đổi trên thuộc tính sẽ được tự động đồng bộ xuống DB khi kết thúc Transaction (Dirty Checking).
+3.  **Detached**: Sau khi Transaction kết thúc, Hibernate không theo dõi nữa.
+4.  **Removed**: Đánh dấu để xóa khỏi Database.
+
+---
+
+### 🚀 3.2 Performance: N+1 Selecting Problem
+
+Lỗi phổ biến nhất khi dùng `@OneToMany` hay `@ManyToMany` là Hibernate sẽ thực hiện `1` query để lấy danh sách gốc, sau đó `N` query để lấy các bản ghi liên quan.
+
+**Giải pháp tiêu chuẩn (Entity Graph / Fetch Join):**
+```java
+// Spring Data JPA
+@Query("SELECT a FROM Author a JOIN FETCH a.books")
+List<Author> findAllWithBooks(); // Chỉ 1 query SQL có JOIN.
+```
+
+---
+
+### 🧪 3.3 Lazy vs Eager Initialization
+
+- **Eager**: Lấy dữ liệu ngay khi khởi tạo Object. (Dễ gây N+1).
+- **Lazy**: Chỉ lấy khi gọi đến thuộc tính (Proxying). (Khuyên dùng, nhưng cẩn thận lỗi `LazyInitializationException` nếu Session đã đóng).
+
+---
+
+### ⚡ 3.4 Hibernate Caching (L1 & L2)
+
+Hibernate cực kỳ thông minh trong việc tối ưu hóa truy vấn qua cơ chế Caching.
+
+- **First-Level Cache (L1)**: (Mặc định) Nằm trong Session. Nếu cùng 1 transaction bạn lấy User có ID=1 hai lần, Hibernate chỉ gửi đúng 1 câu SQL.
+- **Second-Level Cache (L2)**: (Cần cấu hình - Ehcache, Redis) Dùng chung cho toàn bộ ứng dụng. Giúp giảm tải tối đa cho Database.
+
+---
+
+### 📝 3.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Dirty Checking" trong Hibernate là gì và nó giúp ích gì cho lập trình viên?
+<details><summary>Đáp án</summary>
+Dirty Checking là cơ chế Hibernate so sánh trạng thái của Object lúc lấy ra và lúc kết thúc Transaction. Nếu thấy có sự thay đổi, nó tự động gửi lệnh `UPDATE` xuống DB mà bạn không cần gọi hàm `save()`. Nó giúp code tinh gọn và tránh cập nhật thừa nếu dữ liệu không đổi.
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết Interface Spring Data JPA để lọc danh sách `User` theo `Age` lớn hơn 18 và tên bắt đầu bằng "Nhon", sử dụng cú pháp **Derived Query Methods**.
+<details><summary>Solution</summary>
+```java
+public interface UserRepository extends JpaRepository<User, Long> {
+    List<User> findByAgeGreaterThanAndNameStartingWith(int age, String prefix);
+}
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [Mastering Hibernate Performance - Fetch Strategies](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-hibernate-fetch-strategies.md)
+- [Spring Data JPA: Derived Queries vs @Query](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-spring-data-jpa-queries.md)
+- [The Hidden Magic of Dirty Checking](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-dirty-checking.md)

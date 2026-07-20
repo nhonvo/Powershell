@@ -1,0 +1,194 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/03_Searching_Sorting/🔍index_03_Searching_Sorting|03_Searching_Sorting]]
+
+## 3. Binary Search on Answer
+
+### Gioi thieu
+
+Day la mot ky thuat **cuc ky quan trong** va la bai thi yeu thich trong cac cuoc thi lap trinh. Y tuong chinh la: **thay vi tim kiem tren mang du lieu, ta binary search tren khong gian ket qua (answer space)**.
+
+### Khi nao dung Binary Search on Answer?
+
+Ban co the dung ky thuat nay khi bai toan co cac dac diem:
+
+1. **Bai toan yeu cau tim gia tri nho nhat/lon nhat** thoa man dieu kien nao do
+2. **Neu dap an la `x` thoa man, thi moi gia tri >= x (hoac <= x) cung thoa man** (tinh don dieu / monotonic)
+3. **Co the kiem tra nhanh** (O(n) hoac O(n log n)) mot gia tri co phai dap an hop le hay khong
+
+### Vi du thuc te
+
+Tuong tuong ban la mot quản ly nha may. Ban muon tim **nang suat toi thieu** de hoan thanh don hang trong thoi gian cho phep. Ban khong biet chinh xac nang suat can la bao nhieu, nhung ban biet:
+
+- Nang suat qua thap => khong kip
+- Nang suat qua cao => lang phi
+- Neu nang suat X du de hoan thanh, thi nang suat X+1 chac chan cung du
+
+Day la dieu kien **monotonic** -- hoan hao cho binary search on answer!
+
+### Bai toan minh hoa: Koko Eating Bananas (LeetCode 875)
+
+**De bai:** Koko thich an chuoi. Co `n` dong chuoi, dong thu `i` co `piles[i]` qua. Nguoi bao ve se quay lai sau `h` gio. Koko chon toc do an `k` qua/gio. Moi gio, Koko chon 1 dong va an `k` qua tu dong do. Neu dong co it hon `k` qua, an het dong do roi nghi cho het gio do. Tim **k nho nhat** de Koko an het chuoi trong `h` gio.
+
+**Vi du:** `piles = [3, 6, 7, 11]`, `h = 8`
+
+#### Phan tich
+
+- **Answer space:** k tu 1 den max(piles) = 11
+- **Tinh monotonic:** Neu Koko an voi toc do k ma het chuoi trong h gio, thi bat ky toc do k' > k nao cung het. Nguoc lai, neu k khong du, thi k' < k cung khong du.
+- **Ham kiem tra:** Voi toc do k, tinh tong so gio can = sum(ceil(pile/k) for pile in piles). Neu tong <= h, thi k hop le.
+
+#### Mo phong
+
+```
+Answer space: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+piles = [3, 6, 7, 11], h = 8
+
+Buoc 1: left=1, right=11, mid=6
+  Kiem tra k=6: ceil(3/6)+ceil(6/6)+ceil(7/6)+ceil(11/6) = 1+1+2+2 = 6 <= 8
+  => k=6 hop le, thu nho hon: right = mid = 6
+
+Buoc 2: left=1, right=6, mid=3
+  Kiem tra k=3: ceil(3/3)+ceil(6/3)+ceil(7/3)+ceil(11/3) = 1+2+3+4 = 10 > 8
+  => k=3 khong du, tang len: left = mid + 1 = 4
+
+Buoc 3: left=4, right=6, mid=5
+  Kiem tra k=5: ceil(3/5)+ceil(6/5)+ceil(7/5)+ceil(11/5) = 1+2+2+3 = 8 <= 8
+  => k=5 hop le, thu nho hon: right = mid = 5
+
+Buoc 4: left=4, right=5, mid=4
+  Kiem tra k=4: ceil(3/4)+ceil(6/4)+ceil(7/4)+ceil(11/4) = 1+2+2+3 = 8 <= 8
+  => k=4 hop le, thu nho hon: right = mid = 4
+
+Buoc 5: left=4, right=4 => left == right => Dap an: k = 4
+```
+
+### Flowchart
+
+KhongCoCoKhongXac dinh answer space: left, rightleft < right?Tra ve left (dap an)mid = left + (right-left)/2Goi check(mid)check(mid) == true?right = mid (thu dap an nho hon)left = mid + 1 (can dap an lon hon)
+
+### Code Python
+
+```python
+import math
+
+def minEatingSpeed(piles, h):
+    def can_finish(k):
+        """Kiem tra Koko co the an het trong h gio voi toc do k"""
+        total_hours = sum(math.ceil(p / k) for p in piles)
+        return total_hours <= h
+
+    left, right = 1, max(piles)
+
+    while left < right:
+        mid = left + (right - left) // 2
+        if can_finish(mid):
+            right = mid      # mid hop le, thu tim nho hon
+        else:
+            left = mid + 1   # mid khong du, can lon hon
+
+    return left
+
+# Test
+print(minEatingSpeed([3, 6, 7, 11], 8))    # Output: 4
+print(minEatingSpeed([30, 11, 23, 4, 20], 5))  # Output: 30
+print(minEatingSpeed([30, 11, 23, 4, 20], 6))  # Output: 23
+```
+
+### Chay thu chuong trinh hoan chinh
+
+```python
+import math
+
+def minEatingSpeed_verbose(piles, h):
+    """Binary Search on Answer voi in chi tiet tung buoc"""
+    def can_finish(k):
+        total = sum(math.ceil(p / k) for p in piles)
+        return total, total <= h
+
+    left, right = 1, max(piles)
+    step = 0
+    print(f"piles = {piles}, h = {h}")
+    print(f"Answer space: [{left}, {right}]")
+
+    while left < right:
+        step += 1
+        mid = left + (right - left) // 2
+        total, ok = can_finish(mid)
+        status = "hop le" if ok else "KHONG du"
+        print(f"  Buoc {step}: left={left}, right={right}, mid={mid}, "
+              f"tong gio={total} {'<=' if ok else '>'} {h} => k={mid} {status}")
+        if ok:
+            right = mid
+        else:
+            left = mid + 1
+
+    print(f"  => Dap an: k = {left}")
+    return left
+
+# Test
+minEatingSpeed_verbose([3, 6, 7, 11], 8)
+# piles = [3, 6, 7, 11], h = 8
+# Answer space: [1, 11]
+#   Buoc 1: left=1, right=11, mid=6, tong gio=6 <= 8 => k=6 hop le
+#   Buoc 2: left=1, right=6, mid=3, tong gio=10 > 8 => k=3 KHONG du
+#   Buoc 3: left=4, right=6, mid=5, tong gio=8 <= 8 => k=5 hop le
+#   Buoc 4: left=4, right=5, mid=4, tong gio=8 <= 8 => k=4 hop le
+#   => Dap an: k = 4
+
+print()
+minEatingSpeed_verbose([30, 11, 23, 4, 20], 5)
+# => Dap an: k = 30
+```
+
+### Phan tich do phuc tap
+
+Goi `M = max(piles)` va `n = len(piles)`:
+
+- **Binary search:** O(log M) lan kiem tra
+- **Moi lan kiem tra:** O(n) de tinh tong so gio
+- **Tong:** O(n * log M)
+
+Voi `M = 10^9`, `log2(10^9) ~ 30`, nen chi can **~30 lan kiem tra** -- rat nhanh!
+
+| Truong hop | Do phuc tap  |
+| :--------- | :----------- |
+| **Time**   | O(n * log M) |
+| **Space**  | O(1)         |
+
+### Template chung cho Binary Search on Answer
+
+```python
+def binary_search_on_answer(check, lo, hi):
+    """
+    Tim gia tri nho nhat x sao cho check(x) == True.
+    Dieu kien: neu check(x) == True thi check(x+1) cung True (monotonic).
+
+    check: ham kiem tra, nhan vao x, tra ve True/False
+    lo: can duoi cua answer space
+    hi: can tren cua answer space
+    """
+    while lo < hi:
+        mid = lo + (hi - lo) // 2
+        if check(mid):
+            hi = mid        # mid thoa man, thu nho hon
+        else:
+            lo = mid + 1    # mid khong thoa man, can lon hon
+    return lo
+
+# Neu can tim gia tri LON NHAT thoa man:
+def binary_search_on_answer_max(check, lo, hi):
+    while lo < hi:
+        mid = lo + (hi - lo + 1) // 2  # Luu y: lam tron len
+        if check(mid):
+            lo = mid        # mid thoa man, thu lon hon
+        else:
+            hi = mid - 1    # mid khong thoa man, can nho hon
+    return lo
+```
+
+### Cac bai toan kinh dien
+
+1. **Split Array Largest Sum** (LeetCode 410): Chia mang thanh k phan, minimize tong lon nhat
+2. **Capacity To Ship Packages Within D Days** (LeetCode 1011): Tim trong tai nho nhat
+3. **Magnetic Force Between Two Balls** (LeetCode 1552): Maximize khoang cach nho nhat
+4. **Aggressive Cows** (SPOJ): Tuong tu bai tren
+5. **Allocate Minimum Number of Pages** (GFG): Phan bo sach cho sinh vien

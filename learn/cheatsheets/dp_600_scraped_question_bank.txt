@@ -1,0 +1,169 @@
+# 🗃️ DP-600 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Set 1 - Mixed Questions Question
+
+HOTSPOT (Drag and Drop is not supported)
+You have a Fabric tenant.
+
+You plan to create a Fabric notebook that will use Spark DataFrames to generate Microsoft Power BI visuals. You run the following code.
+
+
+
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+
+NOTE: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: No
+Create and render a quick visualize instance
+Create a QuickVisualize instance from the DataFrame you created. If you're using a pandas DataFrame, you can use our utility function as shown in the following code snippet to create the report. If you're using a DataFrame other than pandas, parse the data yourself.
+
+# Create a Power BI report from your data
+PBI_visualize = QuickVisualize(get_dataset_config(df), auth=device_auth)
+# Render new report PBI_visualize
+
+
+Box 2: Yes
+Box 3: Yes
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Set 1 - Mixed Questions Question
+
+You are analyzing the data in a Fabric notebook.
+
+You have a Spark DataFrame assigned to a variable named df.
+
+You need to use the Chart view in the notebook to explore the data manually. Which function should you run to make the data available in the Chart view?
+
+### Options:
+- [ ] **A)** displayHTML
+- [ ] **B)** show
+- [ ] **C)** write
+- [x] **D)** display [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+Built-in visualization command - display() function
+The Fabric built-in visualization function allows you to turn Apache Spark DataFrames, Pandas DataFrames and SQL query results into rich format data visualizations.
+
+You can use the display function on dataframes that created in PySpark and Scala on Spark DataFrames or Resilient Distributed Datasets (RDD) functions to produce the rich dataframe table view and chart view.
+
+The output of SQL statement appears in the rendered table view by default.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Set 1 - Mixed Questions Question
+
+You have a Fabric notebook that has the Python code and output shown in the following exhibit.
+
+
+
+Which type of analytics are you performing?
+
+### Options:
+- [x] **A)** descriptive [Correct]
+- [ ] **B)** diagnostic
+- [ ] **C)** prescriptive
+- [ ] **D)** predictive
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+This is a histogram. Histogram are used in relation to descriptive statistics calculations.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Set 1 - Mixed Questions Question
+
+You have a Fabric tenant that contains customer churn data stored as Parquet files in OneLake. The data contains details about customer demographics and product usage.
+
+You create a Fabric notebook to read the data into a Spark DataFrame. You then create column charts in the notebook that show the distribution of retained customers as compared to lost customers based on geography, the number of products purchased, age, and customer tenure.
+
+Which type of analytics are you performing?
+
+### Options:
+- [ ] **A)** diagnostic
+- [x] **B)** descriptive [Correct]
+- [ ] **C)** prescriptive
+- [ ] **D)** predictive
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+What is Customer Retention Analytics?
+Customer retention analytics provide predictive metrics of which customers may churn, allowing businesses to prevent this from happening. Let us understand this by an example, by using customer retention analytics, companies can reduce churn and increase profits, as evidenced by a McKinsey report suggesting that extensive use of customer data analytics can drive profit. Customer retention metrics, including the customer retention rate, are used to measure the likelihood of retaining and attracting customers to a business. This is how data analytics helps in customer retention.
+
+Descriptive Analytics
+Descriptive analytics provide you with granular insights based on historical data. This includes tracking past purchases, customer complaints, customer service reviews, and more. In order to implement descriptive customer retention analytics, your cloud engineers would need to make sure all customer data is on-premise and up-to-date and backed up on a regular basis. Because it uses historical data to create retention strategies and personalize customer experiences, all historical data must be accessible for analysis.
+
+Incorrect:
+
+Predictive Analytics
+This works in tandеm with dеscriptivе analytics, which allows you to forеcast the behavior of your customers based on past data. This allows you to prеparе for specific customеr intеractions and improvе customеr rеtеntion. For еxamplе, you can usе historical transactions to prеdict how likely a customer is to rеnеw their subscription at a music plan. Thе nеxt timе that customеr walks into thе studio, your staff will rеcеivе an alеrt to offеr additional incеntivеs to pеrsuadе thеm to rеnеw.
+
+Prescriptive Analytics
+Prescriptive analytics finds solutions based on insights from descriptive analytics. For example, you can collect
+data about remedial solutions to improve retention and see how well they performed. Prescriptive analytics forces you to retrospectively evaluate all strategies to improve them. For example, a bank might use Fraud Detection. An algorithm evaluates historical data after making a purchase to see if it matches the typical level of spending. If it detects an anomaly, the bank will be notified and will recommend a course of action, such as cancelling the bank card.
+
+* Diagnostic Analytics
+Diagnostic analytics involves the collection and examination of data pertaining to a particular issue or occurrence in order to comprehend the underlying causes. Consider a scenario where a fitness app, GymFit, observes a significant drop in user engagement during a specific period. Unraveling the factors contributing to this decline becomes the focal point of diagnostic analytics. In this context, GymFit delves into the data to uncover reasons why users might be disengaging, such as changes in workout preferences, dissatisfaction with features, or scheduling conflicts. Through careful analysis, GymFit identifies patterns and root causes behind the drop in user engagement. Armed with this knowledge, the fitness app can then implement targeted improvements, addressing concerns and enhancing the overall user experience to prevent further disengagement and attract new users.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Set 1 - Mixed Questions Question
+
+You have a Fabric workspace named Workspace1 that contains a dataflow named Dataflow1. Dataflow1 returns 500 rows of data.
+
+You need to identify the min and max values for each column in the query results.
+
+Which three Data view options should you select? Each correct answer presents part of the solution. NOTE: Each correct answer is worth one point.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B,E`
+
+**Explanation**:
+
+</details>
+
+---

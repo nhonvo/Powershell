@@ -1,0 +1,422 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/06_Linked_List/🔗index_06_Linked_List|06_Linked_List]]
+
+## 1. Singly Linked List
+
+### 1.1. Hình dung thực tế
+
+Hãy tưởng tượng một **đoàn tàu hoả**. Mỗi toa tàu là một **node** — nó chứa hàng hoá (data) và một móc nối (pointer) kéo đến toa tiếp theo. Toa đầu tiên là **head**, toa cuối cùng không kéo gì cả (trỏ về **null**).
+
+Bạn muốn thêm một toa mới vào giữa đoàn tàu? Chỉ cần tháo móc nối của toa trước, gắn toa mới vào, rồi nối toa mới với toa đứng sau. Không cần dịch chuyển bất kỳ toa nào — khác hẳn với array (phải dồn hết các phần tử).
+
+### 1.2. Cấu trúc (Structure)
+
+Mỗi node trong Singly Linked List gồm 2 thành phần:
+
+```
++--------+------+
+|  data  | next | ---> [node tiếp theo]
++--------+------+
+```
+
+- **data**: giá trị lưu trữ (int, string, object, bất kỳ kiểu dữ liệu gì)
+- **next**: pointer trỏ đến node kế tiếp trong danh sách. Node cuối cùng có `next = null`
+
+Toàn bộ list được quản lý qua một pointer duy nhất: **head** — trỏ đến node đầu tiên.
+
+headdata: 10 | nextdata: 20 | nextdata: 30 | nextnull
+
+### 1.3. Khai báo Node
+
+**Python:**
+
+```python
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None  # Mặc định chưa nối với ai
+
+
+class SinglyLinkedList:
+    def __init__(self):
+        self.head = None
+        self.size = 0  # Tuỳ chọn: track size để O(1) lấy length
+```
+
+**Ghi chú:** Trong Python, ta không cần quản lý bộ nhớ thủ công (không có `delete`, `free`). Python tự động garbage collect khi không còn reference nào trỏ đến object.
+
+```python
+# Ví dụ sử dụng đầy đủ:
+sll = SinglyLinkedList()
+sll.insert_at_head(10)
+sll.insert_at_head(20)
+sll.insert_at_head(30)
+# List: 30 -> 20 -> 10 -> null
+```
+
+### 1.4. Các thao tác cơ bản
+
+#### 1.4.1. Insert at Head (Thêm vào đầu)
+
+Đây là thao tác đơn giản nhất và cũng là điểm mạnh nổi bật so với array.
+
+**Thuật toán:**
+
+1. Tạo node mới với data cần thêm
+2. Cho `new_node.next = head` (nối node mới vào đầu list hiện tại)
+3. Cập nhật `head = new_node` (head bây giờ trỏ vào node mới)
+
+Bước 1: Tạo node mớinew_node: 5 | next=nullhead10 | next20 | nextnull
+
+Bước 2-3: Nối vào đầu và cập nhật headhead5 | next10 | next20 | nextnull
+
+**Mô phỏng từng bước:**
+
+Giả sử list hiện tại: `head -> [10] -> [20] -> [30] -> null`. Thêm node 5 vào đầu:
+
+| Bước | Hành động              | Trạng thái                                        |
+| :--- | :--------------------- | :------------------------------------------------ |
+| 1    | Tạo `new_node(5)`      | `new_node -> [5|null]`, list không đổi            |
+| 2    | `new_node.next = head` | `new_node -> [5] -> [10] -> [20] -> [30] -> null` |
+| 3    | `head = new_node`      | `head -> [5] -> [10] -> [20] -> [30] -> null`     |
+
+**Python:**
+
+```python
+def insert_at_head(self, data):
+    new_node = Node(data)
+    new_node.next = self.head  # Nối node mới vào list cũ
+    self.head = new_node       # Cập nhật head
+    self.size += 1
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Sử dụng
+sll = SinglyLinkedList()
+sll.insert_at_head(30)  # List: 30 -> null
+sll.insert_at_head(20)  # List: 20 -> 30 -> null
+sll.insert_at_head(10)  # List: 10 -> 20 -> 30 -> null
+```
+
+**Complexity:** O(1) time, O(1) space — không phụ thuộc vào kích thước list.
+
+#### 1.4.2. Insert at Tail (Thêm vào cuối)
+
+**Thuật toán:**
+
+1. Tạo node mới
+2. Nếu list rỗng → `head = new_node`, xong
+3. Nếu list không rỗng → duyệt đến node cuối cùng (node có `next = null`)
+4. Cho `last_node.next = new_node`
+
+CóKhôngCóKhôngBắt đầuTạo new_nodehead == null?head = new_nodecurrent = headcurrent.next != null?current = current.nextcurrent.next = new_nodeXong
+
+**Mô phỏng từng bước:**
+
+List hiện tại: `head -> [10] -> [20] -> [30] -> null`. Thêm node 40 vào cuối:
+
+| Bước | current            | current.next      | Hành động                              |
+| :--- | :----------------- | :---------------- | :------------------------------------- |
+| 1    | Tạo `new_node(40)` | -                 | `new_node -> [40|null]`                |
+| 2    | `[10]`             | `[20]` (not null) | Di chuyển: `current = current.next`    |
+| 3    | `[20]`             | `[30]` (not null) | Di chuyển: `current = current.next`    |
+| 4    | `[30]`             | `null`            | Đã đến cuối! `current.next = new_node` |
+
+Kết quả: `head -> [10] -> [20] -> [30] -> [40] -> null`
+
+**Python:**
+
+```python
+def insert_at_tail(self, data):
+    new_node = Node(data)
+    if self.head is None:
+        self.head = new_node
+    else:
+        current = self.head
+        while current.next is not None:
+            current = current.next
+        current.next = new_node
+    self.size += 1
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Sử dụng
+sll = SinglyLinkedList()
+sll.insert_at_tail(10)  # List: 10 -> null
+sll.insert_at_tail(20)  # List: 10 -> 20 -> null
+sll.insert_at_tail(30)  # List: 10 -> 20 -> 30 -> null
+```
+
+**Complexity:** O(n) time (phải duyệt hết list), O(1) space.
+
+> **Cải tiến:** Nếu bạn lưu thêm pointer `tail` trỏ đến node cuối, insert at tail sẽ là O(1). Trade-off: thêm 1 pointer cần maintain.
+
+#### 1.4.3. Insert at Position (Thêm vào vị trí bất kỳ)
+
+**Thuật toán:**
+
+1. Nếu `pos == 0` → gọi `insert_at_head`
+2. Duyệt đến node thứ `pos - 1` (node đứng trước vị trí cần chèn)
+3. `new_node.next = prev_node.next`
+4. `prev_node.next = new_node`
+
+**Lưu ý quan trọng:** Thứ tự của bước 3 và 4 KHÔNG được đảo. Nếu bạn làm bước 4 trước, bạn sẽ mất reference đến phần còn lại của list!
+
+**Mô phỏng từng bước:**
+
+List: `head -> [10] -> [20] -> [30] -> null`. Chèn 25 vào vị trí 2 (0-indexed):
+
+| Bước | Hành động                                                    | Trạng thái                     |
+| :--- | :----------------------------------------------------------- | :----------------------------- |
+| 1    | Tạo `new_node(25)`                                           | Node rời                       |
+| 2    | Duyệt: `prev = head` (node [10]), di chuyển 1 lần → `prev = node[20]` | `prev` ở vị trí 1              |
+| 3    | `new_node.next = prev.next` = node[30]                       | `[25] -> [30] -> null`         |
+| 4    | `prev.next = new_node`                                       | `[20] -> [25] -> [30] -> null` |
+
+Kết quả: `head -> [10] -> [20] -> [25] -> [30] -> null`
+
+**Python:**
+
+```python
+def insert_at_position(self, data, pos):
+    if pos < 0 or pos > self.size:
+        raise IndexError("Position out of range")
+    if pos == 0:
+        self.insert_at_head(data)
+        return
+
+    new_node = Node(data)
+    current = self.head
+    for _ in range(pos - 1):  # Duyệt đến node trước vị trí cần chèn
+        current = current.next
+
+    new_node.next = current.next  # PHẢI làm trước
+    current.next = new_node       # Nối prev → new_node
+    self.size += 1
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Sử dụng
+sll = SinglyLinkedList()
+sll.insert_at_tail(10)           # List: 10 -> null
+sll.insert_at_tail(20)           # List: 10 -> 20 -> null
+sll.insert_at_tail(30)           # List: 10 -> 20 -> 30 -> null
+sll.insert_at_position(25, 2)    # List: 10 -> 20 -> 25 -> 30 -> null
+```
+
+**Complexity:** O(n) time (duyệt đến vị trí), O(1) space.
+
+#### 1.4.4. Delete at Head (Xoá node đầu)
+
+**Thuật toán:**
+
+1. Nếu list rỗng → báo lỗi
+2. Lưu data của head (để return)
+3. `head = head.next` (Python tự garbage collect node cũ)
+
+**Python:**
+
+```python
+def delete_at_head(self):
+    if self.head is None:
+        raise Exception("List is empty")
+    data = self.head.data
+    self.head = self.head.next  # Python tự garbage collect node cũ
+    self.size -= 1
+    return data
+```
+
+**Ghi chú:** Trong Python, không cần `delete temp` — garbage collector tự xử lý khi không còn reference nào trỏ đến node cũ.
+
+**Complexity:** O(1) time, O(1) space.
+
+#### 1.4.5. Delete at Position (Xoá node ở vị trí bất kỳ)
+
+**Thuật toán:**
+
+1. Nếu `pos == 0` → gọi `delete_at_head`
+2. Duyệt đến node thứ `pos - 1` (node đứng trước node cần xoá)
+3. `prev.next = prev.next.next` (bỏ qua node cần xoá, Python tự garbage collect)
+
+Trước khi xoá node ở vị trí 2head10 | next20 | next30 | next40 | nextnull
+
+Sau khi xoá: prev.next = prev.next.nexthead10 | next20 | next40 | nextnull
+
+**Python:**
+
+```python
+def delete_at_position(self, pos):
+    if pos < 0 or pos >= self.size:
+        raise IndexError("Position out of range")
+    if pos == 0:
+        return self.delete_at_head()
+
+    current = self.head
+    for _ in range(pos - 1):
+        current = current.next
+
+    deleted_data = current.next.data
+    current.next = current.next.next  # Bỏ qua node cần xoá
+    self.size -= 1
+    return deleted_data
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Sử dụng
+sll = SinglyLinkedList()
+for val in [10, 20, 30, 40]:
+    sll.insert_at_tail(val)
+# List: 10 -> 20 -> 30 -> 40 -> null
+
+deleted = sll.delete_at_position(2)  # Xoá node [30]
+print(f"Đã xoá: {deleted}")         # Output: Đã xoá: 30
+# List: 10 -> 20 -> 40 -> null
+```
+
+**Complexity:** O(n) time, O(1) space.
+
+#### 1.4.6. Delete by Value (Xoá node theo giá trị)
+
+**Python:**
+
+```python
+def delete_by_value(self, value):
+    if self.head is None:
+        raise Exception("List is empty")
+
+    # Trường hợp đặc biệt: node cần xoá là head
+    if self.head.data == value:
+        return self.delete_at_head()
+
+    current = self.head
+    while current.next is not None:
+        if current.next.data == value:
+            current.next = current.next.next
+            self.size -= 1
+            return value
+        current = current.next
+
+    raise ValueError(f"Value {value} not found")
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Sử dụng
+sll = SinglyLinkedList()
+for val in [10, 20, 30, 40]:
+    sll.insert_at_tail(val)
+# List: 10 -> 20 -> 30 -> 40 -> null
+
+sll.delete_by_value(30)  # Xoá node có giá trị 30
+# List: 10 -> 20 -> 40 -> null
+```
+
+#### 1.4.7. Traverse (Duyệt list)
+
+Duyệt là thao tác nền tảng — hầu hết các thao tác khác đều dựa trên traverse.
+
+**Python:**
+
+```python
+def traverse(self):
+    """In tất cả các phần tử trong list"""
+    elements = []
+    current = self.head
+    while current is not None:
+        elements.append(str(current.data))
+        current = current.next
+    print(" -> ".join(elements) + " -> null")
+
+
+def search(self, value):
+    """Tìm kiếm giá trị, trả về index (0-based) hoặc -1"""
+    current = self.head
+    index = 0
+    while current is not None:
+        if current.data == value:
+            return index
+        current = current.next
+        index += 1
+    return -1
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Sử dụng
+sll = SinglyLinkedList()
+for val in [10, 20, 30]:
+    sll.insert_at_tail(val)
+
+sll.traverse()          # Output: 10 -> 20 -> 30 -> null
+print(sll.search(20))   # Output: 1 (index 0-based)
+print(sll.search(99))   # Output: -1 (không tìm thấy)
+```
+
+### 1.5. Chứng minh toán học về Complexity
+
+**Định lý:** Traverse một Singly Linked List có n node mất chính xác n bước.
+
+**Chứng minh:**
+
+- Gọi T(n) là số bước cần để duyệt list có n node.
+- Base case: T(0) = 0 (list rỗng, không duyệt)
+- Tại mỗi bước, ta xử lý node hiện tại (O(1)) rồi chuyển sang node tiếp theo.
+- Recurrence: T(n) = T(n-1) + 1
+- Giải: T(n) = T(n-1) + 1 = T(n-2) + 2 = ... = T(0) + n = n
+
+Do đó T(n) = n, hay O(n). **QED.**
+
+**Insert/Delete at head là O(1):**
+
+- Chỉ thực hiện một số hằng số phép gán pointer (2-3 phép), không phụ thuộc vào n.
+- Số phép toán: c (hằng số) → O(1). **QED.**
+
+**Insert/Delete ở vị trí k (0-indexed):**
+
+- Cần duyệt k node để tìm vị trí → O(k)
+- Worst case: k = n-1 → O(n)
+- Best case: k = 0 → O(1)
+- Average case: k = n/2 → O(n)
+
+### 1.6. Bảng tổng hợp Complexity
+
+| Thao tác             | Time (Best)          | Time (Worst) | Space |
+| :------------------- | :------------------- | :----------- | :---- |
+| Insert at head       | O(1)                 | O(1)         | O(1)  |
+| Insert at tail       | O(1) nếu có tail ptr | O(n)         | O(1)  |
+| Insert at position k | O(1) nếu k=0         | O(n)         | O(1)  |
+| Delete at head       | O(1)                 | O(1)         | O(1)  |
+| Delete at position k | O(1) nếu k=0         | O(n)         | O(1)  |
+| Search               | O(1) nếu ở đầu       | O(n)         | O(1)  |
+| Traverse             | O(n)                 | O(n)         | O(1)  |
+
+### 1.7. Ưu và nhược điểm
+
+**Ưu điểm:**
+
+- Insert/Delete ở đầu: O(1) — nhanh hơn array
+- Kích thước linh hoạt, không cần biết trước
+- Không lãng phí bộ nhớ khi list nhỏ (array thường allocate dư)
+
+**Nhược điểm:**
+
+- Truy cập random: O(n) — phải duyệt từ đầu, không thể nhảy đến vị trí i
+- Mỗi node thêm overhead: 1 pointer (8 bytes trên 64-bit system)
+- Không cache-friendly: các node nằm rải rác trong bộ nhớ, CPU cache miss nhiều
+- Không hỗ trợ binary search trực tiếp (dù list đã sorted)
+
+### 1.8. Cải tiến
+
+1. **Thêm tail pointer:** Giảm insert at tail từ O(n) xuống O(1)
+2. **Thêm size field:** Lấy kích thước list O(1) thay vì phải đếm O(n)
+3. **Sentinel/Dummy head:** Thêm một node giả ở đầu list để đơn giản hoá code (không cần xử lý edge case `head == null`)
+4. **Skip List:** Thêm nhiều tầng pointer để hỗ trợ search O(log n) — đây là biến thể nâng cao

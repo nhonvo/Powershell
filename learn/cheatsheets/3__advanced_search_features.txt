@@ -1,0 +1,88 @@
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/06_Search_Engine/📂index_06_Search_Engine|06_Search_Engine]]
+
+# 🚀 3. Advanced Search Features (The Power of Text Analysis)
+
+Elasticsearch không chỉ dừng lại ở tìm kiếm từ khóa. Nó có thể hiểu được ngôn ngữ, sửa lỗi chính tả (Fuzzy Search), và tự động hoàn thiện (Autocomplete) một cách chuyên nghiệp.
+
+---
+
+### 🏛️ 3.1 Text Analysis Pipeline (Chuỗi xử lý văn bản)
+
+Khi bạn lưu 1 câu: `"Thầy giáo dạy lập trình C#!"`, Elasticsearch xử lý như thế nào?
+
+1.  **Character Filter**: Loại bỏ các ký tự HTML hoặc chuẩn hóa dấu cách.
+2.  **Tokenizer**: Chia nhỏ câu thành từng từ (**Tokens**). VD: `["Thầy", "giáo", "dạy", "lập", "trình", "C#"]`.
+3.  **Token Filter**:
+    - **Lowercase**: Chuyển hết về chữ thường.
+    - **Stopwords**: Loại bỏ những từ không có ý nghĩa tìm kiếm (VD: "là", "và", "của").
+    - **Stemming**: Đưa từ về dạng gốc (VD: `running`, `runs` → `run`).
+
+---
+
+### 🧠 3.2 Analyzers: Standart, Simple, & Custom
+
+Mỗi ngôn ngữ cần một bộ xử lý (**Analyzer**) riêng.
+- **Standart Analyzer**: (Mặc định) Hiệu quả cho hầu hết các ngôn ngữ nhưng không hỗ trợ tiếng Việt có dấu.
+- **Vietnamese Analyzer**: Phải cài thêm plugin (như `vi_analyzer`) để nhận diện từ ghép (`"học sinh"` thay vì tách ra `"học"` và `"sinh"`).
+
+---
+
+### 🚀 3.3 Dynamic Typing & Mappings
+
+Mapping là "Schema" của Elasticsearch. Bạn có thể định nghĩa kiểu dữ liệu cho từng cột:
+- **Keyword**: Chỉ khớp chính xác 100% (VD: `userId`, `email`, `id`). Cực kỳ nhanh.
+- **Text**: Được phân tích (Tokenized) để hỗ trợ tìm kiếm mờ (VD: `description`, `content`).
+
+> [!TIP]
+> **Autocomplete (Suggesters)**: Elasticsearch hỗ trợ công cụ gợi ý từ khóa (Completion Suggester) cực nhanh nhờ lưu trữ trong cấu trúc dữ liệu **FST (Finite State Transducer)**.
+
+---
+
+### ⚡ 3.4 Aggregations (Tính toán thống kê)
+
+Elasticsearch mạnh ngang ngửa Database trong việc gộp nhóm dữ liệu (VD: Tìm ra 5 nhãn hàng bán chạy nhất).
+- **Terms Aggregation**: Nhóm theo các giá trị duy nhất.
+- **Date Histogram**: Nhóm kết quả theo thời gian (VD: Số lượng đơn hàng theo tháng).
+
+**Ví dụ Aggregation (Nhóm theo hãng điện thoại):**
+```json
+GET /orders/_search
+{
+  "aggs": {
+    "by_brand": { "terms": { "field": "brand.keyword" } }
+  }
+}
+```
+
+---
+
+### 📝 3.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] Phân biệt kiểu dữ liệu `text` và `keyword` trong Elasticsearch. Khi nào nên dùng loại nào?
+<details><summary>Đáp án</summary>
+Dùng `keyword` khi bạn cần lọc chính xác (Filter) các dữ liệu không cần phân tích (ID, Email, Trạng thái). Dùng `text` khi bạn cần tìm kiếm từng phần văn bản (Search) trong các nội dung dài (Mô tả sản phẩm, Bài viết).
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh query tìm sản phẩm có tên là "Iphne" (Cố tình gõ sai) và sử dụng `fuzziness` để Elasticsearch vẫn tìm ra "Iphone".
+<details><summary>Solution</summary>
+```json
+GET /products/_search
+{
+  "query": {
+    "match": {
+      "name": {
+        "query": "Iphne",
+        "fuzziness": "AUTO"
+      }
+    }
+  }
+}
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [How Elasticsearch Analyzers Work - A Deep Dive](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-text-analysis.md)
+- [Mastering Aggregations: Scaling Data Analytics](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-elasticsearch-aggregations.md)
+- [Implementing Autocomplete: Best Practices with Completion Suggesters](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-elasticsearch-autocomplete.md)

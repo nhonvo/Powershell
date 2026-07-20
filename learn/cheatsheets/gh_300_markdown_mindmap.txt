@@ -1,0 +1,144 @@
+# 🧠 GH-300: GitHub Copilot Text-Based Mind Map
+
+A hierarchical Markdown mind map of GH-300 certification knowledge, structured by core domains as big branches.
+
+---
+
+```
+                                  🐱 GitHub Copilot Certification (GH-300)
+                                                         │
+         ┌───────────────────────────────────────────────┼──────────────────────────────────────────────┐
+         │                                               │                                              │
+        ▼                                               ▼                                              ▼
+Domain 1: Responsible AI                        Domain 2: Plans and Features                    Domain 3: Data & Privacy
+ ├─🔍 Public Match Filter                        ├─🌐 Proxy Configuration                        ├─🚫 Content Exclusions
+ │  ├─📏 Threshold: ~150+ characters             │  ├─⛓─ Error: SSL-Intercept Proxy              │  ├─🎯 Scopes: Files, Folders, Repos
+ │  ├─⚙─ Behavior: Match & Block                 │  └─🛠─ Fix: NODE_EXTRA_CA_CERTS Env Var        │  ├─⏳ Time: Up to 30 mins propagation
+ │  └─🛡─ Scope: Public repos only                ├─📊 Subscription Plan Matrix                   │  ├─⚠️ Status Bar: Diagonal line/slash
+ ├─⚖─ Responsible AI Principles                  │  ├─👤 Copilot Individual                      │  ├─⚠️ Bypass: Ref by non-excluded code
+ │  ├─📑 Transparency                            │  │  ├─🔑 Basic Code & Chat                    │  └─👑 Precedence: Strict Enterprise override
+ │  ├─🤝 Fairness & Bias Mitigation               │  │  └─💾 Telemetry: Kept for training default ├─🏗─ Context Derivation
+ │  ├─♿ Inclusiveness                           │  ├─🏢 Copilot Business                        │  ├─📂 IDE Sources: Tabs, Cursor, Code
+ │  └─👤 Accountability                          │  │  ├─👥 REST API User Management             │  └─🚫 Ignored: Theme, Logs, .gitignore
+ ├─🛡─ Vulnerability Filtering                   │  │  └─📋 Org Audit Logs (Admin actions)        └─💾 Telemetry Data Retention
+ │  ├─⚡ Real-Time LLM Scanning                 │  ├─👑 Copilot Enterprise                       ├─🏢 Business & Enterprise
+ │  ├─⚠️ Annotations: Context warnings           │  │  ├─📚 Knowledge Bases: MD Docs              │  │  ├─📝 Prompts/Suggestions: 28 days
+ │  └─🚫 Not a Gate: No block PR/CI              │  │  ├─🔐 IDP: SAML SSO / SCIM (Okta)           │  │  └─📈 Engagement Metrics: 2 years
+ ├─☣─ Toxicity Filter                            │  │  └─🤝 Ext: Bitbucket Sync                   └─👤 Individual
+ │  └─🛑 Blocks explicit text/prompts            │  └─💻 Command Line Interface (CLI)                └─ Retained for training unless opt-out
+ └─🧮 Limitations                                │     ├─📥 Install: gh extension...
+    └─❌ Math: Pattern matching only             │     ├─💬 Suggest: gh copilot suggest
+                                                 │     └─⚙─ Config: Exec confirmations
+                                                 └─🔐 REST API & Audit Logging
+                                                    ├─🛠─ REST API: Team level seats
+                                                    └─🔒 Privacy: Cannot view suggestions
+```
+
+```
+                                      🐱 GitHub Copilot Certification (GH-300)
+                                                         │
+                                    ┌────────────────────┴────────────────────┐
+                                    │                                         │
+                                   ▼                                         ▼
+                        Domain 4: Prompt Engineering              Domain 5: Workflows & Use Cases
+                            ├─⚡ Suggestion Quality Boosters         ├─🔄 Fill-In-the-Middle (FIM)
+                            │  ├─🎯 Clarity: Success criteria        │  └─🔗 Definition: Prefix + Suffix check
+                            │  ├─🔬 Variables: Meaningful names      ├─💬 IDE Chat Slash Commands
+                            │  ├─📖 Sourcing: Embed doc links        │  ├─🧪 /tests or /generate-tests
+                            │  └─📦 Constraints: Target versions     │  ├─⚙─ /optimize: Complexity analysis
+                            ├─🎭 Prompting Strategies                │  ├─🛠─ /fix: Syntax & errors fix
+                            │  ├─👤 Role: Explicit personas          │  └─🔍 /explain: Execution flow
+                            │  └─🧪 Few-Shot: Embed model loops      └─🛠─ Workflow Best Practices
+                            └─💬 Copilot Chat Context Sources         ├─📚 Checklist: Keep tabs open
+                               └─🔄 Multi-Sourcing: Workspace,        ├─⚠️ Deprecation Trap: Legacy patterns
+                                  LLM weights, & Bing searches        └─🤝 Human-in-the-Loop: Review always
+```
+
+
+## 🗺️ Mind Map Structure
+
+* **🐱 GitHub Copilot Certification (GH-300)**
+  * **Domain 1: Responsible AI and Ethical Use**
+    * 🔍 Public Code Matching Filter (Duplication Detection)
+      * 📏 Threshold: **~150 characters** or more
+      * ⚙️ Behavior: Scans suggestions against public code on GitHub. If matched and policy is set to block, the suggestion is blocked.
+      * 🛡️ Scope: Prevents copying public repository code; does not scan private repos.
+    * ⚖️ Responsible AI Principles
+      * 📑 Transparency: Systems must be understandable, providing clear information on datasets, parameters, and how suggestions are generated.
+      * 🤝 Fairness & Bias Mitigation: Auditing training data/algorithms to minimize bias using diverse data, fairness metrics, and human oversight.
+      * ♿ Inclusiveness: Empowering and engaging people of all abilities.
+      * 👤 Accountability: Operators and developers of AI systems are answerable for their behaviors and outputs.
+    * 🛡️ Vulnerability Filtering & Security
+      * ⚡ Real-Time LLM Scanning: Automatically scans suggestion outputs for insecure patterns.
+      * ⚠️ Annotations: Annotates responses with warnings for vulnerabilities (SQL injection, weak cryptography, hardcoded secrets).
+      * 🚫 Not a Gate: Does not run cloud SAST tools (like SonarQube) and does not block commits/PR merges.
+    * ☣️ Toxicity Filter
+      * 🛑 Blocks harmful, sexually suggestive, explicit, hate speech, or discriminatory slurs in both input prompts and generated responses.
+    * 🧮 Limitations
+      * ❌ Math Computations: Generates code based on statistical pattern matching from training data. It does not compile, run, or verify math accuracy (susceptible to hallucinations).
+  * **Domain 2: Plans and Features**
+    * 🌐 Proxy Configuration (Enterprise Networks)
+      * ⛓️ Certificate Chain Error: Caused by corporate SSL-decrypting/intercepting proxies.
+      * 🛠️ Fix: Export the corporate root CA cert to PEM format and set the `NODE_EXTRA_CA_CERTS` environment variable to its absolute path (due to the Node.js runner in the IDE client).
+    * 📊 Subscription Plan Matrix
+      * 👤 Copilot Individual
+        * 🔑 Basic completions and Chat inside IDE.
+        * 💾 Telemetry: Prompt and suggestion code snippets are retained by default (requires manual opt-out).
+        * 🚫 Lacks content exclusions, enterprise policies, or central seat administration.
+      * 🏢 Copilot Business
+        * 👥 Admin seat assignment via REST API (team addition/removal).
+        * 🛡️ Content exclusion support.
+        * 📋 Org audit logs (admin changes).
+        * 📊 Telemetry: Aggregate usage analytics only (no code suggestion snippet exports). Prompts/suggestions kept for 28 days.
+      * 👑 Copilot Enterprise
+        * 📚 Knowledge Bases: Index markdown documentation sets to guide Copilot Chat answers.
+        * 💻 Chat on GitHub.com & PR Summaries.
+        * 🤝 External Code Integrations (e.g., Bitbucket).
+        * 🔐 IDP Integration: Full SAML SSO and SCIM mapping (e.g., Okta) via GitHub Enterprise Cloud (GHEC).
+    * 💻 Command Line Interface (CLI)
+      * 📥 Install: `gh extension install github/gh-copilot`
+      * 💬 Suggest Command: `gh copilot suggest` (universal CLI subcommand).
+      * ⚡ Shell Aliases: Interactive helpers like `?? <prompt>` to suggest and `what? <cmd>` to explain.
+      * ⚙️ Configurable Options: Default command execution confirmation prompts, telemetry opt-in/opt-out toggles.
+    * 🔐 REST API & Audit Logging
+      * 🛠️ REST API: Manage seats at team levels.
+      * 📂 Audit Logs: Track admin actions (specifically changes to content exclusion settings).
+      * 🔒 Privacy Policy: Neither API nor Audit logs permit viewing/exporting accepted code suggestions.
+  * **Domain 3: Data, Architecture, and Privacy**
+    * 🚫 Content Exclusions
+      * 🎯 Scopes: Individual files, folders, or entire repositories can be excluded.
+      * ⏳ Propagation Time: Takes up to **30 minutes** for policy changes to update in the IDE client cache.
+      *  Diagonal slash or diagonal line indicator with a tooltip warning on the status bar icon.
+      * ⚠️ Bypass Traps: Excluded content elements can still guide suggestions if referenced (e.g., a function call) in an active, non-excluded file.
+      * 👑 Policy Precedence: Stricter Enterprise-level exclusions cannot be overridden or weakened by Organization/Repo-level settings.
+    * 🏗️ Context Derivation (Prompt Construction)
+      * 📂 IDE Context Sources: Active file content, cursor position, selected code block, open tabs (filename & import similarity), and neighboring files.
+      * 🚫 Ignored Sources: Commit logs, `.gitignore` exclusions, active IDE syntax theme.
+    * 💾 Telemetry Data Retention
+      * 🏢 Business & Enterprise:
+        * 📝 Prompts and suggestion code snippets: Retained temporarily for **28 days** (service delivery) then deleted.
+        * 📈 Engagement metrics: Retained for **2 years**.
+      * 👤 Individual: Retained for model training by default unless opt-out setting is configured.
+  * **Domain 4: Prompt Engineering**
+    * ⚡ Suggestion Quality Boosters
+      * 🎯 Clarity: Provide clear task descriptions and explicit success criteria (e.g., computational O(n) limits).
+      * 🔬 Variable Names: Use meaningful, descriptive variables to guide the context parser.
+      * 📖 Sourcing: Provide links to API documentation inside comments or chat prompt to leverage contextual pattern matching.
+      * 📦 Constraints: Explicitly state target language and framework versions.
+    * 🎭 Prompting Strategies
+      * 👤 Role Prompting: Assigning a persona (e.g., "Act as a Senior Database Administrator") to constrain output styles.
+      * 🧪 Few-Shot Prompting: Providing one or more input/output examples within the prompt to enforce formatting.
+    * 💬 Copilot Chat Context Sources
+      * 🔄 Multi-Sourcing: Combines LLM weights, local workspace file indexing (`@workspace`), and real-time external search engine queries (Bing).
+  * **Domain 5: Developer Workflows and Use Cases**
+    * 🔄 Fill-In-the-Middle (FIM)
+      * 🔗 Definition: Model architecture parsing both prefix (code before cursor) and suffix (code after cursor) simultaneously to generate mid-code inserts.
+    * 💬 IDE Chat Slash Commands
+      * 🧪 `/tests` (Standard) / `/generate-tests` (Exam Dump variant): Generates unit test suites for highlighted/active code.
+      * ⚙️ `/optimize`: Evaluates selected code performance, analyzes complexity, and suggests enhancements.
+      * 🛠️ `/fix`: Proposes syntax and programming error resolutions.
+      * 🔍 `/explain`: Explains execution flow and algorithms of the code.
+    * 🛠️ Workflow Best Practices
+      * 📚 Context Checklist: Keep related code-under-test files open when writing tests.
+      * ⚠️ Deprecation Trap: Copilot will suggest deprecated APIs and legacy patterns if they occur frequently in its public training data.
+      * 🤝 Human-in-the-Loop: AI output must be treated as suggestions only; always review, refactor, and verify before commit.

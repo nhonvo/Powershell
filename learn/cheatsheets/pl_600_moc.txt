@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/pl-600
+  - pl600
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 PL-600: Microsoft Power Platform Solution Architect MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/PL-600/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/PL-600/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/PL-600/PL-600 Mindmap\|🗺️ PL-600 Mindmap]]
+- [[certifications/microsoft/PL-600/PL-600 Flashcards\|🃏 PL-600 Flashcards]]
+- [[certifications/microsoft/PL-600/PL-600_Scraped_Question_Bank\|🗃️ PL-600 Scraped Question Bank]]

@@ -1,0 +1,12 @@
+# 0. Algorithmic thinking
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/0. Algorithmic thinking/index_0. Algorithmic thinking|1.Interviewcake.com]]
+
+## 📁 Categories
+- [[dsa/1.Interviewcake.com/0. Algorithmic thinking/Big O Notation/index_Big O Notation|Big O Notation]]
+- [[dsa/1.Interviewcake.com/0. Algorithmic thinking/Data Structures for Coding Interviews/index_Data Structures for Coding Interviews|Data Structures for Coding Interviews]]
+- [[dsa/1.Interviewcake.com/0. Algorithmic thinking/Logarithms/index_Logarithms|Logarithms]]
+
+## 📄 Notes
+- [[0. algorithmic thinking|0. Algorithmic thinking]]
+

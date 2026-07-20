@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/ab-731
+  - ab731
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AB-731: AI Transformation Leader MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/AB-731/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/AB-731/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/AB-731/AB-731 Mindmap\|🗺️ AB-731 Mindmap]]
+- [[certifications/microsoft/AB-731/AB-731 Flashcards\|🃏 AB-731 Flashcards]]
+- [[certifications/microsoft/AB-731/AB-731_Scraped_Question_Bank\|🗃️ AB-731 Scraped Question Bank]]

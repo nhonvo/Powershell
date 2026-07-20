@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/gh-300
+  - gh300
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 GH-300: GitHub Copilot MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/GH-300/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/GH-300/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/GH-300/GH-300 Mindmap\|🗺️ GH-300 Mindmap]]
+- [[certifications/microsoft/GH-300/GH-300 Flashcards\|🃏 GH-300 Flashcards]]
+- [[certifications/microsoft/GH-300/GH-300_Scraped_Question_Bank\|🗃️ GH-300 Scraped Question Bank]]

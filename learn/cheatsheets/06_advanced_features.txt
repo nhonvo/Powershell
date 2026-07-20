@@ -1,0 +1,75 @@
+🔙 **Back to Parent**: [[technical_skills/04_PostgreSQL_Deep_Dive/05_Indexing_Mastery|04_PostgreSQL_Deep_Dive]]
+
+# 🚀 6. Advanced Features (The PostgreSQL Edge)
+
+PostgreSQL không chỉ là SQL, nó là một cỗ máy tính toán. Các tính năng nâng cao như JSONB, Window Functions và Partitioning giúp bạn giải quyết những bài toán cực khó mà Database khác phải "khóc lóc".
+
+---
+
+### 🏛️ 6.1 JSONB: Phá vỡ rào cản (NoSQL in SQL)
+
+PostgreSQL hỗ trợ lưu trữ JSON cực mạnh với kiểu **JSONB** (Binary JSON).
+- **Ưu điểm**: Hỗ trợ Index (GIN Index). Cho phép tìm kiếm, truy vấn tực tiếp vào các thuộc tính bên trong JSON.
+- **Thế mạnh**: Dùng cho các dữ liệu Metadata, Thông số kỹ thuật của Sản phẩm, Log thô.
+
+**Ví dụ (Query JSONB):**
+```sql
+SELECT data->>'brand' FROM products
+WHERE data @> '{"color": "red"}';
+```
+
+---
+
+### 🧠 6.2 Window Functions (Báo cáo thông minh)
+
+Tính toán trên một "Cửa sổ" dữ liệu mà không cần gộp nhóm.
+- `ROW_NUMBER()`: Đánh số thứ tự.
+- `RANK()` / `DENSE_RANK()`: Xếp hạng (VD: Ai bán được nhiều hàng nhất?).
+- `OVER (PARTITION BY ... ORDER BY ...)`: Chia "cửa sổ" theo tiêu chí cụ thể.
+
+**Ví dụ (Xếp hạng lương theo Phòng ban):**
+```sql
+SELECT name, salary, dept_id,
+       RANK() OVER(PARTITION BY dept_id ORDER BY salary DESC) as rank
+FROM employees;
+```
+
+---
+
+### 🚀 6.3 Table Partitioning (Chia bảng khổng lồ)
+
+Khi 1 bảng đạt 100 triệu hàng, Postgres bắt đầu chậm.
+- **Giải pháp**: Chia 1 bảng "mẹ" thành nhiều bảng "con" theo tiêu chí thời gian (`Year`) hay khu vực (`City`).
+- **Lợi ích**: Postgres chỉ cần quét trên đúng mảnh (Partition) chứa dữ liệu cần tìm, tăng tốc độ query lên hàng trăm lần.
+
+---
+
+### ⚡ 6.4 Full-Text Search (Tìm kiếm văn bản)
+
+Đừng dùng `LIKE`. Hãy dùng `to_tsvector` và `to_tsquery`. Chuẩn hóa cả tiếng Việt có dấu.
+- **Cơ chế**: Tách từ, loại bỏ từ vô nghĩa và đưa về từ gốc.
+
+---
+
+### 📝 6.5 Bài tập thực hành & Thử thách (Practice)
+
+**Bài 1**: [Lý thuyết] "Tại sao dùng JSONB tốt hơn JSON truyền thống (JSON text)?"
+<details><summary>Đáp án</summary>
+JSONB được lưu dạng Nhị phân, đã được phân tích cấu trúc lúc chèn dữ liệu. Điều này làm việc GHI chậm hơn 1 chút nhưng việc ĐỌC và TRUY VẤN nhanh hơn gấp bội, đặc biệt là JSONB hỗ trợ đánh Index (GIN).
+</details>
+
+**Bài 2**: [Kỹ thuật] Viết câu lệnh SQL (Window Function) để lấy **Lương tích lũy** (Running Total) theo từng nhân viên trong bảng `Employees`.
+<details><summary>Solution</summary>
+```sql
+SELECT name, salary, 
+       SUM(salary) OVER(ORDER BY id) as running_total
+FROM employees;
+```
+</details>
+
+---
+
+### 🔗 Tài liệu chuyên sâu (Blog)
+- [PostgreSQL JSONB: Performance Benchmarks vs MongoDB](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-postgresql-jsonb.md)
+- [Mastering Window Functions for Analytics & Reports in SQL](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-sql-window-functions.md)
+- [Partitioning Large Tables in PostgreSQL - Best Practices](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-postgresql-partitioning.md)

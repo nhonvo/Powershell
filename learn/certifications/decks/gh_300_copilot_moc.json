@@ -1,0 +1,596 @@
+{
+  "Meta": {
+    "Id": "deck_gh_300_copilot_moc",
+    "Topic": "GH-300 Copilot MOC",
+    "Language": "English/Japanese",
+    "Domain": "certifications",
+    "Level": "General",
+    "Tags": [
+      "gh_300_copilot_moc"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 29
+  },
+  "Cards": [
+    {
+      "Id": "card_00354",
+      "Front": "Domain",
+      "Back": "Topic | Weight | Notes | Practice",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00355",
+      "Front": "**[[certifications/microsoft/GH-300-Copilot/Domain 1 - Responsible AI\\",
+      "Back": "D1]]** | Responsible AI | ~15% | AI Ethics, Filtering, Vulnerability Scanner, IP | [[certifications/microsoft/GH-300-Copilot/Practice Questions - Domain 1\\ | Q&A D1]]",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00356",
+      "Front": "**[[certifications/microsoft/GH-300-Copilot/Domain 2 - Plans and Features\\",
+      "Back": "D2]]** | Plans & Features | ~25% | Tiers, IDE Setup, Proxy, CLI | [[certifications/microsoft/GH-300-Copilot/Practice Questions - Domain 2\\ | Q&A D2]]",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00357",
+      "Front": "**[[certifications/microsoft/GH-300-Copilot/Domain 3 - Data and Privacy\\",
+      "Back": "D3]]** | Data & Privacy | ~20% | Context, Telemetry, Exclusions | [[certifications/microsoft/GH-300-Copilot/Practice Questions - Domain 3\\ | Q&A D3]]",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00358",
+      "Front": "**[[certifications/microsoft/GH-300-Copilot/Domain 4 - Prompt Engineering\\",
+      "Back": "D4]]** | Prompt Engineering | ~20% | 3 Cs, Shot Types, Anchors | [[certifications/microsoft/GH-300-Copilot/Practice Questions - Domain 4\\ | Q&A D4]]",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00359",
+      "Front": "**[[certifications/microsoft/GH-300-Copilot/Domain 5 - Developer Workflows\\",
+      "Back": "D5]]** | Developer Workflows | ~20% | Tests, Refactor, PR Summaries, Docs | [[certifications/microsoft/GH-300-Copilot/Practice Questions - Domain 5\\ | Q&A D5]]",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00360",
+      "Front": "Asset",
+      "Back": "Description",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00361",
+      "Front": "**[[certifications/microsoft/GH-300/GH-300 Mindmap\\",
+      "Back": "🗺️ GH-300 Mindmap]]** | Full Mermaid mindmap — all 5 domains with key facts in one view",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00362",
+      "Front": "**[[certifications/microsoft/GH-300-Copilot/GH-300 Markdown Mindmap\\",
+      "Back": "🧠 GH-300 Markdown Mindmap]]** | Hierarchical markdown-only mind map covering all knowledge by domain branch",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00363",
+      "Front": "**[[certifications/microsoft/GH-300-Copilot/GH-300 Flashcards\\",
+      "Back": "🃏 GH-300 Flashcards]]** | 45+ spaced-repetition cards (Obsidian SR plugin compatible)",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00364",
+      "Front": "**[[certifications/microsoft/GH-300-Copilot/Copilot Comparison Cheat Sheet\\",
+      "Back": "📊 Copilot Comparison Cheat Sheet]]** | Individual vs Business vs Enterprise feature matrix",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00365",
+      "Front": "**🖥️ Interactive PS Quiz**",
+      "Back": "Run `.\\Start-StudySession.ps1` · Filter by domain · 30 questions across all 5 domains",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00366",
+      "Front": "Topic",
+      "Back": "Key Fact",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00367",
+      "Front": "Public Code Filter threshold",
+      "Back": "**~150 characters**",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00368",
+      "Front": "Snippet retention — Business/Enterprise",
+      "Back": "**NEVER retained**",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00369",
+      "Front": "Snippet retention — Individual",
+      "Back": "**Retained by default** (must opt out)",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00370",
+      "Front": "Engagement data",
+      "Back": "**Always retained** (no opt-out)",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00371",
+      "Front": "PR Summaries",
+      "Back": "**Enterprise only**",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00372",
+      "Front": "Knowledge Bases",
+      "Back": "**Enterprise only**",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00373",
+      "Front": "Chat on GitHub.com",
+      "Back": "**Enterprise only**",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00374",
+      "Front": "Proxy cert fix",
+      "Back": "`NODE_EXTRA_CA_CERTS` → PEM file",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00375",
+      "Front": "Install Copilot CLI",
+      "Back": "`gh extension install github/gh-copilot`",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00376",
+      "Front": "Suggest terminal cmd",
+      "Back": "`?? <prompt>`",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00377",
+      "Front": "Explain terminal cmd",
+      "Back": "`what? <cmd>`",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00378",
+      "Front": "Generate tests",
+      "Back": "`/tests` chat command",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00379",
+      "Front": "Generate docs",
+      "Back": "`/doc` chat command",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00380",
+      "Front": "Explain code",
+      "Back": "`/explain` chat command",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00381",
+      "Front": "Exclusion file",
+      "Back": "`.github/copilot-exclusions.sha`",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00382",
+      "Front": "Policy cascade",
+      "Back": "**Enterprise → Org → Repo → User**",
+      "Hint": "GH-300-Copilot",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "gh-300 copilot moc"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

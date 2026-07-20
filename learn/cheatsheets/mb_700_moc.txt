@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/mb-700
+  - mb700
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 MB-700: Microsoft Dynamics 365: Finance and Operations Apps Solution Architect MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/MB-700/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/MB-700/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/MB-700/MB-700 Mindmap\|🗺️ MB-700 Mindmap]]
+- [[certifications/microsoft/MB-700/MB-700 Flashcards\|🃏 MB-700 Flashcards]]
+- [[certifications/microsoft/MB-700/MB-700_Scraped_Question_Bank\|🗃️ MB-700 Scraped Question Bank]]

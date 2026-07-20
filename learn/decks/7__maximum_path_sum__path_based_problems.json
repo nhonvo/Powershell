@@ -1,0 +1,536 @@
+{
+  "Meta": {
+    "Id": "deck_7__maximum_path_sum__path_based_problems",
+    "Topic": "7. Maximum Path Sum  Path-based Problems",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "7__maximum_path_sum__path_based_problems"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 26
+  },
+  "Cards": [
+    {
+      "Id": "card_01139",
+      "Front": "Bước",
+      "Back": "Node | left_gain | right_gain | path_sum qua node | max_sum | Return (cho parent)",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01140",
+      "Front": "Trường hợp",
+      "Back": "Time | Space | Max sum",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01141",
+      "Front": "Best case",
+      "Back": "O(n) | O(log n) | Cây cân bằng, tất cả dương",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01142",
+      "Front": "Worst case",
+      "Back": "O(n) | O(n) | Cây suy biến",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01143",
+      "Front": "Tất cả âm",
+      "Back": "O(n) | O(h) | = giá trị node lớn nhất (ít âm nhất)",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01144",
+      "Front": "Bài toán",
+      "Back": "Time | Space | Kỹ thuật chính",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01145",
+      "Front": "Tree Traversals",
+      "Back": "O(n) | O(h) / O(w) | DFS / BFS",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01146",
+      "Front": "Height / Depth",
+      "Back": "O(n) | O(h) | DFS bottom-up",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01147",
+      "Front": "Diameter",
+      "Back": "O(n) | O(h) | DFS + kết hợp height",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01148",
+      "Front": "LCA",
+      "Back": "O(n) | O(h) | DFS phân nhánh",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01149",
+      "Front": "Tree Views",
+      "Back": "O(n) | O(n) | BFS + HD map",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01150",
+      "Front": "Serialization",
+      "Back": "O(n) | O(n) | DFS/BFS + null markers",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01151",
+      "Front": "Max Path Sum",
+      "Back": "O(n) | O(h) | DFS + gain concept",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01152",
+      "Front": "94",
+      "Back": "Binary Tree Inorder Traversal | Easy | Traversal",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01153",
+      "Front": "104",
+      "Back": "Maximum Depth of Binary Tree | Easy | Height",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01154",
+      "Front": "543",
+      "Back": "Diameter of Binary Tree | Easy | Diameter",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01155",
+      "Front": "236",
+      "Back": "Lowest Common Ancestor | Medium | LCA",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01156",
+      "Front": "199",
+      "Back": "Binary Tree Right Side View | Medium | Tree Views",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01157",
+      "Front": "297",
+      "Back": "Serialize and Deserialize | Hard | Serialization",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01158",
+      "Front": "124",
+      "Back": "Binary Tree Maximum Path Sum | Hard | Max Path Sum",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01159",
+      "Front": "112",
+      "Back": "Path Sum | Easy | Path problems",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01160",
+      "Front": "113",
+      "Back": "Path Sum II | Medium | Path problems",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01161",
+      "Front": "437",
+      "Back": "Path Sum III | Medium | Path + prefix sum",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01162",
+      "Front": "110",
+      "Back": "Balanced Binary Tree | Easy | Height variant",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01163",
+      "Front": "226",
+      "Back": "Invert Binary Tree | Easy | Tree manipulation",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01164",
+      "Front": "105",
+      "Back": "Construct from Preorder + Inorder | Medium | Tree construction",
+      "Hint": "09_Binary_Trees",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "7. maximum path sum  path-based problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

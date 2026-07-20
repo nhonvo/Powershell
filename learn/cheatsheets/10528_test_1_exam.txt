@@ -1,0 +1,353 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/04_N2/Course_39/📂index_Course_39|Course_39]]
+
+# Test 1
+
+## Part 1
+**Q1.** 今日は　六日です。
+- **A.** ろくか
+- **B.** むいか
+- **C.** みっか
+- **D.** ふつか
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> 六日: M&ugrave;ng 6今日は　六日です。H&ocirc;m nay l&agrave; m&ugrave;ng 6.</p>
+</details>
+
+---
+**Q2.** 今日は　三月　一日です。
+- **A.** さんがつ
+- **B.** にがつ
+- **C.** いちがつ
+- **D.** しがつ
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 三月: Th&aacute;ng 3今日は　三月　一日です。H&ocirc;m nay l&agrave; m&ugrave;ng 1 th&aacute;ng 3.</p>
+</details>
+
+---
+**Q3.** 六百円です。
+- **A.** ろっぴゃく
+- **B.** ろくひゃく
+- **C.** ろぴゃく
+- **D.** ろひゃく
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 六百: 600 (s&aacute;u trăm)六百円です。600 y&ecirc;n.</p>
+</details>
+
+---
+**Q4.** このかばんは　三千円です。
+- **A.** みぜん
+- **B.** みせん
+- **C.** さんぜん
+- **D.** さんせん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> 三千: 3000 (ba ngh&igrave;n)このかばんは　三千円です。C&aacute;i cặp n&agrave;y (gi&aacute;) 3000 y&ecirc;n.</p>
+</details>
+
+---
+**Q5.** これは　五円です。
+- **A.** ごえん
+- **B.** こえん
+- **C.** ごうえん
+- **D.** こうえん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 五円: 5 y&ecirc;nこれは　五円です。C&aacute;i n&agrave;y (gi&aacute;) 5 y&ecirc;n.</p>
+</details>
+
+---
+**Q6.** 一人ですか。
+- **A.** にり
+- **B.** ふたり
+- **C.** いちり
+- **D.** ひとり
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> 一人: 1 người / 1 m&igrave;nh一人ですか。1 người &agrave;? / 1 m&igrave;nh &agrave;?</p>
+</details>
+
+---
+**Q7.** 今日は　二月　十日ですか。
+- **A.** ここのか
+- **B.** とおか
+- **C.** むいか
+- **D.** みっか
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> 十日: M&ugrave;ng 10今日は　二月　十日ですか。H&ocirc;m nay l&agrave; m&ugrave;ng 10 th&aacute;ng 2.</p>
+</details>
+
+---
+**Q8.** これは　千円です。
+- **A.** せえん
+- **B.** せんねん
+- **C.** せんえん
+- **D.** せねん
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> 千円: 1000 y&ecirc;n (một ngh&igrave;n)これは　千円です。C&aacute;i n&agrave;y (gi&aacute;) 1000 y&ecirc;n.</p>
+</details>
+
+---
+**Q9.** 今日は　七日じゃないです。
+- **A.** なのか
+- **B.** ななか
+- **C.** ようか
+- **D.** よっか
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 七日: M&ugrave;ng 7今日は　七日じゃないです。H&ocirc;m nay kh&ocirc;ng phải m&ugrave;ng 7.</p>
+</details>
+
+---
+**Q10.** 二人ですね。
+- **A.** ふたり
+- **B.** にり
+- **C.** いちり
+- **D.** ひとり
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 二人: 2 người二人ですね。2 người nhỉ.</p>
+</details>
+
+---
+**Q1.** あちらは　　　　です。
+- **A.** 何
+- **B.** 大使館
+- **C.** 私
+- **D.** 明後日
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> 大使館: Đại sứ qu&aacute;nあちらは　大使館です。Kia l&agrave; Đại sứ qu&aacute;n.</p>
+</details>
+
+---
+**Q2.** 今日は　　　　です。
+- **A.** 月曜日
+- **B.** 明日
+- **C.** 午前
+- **D.** 朝
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 月曜日: Thứ Hai今日は　月曜日です。H&ocirc;m nay l&agrave; thứ Hai.</p>
+</details>
+
+---
+**Q3.** 私は　　　　です。
+- **A.** 学生
+- **B.** ベトナム
+- **C.** あちら
+- **D.** お名前
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 学生: sinh vi&ecirc;n私は　学生です。T&ocirc;i l&agrave; sinh vi&ecirc;n.</p>
+</details>
+
+---
+**Q4.** マイさんは　　　　です。
+- **A.** ビール
+- **B.** これ
+- **C.** 医者
+- **D.** 電話番号
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> 医者: B&aacute;c sĩ マイさんは　医者です。Mai l&agrave; b&aacute;c sĩ.</p>
+</details>
+
+---
+**Q5.** この　　　は　いくらですか。
+- **A.** レストラン
+- **B.** 仕事
+- **C.** 銀行
+- **D.** 手帳
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> 手帳: Sổ tayこの手帳は　いくらですか。Sổ tay n&agrave;y bao nhi&ecirc;u tiền ạ?</p>
+</details>
+
+---
+**Q6.** この　　　は　二千円です。
+- **A.** 月曜日
+- **B.** 辞書
+- **C.** スーパー
+- **D.** お名前
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> 辞書: Từ điểnこの辞書は　二千円です。Từ điển n&agrave;y (gi&aacute;) 2000 y&ecirc;n.</p>
+</details>
+
+---
+**Q7.** 十時です。
+- **A.** 午前
+- **B.** 今日
+- **C.** 何分
+- **D.** 休み
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> 午前: Buổi s&aacute;ng午前　十時です。10 giờ s&aacute;ng.</p>
+</details>
+
+---
+**Q8.** は　何ですか。
+- **A.** 休み
+- **B.** 私
+- **C.** 学生
+- **D.** お名前
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> お名前: (Họ) t&ecirc;nお名前は　何ですか。(Họ) t&ecirc;n bạn l&agrave; g&igrave;?</p>
+</details>
+
+---
+**Q9.** 朝　十時から　　　　　八時までです。
+- **A.** お仕事
+- **B.** 今日
+- **C.** 夜
+- **D.** 午前
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> 夜: buổi tối朝　十時から　夜　八時までです。Từ 10 giờ s&aacute;ng đến 8 giờ tối.</p>
+</details>
+
+---
+**Q1.** A:　マイさんは　学生ですか。B:　________________
+- **A.** はい、学生です。
+- **B.** はい、学生じゃないです。
+- **C.** はい、学生ですか。
+- **D.** いいえ、そうです。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> A:　マイさんは　学生ですか。B:　はい、学生です。A: Mai l&agrave; học sinh &agrave;?B: V&acirc;ng, t&ocirc;i l&agrave; học sinh.</p>
+</details>
+
+---
+**Q2.** A:　田中さんは　ベトナム人ですか。B:　________________
+- **A.** いいえ、そうです。
+- **B.** いいえ、ベトナム人です。
+- **C.** いいえ、日本人です。
+- **D.** いいえ、タイ人じゃないです。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> A:　田中さんは　ベトナム人ですか。B:　いいえ、日本人です。A: Anh Tanaka l&agrave; người Việt Nam phải kh&ocirc;ng?B: Kh&ocirc;ng, t&ocirc;i l&agrave; người Nhật.</p>
+</details>
+
+---
+**Q3.** A:　あれは　郵便局ですか。B:　________________　銀行です。
+- **A.** はい、そうです。
+- **B.** はい、郵便局です。
+- **C.** いいえ、郵便局じゃないです。
+- **D.** いいえ、銀行じゃありません。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> C</p>
+<p><b>Giải thích:</b> A:　あれは　郵便局ですか。B:　いいえ、郵便局じゃないです。銀行です。　A: Kia l&agrave; bưu điện phải kh&ocirc;ng?B: Kh&ocirc;ng, kh&ocirc;ng phải bưu điện. L&agrave; ng&acirc;n h&agrave;ng.</p>
+</details>
+
+---
+**Q4.** A:　私は　会社員です。B:　そうですか。________________
+- **A.** 私は　会社員です。
+- **B.** 私も　会社員です。
+- **C.** 私は　学生じゃないです。
+- **D.** 私も　学生です。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> A:　私は　会社員です。B:　そうですか。私も　会社員です。A: T&ocirc;i l&agrave; nh&acirc;n vi&ecirc;n c&ocirc;ng ty.B: Vậy &agrave;! T&ocirc;i cũng l&agrave; nh&acirc;n vi&ecirc;n c&ocirc;ng ty.</p>
+</details>
+
+---
+**Q5.** A:　仕事は　何時から　何時までですか。B:　________________
+- **A.** はい、そうです。
+- **B.** 午前　九時から　午後　五時までですか。
+- **C.** 仕事は　九時　午前から　五時　午後までです。
+- **D.** 午前　九時から　午後　五時までです。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> A:　仕事は　何時から　何時までですか。B:　午前　九時から　午後　五時までです。A: C&ocirc;ng việc l&agrave; từ mấy giờ đến mấy giờ?B: Từ 9 giờ s&aacute;ng đến 5 giờ chiều.</p>
+</details>
+
+---
+**Q6.** A:　________________B:　四百円です。
+- **A.** このジュースは　五百円ですよ。
+- **B.** このジュースは　四百円です。
+- **C.** このジュースは　いくらですよね。
+- **D.** このジュースは　いくらですか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> A:　このジュースは　いくらですか。B:　四百円です。A: Nước hoa quả n&agrave;y bao nhi&ecirc;u tiền?B: 400 y&ecirc;n ạ.</p>
+</details>
+
+---
+**Q7.** A:　________________B:　スーパーですよ。
+- **A.** あれは　何ですか。
+- **B.** あれは　いくらですか。
+- **C.** あれは　何時ですか。
+- **D.** あれは　学校ですか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> A:　あれは　何ですか。B:　スーパーですよ。A: Kia l&agrave; c&aacute;i g&igrave; thế?B: L&agrave; si&ecirc;u thị đấy.</p>
+</details>
+
+---
+**Q8.** A:　________________B:　いいえ、市役所ですよ。
+- **A.** あれは　何ですか。
+- **B.** あれは　いくらですか。
+- **C.** あれは　何時ですか。
+- **D.** あれは　大使館ですか。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> A:　あれは　大使館ですか。B:　いいえ、市​​​​​​​役所ですよ。A: Kia l&agrave; Đại sứ qu&aacute;n phải kh&ocirc;ng?B: Kh&ocirc;ng, t&ograve;a thị ch&iacute;nh đấy.</p>
+</details>
+
+---
+**Q9.** A:　今日は　火曜日ですか。B:　________________
+- **A.** はい、火曜日ですね。
+- **B.** はい、火曜日ですよ。
+- **C.** はい、火曜日ですか。
+- **D.** いいえ、火曜日です。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> A:　今日は　火曜日ですか。B:　はい、火曜日ですよ。A: H&ocirc;m nay l&agrave; thứ Ba phải kh&ocirc;ng?B: V&acirc;ng, đ&uacute;ng l&agrave; thứ Ba đấy.</p>
+</details>
+
+---
+**Q10.** A:　マイさんは________________B:　いいえ、教師です。
+- **A.** 学生ですよね。
+- **B.** 学生です。
+- **C.** 教師ですね。
+- **D.** 教師じゃありません。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> A:　マイさんは　学生ですよね。B:　いいえ、教師です。A: Mai l&agrave; sinh vi&ecirc;n nhỉ?B: Kh&ocirc;ng, t&ocirc;i l&agrave; gi&aacute;o vi&ecirc;n.</p>
+</details>
+
+---

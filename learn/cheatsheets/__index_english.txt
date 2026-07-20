@@ -1,0 +1,14 @@
+# english
+
+🔙 **Back to Parent**: [[languages/english/🇬🇧index_english|03_Languages_Communication]]
+
+## 📁 Sub-Categories
+- [[languages/english/English for work - globish/🇬🇧index_English for work - globish|English for work - globish]]
+- [[languages/english/Ngữ pháp/📖index_Ngữ pháp|Ngữ pháp]]
+
+## 📄 Notes & Documents
+- [[languages/english/English_Grammar_Flashcards|English_Grammar_Flashcards (Flashcard Ngữ pháp)]]
+- [[languages/english/English_Grammar_Mindmap|English_Grammar_Mindmap (Sơ đồ tư duy Ngữ pháp)]]
+
+## 🛠️ Interactive Tools
+- [Start-ENStudySession.ps1](file:///C:/Users/TruongNhon/Desktop/back-up/interview/learning/languages/english/Start-ENStudySession.ps1) (Interactive English grammar quiz)

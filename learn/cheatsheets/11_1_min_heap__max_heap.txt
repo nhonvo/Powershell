@@ -1,0 +1,422 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/11_Heaps_Priority_Queue/🌲index_11_Heaps_Priority_Queue|11_Heaps_Priority_Queue]]
+
+## 11.1 Min Heap / Max Heap
+
+### Heap là gì?
+
+Bạn hãy tưởng tượng một **phòng cấp cứu bệnh viện**. Bệnh nhân không được xử lý theo thứ tự đến trước — mà theo **mức độ nghiêm trọng**. Người bị đau tim sẽ được ưu tiên hơn người bị trầy xước, dù họ đến sau. Đó chính là tinh thần của **Heap** — một cấu trúc dữ liệu luôn đảm bảo phần tử "ưu tiên nhất" nằm ở đầu.
+
+**Heap** là một **complete binary tree** (cây nhị phân đầy đủ) thỏa mãn **heap property**:
+
+- **Min Heap**: Node cha luôn **nhỏ hơn hoặc bằng** tất cả node con → phần tử nhỏ nhất ở gốc (root).
+- **Max Heap**: Node cha luôn **lớn hơn hoặc bằng** tất cả node con → phần tử lớn nhất ở gốc (root).
+
+### Nền tảng toán học
+
+**Complete binary tree** có các tính chất quan trọng sau:
+
+1. **Tất cả các level đều đầy**, trừ level cuối cùng (level cuối điền từ trái sang phải).
+
+2. Với heap có `n` phần tử, **chiều cao** `h = ⌊log₂(n)⌋`.
+
+3. Lưu trữ trong
+
+    
+
+   mảng
+
+    
+
+   (array) — không cần pointer! Với node tại index
+
+    
+
+   ```
+   i
+   ```
+
+    
+
+   (0-indexed):
+
+   - **Cha**: `(i - 1) // 2`
+   - **Con trái**: `2 * i + 1`
+   - **Con phải**: `2 * i + 2`
+
+4. Số node tại level `k` tối đa là `2^k`.
+
+5. Tổng số node trong complete binary tree có chiều cao `h` nằm trong khoảng `[2^h, 2^(h+1) - 1]`.
+
+**Tại sao dùng mảng mà không dùng pointer?** Vì complete binary tree không có "lỗ hổng" — các node liên tiếp, nên lưu trong mảng vừa tiết kiệm bộ nhớ, vừa tận dụng **cache locality** (CPU cache thích truy cập bộ nhớ liên tiếp).
+
+### Các phép toán cơ bản
+
+#### 1. Heapify Down (Sift Down)
+
+Khi gốc bị vi phạm heap property (ví dụ sau khi xóa min/max), mình cần "đẩy" nó xuống đúng vị trí.
+
+KhôngCóKhôngCóBắt đầu tại node iNode i có con không?Dừng — node i là leafTìm con nhỏ nhất/lớn nhất
+(tùy min/max heap)Node i vi phạm
+heap property?Dừng — heap hợp lệSwap node i với con
+nhỏ nhất/lớn nhấtCập nhật i = vị trí con
+vừa swap
+
+#### 2. Heapify Up (Sift Up)
+
+Khi thêm phần tử mới vào cuối heap, mình cần "đẩy" nó lên đúng vị trí.
+
+KhôngCóKhôngCóBắt đầu tại node i
+(vừa thêm vào cuối)i > 0?
+(chưa phải root)Dừng — đã là rootTính parent = (i-1)//2Node i vi phạm
+heap property với parent?Dừng — heap hợp lệSwap node i với parentCập nhật i = parent
+
+#### 3. Build Heap
+
+Xây dựng heap từ một mảng bất kỳ. Thay vì insert từng phần tử (O(n log n)), mình dùng **bottom-up heapify** chỉ mất **O(n)**.
+
+CóKhôngMảng đầu vào: arr[0..n-1]Bắt đầu từ node cuối cùng
+có con: i = n//2 - 1Gọi heapify_down(i)i > 0?i = i - 1Gọi heapify_down(0)Heap hoàn chỉnh!
+
+### Mô phỏng chi tiết: Build Min Heap
+
+Giả sử mình có mảng: `[9, 5, 6, 2, 3]`
+
+**Bước 0: Trạng thái ban đầu**
+
+```
+Mảng: [9, 5, 6, 2, 3]
+
+Cây (chưa phải heap):
+        9          index 0
+       / \
+      5   6        index 1, 2
+     / \
+    2   3          index 3, 4
+```
+
+`n = 5`, node cuối cùng có con: `n // 2 - 1 = 1` (index 1, giá trị 5).
+
+**Bước 1: heapify_down(1)** — xét node `5` (index 1)
+
+- Con trái: index 3, giá trị `2`
+- Con phải: index 4, giá trị `3`
+- Con nhỏ nhất: `2` (index 3)
+- `2 < 5` → Swap `5` và `2`
+
+```
+Mảng: [9, 2, 6, 5, 3]
+
+Cây:
+        9
+       / \
+      2   6
+     / \
+    5   3
+```
+
+Node `5` tại index 3 không còn con → dừng.
+
+**Bước 2: heapify_down(0)** — xét node `9` (index 0, root)
+
+- Con trái: index 1, giá trị `2`
+- Con phải: index 2, giá trị `6`
+- Con nhỏ nhất: `2` (index 1)
+- `2 < 9` → Swap `9` và `2`
+
+```
+Mảng: [2, 9, 6, 5, 3]
+
+Cây:
+        2
+       / \
+      9   6
+     / \
+    5   3
+```
+
+Tiếp tục: node `9` tại index 1:
+
+- Con trái: index 3, giá trị `5`
+- Con phải: index 4, giá trị `3`
+- Con nhỏ nhất: `3` (index 4)
+- `3 < 9` → Swap `9` và `3`
+
+```
+Mảng: [2, 3, 6, 5, 9]
+
+Cây:
+        2
+       / \
+      3   6
+     / \
+    5   9
+```
+
+Node `9` tại index 4 không còn con → dừng. **Min Heap hoàn chỉnh!**
+
+Kiểm tra: root `2` là nhỏ nhất, mỗi node cha đều ≤ node con.
+
+### Chứng minh Build Heap là O(n)
+
+Đây là phần mà nhiều bạn hay nhầm — "mỗi node heapify mất O(log n), có n node thì tổng O(n log n) chứ?" Sai! Hãy xem chứng minh:
+
+**Quan sát quan trọng**: Heapify_down tại node ở level `k` tốn tối đa `h - k` bước swap (h = chiều cao cây). Node ở level thấp (gần gốc) swap nhiều, nhưng số lượng node ít. Node ở level cao (gần lá) swap ít, nhưng số lượng node nhiều.
+
+Tổng số swap:
+
+```
+T(n) = Σ (số node tại level k) × (số swap tối đa tại level k)
+     = Σ (k = 0 đến h) 2^k × (h - k)
+```
+
+Đặt `j = h - k`:
+
+```
+T(n) = Σ (j = 0 đến h) 2^(h-j) × j
+     = 2^h × Σ (j = 0 đến h) j / 2^j
+```
+
+Chuỗi `Σ (j = 0 đến ∞) j / 2^j` hội tụ về **2** (đây là chuỗi arithmetico-geometric nổi tiếng, chứng minh bằng cách nhân với 1/2 rồi trừ).
+
+**Chứng minh chuỗi hội tụ:**
+
+```
+S = Σ (j=0 đến ∞) j × x^j    (với x = 1/2)
+
+Nhân 2 vế với x:
+xS = Σ (j=0 đến ∞) j × x^(j+1)
+
+Trừ: S - xS = Σ (j=1 đến ∞) x^j = x/(1-x)
+
+S(1-x) = x/(1-x)
+S = x/(1-x)^2
+
+Với x = 1/2: S = (1/2) / (1/4) = 2
+```
+
+Do đó:
+
+```
+T(n) ≤ 2^h × 2 = 2 × 2^h
+
+Mà 2^h ≤ n (vì n ≥ 2^h trong complete binary tree)
+
+⇒ T(n) ≤ 2n = O(n)  ∎
+```
+
+**Kết luận**: Build heap chỉ tốn **O(n)**, không phải O(n log n). Lý do trực quan: đa số node nằm ở level dưới cùng, và chúng gần như không cần swap.
+
+### Python code hoàn chỉnh
+
+```python
+"""
+Min Heap / Max Heap — Triển khai từ đầu + sử dụng heapq
+"""
+import heapq
+
+
+class MinHeap:
+    """Min Heap triển khai thủ công bằng mảng."""
+
+    def __init__(self):
+        self.heap = []
+
+    def _parent(self, i):
+        """Trả về index của node cha."""
+        return (i - 1) // 2
+
+    def _left(self, i):
+        """Trả về index con trái."""
+        return 2 * i + 1
+
+    def _right(self, i):
+        """Trả về index con phải."""
+        return 2 * i + 2
+
+    def _swap(self, i, j):
+        """Đổi chỗ 2 phần tử trong heap."""
+        self.heap[i], self.heap[j] = self.heap[j], self.heap[i]
+
+    def _heapify_up(self, i):
+        """Đẩy node tại index i lên trên cho đến khi heap hợp lệ."""
+        while i > 0:
+            parent = self._parent(i)
+            # Nếu node hiện tại nhỏ hơn cha → swap
+            if self.heap[i] < self.heap[parent]:
+                self._swap(i, parent)
+                i = parent
+            else:
+                break  # Đã đúng vị trí
+
+    def _heapify_down(self, i):
+        """Đẩy node tại index i xuống dưới cho đến khi heap hợp lệ."""
+        n = len(self.heap)
+        while True:
+            smallest = i
+            left = self._left(i)
+            right = self._right(i)
+
+            # So sánh với con trái
+            if left < n and self.heap[left] < self.heap[smallest]:
+                smallest = left
+
+            # So sánh với con phải
+            if right < n and self.heap[right] < self.heap[smallest]:
+                smallest = right
+
+            # Nếu node hiện tại đã là nhỏ nhất → dừng
+            if smallest == i:
+                break
+
+            self._swap(i, smallest)
+            i = smallest
+
+    def push(self, val):
+        """Thêm phần tử vào heap — O(log n)."""
+        self.heap.append(val)        # Thêm vào cuối mảng
+        self._heapify_up(len(self.heap) - 1)  # Đẩy lên đúng vị trí
+
+    def pop(self):
+        """Lấy và xóa phần tử nhỏ nhất — O(log n)."""
+        if not self.heap:
+            raise IndexError("Heap rỗng!")
+
+        # Swap root với phần tử cuối, xóa cuối, rồi heapify root xuống
+        min_val = self.heap[0]
+        last = self.heap.pop()
+        if self.heap:
+            self.heap[0] = last
+            self._heapify_down(0)
+        return min_val
+
+    def peek(self):
+        """Xem phần tử nhỏ nhất mà không xóa — O(1)."""
+        if not self.heap:
+            raise IndexError("Heap rỗng!")
+        return self.heap[0]
+
+    def size(self):
+        return len(self.heap)
+
+    def __repr__(self):
+        return f"MinHeap({self.heap})"
+
+
+def build_min_heap(arr):
+    """
+    Build min heap từ mảng bất kỳ — O(n).
+    Dùng bottom-up heapify: bắt đầu từ node cuối cùng có con.
+    """
+    n = len(arr)
+    heap = arr[:]  # Copy để không thay đổi mảng gốc
+
+    # Bắt đầu từ node cuối cùng có con (n//2 - 1) đến root (0)
+    for i in range(n // 2 - 1, -1, -1):
+        _heapify_down_arr(heap, n, i)
+
+    return heap
+
+
+def _heapify_down_arr(arr, n, i):
+    """Heapify down trên mảng — dùng cho build_heap."""
+    while True:
+        smallest = i
+        left = 2 * i + 1
+        right = 2 * i + 2
+
+        if left < n and arr[left] < arr[smallest]:
+            smallest = left
+        if right < n and arr[right] < arr[smallest]:
+            smallest = right
+
+        if smallest == i:
+            break
+
+        arr[i], arr[smallest] = arr[smallest], arr[i]
+        i = smallest
+
+
+# ========================
+#  Test & Demo
+# ========================
+if __name__ == "__main__":
+    print("=" * 50)
+    print("TEST 1: Min Heap thủ công")
+    print("=" * 50)
+
+    h = MinHeap()
+    for val in [9, 5, 6, 2, 3]:
+        h.push(val)
+        print(f"  Push {val}: {h}")
+
+    print(f"\n  Peek (min): {h.peek()}")
+    print(f"  Pop: {h.pop()}")  # 2
+    print(f"  Pop: {h.pop()}")  # 3
+    print(f"  Sau khi pop 2 lần: {h}")
+
+    print(f"\n{'=' * 50}")
+    print("TEST 2: Build Heap O(n)")
+    print("=" * 50)
+
+    arr = [9, 5, 6, 2, 3]
+    print(f"  Mảng gốc: {arr}")
+    heap = build_min_heap(arr)
+    print(f"  Sau build_min_heap: {heap}")
+
+    print(f"\n{'=' * 50}")
+    print("TEST 3: Python heapq (min heap mặc định)")
+    print("=" * 50)
+
+    data = [9, 5, 6, 2, 3]
+    heapq.heapify(data)  # Build heap in-place — O(n)
+    print(f"  Sau heapify: {data}")
+
+    heapq.heappush(data, 1)
+    print(f"  Sau push 1: {data}")
+
+    val = heapq.heappop(data)
+    print(f"  Pop: {val}, heap: {data}")
+
+    # Trick: Max Heap bằng heapq → negate giá trị
+    print(f"\n{'=' * 50}")
+    print("TEST 4: Max Heap bằng heapq (negate trick)")
+    print("=" * 50)
+
+    max_heap = []
+    for x in [9, 5, 6, 2, 3]:
+        heapq.heappush(max_heap, -x)  # Lưu giá trị âm
+    print(f"  Max Heap (internal): {max_heap}")
+    print(f"  Max value: {-max_heap[0]}")  # Negate lại để lấy giá trị thật
+    print(f"  Pop max: {-heapq.heappop(max_heap)}")
+```
+
+### Phân tích độ phức tạp
+
+| Phép toán              | Time Complexity | Giải thích                          |
+| :--------------------- | :-------------- | :---------------------------------- |
+| `peek()` (xem min/max) | **O(1)**        | Luôn nằm ở root (index 0)           |
+| `push()` (thêm)        | **O(log n)**    | Heapify up tối đa h = log n level   |
+| `pop()` (lấy min/max)  | **O(log n)**    | Heapify down tối đa h = log n level |
+| `build_heap()`         | **O(n)**        | Đã chứng minh ở trên                |
+| Space                  | **O(n)**        | Lưu n phần tử trong mảng            |
+
+### Ưu và nhược điểm
+
+**Ưu điểm:**
+
+- Truy cập min/max trong O(1)
+- Insert và delete trong O(log n)
+- Sử dụng mảng → cache-friendly, tiết kiệm bộ nhớ
+- Build heap chỉ O(n)
+
+**Nhược điểm:**
+
+- Tìm kiếm phần tử bất kỳ là O(n) — không hỗ trợ binary search
+- Không hỗ trợ decrease-key hiệu quả (cần Fibonacci Heap cho điều này)
+- Xóa phần tử bất kỳ (không phải root) tốn O(n) để tìm + O(log n) để heapify
+
+### Cải tiến
+
+- **d-ary Heap**: Thay vì binary (2 con), dùng d con. Giảm chiều cao thành log_d(n), tăng tốc push. Nhưng heapify down phải so sánh d con thay vì 2.
+- **Fibonacci Heap**: Hỗ trợ decrease-key trong O(1) amortized — rất hữu ích cho thuật toán Dijkstra.
+- **Pairing Heap**: Đơn giản hơn Fibonacci Heap, vẫn có amortized bounds tốt.

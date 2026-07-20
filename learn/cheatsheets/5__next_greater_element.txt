@@ -1,0 +1,203 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/🥞index_07_Stack_Queue|07_Stack_Queue]]
+
+## 5. Next Greater Element
+
+### 5.1 Bài toán
+
+Cho mảng `arr[]` gồm n phần tử. Với mỗi phần tử `arr[i]`, tìm **phần tử lớn hơn gần nhất bên phải** (Next Greater Element - NGE). Nếu không có thì trả về -1.
+
+**Ví dụ:**
+
+```
+Input:  [4, 5, 2, 25, 7, 8]
+Output: [5, 25, 25, -1, 8, -1]
+
+Giải thích:
+- 4  → phần tử lớn hơn gần nhất bên phải là 5
+- 5  → 25
+- 2  → 25
+- 25 → không có → -1
+- 7  → 8
+- 8  → không có → -1
+```
+
+**Ví dụ thực tế**: Bạn đang xếp hàng, bạn muốn biết "ai là người **cao hơn mình** và đứng **gần nhất phía sau**?"
+
+### 5.2 Cách 1: Brute Force O(n^2)
+
+Với mỗi phần tử, duyệt tất cả phần tử bên phải để tìm phần tử lớn hơn đầu tiên.
+
+```python
+def next_greater_brute_force(arr):
+    n = len(arr)
+    result = [-1] * n
+    for i in range(n):
+        for j in range(i + 1, n):
+            if arr[j] > arr[i]:
+                result[i] = arr[j]
+                break
+    return result
+```
+
+**Phân tích**: Worst case (mảng giảm dần): phần tử đầu phải duyệt n-1, phần tử thứ 2 duyệt n-2, ...
+
+$$T(n) = (n-1) + (n-2) + ... + 1 = \frac{n(n-1)}{2} = O(n^2)$$
+
+### 5.3 Cách 2: Monotonic Stack O(n)
+
+**Ý tưởng**: Duyệt mảng **từ phải sang trái**. Dùng monotonic decreasing stack (giảm dần từ đáy lên đỉnh... hay chính xác hơn là ta pop các phần tử nhỏ hơn hoặc bằng phần tử hiện tại).
+
+**Tại sao nó hoạt động?** Khi duyệt từ phải sang trái, stack lưu các "ứng viên" cho NGE. Các phần tử nhỏ hơn phần tử hiện tại không thể là NGE cho bất kỳ phần tử nào ở bên trái → pop chúng đi.
+
+**Flowchart:**
+
+CóKhôngCóKhôngCóKhôngDuyệt i từ n-1 về 0stack không rỗng
+VÀ stack.top() <= arr[i]stack.pop()
+Loại ứng viên yếu hơnstack rỗng?result[i] = -1
+Không có NGEresult[i] = stack.top()
+Đây là NGE gần nhấtstack.push(arr[i])i > 0?Kết thúc, trả về result
+
+### 5.4 Mô phỏng chi tiết
+
+```
+Mảng: [4, 5, 2, 25, 7, 8]
+Duyệt từ phải sang trái, stack lưu giá trị.
+
+i=5, arr[5]=8:  stack=[]         → result[5]=-1, push 8    stack=[8]
+i=4, arr[4]=7:  stack=[8]
+                7 <= 8? Không    → result[4]=8,  push 7    stack=[8,7]
+i=3, arr[3]=25: stack=[8,7]
+                25 > 7 → pop 7   stack=[8]
+                25 > 8 → pop 8   stack=[]
+                stack rỗng       → result[3]=-1, push 25   stack=[25]
+i=2, arr[2]=2:  stack=[25]
+                2 <= 25? Không   → result[2]=25, push 2    stack=[25,2]
+i=1, arr[1]=5:  stack=[25,2]
+                5 > 2 → pop 2    stack=[25]
+                5 <= 25? Không   → result[1]=25, push 5    stack=[25,5]
+i=0, arr[0]=4:  stack=[25,5]
+                4 <= 5? Không    → result[0]=5,  push 4    stack=[25,5,4]
+
+Kết quả: [5, 25, 25, -1, 8, -1] ✓
+```
+
+### 5.5 Code
+
+#### Python
+
+```python
+def next_greater_element(arr):
+    """
+    Tìm Next Greater Element cho mỗi phần tử.
+    Dùng monotonic stack, duyệt từ phải sang trái.
+    Time: O(n), Space: O(n)
+    """
+    n = len(arr)
+    result = [-1] * n
+    stack = []  # Lưu các ứng viên cho NGE
+
+    # Duyệt từ phải sang trái
+    for i in range(n - 1, -1, -1):
+        # Pop các phần tử nhỏ hơn hoặc bằng arr[i]
+        # vì chúng không thể là NGE cho arr[i] hay bất kỳ
+        # phần tử nào bên trái arr[i]
+        while stack and stack[-1] <= arr[i]:
+            stack.pop()
+
+        # Nếu stack không rỗng, top chính là NGE
+        if stack:
+            result[i] = stack[-1]
+        # Nếu stack rỗng, không có NGE → giữ -1
+
+        # Push phần tử hiện tại làm ứng viên cho các phần tử bên trái
+        stack.append(arr[i])
+
+    return result
+
+
+# --- Test ---
+arr = [4, 5, 2, 25, 7, 8]
+print(next_greater_element(arr))  # [5, 25, 25, -1, 8, -1]
+
+arr2 = [13, 7, 6, 12]
+print(next_greater_element(arr2))  # [-1, 12, 12, -1]
+
+arr3 = [1, 2, 3, 4]
+print(next_greater_element(arr3))  # [2, 3, 4, -1]
+
+arr4 = [4, 3, 2, 1]
+print(next_greater_element(arr4))  # [-1, -1, -1, -1]
+```
+
+#### Python — Cách 2: Duyệt từ trái sang phải
+
+```python
+def next_greater_element_left_to_right(arr):
+    """
+    Biến thể: duyệt từ trái sang phải.
+    Stack lưu INDEX (không phải giá trị).
+    Khi gặp phần tử lớn hơn top stack → top đã tìm được NGE.
+    Time: O(n), Space: O(n)
+    """
+    n = len(arr)
+    result = [-1] * n
+    stack = []  # Lưu index của các phần tử chưa tìm được NGE
+
+    for i in range(n):
+        # Phần tử arr[i] là NGE cho tất cả phần tử trong stack
+        # mà nhỏ hơn arr[i]
+        while stack and arr[stack[-1]] < arr[i]:
+            idx = stack.pop()
+            result[idx] = arr[i]
+        stack.append(i)
+
+    return result
+
+
+# --- Test ---
+arr = [4, 5, 2, 25, 7, 8]
+print(next_greater_element_left_to_right(arr))  # [5, 25, 25, -1, 8, -1]
+
+arr2 = [13, 7, 6, 12]
+print(next_greater_element_left_to_right(arr2))  # [-1, 12, 12, -1]
+```
+
+### 5.6 Biến thể: Next Greater Element trong mảng vòng (Circular)
+
+Nếu mảng là vòng tròn (phần tử cuối nối với phần tử đầu), ta duyệt mảng **2 lần** (2n phần tử) bằng modulo.
+
+```python
+def next_greater_circular(arr):
+    """NGE cho mảng vòng. Duyệt 2n phần tử."""
+    n = len(arr)
+    result = [-1] * n
+    stack = []
+
+    # Duyệt 2n-1 về 0
+    for i in range(2 * n - 1, -1, -1):
+        idx = i % n
+        while stack and stack[-1] <= arr[idx]:
+            stack.pop()
+        if stack and i < n:
+            result[idx] = stack[-1]
+        stack.append(arr[idx])
+
+    return result
+
+print(next_greater_circular([1, 2, 1]))  # [2, -1, 2]
+```
+
+### 5.7 Chứng minh O(n)
+
+Giống phần Monotonic Stack: mỗi phần tử push 1 lần, pop tối đa 1 lần. Tổng = 2n = O(n).
+
+**Best case**: mảng tăng dần → không pop lần nào → O(n). **Worst case**: mảng giảm dần → mỗi phần tử pop tất cả → nhưng tổng pop vẫn <= n → O(n).
+
+### 5.8 Các bài toán liên quan
+
+| Bài toán                    | Biến thể                           |
+| :-------------------------- | :--------------------------------- |
+| Next Smaller Element        | Đổi điều kiện `<=` thành `>=`      |
+| Previous Greater Element    | Duyệt từ trái sang phải            |
+| Previous Smaller Element    | Duyệt trái→phải, điều kiện `>=`    |
+| Daily Temperatures (LC 739) | NGE nhưng trả về khoảng cách index |

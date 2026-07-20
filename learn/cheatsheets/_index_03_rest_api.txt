@@ -1,0 +1,10 @@
+# 03_REST_API
+
+🔙 **Back to Parent**: [[technical_skills/02_Backend_Development_Roadmap/📂index_02_Backend_Development_Roadmap|02_Backend_Development_Roadmap]]
+
+## 📄 Notes & Documents
+- [[technical_skills/02_Backend_Development_Roadmap/03_REST_API/1. REST API Principles|1. REST API Principles]]
+- [[technical_skills/02_Backend_Development_Roadmap/03_REST_API/2. ASP.NET Core Web API|2. ASP.NET Core Web API]]
+- [[technical_skills/02_Backend_Development_Roadmap/03_REST_API/3. Spring Boot Web API|3. Spring Boot Web API]]
+- [[technical_skills/02_Backend_Development_Roadmap/03_REST_API/4. Security (JWT & RBAC)|4. Security (JWT & RBAC)]]
+

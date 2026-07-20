@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/aif-c01
+  - aifc01
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 AIF-C01 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/aws/AIF-C01/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/aws/AIF-C01/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/aws/AIF-C01/AIF-C01 Mindmap\|🗺️ AIF-C01 Mindmap]]
+- [[certifications/aws/AIF-C01/AIF-C01 Flashcards\|🃏 AIF-C01 Flashcards]]
+- [[certifications/aws/AIF-C01/AIF-C01_Scraped_Question_Bank\|🗃️ AIF-C01 Scraped Question Bank]]

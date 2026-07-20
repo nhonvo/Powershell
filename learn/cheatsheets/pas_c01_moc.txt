@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/pas-c01
+  - pasc01
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 PAS-C01 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/aws/PAS-C01/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/aws/PAS-C01/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/aws/PAS-C01/PAS-C01 Mindmap\|🗺️ PAS-C01 Mindmap]]
+- [[certifications/aws/PAS-C01/PAS-C01 Flashcards\|🃏 PAS-C01 Flashcards]]
+- [[certifications/aws/PAS-C01/PAS-C01_Scraped_Question_Bank\|🗃️ PAS-C01 Scraped Question Bank]]

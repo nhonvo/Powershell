@@ -1,0 +1,12 @@
+# Day 09: Microservices & Resilience
+**Goal:** Manage distributed complexity.
+
+### 📖 Reading (GitHub App)
+- Review notes on **Circuit Breakers** and **Service Mesh**.
+
+### 🤖 AI Drill (Copy & Paste to ChatGPT/Gemini)
+> "In a microservices architecture, what happens when one service goes down? Explain the 'Circuit Breaker' pattern. How is it different from a simple 'Retry' logic? Use an example of a military communication line being cut."
+
+### 📝 Mobile Task
+- Open your AI app.
+- "Help me brainstorm: I am building a system with 10 microservices. How do I track a single user request as it travels through all 10 services? Explain Distributed Tracing and Correlation IDs."

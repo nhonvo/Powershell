@@ -1,0 +1,19 @@
+# 3_ArrayExercises
+
+🔙 **Back to Parent**: [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/index_1_ArraysAndLinkedLists|1_ArraysAndLinkedLists]]
+
+## 📄 Notes
+- [[3_arrayexercises|3_ArrayExercises]]
+
+## 🛠️ Related Practices (Arrays & Strings)
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/3_ArrayExercises/index_3_ArrayExercises|1464.Maximum-Product-of-Two-Elements-in-an-Array]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/3_ArrayExercises/index_3_ArrayExercises|3.Longest-Substring-Without-Repeating-Characters]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/3_ArrayExercises/index_3_ArrayExercises|4.Median-of-Two-Sorted-Arrays]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/3_ArrayExercises/index_3_ArrayExercises|5.Longest-Palindromic-Substring]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/3_ArrayExercises/index_3_ArrayExercises|53.Maximum-Subarray]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/3_ArrayExercises/index_3_ArrayExercises|912.Sort-an-Array-Bubble-sort]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/3_ArrayExercises/index_3_ArrayExercises|912.Sort-an-Array-Insert-sort]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/3_ArrayExercises/index_3_ArrayExercises|912.Sort-an-Array-Quick-sort]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/3_ArrayExercises/index_3_ArrayExercises|912.Sort-an-Array-Selection-sort]]
+- [[dsa/Udacity-Data-Structures-and-Algorithms/Problems/DataStructures/1_ArraysAndLinkedLists/3_ArrayExercises/index_3_ArrayExercises|zArray-crud]]
+

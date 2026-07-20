@@ -1,0 +1,141 @@
+# 🗃️ AI-900 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+A company employs a team of customer service agents to provide telephone and email support to customers.
+
+The company develops a webchat bot to provide automated answers to common customer queries.
+
+Which business benefit should the company expect as a result of creating the webchat bot solution?
+
+### Options:
+- [ ] **A)** increased sales
+- [x] **B)** a reduced workload for the customer service agents [Correct]
+- [ ] **C)** improved product reliability
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+For a machine learning process, how should you split data for training and evaluation?
+
+### Options:
+- [ ] **A)** Use features for training and labels for evaluation.
+- [x] **B)** Randomly split the data into rows for training and rows for evaluation. [Correct]
+- [ ] **C)** Use labels for training and features for evaluation.
+- [ ] **D)** Randomly split the data into columns for training and columns for evaluation.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+The Split Data module is particularly useful when you need to separate data into training and testing sets. Use the Split Rows option if you want to divide the data into two parts. You can specify the percentage of data to put in each split, but by default, the data is divided 50-50. You can also randomize the selection of rows in each group, and use stratified sampling.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+You build a machine learning model by using the automated machine learning user interface (UI).
+
+You need to ensure that the model meets the Microsoft transparency principle for responsible AI.
+
+What should you do?
+
+### Options:
+- [ ] **A)** Set Validation type to Auto.
+- [x] **B)** Enable Explain best model. [Correct]
+- [ ] **C)** Set Primary metric to accuracy.
+- [ ] **D)** Set Max concurrent iterations to 0.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Model Explain Ability.
+
+Most businesses run on trust and being able to open the ML "black box" helps build transparency and trust. In heavily regulated industries like healthcare and banking, it is critical to comply with regulations and best practices. One key aspect of this is understanding the relationship between input variables (features) and model output. Knowing both the magnitude and direction of the impact each feature (feature importance) has on the predicted value helps better understand and explain the model. With model explain ability, we enable you to understand feature importance as part of automated ML runs.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported)
+
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Anomaly detection encompasses many important tasks in machine learning:
+Identifying transactions that are potentially fraudulent.
+
+Learning patterns that indicate that a network intrusion has occurred.
+Finding abnormal clusters of patients.
+Checking values entered into a system.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+HOTSPOT (Drag and Drop is not supported)
+
+Select the answer that correctly completes the sentence.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Reliability and safety:
+AI systems need to be reliable and safe in order to be trusted. It is important for a system to perform as it was originally designed and for it to respond safely to new situations. Its inherent resilience should resist intended or unintended manipulation. Rigorous testing and validation should be established for operating conditions to ensure that the system responds safely to edge cases, and A/B testing and champion/challenger methods should be integrated into the evaluation process.
+
+An AI system's performance can degrade over time, so a robust monitoring and model tracking process needs to be established to reactively and proactively measure the model's performance and retrain it, as necessary, to modernize it.
+</details>
+
+---

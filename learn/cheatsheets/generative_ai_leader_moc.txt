@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/generative-ai-leader
+  - generativeaileader
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 Generative-AI-Leader MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/google/Generative-AI-Leader/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/google/Generative-AI-Leader/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/google/Generative-AI-Leader/Generative-AI-Leader Mindmap\|🗺️ Generative-AI-Leader Mindmap]]
+- [[certifications/google/Generative-AI-Leader/Generative-AI-Leader Flashcards\|🃏 Generative-AI-Leader Flashcards]]
+- [[certifications/google/Generative-AI-Leader/Generative-AI-Leader_Scraped_Question_Bank\|🗃️ Generative-AI-Leader Scraped Question Bank]]

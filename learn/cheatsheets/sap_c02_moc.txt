@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/sap-c02
+  - sapc02
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 SAP-C02 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/aws/SAP-C02/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/aws/SAP-C02/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/aws/SAP-C02/SAP-C02 Mindmap\|🗺️ SAP-C02 Mindmap]]
+- [[certifications/aws/SAP-C02/SAP-C02 Flashcards\|🃏 SAP-C02 Flashcards]]
+- [[certifications/aws/SAP-C02/SAP-C02_Scraped_Question_Bank\|🗃️ SAP-C02 Scraped Question Bank]]

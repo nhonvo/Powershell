@@ -1,0 +1,15 @@
+# 01_Basics
+
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/01_Basics/🔢index_01_Basics|01_Algo_and_DSA_doc]]
+
+## 📄 Notes
+- [[1. time & space complexity|1. Time & Space Complexity]]
+- [[dsa/01_Algo_and_DSA_doc/01_Basics/2. Math Basics|2. Math Basics]]
+- [[dsa/01_Algo_and_DSA_doc/01_Basics/3. Bit Manipulation Basics|3. Bit Manipulation Basics]]
+- [[dsa/01_Algo_and_DSA_doc/01_Basics/4. Bit Masking & XOR Tricks|4. Bit Masking & XOR Tricks]]
+- [[dsa/01_Algo_and_DSA_doc/01_Basics/5. LeetCode Practice — Basics|5. LeetCode Practice — Basics]]
+
+
+
+## 🛠️ Related Practices
+- [[dsa/01_Algo_and_DSA_doc/01_Basics/🔢index_01_Basics|🔢 Basics Practice Hub]]

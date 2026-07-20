@@ -1,0 +1,242 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/12_Graphs/🕸️index_12_Graphs|12_Graphs]]
+
+## 6. Minimum Spanning Tree (Cây khung nhỏ nhất)
+
+### 6.1. MST là gì?
+
+**Ví dụ thực tế:** Bạn là kỹ sư mạng, cần kéo cáp mạng nối tất cả 10 văn phòng trong tòa nhà. Mỗi đường cáp có chi phí khác nhau. Bạn muốn nối TẤT CẢ văn phòng với chi phí THẤP NHẤT. Đó chính là MST!
+
+**Định nghĩa:** Cho undirected, weighted, connected graph G = (V, E). Spanning Tree là cây con chứa tất cả V đỉnh và V-1 cạnh. **Minimum Spanning Tree** là spanning tree có tổng trọng số cạnh nhỏ nhất.
+
+**Tính chất MST:**
+
+- Có đúng V - 1 cạnh
+- Không có cycle
+- Nối tất cả các đỉnh (connected)
+- Tổng trọng số nhỏ nhất
+- MST có thể không duy nhất (khi có cạnh cùng trọng số)
+
+**Cut Property (tính chất cắt):** Với mọi cut (phân hoạch V thành 2 tập), cạnh nhẹ nhất đi qua cut chắc chắn thuộc MST. Đây là nền tảng toán học cho cả Prim và Kruskal.
+
+### 6.2. Prim's Algorithm
+
+**Ý tưởng:** Bắt đầu từ 1 đỉnh bất kỳ, mỗi bước thêm cạnh nhẹ nhất nối cây hiện tại với đỉnh ngoài cây. "Trồng cây" — mỗi bước thêm 1 cành nhẹ nhất.
+
+**Tương tự thực tế:** Bạn đang xây nhà. Bắt đầu từ phòng khách, mỗi lần mở rộng thêm 1 phòng gần nhất (chi phí thấp nhất) liền kề phòng đã xây.
+
+CóKhôngĐúngChưaChọn đỉnh bất kỳ làm gốcThêm tất cả cạnh kề vào Min-HeapMin-Heap rỗng?Trả về MSTLấy cạnh nhẹ nhất (u, v, w) từ heapv đã trong MST?Thêm v vào MSTThêm cạnh (u,v,w) vào kết quảĐẩy tất cả cạnh kề của v vào heap
+
+**Mô phỏng từng bước:**
+
+```
+Graph:
+    0 ---2--- 1
+    |         |
+    6         3
+    |         |
+    2 ---7--- 3
+     \       /
+      8     5
+       \   /
+        4
+```
+
+Bắt đầu từ đỉnh 0:
+
+| Bước | Heap (top)                | Chọn cạnh | MST vertices | MST edges         | Tổng cost |
+| :--- | :------------------------ | :-------- | :----------- | :---------------- | :-------- |
+| Init | -                         | -         | {0}          | []                | 0         |
+| 1    | (2,0,1), (6,0,2)          | 0-1 (w=2) | {0,1}        | [(0,1,2)]         | 2         |
+| 2    | (3,1,3), (6,0,2)          | 1-3 (w=3) | {0,1,3}      | [(0,1,2),(1,3,3)] | 5         |
+| 3    | (5,3,4), (6,0,2), (7,3,2) | 3-4 (w=5) | {0,1,3,4}    | [...,(3,4,5)]     | 10        |
+| 4    | (6,0,2), (7,3,2), (8,4,2) | 0-2 (w=6) | {0,1,2,3,4}  | [...,(0,2,6)]     | 16        |
+
+**MST tổng cost = 2 + 3 + 5 + 6 = 16**
+
+```python
+import heapq
+from collections import defaultdict
+
+
+def prim_mst(graph, num_vertices, start=0):
+    """
+    Prim's Algorithm tìm Minimum Spanning Tree.
+    Dùng min-heap (priority queue) để luôn chọn cạnh nhẹ nhất.
+
+    Args:
+        graph: adjacency list {u: [(v, weight), ...]}
+        num_vertices: số đỉnh
+        start: đỉnh bắt đầu
+
+    Returns:
+        mst_edges: danh sách cạnh trong MST [(u, v, weight)]
+        total_cost: tổng trọng số MST
+    """
+    in_mst = [False] * num_vertices  # Đỉnh đã trong MST chưa
+    mst_edges = []
+    total_cost = 0
+
+    # Min-heap: (weight, from_vertex, to_vertex)
+    min_heap = [(0, -1, start)]  # Bắt đầu với cost=0 đến đỉnh start
+
+    while min_heap and len(mst_edges) < num_vertices - 1:
+        weight, u, v = heapq.heappop(min_heap)
+
+        if in_mst[v]:
+            continue  # Đỉnh đã trong MST → bỏ qua
+
+        in_mst[v] = True
+
+        if u != -1:  # Không thêm cạnh giả đầu tiên
+            mst_edges.append((u, v, weight))
+            total_cost += weight
+
+        # Thêm tất cả cạnh kề của v vào heap
+        for neighbor, w in graph[v]:
+            if not in_mst[neighbor]:
+                heapq.heappush(min_heap, (w, v, neighbor))
+
+    return mst_edges, total_cost
+
+
+# === TEST ===
+if __name__ == "__main__":
+    g = defaultdict(list)
+    edges = [
+        (0, 1, 2), (0, 2, 6),
+        (1, 3, 3), (2, 3, 7),
+        (2, 4, 8), (3, 4, 5),
+    ]
+    for u, v, w in edges:
+        g[u].append((v, w))
+        g[v].append((u, w))
+
+    mst_edges, total_cost = prim_mst(g, 5)
+
+    print("=== Prim's MST ===")
+    print("Các cạnh trong MST:")
+    for u, v, w in mst_edges:
+        print(f"  {u} -- {v} (weight: {w})")
+    print(f"Tổng chi phí: {total_cost}")
+```
+
+**Output:**
+
+```
+=== Prim's MST ===
+Các cạnh trong MST:
+  0 -- 1 (weight: 2)
+  1 -- 3 (weight: 3)
+  3 -- 4 (weight: 5)
+  0 -- 2 (weight: 6)
+Tổng chi phí: 16
+```
+
+### 6.3. Kruskal's Algorithm
+
+**Ý tưởng:** Sắp xếp tất cả cạnh theo trọng số tăng dần. Duyệt từng cạnh: nếu thêm cạnh đó không tạo cycle → thêm vào MST. Dùng **Union-Find** để kiểm tra cycle hiệu quả.
+
+**Tương tự thực tế:** Bạn có danh sách tất cả đường cáp (sắp theo giá). Lần lượt chọn từ rẻ nhất: nếu cáp đó nối 2 nhóm máy chưa liên thông → lắp. Nếu 2 máy đã liên thông → bỏ (vì sẽ tạo vòng lặp mạng).
+
+KhôngCóĐúng (cùng component)Không (khác component)Sắp xếp tất cả cạnh theo weight tăng dầnKhởi tạo Union-Find cho V đỉnhCòn cạnh chưa xét AND MST < V-1 cạnh?Trả về MSTLấy cạnh nhẹ nhất (u, v, w)find(u) == find(v)?Bỏ qua (sẽ tạo cycle)union(u, v)Thêm cạnh vào MST
+
+```python
+class UnionFindMST:
+    """Union-Find tối ưu với path compression + union by rank."""
+
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+
+    def find(self, x):
+        # Path compression: trỏ thẳng lên root
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+        px, py = self.find(x), self.find(y)
+        if px == py:
+            return False  # Đã cùng nhóm → sẽ tạo cycle
+
+        # Union by rank: cây thấp gắn vào cây cao
+        if self.rank[px] < self.rank[py]:
+            px, py = py, px
+        self.parent[py] = px
+        if self.rank[px] == self.rank[py]:
+            self.rank[px] += 1
+        return True
+
+
+def kruskal_mst(edges, num_vertices):
+    """
+    Kruskal's Algorithm tìm MST.
+
+    Args:
+        edges: danh sách cạnh [(u, v, weight)]
+        num_vertices: số đỉnh
+
+    Returns:
+        mst_edges, total_cost
+    """
+    # Bước 1: Sắp xếp cạnh theo weight
+    edges_sorted = sorted(edges, key=lambda x: x[2])
+
+    # Bước 2: Khởi tạo Union-Find
+    uf = UnionFindMST(num_vertices)
+
+    mst_edges = []
+    total_cost = 0
+
+    # Bước 3: Duyệt từng cạnh
+    for u, v, w in edges_sorted:
+        if uf.union(u, v):
+            # Hai đỉnh khác component → thêm cạnh vào MST
+            mst_edges.append((u, v, w))
+            total_cost += w
+
+            # MST đủ V-1 cạnh → dừng
+            if len(mst_edges) == num_vertices - 1:
+                break
+
+    return mst_edges, total_cost
+
+
+# === TEST ===
+if __name__ == "__main__":
+    edges = [
+        (0, 1, 2), (0, 2, 6),
+        (1, 3, 3), (2, 3, 7),
+        (2, 4, 8), (3, 4, 5),
+    ]
+
+    mst_edges, total_cost = kruskal_mst(edges, 5)
+
+    print("=== Kruskal's MST ===")
+    print("Các cạnh trong MST (theo thứ tự thêm):")
+    for u, v, w in mst_edges:
+        print(f"  {u} -- {v} (weight: {w})")
+    print(f"Tổng chi phí: {total_cost}")
+```
+
+### 6.4. So sánh Prim vs Kruskal
+
+| Tiêu chí               | Prim                      | Kruskal                     |
+| :--------------------- | :------------------------ | :-------------------------- |
+| **Chiến lược**         | Mở rộng cây từ 1 đỉnh     | Chọn cạnh nhẹ nhất toàn cục |
+| **Cấu trúc dữ liệu**   | Min-Heap (Priority Queue) | Sort + Union-Find           |
+| **Time (binary heap)** | O((V + E) log V)          | O(E log E) = O(E log V)     |
+| **Graph dày đặc**      | Tốt hơn (E ≈ V²)          | Chậm hơn (sort nhiều cạnh)  |
+| **Graph thưa**         | OK                        | Tốt hơn                     |
+| **Disconnected graph** | Cần chạy nhiều lần        | Tự xử lý (MST forest)       |
+| **Triển khai**         | Phức tạp hơn              | Đơn giản hơn                |
+
+**Chứng minh tính đúng (Cut Property):**
+
+- **Prim:** Mỗi bước, tập đỉnh trong MST và tập đỉnh ngoài tạo thành một cut. Prim chọn cạnh nhẹ nhất qua cut → theo Cut Property, cạnh đó thuộc MST.
+- **Kruskal:** Khi xét cạnh (u,v), nếu u và v ở khác component → cạnh này là cạnh nhẹ nhất qua cut (vì đã sort) → thuộc MST.
+
+**Phân tích Time Complexity:**
+
+- **Prim:** Mỗi đỉnh vào heap tối đa 1 lần → O(V log V). Mỗi cạnh có thể tạo 1 push vào heap → O(E log V). Tổng: O((V + E) log V).
+- **Kruskal:** Sort E cạnh → O(E log E). E ≤ V² nên log E ≤ 2 log V → O(E log V). Union-Find: E operations × O(α(V)) ≈ O(E). Tổng: O(E log V).

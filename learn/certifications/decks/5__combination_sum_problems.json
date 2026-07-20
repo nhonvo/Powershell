@@ -1,0 +1,176 @@
+{
+  "Meta": {
+    "Id": "deck_5__combination_sum_problems",
+    "Topic": "5. Combination Sum Problems",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "5__combination_sum_problems"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 8
+  },
+  "Cards": [
+    {
+      "Id": "card_00731",
+      "Front": "**Input**",
+      "Back": "Mảng candidates | Mảng candidates (có thể trùng) | Số 1-9",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. combination sum problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00732",
+      "Front": "**Mỗi phần tử**",
+      "Back": "Dùng không giới hạn | Dùng tối đa 1 lần | Dùng tối đa 1 lần",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. combination sum problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00733",
+      "Front": "**Start khi đệ quy**",
+      "Back": "`i` (chọn lại) | `i + 1` (không chọn lại) | `i + 1`",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. combination sum problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00734",
+      "Front": "**Xử lý duplicate**",
+      "Back": "Không cần (phần tử distinct) | Sort + skip khi `nums[i]==nums[i-1]` | Không cần (1-9 distinct)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. combination sum problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00735",
+      "Front": "**Điều kiện dừng**",
+      "Back": "remaining == 0 | remaining == 0 | len == k AND remaining == 0",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. combination sum problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00736",
+      "Front": "**CS I**",
+      "Back": "O(1) khi target < min(candidates) | O(N^(T/M))",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. combination sum problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00737",
+      "Front": "**CS II**",
+      "Back": "O(1) khi target < min(candidates) | O(2^N)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. combination sum problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00738",
+      "Front": "**CS III**",
+      "Back": "O(1) khi n > 45 (1+...+9=45) | O(C(9,k)) = O(126)",
+      "Hint": "04_Recursion_Backtracking",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "5. combination sum problems"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

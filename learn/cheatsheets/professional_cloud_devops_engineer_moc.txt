@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/professional-cloud-devops-engineer
+  - professionalclouddevopsengineer
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 Professional-Cloud-DevOps-Engineer MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/google/Professional-Cloud-DevOps-Engineer/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/google/Professional-Cloud-DevOps-Engineer/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/google/Professional-Cloud-DevOps-Engineer/Professional-Cloud-DevOps-Engineer Mindmap\|🗺️ Professional-Cloud-DevOps-Engineer Mindmap]]
+- [[certifications/google/Professional-Cloud-DevOps-Engineer/Professional-Cloud-DevOps-Engineer Flashcards\|🃏 Professional-Cloud-DevOps-Engineer Flashcards]]
+- [[certifications/google/Professional-Cloud-DevOps-Engineer/Professional-Cloud-DevOps-Engineer_Scraped_Question_Bank\|🗃️ Professional-Cloud-DevOps-Engineer Scraped Question Bank]]

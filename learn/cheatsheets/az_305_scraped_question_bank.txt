@@ -1,0 +1,162 @@
+# 🗃️ AZ-305 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Design Identity, Governance, and Monitoring Solutions (Testlet 1)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You need to ensure that users managing the production environment are registered for Microsoft Entra MFA and must authenticate by using Microsoft Entra MFA when they sign in to the Azure portal. The solution must meet the authentication and authorization requirements.
+
+What should you do? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Microsoft Entra ID Protection
+Only users that manage the production environment by using the Azure portal must connect from a hybrid Microsoft Entra-joined device and authenticate by using Azure Multi-Factor Authentication (MFA).
+
+Note: Policy configuration
+1. Navigate to the Azure portal.
+2. Browse to Microsoft Entra ID > Security > Identity Protection > MFA registration policy.
+3. Under Assignments
+4. Users – Choose All users or Select individuals and groups if limiting your rollout.
+5. Optionally you can choose to exclude users from the policy.
+6. Enforce Policy – On
+7. Save
+
+Box 2: Grant control in capolicy1
+The litware.com tenant has a Conditional Access policy named Capolicy1. Capolicy1 requires that when users manage the Azure subscription for a production environment by using the Azure portal, they must connect from a Microsoft Entra hybrid joined device.
+
+Note: We need to configure the policy conditions for capolicy1 that prompt for MFA.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Design Identity, Governance, and Monitoring Solutions (Testlet 1)
+
+After you migrate App1 to Azure, you need to enforce the data modification requirements to meet the security and compliance requirements.
+
+What should you do?
+
+### Options:
+- [x] **A)** Create an access policy for the blob service. [Correct]
+- [ ] **B)** Implement Azure resource locks.
+- [ ] **C)** Create Azure RBAC assignments.
+- [ ] **D)** Modify the access level of the blob service.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Scenario: Once App1 is migrated to Azure, you must ensure that new data can be written to the app, and the modification of new and existing data is prevented for a period of three years.
+As an administrator, you can lock a subscription, resource group, or resource to prevent other users in your organization from accidentally deleting or modifying critical resources. The lock overrides any permissions the user might have.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Design Identity, Governance, and Monitoring Solutions (Testlet 2)
+
+HOTSPOT (Drag and Drop is not supported)
+
+To meet the authentication requirements of Fabrikam, what should you include in the solution? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: 1
+One single Microsoft Entra tenant is needed as only the Corp tenant is migrated.
+
+Box 2: 2
+One conditional access policy for Multi-Factor Authentication (MFA) will be used for icrosofthve access, and a second conditional access policy in order to prevent external access.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Design Identity, Governance, and Monitoring Solutions (Testlet 2)
+
+HOTSPOT (Drag and Drop is not supported)
+
+To meet the authentication requirements of Fabrikam, what should you include in the solution? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: 1
+One single Microsoft Entra tenant is needed as only the Corp tenant is migrated.
+
+Box 2: 2
+One conditional access policy for Multi-Factor Authentication (MFA) will be used for icrosofthve access, and a second conditional access policy in order to prevent external access.
+
+Box 3: 1
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Design Identity, Governance, and Monitoring Solutions (Testlet 2)
+
+You need to recommend a notification solution for the IT Support distribution group.
+
+What should you include in the recommendation?
+
+### Options:
+- [ ] **A)** a SendGrid account with advanced reporting
+- [ ] **B)** an action group
+- [ ] **C)** Azure Network Watcher
+- [x] **D)** Microsoft Entra Connect Health [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+Scenario: An email distribution group named IT Support must be notified of any issues relating to the directory synchronization services.
+Directory synchronization between Microsoft Entra ID and corp.fabrikam.com must not be affected by a link failure between Azure and the on- premises network.
+</details>
+
+---

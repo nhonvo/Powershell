@@ -1,0 +1,43 @@
+🔙 **Back to Parent**: [[languages/07_Japanese_Flashcards/🇯🇵index_07_Japanese_Flashcards|07_Japanese_Flashcards]]
+
+# 🗺️ Japanese Vocabulary Mindmap
+
+> Visual Map of common Japanese vocabulary categorized by Parts of Speech.
+
+```mermaid
+mindmap
+  root((Tiếng Nhật sơ cấp))
+    N5 và N4
+      Danh từ (Noun)
+        ベトナム [Việt Nam]
+        日本 [Nhật Bản]
+        会社 [Công ty]
+        病院 [Bệnh viện]
+        学校 [Trường học]
+        台風 [Bão]
+      Động từ (Verb)
+        行く [Đi]
+        来る [Đến]
+        食べる [Ăn]
+        飲む [Uống]
+        終わる [Kết thúc]
+        始まる [Bắt đầu]
+      Tính từ い (i-Adj)
+        近い [Gần]
+        遠い [Xa]
+        美味しい [Ngon]
+        厳しい [Nghiêm khắc]
+        悲しい [Buồn]
+      Tính từ な (na-Adj)
+        親切 [Tử tế]
+        便利 [Tiện lợi]
+        元気 [Khỏe mạnh]
+        真っ暗 [Tối om]
+        幸せ [Hạnh phúc]
+      Trạng từ / Khác
+        きっと [Chắc chắn]
+        ずっと [Suốt]
+        明日 [Ngày mai]
+        今日 [Hôm nay]
+        もしかしたら [Có thể]
+```

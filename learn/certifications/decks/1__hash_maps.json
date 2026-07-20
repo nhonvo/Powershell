@@ -1,0 +1,436 @@
+{
+  "Meta": {
+    "Id": "deck_1__hash_maps",
+    "Topic": "1. Hash Maps",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "1__hash_maps"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 21
+  },
+  "Cards": [
+    {
+      "Id": "card_00769",
+      "Front": "Yêu cầu",
+      "Back": "Giải thích",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00770",
+      "Front": "**Deterministic**",
+      "Back": "Cùng input luôn cho cùng output",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00771",
+      "Front": "**Uniform distribution**",
+      "Back": "Kết quả phân bố đều trên các bucket",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00772",
+      "Front": "**Fast to compute**",
+      "Back": "Tính nhanh, O(1) hoặc O(len(key))",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00773",
+      "Front": "**Minimize collisions**",
+      "Back": "Ít va chạm nhất có thể",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00774",
+      "Front": "Load Factor",
+      "Back": "Chaining | Open Addressing",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00775",
+      "Front": "α < 0.5",
+      "Back": "Rất nhanh | Rất nhanh",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00776",
+      "Front": "α ≈ 0.75",
+      "Back": "Ổn | Bắt đầu chậm",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00777",
+      "Front": "α > 1.0",
+      "Back": "Vẫn hoạt động (list dài hơn) | KHÔNG thể (hết chỗ!)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00778",
+      "Front": "Operation",
+      "Back": "Chaining (Average) | Chaining (Worst) | Open Addressing (Average) | Open Addressing (Worst)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00779",
+      "Front": "Insert",
+      "Back": "O(1) | O(n) | O(1/(1-α)) | O(n)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00780",
+      "Front": "Search",
+      "Back": "O(1 + α) | O(n) | O(1/(1-α)) | O(n)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00781",
+      "Front": "Delete",
+      "Back": "O(1 + α) | O(n) | O(1/(1-α)) | O(n)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00782",
+      "Front": "Space",
+      "Back": "O(n + m) |  | O(m) | ",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00783",
+      "Front": "Tiêu chí",
+      "Back": "Chaining | Open Addressing",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00784",
+      "Front": "**Cài đặt**",
+      "Back": "Đơn giản hơn | Phức tạp hơn (tombstone, resize)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00785",
+      "Front": "**Cache performance**",
+      "Back": "Kém (linked list → random memory access) | Tốt (array → sequential access)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00786",
+      "Front": "**Load factor > 1**",
+      "Back": "Cho phép | Không cho phép",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00787",
+      "Front": "**Delete**",
+      "Back": "Đơn giản (xóa node) | Cần tombstone",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00788",
+      "Front": "**Memory overhead**",
+      "Back": "Pointer cho linked list | Không có overhead pointer",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00789",
+      "Front": "**Clustering**",
+      "Back": "Không bị | Bị (linear/quadratic)",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "1. hash maps"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

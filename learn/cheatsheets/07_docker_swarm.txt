@@ -1,0 +1,47 @@
+🔙 **Back to Parent**: [[technical_skills/05_Docker_Hero/📂index_05_Docker_Hero|05_Docker_Hero]]
+
+# Module 7: Orchestration with Docker Swarm 🐜🐜
+
+Khi một server không còn đủ tải cho ứng dụng của bạn, đã đến lúc "đoàn kết" nhiều server lại thành một Cluster hoàn chỉnh.
+
+---
+
+## 🏛️ Kiến thức cốt lõi
+
+### 1. Docker Swarm là gì?
+Là công cụ Orchestration nguyên bản của Docker. Nó đơn giản hơn Kubernetes nhưng đủ mạnh cho 90% các dự án quy mô vừa và nhỏ.
+
+### 2. Các khái niệm quan trọng
+- **Node**: Một server vật lý/ảo trong cluster. Có 2 loại: `Manager` (Quản lý) và `Worker` (Chạy app).
+- **Service**: Định nghĩa cách chạy Container trong Swarm (Số lượng replica, port, network).
+- **Stack**: Một tập hợp nhiều Service (Tương tự Docker Compose nhưng chạy được trên Swarm).
+
+### 3. Tại sao cần Swarm?
+- **High Availability**: Nếu 1 server chết, container tự động được chuyển sang server khác.
+- **Auto Scaling**: Dễ dàng tăng từ 1 container lên 100 container bằng một lệnh.
+- **Load Balancing**: Tự động chia tải giữa các container trong cụm.
+
+---
+
+## 🛠️ Lệnh vận hành
+
+```bash
+docker swarm init              # Khởi tạo cluster
+docker service create --replicas 3 -p 80:80 nginx  # Chạy 3 bản sao nginx
+docker stack deploy -c docker-compose.yml my_app   # Triển khai toàn bộ stack
+```
+
+---
+
+## 📝 Bài tập thực hành (Practice)
+
+1. Khởi tạo một Swarm mode trên máy của bạn (`docker swarm init`).
+2. Triển khai một service `webapp` với 3 bản sao (`replicas: 3`).
+3. Sử dụng lệnh `docker service update --replicas 5 webapp` để xem Docker tạo thêm container mới như thế nào.
+
+---
+## 🔗 Tài liệu bổ trợ
+- [Containerization & Orchestration Deep Dive](file:///c:/Users/TruongNhon/Desktop/back-up/interview/blog/2025-09-06-containerization-orchestration.md)
+
+---
+*Tiếp tục học: [Module 8: Capstone Project](./08_Capstone_Project.md)*

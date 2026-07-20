@@ -1,0 +1,276 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/11_Heaps_Priority_Queue/🌲index_11_Heaps_Priority_Queue|11_Heaps_Priority_Queue]]
+
+## 11.5 Top K Elements Problems
+
+### Giới thiệu
+
+"Top K" là một **pattern** (khuôn mẫu) cực kỳ phổ biến trong phỏng vấn và thực tế. Ý tưởng: trong một tập dữ liệu lớn, tìm **k phần tử thỏa mãn điều kiện** nào đó (frequent nhất, gần nhất, lớn nhất, v.v.).
+
+**Ví dụ thực tế:**
+
+- **YouTube**: Top 10 trending videos (theo view)
+- **Google Search**: Gợi ý 5 từ khóa phổ biến nhất
+- **Uber**: 3 tài xế gần nhất với vị trí bạn
+
+### Bài toán 1: Top K Frequent Elements
+
+**Đề bài (LeetCode 347)**: Cho mảng `nums` và số nguyên `k`, trả về `k` phần tử xuất hiện nhiều nhất.
+
+#### Ý tưởng
+
+1. Đếm tần suất mỗi phần tử → `Counter` / `HashMap`.
+2. Dùng **Min Heap kích thước k** để giữ k phần tử frequent nhất.
+3. Root của heap = phần tử ít frequent nhất trong top-k.
+
+CóKhôngCóKhôngRồiĐếm tần suất
+từng phần tử
+(HashMap)Duyệt từng cặp
+(phần tử, tần suất)Heap size < k?Push (tần suất, phần tử)
+vào min heapTần suất hiện tại
+\> root frequency?Pop root
+Push phần tử mớiBỏ quaĐã duyệt
+hết?Lấy tất cả phần tử
+từ heap = Top K
+
+#### Mô phỏng
+
+Input: `nums = [1, 1, 1, 2, 2, 3]`, `k = 2`
+
+**Bước 1**: Đếm tần suất
+
+```
+{1: 3, 2: 2, 3: 1}
+```
+
+**Bước 2**: Duyệt qua Counter, dùng min heap kích thước 2
+
+| Phần tử | Tần suất | Heap (freq, elem)  | Hành động            |
+| :------ | :------- | :----------------- | :------------------- |
+| 1       | 3        | `[(3, 1)]`         | Size < 2 → push      |
+| 2       | 2        | `[(2, 2), (3, 1)]` | Size < 2 → push      |
+| 3       | 1        | `[(2, 2), (3, 1)]` | 1 < root(2) → bỏ qua |
+
+**Kết quả**: Heap chứa `[(2, 2), (3, 1)]` → Top 2 frequent = `[1, 2]`.
+
+### Bài toán 2: K Closest Points to Origin
+
+**Đề bài (LeetCode 973)**: Cho mảng points, tìm k điểm gần gốc tọa độ (0, 0) nhất.
+
+#### Ý tưởng
+
+- Khoảng cách: `d² = x² + y²` (không cần sqrt — so sánh bình phương vẫn giữ thứ tự).
+- Dùng **Max Heap kích thước k**: giữ k điểm gần nhất, root là điểm **xa nhất** trong k điểm.
+- Nếu điểm mới gần hơn root → thay thế.
+
+CóKhôngCóKhôngRồiDuyệt từng điểm
+(x, y)Tính d² = x² + y²Heap size < k?Push (-d², point)
+vào heap
+(negate cho max heap)d² < |root|?
+(điểm mới gần hơn
+điểm xa nhất trong top-k)Pop root
+Push điểm mớiBỏ quaĐã duyệt hết?Trả về k điểm
+từ heap
+
+#### Mô phỏng
+
+Input: `points = [[3,3], [5,-1], [-2,4], [1,1], [0,2]]`, `k = 3`
+
+**Tính khoảng cách:**
+
+```
+[3,3]:  d² = 9 + 9 = 18
+[5,-1]: d² = 25 + 1 = 26
+[-2,4]: d² = 4 + 16 = 20
+[1,1]:  d² = 1 + 1 = 2
+[0,2]:  d² = 0 + 4 = 4
+```
+
+**Dùng max heap kích thước 3 (negate giá trị):**
+
+| Điểm   | d²   | Heap (lưu -d²)                                 | Hành động                       |
+| :----- | :--- | :--------------------------------------------- | :------------------------------ |
+| [3,3]  | 18   | `[(-18, [3,3])]`                               | Size < 3 → push                 |
+| [5,-1] | 26   | `[(-26, [5,-1]), (-18, [3,3])]`                | Size < 3 → push                 |
+| [-2,4] | 20   | `[(-26, [5,-1]), (-18, [3,3]), (-20, [-2,4])]` | Size < 3 → push                 |
+| [1,1]  | 2    | `[(-20, [-2,4]), (-18, [3,3]), (-2, [1,1])]`   | 2 < 26 → pop [5,-1], push [1,1] |
+| [0,2]  | 4    | `[(-18, [3,3]), (-4, [0,2]), (-2, [1,1])]`     | 4 < 20 → pop [-2,4], push [0,2] |
+
+**Kết quả**: `[[3,3], [0,2], [1,1]]` — 3 điểm gần gốc nhất.
+
+### Python code hoàn chỉnh
+
+```python
+"""
+Top K Elements — Top K Frequent + K Closest Points
+LeetCode 347 & LeetCode 973
+"""
+import heapq
+from collections import Counter
+from typing import List
+
+
+# ========================
+#  Bài 1: Top K Frequent Elements
+# ========================
+def top_k_frequent(nums: List[int], k: int) -> List[int]:
+    """
+    Tìm k phần tử xuất hiện nhiều nhất.
+    Time: O(n + m log k) — n = len(nums), m = số phần tử distinct
+    Space: O(m) cho Counter + O(k) cho heap
+    """
+    # Bước 1: Đếm tần suất — O(n)
+    freq = Counter(nums)
+
+    # Bước 2: Min heap kích thước k — O(m log k)
+    # Giữ k phần tử frequent nhất
+    min_heap = []
+    for num, count in freq.items():
+        if len(min_heap) < k:
+            heapq.heappush(min_heap, (count, num))
+        elif count > min_heap[0][0]:
+            heapq.heapreplace(min_heap, (count, num))
+
+    # Bước 3: Lấy kết quả từ heap
+    return [num for count, num in min_heap]
+
+
+def top_k_frequent_nlargest(nums: List[int], k: int) -> List[int]:
+    """Cách ngắn gọn dùng heapq.nlargest."""
+    freq = Counter(nums)
+    return heapq.nlargest(k, freq.keys(), key=freq.get)
+
+
+def top_k_frequent_bucket_sort(nums: List[int], k: int) -> List[int]:
+    """
+    Bonus: Bucket Sort — O(n) time, O(n) space.
+    Tạo mảng bucket[i] = các phần tử có tần suất i.
+    Tần suất tối đa = n (len(nums)), nên bucket size = n+1.
+    """
+    freq = Counter(nums)
+
+    # bucket[i] = danh sách phần tử có tần suất i
+    bucket = [[] for _ in range(len(nums) + 1)]
+    for num, count in freq.items():
+        bucket[count].append(num)
+
+    # Duyệt từ tần suất cao nhất xuống
+    result = []
+    for i in range(len(bucket) - 1, 0, -1):
+        for num in bucket[i]:
+            result.append(num)
+            if len(result) == k:
+                return result
+    return result
+
+
+# ========================
+#  Bài 2: K Closest Points to Origin
+# ========================
+def k_closest(points: List[List[int]], k: int) -> List[List[int]]:
+    """
+    Tìm k điểm gần gốc tọa độ nhất.
+    Time: O(n log k), Space: O(k)
+    """
+    # Max heap (negate) kích thước k
+    max_heap = []
+
+    for x, y in points:
+        dist_sq = x * x + y * y  # Không cần sqrt!
+
+        if len(max_heap) < k:
+            # Negate distance để biến min heap thành max heap
+            heapq.heappush(max_heap, (-dist_sq, [x, y]))
+        elif dist_sq < -max_heap[0][0]:
+            # Điểm mới gần hơn điểm xa nhất trong top-k
+            heapq.heapreplace(max_heap, (-dist_sq, [x, y]))
+
+    return [point for _, point in max_heap]
+
+
+def k_closest_nsmallest(points: List[List[int]], k: int) -> List[List[int]]:
+    """Cách ngắn gọn dùng heapq.nsmallest."""
+    return heapq.nsmallest(k, points, key=lambda p: p[0]**2 + p[1]**2)
+
+
+# ========================
+#  Test & Demo
+# ========================
+if __name__ == "__main__":
+    print("=" * 55)
+    print("TEST 1: Top K Frequent Elements")
+    print("=" * 55)
+
+    nums = [1, 1, 1, 2, 2, 3]
+    k = 2
+    print(f"  Input: nums={nums}, k={k}")
+    print(f"  Counter: {dict(Counter(nums))}")
+    print(f"  Top {k} frequent (heap):   {top_k_frequent(nums, k)}")
+    print(f"  Top {k} frequent (nlargest): {top_k_frequent_nlargest(nums, k)}")
+    print(f"  Top {k} frequent (bucket):  {top_k_frequent_bucket_sort(nums, k)}")
+
+    # Test thêm
+    nums2 = [4, 1, -1, 2, -1, 2, 3]
+    k2 = 2
+    print(f"\n  Input: nums={nums2}, k={k2}")
+    print(f"  Counter: {dict(Counter(nums2))}")
+    print(f"  Top {k2} frequent: {top_k_frequent(nums2, k2)}")
+
+    print(f"\n{'=' * 55}")
+    print("TEST 2: K Closest Points to Origin")
+    print("=" * 55)
+
+    points = [[3, 3], [5, -1], [-2, 4], [1, 1], [0, 2]]
+    k = 3
+    print(f"  Input: points={points}, k={k}")
+
+    # In khoảng cách
+    for p in points:
+        d = (p[0]**2 + p[1]**2) ** 0.5
+        print(f"    {p} → distance = {d:.2f}")
+
+    result = k_closest(points, k)
+    print(f"  {k} closest: {result}")
+    print(f"  {k} closest (nsmallest): {k_closest_nsmallest(points, k)}")
+
+    # Edge case: tất cả cùng khoảng cách
+    print(f"\n  Edge case — cùng khoảng cách:")
+    points3 = [[1, 0], [0, 1], [-1, 0], [0, -1]]
+    print(f"  Input: {points3}, k=2")
+    print(f"  Result: {k_closest(points3, 2)}")
+```
+
+### Phân tích Best / Worst Case
+
+**Top K Frequent:**
+
+| Case    | Time           | Giải thích                                             |
+| :------ | :------------- | :----------------------------------------------------- |
+| Best    | O(n)           | Bucket sort approach, hoặc k = m (số phần tử distinct) |
+| Average | O(n + m log k) | n đếm + m phần tử distinct duyệt heap                  |
+| Worst   | O(n + m log k) | m ≤ n, worst khi tất cả phần tử distinct               |
+
+**K Closest Points:**
+
+| Case    | Time       | Giải thích                   |
+| :------ | :--------- | :--------------------------- |
+| Best    | O(n)       | k = 1, heap chỉ có 1 phần tử |
+| Average | O(n log k) |                              |
+| Worst   | O(n log n) | k = n                        |
+
+### Ưu và nhược điểm
+
+**Ưu điểm:**
+
+- Pattern chung cho nhiều bài toán "tìm k phần tử tốt nhất"
+- Space O(k) — rất tiết kiệm khi k << n
+- Hoạt động với streaming data
+
+**Nhược điểm:**
+
+- Bucket sort O(n) nhanh hơn cho Top K Frequent, nhưng tốn space O(n)
+- Khi k ≈ n, không có lợi so với sort thường
+
+### Cải tiến
+
+- **Approximate Top-K** (Count-Min Sketch): Khi dữ liệu quá lớn, chấp nhận sai số nhỏ để giảm space xuống O(1). Dùng trong các hệ thống streaming thật (Kafka, Flink).
+- **Quick Select cho K Closest**: Trung bình O(n), nhưng worst case O(n²). Có thể dùng Introselect (kết hợp QuickSelect + MedianOfMedians) để đảm bảo O(n) worst case.

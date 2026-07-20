@@ -1,0 +1,1628 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/02_Arrays_Strings/📑index_02_Arrays_Strings|02_Arrays_Strings]]
+
+## 10. LeetCode Practice — Giải chi tiết từng bài
+
+Phần này sẽ đi sâu vào 10 bài LeetCode kinh điển liên quan đến Arrays & Strings. Mỗi bài sẽ có: **phân tích tư duy**, **nhiều cách tiếp cận** (từ brute force đến tối ưu), **code Python chi tiết**, **dry run từng bước**, và **phân tích độ phức tạp**.
+
+------
+
+### 10.1. Two Sum — LeetCode #1 (Easy)
+
+**Link:** https://leetcode.com/problems/two-sum/
+
+**Difficulty:** Easy
+
+#### Đề bài
+
+Cho một mảng số nguyên `nums` và một số nguyên `target`. Tìm **hai phần tử** trong mảng có tổng bằng `target`. Trả về chỉ số (index) của hai phần tử đó.
+
+- Mỗi input chỉ có **đúng một** lời giải.
+- Không được dùng cùng một phần tử hai lần.
+- Có thể trả về kết quả theo bất kỳ thứ tự nào.
+
+**Ví dụ:**
+
+```
+Input: nums = [2, 7, 11, 15], target = 9
+Output: [0, 1]
+Giải thích: nums[0] + nums[1] = 2 + 7 = 9
+```
+
+#### Phân tích tư duy
+
+Đầu tiên, bạn cần tự hỏi: "Với mỗi phần tử `nums[i]`, mình cần tìm phần tử nào để tổng = target?" Đó chính là `target - nums[i]` (gọi là **complement**).
+
+Vấn đề quy về: **Tìm kiếm nhanh** — làm sao biết complement có tồn tại trong mảng không, và ở đâu?
+
+#### Cách 1: Brute Force — Thử mọi cặp
+
+**Ý tưởng:** Duyệt mọi cặp (i, j), kiểm tra tổng.
+
+```python
+def two_sum_brute(nums: list[int], target: int) -> list[int]:
+    """
+    Brute force: thử mọi cặp (i, j)
+    Time: O(n^2), Space: O(1)
+    """
+    n = len(nums)
+    for i in range(n):
+        for j in range(i + 1, n):
+            if nums[i] + nums[j] == target:
+                return [i, j]
+    return []  # không tìm thấy
+```
+
+**Độ phức tạp:** Time O(n^2), Space O(1).
+
+**Nhược điểm:** Quá chậm với n lớn (10^4 phần tử thì có 10^8 phép tính).
+
+#### Cách 2: Hash Map — Tối ưu (Recommended)
+
+**Ý tưởng cốt lõi:** Dùng hash map để lưu "phần tử nào đã gặp rồi và ở đâu". Khi duyệt tới phần tử `nums[i]`, tính complement = `target - nums[i]`, rồi tra hash map xem complement đã xuất hiện chưa.
+
+**Tại sao hash map?** Vì tra cứu hash map mất O(1), nên toàn bộ chỉ mất O(n).
+
+```python
+def two_sum(nums: list[int], target: int) -> list[int]:
+    """
+    Hash Map: lưu giá trị -> index
+    Với mỗi phần tử, kiểm tra complement đã tồn tại trong map chưa
+    Time: O(n), Space: O(n)
+    """
+    # Dictionary lưu: giá trị -> index của nó trong mảng
+    seen = {}
+
+    for i, num in enumerate(nums):
+        # Tính complement — giá trị cần tìm
+        complement = target - num
+
+        # Nếu complement đã có trong map -> tìm thấy cặp!
+        if complement in seen:
+            return [seen[complement], i]
+
+        # Chưa tìm thấy -> lưu phần tử hiện tại vào map
+        seen[num] = i
+
+    return []  # không tìm thấy (theo đề bài sẽ không xảy ra)
+```
+
+#### Dry run chi tiết
+
+```
+Input: nums = [2, 7, 11, 15], target = 9
+
+Bước 1: i=0, num=2
+  complement = 9 - 2 = 7
+  seen = {} -> 7 không có trong seen
+  Lưu: seen = {2: 0}
+
+Bước 2: i=1, num=7
+  complement = 9 - 7 = 2
+  seen = {2: 0} -> 2 CÓ trong seen, index = 0
+  -> Return [0, 1] ✓
+
+Kết quả: [0, 1]
+```
+
+**Ví dụ phức tạp hơn:** `nums = [3, 2, 4]`, `target = 6`
+
+```
+Bước 1: i=0, num=3, complement=3, seen={} -> không có
+  seen = {3: 0}
+
+Bước 2: i=1, num=2, complement=4, seen={3:0} -> không có
+  seen = {3: 0, 2: 1}
+
+Bước 3: i=2, num=4, complement=2, seen={3:0, 2:1} -> 2 CÓ! index=1
+  -> Return [1, 2] ✓
+```
+
+#### Phân tích độ phức tạp
+
+|              | Time     | Space    |
+| :----------- | :------- | :------- |
+| Brute Force  | O(n^2)   | O(1)     |
+| **Hash Map** | **O(n)** | **O(n)** |
+
+**Tại sao O(n)?** Mỗi phần tử được duyệt đúng 1 lần, mỗi lần tra cứu hash map mất O(1).
+
+#### Lỗi thường gặp và edge cases
+
+1. **Dùng cùng phần tử 2 lần:** `nums = [3, 3], target = 6`. Code trên vẫn đúng vì ta lưu *sau* khi kiểm tra complement.
+2. **Số âm:** `nums = [-1, -2, -3, -4, -5], target = -8`. Complement = -8 - (-3) = -5. Vẫn hoạt động bình thường.
+3. **Chỉ có 2 phần tử:** `nums = [1, 2], target = 3`. Luôn trả về `[0, 1]`.
+
+------
+
+### 10.2. Best Time to Buy and Sell Stock — LeetCode #121 (Easy)
+
+**Link:** https://leetcode.com/problems/best-time-to-buy-and-sell-stock/
+
+**Difficulty:** Easy
+
+#### Đề bài
+
+Cho mảng `prices` trong đó `prices[i]` là giá cổ phiếu ngày thứ `i`. Bạn chỉ được **mua 1 lần** và **bán 1 lần** (mua trước bán sau). Tìm **lợi nhuận lớn nhất** có thể đạt được.
+
+Nếu không có lợi nhuận nào, trả về 0.
+
+**Ví dụ:**
+
+```
+Input: prices = [7, 1, 5, 3, 6, 4]
+Output: 5
+Giải thích: Mua ngày 2 (giá 1), bán ngày 5 (giá 6) -> lời 6-1 = 5
+```
+
+#### Phân tích tư duy
+
+Bạn cần tìm cặp (i, j) với i < j sao cho `prices[j] - prices[i]` lớn nhất. Nói cách khác: tìm **giá thấp nhất trước** rồi **giá cao nhất sau** nó.
+
+Suy nghĩ như một trader: khi đi qua từng ngày, bạn ghi nhớ **giá thấp nhất đã thấy** (min_price). Mỗi ngày, bạn tính lợi nhuận nếu bán hôm nay (prices[i] - min_price) và cập nhật max profit.
+
+#### Cách 1: Brute Force
+
+```python
+def max_profit_brute(prices: list[int]) -> int:
+    """
+    Thử mọi cặp (mua, bán): O(n^2)
+    """
+    max_profit = 0
+    n = len(prices)
+    for i in range(n):             # ngày mua
+        for j in range(i + 1, n):  # ngày bán (sau ngày mua)
+            profit = prices[j] - prices[i]
+            max_profit = max(max_profit, profit)
+    return max_profit
+```
+
+#### Cách 2: One Pass — Ghi nhớ giá thấp nhất (Recommended)
+
+```python
+def max_profit(prices: list[int]) -> int:
+    """
+    One pass: theo dõi giá thấp nhất và lợi nhuận tốt nhất
+    Time: O(n), Space: O(1)
+    """
+    # Khởi tạo giá thấp nhất = vô cực (chưa biết giá nào)
+    min_price = float('inf')
+    # Lợi nhuận tốt nhất ban đầu = 0 (không giao dịch)
+    max_profit = 0
+
+    for price in prices:
+        # Cập nhật giá thấp nhất đã gặp
+        if price < min_price:
+            min_price = price
+
+        # Tính lợi nhuận nếu bán hôm nay
+        profit = price - min_price
+
+        # Cập nhật lợi nhuận tốt nhất
+        if profit > max_profit:
+            max_profit = profit
+
+    return max_profit
+```
+
+#### Dry run chi tiết
+
+```
+Input: prices = [7, 1, 5, 3, 6, 4]
+
+Ngày 0: price=7
+  min_price = min(inf, 7) = 7
+  profit = 7 - 7 = 0
+  max_profit = max(0, 0) = 0
+
+Ngày 1: price=1
+  min_price = min(7, 1) = 1    <- Tìm thấy giá thấp hơn!
+  profit = 1 - 1 = 0
+  max_profit = max(0, 0) = 0
+
+Ngày 2: price=5
+  min_price = min(1, 5) = 1
+  profit = 5 - 1 = 4           <- Lời 4 nếu bán hôm nay
+  max_profit = max(0, 4) = 4
+
+Ngày 3: price=3
+  min_price = min(1, 3) = 1
+  profit = 3 - 1 = 2
+  max_profit = max(4, 2) = 4   <- Không tốt bằng ngày trước
+
+Ngày 4: price=6
+  min_price = min(1, 6) = 1
+  profit = 6 - 1 = 5           <- Lời 5! Kỷ lục mới!
+  max_profit = max(4, 5) = 5
+
+Ngày 5: price=4
+  min_price = min(1, 4) = 1
+  profit = 4 - 1 = 3
+  max_profit = max(5, 3) = 5
+
+Kết quả: max_profit = 5 (mua giá 1, bán giá 6)
+```
+
+#### Phân tích độ phức tạp
+
+|              | Time     | Space    |
+| :----------- | :------- | :------- |
+| Brute Force  | O(n^2)   | O(1)     |
+| **One Pass** | **O(n)** | **O(1)** |
+
+#### Liên hệ với Kadane's Algorithm
+
+Bài này thực chất là **Kadane's Algorithm** trên mảng **chênh lệch giá** (price differences):
+
+```
+prices:     [7, 1, 5, 3, 6, 4]
+diff:       [_, -6, 4, -2, 3, -2]
+Kadane trên diff: max subarray sum = (-6) -> bắt đầu lại -> 4 + (-2) + 3 = 5
+```
+
+#### Lỗi thường gặp
+
+1. **Mảng giảm dần:** `[7, 6, 4, 3, 1]` -> không có lợi nhuận -> trả về 0.
+2. **Mảng 1 phần tử:** `[5]` -> không thể mua và bán -> trả về 0.
+3. **Tất cả giá bằng nhau:** `[3, 3, 3]` -> lợi nhuận = 0.
+
+------
+
+### 10.3. Maximum Subarray — LeetCode #53 (Medium)
+
+**Link:** https://leetcode.com/problems/maximum-subarray/
+
+**Difficulty:** Medium
+
+#### Đề bài
+
+Cho mảng số nguyên `nums` (có thể chứa số âm). Tìm **dãy con liên tiếp** (subarray) có **tổng lớn nhất**. Trả về tổng đó.
+
+**Ví dụ:**
+
+```
+Input: nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+Output: 6
+Giải thích: Dãy con [4, -1, 2, 1] có tổng = 6
+```
+
+#### Phân tích tư duy
+
+Đây là bài kinh điển của **Kadane's Algorithm** (đã học ở phần 6). Tư duy cốt lõi:
+
+Tại mỗi vị trí i, bạn có 2 lựa chọn:
+
+1. **Tiếp tục tích lũy:** Nối dãy con hiện tại thêm `nums[i]` -> `current_sum + nums[i]`
+2. **Bắt đầu lại từ đây:** `nums[i]` (bỏ toàn bộ tích lũy cũ)
+
+Chọn cái nào lớn hơn!
+
+**Khi nào bắt đầu lại?** Khi `current_sum + nums[i] < nums[i]`, tức là `current_sum < 0`. Mang theo "nợ cũ" (tổng âm) chỉ làm xấu đi.
+
+#### Cách 1: Brute Force — Thử mọi subarray
+
+```python
+def max_subarray_brute(nums: list[int]) -> int:
+    """
+    Thử mọi subarray: O(n^2)
+    """
+    n = len(nums)
+    max_sum = float('-inf')
+
+    for i in range(n):
+        current_sum = 0
+        for j in range(i, n):
+            current_sum += nums[j]
+            max_sum = max(max_sum, current_sum)
+
+    return max_sum
+```
+
+#### Cách 2: Kadane's Algorithm (Recommended)
+
+```python
+def max_subarray(nums: list[int]) -> int:
+    """
+    Kadane's Algorithm: tại mỗi bước, quyết định tiếp tục hay bắt đầu lại
+    Time: O(n), Space: O(1)
+    """
+    # current_max: tổng lớn nhất của subarray KẾT THÚC tại vị trí hiện tại
+    current_max = nums[0]
+    # global_max: tổng lớn nhất tổng thể
+    global_max = nums[0]
+
+    for i in range(1, len(nums)):
+        # Quyết định: tiếp tục tích lũy hay bắt đầu lại?
+        # Nếu current_max + nums[i] >= nums[i] -> tiếp tục
+        # Nếu current_max + nums[i] < nums[i] -> bắt đầu lại (current_max < 0)
+        current_max = max(nums[i], current_max + nums[i])
+
+        # Cập nhật kết quả toàn cục
+        global_max = max(global_max, current_max)
+
+    return global_max
+```
+
+#### Cách 3: Kadane trả về cả subarray
+
+```python
+def max_subarray_with_indices(nums: list[int]) -> tuple[int, int, int]:
+    """
+    Kadane's nhưng trả về cả vị trí bắt đầu và kết thúc
+    Return: (max_sum, start_index, end_index)
+    """
+    current_max = nums[0]
+    global_max = nums[0]
+    start = end = 0       # chỉ số của subarray tốt nhất
+    temp_start = 0        # chỉ số bắt đầu tạm thời
+
+    for i in range(1, len(nums)):
+        if nums[i] > current_max + nums[i]:
+            # Bắt đầu lại từ vị trí i
+            current_max = nums[i]
+            temp_start = i
+        else:
+            # Tiếp tục tích lũy
+            current_max = current_max + nums[i]
+
+        if current_max > global_max:
+            global_max = current_max
+            start = temp_start
+            end = i
+
+    return global_max, start, end
+```
+
+#### Dry run chi tiết
+
+```
+Input: nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+
+i=0: current_max = -2, global_max = -2
+     Dãy hiện tại: [-2]
+
+i=1: current_max = max(1, -2+1) = max(1, -1) = 1
+     -> BẮT ĐẦU LẠI từ 1 (mang theo nợ -2 không có lợi)
+     global_max = max(-2, 1) = 1
+     Dãy hiện tại: [1]
+
+i=2: current_max = max(-3, 1+(-3)) = max(-3, -2) = -2
+     -> TIẾP TỤC tích lũy (-2 vẫn tốt hơn -3)
+     global_max = max(1, -2) = 1
+     Dãy hiện tại: [1, -3]
+
+i=3: current_max = max(4, -2+4) = max(4, 2) = 4
+     -> BẮT ĐẦU LẠI từ 4 (mang theo nợ -2 làm giảm)
+     global_max = max(1, 4) = 4
+     Dãy hiện tại: [4]
+
+i=4: current_max = max(-1, 4+(-1)) = max(-1, 3) = 3
+     -> TIẾP TỤC (3 > -1)
+     global_max = max(4, 3) = 4
+     Dãy hiện tại: [4, -1]
+
+i=5: current_max = max(2, 3+2) = max(2, 5) = 5
+     -> TIẾP TỤC
+     global_max = max(4, 5) = 5
+     Dãy hiện tại: [4, -1, 2]
+
+i=6: current_max = max(1, 5+1) = max(1, 6) = 6
+     -> TIẾP TỤC
+     global_max = max(5, 6) = 6     <- KỶ LỤC MỚI!
+     Dãy hiện tại: [4, -1, 2, 1]
+
+i=7: current_max = max(-5, 6+(-5)) = max(-5, 1) = 1
+     -> TIẾP TỤC (1 > -5)
+     global_max = max(6, 1) = 6
+     Dãy hiện tại: [4, -1, 2, 1, -5]
+
+i=8: current_max = max(4, 1+4) = max(4, 5) = 5
+     -> TIẾP TỤC
+     global_max = max(6, 5) = 6
+
+Kết quả: global_max = 6, subarray = [4, -1, 2, 1]
+```
+
+#### Phân tích độ phức tạp
+
+|                    | Time       | Space    |
+| :----------------- | :--------- | :------- |
+| Brute Force O(n^3) | O(n^3)     | O(1)     |
+| Brute Force O(n^2) | O(n^2)     | O(1)     |
+| **Kadane's**       | **O(n)**   | **O(1)** |
+| Divide & Conquer   | O(n log n) | O(log n) |
+
+Kadane's là **optimal** vì phải đọc ít nhất n phần tử -> lower bound là Omega(n).
+
+#### Lỗi thường gặp
+
+1. **Toàn số âm:** `[-3, -2, -1]` -> Kết quả là `-1` (phần tử lớn nhất), KHÔNG phải 0.
+2. **Nhầm initial value:** Khởi tạo `global_max = 0` sẽ sai khi mảng toàn âm. Phải khởi tạo `global_max = nums[0]`.
+3. **Nhầm subarray vs subsequence:** Subarray phải **liên tiếp**, subsequence thì không.
+
+------
+
+### 10.4. Longest Substring Without Repeating Characters — LeetCode #3 (Medium)
+
+**Link:** https://leetcode.com/problems/longest-substring-without-repeating-characters/
+
+**Difficulty:** Medium
+
+#### Đề bài
+
+Cho một chuỗi `s`. Tìm độ dài của **chuỗi con liên tiếp dài nhất** (substring) mà **không có ký tự nào lặp lại**.
+
+**Ví dụ:**
+
+```
+Input: s = "abcabcbb"
+Output: 3
+Giải thích: Chuỗi con dài nhất không lặp là "abc", độ dài 3
+```
+
+#### Phân tích tư duy
+
+Đây là bài kinh điển của **Sliding Window** (cửa sổ trượt) kích thước thay đổi (variable-size).
+
+Tư duy: duy trì một "cửa sổ" `[left, right]` chứa các ký tự KHÔNG trùng lặp. Khi gặp ký tự trùng:
+
+- Thu nhỏ cửa sổ (tăng left) cho đến khi không còn trùng
+- HOẶC nhảy `left` thẳng tới vị trí sau ký tự trùng (dùng hash map)
+
+#### Cách 1: Brute Force — Thử mọi substring
+
+```python
+def length_of_longest_substring_brute(s: str) -> int:
+    """
+    Thử mọi substring, kiểm tra có ký tự lặp không
+    Time: O(n^3), Space: O(min(n, m)) với m là kích thước charset
+    """
+    def all_unique(s, start, end):
+        """Kiểm tra s[start:end] có toàn ký tự duy nhất không"""
+        chars = set()
+        for i in range(start, end):
+            if s[i] in chars:
+                return False
+            chars.add(s[i])
+        return True
+
+    n = len(s)
+    max_len = 0
+    for i in range(n):
+        for j in range(i + 1, n + 1):
+            if all_unique(s, i, j):
+                max_len = max(max_len, j - i)
+    return max_len
+```
+
+#### Cách 2: Sliding Window + Hash Set
+
+```python
+def length_of_longest_substring_set(s: str) -> int:
+    """
+    Sliding Window với hash set: thu nhỏ cửa sổ khi gặp trùng
+    Time: O(2n) = O(n), Space: O(min(n, m))
+    """
+    char_set = set()  # tập các ký tự trong cửa sổ hiện tại
+    left = 0
+    max_len = 0
+
+    for right in range(len(s)):
+        # Nếu ký tự đã có trong cửa sổ -> thu nhỏ cửa sổ từ trái
+        while s[right] in char_set:
+            char_set.remove(s[left])
+            left += 1
+
+        # Thêm ký tự mới vào cửa sổ
+        char_set.add(s[right])
+        # Cập nhật độ dài lớn nhất
+        max_len = max(max_len, right - left + 1)
+
+    return max_len
+```
+
+#### Cách 3: Sliding Window + Hash Map — Tối ưu nhất (Recommended)
+
+```python
+def length_of_longest_substring(s: str) -> int:
+    """
+    Sliding Window với hash map: nhảy left trực tiếp, không cần while
+    Time: O(n), Space: O(min(n, m))
+
+    Ý tưởng: lưu vị trí cuối cùng của mỗi ký tự.
+    Khi gặp ký tự trùng, nhảy left thẳng tới (vị_trí_trùng + 1)
+    """
+    # Dictionary: ký tự -> index cuối cùng xuất hiện
+    char_index = {}
+    left = 0
+    max_len = 0
+
+    for right in range(len(s)):
+        char = s[right]
+
+        # Nếu ký tự đã xuất hiện VÀ vị trí đó >= left (nằm trong cửa sổ)
+        if char in char_index and char_index[char] >= left:
+            # Nhảy left qua vị trí trùng lặp
+            left = char_index[char] + 1
+
+        # Cập nhật vị trí cuối cùng của ký tự
+        char_index[char] = right
+
+        # Cập nhật độ dài lớn nhất
+        max_len = max(max_len, right - left + 1)
+
+    return max_len
+```
+
+#### Dry run chi tiết
+
+```
+Input: s = "abcabcbb"
+
+right=0, char='a':
+  char_index = {} -> 'a' chưa có
+  char_index = {'a': 0}, left=0, len=1, max_len=1
+  Cửa sổ: [a]
+
+right=1, char='b':
+  char_index có 'a':0 nhưng không có 'b'
+  char_index = {'a':0, 'b':1}, left=0, len=2, max_len=2
+  Cửa sổ: [a, b]
+
+right=2, char='c':
+  'c' chưa có trong char_index
+  char_index = {'a':0, 'b':1, 'c':2}, left=0, len=3, max_len=3
+  Cửa sổ: [a, b, c]
+
+right=3, char='a':
+  'a' CÓ trong char_index, vị trí 0, 0 >= left(0) -> TRÙNG!
+  left = 0 + 1 = 1   <- Nhảy left qua vị trí trùng
+  char_index = {'a':3, 'b':1, 'c':2}, len=3, max_len=3
+  Cửa sổ: [b, c, a]
+
+right=4, char='b':
+  'b' CÓ trong char_index, vị trí 1, 1 >= left(1) -> TRÙNG!
+  left = 1 + 1 = 2
+  char_index = {'a':3, 'b':4, 'c':2}, len=3, max_len=3
+  Cửa sổ: [c, a, b]
+
+right=5, char='c':
+  'c' CÓ trong char_index, vị trí 2, 2 >= left(2) -> TRÙNG!
+  left = 2 + 1 = 3
+  char_index = {'a':3, 'b':4, 'c':5}, len=3, max_len=3
+  Cửa sổ: [a, b, c]
+
+right=6, char='b':
+  'b' CÓ trong char_index, vị trí 4, 4 >= left(3) -> TRÙNG!
+  left = 4 + 1 = 5
+  char_index = {'a':3, 'b':6, 'c':5}, len=2, max_len=3
+  Cửa sổ: [c, b]
+
+right=7, char='b':
+  'b' CÓ trong char_index, vị trí 6, 6 >= left(5) -> TRÙNG!
+  left = 6 + 1 = 7
+  char_index = {'a':3, 'b':7, 'c':5}, len=1, max_len=3
+  Cửa sổ: [b]
+
+Kết quả: max_len = 3 (substring "abc")
+```
+
+#### Phân tích độ phức tạp
+
+|                          | Time         | Space            |
+| :----------------------- | :----------- | :--------------- |
+| Brute Force              | O(n^3)       | O(min(n, m))     |
+| Sliding Window + Set     | O(2n) = O(n) | O(min(n, m))     |
+| **Sliding Window + Map** | **O(n)**     | **O(min(n, m))** |
+
+m là kích thước charset (26 cho lowercase, 128 cho ASCII, 65536 cho Unicode).
+
+#### Lỗi thường gặp
+
+1. **Không kiểm tra `char_index[char] >= left`:** Ký tự có thể tồn tại trong map nhưng NGOÀI cửa sổ (vị trí < left). Phải kiểm tra điều kiện này.
+2. **Dùng `while` thay vì nhảy trực tiếp:** Cách set cần while loop (O(2n)), cách map nhảy trực tiếp (O(n) thực sự).
+3. **Chuỗi rỗng:** `s = ""` -> trả về 0. Code trên xử lý đúng.
+
+------
+
+### 10.5. 3Sum — LeetCode #15 (Medium)
+
+**Link:** https://leetcode.com/problems/3sum/
+
+**Difficulty:** Medium
+
+#### Đề bài
+
+Cho mảng số nguyên `nums`. Tìm **tất cả bộ ba** (triplet) `[nums[i], nums[j], nums[k]]` sao cho `i != j != k` và `nums[i] + nums[j] + nums[k] == 0`.
+
+**Không được trả về bộ ba trùng lặp.**
+
+**Ví dụ:**
+
+```
+Input: nums = [-1, 0, 1, 2, -1, -4]
+Output: [[-1, -1, 2], [-1, 0, 1]]
+```
+
+#### Phân tích tư duy
+
+**Bước 1:** Nhận ra đây là bài mở rộng của Two Sum. Nếu cố định một phần tử `nums[i]`, bài toán quy về: "Tìm 2 phần tử trong phần còn lại có tổng = -nums[i]" -> Two Sum!
+
+**Bước 2:** Để tránh bộ ba trùng lặp, ta **sort mảng trước**. Khi duyệt, nếu `nums[i] == nums[i-1]` thì skip (bỏ qua duplicate).
+
+**Bước 3:** Với mỗi `nums[i]`, dùng **Two Pointers** trên phần mảng phía sau để tìm 2 phần tử có tổng = `-nums[i]`.
+
+#### Cách 1: Brute Force
+
+```python
+def three_sum_brute(nums: list[int]) -> list[list[int]]:
+    """
+    Thử mọi bộ ba: O(n^3)
+    """
+    n = len(nums)
+    nums.sort()
+    result = set()  # dùng set để loại trùng
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            for k in range(j + 1, n):
+                if nums[i] + nums[j] + nums[k] == 0:
+                    result.add((nums[i], nums[j], nums[k]))
+
+    return [list(t) for t in result]
+```
+
+#### Cách 2: Sort + Two Pointers (Recommended)
+
+```python
+def three_sum(nums: list[int]) -> list[list[int]]:
+    """
+    Sort + cố định 1 phần tử + Two Pointers cho 2 phần tử còn lại
+    Time: O(n^2), Space: O(1) ngoài output
+    """
+    nums.sort()  # Sắp xếp để dùng Two Pointers và loại duplicate
+    result = []
+    n = len(nums)
+
+    for i in range(n - 2):
+        # --- Tối ưu 1: skip duplicate cho phần tử đầu ---
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue
+
+        # --- Tối ưu 2: nếu phần tử nhỏ nhất > 0 -> không thể có tổng 0 ---
+        if nums[i] > 0:
+            break
+
+        # --- Two Pointers tìm 2 phần tử có tổng = -nums[i] ---
+        target = -nums[i]
+        left, right = i + 1, n - 1
+
+        while left < right:
+            two_sum = nums[left] + nums[right]
+
+            if two_sum == target:
+                # Tìm thấy bộ ba!
+                result.append([nums[i], nums[left], nums[right]])
+
+                # Skip duplicate cho phần tử thứ 2
+                while left < right and nums[left] == nums[left + 1]:
+                    left += 1
+                # Skip duplicate cho phần tử thứ 3
+                while left < right and nums[right] == nums[right - 1]:
+                    right -= 1
+
+                left += 1
+                right -= 1
+
+            elif two_sum < target:
+                left += 1   # cần tổng lớn hơn -> tăng left
+            else:
+                right -= 1  # cần tổng nhỏ hơn -> giảm right
+
+    return result
+```
+
+#### Dry run chi tiết
+
+```
+Input: nums = [-1, 0, 1, 2, -1, -4]
+Sau sort: nums = [-4, -1, -1, 0, 1, 2]
+
+--- i=0, nums[i]=-4, target=4 ---
+left=1(-1), right=5(2): sum = -1+2 = 1 < 4 -> left++
+left=2(-1), right=5(2): sum = -1+2 = 1 < 4 -> left++
+left=3(0),  right=5(2): sum = 0+2 = 2 < 4  -> left++
+left=4(1),  right=5(2): sum = 1+2 = 3 < 4  -> left++
+left=5, left >= right -> dừng
+
+--- i=1, nums[i]=-1, target=1 ---
+left=2(-1), right=5(2): sum = -1+2 = 1 = target!
+  -> Thêm [-1, -1, 2] vào result
+  Skip dup left: nums[2]==nums[3]? -1==0? Không -> dừng
+  Skip dup right: nums[5]==nums[4]? 2==1? Không -> dừng
+  left=3, right=4
+
+left=3(0), right=4(1): sum = 0+1 = 1 = target!
+  -> Thêm [-1, 0, 1] vào result
+  left=4, right=3 -> dừng
+
+--- i=2, nums[i]=-1, nums[2]==nums[1]? -> SKIP (duplicate) ---
+
+--- i=3, nums[i]=0, target=0 ---
+left=4(1), right=5(2): sum = 1+2 = 3 > 0 -> right--
+left=4, right=4 -> dừng
+
+Kết quả: [[-1, -1, 2], [-1, 0, 1]]
+```
+
+#### Phân tích độ phức tạp
+
+|                         | Time       | Space                   |
+| :---------------------- | :--------- | :---------------------- |
+| Brute Force             | O(n^3)     | O(n)                    |
+| **Sort + Two Pointers** | **O(n^2)** | **O(1)** (ngoài output) |
+
+Sort mất O(n log n), vòng ngoài O(n) * Two Pointers O(n) = O(n^2). Tổng: O(n^2).
+
+#### Lỗi thường gặp
+
+1. **Không xử lý duplicate:** Sẽ trả về kết quả trùng lặp như `[-1,-1,2]` xuất hiện 2 lần.
+2. **Quên sort trước:** Two Pointers chỉ hoạt động trên mảng đã sort.
+3. **Off-by-one:** `range(n-2)` chứ không phải `range(n)` vì cần ít nhất 3 phần tử.
+
+------
+
+### 10.6. Product of Array Except Self — LeetCode #238 (Medium)
+
+**Link:** https://leetcode.com/problems/product-of-array-except-self/
+
+**Difficulty:** Medium
+
+#### Đề bài
+
+Cho mảng số nguyên `nums`. Trả về mảng `answer` sao cho `answer[i]` bằng **tích của tất cả phần tử trong nums TRỪ `nums[i]`**.
+
+**Ràng buộc:** KHÔNG được dùng phép chia. Yêu cầu O(n) time.
+
+**Ví dụ:**
+
+```
+Input: nums = [1, 2, 3, 4]
+Output: [24, 12, 8, 6]
+Giải thích:
+  answer[0] = 2*3*4 = 24
+  answer[1] = 1*3*4 = 12
+  answer[2] = 1*2*4 = 8
+  answer[3] = 1*2*3 = 6
+```
+
+#### Phân tích tư duy
+
+**Quan sát then chốt:** `answer[i]` = (tích các phần tử BÊN TRÁI i) * (tích các phần tử BÊN PHẢI i).
+
+Ta gọi:
+
+- **Prefix product:** `prefix[i]` = tích `nums[0] * nums[1] * ... * nums[i-1]`
+- **Suffix product:** `suffix[i]` = tích `nums[i+1] * nums[i+2] * ... * nums[n-1]`
+
+Khi đó: `answer[i] = prefix[i] * suffix[i]`
+
+#### Cách 1: Hai mảng prefix và suffix
+
+```python
+def product_except_self_two_arrays(nums: list[int]) -> list[int]:
+    """
+    Dùng 2 mảng prefix và suffix
+    Time: O(n), Space: O(n)
+    """
+    n = len(nums)
+
+    # prefix[i] = tích các phần tử bên TRÁI nums[i]
+    prefix = [1] * n
+    for i in range(1, n):
+        prefix[i] = prefix[i - 1] * nums[i - 1]
+
+    # suffix[i] = tích các phần tử bên PHẢI nums[i]
+    suffix = [1] * n
+    for i in range(n - 2, -1, -1):
+        suffix[i] = suffix[i + 1] * nums[i + 1]
+
+    # Kết quả = prefix * suffix
+    answer = [prefix[i] * suffix[i] for i in range(n)]
+    return answer
+```
+
+#### Cách 2: O(1) Space — Dùng mảng output làm prefix (Recommended)
+
+```python
+def product_except_self(nums: list[int]) -> list[int]:
+    """
+    Tối ưu space: dùng mảng output làm prefix, rồi nhân suffix on-the-fly
+    Time: O(n), Space: O(1) (không tính mảng output)
+    """
+    n = len(nums)
+    answer = [1] * n
+
+    # Bước 1: Tính prefix product — lưu vào answer
+    # answer[i] = tích tất cả phần tử bên TRÁI i
+    prefix = 1
+    for i in range(n):
+        answer[i] = prefix
+        prefix *= nums[i]
+
+    # Bước 2: Nhân với suffix product (tính từ phải sang trái)
+    # answer[i] *= tích tất cả phần tử bên PHẢI i
+    suffix = 1
+    for i in range(n - 1, -1, -1):
+        answer[i] *= suffix
+        suffix *= nums[i]
+
+    return answer
+```
+
+#### Dry run chi tiết
+
+```
+Input: nums = [1, 2, 3, 4]
+
+--- Bước 1: Tính prefix product ---
+i=0: answer[0] = 1 (không có phần tử bên trái)
+     prefix = 1 * 1 = 1
+     answer = [1, _, _, _]
+
+i=1: answer[1] = 1 (tích bên trái: 1)
+     prefix = 1 * 2 = 2
+     answer = [1, 1, _, _]
+
+i=2: answer[2] = 2 (tích bên trái: 1*2)
+     prefix = 2 * 3 = 6
+     answer = [1, 1, 2, _]
+
+i=3: answer[3] = 6 (tích bên trái: 1*2*3)
+     prefix = 6 * 4 = 24
+     answer = [1, 1, 2, 6]
+
+--- Bước 2: Nhân suffix product ---
+i=3: answer[3] *= 1 = 6*1 = 6 (không có phần tử bên phải)
+     suffix = 1 * 4 = 4
+     answer = [1, 1, 2, 6]
+
+i=2: answer[2] *= 4 = 2*4 = 8 (tích bên phải: 4)
+     suffix = 4 * 3 = 12
+     answer = [1, 1, 8, 6]
+
+i=1: answer[1] *= 12 = 1*12 = 12 (tích bên phải: 3*4)
+     suffix = 12 * 2 = 24
+     answer = [1, 12, 8, 6]
+
+i=0: answer[0] *= 24 = 1*24 = 24 (tích bên phải: 2*3*4)
+     suffix = 24 * 1 = 24
+     answer = [24, 12, 8, 6]
+
+Kết quả: [24, 12, 8, 6] ✓
+```
+
+#### Phân tích độ phức tạp
+
+|                                 | Time     | Space    |
+| :------------------------------ | :------- | :------- |
+| Brute Force (tích từng phần tử) | O(n^2)   | O(1)     |
+| Dùng phép chia                  | O(n)     | O(1)     |
+| Hai mảng prefix + suffix        | O(n)     | O(n)     |
+| **Một mảng + biến suffix**      | **O(n)** | **O(1)** |
+
+#### Lỗi thường gặp
+
+1. **Dùng phép chia:** Đề bài cấm! Và chia cho 0 sẽ lỗi khi mảng có phần tử 0.
+2. **Mảng có số 0:** `[1, 2, 0, 4]` -> `answer = [0, 0, 8, 0]`. Code trên xử lý đúng tự nhiên.
+3. **Mảng có nhiều số 0:** `[0, 0, 3]` -> `answer = [0, 0, 0]`. Mỗi phần tử đều có ít nhất 1 số 0 "phía còn lại".
+
+------
+
+### 10.7. Majority Element — LeetCode #169 (Easy)
+
+**Link:** https://leetcode.com/problems/majority-element/
+
+**Difficulty:** Easy
+
+#### Đề bài
+
+Cho mảng `nums` kích thước n. Tìm **majority element** — phần tử xuất hiện **hơn n/2 lần**. Đề bài đảm bảo majority element luôn tồn tại.
+
+**Ví dụ:**
+
+```
+Input: nums = [2, 2, 1, 1, 1, 2, 2]
+Output: 2
+Giải thích: 2 xuất hiện 4 lần, 4 > 7/2 = 3.5
+```
+
+#### Phân tích tư duy
+
+Có nhiều cách giải, nhưng **Moore's Voting Algorithm** là elegant nhất: O(n) time, O(1) space.
+
+Tư duy (đã học ở phần 8): Tưởng tượng cuộc bầu cử. Mỗi khi 2 phiếu khác nhau gặp nhau, cả 2 bị hủy (cancel out). Majority element chiếm > 50%, nên sau khi cancel hết, nó vẫn còn sót lại.
+
+#### Cách 1: Hash Map đếm
+
+```python
+from collections import Counter
+
+def majority_element_hash(nums: list[int]) -> int:
+    """
+    Đếm tần suất bằng hash map
+    Time: O(n), Space: O(n)
+    """
+    count = Counter(nums)
+    # Tìm phần tử có tần suất > n/2
+    return max(count, key=count.get)
+```
+
+#### Cách 2: Sort
+
+```python
+def majority_element_sort(nums: list[int]) -> int:
+    """
+    Sort rồi lấy phần tử giữa
+    Majority element chiếm > n/2 -> chắc chắn nằm ở giữa
+    Time: O(n log n), Space: O(1)
+    """
+    nums.sort()
+    return nums[len(nums) // 2]
+```
+
+#### Cách 3: Moore's Voting Algorithm (Recommended)
+
+```python
+def majority_element(nums: list[int]) -> int:
+    """
+    Moore's Voting Algorithm
+    Ý tưởng: duy trì 1 ứng viên (candidate) và 1 bộ đếm (count)
+    - count == 0 -> chọn ứng viên mới
+    - Phần tử == candidate -> count += 1
+    - Phần tử != candidate -> count -= 1 (cancel out)
+
+    Time: O(n), Space: O(1)
+    """
+    candidate = None
+    count = 0
+
+    for num in nums:
+        if count == 0:
+            # Không còn ai trên sân -> chọn ứng viên mới
+            candidate = num
+            count = 1
+        elif num == candidate:
+            # Phiếu bầu cho ứng viên hiện tại
+            count += 1
+        else:
+            # Phiếu khác -> cancel 1 phiếu của ứng viên
+            count -= 1
+
+    return candidate
+```
+
+#### Dry run chi tiết
+
+```
+Input: nums = [2, 2, 1, 1, 1, 2, 2]
+
+Bước 1: num=2, count=0
+  -> count == 0, chọn candidate = 2, count = 1
+  [candidate=2, count=1]
+
+Bước 2: num=2, count=1
+  -> num == candidate(2), count = 2
+  [candidate=2, count=2]
+
+Bước 3: num=1, count=2
+  -> num != candidate(2), count = 1   (cancel 1 phiếu)
+  [candidate=2, count=1]
+
+Bước 4: num=1, count=1
+  -> num != candidate(2), count = 0   (cancel hết!)
+  [candidate=2, count=0]
+
+Bước 5: num=1, count=0
+  -> count == 0, chọn candidate = 1, count = 1
+  [candidate=1, count=1]
+
+Bước 6: num=2, count=1
+  -> num != candidate(1), count = 0   (cancel hết!)
+  [candidate=1, count=0]
+
+Bước 7: num=2, count=0
+  -> count == 0, chọn candidate = 2, count = 1
+  [candidate=2, count=1]
+
+Kết quả: candidate = 2 ✓
+Xác nhận: 2 xuất hiện 4/7 lần > 3.5 ✓
+```
+
+#### Phân tích độ phức tạp
+
+| Phương pháp        | Time       | Space    |
+| :----------------- | :--------- | :------- |
+| Hash Map           | O(n)       | O(n)     |
+| Sort               | O(n log n) | O(1)     |
+| **Moore's Voting** | **O(n)**   | **O(1)** |
+
+Moore's Voting tối ưu cả 2 chiều: time và space.
+
+#### Lỗi thường gặp
+
+1. **Không có phase 2:** Nếu đề bài KHÔNG đảm bảo majority tồn tại, cần đếm lại ứng viên để xác nhận.
+2. **Nhầm "nhiều nhất" vs "majority":** "Nhiều nhất" (most frequent) khác "majority" (> n/2). Phần tử nhiều nhất có thể chỉ chiếm 30%.
+3. **Mảng 1 phần tử:** `[5]` -> candidate = 5. Vẫn đúng.
+
+------
+
+### 10.8. Sort Colors — LeetCode #75 (Medium)
+
+**Link:** https://leetcode.com/problems/sort-colors/
+
+**Difficulty:** Medium
+
+#### Đề bài
+
+Cho mảng `nums` chỉ chứa 3 giá trị: `0` (đỏ), `1` (trắng), `2` (xanh). Sắp xếp **tại chỗ** (in-place) sao cho tất cả 0 đứng trước, rồi 1, rồi 2.
+
+**Yêu cầu:** One-pass, không dùng hàm sort của thư viện.
+
+**Ví dụ:**
+
+```
+Input: nums = [2, 0, 2, 1, 1, 0]
+Output: [0, 0, 1, 1, 2, 2]
+```
+
+#### Phân tích tư duy
+
+Đây là bài kinh điển của **Dutch National Flag Algorithm** (đã học ở phần 9).
+
+Dùng 3 con trỏ:
+
+- `low`: ranh giới bên phải vùng đỏ (0). Mọi thứ trước `low` là 0.
+- `mid`: phần tử đang xét. Di chuyển từ trái sang phải.
+- `high`: ranh giới bên trái vùng xanh (2). Mọi thứ sau `high` là 2.
+
+Quy tắc khi `mid` gặp:
+
+- **0 (đỏ):** swap với `low`, tăng cả `low` và `mid`
+- **1 (trắng):** đúng chỗ rồi, tăng `mid`
+- **2 (xanh):** swap với `high`, giảm `high` (KHÔNG tăng mid vì phần tử swap về chưa xét)
+
+#### Cách 1: Counting Sort (Two-pass)
+
+```python
+def sort_colors_counting(nums: list[int]) -> None:
+    """
+    Đếm số lượng mỗi màu rồi ghi đè
+    Time: O(n) — 2 pass, Space: O(1)
+    """
+    # Pass 1: Đếm
+    count = [0, 0, 0]
+    for num in nums:
+        count[num] += 1
+
+    # Pass 2: Ghi đè
+    idx = 0
+    for color in range(3):
+        for _ in range(count[color]):
+            nums[idx] = color
+            idx += 1
+```
+
+#### Cách 2: Dutch National Flag — One-pass (Recommended)
+
+```python
+def sort_colors(nums: list[int]) -> None:
+    """
+    Dutch National Flag Algorithm
+    Ba con trỏ: low (vùng 0), mid (đang xét), high (vùng 2)
+    Time: O(n) — one pass, Space: O(1)
+    """
+    low = 0               # vị trí tiếp theo cho số 0
+    mid = 0               # phần tử đang xét
+    high = len(nums) - 1  # vị trí tiếp theo cho số 2
+
+    while mid <= high:
+        if nums[mid] == 0:
+            # Đẩy 0 về vùng trái
+            nums[low], nums[mid] = nums[mid], nums[low]
+            low += 1
+            mid += 1
+            # Tăng mid vì nums[low] cũ là 1 (đã xét rồi)
+
+        elif nums[mid] == 1:
+            # 1 đúng vùng rồi, bỏ qua
+            mid += 1
+
+        else:  # nums[mid] == 2
+            # Đẩy 2 về vùng phải
+            nums[mid], nums[high] = nums[high], nums[mid]
+            high -= 1
+            # KHÔNG tăng mid! Phần tử swap về từ high chưa được xét
+```
+
+#### Dry run chi tiết
+
+```
+Input: nums = [2, 0, 2, 1, 1, 0]
+
+Khởi tạo: low=0, mid=0, high=5
+Vùng:     [..............chưa xét..............]
+Array:     2   0   2   1   1   0
+          ^mid                 ^high
+
+──────────────────────────────────────
+
+Bước 1: nums[mid=0] = 2 -> swap(mid, high), high--
+  swap(0, 5): nums = [0, 0, 2, 1, 1, 2]
+  low=0, mid=0, high=4
+  Vùng: [..chưa xét..] [xanh]
+  (KHÔNG tăng mid vì 0 vừa swap về cần xét)
+
+──────────────────────────────────────
+
+Bước 2: nums[mid=0] = 0 -> swap(low, mid), low++, mid++
+  swap(0, 0): không đổi
+  low=1, mid=1, high=4
+  Vùng: [đỏ] [..chưa xét..] [xanh]
+
+──────────────────────────────────────
+
+Bước 3: nums[mid=1] = 0 -> swap(low, mid), low++, mid++
+  swap(1, 1): không đổi
+  low=2, mid=2, high=4
+  Vùng: [đỏ, đỏ] [..chưa xét..] [xanh]
+
+──────────────────────────────────────
+
+Bước 4: nums[mid=2] = 2 -> swap(mid, high), high--
+  swap(2, 4): nums = [0, 0, 1, 1, 2, 2]
+  low=2, mid=2, high=3
+  Vùng: [đỏ, đỏ] [chưa xét] [xanh, xanh]
+
+──────────────────────────────────────
+
+Bước 5: nums[mid=2] = 1 -> mid++
+  low=2, mid=3, high=3
+  Vùng: [đỏ, đỏ] [trắng] [chưa] [xanh, xanh]
+
+──────────────────────────────────────
+
+Bước 6: nums[mid=3] = 1 -> mid++
+  low=2, mid=4, high=3
+  mid > high -> DỪNG!
+
+Kết quả: [0, 0, 1, 1, 2, 2] ✓
+```
+
+#### Phân tích độ phức tạp
+
+|                                  | Time       | Space    |
+| :------------------------------- | :--------- | :------- |
+| Sort thư viện                    | O(n log n) | O(1)     |
+| Counting Sort (2 pass)           | O(n)       | O(1)     |
+| **Dutch National Flag (1 pass)** | **O(n)**   | **O(1)** |
+
+#### Lỗi thường gặp
+
+1. **Tăng mid khi swap với high:** Đây là lỗi KINH ĐIỂN. Phần tử swap về từ `high` chưa được xét, có thể là 0 hoặc 2. PHẢI xét lại.
+2. **Không tăng mid khi swap với low:** Khi swap với `low`, phần tử swap về là 1 (vì low <= mid, vùng [low..mid-1] chỉ chứa 1). An toàn tăng mid.
+3. **Dùng `mid < high` thay vì `mid <= high`:** Sẽ bỏ sót phần tử cuối cùng. Phải là `<=`.
+
+------
+
+### 10.9. Subarray Sum Equals K — LeetCode #560 (Medium)
+
+**Link:** https://leetcode.com/problems/subarray-sum-equals-k/
+
+**Difficulty:** Medium
+
+#### Đề bài
+
+Cho mảng số nguyên `nums` (có thể chứa số âm) và số nguyên `k`. Đếm **số lượng subarray liên tiếp** có tổng bằng `k`.
+
+**Ví dụ:**
+
+```
+Input: nums = [1, 1, 1], k = 2
+Output: 2
+Giải thích: Hai subarray [1,1] (index 0-1) và [1,1] (index 1-2)
+```
+
+#### Phân tích tư duy
+
+**Quan sát then chốt (Prefix Sum):**
+
+Gọi `prefix[j]` = tổng `nums[0] + nums[1] + ... + nums[j-1]`.
+
+Tổng subarray `nums[i..j-1]` = `prefix[j] - prefix[i]`.
+
+Nếu `prefix[j] - prefix[i] == k` thì subarray `nums[i..j-1]` có tổng = k.
+
+-> Với mỗi `j`, ta cần đếm: **có bao nhiêu `prefix[i]` trước đó có giá trị = `prefix[j] - k`**?
+
+Đây chính là bài **Two Sum** nhưng đếm số lượng thay vì tìm 1 cặp!
+
+**Tại sao không dùng Sliding Window?** Vì mảng có số âm, khi mở rộng cửa sổ tổng có thể giảm, thu nhỏ tổng có thể tăng -> không có tính chất monotonic để dùng sliding window.
+
+#### Cách 1: Brute Force
+
+```python
+def subarray_sum_brute(nums: list[int], k: int) -> int:
+    """
+    Thử mọi subarray, tính tổng
+    Time: O(n^2), Space: O(1)
+    """
+    count = 0
+    n = len(nums)
+
+    for i in range(n):
+        current_sum = 0
+        for j in range(i, n):
+            current_sum += nums[j]
+            if current_sum == k:
+                count += 1
+
+    return count
+```
+
+#### Cách 2: Prefix Sum + Hash Map (Recommended)
+
+```python
+from collections import defaultdict
+
+def subarray_sum(nums: list[int], k: int) -> int:
+    """
+    Prefix Sum + Hash Map
+    Ý tưởng: nếu prefix[j] - prefix[i] == k thì subarray nums[i..j-1] có tổng k
+    -> Với mỗi j, đếm số prefix[i] = prefix[j] - k đã gặp trước đó
+
+    Time: O(n), Space: O(n)
+    """
+    count = 0                        # số subarray có tổng = k
+    prefix_sum = 0                   # tổng tích lũy hiện tại
+    prefix_count = defaultdict(int)  # đếm số lần mỗi prefix_sum xuất hiện
+    prefix_count[0] = 1              # base case: prefix_sum = 0 xuất hiện 1 lần
+                                     # (đại diện cho "không lấy phần tử nào")
+
+    for num in nums:
+        # Cập nhật prefix sum
+        prefix_sum += num
+
+        # Tìm: có bao nhiêu prefix trước đó = prefix_sum - k?
+        # Nếu có, thì mỗi prefix đó tạo ra 1 subarray có tổng k
+        complement = prefix_sum - k
+        count += prefix_count[complement]
+
+        # Lưu prefix_sum hiện tại vào map
+        prefix_count[prefix_sum] += 1
+
+    return count
+```
+
+#### Dry run chi tiết
+
+```
+Input: nums = [1, 2, 3, -2, 5], k = 5
+
+Khởi tạo: prefix_sum=0, prefix_count={0:1}, count=0
+
+──────────────────────────────────────
+
+i=0, num=1:
+  prefix_sum = 0 + 1 = 1
+  complement = 1 - 5 = -4
+  prefix_count[-4] = 0 -> count += 0 -> count = 0
+  prefix_count = {0:1, 1:1}
+
+──────────────────────────────────────
+
+i=1, num=2:
+  prefix_sum = 1 + 2 = 3
+  complement = 3 - 5 = -2
+  prefix_count[-2] = 0 -> count += 0 -> count = 0
+  prefix_count = {0:1, 1:1, 3:1}
+
+──────────────────────────────────────
+
+i=2, num=3:
+  prefix_sum = 3 + 3 = 6
+  complement = 6 - 5 = 1
+  prefix_count[1] = 1 -> count += 1 -> count = 1
+  (Subarray: nums[1..2] = [2, 3], tổng = 5) ✓
+  prefix_count = {0:1, 1:1, 3:1, 6:1}
+
+──────────────────────────────────────
+
+i=3, num=-2:
+  prefix_sum = 6 + (-2) = 4
+  complement = 4 - 5 = -1
+  prefix_count[-1] = 0 -> count += 0 -> count = 1
+  prefix_count = {0:1, 1:1, 3:1, 6:1, 4:1}
+
+──────────────────────────────────────
+
+i=4, num=5:
+  prefix_sum = 4 + 5 = 9
+  complement = 9 - 5 = 4
+  prefix_count[4] = 1 -> count += 1 -> count = 2
+  (prefix_sum tại index 3 = 4, nên subarray là nums[4..4] = [5], tổng = 5) ✓
+  prefix_count = {0:1, 1:1, 3:1, 6:1, 4:1, 9:1}
+
+Kiểm tra bằng brute force:
+  [1]=1, [1,2]=3, [1,2,3]=6, [1,2,3,-2]=4, [1,2,3,-2,5]=9
+  [2]=2, [2,3]=5 ✓, [2,3,-2]=3, [2,3,-2,5]=8
+  [3]=3, [3,-2]=1, [3,-2,5]=6
+  [-2]=-2, [-2,5]=3
+  [5]=5 ✓
+
+Đúng 2 subarray! count = 2 ✓
+```
+
+**Ví dụ đơn giản hơn:** `nums = [1, 1, 1], k = 2`
+
+```
+Khởi tạo: prefix_sum=0, prefix_count={0:1}, count=0
+
+i=0, num=1:
+  prefix_sum = 1, complement = 1-2 = -1
+  prefix_count[-1] = 0 -> count = 0
+  prefix_count = {0:1, 1:1}
+
+i=1, num=1:
+  prefix_sum = 2, complement = 2-2 = 0
+  prefix_count[0] = 1 -> count = 1
+  (Subarray nums[0..1] = [1,1], tổng = 2) ✓
+  prefix_count = {0:1, 1:1, 2:1}
+
+i=2, num=1:
+  prefix_sum = 3, complement = 3-2 = 1
+  prefix_count[1] = 1 -> count = 2
+  (Subarray nums[1..2] = [1,1], tổng = 2) ✓
+  prefix_count = {0:1, 1:1, 2:1, 3:1}
+
+Kết quả: count = 2 ✓
+```
+
+#### Phân tích độ phức tạp
+
+|                           | Time     | Space    |
+| :------------------------ | :------- | :------- |
+| Brute Force               | O(n^2)   | O(1)     |
+| **Prefix Sum + Hash Map** | **O(n)** | **O(n)** |
+
+#### Lỗi thường gặp
+
+1. **Quên `prefix_count[0] = 1`:** Đây là base case QUAN TRỌNG. Nếu prefix_sum == k, ta cần biết có 1 "prefix rỗng" (tổng = 0) để tạo subarray từ đầu đến vị trí hiện tại.
+2. **Nhầm với Sliding Window:** Sliding Window KHÔNG áp dụng được vì mảng có số âm.
+3. **Thứ tự lưu vào map:** Phải lưu SAU khi kiểm tra complement, không phải trước. Nếu lưu trước, có thể tự ghép với chính mình.
+
+------
+
+### 10.10. Trapping Rain Water — LeetCode #42 (Hard)
+
+**Link:** https://leetcode.com/problems/trapping-rain-water/
+
+**Difficulty:** Hard
+
+#### Đề bài
+
+Cho mảng `height` đại diện cho độ cao của các cột. Tính **lượng nước** có thể giữ được sau khi trời mưa.
+
+**Ví dụ:**
+
+```
+Input: height = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]
+Output: 6
+       █
+   █ ~ ~ ~ ~ █ █
+   █ █ ~ █ ~ █ █ ~ █
+ __█_█_█_█_█_█_█_█_█_█_█__
+   1 0 2 1 0 1 3 2 1 2 1
+
+~ = nước, █ = cột
+```
+
+#### Phân tích tư duy
+
+**Quan sát cốt lõi:** Lượng nước tại mỗi vị trí `i` phụ thuộc vào:
+
+- `left_max`: cột cao nhất bên TRÁI i
+- `right_max`: cột cao nhất bên PHẢI i
+
+Nước tại vị trí i = `min(left_max, right_max) - height[i]` (nếu > 0).
+
+**Tại sao `min`?** Vì nước sẽ tràn qua phía thấp hơn. Giống như một cái chậu: nước chỉ giữ được đến mép thấp nhất.
+
+#### Cách 1: Brute Force — Tìm left_max và right_max cho mỗi vị trí
+
+```python
+def trap_brute(height: list[int]) -> int:
+    """
+    Với mỗi vị trí, tìm left_max và right_max
+    Time: O(n^2), Space: O(1)
+    """
+    n = len(height)
+    water = 0
+
+    for i in range(1, n - 1):  # cột đầu và cuối không giữ nước
+        # Tìm cột cao nhất bên trái
+        left_max = max(height[:i + 1])
+        # Tìm cột cao nhất bên phải
+        right_max = max(height[i:])
+        # Nước tại vị trí i
+        water += min(left_max, right_max) - height[i]
+
+    return water
+```
+
+#### Cách 2: Prefix Max — Tiền xử lý
+
+```python
+def trap_prefix(height: list[int]) -> int:
+    """
+    Tiền xử lý left_max[] và right_max[]
+    Time: O(n), Space: O(n)
+    """
+    n = len(height)
+    if n <= 2:
+        return 0
+
+    # left_max[i] = cột cao nhất từ 0 đến i
+    left_max = [0] * n
+    left_max[0] = height[0]
+    for i in range(1, n):
+        left_max[i] = max(left_max[i - 1], height[i])
+
+    # right_max[i] = cột cao nhất từ i đến n-1
+    right_max = [0] * n
+    right_max[n - 1] = height[n - 1]
+    for i in range(n - 2, -1, -1):
+        right_max[i] = max(right_max[i + 1], height[i])
+
+    # Tính lượng nước
+    water = 0
+    for i in range(n):
+        water += min(left_max[i], right_max[i]) - height[i]
+
+    return water
+```
+
+#### Cách 3: Two Pointers — Tối ưu space (Recommended)
+
+```python
+def trap(height: list[int]) -> int:
+    """
+    Two Pointers: không cần lưu mảng left_max và right_max
+    Chỉ cần 2 biến left_max và right_max, đi từ 2 đầu vào giữa
+
+    Ý tưởng cốt lõi:
+    - Nếu left_max < right_max: nước tại left bị giới hạn bởi left_max
+      (bên phải CHẮC CHẮN có cột >= right_max >= left_max)
+      -> Tính nước tại left, tăng left
+    - Ngược lại: nước tại right bị giới hạn bởi right_max
+      -> Tính nước tại right, giảm right
+
+    Time: O(n), Space: O(1)
+    """
+    n = len(height)
+    if n <= 2:
+        return 0
+
+    left, right = 0, n - 1
+    left_max, right_max = 0, 0
+    water = 0
+
+    while left < right:
+        if height[left] < height[right]:
+            # Bên phải có cột cao hơn -> nước tại left bị giới hạn bởi left_max
+            if height[left] >= left_max:
+                left_max = height[left]  # cập nhật left_max
+            else:
+                water += left_max - height[left]  # giữ nước
+            left += 1
+        else:
+            # Bên trái có cột cao hơn -> nước tại right bị giới hạn bởi right_max
+            if height[right] >= right_max:
+                right_max = height[right]  # cập nhật right_max
+            else:
+                water += right_max - height[right]  # giữ nước
+            right -= 1
+
+    return water
+```
+
+#### Dry run chi tiết
+
+```
+Input: height = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]
+
+Khởi tạo: left=0, right=11, left_max=0, right_max=0, water=0
+
+Bước 1: h[left=0]=0 < h[right=11]=1
+  h[0]=0 >= left_max(0)? Có -> left_max = 0
+  left = 1
+  water = 0
+
+Bước 2: h[left=1]=1 >= h[right=11]=1
+  h[11]=1 >= right_max(0)? Có -> right_max = 1
+  right = 10
+  water = 0
+
+Bước 3: h[left=1]=1 < h[right=10]=2
+  h[1]=1 >= left_max(0)? Có -> left_max = 1
+  left = 2
+  water = 0
+
+Bước 4: h[left=2]=0 < h[right=10]=2
+  h[2]=0 >= left_max(1)? Không -> water += 1 - 0 = 1
+  left = 3
+  water = 1
+
+Bước 5: h[left=3]=2 >= h[right=10]=2
+  h[10]=2 >= right_max(1)? Có -> right_max = 2
+  right = 9
+  water = 1
+
+Bước 6: h[left=3]=2 > h[right=9]=1
+  h[9]=1 >= right_max(2)? Không -> water += 2 - 1 = 1
+  right = 8
+  water = 2
+
+Bước 7: h[left=3]=2 >= h[right=8]=2
+  h[8]=2 >= right_max(2)? Có -> right_max = 2
+  right = 7
+  water = 2
+
+Bước 8: h[left=3]=2 < h[right=7]=3
+  h[3]=2 >= left_max(1)? Có -> left_max = 2
+  left = 4
+  water = 2
+
+Bước 9: h[left=4]=1 < h[right=7]=3
+  h[4]=1 >= left_max(2)? Không -> water += 2 - 1 = 1
+  left = 5
+  water = 3
+
+Bước 10: h[left=5]=0 < h[right=7]=3
+  h[5]=0 >= left_max(2)? Không -> water += 2 - 0 = 2
+  left = 6
+  water = 5
+
+Bước 11: h[left=6]=1 < h[right=7]=3
+  h[6]=1 >= left_max(2)? Không -> water += 2 - 1 = 1
+  left = 7
+  water = 6
+
+left = 7 >= right = 7 -> DỪNG
+
+Kết quả: water = 6 ✓
+```
+
+#### Phân tích độ phức tạp
+
+|                  | Time     | Space    |
+| :--------------- | :------- | :------- |
+| Brute Force      | O(n^2)   | O(1)     |
+| Prefix Max       | O(n)     | O(n)     |
+| Stack            | O(n)     | O(n)     |
+| **Two Pointers** | **O(n)** | **O(1)** |
+
+#### Tại sao Two Pointers hoạt động?
+
+Điểm mấu chốt: khi `height[left] < height[right]`:
+
+- Ta BIẾT bên phải có ít nhất 1 cột cao `height[right]`
+- Nên nước tại `left` chỉ bị giới hạn bởi `left_max` (vì `right_max >= height[right] > height[left]`)
+- Ta có thể tính nước tại `left` mà KHÔNG cần biết chính xác right_max
+
+Tương tự cho phía phải.
+
+#### Lỗi thường gặp
+
+1. **Nhầm điều kiện so sánh:** Dùng `height[left] < height[right]` (không phải left_max vs right_max) để quyết định đi hướng nào.
+2. **Quên xử lý cột đầu/cuối:** Cột ở biên không giữ nước. Code Two Pointers tự động xử lý vì left_max và right_max bắt đầu = 0.
+3. **Mảng rỗng hoặc quá ngắn:** `n <= 2` -> không giữ được nước -> trả về 0.

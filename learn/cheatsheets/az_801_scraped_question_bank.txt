@@ -1,0 +1,139 @@
+# 🗃️ AZ-801 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Secure Windows Server on-premises and hybrid infrastructures (Testlet 1)
+
+DRAG DROP (Drag and Drop is not supported)
+
+You are planning the implementation of Cluster2 to support the on-premises migration plan.
+
+You need to ensure that the disks on Cluster2 meet the security requirements.
+
+In which order should you perform the actions? To answer, move all actions from the list of actions to the answer area and arrange them in the correct order.
+
+Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Secure Windows Server on-premises and hybrid infrastructures (Testlet 1)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You need to implement a security policy solution to authorize the applications. The solution must meet the security requirements.
+
+Which service should you use to enforce the security policy, and what should you use to manage the policy settings? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Secure Windows Server on-premises and hybrid infrastructures (Testlet 1)
+
+You are remediating the firewall security risks to meet the security requirements.
+
+What should you configure to reduce the risks?
+
+### Options:
+- [x] **A)** a Group Policy Object (GPO) [Correct]
+- [ ] **B)** adaptive network hardening in Microsoft Defender for Cloud
+- [ ] **C)** a network security group (NSG) in Sub1
+- [ ] **D)** an Azure Firewall policy
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Firewall rules configured in a Group Policy Object cannot be modified by local server administrators.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Secure Windows Server on-premises and hybrid infrastructures (Testlet 1)
+
+You are planning the deployment of Microsoft Sentinel.
+
+Which type of Microsoft Sentinel data connector should you use to meet the security requirements?
+
+### Options:
+- [ ] **A)** Threat Intelligence - TAXII
+- [ ] **B)** Azure Active Directory
+- [ ] **C)** Microsoft Defender for Cloud
+- [x] **D)** Microsoft Defender for Identity [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Secure Windows Server on-premises and hybrid infrastructures (Testlet 2)
+
+HOTSPOT (Drag and Drop is not supported)
+
+You need to configure BitLocker on Server4.
+
+On which volumes can you turn on BitLocker, and on which volumes can you turn on auto-unlock? To answer, select the appropriate options in the answer area.
+
+Note: Each correct selection is worth one point.
+
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---

@@ -1,0 +1,384 @@
+---
+tags:
+  - certification/gh-300
+  - copilot/practice-question
+  - domain/3
+status: 🔁 needs-practice
+question_type: 💻 multiple-choice
+last_attempt: 2026-06-01
+---
+
+# ❓ Practice Questions: Domain 3 — Data, Architecture, and Privacy
+
+---
+
+---
+
+## 📝 Q1: Content Exclusions — Bypassing via Non-Excluded Code
+
+When can GitHub Copilot still use content that was excluded using content exclusion settings?
+
+### Options
+- [ ] **A)** When the user prompts with `@workspace`.
+- [ ] **B)** When the repository-level settings allow overrides by the user.
+- [ ] **C)** If the contents of an excluded file are referenced in code that is not excluded, for example via function calls.
+- [ ] **D)** If the exclusion was configured at the enterprise level and overwritten at the organization level.
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **C**
+
+### Detailed Explanation
+- **Why it is correct**: Content exclusion blocks direct access to files. However, if a non-excluded file references elements of an excluded file (such as calling a function defined in an excluded file), Copilot may still access or suggest that referenced context from the active non-excluded file.
+- **Why other options are incorrect**:
+  - **Option A**: `@workspace` respects content exclusions and will not index excluded files directly.
+  - **Option B**: Users cannot override administrator content exclusions.
+  - **Option D**: Organization settings cannot override or loosen stricter enterprise-level exclusions.
+
+### 📖 Exam Relevance
+- **Domain**: [[certifications/microsoft/GH-300-Copilot/Domain 3 - Data and Privacy|Domain 3 - Data and Privacy]]
+
+</details>
+
+---
+
+---
+
+## 📝 Q2: When can GitHub Copilot
+
+When can GitHub Copilot still use content that was excluded using content exclusion?
+
+### Options
+- [ ] **A)** If the contents of an excluded file are referenced in code that is not excluded, for example function calls.
+- [ ] **B)** When the repository level settings allow overrides by the user.
+- [ ] **C)** If the content exclusion was configured at the enterprise level, and is overwritten at the organization level.
+- [ ] **D)** When the user prompts with @workspace.
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **A**
+
+### Detailed Explanation
+- **Why it is correct**: GitHub Copilot can still use excluded content if it is referenced in code that is not excluded, such as function calls.
+
+### 📖 Exam Relevance
+- **Official Docs Reference**: GitHub Copilot content exclusion documentation.
+
+</details>
+
+---
+
+## 📝 Q3: What is a limitation
+
+What is a limitation of content exclusions?
+
+### Options
+- [ ] **A)** Repository administrators and organization owners cannot manage content exclusion settings.
+- [ ] **B)** Content exclusions can be worked around as it is only available for Git repositories.
+- [ ] **C)** Content exclusions can only be configured by an enterprise administrator.
+- [ ] **D)** Content exclusions are only available in the GitHub Copilot Individual plan.
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **C**
+
+### Detailed Explanation
+- **Why it is correct**: "Content exclusions can only be configured at the enterprise level by an enterprise administrator. Repository or organization admins cannot configure them directly." This confirms that configuration is limited to enterprise administrators, making option C correct.
+
+### 📖 Exam Relevance
+- **Official Docs Reference**: GitHub Copilot content exclusions configuration documentation.
+
+</details>
+
+---
+
+## 📝 Q4: Content Exclusions — Exclusion Propagation Delay
+
+What do you check when GitHub Copilot content exclusions are not working, or how long does it take for content exclusions to take effect?
+
+### Options
+- [ ] **A)** If the user has refreshed their personal GitHub profile page.
+- [ ] **B)** Check if the user is in an organization that has exclusions configured, and verify if the setting was changed within the last 30 minutes.
+- [ ] **C)** If the user has restarted their computer.
+- [ ] **D)** Exclusions take 24 hours to propagate across organization seats.
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **B**
+
+### Detailed Explanation
+- **Why it is correct**: Changes to content exclusion policies take up to **30 minutes** to propagate and apply to developer IDE clients. In addition, the developer must belong to an organization where exclusions are configured.
+- **Why other options are incorrect**:
+  - **Option A**: Exclusions are fetched by the IDE plugin in the background, not via manual profile page refreshes.
+  - **Option C**: Restarting the computer is not required; the extension updates its cache automatically within 30 minutes.
+  - **Option D**: The propagation limit is 30 minutes, not 24 hours.
+
+### 📖 Exam Relevance
+- **Domain**: [[certifications/microsoft/GH-300-Copilot/Domain 3 - Data and Privacy|Domain 3 - Data and Privacy]]
+
+</details>
+
+---
+
+---
+
+## 📝 Q5: What reasons could apply
+
+What reasons could apply if code suggestions are not working in your editor? (Select three.)
+
+### Options
+- [ ] **A)** You are working in files included in your .gitignore
+- [ ] **B)** You do not have an active internet connection
+- [ ] **C)** Your programming language is not supported
+- [ ] **D)** Your content exclusion is active and blocks the use of GitHub Copilot
+- [ ] **E)** You do not have a valid GitHub Copilot license
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **B, C, E**
+
+### Detailed Explanation
+- **Why it is correct**: Exact extracts: "Copilot requires an active internet connection to provide suggestions." "Copilot does not support all programming languages."
+
+### 📖 Exam Relevance
+- **Official Docs Reference**: GitHub Copilot troubleshooting documentation.
+
+</details>
+
+---
+
+## 📝 Q6: Context Derivation — Neighbors & Related Files
+
+Which of the following does GitHub Copilot's language model derive context from in the IDE to produce suggestions?
+
+### Options
+- [ ] **A)** Frequency of commits to the Git repository.
+- [ ] **B)** Information from the IDE like open tabs, cursor location, selected code, and neighboring files.
+- [ ] **C)** The syntax highlighting theme configured in the editor.
+- [ ] **D)** All git submodules in the current repository.
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **B** (PDF Questions NO.65 and NO.102 cover this: context is derived from editor state like open tabs, cursor position, selected code, and neighboring/related files in the project).
+
+### Detailed Explanation
+- **Why it is correct**: The IDE client dynamically creates prompts by pulling context from the active file (near the cursor), other open tabs in the editor (relying on filename and import similarity), and neighboring files within the folder structure.
+- **Why other options are incorrect**:
+  - **Option A**: Commit frequency does not impact inline completions context.
+  - **Option C**: Syntax highlighting colors are purely visual and are not sent in prompts.
+  - **Option D**: Copilot does not parse or upload the entire repository and all submodules for every inline suggestion.
+
+### 📖 Exam Relevance
+- **Domain**: [[certifications/microsoft/GH-300-Copilot/Domain 3 - Data and Privacy|Domain 3 - Data and Privacy]]
+
+</details>
+
+---
+
+---
+
+## 📝 Q7: Excludable Content Types
+
+What scopes of content can be configured to be excluded with content exclusions?
+
+### Options
+- [ ] **A)** Specific lines of code within a file.
+- [ ] **B)** Individual files, entire folders, and whole repositories.
+- [ ] **C)** Personal GitHub Gists only.
+- [ ] **D)** Commit messages and pull request titles.
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **B**
+
+### Detailed Explanation
+- **Why it is correct**: Content exclusions can be scoped to target specific files, folders, or entire repositories (e.g., in organization settings).
+- **Why other options are incorrect**:
+  - **Option A**: You cannot exclude individual lines of code within an active file.
+  - **Option C**: Gists are outside the scope of repository content exclusions.
+  - **Option D**: Metadata like commit messages or PR titles are not governed by content exclusions.
+
+### 📖 Exam Relevance
+- **Domain**: [[certifications/microsoft/GH-300-Copilot/Domain 3 - Data and Privacy|Domain 3 - Data and Privacy]]
+
+</details>
+
+---
+
+---
+
+## 📝 Q8: Identify the steps involved
+
+Identify the steps involved in the life cycle of a GitHub Copilot code suggestion? (Each correct answer presents part of the solution. Choose two.)
+
+### Options
+- [ ] **A)** Generate suggestions
+- [ ] **B)** Capturing the user ' s context
+- [ ] **C)** Processing telemetry data
+- [ ] **D)** Retraining the model
+- [ ] **E)** Storing user data
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **A, B**
+
+### Detailed Explanation
+- **Why it is correct**: Exact extracts: "Copilot first captures the context of the developer's code and environment." References: GitHub Copilot technical overview documentation.
+
+### 📖 Exam Relevance
+- **Domain**: [[certifications/microsoft/GH-300-Copilot/Domain 3 - Data and Privacy|Domain 3 - Data and Privacy]]
+
+</details>
+
+---
+
+## 📝 Q9: Troubleshooting Content Exclusions in the Editor
+
+Where can you validate if GitHub Copilot is not returning suggestions in a specific file because of content exclusions?
+
+### Options
+- [ ] **A)** The GitHub Copilot errors panel in your IDE.
+- [ ] **B)** The GitHub Copilot icon in the status bar of the editor will display a message or diagonal line indicating exclusion.
+- [ ] **C)** The code suggestions window will display a warning pop-up.
+- [ ] **D)** The GitHub Copilot logs on GitHub.com under your user settings.
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **B**
+
+### Detailed Explanation
+- **Why it is correct**: When an excluded file is active in the editor, the Copilot status bar icon changes status (e.g., displaying a diagonal slash or hover text indicating suggestions are disabled due to content exclusions).
+- **Why other options are incorrect**:
+  - **Option A**: It is a policy bypass, not a compile/runtime extension error, so it won't show in standard error panels.
+  - **Option C**: Inline suggestions are silently blocked; no warning pop-ups disrupt the developer.
+  - **Option D**: Real-time IDE exclusion events are not logged to a user-facing dashboard on GitHub.com.
+
+### 📖 Exam Relevance
+- **Domain**: [[certifications/microsoft/GH-300-Copilot/Domain 3 - Data and Privacy|Domain 3 - Data and Privacy]]
+
+</details>
+
+---
+
+Back to **[[certifications/microsoft/GH-300-Copilot/GH-300 Copilot MOC|GH-300 Copilot MOC]]**
+
+---
+
+## 📝 Q10: What is used by
+
+What is used by GitHub Copilot in the IDE to determine the prompt context?
+
+### Options
+- [ ] **A)** Information from the IDE like open tabs, cursor location, selected code.
+- [ ] **B)** All the code in the current repository and any git submodules.
+- [ ] **C)** The open tabs in the IDE and the current folder of the terminal.
+- [ ] **D)** All the code visible in the current IDE.
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **A**
+
+### Detailed Explanation
+- **Why it is correct**: "GitHub Copilot generates suggestions based on context from the IDE, including the file you are editing, open tabs, cursor position, and any selected code." This proves that the context is drawn from editor state information, making option A correct.
+
+### 📖 Exam Relevance
+- **Official Docs Reference**: GitHub Copilot context and suggestions documentation.
+
+</details>
+
+---
+
+## 📝 Q11: What are the effects
+
+What are the effects of content exclusions? (Each correct answer presents part of the solution. Choose two.)
+
+### Options
+- [ ] **A)** The excluded content is not directly available to GitHub Copilot to use as context.
+- [ ] **B)** GitHub Copilot suggestions are no longer available in the excluded files.
+- [ ] **C)** The excluded content is no longer used while debugging the code.
+- [ ] **D)** The IDE will not count coding suggestions in the excluded content.
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **A, B**
+
+### Detailed Explanation
+- **Why it is correct**: Content exclusions prevent GitHub Copilot from using the excluded content as context and stop suggestions from being generated in those files.
+
+### 📖 Exam Relevance
+- **Official Docs Reference**: GitHub Copilot content exclusion documentation.
+
+</details>
+
+---
+
+## 📝 Q12: Telemetry Data Retention Periods
+
+How long does GitHub retain Copilot telemetry data for Business and Enterprise plans?
+
+### Options
+- [ ] **A)** Prompts and suggestions are not retained; engagement data is kept indefinitely.
+- [ ] **B)** Prompts and suggestions are retained for 28 days; User engagement data is kept for 2 years.
+- [ ] **C)** Prompts are kept for 1 year; suggestions are kept for 28 days.
+- [ ] **D)** No telemetry data is ever retained for Business and Enterprise plans.
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **B**
+
+### Detailed Explanation
+- **Why it is correct**: For Copilot Business and Enterprise, prompt and suggestion content (code snippets) is retained for **28 days** (for service logging/delivery) and then deleted. User engagement telemetry (usage stats, click events, configuration metrics) is kept for **2 years** to analyze product performance.
+- **Why other options are incorrect**:
+  - **Option A**: Code snippet prompts are retained temporarily for 28 days, not 0 days, for Business/Enterprise.
+  - **Options C and D**: These do not align with GitHub's official data retention policy.
+
+### 📖 Exam Relevance
+- **Domain**: [[certifications/microsoft/GH-300-Copilot/Domain 3 - Data and Privacy|Domain 3 - Data and Privacy]]
+
+</details>
+
+---
+
+---
+
+## 📝 Q13: How long does it
+
+How long does it take content exclusion to add or be updated?
+
+### Options
+- [ ] **A)** Up to 30 minutes
+- [ ] **B)** 45 - 60 minutes
+- [ ] **C)** 60 - 90 minutes
+- [ ] **D)** 24 hours
+
+<details>
+<summary><b>Reveal Correct Answer</b></summary>
+
+### Correct Answer: **A**
+
+### Detailed Explanation
+- **Why it is correct**: Content exclusions typically take up to 30 minutes to be added or updated.
+
+### 📖 Exam Relevance
+- **Official Docs Reference**: GitHub Copilot content exclusion documentation.
+
+</details>
+
+---
+
+Back to **[[certifications/microsoft/GH-300-Copilot/GH-300 Copilot MOC|GH-300 Copilot MOC]]**
+
+[learning/GH-300-Copilot/Domains/Domain 3 - Data and Privacy|Domain 3 - Data and Privacy]: <../Domains/Domain 3 - Data and Privacy.md> "Domain 3 - Data and Privacy"
+[learning/GH-300-Copilot/GH-300 Copilot MOC|GH-300 Copilot MOC]: <../GH-300 Copilot MOC.md> "🐱 GH-300: GitHub Copilot MOC"

@@ -1,0 +1,508 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/09_Binary_Trees/🌲index_09_Binary_Trees|09_Binary_Trees]]
+
+## 1. Tree Traversals (Duyệt cây)
+
+### Ý tưởng
+
+Khi làm việc với tree, câu hỏi đầu tiên luôn là: **"Mình duyệt qua từng node theo thứ tự nào?"** Không giống array hay linked list chỉ có 1 cách duyệt (từ đầu đến cuối), tree có **nhiều cách duyệt** khác nhau, mỗi cách phục vụ mục đích riêng.
+
+### Analogy — Đọc sách giáo khoa
+
+Tưởng tượng bạn đang đọc một cuốn sách có cấu trúc:
+
+```
+Sách
+├── Phần 1
+│   ├── Chương 1
+│   └── Chương 2
+└── Phần 2
+    ├── Chương 3
+    └── Chương 4
+```
+
+- **Preorder** = đọc tên phần trước, rồi đọc từng chương: "Sách → Phần 1 → Chương 1 → Chương 2 → Phần 2 → Chương 3 → Chương 4"
+- **Inorder** = đọc chương trái, rồi tên phần, rồi chương phải: "Chương 1 → Phần 1 → Chương 2 → Sách → Chương 3 → Phần 2 → Chương 4"
+- **Postorder** = đọc hết chương con trước, rồi mới đến phần: "Chương 1 → Chương 2 → Phần 1 → Chương 3 → Chương 4 → Phần 2 → Sách"
+- **Level-order** = đọc theo từng tầng: "Sách → Phần 1, Phần 2 → Chương 1, Chương 2, Chương 3, Chương 4"
+
+### 1.1 Inorder Traversal (Left → Root → Right)
+
+#### Thuật toán
+
+1. Duyệt cây con bên trái (đệ quy)
+2. Xử lý node hiện tại
+3. Duyệt cây con bên phải (đệ quy)
+
+**Đặc biệt**: Với Binary Search Tree (BST), inorder traversal cho ra dãy **tăng dần**.
+
+#### Flowchart
+
+CóKhôngBắt đầu: inorder(node)node == None?Return (dừng)inorder(node.left)Xử lý node.valinorder(node.right)Return
+
+#### Mô phỏng từng bước
+
+Với cây:
+
+```
+        1
+       / \
+      2   3
+     / \
+    4   5
+```
+
+| Bước | Hành động                | Stack đệ quy | Kết quả         |
+| :--- | :----------------------- | :----------- | :-------------- |
+| 1    | `inorder(1)` → đi trái   | [1]          | []              |
+| 2    | `inorder(2)` → đi trái   | [1, 2]       | []              |
+| 3    | `inorder(4)` → đi trái   | [1, 2, 4]    | []              |
+| 4    | `inorder(None)` → return | [1, 2, 4]    | []              |
+| 5    | Xử lý node 4             | [1, 2, 4]    | [4]             |
+| 6    | `inorder(None)` → return | [1, 2, 4]    | [4]             |
+| 7    | Quay về node 2, xử lý    | [1, 2]       | [4, 2]          |
+| 8    | `inorder(5)` → đi trái   | [1, 2, 5]    | [4, 2]          |
+| 9    | `inorder(None)` → return | [1, 2, 5]    | [4, 2]          |
+| 10   | Xử lý node 5             | [1, 2, 5]    | [4, 2, 5]       |
+| 11   | `inorder(None)` → return | [1, 2, 5]    | [4, 2, 5]       |
+| 12   | Quay về node 1, xử lý    | [1]          | [4, 2, 5, 1]    |
+| 13   | `inorder(3)` → đi trái   | [1, 3]       | [4, 2, 5, 1]    |
+| 14   | `inorder(None)` → return | [1, 3]       | [4, 2, 5, 1]    |
+| 15   | Xử lý node 3             | [1, 3]       | [4, 2, 5, 1, 3] |
+| 16   | `inorder(None)` → return | [1, 3]       | [4, 2, 5, 1, 3] |
+
+**Kết quả**: `[4, 2, 5, 1, 3]`
+
+#### Code — Phiên bản đệ quy
+
+```python
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def inorder_recursive(root):
+    """
+    Inorder traversal bằng đệ quy.
+    Thứ tự: Left → Root → Right
+    Time: O(n), Space: O(h) với h = height
+    """
+    result = []
+
+    def dfs(node):
+        if node is None:
+            return
+        dfs(node.left)       # Duyệt cây trái
+        result.append(node.val)  # Xử lý node
+        dfs(node.right)      # Duyệt cây phải
+
+    dfs(root)
+    return result
+
+
+# === Test ===
+#        1
+#       / \
+#      2   3
+#     / \
+#    4   5
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+
+print("Inorder (đệ quy):", inorder_recursive(root))
+# Output: [4, 2, 5, 1, 3]
+```
+
+#### Code — Phiên bản iterative (dùng stack)
+
+```python
+def inorder_iterative(root):
+    """
+    Inorder traversal không dùng đệ quy.
+    Dùng stack để mô phỏng call stack.
+    Time: O(n), Space: O(h)
+    """
+    result = []
+    stack = []
+    current = root
+
+    while current or stack:
+        # Đi sâu nhất có thể về bên trái
+        while current:
+            stack.append(current)
+            current = current.left
+
+        # Lấy node ra khỏi stack, xử lý
+        current = stack.pop()
+        result.append(current.val)
+
+        # Chuyển sang cây con phải
+        current = current.right
+
+    return result
+
+
+# === Test ===
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+
+print("Inorder (iterative):", inorder_iterative(root))
+# Output: [4, 2, 5, 1, 3]
+```
+
+### 1.2 Preorder Traversal (Root → Left → Right)
+
+#### Thuật toán
+
+1. Xử lý node hiện tại
+2. Duyệt cây con bên trái (đệ quy)
+3. Duyệt cây con bên phải (đệ quy)
+
+**Ứng dụng**: Copy cây, serialize cây, tạo biểu thức prefix.
+
+#### Flowchart
+
+CóKhôngBắt đầu: preorder(node)node == None?ReturnXử lý node.valpreorder(node.left)preorder(node.right)Return
+
+#### Mô phỏng từng bước
+
+Cùng cây như trên:
+
+```
+        1
+       / \
+      2   3
+     / \
+    4   5
+```
+
+| Bước | Hành động                     | Kết quả         |
+| :--- | :---------------------------- | :-------------- |
+| 1    | Xử lý node 1, đi trái         | [1]             |
+| 2    | Xử lý node 2, đi trái         | [1, 2]          |
+| 3    | Xử lý node 4, đi trái         | [1, 2, 4]       |
+| 4    | None → return, đi phải node 4 | [1, 2, 4]       |
+| 5    | None → return, đi phải node 2 | [1, 2, 4]       |
+| 6    | Xử lý node 5, đi trái         | [1, 2, 4, 5]    |
+| 7    | None → return, đi phải node 5 | [1, 2, 4, 5]    |
+| 8    | None → return, đi phải node 1 | [1, 2, 4, 5]    |
+| 9    | Xử lý node 3, đi trái         | [1, 2, 4, 5, 3] |
+| 10   | None → return, đi phải node 3 | [1, 2, 4, 5, 3] |
+| 11   | None → return                 | [1, 2, 4, 5, 3] |
+
+**Kết quả**: `[1, 2, 4, 5, 3]`
+
+#### Code
+
+```python
+def preorder_recursive(root):
+    """
+    Preorder traversal bằng đệ quy.
+    Thứ tự: Root → Left → Right
+    Time: O(n), Space: O(h)
+    """
+    result = []
+
+    def dfs(node):
+        if node is None:
+            return
+        result.append(node.val)  # Xử lý node TRƯỚC
+        dfs(node.left)
+        dfs(node.right)
+
+    dfs(root)
+    return result
+
+
+def preorder_iterative(root):
+    """
+    Preorder traversal dùng stack.
+    Trick: push right trước, left sau (vì stack là LIFO).
+    Time: O(n), Space: O(h)
+    """
+    if not root:
+        return []
+
+    result = []
+    stack = [root]
+
+    while stack:
+        node = stack.pop()
+        result.append(node.val)
+
+        # Push right trước để left được xử lý trước
+        if node.right:
+            stack.append(node.right)
+        if node.left:
+            stack.append(node.left)
+
+    return result
+
+
+# === Test ===
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+
+print("Preorder (đệ quy):", preorder_recursive(root))
+print("Preorder (iterative):", preorder_iterative(root))
+# Output: [1, 2, 4, 5, 3]
+```
+
+### 1.3 Postorder Traversal (Left → Right → Root)
+
+#### Thuật toán
+
+1. Duyệt cây con bên trái (đệ quy)
+2. Duyệt cây con bên phải (đệ quy)
+3. Xử lý node hiện tại
+
+**Ứng dụng**: Xóa cây (xóa con trước cha), tính kích thước thư mục (tính thư mục con trước), evaluate biểu thức postfix.
+
+#### Flowchart
+
+CóKhôngBắt đầu: postorder(node)node == None?Returnpostorder(node.left)postorder(node.right)Xử lý node.valReturn
+
+#### Mô phỏng từng bước
+
+```
+        1
+       / \
+      2   3
+     / \
+    4   5
+```
+
+| Bước | Hành động               | Kết quả         |
+| :--- | :---------------------- | :-------------- |
+| 1    | Đi trái node 1          | []              |
+| 2    | Đi trái node 2          | []              |
+| 3    | Đi trái node 4 → None   | []              |
+| 4    | Đi phải node 4 → None   | []              |
+| 5    | Xử lý node 4            | [4]             |
+| 6    | Đi phải node 2 → node 5 | [4]             |
+| 7    | Đi trái node 5 → None   | [4]             |
+| 8    | Đi phải node 5 → None   | [4]             |
+| 9    | Xử lý node 5            | [4, 5]          |
+| 10   | Xử lý node 2            | [4, 5, 2]       |
+| 11   | Đi phải node 1 → node 3 | [4, 5, 2]       |
+| 12   | Đi trái node 3 → None   | [4, 5, 2]       |
+| 13   | Đi phải node 3 → None   | [4, 5, 2]       |
+| 14   | Xử lý node 3            | [4, 5, 2, 3]    |
+| 15   | Xử lý node 1            | [4, 5, 2, 3, 1] |
+
+**Kết quả**: `[4, 5, 2, 3, 1]`
+
+#### Code
+
+```python
+def postorder_recursive(root):
+    """
+    Postorder traversal bằng đệ quy.
+    Thứ tự: Left → Right → Root
+    Time: O(n), Space: O(h)
+    """
+    result = []
+
+    def dfs(node):
+        if node is None:
+            return
+        dfs(node.left)
+        dfs(node.right)
+        result.append(node.val)  # Xử lý node SAU CÙNG
+
+    dfs(root)
+    return result
+
+
+def postorder_iterative(root):
+    """
+    Postorder iterative dùng 2 stack.
+    Trick: Postorder = đảo ngược của "Root → Right → Left"
+    Time: O(n), Space: O(n)
+    """
+    if not root:
+        return []
+
+    result = []
+    stack = [root]
+
+    while stack:
+        node = stack.pop()
+        result.append(node.val)
+
+        # Push left trước, right sau (ngược với preorder)
+        if node.left:
+            stack.append(node.left)
+        if node.right:
+            stack.append(node.right)
+
+    # Đảo ngược kết quả
+    return result[::-1]
+
+
+# === Test ===
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+
+print("Postorder (đệ quy):", postorder_recursive(root))
+print("Postorder (iterative):", postorder_iterative(root))
+# Output: [4, 5, 2, 3, 1]
+```
+
+### 1.4 Level-order Traversal (BFS)
+
+#### Thuật toán
+
+Duyệt cây theo từng **tầng** (level), từ trên xuống dưới, từ trái sang phải. Dùng **queue** (hàng đợi) để quản lý.
+
+1. Đặt root vào queue
+2. Lặp khi queue còn phần tử:
+   - Lấy node ra khỏi queue
+   - Xử lý node
+   - Thêm left child và right child vào queue
+
+#### Flowchart
+
+CóKhôngBắt đầuĐưa root vào queueQueue rỗng?Kết thúcLấy tất cả node ở level hiện tạiXử lý từng nodeThêm children vào queue
+
+#### Mô phỏng từng bước
+
+```
+        1
+       / \
+      2   3
+     / \   \
+    4   5   7
+```
+
+| Bước | Queue     | Đang xử lý         | Kết quả                  |
+| :--- | :-------- | :----------------- | :----------------------- |
+| 0    | [1]       | —                  | []                       |
+| 1    | [2, 3]    | Level 0: [1]       | [[1]]                    |
+| 2    | [4, 5, 7] | Level 1: [2, 3]    | [[1], [2, 3]]            |
+| 3    | []        | Level 2: [4, 5, 7] | [[1], [2, 3], [4, 5, 7]] |
+
+**Kết quả**: `[[1], [2, 3], [4, 5, 7]]`
+
+#### Code
+
+```python
+from collections import deque
+
+
+def level_order(root):
+    """
+    Level-order traversal (BFS) — duyệt theo từng tầng.
+    Trả về list of lists, mỗi list con là 1 level.
+    Time: O(n), Space: O(w) với w = chiều rộng tối đa
+    """
+    if not root:
+        return []
+
+    result = []
+    queue = deque([root])
+
+    while queue:
+        level_size = len(queue)  # Số node ở level hiện tại
+        current_level = []
+
+        for _ in range(level_size):
+            node = queue.popleft()
+            current_level.append(node.val)
+
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+        result.append(current_level)
+
+    return result
+
+
+def level_order_flat(root):
+    """
+    BFS nhưng trả về list phẳng (không chia level).
+    """
+    if not root:
+        return []
+
+    result = []
+    queue = deque([root])
+
+    while queue:
+        node = queue.popleft()
+        result.append(node.val)
+
+        if node.left:
+            queue.append(node.left)
+        if node.right:
+            queue.append(node.right)
+
+    return result
+
+
+# === Test ===
+root = TreeNode(1)
+root.left = TreeNode(2)
+root.right = TreeNode(3)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(5)
+root.right.right = TreeNode(7)
+
+print("Level-order:", level_order(root))
+# Output: [[1], [2, 3], [4, 5, 7]]
+
+print("Level-order (flat):", level_order_flat(root))
+# Output: [1, 2, 3, 4, 5, 7]
+```
+
+### So sánh các phương pháp duyệt cây
+
+| Tiêu chí         | Inorder      | Preorder     | Postorder    | Level-order   |
+| :--------------- | :----------- | :----------- | :----------- | :------------ |
+| Thứ tự           | L → Root → R | Root → L → R | L → R → Root | Theo tầng     |
+| Cấu trúc dữ liệu | Stack/Đệ quy | Stack/Đệ quy | Stack/Đệ quy | Queue         |
+| Time             | O(n)         | O(n)         | O(n)         | O(n)          |
+| Space (best)     | O(log n)     | O(log n)     | O(log n)     | O(n/2) = O(n) |
+| Space (worst)    | O(n)         | O(n)         | O(n)         | O(n)          |
+| BST đặc biệt     | Dãy tăng dần | Copy cây     | Xóa cây      | Tìm theo tầng |
+| Ứng dụng         | Validate BST | Serialize    | Tính size    | Shortest path |
+
+### Ưu điểm và nhược điểm
+
+**DFS (Inorder, Preorder, Postorder):**
+
+- Ưu: Space O(h) — tốt cho cây cân bằng (O(log n))
+- Nhược: Với cây suy biến (lệch), space có thể lên O(n); không tìm được node gần root nhanh
+
+**BFS (Level-order):**
+
+- Ưu: Tìm node gần root nhanh, tự nhiên cho bài toán theo tầng
+- Nhược: Space luôn O(w) — với cây cân bằng, level cuối có n/2 node → O(n)
+
+### Cải tiến
+
+1. **Morris Traversal**: Inorder traversal với O(1) space bằng cách tạm thời sửa cấu trúc cây (dùng threaded binary tree). Phức tạp nhưng rất hiệu quả về bộ nhớ.
+2. **Iterative deepening DFS**: Kết hợp ưu điểm DFS (ít bộ nhớ) và BFS (tìm theo level).
+
+### Chứng minh Complexity
+
+**Time Complexity O(n)**: Mỗi node được visit đúng 1 lần. Với n node → O(n).
+
+**Space Complexity O(h) cho DFS**: Call stack tối đa bằng chiều cao cây h. Cây cân bằng: h = log(n) → O(log n). Cây suy biến: h = n → O(n).
+
+**Space Complexity O(w) cho BFS**: Queue chứa tối đa tất cả node ở 1 level. Level rộng nhất trong perfect binary tree có n/2 node → O(n).

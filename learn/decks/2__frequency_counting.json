@@ -1,0 +1,136 @@
+{
+  "Meta": {
+    "Id": "deck_2__frequency_counting",
+    "Topic": "2. Frequency Counting",
+    "Language": "English/Japanese",
+    "Domain": "dsa",
+    "Level": "General",
+    "Tags": [
+      "2__frequency_counting"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 6
+  },
+  "Cards": [
+    {
+      "Id": "card_00790",
+      "Front": "Bài toán",
+      "Back": "Time | Space | Note",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. frequency counting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00791",
+      "Front": "Đếm frequency",
+      "Back": "O(n) | O(k), k = distinct elements | 1 pass",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. frequency counting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00792",
+      "Front": "Valid Anagram",
+      "Back": "O(n) | O(1) nếu 26 ký tự | 2 pass",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. frequency counting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00793",
+      "Front": "Top K Frequent (sort)",
+      "Back": "O(n log n) | O(n) | ",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. frequency counting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00794",
+      "Front": "Top K Frequent (bucket)",
+      "Back": "O(n) | O(n) | Optimal",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. frequency counting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00795",
+      "Front": "Top K Frequent (heap)",
+      "Back": "O(n log k) | O(n) | Good khi k << n",
+      "Hint": "05_Hashing",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "2. frequency counting"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

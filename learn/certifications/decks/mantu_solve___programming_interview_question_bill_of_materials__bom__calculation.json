@@ -1,0 +1,496 @@
+{
+  "Meta": {
+    "Id": "deck_mantu_solve___programming_interview_question_bill_of_materials__bom__calculation",
+    "Topic": "MANTU solve - Programming Interview Question Bill of Materials (BOM) Calculation",
+    "Language": "English/Japanese",
+    "Domain": "interviewNote",
+    "Level": "General",
+    "Tags": [
+      "mantu_solve___programming_interview_question_bill_of_materials__bom__calculation"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 24
+  },
+  "Cards": [
+    {
+      "Id": "card_01612",
+      "Front": "Method",
+      "Back": "Endpoint | Description",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01613",
+      "Front": "**Product Management**",
+      "Back": " | ",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01614",
+      "Front": "`GET`",
+      "Back": "`/products` | Retrieves a list of all products. Supports filtering by name (`?name=...`).",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01615",
+      "Front": "`POST`",
+      "Back": "`/products` | Creates a new product. Body: `{ \"id\": \"X\", \"name\": \"Product X\", \"description\": \"...\" }`.",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01616",
+      "Front": "`GET`",
+      "Back": "`/products/{productId}` | Retrieves the details of a single product.",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01617",
+      "Front": "`PUT`",
+      "Back": "`/products/{productId}` | Updates the details (name, description) of a product.",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01618",
+      "Front": "`DELETE`",
+      "Back": "`/products/{productId}` | Deletes a product. This should also remove any BOM entries where it is a parent.",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01619",
+      "Front": "**BOM (Component) Management**",
+      "Back": " | ",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01620",
+      "Front": "`GET`",
+      "Back": "`/products/{productId}/components` | Retrieves the list of direct components for a product.",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01621",
+      "Front": "`POST`",
+      "Back": "`/products/{productId}/components` | Adds a component to a product's BOM. Body: `{ \"componentId\": \"Y\", \"quantity\": 5 }`.",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01622",
+      "Front": "`PUT`",
+      "Back": "`/products/{productId}/components/{componentId}` | Updates the quantity of a specific component in a product's BOM. Body: `{ \"quantity\": 10 }`.",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01623",
+      "Front": "`DELETE`",
+      "Back": "`/products/{productId}/components/{componentId}` | Removes a component from a product's BOM.",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01624",
+      "Front": "**Calculation**",
+      "Back": " | ",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01625",
+      "Front": "`GET`",
+      "Back": "`/analysis/material-requirements/{productId}?quantity={qty}` | **Calculates the final list of raw materials**. `quantity` is an optional query parameter (defaults to 1).",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01626",
+      "Front": "Column Name",
+      "Back": "Data Type | Constraints | Description",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01627",
+      "Front": "`ProductId`",
+      "Back": "`VARCHAR(50)` | `PRIMARY KEY`, `NOT NULL` | The unique identifier for the product (e.g., \"A\", \"B\", \"CPU-i9\").",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01628",
+      "Front": "`Name`",
+      "Back": "`VARCHAR(255)` | `NOT NULL` | The human-readable name of the product.",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01629",
+      "Front": "`Description`",
+      "Back": "`TEXT` | `NULL` | A longer description of the product.",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01630",
+      "Front": "`CreatedAt`",
+      "Back": "`DATETIME` | `NOT NULL`, `DEFAULT CURRENT_TIMESTAMP` | Timestamp of when the record was created.",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01631",
+      "Front": "`UpdatedAt`",
+      "Back": "`DATETIME` | `NOT NULL`, `DEFAULT CURRENT_TIMESTAMP` | Timestamp of the last update.",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01632",
+      "Front": "Column Name",
+      "Back": "Data Type | Constraints | Description",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01633",
+      "Front": "`ParentProductId`",
+      "Back": "`VARCHAR(50)` | `PRIMARY KEY`, `FOREIGN KEY (Products.ProductId)` | The ID of the product being assembled. Part of a composite key.",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01634",
+      "Front": "`ComponentId`",
+      "Back": "`VARCHAR(50)` | `PRIMARY KEY`, `FOREIGN KEY (Products.ProductId)` | The ID of the component required. Part of a composite key.",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_01635",
+      "Front": "`Quantity`",
+      "Back": "`INT` | `NOT NULL`, `CHECK (Quantity > 0)` | The number of units of the component required for one unit of the parent.",
+      "Hint": "mantu_amaris",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "mantu solve - programming interview question bill of materials (bom) calculation"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

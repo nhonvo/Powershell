@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/psm-ii
+  - psmii
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 PSM-II MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/scrum/PSM-II/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/scrum/PSM-II/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/scrum/PSM-II/PSM-II Mindmap\|🗺️ PSM-II Mindmap]]
+- [[certifications/scrum/PSM-II/PSM-II Flashcards\|🃏 PSM-II Flashcards]]
+- [[certifications/scrum/PSM-II/PSM-II_Scraped_Question_Bank\|🗃️ PSM-II Scraped Question Bank]]

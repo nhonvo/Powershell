@@ -1,0 +1,516 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/01_Basics/🔢index_01_Basics|01_Basics]]
+
+## 2. Math Basics
+
+### Ví dụ đời thực
+
+Toán học trong lập trình giống như phép cộng trừ trong cuộc sống — bạn dùng nó hàng ngày mà không nhận ra:
+
+- **GCD**: Cắt một tấm gạch 12×8 thành các ô vuông lớn nhất có thể? Cạnh ô vuông = GCD(12, 8) = 4.
+- **LCM**: Hai con tàu xuất phát cùng lúc, tàu A chạy mỗi 6 phút, tàu B mỗi 8 phút. Bao lâu thì hai tàu lại gặp nhau? LCM(6, 8) = 24 phút.
+- **Modular Arithmetic**: Bây giờ là 10 giờ. 25 giờ sau là mấy giờ? (10 + 25) mod 24 = 11 giờ.
+- **Số nguyên tố**: Mã hóa RSA bảo vệ giao dịch ngân hàng của bạn — dựa hoàn toàn vào số nguyên tố.
+
+### 2.1 GCD — Ước chung lớn nhất
+
+GCD (Greatest Common Divisor) = ước chung lớn nhất của hai số.
+
+**Thuật toán Euclid** — một trong những thuật toán cổ nhất (từ ~300 TCN):
+
+```
+GCD(a, b) = GCD(b, a mod b)    khi b ≠ 0
+GCD(a, 0) = a
+```
+
+**Chứng minh tính đúng đắn:**
+
+```
+Bổ đề: GCD(a, b) = GCD(b, a mod b)
+
+Chứng minh:
+Đặt d = GCD(a, b). Ta cần chứng minh d cũng là GCD(b, a mod b).
+
+Viết a = b·q + r, trong đó r = a mod b.
+
+(1) d | a và d | b (vì d là ước chung của a, b)
+    → d | (a - b·q) = r
+    → d là ước chung của b và r
+
+(2) Nếu d' là ước chung bất kỳ của b và r:
+    d' | b và d' | r
+    → d' | (b·q + r) = a
+    → d' là ước chung của a và b
+    → d' ≤ d (vì d là ước chung LỚN NHẤT)
+
+Từ (1) và (2): d = GCD(b, r) = GCD(b, a mod b)  ∎
+```
+
+**Code Python:**
+
+```python
+def gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+    return a
+
+# Ví dụ: gcd(48, 18)
+# 48, 18 → 18, 48%18=12 → 12, 18%12=6 → 6, 12%6=0 → return 6
+```
+
+**Simulation từng bước — GCD(48, 18):**
+
+| Bước    | a     | b    | a mod b | Giải thích          |
+| :------ | :---- | :--- | :------ | :------------------ |
+| 1       | 48    | 18   | 12      | 48 = 18×2 + **12**  |
+| 2       | 18    | 12   | 6       | 18 = 12×1 + **6**   |
+| 3       | 12    | 6    | 0       | 12 = 6×2 + **0**    |
+| Kết quả | **6** | 0    | —       | b = 0, trả về a = 6 |
+
+ĐúngSaiGCD(a, b)b == 0?Trả về atemp = a mod ba = bb = temp
+
+**Độ phức tạp:**
+
+```
+Định lý: Thuật toán Euclid chạy trong O(log(min(a, b))).
+
+Chứng minh:
+Sau mỗi 2 bước, ít nhất một trong hai số giảm đi một nửa.
+
+Trường hợp 1: b ≤ a/2
+  → sau bước này, a_new = b ≤ a/2
+
+Trường hợp 2: b > a/2
+  → a mod b = a - b < a/2
+  → sau bước tiếp, a sẽ trở thành giá trị < a/2
+
+Vậy sau mỗi 2 bước, a giảm ít nhất 1/2.
+Số bước ≤ 2·log₂(a) = O(log a)  ∎
+```
+
+**Cải tiến: GCD đệ quy (dễ đọc hơn):**
+
+```python
+def gcd_recursive(a, b):
+    if b == 0:
+        return a
+    return gcd_recursive(b, a % b)
+```
+
+**So sánh:**
+
+| Phương pháp | Ưu điểm                | Nhược điểm         |
+| :---------- | :--------------------- | :----------------- |
+| Vòng lặp    | Không tốn stack, nhanh | Code dài hơn chút  |
+| Đệ quy      | Code ngắn, dễ đọc      | Tốn stack O(log n) |
+
+**GCD mở rộng (Extended Euclidean):**
+
+Tìm x, y sao cho: **a·x + b·y = GCD(a, b)** (Bézout's identity)
+
+```python
+def extended_gcd(a, b):
+    if b == 0:
+        return a, 1, 0
+    g, x, y = extended_gcd(b, a % b)
+    return g, y, x - (a // b) * y
+
+# Ví dụ: extended_gcd(48, 18) → (6, -1, 3)
+# Kiểm tra: 48×(-1) + 18×3 = -48 + 54 = 6 ✓
+```
+
+### 2.2 LCM — Bội chung nhỏ nhất
+
+**Công thức:**
+
+```
+LCM(a, b) = |a × b| / GCD(a, b)
+```
+
+**Chứng minh:**
+
+```
+Giả sử a = p₁^α₁ · p₂^α₂ · ... (phân tích thừa số nguyên tố)
+        b = p₁^β₁ · p₂^β₂ · ...
+
+GCD(a,b) = p₁^min(α₁,β₁) · p₂^min(α₂,β₂) · ...
+LCM(a,b) = p₁^max(α₁,β₁) · p₂^max(α₂,β₂) · ...
+
+Vì min(x,y) + max(x,y) = x + y:
+
+GCD(a,b) × LCM(a,b) = p₁^(α₁+β₁) · p₂^(α₂+β₂) · ... = a × b
+
+→ LCM(a,b) = a × b / GCD(a,b)  ∎
+def lcm(a, b):
+    return abs(a * b) // gcd(a, b)
+
+# Ví dụ: lcm(12, 8) = 12 × 8 / gcd(12, 8) = 96 / 4 = 24
+```
+
+**Lưu ý tràn số**: Trong một số ngôn ngữ (C++, Java), nên dùng `a // gcd(a, b) * b` thay vì `a * b // gcd(a, b)` để tránh overflow. Python xử lý số lớn tự động, nhưng đây là thói quen tốt:
+
+```python
+def lcm_safe(a, b):
+    """Tính LCM an toàn — chia trước, nhân sau để tránh tràn số"""
+    from math import gcd
+    return a // gcd(a, b) * b  # chia trước, nhân sau
+
+# Ví dụ:
+# lcm_safe(12, 8) = 12 // 4 * 8 = 3 * 8 = 24
+# lcm_safe(10**18, 10**18) — Python xử lý được, nhưng chia trước vẫn tốt hơn
+```
+
+**LCM nhiều số:**
+
+```python
+from functools import reduce
+
+def lcm_multiple(nums):
+    return reduce(lcm, nums)
+
+# lcm_multiple([2, 3, 4, 5]) = lcm(lcm(lcm(2,3), 4), 5) = 60
+```
+
+### 2.3 Số nguyên tố — Prime Numbers
+
+Số nguyên tố p > 1 chỉ chia hết cho 1 và chính nó.
+
+**Kiểm tra số nguyên tố — Brute force:**
+
+```python
+def is_prime_brute(n):
+    if n < 2:
+        return False
+    for i in range(2, n):        # kiểm tra 2, 3, ..., n-1
+        if n % i == 0:
+            return False
+    return True
+# Complexity: O(n) — chậm!
+```
+
+**Cải tiến: Chỉ kiểm tra đến √n**
+
+```python
+def is_prime(n):
+    if n < 2:
+        return False
+    if n < 4:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+# Complexity: O(√n)
+```
+
+**Tại sao chỉ cần kiểm tra đến √n? Chứng minh:**
+
+```
+Giả sử n không phải là số nguyên tố.
+→ n = a × b, với 1 < a ≤ b < n.
+
+Nếu a > √n → b ≥ a > √n → a × b > √n × √n = n. Mâu thuẫn!
+
+Vậy a ≤ √n. Tức là nếu n có ước, nó phải có ước ≤ √n.
+Ngược lại: nếu không có ước nào ≤ √n → n là số nguyên tố.  ∎
+```
+
+**Tại sao bước nhảy là 6?**
+
+```
+Mọi số nguyên có dạng: 6k, 6k+1, 6k+2, 6k+3, 6k+4, 6k+5
+- 6k chia hết cho 6
+- 6k+2 chia hết cho 2
+- 6k+3 chia hết cho 3
+- 6k+4 chia hết cho 2
+→ Số nguyên tố > 3 chỉ có dạng 6k+1 hoặc 6k+5 (= 6k-1)
+→ Chỉ cần kiểm tra i và i+2 với bước nhảy 6
+```
+
+ĐúngSaiĐúngSaiĐúngSaiSaiĐúngĐúngSaiis_prime(n)n < 2?return Falsen < 4?return Truen % 2 == 0
+hoặc n % 3 == 0?i = 5i × i ≤ n?n % i == 0
+hoặc n % (i+2) == 0?i += 6
+
+**Simulation — is_prime(97):**
+
+| Bước        | i    | i × i | i ≤ √97 ≈ 9.8? | 97 % i                 | 97 % (i+2) |
+| :---------- | :--- | :---- | :------------- | :--------------------- | :--------- |
+| 1           | 5    | 25    | 25 ≤ 97 ✓      | 97%5=2 ≠ 0             | 97%7=6 ≠ 0 |
+| 2           | 11   | 121   | 121 > 97 ✗     | —                      | —          |
+| **Kết quả** | —    | —     | —              | **97 là số nguyên tố** |            |
+
+### 2.4 Sàng Eratosthenes
+
+**Bài toán**: Tìm tất cả số nguyên tố ≤ n.
+
+**Ý tưởng:** Thay vì kiểm tra từng số, ta "gạch bỏ" các bội số:
+
+- Bắt đầu từ 2 (số nguyên tố nhỏ nhất)
+- Gạch bỏ tất cả bội của 2: 4, 6, 8, 10, ...
+- Số tiếp theo chưa bị gạch: 3. Gạch bỏ bội của 3: 9, 15, 21, ...
+- Số tiếp theo: 5. Gạch bỏ bội: 25, 35, ...
+- Lặp lại cho đến √n.
+
+```python
+def sieve_of_eratosthenes(n):
+    if n < 2:
+        return []
+
+    is_prime = [True] * (n + 1)
+    is_prime[0] = is_prime[1] = False
+
+    for i in range(2, int(n**0.5) + 1):
+        if is_prime[i]:
+            # Bắt đầu gạch từ i², vì i×2, i×3, ..., i×(i-1)
+            # đã bị gạch bởi các số nguyên tố nhỏ hơn
+            for j in range(i * i, n + 1, i):
+                is_prime[j] = False
+
+    return [i for i in range(2, n + 1) if is_prime[i]]
+
+# sieve_of_eratosthenes(30)
+# → [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+```
+
+**Simulation — Sàng đến n = 30:**
+
+```
+Ban đầu: 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30
+
+Gạch bội 2: 2 3 ✗ 5 ✗ 7 ✗ 9 ✗  11 ✗  13 ✗  15 ✗  17 ✗  19 ✗  21 ✗  23 ✗  25 ✗  27 ✗  29 ✗
+
+Gạch bội 3: 2 3   5   7   ✗     11    13     ✗     17     19    ✗     23     25    ✗     29
+
+Gạch bội 5: 2 3   5   7         11    13           17     19          23     ✗           29
+
+√30 ≈ 5.47 → dừng.
+
+Kết quả: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29
+```
+
+SaiĐúngSaiĐúngTạo mảng is_prime[0..n] = TrueĐánh dấu 0, 1 = Falsei = 2i × i ≤ n?Thu thập các số
+còn True → kết quảis_prime[i]?i += 1Gạch bỏ i², i²+i,
+i²+2i, ... ≤ n
+
+**Độ phức tạp:**
+
+```
+Time: O(n log log n) — gần tuyến tính!
+
+Chứng minh (ý tưởng):
+Số phép toán = n/2 + n/3 + n/5 + n/7 + ... (bội của mỗi prime)
+             = n × (1/2 + 1/3 + 1/5 + 1/7 + ...)
+             = n × Σ(1/p) cho p nguyên tố ≤ n
+
+Theo Mertens' theorem: Σ(1/p) ~ log(log n)
+
+Vậy T(n) = O(n log log n)  ∎
+
+Space: O(n) — cho mảng is_prime
+```
+
+**Ưu điểm và nhược điểm:**
+
+| Ưu điểm                   | Nhược điểm                           |
+| :------------------------ | :----------------------------------- |
+| Cực nhanh: O(n log log n) | Tốn bộ nhớ O(n)                      |
+| Đơn giản, dễ code         | Không dùng được khi n rất lớn (10¹²) |
+| Tìm TẤT CẢ prime một lúc  | Chỉ phù hợp khi cần nhiều prime      |
+
+**Cải tiến: Segmented Sieve** — cho n rất lớn, chia thành các đoạn √n để tiết kiệm bộ nhớ.
+
+### 2.5 Modular Arithmetic
+
+**Tại sao cần?** Khi tính n! hoặc 2ⁿ, kết quả có thể cực lớn (hàng trăm chữ số). Các bài toán competitive programming thường yêu cầu: *"In ra kết quả mod 10⁹ + 7"*.
+
+**Các tính chất cơ bản:**
+
+```
+(a + b) mod m = ((a mod m) + (b mod m)) mod m
+(a - b) mod m = ((a mod m) - (b mod m) + m) mod m     ← cộng m để tránh âm
+(a × b) mod m = ((a mod m) × (b mod m)) mod m
+```
+
+**Lưu ý quan trọng:** Phép chia KHÔNG hoạt động trực tiếp!
+
+```
+(a / b) mod m ≠ ((a mod m) / (b mod m)) mod m    ← SAI!
+
+Thay vào đó, dùng nghịch đảo modular:
+(a / b) mod m = (a × b⁻¹) mod m
+Trong đó b⁻¹ = b^(m-2) mod m   (khi m là số nguyên tố — Fermat's little theorem)
+```
+
+**Chứng minh tính chất phép nhân:**
+
+```
+Đặt a = q₁·m + r₁ (r₁ = a mod m)
+     b = q₂·m + r₂ (r₂ = b mod m)
+
+a·b = (q₁·m + r₁)(q₂·m + r₂)
+    = q₁·q₂·m² + q₁·m·r₂ + q₂·m·r₁ + r₁·r₂
+    = m·(q₁·q₂·m + q₁·r₂ + q₂·r₁) + r₁·r₂
+
+Vậy (a·b) mod m = (r₁·r₂) mod m = ((a mod m) × (b mod m)) mod m  ∎
+MOD = 10**9 + 7
+
+# Tính tổng an toàn
+def add_mod(a, b):
+    return (a % MOD + b % MOD) % MOD
+
+# Tính hiệu an toàn (tránh số âm)
+def sub_mod(a, b):
+    return (a % MOD - b % MOD + MOD) % MOD
+
+# Tính tích an toàn
+def mul_mod(a, b):
+    return (a % MOD) * (b % MOD) % MOD
+
+# Nghịch đảo modular (dùng Fermat's little theorem)
+def mod_inverse(a, m=MOD):
+    return pow(a, m - 2, m)
+
+# Tính chia an toàn
+def div_mod(a, b):
+    return mul_mod(a, mod_inverse(b))
+```
+
+### 2.6 Lũy thừa nhanh — Fast Exponentiation
+
+**Bài toán**: Tính aⁿ mod m.
+
+**Cách naive**: Nhân a với chính nó n lần → O(n). Chậm khi n = 10¹⁸!
+
+**Ý tưởng Binary Exponentiation (lũy thừa nhị phân):**
+
+```
+a^n = (a^(n/2))² nếu n chẵn
+a^n = a × a^(n-1) nếu n lẻ
+```
+
+**Ví dụ: 3¹³**
+
+```
+13 trong nhị phân = 1101₂ = 8 + 4 + 1
+
+3¹³ = 3⁸ × 3⁴ × 3¹
+
+Tính dần:
+3¹ = 3
+3² = (3¹)² = 9
+3⁴ = (3²)² = 81
+3⁸ = (3⁴)² = 6561
+
+Kết quả: 3¹³ = 6561 × 81 × 3 = 1594323
+def fast_pow(base, exp, mod):
+    result = 1
+    base %= mod
+    while exp > 0:
+        if exp % 2 == 1:         # bit cuối = 1 → nhân vào kết quả
+            result = result * base % mod
+        exp //= 2                # dịch phải 1 bit
+        base = base * base % mod # bình phương base
+    return result
+
+# fast_pow(3, 13, 1000000007) = 1594323
+```
+
+**Simulation — fast_pow(2, 10, 1000):**
+
+| Bước | exp  | exp (binary) | exp lẻ? | result            | base    |
+| :--- | :--- | :----------- | :------ | :---------------- | :------ |
+| 0    | 10   | 1010         | Không   | 1                 | 2       |
+| 1    | 5    | 101          | Có      | 1×4=4             | 4→16    |
+| 2    | 2    | 10           | Không   | 4                 | 16→256  |
+| 3    | 1    | 1            | Có      | 4×256=1024→**24** | 256→... |
+| 4    | 0    | 0            | —       | **24**            | —       |
+
+Kết quả: 2¹⁰ mod 1000 = 1024 mod 1000 = **24** ✓
+
+SaiĐúngĐúngSaifast_pow(base, exp, mod)result = 1exp > 0?return resultexp lẻ?
+(exp % 2 == 1)result = result × base % modBỏ quaexp = exp / 2
+base = base² % mod
+
+**Độ phức tạp:**
+
+```
+Mỗi bước, exp chia đôi → lặp log₂(n) lần.
+Mỗi lần lặp: 1-2 phép nhân + 1 phép mod → O(1).
+
+Time: O(log n)   ← so với O(n) của cách naive!
+Space: O(1)
+```
+
+**So sánh:**
+
+| n    | Naive O(n)     | Fast O(log n) |
+| :--- | :------------- | :------------ |
+| 10³  | 1000 phép tính | 10 phép tính  |
+| 10⁶  | 10⁶            | 20            |
+| 10⁹  | 10⁹ (3 giây)   | 30            |
+| 10¹⁸ | Không thể      | 60            |
+
+**Version dùng bitwise (phong cách competitive programming):**
+
+```python
+def fast_pow_bitwise(base, exp, mod):
+    """Lũy thừa nhanh — dùng phép toán bit thay vì mod/chia"""
+    result = 1
+    base %= mod
+    while exp > 0:
+        if exp & 1:                    # kiểm tra bit cuối (lẻ?)
+            result = result * base % mod
+        base = base * base % mod       # bình phương base
+        exp >>= 1                      # dịch phải = chia 2
+    return result
+
+# Ví dụ sử dụng:
+# fast_pow_bitwise(2, 10, 1000) = 24
+# fast_pow_bitwise(3, 13, 10**9 + 7) = 1594323
+
+# Lưu ý: Python có sẵn pow(base, exp, mod) — nhanh và tối ưu hơn!
+# pow(2, 10, 1000) = 24
+```
+
+### 2.7 Bài tập thực hành
+
+**Bài 1:** Tính GCD(252, 105) bằng thuật toán Euclid. Viết từng bước.
+
+<details style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);"><summary style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); display: list-item;">Đáp án</summary><pre style="box-sizing: border-box; border: 1px solid rgba(255, 255, 255, 0.08); margin: 1.5rem 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: 0.875rem; color: rgb(205, 214, 244) !important; background: rgb(30, 30, 46) !important; border-radius: 0.5rem; font-weight: 400; line-height: 1.7; overflow-x: auto; padding-inline: 1.14286em; padding: 1.25rem;"><code style="box-sizing: border-box; border: none; margin: 0px; padding: 0px !important; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: &quot;Geist Mono&quot;, &quot;Geist Mono Fallback&quot;, ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: inherit; color: inherit !important; font-weight: inherit; line-height: inherit; background: 0px 0px !important; border-radius: 0px;">252, 105 → 105, 252%105=42 → 42, 105%42=21 → 21, 42%21=0
+GCD = 21
+</code></pre></details>
+
+**Bài 2:** Tìm tất cả số nguyên tố ≤ 50 bằng sàng Eratosthenes.
+
+<details style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);"><summary style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); display: list-item;">Đáp án</summary><p style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 1.25em 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);">2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47</p><p style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 1.25em 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);">(Chỉ cần sàng đến √50 ≈ 7, tức gạch bội của 2, 3, 5, 7)</p></details>
+
+**Bài 3:** Tính 7⁸ mod 11 bằng fast exponentiation.
+
+<details style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);"><summary style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); display: list-item;">Đáp án</summary><pre style="box-sizing: border-box; border: 1px solid rgba(255, 255, 255, 0.08); margin: 1.5rem 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: 0.875rem; color: rgb(205, 214, 244) !important; background: rgb(30, 30, 46) !important; border-radius: 0.5rem; font-weight: 400; line-height: 1.7; overflow-x: auto; padding-inline: 1.14286em; padding: 1.25rem;"><code style="box-sizing: border-box; border: none; margin: 0px; padding: 0px !important; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: &quot;Geist Mono&quot;, &quot;Geist Mono Fallback&quot;, ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: inherit; color: inherit !important; font-weight: inherit; line-height: inherit; background: 0px 0px !important; border-radius: 0px;">8 = 1000₂
+base=7, exp=8, mod=11
+
+Bước 1: exp=8 (chẵn), base = 7²%11 = 49%11 = 5, exp=4
+Bước 2: exp=4 (chẵn), base = 5²%11 = 25%11 = 3, exp=2
+Bước 3: exp=2 (chẵn), base = 3²%11 = 9%11 = 9, exp=1
+Bước 4: exp=1 (lẻ), result = 1×9%11 = 9, exp=0
+
+Kết quả: 7⁸ mod 11 = 9
+Kiểm tra: 7⁸ = 5764801, 5764801 / 11 = 524072 dư 9 ✓
+</code></pre></details>
+
+**Bài 4:** Tìm x, y sao cho 35x + 15y = GCD(35, 15).
+
+<details style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5);"><summary style="box-sizing: border-box; border: 0px solid lab(18.5843 -0.502676 -14.3513); margin: 0px; padding: 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); display: list-item;">Đáp án</summary><pre style="box-sizing: border-box; border: 1px solid rgba(255, 255, 255, 0.08); margin: 1.5rem 0px; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: 0.875rem; color: rgb(205, 214, 244) !important; background: rgb(30, 30, 46) !important; border-radius: 0.5rem; font-weight: 400; line-height: 1.7; overflow-x: auto; padding-inline: 1.14286em; padding: 1.25rem;"><code style="box-sizing: border-box; border: none; margin: 0px; padding: 0px !important; outline-color: oklab(0.649991 -0.000012666 -0.199977 / 0.5); font-family: &quot;Geist Mono&quot;, &quot;Geist Mono Fallback&quot;, ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, monospace; font-feature-settings: normal; font-variation-settings: normal; font-size: inherit; color: inherit !important; font-weight: inherit; line-height: inherit; background: 0px 0px !important; border-radius: 0px;">GCD(35, 15):
+35 = 15×2 + 5
+15 = 5×3 + 0
+GCD = 5
+
+Truy ngược:
+5 = 35 - 15×2
+→ x = 1, y = -2
+
+Kiểm tra: 35×1 + 15×(-2) = 35 - 30 = 5 ✓
+</code></pre></details>

@@ -1,0 +1,219 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/03_Searching_Sorting/🔍index_03_Searching_Sorting|03_Searching_Sorting]]
+
+## 7. Lower Bound / Upper Bound
+
+### Gioi thieu
+
+Lower Bound va Upper Bound la hai bien the cuc ky huu ich cua Binary Search, dac biet khi lam viec voi **mang da sap xep co phan tu trung lap**. Day la cong cu khong the thieu khi giai cac bai toan ve counting, range query, va tim kiem.
+
+### Dinh nghia
+
+Cho mang da sap xep `arr` va gia tri `target`:
+
+- **Lower Bound:** Vi tri **dau tien** ma `arr[i] >= target` (phan tu nho nhat khong nho hon target)
+- **Upper Bound:** Vi tri **dau tien** ma `arr[i] > target` (phan tu nho nhat lon hon target)
+
+**Vi du truc quan:**
+
+```
+Mang: [1, 2, 2, 2, 3, 5, 5, 7]
+Index: 0  1  2  3  4  5  6  7
+
+Target = 2:
+  Lower Bound = 1  (vi tri dau tien cua 2)
+  Upper Bound = 4  (vi tri dau tien > 2, tuc la 3)
+
+Target = 4:
+  Lower Bound = 5  (vi tri dau tien >= 4, tuc la 5)
+  Upper Bound = 5  (vi tri dau tien > 4, tuc la 5)
+
+Target = 8:
+  Lower Bound = 8  (= n, khong co phan tu nao >= 8)
+  Upper Bound = 8  (= n, khong co phan tu nao > 8)
+```
+
+### Vi du thuc te
+
+Tuong tuong ban co mot ke sach sap xep theo ten tac gia. Ban muon tim **tat ca sach cua tac gia "Nguyen"**.
+
+- **Lower Bound("Nguyen"):** Vi tri cuon sach dau tien cua Nguyen (hoac vi tri cuon sach se dung neu chen them)
+- **Upper Bound("Nguyen"):** Vi tri cuon sach dau tien sau tat ca sach cua Nguyen
+
+So sach cua Nguyen = Upper Bound - Lower Bound.
+
+### Ung dung quan trong
+
+1. **Dem so lan xuat hien cua target:** `count = upper_bound - lower_bound`
+2. **Tim phan tu dau tien = target:** `lower_bound` (kiem tra `arr[lb] == target`)
+3. **Tim phan tu cuoi cung = target:** `upper_bound - 1`
+4. **Dem so phan tu trong khoang [a, b]:** `upper_bound(b) - lower_bound(a)`
+5. **Tim vi tri chen de giu mang sap xep:** `lower_bound`
+
+### Mo phong chi tiet
+
+**Tim Lower Bound cua 2 trong `[1, 2, 2, 2, 3, 5]`:**
+
+```
+left=0, right=6 (n)
+
+Buoc 1: mid = 3, arr[3]=2 >= 2 => right = 3
+Buoc 2: mid = 1, arr[1]=2 >= 2 => right = 1
+Buoc 3: mid = 0, arr[0]=1 < 2  => left = 1
+left == right == 1 => Lower Bound = 1
+```
+
+**Tim Upper Bound cua 2 trong `[1, 2, 2, 2, 3, 5]`:**
+
+```
+left=0, right=6 (n)
+
+Buoc 1: mid = 3, arr[3]=2 <= 2 (khong strictly >) => left = 4
+Buoc 2: mid = 5, arr[5]=5 > 2 => right = 5
+Buoc 3: mid = 4, arr[4]=3 > 2 => right = 4
+left == right == 4 => Upper Bound = 4
+
+So lan xuat hien cua 2 = 4 - 1 = 3. Dung!
+```
+
+### Flowchart
+
+KhongCoCoKhonglower_bound(arr, target)left=0, right=nleft < right?Tra ve leftmid = (left+right)/2arr[mid] >= target?right = midleft = mid + 1
+
+KhongCoCoKhongupper_bound(arr, target)left=0, right=nleft < right?Tra ve leftmid = (left+right)/2arr[mid] > target?right = midleft = mid + 1
+
+### Code Python
+
+```python
+def lower_bound(arr, target):
+    """Tim vi tri dau tien ma arr[i] >= target"""
+    left, right = 0, len(arr)
+    while left < right:
+        mid = left + (right - left) // 2
+        if arr[mid] >= target:
+            right = mid
+        else:
+            left = mid + 1
+    return left
+
+def upper_bound(arr, target):
+    """Tim vi tri dau tien ma arr[i] > target"""
+    left, right = 0, len(arr)
+    while left < right:
+        mid = left + (right - left) // 2
+        if arr[mid] > target:
+            right = mid
+        else:
+            left = mid + 1
+    return left
+
+# === Ung dung ===
+
+def count_occurrences(arr, target):
+    """Dem so lan xuat hien cua target"""
+    return upper_bound(arr, target) - lower_bound(arr, target)
+
+def find_first(arr, target):
+    """Tim vi tri dau tien cua target, tra ve -1 neu khong co"""
+    lb = lower_bound(arr, target)
+    if lb < len(arr) and arr[lb] == target:
+        return lb
+    return -1
+
+def find_last(arr, target):
+    """Tim vi tri cuoi cung cua target, tra ve -1 neu khong co"""
+    ub = upper_bound(arr, target)
+    if ub > 0 and arr[ub - 1] == target:
+        return ub - 1
+    return -1
+
+def count_in_range(arr, a, b):
+    """Dem so phan tu trong khoang [a, b]"""
+    return upper_bound(arr, b) - lower_bound(arr, a)
+
+# Test
+arr = [1, 2, 2, 2, 3, 5, 5, 7]
+
+print(f"Lower Bound of 2: {lower_bound(arr, 2)}")    # 1
+print(f"Upper Bound of 2: {upper_bound(arr, 2)}")    # 4
+print(f"Count of 2: {count_occurrences(arr, 2)}")    # 3
+print(f"First 2 at index: {find_first(arr, 2)}")     # 1
+print(f"Last 2 at index: {find_last(arr, 2)}")       # 3
+print(f"Count in [2, 5]: {count_in_range(arr, 2, 5)}")  # 6
+
+# Dung bisect trong Python (thu vien chuan)
+import bisect
+print(f"bisect_left(2): {bisect.bisect_left(arr, 2)}")   # 1 = lower_bound
+print(f"bisect_right(2): {bisect.bisect_right(arr, 2)}")  # 4 = upper_bound
+```
+
+### Chay thu chuong trinh hoan chinh
+
+```python
+import bisect
+
+def demo_lower_upper_bound():
+    """Demo day du lower_bound va upper_bound"""
+    arr = [1, 2, 2, 2, 3, 5, 5, 7]
+    print(f"Mang: {arr}")
+    print(f"Index: {list(range(len(arr)))}")
+    print()
+
+    # Tu cai dat
+    for target in [2, 4, 8]:
+        lb = lower_bound(arr, target)
+        ub = upper_bound(arr, target)
+        count = ub - lb
+        print(f"Target = {target}:")
+        print(f"  Lower Bound = {lb} (vi tri dau tien >= {target})")
+        print(f"  Upper Bound = {ub} (vi tri dau tien > {target})")
+        print(f"  So lan xuat hien = {count}")
+        print()
+
+    # Dung thu vien bisect cua Python (tuong duong STL)
+    print("--- Dung bisect (thu vien chuan Python) ---")
+    print(f"bisect_left(arr, 2)  = {bisect.bisect_left(arr, 2)}")   # 1 = lower_bound
+    print(f"bisect_right(arr, 2) = {bisect.bisect_right(arr, 2)}")  # 4 = upper_bound
+
+    # Dem phan tu trong khoang [2, 5]
+    count_range = count_in_range(arr, 2, 5)
+    print(f"So phan tu trong [2, 5] = {count_range}")  # 6
+
+# Test
+demo_lower_upper_bound()
+# Target = 2:
+#   Lower Bound = 1 (vi tri dau tien >= 2)
+#   Upper Bound = 4 (vi tri dau tien > 2)
+#   So lan xuat hien = 3
+# Target = 4:
+#   Lower Bound = 5
+#   Upper Bound = 5
+#   So lan xuat hien = 0
+# Target = 8:
+#   Lower Bound = 8
+#   Upper Bound = 8
+#   So lan xuat hien = 0
+```
+
+### Phan tich do phuc tap
+
+Ca Lower Bound va Upper Bound deu la bien the cua Binary Search:
+
+| Truong hop | Do phuc tap |
+| :--------- | :---------- |
+| **Time**   | O(log n)    |
+| **Space**  | O(1)        |
+
+### So sanh Lower Bound va Upper Bound
+
+| Tieu chi            | Lower Bound               | Upper Bound              |
+| :------------------ | :------------------------ | :----------------------- |
+| Tim gi?             | Vi tri dau tien >= target | Vi tri dau tien > target |
+| Dieu kien trong BS  | `arr[mid] >= target`      | `arr[mid] > target`      |
+| Python              | `bisect.bisect_left`      | `bisect.bisect_right`    |
+| Khi target khong co | Giong nhau                | Giong nhau               |
+
+### Luu y quan trong
+
+1. **Khoang [left, right):** Ca hai ham deu su dung `right = n` (khong phai `n - 1`), vi ket qua co the la `n` (khong co phan tu nao thoa man).
+2. **Off-by-one:** Dieu kien la `left < right` (KHONG co dau `=`), khac voi binary search thong thuong.
+3. **Khong can kiem tra tim thay:** Ham luon tra ve vi tri hop le (hoac `n` neu khong co). Ban can tu kiem tra `arr[result] == target` neu can.

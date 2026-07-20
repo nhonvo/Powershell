@@ -1,0 +1,161 @@
+# 🗃️ PL-400 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: Create a technical design (Testlet 1)
+
+DRAG DROP (Drag and Drop is not supported)
+You need to select connectors for the app.
+
+Which types of connectors should you use? To answer, drag the appropriate connectors to the correct requirements. Each connector may be used once, more than once, or not at all. You may need to drag the split bar between panes or scroll to view content. NOTE: Each correct selection is worth one point. Select and Place:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Create a custom connector
+A custom connector is a wrapper around a REST API (Logic Apps also supports SOAP APIs) that allows Logic Apps, Power Automate, or Power Apps to communicate with that REST or SOAP API.
+
+Box 2: Use an AppSource connector
+You can only retrieve the Customer, UnifiedActivity, and Segments entities through the Power Apps connector. Other entities are shown because the underlying connector supports them through triggers in Power Automate.
+
+Scenario: Customer information is stored in the Accounts entity. Box 3: Use a native application function
+You must produce a report that details the number of registrations for a day and send the report as a PDF to the management team.
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: Develop IntegrationsQuestions
+
+HOTSPOT (Drag and Drop is not supported)
+A company updates their client contact information periodically. The contact entity has alternate keys defined. You have the following code. (Line numbers are included for reference only.)
+
+
+For each of the following statements, select Yes if the statement is true. Otherwise, select No.
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: Develop IntegrationsQuestions
+
+HOTSPOT (Drag and Drop is not supported)
+A company is building a new model-driven app.
+
+The app must integrate with a number of on-premises and cloud solutions. No VPNs are in place. You need to determine the method for each integration.
+
+Which methods should you use? To answer, select the appropriate options in the answer area.
+NOTE: Each correct selection is worth one point.
+Hot Area:
+
+### Options:
+- [x] **A)** See Explanation section for answer. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+Box 1: Webhook
+With Dataverse, you can send data about events that occur on the service to a web app by using webhooks. A webhook is a lightweight HTTP pattern for connecting web APIs and services with a publish-and-subscribe model. Webhook senders notify receivers about events by making requests to receiver endpoints with some information about the events.
+
+Webhooks enable developers and ISVs to integrate Dataverse data with their own custom code hosted on external services.
+
+Box 2: Azure Service Bus
+Service Bus provides a secure and reliable communication channel between Dataverse runtime data and external, cloud-based line-of-business apps. This capability is especially useful in keeping disparate Dataverse systems or other Dataverse servers synchronized with business data changes.
+
+Box 3: Azure Event hub
+Azure Event Hubs is a big data streaming platform and event ingestion service. It can receive and process millions of events per second. Data sent to an event hub can be transformed and stored by using any real-time analytics provider or batching/storage adapters.
+
+Note: The most popular approaches in Dataverse involve webhooks, Azure messaging (Service Bus, Event Hubs), Azure Logic Apps, or Power Automate.
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: Develop IntegrationsQuestions
+
+Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than once correct solution, while others might not have a correct solution.
+
+After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen.
+
+You are designing a one-way integration from the Microsoft Dataverse to another system.
+You must use an Azure Function to update the other system. The integration must send only newly created records to the other system. The solution must support scenarios where a component of the integration is unavailable for more than a few seconds to avoid data loss.
+You need to design the integration solution.
+
+Solution: Register a webhook in the Dataverse instance that connects to the Azure Function. Register a step on the webhook which runs synchronously on the record's Create message and in the post-operation stage.
+Does the solution meet the goal?
+
+### Options:
+- [ ] **A)** Yes
+- [x] **B)** No [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Instead use asynchronous communication.
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: Develop IntegrationsQuestions
+
+Note: This question is part of a series of questions that present the same scenario. Each question in the series contains a unique solution that might meet the stated goals. Some question sets might have more than once correct solution, while others might not have a correct solution.
+
+After you answer a question in this section, you will NOT be able to return to it. As a result, these questions will not appear in the review screen.
+
+You are designing a one-way integration from the Microsoft Dataverse to another system.
+You must use an Azure Function to update the other system. The integration must send only newly created records to the other system. The solution must support scenarios where a component of the integration is unavailable for more than a few seconds to avoid data loss.
+You need to design the integration solution.
+
+Solution: Register a service endpoint in the Dataverse instance that connects to an Azure Service Bus queue.
+Register a step at the endpoint which runs asynchronously on the record's Create message and in the post-operation stage.
+Configure the Azure Function to process records as they are added to the queue.
+Does the solution meet the goal?
+
+### Options:
+- [x] **A)** Yes [Correct]
+- [ ] **B)** No
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---

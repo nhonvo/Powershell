@@ -1,0 +1,135 @@
+# 🗃️ MLS-C01 Scraped Question Bank (Page 2)
+
+This contains 5 questions.
+
+---
+
+## ❓ Question 1
+
+**Topic**: 
+
+A large mobile network operating company is building a machine learning model to predict customers who are likely to unsubscribe from the service. The company plans to offer an incentive for these customers as the cost of churn is far greater than the cost of the incentive.
+
+The model produces the following confusion matrix after evaluating on a test dataset of 100 customers:
+
+
+
+Based on the model evaluation results, why is this a viable model for production?
+
+### Options:
+- [x] **A)** The model is 86% accurate and the cost incurred by the company as a result of false negatives is less than the false positives. [Correct]
+- [ ] **B)** The precision of the model is 86%, which is less than the accuracy of the model.
+- [ ] **C)** The model is 86% accurate and the cost incurred by the company as a result of false positives is less than the false negatives.
+- [ ] **D)** The precision of the model is 86%, which is greater than the accuracy of the model.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `A`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 2
+
+**Topic**: 
+
+A Machine Learning Specialist is designing a system for improving sales for a company. The objective is to use the large amount of information the company has on users’ behavior and product preferences to predict which products users would like based on the users’ similarity to other users.
+
+What should the Specialist do to meet this objective?
+
+### Options:
+- [ ] **A)** Build a content-based filtering recommendation engine with Apache Spark ML on Amazon EMR
+- [x] **B)** Build a collaborative filtering recommendation engine with Apache Spark ML on Amazon EMR. [Correct]
+- [ ] **C)** Build a model-based filtering recommendation engine with Apache Spark ML on Amazon EMR
+- [ ] **D)** Build a combinative filtering recommendation engine with Apache Spark ML on Amazon EMR
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+Many developers want to implement the famous Amazon model that was used to power the “People who bought this also bought these items” feature on Amazon.com. This model is based on a method called Collaborative Filtering. It takes items such as movies, books, and products that were rated highly by a set of users and recommending them to other users who also gave them high ratings. This method works well in domains where explicit ratings or implicit user actions can be gathered and analyzed.
+</details>
+
+---
+
+## ❓ Question 3
+
+**Topic**: 
+
+A Mobile Network Operator is building an analytics platform to analyze and optimize a company's operations using Amazon Athena and Amazon S3.
+
+The source systems send data in .CSV format in real time. The Data Engineering team wants to transform the data to the Apache Parquet format before storing it on Amazon S3.
+
+Which solution takes the LEAST effort to implement?
+
+### Options:
+- [ ] **A)** Ingest .CSV data using Apache Kafka Streams on Amazon EC2 instances and use Kafka Connect S3 to serialize data as Parquet
+- [x] **B)** Ingest .CSV data from Amazon Kinesis Data Streams and use Amazon Glue to convert data into Parquet. [Correct]
+- [ ] **C)** Ingest .CSV data using Apache Spark Structured Streaming in an Amazon EMR cluster and use Apache Spark to convert data into Parquet.
+- [ ] **D)** Ingest .CSV data from Amazon Kinesis Data Streams and use Amazon Kinesis Data Firehose to convert data into Parquet.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `B`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 4
+
+**Topic**: 
+
+A city wants to monitor its air quality to address the consequences of air pollution. A Machine Learning Specialist needs to forecast the air quality in parts per million of contaminates for the next 2 days in the city. As this is a prototype, only daily data from the last year is available.
+
+Which model is MOST likely to provide the best results in Amazon SageMaker?
+
+### Options:
+- [ ] **A)** Use the Amazon SageMaker k-Nearest-Neighbors (kNN) algorithm on the single time series consisting of the full year of data with a predictor_type of regressor.
+- [ ] **B)** Use Amazon SageMaker Random Cut Forest (RCF) on the single time series consisting of the full year of data.
+- [x] **C)** Use the Amazon SageMaker Linear Learner algorithm on the single time series consisting of the full year of data with a predictor_type of regressor. [Correct]
+- [ ] **D)** Use the Amazon SageMaker Linear Learner algorithm on the single time series consisting of the full year of data with a predictor_type of classifier.
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `C`
+
+**Explanation**:
+
+</details>
+
+---
+
+## ❓ Question 5
+
+**Topic**: 
+
+A Data Engineer needs to build a model using a dataset containing customer credit card information.
+How can the Data Engineer ensure the data remains encrypted and the credit card information is secure?
+
+### Options:
+- [ ] **A)** Use a custom encryption algorithm to encrypt the data and store the data on an Amazon SageMaker instance in a VPC. Use the SageMaker DeepAR algorithm to randomize the credit card numbers.
+- [ ] **B)** Use an IAM policy to encrypt the data on the Amazon S3 bucket and Amazon Kinesis to automatically discard credit card numbers and insert fake credit card numbers.
+- [ ] **C)** Use an Amazon SageMaker launch configuration to encrypt the data once it is copied to the SageMaker instance in a VP Use the SageMaker principal component analysis (PCA) algorithm to reduce the length of the credit card numbers.
+- [x] **D)** Use AWS KMS to encrypt the data on Amazon S3 and Amazon SageMaker, and redact the credit card numbers from the customer data with AWS Glue. [Correct]
+
+<details>
+<summary><b>Reveal Answer & Explanation</b></summary>
+
+**Correct Answer**: `D`
+
+**Explanation**:
+
+</details>
+
+---

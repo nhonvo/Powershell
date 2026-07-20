@@ -1,0 +1,17 @@
+# 11 - 14
+
+🔙 **Back to Parent**: [[dsa/1.Interviewcake.com/11 - 14/index_11 - 14|1.Interviewcake.com]]
+
+## 📁 Categories
+- [[dsa/1.Interviewcake.com/11 - 14/c/index_c|c]]
+- [[dsa/1.Interviewcake.com/11 - 14/csharp/index_csharp|csharp]]
+- [[dsa/1.Interviewcake.com/11 - 14/javascript/index_javascript|javascript]]
+- [[dsa/1.Interviewcake.com/11 - 14/objective-c/index_objective-c|objective-c]]
+- [[dsa/1.Interviewcake.com/11 - 14/php/index_php|php]]
+- [[dsa/1.Interviewcake.com/11 - 14/python 2.7/index_python 2.7|python 2.7]]
+- [[dsa/1.Interviewcake.com/11 - 14/ruby/index_ruby|ruby]]
+- [[dsa/1.Interviewcake.com/11 - 14/swift/index_swift|swift]]
+
+## 📄 Notes
+- [[11 - 14|11 - 14]]
+

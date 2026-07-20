@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/clf-c02
+  - clfc02
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 CLF-C02 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/aws/CLF-C02/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/aws/CLF-C02/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/aws/CLF-C02/CLF-C02 Mindmap\|🗺️ CLF-C02 Mindmap]]
+- [[certifications/aws/CLF-C02/CLF-C02 Flashcards\|🃏 CLF-C02 Flashcards]]
+- [[certifications/aws/CLF-C02/CLF-C02_Scraped_Question_Bank\|🗃️ CLF-C02 Scraped Question Bank]]

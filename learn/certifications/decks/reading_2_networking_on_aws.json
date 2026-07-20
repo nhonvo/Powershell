@@ -1,0 +1,396 @@
+{
+  "Meta": {
+    "Id": "deck_reading_2_networking_on_aws",
+    "Topic": "Reading 2 Networking on AWS",
+    "Language": "English/Japanese",
+    "Domain": "certifications",
+    "Level": "General",
+    "Tags": [
+      "reading_2_networking_on_aws"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 19
+  },
+  "Cards": [
+    {
+      "Id": "card_00144",
+      "Front": "**Inbound**",
+      "Back": " |  |  |  | ",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00145",
+      "Front": "**Rule #**",
+      "Back": "**Type** | **Protocol** | **Port Range** | **Source** | **Allow/Deny**",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00146",
+      "Front": "100",
+      "Back": "All IPv4 traffic | All | All | 0.0.0.0/0 | ALLOW",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00147",
+      "Front": "**Outbound**",
+      "Back": " |  |  |  | ",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00148",
+      "Front": "**Rule #**",
+      "Back": "**Type** | **Protocol** | **Port Range** | **Source** | **Allow/Deny**",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00149",
+      "Front": "100",
+      "Back": "All IPv4 traffic | All | All | 0.0.0.0/0 | ALLOW",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00150",
+      "Front": "**Inbound**",
+      "Back": " |  |  |  | ",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00151",
+      "Front": "**Rule #**",
+      "Back": "**Source IP** | **Protocol** | **Port** | **Allow/Deny** | **Comments**",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00152",
+      "Front": "100",
+      "Back": "All IPv4 traffic | TCP | 443 | ALLOW | Allows inbound HTTPS traffic from anywhere",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00153",
+      "Front": "130",
+      "Back": "192.0.2.0/24 | TCP | 3389 | ALLOW | Allows inbound RDP traffic to the web servers from your home network’s public IP address range (over the internet gateway)",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00154",
+      "Front": "**Outbound**",
+      "Back": " |  |  |  | ",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00155",
+      "Front": "**Rule #**",
+      "Back": "**Destination IP** | **Protocol** | **Port** | **Allow/Deny** | **Comments**",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00156",
+      "Front": "120",
+      "Back": "0.0.0.0/0 | TCP | 1025-65535 | ALLOW | Allows outbound responses to clients on the internet (serving people visiting the web servers in the subnet)",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00157",
+      "Front": "**Inbound rules**",
+      "Back": " |  | ",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00158",
+      "Front": "**Type**",
+      "Back": "**Protocol** | **Port Range** | **Source**",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00159",
+      "Front": "HTTP (80)",
+      "Back": "TCP (6) | 80 | 0.0.0.0/0",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00160",
+      "Front": "HTTP (80)",
+      "Back": "TCP (6) | 80 | ::/0",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00161",
+      "Front": "HTTPS (443)",
+      "Back": "TCP (6) | 443 | 0.0.0.0/0",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00162",
+      "Front": "HTTPS (443)",
+      "Back": "TCP (6) | 443 | ::/0",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 networking on aws"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

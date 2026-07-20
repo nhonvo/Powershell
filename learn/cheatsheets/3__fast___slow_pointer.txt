@@ -1,0 +1,190 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/06_Linked_List/🔗index_06_Linked_List|06_Linked_List]]
+
+## 3. Fast & Slow Pointer
+
+### 3.1. Hình dung thực tế
+
+Hãy tưởng tượng hai người chạy trên **đường đua vòng tròn**:
+
+- Người chạy nhanh (**fast**, hay "thỏ") chạy 2 bước mỗi lượt
+- Người chạy chậm (**slow**, hay "rùa") chạy 1 bước mỗi lượt
+
+Nếu đường đua là **đường thẳng** (không có cycle), thỏ sẽ đến cuối trước rùa. Khi thỏ đến cuối, rùa đang ở **chính giữa** đường đua!
+
+Nếu đường đua là **vòng tròn** (có cycle), thỏ cuối cùng sẽ **đuổi kịp** rùa — giống như xe đua F1 vượt vòng.
+
+Đây chính là ý tưởng thiên tài của Floyd — kỹ thuật **Two Pointer** (hay Floyd's Tortoise and Hare).
+
+### 3.2. Bài toán 1: Tìm node giữa của Linked List
+
+**Đề bài:** Cho Singly Linked List, tìm node ở vị trí giữa. Nếu list có số chẵn node, trả về node ở nửa sau.
+
+**Cách naive:** Duyệt list đếm length (n bước), rồi duyệt lại đến n/2 (n/2 bước). Tổng: 1.5n bước, 2 lần duyệt.
+
+**Cách thông minh (Fast & Slow):** Chỉ 1 lần duyệt!
+
+**Thuật toán:**
+
+1. Đặt `slow = head`, `fast = head`
+2. Mỗi bước: `slow` đi 1 bước, `fast` đi 2 bước
+3. Khi `fast` đến cuối (hoặc `fast.next` là null), `slow` đang ở giữa
+
+**Tại sao đúng?**
+
+```
+Khi fast đi được 2k bước → slow đi được k bước.
+Khi fast đến cuối (bước 2k = n, tức k = n/2) → slow ở vị trí n/2 = giữa.
+```
+
+**Mô phỏng từng bước:**
+
+List: `[1] -> [2] -> [3] -> [4] -> [5] -> null` (n = 5)
+
+| Bước | slow (vị trí) | fast (vị trí)    | Ghi chú                 |
+| :--- | :------------ | :--------------- | :---------------------- |
+| 0    | [1] (pos 0)   | [1] (pos 0)      | Khởi tạo                |
+| 1    | [2] (pos 1)   | [3] (pos 2)      | slow +1, fast +2        |
+| 2    | [3] (pos 2)   | [5] (pos 4)      | slow +1, fast +2        |
+| 3    | -             | fast.next = null | DỪNG! slow ở [3] = giữa |
+
+List: `[1] -> [2] -> [3] -> [4] -> [5] -> [6] -> null` (n = 6, chẵn)
+
+| Bước | slow (vị trí) | fast (vị trí) | Ghi chú                       |
+| :--- | :------------ | :------------ | :---------------------------- |
+| 0    | [1] (pos 0)   | [1] (pos 0)   | Khởi tạo                      |
+| 1    | [2] (pos 1)   | [3] (pos 2)   | slow +1, fast +2              |
+| 2    | [3] (pos 2)   | [5] (pos 4)   | slow +1, fast +2              |
+| 3    | [4] (pos 3)   | null (pos 6)  | DỪNG! fast = null, slow ở [4] |
+
+Bước 0slow1fast2345null
+
+Bước 112345nullslowfast
+
+Bước 2: DỪNG - fast.next = null12345nullslow = GIỮAfast
+
+**Python:**
+
+```python
+def find_middle(head):
+    if head is None:
+        return None
+
+    slow = head
+    fast = head
+
+    while fast is not None and fast.next is not None:
+        slow = slow.next        # Rùa: 1 bước
+        fast = fast.next.next   # Thỏ: 2 bước
+
+    return slow  # slow đang ở giữa!
+
+
+# Sử dụng
+# List: 1 -> 2 -> 3 -> 4 -> 5
+middle = find_middle(head)
+print(f"Middle node: {middle.data}")  # Output: 3
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Tạo list: 1 -> 2 -> 3 -> 4 -> 5
+head = Node(1)
+head.next = Node(2)
+head.next.next = Node(3)
+head.next.next.next = Node(4)
+head.next.next.next.next = Node(5)
+
+middle = find_middle(head)
+print(f"Middle: {middle.data}")  # Output: Middle: 3
+```
+
+### 3.3. Chứng minh toán học: Fast & Slow tìm đúng giữa
+
+**Định lý:** Khi fast pointer đi hết list, slow pointer ở vị trí giữa.
+
+**Chứng minh:**
+
+Gọi n là số node trong list (đánh số từ 0).
+
+**Trường hợp n lẻ (n = 2m + 1):**
+
+- Vòng lặp dừng khi `fast.next = null`, tức fast ở vị trí 2m = n-1 (node cuối).
+- Lúc đó slow đã đi m bước → slow ở vị trí m.
+- Vị trí giữa (0-indexed) = floor(n/2) = floor((2m+1)/2) = m.
+- Vậy slow ở đúng vị trí giữa. **QED.**
+
+**Trường hợp n chẵn (n = 2m):**
+
+- Vòng lặp dừng khi `fast = null`, tức fast đã vượt qua node cuối.
+- Trước lúc dừng, fast ở vị trí 2m (ngoài list), slow ở vị trí m.
+- Vị trí giữa nửa sau (0-indexed) = n/2 = m.
+- Vậy slow ở đúng vị trí giữa nửa sau. **QED.**
+
+**Complexity:** O(n/2) = O(n) time, O(1) space — chỉ dùng 2 pointer.
+
+### 3.4. Bài toán 2: Tìm node thứ k từ cuối
+
+**Ý tưởng:** Dùng 2 pointer cách nhau k bước. Khi pointer phía trước đến cuối, pointer phía sau ở vị trí thứ k từ cuối.
+
+**Python:**
+
+```python
+def find_kth_from_end(head, k):
+    """Tìm node thứ k từ cuối (1-indexed)"""
+    fast = head
+    slow = head
+
+    # Cho fast đi trước k bước
+    for _ in range(k):
+        if fast is None:
+            raise ValueError(f"List có ít hơn {k} node")
+        fast = fast.next
+
+    # Hai pointer cùng đi, khi fast đến cuối → slow ở vị trí k từ cuối
+    while fast is not None:
+        slow = slow.next
+        fast = fast.next
+
+    return slow
+```
+
+**Tương đương khi gọi:**
+
+```python
+# Tạo list: 10 -> 20 -> 30 -> 40 -> 50
+head = Node(10)
+current = head
+for val in [20, 30, 40, 50]:
+    current.next = Node(val)
+    current = current.next
+
+result = find_kth_from_end(head, 2)
+print(f"Node thứ 2 từ cuối: {result.data}")  # Output: 40
+```
+
+**Mô phỏng (k=2):**
+
+List: `[10] -> [20] -> [30] -> [40] -> [50] -> null`
+
+| Bước   | slow | fast | Ghi chú                                |
+| :----- | :--- | :--- | :------------------------------------- |
+| Init   | [10] | [10] |                                        |
+| Prep 1 | [10] | [20] | fast đi trước 1                        |
+| Prep 2 | [10] | [30] | fast đi trước 2. Gap = 2               |
+| 1      | [20] | [40] | Cùng đi                                |
+| 2      | [30] | [50] | Cùng đi                                |
+| 3      | [40] | null | DỪNG! slow = [40] = node thứ 2 từ cuối |
+
+**Complexity:** O(n) time, O(1) space.
+
+### 3.5. Ứng dụng khác của Fast & Slow
+
+| Bài toán                    | Cách dùng                  |
+| :-------------------------- | :------------------------- |
+| Tìm giữa list               | slow x1, fast x2           |
+| Node thứ k từ cuối          | Gap k bước                 |
+| Detect cycle                | Phần tiếp theo!            |
+| Tìm điểm bắt đầu cycle      | Phần tiếp theo!            |
+| Palindrome check            | Tìm giữa + reverse nửa sau |
+| Happy Number (LeetCode 202) | Số thay vì node            |

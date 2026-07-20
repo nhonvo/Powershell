@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/sc-401
+  - sc401
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 SC-401: Administering Information Security in Microsoft 365 MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/SC-401/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/SC-401/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/SC-401/SC-401 Mindmap\|🗺️ SC-401 Mindmap]]
+- [[certifications/microsoft/SC-401/SC-401 Flashcards\|🃏 SC-401 Flashcards]]
+- [[certifications/microsoft/SC-401/SC-401_Scraped_Question_Bank\|🗃️ SC-401 Scraped Question Bank]]

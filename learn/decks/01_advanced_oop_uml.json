@@ -1,0 +1,136 @@
+{
+  "Meta": {
+    "Id": "deck_01_advanced_oop_uml",
+    "Topic": "01_Advanced_OOP_UML",
+    "Language": "English/Japanese",
+    "Domain": "technical_skills",
+    "Level": "General",
+    "Tags": [
+      "01_advanced_oop_uml"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 6
+  },
+  "Cards": [
+    {
+      "Id": "card_03573",
+      "Front": "Ký hiệu",
+      "Back": "Tên quan hệ | Ý nghĩa (Mẹo nhớ)",
+      "Hint": "03_Design_Patterns_Mastery",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "01_advanced_oop_uml"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03574",
+      "Front": "**`───>`**",
+      "Back": "**Association** | Biết nhau (VD: `User` có `Address`).",
+      "Hint": "03_Design_Patterns_Mastery",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "01_advanced_oop_uml"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03575",
+      "Front": "**`──<>`**",
+      "Back": "**Aggregation** | Chứa nhau (VD: `Phòng` có `Bàn`). Bàn có thể đứng độc lập.",
+      "Hint": "03_Design_Patterns_Mastery",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "01_advanced_oop_uml"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03576",
+      "Front": "**`──#>`**",
+      "Back": "**Composition** | Sống chết có nhau (VD: `Người` có `Tim`). Tim không thể tồn tại bên ngoài.",
+      "Hint": "03_Design_Patterns_Mastery",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "01_advanced_oop_uml"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03577",
+      "Front": "**`──",
+      "Back": ">`** | **Inheritance** | Là một (VD: `Mèo` là `Động vật`).",
+      "Hint": "03_Design_Patterns_Mastery",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "01_advanced_oop_uml"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_03578",
+      "Front": "**`--",
+      "Back": ">`** | **Realization** | Thực thi (VD: `Class` thực hiện `Interface`).",
+      "Hint": "03_Design_Patterns_Mastery",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "01_advanced_oop_uml"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

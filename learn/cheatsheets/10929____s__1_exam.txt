@@ -1,0 +1,41 @@
+🔙 **Back to Parent**: [[languages/08_Japanese_Exams/06_Other/Course_41/📂index_Course_41|Course_41]]
+
+# Đề số 1
+
+## Part 1
+**Q1.** この 　へやを 　そうじしました。
+- **A.** この　 へやは きれいです。
+- **B.** この　 へやは あかるいです。
+- **C.** この　 へやは あたらしいです。
+- **D.** この 　へやは しずかです。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> A</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 1Căn ph&ograve;ng n&agrave;y đ&atilde; được dọn dẹp.1. Căn ph&ograve;ng n&agrave;y sạch sẽ.2. Căn ph&ograve;ng n&agrave;y s&aacute;ng sủa.3. Căn ph&ograve;ng n&agrave;y mới.4. Căn ph&ograve;ng n&agrave;y y&ecirc;n tĩnh.</p>
+</details>
+
+---
+**Q2.** やまださんは 　しゅくだいを 　しませんでした。
+- **A.** やまださんは　 しゅくだいを　 かきました。
+- **B.** やまださんは 　しゅくだいを 　みせました。
+- **C.** やまださんは　 しゅくだいを 　だしました。
+- **D.** やまださんは 　しゅくだいを　 わすれました。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> D</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 4Yamada đ&atilde; kh&ocirc;ng l&agrave;m b&agrave;i tập về nh&agrave;.1. Yamada đ&atilde; viết b&agrave;i tập về nh&agrave;.2. Yamada đ&atilde; cho xem b&agrave;i tập về nh&agrave;.3. Yamada đ&atilde; nộp b&agrave;i tập về nh&agrave;.4. Yamada đ&atilde; qu&ecirc;n b&agrave;i tập về nh&agrave;.</p>
+</details>
+
+---
+**Q3.** あそこは　 こうばんです。
+- **A.** あそこは 　おちゃを　 のむ　 ところです。
+- **B.** あそこは 　みちを　 きく 　ところです。
+- **C.** あそこは 　てがみを　 だす　 ところです。
+- **D.** あそこは 　きっぷを　 かう　 ところです。
+
+<details><summary><b>Xem Đáp Án</b></summary>
+<p><b>Đáp án đúng:</b> B</p>
+<p><b>Giải thích:</b> Đ&aacute;p &aacute;n: 2Ở đằng kia l&agrave; đồn cảnh s&aacute;t.1. Ở đằng kia l&agrave; nơi để uống tr&agrave;.2. Ở đằng kia l&agrave; nơi để hỏi đường.3. Ở đằng kia l&agrave; nơi để gửi thư.4. Ở đằng kia l&agrave; nơi để mua v&eacute;.</p>
+</details>
+
+---

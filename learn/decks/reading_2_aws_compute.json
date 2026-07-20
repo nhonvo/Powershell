@@ -1,0 +1,136 @@
+{
+  "Meta": {
+    "Id": "deck_reading_2_aws_compute",
+    "Topic": "Reading 2 AWS Compute",
+    "Language": "English/Japanese",
+    "Domain": "certifications",
+    "Level": "General",
+    "Tags": [
+      "reading_2_aws_compute"
+    ],
+    "CreatedAt": "2026-07-20T00:00:00Z",
+    "CardCount": 6
+  },
+  "Cards": [
+    {
+      "Id": "card_00138",
+      "Front": "Instance Family",
+      "Back": "Description | Use Cases",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 aws compute"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00139",
+      "Front": "General purpose",
+      "Back": "Provides a balance of compute, memory, and networking resources, and can be used for a variety of workloads. | Scale-out workloads such as web servers, containerized microservices, caching fleets, distributed data stores, and development environments.",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 aws compute"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00140",
+      "Front": "Compute optimized",
+      "Back": "Ideal for compute-bound applications that benefit from high-performance processors. | High-performance web servers, scientific modeling, batch processing, distributed analytics, high-performance computing (HPC), machine/deep learning, ad serving, highly scalable multiplayer gaming.",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 aws compute"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00141",
+      "Front": "Memory optimized",
+      "Back": "Designed to deliver fast performance for workloads that process large data sets in memory. | Memory-intensive applications such as high-performance databases, distributed web-scale in-memory caches, mid-size in-memory databases, real-time big-data analytics, and other enterprise applications.",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 aws compute"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00142",
+      "Front": "Accelerated computing",
+      "Back": "Use hardware accelerators or co-processors to perform functions such as floating-point number calculations, graphics processing, or data pattern matching more efficiently than is possible with conventional CPUs. | 3D visualizations, graphics-intensive remote workstations, 3D rendering, application streaming, video encoding, and other server-side graphics workloads.",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 aws compute"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card_00143",
+      "Front": "Storage optimized",
+      "Back": "Designed for workloads that require high, sequential read and write access to large data sets on local storage. They are optimized to deliver tens of thousands of low-latency random I/O operations per second (IOPS) to applications that replicate their data across different instances. | NoSQL databases, such as Cassandra, MongoDB, and Redis, in-memory databases, scale-out transactional databases, d",
+      "Hint": "AWS Cloud Technical Essentials- udacity - research",
+      "Mnemonic": null,
+      "ExampleSentence": "",
+      "Tags": [
+        "reading 2 aws compute"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

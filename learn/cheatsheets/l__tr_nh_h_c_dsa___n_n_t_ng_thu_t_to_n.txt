@@ -1,0 +1,31 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/📜index_01_Algo_and_DSA_doc|01_Algo_and_DSA_doc]]
+
+# Lộ trình học DSA - Nền tảng thuật toán
+
+Bộ tài liệu này bao gồm 13 phần cốt lõi của Cấu trúc dữ liệu và Giải thuật (DSA), được thiết kế để học từ cơ bản đến nâng cao.
+
+## Danh sách các học phần
+
+1.  [**DSA #1: Nền tảng**](01_Basics/1. Time & Space Complexity.md) — Complexity, Toán học & Bit Manipulation.
+2.  [**DSA #2: Arrays & Strings**](02_Arrays_Strings/1. Arrays — Mảng.md) — Mảng và Chuỗi.
+3.  [**DSA #3: Searching & Sorting**](03_Searching_Sorting/1. Binary Search.md) — Thuật toán Tìm kiếm và Sắp xếp.
+4.  [**DSA #4: Recursion & Backtracking**](04_Recursion_Backtracking/1. Recursion Basics.md) — Đệ quy và Quay lui.
+5.  [**DSA #5: Hashing**](05_Hashing/1. Hashing Basics.md) — Kỹ thuật Hashing.
+6.  [**DSA #6: Linked List**](06_Linked_List/1. Linked List Basics.md) — Danh sách liên kết.
+7.  [**DSA #7: Stack & Queue**](07_Stack_Queue/1. Stack & Queue Basics.md) — Ngăn xếp và Hàng đợi.
+8.  [**DSA #8: Greedy Algorithms**](08_Greedy/1. Greedy Basics.md) — Thuật toán Tham lam.
+9.  [**DSA #9: Binary Trees**](09_Binary_Trees/1. Binary Tree Basics.md) — Cây nhị phân.
+10. [**DSA #10: Binary Search Trees**](10_Binary_Search_Trees/1. BST Basics.md) — Cây nhị phân tìm kiếm.
+11. [**DSA #11: Heaps & Priority Queue**](11_Heaps_Priority_Queue/1. Heap Basics.md) — Heap và Hàng đợi ưu tiên.
+12. [**DSA #12: Graphs**](12_Graphs/1. Graph Basics.md) — Đồ thị.
+13. [**DSA #13: Dynamic Programming**](13_Dynamic_Programming/1. DP Basics.md) — Quy hoạch động.
+
+## Lưu ý
+
+-   Toàn bộ file đã được tổ chức lại vào các thư mục tương ứng.
+-   Các sơ đồ cũ đã được chuyển đổi sang định dạng **Mermaid**.
+-   Nội dung Tiếng Việt đã được bổ sung dấu để dễ đọc hơn.
+-   Mỗi học phần đều đi kèm các bài luyện tập trên LeetCode với lời giải chi tiết.
+
+---
+*Người hướng dẫn: Nguyễn Văn Kiên (Code4Func)*

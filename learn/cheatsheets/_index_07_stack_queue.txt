@@ -1,0 +1,15 @@
+# 07_Stack_Queue
+
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/🥞index_07_Stack_Queue|01_Algo_and_DSA_doc]]
+
+## 📄 Notes
+- [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/1. Stack (LIFO)|1. Stack (LIFO)]]
+- [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/2. Queue (FIFO)|2. Queue (FIFO)]]
+- [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/3. Deque (Double-ended Queue)|3. Deque (Double-ended Queue)]]
+- [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/4. Monotonic Stack|4. Monotonic Stack]]
+- [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/5. Next Greater Element|5. Next Greater Element]]
+- [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/6. Expression Evaluation|6. Expression Evaluation]]
+- [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/7. Min Stack|7. Min Stack]]
+- [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/8. Queue using Stack  Stack using Queue|8. Queue using Stack  Stack using Queue]]
+- [[dsa/01_Algo_and_DSA_doc/07_Stack_Queue/9. LeetCode Practice — Giải chi tiết 8 bài kinh điển|9. LeetCode Practice — Giải chi tiết 8 bài kinh điển]]
+

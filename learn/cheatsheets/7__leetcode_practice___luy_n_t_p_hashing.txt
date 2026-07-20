@@ -1,0 +1,1205 @@
+🔙 **Back to Parent**: [[dsa/01_Algo_and_DSA_doc/05_Hashing/🔑index_05_Hashing|05_Hashing]]
+
+## 7. LeetCode Practice — Luyện tập Hashing
+
+> Phần này mình sẽ đi qua **8 bài LeetCode kinh điển** liên quan đến Hashing. Mỗi bài mình sẽ phân tích **cực kỳ chi tiết**: từ cách đọc đề, tư duy từng bước, các approach khác nhau (brute force → tối ưu), code Python có comment đầy đủ, dry run với ví dụ cụ thể, và phân tích complexity. Bạn hãy đọc kỹ phần tư duy — đó mới là thứ giúp bạn giải được bài mới, chứ không phải chỉ thuộc lời giải.
+
+------
+
+### 7.1. Two Sum — LeetCode #1 (Easy)
+
+**Link:** https://leetcode.com/problems/two-sum/
+
+**Đề bài:**
+
+Cho một mảng số nguyên `nums` và một số nguyên `target`. Tìm **hai phần tử** trong mảng có tổng bằng `target` và trả về **indices** (vị trí) của chúng. Đảm bảo luôn có đúng 1 đáp án, và không được dùng cùng 1 phần tử 2 lần.
+
+```
+Input: nums = [2, 7, 11, 15], target = 9
+Output: [0, 1]
+Giải thích: nums[0] + nums[1] = 2 + 7 = 9
+```
+
+**Phân tích tư duy từng bước:**
+
+Khi đọc đề, mình thấy mấy điểm quan trọng:
+
+1. Cần tìm **2 phần tử** có tổng = target → nghĩ ngay đến "pair sum"
+2. Trả về **index** chứ không phải giá trị → cần lưu lại index khi duyệt
+3. "Exactly one solution" → không cần xử lý trường hợp không tìm thấy
+4. Không dùng cùng phần tử 2 lần → `i != j`
+
+**Approach 1: Brute Force — O(n^2)**
+
+Cách đơn giản nhất: thử tất cả các cặp `(i, j)`.
+
+```python
+def two_sum_brute(nums: list[int], target: int) -> list[int]:
+    """
+    Brute Force: thử tất cả các cặp (i, j).
+    Time: O(n^2) — 2 vòng lặp lồng nhau
+    Space: O(1) — không dùng thêm bộ nhớ
+    """
+    n = len(nums)
+    for i in range(n):
+        for j in range(i + 1, n):  # j > i để không dùng cùng phần tử
+            if nums[i] + nums[j] == target:
+                return [i, j]
+    return []  # Không tìm thấy (theo đề không xảy ra)
+```
+
+Cách này đơn giản nhưng chậm. Với `n = 10^4`, cần `~5 * 10^7` phép tính — vẫn ok nhưng chưa optimal.
+
+**Approach 2: Hash Map — O(n)**
+
+Ý tưởng then chốt: Khi đang ở phần tử `nums[i]`, mình cần tìm xem **trước đó** có phần tử nào bằng `target - nums[i]` không. Nếu lưu các phần tử đã duyệt vào hash map (value -> index), mình chỉ cần 1 lần lookup O(1)!
+
+**Tại sao nghĩ ra được hash map?** Vì mình cần **tra cứu nhanh** xem một giá trị cụ thể có tồn tại không. Đây chính là thế mạnh #1 của hash map: lookup O(1).
+
+```python
+def two_sum(nums: list[int], target: int) -> list[int]:
+    """
+    Hash Map approach:
+    - Duyệt mảng 1 lần
+    - Với mỗi phần tử, kiểm tra complement (target - num) có trong map không
+    - Nếu có → trả về cặp index
+    - Nếu không → thêm phần tử hiện tại vào map
+
+    Time: O(n) — duyệt mảng 1 lần, mỗi lookup O(1)
+    Space: O(n) — hash map chứa tối đa n phần tử
+    """
+    seen = {}  # Lưu: giá trị → index
+
+    for i, num in enumerate(nums):
+        complement = target - num  # Số cần tìm
+
+        if complement in seen:
+            # Tìm thấy! complement đã xuất hiện trước đó tại index seen[complement]
+            return [seen[complement], i]
+
+        # Chưa tìm thấy → ghi nhớ phần tử hiện tại
+        seen[num] = i
+
+    return []  # Theo đề bài, luôn có đáp án
+```
+
+**Dry run chi tiết:**
+
+```
+nums = [2, 7, 11, 15], target = 9
+
+seen = {}
+
+Bước 1: i=0, num=2
+  complement = 9 - 2 = 7
+  7 trong seen? KHÔNG
+  seen = {2: 0}
+
+Bước 2: i=1, num=7
+  complement = 9 - 7 = 2
+  2 trong seen? CÓ! seen[2] = 0
+  → Return [0, 1] ✓
+
+Kết quả: [0, 1]
+Kiểm tra: nums[0] + nums[1] = 2 + 7 = 9 = target ✓
+```
+
+**Complexity:**
+
+- **Time:** O(n) — duyệt mảng 1 lần, hash map lookup O(1)
+- **Space:** O(n) — worst case lưu n-1 phần tử trong map
+
+**Sai lầm thường gặp:**
+
+1. **Thêm phần tử vào map TRƯỚC khi kiểm tra complement** → có thể dùng chính phần tử đó 2 lần. Ví dụ: `nums = [3, 3], target = 6` — nếu thêm `3` vào map rồi mới check, sẽ tìm thấy chính nó.
+2. **Quên xử lý duplicate values** → `seen[num] = i` sẽ ghi đè index cũ. Nhưng không sao vì ta luôn return ngay khi tìm thấy complement.
+3. **Trả về giá trị thay vì index** → đề yêu cầu index, không phải giá trị.
+
+------
+
+### 7.2. Valid Anagram — LeetCode #242 (Easy)
+
+**Link:** https://leetcode.com/problems/valid-anagram/
+
+**Đề bài:**
+
+Cho hai chuỗi `s` và `t`. Kiểm tra xem `t` có phải là **anagram** (đảo chữ) của `s` không. Anagram nghĩa là hai chuỗi chứa các ký tự giống nhau, chỉ khác thứ tự sắp xếp.
+
+```
+Input: s = "anagram", t = "nagaram"
+Output: True
+
+Input: s = "rat", t = "car"
+Output: False
+```
+
+**Phân tích tư duy từng bước:**
+
+1. Anagram = cùng ký tự, khác thứ tự → **tần suất mỗi ký tự phải giống nhau**
+2. Nếu độ dài khác nhau → chắc chắn không phải anagram (early return)
+3. Cần đếm tần suất → nghĩ ngay đến **frequency counting** bằng hash map
+
+**Approach 1: Sort rồi so sánh — O(n log n)**
+
+```python
+def is_anagram_sort(s: str, t: str) -> bool:
+    """
+    Sort cả 2 chuỗi rồi so sánh.
+    Nếu cùng ký tự → sau khi sort sẽ giống nhau.
+    Time: O(n log n) — do sorting
+    Space: O(n) — Python tạo chuỗi mới khi sort
+    """
+    return sorted(s) == sorted(t)
+```
+
+**Approach 2: Frequency Counter — O(n)**
+
+```python
+def is_anagram(s: str, t: str) -> bool:
+    """
+    Đếm tần suất ký tự bằng hash map.
+    Tăng count cho s, giảm count cho t.
+    Nếu cuối cùng tất cả count = 0 → anagram.
+
+    Time: O(n) — duyệt cả 2 chuỗi 1 lần
+    Space: O(1) — tối đa 26 ký tự (lowercase English letters)
+    """
+    if len(s) != len(t):
+        return False  # Độ dài khác → chắc chắn không phải
+
+    freq = {}
+
+    # Tăng count cho mỗi ký tự trong s
+    for c in s:
+        freq[c] = freq.get(c, 0) + 1
+
+    # Giảm count cho mỗi ký tự trong t
+    for c in t:
+        if c not in freq or freq[c] == 0:
+            return False  # t có ký tự mà s không có (hoặc đã hết)
+        freq[c] -= 1
+
+    return True  # Tất cả count đã về 0 (vì len(s) == len(t))
+
+# Test
+print(is_anagram("anagram", "nagaram"))  # True
+print(is_anagram("rat", "car"))          # False
+```
+
+**Approach 3: Counter (Pythonic nhất) — O(n)**
+
+```python
+from collections import Counter
+
+def is_anagram_counter(s: str, t: str) -> bool:
+    """
+    Dùng Counter — 1 dòng, rõ ràng nhất.
+    Counter tự đếm tần suất mỗi ký tự.
+    """
+    return Counter(s) == Counter(t)
+```
+
+**Dry run chi tiết (Approach 2):**
+
+```
+s = "anagram", t = "nagaram"
+
+len(s) = 7, len(t) = 7 → OK, tiếp tục
+
+Duyệt s: "anagram"
+  'a' → freq = {'a': 1}
+  'n' → freq = {'a': 1, 'n': 1}
+  'a' → freq = {'a': 2, 'n': 1}
+  'g' → freq = {'a': 2, 'n': 1, 'g': 1}
+  'r' → freq = {'a': 2, 'n': 1, 'g': 1, 'r': 1}
+  'a' → freq = {'a': 3, 'n': 1, 'g': 1, 'r': 1}
+  'm' → freq = {'a': 3, 'n': 1, 'g': 1, 'r': 1, 'm': 1}
+
+Duyệt t: "nagaram"
+  'n' → freq['n'] = 1 > 0 → freq['n'] = 0 ✓
+  'a' → freq['a'] = 3 > 0 → freq['a'] = 2 ✓
+  'g' → freq['g'] = 1 > 0 → freq['g'] = 0 ✓
+  'a' → freq['a'] = 2 > 0 → freq['a'] = 1 ✓
+  'r' → freq['r'] = 1 > 0 → freq['r'] = 0 ✓
+  'a' → freq['a'] = 1 > 0 → freq['a'] = 0 ✓
+  'm' → freq['m'] = 1 > 0 → freq['m'] = 0 ✓
+
+Không bị return False → Return True ✓
+```
+
+**Complexity:**
+
+- **Time:** O(n) — duyệt mỗi chuỗi 1 lần
+- **Space:** O(1) — hash map có tối đa 26 entries (lowercase letters)
+
+**Edge cases / Sai lầm:**
+
+1. **Chuỗi rỗng:** `s = "", t = ""` → True (2 chuỗi rỗng là anagram của nhau)
+2. **Unicode characters:** Nếu đề mở rộng cho Unicode, space sẽ là O(n) thay vì O(1)
+3. **Quên check độ dài:** Nếu `len(s) != len(t)`, vẫn chạy đúng nhưng lãng phí thời gian
+
+------
+
+### 7.3. Group Anagrams — LeetCode #49 (Medium)
+
+**Link:** https://leetcode.com/problems/group-anagrams/
+
+**Đề bài:**
+
+Cho một mảng các chuỗi `strs`. Hãy **nhóm các anagram lại với nhau**. Kết quả có thể trả về theo bất kỳ thứ tự nào.
+
+```
+Input: strs = ["eat","tea","tan","ate","nat","bat"]
+Output: [["eat","tea","ate"], ["tan","nat"], ["bat"]]
+```
+
+**Phân tích tư duy từng bước:**
+
+1. Cần nhóm các chuỗi có cùng tập ký tự → cần **key chung** cho tất cả anagram
+2. "eat", "tea", "ate" đều là anagram → cần tạo key giống nhau cho cả 3
+3. Key có thể là gì?
+   - **Sorted string:** sort "eat" → "aet", sort "tea" → "aet", sort "ate" → "aet" → giống nhau!
+   - **Character count tuple:** đếm tần suất rồi biến thành tuple, ví dụ (1,0,0,...,1,0,...,1,...) cho "aet"
+4. Dùng hash map: key = sorted string (hoặc count tuple), value = list of anagrams
+
+**Approach 1: Sort as Key — O(n \* k log k)**
+
+```python
+from collections import defaultdict
+
+def group_anagrams(strs: list[str]) -> list[list[str]]:
+    """
+    Nhóm anagram bằng cách dùng sorted string làm key.
+
+    Ý tưởng: Tất cả anagram khi sort sẽ cho cùng 1 chuỗi.
+    "eat" → "aet", "tea" → "aet", "ate" → "aet"
+
+    Time: O(n * k * log(k))
+      - n = số chuỗi
+      - k = độ dài trung bình của chuỗi
+      - Mỗi chuỗi sort mất O(k log k)
+    Space: O(n * k) — lưu tất cả chuỗi trong hash map
+    """
+    groups = defaultdict(list)
+
+    for s in strs:
+        # Sort chuỗi → tạo key chung cho tất cả anagram
+        key = ''.join(sorted(s))  # "eat" → "aet"
+        groups[key].append(s)
+
+    return list(groups.values())
+```
+
+**Approach 2: Character Count as Key — O(n \* k)**
+
+```python
+def group_anagrams_count(strs: list[str]) -> list[list[str]]:
+    """
+    Dùng character count làm key thay vì sort.
+    Nhanh hơn vì không cần sort (O(k) thay vì O(k log k)).
+
+    Key = tuple gồm 26 số, mỗi số = số lần xuất hiện của ký tự a-z.
+    "eat" → (1,0,0,0,1,0,...,1,...,0) (a=1, e=1, t=1)
+
+    Time: O(n * k) — mỗi chuỗi duyệt 1 lần
+    Space: O(n * k)
+    """
+    groups = defaultdict(list)
+
+    for s in strs:
+        # Đếm tần suất 26 ký tự
+        count = [0] * 26
+        for c in s:
+            count[ord(c) - ord('a')] += 1
+
+        # Dùng tuple(count) làm key (list không hash được, tuple thì được)
+        key = tuple(count)
+        groups[key].append(s)
+
+    return list(groups.values())
+
+# Test
+strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
+print(group_anagrams_count(strs))
+# [['eat', 'tea', 'ate'], ['tan', 'nat'], ['bat']]
+```
+
+**Dry run chi tiết (Approach 1):**
+
+```
+strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
+groups = {}
+
+"eat" → sorted = "aet" → groups = {"aet": ["eat"]}
+"tea" → sorted = "aet" → groups = {"aet": ["eat", "tea"]}
+"tan" → sorted = "ant" → groups = {"aet": ["eat", "tea"], "ant": ["tan"]}
+"ate" → sorted = "aet" → groups = {"aet": ["eat", "tea", "ate"], "ant": ["tan"]}
+"nat" → sorted = "ant" → groups = {"aet": ["eat", "tea", "ate"], "ant": ["tan", "nat"]}
+"bat" → sorted = "abt" → groups = {"aet": ["eat", "tea", "ate"], "ant": ["tan", "nat"], "abt": ["bat"]}
+
+Output: [["eat", "tea", "ate"], ["tan", "nat"], ["bat"]]
+```
+
+**Complexity:**
+
+- **Approach 1:** Time O(n * k log k), Space O(n * k)
+- **Approach 2:** Time O(n * k), Space O(n * k)
+
+**Edge cases:**
+
+1. **Chuỗi rỗng:** `[""]` → `[[""]]`
+2. **Tất cả giống nhau:** `["a", "a"]` → `[["a", "a"]]`
+3. **Không có anagram nào:** `["abc", "def"]` → `[["abc"], ["def"]]`
+
+------
+
+### 7.4. Longest Consecutive Sequence — LeetCode #128 (Medium)
+
+**Link:** https://leetcode.com/problems/longest-consecutive-sequence/
+
+**Đề bài:**
+
+Cho mảng số nguyên **unsorted** `nums`. Tìm **dãy số liên tiếp dài nhất** (consecutive sequence). Yêu cầu thuật toán chạy trong **O(n)** time.
+
+```
+Input: nums = [100, 4, 200, 1, 3, 2]
+Output: 4
+Giải thích: Dãy liên tiếp dài nhất là [1, 2, 3, 4]. Độ dài = 4.
+```
+
+**Phân tích tư duy từng bước:**
+
+1. "Consecutive sequence" = dãy số liên tiếp: 1, 2, 3, 4, 5...
+2. Mảng unsorted → không thể dùng binary search trực tiếp
+3. Yêu cầu O(n) → **không được sort** (sort mất O(n log n))
+4. Cần tra cứu nhanh "số x+1 có tồn tại không?" → **Hash Set**!
+5. Trick quan trọng: chỉ bắt đầu đếm dãy từ **phần tử đầu tiên** (num mà num-1 không tồn tại). Nếu không, mỗi phần tử sẽ cố đếm lại → O(n^2).
+
+**Approach 1: Sort — O(n log n)**
+
+```python
+def longest_consecutive_sort(nums: list[int]) -> int:
+    """
+    Sort rồi duyệt đếm dãy liên tiếp.
+    Đơn giản nhưng O(n log n) — không đạt yêu cầu O(n).
+    """
+    if not nums:
+        return 0
+
+    nums.sort()
+    max_len = 1
+    current_len = 1
+
+    for i in range(1, len(nums)):
+        if nums[i] == nums[i-1]:
+            continue  # Bỏ qua duplicate
+        elif nums[i] == nums[i-1] + 1:
+            current_len += 1
+        else:
+            current_len = 1
+        max_len = max(max_len, current_len)
+
+    return max_len
+```
+
+**Approach 2: Hash Set — O(n)**
+
+```python
+def longest_consecutive(nums: list[int]) -> int:
+    """
+    Dùng Hash Set để:
+    1. Chuyển mảng thành set → lookup O(1)
+    2. Duyệt set, chỉ bắt đầu đếm từ "đầu dãy"
+       (num mà num-1 KHÔNG có trong set)
+    3. Từ đầu dãy, đếm tiếp num+1, num+2, ... cho đến khi hết
+
+    Tại sao O(n) chứ không phải O(n^2)?
+    Vì mỗi phần tử chỉ được "visit" tối đa 2 lần:
+    - 1 lần khi duyệt set (vòng for)
+    - 1 lần khi đếm dãy (vòng while)
+
+    Time: O(n)
+    Space: O(n) — set chứa n phần tử
+    """
+    if not nums:
+        return 0
+
+    num_set = set(nums)  # Chuyển sang set, loại bỏ duplicate + lookup O(1)
+    max_length = 0
+
+    for num in num_set:
+        # CHỈ bắt đầu đếm nếu num là ĐẦU DÃY
+        # Đầu dãy = num mà (num - 1) không tồn tại
+        if num - 1 not in num_set:
+            current = num
+            length = 1
+
+            # Đếm dãy liên tiếp: num, num+1, num+2, ...
+            while current + 1 in num_set:
+                current += 1
+                length += 1
+
+            max_length = max(max_length, length)
+
+    return max_length
+
+# Test
+print(longest_consecutive([100, 4, 200, 1, 3, 2]))      # 4
+print(longest_consecutive([0, 3, 7, 2, 5, 8, 4, 6, 0, 1]))  # 9
+print(longest_consecutive([]))                             # 0
+```
+
+**Dry run chi tiết:**
+
+```
+nums = [100, 4, 200, 1, 3, 2]
+num_set = {100, 4, 200, 1, 3, 2}
+max_length = 0
+
+Duyệt num_set (thứ tự có thể khác):
+
+num = 100:
+  100 - 1 = 99 → 99 NOT in set → 100 là đầu dãy
+  current = 100, length = 1
+  101 in set? NO → dừng
+  max_length = max(0, 1) = 1
+
+num = 4:
+  4 - 1 = 3 → 3 IN set → 4 KHÔNG phải đầu dãy → SKIP
+
+num = 200:
+  200 - 1 = 199 → 199 NOT in set → 200 là đầu dãy
+  current = 200, length = 1
+  201 in set? NO → dừng
+  max_length = max(1, 1) = 1
+
+num = 1:
+  1 - 1 = 0 → 0 NOT in set → 1 là đầu dãy ★
+  current = 1, length = 1
+  2 in set? YES → current = 2, length = 2
+  3 in set? YES → current = 3, length = 3
+  4 in set? YES → current = 4, length = 4
+  5 in set? NO → dừng
+  max_length = max(1, 4) = 4 ★
+
+num = 3:
+  3 - 1 = 2 → 2 IN set → SKIP
+
+num = 2:
+  2 - 1 = 1 → 1 IN set → SKIP
+
+Kết quả: max_length = 4 ✓
+```
+
+**Complexity:**
+
+- **Time:** O(n) — mỗi phần tử được visit tối đa 2 lần
+- **Space:** O(n) — hash set
+
+**Sai lầm thường gặp:**
+
+1. **Không check "đầu dãy"** → mỗi phần tử đều cố đếm → O(n^2)
+2. **Quên xử lý duplicate** → dùng set tự giải quyết
+3. **Quên edge case mảng rỗng** → return 0
+
+------
+
+### 7.5. Subarray Sum Equals K — LeetCode #560 (Medium)
+
+**Link:** https://leetcode.com/problems/subarray-sum-equals-k/
+
+**Đề bài:**
+
+Cho mảng số nguyên `nums` và số nguyên `k`. Đếm **số subarray liên tiếp** có tổng bằng `k`.
+
+```
+Input: nums = [1, 1, 1], k = 2
+Output: 2
+Giải thích: [1,1] (index 0-1) và [1,1] (index 1-2)
+
+Input: nums = [1, 2, 3], k = 3
+Output: 2
+Giải thích: [1,2] và [3]
+```
+
+**Phân tích tư duy từng bước:**
+
+1. "Subarray" = mảng con **liên tiếp** (khác "subsequence" không cần liên tiếp)
+
+2. Mảng có thể chứa **số âm** → không thể dùng sliding window (vì thêm phần tử có thể giảm tổng)
+
+3. Brute force O(n^2): thử mọi cặp (i, j)
+
+4. Optimal: dùng
+
+    
+
+   prefix sum + hash map
+
+   . Ý tưởng:
+
+   - `sum(nums[i..j]) = prefix[j+1] - prefix[i]`
+   - Cần tìm: `prefix[j+1] - prefix[i] == k` → `prefix[i] == prefix[j+1] - k`
+   - Tại mỗi j, đếm có bao nhiêu prefix trước đó = `current_sum - k`
+
+5. Dùng hash map lưu **frequency** của từng prefix sum
+
+**Approach 1: Brute Force — O(n^2)**
+
+```python
+def subarray_sum_brute(nums: list[int], k: int) -> int:
+    """
+    Thử tất cả subarray [i..j].
+    Time: O(n^2), Space: O(1)
+    """
+    count = 0
+    n = len(nums)
+    for i in range(n):
+        total = 0
+        for j in range(i, n):
+            total += nums[j]
+            if total == k:
+                count += 1
+    return count
+```
+
+**Approach 2: Prefix Sum + Hash Map — O(n)**
+
+```python
+def subarray_sum(nums: list[int], k: int) -> int:
+    """
+    Prefix Sum + Hash Map:
+    - Duyệt mảng, cộng dồn prefix sum
+    - Tại mỗi vị trí, kiểm tra: đã có bao nhiêu prefix sum = current_sum - k?
+    - Mỗi prefix sum như vậy tương ứng 1 subarray có tổng = k
+
+    QUAN TRỌNG: freq = {0: 1} ban đầu!
+    Vì prefix_sum = 0 xuất hiện 1 lần (trước phần tử đầu tiên).
+    Nếu quên điều này, sẽ bỏ sót subarray bắt đầu từ index 0.
+
+    Time: O(n) — 1 pass
+    Space: O(n) — hash map
+    """
+    freq = {0: 1}  # ← QUAN TRỌNG: prefix_sum = 0 đã xuất hiện 1 lần
+    current_sum = 0
+    count = 0
+
+    for num in nums:
+        current_sum += num
+
+        # Có bao nhiêu prefix sum trước đó = current_sum - k?
+        target = current_sum - k
+        count += freq.get(target, 0)
+
+        # Ghi nhớ prefix sum hiện tại
+        freq[current_sum] = freq.get(current_sum, 0) + 1
+
+    return count
+
+# Test
+print(subarray_sum([1, 1, 1], 2))              # 2
+print(subarray_sum([1, 2, 3], 3))              # 2
+print(subarray_sum([1, -1, 0], 0))             # 3: [1,-1], [-1,0], [1,-1,0]
+```
+
+**Dry run chi tiết:**
+
+```
+nums = [1, 2, 3], k = 3
+freq = {0: 1}, current_sum = 0, count = 0
+
+i=0, num=1:
+  current_sum = 0 + 1 = 1
+  target = 1 - 3 = -2
+  freq[-2] → 0 → count = 0
+  freq = {0: 1, 1: 1}
+
+i=1, num=2:
+  current_sum = 1 + 2 = 3
+  target = 3 - 3 = 0
+  freq[0] = 1 → count = 0 + 1 = 1
+    ↑ subarray nums[0..1] = [1, 2], sum = 3 ✓
+  freq = {0: 1, 1: 1, 3: 1}
+
+i=2, num=3:
+  current_sum = 3 + 3 = 6
+  target = 6 - 3 = 3
+  freq[3] = 1 → count = 1 + 1 = 2
+    ↑ subarray nums[2..2] = [3], sum = 3 ✓
+  freq = {0: 1, 1: 1, 3: 1, 6: 1}
+
+Kết quả: count = 2 ✓
+Hai subarray: [1,2] và [3]
+```
+
+**Complexity:**
+
+- **Time:** O(n)
+- **Space:** O(n)
+
+**Sai lầm thường gặp:**
+
+1. **Quên `freq = {0: 1}`** → Bỏ sót subarray bắt đầu từ index 0. Ví dụ: `nums = [3], k = 3` sẽ trả về 0 thay vì 1.
+2. **Dùng sliding window** → SAI khi có số âm. Sliding window chỉ đúng khi mọi phần tử >= 0.
+3. **Nhầm "subarray" với "subset"** → Subarray phải liên tiếp!
+
+------
+
+### 7.6. Longest Substring Without Repeating Characters — LeetCode #3 (Medium)
+
+**Link:** https://leetcode.com/problems/longest-substring-without-repeating-characters/
+
+**Đề bài:**
+
+Cho chuỗi `s`. Tìm **độ dài substring dài nhất** mà không chứa ký tự lặp.
+
+```
+Input: s = "abcabcbb"
+Output: 3
+Giải thích: "abc" là substring dài nhất không lặp ký tự.
+
+Input: s = "bbbbb"
+Output: 1
+
+Input: s = "pwwkew"
+Output: 3
+Giải thích: "wke" (không phải "pwke" vì đó là subsequence, không phải substring)
+```
+
+**Phân tích tư duy từng bước:**
+
+1. "Substring" = chuỗi con **liên tiếp** → nghĩ đến **sliding window**
+2. "Không ký tự lặp" → cần biết ký tự nào đang có trong window → **Hash Set** hoặc **Hash Map**
+3. Khi gặp ký tự lặp → thu hẹp window (di chuyển left pointer)
+4. **Trick quan trọng:** thay vì dùng set + di chuyển left từng bước 1, dùng **hash map lưu last seen index** → nhảy left trực tiếp đến vị trí sau ký tự lặp → nhanh hơn!
+
+**Approach 1: Brute Force — O(n^3)**
+
+```python
+def length_brute(s: str) -> int:
+    """
+    Thử tất cả substring, kiểm tra có ký tự lặp không.
+    Time: O(n^3) — 2 vòng for + kiểm tra unique O(n)
+    """
+    max_len = 0
+    n = len(s)
+    for i in range(n):
+        for j in range(i + 1, n + 1):
+            substring = s[i:j]
+            if len(substring) == len(set(substring)):  # Không ký tự lặp
+                max_len = max(max_len, len(substring))
+    return max_len
+```
+
+**Approach 2: Sliding Window + Hash Set — O(n)**
+
+```python
+def length_of_longest_substring_set(s: str) -> int:
+    """
+    Sliding window với hash set.
+    - Mở rộng window bằng cách thêm ký tự bên phải
+    - Nếu ký tự lặp → thu hẹp bằng cách xóa ký tự bên trái cho đến khi hết lặp
+
+    Time: O(n) — mỗi ký tự được thêm/xóa khỏi set tối đa 1 lần
+    Space: O(min(n, σ)) — σ = kích thước alphabet
+    """
+    char_set = set()
+    left = 0
+    max_len = 0
+
+    for right in range(len(s)):
+        # Thu hẹp window cho đến khi không còn ký tự lặp
+        while s[right] in char_set:
+            char_set.remove(s[left])
+            left += 1
+
+        char_set.add(s[right])
+        max_len = max(max_len, right - left + 1)
+
+    return max_len
+```
+
+**Approach 3: Sliding Window + Hash Map (Optimal) — O(n)**
+
+```python
+def length_of_longest_substring(s: str) -> int:
+    """
+    Sliding window + hash map (lưu last seen index).
+
+    Ưu điểm so với dùng set: khi gặp ký tự lặp, left nhảy TRỰC TIẾP
+    đến vị trí sau ký tự lặp, thay vì di chuyển từng bước.
+
+    Time: O(n) — 1 pass, mỗi ký tự xử lý 1 lần
+    Space: O(min(n, σ))
+    """
+    last_seen = {}  # ký tự → index xuất hiện gần nhất
+    left = 0
+    max_len = 0
+
+    for right, char in enumerate(s):
+        # Nếu ký tự đã thấy VÀ vị trí cũ nằm TRONG window hiện tại
+        if char in last_seen and last_seen[char] >= left:
+            # Nhảy left đến ngay sau vị trí cũ
+            left = last_seen[char] + 1
+
+        # Cập nhật vị trí mới nhất của ký tự
+        last_seen[char] = right
+
+        # Cập nhật max
+        max_len = max(max_len, right - left + 1)
+
+    return max_len
+
+# Test
+print(length_of_longest_substring("abcabcbb"))  # 3
+print(length_of_longest_substring("bbbbb"))      # 1
+print(length_of_longest_substring("pwwkew"))     # 3
+print(length_of_longest_substring(""))            # 0
+print(length_of_longest_substring("au"))          # 2
+```
+
+**Dry run chi tiết (Approach 3):**
+
+```
+s = "pwwkew"
+last_seen = {}, left = 0, max_len = 0
+
+right=0, char='p':
+  'p' not in last_seen → không nhảy
+  last_seen = {'p': 0}
+  window: "p" (0..0), len = 1, max_len = 1
+
+right=1, char='w':
+  'w' not in last_seen → không nhảy
+  last_seen = {'p': 0, 'w': 1}
+  window: "pw" (0..1), len = 2, max_len = 2
+
+right=2, char='w':
+  'w' in last_seen AND last_seen['w']=1 >= left=0 ✓
+  → left = 1 + 1 = 2 (nhảy qua vị trí cũ của 'w')
+  last_seen = {'p': 0, 'w': 2}
+  window: "w" (2..2), len = 1, max_len = 2
+
+right=3, char='k':
+  'k' not in last_seen → không nhảy
+  last_seen = {'p': 0, 'w': 2, 'k': 3}
+  window: "wk" (2..3), len = 2, max_len = 2
+
+right=4, char='e':
+  'e' not in last_seen → không nhảy
+  last_seen = {'p': 0, 'w': 2, 'k': 3, 'e': 4}
+  window: "wke" (2..4), len = 3, max_len = 3 ★
+
+right=5, char='w':
+  'w' in last_seen AND last_seen['w']=2 >= left=2 ✓
+  → left = 2 + 1 = 3
+  last_seen = {'p': 0, 'w': 5, 'k': 3, 'e': 4}
+  window: "kew" (3..5), len = 3, max_len = 3
+
+Kết quả: max_len = 3 ✓ (substring "wke" hoặc "kew")
+```
+
+**Complexity:**
+
+- **Time:** O(n) — 1 pass
+- **Space:** O(min(n, sigma)) — sigma = kích thước alphabet (26 cho lowercase, 128 cho ASCII, 2^16 cho Unicode)
+
+**Sai lầm thường gặp:**
+
+1. **Quên check `last_seen[char] >= left`** → ký tự cũ nằm NGOÀI window vẫn làm left nhảy sai. Ví dụ: `s = "abba"`, khi xử lý 'a' cuối, last_seen['a'] = 0 nhưng left = 2 → không nên nhảy.
+2. **Nhầm substring vs subsequence** → "pwke" là subsequence (không liên tiếp), "wke" mới là substring.
+3. **Chuỗi rỗng** → return 0 (left = 0, max_len = 0, vòng for không chạy)
+
+------
+
+### 7.7. Top K Frequent Elements — LeetCode #347 (Medium)
+
+**Link:** https://leetcode.com/problems/top-k-frequent-elements/
+
+**Đề bài:**
+
+Cho mảng số nguyên `nums` và số nguyên `k`. Trả về `k` phần tử xuất hiện **nhiều nhất** (most frequent). Đáp án có thể trả về theo bất kỳ thứ tự nào.
+
+```
+Input: nums = [1,1,1,2,2,3], k = 2
+Output: [1, 2]
+
+Input: nums = [1], k = 1
+Output: [1]
+```
+
+**Phân tích tư duy từng bước:**
+
+1. Cần biết tần suất mỗi phần tử → **frequency counting** bằng hash map
+2. Cần tìm top k → nhiều cách:
+   - **Sort by frequency** → O(n log n)
+   - **Min Heap size k** → O(n log k)
+   - **Bucket Sort** → O(n) — optimal!
+3. Bucket sort: tạo array, index = frequency, value = list of elements. Duyệt từ cuối lấy k phần tử.
+
+**Approach 1: Sort — O(n log n)**
+
+```python
+from collections import Counter
+
+def top_k_frequent_sort(nums: list[int], k: int) -> list[int]:
+    """
+    Đếm frequency rồi sort.
+    Time: O(n log n), Space: O(n)
+    """
+    freq = Counter(nums)
+    # most_common(k) trả về k phần tử phổ biến nhất (đã sort)
+    return [x for x, _ in freq.most_common(k)]
+```
+
+**Approach 2: Min Heap — O(n log k)**
+
+```python
+import heapq
+from collections import Counter
+
+def top_k_frequent_heap(nums: list[int], k: int) -> list[int]:
+    """
+    Dùng min heap size k.
+    - Đếm frequency
+    - Duy trì heap size k: nếu phần tử mới có freq cao hơn min trong heap → thay thế
+
+    Time: O(n log k) — heap operation O(log k), thực hiện n lần
+    Space: O(n) cho frequency map + O(k) cho heap
+    """
+    freq = Counter(nums)
+
+    # heapq.nlargest trả về k phần tử có freq lớn nhất
+    # Bên dưới nó dùng min heap size k
+    return heapq.nlargest(k, freq.keys(), key=freq.get)
+```
+
+**Approach 3: Bucket Sort — O(n) (Optimal)**
+
+```python
+from collections import Counter
+
+def top_k_frequent_bucket(nums: list[int], k: int) -> list[int]:
+    """
+    Bucket Sort approach:
+    1. Đếm frequency
+    2. Tạo array of lists: buckets[i] = [phần tử xuất hiện i lần]
+       (Max frequency = n, nên array size = n + 1)
+    3. Duyệt buckets từ CUỐI (frequency cao nhất) lấy k phần tử
+
+    Tại sao O(n)?
+    - Đếm frequency: O(n)
+    - Tạo buckets: O(n) (mỗi phần tử vào đúng 1 bucket)
+    - Duyệt buckets: O(n) worst case
+
+    Time: O(n)
+    Space: O(n) — buckets + frequency map
+    """
+    freq = Counter(nums)
+
+    # Tạo buckets: buckets[i] = list phần tử xuất hiện i lần
+    n = len(nums)
+    buckets = [[] for _ in range(n + 1)]
+
+    for num, count in freq.items():
+        buckets[count].append(num)
+
+    # Duyệt từ frequency cao nhất xuống
+    result = []
+    for i in range(n, 0, -1):  # Từ n xuống 1
+        for num in buckets[i]:
+            result.append(num)
+            if len(result) == k:
+                return result
+
+    return result
+
+# Test
+print(top_k_frequent_bucket([1, 1, 1, 2, 2, 3], 2))  # [1, 2]
+print(top_k_frequent_bucket([1], 1))                    # [1]
+print(top_k_frequent_bucket([4, 4, 4, 1, 1, 2, 2, 2, 3], 2))  # [4, 2]
+```
+
+**Dry run chi tiết (Bucket Sort):**
+
+```
+nums = [1, 1, 1, 2, 2, 3], k = 2
+
+Step 1: Đếm frequency
+  freq = {1: 3, 2: 2, 3: 1}
+
+Step 2: Tạo buckets (size = 7, vì n = 6)
+  buckets[0] = []
+  buckets[1] = [3]      ← 3 xuất hiện 1 lần
+  buckets[2] = [2]      ← 2 xuất hiện 2 lần
+  buckets[3] = [1]      ← 1 xuất hiện 3 lần
+  buckets[4] = []
+  buckets[5] = []
+  buckets[6] = []
+
+Step 3: Duyệt từ cuối
+  i=6: buckets[6] rỗng → skip
+  i=5: buckets[5] rỗng → skip
+  i=4: buckets[4] rỗng → skip
+  i=3: buckets[3] = [1] → result = [1], len = 1 < k=2 → tiếp
+  i=2: buckets[2] = [2] → result = [1, 2], len = 2 == k=2 → DONE!
+
+Output: [1, 2] ✓
+```
+
+**Complexity so sánh:**
+
+| Approach    | Time       | Space    | Khi nào dùng           |
+| :---------- | :--------- | :------- | :--------------------- |
+| Sort        | O(n log n) | O(n)     | Code ngắn, n nhỏ       |
+| Min Heap    | O(n log k) | O(n + k) | k << n                 |
+| Bucket Sort | O(n)       | O(n)     | Optimal mọi trường hợp |
+
+**Edge cases:**
+
+1. **k = n (lấy hết):** bucket sort vẫn đúng
+2. **Tất cả phần tử giống nhau:** `[1,1,1], k=1` → `[1]`
+3. **Nhiều phần tử cùng frequency:** đề bài đảm bảo đáp án unique
+
+------
+
+### 7.8. Find All Anagrams in a String — LeetCode #438 (Medium)
+
+**Link:** https://leetcode.com/problems/find-all-anagrams-in-a-string/
+
+**Đề bài:**
+
+Cho hai chuỗi `s` và `p`. Tìm **tất cả vị trí bắt đầu** của các anagram của `p` trong `s`. Kết quả trả về theo bất kỳ thứ tự nào.
+
+```
+Input: s = "cbaebabacd", p = "abc"
+Output: [0, 6]
+Giải thích:
+- Substring bắt đầu tại index 0: "cba" là anagram của "abc" ✓
+- Substring bắt đầu tại index 6: "bac" là anagram của "abc" ✓
+
+Input: s = "abab", p = "ab"
+Output: [0, 1, 2]
+Giải thích: "ab" (idx 0), "ba" (idx 1), "ab" (idx 2)
+```
+
+**Phân tích tư duy từng bước:**
+
+1. Cần tìm mọi substring có độ dài `len(p)` mà là anagram của `p`
+2. Anagram = cùng character frequency → cần so sánh frequency counter
+3. Brute force: tại mỗi vị trí, tạo Counter cho substring → O(n * k) với k = len(p)
+4. Optimal: **Sliding Window** size cố định = len(p), cập nhật frequency khi window trượt → O(n)
+5. Trick: thay vì so sánh 2 dict mỗi bước (O(26)), đếm **số ký tự đã match** → chỉ cần check 1 biến!
+
+**Approach 1: Brute Force — O(n \* k)**
+
+```python
+from collections import Counter
+
+def find_anagrams_brute(s: str, p: str) -> list[int]:
+    """
+    Tại mỗi vị trí, tạo Counter cho substring rồi so sánh.
+    Time: O((n-k) * k) — n = len(s), k = len(p)
+    """
+    result = []
+    k = len(p)
+    p_count = Counter(p)
+
+    for i in range(len(s) - k + 1):
+        if Counter(s[i:i+k]) == p_count:
+            result.append(i)
+
+    return result
+```
+
+**Approach 2: Sliding Window + Character Match Count — O(n)**
+
+```python
+from collections import Counter
+
+def find_anagrams(s: str, p: str) -> list[int]:
+    """
+    Sliding window với fixed size = len(p).
+
+    Ý tưởng:
+    - Duy trì frequency counter cho window hiện tại
+    - Theo dõi 'matched': số ký tự có frequency khớp giữa window và p
+    - Khi matched == số ký tự distinct trong p → window là anagram!
+
+    Khi window trượt:
+    - Thêm ký tự bên phải: cập nhật freq, check xem match count tăng/giảm
+    - Bỏ ký tự bên trái: cập nhật freq, check xem match count tăng/giảm
+
+    Time: O(n) — mỗi ký tự xử lý O(1)
+    Space: O(1) — frequency counter tối đa 26 entries
+    """
+    if len(s) < len(p):
+        return []
+
+    p_count = Counter(p)      # Frequency counter cho p
+    s_count = Counter()         # Frequency counter cho window hiện tại
+
+    result = []
+    k = len(p)
+
+    for i in range(len(s)):
+        # 1. Thêm ký tự bên phải vào window
+        s_count[s[i]] += 1
+
+        # 2. Nếu window đã vượt quá size k → bỏ ký tự bên trái
+        if i >= k:
+            left_char = s[i - k]
+            s_count[left_char] -= 1
+            if s_count[left_char] == 0:
+                del s_count[left_char]  # Xóa key để so sánh dict chính xác
+
+        # 3. So sánh 2 counter
+        if s_count == p_count:
+            result.append(i - k + 1)  # Vị trí bắt đầu của window
+
+    return result
+
+# Test
+print(find_anagrams("cbaebabacd", "abc"))  # [0, 6]
+print(find_anagrams("abab", "ab"))          # [0, 1, 2]
+```
+
+**Approach 3: Sliding Window + Optimized Match Count — O(n)**
+
+```python
+def find_anagrams_optimized(s: str, p: str) -> list[int]:
+    """
+    Tối ưu hơn: thay vì so sánh 2 dict mỗi bước (dù O(26) nhưng constant lớn),
+    dùng biến 'matched' đếm số ký tự có frequency khớp.
+    Khi matched == len(p_count) → tất cả ký tự khớp → anagram!
+
+    Time: O(n), nhưng constant factor nhỏ hơn Approach 2
+    Space: O(1)
+    """
+    if len(s) < len(p):
+        return []
+
+    from collections import Counter
+    p_count = Counter(p)
+    s_count = {}
+
+    result = []
+    k = len(p)
+    matched = 0      # Số ký tự có freq khớp hoàn toàn
+    total = len(p_count)  # Tổng số ký tự distinct cần match
+
+    for i in range(len(s)):
+        # Thêm ký tự bên phải
+        char = s[i]
+        s_count[char] = s_count.get(char, 0) + 1
+
+        # Nếu ký tự này thuộc p, check xem freq đã khớp chưa
+        if char in p_count:
+            if s_count[char] == p_count[char]:
+                matched += 1   # Vừa khớp!
+            elif s_count[char] == p_count[char] + 1:
+                matched -= 1   # Trước đó khớp, giờ bị thừa → mất match
+
+        # Bỏ ký tự bên trái (nếu window > k)
+        if i >= k:
+            left_char = s[i - k]
+            if left_char in p_count:
+                if s_count[left_char] == p_count[left_char]:
+                    matched -= 1   # Trước đó khớp, giờ bị thiếu
+                elif s_count[left_char] == p_count[left_char] + 1:
+                    matched += 1   # Trước đó thừa, giờ vừa khớp!
+            s_count[left_char] -= 1
+            if s_count[left_char] == 0:
+                del s_count[left_char]
+
+        # Kiểm tra: tất cả ký tự đã match?
+        if matched == total:
+            result.append(i - k + 1)
+
+    return result
+
+# Test
+print(find_anagrams_optimized("cbaebabacd", "abc"))  # [0, 6]
+print(find_anagrams_optimized("abab", "ab"))          # [0, 1, 2]
+print(find_anagrams_optimized("aaaa", "aa"))          # [0, 1, 2]
+```
+
+**Dry run chi tiết (Approach 2):**
+
+```
+s = "cbaebabacd", p = "abc"
+p_count = {'a': 1, 'b': 1, 'c': 1}
+k = 3
+
+i=0, char='c':
+  s_count = {'c': 1}
+  i < k → không bỏ trái
+  s_count == p_count? {'c':1} ≠ {'a':1,'b':1,'c':1} → NO
+
+i=1, char='b':
+  s_count = {'c': 1, 'b': 1}
+  i < k → không bỏ trái
+  s_count == p_count? NO
+
+i=2, char='a':
+  s_count = {'c': 1, 'b': 1, 'a': 1}
+  i < k → không bỏ trái
+  s_count == p_count? {'a':1,'b':1,'c':1} == {'a':1,'b':1,'c':1} ✓
+  → result = [0] ★ (window "cba" bắt đầu tại index 0)
+
+i=3, char='e':
+  s_count = {'c': 1, 'b': 1, 'a': 1, 'e': 1}
+  i >= k → bỏ s[0]='c': s_count = {'b': 1, 'a': 1, 'e': 1}
+  s_count == p_count? NO ('e' thừa, thiếu 'c')
+
+i=4, char='b':
+  s_count = {'b': 2, 'a': 1, 'e': 1}
+  bỏ s[1]='b': s_count = {'b': 1, 'a': 1, 'e': 1}
+  s_count == p_count? NO (thừa 'e')
+
+i=5, char='a':
+  s_count = {'b': 1, 'a': 2, 'e': 1}
+  bỏ s[2]='a': s_count = {'b': 1, 'a': 1, 'e': 1}
+  s_count == p_count? NO (thừa 'e')
+
+i=6, char='b':
+  s_count = {'b': 2, 'a': 1, 'e': 1}
+  bỏ s[3]='e': s_count = {'b': 2, 'a': 1}
+  Xóa 'e' (count=0)
+  s_count == p_count? NO ('b' thừa, thiếu 'c')
+
+Wait, let me recompute...
+  s_count trước khi thêm 'b': {'b': 1, 'a': 1, 'e': 1} (từ bước trước)
+  Thêm 'b': s_count = {'b': 2, 'a': 1, 'e': 1}
+  Bỏ s[3]='e': s_count['e'] = 0 → xóa → s_count = {'b': 2, 'a': 1}
+  s_count == p_count? NO
+
+i=7, char='a':
+  s_count = {'b': 2, 'a': 2}
+  bỏ s[4]='b': s_count = {'b': 1, 'a': 2}
+  s_count == p_count? NO
+
+i=8, char='c':
+  s_count = {'b': 1, 'a': 2, 'c': 1}
+  bỏ s[5]='a': s_count = {'b': 1, 'a': 1, 'c': 1}
+  s_count == p_count? {'a':1,'b':1,'c':1} == {'a':1,'b':1,'c':1} ✓
+  → result = [0, 6] ★ (window "bac" bắt đầu tại index 6)
+
+i=9, char='d':
+  s_count = {'b': 1, 'a': 1, 'c': 1, 'd': 1}
+  bỏ s[6]='b': s_count = {'a': 1, 'c': 1, 'd': 1}
+  s_count == p_count? NO
+
+Kết quả: [0, 6] ✓
+```
+
+**Complexity:**
+
+- **Time:** O(n) — mỗi ký tự thêm/xóa O(1), so sánh dict O(26) = O(1)
+- **Space:** O(1) — 2 counter tối đa 26 entries mỗi cái
+
+**Sai lầm thường gặp:**
+
+1. **Quên xóa key khi count = 0** → so sánh dict sẽ sai. `{'a': 1, 'b': 0}` != `{'a': 1}` trong Python!
+2. **Window size sai** → Phải đúng `len(p)`, bỏ trái khi `i >= len(p)`
+3. **Off-by-one cho start index** → Start index = `i - k + 1`, không phải `i - k`

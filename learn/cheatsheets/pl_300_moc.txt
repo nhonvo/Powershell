@@ -1,0 +1,19 @@
+---
+tags:
+  - certification/pl-300
+  - pl300
+  - moc
+status: in-progress
+created: 2026-06-15
+---
+# 🎓 PL-300: Microsoft Power BI Data Analyst MOC
+
+## 📚 Study Domains
+| Domain | Topic | Practice |
+|:---|:---|:---|
+| **[[certifications/microsoft/PL-300/Domain 1 - Core Objectives\|D1]]** | Core Objectives | [[certifications/microsoft/PL-300/Practice Questions - Domain 1\|Q&A D1]] |
+
+## ⚡ Assets
+- [[certifications/microsoft/PL-300/PL-300 Mindmap\|🗺️ PL-300 Mindmap]]
+- [[certifications/microsoft/PL-300/PL-300 Flashcards\|🃏 PL-300 Flashcards]]
+- [[certifications/microsoft/PL-300/PL-300_Scraped_Question_Bank\|🗃️ PL-300 Scraped Question Bank]]
