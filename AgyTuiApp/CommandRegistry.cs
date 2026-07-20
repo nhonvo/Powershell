@@ -267,6 +267,10 @@ public static class CommandRegistry
             new[] { "live-dashboard — Live-updating multi-column table monitoring active accounts." }, RequiresAgy: true),
         new("autoswitch", "Toggle Auto-Switch", "Toggle automatic project account switching", "[AGY Account Switch]", "Accounts",
             new[] { "autoswitch — Enables/disables automatic account context switching." }, RequiresAgy: true),
+        new("no-auto-commit", "Toggle Multi-Agent Auto-Commit", "Toggle automatic git commits during multi-agent AGY tasks", "[AGY Account Switch]", "Accounts",
+            new[] { "no-auto-commit — Enables/disables automatic git commits during multi-agent AGY execution." }),
+        new("autocommit", "Toggle Multi-Agent Auto-Commit (Alias)", "Alias for no-auto-commit toggle", "[AGY Account Switch]", "Accounts",
+            new[] { "autocommit — Alias for no-auto-commit toggle." }),
 
         // [System & Network]
         new("disk", "Disk Usage", "Show disk usage and health", "[System & Network]", "System",

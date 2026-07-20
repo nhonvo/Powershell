@@ -709,6 +709,10 @@ public static class Program
                 case "autoswitch":
                     AgyAccountCore.ToggleAutoSwitch();
                     break;
+                case "no-auto-commit":
+                case "autocommit":
+                    AgyAccountCore.ToggleNoAutoCommit();
+                    break;
                 case "scaffold":
                     ProjectScaffolder.Scaffold();
                     break;

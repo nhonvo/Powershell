@@ -735,17 +735,8 @@ public static class AgyAccountCore
             SpectrePanel.Warning($"Switched to account '{accountName}' (Temporary - current session only).");
         }
 
-        try
-        {
-            foreach (var name in new[] { "agy", "antigravity-hub", "openclaw" })
-            {
-                foreach (var p in Process.GetProcessesByName(name))
-                {
-                    try { p.Kill(true); } catch { }
-                }
-            }
-        }
-        catch { }
+        // Note: Running processes (agy, antigravity-hub, openclaw) are deliberately NOT killed
+        // so that existing background sessions/subagents using previous account contexts remain active.
     }
 
     public static void AddAccount(string accountName)
@@ -830,6 +821,35 @@ public static class AgyAccountCore
             {
                 try { File.Delete(p); } catch { }
             }
+        }
+    }
+
+    private static readonly string NoAutoCommitFile = Path.Combine(AgySourceHome, "no_auto_commit.flag");
+
+    public static bool IsNoAutoCommitEnabled()
+    {
+        return File.Exists(NoAutoCommitFile);
+    }
+
+    public static bool ToggleNoAutoCommit()
+    {
+        bool currentState = IsNoAutoCommitEnabled();
+        if (currentState)
+        {
+            try { File.Delete(NoAutoCommitFile); } catch { }
+            SpectrePanel.Success("Multi-Agent Auto-Commit: ENABLED (AGY agents will auto-commit git changes)");
+            return false;
+        }
+        else
+        {
+            try
+            {
+                Directory.CreateDirectory(AgySourceHome);
+                File.WriteAllText(NoAutoCommitFile, "true");
+            }
+            catch { }
+            SpectrePanel.Warning("Multi-Agent Auto-Commit: DISABLED (AGY agents will NOT auto-commit changes)");
+            return true;
         }
     }
 

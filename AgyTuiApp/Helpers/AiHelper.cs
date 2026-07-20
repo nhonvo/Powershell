@@ -1340,8 +1340,28 @@ public static class AgyAiCore
 
     private static void RunInteractive(string exe, IEnumerable<string> args, IDictionary<string, string?>? env = null, string? workingDir = null)
     {
-        var argList = string.Join(" ", args.Select(a => a.Contains(" ") ? $"\"{a}\"" : a));
-        Helpers.ProcessRunner.Run(exe, argList, workingDir);
+        var activeAccount = AgyAccountCore.GetActiveAccount();
+        var accountDir = AgyAccountCore.GetAccountDirectory(activeAccount);
+        var fullEnv = env != null ? new Dictionary<string, string?>(env) : new Dictionary<string, string?>();
+        if (!fullEnv.ContainsKey("GEMINI_HOME"))
+        {
+            fullEnv["GEMINI_HOME"] = accountDir;
+        }
+        if (AgyAccountCore.IsNoAutoCommitEnabled() && !fullEnv.ContainsKey("AGY_AUTO_COMMIT"))
+        {
+            fullEnv["AGY_AUTO_COMMIT"] = "false";
+        }
+
+        var argList = new List<string>(args);
+        if (AgyAccountCore.IsNoAutoCommitEnabled() && (exe.Contains("agy") || exe.Contains("claude") || exe.Contains("codex")))
+        {
+            if (!argList.Contains("--no-auto-commit") && !argList.Contains("--no-commit"))
+            {
+                argList.Add("--no-auto-commit");
+            }
+        }
+
+        Helpers.ProcessRunner.RunInteractive(exe, argList, fullEnv, workingDir);
     }
 
     private static string RunCapture(string exe, string args)
