@@ -27,20 +27,37 @@ public static class CommandRegistry
                 "proj <query> — Navigate to a workspace matching <query>.",
                 " If multiple matches are found an interactive selector opens.",
                 " If exactly one matches, jumps immediately.",
-                "Alias: p"
+                " Alias: p, prj"
             }),
-        new("p", "Navigate Workspace (Alias)", "Alias for proj", "[Workspace & Dev]", "Navigation",
-            Array.Empty<string>()),
+        new("p", "Navigate Workspace (Alias)", "Alias for proj workspace navigation", "[Workspace & Dev]", "Navigation",
+            new[] {
+                "p <query> — Quick alias for proj workspace navigation.",
+                " Jumps directly to registered project workspace directory."
+            }),
         new("ide", "Terminal IDE", "Launch terminal IDE session", "[Workspace & Dev]", "IDE",
-            Array.Empty<string>()),
-        new("ide-diff", "Diff Viewer", "Git diff viewer for current dir", "[Workspace & Dev]", "IDE",
-            Array.Empty<string>()),
-        new("ide-search", "Search Across Files", "Search pattern across files", "[Workspace & Dev]", "IDE",
-            Array.Empty<string>()),
+            new[] {
+                "ide — Interactive Terminal IDE with file Explorer, Code Viewer, and Symbol Search.",
+                " Keys: ↑↓/j/k navigate | Enter select | / search symbols | q back."
+            }),
+        new("ide-diff", "Diff Viewer", "Git diff viewer for current workspace", "[Workspace & Dev]", "IDE",
+            new[] {
+                "ide-diff — Full-screen colorized side-by-side / unified git diff viewer.",
+                " Shows staged and unstaged file modifications across the workspace."
+            }),
+        new("ide-search", "Search Across Files", "Search pattern and symbols across workspace files", "[Workspace & Dev]", "IDE",
+            new[] {
+                "ide-search — Workspace-wide code and symbol search tool.",
+                " Scans .cs, .ps1, .ts, .js, .py files for classes, methods, and functions."
+            }),
         new("scaffold", "Scaffold New Project", "Create new project from template", "[Workspace & Dev]", "Scaffold",
             new[] {
                 "scaffold — Interactive project boilerplate creator.",
                 " Templates: webapi · console · react (Vite) · blazorwasm · classlib · worker"
+            }),
+        new("rebuild", "[.NET] Rebuild Control Center TUI", "Recompile AgyTuiApp.csproj and refresh binary", "[Workspace & Dev]", ".NET",
+            new[] {
+                "rebuild — Triggers `dotnet build` on AgyTuiApp.csproj with zero warnings/errors enforcement.",
+                " Recompiles the TUI binary executable in-place."
             }),
         new("db-tui", "SQLite Browser", "SQLite schema and data viewer", "[Workspace & Dev]", "Database",
             new[] {
@@ -51,12 +68,19 @@ public static class CommandRegistry
         // Git Tools (/git-tools & /repo-dashboards)
         new("gs", "Git Status", "Git status summary", "[Workspace & Dev]", "Git",
             new[] {
-                "gs — Short git status (--short) with color coding."
+                "gs — Short git status (--short) with color coding.",
+                " Displays untracked, modified, staged, and branch tracking status."
             }),
         new("ga", "Git Add All", "Stage all modified and new files in workspace", "[Workspace & Dev]", "Git",
-            Array.Empty<string>()),
+            new[] {
+                "ga — Executes `git add .` to stage all modified, deleted, and untracked files.",
+                " Prepares all changes for the next commit."
+            }),
         new("gbr", "Git Branch Manager", "List local and remote branches sorted by recent activity with quick checkout", "[Workspace & Dev]", "Git",
-            Array.Empty<string>()),
+            new[] {
+                "gbr — Interactive branch manager sorted by commit date.",
+                " Select any branch to checkout instantly."
+            }),
         new("gcmt", "Conventional Commit", "Conventional commit wizard", "[Workspace & Dev]", "Git",
             new[] {
                 "gcmt — Conventional commit wizard. Prompts for:",
@@ -66,63 +90,96 @@ public static class CommandRegistry
                 " 4. Breaking changes / issues closed"
             }),
         new("glog", "Git Commit Log", "Paged single-repo commit log graph (--oneline --graph)", "[Workspace & Dev]", "Git",
-            Array.Empty<string>()),
+            new[] {
+                "glog — Shows last 50 commits formatted as a single-line graph with branch decorations.",
+                " Output is scrollable via the built-in Spectre pager."
+            }),
         new("gpull", "Git Pull Remote", "Pull latest commits from remote tracking branch", "[Workspace & Dev]", "Git",
-            Array.Empty<string>()),
+            new[] {
+                "gpull — Executes `git pull` on current branch to incorporate remote changes."
+            }),
         new("gpush", "Git Push Remote", "Push local commits to remote tracking branch", "[Workspace & Dev]", "Git",
-            Array.Empty<string>()),
+            new[] {
+                "gpush — Executes `git push` to upload local commits to upstream tracking branch."
+            }),
         new("gf", "Git Fetch Remote", "Fetch latest branch references from remote repository", "[Workspace & Dev]", "Git",
-            Array.Empty<string>()),
+            new[] {
+                "gf — Executes `git fetch` to update local tracking references without merging."
+            }),
         new("gd", "Git Diff Viewer", "Interactive git diff viewer for modified files", "[Workspace & Dev]", "Git",
-            Array.Empty<string>()),
+            new[] {
+                "gd — Shortcut for launching the interactive Git Diff Viewer for the current directory."
+            }),
         new("git-undo", "Git Undo Last Commit", "Soft-reset the last local commit", "[Workspace & Dev]", "Git",
             new[] {
-                "git-undo — Soft-reset the last commit (keeps changes staged)."
+                "git-undo — Soft-reset the last commit (`git reset --soft HEAD~1`).",
+                " Keeps all file modifications staged in the index."
             }),
         new("nexus", "Repo Nexus Graph", "Git Nexus multi-repo dashboard", "[Workspace & Dev]", "Git",
-            Array.Empty<string>()),
+            new[] {
+                "nexus — Renders a multi-repository workspace dependency and git status dashboard."
+            }),
         new("repo-graph", "Repository dependency graph", "Repository dependency graph", "[Workspace & Dev]", "Git",
-            Array.Empty<string>()),
+            new[] {
+                "repo-graph — Displays dependency tree and inter-project relationship links."
+            }),
         new("nexus-stats", "Git Nexus commit stats", "Git Nexus commit stats", "[Workspace & Dev]", "Git",
-            Array.Empty<string>()),
+            new[] {
+                "nexus-stats — Summarizes commit velocity, active authors, and modification volume across repos."
+            }),
 
         // .NET Tools (/dotnet-tools)
         new("dbld", "[.NET] Build Project", "dotnet build in active workspace", "[Workspace & Dev]", ".NET",
             new[] {
-                "dbld — dotnet build in the active workspace."
+                "dbld — Executes `dotnet build` in active project workspace.",
+                " Compiles source files and reports warnings/errors."
             }),
         new("dr", "[.NET] Run Project", "dotnet run active project in workspace", "[Workspace & Dev]", ".NET",
-            Array.Empty<string>()),
+            new[] {
+                "dr — Executes `dotnet run` in active workspace to launch the application binary."
+            }),
         new("dtst", "[.NET] Test Project", "dotnet test in active workspace", "[Workspace & Dev]", ".NET",
             new[] {
-                "dtst — dotnet test in the active workspace."
+                "dtst — Executes `dotnet test` in active workspace to run all xUnit/NUnit test suites."
             }),
         new("df", "[.NET] Format Code", "dotnet format code style & linting rules", "[Workspace & Dev]", ".NET",
-            Array.Empty<string>()),
+            new[] {
+                "df — Runs `dotnet format` to apply standard C# formatting rules across workspace."
+            }),
         new("dcl", "[.NET] Clean Solution", "dotnet clean build output directory", "[Workspace & Dev]", ".NET",
-            Array.Empty<string>()),
+            new[] {
+                "dcl — Runs `dotnet clean` to clear build target outputs."
+            }),
         new("drestore", "[.NET] Restore Packages", "dotnet restore packages in active workspace", "[Workspace & Dev]", ".NET",
-            Array.Empty<string>()),
+            new[] {
+                "drestore — Executes `dotnet restore` to resolve and download NuGet package dependencies."
+            }),
         new("dpublish", "[.NET] Publish Release", "dotnet publish release binary in active workspace", "[Workspace & Dev]", ".NET",
-            Array.Empty<string>()),
+            new[] {
+                "dpublish — Executes `dotnet publish -c Release` to produce optimized production binaries."
+            }),
         new("dwatch", "[.NET] Watch Live-Reload", "dotnet watch run continuous dev loop", "[Workspace & Dev]", ".NET",
-            Array.Empty<string>()),
+            new[] {
+                "dwatch — Runs `dotnet watch run` for continuous live-reloading during development."
+            }),
         new("clean-build", "[.NET] Clean Build Artifacts", "Remove bin/ and obj/ recursively", "[Workspace & Dev]", ".NET",
             new[] {
-                "clean-build — Recursively delete all bin/ and obj/ folders."
+                "clean-build — Recursively deletes all `bin/` and `obj/` directories in current folder structure."
             }),
         new("add-migration", "[.NET] Add EF Migration", "EF Core: add migration", "[Workspace & Dev]", ".NET",
             new[] {
-                "add-migration — dotnet ef migrations add <name>"
+                "add-migration <name> — Runs `dotnet ef migrations add <name>` for Entity Framework Core."
             }),
         new("update-db", "[.NET] Update EF Database", "EF Core: update database", "[Workspace & Dev]", ".NET",
             new[] {
-                "update-db — dotnet ef database update"
+                "update-db — Runs `dotnet ef database update` to apply pending migrations to database."
             }),
 
         // Docker Tools (/docker-tools)
         new("docker-health", "Docker Health Dashboard", "Show container health & resource utilization", "[Workspace & Dev]", "Docker",
-            Array.Empty<string>()),
+            new[] {
+                "docker-health — Displays real-time CPU, memory, network I/O, and container health metrics."
+            }),
         new("dkcl", "Docker Cleanup", "Docker cleanup TUI dashboard", "[Workspace & Dev]", "Docker",
             new[] {
                 "dkcl — Docker cleanup TUI dashboard. Options:",
@@ -132,59 +189,98 @@ public static class CommandRegistry
                 " • Full cleanup (all of the above)"
             }),
         new("dkrmac", "Docker Remove All Containers", "Stop and remove all Docker containers forcefully", "[Workspace & Dev]", "Docker",
-            Array.Empty<string>()),
+            new[] {
+                "dkrmac — Forcefully stops and removes all running and stopped Docker containers."
+            }),
         new("dkstac", "Docker Stop All Containers", "Stop all running Docker containers", "[Workspace & Dev]", "Docker",
-            Array.Empty<string>()),
+            new[] {
+                "dkstac — Sends SIGTERM to stop all active running Docker containers."
+            }),
         new("dimg", "Docker Image Manager", "List and inspect local Docker images and layer sizes", "[Workspace & Dev]", "Docker",
-            Array.Empty<string>()),
+            new[] {
+                "dimg — Lists local Docker images formatted with Repository, Tag, Size, and Creation Date."
+            }),
         new("dlogs", "Docker Container Logs", "Tail output logs for a selected running container", "[Workspace & Dev]", "Docker",
-            Array.Empty<string>()),
+            new[] {
+                "dlogs — Interactive container log viewer. Select container to tail last 200 log lines."
+            }),
         new("dcup", "Docker Compose Up", "docker compose up -d", "[Workspace & Dev]", "Docker",
             new[] {
-                "dcup — docker compose up -d"
+                "dcup — Runs `docker compose up -d` to start multi-container services in background."
             }),
         new("dcdown", "Docker Compose Down", "docker compose down", "[Workspace & Dev]", "Docker",
             new[] {
-                "dcdown — docker compose down"
+                "dcdown — Runs `docker compose down` to stop and remove compose containers and networks."
             }),
 
         // AWS Tools (/aws-tools)
         new("aws-whoami", "AWS Identity Info", "Inspect active AWS STS caller identity, profile, and region", "[Workspace & Dev]", "AWS",
-            Array.Empty<string>()),
+            new[] {
+                "aws-whoami — Executes `aws sts get-caller-identity` to inspect Account ID, ARN, and IAM User."
+            }),
         new("aws-local", "LocalStack Info", "LocalStack sandbox diagnostics", "[Workspace & Dev]", "AWS / LocalStack",
             new[] {
                 "aws-local — Query running LocalStack sandbox on http://localhost:4566.",
                 " Shows: S3 buckets, SQS queues, Lambda functions."
             }),
         new("aws-s3", "AWS S3 Buckets", "List local or cloud S3 buckets", "[Workspace & Dev]", "AWS",
-            Array.Empty<string>()),
+            new[] {
+                "aws-s3 — Executes `aws s3 ls` (with LocalStack fallback) to list all S3 storage buckets."
+            }),
         new("aws-sqs", "AWS SQS Queues", "List local or cloud SQS queues", "[Workspace & Dev]", "AWS",
-            Array.Empty<string>()),
+            new[] {
+                "aws-sqs — Executes `aws sqs list-queues` (with LocalStack fallback) to inspect message queues."
+            }),
+        new("aws-ssm", "AWS SSM Parameter Store", "Inspect Parameter Store key-value pairs", "[Workspace & Dev]", "AWS",
+            new[] {
+                "aws-ssm — Executes `aws ssm describe-parameters` to view Parameter Store keys and metadata."
+            }),
+        new("aws-sns", "AWS SNS Topics", "Inspect notification topics", "[Workspace & Dev]", "AWS",
+            new[] {
+                "aws-sns — Executes `aws sns list-topics` to inspect active Simple Notification Service topics."
+            }),
+        new("aws-dynamodb", "AWS DynamoDB Tables", "Inspect DynamoDB tables", "[Workspace & Dev]", "AWS",
+            new[] {
+                "aws-dynamodb — Executes `aws dynamodb list-tables` to inspect NoSQL DynamoDB tables."
+            }),
+        new("aws-lambda", "AWS Lambda Functions", "Inspect serverless functions", "[Workspace & Dev]", "AWS",
+            new[] {
+                "aws-lambda — Executes `aws lambda list-functions` to inspect deployed serverless Lambda functions."
+            }),
 
         // [AI Agent & Ollama]
         new("claude", "Claude Code (Auto Mode)", "Launch Claude Code CLI (resolves Cloud vs Ollama via AiProviderMode)", "[AI Agent & Ollama]", "AI / LLM",
             new[] {
-                "claude — Launch Claude Code CLI using runtime AiProviderMode setting."
+                "claude — Launch Claude Code CLI using runtime AiProviderMode setting.",
+                " Evaluates active provider configuration and auto-routes accordingly."
             }, RequiresAiOllama: true),
         new("claude-cloud", "Claude Code (Force Cloud)", "Launch Claude Code CLI utilizing cloud APIs directly", "[AI Agent & Ollama]", "AI / LLM",
-            Array.Empty<string>(), RequiresAiOllama: true),
+            new[] {
+                "claude-cloud — Launch Claude Code CLI forcing direct Anthropic Cloud API key credentials."
+            }, RequiresAiOllama: true),
         new("claude-ollama", "Claude Code (Force Ollama)", "Run Claude Code routed locally via Ollama daemon", "[AI Agent & Ollama]", "AI / LLM",
-            Array.Empty<string>(), RequiresAiOllama: true),
+            new[] {
+                "claude-ollama — Run Claude Code routed locally via Ollama daemon at http://localhost:11434."
+            }, RequiresAiOllama: true),
         new("codex", "Codex (Auto Mode)", "Launch Codex CLI (resolves Cloud vs Ollama via AiProviderMode)", "[AI Agent & Ollama]", "AI / LLM",
             new[] {
-                "codex — Launch Codex CLI using runtime AiProviderMode setting."
+                "codex — Launch Gemini Codex CLI using runtime AiProviderMode setting."
             }, RequiresAiOllama: true),
         new("codex-cloud", "Codex (Force Cloud)", "Launch Gemini's Codex CLI (Cloud API direct)", "[AI Agent & Ollama]", "AI / LLM",
-            Array.Empty<string>(), RequiresAiOllama: true),
+            new[] {
+                "codex-cloud — Launch Gemini's Codex CLI forcing cloud API direct access."
+            }, RequiresAiOllama: true),
         new("codex-ollama", "Codex (Force Ollama)", "Run Codex locally routed via Ollama daemon", "[AI Agent & Ollama]", "AI / LLM",
-            Array.Empty<string>(), RequiresAiOllama: true),
+            new[] {
+                "codex-ollama — Run Codex CLI routed locally via Ollama daemon."
+            }, RequiresAiOllama: true),
         new("openclaw", "OpenClaw (Ollama)", "Launch OpenClaw via Ollama", "[AI Agent & Ollama]", "AI / LLM",
             new[] {
                 "openclaw — Launch OpenClaw model via local Ollama daemon."
             }, RequiresAiOllama: true),
         new("hermes", "Hermes3 (Ollama)", "Launch Hermes3 via Ollama", "[AI Agent & Ollama]", "AI / LLM",
             new[] {
-                "hermes — Launch Hermes3 model via Ollama."
+                "hermes — Launch Hermes3 local reasoning model via Ollama."
             }, RequiresAiOllama: true),
         new("hermesd", "Hermes3 debug mode", "Launch Hermes3 debug mode", "[AI Agent & Ollama]", "AI / LLM",
             new[] {
@@ -192,47 +288,79 @@ public static class CommandRegistry
                 " Note: Ollama daemon on port 11434 is started automatically if offline."
             }, RequiresAiOllama: true),
         new("ollama-status", "Ollama: Check Daemon Status", "Check local Ollama server status and pulled models", "[AI Agent & Ollama]", "AI / LLM",
-            Array.Empty<string>(), RequiresAiOllama: true),
+            new[] {
+                "ollama-status — Checks if Ollama server process is listening on http://localhost:11434."
+            }, RequiresAiOllama: true),
         new("ollama-models", "Ollama: Manage Models", "List/inspect/delete pulled models", "[AI Agent & Ollama]", "AI / LLM",
-            Array.Empty<string>(), RequiresAiOllama: true),
+            new[] {
+                "ollama-models — Interactive model manager. Inspect parameters, disk usage, and delete models."
+            }, RequiresAiOllama: true),
         new("ollama-pull", "Ollama: Pull New Model", "Fetch a new model", "[AI Agent & Ollama]", "AI / LLM",
-            Array.Empty<string>(), RequiresAiOllama: true),
+            new[] {
+                "ollama-pull — Download new model from Ollama library (e.g. qwen2.5-coder, llama3.2)."
+            }, RequiresAiOllama: true),
         new("ollama-start", "Ollama: Start Daemon", "Boot the background daemon", "[AI Agent & Ollama]", "AI / LLM",
-            Array.Empty<string>(), RequiresAiOllama: true),
+            new[] {
+                "ollama-start — Launches the background `ollama serve` process if offline."
+            }, RequiresAiOllama: true),
         new("ollama-logs", "Ollama: View Server Logs", "Show last 50 lines of server logs", "[AI Agent & Ollama]", "AI / LLM",
-            Array.Empty<string>(), RequiresAiOllama: true),
+            new[] {
+                "ollama-logs — Tails output log entries from the local Ollama daemon."
+            }, RequiresAiOllama: true),
         new("ollama-benchmark", "Ollama: Benchmark Models", "Benchmark performance of local Ollama models", "[AI Agent & Ollama]", "AI / LLM",
-            Array.Empty<string>(), RequiresAiOllama: true),
+            new[] {
+                "ollama-benchmark — Measures prompt evaluation speed (tokens/sec) across local Ollama models."
+            }, RequiresAiOllama: true),
         new("deck-status", "Antigravity Deck: Check Status", "Check if Antigravity Deck local server is running", "[AI Agent & Ollama]", "AI / LLM",
-            Array.Empty<string>()),
+            new[] {
+                "deck-status — Queries local port 3000 to verify Antigravity Deck service status."
+            }),
         new("deck-setup", "Antigravity Deck: Setup/Initialize", "Setup local Antigravity Deck", "[AI Agent & Ollama]", "AI / LLM",
-            Array.Empty<string>()),
+            new[] {
+                "deck-setup — Initializes local Node.js environment and dependencies for Antigravity Deck."
+            }),
         new("deck-start", "Antigravity Deck: Start Local", "Boot local Antigravity Deck", "[AI Agent & Ollama]", "AI / LLM",
-            Array.Empty<string>()),
+            new[] {
+                "deck-start — Launches Antigravity Deck web dashboard locally at http://localhost:3000."
+            }),
         new("deck-online", "Antigravity Deck: Go Online (Tunnel)", "Expose local Deck via tunnel", "[AI Agent & Ollama]", "AI / LLM",
-            Array.Empty<string>()),
+            new[] {
+                "deck-online — Exposes local Deck service via cloudflare/tailscale tunnel."
+            }),
         new("agy-cli", "Launch Antigravity CLI (agy)", "Launch the google antigravity CLI tool terminal", "[AI Agent & Ollama]", "AI / LLM",
-            Array.Empty<string>()),
+            new[] {
+                "agy-cli — Launches google antigravity CLI executable session (`agy`)."
+            }),
         new("ai-history", "AI History Ledger", "Show ledger of past AI invocations", "[AI Agent & Ollama]", "AI / LLM",
-            Array.Empty<string>()),
+            new[] {
+                "ai-history — Displays JSONL audit ledger of past AI agent invocations, mode, and response durations."
+            }),
 
         // [AGY Account Switch]
         new("agyswitch", "Select Active Account", "Switch AGY account context", "[AGY Account Switch]", "Accounts",
             new[] {
-                "agyswitch — Switch the active AGY/Gemini account context."
+                "agyswitch — Switch active Google AGY / Gemini account credentials context."
             }, RequiresAgy: true),
         new("agyquota", "View All Accounts", "Show quota usage summary for all accounts", "[AGY Account Switch]", "Accounts",
             new[] {
-                "agyquota — Show quota usage summary for all accounts."
+                "agyquota — Displays 5-hour and weekly request limits across registered accounts."
             }, RequiresAgy: true),
         new("account-tree", "Account Tree", "Show hierarchical active account details", "[AGY Account Switch]", "Accounts",
-            Array.Empty<string>(), RequiresAgy: true),
+            new[] {
+                "account-tree — Renders active account hierarchy, token status, and storage paths."
+            }, RequiresAgy: true),
         new("quota-chart", "Quota Bar Chart", "Show bar chart of active account limits", "[AGY Account Switch]", "Accounts",
-            Array.Empty<string>(), RequiresAgy: true),
+            new[] {
+                "quota-chart — Renders colorized ASCII bar chart of quota consumption."
+            }, RequiresAgy: true),
         new("live-dashboard", "Live Dashboard", "Show real-time active account metrics table", "[AGY Account Switch]", "Accounts",
-            Array.Empty<string>(), RequiresAgy: true),
+            new[] {
+                "live-dashboard — Live-updating multi-column table monitoring active accounts."
+            }, RequiresAgy: true),
         new("autoswitch", "Toggle Auto-Switch", "Toggle automatic project account switching", "[AGY Account Switch]", "Accounts",
-            Array.Empty<string>(), RequiresAgy: true),
+            new[] {
+                "autoswitch — Enables/disables automatic account context switching based on project tags."
+            }, RequiresAgy: true),
 
         // [System & Network]
         new("disk", "Disk Usage", "Show disk usage and health", "[System & Network]", "System",
@@ -252,87 +380,159 @@ public static class CommandRegistry
                 "ssh-info — Local IPs, Tailscale address, active SSH connections."
             }),
         new("tailscale-status", "Tailscale Status", "Parse tailscale status --json for peer connectivity", "[System & Network]", "Network",
-            Array.Empty<string>()),
+            new[] {
+                "tailscale-status — Parses `tailscale status --json` to list connected mesh peers."
+            }),
         new("ssh-qr", "SSH Terminal QR Code", "Generate terminal QR code for SSH connection parameters", "[System & Network]", "SSH",
-            Array.Empty<string>()),
+            new[] {
+                "ssh-qr — Renders terminal QR code containing SSH connection string."
+            }),
 
         // [Learn & Study]
         new("learn", "Start Learning (auto)", "Start learning for a topic (auto-refresh)", "[Learn & Study]", "Learn",
-            Array.Empty<string>()),
+            new[] {
+                "learn — Launches interactive study learning router for selected topic."
+            }),
         new("flashcard", "Flashcard Deck Browser", "Open flashcard deck browser", "[Learn & Study]", "Learn",
-            Array.Empty<string>()),
+            new[] {
+                "flashcard — Interactive flashcard deck viewer with SM-2 spaced-repetition scoring."
+            }),
         new("vocab", "English Vocab Drill", "English vocabulary drill", "[Learn & Study]", "Learn",
-            Array.Empty<string>()),
+            new[] {
+                "vocab — Practice English vocabulary definitions, synonyms, and context sentences."
+            }),
         new("kana", "Kana Quiz", "Hiragana / katakana quiz", "[Learn & Study]", "Learn",
-            Array.Empty<string>()),
+            new[] {
+                "kana — Interactive Japanese Hiragana and Katakana character recognition quiz."
+            }),
         new("kanji", "Kanji Lookup", "Kanji lookup / stroke detail", "[Learn & Study]", "Learn",
-            Array.Empty<string>()),
+            new[] {
+                "kanji — Look up Japanese Kanji radicals, stroke counts, and readings."
+            }),
         new("jlpt", "JLPT Vocab Drill", "JLPT vocabulary drill", "[Learn & Study]", "Learn",
-            Array.Empty<string>()),
+            new[] {
+                "jlpt — Vocabulary practice drills categorized by JLPT level (N5 to N1)."
+            }),
         new("algo", "Algorithm Visualizer", "Algorithm visualizer (sort / search)", "[Learn & Study]", "Learn",
-            Array.Empty<string>()),
+            new[] {
+                "algo — Interactive terminal visualization for sorting and searching algorithms."
+            }),
         new("complexity", "Big-O Complexity Sheet", "Big-O complexity cheat-sheet", "[Learn & Study]", "Learn",
-            Array.Empty<string>()),
+            new[] {
+                "complexity — Displays Big-O time and space complexity cheat-sheet table."
+            }),
         new("problems", "DSA Problem Tracker", "DSA problem tracker", "[Learn & Study]", "Learn",
-            Array.Empty<string>()),
+            new[] {
+                "problems — Track status, difficulty, and notes for LeetCode / DSA practice problems."
+            }),
         new("snippets", "Code Snippet Library", "Code snippet library browser", "[Learn & Study]", "Learn",
-            Array.Empty<string>()),
+            new[] {
+                "snippets — Browse and search reusable code snippets across multiple languages."
+            }),
         new("sheets", "Cheat Sheet Browser", "Cheat-sheet browser (.txt files)", "[Learn & Study]", "Learn",
-            Array.Empty<string>()),
+            new[] {
+                "sheets — Browse text cheat-sheets stored in your local reference library."
+            }),
         new("quiz", "C# Quiz", "C# multiple-choice quiz", "[Learn & Study]", "Learn",
-            Array.Empty<string>()),
+            new[] {
+                "quiz — Multiple-choice practice quiz testing C# and .NET concepts."
+            }),
         new("interview", "Interview Question Bank", "Interview question bank", "[Learn & Study]", "Learn",
-            Array.Empty<string>()),
+            new[] {
+                "interview — Browse technical interview questions for system design and coding."
+            }),
         new("star", "STAR Answer Builder", "STAR answer builder", "[Learn & Study]", "Learn",
-            Array.Empty<string>()),
+            new[] {
+                "star — Interactive wizard to structure behavioral responses using Situation, Task, Action, Result."
+            }),
         new("mock", "Mock Interview Timer", "Mock interview timer", "[Learn & Study]", "Learn",
-            Array.Empty<string>()),
+            new[] {
+                "mock — Practice timed interview responses with an interactive stopwatch."
+            }),
         new("word-of-day", "Word of the Day", "Show today's word of the day", "[Learn & Study]", "Learn",
-            Array.Empty<string>()),
+            new[] {
+                "word-of-day — Displays vocabulary word of the day with definition and usage example."
+            }),
 
         // [Track & Progress]
         new("session", "Start Pomodoro Session", "Start a Pomodoro study session", "[Track & Progress]", "Tracking",
-            Array.Empty<string>()),
+            new[] {
+                "session — Launches 25-minute Pomodoro focus session timer."
+            }),
         new("stats", "Study Statistics", "Study statistics and weekly chart", "[Track & Progress]", "Tracking",
-            Array.Empty<string>()),
+            new[] {
+                "stats — Displays weekly study volume breakdown and retention charts."
+            }),
         new("goals", "Daily Goals", "Daily learning goals", "[Track & Progress]", "Tracking",
-            Array.Empty<string>()),
+            new[] {
+                "goals — View and manage daily learning targets and completed tasks."
+            }),
         new("streak", "Study Streak", "Study streak display", "[Track & Progress]", "Tracking",
-            Array.Empty<string>()),
+            new[] {
+                "streak — Displays current consecutive daily study streak counter."
+            }),
         new("due", "Due Reviews", "Show due spaced-repetition reviews", "[Track & Progress]", "Tracking",
-            Array.Empty<string>()),
+            new[] {
+                "due — Shows total count of flashcards due for SM-2 spaced repetition review today."
+            }),
         new("progress", "Progress Dashboard", "Progress dashboard (bar chart + tree)", "[Track & Progress]", "Tracking",
-            Array.Empty<string>()),
+            new[] {
+                "progress — Renders visual progress bar charts across all learning domains."
+            }),
         new("weak", "Weak Items Queue", "Weak items queue (pre-session review)", "[Track & Progress]", "Tracking",
-            Array.Empty<string>()),
+            new[] {
+                "weak — Review cards and concepts with low retention scores before starting a session."
+            }),
 
         // [Obsidian & Resources]
         new("obsidian", "Obsidian Vault Config", "Configure / browse Obsidian vault", "[Obsidian & Resources]", "Obsidian",
-            Array.Empty<string>()),
+            new[] {
+                "obsidian — Configure local Obsidian vault directory path and sync settings."
+            }),
         new("obs-graph", "Obsidian Graph View", "Obsidian wikilink graph", "[Obsidian & Resources]", "Obsidian",
-            Array.Empty<string>()),
+            new[] {
+                "obs-graph — Visualizes inter-note wikilink relationships in your Obsidian vault."
+            }),
         new("refresh", "Refresh Learning Data", "Refresh learning data from vault", "[Obsidian & Resources]", "Resources",
-            Array.Empty<string>()),
+            new[] {
+                "refresh — Re-indexes Markdown flashcards and notes from Obsidian vault."
+            }),
         new("add-resource", "Add Resource", "Add a file/URL to resource registry", "[Obsidian & Resources]", "Resources",
-            Array.Empty<string>()),
+            new[] {
+                "add-resource — Register a external file path or URL with custom tags."
+            }),
 
         // [Appearance & Layout]
         new("mobile-setup", "Toggle Mobile Setup", "Toggle both prompt mobile mode and compact TUI layout mode", "[Appearance & Layout]", "Theme & Settings",
-            Array.Empty<string>()),
+            new[] {
+                "mobile-setup — Toggles compact prompt and high-density TUI layout."
+            }),
         new("theme", "Select Shell Theme", "Select Shell Theme", "[Appearance & Layout]", "Theme & Settings",
-            Array.Empty<string>()),
+            new[] {
+                "theme — Interactive theme picker for Oh-My-Posh prompt themes."
+            }),
         new("ui-mode", "Toggle UI Layout Mode", "Toggle between three-pane and flat-tree layouts", "[Appearance & Layout]", "Theme & Settings",
-            Array.Empty<string>()),
+            new[] {
+                "ui-mode — Toggles between `three-pane` and `flat-tree` layout modes."
+            }),
         new("density", "Toggle Console Density", "Toggle between comfortable and compact display densities", "[Appearance & Layout]", "Theme & Settings",
-            Array.Empty<string>()),
+            new[] {
+                "density — Toggles line spacing density between `comfortable` and `compact`."
+            }),
 
         // [Help & Docs]
         new("cc", "Command Palette", "Open this Command Palette", "[Help & Docs]", "Help",
-            Array.Empty<string>()),
+            new[] {
+                "cc — Launches interactive Command Palette."
+            }),
         new("help", "Help Browser", "Open interactive help browser", "[Help & Docs]", "Help",
-            Array.Empty<string>()),
+            new[] {
+                "help — Interactive browser listing all profile aliases, functions, and documentation."
+            }),
         new("hotkeys", "Profile Hotkeys Guide", "Show all PowerShell profile shortcut hotkeys grouped by domain", "[Help & Docs]", "Help",
-            Array.Empty<string>())
+            new[] {
+                "hotkeys — Displays profile keyboard shortcuts grouped by domain (git, docker, aws, sys, ai, nav)."
+            })
     };
 
     public static void AssertSwitchCases()

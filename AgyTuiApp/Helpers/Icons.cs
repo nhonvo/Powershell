@@ -110,7 +110,7 @@ public static class Icons
                 "ide" => "󰨞",
                 "ide-diff" => "󰊢",
                 "ide-search" => "󰍉",
-                "dbld" or "drestore" or "dpublish" or "dwatch" => "⚙",
+                "dbld" or "drestore" or "dpublish" or "dwatch" or "rebuild" => "⚙",
                 "dtst" => "󰙨",
                 "clean-build" => "󰃢",
                 "add-migration" => "󰆼",
@@ -125,8 +125,8 @@ public static class Icons
                 "agyquota" or "quota-chart" or "live-dashboard" => "📊",
                 "autoswitch" => "⚡",
 
-                "docker-health" or "dkcl" or "dcup" or "dcdown" or "dimg" or "dlogs" => "🐳",
-                "aws-local" or "aws-whoami" => "☁",
+                "docker-health" or "dkcl" or "dcup" or "dcdown" or "dimg" or "dlogs" or "dkrmac" or "dkstac" => "🐳",
+                "aws-local" or "aws-whoami" or "aws-s3" or "aws-sqs" or "aws-ssm" or "aws-sns" or "aws-dynamodb" or "aws-lambda" => "☁",
                 "db-tui" => "🗄",
 
                 "tailscale-status" => "🔒",

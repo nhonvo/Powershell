@@ -51,6 +51,42 @@ public static class AwsHelper
         else SpectrePager.Show("SQS Queues", output);
     }
 
+    public static void ShowSsmParameters()
+    {
+        AnsiConsole.Write(new Rule("[bold cyan]AWS SSM Parameter Store[/]").RuleStyle("grey"));
+        var output = Helpers.ProcessRunner.RunCapture("aws", "ssm describe-parameters");
+        if (string.IsNullOrWhiteSpace(output)) output = Helpers.ProcessRunner.RunCapture("aws", $"--endpoint-url {LocalStackEndpoint} ssm describe-parameters");
+        if (string.IsNullOrWhiteSpace(output)) SpectrePanel.Warning("No SSM parameters found or AWS/LocalStack offline.");
+        else SpectrePager.Show("SSM Parameter Store", output);
+    }
+
+    public static void ShowSnsTopics()
+    {
+        AnsiConsole.Write(new Rule("[bold cyan]AWS SNS Topics[/]").RuleStyle("grey"));
+        var output = Helpers.ProcessRunner.RunCapture("aws", "sns list-topics");
+        if (string.IsNullOrWhiteSpace(output)) output = Helpers.ProcessRunner.RunCapture("aws", $"--endpoint-url {LocalStackEndpoint} sns list-topics");
+        if (string.IsNullOrWhiteSpace(output)) SpectrePanel.Warning("No SNS topics found or AWS/LocalStack offline.");
+        else SpectrePager.Show("SNS Topics", output);
+    }
+
+    public static void ShowDynamoDbTables()
+    {
+        AnsiConsole.Write(new Rule("[bold cyan]AWS DynamoDB Tables[/]").RuleStyle("grey"));
+        var output = Helpers.ProcessRunner.RunCapture("aws", "dynamodb list-tables");
+        if (string.IsNullOrWhiteSpace(output)) output = Helpers.ProcessRunner.RunCapture("aws", $"--endpoint-url {LocalStackEndpoint} dynamodb list-tables");
+        if (string.IsNullOrWhiteSpace(output)) SpectrePanel.Warning("No DynamoDB tables found or AWS/LocalStack offline.");
+        else SpectrePager.Show("DynamoDB Tables", output);
+    }
+
+    public static void ShowLambdaFunctions()
+    {
+        AnsiConsole.Write(new Rule("[bold cyan]AWS Lambda Functions[/]").RuleStyle("grey"));
+        var output = Helpers.ProcessRunner.RunCapture("aws", "lambda list-functions");
+        if (string.IsNullOrWhiteSpace(output)) output = Helpers.ProcessRunner.RunCapture("aws", $"--endpoint-url {LocalStackEndpoint} lambda list-functions");
+        if (string.IsNullOrWhiteSpace(output)) SpectrePanel.Warning("No Lambda functions found or AWS/LocalStack offline.");
+        else SpectrePager.Show("Lambda Functions", output);
+    }
+
     private static void RunLocalAwsCli(string args, string section)
     {
         AnsiConsole.MarkupLine($"\n[bold cyan]{section.EscapeMarkup()}[/]");

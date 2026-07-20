@@ -81,6 +81,7 @@ public static class MenuNodeBuilder
                 CreateCommandNode(allCommands["drestore"]),
                 CreateCommandNode(allCommands["dpublish"]),
                 CreateCommandNode(allCommands["dwatch"]),
+                CreateCommandNode(allCommands["rebuild"]),
                 CreateCommandNode(allCommands["clean-build"]),
                 CreateCommandNode(allCommands["add-migration"]),
                 CreateCommandNode(allCommands["update-db"])
@@ -117,7 +118,11 @@ public static class MenuNodeBuilder
                 CreateCommandNode(allCommands["aws-whoami"]),
                 CreateCommandNode(allCommands["aws-local"]),
                 CreateCommandNode(allCommands["aws-s3"]),
-                CreateCommandNode(allCommands["aws-sqs"])
+                CreateCommandNode(allCommands["aws-sqs"]),
+                CreateCommandNode(allCommands["aws-ssm"]),
+                CreateCommandNode(allCommands["aws-sns"]),
+                CreateCommandNode(allCommands["aws-dynamodb"]),
+                CreateCommandNode(allCommands["aws-lambda"])
             },
             null
         );

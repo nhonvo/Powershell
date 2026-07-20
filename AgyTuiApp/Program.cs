@@ -463,6 +463,26 @@ public static class Program
                 case "aws-sqs":
                     AwsHelper.ShowSQSQueues();
                     break;
+                case "aws-ssm":
+                    AwsHelper.ShowSsmParameters();
+                    break;
+                case "aws-sns":
+                    AwsHelper.ShowSnsTopics();
+                    break;
+                case "aws-dynamodb":
+                    AwsHelper.ShowDynamoDbTables();
+                    break;
+                case "aws-lambda":
+                    AwsHelper.ShowLambdaFunctions();
+                    break;
+                case "rebuild":
+                    AnsiConsole.MarkupLine("[cyan]Rebuilding Control Center TUI binary...[/]");
+                    var projFile = Path.Combine(Directory.GetCurrentDirectory(), "AgyTuiApp", "AgyTuiApp.csproj");
+                    if (!File.Exists(projFile)) projFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "AgyTuiApp.csproj");
+                    var buildExit = DotNetHelper.Build(File.Exists(projFile) ? projFile : null);
+                    if (buildExit == 0) SpectrePanel.Success("Control Center TUI recompiled successfully!");
+                    else SpectrePanel.Warning("Build note: If running directly inside AgyTuiApp.exe, Windows locks the executable while in-use. Exit TUI and run 'dbld' or run via PowerShell wrapper to refresh binary.");
+                    break;
                 case "claude":
                     AgyAiCore.InvokeClaude([]);
                     break;
@@ -816,7 +836,7 @@ public static class Program
                     GitDiffViewer.ShowDiff(Directory.GetCurrentDirectory());
                     break;
                 case "ide-search":
-                    AnsiConsole.MarkupLine("IDE Search: Browse symbols for current directory files.");
+                    SymbolSearch.BrowseWorkspaceSymbols(Directory.GetCurrentDirectory());
                     break;
                 case "refresh":
                     LearnRouter.RefreshData("all");
