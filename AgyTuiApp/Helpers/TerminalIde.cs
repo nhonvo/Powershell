@@ -343,7 +343,7 @@ public static class TerminalIde
 
             var branch = Helpers.ProcessRunner.RunCapture("git", "branch --show-current").Trim();
             if (string.IsNullOrEmpty(branch)) branch = "main";
-            var statusText = $"[green]⚙ {activeTab}[/] | Git: [yellow]{branch}[/] | [dim][Ctrl+B] Sidebar | [Ctrl+P] Quick Open | [Ctrl+K] Ask AI[/]";
+            var statusText = $"[green]⚙ {activeTab.EscapeMarkup()}[/] | Git: [yellow]{branch.EscapeMarkup()}[/] | [dim][[Ctrl+B]] Sidebar | [[Ctrl+P]] Quick Open | [[Ctrl+K]] Ask AI[/]";
             var statusPanel = new Panel(new Align(new Markup(statusText), HorizontalAlignment.Left, VerticalAlignment.Middle))
             {
                 Border = BoxBorder.Rounded,

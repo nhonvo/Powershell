@@ -88,18 +88,84 @@ public static class LearnDataPaths
         }
 
         // 3. JLPT N5 words
-        var defaultJlptFile = System.IO.Path.Combine(JlptDir, "n5.json");
-        if (!File.Exists(defaultJlptFile))
+        var defaultJlptFile = System.IO.Path.Combine(JlptDir, "N5.json");
+        var defaultJlptLower = System.IO.Path.Combine(JlptDir, "n5.json");
+        if (!File.Exists(defaultJlptFile) && !File.Exists(defaultJlptLower))
         {
             var defaultWords = new[]
             {
                 new JlptWord("jlpt-1", "日本語", "にほんご", "nihongo", "Japanese language", "Noun", "N5", "日本語を勉強します。", "I study Japanese.", new[] { "language" }, NewCardState()),
-                new JlptWord("jlpt-2", "食べる", "たべる", "taberu", "To eat", "Verb", "N5", "リンゴを食べます。", "I eat an apple.", new[] { "verbs" }, NewCardState())
+                new JlptWord("jlpt-2", "食べる", "たべる", "taberu", "To eat", "Verb", "N5", "リンゴを食べます。", "I eat an apple.", new[] { "verbs" }, NewCardState()),
+                new JlptWord("jlpt-3", "猫", "ねこ", "neko", "Cat", "Noun", "N5", "可愛い猫がいます。", "There is a cute cat.", new[] { "animals" }, NewCardState()),
+                new JlptWord("jlpt-4", "本", "ほん", "hon", "Book", "Noun", "N5", "本を読みます。", "I read a book.", new[] { "vocab" }, NewCardState()),
+                new JlptWord("jlpt-5", "水", "みず", "mizu", "Water", "Noun", "N5", "冷たい水を飲みます。", "I drink cold water.", new[] { "vocab" }, NewCardState())
             };
-            SaveJson(defaultJlptFile, new JlptFile("N5", defaultWords));
+            var jlptObj = new JlptFile("N5", defaultWords);
+            SaveJson(defaultJlptFile, jlptObj);
+            SaveJson(defaultJlptLower, jlptObj);
         }
 
-        // 4. Vocab Words (Intermediate)
+        // 4. Kana File (Hiragana & Katakana)
+        if (!File.Exists(KanaFile))
+        {
+            var hiragana = new[]
+            {
+                new KanaEntry("あ", "a", "a", "hiragana", NewCardState()),
+                new KanaEntry("い", "i", "a", "hiragana", NewCardState()),
+                new KanaEntry("う", "u", "a", "hiragana", NewCardState()),
+                new KanaEntry("え", "e", "a", "hiragana", NewCardState()),
+                new KanaEntry("お", "o", "a", "hiragana", NewCardState()),
+                new KanaEntry("か", "ka", "k", "hiragana", NewCardState()),
+                new KanaEntry("き", "ki", "k", "hiragana", NewCardState()),
+                new KanaEntry("く", "ku", "k", "hiragana", NewCardState()),
+                new KanaEntry("け", "ke", "k", "hiragana", NewCardState()),
+                new KanaEntry("こ", "ko", "k", "hiragana", NewCardState()),
+                new KanaEntry("さ", "sa", "s", "hiragana", NewCardState()),
+                new KanaEntry("し", "shi", "s", "hiragana", NewCardState()),
+                new KanaEntry("す", "su", "s", "hiragana", NewCardState()),
+                new KanaEntry("せ", "se", "s", "hiragana", NewCardState()),
+                new KanaEntry("そ", "so", "s", "hiragana", NewCardState()),
+                new KanaEntry("た", "ta", "t", "hiragana", NewCardState()),
+                new KanaEntry("ち", "chi", "t", "hiragana", NewCardState()),
+                new KanaEntry("つ", "tsu", "t", "hiragana", NewCardState()),
+                new KanaEntry("て", "te", "t", "hiragana", NewCardState()),
+                new KanaEntry("と", "to", "t", "hiragana", NewCardState()),
+                new KanaEntry("な", "na", "n", "hiragana", NewCardState()),
+                new KanaEntry("に", "ni", "n", "hiragana", NewCardState()),
+                new KanaEntry("ぬ", "nu", "n", "hiragana", NewCardState()),
+                new KanaEntry("ね", "ne", "n", "hiragana", NewCardState()),
+                new KanaEntry("の", "no", "n", "hiragana", NewCardState())
+            };
+            var katakana = new[]
+            {
+                new KanaEntry("ア", "a", "a", "katakana", NewCardState()),
+                new KanaEntry("イ", "i", "a", "katakana", NewCardState()),
+                new KanaEntry("ウ", "u", "a", "katakana", NewCardState()),
+                new KanaEntry("エ", "e", "a", "katakana", NewCardState()),
+                new KanaEntry("オ", "o", "a", "katakana", NewCardState()),
+                new KanaEntry("カ", "ka", "k", "katakana", NewCardState()),
+                new KanaEntry("キ", "ki", "k", "katakana", NewCardState()),
+                new KanaEntry("ク", "ku", "k", "katakana", NewCardState()),
+                new KanaEntry("ケ", "ke", "k", "katakana", NewCardState()),
+                new KanaEntry("コ", "ko", "k", "katakana", NewCardState())
+            };
+            SaveJson(KanaFile, new KanaFile(hiragana, katakana));
+        }
+
+        // 5. Kanji File
+        if (!File.Exists(KanjiFile))
+        {
+            var defaultKanji = new[]
+            {
+                new KanjiEntry("日", ["ニチ", "ジツ"], ["ひ", "か"], "Sun / Day", "N5", 4, ["日"], [new ExampleWord("日本", "にほん", "Japan"), new ExampleWord("今日", "きょう", "Today")], "Sun in the sky", ["kanji", "n5"], NewCardState()),
+                new KanjiEntry("月", ["ゲツ", "ガツ"], ["つき"], "Moon / Month", "N5", 4, ["月"], [new ExampleWord("月曜日", "げつようび", "Monday"), new ExampleWord("今月", "こんげつ", "This month")], "Crescent moon", ["kanji", "n5"], NewCardState()),
+                new KanjiEntry("水", ["スイ"], ["みず"], "Water", "N5", 4, ["水"], [new ExampleWord("水曜日", "すいようび", "Wednesday"), new ExampleWord("飲み水", "のみみず", "Drinking water")], "Flowing stream", ["kanji", "n5"], NewCardState()),
+                new KanjiEntry("火", ["カ"], ["ひ"], "Fire", "N5", 4, ["火"], [new ExampleWord("火曜日", "かようび", "Tuesday"), new ExampleWord("花火", "はなび", "Fireworks")], "Flickering flames", ["kanji", "n5"], NewCardState())
+            };
+            SaveJson(KanjiFile, new KanjiFile(defaultKanji));
+        }
+
+        // 6. Vocab Words (Intermediate)
         var defaultVocabFile = System.IO.Path.Combine(VocabDir, "intermediate.json");
         if (!File.Exists(defaultVocabFile))
         {

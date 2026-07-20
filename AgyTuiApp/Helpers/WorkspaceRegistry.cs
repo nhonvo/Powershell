@@ -87,7 +87,6 @@ public static class ProfileNavigator
         }
         WorkspaceEntry[] matches;
         if (string.IsNullOrWhiteSpace(query)) matches = workspaces;
-
         else
         {
             matches = WorkspaceRegistry.FindByQuery(query);
@@ -97,10 +96,45 @@ public static class ProfileNavigator
                 return null;
             }
         }
-        if (matches.Length == 1) return matches[0].WorkspacePath;
-        var idx = SpectreMenu.Show("Navigate to Workspace", matches.Select(m => m.Name).ToArray(), 0, true);
-        return idx >= 0 ? matches[idx].WorkspacePath : null;
 
+        WorkspaceEntry selected;
+        if (matches.Length == 1)
+        {
+            selected = matches[0];
+        }
+        else
+        {
+            var menuItems = matches.Select(m => $"{m.Name} ({m.WorkspacePath})").ToArray();
+            var idx = SpectreMenu.Show("Select Workspace Target", menuItems, 0, true);
+            if (idx < 0) return null;
+            selected = matches[idx];
+        }
+
+        var actions = new[]
+        {
+            $"📂 Change Directory to {selected.Name}",
+            $"💻 Open in Terminal IDE",
+            $"📁 Open in Windows File Explorer",
+            $"🌿 View Git Status"
+        };
+
+        var actionIdx = SpectreMenu.Show($"Workspace: {selected.Name}", actions, 0);
+        if (actionIdx == 1)
+        {
+            TerminalIde.Open(selected.WorkspacePath);
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 2)
+        {
+            SystemHelper.OpenExplorer(selected.WorkspacePath);
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 3)
+        {
+            GitDiffViewer.ShowDiff(selected.WorkspacePath);
+            return selected.WorkspacePath;
+        }
+
+        return selected.WorkspacePath;
     }
-
 }

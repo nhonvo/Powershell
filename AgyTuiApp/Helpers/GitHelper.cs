@@ -13,27 +13,42 @@ public static class GitHelper
 
     public static void ShowStatus()
     {
+        var branch = RunGit("branch --show-current").Trim();
+        if (string.IsNullOrEmpty(branch)) branch = "main";
+
+        AnsiConsole.Write(new Rule($"[bold cyan]Git Status ({branch.EscapeMarkup()})[/]").RuleStyle("grey"));
         var output = RunGit("status --short");
         if (string.IsNullOrWhiteSpace(output))
         {
-            SpectrePanel.Info("Working tree clean.");
+            SpectrePanel.Success("Working tree clean. No changes detected.");
             return;
         }
-        AnsiConsole.Write(new Rule("[bold cyan]Git Status[/]").RuleStyle("grey"));
+
+        var table = new Table().Border(TableBorder.Rounded).BorderColor(Color.Grey);
+        table.AddColumn("State");
+        table.AddColumn("File Path");
+
         foreach (var line in output.Split('\n').Where(l => !string.IsNullOrWhiteSpace(l)))
         {
-            var status = line.Length >= 2 ? line[..2] : "??";
-            var color = status.Trim() switch
+            var trimmed = line.TrimEnd('\r');
+            if (trimmed.Length < 3) continue;
+            var code = trimmed[..2];
+            var file = trimmed[3..].Trim();
+
+            var (label, color) = code switch
             {
-                "M" => "yellow",
-                "A" => "green",
-                "D" => "red",
-                "??" => "dim",
-                "R" => "cyan",
-                _ => "white"
+                "??" => ("Untracked", "dim"),
+                " M" or "M " or "MM" => ("Modified", "yellow"),
+                " A" or "A " => ("Staged", "green"),
+                " D" or "D " => ("Deleted", "red"),
+                " R" or "R " => ("Renamed", "cyan"),
+                _ => ("Changed", "white")
             };
-            AnsiConsole.MarkupLine($"[{color}]{line.EscapeMarkup()}[/]");
+
+            table.AddRow($"[{color}]{label} ({code.Trim()})[/]", $"[bold white]{file.EscapeMarkup()}[/]");
         }
+
+        AnsiConsole.Write(table);
     }
 
     public static void ConventionalCommitWizard()

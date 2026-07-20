@@ -22,10 +22,11 @@ public static class KanaQuiz
 {
     public static void Run(string type = "hiragana")
     {
+        LearnDataPaths.EnsureDirectories();
         var kana = LearnDataPaths.LoadJson<KanaFile>(LearnDataPaths.KanaFile);
         if (kana == null)
         {
-            SpectrePanel.Warning("kana.json not found. Run: learn jp");
+            SpectrePanel.Warning("kana.json data file not available.");
             return;
         }
         KanaEntry[] pool = type switch
@@ -33,17 +34,13 @@ public static class KanaQuiz
             "katakana" => kana.Katakana,
             "both" => [.. kana.Hiragana, .. kana.Katakana],
             _ => kana.Hiragana
-        }
-        ;
+        };
         var due = pool.Where(k => SpacedRepetitionEngine.IsDueToday(k.Sr)).ToArray();
-        if (due.Length == 0)
-        {
-            SpectrePanel.Success("All kana are up to date!");
-            return;
-        }
+        if (due.Length == 0) due = pool; // If none due today, practice full pool!
+
         var rowStats = new Dictionary<string, (int c, int t)>(StringComparer.OrdinalIgnoreCase);
         int correct = 0;
-        foreach (var entry in due)
+        foreach (var entry in due.Take(15))
         {
             AnsiConsole.Clear();
             AnsiConsole.Write(new Rule($"[bold cyan]Kana Quiz — {type}[/]").RuleStyle("grey"));
@@ -95,18 +92,20 @@ public static class KanjiLookup
 {
     public static void Run()
     {
+        LearnDataPaths.EnsureDirectories();
         var file = LearnDataPaths.LoadJson<KanjiFile>(LearnDataPaths.KanjiFile);
         if (file == null || file.Kanji.Length == 0)
         {
-            SpectrePanel.Warning("kanji.json not found. Run: learn jp");
+            SpectrePanel.Warning("Kanji database not found.");
             return;
         }
+
         var all = file.Kanji;
         while (true)
         {
             AnsiConsole.Clear();
             AnsiConsole.Write(new Rule("[bold cyan]Kanji Lookup[/]").RuleStyle("grey"));
-            var query = AnsiConsole.Ask<string>("[cyan]Search[/] (meaning/kana, Enter=quit):").Trim();
+            var query = AnsiConsole.Ask<string>("[cyan]Search[/] (meaning/kana, Enter=quit):", string.Empty).Trim();
             if (string.IsNullOrWhiteSpace(query)) return;
             var results = Search(all, query);
             if (results.Length == 0)
@@ -118,7 +117,6 @@ public static class KanjiLookup
             var idx = SpectreMenu.Show($"Results for '{query}'", items, 0, false);
             if (idx >= 0) ShowDetail(results[idx]);
         }
-
     }
 
     public static KanjiEntry[] Search(KanjiEntry[] all, string query) => all.Where(k => k.Meaning.Contains(query, StringComparison.OrdinalIgnoreCase) || k.Char.Contains(query) || k.Onyomi.Any(o => o.Contains(query, StringComparison.OrdinalIgnoreCase)) || k.Kunyomi.Any(u => u.Contains(query, StringComparison.OrdinalIgnoreCase))).ToArray();

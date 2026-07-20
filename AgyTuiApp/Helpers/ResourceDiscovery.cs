@@ -402,9 +402,9 @@ public static class LearnRouter
 {
     public static void StartLearning(string topic)
     {
+        LearnDataPaths.EnsureDirectories();
         RefreshData(topic);
         LaunchTool(topic, "auto");
-
     }
 
     public static void RefreshData(string topic)
@@ -412,7 +412,6 @@ public static class LearnRouter
         var cfg = ObsidianBridge.LoadConfig();
         if (cfg == null || !Directory.Exists(cfg.VaultPath))
         {
-            SpectrePanel.Warning("No Obsidian vault configured. Run: obsidian");
             return;
         }
         var tagMap = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase)
@@ -425,13 +424,11 @@ public static class LearnRouter
             ["csharp"] = ["csharp", "dotnet", "cs"],
             ["dsa"] = ["dsa", "algorithm", "leetcode", "problem"],
             ["interview"] = ["interview", "behavioral", "system-design"],
-        }
-        ;
+        };
         var tags = tagMap.GetValueOrDefault(topic, [topic]);
         var notes = ResourceScanner.FindNotesByTag(cfg.VaultPath, tags);
         if (notes.Length == 0)
         {
-            SpectrePanel.Info($"No notes tagged for topic '{topic}'.");
             return;
         }
         var items = new List<ExtractedItem>();
@@ -439,11 +436,9 @@ public static class LearnRouter
         {
             var fakeEntry = new ResourceEntry("tmp", note, "md", System.IO.Path.GetFileNameWithoutExtension(note), tags, [topic], "auto", "obsidian_note", null, 0, DateTimeOffset.Now.ToString("o"), null, "pending", null, 0, [], true, true);
             items.AddRange(MdExtractor.Extract(note, fakeEntry));
-        }
-        );
+        });
         TemplateGenerator.RouteItemsToFiles([.. items]);
         SpectrePanel.Success($"Generated {items.Count} items from {notes.Length} notes → learn/");
-
     }
 
     private static void LaunchTool(string topic, string level)
@@ -451,7 +446,16 @@ public static class LearnRouter
         switch (topic.ToLower())
         {
             case "jp" or "japanese":
-                JlptVocabDrill.Run("N5");
+                var jpTools = new[]
+                {
+                    "🎌 JLPT Vocabulary Drill (N5)",
+                    "🌸 Hiragana & Katakana Kana Quiz",
+                    "⛩️ Kanji Radical & Stroke Lookup"
+                };
+                var jpChoice = SpectreMenu.Show("Japanese Learning Suite", jpTools, 0);
+                if (jpChoice == 0) JlptVocabDrill.Run("N5");
+                else if (jpChoice == 1) KanaQuiz.Run("hiragana");
+                else if (jpChoice == 2) KanjiLookup.Run();
                 break;
             case "en" or "english":
                 VocabDrill.Run("Intermediate");
@@ -469,7 +473,5 @@ public static class LearnRouter
                 FlashcardEngine.PickAndRun(LearnDataPaths.DecksDir);
                 break;
         }
-
     }
-
 }
