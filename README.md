@@ -326,10 +326,47 @@ The `agy-account` (aliased to `agy-acc`) wrapper supports interactive TUI select
 
 ---
 
+## 🛠️ System Dependencies & Environment Setup
+
+| Dependency | Required Version | Purpose & Installation |
+| :--- | :--- | :--- |
+| **.NET SDK** | `.NET 10.0` or newer | Compiles and executes `AgyTuiApp.csproj` and unit test runner |
+| **PowerShell** | `v7.4` or newer | Shell runtime executing profile functions and aliases |
+| **Git** | `v2.40+` | Code versioning, conventional commits, diff viewer, git status |
+| **Ollama CLI** | `v0.1.30+` | Local LLM server daemon (listening on port 11434) |
+| **Docker Desktop** | `v4.20+` | Container runtime engine, Compose dashboards (`dkcl`) |
+| **Oh My Posh** | Latest (`winget`) | Terminal prompt theme engine (`theme`) |
+| **Micro Editor** | Latest (`winget`) | In-terminal lightweight IDE editor (`ide`) |
+| **SQLite3 CLI** | Latest (`winget`) | Interactive database viewer (`db-tui`) |
+
+---
+
+## 🔒 Advanced Integration Guides
+
+### 1. Tailscale SSH & Remote Connectivity
+- **View Network & SSH Info**: Run `ssh-info` to display your local IPv4, Tailscale IP address, and active inbound SSH sessions.
+- **Authorize Public Keys**: Run `ssh-addkey` to append a public key to `~/.ssh/authorized_keys` for passwordless remote logins.
+- **Remote Access**: Connect securely via `ssh user@<tailscale-ip>` from anywhere within your mesh network.
+
+### 2. Codex-Ollama OpenAI API Proxy Architecture
+- **Schema Translation**: Legacy clients like Codex CLI expect OpenAI-compatible REST schemas. The profile launches `ollama-proxy.js` on port `11435`.
+- **Auto Proxy Launch**: Running `codex` or `codex-ollama` automatically launches the proxy server to translate requests to local Ollama endpoints.
+
+### 3. Antigravity CLI (`agy`) Clean Setup & Re-installation
+- **Account Directories**: Accounts are stored in `C:\Users\Public\.gemini_<account_name>` or `~/.gemini/accounts/`.
+- **Junction Link Healing**: Account switching automatically repairs junction links for `config` (custom skills) and `antigravity` (conversation history) back to the global primary directory.
+- **Token Syncing**: DPAPI-encrypted token backups (`keyring_token.txt`) seamlessly swap active Windows Credential Manager entries when switching contexts.
+
+---
+
 ## 🧪 Verification & Testing
 
-Execute the syntax parsers and run the unit test suites locally:
+Execute syntax parsers and run the Pester / .NET unit test suites locally:
 
 ```powershell
+# Run PowerShell AST syntax check & Pester unit tests
 powershell -ExecutionPolicy Bypass -File ./Tests/run_tests.ps1
+
+# Run .NET C# unit test suite
+dotnet test AgyTuiApp.Tests/AgyTuiApp.Tests.csproj
 ```
