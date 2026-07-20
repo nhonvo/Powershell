@@ -172,9 +172,109 @@ public static class LearnDataPaths
             var defaultWords = new[]
             {
                 new VocabWord("vocab-1", "ubiquitous", "yoo-bik-wi-tuhs", "Adjective", "Existing or being everywhere at the same time; constantly encountered.", "Mobile phones are ubiquitous today.", new[] { "omnipresent", "pervasive" }, new[] { "rare", "scarce" }, 3, new[] { "adjectives" }, NewCardState()),
-                new VocabWord("vocab-2", "pragmatic", "prag-mat-ik", "Adjective", "Dealing with things sensibly and realistically in a way that is based on practical rather than theoretical considerations.", "We need to take a pragmatic approach to software development.", new[] { "practical", "realistic" }, new[] { "idealistic", "impractical" }, 2, new[] { "adjectives" }, NewCardState())
+                new VocabWord("vocab-2", "pragmatic", "prag-mat-ik", "Adjective", "Dealing with things sensibly and realistically in a way that is based on practical rather than theoretical considerations.", "We need to take a pragmatic approach to software development.", new[] { "practical", "realistic" }, new[] { "idealistic", "impractical" }, 2, new[] { "adjectives" }, NewCardState()),
+                new VocabWord("vocab-3", "resilient", "ri-zil-yuhnt", "Adjective", "Able to withstand or recover quickly from difficult conditions.", "Our microservices are resilient against network partitioning.", new[] { "robust", "tough" }, new[] { "fragile" }, 2, new[] { "adjectives" }, NewCardState()),
+                new VocabWord("vocab-4", "idempotent", "eye-dem-poh-tuhnt", "Adjective", "An operation that produces the same result no matter how many times executed.", "HTTP PUT and DELETE APIs must be idempotent.", new[] { "repeatable", "invariant" }, new[] { "stateful" }, 4, new[] { "tech" }, NewCardState())
             };
             SaveJson(defaultVocabFile, new VocabFile("Intermediate", defaultWords));
+        }
+
+        // 7. Word of the Day Bank
+        if (!File.Exists(WordBankFile))
+        {
+            var wordBank = new[]
+            {
+                new WordEntry(DateTime.Today.ToString("yyyy-MM-dd"), "resilient", "ri-zil-yuhnt", "Adjective", "Able to withstand or recover quickly from difficult conditions.", "Our distributed system is resilient to node failures.", new[] { "architecture", "vocab" }),
+                new WordEntry(DateTime.Today.ToString("yyyy-MM-dd"), "idempotent", "eye-dem-poh-tuhnt", "Adjective", "Denoting an operation which can be applied multiple times without changing the result.", "Ensure API retry calls are strictly idempotent.", new[] { "api", "tech" }),
+                new WordEntry(DateTime.Today.ToString("yyyy-MM-dd"), "ephemeral", "ih-fem-er-uhl", "Adjective", "Lasting for a very short time.", "Container local storage is ephemeral unless backed by volumes.", new[] { "docker", "devops" }),
+                new WordEntry(DateTime.Today.ToString("yyyy-MM-dd"), "clandestine", "klan-des-tin", "Adjective", "Kept secret or done secretively.", "Secrets vault prevents clandestine access to tokens.", new[] { "security" }),
+                new WordEntry(DateTime.Today.ToString("yyyy-MM-dd"), "perspicacious", "pur-spih-kay-shuhs", "Adjective", "Having a ready insight into and understanding of things; shrewd.", "The architect gave a perspicacious solution to the bottleneck.", new[] { "vocab" })
+            };
+            SaveJson(WordBankFile, new WordBankFile(wordBank));
+        }
+
+        // 8. Interview Question Bank
+        if (!File.Exists(InterviewFile))
+        {
+            var questions = new[]
+            {
+                new InterviewQuestion("int-1", "Technical", "System Design", "Hard", "How would you design a distributed Rate Limiter for an API gateway?", "System Design", new[] { "Token Bucket", "Redis Sliding Window" }, new[] { "Google", "Amazon", "Uber" }, new[] { "system-design", "api" }),
+                new InterviewQuestion("int-2", "Technical", "C# / .NET", "Medium", "What is the difference between Task, Thread, and ValueTask in .NET?", "Technical Q&A", new[] { "Task allocates heap object", "ValueTask is a struct avoiding allocation on sync path" }, new[] { "Microsoft", "Meta" }, new[] { "dotnet", "async" }),
+                new InterviewQuestion("int-3", "Technical", "Databases", "Medium", "Explain Clustered vs. Non-Clustered Indexes in SQL databases.", "Technical Q&A", new[] { "Clustered sort physical data rows", "Non-clustered is a separate B-tree pointer index" }, new[] { "AWS", "Microsoft" }, new[] { "sql", "db" }),
+                new InterviewQuestion("int-4", "Behavioral", "Conflict Resolution", "Medium", "Describe a situation where you had a technical disagreement with a teammate.", "STAR Method", new[] { "Focus on objective benchmarks", "Show empathy and compromise" }, new[] { "Google", "Apple" }, new[] { "star", "behavioral" }),
+                new InterviewQuestion("int-5", "Behavioral", "Incident Response", "Hard", "Tell me about a critical production outage you handled.", "STAR Method", new[] { "Triage first", "Blameless post-mortem" }, new[] { "Amazon", "Netflix" }, new[] { "star", "sre" })
+            };
+            SaveJson(InterviewFile, new InterviewFile(questions));
+        }
+
+        // 9. STAR Answers Sample
+        if (!File.Exists(StarFile))
+        {
+            var stars = new[]
+            {
+                new StarAnswer("star-1", "int-4", "Disagreement on API Architecture", "Team was split between REST and gRPC for high-speed microservices.", "Reach consensus and unblock sprint deadline.", "Ran benchmark POC proving gRPC reduced latency by 45%, presented metrics neutrally.", "Team adopted gRPC for core services, keeping REST for external clients.", "45% latency reduction, zero sprint delay", DateTime.UtcNow.ToString("o"), DateTime.UtcNow.ToString("o"), new[] { "leadership", "architecture" }, 5)
+            };
+            SaveJson(StarFile, new StarFile(stars));
+        }
+
+        // 10. Complexity File
+        if (!File.Exists(ComplexityFile))
+        {
+            var structures = new[]
+            {
+                new ComplexityEntry("Array", "O(1)", "O(n)", "O(n)", "O(n)", "O(n)", "Random access O(1)", new[] { "basics" }),
+                new ComplexityEntry("Hash Table", "N/A", "O(1)", "O(1)", "O(1)", "O(n)", "Average O(1), worst O(n)", new[] { "hash" }),
+                new ComplexityEntry("Balanced BST (AVL/Red-Black)", "O(log n)", "O(log n)", "O(log n)", "O(log n)", "O(n)", "Self-balancing tree", new[] { "trees" })
+            };
+            var algos = new[]
+            {
+                new AlgoEntry("Quick Sort", "O(n log n)", "O(n log n)", "O(n²)", "O(log n)", "sort", "In-place divide & conquer", new[] { "sorting" }),
+                new AlgoEntry("Merge Sort", "O(n log n)", "O(n log n)", "O(n log n)", "O(n)", "sort", "Stable divide & conquer", new[] { "sorting" }),
+                new AlgoEntry("Binary Search", "O(1)", "O(log n)", "O(log n)", "O(1)", "search", "Requires sorted input", new[] { "search" })
+            };
+            SaveJson(ComplexityFile, new ComplexityFile(structures, algos));
+        }
+
+        // 11. Coding Problems File
+        if (!File.Exists(ProblemsFile))
+        {
+            var problems = new[]
+            {
+                new Problem("prob-1", "Two Sum", "LeetCode #1", "https://leetcode.com/problems/two-sum/", "easy", new[] { "Hash Table", "Array" }, "solved", "O(n)", "O(n)", "Use HashMap to track complement value", 1, DateTime.UtcNow.ToString("o"), DateTime.UtcNow.ToString("o"), new[] { "arrays" }),
+                new Problem("prob-2", "Valid Parentheses", "LeetCode #20", "https://leetcode.com/problems/valid-parentheses/", "easy", new[] { "Stack", "String" }, "solved", "O(n)", "O(n)", "Push open brackets onto stack", 1, DateTime.UtcNow.ToString("o"), DateTime.UtcNow.ToString("o"), new[] { "stack" }),
+                new Problem("prob-3", "LRU Cache", "LeetCode #146", "https://leetcode.com/problems/lru-cache/", "medium", new[] { "Hash Table", "Doubly Linked List" }, "todo", "O(1)", "O(n)", "Combine HashMap with Doubly LinkedList", 0, null, null, new[] { "design" })
+            };
+            SaveJson(ProblemsFile, new ProblemsFile(problems));
+        }
+
+        // 12. Snippets
+        var defaultSnipFile = System.IO.Path.Combine(SnippetsDir, "csharp.json");
+        if (!File.Exists(defaultSnipFile))
+        {
+            var snippets = new[]
+            {
+                new CodeSnippet("snip-1", "Async IAsyncEnumerable Streaming", "Async/Await", "async IAsyncEnumerable<int> FetchDataAsync()\n{\n    for (int i = 0; i < 5; i++)\n    {\n        await Task.Delay(100);\n        yield return i;\n    }\n}", "Yields items asynchronously without allocating a full list in memory.", "High-throughput API streaming", new[] { "csharp", "async" }, 2),
+                new CodeSnippet("snip-2", "LINQ Chunking (.NET 6+)", "LINQ", "var numbers = Enumerable.Range(1, 100);\nforeach (var chunk in numbers.Chunk(10))\n{\n    Console.WriteLine($\"Batch of {chunk.Length}\");\n}", "Splits collections into fixed-size batches for parallel processing.", "Batch DB writes / background queues", new[] { "csharp", "linq" }, 1)
+            };
+            SaveJson(defaultSnipFile, new SnippetsFile("csharp", snippets));
+        }
+
+        // 13. Cheat Sheets
+        if (!Directory.Exists(SheetsDir)) Directory.CreateDirectory(SheetsDir);
+        var csSheet = System.IO.Path.Combine(SheetsDir, "csharp.txt");
+        if (!File.Exists(csSheet))
+        {
+            File.WriteAllText(csSheet, "=== C# & .NET CHEAT SHEET ===\n\n1. Value vs Reference Types:\n   - Value: int, bool, double, struct, enum (allocated on Stack/Inline)\n   - Reference: class, interface, delegate, record class, string (allocated on Heap)\n\n2. Async/Await Best Practices:\n   - Avoid 'async void' except for event handlers\n   - Use ConfigureAwait(false) in class libraries\n   - Prefer Task.WhenAll over sequential awaits");
+        }
+        var gitSheet = System.IO.Path.Combine(SheetsDir, "git.txt");
+        if (!File.Exists(gitSheet))
+        {
+            File.WriteAllText(gitSheet, "=== GIT CHEAT SHEET ===\n\n1. Undo Last Commit (keep changes):\n   git reset --soft HEAD~1\n\n2. Interactive Rebase:\n   git rebase -i HEAD~5\n\n3. Stash with Name:\n   git stash save 'my-wip-feature'");
+        }
+        var dockerSheet = System.IO.Path.Combine(SheetsDir, "docker.txt");
+        if (!File.Exists(dockerSheet))
+        {
+            File.WriteAllText(dockerSheet, "=== DOCKER CHEAT SHEET ===\n\n1. Cleanup unused resources:\n   docker system prune -af --volumes\n\n2. Follow container logs:\n   docker logs -f --tail 100 <container>");
         }
     }
 

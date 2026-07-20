@@ -287,6 +287,42 @@ public static class MenuNodeBuilder
             null
         );
 
+        // Sub-groups for Category 5: Learn & Study
+        var jpSuite = new MenuNode("/jp-suite", " [Japanese Suite]", MenuNodeKind.Group, new[]
+        {
+            CreateCommandNode(allCommands["kana"]),
+            CreateCommandNode(allCommands["kanji"]),
+            CreateCommandNode(allCommands["jlpt"])
+        }, null);
+
+        var englishVocab = new MenuNode("/english-vocab", " [English & Vocab]", MenuNodeKind.Group, new[]
+        {
+            CreateCommandNode(allCommands["word-of-day"]),
+            CreateCommandNode(allCommands["vocab"]),
+            CreateCommandNode(allCommands["flashcard"])
+        }, null);
+
+        var csharpMaster = new MenuNode("/csharp-master", " [C# & Dev Masterclass]", MenuNodeKind.Group, new[]
+        {
+            CreateCommandNode(allCommands["quiz"]),
+            CreateCommandNode(allCommands["snippets"]),
+            CreateCommandNode(allCommands["sheets"])
+        }, null);
+
+        var dsaArchitect = new MenuNode("/dsa-architect", " [DSA & System Design]", MenuNodeKind.Group, new[]
+        {
+            CreateCommandNode(allCommands["algo"]),
+            CreateCommandNode(allCommands["complexity"]),
+            CreateCommandNode(allCommands["problems"])
+        }, null);
+
+        var careerInterview = new MenuNode("/career-interview", " [Career & Interview Prep]", MenuNodeKind.Group, new[]
+        {
+            CreateCommandNode(allCommands["interview"]),
+            CreateCommandNode(allCommands["star"]),
+            CreateCommandNode(allCommands["mock"])
+        }, null);
+
         // Category 5: [Learn & Study]
         var learnStudy = new MenuNode(
             "learn-study",
@@ -295,21 +331,11 @@ public static class MenuNodeBuilder
             new[]
             {
                 CreateCommandNode(allCommands["learn"]),
-                CreateCommandNode(allCommands["flashcard"]),
-                CreateCommandNode(allCommands["vocab"]),
-                CreateCommandNode(allCommands["kana"]),
-                CreateCommandNode(allCommands["kanji"]),
-                CreateCommandNode(allCommands["jlpt"]),
-                CreateCommandNode(allCommands["algo"]),
-                CreateCommandNode(allCommands["complexity"]),
-                CreateCommandNode(allCommands["problems"]),
-                CreateCommandNode(allCommands["snippets"]),
-                CreateCommandNode(allCommands["sheets"]),
-                CreateCommandNode(allCommands["quiz"]),
-                CreateCommandNode(allCommands["interview"]),
-                CreateCommandNode(allCommands["star"]),
-                CreateCommandNode(allCommands["mock"]),
-                CreateCommandNode(allCommands["word-of-day"])
+                jpSuite,
+                englishVocab,
+                csharpMaster,
+                dsaArchitect,
+                careerInterview
             },
             null
         );

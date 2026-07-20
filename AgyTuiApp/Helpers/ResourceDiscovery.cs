@@ -404,7 +404,43 @@ public static class LearnRouter
     {
         LearnDataPaths.EnsureDirectories();
         RefreshData(topic);
-        LaunchTool(topic, "auto");
+        if (string.IsNullOrWhiteSpace(topic) || topic.Equals("all", StringComparison.OrdinalIgnoreCase) || topic.Equals("auto", StringComparison.OrdinalIgnoreCase))
+        {
+            LaunchMasterHub();
+        }
+        else
+        {
+            LaunchTool(topic, "auto");
+        }
+    }
+
+    public static void LaunchMasterHub()
+    {
+        while (true)
+        {
+            AnsiConsole.Clear();
+            AnsiConsole.Write(new Rule("[bold cyan]🎓 Antigravity Master Learning Suite[/]").RuleStyle("grey"));
+
+            var options = new[]
+            {
+                "🎌 Japanese Language Suite (Kana, Kanji, JLPT)",
+                "📖 English & Vocabulary (Vocab Drill, Word of Day, Flashcards)",
+                "💻 C# & .NET Masterclass (Quiz, Snippets, Cheat Sheets)",
+                "🧩 DSA & System Architecture (Algo Visualizer, Big-O, Tracker)",
+                "💼 Career & Technical Interview (Questions, STAR Builder, Mock)",
+                "📊 Progress & Spaced Repetition Queue",
+                "← Exit Learning Suite"
+            };
+
+            var idx = SpectreMenu.Show("Select Learning Domain", options, 0);
+            if (idx == 0) LaunchTool("jp", "auto");
+            else if (idx == 1) LaunchTool("en", "auto");
+            else if (idx == 2) LaunchTool("cs", "auto");
+            else if (idx == 3) LaunchTool("dsa", "auto");
+            else if (idx == 4) LaunchTool("interview", "auto");
+            else if (idx == 5) ProgressDashboard.Show();
+            else break;
+        }
     }
 
     public static void RefreshData(string topic)
@@ -441,8 +477,9 @@ public static class LearnRouter
         SpectrePanel.Success($"Generated {items.Count} items from {notes.Length} notes → learn/");
     }
 
-    private static void LaunchTool(string topic, string level)
+    public static void LaunchTool(string topic, string level)
     {
+        LearnDataPaths.EnsureDirectories();
         switch (topic.ToLower())
         {
             case "jp" or "japanese":
@@ -458,16 +495,57 @@ public static class LearnRouter
                 else if (jpChoice == 2) KanjiLookup.Run();
                 break;
             case "en" or "english":
-                VocabDrill.Run("Intermediate");
+                var enTools = new[]
+                {
+                    "📖 English Vocab Drill",
+                    "🌟 Word of the Day",
+                    "🎴 Flashcard Decks"
+                };
+                var enChoice = SpectreMenu.Show("English & Vocabulary Suite", enTools, 0);
+                if (enChoice == 0) VocabDrill.Run("Intermediate");
+                else if (enChoice == 1)
+                {
+                    var word = WordOfDay.Pick();
+                    if (word != null) WordOfDay.Render(word);
+                    else SpectrePanel.Warning("No word of the day available.");
+                }
+                else if (enChoice == 2) FlashcardEngine.PickAndRun(LearnDataPaths.DecksDir);
                 break;
             case "cs" or "csharp":
-                CsharpQuiz.Run();
+                var csTools = new[]
+                {
+                    "💻 C# & .NET Interactive Quiz",
+                    "⚡ Code Snippet Library",
+                    "📄 Developer Cheat Sheets"
+                };
+                var csChoice = SpectreMenu.Show("C# & Dev Masterclass Suite", csTools, 0);
+                if (csChoice == 0) CsharpQuiz.Run();
+                else if (csChoice == 1) SnippetLibrary.Run();
+                else if (csChoice == 2) CheatSheetBrowser.Run();
                 break;
             case "dsa":
-                AlgoVisualizer.PickAndRun();
+                var dsaTools = new[]
+                {
+                    "🧩 Algorithm Step Visualizer",
+                    "📊 Big-O Complexity Sheet",
+                    "🎯 Coding Problem Tracker"
+                };
+                var dsaChoice = SpectreMenu.Show("DSA & System Architecture Suite", dsaTools, 0);
+                if (dsaChoice == 0) AlgoVisualizer.PickAndRun();
+                else if (dsaChoice == 1) ComplexitySheet.Run();
+                else if (dsaChoice == 2) ProblemTracker.Run();
                 break;
             case "interview":
-                InterviewBank.RunRandom();
+                var intTools = new[]
+                {
+                    "💼 Technical & Behavioral Question Bank",
+                    "⭐ STAR Answer Builder",
+                    "⏱️ Mock Interview Session Timer"
+                };
+                var intChoice = SpectreMenu.Show("Career & Interview Suite", intTools, 0);
+                if (intChoice == 0) InterviewBank.Run();
+                else if (intChoice == 1) StarBuilder.Run();
+                else if (intChoice == 2) MockInterviewTimer.Run(300);
                 break;
             default:
                 FlashcardEngine.PickAndRun(LearnDataPaths.DecksDir);
