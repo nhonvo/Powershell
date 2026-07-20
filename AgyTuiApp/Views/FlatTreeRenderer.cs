@@ -292,11 +292,39 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                             else if (detailsMode == "proj")
                             {
                                 var workspaces = WorkspaceRegistry.GetWorkspaces();
-                                var selectedProj = workspaces[detailsSel].WorkspacePath;
-                                var selectedProjFile = Path.Combine(AgyAccountCore.AgySourceHome, "selected_project.txt");
-                                File.WriteAllText(selectedProjFile, selectedProj);
-                                AnsiConsole.MarkupLine($"[green][[Workspace]] Selected workspace '{workspaces[detailsSel].Name}'. Switch will apply on exit.[/]");
-                                Thread.Sleep(1000);
+                                if (detailsSel >= 0 && detailsSel < workspaces.Length)
+                                {
+                                    var targetEntry = workspaces[detailsSel];
+                                    var actions = new[]
+                                    {
+                                        $"📂 Change Directory to {targetEntry.Name} on exit (cd)",
+                                        $"💻 Open in Terminal IDE (/ide)",
+                                        $"📁 Open in Windows File Explorer",
+                                        $"🔀 View Git Status & Diff (/ide-diff)"
+                                    };
+                                    var actionIdx = SpectreMenu.ShowWithEscape($"Workspace: {targetEntry.Name}", actions, 0);
+                                    if (actionIdx == 0)
+                                    {
+                                        var agyHome = !string.IsNullOrEmpty(AgyAccountCore.AgySourceHome) ? AgyAccountCore.AgySourceHome : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini");
+                                        Directory.CreateDirectory(agyHome);
+                                        var selectedProjFile = Path.Combine(agyHome, "selected_project.txt");
+                                        File.WriteAllText(selectedProjFile, targetEntry.WorkspacePath);
+                                        SpectrePanel.Success($"Selected workspace '{targetEntry.Name}'. Directory switch will apply on exit.");
+                                        Thread.Sleep(1000);
+                                    }
+                                    else if (actionIdx == 1)
+                                    {
+                                        TerminalIde.Open(targetEntry.WorkspacePath);
+                                    }
+                                    else if (actionIdx == 2)
+                                    {
+                                        SystemHelper.OpenExplorer(targetEntry.WorkspacePath);
+                                    }
+                                    else if (actionIdx == 3)
+                                    {
+                                        GitDiffViewer.ShowDiff(targetEntry.WorkspacePath);
+                                    }
+                                }
                             }
                             detailsActive = false;
                         }
@@ -554,7 +582,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
         else
         {
             int winHeight = Console.WindowHeight > 0 ? Console.WindowHeight : 30;
-            int maxRows = Math.Max(5, winHeight - 14);
+            int maxRows = Math.Max(3, winHeight - 18);
 
             int topRow = 0;
             if (selIdx >= maxRows)
@@ -750,15 +778,17 @@ public sealed class FlatTreeRenderer : IMenuRenderer
         }
         else if (mode == "proj")
         {
-            grid.AddRow(new Markup("[cyan bold]Select Workspace directory to switch to on exit:[/]\n"));
+            grid.AddRow(new Markup("[cyan bold]Select Workspace directory (Enter for Actions: cd / IDE / Explorer):[/]\n"));
             var workspaces = WorkspaceRegistry.GetWorkspaces();
             for (var i = 0; i < workspaces.Length; i++)
             {
                 var isSelected = (i == selIdx);
                 var prefix = isSelected ? "[green bold]> [/]" : "  ";
-                grid.AddRow(new Markup($"{prefix}{workspaces[i].Name.EscapeMarkup()} [dim]({workspaces[i].WorkspacePath.EscapeMarkup()})[/]"));
+                var branch = WorkspaceRegistry.GetGitBranch(workspaces[i].WorkspacePath);
+                var branchMarkup = !string.IsNullOrEmpty(branch) ? $" [cyan]({branch})[/]" : "";
+                grid.AddRow(new Markup($"{prefix}{workspaces[i].Name.EscapeMarkup()}{branchMarkup} [dim]({workspaces[i].WorkspacePath.EscapeMarkup()})[/]"));
             }
-            grid.AddRow(new Markup("\n[dim]↑/↓ Navigate  ·  Enter Select  ·  Esc Cancel[/]"));
+            grid.AddRow(new Markup("\n[dim]↑/↓ Navigate  ·  Enter Select Action  ·  Esc Cancel[/]"));
         }
 
         var panel = new Panel(grid)

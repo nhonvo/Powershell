@@ -480,12 +480,13 @@ function Invoke-ControlCenter {
     } else {
         dotnet run --project (Join-Path $Global:ProfileRepoRoot "AgyTuiApp\AgyTuiApp.csproj") -- $args
     }
-    $selectedProjFile = Join-Path -Path $Global:AgySourceHome -ChildPath "selected_project.txt"
-    if (Test-Path $selectedProjFile) {
+    $agyHome = if ($Global:AgySourceHome) { $Global:AgySourceHome } else { Join-Path $env:USERPROFILE ".gemini" }
+    $selectedProjFile = Join-Path -Path $agyHome -ChildPath "selected_project.txt"
+    if ($selectedProjFile -and (Test-Path $selectedProjFile -ErrorAction SilentlyContinue)) {
         $projPath = Get-Content $selectedProjFile -Raw -ErrorAction SilentlyContinue
-        if ($projPath -and (Test-Path $projPath.Trim())) {
+        if ($projPath -and (Test-Path $projPath.Trim() -ErrorAction SilentlyContinue)) {
             Write-Host "🛸 Navigating to selected workspace: $($projPath.Trim())" -ForegroundColor Cyan
-            Set-Location $($projPath.Trim())
+            Set-Location -Path $($projPath.Trim())
         }
         Remove-Item $selectedProjFile -Force -ErrorAction SilentlyContinue
     }

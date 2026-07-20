@@ -73,7 +73,26 @@ public static class WorkspaceRegistry
 
     public static WorkspaceEntry[] GetByAccount(string accountName) => GetWorkspaces().Where(w => string.Equals(w.AssociatedAccount, accountName, StringComparison.OrdinalIgnoreCase)).ToArray();
 
+    public static string GetGitBranch(string dirPath)
+    {
+        try
+        {
+            var headFile = System.IO.Path.Combine(dirPath, ".git", "HEAD");
+            if (File.Exists(headFile))
+            {
+                var txt = File.ReadAllText(headFile).Trim();
+                if (txt.StartsWith("ref: refs/heads/"))
+                {
+                    return txt.Substring("ref: refs/heads/".Length);
+                }
+                if (txt.Length >= 7) return txt.Substring(0, 7);
+            }
+        }
+        catch { }
+        return "";
+    }
 }
+
 public static class ProfileNavigator
 {
     public static string? Navigate(string query) => Navigate(query, WorkspaceRegistry.GetWorkspaces());
@@ -104,7 +123,13 @@ public static class ProfileNavigator
         }
         else
         {
-            var menuItems = matches.Select(m => $"{m.Name} ({m.WorkspacePath})").ToArray();
+            var menuItems = matches.Select(m =>
+            {
+                var branch = WorkspaceRegistry.GetGitBranch(m.WorkspacePath);
+                var branchSuffix = !string.IsNullOrEmpty(branch) ? $" [{branch}]" : "";
+                return $"{m.Name}{branchSuffix} — {m.WorkspacePath}";
+            }).ToArray();
+
             var idx = SpectreMenu.Show("Select Workspace Target", menuItems, 0, true);
             if (idx < 0) return null;
             selected = matches[idx];
@@ -112,13 +137,13 @@ public static class ProfileNavigator
 
         var actions = new[]
         {
-            $"📂 Change Directory to {selected.Name}",
-            $"💻 Open in Terminal IDE",
+            $"📂 Change Directory to {selected.Name} on exit",
+            $"💻 Open in Terminal IDE (/ide)",
             $"📁 Open in Windows File Explorer",
-            $"🌿 View Git Status"
+            $"🔀 View Git Status & Diff"
         };
 
-        var actionIdx = SpectreMenu.Show($"Workspace: {selected.Name}", actions, 0);
+        var actionIdx = SpectreMenu.ShowWithEscape($"Workspace: {selected.Name}", actions, 0);
         if (actionIdx == 1)
         {
             TerminalIde.Open(selected.WorkspacePath);
