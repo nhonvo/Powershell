@@ -28,13 +28,13 @@ public static class WorkspaceRegistry
         try
         {
             var raw = File.ReadAllText(ConfigFile);
-            return JsonSerializer.Deserialize<WorkspaceEntry[]>(raw) ?? [];
+            var items = JsonSerializer.Deserialize<WorkspaceEntry[]>(raw);
+            return items?.Where(w => w != null && !string.IsNullOrEmpty(w.WorkspacePath)).ToArray() ?? [];
         }
         catch
         {
             return [];
         }
-
     }
 
     public static void SaveWorkspaces(WorkspaceEntry[] entries)

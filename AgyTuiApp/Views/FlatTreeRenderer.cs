@@ -793,24 +793,27 @@ public sealed class FlatTreeRenderer : IMenuRenderer
 
             for (var i = 0; i < workspaces.Length; i++)
             {
+                if (workspaces[i] == null) continue;
+                var wsPath = workspaces[i].WorkspacePath ?? "";
+                var wsName = workspaces[i].Name ?? "Unnamed Workspace";
                 var isSelected = (i == selIdx);
-                var isCurrent = string.Equals(workspaces[i].WorkspacePath.TrimEnd('\\', '/'), currentDir.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
+                var isCurrent = !string.IsNullOrEmpty(wsPath) && string.Equals(wsPath.TrimEnd('\\', '/'), currentDir.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
 
                 var cursorMarkup = isSelected ? "[green bold]❯[/]" : " ";
                 var statusMarkup = isCurrent ? "[bold black on green] ACTIVE [/]" : "[dim cyan][READY][/]";
                 
                 var nameMarkup = isSelected 
-                    ? $"[bold green]📁 {workspaces[i].Name.EscapeMarkup()}[/]" 
-                    : $"[bold white]📁 {workspaces[i].Name.EscapeMarkup()}[/]";
+                    ? $"[bold green]📁 {wsName.EscapeMarkup()}[/]" 
+                    : $"[bold white]📁 {wsName.EscapeMarkup()}[/]";
 
-                var branch = WorkspaceRegistry.GetGitBranch(workspaces[i].WorkspacePath);
+                var branch = WorkspaceRegistry.GetGitBranch(wsPath);
                 var branchMarkup = !string.IsNullOrEmpty(branch) 
                     ? $"[yellow]🌿 {branch.EscapeMarkup()}[/]" 
                     : "[dim]—[/]";
 
                 var pathMarkup = isSelected
-                    ? $"[cyan]{workspaces[i].WorkspacePath.EscapeMarkup()}[/]"
-                    : $"[dim]{workspaces[i].WorkspacePath.EscapeMarkup()}[/]";
+                    ? $"[cyan]{wsPath.EscapeMarkup()}[/]"
+                    : $"[dim]{wsPath.EscapeMarkup()}[/]";
 
                 table.AddRow(
                     new Markup(cursorMarkup),
