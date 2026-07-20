@@ -19,12 +19,15 @@ Describe "Core Profile Functions Validation" {
     BeforeAll {
         $repoRoot = Resolve-Path (Join-Path $ProfileDir "..")
         $dllPath = Join-Path $repoRoot "AgyTuiApp\dist\AgyTuiApp.dll"
+        if (-not (Test-Path $dllPath)) {
+            $dllPath = Join-Path $repoRoot "AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+        }
         if (Test-Path $dllPath) {
             # Load dependency assemblies
             Get-ChildItem -Path (Split-Path $dllPath) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
                 try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
             }
-            Add-Type -Path $dllPath -ErrorAction SilentlyContinue
+            try { Add-Type -Path $dllPath -ErrorAction SilentlyContinue } catch {}
         }
 
         . "C:\Users\TruongNhon\Documents\Powershell\Microsoft.PowerShell_profile.ps1"
@@ -154,6 +157,27 @@ Describe "Core Profile Functions Validation" {
         }
     }
 
+    Context "Learning Suite & Obsidian Vault Integration" {
+        It "Verify core learning aliases exist" {
+            $learningAliases = @("learn", "flashcard", "vocab", "kana", "kanji", "jlpt", "grammar", "algo", "complexity", "problems", "snippets", "sheets", "quiz", "interview", "star", "mock")
+            foreach ($alias in $learningAliases) {
+                (Get-Command $alias -ErrorAction SilentlyContinue) | Should Not Be $null
+            }
+        }
 
+        It "Verify Obsidian Vault aliases exist" {
+            $vaultAliases = @("obsidian", "refresh", "vault-open")
+            foreach ($alias in $vaultAliases) {
+                (Get-Command $alias -ErrorAction SilentlyContinue) | Should Not Be $null
+            }
+        }
+
+        It "Verify Auto-Commit toggle aliases exist" {
+            $commitAliases = @("no-auto-commit", "autocommit")
+            foreach ($alias in $commitAliases) {
+                (Get-Command $alias -ErrorAction SilentlyContinue) | Should Not Be $null
+            }
+        }
+    }
 }
 
