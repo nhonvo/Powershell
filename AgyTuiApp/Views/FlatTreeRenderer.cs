@@ -573,8 +573,10 @@ public sealed class FlatTreeRenderer : IMenuRenderer
             {
                 var isExpanded = _expandedCategories.Contains(row.Node.Id) || !string.IsNullOrEmpty(searchBuffer);
                 var sign = isExpanded ? "[-]" : "[+]";
+                var hk = Icons.GetCategoryHotkey(row.Node.Label);
+                var hkSuffix = string.IsNullOrEmpty(hk) ? "" : $" [dim]({hk})[/]";
                 var safeText = $"{sign} {row.Node.Label}".EscapeMarkup();
-                var label = isSelected ? $"[green bold]{safeText}[/]" : $"[bold cyan]{safeText}[/]";
+                var label = isSelected ? $"[green bold]{safeText}[/]{hkSuffix}" : $"[bold cyan]{safeText}[/]{hkSuffix}";
                 grid.AddRow(new Markup($"{prefix}{label}"));
             }
             else if (row.Type == VisibleRowType.Group)
@@ -633,6 +635,9 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                 content = new Rows(grid, new Markup("\n"), footer);
             }
         }
+
+        var hotkeyBar = new Markup("[dim] Hotkeys: cg (Git) · cdk (Docker) · caws (AWS) · cnet (Net) · csys (Sys) · cai (AI) · cnav (Nav) · cssh (SSH) [/]");
+        content = new Rows(content, new Markup("\n"), hotkeyBar);
 
         var outerPanel = new Panel(content)
         {

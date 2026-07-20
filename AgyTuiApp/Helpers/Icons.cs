@@ -65,6 +65,21 @@ public static class Icons
         return "📂";
     }
 
+    public static string GetCategoryHotkey(string categoryLabel)
+    {
+        categoryLabel = categoryLabel.ToLowerInvariant();
+        if (categoryLabel.Contains("workspace")) return "cnav";
+        if (categoryLabel.Contains("ai agent") || categoryLabel.Contains("ollama")) return "cai";
+        if (categoryLabel.Contains("account")) return "agyswitch";
+        if (categoryLabel.Contains("docker") || categoryLabel.Contains("database")) return "cdk";
+        if (categoryLabel.Contains("system") || categoryLabel.Contains("network")) return "csys";
+        if (categoryLabel.Contains("learn") || categoryLabel.Contains("study")) return "learn";
+        if (categoryLabel.Contains("track") || categoryLabel.Contains("progress")) return "stats";
+        if (categoryLabel.Contains("obsidian") || categoryLabel.Contains("resource")) return "obsidian";
+        if (categoryLabel.Contains("theme") || categoryLabel.Contains("setting")) return "theme";
+        return "";
+    }
+
     public static string GetCommandIcon(string alias, string category)
     {
         alias = alias.ToLowerInvariant();
