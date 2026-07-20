@@ -186,7 +186,14 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                 }
                 else if (key.KeyChar >= 32 && key.KeyChar <= 126)
                 {
-                    searchBuffer += key.KeyChar;
+                    if (key.KeyChar == '/' && (string.IsNullOrEmpty(searchBuffer) || searchBuffer.All(c => c == '/')))
+                    {
+                        searchBuffer = "/";
+                    }
+                    else
+                    {
+                        searchBuffer += key.KeyChar;
+                    }
                 }
                 selectionIndex = 0;
                 continue;
@@ -544,92 +551,118 @@ public sealed class FlatTreeRenderer : IMenuRenderer
         {
             grid.AddRow(new Markup($"  [dim]No matching commands found for '{searchBuffer.EscapeMarkup()}'. Press Esc to clear.[/]"));
         }
-
-        for (int i = 0; i < rows.Count; i++)
+        else
         {
-            var row = rows[i];
-            var isSelected = (i == selIdx);
-            var prefix = isSelected ? "[green bold]> [/]" : "  ";
+            int winHeight = Console.WindowHeight > 0 ? Console.WindowHeight : 30;
+            int maxRows = Math.Max(5, winHeight - 14);
 
-            var treePrefix = "";
-            if (row.Indent > 0)
+            int topRow = 0;
+            if (selIdx >= maxRows)
             {
-                treePrefix = new string(' ', (row.Indent - 1) * 3) + "├── ";
+                topRow = selIdx - (maxRows / 2);
+            }
+            if (topRow + maxRows > rows.Count)
+            {
+                topRow = Math.Max(0, rows.Count - maxRows);
+            }
+            int endRow = Math.Min(rows.Count, topRow + maxRows);
+
+            if (topRow > 0)
+            {
+                grid.AddRow(new Markup($"  [dim]▲ ... {topRow} items above ...[/]"));
             }
 
-            if (row.Type == VisibleRowType.Separator)
+            for (int i = topRow; i < endRow; i++)
             {
-                grid.AddRow(new Markup("[dim]  ────────────────────────────[/]"));
-                continue;
-            }
+                var row = rows[i];
+                var isSelected = (i == selIdx);
+                var prefix = isSelected ? "[green bold]> [/]" : "  ";
 
-            if (row.Type == VisibleRowType.Exit)
-            {
-                var label = isSelected ? $"[green bold]{row.Node.Label.EscapeMarkup()}[/]" : row.Node.Label.EscapeMarkup();
-                grid.AddRow(new Markup($"{prefix}{label}"));
-                continue;
-            }
-
-            if (row.Type == VisibleRowType.Category)
-            {
-                var isExpanded = _expandedCategories.Contains(row.Node.Id) || !string.IsNullOrEmpty(searchBuffer);
-                var sign = isExpanded ? "[[-]]" : "[[+]]";
-                var catIcon = Icons.GetCategoryIcon(row.Node.Label);
-                var hk = Icons.GetCategoryHotkey(row.Node.Label);
-                var hkSuffix = string.IsNullOrEmpty(hk) ? "" : $" [dim]({hk})[/]";
-
-                var signMarkup = $"[bold yellow]{sign}[/]";
-                var safeText = $"{catIcon} {row.Node.Label.EscapeMarkup()}";
-                var label = isSelected ? $"[green bold]{sign} {safeText}[/]{hkSuffix}" : $"{signMarkup} [bold cyan]{safeText}[/]{hkSuffix}";
-                grid.AddRow(new Markup($"{prefix}{label}"));
-            }
-            else if (row.Type == VisibleRowType.Group)
-            {
-                var isExpanded = _expandedGroups.Contains(row.Node.Id) || !string.IsNullOrEmpty(searchBuffer);
-                var sign = isExpanded ? "[[-]]" : "[[+]]";
-                var rawLabel = row.Node.Label.Trim();
-                var cleanLabel = System.Text.RegularExpressions.Regex.Replace(rawLabel, @"^\[/[^\]]+\]\s*", "").EscapeMarkup();
-
-                var signMarkup = $"[bold yellow]{sign}[/]";
-                var treeDim = $"[dim]{treePrefix.EscapeMarkup()}[/]";
-                var label = isSelected ? $"[green bold]{treePrefix}{sign} 📂 {cleanLabel}[/]" : $"{treeDim}{signMarkup} [bold yellow]📂 {cleanLabel}[/]";
-                grid.AddRow(new Markup($"{prefix}{label}"));
-            }
-            else if (row.Type == VisibleRowType.Command)
-            {
-                var cmd = row.Node.Command!;
-                var icon = Icons.GetCommandIcon(cmd.Alias, cmd.Category);
-
-                var displayLabel = $"/{cmd.Alias} — {cmd.DisplayName}".EscapeMarkup();
-                var desc = isCompact && !isSelected ? "" : $" [dim]· {cmd.Description.EscapeMarkup()}[/]";
-
-                var treeDim = $"[dim]{treePrefix.EscapeMarkup()}[/]";
-                var label = isSelected
-                    ? $"[green bold]{treePrefix}{icon} {displayLabel}{desc}[/]"
-                    : $"{treeDim}{icon} [white]{displayLabel}[/]{desc}";
-                grid.AddRow(new Markup($"{prefix}{label}"));
-            }
-            else if (row.Type == VisibleRowType.Widget)
-            {
-                var alias = row.Node.Command!.Alias;
-                var widget = StatusWidgetRegistry.GetByAlias(alias);
-                if (widget != null)
+                var treePrefix = "";
+                if (row.Indent > 0)
                 {
-                    var renderable = widget.Render();
-                    var indentPanel = new Panel(renderable)
-                    {
-                        Border = BoxBorder.Rounded,
-                        BorderStyle = new Style(isSelected ? Color.Green : Color.Grey),
-                        Header = new PanelHeader($"[bold cyan]{alias} status[/]")
-                    };
-
-                    var indentGrid = new Grid();
-                    indentGrid.AddColumn(new GridColumn().Width(row.Indent * 3));
-                    indentGrid.AddColumn(new GridColumn());
-                    indentGrid.AddRow(new Markup(""), indentPanel);
-
-                    grid.AddRow(indentGrid);
+                    treePrefix = new string(' ', (row.Indent - 1) * 3) + "├── ";
                 }
+
+                if (row.Type == VisibleRowType.Separator)
+                {
+                    grid.AddRow(new Markup("[dim]  ────────────────────────────[/]"));
+                    continue;
+                }
+
+                if (row.Type == VisibleRowType.Exit)
+                {
+                    var label = isSelected ? $"[green bold]{row.Node.Label.EscapeMarkup()}[/]" : row.Node.Label.EscapeMarkup();
+                    grid.AddRow(new Markup($"{prefix}{label}"));
+                    continue;
+                }
+
+                if (row.Type == VisibleRowType.Category)
+                {
+                    var isExpanded = _expandedCategories.Contains(row.Node.Id) || !string.IsNullOrEmpty(searchBuffer);
+                    var sign = isExpanded ? "[[-]]" : "[[+]]";
+                    var catIcon = Icons.GetCategoryIcon(row.Node.Label);
+                    var hk = Icons.GetCategoryHotkey(row.Node.Label);
+                    var hkSuffix = string.IsNullOrEmpty(hk) ? "" : $" [dim]({hk})[/]";
+
+                    var signMarkup = $"[bold yellow]{sign}[/]";
+                    var safeText = $"{catIcon} {row.Node.Label.EscapeMarkup()}";
+                    var label = isSelected ? $"[green bold]{sign} {safeText}[/]{hkSuffix}" : $"{signMarkup} [bold cyan]{safeText}[/]{hkSuffix}";
+                    grid.AddRow(new Markup($"{prefix}{label}"));
+                }
+                else if (row.Type == VisibleRowType.Group)
+                {
+                    var isExpanded = _expandedGroups.Contains(row.Node.Id) || !string.IsNullOrEmpty(searchBuffer);
+                    var sign = isExpanded ? "[[-]]" : "[[+]]";
+                    var rawLabel = row.Node.Label.Trim();
+                    var cleanLabel = System.Text.RegularExpressions.Regex.Replace(rawLabel, @"^\[/[^\]]+\]\s*", "").EscapeMarkup();
+
+                    var signMarkup = $"[bold yellow]{sign}[/]";
+                    var treeDim = $"[dim]{treePrefix.EscapeMarkup()}[/]";
+                    var label = isSelected ? $"[green bold]{treePrefix}{sign} 📂 {cleanLabel}[/]" : $"{treeDim}{signMarkup} [bold yellow]📂 {cleanLabel}[/]";
+                    grid.AddRow(new Markup($"{prefix}{label}"));
+                }
+                else if (row.Type == VisibleRowType.Command)
+                {
+                    var cmd = row.Node.Command!;
+                    var icon = Icons.GetCommandIcon(cmd.Alias, cmd.Category);
+
+                    var displayLabel = $"/{cmd.Alias} — {cmd.DisplayName}".EscapeMarkup();
+                    var desc = isCompact && !isSelected ? "" : $" [dim]· {cmd.Description.EscapeMarkup()}[/]";
+
+                    var treeDim = $"[dim]{treePrefix.EscapeMarkup()}[/]";
+                    var label = isSelected
+                        ? $"[green bold]{treePrefix}{icon} {displayLabel}{desc}[/]"
+                        : $"{treeDim}{icon} [white]{displayLabel}[/]{desc}";
+                    grid.AddRow(new Markup($"{prefix}{label}"));
+                }
+                else if (row.Type == VisibleRowType.Widget)
+                {
+                    var alias = row.Node.Command!.Alias;
+                    var widget = StatusWidgetRegistry.GetByAlias(alias);
+                    if (widget != null)
+                    {
+                        var renderable = widget.Render();
+                        var indentPanel = new Panel(renderable)
+                        {
+                            Border = BoxBorder.Rounded,
+                            BorderStyle = new Style(isSelected ? Color.Green : Color.Grey),
+                            Header = new PanelHeader($"[bold cyan]{alias} status[/]")
+                        };
+
+                        var indentGrid = new Grid();
+                        indentGrid.AddColumn(new GridColumn().Width(row.Indent * 3));
+                        indentGrid.AddColumn(new GridColumn());
+                        indentGrid.AddRow(new Markup(""), indentPanel);
+
+                        grid.AddRow(indentGrid);
+                    }
+                }
+            }
+
+            if (endRow < rows.Count)
+            {
+                grid.AddRow(new Markup($"  [dim]▼ ... {rows.Count - endRow} items below ...[/]"));
             }
         }
 
