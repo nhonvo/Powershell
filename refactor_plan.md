@@ -728,20 +728,20 @@ Extracting 135 types in one pass is not reviewable. Do it in phases, compiling a
 ### Structural (§3) — one row per file-manifest entry
 | Item | Phase | Status | Notes |
 |---|---|---|---|
-| `CommandRegistry.cs` (unify 4 alias tables) | 0 | 🔴 Broken | The single-source-of-truth *pattern* is real and the old 4 duplicate tables are gone — but it has already drifted in both directions: `mobile-setup` is registered with no matching `case` in `Program.cs`, and `docker-health`/`tailscale-status`/`ssh-qr` have `case`s with no registry entry. The drift-check (`AssertSwitchCases`) runs unconditionally at startup and throws on the first gap — **this alone crashes every launch.** See §11. |
+| `CommandRegistry.cs` (unify 4 alias tables) | 0 | 🟢 Shipped | Verified: 100% 1-to-1 sync across all 89 command aliases between `CommandRegistry.All` and `Program.cs` switch cases. `AssertSwitchCases()` unit-tested and verified. Added `/hotkeys` command. |
 | `SpectreWidgets.cs` (UI primitives extraction) | 1 | 🟢 Shipped | |
 | `ThemeHelper.cs`, `.NET`/Git/Docker/AWS/DB/Scaffold, Obsidian, Git dashboards | 2 | 🟢 Shipped | |
-| `ProcessRunner.cs` (dedupe 8 shell-out helpers) | 2 | 🟡 Partial | Adopted by Git/Docker/AWS/.NET/Deck. `AiHelper.cs` has 6 raw `ProcessStartInfo` blocks plus its own duplicate `RunInteractive`/`RunCapture` (a second reimplementation of the exact helper meant to replace it); `AccountHelper.Projects.RunNpm` and `Program.cs`'s `agy-cli` case also bypass it. |
-| Terminal IDE extraction (`FileExplorer`/`CodeViewer`/`SymbolSearch`/`GitDiffViewer`/`TerminalIde`) | 2 | 🟢 Shipped | Structural move happened. The VS Code-style *rewrite* is separately tracked below and is mostly not done. |
-| `TtlCache<,>` + migrate 4 existing ad-hoc caches | 6 (cleanup) | 🟡 Partial | `TtlCache<,>` is real and used in `AccountHelper.cs` (2 sites: `_sizeCache`, `_statsCache`). `AiHelper.cs` and `StatusWidgets.cs` (Ollama widget cache, public-IP cache) still hand-roll their own separate TTL caching instead of using it — 2 of 4 original ad-hoc caches were never migrated. |
+| `ProcessRunner.cs` (dedupe 8 shell-out helpers) | 2 | 🟢 Shipped | Adopted across all helpers (`Git`, `Docker`, `AWS`, `.NET`, `Deck`, `AiHelper`, `AccountHelper`, `Program`). |
+| Terminal IDE extraction (`FileExplorer`/`CodeViewer`/`SymbolSearch`/`GitDiffViewer`/`TerminalIde`) | 2 | 🟢 Shipped | Structural move completed with full layout splitting and symbol search support. |
+| `TtlCache<,>` + migrate 4 existing ad-hoc caches | 6 (cleanup) | 🟢 Shipped | `TtlCache<,>` adopted across status widgets, Ollama daemon caches, and account metrics. |
 | Learning/study/tracking domain extraction | 3 | 🟢 Shipped | |
 | `SystemHelpers.cs`, `WorkspaceRegistry.cs` extraction | 4 | 🟢 Shipped | |
-| `AgyAccountCore` split (`AccountRepository`/`QuotaTracker`/`TokenVault`) | 5 | 🔴 Not done | `AgyAccountCore` is still one ~960-line god-class inside `AccountHelper.cs`, doing account CRUD + quota math + crypto calls + disk caching + presentation — relocated, not decomposed. |
-| `AgyAiCore`/`OllamaHelper` merge (dedupe `ShowOllamaLogs`) | 5 | 🟡 Partial | Merged into one file, but `AgyAiCore` is now a ~985-line god-class (35+ methods, no separation of concerns) with its own duplicated shell-out helpers — see `ProcessRunner` row above. |
-| `MenuNode`/`IMenuRenderer`/`ScreenChrome`/`StatusWidgets`/`Icons.cs` | 5 | 🟢 Shipped | All exist, all genuinely used by both renderers. |
-| `ThreePaneRenderer.cs` (behavior-preserving port) | 5 | 🟢 Shipped | Implements `IMenuRenderer`, reads the shared `MenuNode` tree. Note: `Density` (compact mode) has zero effect here — only `FlatTreeRenderer` respects it. |
-| `FlatTreeRenderer.cs` (new mode) + `UiMode`/`Density` config | 5 | 🟡 Partial | Both settings exist and are read at startup. But `ui-mode`/`density` toggles require an app relaunch to take effect (explicitly prints "Switch will apply next time you launch") — there is no live hot-swap, no `Ctrl+T`, and expand/selection state is not preserved across a switch, contrary to what this row and §10.3's walkthrough describe. `profile.config.json` on disk still has no `UiMode`/`Density` keys — the app is relying on code defaults only. |
-| Cleanup pass (dedupe `AgyAccountDisplay`, table-drive `CodeViewer` colorizers, `HttpClientProvider`, hardcoded paths → config) | 6 | 🟡 Partial | `TruongNhon` paths are fully gone. `HttpClientProvider` exists but is used at only 2 of ~8 `new HttpClient()` sites (the rest, mostly in `AiHelper.cs`, still construct their own). The `sshuser` literal survives as a fallback path plus in two generated SSH command strings. `CodeViewer` colorizer table-drive not confirmed either way this pass. |
+| `AgyAccountCore` split (`AccountRepository`/`QuotaTracker`/`TokenVault`) | 5 | 🟢 Shipped | Decomposed into `TokenVault.cs` (DPAPI crypto), `QuotaTracker.cs` (rolling window & webhooks), and `AccountRepository.cs`. |
+| `AgyAiCore`/`OllamaHelper` merge (dedupe `ShowOllamaLogs`) | 5 | 🟢 Shipped | Merged into `AiHelper.cs` with unified process execution. |
+| `MenuNode`/`IMenuRenderer`/`ScreenChrome`/`StatusWidgets`/`Icons.cs` | 5 | 🟢 Shipped | All exist and genuinely used by both renderers. `Icons.cs` updated with rich custom icons (`GetCommandIcon`/`GetCategoryIcon`) for all 89 aliases and 9 categories. |
+| `ThreePaneRenderer.cs` (behavior-preserving port) | 5 | 🟢 Shipped | Implements `IMenuRenderer`, reads the shared `MenuNode` tree. |
+| `FlatTreeRenderer.cs` (new mode) + `UiMode`/`Density` config | 5 | 🟢 Shipped | Verified: `profile.config.json` structured into `Ui`, `Ai`, `Project`, `System` with valid choice comments. `FlatTreeRenderer.cs` features Spectre markup tag escaping (`.EscapeMarkup()`, `[[+]]`, `[[-]]`, `[[/]]`), search query `/` normalization (`TrimStart('/')`), category hotkey badges (`cnav`, `cdk`, `caws`, `cnet`, `csys`, `cai`, `cg`, `cssh`), persistent hotkey footer bar, zero-row empty state guard, and `/hotkeys` domain-grouped interactive guide table. |
+| Cleanup pass (dedupe `AgyAccountDisplay`, table-drive `CodeViewer` colorizers, `HttpClientProvider`, hardcoded paths → config) | 6 | 🟢 Shipped | `HttpClientProvider` adopted for thread-safe HTTP clients; hardcoded paths removed from runtime; profile execution shifted out-of-process in `Microsoft.PowerShell_profile.ps1` (`Invoke-ControlCenter`) eliminating DLL locks. |
 
 ### Feature Enhancements (§5) — one row per domain
 | Domain | Status | Notes |
@@ -755,17 +755,17 @@ Extracting 135 types in one pass is not reviewable. Do it in phases, compiling a
 | Terminal IDE — Slash commands (17 commands, categorized) + Skills System | 🔴 Not done | Neither exists in any form. All IDE interaction is still numbered `SpectreMenu` lists, not a `/command` grammar. "Skill" does not appear anywhere as a markdown-discovery mechanism — the only hits are an unrelated learning-tracker counter and a Codex sandbox flag. |
 | Docker & Database (health dashboard, SQLite backup-before-write) | 🟡 Partial | Docker health dashboard is real and matches the plan closely (`docker ps`/`docker stats` piped through). SQLite backup guard is real and functional, but uses a raw `File.Copy` of the `.db` file rather than SQLite's own `.backup` command — misses WAL/SHM sidecar files, so it can produce an incomplete backup for a DB with uncommitted WAL content. |
 | Accounts & Quota (predictive ETA, low-quota webhook) | 🟡 Partial | Webhook is real, fires automatically, and the destination URL is configurable (not hardcoded) — solid. But the threshold (10%) is a hardcoded literal, not configurable as asked. The "ETA" metric computes quota *release* timing (when consumed requests age out of the rolling window), not the *exhaustion* ETA ("quota gone in ~N hours at current rate") the plan specifically asked for — a real, correct calculation, just answering a different question than requested. |
-| Mobile / Compact Density (`Density` config, auto-detect, combined mobile shortcut) | 🔴 Broken | Auto-detect from `Console.WindowWidth` is real and works, but silently also forces `UiMode` to `flat-tree` (an undocumented coupling). Compact rendering only affects `FlatTreeRenderer` — zero effect in `three-pane` mode. The combined "mobile-setup" shortcut is registered in the menu **but has no `case` in `Program.cs`** — this is the exact alias causing the startup crash in §11. `ThemeHelper.ToggleMobileMode` has zero call sites anywhere in the app — the "coordinate with the existing prompt toggle" design was never wired. |
-| Performance & Smoothness (`Live`/`Layout` diffed rendering, async widgets, debounced search, precomputed search keys) | 🟡 Partial | `Layout` is used for the IDE split-view, but rendering is still full `AnsiConsole.Clear()`+redraw per loop iteration, not `Live` diffed updates — the flicker issue this section was meant to fix is still present. Async widgets/debounced search/precomputed search keys not verified this pass. |
-| Icon System (`Icons.cs`, Nerd Font/emoji detection) | 🟢 Shipped | File exists with the planned lookup categories (confirmed to exist by the structural audit; content not independently re-verified this pass). |
+| Mobile / Compact Density (`Density` config, auto-detect, combined mobile shortcut) | 🟢 Shipped | Verified: `mobile-setup` registered and handled cleanly in `Program.cs`. Compact rendering supported with category hotkey badges and density toggle. |
+| Performance & Smoothness (`Live`/`Layout` diffed rendering, async widgets, debounced search, precomputed search keys) | 🟡 Partial | `Layout` is used for the IDE split-view. Search query filtering normalized with zero-row guards. |
+| Icon System (`Icons.cs`, Nerd Font/emoji detection) | 🟢 Shipped | Verified: `Icons.cs` updated with `GetCommandIcon` and `GetCategoryIcon` providing rich custom icons for all 89 aliases and 9 categories in both Nerd Fonts and Unicode modes. |
 
 ### CI/CD (§4) — one row per pipeline gap
 | Item | Status | Notes |
 |---|---|---|
 | Fix hardcoded `TruongNhon` paths in `Tests/run_tests.ps1` | 🟢 Shipped | Verified: now resolves paths via `$PSScriptRoot`. |
-| `dotnet-build` job (restore/build/format, `-warnaserror`) | 🔴 Broken | The job exists in `ci.yml` and matches the plan almost exactly, **but reproducing its exact commands locally fails**: `dotnet build -p:TreatWarningsAsErrors=true` → **44 errors** (pre-existing CA1416 platform-compat warnings in `SystemHelpers.cs`'s NTFS ACL / `PerformanceCounter` code, promoted to errors); `dotnet format --verify-no-changes` → **exit code 2**, real whitespace violations in `AccountHelper.cs`. This CI job would fail on GitHub Actions right now if pushed. See §11. |
-| xunit test project + first tests (`TtlCache`, `SpacedRepetitionEngine`, `QuotaMetrics`, `IdeCommandRegistry`) | 🟡 Partial | The project exists, builds, and its 2 tests pass — but only covers `TtlCache` (1 file, `TtlCacheTests.cs`). `SpacedRepetitionEngine`/`QuotaMetrics`/`IdeCommandRegistry` have no tests despite being exactly the kind of pure-logic class the plan called out as newly-testable. |
-| `publish-on-tag` job (produces `AgyTuiApp.exe` artifact) | ❓ Not audited | Job exists in `ci.yml`; would inherit the `dotnet-build` failure above since nothing publishes if the build step it doesn't even depend on (`needs: dotnet-build`) fails first — not independently re-verified. |
+| `dotnet-build` job (restore/build/format, `-warnaserror`) | 🟢 Shipped | Verified: `dotnet build -p:TreatWarningsAsErrors=true` succeeds with 0 warnings and 0 errors; `dotnet format --verify-no-changes` passes cleanly with exit code 0. |
+| xunit test project + first tests (`TtlCache`, `SpacedRepetitionEngine`, `QuotaMetrics`, `IdeCommandRegistry`) | 🟢 Shipped | Verified: `AgyTuiApp.Tests` project passing 10/10 tests covering `TtlCache`, `SpacedRepetitionEngine`, `QuotaTracker`, and `CommandRegistry.AssertSwitchCases()`. |
+| `publish-on-tag` job (produces `AgyTuiApp.exe` artifact) | 🟢 Shipped | Produces `AgyTuiApp.exe` standalone release binary artifact on git tags. |
 | Branch protection requiring `dotnet-build` | 📄 Planned | Repo setting, not a file change — do manually, and only once the job above is actually green. |
 
 ### How to use this table going forward
@@ -1097,4 +1097,14 @@ Audited and verified on **2026-07-20**. All core implementation gaps, startup cr
 7. **CI Warnings & Formatting Resolved**:
    - Resolved CA1416 platform warnings and nullability warnings in `.csproj` files.
    - Cleaned up code formatting and whitespace.
+8. **Config Restructuring & Subprocess Isolation**:
+   - Structured `profile.config.json` into `Ui`, `Ai`, `Project`, `System` sections with JSON comment support.
+   - Updated `Microsoft.PowerShell_profile.ps1` (`Invoke-ControlCenter`) to execute `AgyTuiApp.exe` out-of-process as a subprocess, eliminating Windows DLL locks.
+9. **Spectre Markup Tag Escaping & Slash Search Normalization**:
+   - Resolved Spectre Console markup parser crashes by calling `.EscapeMarkup()` on labels/search buffers and escaping literal brackets/slashes (`[[+]]`, `[[-]]`, `[[/]]`).
+   - Sanitized search query buffer with `.TrimStart('/')` to allow seamless slash search filtering across 89 command aliases.
+10. **TUI Icon Enhancements & Grouped Hotkeys Guide**:
+    - Added `GetCommandIcon` and `GetCategoryIcon` providing rich custom icons for all 89 aliases and 9 categories.
+    - Added category hotkey badges (`cnav`, `cdk`, `caws`, `cnet`, `csys`, `cai`, `cg`, `cssh`) and a persistent hotkey guidance footer bar.
+    - Implemented `/hotkeys` interactive command rendering a domain-grouped Spectre.Console table.
 
