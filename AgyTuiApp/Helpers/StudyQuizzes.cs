@@ -170,9 +170,9 @@ public static class GrammarQuiz
     public static void Run(string level = "N5")
     {
         LearnDataPaths.EnsureDirectories();
-        var grammarDir = Path.Combine(LearnDataPaths.LearnRoot, "grammar");
-        Directory.CreateDirectory(grammarDir);
-        var file = Path.Combine(grammarDir, $"{level.ToLower()}.json");
+        string dir = level.Equals("english", StringComparison.OrdinalIgnoreCase) ? LearnDataPaths.EnglishDir : LearnDataPaths.JapaneseDir;
+        string file = Path.Combine(dir, level.Equals("english", StringComparison.OrdinalIgnoreCase) ? "grammar.json" : $"grammar_{level.ToLower()}.json");
+        if (!File.Exists(file)) file = Path.Combine(dir, $"{level.ToLower()}.json");
         var data = LearnDataPaths.LoadJson<GrammarFile>(file);
         if (data == null || data.Cards.Length == 0)
         {

@@ -33,33 +33,44 @@ public static class LearnDataPaths
 
     public static string LearnRoot => System.IO.Path.Combine(BaseDirectory, "learn");
 
-    public static string DecksDir => System.IO.Path.Combine(LearnRoot, "decks");
+    // Suite Domain Directories
+    public static string JapaneseDir => System.IO.Path.Combine(LearnRoot, "japanese");
+    public static string EnglishDir => System.IO.Path.Combine(LearnRoot, "english");
+    public static string CsharpDir => System.IO.Path.Combine(LearnRoot, "csharp");
+    public static string DsaDir => System.IO.Path.Combine(LearnRoot, "dsa");
+    public static string CareerDir => System.IO.Path.Combine(LearnRoot, "career");
+    public static string CertificationsDir => System.IO.Path.Combine(LearnRoot, "certifications");
+    public static string StatsDir => System.IO.Path.Combine(LearnRoot, "stats");
 
-    public static string VocabDir => System.IO.Path.Combine(LearnRoot, "vocab");
+    // Sub-directories
+    public static string DecksDir => System.IO.Path.Combine(CertificationsDir, "decks");
 
-    public static string JlptDir => System.IO.Path.Combine(LearnRoot, "jlpt");
+    public static string VocabDir => System.IO.Path.Combine(EnglishDir, "vocab");
 
-    public static string SnippetsDir => System.IO.Path.Combine(LearnRoot, "snippets");
+    public static string JlptDir => JapaneseDir;
+
+    public static string SnippetsDir => System.IO.Path.Combine(CsharpDir, "snippets");
 
     public static string SheetsDir => System.IO.Path.Combine(LearnRoot, "cheatsheets");
 
-    public static string WordBankFile => System.IO.Path.Combine(LearnRoot, "word_bank.json");
+    // Domain Files
+    public static string KanaFile => System.IO.Path.Combine(JapaneseDir, "kana.json");
 
-    public static string KanaFile => System.IO.Path.Combine(LearnRoot, "kana.json");
+    public static string KanjiFile => System.IO.Path.Combine(JapaneseDir, "kanji.json");
 
-    public static string KanjiFile => System.IO.Path.Combine(LearnRoot, "kanji.json");
+    public static string WordBankFile => System.IO.Path.Combine(EnglishDir, "word_bank.json");
 
-    public static string ComplexityFile => System.IO.Path.Combine(LearnRoot, "complexity.json");
+    public static string QuizFile => System.IO.Path.Combine(CsharpDir, "csharp_quiz.json");
 
-    public static string QuizFile => System.IO.Path.Combine(LearnRoot, "csharp_quiz.json");
+    public static string ComplexityFile => System.IO.Path.Combine(DsaDir, "complexity.json");
 
-    public static string InterviewFile => System.IO.Path.Combine(LearnRoot, "interview_questions.json");
+    public static string ProblemsFile => System.IO.Path.Combine(DsaDir, "problems.json");
 
-    public static string StarFile => System.IO.Path.Combine(LearnRoot, "star_answers.json");
+    public static string InterviewFile => System.IO.Path.Combine(CareerDir, "interview_questions.json");
 
-    public static string ProblemsFile => System.IO.Path.Combine(LearnRoot, "problems.json");
+    public static string StarFile => System.IO.Path.Combine(CareerDir, "star_answers.json");
 
-    public static string StudyLogFile => System.IO.Path.Combine(LearnRoot, "study_log.json");
+    public static string StudyLogFile => System.IO.Path.Combine(StatsDir, "study_log.json");
 
     public static string ObsidianCfgFile => System.IO.Path.Combine(BaseDirectory, "obsidian_config.json");
 
@@ -69,9 +80,12 @@ public static class LearnDataPaths
     {
         foreach (var d in new[]
         {
-            LearnRoot, DecksDir, VocabDir, JlptDir, SnippetsDir, SheetsDir
+            LearnRoot, JapaneseDir, EnglishDir, CsharpDir, DsaDir, CareerDir,
+            CertificationsDir, DecksDir, VocabDir, SnippetsDir, SheetsDir, StatsDir
+        })
+        {
+            Directory.CreateDirectory(d);
         }
-        ) Directory.CreateDirectory(d);
         SeedDefaultData();
     }
 
