@@ -438,8 +438,12 @@ public sealed class ThreePaneRenderer : IMenuRenderer
                 leftSb.AppendLine("[dim]────────────────────────────[/]");
                 continue;
             }
-            if (i == leftSel) leftSb.AppendLine(midActive ? $"[cyan bold]> {s.Label.EscapeMarkup()}[/]" : $"[green bold]> {s.Label.EscapeMarkup()}[/]");
-            else leftSb.AppendLine($"  {s.Label.EscapeMarkup()}");
+            var icon = Icons.GetCategoryIcon(s.Label);
+            var hk = Icons.GetCategoryHotkey(s.Label);
+            var hkSuffix = string.IsNullOrEmpty(hk) ? "" : $" [dim]({hk})[/]";
+            var labelWithIcon = $"{icon} {s.Label.EscapeMarkup()}{hkSuffix}";
+            if (i == leftSel) leftSb.AppendLine(midActive ? $"[cyan bold]> {labelWithIcon}[/]" : $"[green bold]> {labelWithIcon}[/]");
+            else leftSb.AppendLine($"  {labelWithIcon}");
         }
 
         var category = categories[leftSel];

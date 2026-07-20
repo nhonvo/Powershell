@@ -573,18 +573,25 @@ public sealed class FlatTreeRenderer : IMenuRenderer
             {
                 var isExpanded = _expandedCategories.Contains(row.Node.Id) || !string.IsNullOrEmpty(searchBuffer);
                 var sign = isExpanded ? "[-]" : "[+]";
+                var catIcon = Icons.GetCategoryIcon(row.Node.Label);
                 var hk = Icons.GetCategoryHotkey(row.Node.Label);
                 var hkSuffix = string.IsNullOrEmpty(hk) ? "" : $" [dim]({hk})[/]";
-                var safeText = $"{sign} {row.Node.Label}".EscapeMarkup();
-                var label = isSelected ? $"[green bold]{safeText}[/]{hkSuffix}" : $"[bold cyan]{safeText}[/]{hkSuffix}";
+
+                var signMarkup = $"[bold yellow]{sign}[/]";
+                var safeText = $"{catIcon} {row.Node.Label.EscapeMarkup()}";
+                var label = isSelected ? $"[green bold]{sign} {safeText}[/]{hkSuffix}" : $"{signMarkup} [bold cyan]{safeText}[/]{hkSuffix}";
                 grid.AddRow(new Markup($"{prefix}{label}"));
             }
             else if (row.Type == VisibleRowType.Group)
             {
                 var isExpanded = _expandedGroups.Contains(row.Node.Id) || !string.IsNullOrEmpty(searchBuffer);
                 var sign = isExpanded ? "[-]" : "[+]";
-                var safeText = $"{treePrefix}{sign} {row.Node.Label.Trim()}".EscapeMarkup();
-                var label = isSelected ? $"[green bold]{safeText}[/]" : $"[bold yellow]{safeText}[/]";
+                var rawLabel = row.Node.Label.Trim();
+                var cleanLabel = System.Text.RegularExpressions.Regex.Replace(rawLabel, @"^\[/[^\]]+\]\s*", "").EscapeMarkup();
+
+                var signMarkup = $"[bold yellow]{sign}[/]";
+                var treeDim = $"[dim]{treePrefix.EscapeMarkup()}[/]";
+                var label = isSelected ? $"[green bold]{treePrefix}{sign} 📂 {cleanLabel}[/]" : $"{treeDim}{signMarkup} [bold yellow]📂 {cleanLabel}[/]";
                 grid.AddRow(new Markup($"{prefix}{label}"));
             }
             else if (row.Type == VisibleRowType.Command)
@@ -595,8 +602,10 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                 var displayLabel = $"/{cmd.Alias} — {cmd.DisplayName}".EscapeMarkup();
                 var desc = isCompact && !isSelected ? "" : $" [dim]· {cmd.Description.EscapeMarkup()}[/]";
 
-                var label = $"{treePrefix}{icon} {displayLabel}{desc}";
-                label = isSelected ? $"[green bold]{label}[/]" : $"  {label}";
+                var treeDim = $"[dim]{treePrefix.EscapeMarkup()}[/]";
+                var label = isSelected
+                    ? $"[green bold]{treePrefix}{icon} {displayLabel}{desc}[/]"
+                    : $"{treeDim}{icon} [white]{displayLabel}[/]{desc}";
                 grid.AddRow(new Markup($"{prefix}{label}"));
             }
             else if (row.Type == VisibleRowType.Widget)
