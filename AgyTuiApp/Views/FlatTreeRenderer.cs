@@ -51,8 +51,10 @@ public sealed class FlatTreeRenderer : IMenuRenderer
 
             if (!string.IsNullOrEmpty(searchBuffer))
             {
-                // Filter every leaf across every category
-                var q = searchBuffer.ToLowerInvariant();
+                // Filter every leaf across every category (trim leading slash so /query or / matches properly)
+                var rawQ = searchBuffer.TrimStart('/').ToLowerInvariant().Trim();
+                var matchAll = string.IsNullOrEmpty(rawQ);
+
                 foreach (var cat in categories)
                 {
                     if (cat.Kind == MenuNodeKind.Separator || cat.Kind == MenuNodeKind.Exit) continue;
@@ -63,8 +65,9 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                         if (child.Kind == MenuNodeKind.Group)
                         {
                             var groupMatches = GetActiveChildren(child)
-                                .Where(sub => sub.SearchKey.Contains(q) ||
-                                              (sub.Command != null && sub.Command.Alias.ToLowerInvariant().Contains(q)))
+                                .Where(sub => matchAll ||
+                                              sub.SearchKey.Contains(rawQ) ||
+                                              (sub.Command != null && sub.Command.Alias.ToLowerInvariant().Contains(rawQ)))
                                 .ToList();
                             if (groupMatches.Count > 0)
                             {
@@ -73,7 +76,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                         }
                         else if (child.Kind == MenuNodeKind.Command && child.Command != null)
                         {
-                            if (child.SearchKey.Contains(q) || child.Command.Alias.ToLowerInvariant().Contains(q))
+                            if (matchAll || child.SearchKey.Contains(rawQ) || child.Command.Alias.ToLowerInvariant().Contains(rawQ))
                             {
                                 catMatches.Add(child);
                             }
@@ -535,6 +538,11 @@ public sealed class FlatTreeRenderer : IMenuRenderer
         grid.AddColumn(new GridColumn().NoWrap());
 
         var isCompact = Config.Current.Density == "compact";
+
+        if (rows.Count == 0)
+        {
+            grid.AddRow(new Markup($"  [dim]No matching commands found for '{searchBuffer.EscapeMarkup()}'. Press Esc to clear.[/]"));
+        }
 
         for (int i = 0; i < rows.Count; i++)
         {
