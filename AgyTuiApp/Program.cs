@@ -363,6 +363,9 @@ public static class Program
                         AnsiConsole.MarkupLine($"Navigate target: [green]{projPath}[/]");
                     }
                     break;
+                case "f":
+                    SystemHelper.OpenExplorer();
+                    break;
                 case "gs":
                     GitHelper.ShowStatus();
                     break;
@@ -370,18 +373,23 @@ public static class Program
                     GitHelper.AddAll();
                     break;
                 case "gbr":
+                case "gb":
                     GitHelper.ShowBranches();
                     break;
                 case "gcmt":
                     GitHelper.ConventionalCommitWizard();
                     break;
                 case "glog":
+                case "glo":
+                case "glg":
                     GitHelper.ShowLog();
                     break;
                 case "gpull":
+                case "gpu":
                     GitHelper.Pull();
                     break;
                 case "gpush":
+                case "gus":
                     GitHelper.Push();
                     break;
                 case "gf":
@@ -391,15 +399,18 @@ public static class Program
                     GitDiffViewer.ShowDiff(Directory.GetCurrentDirectory());
                     break;
                 case "git-undo":
+                case "gundo":
                     GitHelper.InvokeGitUndo();
                     break;
                 case "dbld":
+                case "db":
                     DotNetHelper.Build();
                     break;
                 case "dr":
                     DotNetHelper.Run();
                     break;
                 case "dtst":
+                case "dt":
                     DotNetHelper.Test();
                     break;
                 case "df":
@@ -409,22 +420,27 @@ public static class Program
                     DotNetHelper.Clean();
                     break;
                 case "drestore":
+                case "dres":
                     DotNetHelper.Restore();
                     break;
                 case "dpublish":
                     DotNetHelper.Publish();
                     break;
                 case "dwatch":
+                case "dw":
                     DotNetHelper.Watch();
                     break;
                 case "clean-build":
+                case "dclean":
                     DotNetHelper.RemoveBinObj(Directory.GetCurrentDirectory());
                     break;
                 case "add-migration":
+                case "da":
                     var migName = AnsiConsole.Ask<string>("Migration name:");
                     DotNetHelper.AddMigration(migName);
                     break;
                 case "update-db":
+                case "du":
                     DotNetHelper.UpdateDatabase();
                     break;
                 case "docker-health":
@@ -446,9 +462,11 @@ public static class Program
                     DockerHelper.ShowContainerLogs();
                     break;
                 case "dcup":
+                case "dkcpu":
                     DockerHelper.ComposeUp();
                     break;
                 case "dcdown":
+                case "dkcpd":
                     DockerHelper.ComposeDown();
                     break;
                 case "aws-whoami":
@@ -607,9 +625,11 @@ public static class Program
                     SshHelper.ShowSshQrCode();
                     break;
                 case "disk":
+                case "usage":
                     SystemHelper.ShowDiskSpace();
                     break;
                 case "public-ip":
+                case "myip":
                     AnsiConsole.MarkupLine($"Public IP: [green]{SystemHelper.GetPublicIP()}[/]");
                     break;
                 case "kill-port":
@@ -672,6 +692,7 @@ public static class Program
                     ProfileHelp.Show();
                     break;
                 case "mobile-setup":
+                case "mobile":
                     {
                         ThemeHelper.ToggleMobileMode();
                         var currDensity = Config.GetDensity();

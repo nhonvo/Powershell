@@ -1249,13 +1249,16 @@ Set-Alias -Name f -Value Invoke-OpenExplorer -Force
 Set-Alias -Name go -Value Reload-Profile -Force
 Set-Alias -Name mkcd -Value New-DirAndEnter -Force
 Set-Alias -Name usage -Value Get-DiskSpace -Force
+Set-Alias -Name disk -Value Get-DiskSpace -Force
 Set-Alias -Name myip -Value Get-PublicIP -Force
+Set-Alias -Name public-ip -Value Get-PublicIP -Force
 Set-Alias -Name tree -Value Get-FileTree -Force
 Set-Item -Path Alias:\kill -Value Stop-ProcessFriendly -Force -Option AllScope
 
 Set-Alias -Name ssh-info -Value Get-SshConnectionInfo -Force
 Set-Alias -Name ssh-addkey -Value Add-SshAuthorizedKey -Force
 Set-Alias -Name mobile -Value Toggle-MobileMode -Force
+Set-Alias -Name mobile-setup -Value Toggle-MobileMode -Force
 Set-Alias -Name ssh-addkey-mobile -Value Start-MobileSshKeyReceiver -Force
 
 # --- Git Wrappers ---
@@ -1307,6 +1310,7 @@ Set-Alias -Name glo -Value Get-GitLogGraph -Force
 Set-Alias -Name glg -Value Get-GitLogGraph -Force
 Set-Alias -Name glog -Value Get-GitLogPretty -Force
 Set-Alias -Name gb -Value Get-GitBranches -Force
+Set-Alias -Name gbr -Value Get-GitBranches -Force
 Set-Alias -Name co -Value Invoke-GitCheckout -Force
 Set-Alias -Name cob -Value New-GitBranch -Force
 Set-Alias -Name gbd -Value Remove-GitBranch -Force
@@ -1315,11 +1319,14 @@ Set-Alias -Name gunstage -Value Invoke-GitUnstage -Force
 Set-Alias -Name gcmt -Value Invoke-GitCommit -Force
 Set-Alias -Name gca -Value Invoke-GitAmend -Force
 Set-Alias -Name gundo -Value Invoke-GitUndo -Force
+Set-Alias -Name git-undo -Value Invoke-GitUndo -Force
 Set-Alias -Name gr -Value Invoke-GitResetSoft -Force
 Set-Alias -Name grh -Value Invoke-GitResetHard -Force
 Set-Alias -Name gf -Value Invoke-GitFetch -Force
 Set-Alias -Name gpu -Value Invoke-GitPull -Force
+Set-Alias -Name gpull -Value Invoke-GitPull -Force
 Set-Alias -Name gus -Value Invoke-GitPush -Force
+Set-Alias -Name gpush -Value Invoke-GitPush -Force
 Set-Alias -Name guf -Value Invoke-GitPushForce -Force
 Set-Alias -Name gms -Value Invoke-GitMergeSquash -Force
 Set-Alias -Name gsnap -Value Invoke-GitStashSnapshot -Force
@@ -1367,15 +1374,23 @@ function New-WebApiProject {
 # .NET Aliases
 Set-Alias -Name dr -Value Invoke-DotNetRun -Force
 Set-Alias -Name dw -Value Invoke-DotNetWatch -Force
+Set-Alias -Name dwatch -Value Invoke-DotNetWatch -Force
 Set-Alias -Name db -Value Invoke-DotNetBuild -Force
+Set-Alias -Name dbld -Value Invoke-DotNetBuild -Force
+Set-Alias -Name rebuild -Value Invoke-DotNetBuild -Force
 Set-Alias -Name df -Value Invoke-DotNetFormat -Force
 Set-Alias -Name dt -Value Invoke-DotNetTest -Force
+Set-Alias -Name dtst -Value Invoke-DotNetTest -Force
 Set-Alias -Name wt -Value Invoke-DotNetWatchTest -Force
 Set-Alias -Name dcl -Value Invoke-DotNetClean -Force
 Set-Alias -Name dres -Value Invoke-DotNetRestore -Force
+Set-Alias -Name drestore -Value Invoke-DotNetRestore -Force
 Set-Alias -Name dclean -Value Remove-BinObj -Force
+Set-Alias -Name clean-build -Value Remove-BinObj -Force
 Set-Alias -Name du -Value Update-Database -Force
+Set-Alias -Name update-db -Value Update-Database -Force
 Set-Alias -Name da -Value Add-Migration -Force
+Set-Alias -Name add-migration -Value Add-Migration -Force
 Set-Alias -Name dd -Value Remove-Database -Force
 Set-Alias -Name dremove -Value Remove-Migration -Force
 Set-Alias -Name sln -Value New-Solution -Force
@@ -1401,8 +1416,10 @@ Set-Alias -Name dkcl -Value Get-DockerContainers -Force
 Set-Alias -Name dkrmac -Value Remove-AllDockerContainers -Force
 Set-Alias -Name dkstac -Value Stop-AllDockerContainers -Force
 Set-Alias -Name dkcpu -Value Invoke-ComposeUp -Force
+Set-Alias -Name dcup -Value Invoke-ComposeUp -Force
 Set-Alias -Name dkcpub -Value Invoke-ComposeUpBuild -Force
 Set-Alias -Name dkcpd -Value Invoke-ComposeDown -Force
+Set-Alias -Name dcdown -Value Invoke-ComposeDown -Force
 Set-Alias -Name fix-volume -Value Remove-UnusedDockerVolumes -Force
 Set-Alias -Name fix-image -Value Remove-UnusedDockerImages -Force
 
