@@ -487,29 +487,39 @@ public static class LearnRouter
                 {
                     "🎌 JLPT Vocabulary Drill (N5)",
                     "🌸 Hiragana & Katakana Kana Quiz",
-                    "⛩️ Kanji Radical & Stroke Lookup"
+                    "⛩️ Kanji Radical & Stroke Lookup",
+                    "📘 Japanese Grammar Drill (N5–N2)"
                 };
                 var jpChoice = SpectreMenu.Show("Japanese Learning Suite", jpTools, 0);
                 if (jpChoice == 0) JlptVocabDrill.Run("N5");
                 else if (jpChoice == 1) KanaQuiz.Run("hiragana");
                 else if (jpChoice == 2) KanjiLookup.Run();
+                else if (jpChoice == 3)
+                {
+                    var lvl = SpectreMenu.Show("Grammar Level", new[] { "N5", "N4", "N3" }, 0);
+                    if (lvl == 0) GrammarQuiz.Run("N5");
+                    else if (lvl == 1) GrammarQuiz.Run("N4");
+                    else if (lvl == 2) GrammarQuiz.Run("N3");
+                }
                 break;
             case "en" or "english":
                 var enTools = new[]
                 {
                     "📖 English Vocab Drill",
+                    "📘 English Grammar Drill",
                     "🌟 Word of the Day",
                     "🎴 Flashcard Decks"
                 };
                 var enChoice = SpectreMenu.Show("English & Vocabulary Suite", enTools, 0);
                 if (enChoice == 0) VocabDrill.Run("Intermediate");
-                else if (enChoice == 1)
+                else if (enChoice == 1) GrammarQuiz.Run("English");
+                else if (enChoice == 2)
                 {
                     var word = WordOfDay.Pick();
                     if (word != null) WordOfDay.Render(word);
                     else SpectrePanel.Warning("No word of the day available.");
                 }
-                else if (enChoice == 2) FlashcardEngine.PickAndRun(LearnDataPaths.DecksDir);
+                else if (enChoice == 3) FlashcardEngine.PickAndRun(LearnDataPaths.DecksDir);
                 break;
             case "cs" or "csharp":
                 var csTools = new[]

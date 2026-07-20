@@ -161,15 +161,83 @@ public static class JlptVocabDrill
     }
 
 }
+public sealed record GrammarCard(string Id, string Level, string Pattern, string Meaning, string Usage, string ExampleJp, string ExampleEn, string[] Tags, SrState Sr);
+
+public sealed record GrammarFile(string Level, GrammarCard[] Cards);
+
+public static class GrammarQuiz
+{
+    public static void Run(string level = "N5")
+    {
+        LearnDataPaths.EnsureDirectories();
+        var grammarDir = Path.Combine(LearnDataPaths.LearnRoot, "grammar");
+        Directory.CreateDirectory(grammarDir);
+        var file = Path.Combine(grammarDir, $"{level.ToLower()}.json");
+        var data = LearnDataPaths.LoadJson<GrammarFile>(file);
+        if (data == null || data.Cards.Length == 0)
+        {
+            SpectrePanel.Warning($"No grammar data found for level '{level}'.");
+            return;
+        }
+
+        var due = data.Cards.Where(c => SpacedRepetitionEngine.IsDueToday(c.Sr)).ToArray();
+        if (due.Length == 0) due = data.Cards;
+
+        int correct = 0;
+        int limit = Math.Min(10, due.Length);
+        for (int i = 0; i < limit; i++)
+        {
+            var g = due[i];
+            AnsiConsole.Clear();
+            AnsiConsole.Write(new Rule($"[bold cyan]Grammar Drill — Level {g.Level}[/]").RuleStyle("grey"));
+            AnsiConsole.MarkupLine($"[dim]Card {i + 1} / {limit}[/]");
+            AnsiConsole.WriteLine();
+
+            AnsiConsole.Write(new Panel($"[bold yellow]Pattern:[/] [bold white]{g.Pattern.EscapeMarkup()}[/]\n\n[dim]Usage:[/] {g.Usage.EscapeMarkup()}")
+            {
+                Header = new PanelHeader($"[cyan]Grammar Point ({g.Level})[/]"),
+                Border = BoxBorder.Rounded,
+                BorderStyle = new Style(Color.Cyan1),
+                Padding = new Padding(1, 1)
+            });
+
+            AnsiConsole.MarkupLine("[dim]Press Enter to reveal meaning & examples (Esc to quit)...[/]");
+            if (Console.ReadKey(true).Key == ConsoleKey.Escape) break;
+
+            AnsiConsole.Clear();
+            AnsiConsole.Write(new Rule($"[bold cyan]Grammar Detail — {g.Pattern.EscapeMarkup()}[/]").RuleStyle("grey"));
+
+            var detail = $"[bold yellow]Meaning:[/] {g.Meaning.EscapeMarkup()}\n\n" +
+                         $"[bold green]Example (JP/EN):[/] {g.ExampleJp.EscapeMarkup()}\n" +
+                         $"[bold green]Translation:[/] {g.ExampleEn.EscapeMarkup()}";
+
+            AnsiConsole.Write(new Panel(detail)
+            {
+                Header = new PanelHeader("[green]Explanation[/]"),
+                Border = BoxBorder.Rounded,
+                BorderStyle = new Style(Color.Green),
+                Padding = new Padding(1, 1)
+            });
+
+            if (AnsiConsole.Confirm("Did you understand this pattern?", defaultValue: true)) correct++;
+        }
+        SpectrePanel.Success($"Grammar drill complete — {correct}/{limit} understood.");
+    }
+}
+
 public static class AlgoVisualizer
 {
     public static void PickAndRun()
     {
         var algos = new[]
         {
-            "Bubble Sort","Binary Search","Merge Sort"
-        }
-        ;
+            "Bubble Sort",
+            "Binary Search",
+            "Merge Sort",
+            "Quick Sort",
+            "BFS Graph Traversal",
+            "Dynamic Programming (Fibonacci Table)"
+        };
         var idx = SpectreMenu.Show("Algorithm Visualizer", algos, 0, false);
         var arr = GenerateArray(8);
         switch (idx)
@@ -183,8 +251,16 @@ public static class AlgoVisualizer
             case 2:
                 RunMergeSort([.. arr]);
                 break;
+            case 3:
+                RunQuickSort([.. arr]);
+                break;
+            case 4:
+                RunBfsTraversal();
+                break;
+            case 5:
+                RunDpFibonacci(7);
+                break;
         }
-
     }
 
     public static void RunBubbleSort(int[] input)
@@ -258,7 +334,120 @@ public static class AlgoVisualizer
         i++) a[lo + i] = merged[i];
         RenderArray(a, lo, hi, ++step, 0, 0, $"Merge Sort — merged [{lo}..{hi}]");
         Console.ReadKey(true);
+    }
 
+    public static void RunQuickSort(int[] input)
+    {
+        var a = (int[])input.Clone();
+        int step = 0;
+        QuickSortHelper(a, 0, a.Length - 1, ref step);
+        RenderArray(a, -1, -1, step, 0, 0, "Quick Sort — Done");
+        Console.ReadKey(true);
+    }
+
+    private static void QuickSortHelper(int[] a, int low, int high, ref int step)
+    {
+        if (low < high)
+        {
+            int pi = Partition(a, low, high, ref step);
+            QuickSortHelper(a, low, pi - 1, ref step);
+            QuickSortHelper(a, pi + 1, high, ref step);
+        }
+    }
+
+    private static int Partition(int[] a, int low, int high, ref int step)
+    {
+        int pivot = a[high];
+        int i = (low - 1);
+        for (int j = low; j < high; j++)
+        {
+            if (a[j] < pivot)
+            {
+                i++;
+                (a[i], a[j]) = (a[j], a[i]);
+            }
+            RenderArray(a, low, high, ++step, 0, 0, $"Quick Sort — pivot={pivot}");
+        }
+        (a[i + 1], a[high]) = (a[high], a[i + 1]);
+        return i + 1;
+    }
+
+    public static void RunBfsTraversal()
+    {
+        AnsiConsole.Clear();
+        AnsiConsole.Write(new Rule("[bold cyan]BFS Graph Traversal Visualizer[/]").RuleStyle("grey"));
+
+        var graph = new Dictionary<string, string[]>
+        {
+            ["A"] = new[] { "B", "C" },
+            ["B"] = new[] { "D", "E" },
+            ["C"] = new[] { "F" },
+            ["D"] = Array.Empty<string>(),
+            ["E"] = new[] { "F" },
+            ["F"] = Array.Empty<string>()
+        };
+
+        var queue = new Queue<string>();
+        var visited = new HashSet<string>();
+        queue.Enqueue("A");
+        visited.Add("A");
+
+        int step = 0;
+        while (queue.Count > 0)
+        {
+            var node = queue.Dequeue();
+            step++;
+            AnsiConsole.Clear();
+            AnsiConsole.Write(new Rule($"[bold cyan]BFS Step {step}: Visiting Node [{node}][/]").RuleStyle("grey"));
+            AnsiConsole.MarkupLine($"[bold yellow]Queue:[/] {string.Join(" -> ", queue)}");
+            AnsiConsole.MarkupLine($"[bold green]Visited:[/] {string.Join(", ", visited)}");
+            AnsiConsole.WriteLine();
+
+            foreach (var neighbor in graph[node])
+            {
+                if (!visited.Contains(neighbor))
+                {
+                    visited.Add(neighbor);
+                    queue.Enqueue(neighbor);
+                }
+            }
+
+            AnsiConsole.MarkupLine("[dim]Press Enter for next BFS step...[/]");
+            if (Console.ReadKey(true).Key == ConsoleKey.Escape) break;
+        }
+        SpectrePanel.Success("BFS Graph Traversal Complete!");
+    }
+
+    public static void RunDpFibonacci(int n)
+    {
+        AnsiConsole.Clear();
+        AnsiConsole.Write(new Rule($"[bold cyan]Dynamic Programming — Fibonacci(N={n})[/]").RuleStyle("grey"));
+
+        long[] dp = new long[n + 1];
+        dp[0] = 0;
+        if (n >= 1) dp[1] = 1;
+
+        for (int i = 2; i <= n; i++)
+        {
+            dp[i] = dp[i - 1] + dp[i - 2];
+            AnsiConsole.Clear();
+            AnsiConsole.Write(new Rule($"[bold cyan]DP Fibonacci Step {i}[/]").RuleStyle("grey"));
+            
+            var table = new Table().Border(TableBorder.Rounded);
+            table.AddColumn("Index (N)");
+            table.AddColumn("DP Value");
+            table.AddColumn("Formula");
+
+            for (int k = 0; k <= i; k++)
+            {
+                table.AddRow(k.ToString(), $"[bold green]{dp[k]}[/]", k >= 2 ? $"F({k-1}) + F({k-2}) = {dp[k-1]} + {dp[k-2]}" : "Base case");
+            }
+            AnsiConsole.Write(table);
+
+            AnsiConsole.MarkupLine("[dim]Press Enter for next DP step...[/]");
+            if (Console.ReadKey(true).Key == ConsoleKey.Escape) break;
+        }
+        SpectrePanel.Success($"Fibonacci({n}) = {dp[n]} computed via Dynamic Programming!");
     }
 
     private static void RenderArray(int[] a, int lo, int hi, int step, int comps, int swaps, string label)

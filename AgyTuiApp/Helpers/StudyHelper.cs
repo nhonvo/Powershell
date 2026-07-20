@@ -276,6 +276,60 @@ public static class LearnDataPaths
         {
             File.WriteAllText(dockerSheet, "=== DOCKER CHEAT SHEET ===\n\n1. Cleanup unused resources:\n   docker system prune -af --volumes\n\n2. Follow container logs:\n   docker logs -f --tail 100 <container>");
         }
+        // 14. Grammar Files (Japanese N5-N2 & English)
+        var grammarDir = Path.Combine(LearnRoot, "grammar");
+        Directory.CreateDirectory(grammarDir);
+        
+        var n5GrammarFile = Path.Combine(grammarDir, "n5.json");
+        if (!File.Exists(n5GrammarFile))
+        {
+            var n5Cards = new[]
+            {
+                new GrammarCard("g_n5_01", "N5", "～は～です", "A is B (Topic marker は and copula です)", "N (Topic) + は + N/Adj + です", "わたしは がくせいです。", "I am a student.", new[] { "grammar", "n5", "basics" }, NewCardState()),
+                new GrammarCard("g_n5_02", "N5", "～があります／います", "There is / are (Existence marker)", "Inanimate: があります / Animate: がいます", "あそこに ねこが います。", "There is a cat over there.", new[] { "grammar", "n5" }, NewCardState()),
+                new GrammarCard("g_n5_03", "N5", "～へ行きます／来ます", "Go / Come to (Direction marker へ)", "Place + へ + 行きます / 来ます", "あした とうきょうへ いきます。", "I will go to Tokyo tomorrow.", new[] { "grammar", "n5" }, NewCardState()),
+                new GrammarCard("g_n5_04", "N5", "～てください", "Please do (Te-form requests)", "Verb (Te-form) + ください", "ここに なまえを かいてください。", "Please write your name here.", new[] { "grammar", "n5" }, NewCardState()),
+                new GrammarCard("g_n5_05", "N5", "～てもいいです", "May do / Permitted to do", "Verb (Te-form) + もいいです", "しゃしんを とってもいいです。", "You may take photos.", new[] { "grammar", "n5" }, NewCardState())
+            };
+            SaveJson(n5GrammarFile, new GrammarFile("N5", n5Cards));
+        }
+
+        var n4GrammarFile = Path.Combine(grammarDir, "n4.json");
+        if (!File.Exists(n4GrammarFile))
+        {
+            var n4Cards = new[]
+            {
+                new GrammarCard("g_n4_01", "N4", "～すぎる", "Too much / Excessively", "Verb (Masu-stem) / Adj + すぎる", "この ほんは むずかしすぎます。", "This book is too difficult.", new[] { "grammar", "n4" }, NewCardState()),
+                new GrammarCard("g_n4_02", "N4", "～ために", "In order to / For the sake of", "Verb (Dictionary form) / Noun + の + ために", "にほんごを べんきょうするために にほんへ いきます。", "I am going to Japan in order to study Japanese.", new[] { "grammar", "n4" }, NewCardState()),
+                new GrammarCard("g_n4_03", "N4", "～たら", "If / When (Conditional)", "Verb (Ta-form) + ら", "あめが ふったら いきません。", "If it rains, I won't go.", new[] { "grammar", "n4" }, NewCardState()),
+                new GrammarCard("g_n4_04", "N4", "～ようにする", "Try to / Make an effort to", "Verb (Dictionary / Nai-form) + ようにする", "まいあさ ろくじに おきるようにしています。", "I make it a habit to wake up at 6:00 every morning.", new[] { "grammar", "n4" }, NewCardState())
+            };
+            SaveJson(n4GrammarFile, new GrammarFile("N4", n4Cards));
+        }
+
+        var n3GrammarFile = Path.Combine(grammarDir, "n3.json");
+        if (!File.Exists(n3GrammarFile))
+        {
+            var n3Cards = new[]
+            {
+                new GrammarCard("g_n3_01", "N3", "～に関して", "Regarding / Concerning", "Noun + に関して / に関する + Noun", "この もんだいに関して いけんを のべてください。", "Please express your opinion regarding this problem.", new[] { "grammar", "n3" }, NewCardState()),
+                new GrammarCard("g_n3_02", "N3", "～のおかげで", "Thanks to / Owing to (Positive outcome)", "Noun + の / Verb (Plain) + のおかげで", "せんせいのおかげで しけんに ごうかくできました。", "Thanks to the teacher, I was able to pass the exam.", new[] { "grammar", "n3" }, NewCardState()),
+                new GrammarCard("g_n3_03", "N3", "～に違いない", "Must be / No doubt that", "Plain Form / Noun + に違いない", "かれは はんにんに ちがいない。", "He must be the culprit.", new[] { "grammar", "n3" }, NewCardState())
+            };
+            SaveJson(n3GrammarFile, new GrammarFile("N3", n3Cards));
+        }
+
+        var enGrammarFile = Path.Combine(grammarDir, "english.json");
+        if (!File.Exists(enGrammarFile))
+        {
+            var enCards = new[]
+            {
+                new GrammarCard("g_en_01", "English", "Present Perfect vs Past Simple", "Completed action at specific past time vs Unspecified/Ongoing connection", "Past: 'I saw him yesterday' | Perfect: 'I have seen him before'", "I have lived in Vietnam for 3 years.", "Tôi đã sống ở Việt Nam được 3 năm (và vẫn đang sống ở đây).", new[] { "grammar", "english", "tenses" }, NewCardState()),
+                new GrammarCard("g_en_02", "English", "Second Conditional (Unreal Present)", "Hypothetical or unlikely situations in the present/future", "If + Past Simple, ... would + Verb", "If I had more time, I would learn Rust.", "Nếu tôi có nhiều thời gian hơn, tôi sẽ học Rust.", new[] { "grammar", "english", "conditionals" }, NewCardState()),
+                new GrammarCard("g_en_03", "English", "Third Conditional (Unreal Past)", "Regrets or hypothetical past outcomes", "If + Past Perfect, ... would have + Past Participle", "If we had tested the code, the outage would not have happened.", "Nếu chúng ta đã test code, sự cố đã không xảy ra.", new[] { "grammar", "english", "conditionals" }, NewCardState())
+            };
+            SaveJson(enGrammarFile, new GrammarFile("English", enCards));
+        }
     }
 
     private static SrState NewCardState() => new(2.5, 0, 0, null, null, "new");

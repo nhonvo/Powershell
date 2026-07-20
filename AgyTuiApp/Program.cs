@@ -793,6 +793,13 @@ public static class Program
                 case "jlpt":
                     JlptVocabDrill.Run("N5");
                     break;
+                case "grammar":
+                    var levelChoice = SpectreMenu.Show("Select Grammar Level", new[] { "N5 (Japanese)", "N4 (Japanese)", "N3 (Japanese)", "English" }, 0);
+                    if (levelChoice == 0) GrammarQuiz.Run("N5");
+                    else if (levelChoice == 1) GrammarQuiz.Run("N4");
+                    else if (levelChoice == 2) GrammarQuiz.Run("N3");
+                    else if (levelChoice == 3) GrammarQuiz.Run("English");
+                    break;
                 case "algo":
                     AlgoVisualizer.PickAndRun();
                     break;

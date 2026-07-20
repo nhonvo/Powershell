@@ -271,6 +271,8 @@ public static class CommandRegistry
             new[] { "no-auto-commit — Enables/disables automatic git commits during multi-agent AGY execution." }),
         new("autocommit", "Toggle Multi-Agent Auto-Commit (Alias)", "Alias for no-auto-commit toggle", "[AGY Account Switch]", "Accounts",
             new[] { "autocommit — Alias for no-auto-commit toggle." }),
+        new("grammar", "Grammar Drills by Level", "Practice Japanese (N5–N2) and English grammar points", "[Learn & Study]", "Study",
+            new[] { "grammar — Interactive grammar pattern drills by level." }),
 
         // [System & Network]
         new("disk", "Disk Usage", "Show disk usage and health", "[System & Network]", "System",

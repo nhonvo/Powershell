@@ -292,14 +292,16 @@ public static class MenuNodeBuilder
         {
             CreateCommandNode(allCommands["kana"]),
             CreateCommandNode(allCommands["kanji"]),
-            CreateCommandNode(allCommands["jlpt"])
+            CreateCommandNode(allCommands["jlpt"]),
+            CreateCommandNode(allCommands["grammar"])
         }, null);
 
         var englishVocab = new MenuNode("/english-vocab", " [English & Vocab]", MenuNodeKind.Group, new[]
         {
             CreateCommandNode(allCommands["word-of-day"]),
             CreateCommandNode(allCommands["vocab"]),
-            CreateCommandNode(allCommands["flashcard"])
+            CreateCommandNode(allCommands["flashcard"]),
+            CreateCommandNode(allCommands["grammar"])
         }, null);
 
         var csharpMaster = new MenuNode("/csharp-master", " [C# & Dev Masterclass]", MenuNodeKind.Group, new[]
