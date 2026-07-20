@@ -16,7 +16,22 @@ namespace AgyTui;
 
 public static class LearnDataPaths
 {
-    public static string LearnRoot => System.IO.Path.Combine(AgyAccountCore.GetAccountDirectory(AgyAccountCore.GetActiveAccount()), "learn");
+    public static string BaseDirectory
+    {
+        get
+        {
+            var pwd = Directory.GetCurrentDirectory();
+            var localLearn = System.IO.Path.Combine(pwd, "learn");
+            if (Directory.Exists(localLearn)) return pwd;
+
+            const string projPath = @"C:\Users\TruongNhon\Documents\Powershell";
+            if (Directory.Exists(System.IO.Path.Combine(projPath, "learn"))) return projPath;
+
+            return AgyAccountCore.GetAccountDirectory(AgyAccountCore.GetActiveAccount());
+        }
+    }
+
+    public static string LearnRoot => System.IO.Path.Combine(BaseDirectory, "learn");
 
     public static string DecksDir => System.IO.Path.Combine(LearnRoot, "decks");
 
@@ -46,9 +61,9 @@ public static class LearnDataPaths
 
     public static string StudyLogFile => System.IO.Path.Combine(LearnRoot, "study_log.json");
 
-    public static string ObsidianCfgFile => System.IO.Path.Combine(AgyAccountCore.GetAccountDirectory(AgyAccountCore.GetActiveAccount()), "obsidian_config.json");
+    public static string ObsidianCfgFile => System.IO.Path.Combine(BaseDirectory, "obsidian_config.json");
 
-    public static string ResourcesIndex => System.IO.Path.Combine(AgyAccountCore.GetAccountDirectory(AgyAccountCore.GetActiveAccount()), "resources", "index.json");
+    public static string ResourcesIndex => System.IO.Path.Combine(BaseDirectory, "resources", "index.json");
 
     public static void EnsureDirectories()
     {
