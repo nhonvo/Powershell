@@ -282,6 +282,8 @@ public static class CommandRegistry
         new("ui-mode", "Toggle UI Layout Mode", "Toggle between three-pane and flat-tree layouts", "[Theme & Settings]", "Theme & Settings",
             Array.Empty<string>()),
         new("density", "Toggle Console Density", "Toggle between comfortable and compact display densities", "[Theme & Settings]", "Theme & Settings",
+            Array.Empty<string>()),
+        new("hotkeys", "Profile Hotkeys Guide", "Show all PowerShell profile shortcut hotkeys grouped by domain", "[Theme & Settings]", "Help",
             Array.Empty<string>())
     };
 

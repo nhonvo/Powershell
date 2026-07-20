@@ -145,6 +145,7 @@ public static class Icons
                 "mobile-setup" => "📱",
                 "theme" => "🎨",
                 "ui-mode" or "density" => "🖥",
+                "hotkeys" or "hotkey" => "⌨",
 
                 _ => GetFileIcon(".txt")
             };
@@ -196,6 +197,7 @@ public static class Icons
                 "mobile-setup" => "📱",
                 "theme" => "🎨",
                 "ui-mode" or "density" => "🖥",
+                "hotkeys" or "hotkey" => "⌨",
 
                 _ => GetFileIcon(".txt")
             };

@@ -260,7 +260,8 @@ public static class MenuNodeBuilder
                 CreateCommandNode(allCommands["mobile-setup"]),
                 CreateCommandNode(allCommands["theme"]),
                 CreateCommandNode(allCommands["ui-mode"]),
-                CreateCommandNode(allCommands["density"])
+                CreateCommandNode(allCommands["density"]),
+                CreateCommandNode(allCommands["hotkeys"])
             },
             null
         );
