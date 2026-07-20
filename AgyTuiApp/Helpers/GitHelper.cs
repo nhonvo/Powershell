@@ -151,6 +151,22 @@ public static class GitHelper
         else SpectrePanel.Error($"git push failed (exit {exitCode}).");
     }
 
+    public static void AddAll()
+    {
+        AnsiConsole.MarkupLine("[cyan]Staging all modified and new files...[/]");
+        var exitCode = RunGitDirect("add .");
+        if (exitCode == 0) SpectrePanel.Success("Staged all workspace changes.");
+        else SpectrePanel.Error($"git add failed (exit {exitCode}).");
+    }
+
+    public static void Fetch()
+    {
+        AnsiConsole.MarkupLine("[cyan]Fetching remote references...[/]");
+        var exitCode = RunGitDirect("fetch");
+        if (exitCode == 0) SpectrePanel.Success("Fetched latest remote references.");
+        else SpectrePanel.Error($"git fetch failed (exit {exitCode}).");
+    }
+
     private static string RunGit(string args) => Helpers.ProcessRunner.RunCapture("git", args);
 
     private static int RunGitDirect(string args)

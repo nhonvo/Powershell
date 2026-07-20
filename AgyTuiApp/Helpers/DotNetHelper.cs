@@ -41,7 +41,13 @@ public static class DotNetHelper
 
     public static int Build(string? projectPath = null) => RunDotnet("build", projectPath);
 
+    public static int Run(string? projectPath = null) => RunDotnet("run", projectPath);
+
     public static int Test(string? projectPath = null) => RunDotnet("test", projectPath);
+
+    public static int Format(string? projectPath = null) => RunDotnet("format", projectPath);
+
+    public static int Clean(string? projectPath = null) => RunDotnet("clean", projectPath);
 
     public static int Restore(string? projectPath = null) => RunDotnet("restore", projectPath);
 

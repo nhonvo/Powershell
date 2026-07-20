@@ -140,6 +140,20 @@ public static class DockerHelper
         SpectrePager.Show($"Logs: {containerName}", logs);
     }
 
+    public static void RemoveAllContainers()
+    {
+        AnsiConsole.MarkupLine("[cyan]Removing all Docker containers...[/]");
+        RunDocker("rm -f $(docker ps -aq)");
+        SpectrePanel.Success("Executed container removal.");
+    }
+
+    public static void StopAllContainers()
+    {
+        AnsiConsole.MarkupLine("[cyan]Stopping all Docker containers...[/]");
+        RunDocker("stop $(docker ps -aq)");
+        SpectrePanel.Success("Executed container stop.");
+    }
+
     private static void RunDocker(string args)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))

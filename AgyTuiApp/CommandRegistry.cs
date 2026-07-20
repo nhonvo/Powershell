@@ -53,6 +53,8 @@ public static class CommandRegistry
             new[] {
                 "gs — Short git status (--short) with color coding."
             }),
+        new("ga", "Git Add All", "Stage all modified and new files in workspace", "[Workspace & Dev]", "Git",
+            Array.Empty<string>()),
         new("gbr", "Git Branch Manager", "List local and remote branches sorted by recent activity with quick checkout", "[Workspace & Dev]", "Git",
             Array.Empty<string>()),
         new("gcmt", "Conventional Commit", "Conventional commit wizard", "[Workspace & Dev]", "Git",
@@ -68,6 +70,10 @@ public static class CommandRegistry
         new("gpull", "Git Pull Remote", "Pull latest commits from remote tracking branch", "[Workspace & Dev]", "Git",
             Array.Empty<string>()),
         new("gpush", "Git Push Remote", "Push local commits to remote tracking branch", "[Workspace & Dev]", "Git",
+            Array.Empty<string>()),
+        new("gf", "Git Fetch Remote", "Fetch latest branch references from remote repository", "[Workspace & Dev]", "Git",
+            Array.Empty<string>()),
+        new("gd", "Git Diff Viewer", "Interactive git diff viewer for modified files", "[Workspace & Dev]", "Git",
             Array.Empty<string>()),
         new("git-undo", "Git Undo Last Commit", "Soft-reset the last local commit", "[Workspace & Dev]", "Git",
             new[] {
@@ -85,10 +91,16 @@ public static class CommandRegistry
             new[] {
                 "dbld — dotnet build in the active workspace."
             }),
+        new("dr", "[.NET] Run Project", "dotnet run active project in workspace", "[Workspace & Dev]", ".NET",
+            Array.Empty<string>()),
         new("dtst", "[.NET] Test Project", "dotnet test in active workspace", "[Workspace & Dev]", ".NET",
             new[] {
                 "dtst — dotnet test in the active workspace."
             }),
+        new("df", "[.NET] Format Code", "dotnet format code style & linting rules", "[Workspace & Dev]", ".NET",
+            Array.Empty<string>()),
+        new("dcl", "[.NET] Clean Solution", "dotnet clean build output directory", "[Workspace & Dev]", ".NET",
+            Array.Empty<string>()),
         new("drestore", "[.NET] Restore Packages", "dotnet restore packages in active workspace", "[Workspace & Dev]", ".NET",
             Array.Empty<string>()),
         new("dpublish", "[.NET] Publish Release", "dotnet publish release binary in active workspace", "[Workspace & Dev]", ".NET",
@@ -119,6 +131,10 @@ public static class CommandRegistry
                 " • Delete unused volumes / networks",
                 " • Full cleanup (all of the above)"
             }),
+        new("dkrmac", "Docker Remove All Containers", "Stop and remove all Docker containers forcefully", "[Workspace & Dev]", "Docker",
+            Array.Empty<string>()),
+        new("dkstac", "Docker Stop All Containers", "Stop all running Docker containers", "[Workspace & Dev]", "Docker",
+            Array.Empty<string>()),
         new("dimg", "Docker Image Manager", "List and inspect local Docker images and layer sizes", "[Workspace & Dev]", "Docker",
             Array.Empty<string>()),
         new("dlogs", "Docker Container Logs", "Tail output logs for a selected running container", "[Workspace & Dev]", "Docker",
@@ -140,6 +156,10 @@ public static class CommandRegistry
                 "aws-local — Query running LocalStack sandbox on http://localhost:4566.",
                 " Shows: S3 buckets, SQS queues, Lambda functions."
             }),
+        new("aws-s3", "AWS S3 Buckets", "List local or cloud S3 buckets", "[Workspace & Dev]", "AWS",
+            Array.Empty<string>()),
+        new("aws-sqs", "AWS SQS Queues", "List local or cloud SQS queues", "[Workspace & Dev]", "AWS",
+            Array.Empty<string>()),
 
         // [AI Agent & Ollama]
         new("claude", "Claude Code (Auto Mode)", "Launch Claude Code CLI (resolves Cloud vs Ollama via AiProviderMode)", "[AI Agent & Ollama]", "AI / LLM",

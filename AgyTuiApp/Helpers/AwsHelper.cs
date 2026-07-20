@@ -33,6 +33,24 @@ public static class AwsHelper
         SpectrePanel.Info(output);
     }
 
+    public static void ShowS3Buckets()
+    {
+        AnsiConsole.Write(new Rule("[bold cyan]AWS S3 Buckets[/]").RuleStyle("grey"));
+        var output = Helpers.ProcessRunner.RunCapture("aws", "s3 ls");
+        if (string.IsNullOrWhiteSpace(output)) output = Helpers.ProcessRunner.RunCapture("aws", $"--endpoint-url {LocalStackEndpoint} s3 ls");
+        if (string.IsNullOrWhiteSpace(output)) SpectrePanel.Warning("No S3 buckets found or AWS/LocalStack offline.");
+        else SpectrePager.Show("S3 Buckets", output);
+    }
+
+    public static void ShowSQSQueues()
+    {
+        AnsiConsole.Write(new Rule("[bold cyan]AWS SQS Queues[/]").RuleStyle("grey"));
+        var output = Helpers.ProcessRunner.RunCapture("aws", "sqs list-queues");
+        if (string.IsNullOrWhiteSpace(output)) output = Helpers.ProcessRunner.RunCapture("aws", $"--endpoint-url {LocalStackEndpoint} sqs list-queues");
+        if (string.IsNullOrWhiteSpace(output)) SpectrePanel.Warning("No SQS queues found or AWS/LocalStack offline.");
+        else SpectrePager.Show("SQS Queues", output);
+    }
+
     private static void RunLocalAwsCli(string args, string section)
     {
         AnsiConsole.MarkupLine($"\n[bold cyan]{section.EscapeMarkup()}[/]");

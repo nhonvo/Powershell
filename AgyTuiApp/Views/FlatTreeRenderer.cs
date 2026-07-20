@@ -572,7 +572,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
             if (row.Type == VisibleRowType.Category)
             {
                 var isExpanded = _expandedCategories.Contains(row.Node.Id) || !string.IsNullOrEmpty(searchBuffer);
-                var sign = isExpanded ? "[-]" : "[+]";
+                var sign = isExpanded ? "[[-]]" : "[[+]]";
                 var catIcon = Icons.GetCategoryIcon(row.Node.Label);
                 var hk = Icons.GetCategoryHotkey(row.Node.Label);
                 var hkSuffix = string.IsNullOrEmpty(hk) ? "" : $" [dim]({hk})[/]";
@@ -585,7 +585,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
             else if (row.Type == VisibleRowType.Group)
             {
                 var isExpanded = _expandedGroups.Contains(row.Node.Id) || !string.IsNullOrEmpty(searchBuffer);
-                var sign = isExpanded ? "[-]" : "[+]";
+                var sign = isExpanded ? "[[-]]" : "[[+]]";
                 var rawLabel = row.Node.Label.Trim();
                 var cleanLabel = System.Text.RegularExpressions.Regex.Replace(rawLabel, @"^\[/[^\]]+\]\s*", "").EscapeMarkup();
 

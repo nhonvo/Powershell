@@ -39,11 +39,14 @@ public static class MenuNodeBuilder
             new[]
             {
                 CreateCommandNode(allCommands["gs"]),
+                CreateCommandNode(allCommands["ga"]),
                 CreateCommandNode(allCommands["gbr"]),
                 CreateCommandNode(allCommands["gcmt"]),
                 CreateCommandNode(allCommands["glog"]),
                 CreateCommandNode(allCommands["gpull"]),
                 CreateCommandNode(allCommands["gpush"]),
+                CreateCommandNode(allCommands["gf"]),
+                CreateCommandNode(allCommands["gd"]),
                 CreateCommandNode(allCommands["git-undo"])
             },
             null
@@ -71,7 +74,10 @@ public static class MenuNodeBuilder
             new[]
             {
                 CreateCommandNode(allCommands["dbld"]),
+                CreateCommandNode(allCommands["dr"]),
                 CreateCommandNode(allCommands["dtst"]),
+                CreateCommandNode(allCommands["df"]),
+                CreateCommandNode(allCommands["dcl"]),
                 CreateCommandNode(allCommands["drestore"]),
                 CreateCommandNode(allCommands["dpublish"]),
                 CreateCommandNode(allCommands["dwatch"]),
@@ -91,6 +97,8 @@ public static class MenuNodeBuilder
             {
                 CreateCommandNode(allCommands["docker-health"]),
                 CreateCommandNode(allCommands["dkcl"]),
+                CreateCommandNode(allCommands["dkrmac"]),
+                CreateCommandNode(allCommands["dkstac"]),
                 CreateCommandNode(allCommands["dimg"]),
                 CreateCommandNode(allCommands["dlogs"]),
                 CreateCommandNode(allCommands["dcup"]),
@@ -107,7 +115,9 @@ public static class MenuNodeBuilder
             new[]
             {
                 CreateCommandNode(allCommands["aws-whoami"]),
-                CreateCommandNode(allCommands["aws-local"])
+                CreateCommandNode(allCommands["aws-local"]),
+                CreateCommandNode(allCommands["aws-s3"]),
+                CreateCommandNode(allCommands["aws-sqs"])
             },
             null
         );

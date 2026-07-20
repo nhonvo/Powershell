@@ -366,6 +366,9 @@ public static class Program
                 case "gs":
                     GitHelper.ShowStatus();
                     break;
+                case "ga":
+                    GitHelper.AddAll();
+                    break;
                 case "gbr":
                     GitHelper.ShowBranches();
                     break;
@@ -381,14 +384,29 @@ public static class Program
                 case "gpush":
                     GitHelper.Push();
                     break;
+                case "gf":
+                    GitHelper.Fetch();
+                    break;
+                case "gd":
+                    GitDiffViewer.ShowDiff(Directory.GetCurrentDirectory());
+                    break;
                 case "git-undo":
                     GitHelper.InvokeGitUndo();
                     break;
                 case "dbld":
                     DotNetHelper.Build();
                     break;
+                case "dr":
+                    DotNetHelper.Run();
+                    break;
                 case "dtst":
                     DotNetHelper.Test();
+                    break;
+                case "df":
+                    DotNetHelper.Format();
+                    break;
+                case "dcl":
+                    DotNetHelper.Clean();
                     break;
                 case "drestore":
                     DotNetHelper.Restore();
@@ -415,6 +433,12 @@ public static class Program
                 case "dkcl":
                     DockerHelper.ShowCleanupDashboard();
                     break;
+                case "dkrmac":
+                    DockerHelper.RemoveAllContainers();
+                    break;
+                case "dkstac":
+                    DockerHelper.StopAllContainers();
+                    break;
                 case "dimg":
                     DockerHelper.ShowImages();
                     break;
@@ -432,6 +456,12 @@ public static class Program
                     break;
                 case "aws-local":
                     AwsHelper.ShowLocalStackInfo();
+                    break;
+                case "aws-s3":
+                    AwsHelper.ShowS3Buckets();
+                    break;
+                case "aws-sqs":
+                    AwsHelper.ShowSQSQueues();
                     break;
                 case "claude":
                     AgyAiCore.InvokeClaude([]);
