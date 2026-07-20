@@ -28,7 +28,20 @@ public static class ObsidianBridge
         SpectrePanel.Success($"Vault configured: {vaultPath}");
     }
 
-    public static ObsidianConfig? LoadConfig() => LearnDataPaths.LoadJson<ObsidianConfig>(LearnDataPaths.ObsidianCfgFile);
+    public static ObsidianConfig? LoadConfig()
+    {
+        var cfg = LearnDataPaths.LoadJson<ObsidianConfig>(LearnDataPaths.ObsidianCfgFile);
+        if (cfg != null && Directory.Exists(cfg.VaultPath)) return cfg;
+
+        const string defaultVault = @"C:\Users\sshuser\project\learning";
+        if (Directory.Exists(defaultVault))
+        {
+            var fallback = new ObsidianConfig(defaultVault);
+            try { LearnDataPaths.SaveJson(LearnDataPaths.ObsidianCfgFile, fallback); } catch { }
+            return fallback;
+        }
+        return cfg;
+    }
 
     public static void Run()
     {
