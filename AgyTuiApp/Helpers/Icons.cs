@@ -4,6 +4,21 @@ namespace AgyTui;
 
 public static class Icons
 {
+    public static bool IsUtf8Supported
+    {
+        get
+        {
+            try
+            {
+                return Console.OutputEncoding.CodePage == 65001;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
+
     public static bool UseNerdFonts { get; set; } =
         string.Equals(Environment.GetEnvironmentVariable("AGY_NERD_FONTS"), "true", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(Environment.GetEnvironmentVariable("POSH_THEME_NERD_FONTS"), "true", StringComparison.OrdinalIgnoreCase);
@@ -28,6 +43,23 @@ public static class Icons
                 _ => "󰈙"
             };
         }
+        else if (!IsUtf8Supported)
+        {
+            return ext switch
+            {
+                ".cs" => "[CS]",
+                ".json" => "[JSON]",
+                ".md" => "[MD]",
+                ".txt" => "[TXT]",
+                ".ps1" or ".sh" => "[SH]",
+                ".yaml" or ".yml" => "[YML]",
+                ".csproj" or ".sln" => "[PROJ]",
+                ".ts" or ".tsx" or ".js" => "[JS]",
+                ".sql" => "[SQL]",
+                ".py" => "[PY]",
+                _ => "[FILE]"
+            };
+        }
         else
         {
             return ext switch
@@ -47,24 +79,55 @@ public static class Icons
         }
     }
 
-    public static string FolderClosed => UseNerdFonts ? "󰉋" : "📁";
-    public static string FolderOpen => UseNerdFonts ? "󰉓" : "📂";
+    public static string FolderClosed => UseNerdFonts ? "󰉋" : (IsUtf8Supported ? "📁" : "[+]");
+    public static string FolderOpen => UseNerdFonts ? "󰉓" : (IsUtf8Supported ? "📂" : "[-]");
 
     public static string GetCategoryIcon(string categoryLabel)
     {
         categoryLabel = categoryLabel.ToLowerInvariant();
-        if (categoryLabel.Contains("workspace")) return "📁";
-        if (categoryLabel.Contains("ai agent") || categoryLabel.Contains("ollama")) return "🤖";
-        if (categoryLabel.Contains("account")) return "👤";
-        if (categoryLabel.Contains("docker") || categoryLabel.Contains("database")) return "🐳";
-        if (categoryLabel.Contains("system") || categoryLabel.Contains("network")) return "🌐";
-        if (categoryLabel.Contains("learn") || categoryLabel.Contains("study")) return "📚";
-        if (categoryLabel.Contains("track") || categoryLabel.Contains("progress")) return "📈";
-        if (categoryLabel.Contains("obsidian") || categoryLabel.Contains("resource")) return "💎";
-        if (categoryLabel.Contains("appearance") || categoryLabel.Contains("layout")) return "🎨";
-        if (categoryLabel.Contains("help") || categoryLabel.Contains("docs")) return "🛸";
-        if (categoryLabel.Contains("theme") || categoryLabel.Contains("setting")) return "🎨";
-        return "📂";
+        if (UseNerdFonts)
+        {
+            if (categoryLabel.Contains("workspace")) return "󰉋";
+            if (categoryLabel.Contains("ai agent") || categoryLabel.Contains("ollama")) return "󰚩";
+            if (categoryLabel.Contains("account")) return "👤";
+            if (categoryLabel.Contains("docker") || categoryLabel.Contains("database")) return "🐳";
+            if (categoryLabel.Contains("system") || categoryLabel.Contains("network")) return "🌐";
+            if (categoryLabel.Contains("learn") || categoryLabel.Contains("study")) return "📚";
+            if (categoryLabel.Contains("track") || categoryLabel.Contains("progress")) return "📈";
+            if (categoryLabel.Contains("obsidian") || categoryLabel.Contains("resource")) return "💎";
+            if (categoryLabel.Contains("appearance") || categoryLabel.Contains("layout")) return "🎨";
+            if (categoryLabel.Contains("help") || categoryLabel.Contains("docs")) return "🛸";
+            return "󰉋";
+        }
+        else if (!IsUtf8Supported)
+        {
+            if (categoryLabel.Contains("workspace")) return "[Dev]";
+            if (categoryLabel.Contains("ai agent") || categoryLabel.Contains("ollama")) return "[AI]";
+            if (categoryLabel.Contains("account")) return "[ACC]";
+            if (categoryLabel.Contains("docker") || categoryLabel.Contains("database")) return "[DKR]";
+            if (categoryLabel.Contains("system") || categoryLabel.Contains("network")) return "[SYS]";
+            if (categoryLabel.Contains("learn") || categoryLabel.Contains("study")) return "[LRN]";
+            if (categoryLabel.Contains("track") || categoryLabel.Contains("progress")) return "[TRK]";
+            if (categoryLabel.Contains("obsidian") || categoryLabel.Contains("resource")) return "[OBS]";
+            if (categoryLabel.Contains("appearance") || categoryLabel.Contains("layout")) return "[UI]";
+            if (categoryLabel.Contains("help") || categoryLabel.Contains("docs")) return "[AGY]";
+            return "[+]";
+        }
+        else
+        {
+            if (categoryLabel.Contains("workspace")) return "📁";
+            if (categoryLabel.Contains("ai agent") || categoryLabel.Contains("ollama")) return "🤖";
+            if (categoryLabel.Contains("account")) return "👤";
+            if (categoryLabel.Contains("docker") || categoryLabel.Contains("database")) return "🐳";
+            if (categoryLabel.Contains("system") || categoryLabel.Contains("network")) return "🌐";
+            if (categoryLabel.Contains("learn") || categoryLabel.Contains("study")) return "📚";
+            if (categoryLabel.Contains("track") || categoryLabel.Contains("progress")) return "📈";
+            if (categoryLabel.Contains("obsidian") || categoryLabel.Contains("resource")) return "💎";
+            if (categoryLabel.Contains("appearance") || categoryLabel.Contains("layout")) return "🎨";
+            if (categoryLabel.Contains("help") || categoryLabel.Contains("docs")) return "🛸";
+            if (categoryLabel.Contains("theme") || categoryLabel.Contains("setting")) return "🎨";
+            return "📂";
+        }
     }
 
     public static string GetCategoryHotkey(string categoryLabel)

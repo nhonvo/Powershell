@@ -62,7 +62,8 @@ public static class ScreenChrome
             catch {}
         }
         AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
-        AnsiConsole.MarkupLine("[cyan] ▄████▄  ▄████▄ [/] [bold green]🛸 Powershell Profile Control Center v3.0 🛸[/]");
+        var titleIcon = Icons.IsUtf8Supported ? "🛸" : "[AGY]";
+        AnsiConsole.MarkupLine($"[cyan] ▄████▄  ▄████▄ [/] [bold green]{titleIcon} Powershell Profile Control Center v3.0 {titleIcon}[/]");
         AnsiConsole.MarkupLine("[cyan] █▀  ▀   █▀  ▀  [/] [dim]System dashboard and control suite.[/]");
         AnsiConsole.MarkupLine("[cyan] █       █      [/]");
         AnsiConsole.MarkupLine($"[cyan] █▄  ▄   █▄  ▄  [/] [dim]Active Account:[/] [green bold]{displayAcc.EscapeMarkup()}[/]");

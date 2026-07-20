@@ -228,6 +228,13 @@ public static class Program
     {
         try
         {
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.InputEncoding = Encoding.UTF8;
+        }
+        catch { }
+
+        try
+        {
             AgyTui.Registry.CommandRegistry.AssertSwitchCases();
         }
         catch (Exception ex)

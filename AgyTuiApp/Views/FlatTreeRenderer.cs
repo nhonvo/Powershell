@@ -155,7 +155,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
 
             if (selectionIndex >= visibleRows.Count) selectionIndex = Math.Max(0, visibleRows.Count - 1);
 
-            ScreenChrome.RenderBanner();
+            ScreenChrome.RenderBanner(forceClear: detailsActive);
 
             if (detailsActive)
             {
@@ -763,8 +763,10 @@ public sealed class FlatTreeRenderer : IMenuRenderer
 
         var panel = new Panel(grid)
         {
+            Header = new PanelHeader($"[bold cyan] {mode.ToUpperInvariant()} Selector [/]"),
             Border = BoxBorder.Rounded,
-            BorderStyle = new Style(Color.Cyan1)
+            BorderStyle = new Style(Color.Cyan1),
+            Expand = true
         };
         AnsiConsole.Write(panel);
     }
