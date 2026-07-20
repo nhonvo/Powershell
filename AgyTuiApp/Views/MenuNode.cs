@@ -325,6 +325,13 @@ public static class MenuNodeBuilder
             CreateCommandNode(allCommands["mock"])
         }, null);
 
+        var obsidianVault = new MenuNode("/obsidian-vault", " [Obsidian Vault & Sync]", MenuNodeKind.Group, new[]
+        {
+            CreateCommandNode(allCommands["obsidian"]),
+            CreateCommandNode(allCommands["refresh"]),
+            CreateCommandNode(allCommands["vault-open"])
+        }, null);
+
         // Category 5: [Learn & Study]
         var learnStudy = new MenuNode(
             "learn-study",
@@ -333,6 +340,7 @@ public static class MenuNodeBuilder
             new[]
             {
                 CreateCommandNode(allCommands["learn"]),
+                obsidianVault,
                 jpSuite,
                 englishVocab,
                 csharpMaster,

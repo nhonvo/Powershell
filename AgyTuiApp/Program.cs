@@ -870,7 +870,28 @@ public static class Program
                     if (!string.IsNullOrEmpty(weakTopic)) WeakItemsQueue.ShowPreSessionReview(weakTopic);
                     break;
                 case "obsidian":
+                case "vault":
                     ObsidianBridge.Run();
+                    break;
+                case "sync":
+                    LearnRouter.RefreshData("all");
+                    break;
+                case "vault-open":
+                    var openCfg = ObsidianBridge.LoadConfig();
+                    var targetPath = openCfg?.VaultPath ?? @"C:\Users\sshuser\project\learning";
+                    if (Directory.Exists(targetPath))
+                    {
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = targetPath,
+                            UseShellExecute = true
+                        });
+                        SpectrePanel.Success($"Opened vault directory: {targetPath}");
+                    }
+                    else
+                    {
+                        SpectrePanel.Warning($"Vault directory not found: {targetPath}");
+                    }
                     break;
                 case "obs-graph":
                     var cfg = ObsidianBridge.LoadConfig();

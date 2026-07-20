@@ -295,6 +295,12 @@ public static class CommandRegistry
         // [Learn & Study]
         new("learn", "Start Learning (auto)", "Start learning for a topic (auto-refresh)", "[Learn & Study]", "Learn",
             new[] { "learn — Launches interactive study learning router for selected topic." }),
+        new("obsidian", "Obsidian Vault Browser", "Search, browse by tag, and view daily notes in vault", "[Learn & Study]", "Vault",
+            new[] { "obsidian — Interactive Obsidian Vault note search, tag browser, daily notes, and graph renderer." }),
+        new("refresh", "Rescan & Sync Vault Datasets", "Rescan C:\\Users\\sshuser\\project\\learning and sync datasets to learn/", "[Learn & Study]", "Vault",
+            new[] { "refresh — Rescans Obsidian Vault notes and syncs flashcards, quizzes, and cheat sheets to learn/." }),
+        new("vault-open", "Open Vault Folder", "Open Obsidian Vault directory in Windows Explorer", "[Learn & Study]", "Vault",
+            new[] { "vault-open — Opens C:\\Users\\sshuser\\project\\learning in Windows File Explorer." }),
         new("flashcard", "Flashcard Deck Browser", "Open flashcard deck browser", "[Learn & Study]", "Learn",
             new[] { "flashcard — Interactive flashcard deck viewer with SM-2 spaced-repetition scoring." }),
         new("vocab", "English Vocab Drill", "English vocabulary drill", "[Learn & Study]", "Learn",
