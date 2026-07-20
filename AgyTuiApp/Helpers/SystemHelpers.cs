@@ -537,7 +537,7 @@ public static class SshHelper
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("[bold cyan]📱 Phone to PC Control Quick Guide[/]");
         AnsiConsole.MarkupLine("[cyan]================================[/]");
-        AnsiConsole.MarkupLine(" 1. On your phone (Termux), run: ssh sshuser@<IP>");
+        AnsiConsole.MarkupLine($" 1. On your phone (Termux), run: ssh {Environment.UserName.EscapeMarkup()}@<IP>");
         var displayIp = !string.IsNullOrWhiteSpace(tailscaleIp) ? tailscaleIp : "100.x.y.z";
         AnsiConsole.MarkupLine($" 2. Use your Tailscale IP ({displayIp.EscapeMarkup()}) for secure access anywhere.");
         AnsiConsole.MarkupLine(" 3. To authorize a passwordless login key, run: ssh-addkey");

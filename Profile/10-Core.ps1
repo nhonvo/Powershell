@@ -19,10 +19,10 @@ if (-not (Test-Path $configPath)) {
         "_Note_PoshThemesPath" = "Path to your oh-my-posh themes folder. Leave empty for default: <RepoRoot>/asset/powershell-themes"
         "PoshThemesPath" = ""
         
-        "_Note_ProjectsBaseDir" = "Base directory for development projects. Leave empty to use 'C:\Users\sshuser\project' or '~/Desktop/project'."
+        "_Note_ProjectsBaseDir" = "Base directory for development projects. Leave empty to use '~/Desktop/project' or '~/project'."
         "ProjectsBaseDir" = ""
         
-        "_Note_AgySourceHome" = "Base directory for Antigravity settings and accounts. Leave empty for default: C:\Users\Public\.gemini"
+        "_Note_AgySourceHome" = "Base directory for Antigravity settings and accounts. Leave empty for default: ~/.gemini or C:\Users\Public\.gemini"
         "AgySourceHome" = ""
         
         "_Note_GlobalBinDir" = "Directory containing active Antigravity CLI binary symlinks. Leave empty for default: C:\ProgramData\agy\bin"
@@ -97,14 +97,14 @@ if ($config -and $null -ne $config.AiMode -and "$($config.AiMode)" -ne "auto") {
 if ($config -and $config.ProjectsBaseDir) {
     $Global:ProjectsBaseDir = $config.ProjectsBaseDir
 } else {
-    $Global:ProjectsBaseDir = if (Test-Path "C:\Users\sshuser\project") { "C:\Users\sshuser\project" } else { "$env:USERPROFILE\Desktop\project" }
+    $Global:ProjectsBaseDir = if (Test-Path "$env:USERPROFILE\Desktop\project") { "$env:USERPROFILE\Desktop\project" } elseif (Test-Path "$env:USERPROFILE\project") { "$env:USERPROFILE\project" } else { Join-Path $env:USERPROFILE "Documents" }
 }
 
 # Apply AgySourceHome
 if ($config -and $config.AgySourceHome) {
     $Global:AgySourceHome = $config.AgySourceHome
 } else {
-    $Global:AgySourceHome = "C:\Users\Public\.gemini"
+    $Global:AgySourceHome = if (Test-Path "C:\Users\Public\.gemini") { "C:\Users\Public\.gemini" } else { Join-Path $env:USERPROFILE ".gemini" }
 }
 
 # Apply GlobalBinDir

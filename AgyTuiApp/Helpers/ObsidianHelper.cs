@@ -33,7 +33,11 @@ public static class ObsidianBridge
         var cfg = LearnDataPaths.LoadJson<ObsidianConfig>(LearnDataPaths.ObsidianCfgFile);
         if (cfg != null && Directory.Exists(cfg.VaultPath)) return cfg;
 
-        const string defaultVault = @"C:\Users\sshuser\project\learning";
+        string localLearnVault = System.IO.Path.Combine(LearnDataPaths.BaseDirectory, "learn");
+        string defaultVault = Directory.Exists(localLearnVault)
+            ? localLearnVault
+            : System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "project", "learning");
+
         if (Directory.Exists(defaultVault))
         {
             var fallback = new ObsidianConfig(defaultVault);

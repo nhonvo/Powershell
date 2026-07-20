@@ -118,7 +118,7 @@ A built-in interactive learning suite powered by Spectre.Console, featuring spac
   └── 📊 stats/            # /stats (Spaced repetition study logs)
   ```
 * **Interactive Algorithm Visualizer (`/algo`)**: Visualizes sorting algorithms (Bubble, Selection, QuickSort, MergeSort), Graph Traversals (BFS), and Dynamic Programming (Fibonacci Table) step-by-step in terminal ASCII graphics.
-* **Obsidian Vault Ingestion Pipeline (`/refresh`)**: Scans local vault (`C:\Users\sshuser\project\learning`) containing 2,009 files, 3,600 cards, and 94 flashcard decks.
+* **Obsidian Vault Ingestion Pipeline (`/refresh`)**: Scans local vault (`learn/` or configured vault directory) containing 2,009 files, 3,600 cards, and 94 flashcard decks.
 
 ### 4. AI Integrations & Local AI Hub (`ai helper` / `AiHelper`)
 Manages background server dependencies, model selections, multi-account isolation, and auto-commit toggles.
@@ -147,8 +147,8 @@ Launches a dedicated full-screen interactive command sub-shell.
 | :--- | :--- | :--- |
 | `/learn` | Master Hub | Opens the Master Learning Suite interactive menu connecting all 5 domains |
 | `/obsidian` | 📚 Obsidian Vault | Interactive Obsidian Note Search, Tag Browser, Daily Note, and Graph Renderer |
-| `/refresh` / `/sync` | 📚 Obsidian Vault | Rescans Obsidian Vault (`C:\Users\sshuser\project\learning`) and syncs datasets to `learn/` |
-| `/vault-open` | 📚 Obsidian Vault | Opens Obsidian Vault directory (`C:\Users\sshuser\project\learning`) in File Explorer |
+| `/refresh` / `/sync` | 📚 Obsidian Vault | Rescans Obsidian Vault notes and syncs datasets to `learn/` |
+| `/vault-open` | 📚 Obsidian Vault | Opens Obsidian Vault directory in Windows File Explorer |
 | `/kana` | 🎌 Japanese | Hiragana & Katakana Spaced Repetition Quiz (`learn/japanese/kana.json`) |
 | `/kanji` | 🎌 Japanese | Kanji Radical & Stroke Count Search (`learn/japanese/kanji.json`) |
 | `/jlpt` | 🎌 Japanese | JLPT N5 & N4 Vocabulary Drills (`learn/japanese/N5.json`, `N4.json` — 1,653 words) |

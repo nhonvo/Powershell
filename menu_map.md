@@ -78,8 +78,8 @@ Active learning dashboard, Obsidian vault note sync, language drills, algorithms
 *   **Start Learning (auto)** (`learn`) — Launch master learning suite router.
 *   **[Obsidian Vault & Sync]** (Grouped Vault commands):
     *   **Obsidian Vault Browser** (`obsidian`) — Search notes by keyword, browse tags, view daily notes, and render graph.
-    *   **Rescan & Sync Vault Datasets** (`refresh` / `sync`) — Rescan Obsidian Vault `C:\Users\sshuser\project\learning` and sync flashcards, quizzes, and cheat sheets to `learn/`.
-    *   **Open Vault Folder** (`vault-open`) — Open `C:\Users\sshuser\project\learning` directory in Windows File Explorer.
+    *   **Rescan & Sync Vault Datasets** (`refresh` / `sync`) — Rescan Obsidian Vault and sync flashcards, quizzes, and cheat sheets to `learn/`.
+    *   **Open Vault Folder** (`vault-open`) — Open Obsidian Vault directory in Windows File Explorer.
 *   **[Japanese Suite]** (Grouped Japanese tools):
     *   **Kana Quiz** (`kana`) — Japanese hiragana/katakana training.
     *   **Kanji Lookup** (`kanji`) — Search stroke orders, radicals, and meanings.

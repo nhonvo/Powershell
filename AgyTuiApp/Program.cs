@@ -883,7 +883,8 @@ public static class Program
                     break;
                 case "vault-open":
                     var openCfg = ObsidianBridge.LoadConfig();
-                    var targetPath = openCfg?.VaultPath ?? @"C:\Users\sshuser\project\learning";
+                    var defaultOpenVault = System.IO.Path.Combine(LearnDataPaths.BaseDirectory, "learn");
+                    var targetPath = openCfg?.VaultPath ?? (Directory.Exists(defaultOpenVault) ? defaultOpenVault : System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "project", "learning"));
                     if (Directory.Exists(targetPath))
                     {
                         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo

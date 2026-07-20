@@ -1382,7 +1382,7 @@ public static class AgyAccountMenu
 }
 public static class Projects
 {
-    public static readonly string AgBaseDir = !string.IsNullOrEmpty(Config.Current.ProjectsBaseDir) ? Config.Current.ProjectsBaseDir : (Directory.Exists(@"C:\Users\sshuser\project") ? @"C:\Users\sshuser\project" : System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop", "project"));
+    public static readonly string AgBaseDir = !string.IsNullOrEmpty(Config.Current.ProjectsBaseDir) ? Config.Current.ProjectsBaseDir : System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop", "project");
 
     public static string? StartManager()
     {
