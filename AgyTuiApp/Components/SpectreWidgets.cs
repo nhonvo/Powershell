@@ -111,6 +111,7 @@ public static class SpectreMenu
                 else
                 {
                     Console.SetCursorPosition(0, 0);
+                    Console.Write("\x1b[J");
                 }
             }
             catch { }
@@ -201,6 +202,7 @@ public static class SpectrePager
                 else
                 {
                     Console.SetCursorPosition(0, 0);
+                    Console.Write("\x1b[J");
                 }
 
                 AnsiConsole.Write(new Rule($"[bold cyan]{title.EscapeMarkup()}[/]").RuleStyle("grey"));
