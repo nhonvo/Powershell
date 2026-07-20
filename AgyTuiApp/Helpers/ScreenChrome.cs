@@ -26,6 +26,15 @@ public static class ScreenChrome
         _firstRenderDone = false;
     }
 
+    public static void ClearTrailingLines()
+    {
+        try
+        {
+            Console.Write("\x1b[J");
+        }
+        catch {}
+    }
+
     public static void RenderBanner(string? category = null, string? activeItem = null, bool forceClear = false)
     {
         var acc = AgyAccountCore.GetActiveAccount();
@@ -46,7 +55,11 @@ public static class ScreenChrome
         }
         else
         {
-            try { Console.SetCursorPosition(0, 0); } catch {}
+            try
+            {
+                Console.SetCursorPosition(0, 0);
+            }
+            catch {}
         }
         AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
         AnsiConsole.MarkupLine("[cyan] ▄████▄  ▄████▄ [/] [bold green]🛸 Powershell Profile Control Center v3.0 🛸[/]");

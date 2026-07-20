@@ -51,6 +51,7 @@ public sealed class ThreePaneRenderer : IMenuRenderer
 
             ScreenChrome.RenderBanner();
             RenderPanes(categories, leftSel, visibleItems, midSel, midActive, detailsActive, detailsSel, detailsMode);
+            ScreenChrome.ClearTrailingLines();
 
             var key = Console.ReadKey(true);
 

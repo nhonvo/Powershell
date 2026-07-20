@@ -165,6 +165,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
             {
                 RenderTree(visibleRows, selectionIndex, searching, searchBuffer);
             }
+            ScreenChrome.ClearTrailingLines();
 
             var key = Console.ReadKey(true);
 
