@@ -140,4 +140,13 @@ This setup ensures the C# implementation remains the single source of truth, and
 ---
 
 ### Q3: Why do we use `[System.IO.File]::WriteAllText` instead of `Out-File`?
-In PowerShell testing contexts (especially when using Pester mocks), mocking cmdlets like `Out-File` that constraint properties to `[System.Text.Encoding]` can lead to casting failures (`PSInvalidCastException`) when strings are supplied. Using raw .NET writes (e.g. `[System.IO.File]::WriteAllText($path, $text)`) completely bypasses these cmdlet-binding bugs and makes the profile helper scripts robust across different shell hosts.
+In PowerShell testing contexts (especially when using Pester mocks), mocking cmdlets like Out-File that constraint properties to `[System.Text.Encoding]` can lead to casting failures (`PSInvalidCastException`) when strings are supplied. Using raw .NET writes (e.g. `[System.IO.File]::WriteAllText($path, $text)`) completely bypasses these cmdlet-binding bugs and makes the profile helper scripts robust across different shell hosts.
+
+---
+
+## 🛡️ TUI & Profile Invariants
+
+1. **Markup Tag Safety**: All user input, command descriptions, and panel headers rendered via Spectre.Console MUST use `.EscapeMarkup()`. Literal brackets (`[+]`, `[-]`) and slashes (`[/]`) MUST be escaped as `[[+]]`, `[[-]]`, and `[[/]]`.
+2. **Subprocess Isolation**: PowerShell profile shortcuts (`cc`, `cg`, `cnet`, etc.) MUST launch `AgyTuiApp.exe` directly as a subprocess to prevent Windows assembly locking and runtime version conflicts.
+3. **Slash-Command Normalization**: TUI search filters MUST sanitize queries using `searchBuffer.TrimStart('/')` to allow seamless `/command` searches without returning empty results.
+

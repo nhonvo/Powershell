@@ -588,9 +588,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
             else if (row.Type == VisibleRowType.Command)
             {
                 var cmd = row.Node.Command!;
-                var icon = Icons.GetFileIcon(cmd.Alias == "proj" ? ".cs" : cmd.Alias == "db-tui" ? ".sql" : ".txt");
-                if (cmd.Category == "[AI Agent & Ollama]") icon = Icons.GetProviderIcon(cmd.Alias.Split('-')[0]);
-                if (cmd.Category == "[Learn & Study]") icon = Icons.GetSubjectIcon(cmd.Alias);
+                var icon = Icons.GetCommandIcon(cmd.Alias, cmd.Category);
 
                 var displayLabel = $"/{cmd.Alias} — {cmd.DisplayName}".EscapeMarkup();
                 var desc = isCompact && !isSelected ? "" : $" [dim]· {cmd.Description.EscapeMarkup()}[/]";

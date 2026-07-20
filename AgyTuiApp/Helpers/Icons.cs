@@ -50,6 +50,143 @@ public static class Icons
     public static string FolderClosed => UseNerdFonts ? "󰉋" : "📁";
     public static string FolderOpen => UseNerdFonts ? "󰉓" : "📂";
 
+    public static string GetCategoryIcon(string categoryLabel)
+    {
+        categoryLabel = categoryLabel.ToLowerInvariant();
+        if (categoryLabel.Contains("workspace")) return "📁";
+        if (categoryLabel.Contains("ai agent") || categoryLabel.Contains("ollama")) return "🤖";
+        if (categoryLabel.Contains("account")) return "👤";
+        if (categoryLabel.Contains("docker") || categoryLabel.Contains("database")) return "🐳";
+        if (categoryLabel.Contains("system") || categoryLabel.Contains("network")) return "🌐";
+        if (categoryLabel.Contains("learn") || categoryLabel.Contains("study")) return "📚";
+        if (categoryLabel.Contains("track") || categoryLabel.Contains("progress")) return "📈";
+        if (categoryLabel.Contains("obsidian") || categoryLabel.Contains("resource")) return "💎";
+        if (categoryLabel.Contains("theme") || categoryLabel.Contains("setting")) return "🎨";
+        return "📂";
+    }
+
+    public static string GetCommandIcon(string alias, string category)
+    {
+        alias = alias.ToLowerInvariant();
+        category = category.ToLowerInvariant();
+
+        if (category.Contains("ai agent") || category.Contains("ollama"))
+        {
+            var provider = alias.Split('-')[0];
+            if (alias.StartsWith("deck")) return "🧠";
+            if (alias.StartsWith("ollama")) return "🦙";
+            return GetProviderIcon(provider);
+        }
+
+        if (category.Contains("learn") || category.Contains("study"))
+        {
+            return GetSubjectIcon(alias);
+        }
+
+        if (UseNerdFonts)
+        {
+            return alias switch
+            {
+                "proj" => "󰉋",
+                "ide" => "󰨞",
+                "ide-diff" => "󰊢",
+                "ide-search" => "󰍉",
+                "dbld" => "⚙",
+                "dtst" => "󰙨",
+                "clean-build" => "󰃢",
+                "add-migration" => "󰆼",
+                "update-db" => "󰆼",
+                "scaffold" => "🏗",
+                "gs" => "󰊢",
+                "gcmt" => "💬",
+                "git-undo" => "↩",
+                "nexus" or "repo-graph" or "nexus-stats" => "🕸",
+
+                "agyswitch" or "account-tree" => "👤",
+                "agyquota" or "quota-chart" or "live-dashboard" => "📊",
+                "autoswitch" => "⚡",
+
+                "docker-health" or "dkcl" or "dcup" or "dcdown" => "🐳",
+                "aws-local" => "☁",
+                "db-tui" => "🗄",
+
+                "tailscale-status" => "🔒",
+                "ssh-qr" or "ssh-info" => "🔑",
+                "disk" => "💾",
+                "public-ip" => "🌐",
+                "kill-port" => "🚫",
+
+                "session" => "⏱",
+                "stats" or "progress" => "📈",
+                "goals" => "🎯",
+                "streak" => "🔥",
+                "due" or "weak" => "⭐",
+
+                "obsidian" or "obs-graph" => "💎",
+                "refresh" => "🔄",
+                "add-resource" => "📌",
+
+                "cc" or "help" => "🛸",
+                "mobile-setup" => "📱",
+                "theme" => "🎨",
+                "ui-mode" or "density" => "🖥",
+
+                _ => GetFileIcon(".txt")
+            };
+        }
+        else
+        {
+            return alias switch
+            {
+                "proj" => "📁",
+                "ide" => "💻",
+                "ide-diff" => "🔀",
+                "ide-search" => "🔍",
+                "dbld" => "⚙",
+                "dtst" => "🧪",
+                "clean-build" => "🧹",
+                "add-migration" or "update-db" => "🗄",
+                "scaffold" => "🏗",
+                "gs" => "🌿",
+                "gcmt" => "💬",
+                "git-undo" => "↩",
+                "nexus" or "repo-graph" or "nexus-stats" => "🕸",
+
+                "agyswitch" or "account-tree" => "👤",
+                "agyquota" or "quota-chart" or "live-dashboard" => "📊",
+                "autoswitch" => "⚡",
+
+                "docker-health" or "dkcl" or "dcup" or "dcdown" => "🐳",
+                "aws-local" => "☁",
+                "db-tui" => "🗄",
+
+                "tailscale-status" => "🔒",
+                "ssh-qr" => "📱",
+                "ssh-info" => "🔑",
+                "disk" => "💾",
+                "public-ip" => "🌐",
+                "kill-port" => "🚫",
+
+                "session" => "⏱",
+                "stats" or "progress" => "📈",
+                "goals" => "🎯",
+                "streak" => "🔥",
+                "due" or "weak" => "⭐",
+
+                "obsidian" or "obs-graph" => "💎",
+                "refresh" => "🔄",
+                "add-resource" => "📌",
+
+                "cc" or "help" => "🛸",
+                "mobile-setup" => "📱",
+                "theme" => "🎨",
+                "ui-mode" or "density" => "🖥",
+
+                _ => GetFileIcon(".txt")
+            };
+        }
+    }
+
     public static string GetStatusIcon(string status)
     {
         status = status.ToLowerInvariant();
