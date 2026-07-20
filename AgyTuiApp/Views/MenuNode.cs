@@ -29,7 +29,9 @@ public static class MenuNodeBuilder
 {
     public static MenuNode BuildTree()
     {
-        var allCommands = CommandRegistry.All.ToDictionary(c => c.Alias, StringComparer.OrdinalIgnoreCase);
+        var allCommands = CommandRegistry.All
+            .GroupBy(c => c.Alias, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
 
         // Group 1: Git Tools
         var gitTools = new MenuNode(

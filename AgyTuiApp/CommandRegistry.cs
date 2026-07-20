@@ -351,12 +351,8 @@ public static class CommandRegistry
             new[] { "weak — Review cards and concepts with low retention scores before starting a session." }),
 
         // [Obsidian & Resources]
-        new("obsidian", "Obsidian Vault Config", "Configure / browse Obsidian vault", "[Obsidian & Resources]", "Obsidian",
-            new[] { "obsidian — Configure local Obsidian vault directory path and sync settings." }),
         new("obs-graph", "Obsidian Graph View", "Obsidian wikilink graph", "[Obsidian & Resources]", "Obsidian",
             new[] { "obs-graph — Visualizes inter-note wikilink relationships in your Obsidian vault." }),
-        new("refresh", "Refresh Learning Data", "Refresh learning data from vault", "[Obsidian & Resources]", "Resources",
-            new[] { "refresh — Re-indexes Markdown flashcards and notes from Obsidian vault." }),
         new("add-resource", "Add Resource", "Add a file/URL to resource registry", "[Obsidian & Resources]", "Resources",
             new[] { "add-resource — Register a external file path or URL with custom tags." }),
 
