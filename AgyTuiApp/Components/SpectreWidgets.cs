@@ -98,11 +98,20 @@ public static class SpectreMenu
         var selected = defaultIndex;
         Console.CursorVisible = false;
 
+        bool isFirstRender = true;
         while (true)
         {
             try
             {
-                AnsiConsole.Clear();
+                if (isFirstRender)
+                {
+                    AnsiConsole.Clear();
+                    isFirstRender = false;
+                }
+                else
+                {
+                    Console.SetCursorPosition(0, 0);
+                }
             }
             catch { }
 
@@ -179,11 +188,21 @@ public static class SpectrePager
         var top = 0;
         Console.CursorVisible = false;
 
+        bool isFirstRender = true;
         try
         {
             while (true)
             {
-                AnsiConsole.Clear();
+                if (isFirstRender)
+                {
+                    AnsiConsole.Clear();
+                    isFirstRender = false;
+                }
+                else
+                {
+                    Console.SetCursorPosition(0, 0);
+                }
+
                 AnsiConsole.Write(new Rule($"[bold cyan]{title.EscapeMarkup()}[/]").RuleStyle("grey"));
                 for (var i = top; i < Math.Min(top + pageSize, totalLines); i++)
                     AnsiConsole.MarkupLine(lines[i].EscapeMarkup());

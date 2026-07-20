@@ -869,6 +869,11 @@ public static class Program
                     var weakTopic = SelectTopicInteractive("Select Topic for Weak Items");
                     if (!string.IsNullOrEmpty(weakTopic)) WeakItemsQueue.ShowPreSessionReview(weakTopic);
                     break;
+                case "learn-gen":
+                case "ai-gen":
+                case "deck-gen":
+                    AiLearningGenerator.RunGenerator();
+                    break;
                 case "obsidian":
                 case "vault":
                     ObsidianBridge.Run();

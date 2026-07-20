@@ -340,6 +340,7 @@ public static class MenuNodeBuilder
             new[]
             {
                 CreateCommandNode(allCommands["learn"]),
+                CreateCommandNode(allCommands["learn-gen"]),
                 obsidianVault,
                 jpSuite,
                 englishVocab,

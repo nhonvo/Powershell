@@ -295,6 +295,8 @@ public static class CommandRegistry
         // [Learn & Study]
         new("learn", "Start Learning (auto)", "Start learning for a topic (auto-refresh)", "[Learn & Study]", "Learn",
             new[] { "learn — Launches interactive study learning router for selected topic." }),
+        new("learn-gen", "AI Content Generator", "Deeply generate flashcard decks, grammar, or quizzes via AGY / Claude CLI", "[Learn & Study]", "AI Learn",
+            new[] { "learn-gen — Deeply generates new flashcard decks, quizzes, and STAR answers via agy or claude CLI." }),
         new("obsidian", "Obsidian Vault Browser", "Search, browse by tag, and view daily notes in vault", "[Learn & Study]", "Vault",
             new[] { "obsidian — Interactive Obsidian Vault note search, tag browser, daily notes, and graph renderer." }),
         new("refresh", "Rescan & Sync Vault Datasets", "Rescan C:\\Users\\sshuser\\project\\learning and sync datasets to learn/", "[Learn & Study]", "Vault",
