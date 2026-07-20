@@ -4,24 +4,58 @@ using System.Text.Json;
 
 namespace AgyTui;
 
-public sealed class ConfigData
+public sealed class UiConfig
 {
-    public string AiMode { get; set; } = "auto";
-    public string AiProviderMode { get; set; } = "cloud";
+    public string Mode { get; set; } = "flat-tree";
+    public string Density { get; set; } = "comfortable";
+}
+
+public sealed class AiConfig
+{
+    public string Mode { get; set; } = "auto";
+    public string ProviderMode { get; set; } = "cloud";
+    public bool EnableOllama { get; set; } = true;
+    public bool EnableAgy { get; set; } = true;
+}
+
+public sealed class ProjectConfig
+{
+    public string BaseDir { get; set; } = "";
+    public string[] SearchPaths { get; set; } = Array.Empty<string>();
+    public string[] ExcludeFolders { get; set; } = Array.Empty<string>();
+}
+
+public sealed class SystemConfig
+{
     public bool VerboseStartup { get; set; } = false;
     public string StartupLogFile { get; set; } = "";
     public string PoshThemesPath { get; set; } = "";
-    public string ProjectsBaseDir { get; set; } = "";
     public string AgySourceHome { get; set; } = "";
     public string GlobalBinDir { get; set; } = "";
-    public bool EnableAiOllama { get; set; } = true;
-    public bool EnableAgy { get; set; } = true;
-    public string[] ProjectSearchPaths { get; set; } = Array.Empty<string>();
-    public string[] ProjectExcludeFolders { get; set; } = Array.Empty<string>();
+}
 
-    // New settings
-    public string UiMode { get; set; } = "flat-tree";
-    public string Density { get; set; } = "comfortable";
+public sealed class ConfigData
+{
+    public UiConfig Ui { get; set; } = new();
+    public AiConfig Ai { get; set; } = new();
+    public ProjectConfig Project { get; set; } = new();
+    public SystemConfig System { get; set; } = new();
+
+    // Flat getters and setters for backwards compatibility
+    public string UiMode { get => Ui.Mode; set { if (!string.IsNullOrEmpty(value)) Ui.Mode = value; } }
+    public string Density { get => Ui.Density; set { if (!string.IsNullOrEmpty(value)) Ui.Density = value; } }
+    public string AiMode { get => Ai.Mode; set { if (!string.IsNullOrEmpty(value)) Ai.Mode = value; } }
+    public string AiProviderMode { get => Ai.ProviderMode; set { if (!string.IsNullOrEmpty(value)) Ai.ProviderMode = value; } }
+    public bool EnableAiOllama { get => Ai.EnableOllama; set => Ai.EnableOllama = value; }
+    public bool EnableAgy { get => Ai.EnableAgy; set => Ai.EnableAgy = value; }
+    public bool VerboseStartup { get => System.VerboseStartup; set => System.VerboseStartup = value; }
+    public string StartupLogFile { get => System.StartupLogFile; set { if (!string.IsNullOrEmpty(value)) System.StartupLogFile = value; } }
+    public string PoshThemesPath { get => System.PoshThemesPath; set { if (!string.IsNullOrEmpty(value)) System.PoshThemesPath = value; } }
+    public string ProjectsBaseDir { get => Project.BaseDir; set { if (!string.IsNullOrEmpty(value)) Project.BaseDir = value; } }
+    public string AgySourceHome { get => System.AgySourceHome; set { if (!string.IsNullOrEmpty(value)) System.AgySourceHome = value; } }
+    public string GlobalBinDir { get => System.GlobalBinDir; set { if (!string.IsNullOrEmpty(value)) System.GlobalBinDir = value; } }
+    public string[] ProjectSearchPaths { get => Project.SearchPaths; set { if (value != null) Project.SearchPaths = value; } }
+    public string[] ProjectExcludeFolders { get => Project.ExcludeFolders; set { if (value != null) Project.ExcludeFolders = value; } }
 }
 
 public static class Config
@@ -87,18 +121,18 @@ public static class Config
         catch { }
     }
 
-    public static string GetUiMode() => Current.UiMode;
-    public static string GetDensity() => Current.Density;
+    public static string GetUiMode() => Current.Ui.Mode;
+    public static string GetDensity() => Current.Ui.Density;
 
     public static void SetUiMode(string uiMode)
     {
-        Current.UiMode = uiMode;
+        Current.Ui.Mode = uiMode;
         Save();
     }
 
     public static void SetDensity(string density)
     {
-        Current.Density = density;
+        Current.Ui.Density = density;
         Save();
     }
 
@@ -106,11 +140,10 @@ public static class Config
     {
         try
         {
-            // Auto-detect based on Console.WindowWidth
             if (Console.WindowWidth > 0 && Console.WindowWidth < 70)
             {
-                Current.Density = "compact";
-                Current.UiMode = "flat-tree";
+                Current.Ui.Density = "compact";
+                Current.Ui.Mode = "flat-tree";
             }
         }
         catch { }

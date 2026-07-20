@@ -1,32 +1,40 @@
 {
-  "UiMode": "flat-tree",
-  "Density": "comfortable",
-  "AiMode": "auto",
-  "AiProviderMode": "cloud",
-  "EnableAiOllama": true,
-  "EnableAgy": true,
-  "VerboseStartup": false,
-  "StartupLogFile": "C:\\Users\\TruongNhon\\.gemini\\antigravity\\profile.log",
-  "PoshThemesPath": "C:\\Users\\TruongNhon\\Documents\\Powershell\\asset\\powershell-themes",
-  "ProjectsBaseDir": "C:\\Users\\TruongNhon\\Desktop\\project",
-  "AgySourceHome": "C:\\Users\\Public\\.gemini",
-  "GlobalBinDir": "C:\\ProgramData\\agy\\bin",
-  "ProjectSearchPaths": [
-    "C:\\Users\\TruongNhon\\Desktop\\back-up\\1.project",
-    "C:\\Users\\TruongNhon\\Desktop\\project",
-    "C:\\Users\\sshuser\\project",
-    "C:\\Users\\TruongNhon\\Documents"
-  ],
-  "ProjectExcludeFolders": [
-    "My Music",
-    "My Pictures",
-    "My Videos",
-    "WindowsPowerShell",
-    "Custom Office Templates",
-    "Visual Studio 2022",
-    "Modules",
-    "vscode-config",
-    "typora-themes",
-    "img"
-  ]
+  "Ui": {
+    "Mode": "flat-tree",
+    "Density": "comfortable"
+  },
+  "Ai": {
+    "Mode": "auto",
+    "ProviderMode": "cloud",
+    "EnableOllama": true,
+    "EnableAgy": true
+  },
+  "Project": {
+    "BaseDir": "C:\\Users\\TruongNhon\\Desktop\\project",
+    "SearchPaths": [
+      "C:\\Users\\TruongNhon\\Desktop\\back-up\\1.project",
+      "C:\\Users\\TruongNhon\\Desktop\\project",
+      "C:\\Users\\sshuser\\project",
+      "C:\\Users\\TruongNhon\\Documents"
+    ],
+    "ExcludeFolders": [
+      "My Music",
+      "My Pictures",
+      "My Videos",
+      "WindowsPowerShell",
+      "Custom Office Templates",
+      "Visual Studio 2022",
+      "Modules",
+      "vscode-config",
+      "typora-themes",
+      "img"
+    ]
+  },
+  "System": {
+    "VerboseStartup": false,
+    "StartupLogFile": "C:\\Users\\TruongNhon\\.gemini\\antigravity\\profile.log",
+    "PoshThemesPath": "C:\\Users\\TruongNhon\\Documents\\Powershell\\asset\\powershell-themes",
+    "AgySourceHome": "C:\\Users\\Public\\.gemini",
+    "GlobalBinDir": "C:\\ProgramData\\agy\\bin"
+  }
 }
