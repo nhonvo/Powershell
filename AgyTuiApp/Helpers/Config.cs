@@ -71,14 +71,31 @@ public static class Config
 
     public static string GetProfileRepoRoot()
     {
-        var asmPath = typeof(Config).Assembly.Location;
-        if (string.IsNullOrEmpty(asmPath)) return Directory.GetCurrentDirectory();
-        var asmDir = Path.GetDirectoryName(asmPath);
-        if (string.IsNullOrEmpty(asmDir)) return Directory.GetCurrentDirectory();
-        var parent = Path.GetDirectoryName(asmDir);
-        if (parent == null) return asmDir;
-        var grandParent = Path.GetDirectoryName(parent);
-        return grandParent ?? parent;
+        var envRoot = Environment.GetEnvironmentVariable("PROFILE_REPO_ROOT");
+        if (!string.IsNullOrEmpty(envRoot) && File.Exists(Path.Combine(envRoot, "profile.config.json")))
+            return envRoot;
+
+        var startDir = Directory.GetCurrentDirectory();
+        try
+        {
+            var asmPath = typeof(Config).Assembly.Location;
+            if (!string.IsNullOrEmpty(asmPath))
+            {
+                var dir = Path.GetDirectoryName(asmPath);
+                if (!string.IsNullOrEmpty(dir)) startDir = dir;
+            }
+        }
+        catch { }
+
+        var curr = new DirectoryInfo(startDir);
+        while (curr != null)
+        {
+            if (File.Exists(Path.Combine(curr.FullName, "profile.config.json")))
+                return curr.FullName;
+            curr = curr.Parent;
+        }
+
+        return Directory.GetCurrentDirectory();
     }
 
     public static void Load()
