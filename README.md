@@ -146,6 +146,9 @@ Launches a dedicated full-screen interactive command sub-shell.
 | Command / Alias | Domain Suite | Description & Resource Location |
 | :--- | :--- | :--- |
 | `/learn` | Master Hub | Opens the Master Learning Suite interactive menu connecting all 5 domains |
+| `/obsidian` | 📚 Obsidian Vault | Interactive Obsidian Note Search, Tag Browser, Daily Note, and Graph Renderer |
+| `/refresh` / `/sync` | 📚 Obsidian Vault | Rescans Obsidian Vault (`C:\Users\sshuser\project\learning`) and syncs datasets to `learn/` |
+| `/vault-open` | 📚 Obsidian Vault | Opens Obsidian Vault directory (`C:\Users\sshuser\project\learning`) in File Explorer |
 | `/kana` | 🎌 Japanese | Hiragana & Katakana Spaced Repetition Quiz (`learn/japanese/kana.json`) |
 | `/kanji` | 🎌 Japanese | Kanji Radical & Stroke Count Search (`learn/japanese/kanji.json`) |
 | `/jlpt` | 🎌 Japanese | JLPT N5 & N4 Vocabulary Drills (`learn/japanese/N5.json`, `N4.json` — 1,653 words) |
