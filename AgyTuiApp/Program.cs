@@ -613,10 +613,34 @@ public static class Program
                     }
                     break;
                 case "hermes":
-                    if (AgyAiCore.InvokeHermes([]) == AgyAiCore.HermesResult.NotInstalled) SpectrePanel.Warning("Hermes is not installed. Run 'hermes' from PowerShell for install instructions.");
+                    if (AgyAiCore.InvokeHermes([]) == AgyAiCore.HermesResult.NotInstalled)
+                    {
+                        SpectrePanel.Warning("Hermes CLI is not installed on PATH.");
+                        var choice = SpectreMenu.Show("Hermes Action Fallback", ["Launch local Ollama chat with default model", "View Hermes setup guide"], 0);
+                        if (choice == 0)
+                        {
+                            AgyAiCore.InvokeOllamaNative(null);
+                        }
+                        else if (choice == 1)
+                        {
+                            AnsiConsole.MarkupLine("[cyan]To install Nous Hermes Agent:[/] pip install hermes-agent (or npm install -g @nous/hermes)");
+                        }
+                    }
                     break;
                 case "hermesd":
-                    if (AgyAiCore.InvokeHermesDesktop([]) == AgyAiCore.HermesResult.NotInstalled) SpectrePanel.Warning("Hermes Desktop is not installed. Run 'hermesd' from PowerShell for install instructions.");
+                    if (AgyAiCore.InvokeHermesDesktop([]) == AgyAiCore.HermesResult.NotInstalled)
+                    {
+                        SpectrePanel.Warning("Hermes Desktop is not installed on PATH.");
+                        var choice = SpectreMenu.Show("Hermes Desktop Fallback", ["Launch local Ollama chat with default model", "View Hermes Desktop setup guide"], 0);
+                        if (choice == 0)
+                        {
+                            AgyAiCore.InvokeOllamaNative(null);
+                        }
+                        else if (choice == 1)
+                        {
+                            AnsiConsole.MarkupLine("[cyan]To install Hermes Desktop:[/] Download installer from https://github.com/nousresearch/hermes-desktop");
+                        }
+                    }
                     break;
                 case "tailscale-status":
                     SshHelper.ShowTailscaleStatus();
