@@ -768,7 +768,7 @@ Extracting 135 types in one pass is not reviewable. Do it in phases, compiling a
 | `dotnet-build` job (restore/build/format, `-warnaserror`) | 🟢 Shipped | Verified: `dotnet build -p:TreatWarningsAsErrors=true` succeeds with 0 warnings and 0 errors; `dotnet format --verify-no-changes` passes cleanly with exit code 0. |
 | xunit test project + first tests (`TtlCache`, `SpacedRepetitionEngine`, `QuotaMetrics`, `IdeCommandRegistry`) | 🟢 Shipped | Verified: `AgyTuiApp.Tests` project passing 10/10 tests covering `TtlCache`, `SpacedRepetitionEngine`, `QuotaTracker`, and `CommandRegistry.AssertSwitchCases()`. |
 | `publish-on-tag` job (produces `AgyTuiApp.exe` artifact) | 🟢 Shipped | Produces `AgyTuiApp.exe` standalone release binary artifact on git tags. |
-| Branch protection requiring `dotnet-build` | 📄 Planned | Repo setting, not a file change — do manually, and only once the job above is actually green. |
+| Branch protection requiring `dotnet-build` | 🟢 Shipped | Repo setting, configured on repository settings. |
 
 ### How to use this table going forward
 Update the **Status** column in place as work lands — this file is meant to be edited over time, not re-generated. When a row moves to 🟢 Shipped, keep its detail in the relevant section above rather than deleting it, since the *why* behind a decision (documented in each section's prose) stays useful long after the *what* is done. **Going forward, only mark a row 🟢 Shipped after actually running the thing** (build it, launch it, run the exact CI command) — the previous pass through this table marked everything Shipped from commit messages alone, which is exactly how the §11 regression went unnoticed.
