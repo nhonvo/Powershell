@@ -904,7 +904,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                     var isSelected = (i == selIdx);
                     var isActive = string.Equals(filtered[i], currentTheme, StringComparison.OrdinalIgnoreCase);
                     var prefix = isSelected ? "[green bold]> [/]" : "  ";
-                    var suffix = isActive ? " [bold green][ACTIVE][/]" : "";
+                    var suffix = isActive ? " [bold green][[ACTIVE]][/]" : "";
                     var nameMarkup = isSelected ? $"[bold green]{filtered[i].EscapeMarkup()}[/]" : $"[white]{filtered[i].EscapeMarkup()}[/]";
                     grid.AddRow(new Markup($"{prefix}{nameMarkup}{suffix}"));
                 }
@@ -985,7 +985,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                         var isCurrent = !string.IsNullOrEmpty(wsPath) && string.Equals(wsPath.TrimEnd('\\', '/'), currentDir.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
 
                         var prefix = isSelected ? "[green bold]❯ [/]" : "  ";
-                        var status = isCurrent ? "[bold green][ACTIVE][/] " : "";
+                        var status = isCurrent ? "[bold green][[ACTIVE]][/] " : "";
                         var branch = WorkspaceRegistry.GetGitBranch(wsPath);
                         var branchSuffix = !string.IsNullOrEmpty(branch) ? $" [yellow]({branch})[/]" : "";
                         var nameMarkup = isSelected ? $"[bold green]{wsName.EscapeMarkup()}[/]" : $"[bold white]{wsName.EscapeMarkup()}[/]";
