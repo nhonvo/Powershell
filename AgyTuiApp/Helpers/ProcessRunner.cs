@@ -69,6 +69,13 @@ public static class ProcessRunner
 
     public static string RunCapture(string exe, string args, string? workingDir = null)
     {
+        var (stdout, _, _) = RunCaptureWithDetails(exe, args, workingDir, TimeSpan.FromSeconds(30));
+        return stdout;
+    }
+
+    public static (string Stdout, string Stderr, int ExitCode) RunCaptureWithDetails(
+        string exe, string args, string? workingDir = null, TimeSpan? timeout = null)
+    {
         var psi = new ProcessStartInfo(exe, args)
         {
             RedirectStandardOutput = true,
@@ -78,17 +85,34 @@ public static class ProcessRunner
             WorkingDirectory = workingDir ?? Directory.GetCurrentDirectory()
         };
 
+        var stdoutBuilder = new System.Text.StringBuilder();
+        var stderrBuilder = new System.Text.StringBuilder();
+
         try
         {
-            using var p = Process.Start(psi);
-            if (p == null) return "";
-            var output = p.StandardOutput.ReadToEnd();
-            p.WaitForExit();
-            return output;
+            using var p = new Process { StartInfo = psi };
+            p.OutputDataReceived += (s, e) => { if (e.Data != null) stdoutBuilder.AppendLine(e.Data); };
+            p.ErrorDataReceived += (s, e) => { if (e.Data != null) stderrBuilder.AppendLine(e.Data); };
+
+            p.Start();
+            p.BeginOutputReadLine();
+            p.BeginErrorReadLine();
+
+            var limit = timeout ?? TimeSpan.FromSeconds(30);
+            if (p.WaitForExit((int)limit.TotalMilliseconds))
+            {
+                p.WaitForExit(); 
+                return (stdoutBuilder.ToString(), stderrBuilder.ToString(), p.ExitCode);
+            }
+            else
+            {
+                try { p.Kill(true); } catch { }
+                return (stdoutBuilder.ToString(), stderrBuilder.ToString() + "\n[TIMED OUT]", -1);
+            }
         }
-        catch
+        catch (Exception ex)
         {
-            return "";
+            return ("", ex.Message, -1);
         }
     }
 

@@ -41,6 +41,7 @@ public static class LearnDataPaths
     public static string CareerDir => System.IO.Path.Combine(LearnRoot, "career");
     public static string CertificationsDir => System.IO.Path.Combine(LearnRoot, "certifications");
     public static string StatsDir => System.IO.Path.Combine(LearnRoot, "stats");
+    public static string GrammarDir => System.IO.Path.Combine(LearnRoot, "grammar");
 
     // Sub-directories
     public static string DecksDir => System.IO.Path.Combine(CertificationsDir, "decks");
@@ -81,7 +82,7 @@ public static class LearnDataPaths
         foreach (var d in new[]
         {
             LearnRoot, JapaneseDir, EnglishDir, CsharpDir, DsaDir, CareerDir,
-            CertificationsDir, DecksDir, VocabDir, SnippetsDir, SheetsDir, StatsDir
+            CertificationsDir, DecksDir, VocabDir, SnippetsDir, SheetsDir, StatsDir, GrammarDir
         })
         {
             Directory.CreateDirectory(d);
@@ -454,11 +455,10 @@ public static class FlashcardEngine
             SpectrePanel.Warning("Deck not found or empty.");
             return;
         }
-        Run(deck.Cards, deck.Meta.Title);
-
+        Run(deck.Cards, deck.Meta.Title, deckPath, deck);
     }
 
-    public static void Run(FlashCard[] cards, string deckName)
+    public static void Run(FlashCard[] cards, string deckName, string? deckPath = null, DeckFile? deck = null)
     {
         if (cards.Length == 0)
         {
@@ -472,6 +472,9 @@ public static class FlashcardEngine
             return;
         }
         int known = 0, again = 0;
+        var start = DateTime.Now;
+        var weakItems = new List<string>();
+
         foreach (var card in queue)
         {
             AnsiConsole.Clear();
@@ -500,13 +503,42 @@ public static class FlashcardEngine
                 Padding = new Padding(1, 1)
             }
             );
-            if (AnsiConsole.Confirm("[bold]Did you know it?[/]", defaultValue: false)) known++;
 
-            else again++;
+            bool knewIt = AnsiConsole.Confirm("[bold]Did you know it?[/]", defaultValue: false);
+            int quality = knewIt ? 4 : 1;
+            var srResult = SpacedRepetitionEngine.UpdateCard(card.Sr, quality);
+            
+            for (int i = 0; i < cards.Length; i++)
+            {
+                if (cards[i].Id == card.Id)
+                {
+                    cards[i] = cards[i] with { Sr = srResult.Updated };
+                    break;
+                }
+            }
+
+            if (knewIt)
+            {
+                known++;
+            }
+            else
+            {
+                again++;
+                weakItems.Add(card.Front);
+            }
         }
+
+        if (deckPath != null && deck != null)
+        {
+            var updatedDeck = deck with { Cards = cards };
+            LearnDataPaths.SaveJson(deckPath, updatedDeck);
+        }
+
         AnsiConsole.Clear();
         SpectrePanel.Success($"Session complete — ✓ {known} known ✗ {again} missed ({queue.Count} cards reviewed)");
 
+        var duration = (int)(DateTime.Now - start).TotalMinutes;
+        StudySession.Record(deckName, "cards", "review", new StudyScore(known, known + again, known + again > 0 ? (known * 100.0 / (known + again)) : 100.0), [.. weakItems], 0, duration, $"Reviewed {deckName} deck");
     }
 
     public static DeckFile[] GetDecks(string decksDir)
@@ -1009,6 +1041,21 @@ public static class WeakItemsQueue
 
     public static void ClearWeakItems(string topic)
     {
+        var log = LearnDataPaths.LoadJson<StudyLogFile>(LearnDataPaths.StudyLogFile);
+        if (log == null) return;
+        bool changed = false;
+        for (int i = 0; i < log.Sessions.Length; i++)
+        {
+            if (log.Sessions[i].Topic.Equals(topic, StringComparison.OrdinalIgnoreCase) && log.Sessions[i].WeakItems.Length > 0)
+            {
+                log.Sessions[i] = log.Sessions[i] with { WeakItems = Array.Empty<string>() };
+                changed = true;
+            }
+        }
+        if (changed)
+        {
+            LearnDataPaths.SaveJson(LearnDataPaths.StudyLogFile, log);
+        }
     }
 
 }

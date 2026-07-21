@@ -61,8 +61,9 @@ public static class GitHelper
         var scopePart = string.IsNullOrWhiteSpace(scope) ? string.Empty : $"({scope})";
 
         string description = "";
-        var draftWithClaude = AnsiConsole.Confirm("Would you like Claude to draft the description from staged diff?");
-        if (draftWithClaude)
+        var draftWithAI = AnsiConsole.Confirm("Would you like local AI to draft the description from staged diff?");
+        string draft = "";
+        if (draftWithAI)
         {
             var diff = RunGit("diff --cached").Trim();
             if (string.IsNullOrEmpty(diff))
@@ -71,17 +72,20 @@ public static class GitHelper
             }
             else
             {
-                AnsiConsole.MarkupLine("[cyan]Sending staged diff to Claude to draft description...[/]");
-                var tempFile = Path.Combine(Path.GetTempPath(), "staged_diff.diff");
-                File.WriteAllText(tempFile, diff);
-                AgyAiCore.InvokeClaude(["--prompt", $"Read the diff in {tempFile} and output ONLY a short (under 72 chars), clear description of the changes (no prefix/boilerplate) suitable for a git commit message."]);
-                try { File.Delete(tempFile); } catch { }
+                AnsiConsole.MarkupLine("[cyan]Querying local AI to draft description...[/]");
+                draft = AgyAiCore.GenerateDraftDescription(diff);
+                if (!string.IsNullOrEmpty(draft))
+                {
+                    AnsiConsole.MarkupLine($"[green]Suggested draft:[/] {draft}");
+                }
             }
         }
 
         while (true)
         {
-            description = AnsiConsole.Ask<string>("[cyan]Short description[/]:").Trim();
+            description = string.IsNullOrEmpty(draft)
+                ? AnsiConsole.Ask<string>("[cyan]Short description[/]:").Trim()
+                : AnsiConsole.Ask<string>("[cyan]Short description[/]:", draft).Trim();
             if (description.Length is >= 5 and <= 72) break;
             SpectrePanel.Warning("Description must be 5–72 characters.");
         }

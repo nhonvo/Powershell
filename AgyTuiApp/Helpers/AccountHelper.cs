@@ -54,7 +54,7 @@ public sealed class AccountMetadata
 
 }
 
-public sealed record QuotaMetrics(double RemainingWeekly, double Remaining5H, string TimeWeekly, string Time5H, int CountWeekly, int Count5H);
+public sealed record QuotaMetrics(double RemainingWeekly, double Remaining5H, string TimeWeekly, string Time5H, int CountWeekly, int Count5H, string ExhaustionWeekly, string Exhaustion5H);
 
 public sealed record AccountStats(string LastUsed, int UsageCount, string PrivateSize, string JunctionStatus, int SkillsCount, int ConversationsCount, string TokenStatus, string QuotaStatus, double GeminiWeekly, double GeminiFiveHour);
 
@@ -449,8 +449,18 @@ public static class AgyAccountCore
         meta.RequestHistory.Add(now.ToString("o"));
         meta.RequestHistory = meta.RequestHistory.Where(ts => DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt) && dt >= cutoff).ToList();
 
+        double threshold = 10.0;
+        var thresholdFile = Path.Combine(AgySourceHome, "quota_threshold.txt");
+        if (File.Exists(thresholdFile))
+        {
+            if (double.TryParse(File.ReadAllText(thresholdFile).Trim(), out var parsed))
+            {
+                threshold = parsed;
+            }
+        }
+        
         var rolling = CalculateRollingQuotas(accountName);
-        if (rolling.Remaining5H <= 10.0)
+        if (rolling.Remaining5H <= threshold)
         {
             TriggerLowQuotaWebhook(accountName, rolling.Remaining5H);
         }
@@ -540,7 +550,6 @@ public static class AgyAccountCore
             var url = File.ReadAllText(webhookFile).Trim();
             if (string.IsNullOrEmpty(url)) return;
 
-            var client = new System.Net.Http.HttpClient();
             var payload = new
             {
                 text = $"[Agy Alert] Low quota warning for account {accountName}: Only {remaining5H}% of the 5-hour quota remaining."
@@ -548,7 +557,7 @@ public static class AgyAccountCore
             var json = JsonSerializer.Serialize(payload);
             var reqContent = new System.Net.Http.StringContent(json, Encoding.UTF8, "application/json");
 
-            _ = client.PostAsync(url, reqContent);
+            _ = HttpClientProvider.Client.PostAsync(url, reqContent);
         }
         catch { }
     }
@@ -582,8 +591,32 @@ public static class AgyAccountCore
         var secs5H = Math.Max(0, (int)Math.Round((oldest5H.AddHours(5) - now).TotalSeconds));
         var secsWeekly = Math.Max(0, (int)Math.Round((oldestWeekly.AddDays(7) - now).TotalSeconds));
 
+        // Calculate exhaustion ETA based on burn rate in recent window
+        var oneHourAgo = now.AddHours(-1);
+        double reqsLastHour = history.Count(ts => DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt) && dt >= oneHourAgo);
+        string exhaustion5H = "Never";
+        if (reqsLastHour > 0 && reqs5H > 0)
+        {
+            double remainingReqs = limit5H - reqs5H;
+            double hoursToExhaustion = remainingReqs / reqsLastHour;
+            if (hoursToExhaustion <= 0) exhaustion5H = "Now";
+            else if (hoursToExhaustion > 24) exhaustion5H = $"{Math.Round(hoursToExhaustion / 24, 1)} days";
+            else exhaustion5H = $"{Math.Round(hoursToExhaustion, 1)} hours";
+        }
+
+        var oneDayAgo = now.AddDays(-1);
+        double reqsLastDay = history.Count(ts => DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt) && dt >= oneDayAgo);
+        string exhaustionWeekly = "Never";
+        if (reqsLastDay > 0 && reqsWeekly > 0)
+        {
+            double remainingReqs = limitWeekly - reqsWeekly;
+            double daysToExhaustion = remainingReqs / reqsLastDay;
+            if (daysToExhaustion <= 0) exhaustionWeekly = "Now";
+            else exhaustionWeekly = $"{Math.Round(daysToExhaustion, 1)} days";
+        }
+
         static string Fmt(int s) => $"{s / 3600}h {(s % 3600) / 60}m";
-        return new QuotaMetrics(remainingWeekly, remaining5H, Fmt(secsWeekly), Fmt(secs5H), reqsWeekly, reqs5H);
+        return new QuotaMetrics(remainingWeekly, remaining5H, Fmt(secsWeekly), Fmt(secs5H), reqsWeekly, reqs5H, exhaustionWeekly, exhaustion5H);
 
     }
 
@@ -610,11 +643,11 @@ public static class AgyAccountCore
     {
         try
         {
+            var accDir = GetAccountDirectory(accountName);
+            if (!Directory.Exists(accDir)) return;
             var token = AgyKeyringHelper.ReadToken("gemini:antigravity");
             if (!string.IsNullOrEmpty(token))
             {
-                var accDir = GetAccountDirectory(accountName);
-                Directory.CreateDirectory(accDir);
                 var tokenFile = Path.Combine(accDir, "keyring_token.txt");
                 var encrypted = EncryptToken(token);
                 File.WriteAllText(tokenFile, encrypted, Encoding.UTF8);
@@ -805,11 +838,24 @@ public static class AgyAccountCore
         if (!Directory.Exists(targetDir))
             throw new DirectoryNotFoundException($"Account '{accountName}' does not exist.");
 
+        bool wasActive = string.Equals(GetActiveAccount(), accountName, StringComparison.OrdinalIgnoreCase);
+
+        // If the active account was deleted, clear keyring credentials and update active marker before switching
+        if (wasActive)
+        {
+            AgyKeyringHelper.DeleteToken("gemini:antigravity");
+            try
+            {
+                Directory.CreateDirectory(AgySourceHome);
+                File.WriteAllText(AgyActiveAccountFile, "default", Encoding.UTF8);
+            }
+            catch { }
+        }
+
         // Recursively delete the directory
         Directory.Delete(targetDir, true);
 
-        // If the active account was deleted, switch back to default
-        if (string.Equals(GetActiveAccount(), accountName, StringComparison.OrdinalIgnoreCase))
+        if (wasActive)
         {
             SetActiveAccount("default", false);
         }
@@ -818,6 +864,10 @@ public static class AgyAccountCore
 
     public static void LogoutAccount(string accountName)
     {
+        if (string.Equals(GetActiveAccount(), accountName, StringComparison.OrdinalIgnoreCase))
+        {
+            AgyKeyringHelper.DeleteToken("gemini:antigravity");
+        }
         var dir = GetAccountDirectory(accountName);
         if (!Directory.Exists(dir)) return;
 

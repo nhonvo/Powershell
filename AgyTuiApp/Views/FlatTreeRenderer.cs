@@ -167,6 +167,16 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                 }
             }
 
+            if (visibleRows.Count == 0)
+            {
+                selectionIndex = 0;
+            }
+            else
+            {
+                if (selectionIndex >= visibleRows.Count) selectionIndex = visibleRows.Count - 1;
+                if (selectionIndex < 0) selectionIndex = 0;
+            }
+
             bool forceClear = (detailsActive != lastDetailsActive);
             lastDetailsActive = detailsActive;
             ScreenChrome.RenderBanner(forceClear: forceClear);
@@ -560,7 +570,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                     break;
                 case ConsoleKey.Enter:
                 case ConsoleKey.RightArrow:
-                    if (selectionIndex < visibleRows.Count)
+                    if (selectionIndex >= 0 && selectionIndex < visibleRows.Count)
                     {
                         var row = visibleRows[selectionIndex];
                         if (row.Type == VisibleRowType.Exit) return;
@@ -622,7 +632,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                     }
                     break;
                 case ConsoleKey.LeftArrow:
-                    if (selectionIndex < visibleRows.Count)
+                    if (selectionIndex >= 0 && selectionIndex < visibleRows.Count)
                     {
                         var row = visibleRows[selectionIndex];
                         if (row.Type == VisibleRowType.Category && _expandedCategories.Contains(row.Node.Id))

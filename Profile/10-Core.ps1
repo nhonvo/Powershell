@@ -151,6 +151,23 @@ function Load-AgyTuiDll {
         }
     }
 }
+
+function Test-AgyAiGate {
+    Load-AgyTuiDll
+    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+        return [AgyTui.AgyAiCore]::IsAiOllamaEnabled() -or [AgyTui.AgyAiCore]::IsAgyEnabled()
+    }
+    return $true
+}
+
+function Start-AgyManager {
+    Write-Warning "Start-AgyManager is not yet implemented."
+}
+
+function Start-AgyProxy {
+    Write-Warning "Start-AgyProxy is not yet implemented."
+}
+
 Write-AgyStartupCheckpoint "AgyTuiApp subprocess mode ready"
  
 # ==============================================================================

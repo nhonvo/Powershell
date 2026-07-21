@@ -25,8 +25,8 @@ public static class DockerHelper
         switch (idx)
         {
             case 0:
-                RunDocker("stop $(docker ps -q)");
-                RunDocker("rm $(docker ps -aq)");
+                StopAllContainers();
+                RemoveAllContainers();
                 break;
             case 1:
                 RunDocker("image prune -af");
@@ -43,6 +43,7 @@ public static class DockerHelper
                     switch (i)
                     {
                         case 0:
+                            StopAllContainers();
                             RunDocker("container prune -f");
                             break;
                         case 1:
@@ -140,17 +141,39 @@ public static class DockerHelper
         SpectrePager.Show($"Logs: {containerName}", logs);
     }
 
+    private static string[] GetContainerIds(bool runningOnly)
+    {
+        var filter = runningOnly ? "-q" : "-aq";
+        var output = Helpers.ProcessRunner.RunCapture("docker", $"ps {filter}");
+        if (string.IsNullOrWhiteSpace(output)) return Array.Empty<string>();
+        return output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    }
+
     public static void RemoveAllContainers()
     {
         AnsiConsole.MarkupLine("[cyan]Removing all Docker containers...[/]");
-        RunDocker("rm -f $(docker ps -aq)");
+        var ids = GetContainerIds(false);
+        if (ids.Length == 0)
+        {
+            SpectrePanel.Success("No containers to remove.");
+            return;
+        }
+        if (!AnsiConsole.Confirm($"Remove {ids.Length} container(s)?")) return;
+        Helpers.ProcessRunner.Run("docker", $"rm -f {string.Join(" ", ids)}");
         SpectrePanel.Success("Executed container removal.");
     }
 
     public static void StopAllContainers()
     {
         AnsiConsole.MarkupLine("[cyan]Stopping all Docker containers...[/]");
-        RunDocker("stop $(docker ps -aq)");
+        var ids = GetContainerIds(true);
+        if (ids.Length == 0)
+        {
+            SpectrePanel.Success("No running containers to stop.");
+            return;
+        }
+        if (!AnsiConsole.Confirm($"Stop {ids.Length} running container(s)?")) return;
+        Helpers.ProcessRunner.Run("docker", $"stop {string.Join(" ", ids)}");
         SpectrePanel.Success("Executed container stop.");
     }
 

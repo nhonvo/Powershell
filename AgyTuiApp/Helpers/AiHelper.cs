@@ -510,7 +510,10 @@ public static class AgyAiCore
             if (stats.QuotaStatus == "Exceeded" || stats.GeminiFiveHour >= 98.0)
             {
                 AnsiConsole.MarkupLine($"[yellow]Warning: Account '{activeAccount}' quota is close to or has exceeded limits (5h: {stats.GeminiFiveHour}%).[/]");
-                if (AnsiConsole.Confirm("Would you like to auto-fallback to local Ollama execution?"))
+                bool shouldFallback = Console.IsInputRedirected
+                    ? true
+                    : AnsiConsole.Confirm("Would you like to auto-fallback to local Ollama execution?");
+                if (shouldFallback)
                 {
                     mode = "local";
                     AnsiConsole.MarkupLine("[green]Falling back to local Ollama daemon...[/]");
@@ -605,25 +608,27 @@ public static class AgyAiCore
     {
         try
         {
-            using var handler = new HttpClientHandler
-            {
-                UseProxy = false
-            }
-            ;
-
-            using var client = new HttpClient(handler)
-            {
-                Timeout = TimeSpan.FromSeconds(2)
-            }
-            ;
-            var resp = client.GetStringAsync($"http://127.0.0.1:{port}/").GetAwaiter().GetResult();
+            using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(2));
+            var resp = HttpClientProvider.Client.GetStringAsync($"http://127.0.0.1:{port}/", cts.Token).GetAwaiter().GetResult();
             return string.IsNullOrEmpty(pattern) || resp.Contains(pattern.Trim('*'), StringComparison.OrdinalIgnoreCase);
         }
-        catch
+        catch (Exception ex)
         {
-            return IsPortListening(port);
+            var current = ex;
+            while (current != null)
+            {
+                if (current is System.Net.Sockets.SocketException se)
+                {
+                    if (se.SocketErrorCode == System.Net.Sockets.SocketError.ConnectionRefused)
+                    {
+                        return IsPortListening(port);
+                    }
+                    return false;
+                }
+                current = current.InnerException;
+            }
+            return false;
         }
-
     }
 
     private static readonly TtlCache<string, bool> _ollamaStatusCache = new(TimeSpan.FromSeconds(3));
@@ -753,16 +758,27 @@ public static class AgyAiCore
         }
         File.WriteAllText(sessionFile, activeAccount);
 
+        var finalArgs = new List<string>(argsList);
         if (File.Exists(".agy-context.md"))
         {
-            AnsiConsole.MarkupLine("[green][[AGY]] Shared context handoff (.agy-context.md) found and loaded.[/]");
+            try
+            {
+                var contextText = File.ReadAllText(".agy-context.md").Trim();
+                if (!string.IsNullOrEmpty(contextText))
+                {
+                    AnsiConsole.MarkupLine("[green][[AGY]] Shared context handoff (.agy-context.md) found and appended to prompt.[/]");
+                    finalArgs.Add("--append-system-prompt");
+                    finalArgs.Add(contextText);
+                }
+            }
+            catch {}
         }
 
         InvokeWithPipeline("Claude", providerModeOverride, mode =>
         {
             if (mode == "cloud")
             {
-                RunInteractive("claude.cmd", argsList);
+                RunInteractive("claude.cmd", finalArgs);
             }
             else
             {
@@ -792,65 +808,65 @@ public static class AgyAiCore
 
     public static void InvokeCodex(string[] argsList, string? providerModeOverride = null)
     {
-        var mode = providerModeOverride ?? GetEffectiveProviderMode();
-        if (mode == "cloud")
+        InvokeWithPipeline("Codex", providerModeOverride, mode =>
         {
-            RunInteractive("codex.cmd", argsList);
-        }
-        else
-        {
-            EnsureOllamaServer();
-            var model = OllamaDefaultModel;
-            var newArgsList = new List<string>();
-            for (var i = 0;
-            i < argsList.Length;
-            i++)
+            if (mode == "cloud")
             {
-                if ((argsList[i] == "--model" || argsList[i] == "-m") && i < argsList.Length - 1)
+                RunInteractive("codex.cmd", argsList);
+            }
+            else
+            {
+                EnsureOllamaServer();
+                var model = OllamaDefaultModel;
+                var newArgsList = new List<string>();
+                for (var i = 0;
+                i < argsList.Length;
+                i++)
                 {
-                    model = Regex.Replace(argsList[i + 1], "^ollama_custom/", "");
-                    newArgsList.Add(argsList[i]);
-                    newArgsList.Add(model);
-                    i++;
+                    if ((argsList[i] == "--model" || argsList[i] == "-m") && i < argsList.Length - 1)
+                    {
+                        model = Regex.Replace(argsList[i + 1], "^ollama_custom/", "");
+                        newArgsList.Add(argsList[i]);
+                        newArgsList.Add(model);
+                        i++;
+                    }
+                    else newArgsList.Add(argsList[i]);
                 }
-                else newArgsList.Add(argsList[i]);
-            }
-            var sandboxPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), ".codex_local_ollama");
-            Directory.CreateDirectory(sandboxPath);
-            var emptySkillsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini", "antigravity", "scratch", "empty_skills");
+                var sandboxPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), ".codex_local_ollama");
+                Directory.CreateDirectory(sandboxPath);
+                var emptySkillsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini", "antigravity", "scratch", "empty_skills");
 
-            try
-            {
-                Directory.CreateDirectory(emptySkillsDir);
+                try
+                {
+                    Directory.CreateDirectory(emptySkillsDir);
+                }
+                catch
+                {
+                }
+                var configToml = $"# Temp sandbox configuration generated at {sandboxPath}/config.toml\nmodel = \"{model}\"\n\n[codex]\nskills_directory = \"{emptySkillsDir}\"\n\n[mcp_servers]\n# Intentionally empty to disable external tool description loads\n".Replace('\\', '/');
+                File.WriteAllText(System.IO.Path.Combine(sandboxPath, "config.toml"), configToml);
+                var env = new Dictionary<string, string?>
+                {
+                    ["OLLAMA_HOST"] = "127.0.0.1:11435",
+                    ["NODE_OPTIONS"] = AppendNodeOption(Environment.GetEnvironmentVariable("NODE_OPTIONS")),
+                    ["OPENAI_BASE_URL"] = null,
+                    ["OPENAI_API_KEY"] = null,
+                    ["CODEX_HOME"] = sandboxPath
+                };
+                var flags = new List<string>();
+                if (!newArgsList.Contains("--model") && !newArgsList.Contains("-m"))
+                {
+                    flags.Add("--model");
+                    flags.Add(model);
+                }
+                flags.Add("--oss");
+                flags.Add("--local-provider");
+                flags.Add("ollama");
+                var argList = new List<string>(flags);
+                argList.AddRange(newArgsList);
+                RunInteractive("codex.cmd", argList, env);
             }
-            catch
-            {
-            }
-            var configToml = $"# Temp sandbox configuration generated at {sandboxPath}/config.toml\nmodel = \"{model}\"\n\n[codex]\nskills_directory = \"{emptySkillsDir}\"\n\n[mcp_servers]\n# Intentionally empty to disable external tool description loads\n".Replace('\\', '/');
-            File.WriteAllText(System.IO.Path.Combine(sandboxPath, "config.toml"), configToml);
-            var env = new Dictionary<string, string?>
-            {
-                ["OLLAMA_HOST"] = "127.0.0.1:11435",
-                ["NODE_OPTIONS"] = AppendNodeOption(Environment.GetEnvironmentVariable("NODE_OPTIONS")),
-                ["OPENAI_BASE_URL"] = null,
-                ["OPENAI_API_KEY"] = null,
-                ["CODEX_HOME"] = sandboxPath
-            }
-            ;
-            var flags = new List<string>();
-            if (!newArgsList.Contains("--model") && !newArgsList.Contains("-m"))
-            {
-                flags.Add("--model");
-                flags.Add(model);
-            }
-            flags.Add("--oss");
-            flags.Add("--local-provider");
-            flags.Add("ollama");
-            var argList = new List<string>(flags);
-            argList.AddRange(newArgsList);
-            RunInteractive("codex.cmd", argList, env);
-        }
-
+        });
     }
 
     public static void EnsureOpenClawGateway()
@@ -1180,12 +1196,8 @@ public static class AgyAiCore
 
                 try
                 {
-                    using var client = new HttpClient
-                    {
-                        Timeout = TimeSpan.FromSeconds(1)
-                    }
-                    ;
-                    client.GetStringAsync("http://127.0.0.1:11434/").GetAwaiter().GetResult();
+                    using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(1));
+                    HttpClientProvider.Client.GetStringAsync("http://127.0.0.1:11434/", cts.Token).GetAwaiter().GetResult();
                     status = "Running";
                 }
                 catch
@@ -1314,12 +1326,8 @@ public static class AgyAiCore
 
         try
         {
-            using var client = new HttpClient
-            {
-                Timeout = TimeSpan.FromSeconds(10)
-            }
-            ;
-            var resp = client.PostAsync("http://127.0.0.1:11434/api/generate", new StringContent(body, Encoding.UTF8, "application/json")).GetAwaiter().GetResult();
+            using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(10));
+            var resp = HttpClientProvider.Client.PostAsync("http://127.0.0.1:11434/api/generate", new StringContent(body, Encoding.UTF8, "application/json"), cts.Token).GetAwaiter().GetResult();
             var text = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             var json = JsonDocument.Parse(text);
             if (json.RootElement.TryGetProperty("response", out var respProp))
@@ -1338,6 +1346,30 @@ public static class AgyAiCore
 
     }
 
+    public static string GenerateDraftDescription(string diff)
+    {
+        try
+        {
+            var prompt = $"Analyze this git diff and output ONLY a single short (under 72 chars), clear description of the changes (no prefix, no markdown, no quotes, no boilerplate) suitable for a git commit message:\n\n{diff}";
+            var body = JsonSerializer.Serialize(new
+            {
+                model = OllamaDefaultModel,
+                prompt,
+                stream = false
+            });
+            using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(15));
+            var resp = HttpClientProvider.Client.PostAsync("http://127.0.0.1:11434/api/generate", new StringContent(body, Encoding.UTF8, "application/json"), cts.Token).GetAwaiter().GetResult();
+            var text = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            var json = JsonDocument.Parse(text);
+            if (json.RootElement.TryGetProperty("response", out var respProp))
+            {
+                return respProp.GetString()?.Trim().Trim('"', '\'') ?? "";
+            }
+        }
+        catch {}
+        return "";
+    }
+
     private static void RunInteractive(string exe, IEnumerable<string> args, IDictionary<string, string?>? env = null, string? workingDir = null)
     {
         var activeAccount = AgyAccountCore.GetActiveAccount();
@@ -1353,7 +1385,8 @@ public static class AgyAiCore
         }
 
         var argList = new List<string>(args);
-        if (AgyAccountCore.IsNoAutoCommitEnabled() && (exe.Contains("agy") || exe.Contains("claude") || exe.Contains("codex")))
+        bool targetsClaudeOrCodexOrAgy = exe.Contains("agy") || exe.Contains("claude") || exe.Contains("codex") || args.Any(a => a is "claude" or "codex" or "agy" || a.Contains("claude", StringComparison.OrdinalIgnoreCase));
+        if (AgyAccountCore.IsNoAutoCommitEnabled() && targetsClaudeOrCodexOrAgy)
         {
             if (!argList.Contains("--no-auto-commit") && !argList.Contains("--no-commit"))
             {

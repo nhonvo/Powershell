@@ -278,9 +278,16 @@ class DotNetHelper {
  
     static [void] CleanBinObj() {
         Write-Host "💥 Destroying bin/ and obj/ folders..." -ForegroundColor Red
-        $targets = Get-ChildItem -Path . -Recurse -Directory -Include bin,obj -Force -ErrorAction SilentlyContinue
-        foreach ($t in $targets) {
-            Remove-Item -Path $t.FullName -Recurse -Force -ErrorAction SilentlyContinue
+        $dirs = Get-ChildItem -Path . -Depth 3 -Directory -Force -ErrorAction SilentlyContinue |
+            Where-Object { ($_.Name -eq 'bin' -or $_.Name -eq 'obj') -and $_.FullName -notmatch '\\(node_modules|\.git|\.vs)\\' }
+        if ($dirs) {
+            foreach ($d in $dirs) {
+                if (Test-Path $d.FullName) {
+                    try {
+                        Remove-Item -Path $d.FullName -Recurse -Force -ErrorAction SilentlyContinue
+                    } catch {}
+                }
+            }
         }
         Write-Host "✅ Clean complete." -ForegroundColor Green
     }

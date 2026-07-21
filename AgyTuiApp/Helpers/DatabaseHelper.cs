@@ -117,10 +117,12 @@ public static class DatabaseHelper
             var backupPath = dbPath + ".bak";
             try
             {
-                File.Copy(dbPath, backupPath, true);
-                if (File.Exists(dbPath + "-wal")) File.Copy(dbPath + "-wal", backupPath + "-wal", true);
-                if (File.Exists(dbPath + "-shm")) File.Copy(dbPath + "-shm", backupPath + "-shm", true);
-                AnsiConsole.MarkupLine($"[green][[DB]] Backup created successfully at '{Path.GetFileName(backupPath)}' (including WAL/SHM files) before executing write operation.[/]");
+                var (backupOut, backupErr, exitCode) = Helpers.ProcessRunner.RunCaptureWithDetails("sqlite3", $"\"{dbPath}\" \".backup '{backupPath.Replace("'", "''")}'\"");
+                if (exitCode != 0)
+                {
+                    throw new Exception(string.IsNullOrEmpty(backupErr) ? "sqlite3 exited with code " + exitCode : backupErr.Trim());
+                }
+                AnsiConsole.MarkupLine($"[green][[DB]] Backup created successfully at '{Path.GetFileName(backupPath)}' using SQLite's native .backup command before executing write operation.[/]");
             }
             catch (Exception ex)
             {

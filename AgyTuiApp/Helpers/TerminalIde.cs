@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Spectre.Console;
 using AgyTui.Components;
+using AgyTui.Helpers;
 
 namespace AgyTui;
 
@@ -42,7 +43,9 @@ public static class FileExplorer
                 if (parent != null) current = parent;
                 continue;
             }
-            var selected = entries[idx][3..].Trim();
+            var selectedLine = entries[idx];
+            var spaceIdx = selectedLine.IndexOf(' ');
+            var selected = spaceIdx >= 0 ? selectedLine[(spaceIdx + 1)..].Trim() : selectedLine;
             var fullPath = Path.Combine(current, selected);
             if (Directory.Exists(fullPath))
             {
@@ -355,21 +358,28 @@ public static class TerminalIde
             AnsiConsole.Write(layout);
 
             AnsiConsole.WriteLine();
-            var choices = new[] { "Select File", "Fuzzy Quick Open (Ctrl+P)", "Ask AI / Explain Code (Ctrl+K)", "Edit File", "Search Workspace", "← Exit IDE" };
-            var idx = SpectreMenu.Show("IDE Command Palette", choices, 0, false);
-            if (idx == 0)
+            var key = Console.ReadKey(intercept: true);
+            if ((key.Key == ConsoleKey.R && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'e')
             {
-                var fileIdx = SpectreMenu.Show("Select File to Open", files.ToArray(), 0, true);
-                if (fileIdx >= 0)
+                if (currentFile != null)
                 {
-                    currentFile = Path.Combine(rootPath, files[fileIdx]);
-                    UpdateAgyContext(rootPath, currentFile);
+                    ProcessRunner.Run(EditorResolver.Resolve(), $"\"{currentFile}\"");
+                }
+                else
+                {
+                    SpectrePanel.Warning("No active file open to edit.");
+                    Thread.Sleep(1000);
                 }
             }
-            else if (idx == 1)
+            else if ((key.Key == ConsoleKey.P && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'p')
             {
-                var query = AnsiConsole.Ask<string>("[cyan]Quick Open (filename prefix):[/]").Trim();
-                var matches = files.Where(f => f.Contains(query, StringComparison.OrdinalIgnoreCase)).ToArray();
+                var query = AnsiConsole.Ask<string>("[cyan]Quick Open (Fuzzy Search):[/]").Trim();
+                var matches = files
+                    .Select(f => new { File = f, Score = FuzzyScore(query, f) })
+                    .Where(x => x.Score >= 0)
+                    .OrderByDescending(x => x.Score)
+                    .Select(x => x.File)
+                    .ToArray();
                 if (matches.Length > 0)
                 {
                     var fileIdx = SpectreMenu.Show("Matches", matches, 0, true);
@@ -385,12 +395,14 @@ public static class TerminalIde
                     Thread.Sleep(1000);
                 }
             }
-            else if (idx == 2)
+            else if ((key.Key == ConsoleKey.K && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'k')
             {
-                if (currentFile != null)
+                if (currentFile != null && File.Exists(currentFile))
                 {
                     AnsiConsole.MarkupLine("[cyan]Sending file content to AI for review/explanation...[/]");
-                    AgyAiCore.InvokeClaude(["--prompt", $"Read this file content and explain what it does, highlight any potential bugs, and suggest improvements: {currentFile}"]);
+                    string content = File.ReadAllText(currentFile);
+                    if (content.Length > 8000) content = content[..8000] + "\n...(truncated)";
+                    AgyAiCore.AskAi($"Regarding the file '{currentFile}', explain this file:\n\nFile Content:\n{content}");
                 }
                 else
                 {
@@ -398,24 +410,102 @@ public static class TerminalIde
                     Thread.Sleep(1000);
                 }
             }
-            else if (idx == 3)
+            else if ((key.Key == ConsoleKey.B && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'b')
             {
-                if (currentFile != null)
+                var fileIdx = SpectreMenu.Show("Select File to Open", files.ToArray(), 0, true);
+                if (fileIdx >= 0)
                 {
-                    LaunchEditor(currentFile);
+                    currentFile = Path.Combine(rootPath, files[fileIdx]);
+                    UpdateAgyContext(rootPath, currentFile);
+                }
+            }
+            else if (key.KeyChar == '/')
+            {
+                AnsiConsole.Markup("[yellow]/[/]");
+                var commandLine = Console.ReadLine()?.Trim();
+                var skills = SkillLoader.Discover(rootPath).ToList();
+                if (string.IsNullOrEmpty(commandLine))
+                {
+                    var list = new List<string>();
+                    foreach (var c in IdeCommandRegistry.All)
+                    {
+                        list.Add($"/{c.Name,-10} {c.ArgHint,-12} [dim]{c.Description}[/]");
+                    }
+                    foreach (var s in skills)
+                    {
+                        list.Add($"🧩 /{s.Trigger,-8} {s.Name,-12} [dim]{s.Description}[/]");
+                    }
+                    list.Add("← Back to Editor");
+                    var menuIdx = SpectreMenu.Show("IDE Slash Commands", list.ToArray(), 0, true);
+                    if (menuIdx >= 0 && menuIdx < list.Count - 1)
+                    {
+                        if (menuIdx < IdeCommandRegistry.All.Length)
+                        {
+                            var c = IdeCommandRegistry.All[menuIdx];
+                            var context = new IdeContext(rootPath, currentFile);
+                            c.Run(context, []);
+                            currentFile = context.CurrentFile;
+                        }
+                        else
+                        {
+                            var s = skills[menuIdx - IdeCommandRegistry.All.Length];
+                            AnsiConsole.MarkupLine($"[cyan]Running Skill: {s.Name}...[/]");
+                            var context = new IdeContext(rootPath, currentFile);
+                            foreach (var step in s.Steps)
+                            {
+                                var primitiveCommand = IdeCommandRegistry.All.FirstOrDefault(c => c.Name.Equals(step.Primitive, StringComparison.OrdinalIgnoreCase));
+                                if (primitiveCommand != null)
+                                {
+                                    primitiveCommand.Run(context, string.IsNullOrEmpty(step.Arg) ? [] : [step.Arg]);
+                                }
+                            }
+                            currentFile = context.CurrentFile;
+                            AnsiConsole.MarkupLine("[green]Skill complete. Press any key...[/]");
+                            Console.ReadKey(true);
+                        }
+                    }
                 }
                 else
                 {
-                    SpectrePanel.Warning("No active file open to edit.");
-                    Thread.Sleep(1000);
+                    var parts = commandLine.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length > 0)
+                    {
+                        var cmdName = parts[0].ToLowerInvariant();
+                        var cmdArgs = parts.Skip(1).ToArray();
+                        var command = IdeCommandRegistry.All.FirstOrDefault(c => c.Name.Equals(cmdName, StringComparison.OrdinalIgnoreCase));
+                        if (command != null)
+                        {
+                            var context = new IdeContext(rootPath, currentFile);
+                            command.Run(context, cmdArgs);
+                            currentFile = context.CurrentFile;
+                        }
+                        else
+                        {
+                            var skill = skills.FirstOrDefault(s => s.Trigger.Equals(cmdName, StringComparison.OrdinalIgnoreCase) || s.Name.Equals(cmdName, StringComparison.OrdinalIgnoreCase));
+                            if (skill != null)
+                            {
+                                AnsiConsole.MarkupLine($"[cyan]Running Skill: {skill.Name}...[/]");
+                                var context = new IdeContext(rootPath, currentFile);
+                                foreach (var step in skill.Steps)
+                                {
+                                    var primitiveCommand = IdeCommandRegistry.All.FirstOrDefault(c => c.Name.Equals(step.Primitive, StringComparison.OrdinalIgnoreCase));
+                                    if (primitiveCommand != null)
+                                    {
+                                        primitiveCommand.Run(context, string.IsNullOrEmpty(step.Arg) ? [] : [step.Arg]);
+                                    }
+                                }
+                                currentFile = context.CurrentFile;
+                            }
+                            else
+                            {
+                                SpectrePanel.Warning($"Unknown command or skill trigger: {cmdName}");
+                                Thread.Sleep(1000);
+                            }
+                        }
+                    }
                 }
             }
-            else if (idx == 4)
-            {
-                var pattern = AnsiConsole.Ask<string>("[cyan]Search pattern:[/]").Trim();
-                SearchAcrossFiles(rootPath, pattern);
-            }
-            else
+            else if (key.Key == ConsoleKey.Escape || key.KeyChar == 'q')
             {
                 break;
             }
@@ -571,14 +661,48 @@ public static class TerminalIde
 
     private static void LaunchEditor(string filePath)
     {
-        var editor = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "notepad" : "nano";
         try
         {
-            Helpers.ProcessRunner.Run(editor, $"\"{filePath}\"");
+            Helpers.ProcessRunner.Run(EditorResolver.Resolve(), $"\"{filePath}\"");
         }
         catch (Exception ex)
         {
             SpectrePanel.Error($"Editor launch failed: {ex.Message}");
         }
+    }
+
+    public static int FuzzyScore(string query, string target)
+    {
+        if (string.IsNullOrEmpty(query)) return 0;
+        if (string.IsNullOrEmpty(target)) return -1;
+        
+        int queryIdx = 0;
+        int score = 0;
+        int lastMatchIdx = -2;
+        int firstMatchIdx = -1;
+        
+        for (int i = 0; i < target.Length; i++)
+        {
+            if (char.ToLowerInvariant(target[i]) == char.ToLowerInvariant(query[queryIdx]))
+            {
+                if (firstMatchIdx == -1) firstMatchIdx = i;
+                
+                if (i == lastMatchIdx + 1)
+                {
+                    score += 5;
+                }
+                
+                lastMatchIdx = i;
+                queryIdx++;
+                
+                if (queryIdx == query.Length)
+                {
+                    score += Math.Max(0, 100 - firstMatchIdx);
+                    return score;
+                }
+            }
+        }
+        
+        return -1;
     }
 }

@@ -15,6 +15,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
+using QRCoder;
 
 namespace AgyTui;
 
@@ -400,57 +401,35 @@ public static class SshHelper
 
     public static string[] GenerateAsciiQrCode(string text)
     {
-        int size = 21;
-        bool[,] grid = new bool[size, size];
-
-        void DrawFinder(int startR, int startC)
-        {
-            for (int r = 0; r < 7; r++)
-            {
-                for (int c = 0; c < 7; c++)
-                {
-                    if (r == 0 || r == 6 || c == 0 || c == 6 || (r >= 2 && r <= 4 && c >= 2 && c <= 4))
-                    {
-                        grid[startR + r, startC + c] = true;
-                    }
-                }
-            }
-        }
-        DrawFinder(0, 0);
-        DrawFinder(0, size - 7);
-        DrawFinder(size - 7, 0);
-
-        for (int i = 8; i < size - 8; i++)
-        {
-            if (i % 2 == 0)
-            {
-                grid[6, i] = true;
-                grid[i, 6] = true;
-            }
-        }
-
-        var bytes = Encoding.UTF8.GetBytes(text);
-        int bitIdx = 0;
+        using var qrGenerator = new QRCodeGenerator();
+        using var qrCodeData = qrGenerator.CreateQrCode(text, QRCodeGenerator.ECCLevel.L);
+        int size = qrCodeData.ModuleMatrix.Count;
+        
+        int pad = 2;
+        int newSize = size + pad * 2;
+        bool[,] grid = new bool[newSize, newSize];
         for (int r = 0; r < size; r++)
         {
+            var row = qrCodeData.ModuleMatrix[r];
             for (int c = 0; c < size; c++)
             {
-                if ((r < 8 && c < 8) || (r < 8 && c >= size - 8) || (r >= size - 8 && c < 8) || r == 6 || c == 6) continue;
-                byte b = bytes[bitIdx % bytes.Length];
-                int bit = (b >> (bitIdx % 8)) & 1;
-                grid[r, c] = (bit ^ (r * c % 2)) == 1;
-                bitIdx++;
+                grid[r + pad, c + pad] = row[c];
             }
         }
 
         var lines = new List<string>();
-        for (int r = 0; r < size; r++)
+        for (int r = 0; r < newSize; r += 2)
         {
             var sb = new StringBuilder();
             sb.Append("  ");
-            for (int c = 0; c < size; c++)
+            for (int c = 0; c < newSize; c++)
             {
-                sb.Append(grid[r, c] ? "██" : "  ");
+                bool top = grid[r, c];
+                bool bottom = r + 1 < newSize && grid[r + 1, c];
+                if (top && bottom) sb.Append('█');
+                else if (top) sb.Append('▀');
+                else if (bottom) sb.Append('▄');
+                else sb.Append(' ');
             }
             lines.Add(sb.ToString());
         }
@@ -467,7 +446,14 @@ public static class SshHelper
             var listener = new TcpListener(IPAddress.Any, listenPort);
             listener.Start();
 
-            using var client = listener.AcceptTcpClient();
+            var acceptTask = listener.AcceptTcpClientAsync();
+            if (!acceptTask.Wait(TimeSpan.FromMinutes(2)))
+            {
+                listener.Stop();
+                SpectrePanel.Warning("Key receiver timed out after 2 minutes.");
+                return;
+            }
+            using var client = acceptTask.Result;
             listener.Stop();
 
             using var reader = new StreamReader(client.GetStream(), Encoding.UTF8);
@@ -600,26 +586,34 @@ public static class SshHelper
         }
         File.AppendAllText(authFile, key + Environment.NewLine);
         SpectrePanel.Success($"SSH key successfully authorized for user '{targetUser}'.");
-        AnsiConsole.MarkupLine("[cyan]🔒 Setting secure permissions on SSH files...[/]");
-        const string systemUser = "NT AUTHORITY\\SYSTEM";
-        var targetIdentity = $"{Environment.UserDomainName}\\{targetUser}";
-        const FileSystemRights fullControl = FileSystemRights.FullControl;
-        const AccessControlType allow = AccessControlType.Allow;
-        var dirInfo = new DirectoryInfo(sshDir);
-        var dirSecurity = dirInfo.GetAccessControl();
-        dirSecurity.SetAccessRuleProtection(true, false);
-        foreach (FileSystemAccessRule rule in dirSecurity.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount))) dirSecurity.RemoveAccessRule(rule);
-        dirSecurity.AddAccessRule(new FileSystemAccessRule(targetIdentity, fullControl, InheritanceFlags.None, PropagationFlags.None, allow));
-        dirSecurity.AddAccessRule(new FileSystemAccessRule(systemUser, fullControl, InheritanceFlags.None, PropagationFlags.None, allow));
-        dirInfo.SetAccessControl(dirSecurity);
-        var fileInfo = new FileInfo(authFile);
-        var fileSecurity = fileInfo.GetAccessControl();
-        fileSecurity.SetAccessRuleProtection(true, false);
-        foreach (FileSystemAccessRule rule in fileSecurity.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount))) fileSecurity.RemoveAccessRule(rule);
-        fileSecurity.AddAccessRule(new FileSystemAccessRule(targetIdentity, fullControl, InheritanceFlags.None, PropagationFlags.None, allow));
-        fileSecurity.AddAccessRule(new FileSystemAccessRule(systemUser, fullControl, InheritanceFlags.None, PropagationFlags.None, allow));
-        fileInfo.SetAccessControl(fileSecurity);
-        SpectrePanel.Success("Secure OpenSSH file permissions applied.");
+        
+        try
+        {
+            AnsiConsole.MarkupLine("[cyan]🔒 Setting secure permissions on SSH files...[/]");
+            const string systemUser = "NT AUTHORITY\\SYSTEM";
+            var targetIdentity = $"{Environment.UserDomainName}\\{targetUser}";
+            const FileSystemRights fullControl = FileSystemRights.FullControl;
+            const AccessControlType allow = AccessControlType.Allow;
+            var dirInfo = new DirectoryInfo(sshDir);
+            var dirSecurity = dirInfo.GetAccessControl();
+            dirSecurity.SetAccessRuleProtection(true, false);
+            foreach (FileSystemAccessRule rule in dirSecurity.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount))) dirSecurity.RemoveAccessRule(rule);
+            dirSecurity.AddAccessRule(new FileSystemAccessRule(targetIdentity, fullControl, InheritanceFlags.None, PropagationFlags.None, allow));
+            dirSecurity.AddAccessRule(new FileSystemAccessRule(systemUser, fullControl, InheritanceFlags.None, PropagationFlags.None, allow));
+            dirInfo.SetAccessControl(dirSecurity);
+            var fileInfo = new FileInfo(authFile);
+            var fileSecurity = fileInfo.GetAccessControl();
+            fileSecurity.SetAccessRuleProtection(true, false);
+            foreach (FileSystemAccessRule rule in fileSecurity.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount))) fileSecurity.RemoveAccessRule(rule);
+            fileSecurity.AddAccessRule(new FileSystemAccessRule(targetIdentity, fullControl, InheritanceFlags.None, PropagationFlags.None, allow));
+            fileSecurity.AddAccessRule(new FileSystemAccessRule(systemUser, fullControl, InheritanceFlags.None, PropagationFlags.None, allow));
+            fileInfo.SetAccessControl(fileSecurity);
+            SpectrePanel.Success("Secure OpenSSH file permissions applied.");
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Warning($"Failed to set secure ACL permissions: {ex.Message}");
+        }
 
     }
 
@@ -628,17 +622,41 @@ public static class SshHelper
         var tsIp = IsCommandAvailable("tailscale") ? SystemHelper.RunProcess("tailscale", "ip -4", capture: true).Trim() : null;
         var localIps = NetworkInterface.GetAllNetworkInterfaces().Where(n => n.OperationalStatus == OperationalStatus.Up && (n.Name.Contains("Wi-Fi", StringComparison.OrdinalIgnoreCase) || n.Name.Contains("Ethernet", StringComparison.OrdinalIgnoreCase))).SelectMany(n => n.GetIPProperties().UnicastAddresses).Where(a => a.Address.AddressFamily == AddressFamily.InterNetwork).Select(a => a.Address.ToString()).ToArray();
         var displayIp = !string.IsNullOrWhiteSpace(tsIp) ? tsIp : localIps.Length > 0 ? localIps[0] : "localhost";
+        
+        var oneTimeToken = Guid.NewGuid().ToString("N");
+        var enrollmentUrl = $"http://{displayIp}:{port}/?token={oneTimeToken}";
+        
+        bool isTailscaleActive = false;
+        if (IsCommandAvailable("tailscale"))
+        {
+            try
+            {
+                SystemHelper.RunProcess("tailscale", $"serve --bg https / http://localhost:{port}", capture: true);
+                isTailscaleActive = true;
+            }
+            catch {}
+        }
+
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("[bold cyan]📱 Mobile SSH Key Authorizer[/]");
         AnsiConsole.MarkupLine("[cyan]=============================[/]");
-        AnsiConsole.MarkupLine("[dim]Starting temporary local server to receive your public SSH key...[/]");
+        AnsiConsole.MarkupLine("[dim]Starting temporary secure local server to receive your public SSH key...[/]");
         AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine("[cyan]👉 Link to open in your phone's browser:[/]");
-        AnsiConsole.MarkupLine($" [green]http://{displayIp}:{port}/[/]");
-        AnsiConsole.MarkupLine($" [dim](or http://localhost:{port}/ if local)[/]");
+        AnsiConsole.MarkupLine("[cyan]👉 Scan this QR code or open the link on your mobile phone:[/]");
+        
+        var qrLines = GenerateAsciiQrCode(enrollmentUrl);
+        foreach (var line in qrLines)
+        {
+            AnsiConsole.WriteLine(line);
+        }
+        AnsiConsole.WriteLine();
+
+        AnsiConsole.MarkupLine($" Link: [green]{enrollmentUrl}[/]");
+        AnsiConsole.MarkupLine($" [dim](or http://localhost:{port}/?token={oneTimeToken} if local)[/]");
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("[yellow]Waiting for connection… (Timeout in 2 minutes. Press Ctrl+C to cancel)[/]");
         AnsiConsole.WriteLine();
+        
         var listener = new HttpListener();
         listener.Prefixes.Add($"http://*:{port}/");
 
@@ -664,18 +682,33 @@ public static class SshHelper
                 var context = listener.EndGetContext(getContext);
                 var request = context.Request;
                 var response = context.Response;
+                
+                var urlToken = request.QueryString["token"] ?? "";
+                
                 if (request.HttpMethod == "GET")
                 {
-                    WriteHtml(response, FormHtml);
+                    WriteHtml(response, FormHtml.Replace("{{TOKEN_PLACEHOLDER}}", urlToken));
                 }
                 else if (request.HttpMethod == "POST")
                 {
                     using var reader = new StreamReader(request.InputStream, Encoding.UTF8);
                     var body = reader.ReadToEnd();
                     var decoded = WebUtility.UrlDecode(body);
-                    var sshKey = decoded.StartsWith("key=") ? decoded[4..] : decoded;
+                    
+                    var parts = decoded.Split('&');
+                    string sshKey = "";
+                    string receivedToken = "";
+                    foreach (var p in parts)
+                    {
+                        if (p.StartsWith("key=")) sshKey = p[4..];
+                        if (p.StartsWith("token=")) receivedToken = p[6..];
+                    }
+                    
                     sshKey = sshKey.Trim();
-                    var isValid = Regex.IsMatch(sshKey, @"^ssh-(ed25519|rsa|dss|ecdsa) [A-Za-z0-9+/=]+( .+)?$");
+                    receivedToken = receivedToken.Trim();
+                    
+                    var isTokenValid = (receivedToken == oneTimeToken) || (urlToken == oneTimeToken);
+                    var isValid = isTokenValid && Regex.IsMatch(sshKey, @"^ssh-(ed25519|rsa|dss|ecdsa) [A-Za-z0-9+/=]+( .+)?$");
                     if (isValid)
                     {
                         AddAuthorizedKey(sshKey);
@@ -692,6 +725,14 @@ public static class SshHelper
         }
         finally
         {
+            if (isTailscaleActive)
+            {
+                try
+                {
+                    SystemHelper.RunProcess("tailscale", "serve https / off", capture: true);
+                }
+                catch {}
+            }
             listener.Stop();
             listener.Close();
             AnsiConsole.MarkupLine("[dim]🛑 Mobile Key Authorizer server stopped.[/]");
@@ -711,7 +752,7 @@ public static class SshHelper
 
     private const string PageStyle = "body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background-color:#0f141c;color:#abb2bf;margin:0;padding:20px;display:flex;justify-content:center;align-items:center;min-height:90vh}.container,.card{background-color:#161b22;border-radius:12px;padding:24px;max-width:500px;width:100%;box-shadow:0 4px 12px rgba(0,0,0,.3);border:1px solid #30363d}h2{color:#56b6c2;margin-top:0;font-size:1.5rem;text-align:center}p{font-size:.95rem;line-height:1.5;color:#8b949e}textarea{width:100%;height:120px;box-sizing:border-box;background-color:#0d1117;color:#c9d1d9;border:1px solid #30363d;border-radius:6px;padding:10px;font-family:monospace;font-size:.85rem;resize:vertical;margin-top:10px;margin-bottom:20px}button{width:100%;background-color:#238636;color:#fff;border:none;border-radius:6px;padding:12px;font-size:1rem;font-weight:bold;cursor:pointer}";
 
-    private static readonly string FormHtml = $"<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Mobile SSH Key Authorizer</title><style>{PageStyle}</style></head><body><div class=\"container\"><h2>📱 Add SSH Public Key</h2><p>Paste the public SSH key from your mobile phone (e.g. from Termux's <code>~/.ssh/id_ed25519.pub</code>) to authorize connection.</p><form method=\"POST\"><textarea name=\"key\" placeholder=\"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5...\" required></textarea><button type=\"submit\">Authorize Key</button></form></div></body></html>";
+    private static readonly string FormHtml = $"<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Mobile SSH Key Authorizer</title><style>{PageStyle}</style></head><body><div class=\"container\"><h2>📱 Add SSH Public Key</h2><p>Paste the public SSH key from your mobile phone (e.g. from Termux's <code>~/.ssh/id_ed25519.pub</code>) to authorize connection.</p><form method=\"POST\"><input type=\"hidden\" name=\"token\" value=\"{{TOKEN_PLACEHOLDER}}\"/><textarea name=\"key\" placeholder=\"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5...\" required></textarea><button type=\"submit\">Authorize Key</button></form></div></body></html>";
     private static readonly string SuccessHtml = $"<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Success</title><style>{PageStyle}h2{{color:#2ea043}}</style></head><body><div class=\"card\"><h2>✅ Success!</h2><p>The SSH key has been added to authorized_keys and NTFS file permissions have been secured.</p><p>You can close this window now.</p></div></body></html>";
     private static readonly string InvalidHtml = $"<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Invalid Key</title><style>{PageStyle}h2{{color:#f85149}}a{{color:#58a6ff}}</style></head><body><div class=\"card\"><h2>❌ Invalid SSH Key Format</h2><p>The key provided does not match a valid public SSH key format.</p><p><a href=\"/\">Go back and try again</a></p></div></body></html>";
 

@@ -36,28 +36,63 @@ public static class KanaQuiz
             _ => kana.Hiragana
         };
         var due = pool.Where(k => SpacedRepetitionEngine.IsDueToday(k.Sr)).ToArray();
-        if (due.Length == 0) due = pool; // If none due today, practice full pool!
+        if (due.Length == 0) due = pool;
 
         var rowStats = new Dictionary<string, (int c, int t)>(StringComparer.OrdinalIgnoreCase);
         int correct = 0;
-        foreach (var entry in due.Take(15))
+        var start = DateTime.Now;
+        var weakItems = new List<string>();
+        var reviewedList = due.Take(15).ToArray();
+
+        foreach (var entry in reviewedList)
         {
             AnsiConsole.Clear();
             AnsiConsole.Write(new Rule($"[bold cyan]Kana Quiz — {type}[/]").RuleStyle("grey"));
-            AnsiConsole.MarkupLine($"[dim]Score: {correct}/{due.IndexOf(entry)} · Due: {due.Length}[/]");
+            AnsiConsole.MarkupLine($"[dim]Score: {correct}/{reviewedList.IndexOf(entry)} · Due: {due.Length}[/]");
             AnsiConsole.WriteLine();
             AnsiConsole.Write(new FigletText(entry.Char).Centered().Color(Color.Green));
             AnsiConsole.WriteLine();
             var answer = AnsiConsole.Ask<string>("[cyan]Romaji:[/]").Trim().ToLower();
             bool ok = answer == entry.Romaji.ToLower();
             AnsiConsole.MarkupLine(ok ? $"[green]✓ Correct! {entry.Char} = {entry.Romaji}[/]" : $"[red]✗ Wrong — {entry.Char} = {entry.Romaji} (you typed: {answer.EscapeMarkup()})[/]");
-            if (ok) correct++;
+            
+            var srResult = SpacedRepetitionEngine.UpdateCard(entry.Sr, ok ? 4 : 1);
+            
+            for (int i = 0; i < kana.Hiragana.Length; i++)
+            {
+                if (kana.Hiragana[i].Char == entry.Char)
+                {
+                    kana.Hiragana[i] = kana.Hiragana[i] with { Sr = srResult.Updated };
+                    break;
+                }
+            }
+            for (int i = 0; i < kana.Katakana.Length; i++)
+            {
+                if (kana.Katakana[i].Char == entry.Char)
+                {
+                    kana.Katakana[i] = kana.Katakana[i] with { Sr = srResult.Updated };
+                    break;
+                }
+            }
+
+            if (ok)
+            {
+                correct++;
+            }
+            else
+            {
+                weakItems.Add(entry.Char);
+            }
             rowStats.TryGetValue(entry.Row, out var stat);
             rowStats[entry.Row] = (stat.c + (ok ? 1 : 0), stat.t + 1);
             Thread.Sleep(600);
         }
+
+        LearnDataPaths.SaveJson(LearnDataPaths.KanaFile, kana);
         ShowAccuracyChart(rowStats);
 
+        var duration = (int)(DateTime.Now - start).TotalMinutes;
+        StudySession.Record($"Kana {type}", "language", "quiz", new StudyScore(correct, reviewedList.Length, reviewedList.Length > 0 ? (correct * 100.0 / reviewedList.Length) : 100.0), [.. weakItems], 0, duration, $"Reviewed Kana {type}");
     }
 
     public static void ShowAccuracyChart(Dictionary<string, (int c, int t)> rowStats)
@@ -170,9 +205,12 @@ public static class GrammarQuiz
     public static void Run(string level = "N5")
     {
         LearnDataPaths.EnsureDirectories();
-        string dir = level.Equals("english", StringComparison.OrdinalIgnoreCase) ? LearnDataPaths.EnglishDir : LearnDataPaths.JapaneseDir;
-        string file = Path.Combine(dir, level.Equals("english", StringComparison.OrdinalIgnoreCase) ? "grammar.json" : $"grammar_{level.ToLower()}.json");
-        if (!File.Exists(file)) file = Path.Combine(dir, $"{level.ToLower()}.json");
+        string file = Path.Combine(LearnDataPaths.GrammarDir, $"{level.ToLower()}.json");
+        if (!File.Exists(file))
+        {
+            SpectrePanel.Warning($"No grammar data found for level '{level}' at {file}.");
+            return;
+        }
         var data = LearnDataPaths.LoadJson<GrammarFile>(file);
         if (data == null || data.Cards.Length == 0)
         {
@@ -185,6 +223,9 @@ public static class GrammarQuiz
 
         int correct = 0;
         int limit = Math.Min(10, due.Length);
+        var start = DateTime.Now;
+        var weakItems = new List<string>();
+
         for (int i = 0; i < limit; i++)
         {
             var g = due[i];
@@ -219,9 +260,33 @@ public static class GrammarQuiz
                 Padding = new Padding(1, 1)
             });
 
-            if (AnsiConsole.Confirm("Did you understand this pattern?", defaultValue: true)) correct++;
+            bool ok = AnsiConsole.Confirm("Did you understand this pattern?", defaultValue: true);
+            var srResult = SpacedRepetitionEngine.UpdateCard(g.Sr, ok ? 4 : 1);
+            
+            for (int j = 0; j < data.Cards.Length; j++)
+            {
+                if (data.Cards[j].Id == g.Id)
+                {
+                    data.Cards[j] = data.Cards[j] with { Sr = srResult.Updated };
+                    break;
+                }
+            }
+
+            if (ok)
+            {
+                correct++;
+            }
+            else
+            {
+                weakItems.Add(g.Pattern);
+            }
         }
+
+        LearnDataPaths.SaveJson(file, data);
         SpectrePanel.Success($"Grammar drill complete — {correct}/{limit} understood.");
+
+        var duration = (int)(DateTime.Now - start).TotalMinutes;
+        StudySession.Record($"Grammar {level}", "language", "grammar", new StudyScore(correct, limit, limit > 0 ? (correct * 100.0 / limit) : 100.0), [.. weakItems], 0, duration, $"Reviewed Grammar {level}");
     }
 }
 
@@ -992,6 +1057,9 @@ public static class VocabDrill
             return;
         }
         int correct = 0, total = 0;
+        var start = DateTime.Now;
+        var weakItems = new List<string>();
+
         foreach (var word in due)
         {
             AnsiConsole.Clear();
@@ -1020,12 +1088,35 @@ public static class VocabDrill
                 Padding = new Padding(1, 1)
             }
             );
-            if (AnsiConsole.Confirm("Did you know it?", defaultValue: false)) correct++;
+            bool knewIt = AnsiConsole.Confirm("Did you know it?", defaultValue: false);
+            int quality = knewIt ? 4 : 1;
+            var srResult = SpacedRepetitionEngine.UpdateCard(word.Sr, quality);
+
+            for (int i = 0; i < vocab.Words.Length; i++)
+            {
+                if (vocab.Words[i].Id == word.Id)
+                {
+                    vocab.Words[i] = vocab.Words[i] with { Sr = srResult.Updated };
+                    break;
+                }
+            }
+
+            if (knewIt)
+            {
+                correct++;
+            }
+            else
+            {
+                weakItems.Add(word.Word);
+            }
             total++;
         }
+
+        LearnDataPaths.SaveJson(file, vocab);
         SpectrePanel.Success($"Vocab drill done — {correct}/{total} correct");
 
+        var duration = (int)(DateTime.Now - start).TotalMinutes;
+        StudySession.Record($"Vocab {difficulty}", "vocabulary", "drill", new StudyScore(correct, total, total > 0 ? (correct * 100.0 / total) : 100.0), [.. weakItems], 0, duration, $"Reviewed Vocab {difficulty}");
     }
-
 }
 

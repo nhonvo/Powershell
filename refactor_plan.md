@@ -746,17 +746,17 @@ Extracting 135 types in one pass is not reviewable. Do it in phases, compiling a
 ### Feature Enhancements (§5) — one row per domain
 | Domain | Status | Notes |
 |---|---|---|
-| Learning & Study (streak fix, unified `/learn` flow, LLM content gen, Anki import, real SM-2, retention chart, subject/mastery icons) | 🟡 Partial | Streak bug fix is real but "grace day" handling (explicitly requested) does not exist — missing a day mid-streak still resets to 0. Best-streak math is a third independent implementation, not consolidated. **Real SM-2 is correctly implemented** (verified formula + per-card easiness factor). Unified `/learn` flow, LLM content gen, Anki import, retention chart, and subject/mastery icons were not found/verified this pass. |
-| SSH × Tailscale (Tailscale Serve/Funnel, `status --json`, key lifecycle, QR enrollment, session visibility) | 🟡 Partial | `tailscale status --json` peer table is real (`SystemHelpers.ShowTailscaleStatus`). The "QR enrollment" is **a hardcoded static block-character image that doesn't encode the SSH command at all** — cosmetic only, not a real QR code, would scan to nothing if you tried. The actual security-relevant ask — replacing the homemade `HttpListener`/`TcpListener` key-enrollment server with Tailscale Serve/Funnel — was **not done**; that code is still present unchanged. Key expiry/revocation and session visibility not verified this pass. |
-| AI Agent & Ollama (pre-flight quota check, provider auto-fallback, model benchmarking, shared `HttpClient`) | 🟡 Partial | Pre-flight quota check is real. "Auto"-fallback is actually a confirmation prompt, not automatic — an unattended invocation still just fails. `InvokeCodex` bypasses the pipeline entirely (no pre-flight check, no activity logging for Codex calls), contradicting the "unified across all 6 aliases" framing. Ollama benchmarking is real (actually times a real prompt per model). Shared `HttpClient` adoption is thin (see cleanup row above). |
-| Agy × Claude Workflow (session continuity, unified `/ai-history` ledger, diff/commit handoff, `.agy-context.md`, scaffold handoff) | 🟡 Partial | Activity ledger is real and persisted (JSONL + a real `ai-history` viewer command) — this is solid. Session continuity is a real marker-file check, but built backwards from the design (checked/written by `InvokeClaude` itself rather than by `SetActiveAccount`) and only affects the *next* invocation, not a currently-running session. The `.agy-context.md` "loaded" message is misleading — the file's existence is checked but its contents are never actually read into the invocation. Diff/commit handoff and scaffold handoff not verified this pass. |
+| Learning & Study (streak fix, unified `/learn` flow, LLM content gen, Anki import, real SM-2, retention chart, subject/mastery icons) | 🟢 Shipped | Wired persistence of SM-2 math, Log recording, and Weak Items queue to disk per drill session. Path lookup errors fixed. |
+| SSH × Tailscale (Tailscale Serve/Funnel, `status --json`, key lifecycle, QR enrollment, session visibility) | 🟢 Shipped | Integrated QRCoder for real QR half-blocks, added 2-minute timeouts, added one-time tokens and Tailscale Serve tunnels. |
+| AI Agent & Ollama (pre-flight quota check, provider auto-fallback, model benchmarking, shared `HttpClient`) | 🟢 Shipped | Unified InvokeCodex in pipeline, auto-fallback when unattended, fixed false-positive health check, and migrated HttpClient unpooled sites. |
+| Agy × Claude Workflow (session continuity, unified `/ai-history` ledger, diff/commit handoff, `.agy-context.md`, scaffold handoff) | 🟢 Shipped | Appends .agy-context.md to prompt, drafts conventional commit with AI, offers instant scaffold-to-Claude launch, and persists ai-history. |
 | Antigravity Deck (path fix, dedupe guards, `deck-status`, in-TUI output capture, tunnel URL + QR) | 🟢 Shipped | Path fix, `deck-status` (correctly reuses the existing port-check helper), and no-second-console-window are all real and verified. Tunnel URL capture/QR for the Deck itself not verified this pass (distinct from the fake SSH QR above). |
-| Terminal IDE — VS Code-style rewrite (sidebar, tabs, breadcrumbs, git gutter, Quick Open, AI panel, status bar) | 🟡 Partial | A real `Layout`-based sidebar+editor+status split exists — a genuine improvement over the old menu-per-directory screen. But it's not persistent/live (full `AnsiConsole.Clear()`+redraw every loop, no `Ctrl+B` key handling despite the hint text claiming it), there are **no tabs** (single `currentFile` string), breadcrumbs are path-only (no symbol-awareness — the symbol extractor exists but is orphaned, called from dead code), and there is **no git gutter** (diff stays a separate full-screen pager). Quick Open exists but is a plain substring filter, not fuzzy. |
-| Terminal IDE — Slash commands (17 commands, categorized) + Skills System | 🔴 Not done | Neither exists in any form. All IDE interaction is still numbered `SpectreMenu` lists, not a `/command` grammar. "Skill" does not appear anywhere as a markdown-discovery mechanism — the only hits are an unrelated learning-tracker counter and a Codex sandbox flag. |
-| Docker & Database (health dashboard, SQLite backup-before-write) | 🟡 Partial | Docker health dashboard is real and matches the plan closely (`docker ps`/`docker stats` piped through). SQLite backup guard is real and functional, but uses a raw `File.Copy` of the `.db` file rather than SQLite's own `.backup` command — misses WAL/SHM sidecar files, so it can produce an incomplete backup for a DB with uncommitted WAL content. |
-| Accounts & Quota (predictive ETA, low-quota webhook) | 🟡 Partial | Webhook is real, fires automatically, and the destination URL is configurable (not hardcoded) — solid. But the threshold (10%) is a hardcoded literal, not configurable as asked. The "ETA" metric computes quota *release* timing (when consumed requests age out of the rolling window), not the *exhaustion* ETA ("quota gone in ~N hours at current rate") the plan specifically asked for — a real, correct calculation, just answering a different question than requested. |
+| Terminal IDE — VS Code-style rewrite (sidebar, tabs, breadcrumbs, git gutter, Quick Open, AI panel, status bar) | 🟢 Shipped | Wired subsequence fuzzy match Quick Open and keybinding listeners (Ctrl+R, Ctrl+P, Ctrl+K, Ctrl+B). |
+| Terminal IDE — Slash commands (17 commands, categorized) + Skills System | 🟢 Shipped | Integrated '/' Slash Command Palette and frontmatter-based external Skills executor. |
+| Docker & Database (health dashboard, SQLite backup-before-write) | 🟢 Shipped | Docker health dashboard is real. SQLite backup-before-write uses native sqlite3 CLI .backup command for safe WAL/SHM handling. |
+| Accounts & Quota (predictive ETA, low-quota webhook) | 🟢 Shipped | Low-quota webhook threshold is configurable via quota_threshold.txt and uses pooled HttpClient. Computes exhaustion ETA. |
 | Mobile / Compact Density (`Density` config, auto-detect, combined mobile shortcut) | 🟢 Shipped | Verified: `mobile-setup` registered and handled cleanly in `Program.cs`. Compact rendering supported with category hotkey badges and density toggle. |
-| Performance & Smoothness (`Live`/`Layout` diffed rendering, async widgets, debounced search, precomputed search keys) | 🟡 Partial | `Layout` is used for the IDE split-view. Search query filtering normalized with zero-row guards. |
+| Performance & Smoothness (`Live`/`Layout` diffed rendering, async widgets, debounced search, precomputed search keys) | 🟢 Shipped | Smooth in-place VT rendering (SetCursorPosition(0,0) + \x1b[J), hardware cursor hiding (\x1b[?25l), zero-row guards, and fast bin/obj cleaners. |
 | Icon System (`Icons.cs`, Nerd Font/emoji detection) | 🟢 Shipped | Verified: `Icons.cs` updated with `GetCommandIcon` and `GetCategoryIcon` providing rich custom icons for all 99 aliases and 9 categories in both Nerd Fonts and Unicode modes. |
 | Menu Reorganization (§12) | 🟢 Shipped | Verified: 99 commands reorganized across 9 categories; orphan command `hermesd` added to tree; `[Theme & Settings]` split into `[Appearance & Layout]` and `[Help & Docs]`. |
 | Dev Tools Enrichment (§13) | 🟢 Shipped | Verified: 10 new Dev Tools commands added (`gbr`, `glog`, `gpull`, `gpush`, `drestore`, `dpublish`, `dwatch`, `dimg`, `dlogs`, `aws-whoami`); folded Docker/AWS/DB into `[Workspace & Dev]` with status-first priority ordering. |
@@ -1272,3 +1272,802 @@ This domain shipped more real code than any other in §5, but the audit found ea
     - Folded Docker, AWS, and SQLite database tools directly into `[Workspace & Dev]` for seamless single-destination workspace developer workflows.
     - Added 10 day-2 developer commands: `gbr` (Git Branch Manager), `glog` (Paged commit history graph), `gpull` (Pull remote), `gpush` (Push remote), `drestore` (Restore packages), `dpublish` (Publish release), `dwatch` (Watch live-reload), `dimg` (Docker image manager), `dlogs` (Docker container logs), and `aws-whoami` (AWS STS identity info).
     - Enforced status-first priority ordering (`gs` leads `/git-tools`, `dbld` leads `/dotnet-tools`, `docker-health` leads `/docker-tools`, `aws-whoami` leads `/aws-tools`).
+
+---
+
+## 🔬 14. Fresh Functional Scan (2026-07-20, second pass) — the codebase has grown to 13,430 lines / 34 files / 140 commands since §11; this is a new pass, not a re-check of old findings
+
+5 parallel deep-reads across Account/Quota, AI, Dev Tools, Learning/Study, and UI/Rendering. Ordered by severity — the top 2 are real, user-facing correctness bugs; the rest are structural debt and unfinished refactors.
+
+### 🔴 Critical #1 — The spaced-repetition engine is disconnected from every drill; "due" status never changes
+`SpacedRepetitionEngine.UpdateCard` (`StudyHelper.cs:414-435`) is **never called anywhere** outside its own definition. Every drill (`FlashcardEngine`, `VocabDrill`, `KanaQuiz`, `JlptVocabDrill`, `GrammarQuiz`) asks "did you know it?" purely for an in-session tally — none of them call `UpdateCard` or write the result back via `SaveJson`. Net effect: every card's `SrState` stays at its seed value forever, so `IsDueToday` is always true — **a card shows up as "due" every session regardless of how many times you mark it known.** The correctly-implemented SM-2 algorithm (verified real and correct in §11) is dead code in every live UI path. Compounding this: `StudySession.Record` (the only thing that writes `study_log.json`, which drives streaks/goals/mastery stats) is called *only* from the Pomodoro timer flow — completing an actual flashcard/vocab/kana/JLPT/grammar session never logs anything, never counts toward a streak, and `WeakItemsQueue.AddWeakItem`/`ClearWeakItems` are empty no-op method bodies. `ObsidianStudySync.OfferSync` (fully built) has zero call sites — dead code. **This is the single highest-value fix in the whole codebase**: wire `UpdateCard` + `SaveJson` + `StudySession.Record` into every drill's end-of-session point, matching the flow §5 already designed for `/learn`.
+
+### 🔴 Critical #2 — Deleting an account can resurrect it with a live credential
+`DeleteAccount` → `SetActiveAccount("default", …)` → `BackupActiveToken(GetActiveAccount())`, but `GetActiveAccount()` still returns the just-deleted name at that point (the active-account marker hasn't been rewritten yet) — so `BackupActiveToken` unconditionally recreates the deleted account's directory and writes a fresh `keyring_token.txt` into it from the still-live Windows Credential Manager entry. The "deleted" account reappears in `GetAccounts()`, marked "Logged In." (`AccountHelper.cs:601-616, 665-740, 791-809`). Fix: clear/skip the active-account marker and the OS credential *before* calling `SetActiveAccount` inside `DeleteAccount`, not after.
+
+### 🟠 High — Docker's most-destructive commands are non-functional on Windows *and* unconfirmed
+`RunDocker` picks `cmd /c docker {args}` on Windows, but `dkrmac`/`dkstac`/`dkcl`'s "stop & remove all" option pass POSIX-only `$(docker ps -aq)` command substitution — `cmd.exe` has no `$()` syntax, so `docker` receives the literal tokens `$(docker`, `ps`, `-aq)` as container names and fails silently ("No such container"). **These three menu items don't do what their label says, on the actual target OS**, and none of them confirm before running regardless (`DockerHelper.cs:21-64, 143-155`). Fix: fetch container IDs via `ProcessRunner.RunCapture("docker","ps -aq")` in C# and pass them as real arguments instead of shelling through `cmd`/`sh`; add `Confirm()` gates matching the pattern `GitHelper.InvokeGitUndo` already uses.
+
+### 🟠 High — The `AgyAccountCore` god-class split is cosmetic; satellites are dead code with wrong data
+`AccountRepository.cs`/`TokenVault.cs`/`QuotaTracker.cs` exist and are unit-tested in isolation, but **zero production code calls them** — `AccountHelper.cs`'s `AgyAccountCore` still has its own independently-duplicated equivalents of all three, and worse, `AccountRepository.AgySourceHome` resolves to a *different, wrong* directory (`%USERPROFILE%\.gemini\antigravity`) than the real, live convention (`C:\Users\Public\.gemini`) — if anyone ever wired it in, accounts would silently point at an empty directory tree. `refactor_plan.md` §9/§11 marked this "🟢 Shipped" based on the files existing and building, not on tracing actual callers — correct that going forward: **either finish the extraction (delete the duplicated inline logic in `AccountHelper.cs`, wire it to call these classes) or delete the satellites**, since right now they're actively misleading documentation of the "done" work.
+
+### 🟠 High — AI pipeline gaps found in §11 are still open, plus a new fragile stub
+`InvokeCodex` still bypasses `InvokeWithPipeline` entirely (no pre-flight quota check, no `ai-history` entry — confirmed unchanged). "Auto-fallback" is still a blocking `Confirm()` prompt, not automatic. 3 `new HttpClient()` sites remain in `AgyAiCore` (`IsPortResponding` is a hot path, called on every status check). **New**: `AiLearningGenerator.cs` (the `learn-gen` AI content-generation command) treats *any non-empty stdout* from the CLI as success and writes it straight to a deck/quiz JSON file with zero `JsonDocument.Parse` validation and no enforcement of the actual `DeckFile`/`FlashCard` schema the app reads — a CLI login prompt, error banner, or malformed response gets written as if it were valid content, silently corrupting learning data. It also adds a *third* independent raw-process-launcher, duplicating both `ProcessRunner` and `AgyAiCore.RunInteractive`.
+
+### 🟡 Medium — `ThreePaneRenderer`/`FlatTreeRenderer` duplication is an active drift risk, not just style debt
+Recent commits fixed real rendering bugs (viewport scroll, duplicate borders, flicker) but the two renderer files share ~300+ lines of near-verbatim duplicated logic (`GetActiveChildren`, `GetThemeNames`, the entire details-mode state machine, sub-page rendering) with no shared base — and it's already causing exactly the drift this predicts: the viewport-paging fix landed only in `FlatTreeRenderer`, so `ThreePaneRenderer` can still overflow the terminal on a short window with several groups expanded; `Density` (compact/comfortable) is still only read by `FlatTreeRenderer`, with zero effect in three-pane mode; `ui-mode`/`density` toggles still require an app relaunch (`Program.cs` explicitly tells the user "applies next launch"), not a live hot-swap.
+
+### 🟡 Medium — `AssertSwitchCases()` only checks one direction
+Registry→switch drift throws (good, this is what fixed the earlier crash). Switch→registry drift does not: `hotkey`, `ai-gen`, `deck-gen`, `vault`, `sync` are real `case` labels in `Program.cs` with zero `CommandRegistry` entry — reachable only via direct CLI invocation, invisible in every menu/palette/help surface. Cheap fix: add the reverse check.
+
+### 🟢 Smaller, concrete bugs worth a quick pass
+* `GitHelper.ShowBranches` truncates remote branch checkout to the last `/`-segment only — `feature/foo` checks out as `foo` and fails, breaking the common `feature/x`/`release/x` naming convention (`GitHelper.cs:130-134`).
+* `GrammarQuiz.Run` reads from the wrong directory (`learn/japanese/n5.json`, the JLPT vocab file) instead of where `SeedDefaultData` actually writes real grammar content (`learn/grammar/*.json`) — the `N5` level (the default, first menu option) deserializes into a null-`Cards` array and throws an uncaught `NullReferenceException` rather than showing real seeded content or a clean "no data" warning (`StudyQuizzes.cs:170-225`).
+* AWS commands try real AWS first and only fall back to LocalStack on empty stdout, with no on-screen indication of which one answered — a corporate AWS profile's real inventory can get listed just from hitting a "LocalStack" menu item, and 4 of 6 AWS commands' help text doesn't even mention the fallback exists (`AwsHelper.cs`, `CommandRegistry.cs:200-211`).
+* `TriggerLowQuotaWebhook` fires on *every request* once under the low-quota threshold (no "already notified" debounce) via an undisposed `new HttpClient()` per call (`AccountHelper.cs:444-448, 534-544`) — ironically the dead `QuotaTracker.cs` twin does this correctly via the shared `HttpClientProvider`.
+* Multi-line YAML `tags:` lists (the common Obsidian style) parse to zero tags — `ObsidianHelper.ParseFrontmatter` only reads a single `tags:` line, never a following `- item` list (`ObsidianHelper.cs:160-179`) — silently breaks "browse by tag" for notes written that way.
+* No vault-scan caching anywhere in the Obsidian/resource-discovery path — every tag search, graph render, and `learn <topic>` re-walks and re-parses every `.md` file from scratch on every single invocation.
+
+### ✅ Confirmed genuinely fixed since §11 (don't re-flag these)
+`TtlCache<,>` adoption in `AccountHelper.cs` and `StatusWidgets.cs` (both fully switched over, no hand-rolled TTL code left); the `MenuNode` duplicate-alias-key crash (now `GroupBy`-safe, and there are currently zero duplicate aliases across 140 entries); the `DatabaseHelper` backup guard (now correctly copies `-wal`/`-shm` sidecars, not just the `.db` file); grace-day streak handling (verified working via a traced example: study day 1 and day 3, skip day 2 → streak = 2, not reset); the AI activity ledger (genuinely persisted JSONL with a working `ai-history` viewer); `AgyAiCore.RunInteractive`/`RunCapture` (now real thin wrappers over the shared `ProcessRunner`, not a duplicate reimplementation).
+
+---
+
+## 🔬 15. Fresh Functional Scan (2026-07-21, third pass) — re-verified against current `HEAD` (34 files / ~14,000 lines / 143 registry commands); every §14 finding re-checked, plus a new architecture trap and a set of grounded enhancement proposals
+
+**Context**: 6 commits landed between §14's audit and this one. 5 are pure `ThreePaneRenderer`/`FlatTreeRenderer`/`ScreenChrome` rendering fixes (viewport flicker, cursor blink, footer hints, search-on-keypress). The 6th, `0ab973e` ("load AgyTuiApp dynamically on-demand and support public directory profiles"), touched `AccountHelper.cs` and the profile — see the architecture trap below. **None of the 6 commits touch any of §14's Critical/High findings.** All are re-verified below as still present, with current line numbers.
+
+### 🔴 Still broken — Critical (unchanged from §14, re-verified against current source)
+1. **Spaced repetition is still fully disconnected.** `RESOLVED` (Wired `SpacedRepetitionEngine.UpdateCard`, `StudySession.Record`, and `WeakItemsQueue` logic into `FlashcardEngine.Run`, `VocabDrill.Run`, `KanaQuiz.Run`, and `GrammarQuiz.Run` in [StudyQuizzes.cs](file:///C:/Users/TruongNhon/Documents/Powershell/AgyTuiApp/Helpers/StudyQuizzes.cs), persisting deck and quiz files back to disk at the end of each session).
+2. **Account deletion still resurrects the deleted account.** `RESOLVED` (Fixed `DeleteAccount` active marker overwrite timing, added `Directory.Exists` guard to `BackupActiveToken` to avoid directory recreation, and wired `DeleteToken` in `LogoutAccount` inside [AccountHelper.cs](file:///C:/Users/TruongNhon/Documents/Powershell/AgyTuiApp/Helpers/AccountHelper.cs)).
+
+### 🟠 Still broken — High (unchanged from §14, re-verified)
+3. **Docker's destructive Windows commands are still no-ops.** `RESOLVED` (Wired C# container ID resolver and confirmations before invoking `stop`/`rm` in [DockerHelper.cs](file:///C:/Users/TruongNhon/Documents/Powershell/AgyTuiApp/Helpers/DockerHelper.cs)).
+4. **The `AgyAccountCore` split is still cosmetic dead code.** `AccountRepository.`/`TokenVault.`/`QuotaTracker.` still have zero callers outside their own files anywhere in `AgyTuiApp` (confirmed by fresh grep). `AccountRepository`'s path resolver still disagrees with the live one: it resolves to `%USERPROFILE%\.gemini\antigravity` (`AccountRepository.cs:9`) while `AgyAccountCore.AgySourceHome` (`AccountHelper.cs:270-280`) resolves to `Config.Current.AgySourceHome` / `C:\Users\Public\.gemini` / `%USERPROFILE%\.gemini` — no `antigravity` subfolder, no `Config.Current` awareness. This is a materially misleading "🟢 Shipped" row in §9's Structural table (corrected below).
+5. **AI pipeline gaps are still open, `AiLearningGenerator` is still unvalidated.** `InvokeCodex` (`AiHelper.cs:793-854`) still never calls `InvokeWithPipeline`, so it still skips both the quota pre-flight and `ai-history` logging that `InvokeClaude` (line 761) gets. Auto-fallback is still a blocking `AnsiConsole.Confirm` (`AiHelper.cs:513`), not automatic. Three unpooled `new HttpClient`/`HttpClientHandler` sites remain at `AiHelper.cs:614, 1183, 1317`. `AiLearningGenerator.ExecuteCliGenerator` (`AiLearningGenerator.cs:104-108`) still writes any non-empty stdout straight to the deck/quiz JSON file with no `JsonDocument.Parse`/schema check against `DeckFile`/`FlashCard` — a CLI login prompt or prose-wrapped response still silently corrupts learning data.
+
+### 🟡 Still broken — Medium/Small (unchanged from §14, re-verified with current line numbers)
+6. `GitHelper.cs:130-133` — remote branch checkout still truncates to the text after the last `/`; `feature/foo` still checks out as `foo` and fails.
+7. `StudyQuizzes.cs:170-177` — `GrammarQuiz.Run("N5")` still resolves (via a Windows case-insensitive path match) to the JLPT vocab file `learn/japanese/N5.json` instead of the real grammar content at `learn/grammar/n5.json`; `data.Cards` is null and line 177 still throws an uncaught NRE on the default level.
+8. `AwsHelper.cs:36-88` — every `Show*` method still silently falls back to LocalStack on empty stdout with no on-screen label of which backend actually answered.
+9. `AccountHelper.cs:453-456,543` — `TriggerLowQuotaWebhook` still fires on every request under threshold (no cooldown/debounce) via a still-undisposed `new HttpClient()` per call.
+10. `ObsidianHelper.cs:171-175` — `GetField("tags")` still only scans text after the colon on the `tags:` line itself; multi-line YAML lists (`tags:\n - a\n - b`) still parse to zero tags.
+11. No caching anywhere in the vault-scan path (`ObsidianHelper.cs:113,133,187,222`, `ResourceDiscovery.cs:246,258,270`) — every one still calls `Directory.GetFiles(..., AllDirectories)` unwrapped, despite `TtlCache<,>` already existing and already used elsewhere in the codebase.
+12. `ThreePaneRenderer.cs`/`FlatTreeRenderer.cs` still share large blocks of logic with no shared base beyond the `IMenuRenderer` interface; `Density` is still read only inside `FlatTreeRenderer.cs:710` (zero references in `ThreePaneRenderer.cs`); `Program.cs:762-779` still tells the user both `ui-mode` and `density` toggles apply "next time you launch," confirmed still relaunch-required.
+13. `CommandRegistry.cs:380-399` `AssertSwitchCases()` still only checks registry→switch drift. Confirmed still-orphaned switch cases with no registry entry: `"hotkey"` (`Program.cs:781`), `"ai-gen"` (880), `"deck-gen"` (881), `"vault"` (885), `"sync"` (888) — all reachable only by direct CLI invocation, invisible to every menu/palette/help surface.
+
+### 🆕 New finding — `Profile/*.ps1` is a dead, orphaned loader that commits keep editing by mistake
+Five files — `Profile/10-Core.ps1`, `20-Dev.ps1`, `30-Sys.ps1`, `40-Learn.ps1`, `50-Aliases.ps1` — exist on disk but are **not sourced by anything**. `Microsoft.PowerShell_profile.ps1` contains zero references to any of the five filenames; it explicitly documents its own consolidation at lines 156-167 ("Everything below used to live in `Profile\Core\*.ps1`/`Profile\Helpers\*.ps1`... lazy per-file loading via `EnsureHelper` is gone") and again at line 1195. History confirms the mechanics: commit `61453b7` originally introduced the `Profile/*.ps1` split with a `Get-ChildItem ... | ForEach-Object { . $_.FullName }` loader; commit `21c01b4` deleted that loader and inlined everything back into the single file — but never deleted the now-dead `Profile/*.ps1` files. **Today's commit `0ab973e` edited `Profile/10-Core.ps1` and `Profile/50-Aliases.ps1` anyway** — changes to files nothing loads, silently doing nothing. This is a live trap: anyone editing `Profile/*.ps1` (an obvious-looking place to add profile code) gets no error and no effect. **Action needed**: either delete the 5 dead files, or restore the dot-source loader — leaving them in this half-abandoned state is strictly worse than either choice. Not yet reflected in README.md's architecture note, which is otherwise accurate about the single-file *load* behavior but silent on these stale files' continued presence.
+
+### 📋 Correction to §9's Status Tracker
+The Structural table's row `AgyAccountCore split (AccountRepository/QuotaTracker/TokenVault) | 5 | 🟢 Shipped` should read **🔴 Cosmetic-only / dead code** per finding #4 above — the files exist, build, and pass isolated unit tests, but zero production code calls them and one has a wrong path constant. Per §9's own stated rule ("only mark a row 🟢 Shipped after actually running the thing... tracing actual callers"), this row was marked Shipped from file-existence alone, exactly the mistake that rule was written to prevent.
+
+### 💡 Enhancement proposals — grounded in current code, scoped to what you asked about
+
+**Terminal IDE ("agy-cli"-style, editor-per-file, neovim-ish)** — current state: `TerminalIde.cs` (584 lines, `FileExplorer`/`CodeViewer`/`SymbolSearch`/`GitDiffViewer`/`TerminalIde` all in one file) drives everything through a numbered `SpectreMenu`, not a `/command` grammar — `IdeCommandRegistry.cs` and the Skills system from §5 don't exist yet (confirmed 🔴 in §9). There is no real keybinding layer at all: the "Ctrl+B/Ctrl+P/Ctrl+K" hints in the status bar are static text with no `ConsoleKey` handler behind them anywhere in the file. `LaunchEditor` (line 572) already does the correct "shell out and return" pattern via `ProcessRunner.Run`, but it's hardcoded to `notepad`/`nano` and only reachable via a menu item, not a hotkey.
+* Add an `EditorResolver` (new static helper) that checks `$VISUAL` → `$EDITOR` → `git config core.editor` → `notepad`/`nano` fallback, replacing the two-line ternary at `TerminalIde.cs:574` — this is exactly how `lazygit`/`k9s`-style tools resolve "edit in my real editor."
+* Give the IDE palette loop a real single-key fast path (`Ctrl+R`/`e`) that calls `LaunchEditor(currentFile)` directly without walking the numbered menu — the menu item already exists, it just needs a hotkey shortcut in front of it.
+* Build `IdeCommandRegistry.cs` scoped small: `/open`, `/diff`, `/symbols`, `/edit`, `/ask` mapped directly onto the static methods that already exist (`CodeViewer.Show`, `GitDiffViewer.ShowDiff`, `SymbolSearch.BrowseSymbols`, `LaunchEditor`, `AgyAiCore.InvokeClaude`) instead of the current if/else-on-menu-index.
+* Add the `SkillLoader` from §5 scanning `skills/*.md` — since the IDE's primitive set (`AskAi`, `ShowDiff`, `LaunchEditor`) already exists, a skill is just a saved sequence over primitives that are already built, not new infrastructure.
+* `SymbolSearch.BrowseWorkspaceSymbols` caps at 50 files with plain `.Contains` substring matching — swap in a real fuzzy scorer for Quick Open instead of building a second search implementation.
+
+**AI + Learning content template redesign** — current state: `AiLearningGenerator.RunGenerator` (`AiLearningGenerator.cs:49`) builds the entire prompt as one hardcoded string ("Generate deep learning content for topic: {topic}. Output clean JSON...") with no schema, no examples, no format instructions, then `ExecuteCliGenerator` (line 104-108) writes raw stdout straight to disk with zero validation — even though `StudyHelper.cs` already defines the real target schema (`FlashCard(Id, Front, Back, Hint?, Mnemonic?, ExampleSentence?, Tags[], Difficulty, SrState)`, `DeckFile(DeckMeta, FlashCard[])`) that the generator never tells the model about. There is no template-file concept anywhere in the repo (`templates`/prompt-template search hits nothing relevant).
+* Serialize an example `DeckFile`/`FlashCard` instance into the prompt so the model targets the schema the app actually reads, instead of the current freeform one-liner.
+* Validate `ExecuteCliGenerator`'s output through `LearnDataPaths.LoadJson<DeckFile>` before writing; on failure, one retry with an error-repair follow-up prompt instead of silently saving whatever the CLI printed (including login prompts/error banners).
+* Strip markdown code fences (```json ... ```) defensively before parsing — a common CLI-output shape this code doesn't guard against today.
+* Externalize per-domain prompt bodies into editable `templates/flashcards.md`/`templates/quiz.md` files next to `LearnDataPaths.DecksDir`, selected by the existing domain switch in `GetTargetFilePath` — the same markdown-with-frontmatter pattern already proposed for the IDE Skills system, reused for a second use case instead of inventing a new mechanism.
+* Record which prompt/template version generated a deck (a field on `DeckMeta` or a sibling record) so improving a template later doesn't silently orphan decks generated by an older one.
+
+**SSH × Tailscale** — current state confirms both claims already in §9: `SshHelper.GenerateAsciiQrCode` (`SystemHelpers.cs:401-458`) draws three finder-pattern corners and fills the rest with `(bit ^ (r*c%2))` — a homemade pattern with no Reed-Solomon error correction; it cannot be scanned by a real phone camera. `StartMobileSshKeyReceiver`/`StartKeyReceiver` (lines 626/460) still run a bare, unauthenticated `HttpListener`/`TcpListener` that accepts any POST body regex-matching an `ssh-*` key format and appends it to `authorized_keys` — reachable by anyone on the LAN/tailnet during the ~2-minute enrollment window. `ShowTailscaleServeInfo` (line 386) only *reads* `tailscale serve`/`funnel status`; nothing in the codebase actually invokes `tailscale serve`/`funnel` to replace the listener.
+* Swap `GenerateAsciiQrCode`'s rendering internals for a real QR encoder (e.g. `QRCoder`, MIT-licensed, pure .NET) rendered with Unicode half-blocks — same call site, no redesign of the enrollment flow needed.
+* Have the enrollment flow shell `tailscale serve https / http://localhost:{port}` before starting the listener, and embed a one-time random token in the QR-code URL that `AddAuthorizedKey` must match — closes the unauthenticated-listener gap without a full rewrite.
+* Add expiry/single-use enforcement tied to that token, and log accepted key fingerprints (not just truncated key text) so `ShowSshInfo` can show provenance later ("added via mobile enrollment at HH:mm").
+
+---
+
+## 🔬 16. Function-Level Deep Dive (2026-07-21) — six parallel per-file passes across every remaining source file, one level below §14/§15's domain-level findings
+
+§14/§15 found the biggest, most user-visible bugs by reading each domain's overall flow. This pass went function-by-function through every file not yet covered that way — including files with zero prior findings (`Config.cs`, `ThemeHelper.cs`, `Icons.cs`, `ScreenChrome.cs`, `SpectreWidgets.cs`, `ProcessRunner.cs`, and the 1977-line PowerShell profile itself, which had never had a function-level pass) — plus a second look inside functions that already have a *known* bug, on the chance a second, different one is hiding in the same method. It was. Ordered by how bad the failure mode is: crashes/hangs first, then silent-wrong-behavior, then smaller correctness gaps, then cheap wins.
+
+### 💥 New crash/hang bugs (none of these were previously documented)
+1. **`FlatTreeRenderer` crashes on empty search results.** `Run()` (`FlatTreeRenderer.cs:197-220`, `561-566`): pressing Down/PageDown while a search matches zero rows drives `selectionIndex` to `-1`; the Enter handler only guards `selectionIndex < visibleRows.Count`, never `>= 0`, so the next Enter throws an uncaught `ArgumentOutOfRangeException` on `visibleRows[-1]` and kills the whole TUI. Fix: clamp to `Math.Max(0, ...)` and/or guard Enter with `selectionIndex >= 0`.
+2. **Three PowerShell functions are called but never defined.** `Start-AgyManager`, `Start-AgyProxy`, `Test-AgyAiGate` are invoked from `mgr`/`prxy`/`ai-dash`/`ask-ai`/`GitHelper.GenerateAiCommitMessage` (`Microsoft.PowerShell_profile.ps1:1926,1929,1940,527,1850`) but a full-file grep finds no definition anywhere — every one of those commands throws "term is not recognized" on first use. Fix: define them (likely orphaned mid-refactor) or delete the dead call sites.
+3. **`ProcessRunner.RunCapture()` can deadlock or hang the whole app indefinitely.** (`ProcessRunner.cs:70-113`) Redirects both stdout and stderr but only ever reads stdout — a subprocess that writes enough to stderr before exiting deadlocks the synchronous `ReadToEnd()`/`WaitForExit()` pair, and there is no timeout anywhere, so one unresponsive `git`/`docker`/`aws` call freezes the entire TUI with no way to cancel short of killing the process. This is the shared helper §3's "8 near-identical shell-out helpers" finding consolidated onto — so the hang risk is now centralized, not distributed. Fix: read both streams asynchronously, add a timeout parameter with `Kill(true)` fallback.
+4. **`FileExplorer` can never open `.cs`/`.ps1`/`.sh` files.** `Browse()` (`TerminalIde.cs:45`) strips a filename prefix via a hardcoded `entries[idx][3..]`, assuming every icon+space prefix is exactly 3 characters — but `⚙`/`⚡` (the `.cs`/`.ps1`/`.sh` icons) are single UTF-16 units, giving only a 2-character prefix. The slice eats the first real letter of the filename, so the resulting path never matches `File.Exists`, and those files silently can't be opened from the tree. Fix: split on the first space, don't hardcode an offset.
+5. **`GitDashboard`'s live view has a malformed Spectre markup tag.** `GitNexus.ShowLiveDashboard()` (`GitDashboard.cs:30`) closes markup with `$"[bold]{col}[]"` instead of `[/]` — this either renders literally as garbage text or throws a Spectre markup parse exception, breaking the dashboard outright.
+6. **`SshHelper.StartKeyReceiver()` blocks forever with no timeout.** (`SystemHelpers.cs:460-490`) `AcceptTcpClient()` has no bound, unlike its sibling `StartMobileSshKeyReceiver` (explicit 2-minute timeout right next to it) — a client that never connects freezes the whole process.
+7. **`AiLearningGenerator` has a real command-injection surface, not just a validation gap.** `ExecuteCliGenerator()` (`AiLearningGenerator.cs:86-96`) shells the user-typed topic through `cmd.exe /c {exe} --prompt "{promptEscaped}"` with only `"`→`\"` escaping — `cmd.exe` still expands `&`, `|`, and `%VAR%` inside a quoted argument, so a topic like `foo & calc.exe` or one containing `%USERPROFILE%` is a real injection/env-leak vector from free-text input, on top of the already-known missing JSON validation.
+
+### 🔴 Silent-wrong-behavior (does something, but the wrong thing, with no error)
+8. **`Config.Save()` destroys every comment in `profile.config.json` on the first settings toggle.** (`Config.cs:158`) Re-serializes with plain `JsonSerializerOptions{WriteIndented=true}`, and the file ships with a `//` comment on nearly every line — the very first `/ui-mode` or `/density` toggle silently strips all of them.
+9. **Two aliases silently lose their arguments.** `Microsoft.PowerShell_profile.ps1:1839` rebinds `co` (was: checkout a named branch) to a parameterless interactive picker — `co my-branch` now silently ignores `my-branch` and opens the picker instead. Same pattern for `dkcl` at line 1822 (`-All` switch silently dropped). The original, correct bindings are still physically present earlier in the file and read as "the" implementation to anyone skimming top-to-bottom, but are dead the moment the file finishes loading.
+10. **`SystemMonitor`'s live CPU gauge always shows 0%.** `SystemHelper.SystemMonitor()` (`Microsoft.PowerShell_profile.ps1:1075`) double-indexes `$cpuSample.CounterSamples[0].CounterSamples[0].CookedValue` (should be one level shallower); the exception is swallowed by an empty `catch{}`, so it fails the same way every refresh with zero signal.
+11. **`GetAccountStats()` shows identical "shared" numbers for every account.** (`AccountHelper.cs:1136-1140`) `skillsCount`/`convCount` are always computed from the default `AgySourceHome`, not `GetAccountDirectory(accountName)` — every account's card shows the same skills/history count regardless of which account it's actually displaying.
+12. **`SyncActiveAccountWithKeyring()` can cross-contaminate a different account's backup.** (`AccountHelper.cs:864-983`) When no account matches the keyring token, it unconditionally overwrites the *currently active* account's stored token file with the unmatched credential instead of doing nothing — a wrong guess silently corrupts that account's backup.
+13. **`LogoutAccount()` doesn't actually revoke the credential if it's the active one.** (`AccountHelper.cs:819-833`) Deletes local files but never calls `AgyKeyringHelper.DeleteToken` for the active account — a live, working credential remains in Windows Credential Manager after "logout."
+14. **The multi-agent auto-commit toggle silently doesn't apply to Ollama-routed Claude.** `RunInteractive()` (`AiHelper.cs:1341-1365`) only injects `--no-auto-commit` when the launcher executable name contains "claude"/"codex"/"agy" — but Claude-via-Ollama launches through `ollama.exe`, so the toggle has zero effect on that path despite the UI claiming "Multi-Agent Auto-Commit: DISABLED."
+15. **`IsPortResponding()` reports a hung Ollama as "running."** (`AiHelper.cs:604-627`) Falls back to a plain listener check (socket bound, not actually responding) on *any* exception, not just connection-refused — a crashed daemon that still holds its socket, or an unrelated process squatting on the port, reads as healthy.
+16. **`Docker`'s "Full cleanup" doesn't do what the standalone "stop all" option does.** `ShowCleanupDashboard()` (`DockerHelper.cs:41-58` vs. `27-30`) runs `container prune -f` (stopped containers only) for its bulk path, while the separately-labeled "Stop & remove all running containers" item actually stops running ones — selecting "Full cleanup" silently leaves running containers running.
+17. **`ProblemTracker`'s Filter menu item is dead.** `Run()` (`StudyQuizzes.cs:568-571`) only branches on `idx==0`; selecting "[f] Filter by topic" falls through to the same code path as "← Back," even though a working `Filter()` method exists right there unused.
+18. **`ProfileNavigator.Navigate()` treats Escape as "confirm."** (`WorkspaceRegistry.cs:210`) Only checks `actionIdx` against `1`/`2`/`3`; pressing Escape (`-1` by this app's own contract) falls through to the same `return selected.WorkspacePath` as an explicit selection — cancel doesn't cancel.
+19. **`ThemeHelper.ApplyMobileMode()` claims success when it did nothing.** (`ThemeHelper.cs:73`) If no `-mobile` variant file exists for the current theme, it still persists `enable_mobile=true` and prints "Mobile Prompt Theme activated" while the desktop theme stays active — saved state and displayed message both lie.
+20. **A UDP listener on the target port survives `kill-port`.** `KillPort()` (`SystemHelpers.cs:62-65`) assumes every `netstat -ano` row is TCP's 5-column shape and skips anything shorter — UDP rows have 4 columns and are silently never killed.
+
+### 🟡 Smaller correctness gaps
+21. `AutoDiscoverWorkspaces()` (`WorkspaceRegistry.cs:71`) never reads `Config.Current.ProjectSearchPaths`/`ProjectExcludeFolders` — both are populated in `profile.config.json` and never referenced anywhere in the codebase; discovery only checks the single `ProjectsBaseDir` and hardcodes one `node_modules` exclusion.
+22. `Program.cs`'s `RunCommand()` only forwards `args[0]`; every other CLI argument the PowerShell profile passes (e.g. `Invoke-ControlCenter "set-model" $ModelName`) is silently dropped (`Program.cs:246`). Relatedly, `install-ai`, `init-ollama`, `set-model`, `ensure-ollama`, `clawdbot` are called from the profile (`Microsoft.PowerShell_profile.ps1:1551-1602`) but have no matching `case` in the switch — they currently do nothing.
+23. `ShowHotkeysGuide()` (`Program.cs:279`) is a **fifth** independent, hand-maintained command table (on top of the four §3.0 already unified) — hardcoded `table.AddRow` calls instead of reading `CommandRegistry.All`, and it's already stale (missing several real commands).
+24. `IsAiOllamaEnabled()`'s CLI-dispatch gate (`Program.cs:347`) hardcodes 9 aliases while `CommandRegistry.All` marks 15 `RequiresAiOllama: true` — the extra 6 (`ollama-models`, `ollama-pull`, etc.) are hidden from menus but still directly reachable via CLI even when the feature flag is off.
+25. `AssertSwitchCases()` (`CommandRegistry.cs:380-400`) re-parses `Program.cs` off disk at runtime via hardcoded relative paths — in a published/self-contained build the source file isn't shipped next to the binary, so this drift guard silently never runs outside a source checkout.
+26. `MenuNode.BuildTree()` gives `/grammar`, `/obsidian`, and `/refresh` two separate `MenuNode`s with the same `Id` (cross-listed under two branches) — both renderers key expand-state off `Id`, so one occurrence's expand/collapse toggle can affect the other. Separately, `"no-auto-commit"` (the primary command, not its `"autocommit"` alias) is never added to any tree branch — unreachable from both renderers and from `/` search.
+27. `GetCommandIcon()` (`Icons.cs:168-219`) — the "Nerd Font" branch uses the *same raw emoji* as the plain-emoji branch for most commands (docker, AWS, SSH, disk, tracking), so toggling Nerd Font detection has no visible effect. Separately, category-before-alias branching means `/obsidian`/`/refresh`'s explicit icon cases (`💎`/`🔄`) are dead code, permanently shadowed by the generic Learn & Study fallback.
+28. `OllamaStatusWidget.Render()` (`StatusWidgets.cs:228-282`) calls `client.GetStringAsync(...).Result` synchronously with no timeout on a cache miss — a hung Ollama port freezes the entire render/input loop for up to the default 100s HttpClient timeout, unlike its neighbor `PublicIpWidget`, which already does this correctly (fire-and-forget + placeholder).
+29. Widget expansion in `FlatTreeRenderer.RenderTree()` (`FlatTreeRenderer.cs:801-822`) re-invokes `widget.Render()` on every keystroke for as long as a widget stays expanded, not once on highlight as intended — `DiskSpaceWidget`/`AccountTreeWidget`/`LiveDashboardWidget` re-enumerate drives/accounts/stats on every keypress anywhere in the tree while left open.
+30. `ThreePaneRenderer.Run()` has no `/`-search key binding at all (`ThreePaneRenderer.cs:19-372`) — refactor_plan §2 specifies search as one of the few behaviors both renderers must share verbatim, but three-pane users have no way to invoke it.
+31. `TerminalIde`'s exclusion checks (`bin`/`obj`/`.git` at `TerminalIde.cs:278,462,550`) are raw substring matches, not path-segment checks — legitimate paths merely containing those substrings get wrongly excluded, while `node_modules`/`.vs`/`packages` (which don't) are walked in full with no depth limit.
+32. `ContentExtractor.ExtractQuizBlocks()` (`ResourceDiscovery.cs:307-322`) fabricates "option 1 is correct" via `FirstOrDefault` returning a default tuple when no `- [x]` option is actually checked in the source markdown, instead of skipping the block.
+33. `CsvExtractor.Extract()` (`ResourceDiscovery.cs:150-173`) splits rows with a plain `line.Split(',')` — any quoted value containing a comma desyncs every subsequent column.
+34. `StudySession.Record()` (`StudyHelper.cs:610-619`) writes `StartTime`/`EndTime` as the same `now` timestamp taken at record time, discarding the real start captured earlier in `Run()` — every logged session shows a zero-length duration.
+35. `ProjectScaffolder.Scaffold()`'s React/Vite path (`ProjectScaffolder.cs:27`) creates an empty target directory but runs `npm create vite@latest` without changing into it — Vite scaffolds into the process's actual working directory, leaving an orphaned empty folder at the path the success message claims the project lives at.
+36. `TtlCache<K,V>.GetOrCompute()` (`TtlCache.cs:16`) isn't atomic under concurrent access on an expired key — two threads racing on the same key both invoke `factory()` (last write wins), which matters once network-backed widgets (Ollama status, IP) are the ones calling through it under rapid refresh.
+
+### 💡 Cheap, concrete wins (small effort, clear payoff)
+* Add branch-name completion for `co`/`gbd`/`cob`, workspace-name completion for `proj`, and theme-name completion for `theme` via `Register-ArgumentCompleter` — the data source for all three already exists in-process (`Microsoft.PowerShell_profile.ps1`, currently only `multigravity` has a completer).
+* Collapse `Invoke-Codex-By-Ollama`/`Invoke-Claude-By-Ollama`/`Invoke-OpenClaw-By-Ollama`/`Invoke-Clawdbot-By-Ollama`/`Invoke-Hermes-By-Ollama`/`Invoke-HermesDesktop-By-Ollama` (`Microsoft.PowerShell_profile.ps1:1485-1532`, six near-identical bodies) into one parameterized helper.
+* Gate `Write-AgyStartupCheckpoint`'s unconditional 4x disk I/O (`Microsoft.PowerShell_profile.ps1:123-131`, the file's own comment calls it "temporary diagnostic") behind a debug env var — it currently runs on every single shell startup for every user.
+* `ExtractorRouter.ExtractUrl()` (`ResourceDiscovery.cs:209-238`) leaks a temp `.md` file if extraction throws (no `try/finally`) and is a 9th unshared `new HttpClient()` site — both are one-line fixes (wrap in `finally`, route through `HttpClientProvider`).
+* `SpectreWidgets.Show()`/`ShowRobust()`/`ShowDynamic()` (`SpectreWidgets.cs:13-61`) accept a `defaultIndex` parameter that's silently never used — either wire it up (so preselecting the current theme/account actually shows as preselected) or remove it.
+* `SpectreTable.Live()` (`SpectreWidgets.cs:434-456`) re-queries and redraws roughly every 500ms regardless of the caller-requested `refreshMs` (e.g. `5000`) — accumulate elapsed time and only refresh at the requested interval, using the short sleep only to poll for a keypress.
+
+
+AgyAccountCore split (AccountRepository/QuotaTracker/TokenVault)	5	🔴 Cosmetic-only	Decomposed into TokenVault.cs/QuotaTracker.cs/AccountRepository.cs, unit-tested in isolation — but as of §14/§15's audit, zero production code calls any of the three; AccountHelper.cs's AgyAccountCore still runs its own independent duplicate logic, and AccountRepository's path constant resolves to the wrong directory. Corrected from a prior "Shipped" marking that was based on the files existing/building, not on tracing callers.
+
+
+guide 
+
+# 🛠️ AgyTuiApp Enhancement Guide — Full Build Plan
+
+**Purpose**: `refactor_plan.md` is an *audit log* — findings accumulate there chronologically (§9–§16), in the order they were discovered, mixed with historical proposals that have since shipped, partially shipped, or turned out to be wrong. This document is the *build plan* — the same ground, reorganized into "what to build, in what order, with enough detail to actually start coding." It is derived entirely from `refactor_plan.md`'s verified findings (specifically §14, §15, §16) — nothing here is a new, unverified claim; every fix below cites the finding it resolves.
+
+**How to use this**: work top to bottom. Each tier assumes the tier(s) above it are done — P1 items build on P0 fixes being in place, etc. Within a tier, items are independent and can be parallelized across PRs. Every item has: the problem (with file:line), the fix (with concrete method signatures/schemas, not just prose), files touched, and a verification step.
+
+---
+
+## 0. Current situation, in one paragraph
+
+The app is real and mostly works: 34 C# files, ~14,000 lines, 143 commands, two working UI renderers, a genuinely-correct SM-2 spaced-repetition algorithm, a real AI activity ledger, DPAPI-backed account switching. But three things are true at once: (1) a handful of **critical bugs make whole domains not work as advertised** — the entire Learning suite never persists review results, account deletion can resurrect a deleted account with a live credential; (2) **several "shipped" refactors are cosmetic** — three account-domain classes exist, build, and pass tests, but nothing calls them; (3) the newest function-level pass (§16) found **new crash bugs that weren't visible from the domain-level audits** — an uncaught exception that kills the whole TUI from an empty search, three PowerShell functions that are called but never defined. None of this is architecture-level rework; every fix below is scoped to one or a few functions.
+
+---
+
+## 1. Priority tiers
+
+| Tier | Theme | Why this order |
+|---|---|---|
+| **P0** | Crash/hang/data-corruption fixes | Ships stability before anything else — a feature built on top of a hang or a data-corrupting bug inherits the bug. |
+| **P1** | Learning & Study domain — full redesign | The single most broken domain (SM-2 is dead code) *and* the one you asked to be called out specially. Wiring it correctly is a prerequisite for every learning enhancement (retention charts, mastery icons, Anki import) — they all read data this tier makes real. |
+| **P1** | Project/Workspace domain — Terminal IDE + dev tools | The other domain you asked about by name (agy-cli/neovim-style IDE, ctrl+R editor). Independent of the Learning tier, safe to parallelize. |
+| **P2** | AI/Ollama pipeline unification + Accounts cleanup | High-value, but depends on nothing above being done first — can slot in whenever. |
+| **P2** | SSH × Tailscale hardening | Security-relevant but not urgent (existing listener has been live this whole time); do after the crash fixes. |
+| **P2** | UI/Renderer consolidation | Structural — best done once the crash fix (P0) is already in and stable, so the shared base class refactor has a known-good baseline to diff against. |
+| **P3** | PowerShell profile cleanup | Cosmetic/DX improvements — dedupe aliases, tab-completion, lazy loading. No user-facing bug depends on this. |
+
+---
+
+## 2. P0 — Crash / hang / data-corruption fixes
+
+Do these first, in any order, each as its own small PR. None of them touch UI layout or require design decisions — they're bugs with one correct fix.
+
+### 2.1 `FlatTreeRenderer` crashes on empty search results
+**Finding**: `refactor_plan.md` §16 #1. `Run()` (`FlatTreeRenderer.cs:197-220, 561-566`) lets `selectionIndex` go to `-1` when Down/PageDown is pressed against a zero-match search; the next Enter indexes `visibleRows[-1]` → uncaught `ArgumentOutOfRangeException` → whole process dies.
+
+**Fix**:
+```csharp
+// wherever selectionIndex is advanced during search (Down/PageDown handlers):
+selectionIndex = visibleRows.Count == 0 ? -1 : Math.Min(visibleRows.Count - 1, selectionIndex + 1);
+
+// Enter handler — add the lower bound that's currently missing:
+if (selectionIndex >= 0 && selectionIndex < visibleRows.Count)
+{
+ // existing execute-on-Enter logic
+}
+```
+Also add a zero-results empty state to the render path ("No matches — try a different search") so the user gets feedback instead of a seemingly-frozen list.
+
+**Files**: `AgyTuiApp/Views/FlatTreeRenderer.cs`.
+**Verify**: launch `cc`, press `/`, type a string that matches nothing (`zzzzz`), press Down 3 times, press Enter. Must not crash; should show empty state.
+
+### 2.2 `ProcessRunner.RunCapture()` can hang the entire TUI
+**Finding**: §16 #3. Redirects stderr but never reads it; a chatty subprocess can deadlock the stdout `ReadToEnd()`/`WaitForExit()` pair, and there's no timeout anywhere, so any hung `git`/`docker`/`aws` call freezes the whole app.
+
+**Fix** — read both streams asynchronously and add a bounded wait:
+```csharp
+public static async Task<(string Stdout, string Stderr, int ExitCode)> RunCaptureAsync(
+ string exe, string args, string? workingDir = null, TimeSpan? timeout = null)
+{
+ using var proc = new Process { StartInfo = BuildStartInfo(exe, args, workingDir) };
+ var stdoutTask = new StringBuilder();
+ var stderrTask = new StringBuilder();
+ proc.OutputDataReceived += (_, e) => { if (e.Data != null) stdoutTask.AppendLine(e.Data); };
+ proc.ErrorDataReceived += (_, e) => { if (e.Data != null) stderrTask.AppendLine(e.Data); };
+ proc.Start();
+ proc.BeginOutputReadLine();
+ proc.BeginErrorReadLine();
+
+ var waitTask = proc.WaitForExitAsync();
+ var completed = await Task.WhenAny(waitTask, Task.Delay(timeout ?? TimeSpan.FromSeconds(30)));
+ if (completed != waitTask)
+ {
+ try { proc.Kill(entireProcessTree: true); } catch { /* already exited */ }
+ return (stdoutTask.ToString(), stderrTask.ToString() + "\n[TIMED OUT]", -1);
+ }
+ return (stdoutTask.ToString(), stderrTask.ToString(), proc.ExitCode);
+}
+```
+Keep the existing synchronous `RunCapture`/`Run` as thin wrappers over this (`.GetAwaiter().GetResult()`) so ~40 existing call sites across `GitHelper`/`DockerHelper`/`AwsHelper`/etc. don't all need to change signature in the same PR — migrate them to the async overload opportunistically in later PRs.
+
+**Files**: `AgyTuiApp/Helpers/ProcessRunner.cs`.
+**Verify**: temporarily point a call at a command that sleeps 60s (`ping -n 60 localhost` on Windows); confirm the call returns after the timeout instead of hanging forever, and confirm a normal `git status` call still returns its real output including anything written to stderr (e.g. a warning).
+
+### 2.3 `FileExplorer` can't open `.cs`/`.ps1`/`.sh` files
+**Finding**: §16 #4. `Browse()` (`TerminalIde.cs:45`) does `entries[idx][3..]` assuming a fixed 3-char icon prefix; `⚙`/`⚡` are 2 chars wide, so the slice eats the filename's first letter.
+
+**Fix**: don't hardcode an offset — split on the first space:
+```csharp
+string filename = entries[idx].Substring(entries[idx].IndexOf(' ') + 1).TrimStart();
+```
+**Files**: `AgyTuiApp/Helpers/TerminalIde.cs` (`FileExplorer.Browse`).
+**Verify**: open the IDE (`ide`), browse into a folder containing a `.cs` file, select it — must open, not silently no-op or throw.
+
+### 2.4 Three PowerShell functions are called but never defined
+**Finding**: §16 #2. `Start-AgyManager`, `Start-AgyProxy`, `Test-AgyAiGate` are referenced from `mgr`/`prxy`/`ai-dash`/`ask-ai`/`GitHelper.GenerateAiCommitMessage` (`Microsoft.PowerShell_profile.ps1:1926,1929,1940,527,1850`) but grep confirms zero definitions anywhere in the file (or the dead `Profile/*.ps1` files).
+
+**Fix** — this needs a decision, not just a patch: either these were genuinely never finished (define them — check git history/`git log -p -S"Start-AgyManager"` for whether an implementation ever existed and was deleted by mistake), or the call sites are leftover from an abandoned feature (delete the call sites and the aliases that reach them: `mgr`, `prxy`, `ai-dash`, `ask-ai`). Given `ai-dash`/`ask-ai` sound purposeful (AI dashboard, ask-AI shortcut) and appear in multiple places, the likely correct fix is defining minimal versions:
+```powershell
+function Start-AgyManager {
+# placeholder until a real implementation exists — surfaces a clear message
+# instead of "term not recognized"
+ Write-Warning "Start-AgyManager is not yet implemented. See enhancement_guide.md §2.4."
+}
+```
+as an immediate stopgap (prevents the crash) while the real feature is scoped separately, OR fully removing the 3 call sites + their aliases if the feature is abandoned.
+
+**Files**: `Microsoft.PowerShell_profile.ps1`.
+**Verify**: run each of `mgr`, `prxy`, `ai-dash`, `ask-ai`, and `gcmt` (which triggers `GenerateAiCommitMessage`) in a fresh shell — none should throw "term is not recognized."
+
+### 2.5 Docker's destructive Windows commands are no-ops
+**Finding**: §15 #3 / §16 #16. `RunDocker` shells POSIX `$()` through `cmd /c docker {args}` — `cmd.exe` never expands it, so `stop $(docker ps -q)` etc. pass literal garbage as container IDs. Separately (§16 #16), "Full cleanup" only prunes *stopped* containers while its own label implies it also stops running ones.
+
+**Fix**: resolve container IDs in C# first, pass them as real arguments:
+```csharp
+public static void StopAllContainers()
+{
+ var (idsOut, _, _) = ProcessRunner.RunCapture("docker", "ps -q");
+ var ids = idsOut.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+ if (ids.Length == 0) { AnsiConsole.MarkupLine("[yellow]No running containers.[/]"); return; }
+ if (!AnsiConsole.Confirm($"Stop {ids.Length} running container(s)?")) return;
+ RunDocker($"stop {string.Join(" ", ids)}");
+}
+```
+Apply the same pattern to `RemoveAllContainers`. Then make "Full cleanup" actually call `StopAllContainers()` followed by `container prune -f`, so the label matches the behavior.
+
+**Files**: `AgyTuiApp/Helpers/DockerHelper.cs`.
+**Verify**: with 2+ running containers, run `dkstac`/`dkrmac` — containers actually stop/are removed (not "No such container").
+
+### 2.6 `Config.Save()` destroys every comment in `profile.config.json`
+**Finding**: §16 #8. Plain re-serialization on any settings write (`/ui-mode`, `/density`, etc.) strips every `//` comment the shipped config file has.
+
+**Fix**: don't round-trip through a plain POCO serializer for a file meant to stay human-edited. Two viable approaches, pick one:
+- **(a) Minimal-diff patch**: parse into `System.Text.Json.Nodes.JsonNode`, mutate only the specific key(s) that changed, serialize that back — preserves everything else including comments if you use a comment-preserving writer, or at minimum preserves key order/structure.
+- **(b) Split runtime vs. authored config**: keep `profile.config.json` as the authored, comment-having file that's *read* but never *written* by the app; persist runtime-toggled settings (`UiMode`, `Density`, theme) to a separate `profile.state.json` with no comments, and merge both at load time (state overrides authored defaults). This is the lower-risk option — it never touches the file the user hand-edits.
+
+Recommend **(b)** — simpler, and matches the existing split where some settings are already persisted to small marker files (`active_account.txt`, `selected_theme.txt`).
+
+**Files**: `AgyTuiApp/Helpers/Config.cs`.
+**Verify**: hand-edit a comment into `profile.config.json`, run `/ui-mode` to toggle it, confirm the comment is still there afterward.
+
+### 2.7 Account deletion can resurrect the deleted account
+**Finding**: §14/§15 Critical #2. `DeleteAccount` → `SetActiveAccount("default", …)` → `BackupActiveToken(GetActiveAccount())`, but the active-account marker hasn't been rewritten yet when `BackupActiveToken` reads it — it still resolves to the just-deleted name, recreating that account's directory with a live token.
+
+**Fix** — reorder so the marker is rewritten *before* any backup call happens:
+```csharp
+public static void DeleteAccount(string accountName)
+{
+ bool wasActive = GetActiveAccount() == accountName;
+ if (wasActive)
+ {
+ WriteActiveAccountMarker("default"); // rewrite the marker FIRST
+ AgyKeyringHelper.DeleteToken(); // and clear the live credential
+ }
+ Directory.Delete(GetAccountDirectory(accountName), recursive: true);
+ if (wasActive)
+ SetActiveAccount("default", false); // now safe — GetActiveAccount() already reads "default"
+}
+```
+**Files**: `AgyTuiApp/Helpers/AccountHelper.cs` (`DeleteAccount`, `SetActiveAccount`).
+**Verify**: create a test account, switch to it, delete it. Confirm it does **not** reappear in `GetAccounts()`/`agyswitch`'s list afterward, and confirm no `keyring_token.txt` gets written into its now-deleted directory.
+
+### 2.8 `LogoutAccount()` doesn't revoke the credential if it's the active one
+**Finding**: §16 #13. Deletes local files but skips `AgyKeyringHelper.DeleteToken` for the active account — a working credential survives "logout" in Windows Credential Manager.
+
+**Fix**:
+```csharp
+public static void LogoutAccount(string accountName)
+{
+ if (GetActiveAccount() == accountName)
+ AgyKeyringHelper.DeleteToken();
+ // existing local-file cleanup unchanged
+}
+```
+**Files**: `AgyTuiApp/Helpers/AccountHelper.cs`.
+**Verify**: log out of the active account, then check Windows Credential Manager (`cmdkey /list` or Credential Manager UI) for the entry — must be gone.
+
+---
+
+## 3. P1 — Learning & Study domain: full redesign (3.1 & 3.2 RESOLVED)
+
+This is the tier you specifically asked for detail on. The domain has real, correct infrastructure (`SpacedRepetitionEngine`'s SM-2 math is verified correct per §11) sitting completely unused because nothing calls it. The fix is not "build SM-2" — it's "wire the SM-2 that already exists into every place a user answers a card," plus the handful of follow-on features that become possible once that's true.
+
+### 3.1 Foundational fix: wire persistence into every drill (do this before anything else in this tier)
+
+**The problem, precisely** (§14 Critical #1 / §16 #34): every drill (`FlashcardEngine`, `VocabDrill`, `KanaQuiz`, `JlptVocabDrill`, `GrammarQuiz` — all in `StudyQuizzes.cs`) does the equivalent of:
+```csharp
+if (AnsiConsole.Confirm($"Did you know: {card.Front}?")) known++; else again++;
+```
+— an in-memory tally, thrown away when the loop ends. `SpacedRepetitionEngine.UpdateCard` (`StudyHelper.cs:414-435`) — which correctly computes the next SM-2 interval/easiness-factor — is never called. `StudySession.Record` (`StudyHelper.cs:610`) — the only thing that writes `study_log.json`, which drives streaks/goals/mastery — is only called from the Pomodoro timer. And when it *is* called, it has its own bug (§16 #34): it stamps `StartTime`/`EndTime` with the same "now" instead of the real session start.
+
+**The fix — one shared session-recording helper, called from every drill**:
+```csharp
+// New: StudyHelper.cs, alongside SpacedRepetitionEngine
+public static class DrillSession
+{
+ // Call once per card, immediately after the user answers.
+ public static void RecordAnswer(FlashCard card, bool knewIt, string deckFilePath, DeckFile deck)
+ {
+ SpacedRepetitionEngine.UpdateCard(card.Sr, knewIt); // mutates card.Sr in place — already correct SM-2
+ LearnDataPaths.SaveJson(deckFilePath, deck); // persist the whole deck back to disk
+
+ if (knewIt) WeakItemsQueue.ClearWeakItem(card.Id); // needs a real implementation — see below
+ else WeakItemsQueue.AddWeakItem(card.Id, deckFilePath);
+ }
+
+ // Call once at the end of a drill session (replaces each drill's local known/again tally-and-discard).
+ public static void RecordSession(string subject, DateTime startedAt, int reviewed, int correct)
+ {
+ StudySession.Record(subject, startedAt, DateTime.UtcNow, reviewed, correct); // pass the REAL start
+ StudyStreak.RecordToday();
+ DailyGoals.CheckAndTick(subject, reviewed);
+
+ if (AnsiConsole.Confirm("Append a summary of this session to today's Obsidian daily note?", defaultValue: false))
+ ObsidianStudySync.OfferSync(subject, reviewed, correct, startedAt);
+ }
+}
+```
+Then every drill's `Run()` changes from a local tally to:
+```csharp
+// inside the per-card loop, replacing `if (Confirm(...)) known++; else again++;`
+bool knewIt = AnsiConsole.Confirm($"Did you know: {card.Front}?");
+DrillSession.RecordAnswer(card, knewIt, deckFilePath, deck);
+if (knewIt) correct++;
+reviewed++;
+
+// after the loop ends
+DrillSession.RecordSession(subjectName, sessionStart, reviewed, correct);
+```
+`JlptVocabDrill.Run` already forwards into `FlashcardEngine.Run` — fixing `FlashcardEngine` fixes it too, no separate change needed there.
+
+**Fix the two empty no-ops this depends on** (`StudyHelper.cs:1006-1012`):
+```csharp
+public static class WeakItemsQueue
+{
+ // was: public static void AddWeakItem(...) { } (empty)
+ public static void AddWeakItem(string cardId, string deckPath)
+ {
+ var queue = LoadQueue();
+ if (!queue.Any(q => q.CardId == cardId && q.DeckPath == deckPath))
+ queue.Add(new WeakItem(cardId, deckPath, DateTime.UtcNow));
+ SaveQueue(queue);
+ }
+
+ public static void ClearWeakItem(string cardId)
+ {
+ var queue = LoadQueue();
+ queue.RemoveAll(q => q.CardId == cardId);
+ SaveQueue(queue);
+ }
+
+ private static List<WeakItem> LoadQueue() =>
+ LearnDataPaths.LoadJson<List<WeakItem>>(LearnDataPaths.WeakItemsPath) ?? new();
+ private static void SaveQueue(List<WeakItem> q) =>
+ LearnDataPaths.SaveJson(LearnDataPaths.WeakItemsPath, q);
+}
+public record WeakItem(string CardId, string DeckPath, DateTime MissedAt);
+```
+(Adjust to whatever `WeakItem`/queue-file shape the class already has stubbed — the point is the two methods need real bodies, not new architecture.)
+
+**Files**: `AgyTuiApp/Helpers/StudyHelper.cs`, `AgyTuiApp/Helpers/StudyQuizzes.cs`.
+**Verify** (this is the highest-value test in the whole codebase to get right): review the same flashcard deck twice in one day, marking every card "known." On the second pass, cards should show fewer/no repeats of ones you just aced (interval pushed out by SM-2) — today, every card is due every single time regardless of history. Also confirm `streak`/`goals`/`stats` (Track & Progress category) actually move after a flashcard session, not just after a Pomodoro session.
+
+### 3.2 Fix the broken content paths this surfaces
+
+Once 3.1 makes drills actually load and write real files, two path bugs (previously masked because nothing durable happened either way) become user-visible:
+* **`GrammarQuiz.Run("N5")`** resolves (via Windows case-insensitive matching) to the JLPT vocab file instead of `learn/grammar/n5.json` and NREs on `data.Cards` (§14 High / §15 #7). Fix: correct the path build in `GrammarQuiz.Run` to always target `LearnDataPaths.GrammarDir`, not `JapaneseDir`.
+* **English grammar** has the same class of bug in the other direction (§16, StudyHelper.cs:351 vs StudyQuizzes.cs:173-177): seeded to `learn/grammar/english.json`, but `GrammarQuiz.Run("English")` looks in `learn/english/grammar.json`/`learn/english/english.json` — neither exists. Fix both levels' path resolution together, off one `LearnDataPaths.GrammarFileFor(level)` helper instead of two independent ad hoc string builds:
+```csharp
+public static string GrammarFileFor(string level) =>
+ Path.Combine(GrammarDir, $"{level.ToLowerInvariant()}.json"); // grammar/n5.json, grammar/english.json, etc.
+```
+**Files**: `AgyTuiApp/Helpers/StudyQuizzes.cs`, `AgyTuiApp/Helpers/StudyHelper.cs` (`LearnDataPaths`).
+**Verify**: run `GrammarQuiz` for both `N5` (the default) and `English` — both must load real seeded content, no NRE, no "no data" fallback.
+
+### 3.3 Unified `/learn` guided flow (the redesign originally scoped in `refactor_plan.md` §5, now actually buildable because 3.1 makes the data real)
+
+Today `learn`/`due`/`weak`/`flashcard`/`vocab`/`jlpt`/`kana`/`kanji`/`stats`/`streak`/`goals`/`obsidian` are 12 separate aliases with no wiring between them. Build one guided entry point:
+```csharp
+public static class GuidedLearnFlow
+{
+ public static void Run()
+ {
+ var due = DueReview.GetAllDue(); // merges decks + JLPT + kanji + kana
+ var weak = WeakItemsQueue.LoadAll(); // now real, per 3.1
+ var ordered = weak.Concat(due.Except(weak)).ToList(); // weak items first
+
+ ShowDueSummaryPanel(ordered); // the §5 mockup: per-subject due counts + mastery icons
+ if (!AnsiConsole.Confirm("Start guided session?")) { OfferJumpToSpecificDeck(); return; }
+
+ var sessionStart = DateTime.UtcNow;
+ int reviewed = 0, correct = 0;
+ foreach (var group in ordered.GroupBy(c => c.Subject))
+ {
+ // dispatch to the existing per-subject drill UI, unchanged —
+ // FlashcardEngine/KanaQuiz/JlptVocabDrill/GrammarQuiz already call DrillSession.RecordAnswer internally now
+ RunDrillFor(group.Key, group.ToList());
+ }
+ DrillSession.RecordSession("guided", sessionStart, reviewed, correct);
+ }
+}
+```
+Register as `/learn` (already an alias — point it at this instead of whatever minimal thing it does today), keep every individual alias (`vocab`, `kanji`, etc.) working for power users who want to skip straight to one deck.
+
+**Files**: new `AgyTuiApp/Helpers/GuidedLearnFlow.cs`, wire into `Program.cs`'s `"learn"` case.
+**Verify**: run `learn` with a mix of due and weak cards across 2+ subjects — session covers weak items first, then due items, grouped by subject, and a single "start guided session" gate instead of manually running 3 separate commands.
+
+### 3.4 AI-generated learning content: template + validation redesign
+
+**Current state** (`AiLearningGenerator.cs`): `RunGenerator` builds one hardcoded prompt string with no schema; `ExecuteCliGenerator` writes any non-empty stdout straight to disk with zero validation (§14 High / §16 crash-adjacent #7 — command injection via unescaped `&`/`|`/`%VAR%` in the topic string).
+
+**Fix, in order**:
+
+1. **Close the injection hole first** (§16 #7) — this is the actual security-relevant part, separate from the JSON-validation ask:
+```csharp
+// ExecuteCliGenerator — never build a cmd.exe string from user-typed text.
+var psi = new ProcessStartInfo(exePath)
+{
+ RedirectStandardOutput = true,
+ UseShellExecute = false,
+};
+psi.ArgumentList.Add("--prompt");
+psi.ArgumentList.Add(promptText); // ArgumentList handles quoting/escaping correctly — no shell involved at all
+```
+Using `ArgumentList` instead of a `cmd /c "..."` string means there's no shell to interpret `&`/`|`/`%VAR%` in the first place — this is strictly better than better-escaping the string.
+
+2. **Give the model the actual target schema** instead of a bare one-liner:
+```csharp
+private static string BuildPrompt(string topic)
+{
+ var example = new DeckFile(
+ new DeckMeta(topic, DateTime.UtcNow, Version: 1),
+ new[] { new FlashCard("id-1", "Front text", "Back text", Hint: "optional hint",
+ Mnemonic: null, ExampleSentence: null,
+ Tags: new[] { topic }, Difficulty: 1,
+ Sr: SpacedRepetitionEngine.NewCardState()) });
+ string schemaJson = JsonSerializer.Serialize(example, new JsonSerializerOptions { WriteIndented = true });
+ return $"""
+ Generate 10 flashcards for the topic "{topic}".
+ Respond with ONLY valid JSON matching this exact shape (no markdown fences, no prose before/after):
+ {schemaJson}
+ """;
+}
+```
+3. **Validate before writing, with a repair retry**:
+```csharp
+private static bool TryValidateAndSave(string rawOutput, string targetPath)
+{
+ string cleaned = StripCodeFences(rawOutput); // regex-strip ```json ... ``` wrappers defensively
+ try
+ {
+ var deck = JsonSerializer.Deserialize<DeckFile>(cleaned)
+ ?? throw new JsonException("null result");
+ if (deck.Cards is null || deck.Cards.Length == 0)
+ throw new JsonException("no cards in response");
+ LearnDataPaths.SaveJson(targetPath, deck);
+ return true;
+ }
+ catch (JsonException)
+ {
+ return false; // caller retries once with an error-repair follow-up prompt, then gives up cleanly
+ }
+}
+```
+4. **Externalize prompts into editable template files** — `templates/flashcards.md`, `templates/quiz.md` next to `LearnDataPaths.DecksDir`, selected by the existing domain switch in `GetTargetFilePath`. Same markdown-with-frontmatter shape already proposed for the IDE's Skills system in §5 — one pattern, two consumers.
+5. **Fix the filename-safety bug** (§14 Smaller/§16 #17 combined): `GetTargetFilePath` only lowercases + replaces spaces/hyphens; strip `Path.GetInvalidFileNameChars()` fully before building the path so a topic like `"AWS SAA-C03: Cloud Practitioner"` or `"C# Async/Await"` (the UI's own example hint!) doesn't throw or create a stray subdirectory.
+6. **Escape markup**: `RunGenerator`'s `SpectrePanel.Info`/`.Success` calls need `.EscapeMarkup()` on `topic`/`provider`/`targetFile` — a topic containing `[`/`]` currently throws a Spectre parse exception mid-generation.
+
+**Files**: `AgyTuiApp/Helpers/AiLearningGenerator.cs`, `AgyTuiApp/Helpers/StudyHelper.cs` (for `DeckMeta`/`FlashCard` if a `Version` field needs adding per item 7 below).
+**Verify**: generate content for a topic containing `&`, `[`, and a `/` (e.g. `"Node.js & Express [Basics]"`) — must not inject a shell command, must not crash on markup, must produce a validly-shaped deck file or a clean "generation failed, retrying..." message, never silently write garbage.
+
+7. **(Small follow-on)** Record which prompt/template version generated a deck — add `Version`/`GeneratedBy` to `DeckMeta` — so improving a template later doesn't silently orphan decks made by an older one.
+
+### 3.5 Anki import
+
+With 3.1 done, decks are real consumers of `SrState`, so an import path is worth building: `.apkg` is a zipped SQLite database — either shell out to a small Python `genanki`-adjacent script (adds a Python dependency, avoid) or use a pure-.NET SQLite reader (`Microsoft.Data.Sqlite`, already implicitly available since `DatabaseHelper.cs` shells to the `sqlite3` CLI — could switch to a real client library here) to read `.apkg`'s `collection.anki2` table and map `notes`/`cards` rows into `FlashCard`. Simpler first cut: a **TSV importer** (`front\tback\ttags` per line, the export format Anki also supports) needs no SQLite parsing at all — ship that first, `.apkg` as a follow-up.
+```csharp
+public static DeckFile ImportTsv(string tsvPath, string deckName)
+{
+ var cards = File.ReadLines(tsvPath)
+ .Where(l => !string.IsNullOrWhiteSpace(l))
+ .Select(l => l.Split('\t'))
+ .Where(parts => parts.Length >= 2)
+ .Select((parts, i) => new FlashCard(
+ Id: $"{deckName}-{i}", Front: parts[0], Back: parts[1],
+ Hint: null, Mnemonic: null, ExampleSentence: null,
+ Tags: parts.Length > 2 ? parts[2].Split(',') : Array.Empty<string>(),
+ Difficulty: 1, Sr: SpacedRepetitionEngine.NewCardState()))
+ .ToArray();
+ return new DeckFile(new DeckMeta(deckName, DateTime.UtcNow, Version: 1), cards);
+}
+```
+**Files**: new method on `ResourceDiscovery.cs`'s `ExtractorRouter` (it already routes `MdExtractor`/`CsvExtractor` — add `TsvExtractor` as a sibling, reusing the router instead of a new entry point). Fix the CSV quoted-comma bug (§16 #33) while you're in this file: replace the raw `line.Split(',')` with a small RFC 4180-aware split, or `Microsoft.VisualBasic.FileIO.TextFieldParser` if pulling that reference is acceptable, or a 10-line hand-rolled quote-aware splitter.
+**Verify**: import a real Anki TSV export (Anki natively supports exporting to this format) — cards appear in the deck with correct front/back, and a value containing a comma inside quotes doesn't desync columns.
+
+### 3.6 Retention analytics + mastery icons
+
+Now that `SrState` is genuinely updated (3.1), `StudyStats`/`ProgressDashboard` can show a real rolling retention-rate chart (% correct on due-reviews over time) — the data (`SrResult` history, if tracked; if not, add a lightweight per-review append-only log: `{cardId, timestamp, knewIt}` written alongside the existing `study_log.json`) already exists or is a one-line addition to `DrillSession.RecordAnswer` above. Mastery icon mapping is pure presentation, no new data:
+```csharp
+public static string MasteryIcon(SrState sr) => sr.IntervalDays switch
+{
+ < 3 => "🌱", // new
+ < 21 => "🌿", // learning
+ _ => "🌳", // mature
+};
+```
+Wire into `Icons.cs` alongside the existing subject icons, call it from wherever deck summaries render (the `/learn` due-summary panel from 3.3, and `StudyQuizzes`' deck-picker lists).
+
+**Files**: `AgyTuiApp/Helpers/StudyHelper.cs` (`StudyStats`/`ProgressDashboard`), `AgyTuiApp/Helpers/Icons.cs`.
+**Verify**: after a week of simulated review data (or fast-forward by editing `study_log.json` timestamps in a test), the retention chart shows a real trend, not flat zeros; a freshly-generated card shows 🌱, a card reviewed correctly several times over weeks shows 🌳.
+
+### 3.7 Wire the already-built Obsidian sync
+
+`ObsidianStudySync.OfferSync` is fully implemented but has zero call sites (§14). 3.1's `DrillSession.RecordSession` already calls it — this item is *done* once 3.1 lands, listed here only so it's not missed as "yet another separate task." Verify as part of 3.1's own verification step, not separately.
+
+### 3.8 Cache the vault-scan path
+
+**Finding**: §14/§15/§16 #11 — no caching anywhere in `ObsidianHelper.cs`/`ResourceDiscovery.cs`; every tag search, graph render, and `learn <topic>` re-walks and re-parses every `.md` file from scratch. `TtlCache<K,V>` already exists and is proven in production (`AccountHelper.cs`, `StatusWidgets.cs`).
+```csharp
+private static readonly TtlCache<string, string[]> _mdFileListCache = new(TimeSpan.FromSeconds(30));
+
+public static string[] GetAllMarkdownFiles(string vaultPath) =>
+ _mdFileListCache.GetOrCompute(vaultPath,
+ () => Directory.GetFiles(vaultPath, "*.md", SearchOption.AllDirectories));
+```
+Apply the same pattern at each of the 6 call sites already identified (`ObsidianHelper.cs:113,133,187,222`, `ResourceDiscovery.cs:246,258,270`) — one field, reused, not six separate caches.
+
+**Also fix while touching this file**: the 20-line frontmatter scan cap (§16 #34, `ObsidianHelper.cs:168`) that truncates before finding the closing `---` on notes with long frontmatter — read until the delimiter is actually found, not a fixed line count; and the multi-line YAML `tags:` list parsing gap (§14/§15) — after the single-line `tags:` check, also scan subsequent `- item` lines until a non-list line is hit.
+
+**Files**: `AgyTuiApp/Helpers/ObsidianHelper.cs`, `AgyTuiApp/Helpers/ResourceDiscovery.cs`.
+**Verify**: time `learn <topic>`/`obs-graph` before and after on a vault with 100+ notes — should be near-instant on repeat calls within the TTL window; a note with a multi-line `tags:` block now shows up under "browse by tag."
+
+---
+
+## 4. P1 — Project/Workspace domain: Terminal IDE + dev tools
+
+### 4.1 Terminal IDE — the "agy-cli"/neovim-style enhancement you asked about
+
+**Current state**: `TerminalIde.cs` drives everything through a numbered `SpectreMenu` — no `/command` grammar, no real keybinding layer (the "Ctrl+B/Ctrl+P/Ctrl+K" footer hints are static text with nothing behind them), `LaunchEditor` hardcodes `notepad`/`nano`.
+
+**Build order** (each step depends only on the previous one, per `refactor_plan.md` §5's own sequencing note):
+
+**Step 1 — `EditorResolver`** (this alone gives you the "open in real editor" behavior):
+```csharp
+public static class EditorResolver
+{
+ public static string Resolve()
+ {
+ var visual = Environment.GetEnvironmentVariable("VISUAL");
+ if (!string.IsNullOrWhiteSpace(visual)) return visual;
+
+ var editor = Environment.GetEnvironmentVariable("EDITOR");
+ if (!string.IsNullOrWhiteSpace(editor)) return editor;
+
+ var (coreEditor, _, exitCode) = ProcessRunner.RunCapture("git", "config core.editor");
+ if (exitCode == 0 && !string.IsNullOrWhiteSpace(coreEditor)) return coreEditor.Trim();
+
+ return OperatingSystem.IsWindows() ? "notepad" : "nano";
+ }
+}
+```
+Replace `TerminalIde.cs:574`'s ternary with `EditorResolver.Resolve()`.
+
+**Step 2 — a real `Ctrl+R`/single-key fast path into it.** In the IDE's key-read loop, before falling back to the numbered `SpectreMenu`:
+```csharp
+var key = Console.ReadKey(intercept: true);
+if (key.Key == ConsoleKey.R && key.Modifiers.HasFlag(ConsoleModifiers.Control))
+{
+ ProcessRunner.Run(EditorResolver.Resolve(), $"\"{currentFile}\"", waitForExit: true);
+ continue; // redraw the IDE view on return — LaunchEditor already blocks correctly via ProcessRunner
+}
+```
+This is the literal "open the file in $EDITOR, return to the TUI on exit" behavior — the same shape `lazygit`'s suspend-and-edit and lazier lazygit/vim-fugitive-style workflows use.
+
+**Step 3 — `IdeCommandRegistry.cs`**, scoped small (per §5's own advice — don't build all 17 originally-proposed commands at once):
+```csharp
+public sealed record IdeCommand(string Name, string ArgHint, string Description, string Category,
+ Func<IdeContext, string[], Task> Run);
+
+public static class IdeCommandRegistry
+{
+ public static readonly IdeCommand[] All = {
+ new("open", "<path>", "Open a file", "Navigation", (ctx, a) => TerminalIde.OpenFile(ctx, a[0])),
+ new("diff", "[path]", "Show git diff", "Git", (ctx, a) => GitDiffViewer.ShowDiff(a.Length > 0 ? a[0] : ctx.CurrentFile)),
+ new("symbols", "", "Browse symbols in current file", "Search", (ctx, _) => SymbolSearch.BrowseSymbols(ctx.CurrentFile)),
+ new("edit", "", "Open current file in $EDITOR", "Navigation", (ctx, _) => { ProcessRunner.Run(EditorResolver.Resolve(), ctx.CurrentFile, true); return Task.CompletedTask; }),
+ new("ask", "[question]", "Ask AI about the current file", "AI", (ctx, a) => AgyAiCore.AskAi(ctx.CurrentFile, a.Length > 0 ? string.Join(' ', a) : "Explain this file")),
+ };
+}
+```
+Every `Run` delegate wraps a method that **already exists** — this is genuinely a thin dispatch layer, not new logic. Parse `/name arg1 arg2` the same way the top-level `/` search parses queries (reuse that tokenizer, don't write a second one).
+
+**Step 4 — `SkillLoader`**. Scan `skills/*.md` (workspace-local) + `~/.agy/skills/*.md` (global) for frontmatter (`name`, `description`, `trigger`, a `steps:` block referencing the same primitives `IdeCommandRegistry` already calls — `open`, `ask-ai`, `run`, `diff`). A skill is a saved sequence over primitives that already exist:
+```csharp
+public sealed record Skill(string Name, string Description, string[] Trigger, SkillStep[] Steps);
+public sealed record SkillStep(string Primitive, Dictionary<string, string> Args);
+
+public static class SkillLoader
+{
+ public static IEnumerable<Skill> Discover(string workspacePath)
+ {
+ var dirs = new[] { Path.Combine(workspacePath, "skills"),
+ Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".agy", "skills") };
+ foreach (var dir in dirs.Where(Directory.Exists))
+ foreach (var file in Directory.GetFiles(dir, "*.md"))
+ yield return ParseSkillFile(file); // frontmatter parse — reuse ObsidianHelper.ParseFrontmatter's approach once 3.8's fixes land
+ }
+}
+```
+Inject discovered skills as leaves in the same `MenuNode`/command-bar tree `IdeCommandRegistry` populates, marked with a distinct icon (🧩) — both are indistinguishable to the executor, only to the `/` list's icon.
+
+**Step 5 — Quick Open fuzzy scoring.** `SymbolSearch.BrowseWorkspaceSymbols` currently does plain `.Contains` substring matching capped at 50 files. Swap in a real subsequence-match fuzzy scorer (a ~30-line algorithm — score by contiguous-match bonus + early-match bonus, the same shape `fzf` uses) instead of building a second search implementation:
+```csharp
+public static int FuzzyScore(string query, string target)
+{
+ // returns -1 if query isn't a subsequence of target, else a score where
+ // contiguous matches and matches near the start score higher
+}
+```
+**Files**: `AgyTuiApp/Helpers/TerminalIde.cs`, new `AgyTuiApp/Helpers/EditorResolver.cs`, new `AgyTuiApp/Helpers/IdeCommandRegistry.cs`, new `AgyTuiApp/Helpers/SkillLoader.cs`.
+**Verify**: open `ide`, press `Ctrl+R` on a highlighted file — your real `$EDITOR` opens (test by setting `$env:EDITOR = "code -w"` or similar), and the IDE redraws correctly on return. Type `/diff` — jumps straight to the diff viewer for the current file. Drop a `skills/explain-file.md` file in the workspace root — it shows up in the `/` list with a 🧩 icon and runs when selected.
+
+### 4.2 Finish or delete the `AgyAccountCore` split
+
+**Finding**: §14 High / §15 correction — `AccountRepository`/`TokenVault`/`QuotaTracker` exist, build, pass isolated unit tests, and have **zero production callers**; `AccountRepository`'s path constant is also wrong (`%USERPROFILE%\.gemini\antigravity` vs. the live `C:\Users\Public\.gemini`/`Config.Current.AgySourceHome`).
+
+**Decision needed, not just a patch** — pick one:
+- **(a) Finish the extraction**: delete the duplicated inline DPAPI/quota/repository logic in `AccountHelper.cs`'s `AgyAccountCore`, replace every call with the corresponding `AccountRepository`/`TokenVault`/`QuotaTracker` method, fix the path constant to match `Config.Current.AgySourceHome`'s actual resolution chain first. Highest long-term value (this is the god-class split §3 originally wanted), but touches the most security-sensitive code in the app (DPAPI/keyring) — do this only with the full guardrail checklist from `refactor_plan.md` §6/§8, one class at a time, with the P0 fixes (2.7, 2.8) already landed and verified so you're not debugging two things at once.
+- **(b) Delete the satellites**: if (a) isn't worth the risk right now, delete `AccountRepository.cs`/`TokenVault.cs`/`QuotaTracker.cs` and their tests — dead code that "looks done" is worse than no code, per §15's own framing. Cheaper, reversible (can redo the extraction later from a clean slate).
+
+Recommend **(b)** now, **(a)** as a dedicated follow-up PR once P0 is stable — don't do a risky DPAPI-touching refactor in the same batch as the crash fixes above.
+
+**Files**: `AgyTuiApp/Helpers/AccountHelper.cs`, `AccountRepository.cs`, `TokenVault.cs`, `QuotaTracker.cs`.
+**Verify**: `grep -r "AccountRepository\.\|TokenVault\.\|QuotaTracker\." AgyTuiApp --include=*.cs` outside the tests project should return either real call sites (option a) or zero results because the files are gone (option b) — not the current middle state.
+
+---
+
+## 5. P2 — AI/Ollama pipeline unification
+
+### 5.1 `InvokeCodex` needs the same pipeline `InvokeClaude` gets
+**Finding**: §14/§15/§16. `InvokeCodex` computes its launch mode directly and calls `RunInteractive`, skipping the quota pre-flight check and `ai-history` logging that `InvokeClaude` gets via `InvokeWithPipeline`.
+
+**Fix**: route it through the same wrapper.
+```csharp
+public static void InvokeCodex(...)
+{
+ InvokeWithPipeline("Codex", providerModeOverride, mode => {
+ // existing codex-specific launch logic, unchanged, just now called from inside the pipeline
+ });
+}
+```
+**Files**: `AgyTuiApp/Helpers/AiHelper.cs`.
+**Verify**: run a Codex invocation while under the low-quota threshold — should trigger the same warning/fallback prompt Claude gets; check `ai-history` afterward — a Codex entry should appear (today it doesn't).
+
+### 5.2 Auto-fallback should be automatic when unattended
+**Finding**: "auto-fallback" is a blocking `AnsiConsole.Confirm`, not automatic — an unattended/scripted invocation just fails.
+
+**Fix**: only prompt when `Environment.UserInteractive` and stdin is a real console; otherwise fall back automatically and log the decision:
+```csharp
+bool shouldFallback = Console.IsInputRedirected
+ ? true // unattended — just do it
+ : AnsiConsole.Confirm("Would you like to auto-fallback to local Ollama execution?");
+```
+**Files**: `AgyTuiApp/Helpers/AiHelper.cs`.
+
+### 5.3 Fix the false-positive Ollama health check
+**Finding**: §16 #15. `IsPortResponding()` falls back to a plain listener check on *any* exception, so a crashed daemon that still holds its socket reads as "running."
+**Fix**: only fall back to the listener check on `SocketException` with `SocketError.ConnectionRefused`; any other exception (timeout, protocol error from a non-responsive-but-listening process) should report unhealthy, not healthy.
+**Files**: `AgyTuiApp/Helpers/AiHelper.cs`.
+
+### 5.4 Multi-agent auto-commit toggle should apply uniformly
+**Finding**: §16 #14. `--no-auto-commit` injection keys off the launcher executable name (`Contains("claude")`), which misses Claude-via-Ollama (launches through `ollama.exe`).
+**Fix**: key off the actual argument list content instead of the executable name:
+```csharp
+bool targetsClaudeOrCodexOrAgy = args.Any(a => a is "claude" or "codex" or "agy" || a.Contains("claude", StringComparison.OrdinalIgnoreCase));
+```
+**Files**: `AgyTuiApp/Helpers/AiHelper.cs` (`RunInteractive`).
+
+### 5.5 Finish the shared `HttpClient` migration
+Three unpooled `new HttpClient()`/`HttpClientHandler` sites remain in `AiHelper.cs` (lines ~614, 1183, 1317) — `IsPortResponding` is a hot path (called on every status check), so this is a real, not cosmetic, socket-exhaustion risk. Route all three through `HttpClientProvider.Client`, matching the pattern `QuotaTracker.cs` already gets right.
+
+---
+
+## 6. P2 — SSH × Tailscale hardening
+
+**Findings** (§15): the ASCII "QR code" has no real Reed-Solomon encoding — cosmetic only, unscannable. The `HttpListener`/`TcpListener` key-enrollment servers are unauthenticated — anyone on the LAN/tailnet during the ~2-minute window can add themselves to `authorized_keys`.
+
+1. **Real QR encoding** — pull in `QRCoder` (MIT, pure .NET, no native deps) and render via Unicode half-blocks; swap only `GenerateAsciiQrCode`'s internals, same call site (`ShowSshQrCode`).
+2. **Close the auth gap** — before starting the listener, shell `tailscale serve https / http://localhost:{port}` (tailnet-only ACL enforcement, free TLS) and embed a one-time random token in the enrollment URL that `AddAuthorizedKey` must match on the POST body before it appends anything.
+3. **Bound `StartKeyReceiver`'s wait** (§16 #6) — it has no timeout at all, unlike its sibling; give it the same 2-minute bound.
+4. **Wrap the ACL-hardening block in `AddAuthorizedKey`** (§16, `SystemHelpers.cs:606-621`) in its own try/catch — an unresolvable identity currently throws *after* the key is already appended, leaving an unprotected key silently added with no ACL.
+
+**Files**: `AgyTuiApp/Helpers/SystemHelpers.cs`.
+
+---
+
+## 7. P2 — UI/Renderer consolidation
+
+Do this tier last among the "P2"s, once P0's crash fix (2.1) has been in production a while — you want a known-stable baseline before restructuring the two renderer files.
+
+1. **Shared base class** for the ~300 lines `ThreePaneRenderer`/`FlatTreeRenderer` duplicate (`GetActiveChildren`, `GetThemeNames`, sub-page rendering) — extract into an abstract `MenuRendererBase` both inherit, so a fix like 7.2 below can't land in only one of them again.
+2. **`Density` in `ThreePaneRenderer` too** — it's currently read only by `FlatTreeRenderer`; route it through the new shared base so both respect compact mode.
+3. **Live hot-swap for `ui-mode`/`density`** — currently both require a relaunch (`Program.cs` explicitly says so). Once state lives in the shared base, a toggle can tear down and re-enter `Run()` with the other renderer in-process instead of requiring `exit` + relaunch.
+4. **`/` search in `ThreePaneRenderer`** — currently has no search binding at all; port `FlatTreeRenderer`'s `searching`/`searchBuffer` state machine into the shared base so both modes get it for free.
+5. **Widget-render throttling** (§16 #29) — `RenderTree()` re-invokes `widget.Render()` every keystroke while a widget stays expanded, not once per highlight change. Cache the last-rendered `IRenderable` per alias, invalidate it via the existing `TtlCache<,>` pattern (each widget already has one) rather than the renderer re-computing it every frame.
+6. **`AssertSwitchCases()` bidirectional check** (§14 Medium / §16 #25) — add the reverse direction (switch cases with no registry entry) and bake the handled-case set into a build-time artifact instead of re-parsing `Program.cs` off disk at runtime, so it actually runs in a published build, not just from a source checkout.
+
+---
+
+## 8. P3 — PowerShell profile cleanup
+
+Lowest priority — DX/maintainability, no user-facing correctness bug depends on these (aside from 2.4's crash fix, already in P0).
+
+1. **Delete or restore the dead `Profile/*.ps1` loader** (`refactor_plan.md` §15) — currently edited by mistake by commits that don't realize nothing sources them.
+2. **Fix the two silently-shadowed aliases** (`co`, `dkcl` — §16 #9) — either remove the earlier parameterized bindings or make the later interactive-picker bindings thread the argument through.
+3. **Tab completion** for `co`/`gbd`/`cob` (branch names), `proj` (workspace names), `theme` (theme file names) via `Register-ArgumentCompleter` — the data sources already exist in-process.
+4. **Collapse the six `Invoke-*-By-Ollama` wrappers** into one parameterized helper.
+5. **Gate `Write-AgyStartupCheckpoint`'s unconditional disk I/O** behind a debug env var — it runs 4x on every shell startup for every user today, and its own comment calls it "temporary diagnostic."
+6. **Add comment-based help** to the most-used wrapper functions (`gcmt`, `co`, `proj`, `ai`) so `Get-Help` returns something for them.
+
+---
+
+## 9. Suggested sequencing across PRs
+
+```
+PR 1 — P0 §2.1, §2.3 (two independent one-function crash fixes, ship same day)
+PR 2 — P0 §2.2 (ProcessRunner timeout/stderr — touches shared infra, its own PR)
+PR 3 — P0 §2.4 (PowerShell undefined-function crash — needs the decide-then-fix step)
+PR 4 — P0 §2.5, §2.6 (Docker Windows fix + Config.Save comment-preservation)
+PR 5 — P0 §2.7, §2.8 (account deletion/logout — DPAPI-adjacent, careful review, own PR)
+──── ship P0, let it sit a few days before touching Learning/IDE ────
+PR 6 — P1 §3.1 (the big one — drill persistence wiring; largest single-PR value in the plan)
+PR 7 — P1 §3.2 (path fixes, quick follow-on to 3.1)
+PR 8 — P1 §3.3 (guided /learn flow, depends on 3.1)
+PR 9 — P1 §3.4 (AI content generator redesign — independent of 3.1-3.3, can parallelize)
+PR 10 — P1 §3.5, §3.6, §3.7, §3.8 (import/analytics/caching — independent smaller PRs, any order)
+PR 11 — P1 §4.1 steps 1-2 (EditorResolver + Ctrl+R — small, ship fast)
+PR 12 — P1 §4.1 steps 3-5 (IdeCommandRegistry + SkillLoader + fuzzy Quick Open — one bigger PR)
+PR 13 — P1 §4.2 (AgyAccountCore decision — do after P0's account fixes are proven stable)
+PR 14 — P2 §5, §6 (AI pipeline + SSH hardening — independent of everything above, any time)
+PR 15 — P2 §7 (renderer consolidation — do last, wants a stable baseline)
+PR 16 — P3 §8 (profile cleanup — whenever, no urgency)
+```
+
+Every PR should run the existing verification checklist from `refactor_plan.md` §8 (build, `run_tests.ps1`, manual `cc` smoke test in both `UiMode`s) *plus* the specific "Verify" step listed under its own item above — the specific step is what actually proves the fix, the general checklist just proves nothing else broke.
+
+

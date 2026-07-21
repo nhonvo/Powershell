@@ -149,6 +149,23 @@ function Load-AgyTuiDll {
         }
     }
 }
+
+function Test-AgyAiGate {
+    Load-AgyTuiDll
+    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+        return [AgyTui.AgyAiCore]::IsAiOllamaEnabled() -or [AgyTui.AgyAiCore]::IsAgyEnabled()
+    }
+    return $true
+}
+
+function Start-AgyManager {
+    Write-Warning "Start-AgyManager is not yet implemented."
+}
+
+function Start-AgyProxy {
+    Write-Warning "Start-AgyProxy is not yet implemented."
+}
+
 Write-AgyStartupCheckpoint "AgyTuiApp subprocess mode ready"
  
 # ==============================================================================
@@ -640,8 +657,17 @@ class DotNetHelper {
  
     static [void] CleanBinObj() {
         Write-Host "💥 Destroying bin/ and obj/ folders..." -ForegroundColor Red
-        Get-ChildItem -Path . -Recurse -Directory -Include bin,obj -Force -ErrorAction SilentlyContinue |
-            Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+        $dirs = Get-ChildItem -Path . -Depth 3 -Directory -Force -ErrorAction SilentlyContinue |
+            Where-Object { ($_.Name -eq 'bin' -or $_.Name -eq 'obj') -and $_.FullName -notmatch '\\(node_modules|\.git|\.vs)\\' }
+        if ($dirs) {
+            foreach ($d in $dirs) {
+                if (Test-Path $d.FullName) {
+                    try {
+                        Remove-Item -Path $d.FullName -Recurse -Force -ErrorAction SilentlyContinue
+                    } catch {}
+                }
+            }
+        }
         Write-Host "✅ Clean complete." -ForegroundColor Green
     }
  
@@ -1932,6 +1958,7 @@ Set-Alias -Name prxy -Value Start-Proxy -Force
 # --- Antigravity Account Management Wrappers ---
 function Toggle-AutoSwitch { [AgyAccountManager]::ToggleAutoSwitch() }
 Set-Alias -Name autoswitch -Value Toggle-AutoSwitch -Force
+Set-Alias -Name agyswitch -Value Toggle-AutoSwitch -Force
 
 function Show-AccountsSummary { [AgyAccountManager]::ShowAllAccountsSummary() }
 Set-Alias -Name acc-sum -Value Show-AccountsSummary -Force
@@ -1939,6 +1966,58 @@ Set-Alias -Name acc-sum -Value Show-AccountsSummary -Force
 # --- AI Session Dashboard Wrappers ---
 function Show-AiDashboard { if (-not (Test-AgyAiGate)) { return }; [AgyTui.AgyAiCore]::ShowAiDashboard() }
 Set-Alias -Name ai-dash -Value Show-AiDashboard -Force
+
+# --- Master Learning Suite Router ---
+function Invoke-MasterLearningSuite {
+    param([string]$Topic)
+    $root = if ($Global:ProfileRepoRoot) { $Global:ProfileRepoRoot } elseif ($global:AGY_WORKSPACE_ROOT) { $global:AGY_WORKSPACE_ROOT } else { Split-Path -Parent -Path $MyInvocation.MyCommand.Definition }
+    $projPath = Join-Path $root "AgyTuiApp\AgyTuiApp.csproj"
+    
+    $resolvedTopic = $Topic
+    if (-not $resolvedTopic) {
+        $invName = $MyInvocation.InvocationName
+        if ($invName -and $invName -ne 'Invoke-MasterLearningSuite') {
+            $resolvedTopic = $invName
+        }
+    }
+    
+    $dllPath = Join-Path $root "AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+    if (-not (Test-Path $dllPath)) {
+        Write-Host "⚠️ AgyTuiApp binary not built. Building now..." -ForegroundColor Yellow
+        dotnet build "$projPath" | Out-Null
+    }
+    
+    if ($resolvedTopic) {
+        switch ($resolvedTopic) {
+            "obsidian" { dotnet run --project "$projPath" -- obsidian $args }
+            "refresh"  { dotnet run --project "$projPath" -- refresh $args }
+            "vault-open" { dotnet run --project "$projPath" -- vault $args }
+            default { dotnet run --project "$projPath" -- learn $resolvedTopic $args }
+        }
+    } else {
+        dotnet run --project "$projPath" -- learn
+    }
+}
+
+Set-Alias -Name learn -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name flashcard -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name vocab -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name kana -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name kanji -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name jlpt -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name grammar -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name algo -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name complexity -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name problems -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name snippets -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name sheets -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name quiz -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name interview -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name star -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name mock -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name obsidian -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name refresh -Value Invoke-MasterLearningSuite -Force
+Set-Alias -Name vault-open -Value Invoke-MasterLearningSuite -Force
 
 # --- AWS LocalStack Aliases ---
 Set-Alias -Name s3ls -Value Get-S3Buckets -Force
