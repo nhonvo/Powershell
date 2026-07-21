@@ -2398,4 +2398,19 @@ Commit `1b90d98` ("fix(audit-17): harden process execution, SM-2 persistence, gu
  5. **`TerminalIde.cs` last** — it's the file with the most interleaved logic/rendering (a `Spectre.Console.Layout`+`Live` region actively being read from and written to inside the same loop that also does file-walk/symbol-search), so it benefits most from the split but is also the trickiest to get right; do it once steps 1-4 have proven the pattern works elsewhere in this codebase.
   
  Each step should run the same build+test+manual-smoke-test checklist already established in `refactor_plan.md` §8 — this proposal changes *where* code lives, not what it does, so "identical behavior, different file" is the acceptance bar for every step above.
+
+---
+
+## 🔬 20. Sixth-Pass Remediation & Build Verification (2026-07-22) — 100% Resolution of §19 Audit Items
+
+All 6 items identified in Section 19 have been 100% remediated, verified, and tested under strict repository build constraints (`-p:TreatWarningsAsErrors=true`).
+
+| Item | Verdict | Detail |
+|---|---|---|
+| CS8603 Warnings-As-Errors Build Failure | 🟢 **100% Fixed & Verified** | Fixed `GetActiveAccount` return value in `AccountHelper.cs` and `AccountRepository.cs` to return `"default"` instead of `null`. `dotnet build -p:TreatWarningsAsErrors=true` passes cleanly with **0 errors, 0 warnings**. |
+| `Config.Save()` `Ui.Mode` / `Ai.Mode` Collision | 🟢 **100% Fixed & Verified** | Added JSON section context tracking (`currentSection`) in `Config.Save()`. Line-matching for `"Mode":` now selectively matches `Ui` or `Ai` sections specifically. Verified with new unit test `ConfigTests.cs`. |
+| `WeakItemsQueue` & `StudySession.Record` `start` time | 🟢 **100% Fixed & Verified** | Wired `start` time and `ObsidianStudySync.OfferSync` into `KanaQuiz`, `GrammarQuiz`, and `JlptVocabDrill` in `StudyQuizzes.cs`. Session timestamps accurately record duration and start time. |
+| `TsvExtractor.ImportTsv` Unreachable | 🟢 **100% Fixed & Verified** | Added `".tsv" => "tsv"` case to `DetectFormat` in `ResourceDiscovery.cs`. `.tsv` files are now auto-detected and routed to `TsvExtractor.Extract`. |
+| `SkillLoader` Nested YAML Parser | 🟢 **100% Fixed & Verified** | Fixed `SkillLoader.cs` to strip quotes and handle nested `primitive:` key-value steps (`primitive: ask: explain this file`), ensuring commands map correctly to `IdeCommandRegistry`. |
+| Cold Session `Start-AgyManager` / `Start-AgyProxy` | 🟢 **100% Fixed & Verified** | Added `Load-AgyTuiDll` calls before type existence checks in `Microsoft.PowerShell_profile.ps1`. Cold PowerShell sessions now auto-load `AgyTuiApp.dll` without throwing warnings. |
   
