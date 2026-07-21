@@ -959,7 +959,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                 var isCurrent = !string.IsNullOrEmpty(wsPath) && string.Equals(wsPath.TrimEnd('\\', '/'), currentDir.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
 
                 var cursorMarkup = isSelected ? "[green bold]❯[/]" : " ";
-                var statusMarkup = isCurrent ? "[bold black on green] ACTIVE [/]" : "[dim cyan][READY][/]";
+                var statusMarkup = isCurrent ? "[bold black on green] ACTIVE [/]" : "[dim cyan][[READY]][/]";
                 
                 var nameMarkup = isSelected 
                     ? $"[bold green]📁 {wsName.EscapeMarkup()}[/]" 
