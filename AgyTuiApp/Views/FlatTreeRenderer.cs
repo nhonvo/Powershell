@@ -42,8 +42,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
         var detailsSel = 0;
         var searching = false;
         var searchBuffer = "";
-
-        try { Console.CursorVisible = false; } catch { }
+        var lastDetailsActive = false;
 
         while (true)
         {
@@ -168,9 +167,9 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                 }
             }
 
-            if (selectionIndex >= visibleRows.Count) selectionIndex = Math.Max(0, visibleRows.Count - 1);
-
-            ScreenChrome.RenderBanner(forceClear: detailsActive);
+            bool forceClear = (detailsActive != lastDetailsActive);
+            lastDetailsActive = detailsActive;
+            ScreenChrome.RenderBanner(forceClear: forceClear);
 
             if (detailsActive)
             {
