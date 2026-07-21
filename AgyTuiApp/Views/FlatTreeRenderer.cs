@@ -27,14 +27,14 @@ public sealed record VisibleRow(
     int Indent
 );
 
-public sealed class FlatTreeRenderer : IMenuRenderer
+public sealed class FlatTreeRenderer : MenuRendererBase
 {
     private readonly HashSet<string> _expandedCategories = new();
     private readonly HashSet<string> _expandedGroups = new();
     private readonly HashSet<string> _expandedWidgets = new();
     private string _detailsSearchBuffer = "";
 
-    public void Run(MenuNode root)
+    public override void Run(MenuNode root)
     {
         var selectionIndex = 0;
         var detailsActive = false;
@@ -667,53 +667,6 @@ public sealed class FlatTreeRenderer : IMenuRenderer
         }
     }
 
-    private static MenuNode[] GetActiveChildren(MenuNode parent)
-    {
-        var enableAi = AgyAiCore.IsAiOllamaEnabled();
-        var enableAgy = AgyAiCore.IsAgyEnabled();
-
-        var list = new List<MenuNode>();
-        foreach (var child in parent.Children)
-        {
-            if (child.Kind == MenuNodeKind.Category)
-            {
-                if (child.Label.Contains("AI Agent & Ollama") && !enableAi) continue;
-                if (child.Label.Contains("AGY Account Switch") && !enableAgy) continue;
-            }
-            else if (child.Kind == MenuNodeKind.Command && child.Command != null)
-            {
-                if (child.Command.RequiresAiOllama && !enableAi) continue;
-                if (child.Command.RequiresAgy && !enableAgy) continue;
-            }
-
-            if (child.Id == "agy-cli" && !enableAgy)
-            {
-                var originalCmd = child.Command!;
-                var rewrittenCmd = originalCmd with { DisplayName = "Launch Claude Code CLI (claude)" };
-                list.Add(child with { Label = "Launch Claude Code CLI (claude)", Command = rewrittenCmd });
-                continue;
-            }
-
-            list.Add(child);
-        }
-        return list.ToArray();
-    }
-
-    private static string[] GetThemeNames()
-    {
-        var themesPath = Environment.GetEnvironmentVariable("POSH_THEMES_PATH");
-        if (string.IsNullOrEmpty(themesPath) || !Directory.Exists(themesPath))
-        {
-            themesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "asset", "powershell-themes");
-            if (!Directory.Exists(themesPath))
-            {
-                themesPath = Path.Combine(Directory.GetCurrentDirectory(), "asset", "powershell-themes");
-            }
-        }
-        if (!Directory.Exists(themesPath)) return Array.Empty<string>();
-        return Directory.GetFiles(themesPath, "*.omp.json").Select(f => Path.GetFileName(f).Replace(".omp.json", "")).OrderBy(f => f).ToArray();
-    }
-
     private void RenderTree(List<VisibleRow> rows, int selIdx, bool searching, string searchBuffer)
     {
         var grid = new Grid();
@@ -1117,12 +1070,5 @@ public sealed class FlatTreeRenderer : IMenuRenderer
         AnsiConsole.Write(panel);
     }
 
-    private static string DeletePreviousWord(string text)
-    {
-        if (string.IsNullOrEmpty(text)) return "";
-        var trimmed = text.TrimEnd();
-        int lastIdx = trimmed.LastIndexOfAny(new[] { ' ', '/', '-', '_' });
-        if (lastIdx < 0) return "";
-        return trimmed.Substring(0, lastIdx + 1);
-    }
+
 }
