@@ -682,25 +682,12 @@ public static class AgyAccountCore
         catch { }
     }
 
-    private static string EncryptToken(string token)
-    {
-        var data = Encoding.UTF8.GetBytes(token);
-        var encrypted = ProtectedData.Protect(data, null, DataProtectionScope.CurrentUser);
-        return Convert.ToBase64String(encrypted);
-    }
+    private static string EncryptToken(string token) => TokenVault.Protect(token);
 
     private static string? DecryptToken(string encrypted)
     {
-        try
-        {
-            var data = Convert.FromBase64String(encrypted);
-            var decrypted = ProtectedData.Unprotect(data, null, DataProtectionScope.CurrentUser);
-            return Encoding.UTF8.GetString(decrypted);
-        }
-        catch
-        {
-            return null;
-        }
+        var res = TokenVault.Unprotect(encrypted);
+        return res == encrypted ? null : res;
     }
 
     public static void SetActiveAccount(string accountName, bool temporary)

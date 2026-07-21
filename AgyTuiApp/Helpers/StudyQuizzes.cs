@@ -191,7 +191,17 @@ public static class JlptVocabDrill
             return;
         }
         var cards = data.Words.Where(w => SpacedRepetitionEngine.IsDueToday(w.Sr)).Select(w => new FlashCard(w.Id, w.Word, $"{w.Reading} {w.Meaning}", w.Romaji, null, w.ExampleJp + " / " + w.ExampleEn, w.Tags, 3, w.Sr)).ToArray();
-        FlashcardEngine.Run(cards, $"JLPT {level}");
+        FlashcardEngine.Run(cards, $"JLPT {level}", onSave: (updatedCards) => {
+            var dict = updatedCards.ToDictionary(c => c.Id, c => c.Sr);
+            for (int i = 0; i < data.Words.Length; i++)
+            {
+                if (dict.TryGetValue(data.Words[i].Id, out var newSr))
+                {
+                    data.Words[i] = data.Words[i] with { Sr = newSr };
+                }
+            }
+            LearnDataPaths.SaveJson(path, data);
+        });
 
     }
 

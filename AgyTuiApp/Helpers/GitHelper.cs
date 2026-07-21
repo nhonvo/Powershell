@@ -117,6 +117,19 @@ public static class GitHelper
         else SpectrePanel.Error($"git reset failed (exit {exit}).");
     }
 
+    public static void Checkout(string? branchName = null)
+    {
+        if (!string.IsNullOrWhiteSpace(branchName))
+        {
+            AnsiConsole.MarkupLine($"[cyan]Checking out branch:[/] [bold green]{branchName.EscapeMarkup()}[/]");
+            var exitCode = RunGitDirect($"checkout \"{branchName}\"");
+            if (exitCode == 0) SpectrePanel.Success($"Checked out '{branchName}'.");
+            else SpectrePanel.Error($"git checkout failed (exit {exitCode}).");
+            return;
+        }
+        ShowBranches();
+    }
+
     public static void ShowBranches()
     {
         var output = RunGit("branch -a --sort=-committerdate");
@@ -133,8 +146,8 @@ public static class GitHelper
         var targetBranch = branches[selectedIdx].TrimStart('*', ' ').Trim();
         if (targetBranch.StartsWith("remotes/"))
         {
-            var parts = targetBranch.Split('/');
-            if (parts.Length >= 3) targetBranch = parts[^1];
+            var parts = targetBranch.Split('/', 3);
+            if (parts.Length == 3) targetBranch = parts[2];
         }
 
         AnsiConsole.MarkupLine($"[cyan]Checking out branch:[/] [bold green]{targetBranch.EscapeMarkup()}[/]");

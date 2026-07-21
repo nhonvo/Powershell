@@ -116,9 +116,18 @@ public static class ProcessRunner
         }
     }
 
-    public static int Run(string exe, string args, string? workingDir = null)
+    public static int Run(string exe, string args, string? workingDir = null, TimeSpan? timeout = null)
     {
-        var psi = new ProcessStartInfo(exe, args)
+        string realExe = exe.Trim();
+        string realArgs = args;
+        if (realExe.Contains(' '))
+        {
+            int spaceIdx = realExe.IndexOf(' ');
+            realArgs = realExe[(spaceIdx + 1)..].Trim() + " " + realArgs;
+            realExe = realExe[..spaceIdx].Trim();
+        }
+
+        var psi = new ProcessStartInfo(realExe, realArgs)
         {
             UseShellExecute = false,
             WorkingDirectory = workingDir ?? Directory.GetCurrentDirectory()
@@ -127,8 +136,14 @@ public static class ProcessRunner
         try
         {
             using var p = Process.Start(psi);
-            p?.WaitForExit();
-            return p?.ExitCode ?? -1;
+            if (p == null) return -1;
+            int timeoutMs = (int)(timeout?.TotalMilliseconds ?? 30000);
+            if (!p.WaitForExit(timeoutMs))
+            {
+                try { p.Kill(entireProcessTree: true); } catch { }
+                return -1;
+            }
+            return p.ExitCode;
         }
         catch
         {

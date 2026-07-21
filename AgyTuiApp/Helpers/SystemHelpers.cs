@@ -463,10 +463,12 @@ public static class SshHelper
                 SpectrePanel.Error("Received empty key.");
                 return;
             }
-            var sshDir = System.IO.Path.GetDirectoryName(AuthorizedKeysFile)!;
-            Directory.CreateDirectory(sshDir);
-            File.AppendAllText(AuthorizedKeysFile, keyLine + Environment.NewLine, Encoding.UTF8);
-            SpectrePanel.Success($"Public key added: {keyLine[..Math.Min(48, keyLine.Length)]}…");
+            if (!Regex.IsMatch(keyLine, @"^ssh-(ed25519|rsa|dss|ecdsa) [A-Za-z0-9+/=]+( .+)?$"))
+            {
+                SpectrePanel.Error("Received payload is not a valid SSH public key.");
+                return;
+            }
+            AddAuthorizedKey(keyLine);
         }
         catch (Exception ex)
         {

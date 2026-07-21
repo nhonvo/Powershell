@@ -795,12 +795,12 @@ public static class AgyAiCore
                     "launch","claude"
                 }
                 ;
-                if (!argsList.Contains("--model"))
+                if (!finalArgs.Contains("--model"))
                 {
                     argList.Add("--model");
                     argList.Add(OllamaDefaultModel);
                 }
-                argList.AddRange(argsList);
+                argList.AddRange(finalArgs);
                 RunInteractive("ollama.exe", argList, env);
             }
         });

@@ -107,10 +107,17 @@ public static class ObsidianBridge
         }
     }
 
-    public static NoteMatch[] FindByTag(string vaultPath, string tag)
+    private static readonly TtlCache<string, string[]> _vaultFilesCache = new(TimeSpan.FromSeconds(30));
+
+    public static string[] GetVaultMarkdownFiles(string vaultPath)
     {
         if (!Directory.Exists(vaultPath)) return [];
-        return Directory.GetFiles(vaultPath, "*.md", SearchOption.AllDirectories)
+        return _vaultFilesCache.GetOrCompute(vaultPath, () => Directory.GetFiles(vaultPath, "*.md", SearchOption.AllDirectories));
+    }
+
+    public static NoteMatch[] FindByTag(string vaultPath, string tag)
+    {
+        return GetVaultMarkdownFiles(vaultPath)
             .Select(f => (path: f, fm: ParseFrontmatter(f)))
             .Where(x => x.fm != null && x.fm.Tags.Any(t => t.Contains(tag, StringComparison.OrdinalIgnoreCase)))
             .Select(x => new NoteMatch(Path.GetFileNameWithoutExtension(x.path), Path.GetRelativePath(vaultPath, x.path), x.path))
@@ -130,7 +137,7 @@ public static class ObsidianBridge
 
     public static void ListByTag(string vaultPath)
     {
-        var allTags = Directory.GetFiles(vaultPath, "*.md", SearchOption.AllDirectories)
+        var allTags = GetVaultMarkdownFiles(vaultPath)
             .SelectMany(f => ParseFrontmatter(f)?.Tags ?? [])
             .Distinct()
             .OrderBy(t => t)
@@ -165,14 +172,36 @@ public static class ObsidianBridge
     {
         try
         {
-            var lines = File.ReadLines(notePath).Take(20).ToArray();
-            if (lines.Length == 0 || lines[0] != "---") return null;
-            var fm = lines.Skip(1).TakeWhile(l => l != "---").ToArray();
-            string GetField(string key) => fm.FirstOrDefault(l => l.StartsWith(key + ":"))?.Split(':', 2)[1].Trim() ?? "";
+            if (!File.Exists(notePath)) return null;
+            var allLines = File.ReadLines(notePath);
+            using var enumtr = allLines.GetEnumerator();
+            if (!enumtr.MoveNext() || enumtr.Current != "---") return null;
+
+            var fmList = new List<string>();
+            while (enumtr.MoveNext() && enumtr.Current != "---")
+            {
+                fmList.Add(enumtr.Current);
+            }
+            var fm = fmList.ToArray();
+
+            string GetField(string key) => fm.FirstOrDefault(l => l.TrimStart().StartsWith(key + ":"))?.Split(':', 2)[1].Trim() ?? "";
             string[] GetTags()
             {
                 var tagLine = GetField("tags");
-                return Regex.Matches(tagLine, @"[\w-]+").Select(m => m.Value).ToArray();
+                var tags = Regex.Matches(tagLine, @"[\w-]+").Select(m => m.Value).ToList();
+                int tagsIdx = Array.FindIndex(fm, l => l.TrimStart().StartsWith("tags:"));
+                if (tagsIdx >= 0)
+                {
+                    for (int i = tagsIdx + 1; i < fm.Length; i++)
+                    {
+                        var trimmed = fm[i].Trim();
+                        if (trimmed.StartsWith("- "))
+                            tags.Add(trimmed[2..].Trim());
+                        else if (!string.IsNullOrWhiteSpace(trimmed) && !trimmed.StartsWith("#"))
+                            break;
+                    }
+                }
+                return tags.Distinct().ToArray();
             }
             return new NoteFrontmatter(GetTags(), GetField("topic"), GetField("level"), GetField("type"), GetField("source"), GetField("difficulty"));
         }
@@ -184,7 +213,7 @@ public static class ObsidianBridge
 
     private static NoteMatch[] SearchFiles(string vaultPath, string query)
     {
-        return Directory.GetFiles(vaultPath, "*.md", SearchOption.AllDirectories)
+        return GetVaultMarkdownFiles(vaultPath)
             .Where(f => Path.GetFileNameWithoutExtension(f).Contains(query, StringComparison.OrdinalIgnoreCase)
                      || File.ReadLines(f).Take(5).Any(l => l.Contains(query, StringComparison.OrdinalIgnoreCase)))
             .Select(f => new NoteMatch(Path.GetFileNameWithoutExtension(f), Path.GetRelativePath(vaultPath, f), f))

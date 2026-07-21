@@ -384,8 +384,17 @@ public static class Icons
         {
             "new" => "🌱",
             "learning" => "🌿",
+            "review" => "🌿",
+            "mastered" => "🌳",
             "mature" => "🌳",
             _ => "🌱"
         };
+    }
+
+    public static string GetMasteryIcon(SrState sr)
+    {
+        if (sr.Status.Equals("mastered", StringComparison.OrdinalIgnoreCase) || sr.IntervalDays >= 21) return "🌳";
+        if (sr.Status.Equals("review", StringComparison.OrdinalIgnoreCase) || sr.IntervalDays >= 3) return "🌿";
+        return "🌱";
     }
 }

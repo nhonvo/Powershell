@@ -596,7 +596,7 @@ public static class TerminalIde
             AnsiConsole.Write(new Rule($"[bold cyan]IDE: {Path.GetFileName(filePath).EscapeMarkup()}[/]").RuleStyle("grey"));
             var actions = new[]
             {
-                "View file", "Symbol search", "View diff (this file)", $"Edit ({(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "notepad" : "nano")})", "← Back"
+                "View file", "Symbol search", "View diff (this file)", $"Edit ({EditorResolver.Resolve()})", "← Back"
             };
             var idx = SpectreMenu.Show("File actions", actions, 0, false);
             switch (idx)

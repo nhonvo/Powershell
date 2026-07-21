@@ -458,7 +458,7 @@ public static class FlashcardEngine
         Run(deck.Cards, deck.Meta.Title, deckPath, deck);
     }
 
-    public static void Run(FlashCard[] cards, string deckName, string? deckPath = null, DeckFile? deck = null)
+    public static void Run(FlashCard[] cards, string deckName, string? deckPath = null, DeckFile? deck = null, Action<FlashCard[]>? onSave = null)
     {
         if (cards.Length == 0)
         {
@@ -533,33 +533,48 @@ public static class FlashcardEngine
             var updatedDeck = deck with { Cards = cards };
             LearnDataPaths.SaveJson(deckPath, updatedDeck);
         }
+        else if (onSave != null)
+        {
+            onSave(cards);
+        }
 
         AnsiConsole.Clear();
         SpectrePanel.Success($"Session complete — ✓ {known} known ✗ {again} missed ({queue.Count} cards reviewed)");
 
         var duration = (int)(DateTime.Now - start).TotalMinutes;
-        StudySession.Record(deckName, "cards", "review", new StudyScore(known, known + again, known + again > 0 ? (known * 100.0 / (known + again)) : 100.0), [.. weakItems], 0, duration, $"Reviewed {deckName} deck");
+        StudySession.Record(deckName, "cards", "review", new StudyScore(known, known + again, known + again > 0 ? (known * 100.0 / (known + again)) : 100.0), [.. weakItems], 0, duration, $"Reviewed {deckName} deck", start);
+        
+        try
+        {
+            ObsidianStudySync.OfferSync(new StudySummary(deckName, known, known + again, [.. weakItems], duration));
+        }
+        catch { }
     }
 
-    public static DeckFile[] GetDecks(string decksDir)
+    public static (string FilePath, DeckFile Deck)[] GetDecksWithPaths(string decksDir)
     {
         if (!Directory.Exists(decksDir)) return [];
-        return Directory.GetFiles(decksDir, "*.json").Select(f => LearnDataPaths.LoadJson<DeckFile>(f)).OfType<DeckFile>().ToArray();
-
+        return Directory.GetFiles(decksDir, "*.json")
+            .Select(f => (FilePath: f, Deck: LearnDataPaths.LoadJson<DeckFile>(f)))
+            .Where(pair => pair.Deck != null)
+            .Select(pair => (pair.FilePath, pair.Deck!))
+            .ToArray();
     }
 
     public static void PickAndRun(string decksDir)
     {
-        var decks = GetDecks(decksDir);
+        var decks = GetDecksWithPaths(decksDir);
         if (decks.Length == 0)
         {
             SpectrePanel.Warning($"No decks found in {decksDir}");
             return;
         }
-        var names = decks.Select(d => d.Meta.Title).ToArray();
+        var names = decks.Select(d => d.Deck.Meta.Title).ToArray();
         var idx = SpectreMenu.Show("Select Flashcard Deck", names, 0, true);
-        if (idx >= 0) Run(decks[idx].Cards, decks[idx].Meta.Title);
-
+        if (idx >= 0)
+        {
+            Run(decks[idx].Deck.Cards, decks[idx].Deck.Meta.Title, decks[idx].FilePath, decks[idx].Deck);
+        }
     }
 
 }
@@ -639,13 +654,14 @@ public static class StudySession
 
     }
 
-    public static void Record(string topic, string subTopic, string activity, StudyScore score, string[] weakItems, int pomodoros, int durationMin, string notes)
+    public static void Record(string topic, string subTopic, string activity, StudyScore score, string[] weakItems, int pomodoros, int durationMin, string notes, DateTime? startTime = null)
     {
         var log = LearnDataPaths.LoadJson<StudyLogFile>(LearnDataPaths.StudyLogFile) ?? new StudyLogFile(null, []);
         var sessions = log.Sessions.ToList();
         var now = DateTime.Now;
+        var start = startTime ?? now.AddMinutes(-durationMin);
         var id = $"s_{sessions.Count + 1:000}";
-        sessions.Add(new StudyLogEntry(id, now.ToString("yyyy-MM-dd"), now.ToString("HH:mm"), now.ToString("HH:mm"), durationMin, topic, subTopic, activity, score, weakItems, pomodoros, notes, []));
+        sessions.Add(new StudyLogEntry(id, start.ToString("yyyy-MM-dd"), start.ToString("HH:mm"), now.ToString("HH:mm"), durationMin, topic, subTopic, activity, score, weakItems, pomodoros, notes, []));
         LearnDataPaths.SaveJson(LearnDataPaths.StudyLogFile, new StudyLogFile(log.DailyGoals, [.. sessions]));
 
     }
@@ -1037,6 +1053,19 @@ public static class WeakItemsQueue
 
     public static void AddWeakItem(string topic, string itemId)
     {
+        var log = LearnDataPaths.LoadJson<StudyLogFile>(LearnDataPaths.StudyLogFile);
+        if (log == null || log.Sessions.Length == 0) return;
+        var lastSession = log.Sessions.LastOrDefault(s => s.Topic.Equals(topic, StringComparison.OrdinalIgnoreCase));
+        if (lastSession != null)
+        {
+            if (!lastSession.WeakItems.Contains(itemId))
+            {
+                var newWeak = lastSession.WeakItems.Append(itemId).ToArray();
+                int idx = Array.IndexOf(log.Sessions, lastSession);
+                log.Sessions[idx] = lastSession with { WeakItems = newWeak };
+                LearnDataPaths.SaveJson(LearnDataPaths.StudyLogFile, log);
+            }
+        }
     }
 
     public static void ClearWeakItems(string topic)

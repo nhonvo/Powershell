@@ -782,8 +782,7 @@ public static class Program
                     ShowHotkeysGuide();
                     break;
                 case "learn":
-                    var learnTopic = SelectTopicInteractive("Select Topic to Learn");
-                    if (!string.IsNullOrEmpty(learnTopic)) LearnRouter.StartLearning(learnTopic);
+                    GuidedLearnFlow.Run();
                     break;
                 case "flashcard":
                     FlashcardEngine.PickAndRun(LearnDataPaths.DecksDir);

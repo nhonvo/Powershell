@@ -41,7 +41,7 @@ public static class AiLearningGenerator
         string topic = AnsiConsole.Ask<string>("Enter specific [cyan]topic/subject[/] (e.g. AWS SAA-C03, C# Async/Await, JLPT N3 Passive):");
         if (string.IsNullOrWhiteSpace(topic)) return;
 
-        SpectrePanel.Info($"Generating content for '{topic}' using {provider} in automated mode...");
+        SpectrePanel.Info($"Generating content for '{topic.EscapeMarkup()}' using {provider.EscapeMarkup()} in automated mode...");
 
         string isAgy = provider.Contains("Antigravity") ? "agy" : "claude";
         string targetFile = GetTargetFilePath(domain, topic);
@@ -52,19 +52,23 @@ public static class AiLearningGenerator
 
         if (success)
         {
-            SpectrePanel.Success($"AI generation complete! Data saved to: {targetFile}");
+            SpectrePanel.Success($"AI generation complete! Data saved to: {targetFile.EscapeMarkup()}");
             SpectrePanel.Info("Auto-refreshing local Learning Suite indices...");
             LearnRouter.RefreshData("all");
         }
         else
         {
-            SpectrePanel.Warning($"AI content generation finished with fallbacks. Check {targetFile}");
+            SpectrePanel.Warning($"AI content generation finished with fallbacks. Check {targetFile.EscapeMarkup()}");
         }
     }
 
     private static string GetTargetFilePath(string domain, string topic)
     {
-        string safeTopic = topic.ToLowerInvariant().Replace(" ", "_").Replace("-", "_");
+        var invalidChars = Path.GetInvalidFileNameChars();
+        string cleanTopic = string.Concat(topic.Where(c => !invalidChars.Contains(c))).Trim();
+        string safeTopic = cleanTopic.ToLowerInvariant().Replace(" ", "_").Replace("-", "_");
+        if (string.IsNullOrEmpty(safeTopic)) safeTopic = "topic_" + Guid.NewGuid().ToString("N")[..6];
+
         LearnDataPaths.EnsureDirectories();
 
         if (domain.Contains("Certifications"))
@@ -81,19 +85,18 @@ public static class AiLearningGenerator
     {
         try
         {
-            var exeName = cliName == "agy" ? "agy" : "claude";
-            var promptEscaped = promptText.Replace("\"", "\\\"");
-            var args = $"/c {exeName} --prompt \"{promptEscaped}\"";
+            var exeName = cliName == "agy" ? "agy" : (OperatingSystem.IsWindows() ? "claude.cmd" : "claude");
 
             var psi = new ProcessStartInfo
             {
-                FileName = "cmd.exe",
-                Arguments = args,
+                FileName = exeName,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 CreateNoWindow = true
             };
+            psi.ArgumentList.Add("--prompt");
+            psi.ArgumentList.Add(promptText);
 
             using var proc = Process.Start(psi);
             if (proc == null) return false;
@@ -110,7 +113,7 @@ public static class AiLearningGenerator
         }
         catch (Exception ex)
         {
-            SpectrePanel.Error($"CLI execution warning: {ex.Message}");
+            SpectrePanel.Error($"CLI execution warning: {ex.Message.EscapeMarkup()}");
         }
         return false;
     }

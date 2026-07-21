@@ -149,30 +149,90 @@ public static class MdExtractor
 }
 public static class CsvExtractor
 {
-    public static ExtractedItem[] Extract(string path, ResourceEntry entry)
+    public static string[] ParseCsvLine(string line, char delimiter = ',')
+    {
+        var result = new List<string>();
+        var current = new StringBuilder();
+        bool inQuotes = false;
+        for (int i = 0; i < line.Length; i++)
+        {
+            char c = line[i];
+            if (c == '"')
+            {
+                if (inQuotes && i + 1 < line.Length && line[i + 1] == '"')
+                {
+                    current.Append('"');
+                    i++;
+                }
+                else
+                {
+                    inQuotes = !inQuotes;
+                }
+            }
+            else if (c == delimiter && !inQuotes)
+            {
+                result.Add(current.ToString());
+                current.Clear();
+            }
+            else
+            {
+                current.Append(c);
+            }
+        }
+        result.Add(current.ToString());
+        return result.Select(s => s.Trim().Trim('"')).ToArray();
+    }
+
+    public static ExtractedItem[] Extract(string path, ResourceEntry entry, char delimiter = ',')
     {
         if (!File.Exists(path)) return [];
         var lines = File.ReadAllLines(path);
         if (lines.Length < 2) return [];
-        var headers = lines[0].Split(',').Select(h => h.Trim().Trim('"').ToLower()).ToArray();
+        var headers = ParseCsvLine(lines[0], delimiter).Select(h => h.ToLower()).ToArray();
         int frontIdx = Array.FindIndex(headers, h => h is "word" or "front" or "term" or "question");
         int backIdx = Array.FindIndex(headers, h => h is "definition" or "back" or "meaning" or "answer");
         if (frontIdx < 0) frontIdx = 0;
         if (backIdx < 0) backIdx = 1;
         var items = new List<ExtractedItem>();
-        for (int i = 1;
-        i < lines.Length;
-        i++)
+        for (int i = 1; i < lines.Length; i++)
         {
-            var cells = lines[i].Split(',').Select(c => c.Trim().Trim('"')).ToArray();
+            if (string.IsNullOrWhiteSpace(lines[i])) continue;
+            var cells = ParseCsvLine(lines[i], delimiter);
             if (cells.Length <= Math.Max(frontIdx, backIdx)) continue;
-            items.Add(new ExtractedItem(entry.Id, path, "csv", entry.Topics.FirstOrDefault() ?? "general", "csv-row", entry.Language, "flashcard", cells[frontIdx], cells[backIdx], null, null, null, null, entry.Tags, 3));
+            items.Add(new ExtractedItem(entry.Id, path, delimiter == '\t' ? "tsv" : "csv", entry.Topics.FirstOrDefault() ?? "general", "csv-row", entry.Language, "flashcard", cells[frontIdx], cells[backIdx], null, null, null, null, entry.Tags, 3));
         }
         return [.. items];
-
     }
-
 }
+
+public static class TsvExtractor
+{
+    public static ExtractedItem[] Extract(string path, ResourceEntry entry) => CsvExtractor.Extract(path, entry, '\t');
+
+    public static DeckFile ImportTsv(string tsvPath, string deckName)
+    {
+        var meta = new DeckMeta(deckName, deckName, "en", "imported", "general", [], DateTime.UtcNow.ToString("o"), 1);
+        if (!File.Exists(tsvPath)) return new DeckFile(meta, []);
+        var cards = File.ReadLines(tsvPath)
+            .Where(l => !string.IsNullOrWhiteSpace(l) && !l.StartsWith("#"))
+            .Select(l => CsvExtractor.ParseCsvLine(l, '\t'))
+            .Where(parts => parts.Length >= 2)
+            .Select((parts, i) => new FlashCard(
+                Id: $"{deckName}-{i + 1}",
+                Front: parts[0],
+                Back: parts[1],
+                Hint: parts.Length > 2 ? parts[2] : null,
+                Mnemonic: null,
+                ExampleSentence: parts.Length > 3 ? parts[3] : null,
+                Tags: parts.Length > 4 ? parts[4].Split(',').Select(t => t.Trim()).ToArray() : [deckName],
+                Difficulty: 1,
+                Sr: SpacedRepetitionEngine.NewCard()
+            ))
+            .ToArray();
+        return new DeckFile(meta, cards);
+    }
+}
+
 public static class ExtractorRouter
 {
     public static ExtractedItem[] Route(ResourceEntry entry)
@@ -183,11 +243,11 @@ public static class ExtractorRouter
             {
                 "md" or "txt" => MdExtractor.Extract(entry.Path, entry),
                 "csv" => CsvExtractor.Extract(entry.Path, entry),
+                "tsv" => TsvExtractor.Extract(entry.Path, entry),
                 "code" => ExtractCode(entry),
                 "url" => ExtractUrl(entry),
                 _ => []
-            }
-            ;
+            };
         }
         catch (Exception ex)
         {
