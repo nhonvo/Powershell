@@ -43,6 +43,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
         var searching = false;
         var searchBuffer = "";
         var lastDetailsActive = false;
+        var lastVisibleRowsCount = 0;
 
         while (true)
         {
@@ -177,8 +178,9 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                 if (selectionIndex < 0) selectionIndex = 0;
             }
 
-            bool forceClear = (detailsActive != lastDetailsActive);
+            bool forceClear = (detailsActive != lastDetailsActive) || (visibleRows.Count < lastVisibleRowsCount);
             lastDetailsActive = detailsActive;
+            lastVisibleRowsCount = visibleRows.Count;
             ScreenChrome.RenderBanner(forceClear: forceClear);
 
             if (detailsActive)
@@ -861,11 +863,16 @@ public sealed class FlatTreeRenderer : IMenuRenderer
         var hotkeyBar = new Markup("[dim]Hotkeys: cg (Git) · cdk (Docker) · cnav (Nav) · cai (AI) · csys (Sys) · cnet (Net) · cssh (SSH)\nCombos:  [[Ctrl+Space]] Complete · [[Ctrl+Shift+C]] CC TUI · [[Ctrl+Shift+B]] Build · [[Ctrl+Shift+T]] Test · [[F7]] History[/]");
         content = new Rows(content, new Markup("\n"), hotkeyBar);
 
+        var winWidth = 80;
+        try { winWidth = Console.WindowWidth; } catch {}
+        var w = Math.Max(50, winWidth - 2);
+
         var outerPanel = new Panel(content)
         {
             Header = new PanelHeader($"[bold cyan] {headerText} [/]"),
             Border = BoxBorder.Rounded,
-            BorderStyle = new Style(Color.Cyan1)
+            BorderStyle = new Style(Color.Cyan1),
+            Width = w
         };
 
         AnsiConsole.Write(outerPanel);

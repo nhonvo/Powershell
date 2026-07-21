@@ -65,8 +65,9 @@ public static class ScreenChrome
         var now = DateTime.Now;
         var winWidth = 80;
         try { winWidth = Console.WindowWidth; } catch {}
-        var w = Math.Min(65, Math.Max(50, winWidth - 2));
+        var w = Math.Max(50, winWidth - 2);
         var sep = new string('=', w);
+        const string el = "\x1b[K";
 
         try
         {
@@ -84,13 +85,13 @@ public static class ScreenChrome
             try { AnsiConsole.Clear(); } catch {}
         }
 
-        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
+        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]{el}");
         var titleIcon = Icons.IsUtf8Supported ? "🛸" : "[AGY]";
-        AnsiConsole.MarkupLine($"[cyan] ▄████▄  ▄████▄ [/] [bold green]{titleIcon} Powershell Profile Control Center v3.0 {titleIcon}[/]");
-        AnsiConsole.MarkupLine("[cyan] █▀  ▀   █▀  ▀  [/] [dim]System dashboard and control suite.[/]");
-        AnsiConsole.MarkupLine("[cyan] █       █      [/]");
-        AnsiConsole.MarkupLine($"[cyan] █▄  ▄   █▄  ▄  [/] [dim]Active Account:[/] [green bold]{displayAcc.EscapeMarkup()}[/]");
-        AnsiConsole.MarkupLine($"[cyan] ▀████▀  ▀████▀ [/] [dim]Time:[/] [yellow]{now:yyyy-MM-dd HH:mm}[/]");
+        AnsiConsole.MarkupLine($"[cyan] ▄████▄  ▄████▄ [/] [bold green]{titleIcon} Powershell Profile Control Center v3.0 {titleIcon}[/]{el}");
+        AnsiConsole.MarkupLine($"[cyan] █▀  ▀   █▀  ▀  [/] [dim]System dashboard and control suite.[/]{el}");
+        AnsiConsole.MarkupLine($"[cyan] █       █      [/]{el}");
+        AnsiConsole.MarkupLine($"[cyan] █▄  ▄   █▄  ▄  [/] [dim]Active Account:[/] [green bold]{displayAcc.EscapeMarkup()}[/]{el}");
+        AnsiConsole.MarkupLine($"[cyan] ▀████▀  ▀████▀ [/] [dim]Time:[/] [yellow]{now:yyyy-MM-dd HH:mm}[/]{el}");
 
         if (!string.IsNullOrEmpty(category))
         {
@@ -99,13 +100,13 @@ public static class ScreenChrome
             {
                 breadcrumb += $" [dim]>[/] [yellow]{activeItem.EscapeMarkup()}[/]";
             }
-            AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
-            AnsiConsole.MarkupLine(breadcrumb);
+            AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]{el}");
+            AnsiConsole.MarkupLine($"{breadcrumb}{el}");
         }
 
-        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
-        AnsiConsole.MarkupLine("[dim] [[Tab/→]] Navigate Panes | [[←/Esc]] Go Back | [[Enter]] Select & Run[/]");
-        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
+        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]{el}");
+        AnsiConsole.MarkupLine($"[dim] [[Tab/→]] Navigate Panes | [[←/Esc]] Go Back | [[Enter]] Select & Run[/]{el}");
+        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]{el}");
         AnsiConsole.WriteLine();
     }
 }
