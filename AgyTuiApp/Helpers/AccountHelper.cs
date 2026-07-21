@@ -273,10 +273,22 @@ public static class AgyAccountCore
         {
             var cfgHome = Config.Current.AgySourceHome;
             if (!string.IsNullOrEmpty(cfgHome)) return cfgHome;
+            var publicGemini = @"C:\Users\Public\.gemini";
+            if (Directory.Exists(publicGemini)) return publicGemini;
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini");
         }
     }
-    public static string AgyAccountPrefix => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini_");
+    public static string AgyAccountPrefix
+    {
+        get
+        {
+            if (AgySourceHome.StartsWith(@"C:\Users\Public", StringComparison.OrdinalIgnoreCase))
+            {
+                return @"C:\Users\Public\.gemini_";
+            }
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini_");
+        }
+    }
 
     public static string AgyActiveAccountFile => Path.Combine(AgySourceHome, "active_account.txt");
     private static bool? _networkOnline;
@@ -288,16 +300,12 @@ public static class AgyAccountCore
         lock (_networkLock)
         {
             if (_networkOnline.HasValue) return _networkOnline.Value;
-
             try
             {
-                if (!NetworkInterface.GetIsNetworkAvailable())
-                {
-                    _networkOnline = false;
-                    return false;
-                }
-                using var ping = new Ping();
-                _networkOnline = ping.Send("8.8.8.8", 200).Status == IPStatus.Success;
+                using var client = new System.Net.Http.HttpClient();
+                client.Timeout = TimeSpan.FromSeconds(3);
+                var res = client.GetAsync("https://www.google.com").GetAwaiter().GetResult();
+                _networkOnline = res.IsSuccessStatusCode;
             }
             catch
             {
@@ -305,7 +313,6 @@ public static class AgyAccountCore
             }
             return _networkOnline.Value;
         }
-
     }
 
     public static string[] GetAccounts()
@@ -313,11 +320,12 @@ public static class AgyAccountCore
         var accounts = new List<string>
         {
             "default"
-        }
-        ;
+        };
         var scanPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
         if (Directory.Exists(userProfile)) scanPaths.Add(userProfile);
+        var publicDir = @"C:\Users\Public";
+        if (Directory.Exists(publicDir)) scanPaths.Add(publicDir);
         var prefixParent = Path.GetDirectoryName(AgyAccountPrefix);
         if (prefixParent != null && Directory.Exists(prefixParent)) scanPaths.Add(prefixParent);
         foreach (var scanPath in scanPaths)
@@ -331,7 +339,6 @@ public static class AgyAccountCore
             }
         }
         return [.. accounts];
-
     }
 
     public static string GetActiveAccount()
@@ -345,10 +352,7 @@ public static class AgyAccountCore
             }
         }
         catch { }
-        var home = Environment.GetEnvironmentVariable("GEMINI_HOME") ?? "";
-        var m = Regex.Match(home, @"\.gemini_(.+)$");
-        return m.Success ? m.Groups[1].Value : "default";
-
+        return null;
     }
 
     public static string? GetAccountEmail(string accountName)
@@ -375,7 +379,6 @@ public static class AgyAccountCore
             }
             catch { }
         }
-
         var tokenFile = Path.Combine(dir, "keyring_token.txt");
         if (File.Exists(tokenFile))
         {
@@ -397,14 +400,11 @@ public static class AgyAccountCore
     public static string GetAccountDirectory(string accountName)
     {
         if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase)) return AgySourceHome;
-        var target = AgyAccountPrefix + accountName;
-        if (!Directory.Exists(target))
-        {
-            var alt = Path.Combine(Environment.GetEnvironmentVariable("USERPROFILE") ?? "", ".gemini_" + accountName);
-            if (Directory.Exists(alt)) return alt;
-        }
-        return target;
-
+        var publicTarget = @"C:\Users\Public\.gemini_" + accountName;
+        if (Directory.Exists(publicTarget)) return publicTarget;
+        var userTarget = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini_" + accountName);
+        if (Directory.Exists(userTarget)) return userTarget;
+        return AgyAccountPrefix + accountName;
     }
 
     public static AccountMetadata GetAccountMetadata(string accountName)

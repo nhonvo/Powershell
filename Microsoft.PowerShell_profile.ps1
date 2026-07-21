@@ -136,6 +136,19 @@ Write-AgyStartupCheckpoint "script start"
 #  AGY TUI — compiled C# Spectre.Console application (AgyTuiApp)
 # ==============================================================================
 $Global:AgyTuiAppProject = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\AgyTuiApp.csproj"
+function Load-AgyTuiDll {
+    if ($null -eq ([System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTuiApp" })) {
+        $debugDll = Join-Path -Path $Global:ProfileRepoRoot "AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+        if (Test-Path $debugDll) {
+            try {
+                Get-ChildItem -Path (Split-Path $debugDll) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
+                    try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
+                }
+                Add-Type -Path $debugDll -ErrorAction SilentlyContinue
+            } catch {}
+        }
+    }
+}
 Write-AgyStartupCheckpoint "AgyTuiApp subprocess mode ready"
  
 # ==============================================================================
@@ -311,7 +324,20 @@ if (-not $Global:AiMode) {
     # other AgyTui call site), so if AgyTui.dll isn't loaded yet it must not break oh-my-posh
     # entirely — fall back to a bare default rather than let the whole file abort.
     try {
-        $env:THEME = [AgyTui.ThemeHelper]::ResolveStartupTheme($env:POSH_THEMES_PATH)
+        $configPath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "config.json"
+        $legacyPath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "active_theme.txt"
+        if (Test-Path $configPath) {
+            $cfg = Get-Content $configPath -Raw -ErrorAction SilentlyContinue | ConvertFrom-Json -ErrorAction SilentlyContinue
+            if ($cfg -and $cfg.active_theme) {
+                $env:THEME = $cfg.active_theme
+            } else {
+                $env:THEME = "neko"
+            }
+        } elseif (Test-Path $legacyPath) {
+            $env:THEME = (Get-Content $legacyPath -Raw -ErrorAction SilentlyContinue).Trim()
+        } else {
+            $env:THEME = "neko"
+        }
     } catch {
         $env:THEME = "neko"
     }
@@ -348,6 +374,7 @@ Write-AgyStartupCheckpoint "oh-my-posh init block done"
 #  try/catch, so a failure here only disables the git aliases instead of all ~100.
 # ==============================================================================
 try {
+    Load-AgyTuiDll
     Invoke-Expression @'
 class GitHelper {
     static [void] Status([string[]]$PassThruArgs) {
@@ -717,7 +744,8 @@ class DotNetHelper {
 # references [AgyTui.*] types inside the class body.
 # ==============================================================================
 try {
- Invoke-Expression @'
+    Load-AgyTuiDll
+    Invoke-Expression @'
 class DockerHelper {
  static [void] GetContainers([bool]$All) {
  Write-Host "[Docker] Containers:" -ForegroundColor Blue
@@ -1125,6 +1153,7 @@ class SystemHelper {
 #  references [AgyTui.ProfileHelp] inside the class body.
 # ==============================================================================
 try {
+    Load-AgyTuiDll
     Invoke-Expression @'
 class ProfileHelp {
     # Category/command menu building, filtering, and the drill-down loop all live in
@@ -1453,12 +1482,54 @@ function Get-LocalSQSAttributes {
 }
 
 # --- AI Tools Wrappers ---
-function Invoke-Codex-By-Ollama { [AgyTui.AgyAiCore]::InvokeCodex($args) }
-function Invoke-Claude-By-Ollama { [AgyTui.AgyAiCore]::InvokeClaude($args) }
-function Invoke-OpenClaw-By-Ollama { [AgyTui.AgyAiCore]::InvokeOpenClaw($args) }
-function Invoke-Clawdbot-By-Ollama { [AgyTui.AgyAiCore]::InvokeClawdbot($args) }
-function Invoke-Hermes-By-Ollama { [AgyTui.AgyAiCore]::InvokeHermes($args) }
-function Invoke-HermesDesktop-By-Ollama { [AgyTui.AgyAiCore]::InvokeHermesDesktop($args) }
+function Invoke-Codex-By-Ollama {
+    Load-AgyTuiDll
+    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+        [AgyTui.AgyAiCore]::InvokeCodex($args)
+    } else {
+        Invoke-ControlCenter "codex-ollama" $args
+    }
+}
+function Invoke-Claude-By-Ollama {
+    Load-AgyTuiDll
+    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+        [AgyTui.AgyAiCore]::InvokeClaude($args)
+    } else {
+        Invoke-ControlCenter "claude-ollama" $args
+    }
+}
+function Invoke-OpenClaw-By-Ollama {
+    Load-AgyTuiDll
+    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+        [AgyTui.AgyAiCore]::InvokeOpenClaw($args)
+    } else {
+        Invoke-ControlCenter "openclaw" $args
+    }
+}
+function Invoke-Clawdbot-By-Ollama {
+    Load-AgyTuiDll
+    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+        [AgyTui.AgyAiCore]::InvokeClawdbot($args)
+    } else {
+        Invoke-ControlCenter "clawdbot" $args
+    }
+}
+function Invoke-Hermes-By-Ollama {
+    Load-AgyTuiDll
+    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+        [AgyTui.AgyAiCore]::InvokeHermes($args)
+    } else {
+        Invoke-ControlCenter "hermes" $args
+    }
+}
+function Invoke-HermesDesktop-By-Ollama {
+    Load-AgyTuiDll
+    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+        [AgyTui.AgyAiCore]::InvokeHermesDesktop($args)
+    } else {
+        Invoke-ControlCenter "hermesd" $args
+    }
+}
 function Invoke-CopilotExplain {
     param([string]$Command)
     if (Get-Command gh -ErrorAction SilentlyContinue) {
@@ -1472,14 +1543,47 @@ function Invoke-CopilotExplain {
         Write-Error "GitHub CLI (gh) is not installed. Please install it from https://cli.github.com/"
     }
 }
-function Install-AIIntegrations { [AgyTui.AgyAiCore]::InstallAIIntegrations() }
-function Initialize-OllamaServer { [AgyTui.AgyAiCore]::InitializeOllamaServer() }
+function Install-AIIntegrations {
+    Load-AgyTuiDll
+    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+        [AgyTui.AgyAiCore]::InstallAIIntegrations()
+    } else {
+        Invoke-ControlCenter "install-ai"
+    }
+}
+function Initialize-OllamaServer {
+    Load-AgyTuiDll
+    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+        [AgyTui.AgyAiCore]::InitializeOllamaServer()
+    } else {
+        Invoke-ControlCenter "init-ollama"
+    }
+}
 function Set-OllamaModel {
     param([string]$ModelName)
-    [AgyTui.AgyAiCore]::SetOllamaModel($ModelName)
+    Load-AgyTuiDll
+    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+        [AgyTui.AgyAiCore]::SetOllamaModel($ModelName)
+    } else {
+        Invoke-ControlCenter "set-model" $ModelName
+    }
 }
-function Ensure-OllamaServer { [AgyTui.AgyAiCore]::EnsureOllamaServer() }
-function Invoke-OllamaLogs { [AgyTui.AgyAiCore]::ShowOllamaLogs() }
+function Ensure-OllamaServer {
+    Load-AgyTuiDll
+    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+        [AgyTui.AgyAiCore]::EnsureOllamaServer()
+    } else {
+        Invoke-ControlCenter "ensure-ollama"
+    }
+}
+function Invoke-OllamaLogs {
+    Load-AgyTuiDll
+    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+        [AgyTui.AgyAiCore]::ShowOllamaLogs()
+    } else {
+        Invoke-ControlCenter "ollama-logs"
+    }
+}
 function Invoke-Npm {
     param([string[]]$ArgsList)
     & npm @ArgsList
@@ -1491,7 +1595,12 @@ function Invoke-ChatGPT {
         if ($Query) { chatgpt $Query } else { chatgpt }
     } else {
         Write-Warning "ChatGPT CLI command 'chatgpt' is not installed. Routing to local OpenClaw instead."
-        [AgyTui.AgyAiCore]::InvokeOpenClaw(@())
+        Load-AgyTuiDll
+        if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+            [AgyTui.AgyAiCore]::InvokeOpenClaw(@())
+        } else {
+            Invoke-ControlCenter "openclaw"
+        }
     }
 }
 

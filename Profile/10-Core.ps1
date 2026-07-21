@@ -137,17 +137,20 @@ Write-AgyStartupCheckpoint "script start"
 # ==============================================================================
 $Global:AgyTuiAppProject = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\AgyTuiApp.csproj"
 
-# Load compiled C# AgyTuiApp assembly into PowerShell AppDomain if available
-$debugDll = Join-Path -Path $Global:ProfileRepoRoot "AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
-if (Test-Path $debugDll) {
-    try {
-        Get-ChildItem -Path (Split-Path $debugDll) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
-            try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
+# Load compiled C# AgyTuiApp assembly into PowerShell AppDomain on demand
+function Load-AgyTuiDll {
+    if ($null -eq ([System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTuiApp" })) {
+        $debugDll = Join-Path -Path $Global:ProfileRepoRoot "AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+        if (Test-Path $debugDll) {
+            try {
+                Get-ChildItem -Path (Split-Path $debugDll) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
+                    try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
+                }
+                Add-Type -Path $debugDll -ErrorAction SilentlyContinue
+            } catch {}
         }
-        Add-Type -Path $debugDll -ErrorAction SilentlyContinue
-    } catch {}
+    }
 }
-
 Write-AgyStartupCheckpoint "AgyTuiApp subprocess mode ready"
  
 # ==============================================================================
@@ -330,7 +333,20 @@ Write-AgyStartupCheckpoint "ProfileEnvironment.InitializeSession (modules, PSRea
 # --- Oh My Posh Theme (Initialized in global script scope to bypass class method scoping constraints) ---
 if (-not $Global:AiMode) {
     try {
-        $env:THEME = [AgyTui.ThemeHelper]::ResolveStartupTheme($env:POSH_THEMES_PATH)
+        $configPath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "config.json"
+        $legacyPath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "active_theme.txt"
+        if (Test-Path $configPath) {
+            $cfg = Get-Content $configPath -Raw -ErrorAction SilentlyContinue | ConvertFrom-Json -ErrorAction SilentlyContinue
+            if ($cfg -and $cfg.active_theme) {
+                $env:THEME = $cfg.active_theme
+            } else {
+                $env:THEME = "neko"
+            }
+        } elseif (Test-Path $legacyPath) {
+            $env:THEME = (Get-Content $legacyPath -Raw -ErrorAction SilentlyContinue).Trim()
+        } else {
+            $env:THEME = "neko"
+        }
     } catch {
         $env:THEME = "neko"
     }
