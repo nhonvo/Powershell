@@ -162,20 +162,37 @@ public static class SymbolSearch
 
     public static void BrowseWorkspaceSymbols(string dirPath)
     {
+        var query = AnsiConsole.Ask<string>("[cyan]Filter workspace symbols/files (or Enter for all):[/]", "").Trim();
         var files = Directory.GetFiles(dirPath, "*.*", SearchOption.AllDirectories)
             .Where(f => f.EndsWith(".cs") || f.EndsWith(".ps1") || f.EndsWith(".ts") || f.EndsWith(".js") || f.EndsWith(".py"))
             .Where(f => !f.Contains("\\bin\\") && !f.Contains("\\obj\\") && !f.Contains("\\.git\\"))
-            .Take(50)
             .ToArray();
         if (files.Length == 0)
         {
             SpectrePanel.Info("No code files found in workspace.");
             return;
         }
-        var selectedIdx = SpectreMenu.Show("Select File to Browse Symbols", files.Select(f => Path.GetRelativePath(dirPath, f)).ToArray(), 0, true);
+
+        var scored = files.Select(f => {
+            var relPath = Path.GetRelativePath(dirPath, f);
+            var score = string.IsNullOrEmpty(query) ? 100 : TerminalIde.FuzzyScore(query, relPath);
+            return (File: f, RelPath: relPath, Score: score);
+        })
+        .Where(x => x.Score >= 0)
+        .OrderByDescending(x => x.Score)
+        .Take(50)
+        .ToArray();
+
+        if (scored.Length == 0)
+        {
+            SpectrePanel.Info($"No files matching '{query}'.");
+            return;
+        }
+
+        var selectedIdx = SpectreMenu.Show("Select File to Browse Symbols", scored.Select(x => x.RelPath).ToArray(), 0, true);
         if (selectedIdx >= 0)
         {
-            BrowseSymbols(files[selectedIdx]);
+            BrowseSymbols(scored[selectedIdx].File);
         }
     }
 

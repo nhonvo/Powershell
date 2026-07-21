@@ -12,20 +12,27 @@ public static class ProcessRunner
     {
         try
         {
-            var psi = new ProcessStartInfo("where", exe)
+            var cmd = OperatingSystem.IsWindows() ? "where" : "which";
+            var psi = new ProcessStartInfo(cmd, exe)
             {
                 RedirectStandardOutput = true,
+                RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
 
             using var p = Process.Start(psi);
-            var output = p?.StandardOutput.ReadToEnd().Trim();
-            p?.WaitForExit();
-            if (p?.ExitCode == 0 && !string.IsNullOrWhiteSpace(output))
+            if (p == null) return null;
+            var output = p.StandardOutput.ReadToEnd().Trim();
+            if (!p.WaitForExit(3000))
             {
-                var lines = output.Replace("\r", "").Split('\n');
-                return lines[0].Trim();
+                try { p.Kill(entireProcessTree: true); } catch { }
+                return null;
+            }
+            if (p.ExitCode == 0 && !string.IsNullOrWhiteSpace(output))
+            {
+                var lines = output.Replace("\r", "").Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                return lines.FirstOrDefault();
             }
         }
         catch

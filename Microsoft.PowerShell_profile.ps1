@@ -159,11 +159,23 @@ function Test-AgyAiGate {
 }
 
 function Start-AgyManager {
-    Write-Warning "Start-AgyManager is not yet implemented."
+    if ($null -ne ('AgyTui.Projects' -as [type])) {
+        [AgyTui.Projects]::StartManager()
+    } elseif ($null -ne ('Projects' -as [type])) {
+        [Projects]::StartManager()
+    } else {
+        Write-Warning "Projects manager not loaded."
+    }
 }
 
 function Start-AgyProxy {
-    Write-Warning "Start-AgyProxy is not yet implemented."
+    if ($null -ne ('AgyTui.Projects' -as [type])) {
+        [AgyTui.Projects]::StartProxy()
+    } elseif ($null -ne ('Projects' -as [type])) {
+        [Projects]::StartProxy()
+    } else {
+        Write-Warning "Projects proxy not loaded."
+    }
 }
 
 Write-AgyStartupCheckpoint "AgyTuiApp subprocess mode ready"
