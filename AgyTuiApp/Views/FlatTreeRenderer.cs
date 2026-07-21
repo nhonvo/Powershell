@@ -52,23 +52,37 @@ public sealed class FlatTreeRenderer : IMenuRenderer
 
             if (!string.IsNullOrEmpty(searchBuffer))
             {
-                // Filter every leaf across every category (trim leading slash so /query or / matches properly)
-                var rawQ = searchBuffer.TrimStart('/').ToLowerInvariant().Trim();
+                // Filter every category, group, and command node (trim leading slash for search flexibility)
+                var rawQ = searchBuffer.TrimStart('/').Trim();
                 var matchAll = string.IsNullOrEmpty(rawQ);
+
+                bool IsNodeMatch(MenuNode n)
+                {
+                    if (matchAll) return true;
+                    if (!string.IsNullOrEmpty(n.Label) && n.Label.Contains(rawQ, StringComparison.OrdinalIgnoreCase)) return true;
+                    if (!string.IsNullOrEmpty(n.SearchKey) && n.SearchKey.Contains(rawQ, StringComparison.OrdinalIgnoreCase)) return true;
+                    if (n.Command != null)
+                    {
+                        if (!string.IsNullOrEmpty(n.Command.Alias) && n.Command.Alias.Contains(rawQ, StringComparison.OrdinalIgnoreCase)) return true;
+                        if (!string.IsNullOrEmpty(n.Command.DisplayName) && n.Command.DisplayName.Contains(rawQ, StringComparison.OrdinalIgnoreCase)) return true;
+                        if (!string.IsNullOrEmpty(n.Command.Description) && n.Command.Description.Contains(rawQ, StringComparison.OrdinalIgnoreCase)) return true;
+                    }
+                    return false;
+                }
 
                 foreach (var cat in categories)
                 {
                     if (cat.Kind == MenuNodeKind.Separator || cat.Kind == MenuNodeKind.Exit) continue;
 
                     var catMatches = new List<MenuNode>();
+                    var catMatched = IsNodeMatch(cat);
+
                     foreach (var child in GetActiveChildren(cat))
                     {
                         if (child.Kind == MenuNodeKind.Group)
                         {
                             var groupMatches = GetActiveChildren(child)
-                                .Where(sub => matchAll ||
-                                              sub.SearchKey.Contains(rawQ) ||
-                                              (sub.Command != null && sub.Command.Alias.ToLowerInvariant().Contains(rawQ)))
+                                .Where(sub => catMatched || IsNodeMatch(child) || IsNodeMatch(sub))
                                 .ToList();
                             if (groupMatches.Count > 0)
                             {
@@ -77,7 +91,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                         }
                         else if (child.Kind == MenuNodeKind.Command && child.Command != null)
                         {
-                            if (matchAll || child.SearchKey.Contains(rawQ) || child.Command.Alias.ToLowerInvariant().Contains(rawQ))
+                            if (catMatched || IsNodeMatch(child))
                             {
                                 catMatches.Add(child);
                             }
@@ -629,6 +643,14 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                 case ConsoleKey.Escape:
                 case ConsoleKey.Q:
                     return;
+                default:
+                    if (key.KeyChar >= 32 && key.KeyChar <= 126 && key.Key != ConsoleKey.Enter)
+                    {
+                        searching = true;
+                        searchBuffer = key.KeyChar == '/' ? "/" : "/" + key.KeyChar;
+                        selectionIndex = 0;
+                    }
+                    break;
             }
         }
     }
