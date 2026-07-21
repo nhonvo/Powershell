@@ -556,10 +556,13 @@ public static class AgyAccountCore
     public static QuotaMetrics CalculateRollingQuotas(string accountName)
     {
         var history = GetAccountMetadata(accountName).RequestHistory;
+        var dts = history.Select(ts => DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt) ? dt : (DateTime?)null).Where(dt => dt.HasValue).Select(dt => dt!.Value).ToList();
+        var (qCount5H, qUsage5H) = QuotaTracker.CalculateWindowUsage(dts, 5, 50);
+
         var now = Clock.GetUtcNow().UtcDateTime;
         var fiveHoursAgo = now.AddHours(-5);
         var sevenDaysAgo = now.AddDays(-7);
-        int reqs5H = 0, reqsWeekly = 0;
+        int reqs5H = qCount5H, reqsWeekly = 0;
         var oldest5H = now;
         var oldestWeekly = now;
         foreach (var ts in history)
@@ -567,7 +570,6 @@ public static class AgyAccountCore
             if (!DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt)) continue;
             if (dt >= fiveHoursAgo)
             {
-                reqs5H++;
                 if (dt < oldest5H) oldest5H = dt;
             }
             if (dt >= sevenDaysAgo)
@@ -577,7 +579,7 @@ public static class AgyAccountCore
             }
         }
         const int limit5H = 50, limitWeekly = 1000;
-        var remaining5H = Math.Max(0.0, 100.0 - Math.Round((reqs5H / (double)limit5H) * 100.0, 2));
+        var remaining5H = Math.Max(0.0, 100.0 - qUsage5H);
         var remainingWeekly = Math.Max(0.0, 100.0 - Math.Round((reqsWeekly / (double)limitWeekly) * 100.0, 2));
         var secs5H = Math.Max(0, (int)Math.Round((oldest5H.AddHours(5) - now).TotalSeconds));
         var secsWeekly = Math.Max(0, (int)Math.Round((oldestWeekly.AddDays(7) - now).TotalSeconds));
@@ -740,8 +742,7 @@ public static class AgyAccountCore
         {
             try
             {
-                Directory.CreateDirectory(AgySourceHome);
-                File.WriteAllText(AgyActiveAccountFile, accountName, Encoding.UTF8);
+                    AccountRepository.SetActiveAccount(accountName);
                 SpectrePanel.Success($"Switched to account '{accountName}' (Persistent).");
             }
             catch

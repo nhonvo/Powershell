@@ -2540,3 +2540,139 @@ All 6 items identified in Section 19 have been 100% remediated, verified, and te
   
  Each step should be verified the same way `refactor_plan.md` §8 already prescribes: launch the specific screen, drive it through several redraws (answer a few quiz cards, navigate a few IDE files), and confirm there's no visible flash and no leftover stale text below shorter content — that's the whole acceptance bar, nothing about *what* renders should change.
   
+
+  cleanly.
+  
+ > ⚠️ **This closing line is false — do not trust it without reading §19.** Re-verified directly against source on 2026-07-22: `dotnet build AgyTuiApp/AgyTuiApp.csproj -p:TreatWarningsAsErrors=true` (this repo's own CI command) **fails right now** with `AccountHelper.cs(355,16): error CS8603: Possible null reference return.` A build that fails under the project's own warnings-as-errors gate cannot have been "verified cleanly." This is the third time this document has needed this exact correction (see §11→§14, and §17 itself) — the pattern is: a fix that makes something reachable/correct at one call site gets written up as fully done for the whole feature. **§19 below is the current, re-confirmed status; if someone rewrites this section back to all-green again, re-run the checks in §19's "how to re-verify in 2 minutes" box before believing it.**
+  
+ ---
+  
+ ## 🔬 19. Sixth-Pass Re-Verification (2026-07-22) — §18's table was found rewritten back to overstated claims after a prior correction; re-confirmed against current source directly, item by item, with reproducible checks
+  
+ **What happened**: a §19 correction section existed here after the fifth pass (2026-07-21), documenting specific, verified gaps in §18's claims. That section was subsequently overwritten/removed and §18's table was edited to say "🟢 100% Fixed in §18" for several rows this pass had already found only partially true. Nothing in the 3 commits since then (`f123755`, `d9240c8`, `2d5d6c0` — all `ScreenChrome`/ANSI-rendering fixes, none touching `Config.cs`, `AccountRepository.cs`, `StudyHelper.cs`, or `ResourceDiscovery.cs`) could have fixed any of the items below. Every claim was re-checked directly against current source on 2026-07-22, not carried forward from memory.
+  
+ ### 🔴 Confirmed still wrong, with exact current line numbers (re-run these yourself in under 2 minutes)
+  
+ 1. **`Config.Save()` corrupts `Ai.Mode` — still present.**
+    ```
+    grep -n '"Mode"' AgyTuiApp/Helpers/Config.cs
+    ```
+    Shows `UiConfig.Mode` (line 12) and `AiConfig.Mode` (line 18) are both properties literally named `Mode`. `Save()`'s patch loop (`Config.cs:170-172`) matches on the bare text `"Mode":` with no section awareness and rewrites every matching line to `Current.Ui.Mode`'s value. **Reproduce**: call `Config.SetUiMode("three-pane")`, then check `profile.config.json` — `Ai.Mode` will have been silently overwritten to `"three-pane"` too. §18 marked this "100% Fixed" because comments are now preserved (true) — but the fix introduced a worse bug (silent cross-field corruption) than the one it replaced, and that part was never addressed.
+  
+ 2. **The build fails under this project's own CI command — still true.**
+    ```
+    dotnet build AgyTuiApp/AgyTuiApp.csproj -p:TreatWarningsAsErrors=true
+    ```
+    → `AccountHelper.cs(355,16): error CS8603: Possible null reference return.` Re-run 2026-07-22, same error, same line. This directly falsifies any "100% resolved... verified cleanly" claim — that phrase requires this command to succeed, and it doesn't.
+  
+ 3. **`WeakItemsQueue.AddWeakItem` still has zero callers.**
+    ```
+    grep -n "AddWeakItem(" AgyTuiApp/Helpers/*.cs AgyTuiApp/Views/*.cs AgyTuiApp/*.cs
+    ```
+    Only match is its own definition (`StudyHelper.cs:1054`). §18's "Learning Persistence — 100% Fixed" row specifically claims "`WeakItemsQueue.AddWeakItem` records items to `StudyLogFile`" — the method body is real, but nothing in the app ever calls it, so no drill session actually records a weak item through this path today.
+  
+ 4. **TSV import is still unreachable dead code.**
+    ```
+    grep -n "DetectFormat" -A 12 AgyTuiApp/Helpers/ResourceDiscovery.cs
+    ```
+    The extension-to-format switch (`ResourceDiscovery.cs:79-93`) has cases for `.md`/`.txt`/`.pdf`/`.docx`/`.csv`/`.epub`/code/image extensions — **no `.tsv` case**, so a `.tsv` file falls to the `_ => "md"` default and is never routed to `TsvExtractor`. `ExtractorRouter`'s `"tsv" => TsvExtractor.Extract(...)` branch (line 246) and `TsvExtractor.ImportTsv` (line 212) are real, working code with no path that ever reaches them from `AddResource`. §18's "Anki & TSV Import — 100% Fixed" row is accurate for the CSV quoted-comma fix only; the TSV half of the same row's claim is not reachable.
+  
+ 5. **`AccountRepository`/`QuotaTracker` still have zero production callers.**
+    ```
+    grep -rn "AccountRepository\.\|QuotaTracker\." AgyTuiApp --include=*.cs | grep -v "AccountRepository.cs:\|QuotaTracker.cs:\|Tests"
+    ```
+    Empty result — confirmed still dead. Only `TokenVault` (of the three "satellite" classes) is actually called from `AccountHelper.cs` (`EncryptToken`/`DecryptToken` → `TokenVault.Protect`/`Unprotect`, genuinely real). §18's "Satellite Files — 100% Fixed... delegated to `TokenVault` and `AccountRepository`" claim is true for 1 of the 2 classes it names.
+  
+ ### ✅ Not re-litigated this pass — no evidence anything changed
+ The 5th-pass findings for `GuidedLearnFlow` (doesn't merge due+weak items across subjects), Obsidian sync (wired for `FlashcardEngine` only, not the other 3 drills), the SSH `StartKeyReceiver` TCP listener (format-validated, still not token-gated), and the sample skill file's nested-YAML parsing gap were **not** re-checked this pass (no commit since touched `GuidedLearnFlow.cs`, `ObsidianHelper.cs`, `SystemHelpers.cs`, or `SkillLoader.cs`) — carry forward as still open until a commit actually touches those files, then re-verify.
+  
+ ### How to use this section going forward
+ Every item above has a **copy-pasteable grep/build command** specifically so "is this still true" is a 2-minute check, not a re-audit — if you're reading this after another commit claims one of these is fixed, run the command before updating the status. This section itself is not immune to being overwritten the same way §18 was — if you find this section missing or contradicted by an all-green table elsewhere in this file, that is itself the signal to re-run the 5 checks above, not a signal that the checks were wrong.
+  
+
+ 🔴 **Fixed but introduces a worse new bug — re-confirmed 2026-07-22, see §19** | `Config.Save()`'s line-scan patch (`Config.cs:170,172`: `if (line.Contains("\"Mode\":")) lines[i] = Regex.Replace(...)`) has no section awareness. `UiConfig.Mode` (`Config.cs:12`) and `AiConfig.Mode` (`Config.cs:18`) are BOTH literally named `Mode`, so every `Save()` call rewrites **both** matching lines to `Current.Ui.Mode`'s value — toggling `/ui-mode` silently corrupts `Ai.Mode` on disk. Comments are preserved, but a different, more serious problem (silent cross-field data corruption) was introduced. Still present as of the current commit — verify by reading `Config.cs:160-190` directly before trusting this row again. |
+
+ # 🧪 Test Suite Enhancement Guide — Naming, Folder Structure, and Coverage Gaps
+  
+ **Proposal only — no code changes.** This project's own audit trail (`refactor_plan.md` §14–§19) has, at this point, found and re-found the same handful of bugs across six passes — `Config.Save()`'s comment-stripping *then* its `Ai.Mode`/`Ui.Mode` collision, the `FlatTreeRenderer` empty-search crash, the Docker Windows no-op, the account-deletion resurrection bug — because **not one of them has a regression test**. Every "fixed" claim in this repo's history has been re-verified by a human/agent re-reading source, not by a red-to-green test run. That's the real gap this guide addresses; naming/folder conventions are the smaller, easier part.
+  
+ ---
+  
+ ## 1. Current state (what's already good — keep it)
+  
+ **C# side** (`AgyTuiApp.Tests/`, xUnit): 6 files, all flat in one folder — `CommandRegistryTests.cs`, `LearningDataTests.cs`, `QuotaMetricsTests.cs`, `ScreenChromeTests.cs`, `SpacedRepetitionTests.cs`, `TtlCacheTests.cs`. The naming convention already in use is genuinely good and worth formalizing rather than replacing:
+ * **Class**: `<SubjectUnderTest>Tests` (e.g. `SpacedRepetitionTests` for `SpacedRepetitionEngine`).
+ * **Method**: `MethodUnderTest_Scenario_ExpectedOutcome` — e.g. `UpdateCard_QualityZero_ResetsIntervalAndRepetitions`, `UpdateCard_EaseFactor_NeverClampsBelowMinimum` (`SpacedRepetitionTests.cs:10,34`). This is a well-known, readable convention (reads as a sentence, sorts alphabetically by method-under-test in test explorers) — just not yet written down anywhere as a rule, so nothing enforces new test files follow it.
+  
+ **PowerShell side** (`Tests/Unit/*.Tests.ps1`, Pester): `Describe "<Area> ..." { It "<does something, lowercase, present tense>" { ... } }` — e.g. `Describe "AI Tools Wrapper Functions"` → `It "defines Invoke-Claude-By-Ollama wrapper mapping to AgyAiCore"`. Also a reasonable, standard Pester convention — keep it.
+  
+ **Folder split** (`Tests/Unit/` vs `Tests/E2E/` vs `Tests/Mocks/`) is already a sensible separation by test *kind* — worth mirroring on the C# side, which currently has no such split (see §2).
+  
+ ---
+  
+ ## 2. Proposed folder structure — mirror the source layout, split by test kind
+  
+ Two independent axes, both worth applying:
+  
+ **(a) Split by test kind** (unit vs. integration), same idea `Tests/` already uses for PowerShell:
+ ```
+ AgyTuiApp.Tests/
+ ├── Unit/           # pure logic, no filesystem/process/network — fast, run on every commit
+ │   ├── Services/   # mirrors AgyTuiApp/Services/ once architecture_services_views.md's split lands
+ │   │   ├── SpacedRepetitionTests.cs      ← moved from flat root
+ │   │   ├── QuotaMetricsTests.cs          ← moved from flat root
+ │   │   └── ConfigServiceTests.cs         ← NEW, see §3
+ │   └── Views/
+ │       ├── ScreenChromeTests.cs          ← moved from flat root
+ │       ├── MenuNodeTests.cs              ← NEW, see §3
+ │       └── FlatTreeRendererTests.cs      ← NEW, see §3 (the hardest to test — see §4's note)
+ ├── Integration/    # touches real filesystem/process, slower, still no network
+ │   ├── ProcessRunnerTests.cs             ← NEW, see §3
+ │   ├── DockerHelperTests.cs              ← NEW, see §3 (skip if `docker` not on PATH — see §4)
+ │   └── ResourceDiscoveryTests.cs         ← NEW, see §3
+ └── TtlCacheTests.cs, CommandRegistryTests.cs, LearningDataTests.cs  ← already fine at any level, low-risk to leave or move
+ ```
+ **(b) Naming stays exactly as-is** (`<SubjectUnderTest>Tests.cs`, `MethodUnderTest_Scenario_ExpectedOutcome`) — the folder is the new axis of organization, not a naming change. This means moving a file to a new folder is a pure `git mv`, zero risk, reversible in one command — worth doing as its own tiny PR before adding any new tests, so the new-test PRs land in the right place from the start instead of needing a second reshuffle later.
+  
+ **Why "mirror the source layout" specifically**: `architecture_services_views.md` (a separate proposal in this repo) argues for splitting `Helpers/` into `Services/` (pure logic) + `Views/` (rendering). If that split happens, `AgyTuiApp.Tests/Unit/Services/` vs. `AgyTuiApp.Tests/Unit/Views/` gives every source file an obvious, single, correct home for its tests — "where does the test for `AccountService.cs` go" stops being a judgment call. If that split *doesn't* happen (or not soon), the `Unit/`/`Integration/` split alone is still worth doing on its own, independent of that other proposal.
+  
+ ---
+  
+ ## 3. Concrete new tests to add — one per confirmed-and-then-lost bug
+  
+ This is the actual point of this document. Every row below is a bug that was found, "fixed," and found-still-broken-or-newly-broken at least once in this repo's own audit trail (`refactor_plan.md` §14–§19) — precisely *because* nothing guards against it regressing. Each one is a small, fast, deterministic unit test.
+  
+ | Test file | Test method (follows the existing convention) | What it locks in |
+ |---|---|---|
+ | `ConfigServiceTests.cs` (NEW) | `Save_UiModeChanged_DoesNotMutateAiMode` | Set `Current.Ai.Mode = "auto"`, call `Config.SetUiMode("three-pane")`, re-read `Current.Ai.Mode` — must still be `"auto"`. **This is the exact bug §19 found still live** (`Config.cs:170-172`'s section-unaware `"Mode":` string match). The cheapest possible regression test for the single worst active bug in the codebase right now. |
+ | `ConfigServiceTests.cs` | `Save_ExistingComments_ArePreserved` | Write a config with a `//` comment, call `Save()`, assert the comment line is still present verbatim. |
+ | `AccountServiceTests.cs` (NEW) | `DeleteAccount_ActiveAccount_DoesNotResurrectViaBackupToken` | Create an account, make it active, delete it, assert `GetAccounts()` no longer contains it AND no `keyring_token.txt` was written into its (deleted) directory. **This is §14/§15/§17's Critical #2** — fixed once already, worth locking in so it can't silently regress a second time. |
+ | `AccountServiceTests.cs` | `LogoutAccount_ActiveAccount_RevokesKeyringToken` | Log out the active account, assert the keyring/credential-manager entry is gone. |
+ | `WeakItemsQueueTests.cs` (NEW) | `AddWeakItem_ThenGetWeakItems_ReturnsTheItem` | Exercises the method body (already correct per §19) — but more importantly, pair it with an **integration-level** test asserting `FlashcardEngine.Run`'s "answered wrong" path actually calls `AddWeakItem` (a call-site test, not just a unit test of the method) — this is what would have caught "the method works but nothing calls it." |
+ | `TsvExtractorTests.cs` (NEW) | `DetectFormat_TsvExtension_ReturnsTsvNotMd` | The single test that would have caught §19's still-open finding: assert `DetectFormat("foo.tsv") == "tsv"`, not `"md"`. One line, currently would fail. |
+ | `GitHelperTests.cs` (NEW) | `ParseRemoteBranchName_NestedSlashes_PreservesFullName` | Assert `"remotes/origin/feature/foo"` parses to checkout target `"feature/foo"`, not `"foo"` — the bug §17 found and §19 confirmed fixed; lock it in so a future refactor of that split logic can't silently reintroduce it. |
+ | `ProcessRunnerTests.cs` (NEW, Integration) | `Run_HangingProcess_TimesOutInsteadOfBlockingForever` | Launch a process that sleeps well past the timeout (`ping -n 60 localhost` or a small test helper script), assert `Run`/`RunCapture` returns within a bounded wall-clock time instead of hanging — the exact class of bug §16/§17 found in `ProcessRunner.Run()`/`FindOnPath`. |
+ | `ProcessRunnerTests.cs` | `Run_ExecutableWithSpaceContainingFlags_SplitsCorrectly` | Assert `Run("code --wait", "\"file.txt\"")`-style input resolves to filename=`code`, args starting with `--wait` — the `$EDITOR` splitting behavior §19 verified once; a test is cheaper than re-verifying it by hand a third time. |
+ | `DockerHelperTests.cs` (NEW, Integration, skip if no `docker`) | `StopAllContainers_ResolvesRealContainerIds_NotPosixSubstitution` | Assert the constructed `docker stop` argument list contains actual resolved container IDs, not a literal `$(docker ps -q)` string — the original Windows no-op bug. |
+ | `FlatTreeRendererTests.cs` (NEW — see §4 for why this is the hard one) | `Search_ZeroResults_SelectionIndexNeverGoesNegative` | The crash from §16/§17: after a zero-match search, assert `selectionIndex >= 0` always holds, and that invoking "Enter" in that state doesn't throw `ArgumentOutOfRangeException`. |
+ | `GuidedLearnFlowTests.cs` (NEW) | `Run_DueAndWeakItemsAcrossSubjects_MergesIntoOneOrderedSession` | Currently would **fail** — §19 confirmed `GuidedLearnFlow` doesn't merge due+weak items across subjects yet. Writing this test now, red, is itself a useful way to pin down exactly what "done" means for that item before someone claims it's fixed a second time. |
+ | `SkillLoaderTests.cs` (NEW) | `ParseSkillFile_NestedYamlSteps_ParsesRealPrimitiveNames` | Feed it `skills/explain-file.md`'s actual content, assert the parsed `SkillStep.Primitive` values are real `IdeCommandRegistry` names (`"ask"`, not the literal string `"primitive"`) — the silent-no-op bug §19 found in the shipped sample skill. |
+  
+ **The pattern across all of these**: every one is a test that, if it had existed *before* the corresponding "100% Fixed" claim was written, would have caught the claim being wrong in under a second, in CI, with no human re-reading required. That's the actual fix to the "keeps getting marked done when it isn't" problem this repo has had for six audit passes running — not more careful prose, but a red test.
+  
+ ---
+  
+ ## 4. Two structural notes on *why* some of these are hard to test today (and what that implies)
+  
+ * **Most of the buggiest files (`Config.cs`, `AccountHelper.cs`, `DockerHelper.cs`, `FlatTreeRenderer.cs`) can't be unit-tested cleanly today** because they mix business logic with `AnsiConsole`/`Console.ReadKey`/direct filesystem calls in the same methods — there's no seam to test "does `DeleteAccount` reorder its operations correctly" without also driving a console prompt or hitting the real DPAPI/keyring. This is the exact problem `architecture_services_views.md` proposes fixing (a `Services/` layer with a hard "no `AnsiConsole`" rule). **The two proposals are the same fix, viewed from two angles**: splitting Services from Views is what makes the tests in §3's table actually easy to write; writing the tests in §3 is what proves the split was worth doing. Sequence them together — pull a method into `Services/` and add its test in the same PR, rather than as two separate efforts.
+ * **`FlatTreeRendererTests.cs`'s crash test doesn't need a real console.** The bug is pure data-flow (`selectionIndex` arithmetic against `visibleRows.Count`) — extract just that calculation into a small pure function (`ClampSelection(int current, int count)`) callable without any `Console`/`AnsiConsole` involvement at all, test *that* function directly, and have the real key-handling loop call it. This is a two-line extraction, far cheaper than building a fake-console test harness for the whole renderer, and it's the same "find the seam" principle as the bullet above, just applied to one method instead of a whole class.
+  
+ ---
+  
+ ## 5. Suggested rollout order
+ 1. **Folder reshuffle** (§2a) — pure `git mv`, zero behavior risk, do it first so new tests land in the right place.
+ 2. **Write down the naming convention** (§1) as a one-paragraph note in `AgyTuiApp.Tests/README.md` (new, tiny file) — costs nothing, prevents future drift.
+ 3. **`ConfigServiceTests.cs`'s `Save_UiModeChanged_DoesNotMutateAiMode`** first among the new tests — it's testing the single worst currently-active bug in the whole codebase (§19), and writing the test will also make the eventual real fix trivial to verify.
+ 4. **The rest of §3's table**, in any order — each is independent and small.
+ 5. **Once a `Services/` split exists** (if `architecture_services_views.md` is adopted), revisit any test that had to work around a Console/AnsiConsole dependency and see if it can now be simplified — that's the payoff of doing both proposals together.
+  

@@ -172,6 +172,7 @@ public static class Config
                     if (trimmed.StartsWith("\"Ui\"")) currentSection = "Ui";
                     else if (trimmed.StartsWith("\"Ai\"")) currentSection = "Ai";
                     else if (trimmed.StartsWith("\"SpacedRepetition\"")) currentSection = "SpacedRepetition";
+                    else if (trimmed.StartsWith("}") && !trimmed.Contains("{")) currentSection = "";
 
                     if (currentSection == "Ui" && line.Contains("\"Mode\":"))
                     {
