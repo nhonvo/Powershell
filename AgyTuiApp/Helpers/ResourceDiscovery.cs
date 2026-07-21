@@ -85,6 +85,7 @@ public static class ResourceRegistry
             ".pdf" => "pdf",
             ".docx" => "docx",
             ".csv" => "csv",
+            ".tsv" => "tsv",
             ".epub" => "epub",
             ".cs" or ".py" or ".ts" or ".js" or ".go" => "code",
             ".png" or ".jpg" or ".jpeg" => "image",

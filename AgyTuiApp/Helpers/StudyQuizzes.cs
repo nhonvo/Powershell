@@ -92,7 +92,8 @@ public static class KanaQuiz
         ShowAccuracyChart(rowStats);
 
         var duration = (int)(DateTime.Now - start).TotalMinutes;
-        StudySession.Record($"Kana {type}", "language", "quiz", new StudyScore(correct, reviewedList.Length, reviewedList.Length > 0 ? (correct * 100.0 / reviewedList.Length) : 100.0), [.. weakItems], 0, duration, $"Reviewed Kana {type}");
+        StudySession.Record($"Kana {type}", "language", "quiz", new StudyScore(correct, reviewedList.Length, reviewedList.Length > 0 ? (correct * 100.0 / reviewedList.Length) : 100.0), [.. weakItems], 0, duration, $"Reviewed Kana {type}", start);
+        try { ObsidianStudySync.OfferSync(new StudySummary($"Kana {type}", correct, reviewedList.Length, [.. weakItems], duration)); } catch {}
     }
 
     public static void ShowAccuracyChart(Dictionary<string, (int c, int t)> rowStats)
@@ -296,7 +297,8 @@ public static class GrammarQuiz
         SpectrePanel.Success($"Grammar drill complete — {correct}/{limit} understood.");
 
         var duration = (int)(DateTime.Now - start).TotalMinutes;
-        StudySession.Record($"Grammar {level}", "language", "grammar", new StudyScore(correct, limit, limit > 0 ? (correct * 100.0 / limit) : 100.0), [.. weakItems], 0, duration, $"Reviewed Grammar {level}");
+        StudySession.Record($"Grammar {level}", "language", "grammar", new StudyScore(correct, limit, limit > 0 ? (correct * 100.0 / limit) : 100.0), [.. weakItems], 0, duration, $"Reviewed Grammar {level}", start);
+        try { ObsidianStudySync.OfferSync(new StudySummary($"Grammar {level}", correct, limit, [.. weakItems], duration)); } catch {}
     }
 }
 
@@ -1126,7 +1128,8 @@ public static class VocabDrill
         SpectrePanel.Success($"Vocab drill done — {correct}/{total} correct");
 
         var duration = (int)(DateTime.Now - start).TotalMinutes;
-        StudySession.Record($"Vocab {difficulty}", "vocabulary", "drill", new StudyScore(correct, total, total > 0 ? (correct * 100.0 / total) : 100.0), [.. weakItems], 0, duration, $"Reviewed Vocab {difficulty}");
+        StudySession.Record($"Vocab {difficulty}", "vocabulary", "drill", new StudyScore(correct, total, total > 0 ? (correct * 100.0 / total) : 100.0), [.. weakItems], 0, duration, $"Reviewed Vocab {difficulty}", start);
+        try { ObsidianStudySync.OfferSync(new StudySummary($"Vocab {difficulty}", correct, total, [.. weakItems], duration)); } catch {}
     }
 }
 

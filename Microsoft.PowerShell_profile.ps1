@@ -159,6 +159,7 @@ function Test-AgyAiGate {
 }
 
 function Start-AgyManager {
+    Load-AgyTuiDll
     if ($null -ne ('AgyTui.Projects' -as [type])) {
         [AgyTui.Projects]::StartManager()
     } elseif ($null -ne ('Projects' -as [type])) {
@@ -169,6 +170,7 @@ function Start-AgyManager {
 }
 
 function Start-AgyProxy {
+    Load-AgyTuiDll
     if ($null -ne ('AgyTui.Projects' -as [type])) {
         [AgyTui.Projects]::StartProxy()
     } elseif ($null -ne ('Projects' -as [type])) {

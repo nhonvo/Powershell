@@ -164,14 +164,24 @@ public static class Config
             if (File.Exists(ConfigPath))
             {
                 var lines = File.ReadAllLines(ConfigPath);
+                string currentSection = "";
                 for (int i = 0; i < lines.Length; i++)
                 {
                     var line = lines[i];
-                    if (line.Contains("\"Mode\":"))
+                    var trimmed = line.Trim();
+                    if (trimmed.StartsWith("\"Ui\"")) currentSection = "Ui";
+                    else if (trimmed.StartsWith("\"Ai\"")) currentSection = "Ai";
+                    else if (trimmed.StartsWith("\"SpacedRepetition\"")) currentSection = "SpacedRepetition";
+
+                    if (currentSection == "Ui" && line.Contains("\"Mode\":"))
                     {
                         lines[i] = Regex.Replace(line, @"(""Mode""\s*:\s*"")[^""]*("")", $"$1{Current.Ui.Mode}$2");
                     }
-                    else if (line.Contains("\"Density\":"))
+                    else if (currentSection == "Ai" && line.Contains("\"Mode\":"))
+                    {
+                        lines[i] = Regex.Replace(line, @"(""Mode""\s*:\s*"")[^""]*("")", $"$1{Current.Ai.Mode}$2");
+                    }
+                    else if (currentSection == "Ui" && line.Contains("\"Density\":"))
                     {
                         lines[i] = Regex.Replace(line, @"(""Density""\s*:\s*"")[^""]*("")", $"$1{Current.Ui.Density}$2");
                     }

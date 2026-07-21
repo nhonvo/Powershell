@@ -61,8 +61,14 @@ public static class SkillLoader
                         var parts = line.TrimStart('-', ' ').Split(':', 2);
                         if (parts.Length > 0)
                         {
-                            var primitive = parts[0].Trim();
-                            var arg = parts.Length > 1 ? parts[1].Trim() : "";
+                            var primitive = parts[0].Trim().Trim('"', '\'');
+                            var arg = parts.Length > 1 ? parts[1].Trim().Trim('"', '\'') : "";
+                            if (primitive.Equals("primitive", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(arg))
+                            {
+                                var subParts = arg.Split(':', 2);
+                                primitive = subParts[0].Trim().Trim('"', '\'');
+                                arg = subParts.Length > 1 ? subParts[1].Trim().Trim('"', '\'') : "";
+                            }
                             steps.Add(new SkillStep(primitive, arg));
                         }
                     }

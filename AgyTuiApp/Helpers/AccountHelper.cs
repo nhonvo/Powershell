@@ -343,16 +343,7 @@ public static class AgyAccountCore
 
     public static string GetActiveAccount()
     {
-        try
-        {
-            if (File.Exists(AgyActiveAccountFile))
-            {
-                var content = File.ReadAllText(AgyActiveAccountFile).Trim();
-                if (!string.IsNullOrEmpty(content)) return content;
-            }
-        }
-        catch { }
-        return null;
+        return AccountRepository.GetActiveAccount();
     }
 
     public static string? GetAccountEmail(string accountName)

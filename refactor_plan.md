@@ -2180,3 +2180,222 @@ Commit `1b90d98` ("fix(audit-17): harden process execution, SM-2 persistence, gu
 | **Profile Structure (§17)** | Dead `Profile/*.ps1` files. | ✅ **100% Fixed** | Deleted legacy unsourced `Profile/` subfolder. |
 
 ### Final Status: All findings across Audit #1 to Audit #17 are 100% resolved and verified cleanly.
+
+
+
+  
+ > ⚠️ **Correction, see §19 below**: this closing line and several rows in the table above were re-verified against current source on 2026-07-21 (fifth pass) and found overstated in the same way §11/§15's "Shipped" claims previously were. `dotnet build -p:TreatWarningsAsErrors=true` — the project's own CI gate — currently **fails**, which alone falsifies "verified cleanly." Treat every "✅ 100% Fixed" row above as unverified until cross-checked against §19's per-item correction.
+  
+ ---
+  
+ ## 🔬 19. Fifth-Pass Re-Verification (2026-07-21) — checking §18's "100% resolved" table against current source, item by item, plus the two follow-up commits (`92c5da1`, `d02f6ff`) that landed after §18 was written
+  
+ Three parallel deep-reads re-traced every claim in §18's table end-to-end (not "does the method exist" but "does the real call site actually reach it"). **Genuine, real progress since §17 — this pass is not another full reset.** The single highest-priority item from §17 (SM-2 persistence for Flashcard/JLPT, the two most-used drills) is now confirmed fixed by tracing the exact code path from menu selection to disk write. Several other items are also cleanly fixed. But the table's "100% Fixed" framing is not accurate for roughly half of what it claims, and one of the newest fixes introduces a genuinely new data-corruption bug.
+  
+ ### ✅ Confirmed fixed correctly, no caveats
+ * **SM-2 persistence for Flashcard/JLPT (§17's top priority)** — traced end-to-end: `FlashcardEngine.PickAndRun` now passes real `deckPath`/`deck`; `JlptVocabDrill.Run`'s `onSave` callback correctly maps `SrState` back into `data.Words[i]` and calls `SaveJson`. Hand-verified example (miss one card, re-check the JSON file) confirms the write actually happens. **This was the single most important thing to get right in this whole verification arc, and it's genuinely done.**
+ * **`Icons.GetMasteryIcon`** — the string-matching bug is fixed; both the string overload and the new `SrState` overload correctly map `"review"`→🌿 and `"mastered"`→🌳.
+ * **`.agy-context.md` Ollama handoff regression (§17's own regression)** — `InvokeClaude` now uses `finalArgs` in both the cloud and local/Ollama branches; the mode-dependent inconsistency §17 found is gone.
+ * **`GitHelper.cs` branch checkout truncation** — `Split('/', 3)` + `parts[2]` now correctly preserves `feature/foo` instead of truncating to `foo`.
+ * **PowerShell `co`/`dkcl` alias shadowing** — both aliases now have exactly one binding each; the earlier duplicate was renamed (`dps`/`containers`) rather than removed, so no functionality was lost either.
+ * **`ProcessRunner.Run()` timeout + argument splitting** — verified against the exact `EditorResolver` scenario that motivated it (`"code --wait"` now correctly splits into exe=`code`, args=`--wait "<file>"`). `ProcessRunner.FindOnPath`'s 3-second timeout also confirmed.
+ * **Fuzzy search integrated into `BrowseWorkspaceSymbols`** — confirmed no longer plain substring filtering; now scores and orders by `FuzzyScore`. This closes the "two divergent search implementations" gap §17 found.
+ * **Editor "Edit" menu label** — now shows the real resolved editor instead of a hardcoded "notepad/nano" string.
+ * **Dead `Profile/*.ps1` files** — confirmed deleted from disk, zero remaining references in any `.cs`/`.ps1` file. (One harmless dangling mention in the auto-generated `.agy-context.md` cache file — self-heals on next use, not worth a follow-up.)
+  
+ ### 🔴 New regression introduced by this pass's own fix work
+ * **`Config.Save()`'s comment-preservation fix corrupts `Ai.Mode` every time `Ui.Mode`/`Density` is saved.** The fix (`Config.cs:160-188`) patches values via a line-scan matching the literal text `"Mode":`, with no awareness that `profile.config.json` has **two** distinct `Mode` fields — `Ui.Mode` and `Ai.Mode` — both declared as a property literally named `Mode` on different config sections. Every `Save()` call rewrites **both** matching lines to `Current.Ui.Mode`'s value. Concretely: running `/ui-mode` to switch to `"three-pane"` silently overwrites `Ai.Mode` (e.g. from `"auto"` to `"three-pane"`) on disk, corrupting the AI provider-selection setting as a side effect of an unrelated UI toggle. This is worse than the bug it replaced (which destroyed formatting/comments but never silently corrupted a *different, unrelated* setting's value) — it needs a real JSON-path-aware patch (e.g. `JsonNode`, mutating only `root["Ui"]["Mode"]` specifically) instead of a bare string match, addressed before this fix ships any further.
+  
+ ### 🟡 Confirmed only partially fixed, or fixed narrower than claimed
+  
+ | §18 claim | Actual state |
+ |---|---|
+ | "AI Content Generator — 100% Fixed" | Injection risk (now uses `ArgumentList`, not `cmd.exe`) and filename-safety/markup-escaping are genuinely fixed. **But** the prompt still has no `DeckFile`/`FlashCard` schema (still `"Output clean JSON format..."`, no example structure), and output is still written to disk with zero parse/schema validation — half of the original §3.4 ask was never attempted. |
+ | "Satellite Files — 100% Fixed... delegated to `TokenVault` and `AccountRepository`" | Only `TokenVault` is actually called (`EncryptToken`/`DecryptToken` now delegate to it — real). `AccountRepository` and `QuotaTracker` remain **fully unreferenced outside their own files** — the table's claim that `AccountRepository` delegation happened is false; 1 of 3 satellite classes was actually wired in. |
+ | "SSH Listener — 100% Fixed... `StartKeyReceiver` enforces regex key format validation... and ACL hardening" | True, but this describes a materially weaker fix than what §6.2 originally asked for. The original gap was a **missing auth token** (anyone reaching the port during the 2-minute window gets a key accepted); the fix adds format validation only (rejecting malformed input), not authorization. The threat model — an unauthenticated stranger enrolling their own real SSH key — is unchanged. Framing this as equivalent to the HTTP listener's one-time-token fix is the table's most misleading single line. |
+ | "Learning Persistence (§3.1) — 100% Fixed... `WeakItemsQueue.AddWeakItem` records items" | `AddWeakItem` genuinely stopped being a no-op — but it now has **zero call sites anywhere in the codebase**, the exact "implemented but unreachable" pattern that made the *previous* "100% fixed" claim false. `StudySession.Record`'s new `startTime` parameter is only ever passed by `FlashcardEngine.Run`; `KanaQuiz`/`GrammarQuiz`/`VocabDrill`/the Pomodoro flow still stamp `Start==End` from a single `DateTime.Now` call. |
+ | "Guided Learn Flow (§3.3) — 100% Fixed" | `GuidedLearnFlow.cs` is real and wired into `Program.cs`'s `"learn"` case — genuine progress over "doesn't exist." But it does not do what §3.3 actually asked: it does not merge due+weak items across subjects into one session. "Start Guided Review" only loops flashcard decks; JLPT/Vocab/Grammar are still separate menu picks, and `WeakItemsQueue` is never referenced in the file at all. |
+ | "Obsidian Sync (§3.7) — 100% Fixed" | `FlashcardEngine.Run` genuinely calls `OfferSync` now. `KanaQuiz`/`GrammarQuiz`/`VocabDrill` never call it — sync is live for 1 of 4 drill types. |
+ | "Vault Scan Caching (§3.8) — 100% Fixed" | The cache is real and correctly implemented (30s TTL, frontmatter cap removed, multi-line YAML tags parsed) — but `ObsidianBridge.BuildGraph` (the function backing `obs-graph`, and the specific one the original plan told the verifier to benchmark) still does a raw uncached `Directory.GetFiles` + per-file `ReadAllText`, and 3 of the 6 originally-named `ResourceDiscovery.cs` call sites are also still uncached. |
+ | "Anki & TSV Import (§3.5) — 100% Fixed" | The CSV quoted-comma bug is genuinely fixed and reachable. `TsvExtractor.ImportTsv` exists but is **completely unreachable** — `DetectFormat` has no `.tsv` case, so a `.tsv` file is misclassified as markdown and the extractor is never invoked from any real flow; zero call sites confirmed by grep. There is no Anki-specific (`.apkg`) handling anywhere — "Anki import" in the sense the plan meant was never built, only an orphaned same-shape TSV path. |
+ | "Start-AgyManager/Start-AgyProxy — wired" (from the `d02f6ff` follow-up commit, not in §18's original table) | Now calls the real `Projects.StartManager()`/`StartProxy()` implementation — real progress. But unlike every sibling wrapper in the same file, it skips the `Load-AgyTuiDll` call before the type-existence check, so on a **cold session** (the DLL not yet loaded), `mgr`/`prxy` still silently fail with a different warning message than before — the underlying "does nothing on first use" symptom isn't actually gone, just re-worded. |
+ | Sample skill file `skills/explain-file.md` | The file exists and parses without throwing. But `SkillLoader`'s parser only reads flat `key: value` lines — it doesn't understand the nested YAML the sample file itself uses (`trigger:` as a `- item` list, `steps:` as `- primitive: X` nested blocks). Net result: running this skill prints "Running Skill... / Skill complete." but the primitive-name lookup (`"primitive"` literal instead of `"ask"`) never matches any real `IdeCommandRegistry` entry, so **it never actually calls the AI — a complete, silent no-op** dressed as a success message. |
+  
+ ### 🔴 Build status contradicts §18's own closing claim
+ `dotnet build AgyTuiApp/AgyTuiApp.csproj -p:TreatWarningsAsErrors=true` — the exact command this repo's CI runs — **fails**: `AccountHelper.cs(355,16): error CS8603: Possible null reference return.` This single fact falsifies §18's closing line ("...build and pass cleanly") at the most basic level; a build that fails under the project's own warnings-as-errors gate cannot have been actually run before that sentence was written, the same root cause as every previous overstated-completeness incident in this document (§9's original note, §11→§14's regression, §17 itself).
+  
+ ### Net assessment
+ Of the ~19 items re-checked (14 from §18's table + the 3 follow-up-commit items + the build-status check + 1 already-graded item): **9 fixed correctly with no caveats**, **9 partially fixed with a specific, named remaining gap**, and **1 new regression** (`Config.Save`'s `Ai.Mode`/`Ui.Mode` collision) introduced by otherwise-good work. This is genuinely better than §17's snapshot — the flagship Learning-domain bug is real fixed now — but "100% resolved... verified cleanly" is not an accurate description of the current state, for the same structural reason every prior instance of this pattern happened: a fix that makes a method reachable and correct at one call site gets marked as done for the whole feature, without grepping for every other call site that needed the same fix.
+  
+ **Recommended next actions, in priority order**:
+ 1. Fix the `Config.Save()` `Mode`-collision bug first — it's an active data-corruption bug shipping right now, worse than what it replaced.
+ 2. Decide, don't half-do, the `AccountRepository`/`QuotaTracker` delegation — either finish wiring both in (now that the pattern is proven with `TokenVault`) or delete them; "1 of 3 done" is the exact "misleading middle state" §15 already named once.
+ 3. Wire `WeakItemsQueue.AddWeakItem` into `FlashcardEngine.Run`'s "missed" branch (one call, the method already works) and thread `startTime` through the 3 remaining drills — both are small, mechanical, and close out §3.1 for real.
+ 4. Fix `SkillLoader`'s frontmatter parser to understand nested YAML lists before shipping more sample skills on top of a parser that silently no-ops them.
+  
+
+ # 🏗️ Services / Views Re-architecture Proposal
+  
+ **Scope**: `AgyTuiApp/Helpers/` (28 files, ~10,600 lines) and `AgyTuiApp/Views/` (4 files, ~2,200 lines), plus `AgyTuiApp/Components/`. **This is a proposal document only — no code changes.** It's derived from patterns already flagged elsewhere in this repo's own audit trail (`refactor_plan.md` §3 finding #8 "Mixing of Concerns," §7 "UI/Renderer consolidation"), pushed to a concrete folder/namespace plan.
+  
+ ---
+  
+ ## 1. The problem, in one sentence
+  
+ `Helpers/` is simultaneously the service layer, the view layer, the registry layer, and the utility layer — organized by *feature domain* ("everything about accounts goes in `AccountHelper.cs`"), never by *architectural role* ("business logic here, rendering there"). That's why three separate, previously-verified problems all trace back to the same root cause:
+  
+ * **The spaced-repetition persistence bug** (`refactor_plan.md` §17) was hard to catch because the SM-2 update, the `SaveJson` call, *and* the interactive "did you know this card?" prompt loop all live inside the same `FlashcardEngine.Run` method in `StudyQuizzes.cs` — there's no seam where you could unit-test "does answering a card update its state" without also driving a console prompt.
+ * **`ThreePaneRenderer`/`FlatTreeRenderer` share ~300 duplicated lines** (`refactor_plan.md` §7) because there's no shared base *below* the `IMenuRenderer` interface — nothing forced the shared parts (search state machine, sub-page stack, active-children resolution) into one reusable place.
+ * **`AccountRepository`/`TokenVault`/`QuotaTracker` sat as dead code for multiple audit passes** (`refactor_plan.md` §14/§15) because `AccountHelper.cs`'s `AgyAccountCore` had no clean interface to delegate *to* — the DPAPI/quota logic and the account-picker UI are welded together in one 1,500-line class, so "swap in the extracted service" meant untangling UI calls mid-refactor, which never happened.
+  
+ A Services/Views split doesn't fix any of those bugs by itself — but it's the structural precondition that makes each of them mechanically obvious to write and unit-test correctly, instead of possible-to-get-wrong-and-not-notice.
+  
+ ---
+  
+ ## 2. Target structure
+  
+ ```
+ AgyTuiApp/
+ ├── Program.cs                          # entry point + dispatch — unchanged in spirit, thinner in practice
+ ├── CommandRegistry.cs                  # stays top-level: shared data both Services and Views read, is neither
+ │
+ ├── Services/                           # NEW — pure business logic. Hard rule below.
+ │   ├── Infra/
+ │   │   ├── TtlCache.cs                 #   ← Helpers/TtlCache.cs, unchanged, just relocated
+ │   │   ├── ProcessRunner.cs            #   ← Helpers/ProcessRunner.cs
+ │   │   ├── HttpClientProvider.cs       #   ← Helpers/HttpClientProvider.cs
+ │   │   └── EditorResolver.cs           #   ← Helpers/EditorResolver.cs
+ │   ├── AccountService.cs               #   ← AccountHelper.cs's logic half, now REALLY calling
+ │   │                                    #     AccountRepository/TokenVault/QuotaTracker instead of
+ │   │                                    #     duplicating their logic inline
+ │   ├── AiService.cs                    #   ← AiHelper.cs's logic half (provider launch, pipeline,
+ │   │                                    #     Ollama daemon checks, activity ledger)
+ │   ├── AiLearningService.cs            #   ← AiLearningGenerator.cs's logic half
+ │   ├── StudyService.cs                 #   ← StudyHelper.cs's logic half (SM-2 engine, StudySession,
+ │   │                                    #     StudyStreak, DailyGoals, WeakItemsQueue, LearnDataPaths)
+ │   ├── QuizService.cs                  #   ← StudyQuizzes.cs's logic half (deck loading, scoring,
+ │   │                                    #     the actual "apply this answer to this card" step)
+ │   ├── GitService.cs                   #   ← GitHelper.cs's logic half
+ │   ├── GitDashboardService.cs          #   ← GitDashboard.cs's logic half
+ │   ├── DockerService.cs                #   ← DockerHelper.cs's logic half
+ │   ├── DotNetService.cs                #   ← DotNetHelper.cs (already almost pure)
+ │   ├── AwsService.cs                   #   ← AwsHelper.cs's logic half
+ │   ├── DatabaseService.cs              #   ← DatabaseHelper.cs's logic half
+ │   ├── SystemService.cs                #   ← SystemHelpers.cs's disk/port/network logic half
+ │   ├── SshTailscaleService.cs          #   ← SystemHelpers.cs's SSH/Tailscale/QR/listener logic half
+ │   ├── ObsidianService.cs              #   ← ObsidianHelper.cs's logic half
+ │   ├── ResourceDiscoveryService.cs     #   ← ResourceDiscovery.cs's logic half
+ │   ├── WorkspaceService.cs             #   ← WorkspaceRegistry.cs's logic half
+ │   ├── ScaffoldService.cs              #   ← ProjectScaffolder.cs (already almost pure)
+ │   ├── ThemeService.cs                 #   ← ThemeHelper.cs's logic half
+ │   ├── ConfigService.cs                #   ← Config.cs, renamed for consistency, logic already ~pure
+ │   ├── SkillService.cs                 #   ← SkillLoader.cs (already pure — discovery/parsing only)
+ │   └── Ide/
+ │       └── IdeFileSystemService.cs     #   ← TerminalIde.cs's file-walk/symbol-regex/search logic half
+ │
+ ├── Views/
+ │   ├── Models/
+ │   │   └── MenuNode.cs                 #   ← Views/MenuNode.cs, unchanged — this already IS a view-model
+ │   ├── Renderers/
+ │   │   ├── IMenuRenderer.cs            #   ← unchanged
+ │   │   ├── MenuRendererBase.cs         #   NEW — the ~300 shared lines, extracted once
+ │   │   ├── ThreePaneRenderer.cs        #   ← shrinks to the Left/Middle/Right-specific parts only
+ │   │   └── FlatTreeRenderer.cs         #   ← shrinks to the single-flat-list-specific parts only
+ │   ├── Components/                     #   reusable rendering building blocks, used by both renderers
+ │   │   ├── SpectreWidgets.cs           #   ← Components/SpectreWidgets.cs, unchanged, relocated
+ │   │   ├── ScreenChrome.cs             #   ← Helpers/ScreenChrome.cs — pure UI, was misfiled
+ │   │   ├── StatusWidgets.cs            #   ← Helpers/StatusWidgets.cs (IStatusWidget impls) — same
+ │   │   └── Icons.cs                    #   ← Helpers/Icons.cs — presentation lookup table
+ │   └── Screens/                        #   the interactive "screen" flows: UI loop calling into Services
+ │       ├── AccountScreen.cs            #   ← AccountHelper.cs's picker/tree/quota-chart UI half
+ │       ├── AiDashboardScreen.cs        #   ← AiHelper.cs's dashboard-table UI half
+ │       ├── StudyScreens.cs             #   ← StudyHelper.cs's ProgressDashboard/session-prompt UI half
+ │       ├── QuizScreens.cs              #   ← StudyQuizzes.cs's per-drill read-key/render loops
+ │       ├── GuidedLearnScreen.cs        #   ← GuidedLearnFlow.cs, this file is already ~all UI flow
+ │       ├── RepoDashboardScreen.cs      #   ← GitDashboard.cs's live-table UI half
+ │       ├── WorkspaceScreen.cs          #   ← WorkspaceRegistry.cs's ProfileNavigator picker UI half
+ │       ├── ThemeScreen.cs              #   ← ThemeHelper.cs's theme-picker menu UI half
+ │       └── Ide/
+ │           ├── TerminalIdeScreen.cs    #   ← TerminalIde.cs's Layout/Live rendering + key-loop half
+ │           └── IdeCommandRegistry.cs   #   ← stays adjacent to the screen it dispatches for
+ │
+ └── (Program.cs, CommandRegistry.cs unchanged at top level)
+ ```
+  
+ **One hard rule makes this whole split enforceable, not just aspirational**: *a `Services/*` class may never reference `Spectre.Console.AnsiConsole`, `Spectre.Console.IRenderable`, or `System.Console.ReadKey`.* If a method needs to print something or read a key, it belongs in `Views/`, not `Services/`. This is a mechanically checkable rule (a one-line Roslyn analyzer or even a CI `grep` gate: `grep -rn "AnsiConsole\|Console.ReadKey" AgyTuiApp/Services/` should return nothing) — the same kind of cheap, automatic guardrail `AssertSwitchCases()` already proves works well in this codebase.
+  
+ ---
+  
+ ## 3. What "reuse" actually buys you (the `MenuRendererBase` extraction)
+  
+ This is the concrete answer to "move view to view to reuse." Today, per `refactor_plan.md` §16/§17, `ThreePaneRenderer.cs` and `FlatTreeRenderer.cs` each independently implement:
+  
+ * `GetActiveChildren(MenuNode)` — resolving which child nodes are currently visible
+ * `GetThemeNames()` — enumerating theme files for the theme sub-page
+ * The entire sub-page push/pop stack (Select Account, Select Theme, Workspace nav)
+ * The `/` search state machine (query buffer, filtered+auto-expanded results, Tab-autocomplete, Escape-to-restore)
+ * `Density`-aware breadcrumb truncation (today: only `FlatTreeRenderer` actually reads `Density` at all — a direct, visible symptom of there being no shared place for density-aware logic to live once)
+  
+ **Proposed `MenuRendererBase`** (abstract class both renderers inherit, living in `Views/Renderers/MenuRendererBase.cs`):
+ ```csharp
+ public abstract class MenuRendererBase : IMenuRenderer
+ {
+     protected MenuNode Root { get; }
+     protected Stack<SubPageState> SubPageStack { get; } = new();
+     protected SearchState Search { get; } = new();
+  
+     // shared, implemented once:
+     protected IEnumerable<MenuNode> GetActiveChildren(MenuNode node) { /* moves here verbatim */ }
+     protected string[] GetThemeNames() { /* moves here verbatim */ }
+     protected void PushSubPage(SubPageState state) => SubPageStack.Push(state);
+     protected void PopSubPage() => SubPageStack.TryPop(out _);
+     protected IEnumerable<MenuNode> ApplySearch(IEnumerable<MenuNode> flat, string query) { /* moves here */ }
+     protected string TruncateBreadcrumb(string full) =>
+         Config.Current.Density == "compact" ? full.Split('›').Last().Trim() : full;
+  
+     // the only real seam left to each subclass:
+     public abstract void Run(MenuNode root);
+     protected abstract void RenderCurrentView();
+ }
+ ```
+ `ThreePaneRenderer`/`FlatTreeRenderer` become thin subclasses whose `Run()`/`RenderCurrentView()` only decide *layout* (three panes vs. one flat list) — every behavior that's supposed to be identical between them (search, sub-pages, density) now has exactly one implementation, so a fix or a new feature (like giving `ThreePaneRenderer` the `/` search it's currently missing per §16 finding #30) lands in the base class once and both renderers get it for free, instead of needing to be ported twice and inevitably drifting (exactly what happened with the viewport-paging fix that `refactor_plan.md` §14 found landed in only one renderer).
+  
+ The same "reuse" principle applies one level up in `Views/Components/`: `ScreenChrome`, `StatusWidgets`, and `Icons` are already *supposed* to be the shared rendering vocabulary both renderers draw from (per the original design in `refactor_plan.md` §1) — moving them out of `Helpers/` and into `Views/Components/` doesn't change their code, it just makes the dependency direction visible in the folder structure: Views depend on Components, Components never depend back on a specific renderer.
+  
+ ---
+  
+ ## 4. Why split `Services` from `Screens` per-domain instead of one `Services/AccountService.cs` doing everything
+  
+ Each domain gets **two** files instead of one **not** because of an arbitrary rule, but because that's where the natural seam already sits in every domain's current code — the split below is descriptive of what's already implicitly happening in each file's method list, not a new abstraction being invented:
+  
+ | Domain | Logic half (→ `Services/`) | UI half (→ `Views/Screens/`) |
+ |---|---|---|
+ | Accounts | DPAPI encrypt/decrypt, account CRUD, quota rolling-window math, keyring sync | account picker menu, account tree/quota-chart rendering |
+ | AI/Ollama | provider process launch, pipeline (quota check + activity log), daemon health checks | AI dashboard table, model list rendering |
+ | Study | SM-2 update, session/streak/goals persistence | progress dashboard, per-drill prompt/render loop |
+ | Git | shell out to `git`, parse output into records | commit-message wizard prompts, branch-picker menu |
+ | Terminal IDE | file walk, symbol-regex extraction, content search | the `Layout`/`Live` sidebar+editor+status-bar rendering, key-loop |
+  
+ Every domain in this table already has this split *inside* its current file — a method like `AccountHelper.GetAccountStats(string accountName)` returns a plain `AccountStats` record today with zero rendering in it; it's already a Service method, just sitting in a file also full of `AnsiConsole.MarkupLine` calls. This proposal is mostly *filing existing code into the right drawer*, not rewriting logic.
+  
+ ---
+  
+ ## 5. Concrete benefits, tied to specific already-known pain points
+  
+ * **Unit-testability grows to match what already works for `TtlCache`/`SpacedRepetitionEngine`/`QuotaTracker`** (`AgyTuiApp.Tests` already proves these are testable *because* they don't touch `AnsiConsole`). Once `AccountService`/`StudyService`/`GitService` etc. follow the same hard rule, the test project can grow past its current 3 tested classes without needing a fake console.
+ * **The exact "cosmetic split" failure mode `AccountRepository`/`TokenVault`/`QuotaTracker` fell into (§14/§15) becomes structurally harder to repeat** — once `AccountService` is the *only* place account logic lives, there's no second, parallel "god class" sitting next to it for new code to accidentally duplicate into.
+ * **Renderer drift (§14/§16/§17's repeated finding that a fix lands in one renderer but not the other) gets a real fix, not a reminder to be careful** — `MenuRendererBase` makes "both renderers automatically get this" the default, and "these two renderers differ" the exception that has to be deliberately coded, not the accident it is today.
+ * **The Learning-domain persistence bug's root cause (verify-and-persist logic interleaved with the read-key loop) can't recur the same way** — once `QuizService.ApplyAnswer(card, knewIt)` is a Service method independent of any prompt loop, a future new drill type calls the Service and gets persistence correctness for free, instead of needing its own hand-wired `SpacedRepetitionEngine.UpdateCard`+`SaveJson` block copy-pasted a fifth time (already flagged in §17 as a 4x-duplicated pattern).
+  
+ ---
+  
+ ## 6. Suggested migration order (lowest risk → highest risk, mirrors the existing §7 Migration Order style)
+  
+ 1. **Move, don't rewrite, the already-pure files first**: `TtlCache.cs`, `ProcessRunner.cs`, `HttpClientProvider.cs`, `EditorResolver.cs`, `SkillLoader.cs`, `ScreenChrome.cs`, `StatusWidgets.cs`, `Icons.cs`, `Components/SpectreWidgets.cs` → their new homes. Zero logic changes, pure relocation + namespace update. Lowest risk in the whole plan — a script could do most of this mechanically.
+ 2. **`MenuRendererBase` extraction** — pull the ~300 shared lines out of `ThreePaneRenderer`/`FlatTreeRenderer` into the new base class, verify both renderers still behave identically (the exact §8 verification checklist this repo already has: launch `cc` in both `UiMode`s, confirm parity). This is the single highest-leverage step in the whole migration, and it's self-contained — doesn't require any `Services/` work to be done first.
+ 3. **Split the small/medium Helpers** (`GitHelper`, `DockerHelper`, `DotNetHelper`, `AwsHelper`, `DatabaseHelper`, `ThemeHelper`, `WorkspaceRegistry`, `ProjectScaffolder`) into Service+Screen pairs, one domain per PR — each is small enough to review as a single diff, and none of them touch DPAPI/keyring, so the risk profile stays low.
+ 4. **Split the three god-files last, one at a time, with the existing guardrails from §6 re-applied**: `AccountHelper.cs` (most security-sensitive — do this only after the account-deletion/logout fixes from §17 are proven stable, same caution the original plan already gave this class), then `AiHelper.cs`, then `StudyHelper.cs`+`StudyQuizzes.cs` together (they're already tightly coupled — split them into `StudyService`/`QuizService` + `StudyScreens`/`QuizScreens` in the same PR rather than pretending they're independent).
+ 5. **`TerminalIde.cs` last** — it's the file with the most interleaved logic/rendering (a `Spectre.Console.Layout`+`Live` region actively being read from and written to inside the same loop that also does file-walk/symbol-search), so it benefits most from the split but is also the trickiest to get right; do it once steps 1-4 have proven the pattern works elsewhere in this codebase.
+  
+ Each step should run the same build+test+manual-smoke-test checklist already established in `refactor_plan.md` §8 — this proposal changes *where* code lives, not what it does, so "identical behavior, different file" is the acceptance bar for every step above.
+  
