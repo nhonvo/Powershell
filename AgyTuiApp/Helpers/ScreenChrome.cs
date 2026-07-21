@@ -34,7 +34,7 @@ public static class ScreenChrome
 
     public static void RenderBanner(string? category = null, string? activeItem = null, bool forceClear = false)
     {
-        var acc = AgyAccountCore.GetActiveAccount();
+        var acc = AgyAccountCore.GetActiveAccount() ?? "default";
         var displayAcc = acc;
         if (string.Equals(acc, "default", StringComparison.OrdinalIgnoreCase))
         {
@@ -42,10 +42,27 @@ public static class ScreenChrome
             if (!string.IsNullOrEmpty(email)) displayAcc = $"default ({email})";
         }
         var now = DateTime.Now;
-        var w = Math.Min(65, Math.Max(50, Console.WindowWidth - 2));
+        var winWidth = 80;
+        try { winWidth = Console.WindowWidth; } catch {}
+        var w = Math.Min(65, Math.Max(50, winWidth - 2));
         var sep = new string('=', w);
 
-        try { AnsiConsole.Clear(); } catch {}
+        try
+        {
+            if (forceClear)
+            {
+                AnsiConsole.Clear();
+            }
+            else
+            {
+                Console.SetCursorPosition(0, 0);
+            }
+        }
+        catch
+        {
+            try { AnsiConsole.Clear(); } catch {}
+        }
+
         AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
         var titleIcon = Icons.IsUtf8Supported ? "🛸" : "[AGY]";
         AnsiConsole.MarkupLine($"[cyan] ▄████▄  ▄████▄ [/] [bold green]{titleIcon} Powershell Profile Control Center v3.0 {titleIcon}[/]");
