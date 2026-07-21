@@ -1467,9 +1467,8 @@ function Remove-UnusedDockerVolumes { [DockerHelper]::RemoveUnusedVolumes() }
 function Remove-UnusedDockerImages { [DockerHelper]::RemoveUnusedImages() }
 
 # Docker Aliases
-Set-Alias -Name dkcl -Value Get-DockerContainers -Force
-Set-Alias -Name dkrmac -Value Remove-AllDockerContainers -Force
-Set-Alias -Name dkstac -Value Stop-AllDockerContainers -Force
+Set-Alias -Name dps -Value Get-DockerContainers -Force
+Set-Alias -Name containers -Value Get-DockerContainers -Force
 Set-Alias -Name dkcpu -Value Invoke-ComposeUp -Force
 Set-Alias -Name dcup -Value Invoke-ComposeUp -Force
 Set-Alias -Name dkcpub -Value Invoke-ComposeUpBuild -Force
@@ -1861,8 +1860,7 @@ function Invoke-ProjectScaffolder { [AgyTui.ProjectScaffolder]::Scaffold() }
 Set-Alias -Name new-project -Value Invoke-ProjectScaffolder -Force
 
 # Git TUI Shortcuts
-function Invoke-GitBranchCheckout { [GitHelper]::BranchCheckoutTui() }
-Set-Alias -Name co -Value Invoke-GitBranchCheckout -Force
+function Invoke-GitBranchCheckout { Invoke-GitCheckout $args }
 
 function Invoke-GitCommitWizard {
  param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message)

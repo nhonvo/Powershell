@@ -1,7 +1,9 @@
 using System;
 using System.IO;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace AgyTui;
 
@@ -159,6 +161,25 @@ public static class Config
     {
         try
         {
+            if (File.Exists(ConfigPath))
+            {
+                var lines = File.ReadAllLines(ConfigPath);
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    var line = lines[i];
+                    if (line.Contains("\"Mode\":"))
+                    {
+                        lines[i] = Regex.Replace(line, @"(""Mode""\s*:\s*"")[^""]*("")", $"$1{Current.Ui.Mode}$2");
+                    }
+                    else if (line.Contains("\"Density\":"))
+                    {
+                        lines[i] = Regex.Replace(line, @"(""Density""\s*:\s*"")[^""]*("")", $"$1{Current.Ui.Density}$2");
+                    }
+                }
+                File.WriteAllLines(ConfigPath, lines, Encoding.UTF8);
+                return;
+            }
+
             var options = new JsonSerializerOptions { WriteIndented = true };
             var content = JsonSerializer.Serialize(Current, options);
             File.WriteAllText(ConfigPath, content);
