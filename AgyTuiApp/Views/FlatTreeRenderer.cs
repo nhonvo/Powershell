@@ -728,7 +728,8 @@ public sealed class FlatTreeRenderer : IMenuRenderer
         else
         {
             int winHeight = Console.WindowHeight > 0 ? Console.WindowHeight : 30;
-            int maxRows = Math.Max(3, winHeight - 17);
+            int bannerHeight = (winHeight < 28) ? 4 : 10;
+            int maxRows = Math.Max(2, winHeight - bannerHeight - 11);
 
             int topRow = 0;
             if (selIdx >= maxRows)
@@ -840,6 +841,10 @@ public sealed class FlatTreeRenderer : IMenuRenderer
             }
         }
 
+        var winWidth = 80;
+        try { winWidth = Console.WindowWidth; } catch {}
+        var w = Math.Max(50, winWidth - 2);
+
         var headerText = searching ? $"Search (Esc to clear): [green]{searchBuffer.EscapeMarkup()}[/]_" : "Type [[/]] to search ...";
         IRenderable content = grid;
 
@@ -849,23 +854,24 @@ public sealed class FlatTreeRenderer : IMenuRenderer
             if (highlighted.Type == VisibleRowType.Command && highlighted.Node.Command != null)
             {
                 var cmd = highlighted.Node.Command;
+                var maxNoteLen = Math.Max(30, winWidth - 18);
                 var noteText = (cmd.HelpLines != null && cmd.HelpLines.Length > 0) 
                     ? string.Join(" ", cmd.HelpLines) 
                     : cmd.Description;
+                if (noteText.Length > maxNoteLen) noteText = noteText[..maxNoteLen] + "…";
                 grid.AddRow(new Markup($"\n[bold yellow]💡 Note:[/] [white]{noteText.EscapeMarkup()}[/]"));
             }
             else if (highlighted.Type == VisibleRowType.Category)
             {
-                grid.AddRow(new Markup($"\n[bold yellow]💡 Note:[/] [white]Category '{highlighted.Node.Label.EscapeMarkup()}' — Press [[Enter]] or [[→]] to expand/collapse category.[/]"));
+                var catNote = $"Category '{highlighted.Node.Label}' — Press [Enter] or [→] to expand/collapse.";
+                var maxNoteLen = Math.Max(30, winWidth - 18);
+                if (catNote.Length > maxNoteLen) catNote = catNote[..maxNoteLen] + "…";
+                grid.AddRow(new Markup($"\n[bold yellow]💡 Note:[/] [white]{catNote.EscapeMarkup()}[/]"));
             }
         }
 
         var hotkeyBar = new Markup("[dim]Hotkeys: cg (Git) · cdk (Docker) · cnav (Nav) · cai (AI) · csys (Sys) · cnet (Net) · cssh (SSH)\nCombos:  [[Ctrl+Space]] Complete · [[Ctrl+Shift+C]] CC TUI · [[Ctrl+Shift+B]] Build · [[Ctrl+Shift+T]] Test · [[F7]] History[/]");
         content = new Rows(content, new Markup("\n"), hotkeyBar);
-
-        var winWidth = 80;
-        try { winWidth = Console.WindowWidth; } catch {}
-        var w = Math.Max(50, winWidth - 2);
 
         var outerPanel = new Panel(content)
         {

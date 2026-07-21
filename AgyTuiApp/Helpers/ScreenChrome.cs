@@ -64,7 +64,14 @@ public static class ScreenChrome
         }
         var now = DateTime.Now;
         var winWidth = 80;
-        try { winWidth = Console.WindowWidth; } catch {}
+        var winHeight = 30;
+        try
+        {
+            winWidth = Console.WindowWidth;
+            winHeight = Console.WindowHeight;
+        }
+        catch {}
+
         var w = Math.Max(50, winWidth - 2);
         var sep = new string('=', w);
         const string el = "\x1b[K";
@@ -85,8 +92,25 @@ public static class ScreenChrome
             try { AnsiConsole.Clear(); } catch {}
         }
 
-        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]{el}");
         var titleIcon = Icons.IsUtf8Supported ? "🛸" : "[AGY]";
+
+        if (winHeight > 0 && winHeight < 28)
+        {
+            AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]{el}");
+            var accText = $"[dim]Account:[/] [green bold]{displayAcc.EscapeMarkup()}[/]";
+            var timeText = $"[dim]Time:[/] [yellow]{now:HH:mm}[/]";
+            AnsiConsole.MarkupLine($" [bold green]{titleIcon} Control Center v3.0[/] | {accText} | {timeText}{el}");
+            if (!string.IsNullOrEmpty(category))
+            {
+                var breadcrumb = $" [bold cyan]Home[/] [dim]>[/] [bold green]{category.EscapeMarkup()}[/]";
+                if (!string.IsNullOrEmpty(activeItem)) breadcrumb += $" [dim]>[/] [yellow]{activeItem.EscapeMarkup()}[/]";
+                AnsiConsole.MarkupLine($"{breadcrumb}{el}");
+            }
+            AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]{el}");
+            return;
+        }
+
+        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]{el}");
         AnsiConsole.MarkupLine($"[cyan] ▄████▄  ▄████▄ [/] [bold green]{titleIcon} Powershell Profile Control Center v3.0 {titleIcon}[/]{el}");
         AnsiConsole.MarkupLine($"[cyan] █▀  ▀   █▀  ▀  [/] [dim]System dashboard and control suite.[/]{el}");
         AnsiConsole.MarkupLine($"[cyan] █       █      [/]{el}");
