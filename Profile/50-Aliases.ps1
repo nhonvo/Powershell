@@ -60,14 +60,19 @@ function Add-SshAuthorizedKey {
 # Applies the (returned) theme path picked/computed by AgyTui.ThemeHelper: reload oh-my-posh and
 # re-register the prompt hook in-process — this must happen in the live PS1 session, not in C#.
 function Apply-ThemePath {
- param([string]$ThemePath)
- if (-not $ThemePath) { return }
- $Global:AgyOriginalPromptCmd = $null
- Remove-Module -Name "oh-my-posh-core" -Force -ErrorAction SilentlyContinue
- Remove-Item -Path "Function:\prompt" -Force -ErrorAction SilentlyContinue
- Remove-Item -Path "Function:\prompt_original" -Force -ErrorAction SilentlyContinue
- oh-my-posh --init --shell pwsh --config $ThemePath | Invoke-Expression
- [AgyAccountManager]::RegisterPromptHook()
+    param([string]$ThemePath)
+    if (-not $ThemePath) { return }
+    $Global:AgyOriginalPromptCmd = $null
+    Remove-Module -Name "oh-my-posh-core" -Force -ErrorAction SilentlyContinue
+    Remove-Item -Path "Function:\prompt" -Force -ErrorAction SilentlyContinue
+    Remove-Item -Path "Function:\prompt_original" -Force -ErrorAction SilentlyContinue
+    oh-my-posh init pwsh --config $ThemePath | Invoke-Expression
+    try {
+        $type = [Type]"AgyAccountManager"
+        if ($type) {
+            [AgyAccountManager]::RegisterPromptHook()
+        }
+    } catch {}
 }
 function Toggle-MobileMode {
  Apply-ThemePath ([AgyTui.ThemeHelper]::ToggleMobileMode($env:POSH_THEMES_PATH))

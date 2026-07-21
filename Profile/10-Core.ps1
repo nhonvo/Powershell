@@ -224,104 +224,101 @@ class ProfileEnvironment {
                 }
             }
         }
- 
+
         # --- PSReadLine Options ---
-        Set-PSReadLineOption -EditMode Windows
-        $psReadLineCmd = Get-Command Set-PSReadLineOption -ErrorAction SilentlyContinue
-        if ($psReadLineCmd -and $psReadLineCmd.Parameters.ContainsKey('PredictionSource')) {
-            try {
+        try {
+            Set-PSReadLineOption -EditMode Windows -ErrorAction SilentlyContinue
+            $psReadLineCmd = Get-Command Set-PSReadLineOption -ErrorAction SilentlyContinue
+            if ($psReadLineCmd -and $psReadLineCmd.Parameters.ContainsKey('PredictionSource')) {
                 $supportsVt = -not $Global:AiMode -and $global:Host.UI.SupportsVirtualTerminal -and -not [Console]::IsOutputRedirected
                 if ($supportsVt) {
-                    Set-PSReadLineOption -PredictionSource History
-                    Set-PSReadLineOption -PredictionViewStyle ListView
+                    try {
+                        Set-PSReadLineOption -PredictionSource History -ErrorAction Stop
+                        Set-PSReadLineOption -PredictionViewStyle ListView -ErrorAction Stop
+                    } catch {
+                        Set-PSReadLineOption -PredictionSource None -ErrorAction SilentlyContinue
+                    }
                 } else {
-                    Set-PSReadLineOption -PredictionSource None
+                    Set-PSReadLineOption -PredictionSource None -ErrorAction SilentlyContinue
                 }
-            } catch {
-                Set-PSReadLineOption -PredictionSource None
             }
-        }
-        Set-PSReadLineOption -BellStyle None
- 
-        # Define colors compatible with both older and newer PSReadLine versions
-        $psReadlineColors = @{
-            "Command"          = [ConsoleColor]::Green
-            "Parameter"        = [ConsoleColor]::Gray
-            "Operator"         = [ConsoleColor]::Magenta
-            "Variable"         = [ConsoleColor]::Yellow
-            "String"           = [ConsoleColor]::Cyan
-            "Number"           = [ConsoleColor]::White
-            "Type"             = [ConsoleColor]::Blue
-            "Comment"          = [ConsoleColor]::DarkGreen
-            "Keyword"          = [ConsoleColor]::DarkYellow
-            "Error"            = [ConsoleColor]::Red
-        }
-        if ($psReadLineCmd -and $psReadLineCmd.Parameters.ContainsKey('PredictionSource')) {
-            $psReadlineColors["InlinePrediction"] = '#70A99F'
-        }
- 
-        try {
-            Set-PSReadlineOption -Color $psReadlineColors
+            Set-PSReadLineOption -BellStyle None -ErrorAction SilentlyContinue
+
+            # Define colors compatible with both older and newer PSReadLine versions
+            $psReadlineColors = @{
+                "Command"          = [ConsoleColor]::Green
+                "Parameter"        = [ConsoleColor]::Gray
+                "Operator"         = [ConsoleColor]::Magenta
+                "Variable"         = [ConsoleColor]::Yellow
+                "String"           = [ConsoleColor]::Cyan
+                "Number"           = [ConsoleColor]::White
+                "Type"             = [ConsoleColor]::Blue
+                "Comment"          = [ConsoleColor]::DarkGreen
+                "Keyword"          = [ConsoleColor]::DarkYellow
+                "Error"            = [ConsoleColor]::Red
+            }
+            if ($psReadLineCmd -and $psReadLineCmd.Parameters.ContainsKey('PredictionSource')) {
+                $psReadlineColors["InlinePrediction"] = '#70A99F'
+            }
+
+            Set-PSReadlineOption -Color $psReadlineColors -ErrorAction SilentlyContinue
         } catch {}
- 
+
         # --- PSReadLine Key Bindings ---
-        if (-not $Global:AiMode -and $global:Host.Name -eq 'ConsoleHost' -and (Get-Command Set-PSReadLineKeyHandler -ErrorAction SilentlyContinue)) {
-            Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
-            Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
-            Set-PSReadLineKeyHandler -Chord 'Ctrl+Spacebar' -Function Complete
-            Set-PSReadLineKeyHandler -Key F7 -ScriptBlock {
-                $command = Get-History | Out-GridView -Title 'Command History' -PassThru
-                if ($command) {
+        if (-not $Global:AiMode -and (Get-Command Set-PSReadLineKeyHandler -ErrorAction SilentlyContinue)) {
+            try { Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward -ErrorAction SilentlyContinue } catch {}
+            try { Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward -ErrorAction SilentlyContinue } catch {}
+            try { Set-PSReadLineKeyHandler -Chord 'Ctrl+Spacebar' -Function Complete -ErrorAction SilentlyContinue } catch {}
+            try {
+                Set-PSReadLineKeyHandler -Key F7 -ScriptBlock {
+                    $command = Get-History | Out-GridView -Title 'Command History' -PassThru
+                    if ($command) {
+                        $pr = [Type]"Microsoft.PowerShell.PSConsoleReadLine"
+                        if ($pr) {
+                            $pr::RevertLine()
+                            $pr::Insert($command.CommandLine)
+                        }
+                    }
+                } -ErrorAction SilentlyContinue
+            } catch {}
+        }
+        # .NET Hotkeys
+        if (-not $Global:AiMode -and (Get-Command Set-PSReadLineKeyHandler -ErrorAction SilentlyContinue)) {
+            try {
+                Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+b' -ScriptBlock {
                     $pr = [Type]"Microsoft.PowerShell.PSConsoleReadLine"
                     if ($pr) {
                         $pr::RevertLine()
-                        $pr::Insert($command.CommandLine)
+                        $pr::Insert('db')
+                        $pr::AcceptLine()
                     }
-                }
-            }
-        }
-        # .NET Hotkeys
-        if (-not $Global:AiMode) {
-            Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+b' -ScriptBlock {
-                $pr = [Type]"Microsoft.PowerShell.PSConsoleReadLine"
-                if ($pr) {
-                    $pr::RevertLine()
-                    $pr::Insert('db')
-                    $pr::AcceptLine()
-                }
-            }
-            Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+t' -ScriptBlock {
-                $pr = [Type]"Microsoft.PowerShell.PSConsoleReadLine"
-                if ($pr) {
-                    $pr::RevertLine()
-                    $pr::Insert('dt')
-                    $pr::AcceptLine()
-                }
-            }
-            # Launches the C# Control Center TUI directly (same target as the `cc` alias) —
-            # kept as a hotkey per the decision to keep the alias surface but add a fast path in.
-            Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+c' -ScriptBlock {
-                $pr = [Type]"Microsoft.PowerShell.PSConsoleReadLine"
-                if ($pr) {
-                    $pr::RevertLine()
-                    $pr::Insert('cc')
-                    $pr::AcceptLine()
-                }
-            }
+                } -ErrorAction SilentlyContinue
+                Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+t' -ScriptBlock {
+                    $pr = [Type]"Microsoft.PowerShell.PSConsoleReadLine"
+                    if ($pr) {
+                        $pr::RevertLine()
+                        $pr::Insert('dt')
+                        $pr::AcceptLine()
+                    }
+                } -ErrorAction SilentlyContinue
+                Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+c' -ScriptBlock {
+                    $pr = [Type]"Microsoft.PowerShell.PSConsoleReadLine"
+                    if ($pr) {
+                        $pr::RevertLine()
+                        $pr::Insert('cc')
+                        $pr::AcceptLine()
+                    }
+                } -ErrorAction SilentlyContinue
+            } catch {}
         }
     }
 }
- 
+
 [ProfileEnvironment]::InitializeSession()
 Write-AgyStartupCheckpoint "ProfileEnvironment.InitializeSession (modules, PSReadLine) done"
- 
+
 # --- Oh My Posh Theme (Initialized in global script scope to bypass class method scoping constraints) ---
 if (-not $Global:AiMode) {
-    # Theme name resolution (+ legacy active_theme.txt migration) lives in
-    # [AgyTui.ThemeHelper]::ResolveStartupTheme() now — pure file/JSON logic, no PS1-only dependency.
-    # This runs unconditionally on every shell startup (not deferred inside a method like every
-    # other AgyTui call site), so if AgyTui.dll isn't loaded yet it must not break oh-my-posh
-    # entirely — fall back to a bare default rather than let the whole file abort.
     try {
         $env:THEME = [AgyTui.ThemeHelper]::ResolveStartupTheme($env:POSH_THEMES_PATH)
     } catch {
@@ -331,7 +328,7 @@ if (-not $Global:AiMode) {
     if (Test-Path $themePath) {
         if (-not $global:PoshInitialized) {
             try {
-                oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
+                oh-my-posh init pwsh --config $themePath | Invoke-Expression
                 $global:PoshInitialized = $true
             } catch {
                 Write-Warning "Failed to initialize oh-my-posh: $_"
