@@ -939,53 +939,120 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                      (w.WorkspacePath != null && w.WorkspacePath.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)))).ToArray();
 
             var currentDir = Directory.GetCurrentDirectory();
+            var activeTheme = Environment.GetEnvironmentVariable("THEME") ?? "";
+            var winWidth = 100;
+            try { winWidth = Console.WindowWidth; } catch { }
+            bool isMobile = winWidth < 90 || activeTheme.EndsWith("-mobile", StringComparison.OrdinalIgnoreCase);
 
-            var table = new Table()
-                .Border(TableBorder.Rounded)
-                .BorderColor(Color.Cyan1)
-                .Expand()
-                .AddColumn(new TableColumn("[bold cyan]Sel[/]").Width(3).Centered())
-                .AddColumn(new TableColumn("[bold cyan]Status[/]").Width(10).Centered())
-                .AddColumn(new TableColumn("[bold cyan]Workspace Name[/]").Width(26))
-                .AddColumn(new TableColumn("[bold cyan]Git Branch[/]").Width(14))
-                .AddColumn(new TableColumn("[bold cyan]Directory Path[/]"));
+            grid.AddRow(new Markup($"[bold green]📁 Registered Workspace Navigator (cnav)[/] [dim]({workspaces.Length}/{allWorkspaces.Length} workspaces)[/]:\n"));
 
-            for (var i = 0; i < workspaces.Length; i++)
+            if (!string.IsNullOrEmpty(_detailsSearchBuffer))
             {
-                if (workspaces[i] == null) continue;
-                var wsPath = workspaces[i].WorkspacePath ?? "";
-                var wsName = workspaces[i].Name ?? "Unnamed Workspace";
-                var isSelected = (i == selIdx);
-                var isCurrent = !string.IsNullOrEmpty(wsPath) && string.Equals(wsPath.TrimEnd('\\', '/'), currentDir.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
-
-                var cursorMarkup = isSelected ? "[green bold]❯[/]" : " ";
-                var statusMarkup = isCurrent ? "[bold black on green] ACTIVE [/]" : "[dim cyan][[READY]][/]";
-                
-                var nameMarkup = isSelected 
-                    ? $"[bold green]📁 {wsName.EscapeMarkup()}[/]" 
-                    : $"[bold white]📁 {wsName.EscapeMarkup()}[/]";
-
-                var branch = WorkspaceRegistry.GetGitBranch(wsPath);
-                var branchMarkup = !string.IsNullOrEmpty(branch) 
-                    ? $"[yellow]🌿 {branch.EscapeMarkup()}[/]" 
-                    : "[dim]—[/]";
-
-                var pathMarkup = isSelected
-                    ? $"[cyan]{wsPath.EscapeMarkup()}[/]"
-                    : $"[dim]{wsPath.EscapeMarkup()}[/]";
-
-                table.AddRow(
-                    new Markup(cursorMarkup),
-                    new Markup(statusMarkup),
-                    new Markup(nameMarkup),
-                    new Markup(branchMarkup),
-                    new Markup(pathMarkup)
-                );
+                grid.AddRow(new Markup($"[yellow]Search:[/] [white]{_detailsSearchBuffer.EscapeMarkup()}_[/]\n"));
+            }
+            else
+            {
+                grid.AddRow(new Markup("[dim]Type to filter workspaces (Esc to clear / cancel)[/]\n"));
             }
 
-            grid.AddRow(new Markup("[bold green]📁 Registered Workspace Navigator (cnav)[/] [dim]— Select target to trigger quick actions[/]\n"));
-            grid.AddRow(table);
-            grid.AddRow(new Markup("\n[bold cyan][[Enter]][/] Actions ([green]cd[/] / [cyan]/ide[/] / [yellow]Explorer[/] / [magenta]Git Diff[/])  ·  [bold cyan][[Esc]][/] Cancel"));
+            if (workspaces.Length == 0)
+            {
+                grid.AddRow(new Markup($"  [dim]No workspaces matching '{_detailsSearchBuffer.EscapeMarkup()}'.[/]"));
+            }
+            else
+            {
+                int maxRows = isMobile ? 8 : 10;
+                int topRow = 0;
+                if (selIdx >= maxRows)
+                {
+                    topRow = selIdx - maxRows + 1;
+                }
+                int endRow = Math.Min(workspaces.Length, topRow + maxRows);
+
+                if (topRow > 0)
+                {
+                    grid.AddRow(new Markup($"  [dim]▲ ... {topRow} items above ...[/]"));
+                }
+
+                if (isMobile)
+                {
+                    for (var i = topRow; i < endRow; i++)
+                    {
+                        if (workspaces[i] == null) continue;
+                        var wsPath = workspaces[i].WorkspacePath ?? "";
+                        var wsName = workspaces[i].Name ?? "Unnamed Workspace";
+                        var isSelected = (i == selIdx);
+                        var isCurrent = !string.IsNullOrEmpty(wsPath) && string.Equals(wsPath.TrimEnd('\\', '/'), currentDir.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
+
+                        var prefix = isSelected ? "[green bold]❯ [/]" : "  ";
+                        var status = isCurrent ? "[bold green][ACTIVE][/] " : "";
+                        var branch = WorkspaceRegistry.GetGitBranch(wsPath);
+                        var branchSuffix = !string.IsNullOrEmpty(branch) ? $" [yellow]({branch})[/]" : "";
+                        var nameMarkup = isSelected ? $"[bold green]{wsName.EscapeMarkup()}[/]" : $"[bold white]{wsName.EscapeMarkup()}[/]";
+
+                        grid.AddRow(new Markup($"{prefix}{status}{nameMarkup}{branchSuffix}\n   [dim]{wsPath.EscapeMarkup()}[/]"));
+                    }
+                }
+                else
+                {
+                    var table = new Table()
+                        .Border(TableBorder.Rounded)
+                        .BorderColor(Color.Cyan1)
+                        .Expand()
+                        .AddColumn(new TableColumn("[bold cyan]Sel[/]").Width(3).Centered().NoWrap())
+                        .AddColumn(new TableColumn("[bold cyan]Status[/]").Width(10).Centered().NoWrap())
+                        .AddColumn(new TableColumn("[bold cyan]Workspace Name[/]").Width(26).NoWrap())
+                        .AddColumn(new TableColumn("[bold cyan]Git Branch[/]").Width(14).NoWrap())
+                        .AddColumn(new TableColumn("[bold cyan]Directory Path[/]").NoWrap());
+
+                    for (var i = topRow; i < endRow; i++)
+                    {
+                        if (workspaces[i] == null) continue;
+                        var wsPath = workspaces[i].WorkspacePath ?? "";
+                        var wsName = workspaces[i].Name ?? "Unnamed Workspace";
+                        var isSelected = (i == selIdx);
+                        var isCurrent = !string.IsNullOrEmpty(wsPath) && string.Equals(wsPath.TrimEnd('\\', '/'), currentDir.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
+
+                        var cursorMarkup = isSelected ? "[green bold]❯[/]" : " ";
+                        var statusMarkup = isCurrent ? "[bold black on green] ACTIVE [/]" : "[dim cyan][[READY]][/]";
+                        
+                        var nameMarkup = isSelected 
+                            ? $"[bold green]📁 {wsName.EscapeMarkup()}[/]" 
+                            : $"[bold white]📁 {wsName.EscapeMarkup()}[/]";
+
+                        var branch = WorkspaceRegistry.GetGitBranch(wsPath);
+                        var branchMarkup = !string.IsNullOrEmpty(branch) 
+                            ? $"[yellow]🌿 {branch.EscapeMarkup()}[/]" 
+                            : "[dim]—[/]";
+
+                        var pathMarkup = isSelected
+                            ? $"[cyan]{wsPath.EscapeMarkup()}[/]"
+                            : $"[dim]{wsPath.EscapeMarkup()}[/]";
+
+                        table.AddRow(
+                            new Markup(cursorMarkup),
+                            new Markup(statusMarkup),
+                            new Markup(nameMarkup),
+                            new Markup(branchMarkup),
+                            new Markup(pathMarkup)
+                        );
+                    }
+                    grid.AddRow(table);
+                }
+
+                if (endRow < workspaces.Length)
+                {
+                    grid.AddRow(new Markup($"  [dim]▼ ... {workspaces.Length - endRow} items below ...[/]"));
+                }
+            }
+
+            var selTarget = (selIdx >= 0 && selIdx < workspaces.Length) ? workspaces[selIdx]?.WorkspacePath : null;
+            if (!string.IsNullOrEmpty(selTarget))
+            {
+                grid.AddRow(new Markup($"\n[dim]Selected Target:[/] [bold cyan]{selTarget.EscapeMarkup()}[/]"));
+            }
+
+            grid.AddRow(new Markup("[bold cyan][[Enter]][/] Actions ([green]cd[/] / [cyan]/ide[/] / [yellow]Explorer[/] / [magenta]Git Diff[/])  ·  [bold cyan][[Esc]][/] Cancel"));
         }
 
         var panel = new Panel(grid)
