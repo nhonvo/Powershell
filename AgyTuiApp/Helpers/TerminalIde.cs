@@ -371,8 +371,10 @@ public static class TerminalIde
             };
             layout["Status"].Update(statusPanel);
 
-            AnsiConsole.Clear();
-            AnsiConsole.Write(layout);
+            ScreenChrome.RenderFrame(() =>
+            {
+                AnsiConsole.Write(layout);
+            });
 
             AnsiConsole.WriteLine();
             var key = Console.ReadKey(intercept: true);

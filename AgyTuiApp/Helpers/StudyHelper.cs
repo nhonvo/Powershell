@@ -477,32 +477,37 @@ public static class FlashcardEngine
 
         foreach (var card in queue)
         {
-            AnsiConsole.Clear();
-            AnsiConsole.Write(new Rule($"[bold cyan]Flashcard: {deckName.EscapeMarkup()}[/]").RuleStyle("grey"));
-            AnsiConsole.MarkupLine($"[dim]Card {known + again + 1} / {queue.Count} · ✓ {known} known · ✗ {again} again[/]");
-            AnsiConsole.WriteLine();
-            AnsiConsole.Write(new Panel($"[bold]{card.Front.EscapeMarkup()}[/]" + (card.Hint != null ? $"\n[dim]{card.Hint.EscapeMarkup()}[/]" : ""))
+            ScreenChrome.RenderFrame(() =>
             {
-                Header = new PanelHeader("[dim]Front[/]"),
-                Border = BoxBorder.Rounded,
-                BorderStyle = new Style(Color.Cyan1),
-                Padding = new Padding(1, 1)
-            }
-            );
-            AnsiConsole.MarkupLine("[dim] Press Enter to reveal · Esc to exit[/]");
+                AnsiConsole.Write(new Rule($"[bold cyan]Flashcard: {deckName.EscapeMarkup()}[/]").RuleStyle("grey"));
+                AnsiConsole.MarkupLine($"[dim]Card {known + again + 1} / {queue.Count} · ✓ {known} known · ✗ {again} again[/]");
+                AnsiConsole.WriteLine();
+                AnsiConsole.Write(new Panel($"[bold]{card.Front.EscapeMarkup()}[/]" + (card.Hint != null ? $"\n[dim]{card.Hint.EscapeMarkup()}[/]" : ""))
+                {
+                    Header = new PanelHeader("[dim]Front[/]"),
+                    Border = BoxBorder.Rounded,
+                    BorderStyle = new Style(Color.Cyan1),
+                    Padding = new Padding(1, 1)
+                }
+                );
+                AnsiConsole.MarkupLine("[dim] Press Enter to reveal · Esc to exit[/]");
+            });
             var key = Console.ReadKey(true);
             if (key.Key == ConsoleKey.Escape) break;
-            AnsiConsole.Clear();
-            AnsiConsole.Write(new Rule($"[bold cyan]Flashcard: {deckName.EscapeMarkup()}[/]").RuleStyle("grey"));
-            var backContent = card.Back.EscapeMarkup() + (card.ExampleSentence != null ? $"\n\n[dim]\"{card.ExampleSentence.EscapeMarkup()}\"[/]" : "") + (card.Mnemonic != null ? $"\n[yellow]💡 {card.Mnemonic.EscapeMarkup()}[/]" : "");
-            AnsiConsole.Write(new Panel(backContent)
+
+            ScreenChrome.RenderFrame(() =>
             {
-                Header = new PanelHeader("[green bold]✓ Back[/]"),
-                Border = BoxBorder.Rounded,
-                BorderStyle = new Style(Color.Green),
-                Padding = new Padding(1, 1)
-            }
-            );
+                AnsiConsole.Write(new Rule($"[bold cyan]Flashcard: {deckName.EscapeMarkup()}[/]").RuleStyle("grey"));
+                var backContent = card.Back.EscapeMarkup() + (card.ExampleSentence != null ? $"\n\n[dim]\"{card.ExampleSentence.EscapeMarkup()}\"[/]" : "") + (card.Mnemonic != null ? $"\n[yellow]💡 {card.Mnemonic.EscapeMarkup()}[/]" : "");
+                AnsiConsole.Write(new Panel(backContent)
+                {
+                    Header = new PanelHeader("[green bold]✓ Back[/]"),
+                    Border = BoxBorder.Rounded,
+                    BorderStyle = new Style(Color.Green),
+                    Padding = new Padding(1, 1)
+                }
+                );
+            });
 
             bool knewIt = AnsiConsole.Confirm("[bold]Did you know it?[/]", defaultValue: false);
             int quality = knewIt ? 4 : 1;

@@ -181,17 +181,19 @@ public sealed class FlatTreeRenderer : MenuRendererBase
             bool forceClear = (detailsActive != lastDetailsActive) || (visibleRows.Count < lastVisibleRowsCount);
             lastDetailsActive = detailsActive;
             lastVisibleRowsCount = visibleRows.Count;
-            ScreenChrome.RenderBanner(forceClear: forceClear);
 
-            if (detailsActive)
+            ScreenChrome.RenderFrame(() =>
             {
-                RenderSubPageSelection(detailsMode, detailsSel);
-            }
-            else
-            {
-                RenderTree(visibleRows, selectionIndex, searching, searchBuffer);
-            }
-            ScreenChrome.ClearTrailingLines();
+                ScreenChrome.RenderBanner(forceClear: false);
+                if (detailsActive)
+                {
+                    RenderSubPageSelection(detailsMode, detailsSel);
+                }
+                else
+                {
+                    RenderTree(visibleRows, selectionIndex, searching, searchBuffer);
+                }
+            }, forceClear: forceClear);
 
             var key = Console.ReadKey(true);
 

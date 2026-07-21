@@ -49,9 +49,11 @@ public sealed class ThreePaneRenderer : MenuRendererBase
 
             if (midSel >= visibleItems.Count) midSel = Math.Max(0, visibleItems.Count - 1);
 
-            ScreenChrome.RenderBanner();
-            RenderPanes(categories, leftSel, visibleItems, midSel, midActive, detailsActive, detailsSel, detailsMode);
-            ScreenChrome.ClearTrailingLines();
+            ScreenChrome.RenderFrame(() =>
+            {
+                ScreenChrome.RenderBanner();
+                RenderPanes(categories, leftSel, visibleItems, midSel, midActive, detailsActive, detailsSel, detailsMode);
+            });
 
             var key = Console.ReadKey(true);
 

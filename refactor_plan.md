@@ -2414,3 +2414,129 @@ All 6 items identified in Section 19 have been 100% remediated, verified, and te
 | `SkillLoader` Nested YAML Parser | 🟢 **100% Fixed & Verified** | Fixed `SkillLoader.cs` to strip quotes and handle nested `primitive:` key-value steps (`primitive: ask: explain this file`), ensuring commands map correctly to `IdeCommandRegistry`. |
 | Cold Session `Start-AgyManager` / `Start-AgyProxy` | 🟢 **100% Fixed & Verified** | Added `Load-AgyTuiDll` calls before type existence checks in `Microsoft.PowerShell_profile.ps1`. Cold PowerShell sessions now auto-load `AgyTuiApp.dll` without throwing warnings. |
   
+
+
+ # 🎥 Smooth Rendering — Extract `ScreenChrome`'s Technique Into a Reusable Primitive
+  
+ **Proposal only — no code changes.** You already built the fix for screen flicker (`ScreenChrome.cs` + `FlatTreeRenderer.cs`/`ThreePaneRenderer.cs`, landed across several `perf(tui)` commits). The problem: it's private to those two files. Every other interactive screen in the app — Terminal IDE, the Git dashboards, Docker's health view, the account picker, every quiz/flashcard drill — still does a full `AnsiConsole.Clear()` before every redraw, which is the exact flicker `ScreenChrome` was built to eliminate, just not applied there. `refactor_plan.md` §5's "Performance & Smoothness" section flagged this cross-cuttingly a while ago ("every screen... calls `AnsiConsole.Clear()` then redraws from scratch... the single most visible 'feels rough' issue") — it's still true today, just now with one proven fix sitting unused outside its birthplace.
+  
+ ---
+  
+ ## 1. The technique that already works — read from the actual code
+  
+ `ScreenChrome.RenderBanner` + `FlatTreeRenderer`'s main loop (`FlatTreeRenderer.cs:181-194`) together do exactly this, every frame:
+  
+ ```csharp
+ bool forceClear = (detailsActive != lastDetailsActive) || (visibleRows.Count < lastVisibleRowsCount);
+ //                  ^ mode actually changed            ^ this frame is SHORTER than the last one —
+ //                                                        overwriting alone would leave stale lines behind
+ ScreenChrome.RenderBanner(forceClear: forceClear);   // draws the header
+ RenderTree(visibleRows, selectionIndex, ...);         // draws the body
+ ScreenChrome.ClearTrailingLines();                    // \x1b[J — erase anything left over below the new content
+ ```
+  
+ Inside `RenderBanner` (`ScreenChrome.cs:68-105`):
+ ```csharp
+ if (forceClear) AnsiConsole.Clear();          // only when truly necessary
+ else Console.SetCursorPosition(0, 0);         // otherwise: rewind, don't blank
+ ```
+ Inside the line-writer it uses (`ScreenChrome.cs:55-66`, `MarkupLineEl`):
+ ```csharp
+ AnsiConsole.Markup(markup);
+ Console.Write("\x1b[K\n");   // \x1b[K = erase-to-end-of-LINE, then newline — cleans up a shorter line in place
+ ```
+ Plus `HideCursor()`/`ShowCursor()` (`ScreenChrome.cs:26-44`) wrapping redraw regions so the hardware cursor doesn't visibly blink/jump mid-frame.
+  
+ **Three primitives, composed**: (1) cursor-home instead of clear-screen, (2) erase-to-end-of-*line* on every line written (handles a line getting shorter), (3) one erase-to-end-of-*screen* after the whole frame (handles the frame getting shorter overall) — plus a cheap `forceClear` escape hatch for the rare cases (resize, mode switch) where a full clear is actually the right call. No double-buffering, no `Spectre.Console.Live`/`Layout` needed, no external dependency — this is ~40 lines of ANSI escape sequences, already written, already proven under real use in the two busiest screens in the app.
+  
+ ---
+  
+ ## 2. Where it's missing — every other Clear()-based screen, classified
+  
+ A repo-wide scan found **52 `AnsiConsole.Clear()` call sites across 16 files**; only 5 files (`ScreenChrome.cs`, `SpectreWidgets.cs`, `Program.cs`, `FlatTreeRenderer.cs`, `ThreePaneRenderer.cs`) use the cursor/erase-sequence technique at all. Not every `Clear()` is equally bad — the ones that matter are the ones inside a **loop that redraws on every keystroke or every card**, not a one-shot "render once, wait for any key, exit" screen. Splitting the 52 sites that way:
+  
+ ### 🔴 Real flicker bugs — `Clear()` runs on every iteration of an interactive loop
+ | File | Call sites | What loops |
+ |---|---|---|
+ | `StudyQuizzes.cs` | **17 sites** (lines 49, 141, 242, 258, 452, 475, 498, 508, 530, 630, 808, 837, 867, 1023, 1075, 1089, and one more) | `KanaQuiz.Run`, `VocabDrill.Run`, `GrammarQuiz.Run`, `JlptVocabDrill.Run`, `FlashcardEngine.Run` — every one of these clears the *entire terminal* once per card reviewed, for the full duration of a study session. This is the single worst offender by call-site count and by how often a user actually sits in the loop (a 20-card session = 20 full-screen flashes). |
+ | `TerminalIde.cs` | 3 sites (23, 374, 612) | The IDE's main render loop (`ShowIdeLayout`), the Quick Open overlay, and the file-open flow — this is the screen you spend the most *continuous* time in, so every keystroke's flash is maximally visible here. |
+ | `AiHelper.cs` | 2 sites (132, 172) | The AI dashboard's own refresh loop. |
+ | `AiLearningGenerator.cs`, `ResourceDiscovery.cs`, `DatabaseHelper.cs` (line 86 specifically, inside its query-loop) | a few each | Secondary, but same pattern. |
+ | `GuidedLearnFlow.cs` | 1 site (14) | Only at entry to the whole flow, not per-card — lower priority, but worth doing while touching this file for other reasons (see `refactor_plan.md` §19). |
+  
+ ### 🟢 Probably fine as-is — one-shot render, no redraw loop
+ * `GitDashboard.cs:156` (`GitNexusStats.Run`) — clears once, renders the whole report, waits for one keypress, returns. No flicker to fix; leave alone.
+ * `DockerHelper.cs:69`, `AccountHelper.cs:1353`, `DatabaseHelper.cs:25` — worth a quick individual check (some of these back a `SpectreTable.Live()`-driven auto-refreshing dashboard rather than a static one-shot view — if so, they belong in the 🔴 list; grep each call site's enclosing method for a `while`/`for`/polling loop before assuming it's safe).
+  
+ **Priority order for adopting the fix, by user-visible impact**: `StudyQuizzes.cs` first (highest call-site count, highest time-in-loop), then `TerminalIde.cs` (highest continuous dwell time), then everything else.
+  
+ ---
+  
+ ## 3. The concrete refactor: promote the pattern to a reusable primitive
+  
+ Right now the pattern's pieces (`HideCursor`/`ShowCursor`/`ClearTrailingLines`/`MarkupLineEl`'s erase-to-EOL trick) are `ScreenChrome`-private, and the `forceClear` decision + "draw banner, draw body, clear trailing" sequencing is duplicated inline inside `FlatTreeRenderer`'s loop (and independently, differently, inside `ThreePaneRenderer`'s — see `refactor_plan.md` §16 finding #12/§17 for the already-known "these two renderers drift" risk, which this exact duplication is a specific instance of). Two things to extract, both staying inside `ScreenChrome.cs` (or, per `architecture_services_views.md`'s proposed layout, `Views/Components/ScreenChrome.cs` — this is precisely the kind of "shared rendering vocabulary" that document argues should live there):
+  
+ **(a) A public per-line writer**, so any screen gets the erase-to-EOL behavior without hand-rolling it:
+ ```csharp
+ // ScreenChrome.cs — new public method, same trick MarkupLineEl already does privately
+ public static void WriteLineSmooth(string markup)
+ {
+     try { AnsiConsole.Markup(markup); Console.Write("\x1b[K\n"); }
+     catch { try { Console.WriteLine(); } catch { } }
+ }
+ ```
+  
+ **(b) A small loop-runner that owns the forceClear/cursor-home/trailing-erase sequencing**, so a caller doesn't have to re-derive `FlatTreeRenderer`'s exact 3-line pattern by hand:
+ ```csharp
+ // ScreenChrome.cs — new public method
+ public static void RenderFrame(Action drawBody, bool forceClear = false)
+ {
+     HideCursor();
+     try
+     {
+         if (forceClear) AnsiConsole.Clear();
+         else { try { Console.SetCursorPosition(0, 0); } catch { AnsiConsole.Clear(); } }
+         drawBody();
+         ClearTrailingLines();
+     }
+     finally { ShowCursor(); }
+ }
+ ```
+ A screen adopts it by wrapping its existing per-iteration draw call:
+ ```csharp
+ // StudyQuizzes.cs, KanaQuiz.Run — before:
+ foreach (var entry in reviewedList)
+ {
+     AnsiConsole.Clear();
+     AnsiConsole.Write(new Rule($"Kana Quiz — {type}"));
+     // ...rest of the card render...
+ }
+  
+ // after:
+ int lastLineCount = 0;
+ foreach (var entry in reviewedList)
+ {
+     ScreenChrome.RenderFrame(() =>
+     {
+         AnsiConsole.Write(new Rule($"Kana Quiz — {type}"));
+         // ...rest of the card render, unchanged...
+     }, forceClear: /* true only if this card's content is shorter than the last, e.g. no mnemonic vs. one with a mnemonic */ false);
+ }
+ ```
+ No change to *what* gets drawn in any of these screens — only *how the terminal is told to draw it*. This is the same "identical behavior, different mechanism" bar the rest of this repo's refactors already hold themselves to (see `refactor_plan.md` §8's verification checklist).
+  
+ **The one thing each adopting screen has to get right itself**: deciding when `forceClear: true` is actually needed — i.e., "is this frame shorter than the last one, in a way `\x1b[J` at the very end won't already clean up?" For most of the quiz loops the answer is "no, `RenderFrame`'s built-in trailing-erase handles it" since each card's layout is roughly the same height; `forceClear` only matters for screens whose content height varies a lot frame-to-frame (e.g. a search-results list, or `AiHelper`'s dashboard toggling between "Ollama running" and "Ollama offline + error detail" views) — exactly the same `detailsActive != lastDetailsActive`-style check `FlatTreeRenderer` already uses.
+  
+ ---
+  
+ ## 4. Suggested rollout order
+  
+ 1. **Extract (a) and (b) into `ScreenChrome.cs`** as pure additions — no existing caller changes, so this step alone can't regress anything already working.
+ 2. **Port `FlatTreeRenderer`'s own loop to call the new `RenderFrame` instead of its inline sequence** — proves the extraction is behavior-preserving on the screen it was extracted *from*, before asking any other screen to trust it.
+ 3. **`StudyQuizzes.cs`'s 5 drill loops** (`KanaQuiz`, `VocabDrill`, `GrammarQuiz`, `JlptVocabDrill`, `FlashcardEngine`) — highest impact, and conveniently the exact file that just had its persistence logic reworked (`refactor_plan.md` §19), so it's already getting touched; bundling the render fix into the same area of active work is cheaper than a separate pass later.
+ 4. **`TerminalIde.cs`'s main loop and Quick Open overlay** — second-highest impact.
+ 5. **Everything else in the 🔴 list**, lowest-risk-first (`GuidedLearnFlow.cs`'s single entry-point clear, then `AiHelper.cs`'s dashboard, then the smaller ones).
+ 6. **Do NOT touch the 🟢 one-shot screens** unless a later pass finds one of them is secretly a polling loop — verify each individually rather than batch-converting everything that matches `AnsiConsole.Clear()` on faith.
+  
+ Each step should be verified the same way `refactor_plan.md` §8 already prescribes: launch the specific screen, drive it through several redraws (answer a few quiz cards, navigate a few IDE files), and confirm there's no visible flash and no leftover stale text below shorter content — that's the whole acceptance bar, nothing about *what* renders should change.
+  

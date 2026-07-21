@@ -46,12 +46,14 @@ public static class KanaQuiz
 
         foreach (var entry in reviewedList)
         {
-            AnsiConsole.Clear();
-            AnsiConsole.Write(new Rule($"[bold cyan]Kana Quiz — {type}[/]").RuleStyle("grey"));
-            AnsiConsole.MarkupLine($"[dim]Score: {correct}/{reviewedList.IndexOf(entry)} · Due: {due.Length}[/]");
-            AnsiConsole.WriteLine();
-            AnsiConsole.Write(new FigletText(entry.Char).Centered().Color(Color.Green));
-            AnsiConsole.WriteLine();
+            ScreenChrome.RenderFrame(() =>
+            {
+                AnsiConsole.Write(new Rule($"[bold cyan]Kana Quiz — {type}[/]").RuleStyle("grey"));
+                AnsiConsole.MarkupLine($"[dim]Score: {correct}/{reviewedList.IndexOf(entry)} · Due: {due.Length}[/]");
+                AnsiConsole.WriteLine();
+                AnsiConsole.Write(new FigletText(entry.Char).Centered().Color(Color.Green));
+                AnsiConsole.WriteLine();
+            });
             var answer = AnsiConsole.Ask<string>("[cyan]Romaji:[/]").Trim().ToLower();
             bool ok = answer == entry.Romaji.ToLower();
             AnsiConsole.MarkupLine(ok ? $"[green]✓ Correct! {entry.Char} = {entry.Romaji}[/]" : $"[red]✗ Wrong — {entry.Char} = {entry.Romaji} (you typed: {answer.EscapeMarkup()})[/]");
@@ -240,35 +242,39 @@ public static class GrammarQuiz
         for (int i = 0; i < limit; i++)
         {
             var g = due[i];
-            AnsiConsole.Clear();
-            AnsiConsole.Write(new Rule($"[bold cyan]Grammar Drill — Level {g.Level}[/]").RuleStyle("grey"));
-            AnsiConsole.MarkupLine($"[dim]Card {i + 1} / {limit}[/]");
-            AnsiConsole.WriteLine();
-
-            AnsiConsole.Write(new Panel($"[bold yellow]Pattern:[/] [bold white]{g.Pattern.EscapeMarkup()}[/]\n\n[dim]Usage:[/] {g.Usage.EscapeMarkup()}")
+            ScreenChrome.RenderFrame(() =>
             {
-                Header = new PanelHeader($"[cyan]Grammar Point ({g.Level})[/]"),
-                Border = BoxBorder.Rounded,
-                BorderStyle = new Style(Color.Cyan1),
-                Padding = new Padding(1, 1)
-            });
+                AnsiConsole.Write(new Rule($"[bold cyan]Grammar Drill — Level {g.Level}[/]").RuleStyle("grey"));
+                AnsiConsole.MarkupLine($"[dim]Card {i + 1} / {limit}[/]");
+                AnsiConsole.WriteLine();
 
-            AnsiConsole.MarkupLine("[dim]Press Enter to reveal meaning & examples (Esc to quit)...[/]");
+                AnsiConsole.Write(new Panel($"[bold yellow]Pattern:[/] [bold white]{g.Pattern.EscapeMarkup()}[/]\n\n[dim]Usage:[/] {g.Usage.EscapeMarkup()}")
+                {
+                    Header = new PanelHeader($"[cyan]Grammar Point ({g.Level})[/]"),
+                    Border = BoxBorder.Rounded,
+                    BorderStyle = new Style(Color.Cyan1),
+                    Padding = new Padding(1, 1)
+                });
+
+                AnsiConsole.MarkupLine("[dim]Press Enter to reveal meaning & examples (Esc to quit)...[/]");
+            });
             if (Console.ReadKey(true).Key == ConsoleKey.Escape) break;
 
-            AnsiConsole.Clear();
-            AnsiConsole.Write(new Rule($"[bold cyan]Grammar Detail — {g.Pattern.EscapeMarkup()}[/]").RuleStyle("grey"));
-
-            var detail = $"[bold yellow]Meaning:[/] {g.Meaning.EscapeMarkup()}\n\n" +
-                         $"[bold green]Example (JP/EN):[/] {g.ExampleJp.EscapeMarkup()}\n" +
-                         $"[bold green]Translation:[/] {g.ExampleEn.EscapeMarkup()}";
-
-            AnsiConsole.Write(new Panel(detail)
+            ScreenChrome.RenderFrame(() =>
             {
-                Header = new PanelHeader("[green]Explanation[/]"),
-                Border = BoxBorder.Rounded,
-                BorderStyle = new Style(Color.Green),
-                Padding = new Padding(1, 1)
+                AnsiConsole.Write(new Rule($"[bold cyan]Grammar Detail — {g.Pattern.EscapeMarkup()}[/]").RuleStyle("grey"));
+
+                var detail = $"[bold yellow]Meaning:[/] {g.Meaning.EscapeMarkup()}\n\n" +
+                             $"[bold green]Example (JP/EN):[/] {g.ExampleJp.EscapeMarkup()}\n" +
+                             $"[bold green]Translation:[/] {g.ExampleEn.EscapeMarkup()}";
+
+                AnsiConsole.Write(new Panel(detail)
+                {
+                    Header = new PanelHeader("[green]Explanation[/]"),
+                    Border = BoxBorder.Rounded,
+                    BorderStyle = new Style(Color.Green),
+                    Padding = new Padding(1, 1)
+                });
             });
 
             bool ok = AnsiConsole.Confirm("Did you understand this pattern?", defaultValue: true);
@@ -1074,32 +1080,37 @@ public static class VocabDrill
 
         foreach (var word in due)
         {
-            AnsiConsole.Clear();
-            AnsiConsole.Write(new Rule($"[bold cyan]{difficulty} Vocab[/]").RuleStyle("grey"));
-            AnsiConsole.MarkupLine($"[dim]Word {total + 1} / {due.Length} · Weak queue: {due.Length - total}[/]");
-            AnsiConsole.WriteLine();
-            AnsiConsole.Write(new Panel($"[bold]{word.Word.EscapeMarkup()}[/]\n[dim]{word.Pronunciation.EscapeMarkup()}[/]")
+            ScreenChrome.RenderFrame(() =>
             {
-                Header = new PanelHeader("[cyan]ℹ[/]"),
-                Border = BoxBorder.Rounded,
-                BorderStyle = new Style(Color.Cyan1),
-                Padding = new Padding(1, 1)
-            }
-            );
-            AnsiConsole.MarkupLine("[dim] Press Enter to reveal definition[/]");
+                AnsiConsole.Write(new Rule($"[bold cyan]{difficulty} Vocab[/]").RuleStyle("grey"));
+                AnsiConsole.MarkupLine($"[dim]Word {total + 1} / {due.Length} · Weak queue: {due.Length - total}[/]");
+                AnsiConsole.WriteLine();
+                AnsiConsole.Write(new Panel($"[bold]{word.Word.EscapeMarkup()}[/]\n[dim]{word.Pronunciation.EscapeMarkup()}[/]")
+                {
+                    Header = new PanelHeader("[cyan]ℹ[/]"),
+                    Border = BoxBorder.Rounded,
+                    BorderStyle = new Style(Color.Cyan1),
+                    Padding = new Padding(1, 1)
+                }
+                );
+                AnsiConsole.MarkupLine("[dim] Press Enter to reveal definition[/]");
+            });
             if (Console.ReadKey(true).Key == ConsoleKey.Escape) break;
-            AnsiConsole.Clear();
-            AnsiConsole.Write(new Rule($"[bold cyan]{difficulty} Vocab[/]").RuleStyle("grey"));
-            var detail = $"[bold]{word.Word.EscapeMarkup()}[/] [dim]{word.PartOfSpeech.EscapeMarkup()}[/]\n\n" + $"{word.Definition.EscapeMarkup()}\n\n" + $"[italic dim]\"{word.ExampleSentence.EscapeMarkup()}\"[/]";
-            if (word.Synonyms.Length > 0) detail += $"\n[dim]Synonyms: {string.Join(", ", word.Synonyms).EscapeMarkup()}[/]";
-            AnsiConsole.Write(new Panel(detail)
+
+            ScreenChrome.RenderFrame(() =>
             {
-                Header = new PanelHeader("[green]Definition[/]"),
-                Border = BoxBorder.Rounded,
-                BorderStyle = new Style(Color.Green),
-                Padding = new Padding(1, 1)
-            }
-            );
+                AnsiConsole.Write(new Rule($"[bold cyan]{difficulty} Vocab[/]").RuleStyle("grey"));
+                var detail = $"[bold]{word.Word.EscapeMarkup()}[/] [dim]{word.PartOfSpeech.EscapeMarkup()}[/]\n\n" + $"{word.Definition.EscapeMarkup()}\n\n" + $"[italic dim]\"{word.ExampleSentence.EscapeMarkup()}\"[/]";
+                if (word.Synonyms.Length > 0) detail += $"\n[dim]Synonyms: {string.Join(", ", word.Synonyms).EscapeMarkup()}[/]";
+                AnsiConsole.Write(new Panel(detail)
+                {
+                    Header = new PanelHeader("[green]Definition[/]"),
+                    Border = BoxBorder.Rounded,
+                    BorderStyle = new Style(Color.Green),
+                    Padding = new Padding(1, 1)
+                }
+                );
+            });
             bool knewIt = AnsiConsole.Confirm("Did you know it?", defaultValue: false);
             int quality = knewIt ? 4 : 1;
             var srResult = SpacedRepetitionEngine.UpdateCard(word.Sr, quality);

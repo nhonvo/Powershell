@@ -52,6 +52,34 @@ public static class ScreenChrome
         catch {}
     }
 
+    public static void WriteLineSmooth(string markup)
+    {
+        MarkupLineEl(markup);
+    }
+
+    public static void RenderFrame(Action drawBody, bool forceClear = false)
+    {
+        HideCursor();
+        try
+        {
+            if (forceClear)
+            {
+                AnsiConsole.Clear();
+            }
+            else
+            {
+                try { Console.SetCursorPosition(0, 0); }
+                catch { try { AnsiConsole.Clear(); } catch { } }
+            }
+            drawBody();
+            ClearTrailingLines();
+        }
+        finally
+        {
+            ShowCursor();
+        }
+    }
+
     private static void MarkupLineEl(string markup)
     {
         try
