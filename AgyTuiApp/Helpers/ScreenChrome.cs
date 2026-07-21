@@ -52,6 +52,19 @@ public static class ScreenChrome
         catch {}
     }
 
+    private static void MarkupLineEl(string markup)
+    {
+        try
+        {
+            AnsiConsole.Markup(markup);
+            Console.Write("\x1b[K\n");
+        }
+        catch
+        {
+            try { Console.WriteLine(); } catch {}
+        }
+    }
+
     public static void RenderBanner(string? category = null, string? activeItem = null, bool forceClear = false)
     {
         HideCursor();
@@ -74,7 +87,6 @@ public static class ScreenChrome
 
         var w = Math.Max(50, winWidth - 2);
         var sep = new string('=', w);
-        const string el = "\x1b[K";
 
         try
         {
@@ -96,26 +108,26 @@ public static class ScreenChrome
 
         if (winHeight > 0 && winHeight < 28)
         {
-            AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]{el}");
+            MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
             var accText = $"[dim]Account:[/] [green bold]{displayAcc.EscapeMarkup()}[/]";
             var timeText = $"[dim]Time:[/] [yellow]{now:HH:mm}[/]";
-            AnsiConsole.MarkupLine($" [bold green]{titleIcon} Control Center v3.0[/] | {accText} | {timeText}{el}");
+            MarkupLineEl($" [bold green]{titleIcon} Control Center v3.0[/] | {accText} | {timeText}");
             if (!string.IsNullOrEmpty(category))
             {
                 var breadcrumb = $" [bold cyan]Home[/] [dim]>[/] [bold green]{category.EscapeMarkup()}[/]";
                 if (!string.IsNullOrEmpty(activeItem)) breadcrumb += $" [dim]>[/] [yellow]{activeItem.EscapeMarkup()}[/]";
-                AnsiConsole.MarkupLine($"{breadcrumb}{el}");
+                MarkupLineEl(breadcrumb);
             }
-            AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]{el}");
+            MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
             return;
         }
 
-        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]{el}");
-        AnsiConsole.MarkupLine($"[cyan] ▄████▄  ▄████▄ [/] [bold green]{titleIcon} Powershell Profile Control Center v3.0 {titleIcon}[/]{el}");
-        AnsiConsole.MarkupLine($"[cyan] █▀  ▀   █▀  ▀  [/] [dim]System dashboard and control suite.[/]{el}");
-        AnsiConsole.MarkupLine($"[cyan] █       █      [/]{el}");
-        AnsiConsole.MarkupLine($"[cyan] █▄  ▄   █▄  ▄  [/] [dim]Active Account:[/] [green bold]{displayAcc.EscapeMarkup()}[/]{el}");
-        AnsiConsole.MarkupLine($"[cyan] ▀████▀  ▀████▀ [/] [dim]Time:[/] [yellow]{now:yyyy-MM-dd HH:mm}[/]{el}");
+        MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
+        MarkupLineEl($"[cyan] ▄████▄  ▄████▄ [/] [bold green]{titleIcon} Powershell Profile Control Center v3.0 {titleIcon}[/]");
+        MarkupLineEl("[cyan] █▀  ▀   █▀  ▀  [/] [dim]System dashboard and control suite.[/]");
+        MarkupLineEl("[cyan] █       █      [/]");
+        MarkupLineEl($"[cyan] █▄  ▄   █▄  ▄  [/] [dim]Active Account:[/] [green bold]{displayAcc.EscapeMarkup()}[/]");
+        MarkupLineEl($"[cyan] ▀████▀  ▀████▀ [/] [dim]Time:[/] [yellow]{now:yyyy-MM-dd HH:mm}[/]");
 
         if (!string.IsNullOrEmpty(category))
         {
@@ -124,13 +136,13 @@ public static class ScreenChrome
             {
                 breadcrumb += $" [dim]>[/] [yellow]{activeItem.EscapeMarkup()}[/]";
             }
-            AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]{el}");
-            AnsiConsole.MarkupLine($"{breadcrumb}{el}");
+            MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
+            MarkupLineEl(breadcrumb);
         }
 
-        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]{el}");
-        AnsiConsole.MarkupLine($"[dim] [[Tab/→]] Navigate Panes | [[←/Esc]] Go Back | [[Enter]] Select & Run[/]{el}");
-        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]{el}");
+        MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
+        MarkupLineEl("[dim] [[Tab/→]] Navigate Panes | [[←/Esc]] Go Back | [[Enter]] Select & Run[/]");
+        MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
         AnsiConsole.WriteLine();
     }
 }
