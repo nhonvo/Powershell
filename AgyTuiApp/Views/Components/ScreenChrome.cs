@@ -57,6 +57,33 @@ public static class ScreenChrome
         MarkupLineEl(markup);
     }
 
+    public static void WriteSmooth(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return;
+        var smoothText = text.Replace("\r\n", "\x1b[K\r\n").Replace("\n", "\x1b[K\n");
+        Console.Write(smoothText);
+    }
+
+    public static void WriteSmooth(Spectre.Console.Rendering.IRenderable renderable)
+    {
+        try
+        {
+            var writer = new System.IO.StringWriter();
+            var console = AnsiConsole.Create(new AnsiConsoleSettings
+            {
+                Ansi = AnsiSupport.Yes,
+                ColorSystem = ColorSystemSupport.TrueColor,
+                Out = new AnsiConsoleOutput(writer)
+            });
+            console.Write(renderable);
+            WriteSmooth(writer.ToString());
+        }
+        catch
+        {
+            try { AnsiConsole.Write(renderable); } catch { }
+        }
+    }
+
     public static void RenderFrame(Action drawBody, bool forceClear = false)
     {
         HideCursor();

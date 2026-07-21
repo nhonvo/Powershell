@@ -590,6 +590,6 @@ public sealed class ThreePaneRenderer : MenuRendererBase
         table.AddColumn(new TableColumn("").Width(30));
         table.AddColumn(new TableColumn(""));
         table.AddRow(leftPanel, midPanel, rightPanel);
-        AnsiConsole.Write(table);
+        ScreenChrome.WriteSmooth(table);
     }
 }

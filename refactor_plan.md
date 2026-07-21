@@ -2676,3 +2676,87 @@ All 6 items identified in Section 19 have been 100% remediated, verified, and te
  4. **The rest of §3's table**, in any order — each is independent and small.
  5. **Once a `Services/` split exists** (if `architecture_services_views.md` is adopted), revisit any test that had to work around a Console/AnsiConsole dependency and see if it can now be simplified — that's the payoff of doing both proposals together.
   
+
+ # 🧩 `AgyTuiApp/Helpers/` — Internal Code Pattern Enhancement Notes
+  
+ **Notes only — no code changes.** This is one level more granular than `architecture_services_views.md` (which addresses *where* files should live — Services vs. Views). This document addresses *what pattern each file/class inside `Helpers/` should follow internally* — naming, static-vs-instance shape, error handling, caching, and extension points — independent of whether the Services/Views folder split ever happens.
+  
+ ---
+  
+ ## 1. File-to-type mapping is inconsistent — pick one rule and apply it everywhere
+  
+ C# convention is one type per file, filename matching the type. `Helpers/` currently does this in some files and not others, with no visible rule:
+  
+ | File | Types inside | Problem |
+ |---|---|---|
+ | `StudyQuizzes.cs` | `KanaQuiz`, `KanjiLookup`, `JlptVocabDrill`, `GrammarQuiz`, `AlgoVisualizer`, `ComplexitySheet`, `ProblemTracker`, `SnippetLibrary`, `CheatSheetBrowser`, `CsharpQuiz`, `InterviewBank`, `StarBuilder`, `MockInterviewTimer`, `VocabDrill` — **14 unrelated classes** | Not one of the 14 types is named `StudyQuizzes` — the filename describes none of its own contents. Finding "where is `MockInterviewTimer`" requires already knowing it's in this file. |
+ | `GitDashboard.cs` | `GitNexus`, `RepoGraph`, `GitNexusStats` | Same problem, smaller scale — no `GitDashboard` type exists anywhere. |
+ | `TerminalIde.cs` | `FileExplorer`, `CodeViewer`, `SymbolSearch`, `GitDiffViewer`, `TerminalIde` | Only the last of 5 types matches the filename. |
+ | `SystemHelpers.cs` | `SystemHelper` (singular), `SshHelper` | Filename is plural, contained type is singular — a `grep`/mental-model mismatch for anyone searching by expected filename. |
+ | `AccountHelper.cs`, `AiHelper.cs`, `Config.cs`, `TtlCache.cs`, `ProcessRunner.cs`, `EditorResolver.cs`, `SkillLoader.cs`, etc. | One type each, name matches file | These are all fine — this is the pattern to standardize on, not invent. |
+  
+ **Proposed rule**: one file per class/static-class, filename == type name, no exceptions. This isn't a stylistic nice-to-have in this specific codebase — three of this session's audit findings were made *harder* to catch because a bug lived in a class whose name gives no hint it's in that file (e.g. the SM-2 persistence bug spanned 5 classes inside `StudyQuizzes.cs`; finding all 5 call sites required reading the whole file rather than jumping to a named type). Splitting `StudyQuizzes.cs` into 14 files, `GitDashboard.cs` into 3, `TerminalIde.cs` into 5, and renaming `SystemHelper`→file `SystemHelper.cs` (or the type to plural, either direction, just make them match) closes this for good. This is a pure mechanical split — extract-class-to-new-file — with essentially zero behavior risk, and is worth doing as its own low-risk PR ahead of any of `architecture_services_views.md`'s bigger moves.
+  
+ ---
+  
+ ## 2. The `Helper` suffix means nothing — it's applied to roughly half the files, with no rule for which half
+  
+ Comparing filenames: `AccountHelper`, `AiHelper`, `AwsHelper`, `DatabaseHelper`, `DockerHelper`, `DotNetHelper`, `GitHelper`, `ObsidianHelper`, `StudyHelper`, `SystemHelpers` carry the suffix. `AccountRepository`, `AiLearningGenerator`, `Config`, `EditorResolver`, `GitDashboard`, `GuidedLearnFlow`, `HttpClientProvider`, `Icons`, `IdeCommandRegistry`, `ProcessRunner`, `ProjectScaffolder`, `QuotaTracker`, `ResourceDiscovery`, `ScreenChrome`, `SkillLoader`, `StatusWidgets`, `StudyQuizzes`, `TerminalIde`, `TokenVault`, `TtlCache`, `WorkspaceRegistry` don't. There's no discoverable rule distinguishing the two groups — `AccountHelper` and `AccountRepository` sit in the same domain, one has the suffix and one doesn't, for no reason traceable to what either class actually does.
+  
+ **Proposed rule, tied to `architecture_services_views.md`'s Services/Views split (adopt this naming now even before that folder move happens — it's independent and cheaper)**:
+ * **`*Service`** — pure logic, the "verb" classes that do work and return data (`AccountService`, `AiService`, `GitService` — renaming `AccountHelper`/`AiHelper`/`GitHelper`).
+ * **`*Repository`/`*Vault`/`*Tracker`/`*Cache`/`*Provider`/`*Registry`** — already-good, specific names that say what the class actually stores/provides/looks up (`AccountRepository`, `TokenVault`, `QuotaTracker`, `TtlCache`, `HttpClientProvider`, `CommandRegistry`, `IdeCommandRegistry`) — keep these exactly as they are, they're the model to copy, not fix.
+ * **`*Screen`** — UI/interactive-loop classes (`AccountScreen`, `AiDashboardScreen`, `QuizScreens` — the UI half currently welded into `*Helper` classes).
+ * Retire `*Helper` entirely as a name once a class is split into its Service+Screen halves — "Helper" is a name that describes nothing about what a class does, which is exactly why it ended up as the catch-all for classes doing three unrelated things each.
+  
+ ---
+  
+ ## 3. Error-handling pattern is different in almost every method — pick 3 shapes, not 12
+  
+ A survey of this session's own findings shows at least four different, uncoordinated error-handling styles currently live side by side:
+  
+ 1. **Silent-wrong on failure** — `TokenVault.Protect`/`Unprotect` return the *unprotected* input unchanged if DPAPI throws, with no signal to the caller that protection didn't happen. Dangerous: a caller has no way to distinguish "this is safely encrypted" from "this silently isn't."
+ 2. **No handling at all** — `AccountHelper.GetAccounts()` has zero try/catch; one permission-denied directory throws uncaught and takes down the whole account list.
+ 3. **Bare swallow** — `ObsidianStudySync.OfferSync`'s call site is wrapped in an empty `catch { }`, hiding a real bug (e.g. malformed vault config) behind the same silence used for the genuinely-optional "no vault configured" case.
+ 4. **Real, bounded handling** — `ProcessRunner`'s timeout/kill logic and `SystemHelpers.AddAuthorizedKey`'s ACL try/catch (added in a recent fix) are the good examples: a specific failure mode is anticipated, caught, and surfaced as a clean message rather than a crash or a silent lie.
+  
+ **Proposed rule — three shapes, chosen deliberately per call, not by accident**:
+ * **Let it throw** for programmer errors and genuinely unexpected states (a required file that should always exist by the time this method runs) — don't wrap these in `try/catch { }`, a stack trace is more honest than a silent no-op.
+ * **Return `null`/`false`/a result type** for expected-absence cases (account doesn't exist, no network) — the caller decides what "not found" means, the callee doesn't swallow it into a fake success.
+ * **Catch, log/warn, and continue** only for genuinely optional side effects where failure shouldn't block the main flow (Obsidian sync being one — but the catch block should at minimum `AnsiConsole.MarkupLine("[dim]Obsidian sync skipped: {ex.Message}[/]")` instead of nothing, so a real bug is at least visible once, not permanently invisible).
+ * **Never** the `TokenVault.Protect` shape (return a *different, silently wrong* value on failure) — audit every method with this shape specifically, since it's the most dangerous of the four and the easiest to miss in review (the return type looks identical to the success case).
+  
+ ---
+  
+ ## 4. Caching is a third ad hoc pattern living alongside the one good one
+  
+ `TtlCache<K,V>` (`TtlCache.cs`) is a real, working, unit-tested generic cache — and it's genuinely adopted in several places (`AccountHelper.cs`, `StatusWidgets.cs`, `AiHelper.cs`). But new ad hoc caches keep appearing beside it rather than using it — this session alone traced at least one still-uncached hot path (`ObsidianBridge.BuildGraph`'s raw `Directory.GetFiles`) that could be a two-line `TtlCache` addition instead of staying uncached.
+  
+ **Proposed rule**: any method that recomputes something expensive (filesystem walk, network call, process shell-out) more than once per render frame or per keystroke gets a `TtlCache<K,V>` field, full stop — no new bespoke `Dictionary<string, (T value, DateTime expiresAt)>` pattern should ever be hand-rolled again now that the generic version exists and is proven. If a new caching need doesn't fit `TtlCache<K,V>`'s shape, that's a signal to extend `TtlCache` itself (e.g. a variant keyed by file-mtime instead of wall-clock TTL, already scoped in `refactor_plan.md`'s original caching table for IDE breadcrumb/symbol data) rather than inventing a fourth pattern.
+  
+ ---
+  
+ ## 5. Two different "extension" shapes exist — the declarative one is strictly better, standardize on it
+  
+ Compare two ways this codebase already handles "a list of things the user can pick, each mapped to an action":
+  
+ * **The bad shape**: `Icons.GetCommandIcon` — a big `switch`/if-chain keyed on `alias`/`category` strings, hand-maintained, and already known to have dead branches because category-matching happens before alias-matching (an `/obsidian`/`/refresh` icon case is unreachable because the category branch catches them first). Adding a new command means remembering to also touch this switch, `CommandRegistry.cs`, `MenuNode.cs`'s tree builder, and potentially `ProfileHelp`/`ShowHotkeysGuide` — five places for one new feature (this exact fan-out is `refactor_plan.md` §3's original "four independent command tables" finding, still only partially consolidated).
+ * **The good shape**: `IdeCommandRegistry.All` — a single `record IdeCommand(...)[]` array; adding a new IDE command is one new array entry, and every consumer (the `/` search, the help listing, the dispatcher) reads from the same array, so there's no second place to remember to update.
+  
+ **Proposed rule**: any time a new "kind of thing the user can select" is added (a new icon category, a new report type, a new settings toggle), model it as **data in one array/table**, not **logic spread across N switch statements in N files**. `IdeCommandRegistry` is the concrete example to copy; `Icons.GetCommandIcon`'s category-before-alias branching is the concrete example to eventually flatten into the same shape (a `Dictionary<string, IconSet>` keyed directly by alias, falling back to category only when no alias-specific entry exists — inverting the current precedence, and removing the "five places to update" tax on every future command).
+  
+ ---
+  
+ ## 6. Static-everywhere is fine here — don't over-correct into DI
+  
+ Every class in `Helpers/` is a `static class` with `static` methods — no instances, no interfaces, no dependency injection container. **This is a reasonable choice for what this app is** (a single-process CLI/TUI with no need to swap implementations at runtime, no multi-tenancy, no test doubles required for 90% of call sites) and `architecture_services_views.md` doesn't propose changing it. The one place a lightweight interface *would* earn its cost: classes whose only value-add for testing is substitutability of an *external* dependency — e.g. `ProcessRunner` (so a test can inject a fake process outcome instead of actually shelling out) or `HttpClientProvider` (so a test can inject a fake HTTP response). Even there, prefer a simple `Func<>`/delegate injection point on the specific method under test over a full interface-and-constructor-injection redesign — matches the scale of the actual problem instead of importing a pattern this app's size doesn't need.
+  
+ ---
+  
+ ## 7. Suggested rollout order (cheapest, safest first)
+ 1. **Split multi-class files** (§1) — mechanical, zero behavior risk, do first. `StudyQuizzes.cs` → 14 files is the biggest single win by class count.
+ 2. **Rename for the `Service`/`Screen` split** (§2) — do together with `architecture_services_views.md`'s actual folder move if that's happening soon; do as a standalone rename (keeping everything in `Helpers/` for now) if that folder move is further out, so the naming signal exists even before the physical move.
+ 3. **Audit every `catch` block against the 3-shape rule** (§3) — start with the "silent-wrong" shape specifically (`TokenVault.Protect`/`Unprotect` is the known instance; grep for the pattern "catch, then return a plausible-looking but different value" elsewhere).
+ 4. **Sweep for uncached hot paths and point them at `TtlCache<K,V>`** (§4) — `ObsidianBridge.BuildGraph` is the known instance; grep `Directory.GetFiles(.*AllDirectories)` for the rest.
+ 5. **Flatten `Icons.GetCommandIcon`'s branching** (§5) into a single lookup table, alias-first — lowest urgency, but the cheapest structural fix for the "five places to update per new command" tax once someone's already touching that file for an icon addition.
+  

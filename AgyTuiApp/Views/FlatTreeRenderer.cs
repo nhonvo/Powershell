@@ -836,7 +836,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
             Width = w
         };
 
-        AnsiConsole.Write(outerPanel);
+        ScreenChrome.WriteSmooth(outerPanel);
     }
 
     private void RenderSubPageSelection(string mode, int selIdx)
@@ -1069,7 +1069,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
             BorderStyle = new Style(Color.Cyan1),
             Expand = true
         };
-        AnsiConsole.Write(panel);
+        ScreenChrome.WriteSmooth(panel);
     }
 
 
