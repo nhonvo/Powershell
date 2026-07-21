@@ -23,6 +23,26 @@ public static class ScreenChrome
     {
     }
 
+    public static void HideCursor()
+    {
+        try
+        {
+            Console.CursorVisible = false;
+            Console.Write("\x1b[?25l");
+        }
+        catch {}
+    }
+
+    public static void ShowCursor()
+    {
+        try
+        {
+            Console.CursorVisible = true;
+            Console.Write("\x1b[?25h");
+        }
+        catch {}
+    }
+
     public static void ClearTrailingLines()
     {
         try
@@ -34,6 +54,7 @@ public static class ScreenChrome
 
     public static void RenderBanner(string? category = null, string? activeItem = null, bool forceClear = false)
     {
+        HideCursor();
         var acc = AgyAccountCore.GetActiveAccount() ?? "default";
         var displayAcc = acc;
         if (string.Equals(acc, "default", StringComparison.OrdinalIgnoreCase))

@@ -641,6 +641,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                     break;
                 case ConsoleKey.Escape:
                 case ConsoleKey.Q:
+                    ScreenChrome.ShowCursor();
                     return;
                 default:
                     if (key.KeyChar >= 32 && key.KeyChar <= 126 && key.Key != ConsoleKey.Enter)
