@@ -1,0 +1,10 @@
+=== C# & .NET CHEAT SHEET ===
+
+1. Value vs Reference Types:
+   - Value: int, bool, double, struct, enum (allocated on Stack/Inline)
+   - Reference: class, interface, delegate, record class, string (allocated on Heap)
+
+2. Async/Await Best Practices:
+   - Avoid 'async void' except for event handlers
+   - Use ConfigureAwait(false) in class libraries
+   - Prefer Task.WhenAll over sequential awaits

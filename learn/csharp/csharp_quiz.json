@@ -1,0 +1,61 @@
+﻿{
+  "Questions": [
+    {
+      "Id": "cs-1",
+      "Topic": "C# Basics",
+      "Difficulty": 1,
+      "Question": "What is the size of an int in C#?",
+      "Options": [
+        "2 bytes",
+        "4 bytes",
+        "8 bytes",
+        "Depends on platform"
+      ],
+      "CorrectAnswer": 1,
+      "Explanation": "In C#, \u0027int\u0027 maps directly to System.Int32, which is always 32-bit (4 bytes) regardless of platform or architecture.",
+      "CodeSnippet": null,
+      "Tags": [
+        "basics",
+        "types"
+      ]
+    },
+    {
+      "Id": "cs-2",
+      "Topic": "C# Basics",
+      "Difficulty": 1,
+      "Question": "Which keyword is used to declare a constant in C#?",
+      "Options": [
+        "const",
+        "readonly",
+        "static",
+        "let"
+      ],
+      "CorrectAnswer": 0,
+      "Explanation": "The \u0027const\u0027 keyword declares a compile-time constant, whereas \u0027readonly\u0027 declares a run-time constant.",
+      "CodeSnippet": null,
+      "Tags": [
+        "basics",
+        "keywords"
+      ]
+    },
+    {
+      "Id": "cs-3",
+      "Topic": "OOP",
+      "Difficulty": 2,
+      "Question": "Which access modifier allows access within the same assembly or subclass?",
+      "Options": [
+        "private",
+        "protected",
+        "internal",
+        "protected internal"
+      ],
+      "CorrectAnswer": 3,
+      "Explanation": "The \u0027protected internal\u0027 modifier allows access within the defining assembly, or from derived classes in any assembly.",
+      "CodeSnippet": null,
+      "Tags": [
+        "oop",
+        "access-modifiers"
+      ]
+    }
+  ]
+}

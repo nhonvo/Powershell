@@ -1,0 +1,31 @@
+﻿{
+  "Language": "csharp",
+  "Snippets": [
+    {
+      "Id": "snip-1",
+      "Title": "Async IAsyncEnumerable Streaming",
+      "Category": "Async/Await",
+      "Code": "async IAsyncEnumerable\u003Cint\u003E FetchDataAsync()\n{\n    for (int i = 0; i \u003C 5; i\u002B\u002B)\n    {\n        await Task.Delay(100);\n        yield return i;\n    }\n}",
+      "Explanation": "Yields items asynchronously without allocating a full list in memory.",
+      "UseCase": "High-throughput API streaming",
+      "Tags": [
+        "csharp",
+        "async"
+      ],
+      "Difficulty": 2
+    },
+    {
+      "Id": "snip-2",
+      "Title": "LINQ Chunking (.NET 6\u002B)",
+      "Category": "LINQ",
+      "Code": "var numbers = Enumerable.Range(1, 100);\nforeach (var chunk in numbers.Chunk(10))\n{\n    Console.WriteLine($\u0022Batch of {chunk.Length}\u0022);\n}",
+      "Explanation": "Splits collections into fixed-size batches for parallel processing.",
+      "UseCase": "Batch DB writes / background queues",
+      "Tags": [
+        "csharp",
+        "linq"
+      ],
+      "Difficulty": 1
+    }
+  ]
+}

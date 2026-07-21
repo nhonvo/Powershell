@@ -1,0 +1,67 @@
+﻿{
+  "Problems": [
+    {
+      "Id": "prob-1",
+      "Title": "Two Sum",
+      "Source": "LeetCode #1",
+      "Url": "https://leetcode.com/problems/two-sum/",
+      "Difficulty": "easy",
+      "Topics": [
+        "Hash Table",
+        "Array"
+      ],
+      "Status": "solved",
+      "TimeComplexity": "O(n)",
+      "SpaceComplexity": "O(n)",
+      "ApproachNotes": "Use HashMap to track complement value",
+      "Attempts": 1,
+      "FirstSolvedAt": "2026-07-21T02:38:55.6536254Z",
+      "LastReviewedAt": "2026-07-21T02:38:55.6536274Z",
+      "Tags": [
+        "arrays"
+      ]
+    },
+    {
+      "Id": "prob-2",
+      "Title": "Valid Parentheses",
+      "Source": "LeetCode #20",
+      "Url": "https://leetcode.com/problems/valid-parentheses/",
+      "Difficulty": "easy",
+      "Topics": [
+        "Stack",
+        "String"
+      ],
+      "Status": "solved",
+      "TimeComplexity": "O(n)",
+      "SpaceComplexity": "O(n)",
+      "ApproachNotes": "Push open brackets onto stack",
+      "Attempts": 1,
+      "FirstSolvedAt": "2026-07-21T02:38:55.6537213Z",
+      "LastReviewedAt": "2026-07-21T02:38:55.6537214Z",
+      "Tags": [
+        "stack"
+      ]
+    },
+    {
+      "Id": "prob-3",
+      "Title": "LRU Cache",
+      "Source": "LeetCode #146",
+      "Url": "https://leetcode.com/problems/lru-cache/",
+      "Difficulty": "medium",
+      "Topics": [
+        "Hash Table",
+        "Doubly Linked List"
+      ],
+      "Status": "todo",
+      "TimeComplexity": "O(1)",
+      "SpaceComplexity": "O(n)",
+      "ApproachNotes": "Combine HashMap with Doubly LinkedList",
+      "Attempts": 0,
+      "FirstSolvedAt": null,
+      "LastReviewedAt": null,
+      "Tags": [
+        "design"
+      ]
+    }
+  ]
+}

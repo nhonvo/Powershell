@@ -1,0 +1,496 @@
+﻿{
+  "Hiragana": [
+    {
+      "Char": "\u3042",
+      "Romaji": "a",
+      "Row": "a",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u3044",
+      "Romaji": "i",
+      "Row": "a",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u3046",
+      "Romaji": "u",
+      "Row": "a",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u3048",
+      "Romaji": "e",
+      "Row": "a",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u304A",
+      "Romaji": "o",
+      "Row": "a",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u304B",
+      "Romaji": "ka",
+      "Row": "k",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u304D",
+      "Romaji": "ki",
+      "Row": "k",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u304F",
+      "Romaji": "ku",
+      "Row": "k",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u3051",
+      "Romaji": "ke",
+      "Row": "k",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u3053",
+      "Romaji": "ko",
+      "Row": "k",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u3055",
+      "Romaji": "sa",
+      "Row": "s",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u3057",
+      "Romaji": "shi",
+      "Row": "s",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u3059",
+      "Romaji": "su",
+      "Row": "s",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u305B",
+      "Romaji": "se",
+      "Row": "s",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u305D",
+      "Romaji": "so",
+      "Row": "s",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u305F",
+      "Romaji": "ta",
+      "Row": "t",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u3061",
+      "Romaji": "chi",
+      "Row": "t",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u3064",
+      "Romaji": "tsu",
+      "Row": "t",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u3066",
+      "Romaji": "te",
+      "Row": "t",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u3068",
+      "Romaji": "to",
+      "Row": "t",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u306A",
+      "Romaji": "na",
+      "Row": "n",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u306B",
+      "Romaji": "ni",
+      "Row": "n",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u306C",
+      "Romaji": "nu",
+      "Row": "n",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u306D",
+      "Romaji": "ne",
+      "Row": "n",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u306E",
+      "Romaji": "no",
+      "Row": "n",
+      "Type": "hiragana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ],
+  "Katakana": [
+    {
+      "Char": "\u30A2",
+      "Romaji": "a",
+      "Row": "a",
+      "Type": "katakana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u30A4",
+      "Romaji": "i",
+      "Row": "a",
+      "Type": "katakana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u30A6",
+      "Romaji": "u",
+      "Row": "a",
+      "Type": "katakana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u30A8",
+      "Romaji": "e",
+      "Row": "a",
+      "Type": "katakana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u30AA",
+      "Romaji": "o",
+      "Row": "a",
+      "Type": "katakana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u30AB",
+      "Romaji": "ka",
+      "Row": "k",
+      "Type": "katakana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u30AD",
+      "Romaji": "ki",
+      "Row": "k",
+      "Type": "katakana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u30AF",
+      "Romaji": "ku",
+      "Row": "k",
+      "Type": "katakana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u30B1",
+      "Romaji": "ke",
+      "Row": "k",
+      "Type": "katakana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u30B3",
+      "Romaji": "ko",
+      "Row": "k",
+      "Type": "katakana",
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

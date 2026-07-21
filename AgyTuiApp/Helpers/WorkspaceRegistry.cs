@@ -23,18 +23,82 @@ public static class WorkspaceRegistry
 
     public static WorkspaceEntry[] GetWorkspaces()
     {
-        if (!File.Exists(ConfigFile)) return [];
+        WorkspaceEntry[] items = [];
+        if (File.Exists(ConfigFile))
+        {
+            try
+            {
+                var raw = File.ReadAllText(ConfigFile);
+                items = JsonSerializer.Deserialize<WorkspaceEntry[]>(raw)?.Where(w => w != null && !string.IsNullOrEmpty(w.WorkspacePath)).ToArray() ?? [];
+            }
+            catch {}
+        }
 
+        if (items.Length == 0)
+        {
+            items = AutoDiscoverWorkspaces();
+            if (items.Length > 0) SaveWorkspaces(items);
+        }
+
+        return items;
+    }
+
+    public static WorkspaceEntry[] AutoDiscoverWorkspaces()
+    {
+        var list = new List<WorkspaceEntry>();
+        var addedPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        void TryAdd(string name, string path)
+        {
+            if (!string.IsNullOrEmpty(path) && Directory.Exists(path) && addedPaths.Add(path))
+            {
+                list.Add(new WorkspaceEntry(name, path, "default", new[] { "auto-discovered" }));
+            }
+        }
+
+        // 1. Current working directory
         try
         {
-            var raw = File.ReadAllText(ConfigFile);
-            var items = JsonSerializer.Deserialize<WorkspaceEntry[]>(raw);
-            return items?.Where(w => w != null && !string.IsNullOrEmpty(w.WorkspacePath)).ToArray() ?? [];
+            var currentDir = Directory.GetCurrentDirectory();
+            TryAdd(System.IO.Path.GetFileName(currentDir), currentDir);
         }
-        catch
+        catch {}
+
+        // 2. PowerShell profile root
+        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        TryAdd("Powershell Profile", System.IO.Path.Combine(userProfile, "Documents", "Powershell"));
+
+        // 3. Candidate base project directories
+        var searchBases = new List<string>();
+        if (!string.IsNullOrEmpty(Config.Current.ProjectsBaseDir)) searchBases.Add(Config.Current.ProjectsBaseDir);
+        searchBases.Add(System.IO.Path.Combine(userProfile, "Documents"));
+        searchBases.Add(System.IO.Path.Combine(userProfile, "Desktop"));
+        searchBases.Add(System.IO.Path.Combine(userProfile, "project"));
+
+        foreach (var baseDir in searchBases)
         {
-            return [];
+            if (!Directory.Exists(baseDir)) continue;
+            try
+            {
+                var subDirs = Directory.GetDirectories(baseDir);
+                foreach (var dir in subDirs)
+                {
+                    var dirName = System.IO.Path.GetFileName(dir);
+                    if (dirName.StartsWith(".") || dirName.Equals("node_modules", StringComparison.OrdinalIgnoreCase)) continue;
+
+                    if (Directory.Exists(System.IO.Path.Combine(dir, ".git")) ||
+                        Directory.GetFiles(dir, "*.csproj").Length > 0 ||
+                        Directory.GetFiles(dir, "*.sln").Length > 0 ||
+                        File.Exists(System.IO.Path.Combine(dir, "package.json")))
+                    {
+                        TryAdd(dirName, dir);
+                    }
+                }
+            }
+            catch {}
         }
+
+        return list.ToArray();
     }
 
     public static void SaveWorkspaces(WorkspaceEntry[] entries)

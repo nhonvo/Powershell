@@ -1,0 +1,10 @@
+=== GIT CHEAT SHEET ===
+
+1. Undo Last Commit (keep changes):
+   git reset --soft HEAD~1
+
+2. Interactive Rebase:
+   git rebase -i HEAD~5
+
+3. Stash with Name:
+   git stash save 'my-wip-feature'

@@ -1,0 +1,21 @@
+﻿{
+  "Answers": [
+    {
+      "Id": "star-1",
+      "QuestionId": "int-4",
+      "QuestionText": "Disagreement on API Architecture",
+      "Situation": "Team was split between REST and gRPC for high-speed microservices.",
+      "Task": "Reach consensus and unblock sprint deadline.",
+      "Action": "Ran benchmark POC proving gRPC reduced latency by 45%, presented metrics neutrally.",
+      "Result": "Team adopted gRPC for core services, keeping REST for external clients.",
+      "OutcomeMetric": "45% latency reduction, zero sprint delay",
+      "CreatedAt": "2026-07-21T02:38:55.6491365Z",
+      "UpdatedAt": "2026-07-21T02:38:55.6491445Z",
+      "Tags": [
+        "leadership",
+        "architecture"
+      ],
+      "Rating": 5
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+﻿{
+  "Level": "Intermediate",
+  "Words": [
+    {
+      "Id": "vocab-1",
+      "Word": "ubiquitous",
+      "Pronunciation": "yoo-bik-wi-tuhs",
+      "PartOfSpeech": "Adjective",
+      "Definition": "Existing or being everywhere at the same time; constantly encountered.",
+      "ExampleSentence": "Mobile phones are ubiquitous today.",
+      "Synonyms": [
+        "omnipresent",
+        "pervasive"
+      ],
+      "Antonyms": [
+        "rare",
+        "scarce"
+      ],
+      "Difficulty": 3,
+      "Tags": [
+        "adjectives"
+      ],
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "vocab-2",
+      "Word": "pragmatic",
+      "Pronunciation": "prag-mat-ik",
+      "PartOfSpeech": "Adjective",
+      "Definition": "Dealing with things sensibly and realistically in a way that is based on practical rather than theoretical considerations.",
+      "ExampleSentence": "We need to take a pragmatic approach to software development.",
+      "Synonyms": [
+        "practical",
+        "realistic"
+      ],
+      "Antonyms": [
+        "idealistic",
+        "impractical"
+      ],
+      "Difficulty": 2,
+      "Tags": [
+        "adjectives"
+      ],
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "vocab-3",
+      "Word": "resilient",
+      "Pronunciation": "ri-zil-yuhnt",
+      "PartOfSpeech": "Adjective",
+      "Definition": "Able to withstand or recover quickly from difficult conditions.",
+      "ExampleSentence": "Our microservices are resilient against network partitioning.",
+      "Synonyms": [
+        "robust",
+        "tough"
+      ],
+      "Antonyms": [
+        "fragile"
+      ],
+      "Difficulty": 2,
+      "Tags": [
+        "adjectives"
+      ],
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "vocab-4",
+      "Word": "idempotent",
+      "Pronunciation": "eye-dem-poh-tuhnt",
+      "PartOfSpeech": "Adjective",
+      "Definition": "An operation that produces the same result no matter how many times executed.",
+      "ExampleSentence": "HTTP PUT and DELETE APIs must be idempotent.",
+      "Synonyms": [
+        "repeatable",
+        "invariant"
+      ],
+      "Antonyms": [
+        "stateful"
+      ],
+      "Difficulty": 4,
+      "Tags": [
+        "tech"
+      ],
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

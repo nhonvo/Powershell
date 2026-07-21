@@ -32,6 +32,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
     private readonly HashSet<string> _expandedCategories = new();
     private readonly HashSet<string> _expandedGroups = new();
     private readonly HashSet<string> _expandedWidgets = new();
+    private string _detailsSearchBuffer = "";
 
     public void Run(MenuNode root)
     {
@@ -180,9 +181,46 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                 {
                     searching = false;
                 }
-                else if (key.Key == ConsoleKey.Backspace)
+                else if (key.Key == ConsoleKey.DownArrow)
                 {
-                    if (searchBuffer.Length > 0) searchBuffer = searchBuffer[..^1];
+                    searching = false;
+                    selectionIndex = Math.Min(visibleRows.Count - 1, selectionIndex + 1);
+                    continue;
+                }
+                else if (key.Key == ConsoleKey.UpArrow)
+                {
+                    searching = false;
+                    selectionIndex = Math.Max(0, selectionIndex - 1);
+                    continue;
+                }
+                else if (key.Key == ConsoleKey.PageDown)
+                {
+                    searching = false;
+                    selectionIndex = Math.Min(visibleRows.Count - 1, selectionIndex + 10);
+                    continue;
+                }
+                else if (key.Key == ConsoleKey.PageUp)
+                {
+                    searching = false;
+                    selectionIndex = Math.Max(0, selectionIndex - 10);
+                    continue;
+                }
+                else if (key.Key == ConsoleKey.Backspace || (key.Modifiers.HasFlag(ConsoleModifiers.Control) && key.Key == ConsoleKey.W))
+                {
+                    bool isCtrlWordDelete = (key.Modifiers.HasFlag(ConsoleModifiers.Control)) ||
+                                            key.KeyChar == '\x17' || key.KeyChar == '\x7f' || key.KeyChar == '\x08';
+                    if (isCtrlWordDelete && key.Key == ConsoleKey.Backspace)
+                    {
+                        searchBuffer = DeletePreviousWord(searchBuffer);
+                    }
+                    else if (key.Modifiers.HasFlag(ConsoleModifiers.Control) && key.Key == ConsoleKey.W)
+                    {
+                        searchBuffer = DeletePreviousWord(searchBuffer);
+                    }
+                    else if (searchBuffer.Length > 0)
+                    {
+                        searchBuffer = searchBuffer[..^1];
+                    }
                 }
                 else if (key.KeyChar >= 32 && key.KeyChar <= 126)
                 {
@@ -208,7 +246,12 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                 }
                 else if (detailsMode == "theme")
                 {
-                    itemsCount = GetThemeNames().Length;
+                    var themes = GetThemeNames();
+                    if (!string.IsNullOrEmpty(_detailsSearchBuffer))
+                    {
+                        themes = themes.Where(t => t.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
+                    }
+                    itemsCount = themes.Length;
                 }
                 else if (detailsMode == "learn" || detailsMode == "session" || detailsMode == "weak")
                 {
@@ -219,9 +262,10 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                     itemsCount = WorkspaceRegistry.GetWorkspaces().Length;
                 }
 
-                if (itemsCount == 0)
+                if (itemsCount == 0 && detailsMode != "theme")
                 {
                     detailsActive = false;
+                    _detailsSearchBuffer = "";
                     continue;
                 }
 
@@ -229,11 +273,37 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                 {
                     case ConsoleKey.UpArrow:
                     case ConsoleKey.K:
-                        detailsSel = (detailsSel - 1 + itemsCount) % itemsCount;
+                        if (itemsCount > 0) detailsSel = (detailsSel - 1 + itemsCount) % itemsCount;
                         break;
                     case ConsoleKey.DownArrow:
                     case ConsoleKey.J:
-                        detailsSel = (detailsSel + 1) % itemsCount;
+                        if (itemsCount > 0) detailsSel = (detailsSel + 1) % itemsCount;
+                        break;
+                    case ConsoleKey.PageUp:
+                        if (itemsCount > 0) detailsSel = Math.Max(0, detailsSel - 10);
+                        break;
+                    case ConsoleKey.PageDown:
+                        if (itemsCount > 0) detailsSel = Math.Min(itemsCount - 1, detailsSel + 10);
+                        break;
+                    case ConsoleKey.Home:
+                        detailsSel = 0;
+                        break;
+                    case ConsoleKey.End:
+                        if (itemsCount > 0) detailsSel = Math.Max(0, itemsCount - 1);
+                        break;
+                    case ConsoleKey.Backspace:
+                        if (!string.IsNullOrEmpty(_detailsSearchBuffer))
+                        {
+                            if (key.Modifiers.HasFlag(ConsoleModifiers.Control) || key.KeyChar == '\x17' || key.KeyChar == '\x7f' || key.KeyChar == '\x08')
+                            {
+                                _detailsSearchBuffer = DeletePreviousWord(_detailsSearchBuffer);
+                            }
+                            else
+                            {
+                                _detailsSearchBuffer = _detailsSearchBuffer[..^1];
+                            }
+                            detailsSel = 0;
+                        }
                         break;
                     case ConsoleKey.Enter:
                         if (detailsSel >= 0 && detailsSel < itemsCount)
@@ -249,6 +319,10 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                             else if (detailsMode == "theme")
                             {
                                 var themeNames = GetThemeNames();
+                                if (!string.IsNullOrEmpty(_detailsSearchBuffer))
+                                {
+                                    themeNames = themeNames.Where(t => t.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
+                                }
                                 var selectedTheme = themeNames[detailsSel];
                                 var themesPath = Environment.GetEnvironmentVariable("POSH_THEMES_PATH");
                                 if (string.IsNullOrEmpty(themesPath))
@@ -267,8 +341,12 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                                 catch { }
                                 Environment.SetEnvironmentVariable("THEME", selectedTheme);
                                 var themePath = Path.Combine(themesPath, $"{selectedTheme}.omp.json");
-                                var selectedThemeFile = Path.Combine(AgyAccountCore.AgySourceHome, "selected_theme.txt");
+                                var agyHome = !string.IsNullOrEmpty(AgyAccountCore.AgySourceHome) ? AgyAccountCore.AgySourceHome : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini");
+                                Directory.CreateDirectory(agyHome);
+                                var selectedThemeFile = Path.Combine(agyHome, "selected_theme.txt");
                                 File.WriteAllText(selectedThemeFile, themePath);
+                                SpectrePanel.Success($"Selected theme '{selectedTheme}'. Theme will apply on exit.");
+                                Thread.Sleep(1000);
                             }
                             else if (detailsMode == "learn" || detailsMode == "session" || detailsMode == "weak")
                             {
@@ -414,7 +492,27 @@ public sealed class FlatTreeRenderer : IMenuRenderer
                     case ConsoleKey.LeftArrow:
                     case ConsoleKey.Escape:
                     case ConsoleKey.Q:
-                        detailsActive = false;
+                        if (!string.IsNullOrEmpty(_detailsSearchBuffer))
+                        {
+                            _detailsSearchBuffer = "";
+                            detailsSel = 0;
+                        }
+                        else
+                        {
+                            detailsActive = false;
+                            _detailsSearchBuffer = "";
+                        }
+                        break;
+                    default:
+                        if (key.KeyChar >= 32 && key.KeyChar <= 126 && key.Key != ConsoleKey.Enter)
+                        {
+                            if (detailsMode == "agyswitch" && (key.Key == ConsoleKey.A || key.Key == ConsoleKey.D || key.Key == ConsoleKey.O) && string.IsNullOrEmpty(_detailsSearchBuffer))
+                            {
+                                break;
+                            }
+                            _detailsSearchBuffer += key.KeyChar;
+                            detailsSel = 0;
+                        }
                         break;
                 }
                 continue;
@@ -424,10 +522,24 @@ public sealed class FlatTreeRenderer : IMenuRenderer
             switch (key.Key)
             {
                 case ConsoleKey.UpArrow:
+                case ConsoleKey.K:
                     selectionIndex = Math.Max(0, selectionIndex - 1);
                     break;
                 case ConsoleKey.DownArrow:
+                case ConsoleKey.J:
                     selectionIndex = Math.Min(visibleRows.Count - 1, selectionIndex + 1);
+                    break;
+                case ConsoleKey.PageUp:
+                    selectionIndex = Math.Max(0, selectionIndex - 10);
+                    break;
+                case ConsoleKey.PageDown:
+                    selectionIndex = Math.Min(visibleRows.Count - 1, selectionIndex + 10);
+                    break;
+                case ConsoleKey.Home:
+                    selectionIndex = 0;
+                    break;
+                case ConsoleKey.End:
+                    selectionIndex = Math.Max(0, visibleRows.Count - 1);
                     break;
                 case ConsoleKey.Divide:
                 case ConsoleKey.Oem2:
@@ -582,7 +694,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
         else
         {
             int winHeight = Console.WindowHeight > 0 ? Console.WindowHeight : 30;
-            int maxRows = Math.Max(3, winHeight - 18);
+            int maxRows = Math.Max(3, winHeight - 17);
 
             int topRow = 0;
             if (selIdx >= maxRows)
@@ -751,18 +863,59 @@ public sealed class FlatTreeRenderer : IMenuRenderer
         }
         else if (mode == "theme")
         {
-            grid.AddRow(new Markup("[cyan bold]Select Oh My Posh Theme:[/]\n"));
             var themeNames = GetThemeNames();
+            var filtered = string.IsNullOrEmpty(_detailsSearchBuffer)
+                ? themeNames
+                : themeNames.Where(t => t.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
+
             var currentTheme = Environment.GetEnvironmentVariable("THEME");
-            for (var i = 0; i < themeNames.Length; i++)
+
+            grid.AddRow(new Markup($"[cyan bold]Select Oh My Posh Theme[/] [dim]({filtered.Length}/{themeNames.Length} themes)[/]:\n"));
+            if (!string.IsNullOrEmpty(_detailsSearchBuffer))
             {
-                var isSelected = (i == selIdx);
-                var isActive = (themeNames[i] == currentTheme);
-                var prefix = isSelected ? "[green bold]> [/]" : "  ";
-                var suffix = isActive ? " [green](Active)[/]" : "";
-                grid.AddRow(new Markup($"{prefix}{themeNames[i].EscapeMarkup()}{suffix}"));
+                grid.AddRow(new Markup($"[yellow]Search:[/] [white]{_detailsSearchBuffer.EscapeMarkup()}_[/]\n"));
             }
-            grid.AddRow(new Markup("\n[dim]↑/↓ Navigate  ·  Enter Select  ·  Esc Cancel[/]"));
+            else
+            {
+                grid.AddRow(new Markup("[dim]Type to filter themes (Esc to clear / cancel)[/]\n"));
+            }
+
+            if (filtered.Length == 0)
+            {
+                grid.AddRow(new Markup($"  [dim]No themes matching '{_detailsSearchBuffer.EscapeMarkup()}'.[/]"));
+            }
+            else
+            {
+                int maxRows = 12;
+                int topRow = 0;
+                if (selIdx >= maxRows)
+                {
+                    topRow = selIdx - maxRows + 1;
+                }
+                int endRow = Math.Min(filtered.Length, topRow + maxRows);
+
+                if (topRow > 0)
+                {
+                    grid.AddRow(new Markup($"  [dim]▲ ... {topRow} items above ...[/]"));
+                }
+
+                for (var i = topRow; i < endRow; i++)
+                {
+                    var isSelected = (i == selIdx);
+                    var isActive = string.Equals(filtered[i], currentTheme, StringComparison.OrdinalIgnoreCase);
+                    var prefix = isSelected ? "[green bold]> [/]" : "  ";
+                    var suffix = isActive ? " [bold green][ACTIVE][/]" : "";
+                    var nameMarkup = isSelected ? $"[bold green]{filtered[i].EscapeMarkup()}[/]" : $"[white]{filtered[i].EscapeMarkup()}[/]";
+                    grid.AddRow(new Markup($"{prefix}{nameMarkup}{suffix}"));
+                }
+
+                if (endRow < filtered.Length)
+                {
+                    grid.AddRow(new Markup($"  [dim]▼ ... {filtered.Length - endRow} items below ...[/]"));
+                }
+            }
+
+            grid.AddRow(new Markup("\n[dim]↑/↓/j/k Navigate  ·  PgDn/PgUp Page  ·  Enter Select  ·  Esc Cancel[/]"));
         }
         else if (mode == "learn" || mode == "session" || mode == "weak")
         {
@@ -778,7 +931,13 @@ public sealed class FlatTreeRenderer : IMenuRenderer
         }
         else if (mode == "proj")
         {
-            var workspaces = WorkspaceRegistry.GetWorkspaces();
+            var allWorkspaces = WorkspaceRegistry.GetWorkspaces();
+            var workspaces = string.IsNullOrEmpty(_detailsSearchBuffer)
+                ? allWorkspaces
+                : allWorkspaces.Where(w => w != null && 
+                    ((w.Name != null && w.Name.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)) ||
+                     (w.WorkspacePath != null && w.WorkspacePath.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)))).ToArray();
+
             var currentDir = Directory.GetCurrentDirectory();
 
             var table = new Table()
@@ -826,7 +985,7 @@ public sealed class FlatTreeRenderer : IMenuRenderer
 
             grid.AddRow(new Markup("[bold green]📁 Registered Workspace Navigator (cnav)[/] [dim]— Select target to trigger quick actions[/]\n"));
             grid.AddRow(table);
-            grid.AddRow(new Markup("\n[bold cyan][Enter][/] Actions ([green]cd[/] / [cyan]/ide[/] / [yellow]Explorer[/] / [magenta]Git Diff[/])  ·  [bold cyan][Esc][/] Cancel"));
+            grid.AddRow(new Markup("\n[bold cyan][[Enter]][/] Actions ([green]cd[/] / [cyan]/ide[/] / [yellow]Explorer[/] / [magenta]Git Diff[/])  ·  [bold cyan][[Esc]][/] Cancel"));
         }
 
         var panel = new Panel(grid)
@@ -837,5 +996,14 @@ public sealed class FlatTreeRenderer : IMenuRenderer
             Expand = true
         };
         AnsiConsole.Write(panel);
+    }
+
+    private static string DeletePreviousWord(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return "";
+        var trimmed = text.TrimEnd();
+        int lastIdx = trimmed.LastIndexOfAny(new[] { ' ', '/', '-', '_' });
+        if (lastIdx < 0) return "";
+        return trimmed.Substring(0, lastIdx + 1);
     }
 }

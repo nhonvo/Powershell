@@ -81,12 +81,13 @@ public static class AiLearningGenerator
     {
         try
         {
-            string fileName = cliName == "agy" ? "agy.cmd" : "claude.cmd";
-            string args = $"--prompt \"{promptText}\"";
+            var exeName = cliName == "agy" ? "agy" : "claude";
+            var promptEscaped = promptText.Replace("\"", "\\\"");
+            var args = $"/c {exeName} --prompt \"{promptEscaped}\"";
 
             var psi = new ProcessStartInfo
             {
-                FileName = fileName,
+                FileName = "cmd.exe",
                 Arguments = args,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
@@ -111,7 +112,6 @@ public static class AiLearningGenerator
         {
             SpectrePanel.Error($"CLI execution warning: {ex.Message}");
         }
-
         return false;
     }
 }

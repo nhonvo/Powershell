@@ -1,0 +1,167 @@
+﻿{
+  "Kanji": [
+    {
+      "Char": "\u65E5",
+      "Onyomi": [
+        "\u30CB\u30C1",
+        "\u30B8\u30C4"
+      ],
+      "Kunyomi": [
+        "\u3072",
+        "\u304B"
+      ],
+      "Meaning": "Sun / Day",
+      "JlptLevel": "N5",
+      "StrokeCount": 4,
+      "Radicals": [
+        "\u65E5"
+      ],
+      "ExampleWords": [
+        {
+          "Word": "\u65E5\u672C",
+          "Reading": "\u306B\u307B\u3093",
+          "Meaning": "Japan"
+        },
+        {
+          "Word": "\u4ECA\u65E5",
+          "Reading": "\u304D\u3087\u3046",
+          "Meaning": "Today"
+        }
+      ],
+      "Mnemonic": "Sun in the sky",
+      "Tags": [
+        "kanji",
+        "n5"
+      ],
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u6708",
+      "Onyomi": [
+        "\u30B2\u30C4",
+        "\u30AC\u30C4"
+      ],
+      "Kunyomi": [
+        "\u3064\u304D"
+      ],
+      "Meaning": "Moon / Month",
+      "JlptLevel": "N5",
+      "StrokeCount": 4,
+      "Radicals": [
+        "\u6708"
+      ],
+      "ExampleWords": [
+        {
+          "Word": "\u6708\u66DC\u65E5",
+          "Reading": "\u3052\u3064\u3088\u3046\u3073",
+          "Meaning": "Monday"
+        },
+        {
+          "Word": "\u4ECA\u6708",
+          "Reading": "\u3053\u3093\u3052\u3064",
+          "Meaning": "This month"
+        }
+      ],
+      "Mnemonic": "Crescent moon",
+      "Tags": [
+        "kanji",
+        "n5"
+      ],
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u6C34",
+      "Onyomi": [
+        "\u30B9\u30A4"
+      ],
+      "Kunyomi": [
+        "\u307F\u305A"
+      ],
+      "Meaning": "Water",
+      "JlptLevel": "N5",
+      "StrokeCount": 4,
+      "Radicals": [
+        "\u6C34"
+      ],
+      "ExampleWords": [
+        {
+          "Word": "\u6C34\u66DC\u65E5",
+          "Reading": "\u3059\u3044\u3088\u3046\u3073",
+          "Meaning": "Wednesday"
+        },
+        {
+          "Word": "\u98F2\u307F\u6C34",
+          "Reading": "\u306E\u307F\u307F\u305A",
+          "Meaning": "Drinking water"
+        }
+      ],
+      "Mnemonic": "Flowing stream",
+      "Tags": [
+        "kanji",
+        "n5"
+      ],
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Char": "\u706B",
+      "Onyomi": [
+        "\u30AB"
+      ],
+      "Kunyomi": [
+        "\u3072"
+      ],
+      "Meaning": "Fire",
+      "JlptLevel": "N5",
+      "StrokeCount": 4,
+      "Radicals": [
+        "\u706B"
+      ],
+      "ExampleWords": [
+        {
+          "Word": "\u706B\u66DC\u65E5",
+          "Reading": "\u304B\u3088\u3046\u3073",
+          "Meaning": "Tuesday"
+        },
+        {
+          "Word": "\u82B1\u706B",
+          "Reading": "\u306F\u306A\u3073",
+          "Meaning": "Fireworks"
+        }
+      ],
+      "Mnemonic": "Flickering flames",
+      "Tags": [
+        "kanji",
+        "n5"
+      ],
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

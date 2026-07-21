@@ -104,7 +104,7 @@ if ($config -and $config.ProjectsBaseDir) {
 if ($config -and $config.AgySourceHome) {
     $Global:AgySourceHome = $config.AgySourceHome
 } else {
-    $Global:AgySourceHome = if (Test-Path "C:\Users\Public\.gemini") { "C:\Users\Public\.gemini" } else { Join-Path $env:USERPROFILE ".gemini" }
+    $Global:AgySourceHome = Join-Path $env:USERPROFILE ".gemini"
 }
 
 # Apply GlobalBinDir
@@ -228,18 +228,23 @@ class ProfileEnvironment {
         # --- PSReadLine Options ---
         try {
             Set-PSReadLineOption -EditMode Windows -ErrorAction SilentlyContinue
+            Set-PSReadLineOption -HistorySaveStyle SaveIncrementally -ErrorAction SilentlyContinue
+            Set-PSReadLineOption -MaximumHistoryCount 10000 -ErrorAction SilentlyContinue
+
             $psReadLineCmd = Get-Command Set-PSReadLineOption -ErrorAction SilentlyContinue
             if ($psReadLineCmd -and $psReadLineCmd.Parameters.ContainsKey('PredictionSource')) {
-                $supportsVt = -not $Global:AiMode -and $global:Host.UI.SupportsVirtualTerminal -and -not [Console]::IsOutputRedirected
-                if ($supportsVt) {
+                try {
+                    Set-PSReadLineOption -PredictionSource HistoryAndPlugin -ErrorAction Stop
+                    Set-PSReadLineOption -PredictionViewStyle ListView -ErrorAction Stop
+                } catch {
                     try {
                         Set-PSReadLineOption -PredictionSource History -ErrorAction Stop
                         Set-PSReadLineOption -PredictionViewStyle ListView -ErrorAction Stop
                     } catch {
-                        Set-PSReadLineOption -PredictionSource None -ErrorAction SilentlyContinue
+                        try {
+                            Set-PSReadLineOption -PredictionSource History -PredictionViewStyle InlineView -ErrorAction SilentlyContinue
+                        } catch {}
                     }
-                } else {
-                    Set-PSReadLineOption -PredictionSource None -ErrorAction SilentlyContinue
                 }
             }
             Set-PSReadLineOption -BellStyle None -ErrorAction SilentlyContinue
@@ -268,10 +273,15 @@ class ProfileEnvironment {
         if (-not $Global:AiMode -and (Get-Command Set-PSReadLineKeyHandler -ErrorAction SilentlyContinue)) {
             try { Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward -ErrorAction SilentlyContinue } catch {}
             try { Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward -ErrorAction SilentlyContinue } catch {}
-            try { Set-PSReadLineKeyHandler -Chord 'Ctrl+Spacebar' -Function Complete -ErrorAction SilentlyContinue } catch {}
+            try { Set-PSReadLineKeyHandler -Chord 'Ctrl+r' -Function HistorySearchBackward -ErrorAction SilentlyContinue } catch {}
+            try { Set-PSReadLineKeyHandler -Chord 'Ctrl+s' -Function HistorySearchForward -ErrorAction SilentlyContinue } catch {}
+            try { Set-PSReadLineKeyHandler -Key F2 -Function SwitchPredictionViewStyle -ErrorAction SilentlyContinue } catch {}
+            try { Set-PSReadLineKeyHandler -Chord 'Ctrl+Spacebar' -Function MenuComplete -ErrorAction SilentlyContinue } catch {}
             try {
                 Set-PSReadLineKeyHandler -Key F7 -ScriptBlock {
-                    $command = Get-History | Out-GridView -Title 'Command History' -PassThru
+                    $historyItems = Get-History -Count 100 -ErrorAction SilentlyContinue
+                    if (-not $historyItems) { return }
+                    $command = $historyItems | Out-GridView -Title 'Command History (Select to run)' -PassThru
                     if ($command) {
                         $pr = [Type]"Microsoft.PowerShell.PSConsoleReadLine"
                         if ($pr) {

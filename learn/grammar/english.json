@@ -1,0 +1,71 @@
+﻿{
+  "Level": "English",
+  "Cards": [
+    {
+      "Id": "g_en_01",
+      "Level": "English",
+      "Pattern": "Present Perfect vs Past Simple",
+      "Meaning": "Completed action at specific past time vs Unspecified/Ongoing connection",
+      "Usage": "Past: \u0027I saw him yesterday\u0027 | Perfect: \u0027I have seen him before\u0027",
+      "ExampleJp": "I have lived in Vietnam for 3 years.",
+      "ExampleEn": "T\u00F4i \u0111\u00E3 s\u1ED1ng \u1EDF Vi\u1EC7t Nam \u0111\u01B0\u1EE3c 3 n\u0103m (v\u00E0 v\u1EABn \u0111ang s\u1ED1ng \u1EDF \u0111\u00E2y).",
+      "Tags": [
+        "grammar",
+        "english",
+        "tenses"
+      ],
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "g_en_02",
+      "Level": "English",
+      "Pattern": "Second Conditional (Unreal Present)",
+      "Meaning": "Hypothetical or unlikely situations in the present/future",
+      "Usage": "If \u002B Past Simple, ... would \u002B Verb",
+      "ExampleJp": "If I had more time, I would learn Rust.",
+      "ExampleEn": "N\u1EBFu t\u00F4i c\u00F3 nhi\u1EC1u th\u1EDDi gian h\u01A1n, t\u00F4i s\u1EBD h\u1ECDc Rust.",
+      "Tags": [
+        "grammar",
+        "english",
+        "conditionals"
+      ],
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "g_en_03",
+      "Level": "English",
+      "Pattern": "Third Conditional (Unreal Past)",
+      "Meaning": "Regrets or hypothetical past outcomes",
+      "Usage": "If \u002B Past Perfect, ... would have \u002B Past Participle",
+      "ExampleJp": "If we had tested the code, the outage would not have happened.",
+      "ExampleEn": "N\u1EBFu ch\u00FAng ta \u0111\u00E3 test code, s\u1EF1 c\u1ED1 \u0111\u00E3 kh\u00F4ng x\u1EA3y ra.",
+      "Tags": [
+        "grammar",
+        "english",
+        "conditionals"
+      ],
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

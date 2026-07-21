@@ -1,0 +1,57 @@
+﻿{
+  "Meta": {
+    "Id": "deck-1",
+    "Title": "General Developer Deck",
+    "Language": "English",
+    "Topic": "General Dev",
+    "Level": "Beginner",
+    "SourceNotes": [
+      "internal"
+    ],
+    "GeneratedAt": "2026-07-21T02:38:55.6315576Z",
+    "Version": 1
+  },
+  "Cards": [
+    {
+      "Id": "card-1",
+      "Front": "What is SOLID?",
+      "Back": "SOLID is an acronym for five design principles: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion.",
+      "Hint": "Software design acronym",
+      "Mnemonic": "S-O-L-I-D principles",
+      "ExampleSentence": "Use SOLID principles to write clean code.",
+      "Tags": [
+        "oop",
+        "architecture"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    },
+    {
+      "Id": "card-2",
+      "Front": "Explain Git merge vs. rebase.",
+      "Back": "Merge keeps full commit history with merge commits. Rebase rewrites commit history on top of the target branch for a linear project history.",
+      "Hint": "Git workflow strategy",
+      "Mnemonic": "Rebase = rewrite history, Merge = preserve history",
+      "ExampleSentence": "Rebasing keeps the commit tree clean.",
+      "Tags": [
+        "git"
+      ],
+      "Difficulty": 2,
+      "Sr": {
+        "EaseFactor": 2.5,
+        "IntervalDays": 0,
+        "Repetitions": 0,
+        "LastReviewed": null,
+        "NextReview": null,
+        "Status": "new"
+      }
+    }
+  ]
+}

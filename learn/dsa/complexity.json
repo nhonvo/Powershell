@@ -1,0 +1,78 @@
+﻿{
+  "DataStructures": [
+    {
+      "Name": "Array",
+      "Access": "O(1)",
+      "Search": "O(n)",
+      "Insert": "O(n)",
+      "Delete": "O(n)",
+      "Space": "O(n)",
+      "Notes": "Random access O(1)",
+      "Tags": [
+        "basics"
+      ]
+    },
+    {
+      "Name": "Hash Table",
+      "Access": "N/A",
+      "Search": "O(1)",
+      "Insert": "O(1)",
+      "Delete": "O(1)",
+      "Space": "O(n)",
+      "Notes": "Average O(1), worst O(n)",
+      "Tags": [
+        "hash"
+      ]
+    },
+    {
+      "Name": "Balanced BST (AVL/Red-Black)",
+      "Access": "O(log n)",
+      "Search": "O(log n)",
+      "Insert": "O(log n)",
+      "Delete": "O(log n)",
+      "Space": "O(n)",
+      "Notes": "Self-balancing tree",
+      "Tags": [
+        "trees"
+      ]
+    }
+  ],
+  "Algorithms": [
+    {
+      "Name": "Quick Sort",
+      "Best": "O(n log n)",
+      "Average": "O(n log n)",
+      "Worst": "O(n\u00B2)",
+      "Space": "O(log n)",
+      "Category": "sort",
+      "Notes": "In-place divide \u0026 conquer",
+      "Tags": [
+        "sorting"
+      ]
+    },
+    {
+      "Name": "Merge Sort",
+      "Best": "O(n log n)",
+      "Average": "O(n log n)",
+      "Worst": "O(n log n)",
+      "Space": "O(n)",
+      "Category": "sort",
+      "Notes": "Stable divide \u0026 conquer",
+      "Tags": [
+        "sorting"
+      ]
+    },
+    {
+      "Name": "Binary Search",
+      "Best": "O(1)",
+      "Average": "O(log n)",
+      "Worst": "O(log n)",
+      "Space": "O(1)",
+      "Category": "search",
+      "Notes": "Requires sorted input",
+      "Tags": [
+        "search"
+      ]
+    }
+  ]
+}

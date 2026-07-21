@@ -1,0 +1,62 @@
+﻿{
+  "Words": [
+    {
+      "Date": "2026-07-21",
+      "Word": "resilient",
+      "Pronunciation": "ri-zil-yuhnt",
+      "PartOfSpeech": "Adjective",
+      "Definition": "Able to withstand or recover quickly from difficult conditions.",
+      "Example": "Our distributed system is resilient to node failures.",
+      "Tags": [
+        "architecture",
+        "vocab"
+      ]
+    },
+    {
+      "Date": "2026-07-21",
+      "Word": "idempotent",
+      "Pronunciation": "eye-dem-poh-tuhnt",
+      "PartOfSpeech": "Adjective",
+      "Definition": "Denoting an operation which can be applied multiple times without changing the result.",
+      "Example": "Ensure API retry calls are strictly idempotent.",
+      "Tags": [
+        "api",
+        "tech"
+      ]
+    },
+    {
+      "Date": "2026-07-21",
+      "Word": "ephemeral",
+      "Pronunciation": "ih-fem-er-uhl",
+      "PartOfSpeech": "Adjective",
+      "Definition": "Lasting for a very short time.",
+      "Example": "Container local storage is ephemeral unless backed by volumes.",
+      "Tags": [
+        "docker",
+        "devops"
+      ]
+    },
+    {
+      "Date": "2026-07-21",
+      "Word": "clandestine",
+      "Pronunciation": "klan-des-tin",
+      "PartOfSpeech": "Adjective",
+      "Definition": "Kept secret or done secretively.",
+      "Example": "Secrets vault prevents clandestine access to tokens.",
+      "Tags": [
+        "security"
+      ]
+    },
+    {
+      "Date": "2026-07-21",
+      "Word": "perspicacious",
+      "Pronunciation": "pur-spih-kay-shuhs",
+      "PartOfSpeech": "Adjective",
+      "Definition": "Having a ready insight into and understanding of things; shrewd.",
+      "Example": "The architect gave a perspicacious solution to the bottleneck.",
+      "Tags": [
+        "vocab"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+I have generated the comprehensive deep learning JSON dataset for **Hiragana** designed specifically for flashcards, spaced repetition systems (SRS), and interactive quizzes.
+
+The complete JSON dataset containing **95 flashcards**, lookalike confusion matrixes, phonetic rules, and quiz questions has been saved to:
+📄 [hiragana_deck.json](file:///C:/Users/TruongNhon/.gemini/antigravity-cli/scratch/hiragana-learning-data/hiragana_deck.json)
+
+An artifact summary is available at:
+📑 [hiragana_dataset_summary.md](file:///C:/Users/TruongNhon/.gemini/antigravity-cli/brain/85f0615d-1e7b-4bb5-a45b-8be5b736a82c/hiragana_dataset_summary.md)
+
+---
+
+### 📋 JSON Structure Preview
+
+```json
+{
+  "metadata": {
+    "title": "Comprehensive Deep Learning Hiragana Mastery Deck",
+    "description": "Comprehensive dataset for Japanese Hiragana learning, covering Gojūon (Basic 46), Dakuten/Handakuten, Yōon (Combinations), Special Grammar Rules, Lookalike Confusions, and Quizzes.",
+    "language": "Japanese",
+    "script": "Hiragana",
+    "total_cards": 95,
+    "categories": ["basic", "dakuten", "handakuten", "yoon", "special_rules"]
+  },
+  "flashcards": [
+    {
+      "id": "a_1",
+      "character": "あ",
+      "romaji": "a",
+      "type": "basic",
+      "group": "A-line",
+      "stroke_count": 3,
+      "mnemonic": "Looks like an 'A' drawn inside an apple.",
+      "example_vocabulary": "あめ (ame - rain), あさ (asa - morning)",
+      "distractors": ["お", "め"]
+    },
+    {
+      "id": "g_1",
+      "character": "が",
+      "romaji": "ga",
+      "type": "dakuten",
+      "group": "G-line",
+      "stroke_count": 5,
+      "mnemonic": "か with dakuten (tenten).",
+      "example_vocabulary": "がっこう (gakkou - school)",
+      "distractors": ["か", "ざ"]
+    },
+    {
+      "id": "yoon_kya",
+      "character": "きゃ",
+      "romaji": "kya",
+      "type": "yoon",
+      "group": "K-combo",
+      "stroke_count": 6,
+      "mnemonic": "き + small や",
+      "example_vocabulary": "きゃく (kyaku - guest/customer)",
+      "distractors": ["き", "きょ"]
+    }
+  ],
+  "lookalike_groups": [
+    {
+      "group_id": "lookalike_1",
+      "name": "The Loop/Tail Group",
+      "characters": ["ね", "れ", "ぬ", "め"],
+      "distinction_guide": "ね has a loop at the end; れ curves outward; ぬ has a loop at the end and a rounded body; め has no loop at the end."
+    }
+  ],
+  "special_rules": [
+    {
+      "rule_id": "particle_wa",
+      "title": "Topic Particle は",
+      "written_as": "は",
+      "pronounced_as": "wa",
+      "explanation": "When は is used as a grammar topic marker particle, it is pronounced as 'wa' instead of 'ha'.",
+      "example": {
+        "japanese": "わたしはたなかです",
+        "romaji": "Watashi wa Tanaka desu",
+        "english": "I am Tanaka."
+      }
+    }
+  ],
+  "quizzes": [
+    {
+      "quiz_id": "q1",
+      "type": "multiple_choice_character_to_romaji",
+      "question": "What is the romaji for the character 'ね'?",
+      "options": ["ne", "re", "nu", "me"],
+      "correct_answer": "ne",
+      "explanation": "'ね' has a loop at the end and is pronounced 'ne' (like Neko)."
+    }
+  ]
+}
+```
+
+### 💡 Dataset Breakdown
+1. **Gojūon (Basic 46)**: Complete basic characters with stroke counts, memory mnemonics, and real vocabulary usage.
+2. **Dakuten & Handakuten (25)**: Voiced (`が, ざ, だ, ば`) and semi-voiced (`ぱ`) modifiers.
+3. **Yōon Combinations (24)**: Contracted sounds (`きゃ, しゅ, ちょ, etc.`).
+4. **Visual Lookalike Distinction**: Comparative guides for tricky character pairs (`ね/れ/ぬ/め`, `さ/き/ち`, `ろ/る`).
+5. **Grammar & Phonetic Exception Rules**: Topic particles (`は` -> wa, `へ` -> e, `を` -> o), Sokuon (`っ` double consonants), and long vowels (Chōon).
+6. **Quiz Matrix**: Ready-to-use multiple-choice flashcard test bank.
+
+*Tip: You can set `C:\Users\TruongNhon\.gemini\antigravity-cli\scratch\hiragana-learning-data` as your active workspace if you plan to build a web application or flashcard parser around this data!*

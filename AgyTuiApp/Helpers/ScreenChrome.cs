@@ -19,11 +19,8 @@ public static class ScreenChrome
     public static string Muted(string text) => $"[grey]{text.EscapeMarkup()}[/]";
     public static string Live(string text) => $"[blue]{text.EscapeMarkup()}[/]";
 
-    private static bool _firstRenderDone = false;
-
     public static void ResetRenderState()
     {
-        _firstRenderDone = false;
     }
 
     public static void ClearTrailingLines()
@@ -48,19 +45,7 @@ public static class ScreenChrome
         var w = Math.Min(65, Math.Max(50, Console.WindowWidth - 2));
         var sep = new string('=', w);
 
-        if (!_firstRenderDone || forceClear)
-        {
-            try { AnsiConsole.Clear(); } catch {}
-            _firstRenderDone = true;
-        }
-        else
-        {
-            try
-            {
-                Console.SetCursorPosition(0, 0);
-            }
-            catch {}
-        }
+        try { AnsiConsole.Clear(); } catch {}
         AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
         var titleIcon = Icons.IsUtf8Supported ? "🛸" : "[AGY]";
         AnsiConsole.MarkupLine($"[cyan] ▄████▄  ▄████▄ [/] [bold green]{titleIcon} Powershell Profile Control Center v3.0 {titleIcon}[/]");

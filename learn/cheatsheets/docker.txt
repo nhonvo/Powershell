@@ -1,0 +1,7 @@
+=== DOCKER CHEAT SHEET ===
+
+1. Cleanup unused resources:
+   docker system prune -af --volumes
+
+2. Follow container logs:
+   docker logs -f --tail 100 <container>

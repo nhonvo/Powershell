@@ -267,8 +267,16 @@ public static class AgyAccountCore
 
     }
     = TimeProvider.System;
-    public static readonly string AgySourceHome = @"C:\Users\Public\.gemini";
-    public static readonly string AgyAccountPrefix = @"C:\Users\Public\.gemini_";
+    public static string AgySourceHome
+    {
+        get
+        {
+            var cfgHome = Config.Current.AgySourceHome;
+            if (!string.IsNullOrEmpty(cfgHome)) return cfgHome;
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini");
+        }
+    }
+    public static string AgyAccountPrefix => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini_");
 
     public static string AgyActiveAccountFile => Path.Combine(AgySourceHome, "active_account.txt");
     private static bool? _networkOnline;
