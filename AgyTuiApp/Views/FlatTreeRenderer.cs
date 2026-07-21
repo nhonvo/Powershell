@@ -831,17 +831,24 @@ public sealed class FlatTreeRenderer : IMenuRenderer
         var headerText = searching ? $"Search (Esc to clear): [green]{searchBuffer.EscapeMarkup()}[/]_" : "Type [[/]] to search ...";
         IRenderable content = grid;
 
-        if (isCompact && selIdx >= 0 && selIdx < rows.Count)
+        if (selIdx >= 0 && selIdx < rows.Count)
         {
             var highlighted = rows[selIdx];
             if (highlighted.Type == VisibleRowType.Command && highlighted.Node.Command != null)
             {
-                var footer = new Markup($"[dim] {highlighted.Node.Command.Description.EscapeMarkup()} [/]");
-                content = new Rows(grid, new Markup("\n"), footer);
+                var cmd = highlighted.Node.Command;
+                var noteText = (cmd.HelpLines != null && cmd.HelpLines.Length > 0) 
+                    ? string.Join(" ", cmd.HelpLines) 
+                    : cmd.Description;
+                grid.AddRow(new Markup($"\n[bold yellow]💡 Note:[/] [white]{noteText.EscapeMarkup()}[/]"));
+            }
+            else if (highlighted.Type == VisibleRowType.Category)
+            {
+                grid.AddRow(new Markup($"\n[bold yellow]💡 Note:[/] [white]Category '{highlighted.Node.Label.EscapeMarkup()}' — Press [[Enter]] or [[→]] to expand/collapse category.[/]"));
             }
         }
 
-        var hotkeyBar = new Markup("[dim] Hotkeys: cg (Git) · cdk (Docker) · caws (AWS) · cnet (Net) · csys (Sys) · cai (AI) · cnav (Nav) · cssh (SSH) [/]");
+        var hotkeyBar = new Markup("[dim]Hotkeys: cg (Git) · cdk (Docker) · cnav (Nav) · cai (AI) · csys (Sys) · cnet (Net) · cssh (SSH)\nCombos:  [[Ctrl+Space]] Complete · [[Ctrl+Shift+C]] CC TUI · [[Ctrl+Shift+B]] Build · [[Ctrl+Shift+T]] Test · [[F7]] History[/]");
         content = new Rows(content, new Markup("\n"), hotkeyBar);
 
         var outerPanel = new Panel(content)
