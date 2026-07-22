@@ -11,11 +11,11 @@ public class ConfigServiceTests
         var cfg = Config.Current;
         var initialAiMode = cfg.Ai.Mode;
 
-        cfg.Ui.Mode = "three-pane";
+        cfg.Ui.Mode = "flat-tree";
         Config.Save();
 
         var reloaded = Config.Current;
-        Assert.Equal("three-pane", reloaded.Ui.Mode);
+        Assert.Equal("flat-tree", reloaded.Ui.Mode);
         Assert.Equal(initialAiMode, reloaded.Ai.Mode);
     }
 

@@ -504,6 +504,48 @@
       "PomodoroCount": 0,
       "Notes": "unit test",
       "Tags": []
+    },
+    {
+      "Id": "s_025",
+      "Date": "2026-07-22",
+      "StartTime": "15:38",
+      "EndTime": "15:38",
+      "DurationMinutes": 1,
+      "Topic": "language_test_34ed14",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_9bae2c"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_026",
+      "Date": "2026-07-22",
+      "StartTime": "15:39",
+      "EndTime": "15:39",
+      "DurationMinutes": 1,
+      "Topic": "language_test_62f68b",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_eeb6aa"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
     }
   ]
 }
