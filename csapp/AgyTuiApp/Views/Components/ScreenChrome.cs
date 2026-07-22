@@ -76,7 +76,14 @@ public static class ScreenChrome
         {
             try
             {
-                Console.Write("\x1b[2J\x1b[H");
+                if (forceClear)
+                {
+                    Console.Write("\x1b[2J\x1b[H");
+                }
+                else
+                {
+                    Console.SetCursorPosition(0, 0);
+                }
             }
             catch
             {
