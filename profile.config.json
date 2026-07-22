@@ -1,6 +1,6 @@
-{
+﻿{
   "Ui": {
-    "Mode": "flat-tree", // Valid options: "flat-tree" (slash command tree) | "three-pane" (classic 3-pane dashboard)
+    "Mode": "three-pane", // Valid options: "flat-tree" (slash command tree) | "three-pane" (classic 3-pane dashboard)
     "Density": "comfortable" // Valid options: "comfortable" (full descriptions) | "compact" (mobile/narrow view)
   },
   "Ai": {

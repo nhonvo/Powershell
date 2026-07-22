@@ -1,0 +1,26 @@
+﻿{
+  "DailyGoals": null,
+  "Sessions": [
+    {
+      "Id": "s_001",
+      "Date": "2026-07-22",
+      "StartTime": "13:38",
+      "EndTime": "13:38",
+      "DurationMinutes": 1,
+      "Topic": "language_test_d65060",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_9eb752"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    }
+  ]
+}

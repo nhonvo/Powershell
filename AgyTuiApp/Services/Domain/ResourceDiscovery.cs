@@ -76,7 +76,7 @@ public static class ResourceRegistry
 
     }
 
-    private static string DetectFormat(string path)
+    public static string DetectFormat(string path)
     {
         if (path.StartsWith("http")) return "url";
         return System.IO.Path.GetExtension(path).ToLower() switch
