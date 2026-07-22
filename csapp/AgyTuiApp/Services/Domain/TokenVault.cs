@@ -16,9 +16,9 @@ public static class TokenVault
             var protectedBytes = ProtectedData.Protect(bytes, null, DataProtectionScope.CurrentUser);
             return Convert.ToBase64String(protectedBytes);
         }
-        catch
+        catch (Exception ex)
         {
-            return plainText;
+            throw new CryptographicException("Token encryption failed.", ex);
         }
     }
 
@@ -31,9 +31,9 @@ public static class TokenVault
             var bytes = ProtectedData.Unprotect(protectedBytes, null, DataProtectionScope.CurrentUser);
             return Encoding.UTF8.GetString(bytes);
         }
-        catch
+        catch (Exception ex)
         {
-            return cipherText;
+            throw new CryptographicException("Token decryption failed.", ex);
         }
     }
 }

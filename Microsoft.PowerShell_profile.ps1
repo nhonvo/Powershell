@@ -42,12 +42,21 @@ if (Test-Path $configPath) {
     } catch {}
 }
 
+# Helper properties resolving nested vs flat config
+$poshThemesPath = if ($config.System -and $config.System.PoshThemesPath) { $config.System.PoshThemesPath } else { $config.PoshThemesPath }
+$startupLogFile = if ($config.System -and $config.System.StartupLogFile) { $config.System.StartupLogFile } else { $config.StartupLogFile }
+$verboseStartup = if ($config.System -and $null -ne $config.System.VerboseStartup) { $config.System.VerboseStartup } else { $config.VerboseStartup }
+$aiModeVal = if ($config.Ai -and $null -ne $config.Ai.Mode) { $config.Ai.Mode } else { $config.AiMode }
+$projectsBaseDir = if ($config.Project -and $config.Project.BaseDir) { $config.Project.BaseDir } else { $config.ProjectsBaseDir }
+$agySourceHome = if ($config.System -and $config.System.AgySourceHome) { $config.System.AgySourceHome } else { $config.AgySourceHome }
+$globalBinDir = if ($config.System -and $config.System.GlobalBinDir) { $config.System.GlobalBinDir } else { $config.GlobalBinDir }
+
 # Apply environment variable POSH_THEMES_PATH
-if ($config -and $config.PoshThemesPath) {
-    if ([System.IO.Path]::IsPathRooted($config.PoshThemesPath)) {
-        $env:POSH_THEMES_PATH = $config.PoshThemesPath
+if ($poshThemesPath) {
+    if ([System.IO.Path]::IsPathRooted($poshThemesPath)) {
+        $env:POSH_THEMES_PATH = $poshThemesPath
     } else {
-        $env:POSH_THEMES_PATH = Join-Path -Path $Global:ProfileRepoRoot -ChildPath $config.PoshThemesPath
+        $env:POSH_THEMES_PATH = Join-Path -Path $Global:ProfileRepoRoot -ChildPath $poshThemesPath
     }
 } else {
     $env:POSH_THEMES_PATH = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "psapp\asset\powershell-themes"
@@ -60,14 +69,14 @@ if ((Test-Path $localModules) -and ($env:PSModulePath -notlike "*$localModules*"
 }
 
 # Apply global startup log file path
-if ($config -and $config.StartupLogFile) {
-    if ([System.IO.Path]::IsPathRooted($config.StartupLogFile)) {
-        $Global:AgyStartupLogFile = $config.StartupLogFile
+if ($startupLogFile) {
+    if ([System.IO.Path]::IsPathRooted($startupLogFile)) {
+        $Global:AgyStartupLogFile = $startupLogFile
     } else {
-        if ($config.StartupLogFile -like "~*") {
-            $Global:AgyStartupLogFile = Join-Path -Path $env:USERPROFILE -ChildPath $config.StartupLogFile.Substring(1).TrimStart('\', '/')
+        if ($startupLogFile -like "~*") {
+            $Global:AgyStartupLogFile = Join-Path -Path $env:USERPROFILE -ChildPath $startupLogFile.Substring(1).TrimStart('\', '/')
         } else {
-            $Global:AgyStartupLogFile = Join-Path -Path $Global:ProfileRepoRoot -ChildPath $config.StartupLogFile
+            $Global:AgyStartupLogFile = Join-Path -Path $Global:ProfileRepoRoot -ChildPath $startupLogFile
         }
     }
 } else {
@@ -77,15 +86,15 @@ if ($config -and $config.StartupLogFile) {
 $Global:AgyStartupStart = Get-Date
 
 # Apply VerboseStartup
-if ($config -and $null -ne $config.VerboseStartup) {
-    $Global:VerboseStartup = [System.Convert]::ToBoolean($config.VerboseStartup)
+if ($null -ne $verboseStartup) {
+    $Global:VerboseStartup = [System.Convert]::ToBoolean($verboseStartup)
 } else {
     $Global:VerboseStartup = $false
 }
 
 # Apply AiMode
-if ($config -and $null -ne $config.AiMode -and "$($config.AiMode)" -ne "auto") {
-    $Global:AiMode = [System.Convert]::ToBoolean($config.AiMode)
+if ($null -ne $aiModeVal -and "$aiModeVal" -ne "auto") {
+    $Global:AiMode = [System.Convert]::ToBoolean($aiModeVal)
 } else {
     $Global:AiMode = $false
     $aiMarkers = @(
@@ -102,22 +111,22 @@ if ($config -and $null -ne $config.AiMode -and "$($config.AiMode)" -ne "auto") {
 }
 
 # Apply ProjectsBaseDir
-if ($config -and $config.ProjectsBaseDir) {
-    $Global:ProjectsBaseDir = $config.ProjectsBaseDir
+if ($projectsBaseDir) {
+    $Global:ProjectsBaseDir = $projectsBaseDir
 } else {
     $Global:ProjectsBaseDir = if (Test-Path "$env:USERPROFILE\Desktop\project") { "$env:USERPROFILE\Desktop\project" } elseif (Test-Path "$env:USERPROFILE\project") { "$env:USERPROFILE\project" } else { Join-Path $env:USERPROFILE "Documents" }
 }
 
 # Apply AgySourceHome
-if ($config -and $config.AgySourceHome) {
-    $Global:AgySourceHome = $config.AgySourceHome
+if ($agySourceHome) {
+    $Global:AgySourceHome = $agySourceHome
 } else {
     $Global:AgySourceHome = Join-Path $env:USERPROFILE ".gemini"
 }
 
 # Apply GlobalBinDir
-if ($config -and $config.GlobalBinDir) {
-    $Global:GlobalBinDir = $config.GlobalBinDir
+if ($globalBinDir) {
+    $Global:GlobalBinDir = $globalBinDir
 } else {
     $Global:GlobalBinDir = "C:\ProgramData\agy\bin"
 }
@@ -130,6 +139,7 @@ if ($config -and $config.GlobalBinDir) {
 # session to see exactly which phase was last reached.
 function Write-AgyStartupCheckpoint {
     param([string]$Label)
+    if (-not $Global:VerboseStartup -and -not $env:AGY_STARTUP_DEBUG) { return }
     try {
         $elapsedMs = [Math]::Round(((Get-Date) - $Global:AgyStartupStart).TotalMilliseconds)
         $dir = Split-Path $Global:AgyStartupLogFile
@@ -1045,34 +1055,6 @@ class AwsHelper {
 # ==============================================================================
 
 class SystemHelper {
-    static [object[]] GetDiskSpace() {
-        return @(Get-PSDrive -PSProvider FileSystem | Select-Object Name,
-            @{N='Used(GB)';E={"{0:N2}" -f ($_.Used/1GB)}},
-            @{N='Free(GB)';E={"{0:N2}" -f ($_.Free/1GB)}},
-            @{N='Total(GB)';E={"{0:N2}" -f (($_.Used + $_.Free)/1GB)}})
-    }
-
-    static [void] StopProcessFriendly([string]$Name) {
-        if ($Name) {
-            Stop-Process -Name $Name -Force
-        } else {
-            Get-Process | Out-GridView -Title "Select Process to Kill" -PassThru | Stop-Process -Force
-        }
-    }
-
-    static [void] OpenExplorer() {
-        Invoke-Item .
-    }
-
-    static [string] GetPublicIP() {
-        try {
-            $webClient = [System.Net.WebClient]::new()
-            return $webClient.DownloadString("https://api.ipify.org").Trim()
-        } catch {
-            return "Unable to resolve public IP."
-        }
-    }
-
     static [void] ClearHistory() {
         Clear-Host
         Remove-Item (Get-PSReadlineOption).HistorySavePath -ErrorAction SilentlyContinue
@@ -1080,139 +1062,6 @@ class SystemHelper {
         if ($prType) { $prType::ClearHistory() }
         Clear-History
         Write-Host "🧹 All command history has been cleared." -ForegroundColor Yellow
-    }
-
-    static [void] KillPort([int]$Port) {
-        $connections = Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue
-        if (-not $connections) {
-            Write-Host "No process found listening on port $Port." -ForegroundColor Yellow
-            return
-        }
-        foreach ($conn in $connections) {
-            $owningPid = $conn.OwningProcess
-            try {
-                $proc = Get-Process -Id $owningPid -ErrorAction SilentlyContinue
-                if ($proc) {
-                    Write-Host "Killing process '$($proc.Name)' (PID $owningPid) listening on port $Port..." -ForegroundColor Red
-                    Stop-Process -Id $owningPid -Force
-                }
-            } catch {
-                Write-Host "Failed to kill process PID $($owningPid): $_" -ForegroundColor Red
-            }
-        }
-    }
-
-    static [void] SystemMonitor() {
-        # Check network & metrics first
-        $cpu = 0.0
-        try {
-            $cpuSample = Get-Counter '\Processor(_Total)\% Processor Time' -ErrorAction SilentlyContinue
-            if ($cpuSample) { $cpu = [Math]::Round($cpuSample.CounterSamples[0].CookedValue, 1) }
-        } catch {}
-
-        $os = Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
-        $totalRam = 1.0
-        $freeRam = 1.0
-        if ($os) {
-            $totalRam = $os.TotalVisibleMemorySize
-            $freeRam = $os.FreePhysicalMemory
-        }
-        $ramPercent = [Math]::Round((($totalRam - $freeRam) / $totalRam) * 100, 1)
-
-        $diskPercent = 0.0
-        try {
-            $diskSample = Get-Counter '\PhysicalDisk(_Total)\% Disk Time' -ErrorAction SilentlyContinue
-            if ($diskSample) { $diskPercent = [Math]::Round([Math]::Min(100.0, $diskSample.CounterSamples[0].CookedValue), 1) }
-        } catch {}
-
-        if ($Global:AiMode) {
-            Write-Host "$cpu%,$ramPercent%,$diskPercent%"
-            return
-        }
-
-        Write-Host "Press Escape to exit System Monitor..." -ForegroundColor Gray
-        $charFilled = [char]0x2588
-        $charEmpty = [char]0x2591
-        
-        $startRow = [Console]::CursorTop
-        $startCol = 0
-        
-        try {
-            while ($true) {
-                # Get metrics
-                $cpu = 0.0
-                try {
-                    $cpuSample = Get-Counter '\Processor(_Total)\% Processor Time' -ErrorAction SilentlyContinue
-                    if ($cpuSample) { $cpu = [Math]::Round($cpuSample.CounterSamples[0].CounterSamples[0].CookedValue, 1) }
-                    if (-not $cpu -and $cpuSample) { $cpu = [Math]::Round($cpuSample.CounterSamples[0].CookedValue, 1) }
-                } catch {}
-
-                $os = Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
-                if ($os) {
-                    $totalRam = $os.TotalVisibleMemorySize
-                    $freeRam = $os.FreePhysicalMemory
-                }
-                $ramPercent = [Math]::Round((($totalRam - $freeRam) / $totalRam) * 100, 1)
-                $usedRamGB = [Math]::Round(($totalRam - $freeRam) / 1024 / 1024, 2)
-                $totalRamGB = [Math]::Round($totalRam / 1024 / 1024, 2)
-
-                $diskPercent = 0.0
-                try {
-                    $diskSample = Get-Counter '\PhysicalDisk(_Total)\% Disk Time' -ErrorAction SilentlyContinue
-                    if ($diskSample) { $diskPercent = [Math]::Round([Math]::Min(100.0, $diskSample.CounterSamples[0].CookedValue), 1) }
-                } catch {}
-
-                # Create Gauges (length 20)
-                $cpuFilled = [int][Math]::Round(($cpu / 100.0) * 20)
-                if ($cpuFilled -gt 20) { $cpuFilled = 20 }
-                if ($cpuFilled -lt 0) { $cpuFilled = 0 }
-                $cpuBar = ([string]$charFilled * $cpuFilled) + ([string]$charEmpty * (20 - $cpuFilled))
-
-                $ramFilled = [int][Math]::Round(($ramPercent / 100.0) * 20)
-                if ($ramFilled -gt 20) { $ramFilled = 20 }
-                if ($ramFilled -lt 0) { $ramFilled = 0 }
-                $ramBar = ([string]$charFilled * $ramFilled) + ([string]$charEmpty * (20 - $ramFilled))
-
-                $diskFilled = [int][Math]::Round(($diskPercent / 100.0) * 20)
-                if ($diskFilled -gt 20) { $diskFilled = 20 }
-                if ($diskFilled -lt 0) { $diskFilled = 0 }
-                $diskBar = ([string]$charFilled * $diskFilled) + ([string]$charEmpty * (20 - $diskFilled))
-
-                try {
-                    [Console]::SetCursorPosition($startCol, $startRow)
-                } catch {
-                    $startRow = [Console]::CursorTop
-                    $startCol = 0
-                }
-                
-                Write-Host "  CPU Usage: [$cpuBar] $cpu%                " -ForegroundColor Cyan
-                Write-Host "  RAM Usage: [$ramBar] $ramPercent% ($usedRamGB GB / $totalRamGB GB)     " -ForegroundColor Green
-                Write-Host "  Disk I/O:  [$diskBar] $diskPercent%               " -ForegroundColor Yellow
-
-                # Check key available with 2s timeout
-                $sleepCycles = 20
-                $exit = $false
-                for ($s = 0; $s -lt $sleepCycles; $s++) {
-                    if ([Console]::KeyAvailable) {
-                        $key = [Console]::ReadKey($true)
-                        if ($key.Key -eq [ConsoleKey]::Escape -or $key.Key -eq [ConsoleKey]::Enter) {
-                            $exit = $true
-                            break
-                        }
-                    }
-                    Start-Sleep -Milliseconds 100
-                }
-                if ($exit) { break }
-            }
-        } finally {
-            try {
-                [Console]::SetCursorPosition($startCol, $startRow)
-                Write-Host (" " * ([Console]::WindowWidth - 1))
-                Write-Host (" " * ([Console]::WindowWidth - 1))
-                Write-Host (" " * ([Console]::WindowWidth - 1))
-                [Console]::SetCursorPosition($startCol, $startRow)
-            } catch {}
-        }
     }
 }
 #endregion
@@ -1416,7 +1265,7 @@ Set-Alias -Name cob -Value New-GitBranch -Force
 Set-Alias -Name gbd -Value Remove-GitBranch -Force
 Set-Alias -Name ga -Value Invoke-GitAddAll -Force
 Set-Alias -Name gunstage -Value Invoke-GitUnstage -Force
-Set-Alias -Name gcmt -Value Invoke-GitCommit -Force
+Set-Alias -Name gcommit -Value Invoke-GitCommit -Force
 Set-Alias -Name gca -Value Invoke-GitAmend -Force
 Set-Alias -Name gundo -Value Invoke-GitUndo -Force
 Set-Alias -Name git-undo -Value Invoke-GitUndo -Force
@@ -1552,54 +1401,25 @@ function Get-LocalSQSAttributes {
 }
 
 # --- AI Tools Wrappers ---
-function Invoke-Codex-By-Ollama {
-    Load-AgyTuiDll
-    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
-        [AgyTui.AgyAiCore]::InvokeCodex($args)
-    } else {
-        Invoke-ControlCenter "codex-ollama" $args
+function Invoke-AiTool {
+    param([string]$MethodName, [string]$FallbackAlias, [object[]]$ToolArgs)
+    try {
+        Load-AgyTuiDll
+        if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+            [AgyTui.AgyAiCore]::$MethodName($ToolArgs)
+        } else {
+            Invoke-ControlCenter $FallbackAlias $ToolArgs
+        }
+    } catch {
+        Write-Host "⚠️ AI Tool invocation error: $_" -ForegroundColor Red
     }
 }
-function Invoke-Claude-By-Ollama {
-    Load-AgyTuiDll
-    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
-        [AgyTui.AgyAiCore]::InvokeClaude($args)
-    } else {
-        Invoke-ControlCenter "claude-ollama" $args
-    }
-}
-function Invoke-OpenClaw-By-Ollama {
-    Load-AgyTuiDll
-    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
-        [AgyTui.AgyAiCore]::InvokeOpenClaw($args)
-    } else {
-        Invoke-ControlCenter "openclaw" $args
-    }
-}
-function Invoke-Clawdbot-By-Ollama {
-    Load-AgyTuiDll
-    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
-        [AgyTui.AgyAiCore]::InvokeClawdbot($args)
-    } else {
-        Invoke-ControlCenter "clawdbot" $args
-    }
-}
-function Invoke-Hermes-By-Ollama {
-    Load-AgyTuiDll
-    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
-        [AgyTui.AgyAiCore]::InvokeHermes($args)
-    } else {
-        Invoke-ControlCenter "hermes" $args
-    }
-}
-function Invoke-HermesDesktop-By-Ollama {
-    Load-AgyTuiDll
-    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
-        [AgyTui.AgyAiCore]::InvokeHermesDesktop($args)
-    } else {
-        Invoke-ControlCenter "hermesd" $args
-    }
-}
+function Invoke-Codex-By-Ollama { Invoke-AiTool "InvokeCodex" "codex-ollama" $args }
+function Invoke-Claude-By-Ollama { Invoke-AiTool "InvokeClaude" "claude-ollama" $args }
+function Invoke-OpenClaw-By-Ollama { Invoke-AiTool "InvokeOpenClaw" "openclaw" $args }
+function Invoke-Clawdbot-By-Ollama { Invoke-AiTool "InvokeClawdbot" "clawdbot" $args }
+function Invoke-Hermes-By-Ollama { Invoke-AiTool "InvokeHermes" "hermes" $args }
+function Invoke-HermesDesktop-By-Ollama { Invoke-AiTool "InvokeHermesDesktop" "hermesd" $args }
 function Invoke-CopilotExplain {
     param([string]$Command)
     if (Get-Command gh -ErrorAction SilentlyContinue) {
@@ -1841,7 +1661,8 @@ function cdk { Invoke-ControlCenter "dkcl" }
 function cai { Invoke-ControlCenter "claude" }
 function caws { Invoke-ControlCenter "aws-local" }
 function cnav { Invoke-ControlCenter "proj" }
-function go { Invoke-ControlCenter "go" $args }
+function Invoke-GoTo { Invoke-ControlCenter "go" $args }
+function goto { Invoke-ControlCenter "go" $args }
 function open-term { [AgyTui.SystemHelper]::OpenNewTerminalSession() }
 Set-Alias -Name term -Value open-term -Force
 Set-Alias -Name wt -Value open-term -Force
@@ -2023,9 +1844,6 @@ Set-Alias -Name ai-dash -Value Show-AiDashboard -Force
 # --- Master Learning Suite Router ---
 function Invoke-MasterLearningSuite {
     param([string]$Topic)
-    $root = if ($Global:ProfileRepoRoot) { $Global:ProfileRepoRoot } elseif ($global:AGY_WORKSPACE_ROOT) { $global:AGY_WORKSPACE_ROOT } else { Split-Path -Parent -Path $MyInvocation.MyCommand.Definition }
-    $projPath = Join-Path $root "AgyTuiApp\AgyTuiApp.csproj"
-    
     $resolvedTopic = $Topic
     if (-not $resolvedTopic) {
         $invName = $MyInvocation.InvocationName
@@ -2034,21 +1852,15 @@ function Invoke-MasterLearningSuite {
         }
     }
     
-    $dllPath = Join-Path $root "AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
-    if (-not (Test-Path $dllPath)) {
-        Write-Host "⚠️ AgyTuiApp binary not built. Building now..." -ForegroundColor Yellow
-        dotnet build "$projPath" | Out-Null
-    }
-    
     if ($resolvedTopic) {
         switch ($resolvedTopic) {
-            "obsidian" { dotnet run --project "$projPath" -- obsidian $args }
-            "refresh"  { dotnet run --project "$projPath" -- refresh $args }
-            "vault-open" { dotnet run --project "$projPath" -- vault $args }
-            default { dotnet run --project "$projPath" -- learn $resolvedTopic $args }
+            "obsidian" { Invoke-ControlCenter "obsidian" $args }
+            "refresh"  { Invoke-ControlCenter "refresh" $args }
+            "vault-open" { Invoke-ControlCenter "vault" $args }
+            default { Invoke-ControlCenter $resolvedTopic $args }
         }
     } else {
-        dotnet run --project "$projPath" -- learn
+        Invoke-ControlCenter "learn" $args
     }
 }
 

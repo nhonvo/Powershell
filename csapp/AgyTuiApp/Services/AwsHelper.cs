@@ -15,9 +15,9 @@ public static class AwsHelper
         AnsiConsole.Write(new Rule("[bold cyan]LocalStack Sandbox[/]").RuleStyle("grey"));
         SpectreProgress.Spinner("Querying LocalStack…", () =>
         {
-            RunLocalAwsCli("s3 ls", "S3 Buckets");
-            RunLocalAwsCli("sqs list-queues", "SQS Queues");
-            RunLocalAwsCli("lambda list-functions --query 'Functions[*].FunctionName'", "Lambda Functions");
+            RunLocalAwsCli(new[] { "s3", "ls" }, "S3 Buckets");
+            RunLocalAwsCli(new[] { "sqs", "list-queues" }, "SQS Queues");
+            RunLocalAwsCli(new[] { "lambda", "list-functions", "--query", "Functions[*].FunctionName" }, "Lambda Functions");
         });
     }
 
@@ -87,10 +87,12 @@ public static class AwsHelper
         else SpectrePager.Show("Lambda Functions", output);
     }
 
-    private static void RunLocalAwsCli(string args, string section)
+    private static void RunLocalAwsCli(string[] args, string section)
     {
         AnsiConsole.MarkupLine($"\n[bold cyan]{section.EscapeMarkup()}[/]");
-        var output = Helpers.ProcessRunner.RunCapture("aws", $"--endpoint-url {LocalStackEndpoint} {args}");
+        var fullArgs = new List<string> { "--endpoint-url", LocalStackEndpoint };
+        fullArgs.AddRange(args);
+        var output = Helpers.ProcessRunner.RunCapture("aws", fullArgs);
         if (string.IsNullOrWhiteSpace(output))
             AnsiConsole.MarkupLine("[dim] (no results or LocalStack unavailable)[/]");
         else

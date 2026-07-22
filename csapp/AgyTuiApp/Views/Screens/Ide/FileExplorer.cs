@@ -50,16 +50,5 @@ public static class FileExplorer
         }
     }
 
-    private static string GetFileIcon(string ext) => ext.ToLower() switch
-    {
-        ".cs" => "⚙",
-        ".json" => "📋",
-        ".md" => "📝",
-        ".txt" => "📄",
-        ".ps1" => "⚡",
-        ".sh" => "⚡",
-        ".yaml" or ".yml" => "🔧",
-        ".csproj" or ".sln" => "🏗",
-        _ => "📄"
-    };
+    private static string GetFileIcon(string ext) => Icons.GetFileIcon(ext);
 }

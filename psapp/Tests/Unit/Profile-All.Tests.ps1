@@ -69,7 +69,16 @@ Describe "Core Profile Functions Validation" {
 
     Context "DotNet Cmdlets (50-DotNet.ps1)" {
         It "Remove-BinObj cleans bin and obj folders" {
-            { Remove-BinObj } | Should Not Throw
+            $tempDir = Join-Path ([System.IO.Path]::GetTempPath()) ("test_binobj_" + [System.Guid]::NewGuid().ToString("N"))
+            New-Item -ItemType Directory -Path (Join-Path $tempDir "bin") -Force | Out-Null
+            New-Item -ItemType Directory -Path (Join-Path $tempDir "obj") -Force | Out-Null
+            Push-Location $tempDir
+            try {
+                { Remove-BinObj } | Should Not Throw
+            } finally {
+                Pop-Location
+                Remove-Item $tempDir -Recurse -Force -ErrorAction SilentlyContinue
+            }
         }
 
         It "Invoke-DotNetBuild runs dotnet build" {
@@ -85,7 +94,20 @@ Describe "Core Profile Functions Validation" {
         }
 
         It "Invoke-GitUndo discards uncommitted changes" {
-            { Invoke-GitUndo } | Should Not Throw
+            $tempRepo = Join-Path ([System.IO.Path]::GetTempPath()) ("test_gitrepo_" + [System.Guid]::NewGuid().ToString("N"))
+            New-Item -ItemType Directory -Path $tempRepo -Force | Out-Null
+            Push-Location $tempRepo
+            try {
+                & git init -q
+                "dummy" | Out-File "test.txt"
+                & git add test.txt
+                & git commit -m "init" -q
+                "change" | Out-File "test.txt"
+                { Invoke-GitUndo } | Should Not Throw
+            } finally {
+                Pop-Location
+                Remove-Item $tempRepo -Recurse -Force -ErrorAction SilentlyContinue
+            }
         }
     }
 

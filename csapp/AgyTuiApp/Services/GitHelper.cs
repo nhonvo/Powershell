@@ -102,7 +102,7 @@ public static class GitHelper
             Border = BoxBorder.Rounded
         });
         if (!AnsiConsole.Confirm("Commit now?")) return;
-        var exitCode = RunGitDirect($"commit -m \"{message.Replace("\"", "\\\"")}\"");
+        var exitCode = Helpers.ProcessRunner.Run("git", new[] { "commit", "-m", message });
         if (exitCode == 0) SpectrePanel.Success("Committed successfully.");
         else SpectrePanel.Error($"git commit failed (exit {exitCode}).");
     }

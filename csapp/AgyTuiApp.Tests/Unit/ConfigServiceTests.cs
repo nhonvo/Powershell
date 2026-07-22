@@ -3,8 +3,36 @@ using AgyTui;
 
 namespace AgyTui.Tests.Unit;
 
-public class ConfigServiceTests
+public class ConfigServiceTests : System.IDisposable
 {
+    private readonly string _tempFile;
+
+    public ConfigServiceTests()
+    {
+        _tempFile = Path.Combine(Path.GetTempPath(), $"test_profile_config_{System.Guid.NewGuid()}.json");
+        var realPath = Config.GetConfigFilePath();
+        if (File.Exists(realPath))
+        {
+            File.Copy(realPath, _tempFile, true);
+        }
+        else
+        {
+            File.WriteAllText(_tempFile, "{\n  \"Ui\": { \"Mode\": \"flat-tree\" },\n  \"Ai\": { \"Mode\": \"auto\" }\n}");
+        }
+        Config.OverrideConfigPath = _tempFile;
+        Config.Load();
+    }
+
+    public void Dispose()
+    {
+        Config.OverrideConfigPath = null;
+        Config.Load();
+        if (File.Exists(_tempFile))
+        {
+            try { File.Delete(_tempFile); } catch { }
+        }
+    }
+
     [Fact]
     public void Save_UiModeChanged_DoesNotMutateAiMode()
     {

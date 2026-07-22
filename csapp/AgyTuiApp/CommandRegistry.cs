@@ -385,15 +385,23 @@ public static class CommandRegistry
             new[] { "hotkeys — Displays profile keyboard shortcuts grouped by domain (git, docker, aws, sys, ai, nav)." })
     };
 
+    public static CommandEntry? GetByAlias(string alias)
+    {
+        return All.FirstOrDefault(c => string.Equals(c.Alias, alias, StringComparison.OrdinalIgnoreCase));
+    }
+
     public static void AssertSwitchCases()
     {
-        string[] searchPaths = {
-            Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Program.cs"),
-            Path.Combine(AppContext.BaseDirectory, "Program.cs"),
-            Path.Combine(Directory.GetCurrentDirectory(), "AgyTuiApp", "Program.cs")
-        };
-
-        string? programCsPath = searchPaths.FirstOrDefault(File.Exists);
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        string? programCsPath = null;
+        while (dir != null)
+        {
+            var p = Path.Combine(dir.FullName, "Program.cs");
+            if (File.Exists(p)) { programCsPath = p; break; }
+            var sub = Path.Combine(dir.FullName, "csapp", "AgyTuiApp", "Program.cs");
+            if (File.Exists(sub)) { programCsPath = sub; break; }
+            dir = dir.Parent;
+        }
         if (programCsPath == null) return;
 
         string code = File.ReadAllText(programCsPath);

@@ -90,8 +90,15 @@ public sealed class ConfigData
 
 public static class Config
 {
+    public static string? OverrideConfigPath { get; set; }
+
     public static string GetConfigFilePath()
     {
+        if (!string.IsNullOrEmpty(OverrideConfigPath))
+            return OverrideConfigPath;
+        var envOverride = Environment.GetEnvironmentVariable("PROFILE_CONFIG_PATH");
+        if (!string.IsNullOrEmpty(envOverride))
+            return envOverride;
         var repoRoot = GetProfileRepoRoot();
         var csappCfg = Path.Combine(repoRoot, "csapp", "profile.config.json");
         if (File.Exists(csappCfg)) return csappCfg;
@@ -103,8 +110,12 @@ public static class Config
 
     static Config()
     {
+        bool fileExists = File.Exists(ConfigPath);
         Load();
-        AutoDetectDensity();
+        if (!fileExists)
+        {
+            AutoDetectDensity();
+        }
     }
 
     public static string GetProfileRepoRoot()
@@ -179,20 +190,41 @@ public static class Config
                     var trimmed = line.Trim();
                     if (trimmed.StartsWith("\"Ui\"")) currentSection = "Ui";
                     else if (trimmed.StartsWith("\"Ai\"")) currentSection = "Ai";
-                    else if (trimmed.StartsWith("\"SpacedRepetition\"")) currentSection = "SpacedRepetition";
+                    else if (trimmed.StartsWith("\"Project\"")) currentSection = "Project";
+                    else if (trimmed.StartsWith("\"System\"")) currentSection = "System";
                     else if (trimmed.StartsWith("}") && !trimmed.Contains("{")) currentSection = "";
 
                     if (currentSection == "Ui" && line.Contains("\"Mode\":"))
                     {
                         lines[i] = Regex.Replace(line, @"(""Mode""\s*:\s*"")[^""]*("")", $"$1{Current.Ui.Mode}$2");
                     }
+                    else if (currentSection == "Ui" && line.Contains("\"Density\":"))
+                    {
+                        lines[i] = Regex.Replace(line, @"(""Density""\s*:\s*"")[^""]*("")", $"$1{Current.Ui.Density}$2");
+                    }
                     else if (currentSection == "Ai" && line.Contains("\"Mode\":"))
                     {
                         lines[i] = Regex.Replace(line, @"(""Mode""\s*:\s*"")[^""]*("")", $"$1{Current.Ai.Mode}$2");
                     }
-                    else if (currentSection == "Ui" && line.Contains("\"Density\":"))
+                    else if (currentSection == "Ai" && line.Contains("\"ProviderMode\":"))
                     {
-                        lines[i] = Regex.Replace(line, @"(""Density""\s*:\s*"")[^""]*("")", $"$1{Current.Ui.Density}$2");
+                        lines[i] = Regex.Replace(line, @"(""ProviderMode""\s*:\s*"")[^""]*("")", $"$1{Current.Ai.ProviderMode}$2");
+                    }
+                    else if (currentSection == "Ai" && line.Contains("\"EnableOllama\":"))
+                    {
+                        lines[i] = Regex.Replace(line, @"(""EnableOllama""\s*:\s*)(true|false)", $"$1{Current.Ai.EnableOllama.ToString().ToLowerInvariant()}");
+                    }
+                    else if (currentSection == "Ai" && line.Contains("\"EnableAgy\":"))
+                    {
+                        lines[i] = Regex.Replace(line, @"(""EnableAgy""\s*:\s*)(true|false)", $"$1{Current.Ai.EnableAgy.ToString().ToLowerInvariant()}");
+                    }
+                    else if (currentSection == "Project" && line.Contains("\"BaseDir\":"))
+                    {
+                        lines[i] = Regex.Replace(line, @"(""BaseDir""\s*:\s*"")[^""]*("")", $"$1{Current.Project.BaseDir.Replace("\\", "\\\\")}$2");
+                    }
+                    else if (currentSection == "System" && line.Contains("\"VerboseStartup\":"))
+                    {
+                        lines[i] = Regex.Replace(line, @"(""VerboseStartup""\s*:\s*)(true|false)", $"$1{Current.System.VerboseStartup.ToString().ToLowerInvariant()}");
                     }
                 }
                 File.WriteAllLines(ConfigPath, lines, Encoding.UTF8);

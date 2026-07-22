@@ -35,6 +35,12 @@ public static class KanaQuiz
             "both" => [.. kana.Hiragana, .. kana.Katakana],
             _ => kana.Hiragana
         };
+        if (pool == null || pool.Length == 0)
+        {
+            SpectrePanel.Warning("No Kana entries available in the pool.");
+            System.Threading.Thread.Sleep(1500);
+            return;
+        }
         var due = pool.Where(k => SpacedRepetitionEngine.IsDueToday(k.Sr)).ToArray();
         if (due.Length == 0) due = pool;
 

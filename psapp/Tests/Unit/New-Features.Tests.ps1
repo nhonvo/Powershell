@@ -1,6 +1,10 @@
 Describe "New Profile Features Tests" {
     BeforeAll {
-        . "C:\Users\TruongNhon\Documents\Powershell\Microsoft.PowerShell_profile.ps1"
+        $repoRoot = Resolve-Path "$PSScriptRoot\..\..\.." | Select-Object -ExpandProperty Path
+        $profilePath = Join-Path $repoRoot "Microsoft.PowerShell_profile.ps1"
+        if (Test-Path $profilePath) {
+            . $profilePath
+        }
     }
 
     Context "AgySecretVault" {

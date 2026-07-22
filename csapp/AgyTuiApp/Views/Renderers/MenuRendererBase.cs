@@ -9,10 +9,11 @@ public abstract class MenuRendererBase : IMenuRenderer
 {
     public abstract void Run(MenuNode root);
 
+    private static readonly TtlCache<string, (bool Ai, bool Agy)> _enabledCache = new(TimeSpan.FromSeconds(2));
+
     protected static MenuNode[] GetActiveChildren(MenuNode parent)
     {
-        var enableAi = AgyAiCore.IsAiOllamaEnabled();
-        var enableAgy = AgyAiCore.IsAgyEnabled();
+        var (enableAi, enableAgy) = _enabledCache.GetOrCompute("flags", () => (AgyAiCore.IsAiOllamaEnabled(), AgyAiCore.IsAgyEnabled()));
 
         var list = new List<MenuNode>();
         foreach (var child in parent.Children)

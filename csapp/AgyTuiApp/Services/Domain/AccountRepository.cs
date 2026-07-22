@@ -31,7 +31,6 @@ public static class AccountRepository
 
     public static string[] GetAccounts()
     {
-        if (!Directory.Exists(AccountsDir)) return Array.Empty<string>();
-        return Directory.GetDirectories(AccountsDir).Select(Path.GetFileName).Where(n => !string.IsNullOrEmpty(n)).ToArray()!;
+        return AgyAccountCore.GetAccounts();
     }
 }

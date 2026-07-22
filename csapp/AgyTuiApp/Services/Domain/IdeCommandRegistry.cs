@@ -22,7 +22,19 @@ public static class IdeCommandRegistry
 {
     public static readonly IdeCommand[] All = {
         new("open", "<path>", "Open a file", "Navigation", (ctx, a) => {
-            if (a.Length > 0) ctx.CurrentFile = Path.Combine(ctx.RootPath, a[0]);
+            if (a.Length > 0)
+            {
+                var full = Path.GetFullPath(Path.Combine(ctx.RootPath, a[0]));
+                var rootFull = Path.GetFullPath(ctx.RootPath);
+                if (full.StartsWith(rootFull, StringComparison.OrdinalIgnoreCase))
+                {
+                    ctx.CurrentFile = full;
+                }
+                else
+                {
+                    Components.SpectrePanel.Error("Access denied: path outside workspace root.");
+                }
+            }
         }),
         new("diff", "[path]", "Show git diff", "Git", (ctx, a) => {
             string file = a.Length > 0 ? a[0] : (ctx.CurrentFile ?? "");

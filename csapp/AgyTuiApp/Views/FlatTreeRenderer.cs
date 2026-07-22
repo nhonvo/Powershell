@@ -269,7 +269,12 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                 int itemsCount = 0;
                 if (detailsMode == "agyswitch")
                 {
-                    itemsCount = AgyAccountCore.GetAccounts().Length;
+                    var accs = AgyAccountCore.GetAccounts();
+                    if (!string.IsNullOrEmpty(_detailsSearchBuffer))
+                    {
+                        accs = accs.Where(a => a.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
+                    }
+                    itemsCount = accs.Length;
                 }
                 else if (detailsMode == "theme")
                 {
@@ -282,14 +287,26 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                 }
                 else if (detailsMode == "learn" || detailsMode == "session" || detailsMode == "weak")
                 {
-                    itemsCount = 6;
+                    var topics = new[] { "jp", "en", "cs", "dsa", "interview", "custom" };
+                    if (!string.IsNullOrEmpty(_detailsSearchBuffer))
+                    {
+                        topics = topics.Where(t => t.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
+                    }
+                    itemsCount = topics.Length;
                 }
                 else if (detailsMode == "proj")
                 {
-                    itemsCount = WorkspaceRegistry.GetWorkspaces().Length;
+                    var workspaces = WorkspaceRegistry.GetWorkspaces();
+                    if (!string.IsNullOrEmpty(_detailsSearchBuffer))
+                    {
+                        workspaces = workspaces.Where(w => w != null && 
+                            ((w.Name != null && w.Name.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)) ||
+                             (w.WorkspacePath != null && w.WorkspacePath.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)))).ToArray();
+                    }
+                    itemsCount = workspaces.Length;
                 }
 
-                if (itemsCount == 0 && detailsMode != "theme")
+                if (itemsCount == 0 && string.IsNullOrEmpty(_detailsSearchBuffer))
                 {
                     detailsActive = false;
                     _detailsSearchBuffer = "";
@@ -400,34 +417,10 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                                 if (detailsSel >= 0 && detailsSel < workspaces.Length)
                                 {
                                     var targetEntry = workspaces[detailsSel];
-                                    var actions = new[]
+                                    var actionIdx = SpectreMenu.ShowWithEscape($"Workspace: {targetEntry.Name}", WorkspaceRegistry.SharedWorkspaceActions, 0);
+                                    if (actionIdx >= 0)
                                     {
-                                        $"📂 Change Directory to {targetEntry.Name} on exit (cd)",
-                                        $"💻 Open in Terminal IDE (/ide)",
-                                        $"📁 Open in Windows File Explorer",
-                                        $"🔀 View Git Status & Diff (/ide-diff)"
-                                    };
-                                    var actionIdx = SpectreMenu.ShowWithEscape($"Workspace: {targetEntry.Name}", actions, 0);
-                                    if (actionIdx == 0)
-                                    {
-                                        var agyHome = !string.IsNullOrEmpty(AgyAccountCore.AgySourceHome) ? AgyAccountCore.AgySourceHome : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini");
-                                        Directory.CreateDirectory(agyHome);
-                                        var selectedProjFile = Path.Combine(agyHome, "selected_project.txt");
-                                        File.WriteAllText(selectedProjFile, targetEntry.WorkspacePath);
-                                        SpectrePanel.Success($"Selected workspace '{targetEntry.Name}'. Directory switch will apply on exit.");
-                                        Thread.Sleep(1000);
-                                    }
-                                    else if (actionIdx == 1)
-                                    {
-                                        TerminalIde.Open(targetEntry.WorkspacePath);
-                                    }
-                                    else if (actionIdx == 2)
-                                    {
-                                        SystemHelper.OpenExplorer(targetEntry.WorkspacePath);
-                                    }
-                                    else if (actionIdx == 3)
-                                    {
-                                        GitDiffViewer.ShowDiff(targetEntry.WorkspacePath);
+                                        WorkspaceRegistry.HandleWorkspaceAction(targetEntry, actionIdx);
                                     }
                                 }
                             }
@@ -848,7 +841,14 @@ public sealed class FlatTreeRenderer : MenuRendererBase
         if (mode == "agyswitch")
         {
             grid.AddRow(new Markup("[cyan bold]Select Account to Switch:[/]\n"));
-            var accs = AgyAccountCore.GetAccounts();
+            if (!string.IsNullOrEmpty(_detailsSearchBuffer))
+            {
+                grid.AddRow(new Markup($"[yellow]Search:[/] [white]{_detailsSearchBuffer.EscapeMarkup()}_[/]\n"));
+            }
+            var allAccs = AgyAccountCore.GetAccounts();
+            var accs = string.IsNullOrEmpty(_detailsSearchBuffer)
+                ? allAccs
+                : allAccs.Where(a => a.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
             var activeAcc = AgyAccountCore.GetActiveAccount();
             for (var i = 0; i < accs.Length; i++)
             {
@@ -928,7 +928,14 @@ public sealed class FlatTreeRenderer : MenuRendererBase
         else if (mode == "learn" || mode == "session" || mode == "weak")
         {
             grid.AddRow(new Markup($"[cyan bold]Select Topic for {mode.ToUpperInvariant()}:[/]\n"));
-            var topics = new[] { "jp (Japanese / Language)", "en (English Vocabulary)", "cs (C# Quiz)", "dsa (Data Structures & Algorithms)", "interview (Question Bank & STAR)", "[Type Custom Topic...]" };
+            if (!string.IsNullOrEmpty(_detailsSearchBuffer))
+            {
+                grid.AddRow(new Markup($"[yellow]Search:[/] [white]{_detailsSearchBuffer.EscapeMarkup()}_[/]\n"));
+            }
+            var allTopics = new[] { "jp (Japanese / Language)", "en (English Vocabulary)", "cs (C# Quiz)", "dsa (Data Structures & Algorithms)", "interview (Question Bank & STAR)", "[Type Custom Topic...]" };
+            var topics = string.IsNullOrEmpty(_detailsSearchBuffer)
+                ? allTopics
+                : allTopics.Where(t => t.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
             for (var i = 0; i < topics.Length; i++)
             {
                 var isSelected = (i == selIdx);

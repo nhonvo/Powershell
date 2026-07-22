@@ -5,6 +5,9 @@ namespace AgyTui;
 
 public static class ScreenChrome
 {
+    public static IAnsiConsole? OverrideConsole { get; set; }
+    private static IAnsiConsole ConsoleInstance => OverrideConsole ?? AnsiConsole.Console;
+
     public static readonly Color AccentColor = Color.Cyan1;
     public static readonly Color SuccessColor = Color.Green;
     public static readonly Color WarningColor = Color.Yellow;
@@ -66,7 +69,7 @@ public static class ScreenChrome
 
     public static void WriteSmooth(Spectre.Console.Rendering.IRenderable renderable)
     {
-        try { AnsiConsole.Write(renderable); } catch { }
+        try { ConsoleInstance.Write(renderable); } catch { }
     }
 
     public static void RenderFrame(Action drawBody, bool forceClear = false)
@@ -78,16 +81,17 @@ public static class ScreenChrome
             {
                 if (forceClear)
                 {
-                    Console.Write("\x1b[2J\x1b[H");
+                    if (OverrideConsole != null) OverrideConsole.Clear();
+                    else Console.Write("\x1b[2J\x1b[H");
                 }
                 else
                 {
-                    Console.SetCursorPosition(0, 0);
+                    if (OverrideConsole == null) Console.SetCursorPosition(0, 0);
                 }
             }
             catch
             {
-                try { AnsiConsole.Clear(); } catch { }
+                try { ConsoleInstance.Clear(); } catch { }
             }
             drawBody();
             ClearTrailingLines();
@@ -102,8 +106,9 @@ public static class ScreenChrome
     {
         try
         {
-            AnsiConsole.Markup(markup);
-            Console.Write("\x1b[K\n");
+            ConsoleInstance.Markup(markup);
+            if (OverrideConsole != null) ConsoleInstance.WriteLine();
+            else Console.Write("\x1b[K\n");
         }
         catch
         {
@@ -111,7 +116,7 @@ public static class ScreenChrome
         }
     }
 
-    public static void RenderBanner(string? category = null, string? activeItem = null, bool forceClear = false)
+    public static void RenderBanner(string? category = null, string? activeItem = null, bool forceClear = false, string? footerHint = null)
     {
         HideCursor();
         var acc = AgyAccountCore.GetActiveAccount() ?? "default";
@@ -139,9 +144,9 @@ public static class ScreenChrome
             try { Console.Write("\x1b[2J\x1b[H"); } catch { try { AnsiConsole.Clear(); } catch {} }
         }
 
-        var titleIcon = Icons.IsUtf8Supported ? "🛸" : "[AGY]";
+        var titleIcon = (Icons.IsUtf8Supported ? "🛸" : "[AGY]").EscapeMarkup();
 
-        if (winHeight > 0 && winHeight < 45)
+        if ((winHeight > 0 && winHeight < 45) || (winWidth > 0 && winWidth < 60))
         {
             MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
             var accText = $"[dim]Account:[/] [green bold]{displayAcc.EscapeMarkup()}[/]";
@@ -176,7 +181,7 @@ public static class ScreenChrome
         }
 
         MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
-        MarkupLineEl("[dim] [[Tab/→]] Navigate Panes | [[←/Esc]] Go Back | [[Enter]] Select & Run[/]");
+        MarkupLineEl(footerHint ?? "[dim] [[Tab/→]] Navigate Panes | [[←/Esc]] Go Back | [[Enter]] Select & Run[/]");
         MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
         AnsiConsole.WriteLine();
     }

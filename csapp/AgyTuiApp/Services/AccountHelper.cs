@@ -142,10 +142,9 @@ public static class AgySecretVault
 {
     public static string GetSecretsFilePath()
     {
-        var dir = @"C:\Users\Public\.gemini";
+        var dir = AgyAccountCore.AgySourceHome;
         Directory.CreateDirectory(dir);
         return System.IO.Path.Combine(dir, "secrets.json");
-
     }
 
     public static Dictionary<string, string> LoadSecrets()
@@ -163,7 +162,6 @@ public static class AgySecretVault
         {
             return new();
         }
-
     }
 
     public static void SaveSecrets(Dictionary<string, string> secrets)
@@ -178,7 +176,6 @@ public static class AgySecretVault
         {
             SpectrePanel.Error($"Failed to save secrets: {ex.Message}");
         }
-
     }
 
     public static void SetSecret(string key, string value)
@@ -192,9 +189,7 @@ public static class AgySecretVault
 
         try
         {
-            var bytes = Encoding.Unicode.GetBytes(value);
-            var protectedBytes = ProtectedData.Protect(bytes, null, DataProtectionScope.CurrentUser);
-            secrets[key] = Convert.ToHexString(protectedBytes).ToLowerInvariant();
+            secrets[key] = TokenVault.Protect(value);
             SaveSecrets(secrets);
             AnsiConsole.MarkupLine($"[green]Secret '{key.EscapeMarkup()}' saved and encrypted successfully.[/]");
         }
@@ -202,7 +197,6 @@ public static class AgySecretVault
         {
             SpectrePanel.Error($"Failed to encrypt/save secret: {ex.Message}");
         }
-
     }
 
     public static string GetSecret(string key)
@@ -216,16 +210,13 @@ public static class AgySecretVault
         }
         try
         {
-            var bytes = Convert.FromHexString(encrypted);
-            var plain = ProtectedData.Unprotect(bytes, null, DataProtectionScope.CurrentUser);
-            return Encoding.Unicode.GetString(plain);
+            return TokenVault.Unprotect(encrypted);
         }
         catch (Exception ex)
         {
             SpectrePanel.Error($"Failed to decrypt secret '{key}': {ex.Message}");
             return "";
         }
-
     }
 
     public static void RemoveSecret(string key)
@@ -335,7 +326,7 @@ public static class AgyAccountCore
                 var m = Regex.Match(Path.GetFileName(dir), @"^\.gemini_(.+)$");
                 if (!m.Success) continue;
                 var name = m.Groups[1].Value;
-                if (!Regex.IsMatch(name, "backup|copy|temp", RegexOptions.IgnoreCase) && !accounts.Contains(name, StringComparer.OrdinalIgnoreCase)) accounts.Add(name);
+                if (!Regex.IsMatch(name, @"^(backup|copy|temp)([_-]|$)", RegexOptions.IgnoreCase) && !accounts.Contains(name, StringComparer.OrdinalIgnoreCase)) accounts.Add(name);
             }
         }
         return [.. accounts];
@@ -534,23 +525,7 @@ public static class AgyAccountCore
     public static void TriggerLowQuotaWebhook(string accountName, double remaining5H)
     {
         var webhookFile = Path.Combine(AgySourceHome, "quota_webhook.txt");
-        if (!File.Exists(webhookFile)) return;
-
-        try
-        {
-            var url = File.ReadAllText(webhookFile).Trim();
-            if (string.IsNullOrEmpty(url)) return;
-
-            var payload = new
-            {
-                text = $"[Agy Alert] Low quota warning for account {accountName}: Only {remaining5H}% of the 5-hour quota remaining."
-            };
-            var json = JsonSerializer.Serialize(payload);
-            var reqContent = new System.Net.Http.StringContent(json, Encoding.UTF8, "application/json");
-
-            _ = HttpClientProvider.Client.PostAsync(url, reqContent);
-        }
-        catch { }
+        _ = QuotaTracker.TriggerLowQuotaWebhookAsync(accountName, remaining5H, webhookFile);
     }
 
     public static QuotaMetrics CalculateRollingQuotas(string accountName)
@@ -679,8 +654,14 @@ public static class AgyAccountCore
 
     private static string? DecryptToken(string encrypted)
     {
-        var res = TokenVault.Unprotect(encrypted);
-        return res == encrypted ? null : res;
+        try
+        {
+            return TokenVault.Unprotect(encrypted);
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public static void SetActiveAccount(string accountName, bool temporary)

@@ -39,5 +39,6 @@ try {
         Write-Error "❌ Release Publish Failed."
     }
 } finally {
+    Get-ChildItem -Path "csapp\AgyTuiApp\dist" -Filter "AgyTuiApp.*.old_*" -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
     popd
 }

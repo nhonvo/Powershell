@@ -228,56 +228,65 @@ public sealed class LiveDashboardWidget : IStatusWidget
 public sealed class OllamaStatusWidget : IStatusWidget
 {
     public string Alias => "ollama-status";
+    private static IRenderable? _cachedWidget;
+    private static bool _fetching;
 
     public IRenderable Render()
     {
-        if (OllamaStatusWidgetCache.CachedOllamaWidget != null)
+        if (_cachedWidget != null) return _cachedWidget;
+
+        if (!_fetching)
         {
-            return OllamaStatusWidgetCache.CachedOllamaWidget;
-        }
-
-        var isRunning = AgyAiCore.IsOllamaRunning();
-        var table = new Table().Border(TableBorder.Rounded).BorderColor(isRunning ? Color.Green : Color.Red);
-        table.AddColumn("[bold cyan]Ollama Daemon[/]");
-        table.AddColumn("[bold cyan]Value[/]");
-
-        table.AddRow("Status", isRunning ? "[green bold]● Active (Running)[/]" : "[red bold]○ Offline (Stopped)[/]");
-        table.AddRow("Port", "11434");
-
-        if (isRunning)
-        {
-            try
+            _fetching = true;
+            Task.Run(() =>
             {
-                var client = HttpClientProvider.Client;
-                var response = client.GetStringAsync("http://127.0.0.1:11434/api/tags").Result;
-                using var doc = JsonDocument.Parse(response);
-                if (doc.RootElement.TryGetProperty("models", out var modelsProp) && modelsProp.ValueKind == JsonValueKind.Array)
+                try
                 {
-                    var modelNames = new List<string>();
-                    foreach (var model in modelsProp.EnumerateArray())
+                    var isRunning = AgyAiCore.IsOllamaRunning();
+                    var table = new Table().Border(TableBorder.Rounded).BorderColor(isRunning ? Color.Green : Color.Red);
+                    table.AddColumn("[bold cyan]Ollama Daemon[/]");
+                    table.AddColumn("[bold cyan]Value[/]");
+                    table.AddRow("Status", isRunning ? "[green bold]● Active (Running)[/]" : "[red bold]○ Offline (Stopped)[/]");
+                    table.AddRow("Port", "11434");
+
+                    if (isRunning)
                     {
-                        if (model.TryGetProperty("name", out var nameProp))
+                        try
                         {
-                            modelNames.Add(nameProp.GetString() ?? "");
+                            var client = HttpClientProvider.Client;
+                            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+                            var response = client.GetStringAsync("http://127.0.0.1:11434/api/tags", cts.Token).GetAwaiter().GetResult();
+                            using var doc = JsonDocument.Parse(response);
+                            if (doc.RootElement.TryGetProperty("models", out var modelsProp) && modelsProp.ValueKind == JsonValueKind.Array)
+                            {
+                                var modelNames = new List<string>();
+                                foreach (var model in modelsProp.EnumerateArray())
+                                {
+                                    if (model.TryGetProperty("name", out var nameProp))
+                                    {
+                                        modelNames.Add(nameProp.GetString() ?? "");
+                                    }
+                                }
+                                if (modelNames.Count > 0)
+                                {
+                                    table.AddRow("Models", string.Join(", ", modelNames.Take(3)) + (modelNames.Count > 3 ? "..." : ""));
+                                }
+                            }
                         }
+                        catch { }
                     }
-                    if (modelNames.Count > 0)
-                    {
-                        table.AddRow("Local Models", string.Join(", ", modelNames));
-                    }
-                    else
-                    {
-                        table.AddRow("Local Models", "[yellow]None pulled yet[/]");
-                    }
+                    _cachedWidget = table;
                 }
-            }
-            catch
-            {
-                table.AddRow("Local Models", "[red]Error listing models[/]");
-            }
+                catch { }
+                finally { _fetching = false; }
+            });
         }
-        OllamaStatusWidgetCache.CachedOllamaWidget = table;
-        return table;
+
+        var initTable = new Table().Border(TableBorder.Rounded).BorderColor(Color.Grey);
+        initTable.AddColumn("[bold cyan]Ollama Daemon[/]");
+        initTable.AddColumn("[bold cyan]Value[/]");
+        initTable.AddRow("Status", "[yellow]Checking...[/]");
+        return initTable;
     }
 }
 

@@ -187,6 +187,8 @@ public static class SpectrePager
         var pageSize = Math.Max(5, Console.WindowHeight - 8);
         var totalLines = lines.Length;
         var top = 0;
+        var searchBuffer = "";
+        var searching = false;
         Console.CursorVisible = false;
 
         bool isFirstRender = true;
@@ -194,6 +196,12 @@ public static class SpectrePager
         {
             while (true)
             {
+                var filtered = string.IsNullOrEmpty(searchBuffer)
+                    ? lines
+                    : lines.Where(l => l.Contains(searchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
+                totalLines = filtered.Length;
+                if (top >= totalLines && totalLines > 0) top = totalLines - 1;
+
                 if (isFirstRender)
                 {
                     AnsiConsole.Clear();
@@ -206,8 +214,13 @@ public static class SpectrePager
                 }
 
                 AnsiConsole.Write(new Rule($"[bold cyan]{title.EscapeMarkup()}[/]").RuleStyle("grey"));
+                if (searching)
+                {
+                    AnsiConsole.MarkupLine($"[yellow]Search:[/] [white]{searchBuffer.EscapeMarkup()}_[/] [dim](Esc to clear)[/]");
+                }
+
                 for (var i = top; i < Math.Min(top + pageSize, totalLines); i++)
-                    AnsiConsole.MarkupLine(lines[i].EscapeMarkup());
+                    AnsiConsole.MarkupLine(filtered[i].EscapeMarkup());
                 for (var p = Math.Min(top + pageSize, totalLines); p < top + pageSize; p++)
                     AnsiConsole.WriteLine();
 
@@ -219,6 +232,33 @@ public static class SpectrePager
                 AnsiConsole.MarkupLine("[bold green]↑/↓/j/k[/] [dim]Scroll[/]  [bold cyan]PgDn/PgUp/d/u[/] [dim]Page[/]  [bold yellow]Home/End/g/G[/] [dim]Ends[/]  [bold magenta]/[/] [dim]Search[/]  [bold red]Esc/q[/] [dim]Back[/]");
 
                 var key = Console.ReadKey(true);
+                if (searching)
+                {
+                    if (key.Key == ConsoleKey.Escape)
+                    {
+                        searching = false;
+                        searchBuffer = "";
+                        continue;
+                    }
+                    if (key.Key == ConsoleKey.Enter)
+                    {
+                        searching = false;
+                        continue;
+                    }
+                    if (key.Key == ConsoleKey.Backspace)
+                    {
+                        if (searchBuffer.Length > 0) searchBuffer = searchBuffer[..^1];
+                        top = 0;
+                        continue;
+                    }
+                    if (!char.IsControl(key.KeyChar))
+                    {
+                        searchBuffer += key.KeyChar;
+                        top = 0;
+                        continue;
+                    }
+                }
+
                 switch (key.Key)
                 {
                     case ConsoleKey.DownArrow:
@@ -249,19 +289,12 @@ public static class SpectrePager
                         else top = 0;
                         break;
                     case ConsoleKey.Oem2:
-                    case ConsoleKey.F:
-                        Console.CursorVisible = true;
-                        AnsiConsole.Markup("[cyan]Search: [/]");
-                        var q = Console.ReadLine() ?? "";
-                        Console.CursorVisible = false;
-                        if (!string.IsNullOrWhiteSpace(q))
-                        {
-                            var hit = Array.FindIndex(lines, top + 1, l => l.Contains(q, StringComparison.OrdinalIgnoreCase));
-                            if (hit >= 0) top = Math.Max(0, hit - 2);
-                            else AnsiConsole.MarkupLine("[yellow]Not found[/]");
-                        }
+                    case ConsoleKey.Divide:
+                        searching = true;
                         break;
                     case ConsoleKey.Escape:
+                        if (!string.IsNullOrEmpty(searchBuffer)) { searchBuffer = ""; break; }
+                        return;
                     case ConsoleKey.Enter:
                     case ConsoleKey.Q:
                         return;

@@ -158,13 +158,86 @@ public static class ProcessRunner
         }
     }
 
+    public static string RunCapture(string exe, IEnumerable<string> args, string? workingDir = null)
+    {
+        var (stdout, _, _) = RunCaptureWithDetails(exe, args, workingDir, TimeSpan.FromSeconds(30));
+        return stdout;
+    }
+
+    public static (string Stdout, string Stderr, int ExitCode) RunCaptureWithDetails(
+        string exe, IEnumerable<string> args, string? workingDir = null, TimeSpan? timeout = null)
+    {
+        var psi = new ProcessStartInfo(exe)
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            WorkingDirectory = workingDir ?? Directory.GetCurrentDirectory()
+        };
+        foreach (var a in args)
+        {
+            psi.ArgumentList.Add(a);
+        }
+
+        var stdoutBuilder = new System.Text.StringBuilder();
+        var stderrBuilder = new System.Text.StringBuilder();
+
+        try
+        {
+            using var p = new Process { StartInfo = psi };
+            p.OutputDataReceived += (s, e) => { if (e.Data != null) stdoutBuilder.AppendLine(e.Data); };
+            p.ErrorDataReceived += (s, e) => { if (e.Data != null) stderrBuilder.AppendLine(e.Data); };
+
+            p.Start();
+            p.BeginOutputReadLine();
+            p.BeginErrorReadLine();
+
+            var limit = timeout ?? TimeSpan.FromSeconds(30);
+            if (p.WaitForExit((int)limit.TotalMilliseconds))
+            {
+                p.WaitForExit(); 
+                return (stdoutBuilder.ToString(), stderrBuilder.ToString(), p.ExitCode);
+            }
+            else
+            {
+                try { p.Kill(true); } catch { }
+                return (stdoutBuilder.ToString(), stderrBuilder.ToString() + "\n[TIMED OUT]", -1);
+            }
+        }
+        catch (Exception ex)
+        {
+            return ("", ex.Message, -1);
+        }
+    }
+
     public static string RunCapture(string exe, string[] args, string? workingDir = null)
     {
-        return RunCapture(exe, string.Join(" ", args), workingDir);
+        return RunCapture(exe, (IEnumerable<string>)args, workingDir);
     }
 
     public static int Run(string exe, string[] args, string? workingDir = null)
     {
-        return Run(exe, string.Join(" ", args), workingDir);
+        var psi = new ProcessStartInfo(exe)
+        {
+            UseShellExecute = false,
+            WorkingDirectory = workingDir ?? Directory.GetCurrentDirectory()
+        };
+        foreach (var a in args)
+        {
+            psi.ArgumentList.Add(a);
+        }
+        try
+        {
+            using var p = Process.Start(psi);
+            if (p == null) return -1;
+            if (!p.WaitForExit(30000))
+            {
+                try { p.Kill(entireProcessTree: true); } catch { }
+                return -1;
+            }
+            return p.ExitCode;
+        }
+        catch { return -1; }
     }
 }

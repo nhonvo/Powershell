@@ -97,8 +97,19 @@ foreach ($item in $aiItems) {
 # 6. Run detailed Pester Unit Tests
 Write-Host "`nRunning detailed Pester unit tests..." -ForegroundColor Cyan
 if (Get-Module -ListAvailable Pester) {
-    $tests = Get-ChildItem -Path (Join-Path $PSScriptRoot "Unit") -Filter "*.Tests.ps1" | ForEach-Object { $_.FullName }
-    Invoke-Pester -Script $tests -EnableExit
+    $tests = Get-ChildItem -Path (Join-Path $PSScriptRoot "Unit") -Filter "*.Tests.ps1"
+    $failedTotal = 0
+    foreach ($test in $tests) {
+        $global:AgyUserProfileLoaded = $null
+        $res = Invoke-Pester -Script $test.FullName -PassThru
+        if ($res.FailedCount -gt 0) {
+            $failedTotal += $res.FailedCount
+        }
+    }
+    if ($failedTotal -gt 0) {
+        Write-Error "❌ $failedTotal Pester test(s) failed."
+        exit 1
+    }
 } else {
     Write-Warning "Pester module is not available. Skipping unit tests."
 }

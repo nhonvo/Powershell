@@ -31,17 +31,19 @@ public static class QuotaTracker
         return result;
     }
 
-    public static async void TriggerLowQuotaWebhook(string accountName, double remainingPct, string webhookFile, double threshold = 10.0)
+    public static async Task TriggerLowQuotaWebhookAsync(string accountName, double remainingPct, string webhookFile, double threshold = 10.0)
     {
         if (remainingPct > threshold) return;
         if (!File.Exists(webhookFile)) return;
-        var url = File.ReadAllText(webhookFile).Trim();
-        if (string.IsNullOrEmpty(url)) return;
 
         try
         {
+            var url = File.ReadAllText(webhookFile).Trim();
+            if (string.IsNullOrEmpty(url)) return;
+
             var payload = JsonSerializer.Serialize(new
             {
+                text = $"[Agy Alert] Low quota warning for account {accountName}: Only {remainingPct}% remaining.",
                 event_type = "low_quota_alert",
                 account = accountName,
                 remaining_percent = remainingPct,

@@ -353,17 +353,21 @@ public static class Program
         {
         }
         var lAlias = alias.ToLowerInvariant();
-        if ((lAlias == "claude" || lAlias == "codex" || lAlias == "openclaw" || lAlias == "hermes" || lAlias == "hermesd" || lAlias == "claude-cloud" || lAlias == "claude-ollama" || lAlias == "codex-cloud" || lAlias == "codex-ollama") && !AgyAiCore.IsAiOllamaEnabled())
+        var cmdEntry = Registry.CommandRegistry.GetByAlias(lAlias);
+        if (cmdEntry != null)
         {
-            SpectrePanel.Error("AI/Ollama features are disabled in config.");
-            Thread.Sleep(1500);
-            return;
-        }
-        if ((lAlias == "agyswitch" || lAlias == "agyquota" || lAlias == "account-tree" || lAlias == "quota-chart" || lAlias == "live-dashboard" || lAlias == "autoswitch") && !AgyAiCore.IsAgyEnabled())
-        {
-            SpectrePanel.Error("AGY Account features are disabled in config.");
-            Thread.Sleep(1500);
-            return;
+            if (cmdEntry.RequiresAiOllama && !AgyAiCore.IsAiOllamaEnabled())
+            {
+                SpectrePanel.Error("AI/Ollama features are disabled in config.");
+                Thread.Sleep(1500);
+                return;
+            }
+            if (cmdEntry.RequiresAgy && !AgyAiCore.IsAgyEnabled())
+            {
+                SpectrePanel.Error("AGY Account features are disabled in config.");
+                Thread.Sleep(1500);
+                return;
+            }
         }
 
         try

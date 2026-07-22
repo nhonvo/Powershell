@@ -17,30 +17,34 @@ public sealed record WorkspaceEntry(string Name, [property: JsonPropertyName("Pa
 
 public static class WorkspaceRegistry
 {
-    private static readonly string ConfigFile = System.IO.Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-        ".gemini", "antigravity", "priority_workspaces.json");
+    private static readonly TtlCache<string, WorkspaceEntry[]> _cache = new(TimeSpan.FromSeconds(5));
+
+    private static string ConfigFile => System.IO.Path.Combine(
+        AgyAccountCore.AgySourceHome, "antigravity", "priority_workspaces.json");
 
     public static WorkspaceEntry[] GetWorkspaces()
     {
-        WorkspaceEntry[] items = [];
-        if (File.Exists(ConfigFile))
+        return _cache.GetOrCompute("workspaces", () =>
         {
-            try
+            WorkspaceEntry[] items = [];
+            if (File.Exists(ConfigFile))
             {
-                var raw = File.ReadAllText(ConfigFile);
-                items = JsonSerializer.Deserialize<WorkspaceEntry[]>(raw)?.Where(w => w != null && !string.IsNullOrEmpty(w.WorkspacePath)).ToArray() ?? [];
+                try
+                {
+                    var raw = File.ReadAllText(ConfigFile);
+                    items = JsonSerializer.Deserialize<WorkspaceEntry[]>(raw)?.Where(w => w != null && !string.IsNullOrEmpty(w.WorkspacePath)).ToArray() ?? [];
+                }
+                catch {}
             }
-            catch {}
-        }
 
-        if (items.Length == 0)
-        {
-            items = AutoDiscoverWorkspaces();
-            if (items.Length > 0) SaveWorkspaces(items);
-        }
+            if (items.Length == 0)
+            {
+                items = AutoDiscoverWorkspaces();
+                if (items.Length > 0) SaveWorkspaces(items);
+            }
 
-        return items;
+            return items;
+        });
     }
 
     public static WorkspaceEntry[] AutoDiscoverWorkspaces()
@@ -71,7 +75,6 @@ public static class WorkspaceRegistry
         // 3. Candidate base project directories
         var searchBases = new List<string>();
         if (!string.IsNullOrEmpty(Config.Current.ProjectsBaseDir)) searchBases.Add(Config.Current.ProjectsBaseDir);
-        searchBases.Add(@"C:\Users\sshuser\project");
         searchBases.Add(System.IO.Path.Combine(userProfile, "project"));
         searchBases.Add(System.IO.Path.Combine(userProfile, "Documents"));
         searchBases.Add(System.IO.Path.Combine(userProfile, "Desktop"));
@@ -84,16 +87,20 @@ public static class WorkspaceRegistry
                 var subDirs = Directory.GetDirectories(baseDir);
                 foreach (var dir in subDirs)
                 {
-                    var dirName = System.IO.Path.GetFileName(dir);
-                    if (dirName.StartsWith(".") || dirName.Equals("node_modules", StringComparison.OrdinalIgnoreCase)) continue;
-
-                    if (Directory.Exists(System.IO.Path.Combine(dir, ".git")) ||
-                        Directory.GetFiles(dir, "*.csproj").Length > 0 ||
-                        Directory.GetFiles(dir, "*.sln").Length > 0 ||
-                        File.Exists(System.IO.Path.Combine(dir, "package.json")))
+                    try
                     {
-                        TryAdd(dirName, dir);
+                        var dirName = System.IO.Path.GetFileName(dir);
+                        if (dirName.StartsWith(".") || dirName.Equals("node_modules", StringComparison.OrdinalIgnoreCase)) continue;
+
+                        if (Directory.Exists(System.IO.Path.Combine(dir, ".git")) ||
+                            Directory.GetFiles(dir, "*.csproj").Length > 0 ||
+                            Directory.GetFiles(dir, "*.sln").Length > 0 ||
+                            File.Exists(System.IO.Path.Combine(dir, "package.json")))
+                        {
+                            TryAdd(dirName, dir);
+                        }
                     }
+                    catch {}
                 }
             }
             catch {}
@@ -112,6 +119,7 @@ public static class WorkspaceRegistry
                 WriteIndented = true
             }
             ), Encoding.UTF8);
+            _cache.Clear();
         }
         catch (Exception ex)
         {
@@ -120,29 +128,54 @@ public static class WorkspaceRegistry
 
     }
 
-    public static WorkspaceEntry[] FindByQuery(string query)
+    public static WorkspaceEntry[] FindByQuery(string query, bool asRegex = false)
     {
         var all = GetWorkspaces();
         if (string.IsNullOrWhiteSpace(query)) return all;
 
-        try
+        if (asRegex)
         {
-            return all.Where(w => Regex.IsMatch(w.Name, query, RegexOptions.IgnoreCase) || Regex.IsMatch(w.WorkspacePath, query, RegexOptions.IgnoreCase)).ToArray();
-        }
-        catch
-        {
-            return [];
+            try
+            {
+                return all.Where(w => Regex.IsMatch(w.Name, query, RegexOptions.IgnoreCase) || Regex.IsMatch(w.WorkspacePath, query, RegexOptions.IgnoreCase)).ToArray();
+            }
+            catch
+            {
+                return [];
+            }
         }
 
+        return all.Where(w => w.Name.Contains(query, StringComparison.OrdinalIgnoreCase) || w.WorkspacePath.Contains(query, StringComparison.OrdinalIgnoreCase)).ToArray();
     }
 
-    public static WorkspaceEntry[] GetByAccount(string accountName) => GetWorkspaces().Where(w => string.Equals(w.AssociatedAccount, accountName, StringComparison.OrdinalIgnoreCase)).ToArray();
+    public static WorkspaceEntry[] GetByAccount(string accountName)
+    {
+        var targetAccount = string.IsNullOrEmpty(accountName) ? "default" : accountName;
+        return GetWorkspaces().Where(w => string.Equals(w.AssociatedAccount ?? "default", targetAccount, StringComparison.OrdinalIgnoreCase)).ToArray();
+    }
 
     public static string GetGitBranch(string dirPath)
     {
         try
         {
-            var headFile = System.IO.Path.Combine(dirPath, ".git", "HEAD");
+            var gitPath = System.IO.Path.Combine(dirPath, ".git");
+            string headFile = System.IO.Path.Combine(gitPath, "HEAD");
+
+            if (File.Exists(gitPath) && !Directory.Exists(gitPath))
+            {
+                var lines = File.ReadAllLines(gitPath);
+                var gitdirLine = lines.FirstOrDefault(l => l.StartsWith("gitdir:", StringComparison.OrdinalIgnoreCase));
+                if (gitdirLine != null)
+                {
+                    var targetGitDir = gitdirLine.Substring("gitdir:".Length).Trim();
+                    if (!System.IO.Path.IsPathRooted(targetGitDir))
+                    {
+                        targetGitDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(dirPath, targetGitDir));
+                    }
+                    headFile = System.IO.Path.Combine(targetGitDir, "HEAD");
+                }
+            }
+
             if (File.Exists(headFile))
             {
                 var txt = File.ReadAllText(headFile).Trim();
@@ -155,6 +188,50 @@ public static class WorkspaceRegistry
         }
         catch { }
         return "";
+    }
+
+    public static readonly string[] SharedWorkspaceActions = new[]
+    {
+        "📂 Change Directory on exit",
+        "🚀 Launch New Terminal Session (wt / pwsh)",
+        "💻 Open in Terminal IDE (/ide)",
+        "📁 Open in Windows File Explorer",
+        "🔀 View Git Status & Diff"
+    };
+
+    public static string HandleWorkspaceAction(WorkspaceEntry selected, int actionIdx)
+    {
+        if (actionIdx == 0)
+        {
+            var agyHome = AgyAccountCore.AgySourceHome;
+            Directory.CreateDirectory(agyHome);
+            var selectedProjFile = System.IO.Path.Combine(agyHome, "selected_project.txt");
+            File.WriteAllText(selectedProjFile, selected.WorkspacePath);
+            SpectrePanel.Success($"Selected workspace '{selected.Name}'. Directory switch will apply on exit.");
+            Thread.Sleep(1000);
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 1)
+        {
+            SystemHelper.OpenNewTerminalSession(selected.WorkspacePath);
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 2)
+        {
+            TerminalIde.Open(selected.WorkspacePath);
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 3)
+        {
+            SystemHelper.OpenExplorer(selected.WorkspacePath);
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 4)
+        {
+            GitDiffViewer.ShowDiff(selected.WorkspacePath);
+            return selected.WorkspacePath;
+        }
+        return selected.WorkspacePath;
     }
 }
 
@@ -200,37 +277,8 @@ public static class ProfileNavigator
             selected = matches[idx];
         }
 
-        var actions = new[]
-        {
-            $"📂 Change Directory to {selected.Name} on exit",
-            $"🚀 Launch New Terminal Session (wt / pwsh)",
-            $"💻 Open in Terminal IDE (/ide)",
-            $"📁 Open in Windows File Explorer",
-            $"🔀 View Git Status & Diff"
-        };
-
-        var actionIdx = SpectreMenu.ShowWithEscape($"Workspace: {selected.Name}", actions, 0);
-        if (actionIdx == 1)
-        {
-            SystemHelper.OpenNewTerminalSession(selected.WorkspacePath);
-            return selected.WorkspacePath;
-        }
-        else if (actionIdx == 2)
-        {
-            TerminalIde.Open(selected.WorkspacePath);
-            return selected.WorkspacePath;
-        }
-        else if (actionIdx == 3)
-        {
-            SystemHelper.OpenExplorer(selected.WorkspacePath);
-            return selected.WorkspacePath;
-        }
-        else if (actionIdx == 4)
-        {
-            GitDiffViewer.ShowDiff(selected.WorkspacePath);
-            return selected.WorkspacePath;
-        }
-
-        return selected.WorkspacePath;
+        var actionIdx = SpectreMenu.ShowWithEscape($"Workspace: {selected.Name}", WorkspaceRegistry.SharedWorkspaceActions, 0);
+        if (actionIdx < 0) return selected.WorkspacePath;
+        return WorkspaceRegistry.HandleWorkspaceAction(selected, actionIdx);
     }
 }

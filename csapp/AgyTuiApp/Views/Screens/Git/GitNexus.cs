@@ -27,7 +27,7 @@ public static class GitNexus
         AnsiConsole.Write(new Rule("[bold cyan]AGY — Git Nexus[/]").RuleStyle("grey"));
         AnsiConsole.MarkupLine("[dim] Auto-refreshes · Press any key to exit[/]");
         var t = new Table { Border = TableBorder.Rounded };
-        foreach (var col in cols) t.AddColumn(new TableColumn($"[bold]{col.EscapeMarkup()}[]"));
+        foreach (var col in cols) t.AddColumn(new TableColumn($"[bold]{col.EscapeMarkup()}[/]"));
         AnsiConsole.Live(t).Start(ctx =>
         {
             int ticks = 0;

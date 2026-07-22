@@ -82,69 +82,46 @@ public static class Icons
     public static string FolderClosed => UseNerdFonts ? "󰉋" : (IsUtf8Supported ? "📁" : "[+]");
     public static string FolderOpen => UseNerdFonts ? "󰉓" : (IsUtf8Supported ? "📂" : "[-]");
 
+    private record CategoryMeta(string Keyword, string NerdIcon, string Utf8Icon, string AsciiIcon, string Hotkey);
+
+    private static readonly CategoryMeta[] Categories = new CategoryMeta[]
+    {
+        new("workspace", "󰉋", "📁", "[Dev]", "cnav"),
+        new("ai agent", "󰚩", "🤖", "[AI]", "cai"),
+        new("ollama", "󰚩", "🤖", "[AI]", "cai"),
+        new("account", "👤", "👤", "[ACC]", "agyswitch"),
+        new("docker", "🐳", "🐳", "[DKR]", "cdk"),
+        new("database", "🐳", "🐳", "[DKR]", "cdk"),
+        new("system", "🌐", "🌐", "[SYS]", "csys"),
+        new("network", "🌐", "🌐", "[SYS]", "csys"),
+        new("learn", "📚", "📚", "[LRN]", "learn"),
+        new("study", "📚", "📚", "[LRN]", "learn"),
+        new("track", "📈", "📈", "[TRK]", "track"),
+        new("progress", "📈", "📈", "[TRK]", "track"),
+        new("obsidian", "💎", "💎", "[OBS]", "obsidian"),
+        new("resource", "💎", "💎", "[OBS]", "obsidian"),
+        new("appearance", "🎨", "🎨", "[UI]", "theme"),
+        new("layout", "🎨", "🎨", "[UI]", "theme"),
+        new("help", "🛸", "🛸", "[AGY]", "help"),
+        new("docs", "🛸", "🛸", "[AGY]", "help"),
+    };
+
     public static string GetCategoryIcon(string categoryLabel)
     {
-        categoryLabel = categoryLabel.ToLowerInvariant();
-        if (UseNerdFonts)
+        var lower = categoryLabel.ToLowerInvariant();
+        var match = Array.Find(Categories, c => lower.Contains(c.Keyword));
+        if (match != null)
         {
-            if (categoryLabel.Contains("workspace")) return "󰉋";
-            if (categoryLabel.Contains("ai agent") || categoryLabel.Contains("ollama")) return "󰚩";
-            if (categoryLabel.Contains("account")) return "👤";
-            if (categoryLabel.Contains("docker") || categoryLabel.Contains("database")) return "🐳";
-            if (categoryLabel.Contains("system") || categoryLabel.Contains("network")) return "🌐";
-            if (categoryLabel.Contains("learn") || categoryLabel.Contains("study")) return "📚";
-            if (categoryLabel.Contains("track") || categoryLabel.Contains("progress")) return "📈";
-            if (categoryLabel.Contains("obsidian") || categoryLabel.Contains("resource")) return "💎";
-            if (categoryLabel.Contains("appearance") || categoryLabel.Contains("layout")) return "🎨";
-            if (categoryLabel.Contains("help") || categoryLabel.Contains("docs")) return "🛸";
-            return "󰉋";
+            return UseNerdFonts ? match.NerdIcon : (IsUtf8Supported ? match.Utf8Icon : match.AsciiIcon);
         }
-        else if (!IsUtf8Supported)
-        {
-            if (categoryLabel.Contains("workspace")) return "[Dev]";
-            if (categoryLabel.Contains("ai agent") || categoryLabel.Contains("ollama")) return "[AI]";
-            if (categoryLabel.Contains("account")) return "[ACC]";
-            if (categoryLabel.Contains("docker") || categoryLabel.Contains("database")) return "[DKR]";
-            if (categoryLabel.Contains("system") || categoryLabel.Contains("network")) return "[SYS]";
-            if (categoryLabel.Contains("learn") || categoryLabel.Contains("study")) return "[LRN]";
-            if (categoryLabel.Contains("track") || categoryLabel.Contains("progress")) return "[TRK]";
-            if (categoryLabel.Contains("obsidian") || categoryLabel.Contains("resource")) return "[OBS]";
-            if (categoryLabel.Contains("appearance") || categoryLabel.Contains("layout")) return "[UI]";
-            if (categoryLabel.Contains("help") || categoryLabel.Contains("docs")) return "[AGY]";
-            return "[+]";
-        }
-        else
-        {
-            if (categoryLabel.Contains("workspace")) return "📁";
-            if (categoryLabel.Contains("ai agent") || categoryLabel.Contains("ollama")) return "🤖";
-            if (categoryLabel.Contains("account")) return "👤";
-            if (categoryLabel.Contains("docker") || categoryLabel.Contains("database")) return "🐳";
-            if (categoryLabel.Contains("system") || categoryLabel.Contains("network")) return "🌐";
-            if (categoryLabel.Contains("learn") || categoryLabel.Contains("study")) return "📚";
-            if (categoryLabel.Contains("track") || categoryLabel.Contains("progress")) return "📈";
-            if (categoryLabel.Contains("obsidian") || categoryLabel.Contains("resource")) return "💎";
-            if (categoryLabel.Contains("appearance") || categoryLabel.Contains("layout")) return "🎨";
-            if (categoryLabel.Contains("help") || categoryLabel.Contains("docs")) return "🛸";
-            if (categoryLabel.Contains("theme") || categoryLabel.Contains("setting")) return "🎨";
-            return "📂";
-        }
+        return UseNerdFonts ? "󰉋" : (IsUtf8Supported ? "📂" : "[+]");
     }
 
     public static string GetCategoryHotkey(string categoryLabel)
     {
-        categoryLabel = categoryLabel.ToLowerInvariant();
-        if (categoryLabel.Contains("workspace")) return "cnav";
-        if (categoryLabel.Contains("ai agent") || categoryLabel.Contains("ollama")) return "cai";
-        if (categoryLabel.Contains("account")) return "agyswitch";
-        if (categoryLabel.Contains("docker") || categoryLabel.Contains("database")) return "cdk";
-        if (categoryLabel.Contains("system") || categoryLabel.Contains("network")) return "csys";
-        if (categoryLabel.Contains("learn") || categoryLabel.Contains("study")) return "learn";
-        if (categoryLabel.Contains("track") || categoryLabel.Contains("progress")) return "stats";
-        if (categoryLabel.Contains("obsidian") || categoryLabel.Contains("resource")) return "obsidian";
-        if (categoryLabel.Contains("appearance") || categoryLabel.Contains("layout")) return "theme";
-        if (categoryLabel.Contains("help") || categoryLabel.Contains("docs")) return "help";
-        if (categoryLabel.Contains("theme") || categoryLabel.Contains("setting")) return "theme";
-        return "";
+        var lower = categoryLabel.ToLowerInvariant();
+        var match = Array.Find(Categories, c => lower.Contains(c.Keyword));
+        return match?.Hotkey ?? "";
     }
 
     public static string GetCommandIcon(string alias, string category)

@@ -24,5 +24,6 @@ try {
         Write-Error "❌ Dev Build Failed."
     }
 } finally {
+    Get-ChildItem -Path "csapp\AgyTuiApp\bin\Debug\net10.0" -Filter "AgyTuiApp.dll.old_*" -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
     popd
 }

@@ -68,7 +68,7 @@ public static class SystemHelper
 
             try
             {
-                var proc = Process.GetProcessById(pid);
+                using var proc = Process.GetProcessById(pid);
                 var name = proc.ProcessName;
                 proc.Kill(entireProcessTree: true);
                 SpectrePanel.Success($"Killed process '{name}' (PID {pid}) listening on port {port}.");
@@ -139,32 +139,46 @@ public static class SystemHelper
             }
             foreach (var p in named)
             {
-                try
+                using (p)
                 {
-                    p.Kill();
-                    SpectrePanel.Success($"Stopped '{p.ProcessName}' (PID {p.Id}).");
-                }
-                catch (Exception ex)
-                {
-                    SpectrePanel.Error($"Failed to stop PID {p.Id}: {ex.Message}");
+                    try
+                    {
+                        p.Kill();
+                        SpectrePanel.Success($"Stopped '{p.ProcessName}' (PID {p.Id}).");
+                    }
+                    catch (Exception ex)
+                    {
+                        SpectrePanel.Error($"Failed to stop PID {p.Id}: {ex.Message}");
+                    }
                 }
             }
             return;
         }
         var all = Process.GetProcesses().OrderBy(p => p.ProcessName).ToArray();
-        var labels = all.Select(p => $"{p.ProcessName,-30} PID {p.Id}").ToArray();
-        var idx = SpectreMenu.Show("Select process to kill", labels, 0, true);
-        if (idx < 0) return;
-        var target = all[idx];
-
         try
         {
-            target.Kill();
-            SpectrePanel.Success($"Stopped '{target.ProcessName}' (PID {target.Id}).");
+            var labels = all.Select(p => $"{p.ProcessName,-30} PID {p.Id}").ToArray();
+            var idx = SpectreMenu.Show("Select process to kill", labels, 0, true);
+            if (idx >= 0)
+            {
+                var target = all[idx];
+                try
+                {
+                    target.Kill();
+                    SpectrePanel.Success($"Stopped '{target.ProcessName}' (PID {target.Id}).");
+                }
+                catch (Exception ex)
+                {
+                    SpectrePanel.Error($"Failed to stop PID {target.Id}: {ex.Message}");
+                }
+            }
         }
-        catch (Exception ex)
+        finally
         {
-            SpectrePanel.Error($"Failed to stop PID {target.Id}: {ex.Message}");
+            foreach (var p in all)
+            {
+                try { p.Dispose(); } catch { }
+            }
         }
 
     }
@@ -474,43 +488,7 @@ public static class SshHelper
 
     public static void StartKeyReceiver(int listenPort = 2222)
     {
-        AnsiConsole.MarkupLine($"[yellow]Listening on port {listenPort} for public key…[/]");
-        AnsiConsole.MarkupLine("[dim]Send key from remote: ssh-copy-id or: cat ~/.ssh/id_rsa.pub | nc <this-ip> {listenPort}[/]");
-
-        try
-        {
-            var listener = new TcpListener(IPAddress.Any, listenPort);
-            listener.Start();
-
-            var acceptTask = listener.AcceptTcpClientAsync();
-            if (!acceptTask.Wait(TimeSpan.FromMinutes(2)))
-            {
-                listener.Stop();
-                SpectrePanel.Warning("Key receiver timed out after 2 minutes.");
-                return;
-            }
-            using var client = acceptTask.Result;
-            listener.Stop();
-
-            using var reader = new StreamReader(client.GetStream(), Encoding.UTF8);
-            var keyLine = reader.ReadLine()?.Trim();
-            if (string.IsNullOrWhiteSpace(keyLine))
-            {
-                SpectrePanel.Error("Received empty key.");
-                return;
-            }
-            if (!Regex.IsMatch(keyLine, @"^ssh-(ed25519|rsa|dss|ecdsa) [A-Za-z0-9+/=]+( .+)?$"))
-            {
-                SpectrePanel.Error("Received payload is not a valid SSH public key.");
-                return;
-            }
-            AddAuthorizedKey(keyLine);
-        }
-        catch (Exception ex)
-        {
-            SpectrePanel.Error($"Key receiver failed: {ex.Message}");
-        }
-
+        StartMobileSshKeyReceiver(listenPort);
     }
 
     public static void GetConnectionInfo()

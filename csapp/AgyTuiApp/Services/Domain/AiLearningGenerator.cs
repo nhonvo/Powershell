@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.Json;
 using AgyTui.Components;
 using Spectre.Console;
 
@@ -101,14 +102,44 @@ public static class AiLearningGenerator
             using var proc = Process.Start(psi);
             if (proc == null) return false;
 
-            string output = proc.StandardOutput.ReadToEnd();
-            proc.WaitForExit();
+            var stdoutTask = proc.StandardOutput.ReadToEndAsync();
+            var stderrTask = proc.StandardError.ReadToEndAsync();
+
+            if (!proc.WaitForExit(30000))
+            {
+                try { proc.Kill(); } catch {}
+                SpectrePanel.Error("CLI execution timed out after 30 seconds.");
+                return false;
+            }
+
+            string output = stdoutTask.GetAwaiter().GetResult();
+            string error = stderrTask.GetAwaiter().GetResult();
 
             if (!string.IsNullOrWhiteSpace(output))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(targetFile)!);
-                File.WriteAllText(targetFile, output);
-                return true;
+                var cleanJson = output.Trim();
+                if (cleanJson.StartsWith("```"))
+                {
+                    var lines = cleanJson.Split('\n');
+                    cleanJson = string.Join('\n', lines.Where(l => !l.Trim().StartsWith("```"))).Trim();
+                }
+
+                try
+                {
+                    using var doc = JsonDocument.Parse(cleanJson);
+                    Directory.CreateDirectory(Path.GetDirectoryName(targetFile)!);
+                    File.WriteAllText(targetFile, cleanJson);
+                    return true;
+                }
+                catch (JsonException ex)
+                {
+                    SpectrePanel.Error($"AI response contained invalid JSON: {ex.Message.EscapeMarkup()}");
+                    return false;
+                }
+            }
+            else if (!string.IsNullOrWhiteSpace(error))
+            {
+                SpectrePanel.Error($"CLI error: {error.Trim().EscapeMarkup()}");
             }
         }
         catch (Exception ex)

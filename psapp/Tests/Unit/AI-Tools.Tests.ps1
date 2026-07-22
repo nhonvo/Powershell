@@ -2,16 +2,25 @@
 
 Describe "AI Tools Wrapper Functions" {
     BeforeAll {
+        $Global:AgyUserProfileLoaded = $null
         $Global:AiProviderMode = "local"
-        $dllPath = "C:\Users\TruongNhon\Documents\Powershell\AgyTuiApp\dist\AgyTuiApp.dll"
-        if (Test-Path $dllPath) {
-            # Load dependency assemblies
-            Get-ChildItem -Path (Split-Path $dllPath) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
-                try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
-            }
-            Add-Type -Path $dllPath -ErrorAction SilentlyContinue
+        $repoRoot = Resolve-Path "$PSScriptRoot\..\.." | Select-Object -ExpandProperty Path
+        $dllPath = Join-Path $repoRoot "csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+        if (-not (Test-Path $dllPath)) {
+            $dllPath = Join-Path $repoRoot "csapp\AgyTuiApp\dist\AgyTuiApp.dll"
         }
-        . "C:\Users\TruongNhon\Documents\Powershell\Microsoft.PowerShell_profile.ps1"
+        if ((Test-Path $dllPath) -and -not ('AgyTui.AgyAiCore' -as [type])) {
+            try {
+                Get-ChildItem -Path (Split-Path $dllPath) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
+                    try { Add-Type -Path $_.FullName } catch {}
+                }
+                Add-Type -Path $dllPath
+            } catch {}
+        }
+        $profilePath = Join-Path $repoRoot "Microsoft.PowerShell_profile.ps1"
+        if (Test-Path $profilePath) {
+            . $profilePath
+        }
     }
     
     Context "Ollama Helpers" {
@@ -33,25 +42,25 @@ Describe "AI Tools Wrapper Functions" {
         It "defines Invoke-Claude-By-Ollama wrapper mapping to AgyAiCore" {
             $cmd = Get-Command Invoke-Claude-By-Ollama -ErrorAction SilentlyContinue
             $cmd | Should Not Be $null
-            $cmd.Definition | Should Match "AgyAiCore"
+            $cmd.Definition | Should Match "Invoke-AiTool|AgyAiCore"
         }
 
         It "defines Invoke-Codex-By-Ollama wrapper mapping to AgyAiCore" {
             $cmd = Get-Command Invoke-Codex-By-Ollama -ErrorAction SilentlyContinue
             $cmd | Should Not Be $null
-            $cmd.Definition | Should Match "AgyAiCore"
+            $cmd.Definition | Should Match "Invoke-AiTool|AgyAiCore"
         }
 
         It "defines Invoke-OpenClaw-By-Ollama wrapper mapping to AgyAiCore" {
             $cmd = Get-Command Invoke-OpenClaw-By-Ollama -ErrorAction SilentlyContinue
             $cmd | Should Not Be $null
-            $cmd.Definition | Should Match "AgyAiCore"
+            $cmd.Definition | Should Match "Invoke-AiTool|AgyAiCore"
         }
 
         It "defines Invoke-Hermes-By-Ollama wrapper mapping to AgyAiCore" {
             $cmd = Get-Command Invoke-Hermes-By-Ollama -ErrorAction SilentlyContinue
             $cmd | Should Not Be $null
-            $cmd.Definition | Should Match "AgyAiCore"
+            $cmd.Definition | Should Match "Invoke-AiTool|AgyAiCore"
         }
 
         It "defines Install-AIIntegrations wrapper mapping to AgyAiCore" {

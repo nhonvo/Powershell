@@ -111,13 +111,19 @@ public static class DatabaseHelper
         var sql = AnsiConsole.Ask<string>("Enter SQL Query to execute:").Trim();
         if (string.IsNullOrEmpty(sql)) return;
 
+        if (sql.StartsWith("."))
+        {
+            SpectrePanel.Error("SQLite dot-commands (.) are not allowed.");
+            return;
+        }
+
         bool isWrite = Regex.IsMatch(sql, @"\b(insert|update|delete|drop|create|alter|replace)\b", RegexOptions.IgnoreCase);
         if (isWrite)
         {
             var backupPath = dbPath + ".bak";
             try
             {
-                var (backupOut, backupErr, exitCode) = Helpers.ProcessRunner.RunCaptureWithDetails("sqlite3", $"\"{dbPath}\" \".backup '{backupPath.Replace("'", "''")}'\"");
+                var (backupOut, backupErr, exitCode) = Helpers.ProcessRunner.RunCaptureWithDetails("sqlite3", new[] { dbPath, $".backup '{backupPath.Replace("'", "''")}'" });
                 if (exitCode != 0)
                 {
                     throw new Exception(string.IsNullOrEmpty(backupErr) ? "sqlite3 exited with code " + exitCode : backupErr.Trim());
@@ -137,7 +143,7 @@ public static class DatabaseHelper
         try
         {
             AnsiConsole.MarkupLine($"[yellow]Executing query: {sql.EscapeMarkup()}[/]");
-            var output = Helpers.ProcessRunner.RunCapture("sqlite3", $"\"{dbPath}\" \"{sql}\"");
+            var output = Helpers.ProcessRunner.RunCapture("sqlite3", new[] { dbPath, sql });
             if (string.IsNullOrWhiteSpace(output))
             {
                 AnsiConsole.MarkupLine("[green]Query executed successfully with no output returned.[/]");

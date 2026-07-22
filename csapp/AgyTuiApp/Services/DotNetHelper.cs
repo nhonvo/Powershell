@@ -93,17 +93,27 @@ public static class DotNetHelper
             }
         }
 
-        var keyArg = string.IsNullOrEmpty(apiKey) ? "" : $"--api-key {apiKey}";
         SpectrePanel.Info($"Pushing package {Path.GetFileName(nupkgPath)} to {source}...");
-        var exit = RunDotnet($"nuget push \"{nupkgPath}\" --source \"{source}\" {keyArg} --skip-duplicate", null);
-        if (exit == 0) SpectrePanel.Success("NuGet package published successfully!");
-        else SpectrePanel.Error($"dotnet nuget push failed (exit {exit}).");
-        return exit;
+        var env = new Dictionary<string, string?>();
+        if (!string.IsNullOrEmpty(apiKey))
+        {
+            env["NUGET_API_KEY"] = apiKey;
+        }
+        var pushArgs = new List<string> { "nuget", "push", nupkgPath, "--source", source, "--skip-duplicate" };
+        Helpers.ProcessRunner.RunInteractive("dotnet", pushArgs, env);
+        SpectrePanel.Success("NuGet package publish command completed.");
+        return 0;
     }
 
     public static int Watch(string? projectPath = null) => RunDotnet("watch run", projectPath);
 
-    public static int AddMigration(string migrationName, string? project = null) => RunDotnet($"ef migrations add {migrationName}", project);
+    public static int AddMigration(string migrationName, string? project = null)
+    {
+        var args = new List<string> { "ef", "migrations", "add", migrationName };
+        if (!string.IsNullOrEmpty(project)) { args.Add("--project"); args.Add(project); }
+        Helpers.ProcessRunner.RunInteractive("dotnet", args);
+        return 0;
+    }
 
     public static int UpdateDatabase(string? project = null) => RunDotnet("ef database update", project);
 

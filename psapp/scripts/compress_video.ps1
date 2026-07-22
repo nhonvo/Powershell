@@ -82,7 +82,7 @@ function Compress-SingleFile {
     Write-Host "Original Size: $([math]::Round($item.Length / 1MB, 2)) MB"
     Write-Host "Resolution: $TargetResolution | Quality Preset: $Quality (CRF: $crf)"
 
-    $ffmpegArgs = @("-y", "-i", "`"$file`"")
+    $ffmpegArgs = @("-y", "-i", $file)
 
     if ($scaleFilter -ne "") {
         $ffmpegArgs += @("-vf", $scaleFilter)
@@ -90,15 +90,14 @@ function Compress-SingleFile {
 
     $ffmpegArgs += @(
         "-c:v", $Codec,
-        "-crf", $crf,
+        "-crf", "$crf",
         "-preset", "faster",
         "-c:a", "aac",
         "-b:a", "128k",
-        "`"$outputFile`""
+        $outputFile
     )
 
-    $cmdLine = "ffmpeg " + ($ffmpegArgs -join " ")
-    Invoke-Expression $cmdLine
+    & ffmpeg @ffmpegArgs
 
     if (Test-Path $outputFile) {
         $newItem = Get-Item $outputFile

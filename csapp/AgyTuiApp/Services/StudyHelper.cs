@@ -696,7 +696,7 @@ public static class StudyStats
     public static void ShowWeeklyChart(StudyLogEntry[] logs)
     {
         AnsiConsole.Write(new Rule("[bold cyan]Minutes studied (last 7 days)[/]").RuleStyle("grey"));
-        var cutoff = DateTime.Today.AddDays(-7);
+        var cutoff = DateTime.Today.AddDays(-6);
         var byTopic = logs.Where(s => DateTime.TryParse(s.Date, out var d) && d >= cutoff).GroupBy(s => s.Topic).ToDictionary(g => g.Key, g => g.Sum(s => s.DurationMinutes));
         if (byTopic.Count == 0)
         {
@@ -704,7 +704,7 @@ public static class StudyStats
             return;
         }
         var chart = new BarChart().Width(50).Label("[bold]Minutes[/]").CenterLabel();
-        foreach (var (topic, mins) in byTopic.OrderByDescending(x => x.Value)) chart.AddItem(topic, mins, Color.Cyan1);
+        foreach (var (topic, mins) in byTopic.OrderByDescending(x => x.Value)) chart.AddItem(topic.EscapeMarkup(), mins, Color.Cyan1);
         AnsiConsole.Write(chart);
 
     }
@@ -728,7 +728,7 @@ public static class StudyStats
         {
             if (DateTime.TryParse(s.Date, out var dt)) return dt.Date;
             return DateTime.MinValue;
-        }).Where(d => d != DateTime.MinValue).Distinct().OrderByDescending(d => d).ToArray();
+        }).Where(d => d != DateTime.MinValue && d <= DateTime.Today).Distinct().OrderByDescending(d => d).ToArray();
 
         if (dates.Length == 0) return 0;
 
@@ -738,7 +738,7 @@ public static class StudyStats
         if (dates[0] != check)
         {
             var diff = (check - dates[0]).TotalDays;
-            if (diff == 1 || (allowGraceDay && diff <= 2))
+            if (diff >= 0 && (diff == 1 || (allowGraceDay && diff <= 2)))
             {
                 check = dates[0];
             }
@@ -787,7 +787,7 @@ public static class DailyGoals
                 bool done = t.Completed >= t.Count;
                 int bars = t.Count > 0 ? (int)(t.Completed * 16.0 / t.Count) : 0;
                 var bar = new string('█', Math.Min(16, bars)) + new string('░', Math.Max(0, 16 - bars));
-                sb.AppendLine($" {(done ? "[green]✓[/]" : "[red]✗[/]")} {t.Topic,-12} {t.Activity,-12} [{bar}] {t.Completed}/{t.Count}");
+                sb.AppendLine($" {(done ? "[green]✓[/]" : "[red]✗[/]")} {t.Topic.EscapeMarkup(),-12} {t.Activity.EscapeMarkup(),-12} [{bar}] {t.Completed}/{t.Count}");
             }
             int complete = data.Targets.Count(t => t.Completed >= t.Count);
             AnsiConsole.Write(new Panel(sb.ToString().TrimEnd())
