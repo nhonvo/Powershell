@@ -120,8 +120,7 @@ public static class SpectreMenu
             AnsiConsole.WriteLine();
 
             var pageSize = Math.Min(15, Math.Max(5, Console.WindowHeight - 8));
-            var top = Math.Max(0, Math.Min(selected - pageSize / 2, items.Length - pageSize));
-            var end = Math.Min(items.Length, top + pageSize);
+            var (top, end) = ScrollableListView.ComputeViewport(items.Length, selected, pageSize);
 
             for (var i = top; i < end; i++)
             {
@@ -290,6 +289,7 @@ public static class SpectrePager
                         break;
                     case ConsoleKey.Oem2:
                     case ConsoleKey.Divide:
+                    case ConsoleKey.F:
                         searching = true;
                         break;
                     case ConsoleKey.Escape:

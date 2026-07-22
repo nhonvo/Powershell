@@ -245,6 +245,7 @@ public static class Program
         try
         {
             AgyTui.Registry.CommandRegistry.AssertSwitchCases();
+            AgyTui.Registry.CommandRegistry.AssertAllAliasesReachable(MenuNodeBuilder.BuildTree());
         }
         catch (Exception ex)
         {
@@ -958,6 +959,8 @@ public static class Program
                     else SpectrePanel.Warning("Obsidian vault path not configured. Run 'obsidian' first.");
                     break;
                 case "nexus":
+                    GitNexus.ShowLiveDashboard();
+                    break;
                 case "repo-graph":
                     RepoGraph.Show(RepoGraph.Build());
                     break;

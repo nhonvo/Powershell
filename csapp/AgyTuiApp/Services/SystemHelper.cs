@@ -523,7 +523,8 @@ public static class SshHelper
                 {
                     try
                     {
-                        procName = Process.GetProcessById(pid).ProcessName;
+                        using var proc = Process.GetProcessById(pid);
+                        procName = proc.ProcessName;
                     }
                     catch
                     {

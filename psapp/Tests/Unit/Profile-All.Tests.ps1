@@ -96,6 +96,8 @@ Describe "Core Profile Functions Validation" {
         It "Invoke-GitUndo discards uncommitted changes" {
             $tempRepo = Join-Path ([System.IO.Path]::GetTempPath()) ("test_gitrepo_" + [System.Guid]::NewGuid().ToString("N"))
             New-Item -ItemType Directory -Path $tempRepo -Force | Out-Null
+            $origCurrentDir = [System.Environment]::CurrentDirectory
+            [System.Environment]::CurrentDirectory = $tempRepo
             Push-Location $tempRepo
             try {
                 & git init -q
@@ -106,6 +108,7 @@ Describe "Core Profile Functions Validation" {
                 { Invoke-GitUndo } | Should Not Throw
             } finally {
                 Pop-Location
+                [System.Environment]::CurrentDirectory = $origCurrentDir
                 Remove-Item $tempRepo -Recurse -Force -ErrorAction SilentlyContinue
             }
         }

@@ -26,7 +26,8 @@ public static class IdeCommandRegistry
             {
                 var full = Path.GetFullPath(Path.Combine(ctx.RootPath, a[0]));
                 var rootFull = Path.GetFullPath(ctx.RootPath);
-                if (full.StartsWith(rootFull, StringComparison.OrdinalIgnoreCase))
+                var rootSep = rootFull.EndsWith(Path.DirectorySeparatorChar) ? rootFull : rootFull + Path.DirectorySeparatorChar;
+                if (full.StartsWith(rootSep, StringComparison.OrdinalIgnoreCase) || string.Equals(full, rootFull, StringComparison.OrdinalIgnoreCase))
                 {
                     ctx.CurrentFile = full;
                 }

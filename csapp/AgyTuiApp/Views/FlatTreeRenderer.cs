@@ -184,7 +184,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
 
             ScreenChrome.RenderFrame(() =>
             {
-                ScreenChrome.RenderBanner(forceClear: false);
+                ScreenChrome.RenderBanner(forceClear: false, footerHint: "[dim] [[↑/↓ j/k]] Navigate Tree | [[/]] Filter | [[Enter/→]] Select | [[Esc/q]] Exit[/]");
                 if (detailsActive)
                 {
                     RenderSubPageSelection(detailsMode, detailsSel);
@@ -223,13 +223,15 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                 else if (key.Key == ConsoleKey.PageDown)
                 {
                     searching = false;
-                    selectionIndex = Math.Min(visibleRows.Count - 1, selectionIndex + 10);
+                    int pageStep = ScrollableListView.GetPageStep(Math.Max(3, Console.WindowHeight - 19));
+                    selectionIndex = Math.Min(visibleRows.Count - 1, selectionIndex + pageStep);
                     continue;
                 }
                 else if (key.Key == ConsoleKey.PageUp)
                 {
                     searching = false;
-                    selectionIndex = Math.Max(0, selectionIndex - 10);
+                    int pageStep = ScrollableListView.GetPageStep(Math.Max(3, Console.WindowHeight - 19));
+                    selectionIndex = Math.Max(0, selectionIndex - pageStep);
                     continue;
                 }
                 else if (key.Key == ConsoleKey.Backspace || (key.Modifiers.HasFlag(ConsoleModifiers.Control) && key.Key == ConsoleKey.W))
@@ -324,10 +326,10 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                         if (itemsCount > 0) detailsSel = (detailsSel + 1) % itemsCount;
                         break;
                     case ConsoleKey.PageUp:
-                        if (itemsCount > 0) detailsSel = Math.Max(0, detailsSel - 10);
+                        if (itemsCount > 0) detailsSel = Math.Max(0, detailsSel - ScrollableListView.GetPageStep(Math.Max(3, Console.WindowHeight - 19)));
                         break;
                     case ConsoleKey.PageDown:
-                        if (itemsCount > 0) detailsSel = Math.Min(itemsCount - 1, detailsSel + 10);
+                        if (itemsCount > 0) detailsSel = Math.Min(itemsCount - 1, detailsSel + ScrollableListView.GetPageStep(Math.Max(3, Console.WindowHeight - 19)));
                         break;
                     case ConsoleKey.Home:
                         detailsSel = 0;
@@ -550,10 +552,10 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     selectionIndex = Math.Min(visibleRows.Count - 1, selectionIndex + 1);
                     break;
                 case ConsoleKey.PageUp:
-                    selectionIndex = Math.Max(0, selectionIndex - 10);
+                    selectionIndex = Math.Max(0, selectionIndex - ScrollableListView.GetPageStep(Math.Max(3, Console.WindowHeight - 19)));
                     break;
                 case ConsoleKey.PageDown:
-                    selectionIndex = Math.Min(visibleRows.Count - 1, selectionIndex + 10);
+                    selectionIndex = Math.Min(visibleRows.Count - 1, selectionIndex + ScrollableListView.GetPageStep(Math.Max(3, Console.WindowHeight - 19)));
                     break;
                 case ConsoleKey.Home:
                     selectionIndex = 0;
@@ -819,7 +821,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
             }
         }
 
-        var hotkeyBar = new Markup("[dim]Hotkeys: cg (Git) · cdk (Docker) · cnav (Nav) · cai (AI) · csys (Sys) · cnet (Net) · cssh (SSH)\nCombos:  [[Ctrl+Space]] Complete · [[Ctrl+Shift+C]] CC TUI · [[Ctrl+Shift+B]] Build · [[Ctrl+Shift+T]] Test · [[F7]] History[/]");
+        var hotkeyBar = new Markup("[dim]TUI Keys: [[↑/↓ j/k]] Navigate · [[/]] Filter · [[Enter/→]] Select/Expand · [[←]] Collapse · [[Esc/q]] Exit\nShortcuts: cg (Git) · cdk (Docker) · cnav (Nav) · cai (AI) · csys (Sys) · cnet (Net) · cssh (SSH)[/]");
         content = new Rows(content, new Markup("\n"), hotkeyBar);
 
         var outerPanel = new Panel(content)
@@ -954,10 +956,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                      (w.WorkspacePath != null && w.WorkspacePath.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)))).ToArray();
 
             var currentDir = Directory.GetCurrentDirectory();
-            var activeTheme = Environment.GetEnvironmentVariable("THEME") ?? "";
-            var winWidth = 100;
-            try { winWidth = Console.WindowWidth; } catch { }
-            bool isMobile = winWidth < 90 || activeTheme.EndsWith("-mobile", StringComparison.OrdinalIgnoreCase);
+            bool isMobile = Config.IsMobileContext();
 
             grid.AddRow(new Markup($"[bold green]📁 Registered Workspace Navigator (cnav)[/] [dim]({workspaces.Length}/{allWorkspaces.Length} workspaces)[/]:\n"));
 

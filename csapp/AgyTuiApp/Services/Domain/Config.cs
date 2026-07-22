@@ -222,9 +222,35 @@ public static class Config
                     {
                         lines[i] = Regex.Replace(line, @"(""BaseDir""\s*:\s*"")[^""]*("")", $"$1{Current.Project.BaseDir.Replace("\\", "\\\\")}$2");
                     }
+                    else if (currentSection == "Project" && line.Contains("\"SearchPaths\":"))
+                    {
+                        var jsonArr = JsonSerializer.Serialize(Current.Project.SearchPaths);
+                        lines[i] = Regex.Replace(line, @"(""SearchPaths""\s*:\s*)\[[^\]]*\]", $"$1{jsonArr}");
+                    }
+                    else if (currentSection == "Project" && line.Contains("\"ExcludeFolders\":"))
+                    {
+                        var jsonArr = JsonSerializer.Serialize(Current.Project.ExcludeFolders);
+                        lines[i] = Regex.Replace(line, @"(""ExcludeFolders""\s*:\s*)\[[^\]]*\]", $"$1{jsonArr}");
+                    }
                     else if (currentSection == "System" && line.Contains("\"VerboseStartup\":"))
                     {
                         lines[i] = Regex.Replace(line, @"(""VerboseStartup""\s*:\s*)(true|false)", $"$1{Current.System.VerboseStartup.ToString().ToLowerInvariant()}");
+                    }
+                    else if (currentSection == "System" && line.Contains("\"StartupLogFile\":"))
+                    {
+                        lines[i] = Regex.Replace(line, @"(""StartupLogFile""\s*:\s*"")[^""]*("")", $"$1{Current.System.StartupLogFile.Replace("\\", "\\\\")}$2");
+                    }
+                    else if (currentSection == "System" && line.Contains("\"PoshThemesPath\":"))
+                    {
+                        lines[i] = Regex.Replace(line, @"(""PoshThemesPath""\s*:\s*"")[^""]*("")", $"$1{Current.System.PoshThemesPath.Replace("\\", "\\\\")}$2");
+                    }
+                    else if (currentSection == "System" && line.Contains("\"AgySourceHome\":"))
+                    {
+                        lines[i] = Regex.Replace(line, @"(""AgySourceHome""\s*:\s*"")[^""]*("")", $"$1{Current.System.AgySourceHome.Replace("\\", "\\\\")}$2");
+                    }
+                    else if (currentSection == "System" && line.Contains("\"GlobalBinDir\":"))
+                    {
+                        lines[i] = Regex.Replace(line, @"(""GlobalBinDir""\s*:\s*"")[^""]*("")", $"$1{Current.System.GlobalBinDir.Replace("\\", "\\\\")}$2");
                     }
                 }
                 File.WriteAllLines(ConfigPath, lines, Encoding.UTF8);
@@ -264,5 +290,18 @@ public static class Config
             }
         }
         catch { }
+    }
+
+    public static bool IsMobileContext()
+    {
+        try
+        {
+            if (string.Equals(Current.Ui.Density, "compact", StringComparison.OrdinalIgnoreCase)) return true;
+            if (Console.WindowWidth > 0 && Console.WindowWidth < 90) return true;
+            var theme = Environment.GetEnvironmentVariable("THEME") ?? "";
+            if (theme.EndsWith("-mobile", StringComparison.OrdinalIgnoreCase)) return true;
+        }
+        catch { }
+        return false;
     }
 }

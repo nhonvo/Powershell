@@ -227,6 +227,7 @@ public static class MenuNodeBuilder
             new[]
             {
                 CreateCommandNode(allCommands["proj"]),
+                CreateCommandNode(allCommands["f"]),
                 CreateCommandNode(allCommands["go"]),
                 CreateCommandNode(allCommands["open-term"]),
                 CreateCommandNode(allCommands["ide"]),
@@ -273,7 +274,8 @@ public static class MenuNodeBuilder
                 CreateCommandNode(allCommands["agyswitch"]),
                 CreateCommandNode(allCommands["agyquota"]),
                 quotaViews,
-                CreateCommandNode(allCommands["autoswitch"])
+                CreateCommandNode(allCommands["autoswitch"]),
+                CreateCommandNode(allCommands["no-auto-commit"])
             },
             null
         );

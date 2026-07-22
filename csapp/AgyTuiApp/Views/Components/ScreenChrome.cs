@@ -28,6 +28,7 @@ public static class ScreenChrome
 
     public static void HideCursor()
     {
+        if (OverrideConsole != null) return;
         try
         {
             Console.CursorVisible = false;
@@ -38,6 +39,7 @@ public static class ScreenChrome
 
     public static void ShowCursor()
     {
+        if (OverrideConsole != null) return;
         try
         {
             Console.CursorVisible = true;
@@ -48,6 +50,7 @@ public static class ScreenChrome
 
     public static void ClearTrailingLines()
     {
+        if (OverrideConsole != null) return;
         try
         {
             Console.Write("\x1b[J");
@@ -63,6 +66,11 @@ public static class ScreenChrome
     public static void WriteSmooth(string text)
     {
         if (string.IsNullOrEmpty(text)) return;
+        if (OverrideConsole != null)
+        {
+            ConsoleInstance.Write(text);
+            return;
+        }
         var smoothText = text.Replace("\r\n", "\x1b[K\r\n").Replace("\n", "\x1b[K\n");
         Console.Write(smoothText);
     }

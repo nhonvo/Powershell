@@ -51,7 +51,7 @@ public sealed class ThreePaneRenderer : MenuRendererBase
 
             ScreenChrome.RenderFrame(() =>
             {
-                ScreenChrome.RenderBanner();
+                ScreenChrome.RenderBanner(footerHint: "[dim] [[Tab/→]] Navigate Panes | [[←/Esc]] Go Back | [[Enter]] Select & Run[/]");
                 RenderPanes(categories, leftSel, visibleItems, midSel, midActive, detailsActive, detailsSel, detailsMode);
             });
 
@@ -537,11 +537,12 @@ public sealed class ThreePaneRenderer : MenuRendererBase
             else
             {
                 var rightSb = new StringBuilder();
+                var isCompact = Config.IsMobileContext();
                 rightSb.AppendLine($"[bold white]{display.EscapeMarkup()}[/]");
                 rightSb.AppendLine($"[dim]alias:[/] [yellow]{alias.EscapeMarkup()}[/]");
 
                 var cmd = CommandPalette.Commands.FirstOrDefault(c => string.Equals(c.Alias, alias, StringComparison.OrdinalIgnoreCase));
-                if (cmd != null)
+                if (cmd != null && !isCompact)
                 {
                     rightSb.AppendLine();
                     rightSb.AppendLine($"[dim]{cmd.Description.EscapeMarkup()}[/]");

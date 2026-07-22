@@ -4,7 +4,7 @@ Describe "AI Tools Wrapper Functions" {
     BeforeAll {
         $Global:AgyUserProfileLoaded = $null
         $Global:AiProviderMode = "local"
-        $repoRoot = Resolve-Path "$PSScriptRoot\..\.." | Select-Object -ExpandProperty Path
+        $repoRoot = Resolve-Path "$PSScriptRoot\..\..\.." | Select-Object -ExpandProperty Path
         $dllPath = Join-Path $repoRoot "csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
         if (-not (Test-Path $dllPath)) {
             $dllPath = Join-Path $repoRoot "csapp\AgyTuiApp\dist\AgyTuiApp.dll"

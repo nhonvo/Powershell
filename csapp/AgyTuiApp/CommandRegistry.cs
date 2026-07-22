@@ -414,4 +414,22 @@ public static class CommandRegistry
             throw new InvalidOperationException($"The following CommandRegistry aliases have no switch case in Program.cs: {string.Join(", ", unhandled)}");
         }
     }
+
+    public static void AssertAllAliasesReachable(MenuNode root)
+    {
+        var reachable = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        void Traverse(MenuNode node)
+        {
+            if (node.Command != null) reachable.Add(node.Command.Alias);
+            foreach (var child in node.Children) Traverse(child);
+        }
+        Traverse(root);
+
+        var mainCommands = All.Where(c => !c.Description.StartsWith("Alias for", StringComparison.OrdinalIgnoreCase));
+        var unhandled = mainCommands.Where(c => !reachable.Contains(c.Alias)).Select(c => c.Alias).ToList();
+        if (unhandled.Count > 0)
+        {
+            throw new InvalidOperationException($"The following main CommandRegistry aliases are unreachable in MenuNode tree: {string.Join(", ", unhandled)}");
+        }
+    }
 }

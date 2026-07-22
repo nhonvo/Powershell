@@ -108,7 +108,8 @@ public static class OllamaHelper
                     {
                         AnsiConsole.MarkupLine($"[yellow]Deleting {modelName}...[/]");
                         var request = new HttpRequestMessage(HttpMethod.Delete, "http://127.0.0.1:11434/api/delete");
-                        request.Content = new StringContent($"{{\"name\":\"{modelName}\"}}", Encoding.UTF8, "application/json");
+                        var jsonPayload = JsonSerializer.Serialize(new { name = modelName });
+                        request.Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
                         var delResp = client.SendAsync(request).Result;
                         if (delResp.IsSuccessStatusCode)
                         {
@@ -124,7 +125,7 @@ public static class OllamaHelper
                 else if (action == 1)
                 {
                     AnsiConsole.MarkupLine($"[cyan]Querying model info for {modelName}...[/]");
-                    var requestBody = $"{{\"name\":\"{modelName}\"}}";
+                    var requestBody = JsonSerializer.Serialize(new { name = modelName });
                     var infoResp = client.PostAsync("http://127.0.0.1:11434/api/show", new StringContent(requestBody, Encoding.UTF8, "application/json")).Result;
                     if (infoResp.IsSuccessStatusCode)
                     {
@@ -256,29 +257,11 @@ public static class OllamaHelper
         var modelName = AnsiConsole.Ask<string>("Enter Ollama model name to pull (e.g. qwen2.5:coder, llama3):").Trim();
         if (string.IsNullOrEmpty(modelName)) return;
 
-        AnsiConsole.MarkupLine($"[yellow]Starting pull command: ollama pull {modelName}[/]");
+        AnsiConsole.MarkupLine($"[yellow]Starting pull command: ollama pull {modelName.EscapeMarkup()}[/]");
         try
         {
-            var psi = new ProcessStartInfo
-            {
-                FileName = "ollama",
-                Arguments = $"pull {modelName}",
-                UseShellExecute = false,
-                CreateNoWindow = false
-            };
-            using var proc = Process.Start(psi);
-            if (proc != null)
-            {
-                proc.WaitForExit();
-                if (proc.ExitCode == 0)
-                {
-                    SpectrePanel.Success($"Model '{modelName}' pulled successfully.");
-                }
-                else
-                {
-                    SpectrePanel.Error($"Ollama pull exited with code {proc.ExitCode}");
-                }
-            }
+            AgyTui.Helpers.ProcessRunner.RunInteractive("ollama", new[] { "pull", modelName });
+            SpectrePanel.Success($"Model '{modelName}' pull completed.");
         }
         catch (Exception ex)
         {

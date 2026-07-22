@@ -617,9 +617,22 @@ public static class AgyAccountCore
             if (!string.IsNullOrEmpty(token))
             {
                 var tokenFile = Path.Combine(accDir, "keyring_token.txt");
-                var encrypted = EncryptToken(token);
+                string encrypted;
+                try
+                {
+                    encrypted = EncryptToken(token);
+                }
+                catch (System.Security.Cryptography.CryptographicException ex)
+                {
+                    Components.SpectrePanel.Error($"DPAPI token encryption failed: {ex.Message}");
+                    return;
+                }
                 File.WriteAllText(tokenFile, encrypted, Encoding.UTF8);
             }
+        }
+        catch (System.Security.Cryptography.CryptographicException ex)
+        {
+            Components.SpectrePanel.Error($"DPAPI token encryption failed: {ex.Message}");
         }
         catch { }
     }

@@ -886,7 +886,7 @@ public static class StudyStreak
             if (run > best) best = run;
         }
         var lastActive = dates.Length > 0 ? dates[0] : "Never";
-        var weekAgo = DateTime.Today.AddDays(-7).ToString("yyyy-MM-dd");
+        var weekAgo = DateTime.Today.AddDays(-6).ToString("yyyy-MM-dd");
         int daysThisWeek = dates.Count(d => string.Compare(d, weekAgo, StringComparison.Ordinal) >= 0);
         return new StreakData(current, best, lastActive, daysThisWeek);
 
