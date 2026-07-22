@@ -23,8 +23,10 @@ public static class LearnDataPaths
             var pwd = Directory.GetCurrentDirectory();
             var localLearn = System.IO.Path.Combine(pwd, "learn");
             if (Directory.Exists(localLearn)) return pwd;
+            var csappLearn = System.IO.Path.Combine(pwd, "csapp", "learn");
+            if (Directory.Exists(csappLearn)) return System.IO.Path.Combine(pwd, "csapp");
 
-            const string projPath = @"C:\Users\TruongNhon\Documents\Powershell";
+            const string projPath = @"C:\Users\TruongNhon\Documents\Powershell\csapp";
             if (Directory.Exists(System.IO.Path.Combine(projPath, "learn"))) return projPath;
 
             return AgyAccountCore.GetAccountDirectory(AgyAccountCore.GetActiveAccount());

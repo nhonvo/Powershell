@@ -48,7 +48,13 @@ if ($config -and $config.PoshThemesPath) {
         $env:POSH_THEMES_PATH = Join-Path -Path $Global:ProfileRepoRoot -ChildPath $config.PoshThemesPath
     }
 } else {
-    $env:POSH_THEMES_PATH = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "asset\powershell-themes"
+    $env:POSH_THEMES_PATH = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "psapp\asset\powershell-themes"
+}
+
+# Add local profile modules directory to PSModulePath
+$localModules = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "psapp\Modules"
+if ((Test-Path $localModules) -and ($env:PSModulePath -notlike "*$localModules*")) {
+    $env:PSModulePath = "$localModules;$env:PSModulePath"
 }
 
 # Apply global startup log file path
