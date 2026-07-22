@@ -10,7 +10,7 @@
     "EnableAgy": true
   },
   "Project": {
-    "BaseDir": "", // Base directory for projects. Leave empty for auto-detection
+    "BaseDir": "C:\\Users\\sshuser\\project", // Base directory for development projects
     "SearchPaths": [],
     "ExcludeFolders": []
   },

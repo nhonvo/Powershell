@@ -71,9 +71,10 @@ public static class WorkspaceRegistry
         // 3. Candidate base project directories
         var searchBases = new List<string>();
         if (!string.IsNullOrEmpty(Config.Current.ProjectsBaseDir)) searchBases.Add(Config.Current.ProjectsBaseDir);
+        searchBases.Add(@"C:\Users\sshuser\project");
+        searchBases.Add(System.IO.Path.Combine(userProfile, "project"));
         searchBases.Add(System.IO.Path.Combine(userProfile, "Documents"));
         searchBases.Add(System.IO.Path.Combine(userProfile, "Desktop"));
-        searchBases.Add(System.IO.Path.Combine(userProfile, "project"));
 
         foreach (var baseDir in searchBases)
         {
