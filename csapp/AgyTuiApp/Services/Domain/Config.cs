@@ -90,7 +90,15 @@ public sealed class ConfigData
 
 public static class Config
 {
-    private static readonly string ConfigPath = Path.Combine(GetProfileRepoRoot(), "profile.config.json");
+    public static string GetConfigFilePath()
+    {
+        var repoRoot = GetProfileRepoRoot();
+        var csappCfg = Path.Combine(repoRoot, "csapp", "profile.config.json");
+        if (File.Exists(csappCfg)) return csappCfg;
+        return Path.Combine(repoRoot, "profile.config.json");
+    }
+
+    private static string ConfigPath => GetConfigFilePath();
     public static ConfigData Current { get; private set; } = new();
 
     static Config()
@@ -102,7 +110,7 @@ public static class Config
     public static string GetProfileRepoRoot()
     {
         var envRoot = Environment.GetEnvironmentVariable("PROFILE_REPO_ROOT");
-        if (!string.IsNullOrEmpty(envRoot) && File.Exists(Path.Combine(envRoot, "profile.config.json")))
+        if (!string.IsNullOrEmpty(envRoot) && File.Exists(Path.Combine(envRoot, "csapp", "profile.config.json")))
             return envRoot;
 
         var startDir = Directory.GetCurrentDirectory();
@@ -120,7 +128,7 @@ public static class Config
         var curr = new DirectoryInfo(startDir);
         while (curr != null)
         {
-            if (File.Exists(Path.Combine(curr.FullName, "profile.config.json")))
+            if (File.Exists(Path.Combine(curr.FullName, "csapp", "profile.config.json")) || File.Exists(Path.Combine(curr.FullName, "profile.config.json")))
                 return curr.FullName;
             curr = curr.Parent;
         }
