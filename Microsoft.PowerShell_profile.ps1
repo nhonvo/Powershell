@@ -37,7 +37,8 @@ if (-not (Test-Path $configPath)) {
 $config = @{}
 if (Test-Path $configPath) {
     try {
-        $config = Get-Content $configPath -Raw | ConvertFrom-Json
+        $rawJson = (Get-Content $configPath -Raw) -replace '(?m)^\s*//.*$', '' -replace '\s*//.*$', ''
+        $config = $rawJson | ConvertFrom-Json
     } catch {}
 }
 

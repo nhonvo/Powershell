@@ -1,24 +1,24 @@
 ﻿{
   "Ui": {
-    "Mode": "three-pane",
-    "Density": "comfortable"
+    "Mode": "three-pane", // Options: "three-pane", "flat-tree"
+    "Density": "comfortable" // Options: "comfortable", "compact"
   },
   "Ai": {
-    "Mode": "auto",
-    "ProviderMode": "cloud",
+    "Mode": "auto", // Options: "auto" (scans env), "true" (force AI mode), "false" (force interactive TUI)
+    "ProviderMode": "cloud", // Options: "cloud", "ollama", "hybrid"
     "EnableOllama": true,
     "EnableAgy": true
   },
   "Project": {
-    "BaseDir": "",
+    "BaseDir": "", // Base directory for projects. Leave empty for auto-detection
     "SearchPaths": [],
     "ExcludeFolders": []
   },
   "System": {
     "VerboseStartup": false,
-    "StartupLogFile": "",
-    "PoshThemesPath": "",
-    "AgySourceHome": "",
-    "GlobalBinDir": ""
+    "StartupLogFile": "", // Startup performance log. Leave empty for default (~/.gemini/antigravity/profile.log)
+    "PoshThemesPath": "psapp/asset/powershell-themes", // Oh My Posh themes folder path
+    "AgySourceHome": "", // Base directory for settings/accounts (Default: C:\Users\Public\.gemini)
+    "GlobalBinDir": "" // Symlinks directory (Default: C:\ProgramData\agy\bin)
   }
 }
