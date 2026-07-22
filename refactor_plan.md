@@ -2686,19 +2686,35 @@ All 6 items identified in Section 19 have been 100% remediated, verified, and te
  ## 1. File-to-type mapping is inconsistent — pick one rule and apply it everywhere
   
  C# convention is one type per file, filename matching the type. `Helpers/` currently does this in some files and not others, with no visible rule:
-  
+  
  | File | Types inside | Problem |
  |---|---|---|
  | `StudyQuizzes.cs` | `KanaQuiz`, `KanjiLookup`, `JlptVocabDrill`, `GrammarQuiz`, `AlgoVisualizer`, `ComplexitySheet`, `ProblemTracker`, `SnippetLibrary`, `CheatSheetBrowser`, `CsharpQuiz`, `InterviewBank`, `StarBuilder`, `MockInterviewTimer`, `VocabDrill` — **14 unrelated classes** | Not one of the 14 types is named `StudyQuizzes` — the filename describes none of its own contents. Finding "where is `MockInterviewTimer`" requires already knowing it's in this file. |
  | `GitDashboard.cs` | `GitNexus`, `RepoGraph`, `GitNexusStats` | Same problem, smaller scale — no `GitDashboard` type exists anywhere. |
- | `TerminalIde.cs` | `FileExplorer`, `CodeViewer`, `SymbolSearch`, `GitDiffViewer`, `TerminalIde` | Only the last of 5 types matches the filename. |
- | `SystemHelpers.cs` | `SystemHelper` (singular), `SshHelper` | Filename is plural, contained type is singular — a `grep`/mental-model mismatch for anyone searching by expected filename. |
- | `AccountHelper.cs`, `AiHelper.cs`, `Config.cs`, `TtlCache.cs`, `ProcessRunner.cs`, `EditorResolver.cs`, `SkillLoader.cs`, etc. | One type each, name matches file | These are all fine — this is the pattern to standardize on, not invent. |
-  
+ | `TerminalIde.cs` | `FileExplorer`, `CodeViewer`, `SymbolSearch`, `GitDiffViewer`, `TerminalIde` | Only the 5. **Flatten `Icons.GetCommandIcon`'s branching** (§5) into a single lookup table, alias-first — lowest urgency, but the cheapest structural fix for the "five places to update per new command" tax once someone's already touching that file for an icon addition.
+
+---
+
+## 🏛️ 29. Fifteenth-Pass Rollout — Consolidated AgyTuiApp Directory & Test Consolidation (2026-07-22)
+
+1. **Consolidated `AgyTuiApp` Package Hierarchy**:
+   * Relocated `AgyTuiApp.Tests` into [`AgyTuiApp/Tests/`](file:///C:/Users/TruongNhon/Documents/Powershell/AgyTuiApp/Tests) so that core logic, UI screens, rendering components, and unit/integration tests reside inside the same unified application directory.
+   * Updated `AgyTuiApp/AgyTuiApp.csproj` to exclude `Tests/**` from core application compilation while preserving `InternalsVisibleToAttribute`.
+   * Updated `AgyTuiApp/Tests/AgyTuiApp.Tests.csproj` project reference to `..\AgyTuiApp.csproj`.
+   * Updated release publish script [`scripts/publish_release.ps1`](file:///C:/Users/TruongNhon/Documents/Powershell/scripts/publish_release.ps1) to validate `AgyTuiApp/Tests/AgyTuiApp.Tests.csproj`.
+2. **Build & Test Verification**:
+   * `dotnet build AgyTuiApp/AgyTuiApp.csproj -p:TreatWarningsAsErrors=true` passes cleanly (**0 Errors, 0 Warnings**).
+   * `dotnet test AgyTuiApp/Tests/AgyTuiApp.Tests.csproj` passes cleanly (**26/26 Passed**).
+   * `pwsh -NoProfile -File "Tests/run_tests.ps1"` passes cleanly (**27/27 Passed**).
+
+r.cs`, `Config.cs`, `TtlCache.cs`, `ProcessRunner.cs`, `EditorResolver.cs`, `SkillLoader.cs`, etc. | One type each, name matches file | These are all fine — this is the pattern to standardize on, not invent. |
+  
  **Proposed rule**: one file per class/static-class, filename == type name, no exceptions. This isn't a stylistic nice-to-have in this specific codebase — three of this session's audit findings were made *harder* to catch because a bug lived in a class whose name gives no hint it's in that file (e.g. the SM-2 persistence bug spanned 5 classes inside `StudyQuizzes.cs`; finding all 5 call sites required reading the whole file rather than jumping to a named type). Splitting `StudyQuizzes.cs` into 14 files, `GitDashboard.cs` into 3, `TerminalIde.cs` into 5, and renaming `SystemHelper`→file `SystemHelper.cs` (or the type to plural, either direction, just make them match) closes this for good. This is a pure mechanical split — extract-class-to-new-file — with essentially zero behavior risk, and is worth doing as its own low-risk PR ahead of any of `architecture_services_views.md`'s bigger moves.
-  
+  
  ---
-  
+  
+ 
+  
  ## 2. The `Helper` suffix means nothing — it's applied to roughly half the files, with no rule for which half
   
  Comparing filenames: `AccountHelper`, `AiHelper`, `AwsHelper`, `DatabaseHelper`, `DockerHelper`, `DotNetHelper`, `GitHelper`, `ObsidianHelper`, `StudyHelper`, `SystemHelpers` carry the suffix. `AccountRepository`, `AiLearningGenerator`, `Config`, `EditorResolver`, `GitDashboard`, `GuidedLearnFlow`, `HttpClientProvider`, `Icons`, `IdeCommandRegistry`, `ProcessRunner`, `ProjectScaffolder`, `QuotaTracker`, `ResourceDiscovery`, `ScreenChrome`, `SkillLoader`, `StatusWidgets`, `StudyQuizzes`, `TerminalIde`, `TokenVault`, `TtlCache`, `WorkspaceRegistry` don't. There's no discoverable rule distinguishing the two groups — `AccountHelper` and `AccountRepository` sit in the same domain, one has the suffix and one doesn't, for no reason traceable to what either class actually does.
