@@ -968,7 +968,9 @@ public sealed class FlatTreeRenderer : MenuRendererBase
             }
             else
             {
-                int maxRows = isMobile ? 8 : 10;
+                int termH = 30;
+                try { termH = Console.WindowHeight; } catch { }
+                int maxRows = isMobile ? 5 : Math.Max(3, Math.Min(6, termH - 18));
                 int topRow = 0;
                 if (selIdx >= maxRows)
                 {

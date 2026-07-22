@@ -1,6 +1,6 @@
-{
+﻿{
   "Ui": {
-    "Mode": "flat-tree", // Options: "three-pane", "flat-tree"
+    "Mode": "three-pane", // Options: "three-pane", "flat-tree"
     "Density": "comfortable" // Options: "comfortable", "compact"
   },
   "Ai": {

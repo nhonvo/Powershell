@@ -134,7 +134,7 @@ public static class ScreenChrome
 
         var titleIcon = Icons.IsUtf8Supported ? "🛸" : "[AGY]";
 
-        if (winHeight > 0 && winHeight < 32)
+        if (winHeight > 0 && winHeight < 45)
         {
             MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
             var accText = $"[dim]Account:[/] [green bold]{displayAcc.EscapeMarkup()}[/]";
