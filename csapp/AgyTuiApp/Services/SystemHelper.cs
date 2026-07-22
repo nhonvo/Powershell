@@ -100,7 +100,7 @@ public static class SystemHelper
             var psi = new ProcessStartInfo
             {
                 FileName = "wt.exe",
-                Arguments = $"-d \"{dir}\" pwsh.exe",
+                Arguments = $"-d \"{dir}\"",
                 UseShellExecute = true
             };
             Process.Start(psi);
@@ -112,7 +112,7 @@ public static class SystemHelper
             {
                 var psi = new ProcessStartInfo
                 {
-                    FileName = "pwsh.exe",
+                    FileName = "powershell.exe",
                     Arguments = "-NoExit",
                     WorkingDirectory = dir,
                     UseShellExecute = true

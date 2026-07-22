@@ -1501,7 +1501,7 @@ Set-Alias -Name webapi -Value New-WebApiProject -Force
 # --- Docker Wrappers ---
 function Get-DockerContainers {
  param([switch]$All)
- [DockerHelper]::GetContainers($All)
+ if ($All) { docker ps -a } else { docker ps }
 }
 function Remove-AllDockerContainers { [DockerHelper]::RemoveAllContainers() }
 function Stop-AllDockerContainers { [DockerHelper]::StopAllContainers() }
@@ -1843,6 +1843,7 @@ function caws { Invoke-ControlCenter "aws-local" }
 function cnav { Invoke-ControlCenter "proj" }
 function go { Invoke-ControlCenter "go" $args }
 function open-term { [AgyTui.SystemHelper]::OpenNewTerminalSession() }
+Set-Alias -Name term -Value open-term -Force
 function dpack { [AgyTui.DotNetHelper]::Pack($args) }
 function dpubpkg { [AgyTui.DotNetHelper]::PublishPackage($args) }
 function cssh { Invoke-ControlCenter "ssh-info" }
