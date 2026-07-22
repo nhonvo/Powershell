@@ -203,6 +203,7 @@ public static class ProfileNavigator
         var actions = new[]
         {
             $"📂 Change Directory to {selected.Name} on exit",
+            $"🚀 Launch New Terminal Session (wt / pwsh)",
             $"💻 Open in Terminal IDE (/ide)",
             $"📁 Open in Windows File Explorer",
             $"🔀 View Git Status & Diff"
@@ -211,15 +212,20 @@ public static class ProfileNavigator
         var actionIdx = SpectreMenu.ShowWithEscape($"Workspace: {selected.Name}", actions, 0);
         if (actionIdx == 1)
         {
-            TerminalIde.Open(selected.WorkspacePath);
+            SystemHelper.OpenNewTerminalSession(selected.WorkspacePath);
             return selected.WorkspacePath;
         }
         else if (actionIdx == 2)
         {
-            SystemHelper.OpenExplorer(selected.WorkspacePath);
+            TerminalIde.Open(selected.WorkspacePath);
             return selected.WorkspacePath;
         }
         else if (actionIdx == 3)
+        {
+            SystemHelper.OpenExplorer(selected.WorkspacePath);
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 4)
         {
             GitDiffViewer.ShowDiff(selected.WorkspacePath);
             return selected.WorkspacePath;

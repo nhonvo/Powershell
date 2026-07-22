@@ -53,6 +53,54 @@ public static class DotNetHelper
 
     public static int Publish(string? projectPath = null) => RunDotnet("publish csapp/AgyTuiApp/AgyTuiApp.csproj -c Release -r win-x64 --self-contained -o csapp/AgyTuiApp/dist", projectPath);
 
+    public static int Pack(string? projectPath = null, string outputDir = "nupkg")
+    {
+        SpectrePanel.Info("Packing NuGet package...");
+        var exitCode = RunDotnet($"pack -c Release -o {outputDir}", projectPath);
+        if (exitCode == 0) SpectrePanel.Success($"Package generated in ./{outputDir}/ directory.");
+        else SpectrePanel.Error($"dotnet pack failed (exit {exitCode}).");
+        return exitCode;
+    }
+
+    public static int PublishPackage(string? nupkgPath = null, string? apiKey = null, string source = "https://api.nuget.org/v3/index.json")
+    {
+        if (string.IsNullOrEmpty(nupkgPath))
+        {
+            var packages = Directory.Exists("nupkg") ? Directory.GetFiles("nupkg", "*.nupkg") : Array.Empty<string>();
+            if (packages.Length == 0)
+            {
+                SpectrePanel.Warning("No .nupkg files found in ./nupkg directory. Running dotnet pack first...");
+                var packExit = Pack();
+                if (packExit != 0) return packExit;
+                packages = Directory.Exists("nupkg") ? Directory.GetFiles("nupkg", "*.nupkg") : Array.Empty<string>();
+            }
+
+            if (packages.Length == 0)
+            {
+                SpectrePanel.Error("No .nupkg package found to publish.");
+                return 1;
+            }
+
+            if (packages.Length == 1)
+            {
+                nupkgPath = packages[0];
+            }
+            else
+            {
+                var idx = SpectreMenu.Show("Select NuGet Package to Push", packages, 0);
+                if (idx < 0) return 0;
+                nupkgPath = packages[idx];
+            }
+        }
+
+        var keyArg = string.IsNullOrEmpty(apiKey) ? "" : $"--api-key {apiKey}";
+        SpectrePanel.Info($"Pushing package {Path.GetFileName(nupkgPath)} to {source}...");
+        var exit = RunDotnet($"nuget push \"{nupkgPath}\" --source \"{source}\" {keyArg} --skip-duplicate", null);
+        if (exit == 0) SpectrePanel.Success("NuGet package published successfully!");
+        else SpectrePanel.Error($"dotnet nuget push failed (exit {exit}).");
+        return exit;
+    }
+
     public static int Watch(string? projectPath = null) => RunDotnet("watch run", projectPath);
 
     public static int AddMigration(string migrationName, string? project = null) => RunDotnet($"ef migrations add {migrationName}", project);

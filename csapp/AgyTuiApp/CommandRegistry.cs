@@ -55,6 +55,14 @@ public static class CommandRegistry
                 "scaffold — Interactive project boilerplate creator.",
                 " Templates: webapi · console · react (Vite) · blazorwasm · classlib · worker"
             }),
+        new("go", "Navigate & Launch Workspace", "Search and navigate to workspace or launch terminal session", "[Workspace & Dev]", "Navigation",
+            new[] { "go <query> — Jump to project workspace or launch terminal session." }),
+        new("open-term", "Open New Terminal Session", "Launch new Windows Terminal / PowerShell session in workspace", "[Workspace & Dev]", "Navigation",
+            new[] { "open-term — Spawns a new Windows Terminal (wt.exe) or PowerShell window in active directory." }),
+        new("dpack", "[.NET] Pack NuGet Package", "Create .nupkg release package via dotnet pack", "[Workspace & Dev]", ".NET",
+            new[] { "dpack — Compiles Release package and outputs .nupkg to ./nupkg directory." }),
+        new("dpubpkg", "[.NET] Publish Package to NuGet", "Push .nupkg package to NuGet registry or local feed", "[Workspace & Dev]", ".NET",
+            new[] { "dpubpkg — Prompts for package and API key to publish to NuGet feed." }),
         new("rebuild", "[.NET] Rebuild Control Center TUI", "Recompile AgyTuiApp.csproj and refresh binary", "[Workspace & Dev]", ".NET",
             new[] {
                 "rebuild — Triggers `dotnet build` on AgyTuiApp.csproj with zero warnings/errors enforcement.",

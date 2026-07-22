@@ -87,9 +87,45 @@ public static class SystemHelper
     public static void OpenExplorer(string? path = null) => Process.Start(new ProcessStartInfo("explorer.exe", path ?? Directory.GetCurrentDirectory())
     {
         UseShellExecute = true
+    });
 
+    public static void OpenNewTerminalSession(string? workingDirectory = null)
+    {
+        var dir = !string.IsNullOrEmpty(workingDirectory) && Directory.Exists(workingDirectory)
+            ? workingDirectory
+            : Directory.GetCurrentDirectory();
+
+        try
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "wt.exe",
+                Arguments = $"-d \"{dir}\" pwsh.exe",
+                UseShellExecute = true
+            };
+            Process.Start(psi);
+            SpectrePanel.Success($"Launched Windows Terminal in: {dir}");
+        }
+        catch
+        {
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "pwsh.exe",
+                    Arguments = "-NoExit",
+                    WorkingDirectory = dir,
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+                SpectrePanel.Success($"Launched PowerShell window in: {dir}");
+            }
+            catch (Exception ex)
+            {
+                SpectrePanel.Error($"Failed to launch new terminal session: {ex.Message}");
+            }
+        }
     }
-    );
 
     public static void StopProcessFriendly(string? name = null)
     {

@@ -213,10 +213,11 @@ public static class CcNavigator
 {
     public static void Run()
     {
+        Config.Load();
         var root = MenuNodeBuilder.BuildTree();
-        IMenuRenderer renderer = Config.Current.UiMode == "three-pane"
-            ? new ThreePaneRenderer()
-            : new FlatTreeRenderer();
+        IMenuRenderer renderer = string.Equals(Config.Current.UiMode, "flat-tree", StringComparison.OrdinalIgnoreCase)
+            ? new FlatTreeRenderer()
+            : new ThreePaneRenderer();
         renderer.Run(root);
     }
 }
@@ -432,6 +433,24 @@ public static class Program
                     break;
                 case "dpublish":
                     DotNetHelper.Publish();
+                    break;
+                case "dpack":
+                    DotNetHelper.Pack();
+                    break;
+                case "dpubpkg":
+                    DotNetHelper.PublishPackage();
+                    break;
+                case "open-term":
+                case "term":
+                case "wt":
+                    SystemHelper.OpenNewTerminalSession();
+                    break;
+                case "go":
+                    var goTargetPath = ProfileNavigator.Navigate("");
+                    if (!string.IsNullOrEmpty(goTargetPath))
+                    {
+                        AnsiConsole.MarkupLine($"Navigate target: [green]{goTargetPath}[/]");
+                    }
                     break;
                 case "dwatch":
                 case "dw":

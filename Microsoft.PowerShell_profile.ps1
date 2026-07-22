@@ -1841,6 +1841,10 @@ function cdk { Invoke-ControlCenter "dkcl" }
 function cai { Invoke-ControlCenter "claude" }
 function caws { Invoke-ControlCenter "aws-local" }
 function cnav { Invoke-ControlCenter "proj" }
+function go { Invoke-ControlCenter "go" $args }
+function open-term { [AgyTui.SystemHelper]::OpenNewTerminalSession() }
+function dpack { [AgyTui.DotNetHelper]::Pack($args) }
+function dpubpkg { [AgyTui.DotNetHelper]::PublishPackage($args) }
 function cssh { Invoke-ControlCenter "ssh-info" }
 
 # Theme Switcher

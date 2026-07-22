@@ -82,6 +82,8 @@ public static class MenuNodeBuilder
                 CreateCommandNode(allCommands["dcl"]),
                 CreateCommandNode(allCommands["drestore"]),
                 CreateCommandNode(allCommands["dpublish"]),
+                CreateCommandNode(allCommands["dpack"]),
+                CreateCommandNode(allCommands["dpubpkg"]),
                 CreateCommandNode(allCommands["dwatch"]),
                 CreateCommandNode(allCommands["rebuild"]),
                 CreateCommandNode(allCommands["clean-build"]),
@@ -225,6 +227,8 @@ public static class MenuNodeBuilder
             new[]
             {
                 CreateCommandNode(allCommands["proj"]),
+                CreateCommandNode(allCommands["go"]),
+                CreateCommandNode(allCommands["open-term"]),
                 CreateCommandNode(allCommands["ide"]),
                 CreateCommandNode(allCommands["ide-diff"]),
                 CreateCommandNode(allCommands["ide-search"]),
