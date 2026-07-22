@@ -1481,7 +1481,7 @@ Set-Alias -Name rebuild -Value Invoke-DotNetBuild -Force
 Set-Alias -Name df -Value Invoke-DotNetFormat -Force
 Set-Alias -Name dt -Value Invoke-DotNetTest -Force
 Set-Alias -Name dtst -Value Invoke-DotNetTest -Force
-Set-Alias -Name wt -Value Invoke-DotNetWatchTest -Force
+Set-Alias -Name dwt -Value Invoke-DotNetWatchTest -Force
 Set-Alias -Name dcl -Value Invoke-DotNetClean -Force
 Set-Alias -Name dres -Value Invoke-DotNetRestore -Force
 Set-Alias -Name drestore -Value Invoke-DotNetRestore -Force
@@ -1844,6 +1844,7 @@ function cnav { Invoke-ControlCenter "proj" }
 function go { Invoke-ControlCenter "go" $args }
 function open-term { [AgyTui.SystemHelper]::OpenNewTerminalSession() }
 Set-Alias -Name term -Value open-term -Force
+Set-Alias -Name wt -Value open-term -Force
 function dpack { [AgyTui.DotNetHelper]::Pack($args) }
 function dpubpkg { [AgyTui.DotNetHelper]::PublishPackage($args) }
 function cssh { Invoke-ControlCenter "ssh-info" }
