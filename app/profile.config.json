@@ -1,0 +1,39 @@
+﻿{
+  "Ui": {
+    "Mode": "three-pane", // Valid options: "flat-tree" (slash command tree) | "three-pane" (classic 3-pane dashboard)
+    "Density": "comfortable" // Valid options: "comfortable" (full descriptions) | "compact" (mobile/narrow view)
+  },
+  "Ai": {
+    "Mode": "auto", // Valid options: "auto" | "claude" | "codex" | "ollama"
+    "ProviderMode": "cloud", // Valid options: "cloud" | "local"
+    "EnableOllama": true, // Enable local Ollama server integration (true | false)
+    "EnableAgy": true // Enable Google Antigravity CLI integration (true | false)
+  },
+  "Project": {
+    "BaseDir": "C:\\Users\\TruongNhon\\Desktop\\project",
+    "SearchPaths": [
+      "C:\\Users\\TruongNhon\\Desktop\\back-up\\1.project",
+      "C:\\Users\\TruongNhon\\Desktop\\project",
+      "C:\\Users\\TruongNhon\\Documents"
+    ],
+    "ExcludeFolders": [
+      "My Music",
+      "My Pictures",
+      "My Videos",
+      "WindowsPowerShell",
+      "Custom Office Templates",
+      "Visual Studio 2022",
+      "Modules",
+      "vscode-config",
+      "typora-themes",
+      "img"
+    ]
+  },
+  "System": {
+    "VerboseStartup": false, // Output verbose startup logs (true | false)
+    "StartupLogFile": "C:\\Users\\TruongNhon\\.gemini\\antigravity\\profile.log",
+    "PoshThemesPath": "C:\\Users\\TruongNhon\\Documents\\Powershell\\asset\\powershell-themes",
+    "AgySourceHome": "C:\\Users\\Public\\.gemini",
+    "GlobalBinDir": "C:\\ProgramData\\agy\\bin"
+  }
+}
