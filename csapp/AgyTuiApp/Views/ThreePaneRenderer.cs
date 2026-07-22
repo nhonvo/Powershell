@@ -585,10 +585,15 @@ public sealed class ThreePaneRenderer : MenuRendererBase
             BorderStyle = new Style(detailsActive ? Color.Cyan1 : Color.Grey)
         };
 
-        var table = new Table().NoBorder().HideHeaders();
-        table.AddColumn(new TableColumn("").Width(30));
-        table.AddColumn(new TableColumn("").Width(30));
-        table.AddColumn(new TableColumn(""));
+        int winWidth = 100;
+        try { winWidth = Console.WindowWidth; } catch { }
+        int menuWidth = Math.Max(32, (int)(winWidth * 0.30));
+        int optionsWidth = Math.Max(35, (int)(winWidth * 0.35));
+
+        var table = new Table().NoBorder().HideHeaders().Expand();
+        table.AddColumn(new TableColumn("").Width(menuWidth).NoWrap());
+        table.AddColumn(new TableColumn("").Width(optionsWidth).NoWrap());
+        table.AddColumn(new TableColumn("").NoWrap());
         table.AddRow(leftPanel, midPanel, rightPanel);
         ScreenChrome.WriteSmooth(table);
     }

@@ -254,7 +254,7 @@ public static class Program
 
         if (args.Length > 0)
         {
-            RunCommand(args[0]);
+            RunCommand(args[0], args.Skip(1).ToArray());
             return;
         }
         CcNavigator.Run();
@@ -343,7 +343,7 @@ public static class Program
         AnsiConsole.Write(table);
     }
 
-    public static void RunCommand(string alias)
+    public static void RunCommand(string alias, string[]? args = null)
     {
         try
         {
@@ -787,12 +787,27 @@ public static class Program
                     CommandPalette.Show();
                     break;
                 case "ui-mode":
+                case "layout":
+                case "view":
                     {
-                        var currentMode = Config.Current.UiMode;
-                        var nextMode = currentMode == "three-pane" ? "flat-tree" : "three-pane";
+                        var targetMode = (args != null && args.Length > 0) ? args[0].ToLowerInvariant() : null;
+                        string nextMode;
+                        if (targetMode == "flat-tree" || targetMode == "flat" || targetMode == "tree")
+                        {
+                            nextMode = "flat-tree";
+                        }
+                        else if (targetMode == "three-pane" || targetMode == "three" || targetMode == "pane")
+                        {
+                            nextMode = "three-pane";
+                        }
+                        else
+                        {
+                            var currentMode = Config.Current.UiMode;
+                            nextMode = string.Equals(currentMode, "three-pane", StringComparison.OrdinalIgnoreCase) ? "flat-tree" : "three-pane";
+                        }
                         Config.SetUiMode(nextMode);
-                        AnsiConsole.MarkupLine($"[green]UI Mode toggled to '{nextMode}'. Switch will apply next time you launch Control Center.[/]");
-                        Thread.Sleep(1500);
+                        AnsiConsole.MarkupLine($"[green bold]UI Mode updated to '{nextMode}'. Default view is flat-tree.[/]");
+                        Thread.Sleep(1200);
                     }
                     break;
                 case "density":

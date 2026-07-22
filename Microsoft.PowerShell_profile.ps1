@@ -1845,6 +1845,9 @@ function go { Invoke-ControlCenter "go" $args }
 function open-term { [AgyTui.SystemHelper]::OpenNewTerminalSession() }
 Set-Alias -Name term -Value open-term -Force
 Set-Alias -Name wt -Value open-term -Force
+function ui-mode { Invoke-ControlCenter "ui-mode" $args }
+function layout { Invoke-ControlCenter "ui-mode" $args }
+function view { Invoke-ControlCenter "ui-mode" $args }
 function dpack { [AgyTui.DotNetHelper]::Pack($args) }
 function dpubpkg { [AgyTui.DotNetHelper]::PublishPackage($args) }
 function cssh { Invoke-ControlCenter "ssh-info" }
