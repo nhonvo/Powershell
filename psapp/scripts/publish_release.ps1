@@ -32,7 +32,7 @@ try {
         Rename-Item -Path $distExe -NewName "AgyTuiApp.exe.old_$rand" -Force -ErrorAction SilentlyContinue
     }
 
-    dotnet publish csapp/AgyTuiApp/AgyTuiApp.csproj -c Release -r win-x64 --self-contained -o csapp/AgyTuiApp/dist
+    dotnet publish csapp/AgyTuiApp/AgyTuiApp.csproj -c Release -o csapp/AgyTuiApp/dist
     if ($LASTEXITCODE -eq 0) {
         Write-Host "✅ Release Publish Succeeded! Single-file binary located at csapp/AgyTuiApp/dist/AgyTuiApp.exe" -ForegroundColor Green
     } else {

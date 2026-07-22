@@ -1812,12 +1812,12 @@ class AgyAccountManager {
 
 # --- Help shortcuts ---
 function Invoke-ControlCenter {
-    $debugExe = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.exe"
-    $releaseExe = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTuiApp\dist\AgyTuiApp.exe"
-    if (Test-Path $releaseExe) {
-        & $releaseExe @args
-    } elseif (Test-Path $debugExe) {
-        & $debugExe @args
+    $releaseDll = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTuiApp\dist\AgyTuiApp.dll"
+    $debugDll = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+    if (Test-Path $releaseDll) {
+        dotnet $releaseDll @args
+    } elseif (Test-Path $debugDll) {
+        dotnet $debugDll @args
     } else {
         $proj = Join-Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\AgyTuiApp.csproj"
         dotnet run --project $proj -- $args
