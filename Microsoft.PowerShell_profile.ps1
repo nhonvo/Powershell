@@ -135,11 +135,10 @@ Write-AgyStartupCheckpoint "script start"
 # ==============================================================================
 #  AGY TUI — compiled C# Spectre.Console application (AgyTuiApp)
 # ==============================================================================
-$Global:AgyTuiAppProject = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "app\AgyTuiApp\AgyTuiApp.csproj"
+$Global:AgyTuiAppProject = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\AgyTuiApp.csproj"
 function Load-AgyTuiDll {
     if ($null -eq ([System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTuiApp" })) {
-        $debugDll = Join-Path -Path $Global:ProfileRepoRoot "app\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
-        if (!Test-Path $debugDll) { $debugDll = Join-Path -Path $Global:ProfileRepoRoot "AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll" }
+        $debugDll = Join-Path -Path $Global:ProfileRepoRoot "AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
         if (Test-Path $debugDll) {
             try {
                 Get-ChildItem -Path (Split-Path $debugDll) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
@@ -1782,17 +1781,14 @@ class AgyAccountManager {
 
 # --- Help shortcuts ---
 function Invoke-ControlCenter {
-    $debugExe = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "app\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.exe"
-    $releaseExe = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "app\AgyTuiApp\dist\AgyTuiApp.exe"
-    if (!Test-Path $releaseExe) { $releaseExe = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\dist\AgyTuiApp.exe" }
-    if (!Test-Path $debugExe) { $debugExe = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.exe" }
+    $debugExe = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.exe"
+    $releaseExe = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\dist\AgyTuiApp.exe"
     if (Test-Path $releaseExe) {
         & $releaseExe @args
     } elseif (Test-Path $debugExe) {
         & $debugExe @args
     } else {
-        $proj = Join-Path $Global:ProfileRepoRoot "app\AgyTuiApp\AgyTuiApp.csproj"
-        if (!Test-Path $proj) { $proj = Join-Path $Global:ProfileRepoRoot "AgyTuiApp\AgyTuiApp.csproj" }
+        $proj = Join-Path $Global:ProfileRepoRoot "AgyTuiApp\AgyTuiApp.csproj"
         dotnet run --project $proj -- $args
     }
     $selectedProjFile = Join-Path -Path $Global:AgySourceHome -ChildPath "selected_project.txt"

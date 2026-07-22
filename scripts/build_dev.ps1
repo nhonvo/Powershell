@@ -6,18 +6,18 @@
 param()
 
 $ErrorActionPreference = 'Stop'
-$repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+$repoRoot = Split-Path -Parent $PSScriptRoot
 
 Write-Host "⚙ Building AgyTuiApp [Dev Mode - WarningsAsErrors]..." -ForegroundColor Cyan
 pushd $repoRoot
 try {
     # Unlock DLL if loaded
-    $dll = "app\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+    $dll = "AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
     if (Test-Path $dll) {
         $rand = Get-Random
         Rename-Item -Path $dll -NewName "AgyTuiApp.dll.old_$rand" -Force -ErrorAction SilentlyContinue
     }
-    dotnet build app/AgyTuiApp/AgyTuiApp.csproj -p:TreatWarningsAsErrors=true
+    dotnet build AgyTuiApp/AgyTuiApp.csproj -p:TreatWarningsAsErrors=true
     if ($LASTEXITCODE -eq 0) {
         Write-Host "✅ Dev Build Succeeded cleanly." -ForegroundColor Green
     } else {
