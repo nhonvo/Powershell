@@ -75,13 +75,24 @@ public static class ScreenChrome
                 ColorSystem = ColorSystemSupport.TrueColor,
                 Out = new AnsiConsoleOutput(writer)
             });
+            try
+            {
+                console.Profile.Width = Math.Max(40, Console.WindowWidth);
+                console.Profile.Height = Math.Max(10, Console.WindowHeight);
+            }
+            catch { }
+
             console.Write(renderable);
-            WriteSmooth(writer.ToString());
+            var str = writer.ToString();
+            if (!string.IsNullOrEmpty(str))
+            {
+                WriteSmooth(str);
+                return;
+            }
         }
-        catch
-        {
-            try { AnsiConsole.Write(renderable); } catch { }
-        }
+        catch { }
+
+        try { AnsiConsole.Write(renderable); } catch { }
     }
 
     public static void RenderFrame(Action drawBody, bool forceClear = false)
