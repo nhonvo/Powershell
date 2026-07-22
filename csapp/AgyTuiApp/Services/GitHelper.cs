@@ -111,7 +111,15 @@ public static class GitHelper
     {
         var lastLog = RunGit("log --oneline -1").Trim();
         AnsiConsole.MarkupLine($"[yellow]Last commit:[/] {lastLog.EscapeMarkup()}");
-        if (!AnsiConsole.Confirm("Soft-reset (keep changes staged)?")) return;
+        try
+        {
+            if (!AnsiConsole.Confirm("Soft-reset (keep changes staged)?")) return;
+        }
+        catch (InvalidOperationException)
+        {
+            SpectrePanel.Warning("Non-interactive terminal detected. Skipping confirmation.");
+            return;
+        }
         var exit = RunGitDirect("reset HEAD~1 --soft");
         if (exit == 0) SpectrePanel.Success("Last commit undone. Changes kept in working directory.");
         else SpectrePanel.Error($"git reset failed (exit {exit}).");

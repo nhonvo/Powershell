@@ -4,7 +4,8 @@ $global:AgyUserProfileLoaded = $true
 $Global:ProfileRepoRoot = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 
 # --- Load configuration from profile.config.json ---
-$configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "profile.config.json"
+$configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\profile.config.json"
+if (-not (Test-Path $configPath)) { $configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "profile.config.json" }
 if (-not (Test-Path $configPath)) {
     $defaultConfig = [ordered]@{
         "_Note_AiMode" = "Terminal mode override: 'auto' (scans env), 'true' (force AI mode), or 'false' (force interactive TUI)."
@@ -144,17 +145,40 @@ Write-AgyStartupCheckpoint "script start"
 $Global:AgyTuiAppProject = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTuiApp\AgyTuiApp.csproj"
 function Load-AgyTuiDll {
     if ($null -eq ([System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTuiApp" })) {
-        $debugDll = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
-        if (Test-Path $debugDll) {
+        $targetDll = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+        if (-not (Test-Path $targetDll)) {
+            $targetDll = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\dist\AgyTuiApp.dll"
+        }
+        if (-not (Test-Path $targetDll)) {
+            $proj = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\AgyTuiApp.csproj"
+            if (Test-Path $proj) {
+                dotnet build "$proj" -p:TreatWarningsAsErrors=true | Out-Null
+            }
+        }
+        if (Test-Path $targetDll) {
             try {
-                Get-ChildItem -Path (Split-Path $debugDll) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
+                Get-ChildItem -Path (Split-Path $targetDll) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
                     try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
                 }
-                Add-Type -Path $debugDll -ErrorAction SilentlyContinue
+                Add-Type -Path $targetDll -ErrorAction SilentlyContinue
             } catch {}
         }
     }
+    
+    # Register PowerShell Type Accelerators for shorthand C# helper calls
+    try {
+        $acc = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
+        if ($acc) {
+            foreach ($type in @('GitHelper', 'DotNetHelper', 'DockerHelper', 'SystemHelper', 'AwsHelper', 'ObsidianHelper', 'StudyHelper', 'AccountHelper', 'AiHelper')) {
+                $full = "AgyTui.$type" -as [type]
+                if ($full -and -not ($acc::Get.ContainsKey($type))) {
+                    $acc::Add($type, $full)
+                }
+            }
+        }
+    } catch {}
 }
+Load-AgyTuiDll
 
 function Test-AgyAiGate {
     Load-AgyTuiDll
@@ -1337,38 +1361,38 @@ Set-Alias -Name mobile-setup -Value Toggle-MobileMode -Force
 Set-Alias -Name ssh-addkey-mobile -Value Start-MobileSshKeyReceiver -Force
 
 # --- Git Wrappers ---
-function Get-GitStatus { [GitHelper]::Status($args) }
-function Show-GitDiff { [GitHelper]::Diff() }
-function Get-GitLogGraph { [GitHelper]::LogGraph() }
-function Get-GitLogPretty { [GitHelper]::LogPretty() }
-function Get-GitLog { [GitHelper]::Log() }
-function Get-GitBranches { [GitHelper]::GetBranches($args) }
+function Get-GitStatus { [AgyTui.GitHelper]::ShowStatus() }
+function Show-GitDiff { git diff $args }
+function Get-GitLogGraph { git log --graph --oneline --decorate --all }
+function Get-GitLogPretty { git log --pretty=format:"%h - %an, %ar : %s" }
+function Get-GitLog { [AgyTui.GitHelper]::ShowLog() }
+function Get-GitBranches { [AgyTui.GitHelper]::ShowBranches() }
 function Invoke-GitCheckout {
  param([string]$branchName)
- [GitHelper]::Checkout($branchName)
+ [AgyTui.GitHelper]::Checkout($branchName)
 }
 function New-GitBranch {
  param([string]$branchName)
- [GitHelper]::NewBranch($branchName)
+ git checkout -b $branchName
 }
 function Remove-GitBranch {
  param([string]$branchName)
- [GitHelper]::RemoveBranch($branchName)
+ git branch -d $branchName
 }
-function Invoke-GitAddAll { [GitHelper]::AddAll() }
-function Invoke-GitUnstage { [GitHelper]::Unstage() }
+function Invoke-GitAddAll { [AgyTui.GitHelper]::AddAll() }
+function Invoke-GitUnstage { git restore --staged . }
 function Invoke-GitCommit {
  param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message)
- [GitHelper]::Commit($Message)
+ if ($Message) { git commit -m ($Message -join " ") } else { [AgyTui.GitHelper]::ConventionalCommitWizard() }
 }
-function Invoke-GitAmend { [GitHelper]::Amend($args) }
-function Invoke-GitUndo { [GitHelper]::Undo() }
-function Invoke-GitResetSoft { [GitHelper]::ResetSoft() }
-function Invoke-GitResetHard { [GitHelper]::ResetHard() }
-function Invoke-GitFetch { [GitHelper]::Fetch() }
-function Invoke-GitPull { [GitHelper]::Pull($args) }
-function Invoke-GitPush { [GitHelper]::Push($args) }
-function Invoke-GitPushForce { [GitHelper]::PushForce($args) }
+function Invoke-GitAmend { git commit --amend $args }
+function Invoke-GitUndo { [AgyTui.GitHelper]::InvokeGitUndo() }
+function Invoke-GitResetSoft { git reset --soft HEAD~1 }
+function Invoke-GitResetHard { git reset --hard }
+function Invoke-GitFetch { [AgyTui.GitHelper]::Fetch() }
+function Invoke-GitPull { [AgyTui.GitHelper]::Pull() }
+function Invoke-GitPush { [AgyTui.GitHelper]::Push() }
+function Invoke-GitPushForce { git push --force $args }
 function Invoke-GitMergeSquash {
  param([string]$BranchName)
  [GitHelper]::MergeSquash($BranchName)
