@@ -1783,10 +1783,10 @@ class AgyAccountManager {
 function Invoke-ControlCenter {
     $debugExe = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.exe"
     $releaseExe = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "AgyTuiApp\dist\AgyTuiApp.exe"
-    if (Test-Path $debugExe) {
-        & $debugExe @args
-    } elseif (Test-Path $releaseExe) {
+    if (Test-Path $releaseExe) {
         & $releaseExe @args
+    } elseif (Test-Path $debugExe) {
+        & $debugExe @args
     } else {
         dotnet run --project (Join-Path $Global:ProfileRepoRoot "AgyTuiApp\AgyTuiApp.csproj") -- $args
     }
