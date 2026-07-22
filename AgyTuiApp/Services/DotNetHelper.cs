@@ -51,7 +51,7 @@ public static class DotNetHelper
 
     public static int Restore(string? projectPath = null) => RunDotnet("restore", projectPath);
 
-    public static int Publish(string? projectPath = null) => RunDotnet("publish -c Release", projectPath);
+    public static int Publish(string? projectPath = null) => RunDotnet("publish AgyTuiApp/AgyTuiApp.csproj -c Release -r win-x64 --self-contained -o dist", projectPath);
 
     public static int Watch(string? projectPath = null) => RunDotnet("watch run", projectPath);
 
