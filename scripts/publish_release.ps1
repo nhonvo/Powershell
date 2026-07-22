@@ -19,7 +19,7 @@ try {
     
     # Run test suite before publishing
     Write-Host "🧪 Executing test suite validation..." -ForegroundColor Cyan
-    dotnet test AgyTuiApp/Tests/AgyTuiApp.Tests.csproj --no-restore --verbosity quiet
+    dotnet test AgyTuiApp.Tests/AgyTuiApp.Tests.csproj --no-restore --verbosity quiet
     if ($LASTEXITCODE -ne 0) {
         Write-Error "❌ Tests failed. Aborting release publish."
         return

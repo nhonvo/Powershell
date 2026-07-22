@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AgyTuiApp.csproj" />
+    <ProjectReference Include="..\AgyTuiApp\AgyTuiApp.csproj" />
   </ItemGroup>
 
 </Project>
