@@ -74,14 +74,13 @@ public static class ScreenChrome
         HideCursor();
         try
         {
-            if (forceClear)
+            try
             {
-                AnsiConsole.Clear();
+                Console.Write("\x1b[2J\x1b[H");
             }
-            else
+            catch
             {
-                try { Console.SetCursorPosition(0, 0); }
-                catch { try { AnsiConsole.Clear(); } catch { } }
+                try { AnsiConsole.Clear(); } catch { }
             }
             drawBody();
             ClearTrailingLines();
@@ -128,20 +127,9 @@ public static class ScreenChrome
         var w = Math.Max(50, winWidth - 2);
         var sep = new string('=', w);
 
-        try
+        if (forceClear)
         {
-            if (forceClear)
-            {
-                AnsiConsole.Clear();
-            }
-            else
-            {
-                Console.SetCursorPosition(0, 0);
-            }
-        }
-        catch
-        {
-            try { AnsiConsole.Clear(); } catch {}
+            try { Console.Write("\x1b[2J\x1b[H"); } catch { try { AnsiConsole.Clear(); } catch {} }
         }
 
         var titleIcon = Icons.IsUtf8Supported ? "🛸" : "[AGY]";
