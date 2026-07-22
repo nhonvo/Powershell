@@ -218,12 +218,13 @@ public static class SpectrePager
                     AnsiConsole.MarkupLine($"[yellow]Search:[/] [white]{searchBuffer.EscapeMarkup()}_[/] [dim](Esc to clear)[/]");
                 }
 
-                for (var i = top; i < Math.Min(top + pageSize, totalLines); i++)
+                var (topRow, endRow) = ScrollableListView.ComputeViewport(totalLines, top, pageSize);
+                for (var i = topRow; i < endRow; i++)
                     AnsiConsole.MarkupLine(filtered[i].EscapeMarkup());
-                for (var p = Math.Min(top + pageSize, totalLines); p < top + pageSize; p++)
+                for (var p = endRow; p < topRow + pageSize; p++)
                     AnsiConsole.WriteLine();
 
-                int currentEnd = Math.Min(top + pageSize, totalLines);
+                int currentEnd = endRow;
                 int currentPage = totalLines == 0 ? 0 : (top / pageSize) + 1;
                 int totalPages = totalLines == 0 ? 0 : (int)Math.Ceiling((double)totalLines / pageSize);
 

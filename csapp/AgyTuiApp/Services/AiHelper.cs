@@ -621,6 +621,12 @@ public static class AgyAiCore
         return IsPortListening(3000);
     }
 
+    public static bool IsManagerRunning()
+    {
+        return IsPortListening(8045);
+    }
+
+
     public static bool IsOllamaRunning()
     {
         if (_ollamaStatusCache.TryGet("status", out var cached)) return cached;

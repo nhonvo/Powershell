@@ -385,6 +385,7 @@ public sealed class ThreePaneRenderer : MenuRendererBase
         int detailsSel,
         string detailsMode)
     {
+        var isCompact = Config.IsMobileContext();
         var leftSb = new StringBuilder();
         for (var i = 0; i < categories.Length; i++)
         {
@@ -537,7 +538,6 @@ public sealed class ThreePaneRenderer : MenuRendererBase
             else
             {
                 var rightSb = new StringBuilder();
-                var isCompact = Config.IsMobileContext();
                 rightSb.AppendLine($"[bold white]{display.EscapeMarkup()}[/]");
                 rightSb.AppendLine($"[dim]alias:[/] [yellow]{alias.EscapeMarkup()}[/]");
 
@@ -588,8 +588,8 @@ public sealed class ThreePaneRenderer : MenuRendererBase
 
         int winWidth = 100;
         try { winWidth = Console.WindowWidth; } catch { }
-        int menuWidth = Math.Max(32, (int)(winWidth * 0.30));
-        int optionsWidth = Math.Max(35, (int)(winWidth * 0.35));
+        int menuWidth = isCompact ? Math.Max(22, (int)(winWidth * 0.28)) : Math.Max(32, (int)(winWidth * 0.30));
+        int optionsWidth = isCompact ? Math.Max(25, (int)(winWidth * 0.32)) : Math.Max(35, (int)(winWidth * 0.35));
 
         var table = new Table().NoBorder().HideHeaders().Expand();
         table.AddColumn(new TableColumn("").Width(menuWidth).NoWrap());

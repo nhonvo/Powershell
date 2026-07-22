@@ -682,20 +682,15 @@ public sealed class FlatTreeRenderer : MenuRendererBase
             int bannerHeight = (winHeight < 45) ? 3 : 10;
             int maxRows = Math.Max(3, winHeight - bannerHeight - 9);
 
-            int topRow = 0;
-            if (selIdx >= maxRows)
-            {
-                topRow = selIdx - maxRows + 1;
-            }
-            if (topRow + maxRows > rows.Count)
-            {
-                topRow = Math.Max(0, rows.Count - maxRows);
-            }
-            int endRow = Math.Min(rows.Count, topRow + maxRows);
+            var (topRow, endRow) = ScrollableListView.ComputeViewport(rows.Count, selIdx, maxRows);
 
             if (topRow > 0)
             {
                 grid.AddRow(new Markup($"  [dim]▲ ... {topRow} items above ...[/]"));
+            }
+            else if (rows.Count > maxRows)
+            {
+                grid.AddRow(new Markup(""));
             }
 
             for (int i = topRow; i < endRow; i++)
@@ -790,6 +785,10 @@ public sealed class FlatTreeRenderer : MenuRendererBase
             {
                 grid.AddRow(new Markup($"  [dim]▼ ... {rows.Count - endRow} items below ...[/]"));
             }
+            else if (rows.Count > maxRows)
+            {
+                grid.AddRow(new Markup(""));
+            }
         }
 
         var winWidth = 80;
@@ -799,6 +798,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
         var headerText = searching ? $"Search (Esc to clear): [green]{searchBuffer.EscapeMarkup()}[/]_" : "Type [[/]] to search ...";
         IRenderable content = grid;
 
+        string noteText = "";
         if (selIdx >= 0 && selIdx < rows.Count)
         {
             var highlighted = rows[selIdx];
@@ -806,22 +806,42 @@ public sealed class FlatTreeRenderer : MenuRendererBase
             {
                 var cmd = highlighted.Node.Command;
                 var maxNoteLen = Math.Max(30, winWidth - 18);
-                var noteText = (cmd.HelpLines != null && cmd.HelpLines.Length > 0) 
+                noteText = (cmd.HelpLines != null && cmd.HelpLines.Length > 0) 
                     ? string.Join(" ", cmd.HelpLines) 
                     : cmd.Description;
                 if (noteText.Length > maxNoteLen) noteText = noteText[..maxNoteLen] + "…";
-                grid.AddRow(new Markup($"\n[bold yellow]💡 Note:[/] [white]{noteText.EscapeMarkup()}[/]"));
             }
             else if (highlighted.Type == VisibleRowType.Category)
             {
                 var catNote = $"Category '{highlighted.Node.Label}' — Press [Enter] or [→] to expand/collapse.";
                 var maxNoteLen = Math.Max(30, winWidth - 18);
                 if (catNote.Length > maxNoteLen) catNote = catNote[..maxNoteLen] + "…";
-                grid.AddRow(new Markup($"\n[bold yellow]💡 Note:[/] [white]{catNote.EscapeMarkup()}[/]"));
+                noteText = catNote;
+            }
+            else if (highlighted.Type == VisibleRowType.Group)
+            {
+                var grpNote = $"Group '{highlighted.Node.Label}' — Press [Enter] or [→] to expand/collapse.";
+                var maxNoteLen = Math.Max(30, winWidth - 18);
+                if (grpNote.Length > maxNoteLen) grpNote = grpNote[..maxNoteLen] + "…";
+                noteText = grpNote;
+            }
+            else if (highlighted.Type == VisibleRowType.Exit)
+            {
+                noteText = "Press [Enter] to exit the Control Center.";
+            }
+            else
+            {
+                noteText = "Press [Enter] to select option.";
             }
         }
+        else
+        {
+            noteText = "Use [↑/↓] or [j/k] to navigate commands.";
+        }
 
-        var hotkeyBar = new Markup("[dim]TUI Keys: [[↑/↓ j/k]] Navigate · [[/]] Filter · [[Enter/→]] Select/Expand · [[←]] Collapse · [[Esc/q]] Exit\nShortcuts: cg (Git) · cdk (Docker) · cnav (Nav) · cai (AI) · csys (Sys) · cnet (Net) · cssh (SSH)[/]");
+        grid.AddRow(new Markup($"\n[bold yellow]💡 Note:[/] [white]{noteText.EscapeMarkup()}[/]"));
+
+        var hotkeyBar = new Markup("[dim]TUI Keys: [[↑/↓ j/k]] Navigate · [[PgUp/PgDn]] Scroll · [[/]] Filter · [[Enter/→]] Select/Expand · [[←]] Collapse · [[Esc/q]] Exit\nShell Aliases: cg (Git) · cdk (Docker) · cnav (Nav) · cai (AI) · csys (Sys) · cnet (Net) · cssh (SSH)[/]");
         content = new Rows(content, new Markup("\n"), hotkeyBar);
 
         var outerPanel = new Panel(content)
@@ -897,16 +917,15 @@ public sealed class FlatTreeRenderer : MenuRendererBase
             else
             {
                 int maxRows = 12;
-                int topRow = 0;
-                if (selIdx >= maxRows)
-                {
-                    topRow = selIdx - maxRows + 1;
-                }
-                int endRow = Math.Min(filtered.Length, topRow + maxRows);
+                var (topRow, endRow) = ScrollableListView.ComputeViewport(filtered.Length, selIdx, maxRows);
 
                 if (topRow > 0)
                 {
                     grid.AddRow(new Markup($"  [dim]▲ ... {topRow} items above ...[/]"));
+                }
+                else if (filtered.Length > maxRows)
+                {
+                    grid.AddRow(new Markup(""));
                 }
 
                 for (var i = topRow; i < endRow; i++)
@@ -922,6 +941,10 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                 if (endRow < filtered.Length)
                 {
                     grid.AddRow(new Markup($"  [dim]▼ ... {filtered.Length - endRow} items below ...[/]"));
+                }
+                else if (filtered.Length > maxRows)
+                {
+                    grid.AddRow(new Markup(""));
                 }
             }
 
@@ -978,16 +1001,15 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                 int termH = 30;
                 try { termH = Console.WindowHeight; } catch { }
                 int maxRows = isMobile ? 5 : Math.Max(3, Math.Min(6, termH - 18));
-                int topRow = 0;
-                if (selIdx >= maxRows)
-                {
-                    topRow = selIdx - maxRows + 1;
-                }
-                int endRow = Math.Min(workspaces.Length, topRow + maxRows);
+                var (topRow, endRow) = ScrollableListView.ComputeViewport(workspaces.Length, selIdx, maxRows);
 
                 if (topRow > 0)
                 {
                     grid.AddRow(new Markup($"  [dim]▲ ... {topRow} items above ...[/]"));
+                }
+                else if (workspaces.Length > maxRows)
+                {
+                    grid.AddRow(new Markup(""));
                 }
 
                 if (isMobile)
@@ -1060,13 +1082,15 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                 {
                     grid.AddRow(new Markup($"  [dim]▼ ... {workspaces.Length - endRow} items below ...[/]"));
                 }
+                else if (workspaces.Length > maxRows)
+                {
+                    grid.AddRow(new Markup(""));
+                }
             }
 
             var selTarget = (selIdx >= 0 && selIdx < workspaces.Length) ? workspaces[selIdx]?.WorkspacePath : null;
-            if (!string.IsNullOrEmpty(selTarget))
-            {
-                grid.AddRow(new Markup($"\n[dim]Selected Target:[/] [bold cyan]{selTarget.EscapeMarkup()}[/]"));
-            }
+            var targetDisplay = !string.IsNullOrEmpty(selTarget) ? selTarget : "No workspace selected";
+            grid.AddRow(new Markup($"\n[dim]Selected Target:[/] [bold cyan]{targetDisplay.EscapeMarkup()}[/]"));
 
             grid.AddRow(new Markup("[bold cyan][[Enter]][/] Actions ([green]cd[/] / [cyan]/ide[/] / [yellow]Explorer[/] / [magenta]Git Diff[/])  ·  [bold cyan][[Esc]][/] Cancel"));
         }

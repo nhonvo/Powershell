@@ -149,7 +149,14 @@ public static class ScreenChrome
 
         if (forceClear)
         {
-            try { Console.Write("\x1b[2J\x1b[H"); } catch { try { AnsiConsole.Clear(); } catch {} }
+            if (OverrideConsole != null)
+            {
+                try { OverrideConsole.Clear(); } catch {}
+            }
+            else
+            {
+                try { Console.Write("\x1b[2J\x1b[H"); } catch { try { ConsoleInstance.Clear(); } catch {} }
+            }
         }
 
         var titleIcon = (Icons.IsUtf8Supported ? "🛸" : "[AGY]").EscapeMarkup();

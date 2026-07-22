@@ -1,5 +1,5 @@
 
-  if ($global:AgyUserProfileLoaded) { return }
+  if ($global:AgyProfileLoaded -or $global:AgyUserProfileLoaded) { return }
 $global:AgyUserProfileLoaded = $true
 $Global:ProfileRepoRoot = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 
@@ -160,11 +160,17 @@ function Load-AgyTuiDll {
         if (-not (Test-Path $targetDll)) {
             $targetDll = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\dist\AgyTuiApp.dll"
         }
-        if (-not (Test-Path $targetDll)) {
-            $proj = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\AgyTuiApp.csproj"
-            if (Test-Path $proj) {
-                dotnet build "$proj" -p:TreatWarningsAsErrors=true | Out-Null
+        $proj = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\AgyTuiApp.csproj"
+        $needsBuild = -not (Test-Path $targetDll)
+        if (-not $needsBuild -and (Test-Path $proj)) {
+            $dllMtime = (Get-Item $targetDll).LastWriteTime
+            $newestCs = Get-ChildItem -Path (Join-Path $Global:ProfileRepoRoot "csapp\AgyTuiApp") -Filter "*.cs" -Recurse | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+            if ($newestCs -and $newestCs.LastWriteTime -gt $dllMtime) {
+                $needsBuild = $true
             }
+        }
+        if ($needsBuild -and (Test-Path $proj)) {
+            dotnet build "$proj" -p:TreatWarningsAsErrors=true | Out-Null
         }
         if (Test-Path $targetDll) {
             try {
@@ -189,10 +195,21 @@ function Load-AgyTuiDll {
         }
     } catch {}
 }
-Load-AgyTuiDll
+$global:AgySessionInitialized = $false
+function Initialize-AgySession {
+    if ($global:AgySessionInitialized) { return }
+    $global:AgySessionInitialized = $true
+
+    Load-AgyTuiDll
+    [ProfileEnvironment]::LoadModules()
+    
+    Load-GitHelper
+    Load-DockerHelper
+    Load-HelpHelper
+}
 
 function Test-AgyAiGate {
-    Load-AgyTuiDll
+    Initialize-AgySession
     if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
         return [AgyTui.AgyAiCore]::IsAiOllamaEnabled() -or [AgyTui.AgyAiCore]::IsAgyEnabled()
     }
@@ -200,7 +217,7 @@ function Test-AgyAiGate {
 }
 
 function Start-AgyManager {
-    Load-AgyTuiDll
+    Initialize-AgySession
     if ($null -ne ('AgyTui.Projects' -as [type])) {
         [AgyTui.Projects]::StartManager()
     } elseif ($null -ne ('Projects' -as [type])) {
@@ -211,7 +228,7 @@ function Start-AgyManager {
 }
 
 function Start-AgyProxy {
-    Load-AgyTuiDll
+    Initialize-AgySession
     if ($null -ne ('AgyTui.Projects' -as [type])) {
         [AgyTui.Projects]::StartProxy()
     } elseif ($null -ne ('Projects' -as [type])) {
@@ -242,62 +259,7 @@ Write-AgyStartupCheckpoint "AgyTuiApp subprocess mode ready"
 # ==============================================================================
  
 class ProfileEnvironment {
-    static [void] InitializeSession() {
-        # Ensure UTF8 for Icons
-        [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
- 
-        if (-not $Global:AiMode -and $Global:VerboseStartup) {
-            Write-Host "[*] Loading Enhanced PowerShell Profile... (Core)" -ForegroundColor Cyan
-        }
- 
- 
- 
-        # --- Module Loading & Auto-Healing ---
-        $modules = @(
-            @{ Name = "PSReadLine";                         Description = "Core CLI Experience" }
-            @{ Name = "z";                                  Description = "Smart Directory Navigation" }
-        )
-        if (-not $Global:AiMode) {
-            $modules += @(
-                @{ Name = "Terminal-Icons";                     Description = "Rich File Icons" }
-                @{ Name = "posh-git";                           Description = "Git Status in Prompt" }
-                @{ Name = "Microsoft.PowerShell.ConsoleGuiTools"; Description = "Terminal UI (Out-ConsoleGridView)" }
-                @{ Name = "BurntToast";                         Description = "Windows Notifications" }
-            )
-        }
- 
-        foreach ($mod in $modules) {
-            # Auto-Install if missing (only in interactive console)
-            if (-not (Get-Module -ListAvailable -Name $mod.Name)) {
-                if ($Global:AiMode -or [Console]::IsOutputRedirected -or -not [Environment]::UserInteractive) {
-                    if (-not $Global:AiMode) {
-                        Write-Warning "[!] Module $($mod.Name) is missing and console is non-interactive. Skipping installation."
-                    }
-                    continue
-                }
-                Write-Host "[+] Installing $($mod.Name) ($($mod.Description))..." -ForegroundColor Cyan
-                try {
-                    Install-Module $mod.Name -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck -ErrorAction Stop
-                } catch {
-                    Write-Warning "[!] Failed to install $($mod.Name). Skipping."
-                    continue
-                }
-            }
- 
-            # Safe Import
-            try {
-                if ($mod.Name -eq "Terminal-Icons") {
-                    Import-Module $mod.Name -Force -ErrorAction SilentlyContinue
-                } else {
-                    Import-Module $mod.Name -ErrorAction SilentlyContinue
-                }
-            } catch {
-                if (-not $Global:AiMode) {
-                    Write-Warning "[x] Error loading $($mod.Name): $_"
-                }
-            }
-        }
- 
+    static [void] ConfigurePSReadLine() {
         # --- PSReadLine Options ---
         Set-PSReadLineOption -EditMode Windows
         $psReadLineCmd = Get-Command Set-PSReadLineOption -ErrorAction SilentlyContinue
@@ -315,7 +277,7 @@ class ProfileEnvironment {
             }
         }
         Set-PSReadLineOption -BellStyle None
- 
+
         # Define colors compatible with both older and newer PSReadLine versions
         $psReadlineColors = @{
             "Command"          = [ConsoleColor]::Green
@@ -332,11 +294,11 @@ class ProfileEnvironment {
         if ($psReadLineCmd -and $psReadLineCmd.Parameters.ContainsKey('PredictionSource')) {
             $psReadlineColors["InlinePrediction"] = '#70A99F'
         }
- 
+
         try {
             Set-PSReadlineOption -Color $psReadlineColors
         } catch {}
- 
+
         # --- PSReadLine Key Bindings ---
         if (-not $Global:AiMode -and $global:Host.Name -eq 'ConsoleHost' -and (Get-Command Set-PSReadLineKeyHandler -ErrorAction SilentlyContinue)) {
             Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
@@ -352,9 +314,7 @@ class ProfileEnvironment {
                     }
                 }
             }
-        }
-        # .NET Hotkeys
-        if (-not $Global:AiMode) {
+            # .NET Hotkeys
             Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+b' -ScriptBlock {
                 $pr = [Type]"Microsoft.PowerShell.PSConsoleReadLine"
                 if ($pr) {
@@ -371,8 +331,7 @@ class ProfileEnvironment {
                     $pr::AcceptLine()
                 }
             }
-            # Launches the C# Control Center TUI directly (same target as the `cc` alias) —
-            # kept as a hotkey per the decision to keep the alias surface but add a fast path in.
+            # Launches the C# Control Center TUI directly (same target as the `cc` alias)
             Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+c' -ScriptBlock {
                 $pr = [Type]"Microsoft.PowerShell.PSConsoleReadLine"
                 if ($pr) {
@@ -383,10 +342,63 @@ class ProfileEnvironment {
             }
         }
     }
+
+    static [void] LoadModules() {
+        # Ensure UTF8 for Icons
+        [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
+        if (-not $Global:AiMode -and $Global:VerboseStartup) {
+            Write-Host "[*] Loading Enhanced PowerShell Profile... (Core)" -ForegroundColor Cyan
+        }
+
+        # --- Module Loading & Auto-Healing ---
+        $modules = @(
+            @{ Name = "PSReadLine";                         Description = "Core CLI Experience" }
+            @{ Name = "z";                                  Description = "Smart Directory Navigation" }
+        )
+        if (-not $Global:AiMode) {
+            $modules += @(
+                @{ Name = "Terminal-Icons";                     Description = "Rich File Icons" }
+                @{ Name = "posh-git";                           Description = "Git Status in Prompt" }
+                @{ Name = "Microsoft.PowerShell.ConsoleGuiTools"; Description = "Terminal UI (Out-ConsoleGridView)" }
+                @{ Name = "BurntToast";                         Description = "Windows Notifications" }
+            )
+        }
+
+        foreach ($mod in $modules) {
+            $loaded = $false
+            try {
+                if ($mod.Name -eq "Terminal-Icons") {
+                    Import-Module $mod.Name -Force -ErrorAction Stop
+                } else {
+                    Import-Module $mod.Name -ErrorAction Stop
+                }
+                $loaded = $true
+            } catch {
+                # Auto-Install if missing or failed to import (only in interactive console)
+                if ($Global:AiMode -or [Console]::IsOutputRedirected -or -not [Environment]::UserInteractive) {
+                    if (-not $Global:AiMode) {
+                        Write-Warning "[!] Module $($mod.Name) is missing or failed to load and console is non-interactive. Skipping installation."
+                    }
+                    continue
+                }
+                Write-Host "[+] Installing $($mod.Name) ($($mod.Description))..." -ForegroundColor Cyan
+                try {
+                    Install-Module $mod.Name -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck -ErrorAction Stop
+                    if ($mod.Name -eq "Terminal-Icons") {
+                        Import-Module $mod.Name -Force -ErrorAction SilentlyContinue
+                    } else {
+                        Import-Module $mod.Name -ErrorAction SilentlyContinue
+                    }
+                } catch {
+                    Write-Warning "[!] Failed to install/load $($mod.Name). Skipping."
+                }
+            }
+        }
+    }
 }
- 
-[ProfileEnvironment]::InitializeSession()
-Write-AgyStartupCheckpoint "ProfileEnvironment.InitializeSession (modules, PSReadLine) done"
+
+[ProfileEnvironment]::ConfigurePSReadLine()
  
 # --- Oh My Posh Theme (Initialized in global script scope to bypass class method scoping constraints) ---
 if (-not $Global:AiMode) {
@@ -445,9 +457,9 @@ Write-AgyStartupCheckpoint "oh-my-posh init block done"
 #  Invoke-Expression gives this class its own independent parse pass, wrapped in
 #  try/catch, so a failure here only disables the git aliases instead of all ~100.
 # ==============================================================================
-try {
-    Load-AgyTuiDll
-    Invoke-Expression @'
+function Load-GitHelper {
+    try {
+        Invoke-Expression @'
 class GitHelper {
     static [string] GenerateAiCommitMessage() {
         if (-not (Test-AgyAiGate)) { return "" }
@@ -539,15 +551,33 @@ class GitHelper {
         Write-Host ""
         Write-Host "Generated commit message: '$finalMsg'" -ForegroundColor Cyan
         $confirm = Read-Host "Confirm commit? (Y/N)"
-        if ($confirm -match "^[Yy]") {
+        if ($DirectMessage) {
             git commit -m "$finalMsg"
         } else {
-            Write-Host "Commit cancelled." -ForegroundColor DarkGray
+            Write-Host "Executing: git commit -m `"$finalMsg`"" -ForegroundColor Yellow
+            git commit -m "$finalMsg"
         }
+    }
+
+    static [void] MergeSquash([string]$BranchName) {
+        if ([string]::IsNullOrWhiteSpace($BranchName)) {
+            Write-Warning "Branch name required for merge-squash."
+            return
+        }
+        Write-Host "Squash merging branch: $BranchName" -ForegroundColor Yellow
+        git merge --squash $BranchName | Out-Default
+        Write-Host "Commit the squashed changes!" -ForegroundColor Cyan
+    }
+
+    static [void] StashSnapshot([string]$Message) {
+        $msg = if ($Message) { $Message } else { "snapshot" }
+        git stash push -m "$msg" | Out-Default
+        git stash apply 0 | Out-Default
+        Write-Host "[Git] Snapshot stashed: $msg" -ForegroundColor Green
     }
 }
 '@
-} catch {
+    } catch {}
 }
 #endregion
  
@@ -678,16 +708,11 @@ class DotNetHelper {
 # Embedded via Invoke-Expression for the same reason as GitHelper above: Dkcl()
 # references [AgyTui.*] types inside the class body.
 # ==============================================================================
-try {
-    Load-AgyTuiDll
-    Invoke-Expression @'
+function Load-DockerHelper {
+    try {
+        Invoke-Expression @'
 class DockerHelper {
- static [void] GetContainers([bool]$All) {
- Write-Host "[Docker] Containers:" -ForegroundColor Blue
- if ($All) { docker container ls -a | Out-Default } else { docker container ls | Out-Default }
- }
-
- static [void] RemoveAllContainers() {
+    static [void] RemoveAllContainers() {
  Write-Host "[Prune] Removing ALL containers..." -ForegroundColor Red
  if ((Read-Host "This will remove ALL containers. Are you sure? (y/N)") -eq 'y') {
  $c = docker ps -aq
@@ -846,7 +871,7 @@ class DockerHelper {
  }
 }
 '@
-} catch {
+    } catch {}
 }
 #endregion
 
@@ -926,9 +951,9 @@ class SystemHelper {
 #  Embedded via Invoke-Expression for the same reason as GitHelper above: Show()
 #  references [AgyTui.ProfileHelp] inside the class body.
 # ==============================================================================
-try {
-    Load-AgyTuiDll
-    Invoke-Expression @'
+function Load-HelpHelper {
+    try {
+        Invoke-Expression @'
 class ProfileHelp {
     # Category/command menu building, filtering, and the drill-down loop all live in
     # [AgyTui.ProfileHelp]::ShowInteractive() now. This just runs the returned command's alias —
@@ -959,7 +984,7 @@ class ProfileHelp {
     }
 }
 '@
-} catch {
+    } catch {}
 }
 #endregion
 
@@ -1486,6 +1511,7 @@ class AgyAccountManager {
 
 # --- Help shortcuts ---
 function Invoke-ControlCenter {
+    Initialize-AgySession
     $releaseDll = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTuiApp\dist\AgyTuiApp.dll"
     $debugDll = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
     if (Test-Path $releaseDll) {
@@ -1528,6 +1554,7 @@ function cssh { Invoke-ControlCenter "ssh-info" }
 
 # Theme Switcher
 function Select-ShellTheme {
+ Initialize-AgySession
  Apply-ThemePath ([AgyTui.ThemeHelper]::SelectThemeInteractive($env:POSH_THEMES_PATH, $env:THEME))
 }
 Set-Alias -Name theme -Value Select-ShellTheme -Force
@@ -1572,20 +1599,21 @@ function Clone-Project {
 Set-Alias -Name gclone -Value Clone-Project -Force
 
 # Operations Dashboards & Shortcuts
-function Invoke-DockerDashboard { [DockerHelper]::Dkcl() }
+function Invoke-DockerDashboard { Initialize-AgySession; [DockerHelper]::Dkcl() }
 Set-Alias -Name dkcl -Value Invoke-DockerDashboard -Force
 
 function Invoke-KillPort {
  param([Parameter(Mandatory=$true, Position=0)][int]$Port)
+ Initialize-AgySession
  [AgyTui.SystemHelper]::KillPort($Port)
 }
 Set-Alias -Name killport -Value Invoke-KillPort -Force
 
-function Invoke-SystemMonitor { [AgyTui.SystemHelper]::SystemMonitor() }
+function Invoke-SystemMonitor { Initialize-AgySession; [AgyTui.SystemHelper]::SystemMonitor() }
 Set-Alias -Name sysmon -Value Invoke-SystemMonitor -Force
 
 # Scaffolding Shortcuts
-function Invoke-ProjectScaffolder { [AgyTui.ProjectScaffolder]::Scaffold() }
+function Invoke-ProjectScaffolder { Initialize-AgySession; [AgyTui.ProjectScaffolder]::Scaffold() }
 Set-Alias -Name new-project -Value Invoke-ProjectScaffolder -Force
 
 # Git TUI Shortcuts
@@ -1593,6 +1621,7 @@ function Invoke-GitBranchCheckout { Invoke-GitCheckout $args }
 
 function Invoke-GitCommitWizard {
  param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message)
+ Initialize-AgySession
  $msg = $Message -join ' '
  [GitHelper]::Gcmt($msg)
 }
@@ -1600,6 +1629,7 @@ Set-Alias -Name gcmt -Value Invoke-GitCommitWizard -Force
 
 function Invoke-AskAi {
  param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Query)
+ Initialize-AgySession
  if (-not (Test-AgyAiGate)) { return }
  $q = $Query -join ' '
 # $Global:Error is PS1 session state — resolve the "explain my last error" fallback here,
@@ -1628,6 +1658,7 @@ function Invoke-SecretVault {
  [Parameter(Position=2)]
  [string]$Value
  )
+ Initialize-AgySession
  switch ($Action) {
  "set" {
  if (-not $Key -or -not $Value) {
@@ -1660,6 +1691,7 @@ Set-Alias -Name sec -Value Invoke-SecretVault -Force
 
 function Invoke-DbTui {
  param([Parameter(Mandatory=$true, Position=0)][string]$DbPath)
+ Initialize-AgySession
  $resolved = Resolve-Path $DbPath -ErrorAction SilentlyContinue
  if (-not $resolved) {
  Write-Error "Database file not found: $DbPath"
@@ -1671,6 +1703,7 @@ Set-Alias -Name db-tui -Value Invoke-DbTui -Force
 
 function Invoke-LogStream {
  param([Parameter(Position=0)][string]$LogPath)
+ Initialize-AgySession
  [AgyTui.LogHelper]::StreamLogs($LogPath)
 }
 Set-Alias -Name logstream -Value Invoke-LogStream -Force
@@ -1683,15 +1716,15 @@ function Start-Proxy { Start-AgyProxy }
 Set-Alias -Name prxy -Value Start-Proxy -Force
 
 # --- Antigravity Account Management Wrappers ---
-function Toggle-AutoSwitch { [AgyAccountManager]::ToggleAutoSwitch() }
+function Toggle-AutoSwitch { Initialize-AgySession; [AgyAccountManager]::ToggleAutoSwitch() }
 Set-Alias -Name autoswitch -Value Toggle-AutoSwitch -Force
 Set-Alias -Name agyswitch -Value Toggle-AutoSwitch -Force
 
-function Show-AccountsSummary { [AgyAccountManager]::ShowAllAccountsSummary() }
+function Show-AccountsSummary { Initialize-AgySession; [AgyAccountManager]::ShowAllAccountsSummary() }
 Set-Alias -Name acc-sum -Value Show-AccountsSummary -Force
 
 # --- AI Session Dashboard Wrappers ---
-function Show-AiDashboard { if (-not (Test-AgyAiGate)) { return }; [AgyTui.AgyAiCore]::ShowAiDashboard() }
+function Show-AiDashboard { Initialize-AgySession; if (-not (Test-AgyAiGate)) { return }; [AgyTui.AgyAiCore]::ShowAiDashboard() }
 Set-Alias -Name ai-dash -Value Show-AiDashboard -Force
 
 # --- Master Learning Suite Router ---
@@ -1758,17 +1791,11 @@ Set-Alias -Name clh -Value Clear-ShellHistory -Force
 # Startup complete
 # ==============================================================================
 try {
- [AgyTui.LogHelper]::Log("Enhanced PowerShell Profile loaded successfully. (AiMode = $Global:AiMode)")
+    if ($global:AgySessionInitialized) {
+        [AgyTui.LogHelper]::Log("Enhanced PowerShell Profile loaded successfully. (AiMode = $Global:AiMode)")
+    }
 } catch {}
 
-if (-not $Global:AiMode) {
- if ($Global:VerboseStartup) {
- Write-Host "🛸 Enhanced PowerShell Profile loaded." -ForegroundColor Green
- } else {
- $acc = "default"
- try {
- $acc = [AgyAccountManager]::GetActiveAccount()
- } catch {}
- Write-Host "🛸 Enhanced Profile Loaded | Account: $acc" -ForegroundColor Green
- }
+if (-not $Global:AiMode -and -not [Console]::IsOutputRedirected -and [Environment]::UserInteractive) {
+    Write-Host "🛸 Enhanced PowerShell Profile Loaded" -ForegroundColor Green
 }

@@ -579,11 +579,12 @@ public static class Program
                 case "ollama-status":
                     OllamaStatusWidgetCache.Invalidate();
                     break;
+                case "desk-status":
                 case "deck-status":
                     {
                         var running = AgyAiCore.IsDeckRunning();
                         var statusStr = running ? "[green]Online (port 3000)[/]" : "[red]Offline[/]";
-                        AnsiConsole.MarkupLine($"Antigravity Deck Status: {statusStr}");
+                        AnsiConsole.MarkupLine($"Antigravity Deck/Desk Status: {statusStr}");
                         if (running)
                         {
                             AnsiConsole.MarkupLine("Local App URL: [cyan]http://127.0.0.1:3000[/]");
@@ -592,14 +593,46 @@ public static class Program
                         Console.ReadKey(true);
                     }
                     break;
+                case "desk-setup":
                 case "deck-setup":
                     AntigravityDeckHelper.Setup();
                     break;
+                case "desk-start":
                 case "deck-start":
                     AntigravityDeckHelper.StartLocal();
                     break;
+                case "desk-online":
                 case "deck-online":
                     AntigravityDeckHelper.StartOnline();
+                    break;
+
+                // Antigravity Manager
+                case "mgr-status":
+                case "manager-status":
+                case "agm-status":
+                    {
+                        var running = AgyAiCore.IsManagerRunning();
+                        var statusStr = running ? "[green]Online (port 8045)[/]" : "[red]Offline[/]";
+                        AnsiConsole.MarkupLine($"Antigravity Manager Status: {statusStr}");
+                        if (running)
+                        {
+                            AnsiConsole.MarkupLine("Local Backend URL: [cyan]http://127.0.0.1:8045[/]");
+                        }
+                        Console.WriteLine("\nPress any key to return...");
+                        Console.ReadKey(true);
+                    }
+                    break;
+                case "mgr-setup":
+                case "manager-setup":
+                case "agm-setup":
+                    Projects.SetupManager();
+                    break;
+                case "mgr":
+                case "mgr-start":
+                case "manager-start":
+                case "agm":
+                case "agm-start":
+                    Projects.StartManager();
                     break;
                 case "agy-cli":
                     if (!AgyAiCore.IsAgyEnabled())

@@ -1428,6 +1428,23 @@ public static class Projects
 
     }
 
+    public static string? SetupManager()
+    {
+        var projectDir = System.IO.Path.Combine(AgBaseDir, "AntigravityManager");
+        if (!Directory.Exists(projectDir))
+        {
+            SpectrePanel.Error($"Project not found: {projectDir}");
+            return null;
+        }
+        AnsiConsole.MarkupLine("[cyan]📦 Installing dependencies (npm install)...[/]");
+        RunNpm("install", projectDir, null);
+        SpectrePanel.Success("Dependencies installed successfully!");
+        Thread.Sleep(2000);
+        return projectDir;
+
+    }
+
+
     public static string? StartProxy()
     {
         var projectDir = System.IO.Path.Combine(AgBaseDir, "antigravity-claude-proxy");

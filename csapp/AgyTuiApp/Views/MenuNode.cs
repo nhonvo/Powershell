@@ -179,7 +179,7 @@ public static class MenuNodeBuilder
         // Group 9: Antigravity Deck
         var deckTools = new MenuNode(
             "/antigravity-deck",
-            " [/antigravity-deck] Antigravity Deck",
+            " [/antigravity-deck] Antigravity Deck (Desk)",
             MenuNodeKind.Group,
             new[]
             {
@@ -187,6 +187,20 @@ public static class MenuNodeBuilder
                 CreateCommandNode(allCommands["deck-setup"]),
                 CreateCommandNode(allCommands["deck-start"]),
                 CreateCommandNode(allCommands["deck-online"])
+            },
+            null
+        );
+
+        // Group 9.5: Antigravity Manager
+        var managerTools = new MenuNode(
+            "/antigravity-manager",
+            " [/antigravity-manager] Antigravity Manager",
+            MenuNodeKind.Group,
+            new[]
+            {
+                CreateCommandNode(allCommands["mgr-status"]),
+                CreateCommandNode(allCommands["mgr-setup"]),
+                CreateCommandNode(allCommands["mgr-start"])
             },
             null
         );
@@ -258,6 +272,7 @@ public static class MenuNodeBuilder
                 CreateCommandNode(allCommands["hermesd"]),
                 ollamaTools,
                 deckTools,
+                managerTools,
                 CreateCommandNode(allCommands["agy-cli"]),
                 CreateCommandNode(allCommands["ai-history"])
             },

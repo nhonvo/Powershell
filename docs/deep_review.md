@@ -1,4 +1,4 @@
-# Deep Review — PowerShell Profile & AgyTuiApp (2026-07-22)
+# Deep Review — PowerShell Profile & AgyTuiApp (2026-07-23)
 
 Full-project review covering `Microsoft.PowerShell_profile.ps1`, `psapp/scripts/*.ps1`, `psapp/Tests/**`, and the entire `csapp/AgyTuiApp` C# TUI app (services, domain, infra, views/renderers).
 
@@ -7,16 +7,16 @@ Full-project review covering `Microsoft.PowerShell_profile.ps1`, `psapp/scripts/
 ## 🎉 Implementation & Verification Summary (Post-Fix Status)
 
 - **`dotnet build` (Dev Mode - `TreatWarningsAsErrors=true`)**: **0 Warnings, 0 Errors** (VERIFIED)
-- **`dotnet test` (.NET Unit Tests)**: **26/26 Passed, 0 Failed** (VERIFIED)
-- **`pwsh -File psapp/Tests/run_tests.ps1` (Pester Test Suite)**: **27/27 Passed, 0 Failed** (VERIFIED)
+- **`dotnet test` (.NET Unit Tests)**: **26/26 Passed, 0 Failed** (VERIFIED - zero ANSI leaks)
+- **`pwsh -File psapp/Tests/run_tests.ps1` (Pester Test Suite)**: **27/27 Passed, 0 Failed** (VERIFIED - DLL auto-rebuild on staleness)
 - **Standalone Pester Invocation (`AI-Tools.Tests.ps1` & `New-Features.Tests.ps1`)**: **Passed Cleanly** (VERIFIED)
 - **Tracked `profile.config.json` Isolation**: Fully verified — running unit tests no longer mutates `profile.config.json` on disk.
 
 ### Task Completion Status:
-- **P0 Critical Tasks (T1–T13)**: **[DONE] (VERIFIED)**
-- **P1 Warning & Refactoring Tasks (T14–T32)**: **[DONE] (VERIFIED)**
-- **UI/UX Focused Tasks (T33–T41)**: **[DONE] (VERIFIED)**
-- **Services/Domain Tasks (T42–T52)**: **[DONE] (VERIFIED)**
+- **P0 Critical Tasks (T1–T13)**: **13/13 [DONE] (VERIFIED)**
+- **P1 Warning & Refactoring Tasks (T14–T32)**: **19/19 [DONE] (VERIFIED)**
+- **UI/UX Focused Tasks (T33–T41)**: **9/9 [DONE] (VERIFIED)**
+- **Services/Domain Tasks (T42–T52)**: **11/11 [DONE] (VERIFIED)**
 
 ---
 
@@ -40,7 +40,7 @@ Full-project review covering `Microsoft.PowerShell_profile.ps1`, `psapp/scripts/
 
 ## 🟡 Warning & Refactoring Tasks (T14–T32)
 
-14. **Dead PowerShell Class Cleanup (T14)**: `[DONE] (VERIFIED)` - Removed unused methods from PS-only `GitHelper` and `DockerHelper.GetContainers`.
+14. **Dead PowerShell Class Cleanup (T14)**: `[DONE] (VERIFIED)` - Restored `MergeSquash` & `StashSnapshot` in PS `GitHelper` class (fixing `gms`/`gsnap` aliases) and deleted dead `DockerHelper.GetContainers`.
 15. **AI Wrapper Functions Consolidation (T15)**: `[DONE] (VERIFIED)` - Consolidated 6 identical wrapper functions into `Invoke-AiTool`.
 16. **Build Backup Artifact Cleanup (T16)**: `[DONE] (VERIFIED)` - Added `finally` cleanup block deleting `*.old_*` binary artifacts in build scripts.
 17. **Startup Diagnostic Gating (T17)**: `[DONE] (VERIFIED)` - Gated `Write-AgyStartupCheckpoint` behind `$Global:VerboseStartup` / `$env:AGY_STARTUP_DEBUG`.
@@ -56,7 +56,7 @@ Full-project review covering `Microsoft.PowerShell_profile.ps1`, `psapp/scripts/
 27. **Git Nexus Dashboard Wiring (T27)**: `[DONE] (VERIFIED)` - Wired `GitNexus.ShowLiveDashboard()` to the `/nexus` command in `Program.cs`.
 28. **Kana Quiz Empty Pool Guard (T28)**: `[DONE] (VERIFIED)` - Added empty deck check to `KanaQuiz.Run`.
 29. **Config Tree Child Caching (T29)**: `[DONE] (VERIFIED)` - Cached `MenuRendererBase.GetActiveChildren` lookups with `TtlCache`.
-30. **ScreenChrome Output Seam & ANSI Gating (T30)**: `[DONE] (VERIFIED)` - Gated direct ANSI console writes when `OverrideConsole` is present during unit tests.
+30. **ScreenChrome Output Seam & ANSI Gating (T30)**: `[DONE] (VERIFIED)` - Gated `forceClear` in `ScreenChrome.RenderBanner` behind `OverrideConsole`, eliminating test ANSI output leaks.
 31. **Icon Lookup Deduplication (T31)**: `[DONE] (VERIFIED)` - Unified category icon lookups and removed duplicate icon methods in `FileExplorer.cs`.
 32. **Command Alias Reachability Assertion (T32)**: `[DONE] (VERIFIED)` - Added `AssertAllAliasesReachable()` in `CommandRegistry.cs` and wired `f` and `no-auto-commit` in `MenuNodeBuilder.BuildTree()`.
 
@@ -64,28 +64,28 @@ Full-project review covering `Microsoft.PowerShell_profile.ps1`, `psapp/scripts/
 
 ## 🎛️ UI/UX Focused Tasks (T33–T41)
 
-33. **ScrollableListView Integration (T33)**: `[DONE] (VERIFIED)` - Integrated `ScrollableListView.ComputeViewport` across `FlatTreeRenderer.cs` and `SpectreWidgets.cs`.
+33. **ScrollableListView Integration (T33)**: `[DONE] (VERIFIED)` - Integrated `ScrollableListView.ComputeViewport` across all 6 viewport implementations (`FlatTreeRenderer` main tree, theme sub-picker, workspace sub-picker, `SpectrePager`, `SpectreMenu`).
 34. **Dynamic PageUp/PageDown Stepping (T34)**: `[DONE] (VERIFIED)` - Replaced fixed 10-row page steps with `ScrollableListView.GetPageStep(maxRows)`.
-35. **Footer Hotkey Legend Accuracy (T35)**: `[DONE] (VERIFIED)` - Updated `FlatTreeRenderer.cs` footer legend to display in-app TUI keybindings (`↑/↓ j/k`, `/`, `Enter/→`, `←`, `Esc/q`).
+35. **Footer Hotkey Legend Accuracy (T35)**: `[DONE] (VERIFIED)` - Updated `FlatTreeRenderer.cs` footer legend to display in-app TUI keybindings (`↑/↓ j/k`, `PgUp/PgDn`, `/`, `Enter/→`, `←`, `Esc/q`) and clearly distinguished `Shell Aliases`.
 36. **Renderer-Specific Banner Footer Hints (T36)**: `[DONE] (VERIFIED)` - Passed renderer-specific `footerHint` strings from `FlatTreeRenderer.cs` and `ThreePaneRenderer.cs` to `ScreenChrome.RenderBanner`.
 37. **Live-Filter Sub-Pickers (T37)**: `[DONE] (VERIFIED)` - Wired live search buffer filtering into `agyswitch` and study sub-pickers.
 38. **Width-Aware Short Banner Threshold (T38)**: `[DONE] (VERIFIED)` - Added `winWidth < 60` threshold to `ScreenChrome.RenderBanner`.
 39. **Unified Mobile Context Check (T39)**: `[DONE] (VERIFIED)` - Added `Config.IsMobileContext()` combining prompt theme, compact density, and window width.
-40. **ThreePaneRenderer Density & Mobile Awareness (T40)**: `[DONE] (VERIFIED)` - Added `Config.IsMobileContext()` density adjustments to `ThreePaneRenderer.cs`.
+40. **ThreePaneRenderer Density & Mobile Awareness (T40)**: `[DONE] (VERIFIED)` - Added `Config.IsMobileContext()` density adjustments and mobile column width adaptation to `ThreePaneRenderer.cs`.
 41. **SpectrePager Live-Filter Search (T41)**: `[DONE] (VERIFIED)` - Replaced modal search with live incremental filtering and restored `ConsoleKey.F` search trigger key.
 
 ---
 
 ## 🗂️ Services/Domain Tasks (T42–T52)
 
-42. **Workspace Substring Search Default (T42)**: `[DONE] (VERIFIED)` - Changed `WorkspaceRegistry.FindByQuery` to case-insensitive substring matching.
-43. **AgySourceHome Storage Path (T43)**: `[DONE] (VERIFIED)` - Updated `WorkspaceRegistry.ConfigFile` to resolve under `AgySourceHome` and removed hardcoded fallback paths.
-44. **Per-Directory Exception Isolation (T44)**: `[DONE] (VERIFIED)` - Wrapped subdirectory checks in `AutoDiscoverWorkspaces` with per-directory `try/catch` blocks.
-45. **Workspace Caching via TtlCache (T45)**: `[DONE] (VERIFIED)` - Cached `WorkspaceRegistry.GetWorkspaces()` with a 5-second TTL.
-46. **Null-Safe Account Lookup (T46)**: `[DONE] (VERIFIED)` - Added null-safe fallback for `AssociatedAccount` in `WorkspaceRegistry.GetByAccount`.
-47. **Unified Workspace Action Menu (T47)**: `[DONE] (VERIFIED)` - Extracted `SharedWorkspaceActions` and `HandleWorkspaceAction` in `WorkspaceRegistry.cs`.
-48. **Scoped AutoDetectDensity (T48)**: `[DONE] (VERIFIED)` - Scoped `AutoDetectDensity` to first-run initialization only.
-49. **Unified Account Repository Listing (T49)**: `[DONE] (VERIFIED)` - Delegated `AccountRepository.GetAccounts()` directly to `AgyAccountCore.GetAccounts()`.
-50. **Deadlock-Free AI Generator Execution (T50)**: `[DONE] (VERIFIED)` - Asynchronously read stdout and stderr concurrently with 30s timeout and `JsonDocument.Parse` validation.
-51. **Sanitized Project Scaffolding (T51)**: `[DONE] (VERIFIED)` - Sanitized project names, set `WorkingDirectory = outputDir`, and used `ArgumentList` array splatting.
-52. **Git Worktree & Submodule Support (T52)**: `[DONE] (VERIFIED)` - Updated `WorkspaceRegistry.GetGitBranch` to parse `.git` files containing `gitdir: <path>` references.
+42. **Workspace Substring Search Default (T42)**: `[DONE] (VERIFIED)`.
+43. **AgySourceHome Storage Path (T43)**: `[DONE] (VERIFIED)`.
+44. **Per-Directory Exception Isolation (T44)**: `[DONE] (VERIFIED)`.
+45. **Workspace Caching via TtlCache (T45)**: `[DONE] (VERIFIED)`.
+46. **Null-Safe Account Lookup (T46)**: `[DONE] (VERIFIED)`.
+47. **Unified Workspace Action Menu (T47)**: `[DONE] (VERIFIED)`.
+48. **Scoped AutoDetectDensity (T48)**: `[DONE] (VERIFIED)`.
+49. **Unified Account Repository Listing (T49)**: `[DONE] (VERIFIED)`.
+50. **Deadlock-Free AI Generator Execution (T50)**: `[DONE] (VERIFIED)`.
+51. **Sanitized Project Scaffolding (T51)**: `[DONE] (VERIFIED)`.
+52. **Git Worktree & Submodule Support (T52)**: `[DONE] (VERIFIED)`.
