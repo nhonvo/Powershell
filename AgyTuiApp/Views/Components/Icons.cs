@@ -152,6 +152,9 @@ public static class Icons
         alias = alias.ToLowerInvariant();
         category = category.ToLowerInvariant();
 
+        var icon = GetAliasIcon(alias);
+        if (icon != null) return icon;
+
         if (category.Contains("ai agent") || category.Contains("ollama"))
         {
             var provider = alias.Split('-')[0];
@@ -165,6 +168,11 @@ public static class Icons
             return GetSubjectIcon(alias);
         }
 
+        return GetFileIcon(".txt");
+    }
+
+    private static string? GetAliasIcon(string alias)
+    {
         if (UseNerdFonts)
         {
             return alias switch
@@ -176,109 +184,91 @@ public static class Icons
                 "dbld" or "drestore" or "dpublish" or "dwatch" or "rebuild" => "⚙",
                 "dtst" => "󰙨",
                 "clean-build" => "󰃢",
-                "add-migration" => "󰆼",
-                "update-db" => "󰆼",
+                "add-migration" or "update-db" => "󰆼",
                 "scaffold" => "🏗",
                 "gs" or "gbr" or "glog" or "gpull" or "gpush" => "󰊢",
                 "gcmt" => "💬",
                 "git-undo" => "↩",
                 "nexus" or "repo-graph" or "nexus-stats" => "🕸",
-
                 "agyswitch" or "account-tree" => "👤",
                 "agyquota" or "quota-chart" or "live-dashboard" => "📊",
                 "autoswitch" => "⚡",
-
                 "docker-health" or "dkcl" or "dcup" or "dcdown" or "dimg" or "dlogs" or "dkrmac" or "dkstac" => "🐳",
                 "aws-local" or "aws-whoami" or "aws-s3" or "aws-sqs" or "aws-ssm" or "aws-sns" or "aws-dynamodb" or "aws-lambda" => "☁",
                 "db-tui" => "🗄",
-
                 "tailscale-status" => "🔒",
                 "ssh-qr" or "ssh-info" => "🔑",
                 "disk" => "💾",
                 "public-ip" => "🌐",
                 "kill-port" => "🚫",
-
                 "session" => "⏱",
                 "stats" or "progress" => "📈",
                 "goals" => "🎯",
                 "streak" => "🔥",
                 "due" or "weak" => "⭐",
-
                 "obsidian" or "obs-graph" => "💎",
                 "refresh" => "🔄",
                 "add-resource" => "📌",
-
                 "cc" or "help" => "🛸",
                 "mobile-setup" => "📱",
                 "theme" => "🎨",
                 "ui-mode" or "density" => "🖥",
                 "hotkeys" or "hotkey" => "⌨",
-
-                _ => GetFileIcon(".txt")
+                _ => null
             };
         }
-        else
+
+        return alias switch
         {
-            return alias switch
-            {
-                "proj" => "📁",
-                "ide" => "💻",
-                "ide-diff" => "🔀",
-                "ide-search" => "🔍",
-                "dbld" => "⚙",
-                "dtst" => "🧪",
-                "drestore" => "📦",
-                "dpublish" => "🚀",
-                "dwatch" => "👀",
-                "clean-build" => "🧹",
-                "add-migration" or "update-db" => "🗄",
-                "scaffold" => "🏗",
-                "gs" => "🌿",
-                "gbr" => "🌿",
-                "gcmt" => "💬",
-                "glog" => "📜",
-                "gpull" => "⬇",
-                "gpush" => "⬆",
-                "git-undo" => "↩",
-                "nexus" or "repo-graph" or "nexus-stats" => "🕸",
-
-                "agyswitch" or "account-tree" => "👤",
-                "agyquota" or "quota-chart" or "live-dashboard" => "📊",
-                "autoswitch" => "⚡",
-
-                "docker-health" or "dkcl" or "dcup" or "dcdown" => "🐳",
-                "dimg" => "🖼",
-                "dlogs" => "📄",
-                "aws-local" => "☁",
-                "aws-whoami" => "👤",
-                "db-tui" => "🗄",
-
-                "tailscale-status" => "🔒",
-                "ssh-qr" => "📱",
-                "ssh-info" => "🔑",
-                "disk" => "💾",
-                "public-ip" => "🌐",
-                "kill-port" => "🚫",
-
-                "session" => "⏱",
-                "stats" or "progress" => "📈",
-                "goals" => "🎯",
-                "streak" => "🔥",
-                "due" or "weak" => "⭐",
-
-                "obsidian" or "obs-graph" => "💎",
-                "refresh" => "🔄",
-                "add-resource" => "📌",
-
-                "cc" or "help" => "🛸",
-                "mobile-setup" => "📱",
-                "theme" => "🎨",
-                "ui-mode" or "density" => "🖥",
-                "hotkeys" or "hotkey" => "⌨",
-
-                _ => GetFileIcon(".txt")
-            };
-        }
+            "proj" => "📁",
+            "ide" => "💻",
+            "ide-diff" => "🔀",
+            "ide-search" => "🔍",
+            "dbld" => "⚙",
+            "dtst" => "🧪",
+            "drestore" => "📦",
+            "dpublish" => "🚀",
+            "dwatch" => "👀",
+            "clean-build" => "🧹",
+            "add-migration" or "update-db" => "🗄",
+            "scaffold" => "🏗",
+            "gs" or "gbr" => "🌿",
+            "gcmt" => "💬",
+            "glog" => "📜",
+            "gpull" => "⬇",
+            "gpush" => "⬆",
+            "git-undo" => "↩",
+            "nexus" or "repo-graph" or "nexus-stats" => "🕸",
+            "agyswitch" or "account-tree" => "👤",
+            "agyquota" or "quota-chart" or "live-dashboard" => "📊",
+            "autoswitch" => "⚡",
+            "docker-health" or "dkcl" or "dcup" or "dcdown" => "🐳",
+            "dimg" => "🖼",
+            "dlogs" => "📄",
+            "aws-local" => "☁",
+            "aws-whoami" => "👤",
+            "db-tui" => "🗄",
+            "tailscale-status" => "🔒",
+            "ssh-qr" => "📱",
+            "ssh-info" => "🔑",
+            "disk" => "💾",
+            "public-ip" => "🌐",
+            "kill-port" => "🚫",
+            "session" => "⏱",
+            "stats" or "progress" => "📈",
+            "goals" => "🎯",
+            "streak" => "🔥",
+            "due" or "weak" => "⭐",
+            "obsidian" or "obs-graph" => "💎",
+            "refresh" => "🔄",
+            "add-resource" => "📌",
+            "cc" or "help" => "🛸",
+            "mobile-setup" => "📱",
+            "theme" => "🎨",
+            "ui-mode" or "density" => "🖥",
+            "hotkeys" or "hotkey" => "⌨",
+            _ => null
+        };
     }
 
     public static string GetStatusIcon(string status)
