@@ -17,10 +17,10 @@ function tailscale { $global:tailscaleArgs = $args; return "100.115.92.12" }
 
 Describe "Core Profile Functions Validation" {
     BeforeAll {
-        $repoRoot = (Get-Item (Join-Path $PSScriptRoot "..\..\")).FullName
-        $dllPath = Join-Path $repoRoot "AgyTuiApp\dist\AgyTuiApp.dll"
+        $repoRoot = (Get-Item (Join-Path $PSScriptRoot "..\..\..\")).FullName
+        $dllPath = Join-Path $repoRoot "csapp\AgyTuiApp\dist\AgyTuiApp.dll"
         if (-not (Test-Path $dllPath)) {
-            $dllPath = Join-Path $repoRoot "AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+            $dllPath = Join-Path $repoRoot "csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
         }
         if (Test-Path $dllPath) {
             # Load dependency assemblies

@@ -1,4 +1,4 @@
-{
+﻿{
   "_Note_AiMode": "Terminal mode override: 'auto' (scans env), 'true' (force AI mode), or 'false' (force interactive TUI).",
   "AiMode": "auto",
   "_Note_VerboseStartup": "Set to true to show verbose load status messages during shell startup.",

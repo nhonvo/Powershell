@@ -2,9 +2,9 @@ $env:AI_MODE = 'true'
 Write-Host "Running PowerShell Profile Tests..." -ForegroundColor Cyan
 
 # Pre-load C# types assembly so the AST parser can resolve types during parsing
-$dllPath = Join-Path $PSScriptRoot "..\AgyTuiApp\dist\AgyTuiApp.dll"
+$dllPath = Join-Path $PSScriptRoot "..\..\csapp\AgyTuiApp\dist\AgyTuiApp.dll"
 if (-not (Test-Path $dllPath)) {
-    $dllPath = Join-Path $PSScriptRoot "..\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+    $dllPath = Join-Path $PSScriptRoot "..\..\csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
 }
 if (Test-Path $dllPath) {
     Get-ChildItem -Path (Split-Path $dllPath) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
@@ -14,7 +14,7 @@ if (Test-Path $dllPath) {
 }
 
 # 1. Check syntax of the consolidated profile file
-$profilePath = Join-Path $PSScriptRoot "..\Microsoft.PowerShell_profile.ps1"
+$profilePath = Join-Path $PSScriptRoot "..\..\Microsoft.PowerShell_profile.ps1"
 
 Write-Host "Parsing profile syntax via AST..." -ForegroundColor Cyan
 try {
@@ -46,7 +46,7 @@ foreach ($dep in $dependencies) {
 Write-Host "`nImporting Profile to verify function resolution..." -ForegroundColor Cyan
 try {
     $global:AgyProfileLoaded = $null
-    . (Join-Path $PSScriptRoot "..\Microsoft.PowerShell_profile.ps1")
+    . (Join-Path $PSScriptRoot "..\..\Microsoft.PowerShell_profile.ps1")
     Write-Host "  [OK] Profile loaded successfully with no execution errors." -ForegroundColor Green
 } catch {
     Write-Error "Failed to load profile: $_"
