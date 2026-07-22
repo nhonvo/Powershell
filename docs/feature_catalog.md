@@ -1,87 +1,109 @@
 # 🛸 Full Feature Catalog — PowerShell Profile & AgyTui Control Center
 
-Exhaustive, deeply nested specification of all features, sub-components, UI views, keyboard controls, hotkeys, combo chords, status widgets, and parameters across `Microsoft.PowerShell_profile.ps1` and `AgyTuiApp`.
+Exhaustive, deeply nested specification of all features, sub-components, UI views, execution mechanics, file storage locations, keyboard controls, hotkeys, combo chords, status widgets, and config flags across `Microsoft.PowerShell_profile.ps1` and `AgyTuiApp`.
 
 ---
 
 ### 📁 1. Workspace & Project Navigation Suite
 - **Workspace Navigator (`proj` / `p` / `prj` / `go`)**:
   - **Functionality**: Fuzzy and substring matching navigator that scans, filters, and jumps between registered development workspaces.
-  - **Sub-Features**:
-    - **Sub-Picker Live Search**: Incremental type-ahead search filtering workspaces by name or target directory path.
-    - **Single-Match Jump**: Auto-executes target jump if exactly one workspace matches the query string.
-    - **Interactive Target Selector**: Multi-choice selection menu rendered when multiple matching workspaces exist.
+  - **Execution Mechanics**:
+    - Queries `WorkspaceRegistry.GetWorkspaces()` backed by a 5-second `TtlCache`.
+    - Matches search queries against `WorkspaceEntry.Name` and `WorkspaceEntry.WorkspacePath` using case-insensitive substring search (or optional regex pattern matching).
+  - **Sub-Picker Live Search**:
+    - Maintains `_detailsSearchBuffer` capturing printable keystrokes in real time.
+    - Filters visible list entries dynamically on every keystroke without requiring `Enter`.
+  - **Single-Match Jump**:
+    - Bypasses target selection prompt and jumps immediately if exactly one registered workspace matches the query.
+  - **Interactive Target Selector**:
+    - Displays a scrollable menu of matching workspaces formatted with active git branch decorations `[branch-name]` and full filesystem paths.
   - **Shared Workspace Actions**:
-    - `📂 Change Directory on exit (cd)`: Writes target directory to `$AgySourceHome/selected_project.txt` for automatic shell `cd` on exit.
-    - `🚀 Launch New Terminal Session (wt / pwsh)`: Spawns an isolated Windows Terminal (`wt.exe`) or PowerShell window pointing to the project directory.
-    - `💻 Open in Terminal IDE (/ide)`: Immediately launches the built-in Terminal IDE in the target workspace.
-    - `📁 Open in Windows File Explorer (f)`: Launches native Windows File Explorer (`explorer.exe`) at the target workspace.
-    - `🔀 View Git Status & Diff (/ide-diff)`: Displays full-screen side-by-side or unified git diff viewer for the target workspace.
+    - `📂 Change Directory on exit (cd)`:
+      - **Mechanism**: Writes the resolved target directory path to `$AgySourceHome/selected_project.txt`.
+      - **Shell Hook Integration**: The PowerShell profile prompt hook (`[AgyAccountManager]::RegisterPromptHook`) checks for `selected_project.txt` upon TUI exit and executes `Set-Location <Path>` automatically.
+      - **Fallback Path Handling**: Defaults to `C:\Users\Public\.gemini\selected_project.txt` or `~/.gemini/selected_project.txt` if custom paths are unset.
+      - **Exit Trigger**: Closes the TUI session and returns control to the shell prompt initialized at the chosen workspace path.
+    - `🚀 Launch New Terminal Session (wt / pwsh)`:
+      - **Mechanism**: Calls `SystemHelper.OpenNewTerminalSession(path)`.
+      - **Execution**: Spawns `wt.exe -d "<path>"` via `Process.Start`. If `wt.exe` is not found, falls back to `pwsh.exe -NoExit -Command "Set-Location '<path>'"`.
+    - `💻 Open in Terminal IDE (/ide)`:
+      - **Mechanism**: Executes `TerminalIde.Open(path)` within the active process.
+      - **UI Transition**: Clears terminal screen and switches to the multi-pane file browser and code viewer.
+    - `📁 Open in Windows File Explorer (f)`:
+      - **Mechanism**: Executes `SystemHelper.OpenExplorer(path)`.
+      - **Execution**: Spawns `explorer.exe "<path>"` using native shell execution.
+    - `🔀 View Git Status & Diff (/ide-diff)`:
+      - **Mechanism**: Invokes `GitDiffViewer.ShowDiff(path)`.
+      - **UI Transition**: Opens full-screen colorized side-by-side / unified git diff viewer for modified files in the workspace.
   - **Auto-Discovery Engine**:
-    - Scans configured base paths: `Config.Current.ProjectsBaseDir`, `~/project`, `~/Documents`, `~/Desktop`.
-    - Detects project roots containing `.git` (directories, worktree files, and submodules), `*.csproj`, `*.sln`, or `package.json`.
-    - Skips hidden directories (`.*`) and `node_modules`.
-  - **Hotkeys & Controls**:
-    - `↑` / `↓` or `j` / `k`: Move row cursor.
-    - `PageUp` / `PageDown` or `d` / `u`: Scroll viewport by visible row page count (`maxRows`).
-    - `Home` / `End`: Jump to top or bottom of list.
-    - `/`: Activate live incremental search mode.
-    - `Enter` / `→`: Confirm selection and open workspace action menu.
-    - `Esc` / `q` / `←`: Clear search buffer or exit picker.
+    - **Configured Base Path Scanning**: Iterates over `Config.Current.ProjectsBaseDir`, `~/project`, `~/Documents`, and `~/Desktop`.
+    - **Project Marker Detection**: Scans subdirectories for `.git` (directories, worktrees, or submodule files), `*.csproj`, `*.sln`, or `package.json`.
+    - **Isolation & Performance**: Wraps per-directory evaluation in localized `try/catch` blocks so permission errors or broken symlinks do not halt discovery for sibling directories. Skips hidden folders (`.*`) and `node_modules`.
+    - **Persistence**: Auto-discovered entries are saved to `$AgySourceHome/antigravity/priority_workspaces.json`.
 
 - **Open File Explorer (`f`)**:
   - **Functionality**: Instantly opens Windows File Explorer targeting the active working directory or specified path parameter.
+  - **Execution**: Calls `SystemHelper.OpenExplorer(pwd)` using `ProcessStartInfo("explorer.exe", path)`.
 
 - **New Terminal Session (`open-term`)**:
-  - **Functionality**: Spawns a new Windows Terminal (`wt.exe -d <path>`) or fallback PowerShell process (`pwsh.exe`) in the active workspace directory.
+  - **Functionality**: Spawns a standalone Windows Terminal or PowerShell window at the current location.
+  - **Execution**: Invokes `SystemHelper.OpenNewTerminalSession` with process isolation, preventing child process blocking on the main shell session.
 
 - **Shell Directory Navigation Shortcuts**:
-  - `..` (`Set-LocationParent`): Navigate up one directory level (`cd ..`).
-  - `...` (`Set-LocationGrandParent`): Navigate up two directory levels (`cd ../..`).
+  - `..` (`Set-LocationParent`):
+    - **Mechanism**: Alias for `Set-Location ..`. Steps up one directory level.
+  - `...` (`Set-LocationGrandParent`):
+    - **Mechanism**: Alias for `Set-Location ../..`. Steps up two directory levels.
 
 ---
 
 ### 💻 2. Terminal IDE Suite
 - **Interactive Terminal IDE (`ide`)**:
-  - **Sub-Components & Sidebars**:
-    - **File Explorer Sidebar**: Left-hand directory tree navigator with file extension icons (Nerd Font & UTF-8 fallback support).
-    - **Code Viewer Panel**: Main reading pane with ANSI syntax highlighting, line numbering, and page bounds.
-    - **Symbol Navigator**: Scans `.cs`, `.ps1`, `.ts`, `.js`, and `.py` files for class, interface, method, and function declarations.
-  - **Hotkeys & Controls**:
-    - `↑` / `↓` or `j` / `k`: Navigate directory tree / scroll source code.
-    - `Enter`: Drill down into directory or open source file in viewer panel.
-    - `/`: Search for symbols or function definitions across current file.
+  - **Functionality**: In-terminal development environment with file navigation, file viewing, and symbol resolution.
+  - **Sub-Components**:
+    - **File Explorer Sidebar**:
+      - Renders directory tree with file extension icons (Nerd Font and UTF-8 fallbacks).
+      - Displays `.. (go up)` navigation option and parent directory context.
+    - **Code Viewer Panel**:
+      - Renders file contents with ANSI syntax highlighting.
+      - Includes line numbering and page bound indicators.
+    - **Symbol Navigator**:
+      - Scans source files (`.cs`, `.ps1`, `.ts`, `.js`, `.py`) for class, interface, method, and function declarations using regex pattern extractors.
+  - **Controls & Hotkeys**:
+    - `↑` / `↓` or `j` / `k`: Navigate directory tree or scroll source code view.
+    - `Enter`: Open directory or inspect source file in viewer panel.
+    - `/`: Search for symbols or function definitions.
     - `Esc` / `q`: Return to parent directory or exit IDE.
 
 - **Workspace Diff Viewer (`ide-diff` / `gd`)**:
   - **Functionality**: Interactive colorized diff viewer showing staged (`git diff --staged`) and unstaged changes across all workspace files.
-  - **Controls**: `↑`/`↓` line scrolling, `PageUp`/`PageDown` page jumps, `q`/`Esc` exit.
+  - **Execution**: Runs `git diff` via `ProcessRunner.Run` with `ArgumentList` safety. Renders additions in green (`+`) and deletions in red (`-`).
 
 - **Workspace Code Search (`ide-search`)**:
   - **Functionality**: Workspace-wide code and symbol search tool utilizing ripgrep / regex matching across source code files.
+  - **Execution**: Executes `rg` (ripgrep) or fallback directory traversal, listing file paths, line numbers, and code snippets.
 
 - **SQLite Database Browser (`db-tui`)**:
   - **Functionality**: Interactive schema inspector and data browser for `.db` / `.sqlite` files.
-  - **Sub-Features**:
-    - Schema table list and row count statistics.
-    - Interactive SQL query execution prompt with write-guard protection against `.shell` / `.load` injection.
-    - Backs up database before executing mutating SQL statements (`INSERT`, `UPDATE`, `DELETE`, `DROP`).
+  - **Security & Safety**:
+    - **Write-Guard Protection**: Intercepts queries starting with `.shell`, `.load`, or unsafe sqlite3 dot-commands to prevent process execution.
+    - **Auto-Backup**: Automatically creates `.bak` copy of database file prior to executing mutating SQL queries (`INSERT`, `UPDATE`, `DELETE`, `DROP`, `ALTER`).
+  - **UI Rendering**: Displays tables and query results formatted via Spectre `Table` grid.
 
 ---
 
 ### 🌿 3. Git & Repository Management
 - **Git Status Summary (`gs`)**:
-  - **Functionality**: Colorized short-format git status summary (`git status --short`) displaying untracked (`??`), modified (`M`), staged (`A`), and branch tracking details.
+  - **Functionality**: Colorized short-format git status summary (`git status --short`).
+  - **Output**: Categorizes modifications into untracked (`??` red), modified (`M` yellow), staged (`A` green), and current branch tracking state.
 
 - **Stage All Modifications (`ga`)**:
   - **Functionality**: Executes `git add .` to stage all modified, deleted, and untracked files in the current repository.
 
 - **Git Branch Manager (`gbr` / `gb`)**:
   - **Functionality**: Interactive branch selector sorted by recent commit date.
-  - **Sub-Features**:
-    - Displays current branch indicator `* (active)`.
-    - Supports git worktrees and git submodules by parsing `gitdir:` file references to locate `HEAD`.
-    - Instant checkout upon pressing `Enter`.
+  - **Worktree & Submodule Support**: Parses `.git` files containing `gitdir: <path>` references to resolve `HEAD` branch name accurately for worktrees and submodules.
+  - **Checkout Execution**: Runs `git checkout <branch>` instantly upon `Enter` selection.
 
 - **Conventional Commit Wizard (`gcmt`)**:
   - **Functionality**: Guided 4-step prompt sequence to format commits according to Conventional Commit specifications:
@@ -89,9 +111,10 @@ Exhaustive, deeply nested specification of all features, sub-components, UI view
     2. **Scope**: Optional module or component scope (e.g. `tui`, `auth`, `db`).
     3. **Description**: Concise summary line (5–72 characters).
     4. **Breaking Changes / Issues**: Notes breaking changes or closed issue IDs (`Closes #123`).
+  - **Execution**: Passes formatted message string to `git commit -m` via `ProcessRunner.Run` using `ArgumentList` array splatting.
 
 - **Git Commit Log Graph (`glog` / `glo` / `glg`)**:
-  - **Functionality**: Paged 50-commit branch graph viewer (`git log --oneline --graph --decorate`).
+  - **Functionality**: Paged 50-commit branch graph viewer (`git log --oneline --graph --decorate`). Renders branch points and tags in multi-color ANSI formatting.
 
 - **Git Sync Operations**:
   - `gf` (`Git Fetch`): Executes `git fetch` to pull remote references without altering local HEAD.
@@ -123,7 +146,7 @@ Exhaustive, deeply nested specification of all features, sub-components, UI view
   - **Functionality**: Recursively finds and deletes all `bin/` and `obj/` directories across the workspace.
 
 - **EF Core Migration Commands**:
-  - `add-migration` / `da`: Prompts for migration name and runs `dotnet ef migrations add <name>`.
+  - `add-migration` / `da`: Prompts for migration name and runs `dotnet ef migrations add <name>` using `ArgumentList`.
   - `update-db` / `du`: Runs `dotnet ef database update`.
 
 - **NuGet Package Publishing**:
@@ -337,35 +360,32 @@ Exhaustive, deeply nested specification of all features, sub-components, UI view
 
 ### ⌨️ 13. Comprehensive Keyboard Controls, Hotkeys & Chords
 
-#### A. TUI Tree Navigation (`flat-tree` / `three-pane`)
-- `↑` / `k`: Move row selection up by 1.
-- `↓` / `j`: Move row selection down by 1.
-- `PageUp`: Move row selection up by visible viewport row count (`maxRows`).
-- `PageDown`: Move row selection down by visible viewport row count (`maxRows`).
-- `Home`: Jump selection to the very top row.
-- `End`: Jump selection to the very bottom row.
-- `/` or `?`: Activate live search input mode.
-- `Enter` / `→`: Expand/collapse category or group, expand/collapse inline status widget, or run selected command.
-- `←`: Collapse current category, group, or widget node.
-- `Esc` / `q`: Clear active search filter or exit TUI back to shell.
-
-#### B. In-App Sub-Picker Hotkeys
-- `a`: Add new account (when in `agyswitch` mode).
-- `d`: Delete account (when in `agyswitch` mode).
-- `o`: Log out of account (when in `agyswitch` mode).
-
-#### C. Global Shell Keyboard Chords & Aliases
-- `Ctrl + Space`: Auto-complete suggestion chord.
-- `Ctrl + Shift + C`: Launch Control Center TUI (`Invoke-ControlCenter`).
-- `Ctrl + Shift + B`: Build project (`Invoke-DotNetBuild`).
-- `Ctrl + Shift + T`: Run test suite (`Invoke-DotNetTest`).
-- `F7`: View PowerShell command execution history (`Get-History`).
-
-#### D. Quick Domain Command Aliases
-- `cg`: Git status (`gs`).
-- `cdk`: Docker health (`docker-health`).
-- `cnav`: Workspace navigator (`proj`).
-- `cai`: AI agent menu (`claude`).
-- `csys`: System disk usage (`disk`).
-- `cnet`: Network status (`ssh-info`).
-- `cssh`: SSH connection info (`ssh-info`).
+- **TUI Tree Navigation**:
+  - `↑` / `k`: Selection up by 1.
+  - `↓` / `j`: Selection down by 1.
+  - `PageUp`: Scroll up by `maxRows`.
+  - `PageDown`: Scroll down by `maxRows`.
+  - `Home`: Jump to top row.
+  - `End`: Jump to bottom row.
+  - `/` or `?`: Activate live search filter mode.
+  - `Enter` / `→`: Expand/collapse node/widget, or execute command.
+  - `←`: Collapse current node or widget.
+  - `Esc` / `q`: Clear search filter or exit TUI back to shell.
+- **In-App Sub-Picker Hotkeys**:
+  - `a`: Add new account.
+  - `d`: Delete account.
+  - `o`: Log out of account.
+- **Global Shell Keyboard Chords**:
+  - `Ctrl + Space`: Auto-complete suggestion chord.
+  - `Ctrl + Shift + C`: Control Center TUI (`Invoke-ControlCenter`).
+  - `Ctrl + Shift + B`: Build project (`Invoke-DotNetBuild`).
+  - `Ctrl + Shift + T`: Run test suite (`Invoke-DotNetTest`).
+  - `F7`: PowerShell command history (`Get-History`).
+- **Quick Domain Command Aliases**:
+  - `cg`: Git status (`gs`).
+  - `cdk`: Docker health (`docker-health`).
+  - `cnav`: Workspace navigator (`proj`).
+  - `cai`: AI agent menu (`claude`).
+  - `csys`: System disk usage (`disk`).
+  - `cnet`: Network status (`ssh-info`).
+  - `cssh`: SSH connection info (`ssh-info`).
