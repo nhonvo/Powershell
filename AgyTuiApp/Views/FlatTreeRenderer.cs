@@ -683,8 +683,8 @@ public sealed class FlatTreeRenderer : MenuRendererBase
         else
         {
             int winHeight = Console.WindowHeight > 0 ? Console.WindowHeight : 30;
-            int bannerHeight = (winHeight < 28) ? 4 : 10;
-            int maxRows = Math.Max(2, winHeight - bannerHeight - 11);
+            int bannerHeight = (winHeight < 32) ? 4 : 11;
+            int maxRows = Math.Max(2, winHeight - bannerHeight - 8);
 
             int topRow = 0;
             if (selIdx >= maxRows)

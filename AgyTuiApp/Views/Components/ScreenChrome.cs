@@ -66,32 +66,6 @@ public static class ScreenChrome
 
     public static void WriteSmooth(Spectre.Console.Rendering.IRenderable renderable)
     {
-        try
-        {
-            var writer = new System.IO.StringWriter();
-            var console = AnsiConsole.Create(new AnsiConsoleSettings
-            {
-                Ansi = AnsiSupport.Yes,
-                ColorSystem = ColorSystemSupport.TrueColor,
-                Out = new AnsiConsoleOutput(writer)
-            });
-            try
-            {
-                console.Profile.Width = Math.Max(40, Console.WindowWidth);
-                console.Profile.Height = Math.Max(10, Console.WindowHeight);
-            }
-            catch { }
-
-            console.Write(renderable);
-            var str = writer.ToString();
-            if (!string.IsNullOrEmpty(str))
-            {
-                WriteSmooth(str);
-                return;
-            }
-        }
-        catch { }
-
         try { AnsiConsole.Write(renderable); } catch { }
     }
 
@@ -172,7 +146,7 @@ public static class ScreenChrome
 
         var titleIcon = Icons.IsUtf8Supported ? "🛸" : "[AGY]";
 
-        if (winHeight > 0 && winHeight < 28)
+        if (winHeight > 0 && winHeight < 32)
         {
             MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
             var accText = $"[dim]Account:[/] [green bold]{displayAcc.EscapeMarkup()}[/]";
