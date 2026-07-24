@@ -39,6 +39,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
         var searching = false;
         var searchBuffer = "";
         var lastVisibleRowsCount = 0;
+        var doubleSlashNavigated = false;
 
         while (true)
         {
@@ -178,7 +179,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
 
             ScreenChrome.RenderFrame(() =>
             {
-                RenderTree(visibleRows, selectionIndex, searching, searchBuffer);
+                RenderTree(visibleRows, selectionIndex, searching, searchBuffer, doubleSlashNavigated);
             }, forceClear: forceClear);
 
             var key = Console.ReadKey(true);
@@ -198,12 +199,14 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                 {
                     searching = false;
                     selectionIndex = Math.Min(visibleRows.Count - 1, selectionIndex + 1);
+                    doubleSlashNavigated = true;
                     continue;
                 }
                 else if (key.Key == ConsoleKey.UpArrow)
                 {
                     searching = false;
                     selectionIndex = Math.Max(0, selectionIndex - 1);
+                    doubleSlashNavigated = true;
                     continue;
                 }
                 else if (key.Key == ConsoleKey.PageDown)
@@ -211,6 +214,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     searching = false;
                     int pageStep = ScrollableListView.GetPageStep(Math.Max(3, Console.WindowHeight - 19));
                     selectionIndex = Math.Min(visibleRows.Count - 1, selectionIndex + pageStep);
+                    doubleSlashNavigated = true;
                     continue;
                 }
                 else if (key.Key == ConsoleKey.PageUp)
@@ -218,10 +222,12 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     searching = false;
                     int pageStep = ScrollableListView.GetPageStep(Math.Max(3, Console.WindowHeight - 19));
                     selectionIndex = Math.Max(0, selectionIndex - pageStep);
+                    doubleSlashNavigated = true;
                     continue;
                 }
                 else if (key.Key == ConsoleKey.Backspace || (key.Modifiers.HasFlag(ConsoleModifiers.Control) && key.Key == ConsoleKey.W))
                 {
+                    doubleSlashNavigated = false;
                     bool isCtrlWordDelete = (key.Modifiers.HasFlag(ConsoleModifiers.Control)) ||
                                             key.KeyChar == '\x17' || key.KeyChar == '\x7f' || key.KeyChar == '\x08';
                     if (isCtrlWordDelete && key.Key == ConsoleKey.Backspace)
@@ -245,6 +251,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                 else if (key.KeyChar >= 32 && key.KeyChar <= 126)
                 {
                     searchBuffer += key.KeyChar;
+                    doubleSlashNavigated = false;
                 }
                 selectionIndex = 0;
                 continue;
@@ -260,6 +267,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                      {
                          selectionIndex = (selectionIndex - 1 + visibleRows.Count) % visibleRows.Count;
                      }
+                     doubleSlashNavigated = true;
                      break;
                  case ConsoleKey.DownArrow:
                  case ConsoleKey.J:
@@ -267,22 +275,28 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                      {
                          selectionIndex = (selectionIndex + 1) % visibleRows.Count;
                      }
+                     doubleSlashNavigated = true;
                      break;
                 case ConsoleKey.PageUp:
                     selectionIndex = Math.Max(0, selectionIndex - ScrollableListView.GetPageStep(Math.Max(3, Console.WindowHeight - 19)));
+                    doubleSlashNavigated = true;
                     break;
                 case ConsoleKey.PageDown:
                     selectionIndex = Math.Min(visibleRows.Count - 1, selectionIndex + ScrollableListView.GetPageStep(Math.Max(3, Console.WindowHeight - 19)));
+                    doubleSlashNavigated = true;
                     break;
                 case ConsoleKey.Home:
                     selectionIndex = 0;
+                    doubleSlashNavigated = true;
                     break;
                 case ConsoleKey.End:
                     selectionIndex = Math.Max(0, visibleRows.Count - 1);
+                    doubleSlashNavigated = true;
                     break;
                 case ConsoleKey.Divide:
                 case ConsoleKey.Oem2:
                     searching = true;
+                    doubleSlashNavigated = false;
                     break;
                 case ConsoleKey.Enter:
                 case ConsoleKey.RightArrow:
@@ -377,13 +391,14 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                         searching = true;
                         searchBuffer = key.KeyChar.ToString();
                         selectionIndex = 0;
+                        doubleSlashNavigated = false;
                     }
                     break;
             }
         }
     }
 
-    private void RenderTree(List<VisibleRow> rows, int selIdx, bool searching, string searchBuffer)
+    private void RenderTree(List<VisibleRow> rows, int selIdx, bool searching, string searchBuffer, bool doubleSlashNavigated)
     {
         var grid = new Grid();
         grid.AddColumn(new GridColumn().NoWrap());
@@ -394,7 +409,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
         try { winHeight = Console.WindowHeight; } catch { }
         int bannerHeight = (winHeight < 45) ? 3 : 10;
         int maxRows = Math.Max(3, winHeight - bannerHeight - 9);
-        if (searching && !string.IsNullOrEmpty(searchBuffer) && searchBuffer.StartsWith("//"))
+        if (searching && !string.IsNullOrEmpty(searchBuffer) && searchBuffer.StartsWith("//") && !doubleSlashNavigated)
         {
             maxRows = 9999;
         }

@@ -71,7 +71,7 @@ public static class TerminalIde
                 var sidebarLines = new List<string>();
                 int termH = 30;
                 try { termH = Console.WindowHeight; } catch { }
-                int maxSidebarRows = Math.Max(5, termH - 8);
+                int maxSidebarRows = Math.Max(5, termH - 9);
                 var (sTop, sEnd) = ScrollableListView.ComputeViewport(files.Count, sidebarSel, maxSidebarRows);
 
                 for (int i = sTop; i < sEnd; i++)
@@ -137,10 +137,11 @@ public static class TerminalIde
                 var allLines = File.ReadAllLines(currentFile);
                 int termH = 30;
                 try { termH = Console.WindowHeight; } catch { }
-                int maxEditorRows = Math.Max(5, termH - 8);
+                int maxEditorRows = Math.Max(5, termH - 9);
 
+                int maxScroll = Math.Max(0, allLines.Length - maxEditorRows);
                 if (editorScrollOffset < 0) editorScrollOffset = 0;
-                if (editorScrollOffset >= allLines.Length) editorScrollOffset = Math.Max(0, allLines.Length - 1);
+                if (editorScrollOffset > maxScroll) editorScrollOffset = maxScroll;
 
                 var displayLines = allLines.Skip(editorScrollOffset).Take(maxEditorRows).ToList();
                 var sb = new StringBuilder();
