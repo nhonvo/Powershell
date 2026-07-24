@@ -184,7 +184,6 @@ public sealed class FlatTreeRenderer : MenuRendererBase
 
             ScreenChrome.RenderFrame(() =>
             {
-                ScreenChrome.RenderBanner(forceClear: false, footerHint: "[dim] [[↑/↓ j/k]] Navigate Tree | [[/]] Filter | [[Enter/→]] Select | [[Esc/q]] Exit[/]");
                 if (detailsActive)
                 {
                     RenderSubPageSelection(detailsMode, detailsSel);

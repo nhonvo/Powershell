@@ -51,7 +51,6 @@ public sealed class ThreePaneRenderer : MenuRendererBase
 
             ScreenChrome.RenderFrame(() =>
             {
-                ScreenChrome.RenderBanner(footerHint: "[dim] [[Tab/→]] Navigate Panes | [[←/Esc]] Go Back | [[Enter]] Select & Run[/]");
                 RenderPanes(categories, leftSel, visibleItems, midSel, midActive, detailsActive, detailsSel, detailsMode);
             });
 
