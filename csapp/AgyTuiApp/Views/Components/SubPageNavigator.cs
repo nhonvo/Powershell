@@ -727,7 +727,7 @@ public static class SubPageNavigator
                         var nameMarkup = isSelected ? $"[bold green]{ws.Name.EscapeMarkup()}[/]" : $"[bold white]{ws.Name.EscapeMarkup()}[/]";
                         var pathMarkup = $"[dim]· {ws.WorkspacePath.EscapeMarkup()}[/]";
 
-                        var expandSign = (item.WorkspaceIndex == _expandedWorkspaceIndex) ? "[-] " : "[+] ";
+                        var expandSign = (item.WorkspaceIndex == _expandedWorkspaceIndex) ? "[[-]] " : "[[+]] ";
 
                         grid.AddRow(new Markup($"{prefix}{expandSign}📁 {status}{nameMarkup}{branchSuffix} {pathMarkup}"));
                     }
