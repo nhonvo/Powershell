@@ -42,74 +42,6 @@ namespace AgyTui;
 using AgyTui.Components;
 
 
-public static class AgyHeader
-{
-    public static void ShowSplash()
-    {
-        AnsiConsole.Clear();
-        var splashW = Math.Min(65, Math.Max(50, Console.WindowWidth - 2));
-        var sep = new string('=', splashW);
-        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
-        AnsiConsole.Write(new FigletText("AGY TUI").Centered().Color(Color.Green));
-        AnsiConsole.Write(new Rule("[bold green]🛸 Powershell Profile Control Center v3.0 🛸[/]").RuleStyle("grey"));
-        AnsiConsole.MarkupLine($"[cyan]{sep.EscapeMarkup()}[/]");
-        AnsiConsole.WriteLine();
-        var active = AgyAccountCore.GetActiveAccount();
-        var stats = AgyAccountCore.GetAccountStats(active);
-        var quota = AgyAccountCore.CalculateRollingQuotas(active);
-        var grid = new Grid();
-        grid.AddColumn(new GridColumn().PadLeft(4));
-        grid.AddRow($"[cyan]Active account[/] : [green bold]{active.EscapeMarkup()}[/]");
-        grid.AddRow($"[cyan]Login status[/] : {(stats.TokenStatus == "Logged In" ? "[green]● Logged In[/]" : "[red]○ Not Logged In[/]")}");
-        grid.AddRow($"[cyan]Weekly quota[/] : {AgyAccountCore.GetProgressBar(quota.RemainingWeekly).EscapeMarkup()}");
-        AnsiConsole.Write(grid);
-        AnsiConsole.WriteLine();
-
-        try
-        {
-            var w = WordOfDay.Pick();
-            if (w != null) WordOfDay.Render(w);
-        }
-        catch
-        {
-        }
-        try
-        {
-            StudyStreak.ShowPanel();
-        }
-        catch
-        {
-        }
-        AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine("[dim] Press Enter to continue[/]");
-        Console.ReadKey(true);
-        AnsiConsole.Clear();
-
-    }
-
-}
-public static class CcNavigator
-{
-    public static void Run()
-    {
-        Config.Load();
-        try { Console.Write("\x1b[?1049h\x1b[H"); } catch { }
-        try
-        {
-            var root = MenuNodeBuilder.BuildTree();
-            IMenuRenderer renderer = string.Equals(Config.Current.UiMode, "flat-tree", StringComparison.OrdinalIgnoreCase)
-                ? new FlatTreeRenderer()
-                : new ThreePaneRenderer();
-            renderer.Run(root);
-        }
-        finally
-        {
-            try { Console.Write("\x1b[?1049l"); } catch { }
-        }
-    }
-}
-
-
 public static class Program
 {
     public static void Main(string[] args)
@@ -165,63 +97,7 @@ public static class Program
         return topics[index].Split(' ')[0];
     }
 
-    public static void ShowHotkeysGuide()
-    {
-        var table = new Table().Border(TableBorder.Rounded).BorderColor(Color.Cyan1);
-        table.Title("[bold cyan]🛸 PowerShell Profile Hotkeys Guide[/]");
-        table.AddColumn(new TableColumn("[bold yellow]Domain / Category[/]"));
-        table.AddColumn(new TableColumn("[bold green]Shortcut[/]"));
-        table.AddColumn(new TableColumn("[bold]Command & Description[/]"));
 
-        table.AddRow("📁 Workspace & Dev", "[bold green]cnav[/]", "/proj — Navigate registered workspace");
-        table.AddRow("", "[green]ide[/]", "/ide — Launch terminal IDE session");
-        table.AddRow("", "[green]ide-diff[/]", "/ide-diff — Git diff viewer");
-        table.AddRow("", "[green]dbld[/]", "/dbld — [[.NET]] Build project");
-        table.AddRow("", "[green]dtst[/]", "/dtst — [[.NET]] Test project");
-
-        table.AddRow("🌿 Git Operations", "[bold green]cg[/]", "/gs — Git status summary & conventional commit");
-        table.AddRow("", "[green]gcmt[/]", "/gcmt — Conventional commit wizard");
-        table.AddRow("", "[green]git-undo[/]", "/git-undo — Soft-reset last local commit");
-        table.AddRow("", "[green]nexus[/]", "/nexus — Git Nexus multi-repo dashboard");
-
-        table.AddRow("🐳 Docker & DB", "[bold green]cdk[/]", "/dkcl — Docker cleanup TUI dashboard");
-        table.AddRow("", "[green]dcup[/]", "/dcup — docker compose up -d");
-        table.AddRow("", "[green]dcdown[/]", "/dcdown — docker compose down");
-        table.AddRow("", "[green]db-tui[/]", "/db-tui — SQLite database browser");
-
-        table.AddRow("☁ AWS & Cloud", "[bold green]caws[/]", "/aws-local — LocalStack sandbox diagnostics");
-
-        table.AddRow("🌐 System & Network", "[bold green]cnet[/]", "/public-ip — Public IP address & network status");
-        table.AddRow("", "[bold green]csys[/]", "/disk — Disk space & system health");
-        table.AddRow("", "[bold green]cssh[/]", "/ssh-info — SSH connection info & QR generator");
-        table.AddRow("", "[green]kill-port[/]", "/kill-port — Kill process by port number");
-
-        table.AddRow("🤖 AI Assistants", "[bold green]cai[/]", "/claude — Launch Claude Code CLI");
-        table.AddRow("", "[green]codex[/]", "/codex — Launch Codex CLI");
-        table.AddRow("", "[green]openclaw[/]", "/openclaw — Launch OpenClaw via Ollama");
-        table.AddRow("", "[green]ollama-status[/]", "/ollama-status — Check local Ollama daemon");
-
-        table.AddRow("👤 AGY Accounts", "[green]agyswitch[/]", "/agyswitch — Switch active account context");
-        table.AddRow("", "[green]agyquota[/]", "/agyquota — View quota usage across accounts");
-        table.AddRow("", "[green]autoswitch[/]", "/autoswitch — Toggle automatic workspace account switch");
-
-        table.AddRow("📚 Learn & Study", "[green]learn[/]", "/learn — Interactive learning topic browser");
-        table.AddRow("", "[green]vocab[/]", "/vocab — English vocabulary drill");
-        table.AddRow("", "[green]kana[/]", "/kana — Japanese Kana quiz");
-        table.AddRow("", "[green]kanji[/]", "/kanji — Kanji lookup & stroke detail");
-        table.AddRow("", "[green]algo[/]", "/algo — Algorithm visualizer");
-
-        table.AddRow("📈 Track & Progress", "[green]session[/]", "/session — Start Pomodoro study session");
-        table.AddRow("", "[green]stats[/]", "/stats — Weekly study statistics");
-        table.AddRow("", "[green]streak[/]", "/streak — Study streak display");
-
-        table.AddRow("🎨 Theme & Settings", "[green]cc[/]", "/cc — Open Command Palette");
-        table.AddRow("", "[green]theme[/]", "/theme — Select Shell theme");
-        table.AddRow("", "[green]ui-mode[/]", "/ui-mode — Toggle three-pane / flat-tree layout");
-        table.AddRow("", "[green]mobile-setup[/]", "/mobile-setup — Toggle mobile setup mode");
-
-        AnsiConsole.Write(table);
-    }
 
     public static void RunCommand(string alias, string[]? args = null)
     {
@@ -738,7 +614,7 @@ public static class Program
                     break;
                 case "hotkeys":
                 case "hotkey":
-                    ShowHotkeysGuide();
+                    HotkeysGuide.Show();
                     break;
                 case "learn":
                     GuidedLearnFlow.Run();
