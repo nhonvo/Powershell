@@ -21,9 +21,6 @@ public sealed class ThreePaneRenderer : MenuRendererBase
         var leftSel = 0;
         var midSel = 0;
         var midActive = false;
-        var detailsActive = false;
-        var detailsMode = "";
-        var detailsSel = 0;
 
         try { Console.CursorVisible = false; } catch { }
 
@@ -51,203 +48,11 @@ public sealed class ThreePaneRenderer : MenuRendererBase
 
             ScreenChrome.RenderFrame(() =>
             {
-                RenderPanes(categories, leftSel, visibleItems, midSel, midActive, detailsActive, detailsSel, detailsMode);
+                RenderPanes(categories, leftSel, visibleItems, midSel, midActive);
             });
 
             var key = Console.ReadKey(true);
 
-            if (detailsActive)
-            {
-                int itemsCount = 0;
-                if (detailsMode == "agyswitch")
-                {
-                    itemsCount = AgyAccountCore.GetAccounts().Length;
-                }
-                else if (detailsMode == "theme")
-                {
-                    itemsCount = GetThemeNames().Length;
-                }
-                else if (detailsMode == "learn" || detailsMode == "session" || detailsMode == "weak")
-                {
-                    itemsCount = 6;
-                }
-                else if (detailsMode == "proj")
-                {
-                    itemsCount = WorkspaceRegistry.GetWorkspaces().Length;
-                }
-
-                if (itemsCount == 0)
-                {
-                    detailsActive = false;
-                    continue;
-                }
-
-                switch (key.Key)
-                {
-                    case ConsoleKey.UpArrow:
-                    case ConsoleKey.K:
-                        detailsSel = (detailsSel - 1 + itemsCount) % itemsCount;
-                        break;
-                    case ConsoleKey.DownArrow:
-                    case ConsoleKey.J:
-                        detailsSel = (detailsSel + 1) % itemsCount;
-                        break;
-                    case ConsoleKey.Enter:
-                        if (detailsSel >= 0 && detailsSel < itemsCount)
-                        {
-                            if (detailsMode == "agyswitch")
-                            {
-                                var accs = AgyAccountCore.GetAccounts();
-                                var targetAcc = accs[detailsSel];
-                                Console.CursorVisible = true;
-                                AgyAccountCore.SetActiveAccount(targetAcc, false);
-                                Console.CursorVisible = false;
-                            }
-                            else if (detailsMode == "theme")
-                            {
-                                var themeNames = GetThemeNames();
-                                var selectedTheme = themeNames[detailsSel];
-                                var themesPath = Environment.GetEnvironmentVariable("POSH_THEMES_PATH");
-                                if (string.IsNullOrEmpty(themesPath))
-                                {
-                                    themesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "asset", "powershell-themes");
-                                    if (!Directory.Exists(themesPath))
-                                    {
-                                        themesPath = Path.Combine(Directory.GetCurrentDirectory(), "asset", "powershell-themes");
-                                    }
-                                }
-                                var configPath = Path.Combine(themesPath, "config.json");
-                                try
-                                {
-                                    File.WriteAllText(configPath, JsonSerializer.Serialize(new { active_theme = selectedTheme, enable_mobile = selectedTheme.EndsWith("-mobile") }));
-                                }
-                                catch { }
-                                Environment.SetEnvironmentVariable("THEME", selectedTheme);
-                                var themePath = Path.Combine(themesPath, $"{selectedTheme}.omp.json");
-                                var selectedThemeFile = Path.Combine(AgyAccountCore.AgySourceHome, "selected_theme.txt");
-                                File.WriteAllText(selectedThemeFile, themePath);
-                            }
-                            else if (detailsMode == "learn" || detailsMode == "session" || detailsMode == "weak")
-                            {
-                                var topics = new[] { "jp", "en", "cs", "dsa", "interview", "[Type Custom Topic...]" };
-                                var selectedTopic = topics[detailsSel];
-                                if (selectedTopic == "[Type Custom Topic...]")
-                                {
-                                    Console.CursorVisible = true;
-                                    selectedTopic = AnsiConsole.Ask<string>("Enter custom topic name:").Trim();
-                                    Console.CursorVisible = false;
-                                }
-                                if (!string.IsNullOrEmpty(selectedTopic))
-                                {
-                                    Console.CursorVisible = true;
-                                    if (detailsMode == "learn") LearnRouter.StartLearning(selectedTopic);
-                                    else if (detailsMode == "session") StudySession.Run(selectedTopic);
-                                    else if (detailsMode == "weak") WeakItemsQueue.ShowPreSessionReview(selectedTopic);
-                                    Console.CursorVisible = false;
-                                }
-                            }
-                            else if (detailsMode == "proj")
-                            {
-                                var workspaces = WorkspaceRegistry.GetWorkspaces();
-                                var selectedProj = workspaces[detailsSel].WorkspacePath;
-                                var selectedProjFile = Path.Combine(AgyAccountCore.AgySourceHome, "selected_project.txt");
-                                File.WriteAllText(selectedProjFile, selectedProj);
-                                AnsiConsole.MarkupLine($"[green][[Workspace]] Selected workspace '{workspaces[detailsSel].Name}'. Switch will apply on exit.[/]");
-                                Thread.Sleep(1000);
-                            }
-                            detailsActive = false;
-                        }
-                        break;
-                    case ConsoleKey.A:
-                        if (detailsMode == "agyswitch")
-                        {
-                            Console.CursorVisible = true;
-                            AnsiConsole.Clear();
-                            var newName = AnsiConsole.Ask<string>("Enter new account name:").Trim();
-                            if (!string.IsNullOrEmpty(newName))
-                            {
-                                try
-                                {
-                                    AgyAccountCore.AddAccount(newName);
-                                    SpectrePanel.Success($"Account '{newName}' created successfully!");
-                                    Thread.Sleep(1500);
-                                }
-                                catch (Exception ex)
-                                {
-                                    SpectrePanel.Error($"Failed to create account: {ex.Message}");
-                                    Thread.Sleep(2000);
-                                }
-                            }
-                            Console.CursorVisible = false;
-                            detailsSel = 0;
-                        }
-                        break;
-                    case ConsoleKey.D:
-                        if (detailsMode == "agyswitch")
-                        {
-                            var accs = AgyAccountCore.GetAccounts();
-                            if (detailsSel >= 0 && detailsSel < accs.Length)
-                            {
-                                var targetAcc = accs[detailsSel];
-                                var activeAcc = AgyAccountCore.GetActiveAccount();
-                                if (string.Equals(targetAcc, activeAcc, StringComparison.OrdinalIgnoreCase))
-                                {
-                                    Console.CursorVisible = true;
-                                    SpectrePanel.Error($"Cannot delete '{targetAcc}' because it is the current active account.");
-                                    Thread.Sleep(1500);
-                                    Console.CursorVisible = false;
-                                    break;
-                                }
-                                Console.CursorVisible = true;
-                                AnsiConsole.Clear();
-                                var confirm = AnsiConsole.Confirm($"Are you sure you want to delete account '{targetAcc}'?");
-                                if (confirm)
-                                {
-                                    try
-                                    {
-                                        AgyAccountCore.DeleteAccount(targetAcc);
-                                        SpectrePanel.Success($"Account '{targetAcc}' deleted successfully!");
-                                        Thread.Sleep(1500);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        SpectrePanel.Error($"Failed to delete account: {ex.Message}");
-                                        Thread.Sleep(2000);
-                                    }
-                                }
-                                Console.CursorVisible = false;
-                                detailsSel = 0;
-                            }
-                        }
-                        break;
-                    case ConsoleKey.O:
-                        if (detailsMode == "agyswitch")
-                        {
-                            var accs = AgyAccountCore.GetAccounts();
-                            if (detailsSel >= 0 && detailsSel < accs.Length)
-                            {
-                                var targetAcc = accs[detailsSel];
-                                Console.CursorVisible = true;
-                                AnsiConsole.Clear();
-                                var confirm = AnsiConsole.Confirm($"Are you sure you want to log out of '{targetAcc}'?");
-                                if (confirm)
-                                {
-                                    AgyAccountCore.LogoutAccount(targetAcc);
-                                    SpectrePanel.Success($"Logged out of '{targetAcc}' successfully!");
-                                    Thread.Sleep(1500);
-                                }
-                                Console.CursorVisible = false;
-                            }
-                        }
-                        break;
-                    case ConsoleKey.LeftArrow:
-                    case ConsoleKey.Escape:
-                    case ConsoleKey.Q:
-                        detailsActive = false;
-                        break;
-                }
-                continue;
-            }
 
             if (!midActive)
             {
@@ -318,32 +123,14 @@ public sealed class ThreePaneRenderer : MenuRendererBase
                             else if (item.Command != null)
                             {
                                 var alias = item.Command.Alias;
-                                if (string.Equals(alias, "agyswitch", StringComparison.OrdinalIgnoreCase))
+                                if (string.Equals(alias, "agyswitch", StringComparison.OrdinalIgnoreCase) ||
+                                    string.Equals(alias, "theme", StringComparison.OrdinalIgnoreCase) ||
+                                    string.Equals(alias, "learn", StringComparison.OrdinalIgnoreCase) ||
+                                    string.Equals(alias, "session", StringComparison.OrdinalIgnoreCase) ||
+                                    string.Equals(alias, "weak", StringComparison.OrdinalIgnoreCase) ||
+                                    string.Equals(alias, "proj", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    detailsActive = true;
-                                    detailsMode = "agyswitch";
-                                    var accs = AgyAccountCore.GetAccounts();
-                                    var activeAcc = AgyAccountCore.GetActiveAccount();
-                                    detailsSel = Array.IndexOf(accs, activeAcc);
-                                    if (detailsSel < 0) detailsSel = 0;
-                                }
-                                else if (string.Equals(alias, "theme", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    detailsActive = true;
-                                    detailsMode = "theme";
-                                    var themeFiles = GetThemeNames();
-                                    var currentTheme = Environment.GetEnvironmentVariable("THEME");
-                                    detailsSel = Array.IndexOf(themeFiles, currentTheme);
-                                    if (detailsSel < 0) detailsSel = 0;
-                                }
-                                else if (string.Equals(alias, "learn", StringComparison.OrdinalIgnoreCase) ||
-                                         string.Equals(alias, "session", StringComparison.OrdinalIgnoreCase) ||
-                                         string.Equals(alias, "weak", StringComparison.OrdinalIgnoreCase) ||
-                                         string.Equals(alias, "proj", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    detailsActive = true;
-                                    detailsMode = alias.ToLowerInvariant();
-                                    detailsSel = 0;
+                                    SubPageNavigator.Run(alias);
                                 }
                                 else if (StatusWidgetRegistry.GetByAlias(alias) != null)
                                 {
@@ -379,10 +166,7 @@ public sealed class ThreePaneRenderer : MenuRendererBase
         int leftSel,
         List<MenuNode> visibleItems,
         int midSel,
-        bool midActive,
-        bool detailsActive,
-        int detailsSel,
-        string detailsMode)
+        bool midActive)
     {
         var isCompact = Config.IsMobileContext();
         var leftSb = new StringBuilder();
@@ -441,100 +225,8 @@ public sealed class ThreePaneRenderer : MenuRendererBase
             {
                 detailsContent = widget.Render();
             }
-            else if (string.Equals(alias, "agyswitch", StringComparison.OrdinalIgnoreCase) && detailsActive && detailsMode == "agyswitch")
-            {
-                var rightSb = new StringBuilder();
-                rightSb.AppendLine($"[bold white]{display.EscapeMarkup()}[/]");
-                rightSb.AppendLine($"[dim]alias:[/] [yellow]{alias.EscapeMarkup()}[/]");
-                rightSb.AppendLine();
-                rightSb.AppendLine("[cyan bold]Select Account to Switch:[/]");
-                rightSb.AppendLine();
-                var accs = AgyAccountCore.GetAccounts();
-                var activeAcc = AgyAccountCore.GetActiveAccount();
-                for (var i = 0; i < accs.Length; i++)
-                {
-                    var isSelected = (i == detailsSel);
-                    var isActive = (accs[i] == activeAcc);
-                    var prefix = isSelected ? "[green bold]> [/]" : "  ";
-                    var suffix = isActive ? " [green](Active)[/]" : "";
-                    var displayName = accs[i];
-                    if (string.Equals(accs[i], "default", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var email = AgyAccountCore.GetAccountEmail("default");
-                        if (!string.IsNullOrEmpty(email)) displayName = $"default ({email})";
-                    }
-                    var stats = AgyAccountCore.GetAccountStats(accs[i]);
-                    var loginStatus = stats.TokenStatus == "Logged In" ? "[green]✔[/]" : "[red]✘[/]";
-                    rightSb.AppendLine($"{prefix}{displayName.EscapeMarkup()} [dim]({loginStatus})[/]{suffix}");
-                }
-                rightSb.AppendLine();
-                rightSb.AppendLine("[dim]↑/↓ Navigate  ·  Enter Select  ·  Esc Cancel[/]");
-                rightSb.AppendLine("[dim]a Create Account  ·  d Delete  ·  o Log Out[/]");
-                detailsContent = new Markup(rightSb.ToString());
-            }
-            else if (string.Equals(alias, "theme", StringComparison.OrdinalIgnoreCase) && detailsActive && detailsMode == "theme")
-            {
-                var rightSb = new StringBuilder();
-                rightSb.AppendLine($"[bold white]{display.EscapeMarkup()}[/]");
-                rightSb.AppendLine($"[dim]alias:[/] [yellow]{alias.EscapeMarkup()}[/]");
-                rightSb.AppendLine();
-                rightSb.AppendLine("[cyan bold]Select Oh My Posh Theme (Color segment preview):[/]");
-                rightSb.AppendLine();
-                var themeNames = GetThemeNames();
-                var currentTheme = Environment.GetEnvironmentVariable("THEME");
-                for (var i = 0; i < themeNames.Length; i++)
-                {
-                    var isSelected = (i == detailsSel);
-                    var isActive = (themeNames[i] == currentTheme);
-                    var prefix = isSelected ? "[green bold]> [/]" : "  ";
-                    var suffix = isActive ? " [green](Active)[/]" : "";
-                    rightSb.AppendLine($"{prefix}{themeNames[i].EscapeMarkup()}{suffix}");
-                }
-                rightSb.AppendLine();
-                rightSb.AppendLine("[dim]↑/↓ Navigate  ·  Enter Select  ·  Esc Cancel[/]");
-                detailsContent = new Markup(rightSb.ToString());
-            }
-            else if ((string.Equals(alias, "learn", StringComparison.OrdinalIgnoreCase) ||
-                      string.Equals(alias, "session", StringComparison.OrdinalIgnoreCase) ||
-                      string.Equals(alias, "weak", StringComparison.OrdinalIgnoreCase)) && detailsActive && detailsMode == alias.ToLowerInvariant())
-            {
-                var rightSb = new StringBuilder();
-                rightSb.AppendLine($"[bold white]{display.EscapeMarkup()}[/]");
-                rightSb.AppendLine($"[dim]alias:[/] [yellow]{alias.EscapeMarkup()}[/]");
-                rightSb.AppendLine();
-                rightSb.AppendLine($"[cyan bold]Select Topic for {alias.EscapeMarkup()}:[/]");
-                rightSb.AppendLine();
-                var topics = new[] { "jp (Japanese / Language)", "en (English Vocabulary)", "cs (C# Quiz)", "dsa (Data Structures & Algorithms)", "interview (Question Bank & STAR)", "[Type Custom Topic...]" };
-                for (var i = 0; i < topics.Length; i++)
-                {
-                    var isSelected = (i == detailsSel);
-                    var prefix = isSelected ? "[green bold]> [/]" : "  ";
-                    rightSb.AppendLine($"{prefix}{topics[i].EscapeMarkup()}");
-                }
-                rightSb.AppendLine();
-                rightSb.AppendLine("[dim]↑/↓ Navigate  ·  Enter Select  ·  Esc Cancel[/]");
-                detailsContent = new Markup(rightSb.ToString());
-            }
-            else if (string.Equals(alias, "proj", StringComparison.OrdinalIgnoreCase) && detailsActive && detailsMode == "proj")
-            {
-                var rightSb = new StringBuilder();
-                rightSb.AppendLine($"[bold white]{display.EscapeMarkup()}[/]");
-                rightSb.AppendLine($"[dim]alias:[/] [yellow]{alias.EscapeMarkup()}[/]");
-                rightSb.AppendLine();
-                rightSb.AppendLine("[cyan bold]Select Workspace directory to switch to on exit:[/]");
-                rightSb.AppendLine();
-                var workspaces = WorkspaceRegistry.GetWorkspaces();
-                for (var i = 0; i < workspaces.Length; i++)
-                {
-                    var isSelected = (i == detailsSel);
-                    var prefix = isSelected ? "[green bold]> [/]" : "  ";
-                    rightSb.AppendLine($"{prefix}{workspaces[i].Name.EscapeMarkup()} [dim]({workspaces[i].WorkspacePath.EscapeMarkup()})[/]");
-                }
-                rightSb.AppendLine();
-                rightSb.AppendLine("[dim]↑/↓ Navigate  ·  Enter Select  ·  Esc Cancel[/]");
-                detailsContent = new Markup(rightSb.ToString());
-            }
             else
+
             {
                 var rightSb = new StringBuilder();
                 rightSb.AppendLine($"[bold white]{display.EscapeMarkup()}[/]");
@@ -576,13 +268,13 @@ public sealed class ThreePaneRenderer : MenuRendererBase
         {
             Header = new PanelHeader("[bold cyan]Options[/]"),
             Border = BoxBorder.Rounded,
-            BorderStyle = new Style(midActive && !detailsActive ? Color.Cyan1 : Color.Grey)
+            BorderStyle = new Style(midActive ? Color.Cyan1 : Color.Grey)
         };
         var rightPanel = new Panel(detailsContent)
         {
             Header = new PanelHeader("[bold cyan]Details[/]"),
             Border = BoxBorder.Rounded,
-            BorderStyle = new Style(detailsActive ? Color.Cyan1 : Color.Grey)
+            BorderStyle = new Style(Color.Grey)
         };
 
         int winWidth = 100;

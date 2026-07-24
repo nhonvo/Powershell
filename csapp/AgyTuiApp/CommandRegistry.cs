@@ -15,7 +15,13 @@ public sealed record CommandEntry(
     string[] HelpLines,   // Detailed help text lines
     bool RequiresAiOllama = false,
     bool RequiresAgy = false
-);
+)
+{
+    public bool ShowInTree { get; set; } = true;
+    public string? GroupPath { get; set; } = null;
+    public string? GroupName { get; set; } = null;
+    public int SortOrder { get; set; } = 0;
+}
 
 public static class CommandRegistry
 {
@@ -418,6 +424,144 @@ public static class CommandRegistry
             new[] { "hotkeys — Displays profile keyboard shortcuts grouped by domain (git, docker, aws, sys, ai, nav)." })
     };
 
+    static CommandRegistry()
+    {
+        var gitCmds = new HashSet<string> { "gs", "ga", "gbr", "gcmt", "glog", "gpull", "gpush", "gf", "gd", "git-undo" };
+        var repoCmds = new HashSet<string> { "nexus", "repo-graph", "nexus-stats" };
+        var dotnetCmds = new HashSet<string> { "dbld", "dr", "dtst", "df", "dcl", "drestore", "dpublish", "dpack", "dpubpkg", "dwatch", "rebuild", "clean-build", "add-migration", "update-db" };
+        var dockerCmds = new HashSet<string> { "docker-health", "dkcl", "dkrmac", "dkstac", "dimg", "dlogs", "dcup", "dcdown" };
+        var awsCmds = new HashSet<string> { "aws-whoami", "aws-local", "aws-s3", "aws-sqs", "aws-ssm", "aws-sns", "aws-dynamodb", "aws-lambda" };
+        var claudeCmds = new HashSet<string> { "claude", "claude-cloud", "claude-ollama" };
+        var codexCmds = new HashSet<string> { "codex", "codex-cloud", "codex-ollama" };
+        var ollamaCmds = new HashSet<string> { "ollama-status", "ollama-models", "ollama-pull", "ollama-start", "ollama-logs", "ollama-benchmark" };
+        var deckCmds = new HashSet<string> { "deck-status", "deck-setup", "deck-start", "deck-online" };
+        var mgrCmds = new HashSet<string> { "mgr-status", "mgr-setup", "mgr-start" };
+        var sshCmds = new HashSet<string> { "ssh-info", "tailscale-status", "ssh-qr" };
+        var quotaCmds = new HashSet<string> { "account-tree", "quota-chart", "live-dashboard" };
+        
+        var jpCmds = new HashSet<string> { "kana", "kanji", "jlpt", "grammar" };
+        var enCmds = new HashSet<string> { "word-of-day", "vocab", "flashcard", "grammar" };
+        var csCmds = new HashSet<string> { "quiz", "snippets", "sheets" };
+        var dsaCmds = new HashSet<string> { "algo", "complexity", "problems" };
+        var careerCmds = new HashSet<string> { "interview", "star", "mock" };
+        var obsidianCmds = new HashSet<string> { "obsidian", "refresh", "vault-open" };
+
+        var hiddenCmds = new HashSet<string> { "p", "prj", "gb" };
+
+        var orderedAliases = new[]
+        {
+            // Category 1: [Workspace & Dev]
+            "proj", "f", "go", "open-term", "ide", "ide-diff", "ide-search", "scaffold",
+            // Git group
+            "gs", "ga", "gbr", "gcmt", "glog", "gpull", "gpush", "gf", "gd", "git-undo",
+            // Repo group
+            "nexus", "repo-graph", "nexus-stats",
+            // Dotnet group
+            "dbld", "dr", "dtst", "df", "dcl", "drestore", "dpublish", "dpack", "dpubpkg", "dwatch", "rebuild", "clean-build", "add-migration", "update-db",
+            // Docker group
+            "docker-health", "dkcl", "dkrmac", "dkstac", "dimg", "dlogs", "dcup", "dcdown",
+            // AWS group
+            "aws-whoami", "aws-local", "aws-s3", "aws-sqs", "aws-ssm", "aws-sns", "aws-dynamodb", "aws-lambda",
+            "db-tui",
+
+            // Category 2: [AI Agent & Ollama]
+            // Claude group
+            "claude", "claude-cloud", "claude-ollama",
+            // Codex group
+            "codex", "codex-cloud", "codex-ollama",
+            "openclaw", "hermes", "hermesd",
+            // Ollama group
+            "ollama-status", "ollama-models", "ollama-pull", "ollama-start", "ollama-logs", "ollama-benchmark",
+            // Deck group
+            "deck-status", "deck-setup", "deck-start", "deck-online",
+            // Mgr group
+            "mgr-status", "mgr-setup", "mgr-start",
+            "agy-cli", "ai-history",
+
+            // Category 3: [AGY Account Switch]
+            "agyswitch", "agyquota",
+            // Quota group
+            "account-tree", "quota-chart", "live-dashboard",
+            "autoswitch", "no-auto-commit",
+
+            // Category 4: [System & Network]
+            "disk", "public-ip", "kill-port",
+            // SSH group
+            "ssh-info", "tailscale-status", "ssh-qr",
+
+            // Category 5: [Learn & Study]
+            "learn", "learn-gen",
+            // Obsidian group (in category 5!)
+            "obsidian", "refresh", "vault-open",
+            // jpSuite
+            "kana", "kanji", "jlpt", "grammar",
+            // englishVocab
+            "word-of-day", "vocab", "flashcard",
+            // csharpMaster
+            "quiz", "snippets", "sheets",
+            // dsaArchitect
+            "algo", "complexity", "problems",
+            // careerInterview
+            "interview", "star", "mock",
+
+            // Category 6: [Track & Progress]
+            "session", "stats", "goals", "streak", "due", "progress", "weak",
+
+            // Category 7: [Obsidian & Resources]
+            "obs-graph", "add-resource",
+
+            // Category 8: [Appearance & Layout]
+            "theme", "ui-mode", "density", "mobile-setup",
+
+            // Category 9: [Help & Docs]
+            "cc", "help", "hotkeys"
+        };
+
+        var orderMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        for (int i = 0; i < orderedAliases.Length; i++)
+        {
+            orderMap[orderedAliases[i]] = i;
+        }
+
+        foreach (var cmd in All)
+        {
+            var alias = cmd.Alias;
+            if (hiddenCmds.Contains(alias))
+            {
+                cmd.ShowInTree = false;
+                continue;
+            }
+
+            if (orderMap.TryGetValue(alias, out var order))
+            {
+                cmd.SortOrder = order;
+            }
+
+            if (gitCmds.Contains(alias)) { cmd.GroupPath = "/git-tools"; cmd.GroupName = "Git Tools"; }
+            else if (repoCmds.Contains(alias)) { cmd.GroupPath = "/repo-dashboards"; cmd.GroupName = "Repo Dashboards"; }
+            else if (dotnetCmds.Contains(alias)) { cmd.GroupPath = "/dotnet-tools"; cmd.GroupName = ".NET Project Tools"; }
+            else if (dockerCmds.Contains(alias)) { cmd.GroupPath = "/docker-tools"; cmd.GroupName = "Docker Tools"; }
+            else if (awsCmds.Contains(alias)) { cmd.GroupPath = "/aws-tools"; cmd.GroupName = "AWS Tools"; }
+            else if (claudeCmds.Contains(alias)) { cmd.GroupPath = "/claude-agents"; cmd.GroupName = "Claude Agents"; }
+            else if (codexCmds.Contains(alias)) { cmd.GroupPath = "/codex-agents"; cmd.GroupName = "Codex Agents"; }
+            else if (ollamaCmds.Contains(alias)) { cmd.GroupPath = "/ollama-tools"; cmd.GroupName = "Ollama Tools"; }
+            else if (deckCmds.Contains(alias)) { cmd.GroupPath = "/antigravity-deck"; cmd.GroupName = "Antigravity Deck (Desk)"; }
+            else if (mgrCmds.Contains(alias)) { cmd.GroupPath = "/antigravity-manager"; cmd.GroupName = "Antigravity Manager"; }
+            else if (sshCmds.Contains(alias)) { cmd.GroupPath = "/ssh-tailscale"; cmd.GroupName = "SSH & Tailscale"; }
+            else if (quotaCmds.Contains(alias)) { cmd.GroupPath = "/quota-views"; cmd.GroupName = "Quota Views"; }
+            else if (jpCmds.Contains(alias)) 
+            {
+                cmd.GroupPath = (alias == "grammar") ? "/jp-suite,/english-vocab" : "/jp-suite";
+                cmd.GroupName = "Japanese Suite";
+            }
+            else if (enCmds.Contains(alias)) { cmd.GroupPath = "/english-vocab"; cmd.GroupName = "English & Vocab"; }
+            else if (csCmds.Contains(alias)) { cmd.GroupPath = "/csharp-master"; cmd.GroupName = "C# & Dev Masterclass"; }
+            else if (dsaCmds.Contains(alias)) { cmd.GroupPath = "/dsa-architect"; cmd.GroupName = "DSA & System Design"; }
+            else if (careerCmds.Contains(alias)) { cmd.GroupPath = "/career-interview"; cmd.GroupName = "Career & Interview Prep"; }
+            else if (obsidianCmds.Contains(alias)) { cmd.GroupPath = "/obsidian-vault"; cmd.GroupName = "Obsidian Vault & Sync"; }
+        }
+    }
+
     public static CommandEntry? GetByAlias(string alias)
     {
         return All.FirstOrDefault(c => string.Equals(c.Alias, alias, StringComparison.OrdinalIgnoreCase));
@@ -458,7 +602,7 @@ public static class CommandRegistry
         }
         Traverse(root);
 
-        var mainCommands = All.Where(c => !c.Description.StartsWith("Alias for", StringComparison.OrdinalIgnoreCase));
+        var mainCommands = All.Where(c => c.ShowInTree && !c.Description.StartsWith("Alias for", StringComparison.OrdinalIgnoreCase));
         var unhandled = mainCommands.Where(c => !reachable.Contains(c.Alias)).Select(c => c.Alias).ToList();
         if (unhandled.Count > 0)
         {
