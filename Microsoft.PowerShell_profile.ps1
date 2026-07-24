@@ -121,7 +121,12 @@ if ($projectsBaseDir) {
 if ($agySourceHome) {
     $Global:AgySourceHome = $agySourceHome
 } else {
-    $Global:AgySourceHome = Join-Path $env:USERPROFILE ".gemini"
+    $publicGemini = "C:\Users\Public\.gemini"
+    if (Test-Path $publicGemini) {
+        $Global:AgySourceHome = $publicGemini
+    } else {
+        $Global:AgySourceHome = Join-Path $env:USERPROFILE ".gemini"
+    }
 }
 
 # Apply GlobalBinDir

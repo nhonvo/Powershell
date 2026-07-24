@@ -73,11 +73,30 @@ public static class MenuNodeBuilder
             foreach (var group in groupedCommands)
             {
                 var groupPath = group.Key;
-                var firstCmd = group.First().Command;
-                var groupLabel = firstCmd.GroupName ?? groupPath;
+                var groupLabel = groupPath switch
+                {
+                    "/jp-suite" => "Japanese Suite",
+                    "/english-vocab" => "English & Vocab",
+                    "/csharp-master" => "C# & Dev Masterclass",
+                    "/dsa-architect" => "DSA & System Design",
+                    "/career-interview" => "Career & Interview Prep",
+                    "/obsidian-vault" => "Obsidian Vault & Sync",
+                    "/git-tools" => "Git & Repo Tools",
+                    "/dotnet-tools" => ".NET Project Tools",
+                    "/docker-tools" => "Docker Tools",
+                    "/aws-tools" => "AWS Tools",
+                    "/claude-agents" => "Claude Agents",
+                    "/codex-agents" => "Codex Agents",
+                    "/ollama-tools" => "Ollama Tools",
+                    "/antigravity-deck" => "Antigravity Deck (Desk)",
+                    "/antigravity-manager" => "Antigravity Manager",
+                    "/ssh-tailscale" => "SSH & Tailscale",
+                    "/quota-views" => "Quota Views",
+                    _ => group.First().Command.GroupName ?? groupPath
+                };
                 
                 var formattedLabel = groupPath.StartsWith("/") ? $" [{groupPath}] {groupLabel}" : $" [{groupLabel}]";
-                if (groupPath == "/jp-suite" || groupPath == "/english-vocab" || groupPath == "/csharp-master" || groupPath == "/dsa-architect" || groupPath == "/career-interview" || groupPath == "/obsidian-vault")
+                if (groupPath == "/jp-suite" || groupPath == "/english-vocab" || groupPath == "/csharp-master" || groupPath == "/dsa-architect" || groupPath == "/career-interview" || groupPath == "/obsidian-vault" || groupPath == "/git-tools")
                 {
                     formattedLabel = $" [{groupLabel}]";
                 }
