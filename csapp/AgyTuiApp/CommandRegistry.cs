@@ -432,6 +432,7 @@ public static class CommandRegistry
         var mgrCmds = new HashSet<string> { "mgr-status", "mgr-setup", "mgr-start", "mgr", "manager-status", "manager-setup", "manager-start", "agm", "agm-status", "agm-setup", "agm-start" };
         var sshCmds = new HashSet<string> { "ssh-info", "tailscale-status", "ssh-qr" };
         var quotaCmds = new HashSet<string> { "account-tree", "quota-chart", "live-dashboard" };
+        var trackCmds = new HashSet<string> { "session", "stats", "goals", "streak", "due", "progress", "weak" };
         
         var jpCmds = new HashSet<string> { "kana", "kanji", "jlpt", "grammar" };
         var enCmds = new HashSet<string> { "word-of-day", "vocab", "flashcard", "grammar" };
@@ -549,6 +550,7 @@ public static class CommandRegistry
             else if (dsaCmds.Contains(alias)) { cmd.GroupPath = "/dsa-architect"; cmd.GroupName = "DSA & System Design"; }
             else if (careerCmds.Contains(alias)) { cmd.GroupPath = "/career-interview"; cmd.GroupName = "Career & Interview Prep"; }
             else if (obsidianCmds.Contains(alias)) { cmd.GroupPath = "/obsidian-vault"; cmd.GroupName = "Obsidian Vault & Sync"; }
+            else if (trackCmds.Contains(alias)) { cmd.GroupPath = "/track"; cmd.GroupName = "Track & Progress"; }
         }
     }
 

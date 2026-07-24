@@ -91,11 +91,12 @@ public static class MenuNodeBuilder
                     "/antigravity-manager" => "Antigravity Manager",
                     "/ssh-tailscale" => "SSH & Tailscale",
                     "/quota-views" => "Quota Views",
+                    "/track" => "Track & Progress",
                     _ => group.First().Command.GroupName ?? groupPath
                 };
                 
                 var formattedLabel = groupPath.StartsWith("/") ? $" [{groupPath}] {groupLabel}" : $" [{groupLabel}]";
-                if (groupPath == "/jp-suite" || groupPath == "/english-vocab" || groupPath == "/csharp-master" || groupPath == "/dsa-architect" || groupPath == "/career-interview" || groupPath == "/obsidian-vault" || groupPath == "/git-tools")
+                if (groupPath == "/jp-suite" || groupPath == "/english-vocab" || groupPath == "/csharp-master" || groupPath == "/dsa-architect" || groupPath == "/career-interview" || groupPath == "/obsidian-vault" || groupPath == "/git-tools" || groupPath == "/track")
                 {
                     formattedLabel = $" [{groupLabel}]";
                 }
