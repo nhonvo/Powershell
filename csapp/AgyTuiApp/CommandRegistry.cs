@@ -537,8 +537,7 @@ public static class CommandRegistry
                 cmd.SortOrder = order;
             }
 
-            if (gitCmds.Contains(alias)) { cmd.GroupPath = "/git-tools"; cmd.GroupName = "Git Tools"; }
-            else if (repoCmds.Contains(alias)) { cmd.GroupPath = "/repo-dashboards"; cmd.GroupName = "Repo Dashboards"; }
+            if (gitCmds.Contains(alias) || repoCmds.Contains(alias)) { cmd.GroupPath = "/git-tools"; cmd.GroupName = "Git & Repo Tools"; }
             else if (dotnetCmds.Contains(alias)) { cmd.GroupPath = "/dotnet-tools"; cmd.GroupName = ".NET Project Tools"; }
             else if (dockerCmds.Contains(alias)) { cmd.GroupPath = "/docker-tools"; cmd.GroupName = "Docker Tools"; }
             else if (awsCmds.Contains(alias)) { cmd.GroupPath = "/aws-tools"; cmd.GroupName = "AWS Tools"; }

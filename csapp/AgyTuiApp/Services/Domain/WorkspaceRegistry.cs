@@ -199,7 +199,9 @@ public static class WorkspaceRegistry
         "🔀 View Git Status & Diff",
         "🤖 Start Antigravity AI Agent (ask-ai)",
         "🛸 Open Antigravity TUI / Deck",
-        "📦 Clean & Rebuild Project (.NET)"
+        "📦 Clean & Rebuild Project (.NET)",
+        "🕸 Open Git Nexus Dashboard",
+        "📊 View Git Nexus Commit Stats"
     };
 
     public static string HandleWorkspaceAction(WorkspaceEntry selected, int actionIdx)
@@ -260,6 +262,16 @@ public static class WorkspaceRegistry
                 SpectrePanel.Warning("No C# project (.csproj) found in this workspace.");
                 Thread.Sleep(1500);
             }
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 8)
+        {
+            GitNexus.ShowLiveDashboard();
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 9)
+        {
+            GitNexusStats.Run();
             return selected.WorkspacePath;
         }
         return selected.WorkspacePath;
