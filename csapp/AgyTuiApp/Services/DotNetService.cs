@@ -7,9 +7,13 @@ using Spectre.Console;
 
 namespace AgyTui;
 
-public static class DotNetHelper
+public class DotNetService : CliToolWrapper
 {
-    public static void RemoveBinObj(string rootPath)
+    public DotNetService() : base("dotnet")
+    {
+    }
+
+    public void RemoveBinObj(string rootPath)
     {
         var targets = new[] { "bin", "obj" };
         var deleted = new List<string>();
@@ -31,29 +35,27 @@ public static class DotNetHelper
         SpectreTable.Render(["Status", "Path"], [.. deleted.Select(d => new[]
         {
             "[green]Deleted[/]", d.EscapeMarkup()
-        }
-        ).Concat(failed.Select(f => new[]
+        }).Concat(failed.Select(f => new[]
         {
             "[red]Failed[/]", f.EscapeMarkup()
-        }
-        ))], markup: true);
+        }))], markup: true);
     }
 
-    public static int Build(string? projectPath = null) => RunDotnet("build", projectPath);
+    public int Build(string? projectPath = null) => RunDotnet("build", projectPath);
 
-    public static int Run(string? projectPath = null) => RunDotnet("run", projectPath);
+    public int Run(string? projectPath = null) => RunDotnet("run", projectPath);
 
-    public static int Test(string? projectPath = null) => RunDotnet("test", projectPath);
+    public int Test(string? projectPath = null) => RunDotnet("test", projectPath);
 
-    public static int Format(string? projectPath = null) => RunDotnet("format", projectPath);
+    public int Format(string? projectPath = null) => RunDotnet("format", projectPath);
 
-    public static int Clean(string? projectPath = null) => RunDotnet("clean", projectPath);
+    public int Clean(string? projectPath = null) => RunDotnet("clean", projectPath);
 
-    public static int Restore(string? projectPath = null) => RunDotnet("restore", projectPath);
+    public int Restore(string? projectPath = null) => RunDotnet("restore", projectPath);
 
-    public static int Publish(string? projectPath = null) => RunDotnet("publish csapp/AgyTuiApp/AgyTuiApp.csproj -c Release -r win-x64 --self-contained -o csapp/AgyTuiApp/dist", projectPath);
+    public int Publish(string? projectPath = null) => RunDotnet("publish csapp/AgyTuiApp/AgyTuiApp.csproj -c Release -r win-x64 --self-contained -o csapp/AgyTuiApp/dist", projectPath);
 
-    public static int Pack(string? projectPath = null, string outputDir = "nupkg")
+    public int Pack(string? projectPath = null, string outputDir = "nupkg")
     {
         SpectrePanel.Info("Packing NuGet package...");
         var exitCode = RunDotnet($"pack -c Release -o {outputDir}", projectPath);
@@ -62,7 +64,7 @@ public static class DotNetHelper
         return exitCode;
     }
 
-    public static int PublishPackage(string? nupkgPath = null, string? apiKey = null, string source = "https://api.nuget.org/v3/index.json")
+    public int PublishPackage(string? nupkgPath = null, string? apiKey = null, string source = "https://api.nuget.org/v3/index.json")
     {
         if (string.IsNullOrEmpty(nupkgPath))
         {
@@ -100,25 +102,25 @@ public static class DotNetHelper
             env["NUGET_API_KEY"] = apiKey;
         }
         var pushArgs = new List<string> { "nuget", "push", nupkgPath, "--source", source, "--skip-duplicate" };
-        Helpers.ProcessRunner.RunInteractive("dotnet", pushArgs, env);
+        RunInteractive(pushArgs, env);
         SpectrePanel.Success("NuGet package publish command completed.");
         return 0;
     }
 
-    public static int Watch(string? projectPath = null) => RunDotnet("watch run", projectPath);
+    public int Watch(string? projectPath = null) => RunDotnet("watch run", projectPath);
 
-    public static int AddMigration(string migrationName, string? project = null)
+    public int AddMigration(string migrationName, string? project = null)
     {
         var args = new List<string> { "ef", "migrations", "add", migrationName };
         if (!string.IsNullOrEmpty(project)) { args.Add("--project"); args.Add(project); }
-        Helpers.ProcessRunner.RunInteractive("dotnet", args);
+        RunInteractive(args);
         return 0;
     }
 
-    public static int UpdateDatabase(string? project = null) => RunDotnet("ef database update", project);
+    public int UpdateDatabase(string? project = null) => RunDotnet("ef database update", project);
 
-    private static int RunDotnet(string args, string? workingDir)
+    private int RunDotnet(string args, string? workingDir)
     {
-        return Helpers.ProcessRunner.Run("dotnet", args, workingDir);
+        return Helpers.ProcessRunner.Run(BinaryName, args, workingDir);
     }
 }

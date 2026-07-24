@@ -267,70 +267,70 @@ public static class Program
                     SystemHelper.OpenExplorer();
                     break;
                 case "gs":
-                    GitHelper.ShowStatus();
+                    AgyServices.Git.ShowStatus();
                     break;
                 case "ga":
-                    GitHelper.AddAll();
+                    AgyServices.Git.AddAll();
                     break;
                 case "gbr":
                 case "gb":
-                    GitHelper.ShowBranches();
+                    AgyServices.Git.ShowBranches();
                     break;
                 case "gcmt":
-                    GitHelper.ConventionalCommitWizard();
+                    AgyServices.Git.ConventionalCommitWizard();
                     break;
                 case "glog":
                 case "glo":
                 case "glg":
-                    GitHelper.ShowLog();
+                    AgyServices.Git.ShowLog();
                     break;
                 case "gpull":
                 case "gpu":
-                    GitHelper.Pull();
+                    AgyServices.Git.Pull();
                     break;
                 case "gpush":
                 case "gus":
-                    GitHelper.Push();
+                    AgyServices.Git.Push();
                     break;
                 case "gf":
-                    GitHelper.Fetch();
+                    AgyServices.Git.Fetch();
                     break;
                 case "gd":
                     GitDiffViewer.ShowDiff(Directory.GetCurrentDirectory());
                     break;
                 case "git-undo":
                 case "gundo":
-                    GitHelper.InvokeGitUndo();
+                    AgyServices.Git.InvokeGitUndo();
                     break;
                 case "dbld":
                 case "db":
-                    DotNetHelper.Build();
+                    AgyServices.DotNet.Build();
                     break;
                 case "dr":
-                    DotNetHelper.Run();
+                    AgyServices.DotNet.Run();
                     break;
                 case "dtst":
                 case "dt":
-                    DotNetHelper.Test();
+                    AgyServices.DotNet.Test();
                     break;
                 case "df":
-                    DotNetHelper.Format();
+                    AgyServices.DotNet.Format();
                     break;
                 case "dcl":
-                    DotNetHelper.Clean();
+                    AgyServices.DotNet.Clean();
                     break;
                 case "drestore":
                 case "dres":
-                    DotNetHelper.Restore();
+                    AgyServices.DotNet.Restore();
                     break;
                 case "dpublish":
-                    DotNetHelper.Publish();
+                    AgyServices.DotNet.Publish();
                     break;
                 case "dpack":
-                    DotNetHelper.Pack();
+                    AgyServices.DotNet.Pack();
                     break;
                 case "dpubpkg":
-                    DotNetHelper.PublishPackage();
+                    AgyServices.DotNet.PublishPackage();
                     break;
                 case "open-term":
                 case "term":
@@ -346,76 +346,76 @@ public static class Program
                     break;
                 case "dwatch":
                 case "dw":
-                    DotNetHelper.Watch();
+                    AgyServices.DotNet.Watch();
                     break;
                 case "clean-build":
                 case "dclean":
-                    DotNetHelper.RemoveBinObj(Directory.GetCurrentDirectory());
+                    AgyServices.DotNet.RemoveBinObj(Directory.GetCurrentDirectory());
                     break;
                 case "add-migration":
                 case "da":
                     var migName = AnsiConsole.Ask<string>("Migration name:");
-                    DotNetHelper.AddMigration(migName);
+                    AgyServices.DotNet.AddMigration(migName);
                     break;
                 case "update-db":
                 case "du":
-                    DotNetHelper.UpdateDatabase();
+                    AgyServices.DotNet.UpdateDatabase();
                     break;
                 case "docker-health":
-                    DockerHelper.ShowDockerHealthDashboard();
+                    AgyServices.Docker.ShowDockerHealthDashboard();
                     break;
                 case "dkcl":
-                    DockerHelper.ShowCleanupDashboard();
+                    AgyServices.Docker.ShowCleanupDashboard();
                     break;
                 case "dkrmac":
-                    DockerHelper.RemoveAllContainers();
+                    AgyServices.Docker.RemoveAllContainers();
                     break;
                 case "dkstac":
-                    DockerHelper.StopAllContainers();
+                    AgyServices.Docker.StopAllContainers();
                     break;
                 case "dimg":
-                    DockerHelper.ShowImages();
+                    AgyServices.Docker.ShowImages();
                     break;
                 case "dlogs":
-                    DockerHelper.ShowContainerLogs();
+                    AgyServices.Docker.ShowContainerLogs();
                     break;
                 case "dcup":
                 case "dkcpu":
-                    DockerHelper.ComposeUp();
+                    AgyServices.Docker.ComposeUp();
                     break;
                 case "dcdown":
                 case "dkcpd":
-                    DockerHelper.ComposeDown();
+                    AgyServices.Docker.ComposeDown();
                     break;
                 case "aws-whoami":
-                    AwsHelper.ShowCallerIdentity();
+                    AgyServices.Aws.ShowCallerIdentity();
                     break;
                 case "aws-local":
-                    AwsHelper.ShowLocalStackInfo();
+                    AgyServices.Aws.ShowLocalStackInfo();
                     break;
                 case "aws-s3":
-                    AwsHelper.ShowS3Buckets();
+                    AgyServices.Aws.ShowS3Buckets();
                     break;
                 case "aws-sqs":
-                    AwsHelper.ShowSQSQueues();
+                    AgyServices.Aws.ShowSQSQueues();
                     break;
                 case "aws-ssm":
-                    AwsHelper.ShowSsmParameters();
+                    AgyServices.Aws.ShowSsmParameters();
                     break;
                 case "aws-sns":
-                    AwsHelper.ShowSnsTopics();
+                    AgyServices.Aws.ShowSnsTopics();
                     break;
                 case "aws-dynamodb":
-                    AwsHelper.ShowDynamoDbTables();
+                    AgyServices.Aws.ShowDynamoDbTables();
                     break;
                 case "aws-lambda":
-                    AwsHelper.ShowLambdaFunctions();
+                    AgyServices.Aws.ShowLambdaFunctions();
                     break;
                 case "rebuild":
                     AnsiConsole.MarkupLine("[cyan]Rebuilding Control Center TUI binary...[/]");
                     var projFile = Path.Combine(Directory.GetCurrentDirectory(), "AgyTuiApp", "AgyTuiApp.csproj");
                     if (!File.Exists(projFile)) projFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "AgyTuiApp.csproj");
-                    var buildExit = DotNetHelper.Build(File.Exists(projFile) ? projFile : null);
+                    var buildExit = AgyServices.DotNet.Build(File.Exists(projFile) ? projFile : null);
                     if (buildExit == 0) SpectrePanel.Success("Control Center TUI recompiled successfully!");
                     else SpectrePanel.Warning("Build note: If running directly inside AgyTuiApp.exe, Windows locks the executable while in-use. Exit TUI and run 'dbld' or run via PowerShell wrapper to refresh binary.");
                     break;

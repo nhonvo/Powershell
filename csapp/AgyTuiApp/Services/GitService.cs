@@ -7,11 +7,15 @@ using AgyTui.Components;
 
 namespace AgyTui;
 
-public static class GitHelper
+public class GitService : CliToolWrapper
 {
     private static readonly string[] CommitTypes = ["feat", "fix", "docs", "style", "refactor", "test", "chore", "ci"];
 
-    public static void ShowStatus()
+    public GitService() : base("git")
+    {
+    }
+
+    public void ShowStatus()
     {
         var branch = RunGit("branch --show-current").Trim();
         if (string.IsNullOrEmpty(branch)) branch = "main";
@@ -51,7 +55,7 @@ public static class GitHelper
         AnsiConsole.Write(table);
     }
 
-    public static void ConventionalCommitWizard()
+    public void ConventionalCommitWizard()
     {
         AnsiConsole.Write(new Rule("[bold cyan]Conventional Commit Wizard[/]").RuleStyle("grey"));
         var typeIdx = SpectreMenu.Show("Commit Type", CommitTypes, 0, false);
@@ -102,12 +106,12 @@ public static class GitHelper
             Border = BoxBorder.Rounded
         });
         if (!AnsiConsole.Confirm("Commit now?")) return;
-        var exitCode = Helpers.ProcessRunner.Run("git", new[] { "commit", "-m", message });
+        var exitCode = Helpers.ProcessRunner.Run(BinaryName, new[] { "commit", "-m", message });
         if (exitCode == 0) SpectrePanel.Success("Committed successfully.");
         else SpectrePanel.Error($"git commit failed (exit {exitCode}).");
     }
 
-    public static void InvokeGitUndo()
+    public void InvokeGitUndo()
     {
         var lastLog = RunGit("log --oneline -1").Trim();
         AnsiConsole.MarkupLine($"[yellow]Last commit:[/] {lastLog.EscapeMarkup()}");
@@ -125,7 +129,7 @@ public static class GitHelper
         else SpectrePanel.Error($"git reset failed (exit {exit}).");
     }
 
-    public static void Checkout(string? branchName = null)
+    public void Checkout(string? branchName = null)
     {
         if (!string.IsNullOrWhiteSpace(branchName))
         {
@@ -138,7 +142,7 @@ public static class GitHelper
         ShowBranches();
     }
 
-    public static void ShowBranches()
+    public void ShowBranches()
     {
         var output = RunGit("branch -a --sort=-committerdate");
         if (string.IsNullOrWhiteSpace(output))
@@ -164,7 +168,7 @@ public static class GitHelper
         else SpectrePanel.Error($"git checkout failed (exit {exitCode}).");
     }
 
-    public static void ShowLog()
+    public void ShowLog()
     {
         var output = RunGit("log --oneline --graph --decorate -n 50");
         if (string.IsNullOrWhiteSpace(output))
@@ -175,7 +179,7 @@ public static class GitHelper
         SpectrePager.Show("Git Commit Log (Last 50)", output);
     }
 
-    public static void Pull()
+    public void Pull()
     {
         AnsiConsole.MarkupLine("[cyan]Pulling latest changes from remote...[/]");
         var exitCode = RunGitDirect("pull");
@@ -183,7 +187,7 @@ public static class GitHelper
         else SpectrePanel.Error($"git pull failed (exit {exitCode}).");
     }
 
-    public static void Push()
+    public void Push()
     {
         AnsiConsole.MarkupLine("[cyan]Pushing local commits to remote...[/]");
         var exitCode = RunGitDirect("push");
@@ -191,7 +195,7 @@ public static class GitHelper
         else SpectrePanel.Error($"git push failed (exit {exitCode}).");
     }
 
-    public static void AddAll()
+    public void AddAll()
     {
         AnsiConsole.MarkupLine("[cyan]Staging all modified and new files...[/]");
         var exitCode = RunGitDirect("add .");
@@ -199,7 +203,7 @@ public static class GitHelper
         else SpectrePanel.Error($"git add failed (exit {exitCode}).");
     }
 
-    public static void Fetch()
+    public void Fetch()
     {
         AnsiConsole.MarkupLine("[cyan]Fetching remote references...[/]");
         var exitCode = RunGitDirect("fetch");
@@ -207,10 +211,10 @@ public static class GitHelper
         else SpectrePanel.Error($"git fetch failed (exit {exitCode}).");
     }
 
-    private static string RunGit(string args) => Helpers.ProcessRunner.RunCapture("git", args);
+    private string RunGit(string args) => RunCapture(args);
 
-    private static int RunGitDirect(string args)
+    private int RunGitDirect(string args)
     {
-        return Helpers.ProcessRunner.Run("git", args);
+        return Helpers.ProcessRunner.Run(BinaryName, args);
     }
 }

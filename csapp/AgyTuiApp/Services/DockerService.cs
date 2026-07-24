@@ -7,7 +7,7 @@ using AgyTui.Components;
 
 namespace AgyTui;
 
-public static class DockerHelper
+public class DockerService : CliToolWrapper
 {
     private static readonly string[] CleanupOptions = [
         "Stop & remove all running containers",
@@ -18,7 +18,11 @@ public static class DockerHelper
         "Cancel"
     ];
 
-    public static void ShowCleanupDashboard()
+    public DockerService() : base("docker")
+    {
+    }
+
+    public void ShowCleanupDashboard()
     {
         AnsiConsole.Write(new Rule("[bold cyan]Docker Cleanup Dashboard[/]").RuleStyle("grey"));
         var idx = SpectreMenu.Show("Select cleanup action", CleanupOptions, 0, false);
@@ -64,14 +68,14 @@ public static class DockerHelper
         SpectrePanel.Success("Docker cleanup completed.");
     }
 
-    public static void ShowDockerHealthDashboard()
+    public void ShowDockerHealthDashboard()
     {
         AnsiConsole.Clear();
         AnsiConsole.Write(new Rule("[bold cyan]Docker Health Dashboard[/]").RuleStyle("grey"));
 
         try
         {
-            var psOutput = Helpers.ProcessRunner.RunCapture("docker", "ps --format \"table {{.ID}}\\t{{.Names}}\\t{{.Status}}\\t{{.Ports}}\"");
+            var psOutput = RunCapture("ps --format \"table {{.ID}}\\t{{.Names}}\\t{{.Status}}\\t{{.Ports}}\"");
             if (string.IsNullOrWhiteSpace(psOutput) || psOutput.Contains("error during connect"))
             {
                 SpectrePanel.Warning("Docker daemon is not running or not responding.");
@@ -81,7 +85,7 @@ public static class DockerHelper
                 AnsiConsole.MarkupLine("[bold green]Running Containers:[/]");
                 AnsiConsole.WriteLine(psOutput);
 
-                var statsOutput = Helpers.ProcessRunner.RunCapture("docker", "stats --no-stream --format \"table {{.Name}}\\t{{.CPUPerc}}\\t{{.MemUsage}}\\t{{.NetIO}}\"");
+                var statsOutput = RunCapture("stats --no-stream --format \"table {{.Name}}\\t{{.CPUPerc}}\\t{{.MemUsage}}\\t{{.NetIO}}\"");
                 if (!string.IsNullOrWhiteSpace(statsOutput))
                 {
                     AnsiConsole.WriteLine();
@@ -99,21 +103,21 @@ public static class DockerHelper
         Console.ReadKey(true);
     }
 
-    public static int ComposeUp(string? composeFile = null)
+    public int ComposeUp(string? composeFile = null)
     {
         var args = composeFile != null ? $"-f {composeFile} up -d" : "up -d";
         return RunDockerCompose(args);
     }
 
-    public static int ComposeDown(string? composeFile = null)
+    public int ComposeDown(string? composeFile = null)
     {
         var args = composeFile != null ? $"-f {composeFile} down" : "down";
         return RunDockerCompose(args);
     }
 
-    public static void ShowImages()
+    public void ShowImages()
     {
-        var output = Helpers.ProcessRunner.RunCapture("docker", "images --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.Size}}\\t{{.CreatedAt}}\"");
+        var output = RunCapture("images --format \"table {{.Repository}}\\t{{.Tag}}\\t{{.Size}}\\t{{.CreatedAt}}\"");
         if (string.IsNullOrWhiteSpace(output))
         {
             SpectrePanel.Info("No Docker images found or Docker daemon offline.");
@@ -122,9 +126,9 @@ public static class DockerHelper
         SpectrePager.Show("Docker Images", output);
     }
 
-    public static void ShowContainerLogs()
+    public void ShowContainerLogs()
     {
-        var output = Helpers.ProcessRunner.RunCapture("docker", "ps --format \"{{.ID}}\\t{{.Names}}\\t{{.Status}}\"");
+        var output = RunCapture("ps --format \"{{.ID}}\\t{{.Names}}\\t{{.Status}}\"");
         if (string.IsNullOrWhiteSpace(output))
         {
             SpectrePanel.Info("No running Docker containers found.");
@@ -137,19 +141,19 @@ public static class DockerHelper
         var containerId = lines[selectedIdx].Split('\t')[0];
         var containerName = lines[selectedIdx].Split('\t')[1];
         AnsiConsole.MarkupLine($"[cyan]Tailing last 200 lines of logs for [bold green]{containerName.EscapeMarkup()}[/]:[/]");
-        var logs = Helpers.ProcessRunner.RunCapture("docker", $"logs --tail 200 {containerId}");
+        var logs = RunCapture($"logs --tail 200 {containerId}");
         SpectrePager.Show($"Logs: {containerName}", logs);
     }
 
-    private static string[] GetContainerIds(bool runningOnly)
+    private string[] GetContainerIds(bool runningOnly)
     {
         var filter = runningOnly ? "-q" : "-aq";
-        var output = Helpers.ProcessRunner.RunCapture("docker", $"ps {filter}");
+        var output = RunCapture($"ps {filter}");
         if (string.IsNullOrWhiteSpace(output)) return Array.Empty<string>();
         return output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
 
-    public static void RemoveAllContainers()
+    public void RemoveAllContainers()
     {
         AnsiConsole.MarkupLine("[cyan]Removing all Docker containers...[/]");
         var ids = GetContainerIds(false);
@@ -159,11 +163,11 @@ public static class DockerHelper
             return;
         }
         if (!AnsiConsole.Confirm($"Remove {ids.Length} container(s)?")) return;
-        Helpers.ProcessRunner.Run("docker", $"rm -f {string.Join(" ", ids)}");
+        Helpers.ProcessRunner.Run(BinaryName, $"rm -f {string.Join(" ", ids)}");
         SpectrePanel.Success("Executed container removal.");
     }
 
-    public static void StopAllContainers()
+    public void StopAllContainers()
     {
         AnsiConsole.MarkupLine("[cyan]Stopping all Docker containers...[/]");
         var ids = GetContainerIds(true);
@@ -173,11 +177,11 @@ public static class DockerHelper
             return;
         }
         if (!AnsiConsole.Confirm($"Stop {ids.Length} running container(s)?")) return;
-        Helpers.ProcessRunner.Run("docker", $"stop {string.Join(" ", ids)}");
+        Helpers.ProcessRunner.Run(BinaryName, $"stop {string.Join(" ", ids)}");
         SpectrePanel.Success("Executed container stop.");
     }
 
-    private static void RunDocker(string args)
+    private void RunDocker(string args)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
@@ -189,8 +193,8 @@ public static class DockerHelper
         }
     }
 
-    private static int RunDockerCompose(string args)
+    private int RunDockerCompose(string args)
     {
-        return Helpers.ProcessRunner.Run("docker", $"compose {args}");
+        return Helpers.ProcessRunner.Run(BinaryName, $"compose {args}");
     }
 }
