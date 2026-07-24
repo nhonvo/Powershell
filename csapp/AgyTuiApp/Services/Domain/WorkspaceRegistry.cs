@@ -223,8 +223,6 @@ public static class WorkspaceRegistry
             Directory.CreateDirectory(agyHome);
             var selectedProjFile = System.IO.Path.Combine(agyHome, "selected_project.txt");
             File.WriteAllText(selectedProjFile, selected.WorkspacePath);
-            SpectrePanel.Success($"Selected workspace '{selected.Name}'. Directory switch will apply on exit.");
-            Thread.Sleep(1000);
             return selected.WorkspacePath;
         }
         else if (actionIdx == 1)

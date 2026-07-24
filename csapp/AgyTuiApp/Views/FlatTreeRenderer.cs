@@ -316,6 +316,10 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                                      string.Equals(alias, "proj", StringComparison.OrdinalIgnoreCase))
                             {
                                 SubPageNavigator.Run(alias);
+                                if (File.Exists(Path.Combine(AgyAccountCore.AgySourceHome, "selected_project.txt")))
+                                {
+                                    return;
+                                }
                             }
                             else
                             {

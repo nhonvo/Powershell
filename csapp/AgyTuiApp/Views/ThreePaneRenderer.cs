@@ -105,6 +105,10 @@ public sealed class ThreePaneRenderer : MenuRendererBase
                                 string.Equals(alias, "proj", StringComparison.OrdinalIgnoreCase))
                             {
                                 SubPageNavigator.Run(alias);
+                                if (File.Exists(Path.Combine(AgyAccountCore.AgySourceHome, "selected_project.txt")))
+                                {
+                                    return;
+                                }
                             }
                             else if (StatusWidgetRegistry.GetByAlias(alias) != null)
                             {
@@ -249,6 +253,10 @@ public sealed class ThreePaneRenderer : MenuRendererBase
                                     string.Equals(alias, "proj", StringComparison.OrdinalIgnoreCase))
                                 {
                                     SubPageNavigator.Run(alias);
+                                    if (File.Exists(Path.Combine(AgyAccountCore.AgySourceHome, "selected_project.txt")))
+                                    {
+                                        return;
+                                    }
                                 }
                                 else if (StatusWidgetRegistry.GetByAlias(alias) != null)
                                 {
