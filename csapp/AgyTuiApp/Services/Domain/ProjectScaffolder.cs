@@ -27,7 +27,8 @@ public static class ProjectScaffolder
     public static void Scaffold()
     {
         AnsiConsole.Write(new Rule("[bold cyan]Project Scaffolder[/]").RuleStyle("grey"));
-        var idx = SpectreMenu.Show("Select template", Templates, 0, false);
+        // Enable search/filtering (4th parameter = true)
+        var idx = SpectreMenu.Show("Select template", Templates, 0, true);
         if (idx < 0) return;
         
         var selectedItem = Templates[idx];
@@ -57,15 +58,14 @@ public static class ProjectScaffolder
             {
                 var psi = new ProcessStartInfo
                 {
-                    FileName = OperatingSystem.IsWindows() ? "npm.cmd" : "npm",
+                    FileName = OperatingSystem.IsWindows() ? "npx.cmd" : "npx",
                     WorkingDirectory = outputDir,
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };
-                psi.ArgumentList.Add("create");
-                psi.ArgumentList.Add("vite@latest");
+                psi.ArgumentList.Add("--yes");
+                psi.ArgumentList.Add("create-vite");
                 psi.ArgumentList.Add(name);
-                psi.ArgumentList.Add("--");
                 psi.ArgumentList.Add("--template");
                 psi.ArgumentList.Add(template == "react" ? "react-ts" : "vue-ts");
 
@@ -81,6 +81,7 @@ public static class ProjectScaffolder
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };
+                psi.ArgumentList.Add("--yes");
                 psi.ArgumentList.Add("create-next-app@latest");
                 psi.ArgumentList.Add(name);
                 psi.ArgumentList.Add("--ts");
