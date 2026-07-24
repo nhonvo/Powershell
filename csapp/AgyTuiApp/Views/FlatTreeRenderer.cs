@@ -671,27 +671,22 @@ public sealed class FlatTreeRenderer : MenuRendererBase
 
         var isCompact = Config.Current.Density == "compact";
 
+        int winHeight = 30;
+        try { winHeight = Console.WindowHeight; } catch { }
+        int bannerHeight = (winHeight < 45) ? 3 : 10;
+        int maxRows = Math.Max(3, winHeight - bannerHeight - 9);
+        int topRow = 0;
+        int endRow = 0;
+
         if (rows.Count == 0)
         {
             grid.AddRow(new Markup($"  [dim]No matching commands found for '{searchBuffer.EscapeMarkup()}'. Press Esc to clear.[/]"));
         }
         else
         {
-            int winHeight = 30;
-            try { winHeight = Console.WindowHeight; } catch { }
-            int bannerHeight = (winHeight < 45) ? 3 : 10;
-            int maxRows = Math.Max(3, winHeight - bannerHeight - 9);
+            (topRow, endRow) = ScrollableListView.ComputeViewport(rows.Count, selIdx, maxRows);
 
-            var (topRow, endRow) = ScrollableListView.ComputeViewport(rows.Count, selIdx, maxRows);
-
-            if (topRow > 0)
-            {
-                grid.AddRow(new Markup($"  [dim]▲ ... {topRow} items above ...[/]"));
-            }
-            else if (rows.Count > maxRows)
-            {
-                grid.AddRow(new Markup(""));
-            }
+            // No indicators inside the grid itself
 
             for (int i = topRow; i < endRow; i++)
             {
@@ -781,14 +776,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                 }
             }
 
-            if (endRow < rows.Count)
-            {
-                grid.AddRow(new Markup($"  [dim]▼ ... {rows.Count - endRow} items below ...[/]"));
-            }
-            else if (rows.Count > maxRows)
-            {
-                grid.AddRow(new Markup(""));
-            }
+            // No indicators inside the grid itself
         }
 
         var winWidth = 80;
@@ -839,10 +827,28 @@ public sealed class FlatTreeRenderer : MenuRendererBase
             noteText = "Use [↑/↓] or [j/k] to navigate commands.";
         }
 
-        grid.AddRow(new Markup($"\n[bold yellow]💡 Note:[/] [white]{noteText.EscapeMarkup()}[/]"));
+        string scrollStatus = "";
+        if (rows.Count > maxRows)
+        {
+            var aboveStr = topRow > 0 ? $"[yellow]▲ {topRow} items above[/]" : "[grey]▲ Start of list[/]";
+            var belowStr = (endRow < rows.Count) ? $"[yellow]▼ {rows.Count - endRow} items below[/]" : "[grey]▼ End of list[/]";
+            scrollStatus = $"  {aboveStr}   ·   {belowStr}";
+        }
+        else
+        {
+            scrollStatus = "  [grey]▲ Start of list   ·   ▼ End of list[/]";
+        }
 
         var hotkeyBar = new Markup("[dim]TUI Keys: [[↑/↓ j/k]] Navigate · [[PgUp/PgDn]] Scroll · [[/]] Filter · [[Enter/→]] Select/Expand · [[←]] Collapse · [[Esc/q]] Exit\nShell Aliases: cg (Git) · cdk (Docker) · cnav (Nav) · cai (AI) · csys (Sys) · cnet (Net) · cssh (SSH)[/]");
-        content = new Rows(content, new Markup("\n"), hotkeyBar);
+        
+        content = new Rows(
+            grid,
+            new Rule().RuleStyle("cyan dim"),
+            new Markup(scrollStatus),
+            new Markup($"  [bold yellow]💡 Note:[/] [white]{noteText.EscapeMarkup()}[/]"),
+            new Markup("\n"),
+            hotkeyBar
+        );
 
         var outerPanel = new Panel(content)
         {
@@ -859,6 +865,8 @@ public sealed class FlatTreeRenderer : MenuRendererBase
     {
         var grid = new Grid();
         grid.AddColumn(new GridColumn().NoWrap());
+
+        IRenderable content = grid;
 
         if (mode == "agyswitch")
         {
@@ -910,23 +918,19 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                 grid.AddRow(new Markup("[dim]Type to filter themes (Esc to clear / cancel)[/]\n"));
             }
 
+            int maxRows = 12;
+            int topRow = 0;
+            int endRow = 0;
+
             if (filtered.Length == 0)
             {
                 grid.AddRow(new Markup($"  [dim]No themes matching '{_detailsSearchBuffer.EscapeMarkup()}'.[/]"));
             }
             else
             {
-                int maxRows = 12;
-                var (topRow, endRow) = ScrollableListView.ComputeViewport(filtered.Length, selIdx, maxRows);
+                (topRow, endRow) = ScrollableListView.ComputeViewport(filtered.Length, selIdx, maxRows);
 
-                if (topRow > 0)
-                {
-                    grid.AddRow(new Markup($"  [dim]▲ ... {topRow} items above ...[/]"));
-                }
-                else if (filtered.Length > maxRows)
-                {
-                    grid.AddRow(new Markup(""));
-                }
+                // No indicators inside the grid itself
 
                 for (var i = topRow; i < endRow; i++)
                 {
@@ -938,17 +942,27 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     grid.AddRow(new Markup($"{prefix}{nameMarkup}{suffix}"));
                 }
 
-                if (endRow < filtered.Length)
-                {
-                    grid.AddRow(new Markup($"  [dim]▼ ... {filtered.Length - endRow} items below ...[/]"));
-                }
-                else if (filtered.Length > maxRows)
-                {
-                    grid.AddRow(new Markup(""));
-                }
+                // No indicators inside the grid itself
             }
 
-            grid.AddRow(new Markup("\n[dim]↑/↓/j/k Navigate  ·  PgDn/PgUp Page  ·  Enter Select  ·  Esc Cancel[/]"));
+            string scrollStatus = "";
+            if (filtered.Length > maxRows)
+            {
+                var aboveStr = topRow > 0 ? $"[yellow]▲ {topRow} items above[/]" : "[grey]▲ Start of list[/]";
+                var belowStr = (endRow < filtered.Length) ? $"[yellow]▼ {filtered.Length - endRow} items below[/]" : "[grey]▼ End of list[/]";
+                scrollStatus = $"  {aboveStr}   ·   {belowStr}";
+            }
+            else
+            {
+                scrollStatus = "  [grey]▲ Start of list   ·   ▼ End of list[/]";
+            }
+
+            content = new Rows(
+                grid,
+                new Rule().RuleStyle("cyan dim"),
+                new Markup(scrollStatus),
+                new Markup("\n[dim]↑/↓/j/k Navigate  ·  PgDn/PgUp Page  ·  Enter Select  ·  Esc Cancel[/]")
+            );
         }
         else if (mode == "learn" || mode == "session" || mode == "weak")
         {
@@ -992,25 +1006,21 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                 grid.AddRow(new Markup("[dim]Type to filter workspaces (Esc to clear / cancel)[/]\n"));
             }
 
+            int termH = 30;
+            try { termH = Console.WindowHeight; } catch { }
+            int maxRows = isMobile ? 5 : Math.Max(3, Math.Min(6, termH - 18));
+            int topRow = 0;
+            int endRow = 0;
+
             if (workspaces.Length == 0)
             {
                 grid.AddRow(new Markup($"  [dim]No workspaces matching '{_detailsSearchBuffer.EscapeMarkup()}'.[/]"));
             }
             else
             {
-                int termH = 30;
-                try { termH = Console.WindowHeight; } catch { }
-                int maxRows = isMobile ? 5 : Math.Max(3, Math.Min(6, termH - 18));
-                var (topRow, endRow) = ScrollableListView.ComputeViewport(workspaces.Length, selIdx, maxRows);
+                (topRow, endRow) = ScrollableListView.ComputeViewport(workspaces.Length, selIdx, maxRows);
 
-                if (topRow > 0)
-                {
-                    grid.AddRow(new Markup($"  [dim]▲ ... {topRow} items above ...[/]"));
-                }
-                else if (workspaces.Length > maxRows)
-                {
-                    grid.AddRow(new Markup(""));
-                }
+                // No indicators inside the grid itself
 
                 if (isMobile)
                 {
@@ -1078,24 +1088,34 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     grid.AddRow(table);
                 }
 
-                if (endRow < workspaces.Length)
-                {
-                    grid.AddRow(new Markup($"  [dim]▼ ... {workspaces.Length - endRow} items below ...[/]"));
-                }
-                else if (workspaces.Length > maxRows)
-                {
-                    grid.AddRow(new Markup(""));
-                }
+                // No indicators inside the grid itself
+            }
+
+            string scrollStatus = "";
+            if (workspaces.Length > maxRows)
+            {
+                var aboveStr = topRow > 0 ? $"[yellow]▲ {topRow} items above[/]" : "[grey]▲ Start of list[/]";
+                var belowStr = (endRow < workspaces.Length) ? $"[yellow]▼ {workspaces.Length - endRow} items below[/]" : "[grey]▼ End of list[/]";
+                scrollStatus = $"  {aboveStr}   ·   {belowStr}";
+            }
+            else
+            {
+                scrollStatus = "  [grey]▲ Start of list   ·   ▼ End of list[/]";
             }
 
             var selTarget = (selIdx >= 0 && selIdx < workspaces.Length) ? workspaces[selIdx]?.WorkspacePath : null;
             var targetDisplay = !string.IsNullOrEmpty(selTarget) ? selTarget : "No workspace selected";
-            grid.AddRow(new Markup($"\n[dim]Selected Target:[/] [bold cyan]{targetDisplay.EscapeMarkup()}[/]"));
 
-            grid.AddRow(new Markup("[bold cyan][[Enter]][/] Actions ([green]cd[/] / [cyan]/ide[/] / [yellow]Explorer[/] / [magenta]Git Diff[/])  ·  [bold cyan][[Esc]][/] Cancel"));
+            content = new Rows(
+                grid,
+                new Rule().RuleStyle("cyan dim"),
+                new Markup(scrollStatus),
+                new Markup($"  [dim]Selected Target:[/] [bold cyan]{targetDisplay.EscapeMarkup()}[/]"),
+                new Markup("\n[bold cyan][[Enter]][/] Actions ([green]cd[/] / [cyan]/ide[/] / [yellow]Explorer[/] / [magenta]Git Diff[/])  ·  [bold cyan][[Esc]][/] Cancel")
+            );
         }
 
-        var panel = new Panel(grid)
+        var panel = new Panel(content)
         {
             Header = new PanelHeader($"[bold cyan] {mode.ToUpperInvariant()} Selector [/]"),
             Border = BoxBorder.Rounded,
