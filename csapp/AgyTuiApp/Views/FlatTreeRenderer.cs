@@ -239,7 +239,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                 }
                 else if (key.KeyChar >= 32 && key.KeyChar <= 126)
                 {
-                    if (key.KeyChar == '/' && (string.IsNullOrEmpty(searchBuffer) || searchBuffer.All(c => c == '/')))
+                    if (key.KeyChar == '/' && string.IsNullOrEmpty(searchBuffer))
                     {
                         searchBuffer = "/";
                     }
@@ -370,6 +370,10 @@ public sealed class FlatTreeRenderer : MenuRendererBase
         try { winHeight = Console.WindowHeight; } catch { }
         int bannerHeight = (winHeight < 45) ? 3 : 10;
         int maxRows = Math.Max(3, winHeight - bannerHeight - 9);
+        if (searching && !string.IsNullOrEmpty(searchBuffer) && searchBuffer.StartsWith("//"))
+        {
+            maxRows = 9999;
+        }
         int topRow = 0;
         int endRow = 0;
 

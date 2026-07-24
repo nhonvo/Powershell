@@ -154,8 +154,14 @@ public static class WorkspaceRegistry
         return GetWorkspaces().Where(w => string.Equals(w.AssociatedAccount ?? "default", targetAccount, StringComparison.OrdinalIgnoreCase)).ToArray();
     }
 
+    private static readonly Dictionary<string, string> _branchCache = new(StringComparer.OrdinalIgnoreCase);
+
     public static string GetGitBranch(string dirPath)
     {
+        if (string.IsNullOrEmpty(dirPath)) return "";
+        if (_branchCache.TryGetValue(dirPath, out var cached)) return cached;
+
+        string branch = "";
         try
         {
             var gitPath = System.IO.Path.Combine(dirPath, ".git");
@@ -181,13 +187,18 @@ public static class WorkspaceRegistry
                 var txt = File.ReadAllText(headFile).Trim();
                 if (txt.StartsWith("ref: refs/heads/"))
                 {
-                    return txt.Substring("ref: refs/heads/".Length);
+                    branch = txt.Substring("ref: refs/heads/".Length);
                 }
-                if (txt.Length >= 7) return txt.Substring(0, 7);
+                else if (txt.Length >= 7)
+                {
+                    branch = txt.Substring(0, 7);
+                }
             }
         }
         catch { }
-        return "";
+
+        _branchCache[dirPath] = branch;
+        return branch;
     }
 
     public static readonly string[] SharedWorkspaceActions = new[]

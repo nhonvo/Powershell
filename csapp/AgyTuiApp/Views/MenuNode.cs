@@ -100,24 +100,21 @@ public static class MenuNodeBuilder
                 groupsList.Add(groupNode);
             }
 
-            // Combine ungrouped items and groups
-            var allCatChildren = new List<MenuNode>();
-            allCatChildren.AddRange(ungrouped);
-            allCatChildren.AddRange(groupsList);
+            // Sort ungrouped commands by SortOrder
+            var sortedUngrouped = ungrouped
+                .OrderBy(node => node.Command!.SortOrder)
+                .ToList();
 
-            // Sort children by SortOrder
-            var sortedChildren = allCatChildren
-                .OrderBy(node => {
-                    if (node.Kind == MenuNodeKind.Command)
-                    {
-                        return node.Command!.SortOrder;
-                    }
-                    else
-                    {
-                        return node.Children.Length > 0 ? node.Children.Min(c => c.Command!.SortOrder) : 999;
-                    }
-                })
-                .ToArray();
+            // Sort group nodes by SortOrder of their minimum child
+            var sortedGroups = groupsList
+                .OrderBy(node => node.Children.Length > 0 ? node.Children.Min(c => c.Command!.SortOrder) : 999)
+                .ToList();
+
+            // Combine: sorted ungrouped first, then sorted groups
+            var sortedChildren = new List<MenuNode>();
+            sortedChildren.AddRange(sortedUngrouped);
+            sortedChildren.AddRange(sortedGroups);
+            var sortedChildrenArray = sortedChildren.ToArray();
 
             var catId = catName.Trim('[', ']').ToLowerInvariant().Replace(" & ", "-").Replace(" ", "-");
 
@@ -125,7 +122,7 @@ public static class MenuNodeBuilder
                 catId,
                 catName,
                 MenuNodeKind.Category,
-                sortedChildren,
+                sortedChildrenArray,
                 null
             );
 
