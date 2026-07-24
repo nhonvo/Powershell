@@ -354,7 +354,7 @@ class ProfileEnvironment {
         # --- Module Loading & Auto-Healing ---
         $modules = @(
             @{ Name = "PSReadLine";                         Description = "Core CLI Experience" }
-            @{ Name = "z";                                  Description = "Smart Directory Navigation" }
+            # @{ Name = "z";                                  Description = "Smart Directory Navigation" }
         )
         if (-not $Global:AiMode) {
             $modules += @(
@@ -1511,16 +1511,19 @@ class AgyAccountManager {
 
 # --- Help shortcuts ---
 function Invoke-ControlCenter {
-    Initialize-AgySession
     $releaseDll = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTuiApp\dist\AgyTuiApp.dll"
     $debugDll = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
     if (Test-Path $releaseDll) {
         dotnet $releaseDll @args
-    } elseif (Test-Path $debugDll) {
-        dotnet $debugDll @args
+        Initialize-AgySession
     } else {
-        $proj = Join-Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\AgyTuiApp.csproj"
-        dotnet run --project $proj -- $args
+        Initialize-AgySession
+        if (Test-Path $debugDll) {
+            dotnet $debugDll @args
+        } else {
+            $proj = Join-Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\AgyTuiApp.csproj"
+            dotnet run --project $proj -- $args
+        }
     }
     $selectedProjFile = Join-Path -Path $Global:AgySourceHome -ChildPath "selected_project.txt"
     if (Test-Path $selectedProjFile) {
