@@ -380,14 +380,14 @@ public static class Program
                 case "mgr-setup":
                 case "manager-setup":
                 case "agm-setup":
-                    Projects.SetupManager();
+                    AntigravityManagerHelper.Setup();
                     break;
                 case "mgr":
                 case "mgr-start":
                 case "manager-start":
                 case "agm":
                 case "agm-start":
-                    Projects.StartManager();
+                    AntigravityManagerHelper.StartLocal();
                     break;
                 case "agy-cli":
                     if (!AgyAiCore.IsAgyEnabled())

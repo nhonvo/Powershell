@@ -434,8 +434,8 @@ public static class CommandRegistry
         var claudeCmds = new HashSet<string> { "claude", "claude-cloud", "claude-ollama" };
         var codexCmds = new HashSet<string> { "codex", "codex-cloud", "codex-ollama" };
         var ollamaCmds = new HashSet<string> { "ollama-status", "ollama-models", "ollama-pull", "ollama-start", "ollama-logs", "ollama-benchmark" };
-        var deckCmds = new HashSet<string> { "deck-status", "deck-setup", "deck-start", "deck-online" };
-        var mgrCmds = new HashSet<string> { "mgr-status", "mgr-setup", "mgr-start" };
+        var deckCmds = new HashSet<string> { "deck-status", "deck-setup", "deck-start", "deck-online", "desk-status", "desk-setup", "desk-start", "desk-online" };
+        var mgrCmds = new HashSet<string> { "mgr-status", "mgr-setup", "mgr-start", "mgr", "manager-status", "manager-setup", "manager-start", "agm", "agm-status", "agm-setup", "agm-start" };
         var sshCmds = new HashSet<string> { "ssh-info", "tailscale-status", "ssh-qr" };
         var quotaCmds = new HashSet<string> { "account-tree", "quota-chart", "live-dashboard" };
         
