@@ -21,6 +21,7 @@ public sealed class ThreePaneRenderer : MenuRendererBase
         var leftSel = 0;
         var midSel = 0;
         var midActive = false;
+        var searchBuffer = "";
 
         try { Console.CursorVisible = false; } catch { }
 
@@ -44,28 +45,128 @@ public sealed class ThreePaneRenderer : MenuRendererBase
                 }
             }
 
-            if (midSel >= visibleItems.Count) midSel = Math.Max(0, visibleItems.Count - 1);
+            if (!string.IsNullOrEmpty(searchBuffer))
+            {
+                visibleItems = visibleItems.Where(item =>
+                    SystemHelper.IsFuzzyMatch(item.Label, searchBuffer) ||
+                    (item.Command != null && SystemHelper.IsFuzzyMatch(item.Command.Alias, searchBuffer))
+                ).ToList();
+            }
+
+            if (midSel < 0) midSel = 0;
+            if (visibleItems.Count > 0 && midSel >= visibleItems.Count) midSel = visibleItems.Count - 1;
 
             ScreenChrome.RenderFrame(() =>
             {
-                RenderPanes(categories, leftSel, visibleItems, midSel, midActive);
+                RenderPanes(categories, leftSel, visibleItems, midSel, midActive, searchBuffer);
             });
 
             var key = Console.ReadKey(true);
 
+            // Handle search buffer keys when searching
+            if (!string.IsNullOrEmpty(searchBuffer))
+            {
+                if (key.Key == ConsoleKey.Backspace || (key.Modifiers.HasFlag(ConsoleModifiers.Control) && key.Key == ConsoleKey.W))
+                {
+                    bool isCtrlWordDelete = (key.Modifiers.HasFlag(ConsoleModifiers.Control)) ||
+                                            key.KeyChar == '\x17' || key.KeyChar == '\x7f' || key.KeyChar == '\x08';
+                    if (isCtrlWordDelete && key.Key == ConsoleKey.Backspace)
+                    {
+                        searchBuffer = DeletePreviousWord(searchBuffer);
+                    }
+                    else if (key.Modifiers.HasFlag(ConsoleModifiers.Control) && key.Key == ConsoleKey.W)
+                    {
+                        searchBuffer = DeletePreviousWord(searchBuffer);
+                    }
+                    else if (searchBuffer.Length > 0)
+                    {
+                        searchBuffer = searchBuffer[..^1];
+                    }
+                    midSel = 0;
+                }
+                else if (key.Key == ConsoleKey.Escape)
+                {
+                    searchBuffer = "";
+                    midSel = 0;
+                }
+                else if (key.Key == ConsoleKey.Enter)
+                {
+                    if (midSel >= 0 && midSel < visibleItems.Count)
+                    {
+                        var item = visibleItems[midSel];
+                        if (item.Command != null)
+                        {
+                            var alias = item.Command.Alias;
+                            if (string.Equals(alias, "agyswitch", StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(alias, "theme", StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(alias, "learn", StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(alias, "session", StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(alias, "weak", StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(alias, "proj", StringComparison.OrdinalIgnoreCase))
+                            {
+                                SubPageNavigator.Run(alias);
+                            }
+                            else if (StatusWidgetRegistry.GetByAlias(alias) != null)
+                            {
+                                // Widgets are rendered directly on the right pane, no direct execution needed on Enter
+                            }
+                            else
+                            {
+                                Console.CursorVisible = true;
+                                Program.RunCommand(alias);
+                                AnsiConsole.WriteLine();
+                                AnsiConsole.MarkupLine("[dim]Press any key to return to Control Center...[/]");
+                                Console.ReadKey(true);
+                                Console.CursorVisible = false;
+                            }
+                        }
+                    }
+                }
+                else if (key.Key == ConsoleKey.UpArrow || (key.Key == ConsoleKey.K && key.Modifiers == 0))
+                {
+                    if (visibleItems.Count > 0)
+                    {
+                        midSel = (midSel - 1 + visibleItems.Count) % visibleItems.Count;
+                    }
+                }
+                else if (key.Key == ConsoleKey.DownArrow || (key.Key == ConsoleKey.J && key.Modifiers == 0))
+                {
+                    if (visibleItems.Count > 0)
+                    {
+                        midSel = (midSel + 1) % visibleItems.Count;
+                    }
+                }
+                else if (key.KeyChar >= 32 && key.KeyChar <= 126 && key.Key != ConsoleKey.Enter)
+                {
+                    searchBuffer += key.KeyChar;
+                    midSel = 0;
+                }
+                continue;
+            }
 
+            // If search is empty, check for search key
+            if (key.KeyChar == '/' || key.Key == ConsoleKey.Divide || key.Key == ConsoleKey.Oem2)
+            {
+                searchBuffer = "";
+                midActive = true;
+                midSel = 0;
+                continue;
+            }
+
+            // Normal mode
             if (!midActive)
             {
                 switch (key.Key)
                 {
                     case ConsoleKey.UpArrow:
+                    case ConsoleKey.K:
                         {
                             var next = leftSel;
                             do
                             {
-                                next = Math.Max(0, next - 1);
+                                next = (next - 1 + categories.Length) % categories.Length;
                             }
-                            while (next > 0 && IsSep(categories, next));
+                            while (next != leftSel && IsSep(categories, next));
                             if (!IsSep(categories, next))
                             {
                                 leftSel = next;
@@ -74,13 +175,14 @@ public sealed class ThreePaneRenderer : MenuRendererBase
                             break;
                         }
                     case ConsoleKey.DownArrow:
+                    case ConsoleKey.J:
                         {
                             var next = leftSel;
                             do
                             {
-                                next = Math.Min(categories.Length - 1, next + 1);
+                                next = (next + 1) % categories.Length;
                             }
-                            while (next < categories.Length - 1 && IsSep(categories, next));
+                            while (next != leftSel && IsSep(categories, next));
                             if (!IsSep(categories, next))
                             {
                                 leftSel = next;
@@ -97,6 +199,14 @@ public sealed class ThreePaneRenderer : MenuRendererBase
                     case ConsoleKey.Escape:
                     case ConsoleKey.Q:
                         return;
+                    default:
+                        if (key.KeyChar >= 32 && key.KeyChar <= 126 && key.Key != ConsoleKey.Enter)
+                        {
+                            searchBuffer = key.KeyChar.ToString();
+                            midActive = true;
+                            midSel = 0;
+                        }
+                        break;
                 }
             }
             else
@@ -104,10 +214,18 @@ public sealed class ThreePaneRenderer : MenuRendererBase
                 switch (key.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        midSel = Math.Max(0, midSel - 1);
+                    case ConsoleKey.K:
+                        if (visibleItems.Count > 0)
+                        {
+                            midSel = (midSel - 1 + visibleItems.Count) % visibleItems.Count;
+                        }
                         break;
                     case ConsoleKey.DownArrow:
-                        midSel = Math.Min(visibleItems.Count - 1, midSel + 1);
+                    case ConsoleKey.J:
+                        if (visibleItems.Count > 0)
+                        {
+                            midSel = (midSel + 1) % visibleItems.Count;
+                        }
                         break;
                     case ConsoleKey.Enter:
                     case ConsoleKey.RightArrow:
@@ -154,6 +272,14 @@ public sealed class ThreePaneRenderer : MenuRendererBase
                         break;
                     case ConsoleKey.Q:
                         return;
+                    default:
+                        if (key.KeyChar >= 32 && key.KeyChar <= 126 && key.Key != ConsoleKey.Enter)
+                        {
+                            searchBuffer = key.KeyChar.ToString();
+                            midActive = true;
+                            midSel = 0;
+                        }
+                        break;
                 }
             }
         }
@@ -166,7 +292,8 @@ public sealed class ThreePaneRenderer : MenuRendererBase
         int leftSel,
         List<MenuNode> visibleItems,
         int midSel,
-        bool midActive)
+        bool midActive,
+        string searchBuffer)
     {
         var isCompact = Config.IsMobileContext();
         var leftSb = new StringBuilder();
@@ -188,28 +315,54 @@ public sealed class ThreePaneRenderer : MenuRendererBase
 
         var category = categories[leftSel];
         var midSb = new StringBuilder();
+
+        if (!string.IsNullOrEmpty(searchBuffer))
+        {
+            midSb.AppendLine($"[yellow]Search:[/] [white]{searchBuffer.EscapeMarkup()}[/]_");
+            midSb.AppendLine();
+        }
+
         for (var i = 0; i < visibleItems.Count; i++)
         {
             var item = visibleItems[i];
             var display = item.Label;
+
+            if (!string.IsNullOrEmpty(searchBuffer))
+            {
+                display = SystemHelper.BoldFuzzyMatch(display, searchBuffer);
+            }
+            else
+            {
+                display = display.EscapeMarkup();
+            }
 
             // Check if group is expanded
             if (item.Kind == MenuNodeKind.Group)
             {
                 var isExpanded = _expandedGroups.Contains(item.Id);
                 var arrow = isExpanded ? "▼" : "▶";
-                display = $"[bold cyan]{arrow} {item.Label.Trim().EscapeMarkup()}[/]";
+                display = $"[bold cyan]{arrow} {display}[/]";
             }
             else if (item.Command == null)
             {
                 // Nested item indentation
-                display = $"  {display.EscapeMarkup()}";
+                display = $"  {display}";
             }
 
             midSb.AppendLine(midActive && i == midSel ? $"[green bold]> {display}[/]" : $"  {display}");
         }
 
-        if (visibleItems.Count == 0) midSb.AppendLine("[dim]  (press Enter to select)[/]");
+        if (visibleItems.Count == 0)
+        {
+            if (!string.IsNullOrEmpty(searchBuffer))
+            {
+                midSb.AppendLine($"[dim]  No items matching '{searchBuffer.EscapeMarkup()}'[/]");
+            }
+            else
+            {
+                midSb.AppendLine("[dim]  (press Enter to select)[/]");
+            }
+        }
 
         var sectionTitle = category.Label.TrimStart('>', ' ');
         IRenderable detailsContent;
@@ -226,7 +379,6 @@ public sealed class ThreePaneRenderer : MenuRendererBase
                 detailsContent = widget.Render();
             }
             else
-
             {
                 var rightSb = new StringBuilder();
                 rightSb.AppendLine($"[bold white]{display.EscapeMarkup()}[/]");
