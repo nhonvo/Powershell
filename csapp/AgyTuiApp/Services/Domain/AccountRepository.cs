@@ -10,27 +10,9 @@ public static class AccountRepository
     public static string ActiveAccountFile => Path.Combine(AgySourceHome, "active_account.txt");
     public static string AccountsDir => Path.Combine(AgySourceHome, "accounts");
 
-    public static string GetActiveAccount()
-    {
-        if (File.Exists(ActiveAccountFile))
-        {
-            var acc = File.ReadAllText(ActiveAccountFile).Trim();
-            if (!string.IsNullOrEmpty(acc)) return acc;
-        }
-        return "default";
-    }
+    public static string GetActiveAccount() => AgyServices.Account.GetActiveAccount();
 
-    public static void SetActiveAccount(string accountName)
-    {
-        Directory.CreateDirectory(Path.GetDirectoryName(ActiveAccountFile)!);
-        File.WriteAllText(ActiveAccountFile, accountName);
+    public static void SetActiveAccount(string accountName) => AgyServices.Account.SetActiveAccount(accountName);
 
-        var markerPath = Path.Combine(AgySourceHome, "last_account_change.txt");
-        File.WriteAllText(markerPath, accountName);
-    }
-
-    public static string[] GetAccounts()
-    {
-        return AgyAccountCore.GetAccounts();
-    }
+    public static string[] GetAccounts() => AgyServices.Account.GetAccounts();
 }

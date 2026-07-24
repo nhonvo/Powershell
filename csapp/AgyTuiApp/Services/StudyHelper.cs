@@ -81,14 +81,7 @@ public static class LearnDataPaths
 
     public static void EnsureDirectories()
     {
-        foreach (var d in new[]
-        {
-            LearnRoot, JapaneseDir, EnglishDir, CsharpDir, DsaDir, CareerDir,
-            CertificationsDir, DecksDir, VocabDir, SnippetsDir, SheetsDir, StatsDir, GrammarDir
-        })
-        {
-            Directory.CreateDirectory(d);
-        }
+        AgyServices.Study.EnsureDirectories();
         SeedDefaultData();
     }
 
@@ -374,33 +367,9 @@ public static class LearnDataPaths
     }
     ;
 
-    public static T? LoadJson<T>(string path) where T : class
-    {
-        if (!File.Exists(path)) return null;
+    public static T? LoadJson<T>(string path) where T : class => AgyServices.Study.LoadJson<T>(path);
 
-        try
-        {
-            return JsonSerializer.Deserialize<T>(File.ReadAllText(path), _js);
-        }
-        catch
-        {
-            return null;
-        }
-
-    }
-
-    public static void SaveJson<T>(string path, T obj)
-    {
-        try
-        {
-            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path)!);
-            File.WriteAllText(path, JsonSerializer.Serialize(obj, _js), Encoding.UTF8);
-        }
-        catch
-        {
-        }
-
-    }
+    public static void SaveJson<T>(string path, T obj) => AgyServices.Study.SaveJson(path, obj);
 
 }
 
