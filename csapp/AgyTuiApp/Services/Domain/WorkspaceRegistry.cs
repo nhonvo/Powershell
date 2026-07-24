@@ -192,11 +192,14 @@ public static class WorkspaceRegistry
 
     public static readonly string[] SharedWorkspaceActions = new[]
     {
-        "📂 Change Directory on exit",
-        "🚀 Launch New Terminal Session (wt / pwsh)",
+        "📂 Change Directory to workspace",
+        "🚀 Open in New Terminal",
         "💻 Open in Terminal IDE (/ide)",
         "📁 Open in Windows File Explorer",
-        "🔀 View Git Status & Diff"
+        "🔀 View Git Status & Diff",
+        "🤖 Start Antigravity AI Agent (ask-ai)",
+        "🛸 Open Antigravity TUI / Deck",
+        "📦 Clean & Rebuild Project (.NET)"
     };
 
     public static string HandleWorkspaceAction(WorkspaceEntry selected, int actionIdx)
@@ -229,6 +232,34 @@ public static class WorkspaceRegistry
         else if (actionIdx == 4)
         {
             GitDiffViewer.ShowDiff(selected.WorkspacePath);
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 5)
+        {
+            SystemHelper.OpenNewTerminalSession(selected.WorkspacePath, "ask-ai");
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 6)
+        {
+            SystemHelper.OpenNewTerminalSession(selected.WorkspacePath, "cc");
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 7)
+        {
+            var projFiles = Directory.GetFiles(selected.WorkspacePath, "*.csproj", SearchOption.AllDirectories);
+            if (projFiles.Length > 0)
+            {
+                AnsiConsole.Clear();
+                AnsiConsole.MarkupLine("[bold cyan]🔨 Building .NET Projects...[/]\n");
+                Helpers.ProcessRunner.Run("dotnet", "build", selected.WorkspacePath);
+                AnsiConsole.MarkupLine("\n[dim]Press any key to return...[/]");
+                Console.ReadKey(true);
+            }
+            else
+            {
+                SpectrePanel.Warning("No C# project (.csproj) found in this workspace.");
+                Thread.Sleep(1500);
+            }
             return selected.WorkspacePath;
         }
         return selected.WorkspacePath;

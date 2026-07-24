@@ -22,7 +22,7 @@ public static class SubPageNavigator
     private static string _detailsSearchBuffer = "";
     private static int _selectedWorkspaceIndex = 0;
     private static int _selectedActionIndex = -1;
-    private static int _expandedWorkspaceIndex = 0;
+    private static int _expandedWorkspaceIndex = -1;
 
     public static void Run(string mode, string initialQuery = "")
     {
@@ -48,7 +48,7 @@ public static class SubPageNavigator
         {
             _selectedWorkspaceIndex = 0;
             _selectedActionIndex = -1;
-            _expandedWorkspaceIndex = 0;
+            _expandedWorkspaceIndex = -1;
         }
 
         _detailsSearchBuffer = initialQuery;
@@ -56,6 +56,7 @@ public static class SubPageNavigator
         while (true)
         {
             int itemsCount = 0;
+            var flatList = new List<FlatItem>();
             if (mode == "agyswitch")
             {
                 var accs = AgyAccountCore.GetAccounts();
@@ -93,7 +94,7 @@ public static class SubPageNavigator
                          (w.WorkspacePath != null && w.WorkspacePath.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)))).ToArray();
                 }
                 
-                var flatList = new List<FlatItem>();
+                flatList = new List<FlatItem>();
                 for (int i = 0; i < workspaces.Length; i++)
                 {
                     var w = workspaces[i];
@@ -171,7 +172,7 @@ public static class SubPageNavigator
                         {
                             _selectedWorkspaceIndex = 0;
                             _selectedActionIndex = -1;
-                            _expandedWorkspaceIndex = 0;
+                            _expandedWorkspaceIndex = -1;
                         }
                     }
                     break;
@@ -185,7 +186,7 @@ public static class SubPageNavigator
                                 ((w.Name != null && w.Name.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)) ||
                                  (w.WorkspacePath != null && w.WorkspacePath.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)))).ToArray();
                         }
-                        var flatList = new List<FlatItem>();
+                        flatList = new List<FlatItem>();
                         for (int i = 0; i < workspaces.Length; i++)
                         {
                             var w = workspaces[i];
@@ -204,14 +205,9 @@ public static class SubPageNavigator
                             var item = flatList[detailsSel];
                             if (item.ActionIndex == -1)
                             {
-                                if (_expandedWorkspaceIndex == item.WorkspaceIndex)
-                                {
-                                    _expandedWorkspaceIndex = -1;
-                                }
-                                else
-                                {
-                                    _expandedWorkspaceIndex = item.WorkspaceIndex;
-                                }
+                                // Default Enter on workspace row: Change directory (Action 0) and exit!
+                                WorkspaceRegistry.HandleWorkspaceAction(item.Workspace, 0);
+                                return;
                             }
                             else
                             {
@@ -229,6 +225,55 @@ public static class SubPageNavigator
                         }
                     }
                     break;
+                case ConsoleKey.RightArrow:
+                case ConsoleKey.L:
+                    if (mode == "proj" && flatList.Count > 0)
+                    {
+                        if (detailsSel >= 0 && detailsSel < flatList.Count)
+                        {
+                            var item = flatList[detailsSel];
+                            if (item.ActionIndex == -1)
+                            {
+                                _expandedWorkspaceIndex = item.WorkspaceIndex;
+                            }
+                        }
+                    }
+                    break;
+                case ConsoleKey.LeftArrow:
+                case ConsoleKey.H:
+                    if (mode == "proj" && flatList.Count > 0)
+                    {
+                        if (detailsSel >= 0 && detailsSel < flatList.Count)
+                        {
+                            var item = flatList[detailsSel];
+                            if (item.ActionIndex == -1)
+                            {
+                                if (_expandedWorkspaceIndex == item.WorkspaceIndex)
+                                {
+                                    _expandedWorkspaceIndex = -1;
+                                }
+                            }
+                            else
+                            {
+                                _expandedWorkspaceIndex = -1;
+                                _selectedActionIndex = -1;
+                                _selectedWorkspaceIndex = item.WorkspaceIndex;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(_detailsSearchBuffer))
+                        {
+                            _detailsSearchBuffer = "";
+                            detailsSel = 0;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                    break;
                 case ConsoleKey.A:
                     if (mode == "agyswitch")
                     {
@@ -242,7 +287,7 @@ public static class SubPageNavigator
                         {
                             _selectedWorkspaceIndex = 0;
                             _selectedActionIndex = -1;
-                            _expandedWorkspaceIndex = 0;
+                            _expandedWorkspaceIndex = -1;
                         }
                     }
                     break;
@@ -259,7 +304,7 @@ public static class SubPageNavigator
                         {
                             _selectedWorkspaceIndex = 0;
                             _selectedActionIndex = -1;
-                            _expandedWorkspaceIndex = 0;
+                            _expandedWorkspaceIndex = -1;
                         }
                     }
                     break;
@@ -276,11 +321,10 @@ public static class SubPageNavigator
                         {
                             _selectedWorkspaceIndex = 0;
                             _selectedActionIndex = -1;
-                            _expandedWorkspaceIndex = 0;
+                            _expandedWorkspaceIndex = -1;
                         }
                     }
                     break;
-                case ConsoleKey.LeftArrow:
                 case ConsoleKey.Escape:
                 case ConsoleKey.Q:
                     if (!string.IsNullOrEmpty(_detailsSearchBuffer))
@@ -291,7 +335,7 @@ public static class SubPageNavigator
                         {
                             _selectedWorkspaceIndex = 0;
                             _selectedActionIndex = -1;
-                            _expandedWorkspaceIndex = 0;
+                            _expandedWorkspaceIndex = -1;
                         }
                     }
                     else
@@ -312,7 +356,7 @@ public static class SubPageNavigator
                         {
                             _selectedWorkspaceIndex = 0;
                             _selectedActionIndex = -1;
-                            _expandedWorkspaceIndex = 0;
+                            _expandedWorkspaceIndex = -1;
                         }
                     }
                     break;
@@ -328,7 +372,7 @@ public static class SubPageNavigator
                         ((w.Name != null && w.Name.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)) ||
                          (w.WorkspacePath != null && w.WorkspacePath.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)))).ToArray();
                 }
-                var flatList = new List<FlatItem>();
+                flatList = new List<FlatItem>();
                 for (int i = 0; i < workspaces.Length; i++)
                 {
                     var w = workspaces[i];

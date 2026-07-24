@@ -89,7 +89,7 @@ public static class SystemHelper
         UseShellExecute = true
     });
 
-    public static void OpenNewTerminalSession(string? workingDirectory = null)
+    public static void OpenNewTerminalSession(string? workingDirectory = null, string? command = null)
     {
         var dir = !string.IsNullOrEmpty(workingDirectory) && Directory.Exists(workingDirectory)
             ? workingDirectory
@@ -97,10 +97,12 @@ public static class SystemHelper
 
         try
         {
+            var commandArg = string.IsNullOrEmpty(command) ? "" : $"-p \"PowerShell\" pwsh.exe -NoExit -Command \"{command}\"";
+            var args = string.IsNullOrEmpty(command) ? $"-d \"{dir}\"" : $"-d \"{dir}\" {commandArg}";
             var psi = new ProcessStartInfo
             {
                 FileName = "wt.exe",
-                Arguments = $"-d \"{dir}\"",
+                Arguments = args,
                 UseShellExecute = true
             };
             Process.Start(psi);
@@ -110,10 +112,15 @@ public static class SystemHelper
         {
             try
             {
+                var args = "-NoExit";
+                if (!string.IsNullOrEmpty(command))
+                {
+                    args = $"-NoExit -Command \"{command}\"";
+                }
                 var psi = new ProcessStartInfo
                 {
                     FileName = "powershell.exe",
-                    Arguments = "-NoExit",
+                    Arguments = args,
                     WorkingDirectory = dir,
                     UseShellExecute = true
                 };
