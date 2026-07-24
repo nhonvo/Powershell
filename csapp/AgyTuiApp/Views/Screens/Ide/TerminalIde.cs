@@ -35,35 +35,52 @@ public static class TerminalIde
             currentFile = Path.Combine(rootPath, files[0]);
         }
 
+        var showSidebar = true;
+
         while (true)
         {
             var activeTab = currentFile != null ? Path.GetFileName(currentFile) : "No file open";
 
+            var mainLayout = new Layout("Main");
+            if (showSidebar)
+            {
+                mainLayout.SplitColumns(
+                    new Layout("Sidebar").Size(30),
+                    new Layout("Editor")
+                );
+            }
+            else
+            {
+                mainLayout.SplitColumns(
+                    new Layout("Editor")
+                );
+            }
+
             var layout = new Layout("Root")
                 .SplitRows(
                     new Layout("Header").Size(3),
-                    new Layout("Main").SplitColumns(
-                        new Layout("Sidebar").Size(30),
-                        new Layout("Editor")
-                    ),
+                    mainLayout,
                     new Layout("Status").Size(3)
                 );
 
-            var sidebarLines = new List<string>();
-            foreach (var f in files.Take(15))
+            if (showSidebar)
             {
-                var icon = AgyTui.Icons.GetFileIcon(Path.GetExtension(f));
-                var prefix = currentFile != null && f == Path.GetRelativePath(rootPath, currentFile) ? "[green]▶ [/]" : "  ";
-                sidebarLines.Add($"{prefix}{icon} [cyan]{f}[/]");
-            }
-            if (files.Count > 15) sidebarLines.Add("  ...");
+                var sidebarLines = new List<string>();
+                foreach (var f in files.Take(15))
+                {
+                    var icon = AgyTui.Icons.GetFileIcon(Path.GetExtension(f));
+                    var prefix = currentFile != null && f == Path.GetRelativePath(rootPath, currentFile) ? "[green]▶ [/]" : "  ";
+                    sidebarLines.Add($"{prefix}{icon} [cyan]{f}[/]");
+                }
+                if (files.Count > 15) sidebarLines.Add("  ...");
 
-            var sidebarPanel = new Panel(string.Join("\n", sidebarLines))
-            {
-                Header = new PanelHeader("[bold yellow]Explorer[/]"),
-                Border = BoxBorder.Rounded
-            };
-            layout["Sidebar"].Update(sidebarPanel);
+                var sidebarPanel = new Panel(string.Join("\n", sidebarLines))
+                {
+                    Header = new PanelHeader("[bold yellow]Explorer[/]"),
+                    Border = BoxBorder.Rounded
+                };
+                layout["Sidebar"].Update(sidebarPanel);
+            }
 
             var breadcrumbs = currentFile != null
                 ? $"[bold white]📁 {Path.GetFileName(rootPath)}[/] › [green]{Path.GetRelativePath(rootPath, currentFile).Replace(Path.DirectorySeparatorChar, '›')}[/]"
@@ -121,29 +138,9 @@ public static class TerminalIde
                     Thread.Sleep(1000);
                 }
             }
-            else if ((key.Key == ConsoleKey.P && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'p')
+            else if ((key.Key == ConsoleKey.P && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'p' || key.KeyChar == '/')
             {
-                var query = AnsiConsole.Ask<string>("[cyan]Quick Open (Fuzzy Search):[/]").Trim();
-                var matches = files
-                    .Select(f => new { File = f, Score = FuzzyScore(query, f) })
-                    .Where(x => x.Score >= 0)
-                    .OrderByDescending(x => x.Score)
-                    .Select(x => x.File)
-                    .ToArray();
-                if (matches.Length > 0)
-                {
-                    var fileIdx = SpectreMenu.Show("Matches", matches, 0, true);
-                    if (fileIdx >= 0)
-                    {
-                        currentFile = Path.Combine(rootPath, matches[fileIdx]);
-                        UpdateAgyContext(rootPath, currentFile);
-                    }
-                }
-                else
-                {
-                    SpectrePanel.Warning("No matching files.");
-                    Thread.Sleep(1000);
-                }
+                OpenFileSearch(rootPath, files, ref currentFile);
             }
             else if ((key.Key == ConsoleKey.K && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'k')
             {
@@ -160,100 +157,9 @@ public static class TerminalIde
                     Thread.Sleep(1000);
                 }
             }
-            else if ((key.Key == ConsoleKey.B && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'b')
+            else if ((key.Key == ConsoleKey.B && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.Key == ConsoleKey.B)
             {
-                var fileIdx = SpectreMenu.Show("Select File to Open", files.ToArray(), 0, true);
-                if (fileIdx >= 0)
-                {
-                    currentFile = Path.Combine(rootPath, files[fileIdx]);
-                    UpdateAgyContext(rootPath, currentFile);
-                }
-            }
-            else if (key.KeyChar == '/')
-            {
-                AnsiConsole.Markup("[yellow]/[/]");
-                var commandLine = Console.ReadLine()?.Trim();
-                var skills = SkillLoader.Discover(rootPath).ToList();
-                if (string.IsNullOrEmpty(commandLine))
-                {
-                    var list = new List<string>();
-                    foreach (var c in IdeCommandRegistry.All)
-                    {
-                        list.Add($"/{c.Name,-10} {c.ArgHint,-12} [dim]{c.Description}[/]");
-                    }
-                    foreach (var s in skills)
-                    {
-                        list.Add($"🧩 /{s.Trigger,-8} {s.Name,-12} [dim]{s.Description}[/]");
-                    }
-                    list.Add("← Back to Editor");
-                    var menuIdx = SpectreMenu.Show("IDE Slash Commands", list.ToArray(), 0, true);
-                    if (menuIdx >= 0 && menuIdx < list.Count - 1)
-                    {
-                        if (menuIdx < IdeCommandRegistry.All.Length)
-                        {
-                            var c = IdeCommandRegistry.All[menuIdx];
-                            var context = new IdeContext(rootPath, currentFile);
-                            c.Run(context, []);
-                            currentFile = context.CurrentFile;
-                        }
-                        else
-                        {
-                            var s = skills[menuIdx - IdeCommandRegistry.All.Length];
-                            AnsiConsole.MarkupLine($"[cyan]Running Skill: {s.Name}...[/]");
-                            var context = new IdeContext(rootPath, currentFile);
-                            foreach (var step in s.Steps)
-                            {
-                                var primitiveCommand = IdeCommandRegistry.All.FirstOrDefault(c => c.Name.Equals(step.Primitive, StringComparison.OrdinalIgnoreCase));
-                                if (primitiveCommand != null)
-                                {
-                                    primitiveCommand.Run(context, string.IsNullOrEmpty(step.Arg) ? [] : [step.Arg]);
-                                }
-                            }
-                            currentFile = context.CurrentFile;
-                            AnsiConsole.MarkupLine("[green]Skill complete. Press any key...[/]");
-                            Console.ReadKey(true);
-                        }
-                    }
-                }
-                else
-                {
-                    var parts = commandLine.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                    if (parts.Length > 0)
-                    {
-                        var cmdName = parts[0].ToLowerInvariant();
-                        var cmdArgs = parts.Skip(1).ToArray();
-                        var command = IdeCommandRegistry.All.FirstOrDefault(c => c.Name.Equals(cmdName, StringComparison.OrdinalIgnoreCase));
-                        if (command != null)
-                        {
-                            var context = new IdeContext(rootPath, currentFile);
-                            command.Run(context, cmdArgs);
-                            currentFile = context.CurrentFile;
-                        }
-                        else
-                        {
-                            var skill = skills.FirstOrDefault(s => s.Trigger.Equals(cmdName, StringComparison.OrdinalIgnoreCase) || s.Name.Equals(cmdName, StringComparison.OrdinalIgnoreCase));
-                            if (skill != null)
-                            {
-                                AnsiConsole.MarkupLine($"[cyan]Running Skill: {skill.Name}...[/]");
-                                var context = new IdeContext(rootPath, currentFile);
-                                foreach (var step in skill.Steps)
-                                {
-                                    var primitiveCommand = IdeCommandRegistry.All.FirstOrDefault(c => c.Name.Equals(step.Primitive, StringComparison.OrdinalIgnoreCase));
-                                    if (primitiveCommand != null)
-                                    {
-                                        primitiveCommand.Run(context, string.IsNullOrEmpty(step.Arg) ? [] : [step.Arg]);
-                                    }
-                                }
-                                currentFile = context.CurrentFile;
-                            }
-                            else
-                            {
-                                SpectrePanel.Warning($"Unknown command or skill trigger: {cmdName}");
-                                Thread.Sleep(1000);
-                            }
-                        }
-                    }
-                }
+                showSidebar = !showSidebar;
             }
             else if (key.Key == ConsoleKey.Escape || key.KeyChar == 'q')
             {
@@ -454,5 +360,126 @@ public static class TerminalIde
         }
         
         return -1;
+    }
+
+    private static string DeletePreviousWord(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return "";
+        var trimmed = text.TrimEnd();
+        if (string.IsNullOrEmpty(trimmed)) return "";
+        int lastSpace = trimmed.LastIndexOf(' ');
+        if (lastSpace < 0) return "";
+        return trimmed[..lastSpace].TrimEnd();
+    }
+
+    private static void OpenFileSearch(string rootPath, List<string> files, ref string? currentFile)
+    {
+        var searchBuffer = "";
+        var selIdx = 0;
+        try { Console.CursorVisible = false; } catch { }
+
+        while (true)
+        {
+            var matches = files;
+            if (!string.IsNullOrEmpty(searchBuffer))
+            {
+                matches = files.Where(f => SystemHelper.IsFuzzyMatch(f, searchBuffer)).ToList();
+            }
+
+            if (selIdx < 0) selIdx = 0;
+            if (matches.Count > 0 && selIdx >= matches.Count) selIdx = matches.Count - 1;
+
+            ScreenChrome.RenderFrame(() =>
+            {
+                var grid = new Grid();
+                grid.AddColumn(new GridColumn().NoWrap());
+                grid.AddRow(new Markup("[bold green]📁 File Search / Quick Open[/]\n"));
+
+                if (!string.IsNullOrEmpty(searchBuffer))
+                {
+                    grid.AddRow(new Markup($"[yellow]Search:[/] [white]{searchBuffer.EscapeMarkup()}[/]_\n"));
+                }
+                else
+                {
+                    grid.AddRow(new Markup("[dim]Type to filter files (Esc to cancel, Enter to open)[/]\n"));
+                }
+
+                if (matches.Count == 0)
+                {
+                    grid.AddRow(new Markup($"  [dim]No files matching '{searchBuffer.EscapeMarkup()}'.[/]"));
+                }
+                else
+                {
+                    int winH = 30;
+                    try { winH = Console.WindowHeight; } catch { }
+                    int maxRows = Math.Max(5, winH - 10);
+                    var (topRow, endRow) = ScrollableListView.ComputeViewport(matches.Count, selIdx, maxRows);
+
+                    for (int i = topRow; i < endRow; i++)
+                    {
+                        var isSelected = (i == selIdx);
+                        var prefix = isSelected ? "[green bold]❯ [/]" : "  ";
+                        var f = matches[i];
+                        var icon = Icons.GetFileIcon(Path.GetExtension(f));
+                        var boldF = string.IsNullOrEmpty(searchBuffer) ? f.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(f, searchBuffer);
+                        grid.AddRow(new Markup($"{prefix}{icon} {boldF}"));
+                    }
+                }
+
+                AnsiConsole.Write(new Panel(grid) { Border = BoxBorder.Rounded });
+            });
+
+            var key = Console.ReadKey(true);
+            if (key.Key == ConsoleKey.Backspace || (key.Modifiers.HasFlag(ConsoleModifiers.Control) && key.Key == ConsoleKey.W))
+            {
+                bool isCtrlWordDelete = (key.Modifiers.HasFlag(ConsoleModifiers.Control)) ||
+                                        key.KeyChar == '\x17' || key.KeyChar == '\x7f' || key.KeyChar == '\x08';
+                if (isCtrlWordDelete && key.Key == ConsoleKey.Backspace)
+                {
+                    searchBuffer = DeletePreviousWord(searchBuffer);
+                }
+                else if (key.Modifiers.HasFlag(ConsoleModifiers.Control) && key.Key == ConsoleKey.W)
+                {
+                    searchBuffer = DeletePreviousWord(searchBuffer);
+                }
+                else if (searchBuffer.Length > 0)
+                {
+                    searchBuffer = searchBuffer[..^1];
+                }
+                selIdx = 0;
+            }
+            else if (key.Key == ConsoleKey.Escape)
+            {
+                return;
+            }
+            else if (key.Key == ConsoleKey.Enter)
+            {
+                if (matches.Count > 0 && selIdx >= 0 && selIdx < matches.Count)
+                {
+                    currentFile = Path.Combine(rootPath, matches[selIdx]);
+                    UpdateAgyContext(rootPath, currentFile);
+                    return;
+                }
+            }
+            else if (key.Key == ConsoleKey.UpArrow || (key.Key == ConsoleKey.K && key.Modifiers == 0))
+            {
+                if (matches.Count > 0)
+                {
+                    selIdx = (selIdx - 1 + matches.Count) % matches.Count;
+                }
+            }
+            else if (key.Key == ConsoleKey.DownArrow || (key.Key == ConsoleKey.J && key.Modifiers == 0))
+            {
+                if (matches.Count > 0)
+                {
+                    selIdx = (selIdx + 1) % matches.Count;
+                }
+            }
+            else if (key.KeyChar >= 32 && key.KeyChar <= 126 && key.KeyChar != '/')
+            {
+                searchBuffer += key.KeyChar;
+                selIdx = 0;
+            }
+        }
     }
 }
