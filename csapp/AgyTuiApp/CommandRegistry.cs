@@ -426,10 +426,10 @@ public static class CommandRegistry
 
     static CommandRegistry()
     {
-        var gitCmds = new HashSet<string> { "gs", "ga", "gbr", "gcmt", "glog", "gpull", "gpush", "gf", "gd", "git-undo" };
+        var gitCmds = new HashSet<string> { "gs", "ga", "gbr", "gcmt", "glog", "gpull", "gpush", "gf", "gd", "git-undo", "glo", "glg", "gpu", "gus", "gundo" };
         var repoCmds = new HashSet<string> { "nexus", "repo-graph", "nexus-stats" };
-        var dotnetCmds = new HashSet<string> { "dbld", "dr", "dtst", "df", "dcl", "drestore", "dpublish", "dpack", "dpubpkg", "dwatch", "rebuild", "clean-build", "add-migration", "update-db" };
-        var dockerCmds = new HashSet<string> { "docker-health", "dkcl", "dkrmac", "dkstac", "dimg", "dlogs", "dcup", "dcdown" };
+        var dotnetCmds = new HashSet<string> { "dbld", "dr", "dtst", "df", "dcl", "drestore", "dpublish", "dpack", "dpubpkg", "dwatch", "rebuild", "clean-build", "add-migration", "update-db", "db", "dt", "dres", "dw", "dclean", "da", "du" };
+        var dockerCmds = new HashSet<string> { "docker-health", "dkcl", "dkrmac", "dkstac", "dimg", "dlogs", "dcup", "dcdown", "dkcpu", "dkcpd" };
         var awsCmds = new HashSet<string> { "aws-whoami", "aws-local", "aws-s3", "aws-sqs", "aws-ssm", "aws-sns", "aws-dynamodb", "aws-lambda" };
         var claudeCmds = new HashSet<string> { "claude", "claude-cloud", "claude-ollama" };
         var codexCmds = new HashSet<string> { "codex", "codex-cloud", "codex-ollama" };
