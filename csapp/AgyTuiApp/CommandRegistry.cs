@@ -457,17 +457,16 @@ public static class CommandRegistry
             "aws-whoami", "aws-local", "aws-s3", "aws-sqs", "aws-ssm", "aws-sns", "aws-dynamodb", "aws-lambda",
 
             // Category 2: [AI Agent & Ollama]
-            // Claude group
-            "claude", "claude-cloud", "claude-ollama",
-            // Codex group
-            "codex", "codex-cloud", "codex-ollama",
-            "openclaw", "hermes", "hermesd",
-            // Ollama group
-            "ollama-status", "ollama-models", "ollama-pull", "ollama-start", "ollama-logs", "ollama-benchmark",
             // Deck group
             "deck-status", "deck-setup", "deck-start", "deck-online",
             // Mgr group
             "mgr-status", "mgr-setup", "mgr-start",
+            // Ollama group
+            "ollama-status", "ollama-models", "ollama-pull", "ollama-start", "ollama-logs", "ollama-benchmark",
+            // Other agents/models
+            "openclaw", "hermes", "hermesd",
+            "claude", "claude-cloud", "claude-ollama",
+            "codex", "codex-cloud", "codex-ollama",
             "agy-cli", "ai-history",
 
             // Category 3: [AGY Account Switch]

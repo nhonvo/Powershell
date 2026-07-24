@@ -119,21 +119,20 @@ public static class MenuNodeBuilder
                 groupsList.Add(groupNode);
             }
 
-            // Sort ungrouped commands by SortOrder
-            var sortedUngrouped = ungrouped
-                .OrderBy(node => node.Command!.SortOrder)
-                .ToList();
+            // Combine all children (both ungrouped and groups) and sort them by SortOrder
+            var allChildren = new List<MenuNode>();
+            allChildren.AddRange(ungrouped);
+            allChildren.AddRange(groupsList);
 
-            // Sort group nodes by SortOrder of their minimum child
-            var sortedGroups = groupsList
-                .OrderBy(node => node.Children.Length > 0 ? node.Children.Min(c => c.Command!.SortOrder) : 999)
-                .ToList();
-
-            // Combine: sorted ungrouped first, then sorted groups
-            var sortedChildren = new List<MenuNode>();
-            sortedChildren.AddRange(sortedUngrouped);
-            sortedChildren.AddRange(sortedGroups);
-            var sortedChildrenArray = sortedChildren.ToArray();
+            var sortedChildrenArray = allChildren
+                .OrderBy(node => {
+                    if (node.Kind == MenuNodeKind.Group)
+                    {
+                        return node.Children.Length > 0 ? node.Children.Min(c => c.Command!.SortOrder) : 9999;
+                    }
+                    return node.Command!.SortOrder;
+                })
+                .ToArray();
 
             var catId = catName.Trim('[', ']').ToLowerInvariant().Replace(" & ", "-").Replace(" ", "-");
 

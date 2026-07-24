@@ -339,6 +339,13 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                             {
                                 Console.CursorVisible = true;
                                 Program.RunCommand(alias);
+                                if (string.Equals(alias, "deck-start", StringComparison.OrdinalIgnoreCase) ||
+                                    string.Equals(alias, "desk-start", StringComparison.OrdinalIgnoreCase) ||
+                                    string.Equals(alias, "deck-online", StringComparison.OrdinalIgnoreCase) ||
+                                    string.Equals(alias, "desk-online", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    return;
+                                }
                                 AnsiConsole.WriteLine();
                                 AnsiConsole.MarkupLine("[dim]Press any key to return to Control Center...[/]");
                                 Console.ReadKey(true);
