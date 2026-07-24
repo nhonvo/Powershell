@@ -150,19 +150,19 @@ function Write-AgyStartupCheckpoint {
 Write-AgyStartupCheckpoint "script start"
  
 # ==============================================================================
-# ==============================================================================
 #  AGY TUI — compiled C# Spectre.Console application (AgyTuiApp)
 # ==============================================================================
 $Global:AgyTuiAppProject = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTuiApp\AgyTuiApp.csproj"
 function Load-AgyTuiDll {
+    param([bool]$SkipBuildCheck = $false)
     if ($null -eq ([System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTuiApp" })) {
-        $targetDll = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+        $targetDll = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\bin\Debug\net9.0\AgyTuiApp.dll"
         if (-not (Test-Path $targetDll)) {
             $targetDll = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\dist\AgyTuiApp.dll"
         }
         $proj = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\AgyTuiApp.csproj"
-        $needsBuild = -not (Test-Path $targetDll)
-        if (-not $needsBuild -and (Test-Path $proj)) {
+        $needsBuild = -not $SkipBuildCheck -and -not (Test-Path $targetDll)
+        if (-not $needsBuild -and -not $SkipBuildCheck -and (Test-Path $proj)) {
             $dllMtime = (Get-Item $targetDll).LastWriteTime
             $newestCs = Get-ChildItem -Path (Join-Path $Global:ProfileRepoRoot "csapp\AgyTuiApp") -Filter "*.cs" -Recurse | Sort-Object LastWriteTime -Descending | Select-Object -First 1
             if ($newestCs -and $newestCs.LastWriteTime -gt $dllMtime) {
@@ -1798,6 +1798,10 @@ Set-Alias -Name clh -Value Clear-ShellHistory -Force
 # ==============================================================================
 # Startup complete
 # ==============================================================================
+try {
+    Load-AgyTuiDll -SkipBuildCheck $true
+} catch {}
+
 try {
     if ($global:AgySessionInitialized) {
         [AgyTui.LogHelper]::Log("Enhanced PowerShell Profile loaded successfully. (AiMode = $Global:AiMode)")
