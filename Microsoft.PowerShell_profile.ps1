@@ -1524,9 +1524,7 @@ function Invoke-ControlCenter {
     $debugDll = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
     if (Test-Path $releaseDll) {
         dotnet $releaseDll @args
-        Initialize-AgySession
     } else {
-        Initialize-AgySession
         if (Test-Path $debugDll) {
             dotnet $debugDll @args
         } else {
