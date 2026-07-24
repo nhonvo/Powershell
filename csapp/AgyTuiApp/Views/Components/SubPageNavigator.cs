@@ -12,9 +12,19 @@ namespace AgyTui;
 
 public static class SubPageNavigator
 {
-    private static string _detailsSearchBuffer = "";
+    private struct FlatItem
+    {
+        public WorkspaceEntry Workspace;
+        public int WorkspaceIndex;
+        public int ActionIndex;
+    }
 
-    public static void Run(string mode)
+    private static string _detailsSearchBuffer = "";
+    private static int _selectedWorkspaceIndex = 0;
+    private static int _selectedActionIndex = -1;
+    private static int _expandedWorkspaceIndex = 0;
+
+    public static void Run(string mode, string initialQuery = "")
     {
         mode = mode.ToLowerInvariant();
         int detailsSel = 0;
@@ -34,8 +44,14 @@ public static class SubPageNavigator
             detailsSel = Array.IndexOf(themeFiles, currentTheme);
             if (detailsSel < 0) detailsSel = 0;
         }
+        else if (mode == "proj")
+        {
+            _selectedWorkspaceIndex = 0;
+            _selectedActionIndex = -1;
+            _expandedWorkspaceIndex = 0;
+        }
 
-        _detailsSearchBuffer = "";
+        _detailsSearchBuffer = initialQuery;
 
         while (true)
         {
@@ -76,7 +92,38 @@ public static class SubPageNavigator
                         ((w.Name != null && w.Name.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)) ||
                          (w.WorkspacePath != null && w.WorkspacePath.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)))).ToArray();
                 }
-                itemsCount = workspaces.Length;
+                
+                var flatList = new List<FlatItem>();
+                for (int i = 0; i < workspaces.Length; i++)
+                {
+                    var w = workspaces[i];
+                    flatList.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -1 });
+                    if (i == _expandedWorkspaceIndex)
+                    {
+                        for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
+                        {
+                            flatList.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = j });
+                        }
+                    }
+                }
+                itemsCount = flatList.Count;
+                
+                detailsSel = flatList.FindIndex(item => item.WorkspaceIndex == _selectedWorkspaceIndex && item.ActionIndex == _selectedActionIndex);
+                if (detailsSel < 0)
+                {
+                    if (flatList.Count > 0)
+                    {
+                        detailsSel = 0;
+                        _selectedWorkspaceIndex = flatList[0].WorkspaceIndex;
+                        _selectedActionIndex = flatList[0].ActionIndex;
+                    }
+                    else
+                    {
+                        detailsSel = 0;
+                        _selectedWorkspaceIndex = 0;
+                        _selectedActionIndex = -1;
+                    }
+                }
             }
 
             ScreenChrome.RenderFrame(() =>
@@ -120,13 +167,66 @@ public static class SubPageNavigator
                             _detailsSearchBuffer = _detailsSearchBuffer[..^1];
                         }
                         detailsSel = 0;
+                        if (mode == "proj")
+                        {
+                            _selectedWorkspaceIndex = 0;
+                            _selectedActionIndex = -1;
+                            _expandedWorkspaceIndex = 0;
+                        }
                     }
                     break;
                 case ConsoleKey.Enter:
-                    if (detailsSel >= 0 && detailsSel < itemsCount)
+                    if (mode == "proj")
                     {
-                        bool shouldExit = HandleSelection(mode, detailsSel);
-                        if (shouldExit) return;
+                        var workspaces = WorkspaceRegistry.GetWorkspaces();
+                        if (!string.IsNullOrEmpty(_detailsSearchBuffer))
+                        {
+                            workspaces = workspaces.Where(w => w != null && 
+                                ((w.Name != null && w.Name.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)) ||
+                                 (w.WorkspacePath != null && w.WorkspacePath.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)))).ToArray();
+                        }
+                        var flatList = new List<FlatItem>();
+                        for (int i = 0; i < workspaces.Length; i++)
+                        {
+                            var w = workspaces[i];
+                            flatList.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -1 });
+                            if (i == _expandedWorkspaceIndex)
+                            {
+                                for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
+                                {
+                                    flatList.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = j });
+                                }
+                            }
+                        }
+
+                        if (detailsSel >= 0 && detailsSel < flatList.Count)
+                        {
+                            var item = flatList[detailsSel];
+                            if (item.ActionIndex == -1)
+                            {
+                                if (_expandedWorkspaceIndex == item.WorkspaceIndex)
+                                {
+                                    _expandedWorkspaceIndex = -1;
+                                }
+                                else
+                                {
+                                    _expandedWorkspaceIndex = item.WorkspaceIndex;
+                                }
+                            }
+                            else
+                            {
+                                WorkspaceRegistry.HandleWorkspaceAction(item.Workspace, item.ActionIndex);
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (detailsSel >= 0 && detailsSel < itemsCount)
+                        {
+                            bool shouldExit = HandleSelection(mode, detailsSel);
+                            if (shouldExit) return;
+                        }
                     }
                     break;
                 case ConsoleKey.A:
@@ -134,17 +234,50 @@ public static class SubPageNavigator
                     {
                         CreateAccount();
                     }
+                    else
+                    {
+                        _detailsSearchBuffer += key.KeyChar;
+                        detailsSel = 0;
+                        if (mode == "proj")
+                        {
+                            _selectedWorkspaceIndex = 0;
+                            _selectedActionIndex = -1;
+                            _expandedWorkspaceIndex = 0;
+                        }
+                    }
                     break;
                 case ConsoleKey.D:
                     if (mode == "agyswitch" && detailsSel >= 0 && detailsSel < itemsCount)
                     {
                         DeleteAccount(detailsSel);
                     }
+                    else
+                    {
+                        _detailsSearchBuffer += key.KeyChar;
+                        detailsSel = 0;
+                        if (mode == "proj")
+                        {
+                            _selectedWorkspaceIndex = 0;
+                            _selectedActionIndex = -1;
+                            _expandedWorkspaceIndex = 0;
+                        }
+                    }
                     break;
                 case ConsoleKey.O:
                     if (mode == "agyswitch" && detailsSel >= 0 && detailsSel < itemsCount)
                     {
                         LogoutAccount(detailsSel);
+                    }
+                    else
+                    {
+                        _detailsSearchBuffer += key.KeyChar;
+                        detailsSel = 0;
+                        if (mode == "proj")
+                        {
+                            _selectedWorkspaceIndex = 0;
+                            _selectedActionIndex = -1;
+                            _expandedWorkspaceIndex = 0;
+                        }
                     }
                     break;
                 case ConsoleKey.LeftArrow:
@@ -154,6 +287,12 @@ public static class SubPageNavigator
                     {
                         _detailsSearchBuffer = "";
                         detailsSel = 0;
+                        if (mode == "proj")
+                        {
+                            _selectedWorkspaceIndex = 0;
+                            _selectedActionIndex = -1;
+                            _expandedWorkspaceIndex = 0;
+                        }
                     }
                     else
                     {
@@ -169,8 +308,49 @@ public static class SubPageNavigator
                         }
                         _detailsSearchBuffer += key.KeyChar;
                         detailsSel = 0;
+                        if (mode == "proj")
+                        {
+                            _selectedWorkspaceIndex = 0;
+                            _selectedActionIndex = -1;
+                            _expandedWorkspaceIndex = 0;
+                        }
                     }
                     break;
+            }
+
+            // Sync selection state back from detailsSel
+            if (mode == "proj" && itemsCount > 0)
+            {
+                var workspaces = WorkspaceRegistry.GetWorkspaces();
+                if (!string.IsNullOrEmpty(_detailsSearchBuffer))
+                {
+                    workspaces = workspaces.Where(w => w != null && 
+                        ((w.Name != null && w.Name.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)) ||
+                         (w.WorkspacePath != null && w.WorkspacePath.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)))).ToArray();
+                }
+                var flatList = new List<FlatItem>();
+                for (int i = 0; i < workspaces.Length; i++)
+                {
+                    var w = workspaces[i];
+                    flatList.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -1 });
+                    if (i == _expandedWorkspaceIndex)
+                    {
+                        for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
+                        {
+                            flatList.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = j });
+                        }
+                    }
+                }
+
+                if (detailsSel < 0) detailsSel = 0;
+                if (detailsSel >= flatList.Count) detailsSel = flatList.Count - 1;
+                
+                if (flatList.Count > 0)
+                {
+                    var selectedItem = flatList[detailsSel];
+                    _selectedWorkspaceIndex = selectedItem.WorkspaceIndex;
+                    _selectedActionIndex = selectedItem.ActionIndex;
+                }
             }
         }
     }
@@ -490,7 +670,6 @@ public static class SubPageNavigator
                      (w.WorkspacePath != null && w.WorkspacePath.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)))).ToArray();
 
             var currentDir = Directory.GetCurrentDirectory();
-            bool isMobile = Config.IsMobileContext();
 
             grid.AddRow(new Markup($"[bold green]📁 Registered Workspace Navigator (cnav)[/] [dim]({workspaces.Length}/{allWorkspaces.Length} workspaces)[/]:\n"));
 
@@ -509,85 +688,66 @@ public static class SubPageNavigator
             }
             else
             {
+                var flatList = new List<FlatItem>();
+                for (int i = 0; i < workspaces.Length; i++)
+                {
+                    var w = workspaces[i];
+                    flatList.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -1 });
+                    if (i == _expandedWorkspaceIndex)
+                    {
+                        for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
+                        {
+                            flatList.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = j });
+                        }
+                    }
+                }
+
                 int termH = 30;
                 try { termH = Console.WindowHeight; } catch { }
-                int maxRows = isMobile ? 5 : Math.Max(3, Math.Min(6, termH - 18));
+                int maxRows = Math.Max(5, termH - 18);
                 int topRow = 0;
                 int endRow = 0;
 
-                (topRow, endRow) = ScrollableListView.ComputeViewport(workspaces.Length, selIdx, maxRows);
+                (topRow, endRow) = ScrollableListView.ComputeViewport(flatList.Count, selIdx, maxRows);
 
-                if (isMobile)
+                for (int i = topRow; i < endRow; i++)
                 {
-                    for (var i = topRow; i < endRow; i++)
+                    var item = flatList[i];
+                    var isSelected = (i == selIdx);
+
+                    if (item.ActionIndex == -1)
                     {
-                        if (workspaces[i] == null) continue;
-                        var wsPath = workspaces[i].WorkspacePath ?? "";
-                        var wsName = workspaces[i].Name ?? "Unnamed Workspace";
-                        var isSelected = (i == selIdx);
-                        var isCurrent = !string.IsNullOrEmpty(wsPath) && string.Equals(wsPath.TrimEnd('\\', '/'), currentDir.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
+                        var ws = item.Workspace;
+                        var isCurrent = !string.IsNullOrEmpty(ws.WorkspacePath) && string.Equals(ws.WorkspacePath.TrimEnd('\\', '/'), currentDir.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
 
                         var prefix = isSelected ? "[green bold]❯ [/]" : "  ";
-                        var status = isCurrent ? "[bold green][[ACTIVE]][/] " : "";
-                        var branch = WorkspaceRegistry.GetGitBranch(wsPath);
-                        var branchSuffix = !string.IsNullOrEmpty(branch) ? $" [yellow]({branch})[/]" : "";
-                        var nameMarkup = isSelected ? $"[bold green]{wsName.EscapeMarkup()}[/]" : $"[bold white]{wsName.EscapeMarkup()}[/]";
+                        var status = isCurrent ? "[bold black on green] ACTIVE [/] " : "";
+                        var branch = WorkspaceRegistry.GetGitBranch(ws.WorkspacePath);
+                        var branchSuffix = !string.IsNullOrEmpty(branch) ? $" [yellow]🌿 {branch}[/]" : "";
+                        var nameMarkup = isSelected ? $"[bold green]{ws.Name.EscapeMarkup()}[/]" : $"[bold white]{ws.Name.EscapeMarkup()}[/]";
+                        var pathMarkup = $"[dim]· {ws.WorkspacePath.EscapeMarkup()}[/]";
 
-                        grid.AddRow(new Markup($"{prefix}{status}{nameMarkup}{branchSuffix}\n   [dim]{wsPath.EscapeMarkup()}[/]"));
+                        var expandSign = (item.WorkspaceIndex == _expandedWorkspaceIndex) ? "[-] " : "[+] ";
+
+                        grid.AddRow(new Markup($"{prefix}{expandSign}📁 {status}{nameMarkup}{branchSuffix} {pathMarkup}"));
                     }
-                }
-                else
-                {
-                    var table = new Table()
-                        .Border(TableBorder.Rounded)
-                        .BorderColor(Color.Cyan1)
-                        .Expand()
-                        .AddColumn(new TableColumn("[bold cyan]Sel[/]").Width(3).Centered().NoWrap())
-                        .AddColumn(new TableColumn("[bold cyan]Status[/]").Width(10).Centered().NoWrap())
-                        .AddColumn(new TableColumn("[bold cyan]Workspace Name[/]").Width(26).NoWrap())
-                        .AddColumn(new TableColumn("[bold cyan]Git Branch[/]").Width(14).NoWrap())
-                        .AddColumn(new TableColumn("[bold cyan]Directory Path[/]").NoWrap());
-
-                    for (var i = topRow; i < endRow; i++)
+                    else
                     {
-                        if (workspaces[i] == null) continue;
-                        var wsPath = workspaces[i].WorkspacePath ?? "";
-                        var wsName = workspaces[i].Name ?? "Unnamed Workspace";
-                        var isSelected = (i == selIdx);
-                        var isCurrent = !string.IsNullOrEmpty(wsPath) && string.Equals(wsPath.TrimEnd('\\', '/'), currentDir.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
+                        var isLast = (item.ActionIndex == WorkspaceRegistry.SharedWorkspaceActions.Length - 1);
+                        var bullet = isLast ? "└── " : "├── ";
+                        var prefix = isSelected ? "  [green bold]❯──[/] " : $"  {bullet}";
 
-                        var cursorMarkup = isSelected ? "[green bold]❯[/]" : " ";
-                        var statusMarkup = isCurrent ? "[bold black on green] ACTIVE [/]" : "[dim cyan][[READY]][/]";
-                        
-                        var nameMarkup = isSelected 
-                            ? $"[bold green]📁 {wsName.EscapeMarkup()}[/]" 
-                            : $"[bold white]📁 {wsName.EscapeMarkup()}[/]";
-
-                        var branch = WorkspaceRegistry.GetGitBranch(wsPath);
-                        var branchMarkup = !string.IsNullOrEmpty(branch) 
-                            ? $"[yellow]🌿 {branch.EscapeMarkup()}[/]" 
-                            : "[dim]—[/]";
-
-                        var pathMarkup = isSelected
-                            ? $"[cyan]{wsPath.EscapeMarkup()}[/]"
-                            : $"[dim]{wsPath.EscapeMarkup()}[/]";
-
-                        table.AddRow(
-                            new Markup(cursorMarkup),
-                            new Markup(statusMarkup),
-                            new Markup(nameMarkup),
-                            new Markup(branchMarkup),
-                            new Markup(pathMarkup)
-                        );
+                        var actionLabel = WorkspaceRegistry.SharedWorkspaceActions[item.ActionIndex];
+                        var labelMarkup = isSelected ? $"[bold green]{actionLabel.EscapeMarkup()}[/]" : $"[dim]{actionLabel.EscapeMarkup()}[/]";
+                        grid.AddRow(new Markup($"{prefix}{labelMarkup}"));
                     }
-                    grid.AddRow(table);
                 }
 
                 string scrollStatus = "";
-                if (workspaces.Length > maxRows)
+                if (flatList.Count > maxRows)
                 {
                     var aboveStr = topRow > 0 ? $"[yellow]▲ {topRow} items above[/]" : "[grey]▲ Start of list[/]";
-                    var belowStr = (endRow < workspaces.Length) ? $"[yellow]▼ {workspaces.Length - endRow} items below[/]" : "[grey]▼ End of list[/]";
+                    var belowStr = (endRow < flatList.Count) ? $"[yellow]▼ {flatList.Count - endRow} items below[/]" : "[grey]▼ End of list[/]";
                     scrollStatus = $"  {aboveStr}   ·   {belowStr}";
                 }
                 else
@@ -595,7 +755,7 @@ public static class SubPageNavigator
                     scrollStatus = "  [grey]▲ Start of list   ·   ▼ End of list[/]";
                 }
 
-                var selTarget = (selIdx >= 0 && selIdx < workspaces.Length) ? workspaces[selIdx]?.WorkspacePath : null;
+                var selTarget = (_selectedWorkspaceIndex >= 0 && _selectedWorkspaceIndex < workspaces.Length) ? workspaces[_selectedWorkspaceIndex]?.WorkspacePath : null;
                 var targetDisplay = !string.IsNullOrEmpty(selTarget) ? selTarget : "No workspace selected";
 
                 content = new Rows(
@@ -603,7 +763,7 @@ public static class SubPageNavigator
                     new Rule().RuleStyle("cyan dim"),
                     new Markup(scrollStatus),
                     new Markup($"  [dim]Selected Target:[/] [bold cyan]{targetDisplay.EscapeMarkup()}[/]"),
-                    new Markup("\n[bold cyan][[Enter]][/] Actions ([green]cd[/] / [cyan]/ide[/] / [yellow]Explorer[/] / [magenta]Git Diff[/])  ·  [bold cyan][[Esc]][/] Cancel")
+                    new Markup("\n[bold cyan][[Enter]][/] Toggle/Run  ·  [bold cyan][[Esc]][/] Cancel")
                 );
             }
         }

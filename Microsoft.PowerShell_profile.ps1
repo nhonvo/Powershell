@@ -1003,14 +1003,11 @@ Set-Item -Path Alias:\cls -Value Clear-Host -Force -Option AllScope
 function Set-LocationParent { Set-Location .. }
 function Set-LocationGrandParent { Set-Location ..\.. }
 function Invoke-OpenExplorer { Initialize-AgySession; [AgyTui.SystemHelper]::OpenExplorer() }
-function Enter-Project {
+function Invoke-WorkspaceNavigator {
  param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Name)
- Initialize-AgySession
- $query = $Name -join ' '
- $target = [AgyTui.ProfileNavigator]::Navigate($query)
- if ($target) { Set-Location $target }
+ Invoke-ControlCenter "proj" $Name
 }
-Set-Alias -Name proj -Value Enter-Project -Force
+Set-Alias -Name proj -Value Invoke-WorkspaceNavigator -Force
 function Invoke-TerminalIde {
  param([string]$Path)
  Initialize-AgySession

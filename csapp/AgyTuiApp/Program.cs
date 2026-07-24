@@ -133,11 +133,8 @@ public static class Program
                 case "proj":
                 case "prj":
                 case "p":
-                    var projPath = ProfileNavigator.Navigate("");
-                    if (!string.IsNullOrEmpty(projPath))
-                    {
-                        AnsiConsole.MarkupLine($"Navigate target: [green]{projPath}[/]");
-                    }
+                    var q = args != null && args.Length > 0 ? string.Join(" ", args) : "";
+                    SubPageNavigator.Run("proj", q);
                     break;
                 case "f":
                     SystemHelper.OpenExplorer();
