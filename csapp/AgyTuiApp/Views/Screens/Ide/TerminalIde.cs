@@ -1,4 +1,3 @@
-using System.Text;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -6,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using Spectre.Console;
 using AgyTui.Components;
@@ -36,6 +36,9 @@ public static class TerminalIde
         }
 
         var showSidebar = true;
+        var sidebarFocused = true;
+        var sidebarSel = 0;
+        var editorScrollOffset = 0;
 
         while (true)
         {
@@ -66,18 +69,54 @@ public static class TerminalIde
             if (showSidebar)
             {
                 var sidebarLines = new List<string>();
-                foreach (var f in files.Take(15))
-                {
-                    var icon = AgyTui.Icons.GetFileIcon(Path.GetExtension(f));
-                    var prefix = currentFile != null && f == Path.GetRelativePath(rootPath, currentFile) ? "[green]▶ [/]" : "  ";
-                    sidebarLines.Add($"{prefix}{icon} [cyan]{f}[/]");
-                }
-                if (files.Count > 15) sidebarLines.Add("  ...");
+                int termH = 30;
+                try { termH = Console.WindowHeight; } catch { }
+                int maxSidebarRows = Math.Max(5, termH - 8);
+                var (sTop, sEnd) = ScrollableListView.ComputeViewport(files.Count, sidebarSel, maxSidebarRows);
 
+                for (int i = sTop; i < sEnd; i++)
+                {
+                    var f = files[i];
+                    var icon = AgyTui.Icons.GetFileIcon(Path.GetExtension(f));
+                    var isCurrent = currentFile != null && f == Path.GetRelativePath(rootPath, currentFile);
+                    var isSelected = (i == sidebarSel);
+
+                    var prefix = isCurrent ? "[green]▶ [/]" : "  ";
+                    var line = $"{prefix}{icon} {f}";
+                    
+                    if (isSelected)
+                    {
+                        if (sidebarFocused)
+                        {
+                            line = $"[bold black on yellow]❯ {icon} {f}[/]";
+                        }
+                        else
+                        {
+                            line = $"[bold yellow]❯ {icon} {f}[/]";
+                        }
+                    }
+                    else if (isCurrent)
+                    {
+                        line = $"[bold green]  {icon} {f}[/]";
+                    }
+                    else
+                    {
+                        line = $"  [cyan]{icon} {f}[/]";
+                    }
+                    sidebarLines.Add(line);
+                }
+
+                if (files.Count > maxSidebarRows && sEnd < files.Count)
+                {
+                    sidebarLines.Add($"  [dim]... {files.Count - sEnd} more files[/]");
+                }
+
+                var sidebarTitle = sidebarFocused ? "[bold yellow]EXPLORER (Focused)[/]" : "[dim]EXPLORER[/]";
                 var sidebarPanel = new Panel(string.Join("\n", sidebarLines))
                 {
-                    Header = new PanelHeader("[bold yellow]Explorer[/]"),
-                    Border = BoxBorder.Rounded
+                    Header = new PanelHeader(sidebarTitle),
+                    Border = BoxBorder.Rounded,
+                    BorderStyle = new Style(sidebarFocused ? Color.Yellow : Color.Grey)
                 };
                 layout["Sidebar"].Update(sidebarPanel);
             }
@@ -92,26 +131,50 @@ public static class TerminalIde
             layout["Header"].Update(headerPanel);
 
             string editorText = "";
+            var editorTitle = "";
             if (currentFile != null && File.Exists(currentFile))
             {
-                var fileLines = File.ReadAllLines(currentFile).Take(40).ToList();
-                editorText = string.Join("\n", fileLines.Select((l, i) => $"[dim]{i + 1:D3} |[/] {l.EscapeMarkup()}"));
-                if (File.ReadAllLines(currentFile).Length > 40) editorText += "\n[dim]... (truncated) ...[/]";
+                var allLines = File.ReadAllLines(currentFile);
+                int termH = 30;
+                try { termH = Console.WindowHeight; } catch { }
+                int maxEditorRows = Math.Max(5, termH - 8);
+
+                if (editorScrollOffset < 0) editorScrollOffset = 0;
+                if (editorScrollOffset >= allLines.Length) editorScrollOffset = Math.Max(0, allLines.Length - 1);
+
+                var displayLines = allLines.Skip(editorScrollOffset).Take(maxEditorRows).ToList();
+                var sb = new StringBuilder();
+                for (int i = 0; i < displayLines.Count; i++)
+                {
+                    int lineNum = editorScrollOffset + i + 1;
+                    sb.AppendLine($"[dim]{lineNum:D3} │[/] {displayLines[i].EscapeMarkup()}");
+                }
+
+                if (allLines.Length > editorScrollOffset + maxEditorRows)
+                {
+                    sb.AppendLine($"[dim]... (truncated, showing lines {editorScrollOffset + 1}-{editorScrollOffset + displayLines.Count} of {allLines.Length}) ...[/]");
+                }
+                editorText = sb.ToString();
+                editorTitle = $" [bold green] {activeTab} [/] ({allLines.Length} lines) ";
             }
             else
             {
                 editorText = "[dim]No file loaded. Select a file from the sidebar to inspect.[/]";
+                editorTitle = " [bold green] Editor [/] ";
             }
+
             var editorPanel = new Panel(editorText)
             {
-                Header = new PanelHeader($"[bold green] {activeTab} [/]"),
-                Border = BoxBorder.Rounded
+                Header = new PanelHeader(editorTitle),
+                Border = BoxBorder.Rounded,
+                BorderStyle = new Style(!sidebarFocused ? Color.Yellow : Color.Grey)
             };
             layout["Editor"].Update(editorPanel);
 
             var branch = Helpers.ProcessRunner.RunCapture("git", "branch --show-current").Trim();
             if (string.IsNullOrEmpty(branch)) branch = "main";
-            var statusText = $"[green]⚙ {activeTab.EscapeMarkup()}[/] | Git: [yellow]{branch.EscapeMarkup()}[/] | [dim][[Ctrl+B]] Sidebar | [[Ctrl+P]] Quick Open | [[Ctrl+K]] Ask AI[/]";
+            var modeTag = sidebarFocused ? "[bold black on yellow] EXPLORER [/]" : "[bold black on green] EDITOR [/]";
+            var statusText = $"{modeTag} | [green]⚙ {activeTab.EscapeMarkup()}[/] | Git: [yellow]{branch.EscapeMarkup()}[/] | [dim][[Tab]] Switch Pane | [[/]] Search | [[e]] Edit | [[k]] AI | [[b]] Sidebar[/]";
             var statusPanel = new Panel(new Align(new Markup(statusText), HorizontalAlignment.Left, VerticalAlignment.Middle))
             {
                 Border = BoxBorder.Rounded,
@@ -126,22 +189,36 @@ public static class TerminalIde
 
             AnsiConsole.WriteLine();
             var key = Console.ReadKey(intercept: true);
-            if ((key.Key == ConsoleKey.R && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'e')
+            
+            // Tab navigation
+            if (key.Key == ConsoleKey.Tab)
             {
-                if (currentFile != null)
+                if (showSidebar)
                 {
-                    ProcessRunner.Run(EditorResolver.Resolve(), $"\"{currentFile}\"");
+                    sidebarFocused = !sidebarFocused;
                 }
                 else
                 {
-                    SpectrePanel.Warning("No active file open to edit.");
-                    Thread.Sleep(1000);
+                    sidebarFocused = false;
                 }
             }
+            // Toggle sidebar visibility
+            else if ((key.Key == ConsoleKey.B && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'b')
+            {
+                showSidebar = !showSidebar;
+                if (!showSidebar) sidebarFocused = false;
+            }
+            // Open file search
             else if ((key.Key == ConsoleKey.P && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'p' || key.KeyChar == '/')
             {
                 OpenFileSearch(rootPath, files, ref currentFile);
+                if (currentFile != null)
+                {
+                    editorScrollOffset = 0;
+                    sidebarFocused = false;
+                }
             }
+            // Ask AI
             else if ((key.Key == ConsoleKey.K && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'k')
             {
                 if (currentFile != null && File.Exists(currentFile))
@@ -157,10 +234,100 @@ public static class TerminalIde
                     Thread.Sleep(1000);
                 }
             }
-            else if ((key.Key == ConsoleKey.B && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.Key == ConsoleKey.B)
+            // Edit file
+            else if ((key.Key == ConsoleKey.R && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'e')
             {
-                showSidebar = !showSidebar;
+                if (currentFile != null)
+                {
+                    ProcessRunner.Run(EditorResolver.Resolve(), $"\"{currentFile}\"");
+                }
+                else
+                {
+                    SpectrePanel.Warning("No active file open to edit.");
+                    Thread.Sleep(1000);
+                }
             }
+            // Up Arrow (Navigate sidebar or scroll editor)
+            else if (key.Key == ConsoleKey.UpArrow || (key.Key == ConsoleKey.K && key.Modifiers == 0))
+            {
+                if (sidebarFocused)
+                {
+                    if (files.Count > 0)
+                    {
+                        sidebarSel = (sidebarSel - 1 + files.Count) % files.Count;
+                    }
+                }
+                else
+                {
+                    editorScrollOffset = Math.Max(0, editorScrollOffset - 1);
+                }
+            }
+            // Down Arrow (Navigate sidebar or scroll editor)
+            else if (key.Key == ConsoleKey.DownArrow || (key.Key == ConsoleKey.J && key.Modifiers == 0))
+            {
+                if (sidebarFocused)
+                {
+                    if (files.Count > 0)
+                    {
+                        sidebarSel = (sidebarSel + 1) % files.Count;
+                    }
+                }
+                else
+                {
+                    editorScrollOffset++;
+                }
+            }
+            // PageUp
+            else if (key.Key == ConsoleKey.PageUp)
+            {
+                if (sidebarFocused)
+                {
+                    sidebarSel = Math.Max(0, sidebarSel - 10);
+                }
+                else
+                {
+                    editorScrollOffset = Math.Max(0, editorScrollOffset - 20);
+                }
+            }
+            // PageDown
+            else if (key.Key == ConsoleKey.PageDown)
+            {
+                if (sidebarFocused)
+                {
+                    sidebarSel = Math.Min(files.Count - 1, sidebarSel + 10);
+                }
+                else
+                {
+                    editorScrollOffset += 20;
+                }
+            }
+            // Enter
+            else if (key.Key == ConsoleKey.Enter)
+            {
+                if (sidebarFocused)
+                {
+                    if (sidebarSel >= 0 && sidebarSel < files.Count)
+                    {
+                        currentFile = Path.Combine(rootPath, files[sidebarSel]);
+                        UpdateAgyContext(rootPath, currentFile);
+                        editorScrollOffset = 0;
+                        sidebarFocused = false;
+                    }
+                }
+            }
+            // Left/Right Arrow focus switching
+            else if (key.Key == ConsoleKey.LeftArrow || (key.Key == ConsoleKey.H && key.Modifiers == 0))
+            {
+                if (showSidebar)
+                {
+                    sidebarFocused = true;
+                }
+            }
+            else if (key.Key == ConsoleKey.RightArrow || (key.Key == ConsoleKey.L && key.Modifiers == 0))
+            {
+                sidebarFocused = false;
+            }
+            // Escape / Quit
             else if (key.Key == ConsoleKey.Escape || key.KeyChar == 'q')
             {
                 break;
@@ -283,7 +450,8 @@ public static class TerminalIde
         var matches = lines.Select((l, i) => (line: l, num: i + 1)).Where(x => Regex.IsMatch(x.line, pattern, RegexOptions.IgnoreCase)).ToArray();
         if (matches.Length == 0)
         {
-            SpectrePanel.Info($"No matches for '{pattern}'.");
+            AnsiConsole.MarkupLine("[yellow]No matches found.[/]");
+            Thread.Sleep(1000);
             return;
         }
         CodeViewer.ShowWithHighlight(filePath, matches.Select(m => m.num).ToArray());
@@ -309,7 +477,8 @@ public static class TerminalIde
         }
         if (results.Count == 0)
         {
-            SpectrePanel.Info($"No matches for '{pattern}'.");
+            AnsiConsole.MarkupLine("[yellow]No matches found.[/]");
+            Thread.Sleep(1000);
             return;
         }
         SpectrePager.Show($"Search results: {pattern}", [.. results]);
