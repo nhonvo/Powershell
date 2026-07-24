@@ -15,11 +15,71 @@ namespace AgyTui;
 
 public static class TerminalIde
 {
+    private struct ExplorerNode
+    {
+        public string Path;
+        public string Name;
+        public bool IsDirectory;
+        public int Level;
+    }
+
     public static void Open(string? path = null)
     {
         var root = path ?? Directory.GetCurrentDirectory();
         UpdateAgyContext(root);
         ShowIdeLayout(root);
+    }
+
+    private static List<ExplorerNode> GetVisibleNodes(string rootPath, string dir, int level, HashSet<string> expandedFolders)
+    {
+        var nodes = new List<ExplorerNode>();
+        try
+        {
+            var dirs = Directory.GetDirectories(dir)
+                .Where(d => {
+                    var name = Path.GetFileName(d);
+                    return !name.Equals("bin") && !name.Equals("obj") && !name.Equals(".git") && !name.StartsWith(".");
+                })
+                .OrderBy(d => d)
+                .ToList();
+
+            foreach (var d in dirs)
+            {
+                nodes.Add(new ExplorerNode 
+                { 
+                    Path = d, 
+                    Name = Path.GetFileName(d), 
+                    IsDirectory = true, 
+                    Level = level 
+                });
+
+                if (expandedFolders.Contains(d))
+                {
+                    nodes.AddRange(GetVisibleNodes(rootPath, d, level + 1, expandedFolders));
+                }
+            }
+
+            var files = Directory.GetFiles(dir)
+                .Where(f => {
+                    var name = Path.GetFileName(f);
+                    return !name.Equals("bin") && !name.Equals("obj") && !name.Equals(".git") && !name.StartsWith(".");
+                })
+                .OrderBy(f => f)
+                .ToList();
+
+            foreach (var f in files)
+            {
+                nodes.Add(new ExplorerNode 
+                { 
+                    Path = f, 
+                    Name = Path.GetFileName(f), 
+                    IsDirectory = false, 
+                    Level = level 
+                });
+            }
+        }
+        catch {}
+        return nodes;
     }
 
     public static void ShowIdeLayout(string rootPath, string? openFilePath = null)
@@ -39,9 +99,15 @@ public static class TerminalIde
         var sidebarFocused = true;
         var sidebarSel = 0;
         var editorScrollOffset = 0;
+        var expandedFolders = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         while (true)
         {
+            var visibleNodes = GetVisibleNodes(rootPath, rootPath, 0, expandedFolders);
+
+            if (sidebarSel < 0) sidebarSel = 0;
+            if (visibleNodes.Count > 0 && sidebarSel >= visibleNodes.Count) sidebarSel = visibleNodes.Count - 1;
+
             var activeTab = currentFile != null ? Path.GetFileName(currentFile) : "No file open";
 
             var mainLayout = new Layout("Main");
@@ -72,43 +138,47 @@ public static class TerminalIde
                 int termH = 30;
                 try { termH = Console.WindowHeight; } catch { }
                 int maxSidebarRows = Math.Max(5, termH - 9);
-                var (sTop, sEnd) = ScrollableListView.ComputeViewport(files.Count, sidebarSel, maxSidebarRows);
+                var (sTop, sEnd) = ScrollableListView.ComputeViewport(visibleNodes.Count, sidebarSel, maxSidebarRows);
 
                 for (int i = sTop; i < sEnd; i++)
                 {
-                    var f = files[i];
-                    var icon = AgyTui.Icons.GetFileIcon(Path.GetExtension(f));
-                    var isCurrent = currentFile != null && f == Path.GetRelativePath(rootPath, currentFile);
+                    var node = visibleNodes[i];
                     var isSelected = (i == sidebarSel);
-
-                    var prefix = isCurrent ? "[green]▶ [/]" : "  ";
-                    var line = $"{prefix}{icon} {f}";
                     
+                    var indent = new string(' ', node.Level * 2);
+                    var icon = node.IsDirectory 
+                        ? (expandedFolders.Contains(node.Path) ? "📂" : "📁")
+                        : AgyTui.Icons.GetFileIcon(Path.GetExtension(node.Name));
+
+                    var isCurrent = !node.IsDirectory && currentFile != null && string.Equals(node.Path, currentFile, StringComparison.OrdinalIgnoreCase);
+                    var prefix = isCurrent ? "[green]▶ [/]" : "  ";
+                    var line = $"{prefix}{indent}{icon} {node.Name}";
+
                     if (isSelected)
                     {
                         if (sidebarFocused)
                         {
-                            line = $"[bold black on yellow]❯ {icon} {f}[/]";
+                            line = $"[bold black on yellow]❯ {indent}{icon} {node.Name}[/]";
                         }
                         else
                         {
-                            line = $"[bold yellow]❯ {icon} {f}[/]";
+                            line = $"[bold yellow]❯ {indent}{icon} {node.Name}[/]";
                         }
                     }
                     else if (isCurrent)
                     {
-                        line = $"[bold green]  {icon} {f}[/]";
+                        line = $"[bold green]  {indent}{icon} {node.Name}[/]";
                     }
                     else
                     {
-                        line = $"  [cyan]{icon} {f}[/]";
+                        line = node.IsDirectory ? $"  {indent}[bold cyan]{icon} {node.Name}[/]" : $"  {indent}[cyan]{icon} {node.Name}[/]";
                     }
                     sidebarLines.Add(line);
                 }
 
-                if (files.Count > maxSidebarRows && sEnd < files.Count)
+                if (visibleNodes.Count > maxSidebarRows && sEnd < visibleNodes.Count)
                 {
-                    sidebarLines.Add($"  [dim]... {files.Count - sEnd} more files[/]");
+                    sidebarLines.Add($"  [dim]... {visibleNodes.Count - sEnd} more files[/]");
                 }
 
                 var sidebarTitle = sidebarFocused ? "[bold yellow]EXPLORER (Focused)[/]" : "[dim]EXPLORER[/]";
@@ -253,9 +323,9 @@ public static class TerminalIde
             {
                 if (sidebarFocused)
                 {
-                    if (files.Count > 0)
+                    if (visibleNodes.Count > 0)
                     {
-                        sidebarSel = (sidebarSel - 1 + files.Count) % files.Count;
+                        sidebarSel = (sidebarSel - 1 + visibleNodes.Count) % visibleNodes.Count;
                     }
                 }
                 else
@@ -268,9 +338,9 @@ public static class TerminalIde
             {
                 if (sidebarFocused)
                 {
-                    if (files.Count > 0)
+                    if (visibleNodes.Count > 0)
                     {
-                        sidebarSel = (sidebarSel + 1) % files.Count;
+                        sidebarSel = (sidebarSel + 1) % visibleNodes.Count;
                     }
                 }
                 else
@@ -295,7 +365,7 @@ public static class TerminalIde
             {
                 if (sidebarFocused)
                 {
-                    sidebarSel = Math.Min(files.Count - 1, sidebarSel + 10);
+                    sidebarSel = Math.Min(visibleNodes.Count - 1, sidebarSel + 10);
                 }
                 else
                 {
@@ -307,26 +377,48 @@ public static class TerminalIde
             {
                 if (sidebarFocused)
                 {
-                    if (sidebarSel >= 0 && sidebarSel < files.Count)
+                    if (sidebarSel >= 0 && sidebarSel < visibleNodes.Count)
                     {
-                        currentFile = Path.Combine(rootPath, files[sidebarSel]);
-                        UpdateAgyContext(rootPath, currentFile);
-                        editorScrollOffset = 0;
-                        sidebarFocused = false;
+                        var node = visibleNodes[sidebarSel];
+                        if (node.IsDirectory)
+                        {
+                            if (expandedFolders.Contains(node.Path))
+                                expandedFolders.Remove(node.Path);
+                            else
+                                expandedFolders.Add(node.Path);
+                        }
+                        else
+                        {
+                            currentFile = node.Path;
+                            UpdateAgyContext(rootPath, currentFile);
+                            editorScrollOffset = 0;
+                            sidebarFocused = false;
+                        }
                     }
                 }
             }
-            // Left/Right Arrow focus switching
+            // Left/Right Arrow focus switching or collapse/expand
             else if (key.Key == ConsoleKey.LeftArrow || (key.Key == ConsoleKey.H && key.Modifiers == 0))
             {
-                if (showSidebar)
+                if (sidebarFocused && sidebarSel >= 0 && sidebarSel < visibleNodes.Count && visibleNodes[sidebarSel].IsDirectory)
+                {
+                    expandedFolders.Remove(visibleNodes[sidebarSel].Path);
+                }
+                else if (showSidebar)
                 {
                     sidebarFocused = true;
                 }
             }
             else if (key.Key == ConsoleKey.RightArrow || (key.Key == ConsoleKey.L && key.Modifiers == 0))
             {
-                sidebarFocused = false;
+                if (sidebarFocused && sidebarSel >= 0 && sidebarSel < visibleNodes.Count && visibleNodes[sidebarSel].IsDirectory)
+                {
+                    expandedFolders.Add(visibleNodes[sidebarSel].Path);
+                }
+                else
+                {
+                    sidebarFocused = false;
+                }
             }
             // Escape / Quit
             else if (key.Key == ConsoleKey.Escape || key.KeyChar == 'q')

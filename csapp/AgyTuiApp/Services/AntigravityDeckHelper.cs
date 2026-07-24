@@ -48,7 +48,14 @@ public static class AntigravityDeckHelper
     {
         try
         {
-            Helpers.ProcessRunner.Run("npm.cmd", $"{cmd} {arg}", DeckPath);
+            if (OperatingSystem.IsWindows())
+            {
+                Helpers.ProcessRunner.Run("cmd.exe", $"/c npm {cmd} {arg}", DeckPath);
+            }
+            else
+            {
+                Helpers.ProcessRunner.Run("npm", $"{cmd} {arg}", DeckPath);
+            }
         }
         catch (Exception ex)
         {
