@@ -54,13 +54,13 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                 bool IsNodeMatch(MenuNode n)
                 {
                     if (matchAll) return true;
-                    if (!string.IsNullOrEmpty(n.Label) && n.Label.Contains(rawQ, StringComparison.OrdinalIgnoreCase)) return true;
-                    if (!string.IsNullOrEmpty(n.SearchKey) && n.SearchKey.Contains(rawQ, StringComparison.OrdinalIgnoreCase)) return true;
+                    if (!string.IsNullOrEmpty(n.Label) && SystemHelper.IsFuzzyMatch(n.Label, rawQ)) return true;
+                    if (!string.IsNullOrEmpty(n.SearchKey) && SystemHelper.IsFuzzyMatch(n.SearchKey, rawQ)) return true;
                     if (n.Command != null)
                     {
-                        if (!string.IsNullOrEmpty(n.Command.Alias) && n.Command.Alias.Contains(rawQ, StringComparison.OrdinalIgnoreCase)) return true;
-                        if (!string.IsNullOrEmpty(n.Command.DisplayName) && n.Command.DisplayName.Contains(rawQ, StringComparison.OrdinalIgnoreCase)) return true;
-                        if (!string.IsNullOrEmpty(n.Command.Description) && n.Command.Description.Contains(rawQ, StringComparison.OrdinalIgnoreCase)) return true;
+                        if (!string.IsNullOrEmpty(n.Command.Alias) && SystemHelper.IsFuzzyMatch(n.Command.Alias, rawQ)) return true;
+                        if (!string.IsNullOrEmpty(n.Command.DisplayName) && SystemHelper.IsFuzzyMatch(n.Command.DisplayName, rawQ)) return true;
+                        if (!string.IsNullOrEmpty(n.Command.Description) && SystemHelper.IsFuzzyMatch(n.Command.Description, rawQ)) return true;
                     }
                     return false;
                 }
@@ -236,17 +236,15 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     {
                         searchBuffer = searchBuffer[..^1];
                     }
+
+                    if (string.IsNullOrEmpty(searchBuffer))
+                    {
+                        searching = false;
+                    }
                 }
                 else if (key.KeyChar >= 32 && key.KeyChar <= 126)
                 {
-                    if (key.KeyChar == '/' && string.IsNullOrEmpty(searchBuffer))
-                    {
-                        searchBuffer = "/";
-                    }
-                    else
-                    {
-                        searchBuffer += key.KeyChar;
-                    }
+                    searchBuffer += key.KeyChar;
                 }
                 selectionIndex = 0;
                 continue;
@@ -351,7 +349,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     if (key.KeyChar >= 32 && key.KeyChar <= 126 && key.Key != ConsoleKey.Enter)
                     {
                         searching = true;
-                        searchBuffer = key.KeyChar == '/' ? "/" : "/" + key.KeyChar;
+                        searchBuffer = key.KeyChar.ToString();
                         selectionIndex = 0;
                     }
                     break;
@@ -412,6 +410,8 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     continue;
                 }
 
+                var rawQ = searching ? searchBuffer.TrimStart('/').Trim() : "";
+
                 if (row.Type == VisibleRowType.Category)
                 {
                     var isExpanded = _expandedCategories.Contains(row.Node.Id) || !string.IsNullOrEmpty(searchBuffer);
@@ -421,7 +421,8 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     var hkSuffix = string.IsNullOrEmpty(hk) ? "" : $" [dim]({hk})[/]";
 
                     var signMarkup = $"[bold yellow]{sign}[/]";
-                    var safeText = $"{catIcon} {row.Node.Label.EscapeMarkup()}";
+                    var boldText = string.IsNullOrEmpty(rawQ) ? row.Node.Label.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(row.Node.Label, rawQ);
+                    var safeText = $"{catIcon} {boldText}";
                     var label = isSelected ? $"[green bold]{sign} {safeText}[/]{hkSuffix}" : $"{signMarkup} [bold cyan]{safeText}[/]{hkSuffix}";
                     grid.AddRow(new Markup($"{prefix}{label}"));
                 }
@@ -430,11 +431,12 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     var isExpanded = _expandedGroups.Contains(row.Node.Id) || !string.IsNullOrEmpty(searchBuffer);
                     var sign = isExpanded ? "[[-]]" : "[[+]]";
                     var rawLabel = row.Node.Label.Trim();
-                    var cleanLabel = System.Text.RegularExpressions.Regex.Replace(rawLabel, @"^\[/[^\]]+\]\s*", "").EscapeMarkup();
+                    var cleanLabelRaw = System.Text.RegularExpressions.Regex.Replace(rawLabel, @"^\[/[^\]]+\]\s*", "");
+                    var boldText = string.IsNullOrEmpty(rawQ) ? cleanLabelRaw.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(cleanLabelRaw, rawQ);
 
                     var signMarkup = $"[bold yellow]{sign}[/]";
                     var treeDim = $"[dim]{treePrefix.EscapeMarkup()}[/]";
-                    var label = isSelected ? $"[green bold]{treePrefix}{sign} 📂 {cleanLabel}[/]" : $"{treeDim}{signMarkup} [bold yellow]📂 {cleanLabel}[/]";
+                    var label = isSelected ? $"[green bold]{treePrefix}{sign} 📂 {boldText}[/]" : $"{treeDim}{signMarkup} [bold yellow]📂 {boldText}[/]";
                     grid.AddRow(new Markup($"{prefix}{label}"));
                 }
                 else if (row.Type == VisibleRowType.Command)
@@ -442,8 +444,12 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     var cmd = row.Node.Command!;
                     var icon = Icons.GetCommandIcon(cmd.Alias, cmd.Category);
 
-                    var displayLabel = $"/{cmd.Alias} — {cmd.DisplayName}".EscapeMarkup();
-                    var desc = isCompact && !isSelected ? "" : $" [dim]· {cmd.Description.EscapeMarkup()}[/]";
+                    var boldAlias = string.IsNullOrEmpty(rawQ) ? cmd.Alias.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(cmd.Alias, rawQ);
+                    var boldDisplayName = string.IsNullOrEmpty(rawQ) ? cmd.DisplayName.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(cmd.DisplayName, rawQ);
+                    var boldDesc = string.IsNullOrEmpty(rawQ) ? cmd.Description.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(cmd.Description, rawQ);
+
+                    var displayLabel = $"/{boldAlias} — {boldDisplayName}";
+                    var desc = isCompact && !isSelected ? "" : $" [dim]· {boldDesc}[/]";
 
                     var treeDim = $"[dim]{treePrefix.EscapeMarkup()}[/]";
                     var label = isSelected

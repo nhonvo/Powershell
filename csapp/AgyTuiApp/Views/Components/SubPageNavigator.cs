@@ -90,8 +90,8 @@ public static class SubPageNavigator
                 if (!string.IsNullOrEmpty(_detailsSearchBuffer))
                 {
                     workspaces = workspaces.Where(w => w != null && 
-                        ((w.Name != null && w.Name.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)) ||
-                         (w.WorkspacePath != null && w.WorkspacePath.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)))).ToArray();
+                        ((w.Name != null && SystemHelper.IsFuzzyMatch(w.Name, _detailsSearchBuffer)) ||
+                         (w.WorkspacePath != null && SystemHelper.IsFuzzyMatch(w.WorkspacePath, _detailsSearchBuffer)))).ToArray();
                 }
                 
                 flatList = new List<FlatItem>();
@@ -369,8 +369,8 @@ public static class SubPageNavigator
                 if (!string.IsNullOrEmpty(_detailsSearchBuffer))
                 {
                     workspaces = workspaces.Where(w => w != null && 
-                        ((w.Name != null && w.Name.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)) ||
-                         (w.WorkspacePath != null && w.WorkspacePath.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)))).ToArray();
+                        ((w.Name != null && SystemHelper.IsFuzzyMatch(w.Name, _detailsSearchBuffer)) ||
+                         (w.WorkspacePath != null && SystemHelper.IsFuzzyMatch(w.WorkspacePath, _detailsSearchBuffer)))).ToArray();
                 }
                 flatList = new List<FlatItem>();
                 for (int i = 0; i < workspaces.Length; i++)
@@ -501,8 +501,8 @@ public static class SubPageNavigator
             if (!string.IsNullOrEmpty(_detailsSearchBuffer))
             {
                 workspaces = workspaces.Where(w => w != null && 
-                    ((w.Name != null && w.Name.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)) ||
-                     (w.WorkspacePath != null && w.WorkspacePath.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)))).ToArray();
+                    ((w.Name != null && SystemHelper.IsFuzzyMatch(w.Name, _detailsSearchBuffer)) ||
+                     (w.WorkspacePath != null && SystemHelper.IsFuzzyMatch(w.WorkspacePath, _detailsSearchBuffer)))).ToArray();
             }
             if (detailsSel >= 0 && detailsSel < workspaces.Length)
             {
@@ -710,8 +710,8 @@ public static class SubPageNavigator
             var workspaces = string.IsNullOrEmpty(_detailsSearchBuffer)
                 ? allWorkspaces
                 : allWorkspaces.Where(w => w != null && 
-                    ((w.Name != null && w.Name.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)) ||
-                     (w.WorkspacePath != null && w.WorkspacePath.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)))).ToArray();
+                    ((w.Name != null && SystemHelper.IsFuzzyMatch(w.Name, _detailsSearchBuffer)) ||
+                     (w.WorkspacePath != null && SystemHelper.IsFuzzyMatch(w.WorkspacePath, _detailsSearchBuffer)))).ToArray();
 
             var currentDir = Directory.GetCurrentDirectory();
 
@@ -768,8 +768,12 @@ public static class SubPageNavigator
                         var status = isCurrent ? "[bold black on green] ACTIVE [/] " : "";
                         var branch = WorkspaceRegistry.GetGitBranch(ws.WorkspacePath);
                         var branchSuffix = !string.IsNullOrEmpty(branch) ? $" [yellow]🌿 {branch}[/]" : "";
-                        var nameMarkup = isSelected ? $"[bold green]{ws.Name.EscapeMarkup()}[/]" : $"[bold white]{ws.Name.EscapeMarkup()}[/]";
-                        var pathMarkup = $"[dim]· {ws.WorkspacePath.EscapeMarkup()}[/]";
+
+                        var boldName = string.IsNullOrEmpty(_detailsSearchBuffer) ? ws.Name.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(ws.Name, _detailsSearchBuffer);
+                        var boldPath = string.IsNullOrEmpty(_detailsSearchBuffer) ? ws.WorkspacePath.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(ws.WorkspacePath, _detailsSearchBuffer);
+
+                        var nameMarkup = isSelected ? $"[bold green]{boldName}[/]" : $"[bold white]{boldName}[/]";
+                        var pathMarkup = $"[dim]· {boldPath}[/]";
 
                         var expandSign = (item.WorkspaceIndex == _expandedWorkspaceIndex) ? "[[-]] " : "[[+]] ";
 

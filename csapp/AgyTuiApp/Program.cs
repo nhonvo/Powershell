@@ -780,18 +780,6 @@ public static class Program
             SpectrePanel.Error($"Error running command: {ex.Message}");
         }
         AnsiConsole.WriteLine();
-        if (!Console.IsInputRedirected)
-        {
-            AnsiConsole.MarkupLine("[dim]Press any key to return to menu...[/]");
-
-            try
-            {
-                Console.ReadKey(true);
-            }
-            catch
-            {
-            }
-        }
 
     }
 

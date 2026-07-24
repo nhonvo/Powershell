@@ -334,5 +334,44 @@ public static class SystemHelper
         }
     }
 
+    public static bool IsFuzzyMatch(string source, string query)
+    {
+        if (string.IsNullOrEmpty(query)) return true;
+        if (string.IsNullOrEmpty(source)) return false;
+        int sourceIdx = 0;
+        int queryIdx = 0;
+        while (sourceIdx < source.Length && queryIdx < query.Length)
+        {
+            if (char.ToLowerInvariant(source[sourceIdx]) == char.ToLowerInvariant(query[queryIdx]))
+            {
+                queryIdx++;
+            }
+            sourceIdx++;
+        }
+        return queryIdx == query.Length;
+    }
+
+    public static string BoldFuzzyMatch(string source, string query)
+    {
+        if (string.IsNullOrEmpty(query)) return source.EscapeMarkup();
+        
+        var sb = new System.Text.StringBuilder();
+        int queryIdx = 0;
+        
+        for (int i = 0; i < source.Length; i++)
+        {
+            var ch = source[i];
+            if (queryIdx < query.Length && char.ToLowerInvariant(ch) == char.ToLowerInvariant(query[queryIdx]))
+            {
+                sb.Append($"[bold green]{ch.ToString().EscapeMarkup()}[/]");
+                queryIdx++;
+            }
+            else
+            {
+                sb.Append(ch.ToString().EscapeMarkup());
+            }
+        }
+        return sb.ToString();
+    }
 }
 
