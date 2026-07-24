@@ -249,45 +249,45 @@ public static class CommandRegistry
             new[] { "ollama-logs — Tails output log entries from local Ollama daemon." }, RequiresAiOllama: true),
         new("ollama-benchmark", "Ollama: Benchmark Models", "Benchmark performance of local Ollama models", "[AI Agent & Ollama]", "AI / LLM",
             new[] { "ollama-benchmark — Measures prompt evaluation speed (tokens/sec)." }, RequiresAiOllama: true),
-        new("deck-status", "Antigravity Deck: Check Status", "Check if Antigravity Deck (Desk) local server is running", "[AI Agent & Ollama]", "AI / LLM",
+        new("deck-status", "Antigravity Deck: Check Status", "Check if Antigravity Deck (Desk) local server is running", "[AGY Account Switch]", "Accounts",
             new[] { "deck-status — Queries local port 3000 to verify Deck status. Also matches 'desk'." }),
-        new("deck-setup", "Antigravity Deck: Setup/Initialize", "Setup local Antigravity Deck (Desk)", "[AI Agent & Ollama]", "AI / LLM",
+        new("deck-setup", "Antigravity Deck: Setup/Initialize", "Setup local Antigravity Deck (Desk)", "[AGY Account Switch]", "Accounts",
             new[] { "deck-setup — Initializes local Node.js environment for Deck. Also matches 'desk'." }),
-        new("deck-start", "Antigravity Deck: Start Local", "Boot local Antigravity Deck (Desk)", "[AI Agent & Ollama]", "AI / LLM",
+        new("deck-start", "Antigravity Deck: Start Local", "Boot local Antigravity Deck (Desk)", "[AGY Account Switch]", "Accounts",
             new[] { "deck-start — Launches Antigravity Deck dashboard at http://localhost:3000. Also matches 'desk'." }),
-        new("deck-online", "Antigravity Deck: Go Online (Tunnel)", "Expose local Deck (Desk) via tunnel", "[AI Agent & Ollama]", "AI / LLM",
+        new("deck-online", "Antigravity Deck: Go Online (Tunnel)", "Expose local Deck (Desk) via tunnel", "[AGY Account Switch]", "Accounts",
             new[] { "deck-online — Exposes local Deck service via cloudflare/tailscale tunnel. Also matches 'desk'." }),
-        new("desk-status", "Antigravity Desk: Check Status (Alias)", "Alias for deck-status", "[AI Agent & Ollama]", "AI / LLM",
+        new("desk-status", "Antigravity Desk: Check Status (Alias)", "Alias for deck-status", "[AGY Account Switch]", "Accounts",
             new[] { "desk-status — Alias for deck-status." }),
-        new("desk-setup", "Antigravity Desk: Setup/Initialize (Alias)", "Alias for deck-setup", "[AI Agent & Ollama]", "AI / LLM",
+        new("desk-setup", "Antigravity Desk: Setup/Initialize (Alias)", "Alias for deck-setup", "[AGY Account Switch]", "Accounts",
             new[] { "desk-setup — Alias for deck-setup." }),
-        new("desk-start", "Antigravity Desk: Start Local (Alias)", "Alias for deck-start", "[AI Agent & Ollama]", "AI / LLM",
+        new("desk-start", "Antigravity Desk: Start Local (Alias)", "Alias for deck-start", "[AGY Account Switch]", "Accounts",
             new[] { "desk-start — Alias for deck-start." }),
-        new("desk-online", "Antigravity Desk: Go Online (Alias)", "Alias for deck-online", "[AI Agent & Ollama]", "AI / LLM",
+        new("desk-online", "Antigravity Desk: Go Online (Alias)", "Alias for deck-online", "[AGY Account Switch]", "Accounts",
             new[] { "desk-online — Alias for deck-online." }),
-
+ 
         // Antigravity Manager
-        new("mgr-status", "Antigravity Manager: Check Status", "Check if Antigravity Manager backend is running on port 8045", "[AI Agent & Ollama]", "AI / LLM",
+        new("mgr-status", "Antigravity Manager: Check Status", "Check if Antigravity Manager backend is running on port 8045", "[AGY Account Switch]", "Accounts",
             new[] { "mgr-status — Queries local port 8045 to verify Antigravity Manager status." }),
-        new("mgr-setup", "Antigravity Manager: Setup/Initialize", "Setup local Antigravity Manager dependencies", "[AI Agent & Ollama]", "AI / LLM",
+        new("mgr-setup", "Antigravity Manager: Setup/Initialize", "Setup local Antigravity Manager dependencies", "[AGY Account Switch]", "Accounts",
             new[] { "mgr-setup — Runs npm install to initialize Antigravity Manager dependencies." }),
-        new("mgr-start", "Antigravity Manager: Start Local", "Boot local Antigravity Manager Electron desktop app", "[AI Agent & Ollama]", "AI / LLM",
+        new("mgr-start", "Antigravity Manager: Start Local", "Boot local Antigravity Manager Electron desktop app", "[AGY Account Switch]", "Accounts",
             new[] { "mgr-start — Launches Antigravity Manager desktop application." }),
-        new("mgr", "Antigravity Manager: Start Local (Alias)", "Alias for mgr-start", "[AI Agent & Ollama]", "AI / LLM",
+        new("mgr", "Antigravity Manager: Start Local (Alias)", "Alias for mgr-start", "[AGY Account Switch]", "Accounts",
             new[] { "mgr — Alias for mgr-start." }),
-        new("manager-status", "Antigravity Manager: Check Status (Alias)", "Alias for mgr-status", "[AI Agent & Ollama]", "AI / LLM",
+        new("manager-status", "Antigravity Manager: Check Status (Alias)", "Alias for mgr-status", "[AGY Account Switch]", "Accounts",
             new[] { "manager-status — Alias for mgr-status." }),
-        new("manager-setup", "Antigravity Manager: Setup/Initialize (Alias)", "Alias for mgr-setup", "[AI Agent & Ollama]", "AI / LLM",
+        new("manager-setup", "Antigravity Manager: Setup/Initialize (Alias)", "Alias for mgr-setup", "[AGY Account Switch]", "Accounts",
             new[] { "manager-setup — Alias for mgr-setup." }),
-        new("manager-start", "Antigravity Manager: Start Local (Alias)", "Alias for mgr-start", "[AI Agent & Ollama]", "AI / LLM",
+        new("manager-start", "Antigravity Manager: Start Local (Alias)", "Alias for mgr-start", "[AGY Account Switch]", "Accounts",
             new[] { "manager-start — Alias for mgr-start." }),
-        new("agm", "Antigravity Manager: Start Local (Alias)", "Alias for mgr-start", "[AI Agent & Ollama]", "AI / LLM",
+        new("agm", "Antigravity Manager: Start Local (Alias)", "Alias for mgr-start", "[AGY Account Switch]", "Accounts",
             new[] { "agm — Alias for mgr-start." }),
-        new("agm-status", "Antigravity Manager: Check Status (Alias)", "Alias for mgr-status", "[AI Agent & Ollama]", "AI / LLM",
+        new("agm-status", "Antigravity Manager: Check Status (Alias)", "Alias for mgr-status", "[AGY Account Switch]", "Accounts",
             new[] { "agm-status — Alias for mgr-status." }),
-        new("agm-setup", "Antigravity Manager: Setup/Initialize (Alias)", "Alias for mgr-setup", "[AI Agent & Ollama]", "AI / LLM",
+        new("agm-setup", "Antigravity Manager: Setup/Initialize (Alias)", "Alias for mgr-setup", "[AGY Account Switch]", "Accounts",
             new[] { "agm-setup — Alias for mgr-setup." }),
-        new("agm-start", "Antigravity Manager: Start Local (Alias)", "Alias for mgr-start", "[AI Agent & Ollama]", "AI / LLM",
+        new("agm-start", "Antigravity Manager: Start Local (Alias)", "Alias for mgr-start", "[AGY Account Switch]", "Accounts",
             new[] { "agm-start — Alias for mgr-start." }),
 
         new("agy-cli", "Launch Antigravity CLI (agy)", "Launch the google antigravity CLI tool terminal", "[AI Agent & Ollama]", "AI / LLM",
@@ -375,20 +375,20 @@ public static class CommandRegistry
         new("word-of-day", "Word of the Day", "Show today's word of the day", "[Learn & Study]", "Learn",
             new[] { "word-of-day — Displays vocabulary word of the day with definition and usage example." }),
 
-        // [Track & Progress]
-        new("session", "Start Pomodoro Session", "Start a Pomodoro study session", "[Track & Progress]", "Tracking",
+        // [Learn & Study] - Study Tracking
+        new("session", "Start Pomodoro Session", "Start a Pomodoro study session", "[Learn & Study]", "Tracking",
             new[] { "session — Launches 25-minute Pomodoro focus session timer." }),
-        new("stats", "Study Statistics", "Study statistics and weekly chart", "[Track & Progress]", "Tracking",
+        new("stats", "Study Statistics", "Study statistics and weekly chart", "[Learn & Study]", "Tracking",
             new[] { "stats — Displays weekly study volume breakdown and retention charts." }),
-        new("goals", "Daily Goals", "Daily learning goals", "[Track & Progress]", "Tracking",
+        new("goals", "Daily Goals", "Daily learning goals", "[Learn & Study]", "Tracking",
             new[] { "goals — View and manage daily learning targets and completed tasks." }),
-        new("streak", "Study Streak", "Study streak display", "[Track & Progress]", "Tracking",
+        new("streak", "Study Streak", "Study streak display", "[Learn & Study]", "Tracking",
             new[] { "streak — Displays current consecutive daily study streak counter." }),
-        new("due", "Due Reviews", "Show due spaced-repetition reviews", "[Track & Progress]", "Tracking",
+        new("due", "Due Reviews", "Show due spaced-repetition reviews", "[Learn & Study]", "Tracking",
             new[] { "due — Shows total count of flashcards due for SM-2 spaced repetition review today." }),
-        new("progress", "Progress Dashboard", "Progress dashboard (bar chart + tree)", "[Track & Progress]", "Tracking",
+        new("progress", "Progress Dashboard", "Progress dashboard (bar chart + tree)", "[Learn & Study]", "Tracking",
             new[] { "progress — Renders visual progress bar charts across all learning domains." }),
-        new("weak", "Weak Items Queue", "Weak items queue (pre-session review)", "[Track & Progress]", "Tracking",
+        new("weak", "Weak Items Queue", "Weak items queue (pre-session review)", "[Learn & Study]", "Tracking",
             new[] { "weak — Review cards and concepts with low retention scores before starting a session." }),
 
         // [Obsidian & Resources]
@@ -440,12 +440,16 @@ public static class CommandRegistry
         var careerCmds = new HashSet<string> { "interview", "star", "mock" };
         var obsidianCmds = new HashSet<string> { "obsidian", "refresh", "vault-open" };
 
-        var hiddenCmds = new HashSet<string> { "p", "prj", "gb" };
+        var hiddenCmds = new HashSet<string> { 
+            "p", "prj", "gb",
+            "desk-status", "desk-setup", "desk-start", "desk-online",
+            "mgr", "manager-status", "manager-setup", "manager-start", "agm", "agm-status", "agm-setup", "agm-start"
+        };
 
         var orderedAliases = new[]
         {
             // Category 1: [Workspace & Dev]
-            "proj", "f", "go", "open-term", "ide", "ide-diff", "ide-search", "scaffold",
+            "go", "scaffold", "proj", "ide", "f", "open-term", "ide-diff", "ide-search",
             // Git group
             "gs", "ga", "gbr", "gcmt", "glog", "gpull", "gpush", "gf", "gd", "git-undo",
             // Repo group
@@ -457,10 +461,6 @@ public static class CommandRegistry
             "aws-whoami", "aws-local", "aws-s3", "aws-sqs", "aws-ssm", "aws-sns", "aws-dynamodb", "aws-lambda",
 
             // Category 2: [AI Agent & Ollama]
-            // Deck group
-            "deck-status", "deck-setup", "deck-start", "deck-online",
-            // Mgr group
-            "mgr-status", "mgr-setup", "mgr-start",
             // Ollama group
             "ollama-status", "ollama-models", "ollama-pull", "ollama-start", "ollama-logs", "ollama-benchmark",
             // Other agents/models
@@ -470,18 +470,22 @@ public static class CommandRegistry
             "agy-cli", "ai-history",
 
             // Category 3: [AGY Account Switch]
+            // Deck group
+            "deck-status", "deck-setup", "deck-start", "deck-online",
+            // Mgr group
+            "mgr-status", "mgr-setup", "mgr-start",
             "agyswitch", "agyquota",
             // Quota group
             "account-tree", "quota-chart", "live-dashboard",
             "autoswitch", "no-auto-commit",
 
             // Category 4: [System & Network]
-            "disk", "public-ip", "kill-port",
-            // SSH group
-            "ssh-info", "tailscale-status", "ssh-qr",
+            "disk", "public-ip", "kill-port", "ssh-info", "tailscale-status", "ssh-qr",
 
             // Category 5: [Learn & Study]
             "learn", "learn-gen",
+            // Study tracking
+            "session", "stats", "goals", "streak", "due", "progress", "weak",
             // Obsidian group (in category 5!)
             "obsidian", "refresh", "vault-open",
             // jpSuite
@@ -494,9 +498,6 @@ public static class CommandRegistry
             "algo", "complexity", "problems",
             // careerInterview
             "interview", "star", "mock",
-
-            // Category 6: [Track & Progress]
-            "session", "stats", "goals", "streak", "due", "progress", "weak",
 
             // Category 7: [Obsidian & Resources]
             "obs-graph", "add-resource",
@@ -537,7 +538,6 @@ public static class CommandRegistry
             else if (ollamaCmds.Contains(alias)) { cmd.GroupPath = "/ollama-tools"; cmd.GroupName = "Ollama Tools"; }
             else if (deckCmds.Contains(alias)) { cmd.GroupPath = "/antigravity-deck"; cmd.GroupName = "Antigravity Deck (Desk)"; }
             else if (mgrCmds.Contains(alias)) { cmd.GroupPath = "/antigravity-manager"; cmd.GroupName = "Antigravity Manager"; }
-            else if (sshCmds.Contains(alias)) { cmd.GroupPath = "/ssh-tailscale"; cmd.GroupName = "SSH & Tailscale"; }
             else if (quotaCmds.Contains(alias)) { cmd.GroupPath = "/quota-views"; cmd.GroupName = "Quota Views"; }
             else if (jpCmds.Contains(alias)) 
             {

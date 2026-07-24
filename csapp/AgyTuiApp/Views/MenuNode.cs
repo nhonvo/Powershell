@@ -40,7 +40,6 @@ public static class MenuNodeBuilder
             "[AGY Account Switch]",
             "[System & Network]",
             "[Learn & Study]",
-            "[Track & Progress]",
             "[Obsidian & Resources]",
             "[Appearance & Layout]",
             "[Help & Docs]"
