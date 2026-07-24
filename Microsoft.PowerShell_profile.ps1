@@ -1002,9 +1002,10 @@ Set-Item -Path Alias:\cls -Value Clear-Host -Force -Option AllScope
 # --- Navigation & System Wrappers ---
 function Set-LocationParent { Set-Location .. }
 function Set-LocationGrandParent { Set-Location ..\.. }
-function Invoke-OpenExplorer { [AgyTui.SystemHelper]::OpenExplorer() }
+function Invoke-OpenExplorer { Initialize-AgySession; [AgyTui.SystemHelper]::OpenExplorer() }
 function Enter-Project {
  param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Name)
+ Initialize-AgySession
  $query = $Name -join ' '
  $target = [AgyTui.ProfileNavigator]::Navigate($query)
  if ($target) { Set-Location $target }
@@ -1012,6 +1013,7 @@ function Enter-Project {
 Set-Alias -Name proj -Value Enter-Project -Force
 function Invoke-TerminalIde {
  param([string]$Path)
+ Initialize-AgySession
  $targetPath = if ($Path) { $Path } else { Get-Location }
  [AgyTui.TerminalIde]::Open($targetPath)
 }
@@ -1030,20 +1032,22 @@ function New-DirAndEnter {
  $null = New-Item -ItemType Directory -Path $Path -Force
  Set-Location $Path
 }
-function Get-DiskSpace { [AgyTui.SystemHelper]::ShowDiskSpace() }
-function Get-PublicIP { [AgyTui.SystemHelper]::GetPublicIP() }
+function Get-DiskSpace { Initialize-AgySession; [AgyTui.SystemHelper]::ShowDiskSpace() }
+function Get-PublicIP { Initialize-AgySession; [AgyTui.SystemHelper]::GetPublicIP() }
 function Get-FileTree {
  param([int]$Depth = 2)
  tree.com /f /a | Select-Object -First (50 * $Depth)
 }
 function Stop-ProcessFriendly {
  param([string]$Name)
+ Initialize-AgySession
  [AgyTui.SystemHelper]::StopProcessFriendly($Name)
 }
 
-function Get-SshConnectionInfo { [AgyTui.SshHelper]::GetConnectionInfo() }
+function Get-SshConnectionInfo { Initialize-AgySession; [AgyTui.SshHelper]::GetConnectionInfo() }
 function Add-SshAuthorizedKey {
  param([string]$Key, [string]$Account)
+ Initialize-AgySession
  [AgyTui.SshHelper]::AddAuthorizedKey($Key, $Account)
 }
 
@@ -1068,7 +1072,7 @@ function Set-DesktopThemeMode {
 function Set-MobileThemeMode {
  Apply-ThemePath ([AgyTui.ThemeHelper]::SetMobileMode($env:POSH_THEMES_PATH, $true))
 }
-function Start-MobileSshKeyReceiver { [AgyTui.SshHelper]::StartMobileSshKeyReceiver() }
+function Start-MobileSshKeyReceiver { Initialize-AgySession; [AgyTui.SshHelper]::StartMobileSshKeyReceiver() }
 
 # Navigation & System Aliases
 Set-Alias -Name .. -Value Set-LocationParent -Force
@@ -1090,14 +1094,15 @@ Set-Alias -Name mobile-setup -Value Toggle-MobileMode -Force
 Set-Alias -Name ssh-addkey-mobile -Value Start-MobileSshKeyReceiver -Force
 
 # --- Git Wrappers ---
-function Get-GitStatus { [AgyTui.GitHelper]::ShowStatus() }
+function Get-GitStatus { Initialize-AgySession; [AgyTui.GitHelper]::ShowStatus() }
 function Show-GitDiff { git diff $args }
 function Get-GitLogGraph { git log --graph --oneline --decorate --all }
 function Get-GitLogPretty { git log --pretty=format:"%h - %an, %ar : %s" }
-function Get-GitLog { [AgyTui.GitHelper]::ShowLog() }
-function Get-GitBranches { [AgyTui.GitHelper]::ShowBranches() }
+function Get-GitLog { Initialize-AgySession; [AgyTui.GitHelper]::ShowLog() }
+function Get-GitBranches { Initialize-AgySession; [AgyTui.GitHelper]::ShowBranches() }
 function Invoke-GitCheckout {
  param([string]$branchName)
+ Initialize-AgySession
  [AgyTui.GitHelper]::Checkout($branchName)
 }
 function New-GitBranch {
@@ -1108,19 +1113,19 @@ function Remove-GitBranch {
  param([string]$branchName)
  git branch -d $branchName
 }
-function Invoke-GitAddAll { [AgyTui.GitHelper]::AddAll() }
+function Invoke-GitAddAll { Initialize-AgySession; [AgyTui.GitHelper]::AddAll() }
 function Invoke-GitUnstage { git restore --staged . }
 function Invoke-GitCommit {
  param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message)
- if ($Message) { git commit -m ($Message -join " ") } else { [AgyTui.GitHelper]::ConventionalCommitWizard() }
+ if ($Message) { git commit -m ($Message -join " ") } else { Initialize-AgySession; [AgyTui.GitHelper]::ConventionalCommitWizard() }
 }
 function Invoke-GitAmend { git commit --amend $args }
-function Invoke-GitUndo { [AgyTui.GitHelper]::InvokeGitUndo() }
+function Invoke-GitUndo { Initialize-AgySession; [AgyTui.GitHelper]::InvokeGitUndo() }
 function Invoke-GitResetSoft { git reset --soft HEAD~1 }
 function Invoke-GitResetHard { git reset --hard }
-function Invoke-GitFetch { [AgyTui.GitHelper]::Fetch() }
-function Invoke-GitPull { [AgyTui.GitHelper]::Pull() }
-function Invoke-GitPush { [AgyTui.GitHelper]::Push() }
+function Invoke-GitFetch { Initialize-AgySession; [AgyTui.GitHelper]::Fetch() }
+function Invoke-GitPull { Initialize-AgySession; [AgyTui.GitHelper]::Pull() }
+function Invoke-GitPush { Initialize-AgySession; [AgyTui.GitHelper]::Push() }
 function Invoke-GitPushForce { git push --force $args }
 function Invoke-GitMergeSquash {
  param([string]$BranchName)
@@ -1545,14 +1550,14 @@ function cai { Invoke-ControlCenter "claude" }
 function caws { Invoke-ControlCenter "aws-local" }
 function cnav { Invoke-ControlCenter "proj" }
 function goto { Invoke-ControlCenter "go" $args }
-function open-term { [AgyTui.SystemHelper]::OpenNewTerminalSession() }
+function open-term { Initialize-AgySession; [AgyTui.SystemHelper]::OpenNewTerminalSession() }
 Set-Alias -Name term -Value open-term -Force
 Set-Alias -Name wt -Value open-term -Force
 function ui-mode { Invoke-ControlCenter "ui-mode" $args }
 function layout { Invoke-ControlCenter "ui-mode" $args }
 function view { Invoke-ControlCenter "ui-mode" $args }
-function dpack { [AgyTui.DotNetHelper]::Pack($args) }
-function dpubpkg { [AgyTui.DotNetHelper]::PublishPackage($args) }
+function dpack { Initialize-AgySession; [AgyTui.DotNetHelper]::Pack($args) }
+function dpubpkg { Initialize-AgySession; [AgyTui.DotNetHelper]::PublishPackage($args) }
 function cssh { Invoke-ControlCenter "ssh-info" }
 
 # Theme Switcher
