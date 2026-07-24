@@ -253,14 +253,14 @@ Write-AgyStartupCheckpoint "script start"
 # ==============================================================================
 $Global:AgyTuiAppProject = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTuiApp\AgyTuiApp.csproj"
 function Load-AgyTuiDll {
-    param([bool]$SkipBuildCheck = $false)
+    param([bool]$SkipBuildCheck = $true)
     if ($null -eq ([System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTuiApp" })) {
         $targetDll = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\bin\Debug\net9.0\AgyTuiApp.dll"
         if (-not (Test-Path $targetDll)) {
             $targetDll = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\dist\AgyTuiApp.dll"
         }
         $proj = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\AgyTuiApp.csproj"
-        $needsBuild = -not $SkipBuildCheck -and -not (Test-Path $targetDll)
+        $needsBuild = -not (Test-Path $targetDll)
         if (-not $needsBuild -and -not $SkipBuildCheck -and (Test-Path $proj)) {
             $dllMtime = (Get-Item $targetDll).LastWriteTime
             $newestCs = Get-ChildItem -Path (Join-Path $Global:ProfileRepoRoot "csapp\AgyTuiApp") -Filter "*.cs" -Recurse | Sort-Object LastWriteTime -Descending | Select-Object -First 1
@@ -467,11 +467,7 @@ class ProfileEnvironment {
         foreach ($mod in $modules) {
             $loaded = $false
             try {
-                if ($mod.Name -eq "Terminal-Icons") {
-                    Import-Module $mod.Name -Force -ErrorAction Stop
-                } else {
-                    Import-Module $mod.Name -ErrorAction Stop
-                }
+                Import-Module $mod.Name -ErrorAction Stop
                 $loaded = $true
             } catch {
                 # Auto-Install if missing or failed to import (only in interactive console)
@@ -1809,7 +1805,7 @@ Set-Alias -Name clh -Value Clear-ShellHistory -Force
 # Startup complete
 # ==============================================================================
 try {
-    Load-AgyTuiDll -SkipBuildCheck $true
+    Initialize-AgySession
 } catch {}
 
 try {
