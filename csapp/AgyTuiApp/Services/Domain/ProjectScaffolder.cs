@@ -9,14 +9,30 @@ namespace AgyTui;
 
 public static class ProjectScaffolder
 {
-    private static readonly string[] Templates = ["webapi", "console", "react (Vite)", "blazorwasm", "classlib", "worker"];
+    private static readonly string[] Templates = [
+        "webapi (.NET Core Web API)",
+        "mvc (.NET Core MVC Web App)",
+        "razor (.NET Core Razor Pages Web App)",
+        "blazor (Blazor Web App)",
+        "blazorwasm (Blazor WebAssembly)",
+        "console (.NET Console App)",
+        "classlib (.NET Class Library)",
+        "worker (.NET Worker Service)",
+        "xunit (xUnit Test Project)",
+        "react (Vite React + TS)",
+        "vue (Vite Vue + TS)",
+        "nextjs (Next.js React + TS App)"
+    ];
 
     public static void Scaffold()
     {
         AnsiConsole.Write(new Rule("[bold cyan]Project Scaffolder[/]").RuleStyle("grey"));
         var idx = SpectreMenu.Show("Select template", Templates, 0, false);
         if (idx < 0) return;
-        var template = Templates[idx];
+        
+        var selectedItem = Templates[idx];
+        var template = selectedItem.Split(' ')[0].ToLowerInvariant();
+        
         var rawName = AnsiConsole.Ask<string>("[cyan]Project name:[/]").Trim();
         if (string.IsNullOrWhiteSpace(rawName))
         {
@@ -37,7 +53,7 @@ public static class ProjectScaffolder
 
         SpectreProgress.Spinner($"Scaffolding {template} project '{name}'…", () =>
         {
-            if (template == "react (Vite)")
+            if (template == "react" || template == "vue")
             {
                 var psi = new ProcessStartInfo
                 {
@@ -51,7 +67,30 @@ public static class ProjectScaffolder
                 psi.ArgumentList.Add(name);
                 psi.ArgumentList.Add("--");
                 psi.ArgumentList.Add("--template");
-                psi.ArgumentList.Add("react-ts");
+                psi.ArgumentList.Add(template == "react" ? "react-ts" : "vue-ts");
+
+                using var proc = Process.Start(psi);
+                proc?.WaitForExit();
+            }
+            else if (template == "nextjs")
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = OperatingSystem.IsWindows() ? "npx.cmd" : "npx",
+                    WorkingDirectory = outputDir,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                psi.ArgumentList.Add("create-next-app@latest");
+                psi.ArgumentList.Add(name);
+                psi.ArgumentList.Add("--ts");
+                psi.ArgumentList.Add("--eslint");
+                psi.ArgumentList.Add("--tailwind");
+                psi.ArgumentList.Add("--src-dir");
+                psi.ArgumentList.Add("--app");
+                psi.ArgumentList.Add("--import-alias");
+                psi.ArgumentList.Add("@/*");
+                psi.ArgumentList.Add("--use-npm");
 
                 using var proc = Process.Start(psi);
                 proc?.WaitForExit();
@@ -77,16 +116,7 @@ public static class ProjectScaffolder
                 proc?.WaitForExit();
             }
         });
+        
         SpectrePanel.Success($"Project '{name}' created at {Path.Combine(outputDir, name)}");
-
-        if (AnsiConsole.Confirm("Do you want to launch Claude immediately to write initial tests and features in this new project?"))
-        {
-            var targetDir = Path.Combine(outputDir, name);
-            if (Directory.Exists(targetDir))
-            {
-                Directory.SetCurrentDirectory(targetDir);
-                AgyAiCore.InvokeClaude(["--prompt", "Implement the first feature and write initial tests for this scaffolded " + template + " project"]);
-            }
-        }
     }
 }
