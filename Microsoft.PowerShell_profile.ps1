@@ -1186,7 +1186,7 @@ Set-Alias -Name mobile-setup -Value Toggle-MobileMode -Force
 Set-Alias -Name ssh-addkey-mobile -Value Start-MobileSshKeyReceiver -Force
 
 # --- Git Wrappers ---
-function Get-GitStatus { Initialize-AgySession; [AgyTui.GitHelper]::ShowStatus() }
+function Get-GitStatus { git status $args }
 function Show-GitDiff { git diff $args }
 function Get-GitLogGraph { git log --graph --oneline --decorate --all }
 function Get-GitLogPretty { git log --pretty=format:"%h - %an, %ar : %s" }
