@@ -74,12 +74,6 @@ public static class CommandRegistry
                 "rebuild — Triggers `dotnet build` on AgyTuiApp.csproj with zero warnings/errors enforcement.",
                 " Recompiles the TUI binary executable in-place."
             }),
-        new("db-tui", "SQLite Browser", "SQLite schema and data viewer", "[Workspace & Dev]", "Database",
-            new[] {
-                "db-tui <path> — Open SQLite file in interactive schema/data viewer.",
-                " Requires sqlite3 CLI on PATH."
-            }),
-
         // Git Tools (/git-tools & /repo-dashboards)
         new("gs", "Git Status", "Git status summary", "[Workspace & Dev]", "Git",
             new[] {
@@ -460,9 +454,7 @@ public static class CommandRegistry
             "dbld", "dr", "dtst", "df", "dcl", "drestore", "dpublish", "dpack", "dpubpkg", "dwatch", "rebuild", "clean-build", "add-migration", "update-db",
             // Docker group
             "docker-health", "dkcl", "dkrmac", "dkstac", "dimg", "dlogs", "dcup", "dcdown",
-            // AWS group
             "aws-whoami", "aws-local", "aws-s3", "aws-sqs", "aws-ssm", "aws-sns", "aws-dynamodb", "aws-lambda",
-            "db-tui",
 
             // Category 2: [AI Agent & Ollama]
             // Claude group

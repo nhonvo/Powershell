@@ -487,10 +487,6 @@ public static class Program
                 case "ssh-info":
                     SshHelper.ShowSshInfo();
                     break;
-                case "db-tui":
-                    var dbPath = AnsiConsole.Ask<string>("SQLite DB path:");
-                    DatabaseHelper.ShowDatabaseTui(dbPath);
-                    break;
                 case "agyswitch":
                     var accs = AgyAccountCore.GetAccounts();
                     var activeAcc = AgyAccountCore.GetActiveAccount();

@@ -42,12 +42,18 @@ public static class ThemeHelper
         var selectedIndex = SpectreMenu.Show("Select Oh My Posh Theme (Color segment preview)", displayLabels, defaultIndex);
         if (selectedIndex < 0) return null;
         var selectedTheme = themeNames[selectedIndex];
+        var themePath = SetTheme(themesPath, selectedTheme);
+        if (themePath == null) return null;
+        AnsiConsole.MarkupLine($"[green][[Theme]] Oh My Posh theme switched to '{selectedTheme}' (Persistent).[/]");
+        return themePath;
+    }
+
+    public static string? SetTheme(string themesPath, string selectedTheme)
+    {
         PersistConfig(themesPath, selectedTheme, selectedTheme.EndsWith("-mobile"));
         Environment.SetEnvironmentVariable("THEME", selectedTheme);
         var themePath = Path.Combine(themesPath, $"{selectedTheme}.omp.json");
-        if (!File.Exists(themePath)) return null;
-        AnsiConsole.MarkupLine($"[green][[Theme]] Oh My Posh theme switched to '{selectedTheme}' (Persistent).[/]");
-        return themePath;
+        return File.Exists(themePath) ? themePath : null;
     }
 
     public static bool IsMobileModeActive(string? themesPath = null)

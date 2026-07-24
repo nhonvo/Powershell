@@ -137,12 +137,44 @@ public static class SubPageNavigator
             switch (key.Key)
             {
                 case ConsoleKey.UpArrow:
-                case ConsoleKey.K:
                     if (itemsCount > 0) detailsSel = (detailsSel - 1 + itemsCount) % itemsCount;
                     break;
+                case ConsoleKey.K:
+                    if (string.IsNullOrEmpty(_detailsSearchBuffer))
+                    {
+                        if (itemsCount > 0) detailsSel = (detailsSel - 1 + itemsCount) % itemsCount;
+                    }
+                    else
+                    {
+                        _detailsSearchBuffer += key.KeyChar;
+                        detailsSel = 0;
+                        if (mode == "proj")
+                        {
+                            _selectedWorkspaceIndex = 0;
+                            _selectedActionIndex = -1;
+                            _expandedWorkspaceIndex = -1;
+                        }
+                    }
+                    break;
                 case ConsoleKey.DownArrow:
-                case ConsoleKey.J:
                     if (itemsCount > 0) detailsSel = (detailsSel + 1) % itemsCount;
+                    break;
+                case ConsoleKey.J:
+                    if (string.IsNullOrEmpty(_detailsSearchBuffer))
+                    {
+                        if (itemsCount > 0) detailsSel = (detailsSel + 1) % itemsCount;
+                    }
+                    else
+                    {
+                        _detailsSearchBuffer += key.KeyChar;
+                        detailsSel = 0;
+                        if (mode == "proj")
+                        {
+                            _selectedWorkspaceIndex = 0;
+                            _selectedActionIndex = -1;
+                            _expandedWorkspaceIndex = -1;
+                        }
+                    }
                     break;
                 case ConsoleKey.PageUp:
                     if (itemsCount > 0) detailsSel = Math.Max(0, detailsSel - ScrollableListView.GetPageStep(Math.Max(3, Console.WindowHeight - 19)));
@@ -455,18 +487,14 @@ public static class SubPageNavigator
                     themesPath = Path.Combine(Directory.GetCurrentDirectory(), "asset", "powershell-themes");
                 }
             }
-            var configPath = Path.Combine(themesPath, "config.json");
-            try
+            var themePath = ThemeHelper.SetTheme(themesPath, selectedTheme);
+            if (!string.IsNullOrEmpty(themePath))
             {
-                File.WriteAllText(configPath, JsonSerializer.Serialize(new { active_theme = selectedTheme, enable_mobile = selectedTheme.EndsWith("-mobile") }));
+                var agyHome = !string.IsNullOrEmpty(AgyAccountCore.AgySourceHome) ? AgyAccountCore.AgySourceHome : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini");
+                Directory.CreateDirectory(agyHome);
+                var selectedThemeFile = Path.Combine(agyHome, "selected_theme.txt");
+                File.WriteAllText(selectedThemeFile, themePath);
             }
-            catch { }
-            Environment.SetEnvironmentVariable("THEME", selectedTheme);
-            var themePath = Path.Combine(themesPath, $"{selectedTheme}.omp.json");
-            var agyHome = !string.IsNullOrEmpty(AgyAccountCore.AgySourceHome) ? AgyAccountCore.AgySourceHome : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini");
-            Directory.CreateDirectory(agyHome);
-            var selectedThemeFile = Path.Combine(agyHome, "selected_theme.txt");
-            File.WriteAllText(selectedThemeFile, themePath);
             SpectrePanel.Success($"Selected theme '{selectedTheme}'. Theme will apply on exit.");
             Thread.Sleep(1000);
             return true;

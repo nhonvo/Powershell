@@ -254,14 +254,20 @@ public sealed class FlatTreeRenderer : MenuRendererBase
             // Normal mode keys
             switch (key.Key)
             {
-                case ConsoleKey.UpArrow:
-                case ConsoleKey.K:
-                    selectionIndex = Math.Max(0, selectionIndex - 1);
-                    break;
-                case ConsoleKey.DownArrow:
-                case ConsoleKey.J:
-                    selectionIndex = Math.Min(visibleRows.Count - 1, selectionIndex + 1);
-                    break;
+                 case ConsoleKey.UpArrow:
+                 case ConsoleKey.K:
+                     if (visibleRows.Count > 0)
+                     {
+                         selectionIndex = (selectionIndex - 1 + visibleRows.Count) % visibleRows.Count;
+                     }
+                     break;
+                 case ConsoleKey.DownArrow:
+                 case ConsoleKey.J:
+                     if (visibleRows.Count > 0)
+                     {
+                         selectionIndex = (selectionIndex + 1) % visibleRows.Count;
+                     }
+                     break;
                 case ConsoleKey.PageUp:
                     selectionIndex = Math.Max(0, selectionIndex - ScrollableListView.GetPageStep(Math.Max(3, Console.WindowHeight - 19)));
                     break;
@@ -335,9 +341,25 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                         {
                             _expandedGroups.Remove(row.Node.Id);
                         }
-                        else if (row.Type == VisibleRowType.Command && _expandedWidgets.Contains(row.Node.Command!.Alias))
+                        else if (row.Type == VisibleRowType.Command)
                         {
-                            _expandedWidgets.Remove(row.Node.Command.Alias);
+                            // Search upwards to find closest parent Group or Category
+                            for (int i = selectionIndex - 1; i >= 0; i--)
+                            {
+                                var p = visibleRows[i];
+                                if (p.Type == VisibleRowType.Group)
+                                {
+                                    _expandedGroups.Remove(p.Node.Id);
+                                    selectionIndex = i;
+                                    break;
+                                }
+                                else if (p.Type == VisibleRowType.Category)
+                                {
+                                    _expandedCategories.Remove(p.Node.Id);
+                                    selectionIndex = i;
+                                    break;
+                                }
+                            }
                         }
                     }
                     break;
