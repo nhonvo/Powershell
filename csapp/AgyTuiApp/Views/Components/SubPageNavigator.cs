@@ -1,35 +1,21 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Threading;
+using System.Collections.Generic;
 using Spectre.Console;
 using Spectre.Console.Rendering;
-using AgyTui.Components;
-using AgyTui.Registry;
 
 namespace AgyTui;
 
 public static class SubPageNavigator
 {
-    private struct FlatItem
-    {
-        public WorkspaceEntry Workspace;
-        public int WorkspaceIndex;
-        public int ActionIndex;
-    }
-
     private static string _detailsSearchBuffer = "";
-    private static int _selectedWorkspaceIndex = 0;
-    private static int _selectedActionIndex = -1;
-    private static int _expandedWorkspaceIndex = -1;
 
     public static void Run(string mode, string initialQuery = "")
     {
         mode = mode.ToLowerInvariant();
         int detailsSel = 0;
 
-        // Initialize selection index if active theme/account exists
         if (mode == "agyswitch")
         {
             var accs = AgyAccountCore.GetAccounts();
@@ -39,16 +25,16 @@ public static class SubPageNavigator
         }
         else if (mode == "theme")
         {
-            var themeFiles = GetThemeNames();
+            var themeFiles = SubPageThemeNavigator.GetThemeNames();
             var currentTheme = Environment.GetEnvironmentVariable("THEME");
             detailsSel = Array.IndexOf(themeFiles, currentTheme);
             if (detailsSel < 0) detailsSel = 0;
         }
         else if (mode == "proj")
         {
-            _selectedWorkspaceIndex = 0;
-            _selectedActionIndex = -1;
-            _expandedWorkspaceIndex = -1;
+            SubPageProjNavigator.SelectedWorkspaceIndex = 0;
+            SubPageProjNavigator.SelectedActionIndex = -1;
+            SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
         }
 
         _detailsSearchBuffer = initialQuery;
@@ -56,7 +42,9 @@ public static class SubPageNavigator
         while (true)
         {
             int itemsCount = 0;
-            var flatList = new List<FlatItem>();
+            var flatList = new List<SubPageProjNavigator.FlatItem>();
+            var workspaces = Array.Empty<WorkspaceEntry>();
+
             if (mode == "agyswitch")
             {
                 var accs = AgyAccountCore.GetAccounts();
@@ -68,7 +56,7 @@ public static class SubPageNavigator
             }
             else if (mode == "theme")
             {
-                var themes = GetThemeNames();
+                var themes = SubPageThemeNavigator.GetThemeNames();
                 if (!string.IsNullOrEmpty(_detailsSearchBuffer))
                 {
                     themes = themes.Where(t => t.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
@@ -86,7 +74,7 @@ public static class SubPageNavigator
             }
             else if (mode == "proj")
             {
-                var workspaces = WorkspaceRegistry.GetWorkspaces();
+                workspaces = WorkspaceRegistry.GetWorkspaces();
                 if (!string.IsNullOrEmpty(_detailsSearchBuffer))
                 {
                     workspaces = workspaces.Where(w => w != null && 
@@ -94,42 +82,30 @@ public static class SubPageNavigator
                          (w.WorkspacePath != null && SystemHelper.IsFuzzyMatch(w.WorkspacePath, _detailsSearchBuffer)))).ToArray();
                 }
                 
-                flatList = new List<FlatItem>();
-                for (int i = 0; i < workspaces.Length; i++)
-                {
-                    var w = workspaces[i];
-                    flatList.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -1 });
-                    if (i == _expandedWorkspaceIndex)
-                    {
-                        for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
-                        {
-                            flatList.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = j });
-                        }
-                    }
-                }
+                flatList = SubPageProjNavigator.GetFlatList(workspaces);
                 itemsCount = flatList.Count;
                 
-                detailsSel = flatList.FindIndex(item => item.WorkspaceIndex == _selectedWorkspaceIndex && item.ActionIndex == _selectedActionIndex);
+                detailsSel = flatList.FindIndex(item => item.WorkspaceIndex == SubPageProjNavigator.SelectedWorkspaceIndex && item.ActionIndex == SubPageProjNavigator.SelectedActionIndex);
                 if (detailsSel < 0)
                 {
                     if (flatList.Count > 0)
                     {
                         detailsSel = 0;
-                        _selectedWorkspaceIndex = flatList[0].WorkspaceIndex;
-                        _selectedActionIndex = flatList[0].ActionIndex;
+                        SubPageProjNavigator.SelectedWorkspaceIndex = flatList[0].WorkspaceIndex;
+                        SubPageProjNavigator.SelectedActionIndex = flatList[0].ActionIndex;
                     }
                     else
                     {
                         detailsSel = 0;
-                        _selectedWorkspaceIndex = 0;
-                        _selectedActionIndex = -1;
+                        SubPageProjNavigator.SelectedWorkspaceIndex = 0;
+                        SubPageProjNavigator.SelectedActionIndex = -1;
                     }
                 }
             }
 
             ScreenChrome.RenderFrame(() =>
             {
-                RenderSubPageSelection(mode, detailsSel);
+                RenderSubPageSelection(mode, detailsSel, workspaces, flatList);
             }, forceClear: true);
 
             var key = Console.ReadKey(true);
@@ -150,9 +126,9 @@ public static class SubPageNavigator
                         detailsSel = 0;
                         if (mode == "proj")
                         {
-                            _selectedWorkspaceIndex = 0;
-                            _selectedActionIndex = -1;
-                            _expandedWorkspaceIndex = -1;
+                            SubPageProjNavigator.SelectedWorkspaceIndex = 0;
+                            SubPageProjNavigator.SelectedActionIndex = -1;
+                            SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
                         }
                     }
                     break;
@@ -170,9 +146,9 @@ public static class SubPageNavigator
                         detailsSel = 0;
                         if (mode == "proj")
                         {
-                            _selectedWorkspaceIndex = 0;
-                            _selectedActionIndex = -1;
-                            _expandedWorkspaceIndex = -1;
+                            SubPageProjNavigator.SelectedWorkspaceIndex = 0;
+                            SubPageProjNavigator.SelectedActionIndex = -1;
+                            SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
                         }
                     }
                     break;
@@ -202,59 +178,32 @@ public static class SubPageNavigator
                         detailsSel = 0;
                         if (mode == "proj")
                         {
-                            _selectedWorkspaceIndex = 0;
-                            _selectedActionIndex = -1;
-                            _expandedWorkspaceIndex = -1;
+                            SubPageProjNavigator.SelectedWorkspaceIndex = 0;
+                            SubPageProjNavigator.SelectedActionIndex = -1;
+                            SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
                         }
                     }
                     break;
                 case ConsoleKey.Enter:
                     if (mode == "proj")
                     {
-                        var workspaces = WorkspaceRegistry.GetWorkspaces();
-                        if (!string.IsNullOrEmpty(_detailsSearchBuffer))
-                        {
-                            workspaces = workspaces.Where(w => w != null && 
-                                ((w.Name != null && SystemHelper.IsFuzzyMatch(w.Name, _detailsSearchBuffer)) ||
-                                 (w.WorkspacePath != null && SystemHelper.IsFuzzyMatch(w.WorkspacePath, _detailsSearchBuffer)))).ToArray();
-                        }
-                        flatList = new List<FlatItem>();
-                        for (int i = 0; i < workspaces.Length; i++)
-                        {
-                            var w = workspaces[i];
-                            flatList.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -1 });
-                            if (i == _expandedWorkspaceIndex)
-                            {
-                                for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
-                                {
-                                    flatList.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = j });
-                                }
-                            }
-                        }
-
-                        if (detailsSel >= 0 && detailsSel < flatList.Count)
-                        {
-                            var item = flatList[detailsSel];
-                            if (item.ActionIndex == -1)
-                            {
-                                // Default Enter on workspace row: Change directory (Action 0) and exit!
-                                WorkspaceRegistry.HandleWorkspaceAction(item.Workspace, 0);
-                                return;
-                            }
-                            else
-                            {
-                                WorkspaceRegistry.HandleWorkspaceAction(item.Workspace, item.ActionIndex);
-                                return;
-                            }
-                        }
+                        bool shouldExit = SubPageProjNavigator.HandleEnter(workspaces, flatList, detailsSel);
+                        if (shouldExit) return;
                     }
-                    else
+                    else if (mode == "theme")
                     {
-                        if (detailsSel >= 0 && detailsSel < itemsCount)
-                        {
-                            bool shouldExit = HandleSelection(mode, detailsSel);
-                            if (shouldExit) return;
-                        }
+                        bool shouldExit = SubPageThemeNavigator.HandleSelection(_detailsSearchBuffer, detailsSel);
+                        if (shouldExit) return;
+                    }
+                    else if (mode == "agyswitch")
+                    {
+                        bool shouldExit = SubPageAccountNavigator.HandleSelection(_detailsSearchBuffer, detailsSel);
+                        if (shouldExit) return;
+                    }
+                    else if (mode == "learn" || mode == "session" || mode == "weak")
+                    {
+                        bool shouldExit = SubPageTopicNavigator.HandleSelection(mode, _detailsSearchBuffer, detailsSel);
+                        if (shouldExit) return;
                     }
                     break;
                 case ConsoleKey.RightArrow:
@@ -266,7 +215,7 @@ public static class SubPageNavigator
                             var item = flatList[detailsSel];
                             if (item.ActionIndex == -1)
                             {
-                                _expandedWorkspaceIndex = item.WorkspaceIndex;
+                                SubPageProjNavigator.ExpandedWorkspaceIndex = item.WorkspaceIndex;
                             }
                         }
                     }
@@ -280,16 +229,16 @@ public static class SubPageNavigator
                             var item = flatList[detailsSel];
                             if (item.ActionIndex == -1)
                             {
-                                if (_expandedWorkspaceIndex == item.WorkspaceIndex)
+                                if (SubPageProjNavigator.ExpandedWorkspaceIndex == item.WorkspaceIndex)
                                 {
-                                    _expandedWorkspaceIndex = -1;
+                                    SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
                                 }
                             }
                             else
                             {
-                                _expandedWorkspaceIndex = -1;
-                                _selectedActionIndex = -1;
-                                _selectedWorkspaceIndex = item.WorkspaceIndex;
+                                SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
+                                SubPageProjNavigator.SelectedActionIndex = -1;
+                                SubPageProjNavigator.SelectedWorkspaceIndex = item.WorkspaceIndex;
                             }
                         }
                     }
@@ -309,7 +258,7 @@ public static class SubPageNavigator
                 case ConsoleKey.A:
                     if (mode == "agyswitch")
                     {
-                        CreateAccount();
+                        SubPageAccountNavigator.CreateAccount();
                     }
                     else
                     {
@@ -317,16 +266,16 @@ public static class SubPageNavigator
                         detailsSel = 0;
                         if (mode == "proj")
                         {
-                            _selectedWorkspaceIndex = 0;
-                            _selectedActionIndex = -1;
-                            _expandedWorkspaceIndex = -1;
+                            SubPageProjNavigator.SelectedWorkspaceIndex = 0;
+                            SubPageProjNavigator.SelectedActionIndex = -1;
+                            SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
                         }
                     }
                     break;
                 case ConsoleKey.D:
-                    if (mode == "agyswitch" && detailsSel >= 0 && detailsSel < itemsCount)
+                    if (mode == "agyswitch")
                     {
-                        DeleteAccount(detailsSel);
+                        SubPageAccountNavigator.DeleteAccount(_detailsSearchBuffer, detailsSel);
                     }
                     else
                     {
@@ -334,16 +283,16 @@ public static class SubPageNavigator
                         detailsSel = 0;
                         if (mode == "proj")
                         {
-                            _selectedWorkspaceIndex = 0;
-                            _selectedActionIndex = -1;
-                            _expandedWorkspaceIndex = -1;
+                            SubPageProjNavigator.SelectedWorkspaceIndex = 0;
+                            SubPageProjNavigator.SelectedActionIndex = -1;
+                            SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
                         }
                     }
                     break;
                 case ConsoleKey.O:
-                    if (mode == "agyswitch" && detailsSel >= 0 && detailsSel < itemsCount)
+                    if (mode == "agyswitch")
                     {
-                        LogoutAccount(detailsSel);
+                        SubPageAccountNavigator.LogoutAccount(_detailsSearchBuffer, detailsSel);
                     }
                     else
                     {
@@ -351,9 +300,9 @@ public static class SubPageNavigator
                         detailsSel = 0;
                         if (mode == "proj")
                         {
-                            _selectedWorkspaceIndex = 0;
-                            _selectedActionIndex = -1;
-                            _expandedWorkspaceIndex = -1;
+                            SubPageProjNavigator.SelectedWorkspaceIndex = 0;
+                            SubPageProjNavigator.SelectedActionIndex = -1;
+                            SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
                         }
                     }
                     break;
@@ -365,9 +314,9 @@ public static class SubPageNavigator
                         detailsSel = 0;
                         if (mode == "proj")
                         {
-                            _selectedWorkspaceIndex = 0;
-                            _selectedActionIndex = -1;
-                            _expandedWorkspaceIndex = -1;
+                            SubPageProjNavigator.SelectedWorkspaceIndex = 0;
+                            SubPageProjNavigator.SelectedActionIndex = -1;
+                            SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
                         }
                     }
                     else
@@ -386,46 +335,24 @@ public static class SubPageNavigator
                         detailsSel = 0;
                         if (mode == "proj")
                         {
-                            _selectedWorkspaceIndex = 0;
-                            _selectedActionIndex = -1;
-                            _expandedWorkspaceIndex = -1;
+                            SubPageProjNavigator.SelectedWorkspaceIndex = 0;
+                            SubPageProjNavigator.SelectedActionIndex = -1;
+                            SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
                         }
                     }
                     break;
             }
 
-            // Sync selection state back from detailsSel
             if (mode == "proj" && itemsCount > 0)
             {
-                var workspaces = WorkspaceRegistry.GetWorkspaces();
-                if (!string.IsNullOrEmpty(_detailsSearchBuffer))
-                {
-                    workspaces = workspaces.Where(w => w != null && 
-                        ((w.Name != null && SystemHelper.IsFuzzyMatch(w.Name, _detailsSearchBuffer)) ||
-                         (w.WorkspacePath != null && SystemHelper.IsFuzzyMatch(w.WorkspacePath, _detailsSearchBuffer)))).ToArray();
-                }
-                flatList = new List<FlatItem>();
-                for (int i = 0; i < workspaces.Length; i++)
-                {
-                    var w = workspaces[i];
-                    flatList.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -1 });
-                    if (i == _expandedWorkspaceIndex)
-                    {
-                        for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
-                        {
-                            flatList.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = j });
-                        }
-                    }
-                }
-
                 if (detailsSel < 0) detailsSel = 0;
                 if (detailsSel >= flatList.Count) detailsSel = flatList.Count - 1;
                 
                 if (flatList.Count > 0)
                 {
                     var selectedItem = flatList[detailsSel];
-                    _selectedWorkspaceIndex = selectedItem.WorkspaceIndex;
-                    _selectedActionIndex = selectedItem.ActionIndex;
+                    SubPageProjNavigator.SelectedWorkspaceIndex = selectedItem.WorkspaceIndex;
+                    SubPageProjNavigator.SelectedActionIndex = selectedItem.ActionIndex;
                 }
             }
         }
@@ -440,181 +367,7 @@ public static class SubPageNavigator
         return buffer[..(i + 1)];
     }
 
-    private static string[] GetThemeNames()
-    {
-        var themesPath = Environment.GetEnvironmentVariable("POSH_THEMES_PATH");
-        if (string.IsNullOrEmpty(themesPath) || !Directory.Exists(themesPath))
-        {
-            themesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "asset", "powershell-themes");
-            if (!Directory.Exists(themesPath))
-            {
-                themesPath = Path.Combine(Directory.GetCurrentDirectory(), "asset", "powershell-themes");
-            }
-        }
-        if (!Directory.Exists(themesPath)) return Array.Empty<string>();
-        return Directory.GetFiles(themesPath, "*.omp.json").Select(f => Path.GetFileName(f).Replace(".omp.json", "")).OrderBy(f => f).ToArray();
-    }
-
-    private static bool HandleSelection(string mode, int detailsSel)
-    {
-        if (mode == "agyswitch")
-        {
-            var accs = AgyAccountCore.GetAccounts();
-            if (!string.IsNullOrEmpty(_detailsSearchBuffer))
-            {
-                accs = accs.Where(a => a.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
-            }
-            var targetAcc = accs[detailsSel];
-            Console.CursorVisible = true;
-            AgyAccountCore.SetActiveAccount(targetAcc, false);
-            Console.CursorVisible = false;
-            return true;
-        }
-        else if (mode == "theme")
-        {
-            var themeNames = GetThemeNames();
-            if (!string.IsNullOrEmpty(_detailsSearchBuffer))
-            {
-                themeNames = themeNames.Where(t => t.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
-            }
-            var selectedTheme = themeNames[detailsSel];
-            var themesPath = Environment.GetEnvironmentVariable("POSH_THEMES_PATH");
-            if (string.IsNullOrEmpty(themesPath))
-            {
-                themesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "asset", "powershell-themes");
-                if (!Directory.Exists(themesPath))
-                {
-                    themesPath = Path.Combine(Directory.GetCurrentDirectory(), "asset", "powershell-themes");
-                }
-            }
-            var themePath = ThemeHelper.SetTheme(themesPath, selectedTheme);
-            if (!string.IsNullOrEmpty(themePath))
-            {
-                var agyHome = !string.IsNullOrEmpty(AgyAccountCore.AgySourceHome) ? AgyAccountCore.AgySourceHome : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini");
-                Directory.CreateDirectory(agyHome);
-                var selectedThemeFile = Path.Combine(agyHome, "selected_theme.txt");
-                File.WriteAllText(selectedThemeFile, themePath);
-            }
-            SpectrePanel.Success($"Selected theme '{selectedTheme}'. Theme will apply on exit.");
-            Thread.Sleep(1000);
-            return true;
-        }
-        else if (mode == "learn" || mode == "session" || mode == "weak")
-        {
-            var topics = new[] { "jp", "en", "cs", "dsa", "interview", "[Type Custom Topic...]" };
-            if (!string.IsNullOrEmpty(_detailsSearchBuffer))
-            {
-                topics = topics.Where(t => t.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
-            }
-            var selectedTopic = topics[detailsSel];
-            if (selectedTopic == "[Type Custom Topic...]")
-            {
-                Console.CursorVisible = true;
-                selectedTopic = AnsiConsole.Ask<string>("Enter custom topic name:").Trim();
-                Console.CursorVisible = false;
-            }
-            if (!string.IsNullOrEmpty(selectedTopic))
-            {
-                Console.CursorVisible = true;
-                if (mode == "learn") LearnRouter.StartLearning(selectedTopic);
-                else if (mode == "session") StudySession.Run(selectedTopic);
-                else if (mode == "weak") WeakItemsQueue.ShowPreSessionReview(selectedTopic);
-                Console.CursorVisible = false;
-            }
-            return true;
-        }
-        else if (mode == "proj")
-        {
-            var workspaces = WorkspaceRegistry.GetWorkspaces();
-            if (!string.IsNullOrEmpty(_detailsSearchBuffer))
-            {
-                workspaces = workspaces.Where(w => w != null && 
-                    ((w.Name != null && SystemHelper.IsFuzzyMatch(w.Name, _detailsSearchBuffer)) ||
-                     (w.WorkspacePath != null && SystemHelper.IsFuzzyMatch(w.WorkspacePath, _detailsSearchBuffer)))).ToArray();
-            }
-            if (detailsSel >= 0 && detailsSel < workspaces.Length)
-            {
-                var targetEntry = workspaces[detailsSel];
-                var actionIdx = SpectreMenu.ShowWithEscape($"Workspace: {targetEntry.Name}", WorkspaceRegistry.SharedWorkspaceActions, 0);
-                if (actionIdx >= 0)
-                {
-                    WorkspaceRegistry.HandleWorkspaceAction(targetEntry, actionIdx);
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private static void CreateAccount()
-    {
-        Console.CursorVisible = true;
-        AnsiConsole.Clear();
-        var newName = AnsiConsole.Ask<string>("Enter new account name:").Trim();
-        if (!string.IsNullOrEmpty(newName))
-        {
-            try
-            {
-                AgyAccountCore.AddAccount(newName);
-                SpectrePanel.Success($"Account '{newName}' created successfully!");
-                Thread.Sleep(1500);
-            }
-            catch (Exception ex)
-            {
-                SpectrePanel.Error($"Failed to create account: {ex.Message}");
-                Thread.Sleep(2000);
-            }
-        }
-        Console.CursorVisible = false;
-    }
-
-    private static void DeleteAccount(int detailsSel)
-    {
-        var accs = AgyAccountCore.GetAccounts();
-        if (!string.IsNullOrEmpty(_detailsSearchBuffer))
-        {
-            accs = accs.Where(a => a.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
-        }
-        var targetAcc = accs[detailsSel];
-        if (string.Equals(targetAcc, "default", StringComparison.OrdinalIgnoreCase))
-        {
-            SpectrePanel.Error("Cannot delete default account.");
-            Thread.Sleep(1500);
-            return;
-        }
-        Console.CursorVisible = true;
-        AnsiConsole.Clear();
-        var confirm = AnsiConsole.Confirm($"Are you sure you want to delete account '{targetAcc}'?");
-        if (confirm)
-        {
-            AgyAccountCore.DeleteAccount(targetAcc);
-            SpectrePanel.Success($"Account '{targetAcc}' deleted successfully!");
-            Thread.Sleep(1500);
-        }
-        Console.CursorVisible = false;
-    }
-
-    private static void LogoutAccount(int detailsSel)
-    {
-        var accs = AgyAccountCore.GetAccounts();
-        if (!string.IsNullOrEmpty(_detailsSearchBuffer))
-        {
-            accs = accs.Where(a => a.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
-        }
-        var targetAcc = accs[detailsSel];
-        Console.CursorVisible = true;
-        AnsiConsole.Clear();
-        var confirm = AnsiConsole.Confirm($"Are you sure you want to log out of '{targetAcc}'?");
-        if (confirm)
-        {
-            AgyAccountCore.LogoutAccount(targetAcc);
-            SpectrePanel.Success($"Logged out of '{targetAcc}' successfully!");
-            Thread.Sleep(1500);
-        }
-        Console.CursorVisible = false;
-    }
-
-    private static void RenderSubPageSelection(string mode, int selIdx)
+    private static void RenderSubPageSelection(string mode, int selIdx, WorkspaceEntry[] workspaces, List<SubPageProjNavigator.FlatItem> flatList)
     {
         var grid = new Grid();
         grid.AddColumn(new GridColumn().NoWrap());
@@ -623,127 +376,20 @@ public static class SubPageNavigator
 
         if (mode == "agyswitch")
         {
-            grid.AddRow(new Markup("[cyan bold]Select Account to Switch:[/]\n"));
-            if (!string.IsNullOrEmpty(_detailsSearchBuffer))
-            {
-                grid.AddRow(new Markup($"[yellow]Search:[/] [white]{_detailsSearchBuffer.EscapeMarkup()}[/]_\n"));
-            }
-            var allAccs = AgyAccountCore.GetAccounts();
-            var accs = string.IsNullOrEmpty(_detailsSearchBuffer)
-                ? allAccs
-                : allAccs.Where(a => a.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
-            var activeAcc = AgyAccountCore.GetActiveAccount();
-            for (var i = 0; i < accs.Length; i++)
-            {
-                var isSelected = (i == selIdx);
-                var isActive = (accs[i] == activeAcc);
-                var prefix = isSelected ? "[green bold]> [/]" : "  ";
-                var suffix = isActive ? " [green](Active)[/]" : "";
-                var displayName = accs[i];
-                if (string.Equals(accs[i], "default", StringComparison.OrdinalIgnoreCase))
-                {
-                    var email = AgyAccountCore.GetAccountEmail("default");
-                    if (!string.IsNullOrEmpty(email)) displayName = $"default ({email})";
-                }
-                var stats = AgyAccountCore.GetAccountStats(accs[i]);
-                var loginStatus = stats.TokenStatus == "Logged In" ? "[green]✔[/]" : "[red]✘[/]";
-                grid.AddRow(new Markup($"{prefix}{displayName.EscapeMarkup()} [dim]({loginStatus})[/]{suffix}"));
-            }
-            grid.AddRow(new Markup("\n[dim]↑/↓ Navigate  ·  Enter Select  ·  Esc Cancel[/]"));
-            grid.AddRow(new Markup("[dim]a Create Account  ·  d Delete  ·  o Log Out[/]"));
+            content = SubPageAccountNavigator.Render(grid, _detailsSearchBuffer, selIdx);
         }
         else if (mode == "theme")
         {
-            var themeNames = GetThemeNames();
-            var filtered = string.IsNullOrEmpty(_detailsSearchBuffer)
-                ? themeNames
-                : themeNames.Where(t => t.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
-
-            var currentTheme = Environment.GetEnvironmentVariable("THEME");
-
-            grid.AddRow(new Markup($"[cyan bold]Select Oh My Posh Theme[/] [dim]({filtered.Length}/{themeNames.Length} themes)[/]:\n"));
-            if (!string.IsNullOrEmpty(_detailsSearchBuffer))
-            {
-                grid.AddRow(new Markup($"[yellow]Search:[/] [white]{_detailsSearchBuffer.EscapeMarkup()}[/]_\n"));
-            }
-            else
-            {
-                grid.AddRow(new Markup("[dim]Type to filter themes (Esc to clear / cancel)[/]\n"));
-            }
-
-            int maxRows = 12;
-            int topRow = 0;
-            int endRow = 0;
-
-            if (filtered.Length == 0)
-            {
-                grid.AddRow(new Markup($"  [dim]No themes matching '{_detailsSearchBuffer.EscapeMarkup()}'.[/]"));
-            }
-            else
-            {
-                (topRow, endRow) = ScrollableListView.ComputeViewport(filtered.Length, selIdx, maxRows);
-
-                for (var i = topRow; i < endRow; i++)
-                {
-                    var isSelected = (i == selIdx);
-                    var isActive = string.Equals(filtered[i], currentTheme, StringComparison.OrdinalIgnoreCase);
-                    var prefix = isSelected ? "[green bold]> [/]" : "  ";
-                    var suffix = isActive ? " [bold green][[ACTIVE]][/]" : "";
-                    var nameMarkup = isSelected ? $"[bold green]{filtered[i].EscapeMarkup()}[/]" : $"[white]{filtered[i].EscapeMarkup()}[/]";
-                    grid.AddRow(new Markup($"{prefix}{nameMarkup}{suffix}"));
-                }
-            }
-
-            string scrollStatus = "";
-            if (filtered.Length > maxRows)
-            {
-                var aboveStr = topRow > 0 ? $"[yellow]▲ {topRow} items above[/]" : "[grey]▲ Start of list[/]";
-                var belowStr = (endRow < filtered.Length) ? $"[yellow]▼ {filtered.Length - endRow} items below[/]" : "[grey]▼ End of list[/]";
-                scrollStatus = $"  {aboveStr}   ·   {belowStr}";
-            }
-            else
-            {
-                scrollStatus = "  [grey]▲ Start of list   ·   ▼ End of list[/]";
-            }
-
-            content = new Rows(
-                grid,
-                new Rule().RuleStyle("cyan dim"),
-                new Markup(scrollStatus),
-                new Markup("\n[dim]↑/↓/j/k Navigate  ·  PgDn/PgUp Page  ·  Enter Select  ·  Esc Cancel[/]")
-            );
+            content = SubPageThemeNavigator.Render(grid, _detailsSearchBuffer, selIdx);
         }
         else if (mode == "learn" || mode == "session" || mode == "weak")
         {
-            grid.AddRow(new Markup($"[cyan bold]Select Topic for {mode.ToUpperInvariant()}:[/]\n"));
-            if (!string.IsNullOrEmpty(_detailsSearchBuffer))
-            {
-                grid.AddRow(new Markup($"[yellow]Search:[/] [white]{_detailsSearchBuffer.EscapeMarkup()}[/]_\n"));
-            }
-            var allTopics = new[] { "jp (Japanese / Language)", "en (English Vocabulary)", "cs (C# Quiz)", "dsa (Data Structures & Algorithms)", "interview (Question Bank & STAR)", "[Type Custom Topic...]" };
-            var topics = string.IsNullOrEmpty(_detailsSearchBuffer)
-                ? allTopics
-                : allTopics.Where(t => t.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
-            for (var i = 0; i < topics.Length; i++)
-            {
-                var isSelected = (i == selIdx);
-                var prefix = isSelected ? "[green bold]> [/]" : "  ";
-                grid.AddRow(new Markup($"{prefix}{topics[i].EscapeMarkup()}"));
-            }
-            grid.AddRow(new Markup("\n[dim]↑/↓ Navigate  ·  Enter Select  ·  Esc Cancel[/]"));
+            content = SubPageTopicNavigator.Render(grid, mode, _detailsSearchBuffer, selIdx);
         }
         else if (mode == "proj")
         {
-            var allWorkspaces = WorkspaceRegistry.GetWorkspaces();
-            var workspaces = string.IsNullOrEmpty(_detailsSearchBuffer)
-                ? allWorkspaces
-                : allWorkspaces.Where(w => w != null && 
-                    ((w.Name != null && SystemHelper.IsFuzzyMatch(w.Name, _detailsSearchBuffer)) ||
-                     (w.WorkspacePath != null && SystemHelper.IsFuzzyMatch(w.WorkspacePath, _detailsSearchBuffer)))).ToArray();
-
             var currentDir = Directory.GetCurrentDirectory();
-
-            grid.AddRow(new Markup($"[bold green]📁 Registered Workspace Navigator (cnav)[/] [dim]({workspaces.Length}/{allWorkspaces.Length} workspaces)[/]:\n"));
+            grid.AddRow(new Markup($"[bold green]📁 Registered Workspace Navigator (cnav)[/] [dim]({workspaces.Length} workspaces)[/]:\n"));
 
             if (!string.IsNullOrEmpty(_detailsSearchBuffer))
             {
@@ -760,87 +406,7 @@ public static class SubPageNavigator
             }
             else
             {
-                var flatList = new List<FlatItem>();
-                for (int i = 0; i < workspaces.Length; i++)
-                {
-                    var w = workspaces[i];
-                    flatList.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -1 });
-                    if (i == _expandedWorkspaceIndex)
-                    {
-                        for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
-                        {
-                            flatList.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = j });
-                        }
-                    }
-                }
-
-                int termH = 30;
-                try { termH = Console.WindowHeight; } catch { }
-                int maxRows = Math.Max(5, termH - 18);
-                int topRow = 0;
-                int endRow = 0;
-
-                (topRow, endRow) = ScrollableListView.ComputeViewport(flatList.Count, selIdx, maxRows);
-
-                for (int i = topRow; i < endRow; i++)
-                {
-                    var item = flatList[i];
-                    var isSelected = (i == selIdx);
-
-                    if (item.ActionIndex == -1)
-                    {
-                        var ws = item.Workspace;
-                        var isCurrent = !string.IsNullOrEmpty(ws.WorkspacePath) && string.Equals(ws.WorkspacePath.TrimEnd('\\', '/'), currentDir.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
-
-                        var prefix = isSelected ? "[green bold]❯ [/]" : "  ";
-                        var status = isCurrent ? "[bold black on green] ACTIVE [/] " : "";
-                        var branch = WorkspaceRegistry.GetGitBranch(ws.WorkspacePath);
-                        var branchSuffix = !string.IsNullOrEmpty(branch) ? $" [yellow]🌿 {branch}[/]" : "";
-
-                        var boldName = string.IsNullOrEmpty(_detailsSearchBuffer) ? ws.Name.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(ws.Name, _detailsSearchBuffer);
-                        var boldPath = string.IsNullOrEmpty(_detailsSearchBuffer) ? ws.WorkspacePath.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(ws.WorkspacePath, _detailsSearchBuffer);
-
-                        var nameMarkup = isSelected ? $"[bold green]{boldName}[/]" : $"[bold white]{boldName}[/]";
-                        var pathMarkup = $"[dim]· {boldPath}[/]";
-
-                        var expandSign = (item.WorkspaceIndex == _expandedWorkspaceIndex) ? "[[-]] " : "[[+]] ";
-
-                        grid.AddRow(new Markup($"{prefix}{expandSign}📁 {status}{nameMarkup}{branchSuffix} {pathMarkup}"));
-                    }
-                    else
-                    {
-                        var isLast = (item.ActionIndex == WorkspaceRegistry.SharedWorkspaceActions.Length - 1);
-                        var bullet = isLast ? "└── " : "├── ";
-                        var prefix = isSelected ? "  [green bold]❯──[/] " : $"  {bullet}";
-
-                        var actionLabel = WorkspaceRegistry.SharedWorkspaceActions[item.ActionIndex];
-                        var labelMarkup = isSelected ? $"[bold green]{actionLabel.EscapeMarkup()}[/]" : $"[dim]{actionLabel.EscapeMarkup()}[/]";
-                        grid.AddRow(new Markup($"{prefix}{labelMarkup}"));
-                    }
-                }
-
-                string scrollStatus = "";
-                if (flatList.Count > maxRows)
-                {
-                    var aboveStr = topRow > 0 ? $"[yellow]▲ {topRow} items above[/]" : "[grey]▲ Start of list[/]";
-                    var belowStr = (endRow < flatList.Count) ? $"[yellow]▼ {flatList.Count - endRow} items below[/]" : "[grey]▼ End of list[/]";
-                    scrollStatus = $"  {aboveStr}   ·   {belowStr}";
-                }
-                else
-                {
-                    scrollStatus = "  [grey]▲ Start of list   ·   ▼ End of list[/]";
-                }
-
-                var selTarget = (_selectedWorkspaceIndex >= 0 && _selectedWorkspaceIndex < workspaces.Length) ? workspaces[_selectedWorkspaceIndex]?.WorkspacePath : null;
-                var targetDisplay = !string.IsNullOrEmpty(selTarget) ? selTarget : "No workspace selected";
-
-                content = new Rows(
-                    grid,
-                    new Rule().RuleStyle("cyan dim"),
-                    new Markup(scrollStatus),
-                    new Markup($"  [dim]Selected Target:[/] [bold cyan]{targetDisplay.EscapeMarkup()}[/]"),
-                    new Markup("\n[bold cyan][[Enter]][/] Toggle/Run  ·  [bold cyan][[Esc]][/] Cancel")
-                );
+                content = SubPageProjNavigator.Render(grid, _detailsSearchBuffer, workspaces, flatList, selIdx, currentDir);
             }
         }
 
