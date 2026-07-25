@@ -21,6 +21,46 @@ public static class Icons
         string.Equals(Environment.GetEnvironmentVariable("AGY_NERD_FONTS"), "true", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(Environment.GetEnvironmentVariable("POSH_THEME_NERD_FONTS"), "true", StringComparison.OrdinalIgnoreCase);
 
+    public static int GetGlyphDisplayWidth(string glyph)
+    {
+        if (string.IsNullOrEmpty(glyph)) return 0;
+        int width = 0;
+        for (int i = 0; i < glyph.Length; i += char.IsSurrogatePair(glyph, i) ? 2 : 1)
+        {
+            int codePoint = char.ConvertToUtf32(glyph, i);
+            width += GetCodePointDisplayWidth(codePoint);
+        }
+        return width;
+    }
+
+    public static int GetStringDisplayWidth(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return 0;
+        int width = 0;
+        for (int i = 0; i < text.Length; i += char.IsSurrogatePair(text, i) ? 2 : 1)
+        {
+            int codePoint = char.ConvertToUtf32(text, i);
+            width += GetCodePointDisplayWidth(codePoint);
+        }
+        return width;
+    }
+
+    public static string PadDisplayWidth(string text, int targetWidth)
+    {
+        int displayWidth = GetStringDisplayWidth(text);
+        int paddingNeeded = Math.Max(0, targetWidth - displayWidth);
+        return text + new string(' ', paddingNeeded);
+    }
+
+    public static int GetCodePointDisplayWidth(int codePoint)
+    {
+        if (codePoint >= 0x1F300 && codePoint <= 0x1FAFF) return 2;
+        if (codePoint >= 0x4E00 && codePoint <= 0x9FFF) return 2;
+        if (codePoint >= 0x2E80 && codePoint <= 0x33FF) return 2;
+        if (codePoint == 0x25B2 || codePoint == 0x25BC || codePoint == 0x2699 || codePoint == 0x26A1 || codePoint == 0x2693 || codePoint == 0x2615 || codePoint == 0x267B) return 2;
+        return 1;
+    }
+
     public static string GetFileIcon(string ext)
     {
         ext = ext.ToLowerInvariant();

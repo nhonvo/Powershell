@@ -42,13 +42,20 @@ public static class AntigravityDeckHelper
     {
         try
         {
+            var argsList = new List<string>();
             if (OperatingSystem.IsWindows())
             {
-                Helpers.ProcessRunner.Run("cmd.exe", $"/c npm {cmd} {arg}", DeckPath);
+                argsList.Add("/c");
+                argsList.Add("npm");
+                argsList.Add(cmd);
+                if (!string.IsNullOrEmpty(arg)) argsList.Add(arg);
+                Helpers.ProcessRunner.RunInteractive("cmd.exe", argsList, workingDir: DeckPath);
             }
             else
             {
-                Helpers.ProcessRunner.Run("npm", $"{cmd} {arg}", DeckPath);
+                argsList.Add(cmd);
+                if (!string.IsNullOrEmpty(arg)) argsList.Add(arg);
+                Helpers.ProcessRunner.RunInteractive("npm", argsList, workingDir: DeckPath);
             }
         }
         catch (Exception ex)

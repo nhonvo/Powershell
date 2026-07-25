@@ -4,7 +4,14 @@ namespace AgyTui;
 
 public static class Program
 {
-    public static void Main(string[] args)
+    public static int Main(string[] args)
+    {
+        int exitCode = RunApp(args);
+        Environment.ExitCode = exitCode;
+        return exitCode;
+    }
+
+    public static int RunApp(string[] args)
     {
         try
         {
@@ -21,13 +28,12 @@ public static class Program
         catch (Exception ex)
         {
             AnsiConsole.WriteException(ex);
-            Environment.Exit(1);
+            return 1;
         }
 
         if (args.Length > 0)
         {
-            RunCommand(args[0], args.Skip(1).ToArray());
-            return;
+            return RunCommand(args[0], args.Skip(1).ToArray());
         }
         CcNavigator.Run();
 
@@ -39,10 +45,11 @@ public static class Program
         {
         }
         AnsiConsole.MarkupLine("[dim]Goodbye.[/]");
+        return 0;
     }
 
-    public static void RunCommand(string alias, string[]? args = null)
+    public static int RunCommand(string alias, string[]? args = null)
     {
-        CommandRouter.Execute(alias, args);
+        return CommandRouter.Execute(alias, args);
     }
 }

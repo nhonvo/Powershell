@@ -52,4 +52,20 @@ public static class IdeCommandRegistry
             }
         }),
     };
+
+    public static bool ExecuteCommand(IdeContext ctx, string cmdLine)
+    {
+        if (string.IsNullOrWhiteSpace(cmdLine)) return false;
+        var parts = cmdLine.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var name = parts[0].ToLowerInvariant();
+        var args = parts.Skip(1).ToArray();
+
+        var cmd = All.FirstOrDefault(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
+        if (cmd != null)
+        {
+            cmd.Run(ctx, args);
+            return true;
+        }
+        return false;
+    }
 }

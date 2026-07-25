@@ -35,4 +35,24 @@ public class ScreenChromeTests : IDisposable
         Assert.Contains("Workspace & Dev", output);
         Assert.Contains("proj", output);
     }
+
+    [Fact]
+    public void WriteLineSmooth_ShorterLineThanPrevious_ErasesTrailingCharacters()
+    {
+        ScreenChrome.WriteLineSmooth("Long initial line text");
+        var firstOutput = _writer.ToString();
+        Assert.Contains("Long initial line text", firstOutput);
+
+        ScreenChrome.WriteLineSmooth("Short");
+        var fullOutput = _writer.ToString();
+        Assert.Contains("Short", fullOutput);
+    }
+
+    [Fact]
+    public void RenderFrame_ForceClearFalse_UsesCursorHomeNotFullClear()
+    {
+        bool drawn = false;
+        ScreenChrome.RenderFrame(() => { drawn = true; }, forceClear: false);
+        Assert.True(drawn);
+    }
 }

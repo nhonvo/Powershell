@@ -62,8 +62,21 @@ public static class AntigravityManagerHelper
     {
         try
         {
-            var args = string.IsNullOrEmpty(arg) ? cmd : $"{cmd} {arg}";
-            Helpers.ProcessRunner.Run("npm.cmd", args, ManagerPath);
+            var argsList = new List<string>();
+            if (OperatingSystem.IsWindows())
+            {
+                argsList.Add("/c");
+                argsList.Add("npm");
+                argsList.Add(cmd);
+                if (!string.IsNullOrEmpty(arg)) argsList.Add(arg);
+                Helpers.ProcessRunner.RunInteractive("cmd.exe", argsList, workingDir: ManagerPath);
+            }
+            else
+            {
+                argsList.Add(cmd);
+                if (!string.IsNullOrEmpty(arg)) argsList.Add(arg);
+                Helpers.ProcessRunner.RunInteractive("npm", argsList, workingDir: ManagerPath);
+            }
         }
         catch (Exception ex)
         {

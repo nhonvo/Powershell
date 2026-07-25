@@ -12,16 +12,16 @@ public static class QuotaTracker
         return (activeCount, pct);
     }
 
-    public static List<(DateTime TimeSlot, double RestoredPct)> ForecastQuotaRelease(List<DateTime> timestamps, int limitWindowHours = 5, int maxLimit = 50)
+    public static List<(DateTime TimeSlot, int ReqsReleased, double RestoredPct)> ForecastQuotaRelease(List<DateTime> timestamps, int limitWindowHours = 5, int maxLimit = 50)
     {
         var cutoff = DateTime.UtcNow.AddHours(-limitWindowHours);
         var active = timestamps.Where(t => t >= cutoff).OrderBy(t => t).ToList();
-        var result = new List<(DateTime, double)>();
+        var result = new List<(DateTime, int, double)>();
         foreach (var group in active.GroupBy(t => new DateTime(t.AddHours(limitWindowHours).Ticks / TimeSpan.FromMinutes(15).Ticks * TimeSpan.FromMinutes(15).Ticks)))
         {
             var releasedCount = group.Count();
-            var releasedPct = (double)releasedCount / maxLimit * 100.0;
-            result.Add((group.Key, releasedPct));
+            var releasedPct = Math.Round((double)releasedCount / maxLimit * 100.0, 2);
+            result.Add((group.Key, releasedCount, releasedPct));
         }
         return result;
     }

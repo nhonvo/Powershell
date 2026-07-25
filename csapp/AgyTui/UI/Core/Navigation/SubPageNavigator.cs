@@ -6,6 +6,15 @@ public static class SubPageNavigator
 {
     private static string _detailsSearchBuffer = "";
 
+    public static string ProcessSearchKey(ConsoleKeyInfo key, string currentBuffer)
+    {
+        if (!char.IsControl(key.KeyChar) && key.KeyChar != '\0')
+        {
+            return currentBuffer + key.KeyChar;
+        }
+        return currentBuffer;
+    }
+
     public static void Run(string mode, string initialQuery = "")
     {
         mode = mode.ToLowerInvariant();
@@ -201,8 +210,16 @@ public static class SubPageNavigator
                         if (shouldExit) return;
                     }
                     break;
-                case ConsoleKey.RightArrow:
+
                 case ConsoleKey.L:
+                    if (!string.IsNullOrEmpty(_detailsSearchBuffer))
+                    {
+                        _detailsSearchBuffer = ProcessSearchKey(key, _detailsSearchBuffer);
+                        detailsSel = 0;
+                        break;
+                    }
+                    goto case ConsoleKey.RightArrow;
+                case ConsoleKey.RightArrow:
                     if (mode == "proj" && flatList.Count > 0)
                     {
                         if (detailsSel >= 0 && detailsSel < flatList.Count)
@@ -215,8 +232,15 @@ public static class SubPageNavigator
                         }
                     }
                     break;
-                case ConsoleKey.LeftArrow:
                 case ConsoleKey.H:
+                    if (!string.IsNullOrEmpty(_detailsSearchBuffer))
+                    {
+                        _detailsSearchBuffer = ProcessSearchKey(key, _detailsSearchBuffer);
+                        detailsSel = 0;
+                        break;
+                    }
+                    goto case ConsoleKey.LeftArrow;
+                case ConsoleKey.LeftArrow:
                     if (mode == "proj" && flatList.Count > 0)
                     {
                         if (detailsSel >= 0 && detailsSel < flatList.Count)

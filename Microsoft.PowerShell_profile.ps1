@@ -1,4 +1,4 @@
-if ($global:AgyProfileLoaded -or $global:AgyUserProfileLoaded) { return }
+if ($global:AgyProfileLoaded -or $global:AgyUserProfileLoaded -or $env:AGY_SKIP_DLL_LOAD -eq '1') { return }
 $global:AgyUserProfileLoaded = $true
 $Global:ProfileRepoRoot = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 
@@ -178,7 +178,7 @@ function Load-AgyTuiDll {
         if ($needsBuild -and (Test-Path $proj)) {
             dotnet build "$proj" -p:TreatWarningsAsErrors=true | Out-Null
         }
-        if (Test-Path $targetDll) {
+        if ((Test-Path $targetDll) -and $env:AGY_SKIP_DLL_LOAD -ne '1' -and (-not [Console]::IsOutputRedirected -or $env:AGY_LOAD_DLL -eq '1')) {
             try {
                 Get-ChildItem -Path (Split-Path $targetDll) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTui.dll" } | ForEach-Object {
                     try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
@@ -196,13 +196,14 @@ function Load-AgyTuiDll {
                 "GitHelper"          = "AgyTui.Infrastructure.GitHelper"
                 "DotNetHelper"       = "AgyTui.Infrastructure.DotNetHelper"
                 "DockerHelper"       = "AgyTui.Infrastructure.DockerHelper"
-                "SystemHelper"       = "AgyTui.UI.Screens.SysNet.SystemConsoleView"
+                "SystemHelper"       = "AgyTui.Infrastructure.SystemHelper"
                 "AwsHelper"          = "AgyTui.Infrastructure.AwsHelper"
                 "ObsidianHelper"     = "AgyTui.Infrastructure.Integrations.Obsidian.ObsidianBridge"
                 "StudyHelper"        = "AgyTui.UI.Screens.Learn.StudyConsoleView"
                 "AccountHelper"      = "AgyTui.UI.Screens.Account.AgyAccountCore"
                 "AiHelper"           = "AgyTui.Infrastructure.Integrations.Ai.AiClient"
                 "AgyAccountCore"     = "AgyTui.UI.Screens.Account.AgyAccountCore"
+                "AgyAccountManager"  = "AgyTui.UI.Screens.Account.AgyAccountCore"
                 "AgyAiCore"          = "AgyTui.Infrastructure.Integrations.Ai.AgyAiCore"
                 "TerminalIde"        = "AgyTui.UI.Screens.Ide.TerminalIde"
                 "ProfileHelp"        = "AgyTui.UI.Core.Layouts.ProfileHelp"
@@ -210,7 +211,8 @@ function Load-AgyTuiDll {
                 "SpectreProgress"    = "AgyTui.UI.Core.Common.SpectreProgress"
                 "SpectrePager"       = "AgyTui.UI.Core.Common.SpectrePager"
                 "WorkspaceRegistry"  = "AgyTui.Core.Registries.WorkspaceRegistry"
-                "Projects"           = "AgyTui.Infrastructure.Integrations.Sys.ProjectsLauncher"
+                "AntigravityManager" = "AgyTui.Infrastructure.Integrations.Sys.AntigravityManagerHelper"
+                "AntigravityDeck"    = "AgyTui.Infrastructure.Integrations.Sys.AntigravityDeckHelper"
                 "ThemeHelper"        = "AgyTui.Infrastructure.Common.ThemeManager"
                 "SshHelper"          = "AgyTui.UI.Screens.SysNet.SshConsoleView"
                 "ProjectScaffolder"  = "AgyTui.Infrastructure.Common.ProjectScaffolder"
@@ -278,7 +280,7 @@ class AgyAccountManager {
                     }
                 } catch {}
                 try {
-                    [AgyAccountManager]::AutoSwitchOnDirectoryChange($pwd.Path)
+                    [AgyAccountCore]::AutoSwitchOnDirectoryChange($pwd.Path)
                 } catch {}
                 if (Test-Path Function:\prompt_original) {
                     prompt_original
@@ -335,7 +337,7 @@ function Initialize-AgySession {
 
 function Test-AgyAiGate {
     Initialize-AgySession
-    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+    if ($null -ne ('AgyTui.Infrastructure.Integrations.Ai.AgyAiCore' -as [type])) {
         return [AgyAiCore]::IsAiOllamaEnabled() -or [AgyAiCore]::IsAgyEnabled()
     }
     return $true
@@ -343,23 +345,19 @@ function Test-AgyAiGate {
 
 function Start-AgyManager {
     Initialize-AgySession
-    if ($null -ne ('AgyTui.Projects' -as [type])) {
-        [Projects]::StartManager()
-    } elseif ($null -ne ('Projects' -as [type])) {
-        [Projects]::StartManager()
+    if ($null -ne ('AgyTui.Infrastructure.Integrations.Sys.AntigravityManagerHelper' -as [type])) {
+        [AntigravityManager]::StartLocal()
     } else {
-        Write-Warning "Projects manager not loaded."
+        Invoke-ControlCenter "mgr-start"
     }
 }
 
 function Start-AgyProxy {
     Initialize-AgySession
-    if ($null -ne ('AgyTui.Projects' -as [type])) {
-        [Projects]::StartProxy()
-    } elseif ($null -ne ('Projects' -as [type])) {
-        [Projects]::StartProxy()
+    if ($null -ne ('AgyTui.Infrastructure.Integrations.Sys.AntigravityDeckHelper' -as [type])) {
+        [AntigravityDeck]::StartLocal()
     } else {
-        Write-Warning "Projects proxy not loaded."
+        Invoke-ControlCenter "deck-start"
     }
 }
 
@@ -1075,7 +1073,7 @@ class ShellSystemHelper {
 function Load-HelpHelper {
     try {
         Invoke-Expression @'
-class ProfileHelp {
+class ShellProfileHelp {
     # Category/command menu building, filtering, and the drill-down loop all live in
     # [ProfileHelp]::ShowInteractive() now. This just runs the returned command's alias —
     # the one part that has to stay PS1-side, since it executes an arbitrary alias in the live
@@ -1407,7 +1405,7 @@ function Invoke-AiTool {
     param([string]$MethodName, [string]$FallbackAlias, [object[]]$ToolArgs)
     try {
         Load-AgyTuiDll
-        if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+        if ($null -ne ('AgyAiCore' -as [type])) {
             [AgyAiCore]::$MethodName($ToolArgs)
         } else {
             Invoke-ControlCenter $FallbackAlias $ToolArgs
@@ -1437,7 +1435,7 @@ function Invoke-CopilotExplain {
 }
 function Install-AIIntegrations {
     Load-AgyTuiDll
-    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+    if ($null -ne ('AgyAiCore' -as [type])) {
         [AgyAiCore]::InstallAIIntegrations()
     } else {
         Invoke-ControlCenter "install-ai"
@@ -1445,7 +1443,7 @@ function Install-AIIntegrations {
 }
 function Initialize-OllamaServer {
     Load-AgyTuiDll
-    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+    if ($null -ne ('AgyAiCore' -as [type])) {
         [AgyAiCore]::InitializeOllamaServer()
     } else {
         Invoke-ControlCenter "init-ollama"
@@ -1454,7 +1452,7 @@ function Initialize-OllamaServer {
 function Set-OllamaModel {
     param([string]$ModelName)
     Load-AgyTuiDll
-    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+    if ($null -ne ('AgyAiCore' -as [type])) {
         [AgyAiCore]::SetOllamaModel($ModelName)
     } else {
         Invoke-ControlCenter "set-model" $ModelName
@@ -1462,7 +1460,7 @@ function Set-OllamaModel {
 }
 function Ensure-OllamaServer {
     Load-AgyTuiDll
-    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+    if ($null -ne ('AgyAiCore' -as [type])) {
         [AgyAiCore]::EnsureOllamaServer()
     } else {
         Invoke-ControlCenter "ensure-ollama"
@@ -1470,7 +1468,7 @@ function Ensure-OllamaServer {
 }
 function Invoke-OllamaLogs {
     Load-AgyTuiDll
-    if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+    if ($null -ne ('AgyAiCore' -as [type])) {
         [AgyAiCore]::ShowOllamaLogs()
     } else {
         Invoke-ControlCenter "ollama-logs"
@@ -1488,7 +1486,7 @@ function Invoke-ChatGPT {
     } else {
         Write-Warning "ChatGPT CLI command 'chatgpt' is not installed. Routing to local OpenClaw instead."
         Load-AgyTuiDll
-        if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
+        if ($null -ne ('AgyAiCore' -as [type])) {
             [AgyAiCore]::InvokeOpenClaw(@())
         } else {
             Invoke-ControlCenter "openclaw"
@@ -1590,7 +1588,7 @@ function open-term {
         Start-Process wt.exe -ArgumentList $args
     } else {
         Initialize-AgySession
-        [SystemHelper]::OpenNewTerminalSession($pwd.Path, $null, $true)
+        [SystemHelper]::OpenNewTerminalSession($pwd.Path, [string]$null, $true)
     }
 }
 Set-Alias -Name term -Value open-term -Force
@@ -1766,12 +1764,23 @@ function Start-Proxy { Start-AgyProxy }
 Set-Alias -Name prxy -Value Start-Proxy -Force
 
 # --- Antigravity Account Management Wrappers ---
-function Toggle-AutoSwitch { Initialize-AgySession; [AgyAccountManager]::ToggleAutoSwitch() }
-Set-Alias -Name autoswitch -Value Toggle-AutoSwitch -Force
-Set-Alias -Name agyswitch -Value Toggle-AutoSwitch -Force
+function Select-AgyAccount {
+    param([string]$AccountName)
+    Initialize-AgySession
+    if ($AccountName) {
+        [AgyAccountCore]::SetActiveAccount($AccountName, $true)
+    } else {
+        Invoke-ControlCenter "agyswitch"
+    }
+}
+Set-Alias -Name agyswitch -Value Select-AgyAccount -Force
 
-function Show-AccountsSummary { Initialize-AgySession; [AgyAccountManager]::ShowAllAccountsSummary() }
+function Toggle-AutoSwitch { Initialize-AgySession; [AgyAccountCore]::ToggleAutoSwitch() }
+Set-Alias -Name autoswitch -Value Toggle-AutoSwitch -Force
+
+function Show-AccountsSummary { Initialize-AgySession; [AgyAccountCore]::ShowAllAccountsSummary() }
 Set-Alias -Name acc-sum -Value Show-AccountsSummary -Force
+Set-Alias -Name agyquota -Value Show-AccountsSummary -Force
 
 # --- AI Session Dashboard Wrappers ---
 function Show-AiDashboard { Initialize-AgySession; if (-not (Test-AgyAiGate)) { return }; [AgyAiCore]::ShowAiDashboard() }

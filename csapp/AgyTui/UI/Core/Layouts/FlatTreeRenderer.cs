@@ -399,7 +399,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
         var grid = new Grid();
         grid.AddColumn(new GridColumn().NoWrap());
 
-        var isCompact = Config.Current.Density == "compact";
+        var isCompact = Config.IsMobileContext();
 
         int winHeight = 30;
         try { winHeight = Console.WindowHeight; } catch { }

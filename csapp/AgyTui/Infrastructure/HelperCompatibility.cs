@@ -55,3 +55,25 @@ public static class AwsHelper
     public static void ShowDynamoDbTables() => AgyServices.Aws.ShowDynamoDbTables();
     public static void ShowLambdaFunctions() => AgyServices.Aws.ShowLambdaFunctions();
 }
+
+public static class SystemHelper
+{
+    public static void OpenNewTerminalSession(string? workingDirectory = null, string? command = null, bool promptForCommand = false)
+        => Common.SystemConsoleView.OpenNewTerminalSession(workingDirectory, command, promptForCommand);
+
+    public static void OpenNewTerminalSession(string workingDirectory)
+        => Common.SystemConsoleView.OpenNewTerminalSession(workingDirectory, null, false);
+
+    public static void OpenNewTerminalSession()
+        => Common.SystemConsoleView.OpenNewTerminalSession(null, null, false);
+
+    public static bool KillPort(int port) => Common.SystemConsoleView.KillPort(port);
+
+    public static void OpenExplorer(string? path = null) => Common.SystemConsoleView.OpenExplorer(path);
+
+    public static void ShowDiskSpace() => Common.SystemConsoleView.ShowDiskSpace();
+
+    public static string GetPublicIP() => Common.SystemConsoleView.GetPublicIP();
+
+    public static void StopProcessFriendly(string? name = null) => Common.SystemConsoleView.StopProcessFriendly(name);
+}

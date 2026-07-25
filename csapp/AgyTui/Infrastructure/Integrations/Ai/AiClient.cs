@@ -64,19 +64,23 @@ public static class AgyAiCore
 
     public static string GetAiProviderMode()
     {
+        if (Config.Current.Ai != null && !string.IsNullOrEmpty(Config.Current.Ai.ProviderMode))
+        {
+            return Config.Current.Ai.ProviderMode;
+        }
         var path = GetConfigPath();
-        if (!File.Exists(path)) return "cloud";
+        if (!File.Exists(path)) return "auto";
         try
         {
             var content = File.ReadAllText(path);
             using var doc = System.Text.Json.JsonDocument.Parse(content);
             if (doc.RootElement.TryGetProperty("AiProviderMode", out var prop))
             {
-                return prop.GetString() ?? "cloud";
+                return prop.GetString() ?? "auto";
             }
         }
         catch { }
-        return "cloud";
+        return "auto";
     }
 
     public static bool IsAiOllamaEnabled()
@@ -113,14 +117,53 @@ public static class AgyAiCore
         return true;
     }
 
+    public static Func<bool> IsOllamaRunningProvider { get; set; } = IsOllamaRunning;
+
     public static string GetEffectiveProviderMode()
     {
         var mode = GetAiProviderMode();
         if (mode == "auto")
         {
-            return IsOllamaRunning() ? "local" : "cloud";
+            return IsOllamaRunningProvider() ? "local" : "cloud";
         }
         return mode;
+    }
+
+    public static (string Mode, string Reason) ResolveAiMode(string alias, string? providerModeOverride = null)
+    {
+        if (!string.IsNullOrEmpty(providerModeOverride))
+        {
+            return (providerModeOverride, "explicit providerModeOverride parameter");
+        }
+
+        var modeSetting = GetAiProviderMode();
+        if (modeSetting != "auto")
+        {
+            return (modeSetting, $"configured Ai.ProviderMode setting ('{modeSetting}')");
+        }
+
+        if (!IsAiOllamaEnabled())
+        {
+            return ("cloud", "AI/Ollama features disabled in config");
+        }
+
+        bool isRunning = IsOllamaRunningProvider();
+        if (isRunning)
+        {
+            return ("local", "auto-detected local Ollama server running");
+        }
+
+        return ("cloud", "auto-detected cloud (Ollama server not running)");
+    }
+
+    public static void ShowAiModeCheck(string alias)
+    {
+        var (mode, reason) = ResolveAiMode(alias);
+        AnsiConsole.WriteLine();
+        SpectrePanel.Info($"[bold cyan]AI Mode Diagnostic for '{alias}':[/]");
+        AnsiConsole.MarkupLine($"  [bold]Resolved Mode:[/] [yellow]{mode}[/]");
+        AnsiConsole.MarkupLine($"  [bold]Reason:[/] {reason}");
+        AnsiConsole.WriteLine();
     }
 
     private static void InvokeWithPipeline(string agentName, string? providerModeOverride, Action<string> executeAction)
@@ -354,7 +397,7 @@ public static class AgyAiCore
 
     public static void EnsureOllamaServer()
     {
-        if (!IsOllamaRunning()) InitializeOllamaServer();
+        if (!IsOllamaRunningProvider()) InitializeOllamaServer();
         EnsureOllamaProxy();
 
     }
@@ -369,6 +412,61 @@ public static class AgyAiCore
     }
 
     private static string AppendNodeOption(string? existing) => string.IsNullOrEmpty(existing) ? "--dns-result-order=ipv4first" : $"{existing} --dns-result-order=ipv4first";
+
+    public static void InvokeCliAgent(
+        string agentName,
+        string cloudCmd,
+        string[] argsList,
+        string? providerModeOverride = null,
+        Action<List<string>, string>? onCloudArgs = null,
+        Action<List<string>, Dictionary<string, string?>>? onLocalSetup = null)
+    {
+        var finalArgs = new List<string>(argsList);
+        if (File.Exists(".agy-context.md"))
+        {
+            try
+            {
+                var contextText = File.ReadAllText(".agy-context.md").Trim();
+                if (!string.IsNullOrEmpty(contextText))
+                {
+                    AnsiConsole.MarkupLine("[green][[AGY]] Shared context handoff (.agy-context.md) found and appended to prompt.[/]");
+                    finalArgs.Add("--append-system-prompt");
+                    finalArgs.Add(contextText);
+                }
+            }
+            catch { }
+        }
+
+        onCloudArgs?.Invoke(finalArgs, agentName);
+
+        InvokeWithPipeline(agentName, providerModeOverride, mode =>
+        {
+            if (mode == "cloud")
+            {
+                RunInteractive(cloudCmd, finalArgs);
+            }
+            else
+            {
+                EnsureOllamaServer();
+                var env = new Dictionary<string, string?>
+                {
+                    ["OLLAMA_HOST"] = "127.0.0.1:11434",
+                    ["NODE_OPTIONS"] = AppendNodeOption(Environment.GetEnvironmentVariable("NODE_OPTIONS"))
+                };
+                var localArgs = new List<string>();
+                onLocalSetup?.Invoke(localArgs, env);
+
+                if (localArgs.Count > 0)
+                {
+                    RunInteractive("ollama.exe", localArgs, env);
+                }
+                else
+                {
+                    RunInteractive("ollama.exe", finalArgs, env);
+                }
+            }
+        });
+    }
 
     public static void InvokeClaude(string[] argsList, string? providerModeOverride = null)
     {
@@ -388,51 +486,17 @@ public static class AgyAiCore
         }
         File.WriteAllText(sessionFile, activeAccount);
 
-        var finalArgs = new List<string>(argsList);
-        if (File.Exists(".agy-context.md"))
+        InvokeCliAgent("Claude", "claude.cmd", argsList, providerModeOverride, onLocalSetup: (localArgs, env) =>
         {
-            try
+            env["ANTHROPIC_BASE_URL"] = "http://127.0.0.1:11434";
+            localArgs.Add("launch");
+            localArgs.Add("claude");
+            if (!argsList.Contains("--model"))
             {
-                var contextText = File.ReadAllText(".agy-context.md").Trim();
-                if (!string.IsNullOrEmpty(contextText))
-                {
-                    AnsiConsole.MarkupLine("[green][[AGY]] Shared context handoff (.agy-context.md) found and appended to prompt.[/]");
-                    finalArgs.Add("--append-system-prompt");
-                    finalArgs.Add(contextText);
-                }
+                localArgs.Add("--model");
+                localArgs.Add(OllamaDefaultModel);
             }
-            catch { }
-        }
-
-        InvokeWithPipeline("Claude", providerModeOverride, mode =>
-        {
-            if (mode == "cloud")
-            {
-                RunInteractive("claude.cmd", finalArgs);
-            }
-            else
-            {
-                EnsureOllamaServer();
-                var env = new Dictionary<string, string?>
-                {
-                    ["OLLAMA_HOST"] = "127.0.0.1:11434",
-                    ["ANTHROPIC_BASE_URL"] = "http://127.0.0.1:11434",
-                    ["NODE_OPTIONS"] = AppendNodeOption(Environment.GetEnvironmentVariable("NODE_OPTIONS"))
-                }
-                ;
-                var argList = new List<string>
-                {
-                    "launch","claude"
-                }
-                ;
-                if (!finalArgs.Contains("--model"))
-                {
-                    argList.Add("--model");
-                    argList.Add(OllamaDefaultModel);
-                }
-                argList.AddRange(finalArgs);
-                RunInteractive("ollama.exe", argList, env);
-            }
+            localArgs.AddRange(argsList);
         });
     }
 
@@ -566,6 +630,35 @@ public static class AgyAiCore
 
     }
 
+    public static List<string> CleanHermesArguments(string[] argsList, string defaultModel)
+    {
+        var result = new List<string> { "chat" };
+        string? modelValue = null;
+        var extraArgs = new List<string>();
+
+        for (int i = 0; i < argsList.Length; i++)
+        {
+            if ((argsList[i] == "--model" || argsList[i] == "-m") && i < argsList.Length - 1)
+            {
+                modelValue = argsList[i + 1];
+                i++;
+            }
+            else
+            {
+                extraArgs.Add(argsList[i]);
+            }
+        }
+
+        if (!string.IsNullOrEmpty(modelValue))
+        {
+            result.Add("--model");
+            result.Add(modelValue);
+        }
+
+        result.AddRange(extraArgs);
+        return result;
+    }
+
     public static HermesResult InvokeHermes(string[] argsList)
     {
         EnsureOllamaServer();
@@ -583,12 +676,7 @@ public static class AgyAiCore
             AnsiConsole.MarkupLine("[yellow][[AI]] Configuring local Ollama endpoint in Hermes config.toml...[/]");
             File.AppendAllText(configPath, "\n[model_providers.ollama_custom]\nname = \"Ollama Custom\"\nbase_url = \"http://127.0.0.1:11434/v1\"\n");
         }
-        var argList = new List<string>
-        {
-            "chat"
-        }
-        ;
-        foreach (var a in argsList) if (a != "--model" && a != OllamaDefaultModel) argList.Add(a);
+        var argList = CleanHermesArguments(argsList, OllamaDefaultModel);
         AnsiConsole.MarkupLine("[cyan]Starting Hermes Agent TUI...[/]");
 
         var result = HermesResult.NotInstalled;
@@ -607,15 +695,25 @@ public static class AgyAiCore
         if (bin != null)
         {
             AnsiConsole.MarkupLine("[cyan]Starting Hermes Desktop...[/]");
-            RunInteractive(bin, []);
-            return HermesResult.Launched;
+            var result = HermesResult.NotInstalled;
+            InvokeWithPipeline("HermesDesktop", "local", _ =>
+            {
+                RunInteractive(bin, []);
+                result = HermesResult.Launched;
+            });
+            return result;
         }
         var cliBin = FindOnPath("hermes");
         if (cliBin != null)
         {
             AnsiConsole.MarkupLine("[cyan]Starting Hermes Desktop...[/]");
-            RunInteractive(cliBin, ["desktop"]);
-            return HermesResult.Launched;
+            var result = HermesResult.NotInstalled;
+            InvokeWithPipeline("HermesDesktop", "local", _ =>
+            {
+                RunInteractive(cliBin, ["desktop"]);
+                result = HermesResult.Launched;
+            });
+            return result;
         }
         return HermesResult.NotInstalled;
 
@@ -870,11 +968,21 @@ public static class AgyAiCore
                 "auto" => "Auto (Local if online, else Cloud)",
                 _ => "Cloud API (Normal)"
             };
+            var (claudeMode, _) = ResolveAiMode("claude");
+            var (codexMode, _) = ResolveAiMode("codex");
+
             var menuItems = new[]
             {
-            "[Agent] Claude CLI (Interactive coding chat)","[Agent] Hermes TUI (Autonomous workspace assistant)","[Agent] Codex CLI (Natural language command tool)","[Agent] OpenClaw CLI (Local agent router)","[Agent] Clawdbot TUI (Interactive helper)",$"[Setting] Provider Mode: {modeLabel}","[Model] Select / Set Default Local Model","[Action] Auto-Install missing LLM CLI tools","[x] Return to Main Menu"
-        }
-            ;
+                $"[Agent] Claude CLI [{claudeMode}] (Interactive coding chat)",
+                "[Agent] Hermes TUI (Autonomous workspace assistant)",
+                $"[Agent] Codex CLI [{codexMode}] (Natural language command tool)",
+                "[Agent] OpenClaw CLI (Local agent router)",
+                "[Agent] Clawdbot TUI (Interactive helper)",
+                $"[Setting] Provider Mode: {modeLabel}",
+                "[Model] Select / Set Default Local Model",
+                "[Action] Auto-Install missing LLM CLI tools",
+                "[x] Return to Main Menu"
+            };
             while (Console.KeyAvailable) Console.ReadKey(true);
             var selected = SpectreMenu.ShowRobust(aiHeaders, menuItems, 0, false, true);
             if (selected < 0 || selected == menuItems.Length - 1) break;

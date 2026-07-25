@@ -1176,6 +1176,1119 @@
       "PomodoroCount": 0,
       "Notes": "unit test",
       "Tags": []
+    },
+    {
+      "Id": "s_057",
+      "Date": "2026-07-25",
+      "StartTime": "18:03",
+      "EndTime": "18:03",
+      "DurationMinutes": 1,
+      "Topic": "language_test_7e0ca7",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_3905ba"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_058",
+      "Date": "2026-07-25",
+      "StartTime": "18:05",
+      "EndTime": "18:05",
+      "DurationMinutes": 1,
+      "Topic": "language_test_7c8ecd",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_4a0edb"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_059",
+      "Date": "2026-07-25",
+      "StartTime": "18:06",
+      "EndTime": "18:06",
+      "DurationMinutes": 1,
+      "Topic": "language_test_9f07b1",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_9418bc"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_060",
+      "Date": "2026-07-25",
+      "StartTime": "18:06",
+      "EndTime": "18:06",
+      "DurationMinutes": 1,
+      "Topic": "language_test_7aba95",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_35d6a3"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_061",
+      "Date": "2026-07-25",
+      "StartTime": "18:08",
+      "EndTime": "18:08",
+      "DurationMinutes": 1,
+      "Topic": "language_test_8993ad",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_0d7282"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_062",
+      "Date": "2026-07-25",
+      "StartTime": "18:08",
+      "EndTime": "18:08",
+      "DurationMinutes": 1,
+      "Topic": "language_test_7d6f96",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_080990"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_063",
+      "Date": "2026-07-25",
+      "StartTime": "18:11",
+      "EndTime": "18:11",
+      "DurationMinutes": 1,
+      "Topic": "language_test_f796b6",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_d4b69d"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_064",
+      "Date": "2026-07-25",
+      "StartTime": "18:11",
+      "EndTime": "18:11",
+      "DurationMinutes": 1,
+      "Topic": "language_test_39a9b0",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_bdb037"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_065",
+      "Date": "2026-07-25",
+      "StartTime": "18:11",
+      "EndTime": "18:11",
+      "DurationMinutes": 1,
+      "Topic": "language_test_9a047f",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_0fbcc9"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_066",
+      "Date": "2026-07-25",
+      "StartTime": "18:12",
+      "EndTime": "18:12",
+      "DurationMinutes": 1,
+      "Topic": "language_test_73567d",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_d388e3"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_067",
+      "Date": "2026-07-25",
+      "StartTime": "18:13",
+      "EndTime": "18:13",
+      "DurationMinutes": 1,
+      "Topic": "language_test_93fd5d",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_a8070b"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_068",
+      "Date": "2026-07-25",
+      "StartTime": "18:15",
+      "EndTime": "18:15",
+      "DurationMinutes": 1,
+      "Topic": "language_test_022b1b",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_32e9df"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_069",
+      "Date": "2026-07-25",
+      "StartTime": "18:15",
+      "EndTime": "18:15",
+      "DurationMinutes": 1,
+      "Topic": "language_test_3cbacd",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_a14ffa"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_070",
+      "Date": "2026-07-25",
+      "StartTime": "18:16",
+      "EndTime": "18:16",
+      "DurationMinutes": 1,
+      "Topic": "language_test_7675c0",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_c068ac"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_071",
+      "Date": "2026-07-25",
+      "StartTime": "18:17",
+      "EndTime": "18:17",
+      "DurationMinutes": 1,
+      "Topic": "language_test_f9ab4b",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_3d7a9f"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_072",
+      "Date": "2026-07-25",
+      "StartTime": "18:18",
+      "EndTime": "18:18",
+      "DurationMinutes": 1,
+      "Topic": "language_test_ec2440",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_20176b"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_073",
+      "Date": "2026-07-25",
+      "StartTime": "18:19",
+      "EndTime": "18:19",
+      "DurationMinutes": 1,
+      "Topic": "language_test_e277c6",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_f58aad"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_074",
+      "Date": "2026-07-25",
+      "StartTime": "18:19",
+      "EndTime": "18:19",
+      "DurationMinutes": 1,
+      "Topic": "language_test_044c8f",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_4f14ab"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_075",
+      "Date": "2026-07-25",
+      "StartTime": "18:20",
+      "EndTime": "18:20",
+      "DurationMinutes": 1,
+      "Topic": "language_test_8f7b03",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_04653f"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_076",
+      "Date": "2026-07-25",
+      "StartTime": "18:21",
+      "EndTime": "18:21",
+      "DurationMinutes": 1,
+      "Topic": "language_test_54f969",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_2a488b"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_077",
+      "Date": "2026-07-25",
+      "StartTime": "18:22",
+      "EndTime": "18:22",
+      "DurationMinutes": 1,
+      "Topic": "language_test_d98488",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_1b0199"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_078",
+      "Date": "2026-07-25",
+      "StartTime": "18:22",
+      "EndTime": "18:22",
+      "DurationMinutes": 1,
+      "Topic": "language_test_df52eb",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_d5f3d7"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_079",
+      "Date": "2026-07-25",
+      "StartTime": "18:23",
+      "EndTime": "18:23",
+      "DurationMinutes": 1,
+      "Topic": "language_test_daff17",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_76f5de"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_080",
+      "Date": "2026-07-25",
+      "StartTime": "18:24",
+      "EndTime": "18:24",
+      "DurationMinutes": 1,
+      "Topic": "language_test_f62a59",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_224c33"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_081",
+      "Date": "2026-07-25",
+      "StartTime": "18:24",
+      "EndTime": "18:24",
+      "DurationMinutes": 1,
+      "Topic": "language_test_fcf9c7",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_3dc569"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_082",
+      "Date": "2026-07-25",
+      "StartTime": "18:26",
+      "EndTime": "18:26",
+      "DurationMinutes": 1,
+      "Topic": "language_test_56b4c5",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_0fb52a"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_083",
+      "Date": "2026-07-25",
+      "StartTime": "18:26",
+      "EndTime": "18:26",
+      "DurationMinutes": 1,
+      "Topic": "language_test_f0ecb8",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_1b71a3"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_084",
+      "Date": "2026-07-25",
+      "StartTime": "18:26",
+      "EndTime": "18:26",
+      "DurationMinutes": 1,
+      "Topic": "language_test_9fc0ba",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_1751d2"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_085",
+      "Date": "2026-07-25",
+      "StartTime": "18:27",
+      "EndTime": "18:27",
+      "DurationMinutes": 1,
+      "Topic": "language_test_d5ade9",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_2479db"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_086",
+      "Date": "2026-07-25",
+      "StartTime": "18:27",
+      "EndTime": "18:27",
+      "DurationMinutes": 1,
+      "Topic": "language_test_64b998",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_f664d7"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_087",
+      "Date": "2026-07-25",
+      "StartTime": "18:28",
+      "EndTime": "18:28",
+      "DurationMinutes": 1,
+      "Topic": "language_test_e57b23",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_dd336b"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_088",
+      "Date": "2026-07-25",
+      "StartTime": "18:29",
+      "EndTime": "18:29",
+      "DurationMinutes": 1,
+      "Topic": "language_test_1f3ec9",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_6ff024"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_089",
+      "Date": "2026-07-25",
+      "StartTime": "18:30",
+      "EndTime": "18:30",
+      "DurationMinutes": 1,
+      "Topic": "language_test_7be5e5",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_280092"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_090",
+      "Date": "2026-07-25",
+      "StartTime": "18:30",
+      "EndTime": "18:30",
+      "DurationMinutes": 1,
+      "Topic": "language_test_daae54",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_cd32cc"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_091",
+      "Date": "2026-07-25",
+      "StartTime": "18:31",
+      "EndTime": "18:31",
+      "DurationMinutes": 1,
+      "Topic": "language_test_eb366b",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_c0dce1"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_092",
+      "Date": "2026-07-25",
+      "StartTime": "18:32",
+      "EndTime": "18:32",
+      "DurationMinutes": 1,
+      "Topic": "language_test_f2cecd",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_abb86f"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_093",
+      "Date": "2026-07-25",
+      "StartTime": "18:32",
+      "EndTime": "18:32",
+      "DurationMinutes": 1,
+      "Topic": "language_test_5acf8e",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_e144ad"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_094",
+      "Date": "2026-07-25",
+      "StartTime": "18:33",
+      "EndTime": "18:33",
+      "DurationMinutes": 1,
+      "Topic": "language_test_099969",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_201917"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_095",
+      "Date": "2026-07-25",
+      "StartTime": "18:34",
+      "EndTime": "18:34",
+      "DurationMinutes": 1,
+      "Topic": "language_test_0aefcc",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_082077"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_096",
+      "Date": "2026-07-25",
+      "StartTime": "18:35",
+      "EndTime": "18:35",
+      "DurationMinutes": 1,
+      "Topic": "language_test_a8e162",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_34663a"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_097",
+      "Date": "2026-07-25",
+      "StartTime": "18:36",
+      "EndTime": "18:36",
+      "DurationMinutes": 1,
+      "Topic": "language_test_ebec9c",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_7c7337"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_098",
+      "Date": "2026-07-25",
+      "StartTime": "18:36",
+      "EndTime": "18:36",
+      "DurationMinutes": 1,
+      "Topic": "language_test_173e8c",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_949cda"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_099",
+      "Date": "2026-07-25",
+      "StartTime": "19:22",
+      "EndTime": "19:22",
+      "DurationMinutes": 1,
+      "Topic": "language_test_8b9206",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_19da44"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_100",
+      "Date": "2026-07-25",
+      "StartTime": "19:23",
+      "EndTime": "19:23",
+      "DurationMinutes": 1,
+      "Topic": "language_test_050612",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_fffe83"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_101",
+      "Date": "2026-07-25",
+      "StartTime": "19:23",
+      "EndTime": "19:23",
+      "DurationMinutes": 1,
+      "Topic": "language_test_97e57f",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_43c206"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_102",
+      "Date": "2026-07-25",
+      "StartTime": "19:24",
+      "EndTime": "19:24",
+      "DurationMinutes": 1,
+      "Topic": "language_test_1c21ef",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_b10b44"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_103",
+      "Date": "2026-07-25",
+      "StartTime": "19:44",
+      "EndTime": "19:44",
+      "DurationMinutes": 1,
+      "Topic": "language_test_5ee069",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_a6116b"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_104",
+      "Date": "2026-07-25",
+      "StartTime": "19:44",
+      "EndTime": "19:44",
+      "DurationMinutes": 1,
+      "Topic": "language_test_e5072a",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_b4b80d"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_105",
+      "Date": "2026-07-25",
+      "StartTime": "19:44",
+      "EndTime": "19:44",
+      "DurationMinutes": 1,
+      "Topic": "language_test_cdd4dc",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_ed2cc4"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_106",
+      "Date": "2026-07-25",
+      "StartTime": "19:45",
+      "EndTime": "19:45",
+      "DurationMinutes": 1,
+      "Topic": "language_test_3549fd",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_81c86b"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_107",
+      "Date": "2026-07-25",
+      "StartTime": "19:46",
+      "EndTime": "19:46",
+      "DurationMinutes": 1,
+      "Topic": "language_test_7c4777",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_393d7a"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_108",
+      "Date": "2026-07-25",
+      "StartTime": "19:49",
+      "EndTime": "19:49",
+      "DurationMinutes": 1,
+      "Topic": "language_test_526644",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_0e0e57"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_109",
+      "Date": "2026-07-25",
+      "StartTime": "22:07",
+      "EndTime": "22:07",
+      "DurationMinutes": 1,
+      "Topic": "language_test_b7f9d3",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_2a4329"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
     }
   ]
 }

@@ -19,15 +19,22 @@ public static class CommandRouter
         return topics[index].Split(' ')[0];
     }
 
-    public static void Execute(string alias, string[]? args = null)
+    public static int Execute(string alias, string[]? args = null)
     {
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        bool success = true;
+        string? errorType = null;
+        int exitCode = 0;
+
         try
         {
-            AnsiConsole.Clear();
-        }
-        catch
-        {
-        }
+            try
+            {
+                AnsiConsole.Clear();
+            }
+            catch
+            {
+            }
         var lAlias = alias.ToLowerInvariant();
         var cmdEntry = CommandRegistry.GetByAlias(lAlias);
         if (cmdEntry != null)
@@ -36,13 +43,13 @@ public static class CommandRouter
             {
                 SpectrePanel.Error("AI/Ollama features are disabled in config.");
                 Thread.Sleep(1500);
-                return;
+                return 1;
             }
             if (cmdEntry.RequiresAgy && !AgyAiCore.IsAgyEnabled())
             {
                 SpectrePanel.Error("AGY Account features are disabled in config.");
                 Thread.Sleep(1500);
-                return;
+                return 1;
             }
         }
 
@@ -50,6 +57,10 @@ public static class CommandRouter
         {
             switch (alias.ToLowerInvariant())
             {
+                case "ai-mode-check":
+                    var targetAlias = args != null && args.Length > 0 ? args[0] : "claude";
+                    AgyAiCore.ShowAiModeCheck(targetAlias);
+                    break;
                 case "proj":
                 case "prj":
                 case "p":
@@ -213,7 +224,7 @@ public static class CommandRouter
                     else SpectrePanel.Warning("Build note: If running directly inside AgyTui.exe, Windows locks the executable while in-use. Exit TUI and run 'dbld' or run via PowerShell wrapper to refresh binary.");
                     break;
                 case "claude":
-                    AgyAiCore.InvokeClaude([]);
+                    AgyAiCore.InvokeClaude([], "cloud");
                     break;
                 case "claude-cloud":
                     AgyAiCore.InvokeClaude([], "cloud");
@@ -222,7 +233,7 @@ public static class CommandRouter
                     AgyAiCore.InvokeClaude([], "local");
                     break;
                 case "codex":
-                    AgyAiCore.InvokeCodex([]);
+                    AgyAiCore.InvokeCodex([], "cloud");
                     break;
                 case "codex-cloud":
                     AgyAiCore.InvokeCodex([], "cloud");
@@ -682,15 +693,42 @@ public static class CommandRouter
                     ResourceRegistry.AddResource(path, tags);
                     SpectrePanel.Success("Resource registered.");
                     break;
+                case "secret-set":
+                    var sKey = args != null && args.Length > 0 ? args[0] : AnsiConsole.Ask<string>("Key:");
+                    var sVal = args != null && args.Length > 1 ? args[1] : AnsiConsole.Ask<string>("Value:");
+                    Infrastructure.Persistence.Accounts.AgySecretVault.SetSecret(sKey, sVal);
+                    break;
+                case "secret-get":
+                    var gKey = args != null && args.Length > 0 ? args[0] : AnsiConsole.Ask<string>("Key:");
+                    var secVal = Infrastructure.Persistence.Accounts.AgySecretVault.GetSecret(gKey);
+                    if (!string.IsNullOrEmpty(secVal)) AnsiConsole.WriteLine(secVal);
+                    break;
+                case "secret-list":
+                    Infrastructure.Persistence.Accounts.AgySecretVault.ListSecrets();
+                    break;
+                case "secret-remove":
+                    var rKey = args != null && args.Length > 0 ? args[0] : AnsiConsole.Ask<string>("Key:");
+                    Infrastructure.Persistence.Accounts.AgySecretVault.RemoveSecret(rKey);
+                    break;
                 default:
                     SpectrePanel.Warning($"Command alias '{alias}' is not implemented for direct TUI routing.");
+                    exitCode = 1;
                     break;
             }
         }
         catch (Exception ex)
         {
+            success = false;
+            errorType = ex.GetType().Name;
+            exitCode = 1;
             SpectrePanel.Error($"Error running command: {ex.Message}");
         }
         AnsiConsole.WriteLine();
+        }
+        finally
+        {
+            CommandInvocationLog.Record(alias, sw.Elapsed, success, errorType);
+        }
+        return exitCode;
     }
 }

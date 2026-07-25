@@ -1,4 +1,5 @@
 $env:AI_MODE = 'true'
+$env:AGY_LOAD_DLL = '1'
 Write-Host "Running PowerShell Profile Tests..." -ForegroundColor Cyan
 
 # Pre-load C# types assembly so the AST parser can resolve types during parsing

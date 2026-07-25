@@ -2,9 +2,14 @@ namespace AgyTui.UI.Screens.Ide;
 
 public static class GitDiffViewer
 {
+    public static string BuildDiffArgs(string? filePath)
+    {
+        return filePath != null ? $"diff \"{filePath.Trim('\"')}\"" : "diff";
+    }
+
     public static void ShowDiff(string workspacePath, string? filePath = null)
     {
-        var args = filePath != null ? $"diff {filePath}" : "diff";
+        var args = BuildDiffArgs(filePath);
         var output = RunGit(workspacePath, args);
         if (string.IsNullOrWhiteSpace(output))
         {
@@ -15,17 +20,6 @@ public static class GitDiffViewer
         SpectrePager.Show($"Diff: {Path.GetFileName(workspacePath)}", lines);
     }
 
-    public static void ShowCommitDiff(string workspacePath, string commitHash)
-    {
-        var output = RunGit(workspacePath, $"show {commitHash}");
-        if (string.IsNullOrWhiteSpace(output))
-        {
-            SpectrePanel.Info("No diff for that commit.");
-            return;
-        }
-        var lines = ColorizeHunk(output.Split('\n'));
-        SpectrePager.Show($"Commit: {commitHash[..Math.Min(7, commitHash.Length)]}", lines);
-    }
 
     private static string[] ColorizeHunk(string[] diffLines) => diffLines.Select(l => l switch
     {

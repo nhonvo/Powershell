@@ -214,11 +214,23 @@ public static class CommandRegistry
         new("aws-lambda", "AWS Lambda Functions", "Inspect serverless functions", "[Workspace & Dev]", "AWS",
             new[] { "aws-lambda — Executes `aws lambda list-functions`." }),
 
+        // Secret Vault Tools
+        new("secret-set", "Set Encrypted Secret", "Store an encrypted key-value pair in AgySecretVault", "[AGY Account Switch]", "Security",
+            new[] { "secret-set <key> <value> — Encrypt and save secret key in vault." }, RequiresAgy: true),
+        new("secret-get", "Get Encrypted Secret", "Decrypt and print secret key value from AgySecretVault", "[AGY Account Switch]", "Security",
+            new[] { "secret-get <key> — Decrypt and display secret key value." }, RequiresAgy: true),
+        new("secret-list", "List Encrypted Secrets", "List all encrypted secret keys in AgySecretVault", "[AGY Account Switch]", "Security",
+            new[] { "secret-list — Display all encrypted secret keys." }, RequiresAgy: true),
+        new("secret-remove", "Remove Encrypted Secret", "Remove secret key from AgySecretVault", "[AGY Account Switch]", "Security",
+            new[] { "secret-remove <key> — Remove secret key from vault." }, RequiresAgy: true),
+
         // [AI Agent & Ollama]
         new("claude", "Claude Code (Auto Mode)", "Launch Claude Code CLI (resolves Cloud vs Ollama via AiProviderMode)", "[AI Agent & Ollama]", "AI / LLM",
             new[] { "claude — Launch Claude Code CLI using runtime AiProviderMode setting." }, RequiresAiOllama: true),
-        new("claude-cloud", "Claude Code (Force Cloud)", "Launch Claude Code CLI utilizing cloud APIs directly", "[AI Agent & Ollama]", "AI / LLM",
-            new[] { "claude-cloud — Launch Claude Code CLI forcing cloud API credentials." }, RequiresAiOllama: true),
+        new("claude", "Claude Code CLI", "Launch Claude Code CLI session", "[AI Agent & Ollama]", "Integrations",
+            new[] { "claude [prompt] — Launches Claude Code agent CLI with optional initial prompt." }, RequiresAiOllama: true),
+        new("ai-mode-check", "AI Mode Diagnostic", "Check resolved AI mode and reason for an alias", "[AI Agent & Ollama]", "Integrations",
+            new[] { "ai-mode-check <alias> — Prints resolved provider mode (cloud vs local) and resolution reason." }, RequiresAiOllama: true),
         new("claude-ollama", "Claude Code (Force Ollama)", "Run Claude Code routed locally via Ollama daemon", "[AI Agent & Ollama]", "AI / LLM",
             new[] { "claude-ollama — Run Claude Code routed locally via Ollama daemon." }, RequiresAiOllama: true),
         new("codex", "Codex (Auto Mode)", "Launch Codex CLI (resolves Cloud vs Ollama via AiProviderMode)", "[AI Agent & Ollama]", "AI / LLM",
@@ -428,6 +440,8 @@ public static class CommandRegistry
         var mgrCmds = new HashSet<string> { "mgr-status", "mgr-setup", "mgr-start", "mgr", "manager-status", "manager-setup", "manager-start", "agm", "agm-status", "agm-setup", "agm-start" };
         var sshCmds = new HashSet<string> { "ssh-info", "tailscale-status", "ssh-qr" };
         var quotaCmds = new HashSet<string> { "account-tree", "quota-chart", "live-dashboard" };
+        var secretCmds = new HashSet<string> { "secret-set", "secret-get", "secret-list", "secret-remove" };
+        var toggleCmds = new HashSet<string> { "autoswitch", "no-auto-commit", "autocommit" };
         var trackCmds = new HashSet<string> { "session", "stats", "goals", "streak", "due", "progress", "weak" };
 
         var jpCmds = new HashSet<string> { "kana", "kanji", "jlpt", "grammar" };
@@ -457,7 +471,20 @@ public static class CommandRegistry
             "docker-health", "dkcl", "dkrmac", "dkstac", "dimg", "dlogs", "dcup", "dcdown",
             "aws-whoami", "aws-local", "aws-s3", "aws-sqs", "aws-ssm", "aws-sns", "aws-dynamodb", "aws-lambda",
 
-            // Category 2: [AI Agent & Ollama]
+            // Category 2: [AGY Account Switch]
+            // Secret Vault group
+            "secret-set", "secret-get", "secret-list", "secret-remove",
+            // Deck group
+            "deck-status", "deck-setup", "deck-start", "deck-online",
+            // Mgr group
+            "mgr-status", "mgr-setup", "mgr-start",
+            "agyswitch", "agyquota",
+            // Quota group
+            "account-tree", "quota-chart", "live-dashboard",
+            // Account Toggles group
+            "autoswitch", "no-auto-commit", "autocommit",
+
+            // Category 3: [AI Agent & Ollama]
             // Ollama group
             "ollama-status", "ollama-models", "ollama-pull", "ollama-start", "ollama-logs", "ollama-benchmark",
             // Other agents/models
@@ -466,18 +493,8 @@ public static class CommandRegistry
             "codex", "codex-cloud", "codex-ollama",
             "agy-cli", "ai-history",
 
-            // Category 3: [AGY Account Switch]
-            // Deck group
-            "deck-status", "deck-setup", "deck-start", "deck-online",
-            // Mgr group
-            "mgr-status", "mgr-setup", "mgr-start",
-            "agyswitch", "agyquota",
-            // Quota group
-            "account-tree", "quota-chart", "live-dashboard",
-            "autoswitch", "no-auto-commit",
-
-            // Category 4: [System & Network]
-            "disk", "public-ip", "kill-port", "ssh-info", "tailscale-status", "ssh-qr",
+            // Category 4: [Appearance & Layout]
+            "theme", "ui-mode", "density", "mobile-setup",
 
             // Category 5: [Learn & Study]
             "learn", "learn-gen",
@@ -496,13 +513,13 @@ public static class CommandRegistry
             // careerInterview
             "interview", "star", "mock",
 
-            // Category 7: [Obsidian & Resources]
+            // Category 6: [Obsidian & Resources]
             "obs-graph", "add-resource",
 
-            // Category 8: [Appearance & Layout]
-            "theme", "ui-mode", "density", "mobile-setup",
+            // Category 7: [System & Network]
+            "disk", "public-ip", "kill-port", "ssh-info", "tailscale-status", "ssh-qr",
 
-            // Category 9: [Help & Docs]
+            // Category 8: [Help & Docs]
             "cc", "help", "hotkeys"
         };
 
@@ -536,6 +553,8 @@ public static class CommandRegistry
             else if (deckCmds.Contains(alias)) { cmd.GroupPath = "/antigravity-deck"; cmd.GroupName = "Antigravity Deck (Desk)"; }
             else if (mgrCmds.Contains(alias)) { cmd.GroupPath = "/antigravity-manager"; cmd.GroupName = "Antigravity Manager"; }
             else if (quotaCmds.Contains(alias)) { cmd.GroupPath = "/quota-views"; cmd.GroupName = "Quota Views"; }
+            else if (secretCmds.Contains(alias)) { cmd.GroupPath = "/secret-vault"; cmd.GroupName = "Secret Vault"; }
+            else if (toggleCmds.Contains(alias)) { cmd.GroupPath = "/account-toggles"; cmd.GroupName = "Account Toggles"; }
             else if (jpCmds.Contains(alias))
             {
                 cmd.GroupPath = (alias == "grammar") ? "/jp-suite,/english-vocab" : "/jp-suite";

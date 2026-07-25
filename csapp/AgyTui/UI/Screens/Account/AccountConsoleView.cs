@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-namespace AgyTui.UI.Screens.Account;
+namespace AgyTui.Infrastructure.Persistence.Accounts;
 
 public sealed class AccountMetadata
 {
@@ -286,37 +286,9 @@ public static class AgyAccountCore
     public static List<(DateTime Time, int ReqsReleased, double QuotaGained)> GetQuotaReleaseForecast(string accountName)
     {
         var history = GetAccountMetadata(accountName).RequestHistory;
-        var now = Clock.GetUtcNow().UtcDateTime;
-        var fiveHoursAgo = now.AddHours(-5);
-
-        var activeRequests = new List<DateTime>();
-        foreach (var ts in history)
-        {
-            if (DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt))
-            {
-                if (dt >= fiveHoursAgo) activeRequests.Add(dt);
-            }
-        }
-
-        activeRequests.Sort();
-
-        var forecast = new List<(DateTime Time, int ReqsReleased, double QuotaGained)>();
-        const int limit5H = 50;
-
-        var releases = activeRequests.Select(dt => dt.AddHours(5)).GroupBy(t =>
-        {
-            var min = (t.Minute / 15) * 15;
-            return new DateTime(t.Year, t.Month, t.Day, t.Hour, min, 0, DateTimeKind.Utc);
-        }).OrderBy(g => g.Key);
-
-        foreach (var group in releases)
-        {
-            int count = group.Count();
-            double gain = Math.Round((count / (double)limit5H) * 100.0, 2);
-            forecast.Add((group.Key, count, gain));
-        }
-
-        return forecast;
+        var dts = history.Select(ts => DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt) ? dt : (DateTime?)null).Where(dt => dt.HasValue).Select(dt => dt!.Value).ToList();
+        var forecast = QuotaTracker.ForecastQuotaRelease(dts, 5, 50);
+        return forecast.Select(f => (f.TimeSlot, f.ReqsReleased, f.RestoredPct)).ToList();
     }
 
     public static void TriggerLowQuotaWebhook(string accountName, double remaining5H)
@@ -330,35 +302,28 @@ public static class AgyAccountCore
         var history = GetAccountMetadata(accountName).RequestHistory;
         var dts = history.Select(ts => DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt) ? dt : (DateTime?)null).Where(dt => dt.HasValue).Select(dt => dt!.Value).ToList();
         var (qCount5H, qUsage5H) = QuotaTracker.CalculateWindowUsage(dts, 5, 50);
+        var (qCountWeekly, qUsageWeekly) = QuotaTracker.CalculateWindowUsage(dts, 168, 1000);
 
         var now = Clock.GetUtcNow().UtcDateTime;
         var fiveHoursAgo = now.AddHours(-5);
         var sevenDaysAgo = now.AddDays(-7);
-        int reqs5H = qCount5H, reqsWeekly = 0;
+        int reqs5H = qCount5H, reqsWeekly = qCountWeekly;
         var oldest5H = now;
         var oldestWeekly = now;
-        foreach (var ts in history)
+        foreach (var dt in dts)
         {
-            if (!DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt)) continue;
-            if (dt >= fiveHoursAgo)
-            {
-                if (dt < oldest5H) oldest5H = dt;
-            }
-            if (dt >= sevenDaysAgo)
-            {
-                reqsWeekly++;
-                if (dt < oldestWeekly) oldestWeekly = dt;
-            }
+            if (dt >= fiveHoursAgo && dt < oldest5H) oldest5H = dt;
+            if (dt >= sevenDaysAgo && dt < oldestWeekly) oldestWeekly = dt;
         }
         const int limit5H = 50, limitWeekly = 1000;
         var remaining5H = Math.Max(0.0, 100.0 - qUsage5H);
-        var remainingWeekly = Math.Max(0.0, 100.0 - Math.Round((reqsWeekly / (double)limitWeekly) * 100.0, 2));
+        var remainingWeekly = Math.Max(0.0, 100.0 - qUsageWeekly);
         var secs5H = Math.Max(0, (int)Math.Round((oldest5H.AddHours(5) - now).TotalSeconds));
         var secsWeekly = Math.Max(0, (int)Math.Round((oldestWeekly.AddDays(7) - now).TotalSeconds));
 
         // Calculate exhaustion ETA based on burn rate in recent window
         var oneHourAgo = now.AddHours(-1);
-        double reqsLastHour = history.Count(ts => DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt) && dt >= oneHourAgo);
+        double reqsLastHour = dts.Count(dt => dt >= oneHourAgo);
         string exhaustion5H = "Never";
         if (reqsLastHour > 0 && reqs5H > 0)
         {
@@ -370,7 +335,7 @@ public static class AgyAccountCore
         }
 
         var oneDayAgo = now.AddDays(-1);
-        double reqsLastDay = history.Count(ts => DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt) && dt >= oneDayAgo);
+        double reqsLastDay = dts.Count(dt => dt >= oneDayAgo);
         string exhaustionWeekly = "Never";
         if (reqsLastDay > 0 && reqsWeekly > 0)
         {
@@ -383,6 +348,55 @@ public static class AgyAccountCore
         static string Fmt(int s) => $"{s / 3600}h {(s % 3600) / 60}m";
         return new QuotaMetrics(remainingWeekly, remaining5H, Fmt(secsWeekly), Fmt(secs5H), reqsWeekly, reqs5H, exhaustionWeekly, exhaustion5H);
 
+    }
+
+    public static QuotaMetrics CalculateRollingQuotasForAgent(string agentName)
+    {
+        var logPath = Path.Combine(AgySourceHome, "ai_activity_log.jsonl");
+        var dts = new List<DateTime>();
+        if (File.Exists(logPath))
+        {
+            try
+            {
+                foreach (var line in File.ReadLines(logPath))
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+                    using var doc = System.Text.Json.JsonDocument.Parse(line);
+                    if (doc.RootElement.TryGetProperty("Agent", out var agentProp) &&
+                        string.Equals(agentProp.GetString(), agentName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (doc.RootElement.TryGetProperty("Timestamp", out var tsProp) &&
+                            DateTime.TryParse(tsProp.GetString(), null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt))
+                        {
+                            dts.Add(dt);
+                        }
+                    }
+                }
+            }
+            catch { }
+        }
+
+        var (qCount5H, qUsage5H) = QuotaTracker.CalculateWindowUsage(dts, 5, 50);
+        var (qCountWeekly, qUsageWeekly) = QuotaTracker.CalculateWindowUsage(dts, 168, 1000);
+
+        var now = Clock.GetUtcNow().UtcDateTime;
+        var fiveHoursAgo = now.AddHours(-5);
+        var sevenDaysAgo = now.AddDays(-7);
+        int reqs5H = qCount5H, reqsWeekly = qCountWeekly;
+        var oldest5H = now;
+        var oldestWeekly = now;
+        foreach (var dt in dts)
+        {
+            if (dt >= fiveHoursAgo && dt < oldest5H) oldest5H = dt;
+            if (dt >= sevenDaysAgo && dt < oldestWeekly) oldestWeekly = dt;
+        }
+        var remaining5H = Math.Max(0.0, 100.0 - qUsage5H);
+        var remainingWeekly = Math.Max(0.0, 100.0 - qUsageWeekly);
+        var secs5H = Math.Max(0, (int)Math.Round((oldest5H.AddHours(5) - now).TotalSeconds));
+        var secsWeekly = Math.Max(0, (int)Math.Round((oldestWeekly.AddDays(7) - now).TotalSeconds));
+
+        static string Fmt(int s) => $"{s / 3600}h {(s % 3600) / 60}m";
+        return new QuotaMetrics(remainingWeekly, remaining5H, Fmt(secsWeekly), Fmt(secs5H), reqsWeekly, reqs5H, "Never", "Never");
     }
 
     public static bool IsAutoSwitchEnabled()
@@ -983,8 +997,9 @@ public static class AgyAccountCore
         var quota = CalculateRollingQuotas(accountName);
         double geminiWeekly = quota.RemainingWeekly;
         double geminiFiveHour = quota.Remaining5H;
-        double claudeWeekly = 100.0;
-        double claudeFiveHour = 100.0;
+        var claudeQuota = CalculateRollingQuotasForAgent("Claude");
+        double claudeWeekly = claudeQuota.RemainingWeekly;
+        double claudeFiveHour = claudeQuota.Remaining5H;
         var bar = new string('─', 140);
         var lines = new List<string>
         {

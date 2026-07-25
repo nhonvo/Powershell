@@ -187,10 +187,6 @@ public static class MockInterviewTimer
     }
 }
 
-public sealed record VocabWord(string Id, string Word, string Pronunciation, string PartOfSpeech, string Definition, string ExampleSentence, string[] Synonyms, string[] Antonyms, int Difficulty, string[] Tags, SrState Sr);
-
-public sealed record VocabFile(string Level, VocabWord[] Words);
-
 public static class VocabDrill
 {
     public static void Run(string difficulty = "Intermediate")

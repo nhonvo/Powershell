@@ -9,8 +9,12 @@ public class JsonAccountRepository : IAccountRepository
     {
         if (File.Exists(ActiveAccountFile))
         {
-            var acc = File.ReadAllText(ActiveAccountFile).Trim();
-            if (!string.IsNullOrEmpty(acc)) return acc;
+            try
+            {
+                var acc = File.ReadAllText(ActiveAccountFile).Trim();
+                if (!string.IsNullOrEmpty(acc)) return acc;
+            }
+            catch { }
         }
         return "default";
     }
@@ -19,9 +23,6 @@ public class JsonAccountRepository : IAccountRepository
     {
         Directory.CreateDirectory(Path.GetDirectoryName(ActiveAccountFile)!);
         File.WriteAllText(ActiveAccountFile, accountName);
-
-        var markerPath = Path.Combine(AgySourceHome, "last_account_change.txt");
-        File.WriteAllText(markerPath, accountName);
     }
 
     public string[] GetAccounts()

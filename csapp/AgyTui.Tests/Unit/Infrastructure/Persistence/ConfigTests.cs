@@ -61,4 +61,14 @@ public class ConfigTests
             if (File.Exists(tempFile)) File.Delete(tempFile);
         }
     }
+
+    [Fact]
+    public void IsMobileContext_And_RendererDensityCheck_AlwaysAgree()
+    {
+        Config.Current.Ui.Density = "comfortable";
+        Assert.False(Config.Current.Density == "compact" && !Config.IsMobileContext());
+
+        Config.Current.Ui.Density = "compact";
+        Assert.True(Config.IsMobileContext());
+    }
 }

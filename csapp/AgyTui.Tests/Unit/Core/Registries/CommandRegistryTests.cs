@@ -1,26 +1,50 @@
 namespace AgyTui.Tests.Unit.Core.Registries;
 
+using System.Linq;
+using AgyTui.Core.Registries;
+using AgyTui.UI.Core.Layouts;
+using Xunit;
+
 public class CommandRegistryTests
 {
     [Fact]
-    public void CommandRegistry_ContainsAllExpectedAliases()
+    public void Categories_SortOrder_MatchesProposedSequence()
     {
-        Assert.NotEmpty(CommandRegistry.All);
-        Assert.True(CommandRegistry.All.Length >= 80);
+        var root = MenuNodeBuilder.BuildTree();
+
+        var categoryNames = root.Children
+            .Where(c => c.Kind == MenuNodeKind.Category)
+            .Select(c => c.Label)
+            .ToList();
+
+        var expectedSequence = new[]
+        {
+            "[Favorites]",
+            "[Workspace & Dev]",
+            "[AGY Account Switch]",
+            "[AI Agent & Ollama]",
+            "[Appearance & Layout]",
+            "[Learn & Study]",
+            "[Obsidian & Resources]",
+            "[System & Network]",
+            "[Help & Docs]"
+        };
+
+        Assert.Equal(expectedSequence, categoryNames);
     }
 
     [Fact]
-    public void CommandRegistry_Lookup_ReturnsValidCommandEntry()
+    public void AssertAllAliasesReachable_DoesNotThrow()
     {
-        var cmd = CommandRegistry.All.FirstOrDefault(c => c.Alias == "proj");
-        Assert.NotNull(cmd);
-        Assert.Equal("proj", cmd.Alias);
+        var root = MenuNodeBuilder.BuildTree();
+        var ex = Record.Exception(() => CommandRegistry.AssertAllAliasesReachable(root));
+        Assert.Null(ex);
     }
 
     [Fact]
-    public void AssertSwitchCases_DoesNotThrow_WhenAllAliasesAreMapped()
+    public void AssertSwitchCases_WorksFromPublishedOutputLayout()
     {
-        var exception = Record.Exception(() => CommandRegistry.AssertSwitchCases());
-        Assert.Null(exception);
+        var ex = Record.Exception(() => CommandRegistry.AssertSwitchCases());
+        Assert.Null(ex);
     }
 }

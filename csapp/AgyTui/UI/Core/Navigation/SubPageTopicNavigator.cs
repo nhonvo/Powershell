@@ -2,18 +2,37 @@ using Spectre.Console.Rendering;
 
 namespace AgyTui.UI.Core.Navigation;
 
+public record TopicItem(string Key, string DisplayName);
+
 public static class SubPageTopicNavigator
 {
+    public static readonly IReadOnlyList<TopicItem> DefaultTopics = new TopicItem[]
+    {
+        new("jp", "jp (Japanese / Language)"),
+        new("en", "en (English Vocabulary)"),
+        new("cs", "cs (C# Quiz)"),
+        new("dsa", "dsa (Data Structures & Algorithms)"),
+        new("interview", "interview (Question Bank & STAR)"),
+        new("[Type Custom Topic...]", "[Type Custom Topic...]")
+    };
+
+    public static List<TopicItem> GetFilteredTopics(string searchBuffer)
+    {
+        if (string.IsNullOrWhiteSpace(searchBuffer))
+            return DefaultTopics.ToList();
+
+        return DefaultTopics
+            .Where(t => t.Key.Contains(searchBuffer, StringComparison.OrdinalIgnoreCase) ||
+                        t.DisplayName.Contains(searchBuffer, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
     public static bool HandleSelection(string mode, string searchBuffer, int detailsSel)
     {
-        var topics = new[] { "jp", "en", "cs", "dsa", "interview", "[Type Custom Topic...]" };
-        if (!string.IsNullOrEmpty(searchBuffer))
-        {
-            topics = topics.Where(t => t.Contains(searchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
-        }
-        if (detailsSel < 0 || detailsSel >= topics.Length) return false;
+        var topics = GetFilteredTopics(searchBuffer);
+        if (detailsSel < 0 || detailsSel >= topics.Count) return false;
 
-        var selectedTopic = topics[detailsSel];
+        var selectedTopic = topics[detailsSel].Key;
         if (selectedTopic == "[Type Custom Topic...]")
         {
             Console.CursorVisible = true;
@@ -38,15 +57,12 @@ public static class SubPageTopicNavigator
         {
             grid.AddRow(new Markup($"[yellow]Search:[/] [white]{searchBuffer.EscapeMarkup()}[/]_\n"));
         }
-        var allTopics = new[] { "jp (Japanese / Language)", "en (English Vocabulary)", "cs (C# Quiz)", "dsa (Data Structures & Algorithms)", "interview (Question Bank & STAR)", "[Type Custom Topic...]" };
-        var topics = string.IsNullOrEmpty(searchBuffer)
-            ? allTopics
-            : allTopics.Where(t => t.Contains(searchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
-        for (var i = 0; i < topics.Length; i++)
+        var topics = GetFilteredTopics(searchBuffer);
+        for (var i = 0; i < topics.Count; i++)
         {
             var isSelected = (i == selIdx);
             var prefix = isSelected ? "[green bold]> [/]" : "  ";
-            grid.AddRow(new Markup($"{prefix}{topics[i].EscapeMarkup()}"));
+            grid.AddRow(new Markup($"{prefix}{topics[i].DisplayName.EscapeMarkup()}"));
         }
         grid.AddRow(new Markup("\n[dim]↑/↓ Navigate  ·  Enter Select  ·  Esc Cancel[/]"));
         return grid;

@@ -163,11 +163,13 @@ public static class AlgoVisualizer
         {
             var node = queue.Dequeue();
             step++;
-            AnsiConsole.Clear();
-            AnsiConsole.Write(new Rule($"[bold cyan]BFS Step {step}: Visiting Node [{node}][/]").RuleStyle("grey"));
-            AnsiConsole.MarkupLine($"[bold yellow]Queue:[/] {string.Join(" -> ", queue)}");
-            AnsiConsole.MarkupLine($"[bold green]Visited:[/] {string.Join(", ", visited)}");
-            AnsiConsole.WriteLine();
+            ScreenChrome.RenderFrame(() =>
+            {
+                AnsiConsole.Write(new Rule($"[bold cyan]BFS Step {step}: Visiting Node [{node}][/]").RuleStyle("grey"));
+                AnsiConsole.MarkupLine($"[bold yellow]Queue:[/] {string.Join(" -> ", queue)}");
+                AnsiConsole.MarkupLine($"[bold green]Visited:[/] {string.Join(", ", visited)}");
+                AnsiConsole.WriteLine();
+            });
 
             foreach (var neighbor in graph[node])
             {

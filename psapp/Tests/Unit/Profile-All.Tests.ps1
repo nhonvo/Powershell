@@ -37,6 +37,13 @@ Describe "Core Profile Functions Validation" {
         . (Join-Path $repoRoot "Microsoft.PowerShell_profile.ps1")
     }
 
+    Context "ProfileHelp Type Accelerator" {
+        It "ProfileHelp resolves to the AgyTui type accelerator even after Load-HelpHelper runs" {
+            Load-HelpHelper
+            [ProfileHelp].FullName | Should Be "AgyTui.UI.Core.Layouts.ProfileHelp"
+        }
+    }
+
     Context "Navigation (20-Navigation.ps1)" {
         It "Set-LocationParent navigates up one level" {
             { Set-LocationParent } | Should Not Throw
@@ -174,6 +181,11 @@ Describe "Core Profile Functions Validation" {
             foreach ($alias in $commitAliases) {
                 (Get-Command $alias -ErrorAction SilentlyContinue) | Should Not Be $null
             }
+        }
+
+        It "Executes Toggle-AutoSwitch and Select-AgyAccount without throwing" {
+            { Toggle-AutoSwitch } | Should Not Throw
+            { Select-AgyAccount -AccountName "default" } | Should Not Throw
         }
     }
 }

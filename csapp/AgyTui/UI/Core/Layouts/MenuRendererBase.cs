@@ -61,4 +61,23 @@ public abstract class MenuRendererBase : IMenuRenderer
         if (lastSpace < 0) return "";
         return trimmed[..lastSpace].TrimEnd();
     }
+
+    public static (int startIdx, int endIdx) ComputeViewport(int totalItems, int selectedIndex, int maxVisibleItems)
+    {
+        if (totalItems <= 0) return (0, 0);
+        if (maxVisibleItems <= 0) maxVisibleItems = 10;
+
+        selectedIndex = Math.Clamp(selectedIndex, 0, totalItems - 1);
+
+        int startIdx = Math.Max(0, selectedIndex - (maxVisibleItems / 2));
+        int endIdx = startIdx + maxVisibleItems;
+
+        if (endIdx > totalItems)
+        {
+            endIdx = totalItems;
+            startIdx = Math.Max(0, endIdx - maxVisibleItems);
+        }
+
+        return (startIdx, endIdx);
+    }
 }

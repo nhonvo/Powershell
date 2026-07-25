@@ -1,6 +1,7 @@
 global using AgyTui.Core.Models;
 global using AgyTui.Core.Registries;
 global using AgyTui.Infrastructure.Common;
+global using AgyTui.Infrastructure.Integrations.Ai;
 global using AgyTui.Infrastructure.Integrations.Obsidian;
 global using AgyTui.Infrastructure.Persistence.Accounts;
 global using AgyTui.UI.Core.Layouts;

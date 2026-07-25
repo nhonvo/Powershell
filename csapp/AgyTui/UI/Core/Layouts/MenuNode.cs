@@ -30,20 +30,38 @@ public static class MenuNodeBuilder
 
         var categoryNames = new[]
         {
+            "[Favorites]",
             "[Workspace & Dev]",
-            "[AI Agent & Ollama]",
             "[AGY Account Switch]",
-            "[System & Network]",
+            "[AI Agent & Ollama]",
+            "[Appearance & Layout]",
             "[Learn & Study]",
             "[Obsidian & Resources]",
-            "[Appearance & Layout]",
+            "[System & Network]",
             "[Help & Docs]"
         };
+
+        var favoriteAliases = new[] { "proj", "agyswitch", "ide", "claude", "theme", "learn", "obsidian", "ssh-info" };
 
         var categoryNodes = new List<MenuNode>();
 
         foreach (var catName in categoryNames)
         {
+            if (catName == "[Favorites]")
+            {
+                var favCommands = favoriteAliases
+                    .Select(a => CommandRegistry.GetByAlias(a))
+                    .Where(c => c != null)
+                    .Select(c => CreateCommandNode(c!))
+                    .ToArray();
+
+                if (favCommands.Length > 0)
+                {
+                    categoryNodes.Add(new MenuNode("favorites", "[Favorites]", MenuNodeKind.Category, favCommands, null));
+                }
+                continue;
+            }
+
             var catCommands = visibleCommands
                 .Where(c => string.Equals(c.Category, catName, StringComparison.OrdinalIgnoreCase))
                 .ToList();
