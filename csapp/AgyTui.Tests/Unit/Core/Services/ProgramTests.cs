@@ -7,7 +7,7 @@ using Xunit;
 public class ProgramTests
 {
     [Fact]
-    public void Main_CommandThrowsException_ReturnsNonZeroExitCode()
+    public void RunApp_UnknownCommand_ReturnsNonZeroExitCode()
     {
         int exitCode = Program.RunApp(["invalid-command-alias-xyz"]);
         Assert.NotEqual(0, exitCode);

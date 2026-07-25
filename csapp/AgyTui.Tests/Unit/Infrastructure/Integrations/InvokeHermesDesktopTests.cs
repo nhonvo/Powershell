@@ -6,9 +6,9 @@ using Xunit;
 public class InvokeHermesDesktopTests
 {
     [Fact]
-    public void InvokeHermesDesktop_SuccessfulLaunch_WritesActivityLogEntry()
+    public void InvokeHermesDesktop_Execution_ReturnsValidResultStatus()
     {
-        var method = typeof(AgyAiCore).GetMethod("InvokeHermesDesktop");
-        Assert.NotNull(method);
+        var result = AgyAiCore.InvokeHermesDesktop([]);
+        Assert.True(result == AgyAiCore.HermesResult.NotInstalled || result == AgyAiCore.HermesResult.Launched);
     }
 }

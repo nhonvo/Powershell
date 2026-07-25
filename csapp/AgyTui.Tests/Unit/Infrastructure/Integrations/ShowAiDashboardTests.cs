@@ -6,10 +6,15 @@ using Xunit;
 public class ShowAiDashboardTests
 {
     [Fact]
-    public void ShowAiDashboard_ClaudeAndCodexMenuItems_DisplayedModeMatchesActualLaunchMode()
+    public void ResolveAiMode_ClaudeAndCodex_ReturnsValidModeAndReason()
     {
-        var effectiveMode = AgyAiCore.GetEffectiveProviderMode();
-        Assert.NotNull(effectiveMode);
-        Assert.NotEmpty(effectiveMode);
+        var (claudeMode, claudeReason) = AgyAiCore.ResolveAiMode("claude");
+        var (codexMode, codexReason) = AgyAiCore.ResolveAiMode("codex");
+
+        Assert.True(claudeMode == "cloud" || claudeMode == "local");
+        Assert.NotEmpty(claudeReason);
+
+        Assert.True(codexMode == "cloud" || codexMode == "local");
+        Assert.NotEmpty(codexReason);
     }
 }

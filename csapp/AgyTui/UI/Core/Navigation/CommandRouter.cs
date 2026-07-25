@@ -215,7 +215,7 @@ public static class CommandRouter
                 case "aws-lambda":
                     AgyServices.Aws.ShowLambdaFunctions();
                     break;
-                case "rebuild":
+                case "rebuild-tui":
                     AnsiConsole.MarkupLine("[cyan]Rebuilding Control Center TUI binary...[/]");
                     var projFile = Path.Combine(Directory.GetCurrentDirectory(), "AgyTui", "AgyTui.csproj");
                     if (!File.Exists(projFile)) projFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "AgyTui.csproj");

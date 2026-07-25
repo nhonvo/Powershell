@@ -46,7 +46,7 @@ public class DotNetClient : CliToolWrapper
 
     public int Restore(string? projectPath = null) => RunDotnet("restore", projectPath);
 
-    public int Publish(string? projectPath = null) => RunDotnet("publish csapp/AgyTuiApp/AgyTuiApp.csproj -c Release -r win-x64 --self-contained -o csapp/AgyTuiApp/dist", projectPath);
+    public int Publish(string? projectPath = null) => RunDotnet("publish csapp/AgyTui/AgyTui.csproj -c Release -r win-x64 --self-contained -o csapp/AgyTui/dist", projectPath);
 
     public int Pack(string? projectPath = null, string outputDir = "nupkg")
     {
@@ -102,15 +102,23 @@ public class DotNetClient : CliToolWrapper
 
     public int Watch(string? projectPath = null) => RunDotnet("watch run", projectPath);
 
-    public int AddMigration(string migrationName, string? project = null)
+    public int AddMigration(string migrationName, string? project = null, string? context = null)
     {
         var args = new List<string> { "ef", "migrations", "add", migrationName };
         if (!string.IsNullOrEmpty(project)) { args.Add("--project"); args.Add(project); }
+        if (!string.IsNullOrEmpty(context)) { args.Add("--context"); args.Add(context); }
         RunInteractive(args);
         return 0;
     }
 
-    public int UpdateDatabase(string? project = null) => RunDotnet("ef database update", project);
+    public int UpdateDatabase(string? project = null, string? context = null)
+    {
+        var args = new List<string> { "ef", "database", "update" };
+        if (!string.IsNullOrEmpty(project)) { args.Add("--project"); args.Add(project); }
+        if (!string.IsNullOrEmpty(context)) { args.Add("--context"); args.Add(context); }
+        RunInteractive(args);
+        return 0;
+    }
 
     private int RunDotnet(string args, string? workingDir)
     {

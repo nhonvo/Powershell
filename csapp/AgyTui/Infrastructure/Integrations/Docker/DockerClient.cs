@@ -21,6 +21,15 @@ public class DockerClient : CliToolWrapper
     {
         AnsiConsole.Write(new Rule("[bold cyan]Docker Cleanup Dashboard[/]").RuleStyle("grey"));
         var idx = SpectreMenu.Show("Select cleanup action", CleanupOptions, 0, false);
+        if (idx < 0 || idx >= CleanupOptions.Length) return;
+
+        bool confirm = Console.IsInputRedirected || AnsiConsole.Confirm($"Are you sure you want to perform: [yellow]{CleanupOptions[idx].EscapeMarkup()}[/]?");
+        if (!confirm)
+        {
+            SpectrePanel.Info("Cleanup cancelled.");
+            return;
+        }
+
         switch (idx)
         {
             case 0:

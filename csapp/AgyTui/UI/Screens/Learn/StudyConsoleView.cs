@@ -4,18 +4,21 @@ namespace AgyTui.UI.Screens.Learn;
 
 public static class LearnDataPaths
 {
+    public static string? OverrideBaseDirectory { get; set; }
+
     public static string BaseDirectory
     {
         get
         {
+            if (!string.IsNullOrEmpty(OverrideBaseDirectory)) return OverrideBaseDirectory;
+            var envDir = Environment.GetEnvironmentVariable("AGY_TEST_LEARN_DIR");
+            if (!string.IsNullOrEmpty(envDir)) return envDir;
+
             var pwd = Directory.GetCurrentDirectory();
             var localLearn = System.IO.Path.Combine(pwd, "learn");
             if (Directory.Exists(localLearn)) return pwd;
             var csappLearn = System.IO.Path.Combine(pwd, "csapp", "learn");
             if (Directory.Exists(csappLearn)) return System.IO.Path.Combine(pwd, "csapp");
-
-            const string projPath = @"C:\Users\TruongNhon\Documents\Powershell\csapp";
-            if (Directory.Exists(System.IO.Path.Combine(projPath, "learn"))) return projPath;
 
             return AgyAccountCore.GetAccountDirectory(AgyAccountCore.GetActiveAccount());
         }

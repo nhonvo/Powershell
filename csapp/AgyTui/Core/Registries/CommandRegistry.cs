@@ -65,9 +65,9 @@ public static class CommandRegistry
             new[] { "dpack — Compiles Release package and outputs .nupkg to ./nupkg directory." }),
         new("dpubpkg", "[.NET] Publish Package to NuGet", "Push .nupkg package to NuGet registry or local feed", "[Workspace & Dev]", ".NET",
             new[] { "dpubpkg — Prompts for package and API key to publish to NuGet feed." }),
-        new("rebuild", "[.NET] Rebuild Control Center TUI", "Recompile AgyTuiApp.csproj and refresh binary", "[Workspace & Dev]", ".NET",
+        new("rebuild-tui", "[.NET] Rebuild Control Center TUI", "Recompile AgyTui.csproj and refresh binary", "[Workspace & Dev]", ".NET",
             new[] {
-                "rebuild — Triggers `dotnet build` on AgyTuiApp.csproj with zero warnings/errors enforcement.",
+                "rebuild-tui — Triggers `dotnet build` on AgyTui.csproj with zero warnings/errors enforcement.",
                 " Recompiles the TUI binary executable in-place."
             }),
         // Git Tools (/git-tools & /repo-dashboards)
@@ -430,7 +430,7 @@ public static class CommandRegistry
     {
         var gitCmds = new HashSet<string> { "gs", "ga", "gbr", "gcmt", "glog", "gpull", "gpush", "gf", "gd", "git-undo", "glo", "glg", "gpu", "gus", "gundo" };
         var repoCmds = new HashSet<string> { "nexus", "repo-graph", "nexus-stats" };
-        var dotnetCmds = new HashSet<string> { "dbld", "dr", "dtst", "df", "dcl", "drestore", "dpublish", "dpack", "dpubpkg", "dwatch", "rebuild", "clean-build", "add-migration", "update-db", "db", "dt", "dres", "dw", "dclean", "da", "du" };
+        var dotnetCmds = new HashSet<string> { "dbld", "dr", "dtst", "df", "dcl", "drestore", "dpublish", "dpack", "dpubpkg", "dwatch", "rebuild-tui", "clean-build", "add-migration", "update-db", "db", "dt", "dres", "dw", "dclean", "da", "du" };
         var dockerCmds = new HashSet<string> { "docker-health", "dkcl", "dkrmac", "dkstac", "dimg", "dlogs", "dcup", "dcdown", "dkcpu", "dkcpd" };
         var awsCmds = new HashSet<string> { "aws-whoami", "aws-local", "aws-s3", "aws-sqs", "aws-ssm", "aws-sns", "aws-dynamodb", "aws-lambda" };
         var claudeCmds = new HashSet<string> { "claude", "claude-cloud", "claude-ollama" };
@@ -466,7 +466,7 @@ public static class CommandRegistry
             // Repo group
             "nexus", "repo-graph", "nexus-stats",
             // Dotnet group
-            "dbld", "dr", "dtst", "df", "dcl", "drestore", "dpublish", "dpack", "dpubpkg", "dwatch", "rebuild", "clean-build", "add-migration", "update-db",
+            "dbld", "dr", "dtst", "df", "dcl", "drestore", "dpublish", "dpack", "dpubpkg", "dwatch", "rebuild-tui", "clean-build", "add-migration", "update-db",
             // Docker group
             "docker-health", "dkcl", "dkrmac", "dkstac", "dimg", "dlogs", "dcup", "dcdown",
             "aws-whoami", "aws-local", "aws-s3", "aws-sqs", "aws-ssm", "aws-sns", "aws-dynamodb", "aws-lambda",

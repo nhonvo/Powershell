@@ -196,7 +196,7 @@ public static class Icons
                 "ide" => "󰨞",
                 "ide-diff" => "󰊢",
                 "ide-search" => "󰍉",
-                "dbld" or "drestore" or "dpublish" or "dwatch" or "rebuild" => "⚙",
+                "dbld" or "drestore" or "dpublish" or "dwatch" or "rebuild-tui" => "⚙",
                 "dtst" => "󰙨",
                 "clean-build" => "󰃢",
                 "add-migration" or "update-db" => "󰆼",
