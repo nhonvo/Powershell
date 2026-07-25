@@ -581,7 +581,7 @@ Write-AgyStartupCheckpoint "oh-my-posh init block done"
 function Load-GitHelper {
     try {
         Invoke-Expression @'
-class GitHelper {
+class ShellGitHelper {
     static [string] GenerateAiCommitMessage() {
         if (-not (Test-AgyAiGate)) { return "" }
         $diff = git diff --cached
@@ -655,7 +655,7 @@ class GitHelper {
         $desc = Read-Host "Enter commit description (or type 'ai' to auto-generate)"
         if ($desc -eq "ai") {
             Write-Host "[Ollama] Querying Ollama for commit suggestion..." -ForegroundColor Yellow
-            $desc = [GitHelper]::GenerateAiCommitMessage()
+            $desc = [ShellGitHelper]::GenerateAiCommitMessage()
             if (-not $desc) {
                 $desc = Read-Host "Ollama failed to generate message. Please enter description manually"
             } else {
@@ -709,7 +709,7 @@ class GitHelper {
 #  Shortcuts and migrations tool wrappers for the .NET SDK.
 # ==============================================================================
  
-class DotNetHelper {
+class ShellDotNetHelper {
     static [void] Run([string[]]$PassThruArgs) {
         Write-Host "🚀 Running project..." -ForegroundColor Green
         if ($PassThruArgs) { dotnet run $PassThruArgs | Out-Default } else { dotnet run | Out-Default }
@@ -832,7 +832,7 @@ class DotNetHelper {
 function Load-DockerHelper {
     try {
         Invoke-Expression @'
-class DockerHelper {
+class ShellDockerHelper {
     static [void] RemoveAllContainers() {
  Write-Host "[Prune] Removing ALL containers..." -ForegroundColor Red
  if ((Read-Host "This will remove ALL containers. Are you sure? (y/N)") -eq 'y') {
@@ -1001,44 +1001,44 @@ class DockerHelper {
 # AWS LocalStack commands and S3/SQS utility wrappers.
 # ==============================================================================
 
-class AwsHelper {
+class ShellAwsHelper {
  static [string]$LocalStackUrl = "http://localhost:4566"
 
  static [void] GetS3Buckets() {
- awslocal --endpoint-url=([AwsHelper]::LocalStackUrl) s3 ls | Out-Default
+ awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) s3 ls | Out-Default
  }
 
  static [void] NewS3Bucket([string]$Name) {
- awslocal --endpoint-url=([AwsHelper]::LocalStackUrl) s3 mb s3://$Name | Out-Default
+ awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) s3 mb s3://$Name | Out-Default
  }
 
  static [void] GetLambdaFunctions() {
- awslocal --endpoint-url=([AwsHelper]::LocalStackUrl) lambda list-functions | Out-Default
+ awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) lambda list-functions | Out-Default
  }
 
  static [void] GetLocalSQSQueues() {
- awslocal --endpoint-url=([AwsHelper]::LocalStackUrl) sqs list-queues | Out-Default
+ awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) sqs list-queues | Out-Default
  }
 
  static [void] NewLocalSQSQueue([string]$QueueName) {
- awslocal --endpoint-url=([AwsHelper]::LocalStackUrl) sqs create-queue --queue-name=$QueueName | Out-Default
+ awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) sqs create-queue --queue-name=$QueueName | Out-Default
  }
 
  static [void] ClearLocalSQSQueue([string]$QueueUrl) {
- awslocal --endpoint-url=([AwsHelper]::LocalStackUrl) sqs purge-queue --queue-url $QueueUrl | Out-Default
+ awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) sqs purge-queue --queue-url $QueueUrl | Out-Default
  }
 
  static [void] SendLocalSQSMessage([string]$QueueUrl, [string]$MessageBody, [string]$GroupId) {
  $gid = if ($GroupId) { $GroupId } else { "default-group" }
- awslocal --endpoint-url=([AwsHelper]::LocalStackUrl) sqs send-message --queue-url $QueueUrl --message-body $MessageBody --message-group-id $gid | Out-Default
+ awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) sqs send-message --queue-url $QueueUrl --message-body $MessageBody --message-group-id $gid | Out-Default
  }
 
  static [void] GetLocalSQSMessage([string]$QueueUrl) {
- awslocal --endpoint-url=([AwsHelper]::LocalStackUrl) sqs receive-message --queue-url $QueueUrl | Out-Default
+ awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) sqs receive-message --queue-url $QueueUrl | Out-Default
  }
 
  static [void] GetLocalSQSAttributes([string]$QueueUrl) {
- awslocal --endpoint-url=([AwsHelper]::LocalStackUrl) sqs get-queue-attributes --queue-url $QueueUrl --attribute-names All | Out-Default
+ awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) sqs get-queue-attributes --queue-url $QueueUrl --attribute-names All | Out-Default
  }
 }
 #endregion
@@ -1054,7 +1054,7 @@ class AwsHelper {
 # session/engine internals with no real portability win from moving to C#.
 # ==============================================================================
 
-class SystemHelper {
+class ShellSystemHelper {
     static [void] ClearHistory() {
         Clear-Host
         Remove-Item (Get-PSReadlineOption).HistorySavePath -ErrorAction SilentlyContinue
@@ -1247,11 +1247,11 @@ function Invoke-GitPush { Initialize-AgySession; [GitHelper]::Push() }
 function Invoke-GitPushForce { git push --force $args }
 function Invoke-GitMergeSquash {
  param([string]$BranchName)
- [GitHelper]::MergeSquash($BranchName)
+ [ShellGitHelper]::MergeSquash($BranchName)
 }
 function Invoke-GitStashSnapshot {
  param([string]$Message)
- [GitHelper]::StashSnapshot($Message)
+ [ShellGitHelper]::StashSnapshot($Message)
 }
 
 # Git Aliases
@@ -1283,43 +1283,43 @@ Set-Alias -Name gms -Value Invoke-GitMergeSquash -Force
 Set-Alias -Name gsnap -Value Invoke-GitStashSnapshot -Force
 
 # --- .NET Development Wrappers ---
-function Invoke-DotNetRun { [DotNetHelper]::Run($args) }
-function Invoke-DotNetWatch { [DotNetHelper]::Watch($args) }
-function Invoke-DotNetBuild { [DotNetHelper]::Build($args) }
-function Invoke-DotNetFormat { [DotNetHelper]::Format($args) }
-function Invoke-DotNetTest { [DotNetHelper]::Test($args) }
-function Invoke-DotNetWatchTest { [DotNetHelper]::WatchTest($args) }
-function Invoke-DotNetClean { [DotNetHelper]::Clean($args) }
-function Invoke-DotNetRestore { [DotNetHelper]::Restore($args) }
-function Remove-BinObj { [DotNetHelper]::CleanBinObj() }
+function Invoke-DotNetRun { [ShellDotNetHelper]::Run($args) }
+function Invoke-DotNetWatch { [ShellDotNetHelper]::Watch($args) }
+function Invoke-DotNetBuild { [ShellDotNetHelper]::Build($args) }
+function Invoke-DotNetFormat { [ShellDotNetHelper]::Format($args) }
+function Invoke-DotNetTest { [ShellDotNetHelper]::Test($args) }
+function Invoke-DotNetWatchTest { [ShellDotNetHelper]::WatchTest($args) }
+function Invoke-DotNetClean { [ShellDotNetHelper]::Clean($args) }
+function Invoke-DotNetRestore { [ShellDotNetHelper]::Restore($args) }
+function Remove-BinObj { [ShellDotNetHelper]::CleanBinObj() }
 function Update-Database {
  param([string]$Context)
- [DotNetHelper]::UpdateDatabase($Context)
+ [ShellDotNetHelper]::UpdateDatabase($Context)
 }
 function Add-Migration {
  param([string]$MigrationName, [string]$Context)
- [DotNetHelper]::AddMigration($MigrationName, $Context)
+ [ShellDotNetHelper]::AddMigration($MigrationName, $Context)
 }
 function Remove-Database {
  param([string]$Context)
- [DotNetHelper]::RemoveDatabase($Context)
+ [ShellDotNetHelper]::RemoveDatabase($Context)
 }
 function Remove-Migration {
  param([string]$Context)
- [DotNetHelper]::RemoveMigration($Context)
+ [ShellDotNetHelper]::RemoveMigration($Context)
 }
 function New-Solution {
  param([string]$Name)
- [DotNetHelper]::NewSolution($Name)
+ [ShellDotNetHelper]::NewSolution($Name)
 }
-function Add-AllProjectsToSolution { [DotNetHelper]::AddAllProjectsToSolution() }
+function Add-AllProjectsToSolution { [ShellDotNetHelper]::AddAllProjectsToSolution() }
 function New-ConsoleProject {
  param([string]$Name)
- [DotNetHelper]::NewConsole($Name)
+ [ShellDotNetHelper]::NewConsole($Name)
 }
 function New-WebApiProject {
  param([string]$Name)
- [DotNetHelper]::NewWebApi($Name)
+ [ShellDotNetHelper]::NewWebApi($Name)
 }
 
 # .NET Aliases
@@ -1354,13 +1354,13 @@ function Get-DockerContainers {
  param([switch]$All)
  if ($All) { docker ps -a } else { docker ps }
 }
-function Remove-AllDockerContainers { [DockerHelper]::RemoveAllContainers() }
-function Stop-AllDockerContainers { [DockerHelper]::StopAllContainers() }
-function Invoke-ComposeUp { [DockerHelper]::ComposeUp($args) }
-function Invoke-ComposeUpBuild { [DockerHelper]::ComposeUpBuild($args) }
-function Invoke-ComposeDown { [DockerHelper]::ComposeDown($args) }
-function Remove-UnusedDockerVolumes { [DockerHelper]::RemoveUnusedVolumes() }
-function Remove-UnusedDockerImages { [DockerHelper]::RemoveUnusedImages() }
+function Remove-AllDockerContainers { [ShellDockerHelper]::RemoveAllContainers() }
+function Stop-AllDockerContainers { [ShellDockerHelper]::StopAllContainers() }
+function Invoke-ComposeUp { [ShellDockerHelper]::ComposeUp($args) }
+function Invoke-ComposeUpBuild { [ShellDockerHelper]::ComposeUpBuild($args) }
+function Invoke-ComposeDown { [ShellDockerHelper]::ComposeDown($args) }
+function Remove-UnusedDockerVolumes { [ShellDockerHelper]::RemoveUnusedVolumes() }
+function Remove-UnusedDockerImages { [ShellDockerHelper]::RemoveUnusedImages() }
 
 # Docker Aliases
 Set-Alias -Name dps -Value Get-DockerContainers -Force
@@ -1374,32 +1374,32 @@ Set-Alias -Name fix-volume -Value Remove-UnusedDockerVolumes -Force
 Set-Alias -Name fix-image -Value Remove-UnusedDockerImages -Force
 
 # --- AWS LocalStack Wrappers ---
-function Get-S3Buckets { [AwsHelper]::GetS3Buckets() }
+function Get-S3Buckets { [ShellAwsHelper]::GetS3Buckets() }
 function New-S3Bucket {
  param([string]$Name)
- [AwsHelper]::NewS3Bucket($Name)
+ [ShellAwsHelper]::NewS3Bucket($Name)
 }
-function Get-LambdaFunctions { [AwsHelper]::GetLambdaFunctions() }
-function Get-LocalSQSQueues { [AwsHelper]::GetLocalSQSQueues() }
+function Get-LambdaFunctions { [ShellAwsHelper]::GetLambdaFunctions() }
+function Get-LocalSQSQueues { [ShellAwsHelper]::GetLocalSQSQueues() }
 function New-LocalSQSQueue {
  param([string]$QueueName)
- [AwsHelper]::NewLocalSQSQueue($QueueName)
+ [ShellAwsHelper]::NewLocalSQSQueue($QueueName)
 }
 function Clear-LocalSQSQueue {
  param([string]$QueueUrl)
- [AwsHelper]::ClearLocalSQSQueue($QueueUrl)
+ [ShellAwsHelper]::ClearLocalSQSQueue($QueueUrl)
 }
 function Send-LocalSQSMessage {
  param([string]$QueueUrl, [string]$MessageBody, [string]$GroupId)
- [AwsHelper]::SendLocalSQSMessage($QueueUrl, $MessageBody, $GroupId)
+ [ShellAwsHelper]::SendLocalSQSMessage($QueueUrl, $MessageBody, $GroupId)
 }
 function Get-LocalSQSMessage {
  param([string]$QueueUrl)
- [AwsHelper]::GetLocalSQSMessage($QueueUrl)
+ [ShellAwsHelper]::GetLocalSQSMessage($QueueUrl)
 }
 function Get-LocalSQSAttributes {
  param([string]$QueueUrl)
- [AwsHelper]::GetLocalSQSAttributes($QueueUrl)
+ [ShellAwsHelper]::GetLocalSQSAttributes($QueueUrl)
 }
 
 # --- AI Tools Wrappers ---
@@ -1649,7 +1649,7 @@ function Clone-Project {
 Set-Alias -Name gclone -Value Clone-Project -Force
 
 # Operations Dashboards & Shortcuts
-function Invoke-DockerDashboard { Initialize-AgySession; [DockerHelper]::Dkcl() }
+function Invoke-DockerDashboard { Initialize-AgySession; [ShellDockerHelper]::Dkcl() }
 Set-Alias -Name dkcl -Value Invoke-DockerDashboard -Force
 
 function Invoke-KillPort {
@@ -1673,7 +1673,7 @@ function Invoke-GitCommitWizard {
  param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message)
  Initialize-AgySession
  $msg = $Message -join ' '
- [GitHelper]::Gcmt($msg)
+ [ShellGitHelper]::Gcmt($msg)
 }
 Set-Alias -Name gcmt -Value Invoke-GitCommitWizard -Force
 
@@ -1832,7 +1832,7 @@ Set-Alias -Name sqsrecv -Value Get-LocalSQSMessage -Force
 Set-Alias -Name sqsattr -Value Get-LocalSQSAttributes -Force
 
 # --- System History Wrapper ---
-function Clear-ShellHistory { [SystemHelper]::ClearHistory() }
+function Clear-ShellHistory { [ShellSystemHelper]::ClearHistory() }
 Set-Alias -Name clh -Value Clear-ShellHistory -Force
 
 #endregion
