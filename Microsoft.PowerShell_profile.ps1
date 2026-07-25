@@ -1186,7 +1186,7 @@ Set-Alias -Name mobile-setup -Value Toggle-MobileMode -Force
 Set-Alias -Name ssh-addkey-mobile -Value Start-MobileSshKeyReceiver -Force
 
 # --- Git Wrappers ---
-function Get-GitStatus { git status $args }
+function Invoke-GitStatus { git status $args }
 function Show-GitDiff { git diff $args }
 function Get-GitLogGraph { git log --graph --oneline --decorate --all }
 function Get-GitLogPretty { git log --pretty=format:"%h - %an, %ar : %s" }
@@ -1229,7 +1229,7 @@ function Invoke-GitStashSnapshot {
 }
 
 # Git Aliases
-Set-Alias -Name gs -Value Get-GitStatus -Force
+Set-Alias -Name gs -Value Invoke-GitStatus -Force
 Set-Alias -Name gd -Value Show-GitDiff -Force
 Set-Alias -Name glo -Value Get-GitLogGraph -Force
 Set-Alias -Name glg -Value Get-GitLogGraph -Force
