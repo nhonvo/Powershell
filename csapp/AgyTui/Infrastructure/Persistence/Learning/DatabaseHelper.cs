@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace AgyTui.Infrastructure.Persistence;
+namespace AgyTui.Infrastructure.Persistence.Learning;
 
 public static class DatabaseHelper
 {

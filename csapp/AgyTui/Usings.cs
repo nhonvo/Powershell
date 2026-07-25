@@ -9,6 +9,8 @@ global using AgyTui.Core.Interfaces;
 global using AgyTui.Infrastructure;
 global using AgyTui.Infrastructure.Common;
 global using AgyTui.Infrastructure.Persistence;
+global using AgyTui.Infrastructure.Persistence.Accounts;
+global using AgyTui.Infrastructure.Persistence.Learning;
 global using AgyTui.Infrastructure.Integrations;
 global using AgyTui.Core.Models;
 global using AgyTui.Core.Registries;

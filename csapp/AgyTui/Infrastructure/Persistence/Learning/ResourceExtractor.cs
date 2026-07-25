@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace AgyTui.Infrastructure.Persistence;
+namespace AgyTui.Infrastructure.Persistence.Learning;
 
 public sealed record ExtractedItem(string SourceId, string SourcePath, string Format, string Topic, string SubTopic, string Language, string ItemType, string Front, string Back, string? Hint, string? Mnemonic, string? ExampleSentence, string? CodeSnippetText, string[] Tags, int Difficulty);
 

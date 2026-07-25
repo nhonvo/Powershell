@@ -1,4 +1,4 @@
-namespace AgyTui.Infrastructure.Persistence;
+namespace AgyTui.Infrastructure.Persistence.Learning;
 
 public static class SkillLoader
 {

@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace AgyTui.Infrastructure.Persistence;
+namespace AgyTui.Infrastructure.Persistence.Accounts;
 
 public static class TokenVault
 {
