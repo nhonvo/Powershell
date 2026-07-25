@@ -334,3 +334,62 @@ public static class Program
 1. **Self-Documenting Help Screens**: Automatically generates beautiful `--help` screens showing descriptions, commands, and parameter options.
 2. **Type Safety & Flags**: Handles option parsing (e.g. `--json`, `-d "path"`) and type binding automatically.
 3. **Decoupled Business Logic**: Testing a specific command only requires executing its class without loading the entire TUI render cycle.
+
+---
+
+## 🧪 6. Structuring the Test Project (`AgyTuiApp.Tests`)
+
+To maintain clean architecture and ensure long-term testability, the test project **`AgyTuiApp.Tests`** should be structured to mirror the production codebase directory layout. This makes finding, writing, and executing tests highly predictable.
+
+### Proposed Test Project Layout:
+
+```
+csapp/AgyTuiApp.Tests/
+├── AgyTuiApp.Tests.csproj
+├── Mocks/                              # Shared Test Fakes & Mock Providers
+│   ├── FakeAccountRepository.cs         # In-memory account repo mock
+│   ├── FakeStudyRepository.cs           # In-memory study repo mock
+│   └── TestResources/                   # JSON/TSV mock raw files for tests
+├── Unit/                               # Isolated Unit Tests (Mirroring production Core/Infra/UI)
+│   ├── Core/
+│   │   ├── Registries/
+│   │   │   └── CommandRegistryTests.cs
+│   │   └── Services/
+│   │       ├── SpacedRepetitionTests.cs
+│   │       └── WeakItemsQueueTests.cs
+│   ├── Infrastructure/
+│   │   ├── Persistence/
+│   │   │   ├── AccountServiceTests.cs
+│   │   │   └── ConfigTests.cs
+│   │   └── Common/
+│   │       └── TtlCacheTests.cs
+│   └── UI/
+│       ├── Layouts/
+│       │   └── FlatTreeRendererTests.cs
+│       └── Components/
+│           └── ScreenChromeTests.cs
+└── Integration/                        # Integration Tests (collaborating parts, filesystem, CLI commands)
+    ├── ResourceDiscoveryTests.cs       # Verifies TSV extractor/parser behaves correctly on actual files
+    └── LearningDataTests.cs            # Verifies JSON writing and config saving on local disk
+```
+
+### 📈 Test File Relocation Mapping
+
+Here is how the existing test files map to the new structured layout:
+
+| Original Test File | Proposed Test File | Layer |
+| :--- | :--- | :--- |
+| `Unit/CommandRegistryTests.cs` | `Unit/Core/Registries/CommandRegistryTests.cs` | **Unit (Core)** |
+| `Unit/SpacedRepetitionTests.cs` | `Unit/Core/Services/SpacedRepetitionTests.cs` | **Unit (Core)** |
+| `Unit/WeakItemsQueueTests.cs` | `Unit/Core/Services/WeakItemsQueueTests.cs` | **Unit (Core)** |
+| `Unit/AccountServiceTests.cs` | `Unit/Infrastructure/Persistence/AccountServiceTests.cs` | **Unit (Infra)** |
+| `Unit/ConfigTests.cs` | `Unit/Infrastructure/Persistence/ConfigTests.cs` | **Unit (Infra)** |
+| `Unit/ConfigServiceTests.cs` | `Unit/Infrastructure/Persistence/ConfigServiceTests.cs` | **Unit (Infra)** |
+| `Unit/TtlCacheTests.cs` | `Unit/Infrastructure/Common/TtlCacheTests.cs` | **Unit (Infra)** |
+| `Unit/FlatTreeRendererTests.cs` | `Unit/UI/Layouts/FlatTreeRendererTests.cs` | **Unit (UI)** |
+| `Unit/ScreenChromeTests.cs` | `Unit/UI/Components/ScreenChromeTests.cs` | **Unit (UI)** |
+| `Unit/TsvExtractorTests.cs` | `Integration/TsvExtractorTests.cs` | **Integration** |
+| `Unit/LearningDataTests.cs` | `Integration/LearningDataTests.cs` | **Integration** |
+| `Unit/QuotaMetricsTests.cs` | `Integration/QuotaMetricsTests.cs` | **Integration** |
+| `Integration/ResourceDiscoveryTests.cs` | `Integration/ResourceDiscoveryTests.cs` | **Integration** |
+
