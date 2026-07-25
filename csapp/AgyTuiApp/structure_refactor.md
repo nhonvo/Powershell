@@ -159,7 +159,37 @@ csapp/AgyTuiApp/
 
 ---
 
-## 📈 3. Mapping of Relocated Files
+## 🏷 3. Naming Convention Enhancements (Dropping "_Helper")
+
+Currently, many classes are named with the generic `*Helper` or `*Service` suffix (e.g. `GitHelper` and `GitService`). Having both is confusing, and using `Helper` is a code smell that leads to bloated classes with mixed concerns.
+
+To make the codebase self-documenting and separate low-level logic from UI presentation, we will rename these integrations using clear, specific architectural suffixes:
+
+### 🔌 A. Low-Level Integrations: Use `Client`
+For classes whose primary job is interfacing with external tools, APIs, or command lines (spawning processes, making HTTP calls, reading JSON), we drop `Helper` and `Service` and use **`Client`**.
+- `GitService` / `GitHelper` (core execution) $\rightarrow$ **`GitClient`**
+- `DockerService` / `DockerHelper` (core execution) $\rightarrow$ **`DockerClient`**
+- `AwsService` / `AwsHelper` (core execution) $\rightarrow$ **`AwsClient`**
+- `DotNetService` / `DotNetHelper` (core execution) $\rightarrow$ **`DotNetClient`**
+- `OllamaHelper` / `AiHelper` (core execution) $\rightarrow$ **`OllamaClient`**
+
+### 🖥 B. High-Level Console Presenters: Use `ConsoleView`
+For classes whose primary job is executing a workflow and rendering Spectre.Console layout tables, graphs, progress bars, or prompts in the console window, we rename them to **`ConsoleView`** (placed in the `UI` layer).
+- `GitHelper` (interactive UI commands) $\rightarrow$ **`GitConsoleView`**
+- `DockerHelper` (interactive dashboard UI) $\rightarrow$ **`DockerConsoleView`**
+- `SystemHelper` (interactive disk tables / port killing UI) $\rightarrow$ **`SystemConsoleView`**
+- `SshHelper` (interactive connection logs / QR presentation UI) $\rightarrow$ **`SshConsoleView`**
+- `AccountHelper` / `AccountViewHelper` (interactive accounts list UI) $\rightarrow$ **`AccountConsoleView`**
+
+### 🧠 C. Domain Engine Components: Keep `Engine` / `Flow`
+For classes that manage core calculations, state-machine tracking, or learning logic, we use clear domain suffixes:
+- `SpacedRepetitionEngine` (SM-2 calculations) $\rightarrow$ **`SpacedRepetitionEngine`** (Domain Engine)
+- `FlashcardEngine` (Vocabulary matching) $\rightarrow$ **`FlashcardEngine`** (Domain Engine)
+- `GuidedLearnFlow` (Study session state) $\rightarrow$ **`GuidedLearnFlow`** (Domain Flow)
+
+---
+
+## 📈 4. Mapping of Relocated Files
 
 Here is how the main source files will map to the new modular structure:
 
@@ -199,7 +229,7 @@ Here is how the main source files will map to the new modular structure:
 
 ---
 
-## 💻 4. Structuring as a Modern CLI Project
+## 💻 5. Structuring as a Modern CLI Project
 
 Currently, `AgyTuiApp` handles command-line arguments via manual array parsing and a massive `switch(alias)` block in **[Program.cs](file:///C:/Users/TruongNhon/Documents/PowerShell/csapp/AgyTuiApp/Program.cs)**. 
 
