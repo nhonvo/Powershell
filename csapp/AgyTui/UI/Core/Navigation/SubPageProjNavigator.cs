@@ -24,6 +24,13 @@ public static class SubPageProjNavigator
             list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -1 });
             if (i == ExpandedWorkspaceIndex)
             {
+                if (w.Links != null && w.Links.Length > 0)
+                {
+                    for (int k = 0; k < w.Links.Length; k++)
+                    {
+                        list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -2 - k });
+                    }
+                }
                 for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
                 {
                     list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = j });
@@ -38,6 +45,16 @@ public static class SubPageProjNavigator
         if (detailsSel >= 0 && detailsSel < flatList.Count)
         {
             var item = flatList[detailsSel];
+            if (item.ActionIndex <= -2)
+            {
+                int linkIdx = -2 - item.ActionIndex;
+                if (item.Workspace.Links != null && linkIdx >= 0 && linkIdx < item.Workspace.Links.Length)
+                {
+                    var link = item.Workspace.Links[linkIdx];
+                    WorkspaceRegistry.OpenUrl(link.Url);
+                }
+                return true;
+            }
             if (item.ActionIndex == -1)
             {
                 WorkspaceRegistry.HandleWorkspaceAction(item.Workspace, 0);
@@ -87,6 +104,18 @@ public static class SubPageProjNavigator
 
                 grid.AddRow(new Markup($"{prefix}{expandSign}📁 {status}{nameMarkup}{branchSuffix} {pathMarkup}"));
             }
+            else if (item.ActionIndex <= -2)
+            {
+                var bullet = "├── ";
+                var prefix = isSelected ? "  [green bold]❯──[/] " : $"  {bullet}";
+                int linkIdx = -2 - item.ActionIndex;
+                var link = item.Workspace.Links![linkIdx];
+
+                var labelMarkup = isSelected 
+                    ? $"[bold green]🌐 Link: {link.Label.EscapeMarkup()} ({link.Url.EscapeMarkup()})[/]" 
+                    : $"[dim]🌐 Link: {link.Label.EscapeMarkup()} ({link.Url.EscapeMarkup()})[/]";
+                grid.AddRow(new Markup($"{prefix}{labelMarkup}"));
+            }
             else
             {
                 var isLast = (item.ActionIndex == WorkspaceRegistry.SharedWorkspaceActions.Length - 1);
@@ -111,14 +140,21 @@ public static class SubPageProjNavigator
             scrollStatus = "  [grey]▲ Start of list   ·   ▼ End of list[/]";
         }
 
-        var selTarget = (SelectedWorkspaceIndex >= 0 && SelectedWorkspaceIndex < workspaces.Length) ? workspaces[SelectedWorkspaceIndex]?.WorkspacePath : null;
-        var targetDisplay = !string.IsNullOrEmpty(selTarget) ? selTarget : "No workspace selected";
+        var selectedWorkspace = (SelectedWorkspaceIndex >= 0 && SelectedWorkspaceIndex < workspaces.Length) ? workspaces[SelectedWorkspaceIndex] : null;
+        var targetDisplay = selectedWorkspace != null ? selectedWorkspace.WorkspacePath : "No workspace selected";
+
+        var linksMarkup = "";
+        if (selectedWorkspace?.Links != null && selectedWorkspace.Links.Length > 0)
+        {
+            var linksStr = string.Join("  ·  ", selectedWorkspace.Links.Select(l => $"[cyan]{l.Label.EscapeMarkup()}[/]: [dim]{l.Url.EscapeMarkup()}[/]"));
+            linksMarkup = $"\n  [dim]Links:[/] {linksStr}";
+        }
 
         return new Rows(
             grid,
             new Rule().RuleStyle("cyan dim"),
             new Markup(scrollStatus),
-            new Markup($"  [dim]Selected Target:[/] [bold cyan]{targetDisplay.EscapeMarkup()}[/]"),
+            new Markup($"  [dim]Selected Target:[/] [bold cyan]{targetDisplay.EscapeMarkup()}[/]{linksMarkup}"),
             new Markup("\n[bold cyan][[Enter]][/] Toggle/Run  ·  [bold cyan][[Esc]][/] Cancel")
         );
     }

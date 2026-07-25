@@ -291,7 +291,7 @@ public static class WorkspaceRegistry
         return selected.WorkspacePath;
     }
 
-    private static void OpenUrl(string url)
+    public static void OpenUrl(string url)
     {
         try
         {
