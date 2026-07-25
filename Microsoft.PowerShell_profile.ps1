@@ -1556,7 +1556,14 @@ function cai { Invoke-ControlCenter "claude" }
 function caws { Invoke-ControlCenter "aws-local" }
 function cnav { Invoke-ControlCenter "proj" }
 function goto { Invoke-ControlCenter "go" $args }
-function open-term { Initialize-AgySession; [AgyTui.SystemHelper]::OpenNewTerminalSession() }
+function open-term {
+    if ($args) {
+        Start-Process wt.exe -ArgumentList $args
+    } else {
+        Initialize-AgySession
+        [AgyTui.SystemHelper]::OpenNewTerminalSession()
+    }
+}
 Set-Alias -Name term -Value open-term -Force
 Set-Alias -Name wt -Value open-term -Force
 function ui-mode { Invoke-ControlCenter "ui-mode" $args }
