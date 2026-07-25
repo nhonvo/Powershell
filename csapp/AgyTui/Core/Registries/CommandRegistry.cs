@@ -416,6 +416,10 @@ public static class CommandRegistry
             new[] { "ui-mode — Toggles between `three-pane` and `flat-tree` layout modes." }),
         new("density", "Toggle Console Density", "Toggle between comfortable and compact display densities", "[Appearance & Layout]", "Theme & Settings",
             new[] { "density — Toggles line spacing density between `comfortable` and `compact`." }),
+        new("favorite", "Toggle Favorite Command", "Pin or unpin a command alias to your Favorites category", "[Appearance & Layout]", "Theme & Settings",
+            new[] { "favorite <alias> — Toggles pinning of the specified command alias to your Favorites category." }),
+        new("favorites", "List Favorite Commands", "List all pinned favorite command aliases", "[Appearance & Layout]", "Theme & Settings",
+            new[] { "favorites — Displays all command aliases currently pinned to Favorites." }),
 
         // [Help & Docs]
         new("cc", "Command Palette", "Open this Command Palette", "[Help & Docs]", "Help",
@@ -494,7 +498,7 @@ public static class CommandRegistry
             "agy-cli", "ai-history",
 
             // Category 4: [Appearance & Layout]
-            "theme", "ui-mode", "density", "mobile-setup",
+            "theme", "ui-mode", "density", "mobile-setup", "favorite", "favorites",
 
             // Category 5: [Learn & Study]
             "learn", "learn-gen",

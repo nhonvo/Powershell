@@ -159,11 +159,15 @@ public static class CommandRouter
                 case "add-migration":
                 case "da":
                     var migName = AnsiConsole.Ask<string>("Migration name:");
-                    AgyServices.DotNet.AddMigration(migName);
+                    var addCtx = Console.IsInputRedirected ? null : AnsiConsole.Prompt(new TextPrompt<string>("DbContext name [dim](optional, press Enter to skip)[/]:").AllowEmpty());
+                    if (string.IsNullOrWhiteSpace(addCtx)) addCtx = null;
+                    AgyServices.DotNet.AddMigration(migName, context: addCtx);
                     break;
                 case "update-db":
                 case "du":
-                    AgyServices.DotNet.UpdateDatabase();
+                    var upCtx = Console.IsInputRedirected ? null : AnsiConsole.Prompt(new TextPrompt<string>("DbContext name [dim](optional, press Enter to skip)[/]:").AllowEmpty());
+                    if (string.IsNullOrWhiteSpace(upCtx)) upCtx = null;
+                    AgyServices.DotNet.UpdateDatabase(context: upCtx);
                     break;
                 case "docker-health":
                     AgyServices.Docker.ShowDockerHealthDashboard();
@@ -532,6 +536,64 @@ public static class CommandRouter
                         Config.SetDensity(nextDensity);
                         AnsiConsole.MarkupLine($"[green]UI Density toggled to '{nextDensity}'. Switch will apply next time you launch Control Center.[/]");
                         Thread.Sleep(1500);
+                    }
+                    break;
+                case "favorite":
+                    {
+                        var favAlias = (args != null && args.Length > 0) ? args[0].Trim().ToLowerInvariant() : null;
+                        if (string.IsNullOrEmpty(favAlias))
+                        {
+                            favAlias = Console.IsInputRedirected ? null : AnsiConsole.Ask<string>("Enter command alias to toggle favorite:");
+                        }
+                        if (!string.IsNullOrEmpty(favAlias))
+                        {
+                            var cmd = CommandRegistry.GetByAlias(favAlias);
+                            if (cmd == null)
+                            {
+                                SpectrePanel.Warning($"Unknown command alias '{favAlias}'.");
+                            }
+                            else
+                            {
+                                var currentFavs = (Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases).ToList();
+                                if (currentFavs.Contains(favAlias, StringComparer.OrdinalIgnoreCase))
+                                {
+                                    currentFavs.RemoveAll(a => string.Equals(a, favAlias, StringComparison.OrdinalIgnoreCase));
+                                    Config.Current.Ui.FavoriteAliases = [.. currentFavs];
+                                    Config.Save();
+                                    SpectrePanel.Success($"Removed '{favAlias}' from Favorites.");
+                                }
+                                else
+                                {
+                                    currentFavs.Add(favAlias);
+                                    Config.Current.Ui.FavoriteAliases = [.. currentFavs];
+                                    Config.Save();
+                                    SpectrePanel.Success($"Added '{favAlias}' to Favorites.");
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case "favorites":
+                    {
+                        var favs = Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases;
+                        AnsiConsole.Write(new Rule("[bold cyan]Pinned Favorite Aliases[/]").RuleStyle("grey"));
+                        if (favs.Length == 0)
+                        {
+                            AnsiConsole.MarkupLine("[yellow]No favorite aliases pinned. Use '/favorite <alias>' to pin.[/]");
+                        }
+                        else
+                        {
+                            var table = new Table().Border(TableBorder.Rounded);
+                            table.AddColumn("[bold cyan]Alias[/]");
+                            table.AddColumn("[bold cyan]Name[/]");
+                            table.AddColumn("[bold cyan]Description[/]");
+                            foreach (var f in favs)
+                            {
+                                var c = CommandRegistry.GetByAlias(f);
+                                table.AddRow($"[green]{f}[/]", c?.DisplayName ?? "?", c?.Description ?? "");
+                            }
+                            AnsiConsole.Write(table);
+                        }
                     }
                     break;
                 case "hotkeys":

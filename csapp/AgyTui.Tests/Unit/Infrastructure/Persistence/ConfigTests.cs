@@ -27,4 +27,31 @@ public class ConfigTests
             Config.Current.Ui.Density = originalDensity;
         }
     }
+
+    [Fact]
+    public void FavoriteAliases_DefaultsToCurrentHardcodedList_NoConfigMigrationNeeded()
+    {
+        Assert.NotNull(Config.Current.Ui.FavoriteAliases);
+        Assert.Equal(Config.DefaultFavoriteAliases, Config.Current.Ui.FavoriteAliases);
+    }
+
+    [Fact]
+    public void MenuNodeBuilder_BuildTree_FavoritesCategory_ReflectsConfigNotHardcodedArray()
+    {
+        var originalFavs = Config.Current.Ui.FavoriteAliases;
+        try
+        {
+            Config.Current.Ui.FavoriteAliases = ["gs", "ga"];
+            var root = AgyTui.UI.Core.Layouts.MenuNodeBuilder.BuildTree();
+            var favNode = root.Children.FirstOrDefault(c => c.Id == "favorites" || c.Label == "[Favorites]");
+            Assert.NotNull(favNode);
+            Assert.Equal(2, favNode.Children.Length);
+            Assert.Equal("gs", favNode.Children[0].Command?.Alias);
+            Assert.Equal("ga", favNode.Children[1].Command?.Alias);
+        }
+        finally
+        {
+            Config.Current.Ui.FavoriteAliases = originalFavs;
+        }
+    }
 }

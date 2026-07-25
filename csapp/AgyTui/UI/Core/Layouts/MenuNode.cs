@@ -41,7 +41,7 @@ public static class MenuNodeBuilder
             "[Help & Docs]"
         };
 
-        var favoriteAliases = new[] { "proj", "agyswitch", "ide", "claude", "theme", "learn", "obsidian", "ssh-info" };
+        var favoriteAliases = AgyTui.Core.Models.Config.Current.Ui.FavoriteAliases ?? AgyTui.Core.Models.Config.DefaultFavoriteAliases;
 
         var categoryNodes = new List<MenuNode>();
 

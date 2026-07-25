@@ -10,6 +10,7 @@ public sealed class UiConfig
     public string Density { get; set; } = "comfortable";
     public string ActiveTheme { get; set; } = "neko";
     public bool EnableMobile { get; set; } = false;
+    public string[] FavoriteAliases { get; set; } = Config.DefaultFavoriteAliases;
 }
 
 public sealed class AiConfig
@@ -95,6 +96,8 @@ public sealed class ConfigData
 
 public static class Config
 {
+    public static readonly string[] DefaultFavoriteAliases = ["proj", "agyswitch", "ide", "claude", "theme", "learn", "obsidian", "ssh-info"];
+
     public static string? OverrideConfigPath { get; set; }
 
     public static string GetConfigFilePath()
