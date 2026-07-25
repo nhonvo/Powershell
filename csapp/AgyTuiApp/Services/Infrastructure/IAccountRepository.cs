@@ -1,8 +1,0 @@
-namespace AgyTui;
-
-public interface IAccountRepository
-{
-    string GetActiveAccount();
-    void SetActiveAccount(string accountName);
-    string[] GetAccounts();
-}

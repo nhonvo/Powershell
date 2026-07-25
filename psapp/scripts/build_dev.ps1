@@ -12,18 +12,22 @@ Write-Host "⚙ Building AgyTuiApp [Dev Mode - WarningsAsErrors]..." -Foreground
 pushd $repoRoot
 try {
     # Unlock DLL if loaded
-    $dll = "csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+    $dll = "csapp\AgyTui\bin\Debug\net9.0\AgyTui.dll"
+    if (-not (Test-Path $dll)) {
+        $dll = "csapp\AgyTui\bin\Debug\net10.0\AgyTui.dll"
+    }
     if (Test-Path $dll) {
         $rand = Get-Random
-        Rename-Item -Path $dll -NewName "AgyTuiApp.dll.old_$rand" -Force -ErrorAction SilentlyContinue
+        Rename-Item -Path $dll -NewName "AgyTui.dll.old_$rand" -Force -ErrorAction SilentlyContinue
     }
-    dotnet build csapp/AgyTuiApp/AgyTuiApp.csproj -p:TreatWarningsAsErrors=true
+    dotnet build csapp/AgyTui/AgyTui.csproj -p:TreatWarningsAsErrors=true
     if ($LASTEXITCODE -eq 0) {
         Write-Host "✅ Dev Build Succeeded cleanly." -ForegroundColor Green
     } else {
         Write-Error "❌ Dev Build Failed."
     }
 } finally {
-    Get-ChildItem -Path "csapp\AgyTuiApp\bin\Debug\net10.0" -Filter "AgyTuiApp.dll.old_*" -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
+    Get-ChildItem -Path "csapp\AgyTui\bin\Debug\net9.0" -Filter "AgyTui.dll.old_*" -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
+    Get-ChildItem -Path "csapp\AgyTui\bin\Debug\net10.0" -Filter "AgyTui.dll.old_*" -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
     popd
 }

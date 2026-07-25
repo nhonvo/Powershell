@@ -1,5 +1,4 @@
-
-  if ($global:AgyProfileLoaded -or $global:AgyUserProfileLoaded) { return }
+if ($global:AgyProfileLoaded -or $global:AgyUserProfileLoaded) { return }
 $global:AgyUserProfileLoaded = $true
 $Global:ProfileRepoRoot = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 
@@ -129,9 +128,108 @@ if ($agySourceHome) {
     }
 }
 
-# --- AgyAccountManager Legacy Compatibility Layer ---
-try {
-    Invoke-Expression @'
+
+
+# Apply GlobalBinDir
+if ($globalBinDir) {
+    $Global:GlobalBinDir = $globalBinDir
+} else {
+    $Global:GlobalBinDir = "C:\ProgramData\agy\bin"
+}
+
+# --- Startup checkpoint logging ---
+# Temporary diagnostic for the "profile loads too long / freezes" reports — appends a
+# timestamped, elapsed-ms line to profile.log at each major startup phase. Plain file I/O
+# (no dependency on AgyTuiApp.dll, which hasn't loaded yet at the top of this file) so it
+# works even if a later phase never returns. Check the tail of the log after a slow/frozen
+# session to see exactly which phase was last reached.
+function Write-AgyStartupCheckpoint {
+    param([string]$Label)
+    if (-not $Global:VerboseStartup -and -not $env:AGY_STARTUP_DEBUG) { return }
+    try {
+        $elapsedMs = [Math]::Round(((Get-Date) - $Global:AgyStartupStart).TotalMilliseconds)
+        $dir = Split-Path $Global:AgyStartupLogFile
+        if (-not (Test-Path $dir)) { $null = New-Item -ItemType Directory -Path $dir -Force }
+        Add-Content -Path $Global:AgyStartupLogFile -Value "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] [STARTUP] +$($elapsedMs)ms  $Label"
+    } catch {}
+}
+Write-AgyStartupCheckpoint "script start"
+ 
+# ==============================================================================
+#  AGY TUI — compiled C# Spectre.Console application (AgyTuiApp)
+# ==============================================================================
+$Global:AgyTuiAppProject = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\AgyTui.csproj"
+function Load-AgyTuiDll {
+    param([bool]$SkipBuildCheck = $true)
+    if ($null -eq ([System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTui" })) {
+        $targetDll = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Debug\net9.0\AgyTui.dll"
+        if (-not (Test-Path $targetDll)) {
+            $targetDll = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTui\dist\AgyTui.dll"
+        }
+        $proj = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTui\AgyTui.csproj"
+        $needsBuild = -not (Test-Path $targetDll)
+        if (-not $needsBuild -and -not $SkipBuildCheck -and (Test-Path $proj)) {
+            $dllMtime = (Get-Item $targetDll).LastWriteTime
+            $newestCs = Get-ChildItem -Path (Join-Path $Global:ProfileRepoRoot "csapp\AgyTui") -Filter "*.cs" -Recurse | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+            if ($newestCs -and $newestCs.LastWriteTime -gt $dllMtime) {
+                $needsBuild = $true
+            }
+        }
+        if ($needsBuild -and (Test-Path $proj)) {
+            dotnet build "$proj" -p:TreatWarningsAsErrors=true | Out-Null
+        }
+        if (Test-Path $targetDll) {
+            try {
+                Get-ChildItem -Path (Split-Path $targetDll) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTui.dll" } | ForEach-Object {
+                    try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
+                }
+                Add-Type -Path $targetDll -ErrorAction SilentlyContinue
+            } catch {}
+        }
+    }
+    
+    # Register PowerShell Type Accelerators for shorthand C# helper calls
+    try {
+        $acc = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
+        if ($acc) {
+            $mappings = @{
+                "GitHelper"          = "AgyTui.GitHelper"
+                "DotNetHelper"       = "AgyTui.DotNetHelper"
+                "DockerHelper"       = "AgyTui.DockerHelper"
+                "SystemHelper"       = "AgyTui.UI.Screens.SysNet.SystemConsoleView"
+                "AwsHelper"          = "AgyTui.AwsHelper"
+                "ObsidianHelper"     = "AgyTui.ObsidianHelper"
+                "StudyHelper"        = "AgyTui.UI.Screens.Learn.StudyConsoleView"
+                "AccountHelper"      = "AgyTui.UI.Screens.Account.AgyAccountCore"
+                "AiHelper"           = "AgyTui.Infrastructure.Integrations.Ollama.AiClient"
+                "AgyAccountCore"     = "AgyTui.UI.Screens.Account.AgyAccountCore"
+                "AgyAiCore"          = "AgyTui.Infrastructure.Integrations.Ollama.AgyAiCore"
+                "TerminalIde"        = "AgyTui.UI.Screens.Ide.TerminalIde"
+                "ProfileHelp"        = "AgyTui.UI.Core.Layouts.ProfileHelp"
+                "SpectreMenu"        = "AgyTui.UI.Core.Common.SpectreMenu"
+                "SpectreProgress"    = "AgyTui.UI.Core.Common.SpectreProgress"
+                "SpectrePager"       = "AgyTui.UI.Core.Common.SpectrePager"
+                "WorkspaceRegistry"  = "AgyTui.WorkspaceRegistry"
+                "Projects"           = "AgyTui.Projects"
+                "ThemeHelper"        = "AgyTui.Infrastructure.Common.ThemeManager"
+                "SshHelper"          = "AgyTui.UI.Screens.SysNet.SshConsoleView"
+                "ProjectScaffolder"  = "AgyTui.ProjectScaffolder"
+                "AgySecretVault"     = "AgyTui.Infrastructure.Persistence.AgySecretVault"
+                "DatabaseHelper"     = "AgyTui.DatabaseHelper"
+                "LogHelper"          = "AgyTui.UI.Core.Common.LogHelper"
+            }
+            foreach ($key in $mappings.Keys) {
+                $full = $mappings[$key] -as [type]
+                if ($full -and -not ($acc::Get.ContainsKey($key))) {
+                    $acc::Add($key, $full)
+                }
+            }
+        }
+    } catch {}
+
+    # --- AgyAccountManager Legacy Compatibility Layer ---
+    try {
+        Invoke-Expression @'
 class AgyAccountManager {
     static [void] RegisterPromptHook() {
         try {
@@ -173,9 +271,9 @@ class AgyAccountManager {
                                 }
                                 if (Test-Path $targetPath) {
                                     $env:GEMINI_HOME = $targetPath
-                                    [AgyTui.AgyAccountCore]::RestoreActiveToken($savedAcc)
+                                    [AgyAccountCore]::RestoreActiveToken($savedAcc)
                                 }
-                            }
+                             }
                         }
                     }
                 } catch {}
@@ -185,7 +283,7 @@ class AgyAccountManager {
                 if (Test-Path Function:\prompt_original) {
                     prompt_original
                 } else {
-                    $acc = [AgyTui.AgyAccountCore]::GetActiveAccount()
+                    $acc = [AgyAccountCore]::GetActiveAccount()
                     $tag = ""
                     "PS ($acc)$tag $($pwd.Path)> "
                 }
@@ -195,103 +293,31 @@ class AgyAccountManager {
     }
 
     static [void] AutoSwitchOnDirectoryChange([string]$Path) {
-        if (-not [AgyTui.AgyAccountCore]::IsAutoSwitchEnabled()) { return }
-        $workspaces = [AgyTui.WorkspaceRegistry]::GetWorkspaces()
+        if (-not [AgyAccountCore]::IsAutoSwitchEnabled()) { return }
+        $workspaces = [WorkspaceRegistry]::GetWorkspaces()
         if (-not $workspaces) { return }
         $matchedProject = $workspaces | Where-Object { $_.WorkspacePath -and $Path -like "$($_.WorkspacePath)*" } | Select-Object -First 1
-        if ($null -ne $matchedProject -and $matchedProject.AssociatedAccount -and $matchedProject.AssociatedAccount -ne [AgyTui.AgyAccountCore]::GetActiveAccount()) {
+        if ($null -ne $matchedProject -and $matchedProject.AssociatedAccount -and $matchedProject.AssociatedAccount -ne [AgyAccountCore]::GetActiveAccount()) {
             if (-not $Global:AiMode) {
                 Write-Host "[Auto-Switch] Changing credentials to: $($matchedProject.AssociatedAccount)" -ForegroundColor Cyan
             }
-            [AgyTui.AgyAccountCore]::SetActiveAccount($matchedProject.AssociatedAccount, $true)
+            [AgyAccountCore]::SetActiveAccount($matchedProject.AssociatedAccount, $true)
         }
     }
 
     static [void] ToggleAutoSwitch() {
-        [AgyTui.AgyAccountCore]::ToggleAutoSwitch()
+        [AgyAccountCore]::ToggleAutoSwitch()
     }
 
     static [void] ShowAllAccountsSummary() {
-        [AgyTui.AgyAccountCore]::ShowAllAccountsSummary()
+        [AgyAccountCore]::ShowAllAccountsSummary()
     }
 
     static [string] GetActiveAccount() {
-        return [AgyTui.AgyAccountCore]::GetActiveAccount()
+        return [AgyAccountCore]::GetActiveAccount()
     }
 }
 '@
-} catch {
-}
-
-# Apply GlobalBinDir
-if ($globalBinDir) {
-    $Global:GlobalBinDir = $globalBinDir
-} else {
-    $Global:GlobalBinDir = "C:\ProgramData\agy\bin"
-}
-
-# --- Startup checkpoint logging ---
-# Temporary diagnostic for the "profile loads too long / freezes" reports — appends a
-# timestamped, elapsed-ms line to profile.log at each major startup phase. Plain file I/O
-# (no dependency on AgyTuiApp.dll, which hasn't loaded yet at the top of this file) so it
-# works even if a later phase never returns. Check the tail of the log after a slow/frozen
-# session to see exactly which phase was last reached.
-function Write-AgyStartupCheckpoint {
-    param([string]$Label)
-    if (-not $Global:VerboseStartup -and -not $env:AGY_STARTUP_DEBUG) { return }
-    try {
-        $elapsedMs = [Math]::Round(((Get-Date) - $Global:AgyStartupStart).TotalMilliseconds)
-        $dir = Split-Path $Global:AgyStartupLogFile
-        if (-not (Test-Path $dir)) { $null = New-Item -ItemType Directory -Path $dir -Force }
-        Add-Content -Path $Global:AgyStartupLogFile -Value "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] [STARTUP] +$($elapsedMs)ms  $Label"
-    } catch {}
-}
-Write-AgyStartupCheckpoint "script start"
- 
-# ==============================================================================
-#  AGY TUI — compiled C# Spectre.Console application (AgyTuiApp)
-# ==============================================================================
-$Global:AgyTuiAppProject = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTuiApp\AgyTuiApp.csproj"
-function Load-AgyTuiDll {
-    param([bool]$SkipBuildCheck = $true)
-    if ($null -eq ([System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTuiApp" })) {
-        $targetDll = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\bin\Debug\net9.0\AgyTuiApp.dll"
-        if (-not (Test-Path $targetDll)) {
-            $targetDll = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\dist\AgyTuiApp.dll"
-        }
-        $proj = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\AgyTuiApp.csproj"
-        $needsBuild = -not (Test-Path $targetDll)
-        if (-not $needsBuild -and -not $SkipBuildCheck -and (Test-Path $proj)) {
-            $dllMtime = (Get-Item $targetDll).LastWriteTime
-            $newestCs = Get-ChildItem -Path (Join-Path $Global:ProfileRepoRoot "csapp\AgyTuiApp") -Filter "*.cs" -Recurse | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-            if ($newestCs -and $newestCs.LastWriteTime -gt $dllMtime) {
-                $needsBuild = $true
-            }
-        }
-        if ($needsBuild -and (Test-Path $proj)) {
-            dotnet build "$proj" -p:TreatWarningsAsErrors=true | Out-Null
-        }
-        if (Test-Path $targetDll) {
-            try {
-                Get-ChildItem -Path (Split-Path $targetDll) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
-                    try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
-                }
-                Add-Type -Path $targetDll -ErrorAction SilentlyContinue
-            } catch {}
-        }
-    }
-    
-    # Register PowerShell Type Accelerators for shorthand C# helper calls
-    try {
-        $acc = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
-        if ($acc) {
-            foreach ($type in @('GitHelper', 'DotNetHelper', 'DockerHelper', 'SystemHelper', 'AwsHelper', 'ObsidianHelper', 'StudyHelper', 'AccountHelper', 'AiHelper')) {
-                $full = "AgyTui.$type" -as [type]
-                if ($full -and -not ($acc::Get.ContainsKey($type))) {
-                    $acc::Add($type, $full)
-                }
-            }
-        }
     } catch {}
 }
 $global:AgySessionInitialized = $false
@@ -310,7 +336,7 @@ function Initialize-AgySession {
 function Test-AgyAiGate {
     Initialize-AgySession
     if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
-        return [AgyTui.AgyAiCore]::IsAiOllamaEnabled() -or [AgyTui.AgyAiCore]::IsAgyEnabled()
+        return [AgyAiCore]::IsAiOllamaEnabled() -or [AgyAiCore]::IsAgyEnabled()
     }
     return $true
 }
@@ -318,7 +344,7 @@ function Test-AgyAiGate {
 function Start-AgyManager {
     Initialize-AgySession
     if ($null -ne ('AgyTui.Projects' -as [type])) {
-        [AgyTui.Projects]::StartManager()
+        [Projects]::StartManager()
     } elseif ($null -ne ('Projects' -as [type])) {
         [Projects]::StartManager()
     } else {
@@ -329,7 +355,7 @@ function Start-AgyManager {
 function Start-AgyProxy {
     Initialize-AgySession
     if ($null -ne ('AgyTui.Projects' -as [type])) {
-        [AgyTui.Projects]::StartProxy()
+        [Projects]::StartProxy()
     } elseif ($null -ne ('Projects' -as [type])) {
         [Projects]::StartProxy()
     } else {
@@ -475,18 +501,18 @@ class ProfileEnvironment {
                     if (-not $Global:AiMode) {
                         Write-Warning "[!] Module $($mod.Name) is missing or failed to load and console is non-interactive. Skipping installation."
                     }
-                    continue
-                }
-                Write-Host "[+] Installing $($mod.Name) ($($mod.Description))..." -ForegroundColor Cyan
-                try {
-                    Install-Module $mod.Name -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck -ErrorAction Stop
-                    if ($mod.Name -eq "Terminal-Icons") {
-                        Import-Module $mod.Name -Force -ErrorAction SilentlyContinue
-                    } else {
-                        Import-Module $mod.Name -ErrorAction SilentlyContinue
+                } else {
+                    Write-Host "[+] Installing $($mod.Name) ($($mod.Description))..." -ForegroundColor Cyan
+                    try {
+                        Install-Module $mod.Name -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck -ErrorAction Stop
+                        if ($mod.Name -eq "Terminal-Icons") {
+                            Import-Module $mod.Name -Force -ErrorAction SilentlyContinue
+                        } else {
+                            Import-Module $mod.Name -ErrorAction SilentlyContinue
+                        }
+                    } catch {
+                        Write-Warning "[!] Failed to install/load $($mod.Name). Skipping."
                     }
-                } catch {
-                    Write-Warning "[!] Failed to install/load $($mod.Name). Skipping."
                 }
             }
         }
@@ -498,7 +524,7 @@ class ProfileEnvironment {
 # --- Oh My Posh Theme (Initialized in global script scope to bypass class method scoping constraints) ---
 if (-not $Global:AiMode) {
     # Theme name resolution (+ legacy active_theme.txt migration) lives in
-    # [AgyTui.ThemeHelper]::ResolveStartupTheme() now — pure file/JSON logic, no PS1-only dependency.
+    # [ThemeHelper]::ResolveStartupTheme() now — pure file/JSON logic, no PS1-only dependency.
     # This runs unconditionally on every shell startup (not deferred inside a method like every
     # other AgyTui call site), so if AgyTui.dll isn't loaded yet it must not break oh-my-posh
     # entirely — fall back to a bare default rather than let the whole file abort.
@@ -564,7 +590,7 @@ class GitHelper {
         $prompt = "Generate a concise, one-line conventional commit description (excluding type/scope prefix) based on the following git diff. Output ONLY the description:`n`n$diff"
 
         $body = @{
-            model = [AgyTui.AgyAiCore]::OllamaDefaultModel
+            model = [AgyAiCore]::OllamaDefaultModel
             prompt = $prompt
             stream = $false
         } | ConvertTo-Json
@@ -610,7 +636,7 @@ class GitHelper {
             "test     (Adding missing tests)",
             "chore    (Maintenance/dependencies)"
         )
-        $sel = [AgyTui.SpectreMenu]::Show("Select Commit Type", $types, 0)
+        $sel = [SpectreMenu]::Show("Select Commit Type", $types, 0)
         if ($sel -lt 0) { return }
 
         $type = switch ($sel) {
@@ -886,7 +912,7 @@ class DockerHelper {
  }
 
  while ($true) {
- $containers = [AgyTui.SpectreProgress]::SpinnerResult("[Docker] Querying active container configurations...", {
+ $containers = [SpectreProgress]::SpinnerResult("[Docker] Querying active container configurations...", {
  $cList = @()
  try {
  $open = "{" + "{"
@@ -927,7 +953,7 @@ class DockerHelper {
  $menuItems += "[x] Exit Dashboard"
  $itemMapping += $null
 
- $selected = [AgyTui.SpectreMenu]::Show("Docker Containers Dashboard (dkcl)", $menuItems, 0)
+ $selected = [SpectreMenu]::Show("Docker Containers Dashboard (dkcl)", $menuItems, 0)
  if ($selected -lt 0 -or $selected -eq ($menuItems.Count - 1)) {
  break
  }
@@ -944,7 +970,7 @@ class DockerHelper {
  "[Logs] View Logs (tail 50)",
  "[Back] Return"
  )
- $subSel = [AgyTui.SpectreMenu]::Show("Manage Container: $($c.Name)", $subItems, 0)
+ $subSel = [SpectreMenu]::Show("Manage Container: $($c.Name)", $subItems, 0)
  if ($subSel -eq 0) {
  Write-Host "Starting $($c.Name)..." -ForegroundColor Green
  docker start $c.Name | Out-Null
@@ -960,7 +986,7 @@ class DockerHelper {
  elseif ($subSel -eq 3) {
  Write-Host "Fetching logs for $($c.Name)..." -ForegroundColor Blue
  $logs = docker logs --tail 50 $c.Name 2>&1
- [AgyTui.SpectrePager]::Show("Logs: $($c.Name)", $logs)
+ [SpectrePager]::Show("Logs: $($c.Name)", $logs)
  }
  }
  }
@@ -1044,20 +1070,20 @@ class SystemHelper {
 #  Exposes interactive help documentation for all custom commands.
 #
 #  Embedded via Invoke-Expression for the same reason as GitHelper above: Show()
-#  references [AgyTui.ProfileHelp] inside the class body.
+#  references [ProfileHelp] inside the class body.
 # ==============================================================================
 function Load-HelpHelper {
     try {
         Invoke-Expression @'
 class ProfileHelp {
     # Category/command menu building, filtering, and the drill-down loop all live in
-    # [AgyTui.ProfileHelp]::ShowInteractive() now. This just runs the returned command's alias —
+    # [ProfileHelp]::ShowInteractive() now. This just runs the returned command's alias —
     # the one part that has to stay PS1-side, since it executes an arbitrary alias in the live
     # session and C# can't do that.
     static [void] Show([string]$CategoryFilter) {
         $jsonPath = Join-Path $Global:ProfileRepoRoot "Profile\Core\CommandsMenu.json"
         while ($true) {
-            $cmdObj = [AgyTui.ProfileHelp]::ShowInteractive($jsonPath, $CategoryFilter)
+            $cmdObj = [ProfileHelp]::ShowInteractive($jsonPath, $CategoryFilter)
             $CategoryFilter = ""
             if (-not $cmdObj) { return }
  
@@ -1097,7 +1123,7 @@ Set-Item -Path Alias:\cls -Value Clear-Host -Force -Option AllScope
 # --- Navigation & System Wrappers ---
 function Set-LocationParent { Set-Location .. }
 function Set-LocationGrandParent { Set-Location ..\.. }
-function Invoke-OpenExplorer { Initialize-AgySession; [AgyTui.SystemHelper]::OpenExplorer() }
+function Invoke-OpenExplorer { Initialize-AgySession; [SystemHelper]::OpenExplorer() }
 function Invoke-WorkspaceNavigator {
  param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Name)
  Invoke-ControlCenter "proj" $Name
@@ -1107,7 +1133,7 @@ function Invoke-TerminalIde {
  param([string]$Path)
  Initialize-AgySession
  $targetPath = if ($Path) { $Path } else { Get-Location }
- [AgyTui.TerminalIde]::Open($targetPath)
+ [TerminalIde]::Open($targetPath)
 }
 Set-Alias -Name ide -Value Invoke-TerminalIde -Force
 function Reload-Profile {
@@ -1124,8 +1150,8 @@ function New-DirAndEnter {
  $null = New-Item -ItemType Directory -Path $Path -Force
  Set-Location $Path
 }
-function Get-DiskSpace { Initialize-AgySession; [AgyTui.SystemHelper]::ShowDiskSpace() }
-function Get-PublicIP { Initialize-AgySession; [AgyTui.SystemHelper]::GetPublicIP() }
+function Get-DiskSpace { Initialize-AgySession; [SystemHelper]::ShowDiskSpace() }
+function Get-PublicIP { Initialize-AgySession; [SystemHelper]::GetPublicIP() }
 function Get-FileTree {
  param([int]$Depth = 2)
  tree.com /f /a | Select-Object -First (50 * $Depth)
@@ -1133,14 +1159,14 @@ function Get-FileTree {
 function Stop-ProcessFriendly {
  param([string]$Name)
  Initialize-AgySession
- [AgyTui.SystemHelper]::StopProcessFriendly($Name)
+ [SystemHelper]::StopProcessFriendly($Name)
 }
 
-function Get-SshConnectionInfo { Initialize-AgySession; [AgyTui.SshHelper]::GetConnectionInfo() }
+function Get-SshConnectionInfo { Initialize-AgySession; [SshHelper]::GetConnectionInfo() }
 function Add-SshAuthorizedKey {
  param([string]$Key, [string]$Account)
  Initialize-AgySession
- [AgyTui.SshHelper]::AddAuthorizedKey($Key, $Account)
+ [SshHelper]::AddAuthorizedKey($Key, $Account)
 }
 
 # Applies the (returned) theme path picked/computed by AgyTui.ThemeHelper: reload oh-my-posh and
@@ -1156,15 +1182,15 @@ function Apply-ThemePath {
  [AgyAccountManager]::RegisterPromptHook()
 }
 function Toggle-MobileMode {
- Apply-ThemePath ([AgyTui.ThemeHelper]::ToggleMobileMode($env:POSH_THEMES_PATH))
+ Apply-ThemePath ([ThemeHelper]::ToggleMobileMode($env:POSH_THEMES_PATH))
 }
 function Set-DesktopThemeMode {
- Apply-ThemePath ([AgyTui.ThemeHelper]::SetMobileMode($env:POSH_THEMES_PATH, $false))
+ Apply-ThemePath ([ThemeHelper]::SetMobileMode($env:POSH_THEMES_PATH, $false))
 }
 function Set-MobileThemeMode {
- Apply-ThemePath ([AgyTui.ThemeHelper]::SetMobileMode($env:POSH_THEMES_PATH, $true))
+ Apply-ThemePath ([ThemeHelper]::SetMobileMode($env:POSH_THEMES_PATH, $true))
 }
-function Start-MobileSshKeyReceiver { Initialize-AgySession; [AgyTui.SshHelper]::StartMobileSshKeyReceiver() }
+function Start-MobileSshKeyReceiver { Initialize-AgySession; [SshHelper]::StartMobileSshKeyReceiver() }
 
 # Navigation & System Aliases
 Set-Alias -Name .. -Value Set-LocationParent -Force
@@ -1190,12 +1216,12 @@ function Invoke-GitStatus { git status $args }
 function Show-GitDiff { git diff $args }
 function Get-GitLogGraph { git log --graph --oneline --decorate --all }
 function Get-GitLogPretty { git log --pretty=format:"%h - %an, %ar : %s" }
-function Get-GitLog { Initialize-AgySession; [AgyTui.GitHelper]::ShowLog() }
-function Get-GitBranches { Initialize-AgySession; [AgyTui.GitHelper]::ShowBranches() }
+function Get-GitLog { Initialize-AgySession; [GitHelper]::ShowLog() }
+function Get-GitBranches { Initialize-AgySession; [GitHelper]::ShowBranches() }
 function Invoke-GitCheckout {
  param([string]$branchName)
  Initialize-AgySession
- [AgyTui.GitHelper]::Checkout($branchName)
+ [GitHelper]::Checkout($branchName)
 }
 function New-GitBranch {
  param([string]$branchName)
@@ -1205,19 +1231,19 @@ function Remove-GitBranch {
  param([string]$branchName)
  git branch -d $branchName
 }
-function Invoke-GitAddAll { Initialize-AgySession; [AgyTui.GitHelper]::AddAll() }
+function Invoke-GitAddAll { Initialize-AgySession; [GitHelper]::AddAll() }
 function Invoke-GitUnstage { git restore --staged . }
 function Invoke-GitCommit {
  param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message)
- if ($Message) { git commit -m ($Message -join " ") } else { Initialize-AgySession; [AgyTui.GitHelper]::ConventionalCommitWizard() }
+ if ($Message) { git commit -m ($Message -join " ") } else { Initialize-AgySession; [GitHelper]::ConventionalCommitWizard() }
 }
 function Invoke-GitAmend { git commit --amend $args }
-function Invoke-GitUndo { Initialize-AgySession; [AgyTui.GitHelper]::InvokeGitUndo() }
+function Invoke-GitUndo { Initialize-AgySession; [GitHelper]::InvokeGitUndo() }
 function Invoke-GitResetSoft { git reset --soft HEAD~1 }
 function Invoke-GitResetHard { git reset --hard }
-function Invoke-GitFetch { Initialize-AgySession; [AgyTui.GitHelper]::Fetch() }
-function Invoke-GitPull { Initialize-AgySession; [AgyTui.GitHelper]::Pull() }
-function Invoke-GitPush { Initialize-AgySession; [AgyTui.GitHelper]::Push() }
+function Invoke-GitFetch { Initialize-AgySession; [GitHelper]::Fetch() }
+function Invoke-GitPull { Initialize-AgySession; [GitHelper]::Pull() }
+function Invoke-GitPush { Initialize-AgySession; [GitHelper]::Push() }
 function Invoke-GitPushForce { git push --force $args }
 function Invoke-GitMergeSquash {
  param([string]$BranchName)
@@ -1382,7 +1408,7 @@ function Invoke-AiTool {
     try {
         Load-AgyTuiDll
         if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
-            [AgyTui.AgyAiCore]::$MethodName($ToolArgs)
+            [AgyAiCore]::$MethodName($ToolArgs)
         } else {
             Invoke-ControlCenter $FallbackAlias $ToolArgs
         }
@@ -1412,7 +1438,7 @@ function Invoke-CopilotExplain {
 function Install-AIIntegrations {
     Load-AgyTuiDll
     if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
-        [AgyTui.AgyAiCore]::InstallAIIntegrations()
+        [AgyAiCore]::InstallAIIntegrations()
     } else {
         Invoke-ControlCenter "install-ai"
     }
@@ -1420,7 +1446,7 @@ function Install-AIIntegrations {
 function Initialize-OllamaServer {
     Load-AgyTuiDll
     if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
-        [AgyTui.AgyAiCore]::InitializeOllamaServer()
+        [AgyAiCore]::InitializeOllamaServer()
     } else {
         Invoke-ControlCenter "init-ollama"
     }
@@ -1429,7 +1455,7 @@ function Set-OllamaModel {
     param([string]$ModelName)
     Load-AgyTuiDll
     if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
-        [AgyTui.AgyAiCore]::SetOllamaModel($ModelName)
+        [AgyAiCore]::SetOllamaModel($ModelName)
     } else {
         Invoke-ControlCenter "set-model" $ModelName
     }
@@ -1437,7 +1463,7 @@ function Set-OllamaModel {
 function Ensure-OllamaServer {
     Load-AgyTuiDll
     if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
-        [AgyTui.AgyAiCore]::EnsureOllamaServer()
+        [AgyAiCore]::EnsureOllamaServer()
     } else {
         Invoke-ControlCenter "ensure-ollama"
     }
@@ -1445,7 +1471,7 @@ function Ensure-OllamaServer {
 function Invoke-OllamaLogs {
     Load-AgyTuiDll
     if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
-        [AgyTui.AgyAiCore]::ShowOllamaLogs()
+        [AgyAiCore]::ShowOllamaLogs()
     } else {
         Invoke-ControlCenter "ollama-logs"
     }
@@ -1463,7 +1489,7 @@ function Invoke-ChatGPT {
         Write-Warning "ChatGPT CLI command 'chatgpt' is not installed. Routing to local OpenClaw instead."
         Load-AgyTuiDll
         if ($null -ne ('AgyTui.AgyAiCore' -as [type])) {
-            [AgyTui.AgyAiCore]::InvokeOpenClaw(@())
+            [AgyAiCore]::InvokeOpenClaw(@())
         } else {
             Invoke-ControlCenter "openclaw"
         }
@@ -1484,7 +1510,7 @@ function Invoke-MultiAgent {
         [Parameter(ParameterSetName="Codex")][Alias("cx")][switch]$UseCodex,
         [string]$Model
     )
-    [AgyTui.AgyAiCore]::InvokeMultiAgent($Query, $PSCmdlet.ParameterSetName, $Model)
+    [AgyAiCore]::InvokeMultiAgent($Query, $PSCmdlet.ParameterSetName, $Model)
 }
 
 # AI Tools Aliases
@@ -1516,15 +1542,18 @@ if (Get-Command multigravity -ErrorAction SilentlyContinue) {
 
 # --- Help shortcuts ---
 function Invoke-ControlCenter {
-    $releaseDll = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTuiApp\dist\AgyTuiApp.dll"
-    $debugDll = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+    $releaseDll = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\dist\AgyTui.dll"
+    $debugDll = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin\Debug\net9.0\AgyTui.dll"
+    if (-not (Test-Path $debugDll)) {
+        $debugDll = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin\Debug\net10.0\AgyTui.dll"
+    }
     if (Test-Path $releaseDll) {
         dotnet $releaseDll @args
     } else {
         if (Test-Path $debugDll) {
             dotnet $debugDll @args
         } else {
-            $proj = Join-Path $Global:ProfileRepoRoot "csapp\AgyTuiApp\AgyTuiApp.csproj"
+            $proj = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\AgyTui.csproj"
             dotnet run --project $proj -- $args
         }
     }
@@ -1561,7 +1590,7 @@ function open-term {
         Start-Process wt.exe -ArgumentList $args
     } else {
         Initialize-AgySession
-        [AgyTui.SystemHelper]::OpenNewTerminalSession()
+        [SystemHelper]::OpenNewTerminalSession()
     }
 }
 Set-Alias -Name term -Value open-term -Force
@@ -1569,14 +1598,14 @@ Set-Alias -Name wt -Value open-term -Force
 function ui-mode { Invoke-ControlCenter "ui-mode" $args }
 function layout { Invoke-ControlCenter "ui-mode" $args }
 function view { Invoke-ControlCenter "ui-mode" $args }
-function dpack { Initialize-AgySession; [AgyTui.DotNetHelper]::Pack($args) }
-function dpubpkg { Initialize-AgySession; [AgyTui.DotNetHelper]::PublishPackage($args) }
+function dpack { Initialize-AgySession; [DotNetHelper]::Pack($args) }
+function dpubpkg { Initialize-AgySession; [DotNetHelper]::PublishPackage($args) }
 function cssh { Invoke-ControlCenter "ssh-info" }
 
 # Theme Switcher
 function Select-ShellTheme {
  Initialize-AgySession
- Apply-ThemePath ([AgyTui.ThemeHelper]::SelectThemeInteractive($env:POSH_THEMES_PATH, $env:THEME))
+ Apply-ThemePath ([ThemeHelper]::SelectThemeInteractive($env:POSH_THEMES_PATH, $env:THEME))
 }
 Set-Alias -Name theme -Value Select-ShellTheme -Force
 
@@ -1626,15 +1655,15 @@ Set-Alias -Name dkcl -Value Invoke-DockerDashboard -Force
 function Invoke-KillPort {
  param([Parameter(Mandatory=$true, Position=0)][int]$Port)
  Initialize-AgySession
- [AgyTui.SystemHelper]::KillPort($Port)
+ [SystemHelper]::KillPort($Port)
 }
 Set-Alias -Name killport -Value Invoke-KillPort -Force
 
-function Invoke-SystemMonitor { Initialize-AgySession; [AgyTui.SystemHelper]::SystemMonitor() }
+function Invoke-SystemMonitor { Initialize-AgySession; [SystemHelper]::SystemMonitor() }
 Set-Alias -Name sysmon -Value Invoke-SystemMonitor -Force
 
 # Scaffolding Shortcuts
-function Invoke-ProjectScaffolder { Initialize-AgySession; [AgyTui.ProjectScaffolder]::Scaffold() }
+function Invoke-ProjectScaffolder { Initialize-AgySession; [ProjectScaffolder]::Scaffold() }
 Set-Alias -Name new-project -Value Invoke-ProjectScaffolder -Force
 
 # Git TUI Shortcuts
@@ -1664,7 +1693,7 @@ function Invoke-AskAi {
  }
  }
  }
- [AgyTui.AgyAiCore]::AskAi($q)
+ [AgyAiCore]::AskAi($q)
 }
 Set-Alias -Name ask-ai -Value Invoke-AskAi -Force
 
@@ -1686,25 +1715,25 @@ function Invoke-SecretVault {
  Write-Error "Usage: sec set <key> <value>"
  return
  }
- [AgyTui.AgySecretVault]::SetSecret($Key, $Value)
+ [AgySecretVault]::SetSecret($Key, $Value)
  }
  "get" {
  if (-not $Key) {
  Write-Error "Usage: sec get <key>"
  return
  }
- $val = [AgyTui.AgySecretVault]::GetSecret($Key)
+ $val = [AgySecretVault]::GetSecret($Key)
  if ($val) { Write-Host $val }
  }
  "list" {
- [AgyTui.AgySecretVault]::ListSecrets()
+ [AgySecretVault]::ListSecrets()
  }
  { $_ -in "remove", "rm" } {
  if (-not $Key) {
  Write-Error "Usage: sec remove <key>"
  return
  }
- [AgyTui.AgySecretVault]::RemoveSecret($Key)
+ [AgySecretVault]::RemoveSecret($Key)
  }
  }
 }
@@ -1718,14 +1747,14 @@ function Invoke-DbTui {
  Write-Error "Database file not found: $DbPath"
  return
  }
- [AgyTui.DatabaseHelper]::ShowDatabaseTui($resolved.Path)
+ [DatabaseHelper]::ShowDatabaseTui($resolved.Path)
 }
 Set-Alias -Name db-tui -Value Invoke-DbTui -Force
 
 function Invoke-LogStream {
  param([Parameter(Position=0)][string]$LogPath)
  Initialize-AgySession
- [AgyTui.LogHelper]::StreamLogs($LogPath)
+ [LogHelper]::StreamLogs($LogPath)
 }
 Set-Alias -Name logstream -Value Invoke-LogStream -Force
 
@@ -1745,7 +1774,7 @@ function Show-AccountsSummary { Initialize-AgySession; [AgyAccountManager]::Show
 Set-Alias -Name acc-sum -Value Show-AccountsSummary -Force
 
 # --- AI Session Dashboard Wrappers ---
-function Show-AiDashboard { Initialize-AgySession; if (-not (Test-AgyAiGate)) { return }; [AgyTui.AgyAiCore]::ShowAiDashboard() }
+function Show-AiDashboard { Initialize-AgySession; if (-not (Test-AgyAiGate)) { return }; [AgyAiCore]::ShowAiDashboard() }
 Set-Alias -Name ai-dash -Value Show-AiDashboard -Force
 
 # --- Master Learning Suite Router ---
@@ -1817,7 +1846,7 @@ try {
 
 try {
     if ($global:AgySessionInitialized) {
-        [AgyTui.LogHelper]::Log("Enhanced PowerShell Profile loaded successfully. (AiMode = $Global:AiMode)")
+        [LogHelper]::Log("Enhanced PowerShell Profile loaded successfully. (AiMode = $Global:AiMode)")
     }
 } catch {}
 

@@ -2,12 +2,15 @@ $env:AI_MODE = 'true'
 Write-Host "Running PowerShell Profile Tests..." -ForegroundColor Cyan
 
 # Pre-load C# types assembly so the AST parser can resolve types during parsing
-$dllPath = Join-Path $PSScriptRoot "..\..\csapp\AgyTuiApp\dist\AgyTuiApp.dll"
+$dllPath = Join-Path $PSScriptRoot "..\..\csapp\AgyTui\dist\AgyTui.dll"
 if (-not (Test-Path $dllPath)) {
-    $dllPath = Join-Path $PSScriptRoot "..\..\csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+    $dllPath = Join-Path $PSScriptRoot "..\..\csapp\AgyTui\bin\Debug\net9.0\AgyTui.dll"
+}
+if (-not (Test-Path $dllPath)) {
+    $dllPath = Join-Path $PSScriptRoot "..\..\csapp\AgyTui\bin\Debug\net10.0\AgyTui.dll"
 }
 if (Test-Path $dllPath) {
-    Get-ChildItem -Path (Split-Path $dllPath) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
+    Get-ChildItem -Path (Split-Path $dllPath) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTui.dll" } | ForEach-Object {
         try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
     }
     try { Add-Type -Path $dllPath -ErrorAction SilentlyContinue } catch {}

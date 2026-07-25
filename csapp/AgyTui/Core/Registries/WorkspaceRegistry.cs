@@ -1,0 +1,327 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
+
+namespace AgyTui.Core.Registries;
+
+public sealed record WorkspaceEntry(string Name, [property: JsonPropertyName("Path")] string WorkspacePath, string? AssociatedAccount, string[]? Tags);
+
+public static class WorkspaceRegistry
+{
+    private static readonly TtlCache<string, WorkspaceEntry[]> _cache = new(TimeSpan.FromSeconds(5));
+
+    private static string ConfigFile => Path.Combine(
+        AgyAccountCore.AgySourceHome, "antigravity", "priority_workspaces.json");
+
+    public static WorkspaceEntry[] GetWorkspaces()
+    {
+        return _cache.GetOrCompute("workspaces", () =>
+        {
+            WorkspaceEntry[] items = [];
+            if (File.Exists(ConfigFile))
+            {
+                try
+                {
+                    var raw = File.ReadAllText(ConfigFile);
+                    items = JsonSerializer.Deserialize<WorkspaceEntry[]>(raw)?.Where(w => w != null && !string.IsNullOrEmpty(w.WorkspacePath)).ToArray() ?? [];
+                }
+                catch { }
+            }
+
+            if (items.Length == 0)
+            {
+                items = AutoDiscoverWorkspaces();
+                if (items.Length > 0) SaveWorkspaces(items);
+            }
+
+            return items;
+        });
+    }
+
+    public static WorkspaceEntry[] AutoDiscoverWorkspaces()
+    {
+        var list = new List<WorkspaceEntry>();
+        var addedPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        void TryAdd(string name, string path)
+        {
+            if (!string.IsNullOrEmpty(path) && Directory.Exists(path) && addedPaths.Add(path))
+            {
+                list.Add(new WorkspaceEntry(name, path, "default", new[] { "auto-discovered" }));
+            }
+        }
+
+        // 1. Current working directory
+        try
+        {
+            var currentDir = Directory.GetCurrentDirectory();
+            TryAdd(Path.GetFileName(currentDir), currentDir);
+        }
+        catch { }
+
+        // 2. PowerShell profile root
+        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        TryAdd("Powershell Profile", Path.Combine(userProfile, "Documents", "Powershell"));
+
+        // 3. Candidate base project directories
+        var searchBases = new List<string>();
+        if (!string.IsNullOrEmpty(Config.Current.ProjectsBaseDir)) searchBases.Add(Config.Current.ProjectsBaseDir);
+        searchBases.Add(Path.Combine(userProfile, "project"));
+        searchBases.Add(Path.Combine(userProfile, "Documents"));
+        searchBases.Add(Path.Combine(userProfile, "Desktop"));
+
+        foreach (var baseDir in searchBases)
+        {
+            if (!Directory.Exists(baseDir)) continue;
+            try
+            {
+                var subDirs = Directory.GetDirectories(baseDir);
+                foreach (var dir in subDirs)
+                {
+                    try
+                    {
+                        var dirName = Path.GetFileName(dir);
+                        if (dirName.StartsWith(".") || dirName.Equals("node_modules", StringComparison.OrdinalIgnoreCase)) continue;
+
+                        if (Directory.Exists(Path.Combine(dir, ".git")) ||
+                            Directory.GetFiles(dir, "*.csproj").Length > 0 ||
+                            Directory.GetFiles(dir, "*.sln").Length > 0 ||
+                            File.Exists(Path.Combine(dir, "package.json")))
+                        {
+                            TryAdd(dirName, dir);
+                        }
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+        }
+
+        return list.ToArray();
+    }
+
+    public static void SaveWorkspaces(WorkspaceEntry[] entries)
+    {
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(ConfigFile)!);
+            File.WriteAllText(ConfigFile, JsonSerializer.Serialize(entries, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            }
+            ), Encoding.UTF8);
+            _cache.Clear();
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Failed to save workspaces: {ex.Message}");
+        }
+
+    }
+
+    public static WorkspaceEntry[] FindByQuery(string query, bool asRegex = false)
+    {
+        var all = GetWorkspaces();
+        if (string.IsNullOrWhiteSpace(query)) return all;
+
+        if (asRegex)
+        {
+            try
+            {
+                return all.Where(w => Regex.IsMatch(w.Name, query, RegexOptions.IgnoreCase) || Regex.IsMatch(w.WorkspacePath, query, RegexOptions.IgnoreCase)).ToArray();
+            }
+            catch
+            {
+                return [];
+            }
+        }
+
+        return all.Where(w => w.Name.Contains(query, StringComparison.OrdinalIgnoreCase) || w.WorkspacePath.Contains(query, StringComparison.OrdinalIgnoreCase)).ToArray();
+    }
+
+    public static WorkspaceEntry[] GetByAccount(string accountName)
+    {
+        var targetAccount = string.IsNullOrEmpty(accountName) ? "default" : accountName;
+        return GetWorkspaces().Where(w => string.Equals(w.AssociatedAccount ?? "default", targetAccount, StringComparison.OrdinalIgnoreCase)).ToArray();
+    }
+
+    private static readonly Dictionary<string, string> _branchCache = new(StringComparer.OrdinalIgnoreCase);
+
+    public static string GetGitBranch(string dirPath)
+    {
+        if (string.IsNullOrEmpty(dirPath)) return "";
+        if (_branchCache.TryGetValue(dirPath, out var cached)) return cached;
+
+        string branch = "";
+        try
+        {
+            var gitPath = Path.Combine(dirPath, ".git");
+            string headFile = Path.Combine(gitPath, "HEAD");
+
+            if (File.Exists(gitPath) && !Directory.Exists(gitPath))
+            {
+                var lines = File.ReadAllLines(gitPath);
+                var gitdirLine = lines.FirstOrDefault(l => l.StartsWith("gitdir:", StringComparison.OrdinalIgnoreCase));
+                if (gitdirLine != null)
+                {
+                    var targetGitDir = gitdirLine.Substring("gitdir:".Length).Trim();
+                    if (!Path.IsPathRooted(targetGitDir))
+                    {
+                        targetGitDir = Path.GetFullPath(Path.Combine(dirPath, targetGitDir));
+                    }
+                    headFile = Path.Combine(targetGitDir, "HEAD");
+                }
+            }
+
+            if (File.Exists(headFile))
+            {
+                var txt = File.ReadAllText(headFile).Trim();
+                if (txt.StartsWith("ref: refs/heads/"))
+                {
+                    branch = txt.Substring("ref: refs/heads/".Length);
+                }
+                else if (txt.Length >= 7)
+                {
+                    branch = txt.Substring(0, 7);
+                }
+            }
+        }
+        catch { }
+
+        _branchCache[dirPath] = branch;
+        return branch;
+    }
+
+    public static readonly string[] SharedWorkspaceActions = new[]
+    {
+        "📂 Change Directory to workspace",
+        "🚀 Open in New Terminal",
+        "💻 Open in Terminal IDE (/ide)",
+        "📁 Open in Windows File Explorer",
+        "🔀 View Git Status & Diff",
+        "🤖 Start Antigravity AI Agent (ask-ai)",
+        "🛸 Open Antigravity TUI / Deck",
+        "📦 Clean & Rebuild Project (.NET)",
+        "🕸 Open Git Nexus Dashboard",
+        "📊 View Git Nexus Commit Stats"
+    };
+
+    public static string HandleWorkspaceAction(WorkspaceEntry selected, int actionIdx)
+    {
+        if (actionIdx == 0)
+        {
+            var agyHome = AgyAccountCore.AgySourceHome;
+            Directory.CreateDirectory(agyHome);
+            var selectedProjFile = Path.Combine(agyHome, "selected_project.txt");
+            File.WriteAllText(selectedProjFile, selected.WorkspacePath);
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 1)
+        {
+            SystemHelper.OpenNewTerminalSession(selected.WorkspacePath);
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 2)
+        {
+            TerminalIde.Open(selected.WorkspacePath);
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 3)
+        {
+            SystemHelper.OpenExplorer(selected.WorkspacePath);
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 4)
+        {
+            GitDiffViewer.ShowDiff(selected.WorkspacePath);
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 5)
+        {
+            SystemHelper.OpenNewTerminalSession(selected.WorkspacePath, "ask-ai");
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 6)
+        {
+            SystemHelper.OpenNewTerminalSession(selected.WorkspacePath, "cc");
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 7)
+        {
+            var projFiles = Directory.GetFiles(selected.WorkspacePath, "*.csproj", SearchOption.AllDirectories);
+            if (projFiles.Length > 0)
+            {
+                AnsiConsole.Clear();
+                AnsiConsole.MarkupLine("[bold cyan]🔨 Building .NET Projects...[/]\n");
+                Helpers.ProcessRunner.Run("dotnet", "build", selected.WorkspacePath);
+                AnsiConsole.MarkupLine("\n[dim]Press any key to return...[/]");
+                Console.ReadKey(true);
+            }
+            else
+            {
+                SpectrePanel.Warning("No C# project (.csproj) found in this workspace.");
+                Thread.Sleep(1500);
+            }
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 8)
+        {
+            GitNexus.ShowLiveDashboard();
+            return selected.WorkspacePath;
+        }
+        else if (actionIdx == 9)
+        {
+            GitNexusStats.Run();
+            return selected.WorkspacePath;
+        }
+        return selected.WorkspacePath;
+    }
+}
+
+public static class ProfileNavigator
+{
+    public static string? Navigate(string query) => Navigate(query, WorkspaceRegistry.GetWorkspaces());
+
+    public static string? Navigate(string query, WorkspaceEntry[] workspaces)
+    {
+        if (workspaces.Length == 0)
+        {
+            SpectrePanel.Warning("No workspaces registered.");
+            return null;
+        }
+        WorkspaceEntry[] matches;
+        if (string.IsNullOrWhiteSpace(query)) matches = workspaces;
+        else
+        {
+            matches = WorkspaceRegistry.FindByQuery(query);
+            if (matches.Length == 0)
+            {
+                SpectrePanel.Warning($"No workspace matched '{query}'.");
+                return null;
+            }
+        }
+
+        WorkspaceEntry selected;
+        if (matches.Length == 1)
+        {
+            selected = matches[0];
+        }
+        else
+        {
+            var menuItems = matches.Select(m =>
+            {
+                var branch = WorkspaceRegistry.GetGitBranch(m.WorkspacePath);
+                var branchSuffix = !string.IsNullOrEmpty(branch) ? $" [{branch}]" : "";
+                return $"{m.Name}{branchSuffix} — {m.WorkspacePath}";
+            }).ToArray();
+
+            var idx = SpectreMenu.Show("Select Workspace Target", menuItems, 0, true);
+            if (idx < 0) return null;
+            selected = matches[idx];
+        }
+
+        var actionIdx = SpectreMenu.ShowWithEscape($"Workspace: {selected.Name}", WorkspaceRegistry.SharedWorkspaceActions, 0);
+        if (actionIdx < 0) return selected.WorkspacePath;
+        return WorkspaceRegistry.HandleWorkspaceAction(selected, actionIdx);
+    }
+}

@@ -95,6 +95,15 @@ if (Test-Path $path2) {
     } else {
         Write-Host "ℹ️ $path2 is already optimized." -ForegroundColor Cyan
     }
+    
+    # Also fix the theme path to match repo structure
+    $oldPath = '$env:POSH_THEMES_PATH = Join-Path -Path $env:USERPROFILE -ChildPath "Documents\PowerShell\asset\powershell-themes"'
+    $newPath = '$env:POSH_THEMES_PATH = Join-Path -Path $env:USERPROFILE -ChildPath "Documents\Powershell\psapp\asset\powershell-themes"'
+    if ($content.Contains($oldPath)) {
+        $content = $content.Replace($oldPath, $newPath)
+        [System.IO.File]::WriteAllText($path2, $content)
+        Write-Host "✅ Updated theme path in $path2 successfully." -ForegroundColor Green
+    }
 } else {
     Write-Warning "⚠️ Global core profile script not found at $path2"
 }

@@ -18,13 +18,16 @@ function tailscale { $global:tailscaleArgs = $args; return "100.115.92.12" }
 Describe "Core Profile Functions Validation" {
     BeforeAll {
         $repoRoot = (Get-Item (Join-Path $PSScriptRoot "..\..\..\")).FullName
-        $dllPath = Join-Path $repoRoot "csapp\AgyTuiApp\dist\AgyTuiApp.dll"
+        $dllPath = Join-Path $repoRoot "csapp\AgyTui\dist\AgyTui.dll"
         if (-not (Test-Path $dllPath)) {
-            $dllPath = Join-Path $repoRoot "csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+            $dllPath = Join-Path $repoRoot "csapp\AgyTui\bin\Debug\net9.0\AgyTui.dll"
+        }
+        if (-not (Test-Path $dllPath)) {
+            $dllPath = Join-Path $repoRoot "csapp\AgyTui\bin\Debug\net10.0\AgyTui.dll"
         }
         if (Test-Path $dllPath) {
             # Load dependency assemblies
-            Get-ChildItem -Path (Split-Path $dllPath) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
+            Get-ChildItem -Path (Split-Path $dllPath) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTui.dll" } | ForEach-Object {
                 try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
             }
             try { Add-Type -Path $dllPath -ErrorAction SilentlyContinue } catch {}

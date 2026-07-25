@@ -5,13 +5,16 @@ Describe "AI Tools Wrapper Functions" {
         $Global:AgyUserProfileLoaded = $null
         $Global:AiProviderMode = "local"
         $repoRoot = Resolve-Path "$PSScriptRoot\..\..\.." | Select-Object -ExpandProperty Path
-        $dllPath = Join-Path $repoRoot "csapp\AgyTuiApp\bin\Debug\net10.0\AgyTuiApp.dll"
+        $dllPath = Join-Path $repoRoot "csapp\AgyTui\bin\Debug\net9.0\AgyTui.dll"
         if (-not (Test-Path $dllPath)) {
-            $dllPath = Join-Path $repoRoot "csapp\AgyTuiApp\dist\AgyTuiApp.dll"
+            $dllPath = Join-Path $repoRoot "csapp\AgyTui\bin\Debug\net10.0\AgyTui.dll"
+        }
+        if (-not (Test-Path $dllPath)) {
+            $dllPath = Join-Path $repoRoot "csapp\AgyTui\dist\AgyTui.dll"
         }
         if ((Test-Path $dllPath) -and -not ('AgyTui.AgyAiCore' -as [type])) {
             try {
-                Get-ChildItem -Path (Split-Path $dllPath) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTuiApp.dll" } | ForEach-Object {
+                Get-ChildItem -Path (Split-Path $dllPath) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTui.dll" } | ForEach-Object {
                     try { Add-Type -Path $_.FullName } catch {}
                 }
                 Add-Type -Path $dllPath
