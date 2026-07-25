@@ -196,3 +196,111 @@ Here is how the main source files will map to the new modular structure:
 | `Views/Screens/Quizzes/KanaQuiz.cs` | `UI/Screens/Quizzes/KanaQuiz.cs` | **UI** |
 | `Views/Screens/Career/InterviewBank.cs` | `UI/Screens/Career/InterviewBank.cs` | **UI** |
 | `Views/Screens/Dsa/AlgoVisualizer.cs` | `UI/Screens/Career/AlgoVisualizer.cs` | **UI** |
+
+---
+
+## 💻 4. Structuring as a Modern CLI Project
+
+Currently, `AgyTuiApp` handles command-line arguments via manual array parsing and a massive `switch(alias)` block in **[Program.cs](file:///C:/Users/TruongNhon/Documents/PowerShell/csapp/AgyTuiApp/Program.cs)**. 
+
+To turn this into a professional CLI tool, we can transition to **Spectre.Console.Cli** (already included in the Spectre.Console library).
+
+### 🛠 Proposed Command Pattern Design
+
+Under this pattern:
+1. **Interactive TUI Mode**: Executed when the tool is run with zero arguments (launches the main dashboard).
+2. **Subcommand Routing**: Executed when subcommands are provided (e.g. `agy disk` or `agy git diff`).
+3. **No Giant Switch Blocks**: Each command is encapsulated into a separate testable class.
+
+### Directory Structure Additions:
+```
+csapp/AgyTuiApp/
+├── Core/
+│   └── Commands/                        # Encapsulated command routes
+│       ├── Base/                        # Shared settings and TUI router
+│       ├── Git/                         # GitStatusCmd, GitDiffCmd
+│       ├── System/                      # DiskUsageCmd, PublicIpCmd
+│       ├── Workspace/                   # ProjNavigatorCmd, IdeCmd
+│       └── Learn/                       # PomodoroSessionCmd, StatsCmd
+```
+
+### 📝 Example CLI Command Implementation
+
+Here is how a single command like `disk` is refactored into a class:
+
+```csharp
+using System.ComponentModel;
+using Spectre.Console.Cli;
+
+namespace AgyTui.Core.Commands.System;
+
+public sealed class DiskUsageCommand : Command<DiskUsageCommand.Settings>
+{
+    public sealed class Settings : CommandSettings
+    {
+        [CommandOption("-j|--json")]
+        [Description("Output raw disk metrics in JSON format")]
+        public bool OutputJson { get; init; }
+    }
+
+    public override int Execute(CommandContext context, Settings settings)
+    {
+        if (settings.OutputJson)
+        {
+            // Output computer-readable disk JSON data
+            Console.WriteLine("[ { \"drive\": \"C:\", \"free_gb\": 142.5 } ]");
+            return 0;
+        }
+
+        // Standard colored console output
+        Infrastructure.Integrations.System.SystemHelper.ShowDiskSpace();
+        return 0;
+    }
+}
+```
+
+### 🔗 Wiring up Program.cs via CommandApp
+
+Using **Spectre.Console.Cli**'s `CommandApp`, the entry point is simplified to a declarative routing system:
+
+```csharp
+using Spectre.Console.Cli;
+using AgyTui.Core.Commands.System;
+using AgyTui.Core.Commands.Workspace;
+
+public static class Program
+{
+    public static int Main(string[] args)
+    {
+        // 1. Direct interactive dashboard launch if no args
+        if (args.Length == 0)
+        {
+            UI.Core.Navigation.CcNavigator.Run();
+            return 0;
+        }
+
+        // 2. Command routing for CLI commands
+        var app = new CommandApp();
+        app.Configure(config =>
+        {
+            config.SetApplicationName("agy");
+
+            // Register system commands
+            config.AddCommand<DiskUsageCommand>("disk")
+                  .WithDescription("Show local drive capacities and partition health");
+
+            // Register project commands
+            config.AddCommand<WorkspaceNavigatorCommand>("proj")
+                  .WithAlias("p")
+                  .WithDescription("Select and open development project workspace");
+        });
+
+        return app.Run(args);
+    }
+}
+```
+
+### 🌟 Key Benefits of the CLI Refactoring:
+1. **Self-Documenting Help Screens**: Automatically generates beautiful `--help` screens showing descriptions, commands, and parameter options.
+2. **Type Safety & Flags**: Handles option parsing (e.g. `--json`, `-d "path"`) and type binding automatically.
+3. **Decoupled Business Logic**: Testing a specific command only requires executing its class without loading the entire TUI render cycle.
