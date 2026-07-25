@@ -1,46 +1,10 @@
-using System;
-
 using System.Buffers;
-
-using System.Collections.Frozen;
-
-using System.Collections.Generic;
-
-using System.Diagnostics;
-
-using System.IO;
-
-using System.Linq;
-
-using System.Net;
-
-using System.Net.Http;
-
-using System.Net.NetworkInformation;
-
-using System.Net.Sockets;
-
-using System.Runtime.InteropServices;
-
-using System.Security.AccessControl;
-
-using System.Security.Cryptography;
-
 using System.Text;
-
 using System.Text.Json;
-
-using System.Text.Json.Serialization;
-
-using System.Text.RegularExpressions;
-
-using System.Threading;
-
 using Spectre.Console;
-
-namespace AgyTui;
 using AgyTui.Components;
 
+namespace AgyTui;
 
 public static class Program
 {
