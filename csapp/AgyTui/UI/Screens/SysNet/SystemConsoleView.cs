@@ -82,10 +82,38 @@ public static class SystemConsoleView
             ? workingDirectory
             : Directory.GetCurrentDirectory();
 
+        var targetCommand = command;
+        if (string.IsNullOrEmpty(targetCommand))
+        {
+            var options = new[]
+            {
+                "💻 Blank Shell (No command)",
+                "🔨 Build Project (dotnet build)",
+                "📦 Pack Package (dotnet pack)",
+                "🧪 Run Tests (dotnet test)",
+                "🤖 Start Antigravity AI (ask-ai)",
+                "🛸 Open Control Center (cc)",
+                "❌ Cancel"
+            };
+
+            var choice = SpectreMenu.Show("Select Startup Command for New Terminal", options, 0);
+            if (choice < 0 || choice == 6) return; // Cancel or Escape
+
+            targetCommand = choice switch
+            {
+                1 => "dotnet build",
+                2 => "dotnet pack",
+                3 => "dotnet test",
+                4 => "ask-ai",
+                5 => "cc",
+                _ => null
+            };
+        }
+
         try
         {
-            var commandArg = string.IsNullOrEmpty(command) ? "" : $"-p \"PowerShell\" pwsh.exe -NoExit -Command \"{command}\"";
-            var args = string.IsNullOrEmpty(command) ? $"-d \"{dir}\"" : $"-d \"{dir}\" {commandArg}";
+            var commandArg = string.IsNullOrEmpty(targetCommand) ? "" : $"-p \"PowerShell\" pwsh.exe -NoExit -Command \"{targetCommand}\"";
+            var args = string.IsNullOrEmpty(targetCommand) ? $"-d \"{dir}\"" : $"-d \"{dir}\" {commandArg}";
             var psi = new ProcessStartInfo
             {
                 FileName = "wt.exe",
@@ -100,9 +128,9 @@ public static class SystemConsoleView
             try
             {
                 var args = "-NoExit";
-                if (!string.IsNullOrEmpty(command))
+                if (!string.IsNullOrEmpty(targetCommand))
                 {
-                    args = $"-NoExit -Command \"{command}\"";
+                    args = $"-NoExit -Command \"{targetCommand}\"";
                 }
                 var psi = new ProcessStartInfo
                 {

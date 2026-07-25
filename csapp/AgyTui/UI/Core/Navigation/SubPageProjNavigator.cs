@@ -26,6 +26,7 @@ public static class SubPageProjNavigator
             {
                 if (w.Links != null && w.Links.Length > 0)
                 {
+                    list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -100 });
                     for (int k = 0; k < w.Links.Length; k++)
                     {
                         list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -2 - k });
@@ -45,6 +46,11 @@ public static class SubPageProjNavigator
         if (detailsSel >= 0 && detailsSel < flatList.Count)
         {
             var item = flatList[detailsSel];
+            if (item.ActionIndex == -100)
+            {
+                WorkspaceRegistry.ManageWorkspaceLinks(item.Workspace);
+                return true;
+            }
             if (item.ActionIndex <= -2)
             {
                 int linkIdx = -2 - item.ActionIndex;
@@ -104,16 +110,27 @@ public static class SubPageProjNavigator
 
                 grid.AddRow(new Markup($"{prefix}{expandSign}📁 {status}{nameMarkup}{branchSuffix} {pathMarkup}"));
             }
-            else if (item.ActionIndex <= -2)
+            else if (item.ActionIndex == -100)
             {
                 var bullet = "├── ";
                 var prefix = isSelected ? "  [green bold]❯──[/] " : $"  {bullet}";
+                var labelMarkup = isSelected 
+                    ? "[bold green]🔗 Project Links (Enter to Manage)[/]" 
+                    : "[cyan]🔗 Project Links[/]";
+                grid.AddRow(new Markup($"{prefix}{labelMarkup}"));
+            }
+            else if (item.ActionIndex <= -2)
+            {
                 int linkIdx = -2 - item.ActionIndex;
                 var link = item.Workspace.Links![linkIdx];
+                var isLastLink = (linkIdx == item.Workspace.Links.Length - 1);
+                
+                var bullet = isLastLink ? "│   └── " : "│   ├── ";
+                var prefix = isSelected ? "  [green bold]❯───[/] " : $"{bullet}";
 
                 var labelMarkup = isSelected 
-                    ? $"[bold green]🌐 Link: {link.Label.EscapeMarkup()} ({link.Url.EscapeMarkup()})[/]" 
-                    : $"[dim]🌐 Link: {link.Label.EscapeMarkup()} ({link.Url.EscapeMarkup()})[/]";
+                    ? $"[bold green]🌐 {link.Label.EscapeMarkup()}: {link.Url.EscapeMarkup()}[/]" 
+                    : $"[dim]🌐 {link.Label.EscapeMarkup()}: {link.Url.EscapeMarkup()}[/]";
                 grid.AddRow(new Markup($"{prefix}{labelMarkup}"));
             }
             else

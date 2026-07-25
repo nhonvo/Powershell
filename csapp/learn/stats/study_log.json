@@ -1134,6 +1134,27 @@
       "PomodoroCount": 0,
       "Notes": "unit test",
       "Tags": []
+    },
+    {
+      "Id": "s_055",
+      "Date": "2026-07-25",
+      "StartTime": "14:58",
+      "EndTime": "14:58",
+      "DurationMinutes": 1,
+      "Topic": "language_test_1251cc",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_13f461"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
     }
   ]
 }
