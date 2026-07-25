@@ -4,7 +4,15 @@ using System.Text.RegularExpressions;
 
 namespace AgyTui.Core.Registries;
 
-public sealed record WorkspaceEntry(string Name, [property: JsonPropertyName("Path")] string WorkspacePath, string? AssociatedAccount, string[]? Tags);
+public sealed record WorkspaceLink(string Label, string Url);
+
+public sealed record WorkspaceEntry(
+    string Name,
+    [property: JsonPropertyName("Path")] string WorkspacePath,
+    string? AssociatedAccount,
+    string[]? Tags,
+    WorkspaceLink[]? Links = null
+);
 
 public static class WorkspaceRegistry
 {
@@ -203,7 +211,8 @@ public static class WorkspaceRegistry
         "🛸 Open Antigravity TUI / Deck",
         "📦 Clean & Rebuild Project (.NET)",
         "🕸 Open Git Nexus Dashboard",
-        "📊 View Git Nexus Commit Stats"
+        "📊 View Git Nexus Commit Stats",
+        "🔗 Manage/Open Project Links"
     };
 
     public static string HandleWorkspaceAction(WorkspaceEntry selected, int actionIdx)
@@ -274,7 +283,130 @@ public static class WorkspaceRegistry
             GitNexusStats.Run();
             return selected.WorkspacePath;
         }
+        else if (actionIdx == 10)
+        {
+            ManageWorkspaceLinks(selected);
+            return selected.WorkspacePath;
+        }
         return selected.WorkspacePath;
+    }
+
+    private static void OpenUrl(string url)
+    {
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+            SpectrePanel.Success($"Opening URL in browser: {url}");
+            Thread.Sleep(1000);
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Failed to open URL: {ex.Message}");
+            Thread.Sleep(1500);
+        }
+    }
+
+    private static void UpdateWorkspaceLinks(string workspacePath, WorkspaceLink[] newLinks)
+    {
+        var all = GetWorkspaces().ToList();
+        var idx = all.FindIndex(w => string.Equals(w.WorkspacePath, workspacePath, StringComparison.OrdinalIgnoreCase));
+        if (idx >= 0)
+        {
+            var old = all[idx];
+            all[idx] = old with { Links = newLinks };
+            SaveWorkspaces(all.ToArray());
+        }
+    }
+
+    public static void ManageWorkspaceLinks(WorkspaceEntry selected)
+    {
+        while (true)
+        {
+            var workspaces = GetWorkspaces();
+            var currentWs = workspaces.FirstOrDefault(w => string.Equals(w.WorkspacePath, selected.WorkspacePath, StringComparison.OrdinalIgnoreCase)) ?? selected;
+            var linksList = currentWs.Links != null ? currentWs.Links.ToList() : new List<WorkspaceLink>();
+
+            var menuOptions = new List<string>();
+            foreach (var link in linksList)
+            {
+                menuOptions.Add($"🌐 Open: {link.Label} ({link.Url})");
+            }
+            menuOptions.Add("➕ Add New Link");
+            if (linksList.Count > 0)
+            {
+                menuOptions.Add("✏️ Edit Link");
+                menuOptions.Add("❌ Delete Link");
+            }
+            menuOptions.Add("↩ Back");
+
+            var choice = SpectreMenu.Show($"Links for {currentWs.Name}", menuOptions.ToArray(), 0);
+            if (choice < 0 || choice == menuOptions.Count - 1)
+            {
+                break; // Back
+            }
+
+            if (choice < linksList.Count)
+            {
+                var targetLink = linksList[choice];
+                OpenUrl(targetLink.Url);
+            }
+            else
+            {
+                var action = menuOptions[choice];
+                if (action == "➕ Add New Link")
+                {
+                    Console.CursorVisible = true;
+                    var label = AnsiConsole.Ask<string>("Enter Link Label (e.g. prod api, prod ui, db):").Trim();
+                    var url = AnsiConsole.Ask<string>("Enter Link URL:").Trim();
+                    Console.CursorVisible = false;
+
+                    if (!string.IsNullOrEmpty(label) && !string.IsNullOrEmpty(url))
+                    {
+                        linksList.Add(new WorkspaceLink(label, url));
+                        UpdateWorkspaceLinks(currentWs.WorkspacePath, linksList.ToArray());
+                        SpectrePanel.Success("Link added successfully!");
+                        Thread.Sleep(1000);
+                    }
+                }
+                else if (action == "✏️ Edit Link")
+                {
+                    var editOptions = linksList.Select(l => $"{l.Label} ({l.Url})").ToArray();
+                    var editChoice = SpectreMenu.Show("Select Link to Edit", editOptions, 0);
+                    if (editChoice >= 0 && editChoice < linksList.Count)
+                    {
+                        var target = linksList[editChoice];
+                        Console.CursorVisible = true;
+                        var label = AnsiConsole.Prompt(new TextPrompt<string>("Enter Link Label:").DefaultValue(target.Label)).Trim();
+                        var url = AnsiConsole.Prompt(new TextPrompt<string>("Enter Link URL:").DefaultValue(target.Url)).Trim();
+                        Console.CursorVisible = false;
+
+                        if (!string.IsNullOrEmpty(label) && !string.IsNullOrEmpty(url))
+                        {
+                            linksList[editChoice] = new WorkspaceLink(label, url);
+                            UpdateWorkspaceLinks(currentWs.WorkspacePath, linksList.ToArray());
+                            SpectrePanel.Success("Link updated successfully!");
+                            Thread.Sleep(1000);
+                        }
+                    }
+                }
+                else if (action == "❌ Delete Link")
+                {
+                    var deleteOptions = linksList.Select(l => $"{l.Label} ({l.Url})").ToArray();
+                    var deleteChoice = SpectreMenu.Show("Select Link to Delete", deleteOptions, 0);
+                    if (deleteChoice >= 0 && deleteChoice < linksList.Count)
+                    {
+                        linksList.RemoveAt(deleteChoice);
+                        UpdateWorkspaceLinks(currentWs.WorkspacePath, linksList.ToArray());
+                        SpectrePanel.Success("Link deleted successfully!");
+                        Thread.Sleep(1000);
+                    }
+                }
+            }
+        }
     }
 }
 

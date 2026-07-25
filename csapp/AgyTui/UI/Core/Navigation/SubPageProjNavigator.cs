@@ -1,5 +1,4 @@
 using Spectre.Console.Rendering;
-using AgyTui.Core.Registries;
 
 namespace AgyTui.UI.Core.Navigation;
 

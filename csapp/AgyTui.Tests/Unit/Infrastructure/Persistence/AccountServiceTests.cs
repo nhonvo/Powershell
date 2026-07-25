@@ -1,4 +1,4 @@
-namespace AgyTuiApp.Tests.Unit.Infrastructure.Persistence;
+namespace AgyTui.Tests.Unit.Infrastructure.Persistence;
 
 public class AccountServiceTests
 {

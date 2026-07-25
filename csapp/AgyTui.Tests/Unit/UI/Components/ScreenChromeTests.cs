@@ -1,4 +1,4 @@
-namespace AgyTuiApp.Tests.Unit.UI.Components;
+namespace AgyTui.Tests.Unit.UI.Components;
 
 public class ScreenChromeTests : IDisposable
 {

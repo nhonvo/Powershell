@@ -1,5 +1,4 @@
 using System.Text.Json;
-using AgyTui.Core.Registries;
 
 namespace AgyTui.UI.Core.Navigation;
 

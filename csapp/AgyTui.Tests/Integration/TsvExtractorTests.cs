@@ -1,4 +1,4 @@
-namespace AgyTuiApp.Tests.Integration;
+namespace AgyTui.Tests.Integration;
 
 public class TsvExtractorTests
 {

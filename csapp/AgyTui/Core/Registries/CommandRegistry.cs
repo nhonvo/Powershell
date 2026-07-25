@@ -558,25 +558,27 @@ public static class CommandRegistry
     public static void AssertSwitchCases()
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
-        string? programCsPath = null;
+        string? routerCsPath = null;
         while (dir != null)
         {
-            var p = Path.Combine(dir.FullName, "Program.cs");
-            if (File.Exists(p)) { programCsPath = p; break; }
-            var sub = Path.Combine(dir.FullName, "csapp", "AgyTuiApp", "Program.cs");
-            if (File.Exists(sub)) { programCsPath = sub; break; }
+            var p = Path.Combine(dir.FullName, "CommandRouter.cs");
+            if (File.Exists(p)) { routerCsPath = p; break; }
+            var sub = Path.Combine(dir.FullName, "csapp", "AgyTui", "UI", "Core", "Navigation", "CommandRouter.cs");
+            if (File.Exists(sub)) { routerCsPath = sub; break; }
+            var subNew = Path.Combine(dir.FullName, "UI", "Core", "Navigation", "CommandRouter.cs");
+            if (File.Exists(subNew)) { routerCsPath = subNew; break; }
             dir = dir.Parent;
         }
-        if (programCsPath == null) return;
+        if (routerCsPath == null) return;
 
-        string code = File.ReadAllText(programCsPath);
+        string code = File.ReadAllText(routerCsPath);
         var matches = Regex.Matches(code, @"case\s+""([^""]+)""\s*:");
         var handledCases = matches.Select(m => m.Groups[1].Value).ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         var unhandled = All.Where(c => !handledCases.Contains(c.Alias)).Select(c => c.Alias).ToList();
         if (unhandled.Count > 0)
         {
-            throw new InvalidOperationException($"The following CommandRegistry aliases have no switch case in Program.cs: {string.Join(", ", unhandled)}");
+            throw new InvalidOperationException($"The following CommandRegistry aliases have no switch case in CommandRouter.cs: {string.Join(", ", unhandled)}");
         }
     }
 

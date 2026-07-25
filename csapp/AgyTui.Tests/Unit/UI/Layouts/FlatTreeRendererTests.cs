@@ -1,4 +1,4 @@
-namespace AgyTuiApp.Tests.Unit.UI.Layouts;
+namespace AgyTui.Tests.Unit.UI.Layouts;
 
 public class FlatTreeRendererTests
 {

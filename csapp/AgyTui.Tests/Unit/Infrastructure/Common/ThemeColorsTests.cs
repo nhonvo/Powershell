@@ -1,4 +1,4 @@
-namespace AgyTuiApp.Tests.Unit.Infrastructure.Common;
+namespace AgyTui.Tests.Unit.Infrastructure.Common;
 
 public class ThemeColorsTests
 {

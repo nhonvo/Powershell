@@ -1,4 +1,4 @@
-namespace AgyTuiApp.Tests.Unit.Core.Registries;
+namespace AgyTui.Tests.Unit.Core.Registries;
 
 public class CommandRegistryTests
 {

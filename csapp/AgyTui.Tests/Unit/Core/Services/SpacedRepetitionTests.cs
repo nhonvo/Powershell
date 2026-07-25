@@ -1,4 +1,4 @@
-namespace AgyTuiApp.Tests.Unit.Core.Services;
+namespace AgyTui.Tests.Unit.Core.Services;
 
 public class SpacedRepetitionTests
 {
