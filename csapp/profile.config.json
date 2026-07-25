@@ -1,7 +1,9 @@
-﻿{
+{
   "Ui": {
     "Mode": "flat-tree", // Options: "three-pane", "flat-tree"
-    "Density": "comfortable" // Options: "comfortable", "compact"
+    "Density": "comfortable", // Options: "comfortable", "compact"
+    "ActiveTheme": "amro",
+    "EnableMobile": false
   },
   "Ai": {
     "Mode": "auto", // Options: "auto" (scans env), "true" (force AI mode), "false" (force interactive TUI)
@@ -20,5 +22,8 @@
     "PoshThemesPath": "psapp/asset/powershell-themes", // Oh My Posh themes folder path
     "AgySourceHome": "", // Base directory for settings/accounts (Default: C:\Users\Public\.gemini)
     "GlobalBinDir": "" // Symlinks directory (Default: C:\ProgramData\agy\bin)
+  },
+  "Obsidian": {
+    "VaultPath": "C:\\Users\\TruongNhon\\Documents\\Powershell\\csapp\\learn"
   }
 }

@@ -8,6 +8,8 @@ public sealed class UiConfig
 {
     public string Mode { get; set; } = "flat-tree";
     public string Density { get; set; } = "comfortable";
+    public string ActiveTheme { get; set; } = "neko";
+    public bool EnableMobile { get; set; } = false;
 }
 
 public sealed class AiConfig
@@ -34,12 +36,18 @@ public sealed class SystemConfig
     public string GlobalBinDir { get; set; } = "";
 }
 
+public sealed class ObsidianConfig
+{
+    public string VaultPath { get; set; } = "";
+}
+
 public sealed class ConfigData
 {
     public UiConfig Ui { get; set; } = new();
     public AiConfig Ai { get; set; } = new();
     public ProjectConfig Project { get; set; } = new();
     public SystemConfig System { get; set; } = new();
+    public ObsidianConfig Obsidian { get; set; } = new();
 
     // Flat getters and setters for backwards compatibility
     [JsonIgnore]
@@ -189,6 +197,7 @@ public static class Config
                     else if (trimmed.StartsWith("\"Ai\"")) currentSection = "Ai";
                     else if (trimmed.StartsWith("\"Project\"")) currentSection = "Project";
                     else if (trimmed.StartsWith("\"System\"")) currentSection = "System";
+                    else if (trimmed.StartsWith("\"Obsidian\"")) currentSection = "Obsidian";
                     else if (trimmed.StartsWith("}") && !trimmed.Contains("{")) currentSection = "";
 
                     if (currentSection == "Ui" && line.Contains("\"Mode\":"))
@@ -198,6 +207,14 @@ public static class Config
                     else if (currentSection == "Ui" && line.Contains("\"Density\":"))
                     {
                         lines[i] = Regex.Replace(line, @"(""Density""\s*:\s*"")[^""]*("")", $"$1{Current.Ui.Density}$2");
+                    }
+                    else if (currentSection == "Ui" && line.Contains("\"ActiveTheme\":"))
+                    {
+                        lines[i] = Regex.Replace(line, @"(""ActiveTheme""\s*:\s*"")[^""]*("")", $"$1{Current.Ui.ActiveTheme}$2");
+                    }
+                    else if (currentSection == "Ui" && line.Contains("\"EnableMobile\":"))
+                    {
+                        lines[i] = Regex.Replace(line, @"(""EnableMobile""\s*:\s*)(true|false)", $"$1{Current.Ui.EnableMobile.ToString().ToLowerInvariant()}");
                     }
                     else if (currentSection == "Ai" && line.Contains("\"Mode\":"))
                     {
@@ -248,6 +265,10 @@ public static class Config
                     else if (currentSection == "System" && line.Contains("\"GlobalBinDir\":"))
                     {
                         lines[i] = Regex.Replace(line, @"(""GlobalBinDir""\s*:\s*"")[^""]*("")", $"$1{Current.System.GlobalBinDir.Replace("\\", "\\\\")}$2");
+                    }
+                    else if (currentSection == "Obsidian" && line.Contains("\"VaultPath\":"))
+                    {
+                        lines[i] = Regex.Replace(line, @"(""VaultPath""\s*:\s*"")[^""]*("")", $"$1{Current.Obsidian.VaultPath.Replace("\\", "\\\\")}$2");
                     }
                 }
                 File.WriteAllLines(ConfigPath, lines, Encoding.UTF8);

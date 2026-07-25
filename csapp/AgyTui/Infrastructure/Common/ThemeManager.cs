@@ -89,36 +89,20 @@ public static class ThemeManager
         return themePath;
     }
 
-    private static string CentralConfigPath => Path.Combine(Config.GetProfileRepoRoot(), "config.json");
-
     private static (string ThemeName, bool IsMobile) ReadConfig(string themesPath)
     {
-        var configPath = CentralConfigPath;
-        var themeName = "neko";
-        var isMobile = false;
-        if (File.Exists(configPath))
-        {
-            try
-            {
-                var cfg = JsonSerializer.Deserialize<ThemeConfig>(File.ReadAllText(configPath));
-                if (!string.IsNullOrWhiteSpace(cfg?.active_theme)) themeName = cfg.active_theme!;
-                if (cfg?.enable_mobile is bool b) isMobile = b;
-            }
-            catch
-            {
-            }
-        }
+        var themeName = string.IsNullOrWhiteSpace(Config.Current.Ui.ActiveTheme) ? "neko" : Config.Current.Ui.ActiveTheme;
+        var isMobile = Config.Current.Ui.EnableMobile;
         return (themeName, isMobile);
     }
 
     public static string ResolveStartupTheme(string themesPath)
     {
-        var configPath = CentralConfigPath;
-        if (File.Exists(configPath)) return ReadConfig(themesPath).ThemeName;
+        var theme = ReadConfig(themesPath).ThemeName;
         var legacyFile = Path.Combine(Config.GetProfileRepoRoot(), "active_theme.txt");
         if (File.Exists(legacyFile))
         {
-            var theme = File.ReadAllText(legacyFile).Trim();
+            theme = File.ReadAllText(legacyFile).Trim();
             try
             {
                 File.Delete(legacyFile);
@@ -127,31 +111,17 @@ public static class ThemeManager
             {
             }
             PersistConfig(themesPath, theme, theme.EndsWith("-mobile"));
-            return theme;
         }
-        return "neko";
+        return theme;
     }
 
     private static void PersistConfig(string themesPath, string themeName, bool enableMobile)
     {
-        var configPath = CentralConfigPath;
         try
         {
-            File.WriteAllText(configPath, JsonSerializer.Serialize(new ThemeConfig(themeName, enableMobile)));
-        }
-        catch
-        {
-        }
-        try
-        {
-            File.Delete(Path.Combine(Config.GetProfileRepoRoot(), "active_theme.txt"));
-        }
-        catch
-        {
-        }
-        try
-        {
-            File.Delete(Path.Combine(Config.GetProfileRepoRoot(), "mobile_mode_active.txt"));
+            Config.Current.Ui.ActiveTheme = themeName;
+            Config.Current.Ui.EnableMobile = enableMobile;
+            Config.Save();
         }
         catch
         {

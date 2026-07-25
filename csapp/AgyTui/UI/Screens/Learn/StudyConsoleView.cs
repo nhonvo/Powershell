@@ -63,8 +63,6 @@ public static class LearnDataPaths
 
     public static string StudyLogFile => System.IO.Path.Combine(StatsDir, "study_log.json");
 
-    public static string ObsidianCfgFile => System.IO.Path.Combine(BaseDirectory, "obsidian_config.json");
-
     public static string ResourcesIndex => System.IO.Path.Combine(BaseDirectory, "resources", "index.json");
 
     public static void EnsureDirectories()

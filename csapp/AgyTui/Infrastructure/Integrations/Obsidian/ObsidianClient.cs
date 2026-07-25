@@ -17,14 +17,18 @@ public static class ObsidianBridge
             SpectrePanel.Error($"Directory not found: {vaultPath}");
             return;
         }
-        LearnDataPaths.SaveJson(LearnDataPaths.ObsidianCfgFile, new ObsidianConfig(vaultPath));
+        Config.Current.Obsidian.VaultPath = vaultPath;
+        Config.Save();
         SpectrePanel.Success($"Vault configured: {vaultPath}");
     }
 
     public static ObsidianConfig? LoadConfig()
     {
-        var cfg = LearnDataPaths.LoadJson<ObsidianConfig>(LearnDataPaths.ObsidianCfgFile);
-        if (cfg != null && Directory.Exists(cfg.VaultPath)) return cfg;
+        var vaultPath = Config.Current.Obsidian.VaultPath;
+        if (!string.IsNullOrWhiteSpace(vaultPath) && Directory.Exists(vaultPath))
+        {
+            return new ObsidianConfig(vaultPath);
+        }
 
         string localLearnVault = System.IO.Path.Combine(LearnDataPaths.BaseDirectory, "learn");
         string defaultVault = Directory.Exists(localLearnVault)
@@ -33,11 +37,11 @@ public static class ObsidianBridge
 
         if (Directory.Exists(defaultVault))
         {
-            var fallback = new ObsidianConfig(defaultVault);
-            try { LearnDataPaths.SaveJson(LearnDataPaths.ObsidianCfgFile, fallback); } catch { }
-            return fallback;
+            Config.Current.Obsidian.VaultPath = defaultVault;
+            try { Config.Save(); } catch { }
+            return new ObsidianConfig(defaultVault);
         }
-        return cfg;
+        return null;
     }
 
     public static void Run()
