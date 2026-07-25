@@ -76,14 +76,14 @@ public static class SystemConsoleView
         UseShellExecute = true
     });
 
-    public static void OpenNewTerminalSession(string? workingDirectory = null, string? command = null)
+    public static void OpenNewTerminalSession(string? workingDirectory = null, string? command = null, bool promptForCommand = false)
     {
         var dir = !string.IsNullOrEmpty(workingDirectory) && Directory.Exists(workingDirectory)
             ? workingDirectory
             : Directory.GetCurrentDirectory();
 
         var targetCommand = command;
-        if (string.IsNullOrEmpty(targetCommand))
+        if (string.IsNullOrEmpty(targetCommand) && promptForCommand)
         {
             var options = new[]
             {

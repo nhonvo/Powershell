@@ -1590,7 +1590,7 @@ function open-term {
         Start-Process wt.exe -ArgumentList $args
     } else {
         Initialize-AgySession
-        [SystemHelper]::OpenNewTerminalSession()
+        [SystemHelper]::OpenNewTerminalSession($pwd.Path, $null, $true)
     }
 }
 Set-Alias -Name term -Value open-term -Force
