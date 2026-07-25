@@ -168,6 +168,7 @@ public static class AgyAiCore
 
     private static void InvokeWithPipeline(string agentName, string? providerModeOverride, Action<string> executeAction)
     {
+        AgyAccountCore.AutoSwitchOnQuotaExceeded();
         var activeAccount = AgyAccountCore.GetActiveAccount();
         var mode = providerModeOverride ?? GetEffectiveProviderMode();
 
@@ -210,6 +211,10 @@ public static class AgyAiCore
         {
             var duration = DateTime.UtcNow - startTime;
             RecordAiActivity(agentName, mode, duration, success);
+            if (AgyAccountCore.CheckQuotaAfterRun(activeAccount))
+            {
+                AgyAccountCore.AutoSwitchOnQuotaExceeded();
+            }
         }
     }
 

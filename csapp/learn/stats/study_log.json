@@ -2289,6 +2289,48 @@
       "PomodoroCount": 0,
       "Notes": "unit test",
       "Tags": []
+    },
+    {
+      "Id": "s_110_2520",
+      "Date": "2026-07-26",
+      "StartTime": "00:03",
+      "EndTime": "00:03",
+      "DurationMinutes": 1,
+      "Topic": "language_test_ad2276",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_611132"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
+    },
+    {
+      "Id": "s_111_7894",
+      "Date": "2026-07-26",
+      "StartTime": "00:04",
+      "EndTime": "00:04",
+      "DurationMinutes": 1,
+      "Topic": "language_test_3d1d57",
+      "SubTopic": "language",
+      "Activity": "quiz",
+      "Score": {
+        "Correct": 0,
+        "Total": 1,
+        "Percentage": 0
+      },
+      "WeakItems": [
+        "test_weak_item_239512"
+      ],
+      "PomodoroCount": 0,
+      "Notes": "unit test",
+      "Tags": []
     }
   ]
 }

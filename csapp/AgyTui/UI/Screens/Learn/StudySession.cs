@@ -53,14 +53,19 @@ public static class StudySession
         }
     }
 
+    private static readonly object _recordLock = new();
+
     public static void Record(string topic, string subTopic, string activity, StudyScore score, string[] weakItems, int pomodoros, int durationMin, string notes, DateTime? startTime = null)
     {
-        var log = LearnDataPaths.LoadJson<StudyLogFile>(LearnDataPaths.StudyLogFile) ?? new StudyLogFile(null, []);
-        var sessions = log.Sessions.ToList();
-        var now = DateTime.Now;
-        var start = startTime ?? now.AddMinutes(-durationMin);
-        var id = $"s_{sessions.Count + 1:000}";
-        sessions.Add(new StudyLogEntry(id, start.ToString("yyyy-MM-dd"), start.ToString("HH:mm"), now.ToString("HH:mm"), durationMin, topic, subTopic, activity, score, weakItems, pomodoros, notes, []));
-        LearnDataPaths.SaveJson(LearnDataPaths.StudyLogFile, new StudyLogFile(log.DailyGoals, [.. sessions]));
+        lock (_recordLock)
+        {
+            var log = LearnDataPaths.LoadJson<StudyLogFile>(LearnDataPaths.StudyLogFile) ?? new StudyLogFile(null, []);
+            var sessions = log.Sessions.ToList();
+            var now = DateTime.Now;
+            var start = startTime ?? now.AddMinutes(-durationMin);
+            var id = $"s_{sessions.Count + 1:000}_{Guid.NewGuid().ToString("N")[..4]}";
+            sessions.Add(new StudyLogEntry(id, start.ToString("yyyy-MM-dd"), start.ToString("HH:mm"), now.ToString("HH:mm"), durationMin, topic, subTopic, activity, score, weakItems, pomodoros, notes, []));
+            LearnDataPaths.SaveJson(LearnDataPaths.StudyLogFile, new StudyLogFile(log.DailyGoals, [.. sessions]));
+        }
     }
 }

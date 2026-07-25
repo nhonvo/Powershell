@@ -32,21 +32,30 @@ public class JsonStudyRepository : IStudyRepository
         {
             return JsonSerializer.Deserialize<T>(File.ReadAllText(path), _js);
         }
-        catch
+        catch (Exception ex)
         {
+            LogHelper.Log($"[JsonStudyRepository] Failed to parse JSON file '{path}': {ex.Message}", "ERROR");
             return null;
         }
     }
 
-    public void SaveJson<T>(string path, T obj)
+    public bool SaveJson<T>(string path, T obj)
     {
         try
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-            File.WriteAllText(path, JsonSerializer.Serialize(obj, _js), Encoding.UTF8);
+            var dir = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+
+            var tempPath = path + ".tmp." + Guid.NewGuid().ToString("N");
+            var json = JsonSerializer.Serialize(obj, _js);
+            File.WriteAllText(tempPath, json, Encoding.UTF8);
+            File.Move(tempPath, path, overwrite: true);
+            return true;
         }
-        catch
+        catch (Exception ex)
         {
+            LogHelper.Log($"[JsonStudyRepository] Failed to save JSON file '{path}': {ex.Message}", "ERROR");
+            return false;
         }
     }
 }

@@ -3,9 +3,11 @@ namespace AgyTui.Tests.Unit.Infrastructure.Persistence;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using AgyTui.Core.Models;
 using AgyTui.Infrastructure.Persistence.Accounts;
 using Xunit;
 
+[Collection("Sequential")]
 public class QuotaCentralizationTests
 {
     [Fact]

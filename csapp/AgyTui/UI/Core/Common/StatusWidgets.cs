@@ -220,12 +220,12 @@ public sealed class LiveDashboardWidget : IStatusWidget
 public sealed class OllamaStatusWidget : IStatusWidget
 {
     public string Alias => "ollama-status";
-    private static IRenderable? _cachedWidget;
+    private static readonly TtlCache<string, IRenderable> _ollamaCache = new(TimeSpan.FromSeconds(5));
     private static bool _fetching;
 
     public IRenderable Render()
     {
-        if (_cachedWidget != null) return _cachedWidget;
+        if (_ollamaCache.TryGet("widget", out var cached) && cached != null) return cached;
 
         if (!_fetching)
         {
@@ -267,7 +267,7 @@ public sealed class OllamaStatusWidget : IStatusWidget
                         }
                         catch { }
                     }
-                    _cachedWidget = table;
+                    _ollamaCache.Set("widget", table);
                 }
                 catch { }
                 finally { _fetching = false; }

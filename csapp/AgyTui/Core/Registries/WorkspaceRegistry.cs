@@ -153,51 +153,51 @@ public static class WorkspaceRegistry
         return GetWorkspaces().Where(w => string.Equals(w.AssociatedAccount ?? "default", targetAccount, StringComparison.OrdinalIgnoreCase)).ToArray();
     }
 
-    private static readonly Dictionary<string, string> _branchCache = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly TtlCache<string, string> _branchCache = new(TimeSpan.FromSeconds(5));
 
     public static string GetGitBranch(string dirPath)
     {
         if (string.IsNullOrEmpty(dirPath)) return "";
-        if (_branchCache.TryGetValue(dirPath, out var cached)) return cached;
-
-        string branch = "";
-        try
+        return _branchCache.GetOrCompute(dirPath, () =>
         {
-            var gitPath = Path.Combine(dirPath, ".git");
-            string headFile = Path.Combine(gitPath, "HEAD");
-
-            if (File.Exists(gitPath) && !Directory.Exists(gitPath))
+            string branch = "";
+            try
             {
-                var lines = File.ReadAllLines(gitPath);
-                var gitdirLine = lines.FirstOrDefault(l => l.StartsWith("gitdir:", StringComparison.OrdinalIgnoreCase));
-                if (gitdirLine != null)
+                var gitPath = Path.Combine(dirPath, ".git");
+                string headFile = Path.Combine(gitPath, "HEAD");
+
+                if (File.Exists(gitPath) && !Directory.Exists(gitPath))
                 {
-                    var targetGitDir = gitdirLine.Substring("gitdir:".Length).Trim();
-                    if (!Path.IsPathRooted(targetGitDir))
+                    var lines = File.ReadAllLines(gitPath);
+                    var gitdirLine = lines.FirstOrDefault(l => l.StartsWith("gitdir:", StringComparison.OrdinalIgnoreCase));
+                    if (gitdirLine != null)
                     {
-                        targetGitDir = Path.GetFullPath(Path.Combine(dirPath, targetGitDir));
+                        var targetGitDir = gitdirLine.Substring("gitdir:".Length).Trim();
+                        if (!Path.IsPathRooted(targetGitDir))
+                        {
+                            targetGitDir = Path.GetFullPath(Path.Combine(dirPath, targetGitDir));
+                        }
+                        headFile = Path.Combine(targetGitDir, "HEAD");
                     }
-                    headFile = Path.Combine(targetGitDir, "HEAD");
+                }
+
+                if (File.Exists(headFile))
+                {
+                    var txt = File.ReadAllText(headFile).Trim();
+                    if (txt.StartsWith("ref: refs/heads/"))
+                    {
+                        branch = txt.Substring("ref: refs/heads/".Length);
+                    }
+                    else if (txt.Length >= 7)
+                    {
+                        branch = txt.Substring(0, 7);
+                    }
                 }
             }
+            catch { }
 
-            if (File.Exists(headFile))
-            {
-                var txt = File.ReadAllText(headFile).Trim();
-                if (txt.StartsWith("ref: refs/heads/"))
-                {
-                    branch = txt.Substring("ref: refs/heads/".Length);
-                }
-                else if (txt.Length >= 7)
-                {
-                    branch = txt.Substring(0, 7);
-                }
-            }
-        }
-        catch { }
-
-        _branchCache[dirPath] = branch;
-        return branch;
+            return branch;
+        });
     }
 
     public static readonly string[] SharedWorkspaceActions = new[]

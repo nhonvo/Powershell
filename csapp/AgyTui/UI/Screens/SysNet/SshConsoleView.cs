@@ -350,7 +350,12 @@ public static class SshConsoleView
         AnsiConsole.WriteLine();
 
         var listener = new HttpListener();
-        listener.Prefixes.Add($"http://*:{port}/");
+        listener.Prefixes.Add($"http://localhost:{port}/");
+        listener.Prefixes.Add($"http://127.0.0.1:{port}/");
+        if (!string.IsNullOrWhiteSpace(tsIp))
+        {
+            try { listener.Prefixes.Add($"http://{tsIp}:{port}/"); } catch { }
+        }
 
         try
         {

@@ -79,28 +79,22 @@ public static class AgyAccountCore
     }
 
     public static string AgyActiveAccountFile => Path.Combine(AgySourceHome, "active_account.txt");
-    private static bool? _networkOnline;
-
-    private static readonly Lock _networkLock = new();
+    private static readonly TtlCache<string, bool> _networkCache = new(TimeSpan.FromSeconds(10));
 
     public static bool CheckNetworkStatus()
     {
-        lock (_networkLock)
+        return _networkCache.GetOrCompute("status", () =>
         {
-            if (_networkOnline.HasValue) return _networkOnline.Value;
             try
             {
-                using var client = new System.Net.Http.HttpClient();
-                client.Timeout = TimeSpan.FromSeconds(3);
-                var res = client.GetAsync("https://www.google.com").GetAwaiter().GetResult();
-                _networkOnline = res.IsSuccessStatusCode;
+                var res = HttpClientProvider.Client.GetAsync("https://www.google.com").GetAwaiter().GetResult();
+                return res.IsSuccessStatusCode;
             }
             catch
             {
-                _networkOnline = false;
+                return false;
             }
-            return _networkOnline.Value;
-        }
+        });
     }
 
     public static string[] GetAccounts()
@@ -820,28 +814,11 @@ public static class AgyAccountCore
     {
         if (!IsAutoSwitchEnabled()) return;
         var active = GetActiveAccount();
-        var activeMeta = GetAccountMetadata(active);
-        if (string.Equals(activeMeta.QuotaStatus, "Exceeded", StringComparison.OrdinalIgnoreCase))
+        var candidate = FindAutoSwitchCandidate();
+        if (candidate != null)
         {
-            string? candidate = null;
-            foreach (var acc in GetAccounts())
-            {
-                if (string.Equals(acc, active, StringComparison.OrdinalIgnoreCase)) continue;
-                var accDir = GetAccountDirectory(acc);
-                if (!File.Exists(Path.Combine(accDir, "keyring_token.txt"))) continue;
-                var meta = GetAccountMetadata(acc);
-                if (string.Equals(meta.QuotaStatus, "OK", StringComparison.OrdinalIgnoreCase))
-                {
-                    candidate = acc;
-                    break;
-                }
-            }
-
-            if (candidate != null)
-            {
-                SpectrePanel.Warning($"Active account '{active}' exceeded quota. Auto-switching to candidate account '{candidate}' with available quota.");
-                SetActiveAccount(candidate, false);
-            }
+            SpectrePanel.Warning($"Active account '{active}' exceeded quota. Auto-switching to candidate account '{candidate}' with available quota.");
+            SetActiveAccount(candidate, false);
         }
     }
 
@@ -866,14 +843,15 @@ public static class AgyAccountCore
     {
         if (!IsAutoSwitchEnabled()) return null;
         var active = GetActiveAccount();
-        if (GetAccountMetadata(active).QuotaStatus != "Exceeded") return null;
+        var activeMeta = GetAccountMetadata(active);
+        if (!string.Equals(activeMeta.QuotaStatus, "Exceeded", StringComparison.OrdinalIgnoreCase)) return null;
         foreach (var acc in GetAccounts())
         {
             if (string.Equals(acc, active, StringComparison.OrdinalIgnoreCase)) continue;
             var tokenFile = Path.Combine(GetAccountDirectory(acc), "keyring_token.txt");
             if (!File.Exists(tokenFile)) continue;
             var quota = GetAccountMetadata(acc).QuotaStatus ?? "OK";
-            if (quota == "OK") return acc;
+            if (string.Equals(quota, "OK", StringComparison.OrdinalIgnoreCase)) return acc;
         }
         return null;
 
@@ -883,7 +861,9 @@ public static class AgyAccountCore
     {
         try
         {
-            var brainDir = Path.Combine(AgySourceHome, "antigravity", "brain");
+            var accDir = GetAccountDirectory(accountName);
+            var brainDir = Path.Combine(accDir, "antigravity", "brain");
+            if (!Directory.Exists(brainDir)) brainDir = Path.Combine(AgySourceHome, "antigravity", "brain");
             if (!Directory.Exists(brainDir)) return false;
             var latest = new DirectoryInfo(brainDir).EnumerateFiles("transcript.jsonl", SearchOption.AllDirectories).OrderByDescending(f => f.LastWriteTime).FirstOrDefault();
             if (latest == null) return false;
@@ -968,9 +948,12 @@ public static class AgyAccountCore
             var privateSize = GetPrivateDirectorySize(dir);
             var junctionStatus = GetJunctionStatus(accountName);
             int skillsCount = 0, convCount = 0;
-            var skillsPath = Path.Combine(AgySourceHome, "config", "skills");
+            var skillsPath = Path.Combine(dir, "config", "skills");
+            if (!Directory.Exists(skillsPath)) skillsPath = Path.Combine(dir, "skills");
             if (Directory.Exists(skillsPath)) skillsCount = Directory.GetDirectories(skillsPath).Length;
-            var convPath = Path.Combine(AgySourceHome, "antigravity", "brain");
+
+            var convPath = Path.Combine(dir, "antigravity", "brain");
+            if (!Directory.Exists(convPath)) convPath = Path.Combine(dir, "brain");
             if (Directory.Exists(convPath)) convCount = Directory.GetDirectories(convPath).Length;
             var tokenStatus = File.Exists(Path.Combine(dir, "keyring_token.txt")) ? "Logged In" : "Not Logged In";
             string sizeStr;
