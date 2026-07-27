@@ -82,14 +82,8 @@ public static class AppPaths
             if (!string.IsNullOrEmpty(envOverride)) return envOverride;
 
             var csappCfg = Path.Combine(RepoRoot, "csapp", "profile.config.json");
-            if (File.Exists(csappCfg)) return csappCfg;
-
-            var rootCfg = Path.Combine(RepoRoot, "profile.config.json");
-            if (File.Exists(rootCfg)) return rootCfg;
-
-            var projCfg = Path.Combine(ProjectRoot, "profile.config.json");
-            if (File.Exists(projCfg)) return projCfg;
-
+            var dir = Path.GetDirectoryName(csappCfg);
+            if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
             return csappCfg;
         }
     }

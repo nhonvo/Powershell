@@ -191,7 +191,6 @@ public static class Config
         catch { }
     }
 
-    public static string GetUiMode() => Current.Ui.Mode;
     public static string GetDensity() => Runtime.RuntimeDensity ?? Current.Ui.Density;
 
     public static void SetUiMode(string uiMode)
