@@ -38,4 +38,6 @@ selected_theme.txt
 scratch/
 .gemini/
 .data/
+data/
+logs/
 priority_workspaces.json

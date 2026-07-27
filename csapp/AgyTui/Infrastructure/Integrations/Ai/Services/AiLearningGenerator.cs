@@ -65,8 +65,7 @@ public class AiLearningGenerator : IAiLearningGenerator
         string safeTopic = cleanTopic.ToLowerInvariant().Replace(" ", "_").Replace("-", "_");
         if (string.IsNullOrEmpty(safeTopic)) safeTopic = "topic_" + Guid.NewGuid().ToString("N")[..6];
 
-        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        var baseDir = Path.Combine(userProfile, ".gemini", "learn");
+        var baseDir = Path.Combine(AppPaths.DataDir, "learn");
         Directory.CreateDirectory(baseDir);
 
         if (domain.Contains("Certifications"))

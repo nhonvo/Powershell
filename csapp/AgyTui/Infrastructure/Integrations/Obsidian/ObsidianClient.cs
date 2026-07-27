@@ -33,7 +33,7 @@ public static class ObsidianBridge
         string localLearnVault = System.IO.Path.Combine(LearnDataPaths.BaseDirectory, "learn");
         string defaultVault = Directory.Exists(localLearnVault)
             ? localLearnVault
-            : System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "project", "learning");
+            : AppPaths.DefaultLearningVaultDir;
 
         if (Directory.Exists(defaultVault))
         {

@@ -11,7 +11,7 @@ public class AiProcessRunner : IAiProcessRunner
         {
             Path.Combine(repoRoot, "psapp", "script", "Start-ClaudeProxy.ps1"),
             Path.Combine(repoRoot, "script", "Start-ClaudeProxy.ps1"),
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini", "antigravity", "script", "Start-ClaudeProxy.ps1")
+            Path.Combine(AppPaths.GeminiHome, "antigravity", "script", "Start-ClaudeProxy.ps1")
         };
         return candidates.FirstOrDefault(File.Exists) ?? candidates[0];
     }

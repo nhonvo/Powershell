@@ -765,7 +765,7 @@ public class CommandRouter : ICommandRouter
                     case "vault-open":
                         var openCfg = ObsidianBridge.LoadConfig();
                         var defaultOpenVault = System.IO.Path.Combine(LearnDataPaths.BaseDirectory, "learn");
-                        var targetPath = openCfg?.VaultPath ?? (Directory.Exists(defaultOpenVault) ? defaultOpenVault : System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "project", "learning"));
+                        var targetPath = openCfg?.VaultPath ?? (Directory.Exists(defaultOpenVault) ? defaultOpenVault : AppPaths.DefaultLearningVaultDir);
                         if (Directory.Exists(targetPath))
                         {
                             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
@@ -890,7 +890,7 @@ public class CommandRouter : ICommandRouter
 
     private void ShowExecutionLogs()
     {
-        var logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini", "antigravity");
+        var logDir = AppPaths.LogsDir;
         var logFile = Path.Combine(logDir, "tui_execution.log");
         if (File.Exists(logFile))
         {

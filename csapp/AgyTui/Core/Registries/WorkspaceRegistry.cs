@@ -115,7 +115,7 @@ public static class WorkspaceRegistry
         catch { }
 
         // 2. PowerShell profile root
-        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        var userProfile = AppPaths.UserProfileDir;
         TryAdd("Powershell Profile", Path.Combine(userProfile, "Documents", "Powershell"));
 
         // 3. Candidate base project directories (including C:\Users\sshuser\project)
@@ -179,7 +179,7 @@ public static class WorkspaceRegistry
         if (!string.IsNullOrEmpty(Config.Current.ProjectsBaseDir) && Directory.Exists(Config.Current.ProjectsBaseDir)) searchBases.Add(Config.Current.ProjectsBaseDir);
         searchBases.Add(@"C:\Users\sshuser\project");
 
-        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        var userProfile = AppPaths.UserProfileDir;
         if (Directory.Exists(Path.Combine(userProfile, "project"))) searchBases.Add(Path.Combine(userProfile, "project"));
         if (Directory.Exists(Path.Combine(userProfile, "Desktop", "project"))) searchBases.Add(Path.Combine(userProfile, "Desktop", "project"));
 

@@ -33,7 +33,38 @@ public static class AppPaths
         }
     }
 
-    public static string DataDir => Path.Combine(ProjectRoot, ".data");
+    public static string UserProfileDir => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+    public static string LocalAppDataDir => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
+    public static string LogsDir
+    {
+        get
+        {
+            var dir = Path.Combine(ProjectRoot, "logs");
+            Directory.CreateDirectory(dir);
+            return dir;
+        }
+    }
+
+    public static string DataDir
+    {
+        get
+        {
+            var dir = Path.Combine(ProjectRoot, "data");
+            Directory.CreateDirectory(dir);
+            return dir;
+        }
+    }
+
+    public static string CacheDir
+    {
+        get
+        {
+            var dir = Path.Combine(DataDir, "cache");
+            Directory.CreateDirectory(dir);
+            return dir;
+        }
+    }
 
     public static string GeminiHome
     {
@@ -47,16 +78,6 @@ public static class AppPaths
             var projectGemini = Path.Combine(DataDir, ".gemini");
             Directory.CreateDirectory(projectGemini);
             return projectGemini;
-        }
-    }
-
-    public static string LogsDir
-    {
-        get
-        {
-            var dir = Path.Combine(DataDir, "logs");
-            Directory.CreateDirectory(dir);
-            return dir;
         }
     }
 
@@ -79,4 +100,8 @@ public static class AppPaths
             return dir;
         }
     }
+
+    public static string UserSshKeysFile => Path.Combine(UserProfileDir, ".ssh", "authorized_keys");
+    public static string DefaultLearningVaultDir => Path.Combine(UserProfileDir, "project", "learning");
+    public static string DefaultDesktopProjectDir => Path.Combine(UserProfileDir, "Desktop", "project");
 }

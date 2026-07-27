@@ -76,7 +76,7 @@ public class OllamaClient : IOllamaClient
 
     public void ShowLogs()
     {
-        var logPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ollama", "server.log");
+        var logPath = Path.Combine(AppPaths.LocalAppDataDir, "Ollama", "server.log");
         if (!File.Exists(logPath))
         {
             SpectrePanel.Error($"Ollama log file not found at: {logPath}");

@@ -11,7 +11,7 @@ namespace AgyTui.UI.Screens.SysNet;
 
 public static class SshConsoleView
 {
-    private static readonly string AuthorizedKeysFile = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ssh", "authorized_keys");
+    private static readonly string AuthorizedKeysFile = AppPaths.UserSshKeysFile;
 
     public static void ShowSshInfo()
     {
@@ -248,7 +248,7 @@ public static class SshConsoleView
     public static void AddAuthorizedKey(string key, string? account = null)
     {
         var targetUser = string.IsNullOrWhiteSpace(account) ? Environment.UserName : account;
-        var userHome = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        var userHome = AppPaths.UserProfileDir;
         if (!string.Equals(targetUser, Environment.UserName, StringComparison.OrdinalIgnoreCase))
         {
             var usersRoot = Directory.GetParent(userHome)!.FullName;

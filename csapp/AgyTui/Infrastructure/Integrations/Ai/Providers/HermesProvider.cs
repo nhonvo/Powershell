@@ -42,7 +42,7 @@ public class HermesProvider : IHermesClient
 
     public HermesResult InvokeHermes(string[]? argsList = null)
     {
-        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        var userProfile = AppPaths.UserProfileDir;
         var exe = FindHermesBinary("hermes", new[] {
             Path.Combine(userProfile, ".cargo", "bin", "hermes.exe"),
             Path.Combine(userProfile, "AppData", "Local", "Programs", "hermes", "hermes.exe")
