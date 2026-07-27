@@ -1,18 +1,39 @@
-Modules/
+# PowerShell Modules & Local Dependencies
+**/Modules/
 
-**.bak
+# PowerShell / Shell Runtime Logs & Outputs
 *.log
+*.bak
+*.tmp
+*.cache
+*.swp
 
-# .NET / C# Build and IDE outputs
-[Bb]in/
-[Oo]bj/
-[Dd]ist/
-[Dd]ist_run/
-[Pp]ublish/
+# C# / .NET Build Outputs & Artifacts
+**/bin/
+**/obj/
+**/dist/
+**/dist_run/
+**/publish/
+
+# IDE & Editor Configuration
 .vs/
+.vscode/
+.idea/
 *.suo
 *.user
-*.suo
 *.userprefs
-.idea/
-.vscode/
+*.sln.docstates
+
+# OS Metadata
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Local Runtime Diagnostics & State Files
+profile.log
+active_account.txt
+selected_project.txt
+selected_theme.txt
+scratch/
+.gemini/

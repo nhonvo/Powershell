@@ -5,33 +5,6 @@ $Global:ProfileRepoRoot = Split-Path -Parent -Path $MyInvocation.MyCommand.Defin
 # --- Load configuration from profile.config.json ---
 $configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\profile.config.json"
 if (-not (Test-Path $configPath)) { $configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "profile.config.json" }
-if (-not (Test-Path $configPath)) {
-    $defaultConfig = [ordered]@{
-        "_Note_AiMode" = "Terminal mode override: 'auto' (scans env), 'true' (force AI mode), or 'false' (force interactive TUI)."
-        "AiMode" = "auto"
-        
-        "_Note_VerboseStartup" = "Set to true to show verbose load status messages during shell startup."
-        "VerboseStartup" = $false
-        
-        "_Note_StartupLogFile" = "Path to the startup performance log. Leave empty for default: ~/.gemini/antigravity/profile.log"
-        "StartupLogFile" = ""
-        
-        "_Note_PoshThemesPath" = "Path to your oh-my-posh themes folder. Leave empty for default: <RepoRoot>/asset/powershell-themes"
-        "PoshThemesPath" = ""
-        
-        "_Note_ProjectsBaseDir" = "Base directory for development projects. Leave empty to use 'C:\Users\sshuser\project' or '~/Desktop/project'."
-        "ProjectsBaseDir" = ""
-        
-        "_Note_AgySourceHome" = "Base directory for Antigravity settings and accounts. Leave empty for default: C:\Users\Public\.gemini"
-        "AgySourceHome" = ""
-        
-        "_Note_GlobalBinDir" = "Directory containing active Antigravity CLI binary symlinks. Leave empty for default: C:\ProgramData\agy\bin"
-        "GlobalBinDir" = ""
-    }
-    try {
-        $defaultConfig | ConvertTo-Json -Depth 4 | Set-Content -Path $configPath -Force
-    } catch {}
-}
 
 $config = @{}
 if (Test-Path $configPath) {
@@ -159,15 +132,32 @@ Write-AgyStartupCheckpoint "script start"
 #  AGY TUI — compiled C# Spectre.Console application (AgyTuiApp)
 # ==============================================================================
 $Global:AgyTuiAppProject = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\AgyTui.csproj"
+
+function Get-AgyTuiDllPath {
+    $candidates = @()
+    $distPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\dist\AgyTui.dll"
+    if (Test-Path $distPath) { $candidates += Get-Item $distPath }
+
+    $debugBase = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin\Debug"
+    if (Test-Path $debugBase) {
+        $debugFiles = Get-ChildItem -Path $debugBase -Filter "AgyTui.dll" -Recurse -ErrorAction SilentlyContinue
+        if ($debugFiles) { $candidates += $debugFiles }
+    }
+
+    if ($candidates.Count -gt 0) {
+        $best = $candidates | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+        return $best.FullName
+    }
+    return $null
+}
+
 function Load-AgyTuiDll {
     param([bool]$SkipBuildCheck = $true)
     if ($null -eq ([System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTui" })) {
-        $targetDll = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Debug\net9.0\AgyTui.dll"
-        if (-not (Test-Path $targetDll)) {
-            $targetDll = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTui\dist\AgyTui.dll"
-        }
+        $targetDll = Get-AgyTuiDllPath
         $proj = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTui\AgyTui.csproj"
-        $needsBuild = -not (Test-Path $targetDll)
+        $needsBuild = [string]::IsNullOrEmpty($targetDll)
+
         if (-not $needsBuild -and -not $SkipBuildCheck -and (Test-Path $proj)) {
             $dllMtime = (Get-Item $targetDll).LastWriteTime
             $newestCs = Get-ChildItem -Path (Join-Path $Global:ProfileRepoRoot "csapp\AgyTui") -Filter "*.cs" -Recurse | Sort-Object LastWriteTime -Descending | Select-Object -First 1
@@ -175,55 +165,58 @@ function Load-AgyTuiDll {
                 $needsBuild = $true
             }
         }
+
         if ($needsBuild -and (Test-Path $proj)) {
-            dotnet build "$proj" -p:TreatWarningsAsErrors=true | Out-Null
-        }
-        if ((Test-Path $targetDll) -and $env:AGY_SKIP_DLL_LOAD -ne '1' -and (-not [Console]::IsOutputRedirected -or $env:AGY_LOAD_DLL -eq '1')) {
             try {
-                Get-ChildItem -Path (Split-Path $targetDll) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTui.dll" } | ForEach-Object {
+                dotnet build "$proj" -p:TreatWarningsAsErrors=true | Out-Null
+                $targetDll = Get-AgyTuiDllPath
+            } catch {
+                Write-AgyStartupCheckpoint "dotnet build failed or locked: $_"
+            }
+        }
+
+        if ($targetDll -and (Test-Path $targetDll) -and $env:AGY_SKIP_DLL_LOAD -ne '1' -and (-not [Console]::IsOutputRedirected -or $env:AGY_LOAD_DLL -eq '1')) {
+            try {
+                $dllFolder = Split-Path $targetDll
+                Get-ChildItem -Path $dllFolder -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTui.dll" } | ForEach-Object {
                     try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
                 }
                 Add-Type -Path $targetDll -ErrorAction SilentlyContinue
-            } catch {}
+                Write-AgyStartupCheckpoint "Loaded AgyTui.dll from $targetDll"
+            } catch {
+                Write-AgyStartupCheckpoint "Failed loading AgyTui.dll: $_"
+            }
         }
     }
     
-    # Register PowerShell Type Accelerators for shorthand C# helper calls
+    # Register PowerShell Type Accelerators via Dynamic Assembly Reflection
     try {
         $acc = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
-        if ($acc) {
-            $mappings = @{
-                "GitHelper"          = "AgyTui.Infrastructure.GitHelper"
-                "DotNetHelper"       = "AgyTui.Infrastructure.DotNetHelper"
-                "DockerHelper"       = "AgyTui.Infrastructure.DockerHelper"
-                "SystemHelper"       = "AgyTui.Infrastructure.SystemHelper"
-                "AwsHelper"          = "AgyTui.Infrastructure.AwsHelper"
-                "ObsidianHelper"     = "AgyTui.Infrastructure.Integrations.Obsidian.ObsidianBridge"
-                "StudyHelper"        = "AgyTui.UI.Screens.Learn.StudyConsoleView"
-                "AccountHelper"      = "AgyTui.UI.Screens.Account.AgyAccountCore"
-                "AiHelper"           = "AgyTui.Infrastructure.Integrations.Ai.AiClient"
-                "AgyAccountCore"     = "AgyTui.UI.Screens.Account.AgyAccountCore"
-                "AgyAccountManager"  = "AgyTui.UI.Screens.Account.AgyAccountCore"
-                "AgyAiCore"          = "AgyTui.Infrastructure.Integrations.Ai.AgyAiCore"
-                "TerminalIde"        = "AgyTui.UI.Screens.Ide.TerminalIde"
-                "ProfileHelp"        = "AgyTui.UI.Core.Layouts.ProfileHelp"
-                "SpectreMenu"        = "AgyTui.UI.Core.Common.SpectreMenu"
-                "SpectreProgress"    = "AgyTui.UI.Core.Common.SpectreProgress"
-                "SpectrePager"       = "AgyTui.UI.Core.Common.SpectrePager"
-                "WorkspaceRegistry"  = "AgyTui.Core.Registries.WorkspaceRegistry"
-                "AntigravityManager" = "AgyTui.Infrastructure.Integrations.Sys.AntigravityManagerHelper"
-                "AntigravityDeck"    = "AgyTui.Infrastructure.Integrations.Sys.AntigravityDeckHelper"
-                "ThemeHelper"        = "AgyTui.Infrastructure.Common.ThemeManager"
-                "SshHelper"          = "AgyTui.UI.Screens.SysNet.SshConsoleView"
-                "ProjectScaffolder"  = "AgyTui.Infrastructure.Common.ProjectScaffolder"
-                "AgySecretVault"     = "AgyTui.Infrastructure.Persistence.Accounts.AgySecretVault"
-                "DatabaseHelper"     = "AgyTui.Infrastructure.Persistence.Learning.DatabaseHelper"
-                "LogHelper"          = "AgyTui.UI.Core.Common.LogHelper"
+        $agyAssembly = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTui" }
+        if ($acc -and $agyAssembly) {
+            # Auto-register all public C# classes from AgyTui
+            foreach ($type in $agyAssembly.GetExportedTypes()) {
+                if ($type.IsClass -and -not $acc::Get.ContainsKey($type.Name)) {
+                    $acc::Add($type.Name, $type)
+                }
             }
-            foreach ($key in $mappings.Keys) {
-                $full = $mappings[$key] -as [type]
-                if ($full -and -not ($acc::Get.ContainsKey($key))) {
-                    $acc::Add($key, $full)
+
+            # Map shorthand aliases dynamically to primary class names
+            $aliases = @{
+                "ObsidianHelper"     = "ObsidianBridge"
+                "StudyHelper"        = "LearnRouter"
+                "AccountHelper"      = "AgyAccountCore"
+                "AgyAccountManager"  = "AgyAccountCore"
+                "AiHelper"           = "AgyAiCore"
+                "ThemeHelper"        = "ThemeManager"
+                "SshHelper"          = "SshConsoleView"
+                "AntigravityManager" = "AntigravityManagerHelper"
+                "AntigravityDeck"    = "AntigravityDeckHelper"
+            }
+            foreach ($alias in $aliases.Keys) {
+                $targetClass = $aliases[$alias]
+                if (-not $acc::Get.ContainsKey($alias) -and $acc::Get.ContainsKey($targetClass)) {
+                    $acc::Add($alias, $acc::Get[$targetClass])
                 }
             }
         }
@@ -1540,19 +1533,29 @@ if (Get-Command multigravity -ErrorAction SilentlyContinue) {
 
 # --- Help shortcuts ---
 function Invoke-ControlCenter {
-    $releaseDll = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\dist\AgyTui.dll"
-    $debugDll = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin\Debug\net9.0\AgyTui.dll"
-    if (-not (Test-Path $debugDll)) {
-        $debugDll = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin\Debug\net10.0\AgyTui.dll"
+    [CmdletBinding()]
+    param(
+        [switch]$NewWindow,
+        [ValueFromRemainingArguments()][string[]]$ControlArgs
+    )
+    if ($NewWindow) {
+        $pwshExe = (Get-Command pwsh -ErrorAction SilentlyContinue).Source
+        if (-not $pwshExe) { $pwshExe = "powershell.exe" }
+        $argString = if ($ControlArgs) { $ControlArgs -join ' ' } else { '' }
+        Start-Process $pwshExe -ArgumentList "-NoExit", "-Command", "Invoke-ControlCenter $argString"
+        return
     }
-    if (Test-Path $releaseDll) {
-        dotnet $releaseDll @args
+
+    $targetDll = Get-AgyTuiDllPath
+    if ($targetDll -and (Test-Path $targetDll)) {
+        dotnet $targetDll @ControlArgs
     } else {
-        if (Test-Path $debugDll) {
-            dotnet $debugDll @args
+        $proj = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\AgyTui.csproj"
+        if (Test-Path $proj) {
+            dotnet run --project $proj -- $ControlArgs
         } else {
-            $proj = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\AgyTui.csproj"
-            dotnet run --project $proj -- $args
+            Write-Warning "AgyTui application not found."
+            return
         }
     }
     $selectedProjFile = Join-Path -Path $Global:AgySourceHome -ChildPath "selected_project.txt"
