@@ -13,7 +13,7 @@ public class CommandLoggingMiddleware : ICommandRouter
 
     public int Execute(string alias, string[]? args = null)
     {
-        var logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini", "antigravity");
+        var logDir = AppPaths.LogsDir;
         var logFile = Path.Combine(logDir, "tui_execution.log");
 
         try

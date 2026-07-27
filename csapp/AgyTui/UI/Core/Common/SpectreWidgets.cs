@@ -349,9 +349,7 @@ public static class LogHelper
 {
     public static string GetLogFilePath()
     {
-        var logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini", "antigravity");
-        Directory.CreateDirectory(logDir);
-        return Path.Combine(logDir, "profile.log");
+        return Path.Combine(AppPaths.LogsDir, "profile.log");
     }
 
     public static void Log(string message, string level = "INFO")

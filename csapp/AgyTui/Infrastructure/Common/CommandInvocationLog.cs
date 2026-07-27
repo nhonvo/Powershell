@@ -23,12 +23,7 @@ public static class CommandInvocationLog
     {
         get
         {
-            var home = AgyAccountCore.AgySourceHome;
-            if (string.IsNullOrEmpty(home))
-            {
-                home = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini");
-            }
-            return Path.Combine(home, "command_activity_log.jsonl");
+            return Path.Combine(AppPaths.LogsDir, "command_activity_log.jsonl");
         }
     }
 

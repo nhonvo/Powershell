@@ -11,7 +11,7 @@ namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
 
 public class OllamaClient : IOllamaClient
 {
-    private static readonly string OllamaDefaultModelFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ollama_default_model");
+    private static readonly string OllamaDefaultModelFile = Path.Combine(AppPaths.OllamaDataDir, "default_model.txt");
     private readonly IAiProcessRunner _processRunner;
     private string _defaultModel = LoadDefaultModel();
 

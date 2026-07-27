@@ -2,7 +2,7 @@ namespace AgyTui.Infrastructure.Integrations.Sys;
 
 public static class AntigravityDeckHelper
 {
-    private static readonly string DeckPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AntigravityDeck");
+    private static readonly string DeckPath = AppPaths.DeckDataDir;
 
     private static bool EnsureDeckPathExists()
     {

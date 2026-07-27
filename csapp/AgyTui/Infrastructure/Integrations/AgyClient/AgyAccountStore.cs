@@ -28,9 +28,9 @@ public class AgyAccountStore : IAgyAccountStore
             Path.Combine(AgySourceHome, "active_account")
         };
 
-        var userGemini = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini");
-        list.Add(Path.Combine(userGemini, "active_account.txt"));
-        list.Add(Path.Combine(userGemini, "active_account"));
+        var projectGemini = AppPaths.GeminiHome;
+        list.Add(Path.Combine(projectGemini, "active_account.txt"));
+        list.Add(Path.Combine(projectGemini, "active_account"));
 
         return list.Distinct(StringComparer.OrdinalIgnoreCase);
     }

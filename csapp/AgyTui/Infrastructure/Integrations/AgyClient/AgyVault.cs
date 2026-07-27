@@ -110,7 +110,7 @@ public class AgyVault : IAgyVault
             var targetHomeDirs = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 AgySourceHome,
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini")
+                AppPaths.GeminiHome
             };
 
             var credFiles = new[] { "google_accounts.json", "oauth_creds.json", "state.json", "keyring_token.txt" };
