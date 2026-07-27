@@ -13,8 +13,8 @@ public static class AntigravityManagerHelper
         }
 
         // Fallback to desktop/project path
-        var agBaseDir = !string.IsNullOrEmpty(Config.Current.ProjectsBaseDir)
-            ? Config.Current.ProjectsBaseDir
+        var agBaseDir = !string.IsNullOrEmpty(Config.Current.Project.BaseDir)
+            ? Config.Current.Project.BaseDir
             : AppPaths.DefaultDesktopProjectDir;
         return Path.Combine(agBaseDir, "AntigravityManager");
     }

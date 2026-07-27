@@ -9,7 +9,7 @@ public static class CcNavigator
         try
         {
             var root = MenuNodeBuilder.BuildTree();
-            IMenuRenderer renderer = string.Equals(Config.Current.UiMode, "flat-tree", StringComparison.OrdinalIgnoreCase)
+            IMenuRenderer renderer = string.Equals(Config.Current.Ui.Mode, "flat-tree", StringComparison.OrdinalIgnoreCase)
                 ? new FlatTreeRenderer()
                 : new ThreePaneRenderer();
             renderer.Run(root);

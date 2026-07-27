@@ -8,7 +8,7 @@ public static class AiDashboardView
 {
     public static void ShowAiModeCheck(string alias)
     {
-        var mode = Config.Current.AiProviderMode ?? "hybrid";
+        var mode = Config.Current.Ai.ProviderMode ?? "hybrid";
         SpectrePanel.Info($"Active AI Alias: {alias} (Provider Mode: {mode})");
         Thread.Sleep(1000);
     }
@@ -19,7 +19,7 @@ public static class AiDashboardView
 
         while (true)
         {
-            var mode = Config.Current.AiProviderMode ?? "hybrid";
+            var mode = Config.Current.Ai.ProviderMode ?? "hybrid";
             var options = new[]
             {
                 $"🤖 Current AI Provider Mode: [{mode.ToUpper()}]",
@@ -40,7 +40,7 @@ public static class AiDashboardView
                 if (modeChoice >= 0)
                 {
                     var selected = modeChoice switch { 0 => "cloud", 1 => "ollama", _ => "hybrid" };
-                    Config.Current.AiProviderMode = selected;
+                    Config.Current.Ai.ProviderMode = selected;
                     Config.Save();
                     SpectrePanel.Success($"AI Provider Mode set to: {selected}");
                     Thread.Sleep(1000);

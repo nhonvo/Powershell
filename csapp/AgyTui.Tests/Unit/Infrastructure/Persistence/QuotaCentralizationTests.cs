@@ -47,10 +47,10 @@ public class QuotaCentralizationTests
     {
         var tempDir = Path.Combine(Path.GetTempPath(), "agy_quota_test_" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(tempDir);
-        var originalHome = AgyAccountCore.AgySourceHome;
+        var originalHome = Config.Current.System.AgySourceHome;
         try
         {
-            Config.Current.AgySourceHome = tempDir;
+            Config.Current.System.AgySourceHome = tempDir;
             var logPath = Path.Combine(tempDir, "ai_activity_log.jsonl");
 
             var nowStr = DateTime.UtcNow.ToString("o");
@@ -67,7 +67,7 @@ public class QuotaCentralizationTests
         }
         finally
         {
-            Config.Current.AgySourceHome = originalHome;
+            Config.Current.System.AgySourceHome = originalHome;
             try { if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true); } catch { }
         }
     }

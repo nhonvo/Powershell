@@ -5,22 +5,22 @@ public class AiClientTests
     [Fact]
     public void Config_AiProviderMode_DefaultsToHybridOrConfiguredValue()
     {
-        var mode = Config.Current.AiProviderMode;
+        var mode = Config.Current.Ai.ProviderMode;
         Assert.NotNull(mode);
     }
 
     [Fact]
     public void Config_EnableAiOllama_FlagCanBeToggled()
     {
-        var orig = Config.Current.EnableAiOllama;
+        var orig = Config.Current.Ai.EnableOllama;
         try
         {
-            Config.Current.EnableAiOllama = true;
-            Assert.True(Config.Current.EnableAiOllama);
+            Config.Current.Ai.EnableOllama = true;
+            Assert.True(Config.Current.Ai.EnableOllama);
         }
         finally
         {
-            Config.Current.EnableAiOllama = orig;
+            Config.Current.Ai.EnableOllama = orig;
         }
     }
 }

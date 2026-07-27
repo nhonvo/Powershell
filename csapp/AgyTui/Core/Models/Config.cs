@@ -59,65 +59,12 @@ public sealed class ConfigData
     public ObsidianConfig Obsidian { get; set; } = new();
     public ProxyConfig Proxy { get; set; } = new();
 
-    // Flat getters and setters for backwards compatibility adapter pattern
-    [JsonIgnore]
-    public string UiMode { get => Ui.Mode; set { if (!string.IsNullOrEmpty(value)) Ui.Mode = value; } }
-
-    [JsonIgnore]
-    public string Density { get => Ui.Density; set { if (!string.IsNullOrEmpty(value)) Ui.Density = value; } }
-
-    [JsonIgnore]
-    public string AiMode { get => Ai.Mode; set { if (!string.IsNullOrEmpty(value)) Ai.Mode = value; } }
-
-    [JsonIgnore]
-    public string AiProviderMode { get => Ai.ProviderMode; set { if (!string.IsNullOrEmpty(value)) Ai.ProviderMode = value; } }
-
-    [JsonIgnore]
-    public bool EnableAiOllama { get => Ai.EnableOllama; set => Ai.EnableOllama = value; }
-
-    [JsonIgnore]
-    public bool EnableAgy { get => Ai.EnableAgy; set => Ai.EnableAgy = value; }
-
-    [JsonIgnore]
-    public bool VerboseStartup { get => System.VerboseStartup; set => System.VerboseStartup = value; }
-
-    [JsonIgnore]
-    public string StartupLogFile { get => System.StartupLogFile; set { if (!string.IsNullOrEmpty(value)) System.StartupLogFile = value; } }
-
-    [JsonIgnore]
-    public string PoshThemesPath { get => System.PoshThemesPath; set { if (!string.IsNullOrEmpty(value)) System.PoshThemesPath = value; } }
-
-    [JsonIgnore]
-    public string ProjectsBaseDir { get => Project.BaseDir; set { if (!string.IsNullOrEmpty(value)) Project.BaseDir = value; } }
-
-    [JsonIgnore]
-    public string AgySourceHome { get => System.AgySourceHome; set { if (!string.IsNullOrEmpty(value)) System.AgySourceHome = value; } }
-
-    [JsonIgnore]
-    public string GlobalBinDir { get => System.GlobalBinDir; set { if (!string.IsNullOrEmpty(value)) System.GlobalBinDir = value; } }
-
-    [JsonIgnore]
-    public string HttpProxy { get => Proxy.HttpProxy; set { if (value != null) Proxy.HttpProxy = value; } }
-
-    [JsonIgnore]
-    public string HttpsProxy { get => Proxy.HttpsProxy; set { if (value != null) Proxy.HttpsProxy = value; } }
-
-    [JsonIgnore]
-    public string NoProxy { get => Proxy.NoProxy; set { if (value != null) Proxy.NoProxy = value; } }
-
-    [JsonIgnore]
-    public string[] ProjectSearchPaths { get => Project.SearchPaths; set { if (value != null) Project.SearchPaths = value; } }
-
-    [JsonIgnore]
-    public string[] ProjectExcludeFolders { get => Project.ExcludeFolders; set { if (value != null) Project.ExcludeFolders = value; } }
 }
 
 public sealed class RuntimeState
 {
-    public string? ActiveThemeOverride { get; set; }
     public bool? MobileContextOverride { get; set; }
     public string? RuntimeDensity { get; set; }
-    public DateTime SessionStartTime { get; } = DateTime.UtcNow;
 }
 
 public static class Config

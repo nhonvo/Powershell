@@ -8,7 +8,7 @@ public abstract class MenuRendererBase : IMenuRenderer
 
     protected static MenuNode[] GetActiveChildren(MenuNode parent)
     {
-        var (enableAi, enableAgy) = _enabledCache.GetOrCompute("flags", () => (Config.Current.EnableAiOllama, Config.Current.EnableAgy));
+        var (enableAi, enableAgy) = _enabledCache.GetOrCompute("flags", () => (Config.Current.Ai.EnableOllama, Config.Current.Ai.EnableAgy));
 
         var list = new List<MenuNode>();
         foreach (var child in parent.Children)

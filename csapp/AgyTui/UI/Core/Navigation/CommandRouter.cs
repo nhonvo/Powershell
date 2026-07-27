@@ -74,13 +74,13 @@ public class CommandRouter : ICommandRouter
             var cmdEntry = CommandRegistry.GetByAlias(lAlias);
             if (cmdEntry != null)
             {
-                if (cmdEntry.RequiresAiOllama && !Config.Current.EnableAiOllama)
+                if (cmdEntry.RequiresAiOllama && !Config.Current.Ai.EnableOllama)
                 {
                     SpectrePanel.Error("AI/Ollama features are disabled in config.");
                     Thread.Sleep(1500);
                     return 1;
                 }
-                if (cmdEntry.RequiresAgy && !Config.Current.EnableAgy)
+                if (cmdEntry.RequiresAgy && !Config.Current.Ai.EnableAgy)
                 {
                     SpectrePanel.Error("AGY Account features are disabled in config.");
                     Thread.Sleep(1500);
@@ -357,7 +357,7 @@ public class CommandRouter : ICommandRouter
                         AntigravityManagerHelper.StartLocal();
                         break;
                     case "agy-cli":
-                        if (!Config.Current.EnableAgy)
+                        if (!Config.Current.Ai.EnableAgy)
                         {
                             _claude.InvokeClaude([]);
                             break;
@@ -578,7 +578,7 @@ public class CommandRouter : ICommandRouter
                             }
                             else
                             {
-                                var currentMode = Config.Current.UiMode;
+                                var currentMode = Config.Current.Ui.Mode;
                                 nextMode = string.Equals(currentMode, "three-pane", StringComparison.OrdinalIgnoreCase) ? "flat-tree" : "three-pane";
                             }
                             Config.SetUiMode(nextMode);
@@ -588,7 +588,7 @@ public class CommandRouter : ICommandRouter
                         break;
                     case "density":
                         {
-                            var currentDensity = Config.Current.Density;
+                            var currentDensity = Config.Current.Ui.Density;
                             var nextDensity = currentDensity == "comfortable" ? "compact" : "comfortable";
                             Config.SetDensity(nextDensity);
                             AnsiConsole.MarkupLine($"[green]UI Density toggled to '{nextDensity}'. Switch will apply next time you launch Control Center.[/]");

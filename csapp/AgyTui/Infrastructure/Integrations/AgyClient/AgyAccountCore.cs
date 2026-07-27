@@ -23,7 +23,7 @@ public static class AgyAccountCore
     {
         get
         {
-            var cfgHome = Config.Current.AgySourceHome;
+            var cfgHome = Config.Current.System.AgySourceHome;
             if (!string.IsNullOrEmpty(cfgHome)) return cfgHome;
             return AppPaths.GeminiHome;
         }

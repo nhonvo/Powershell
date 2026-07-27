@@ -7,10 +7,10 @@ public class AccountStatsTests
     public void GetAccountStats_ReadsSkillsAndBrainFromAccountSpecificDir()
     {
         var tempDir = Path.Combine(Path.GetTempPath(), "AgyStatsTest_" + Path.GetRandomFileName());
-        var originalHome = Config.Current.AgySourceHome;
+        var originalHome = Config.Current.System.AgySourceHome;
         try
         {
-            Config.Current.AgySourceHome = tempDir;
+            Config.Current.System.AgySourceHome = tempDir;
             var accDir = AgyAccountCore.GetAccountDirectory("testacc");
             Directory.CreateDirectory(Path.Combine(accDir, "skills", "skill1"));
             Directory.CreateDirectory(Path.Combine(accDir, "skills", "skill2"));
@@ -24,7 +24,7 @@ public class AccountStatsTests
         }
         finally
         {
-            Config.Current.AgySourceHome = originalHome;
+            Config.Current.System.AgySourceHome = originalHome;
             if (Directory.Exists(tempDir))
             {
                 try { Directory.Delete(tempDir, true); } catch { }

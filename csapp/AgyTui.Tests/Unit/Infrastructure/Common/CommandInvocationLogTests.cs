@@ -7,11 +7,11 @@ public class CommandInvocationLogTests
     {
         var tempDir = Path.Combine(Path.GetTempPath(), "agy_cmd_log_test_" + Guid.NewGuid());
         Directory.CreateDirectory(tempDir);
-        var oldHome = Config.Current.AgySourceHome;
+        var oldHome = Config.Current.System.AgySourceHome;
 
         try
         {
-            Config.Current.AgySourceHome = tempDir;
+            Config.Current.System.AgySourceHome = tempDir;
             CommandInvocationLog.Record("proj", TimeSpan.FromMilliseconds(150), true, null);
 
             var logFile = CommandInvocationLog.LogFilePath;
@@ -33,7 +33,7 @@ public class CommandInvocationLogTests
         }
         finally
         {
-            Config.Current.AgySourceHome = oldHome;
+            Config.Current.System.AgySourceHome = oldHome;
             try { if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true); } catch { }
         }
     }

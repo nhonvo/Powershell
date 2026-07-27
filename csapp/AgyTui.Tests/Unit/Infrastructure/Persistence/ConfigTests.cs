@@ -17,7 +17,7 @@ public class ConfigTests
         try
         {
             Config.Current.Ui.Density = "comfortable";
-            Assert.False(Config.Current.Density == "compact" && !Config.IsMobileContext());
+            Assert.False(Config.Current.Ui.Density == "compact" && !Config.IsMobileContext());
 
             Config.Current.Ui.Density = "compact";
             Assert.True(Config.IsMobileContext());
