@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace AgyTui.Infrastructure.Integrations.Docker;
 
-public class DockerClient : CliToolWrapper
+public class DockerClient : CliToolWrapper, IDockerClient
 {
     private static readonly string[] CleanupOptions = [
         "Stop & remove all running containers",

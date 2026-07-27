@@ -1,6 +1,6 @@
 namespace AgyTui.Infrastructure.Integrations.Git;
 
-public class GitClient : CliToolWrapper
+public class GitClient : CliToolWrapper, IGitClient
 {
     private static readonly string[] CommitTypes = ["feat", "fix", "docs", "style", "refactor", "test", "chore", "ci"];
 

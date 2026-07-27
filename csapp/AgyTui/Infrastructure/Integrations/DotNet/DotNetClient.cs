@@ -1,6 +1,6 @@
 namespace AgyTui.Infrastructure.Integrations.DotNet;
 
-public class DotNetClient : CliToolWrapper
+public class DotNetClient : CliToolWrapper, IDotNetClient
 {
     public DotNetClient() : base("dotnet")
     {

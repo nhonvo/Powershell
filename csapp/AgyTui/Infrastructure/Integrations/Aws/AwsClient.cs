@@ -1,6 +1,6 @@
 namespace AgyTui.Infrastructure.Integrations.Aws;
 
-public class AwsClient : CliToolWrapper
+public class AwsClient : CliToolWrapper, IAwsClient
 {
     private const string LocalStackEndpoint = "http://localhost:4566";
 
