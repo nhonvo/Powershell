@@ -60,8 +60,6 @@ public static class OllamaProvider
         }
     }
 
-    public static void EnsureOllamaProxy() => EnsureOllamaServer();
-
     public static void InvokeOllamaNative(string? model)
     {
         EnsureOllamaServer();
