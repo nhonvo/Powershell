@@ -1,7 +1,7 @@
 using AgyTui.Core.Interfaces;
 using AgyTui.Infrastructure.Di;
 using AgyTui.Infrastructure.Integrations.AgyClient;
-using AgyTui.Infrastructure.Persistence.Accounts;
+using AgyTui.Infrastructure.Integrations.AgyClient;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 

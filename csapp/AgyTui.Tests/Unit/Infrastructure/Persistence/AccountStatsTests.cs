@@ -1,6 +1,6 @@
 using System.IO;
 using AgyTui.Core.Models;
-using AgyTui.Infrastructure.Persistence.Accounts;
+using AgyTui.Infrastructure.Integrations.AgyClient;
 using Xunit;
 
 namespace AgyTui.Tests.Unit.Infrastructure.Persistence;

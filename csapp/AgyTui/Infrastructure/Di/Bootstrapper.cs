@@ -8,7 +8,7 @@ using AgyTui.Infrastructure.Integrations.Docker;
 using AgyTui.Infrastructure.Integrations.DotNet;
 using AgyTui.Infrastructure.Integrations.Git;
 using AgyTui.Infrastructure.Logging;
-using AgyTui.Infrastructure.Persistence.Accounts;
+using AgyTui.Infrastructure.Integrations.AgyClient;
 using AgyTui.Infrastructure.Persistence.Learning;
 using AgyTui.UI.Core.Navigation;
 

@@ -1,6 +1,6 @@
 using AgyTui.Core.Interfaces;
 
-namespace AgyTui.Infrastructure.Persistence.Accounts;
+namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
 public class JsonAccountRepository : IAccountRepository
 {

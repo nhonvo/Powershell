@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using AgyTui.Infrastructure.Persistence.Accounts;
+using AgyTui.Infrastructure.Integrations.AgyClient;
 using Xunit;
 
 public class ArchitectureTests

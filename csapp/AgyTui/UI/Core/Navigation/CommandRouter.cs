@@ -824,19 +824,19 @@ public class CommandRouter : ICommandRouter
                 case "secret-set":
                     var sKey = args != null && args.Length > 0 ? args[0] : AnsiConsole.Ask<string>("Key:");
                     var sVal = args != null && args.Length > 1 ? args[1] : AnsiConsole.Ask<string>("Value:");
-                    Infrastructure.Persistence.Accounts.AgySecretVault.SetSecret(sKey, sVal);
+                    AgySecretVault.SetSecret(sKey, sVal);
                     break;
                 case "secret-get":
                     var gKey = args != null && args.Length > 0 ? args[0] : AnsiConsole.Ask<string>("Key:");
-                    var secVal = Infrastructure.Persistence.Accounts.AgySecretVault.GetSecret(gKey);
+                    var secVal = AgySecretVault.GetSecret(gKey);
                     if (!string.IsNullOrEmpty(secVal)) AnsiConsole.WriteLine(secVal);
                     break;
                 case "secret-list":
-                    Infrastructure.Persistence.Accounts.AgySecretVault.ListSecrets();
+                    AgySecretVault.ListSecrets();
                     break;
                 case "secret-remove":
                     var rKey = args != null && args.Length > 0 ? args[0] : AnsiConsole.Ask<string>("Key:");
-                    Infrastructure.Persistence.Accounts.AgySecretVault.RemoveSecret(rKey);
+                    AgySecretVault.RemoveSecret(rKey);
                     break;
                 default:
                     SpectrePanel.Warning($"Command alias '{alias}' is not implemented for direct TUI routing.");

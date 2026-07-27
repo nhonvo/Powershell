@@ -1,7 +1,8 @@
+using AgyTui.Core.Interfaces;
 using AgyTui.Infrastructure.Di;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AgyTui.Infrastructure.Persistence.Accounts;
+namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
 public static class AccountRepository
 {

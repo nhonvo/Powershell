@@ -1,7 +1,7 @@
 namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
 using AgyTui.Core.Interfaces;
-using AgyTui.Infrastructure.Persistence.Accounts;
+using AgyTui.Infrastructure.Integrations.AgyClient;
 
 public class AgyClient : IAgyClient
 {

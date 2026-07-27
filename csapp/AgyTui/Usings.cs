@@ -11,7 +11,6 @@ global using AgyTui.Infrastructure.Integrations.Git;
 global using AgyTui.Infrastructure.Integrations.Obsidian;
 global using AgyTui.Infrastructure.Integrations.Sys;
 global using AgyTui.Infrastructure.Integrations.AgyClient;
-global using AgyTui.Infrastructure.Persistence.Accounts;
 global using AgyTui.Infrastructure.Persistence.Learning;
 global using AgyTui.UI.Core.Common;
 global using AgyTui.UI.Core.Layouts;

@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace AgyTui.Infrastructure.Persistence.Accounts;
+namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
 public static class QuotaTracker
 {
