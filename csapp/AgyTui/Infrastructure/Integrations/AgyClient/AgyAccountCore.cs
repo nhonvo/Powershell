@@ -90,7 +90,7 @@ public static class AgyAccountCore
                 var m = Regex.Match(Path.GetFileName(dir), @"^\.gemini_(.+)$");
                 if (!m.Success) continue;
                 var name = m.Groups[1].Value;
-                if (!Regex.IsMatch(name, @"^(backup|copy|temp)([_-]|$)", RegexOptions.IgnoreCase) && !accounts.Contains(name, StringComparer.OrdinalIgnoreCase)) accounts.Add(name);
+                if (!Regex.IsMatch(name, @"^(backup|copy|temp|test|testacc)([_-]|$)", RegexOptions.IgnoreCase) && !accounts.Contains(name, StringComparer.OrdinalIgnoreCase)) accounts.Add(name);
             }
         }
         return [.. accounts];
