@@ -479,6 +479,11 @@ public class CommandRouter : ICommandRouter
                 case "reload-profile":
                     ReloadTerminalProfile();
                     break;
+                case "tui-log":
+                case "show-log":
+                case "tui-logs":
+                    ShowExecutionLogs();
+                    break;
                 case "reload-all":
                 case "rall":
                     ReloadAll();
@@ -887,30 +892,52 @@ public class CommandRouter : ICommandRouter
             }
             if (idx == 3)
             {
-                var logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini", "antigravity");
-                var logFile = Path.Combine(logDir, "tui_execution.log");
-                if (File.Exists(logFile))
-                {
-                    SystemHelper.OpenExplorer(logFile);
-                }
-                else
-                {
-                    SpectrePanel.Warning("Execution log file does not exist yet.");
-                }
+                ShowExecutionLogs();
             }
+        }
+    }
+
+    private void ShowExecutionLogs()
+    {
+        var logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini", "antigravity");
+        var logFile = Path.Combine(logDir, "tui_execution.log");
+        if (File.Exists(logFile))
+        {
+            try
+            {
+                var lines = File.ReadAllLines(logFile).TakeLast(35).ToArray();
+                AnsiConsole.Clear();
+                SpectrePanel.Info($"Execution Log ({logFile}) — Last {lines.Length} entries:");
+                foreach (var line in lines)
+                {
+                    if (line.Contains("[FAIL]")) AnsiConsole.MarkupLine($"[red]{line.EscapeMarkup()}[/]");
+                    else if (line.Contains("[END]")) AnsiConsole.MarkupLine($"[green]{line.EscapeMarkup()}[/]");
+                    else AnsiConsole.MarkupLine($"[cyan]{line.EscapeMarkup()}[/]");
+                }
+                AnsiConsole.MarkupLine("\n[dim yellow]Press any key to return to menu...[/]");
+                Console.ReadKey(true);
+            }
+            catch (Exception ex)
+            {
+                SpectrePanel.Error($"Failed to read log file: {ex.Message}");
+            }
+        }
+        else
+        {
+            SpectrePanel.Warning($"Execution log file does not exist at '{logFile}'.");
         }
     }
 
     private void ReloadControlCenter()
     {
-        SpectrePanel.Info("Initiating clean rebuild and restart sequence for Control Center TUI...");
+        SpectrePanel.Info("Initiating clean kill, rebuild and restart sequence for Control Center TUI & agy...");
         try
         {
             var csproj = @"C:\Users\TruongNhon\Documents\Powershell\csapp\AgyTui\AgyTui.csproj";
             var binDir = @"C:\Users\TruongNhon\Documents\Powershell\csapp\AgyTui\bin\Debug\net9.0";
             var exePath = Path.Combine(binDir, "AgyTui.exe");
 
-            var script = $"Start-Sleep -Milliseconds 600; dotnet build '{csproj}' -c Debug; if ($?) {{ Start-Process '{exePath}' }}";
+            var script = $"Stop-Process -Name 'agy' -Force -ErrorAction SilentlyContinue; Stop-Process -Name 'AgyTui' -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 600; dotnet build '{csproj}' -c Debug; if ($?) {{ Start-Process '{exePath}' }}";
             
             var psi = new System.Diagnostics.ProcessStartInfo
             {

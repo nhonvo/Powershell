@@ -7,24 +7,20 @@ public static class ScrollableListView
         if (totalCount <= 0) return (0, 0);
         if (maxVisibleRows <= 0) maxVisibleRows = 10;
 
-        int topRow = 0;
-        if (selectedIndex >= topRow + maxVisibleRows)
-        {
-            topRow = selectedIndex - maxVisibleRows + 1;
-        }
-        if (selectedIndex < topRow)
-        {
-            topRow = selectedIndex;
-        }
+        if (totalCount <= maxVisibleRows) return (0, totalCount);
 
-        topRow = Math.Max(0, Math.Min(topRow, Math.Max(0, totalCount - maxVisibleRows)));
+        // Center selectedIndex in the middle of the visible viewport
+        int half = maxVisibleRows / 2;
+        int topRow = selectedIndex - half;
+
+        topRow = Math.Max(0, Math.Min(topRow, totalCount - maxVisibleRows));
         int endRow = Math.Min(totalCount, topRow + maxVisibleRows);
         return (topRow, endRow);
     }
 
     public static int GetPageStep(int maxVisibleRows)
     {
-        return Math.Max(1, maxVisibleRows);
+        return Math.Max(1, maxVisibleRows / 2);
     }
 
     public static string RenderAboveIndicator(int topRow)
