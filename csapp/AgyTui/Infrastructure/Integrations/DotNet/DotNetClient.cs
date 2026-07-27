@@ -34,17 +34,30 @@ public class DotNetClient : CliToolWrapper, IDotNetClient
         }))], markup: true);
     }
 
-    public int Build(string? projectPath = null) => RunDotnet("build", projectPath);
+    private int RunDotnetWithTarget(string command, string? targetOrWorkingDir)
+    {
+        if (!string.IsNullOrEmpty(targetOrWorkingDir))
+        {
+            if (File.Exists(targetOrWorkingDir) || targetOrWorkingDir.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase) || targetOrWorkingDir.EndsWith(".sln", StringComparison.OrdinalIgnoreCase))
+            {
+                return RunDotnet($"{command} \"{targetOrWorkingDir}\"", null);
+            }
+            return RunDotnet(command, targetOrWorkingDir);
+        }
+        return RunDotnet(command, null);
+    }
 
-    public int Run(string? projectPath = null) => RunDotnet("run", projectPath);
+    public int Build(string? projectPath = null) => RunDotnetWithTarget("build", projectPath);
 
-    public int Test(string? projectPath = null) => RunDotnet("test", projectPath);
+    public int Run(string? projectPath = null) => RunDotnetWithTarget("run", projectPath);
 
-    public int Format(string? projectPath = null) => RunDotnet("format", projectPath);
+    public int Test(string? projectPath = null) => RunDotnetWithTarget("test", projectPath);
 
-    public int Clean(string? projectPath = null) => RunDotnet("clean", projectPath);
+    public int Format(string? projectPath = null) => RunDotnetWithTarget("format", projectPath);
 
-    public int Restore(string? projectPath = null) => RunDotnet("restore", projectPath);
+    public int Clean(string? projectPath = null) => RunDotnetWithTarget("clean", projectPath);
+
+    public int Restore(string? projectPath = null) => RunDotnetWithTarget("restore", projectPath);
 
     public int Publish(string? projectPath = null) => RunDotnet("publish csapp/AgyTui/AgyTui.csproj -c Release -r win-x64 --self-contained -o csapp/AgyTui/dist", projectPath);
 

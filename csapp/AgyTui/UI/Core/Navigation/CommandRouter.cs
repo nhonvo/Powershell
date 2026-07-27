@@ -896,10 +896,18 @@ public class CommandRouter : ICommandRouter
         SpectrePanel.Info("Rebuilding and restarting Control Center TUI session...");
         try
         {
-            DotNetHelper.Build(new[] { "C:\\Users\\TruongNhon\\Documents\\Powershell\\csapp\\AgyTui\\AgyTui.csproj" });
-            SpectrePanel.Success("Control Center TUI rebuilt successfully. Restarting...");
-            Thread.Sleep(1000);
-            Environment.Exit(0);
+            var csproj = @"C:\Users\TruongNhon\Documents\Powershell\csapp\AgyTui\AgyTui.csproj";
+            var exitCode = DotNetHelper.Build(new[] { csproj });
+            if (exitCode == 0)
+            {
+                SpectrePanel.Success("Control Center TUI rebuilt successfully. Restarting...");
+                Thread.Sleep(1000);
+                Environment.Exit(0);
+            }
+            else
+            {
+                SpectrePanel.Error($"Control Center build failed with exit code {exitCode}.");
+            }
         }
         catch (Exception ex)
         {

@@ -27,16 +27,18 @@ public static class DotNetHelper
 {
     private static IDotNetClient DotNet => Bootstrapper.ServiceProvider.GetRequiredService<IDotNetClient>();
 
-    public static int Build(string[]? args = null) => DotNet.Build();
-    public static int Run(string[]? args = null) => DotNet.Run();
-    public static int Test(string[]? args = null) => DotNet.Test();
-    public static int Format(string[]? args = null) => DotNet.Format();
-    public static int Clean(string[]? args = null) => DotNet.Clean();
-    public static int Restore(string[]? args = null) => DotNet.Restore();
-    public static int Publish(string[]? args = null) => DotNet.Publish();
-    public static int Pack(string[]? args = null) => DotNet.Pack();
-    public static int PublishPackage(string[]? args = null) => DotNet.PublishPackage();
-    public static int Watch(string[]? args = null) => DotNet.Watch();
+    private static string? GetTarget(string[]? args) => args != null && args.Length > 0 ? args[0] : null;
+
+    public static int Build(string[]? args = null) => DotNet.Build(GetTarget(args));
+    public static int Run(string[]? args = null) => DotNet.Run(GetTarget(args));
+    public static int Test(string[]? args = null) => DotNet.Test(GetTarget(args));
+    public static int Format(string[]? args = null) => DotNet.Format(GetTarget(args));
+    public static int Clean(string[]? args = null) => DotNet.Clean(GetTarget(args));
+    public static int Restore(string[]? args = null) => DotNet.Restore(GetTarget(args));
+    public static int Publish(string[]? args = null) => DotNet.Publish(GetTarget(args));
+    public static int Pack(string[]? args = null) => DotNet.Pack(GetTarget(args));
+    public static int PublishPackage(string[]? args = null) => DotNet.PublishPackage(GetTarget(args));
+    public static int Watch(string[]? args = null) => DotNet.Watch(GetTarget(args));
     public static void CleanBinObj() => DotNet.RemoveBinObj(Directory.GetCurrentDirectory());
     public static int AddMigration(string migrationName, string? context = null) => DotNet.AddMigration(migrationName);
     public static int UpdateDatabase(string? context = null) => DotNet.UpdateDatabase();
