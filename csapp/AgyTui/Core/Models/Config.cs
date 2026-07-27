@@ -1,7 +1,9 @@
+namespace AgyTui.Core.Models;
+
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
-namespace AgyTui.Core.Models;
+using AgyTui.Infrastructure.Common;
 
 public sealed class UiConfig
 {
@@ -57,7 +59,7 @@ public sealed class ConfigData
     public ObsidianConfig Obsidian { get; set; } = new();
     public ProxyConfig Proxy { get; set; } = new();
 
-    // Flat getters and setters for backwards compatibility
+    // Flat getters and setters for backwards compatibility adapter pattern
     [JsonIgnore]
     public string UiMode { get => Ui.Mode; set { if (!string.IsNullOrEmpty(value)) Ui.Mode = value; } }
 
@@ -110,27 +112,23 @@ public sealed class ConfigData
     public string[] ProjectExcludeFolders { get => Project.ExcludeFolders; set { if (value != null) Project.ExcludeFolders = value; } }
 }
 
+public sealed class RuntimeState
+{
+    public string? ActiveThemeOverride { get; set; }
+    public bool? MobileContextOverride { get; set; }
+    public string? RuntimeDensity { get; set; }
+    public DateTime SessionStartTime { get; } = DateTime.UtcNow;
+}
+
 public static class Config
 {
     public static readonly string[] DefaultFavoriteAliases = ["proj", "agyswitch", "ide", "claude", "theme", "learn", "obsidian", "ssh-info"];
 
     public static string? OverrideConfigPath { get; set; }
-
-    public static string GetConfigFilePath()
-    {
-        if (!string.IsNullOrEmpty(OverrideConfigPath))
-            return OverrideConfigPath;
-        var envOverride = Environment.GetEnvironmentVariable("PROFILE_CONFIG_PATH");
-        if (!string.IsNullOrEmpty(envOverride))
-            return envOverride;
-        var repoRoot = GetProfileRepoRoot();
-        var csappCfg = Path.Combine(repoRoot, "csapp", "profile.config.json");
-        if (File.Exists(csappCfg)) return csappCfg;
-        return Path.Combine(repoRoot, "profile.config.json");
-    }
+    public static ConfigData Current { get; private set; } = new();
+    public static RuntimeState Runtime { get; } = new();
 
     private static string ConfigPath => GetConfigFilePath();
-    public static ConfigData Current { get; private set; } = new();
 
     static Config()
     {
@@ -140,6 +138,27 @@ public static class Config
         {
             AutoDetectDensity();
         }
+    }
+
+    public static string GetConfigFilePath()
+    {
+        if (!string.IsNullOrEmpty(OverrideConfigPath))
+            return OverrideConfigPath;
+        var envOverride = Environment.GetEnvironmentVariable("PROFILE_CONFIG_PATH");
+        if (!string.IsNullOrEmpty(envOverride))
+            return envOverride;
+
+        var repoRoot = GetProfileRepoRoot();
+        var csappCfg = Path.Combine(repoRoot, "csapp", "profile.config.json");
+        if (File.Exists(csappCfg)) return csappCfg;
+
+        var rootCfg = Path.Combine(repoRoot, "profile.config.json");
+        if (File.Exists(rootCfg)) return rootCfg;
+
+        var projCfg = Path.Combine(AppPaths.ProjectRoot, "profile.config.json");
+        if (File.Exists(projCfg)) return projCfg;
+
+        return csappCfg;
     }
 
     public static string GetProfileRepoRoot()
@@ -168,7 +187,7 @@ public static class Config
             curr = curr.Parent;
         }
 
-        return Directory.GetCurrentDirectory();
+        return AppPaths.ProjectRoot;
     }
 
     public static void Load()
@@ -214,7 +233,7 @@ public static class Config
     }
 
     public static string GetUiMode() => Current.Ui.Mode;
-    public static string GetDensity() => Current.Ui.Density;
+    public static string GetDensity() => Runtime.RuntimeDensity ?? Current.Ui.Density;
 
     public static void SetUiMode(string uiMode)
     {
@@ -243,9 +262,12 @@ public static class Config
 
     public static bool IsMobileContext()
     {
+        if (Runtime.MobileContextOverride.HasValue)
+            return Runtime.MobileContextOverride.Value;
+
         try
         {
-            if (string.Equals(Current.Ui.Density, "compact", StringComparison.OrdinalIgnoreCase)) return true;
+            if (string.Equals(GetDensity(), "compact", StringComparison.OrdinalIgnoreCase)) return true;
             if (Console.WindowWidth > 0 && Console.WindowWidth < 90) return true;
             var theme = Environment.GetEnvironmentVariable("THEME") ?? "";
             if (theme.EndsWith("-mobile", StringComparison.OrdinalIgnoreCase)) return true;
