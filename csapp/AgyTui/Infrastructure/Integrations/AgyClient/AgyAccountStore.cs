@@ -1,10 +1,13 @@
 namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
 using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
+using AgyTui.Infrastructure.Persistence;
+using AgyTui.Infrastructure.Persistence.Interfaces;
 using System.Text;
 
 public class AgyAccountStore : IAgyAccountStore
 {
+    private readonly IAgyAccountRepository _accountRepo;
     private string AgySourceHome => AgyAccountCore.AgySourceHome;
 
     private IEnumerable<string> GetActiveAccountFileCandidates()
@@ -22,8 +25,18 @@ public class AgyAccountStore : IAgyAccountStore
         return list.Distinct(StringComparer.OrdinalIgnoreCase);
     }
 
+    public AgyAccountStore(IAgyAccountRepository accountRepo)
+    {
+        _accountRepo = accountRepo;
+    }
+
+    public AgyAccountStore() : this(new SqliteAgyAccountRepository(new SqliteDatabase())) { }
+
     public string GetActiveAccount()
     {
+        var dbActive = _accountRepo.GetActiveAccount();
+        if (!string.IsNullOrEmpty(dbActive)) return dbActive;
+
         foreach (var file in GetActiveAccountFileCandidates())
         {
             if (File.Exists(file))
@@ -55,6 +68,7 @@ public class AgyAccountStore : IAgyAccountStore
         AgyAccountCore.ClearStatsCache();
         AgyAccountCore.UpdateAccountMetadata(accountName);
         AgyAccountCore.BackupActiveToken(AgyAccountCore.GetActiveAccount());
+        if (!temporary) _accountRepo.SetActiveAccount(accountName);
 
         if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
         {

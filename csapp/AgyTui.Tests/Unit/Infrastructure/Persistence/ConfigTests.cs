@@ -1,5 +1,6 @@
 namespace AgyTui.Tests.Unit.Infrastructure.Persistence;
 
+[Collection("Sequential")]
 public class ConfigTests
 {
     [Fact]

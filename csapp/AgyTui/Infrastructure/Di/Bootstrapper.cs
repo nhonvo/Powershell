@@ -2,6 +2,8 @@ using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using AgyTui.Infrastructure.Integrations.Ai.Providers;
 using AgyTui.Infrastructure.Integrations.Ai.Services;
 using AgyTui.Infrastructure.Logging;
+using AgyTui.Infrastructure.Persistence;
+using AgyTui.Infrastructure.Persistence.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Di;
@@ -25,6 +27,11 @@ public static class Bootstrapper
         services.AddSingleton<IAiProjectScanner, AiProjectScanner>();
         services.AddSingleton<IAiCommitGenerator, AiCommitGenerator>();
         services.AddSingleton<IAiLearningGenerator, AiLearningGenerator>();
+
+        // SQLite Persistence
+        services.AddSingleton<ISqliteDatabase, SqliteDatabase>();
+        services.AddSingleton<IConfigRepository, SqliteConfigRepository>();
+        services.AddSingleton<IAgyAccountRepository, SqliteAgyAccountRepository>();
 
         // Tool Integration Services
         services.AddSingleton<IAwsClient, AwsClient>();

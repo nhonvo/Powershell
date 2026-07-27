@@ -4,6 +4,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using AgyTui.Infrastructure.Common;
+using AgyTui.Infrastructure.Persistence;
+using AgyTui.Infrastructure.Persistence.Interfaces;
 
 public sealed class UiConfig
 {
@@ -96,28 +98,13 @@ public static class Config
 
     public static string GetProfileRepoRoot() => AppPaths.RepoRoot;
 
+    private static IConfigRepository Repository => new SqliteConfigRepository(new SqliteDatabase());
+
     public static void Load()
     {
-        if (!File.Exists(ConfigPath))
-        {
-            Current = new ConfigData();
-            return;
-        }
-
         try
         {
-            var options = new JsonSerializerOptions
-            {
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                AllowTrailingCommas = true,
-                PropertyNameCaseInsensitive = true
-            };
-            var content = File.ReadAllText(ConfigPath);
-            var data = JsonSerializer.Deserialize<ConfigData>(content, options);
-            if (data != null)
-            {
-                Current = data;
-            }
+            Current = Repository.LoadConfig();
         }
         catch
         {
@@ -129,11 +116,7 @@ public static class Config
     {
         try
         {
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            var content = JsonSerializer.Serialize(Current, options);
-            var dir = Path.GetDirectoryName(ConfigPath);
-            if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-            File.WriteAllText(ConfigPath, content, Encoding.UTF8);
+            Repository.SaveConfig(Current);
         }
         catch { }
     }
