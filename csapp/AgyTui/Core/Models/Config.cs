@@ -205,99 +205,11 @@ public static class Config
     {
         try
         {
-            if (File.Exists(ConfigPath))
-            {
-                var lines = File.ReadAllLines(ConfigPath);
-                string currentSection = "";
-                for (int i = 0; i < lines.Length; i++)
-                {
-                    var line = lines[i];
-                    var trimmed = line.Trim();
-                    if (trimmed.StartsWith("\"Ui\"")) currentSection = "Ui";
-                    else if (trimmed.StartsWith("\"Ai\"")) currentSection = "Ai";
-                    else if (trimmed.StartsWith("\"Project\"")) currentSection = "Project";
-                    else if (trimmed.StartsWith("\"System\"")) currentSection = "System";
-                    else if (trimmed.StartsWith("\"Obsidian\"")) currentSection = "Obsidian";
-                    else if (trimmed.StartsWith("}") && !trimmed.Contains("{")) currentSection = "";
-
-                    if (currentSection == "Ui" && line.Contains("\"Mode\":"))
-                    {
-                        lines[i] = Regex.Replace(line, @"(""Mode""\s*:\s*"")[^""]*("")", $"$1{Current.Ui.Mode}$2");
-                    }
-                    else if (currentSection == "Ui" && line.Contains("\"Density\":"))
-                    {
-                        lines[i] = Regex.Replace(line, @"(""Density""\s*:\s*"")[^""]*("")", $"$1{Current.Ui.Density}$2");
-                    }
-                    else if (currentSection == "Ui" && line.Contains("\"ActiveTheme\":"))
-                    {
-                        lines[i] = Regex.Replace(line, @"(""ActiveTheme""\s*:\s*"")[^""]*("")", $"$1{Current.Ui.ActiveTheme}$2");
-                    }
-                    else if (currentSection == "Ui" && line.Contains("\"EnableMobile\":"))
-                    {
-                        lines[i] = Regex.Replace(line, @"(""EnableMobile""\s*:\s*)(true|false)", $"$1{Current.Ui.EnableMobile.ToString().ToLowerInvariant()}");
-                    }
-                    else if (currentSection == "Ai" && line.Contains("\"Mode\":"))
-                    {
-                        lines[i] = Regex.Replace(line, @"(""Mode""\s*:\s*"")[^""]*("")", $"$1{Current.Ai.Mode}$2");
-                    }
-                    else if (currentSection == "Ai" && line.Contains("\"ProviderMode\":"))
-                    {
-                        lines[i] = Regex.Replace(line, @"(""ProviderMode""\s*:\s*"")[^""]*("")", $"$1{Current.Ai.ProviderMode}$2");
-                    }
-                    else if (currentSection == "Ai" && line.Contains("\"EnableOllama\":"))
-                    {
-                        lines[i] = Regex.Replace(line, @"(""EnableOllama""\s*:\s*)(true|false)", $"$1{Current.Ai.EnableOllama.ToString().ToLowerInvariant()}");
-                    }
-                    else if (currentSection == "Ai" && line.Contains("\"EnableAgy\":"))
-                    {
-                        lines[i] = Regex.Replace(line, @"(""EnableAgy""\s*:\s*)(true|false)", $"$1{Current.Ai.EnableAgy.ToString().ToLowerInvariant()}");
-                    }
-                    else if (currentSection == "Project" && line.Contains("\"BaseDir\":"))
-                    {
-                        lines[i] = Regex.Replace(line, @"(""BaseDir""\s*:\s*"")[^""]*("")", $"$1{Current.Project.BaseDir.Replace("\\", "\\\\")}$2");
-                    }
-                    else if (currentSection == "Project" && line.Contains("\"SearchPaths\":"))
-                    {
-                        var jsonArr = JsonSerializer.Serialize(Current.Project.SearchPaths);
-                        lines[i] = Regex.Replace(line, @"(""SearchPaths""\s*:\s*)\[[^\]]*\]", $"$1{jsonArr}");
-                    }
-                    else if (currentSection == "Project" && line.Contains("\"ExcludeFolders\":"))
-                    {
-                        var jsonArr = JsonSerializer.Serialize(Current.Project.ExcludeFolders);
-                        lines[i] = Regex.Replace(line, @"(""ExcludeFolders""\s*:\s*)\[[^\]]*\]", $"$1{jsonArr}");
-                    }
-                    else if (currentSection == "System" && line.Contains("\"VerboseStartup\":"))
-                    {
-                        lines[i] = Regex.Replace(line, @"(""VerboseStartup""\s*:\s*)(true|false)", $"$1{Current.System.VerboseStartup.ToString().ToLowerInvariant()}");
-                    }
-                    else if (currentSection == "System" && line.Contains("\"StartupLogFile\":"))
-                    {
-                        lines[i] = Regex.Replace(line, @"(""StartupLogFile""\s*:\s*"")[^""]*("")", $"$1{Current.System.StartupLogFile.Replace("\\", "\\\\")}$2");
-                    }
-                    else if (currentSection == "System" && line.Contains("\"PoshThemesPath\":"))
-                    {
-                        lines[i] = Regex.Replace(line, @"(""PoshThemesPath""\s*:\s*"")[^""]*("")", $"$1{Current.System.PoshThemesPath.Replace("\\", "\\\\")}$2");
-                    }
-                    else if (currentSection == "System" && line.Contains("\"AgySourceHome\":"))
-                    {
-                        lines[i] = Regex.Replace(line, @"(""AgySourceHome""\s*:\s*"")[^""]*("")", $"$1{Current.System.AgySourceHome.Replace("\\", "\\\\")}$2");
-                    }
-                    else if (currentSection == "System" && line.Contains("\"GlobalBinDir\":"))
-                    {
-                        lines[i] = Regex.Replace(line, @"(""GlobalBinDir""\s*:\s*"")[^""]*("")", $"$1{Current.System.GlobalBinDir.Replace("\\", "\\\\")}$2");
-                    }
-                    else if (currentSection == "Obsidian" && line.Contains("\"VaultPath\":"))
-                    {
-                        lines[i] = Regex.Replace(line, @"(""VaultPath""\s*:\s*"")[^""]*("")", $"$1{Current.Obsidian.VaultPath.Replace("\\", "\\\\")}$2");
-                    }
-                }
-                File.WriteAllLines(ConfigPath, lines, Encoding.UTF8);
-                return;
-            }
-
             var options = new JsonSerializerOptions { WriteIndented = true };
             var content = JsonSerializer.Serialize(Current, options);
-            File.WriteAllText(ConfigPath, content);
+            var dir = Path.GetDirectoryName(ConfigPath);
+            if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+            File.WriteAllText(ConfigPath, content, Encoding.UTF8);
         }
         catch { }
     }
