@@ -1,11 +1,14 @@
 using System.Diagnostics;
 using System.Text.Json;
+using AgyTui.Core.Models;
+using AgyTui.Infrastructure.Common;
+using Spectre.Console;
 
 namespace AgyTui.Infrastructure.Integrations.Ai;
 
-public static class AiLearningGenerator
+public class AiLearningGenerator : IAiLearningGenerator
 {
-    public static void RunGenerator(string domain = "")
+    public void RunGenerator(string domain = "")
     {
         AnsiConsole.Clear();
         SpectrePanel.Info("🤖 AI Deep Learning Content Generator");
@@ -50,8 +53,6 @@ public static class AiLearningGenerator
         if (success)
         {
             SpectrePanel.Success($"AI generation complete! Data saved to: {targetFile.EscapeMarkup()}");
-            SpectrePanel.Info("Auto-refreshing local Learning Suite indices...");
-            LearnRouter.RefreshData("all");
         }
         else
         {
@@ -66,16 +67,18 @@ public static class AiLearningGenerator
         string safeTopic = cleanTopic.ToLowerInvariant().Replace(" ", "_").Replace("-", "_");
         if (string.IsNullOrEmpty(safeTopic)) safeTopic = "topic_" + Guid.NewGuid().ToString("N")[..6];
 
-        LearnDataPaths.EnsureDirectories();
+        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        var baseDir = Path.Combine(userProfile, ".gemini", "learn");
+        Directory.CreateDirectory(baseDir);
 
         if (domain.Contains("Certifications"))
-            return Path.Combine(LearnDataPaths.DecksDir, $"deck_{safeTopic}.json");
+            return Path.Combine(baseDir, "decks", $"deck_{safeTopic}.json");
         if (domain.Contains("Japanese"))
-            return Path.Combine(LearnDataPaths.JapaneseDir, $"grammar_{safeTopic}.json");
+            return Path.Combine(baseDir, "japanese", $"grammar_{safeTopic}.json");
         if (domain.Contains("C#"))
-            return Path.Combine(LearnDataPaths.CsharpDir, $"quiz_{safeTopic}.json");
+            return Path.Combine(baseDir, "csharp", $"quiz_{safeTopic}.json");
 
-        return Path.Combine(LearnDataPaths.CareerDir, $"interview_{safeTopic}.json");
+        return Path.Combine(baseDir, "career", $"interview_{safeTopic}.json");
     }
 
     private static bool ExecuteCliGenerator(string cliName, string promptText, string targetFile)

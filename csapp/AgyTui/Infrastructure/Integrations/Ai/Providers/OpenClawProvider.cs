@@ -1,12 +1,10 @@
-using AgyTui.Infrastructure.Integrations.Ai.Services;
-
 namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
 
-public static class OpenClawProvider
+public class OpenClawProvider : IOpenClawClient
 {
-    public static void EnsureOpenClawGateway()
+    public void EnsureGateway()
     {
-        if (!OllamaProvider.IsPortListening(18789))
+        if (!AgyServices.Ollama.IsPortListening(18789))
         {
             try
             {
@@ -22,11 +20,11 @@ public static class OpenClawProvider
         }
     }
 
-    public static void InvokeOpenClaw(string[] argsList)
+    public void InvokeOpenClaw(string[] argsList)
     {
-        EnsureOpenClawGateway();
-        AiProcessRunner.RunInteractive("openclaw", argsList);
+        EnsureGateway();
+        AgyServices.ProcessRunner.RunInteractive("openclaw", argsList);
     }
 
-    public static void InvokeClawdbot(string[] argsList) => InvokeOpenClaw(argsList);
+    public void InvokeClawdbot(string[] argsList) => InvokeOpenClaw(argsList);
 }

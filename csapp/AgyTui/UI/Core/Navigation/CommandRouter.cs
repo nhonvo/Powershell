@@ -696,7 +696,7 @@ public static class CommandRouter
                 case "learn-gen":
                 case "ai-gen":
                 case "deck-gen":
-                    AiLearningGenerator.RunGenerator();
+                    AgyServices.LearningGenerator.RunGenerator();
                     break;
                 case "obsidian":
                 case "vault":

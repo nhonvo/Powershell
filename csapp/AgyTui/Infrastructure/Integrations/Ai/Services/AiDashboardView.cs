@@ -62,7 +62,7 @@ public static class AiDashboardView
     public static void AskAi(string query)
     {
         SpectrePanel.Info($"Querying AI: {query}");
-        ClaudeProvider.InvokeClaude(new[] { query });
+        AgyServices.Claude.InvokeClaude(new[] { query });
     }
 
     public static void InstallAIIntegrations()

@@ -1,8 +1,8 @@
 namespace AgyTui.Infrastructure.Integrations.Ai.Services;
 
-public static class AiCommitGenerator
+public class AiCommitGenerator : IAiCommitGenerator
 {
-    public static string GenerateDraftDescription(string diff)
+    public string GenerateDraftDescription(string diff)
     {
         if (string.IsNullOrWhiteSpace(diff)) return "Automated commit: minor updates.";
 

@@ -4,9 +4,9 @@ namespace AgyTui.Infrastructure.Integrations.Ai.Services;
 
 public sealed record ProjectScanResult(string Name, string Path, string Provider, string[] Features);
 
-public static class AiProjectScanner
+public class AiProjectScanner : IAiProjectScanner
 {
-    public static ProjectScanResult[] ScanProjectsForClaude(string? baseDir = null)
+    public ProjectScanResult[] ScanProjectsForClaude(string? baseDir = null)
     {
         return ScanProjectsByFilter("claude", dir =>
             File.Exists(Path.Combine(dir, "CLAUDE.md")) ||
@@ -14,14 +14,14 @@ public static class AiProjectScanner
             File.Exists(Path.Combine(dir, "package.json")), baseDir);
     }
 
-    public static ProjectScanResult[] ScanProjectsForOllama(string? baseDir = null)
+    public ProjectScanResult[] ScanProjectsForOllama(string? baseDir = null)
     {
         return ScanProjectsByFilter("ollama", dir =>
             File.Exists(Path.Combine(dir, "Modelfile")) ||
             Directory.Exists(Path.Combine(dir, ".ollama")), baseDir);
     }
 
-    public static ProjectScanResult[] ScanProjectsForAgy(string? baseDir = null)
+    public ProjectScanResult[] ScanProjectsForAgy(string? baseDir = null)
     {
         return ScanProjectsByFilter("agy", dir =>
             File.Exists(Path.Combine(dir, "AGY.md")) ||
@@ -29,7 +29,7 @@ public static class AiProjectScanner
             Directory.Exists(Path.Combine(dir, ".gemini")), baseDir);
     }
 
-    public static ProjectScanResult[] ScanProjects(string provider, string? baseDir = null)
+    public ProjectScanResult[] ScanProjects(string provider, string? baseDir = null)
     {
         return (provider?.ToLowerInvariant()) switch
         {

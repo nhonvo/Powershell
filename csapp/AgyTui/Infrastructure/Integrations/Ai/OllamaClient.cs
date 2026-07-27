@@ -68,7 +68,7 @@ public class OllamaClient : IOllamaClient
     {
         EnsureServer();
         var selectedModel = !string.IsNullOrEmpty(model) ? model : DefaultModel;
-        AiProcessRunner.RunInteractive("ollama", new[] { "run", selectedModel });
+        AgyServices.ProcessRunner.RunInteractive("ollama", new[] { "run", selectedModel });
     }
 
     public void ShowLogs()

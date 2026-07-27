@@ -1,13 +1,12 @@
-using System.Diagnostics;
 using AgyTui.Core.Models;
-using AgyTui.Infrastructure;
+using AgyTui.Infrastructure.Common;
 using AgyTui.Infrastructure.Persistence.Accounts;
 
 namespace AgyTui.Infrastructure.Integrations.Ai.Services;
 
-public static class AiProcessRunner
+public class AiProcessRunner : IAiProcessRunner
 {
-    public static string ResolveProxyScriptPath()
+    public string ResolveProxyScriptPath()
     {
         var repoRoot = Config.GetProfileRepoRoot();
         var candidates = new[]
@@ -19,7 +18,12 @@ public static class AiProcessRunner
         return candidates.FirstOrDefault(File.Exists) ?? candidates[0];
     }
 
-    public static void RunInteractive(string exe, IEnumerable<string> args, IDictionary<string, string?>? env = null, string? workingDir = null)
+    public void RunInteractive(string exe, IEnumerable<string> args, IDictionary<string, string?>? env = null, string? workingDir = null)
+    {
+        RunInteractiveStatic(exe, args, env, workingDir);
+    }
+
+    public static void RunInteractiveStatic(string exe, IEnumerable<string> args, IDictionary<string, string?>? env = null, string? workingDir = null)
     {
         var activeAccount = AgyAccountCore.GetActiveAccount();
         var accountDir = AgyAccountCore.GetAccountDirectory(activeAccount);
@@ -33,7 +37,6 @@ public static class AiProcessRunner
             fullEnv["AGY_AUTO_COMMIT"] = "false";
         }
 
-        // Configure Proxy environment variables from profile.config.json or environment
         var httpProxy = Config.Current.Proxy?.HttpProxy;
         if (string.IsNullOrEmpty(httpProxy)) httpProxy = Environment.GetEnvironmentVariable("HTTP_PROXY");
         if (!string.IsNullOrEmpty(httpProxy) && !fullEnv.ContainsKey("HTTP_PROXY"))
@@ -68,7 +71,7 @@ public static class AiProcessRunner
         ProcessRunner.RunInteractive(exe, argList, fullEnv, workingDir);
     }
 
-    public static string RunCapture(string exe, string args)
+    public string RunCapture(string exe, string args)
     {
         return ProcessRunner.RunCapture(exe, args);
     }

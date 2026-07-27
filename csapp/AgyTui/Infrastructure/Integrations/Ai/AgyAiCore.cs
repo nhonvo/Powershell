@@ -1,5 +1,4 @@
 using AgyTui.Core.Models;
-using AgyTui.Infrastructure.Integrations.Ai.Providers;
 using AgyTui.Infrastructure.Integrations.Ai.Services;
 
 namespace AgyTui.Infrastructure.Integrations.Ai;
@@ -13,7 +12,7 @@ public static class AgyAiCore
         Error
     }
 
-    public static string OllamaDefaultModel => OllamaProvider.OllamaDefaultModel;
+    public static string OllamaDefaultModel => AgyServices.Ollama.DefaultModel;
 
     public static bool IsAiOllamaEnabled() => Config.Current.EnableAiOllama;
 
@@ -35,45 +34,45 @@ public static class AgyAiCore
         }
     }
 
-    public static bool IsPortListening(int port) => OllamaProvider.IsPortListening(port);
-    public static bool IsOllamaRunning() => OllamaProvider.IsOllamaRunning();
-    public static bool IsDeckRunning() => OllamaProvider.IsPortListening(18789);
-    public static bool IsManagerRunning() => OllamaProvider.IsPortListening(18790);
+    public static bool IsPortListening(int port) => AgyServices.Ollama.IsPortListening(port);
+    public static bool IsOllamaRunning() => AgyServices.Ollama.IsRunning;
+    public static bool IsDeckRunning() => AgyServices.Ollama.IsPortListening(18789);
+    public static bool IsManagerRunning() => AgyServices.Ollama.IsPortListening(18790);
 
     public static void RunInteractive(string exe, IEnumerable<string> args, IDictionary<string, string?>? env = null, string? workingDir = null)
-        => AiProcessRunner.RunInteractive(exe, args, env, workingDir);
+        => AgyServices.ProcessRunner.RunInteractive(exe, args, env, workingDir);
 
-    // --- Provider Delegations ---
+    // --- Provider Interface Delegations ---
     public static void InvokeClaude(string[] argsList, string? providerModeOverride = null)
-        => ClaudeProvider.InvokeClaude(argsList, providerModeOverride);
+        => AgyServices.Claude.InvokeClaude(argsList, providerModeOverride);
 
     public static void InvokeCodex(string[] argsList, string? providerModeOverride = null)
-        => ClaudeProvider.InvokeCodex(argsList, providerModeOverride);
+        => AgyServices.Claude.InvokeCodex(argsList, providerModeOverride);
 
-    public static void EnsureOllamaServer() => OllamaProvider.EnsureOllamaServer();
-    public static void InvokeOllamaNative(string? model) => OllamaProvider.InvokeOllamaNative(model);
-    public static void InitializeOllamaServer() => OllamaProvider.InitializeOllamaServer();
-    public static void SetOllamaModel(string? modelName) => OllamaProvider.SetOllamaModel(modelName);
-    public static void ShowOllamaLogs() => OllamaProvider.ShowOllamaLogs();
+    public static void EnsureOllamaServer() => AgyServices.Ollama.EnsureServer();
+    public static void InvokeOllamaNative(string? model) => AgyServices.Ollama.InvokeNative(model);
+    public static void InitializeOllamaServer() => AgyServices.Ollama.EnsureServer();
+    public static void SetOllamaModel(string? modelName) => AgyServices.Ollama.SetModel(modelName);
+    public static void ShowOllamaLogs() => AgyServices.Ollama.ShowLogs();
 
     public static HermesResult InvokeHermes(string[]? argsList = null)
-        => (HermesResult)HermesProvider.InvokeHermes(argsList);
+        => (HermesResult)AgyServices.Hermes.InvokeHermes(argsList);
 
     public static HermesResult InvokeHermesDesktop(string[]? argsList = null)
-        => (HermesResult)HermesProvider.InvokeHermesDesktop(argsList);
+        => (HermesResult)AgyServices.Hermes.InvokeHermesDesktop(argsList);
 
-    public static void InvokeOpenClaw(string[] argsList) => OpenClawProvider.InvokeOpenClaw(argsList);
-    public static void InvokeClawdbot(string[] argsList) => OpenClawProvider.InvokeClawdbot(argsList);
+    public static void InvokeOpenClaw(string[] argsList) => AgyServices.OpenClaw.InvokeOpenClaw(argsList);
+    public static void InvokeClawdbot(string[] argsList) => AgyServices.OpenClaw.InvokeClawdbot(argsList);
 
-    // --- Service Delegations ---
+    // --- Service Interface Delegations ---
     public static void ShowAiDashboard() => AiDashboardView.ShowAiDashboard();
     public static void ShowAiModeCheck(string alias) => AiDashboardView.ShowAiModeCheck(alias);
     public static void AskAi(string query) => AiDashboardView.AskAi(query);
     public static void InstallAIIntegrations() => AiDashboardView.InstallAIIntegrations();
 
-    public static string GenerateDraftDescription(string diff) => AiCommitGenerator.GenerateDraftDescription(diff);
+    public static string GenerateDraftDescription(string diff) => AgyServices.CommitGenerator.GenerateDraftDescription(diff);
 
-    // --- Project Scanning Facade ---
+    // --- Project Scanning Interface Facade ---
     public static ProjectScanResult[] ScanProjects(string provider, string? baseDir = null)
-        => AiProjectScanner.ScanProjects(provider, baseDir);
+        => AgyServices.ProjectScanner.ScanProjects(provider, baseDir);
 }

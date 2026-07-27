@@ -1,15 +1,6 @@
-using AgyTui.Infrastructure.Integrations.Ai.Services;
-
 namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
 
-public enum HermesResult
-{
-    Success,
-    NotInstalled,
-    Error
-}
-
-public static class HermesProvider
+public class HermesProvider : IHermesClient
 {
     public static string? FindOnPath(string exe)
     {
@@ -40,7 +31,7 @@ public static class HermesProvider
         return null;
     }
 
-    public static HermesResult InvokeHermes(string[]? argsList = null)
+    public HermesResult InvokeHermes(string[]? argsList = null)
     {
         var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         var exe = FindHermesBinary("hermes", new[] {
@@ -53,7 +44,7 @@ public static class HermesProvider
         try
         {
             var args = argsList != null && argsList.Length > 0 ? argsList : new[] { "chat" };
-            AiProcessRunner.RunInteractive(exe, args);
+            AgyServices.ProcessRunner.RunInteractive(exe, args);
             return HermesResult.Success;
         }
         catch
@@ -62,7 +53,7 @@ public static class HermesProvider
         }
     }
 
-    public static HermesResult InvokeHermesDesktop(string[]? argsList = null)
+    public HermesResult InvokeHermesDesktop(string[]? argsList = null)
     {
         return InvokeHermes(argsList);
     }
