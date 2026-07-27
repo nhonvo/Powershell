@@ -8,6 +8,7 @@ using AgyTui.Infrastructure.Integrations.DotNet;
 using AgyTui.Infrastructure.Integrations.Git;
 using AgyTui.Infrastructure.Persistence.Accounts;
 using AgyTui.Infrastructure.Persistence.Learning;
+using AgyTui.UI.Core.Navigation;
 
 namespace AgyTui.Infrastructure.Di;
 
@@ -40,6 +41,9 @@ public static class Bootstrapper
         // Repositories
         services.AddSingleton<IAccountRepository, JsonAccountRepository>();
         services.AddSingleton<IStudyRepository, JsonStudyRepository>();
+
+        // Navigation & Routers
+        services.AddSingleton<ICommandRouter, CommandRouter>();
 
         _serviceProvider = services.BuildServiceProvider();
         return _serviceProvider;

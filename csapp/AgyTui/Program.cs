@@ -1,4 +1,11 @@
-using System.Buffers;
+using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using AgyTui.Core.Registries;
+using AgyTui.Infrastructure.Common;
+using AgyTui.Infrastructure.Di;
+using AgyTui.UI.Core.Layouts;
+using AgyTui.UI.Core.Navigation;
+using Spectre.Console;
 
 namespace AgyTui;
 
@@ -41,15 +48,14 @@ public static class Program
         {
             AnsiConsole.Clear();
         }
-        catch
-        {
-        }
+        catch { }
         AnsiConsole.MarkupLine("[dim]Goodbye.[/]");
         return 0;
     }
 
     public static int RunCommand(string alias, string[]? args = null)
     {
-        return CommandRouter.Execute(alias, args);
+        var router = Bootstrapper.ServiceProvider.GetRequiredService<ICommandRouter>();
+        return router.Execute(alias, args);
     }
 }

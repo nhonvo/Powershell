@@ -1,9 +1,48 @@
 using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
+using AgyTui.Infrastructure;
+using AgyTui.Infrastructure.Integrations.Ai;
+using AgyTui.Infrastructure.Integrations.Aws;
+using AgyTui.Infrastructure.Integrations.Docker;
+using AgyTui.Infrastructure.Integrations.DotNet;
+using AgyTui.Infrastructure.Integrations.Git;
 
 namespace AgyTui.UI.Core.Navigation;
 
-public static class CommandRouter
+public class CommandRouter : ICommandRouter
 {
+    private readonly IOllamaClient _ollama;
+    private readonly IClaudeClient _claude;
+    private readonly IHermesClient _hermes;
+    private readonly IOpenClawClient _openClaw;
+    private readonly IAwsClient _aws;
+    private readonly IDockerClient _docker;
+    private readonly IDotNetClient _dotNet;
+    private readonly IGitClient _git;
+    private readonly IAiLearningGenerator _learningGenerator;
+
+    public CommandRouter(
+        IOllamaClient ollama,
+        IClaudeClient claude,
+        IHermesClient hermes,
+        IOpenClawClient openClaw,
+        IAwsClient aws,
+        IDockerClient docker,
+        IDotNetClient dotNet,
+        IGitClient git,
+        IAiLearningGenerator learningGenerator)
+    {
+        _ollama = ollama;
+        _claude = claude;
+        _hermes = hermes;
+        _openClaw = openClaw;
+        _aws = aws;
+        _docker = docker;
+        _dotNet = dotNet;
+        _git = git;
+        _learningGenerator = learningGenerator;
+    }
+
     public static string? SelectTopicInteractive(string promptTitle)
     {
         var topics = new[] { "jp (Japanese / Language)", "en (English Vocabulary)", "cs (C# Quiz)", "dsa (Data Structures & Algorithms)", "interview (Question Bank & STAR)", "[Type Custom Topic...]" };
@@ -19,7 +58,7 @@ public static class CommandRouter
         return topics[index].Split(' ')[0];
     }
 
-    public static int Execute(string alias, string[]? args = null)
+    public int Execute(string alias, string[]? args = null)
     {
         var sw = System.Diagnostics.Stopwatch.StartNew();
         bool success = true;
@@ -71,70 +110,70 @@ public static class CommandRouter
                     SystemHelper.OpenExplorer();
                     break;
                 case "gs":
-                    AgyServices.Git.ShowStatus();
+                    _git.ShowStatus();
                     break;
                 case "ga":
-                    AgyServices.Git.AddAll();
+                    _git.AddAll();
                     break;
                 case "gbr":
                 case "gb":
-                    AgyServices.Git.ShowBranches();
+                    _git.ShowBranches();
                     break;
                 case "gcmt":
-                    AgyServices.Git.ConventionalCommitWizard();
+                    _git.ConventionalCommitWizard();
                     break;
                 case "glog":
                 case "glo":
                 case "glg":
-                    AgyServices.Git.ShowLog();
+                    _git.ShowLog();
                     break;
                 case "gpull":
                 case "gpu":
-                    AgyServices.Git.Pull();
+                    _git.Pull();
                     break;
                 case "gpush":
                 case "gus":
-                    AgyServices.Git.Push();
+                    _git.Push();
                     break;
                 case "gf":
-                    AgyServices.Git.Fetch();
+                    _git.Fetch();
                     break;
                 case "gd":
                     GitDiffViewer.ShowDiff(Directory.GetCurrentDirectory());
                     break;
                 case "git-undo":
                 case "gundo":
-                    AgyServices.Git.InvokeGitUndo();
+                    _git.InvokeGitUndo();
                     break;
                 case "dbld":
                 case "db":
-                    AgyServices.DotNet.Build();
+                    _dotNet.Build();
                     break;
                 case "dr":
-                    AgyServices.DotNet.Run();
+                    _dotNet.Run();
                     break;
                 case "dtst":
                 case "dt":
-                    AgyServices.DotNet.Test();
+                    _dotNet.Test();
                     break;
                 case "df":
-                    AgyServices.DotNet.Format();
+                    _dotNet.Format();
                     break;
                 case "dcl":
-                    AgyServices.DotNet.Clean();
+                    _dotNet.Clean();
                     break;
                 case "drestore":
                 case "dres":
-                    AgyServices.DotNet.Restore();
+                    _dotNet.Restore();
                     break;
                 case "dpublish":
-                    AgyServices.DotNet.Publish();
+                    _dotNet.Publish();
                     break;
                 case "dpack":
-                    AgyServices.DotNet.Pack();
+                    _dotNet.Pack();
                     break;
                 case "dpubpkg":
-                    AgyServices.DotNet.PublishPackage();
+                    _dotNet.PublishPackage();
                     break;
                 case "open-term":
                 case "term":
@@ -150,80 +189,80 @@ public static class CommandRouter
                     break;
                 case "dwatch":
                 case "dw":
-                    AgyServices.DotNet.Watch();
+                    _dotNet.Watch();
                     break;
                 case "clean-build":
                 case "dclean":
-                    AgyServices.DotNet.RemoveBinObj(Directory.GetCurrentDirectory());
+                    _dotNet.RemoveBinObj(Directory.GetCurrentDirectory());
                     break;
                 case "add-migration":
                 case "da":
                     var migName = AnsiConsole.Ask<string>("Migration name:");
                     var addCtx = Console.IsInputRedirected ? null : AnsiConsole.Prompt(new TextPrompt<string>("DbContext name [dim](optional, press Enter to skip)[/]:").AllowEmpty());
                     if (string.IsNullOrWhiteSpace(addCtx)) addCtx = null;
-                    AgyServices.DotNet.AddMigration(migName, context: addCtx);
+                    _dotNet.AddMigration(migName, context: addCtx);
                     break;
                 case "update-db":
                 case "du":
                     var upCtx = Console.IsInputRedirected ? null : AnsiConsole.Prompt(new TextPrompt<string>("DbContext name [dim](optional, press Enter to skip)[/]:").AllowEmpty());
                     if (string.IsNullOrWhiteSpace(upCtx)) upCtx = null;
-                    AgyServices.DotNet.UpdateDatabase(context: upCtx);
+                    _dotNet.UpdateDatabase(context: upCtx);
                     break;
                 case "docker-health":
-                    AgyServices.Docker.ShowDockerHealthDashboard();
+                    _docker.ShowDockerHealthDashboard();
                     break;
                 case "dkcl":
-                    AgyServices.Docker.ShowCleanupDashboard();
+                    _docker.ShowCleanupDashboard();
                     break;
                 case "dkrmac":
-                    AgyServices.Docker.RemoveAllContainers();
+                    _docker.RemoveAllContainers();
                     break;
                 case "dkstac":
-                    AgyServices.Docker.StopAllContainers();
+                    _docker.StopAllContainers();
                     break;
                 case "dimg":
-                    AgyServices.Docker.ShowImages();
+                    _docker.ShowImages();
                     break;
                 case "dlogs":
-                    AgyServices.Docker.ShowContainerLogs();
+                    _docker.ShowContainerLogs();
                     break;
                 case "dcup":
                 case "dkcpu":
-                    AgyServices.Docker.ComposeUp();
+                    _docker.ComposeUp();
                     break;
                 case "dcdown":
                 case "dkcpd":
-                    AgyServices.Docker.ComposeDown();
+                    _docker.ComposeDown();
                     break;
                 case "aws-whoami":
-                    AgyServices.Aws.ShowCallerIdentity();
+                    _aws.ShowCallerIdentity();
                     break;
                 case "aws-local":
-                    AgyServices.Aws.ShowLocalStackInfo();
+                    _aws.ShowLocalStackInfo();
                     break;
                 case "aws-s3":
-                    AgyServices.Aws.ShowS3Buckets();
+                    _aws.ShowS3Buckets();
                     break;
                 case "aws-sqs":
-                    AgyServices.Aws.ShowSQSQueues();
+                    _aws.ShowSQSQueues();
                     break;
                 case "aws-ssm":
-                    AgyServices.Aws.ShowSsmParameters();
+                    _aws.ShowSsmParameters();
                     break;
                 case "aws-sns":
-                    AgyServices.Aws.ShowSnsTopics();
+                    _aws.ShowSnsTopics();
                     break;
                 case "aws-dynamodb":
-                    AgyServices.Aws.ShowDynamoDbTables();
+                    _aws.ShowDynamoDbTables();
                     break;
                 case "aws-lambda":
-                    AgyServices.Aws.ShowLambdaFunctions();
+                    _aws.ShowLambdaFunctions();
                     break;
                 case "rebuild-tui":
                     AnsiConsole.MarkupLine("[cyan]Rebuilding Control Center TUI binary...[/]");
                     var projFile = Path.Combine(Directory.GetCurrentDirectory(), "AgyTui", "AgyTui.csproj");
                     if (!File.Exists(projFile)) projFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "AgyTui.csproj");
-                    var buildExit = AgyServices.DotNet.Build(File.Exists(projFile) ? projFile : null);
+                    var buildExit = _dotNet.Build(File.Exists(projFile) ? projFile : null);
                     if (buildExit == 0) SpectrePanel.Success("Control Center TUI recompiled successfully!");
                     else SpectrePanel.Warning("Build note: If running directly inside AgyTui.exe, Windows locks the executable while in-use. Exit TUI and run 'dbld' or run via PowerShell wrapper to refresh binary.");
                     break;
@@ -696,7 +735,7 @@ public static class CommandRouter
                 case "learn-gen":
                 case "ai-gen":
                 case "deck-gen":
-                    AgyServices.LearningGenerator.RunGenerator();
+                    _learningGenerator.RunGenerator();
                     break;
                 case "obsidian":
                 case "vault":
