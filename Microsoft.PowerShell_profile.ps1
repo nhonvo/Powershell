@@ -338,9 +338,8 @@ function Initialize-AgySession {
 }
 
 function Test-AgyAiGate {
-    Initialize-AgySession
-    if ($null -ne ('AgyTui.Infrastructure.Integrations.Ai.AgyAiCore' -as [type])) {
-        return [AgyAiCore]::IsAiOllamaEnabled() -or [AgyAiCore]::IsAgyEnabled()
+    if ($null -ne ('AgyTui.Core.Models.Config' -as [type])) {
+        return [AgyTui.Core.Models.Config]::Current.EnableAiOllama -or [AgyTui.Core.Models.Config]::Current.EnableAgy
     }
     return $true
 }
@@ -1847,7 +1846,7 @@ Set-Alias -Name acc-sum -Value Show-AccountsSummary -Force
 Set-Alias -Name agyquota -Value Show-AccountsSummary -Force
 
 # --- AI Session Dashboard Wrappers ---
-function Show-AiDashboard { Initialize-AgySession; if (-not (Test-AgyAiGate)) { return }; [AgyAiCore]::ShowAiDashboard() }
+function Show-AiDashboard { Initialize-AgySession; if (-not (Test-AgyAiGate)) { return }; [AgyTui.Infrastructure.Integrations.Ai.Services.AiDashboardView]::ShowAiDashboard() }
 Set-Alias -Name ai-dash -Value Show-AiDashboard -Force
 
 # --- Master Learning Suite Router ---

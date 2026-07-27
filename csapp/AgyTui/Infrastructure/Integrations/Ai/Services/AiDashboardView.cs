@@ -1,4 +1,8 @@
+using AgyTui.Core.Models;
+using AgyTui.Infrastructure.Di;
+using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using AgyTui.Infrastructure.Integrations.Ai.Providers;
+using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 
 namespace AgyTui.Infrastructure.Integrations.Ai.Services;
@@ -7,19 +11,23 @@ public static class AiDashboardView
 {
     public static void ShowAiModeCheck(string alias)
     {
-        SpectrePanel.Info($"Active AI Alias: {alias} (Provider Mode: {AgyAiCore.GetEffectiveProviderMode()})");
+        var mode = Config.Current.AiProviderMode ?? "hybrid";
+        SpectrePanel.Info($"Active AI Alias: {alias} (Provider Mode: {mode})");
         Thread.Sleep(1000);
     }
 
     public static void ShowAiDashboard()
     {
+        var ollama = Bootstrapper.ServiceProvider.GetRequiredService<IOllamaClient>();
+
         while (true)
         {
+            var mode = Config.Current.AiProviderMode ?? "hybrid";
             var options = new[]
             {
-                $"🤖 Current AI Provider Mode: [{AgyAiCore.GetEffectiveProviderMode().ToUpper()}]",
-                $"🦙 Ollama Server Status: {(OllamaProvider.IsOllamaRunning() ? "ACTIVE (localhost:11434)" : "INACTIVE")}",
-                $"📦 Default Model: {OllamaProvider.OllamaDefaultModel}",
+                $"🤖 Current AI Provider Mode: [{mode.ToUpper()}]",
+                $"🦙 Ollama Server Status: {(ollama.IsRunning ? "ACTIVE (localhost:11434)" : "INACTIVE")}",
+                $"📦 Default Model: {ollama.DefaultModel}",
                 "⚡ Switch AI Provider Mode (Cloud / Ollama / Hybrid)",
                 "✏️ Set Default Ollama Model",
                 "📊 View Ollama Logs",
@@ -35,7 +43,8 @@ public static class AiDashboardView
                 if (modeChoice >= 0)
                 {
                     var selected = modeChoice switch { 0 => "cloud", 1 => "ollama", _ => "hybrid" };
-                    AgyAiCore.SetAiProviderMode(selected);
+                    Config.Current.AiProviderMode = selected;
+                    Config.Save();
                     SpectrePanel.Success($"AI Provider Mode set to: {selected}");
                     Thread.Sleep(1000);
                 }
@@ -47,14 +56,14 @@ public static class AiDashboardView
                 Console.CursorVisible = false;
                 if (!string.IsNullOrEmpty(model))
                 {
-                    OllamaProvider.SetOllamaModel(model);
+                    ollama.SetModel(model);
                     SpectrePanel.Success($"Default Ollama model set to: {model}");
                     Thread.Sleep(1000);
                 }
             }
             else if (choice == 5)
             {
-                OllamaProvider.ShowOllamaLogs();
+                ollama.ShowLogs();
             }
         }
     }
@@ -62,7 +71,8 @@ public static class AiDashboardView
     public static void AskAi(string query)
     {
         SpectrePanel.Info($"Querying AI: {query}");
-        AgyServices.Claude.InvokeClaude(new[] { query });
+        var claude = Bootstrapper.ServiceProvider.GetRequiredService<IClaudeClient>();
+        claude.InvokeClaude(new[] { query });
     }
 
     public static void InstallAIIntegrations()

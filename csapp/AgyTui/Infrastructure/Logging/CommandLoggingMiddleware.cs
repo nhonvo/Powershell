@@ -1,4 +1,4 @@
-using AgyTui.UI.Core.Navigation;
+using AgyTui.Core.Interfaces;
 
 namespace AgyTui.Infrastructure.Logging;
 
@@ -24,16 +24,25 @@ public class CommandLoggingMiddleware : ICommandRouter
 
         var sw = System.Diagnostics.Stopwatch.StartNew();
         var startTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+        var argStr = args != null && args.Length > 0 ? string.Join(" ", args) : "none";
 
         try
         {
-            var argStr = args != null && args.Length > 0 ? string.Join(" ", args) : "none";
             File.AppendAllText(logFile, $"[{startTime}] [START] Command: '{alias}' Args: {argStr}\n");
+        }
+        catch { }
 
+        try
+        {
             int exitCode = _inner.Execute(alias, args);
-
             sw.Stop();
-            File.AppendAllText(logFile, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] [END] Command: '{alias}' ExitCode: {exitCode} Elapsed: {sw.ElapsedMilliseconds}ms\n");
+
+            try
+            {
+                File.AppendAllText(logFile, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] [END] Command: '{alias}' ExitCode: {exitCode} Elapsed: {sw.ElapsedMilliseconds}ms\n");
+            }
+            catch { }
+
             return exitCode;
         }
         catch (Exception ex)

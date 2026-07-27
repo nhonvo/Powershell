@@ -4,9 +4,18 @@ namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
 
 public class OpenClawProvider : IOpenClawClient
 {
+    private readonly IAiProcessRunner _processRunner;
+    private readonly IOllamaClient _ollama;
+
+    public OpenClawProvider(IAiProcessRunner processRunner, IOllamaClient ollama)
+    {
+        _processRunner = processRunner;
+        _ollama = ollama;
+    }
+
     public void EnsureGateway()
     {
-        if (!AgyServices.Ollama.IsPortListening(18789))
+        if (!_ollama.IsPortListening(18789))
         {
             try
             {
@@ -25,7 +34,7 @@ public class OpenClawProvider : IOpenClawClient
     public void InvokeOpenClaw(string[] argsList)
     {
         EnsureGateway();
-        AgyServices.ProcessRunner.RunInteractive("openclaw", argsList);
+        _processRunner.RunInteractive("openclaw", argsList);
     }
 
     public void InvokeClawdbot(string[] argsList) => InvokeOpenClaw(argsList);

@@ -1,8 +1,10 @@
-namespace AgyTui.Tests.Unit.Core.Services;
-
 using AgyTui;
-using AgyTui.UI.Core.Navigation;
+using AgyTui.Core.Interfaces;
+using AgyTui.Infrastructure.Di;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+
+namespace AgyTui.Tests.Unit.Core.Services;
 
 public class ProgramTests
 {
@@ -16,7 +18,8 @@ public class ProgramTests
     [Fact]
     public void CommandRouter_Execute_UnknownAlias_ReturnsNonZeroExitCode()
     {
-        int exitCode = CommandRouter.Execute("non-existent-alias-999");
+        var router = Bootstrapper.ServiceProvider.GetRequiredService<ICommandRouter>();
+        int exitCode = router.Execute("non-existent-alias-999");
         Assert.Equal(1, exitCode);
     }
 }

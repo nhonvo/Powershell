@@ -4,21 +4,20 @@ namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
 
 public class ClaudeProvider : IClaudeClient
 {
+    private readonly IAiProcessRunner _processRunner;
+
+    public ClaudeProvider(IAiProcessRunner processRunner)
+    {
+        _processRunner = processRunner;
+    }
+
     public void InvokeClaude(string[] argsList, string? providerModeOverride = null)
     {
-        var exe = "claude";
-        AgyServices.ProcessRunner.RunInteractive(exe, argsList);
+        _processRunner.RunInteractive("claude", argsList);
     }
 
     public void InvokeCodex(string[] argsList, string? providerModeOverride = null)
     {
-        var exe = "codex";
-        AgyServices.ProcessRunner.RunInteractive(exe, argsList);
+        _processRunner.RunInteractive("codex", argsList);
     }
-
-    public static void InvokeClaudeStatic(string[] argsList, string? providerModeOverride = null)
-        => AgyServices.Claude.InvokeClaude(argsList, providerModeOverride);
-
-    public static void InvokeCodexStatic(string[] argsList, string? providerModeOverride = null)
-        => AgyServices.Claude.InvokeCodex(argsList, providerModeOverride);
 }

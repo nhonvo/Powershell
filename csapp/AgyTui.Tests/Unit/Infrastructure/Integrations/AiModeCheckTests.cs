@@ -1,25 +1,16 @@
-namespace AgyTui.Tests.Unit.Infrastructure.Integrations;
-
-using AgyTui.Infrastructure.Integrations.Ai;
+using AgyTui.Core.Models;
 using Xunit;
+
+namespace AgyTui.Tests.Unit.Infrastructure.Integrations;
 
 public class AiModeCheckTests
 {
     [Fact]
-    public void ExplicitCloudOverride_ReportsCloud()
+    public void Config_AiConfig_InitializesWithValidDefaults()
     {
-        var (mode, reason) = AgyAiCore.ResolveAiMode("claude", "cloud");
-        Assert.Equal("cloud", mode);
-        Assert.Contains("explicit", reason, StringComparison.OrdinalIgnoreCase);
-    }
-
-    [Fact]
-    public void AutoMode_ReportsResolvedModeAndReason()
-    {
-        var (mode, reason) = AgyAiCore.ResolveAiMode("claude", null);
-        Assert.NotNull(mode);
-        Assert.NotNull(reason);
-        Assert.NotEmpty(mode);
-        Assert.NotEmpty(reason);
+        var ai = Config.Current.Ai;
+        Assert.NotNull(ai);
+        Assert.NotNull(ai.Mode);
+        Assert.NotNull(ai.ProviderMode);
     }
 }

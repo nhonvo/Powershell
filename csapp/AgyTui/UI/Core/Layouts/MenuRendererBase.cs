@@ -1,3 +1,5 @@
+using AgyTui.Core.Models;
+
 namespace AgyTui.UI.Core.Layouts;
 
 public abstract class MenuRendererBase : IMenuRenderer
@@ -8,7 +10,7 @@ public abstract class MenuRendererBase : IMenuRenderer
 
     protected static MenuNode[] GetActiveChildren(MenuNode parent)
     {
-        var (enableAi, enableAgy) = _enabledCache.GetOrCompute("flags", () => (AgyAiCore.IsAiOllamaEnabled(), AgyAiCore.IsAgyEnabled()));
+        var (enableAi, enableAgy) = _enabledCache.GetOrCompute("flags", () => (Config.Current.EnableAiOllama, Config.Current.EnableAgy));
 
         var list = new List<MenuNode>();
         foreach (var child in parent.Children)

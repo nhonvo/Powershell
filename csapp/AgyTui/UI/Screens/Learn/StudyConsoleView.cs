@@ -1,4 +1,7 @@
 using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
+using AgyTui.Infrastructure.Di;
+using AgyTui.Infrastructure.Persistence.Learning;
 
 namespace AgyTui.UI.Screens.Learn;
 
@@ -70,7 +73,7 @@ public static class LearnDataPaths
 
     public static void EnsureDirectories()
     {
-        AgyServices.Study.EnsureDirectories();
+        Bootstrapper.ServiceProvider.GetRequiredService<IStudyRepository>().EnsureDirectories();
         SeedDefaultData();
     }
 
@@ -356,9 +359,9 @@ public static class LearnDataPaths
     }
     ;
 
-    public static T? LoadJson<T>(string path) where T : class => AgyServices.Study.LoadJson<T>(path);
+    public static T? LoadJson<T>(string path) where T : class => Bootstrapper.ServiceProvider.GetRequiredService<IStudyRepository>().LoadJson<T>(path);
 
-    public static void SaveJson<T>(string path, T obj) => AgyServices.Study.SaveJson(path, obj);
+    public static void SaveJson<T>(string path, T obj) => Bootstrapper.ServiceProvider.GetRequiredService<IStudyRepository>().SaveJson(path, obj);
 
 }
 

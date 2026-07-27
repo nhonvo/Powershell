@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
+using AgyTui.Core.Interfaces;
 using AgyTui.Core.Registries;
 using AgyTui.Infrastructure.Common;
 using AgyTui.Infrastructure.Di;

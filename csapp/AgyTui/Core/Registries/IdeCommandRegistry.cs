@@ -1,3 +1,5 @@
+using AgyTui.Infrastructure.Integrations.Ai.Services;
+
 namespace AgyTui.Core.Registries;
 
 public sealed record IdeCommand(string Name, string ArgHint, string Description, string Category, Action<IdeContext, string[]> Run);
@@ -48,7 +50,7 @@ public static class IdeCommandRegistry
                 string q = a.Length > 0 ? string.Join(' ', a) : "Explain this file";
                 string content = File.ReadAllText(ctx.CurrentFile);
                 if (content.Length > 8000) content = content[..8000] + "\n...(truncated)";
-                AgyAiCore.AskAi($"Regarding the file '{ctx.CurrentFile}', question: {q}\n\nFile Content:\n{content}");
+                AiDashboardView.AskAi($"Regarding the file '{ctx.CurrentFile}', question: {q}\n\nFile Content:\n{content}");
             }
         }),
     };

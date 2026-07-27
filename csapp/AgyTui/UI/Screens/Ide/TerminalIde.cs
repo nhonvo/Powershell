@@ -1,5 +1,6 @@
 using System.Buffers;
 using System.Text.RegularExpressions;
+using AgyTui.Infrastructure.Integrations.Ai.Services;
 
 namespace AgyTui.UI.Screens.Ide;
 
@@ -289,7 +290,7 @@ public static class TerminalIde
                     AnsiConsole.MarkupLine("[cyan]Sending file content to AI for review/explanation...[/]");
                     string content = File.ReadAllText(currentFile);
                     if (content.Length > 8000) content = content[..8000] + "\n...(truncated)";
-                    AgyAiCore.AskAi($"Regarding the file '{currentFile}', explain this file:\n\nFile Content:\n{content}");
+                    AiDashboardView.AskAi($"Regarding the file '{currentFile}', explain this file:\n\nFile Content:\n{content}");
                 }
                 else
                 {

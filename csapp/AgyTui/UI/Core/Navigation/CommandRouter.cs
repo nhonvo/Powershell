@@ -10,6 +10,7 @@ using AgyTui.Infrastructure.Integrations.Docker;
 using AgyTui.Infrastructure.Integrations.DotNet;
 using AgyTui.Infrastructure.Integrations.Git;
 
+using AgyTui.Core.Interfaces;
 namespace AgyTui.UI.Core.Navigation;
 
 public class CommandRouter : ICommandRouter
@@ -81,13 +82,13 @@ public class CommandRouter : ICommandRouter
         var cmdEntry = CommandRegistry.GetByAlias(lAlias);
         if (cmdEntry != null)
         {
-            if (cmdEntry.RequiresAiOllama && !AgyAiCore.IsAiOllamaEnabled())
+            if (cmdEntry.RequiresAiOllama && !Config.Current.EnableAiOllama)
             {
                 SpectrePanel.Error("AI/Ollama features are disabled in config.");
                 Thread.Sleep(1500);
                 return 1;
             }
-            if (cmdEntry.RequiresAgy && !AgyAiCore.IsAgyEnabled())
+            if (cmdEntry.RequiresAgy && !Config.Current.EnableAgy)
             {
                 SpectrePanel.Error("AGY Account features are disabled in config.");
                 Thread.Sleep(1500);
@@ -101,7 +102,7 @@ public class CommandRouter : ICommandRouter
             {
                 case "ai-mode-check":
                     var targetAlias = args != null && args.Length > 0 ? args[0] : "claude";
-                    AgyAiCore.ShowAiModeCheck(targetAlias);
+                    AiDashboardView.ShowAiModeCheck(targetAlias);
                     break;
                 case "proj":
                 case "prj":
@@ -270,25 +271,25 @@ public class CommandRouter : ICommandRouter
                     else SpectrePanel.Warning("Build note: If running directly inside AgyTui.exe, Windows locks the executable while in-use. Exit TUI and run 'dbld' or run via PowerShell wrapper to refresh binary.");
                     break;
                 case "claude":
-                    AgyAiCore.InvokeClaude([], "cloud");
+                    _claude.InvokeClaude([], "cloud");
                     break;
                 case "claude-cloud":
-                    AgyAiCore.InvokeClaude([], "cloud");
+                    _claude.InvokeClaude([], "cloud");
                     break;
                 case "claude-ollama":
-                    AgyAiCore.InvokeClaude([], "local");
+                    _claude.InvokeClaude([], "local");
                     break;
                 case "codex":
-                    AgyAiCore.InvokeCodex([], "cloud");
+                    _claude.InvokeCodex([], "cloud");
                     break;
                 case "codex-cloud":
-                    AgyAiCore.InvokeCodex([], "cloud");
+                    _claude.InvokeCodex([], "cloud");
                     break;
                 case "codex-ollama":
-                    AgyAiCore.InvokeCodex([], "local");
+                    _claude.InvokeCodex([], "local");
                     break;
                 case "openclaw":
-                    AgyAiCore.InvokeOpenClaw([]);
+                    _openClaw.InvokeOpenClaw([]);
                     break;
                 case "ollama-models":
                     _ollama.ManageModels();
@@ -311,12 +312,12 @@ public class CommandRouter : ICommandRouter
                 case "desk-status":
                 case "deck-status":
                     {
-                        var running = AgyAiCore.IsDeckRunning();
-                        var statusStr = running ? "[green]Online (port 3000)[/]" : "[red]Offline[/]";
+                        var running = _ollama.IsPortListening(18789);
+                        var statusStr = running ? "[green]Online (port 18789)[/]" : "[red]Offline[/]";
                         AnsiConsole.MarkupLine($"Antigravity Deck/Desk Status: {statusStr}");
                         if (running)
                         {
-                            AnsiConsole.MarkupLine("Local App URL: [cyan]http://127.0.0.1:3000[/]");
+                            AnsiConsole.MarkupLine("Local App URL: [cyan]http://127.0.0.1:18789[/]");
                         }
                         Console.WriteLine("\nPress any key to return...");
                         Console.ReadKey(true);
@@ -340,12 +341,12 @@ public class CommandRouter : ICommandRouter
                 case "manager-status":
                 case "agm-status":
                     {
-                        var running = AgyAiCore.IsManagerRunning();
-                        var statusStr = running ? "[green]Online (port 8045)[/]" : "[red]Offline[/]";
+                        var running = _ollama.IsPortListening(18790);
+                        var statusStr = running ? "[green]Online (port 18790)[/]" : "[red]Offline[/]";
                         AnsiConsole.MarkupLine($"Antigravity Manager Status: {statusStr}");
                         if (running)
                         {
-                            AnsiConsole.MarkupLine("Local Backend URL: [cyan]http://127.0.0.1:8045[/]");
+                            AnsiConsole.MarkupLine("Local Backend URL: [cyan]http://127.0.0.1:18790[/]");
                         }
                         Console.WriteLine("\nPress any key to return...");
                         Console.ReadKey(true);
@@ -364,9 +365,9 @@ public class CommandRouter : ICommandRouter
                     AntigravityManagerHelper.StartLocal();
                     break;
                 case "agy-cli":
-                    if (!AgyAiCore.IsAgyEnabled())
+                    if (!Config.Current.EnableAgy)
                     {
-                        AgyAiCore.InvokeClaude([]);
+                        _claude.InvokeClaude([]);
                         break;
                     }
                     Helpers.ProcessRunner.Run("cmd.exe", "/c agy");
@@ -414,13 +415,13 @@ public class CommandRouter : ICommandRouter
                     }
                     break;
                 case "hermes":
-                    if (AgyAiCore.InvokeHermes([]) == AgyAiCore.HermesResult.NotInstalled)
+                    if (_hermes.InvokeHermes([]) == HermesResult.NotInstalled)
                     {
                         SpectrePanel.Warning("Hermes CLI is not installed on PATH.");
                         var choice = SpectreMenu.Show("Hermes Action Fallback", ["Launch local Ollama chat with default model", "View Hermes setup guide"], 0);
                         if (choice == 0)
                         {
-                            AgyAiCore.InvokeOllamaNative(null);
+                            _ollama.InvokeNative(null);
                         }
                         else if (choice == 1)
                         {
@@ -429,13 +430,13 @@ public class CommandRouter : ICommandRouter
                     }
                     break;
                 case "hermesd":
-                    if (AgyAiCore.InvokeHermesDesktop([]) == AgyAiCore.HermesResult.NotInstalled)
+                    if (_hermes.InvokeHermesDesktop([]) == HermesResult.NotInstalled)
                     {
                         SpectrePanel.Warning("Hermes Desktop is not installed on PATH.");
                         var choice = SpectreMenu.Show("Hermes Desktop Fallback", ["Launch local Ollama chat with default model", "View Hermes Desktop setup guide"], 0);
                         if (choice == 0)
                         {
-                            AgyAiCore.InvokeOllamaNative(null);
+                            _ollama.InvokeNative(null);
                         }
                         else if (choice == 1)
                         {

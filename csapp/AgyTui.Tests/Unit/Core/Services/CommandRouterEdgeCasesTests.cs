@@ -1,21 +1,25 @@
-namespace AgyTui.Tests.Unit.Core.Services;
-
-using AgyTui.UI.Core.Navigation;
+using AgyTui.Core.Interfaces;
+using AgyTui.Infrastructure.Di;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+
+namespace AgyTui.Tests.Unit.Core.Services;
 
 public class CommandRouterEdgeCasesTests
 {
     [Fact]
     public void Execute_UnknownAlias_ReturnsExitCodeOne()
     {
-        int exitCode = CommandRouter.Execute("non_existent_alias_999", Array.Empty<string>());
+        var router = Bootstrapper.ServiceProvider.GetRequiredService<ICommandRouter>();
+        int exitCode = router.Execute("non_existent_alias_999", Array.Empty<string>());
         Assert.Equal(1, exitCode);
     }
 
     [Fact]
     public void Execute_NullArgs_DoesNotThrow()
     {
-        int exitCode = CommandRouter.Execute("unknown_command", null!);
+        var router = Bootstrapper.ServiceProvider.GetRequiredService<ICommandRouter>();
+        int exitCode = router.Execute("unknown_command", null!);
         Assert.Equal(1, exitCode);
     }
 }

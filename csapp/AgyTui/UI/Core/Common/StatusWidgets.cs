@@ -1,3 +1,7 @@
+using Microsoft.Extensions.DependencyInjection;
+using AgyTui.Infrastructure.Di;
+using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
+using Spectre.Console;
 using Spectre.Console.Rendering;
 using System.Text.Json;
 
@@ -234,7 +238,7 @@ public sealed class OllamaStatusWidget : IStatusWidget
             {
                 try
                 {
-                    var isRunning = AgyAiCore.IsOllamaRunning();
+                    var isRunning = Bootstrapper.ServiceProvider.GetRequiredService<IOllamaClient>().IsRunning;
                     var table = new Table().Border(TableBorder.Rounded).BorderColor(isRunning ? Color.Green : Color.Red);
                     table.AddColumn("[bold cyan]Ollama Daemon[/]");
                     table.AddColumn("[bold cyan]Value[/]");

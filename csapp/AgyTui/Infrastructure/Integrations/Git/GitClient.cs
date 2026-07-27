@@ -1,11 +1,15 @@
+using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
+
 namespace AgyTui.Infrastructure.Integrations.Git;
 
 public class GitClient : CliToolWrapper, IGitClient
 {
     private static readonly string[] CommitTypes = ["feat", "fix", "docs", "style", "refactor", "test", "chore", "ci"];
+    private readonly IAiCommitGenerator _commitGenerator;
 
-    public GitClient() : base("git")
+    public GitClient(IAiCommitGenerator commitGenerator) : base("git")
     {
+        _commitGenerator = commitGenerator;
     }
 
     public void ShowStatus()
@@ -70,7 +74,7 @@ public class GitClient : CliToolWrapper, IGitClient
             else
             {
                 AnsiConsole.MarkupLine("[cyan]Querying local AI to draft description...[/]");
-                draft = AgyAiCore.GenerateDraftDescription(diff);
+                draft = _commitGenerator.GenerateDraftDescription(diff);
                 if (!string.IsNullOrEmpty(draft))
                 {
                     AnsiConsole.MarkupLine($"[green]Suggested draft:[/] {draft}");

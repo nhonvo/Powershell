@@ -1,20 +1,22 @@
-namespace AgyTui.Tests.Unit.Infrastructure.Integrations;
-
-using AgyTui.Infrastructure.Integrations.Ai;
+using AgyTui.Core.Models;
 using Xunit;
+
+namespace AgyTui.Tests.Unit.Infrastructure.Integrations;
 
 public class ShowAiDashboardTests
 {
     [Fact]
-    public void ResolveAiMode_ClaudeAndCodex_ReturnsValidModeAndReason()
+    public void Config_AiProviderMode_CanBeUpdatedAndRestored()
     {
-        var (claudeMode, claudeReason) = AgyAiCore.ResolveAiMode("claude");
-        var (codexMode, codexReason) = AgyAiCore.ResolveAiMode("codex");
-
-        Assert.True(claudeMode == "cloud" || claudeMode == "local");
-        Assert.NotEmpty(claudeReason);
-
-        Assert.True(codexMode == "cloud" || codexMode == "local");
-        Assert.NotEmpty(codexReason);
+        var orig = Config.Current.AiProviderMode;
+        try
+        {
+            Config.Current.AiProviderMode = "cloud";
+            Assert.Equal("cloud", Config.Current.AiProviderMode);
+        }
+        finally
+        {
+            Config.Current.AiProviderMode = orig;
+        }
     }
 }

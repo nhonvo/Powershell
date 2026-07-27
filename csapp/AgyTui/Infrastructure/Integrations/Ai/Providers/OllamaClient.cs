@@ -12,7 +12,13 @@ namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
 public class OllamaClient : IOllamaClient
 {
     private static readonly string OllamaDefaultModelFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ollama_default_model");
+    private readonly IAiProcessRunner _processRunner;
     private string _defaultModel = LoadDefaultModel();
+
+    public OllamaClient(IAiProcessRunner processRunner)
+    {
+        _processRunner = processRunner;
+    }
 
     public string DefaultModel => _defaultModel;
 
@@ -69,7 +75,7 @@ public class OllamaClient : IOllamaClient
     {
         EnsureServer();
         var selectedModel = !string.IsNullOrEmpty(model) ? model : DefaultModel;
-        AgyServices.ProcessRunner.RunInteractive("ollama", new[] { "run", selectedModel });
+        _processRunner.RunInteractive("ollama", new[] { "run", selectedModel });
     }
 
     public void ShowLogs()
@@ -363,10 +369,4 @@ public class OllamaClient : IOllamaClient
         }
         Thread.Sleep(2000);
     }
-
-    public static void ShowOllamaLogs() => AgyServices.Ollama.ShowLogs();
-    public static void ManageOllamaModels() => AgyServices.Ollama.ManageModels();
-    public static void BenchmarkOllamaModels() => AgyServices.Ollama.BenchmarkModels();
-    public static void PullOllamaModel() => AgyServices.Ollama.PullModel();
-    public static void StartOllamaDaemon() => AgyServices.Ollama.StartDaemon();
 }

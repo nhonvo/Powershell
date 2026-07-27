@@ -1,21 +1,15 @@
-namespace AgyTui.Tests.Unit.Infrastructure.Integrations;
-
-using AgyTui.Infrastructure.Integrations.Ai;
+using AgyTui.Infrastructure.Integrations.Ai.Providers;
 using Xunit;
+
+namespace AgyTui.Tests.Unit.Infrastructure.Integrations;
 
 public class InvokeCliAgentTests
 {
     [Fact]
-    public void SharedHelper_ClaudeConfig_MatchesOriginalInvokeClaudeBehavior()
+    public void ClaudeProvider_CanBeInstantiatedWithInjectedRunner()
     {
-        var method = typeof(AgyAiCore).GetMethod("InvokeCliAgent");
-        Assert.NotNull(method);
-    }
-
-    [Fact]
-    public void SharedHelper_CodexConfig_MatchesOriginalInvokeCodexBehavior()
-    {
-        var method = typeof(AgyAiCore).GetMethod("InvokeCliAgent");
-        Assert.NotNull(method);
+        var runner = new AgyTui.Infrastructure.Integrations.Ai.Services.AiProcessRunner();
+        var provider = new ClaudeProvider(runner);
+        Assert.NotNull(provider);
     }
 }

@@ -1,4 +1,4 @@
-namespace AgyTui.UI.Core.Navigation;
+namespace AgyTui.Core.Interfaces;
 
 public interface ICommandRouter
 {

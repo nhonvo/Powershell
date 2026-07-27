@@ -4,6 +4,13 @@ namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
 
 public class HermesProvider : IHermesClient
 {
+    private readonly IAiProcessRunner _processRunner;
+
+    public HermesProvider(IAiProcessRunner processRunner)
+    {
+        _processRunner = processRunner;
+    }
+
     public static string? FindOnPath(string exe)
     {
         var pathEnv = Environment.GetEnvironmentVariable("PATH") ?? "";
@@ -46,7 +53,7 @@ public class HermesProvider : IHermesClient
         try
         {
             var args = argsList != null && argsList.Length > 0 ? argsList : new[] { "chat" };
-            AgyServices.ProcessRunner.RunInteractive(exe, args);
+            _processRunner.RunInteractive(exe, args);
             return HermesResult.Success;
         }
         catch
