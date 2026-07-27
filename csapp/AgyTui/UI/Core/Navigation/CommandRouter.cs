@@ -479,6 +479,10 @@ public class CommandRouter : ICommandRouter
                 case "reload-profile":
                     ReloadTerminalProfile();
                     break;
+                case "reload-all":
+                case "rall":
+                    ReloadAll();
+                    break;
                 case "agyswitch":
                     var accs = AgyAccountCore.GetAccounts();
                     var activeAcc = AgyAccountCore.GetActiveAccount();
@@ -859,12 +863,13 @@ public class CommandRouter : ICommandRouter
             {
                 "🔄  Reload Control Center TUI (rebuild & restart session)",
                 "⚡  Reload Terminal & PowerShell Profile ($PROFILE)",
+                "🚀  Reload All (Full System & TUI Refresh)",
                 "📂  Open Execution Log File (tui_execution.log)",
                 "⬅️  Back"
             };
 
             var idx = SpectreMenu.ShowWithEscape("System & Terminal Reload", options, 0);
-            if (idx < 0 || idx == 3) break;
+            if (idx < 0 || idx == 4) break;
 
             if (idx == 0)
             {
@@ -876,6 +881,11 @@ public class CommandRouter : ICommandRouter
                 ReloadTerminalProfile();
             }
             if (idx == 2)
+            {
+                ReloadAll();
+                break;
+            }
+            if (idx == 3)
             {
                 var logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini", "antigravity");
                 var logFile = Path.Combine(logDir, "tui_execution.log");
@@ -893,21 +903,27 @@ public class CommandRouter : ICommandRouter
 
     private void ReloadControlCenter()
     {
-        SpectrePanel.Info("Rebuilding and restarting Control Center TUI session...");
+        SpectrePanel.Info("Initiating clean rebuild and restart sequence for Control Center TUI...");
         try
         {
             var csproj = @"C:\Users\TruongNhon\Documents\Powershell\csapp\AgyTui\AgyTui.csproj";
-            var exitCode = DotNetHelper.Build(new[] { csproj });
-            if (exitCode == 0)
+            var binDir = @"C:\Users\TruongNhon\Documents\Powershell\csapp\AgyTui\bin\Debug\net9.0";
+            var exePath = Path.Combine(binDir, "AgyTui.exe");
+
+            var script = $"Start-Sleep -Milliseconds 600; dotnet build '{csproj}' -c Debug; if ($?) {{ Start-Process '{exePath}' }}";
+            
+            var psi = new System.Diagnostics.ProcessStartInfo
             {
-                SpectrePanel.Success("Control Center TUI rebuilt successfully. Restarting...");
-                Thread.Sleep(1000);
-                Environment.Exit(0);
-            }
-            else
-            {
-                SpectrePanel.Error($"Control Center build failed with exit code {exitCode}.");
-            }
+                FileName = "pwsh",
+                Arguments = $"-NoProfile -WindowStyle Hidden -Command \"{script}\"",
+                UseShellExecute = true,
+                CreateNoWindow = true
+            };
+            System.Diagnostics.Process.Start(psi);
+
+            SpectrePanel.Success("Restart launcher spawned cleanly. Exiting current session...");
+            Thread.Sleep(500);
+            Environment.Exit(0);
         }
         catch (Exception ex)
         {
@@ -928,5 +944,11 @@ public class CommandRouter : ICommandRouter
         {
             SpectrePanel.Error($"Failed to reload terminal profile: {ex.Message}");
         }
+    }
+
+    private void ReloadAll()
+    {
+        SpectrePanel.Info("Reloading PowerShell Profile and initiating Control Center TUI rebuild...");
+        ReloadControlCenter();
     }
 }
