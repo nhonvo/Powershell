@@ -21,6 +21,10 @@ public static class AgyAccountCore
         {
             var cfgHome = Config.Current.AgySourceHome;
             if (!string.IsNullOrEmpty(cfgHome)) return cfgHome;
+            var envGemini = Environment.GetEnvironmentVariable("GEMINI_HOME");
+            if (!string.IsNullOrEmpty(envGemini) && Directory.Exists(envGemini)) return envGemini;
+            var envAgy = Environment.GetEnvironmentVariable("AGY_HOME");
+            if (!string.IsNullOrEmpty(envAgy) && Directory.Exists(envAgy)) return envAgy;
             var publicGemini = @"C:\Users\Public\.gemini";
             if (Directory.Exists(publicGemini)) return publicGemini;
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini");
