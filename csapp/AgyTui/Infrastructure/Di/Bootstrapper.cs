@@ -40,7 +40,6 @@ public static class Bootstrapper
         services.AddSingleton<IDotNetClient, DotNetClient>();
         services.AddSingleton<IGitClient, GitClient>();
         services.AddSingleton<IAgyAccountStore, AgyAccountStore>();
-        services.AddSingleton<IAccountRepository>(sp => sp.GetRequiredService<IAgyAccountStore>());
         services.AddSingleton<IAgyQuotaEngine, AgyQuotaEngine>();
         services.AddSingleton<IAgyVault, AgyVault>();
         services.AddSingleton<IAgyClient, AgyClient>();

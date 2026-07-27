@@ -1,6 +1,4 @@
-namespace AgyTui.Core.Interfaces;
-
-using AgyTui.Infrastructure.Integrations.AgyClient;
+namespace AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 
 public interface IAgyClient
 {

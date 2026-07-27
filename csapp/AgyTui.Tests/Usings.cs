@@ -4,6 +4,7 @@ global using AgyTui.Infrastructure.Common;
 global using AgyTui.Infrastructure.Integrations.Ai;
 global using AgyTui.Infrastructure.Integrations.Obsidian;
 global using AgyTui.Infrastructure.Integrations.AgyClient;
+global using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 global using AgyTui.UI.Core.Layouts;
 global using AgyTui.UI.Screens.Learn;
 global using AgyTui.UI.Screens.Quizzes;

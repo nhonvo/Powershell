@@ -32,7 +32,7 @@ public class BootstrapperTests
         Assert.NotNull(provider.GetService<IDotNetClient>());
         Assert.NotNull(provider.GetService<IGitClient>());
 
-        Assert.NotNull(provider.GetService<IAccountRepository>());
+        Assert.NotNull(provider.GetService<IAgyAccountStore>());
         Assert.NotNull(provider.GetService<IStudyRepository>());
 
         Assert.NotNull(provider.GetService<ICommandRouter>());

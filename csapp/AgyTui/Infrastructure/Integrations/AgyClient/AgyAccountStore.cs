@@ -4,17 +4,7 @@ using System.Text;
 using AgyTui.Core.Interfaces;
 using Spectre.Console;
 
-public interface IAgyAccountStore : IAccountRepository
-{
-    void SetActiveAccount(string accountName, bool temporary = false);
-    void AddAccount(string accountName);
-    void DeleteAccount(string accountName);
-    void LogoutAccount(string accountName);
-    bool IsAutoSwitchEnabled();
-    void ToggleAutoSwitch();
-    string? FindAutoSwitchCandidate();
-    void AutoSwitchOnQuotaExceeded();
-}
+using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 
 public class AgyAccountStore : IAgyAccountStore
 {
