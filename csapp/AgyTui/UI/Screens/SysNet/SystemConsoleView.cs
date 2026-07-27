@@ -132,15 +132,24 @@ public static class SystemConsoleView
                 {
                     args = $"-NoExit -Command \"{targetCommand}\"";
                 }
+                var shellExe = File.Exists(@"C:\Program Files\PowerShell\7\pwsh.exe") ? @"C:\Program Files\PowerShell\7\pwsh.exe" : "pwsh.exe";
                 var psi = new ProcessStartInfo
                 {
-                    FileName = "powershell.exe",
+                    FileName = shellExe,
                     Arguments = args,
                     WorkingDirectory = dir,
                     UseShellExecute = true
                 };
-                Process.Start(psi);
-                SpectrePanel.Success($"Launched PowerShell window in: {dir}");
+                try
+                {
+                    Process.Start(psi);
+                }
+                catch
+                {
+                    psi.FileName = "powershell.exe";
+                    Process.Start(psi);
+                }
+                SpectrePanel.Success($"Launched terminal window in: {dir}");
             }
             catch (Exception ex)
             {

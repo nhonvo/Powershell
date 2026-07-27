@@ -25,5 +25,10 @@
   },
   "Obsidian": {
     "VaultPath": "C:\\Users\\TruongNhon\\Documents\\Powershell\\csapp\\learn"
+  },
+  "Proxy": {
+    "HttpProxy": "",
+    "HttpsProxy": "",
+    "NoProxy": ""
   }
 }

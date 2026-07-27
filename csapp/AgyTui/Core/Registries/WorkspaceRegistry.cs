@@ -11,15 +11,38 @@ public sealed record WorkspaceEntry(
     [property: JsonPropertyName("Path")] string WorkspacePath,
     string? AssociatedAccount,
     string[]? Tags,
-    WorkspaceLink[]? Links = null
+    WorkspaceLink[]? Links = null,
+    string? Alias = null
 );
 
 public static class WorkspaceRegistry
 {
     private static readonly TtlCache<string, WorkspaceEntry[]> _cache = new(TimeSpan.FromSeconds(5));
 
-    private static string ConfigFile => Path.Combine(
-        AgyAccountCore.AgySourceHome, "antigravity", "priority_workspaces.json");
+    private static string ConfigFile
+    {
+        get
+        {
+            var repoRoot = Config.GetProfileRepoRoot();
+            var rootFile = Path.Combine(repoRoot, "priority_workspaces.json");
+            if (File.Exists(rootFile)) return rootFile;
+
+            var csappFile = Path.Combine(repoRoot, "csapp", "priority_workspaces.json");
+            if (File.Exists(csappFile)) return csappFile;
+
+            var legacyFile = Path.Combine(AgyAccountCore.AgySourceHome, "antigravity", "priority_workspaces.json");
+            if (File.Exists(legacyFile)) return legacyFile;
+
+            return rootFile;
+        }
+    }
+
+    public static string DeriveAlias(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return "proj";
+        var clean = Regex.Replace(name, @"[^a-zA-Z0-9]", "").ToLowerInvariant();
+        return string.IsNullOrEmpty(clean) ? "proj" : clean;
+    }
 
     public static WorkspaceEntry[] GetWorkspaces()
     {
@@ -31,7 +54,10 @@ public static class WorkspaceRegistry
                 try
                 {
                     var raw = File.ReadAllText(ConfigFile);
-                    items = JsonSerializer.Deserialize<WorkspaceEntry[]>(raw)?.Where(w => w != null && !string.IsNullOrEmpty(w.WorkspacePath)).ToArray() ?? [];
+                    items = JsonSerializer.Deserialize<WorkspaceEntry[]>(raw)?
+                        .Where(w => w != null && !string.IsNullOrEmpty(w.WorkspacePath) && Directory.Exists(w.WorkspacePath))
+                        .Select(w => string.IsNullOrEmpty(w.Alias) ? w with { Alias = DeriveAlias(w.Name) } : w)
+                        .ToArray() ?? [];
                 }
                 catch { }
             }
@@ -46,6 +72,26 @@ public static class WorkspaceRegistry
         });
     }
 
+    public static int PruneWorkspaces()
+    {
+        if (!File.Exists(ConfigFile)) return 0;
+        try
+        {
+            var raw = File.ReadAllText(ConfigFile);
+            var items = JsonSerializer.Deserialize<WorkspaceEntry[]>(raw) ?? [];
+            var valid = items.Where(w => w != null && !string.IsNullOrEmpty(w.WorkspacePath) && Directory.Exists(w.WorkspacePath))
+                             .Select(w => string.IsNullOrEmpty(w.Alias) ? w with { Alias = DeriveAlias(w.Name) } : w)
+                             .ToArray();
+            var prunedCount = items.Length - valid.Length;
+            if (prunedCount > 0)
+            {
+                SaveWorkspaces(valid);
+            }
+            return prunedCount;
+        }
+        catch { return 0; }
+    }
+
     public static WorkspaceEntry[] AutoDiscoverWorkspaces()
     {
         var list = new List<WorkspaceEntry>();
@@ -55,7 +101,8 @@ public static class WorkspaceRegistry
         {
             if (!string.IsNullOrEmpty(path) && Directory.Exists(path) && addedPaths.Add(path))
             {
-                list.Add(new WorkspaceEntry(name, path, "default", new[] { "auto-discovered" }));
+                var alias = DeriveAlias(name);
+                list.Add(new WorkspaceEntry(name, path, "default", new[] { "auto-discovered" }, null, alias));
             }
         }
 
@@ -71,12 +118,14 @@ public static class WorkspaceRegistry
         var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         TryAdd("Powershell Profile", Path.Combine(userProfile, "Documents", "Powershell"));
 
-        // 3. Candidate base project directories
+        // 3. Candidate base project directories (including C:\Users\sshuser\project)
         var searchBases = new List<string>();
         if (!string.IsNullOrEmpty(Config.Current.ProjectsBaseDir)) searchBases.Add(Config.Current.ProjectsBaseDir);
+        searchBases.Add(@"C:\Users\sshuser\project");
         searchBases.Add(Path.Combine(userProfile, "project"));
         searchBases.Add(Path.Combine(userProfile, "Documents"));
         searchBases.Add(Path.Combine(userProfile, "Desktop"));
+        searchBases.Add(Path.Combine(userProfile, "Desktop", "project"));
 
         foreach (var baseDir in searchBases)
         {
@@ -108,6 +157,58 @@ public static class WorkspaceRegistry
         return list.ToArray();
     }
 
+    public static int SyncAllProjects(string? customBaseDir = null)
+    {
+        var list = new List<WorkspaceEntry>();
+        var addedPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        void TryAdd(string name, string path)
+        {
+            if (!string.IsNullOrEmpty(path) && Directory.Exists(path) && addedPaths.Add(path))
+            {
+                var alias = DeriveAlias(name);
+                list.Add(new WorkspaceEntry(name, path, "default", new[] { "scanned" }, null, alias));
+            }
+        }
+
+        var repoRoot = Config.GetProfileRepoRoot();
+        if (Directory.Exists(repoRoot)) TryAdd("Powershell", repoRoot);
+
+        var searchBases = new List<string>();
+        if (!string.IsNullOrEmpty(customBaseDir) && Directory.Exists(customBaseDir)) searchBases.Add(customBaseDir);
+        if (!string.IsNullOrEmpty(Config.Current.ProjectsBaseDir) && Directory.Exists(Config.Current.ProjectsBaseDir)) searchBases.Add(Config.Current.ProjectsBaseDir);
+        searchBases.Add(@"C:\Users\sshuser\project");
+
+        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        if (Directory.Exists(Path.Combine(userProfile, "project"))) searchBases.Add(Path.Combine(userProfile, "project"));
+        if (Directory.Exists(Path.Combine(userProfile, "Desktop", "project"))) searchBases.Add(Path.Combine(userProfile, "Desktop", "project"));
+
+        foreach (var baseDir in searchBases)
+        {
+            if (!Directory.Exists(baseDir)) continue;
+            try
+            {
+                foreach (var dir in Directory.GetDirectories(baseDir))
+                {
+                    try
+                    {
+                        var dirName = Path.GetFileName(dir);
+                        if (dirName.StartsWith(".") || dirName.Equals("node_modules", StringComparison.OrdinalIgnoreCase)) continue;
+                        TryAdd(dirName, dir);
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+        }
+
+        if (list.Count > 0)
+        {
+            SaveWorkspaces(list.ToArray());
+        }
+        return list.Count;
+    }
+
     public static void SaveWorkspaces(WorkspaceEntry[] entries)
     {
         try
@@ -136,7 +237,11 @@ public static class WorkspaceRegistry
         {
             try
             {
-                return all.Where(w => Regex.IsMatch(w.Name, query, RegexOptions.IgnoreCase) || Regex.IsMatch(w.WorkspacePath, query, RegexOptions.IgnoreCase)).ToArray();
+                return all.Where(w =>
+                    Regex.IsMatch(w.Name, query, RegexOptions.IgnoreCase) ||
+                    (!string.IsNullOrEmpty(w.Alias) && Regex.IsMatch(w.Alias, query, RegexOptions.IgnoreCase)) ||
+                    Regex.IsMatch(w.WorkspacePath, query, RegexOptions.IgnoreCase)
+                ).ToArray();
             }
             catch
             {
@@ -144,7 +249,12 @@ public static class WorkspaceRegistry
             }
         }
 
-        return all.Where(w => w.Name.Contains(query, StringComparison.OrdinalIgnoreCase) || w.WorkspacePath.Contains(query, StringComparison.OrdinalIgnoreCase)).ToArray();
+        return all.Where(w =>
+            w.Name.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+            (!string.IsNullOrEmpty(w.Alias) && w.Alias.Equals(query, StringComparison.OrdinalIgnoreCase)) ||
+            (!string.IsNullOrEmpty(w.Alias) && w.Alias.Contains(query, StringComparison.OrdinalIgnoreCase)) ||
+            w.WorkspacePath.Contains(query, StringComparison.OrdinalIgnoreCase)
+        ).ToArray();
     }
 
     public static WorkspaceEntry[] GetByAccount(string accountName)
@@ -444,7 +554,8 @@ public static class ProfileNavigator
             {
                 var branch = WorkspaceRegistry.GetGitBranch(m.WorkspacePath);
                 var branchSuffix = !string.IsNullOrEmpty(branch) ? $" [{branch}]" : "";
-                return $"{m.Name}{branchSuffix} — {m.WorkspacePath}";
+                var aliasTag = !string.IsNullOrEmpty(m.Alias) ? $" ({m.Alias})" : "";
+                return $"{m.Name}{aliasTag}{branchSuffix} — {m.WorkspacePath}";
             }).ToArray();
 
             var idx = SpectreMenu.Show("Select Workspace Target", menuItems, 0, true);

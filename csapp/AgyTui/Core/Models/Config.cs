@@ -42,6 +42,13 @@ public sealed class ObsidianConfig
     public string VaultPath { get; set; } = "";
 }
 
+public sealed class ProxyConfig
+{
+    public string HttpProxy { get; set; } = "";
+    public string HttpsProxy { get; set; } = "";
+    public string NoProxy { get; set; } = "";
+}
+
 public sealed class ConfigData
 {
     public UiConfig Ui { get; set; } = new();
@@ -49,6 +56,7 @@ public sealed class ConfigData
     public ProjectConfig Project { get; set; } = new();
     public SystemConfig System { get; set; } = new();
     public ObsidianConfig Obsidian { get; set; } = new();
+    public ProxyConfig Proxy { get; set; } = new();
 
     // Flat getters and setters for backwards compatibility
     [JsonIgnore]
@@ -86,6 +94,15 @@ public sealed class ConfigData
 
     [JsonIgnore]
     public string GlobalBinDir { get => System.GlobalBinDir; set { if (!string.IsNullOrEmpty(value)) System.GlobalBinDir = value; } }
+
+    [JsonIgnore]
+    public string HttpProxy { get => Proxy.HttpProxy; set { if (value != null) Proxy.HttpProxy = value; } }
+
+    [JsonIgnore]
+    public string HttpsProxy { get => Proxy.HttpsProxy; set { if (value != null) Proxy.HttpsProxy = value; } }
+
+    [JsonIgnore]
+    public string NoProxy { get => Proxy.NoProxy; set { if (value != null) Proxy.NoProxy = value; } }
 
     [JsonIgnore]
     public string[] ProjectSearchPaths { get => Project.SearchPaths; set { if (value != null) Project.SearchPaths = value; } }

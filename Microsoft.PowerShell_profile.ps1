@@ -55,6 +55,15 @@ if ($startupLogFile) {
     $Global:AgyStartupLogFile = Join-Path $env:USERPROFILE ".gemini\antigravity\profile.log"
 }
 
+# Apply Proxy environment variables if defined in profile.config.json
+$httpProxyVal = if ($config.Proxy -and $config.Proxy.HttpProxy) { $config.Proxy.HttpProxy } else { $config.HttpProxy }
+$httpsProxyVal = if ($config.Proxy -and $config.Proxy.HttpsProxy) { $config.Proxy.HttpsProxy } else { $config.HttpsProxy }
+$noProxyVal = if ($config.Proxy -and $config.Proxy.NoProxy) { $config.Proxy.NoProxy } else { $config.NoProxy }
+
+if ($httpProxyVal) { $env:HTTP_PROXY = $httpProxyVal }
+if ($httpsProxyVal) { $env:HTTPS_PROXY = $httpsProxyVal }
+if ($noProxyVal) { $env:NO_PROXY = $noProxyVal }
+
 $Global:AgyStartupStart = Get-Date
 
 # Apply VerboseStartup
@@ -1134,6 +1143,46 @@ function Reload-Profile {
  . $PROFILE
  Write-Host "✅ Profile reloaded." -ForegroundColor Green
 }
+function Rebuild-AgyApp {
+    Write-Host "🧹 Terminating running Agy processes to unlock DLL..." -ForegroundColor Yellow
+    Get-Process -Name "AgyTui", "agy", "AgyTuiApp" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+    Start-Sleep -Milliseconds 500
+
+    $proj = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\AgyTui.csproj"
+    if (-not (Test-Path $proj)) {
+        Write-Error "AgyTui project file not found at: $proj"
+        return
+    }
+
+    Write-Host "🔨 Building AgyTui project..." -ForegroundColor Cyan
+    try {
+        dotnet build "$proj" -p:TreatWarningsAsErrors=true
+        if ($LASTEXITCODE -eq 0) {
+            $distDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\dist"
+            dotnet publish "$proj" -c Release -o "$distDir" | Out-Null
+            Write-Host "✅ AgyTui built and published successfully to dist/." -ForegroundColor Green
+        } else {
+            Write-Error "❌ Build failed with exit code $LASTEXITCODE"
+        }
+    } catch {
+        Write-Error "❌ Build exception: $_"
+    }
+}
+Set-Alias -Name rebuild-agy -Value Rebuild-AgyApp -Force
+Set-Alias -Name build-agy -Value Rebuild-AgyApp -Force
+
+function Sync-AgyWorkspaces {
+    param([string]$BaseDir)
+    Initialize-AgySession
+    if ($null -ne ('WorkspaceRegistry' -as [type])) {
+        $count = [WorkspaceRegistry]::SyncAllProjects($BaseDir)
+        Write-Host "✅ Scanned and updated $count projects in priority_workspaces.json" -ForegroundColor Green
+    } else {
+        Invoke-ControlCenter "sync-projects"
+    }
+}
+Set-Alias -Name sync-projects -Value Sync-AgyWorkspaces -Force
+Set-Alias -Name scan-projects -Value Sync-AgyWorkspaces -Force
 function New-DirAndEnter {
  param([string]$Path)
  $null = New-Item -ItemType Directory -Path $Path -Force
