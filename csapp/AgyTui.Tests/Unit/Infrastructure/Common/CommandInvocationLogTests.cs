@@ -1,14 +1,16 @@
-namespace AgyTui.Tests.Unit.Infrastructure.Common;
-
 using System;
 using System.IO;
+using System.Linq;
+using AgyTui.Core.Models;
 using AgyTui.Infrastructure.Common;
 using Xunit;
+
+namespace AgyTui.Tests.Unit.Infrastructure.Common;
 
 public class CommandInvocationLogTests
 {
     [Fact]
-    public void Record_WritesWellFormedJsonlEntry_WithAllSixFields()
+    public void Record_WritesWellFormedJsonlEntry_WithAllFields()
     {
         var tempDir = Path.Combine(Path.GetTempPath(), "agy_cmd_log_test_" + Guid.NewGuid());
         Directory.CreateDirectory(tempDir);
@@ -28,6 +30,13 @@ public class CommandInvocationLogTests
             Assert.NotNull(projLine);
             Assert.Contains("\"durationMs\":", projLine);
             Assert.Contains("\"success\":true", projLine);
+            Assert.Contains("\"activeAccount\":", projLine);
+
+            var entries = CommandInvocationLog.GetRecentEntries(10);
+            Assert.NotEmpty(entries);
+            var projEntry = entries.LastOrDefault(e => e.Alias == "proj");
+            Assert.NotNull(projEntry);
+            Assert.True(projEntry.Success);
         }
         finally
         {
