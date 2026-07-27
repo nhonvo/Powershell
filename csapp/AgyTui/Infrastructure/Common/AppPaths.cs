@@ -3,6 +3,7 @@ namespace AgyTui.Infrastructure.Common;
 public static class AppPaths
 {
     private static string? _projectRoot;
+    private static string? _repoRoot;
 
     public static string ProjectRoot
     {
@@ -30,6 +31,66 @@ public static class AppPaths
 
             _projectRoot = @"C:\Users\TruongNhon\Documents\Powershell\csapp\AgyTui";
             return _projectRoot;
+        }
+    }
+
+    public static string RepoRoot
+    {
+        get
+        {
+            if (_repoRoot != null) return _repoRoot;
+            var envRoot = Environment.GetEnvironmentVariable("PROFILE_REPO_ROOT");
+            if (!string.IsNullOrEmpty(envRoot) && File.Exists(Path.Combine(envRoot, "csapp", "profile.config.json")))
+            {
+                _repoRoot = envRoot;
+                return _repoRoot;
+            }
+
+            var startDir = Directory.GetCurrentDirectory();
+            try
+            {
+                var asmPath = typeof(AppPaths).Assembly.Location;
+                if (!string.IsNullOrEmpty(asmPath))
+                {
+                    var dir = Path.GetDirectoryName(asmPath);
+                    if (!string.IsNullOrEmpty(dir)) startDir = dir;
+                }
+            }
+            catch { }
+
+            var curr = new DirectoryInfo(startDir);
+            while (curr != null)
+            {
+                if (File.Exists(Path.Combine(curr.FullName, "csapp", "profile.config.json")) || File.Exists(Path.Combine(curr.FullName, "profile.config.json")))
+                {
+                    _repoRoot = curr.FullName;
+                    return _repoRoot;
+                }
+                curr = curr.Parent;
+            }
+
+            _repoRoot = Path.GetFullPath(Path.Combine(ProjectRoot, "..", ".."));
+            return _repoRoot;
+        }
+    }
+
+    public static string ConfigFile
+    {
+        get
+        {
+            var envOverride = Environment.GetEnvironmentVariable("PROFILE_CONFIG_PATH");
+            if (!string.IsNullOrEmpty(envOverride)) return envOverride;
+
+            var csappCfg = Path.Combine(RepoRoot, "csapp", "profile.config.json");
+            if (File.Exists(csappCfg)) return csappCfg;
+
+            var rootCfg = Path.Combine(RepoRoot, "profile.config.json");
+            if (File.Exists(rootCfg)) return rootCfg;
+
+            var projCfg = Path.Combine(ProjectRoot, "profile.config.json");
+            if (File.Exists(projCfg)) return projCfg;
+
+            return csappCfg;
         }
     }
 

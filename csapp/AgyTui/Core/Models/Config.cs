@@ -144,51 +144,10 @@ public static class Config
     {
         if (!string.IsNullOrEmpty(OverrideConfigPath))
             return OverrideConfigPath;
-        var envOverride = Environment.GetEnvironmentVariable("PROFILE_CONFIG_PATH");
-        if (!string.IsNullOrEmpty(envOverride))
-            return envOverride;
-
-        var repoRoot = GetProfileRepoRoot();
-        var csappCfg = Path.Combine(repoRoot, "csapp", "profile.config.json");
-        if (File.Exists(csappCfg)) return csappCfg;
-
-        var rootCfg = Path.Combine(repoRoot, "profile.config.json");
-        if (File.Exists(rootCfg)) return rootCfg;
-
-        var projCfg = Path.Combine(AppPaths.ProjectRoot, "profile.config.json");
-        if (File.Exists(projCfg)) return projCfg;
-
-        return csappCfg;
+        return AppPaths.ConfigFile;
     }
 
-    public static string GetProfileRepoRoot()
-    {
-        var envRoot = Environment.GetEnvironmentVariable("PROFILE_REPO_ROOT");
-        if (!string.IsNullOrEmpty(envRoot) && File.Exists(Path.Combine(envRoot, "csapp", "profile.config.json")))
-            return envRoot;
-
-        var startDir = Directory.GetCurrentDirectory();
-        try
-        {
-            var asmPath = typeof(Config).Assembly.Location;
-            if (!string.IsNullOrEmpty(asmPath))
-            {
-                var dir = Path.GetDirectoryName(asmPath);
-                if (!string.IsNullOrEmpty(dir)) startDir = dir;
-            }
-        }
-        catch { }
-
-        var curr = new DirectoryInfo(startDir);
-        while (curr != null)
-        {
-            if (File.Exists(Path.Combine(curr.FullName, "csapp", "profile.config.json")) || File.Exists(Path.Combine(curr.FullName, "profile.config.json")))
-                return curr.FullName;
-            curr = curr.Parent;
-        }
-
-        return AppPaths.ProjectRoot;
-    }
+    public static string GetProfileRepoRoot() => AppPaths.RepoRoot;
 
     public static void Load()
     {

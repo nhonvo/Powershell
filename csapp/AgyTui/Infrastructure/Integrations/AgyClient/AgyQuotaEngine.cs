@@ -66,6 +66,7 @@ public class AgyQuotaEngine : IAgyQuotaEngine
     public QuotaMetrics CalculateRollingQuotasForAgent(string agentName)
     {
         var logPath = Path.Combine(AgySourceHome, "ai_activity_log.jsonl");
+        if (!File.Exists(logPath)) logPath = Path.Combine(AppPaths.LogsDir, "ai_activity_log.jsonl");
         var dts = new List<DateTime>();
         if (File.Exists(logPath))
         {
