@@ -538,7 +538,7 @@ if (-not $Global:AiMode) {
         $env:THEME = "neko"
     }
     $themePath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "$($env:THEME).omp.json"
-    if (Test-Path $themePath) {
+    if ((Test-Path $themePath) -and (Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
         if (-not $global:PoshInitialized) {
             try {
                 oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
@@ -547,8 +547,6 @@ if (-not $Global:AiMode) {
                 Write-Warning "Failed to initialize oh-my-posh: $_"
             }
         }
-    } else {
-        Write-Warning "Oh My Posh theme '$($env:THEME)' not found at '$themePath'."
     }
 }
  
@@ -1536,7 +1534,7 @@ function Invoke-ControlCenter {
     [CmdletBinding()]
     param(
         [switch]$NewWindow,
-        [ValueFromRemainingArguments()][string[]]$ControlArgs
+        [Parameter(ValueFromRemainingArguments)][string[]]$ControlArgs
     )
     if ($NewWindow) {
         $pwshExe = (Get-Command pwsh -ErrorAction SilentlyContinue).Source
@@ -1559,19 +1557,33 @@ function Invoke-ControlCenter {
         }
     }
     $selectedProjFile = Join-Path -Path $Global:AgySourceHome -ChildPath "selected_project.txt"
-    if (Test-Path $selectedProjFile) {
+    if (Test-Path $selectedProjFile -ErrorAction SilentlyContinue) {
         $projPath = Get-Content $selectedProjFile -Raw -ErrorAction SilentlyContinue
-        if ($projPath -and (Test-Path $projPath.Trim())) {
-            Write-Host "🛸 Navigating to selected workspace: $($projPath.Trim())" -ForegroundColor Cyan
-            Set-Location $($projPath.Trim())
+        if ($projPath) {
+            $cleanPath = $projPath.Trim()
+            try {
+                if (Test-Path $cleanPath -ErrorAction Stop) {
+                    Write-Host "🛸 Navigating to selected workspace: $cleanPath" -ForegroundColor Cyan
+                    Set-Location $cleanPath -ErrorAction Stop
+                }
+            } catch {
+                Write-Warning "Cannot navigate to '$cleanPath': $($_.Exception.Message)"
+            }
         }
         Remove-Item $selectedProjFile -Force -ErrorAction SilentlyContinue
     }
     $selectedThemeFile = Join-Path -Path $Global:AgySourceHome -ChildPath "selected_theme.txt"
-    if (Test-Path $selectedThemeFile) {
+    if (Test-Path $selectedThemeFile -ErrorAction SilentlyContinue) {
         $themePath = Get-Content $selectedThemeFile -Raw -ErrorAction SilentlyContinue
-        if ($themePath -and (Test-Path $themePath.Trim())) {
-            Apply-ThemePath $($themePath.Trim())
+        if ($themePath) {
+            $cleanTheme = $themePath.Trim()
+            try {
+                if (Test-Path $cleanTheme -ErrorAction Stop) {
+                    Apply-ThemePath $cleanTheme
+                }
+            } catch {
+                Write-Warning "Cannot apply theme '$cleanTheme': $($_.Exception.Message)"
+            }
         }
         Remove-Item $selectedThemeFile -Force -ErrorAction SilentlyContinue
     }
