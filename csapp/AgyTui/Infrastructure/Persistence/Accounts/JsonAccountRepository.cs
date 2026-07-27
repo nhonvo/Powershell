@@ -1,28 +1,64 @@
+using AgyTui.Core.Interfaces;
+
 namespace AgyTui.Infrastructure.Persistence.Accounts;
 
 public class JsonAccountRepository : IAccountRepository
 {
     private string AgySourceHome => AgyAccountCore.AgySourceHome;
-    private string ActiveAccountFile => Path.Combine(AgySourceHome, "active_account.txt");
+
+    private IEnumerable<string> GetActiveAccountFileCandidates()
+    {
+        var list = new List<string>
+        {
+            Path.Combine(AgySourceHome, "active_account.txt"),
+            Path.Combine(AgySourceHome, "active_account")
+        };
+
+        var userGemini = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini");
+        list.Add(Path.Combine(userGemini, "active_account.txt"));
+        list.Add(Path.Combine(userGemini, "active_account"));
+
+        return list.Distinct(StringComparer.OrdinalIgnoreCase);
+    }
 
     public string GetActiveAccount()
     {
-        if (File.Exists(ActiveAccountFile))
+        foreach (var file in GetActiveAccountFileCandidates())
         {
-            try
+            if (File.Exists(file))
             {
-                var acc = File.ReadAllText(ActiveAccountFile).Trim();
-                if (!string.IsNullOrEmpty(acc)) return acc;
+                try
+                {
+                    var acc = File.ReadAllText(file).Trim();
+                    if (!string.IsNullOrEmpty(acc)) return acc;
+                }
+                catch { }
             }
-            catch { }
         }
         return "default";
     }
 
     public void SetActiveAccount(string accountName)
     {
-        Directory.CreateDirectory(Path.GetDirectoryName(ActiveAccountFile)!);
-        File.WriteAllText(ActiveAccountFile, accountName);
+        var targetDir = AgyAccountCore.GetAccountDirectory(accountName);
+
+        try
+        {
+            Environment.SetEnvironmentVariable("GEMINI_HOME", targetDir, EnvironmentVariableTarget.Process);
+            Environment.SetEnvironmentVariable("GEMINI_HOME", targetDir, EnvironmentVariableTarget.User);
+        }
+        catch { }
+
+        foreach (var file in GetActiveAccountFileCandidates())
+        {
+            try
+            {
+                var dir = Path.GetDirectoryName(file);
+                if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+                File.WriteAllText(file, accountName);
+            }
+            catch { }
+        }
     }
 
     public string[] GetAccounts()

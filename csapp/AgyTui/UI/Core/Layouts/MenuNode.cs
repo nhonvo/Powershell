@@ -103,6 +103,7 @@ public static class MenuNodeBuilder
                     "/antigravity-deck" => "Antigravity Deck (Desk)",
                     "/antigravity-manager" => "Antigravity Manager",
                     "/ssh-tailscale" => "SSH & Tailscale",
+                    "/system-reload" => "System & Terminal Reload",
                     "/quota-views" => "Quota Views",
                     "/track" => "Track & Progress",
                     _ => group.First().Command.GroupName ?? groupPath

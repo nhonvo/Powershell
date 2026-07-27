@@ -408,6 +408,32 @@ public static class AgyAccountCore
             {
                 AgyKeyringHelper.DeleteToken("gemini:antigravity");
             }
+
+            var targetHomeDirs = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                AgySourceHome,
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini")
+            };
+
+            var credFiles = new[] { "google_accounts.json", "oauth_creds.json", "state.json", "keyring_token.txt" };
+            foreach (var homeDir in targetHomeDirs)
+            {
+                if (string.Equals(homeDir, accDir, StringComparison.OrdinalIgnoreCase)) continue;
+                Directory.CreateDirectory(homeDir);
+                foreach (var f in credFiles)
+                {
+                    var src = Path.Combine(accDir, f);
+                    var dest = Path.Combine(homeDir, f);
+                    if (File.Exists(src))
+                    {
+                        try { File.Copy(src, dest, true); } catch { }
+                    }
+                    else if (File.Exists(dest))
+                    {
+                        try { File.Delete(dest); } catch { }
+                    }
+                }
+            }
         }
         catch { }
     }

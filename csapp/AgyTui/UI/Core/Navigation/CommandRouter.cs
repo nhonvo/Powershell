@@ -10,6 +10,7 @@ using AgyTui.Infrastructure.Integrations.Docker;
 using AgyTui.Infrastructure.Integrations.DotNet;
 using AgyTui.Infrastructure.Integrations.Git;
 
+using AgyTui.Infrastructure.Di;
 using AgyTui.Core.Interfaces;
 namespace AgyTui.UI.Core.Navigation;
 
@@ -465,6 +466,19 @@ public class CommandRouter : ICommandRouter
                 case "ssh-info":
                     SshHelper.ShowSshInfo();
                     break;
+                case "system-reload":
+                case "sys-reload":
+                    ShowSystemReloadMenu();
+                    break;
+                case "reload-cc":
+                case "rcc":
+                    ReloadControlCenter();
+                    break;
+                case "reload-term":
+                case "rterm":
+                case "reload-profile":
+                    ReloadTerminalProfile();
+                    break;
                 case "agyswitch":
                     var accs = AgyAccountCore.GetAccounts();
                     var activeAcc = AgyAccountCore.GetActiveAccount();
@@ -835,5 +849,76 @@ public class CommandRouter : ICommandRouter
             CommandInvocationLog.Record(alias, sw.Elapsed, success, errorType);
         }
         return exitCode;
+    }
+
+    private void ShowSystemReloadMenu()
+    {
+        while (true)
+        {
+            var options = new[]
+            {
+                "🔄  Reload Control Center TUI (rebuild & restart session)",
+                "⚡  Reload Terminal & PowerShell Profile ($PROFILE)",
+                "📂  Open Execution Log File (tui_execution.log)",
+                "⬅️  Back"
+            };
+
+            var idx = SpectreMenu.ShowWithEscape("System & Terminal Reload", options, 0);
+            if (idx < 0 || idx == 3) break;
+
+            if (idx == 0)
+            {
+                ReloadControlCenter();
+                break;
+            }
+            if (idx == 1)
+            {
+                ReloadTerminalProfile();
+            }
+            if (idx == 2)
+            {
+                var logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini", "antigravity");
+                var logFile = Path.Combine(logDir, "tui_execution.log");
+                if (File.Exists(logFile))
+                {
+                    SystemHelper.OpenExplorer(logFile);
+                }
+                else
+                {
+                    SpectrePanel.Warning("Execution log file does not exist yet.");
+                }
+            }
+        }
+    }
+
+    private void ReloadControlCenter()
+    {
+        SpectrePanel.Info("Rebuilding and restarting Control Center TUI session...");
+        try
+        {
+            DotNetHelper.Build(new[] { "C:\\Users\\TruongNhon\\Documents\\Powershell\\csapp\\AgyTui\\AgyTui.csproj" });
+            SpectrePanel.Success("Control Center TUI rebuilt successfully. Restarting...");
+            Thread.Sleep(1000);
+            Environment.Exit(0);
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Failed to reload Control Center TUI: {ex.Message}");
+        }
+    }
+
+    private void ReloadTerminalProfile()
+    {
+        SpectrePanel.Info("Reloading PowerShell Profile ($PROFILE)...");
+        try
+        {
+            var processRunner = Bootstrapper.ServiceProvider.GetRequiredService<IAiProcessRunner>();
+            processRunner.RunInteractive("pwsh", new[] { "-NoProfile", "-Command", "pwsh -NoExit -Command '. $PROFILE'" });
+            SpectrePanel.Success("PowerShell profile reloaded successfully.");
+        }
+        catch (Exception ex)
+        {
+            SpectrePanel.Error($"Failed to reload terminal profile: {ex.Message}");
+        }
     }
 }

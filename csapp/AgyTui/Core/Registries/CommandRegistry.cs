@@ -340,6 +340,18 @@ public static class CommandRegistry
             new[] { "tailscale-status — Parses `tailscale status --json` to list connected mesh peers." }),
         new("ssh-qr", "SSH Terminal QR Code", "Generate terminal QR code for SSH connection parameters", "[System & Network]", "SSH",
             new[] { "ssh-qr — Renders terminal QR code containing SSH connection string." }),
+        new("system-reload", "System & Terminal Reload", "Interactive menu to reload CC TUI or Terminal profile & session", "[System & Network]", "Reload",
+            new[] { "system-reload — Interactive menu to reload CC TUI or Terminal session." }) { GroupPath = "/system-reload" },
+        new("sys-reload", "System & Terminal Reload (Alias)", "Alias for system-reload menu", "[System & Network]", "Reload",
+            new[] { "sys-reload — Alias for system-reload." }) { GroupPath = "/system-reload" },
+        new("reload-cc", "Reload Control Center TUI", "Rebuild and restart Control Center TUI binary session", "[System & Network]", "Reload",
+            new[] { "reload-cc — Rebuild and restart Control Center TUI binary session." }) { GroupPath = "/system-reload" },
+        new("rcc", "Reload Control Center TUI (Alias)", "Alias for reload-cc", "[System & Network]", "Reload",
+            new[] { "rcc — Alias for reload-cc." }) { GroupPath = "/system-reload" },
+        new("reload-term", "Reload Terminal Profile", "Reload PowerShell profile ($PROFILE) and refresh active terminal environment", "[System & Network]", "Reload",
+            new[] { "reload-term — Reload PowerShell profile ($PROFILE) and refresh active terminal environment." }) { GroupPath = "/system-reload" },
+        new("rterm", "Reload Terminal Profile (Alias)", "Alias for reload-term", "[System & Network]", "Reload",
+            new[] { "rterm — Alias for reload-term." }) { GroupPath = "/system-reload" },
 
         // [Learn & Study]
         new("learn", "Start Learning (auto)", "Start learning for a topic (auto-refresh)", "[Learn & Study]", "Learn",
