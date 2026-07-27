@@ -207,22 +207,22 @@ public static class AgyAccountCore
     }
 
     // Direct delegation facade calls to DI services
-    public static void BackupActiveToken(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyTokenManager>().BackupActiveToken(accountName);
-    public static void RestoreActiveToken(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyTokenManager>().RestoreActiveToken(accountName);
-    public static void SyncActiveAccountWithKeyring(bool silent = false) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyTokenManager>().SyncActiveAccountWithKeyring(silent);
+    public static void BackupActiveToken(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>().BackupActiveToken(accountName);
+    public static void RestoreActiveToken(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>().RestoreActiveToken(accountName);
+    public static void SyncActiveAccountWithKeyring(bool silent = false) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>().SyncActiveAccountWithKeyring(silent);
 
-    public static QuotaMetrics CalculateRollingQuotas(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaCalculator>().CalculateRollingQuotas(accountName);
-    public static QuotaMetrics CalculateRollingQuotasForAgent(string agentName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaCalculator>().CalculateRollingQuotasForAgent(agentName);
+    public static QuotaMetrics CalculateRollingQuotas(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>().CalculateRollingQuotas(accountName);
+    public static QuotaMetrics CalculateRollingQuotasForAgent(string agentName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>().CalculateRollingQuotasForAgent(agentName);
 
-    public static AccountStats GetAccountStats(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStatsProvider>().GetAccountStats(accountName);
-    public static void ClearStatsCache() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStatsProvider>().ClearStatsCache();
+    public static AccountStats GetAccountStats(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>().GetAccountStats(accountName);
+    public static void ClearStatsCache() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>().ClearStatsCache();
 
-    public static void SetActiveAccount(string accountName, bool temporary = false) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountSwitcher>().SetActiveAccount(accountName, temporary);
-    public static void AddAccount(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountSwitcher>().AddAccount(accountName);
-    public static void DeleteAccount(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountSwitcher>().DeleteAccount(accountName);
-    public static void LogoutAccount(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountSwitcher>().LogoutAccount(accountName);
-    public static bool IsAutoSwitchEnabled() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountSwitcher>().IsAutoSwitchEnabled();
-    public static void ToggleAutoSwitch() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountSwitcher>().ToggleAutoSwitch();
-    public static void AutoSwitchOnQuotaExceeded() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountSwitcher>().AutoSwitchOnQuotaExceeded();
+    public static void SetActiveAccount(string accountName, bool temporary = false) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().SetActiveAccount(accountName, temporary);
+    public static void AddAccount(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().AddAccount(accountName);
+    public static void DeleteAccount(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().DeleteAccount(accountName);
+    public static void LogoutAccount(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().LogoutAccount(accountName);
+    public static bool IsAutoSwitchEnabled() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().IsAutoSwitchEnabled();
+    public static void ToggleAutoSwitch() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().ToggleAutoSwitch();
+    public static void AutoSwitchOnQuotaExceeded() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().AutoSwitchOnQuotaExceeded();
     public static void ShowAllAccountsSummary() => AgyTui.UI.Core.Navigation.AgyAccountDisplay.ShowAccountTree();
 }

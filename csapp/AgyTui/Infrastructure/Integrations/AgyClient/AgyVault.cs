@@ -1,19 +1,58 @@
 namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using Spectre.Console;
 
-public interface IAgyTokenManager
+public interface IAgyVault
 {
+    string Protect(string plainText);
+    string Unprotect(string cipherText);
     void BackupActiveToken(string accountName);
     void RestoreActiveToken(string accountName);
     void SyncActiveAccountWithKeyring(bool silent);
+    void SetSecret(string key, string value);
+    string? GetSecret(string key);
+    void ListSecrets();
+    void RemoveSecret(string key);
 }
 
-public class AgyTokenManager : IAgyTokenManager
+public class AgyVault : IAgyVault
 {
+    private static readonly byte[] Entropy = Encoding.UTF8.GetBytes("AgyTui_Secure_Entropy_v1");
     private string AgySourceHome => AgyAccountCore.AgySourceHome;
+
+    public string Protect(string plainText)
+    {
+        if (string.IsNullOrEmpty(plainText)) return string.Empty;
+        try
+        {
+            var data = Encoding.UTF8.GetBytes(plainText);
+            var encrypted = ProtectedData.Protect(data, Entropy, DataProtectionScope.CurrentUser);
+            return Convert.ToBase64String(encrypted);
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }
+
+    public string Unprotect(string cipherText)
+    {
+        if (string.IsNullOrEmpty(cipherText)) return string.Empty;
+        try
+        {
+            var data = Convert.FromBase64String(cipherText);
+            var decrypted = ProtectedData.Unprotect(data, Entropy, DataProtectionScope.CurrentUser);
+            return Encoding.UTF8.GetString(decrypted);
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }
 
     public void BackupActiveToken(string accountName)
     {
@@ -28,9 +67,9 @@ public class AgyTokenManager : IAgyTokenManager
                 string encrypted;
                 try
                 {
-                    encrypted = TokenVault.Protect(token);
+                    encrypted = Protect(token);
                 }
-                catch (System.Security.Cryptography.CryptographicException ex)
+                catch (CryptographicException ex)
                 {
                     SpectrePanel.Error($"DPAPI token encryption failed: {ex.Message}");
                     return;
@@ -38,7 +77,7 @@ public class AgyTokenManager : IAgyTokenManager
                 File.WriteAllText(tokenFile, encrypted, Encoding.UTF8);
             }
         }
-        catch (System.Security.Cryptography.CryptographicException ex)
+        catch (CryptographicException ex)
         {
             SpectrePanel.Error($"DPAPI token encryption failed: {ex.Message}");
         }
@@ -56,7 +95,7 @@ public class AgyTokenManager : IAgyTokenManager
                 var encrypted = File.ReadAllText(tokenFile).Trim();
                 if (!string.IsNullOrEmpty(encrypted))
                 {
-                    var token = TokenVault.Unprotect(encrypted);
+                    var token = Unprotect(encrypted);
                     if (!string.IsNullOrEmpty(token))
                     {
                         AgyKeyringHelper.WriteToken("gemini:antigravity", "antigravity", token);
@@ -119,7 +158,7 @@ public class AgyTokenManager : IAgyTokenManager
                         var encrypted = File.ReadAllText(tokenFile).Trim();
                         if (!string.IsNullOrEmpty(encrypted))
                         {
-                            var savedToken = TokenVault.Unprotect(encrypted);
+                            var savedToken = Unprotect(encrypted);
                             if (savedToken == keyringToken)
                             {
                                 matchedAcc = acc;
@@ -203,7 +242,7 @@ public class AgyTokenManager : IAgyTokenManager
                 var accDir = AgyAccountCore.GetAccountDirectory(savedAcc);
                 Directory.CreateDirectory(accDir);
                 var tokenFile = Path.Combine(accDir, "keyring_token.txt");
-                var encryptedToken = TokenVault.Protect(keyringToken);
+                var encryptedToken = Protect(keyringToken);
                 File.WriteAllText(tokenFile, encryptedToken, Encoding.UTF8);
             }
             else
@@ -211,10 +250,176 @@ public class AgyTokenManager : IAgyTokenManager
                 var accDir = AgyAccountCore.GetAccountDirectory(savedAcc);
                 Directory.CreateDirectory(accDir);
                 var tokenFile = Path.Combine(accDir, "keyring_token.txt");
-                var encryptedToken = TokenVault.Protect(keyringToken);
+                var encryptedToken = Protect(keyringToken);
                 File.WriteAllText(tokenFile, encryptedToken, Encoding.UTF8);
             }
         }
         catch { }
+    }
+
+    public void SetSecret(string key, string value)
+    {
+        if (string.IsNullOrWhiteSpace(key)) return;
+        var encrypted = Protect(value);
+        AgyKeyringHelper.WriteToken($"agy:secret:{key}", "secret", encrypted);
+        SpectrePanel.Success($"Secret '{key}' stored securely via DPAPI.");
+    }
+
+    public string? GetSecret(string key)
+    {
+        if (string.IsNullOrWhiteSpace(key)) return null;
+        var encrypted = AgyKeyringHelper.ReadToken($"agy:secret:{key}");
+        if (string.IsNullOrEmpty(encrypted)) return null;
+        return Unprotect(encrypted);
+    }
+
+    public void ListSecrets()
+    {
+        var secrets = AgyKeyringHelper.ListTokens("agy:secret:");
+        if (secrets.Length == 0)
+        {
+            SpectrePanel.Info("No secrets stored in vault.");
+            return;
+        }
+        AnsiConsole.MarkupLine("[bold cyan]Vault Secrets:[/]");
+        foreach (var s in secrets)
+        {
+            var key = s.Replace("agy:secret:", "");
+            AnsiConsole.MarkupLine($"  [dim]•[/] [bold]{key.EscapeMarkup()}[/]");
+        }
+    }
+
+    public void RemoveSecret(string key)
+    {
+        if (string.IsNullOrWhiteSpace(key)) return;
+        AgyKeyringHelper.DeleteToken($"agy:secret:{key}");
+        SpectrePanel.Success($"Secret '{key}' removed from vault.");
+    }
+}
+
+public static class AgySecretVault
+{
+    private static readonly IAgyVault _vault = new AgyVault();
+
+    public static void SetSecret(string key, string value) => _vault.SetSecret(key, value);
+    public static string? GetSecret(string key) => _vault.GetSecret(key);
+    public static void ListSecrets() => _vault.ListSecrets();
+    public static void RemoveSecret(string key) => _vault.RemoveSecret(key);
+}
+
+public static class TokenVault
+{
+    private static readonly IAgyVault _vault = new AgyVault();
+
+    public static string Protect(string plainText) => _vault.Protect(plainText);
+    public static string Unprotect(string cipherText) => _vault.Unprotect(cipherText);
+}
+
+internal static class AgyKeyringHelper
+{
+    [DllImport("advapi32.dll", EntryPoint = "CredReadW", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern bool CredRead(string target, int type, int reservedFlag, out IntPtr credential);
+
+    [DllImport("advapi32.dll", EntryPoint = "CredWriteW", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern bool CredWrite([In] ref CREDENTIAL userCredential, uint flags);
+
+    [DllImport("advapi32.dll", EntryPoint = "CredDeleteW", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern bool CredDelete(string target, int type, int reservedFlag);
+
+    [DllImport("advapi32.dll", EntryPoint = "CredFree", SetLastError = true)]
+    private static extern void CredFree([In] IntPtr cred);
+
+    [DllImport("advapi32.dll", EntryPoint = "CredEnumerateW", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern bool CredEnumerate(string filter, int flags, out int count, out IntPtr credentials);
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    private struct CREDENTIAL
+    {
+        public int flags;
+        public int type;
+        public string targetName;
+        public string comment;
+        public System.Runtime.InteropServices.ComTypes.FILETIME lastWritten;
+        public int credentialBlobSize;
+        public IntPtr credentialBlob;
+        public int persist;
+        public int attributeCount;
+        public IntPtr attributes;
+        public string targetAlias;
+        public string userName;
+    }
+
+    public static string? ReadToken(string target)
+    {
+        if (CredRead(target, 1, 0, out var credPtr))
+        {
+            try
+            {
+                var cred = Marshal.PtrToStructure<CREDENTIAL>(credPtr);
+                if (cred.credentialBlob != IntPtr.Zero && cred.credentialBlobSize > 0)
+                {
+                    return Marshal.PtrToStringUni(cred.credentialBlob, cred.credentialBlobSize / 2);
+                }
+            }
+            finally
+            {
+                CredFree(credPtr);
+            }
+        }
+        return null;
+    }
+
+    public static bool WriteToken(string target, string username, string token)
+    {
+        var bytes = Encoding.Unicode.GetBytes(token);
+        var blobPtr = Marshal.AllocHGlobal(bytes.Length);
+        try
+        {
+            Marshal.Copy(bytes, 0, blobPtr, bytes.Length);
+            var cred = new CREDENTIAL
+            {
+                type = 1,
+                targetName = target,
+                userName = username,
+                credentialBlob = blobPtr,
+                credentialBlobSize = bytes.Length,
+                persist = 2
+            };
+            return CredWrite(ref cred, 0);
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(blobPtr);
+        }
+    }
+
+    public static bool DeleteToken(string target)
+    {
+        return CredDelete(target, 1, 0);
+    }
+
+    public static string[] ListTokens(string prefix)
+    {
+        var list = new List<string>();
+        if (CredEnumerate(prefix + "*", 0, out var count, out var credsPtr))
+        {
+            try
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    var ptr = Marshal.ReadIntPtr(credsPtr, i * IntPtr.Size);
+                    var cred = Marshal.PtrToStructure<CREDENTIAL>(ptr);
+                    if (!string.IsNullOrEmpty(cred.targetName))
+                    {
+                        list.Add(cred.targetName);
+                    }
+                }
+            }
+            finally
+            {
+                CredFree(credsPtr);
+            }
+        }
+        return [.. list];
     }
 }
