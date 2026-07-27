@@ -1,10 +1,7 @@
 namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
-using System.Text;
-using AgyTui.Core.Interfaces;
-using Spectre.Console;
-
 using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
+using System.Text;
 
 public class AgyAccountStore : IAgyAccountStore
 {

@@ -1,7 +1,6 @@
-using System.Text.Json;
-using Microsoft.Extensions.DependencyInjection;
 using AgyTui.Infrastructure.Di;
-using AgyTui.Infrastructure.Persistence.Learning;
+using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json;
 
 namespace AgyTui.UI.Screens.Learn;
 

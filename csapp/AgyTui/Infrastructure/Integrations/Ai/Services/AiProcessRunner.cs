@@ -1,7 +1,4 @@
-using AgyTui.Core.Models;
-using AgyTui.Infrastructure.Common;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
-using AgyTui.Infrastructure.Integrations.AgyClient;
 
 namespace AgyTui.Infrastructure.Integrations.Ai.Services;
 

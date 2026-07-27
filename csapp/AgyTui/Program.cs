@@ -1,12 +1,5 @@
-using System.Text;
-using Microsoft.Extensions.DependencyInjection;
-using AgyTui.Core.Interfaces;
-using AgyTui.Core.Registries;
-using AgyTui.Infrastructure.Common;
 using AgyTui.Infrastructure.Di;
-using AgyTui.UI.Core.Layouts;
-using AgyTui.UI.Core.Navigation;
-using Spectre.Console;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui;
 

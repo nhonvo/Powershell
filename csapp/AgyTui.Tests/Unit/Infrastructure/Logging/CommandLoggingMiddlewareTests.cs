@@ -1,6 +1,5 @@
 using AgyTui.Core.Interfaces;
 using AgyTui.Infrastructure.Logging;
-using Xunit;
 
 namespace AgyTui.Tests.Unit.Infrastructure.Logging;
 

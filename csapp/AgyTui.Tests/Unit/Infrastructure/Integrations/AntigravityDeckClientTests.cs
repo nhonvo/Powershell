@@ -1,8 +1,8 @@
 namespace AgyTui.Tests.Unit.Infrastructure.Integrations;
 
+using AgyTui.Infrastructure.Common;
 using System;
 using System.Diagnostics;
-using AgyTui.Infrastructure.Common;
 using Xunit;
 
 public class AntigravityDeckClientTests

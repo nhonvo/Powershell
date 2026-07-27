@@ -1,10 +1,10 @@
 namespace AgyTui.Tests.Unit.Infrastructure.Persistence;
 
+using AgyTui.Core.Models;
+using AgyTui.Infrastructure.Integrations.AgyClient;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using AgyTui.Core.Models;
-using AgyTui.Infrastructure.Integrations.AgyClient;
 using Xunit;
 
 [Collection("Sequential")]

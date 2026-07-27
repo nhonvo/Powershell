@@ -1,5 +1,3 @@
-using AgyTui.Core.Models;
-
 namespace AgyTui.UI.Core.Layouts;
 
 public abstract class MenuRendererBase : IMenuRenderer

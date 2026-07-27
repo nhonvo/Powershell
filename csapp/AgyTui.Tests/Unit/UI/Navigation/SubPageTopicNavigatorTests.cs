@@ -1,6 +1,5 @@
 namespace AgyTui.Tests.Unit.UI.Navigation;
 
-using System.Linq;
 using AgyTui.UI.Core.Navigation;
 using Xunit;
 

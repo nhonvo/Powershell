@@ -1,10 +1,3 @@
-using System;
-using System.IO;
-using System.Linq;
-using AgyTui.Core.Models;
-using AgyTui.Infrastructure.Common;
-using Xunit;
-
 namespace AgyTui.Tests.Unit.Infrastructure.Common;
 
 public class CommandInvocationLogTests

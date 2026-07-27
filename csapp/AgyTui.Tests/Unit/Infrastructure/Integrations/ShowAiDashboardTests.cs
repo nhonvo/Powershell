@@ -1,6 +1,3 @@
-using AgyTui.Core.Models;
-using Xunit;
-
 namespace AgyTui.Tests.Unit.Infrastructure.Integrations;
 
 public class ShowAiDashboardTests

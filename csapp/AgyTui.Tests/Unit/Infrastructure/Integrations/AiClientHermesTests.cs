@@ -1,5 +1,4 @@
 using AgyTui.Infrastructure.Integrations.Ai.Providers;
-using Xunit;
 
 namespace AgyTui.Tests.Unit.Infrastructure.Integrations;
 

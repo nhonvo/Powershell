@@ -1,7 +1,6 @@
 using AgyTui.Core.Interfaces;
 using AgyTui.Infrastructure.Di;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace AgyTui.Tests.Unit.Core.Services;
 

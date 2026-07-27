@@ -1,9 +1,5 @@
-using Microsoft.Extensions.DependencyInjection;
 using AgyTui.Infrastructure.Di;
-using AgyTui.Infrastructure.Integrations.Aws;
-using AgyTui.Infrastructure.Integrations.Docker;
-using AgyTui.Infrastructure.Integrations.DotNet;
-using AgyTui.Infrastructure.Integrations.Git;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure;
 
@@ -76,21 +72,21 @@ public static class AwsHelper
 public static class SystemHelper
 {
     public static void OpenNewTerminalSession(string? workingDirectory = null, string? command = null, bool promptForCommand = false)
-        => Common.SystemConsoleView.OpenNewTerminalSession(workingDirectory, command, promptForCommand);
+        => AgyTui.UI.Screens.SysNet.SystemConsoleView.OpenNewTerminalSession(workingDirectory, command, promptForCommand);
 
     public static void OpenNewTerminalSession(string workingDirectory)
-        => Common.SystemConsoleView.OpenNewTerminalSession(workingDirectory, null, false);
+        => AgyTui.UI.Screens.SysNet.SystemConsoleView.OpenNewTerminalSession(workingDirectory, null, false);
 
     public static void OpenNewTerminalSession()
-        => Common.SystemConsoleView.OpenNewTerminalSession(null, null, false);
+        => AgyTui.UI.Screens.SysNet.SystemConsoleView.OpenNewTerminalSession(null, null, false);
 
-    public static bool KillPort(int port) => Common.SystemConsoleView.KillPort(port);
+    public static bool KillPort(int port) => AgyTui.UI.Screens.SysNet.SystemConsoleView.KillPort(port);
 
-    public static void OpenExplorer(string? path = null) => Common.SystemConsoleView.OpenExplorer(path);
+    public static void OpenExplorer(string? path = null) => AgyTui.UI.Screens.SysNet.SystemConsoleView.OpenExplorer(path);
 
-    public static void ShowDiskSpace() => Common.SystemConsoleView.ShowDiskSpace();
+    public static void ShowDiskSpace() => AgyTui.UI.Screens.SysNet.SystemConsoleView.ShowDiskSpace();
 
-    public static string GetPublicIP() => Common.SystemConsoleView.GetPublicIP();
+    public static string GetPublicIP() => AgyTui.UI.Screens.SysNet.SystemConsoleView.GetPublicIP();
 
-    public static void StopProcessFriendly(string? name = null) => Common.SystemConsoleView.StopProcessFriendly(name);
+    public static void StopProcessFriendly(string? name = null) => AgyTui.UI.Screens.SysNet.SystemConsoleView.StopProcessFriendly(name);
 }

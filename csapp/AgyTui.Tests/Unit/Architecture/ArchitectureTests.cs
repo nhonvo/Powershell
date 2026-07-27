@@ -1,10 +1,9 @@
 namespace AgyTui.Tests.Unit.Architecture;
 
-using System;
+using AgyTui.Infrastructure.Integrations.AgyClient;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using AgyTui.Infrastructure.Integrations.AgyClient;
 using Xunit;
 
 public class ArchitectureTests

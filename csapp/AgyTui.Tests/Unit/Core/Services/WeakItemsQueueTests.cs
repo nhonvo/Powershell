@@ -1,8 +1,3 @@
-using System;
-using System.IO;
-using AgyTui.UI.Screens.Learn;
-using Xunit;
-
 namespace AgyTui.Tests.Unit.Core.Services;
 
 [Collection("Sequential")]

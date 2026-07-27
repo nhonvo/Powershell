@@ -1,11 +1,7 @@
+using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
-using System.Text;
 using System.Text.Json;
-using AgyTui.Infrastructure.Common;
-using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
-using AgyTui.Infrastructure.Integrations.Ai.Services;
-using Spectre.Console;
 
 namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
 

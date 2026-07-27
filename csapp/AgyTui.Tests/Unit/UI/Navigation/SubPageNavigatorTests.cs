@@ -1,7 +1,7 @@
 namespace AgyTui.Tests.Unit.UI.Navigation;
 
-using System;
 using AgyTui.UI.Core.Navigation;
+using System;
 using Xunit;
 
 public class SubPageNavigatorTests

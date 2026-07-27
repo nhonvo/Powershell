@@ -1,9 +1,5 @@
-using AgyTui.Core.Interfaces;
 using AgyTui.Infrastructure.Di;
-using AgyTui.Infrastructure.Integrations.AgyClient;
-using AgyTui.Infrastructure.Integrations.AgyClient;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace AgyTui.Tests.Unit.Infrastructure.Integrations.AgyClient;
 

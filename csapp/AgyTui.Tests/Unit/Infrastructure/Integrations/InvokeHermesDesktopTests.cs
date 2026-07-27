@@ -1,7 +1,6 @@
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using AgyTui.Infrastructure.Integrations.Ai.Providers;
 using AgyTui.Infrastructure.Integrations.Ai.Services;
-using Xunit;
 
 namespace AgyTui.Tests.Unit.Infrastructure.Integrations;
 

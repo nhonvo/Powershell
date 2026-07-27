@@ -1,5 +1,3 @@
-using AgyTui.Core.Interfaces;
-
 namespace AgyTui.Infrastructure.Logging;
 
 public class CommandLoggingMiddleware : ICommandRouter

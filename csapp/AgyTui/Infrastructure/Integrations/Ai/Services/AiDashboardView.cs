@@ -1,9 +1,6 @@
-using AgyTui.Core.Models;
 using AgyTui.Infrastructure.Di;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
-using AgyTui.Infrastructure.Integrations.Ai.Providers;
 using Microsoft.Extensions.DependencyInjection;
-using Spectre.Console;
 
 namespace AgyTui.Infrastructure.Integrations.Ai.Services;
 

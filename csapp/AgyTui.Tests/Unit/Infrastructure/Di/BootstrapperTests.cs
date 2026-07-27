@@ -5,9 +5,7 @@ using AgyTui.Infrastructure.Integrations.Aws;
 using AgyTui.Infrastructure.Integrations.Docker;
 using AgyTui.Infrastructure.Integrations.DotNet;
 using AgyTui.Infrastructure.Integrations.Git;
-using AgyTui.UI.Core.Navigation;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace AgyTui.Tests.Unit.Infrastructure.Di;
 

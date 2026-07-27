@@ -114,8 +114,8 @@ public static class SubPageProjNavigator
             {
                 var bullet = "├── ";
                 var prefix = isSelected ? "  [green bold]❯──[/] " : $"  {bullet}";
-                var labelMarkup = isSelected 
-                    ? "[bold green]🔗 Project Links (Enter to Manage)[/]" 
+                var labelMarkup = isSelected
+                    ? "[bold green]🔗 Project Links (Enter to Manage)[/]"
                     : "[cyan]🔗 Project Links[/]";
                 grid.AddRow(new Markup($"{prefix}{labelMarkup}"));
             }
@@ -124,12 +124,12 @@ public static class SubPageProjNavigator
                 int linkIdx = -2 - item.ActionIndex;
                 var link = item.Workspace.Links![linkIdx];
                 var isLastLink = (linkIdx == item.Workspace.Links.Length - 1);
-                
+
                 var bullet = isLastLink ? "│   └── " : "│   ├── ";
                 var prefix = isSelected ? "  [green bold]❯───[/] " : $"{bullet}";
 
-                var labelMarkup = isSelected 
-                    ? $"[bold green]🌐 {link.Label.EscapeMarkup()}: {link.Url.EscapeMarkup()}[/]" 
+                var labelMarkup = isSelected
+                    ? $"[bold green]🌐 {link.Label.EscapeMarkup()}: {link.Url.EscapeMarkup()}[/]"
                     : $"[dim]🌐 {link.Label.EscapeMarkup()}: {link.Url.EscapeMarkup()}[/]";
                 grid.AddRow(new Markup($"{prefix}{labelMarkup}"));
             }

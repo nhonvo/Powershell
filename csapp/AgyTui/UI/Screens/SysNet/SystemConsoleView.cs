@@ -4,7 +4,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
-namespace AgyTui.Infrastructure.Common;
+namespace AgyTui.UI.Screens.SysNet;
 
 public static class SystemConsoleView
 {
