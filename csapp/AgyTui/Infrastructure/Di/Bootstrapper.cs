@@ -1,11 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
-using AgyTui.Infrastructure.Integrations.Ai;
+using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using AgyTui.Infrastructure.Integrations.Ai.Providers;
 using AgyTui.Infrastructure.Integrations.Ai.Services;
 using AgyTui.Infrastructure.Integrations.Aws;
 using AgyTui.Infrastructure.Integrations.Docker;
 using AgyTui.Infrastructure.Integrations.DotNet;
 using AgyTui.Infrastructure.Integrations.Git;
+using AgyTui.Infrastructure.Logging;
 using AgyTui.Infrastructure.Persistence.Accounts;
 using AgyTui.Infrastructure.Persistence.Learning;
 using AgyTui.UI.Core.Navigation;
@@ -42,8 +43,9 @@ public static class Bootstrapper
         services.AddSingleton<IAccountRepository, JsonAccountRepository>();
         services.AddSingleton<IStudyRepository, JsonStudyRepository>();
 
-        // Navigation & Routers
-        services.AddSingleton<ICommandRouter, CommandRouter>();
+        // Navigation & Routers with Logging Middleware
+        services.AddSingleton<CommandRouter>();
+        services.AddSingleton<ICommandRouter>(sp => new CommandLoggingMiddleware(sp.GetRequiredService<CommandRouter>()));
 
         _serviceProvider = services.BuildServiceProvider();
         return _serviceProvider;

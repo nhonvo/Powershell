@@ -1,3 +1,5 @@
+using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
+
 namespace AgyTui.Infrastructure.Integrations.Ai.Services;
 
 public class AiCommitGenerator : IAiCommitGenerator

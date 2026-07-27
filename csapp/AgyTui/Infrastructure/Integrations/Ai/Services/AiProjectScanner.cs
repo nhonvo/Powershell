@@ -1,4 +1,5 @@
 using AgyTui.Core.Models;
+using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 
 namespace AgyTui.Infrastructure.Integrations.Ai.Services;
 

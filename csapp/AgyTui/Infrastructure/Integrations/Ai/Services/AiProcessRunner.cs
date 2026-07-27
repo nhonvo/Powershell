@@ -1,5 +1,6 @@
 using AgyTui.Core.Models;
 using AgyTui.Infrastructure.Common;
+using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using AgyTui.Infrastructure.Persistence.Accounts;
 
 namespace AgyTui.Infrastructure.Integrations.Ai.Services;

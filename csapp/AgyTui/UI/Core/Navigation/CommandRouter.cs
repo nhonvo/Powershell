@@ -1,6 +1,9 @@
 using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using AgyTui.Infrastructure;
+using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
+using AgyTui.Infrastructure.Integrations.Ai.Providers;
+using AgyTui.Infrastructure.Integrations.Ai.Services;
 using AgyTui.Infrastructure.Integrations.Ai;
 using AgyTui.Infrastructure.Integrations.Aws;
 using AgyTui.Infrastructure.Integrations.Docker;
@@ -288,19 +291,19 @@ public class CommandRouter : ICommandRouter
                     AgyAiCore.InvokeOpenClaw([]);
                     break;
                 case "ollama-models":
-                    OllamaClient.ManageOllamaModels();
+                    _ollama.ManageModels();
                     break;
                 case "ollama-pull":
-                    OllamaClient.PullOllamaModel();
+                    _ollama.PullModel();
                     break;
                 case "ollama-start":
-                    OllamaClient.StartOllamaDaemon();
+                    _ollama.StartDaemon();
                     break;
                 case "ollama-logs":
-                    OllamaClient.ShowOllamaLogs();
+                    _ollama.ShowLogs();
                     break;
                 case "ollama-benchmark":
-                    OllamaClient.BenchmarkOllamaModels();
+                    _ollama.BenchmarkModels();
                     break;
                 case "ollama-status":
                     OllamaStatusWidgetCache.Invalidate();

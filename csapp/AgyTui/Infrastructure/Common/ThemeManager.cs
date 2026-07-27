@@ -6,11 +6,6 @@ namespace AgyTui.Infrastructure.Common;
 
 public static class ThemeManager
 {
-    private sealed record ThemeConfig(
-        [property: JsonPropertyName("active_theme")] string? active_theme,
-        [property: JsonPropertyName("enable_mobile")] bool? enable_mobile
-    );
-
     public static string? SelectThemeInteractive(string themesPath, string? currentTheme)
     {
         if (!Directory.Exists(themesPath))

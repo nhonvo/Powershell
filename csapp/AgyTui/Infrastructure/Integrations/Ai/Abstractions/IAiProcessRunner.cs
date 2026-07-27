@@ -1,4 +1,4 @@
-namespace AgyTui.Infrastructure.Integrations.Ai;
+namespace AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 
 public interface IAiProcessRunner
 {

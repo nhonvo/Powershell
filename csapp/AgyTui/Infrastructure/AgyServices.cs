@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using AgyTui.Infrastructure.Di;
-using AgyTui.Infrastructure.Integrations.Ai;
+using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using AgyTui.Infrastructure.Integrations.Aws;
 using AgyTui.Infrastructure.Integrations.Docker;
 using AgyTui.Infrastructure.Integrations.DotNet;

@@ -3,10 +3,11 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Text.Json;
 using AgyTui.Infrastructure.Common;
+using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using AgyTui.Infrastructure.Integrations.Ai.Services;
 using Spectre.Console;
 
-namespace AgyTui.Infrastructure.Integrations.Ai;
+namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
 
 public class OllamaClient : IOllamaClient
 {
@@ -363,7 +364,6 @@ public class OllamaClient : IOllamaClient
         Thread.Sleep(2000);
     }
 
-    // Static facade methods for backwards compatibility
     public static void ShowOllamaLogs() => AgyServices.Ollama.ShowLogs();
     public static void ManageOllamaModels() => AgyServices.Ollama.ManageModels();
     public static void BenchmarkOllamaModels() => AgyServices.Ollama.BenchmarkModels();
