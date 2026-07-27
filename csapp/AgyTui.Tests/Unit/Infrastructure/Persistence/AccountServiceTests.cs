@@ -5,7 +5,7 @@ public class AccountServiceTests
     [Fact]
     public void GetActiveAccount_ReturnsNonNullDefaultFallback()
     {
-        var active = AccountRepository.GetActiveAccount();
+        var active = AgyAccountCore.GetActiveAccount();
         Assert.NotNull(active);
         Assert.NotEmpty(active);
     }
@@ -13,7 +13,7 @@ public class AccountServiceTests
     [Fact]
     public void GetAccounts_ReturnsAccountsList()
     {
-        var accounts = AccountRepository.GetAccounts();
+        var accounts = AgyAccountCore.GetAccounts();
         Assert.NotNull(accounts);
     }
 }

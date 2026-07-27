@@ -12,7 +12,7 @@ public class ArchitectureTests
     [Fact]
     public void Infrastructure_Namespace_DoesNotReferenceUI_Namespace()
     {
-        var infraAssembly = typeof(JsonAccountRepository).Assembly;
+        var infraAssembly = typeof(AgyAccountStore).Assembly;
 
         var infraTypes = infraAssembly.GetTypes()
             .Where(t => t.Namespace != null && t.Namespace.StartsWith("AgyTui.Infrastructure"))

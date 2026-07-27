@@ -42,9 +42,6 @@ public static class SpectreMenu
         }
     }
 
-    public static void InitializeTuiColors()
-    {
-    }
 
     private static int CoreShow(string[] headerLines, string[] items, string[] cmds, bool searchEnabled, bool fullScreen)
     {
@@ -331,18 +328,6 @@ public static class SpectreProgress
             .SpinnerStyle(new Style(Color.Yellow))
             .Start(message.EscapeMarkup(), _ => action());
 
-    public static object? SpinnerResult(string message, Func<object?> action)
-    {
-        object? result = null;
-        AnsiConsole.Status()
-            .Spinner(Spectre.Console.Spinner.Known.Dots)
-            .SpinnerStyle(new Style(Color.Yellow))
-            .Start(message.EscapeMarkup(), _ =>
-            {
-                result = action();
-            });
-        return result;
-    }
 
     public static void BulkProgress(string label, string[] items, Action<int, string> action) =>
         AnsiConsole.Progress()
@@ -483,20 +468,4 @@ public static class SpectreTable
         });
     }
 
-    public static void ThreePane(string leftTitle, string[] leftItems, int leftSelected, string midTitle, string[] midItems, int midSelected, string rightTitle, string[] rightItems)
-    {
-        AnsiConsole.Write(new Columns(BuildPane(leftTitle, leftItems, leftSelected), BuildPane(midTitle, midItems, midSelected), BuildPane(rightTitle, rightItems, -1)));
-    }
-
-    private static Panel BuildPane(string title, string[] items, int selected)
-    {
-        var sb = new StringBuilder();
-        for (var i = 0; i < items.Length; i++)
-            sb.AppendLine(i == selected ? $"[green bold]> {items[i].EscapeMarkup()}[/]" : $" {items[i].EscapeMarkup()}");
-        return new Panel(sb.ToString())
-        {
-            Header = new PanelHeader($"[bold cyan]{title.EscapeMarkup()}[/]"),
-            Border = BoxBorder.Rounded
-        };
-    }
 }

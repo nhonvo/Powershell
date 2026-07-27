@@ -3,6 +3,8 @@ namespace AgyTui.Infrastructure.Integrations.AgyClient;
 using System.Text;
 using Spectre.Console;
 
+using AgyTui.Core.Interfaces;
+
 public interface IAgyAccountSwitcher
 {
     void SetActiveAccount(string accountName, bool temporary = false);
@@ -17,7 +19,15 @@ public interface IAgyAccountSwitcher
 
 public class AgyAccountSwitcher : IAgyAccountSwitcher
 {
+    private readonly IAccountRepository _accountStore;
     private string AgySourceHome => AgyAccountCore.AgySourceHome;
+
+    public AgyAccountSwitcher(IAccountRepository accountStore)
+    {
+        _accountStore = accountStore ?? throw new ArgumentNullException(nameof(accountStore));
+    }
+
+    public AgyAccountSwitcher() : this(new AgyAccountStore()) { }
 
     public void SetActiveAccount(string accountName, bool temporary = false)
     {
@@ -78,7 +88,7 @@ public class AgyAccountSwitcher : IAgyAccountSwitcher
         {
             try
             {
-                AccountRepository.SetActiveAccount(accountName);
+                _accountStore.SetActiveAccount(accountName);
                 SpectrePanel.Success($"Switched to account '{accountName}' (Persistent).");
             }
             catch

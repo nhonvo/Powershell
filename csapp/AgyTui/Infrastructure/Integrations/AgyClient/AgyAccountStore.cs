@@ -1,8 +1,8 @@
-using AgyTui.Core.Interfaces;
-
 namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
-public class JsonAccountRepository : IAccountRepository
+using AgyTui.Core.Interfaces;
+
+public class AgyAccountStore : IAccountRepository
 {
     private string AgySourceHome => AgyAccountCore.AgySourceHome;
 

@@ -22,7 +22,7 @@ public class AgyClientTests
     [Fact]
     public void AgyClient_DelegatesToAccountRepository_ForActiveAccount()
     {
-        var repo = new JsonAccountRepository();
+        var repo = new AgyAccountStore();
         var client = new AgyTui.Infrastructure.Integrations.AgyClient.AgyClient(repo);
 
         var activeAcc = client.GetActiveAccount();

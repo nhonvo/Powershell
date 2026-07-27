@@ -46,7 +46,7 @@ public static class Bootstrapper
         services.AddSingleton<IAgyClient, AgyClient>();
 
         // Repositories
-        services.AddSingleton<IAccountRepository, JsonAccountRepository>();
+        services.AddSingleton<IAccountRepository, AgyAccountStore>();
         services.AddSingleton<IStudyRepository, JsonStudyRepository>();
 
         // Navigation & Routers with Logging Middleware
