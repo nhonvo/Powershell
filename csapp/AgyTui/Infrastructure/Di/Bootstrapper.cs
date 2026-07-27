@@ -39,6 +39,10 @@ public static class Bootstrapper
         services.AddSingleton<IDockerClient, DockerClient>();
         services.AddSingleton<IDotNetClient, DotNetClient>();
         services.AddSingleton<IGitClient, GitClient>();
+        services.AddSingleton<IAgyTokenManager, AgyTokenManager>();
+        services.AddSingleton<IAgyQuotaCalculator, AgyQuotaCalculator>();
+        services.AddSingleton<IAgyAccountStatsProvider, AgyAccountStatsProvider>();
+        services.AddSingleton<IAgyAccountSwitcher, AgyAccountSwitcher>();
         services.AddSingleton<IAgyClient, AgyClient>();
 
         // Repositories
