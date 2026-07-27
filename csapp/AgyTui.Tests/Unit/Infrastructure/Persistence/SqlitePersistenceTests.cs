@@ -62,6 +62,6 @@ public class SqlitePersistenceTests
     {
         private readonly string _path;
         public TestSqliteDatabase(string path) => _path = path;
-        public new string DbPath => _path;
+        public override string DbPath => _path;
     }
 }

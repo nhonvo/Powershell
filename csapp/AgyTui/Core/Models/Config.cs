@@ -4,8 +4,10 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using AgyTui.Infrastructure.Common;
+using AgyTui.Infrastructure.Di;
 using AgyTui.Infrastructure.Persistence;
 using AgyTui.Infrastructure.Persistence.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 public sealed class UiConfig
 {
@@ -98,7 +100,7 @@ public static class Config
 
     public static string GetProfileRepoRoot() => AppPaths.RepoRoot;
 
-    private static IConfigRepository Repository => new SqliteConfigRepository(new SqliteDatabase());
+    private static IConfigRepository Repository => Bootstrapper.ServiceProvider.GetRequiredService<IConfigRepository>();
 
     public static void Load()
     {

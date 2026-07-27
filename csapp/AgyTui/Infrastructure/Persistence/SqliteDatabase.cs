@@ -6,7 +6,7 @@ using Microsoft.Data.Sqlite;
 
 public class SqliteDatabase : ISqliteDatabase
 {
-    public string DbPath => Path.Combine(AppPaths.DataDir, "agytui.db");
+    public virtual string DbPath => Path.Combine(AppPaths.DataDir, "agytui.db");
 
     public SqliteConnection CreateConnection()
     {

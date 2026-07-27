@@ -26,7 +26,13 @@ public class SqliteConfigRepository : IConfigRepository
             if (result != null && result != DBNull.Value)
             {
                 var json = result.ToString()!;
-                var data = JsonSerializer.Deserialize<ConfigData>(json);
+                var options = new JsonSerializerOptions
+                {
+                    ReadCommentHandling = JsonCommentHandling.Skip,
+                    AllowTrailingCommas = true,
+                    PropertyNameCaseInsensitive = true
+                };
+                var data = JsonSerializer.Deserialize<ConfigData>(json, options);
                 if (data != null) return data;
             }
         }

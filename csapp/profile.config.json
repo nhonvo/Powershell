@@ -1,30 +1,40 @@
 {
   "Ui": {
-    "Mode": "flat-tree", // Options: "three-pane", "flat-tree"
-    "Density": "comfortable", // Options: "comfortable", "compact"
-    "ActiveTheme": "amro",
-    "EnableMobile": false
+    "Mode": "flat-tree",
+    "Density": "compact",
+    "ActiveTheme": "neko",
+    "EnableMobile": false,
+    "FavoriteAliases": [
+      "proj",
+      "agyswitch",
+      "ide",
+      "claude",
+      "theme",
+      "learn",
+      "obsidian",
+      "ssh-info"
+    ]
   },
   "Ai": {
-    "Mode": "auto", // Options: "auto" (scans env), "true" (force AI mode), "false" (force interactive TUI)
-    "ProviderMode": "cloud", // Options: "cloud", "ollama", "hybrid"
+    "Mode": "auto",
+    "ProviderMode": "ollama",
     "EnableOllama": true,
     "EnableAgy": true
   },
   "Project": {
-    "BaseDir": "C:\\Users\\sshuser\\project", // Base directory for development projects
+    "BaseDir": "",
     "SearchPaths": [],
     "ExcludeFolders": []
   },
   "System": {
     "VerboseStartup": false,
-    "StartupLogFile": "", // Startup performance log. Leave empty for default (~/.gemini/antigravity/profile.log)
-    "PoshThemesPath": "psapp/asset/powershell-themes", // Oh My Posh themes folder path
-    "AgySourceHome": "", // Base directory for settings/accounts (Default: C:\Users\Public\.gemini)
-    "GlobalBinDir": "" // Symlinks directory (Default: C:\ProgramData\agy\bin)
+    "StartupLogFile": "",
+    "PoshThemesPath": "",
+    "AgySourceHome": "C:\\Users\\TruongNhon\\AppData\\Local\\Temp\\agy_cmd_log_test_07ad0bfe-8743-4685-a457-94195bde9b28",
+    "GlobalBinDir": ""
   },
   "Obsidian": {
-    "VaultPath": "C:\\Users\\TruongNhon\\Documents\\Powershell\\csapp\\learn"
+    "VaultPath": "C:\\Users\\TruongNhon\\AppData\\Local\\Temp\\agy_weak_items_test_1b625ccb38f74ba1990d7ac68133d415\\learn"
   },
   "Proxy": {
     "HttpProxy": "",

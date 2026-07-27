@@ -61,9 +61,16 @@ public static class AppPaths
             var curr = new DirectoryInfo(startDir);
             while (curr != null)
             {
-                if (File.Exists(Path.Combine(curr.FullName, "csapp", "profile.config.json")) || File.Exists(Path.Combine(curr.FullName, "profile.config.json")))
+                if (File.Exists(Path.Combine(curr.FullName, "csapp", "profile.config.json")))
                 {
                     _repoRoot = curr.FullName;
+                    return _repoRoot;
+                }
+                if (File.Exists(Path.Combine(curr.FullName, "profile.config.json")))
+                {
+                    _repoRoot = string.Equals(curr.Name, "csapp", StringComparison.OrdinalIgnoreCase) && curr.Parent != null
+                        ? curr.Parent.FullName
+                        : curr.FullName;
                     return _repoRoot;
                 }
                 curr = curr.Parent;
