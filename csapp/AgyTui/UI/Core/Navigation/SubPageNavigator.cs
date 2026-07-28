@@ -112,7 +112,19 @@ public static class SubPageNavigator
                 RenderSubPageSelection(mode, detailsSel, workspaces, flatList);
             }, forceClear: true);
 
-            var key = Console.ReadKey(true);
+            ScreenChrome.EnableMouseTracking();
+            var (key, isScrollUp, isScrollDown) = ScreenChrome.ReadKeyWithMouse();
+
+            if (isScrollUp && itemsCount > 0)
+            {
+                detailsSel = Math.Max(0, detailsSel - 3);
+                continue;
+            }
+            if (isScrollDown && itemsCount > 0)
+            {
+                detailsSel = Math.Min(itemsCount - 1, detailsSel + 3);
+                continue;
+            }
 
             switch (key.Key)
             {

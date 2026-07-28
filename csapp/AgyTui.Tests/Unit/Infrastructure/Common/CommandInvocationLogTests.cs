@@ -12,6 +12,7 @@ public class CommandInvocationLogTests
         try
         {
             Config.Current.System.AgySourceHome = tempDir;
+            Config.Save();
             CommandInvocationLog.Record("proj", TimeSpan.FromMilliseconds(150), true, null);
 
             var logFile = CommandInvocationLog.LogFilePath;
@@ -34,6 +35,7 @@ public class CommandInvocationLogTests
         finally
         {
             Config.Current.System.AgySourceHome = oldHome;
+            Config.Save();
             try { if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true); } catch { }
         }
     }

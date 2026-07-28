@@ -171,7 +171,21 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                 RenderTree(visibleRows, selectionIndex, searching, searchBuffer, doubleSlashNavigated);
             }, forceClear: forceClear);
 
-            var key = Console.ReadKey(true);
+            ScreenChrome.EnableMouseTracking();
+            var (key, isScrollUp, isScrollDown) = ScreenChrome.ReadKeyWithMouse();
+
+            if (isScrollUp)
+            {
+                selectionIndex = Math.Max(0, selectionIndex - 3);
+                doubleSlashNavigated = true;
+                continue;
+            }
+            if (isScrollDown)
+            {
+                selectionIndex = Math.Min(visibleRows.Count - 1, selectionIndex + 3);
+                doubleSlashNavigated = true;
+                continue;
+            }
 
             if (searching)
             {
@@ -403,12 +417,8 @@ public sealed class FlatTreeRenderer : MenuRendererBase
 
         int winHeight = 30;
         try { winHeight = Console.WindowHeight; } catch { }
-        int bannerHeight = (winHeight < 45) ? 3 : 10;
-        int maxRows = Math.Max(8, winHeight - bannerHeight - 8);
-        if (searching && !string.IsNullOrEmpty(searchBuffer) && searchBuffer.StartsWith("//"))
-        {
-            maxRows = 9999;
-        }
+        int chromeOverhead = 15;
+        int maxRows = Math.Max(3, winHeight - chromeOverhead);
         int topRow = 0;
         int endRow = 0;
 

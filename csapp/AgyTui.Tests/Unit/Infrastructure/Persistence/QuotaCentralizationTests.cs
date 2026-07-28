@@ -51,6 +51,7 @@ public class QuotaCentralizationTests
         try
         {
             Config.Current.System.AgySourceHome = tempDir;
+            Config.Save();
             var logPath = Path.Combine(tempDir, "ai_activity_log.jsonl");
 
             var nowStr = DateTime.UtcNow.ToString("o");
@@ -68,6 +69,7 @@ public class QuotaCentralizationTests
         finally
         {
             Config.Current.System.AgySourceHome = originalHome;
+            Config.Save();
             try { if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true); } catch { }
         }
     }

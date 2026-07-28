@@ -51,7 +51,21 @@ public sealed class ThreePaneRenderer : MenuRendererBase
                 RenderPanes(categories, leftSel, visibleItems, midSel, midActive, searchBuffer);
             });
 
-            var key = Console.ReadKey(true);
+            ScreenChrome.EnableMouseTracking();
+            var (key, isScrollUp, isScrollDown) = ScreenChrome.ReadKeyWithMouse();
+
+            if (isScrollUp)
+            {
+                if (midActive && visibleItems.Count > 0) midSel = Math.Max(0, midSel - 3);
+                else if (categories.Length > 0) leftSel = Math.Max(0, leftSel - 1);
+                continue;
+            }
+            if (isScrollDown)
+            {
+                if (midActive && visibleItems.Count > 0) midSel = Math.Min(visibleItems.Count - 1, midSel + 3);
+                else if (categories.Length > 0) leftSel = Math.Min(categories.Length - 1, leftSel + 1);
+                continue;
+            }
 
             // Handle search buffer keys when searching
             if (!string.IsNullOrEmpty(searchBuffer))

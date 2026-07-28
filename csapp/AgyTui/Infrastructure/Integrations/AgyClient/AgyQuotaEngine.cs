@@ -80,9 +80,9 @@ public class AgyQuotaEngine : IAgyQuotaEngine
                         string.Equals(agentProp.GetString(), agentName, StringComparison.OrdinalIgnoreCase))
                     {
                         if (doc.RootElement.TryGetProperty("Timestamp", out var tsProp) &&
-                            DateTime.TryParse(tsProp.GetString(), null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt))
+                            DateTime.TryParse(tsProp.GetString(), System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind, out var dt))
                         {
-                            dts.Add(dt);
+                            dts.Add(dt.ToUniversalTime());
                         }
                     }
                 }

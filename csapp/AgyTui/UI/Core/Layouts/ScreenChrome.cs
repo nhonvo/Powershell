@@ -45,6 +45,55 @@ public static class ScreenChrome
         catch { }
     }
 
+    public static void EnableMouseTracking()
+    {
+        if (OverrideConsole != null) return;
+        try
+        {
+            Console.Write("\x1b[?1000h\x1b[?1006h");
+        }
+        catch { }
+    }
+
+    public static void DisableMouseTracking()
+    {
+        if (OverrideConsole != null) return;
+        try
+        {
+            Console.Write("\x1b[?1000l\x1b[?1006l");
+        }
+        catch { }
+    }
+
+    public static (ConsoleKeyInfo Key, bool IsScrollUp, bool IsScrollDown) ReadKeyWithMouse()
+    {
+        var key = Console.ReadKey(true);
+        bool isScrollUp = false;
+        bool isScrollDown = false;
+
+        if (key.KeyChar == '\x1b' && Console.KeyAvailable)
+        {
+            var sb = new System.Text.StringBuilder("\x1b");
+            while (Console.KeyAvailable)
+            {
+                var next = Console.ReadKey(true);
+                sb.Append(next.KeyChar);
+                if (next.KeyChar == 'M' || next.KeyChar == 'm' || sb.Length > 20) break;
+            }
+            var seq = sb.ToString();
+            if (seq.Contains("[<64;") || seq.Contains("[<0;") || seq.Contains("[M "))
+            {
+                isScrollUp = true;
+            }
+            else if (seq.Contains("[<65;") || seq.Contains("[<1;") || seq.Contains("[M!"))
+            {
+                isScrollDown = true;
+            }
+        }
+
+        return (key, isScrollUp, isScrollDown);
+    }
+
     public static void ClearTrailingLines()
     {
         if (OverrideConsole != null) return;
