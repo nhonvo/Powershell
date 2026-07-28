@@ -161,14 +161,13 @@ public static class ScreenChrome
         {
             try
             {
-                if (forceClear)
+                if (OverrideConsole != null)
                 {
-                    if (OverrideConsole != null) OverrideConsole.Clear();
-                    else Console.Write("\x1b[2J\x1b[H");
+                    OverrideConsole.Clear();
                 }
                 else
                 {
-                    if (OverrideConsole == null) Console.SetCursorPosition(0, 0);
+                    Console.Write("\x1b[H\x1b[J");
                 }
             }
             catch
