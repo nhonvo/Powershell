@@ -1,8 +1,6 @@
 Solution csapp\AgyTui.slnx
     Project AgyTui
       AgyTui\Core\Models\Config.cs: Using directive is not required by the code and can be safely removed
-      AgyTui\Core\Models\Config.cs:66 Auto-property accessor 'MobileContextOverride.set' is never used
-      AgyTui\Core\Models\Config.cs:67 Auto-property accessor 'RuntimeDensity.set' is never used
       AgyTui\Core\Models\LearningModels.cs:3 Positional property 'AgyTui.Core.Models.FlashCard.Tags' is never accessed (except in implicit Equals/ToString implementations)
       AgyTui\Core\Models\LearningModels.cs:3 Positional property 'AgyTui.Core.Models.FlashCard.Difficulty' is never accessed (except in implicit Equals/ToString implementations)
       AgyTui\Core\Models\LearningModels.cs:5 Positional property 'AgyTui.Core.Models.DeckMeta.Id' is never accessed (except in implicit Equals/ToString implementations)
@@ -45,18 +43,6 @@ Solution csapp\AgyTui.slnx
       AgyTui\Core\Registries\WorkspaceRegistry.cs:199 Empty general catch clause suppresses any errors
       AgyTui\Core\Registries\WorkspaceRegistry.cs:202 Empty general catch clause suppresses any errors
       AgyTui\Core\Registries\WorkspaceRegistry.cs:307 Empty general catch clause suppresses any errors
-      AgyTui\Core\Registries\WorkspaceRegistry.cs:336 Duplicated statements
-      AgyTui\Core\Registries\WorkspaceRegistry.cs:341 Duplicated statements
-      AgyTui\Core\Registries\WorkspaceRegistry.cs:346 Duplicated statements
-      AgyTui\Core\Registries\WorkspaceRegistry.cs:351 Duplicated statements
-      AgyTui\Core\Registries\WorkspaceRegistry.cs:356 Duplicated statements
-      AgyTui\Core\Registries\WorkspaceRegistry.cs:361 Duplicated statements
-      AgyTui\Core\Registries\WorkspaceRegistry.cs:366 Duplicated statements
-      AgyTui\Core\Registries\WorkspaceRegistry.cs:375 Qualifier is redundant
-      AgyTui\Core\Registries\WorkspaceRegistry.cs:384 Duplicated statements
-      AgyTui\Core\Registries\WorkspaceRegistry.cs:389 Duplicated statements
-      AgyTui\Core\Registries\WorkspaceRegistry.cs:394 Duplicated statements
-      AgyTui\Core\Registries\WorkspaceRegistry.cs:399 Duplicated statements
       AgyTui\Infrastructure\Common\AppPaths.cs:23 Empty general catch clause suppresses any errors
       AgyTui\Infrastructure\Common\AppPaths.cs:59 Empty general catch clause suppresses any errors
       AgyTui\Infrastructure\Common\CommandInvocationLog.cs:3 Qualifier is redundant

@@ -327,76 +327,57 @@ public static class WorkspaceRegistry
 
     public static string HandleWorkspaceAction(WorkspaceEntry selected, int actionIdx)
     {
-        if (actionIdx == 0)
+        switch (actionIdx)
         {
-            var agyHome = AgyAccountCore.AgySourceHome;
-            Directory.CreateDirectory(agyHome);
-            var selectedProjFile = Path.Combine(agyHome, "selected_project.txt");
-            File.WriteAllText(selectedProjFile, selected.WorkspacePath);
-            return selected.WorkspacePath;
-        }
-        else if (actionIdx == 1)
-        {
-            SystemHelper.OpenNewTerminalSession(selected.WorkspacePath);
-            return selected.WorkspacePath;
-        }
-        else if (actionIdx == 2)
-        {
-            TerminalIde.Open(selected.WorkspacePath);
-            return selected.WorkspacePath;
-        }
-        else if (actionIdx == 3)
-        {
-            SystemHelper.OpenExplorer(selected.WorkspacePath);
-            return selected.WorkspacePath;
-        }
-        else if (actionIdx == 4)
-        {
-            GitDiffViewer.ShowDiff(selected.WorkspacePath);
-            return selected.WorkspacePath;
-        }
-        else if (actionIdx == 5)
-        {
-            SystemHelper.OpenNewTerminalSession(selected.WorkspacePath, "ask-ai");
-            return selected.WorkspacePath;
-        }
-        else if (actionIdx == 6)
-        {
-            SystemHelper.OpenNewTerminalSession(selected.WorkspacePath, "cc");
-            return selected.WorkspacePath;
-        }
-        else if (actionIdx == 7)
-        {
-            var projFiles = Directory.GetFiles(selected.WorkspacePath, "*.csproj", SearchOption.AllDirectories);
-            if (projFiles.Length > 0)
-            {
-                AnsiConsole.Clear();
-                AnsiConsole.MarkupLine("[bold cyan]🔨 Building .NET Projects...[/]\n");
-                Helpers.ProcessRunner.Run("dotnet", "build", selected.WorkspacePath);
-                AnsiConsole.MarkupLine("\n[dim]Press any key to return...[/]");
-                Console.ReadKey(true);
-            }
-            else
-            {
-                SpectrePanel.Warning("No C# project (.csproj) found in this workspace.");
-                Thread.Sleep(1500);
-            }
-            return selected.WorkspacePath;
-        }
-        else if (actionIdx == 8)
-        {
-            GitNexus.ShowLiveDashboard();
-            return selected.WorkspacePath;
-        }
-        else if (actionIdx == 9)
-        {
-            GitNexusStats.Run();
-            return selected.WorkspacePath;
-        }
-        else if (actionIdx == 10)
-        {
-            ManageWorkspaceLinks(selected);
-            return selected.WorkspacePath;
+            case 0:
+                var agyHome = AgyAccountCore.AgySourceHome;
+                Directory.CreateDirectory(agyHome);
+                var selectedProjFile = Path.Combine(agyHome, "selected_project.txt");
+                File.WriteAllText(selectedProjFile, selected.WorkspacePath);
+                break;
+            case 1:
+                SystemHelper.OpenNewTerminalSession(selected.WorkspacePath);
+                break;
+            case 2:
+                TerminalIde.Open(selected.WorkspacePath);
+                break;
+            case 3:
+                SystemHelper.OpenExplorer(selected.WorkspacePath);
+                break;
+            case 4:
+                GitDiffViewer.ShowDiff(selected.WorkspacePath);
+                break;
+            case 5:
+                SystemHelper.OpenNewTerminalSession(selected.WorkspacePath, "ask-ai");
+                break;
+            case 6:
+                SystemHelper.OpenNewTerminalSession(selected.WorkspacePath, "cc");
+                break;
+            case 7:
+                var projFiles = Directory.GetFiles(selected.WorkspacePath, "*.csproj", SearchOption.AllDirectories);
+                if (projFiles.Length > 0)
+                {
+                    AnsiConsole.Clear();
+                    AnsiConsole.MarkupLine("[bold cyan]🔨 Building .NET Projects...[/]\n");
+                    ProcessRunner.Run("dotnet", "build", selected.WorkspacePath);
+                    AnsiConsole.MarkupLine("\n[dim]Press any key to return...[/]");
+                    Console.ReadKey(true);
+                }
+                else
+                {
+                    SpectrePanel.Warning("No C# project (.csproj) found in this workspace.");
+                    Thread.Sleep(1500);
+                }
+                break;
+            case 8:
+                GitNexus.ShowLiveDashboard();
+                break;
+            case 9:
+                GitNexusStats.Run();
+                break;
+            case 10:
+                ManageWorkspaceLinks(selected);
+                break;
         }
         return selected.WorkspacePath;
     }

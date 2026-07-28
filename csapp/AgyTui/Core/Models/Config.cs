@@ -136,6 +136,16 @@ public static class Config
         Save();
     }
 
+    public static void SetRuntimeDensity(string? density)
+    {
+        Runtime.RuntimeDensity = density;
+    }
+
+    public static void SetMobileOverride(bool? overrideValue)
+    {
+        Runtime.MobileContextOverride = overrideValue;
+    }
+
     private static void AutoDetectDensity()
     {
         try
