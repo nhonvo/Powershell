@@ -431,13 +431,15 @@ public sealed class FlatTreeRenderer : MenuRendererBase
 
     private void RenderTree(List<VisibleRow> rows, int selIdx, bool searching, string searchBuffer, bool doubleSlashNavigated)
     {
-        var grid = new Grid();
-        grid.AddColumn(new GridColumn().NoWrap());
-
-        var isCompact = Config.IsMobileContext();
-
+        int winWidth = 80;
+        try { winWidth = Console.WindowWidth; } catch { }
         int winHeight = 30;
         try { winHeight = Console.WindowHeight; } catch { }
+
+        var grid = new Grid();
+        grid.AddColumn(new GridColumn().Width(winWidth).NoWrap());
+
+        var isCompact = Config.IsMobileContext();
         int chromeOverhead = 5;
         int maxRows = Math.Max(5, winHeight - chromeOverhead);
         int topRow = 0;
@@ -547,9 +549,6 @@ public sealed class FlatTreeRenderer : MenuRendererBase
             }
         }
 
-        var winWidth = 80;
-        try { winWidth = Console.WindowWidth; } catch (Exception) { }
-
         string noteText = "";
         if (selIdx >= 0 && selIdx < rows.Count)
         {
@@ -597,8 +596,10 @@ public sealed class FlatTreeRenderer : MenuRendererBase
         var noteRenderable = AgyUiComponents.RenderFooterNote(noteText, Math.Max(30, winWidth - 12));
 
         var statusGrid = new Grid();
-        statusGrid.AddColumn(new GridColumn());
-        statusGrid.AddColumn(new GridColumn().RightAligned());
+        int col1Width = Math.Max(20, winWidth / 2);
+        int col2Width = Math.Max(20, winWidth - col1Width);
+        statusGrid.AddColumn(new GridColumn().Width(col1Width));
+        statusGrid.AddColumn(new GridColumn().Width(col2Width).RightAligned());
         statusGrid.AddRow(filterRenderable, scrollRenderable);
 
         var keysText = "TUI Keys: [[↑/↓ j/k]] Nav · [[PgUp/PgDn]] Scroll · [[/]] Filter · [[c/y]] Copy · [[Enter/→]] Select · [[Esc/q]] Exit";
