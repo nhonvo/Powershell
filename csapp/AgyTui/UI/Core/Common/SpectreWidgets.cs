@@ -324,21 +324,30 @@ public static class SpectreProgress
 {
     public static void Spinner(string message, Action action) =>
         AnsiConsole.Status()
-            .Spinner(Spectre.Console.Spinner.Known.Dots)
-            .SpinnerStyle(new Style(Color.Yellow))
-            .Start(message.EscapeMarkup(), _ => action());
+            .Spinner(Spectre.Console.Spinner.Known.Dots2)
+            .SpinnerStyle(new Style(AgyThemeColors.GetAccentColor()))
+            .Start($"[bold white]{message.EscapeMarkup()}[/]", _ => action());
 
+    public static T Spinner<T>(string message, Func<T> func)
+    {
+        T result = default!;
+        AnsiConsole.Status()
+            .Spinner(Spectre.Console.Spinner.Known.Dots2)
+            .SpinnerStyle(new Style(AgyThemeColors.GetAccentColor()))
+            .Start($"[bold white]{message.EscapeMarkup()}[/]", _ => { result = func(); });
+        return result;
+    }
 
     public static void BulkProgress(string label, string[] items, Action<int, string> action) =>
         AnsiConsole.Progress()
             .AutoClear(false)
-            .Columns(new TaskDescriptionColumn(), new ProgressBarColumn(), new PercentageColumn(), new ElapsedTimeColumn())
+            .Columns(new TaskDescriptionColumn(), new ProgressBarColumn { CompletedStyle = new Style(AgyThemeColors.GetSelectedColor()) }, new PercentageColumn(), new ElapsedTimeColumn())
             .Start(ctx =>
             {
-                var task = ctx.AddTask($"[green]{label.EscapeMarkup()}[/]", maxValue: items.Length);
+                var task = ctx.AddTask($"[bold cyan]{label.EscapeMarkup()}[/]", maxValue: items.Length);
                 for (var i = 0; i < items.Length; i++)
                 {
-                    task.Description = $"{label.EscapeMarkup()}: {items[i].EscapeMarkup()}";
+                    task.Description = $"[bold cyan]{label.EscapeMarkup()}:[/] [white]{items[i].EscapeMarkup()}[/]";
                     action(i, items[i]);
                     task.Increment(1);
                 }
