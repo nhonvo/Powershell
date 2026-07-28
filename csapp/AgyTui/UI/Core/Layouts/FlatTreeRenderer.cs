@@ -445,7 +445,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
 
         if (rows.Count == 0)
         {
-            grid.AddRow(new Markup($"  [dim]No matching commands found for '{searchBuffer.EscapeMarkup()}'. Press Esc to clear.[/]"));
+            grid.AddRow(new Markup($"  [dim]No matching commands found for '{searchBuffer.EscapeMarkup()}'. Press Esc to clear.[/]\x1b[K"));
         }
         else
         {
@@ -465,14 +465,14 @@ public sealed class FlatTreeRenderer : MenuRendererBase
 
                 if (row.Type == VisibleRowType.Separator)
                 {
-                    grid.AddRow(new Markup("[dim]  ────────────────────────────[/]"));
+                    grid.AddRow(new Markup("[dim]  ────────────────────────────[/]\x1b[K"));
                     continue;
                 }
 
                 if (row.Type == VisibleRowType.Exit)
                 {
                     var label = isSelected ? $"[{AgyThemeColors.Selected} bold]{row.Node.Label.EscapeMarkup()}[/]" : row.Node.Label.EscapeMarkup();
-                    grid.AddRow(new Markup($"{prefix}{label}"));
+                    grid.AddRow(new Markup($"{prefix}{label}\x1b[K"));
                     continue;
                 }
 
@@ -490,7 +490,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     var boldText = string.IsNullOrEmpty(rawQ) ? row.Node.Label.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(row.Node.Label, rawQ);
                     var safeText = $"{catIcon} {boldText}";
                     var label = isSelected ? $"[{AgyThemeColors.Selected} bold]{sign} {safeText}[/]{hkSuffix}" : $"{signMarkup} [bold {AgyThemeColors.Accent}]{safeText}[/]{hkSuffix}";
-                    grid.AddRow(new Markup($"{prefix}{label}"));
+                    grid.AddRow(new Markup($"{prefix}{label}\x1b[K"));
                 }
                 else if (row.Type == VisibleRowType.Group)
                 {
@@ -503,7 +503,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     var signMarkup = $"[bold {AgyThemeColors.Secondary}]{sign}[/]";
                     var treeDim = $"[dim]{treePrefix.EscapeMarkup()}[/]";
                     var label = isSelected ? $"[{AgyThemeColors.Selected} bold]{treePrefix}{sign} 📂 {boldText}[/]" : $"{treeDim}{signMarkup} [bold {AgyThemeColors.Secondary}]📂 {boldText}[/]";
-                    grid.AddRow(new Markup($"{prefix}{label}"));
+                    grid.AddRow(new Markup($"{prefix}{label}\x1b[K"));
                 }
                 else if (row.Type == VisibleRowType.Command)
                 {
@@ -520,7 +520,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     var label = isSelected
                         ? $"[{AgyThemeColors.Selected} bold]{treePrefix}{icon} {displayLabel}[/]"
                         : $"{treeDim}{icon} [white]{displayLabel}[/]";
-                    grid.AddRow(new Markup($"{prefix}{label}"));
+                    grid.AddRow(new Markup($"{prefix}{label}\x1b[K"));
                 }
                 else if (row.Type == VisibleRowType.Widget)
                 {

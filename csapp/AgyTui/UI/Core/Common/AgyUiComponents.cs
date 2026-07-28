@@ -58,7 +58,7 @@ public static class AgyUiComponents
 
         if (rawText.Length > maxLen) rawText = rawText[..(maxLen - 1)] + "…";
 
-        var text = $"[bold {AgyThemeColors.Secondary}]💡 Tip:[/] [white]{rawText.EscapeMarkup()}[/]";
+        var text = $"[bold {AgyThemeColors.Secondary}]💡 Tip:[/] [white]{rawText.EscapeMarkup()}[/]\x1b[K";
         return new Markup(text);
     }
 }
