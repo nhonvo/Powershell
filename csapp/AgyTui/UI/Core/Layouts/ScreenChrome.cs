@@ -234,44 +234,17 @@ public static class ScreenChrome
         }
 
         var titleIcon = (Icons.IsUtf8Supported ? "🛸" : "[AGY]").EscapeMarkup();
+        var accText = $"[dim]Account:[/] [green bold]{displayAcc.EscapeMarkup()}[/]";
+        var timeText = $"[dim]Time:[/] [yellow]{now:HH:mm}[/]";
 
-        if ((winHeight > 0 && winHeight < 45) || (winWidth > 0 && winWidth < 60))
-        {
-            MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
-            var accText = $"[dim]Account:[/] [green bold]{displayAcc.EscapeMarkup()}[/]";
-            var timeText = $"[dim]Time:[/] [yellow]{now:HH:mm}[/]";
-            MarkupLineEl($" [bold green]{titleIcon} Control Center v3.0[/] | {accText} | {timeText}");
-            if (!string.IsNullOrEmpty(category))
-            {
-                var breadcrumb = $" [bold cyan]Home[/] [dim]>[/] [bold green]{category.EscapeMarkup()}[/]";
-                if (!string.IsNullOrEmpty(activeItem)) breadcrumb += $" [dim]>[/] [yellow]{activeItem.EscapeMarkup()}[/]";
-                MarkupLineEl(breadcrumb);
-            }
-            MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
-            return;
-        }
-
-        MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
-        MarkupLineEl($"[cyan] ▄████▄  ▄████▄ [/] [bold green]{titleIcon} Powershell Profile Control Center v3.0 {titleIcon}[/]");
-        MarkupLineEl("[cyan] █▀  ▀   █▀  ▀  [/] [dim]System dashboard and control suite.[/]");
-        MarkupLineEl("[cyan] █       █      [/]");
-        MarkupLineEl($"[cyan] █▄  ▄   █▄  ▄  [/] [dim]Active Account:[/] [green bold]{displayAcc.EscapeMarkup()}[/]");
-        MarkupLineEl($"[cyan] ▀████▀  ▀████▀ [/] [dim]Time:[/] [yellow]{now:yyyy-MM-dd HH:mm}[/]");
-
+        var headerLine = $" [bold green]{titleIcon} Powershell Profile Control Center v3.0[/] | {accText} | {timeText}";
         if (!string.IsNullOrEmpty(category))
         {
-            var breadcrumb = $" [bold cyan]Home[/] [dim]>[/] [bold green]{category.EscapeMarkup()}[/]";
-            if (!string.IsNullOrEmpty(activeItem))
-            {
-                breadcrumb += $" [dim]>[/] [yellow]{activeItem.EscapeMarkup()}[/]";
-            }
-            MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
-            MarkupLineEl(breadcrumb);
+            headerLine += $" | [bold cyan]Home[/] [dim]>[/] [bold green]{category.EscapeMarkup()}[/]";
+            if (!string.IsNullOrEmpty(activeItem)) headerLine += $" [dim]>[/] [yellow]{activeItem.EscapeMarkup()}[/]";
         }
 
+        MarkupLineEl(headerLine);
         MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
-        MarkupLineEl(footerHint ?? "[dim] [[Tab/→]] Navigate Panes | [[←/Esc]] Go Back | [[Enter]] Select & Run[/]");
-        MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
-        AnsiConsole.WriteLine();
     }
 }

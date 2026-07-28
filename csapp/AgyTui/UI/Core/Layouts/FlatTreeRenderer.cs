@@ -438,8 +438,8 @@ public sealed class FlatTreeRenderer : MenuRendererBase
 
         int winHeight = 30;
         try { winHeight = Console.WindowHeight; } catch { }
-        int chromeOverhead = 15;
-        int maxRows = Math.Max(3, winHeight - chromeOverhead);
+        int chromeOverhead = 6;
+        int maxRows = Math.Max(5, winHeight - chromeOverhead);
         int topRow = 0;
         int endRow = 0;
 
@@ -593,32 +593,25 @@ public sealed class FlatTreeRenderer : MenuRendererBase
             noteText = "Use [↑/↓] or [j/k] to navigate commands.";
         }
 
-        var filterPanel = AgyUiComponents.RenderFilter(searchBuffer, searching);
-        var scrollIndicator = AgyUiComponents.RenderScrollIndicator(rows.Count, topRow, endRow, maxRows);
-        var notePanel = AgyUiComponents.RenderFooterNote(noteText);
+        var filterRenderable = AgyUiComponents.RenderFilter(searchBuffer, searching);
+        var scrollRenderable = AgyUiComponents.RenderScrollIndicator(rows.Count, topRow, endRow, maxRows);
+        var noteRenderable = AgyUiComponents.RenderFooterNote(noteText, Math.Max(30, winWidth - 12));
 
-        var hotkeyBar = new Markup("[dim]TUI Keys: [[↑/↓ j/k]] Navigate · [[PgUp/PgDn]] Scroll · [[/]] Filter · [[c/y]] Copy · [[Enter/→]] Select/Expand · [[Esc/q]] Exit\nShell Aliases: cg (Git) · cdk (Docker) · cnav (Nav) · cai (AI) · csys (Sys) · cnet (Net) · cssh (SSH)[/]");
+        var statusGrid = new Grid();
+        statusGrid.AddColumn(new GridColumn());
+        statusGrid.AddColumn(new GridColumn().RightAligned());
+        statusGrid.AddRow(filterRenderable, scrollRenderable);
+
+        var hotkeyBar = new Markup("[dim]TUI Keys: [[↑/↓ j/k]] Nav · [[PgUp/PgDn]] Scroll · [[/]] Filter · [[c/y]] Copy · [[Enter/→]] Select · [[Esc/q]] Exit\nShell Aliases: cg (Git) · cdk (Docker) · cnav (Nav) · cai (AI) · csys (Sys) · cnet (Net) · cssh (SSH)[/]");
 
         var layout = new Rows(
-            filterPanel,
-            new Markup(""),
             grid,
             new Rule().RuleStyle($"{AgyThemeColors.Accent} dim"),
-            scrollIndicator,
-            new Markup(""),
-            notePanel,
-            new Markup("\n"),
+            statusGrid,
+            noteRenderable,
             hotkeyBar
         );
 
-        var outerPanel = new Panel(layout)
-        {
-            Header = new PanelHeader($"[bold {AgyThemeColors.Accent}] Control Center [/]"),
-            Border = BoxBorder.Double,
-            BorderStyle = new Style(AgyThemeColors.GetAccentColor()),
-            Width = w
-        };
-
-        ScreenChrome.WriteSmooth(outerPanel);
+        ScreenChrome.WriteSmooth(layout);
     }
 }

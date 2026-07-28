@@ -7,37 +7,30 @@ public static class AgyUiComponents
     public static IRenderable RenderFilter(string searchBuffer, bool active)
     {
         var text = string.IsNullOrEmpty(searchBuffer)
-            ? "[dim]Type / or start typing to filter...[/]"
-            : $"🔍 [bold white]{searchBuffer.EscapeMarkup()}[/][blink green]_[/]";
+            ? $"[bold {AgyThemeColors.Accent}]🔍 Filter:[/] [dim][[ / ] type to filter...[/]"
+            : $"[bold {AgyThemeColors.Accent}]🔍 Filter:[/] [[ [bold white]{searchBuffer.EscapeMarkup()}[/][blink green]_[/] ]]";
 
-        var borderStyle = new Style(active ? AgyThemeColors.GetSelectedColor() : AgyThemeColors.GetBorderColor());
-
-        return new Panel(new Markup(text))
-        {
-            Border = BoxBorder.Rounded,
-            BorderStyle = borderStyle,
-            Header = new PanelHeader($"[bold {AgyThemeColors.Accent}] Filter [/]")
-        };
+        return new Markup(text);
     }
 
     public static IRenderable RenderScrollIndicator(int totalCount, int topRow, int endRow, int maxRows)
     {
         if (totalCount <= maxRows)
         {
-            return new Markup($"  [dim]▲ Start of list   ·   ▼ End of list ({totalCount} items)[/]");
+            return new Markup($"[dim]▲ 0 above  ░░░░░░███░░░░  ▼ 0 below[/]");
         }
 
         var percentStart = (double)topRow / totalCount;
         var percentVisible = (double)(endRow - topRow) / totalCount;
 
-        const int barLength = 20;
+        const int barLength = 16;
         int activeStart = (int)Math.Round(percentStart * barLength);
         int activeLength = (int)Math.Round(percentVisible * barLength);
         if (activeLength < 1) activeLength = 1;
         if (activeStart + activeLength > barLength) activeStart = barLength - activeLength;
 
         var sb = new StringBuilder();
-        sb.Append($"  [{AgyThemeColors.Accent}]▲ {topRow} above[/]  ");
+        sb.Append($"[{AgyThemeColors.Accent}]▲ {topRow} above[/]  ");
 
         for (int i = 0; i < barLength; i++)
         {
@@ -57,17 +50,15 @@ public static class AgyUiComponents
         return new Markup(sb.ToString());
     }
 
-    public static IRenderable RenderFooterNote(string noteText)
+    public static IRenderable RenderFooterNote(string noteText, int maxLen = 100)
     {
-        var text = string.IsNullOrWhiteSpace(noteText)
-            ? "[dim]Use arrows to navigate options[/]"
-            : $"[bold {AgyThemeColors.Secondary}]💡 Tip:[/] [white]{noteText.EscapeMarkup()}[/]";
+        var rawText = string.IsNullOrWhiteSpace(noteText)
+            ? "Use [↑/↓] or [j/k] to navigate options."
+            : noteText;
 
-        return new Panel(new Markup(text))
-        {
-            Border = BoxBorder.Rounded,
-            BorderStyle = new Style(AgyThemeColors.GetBorderColor()),
-            Padding = new Padding(2, 0, 2, 0)
-        };
+        if (rawText.Length > maxLen) rawText = rawText[..(maxLen - 1)] + "…";
+
+        var text = $"[bold {AgyThemeColors.Secondary}]💡 Tip:[/] [white]{rawText.EscapeMarkup()}[/]";
+        return new Markup(text);
     }
 }
