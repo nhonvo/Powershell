@@ -438,7 +438,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
 
         int winHeight = 30;
         try { winHeight = Console.WindowHeight; } catch { }
-        int chromeOverhead = 3;
+        int chromeOverhead = 5;
         int maxRows = Math.Max(5, winHeight - chromeOverhead);
         int topRow = 0;
         int endRow = 0;
@@ -601,7 +601,22 @@ public sealed class FlatTreeRenderer : MenuRendererBase
         statusGrid.AddColumn(new GridColumn().RightAligned());
         statusGrid.AddRow(filterRenderable, scrollRenderable);
 
-        var hotkeyBar = new Markup("[dim]TUI Keys: [[↑/↓ j/k]] Nav · [[PgUp/PgDn]] Scroll · [[/]] Filter · [[c/y]] Copy · [[Enter/→]] Select · [[Esc/q]] Exit\nShell Aliases: cg (Git) · cdk (Docker) · cnav (Nav) · cai (AI) · csys (Sys) · cnet (Net) · cssh (SSH)[/]");
+        var keysText = "TUI Keys: [[↑/↓ j/k]] Nav · [[PgUp/PgDn]] Scroll · [[/]] Filter · [[c/y]] Copy · [[Enter/→]] Select · [[Esc/q]] Exit";
+        var rawKeys = "TUI Keys: [↑/↓ j/k] Nav · [PgUp/PgDn] Scroll · [/] Filter · [c/y] Copy · [Enter/→] Select · [Esc/q] Exit";
+        if (rawKeys.Length > winWidth - 1)
+        {
+            keysText = "TUI Keys: [[↑/↓ j/k]] Nav · [[/]] Filter · [[c/y]] Copy · [[Enter]] Select · [[Esc]] Exit";
+            var rawShortKeys = "TUI Keys: [↑/↓ j/k] Nav · [/] Filter · [c/y] Copy · [Enter] Select · [Esc] Exit";
+            if (rawShortKeys.Length > winWidth - 1) keysText = rawShortKeys[..(winWidth - 1)].EscapeMarkup();
+        }
+
+        var aliasText = "Shell Aliases: cg (Git) · cdk (Docker) · cnav (Nav) · cai (AI) · csys (Sys) · cnet (Net) · cssh (SSH)";
+        if (aliasText.Length > winWidth - 1)
+        {
+            aliasText = aliasText[..(winWidth - 1)];
+        }
+
+        var hotkeyBar = new Markup($"[dim]{keysText}\n{aliasText.EscapeMarkup()}[/]");
 
         var layout = new Rows(
             grid,
