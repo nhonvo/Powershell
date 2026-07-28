@@ -7,7 +7,7 @@ public static class AgyUiComponents
     public static IRenderable RenderFilter(string searchBuffer, bool active)
     {
         var text = string.IsNullOrEmpty(searchBuffer)
-            ? $"[bold {AgyThemeColors.Accent}]🔍 Filter:[/] [dim][[ / ] type to filter...[/]"
+            ? $"[bold {AgyThemeColors.Accent}]🔍 Filter:[/] [dim][[ / ]] type to filter...[/]"
             : $"[bold {AgyThemeColors.Accent}]🔍 Filter:[/] [[ [bold white]{searchBuffer.EscapeMarkup()}[/][blink green]_[/] ]]";
 
         return new Markup(text);
