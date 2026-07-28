@@ -586,6 +586,7 @@ public static class CommandRegistry
             else if (careerCmds.Contains(alias)) { cmd.GroupPath = "/career-interview"; cmd.GroupName = "Career & Interview Prep"; }
             else if (obsidianCmds.Contains(alias)) { cmd.GroupPath = "/obsidian-vault"; cmd.GroupName = "Obsidian Vault & Sync"; }
             else if (trackCmds.Contains(alias)) { cmd.GroupPath = "/track"; cmd.GroupName = "Track & Progress"; }
+            else if (sshCmds.Contains(alias)) { cmd.GroupPath = "/ssh-tools"; cmd.GroupName = "SSH & Network Tools"; }
         }
     }
 

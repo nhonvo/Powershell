@@ -210,16 +210,11 @@ public static class ScreenChrome
         }
         var now = DateTime.Now;
         var winWidth = 80;
-        var winHeight = 30;
         try
         {
             winWidth = Console.WindowWidth;
-            winHeight = Console.WindowHeight;
         }
-        catch { }
-
-        var w = Math.Max(50, winWidth - 2);
-        var sep = new string('=', w);
+        catch (Exception) { }
 
         if (forceClear)
         {

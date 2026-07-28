@@ -549,8 +549,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
         }
 
         var winWidth = 80;
-        try { winWidth = Console.WindowWidth; } catch { }
-        var w = Math.Max(50, winWidth - 2);
+        try { winWidth = Console.WindowWidth; } catch (Exception) { }
 
         string noteText = "";
         if (selIdx >= 0 && selIdx < rows.Count)

@@ -55,11 +55,11 @@ public static class WorkspaceRegistry
                 {
                     var raw = File.ReadAllText(ConfigFile);
                     items = JsonSerializer.Deserialize<WorkspaceEntry[]>(raw)?
-                        .Where(w => w != null && !string.IsNullOrEmpty(w.WorkspacePath) && Directory.Exists(w.WorkspacePath))
+                        .Where(w => !string.IsNullOrEmpty(w.WorkspacePath) && Directory.Exists(w.WorkspacePath))
                         .Select(w => string.IsNullOrEmpty(w.Alias) ? w with { Alias = DeriveAlias(w.Name) } : w)
                         .ToArray() ?? [];
                 }
-                catch { }
+                catch (Exception) { }
             }
 
             if (items.Length == 0)
@@ -79,7 +79,7 @@ public static class WorkspaceRegistry
         {
             var raw = File.ReadAllText(ConfigFile);
             var items = JsonSerializer.Deserialize<WorkspaceEntry[]>(raw) ?? [];
-            var valid = items.Where(w => w != null && !string.IsNullOrEmpty(w.WorkspacePath) && Directory.Exists(w.WorkspacePath))
+            var valid = items.Where(w => !string.IsNullOrEmpty(w.WorkspacePath) && Directory.Exists(w.WorkspacePath))
                              .Select(w => string.IsNullOrEmpty(w.Alias) ? w with { Alias = DeriveAlias(w.Name) } : w)
                              .ToArray();
             var prunedCount = items.Length - valid.Length;

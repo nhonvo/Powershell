@@ -1,0 +1,517 @@
+Solution csapp\AgyTui.slnx
+    Project AgyTui
+      AgyTui\Core\Models\Config.cs:3 Qualifier is redundant
+      AgyTui\Core\Models\Config.cs:4 Qualifier is redundant
+      AgyTui\Core\Models\Config.cs:66 Auto-property accessor 'MobileContextOverride.set' is never used
+      AgyTui\Core\Models\Config.cs:67 Auto-property accessor 'RuntimeDensity.set' is never used
+      AgyTui\Core\Models\LearningModels.cs:3 Positional property 'AgyTui.Core.Models.FlashCard.Tags' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Models\LearningModels.cs:3 Positional property 'AgyTui.Core.Models.FlashCard.Difficulty' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Models\LearningModels.cs:5 Positional property 'AgyTui.Core.Models.DeckMeta.Id' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Models\LearningModels.cs:5 Positional property 'AgyTui.Core.Models.DeckMeta.Language' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Models\LearningModels.cs:5 Positional property 'AgyTui.Core.Models.DeckMeta.Level' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Models\LearningModels.cs:5 Positional property 'AgyTui.Core.Models.DeckMeta.SourceNotes' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Models\LearningModels.cs:5 Positional property 'AgyTui.Core.Models.DeckMeta.GeneratedAt' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Models\LearningModels.cs:11 Type with suspicious equality is used as a member of a record type
+      AgyTui\Core\Models\LearningModels.cs:19 Positional property 'AgyTui.Core.Models.DueItem.ItemId' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Models\LearningModels.cs:19 Positional property 'AgyTui.Core.Models.DueItem.Front' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Models\LearningModels.cs:21 Positional property 'AgyTui.Core.Models.MasteryData.Topic' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Models\LearningModels.cs:29 Positional property 'AgyTui.Core.Models.VocabWord.Antonyms' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Models\LearningModels.cs:29 Positional property 'AgyTui.Core.Models.VocabWord.Difficulty' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Models\LearningModels.cs:29 Positional property 'AgyTui.Core.Models.VocabWord.Tags' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Models\LearningModels.cs:31 Positional property 'AgyTui.Core.Models.VocabFile.Level' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\CommandRegistry.cs:17 Initializing property by default value is redundant
+      AgyTui\Core\Registries\CommandRegistry.cs:17 Initializing property by default value is redundant
+      AgyTui\Core\Registries\CommandRegistry.cs:18 Initializing property by default value is redundant
+      AgyTui\Core\Registries\CommandRegistry.cs:18 Initializing property by default value is redundant
+      AgyTui\Core\Registries\CommandRegistry.cs:19 Initializing property by default value is redundant
+      AgyTui\Core\Registries\CommandRegistry.cs:19 Initializing property by default value is redundant
+      AgyTui\Core\Registries\IdeCommandRegistry.cs:5 Positional property 'AgyTui.Core.Registries.IdeCommand.ArgHint' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\IdeCommandRegistry.cs:5 Positional property 'AgyTui.Core.Registries.IdeCommand.Description' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\IdeCommandRegistry.cs:5 Positional property 'AgyTui.Core.Registries.IdeCommand.Category' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:3 Positional property 'AgyTui.Core.Registries.ResourceEntry.Checksum' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:3 Positional property 'AgyTui.Core.Registries.ResourceEntry.SizeBytes' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:3 Positional property 'AgyTui.Core.Registries.ResourceEntry.LastExtractedAt' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:3 Positional property 'AgyTui.Core.Registries.ResourceEntry.Status' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:3 Positional property 'AgyTui.Core.Registries.ResourceEntry.ErrorMessage' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:3 Positional property 'AgyTui.Core.Registries.ResourceEntry.ExtractedItemCount' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:3 Positional property 'AgyTui.Core.Registries.ResourceEntry.LearnFiles' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:3 Positional property 'AgyTui.Core.Registries.ResourceEntry.AutoDiscovered' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:3 Positional property 'AgyTui.Core.Registries.ResourceEntry.Enabled' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:5 Positional property 'AgyTui.Core.Registries.ExtractionConfig.LearnPath' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:5 Positional property 'AgyTui.Core.Registries.ExtractionConfig.VaultPath' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:5 Positional property 'AgyTui.Core.Registries.ExtractionConfig.ResourcesIndexPath' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:5 Positional property 'AgyTui.Core.Registries.ExtractionConfig.DryRun' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:5 Positional property 'AgyTui.Core.Registries.ExtractionConfig.ForceReExtract' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:7 Positional property 'AgyTui.Core.Registries.ResourceIndex.Version' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:7 Positional property 'AgyTui.Core.Registries.ResourceIndex.UpdatedAt' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\ResourceRegistry.cs:30 Qualifier is redundant
+      AgyTui\Core\Registries\ResourceRegistry.cs:58 Qualifier is redundant
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:13 Positional property 'AgyTui.Core.Registries.WorkspaceEntry.Tags' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:20 Name '_cache' does not match rule 'Static readonly fields (private)'. Suggested name is 'Cache'.
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:62 Empty general catch clause suppresses any errors
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:115 Empty general catch clause suppresses any errors
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:151 Empty general catch clause suppresses any errors
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:154 Empty general catch clause suppresses any errors
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:199 Empty general catch clause suppresses any errors
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:202 Empty general catch clause suppresses any errors
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:266 Name '_branchCache' does not match rule 'Static readonly fields (private)'. Suggested name is 'BranchCache'.
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:307 Empty general catch clause suppresses any errors
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:336 Duplicated statements
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:341 Duplicated statements
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:346 Duplicated statements
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:351 Duplicated statements
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:356 Duplicated statements
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:361 Duplicated statements
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:366 Duplicated statements
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:375 Qualifier is redundant
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:384 Duplicated statements
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:389 Duplicated statements
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:394 Duplicated statements
+      AgyTui\Core\Registries\WorkspaceRegistry.cs:399 Duplicated statements
+      AgyTui\Infrastructure\Common\AppPaths.cs:23 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\AppPaths.cs:59 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\CommandInvocationLog.cs:3 Qualifier is redundant
+      AgyTui\Infrastructure\Common\CommandInvocationLog.cs:20 Name '_logLock' does not match rule 'Static readonly fields (private)'. Suggested name is 'LogLock'.
+      AgyTui\Infrastructure\Common\CommandInvocationLog.cs:56 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\CommandInvocationLog.cs:78 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\CommandInvocationLog.cs:81 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:25 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:34 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:79 Component of the return tuple is never used
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:91 Qualifier is redundant
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:92 Qualifier is redundant
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:96 Initialize object properties inside the 'using' statement to ensure that the object is disposed if an exception is thrown during initialization
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:97 Parameter 's' is never used
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:98 Parameter 's' is never used
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:112 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:113 Redundant 'Object.ToString()' call
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:145 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:176 Qualifier is redundant
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:177 Qualifier is redundant
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:181 Initialize object properties inside the 'using' statement to ensure that the object is disposed if an exception is thrown during initialization
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:182 Parameter 's' is never used
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:183 Parameter 's' is never used
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:197 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:198 Redundant 'Object.ToString()' call
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:229 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\ProjectScaffolder.cs:47 Type argument specification is redundant
+      AgyTui\Infrastructure\Common\ThemeManager.cs:86 Parameter 'themesPath' is never used
+      AgyTui\Infrastructure\Common\ThemeManager.cs:104 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\ThemeManager.cs:112 Parameter 'themesPath' is never used
+      AgyTui\Infrastructure\Common\ThemeManager.cs:120 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\HelperCompatibility.cs:65 Name 'ShowSQSQueues' does not match rule 'Methods'. Suggested name is 'ShowSqsQueues'.
+      AgyTui\Infrastructure\HelperCompatibility.cs:74 Method with optional parameter is hidden by overload
+      AgyTui\Infrastructure\HelperCompatibility.cs:74 Method with optional parameter is hidden by overload
+      AgyTui\Infrastructure\HelperCompatibility.cs:75 Qualifier is redundant
+      AgyTui\Infrastructure\HelperCompatibility.cs:78 Qualifier is redundant
+      AgyTui\Infrastructure\HelperCompatibility.cs:78 The parameter 'command' has the same default value
+      AgyTui\Infrastructure\HelperCompatibility.cs:78 The parameter 'promptForCommand' has the same default value
+      AgyTui\Infrastructure\HelperCompatibility.cs:81 Qualifier is redundant
+      AgyTui\Infrastructure\HelperCompatibility.cs:81 The parameter 'workingDirectory' has the same default value
+      AgyTui\Infrastructure\HelperCompatibility.cs:81 The parameter 'command' has the same default value
+      AgyTui\Infrastructure\HelperCompatibility.cs:81 The parameter 'promptForCommand' has the same default value
+      AgyTui\Infrastructure\HelperCompatibility.cs:83 Qualifier is redundant
+      AgyTui\Infrastructure\HelperCompatibility.cs:85 Qualifier is redundant
+      AgyTui\Infrastructure\HelperCompatibility.cs:87 Qualifier is redundant
+      AgyTui\Infrastructure\HelperCompatibility.cs:89 Name 'GetPublicIP' does not match rule 'Methods'. Suggested name is 'GetPublicIp'.
+      AgyTui\Infrastructure\HelperCompatibility.cs:89 Qualifier is redundant
+      AgyTui\Infrastructure\HelperCompatibility.cs:91 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountCore.cs:3 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountCore.cs:4 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountCore.cs:5 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountCore.cs:7 Using directive is not required by the code and can be safely removed
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountCore.cs:12 Positional property 'AgyTui.Infrastructure.Integrations.AgyClient.QuotaMetrics.ExhaustionWeekly' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountCore.cs:12 Positional property 'AgyTui.Infrastructure.Integrations.AgyClient.QuotaMetrics.Exhaustion5H' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountCore.cs:49 Name '_networkCache' does not match rule 'Static readonly fields (private)'. Suggested name is 'NetworkCache'.
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountCore.cs:116 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountCore.cs:133 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountCore.cs:161 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountCore.cs:176 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountCore.cs:222 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountStore.cs:3 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountStore.cs:4 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountStore.cs:49 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountStore.cs:57 Method with optional parameter is hidden by overload
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountStore.cs:83 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountStore.cs:107 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountStore.cs:125 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountStore.cs:172 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountStore.cs:207 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountStore.cs:234 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountStore.cs:280 '??' left operand is never 'null' according to nullable reference types' annotations
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyClient.cs:3 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyQuotaEngine.cs:3 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyQuotaEngine.cs:4 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyQuotaEngine.cs:9 Name '_sizeCache' does not match rule 'Static readonly fields (private)'. Suggested name is 'SizeCache'.
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyQuotaEngine.cs:10 Name '_statsCache' does not match rule 'Static readonly fields (private)'. Suggested name is 'StatsCache'.
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyQuotaEngine.cs:90 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyQuotaEngine.cs:155 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyQuotaEngine.cs:203 Expression is always false according to nullable reference types' annotations
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyQuotaEngine.cs:214 Expression is always false according to nullable reference types' annotations
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyQuotaEngine.cs:249 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyQuotaEngine.cs:252 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyVault.cs:3 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyVault.cs:72 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyVault.cs:115 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyVault.cs:119 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyVault.cs:124 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyVault.cs:171 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyVault.cs:175 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyVault.cs:191 Short-lived 'HttpClient' is not recommended. Frequently creating 'HttpClient' instances can lead to socket exhaustion. Consider using 'IHttpClientFactory' or a long-lived (e.g., static) 'HttpClient' instance instead.
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyVault.cs:214 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyVault.cs:245 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyVault.cs:290 Name '_vault' does not match rule 'Static readonly fields (private)'. Suggested name is 'Vault'.
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyVault.cs:300 Name '_vault' does not match rule 'Static readonly fields (private)'. Suggested name is 'Vault'.
+      AgyTui\Infrastructure\Integrations\AgyClient\AgyVault.cs:324 Name 'CREDENTIAL' does not match rule 'Types and namespaces'. Suggested name is 'Credential'.
+      AgyTui\Infrastructure\Integrations\Ai\Providers\HermesProvider.cs:26 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\Ai\Providers\OllamaClient.cs:33 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\Ai\Providers\OllamaClient.cs:46 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\Ai\Providers\OllamaClient.cs:66 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\Ai\Providers\OpenClawProvider.cs:30 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\Ai\Services\AiDashboardView.cs:11 '??' left operand is never 'null' according to nullable reference types' annotations
+      AgyTui\Infrastructure\Integrations\Ai\Services\AiDashboardView.cs:75 Name 'InstallAIIntegrations' does not match rule 'Methods'. Suggested name is 'InstallAiIntegrations'.
+      AgyTui\Infrastructure\Integrations\Ai\Services\AiLearningGenerator.cs:106 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\Ai\Services\AiProcessRunner.cs:38 Conditional access qualifier expression is never null according to nullable reference types' annotations
+      AgyTui\Infrastructure\Integrations\Ai\Services\AiProcessRunner.cs:59 Possible multiple enumeration
+      AgyTui\Infrastructure\Integrations\Ai\Services\AiProcessRunner.cs:60 Possible multiple enumeration
+      AgyTui\Infrastructure\Integrations\Ai\Services\AiProjectScanner.cs:5 Positional property 'AgyTui.Infrastructure.Integrations.Ai.Services.ProjectScanResult.Name' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Infrastructure\Integrations\Ai\Services\AiProjectScanner.cs:5 Positional property 'AgyTui.Infrastructure.Integrations.Ai.Services.ProjectScanResult.Path' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Infrastructure\Integrations\Ai\Services\AiProjectScanner.cs:5 Positional property 'AgyTui.Infrastructure.Integrations.Ai.Services.ProjectScanResult.Provider' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Infrastructure\Integrations\Ai\Services\AiProjectScanner.cs:5 Positional property 'AgyTui.Infrastructure.Integrations.Ai.Services.ProjectScanResult.Features' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Infrastructure\Integrations\Ai\Services\AiProjectScanner.cs:34 Conditional access qualifier expression is never null according to nullable reference types' annotations
+      AgyTui\Infrastructure\Integrations\Ai\Services\AiProjectScanner.cs:74 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\Ai\Services\AiProjectScanner.cs:77 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\Aws\AwsClient.cs:93 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\Aws\IAwsClient.cs:8 Name 'ShowSQSQueues' does not match rule 'Methods'. Suggested name is 'ShowSqsQueues'.
+      AgyTui\Infrastructure\Integrations\Docker\DockerClient.cs:49 Parameter 'step' is never used
+      AgyTui\Infrastructure\Integrations\Docker\DockerClient.cs:170 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\Docker\DockerClient.cs:184 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\Docker\DockerClient.cs:192 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\Docker\DockerClient.cs:196 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\Docker\DockerClient.cs:202 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\DotNet\DotNetClient.cs:138 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\Git\GitClient.cs:61 Type argument specification is redundant
+      AgyTui\Infrastructure\Integrations\Git\GitClient.cs:89 Type argument specification is redundant
+      AgyTui\Infrastructure\Integrations\Git\GitClient.cs:94 Type argument specification is redundant
+      AgyTui\Infrastructure\Integrations\Git\GitClient.cs:95 Type argument specification is redundant
+      AgyTui\Infrastructure\Integrations\Git\GitClient.cs:106 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\Git\GitClient.cs:215 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\Obsidian\ObsidianClient.cs:8 Positional property 'AgyTui.Infrastructure.Integrations.Obsidian.NoteFrontmatter.Level' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Infrastructure\Integrations\Obsidian\ObsidianClient.cs:8 Positional property 'AgyTui.Infrastructure.Integrations.Obsidian.NoteFrontmatter.Type' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Infrastructure\Integrations\Obsidian\ObsidianClient.cs:8 Positional property 'AgyTui.Infrastructure.Integrations.Obsidian.NoteFrontmatter.Source' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Infrastructure\Integrations\Obsidian\ObsidianClient.cs:8 Positional property 'AgyTui.Infrastructure.Integrations.Obsidian.NoteFrontmatter.Difficulty' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Infrastructure\Integrations\Obsidian\ObsidianClient.cs:33 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\Obsidian\ObsidianClient.cs:41 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Integrations\Obsidian\ObsidianClient.cs:92 Type argument specification is redundant
+      AgyTui\Infrastructure\Integrations\Obsidian\ObsidianClient.cs:107 Name '_vaultFilesCache' does not match rule 'Static readonly fields (private)'. Suggested name is 'VaultFilesCache'.
+      AgyTui\Infrastructure\Integrations\Obsidian\ObsidianClient.cs:240 The parameter 'depth' has the same default value
+      AgyTui\Infrastructure\Integrations\Sys\AntigravityDeckClient.cs:52 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\Sys\AntigravityDeckClient.cs:58 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\Sys\AntigravityManagerClient.cs:72 Qualifier is redundant
+      AgyTui\Infrastructure\Integrations\Sys\AntigravityManagerClient.cs:78 Qualifier is redundant
+      AgyTui\Infrastructure\Logging\CommandLoggingMiddleware.cs:21 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Logging\CommandLoggingMiddleware.cs:31 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Logging\CommandLoggingMiddleware.cs:42 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Logging\CommandLoggingMiddleware.cs:53 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Persistence\Interfaces\IAgyAccountRepository.cs:3 Using directive is not required by the code and can be safely removed
+      AgyTui\Infrastructure\Persistence\Interfaces\IConfigRepository.cs:3 Qualifier is redundant
+      AgyTui\Infrastructure\Persistence\Learning\DatabaseHelper.cs:25 Qualifier is redundant
+      AgyTui\Infrastructure\Persistence\Learning\DatabaseHelper.cs:46 Qualifier is redundant
+      AgyTui\Infrastructure\Persistence\Learning\DatabaseHelper.cs:118 Local variable 'backupOut' is never used
+      AgyTui\Infrastructure\Persistence\Learning\DatabaseHelper.cs:118 Qualifier is redundant
+      AgyTui\Infrastructure\Persistence\Learning\DatabaseHelper.cs:138 Qualifier is redundant
+      AgyTui\Infrastructure\Persistence\Learning\JsonStudyRepository.cs:7 Name '_js' does not match rule 'Static readonly fields (private)'. Suggested name is 'Js'.
+      AgyTui\Infrastructure\Persistence\Learning\ResourceExtractor.cs:5 Positional property 'AgyTui.Infrastructure.Persistence.Learning.ExtractedItem.SourceId' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Infrastructure\Persistence\Learning\ResourceExtractor.cs:5 Positional property 'AgyTui.Infrastructure.Persistence.Learning.ExtractedItem.SourcePath' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Infrastructure\Persistence\Learning\ResourceExtractor.cs:5 Positional property 'AgyTui.Infrastructure.Persistence.Learning.ExtractedItem.Format' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\Infrastructure\Persistence\Learning\ResourceExtractor.cs:23 Local variable 'tablePattern' is never used
+      AgyTui\Infrastructure\Persistence\Learning\ResourceExtractor.cs:29 Local variable 'headers' is never used
+      AgyTui\Infrastructure\Persistence\Learning\ResourceExtractor.cs:174 Initialize object properties inside the 'using' statement to ensure that the object is disposed if an exception is thrown during initialization
+      AgyTui\Infrastructure\Persistence\Learning\ResourceExtractor.cs:174 Short-lived 'HttpClient' is not recommended. Frequently creating 'HttpClient' instances can lead to socket exhaustion. Consider using 'IHttpClientFactory' or a long-lived (e.g., static) 'HttpClient' instance instead.
+      AgyTui\Infrastructure\Persistence\SqliteAgyAccountRepository.cs:3 Using directive is not required by the code and can be safely removed
+      AgyTui\Infrastructure\Persistence\SqliteAgyAccountRepository.cs:4 Qualifier is redundant
+      AgyTui\Infrastructure\Persistence\SqliteAgyAccountRepository.cs:27 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Persistence\SqliteAgyAccountRepository.cs:48 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Persistence\SqliteAgyAccountRepository.cs:66 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Persistence\SqliteAgyAccountRepository.cs:99 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Persistence\SqliteAgyAccountRepository.cs:117 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Persistence\SqliteAgyAccountRepository.cs:138 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Persistence\SqliteAgyAccountRepository.cs:151 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Persistence\SqliteConfigRepository.cs:3 Qualifier is redundant
+      AgyTui\Infrastructure\Persistence\SqliteConfigRepository.cs:4 Qualifier is redundant
+      AgyTui\Infrastructure\Persistence\SqliteConfigRepository.cs:5 Qualifier is redundant
+      AgyTui\Infrastructure\Persistence\SqliteConfigRepository.cs:39 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Persistence\SqliteConfigRepository.cs:60 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Persistence\SqliteConfigRepository.cs:85 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Persistence\SqliteConfigRepository.cs:95 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Persistence\SqliteConfigRepository.cs:129 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Persistence\SqliteDatabase.cs:3 Qualifier is redundant
+      AgyTui\Infrastructure\Persistence\SqliteDatabase.cs:4 Qualifier is redundant
+      AgyTui\Program.cs:22 Empty general catch clause suppresses any errors
+      AgyTui\Program.cs:45 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Common\Icons.cs:324 Redundant 'switch' expression arms
+      AgyTui\UI\Core\Common\SpectreWidgets.cs:46 Parameter 'cmds' is never used
+      AgyTui\UI\Core\Common\SpectreWidgets.cs:108 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Common\SpectreWidgets.cs:171 '??' left operand is never 'null' according to nullable reference types' annotations
+      AgyTui\UI\Core\Common\SpectreWidgets.cs:178 Value assigned is not used in any execution path
+      AgyTui\UI\Core\Common\SpectreWidgets.cs:371 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Common\StatusWidgets.cs:17 Name '_cache' does not match rule 'Static readonly fields (private)'. Suggested name is 'Cache'.
+      AgyTui\UI\Core\Common\StatusWidgets.cs:60 Name '_ipCache' does not match rule 'Static readonly fields (private)'. Suggested name is 'IpCache'.
+      AgyTui\UI\Core\Common\StatusWidgets.cs:109 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Common\StatusWidgets.cs:226 Name '_ollamaCache' does not match rule 'Static readonly fields (private)'. Suggested name is 'OllamaCache'.
+      AgyTui\UI\Core\Common\StatusWidgets.cs:271 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Common\StatusWidgets.cs:275 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Common\StatusWidgets.cs:290 Name '_widgets' does not match rule 'Static readonly fields (private)'. Suggested name is 'Widgets'.
+      AgyTui\UI\Core\Layouts\FlatTreeRenderer.cs:171 Captured variable is modified in the outer scope
+      AgyTui\UI\Core\Layouts\FlatTreeRenderer.cs:171 Captured variable is modified in the outer scope
+      AgyTui\UI\Core\Layouts\FlatTreeRenderer.cs:171 Captured variable is modified in the outer scope
+      AgyTui\UI\Core\Layouts\FlatTreeRenderer.cs:171 Captured variable is modified in the outer scope
+      AgyTui\UI\Core\Layouts\FlatTreeRenderer.cs:301 Expression is always true
+      AgyTui\UI\Core\Layouts\FlatTreeRenderer.cs:327 Expression is always true
+      AgyTui\UI\Core\Layouts\FlatTreeRenderer.cs:382 Expression is always true
+      AgyTui\UI\Core\Layouts\FlatTreeRenderer.cs:432 Parameter 'doubleSlashNavigated' is never used
+      AgyTui\UI\Core\Layouts\FlatTreeRenderer.cs:440 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Layouts\FlatTreeRenderer.cs:552 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Layouts\FlatTreeRenderer.cs:554 Value assigned is not used in any execution path
+      AgyTui\UI\Core\Layouts\FlatTreeRenderer.cs:562 Expression is always true according to nullable reference types' annotations
+      AgyTui\UI\Core\Layouts\MenuNode.cs:44 Qualifier is redundant
+      AgyTui\UI\Core\Layouts\MenuNode.cs:44 Qualifier is redundant
+      AgyTui\UI\Core\Layouts\MenuNode.cs:44 '??' left operand is never 'null' according to nullable reference types' annotations
+      AgyTui\UI\Core\Layouts\MenuRendererBase.cs:7 Name '_enabledCache' does not match rule 'Static readonly fields (private)'. Suggested name is 'EnabledCache'.
+      AgyTui\UI\Core\Layouts\ProfileHelp.cs:6 Positional property 'AgyTui.UI.Core.Layouts.CommandDoc.FullName' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Core\Layouts\ProfileHelp.cs:10 Qualifier is redundant
+      AgyTui\UI\Core\Layouts\ScreenChrome.cs:34 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Layouts\ScreenChrome.cs:45 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Layouts\ScreenChrome.cs:60 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Layouts\ScreenChrome.cs:68 Qualifier is redundant
+      AgyTui\UI\Core\Layouts\ScreenChrome.cs:86 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Layouts\ScreenChrome.cs:104 Qualifier is redundant
+      AgyTui\UI\Core\Layouts\ScreenChrome.cs:132 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Layouts\ScreenChrome.cs:154 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Layouts\ScreenChrome.cs:176 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Layouts\ScreenChrome.cs:197 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Layouts\ScreenChrome.cs:204 '??' left operand is never 'null' according to nullable reference types' annotations
+      AgyTui\UI\Core\Layouts\ScreenChrome.cs:212 Local variable 'winWidth' is only assigned but its value is never used
+      AgyTui\UI\Core\Layouts\ScreenChrome.cs:215 Value assigned is not used in any execution path
+      AgyTui\UI\Core\Layouts\ScreenChrome.cs:217 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Layouts\ScreenChrome.cs:223 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Layouts\ScreenChrome.cs:227 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Layouts\ThreePaneRenderer.cs:16 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Layouts\ThreePaneRenderer.cs:51 Captured variable is modified in the outer scope
+      AgyTui\UI\Core\Layouts\ThreePaneRenderer.cs:51 Captured variable is modified in the outer scope
+      AgyTui\UI\Core\Layouts\ThreePaneRenderer.cs:51 Captured variable is modified in the outer scope
+      AgyTui\UI\Core\Layouts\ThreePaneRenderer.cs:51 Captured variable is modified in the outer scope
+      AgyTui\UI\Core\Layouts\ThreePaneRenderer.cs:456 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Navigation\AccountViewHelper.cs:10 Positional property 'AgyTui.UI.Core.Navigation.AgyAccountMenu.MainMenuResult.Choice' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Core\Navigation\AccountViewHelper.cs:10 Positional property 'AgyTui.UI.Core.Navigation.AgyAccountMenu.MainMenuResult.AccountName' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Core\Navigation\AccountViewHelper.cs:20 Qualifier is redundant
+      AgyTui\UI\Core\Navigation\AccountViewHelper.cs:67 Qualifier is redundant
+      AgyTui\UI\Core\Navigation\AccountViewHelper.cs:93 Positional property 'AgyTui.UI.Core.Navigation.AgyAccountMenu.SelectResult.Choice' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Core\Navigation\AccountViewHelper.cs:93 Positional property 'AgyTui.UI.Core.Navigation.AgyAccountMenu.SelectResult.AccountName' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Core\Navigation\CcNavigator.cs:8 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Navigation\CcNavigator.cs:19 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Navigation\CommandPalette.cs:7 Qualifier is redundant
+      AgyTui\UI\Core\Navigation\CommandPalette.cs:27 Possible multiple enumeration
+      AgyTui\UI\Core\Navigation\CommandPalette.cs:28 Possible multiple enumeration
+      AgyTui\UI\Core\Navigation\CommandPalette.cs:32 Possible multiple enumeration
+      AgyTui\UI\Core\Navigation\CommandRouter.cs:70 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Navigation\CommandRouter.cs:365 Qualifier is redundant
+      AgyTui\UI\Core\Navigation\CommandRouter.cs:402 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Navigation\CommandRouter.cs:416 The parameter 'model' has the same default value
+      AgyTui\UI\Core\Navigation\CommandRouter.cs:431 The parameter 'model' has the same default value
+      AgyTui\UI\Core\Navigation\CommandRouter.cs:492 The parameter 'temporary' has the same default value
+      AgyTui\UI\Core\Navigation\CommandRouter.cs:517 The parameter 'refreshMs' has the same default value
+      AgyTui\UI\Core\Navigation\CommandRouter.cs:614 '??' left operand is never 'null' according to nullable reference types' annotations
+      AgyTui\UI\Core\Navigation\CommandRouter.cs:635 '??' left operand is never 'null' according to nullable reference types' annotations
+      AgyTui\UI\Core\Navigation\CommandRouter.cs:667 The parameter 'difficulty' has the same default value
+      AgyTui\UI\Core\Navigation\CommandRouter.cs:670 The parameter 'type' has the same default value
+      AgyTui\UI\Core\Navigation\CommandRouter.cs:676 The parameter 'level' has the same default value
+      AgyTui\UI\Core\Navigation\CommandRouter.cs:680 The parameter 'level' has the same default value
+      AgyTui\UI\Core\Navigation\CommandRouter.cs:767 Qualifier is redundant
+      AgyTui\UI\Core\Navigation\SubPageAccountNavigator.cs:18 The parameter 'temporary' has the same default value
+      AgyTui\UI\Core\Navigation\SubPageNavigator.cs:84 Expression is always true according to nullable reference types' annotations
+      AgyTui\UI\Core\Navigation\SubPageNavigator.cs:85 Expression is always true according to nullable reference types' annotations
+      AgyTui\UI\Core\Navigation\SubPageNavigator.cs:86 Expression is always true according to nullable reference types' annotations
+      AgyTui\UI\Core\Navigation\SubPageNavigator.cs:112 Captured variable is modified in the outer scope
+      AgyTui\UI\Core\Navigation\SubPageProjNavigator.cs:81 Empty general catch clause suppresses any errors
+      AgyTui\UI\Core\Navigation\SubPageProjNavigator.cs:83 Value assigned is not used in any execution path
+      AgyTui\UI\Core\Navigation\SubPageProjNavigator.cs:84 Value assigned is not used in any execution path
+      AgyTui\UI\Core\Navigation\SubPageProjNavigator.cs:148 Value assigned is not used in any execution path
+      AgyTui\UI\Core\Navigation\SubPageThemeNavigator.cs:97 Value assigned is not used in any execution path
+      AgyTui\UI\Core\Navigation\UiNavigationHandler.cs:3 Qualifier is redundant
+      AgyTui\UI\Core\Navigation\UiNavigationHandler.cs:16 Expression is always true according to nullable reference types' annotations
+      AgyTui\UI\Screens\Career\AlgoVisualizer.cs:168 Captured variable is modified in the outer scope
+      AgyTui\UI\Screens\Career\AlgoVisualizer.cs:249 Positional property 'AgyTui.UI.Screens.Career.ComplexityEntry.Tags' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\AlgoVisualizer.cs:251 Positional property 'AgyTui.UI.Screens.Career.AlgoEntry.Tags' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\AlgoVisualizer.cs:313 Positional property 'AgyTui.UI.Screens.Career.Problem.Id' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\AlgoVisualizer.cs:313 Positional property 'AgyTui.UI.Screens.Career.Problem.Source' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\AlgoVisualizer.cs:313 Positional property 'AgyTui.UI.Screens.Career.Problem.Url' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\AlgoVisualizer.cs:313 Positional property 'AgyTui.UI.Screens.Career.Problem.TimeComplexity' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\AlgoVisualizer.cs:313 Positional property 'AgyTui.UI.Screens.Career.Problem.SpaceComplexity' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\AlgoVisualizer.cs:313 Positional property 'AgyTui.UI.Screens.Career.Problem.ApproachNotes' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\AlgoVisualizer.cs:313 Positional property 'AgyTui.UI.Screens.Career.Problem.Attempts' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\AlgoVisualizer.cs:313 Positional property 'AgyTui.UI.Screens.Career.Problem.FirstSolvedAt' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\AlgoVisualizer.cs:313 Positional property 'AgyTui.UI.Screens.Career.Problem.LastReviewedAt' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\AlgoVisualizer.cs:313 Positional property 'AgyTui.UI.Screens.Career.Problem.Tags' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\InterviewBank.cs:3 Positional property 'AgyTui.UI.Screens.Career.InterviewQuestion.Id' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\InterviewBank.cs:22 Local variable 'items' is never used
+      AgyTui\UI\Screens\Career\InterviewBank.cs:86 Positional property 'AgyTui.UI.Screens.Career.StarAnswer.Id' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\InterviewBank.cs:86 Positional property 'AgyTui.UI.Screens.Career.StarAnswer.QuestionId' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\InterviewBank.cs:86 Positional property 'AgyTui.UI.Screens.Career.StarAnswer.UpdatedAt' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\InterviewBank.cs:86 Positional property 'AgyTui.UI.Screens.Career.StarAnswer.Tags' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\InterviewBank.cs:86 Positional property 'AgyTui.UI.Screens.Career.StarAnswer.Rating' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Career\InterviewBank.cs:162 Parameter 'ctx' is never used
+      AgyTui\UI\Screens\Career\InterviewBank.cs:194 Qualifier is redundant
+      AgyTui\UI\Screens\Career\InterviewBank.cs:216 Captured variable is modified in the outer scope
+      AgyTui\UI\Screens\Career\InterviewBank.cs:216 Captured variable is modified in the outer scope
+      AgyTui\UI\Screens\Career\InterviewBank.cs:273 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\Git\GitNexus.cs:6 Positional property 'AgyTui.UI.Screens.Git.RepoStatus.RepoPath' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Git\GitNexus.cs:7 Positional property 'AgyTui.UI.Screens.Git.RepoNode.NodePath' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Ide\CodeViewer.cs:8 Field 'StringDelimiters' is never used
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:2 Using directive is not required by the code and can be safely removed
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:24 Parameter 'rootPath' is only passed to itself
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:74 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:132 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:148 Value assigned is not used in any execution path
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:196 Value assigned is not used in any execution path
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:197 Value assigned is not used in any execution path
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:202 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:476 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:496 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:501 Local variable 'ext' is never used
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:559 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:634 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:653 Captured variable is modified in the outer scope
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:655 Captured variable is modified in the outer scope
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:664 Captured variable is modified in the outer scope
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:669 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:671 Captured variable is modified in the outer scope
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:675 Captured variable is modified in the outer scope
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:679 Captured variable is modified in the outer scope
+      AgyTui\UI\Screens\Ide\TerminalIde.cs:679 Captured variable is modified in the outer scope
+      AgyTui\UI\Screens\Learn\FlashcardEngine.cs:38 Captured variable is modified in the outer scope
+      AgyTui\UI\Screens\Learn\FlashcardEngine.cs:38 Captured variable is modified in the outer scope
+      AgyTui\UI\Screens\Learn\FlashcardEngine.cs:38 Captured variable is modified in the outer scope
+      AgyTui\UI\Screens\Learn\FlashcardEngine.cs:38 Captured variable is modified in the outer scope
+      AgyTui\UI\Screens\Learn\FlashcardEngine.cs:111 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\Learn\GuidedLearnFlow.cs:15 Local variable 'path' is never used
+      AgyTui\UI\Screens\Learn\GuidedLearnFlow.cs:72 The parameter 'level' has the same default value
+      AgyTui\UI\Screens\Learn\GuidedLearnFlow.cs:76 The parameter 'difficulty' has the same default value
+      AgyTui\UI\Screens\Learn\GuidedLearnFlow.cs:80 The parameter 'level' has the same default value
+      AgyTui\UI\Screens\Learn\LearnRouter.cs:96 The parameter 'level' has the same default value
+      AgyTui\UI\Screens\Learn\LearnRouter.cs:97 The parameter 'type' has the same default value
+      AgyTui\UI\Screens\Learn\LearnRouter.cs:102 The parameter 'level' has the same default value
+      AgyTui\UI\Screens\Learn\LearnRouter.cs:116 The parameter 'difficulty' has the same default value
+      AgyTui\UI\Screens\Learn\LearnRouter.cs:160 The parameter 'timeLimitSeconds' has the same default value
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:20 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:22 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:23 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:29 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:32 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:33 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:34 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:35 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:36 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:37 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:38 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:39 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:42 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:44 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:48 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:50 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:53 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:55 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:57 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:59 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:61 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:63 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:65 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:67 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:69 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:71 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:94 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:107 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:108 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:185 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:267 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:280 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:285 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:290 Qualifier is redundant
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:353 Field '_js' is never used
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:353 Name '_js' does not match rule 'Static readonly fields (private)'. Suggested name is 'Js'.
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:432 Equality comparison of floating point numbers. Possible loss of precision while rounding values
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:434 Value assigned is not used in any execution path
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:450 Equality comparison of floating point numbers. Possible loss of precision while rounding values
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:450 Equality comparison of floating point numbers. Possible loss of precision while rounding values
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:574 Equality comparison of floating point numbers. Possible loss of precision while rounding values
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:574 Equality comparison of floating point numbers. Possible loss of precision while rounding values
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:790 Positional property 'AgyTui.UI.Screens.Learn.WordEntry.Date' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Learn\StudyConsoleView.cs:790 Positional property 'AgyTui.UI.Screens.Learn.WordEntry.Tags' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Learn\StudySession.cs:56 Name '_recordLock' does not match rule 'Static readonly fields (private)'. Suggested name is 'RecordLock'.
+      AgyTui\UI\Screens\Quizzes\CsharpQuiz.cs:6 Positional property 'AgyTui.UI.Screens.Quizzes.CodeSnippet.Id' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Quizzes\CsharpQuiz.cs:6 Positional property 'AgyTui.UI.Screens.Quizzes.CodeSnippet.Tags' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Quizzes\CsharpQuiz.cs:8 Positional property 'AgyTui.UI.Screens.Quizzes.SnippetsFile.Language' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Quizzes\CsharpQuiz.cs:14 Qualifier is redundant
+      AgyTui\UI\Screens\Quizzes\CsharpQuiz.cs:26 Qualifier is redundant
+      AgyTui\UI\Screens\Quizzes\CsharpQuiz.cs:76 Qualifier is redundant
+      AgyTui\UI\Screens\Quizzes\CsharpQuiz.cs:82 Qualifier is redundant
+      AgyTui\UI\Screens\Quizzes\CsharpQuiz.cs:97 Positional property 'AgyTui.UI.Screens.Quizzes.QuizQuestion.Id' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Quizzes\CsharpQuiz.cs:97 Positional property 'AgyTui.UI.Screens.Quizzes.QuizQuestion.Difficulty' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Quizzes\CsharpQuiz.cs:97 Positional property 'AgyTui.UI.Screens.Quizzes.QuizQuestion.Tags' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Quizzes\KanaQuiz.cs:3 Positional property 'AgyTui.UI.Screens.Quizzes.KanaEntry.Type' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Quizzes\KanaQuiz.cs:24 Expression is always false according to nullable reference types' annotations
+      AgyTui\UI\Screens\Quizzes\KanaQuiz.cs:27 Qualifier is redundant
+      AgyTui\UI\Screens\Quizzes\KanaQuiz.cs:44 Captured variable is modified in the outer scope
+      AgyTui\UI\Screens\Quizzes\KanaQuiz.cs:90 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\Quizzes\KanaQuiz.cs:117 Positional property 'AgyTui.UI.Screens.Quizzes.KanjiEntry.Tags' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Quizzes\KanaQuiz.cs:117 Positional property 'AgyTui.UI.Screens.Quizzes.KanjiEntry.Sr' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Quizzes\KanaQuiz.cs:138 Type argument specification is redundant
+      AgyTui\UI\Screens\Quizzes\KanaQuiz.cs:173 Positional property 'AgyTui.UI.Screens.Quizzes.JlptWord.PartOfSpeech' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Quizzes\KanaQuiz.cs:173 Positional property 'AgyTui.UI.Screens.Quizzes.JlptWord.JlptLevel' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Quizzes\KanaQuiz.cs:181 Qualifier is redundant
+      AgyTui\UI\Screens\Quizzes\KanaQuiz.cs:207 Positional property 'AgyTui.UI.Screens.Quizzes.GrammarFile.Level' is never accessed (except in implicit Equals/ToString implementations)
+      AgyTui\UI\Screens\Quizzes\KanaQuiz.cs:241 Captured variable is modified in the outer scope
+      AgyTui\UI\Screens\Quizzes\KanaQuiz.cs:300 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\SysNet\SshConsoleView.cs:208 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\SysNet\SshConsoleView.cs:255 Qualifier is redundant
+      AgyTui\UI\Screens\SysNet\SshConsoleView.cs:255 The nullable warning suppression expression is redundant
+      AgyTui\UI\Screens\SysNet\SshConsoleView.cs:262 Qualifier is redundant
+      AgyTui\UI\Screens\SysNet\SshConsoleView.cs:263 Qualifier is redundant
+      AgyTui\UI\Screens\SysNet\SshConsoleView.cs:329 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\SysNet\SshConsoleView.cs:357 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\SysNet\SshConsoleView.cs:431 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\SysNet\SystemConsoleView.cs:30 Name 'GetPublicIP' does not match rule 'Methods'. Suggested name is 'GetPublicIp'.
+      AgyTui\UI\Screens\SysNet\SystemConsoleView.cs:211 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\SysNet\SystemConsoleView.cs:230 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\SysNet\SystemConsoleView.cs:243 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\SysNet\SystemConsoleView.cs:252 Empty general catch clause suppresses any errors
+      AgyTui\UI\Screens\SysNet\SystemConsoleView.cs:339 Name 'tailscaleIP' does not match rule 'Local variables'. Suggested name is 'tailscaleIp'.
+      AgyTui\UI\Screens\SysNet\SystemConsoleView.cs:382 Qualifier is redundant
+    
+    Project AgyTui.Tests
+      AgyTui.Tests\Integration\ResourceDiscoveryTests.cs:8 Qualifier is redundant
+      AgyTui.Tests\Integration\ResourceDiscoveryTests.cs:20 Empty general catch clause suppresses any errors
+      AgyTui.Tests\Unit\Core\Services\CommandRouterEdgeCasesTests.cs:21 The parameter 'args' has the same default value
+      AgyTui.Tests\Unit\Core\Services\WeakItemsQueueTests.cs:31 Empty general catch clause suppresses any errors
+      AgyTui.Tests\Unit\Infrastructure\Common\CommandInvocationLogTests.cs:16 The parameter 'errorType' has the same default value
+      AgyTui.Tests\Unit\Infrastructure\Common\CommandInvocationLogTests.cs:39 Empty general catch clause suppresses any errors
+      AgyTui.Tests\Unit\Infrastructure\Logging\CommandLoggingMiddlewareTests.cs:10 Initializing property by default value is redundant
+      AgyTui.Tests\Unit\Infrastructure\Logging\CommandLoggingMiddlewareTests.cs:10 Initializing property by default value is redundant
+      AgyTui.Tests\Unit\Infrastructure\Persistence\AccountStatsTests.cs:30 Empty general catch clause suppresses any errors
+      AgyTui.Tests\Unit\Infrastructure\Persistence\ConfigServiceTests.cs:3 Qualifier is redundant
+      AgyTui.Tests\Unit\Infrastructure\Persistence\ConfigServiceTests.cs:9 Qualifier is redundant
+      AgyTui.Tests\Unit\Infrastructure\Persistence\ConfigServiceTests.cs:29 Empty general catch clause suppresses any errors
+      AgyTui.Tests\Unit\Infrastructure\Persistence\ConfigServiceTests.cs:50 Local variable 'cfg' is never used
+      AgyTui.Tests\Unit\Infrastructure\Persistence\ConfigTests.cs:46 Qualifier is redundant
+      AgyTui.Tests\Unit\Infrastructure\Persistence\QuotaCentralizationTests.cs:73 Empty general catch clause suppresses any errors
+      AgyTui.Tests\Unit\Infrastructure\Persistence\QuotaTrackerEdgeCasesTests.cs:11 Content of collection 'timestamps' is never updated
+      AgyTui.Tests\Unit\Infrastructure\Persistence\SqlitePersistenceTests.cs:33 Empty general catch clause suppresses any errors
+      AgyTui.Tests\Unit\Infrastructure\Persistence\SqlitePersistenceTests.cs:57 Empty general catch clause suppresses any errors
+      AgyTui.Tests\Unit\UI\Layouts\FlatTreeRendererTests.cs:11 Expression is always true
+      AgyTui.Tests\Unit\UI\Navigation\CommandPaletteTests.cs:37 Possible multiple enumeration
+      AgyTui.Tests\Unit\UI\Navigation\CommandPaletteTests.cs:38 Possible multiple enumeration
+      AgyTui.Tests\Unit\UI\Navigation\UiNavigationHandlerTests.cs:4 Using directive is not required by the code and can be safely removed
+      AgyTui.Tests\Usings.cs:8 'global using' directive is not required by the code and can be safely removed
+      AgyTui.Tests\Usings.cs:9 'global using' directive is not required by the code and can be safely removed
+    
+  

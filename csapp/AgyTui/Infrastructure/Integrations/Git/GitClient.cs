@@ -61,10 +61,10 @@ public class GitClient : CliToolWrapper, IGitClient
         var scope = AnsiConsole.Ask<string>("[dim]Scope[/] (optional, press Enter to skip):", string.Empty).Trim();
         var scopePart = string.IsNullOrWhiteSpace(scope) ? string.Empty : $"({scope})";
 
-        string description = "";
-        var draftWithAI = AnsiConsole.Confirm("Would you like local AI to draft the description from staged diff?");
+        string description;
+        var draftWithAi = AnsiConsole.Confirm("Would you like local AI to draft the description from staged diff?");
         string draft = "";
-        if (draftWithAI)
+        if (draftWithAi)
         {
             var diff = RunGit("diff --cached").Trim();
             if (string.IsNullOrEmpty(diff))

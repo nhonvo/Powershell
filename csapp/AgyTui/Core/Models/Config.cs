@@ -1,11 +1,7 @@
 namespace AgyTui.Core.Models;
 
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using AgyTui.Infrastructure.Common;
 using AgyTui.Infrastructure.Di;
-using AgyTui.Infrastructure.Persistence;
 using AgyTui.Infrastructure.Persistence.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,7 +10,7 @@ public sealed class UiConfig
     public string Mode { get; set; } = "flat-tree";
     public string Density { get; set; } = "comfortable";
     public string ActiveTheme { get; set; } = "neko";
-    public bool EnableMobile { get; set; } = false;
+    public bool EnableMobile { get; set; }
     public string[] FavoriteAliases { get; set; } = Config.DefaultFavoriteAliases;
 }
 
@@ -120,7 +116,10 @@ public static class Config
         {
             Repository.SaveConfig(Current);
         }
-        catch { }
+        catch (Exception)
+        {
+            // Ignored
+        }
     }
 
     public static string GetDensity() => Runtime.RuntimeDensity ?? Current.Ui.Density;
@@ -147,7 +146,10 @@ public static class Config
                 Current.Ui.Mode = "flat-tree";
             }
         }
-        catch { }
+        catch (Exception)
+        {
+            // Ignored
+        }
     }
 
     public static bool IsMobileContext()
@@ -162,7 +164,10 @@ public static class Config
             var theme = Environment.GetEnvironmentVariable("THEME") ?? "";
             if (theme.EndsWith("-mobile", StringComparison.OrdinalIgnoreCase)) return true;
         }
-        catch { }
+        catch (Exception)
+        {
+            // Ignored
+        }
         return false;
     }
 }
