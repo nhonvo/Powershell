@@ -1,4 +1,5 @@
 using AgyTui.Infrastructure.Di;
+using AgyTui.UI.Screens.SysNet;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure;
@@ -72,21 +73,21 @@ public static class AwsHelper
 public static class SystemHelper
 {
     public static void OpenNewTerminalSession(string? workingDirectory = null, string? command = null, bool promptForCommand = false)
-        => AgyTui.UI.Screens.SysNet.SystemConsoleView.OpenNewTerminalSession(workingDirectory, command, promptForCommand);
+        => SystemConsoleView.OpenNewTerminalSession(workingDirectory, command, promptForCommand);
 
     public static void OpenNewTerminalSession(string workingDirectory)
-        => AgyTui.UI.Screens.SysNet.SystemConsoleView.OpenNewTerminalSession(workingDirectory, null, false);
+        => SystemConsoleView.OpenNewTerminalSession(workingDirectory);
 
     public static void OpenNewTerminalSession()
-        => AgyTui.UI.Screens.SysNet.SystemConsoleView.OpenNewTerminalSession(null, null, false);
+        => SystemConsoleView.OpenNewTerminalSession();
 
-    public static bool KillPort(int port) => AgyTui.UI.Screens.SysNet.SystemConsoleView.KillPort(port);
+    public static bool KillPort(int port) => SystemConsoleView.KillPort(port);
 
-    public static void OpenExplorer(string? path = null) => AgyTui.UI.Screens.SysNet.SystemConsoleView.OpenExplorer(path);
+    public static void OpenExplorer(string? path = null) => SystemConsoleView.OpenExplorer(path);
 
-    public static void ShowDiskSpace() => AgyTui.UI.Screens.SysNet.SystemConsoleView.ShowDiskSpace();
+    public static void ShowDiskSpace() => SystemConsoleView.ShowDiskSpace();
 
-    public static string GetPublicIP() => AgyTui.UI.Screens.SysNet.SystemConsoleView.GetPublicIP();
+    public static string GetPublicIP() => SystemConsoleView.GetPublicIP();
 
-    public static void StopProcessFriendly(string? name = null) => AgyTui.UI.Screens.SysNet.SystemConsoleView.StopProcessFriendly(name);
+    public static void StopProcessFriendly(string? name = null) => SystemConsoleView.StopProcessFriendly(name);
 }

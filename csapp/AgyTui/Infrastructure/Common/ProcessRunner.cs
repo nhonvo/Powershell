@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 
 namespace AgyTui.Infrastructure.Common;
 
@@ -22,7 +23,7 @@ public static class ProcessRunner
             var output = p.StandardOutput.ReadToEnd().Trim();
             if (!p.WaitForExit(3000))
             {
-                try { p.Kill(entireProcessTree: true); } catch { }
+                try { p.Kill(entireProcessTree: true); } catch (Exception) { }
                 return null;
             }
             if (p.ExitCode == 0 && !string.IsNullOrWhiteSpace(output))
@@ -31,7 +32,7 @@ public static class ProcessRunner
                 return lines.FirstOrDefault();
             }
         }
-        catch
+        catch (Exception)
         {
         }
         return null;
@@ -88,14 +89,15 @@ public static class ProcessRunner
             WorkingDirectory = workingDir ?? Directory.GetCurrentDirectory()
         };
 
-        var stdoutBuilder = new System.Text.StringBuilder();
-        var stderrBuilder = new System.Text.StringBuilder();
+        var stdoutBuilder = new StringBuilder();
+        var stderrBuilder = new StringBuilder();
 
         try
         {
-            using var p = new Process { StartInfo = psi };
-            p.OutputDataReceived += (s, e) => { if (e.Data != null) stdoutBuilder.AppendLine(e.Data); };
-            p.ErrorDataReceived += (s, e) => { if (e.Data != null) stderrBuilder.AppendLine(e.Data); };
+            using var p = new Process();
+            p.StartInfo = psi;
+            p.OutputDataReceived += (_, e) => { if (e.Data != null) stdoutBuilder.AppendLine(e.Data); };
+            p.ErrorDataReceived += (_, e) => { if (e.Data != null) stderrBuilder.AppendLine(e.Data); };
 
             p.Start();
             p.BeginOutputReadLine();
@@ -109,7 +111,7 @@ public static class ProcessRunner
             }
             else
             {
-                try { p.Kill(true); } catch { }
+                try { p.Kill(true); } catch (Exception) { }
                 return (stdoutBuilder.ToString(), stderrBuilder.ToString() + "\n[TIMED OUT]", -1);
             }
         }

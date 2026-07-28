@@ -20,7 +20,7 @@ public static class AppPaths
                     return _projectRoot;
                 }
             }
-            catch { }
+            catch (Exception) { }
 
             var pwd = Directory.GetCurrentDirectory();
             if (File.Exists(Path.Combine(pwd, "AgyTui.csproj")))
@@ -56,7 +56,7 @@ public static class AppPaths
                     if (!string.IsNullOrEmpty(dir)) startDir = dir;
                 }
             }
-            catch { }
+            catch (Exception) { }
 
             var curr = new DirectoryInfo(startDir);
             while (curr != null)

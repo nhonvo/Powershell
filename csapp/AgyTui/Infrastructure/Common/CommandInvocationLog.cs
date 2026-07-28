@@ -17,7 +17,7 @@ public sealed record CommandLogEntry(
 
 public static class CommandInvocationLog
 {
-    private static readonly object _logLock = new();
+    private static readonly object LogLock = new();
 
     public static string LogFilePath
     {
@@ -45,7 +45,7 @@ public static class CommandInvocationLog
                 errorType);
 
             var json = JsonSerializer.Serialize(entry);
-            lock (_logLock)
+            lock (LogLock)
             {
                 var filePath = LogFilePath;
                 var dir = Path.GetDirectoryName(filePath);
@@ -53,13 +53,13 @@ public static class CommandInvocationLog
                 File.AppendAllText(filePath, json + Environment.NewLine);
             }
         }
-        catch { }
+        catch (Exception) { }
     }
 
     public static List<CommandLogEntry> GetRecentEntries(int count = 50)
     {
         var list = new List<CommandLogEntry>();
-        lock (_logLock)
+        lock (LogLock)
         {
             var filePath = LogFilePath;
             if (!File.Exists(filePath)) return list;
@@ -75,10 +75,10 @@ public static class CommandInvocationLog
                         var entry = JsonSerializer.Deserialize<CommandLogEntry>(line);
                         if (entry != null) list.Add(entry);
                     }
-                    catch { }
+                    catch (Exception) { }
                 }
             }
-            catch { }
+            catch (Exception) { }
         }
         return list;
     }

@@ -71,51 +71,33 @@ Solution csapp\AgyTui.slnx
       AgyTui\Infrastructure\Common\AppPaths.cs:23 Empty general catch clause suppresses any errors
       AgyTui\Infrastructure\Common\AppPaths.cs:59 Empty general catch clause suppresses any errors
       AgyTui\Infrastructure\Common\CommandInvocationLog.cs:3 Qualifier is redundant
-      AgyTui\Infrastructure\Common\CommandInvocationLog.cs:20 Name '_logLock' does not match rule 'Static readonly fields (private)'. Suggested name is 'LogLock'.
       AgyTui\Infrastructure\Common\CommandInvocationLog.cs:56 Empty general catch clause suppresses any errors
       AgyTui\Infrastructure\Common\CommandInvocationLog.cs:78 Empty general catch clause suppresses any errors
       AgyTui\Infrastructure\Common\CommandInvocationLog.cs:81 Empty general catch clause suppresses any errors
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:25 Empty general catch clause suppresses any errors
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:34 Empty general catch clause suppresses any errors
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:79 Component of the return tuple is never used
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:91 Qualifier is redundant
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:92 Qualifier is redundant
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:96 Initialize object properties inside the 'using' statement to ensure that the object is disposed if an exception is thrown during initialization
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:97 Parameter 's' is never used
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:98 Parameter 's' is never used
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:112 Empty general catch clause suppresses any errors
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:113 Redundant 'Object.ToString()' call
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:145 Empty general catch clause suppresses any errors
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:176 Qualifier is redundant
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:177 Qualifier is redundant
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:181 Initialize object properties inside the 'using' statement to ensure that the object is disposed if an exception is thrown during initialization
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:182 Parameter 's' is never used
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:183 Parameter 's' is never used
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:197 Empty general catch clause suppresses any errors
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:198 Redundant 'Object.ToString()' call
-      AgyTui\Infrastructure\Common\ProcessRunner.cs:229 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:2 Using directive is not required by the code and can be safely removed
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:26 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:35 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:80 Component of the return tuple is never used
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:114 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:115 Redundant 'Object.ToString()' call
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:147 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:178 Qualifier is redundant
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:179 Qualifier is redundant
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:183 Initialize object properties inside the 'using' statement to ensure that the object is disposed if an exception is thrown during initialization
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:184 Parameter 's' is never used
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:185 Parameter 's' is never used
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:199 Empty general catch clause suppresses any errors
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:200 Redundant 'Object.ToString()' call
+      AgyTui\Infrastructure\Common\ProcessRunner.cs:231 Empty general catch clause suppresses any errors
       AgyTui\Infrastructure\Common\ProjectScaffolder.cs:47 Type argument specification is redundant
       AgyTui\Infrastructure\Common\ThemeManager.cs:86 Parameter 'themesPath' is never used
       AgyTui\Infrastructure\Common\ThemeManager.cs:104 Empty general catch clause suppresses any errors
       AgyTui\Infrastructure\Common\ThemeManager.cs:112 Parameter 'themesPath' is never used
       AgyTui\Infrastructure\Common\ThemeManager.cs:120 Empty general catch clause suppresses any errors
-      AgyTui\Infrastructure\HelperCompatibility.cs:65 Name 'ShowSQSQueues' does not match rule 'Methods'. Suggested name is 'ShowSqsQueues'.
-      AgyTui\Infrastructure\HelperCompatibility.cs:74 Method with optional parameter is hidden by overload
-      AgyTui\Infrastructure\HelperCompatibility.cs:74 Method with optional parameter is hidden by overload
-      AgyTui\Infrastructure\HelperCompatibility.cs:75 Qualifier is redundant
-      AgyTui\Infrastructure\HelperCompatibility.cs:78 Qualifier is redundant
-      AgyTui\Infrastructure\HelperCompatibility.cs:78 The parameter 'command' has the same default value
-      AgyTui\Infrastructure\HelperCompatibility.cs:78 The parameter 'promptForCommand' has the same default value
-      AgyTui\Infrastructure\HelperCompatibility.cs:81 Qualifier is redundant
-      AgyTui\Infrastructure\HelperCompatibility.cs:81 The parameter 'workingDirectory' has the same default value
-      AgyTui\Infrastructure\HelperCompatibility.cs:81 The parameter 'command' has the same default value
-      AgyTui\Infrastructure\HelperCompatibility.cs:81 The parameter 'promptForCommand' has the same default value
-      AgyTui\Infrastructure\HelperCompatibility.cs:83 Qualifier is redundant
-      AgyTui\Infrastructure\HelperCompatibility.cs:85 Qualifier is redundant
-      AgyTui\Infrastructure\HelperCompatibility.cs:87 Qualifier is redundant
-      AgyTui\Infrastructure\HelperCompatibility.cs:89 Name 'GetPublicIP' does not match rule 'Methods'. Suggested name is 'GetPublicIp'.
-      AgyTui\Infrastructure\HelperCompatibility.cs:89 Qualifier is redundant
-      AgyTui\Infrastructure\HelperCompatibility.cs:91 Qualifier is redundant
+      AgyTui\Infrastructure\HelperCompatibility.cs:66 Name 'ShowSQSQueues' does not match rule 'Methods'. Suggested name is 'ShowSqsQueues'.
+      AgyTui\Infrastructure\HelperCompatibility.cs:75 Method with optional parameter is hidden by overload
+      AgyTui\Infrastructure\HelperCompatibility.cs:75 Method with optional parameter is hidden by overload
+      AgyTui\Infrastructure\HelperCompatibility.cs:90 Name 'GetPublicIP' does not match rule 'Methods'. Suggested name is 'GetPublicIp'.
       AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountCore.cs:3 Qualifier is redundant
       AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountCore.cs:4 Qualifier is redundant
       AgyTui\Infrastructure\Integrations\AgyClient\AgyAccountCore.cs:5 Qualifier is redundant
