@@ -515,12 +515,11 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     var boldDesc = string.IsNullOrEmpty(rawQ) ? cmd.Description.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(cmd.Description, rawQ);
 
                     var displayLabel = $"/{boldAlias} — {boldDisplayName}";
-                    var desc = isCompact && !isSelected ? "" : $" [dim]· {boldDesc}[/]";
 
                     var treeDim = $"[dim]{treePrefix.EscapeMarkup()}[/]";
                     var label = isSelected
-                        ? $"[{AgyThemeColors.Selected} bold]{treePrefix}{icon} {displayLabel}{desc}[/]"
-                        : $"{treeDim}{icon} [white]{displayLabel}[/]{desc}";
+                        ? $"[{AgyThemeColors.Selected} bold]{treePrefix}{icon} {displayLabel}[/]"
+                        : $"{treeDim}{icon} [white]{displayLabel}[/]";
                     grid.AddRow(new Markup($"{prefix}{label}"));
                 }
                 else if (row.Type == VisibleRowType.Widget)
@@ -559,9 +558,10 @@ public sealed class FlatTreeRenderer : MenuRendererBase
             {
                 var cmd = highlighted.Node.Command;
                 var maxNoteLen = Math.Max(30, winWidth - 18);
-                noteText = (cmd.HelpLines != null && cmd.HelpLines.Length > 0)
-                    ? string.Join(" ", cmd.HelpLines)
-                    : cmd.Description;
+                var cleanDesc = !string.IsNullOrWhiteSpace(cmd.Description)
+                    ? cmd.Description
+                    : (cmd.HelpLines != null && cmd.HelpLines.Length > 0 ? cmd.HelpLines[0] : "");
+                noteText = $"/{cmd.Alias} — {cleanDesc}";
                 if (noteText.Length > maxNoteLen) noteText = noteText[..maxNoteLen] + "…";
             }
             else if (highlighted.Type == VisibleRowType.Category)
