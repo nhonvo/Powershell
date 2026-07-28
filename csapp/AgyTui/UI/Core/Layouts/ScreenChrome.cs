@@ -47,12 +47,7 @@ public static class ScreenChrome
 
     public static void EnableMouseTracking()
     {
-        if (OverrideConsole != null) return;
-        try
-        {
-            Console.Write("\x1b[?1000h\x1b[?1006h");
-        }
-        catch { }
+        // Keep mouse tracking disabled by default so users can select and copy text with mouse
     }
 
     public static void DisableMouseTracking()
@@ -63,6 +58,39 @@ public static class ScreenChrome
             Console.Write("\x1b[?1000l\x1b[?1006l");
         }
         catch { }
+    }
+
+    public static bool CopyToClipboard(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return false;
+        try
+        {
+            var bytes = System.Text.Encoding.UTF8.GetBytes(text);
+            var base64 = Convert.ToBase64String(bytes);
+            Console.Write($"\x1b]52;c;{base64}\a");
+
+            if (OperatingSystem.IsWindows())
+            {
+                try
+                {
+                    var psi = new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = "powershell.exe",
+                        Arguments = $"-NoProfile -Command \"Set-Clipboard -Value '{text.Replace("'", "''")}'\"",
+                        CreateNoWindow = true,
+                        UseShellExecute = false
+                    };
+                    using var proc = System.Diagnostics.Process.Start(psi);
+                    proc?.WaitForExit(500);
+                }
+                catch { }
+            }
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public static (ConsoleKeyInfo Key, bool IsScrollUp, bool IsScrollDown) ReadKeyWithMouse()

@@ -296,6 +296,27 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     selectionIndex = Math.Max(0, visibleRows.Count - 1);
                     doubleSlashNavigated = true;
                     break;
+                case ConsoleKey.C:
+                case ConsoleKey.Y:
+                    if (selectionIndex >= 0 && selectionIndex < visibleRows.Count)
+                    {
+                        var row = visibleRows[selectionIndex];
+                        string copyText = "";
+                        if (row.Type == VisibleRowType.Command && row.Node.Command != null)
+                        {
+                            copyText = $"/{row.Node.Command.Alias}";
+                        }
+                        else if (row.Type == VisibleRowType.Category || row.Type == VisibleRowType.Group)
+                        {
+                            copyText = row.Node.Label;
+                        }
+
+                        if (!string.IsNullOrEmpty(copyText))
+                        {
+                            ScreenChrome.CopyToClipboard(copyText);
+                        }
+                    }
+                    break;
                 case ConsoleKey.Divide:
                 case ConsoleKey.Oem2:
                     searching = true;
@@ -576,7 +597,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
         var scrollIndicator = AgyUiComponents.RenderScrollIndicator(rows.Count, topRow, endRow, maxRows);
         var notePanel = AgyUiComponents.RenderFooterNote(noteText);
 
-        var hotkeyBar = new Markup("[dim]TUI Keys: [[↑/↓ j/k]] Navigate · [[PgUp/PgDn]] Scroll · [[/]] Filter · [[Enter/→]] Select/Expand · [[←]] Collapse · [[Esc/q]] Exit\nShell Aliases: cg (Git) · cdk (Docker) · cnav (Nav) · cai (AI) · csys (Sys) · cnet (Net) · cssh (SSH)[/]");
+        var hotkeyBar = new Markup("[dim]TUI Keys: [[↑/↓ j/k]] Navigate · [[PgUp/PgDn]] Scroll · [[/]] Filter · [[c/y]] Copy · [[Enter/→]] Select/Expand · [[Esc/q]] Exit\nShell Aliases: cg (Git) · cdk (Docker) · cnav (Nav) · cai (AI) · csys (Sys) · cnet (Net) · cssh (SSH)[/]");
 
         var layout = new Rows(
             filterPanel,
