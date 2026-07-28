@@ -438,7 +438,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
 
         int winHeight = 30;
         try { winHeight = Console.WindowHeight; } catch { }
-        int chromeOverhead = 6;
+        int chromeOverhead = 3;
         int maxRows = Math.Max(5, winHeight - chromeOverhead);
         int topRow = 0;
         int endRow = 0;
@@ -606,7 +606,6 @@ public sealed class FlatTreeRenderer : MenuRendererBase
 
         var layout = new Rows(
             grid,
-            new Rule().RuleStyle($"{AgyThemeColors.Accent} dim"),
             statusGrid,
             noteRenderable,
             hotkeyBar

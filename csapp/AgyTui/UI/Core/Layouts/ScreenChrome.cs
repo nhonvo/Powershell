@@ -245,6 +245,5 @@ public static class ScreenChrome
         }
 
         MarkupLineEl(headerLine);
-        MarkupLineEl($"[cyan]{sep.EscapeMarkup()}[/]");
     }
 }
