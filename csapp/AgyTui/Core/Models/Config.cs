@@ -1,9 +1,9 @@
-namespace AgyTui.Core.Models;
-
 using AgyTui.Infrastructure.Common;
 using AgyTui.Infrastructure.Di;
 using AgyTui.Infrastructure.Persistence.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+
+namespace AgyTui.Core.Models;
 
 public sealed class UiConfig
 {

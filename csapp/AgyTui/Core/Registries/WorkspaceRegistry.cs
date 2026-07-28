@@ -17,7 +17,7 @@ public sealed record WorkspaceEntry(
 
 public static class WorkspaceRegistry
 {
-    private static readonly TtlCache<string, WorkspaceEntry[]> _cache = new(TimeSpan.FromSeconds(5));
+    private static readonly TtlCache<string, WorkspaceEntry[]> WorkspacesCache = new(TimeSpan.FromSeconds(5));
 
     private static string ConfigFile
     {
@@ -46,7 +46,7 @@ public static class WorkspaceRegistry
 
     public static WorkspaceEntry[] GetWorkspaces()
     {
-        return _cache.GetOrCompute("workspaces", () =>
+        return WorkspacesCache.GetOrCompute("workspaces", () =>
         {
             WorkspaceEntry[] items = [];
             if (File.Exists(ConfigFile))
@@ -219,7 +219,7 @@ public static class WorkspaceRegistry
                 WriteIndented = true
             }
             ), Encoding.UTF8);
-            _cache.Clear();
+            WorkspacesCache.Clear();
         }
         catch (Exception ex)
         {
@@ -263,12 +263,12 @@ public static class WorkspaceRegistry
         return GetWorkspaces().Where(w => string.Equals(w.AssociatedAccount ?? "default", targetAccount, StringComparison.OrdinalIgnoreCase)).ToArray();
     }
 
-    private static readonly TtlCache<string, string> _branchCache = new(TimeSpan.FromSeconds(5));
+    private static readonly TtlCache<string, string> BranchCache = new(TimeSpan.FromSeconds(5));
 
     public static string GetGitBranch(string dirPath)
     {
         if (string.IsNullOrEmpty(dirPath)) return "";
-        return _branchCache.GetOrCompute(dirPath, () =>
+        return BranchCache.GetOrCompute(dirPath, () =>
         {
             string branch = "";
             try

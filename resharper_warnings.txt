@@ -1,7 +1,6 @@
 Solution csapp\AgyTui.slnx
     Project AgyTui
-      AgyTui\Core\Models\Config.cs:3 Qualifier is redundant
-      AgyTui\Core\Models\Config.cs:4 Qualifier is redundant
+      AgyTui\Core\Models\Config.cs: Using directive is not required by the code and can be safely removed
       AgyTui\Core\Models\Config.cs:66 Auto-property accessor 'MobileContextOverride.set' is never used
       AgyTui\Core\Models\Config.cs:67 Auto-property accessor 'RuntimeDensity.set' is never used
       AgyTui\Core\Models\LearningModels.cs:3 Positional property 'AgyTui.Core.Models.FlashCard.Tags' is never accessed (except in implicit Equals/ToString implementations)
@@ -47,14 +46,12 @@ Solution csapp\AgyTui.slnx
       AgyTui\Core\Registries\ResourceRegistry.cs:30 Qualifier is redundant
       AgyTui\Core\Registries\ResourceRegistry.cs:58 Qualifier is redundant
       AgyTui\Core\Registries\WorkspaceRegistry.cs:13 Positional property 'AgyTui.Core.Registries.WorkspaceEntry.Tags' is never accessed (except in implicit Equals/ToString implementations)
-      AgyTui\Core\Registries\WorkspaceRegistry.cs:20 Name '_cache' does not match rule 'Static readonly fields (private)'. Suggested name is 'Cache'.
       AgyTui\Core\Registries\WorkspaceRegistry.cs:62 Empty general catch clause suppresses any errors
       AgyTui\Core\Registries\WorkspaceRegistry.cs:115 Empty general catch clause suppresses any errors
       AgyTui\Core\Registries\WorkspaceRegistry.cs:151 Empty general catch clause suppresses any errors
       AgyTui\Core\Registries\WorkspaceRegistry.cs:154 Empty general catch clause suppresses any errors
       AgyTui\Core\Registries\WorkspaceRegistry.cs:199 Empty general catch clause suppresses any errors
       AgyTui\Core\Registries\WorkspaceRegistry.cs:202 Empty general catch clause suppresses any errors
-      AgyTui\Core\Registries\WorkspaceRegistry.cs:266 Name '_branchCache' does not match rule 'Static readonly fields (private)'. Suggested name is 'BranchCache'.
       AgyTui\Core\Registries\WorkspaceRegistry.cs:307 Empty general catch clause suppresses any errors
       AgyTui\Core\Registries\WorkspaceRegistry.cs:336 Duplicated statements
       AgyTui\Core\Registries\WorkspaceRegistry.cs:341 Duplicated statements
