@@ -18,12 +18,6 @@ Solution csapp\AgyTui.slnx
       AgyTui\Core\Models\LearningModels.cs:29 Positional property 'AgyTui.Core.Models.VocabWord.Difficulty' is never accessed (except in implicit Equals/ToString implementations)
       AgyTui\Core\Models\LearningModels.cs:29 Positional property 'AgyTui.Core.Models.VocabWord.Tags' is never accessed (except in implicit Equals/ToString implementations)
       AgyTui\Core\Models\LearningModels.cs:31 Positional property 'AgyTui.Core.Models.VocabFile.Level' is never accessed (except in implicit Equals/ToString implementations)
-      AgyTui\Core\Registries\CommandRegistry.cs:17 Initializing property by default value is redundant
-      AgyTui\Core\Registries\CommandRegistry.cs:17 Initializing property by default value is redundant
-      AgyTui\Core\Registries\CommandRegistry.cs:18 Initializing property by default value is redundant
-      AgyTui\Core\Registries\CommandRegistry.cs:18 Initializing property by default value is redundant
-      AgyTui\Core\Registries\CommandRegistry.cs:19 Initializing property by default value is redundant
-      AgyTui\Core\Registries\CommandRegistry.cs:19 Initializing property by default value is redundant
       AgyTui\Core\Registries\IdeCommandRegistry.cs:5 Positional property 'AgyTui.Core.Registries.IdeCommand.ArgHint' is never accessed (except in implicit Equals/ToString implementations)
       AgyTui\Core\Registries\IdeCommandRegistry.cs:5 Positional property 'AgyTui.Core.Registries.IdeCommand.Description' is never accessed (except in implicit Equals/ToString implementations)
       AgyTui\Core\Registries\IdeCommandRegistry.cs:5 Positional property 'AgyTui.Core.Registries.IdeCommand.Category' is never accessed (except in implicit Equals/ToString implementations)
@@ -43,8 +37,6 @@ Solution csapp\AgyTui.slnx
       AgyTui\Core\Registries\ResourceRegistry.cs:5 Positional property 'AgyTui.Core.Registries.ExtractionConfig.ForceReExtract' is never accessed (except in implicit Equals/ToString implementations)
       AgyTui\Core\Registries\ResourceRegistry.cs:7 Positional property 'AgyTui.Core.Registries.ResourceIndex.Version' is never accessed (except in implicit Equals/ToString implementations)
       AgyTui\Core\Registries\ResourceRegistry.cs:7 Positional property 'AgyTui.Core.Registries.ResourceIndex.UpdatedAt' is never accessed (except in implicit Equals/ToString implementations)
-      AgyTui\Core\Registries\ResourceRegistry.cs:30 Qualifier is redundant
-      AgyTui\Core\Registries\ResourceRegistry.cs:58 Qualifier is redundant
       AgyTui\Core\Registries\WorkspaceRegistry.cs:13 Positional property 'AgyTui.Core.Registries.WorkspaceEntry.Tags' is never accessed (except in implicit Equals/ToString implementations)
       AgyTui\Core\Registries\WorkspaceRegistry.cs:62 Empty general catch clause suppresses any errors
       AgyTui\Core\Registries\WorkspaceRegistry.cs:115 Empty general catch clause suppresses any errors

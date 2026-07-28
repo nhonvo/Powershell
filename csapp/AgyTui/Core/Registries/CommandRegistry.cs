@@ -14,9 +14,9 @@ public sealed record CommandEntry(
 )
 {
     public bool ShowInTree { get; set; } = true;
-    public string? GroupPath { get; set; } = null;
-    public string? GroupName { get; set; } = null;
-    public int SortOrder { get; set; } = 0;
+    public string? GroupPath { get; set; }
+    public string? GroupName { get; set; }
+    public int SortOrder { get; set; }
 }
 
 public static class CommandRegistry

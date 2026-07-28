@@ -27,7 +27,7 @@ public static class ResourceRegistry
         var format = DetectFormat(path);
         var checksum = File.Exists(path) ? ComputeChecksum(path) : null;
         var size = File.Exists(path) ? new FileInfo(path).Length : 0;
-        entries.Add(new ResourceEntry(id, path, format, System.IO.Path.GetFileNameWithoutExtension(path), tags, [], "auto", "local_file", checksum, size, DateTimeOffset.Now.ToString("o"), null, "pending", null, 0, [], false, true));
+        entries.Add(new ResourceEntry(id, path, format, Path.GetFileNameWithoutExtension(path), tags, [], "auto", "local_file", checksum, size, DateTimeOffset.Now.ToString("o"), null, "pending", null, 0, [], false, true));
         Save([.. entries]);
         return id;
     }
@@ -55,7 +55,7 @@ public static class ResourceRegistry
     public static string DetectFormat(string path)
     {
         if (path.StartsWith("http")) return "url";
-        return System.IO.Path.GetExtension(path).ToLower() switch
+        return Path.GetExtension(path).ToLower() switch
         {
             ".md" or ".txt" => "md",
             ".pdf" => "pdf",
