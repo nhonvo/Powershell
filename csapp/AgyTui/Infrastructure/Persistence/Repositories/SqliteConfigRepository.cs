@@ -1,4 +1,4 @@
-namespace AgyTui.Infrastructure.Persistence;
+namespace AgyTui.Infrastructure.Persistence.Repositories;
 
 using AgyTui.Core.Models;
 using AgyTui.Infrastructure.Common;
@@ -22,30 +22,25 @@ public class SqliteConfigRepository : IConfigRepository
             using var conn = _db.CreateConnection();
             using var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT json_data FROM app_config WHERE section_name = 'main';";
-            var result = cmd.ExecuteScalar();
-            if (result != null && result != DBNull.Value)
+            var res = cmd.ExecuteScalar();
+            if (res != null && res != DBNull.Value)
             {
-                var json = result.ToString()!;
-                var options = new JsonSerializerOptions
+                var cfg = JsonSerializer.Deserialize<ConfigData>(res.ToString()!, new JsonSerializerOptions
                 {
-                    ReadCommentHandling = JsonCommentHandling.Skip,
-                    AllowTrailingCommas = true,
                     PropertyNameCaseInsensitive = true
-                };
-                var data = JsonSerializer.Deserialize<ConfigData>(json, options);
-                if (data != null) return data;
+                });
+                if (cfg != null) return cfg;
             }
         }
         catch { }
 
-        // Fallback sync with profile.config.json if sqlite record doesn't exist yet
-        var fallbackPath = AppPaths.ConfigFile;
-        if (File.Exists(fallbackPath))
+        var legacyFile = Config.GetConfigFilePath();
+        if (File.Exists(legacyFile))
         {
             try
             {
-                var json = File.ReadAllText(fallbackPath);
-                var data = JsonSerializer.Deserialize<ConfigData>(json, new JsonSerializerOptions
+                var text = File.ReadAllText(legacyFile);
+                var data = JsonSerializer.Deserialize<ConfigData>(text, new JsonSerializerOptions
                 {
                     ReadCommentHandling = JsonCommentHandling.Skip,
                     AllowTrailingCommas = true,
@@ -103,10 +98,11 @@ public class SqliteConfigRepository : IConfigRepository
             using var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT state_value FROM system_state WHERE state_key = @key;";
             cmd.Parameters.AddWithValue("@key", key);
-            var result = cmd.ExecuteScalar();
-            return result?.ToString();
+            var res = cmd.ExecuteScalar();
+            if (res != null && res != DBNull.Value) return res.ToString();
         }
-        catch { return null; }
+        catch { }
+        return null;
     }
 
     public void SetState(string key, string? value)

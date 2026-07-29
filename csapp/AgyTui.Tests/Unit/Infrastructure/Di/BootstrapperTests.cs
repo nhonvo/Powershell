@@ -1,5 +1,6 @@
 using AgyTui.Core.Interfaces;
 using AgyTui.Infrastructure.Di;
+using AgyTui.Infrastructure.Persistence.Interfaces;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using AgyTui.Infrastructure.Integrations.Aws;
 using AgyTui.Infrastructure.Integrations.Docker;

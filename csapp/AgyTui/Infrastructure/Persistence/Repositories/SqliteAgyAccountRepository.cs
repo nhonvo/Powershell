@@ -1,4 +1,4 @@
-namespace AgyTui.Infrastructure.Persistence;
+namespace AgyTui.Infrastructure.Persistence.Repositories;
 
 using AgyTui.Infrastructure.Integrations.AgyClient;
 using AgyTui.Infrastructure.Persistence.Interfaces;

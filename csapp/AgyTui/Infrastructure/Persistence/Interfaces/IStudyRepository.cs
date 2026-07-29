@@ -1,4 +1,4 @@
-namespace AgyTui.Core.Interfaces;
+namespace AgyTui.Infrastructure.Persistence.Interfaces;
 
 public interface IStudyRepository
 {

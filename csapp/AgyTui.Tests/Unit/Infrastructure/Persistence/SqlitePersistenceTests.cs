@@ -1,7 +1,7 @@
 namespace AgyTui.Tests.Unit.Infrastructure.Persistence;
 
-using AgyTui.Core.Models;
-using AgyTui.Infrastructure.Persistence;
+using AgyTui.Infrastructure.Persistence.DbContext;
+using AgyTui.Infrastructure.Persistence.Repositories;
 using System.IO;
 using Xunit;
 

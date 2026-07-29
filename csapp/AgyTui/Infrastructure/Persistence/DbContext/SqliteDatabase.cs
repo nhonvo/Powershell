@@ -1,4 +1,4 @@
-namespace AgyTui.Infrastructure.Persistence;
+namespace AgyTui.Infrastructure.Persistence.DbContext;
 
 using AgyTui.Infrastructure.Common;
 using AgyTui.Infrastructure.Persistence.Interfaces;

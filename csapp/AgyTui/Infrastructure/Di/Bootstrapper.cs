@@ -2,8 +2,9 @@ using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using AgyTui.Infrastructure.Integrations.Ai.Providers;
 using AgyTui.Infrastructure.Integrations.Ai.Services;
 using AgyTui.Infrastructure.Logging;
-using AgyTui.Infrastructure.Persistence;
+using AgyTui.Infrastructure.Persistence.DbContext;
 using AgyTui.Infrastructure.Persistence.Interfaces;
+using AgyTui.Infrastructure.Persistence.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Di;
