@@ -1,7 +1,7 @@
-namespace AgyTui.Infrastructure.Persistence.DbContext;
 
 using System.Text.RegularExpressions;
-using AgyTui.Infrastructure.Common;
+
+namespace AgyTui.Infrastructure.Persistence.DbContext;
 
 public static class DatabaseHelper
 {

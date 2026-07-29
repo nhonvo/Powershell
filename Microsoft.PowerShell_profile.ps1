@@ -3,7 +3,8 @@ $global:AgyUserProfileLoaded = $true
 $Global:ProfileRepoRoot = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 
 # --- Load configuration from profile.config.json ---
-$configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\profile.config.json"
+$configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\profile.config.json"
+if (-not (Test-Path $configPath)) { $configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\profile.config.json" }
 if (-not (Test-Path $configPath)) { $configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "profile.config.json" }
 
 $config = @{}

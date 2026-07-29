@@ -1,9 +1,7 @@
-namespace AgyTui.Tests.Unit.Infrastructure.Persistence;
-
 using AgyTui.Infrastructure.Persistence.DbContext;
 using AgyTui.Infrastructure.Persistence.Repositories;
-using System.IO;
-using Xunit;
+
+namespace AgyTui.Tests.Unit.Infrastructure.Persistence;
 
 public class SqlitePersistenceTests
 {

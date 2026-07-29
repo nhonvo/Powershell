@@ -1,10 +1,5 @@
 namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
-using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
-using AgyTui.Infrastructure.Persistence;
-using AgyTui.Infrastructure.Persistence.Interfaces;
-using System.Text;
-
 public class AgyAccountStore : IAgyAccountStore
 {
     private readonly IAgyAccountRepository _accountRepo;

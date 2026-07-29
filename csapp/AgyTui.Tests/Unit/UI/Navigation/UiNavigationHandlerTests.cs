@@ -1,8 +1,7 @@
-namespace AgyTui.Tests.Unit.UI.Navigation;
 
 using AgyTui.UI.Core.Navigation;
-using AgyTui.UI.Core.Navigation.Interfaces;
-using Xunit;
+
+namespace AgyTui.Tests.Unit.UI.Navigation;
 
 public class UiNavigationHandlerTests
 {

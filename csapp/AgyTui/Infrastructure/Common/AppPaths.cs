@@ -40,7 +40,7 @@ public static class AppPaths
         {
             if (_repoRoot != null) return _repoRoot;
             var envRoot = Environment.GetEnvironmentVariable("PROFILE_REPO_ROOT");
-            if (!string.IsNullOrEmpty(envRoot) && File.Exists(Path.Combine(envRoot, "csapp", "profile.config.json")))
+            if (!string.IsNullOrEmpty(envRoot) && (File.Exists(Path.Combine(envRoot, "csapp", "AgyTui", "profile.config.json")) || File.Exists(Path.Combine(envRoot, "csapp", "profile.config.json"))))
             {
                 _repoRoot = envRoot;
                 return _repoRoot;
@@ -61,7 +61,7 @@ public static class AppPaths
             var curr = new DirectoryInfo(startDir);
             while (curr != null)
             {
-                if (File.Exists(Path.Combine(curr.FullName, "csapp", "profile.config.json")))
+                if (File.Exists(Path.Combine(curr.FullName, "csapp", "AgyTui", "profile.config.json")) || File.Exists(Path.Combine(curr.FullName, "csapp", "profile.config.json")))
                 {
                     _repoRoot = curr.FullName;
                     return _repoRoot;
@@ -88,10 +88,15 @@ public static class AppPaths
             var envOverride = Environment.GetEnvironmentVariable("PROFILE_CONFIG_PATH");
             if (!string.IsNullOrEmpty(envOverride)) return envOverride;
 
+            var agyTuiCfg = Path.Combine(RepoRoot, "csapp", "AgyTui", "profile.config.json");
+            if (File.Exists(agyTuiCfg)) return agyTuiCfg;
+
             var csappCfg = Path.Combine(RepoRoot, "csapp", "profile.config.json");
-            var dir = Path.GetDirectoryName(csappCfg);
+            if (File.Exists(csappCfg)) return csappCfg;
+
+            var dir = Path.GetDirectoryName(agyTuiCfg);
             if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-            return csappCfg;
+            return agyTuiCfg;
         }
     }
 

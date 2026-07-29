@@ -1,8 +1,8 @@
+using System.Text.Json;
 using AgyTui.Infrastructure.Di;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using AgyTui.Infrastructure.Integrations.Ai.Services;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text.Json;
 namespace AgyTui.UI.Core.Navigation;
 
 public class CommandRouter : ICommandRouter

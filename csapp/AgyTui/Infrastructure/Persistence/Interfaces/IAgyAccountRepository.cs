@@ -1,7 +1,5 @@
 namespace AgyTui.Infrastructure.Persistence.Interfaces;
 
-using AgyTui.Infrastructure.Integrations.AgyClient;
-
 public interface IAgyAccountRepository
 {
     string GetActiveAccount();

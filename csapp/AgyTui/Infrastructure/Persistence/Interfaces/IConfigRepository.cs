@@ -1,7 +1,5 @@
 namespace AgyTui.Infrastructure.Persistence.Interfaces;
 
-using AgyTui.Core.Models;
-
 public interface IConfigRepository
 {
     ConfigData LoadConfig();

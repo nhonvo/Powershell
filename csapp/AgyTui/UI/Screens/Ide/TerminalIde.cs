@@ -1,6 +1,6 @@
-using AgyTui.Infrastructure.Integrations.Ai.Services;
 using System.Buffers;
 using System.Text.RegularExpressions;
+using AgyTui.Infrastructure.Integrations.Ai.Services;
 
 namespace AgyTui.UI.Screens.Ide;
 

@@ -1,8 +1,5 @@
 namespace AgyTui.Tests.Unit.UI.Layouts;
 
-using AgyTui.UI.Core.Layouts;
-using Xunit;
-
 public class MenuRendererBaseTests
 {
     [Fact]

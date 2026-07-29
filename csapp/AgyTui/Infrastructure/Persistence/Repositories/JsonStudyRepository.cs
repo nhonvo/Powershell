@@ -1,8 +1,7 @@
-namespace AgyTui.Infrastructure.Persistence.Repositories;
 
 using System.Text.Json;
-using AgyTui.Infrastructure.Common;
-using AgyTui.Infrastructure.Persistence.Interfaces;
+
+namespace AgyTui.Infrastructure.Persistence.Repositories;
 
 public class JsonStudyRepository : IStudyRepository
 {

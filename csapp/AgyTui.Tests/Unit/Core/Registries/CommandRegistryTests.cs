@@ -1,10 +1,5 @@
 namespace AgyTui.Tests.Unit.Core.Registries;
 
-using AgyTui.Core.Registries;
-using AgyTui.UI.Core.Layouts;
-using System.Linq;
-using Xunit;
-
 public class CommandRegistryTests
 {
     [Fact]

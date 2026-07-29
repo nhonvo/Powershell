@@ -1,4 +1,3 @@
-using QRCoder;
 using System.Diagnostics;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -6,6 +5,7 @@ using System.Net.Sockets;
 using System.Security.AccessControl;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using QRCoder;
 
 namespace AgyTui.UI.Screens.SysNet;
 

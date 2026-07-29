@@ -1,9 +1,8 @@
-namespace AgyTui.Infrastructure.Common;
 
-using AgyTui.Core.Registries;
-using AgyTui.Infrastructure.Integrations.AgyClient;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+
+namespace AgyTui.Infrastructure.Common;
 
 public sealed record CommandLogEntry(
     [property: JsonPropertyName("alias")] string Alias,

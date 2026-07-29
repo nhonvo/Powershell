@@ -1,11 +1,9 @@
-namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
-using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
-using Spectre.Console;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
+
+namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
 public class AgyVault : IAgyVault
 {

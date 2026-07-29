@@ -1,8 +1,7 @@
-namespace AgyTui.Infrastructure.Persistence.Repositories;
 
-using AgyTui.Infrastructure.Integrations.AgyClient;
-using AgyTui.Infrastructure.Persistence.Interfaces;
 using System.Text.Json;
+
+namespace AgyTui.Infrastructure.Persistence.Repositories;
 
 public class SqliteAgyAccountRepository : IAgyAccountRepository
 {

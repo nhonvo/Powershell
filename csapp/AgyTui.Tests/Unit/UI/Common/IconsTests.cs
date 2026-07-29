@@ -1,7 +1,7 @@
-namespace AgyTui.Tests.Unit.UI.Common;
 
 using AgyTui.UI.Core.Common;
-using Xunit;
+
+namespace AgyTui.Tests.Unit.UI.Common;
 
 public class IconsTests
 {

@@ -1,8 +1,5 @@
 namespace AgyTui.Tests.Unit.Infrastructure.Persistence;
 
-using AgyTui.Infrastructure.Integrations.AgyClient;
-using Xunit;
-
 public class QuotaTrackerEdgeCasesTests
 {
     [Fact]

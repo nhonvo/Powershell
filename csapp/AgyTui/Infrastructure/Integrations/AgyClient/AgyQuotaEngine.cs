@@ -1,8 +1,7 @@
-namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
-using AgyTui.Infrastructure.Common;
-using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 using System.Text.Json;
+
+namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
 public class AgyQuotaEngine : IAgyQuotaEngine
 {

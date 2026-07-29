@@ -1,8 +1,5 @@
 namespace AgyTui.Tests.Unit.Architecture;
 
-using AgyTui.UI.Screens.Learn;
-using Xunit;
-
 public class SpacedRepetitionEdgeCasesTests
 {
     [Theory]

@@ -1,9 +1,7 @@
-namespace AgyTui.Infrastructure.Persistence.Repositories;
 
-using AgyTui.Core.Models;
-using AgyTui.Infrastructure.Common;
-using AgyTui.Infrastructure.Persistence.Interfaces;
 using System.Text.Json;
+
+namespace AgyTui.Infrastructure.Persistence.Repositories;
 
 public class SqliteConfigRepository : IConfigRepository
 {

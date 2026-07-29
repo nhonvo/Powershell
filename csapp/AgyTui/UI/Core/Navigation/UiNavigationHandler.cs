@@ -1,7 +1,5 @@
 namespace AgyTui.UI.Core.Navigation;
 
-using AgyTui.UI.Core.Navigation.Interfaces;
-
 public class UiNavigationHandler : IUiNavigationHandler
 {
     private readonly Stack<string> _history = new();

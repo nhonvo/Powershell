@@ -1,8 +1,6 @@
-namespace AgyTui.Tests;
-
-using AgyTui.Core.Models;
-using System.IO;
 using System.Runtime.CompilerServices;
+
+namespace AgyTui.Tests;
 
 public static class TestInitializer
 {

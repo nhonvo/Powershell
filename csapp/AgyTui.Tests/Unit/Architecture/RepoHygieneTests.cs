@@ -1,8 +1,5 @@
 namespace AgyTui.Tests.Unit.Architecture;
 
-using System.IO;
-using Xunit;
-
 public class RepoHygieneTests
 {
     [Fact]

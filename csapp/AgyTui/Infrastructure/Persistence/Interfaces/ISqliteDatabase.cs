@@ -1,6 +1,7 @@
-namespace AgyTui.Infrastructure.Persistence.Interfaces;
 
 using Microsoft.Data.Sqlite;
+
+namespace AgyTui.Infrastructure.Persistence.Interfaces;
 
 public interface ISqliteDatabase
 {

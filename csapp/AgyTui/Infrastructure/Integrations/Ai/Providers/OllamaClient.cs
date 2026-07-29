@@ -1,7 +1,7 @@
-using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Text.Json;
+using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 
 namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
 

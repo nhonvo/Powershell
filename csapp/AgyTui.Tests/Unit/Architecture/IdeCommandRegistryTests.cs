@@ -1,8 +1,5 @@
 namespace AgyTui.Tests.Unit.Architecture;
 
-using AgyTui.Core.Registries;
-using Xunit;
-
 public class IdeCommandRegistryTests
 {
     [Fact]

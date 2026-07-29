@@ -1,7 +1,7 @@
-namespace AgyTui.Tests.Unit.UI.Screens.Ide;
 
 using AgyTui.UI.Screens.Ide;
-using Xunit;
+
+namespace AgyTui.Tests.Unit.UI.Screens.Ide;
 
 public class GitDiffViewerTests
 {

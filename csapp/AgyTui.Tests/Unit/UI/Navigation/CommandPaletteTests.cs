@@ -1,8 +1,6 @@
-namespace AgyTui.Tests.Unit.UI.Navigation;
-
 using AgyTui.UI.Core.Navigation;
-using System.Linq;
-using Xunit;
+
+namespace AgyTui.Tests.Unit.UI.Navigation;
 
 public class CommandPaletteTests
 {

@@ -1,9 +1,6 @@
-namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
-
-using System.Text;
-using AgyTui.Infrastructure.Common;
-using AgyTui.Infrastructure.Integrations.AgyClient;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
+
+namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
 
 public class ClaudeProvider : IClaudeClient
 {
