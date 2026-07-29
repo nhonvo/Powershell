@@ -1,5 +1,6 @@
 namespace AgyTui.Tests.Unit.Infrastructure.Common;
 
+[Collection("Sequential")]
 public class CommandInvocationLogTests
 {
     [Fact]

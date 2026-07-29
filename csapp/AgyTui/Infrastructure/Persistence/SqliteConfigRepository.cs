@@ -87,7 +87,7 @@ public class SqliteConfigRepository : IConfigRepository
         // Dual-write to profile.config.json for external tool compatibility
         try
         {
-            var fallbackPath = AppPaths.ConfigFile;
+            var fallbackPath = Config.GetConfigFilePath();
             var dir = Path.GetDirectoryName(fallbackPath);
             if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
             File.WriteAllText(fallbackPath, json);

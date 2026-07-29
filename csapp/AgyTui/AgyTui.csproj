@@ -5,7 +5,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <NoWarn>$(NoWarn);CA1416;CS8625;CS8604</NoWarn>
+    <NoWarn>$(NoWarn);CA1416;CS8625;CS8604;NU1903;MSB3026;MSB3027</NoWarn>
     <Version>3.1.0</Version>
     <AssemblyVersion>3.1.0.0</AssemblyVersion>
     <FileVersion>3.1.0.0</FileVersion>

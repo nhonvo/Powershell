@@ -46,7 +46,7 @@ public static class AppPaths
                 return _repoRoot;
             }
 
-            var startDir = Directory.GetCurrentDirectory();
+            var startDir = AppContext.BaseDirectory;
             try
             {
                 var asmPath = typeof(AppPaths).Assembly.Location;

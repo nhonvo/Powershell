@@ -1158,7 +1158,7 @@ function Rebuild-AgyApp {
         dotnet build "$proj" -p:TreatWarningsAsErrors=true
         if ($LASTEXITCODE -eq 0) {
             $distDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\dist"
-            dotnet publish "$proj" -c Release -o "$distDir" | Out-Null
+            dotnet publish "$proj" -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o "$distDir" | Out-Null
             Write-Host "✅ AgyTui built and published successfully to dist/." -ForegroundColor Green
         } else {
             Write-Error "❌ Build failed with exit code $LASTEXITCODE"

@@ -1,5 +1,6 @@
 namespace AgyTui.Tests.Unit.Infrastructure.Integrations;
 
+[Collection("Sequential")]
 public class ShowAiDashboardTests
 {
     [Fact]
