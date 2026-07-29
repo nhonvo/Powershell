@@ -814,6 +814,16 @@ class ShellDotNetHelper {
     static [void] NewWebApi([string]$Name) {
         dotnet new webapi -n $Name | Out-Default
     }
+
+    static [void] Pack([string[]]$PassThruArgs) {
+        Write-Host "📦 Packing NuGet package..." -ForegroundColor Cyan
+        if ($PassThruArgs) { dotnet pack $PassThruArgs | Out-Default } else { dotnet pack | Out-Default }
+    }
+
+    static [void] PublishPackage([string[]]$PassThruArgs) {
+        Write-Host "🚀 Publishing NuGet package..." -ForegroundColor Green
+        if ($PassThruArgs) { dotnet nuget push $PassThruArgs | Out-Default } else { dotnet nuget push | Out-Default }
+    }
 }
 #endregion
  
@@ -1659,8 +1669,8 @@ Set-Alias -Name wt -Value open-term -Force
 function ui-mode { Invoke-ControlCenter "ui-mode" $args }
 function layout { Invoke-ControlCenter "ui-mode" $args }
 function view { Invoke-ControlCenter "ui-mode" $args }
-function dpack { Initialize-AgySession; [DotNetHelper]::Pack($args) }
-function dpubpkg { Initialize-AgySession; [DotNetHelper]::PublishPackage($args) }
+function dpack { [ShellDotNetHelper]::Pack($args) }
+function dpubpkg { [ShellDotNetHelper]::PublishPackage($args) }
 function cssh { Invoke-ControlCenter "ssh-info" }
 
 # Theme Switcher
