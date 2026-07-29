@@ -124,6 +124,16 @@ public class AgyAccountStore : IAgyAccountStore
                     }
                     catch { }
                 }
+
+                try
+                {
+                    var claudeMarker = Path.Combine(AgySourceHome, "last_claude_account.txt");
+                    var dir = Path.GetDirectoryName(claudeMarker);
+                    if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+                    File.WriteAllText(claudeMarker, accountName);
+                }
+                catch { }
+
                 SpectrePanel.Success($"Switched to account '{accountName}' (Persistent).");
             }
             catch
