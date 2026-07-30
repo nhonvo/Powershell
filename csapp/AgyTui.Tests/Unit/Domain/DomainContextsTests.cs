@@ -38,6 +38,15 @@ public class DomainContextsTests
     }
 
     [Fact]
+    public void EncryptedToken_Initializes_Record()
+    {
+        var token = new EncryptedToken("test_acc", "secret_cipher_text", DateTime.UtcNow);
+        Assert.Equal("test_acc", token.AccountName);
+        Assert.Equal("secret_cipher_text", token.CipherText);
+        Assert.True(token.CreatedAtUtc <= DateTime.UtcNow);
+    }
+
+    [Fact]
     public void WorkspaceAggregate_NormalizesPath_AndConvertsWorkspaceEntry()
     {
         var ws = new WorkspaceAggregate("Powershell", AppContext.BaseDirectory, "nhonvo/Powershell", true, "main", "ps", new[] { "tag1" });
@@ -57,11 +66,11 @@ public class DomainContextsTests
     [Fact]
     public void AgentInvocationLog_Initializes_Defaults()
     {
-        var log = new AgentInvocationLog("claude", 1200, true, "default");
+        var log = new AgentInvocationLog("claude", 1200, true, "default", ProviderMode.CloudDirect);
         Assert.NotEqual(Guid.Empty, log.Id);
         Assert.Equal("claude", log.Alias);
         Assert.True(log.Success);
-        Assert.Equal(ProviderMode.Auto, log.Mode);
+        Assert.Equal(ProviderMode.CloudDirect, log.Mode);
     }
 
     [Fact]

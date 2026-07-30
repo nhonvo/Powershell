@@ -1,5 +1,6 @@
 
 using System.Text.Json;
+using AgyTui.Domain.LearnContext;
 
 namespace AgyTui.Infrastructure.Persistence.Repositories;
 
@@ -58,5 +59,18 @@ public class JsonStudyRepository : IStudyRepository
             LogHelper.Log($"[JsonStudyRepository] Failed to save JSON file '{path}': {ex.Message}", "ERROR");
             return false;
         }
+    }
+
+    public FlashcardDeck LoadDeck(string topic)
+    {
+        var path = Path.Combine(LearnDataPaths.DecksDir, $"{topic}_deck.json");
+        var loaded = LoadJson<FlashcardDeck>(path);
+        return loaded ?? new FlashcardDeck(topic);
+    }
+
+    public bool SaveDeck(FlashcardDeck deck)
+    {
+        var path = Path.Combine(LearnDataPaths.DecksDir, $"{deck.Topic}_deck.json");
+        return SaveJson(path, deck);
     }
 }

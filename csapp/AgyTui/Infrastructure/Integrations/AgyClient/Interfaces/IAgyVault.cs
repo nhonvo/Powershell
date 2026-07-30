@@ -1,9 +1,12 @@
+using AgyTui.Domain.AccountContext;
+
 namespace AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 
 public interface IAgyVault
 {
     string Protect(string plainText);
     string Unprotect(string cipherText);
+    EncryptedToken CreateEncryptedToken(string accountName, string plainText);
     void BackupActiveToken(string accountName);
     void RestoreActiveToken(string accountName);
     void SyncActiveAccountWithKeyring(bool silent);

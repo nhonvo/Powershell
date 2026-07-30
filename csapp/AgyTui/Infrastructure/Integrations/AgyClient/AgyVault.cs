@@ -1,8 +1,8 @@
-
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text;
+using AgyTui.Domain.AccountContext;
 using AgyTui.Infrastructure.Di;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -50,6 +50,12 @@ public class AgyVault : IAgyVault
         {
             return string.Empty;
         }
+    }
+
+    public EncryptedToken CreateEncryptedToken(string accountName, string plainText)
+    {
+        var cipherText = Protect(plainText);
+        return new EncryptedToken(accountName, cipherText, DateTime.UtcNow);
     }
 
     public void BackupActiveToken(string accountName)

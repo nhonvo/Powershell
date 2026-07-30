@@ -80,20 +80,9 @@ public class AgyAccountStore : IAgyAccountStore
     {
         try
         {
-            var meta = GetAccountMetadata(accountName);
-            meta.LastUsed = DateTimeOffset.Now.ToString("yyyy-MM-ddTHH:mm:sszzz");
-            meta.UsageCount++;
-
-            var now = DateTime.UtcNow;
-            var cutoffWeekly = now.AddDays(-7);
-            var history = meta.RequestHistory
-                .Select(ts => DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt) ? dt : (DateTime?)null)
-                .Where(dt => dt.HasValue && dt.Value >= cutoffWeekly)
-                .Select(dt => dt!.Value.ToString("yyyy-MM-ddTHH:mm:sszzz"))
-                .ToList();
-            meta.RequestHistory = history;
-
-            _accountRepo.SaveAccountMetadata(accountName, meta);
+            var agg = GetAccountAggregate(accountName);
+            agg.RecordUsage(DateTimeOffset.Now.ToString("yyyy-MM-ddTHH:mm:sszzz"));
+            SaveAccountAggregate(agg);
         }
         catch { }
     }
@@ -102,9 +91,9 @@ public class AgyAccountStore : IAgyAccountStore
     {
         try
         {
-            var meta = GetAccountMetadata(accountName);
-            meta.QuotaStatus = exceeded ? "Exceeded" : "OK";
-            _accountRepo.SaveAccountMetadata(accountName, meta);
+            var agg = GetAccountAggregate(accountName);
+            agg.SetQuotaExceeded(exceeded);
+            SaveAccountAggregate(agg);
         }
         catch { }
     }
@@ -194,6 +183,9 @@ public class AgyAccountStore : IAgyAccountStore
         if (!temporary)
         {
             _accountRepo.SetActiveAccount(accountName);
+            var activeAgg = GetAccountAggregate(accountName);
+            activeAgg.MarkActive();
+            SaveAccountAggregate(activeAgg);
         }
 
         var targetDirLoc = GetAccountDirectory(accountName);
