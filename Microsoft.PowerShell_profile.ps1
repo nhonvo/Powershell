@@ -232,98 +232,7 @@ function Load-AgyTuiDll {
         }
     } catch {}
 
-    # --- AgyAccountManager Legacy Compatibility Layer ---
-    try {
-        Invoke-Expression @'
-class AgyAccountManager {
-    static [void] RegisterPromptHook() {
-        try {
-            $promptCmd = Get-Command prompt -ErrorAction SilentlyContinue
-            if ($promptCmd -and ($promptCmd.Definition -like "*AgyOriginalPromptCmd*" -or $promptCmd.Definition -like "*prompt_original*")) {
-                if (-not $Global:AgyOriginalPromptCmd) {
-                    # Allow re-binding if the session global command reference was cleared
-                } else {
-                    return
-                }
-            }
-
-            if (Test-Path Function:\prompt_original) {
-                Remove-Item Function:\prompt_original -Force -ErrorAction SilentlyContinue
-            }
-
-            if (Test-Path Function:\prompt) {
-                $Global:AgyOriginalPromptCmd = Get-Command prompt
-                $null = New-Item -Path Function:\prompt_original -Value ([ScriptBlock]::Create("if (`$Global:AgyOriginalPromptCmd) { & `$Global:AgyOriginalPromptCmd }")) -Force
-                Remove-Item Function:\prompt -Force -ErrorAction SilentlyContinue
-            }
-
-            $scriptBlock = {
-                try {
-                    $activeAccFile = Join-Path -Path $Global:AgySourceHome -ChildPath "active_account.txt"
-                    if (Test-Path $activeAccFile) {
-                        $content = (Get-Content -Path $activeAccFile -ErrorAction SilentlyContinue)
-                        if ($content) {
-                            $savedAcc = $content.Trim()
-                            $currentHomeName = Split-Path $env:GEMINI_HOME -Leaf
-                            $expectedHomeName = if ($savedAcc -eq "default") { ".gemini" } else { ".gemini_$savedAcc" }
-                            if ($currentHomeName -ne $expectedHomeName) {
-                                $targetPath = if ($savedAcc -eq "default") {
-                                    $Global:AgySourceHome
-                                } else {
-                                    $p = "C:\Users\Public\.$expectedHomeName"
-                                    if (-not (Test-Path $p)) { $p = Join-Path -Path $env:USERPROFILE -ChildPath "$expectedHomeName" }
-                                    $p
-                                }
-                                if (Test-Path $targetPath) {
-                                    $env:GEMINI_HOME = $targetPath
-                                    [AgyAccountCore]::RestoreActiveToken($savedAcc)
-                                }
-                             }
-                        }
-                    }
-                } catch {}
-                try {
-                    [AgyAccountCore]::AutoSwitchOnDirectoryChange($pwd.Path)
-                } catch {}
-                if (Test-Path Function:\prompt_original) {
-                    prompt_original
-                } else {
-                    $acc = [AgyAccountCore]::GetActiveAccount()
-                    $tag = ""
-                    "PS ($acc)$tag $($pwd.Path)> "
-                }
-            }
-            $null = New-Item -Path Function:\prompt -Value $scriptBlock -Force
-        } catch {}
-    }
-
-    static [void] AutoSwitchOnDirectoryChange([string]$Path) {
-        if (-not [AgyAccountCore]::IsAutoSwitchEnabled()) { return }
-        $workspaces = [WorkspaceRegistry]::GetWorkspaces()
-        if (-not $workspaces) { return }
-        $matchedProject = $workspaces | Where-Object { $_.WorkspacePath -and $Path -like "$($_.WorkspacePath)*" } | Select-Object -First 1
-        if ($null -ne $matchedProject -and $matchedProject.AssociatedAccount -and $matchedProject.AssociatedAccount -ne [AgyAccountCore]::GetActiveAccount()) {
-            if (-not $Global:AiMode) {
-                Write-Host "[Auto-Switch] Changing credentials to: $($matchedProject.AssociatedAccount)" -ForegroundColor Cyan
-            }
-            [AgyAccountCore]::SetActiveAccount($matchedProject.AssociatedAccount, $true)
-        }
-    }
-
-    static [void] ToggleAutoSwitch() {
-        [AgyAccountCore]::ToggleAutoSwitch()
-    }
-
-    static [void] ShowAllAccountsSummary() {
-        [AgyAccountCore]::ShowAllAccountsSummary()
-    }
-
-    static [string] GetActiveAccount() {
-        return [AgyAccountCore]::GetActiveAccount()
-    }
-}
-'@
-    } catch {}
+    # --- AgyAccountManager Legacy Compatibility Layer (Removed - Migrated to C# AgyAccountCore) ---
 }
 $global:AgySessionInitialized = $false
 function Initialize-AgySession {
@@ -1228,7 +1137,6 @@ function Apply-ThemePath {
  Remove-Item -Path "Function:\prompt" -Force -ErrorAction SilentlyContinue
  Remove-Item -Path "Function:\prompt_original" -Force -ErrorAction SilentlyContinue
  oh-my-posh --init --shell pwsh --config $ThemePath | Invoke-Expression
- [AgyAccountManager]::RegisterPromptHook()
 }
 function Toggle-MobileMode {
  Apply-ThemePath ([ThemeHelper]::ToggleMobileMode($env:POSH_THEMES_PATH))
@@ -1465,113 +1373,18 @@ function Invoke-AiTool {
         Write-Host "⚠️ AI Tool invocation error: $_" -ForegroundColor Red
     }
 }
-function Invoke-Codex-By-Ollama { Invoke-AiTool "InvokeCodex" "codex-ollama" $args }
-function Invoke-Claude-By-Ollama { Invoke-AiTool "InvokeClaude" "claude-ollama" $args }
-function Invoke-OpenClaw-By-Ollama { Invoke-AiTool "InvokeOpenClaw" "openclaw" $args }
-function Invoke-Clawdbot-By-Ollama { Invoke-AiTool "InvokeClawdbot" "clawdbot" $args }
-function Invoke-Hermes-By-Ollama { Invoke-AiTool "InvokeHermes" "hermes" $args }
-function Invoke-HermesDesktop-By-Ollama { Invoke-AiTool "InvokeHermesDesktop" "hermesd" $args }
-function Invoke-CopilotExplain {
-    param([string]$Command)
-    if (Get-Command gh -ErrorAction SilentlyContinue) {
-        $extensions = gh extension list -ErrorAction SilentlyContinue
-        if ($extensions -notmatch "gh-copilot") {
-            Write-Host "Installing github/gh-copilot extension..." -ForegroundColor Cyan
-            gh extension install github/gh-copilot
-        }
-        gh copilot explain $Command
-    } else {
-        Write-Error "GitHub CLI (gh) is not installed. Please install it from https://cli.github.com/"
-    }
-}
-function Install-AIIntegrations {
-    Load-AgyTuiDll
-    if ($null -ne ('AgyAiCore' -as [type])) {
-        [AgyAiCore]::InstallAIIntegrations()
-    } else {
-        Invoke-ControlCenter "install-ai"
-    }
-}
-function Initialize-OllamaServer {
-    Load-AgyTuiDll
-    if ($null -ne ('AgyAiCore' -as [type])) {
-        [AgyAiCore]::InitializeOllamaServer()
-    } else {
-        Invoke-ControlCenter "init-ollama"
-    }
-}
-function Set-OllamaModel {
-    param([string]$ModelName)
-    Load-AgyTuiDll
-    if ($null -ne ('AgyAiCore' -as [type])) {
-        [AgyAiCore]::SetOllamaModel($ModelName)
-    } else {
-        Invoke-ControlCenter "set-model" $ModelName
-    }
-}
-function Ensure-OllamaServer {
-    Load-AgyTuiDll
-    if ($null -ne ('AgyAiCore' -as [type])) {
-        [AgyAiCore]::EnsureOllamaServer()
-    } else {
-        Invoke-ControlCenter "ensure-ollama"
-    }
-}
-function Invoke-OllamaLogs {
-    Load-AgyTuiDll
-    if ($null -ne ('AgyAiCore' -as [type])) {
-        [AgyAiCore]::ShowOllamaLogs()
-    } else {
-        Invoke-ControlCenter "ollama-logs"
-    }
-}
-function Invoke-Npm {
-    param([string[]]$ArgsList)
-    & npm @ArgsList
-}
-
-function Invoke-ChatGPT {
-    param([string]$Query)
-    if (Get-Command chatgpt -ErrorAction SilentlyContinue) {
-        if ($Query) { chatgpt $Query } else { chatgpt }
-    } else {
-        Write-Warning "ChatGPT CLI command 'chatgpt' is not installed. Routing to local OpenClaw instead."
-        Load-AgyTuiDll
-        if ($null -ne ('AgyAiCore' -as [type])) {
-            [AgyAiCore]::InvokeOpenClaw(@())
-        } else {
-            Invoke-ControlCenter "openclaw"
-        }
-    }
-}
-
-# Unified AI Agent Selector
 function Invoke-MultiAgent {
-    [CmdletBinding(DefaultParameterSetName="Menu")]
-    param(
-        [Parameter(Position=0)][string]$Query,
-        [Parameter(ParameterSetName="Gemini")][Alias("g")][switch]$UseGemini,
-        [Parameter(ParameterSetName="Copilot")][Alias("c")][switch]$UseCopilot,
-        [Parameter(ParameterSetName="Ollama")][Alias("o")][switch]$UseOllama,
-        [Parameter(ParameterSetName="Claude")][switch]$UseClaude,
-        [Parameter(ParameterSetName="Local")][switch]$UseLocal,
-        [Parameter(ParameterSetName="ChatGPT")][Alias("gpt")][switch]$UseChatGPT,
-        [Parameter(ParameterSetName="Codex")][Alias("cx")][switch]$UseCodex,
-        [string]$Model
-    )
-    [AgyAiCore]::InvokeMultiAgent($Query, $PSCmdlet.ParameterSetName, $Model)
+    param([string]$Query)
+    Load-AgyTuiDll
+    if ($null -ne ('AgyAiCore' -as [type])) {
+        [AgyAiCore]::InvokeMultiAgent($Query, "Menu", "")
+    } else {
+        Invoke-ControlCenter "ai" $Query
+    }
 }
-
-# AI Tools Aliases
-Set-Alias -Name ai          -Value Invoke-MultiAgent        -Force
-Set-Alias -Name codex       -Value Invoke-Codex-By-Ollama   -Force
-Set-Alias -Name claude      -Value Invoke-Claude-By-Ollama  -Force
-Set-Alias -Name openclaw    -Value Invoke-OpenClaw-By-Ollama -Force
-Set-Alias -Name clawdbot    -Value Invoke-Clawdbot-By-Ollama -Force
-Set-Alias -Name hermes      -Value Invoke-Hermes-By-Ollama   -Force
-Set-Alias -Name hermesd     -Value Invoke-HermesDesktop-By-Ollama -Force
-Set-Alias -Name model       -Value Set-OllamaModel          -Force
-Set-Alias -Name ollama-logs -Value Invoke-OllamaLogs         -Force
+Set-Alias -Name ai -Value Invoke-MultiAgent -Force
+Set-Alias -Name cai -Value Invoke-MultiAgent -Force
+Set-Alias -Name claude -Value Invoke-MultiAgent -Force
 
 # --- Tab Autocompleters ---
 if (Get-Command multigravity -ErrorAction SilentlyContinue) {
@@ -1857,52 +1670,16 @@ function Show-AccountsSummary { Initialize-AgySession; [AgyAccountCore]::ShowAll
 Set-Alias -Name acc-sum -Value Show-AccountsSummary -Force
 Set-Alias -Name agyquota -Value Show-AccountsSummary -Force
 
-# --- AI Session Dashboard Wrappers ---
-function Show-AiDashboard { Initialize-AgySession; if (-not (Test-AgyAiGate)) { return }; [AgyTui.Infrastructure.Integrations.Ai.Services.AiDashboardView]::ShowAiDashboard() }
-Set-Alias -Name ai-dash -Value Show-AiDashboard -Force
-
 # --- Master Learning Suite Router ---
 function Invoke-MasterLearningSuite {
     param([string]$Topic)
-    $resolvedTopic = $Topic
-    if (-not $resolvedTopic) {
-        $invName = $MyInvocation.InvocationName
-        if ($invName -and $invName -ne 'Invoke-MasterLearningSuite') {
-            $resolvedTopic = $invName
-        }
-    }
-    
-    if ($resolvedTopic) {
-        switch ($resolvedTopic) {
-            "obsidian" { Invoke-ControlCenter "obsidian" $args }
-            "refresh"  { Invoke-ControlCenter "refresh" $args }
-            "vault-open" { Invoke-ControlCenter "vault" $args }
-            default { Invoke-ControlCenter $resolvedTopic $args }
-        }
+    if ($Topic) {
+        Invoke-ControlCenter $Topic $args
     } else {
         Invoke-ControlCenter "learn" $args
     }
 }
-
 Set-Alias -Name learn -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name flashcard -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name vocab -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name kana -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name kanji -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name jlpt -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name grammar -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name algo -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name complexity -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name problems -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name snippets -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name sheets -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name quiz -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name interview -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name star -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name mock -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name obsidian -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name refresh -Value Invoke-MasterLearningSuite -Force
-Set-Alias -Name vault-open -Value Invoke-MasterLearningSuite -Force
 
 # --- AWS LocalStack Aliases ---
 Set-Alias -Name s3ls -Value Get-S3Buckets -Force
