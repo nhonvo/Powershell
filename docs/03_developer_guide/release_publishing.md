@@ -4,12 +4,12 @@
 > **Subsystem**: CI/CD & Production Build  
 > **Date**: 2026-07-31  
 > **Author**: Antigravity AI Engineering Team  
-> **Status**: Active / Approved  
+> **Status**: Completed / Active  
 
 ---
 
 ## Executive Summary
-This document specifies the production release publishing pipeline for `AgyTui`. It details the automated build, binary unlocking, test gate validation, and single-file executable packaging performed by [psapp/scripts/publish_release.ps1](file:///C:/Users/TruongNhon/Documents/Powershell/psapp/scripts/publish_release.ps1).
+This document specifies the production release publishing pipeline for `AgyTui`. It details the automated build, binary unlocking, test gate validation, and single-file executable packaging performed by `psapp/scripts/publish_release.ps1`.
 
 ## Table of Contents
 - [1. Release Publish Pipeline Overview](#1-release-publish-pipeline-overview)
@@ -81,5 +81,5 @@ With an optional version tag:
 ---
 
 ## 5. Cross References
-- [Automated Machine Setup Guide](file:///C:/Users/TruongNhon/Documents/Powershell/docs/02_user_guide/onboarding_and_setup.md)
-- [Testing & Architecture Rules](file:///C:/Users/TruongNhon/Documents/Powershell/docs/03_developer_guide/testing_and_architecture_rules.md)
+- [Automated Machine Setup Guide](../02_user_guide/onboarding_and_setup.md)
+- [Testing & Architecture Rules](testing_and_architecture_rules.md)

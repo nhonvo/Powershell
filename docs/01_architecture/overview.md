@@ -4,7 +4,7 @@
 > **Subsystem**: Core System Design  
 > **Date**: 2026-07-31  
 > **Author**: Antigravity AI Engineering Team  
-> **Status**: Active / Approved  
+> **Status**: Completed / Active  
 
 ---
 
@@ -116,6 +116,6 @@ graph TD
 ---
 
 ## 5. Cross References
-- [DDD Bounded Contexts](file:///C:/Users/TruongNhon/Documents/Powershell/docs/01_architecture/ddd_bounded_contexts.md)
-- [Database Persistence Engine](file:///C:/Users/TruongNhon/Documents/Powershell/docs/01_architecture/database_persistence.md)
-- [Testing & Architecture Rules](file:///C:/Users/TruongNhon/Documents/Powershell/docs/03_developer_guide/testing_and_architecture_rules.md)
+- [DDD Bounded Contexts](ddd_bounded_contexts.md)
+- [Database Persistence Engine](database_persistence.md)
+- [Testing & Architecture Rules](../03_developer_guide/testing_and_architecture_rules.md)

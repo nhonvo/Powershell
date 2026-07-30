@@ -4,7 +4,7 @@
 > **Subsystem**: Quality Assurance & Reflection Testing  
 > **Date**: 2026-07-31  
 > **Author**: Antigravity AI Engineering Team  
-> **Status**: Active / Approved  
+> **Status**: Completed / Active  
 
 ---
 
@@ -82,5 +82,5 @@ dotnet test csapp/AgyTui.Tests/AgyTui.Tests.csproj -c Debug
 ---
 
 ## 5. Cross References
-- [Clean Architecture Overview](file:///C:/Users/TruongNhon/Documents/Powershell/docs/01_architecture/overview.md)
-- [Production Release Publishing](file:///C:/Users/TruongNhon/Documents/Powershell/docs/03_developer_guide/release_publishing.md)
+- [Clean Architecture Overview](../01_architecture/overview.md)
+- [Production Release Publishing](release_publishing.md)

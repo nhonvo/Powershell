@@ -4,7 +4,7 @@
 > **Subsystem**: Database Persistence  
 > **Date**: 2026-07-31  
 > **Author**: Antigravity AI Engineering Team  
-> **Status**: Active / Approved  
+> **Status**: Completed / Active  
 
 ---
 
@@ -104,5 +104,5 @@ All data access is implemented via generic base classes inheriting from `IReposi
 ---
 
 ## 5. Cross References
-- [MasterSeeder Seeding Pipeline](file:///C:/Users/TruongNhon/Documents/Powershell/docs/01_architecture/seeding_pipeline.md)
-- [DDD Bounded Contexts](file:///C:/Users/TruongNhon/Documents/Powershell/docs/01_architecture/ddd_bounded_contexts.md)
+- [MasterSeeder Seeding Pipeline](seeding_pipeline.md)
+- [DDD Bounded Contexts](ddd_bounded_contexts.md)

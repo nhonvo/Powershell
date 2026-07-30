@@ -4,12 +4,12 @@
 > **Subsystem**: Shell Integration & Shortcuts  
 > **Date**: 2026-07-31  
 > **Author**: Antigravity AI Engineering Team  
-> **Status**: Active / Approved  
+> **Status**: Completed / Active  
 
 ---
 
 ## Executive Summary
-This document specifies all PowerShell profile functions, aliases, and terminal integration shortcuts exported by [Microsoft.PowerShell_profile.ps1](file:///C:/Users/TruongNhon/Documents/Powershell/Microsoft.PowerShell_profile.ps1).
+This document specifies all PowerShell profile functions, aliases, and terminal integration shortcuts exported by `Microsoft.PowerShell_profile.ps1`.
 
 ## Table of Contents
 - [1. Environment Launch Triggers](#1-environment-launch-triggers)
@@ -63,5 +63,5 @@ Set-Alias -Name proj -Value Invoke-WorkspaceNavigator -Force
 ---
 
 ## 5. Cross References
-- [Automated Onboarding Guide](file:///C:/Users/TruongNhon/Documents/Powershell/docs/02_user_guide/onboarding_and_setup.md)
-- [Dual Environment Workflow](file:///C:/Users/TruongNhon/Documents/Powershell/docs/03_developer_guide/dual_environment_workflow.md)
+- [Automated Onboarding Guide](onboarding_and_setup.md)
+- [Dual Environment Workflow](../03_developer_guide/dual_environment_workflow.md)

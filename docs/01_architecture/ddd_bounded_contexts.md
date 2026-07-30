@@ -4,7 +4,7 @@
 > **Subsystem**: Domain Model Design  
 > **Date**: 2026-07-31  
 > **Author**: Antigravity AI Engineering Team  
-> **Status**: Active / Approved  
+> **Status**: Completed / Active  
 
 ---
 
@@ -65,7 +65,7 @@ classDiagram
 ## 2. AccountContext
 
 - **Location**: `AgyTui.Domain.AccountContext`
-- **Aggregate Root**: [AccountAggregate.cs](file:///C:/Users/TruongNhon/Documents/Powershell/csapp/AgyTui/Domain/AccountContext/AccountAggregate.cs)
+- **Aggregate Root**: `csapp/AgyTui/Domain/AccountContext/AccountAggregate.cs`
 - **Value Objects / Records**:
   - `AccountMetadata`: Holds JSON-serializable account statistics (`UsageCount`, `QuotaStatus`, `LastUsed`, `RequestHistory`).
   - `EncryptedToken`: Encapsulates AES-encrypted keyring OAuth tokens.
@@ -76,7 +76,7 @@ classDiagram
 ## 3. WorkspaceContext
 
 - **Location**: `AgyTui.Domain.WorkspaceContext`
-- **Aggregate Root**: [WorkspaceAggregate.cs](file:///C:/Users/TruongNhon/Documents/Powershell/csapp/AgyTui/Domain/WorkspaceContext/WorkspaceAggregate.cs)
+- **Aggregate Root**: `csapp/AgyTui/Domain/WorkspaceContext/WorkspaceAggregate.cs`
 - **Value Objects**:
   - `ProjectPath`: Strongly typed path validation ensuring target directories exist.
   - `WorkspaceEntry`: DTO representation for `priority_workspaces.json`.
@@ -95,7 +95,7 @@ classDiagram
 ## 5. LearnContext
 
 - **Location**: `AgyTui.Domain.LearnContext`
-- **Aggregate Root**: [FlashcardDeck.cs](file:///C:/Users/TruongNhon/Documents/Powershell/csapp/AgyTui/Domain/LearnContext/FlashcardDeck.cs)
+- **Aggregate Root**: `csapp/AgyTui/Domain/LearnContext/FlashcardDeck.cs`
 - **Core Domain Records**:
   - `SrState`: SuperMemo 2 algorithm state (`EaseFactor`, `IntervalDays`, `Repetitions`, `NextReview`, `Status`).
   - `FlashCard`: Individual card with front/back text, mnemonic, and `SrState`.
@@ -104,5 +104,5 @@ classDiagram
 ---
 
 ## 6. Cross References
-- [Clean Architecture Overview](file:///C:/Users/TruongNhon/Documents/Powershell/docs/01_architecture/overview.md)
-- [Database Persistence Engine](file:///C:/Users/TruongNhon/Documents/Powershell/docs/01_architecture/database_persistence.md)
+- [Clean Architecture Overview](overview.md)
+- [Database Persistence Engine](database_persistence.md)

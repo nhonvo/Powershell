@@ -4,7 +4,7 @@
 > **Subsystem**: Core Documentation Suite  
 > **Date**: 2026-07-31  
 > **Author**: Antigravity AI Engineering Team  
-> **Status**: Active / Approved  
+> **Status**: Completed / Active  
 
 ---
 
@@ -38,20 +38,20 @@ graph TD
 ## 2. Quick Navigation Sitemap
 
 ### 🏛️ 01. System Architecture
-- [Clean Architecture & Layer Boundaries](file:///C:/Users/TruongNhon/Documents/Powershell/docs/01_architecture/overview.md): Layer rules, DIP, and `Bootstrapper` DI container setup.
-- [DDD Bounded Contexts & Aggregate Roots](file:///C:/Users/TruongNhon/Documents/Powershell/docs/01_architecture/ddd_bounded_contexts.md): Account, Workspace, AI Agent, and Learning contexts.
-- [SQLite Database Schemas & Persistence](file:///C:/Users/TruongNhon/Documents/Powershell/docs/01_architecture/database_persistence.md): Migrations V1-V6, ERD diagram, and SqliteRepositoryBase.
-- [MasterSeeder Data Ingestion Pipeline](file:///C:/Users/TruongNhon/Documents/Powershell/docs/01_architecture/seeding_pipeline.md): Automatic JSON-to-SQLite data seeding.
+- [Clean Architecture & Layer Boundaries](01_architecture/overview.md): Layer rules, DIP, and `Bootstrapper` DI container setup.
+- [DDD Bounded Contexts & Aggregate Roots](01_architecture/ddd_bounded_contexts.md): Account, Workspace, AI Agent, and Learning contexts.
+- [SQLite Database Schemas & Persistence](01_architecture/database_persistence.md): Migrations V1-V6, ERD diagram, and SqliteRepositoryBase.
+- [MasterSeeder Data Ingestion Pipeline](01_architecture/seeding_pipeline.md): Automatic JSON-to-SQLite data seeding.
 
 ### 👤 02. User Guide
-- [Automated Machine Setup & Onboarding](file:///C:/Users/TruongNhon/Documents/Powershell/docs/02_user_guide/onboarding_and_setup.md): Setup via `Install-AgyEnvironment.ps1`.
-- [PowerShell Commands & Profile Shortcuts](file:///C:/Users/TruongNhon/Documents/Powershell/docs/02_user_guide/powershell_profile_shortcuts.md): `cc`, `ccd`, `cnav`, `proj`, `reset-agy`.
-- [Spectre.Console TUI Screen Catalog](file:///C:/Users/TruongNhon/Documents/Powershell/docs/02_user_guide/tui_screen_catalog.md): Interactive screens, hotkeys, and navigation.
+- [Automated Machine Setup & Onboarding](02_user_guide/onboarding_and_setup.md): Setup via `Install-AgyEnvironment.ps1`.
+- [PowerShell Commands & Profile Shortcuts](02_user_guide/powershell_profile_shortcuts.md): `cc`, `ccd`, `cnav`, `proj`, `reset-agy`.
+- [Spectre.Console TUI Screen Catalog](02_user_guide/tui_screen_catalog.md): Interactive screens, hotkeys, and navigation.
 
 ### 🛠️ 03. Developer Guide
-- [Dual Environment Workflow (Dev vs. Stable)](file:///C:/Users/TruongNhon/Documents/Powershell/docs/03_developer_guide/dual_environment_workflow.md): Isolated sandbox testing flow.
-- [Testing & Architecture Rules](file:///C:/Users/TruongNhon/Documents/Powershell/docs/03_developer_guide/testing_and_architecture_rules.md): 117 XUnit tests and reflection rules.
-- [Production Release Publishing](file:///C:/Users/TruongNhon/Documents/Powershell/docs/03_developer_guide/release_publishing.md): Standalone build script `publish_release.ps1`.
+- [Dual Environment Workflow (Dev vs. Stable)](03_developer_guide/dual_environment_workflow.md): Isolated sandbox testing flow.
+- [Testing & Architecture Rules](03_developer_guide/testing_and_architecture_rules.md): 117 XUnit tests and reflection rules.
+- [Production Release Publishing](03_developer_guide/release_publishing.md): Standalone build script `publish_release.ps1`.
 
 ---
 

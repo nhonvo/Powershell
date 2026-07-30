@@ -4,12 +4,12 @@
 > **Subsystem**: Machine Onboarding & Setup  
 > **Date**: 2026-07-31  
 > **Author**: Antigravity AI Engineering Team  
-> **Status**: Active / Approved  
+> **Status**: Completed / Active  
 
 ---
 
 ## Executive Summary
-This document provides instructions for setting up **PowerShell Control Center (`AgyTui`)** on a fresh Windows machine using the automated onboarding script [psapp/scripts/Install-AgyEnvironment.ps1](file:///C:/Users/TruongNhon/Documents/Powershell/psapp/scripts/Install-AgyEnvironment.ps1).
+This document provides instructions for setting up **PowerShell Control Center (`AgyTui`)** on a fresh Windows machine using the automated onboarding script `psapp/scripts/Install-AgyEnvironment.ps1`.
 
 ## Table of Contents
 - [1. Prerequisites Audit](#1-prerequisites-audit)
@@ -76,5 +76,5 @@ ccd
 ---
 
 ## 5. Cross References
-- [PowerShell Profile Commands](file:///C:/Users/TruongNhon/Documents/Powershell/docs/02_user_guide/powershell_profile_shortcuts.md)
-- [Spectre.Console TUI Screen Catalog](file:///C:/Users/TruongNhon/Documents/Powershell/docs/02_user_guide/tui_screen_catalog.md)
+- [PowerShell Profile Commands](powershell_profile_shortcuts.md)
+- [Spectre.Console TUI Screen Catalog](tui_screen_catalog.md)

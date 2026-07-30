@@ -4,7 +4,7 @@
 > **Subsystem**: Runtime Environment & Sandbox  
 > **Date**: 2026-07-31  
 > **Author**: Antigravity AI Engineering Team  
-> **Status**: Active / Approved  
+> **Status**: Completed / Active  
 
 ---
 
@@ -85,5 +85,5 @@ flowchart TD
 ---
 
 ## 5. Cross References
-- [PowerShell Profile Shortcuts](file:///C:/Users/TruongNhon/Documents/Powershell/docs/02_user_guide/powershell_profile_shortcuts.md)
-- [Testing & Architecture Rules](file:///C:/Users/TruongNhon/Documents/Powershell/docs/03_developer_guide/testing_and_architecture_rules.md)
+- [PowerShell Profile Shortcuts](../02_user_guide/powershell_profile_shortcuts.md)
+- [Testing & Architecture Rules](testing_and_architecture_rules.md)

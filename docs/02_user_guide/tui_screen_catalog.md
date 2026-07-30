@@ -4,7 +4,7 @@
 > **Subsystem**: User Interface Views & Layouts  
 > **Date**: 2026-07-31  
 > **Author**: Antigravity AI Engineering Team  
-> **Status**: Active / Approved  
+> **Status**: Completed / Active  
 
 ---
 
@@ -59,5 +59,5 @@ This document provides a visual and operational catalog of all interactive Spect
 ---
 
 ## 5. Cross References
-- [PowerShell Profile Shortcuts](file:///C:/Users/TruongNhon/Documents/Powershell/docs/02_user_guide/powershell_profile_shortcuts.md)
-- [DDD Bounded Contexts](file:///C:/Users/TruongNhon/Documents/Powershell/docs/01_architecture/ddd_bounded_contexts.md)
+- [PowerShell Profile Shortcuts](powershell_profile_shortcuts.md)
+- [DDD Bounded Contexts](../01_architecture/ddd_bounded_contexts.md)

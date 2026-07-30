@@ -4,7 +4,7 @@
 > **Subsystem**: Persistence & Data Ingestion  
 > **Date**: 2026-07-31  
 > **Author**: Antigravity AI Engineering Team  
-> **Status**: Active / Approved  
+> **Status**: Completed / Active  
 
 ---
 
@@ -42,11 +42,11 @@ AgyTui.Infrastructure.Persistence.Seeding/
 | Seeder Class | Order | Source Data File | Target SQLite Database Table |
 | :--- | :---: | :--- | :--- |
 | `AccountSeeder` | 1 | Code Default | `accounts` |
-| `WorkspaceSeeder` | 2 | `data/priority_workspaces.json` | `workspaces` |
-| `LearningSeeder` | 3 | `data/learn/**/*.json` | `flashcard_decks`, `flashcards`, `quiz_questions` |
+| `WorkspaceSeeder` | 2 | `csapp/AgyTui/data/priority_workspaces.json` | `workspaces` |
+| `LearningSeeder` | 3 | `csapp/AgyTui/data/learn/**/*.json` | `flashcard_decks`, `flashcards`, `quiz_questions` |
 | `ThemeSeeder` | 4 | Code Palette Constants | `themes` |
-| `ResourceSeeder` | 5 | `data/resources/index.json` | `resources` |
-| `SkillSeeder` | 6 | `data/skills/*.md` | `skills` |
+| `ResourceSeeder` | 5 | `csapp/AgyTui/data/resources/index.json` | `resources` |
+| `SkillSeeder` | 6 | `csapp/AgyTui/data/skills/*.md` | `skills` |
 
 ---
 
@@ -84,5 +84,5 @@ sequenceDiagram
 ---
 
 ## 4. Cross References
-- [Database Persistence Engine](file:///C:/Users/TruongNhon/Documents/Powershell/docs/01_architecture/database_persistence.md)
-- [Clean Architecture Overview](file:///C:/Users/TruongNhon/Documents/Powershell/docs/01_architecture/overview.md)
+- [Database Persistence Engine](database_persistence.md)
+- [Clean Architecture Overview](overview.md)
