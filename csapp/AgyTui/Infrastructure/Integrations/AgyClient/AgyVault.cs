@@ -44,7 +44,7 @@ public class AgyVault : IAgyVault
         {
             var data = Convert.FromBase64String(cipherText);
             var decrypted = ProtectedData.Unprotect(data, Entropy, DataProtectionScope.CurrentUser);
-            return Encoding.UTF8.GetString(decrypted);
+            return AgyKeyringHelper.DecodeTokenBytes(decrypted);
         }
         catch
         {
@@ -80,6 +80,7 @@ public class AgyVault : IAgyVault
         {
             var accDir = _accountStore.GetAccountDirectory(accountName);
             if (!Directory.Exists(accDir)) return;
+
             var tokenFile = Path.Combine(accDir, "keyring_token.txt");
             if (File.Exists(tokenFile))
             {
@@ -90,6 +91,21 @@ public class AgyVault : IAgyVault
                     if (!string.IsNullOrEmpty(token))
                     {
                         AgyKeyringHelper.WriteToken("gemini:antigravity", "antigravity", token);
+                    }
+                }
+            }
+
+            var defaultGeminiDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini");
+            if (Directory.Exists(defaultGeminiDir) && !string.Equals(accDir, defaultGeminiDir, StringComparison.OrdinalIgnoreCase))
+            {
+                var filesToSync = new[] { "google_accounts.json", "oauth_creds.json", "state.json", "installation_id", "keyring_token.txt" };
+                foreach (var f in filesToSync)
+                {
+                    var src = Path.Combine(accDir, f);
+                    var dst = Path.Combine(defaultGeminiDir, f);
+                    if (File.Exists(src))
+                    {
+                        try { File.Copy(src, dst, overwrite: true); } catch { }
                     }
                 }
             }
@@ -298,6 +314,42 @@ internal static class AgyKeyringHelper
         public string userName;
     }
 
+    public static string DecodeTokenBytes(byte[] bytes)
+    {
+        if (bytes == null || bytes.Length == 0) return string.Empty;
+        var utf8Str = Encoding.UTF8.GetString(bytes);
+
+        if (utf8Str.Contains("\"token\"") || utf8Str.Contains("\"access_token\""))
+        {
+            return utf8Str;
+        }
+
+        var unicodeStr = Encoding.Unicode.GetString(bytes);
+        if (unicodeStr.Contains("\"token\"") || unicodeStr.Contains("\"access_token\""))
+        {
+            return unicodeStr;
+        }
+
+        try
+        {
+            var recoveredBytes = new byte[unicodeStr.Length * 2];
+            for (int i = 0; i < unicodeStr.Length; i++)
+            {
+                ushort c = unicodeStr[i];
+                recoveredBytes[i * 2] = (byte)(c & 0xFF);
+                recoveredBytes[i * 2 + 1] = (byte)(c >> 8);
+            }
+            var recoveredStr = Encoding.UTF8.GetString(recoveredBytes).TrimEnd('\0');
+            if (recoveredStr.Contains("\"token\"") || recoveredStr.Contains("\"access_token\""))
+            {
+                return recoveredStr;
+            }
+        }
+        catch { }
+
+        return utf8Str;
+    }
+
     public static string? ReadToken(string target)
     {
         if (CredRead(target, 1, 0, out var credPtr))
@@ -307,7 +359,9 @@ internal static class AgyKeyringHelper
                 var cred = Marshal.PtrToStructure<CREDENTIAL>(credPtr);
                 if (cred.credentialBlob != IntPtr.Zero && cred.credentialBlobSize > 0)
                 {
-                    return Marshal.PtrToStringUni(cred.credentialBlob, cred.credentialBlobSize / 2);
+                    var bytes = new byte[cred.credentialBlobSize];
+                    Marshal.Copy(cred.credentialBlob, bytes, 0, cred.credentialBlobSize);
+                    return DecodeTokenBytes(bytes);
                 }
             }
             finally
@@ -320,7 +374,8 @@ internal static class AgyKeyringHelper
 
     public static bool WriteToken(string target, string username, string token)
     {
-        var bytes = Encoding.Unicode.GetBytes(token);
+        if (string.IsNullOrEmpty(token)) return false;
+        var bytes = Encoding.UTF8.GetBytes(token);
         var blobPtr = Marshal.AllocHGlobal(bytes.Length);
         try
         {
@@ -334,6 +389,7 @@ internal static class AgyKeyringHelper
                 credentialBlobSize = bytes.Length,
                 persist = 2
             };
+            CredDelete(target, 1, 0);
             return CredWrite(ref cred, 0);
         }
         finally

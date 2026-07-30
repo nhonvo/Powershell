@@ -444,6 +444,29 @@ Set-Alias -Name sqsattr -Value Get-LocalSQSAttributes -Force
 # ==============================================================================
 
 function Invoke-MultiAgent { param([string]$Query) Load-AgyTuiDll; [CommandRouter]::Route("ai", $Query) }
+function Sync-ActiveAgyEnvironment {
+    try {
+        $userVal = [System.Environment]::GetEnvironmentVariable("GEMINI_HOME", [System.EnvironmentVariableTarget]::User)
+        if ($userVal -and (Test-Path $userVal)) {
+            $env:GEMINI_HOME = $userVal
+        }
+    } catch {}
+}
+
+function Invoke-AgyAccountSwitch {
+    param([string]$AccountName)
+    Load-AgyTuiDll
+    if ($AccountName) {
+        [SubPageAccountNavigator]::HandleSelection($AccountName, 0)
+    } else {
+        [SubPageNavigator]::Run("agyswitch")
+    }
+    Sync-ActiveAgyEnvironment
+    if ($env:GEMINI_HOME) {
+        Write-Host "✅ Active shell GEMINI_HOME synchronized to: $env:GEMINI_HOME" -ForegroundColor Green
+    }
+}
+
 function Invoke-ControlCenter {
     param([string]$CmdAlias, [object[]]$PassArgs)
     $env:ENVIRONMENT = "Production"
@@ -451,11 +474,13 @@ function Invoke-ControlCenter {
         $tuiExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Release\net9.0\AgyTui.exe"
         if (Test-Path $tuiExe) {
             & $tuiExe
+            Sync-ActiveAgyEnvironment
             return
         }
     }
     Load-AgyTuiDll
     [CommandRouter]::Route($CmdAlias, $PassArgs)
+    Sync-ActiveAgyEnvironment
 }
 
 function Invoke-ControlCenterDev {
@@ -465,12 +490,14 @@ function Invoke-ControlCenterDev {
     if (Test-Path $tuiDevExe) {
         Write-Host "🚀 Launching AgyTui [DEVELOPMENT MODE]..." -ForegroundColor Cyan
         & $tuiDevExe
+        Sync-ActiveAgyEnvironment
         return
     }
     Write-Host "🔨 Building & Launching AgyTui [DEVELOPMENT MODE]..." -ForegroundColor Cyan
     Push-Location (Join-Path $Global:ProfileRepoRoot "csapp\AgyTui")
     dotnet run -c Debug -- @PassArgs
     Pop-Location
+    Sync-ActiveAgyEnvironment
 }
 
 function Reset-AgyAccountData {
@@ -491,6 +518,7 @@ Set-Alias -Name claude -Value Invoke-MultiAgent -Force
 Set-Alias -Name cc -Value Invoke-ControlCenter -Force
 Set-Alias -Name ccd -Value Invoke-ControlCenterDev -Force
 Set-Alias -Name cnav -Value Invoke-ControlCenterNavigator -Force
+Set-Alias -Name agyswitch -Value Invoke-AgyAccountSwitch -Force
 Set-Alias -Name reset-agy -Value Reset-AgyAccountData -Force
 Set-Alias -Name purge-accounts -Value Purge-AgyAccounts -Force
 Set-Alias -Name dotnet-info -Value Show-DotNetInfo -Force

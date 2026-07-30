@@ -13,5 +13,6 @@ public interface IAgyQuotaEngine
     long GetPrivateDirectorySize(string path);
     string GetJunctionStatus(string accountName);
     AccountStats GetAccountStats(string accountName);
+    void SetAccountQuotaMetrics(string accountName, double remainingWeekly, double remaining5H, string? timeWeekly = null, string? time5H = null);
     void ClearStatsCache();
 }

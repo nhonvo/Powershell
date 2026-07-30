@@ -144,22 +144,36 @@ public class AgyAccountStore : IAgyAccountStore
                 if (!Regex.IsMatch(name, @"^(backup|copy|temp|test|testacc)([_-]|$)", RegexOptions.IgnoreCase) && !accounts.Contains(name, StringComparer.OrdinalIgnoreCase)) accounts.Add(name);
             }
         }
+        try
+        {
+            var dbAccs = _accountRepo.GetAccounts();
+            foreach (var dbAcc in dbAccs)
+            {
+                if (!accounts.Contains(dbAcc, StringComparer.OrdinalIgnoreCase)) accounts.Add(dbAcc);
+            }
+        }
+        catch { }
         return [.. accounts];
     }
     public string GetActiveAccount()
     {
-        var dbActive = _accountRepo.GetActiveAccount();
-        if (!string.IsNullOrEmpty(dbActive)) return dbActive;
-
         var envGemini = Environment.GetEnvironmentVariable("GEMINI_HOME");
         if (!string.IsNullOrEmpty(envGemini) && Directory.Exists(envGemini))
         {
-            var folderName = Path.GetFileName(envGemini);
-            if (folderName.StartsWith(".gemini_"))
+            var folderName = Path.GetFileName(envGemini.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+            if (folderName.StartsWith(".gemini_", StringComparison.OrdinalIgnoreCase))
             {
                 return folderName[8..];
             }
+            if (string.Equals(folderName, ".gemini", StringComparison.OrdinalIgnoreCase))
+            {
+                return "default";
+            }
         }
+
+        var dbActive = _accountRepo.GetActiveAccount();
+        if (!string.IsNullOrEmpty(dbActive)) return dbActive;
+
         return "default";
     }
 
@@ -190,6 +204,11 @@ public class AgyAccountStore : IAgyAccountStore
 
         var targetDirLoc = GetAccountDirectory(accountName);
         Environment.SetEnvironmentVariable("GEMINI_HOME", targetDirLoc);
+        try
+        {
+            Environment.SetEnvironmentVariable("GEMINI_HOME", targetDirLoc, EnvironmentVariableTarget.User);
+        }
+        catch { }
         _vaultFactory().RestoreActiveToken(accountName);
 
         if (!temporary)

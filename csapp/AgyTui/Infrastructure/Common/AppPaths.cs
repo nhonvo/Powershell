@@ -150,6 +150,9 @@ public static class AppPaths
             var envAgy = Environment.GetEnvironmentVariable("AGY_HOME");
             if (!string.IsNullOrEmpty(envAgy) && Directory.Exists(envAgy)) return envAgy;
 
+            var userProfileGemini = Path.Combine(UserProfileDir, ".gemini");
+            if (Directory.Exists(userProfileGemini)) return userProfileGemini;
+
             var projectGemini = Path.Combine(DataDir, ".gemini");
             Directory.CreateDirectory(projectGemini);
             return projectGemini;

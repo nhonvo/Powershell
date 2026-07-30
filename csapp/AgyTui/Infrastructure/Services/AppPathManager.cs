@@ -6,13 +6,12 @@ namespace AgyTui.Infrastructure.Services;
 
 public class AppPathManager : IAppPathManager
 {
-    private string? _cachedGeminiHome;
     private string? _cachedAccountPrefix;
     private string? _cachedLogsDirectory;
     private string? _cachedAssetDirectory;
     private readonly ConcurrentDictionary<string, string> _accountDirCache = new(StringComparer.OrdinalIgnoreCase);
 
-    public string GeminiHome => _cachedGeminiHome ??= ResolveGeminiHome();
+    public string GeminiHome => ResolveGeminiHome();
     public string AccountPrefix => _cachedAccountPrefix ??= ResolveAccountPrefix();
     public string LogsDirectory => _cachedLogsDirectory ??= AppPaths.LogsDir;
     public string AssetDirectory => _cachedAssetDirectory ??= AppPaths.DataDir;
@@ -21,6 +20,14 @@ public class AppPathManager : IAppPathManager
     {
         if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
             return GeminiHome;
+
+        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        if (!string.IsNullOrEmpty(userProfile))
+        {
+            var userAccDir = Path.Combine(userProfile, $".gemini_{accountName}");
+            if (Directory.Exists(userAccDir))
+                return userAccDir;
+        }
 
         return _accountDirCache.GetOrAdd(accountName, name => $"{AccountPrefix}{name}");
     }
@@ -32,7 +39,6 @@ public class AppPathManager : IAppPathManager
 
     public void ClearAllCache()
     {
-        _cachedGeminiHome = null;
         _cachedAccountPrefix = null;
         _cachedLogsDirectory = null;
         _cachedAssetDirectory = null;
@@ -50,11 +56,25 @@ public class AppPathManager : IAppPathManager
         if (!string.IsNullOrEmpty(envGemini) && Directory.Exists(envGemini))
             return envGemini;
 
+        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        if (!string.IsNullOrEmpty(userProfile))
+        {
+            var defaultGemini = Path.Combine(userProfile, ".gemini");
+            if (Directory.Exists(defaultGemini))
+                return defaultGemini;
+        }
+
         return AppPaths.GeminiHome;
     }
 
     private string ResolveAccountPrefix()
     {
+        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        if (!string.IsNullOrEmpty(userProfile))
+        {
+            return Path.Combine(userProfile, ".gemini_");
+        }
+
         var publicDir = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\", "Users", "Public");
         if (GeminiHome.StartsWith(publicDir, StringComparison.OrdinalIgnoreCase))
         {

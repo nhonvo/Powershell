@@ -25,8 +25,8 @@ public static class AgyAccountMenu
         var defaultIdx = 0;
         for (var i = 0; i < accounts.Length; i++)
         {
-            var status = File.Exists(System.IO.Path.Combine(AccountStore.GetAccountDirectory(accounts[i]), "keyring_token.txt")) ? "Logged In" : "Not Logged In";
-            if (accounts[i] == active)
+            var status = QuotaEngine.GetAccountStats(accounts[i]).TokenStatus;
+            if (string.Equals(accounts[i], active, StringComparison.OrdinalIgnoreCase))
             {
                 menuItems.Add($"* {accounts[i]} (Active, {status})");
                 defaultIdx = i;
@@ -72,7 +72,7 @@ public static class AgyAccountMenu
     {
         AnsiConsole.Clear();
         ShowAccountStatsCard(accountName);
-        var status = File.Exists(System.IO.Path.Combine(AccountStore.GetAccountDirectory(accountName), "keyring_token.txt")) ? "Logged In" : "Not Logged In";
+        var status = QuotaEngine.GetAccountStats(accountName).TokenStatus;
         var subItems = new List<string>
         {
             "[Switch] Set as Active (Persistent)","[Switch] Set as Active (Temporary)","[Usage] Models & Quota","[Login] Sign In / Re-authenticate","[Logout] Sign Out / Reset Credentials"

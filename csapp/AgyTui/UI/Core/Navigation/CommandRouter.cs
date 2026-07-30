@@ -521,32 +521,7 @@ public class CommandRouter : ICommandRouter
                         ReloadAll();
                         break;
                     case "agyswitch":
-                        var accStore = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
-                        var quotaEng = Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
-                        var accs = accStore.GetAccounts();
-                        var activeAcc = accStore.GetActiveAccount();
-                        var accItems = accs.Select(a => a == activeAcc ? $"{a} (Active)" : a).ToArray();
-                        var defaultIdx = Array.IndexOf(accs, activeAcc);
-                        if (defaultIdx < 0) defaultIdx = 0;
-                        var accIdx = SpectreMenu.ShowWithEscape("Select Account to Switch", accItems, defaultIdx);
-                        if (accIdx >= 0)
-                        {
-                            var targetAcc = accs[accIdx];
-                            accStore.SetActiveAccount(targetAcc, false);
-                            var stats = quotaEng.GetAccountStats(targetAcc);
-                            if (stats.TokenStatus != "Logged In")
-                            {
-                                var confirm = AnsiConsole.Confirm($"Account '{targetAcc}' is currently logged out. Launch authentication login page now?");
-                                if (confirm)
-                                {
-                                    accStore.AuthenticateAccount(targetAcc);
-                                }
-                            }
-                            else
-                            {
-                                Thread.Sleep(1000);
-                            }
-                        }
+                        SubPageNavigator.Run("agyswitch");
                         break;
                     case "agyquota":
                         AgyAccountDisplay.ShowAccountTree();

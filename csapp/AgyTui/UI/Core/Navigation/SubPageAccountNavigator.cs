@@ -32,8 +32,16 @@ public static class SubPageAccountNavigator
             if (confirm)
             {
                 AccountStore.AuthenticateAccount(targetAcc);
+                Console.CursorVisible = false;
+                return true;
+            }
+            else
+            {
+                Console.CursorVisible = false;
+                return false;
             }
         }
+        Thread.Sleep(800);
         Console.CursorVisible = false;
         return true;
     }
@@ -155,15 +163,12 @@ public static class SubPageAccountNavigator
         for (var i = 0; i < accs.Length; i++)
         {
             var isSelected = (i == selIdx);
-            var isActive = (accs[i] == activeAcc);
+            var isActive = string.Equals(accs[i], activeAcc, StringComparison.OrdinalIgnoreCase);
             var prefix = isSelected ? "[green bold]> [/]" : "  ";
             var suffix = isActive ? " [green](Active)[/]" : "";
             var displayName = accs[i];
-            if (string.Equals(accs[i], "default", StringComparison.OrdinalIgnoreCase))
-            {
-                var email = AccountStore.GetAccountEmail("default");
-                if (!string.IsNullOrEmpty(email)) displayName = $"default ({email})";
-            }
+            var email = AccountStore.GetAccountEmail(accs[i]);
+            if (!string.IsNullOrEmpty(email)) displayName = $"{accs[i]} ({email})";
             var stats = QuotaEngine.GetAccountStats(accs[i]);
             var loginStatus = stats.TokenStatus == "Logged In" ? "[green]✔ Logged In[/]" : "[red]✘ Logged Out[/]";
             grid.AddRow(new Markup($"{prefix}{displayName.EscapeMarkup()} [dim]({loginStatus})[/]{suffix}"));

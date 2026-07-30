@@ -15,4 +15,16 @@ public sealed class AccountMetadata
 
     [JsonPropertyName("RequestHistory")]
     public List<string> RequestHistory { get; set; } = [];
+
+    [JsonPropertyName("RemainingWeekly")]
+    public double? RemainingWeekly { get; set; }
+
+    [JsonPropertyName("Remaining5H")]
+    public double? Remaining5H { get; set; }
+
+    [JsonPropertyName("TimeWeekly")]
+    public string? TimeWeekly { get; set; }
+
+    [JsonPropertyName("Time5H")]
+    public string? Time5H { get; set; }
 }
