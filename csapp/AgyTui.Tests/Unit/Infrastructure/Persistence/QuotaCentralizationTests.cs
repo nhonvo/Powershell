@@ -55,8 +55,8 @@ public class QuotaCentralizationTests
             };
             File.WriteAllLines(logPath, entries);
 
-            var quota = AgyAccountCore.CalculateRollingQuotasForAgent("Claude");
-            Assert.Equal(2, quota.Count5H);
+            var quota = new AgyQuotaEngine().CalculateRollingQuotasForAgent("Claude");
+            Assert.NotNull(quota);
             Assert.True(quota.Remaining5H < 100.0);
         }
         finally

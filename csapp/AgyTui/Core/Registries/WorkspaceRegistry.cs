@@ -30,7 +30,7 @@ public static class WorkspaceRegistry
             var csappFile = Path.Combine(repoRoot, "csapp", "priority_workspaces.json");
             if (File.Exists(csappFile)) return csappFile;
 
-            var legacyFile = Path.Combine(AgyAccountCore.AgySourceHome, "antigravity", "priority_workspaces.json");
+            var legacyFile = Path.Combine(AppPaths.GeminiHome, "antigravity", "priority_workspaces.json");
             if (File.Exists(legacyFile)) return legacyFile;
 
             return rootFile;
@@ -344,7 +344,7 @@ public static class WorkspaceRegistry
         switch (actionIdx)
         {
             case 0:
-                var agyHome = AgyAccountCore.AgySourceHome;
+                var agyHome = AppPaths.GeminiHome;
                 Directory.CreateDirectory(agyHome);
                 var selectedProjFile = Path.Combine(agyHome, "selected_project.txt");
                 File.WriteAllText(selectedProjFile, selected.WorkspacePath);

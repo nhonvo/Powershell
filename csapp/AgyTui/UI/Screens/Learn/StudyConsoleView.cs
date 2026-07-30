@@ -22,7 +22,8 @@ public static class LearnDataPaths
             var csappLearn = System.IO.Path.Combine(pwd, "csapp", "learn");
             if (Directory.Exists(csappLearn)) return System.IO.Path.Combine(pwd, "csapp");
 
-            return AgyAccountCore.GetAccountDirectory(AgyAccountCore.GetActiveAccount());
+            var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+            return store.GetAccountDirectory(store.GetActiveAccount());
         }
     }
 

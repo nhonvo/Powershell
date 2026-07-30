@@ -1,7 +1,13 @@
+using AgyTui.Infrastructure.Di;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace AgyTui.UI.Core.Navigation;
 
 public static class AgyAccountMenu
 {
+    private static IAgyAccountStore AccountStore => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+    private static IAgyQuotaEngine QuotaEngine => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+
     public enum MainMenuChoice
     {
         Exit, ManageAccount, AddAccount, ToggleAutoSwitch, ShowStats
@@ -11,13 +17,13 @@ public static class AgyAccountMenu
 
     public static MainMenuResult ShowManageMenu()
     {
-        var accounts = AgyAccountCore.GetAccounts();
-        var active = AgyAccountCore.GetActiveAccount();
+        var accounts = AccountStore.GetAccounts();
+        var active = AccountStore.GetActiveAccount();
         var menuItems = new List<string>();
         var defaultIdx = 0;
         for (var i = 0; i < accounts.Length; i++)
         {
-            var status = File.Exists(System.IO.Path.Combine(AgyAccountCore.GetAccountDirectory(accounts[i]), "keyring_token.txt")) ? "Logged In" : "Not Logged In";
+            var status = File.Exists(System.IO.Path.Combine(AccountStore.GetAccountDirectory(accounts[i]), "keyring_token.txt")) ? "Logged In" : "Not Logged In";
             if (accounts[i] == active)
             {
                 menuItems.Add($"* {accounts[i]} (Active, {status})");
@@ -26,7 +32,7 @@ public static class AgyAccountMenu
             else menuItems.Add($" {accounts[i]} ({status})");
         }
         menuItems.Add("+ Add New Account");
-        menuItems.Add($"[Settings] Toggle Auto-Switch (Currently: {(AgyAccountCore.IsAutoSwitchEnabled() ? "Enabled" : "Disabled")})");
+        menuItems.Add($"[Settings] Toggle Auto-Switch (Currently: {(AccountStore.IsAutoSwitchEnabled() ? "Enabled" : "Disabled")})");
         menuItems.Add("[Stats] Show All Accounts Summary");
         menuItems.Add("[x] Exit Dashboard");
         var selected = SpectreMenu.ShowRobust(["Antigravity Multi-Account Manager"], menuItems.ToArray(), defaultIdx, false, true);
@@ -44,7 +50,7 @@ public static class AgyAccountMenu
 
     public static void ShowAccountStatsCard(string accountName)
     {
-        var stats = AgyAccountCore.GetAccountStats(accountName);
+        var stats = QuotaEngine.GetAccountStats(accountName);
         AnsiConsole.MarkupLine("[cyan]=============================================[/]");
         AnsiConsole.MarkupLine($"[cyan] ACCOUNT STATS: {accountName.EscapeMarkup()}[/]");
         AnsiConsole.MarkupLine("[cyan]=============================================[/]");
@@ -64,7 +70,7 @@ public static class AgyAccountMenu
     {
         AnsiConsole.Clear();
         ShowAccountStatsCard(accountName);
-        var status = File.Exists(System.IO.Path.Combine(AgyAccountCore.GetAccountDirectory(accountName), "keyring_token.txt")) ? "Logged In" : "Not Logged In";
+        var status = File.Exists(System.IO.Path.Combine(AccountStore.GetAccountDirectory(accountName), "keyring_token.txt")) ? "Logged In" : "Not Logged In";
         var subItems = new List<string>
         {
             "[Switch] Set as Active (Persistent)","[Switch] Set as Active (Temporary)","[Usage] Models & Quota","[Login] Sign In / Re-authenticate","[Logout] Sign Out / Reset Credentials"
@@ -94,8 +100,8 @@ public static class AgyAccountMenu
 
     public static SelectResult ShowSelectAccountMenu()
     {
-        var accounts = AgyAccountCore.GetAccounts();
-        var active = AgyAccountCore.GetActiveAccount();
+        var accounts = AccountStore.GetAccounts();
+        var active = AccountStore.GetActiveAccount();
         var menuItems = new List<string>();
         var defaultIdx = 0;
         for (var i = 0; i < accounts.Length; i++)
@@ -119,7 +125,7 @@ public static class AgyAccountMenu
 
     public static string? ShowDeleteAccountMenu()
     {
-        var deletable = AgyAccountCore.GetAccounts().Where(a => !string.Equals(a, "default", StringComparison.OrdinalIgnoreCase)).ToArray();
+        var deletable = AccountStore.GetAccounts().Where(a => !string.Equals(a, "default", StringComparison.OrdinalIgnoreCase)).ToArray();
         if (deletable.Length == 0)
         {
             SpectrePanel.Warning("No secondary accounts available to delete.");
@@ -132,9 +138,12 @@ public static class AgyAccountMenu
 
 public static class AgyAccountDisplay
 {
+    private static IAgyAccountStore AccountStore => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+    private static IAgyQuotaEngine QuotaEngine => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+
     public static void ShowQuotaChart(string accountName)
     {
-        var quota = AgyAccountCore.CalculateRollingQuotas(accountName);
+        var quota = QuotaEngine.CalculateRollingQuotas(accountName);
         AnsiConsole.Write(new Rule($"[bold cyan]Quota: {accountName.EscapeMarkup()}[/]").RuleStyle("grey"));
         var chart = new BarChart().Width(60).Label($"[bold]Remaining Quota % — {accountName.EscapeMarkup()}[/]").CenterLabel().AddItem("Gemini Weekly", quota.RemainingWeekly, Color.Cyan1).AddItem("Gemini 5-Hour", quota.Remaining5H, Color.Yellow).AddItem("Claude Weekly", 100.0, Color.Green).AddItem("Claude 5-Hour", 100.0, Color.Blue);
         AnsiConsole.Write(chart);
@@ -144,12 +153,12 @@ public static class AgyAccountDisplay
 
     public static void ShowAccountTree()
     {
-        var accounts = AgyAccountCore.GetAccounts();
-        var active = AgyAccountCore.GetActiveAccount();
+        var accounts = AccountStore.GetAccounts();
+        var active = AccountStore.GetActiveAccount();
         var tree = new Tree("[bold cyan]AGY Accounts[/]");
         foreach (var acc in accounts)
         {
-            var stats = AgyAccountCore.GetAccountStats(acc);
+            var stats = QuotaEngine.GetAccountStats(acc);
             var label = acc == active ? $"[green bold]★ {acc.EscapeMarkup()} (Active)[/]" : acc.EscapeMarkup();
             var node = tree.AddNode(label);
             node.AddNode($"[dim]Login:[/] {(stats.TokenStatus == "Logged In" ? "[green]Logged In[/]" : "[red]Not Logged In[/]")}");
@@ -162,7 +171,7 @@ public static class AgyAccountDisplay
 
     public static string[] MultiSelectAccounts(string prompt = "Select accounts:")
     {
-        var accounts = AgyAccountCore.GetAccounts();
+        var accounts = AccountStore.GetAccounts();
         if (accounts.Length == 0)
         {
             SpectrePanel.Warning("No accounts found.");

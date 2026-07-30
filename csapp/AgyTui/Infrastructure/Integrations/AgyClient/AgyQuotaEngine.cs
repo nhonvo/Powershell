@@ -7,18 +7,27 @@ public class AgyQuotaEngine : IAgyQuotaEngine
 {
     private static readonly TtlCache<string, long> _sizeCache = new(TimeSpan.FromSeconds(15));
     private static readonly TtlCache<string, AccountStats> _statsCache = new(TimeSpan.FromSeconds(3));
-    private string AgySourceHome => AgyAccountCore.AgySourceHome;
+    private readonly IAgyAccountStore _accountStore;
+
+    public AgyQuotaEngine(IAgyAccountStore accountStore)
+    {
+        _accountStore = accountStore;
+    }
+
+    public AgyQuotaEngine() : this(new AgyAccountStore()) { }
+
+    private string AgySourceHome => _accountStore.AgySourceHome;
 
     public void ClearStatsCache() => _statsCache.InvalidateAll();
 
     public QuotaMetrics CalculateRollingQuotas(string accountName)
     {
-        var history = AgyAccountCore.GetAccountMetadata(accountName).RequestHistory;
+        var history = _accountStore.GetAccountMetadata(accountName).RequestHistory;
         var dts = history.Select(ts => DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt) ? dt : (DateTime?)null).Where(dt => dt.HasValue).Select(dt => dt!.Value).ToList();
         var (qCount5H, qUsage5H) = CalculateWindowUsage(dts, 5, 50);
         var (qCountWeekly, qUsageWeekly) = CalculateWindowUsage(dts, 168, 1000);
 
-        var now = AgyAccountCore.Clock.GetUtcNow().UtcDateTime;
+        var now = DateTime.UtcNow;
         var fiveHoursAgo = now.AddHours(-5);
         var sevenDaysAgo = now.AddDays(-7);
         int reqs5H = qCount5H, reqsWeekly = qCountWeekly;
@@ -92,7 +101,7 @@ public class AgyQuotaEngine : IAgyQuotaEngine
         var (qCount5H, qUsage5H) = CalculateWindowUsage(dts, 5, 50);
         var (qCountWeekly, qUsageWeekly) = CalculateWindowUsage(dts, 168, 1000);
 
-        var now = AgyAccountCore.Clock.GetUtcNow().UtcDateTime;
+        var now = DateTime.UtcNow;
         var fiveHoursAgo = now.AddHours(-5);
         var sevenDaysAgo = now.AddDays(-7);
         int reqs5H = qCount5H, reqsWeekly = qCountWeekly;
@@ -103,21 +112,26 @@ public class AgyQuotaEngine : IAgyQuotaEngine
             if (dt >= fiveHoursAgo && dt < oldest5H) oldest5H = dt;
             if (dt >= sevenDaysAgo && dt < oldestWeekly) oldestWeekly = dt;
         }
-        var remaining5H = Math.Max(0.0, 100.0 - qUsage5H);
-        var remainingWeekly = Math.Max(0.0, 100.0 - qUsageWeekly);
-        var secs5H = Math.Max(0, (int)Math.Round((oldest5H.AddHours(5) - now).TotalSeconds));
-        var secsWeekly = Math.Max(0, (int)Math.Round((oldestWeekly.AddDays(7) - now).TotalSeconds));
 
-        static string Fmt(int s) => $"{s / 3600}h {(s % 3600) / 60}m";
-        return new QuotaMetrics(remainingWeekly, remaining5H, Fmt(secsWeekly), Fmt(secs5H), reqsWeekly, reqs5H, "Never", "Never");
+        var time5H = qCount5H >= 50 ? FormatTimeSpan(oldest5H.AddHours(5) - now) : "Never";
+        var timeWeekly = qCountWeekly >= 1000 ? FormatTimeSpan(oldestWeekly.AddDays(7) - now) : "Never";
+
+        return new QuotaMetrics(
+            100.0 - qUsageWeekly, 100.0 - qUsage5H,
+            timeWeekly, time5H,
+            qCountWeekly, qCount5H,
+            timeWeekly, time5H
+        );
     }
+
+    private static string FormatTimeSpan(TimeSpan ts) => ts.TotalSeconds <= 0 ? "Now" : $"{(int)ts.TotalHours}h {ts.Minutes}m";
 
     public List<(DateTime Time, int ReqsReleased, double QuotaGained)> GetQuotaReleaseForecast(string accountName)
     {
-        var history = AgyAccountCore.GetAccountMetadata(accountName).RequestHistory;
+        var history = _accountStore.GetAccountMetadata(accountName).RequestHistory;
         var dts = history.Select(ts => DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt) ? dt : (DateTime?)null).Where(dt => dt.HasValue).Select(dt => dt!.Value).ToList();
-        var forecast = ForecastQuotaRelease(dts, 5, 50);
-        return forecast.Select(f => (f.TimeSlot, f.ReqsReleased, f.RestoredPct)).ToList();
+        var forecast5H = ForecastQuotaRelease(dts, 5, 50);
+        return forecast5H.Select(f => (f.TimeSlot, f.ReqsReleased, f.RestoredPct)).ToList();
     }
 
     public void TriggerLowQuotaWebhook(string accountName, double remaining5H)
@@ -128,25 +142,21 @@ public class AgyQuotaEngine : IAgyQuotaEngine
 
     public long GetPrivateDirectorySize(string path)
     {
+        if (string.IsNullOrEmpty(path) || !Directory.Exists(path)) return 0;
         return _sizeCache.GetOrCompute(path, () =>
         {
-            if (!Directory.Exists(path)) return 0;
             long total = 0;
             try
             {
-                foreach (var file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
+                var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+                foreach (var file in files)
                 {
+                    var dir = Path.GetDirectoryName(file);
                     bool inJunction = false;
-                    var parent = Path.GetDirectoryName(file);
-                    while (parent != null && parent.Length >= path.Length)
+                    while (dir != null && dir.Length >= path.Length)
                     {
-                        var di = new DirectoryInfo(parent);
-                        if (di.Exists && di.LinkTarget != null)
-                        {
-                            inJunction = true;
-                            break;
-                        }
-                        parent = Path.GetDirectoryName(parent);
+                        if (new DirectoryInfo(dir).LinkTarget != null) { inJunction = true; break; }
+                        dir = Path.GetDirectoryName(dir);
                     }
                     if (!inJunction) total += new FileInfo(file).Length;
                 }
@@ -159,7 +169,7 @@ public class AgyQuotaEngine : IAgyQuotaEngine
     public string GetJunctionStatus(string accountName)
     {
         if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase)) return "Healthy (Primary)";
-        var destDir = AgyAccountCore.GetAccountDirectory(accountName);
+        var destDir = _accountStore.GetAccountDirectory(accountName);
         if (!Directory.Exists(destDir)) return "Uninitialized";
         var shared = new[] { "antigravity", "antigravity-cli", "config", "history", "antigravity-ide", "wf" };
         foreach (var sub in shared)
@@ -175,8 +185,8 @@ public class AgyQuotaEngine : IAgyQuotaEngine
     {
         return _statsCache.GetOrCompute(accountName, () =>
         {
-            var meta = AgyAccountCore.GetAccountMetadata(accountName);
-            var dir = AgyAccountCore.GetAccountDirectory(accountName);
+            var meta = _accountStore.GetAccountMetadata(accountName);
+            var dir = _accountStore.GetAccountDirectory(accountName);
             var privateSize = GetPrivateDirectorySize(dir);
             var junctionStatus = GetJunctionStatus(accountName);
             int skillsCount = 0, convCount = 0;
@@ -200,7 +210,7 @@ public class AgyQuotaEngine : IAgyQuotaEngine
     public static (int Count, double UsagePct) CalculateWindowUsage(IEnumerable<DateTime> timestamps, double limitWindowHours, int maxLimit)
     {
         if (timestamps == null || maxLimit <= 0) return (0, 0.0);
-        var now = AgyAccountCore.Clock.GetUtcNow().UtcDateTime;
+        var now = DateTime.UtcNow;
         var cutoff = now.AddHours(-limitWindowHours);
         int count = timestamps.Count(ts => ts >= cutoff);
         double usagePct = Math.Min(100.0, (double)count / maxLimit * 100.0);
@@ -211,7 +221,7 @@ public class AgyQuotaEngine : IAgyQuotaEngine
     {
         var result = new List<(DateTime TimeSlot, int ReqsReleased, double RestoredPct)>();
         if (timestamps == null || maxLimit <= 0) return result;
-        var now = AgyAccountCore.Clock.GetUtcNow().UtcDateTime;
+        var now = DateTime.UtcNow;
         var cutoff = now.AddHours(-limitWindowHours);
         var inWindow = timestamps.Where(ts => ts >= cutoff).OrderBy(ts => ts).ToList();
         if (inWindow.Count == 0) return result;

@@ -1,6 +1,8 @@
-
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using AgyTui.Infrastructure.Di;
+using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Common;
 
@@ -32,7 +34,7 @@ public static class CommandInvocationLog
         {
             var cmdEntry = CommandRegistry.GetByAlias(alias);
             var category = cmdEntry?.Category ?? "Unknown";
-            var activeAcc = AgyAccountCore.GetActiveAccount();
+            var activeAcc = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().GetActiveAccount();
 
             var entry = new CommandLogEntry(
                 alias,

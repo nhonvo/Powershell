@@ -1,4 +1,8 @@
+using AgyTui.Infrastructure.Di;
+using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
+using System.Text;
 
 namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
 
@@ -27,12 +31,13 @@ public class ClaudeProvider : IClaudeClient
     {
         try
         {
-            var homeDir = AgyAccountCore.AgySourceHome;
+            var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+            var homeDir = store.AgySourceHome;
             if (string.IsNullOrEmpty(homeDir)) return;
 
             Directory.CreateDirectory(homeDir);
             var sessionFile = Path.Combine(homeDir, filename);
-            var activeAccount = AgyAccountCore.GetActiveAccount();
+            var activeAccount = store.GetActiveAccount();
 
             if (File.Exists(sessionFile))
             {

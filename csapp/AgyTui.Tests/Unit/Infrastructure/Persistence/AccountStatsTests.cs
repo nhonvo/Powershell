@@ -8,16 +8,18 @@ public class AccountStatsTests
     {
         var tempDir = Path.Combine(Path.GetTempPath(), "AgyStatsTest_" + Path.GetRandomFileName());
         var originalHome = Config.Current.System.AgySourceHome;
+        var store = new AgyAccountStore();
+        var quotaEngine = new AgyQuotaEngine(store);
         try
         {
             Config.Current.System.AgySourceHome = tempDir;
-            var accDir = AgyAccountCore.GetAccountDirectory("testacc");
+            var accDir = store.GetAccountDirectory("testacc");
             Directory.CreateDirectory(Path.Combine(accDir, "skills", "skill1"));
             Directory.CreateDirectory(Path.Combine(accDir, "skills", "skill2"));
             Directory.CreateDirectory(Path.Combine(accDir, "brain", "conv1"));
-            AgyAccountCore.ClearStatsCache();
+            quotaEngine.ClearStatsCache();
 
-            var stats = AgyAccountCore.GetAccountStats("testacc");
+            var stats = quotaEngine.GetAccountStats("testacc");
 
             Assert.Equal(2, stats.SkillsCount);
             Assert.Equal(1, stats.ConversationsCount);

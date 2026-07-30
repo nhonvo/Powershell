@@ -109,7 +109,7 @@ public sealed class ThreePaneRenderer : MenuRendererBase
                                 string.Equals(alias, "proj", StringComparison.OrdinalIgnoreCase))
                             {
                                 SubPageNavigator.Run(alias);
-                                if (File.Exists(Path.Combine(AgyAccountCore.AgySourceHome, "selected_project.txt")))
+                                if (File.Exists(Path.Combine(AppPaths.GeminiHome, "selected_project.txt")))
                                 {
                                     return;
                                 }
@@ -264,7 +264,7 @@ public sealed class ThreePaneRenderer : MenuRendererBase
                                     string.Equals(alias, "proj", StringComparison.OrdinalIgnoreCase))
                                 {
                                     SubPageNavigator.Run(alias);
-                                    if (File.Exists(Path.Combine(AgyAccountCore.AgySourceHome, "selected_project.txt")))
+                                    if (File.Exists(Path.Combine(AppPaths.GeminiHome, "selected_project.txt")))
                                     {
                                         return;
                                     }

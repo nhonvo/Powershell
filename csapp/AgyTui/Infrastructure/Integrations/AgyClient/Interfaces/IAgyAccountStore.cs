@@ -2,6 +2,16 @@ namespace AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 
 public interface IAgyAccountStore
 {
+    string AgySourceHome { get; }
+    string AgyAccountPrefix { get; }
+    string GetAccountDirectory(string accountName);
+    string? GetAccountEmail(string accountName);
+    AccountMetadata GetAccountMetadata(string accountName);
+    void UpdateAccountMetadata(string accountName);
+    void SetAccountQuotaExceeded(string accountName, bool exceeded);
+    bool IsNoAutoCommitEnabled();
+    bool ToggleNoAutoCommit();
+
     string GetActiveAccount();
     void SetActiveAccount(string accountName);
     void SetActiveAccount(string accountName, bool temporary);

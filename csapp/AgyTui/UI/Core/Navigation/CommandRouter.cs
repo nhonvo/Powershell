@@ -406,7 +406,8 @@ public class CommandRouter : ICommandRouter
                         break;
                     case "ai-history":
                         {
-                            var logPath = Path.Combine(AgyAccountCore.AgySourceHome, "ai_activity_log.jsonl");
+                            var accStoreHist = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+                            var logPath = Path.Combine(accStoreHist.AgySourceHome, "ai_activity_log.jsonl");
                             if (!File.Exists(logPath))
                             {
                                 AnsiConsole.MarkupLine("[yellow]No AI activity log found yet.[/]");
@@ -520,8 +521,10 @@ public class CommandRouter : ICommandRouter
                         ReloadAll();
                         break;
                     case "agyswitch":
-                        var accs = AgyAccountCore.GetAccounts();
-                        var activeAcc = AgyAccountCore.GetActiveAccount();
+                        var accStore = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+                        var quotaEng = Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+                        var accs = accStore.GetAccounts();
+                        var activeAcc = accStore.GetActiveAccount();
                         var accItems = accs.Select(a => a == activeAcc ? $"{a} (Active)" : a).ToArray();
                         var defaultIdx = Array.IndexOf(accs, activeAcc);
                         if (defaultIdx < 0) defaultIdx = 0;
@@ -529,14 +532,14 @@ public class CommandRouter : ICommandRouter
                         if (accIdx >= 0)
                         {
                             var targetAcc = accs[accIdx];
-                            AgyAccountCore.SetActiveAccount(targetAcc, false);
-                            var stats = AgyAccountCore.GetAccountStats(targetAcc);
+                            accStore.SetActiveAccount(targetAcc, false);
+                            var stats = quotaEng.GetAccountStats(targetAcc);
                             if (stats.TokenStatus != "Logged In")
                             {
                                 var confirm = AnsiConsole.Confirm($"Account '{targetAcc}' is currently logged out. Launch authentication login page now?");
                                 if (confirm)
                                 {
-                                    AgyAccountCore.AuthenticateAccount(targetAcc);
+                                    accStore.AuthenticateAccount(targetAcc);
                                 }
                             }
                             else
@@ -546,19 +549,21 @@ public class CommandRouter : ICommandRouter
                         }
                         break;
                     case "agyquota":
-                        AgyAccountCore.ShowAllAccountsSummary();
+                        AgyAccountDisplay.ShowAccountTree();
                         break;
                     case "account-tree":
                         AgyAccountDisplay.ShowAccountTree();
                         break;
                     case "quota-chart":
-                        AgyAccountDisplay.ShowQuotaChart(AgyAccountCore.GetActiveAccount());
+                        AgyAccountDisplay.ShowQuotaChart(Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().GetActiveAccount());
                         break;
                     case "live-dashboard":
-                        SpectreTable.Live(["Account", "Login", "Quota W", "Quota 5h", "Last Used"], () => AgyAccountCore.GetAccounts().Select(a =>
+                        var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+                        var qEngine = Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+                        SpectreTable.Live(["Account", "Login", "Quota W", "Quota 5h", "Last Used"], () => store.GetAccounts().Select(a =>
                         {
-                            var s = AgyAccountCore.GetAccountStats(a);
-                            var act = AgyAccountCore.GetActiveAccount();
+                            var s = qEngine.GetAccountStats(a);
+                            var act = store.GetActiveAccount();
                             var n = a == act ? $"[green bold]* {a}[/]" : a;
                             var st = s.TokenStatus == "Logged In" ? "[green]●[/]" : "[red]○[/]";
                             var lu = s.LastUsed.Length >= 10 && s.LastUsed != "Never" ? s.LastUsed[..10] : "Never";
@@ -569,11 +574,11 @@ public class CommandRouter : ICommandRouter
                         }).ToArray(), 5000);
                         break;
                     case "autoswitch":
-                        AgyAccountCore.ToggleAutoSwitch();
+                        Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().ToggleAutoSwitch();
                         break;
                     case "no-auto-commit":
                     case "autocommit":
-                        AgyAccountCore.ToggleNoAutoCommit();
+                        Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().ToggleNoAutoCommit();
                         break;
                     case "scaffold":
                         ProjectScaffolder.Scaffold();
@@ -606,7 +611,8 @@ public class CommandRouter : ICommandRouter
                             var newThemePath = ThemeManager.SelectThemeInteractive(tPath, currTheme);
                             if (!string.IsNullOrEmpty(newThemePath))
                             {
-                                var selThemeFile = Path.Combine(AgyAccountCore.AgySourceHome, "selected_theme.txt");
+                                var accStoreTheme = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+                                var selThemeFile = Path.Combine(accStoreTheme.AgySourceHome, "selected_theme.txt");
                                 File.WriteAllText(selThemeFile, newThemePath);
                             }
                         }

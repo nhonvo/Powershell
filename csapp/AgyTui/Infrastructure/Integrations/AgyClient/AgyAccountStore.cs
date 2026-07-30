@@ -1,9 +1,153 @@
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using AgyTui.Infrastructure.Di;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
 public class AgyAccountStore : IAgyAccountStore
 {
     private readonly IAgyAccountRepository _accountRepo;
-    private string AgySourceHome => AgyAccountCore.AgySourceHome;
+
+    public string AgySourceHome
+    {
+        get
+        {
+            var cfgHome = Config.Current.System.AgySourceHome;
+            if (!string.IsNullOrEmpty(cfgHome)) return cfgHome;
+            return AppPaths.GeminiHome;
+        }
+    }
+
+    public string AgyAccountPrefix
+    {
+        get
+        {
+            var publicDir = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\", "Users", "Public");
+            if (AgySourceHome.StartsWith(publicDir, StringComparison.OrdinalIgnoreCase))
+            {
+                return Path.Combine(publicDir, ".gemini_");
+            }
+            var accountsDir = Path.Combine(AppPaths.DataDir, ".gemini_");
+            Directory.CreateDirectory(Path.GetDirectoryName(accountsDir)!);
+            return accountsDir;
+        }
+    }
+
+    public string GetAccountDirectory(string accountName)
+    {
+        if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
+            return AgySourceHome;
+
+        return $"{AgyAccountPrefix}{accountName}";
+    }
+
+    public string? GetAccountEmail(string accountName)
+    {
+        var dir = GetAccountDirectory(accountName);
+        var googleAccountsFile = Path.Combine(dir, "google_accounts.json");
+        if (File.Exists(googleAccountsFile))
+        {
+            try
+            {
+                var json = File.ReadAllText(googleAccountsFile);
+                using var doc = JsonDocument.Parse(json);
+                if (doc.RootElement.TryGetProperty("activeAccount", out var acc) && acc.ValueKind == JsonValueKind.String)
+                {
+                    return acc.GetString();
+                }
+            }
+            catch { }
+        }
+        return null;
+    }
+
+    public AccountMetadata GetAccountMetadata(string accountName)
+    {
+        return _accountRepo.GetAccountMetadata(accountName);
+    }
+
+    public void UpdateAccountMetadata(string accountName)
+    {
+        try
+        {
+            var meta = GetAccountMetadata(accountName);
+            meta.LastUsed = DateTimeOffset.Now.ToString("yyyy-MM-ddTHH:mm:sszzz");
+            meta.UsageCount++;
+
+            var now = DateTime.UtcNow;
+            var cutoffWeekly = now.AddDays(-7);
+            var history = meta.RequestHistory
+                .Select(ts => DateTime.TryParse(ts, null, System.Globalization.DateTimeStyles.RoundtripKind, out var dt) ? dt : (DateTime?)null)
+                .Where(dt => dt.HasValue && dt.Value >= cutoffWeekly)
+                .Select(dt => dt!.Value.ToString("yyyy-MM-ddTHH:mm:sszzz"))
+                .ToList();
+            meta.RequestHistory = history;
+
+            _accountRepo.SaveAccountMetadata(accountName, meta);
+        }
+        catch { }
+    }
+
+    public void SetAccountQuotaExceeded(string accountName, bool exceeded)
+    {
+        try
+        {
+            var meta = GetAccountMetadata(accountName);
+            meta.QuotaStatus = exceeded ? "Exceeded" : "OK";
+            _accountRepo.SaveAccountMetadata(accountName, meta);
+        }
+        catch { }
+    }
+
+    public bool IsNoAutoCommitEnabled()
+    {
+        var file = Path.Combine(AgySourceHome, "no_auto_commit_enabled.txt");
+        if (!File.Exists(file)) return false;
+        try { return File.ReadAllText(file).Trim() == "True"; }
+        catch { return false; }
+    }
+
+    public bool ToggleNoAutoCommit()
+    {
+        var current = IsNoAutoCommitEnabled();
+        var next = !current;
+        try
+        {
+            Directory.CreateDirectory(AgySourceHome);
+            File.WriteAllText(Path.Combine(AgySourceHome, "no_auto_commit_enabled.txt"), next ? "True" : "False", Encoding.UTF8);
+            SpectrePanel.Info($"No-Auto-Commit mode is now: {(next ? "Enabled" : "Disabled")}");
+        }
+        catch
+        {
+            SpectrePanel.Error("Failed to update No-Auto-Commit setting.");
+        }
+        return next;
+    }
+
+    public string[] GetAccounts()
+    {
+        var accounts = new List<string> { "default" };
+        var scanPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
+        if (Directory.Exists(userProfile)) scanPaths.Add(userProfile);
+        var publicDir = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\", "Users", "Public");
+        if (Directory.Exists(publicDir)) scanPaths.Add(publicDir);
+        var prefixParent = Path.GetDirectoryName(AgyAccountPrefix);
+        if (prefixParent != null && Directory.Exists(prefixParent)) scanPaths.Add(prefixParent);
+
+        foreach (var scanPath in scanPaths)
+        {
+            foreach (var dir in Directory.GetDirectories(scanPath, ".gemini_*"))
+            {
+                var m = Regex.Match(Path.GetFileName(dir), @"^\.gemini_(.+)$");
+                if (!m.Success) continue;
+                var name = m.Groups[1].Value;
+                if (!Regex.IsMatch(name, @"^(backup|copy|temp|test|testacc)([_-]|$)", RegexOptions.IgnoreCase) && !accounts.Contains(name, StringComparer.OrdinalIgnoreCase)) accounts.Add(name);
+            }
+        }
+        return [.. accounts];
+    }
 
     public AgyAccountStore(IAgyAccountRepository accountRepo)
     {
@@ -35,25 +179,25 @@ public class AgyAccountStore : IAgyAccountStore
     {
         if (!string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
         {
-            var targetDir = AgyAccountCore.GetAccountDirectory(accountName);
+            var targetDir = GetAccountDirectory(accountName);
             if (!Directory.Exists(targetDir))
             {
                 throw new ArgumentException($"Account '{accountName}' does not exist.");
             }
         }
 
-        AgyAccountCore.ClearStatsCache();
-        AgyAccountCore.UpdateAccountMetadata(accountName);
-        AgyAccountCore.BackupActiveToken(GetActiveAccount());
+        Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>().ClearStatsCache();
+        UpdateAccountMetadata(accountName);
+        Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>().BackupActiveToken(GetActiveAccount());
 
         if (!temporary)
         {
             _accountRepo.SetActiveAccount(accountName);
         }
 
-        var targetDirLoc = AgyAccountCore.GetAccountDirectory(accountName);
+        var targetDirLoc = GetAccountDirectory(accountName);
         Environment.SetEnvironmentVariable("GEMINI_HOME", targetDirLoc);
-        AgyAccountCore.RestoreActiveToken(accountName);
+        Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>().RestoreActiveToken(accountName);
 
         if (!temporary)
         {
@@ -65,8 +209,6 @@ public class AgyAccountStore : IAgyAccountStore
         }
     }
 
-    public string[] GetAccounts() => AgyAccountCore.GetAccounts();
-
     public void AddAccount(string accountName)
     {
         if (string.IsNullOrWhiteSpace(accountName))
@@ -75,7 +217,7 @@ public class AgyAccountStore : IAgyAccountStore
         if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("Cannot create an account named 'default'.");
 
-        var destDir = AgyAccountCore.GetAccountDirectory(accountName);
+        var destDir = GetAccountDirectory(accountName);
         if (Directory.Exists(destDir))
             throw new InvalidOperationException($"Account '{accountName}' already exists.");
 
@@ -110,7 +252,7 @@ public class AgyAccountStore : IAgyAccountStore
         {
             Directory.CreateDirectory(Path.Combine(destDir, sub));
         }
-        AgyAccountCore.ClearStatsCache();
+        Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>().ClearStatsCache();
     }
 
     public void DeleteAccount(string accountName)
@@ -118,7 +260,7 @@ public class AgyAccountStore : IAgyAccountStore
         if (string.IsNullOrWhiteSpace(accountName))
             throw new ArgumentException("Account name cannot be empty.");
 
-        var targetDir = AgyAccountCore.GetAccountDirectory(accountName);
+        var targetDir = GetAccountDirectory(accountName);
         if (!Directory.Exists(targetDir))
             throw new DirectoryNotFoundException($"Account '{accountName}' does not exist.");
 
@@ -135,7 +277,7 @@ public class AgyAccountStore : IAgyAccountStore
         {
             SetActiveAccount("default", false);
         }
-        AgyAccountCore.ClearStatsCache();
+        Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>().ClearStatsCache();
     }
 
     public void LogoutAccount(string accountName)
@@ -144,7 +286,7 @@ public class AgyAccountStore : IAgyAccountStore
         {
             AgyKeyringHelper.DeleteToken("gemini:antigravity");
         }
-        var dir = AgyAccountCore.GetAccountDirectory(accountName);
+        var dir = GetAccountDirectory(accountName);
         if (!Directory.Exists(dir)) return;
 
         var files = new[] { "google_accounts.json", "oauth_creds.json", "state.json", "keyring_token.txt" };
@@ -161,7 +303,7 @@ public class AgyAccountStore : IAgyAccountStore
     public void AuthenticateAccount(string accountName)
     {
         SetActiveAccount(accountName, false);
-        var targetDir = AgyAccountCore.GetAccountDirectory(accountName);
+        var targetDir = GetAccountDirectory(accountName);
         Environment.SetEnvironmentVariable("GEMINI_HOME", targetDir);
 
         var agyExe = Helpers.ProcessRunner.FindOnPath("agy") ?? Helpers.ProcessRunner.FindOnPath("antigravity");
@@ -175,14 +317,14 @@ public class AgyAccountStore : IAgyAccountStore
             SpectrePanel.Info($"Launching OAuth login for '{accountName}'...");
             Helpers.ProcessRunner.RunInteractive("pwsh", ["-NoProfile", "-Command", $"$env:GEMINI_HOME='{targetDir}'; agy auth login"], null, targetDir);
         }
-        AgyAccountCore.ClearStatsCache();
+        Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>().ClearStatsCache();
     }
 
     public void PurgeAllNonDefaultAccounts()
     {
         var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
         var publicDir = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\", "Users", "Public");
-        var prefixParent = Path.GetDirectoryName(AgyAccountCore.AgyAccountPrefix);
+        var prefixParent = Path.GetDirectoryName(AgyAccountPrefix);
 
         var scanPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         if (Directory.Exists(userProfile)) scanPaths.Add(userProfile);
@@ -203,7 +345,7 @@ public class AgyAccountStore : IAgyAccountStore
 
         LogoutAccount("default");
         SetActiveAccount("default", false);
-        AgyAccountCore.ClearStatsCache();
+        Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>().ClearStatsCache();
     }
 
     public bool IsAutoSwitchEnabled()
@@ -240,14 +382,14 @@ public class AgyAccountStore : IAgyAccountStore
     {
         if (!IsAutoSwitchEnabled()) return null;
         var active = GetActiveAccount();
-        var activeMeta = AgyAccountCore.GetAccountMetadata(active);
+        var activeMeta = GetAccountMetadata(active);
         if (!string.Equals(activeMeta.QuotaStatus, "Exceeded", StringComparison.OrdinalIgnoreCase)) return null;
         foreach (var acc in GetAccounts())
         {
             if (string.Equals(acc, active, StringComparison.OrdinalIgnoreCase)) continue;
-            var tokenFile = Path.Combine(AgyAccountCore.GetAccountDirectory(acc), "keyring_token.txt");
+            var tokenFile = Path.Combine(GetAccountDirectory(acc), "keyring_token.txt");
             if (!File.Exists(tokenFile)) continue;
-            var quota = AgyAccountCore.GetAccountMetadata(acc).QuotaStatus ?? "OK";
+            var quota = GetAccountMetadata(acc).QuotaStatus ?? "OK";
             if (string.Equals(quota, "OK", StringComparison.OrdinalIgnoreCase)) return acc;
         }
         return null;

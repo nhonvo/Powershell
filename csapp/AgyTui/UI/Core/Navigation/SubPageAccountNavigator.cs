@@ -1,12 +1,17 @@
+using AgyTui.Infrastructure.Di;
+using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Rendering;
 
 namespace AgyTui.UI.Core.Navigation;
 
 public static class SubPageAccountNavigator
 {
+    private static IAgyAccountStore AccountStore => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+    private static IAgyQuotaEngine QuotaEngine => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+
     public static bool HandleSelection(string searchBuffer, int detailsSel)
     {
-        var accs = AgyAccountCore.GetAccounts();
+        var accs = AccountStore.GetAccounts();
         if (!string.IsNullOrEmpty(searchBuffer))
         {
             accs = accs.Where(a => a.Contains(searchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
@@ -15,8 +20,8 @@ public static class SubPageAccountNavigator
 
         var targetAcc = accs[detailsSel];
         Console.CursorVisible = true;
-        AgyAccountCore.SetActiveAccount(targetAcc, false);
-        var stats = AgyAccountCore.GetAccountStats(targetAcc);
+        AccountStore.SetActiveAccount(targetAcc, false);
+        var stats = QuotaEngine.GetAccountStats(targetAcc);
         if (stats.TokenStatus != "Logged In")
         {
             AnsiConsole.Clear();
@@ -24,7 +29,7 @@ public static class SubPageAccountNavigator
             var confirm = AnsiConsole.Confirm("Would you like to launch the authentication login page now?");
             if (confirm)
             {
-                AgyAccountCore.AuthenticateAccount(targetAcc);
+                AccountStore.AuthenticateAccount(targetAcc);
             }
         }
         Console.CursorVisible = false;
@@ -40,7 +45,7 @@ public static class SubPageAccountNavigator
         {
             try
             {
-                AgyAccountCore.AddAccount(newName);
+                AccountStore.AddAccount(newName);
                 SpectrePanel.Success($"Account '{newName}' created successfully!");
                 Thread.Sleep(1500);
             }
@@ -55,7 +60,7 @@ public static class SubPageAccountNavigator
 
     public static void DeleteAccount(string searchBuffer, int detailsSel)
     {
-        var accs = AgyAccountCore.GetAccounts();
+        var accs = AccountStore.GetAccounts();
         if (!string.IsNullOrEmpty(searchBuffer))
         {
             accs = accs.Where(a => a.Contains(searchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
@@ -74,7 +79,7 @@ public static class SubPageAccountNavigator
         var confirm = AnsiConsole.Confirm($"Are you sure you want to delete account '{targetAcc}'?");
         if (confirm)
         {
-            AgyAccountCore.DeleteAccount(targetAcc);
+            AccountStore.DeleteAccount(targetAcc);
             SpectrePanel.Success($"Account '{targetAcc}' deleted successfully!");
             Thread.Sleep(1500);
         }
@@ -83,7 +88,7 @@ public static class SubPageAccountNavigator
 
     public static void LoginAccount(string searchBuffer, int detailsSel)
     {
-        var accs = AgyAccountCore.GetAccounts();
+        var accs = AccountStore.GetAccounts();
         if (!string.IsNullOrEmpty(searchBuffer))
         {
             accs = accs.Where(a => a.Contains(searchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
@@ -93,7 +98,7 @@ public static class SubPageAccountNavigator
         var targetAcc = accs[detailsSel];
         Console.CursorVisible = true;
         AnsiConsole.Clear();
-        AgyAccountCore.AuthenticateAccount(targetAcc);
+        AccountStore.AuthenticateAccount(targetAcc);
         Console.CursorVisible = false;
     }
 
@@ -104,7 +109,7 @@ public static class SubPageAccountNavigator
         var confirm = AnsiConsole.Confirm("Are you sure you want to purge all custom accounts and reset to default?");
         if (confirm)
         {
-            AgyAccountCore.PurgeAllNonDefaultAccounts();
+            AccountStore.PurgeAllNonDefaultAccounts();
             SpectrePanel.Success("All custom accounts purged. Reset active context to clean default account.");
             Thread.Sleep(1500);
         }
@@ -113,7 +118,7 @@ public static class SubPageAccountNavigator
 
     public static void LogoutAccount(string searchBuffer, int detailsSel)
     {
-        var accs = AgyAccountCore.GetAccounts();
+        var accs = AccountStore.GetAccounts();
         if (!string.IsNullOrEmpty(searchBuffer))
         {
             accs = accs.Where(a => a.Contains(searchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
@@ -126,7 +131,7 @@ public static class SubPageAccountNavigator
         var confirm = AnsiConsole.Confirm($"Are you sure you want to log out of '{targetAcc}'?");
         if (confirm)
         {
-            AgyAccountCore.LogoutAccount(targetAcc);
+            AccountStore.LogoutAccount(targetAcc);
             SpectrePanel.Success($"Logged out of '{targetAcc}' successfully!");
             Thread.Sleep(1500);
         }
@@ -140,11 +145,11 @@ public static class SubPageAccountNavigator
         {
             grid.AddRow(new Markup($"[yellow]Search:[/] [white]{searchBuffer.EscapeMarkup()}[/]_\n"));
         }
-        var allAccs = AgyAccountCore.GetAccounts();
+        var allAccs = AccountStore.GetAccounts();
         var accs = string.IsNullOrEmpty(searchBuffer)
             ? allAccs
             : allAccs.Where(a => a.Contains(searchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
-        var activeAcc = AgyAccountCore.GetActiveAccount();
+        var activeAcc = AccountStore.GetActiveAccount();
         for (var i = 0; i < accs.Length; i++)
         {
             var isSelected = (i == selIdx);
@@ -154,10 +159,10 @@ public static class SubPageAccountNavigator
             var displayName = accs[i];
             if (string.Equals(accs[i], "default", StringComparison.OrdinalIgnoreCase))
             {
-                var email = AgyAccountCore.GetAccountEmail("default");
+                var email = AccountStore.GetAccountEmail("default");
                 if (!string.IsNullOrEmpty(email)) displayName = $"default ({email})";
             }
-            var stats = AgyAccountCore.GetAccountStats(accs[i]);
+            var stats = QuotaEngine.GetAccountStats(accs[i]);
             var loginStatus = stats.TokenStatus == "Logged In" ? "[green]✔ Logged In[/]" : "[red]✘ Logged Out[/]";
             grid.AddRow(new Markup($"{prefix}{displayName.EscapeMarkup()} [dim]({loginStatus})[/]{suffix}"));
         }

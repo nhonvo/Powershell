@@ -2,10 +2,12 @@ namespace AgyTui.Tests.Unit.Infrastructure.Persistence;
 
 public class AccountServiceTests
 {
+    private readonly IAgyAccountStore _store = new AgyAccountStore();
+
     [Fact]
     public void GetActiveAccount_ReturnsNonNullDefaultFallback()
     {
-        var active = AgyAccountCore.GetActiveAccount();
+        var active = _store.GetActiveAccount();
         Assert.NotNull(active);
         Assert.NotEmpty(active);
     }
@@ -13,7 +15,7 @@ public class AccountServiceTests
     [Fact]
     public void GetAccounts_ReturnsAccountsList()
     {
-        var accounts = AgyAccountCore.GetAccounts();
+        var accounts = _store.GetAccounts();
         Assert.NotNull(accounts);
     }
 }

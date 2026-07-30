@@ -42,7 +42,7 @@ public static class SubPageThemeNavigator
         var themePath = ThemeManager.SetTheme(themesPath, selectedTheme);
         if (!string.IsNullOrEmpty(themePath))
         {
-            var agyHome = !string.IsNullOrEmpty(AgyAccountCore.AgySourceHome) ? AgyAccountCore.AgySourceHome : AppPaths.GeminiHome;
+            var agyHome = AppPaths.GeminiHome;
             Directory.CreateDirectory(agyHome);
             var selectedThemeFile = Path.Combine(agyHome, "selected_theme.txt");
             File.WriteAllText(selectedThemeFile, themePath);

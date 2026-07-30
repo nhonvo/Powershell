@@ -464,7 +464,8 @@ function Reset-AgyAccountData {
 
     Load-AgyTuiDll
     try {
-        [AgyAccountCore]::PurgeAllNonDefaultAccounts()
+        $store = [AgyTui.Infrastructure.Di.Bootstrapper]::ServiceProvider.GetService([AgyTui.Infrastructure.Integrations.AgyClient.Interfaces.IAgyAccountStore])
+        if ($store) { $store.PurgeAllNonDefaultAccounts() }
         Write-Host "  ✔ Purged all custom account directories and reset active context to default." -ForegroundColor Green
     } catch {}
 

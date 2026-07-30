@@ -1,4 +1,7 @@
+using AgyTui.Infrastructure.Di;
+using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Integrations.Ai.Services;
 
@@ -23,14 +26,15 @@ public class AiProcessRunner : IAiProcessRunner
 
     public static void RunInteractiveStatic(string exe, IEnumerable<string> args, IDictionary<string, string?>? env = null, string? workingDir = null)
     {
-        var activeAccount = AgyAccountCore.GetActiveAccount();
-        var accountDir = AgyAccountCore.GetAccountDirectory(activeAccount);
+        var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+        var activeAccount = store.GetActiveAccount();
+        var accountDir = store.GetAccountDirectory(activeAccount);
         var fullEnv = env != null ? new Dictionary<string, string?>(env) : new Dictionary<string, string?>();
         if (!fullEnv.ContainsKey("GEMINI_HOME"))
         {
             fullEnv["GEMINI_HOME"] = accountDir;
         }
-        if (AgyAccountCore.IsNoAutoCommitEnabled() && !fullEnv.ContainsKey("AGY_AUTO_COMMIT"))
+        if (store.IsNoAutoCommitEnabled() && !fullEnv.ContainsKey("AGY_AUTO_COMMIT"))
         {
             fullEnv["AGY_AUTO_COMMIT"] = "false";
         }
@@ -58,7 +62,7 @@ public class AiProcessRunner : IAiProcessRunner
 
         var argList = new List<string>(args);
         bool targetsClaudeOrCodexOrAgy = exe.Contains("agy") || exe.Contains("claude") || exe.Contains("codex") || args.Any(a => a is "claude" or "codex" or "agy" || a.Contains("claude", StringComparison.OrdinalIgnoreCase));
-        if (AgyAccountCore.IsNoAutoCommitEnabled() && targetsClaudeOrCodexOrAgy)
+        if (store.IsNoAutoCommitEnabled() && targetsClaudeOrCodexOrAgy)
         {
             if (!argList.Contains("--no-auto-commit") && !argList.Contains("--no-commit"))
             {

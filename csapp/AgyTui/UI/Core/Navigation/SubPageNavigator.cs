@@ -1,3 +1,6 @@
+using AgyTui.Infrastructure.Di;
+using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Rendering;
 
 namespace AgyTui.UI.Core.Navigation;
@@ -22,8 +25,9 @@ public static class SubPageNavigator
 
         if (mode == "agyswitch")
         {
-            var accs = AgyAccountCore.GetAccounts();
-            var activeAcc = AgyAccountCore.GetActiveAccount();
+            var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+            var accs = store.GetAccounts();
+            var activeAcc = store.GetActiveAccount();
             detailsSel = Array.IndexOf(accs, activeAcc);
             if (detailsSel < 0) detailsSel = 0;
         }
@@ -51,7 +55,8 @@ public static class SubPageNavigator
 
             if (mode == "agyswitch")
             {
-                var accs = AgyAccountCore.GetAccounts();
+                var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+                var accs = store.GetAccounts();
                 if (!string.IsNullOrEmpty(_detailsSearchBuffer))
                 {
                     accs = accs.Where(a => a.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();

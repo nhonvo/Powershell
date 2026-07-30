@@ -2,13 +2,23 @@
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Text;
 
 namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
 public class AgyVault : IAgyVault
 {
     private static readonly byte[] Entropy = Encoding.UTF8.GetBytes("AgyTui_Secure_Entropy_v1");
-    private string AgySourceHome => AgyAccountCore.AgySourceHome;
+    private readonly IAgyAccountStore _accountStore;
+
+    public AgyVault(IAgyAccountStore accountStore)
+    {
+        _accountStore = accountStore;
+    }
+
+    public AgyVault() : this(new AgyAccountStore()) { }
+
+    private string AgySourceHome => _accountStore.AgySourceHome;
 
     public string Protect(string plainText)
     {
@@ -44,28 +54,14 @@ public class AgyVault : IAgyVault
     {
         try
         {
-            var accDir = AgyAccountCore.GetAccountDirectory(accountName);
+            var accDir = _accountStore.GetAccountDirectory(accountName);
             if (!Directory.Exists(accDir)) return;
             var token = AgyKeyringHelper.ReadToken("gemini:antigravity");
             if (!string.IsNullOrEmpty(token))
             {
-                var tokenFile = Path.Combine(accDir, "keyring_token.txt");
-                string encrypted;
-                try
-                {
-                    encrypted = Protect(token);
-                }
-                catch (CryptographicException ex)
-                {
-                    SpectrePanel.Error($"DPAPI token encryption failed: {ex.Message}");
-                    return;
-                }
-                File.WriteAllText(tokenFile, encrypted, Encoding.UTF8);
+                var encryptedToken = Protect(token);
+                File.WriteAllText(Path.Combine(accDir, "keyring_token.txt"), encryptedToken, Encoding.UTF8);
             }
-        }
-        catch (CryptographicException ex)
-        {
-            SpectrePanel.Error($"DPAPI token encryption failed: {ex.Message}");
         }
         catch { }
     }
@@ -74,7 +70,8 @@ public class AgyVault : IAgyVault
     {
         try
         {
-            var accDir = AgyAccountCore.GetAccountDirectory(accountName);
+            var accDir = _accountStore.GetAccountDirectory(accountName);
+            if (!Directory.Exists(accDir)) return;
             var tokenFile = Path.Combine(accDir, "keyring_token.txt");
             if (File.Exists(tokenFile))
             {
@@ -88,60 +85,30 @@ public class AgyVault : IAgyVault
                     }
                 }
             }
-            else
-            {
-                AgyKeyringHelper.DeleteToken("gemini:antigravity");
-            }
-
-            var targetHomeDirs = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                AgySourceHome,
-                AppPaths.GeminiHome
-            };
-
-            var credFiles = new[] { "google_accounts.json", "oauth_creds.json", "state.json", "keyring_token.txt" };
-            foreach (var homeDir in targetHomeDirs)
-            {
-                if (string.Equals(homeDir, accDir, StringComparison.OrdinalIgnoreCase)) continue;
-                Directory.CreateDirectory(homeDir);
-                foreach (var f in credFiles)
-                {
-                    var src = Path.Combine(accDir, f);
-                    var dest = Path.Combine(homeDir, f);
-                    if (File.Exists(src))
-                    {
-                        try { File.Copy(src, dest, true); } catch { }
-                    }
-                    else if (File.Exists(dest))
-                    {
-                        try { File.Delete(dest); } catch { }
-                    }
-                }
-            }
         }
         catch { }
     }
 
     public void SyncActiveAccountWithKeyring(bool silent)
     {
-        if (!AgyAccountCore.IsAutoSwitchEnabled()) return;
+        if (!_accountStore.IsAutoSwitchEnabled()) return;
         try
         {
-            string savedAcc = AgyAccountCore.GetActiveAccount();
+            string savedAcc = _accountStore.GetActiveAccount();
             string? keyringToken = AgyKeyringHelper.ReadToken("gemini:antigravity");
             if (string.IsNullOrEmpty(keyringToken)) return;
 
             string? matchedAcc = null;
-            var availableAccounts = AgyAccountCore.GetAccounts();
+            var availableAccounts = _accountStore.GetAccounts();
             foreach (var acc in availableAccounts)
             {
-                var accDir = AgyAccountCore.GetAccountDirectory(acc);
-                var tokenFile = Path.Combine(accDir, "keyring_token.txt");
-                if (File.Exists(tokenFile))
+                var curAccDir = _accountStore.GetAccountDirectory(acc);
+                var curTokenFile = Path.Combine(curAccDir, "keyring_token.txt");
+                if (File.Exists(curTokenFile))
                 {
                     try
                     {
-                        var encrypted = File.ReadAllText(tokenFile).Trim();
+                        var encrypted = File.ReadAllText(curTokenFile).Trim();
                         if (!string.IsNullOrEmpty(encrypted))
                         {
                             var savedToken = Unprotect(encrypted);
@@ -178,30 +145,27 @@ public class AgyVault : IAgyVault
             {
                 try
                 {
-                    if (AgyAccountCore.CheckNetworkStatus())
+                    using var json = JsonDocument.Parse(keyringToken);
+                    if (json.RootElement.TryGetProperty("token", out var tokenObj) && tokenObj.TryGetProperty("access_token", out var accessTok))
                     {
-                        using var json = JsonDocument.Parse(keyringToken);
-                        if (json.RootElement.TryGetProperty("token", out var tokenObj) && tokenObj.TryGetProperty("access_token", out var accessTok))
+                        var accessToken = accessTok.GetString();
+                        if (!string.IsNullOrEmpty(accessToken))
                         {
-                            var accessToken = accessTok.GetString();
-                            if (!string.IsNullOrEmpty(accessToken))
+                            using var client = new HttpClient();
+                            client.Timeout = TimeSpan.FromSeconds(3);
+                            var response = client.GetStringAsync($"https://oauth2.googleapis.com/tokeninfo?access_token={accessToken}").Result;
+                            using var info = JsonDocument.Parse(response);
+                            if (info.RootElement.TryGetProperty("email", out var emailProp))
                             {
-                                using var client = new HttpClient();
-                                client.Timeout = TimeSpan.FromSeconds(3);
-                                var response = client.GetStringAsync($"https://oauth2.googleapis.com/tokeninfo?access_token={accessToken}").Result;
-                                using var info = JsonDocument.Parse(response);
-                                if (info.RootElement.TryGetProperty("email", out var emailProp))
+                                var email = emailProp.GetString()?.Trim().ToLower();
+                                if (email != null)
                                 {
-                                    var email = emailProp.GetString()?.Trim().ToLower();
-                                    if (email != null)
+                                    foreach (var acc in availableAccounts)
                                     {
-                                        foreach (var acc in availableAccounts)
+                                        if (string.Equals(acc.Trim(), email, StringComparison.OrdinalIgnoreCase))
                                         {
-                                            if (string.Equals(acc.Trim(), email, StringComparison.OrdinalIgnoreCase))
-                                            {
-                                                matchedAcc = acc;
-                                                break;
-                                            }
+                                            matchedAcc = acc;
+                                            break;
                                         }
                                     }
                                 }
@@ -221,22 +185,15 @@ public class AgyVault : IAgyVault
                         SpectrePanel.Warning($"Keyring matches account '{matchedAcc}'. Auto-switching active account.");
                     }
                     savedAcc = matchedAcc;
-                    AgyAccountCore.SetActiveAccount(savedAcc, false);
+                    _accountStore.SetActiveAccount(savedAcc, false);
                 }
-                var accDir = AgyAccountCore.GetAccountDirectory(savedAcc);
-                Directory.CreateDirectory(accDir);
-                var tokenFile = Path.Combine(accDir, "keyring_token.txt");
-                var encryptedToken = Protect(keyringToken);
-                File.WriteAllText(tokenFile, encryptedToken, Encoding.UTF8);
             }
-            else
-            {
-                var accDir = AgyAccountCore.GetAccountDirectory(savedAcc);
-                Directory.CreateDirectory(accDir);
-                var tokenFile = Path.Combine(accDir, "keyring_token.txt");
-                var encryptedToken = Protect(keyringToken);
-                File.WriteAllText(tokenFile, encryptedToken, Encoding.UTF8);
-            }
+
+            var accDir = _accountStore.GetAccountDirectory(savedAcc);
+            Directory.CreateDirectory(accDir);
+            var tokenFile = Path.Combine(accDir, "keyring_token.txt");
+            var encryptedToken = Protect(keyringToken);
+            File.WriteAllText(tokenFile, encryptedToken, Encoding.UTF8);
         }
         catch { }
     }

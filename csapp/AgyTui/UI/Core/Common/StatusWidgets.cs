@@ -135,16 +135,18 @@ public sealed class AccountTreeWidget : IStatusWidget
 
     public IRenderable Render()
     {
-        var accounts = AgyAccountCore.GetAccounts();
-        var active = AgyAccountCore.GetActiveAccount();
+        var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+        var quotaEng = Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+        var accounts = store.GetAccounts();
+        var active = store.GetActiveAccount();
         var tree = new Tree("[bold cyan]Account Tree[/]");
         foreach (var acc in accounts)
         {
-            var stats = AgyAccountCore.GetAccountStats(acc);
+            var stats = quotaEng.GetAccountStats(acc);
             var displayName = acc;
             if (string.Equals(acc, "default", StringComparison.OrdinalIgnoreCase))
             {
-                var email = AgyAccountCore.GetAccountEmail("default");
+                var email = store.GetAccountEmail("default");
                 if (!string.IsNullOrEmpty(email)) displayName = $"default ({email})";
             }
             var label = acc == active ? $"[green bold]★ {displayName.EscapeMarkup()} (Active)[/]" : displayName.EscapeMarkup();
@@ -164,12 +166,14 @@ public sealed class QuotaChartWidget : IStatusWidget
 
     public IRenderable Render()
     {
-        var accountName = AgyAccountCore.GetActiveAccount();
-        var quota = AgyAccountCore.CalculateRollingQuotas(accountName);
+        var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+        var quotaEng = Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+        var accountName = store.GetActiveAccount();
+        var quota = quotaEng.CalculateRollingQuotas(accountName);
         var chartLabel = accountName;
         if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
         {
-            var email = AgyAccountCore.GetAccountEmail("default");
+            var email = store.GetAccountEmail("default");
             if (!string.IsNullOrEmpty(email)) chartLabel = $"default ({email})";
         }
         var chart = new BarChart().Width(28).Label($"[bold cyan]{chartLabel.EscapeMarkup()} Quota Remaining %[/]").CenterLabel()
@@ -202,14 +206,16 @@ public sealed class LiveDashboardWidget : IStatusWidget
         table.AddColumn("[bold cyan]W[/]");
         table.AddColumn("[bold cyan]5h[/]");
 
-        foreach (var a in AgyAccountCore.GetAccounts())
+        var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+        var quotaEng = Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+        foreach (var a in store.GetAccounts())
         {
-            var s = AgyAccountCore.GetAccountStats(a);
-            var act = AgyAccountCore.GetActiveAccount();
+            var s = quotaEng.GetAccountStats(a);
+            var act = store.GetActiveAccount();
             var displayName = a;
             if (string.Equals(a, "default", StringComparison.OrdinalIgnoreCase))
             {
-                var email = AgyAccountCore.GetAccountEmail("default");
+                var email = store.GetAccountEmail("default");
                 if (!string.IsNullOrEmpty(email)) displayName = $"default ({email})";
             }
             var n = a == act ? $"[green bold]* {displayName.EscapeMarkup()}[/]" : displayName.EscapeMarkup();

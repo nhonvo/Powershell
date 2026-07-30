@@ -1,3 +1,7 @@
+using AgyTui.Infrastructure.Di;
+using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace AgyTui.UI.Core.Layouts;
 
 public static class ScreenChrome
@@ -201,11 +205,12 @@ public static class ScreenChrome
     public static void RenderBanner(string? category = null, string? activeItem = null, bool forceClear = false, string? footerHint = null)
     {
         HideCursor();
-        var acc = AgyAccountCore.GetActiveAccount() ?? "default";
+        var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+        var acc = store.GetActiveAccount() ?? "default";
         var displayAcc = acc;
         if (string.Equals(acc, "default", StringComparison.OrdinalIgnoreCase))
         {
-            var email = AgyAccountCore.GetAccountEmail("default");
+            var email = store.GetAccountEmail("default");
             if (!string.IsNullOrEmpty(email)) displayAcc = $"default ({email})";
         }
         var now = DateTime.Now;
