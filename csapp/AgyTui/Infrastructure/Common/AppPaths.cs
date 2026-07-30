@@ -82,10 +82,20 @@ public static class AppPaths
             var envOverride = Environment.GetEnvironmentVariable("PROFILE_CONFIG_PATH");
             if (!string.IsNullOrEmpty(envOverride)) return envOverride;
 
-            var agyTuiCfg = Path.Combine(RepoRoot, "csapp", "AgyTui", "profile.config.json");
+            var root = RepoRoot;
+            if (root.EndsWith(Path.Combine("csapp", "AgyTui"), StringComparison.OrdinalIgnoreCase))
+            {
+                return Path.Combine(root, "profile.config.json");
+            }
+            if (root.EndsWith("csapp", StringComparison.OrdinalIgnoreCase))
+            {
+                return Path.Combine(root, "AgyTui", "profile.config.json");
+            }
+
+            var agyTuiCfg = Path.Combine(root, "csapp", "AgyTui", "profile.config.json");
             if (File.Exists(agyTuiCfg)) return agyTuiCfg;
 
-            var csappCfg = Path.Combine(RepoRoot, "csapp", "profile.config.json");
+            var csappCfg = Path.Combine(root, "csapp", "profile.config.json");
             if (File.Exists(csappCfg)) return csappCfg;
 
             var dir = Path.GetDirectoryName(agyTuiCfg);
