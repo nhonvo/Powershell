@@ -42,6 +42,7 @@ public static class Bootstrapper
         services.AddSingleton<SqliteMigrationEngine>();
         services.AddSingleton<IConfigRepository, SqliteConfigRepository>();
         services.AddSingleton<IAgyAccountRepository, SqliteAgyAccountRepository>();
+        services.AddSingleton<IWorkspaceRepository, SqliteWorkspaceRepository>();
 
         // Tool Integration Services
         services.AddSingleton<IAwsClient, AwsClient>();
