@@ -198,6 +198,51 @@ public static class AgyAccountCore
         return next;
     }
 
+    public static void PurgeAllNonDefaultAccounts()
+    {
+        var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
+        var publicDir = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\", "Users", "Public");
+        var prefixParent = Path.GetDirectoryName(AgyAccountPrefix);
+
+        var scanPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (Directory.Exists(userProfile)) scanPaths.Add(userProfile);
+        if (Directory.Exists(publicDir)) scanPaths.Add(publicDir);
+        if (prefixParent != null && Directory.Exists(prefixParent)) scanPaths.Add(prefixParent);
+
+        foreach (var path in scanPaths)
+        {
+            try
+            {
+                foreach (var dir in Directory.GetDirectories(path, ".gemini_*"))
+                {
+                    try { Directory.Delete(dir, true); } catch { }
+                }
+            }
+            catch { }
+        }
+        SetActiveAccount("default", false);
+        ClearStatsCache();
+    }
+
+    public static void AuthenticateAccount(string accountName)
+    {
+        SetActiveAccount(accountName, false);
+        var targetDir = GetAccountDirectory(accountName);
+        Environment.SetEnvironmentVariable("GEMINI_HOME", targetDir);
+
+        var agyExe = Helpers.ProcessRunner.FindOnPath("agy") ?? Helpers.ProcessRunner.FindOnPath("antigravity");
+        if (!string.IsNullOrEmpty(agyExe))
+        {
+            SpectrePanel.Info($"Launching authentication for '{accountName}' using '{agyExe}'...");
+            Helpers.ProcessRunner.RunInteractive(agyExe, ["auth", "login"], new Dictionary<string, string?> { ["GEMINI_HOME"] = targetDir }, targetDir);
+        }
+        else
+        {
+            SpectrePanel.Warning($"Switched active context to '{accountName}'. Run 'agy auth login' to authenticate.");
+        }
+        ClearStatsCache();
+    }
+
     // Direct delegation facade calls to DI services
     public static void BackupActiveToken(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>().BackupActiveToken(accountName);
     public static void RestoreActiveToken(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>().RestoreActiveToken(accountName);

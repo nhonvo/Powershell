@@ -224,6 +224,11 @@ public static class SubPageNavigator
                     break;
 
                 case ConsoleKey.L:
+                    if (mode == "agyswitch")
+                    {
+                        SubPageAccountNavigator.LoginAccount(_detailsSearchBuffer, detailsSel);
+                        break;
+                    }
                     if (!string.IsNullOrEmpty(_detailsSearchBuffer))
                     {
                         _detailsSearchBuffer = ProcessSearchKey(key, _detailsSearchBuffer);
@@ -320,6 +325,17 @@ public static class SubPageNavigator
                         }
                     }
                     break;
+                case ConsoleKey.R:
+                    if (mode == "agyswitch")
+                    {
+                        SubPageAccountNavigator.PurgeAccounts();
+                    }
+                    else
+                    {
+                        _detailsSearchBuffer += key.KeyChar;
+                        detailsSel = 0;
+                    }
+                    break;
                 case ConsoleKey.O:
                     if (mode == "agyswitch")
                     {
@@ -358,7 +374,7 @@ public static class SubPageNavigator
                 default:
                     if (key.KeyChar >= 32 && key.KeyChar <= 126 && key.Key != ConsoleKey.Enter)
                     {
-                        if (mode == "agyswitch" && (key.Key == ConsoleKey.A || key.Key == ConsoleKey.D || key.Key == ConsoleKey.O) && string.IsNullOrEmpty(_detailsSearchBuffer))
+                        if (mode == "agyswitch" && (key.Key == ConsoleKey.A || key.Key == ConsoleKey.D || key.Key == ConsoleKey.O || key.Key == ConsoleKey.L || key.Key == ConsoleKey.R) && string.IsNullOrEmpty(_detailsSearchBuffer))
                         {
                             break;
                         }

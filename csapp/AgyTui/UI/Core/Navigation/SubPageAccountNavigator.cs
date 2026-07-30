@@ -70,6 +70,36 @@ public static class SubPageAccountNavigator
         Console.CursorVisible = false;
     }
 
+    public static void LoginAccount(string searchBuffer, int detailsSel)
+    {
+        var accs = AgyAccountCore.GetAccounts();
+        if (!string.IsNullOrEmpty(searchBuffer))
+        {
+            accs = accs.Where(a => a.Contains(searchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();
+        }
+        if (detailsSel < 0 || detailsSel >= accs.Length) return;
+
+        var targetAcc = accs[detailsSel];
+        Console.CursorVisible = true;
+        AnsiConsole.Clear();
+        AgyAccountCore.AuthenticateAccount(targetAcc);
+        Console.CursorVisible = false;
+    }
+
+    public static void PurgeAccounts()
+    {
+        Console.CursorVisible = true;
+        AnsiConsole.Clear();
+        var confirm = AnsiConsole.Confirm("Are you sure you want to purge all custom accounts and reset to default?");
+        if (confirm)
+        {
+            AgyAccountCore.PurgeAllNonDefaultAccounts();
+            SpectrePanel.Success("All custom accounts purged. Reset active context to clean default account.");
+            Thread.Sleep(1500);
+        }
+        Console.CursorVisible = false;
+    }
+
     public static void LogoutAccount(string searchBuffer, int detailsSel)
     {
         var accs = AgyAccountCore.GetAccounts();
@@ -117,11 +147,11 @@ public static class SubPageAccountNavigator
                 if (!string.IsNullOrEmpty(email)) displayName = $"default ({email})";
             }
             var stats = AgyAccountCore.GetAccountStats(accs[i]);
-            var loginStatus = stats.TokenStatus == "Logged In" ? "[green]✔[/]" : "[red]✘[/]";
+            var loginStatus = stats.TokenStatus == "Logged In" ? "[green]✔ Logged In[/]" : "[red]✘ Logged Out[/]";
             grid.AddRow(new Markup($"{prefix}{displayName.EscapeMarkup()} [dim]({loginStatus})[/]{suffix}"));
         }
-        grid.AddRow(new Markup("\n[dim]↑/↓ Navigate  ·  Enter Select  ·  Esc Cancel[/]"));
-        grid.AddRow(new Markup("[dim]a Create Account  ·  d Delete  ·  o Log Out[/]"));
+        grid.AddRow(new Markup("\n[dim]↑/↓ Navigate  ·  Enter Switch Account  ·  Esc Cancel[/]"));
+        grid.AddRow(new Markup("[dim]a Create Account  ·  l Login/Auth  ·  d Delete  ·  r Reset/Purge  ·  o Log Out[/]"));
         return grid;
     }
 }
