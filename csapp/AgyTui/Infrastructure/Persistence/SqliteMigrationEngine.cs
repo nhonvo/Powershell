@@ -199,6 +199,23 @@ public class SqliteMigrationEngine
 
                 CREATE INDEX IF NOT EXISTS idx_resources_topic ON resources(topic);
                 CREATE INDEX IF NOT EXISTS idx_skills_builtin ON skills(is_builtin);
+                """),
+
+            (6, "V6__ComprehensiveLearningSeeding", """
+                CREATE TABLE IF NOT EXISTS quiz_questions (
+                    id TEXT PRIMARY KEY NOT NULL,
+                    category TEXT NOT NULL,
+                    type TEXT,
+                    difficulty TEXT,
+                    question TEXT NOT NULL,
+                    format TEXT,
+                    hints_json TEXT,
+                    companies_json TEXT,
+                    tags_json TEXT,
+                    updated_at TEXT NOT NULL
+                );
+
+                CREATE INDEX IF NOT EXISTS idx_quiz_questions_category ON quiz_questions(category);
                 """)
         };
     }
