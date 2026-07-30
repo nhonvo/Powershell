@@ -1,3 +1,4 @@
+using AgyTui.Core.Services;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using AgyTui.Infrastructure.Integrations.Ai.Providers;
 using AgyTui.Infrastructure.Integrations.Ai.Services;
@@ -15,6 +16,9 @@ public static class Bootstrapper
     public static IServiceProvider BuildServiceProvider(IServiceCollection? customServices = null)
     {
         var services = customServices ?? new ServiceCollection();
+
+        // Core Services
+        services.AddSingleton<IAppPathManager, AppPathManager>();
 
         // AI Services
         services.AddSingleton<IAiProcessRunner, AiProcessRunner>();

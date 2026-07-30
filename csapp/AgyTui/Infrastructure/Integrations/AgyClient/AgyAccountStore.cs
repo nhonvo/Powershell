@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using AgyTui.Core.Services;
 using AgyTui.Infrastructure.Di;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -7,58 +8,34 @@ namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
 public class AgyAccountStore : IAgyAccountStore
 {
-    public string AgySourceHome
-    {
-        get
-        {
-            var cfgHome = Config.Current.System.AgySourceHome;
-            if (!string.IsNullOrEmpty(cfgHome)) return cfgHome;
-            return AppPaths.GeminiHome;
-        }
-    }
-
-    public string AgyAccountPrefix
-    {
-        get
-        {
-            var publicDir = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\", "Users", "Public");
-            if (AgySourceHome.StartsWith(publicDir, StringComparison.OrdinalIgnoreCase))
-            {
-                return Path.Combine(publicDir, ".gemini_");
-            }
-
-            var accountsDir = Path.Combine(AppPaths.DataDir, ".gemini_");
-            Directory.CreateDirectory(Path.GetDirectoryName(accountsDir)!);
-            return accountsDir;
-        }
-    }
-
-    
     private readonly IAgyAccountRepository _accountRepo;
-
+    private readonly IAppPathManager _pathManager;
     private readonly Func<IAgyQuotaEngine> _quotaEngineFactory;
     private readonly Func<IAgyVault> _vaultFactory;
 
+    public string AgySourceHome => _pathManager.GeminiHome;
+    public string AgyAccountPrefix => _pathManager.AccountPrefix;
+
     public AgyAccountStore(
         IAgyAccountRepository accountRepo,
+        IAppPathManager pathManager,
         Func<IAgyQuotaEngine>? quotaEngineFactory = null,
         Func<IAgyVault>? vaultFactory = null)
     {
         _accountRepo = accountRepo;
+        _pathManager = pathManager;
         _quotaEngineFactory = quotaEngineFactory ??
                               (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>());
         _vaultFactory = vaultFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>());
     }
 
-    public AgyAccountStore() : this(Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountRepository>()) { }
+    public AgyAccountStore(IAgyAccountRepository accountRepo)
+        : this(accountRepo, Bootstrapper.ServiceProvider.GetRequiredService<IAppPathManager>()) { }
 
-    public string GetAccountDirectory(string accountName)
-    {
-        if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
-            return AgySourceHome;
+    public AgyAccountStore()
+        : this(Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountRepository>(), Bootstrapper.ServiceProvider.GetRequiredService<IAppPathManager>()) { }
 
-        return $"{AgyAccountPrefix}{accountName}";
-    }
+    public string GetAccountDirectory(string accountName) => _pathManager.GetAccountDirectory(accountName);
 
     public string? GetAccountEmail(string accountName)
     {

@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using AgyTui.Core.Services;
 using AgyTui.Infrastructure.Integrations.AgyClient;
 using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 using AgyTui.Infrastructure.Persistence.Interfaces;
@@ -14,6 +15,7 @@ public class ServiceTestFixture : IDisposable
 
     public ServiceTestFixture()
     {
+        Services.AddSingleton<IAppPathManager, AppPathManager>();
         Services.AddSingleton<ISqliteDatabase, FakeSqliteDatabase>();
         Services.AddSingleton<IAgyAccountRepository, InMemoryAgyAccountRepository>();
         Services.AddSingleton<IAgyAccountStore, AgyAccountStore>();
