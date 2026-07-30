@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Tests.Unit.Infrastructure.Di;
 
+[Collection("Sequential")]
 public class BootstrapperTests
 {
     [Fact]
