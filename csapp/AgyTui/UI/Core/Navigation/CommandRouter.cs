@@ -279,10 +279,27 @@ public class CommandRouter : ICommandRouter
                         break;
                     case "rebuild-tui":
                         AnsiConsole.MarkupLine("[cyan]Rebuilding Control Center TUI binary...[/]");
-                        var projFile = Path.Combine(Directory.GetCurrentDirectory(), "AgyTui", "AgyTui.csproj");
+                        var projFile = Path.Combine(Config.GetProfileRepoRoot(), "csapp", "AgyTui", "AgyTui.csproj");
                         if (!File.Exists(projFile)) projFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "AgyTui.csproj");
                         var buildExit = _dotNet.Build(File.Exists(projFile) ? projFile : null);
-                        if (buildExit == 0) SpectrePanel.Success("Control Center TUI recompiled successfully!");
+                        if (buildExit == 0)
+                        {
+                            try
+                            {
+                                var binDir = Path.Combine(Config.GetProfileRepoRoot(), "csapp", "AgyTui", "bin", "Release", "net9.0");
+                                var distDir = Path.Combine(Config.GetProfileRepoRoot(), "csapp", "AgyTui", "dist");
+                                if (Directory.Exists(binDir) && Directory.Exists(distDir))
+                                {
+                                    foreach (var file in Directory.GetFiles(binDir, "*.dll"))
+                                    {
+                                        var dest = Path.Combine(distDir, Path.GetFileName(file));
+                                        File.Copy(file, dest, overwrite: true);
+                                    }
+                                }
+                            }
+                            catch {}
+                            SpectrePanel.Success("Control Center TUI recompiled successfully! Run 'go' or open a new terminal window to apply binary changes.");
+                        }
                         else SpectrePanel.Warning("Build note: If running directly inside AgyTui.exe, Windows locks the executable while in-use. Exit TUI and run 'dbld' or run via PowerShell wrapper to refresh binary.");
                         break;
                     case "claude":
