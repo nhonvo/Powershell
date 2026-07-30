@@ -40,15 +40,38 @@ public static class ProcessRunner
     public static void RunInteractive(string exe, IEnumerable<string> args, IDictionary<string, string?>? env = null, string? workingDir = null)
     {
         var resolvedExe = Path.IsPathRooted(exe) ? exe : FindOnPath(exe) ?? exe;
-        var psi = new ProcessStartInfo(resolvedExe)
+        var targetWorkingDir = !string.IsNullOrEmpty(workingDir) && Directory.Exists(workingDir)
+            ? workingDir
+            : Directory.GetCurrentDirectory();
+
+        ProcessStartInfo psi;
+        if (OperatingSystem.IsWindows() && (resolvedExe.EndsWith(".cmd", StringComparison.OrdinalIgnoreCase) || resolvedExe.EndsWith(".bat", StringComparison.OrdinalIgnoreCase) || resolvedExe.EndsWith(".ps1", StringComparison.OrdinalIgnoreCase)))
         {
-            UseShellExecute = false,
-            WorkingDirectory = workingDir ?? Directory.GetCurrentDirectory()
-        };
-        foreach (var a in args)
-        {
-            psi.ArgumentList.Add(a);
+            psi = new ProcessStartInfo("cmd.exe")
+            {
+                UseShellExecute = false,
+                WorkingDirectory = targetWorkingDir
+            };
+            psi.ArgumentList.Add("/c");
+            psi.ArgumentList.Add(resolvedExe);
+            foreach (var a in args)
+            {
+                psi.ArgumentList.Add(a);
+            }
         }
+        else
+        {
+            psi = new ProcessStartInfo(resolvedExe)
+            {
+                UseShellExecute = false,
+                WorkingDirectory = targetWorkingDir
+            };
+            foreach (var a in args)
+            {
+                psi.ArgumentList.Add(a);
+            }
+        }
+
         if (env != null)
         {
             foreach (var kv in env)
@@ -79,14 +102,34 @@ public static class ProcessRunner
     public static (string Stdout, string Stderr, int ExitCode) RunCaptureWithDetails(
         string exe, string args, string? workingDir = null, TimeSpan? timeout = null)
     {
-        var psi = new ProcessStartInfo(exe, args)
+        var resolvedExe = Path.IsPathRooted(exe) ? exe : FindOnPath(exe) ?? exe;
+        var targetWorkingDir = !string.IsNullOrEmpty(workingDir) && Directory.Exists(workingDir)
+            ? workingDir
+            : Directory.GetCurrentDirectory();
+
+        ProcessStartInfo psi;
+        if (OperatingSystem.IsWindows() && (resolvedExe.EndsWith(".cmd", StringComparison.OrdinalIgnoreCase) || resolvedExe.EndsWith(".bat", StringComparison.OrdinalIgnoreCase) || resolvedExe.EndsWith(".ps1", StringComparison.OrdinalIgnoreCase)))
         {
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            WorkingDirectory = workingDir ?? Directory.GetCurrentDirectory()
-        };
+            psi = new ProcessStartInfo("cmd.exe", $"/c \"{resolvedExe}\" {args}")
+            {
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                WorkingDirectory = targetWorkingDir
+            };
+        }
+        else
+        {
+            psi = new ProcessStartInfo(resolvedExe, args)
+            {
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                WorkingDirectory = targetWorkingDir
+            };
+        }
 
         var stdoutBuilder = new StringBuilder();
         var stderrBuilder = new StringBuilder();

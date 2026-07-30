@@ -42,9 +42,29 @@ public class DotNetClient : CliToolWrapper, IDotNetClient
             {
                 return RunDotnet($"{command} \"{targetOrWorkingDir}\"", null);
             }
-            return RunDotnet(command, targetOrWorkingDir);
+            if (Directory.Exists(targetOrWorkingDir))
+            {
+                var csInDir = Directory.GetFiles(targetOrWorkingDir, "*.csproj", SearchOption.TopDirectoryOnly);
+                if (csInDir.Length > 0) return RunDotnet($"{command} \"{csInDir[0]}\"", targetOrWorkingDir);
+            }
         }
-        return RunDotnet(command, null);
+
+        var cwd = Directory.GetCurrentDirectory();
+        var csInCwd = Directory.GetFiles(cwd, "*.csproj", SearchOption.TopDirectoryOnly);
+        if (csInCwd.Length == 0)
+        {
+            var csSub = Directory.GetFiles(cwd, "*.csproj", SearchOption.AllDirectories)
+                .Where(f => !f.Contains("\\obj\\") && !f.Contains("/obj/") && !f.Contains("\\bin\\") && !f.Contains("/bin/"))
+                .OrderBy(f => f.Length)
+                .FirstOrDefault();
+
+            if (!string.IsNullOrEmpty(csSub))
+            {
+                return RunDotnet($"{command} \"{csSub}\"", cwd);
+            }
+        }
+
+        return RunDotnet(command, targetOrWorkingDir);
     }
 
     public int Build(string? projectPath = null) => RunDotnetWithTarget("build", projectPath);
