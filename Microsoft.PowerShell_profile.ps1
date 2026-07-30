@@ -1651,24 +1651,7 @@ Set-Alias -Name mgr -Value Start-Manager -Force
 function Start-Proxy { Start-AgyProxy }
 Set-Alias -Name prxy -Value Start-Proxy -Force
 
-# --- Antigravity Account Management Wrappers ---
-function Select-AgyAccount {
-    param([string]$AccountName)
-    Initialize-AgySession
-    if ($AccountName) {
-        [AgyAccountCore]::SetActiveAccount($AccountName, $true)
-    } else {
-        Invoke-ControlCenter "agyswitch"
-    }
-}
-Set-Alias -Name agyswitch -Value Select-AgyAccount -Force
 
-function Toggle-AutoSwitch { Initialize-AgySession; [AgyAccountCore]::ToggleAutoSwitch() }
-Set-Alias -Name autoswitch -Value Toggle-AutoSwitch -Force
-
-function Show-AccountsSummary { Initialize-AgySession; [AgyAccountCore]::ShowAllAccountsSummary() }
-Set-Alias -Name acc-sum -Value Show-AccountsSummary -Force
-Set-Alias -Name agyquota -Value Show-AccountsSummary -Force
 
 # --- Master Learning Suite Router ---
 function Invoke-MasterLearningSuite {
