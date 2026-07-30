@@ -51,6 +51,8 @@ public static class Bootstrapper
         services.AddSingleton<ISeeder, WorkspaceSeeder>();
         services.AddSingleton<ISeeder, LearningSeeder>();
         services.AddSingleton<ISeeder, ThemeSeeder>();
+        services.AddSingleton<ISeeder, ResourceSeeder>();
+        services.AddSingleton<ISeeder, SkillSeeder>();
         services.AddSingleton<IMasterSeeder, MasterSeeder>();
 
         // Tool Integration Services
