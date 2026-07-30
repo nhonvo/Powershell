@@ -396,8 +396,53 @@ CREATE INDEX IF NOT EXISTS idx_flashcards_next_review ON flashcards(next_review)
 
 ---
 
-## 5. Summary & Verification
+## 5. Dual Environment Architecture & Execution Flow (Dev vs. Stable)
+
+To ensure zero risk of corrupting production study data or user accounts during local feature development, `AgyTui` implements strict **Environment Isolation**:
+
+### 5.1 Environment Isolation Matrix
+
+| Dimension | Stable / Production (`Default`) | Development (`ENVIRONMENT=Development`) |
+| :--- | :--- | :--- |
+| **Execution Command** | `cc` / `AgyTui.exe` | `dotnet run --c Debug` |
+| **Config File** | `profile.config.json` | `profile.config.dev.json` |
+| **SQLite Database** | `agytui.db` | `agytui.dev.db` |
+| **Data Seeding** | Master Production Seeder | Dev Sandbox Mock Seeder |
+| **Data Safety** | Protected Production Data | Wiped & Re-seeded freely during testing |
+
+### 5.2 Dual-Execution Flow Diagram
+
+```mermaid
+flowchart TD
+    Start([App Invocation]) --> CheckEnv{Check Environment<br/>`ENVIRONMENT` / `AGYTUI_ENV`}
+    
+    CheckEnv -- Development --> DevPath[Dev Environment Activated]
+    CheckEnv -- Production / Default --> ProdPath[Stable/Prod Environment Activated]
+
+    subgraph Dev_Environment [Dev Sandbox - Isolated]
+        DevPath --> DevDB[DB File: agytui.dev.db]
+        DevPath --> DevCfg[Config: profile.config.dev.json]
+        DevDB --> DevMigrate[Apply Dev Migrations V1..V4]
+        DevMigrate --> DevSeed[MasterSeeder: Dev Mock Decks & Accounts]
+    end
+
+    subgraph Prod_Environment [Stable Workspace - Protected]
+        ProdPath --> ProdDB[DB File: agytui.db]
+        ProdPath --> ProdCfg[Config: profile.config.json]
+        ProdDB --> ProdMigrate[Apply Production Migrations V1..V4]
+        ProdMigrate --> ProdSeed[MasterSeeder: Master Decks & Workspaces]
+    end
+
+    DevSeed --> UI([Spectre.Console Terminal UI Engine Launch])
+    ProdSeed --> UI
+```
+
+---
+
+## 6. Summary & Verification
 
 - **Total Unit/Integration Tests**: **117 Passed (100% PASS rate)**.
 - **Test Directory Parity**: Eliminating `Unit/Core/` in tests mirrors the main `AgyTui` structure.
+- **Data Seeding Pipeline**: Fully modularized under `Infrastructure/Persistence/Seeding/`.
 - **Git Commit**: Clean working directory on branch `main`.
+
