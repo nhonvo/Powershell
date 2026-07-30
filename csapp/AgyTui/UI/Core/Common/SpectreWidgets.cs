@@ -77,7 +77,8 @@ public static class SpectreMenu
         var prompt = new SelectionPrompt<string>()
             .PageSize(pageSize)
             .HighlightStyle(new Style(Color.Green, decoration: Decoration.Bold))
-            .MoreChoicesText("[dim cyan](Move ↑/↓ or j/k to reveal more items)[/]");
+            .MoreChoicesText("[dim cyan](Move ↑/↓ or j/k to reveal more items)[/]")
+            .UseConverter(item => item.EscapeMarkup());
         if (searchEnabled) prompt.SearchEnabled = true;
         prompt.AddChoices(items);
         return prompt;

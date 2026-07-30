@@ -117,8 +117,8 @@ public static class Icons
         }
     }
 
-    public static string FolderClosed => UseNerdFonts ? "󰉋" : (IsUtf8Supported ? "📁" : "[+]");
-    public static string FolderOpen => UseNerdFonts ? "󰉓" : (IsUtf8Supported ? "📂" : "[-]");
+    public static string FolderClosed => UseNerdFonts ? "󰉋" : (IsUtf8Supported ? "📁" : "[[+]]");
+    public static string FolderOpen => UseNerdFonts ? "󰉓" : (IsUtf8Supported ? "📂" : "[[-]]");
 
     private record CategoryMeta(string Keyword, string NerdIcon, string Utf8Icon, string AsciiIcon, string Hotkey);
 
@@ -152,7 +152,7 @@ public static class Icons
         {
             return UseNerdFonts ? match.NerdIcon : (IsUtf8Supported ? match.Utf8Icon : match.AsciiIcon);
         }
-        return UseNerdFonts ? "󰉋" : (IsUtf8Supported ? "📂" : "[+]");
+        return UseNerdFonts ? "󰉋" : (IsUtf8Supported ? "📂" : "[[+]]");
     }
 
     public static string GetCategoryHotkey(string categoryLabel)

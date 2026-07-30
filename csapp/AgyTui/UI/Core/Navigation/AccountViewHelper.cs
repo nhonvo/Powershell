@@ -25,7 +25,7 @@ public static class AgyAccountMenu
             }
             else menuItems.Add($" {accounts[i]} ({status})");
         }
-        menuItems.Add("[+] Add New Account");
+        menuItems.Add("+ Add New Account");
         menuItems.Add($"[Settings] Toggle Auto-Switch (Currently: {(AgyAccountCore.IsAutoSwitchEnabled() ? "Enabled" : "Disabled")})");
         menuItems.Add("[Stats] Show All Accounts Summary");
         menuItems.Add("[x] Exit Dashboard");
@@ -107,7 +107,7 @@ public static class AgyAccountMenu
             }
             else menuItems.Add(accounts[i]);
         }
-        menuItems.Add("[+] Add New Account");
+        menuItems.Add("+ Add New Account");
         menuItems.Add("[x] Delete Account");
         menuItems.Add("[exit] Cancel / Exit");
         var selected = SpectreMenu.ShowRobust(["Select Antigravity Account"], menuItems.ToArray(), defaultIdx, false, true);
