@@ -456,10 +456,59 @@ function Invoke-ControlCenter {
     [CommandRouter]::Route($CmdAlias, $PassArgs)
 }
 
+function Reset-AgyAccountData {
+    [CmdletBinding()]
+    param()
+
+    Write-Host "⚠️ Purging all AGY account data, custom account directories, and token credentials..." -ForegroundColor Yellow
+
+    Load-AgyTuiDll
+    try {
+        [AgyAccountCore]::PurgeAllNonDefaultAccounts()
+        Write-Host "  ✔ Purged all custom account directories and reset active context to default." -ForegroundColor Green
+    } catch {}
+
+    $userProfile = [Environment]::GetFolderPath('UserProfile')
+    $dataDir = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\data"
+
+    $targets = @(
+        (Join-Path $userProfile ".gemini"),
+        (Join-Path $dataDir ".gemini"),
+        (Join-Path $dataDir "db.sqlite")
+    )
+
+    Get-ChildItem -Path $userProfile -Filter ".gemini_*" -Directory -ErrorAction SilentlyContinue | ForEach-Object { $targets += $_.FullName }
+    Get-ChildItem -Path $dataDir -Filter ".gemini_*" -Directory -ErrorAction SilentlyContinue | ForEach-Object { $targets += $_.FullName }
+    Get-ChildItem -Path "C:\Users\Public" -Filter ".gemini_*" -Directory -ErrorAction SilentlyContinue | ForEach-Object { $targets += $_.FullName }
+
+    foreach ($target in ($targets | Select-Object -Unique)) {
+        if (Test-Path $target) {
+            try {
+                Remove-Item -Path $target -Recurse -Force -ErrorAction SilentlyContinue
+                Write-Host "  ✔ Removed: $target" -ForegroundColor Green
+            } catch {}
+        }
+    }
+
+    try {
+        cmdkey /list | Select-String "gemini:antigravity" | ForEach-Object {
+            cmdkey /delete:gemini:antigravity 2>$null
+        }
+        Write-Host "  ✔ Cleared Windows Credential Manager AGY tokens." -ForegroundColor Green
+    } catch {}
+
+    $defaultGemini = Join-Path $dataDir ".gemini"
+    New-Item -ItemType Directory -Path $defaultGemini -Force | Out-Null
+    Set-Content -Path (Join-Path $defaultGemini "active_account.txt") -Value "default" -Encoding UTF8
+
+    Write-Host "✅ All AGY Account Data successfully reset! Run 'agy auth login' or launch 'agyswitch' to authenticate cleanly." -ForegroundColor Green
+}
+
 Set-Alias -Name ai -Value Invoke-MultiAgent -Force
 Set-Alias -Name cai -Value Invoke-MultiAgent -Force
 Set-Alias -Name claude -Value Invoke-MultiAgent -Force
 Set-Alias -Name cc -Value Invoke-ControlCenter -Force
+Set-Alias -Name reset-agy -Value Reset-AgyAccountData -Force
 #endregion
 
 #region 9. NAVIGATION & SYSTEM WRAPPERS

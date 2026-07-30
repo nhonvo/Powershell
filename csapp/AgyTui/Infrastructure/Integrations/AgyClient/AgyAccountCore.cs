@@ -220,6 +220,8 @@ public static class AgyAccountCore
             }
             catch { }
         }
+
+        LogoutAccount("default");
         SetActiveAccount("default", false);
         ClearStatsCache();
     }
