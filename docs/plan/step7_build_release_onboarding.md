@@ -166,8 +166,8 @@ jobs:
 
 ## 7. Implementation Checklist
 
-- [ ] Create `EnvironmentProvider.cs` to manage Dev vs Prod DB filenames (`agytui.dev.db` vs `agytui.db`).
-- [ ] Create `script/Install-AgyEnvironment.ps1` with `-DevEnvironment` switch.
-- [ ] Create `build-release.ps1` local single-file publish script.
-- [ ] Create `.github/workflows/release.yml` GitHub Actions pipeline.
-- [ ] Verify test suite runs against Dev environment without mutating production state.
+- [x] Create `EnvironmentProvider.cs` to manage Dev vs Prod DB filenames (`agytui.dev.db` vs `agytui.db`).
+- [x] Create `script/Install-AgyEnvironment.ps1` with `-DevEnvironment` switch.
+- [x] Create `build-release.ps1` local single-file publish script.
+- [x] Create `.github/workflows/release.yml` GitHub Actions pipeline.
+- [x] Verify test suite runs against Dev environment without mutating production state.

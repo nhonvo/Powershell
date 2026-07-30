@@ -58,8 +58,8 @@ graph TD
 
 ## 4. Implementation Checklist
 
-- [ ] Create `AgyTui.Domain` directory structure for Bounded Contexts.
-- [ ] Define `AccountAggregate` and `QuotaMetrics` value objects.
-- [ ] Define `WorkspaceAggregate` and `ProjectPath` value objects.
-- [ ] Define `AgentInvocationLog` entity and `ProviderMode` enum.
-- [ ] Implement Application services mapping presentation commands to domain aggregates.
+- [x] Create `AgyTui.Domain` directory structure for Bounded Contexts.
+- [x] Define `AccountAggregate` and `QuotaMetrics` value objects.
+- [x] Define `WorkspaceAggregate` and `ProjectPath` value objects.
+- [x] Define `AgentInvocationLog` entity and `ProviderMode` enum.
+- [x] Implement Application services mapping presentation commands to domain aggregates.

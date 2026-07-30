@@ -59,6 +59,6 @@ public class ProfileAliasParityTests
 
 - [x] Update `CommandRegistry.cs` to include all profile aliases (`cnav`, `reset-agy`, `purge-accounts`, `dotnet-info`).
 - [x] Update `CommandRouter.cs` to handle execution for newly added aliases.
-- [ ] Refactor `Microsoft.PowerShell_profile.ps1` to delegate function calls directly to `AgyTui <alias>`.
-- [ ] Create `ProfileAliasParityTests.cs` in `csapp/AgyTui.Tests/Parity/`.
-- [ ] Verify all 91+ unit tests pass.
+- [x] Refactor `Microsoft.PowerShell_profile.ps1` to delegate function calls directly to `AgyTui <alias>`.
+- [x] Create `ProfileAliasParityTests.cs` in `csapp/AgyTui.Tests/Parity/`.
+- [x] Verify all 91+ unit tests pass.

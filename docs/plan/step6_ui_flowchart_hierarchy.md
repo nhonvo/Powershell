@@ -143,8 +143,8 @@ flowchart TD
 - [x] Create `proposed_command_menu_tree.md` artifact detailing all menu categories.
 - [x] Update `CommandRegistry.cs` to add `cnav`, `reset-agy`, `purge-accounts`, `dotnet-info`.
 - [x] Update `CommandRouter.cs` to execute new menu items.
-- [ ] Create `UiStateStore.cs` for reactive, immutable UI state management.
-- [ ] Refactor `ThreePaneRenderer` to accept `UiState` as a pure render function.
-- [ ] Implement `IUiCommandDispatcher` and non-blocking background command handlers.
-- [ ] Add compact auto-wrapping Spectre tables for mobile density mode (`mobile-setup`).
-- [ ] Enhance real-time HSL color gradients in `QuotaChartWidget` and `LiveDashboard`.
+- [x] Create `UiStateStore.cs` for reactive, immutable UI state management.
+- [x] Refactor `ThreePaneRenderer` to accept `UiState` as a pure render function.
+- [x] Implement `IUiCommandDispatcher` and non-blocking background command handlers.
+- [x] Add compact auto-wrapping Spectre tables for mobile density mode (`mobile-setup`).
+- [x] Enhance real-time HSL color gradients in `QuotaChartWidget` and `LiveDashboard`.

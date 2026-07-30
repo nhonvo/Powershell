@@ -85,8 +85,8 @@ graph TD
 ## 4. Implementation Checklist
 
 - [x] Maintain 91/91 unit test pass rate across `csapp/AgyTui.Tests`.
-- [ ] Create `ServiceTestFixture.cs` in `csapp/AgyTui.Tests/Fixtures/`.
-- [ ] Refactor existing test classes to consume `ServiceTestFixture`.
-- [ ] Create `SqlitePersistenceTests.cs` for SQLite CRUD verification.
-- [ ] Create `ProfileAliasParityTests.cs` for PS1 function signature parity.
-- [ ] Create `docs/guides/testing_and_ci.md` developer guide.
+- [x] Create `ServiceTestFixture.cs` in `csapp/AgyTui.Tests/Fixtures/`.
+- [x] Refactor existing test classes to consume `ServiceTestFixture`.
+- [x] Create `SqlitePersistenceTests.cs` for SQLite CRUD verification.
+- [x] Create `ProfileAliasParityTests.cs` for PS1 function signature parity.
+- [x] Create `docs/guides/testing_and_ci.md` developer guide.

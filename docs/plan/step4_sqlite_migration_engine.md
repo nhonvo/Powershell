@@ -106,8 +106,8 @@ public class SqliteMigrationEngine
 ## 4. Implementation Checklist
 
 - [x] Create `SqliteAgyAccountRepository.cs` and `accounts` table creation.
-- [ ] Create `SqliteMigrationEngine.cs` class.
-- [ ] Add `V1__InitialSchema.sql` embedded resource script.
-- [ ] Add `V2__AddCommandLogs.sql` embedded resource script.
-- [ ] Register `SqliteMigrationEngine` in `Bootstrapper.cs` and execute during application startup.
-- [ ] Add integration tests in `SqlitePersistenceTests.cs`.
+- [x] Create `SqliteMigrationEngine.cs` class.
+- [x] Add `V1__InitialSchema.sql` embedded resource script.
+- [x] Add `V2__AddCommandLogs.sql` embedded resource script.
+- [x] Register `SqliteMigrationEngine` in `Bootstrapper.cs` and execute during application startup.
+- [x] Add integration tests in `SqlitePersistenceTests.cs`.

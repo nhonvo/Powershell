@@ -89,8 +89,8 @@ public class ServiceTestFixture : IDisposable
 
 - [x] Identify and catalog all `new ServiceObject()` instantiations across `csapp/AgyTui`.
 - [x] Prohibit direct service instantiations in favor of `Func<T>` factories or constructor injection.
-- [ ] Refactor fallback constructors in `AgyAccountStore`, `AgyQuotaEngine`, `AgyVault` to use DI resolving.
-- [ ] Refactor static helper call sites (`AiProcessRunner.RunInteractiveStatic`, `AgySecretVault`, `TokenVault`, `StatusWidgets`, `ScreenChrome`, `SubPageNavigator`, `AiDashboardView`, `LearnDataPaths`) to use top-level `Func<T>` factories.
-- [ ] Create `ServiceTestFixture.cs` in `csapp/AgyTui.Tests/Fixtures/`.
-- [ ] Migrate `AccountServiceTests.cs`, `AccountStatsTests.cs`, and `QuotaCentralizationTests.cs` to consume `ServiceTestFixture`.
+- [x] Refactor fallback constructors in `AgyAccountStore`, `AgyQuotaEngine`, `AgyVault` to use DI resolving.
+- [x] Refactor static helper call sites (`AiProcessRunner.RunInteractiveStatic`, `AgySecretVault`, `TokenVault`, `StatusWidgets`, `ScreenChrome`, `SubPageNavigator`, `AiDashboardView`, `LearnDataPaths`) to use top-level `Func<T>` factories.
+- [x] Create `ServiceTestFixture.cs` in `csapp/AgyTui.Tests/Fixtures/`.
+- [x] Migrate `AccountServiceTests.cs`, `AccountStatsTests.cs`, and `QuotaCentralizationTests.cs` to consume `ServiceTestFixture`.
 - [x] Verify 100% test pass rate across `dotnet test`.

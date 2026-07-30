@@ -81,8 +81,8 @@ public class AppPathManager : IAppPathManager
 
 ## 3. Implementation Checklist
 
-- [ ] Create `IAppPathManager.cs` interface in `AgyTui.Core.Services`.
-- [ ] Implement `AppPathManager.cs` with thread-safe `ConcurrentDictionary` path caching.
-- [ ] Register `IAppPathManager` as a Singleton in `Bootstrapper.cs`.
-- [ ] Update `AgyAccountStore` to consume `IAppPathManager` instead of raw property getters.
-- [ ] Add unit tests verifying cache invalidation when accounts switch.
+- [x] Create `IAppPathManager.cs` interface in `AgyTui.Core.Services`.
+- [x] Implement `AppPathManager.cs` with thread-safe `ConcurrentDictionary` path caching.
+- [x] Register `IAppPathManager` as a Singleton in `Bootstrapper.cs`.
+- [x] Update `AgyAccountStore` to consume `IAppPathManager` instead of raw property getters.
+- [x] Add unit tests verifying cache invalidation when accounts switch.
