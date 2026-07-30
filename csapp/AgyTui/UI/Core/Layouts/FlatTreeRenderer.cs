@@ -473,8 +473,10 @@ public sealed class FlatTreeRenderer : MenuRendererBase
 
                 if (row.Type == VisibleRowType.Exit)
                 {
-                    var label = isSelected ? $"[{AgyThemeColors.Selected} bold]{row.Node.Label.EscapeMarkup()}[/]" : row.Node.Label.EscapeMarkup();
-                    grid.AddRow(new Markup($"{prefix}{label}"));
+                    var exitMarkup = isSelected
+                        ? $"[{AgyThemeColors.Selected} bold]> {row.Node.Label.EscapeMarkup()}[/]"
+                        : $"  {row.Node.Label.EscapeMarkup()}";
+                    grid.AddRow(new Markup(exitMarkup));
                     continue;
                 }
 
@@ -483,24 +485,31 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                 if (row.Type == VisibleRowType.Category)
                 {
                     var isExpanded = _expandedCategories.Contains(row.Node.Id) || !string.IsNullOrEmpty(searchBuffer);
-                    var sign = isExpanded ? "[[-]]" : "[[+]]";
+                    var sign = isExpanded ? "-" : "+";
                     var catIcon = Icons.GetCategoryIcon(row.Node.Label);
                     var hk = Icons.GetCategoryHotkey(row.Node.Label);
-                    var hkSuffix = string.IsNullOrEmpty(hk) ? "" : $" [dim]({hk})[/]";
 
                     var rawCatLabel = row.Node.Label.Trim();
                     var cleanCatLabel = rawCatLabel.StartsWith('[') && rawCatLabel.EndsWith(']') ? rawCatLabel[1..^1] : rawCatLabel;
-
-                    var signMarkup = $"[bold {AgyThemeColors.Secondary}]{sign}[/]";
                     var boldText = string.IsNullOrEmpty(rawQ) ? cleanCatLabel.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(cleanCatLabel, rawQ);
-                    var safeText = $"{catIcon} {boldText}";
-                    var label = isSelected ? $"[{AgyThemeColors.Selected} bold]{sign} {safeText}[/]{hkSuffix}" : $"{signMarkup} [bold {AgyThemeColors.Accent}]{safeText}[/]{hkSuffix}";
-                    grid.AddRow(new Markup($"{prefix}{label}"));
+
+                    string lineMarkup;
+                    if (isSelected)
+                    {
+                        lineMarkup = $"[{AgyThemeColors.Selected} bold]> [[{sign}]] {catIcon} {boldText}[/]";
+                        if (!string.IsNullOrEmpty(hk)) lineMarkup += $" [dim]({hk.EscapeMarkup()})[/]";
+                    }
+                    else
+                    {
+                        lineMarkup = $"  [bold {AgyThemeColors.Secondary}][[{sign}]][/] [bold {AgyThemeColors.Accent}]{catIcon} {boldText}[/]";
+                        if (!string.IsNullOrEmpty(hk)) lineMarkup += $" [dim]({hk.EscapeMarkup()})[/]";
+                    }
+                    grid.AddRow(new Markup(lineMarkup));
                 }
                 else if (row.Type == VisibleRowType.Group)
                 {
                     var isExpanded = _expandedGroups.Contains(row.Node.Id) || !string.IsNullOrEmpty(searchBuffer);
-                    var sign = isExpanded ? "[[-]]" : "[[+]]";
+                    var sign = isExpanded ? "-" : "+";
                     var rawLabel = row.Node.Label.Trim();
                     var cleanLabelRaw = System.Text.RegularExpressions.Regex.Replace(rawLabel, @"^\[/[^\]]+\]\s*", "");
                     if (cleanLabelRaw.StartsWith('[') && cleanLabelRaw.EndsWith(']'))
@@ -509,10 +518,16 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     }
                     var boldText = string.IsNullOrEmpty(rawQ) ? cleanLabelRaw.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(cleanLabelRaw, rawQ);
 
-                    var signMarkup = $"[bold {AgyThemeColors.Secondary}]{sign}[/]";
-                    var treeDim = $"[dim]{treePrefix.EscapeMarkup()}[/]";
-                    var label = isSelected ? $"[{AgyThemeColors.Selected} bold]{treePrefix}{sign} 📂 {boldText}[/]" : $"{treeDim}{signMarkup} [bold {AgyThemeColors.Secondary}]📂 {boldText}[/]";
-                    grid.AddRow(new Markup($"{prefix}{label}"));
+                    string lineMarkup;
+                    if (isSelected)
+                    {
+                        lineMarkup = $"[{AgyThemeColors.Selected} bold]> {treePrefix.EscapeMarkup()}[[{sign}]] 📂 {boldText}[/]";
+                    }
+                    else
+                    {
+                        lineMarkup = $"  [dim]{treePrefix.EscapeMarkup()}[/][bold {AgyThemeColors.Secondary}][[{sign}]][/] [bold {AgyThemeColors.Secondary}]📂 {boldText}[/]";
+                    }
+                    grid.AddRow(new Markup(lineMarkup));
                 }
                 else if (row.Type == VisibleRowType.Command)
                 {
@@ -521,15 +536,19 @@ public sealed class FlatTreeRenderer : MenuRendererBase
 
                     var boldAlias = string.IsNullOrEmpty(rawQ) ? cmd.Alias.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(cmd.Alias, rawQ);
                     var boldDisplayName = string.IsNullOrEmpty(rawQ) ? cmd.DisplayName.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(cmd.DisplayName, rawQ);
-                    var boldDesc = string.IsNullOrEmpty(rawQ) ? cmd.Description.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(cmd.Description, rawQ);
 
                     var displayLabel = $"/{boldAlias} — {boldDisplayName}";
 
-                    var treeDim = $"[dim]{treePrefix.EscapeMarkup()}[/]";
-                    var label = isSelected
-                        ? $"[{AgyThemeColors.Selected} bold]{treePrefix}{icon} {displayLabel}[/]"
-                        : $"{treeDim}{icon} [white]{displayLabel}[/]";
-                    grid.AddRow(new Markup($"{prefix}{label}"));
+                    string lineMarkup;
+                    if (isSelected)
+                    {
+                        lineMarkup = $"[{AgyThemeColors.Selected} bold]> {treePrefix.EscapeMarkup()}{icon} {displayLabel}[/]";
+                    }
+                    else
+                    {
+                        lineMarkup = $"  [dim]{treePrefix.EscapeMarkup()}[/]{icon} [white]{displayLabel}[/]";
+                    }
+                    grid.AddRow(new Markup(lineMarkup));
                 }
                 else if (row.Type == VisibleRowType.Widget)
                 {
