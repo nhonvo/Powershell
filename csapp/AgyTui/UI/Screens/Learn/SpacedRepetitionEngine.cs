@@ -1,22 +1,24 @@
+using AgyTui.Domain.LearnContext;
+
 namespace AgyTui.UI.Screens.Learn;
 
-public sealed record SrState(double EaseFactor, int IntervalDays, int Repetitions, DateTime? LastReviewed, DateTime? NextReview, string Status)
+public static class SrStateExtensions
 {
     public static SrState NewCard() => new(2.5, 0, 0, null, null, "new");
 
-    public bool IsDueToday() => NextReview == null || NextReview.Value.Date <= DateTime.Today;
+    public static bool IsDueToday(this SrState state) => state.NextReview == null || state.NextReview.Value.Date <= DateTime.Today;
 
-    public SrResult UpdateCard(int quality)
+    public static SrResult UpdateCard(this SrState state, int quality)
     {
         bool passed = quality >= 3;
-        double ef = Math.Max(1.3, EaseFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)));
-        int reps = passed ? Repetitions + 1 : 0;
+        double ef = Math.Max(1.3, state.EaseFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)));
+        int reps = passed ? state.Repetitions + 1 : 0;
         int interval = reps switch
         {
             0 => 1,
             1 => 1,
             2 => 6,
-            _ => (int)Math.Round(IntervalDays * ef)
+            _ => (int)Math.Round(state.IntervalDays * ef)
         };
         if (!passed)
         {
@@ -32,7 +34,7 @@ public sealed record SrResult(SrState Updated, bool Passed, int NextIntervalDays
 
 public static class SpacedRepetitionEngine
 {
-    public static SrState NewCard() => SrState.NewCard();
+    public static SrState NewCard() => SrStateExtensions.NewCard();
 
     public static bool IsDueToday(SrState sr) => sr.IsDueToday();
 

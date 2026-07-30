@@ -1,3 +1,4 @@
+using AgyTui.Infrastructure.Persistence.DbContext;
 using AgyTui.Domain.LearnContext;
 
 namespace AgyTui.Tests.Unit.Core.Services;
@@ -35,3 +36,4 @@ public class WeakItemsQueueTests
         }
     }
 }
+

@@ -1,3 +1,4 @@
+using AgyTui.Domain.LearnContext;
 namespace AgyTui.Tests.Unit.Architecture;
 
 public class SpacedRepetitionEdgeCasesTests
@@ -67,3 +68,4 @@ public class SpacedRepetitionEdgeCasesTests
         Assert.False(SpacedRepetitionEngine.IsDueToday(futureCard));
     }
 }
+

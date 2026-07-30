@@ -2,11 +2,11 @@
 
 > **Date**: 2026-07-30  
 > **Author**: Antigravity AI Engineering Team  
-> **Scope**: Complete architectural tree, naming review, and location feedback for `csapp/AgyTui`.
+> **Scope**: Complete architectural tree representation of `AgyTui` & `AgyTui.Tests`, naming review, and location feedback.
 
 ---
 
-## 1. Directory Tree Representation (`csapp/AgyTui`)
+## 1. Main Project Directory Tree (`csapp/AgyTui`)
 
 ```text
 csapp/AgyTui/
@@ -27,7 +27,7 @@ csapp/AgyTui/
 │   │   └── ProviderMode.cs                     # Provider Mode Enum (Auto, CloudDirect, Ollama)
 │   ├── LearnContext/
 │   │   ├── FlashcardDeck.cs                    # Flashcard Deck Aggregate Root
-│   │   └── LearningModels.cs                   # Flashcards, Quizzes, Vocab & STAR Records
+│   │   └── LearningModels.cs                   # Flashcards, Quizzes, Vocab, SrState & STAR Records
 │   └── WorkspaceContext/
 │       ├── ProjectPath.cs                      # Project Path Value Object
 │       ├── WorkspaceAggregate.cs               # Workspace Aggregate Root
@@ -80,6 +80,7 @@ csapp/AgyTui/
 │   ├── Persistence/                            # Storage Engine & Data Repositories
 │   │   ├── DbContext/
 │   │   │   ├── ISqliteDatabase.cs              # SQLite Connection Interface
+│   │   │   ├── LearnDataPaths.cs               # Study Directory & Path Discovery Provider
 │   │   │   └── SqliteDatabase.cs               # SQLite Connection Implementation
 │   │   ├── Interfaces/
 │   │   │   ├── IAgyAccountRepository.cs        # Account Storage Repository Interface
@@ -87,8 +88,6 @@ csapp/AgyTui/
 │   │   │   ├── IFileRepository.cs              # Generic File Repository Interface
 │   │   │   ├── IRepository.cs                  # Generic DB Repository Interface
 │   │   │   └── IStudyRepository.cs             # Study Data Repository Interface
-│   │   ├── Learning/
-│   │   │   └── LearnDataPaths.cs               # Study Directory Paths Helper
 │   │   ├── Migrations/
 │   │   │   ├── V1__InitialSchema.sql           # Initial Database Schema Migration
 │   │   │   └── V2__AddCommandInvocationLogs.sql# Invocation Log Schema Migration
@@ -178,42 +177,116 @@ csapp/AgyTui/
 
 ---
 
-## 2. Architectural Review & Evaluation
+## 2. Test Project Directory Tree (`csapp/AgyTui.Tests`)
 
-### 🌟 Strengths & Major Refactoring Milestones
-
-1. **Complete Elimination of legacy `Core/` Folder**:
-   - Eliminating `Core/` removed ambiguous namespace references (`AgyTui.Core.Models` vs `AgyTui.Domain.*`) and established clear boundary separation between `Domain`, `Infrastructure`, and `UI`.
-
-2. **Domain-Driven Design (DDD) Strict Isolation**:
-   - Domain aggregates (`AccountAggregate`, `WorkspaceAggregate`, `FlashcardDeck`) and value objects (`ProjectPath`, `EncryptedToken`, `QuotaMetrics`) contain zero infrastructure dependencies.
-   - Domain business rules (e.g. `MarkActive()`, `SetQuotaExceeded()`, `RecordUsage()`, `Activate()`) remain encapsulated inside aggregate roots.
-
-3. **Generic Repository Pattern**:
-   - Introduced generic interfaces `IRepository<TEntity, TKey>` and `IFileRepository<TEntity>`.
-   - SQLite repositories (`SqliteAgyAccountRepository`, `SqliteConfigRepository`) extend `SqliteRepositoryBase<TEntity, TKey>`.
-   - File/JSON repositories (`JsonStudyRepository`) extend `JsonFileRepositoryBase<TEntity>`.
-
-4. **Layer Dependency Enforcement**:
-   - `ArchitectureTests.cs` verifies that `AgyTui.Infrastructure` components never depend on `AgyTui.UI` components.
-   - `CommandRegistry.cs` is located in `AgyTui.UI.Core.Registries` because it couples directly to `MenuNode` UI layout elements.
+```text
+csapp/AgyTui.Tests/
+├── AgyTui.Tests.csproj
+├── README.md
+├── TestInitializer.cs                          # Global Test Assembly Setup & TearDown
+├── Usings.cs                                   # Global Test Directives & Assertions
+│
+├── Fixtures/
+│   └── ServiceTestFixture.cs                   # Dependency Injection Test Fixture & Container
+│
+├── Integration/
+│   ├── LearningDataTests.cs                    # Study & Json Repository Integration Tests
+│   ├── QuotaMetricsTests.cs                    # Quota Calculation Integration Tests
+│   ├── ResourceDiscoveryTests.cs               # Markdown Resource Scanning Tests
+│   ├── SqlitePersistenceTests.cs               # SQLite Migration & Connection Tests
+│   └── TsvExtractorTests.cs                    # TSV Data Extraction Integration Tests
+│
+├── Mocks/
+│   ├── FakeSqliteDatabase.cs                   # In-Memory SQLite Mock Database Connection
+│   └── InMemoryAgyAccountRepository.cs         # In-Memory Account Repository Stub
+│
+├── Parity/
+│   └── ProfileAliasParityTests.cs              # PowerShell Profile <-> C# Parity Assertions
+│
+└── Unit/
+    ├── Architecture/
+    │   ├── ArchitectureTests.cs                # Layer Boundary & Dependency Enforcement Tests
+    │   ├── IdeCommandRegistryTests.cs          # IDE Command Verification Tests
+    │   ├── RepoHygieneTests.cs                 # Code Base Hygiene & Formatting Tests
+    │   └── SpacedRepetitionEdgeCasesTests.cs   # Spaced Repetition Edge Case Tests
+    ├── Core/
+    │   ├── Registries/
+    │   │   └── CommandRegistryTests.cs         # Menu & Command Registry Tests
+    │   └── Services/
+    │       ├── AppPathManagerTests.cs          # Path Manager Unit Tests
+    │       ├── CommandRouterEdgeCasesTests.cs  # Command Router Routing Tests
+    │       ├── PathResolutionBenchmarkTests.cs # Path Caching Benchmark Tests
+    │       ├── ProgramTests.cs                 # Entry Point Tests
+    │       ├── SpacedRepetitionTests.cs        # SuperMemo 2 Core Tests
+    │       └── WeakItemsQueueTests.cs          # Weak Items Queue Strategy Tests
+    ├── Domain/
+    │   └── DomainContextsTests.cs              # Aggregate Root Invariant Tests
+    ├── Infrastructure/
+    │   ├── Common/
+    │   │   ├── CommandInvocationLogTests.cs    # Invocation Logging Tests
+    │   │   ├── ThemeColorsTests.cs             # UI Theme Palette Unit Tests
+    │   │   └── TtlCacheTests.cs                # TTL Cache Eviction Unit Tests
+    │   ├── Di/
+    │   │   └── BootstrapperTests.cs            # DI Service Container Resolve Tests
+    │   ├── Integrations/
+    │   │   ├── AgyClient/
+    │   │   │   ├── AgyAccountStoreTests.cs
+    │   │   │   ├── AgyClientTests.cs
+    │   │   │   ├── AgyQuotaEngineTests.cs
+    │   │   │   └── AgyVaultTests.cs
+    │   │   ├── AiClientHermesTests.cs
+    │   │   ├── AiClientTests.cs
+    │   │   ├── AiModeCheckTests.cs
+    │   │   ├── AntigravityDeckClientTests.cs
+    │   │   ├── InvokeCliAgentTests.cs
+    │   │   ├── InvokeHermesDesktopTests.cs
+    │   │   └── ShowAiDashboardTests.cs
+    │   ├── Logging/
+    │   │   └── CommandLoggingMiddlewareTests.cs
+    │   └── Persistence/
+    │       ├── AccountServiceTests.cs
+    │       ├── AccountStatsTests.cs
+    │       ├── ConfigServiceTests.cs
+    │       ├── ConfigTests.cs
+    │       ├── QuotaCentralizationTests.cs
+    │       ├── QuotaTrackerEdgeCasesTests.cs
+    │       └── SqlitePersistenceTests.cs
+    └── UI/
+        ├── Common/
+        │   └── IconsTests.cs
+        ├── Components/
+        │   └── ScreenChromeTests.cs
+        ├── Layouts/
+        │   ├── FlatTreeRendererTests.cs
+        │   └── MenuRendererBaseTests.cs
+        ├── Navigation/
+        │   ├── CommandPaletteTests.cs
+        │   ├── SubPageNavigatorTests.cs
+        │   ├── SubPageTopicNavigatorTests.cs
+        │   └── UiNavigationHandlerTests.cs
+        ├── Screens/
+        │   └── Ide/
+        │       └── GitDiffViewerTests.cs
+        └── UiEngineTests.cs
+```
 
 ---
 
 ## 3. Location & Naming Audit Feedback
 
-| Subsystem / File | Current Location | Naming Assessment | Recommendation |
+| Subsystem / File | Location | Status | Assessment & Updates |
 | :--- | :--- | :--- | :--- |
+| `LearnDataPaths.cs` | `Infrastructure/Persistence/DbContext/LearnDataPaths.cs` | ✅ **Resolved** | Extracted from `UI/Screens/Learn/StudyConsoleView.cs` into `Infrastructure/Persistence/DbContext/`. Resolves UI-to-Persistence coupling. |
 | `CommandRegistry.cs` | `UI/Core/Registries/CommandRegistry.cs` | ✅ **Optimal** | Located correctly in `UI/Core/Registries` as it directly references `MenuNode` layout structures. |
 | `WorkspaceRegistry.cs` | `Infrastructure/Registries/WorkspaceRegistry.cs` | ✅ **Appropriate** | Encapsulates workspace filesystem scanning and cache. Abstracted via `IWorkspaceRegistry`. |
 | `ResourceRegistry.cs` | `Infrastructure/Registries/ResourceRegistry.cs` | ✅ **Appropriate** | Indexing and SHA-256 checksum logic for learning notes. Abstracted via `IResourceRegistry`. |
 | `AppPathManager.cs` | `Infrastructure/Services/AppPathManager.cs` | ✅ **Optimal** | Implements `IAppPathManager` singleton registered in `Bootstrapper.cs`. |
 | `ConfigService.cs` | `Infrastructure/Services/ConfigService.cs` | ✅ **Optimal** | Implements `IConfigService` singleton registered in `Bootstrapper.cs`. |
-| `LearnDataPaths.cs` | `Infrastructure/Persistence/Learning/LearnDataPaths.cs` | ℹ️ **Minor Suggestion** | Consider moving to `Infrastructure/Persistence/DbContext/` or `Infrastructure/Services/` in future passes for uniform data path discovery. |
 
 ---
 
 ## 4. Summary & Verification
 
 - **Total Unit/Integration Tests**: **117 Passed (100% PASS rate)**.
+- **Layer Architecture Compliance**: Enforced by `ArchitectureTests.cs` (zero infrastructure -> UI dependencies).
 - **Git Commit**: Clean working directory on branch `main`.

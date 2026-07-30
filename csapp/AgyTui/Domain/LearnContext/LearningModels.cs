@@ -1,5 +1,7 @@
 namespace AgyTui.Domain.LearnContext;
 
+public sealed record SrState(double EaseFactor, int IntervalDays, int Repetitions, DateTime? LastReviewed, DateTime? NextReview, string Status);
+
 public sealed record FlashCard(string Id, string Front, string Back, string? Hint, string? Mnemonic, string? ExampleSentence, string[] Tags, int Difficulty, SrState Sr);
 
 public sealed record DeckMeta(string Id, string Title, string Language, string Topic, string Level, string[] SourceNotes, string GeneratedAt, int Version);
