@@ -1,5 +1,3 @@
-using AgyTui.Infrastructure.Configuration;
-
 namespace AgyTui.Domain.AccountContext;
 
 public class AccountAggregate

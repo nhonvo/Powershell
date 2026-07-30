@@ -1,5 +1,3 @@
-using AgyTui.Infrastructure.Registries;
-
 namespace AgyTui.Domain.WorkspaceContext;
 
 public class WorkspaceAggregate
