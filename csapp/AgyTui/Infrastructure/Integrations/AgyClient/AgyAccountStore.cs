@@ -149,9 +149,17 @@ public class AgyAccountStore : IAgyAccountStore
         return [.. accounts];
     }
 
-    public AgyAccountStore(IAgyAccountRepository accountRepo)
+    private readonly Func<IAgyQuotaEngine> _quotaEngineFactory;
+    private readonly Func<IAgyVault> _vaultFactory;
+
+    public AgyAccountStore(
+        IAgyAccountRepository accountRepo,
+        Func<IAgyQuotaEngine>? quotaEngineFactory = null,
+        Func<IAgyVault>? vaultFactory = null)
     {
         _accountRepo = accountRepo;
+        _quotaEngineFactory = quotaEngineFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>());
+        _vaultFactory = vaultFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>());
     }
 
     public AgyAccountStore() : this(new SqliteAgyAccountRepository(new SqliteDatabase())) { }
@@ -186,9 +194,9 @@ public class AgyAccountStore : IAgyAccountStore
             }
         }
 
-        Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>().ClearStatsCache();
+        _quotaEngineFactory().ClearStatsCache();
         UpdateAccountMetadata(accountName);
-        Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>().BackupActiveToken(GetActiveAccount());
+        _vaultFactory().BackupActiveToken(GetActiveAccount());
 
         if (!temporary)
         {
@@ -197,7 +205,7 @@ public class AgyAccountStore : IAgyAccountStore
 
         var targetDirLoc = GetAccountDirectory(accountName);
         Environment.SetEnvironmentVariable("GEMINI_HOME", targetDirLoc);
-        Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>().RestoreActiveToken(accountName);
+        _vaultFactory().RestoreActiveToken(accountName);
 
         if (!temporary)
         {
@@ -252,7 +260,7 @@ public class AgyAccountStore : IAgyAccountStore
         {
             Directory.CreateDirectory(Path.Combine(destDir, sub));
         }
-        Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>().ClearStatsCache();
+        _quotaEngineFactory().ClearStatsCache();
     }
 
     public void DeleteAccount(string accountName)
@@ -277,7 +285,7 @@ public class AgyAccountStore : IAgyAccountStore
         {
             SetActiveAccount("default", false);
         }
-        Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>().ClearStatsCache();
+        _quotaEngineFactory().ClearStatsCache();
     }
 
     public void LogoutAccount(string accountName)
@@ -317,7 +325,7 @@ public class AgyAccountStore : IAgyAccountStore
             SpectrePanel.Info($"Launching OAuth login for '{accountName}'...");
             Helpers.ProcessRunner.RunInteractive("pwsh", ["-NoProfile", "-Command", $"$env:GEMINI_HOME='{targetDir}'; agy auth login"], null, targetDir);
         }
-        Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>().ClearStatsCache();
+        _quotaEngineFactory().ClearStatsCache();
     }
 
     public void PurgeAllNonDefaultAccounts()
@@ -345,7 +353,7 @@ public class AgyAccountStore : IAgyAccountStore
 
         LogoutAccount("default");
         SetActiveAccount("default", false);
-        Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>().ClearStatsCache();
+        _quotaEngineFactory().ClearStatsCache();
     }
 
     public bool IsAutoSwitchEnabled()

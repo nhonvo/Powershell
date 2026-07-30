@@ -580,6 +580,16 @@ public class CommandRouter : ICommandRouter
                     case "autocommit":
                         Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().ToggleNoAutoCommit();
                         break;
+                    case "cnav":
+                        SubPageNavigator.Run("proj");
+                        break;
+                    case "reset-agy":
+                    case "purge-accounts":
+                        SubPageAccountNavigator.PurgeAccounts();
+                        break;
+                    case "dotnet-info":
+                        Helpers.ProcessRunner.RunInteractive("dotnet", ["--info"]);
+                        break;
                     case "scaffold":
                         ProjectScaffolder.Scaffold();
                         break;
