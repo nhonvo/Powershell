@@ -9,6 +9,8 @@ using AgyTui.UI.Core.Commands;
 using AgyTui.UI.Core.State;
 using Microsoft.Extensions.DependencyInjection;
 
+using AgyTui.Infrastructure.Persistence.Seeding;
+
 namespace AgyTui.Infrastructure.Di;
 
 public static class Bootstrapper
@@ -37,13 +39,19 @@ public static class Bootstrapper
         services.AddSingleton<IAiCommitGenerator, AiCommitGenerator>();
         services.AddSingleton<IAiLearningGenerator, AiLearningGenerator>();
 
-        // SQLite Persistence
+        // SQLite Persistence & Seeding Pipeline
         services.AddSingleton<ISqliteDatabase, SqliteDatabase>();
         services.AddSingleton<SqliteMigrationEngine>();
         services.AddSingleton<ILearningDataSeeder, LearningDataSeeder>();
         services.AddSingleton<IConfigRepository, SqliteConfigRepository>();
         services.AddSingleton<IAgyAccountRepository, SqliteAgyAccountRepository>();
         services.AddSingleton<IWorkspaceRepository, SqliteWorkspaceRepository>();
+
+        services.AddSingleton<ISeeder, AccountSeeder>();
+        services.AddSingleton<ISeeder, WorkspaceSeeder>();
+        services.AddSingleton<ISeeder, LearningSeeder>();
+        services.AddSingleton<ISeeder, ThemeSeeder>();
+        services.AddSingleton<IMasterSeeder, MasterSeeder>();
 
         // Tool Integration Services
         services.AddSingleton<IAwsClient, AwsClient>();

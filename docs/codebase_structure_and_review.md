@@ -96,7 +96,15 @@ csapp/AgyTui/
 │   │   │   ├── JsonStudyRepository.cs          # Study Data JSON Repository
 │   │   │   ├── SqliteAgyAccountRepository.cs   # Account SQLite Repository
 │   │   │   ├── SqliteConfigRepository.cs       # Configuration SQLite Repository
-│   │   │   └── SqliteRepositoryBase.cs         # Generic Base SQLite Database Repository
+│   │   │   ├── SqliteRepositoryBase.cs         # Generic Base SQLite Database Repository
+│   │   │   └── SqliteWorkspaceRepository.cs    # Workspace SQLite Repository
+│   │   ├── Seeding/                            # Domain Data Seeding Flow
+│   │   │   ├── AccountSeeder.cs                # Default Account & Token Seeder
+│   │   │   ├── ISeeder.cs                      # Generic Seeder Interface
+│   │   │   ├── LearningSeeder.cs               # Flashcard & Quiz Seeder
+│   │   │   ├── MasterSeeder.cs                 # Master Seeding Pipeline Orchestrator
+│   │   │   ├── ThemeSeeder.cs                  # UI Theme Palette Seeder
+│   │   │   └── WorkspaceSeeder.cs              # Project Workspace & Alias Seeder
 │   │   └── SqliteMigrationEngine.cs            # Automatic SQLite Schema Migration Engine
 │   ├── Registries/
 │   │   ├── IdeCommandRegistry.cs               # IDE Custom Commands Registry
