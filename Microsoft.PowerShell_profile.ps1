@@ -446,6 +446,7 @@ Set-Alias -Name sqsattr -Value Get-LocalSQSAttributes -Force
 function Invoke-MultiAgent { param([string]$Query) Load-AgyTuiDll; [CommandRouter]::Route("ai", $Query) }
 function Invoke-ControlCenter {
     param([string]$CmdAlias, [object[]]$PassArgs)
+    $env:ENVIRONMENT = "Production"
     if (-not $CmdAlias -or $CmdAlias -eq "cc") {
         $tuiExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Release\net9.0\AgyTui.exe"
         if (Test-Path $tuiExe) {
@@ -455,6 +456,21 @@ function Invoke-ControlCenter {
     }
     Load-AgyTuiDll
     [CommandRouter]::Route($CmdAlias, $PassArgs)
+}
+
+function Invoke-ControlCenterDev {
+    param([string]$CmdAlias, [object[]]$PassArgs)
+    $env:ENVIRONMENT = "Development"
+    $tuiDevExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Debug\net9.0\AgyTui.exe"
+    if (Test-Path $tuiDevExe) {
+        Write-Host "🚀 Launching AgyTui [DEVELOPMENT MODE]..." -ForegroundColor Cyan
+        & $tuiDevExe
+        return
+    }
+    Write-Host "🔨 Building & Launching AgyTui [DEVELOPMENT MODE]..." -ForegroundColor Cyan
+    Push-Location (Join-Path $Global:ProfileRepoRoot "csapp\AgyTui")
+    dotnet run -c Debug -- @PassArgs
+    Pop-Location
 }
 
 function Reset-AgyAccountData {
@@ -473,6 +489,7 @@ Set-Alias -Name ai -Value Invoke-MultiAgent -Force
 Set-Alias -Name cai -Value Invoke-MultiAgent -Force
 Set-Alias -Name claude -Value Invoke-MultiAgent -Force
 Set-Alias -Name cc -Value Invoke-ControlCenter -Force
+Set-Alias -Name ccd -Value Invoke-ControlCenterDev -Force
 Set-Alias -Name cnav -Value Invoke-ControlCenterNavigator -Force
 Set-Alias -Name reset-agy -Value Reset-AgyAccountData -Force
 Set-Alias -Name purge-accounts -Value Purge-AgyAccounts -Force

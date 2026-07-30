@@ -50,6 +50,8 @@ public class ProfileAliasParityTests
         if (File.Exists(profilePath))
         {
             var content = File.ReadAllText(profilePath);
+            Assert.Contains("Set-Alias -Name cc", content);
+            Assert.Contains("Set-Alias -Name ccd", content);
             Assert.Contains("Set-Alias -Name cnav", content);
             Assert.Contains("Set-Alias -Name reset-agy", content);
             Assert.Contains("Set-Alias -Name purge-accounts", content);

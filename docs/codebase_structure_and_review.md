@@ -400,41 +400,42 @@ CREATE INDEX IF NOT EXISTS idx_flashcards_next_review ON flashcards(next_review)
 
 To ensure zero risk of corrupting production study data or user accounts during local feature development, `AgyTui` implements strict **Environment Isolation**:
 
-### 5.1 Environment Isolation Matrix
+### 5.1 PowerShell Command Triggers & Isolation Matrix
 
-| Dimension | Stable / Production (`Default`) | Development (`ENVIRONMENT=Development`) |
+Developers trigger each environment directly via explicit PowerShell profile shortcuts:
+- **`cc`**: Launches the **Stable / Production** version (`$env:ENVIRONMENT = "Production"`). Reads `agytui.db` and `profile.config.json`.
+- **`ccd`**: Launches the **Development** version (`$env:ENVIRONMENT = "Development"`). Reads `agytui.dev.db` and `profile.config.dev.json`.
+
+| Feature / Shortcut | Stable Command (`cc`) | Development Command (`ccd`) |
 | :--- | :--- | :--- |
-| **Execution Command** | `cc` / `AgyTui.exe` | `dotnet run --c Debug` |
-| **Config File** | `profile.config.json` | `profile.config.dev.json` |
-| **SQLite Database** | `agytui.db` | `agytui.dev.db` |
-| **Data Seeding** | Master Production Seeder | Dev Sandbox Mock Seeder |
-| **Data Safety** | Protected Production Data | Wiped & Re-seeded freely during testing |
+| **PowerShell Function** | `Invoke-ControlCenter` | `Invoke-ControlCenterDev` |
+| **Runtime Environment** | `ENVIRONMENT=Production` | `ENVIRONMENT=Development` |
+| **Executable Binary** | `csapp/AgyTui/bin/Release/net9.0/AgyTui.exe` | `csapp/AgyTui/bin/Debug/net9.0/AgyTui.exe` |
+| **Configuration File** | `profile.config.json` | `profile.config.dev.json` |
+| **SQLite DB Database** | `agytui.db` | `agytui.dev.db` |
+| **Data Safety & State** | Protected Daily Production Data | Isolated Sandbox Wiped & Tested Freely |
 
-### 5.2 Dual-Execution Flow Diagram
+### 5.2 PowerShell Trigger Execution Diagram
 
 ```mermaid
 flowchart TD
-    Start([App Invocation]) --> CheckEnv{Check Environment<br/>`ENVIRONMENT` / `AGYTUI_ENV`}
+    UserCmd([Developer Types Command]) --> Choice{Which Command?}
     
-    CheckEnv -- Development --> DevPath[Dev Environment Activated]
-    CheckEnv -- Production / Default --> ProdPath[Stable/Prod Environment Activated]
+    Choice -- "cc" --> StableFunc[Invoke-ControlCenter]
+    Choice -- "ccd" --> DevFunc[Invoke-ControlCenterDev]
 
-    subgraph Dev_Environment [Dev Sandbox - Isolated]
-        DevPath --> DevDB[DB File: agytui.dev.db]
-        DevPath --> DevCfg[Config: profile.config.dev.json]
-        DevDB --> DevMigrate[Apply Dev Migrations V1..V4]
-        DevMigrate --> DevSeed[MasterSeeder: Dev Mock Decks & Accounts]
+    subgraph Prod_Trigger ["cc - Stable Production Workspace"]
+        StableFunc --> SetProdEnv["$env:ENVIRONMENT = 'Production'"]
+        SetProdEnv --> ExecProd["Run Release Binary (agytui.db)"]
     end
 
-    subgraph Prod_Environment [Stable Workspace - Protected]
-        ProdPath --> ProdDB[DB File: agytui.db]
-        ProdPath --> ProdCfg[Config: profile.config.json]
-        ProdDB --> ProdMigrate[Apply Production Migrations V1..V4]
-        ProdMigrate --> ProdSeed[MasterSeeder: Master Decks & Workspaces]
+    subgraph Dev_Trigger ["ccd - Isolated Dev Sandbox"]
+        DevFunc --> SetDevEnv["$env:ENVIRONMENT = 'Development'"]
+        SetDevEnv --> ExecDev["Run Debug Binary / dotnet run (agytui.dev.db)"]
     end
 
-    DevSeed --> UI([Spectre.Console Terminal UI Engine Launch])
-    ProdSeed --> UI
+    ExecProd --> UI([Spectre.Console Terminal Dashboard])
+    ExecDev --> UI
 ```
 
 ---
