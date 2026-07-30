@@ -221,9 +221,7 @@ public class AgyVault : IAgyVault
                         SpectrePanel.Warning($"Keyring matches account '{matchedAcc}'. Auto-switching active account.");
                     }
                     savedAcc = matchedAcc;
-                    Directory.CreateDirectory(AgySourceHome);
-                    File.WriteAllText(AgyAccountCore.AgyActiveAccountFile, savedAcc, Encoding.UTF8);
-                    Environment.SetEnvironmentVariable("GEMINI_HOME", AgyAccountCore.GetAccountDirectory(savedAcc));
+                    AgyAccountCore.SetActiveAccount(savedAcc, false);
                 }
                 var accDir = AgyAccountCore.GetAccountDirectory(savedAcc);
                 Directory.CreateDirectory(accDir);

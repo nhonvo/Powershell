@@ -9,6 +9,8 @@ public interface IAgyAccountStore
     void AddAccount(string accountName);
     void DeleteAccount(string accountName);
     void LogoutAccount(string accountName);
+    void AuthenticateAccount(string accountName);
+    void PurgeAllNonDefaultAccounts();
     bool IsAutoSwitchEnabled();
     void ToggleAutoSwitch();
     string? FindAutoSwitchCandidate();

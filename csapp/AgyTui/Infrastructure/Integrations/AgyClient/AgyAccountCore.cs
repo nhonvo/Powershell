@@ -40,9 +40,6 @@ public static class AgyAccountCore
         }
     }
 
-    public static string ActiveAccountFile => Path.Combine(AgySourceHome, "active_account.txt");
-    public static string AgyActiveAccountFile => ActiveAccountFile;
-
     private static readonly TtlCache<string, bool> _networkCache = new(TimeSpan.FromSeconds(10));
 
     public static bool CheckNetworkStatus()
@@ -198,53 +195,8 @@ public static class AgyAccountCore
         return next;
     }
 
-    public static void PurgeAllNonDefaultAccounts()
-    {
-        var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
-        var publicDir = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\", "Users", "Public");
-        var prefixParent = Path.GetDirectoryName(AgyAccountPrefix);
-
-        var scanPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        if (Directory.Exists(userProfile)) scanPaths.Add(userProfile);
-        if (Directory.Exists(publicDir)) scanPaths.Add(publicDir);
-        if (prefixParent != null && Directory.Exists(prefixParent)) scanPaths.Add(prefixParent);
-
-        foreach (var path in scanPaths)
-        {
-            try
-            {
-                foreach (var dir in Directory.GetDirectories(path, ".gemini_*"))
-                {
-                    try { Directory.Delete(dir, true); } catch { }
-                }
-            }
-            catch { }
-        }
-
-        LogoutAccount("default");
-        SetActiveAccount("default", false);
-        ClearStatsCache();
-    }
-
-    public static void AuthenticateAccount(string accountName)
-    {
-        SetActiveAccount(accountName, false);
-        var targetDir = GetAccountDirectory(accountName);
-        Environment.SetEnvironmentVariable("GEMINI_HOME", targetDir);
-
-        var agyExe = Helpers.ProcessRunner.FindOnPath("agy") ?? Helpers.ProcessRunner.FindOnPath("antigravity");
-        if (!string.IsNullOrEmpty(agyExe))
-        {
-            SpectrePanel.Info($"Launching OAuth login for '{accountName}' via '{agyExe}'...");
-            Helpers.ProcessRunner.RunInteractive(agyExe, ["auth", "login"], new Dictionary<string, string?> { ["GEMINI_HOME"] = targetDir }, targetDir);
-        }
-        else
-        {
-            SpectrePanel.Info($"Launching OAuth login for '{accountName}'...");
-            Helpers.ProcessRunner.RunInteractive("pwsh", ["-NoProfile", "-Command", $"$env:GEMINI_HOME='{targetDir}'; agy auth login"], null, targetDir);
-        }
-        ClearStatsCache();
-    }
+    public static void PurgeAllNonDefaultAccounts() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().PurgeAllNonDefaultAccounts();
+    public static void AuthenticateAccount(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().AuthenticateAccount(accountName);
 
     // Direct delegation facade calls to DI services
     public static void BackupActiveToken(string accountName) => Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>().BackupActiveToken(accountName);

@@ -5,21 +5,6 @@ public class AgyAccountStore : IAgyAccountStore
     private readonly IAgyAccountRepository _accountRepo;
     private string AgySourceHome => AgyAccountCore.AgySourceHome;
 
-    private IEnumerable<string> GetActiveAccountFileCandidates()
-    {
-        var list = new List<string>
-        {
-            Path.Combine(AgySourceHome, "active_account.txt"),
-            Path.Combine(AgySourceHome, "active_account")
-        };
-
-        var projectGemini = AppPaths.GeminiHome;
-        list.Add(Path.Combine(projectGemini, "active_account.txt"));
-        list.Add(Path.Combine(projectGemini, "active_account"));
-
-        return list.Distinct(StringComparer.OrdinalIgnoreCase);
-    }
-
     public AgyAccountStore(IAgyAccountRepository accountRepo)
     {
         _accountRepo = accountRepo;
@@ -32,16 +17,13 @@ public class AgyAccountStore : IAgyAccountStore
         var dbActive = _accountRepo.GetActiveAccount();
         if (!string.IsNullOrEmpty(dbActive)) return dbActive;
 
-        foreach (var file in GetActiveAccountFileCandidates())
+        var envGemini = Environment.GetEnvironmentVariable("GEMINI_HOME");
+        if (!string.IsNullOrEmpty(envGemini) && Directory.Exists(envGemini))
         {
-            if (File.Exists(file))
+            var folderName = Path.GetFileName(envGemini);
+            if (folderName.StartsWith(".gemini_"))
             {
-                try
-                {
-                    var acc = File.ReadAllText(file).Trim();
-                    if (!string.IsNullOrEmpty(acc)) return acc;
-                }
-                catch { }
+                return folderName[8..];
             }
         }
         return "default";
@@ -62,83 +44,24 @@ public class AgyAccountStore : IAgyAccountStore
 
         AgyAccountCore.ClearStatsCache();
         AgyAccountCore.UpdateAccountMetadata(accountName);
-        AgyAccountCore.BackupActiveToken(AgyAccountCore.GetActiveAccount());
-        if (!temporary) _accountRepo.SetActiveAccount(accountName);
+        AgyAccountCore.BackupActiveToken(GetActiveAccount());
 
-        if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
+        if (!temporary)
         {
-            Environment.SetEnvironmentVariable("GEMINI_HOME", AgySourceHome);
-            if (!temporary)
-            {
-                try
-                {
-                    Directory.CreateDirectory(AgySourceHome);
-                    File.WriteAllText(AgyAccountCore.AgyActiveAccountFile, "default", Encoding.UTF8);
-                }
-                catch { }
-            }
-            AgyAccountCore.RestoreActiveToken("default");
-            SpectrePanel.Success("Switched to default Antigravity account (Primary).");
-            return;
+            _accountRepo.SetActiveAccount(accountName);
         }
 
         var targetDirLoc = AgyAccountCore.GetAccountDirectory(accountName);
-        var defaultIdFile = Path.Combine(AgySourceHome, "installation_id");
-        var targetIdFile = Path.Combine(targetDirLoc, "installation_id");
-        string defaultId = "";
-        if (File.Exists(defaultIdFile)) defaultId = File.ReadAllText(defaultIdFile).Trim();
-        string targetId = "";
-        if (File.Exists(targetIdFile)) targetId = File.ReadAllText(targetIdFile).Trim();
-
-        if (string.IsNullOrWhiteSpace(targetId) || targetId == defaultId)
-        {
-            try
-            {
-                Directory.CreateDirectory(targetDirLoc);
-                var newId = Guid.NewGuid().ToString();
-                File.WriteAllText(targetIdFile, newId);
-                SpectrePanel.Warning($"Re-generated unique installation ID for '{accountName}' to separate credentials.");
-            }
-            catch { }
-        }
-
         Environment.SetEnvironmentVariable("GEMINI_HOME", targetDirLoc);
         AgyAccountCore.RestoreActiveToken(accountName);
 
         if (!temporary)
         {
-            try
-            {
-                foreach (var file in GetActiveAccountFileCandidates())
-                {
-                    try
-                    {
-                        var dir = Path.GetDirectoryName(file);
-                        if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-                        File.WriteAllText(file, accountName);
-                    }
-                    catch { }
-                }
-
-                try
-                {
-                    var claudeMarker = Path.Combine(AgySourceHome, "last_claude_account.txt");
-                    var dir = Path.GetDirectoryName(claudeMarker);
-                    if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-                    File.WriteAllText(claudeMarker, accountName);
-                }
-                catch { }
-
-                SpectrePanel.Success($"Switched to account '{accountName}' (Persistent).");
-            }
-            catch
-            {
-                SpectrePanel.Error("Failed to update active account file.");
-            }
+            SpectrePanel.Success($"Switched active account context to '{accountName}' (Persistent SQLite DB).");
         }
         else
         {
-            SpectrePanel.Warning($"Switched to account '{accountName}' (Temporary - current session only).");
+            SpectrePanel.Warning($"Switched to account '{accountName}' (Temporary session).");
         }
     }
 
@@ -204,12 +127,6 @@ public class AgyAccountStore : IAgyAccountStore
         if (wasActive)
         {
             AgyKeyringHelper.DeleteToken("gemini:antigravity");
-            try
-            {
-                Directory.CreateDirectory(AgySourceHome);
-                File.WriteAllText(AgyAccountCore.AgyActiveAccountFile, "default", Encoding.UTF8);
-            }
-            catch { }
         }
 
         Directory.Delete(targetDir, true);
@@ -239,6 +156,54 @@ public class AgyAccountStore : IAgyAccountStore
                 try { File.Delete(p); } catch { }
             }
         }
+    }
+
+    public void AuthenticateAccount(string accountName)
+    {
+        SetActiveAccount(accountName, false);
+        var targetDir = AgyAccountCore.GetAccountDirectory(accountName);
+        Environment.SetEnvironmentVariable("GEMINI_HOME", targetDir);
+
+        var agyExe = Helpers.ProcessRunner.FindOnPath("agy") ?? Helpers.ProcessRunner.FindOnPath("antigravity");
+        if (!string.IsNullOrEmpty(agyExe))
+        {
+            SpectrePanel.Info($"Launching OAuth login for '{accountName}' via '{agyExe}'...");
+            Helpers.ProcessRunner.RunInteractive(agyExe, ["auth", "login"], new Dictionary<string, string?> { ["GEMINI_HOME"] = targetDir }, targetDir);
+        }
+        else
+        {
+            SpectrePanel.Info($"Launching OAuth login for '{accountName}'...");
+            Helpers.ProcessRunner.RunInteractive("pwsh", ["-NoProfile", "-Command", $"$env:GEMINI_HOME='{targetDir}'; agy auth login"], null, targetDir);
+        }
+        AgyAccountCore.ClearStatsCache();
+    }
+
+    public void PurgeAllNonDefaultAccounts()
+    {
+        var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
+        var publicDir = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\", "Users", "Public");
+        var prefixParent = Path.GetDirectoryName(AgyAccountCore.AgyAccountPrefix);
+
+        var scanPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (Directory.Exists(userProfile)) scanPaths.Add(userProfile);
+        if (Directory.Exists(publicDir)) scanPaths.Add(publicDir);
+        if (prefixParent != null && Directory.Exists(prefixParent)) scanPaths.Add(prefixParent);
+
+        foreach (var path in scanPaths)
+        {
+            try
+            {
+                foreach (var dir in Directory.GetDirectories(path, ".gemini_*"))
+                {
+                    try { Directory.Delete(dir, true); } catch { }
+                }
+            }
+            catch { }
+        }
+
+        LogoutAccount("default");
+        SetActiveAccount("default", false);
+        AgyAccountCore.ClearStatsCache();
     }
 
     public bool IsAutoSwitchEnabled()
