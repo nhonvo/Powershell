@@ -48,27 +48,40 @@ public static class WorkspaceRegistry
     {
         return WorkspacesCache.GetOrCompute("workspaces", () =>
         {
-            WorkspaceEntry[] items = [];
+            var items = new List<WorkspaceEntry>();
             if (File.Exists(ConfigFile))
             {
                 try
                 {
                     var raw = File.ReadAllText(ConfigFile);
-                    items = JsonSerializer.Deserialize<WorkspaceEntry[]>(raw)?
+                    var loaded = JsonSerializer.Deserialize<WorkspaceEntry[]>(raw)?
                         .Where(w => !string.IsNullOrEmpty(w.WorkspacePath) && Directory.Exists(w.WorkspacePath))
                         .Select(w => string.IsNullOrEmpty(w.Alias) ? w with { Alias = DeriveAlias(w.Name) } : w)
-                        .ToArray() ?? [];
+                        .ToList() ?? new List<WorkspaceEntry>();
+                    items.AddRange(loaded);
                 }
                 catch (Exception) { }
             }
 
-            if (items.Length == 0)
+            var discovered = AutoDiscoverWorkspaces();
+            bool addedNew = false;
+            var existingPaths = new HashSet<string>(items.Select(i => i.WorkspacePath), StringComparer.OrdinalIgnoreCase);
+
+            foreach (var disc in discovered)
             {
-                items = AutoDiscoverWorkspaces();
-                if (items.Length > 0) SaveWorkspaces(items);
+                if (existingPaths.Add(disc.WorkspacePath))
+                {
+                    items.Add(disc);
+                    addedNew = true;
+                }
             }
 
-            return items;
+            if (addedNew || !File.Exists(ConfigFile))
+            {
+                SaveWorkspaces(items.ToArray());
+            }
+
+            return items.ToArray();
         });
     }
 
@@ -106,7 +119,6 @@ public static class WorkspaceRegistry
             }
         }
 
-        // 1. Current working directory
         try
         {
             var currentDir = Directory.GetCurrentDirectory();
@@ -114,92 +126,97 @@ public static class WorkspaceRegistry
         }
         catch { }
 
-        // 2. PowerShell profile root
         var userProfile = AppPaths.UserProfileDir;
         TryAdd("Powershell Profile", Path.Combine(userProfile, "Documents", "Powershell"));
 
-        // 3. Candidate base project directories (including C:\Users\sshuser\project)
         var searchBases = new List<string>();
-        if (!string.IsNullOrEmpty(Config.Current.Project.BaseDir)) searchBases.Add(Config.Current.Project.BaseDir);
-        if (Directory.Exists(Path.Combine(userProfile, "project"))) searchBases.Add(Path.Combine(userProfile, "project"));
-        searchBases.Add(Path.Combine(userProfile, "Documents"));
-        searchBases.Add(Path.Combine(userProfile, "Desktop"));
-        searchBases.Add(Path.Combine(userProfile, "Desktop", "project"));
 
-        foreach (var baseDir in searchBases)
+        if (!string.IsNullOrEmpty(Config.Current.Project.BaseDir))
+            searchBases.Add(Config.Current.Project.BaseDir);
+
+        if (Config.Current.Project.SearchPaths != null)
         {
-            if (!Directory.Exists(baseDir)) continue;
+            foreach (var sp in Config.Current.Project.SearchPaths)
+            {
+                if (!string.IsNullOrEmpty(sp)) searchBases.Add(sp);
+            }
+        }
+
+        var usersParent = Path.GetDirectoryName(userProfile) ?? @"C:\Users";
+        if (Directory.Exists(usersParent))
+        {
             try
             {
-                var subDirs = Directory.GetDirectories(baseDir);
-                foreach (var dir in subDirs)
+                foreach (var uDir in Directory.GetDirectories(usersParent))
                 {
-                    try
-                    {
-                        var dirName = Path.GetFileName(dir);
-                        if (dirName.StartsWith(".") || dirName.Equals("node_modules", StringComparison.OrdinalIgnoreCase)) continue;
-
-                        if (Directory.Exists(Path.Combine(dir, ".git")) ||
-                            Directory.GetFiles(dir, "*.csproj").Length > 0 ||
-                            Directory.GetFiles(dir, "*.sln").Length > 0 ||
-                            File.Exists(Path.Combine(dir, "package.json")))
-                        {
-                            TryAdd(dirName, dir);
-                        }
-                    }
-                    catch { }
+                    searchBases.Add(Path.Combine(uDir, "project"));
+                    searchBases.Add(Path.Combine(uDir, "project", "learning"));
+                    searchBases.Add(Path.Combine(uDir, "learning"));
+                    searchBases.Add(Path.Combine(uDir, "Documents"));
+                    searchBases.Add(Path.Combine(uDir, "Desktop"));
                 }
             }
             catch { }
+        }
+
+        foreach (var baseDir in searchBases.Distinct(StringComparer.OrdinalIgnoreCase))
+        {
+            if (!Directory.Exists(baseDir)) continue;
+            TryScanDirectory(baseDir, 0, 3, TryAdd);
         }
 
         return list.ToArray();
     }
 
+    private static void TryScanDirectory(string dir, int depth, int maxDepth, Action<string, string> tryAdd)
+    {
+        if (depth > maxDepth) return;
+        try
+        {
+            var dirName = Path.GetFileName(dir);
+            if (dirName.StartsWith(".") || dirName.Equals("node_modules", StringComparison.OrdinalIgnoreCase) || dirName.Equals("bin", StringComparison.OrdinalIgnoreCase) || dirName.Equals("obj", StringComparison.OrdinalIgnoreCase)) return;
+
+            bool isProject = Directory.Exists(Path.Combine(dir, ".git")) ||
+                             Directory.GetFiles(dir, "*.csproj").Length > 0 ||
+                             Directory.GetFiles(dir, "*.sln").Length > 0 ||
+                             File.Exists(Path.Combine(dir, "package.json")) ||
+                             File.Exists(Path.Combine(dir, "Cargo.toml")) ||
+                             File.Exists(Path.Combine(dir, "go.mod")) ||
+                             File.Exists(Path.Combine(dir, "requirements.txt"));
+
+            if (isProject || depth == 0)
+            {
+                tryAdd(dirName, dir);
+            }
+
+            foreach (var sub in Directory.GetDirectories(dir))
+            {
+                var subName = Path.GetFileName(sub);
+                if (subName.StartsWith(".") || subName.Equals("node_modules", StringComparison.OrdinalIgnoreCase) || subName.Equals("bin", StringComparison.OrdinalIgnoreCase) || subName.Equals("obj", StringComparison.OrdinalIgnoreCase)) continue;
+
+                TryScanDirectory(sub, depth + 1, maxDepth, tryAdd);
+            }
+        }
+        catch { }
+    }
+
     public static int SyncAllProjects(string? customBaseDir = null)
     {
-        var list = new List<WorkspaceEntry>();
-        var addedPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var list = new List<WorkspaceEntry>(GetWorkspaces());
+        var discovered = AutoDiscoverWorkspaces();
+        var existingPaths = new HashSet<string>(list.Select(i => i.WorkspacePath), StringComparer.OrdinalIgnoreCase);
+        int addedCount = 0;
 
-        void TryAdd(string name, string path)
+        foreach (var disc in discovered)
         {
-            if (!string.IsNullOrEmpty(path) && Directory.Exists(path) && addedPaths.Add(path))
+            if (existingPaths.Add(disc.WorkspacePath))
             {
-                var alias = DeriveAlias(name);
-                list.Add(new WorkspaceEntry(name, path, "default", new[] { "scanned" }, null, alias));
+                list.Add(disc);
+                addedCount++;
             }
         }
 
-        var repoRoot = Config.GetProfileRepoRoot();
-        if (Directory.Exists(repoRoot)) TryAdd("Powershell", repoRoot);
-
-        var searchBases = new List<string>();
-        if (!string.IsNullOrEmpty(customBaseDir) && Directory.Exists(customBaseDir)) searchBases.Add(customBaseDir);
-        if (!string.IsNullOrEmpty(Config.Current.Project.BaseDir) && Directory.Exists(Config.Current.Project.BaseDir)) searchBases.Add(Config.Current.Project.BaseDir);
-        var userProfile = AppPaths.UserProfileDir;
-        if (Directory.Exists(Path.Combine(userProfile, "project"))) searchBases.Add(Path.Combine(userProfile, "project"));
-        if (Directory.Exists(Path.Combine(userProfile, "Desktop", "project"))) searchBases.Add(Path.Combine(userProfile, "Desktop", "project"));
-
-        foreach (var baseDir in searchBases)
-        {
-            if (!Directory.Exists(baseDir)) continue;
-            try
-            {
-                foreach (var dir in Directory.GetDirectories(baseDir))
-                {
-                    try
-                    {
-                        var dirName = Path.GetFileName(dir);
-                        if (dirName.StartsWith(".") || dirName.Equals("node_modules", StringComparison.OrdinalIgnoreCase)) continue;
-                        TryAdd(dirName, dir);
-                    }
-                    catch { }
-                }
-            }
-            catch { }
-        }
-
-        if (list.Count > 0)
+        if (addedCount > 0 || !File.Exists(ConfigFile))
         {
             SaveWorkspaces(list.ToArray());
         }
