@@ -52,8 +52,8 @@ public sealed class EnvironmentConfig
 {
     public string PoshThemesPath { get; set; } = "psapp/asset/powershell-themes";
     public string PsModulePath { get; set; } = "psapp/Modules";
-    public bool SkipDllLoad { get; set; } = false;
-    public bool LoadDll { get; set; } = false;
+    public bool EnableFastStartup { get; set; } = false;
+    public bool ForceLoadRedirected { get; set; } = false;
     public string Theme { get; set; } = "neko";
 }
 

@@ -1,4 +1,17 @@
 {
+  // Shell environment settings loaded by Microsoft.PowerShell_profile.ps1 at startup
+  "Environment": {
+    "PoshThemesPath": "psapp/asset/powershell-themes",
+    "PsModulePath": "psapp/Modules",
+    "EnableFastStartup": false,
+    "ForceLoadRedirected": false,
+    "Theme": "neko"
+  },
+  "Proxy": {
+    "HttpProxy": "",
+    "HttpsProxy": "",
+    "NoProxy": ""
+  },
   "Ui": {
     "Mode": "flat-tree",
     "Density": "compact",
@@ -35,17 +48,5 @@
   },
   "Obsidian": {
     "VaultPath": ""
-  },
-  "Proxy": {
-    "HttpProxy": "",
-    "HttpsProxy": "",
-    "NoProxy": ""
-  },
-  "Environment": {
-    "PoshThemesPath": "psapp/asset/powershell-themes",
-    "PsModulePath": "psapp/Modules",
-    "SkipDllLoad": false,
-    "LoadDll": false,
-    "Theme": "neko"
   }
 }

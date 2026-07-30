@@ -26,9 +26,9 @@ if (Test-Path $configPath) {
     } catch {}
 }
 
-# Determine Flag State Matrix
-$skipDll = ($null -ne $config.Environment -and $config.Environment.SkipDllLoad -eq $true) -or $env:AGY_SKIP_DLL_LOAD -eq 'true'
-$loadDll = ($null -ne $config.Environment -and $config.Environment.LoadDll -eq $true)     -or $env:AGY_LOAD_DLL     -eq 'true'
+# Determine Flag State Matrix: Fast Startup vs Normal Load
+$fastStartup = ($null -ne $config.Environment -and $config.Environment.EnableFastStartup -eq $true) -or $env:AGY_ENABLE_FAST_STARTUP -eq 'true' -or $env:AGY_SKIP_DLL_LOAD -eq 'true'
+$forceLoad   = ($null -ne $config.Environment -and $config.Environment.ForceLoadRedirected -eq $true) -or $env:AGY_FORCE_LOAD_REDIRECTED -eq 'true' -or $env:AGY_LOAD_DLL -eq 'true'
 
 # --- Apply Environment Variables from JSON Config ---
 if ($config.Environment) {
@@ -47,9 +47,9 @@ if ($config.Environment) {
         }
     }
 
-    if ($null -ne $config.Environment.SkipDllLoad) { $env:AGY_SKIP_DLL_LOAD = if ($config.Environment.SkipDllLoad) { "true" } else { "false" } }
-    if ($null -ne $config.Environment.LoadDll)     { $env:AGY_LOAD_DLL     = if ($config.Environment.LoadDll)     { "true" } else { "false" } }
-    if ($config.Environment.Theme)       { $env:THEME            = "$($config.Environment.Theme)" }
+    if ($null -ne $config.Environment.EnableFastStartup)  { $env:AGY_ENABLE_FAST_STARTUP  = if ($config.Environment.EnableFastStartup)  { "true" } else { "false" } }
+    if ($null -ne $config.Environment.ForceLoadRedirected) { $env:AGY_FORCE_LOAD_REDIRECTED = if ($config.Environment.ForceLoadRedirected) { "true" } else { "false" } }
+    if ($config.Environment.Theme)             { $env:THEME                  = "$($config.Environment.Theme)" }
 } else {
     $env:POSH_THEMES_PATH = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "psapp\asset\powershell-themes"
     $localModules = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "psapp\Modules"
@@ -92,7 +92,7 @@ function Get-AgyTuiDllPath {
 
 function Load-AgyTuiDll {
     param([bool]$SkipBuildCheck = $true, [bool]$ForceLoad = $false)
-    $shouldLoad = (-not $skipDll) -and ($ForceLoad -or $loadDll -or (-not [Console]::IsOutputRedirected))
+    $shouldLoad = (-not $fastStartup) -and ($ForceLoad -or $forceLoad -or (-not [Console]::IsOutputRedirected))
     if (-not $shouldLoad) { return }
 
     if ($null -eq ([System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTui" })) {
@@ -156,7 +156,7 @@ function Load-AgyTuiDll {
     } catch {}
 }
 
-if (-not $skipDll -and -not [Console]::IsOutputRedirected) {
+if (-not $fastStartup -and -not [Console]::IsOutputRedirected) {
     Load-AgyTuiDll
 }
 #endregion
