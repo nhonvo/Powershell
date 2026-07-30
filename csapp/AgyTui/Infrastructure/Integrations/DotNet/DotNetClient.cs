@@ -36,16 +36,29 @@ public class DotNetClient : CliToolWrapper, IDotNetClient
 
     private int RunDotnetWithTarget(string command, string? targetOrWorkingDir)
     {
+        string FormatCommand(string cmd, string target)
+        {
+            if (target.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase) || target.EndsWith(".sln", StringComparison.OrdinalIgnoreCase))
+            {
+                if (cmd.Equals("run", StringComparison.OrdinalIgnoreCase) || cmd.StartsWith("watch", StringComparison.OrdinalIgnoreCase))
+                {
+                    return $"{cmd} --project \"{target}\"";
+                }
+                return $"{cmd} \"{target}\"";
+            }
+            return cmd;
+        }
+
         if (!string.IsNullOrEmpty(targetOrWorkingDir))
         {
             if (File.Exists(targetOrWorkingDir) || targetOrWorkingDir.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase) || targetOrWorkingDir.EndsWith(".sln", StringComparison.OrdinalIgnoreCase))
             {
-                return RunDotnet($"{command} \"{targetOrWorkingDir}\"", null);
+                return RunDotnet(FormatCommand(command, targetOrWorkingDir), null);
             }
             if (Directory.Exists(targetOrWorkingDir))
             {
                 var csInDir = Directory.GetFiles(targetOrWorkingDir, "*.csproj", SearchOption.TopDirectoryOnly);
-                if (csInDir.Length > 0) return RunDotnet($"{command} \"{csInDir[0]}\"", targetOrWorkingDir);
+                if (csInDir.Length > 0) return RunDotnet(FormatCommand(command, csInDir[0]), targetOrWorkingDir);
             }
         }
 
@@ -60,7 +73,7 @@ public class DotNetClient : CliToolWrapper, IDotNetClient
 
             if (!string.IsNullOrEmpty(csSub))
             {
-                return RunDotnet($"{command} \"{csSub}\"", cwd);
+                return RunDotnet(FormatCommand(command, csSub), cwd);
             }
         }
 
@@ -84,7 +97,7 @@ public class DotNetClient : CliToolWrapper, IDotNetClient
     public int Pack(string? projectPath = null, string outputDir = "nupkg")
     {
         SpectrePanel.Info("Packing NuGet package...");
-        var exitCode = RunDotnet($"pack -c Release -o {outputDir}", projectPath);
+        var exitCode = RunDotnetWithTarget($"pack -c Release -o {outputDir}", projectPath);
         if (exitCode == 0) SpectrePanel.Success($"Package generated in ./{outputDir}/ directory.");
         else SpectrePanel.Error($"dotnet pack failed (exit {exitCode}).");
         return exitCode;
@@ -133,7 +146,7 @@ public class DotNetClient : CliToolWrapper, IDotNetClient
         return 0;
     }
 
-    public int Watch(string? projectPath = null) => RunDotnet("watch run", projectPath);
+    public int Watch(string? projectPath = null) => RunDotnetWithTarget("watch run", projectPath);
 
     public int AddMigration(string migrationName, string? project = null, string? context = null)
     {
