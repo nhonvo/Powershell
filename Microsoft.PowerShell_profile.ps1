@@ -73,20 +73,15 @@ if ($config.Proxy) {
 $Global:AgyTuiAppProject = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\AgyTui.csproj"
 
 function Get-AgyTuiDllPath {
-    $candidates = @()
+    $releasePath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin\Release\net9.0\AgyTui.dll"
+    if (Test-Path $releasePath) { return $releasePath }
+
+    $debugPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin\Debug\net9.0\AgyTui.dll"
+    if (Test-Path $debugPath) { return $debugPath }
+
     $distPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\dist\AgyTui.dll"
-    if (Test-Path $distPath) { $candidates += Get-Item $distPath }
+    if (Test-Path $distPath) { return $distPath }
 
-    $binBase = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin"
-    if (Test-Path $binBase) {
-        $binFiles = Get-ChildItem -Path $binBase -Filter "AgyTui.dll" -Recurse -ErrorAction SilentlyContinue
-        if ($binFiles) { $candidates += $binFiles }
-    }
-
-    if ($candidates.Count -gt 0) {
-        $best = $candidates | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-        return $best.FullName
-    }
     return $null
 }
 
@@ -448,7 +443,18 @@ Set-Alias -Name sqsattr -Value Get-LocalSQSAttributes -Force
 # ==============================================================================
 
 function Invoke-MultiAgent { param([string]$Query) Load-AgyTuiDll; [CommandRouter]::Route("ai", $Query) }
-function Invoke-ControlCenter { param([string]$CmdAlias, [object[]]$PassArgs) Load-AgyTuiDll; [CommandRouter]::Route($CmdAlias, $PassArgs) }
+function Invoke-ControlCenter {
+    param([string]$CmdAlias, [object[]]$PassArgs)
+    if (-not $CmdAlias -or $CmdAlias -eq "cc") {
+        $tuiExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Release\net9.0\AgyTui.exe"
+        if (Test-Path $tuiExe) {
+            & $tuiExe
+            return
+        }
+    }
+    Load-AgyTuiDll
+    [CommandRouter]::Route($CmdAlias, $PassArgs)
+}
 
 Set-Alias -Name ai -Value Invoke-MultiAgent -Force
 Set-Alias -Name cai -Value Invoke-MultiAgent -Force
