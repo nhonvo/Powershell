@@ -488,8 +488,11 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     var hk = Icons.GetCategoryHotkey(row.Node.Label);
                     var hkSuffix = string.IsNullOrEmpty(hk) ? "" : $" [dim]({hk})[/]";
 
+                    var rawCatLabel = row.Node.Label.Trim();
+                    var cleanCatLabel = rawCatLabel.StartsWith('[') && rawCatLabel.EndsWith(']') ? rawCatLabel[1..^1] : rawCatLabel;
+
                     var signMarkup = $"[bold {AgyThemeColors.Secondary}]{sign}[/]";
-                    var boldText = string.IsNullOrEmpty(rawQ) ? row.Node.Label.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(row.Node.Label, rawQ);
+                    var boldText = string.IsNullOrEmpty(rawQ) ? cleanCatLabel.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(cleanCatLabel, rawQ);
                     var safeText = $"{catIcon} {boldText}";
                     var label = isSelected ? $"[{AgyThemeColors.Selected} bold]{sign} {safeText}[/]{hkSuffix}" : $"{signMarkup} [bold {AgyThemeColors.Accent}]{safeText}[/]{hkSuffix}";
                     grid.AddRow(new Markup($"{prefix}{label}"));
@@ -500,6 +503,10 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     var sign = isExpanded ? "[[-]]" : "[[+]]";
                     var rawLabel = row.Node.Label.Trim();
                     var cleanLabelRaw = System.Text.RegularExpressions.Regex.Replace(rawLabel, @"^\[/[^\]]+\]\s*", "");
+                    if (cleanLabelRaw.StartsWith('[') && cleanLabelRaw.EndsWith(']'))
+                    {
+                        cleanLabelRaw = cleanLabelRaw[1..^1];
+                    }
                     var boldText = string.IsNullOrEmpty(rawQ) ? cleanLabelRaw.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(cleanLabelRaw, rawQ);
 
                     var signMarkup = $"[bold {AgyThemeColors.Secondary}]{sign}[/]";
