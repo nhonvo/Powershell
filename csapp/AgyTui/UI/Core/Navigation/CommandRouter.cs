@@ -89,7 +89,11 @@ public class CommandRouter : ICommandRouter
             catch
             {
             }
-            var lAlias = alias.ToLowerInvariant();
+            var lAlias = (alias ?? "").Trim().ToLowerInvariant();
+            if (string.IsNullOrEmpty(lAlias))
+            {
+                lAlias = "cc";
+            }
             var cmdEntry = CommandRegistry.GetByAlias(lAlias);
             if (cmdEntry != null)
             {
@@ -109,7 +113,7 @@ public class CommandRouter : ICommandRouter
 
             try
             {
-                switch (alias.ToLowerInvariant())
+                switch (lAlias)
                 {
                     case "ai-mode-check":
                         var targetAlias = args != null && args.Length > 0 ? args[0] : "claude";
@@ -578,7 +582,10 @@ public class CommandRouter : ICommandRouter
                             }
                         }
                         break;
+                    case "":
                     case "cc":
+                    case "control-center":
+                    case "menu":
                         CommandPalette.Show();
                         break;
                     case "ui-mode":
