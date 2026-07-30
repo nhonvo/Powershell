@@ -5,8 +5,10 @@ namespace AgyTui.UI.Core.Navigation;
 
 public static class AgyAccountMenu
 {
-    private static IAgyAccountStore AccountStore => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
-    private static IAgyQuotaEngine QuotaEngine => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+    private static readonly Func<IAgyAccountStore> AccountStoreFactory = () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+    private static readonly Func<IAgyQuotaEngine> QuotaEngineFactory = () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+    private static IAgyAccountStore AccountStore => AccountStoreFactory();
+    private static IAgyQuotaEngine QuotaEngine => QuotaEngineFactory();
 
     public enum MainMenuChoice
     {
@@ -138,8 +140,10 @@ public static class AgyAccountMenu
 
 public static class AgyAccountDisplay
 {
-    private static IAgyAccountStore AccountStore => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
-    private static IAgyQuotaEngine QuotaEngine => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+    private static readonly Func<IAgyAccountStore> AccountStoreFactory = () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+    private static readonly Func<IAgyQuotaEngine> QuotaEngineFactory = () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+    private static IAgyAccountStore AccountStore => AccountStoreFactory();
+    private static IAgyQuotaEngine QuotaEngine => QuotaEngineFactory();
 
     public static void ShowQuotaChart(string accountName)
     {

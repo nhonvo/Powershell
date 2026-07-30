@@ -28,13 +28,15 @@ public static class CommandInvocationLog
         }
     }
 
+    private static readonly Func<IAgyAccountStore> _accountStoreFactory = () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+
     public static void Record(string alias, TimeSpan duration, bool success, string? errorType = null)
     {
         try
         {
             var cmdEntry = CommandRegistry.GetByAlias(alias);
             var category = cmdEntry?.Category ?? "Unknown";
-            var activeAcc = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().GetActiveAccount();
+            var activeAcc = _accountStoreFactory().GetActiveAccount();
 
             var entry = new CommandLogEntry(
                 alias,

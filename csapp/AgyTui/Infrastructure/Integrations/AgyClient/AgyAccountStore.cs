@@ -7,8 +7,6 @@ namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
 public class AgyAccountStore : IAgyAccountStore
 {
-    private readonly IAgyAccountRepository _accountRepo;
-
     public string AgySourceHome
     {
         get
@@ -28,11 +26,31 @@ public class AgyAccountStore : IAgyAccountStore
             {
                 return Path.Combine(publicDir, ".gemini_");
             }
+
             var accountsDir = Path.Combine(AppPaths.DataDir, ".gemini_");
             Directory.CreateDirectory(Path.GetDirectoryName(accountsDir)!);
             return accountsDir;
         }
     }
+
+    
+    private readonly IAgyAccountRepository _accountRepo;
+
+    private readonly Func<IAgyQuotaEngine> _quotaEngineFactory;
+    private readonly Func<IAgyVault> _vaultFactory;
+
+    public AgyAccountStore(
+        IAgyAccountRepository accountRepo,
+        Func<IAgyQuotaEngine>? quotaEngineFactory = null,
+        Func<IAgyVault>? vaultFactory = null)
+    {
+        _accountRepo = accountRepo;
+        _quotaEngineFactory = quotaEngineFactory ??
+                              (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>());
+        _vaultFactory = vaultFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>());
+    }
+
+    public AgyAccountStore() : this(new SqliteAgyAccountRepository(new SqliteDatabase())) { }
 
     public string GetAccountDirectory(string accountName)
     {
@@ -148,22 +166,6 @@ public class AgyAccountStore : IAgyAccountStore
         }
         return [.. accounts];
     }
-
-    private readonly Func<IAgyQuotaEngine> _quotaEngineFactory;
-    private readonly Func<IAgyVault> _vaultFactory;
-
-    public AgyAccountStore(
-        IAgyAccountRepository accountRepo,
-        Func<IAgyQuotaEngine>? quotaEngineFactory = null,
-        Func<IAgyVault>? vaultFactory = null)
-    {
-        _accountRepo = accountRepo;
-        _quotaEngineFactory = quotaEngineFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>());
-        _vaultFactory = vaultFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>());
-    }
-
-    public AgyAccountStore() : this(new SqliteAgyAccountRepository(new SqliteDatabase())) { }
-
     public string GetActiveAccount()
     {
         var dbActive = _accountRepo.GetActiveAccount();

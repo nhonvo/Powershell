@@ -1,4 +1,6 @@
 using AgyTui.Infrastructure.Di;
+using AgyTui.Infrastructure.Integrations.AgyClient;
+using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Tests.Unit.Infrastructure.Integrations.AgyClient;
@@ -6,22 +8,21 @@ namespace AgyTui.Tests.Unit.Infrastructure.Integrations.AgyClient;
 public class AgyClientTests
 {
     [Fact]
-    public void Bootstrapper_Resolves_IAgyClient_Instance()
+    public void Bootstrapper_Resolves_IAgyAccountStore_Instance()
     {
         var provider = Bootstrapper.BuildServiceProvider();
-        var client = provider.GetService<IAgyClient>();
+        var store = provider.GetService<IAgyAccountStore>();
 
-        Assert.NotNull(client);
-        Assert.IsType<AgyTui.Infrastructure.Integrations.AgyClient.AgyClient>(client);
+        Assert.NotNull(store);
+        Assert.IsType<AgyAccountStore>(store);
     }
 
     [Fact]
-    public void AgyClient_DelegatesToAccountRepository_ForActiveAccount()
+    public void AccountStore_RetrievesActiveAccount()
     {
-        var repo = new AgyAccountStore();
-        var client = new AgyTui.Infrastructure.Integrations.AgyClient.AgyClient(repo);
+        var store = new AgyAccountStore();
+        var activeAcc = store.GetActiveAccount();
 
-        var activeAcc = client.GetActiveAccount();
         Assert.NotNull(activeAcc);
         Assert.NotEmpty(activeAcc);
     }

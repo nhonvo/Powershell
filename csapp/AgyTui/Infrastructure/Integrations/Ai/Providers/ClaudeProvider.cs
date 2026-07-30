@@ -9,11 +9,15 @@ namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
 public class ClaudeProvider : IClaudeClient
 {
     private readonly IAiProcessRunner _processRunner;
+    private readonly Func<IAgyAccountStore> _accountStoreFactory;
 
-    public ClaudeProvider(IAiProcessRunner processRunner)
+    public ClaudeProvider(IAiProcessRunner processRunner, Func<IAgyAccountStore>? accountStoreFactory = null)
     {
         _processRunner = processRunner;
+        _accountStoreFactory = accountStoreFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>());
     }
+
+    public ClaudeProvider() : this(new Services.AiProcessRunner()) { }
 
     public void InvokeClaude(string[] argsList, string? providerModeOverride = null)
     {
@@ -27,11 +31,11 @@ public class ClaudeProvider : IClaudeClient
         _processRunner.RunInteractive("codex", argsList);
     }
 
-    private static void EnsureSessionAccountMarker(string filename, string agentName)
+    private void EnsureSessionAccountMarker(string filename, string agentName)
     {
         try
         {
-            var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+            var store = _accountStoreFactory();
             var homeDir = store.AgySourceHome;
             if (string.IsNullOrEmpty(homeDir)) return;
 

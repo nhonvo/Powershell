@@ -7,6 +7,13 @@ namespace AgyTui.Infrastructure.Integrations.Ai.Services;
 
 public class AiProcessRunner : IAiProcessRunner
 {
+    private readonly Func<IAgyAccountStore> _accountStoreFactory;
+
+    public AiProcessRunner(Func<IAgyAccountStore>? accountStoreFactory = null)
+    {
+        _accountStoreFactory = accountStoreFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>());
+    }
+
     public string ResolveProxyScriptPath()
     {
         var repoRoot = Config.GetProfileRepoRoot();
@@ -21,12 +28,7 @@ public class AiProcessRunner : IAiProcessRunner
 
     public void RunInteractive(string exe, IEnumerable<string> args, IDictionary<string, string?>? env = null, string? workingDir = null)
     {
-        RunInteractiveStatic(exe, args, env, workingDir);
-    }
-
-    public static void RunInteractiveStatic(string exe, IEnumerable<string> args, IDictionary<string, string?>? env = null, string? workingDir = null)
-    {
-        var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+        var store = _accountStoreFactory();
         var activeAccount = store.GetActiveAccount();
         var accountDir = store.GetAccountDirectory(activeAccount);
         var fullEnv = env != null ? new Dictionary<string, string?>(env) : new Dictionary<string, string?>();
@@ -69,12 +71,16 @@ public class AiProcessRunner : IAiProcessRunner
                 argList.Add("--no-auto-commit");
             }
         }
+        Helpers.ProcessRunner.RunInteractive(exe, argList, fullEnv, workingDir);
+    }
 
-        ProcessRunner.RunInteractive(exe, argList, fullEnv, workingDir);
+    public static void RunInteractiveStatic(string exe, IEnumerable<string> args, IDictionary<string, string?>? env = null, string? workingDir = null)
+    {
+        new AiProcessRunner().RunInteractive(exe, args, env, workingDir);
     }
 
     public string RunCapture(string exe, string args)
     {
-        return ProcessRunner.RunCapture(exe, args);
+        return Helpers.ProcessRunner.RunCapture(exe, args);
     }
 }

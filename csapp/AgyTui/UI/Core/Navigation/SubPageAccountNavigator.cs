@@ -6,8 +6,10 @@ namespace AgyTui.UI.Core.Navigation;
 
 public static class SubPageAccountNavigator
 {
-    private static IAgyAccountStore AccountStore => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
-    private static IAgyQuotaEngine QuotaEngine => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+    private static readonly Func<IAgyAccountStore> AccountStoreFactory = () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+    private static readonly Func<IAgyQuotaEngine> QuotaEngineFactory = () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+    private static IAgyAccountStore AccountStore => AccountStoreFactory();
+    private static IAgyQuotaEngine QuotaEngine => QuotaEngineFactory();
 
     public static bool HandleSelection(string searchBuffer, int detailsSel)
     {
