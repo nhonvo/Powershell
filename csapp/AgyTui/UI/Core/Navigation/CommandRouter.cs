@@ -530,7 +530,19 @@ public class CommandRouter : ICommandRouter
                         {
                             var targetAcc = accs[accIdx];
                             AgyAccountCore.SetActiveAccount(targetAcc, false);
-                            Thread.Sleep(1000);
+                            var stats = AgyAccountCore.GetAccountStats(targetAcc);
+                            if (stats.TokenStatus != "Logged In")
+                            {
+                                var confirm = AnsiConsole.Confirm($"Account '{targetAcc}' is currently logged out. Launch authentication login page now?");
+                                if (confirm)
+                                {
+                                    AgyAccountCore.AuthenticateAccount(targetAcc);
+                                }
+                            }
+                            else
+                            {
+                                Thread.Sleep(1000);
+                            }
                         }
                         break;
                     case "agyquota":

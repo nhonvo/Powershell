@@ -235,12 +235,13 @@ public static class AgyAccountCore
         var agyExe = Helpers.ProcessRunner.FindOnPath("agy") ?? Helpers.ProcessRunner.FindOnPath("antigravity");
         if (!string.IsNullOrEmpty(agyExe))
         {
-            SpectrePanel.Info($"Launching authentication for '{accountName}' using '{agyExe}'...");
+            SpectrePanel.Info($"Launching OAuth login for '{accountName}' via '{agyExe}'...");
             Helpers.ProcessRunner.RunInteractive(agyExe, ["auth", "login"], new Dictionary<string, string?> { ["GEMINI_HOME"] = targetDir }, targetDir);
         }
         else
         {
-            SpectrePanel.Warning($"Switched active context to '{accountName}'. Run 'agy auth login' to authenticate.");
+            SpectrePanel.Info($"Launching OAuth login for '{accountName}'...");
+            Helpers.ProcessRunner.RunInteractive("pwsh", ["-NoProfile", "-Command", $"$env:GEMINI_HOME='{targetDir}'; agy auth login"], null, targetDir);
         }
         ClearStatsCache();
     }

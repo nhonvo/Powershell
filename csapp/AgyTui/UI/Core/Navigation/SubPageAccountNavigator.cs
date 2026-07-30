@@ -16,6 +16,17 @@ public static class SubPageAccountNavigator
         var targetAcc = accs[detailsSel];
         Console.CursorVisible = true;
         AgyAccountCore.SetActiveAccount(targetAcc, false);
+        var stats = AgyAccountCore.GetAccountStats(targetAcc);
+        if (stats.TokenStatus != "Logged In")
+        {
+            AnsiConsole.Clear();
+            SpectrePanel.Warning($"Account '{targetAcc}' is currently logged out.");
+            var confirm = AnsiConsole.Confirm("Would you like to launch the authentication login page now?");
+            if (confirm)
+            {
+                AgyAccountCore.AuthenticateAccount(targetAcc);
+            }
+        }
         Console.CursorVisible = false;
         return true;
     }
