@@ -529,7 +529,8 @@ if (-not $Global:AiMode) {
     # other AgyTui call site), so if AgyTui.dll isn't loaded yet it must not break oh-my-posh
     # entirely — fall back to a bare default rather than let the whole file abort.
     try {
-        $configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "config.json"
+        $configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\config.json"
+        if (-not (Test-Path $configPath)) { $configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "config.json" }
         $legacyPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "active_theme.txt"
         if (Test-Path $configPath) {
             $cfg = Get-Content $configPath -Raw -ErrorAction SilentlyContinue | ConvertFrom-Json -ErrorAction SilentlyContinue
