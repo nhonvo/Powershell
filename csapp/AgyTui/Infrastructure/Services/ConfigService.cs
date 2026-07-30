@@ -1,5 +1,5 @@
-using AgyTui.Core.Interfaces;
-using AgyTui.Core.Models;
+using AgyTui.Infrastructure.Services;
+using AgyTui.Infrastructure.Configuration;
 
 namespace AgyTui.Infrastructure.Services;
 
@@ -17,3 +17,4 @@ public class ConfigService : IConfigService
         Config.Load();
     }
 }
+

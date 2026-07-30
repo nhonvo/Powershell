@@ -1,4 +1,5 @@
-using AgyTui.Core.Interfaces;
+using AgyTui.UI.Core.Navigation.Interfaces;
+using AgyTui.Infrastructure.Services;
 using AgyTui.Infrastructure.Di;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,3 +23,5 @@ public class CommandRouterEdgeCasesTests
         Assert.Equal(1, exitCode);
     }
 }
+
+

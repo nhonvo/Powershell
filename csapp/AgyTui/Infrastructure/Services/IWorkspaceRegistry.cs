@@ -1,4 +1,6 @@
-namespace AgyTui.Core.Interfaces;
+using AgyTui.Domain.WorkspaceContext;
+
+namespace AgyTui.Infrastructure.Services;
 
 public interface IWorkspaceRegistry
 {

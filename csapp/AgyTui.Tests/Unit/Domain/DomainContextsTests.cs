@@ -1,5 +1,5 @@
-using AgyTui.Core.Models;
-using AgyTui.Core.Registries;
+using AgyTui.Infrastructure.Configuration;
+using AgyTui.Infrastructure.Registries;
 using AgyTui.Domain.AccountContext;
 using AgyTui.Domain.AiAgentContext;
 using AgyTui.Domain.LearnContext;
@@ -85,3 +85,4 @@ public class DomainContextsTests
         Assert.Equal(2.8, deck.AverageEaseFactor);
     }
 }
+

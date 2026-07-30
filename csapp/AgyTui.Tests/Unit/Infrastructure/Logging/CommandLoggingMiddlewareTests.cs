@@ -1,5 +1,6 @@
-using AgyTui.Core.Interfaces;
+using AgyTui.Infrastructure.Services;
 using AgyTui.Infrastructure.Logging;
+using AgyTui.UI.Core.Navigation.Interfaces;
 
 namespace AgyTui.Tests.Unit.Infrastructure.Logging;
 
@@ -32,3 +33,4 @@ public class CommandLoggingMiddlewareTests
         Assert.Equal(new[] { "arg1", "arg2" }, dummy.LastArgs);
     }
 }
+

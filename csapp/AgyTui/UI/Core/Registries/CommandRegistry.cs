@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace AgyTui.Core.Registries;
+namespace AgyTui.UI.Core.Registries;
 
 public sealed record CommandEntry(
     string Alias,
@@ -648,3 +648,4 @@ public static class CommandRegistry
         }
     }
 }
+

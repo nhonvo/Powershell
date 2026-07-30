@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using AgyTui.Core.Services;
+using AgyTui.Infrastructure.Services;
 using Xunit;
 
 namespace AgyTui.Tests.Unit.Core.Services;
@@ -25,3 +25,4 @@ public class PathResolutionBenchmarkTests
         Assert.True(sw.ElapsedMilliseconds < 50, $"1000 cached path resolutions took {sw.ElapsedMilliseconds}ms (expected < 50ms)");
     }
 }
+

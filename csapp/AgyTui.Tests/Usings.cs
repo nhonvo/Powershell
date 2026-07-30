@@ -2,8 +2,8 @@ global using System;
 global using System.Collections.Generic;
 global using System.IO;
 global using System.Linq;
-global using AgyTui.Core.Models;
-global using AgyTui.Core.Registries;
+global using AgyTui.Infrastructure.Configuration;
+global using AgyTui.Infrastructure.Registries;
 global using AgyTui.Infrastructure.Common;
 global using AgyTui.Infrastructure.Integrations.AgyClient;
 global using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
@@ -12,3 +12,4 @@ global using AgyTui.UI.Core.Layouts;
 global using AgyTui.UI.Screens.Learn;
 global using AgyTui.UI.Screens.Quizzes;
 global using Spectre.Console;
+

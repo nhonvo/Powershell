@@ -1,3 +1,4 @@
+using AgyTui.UI.Core.Registries;
 namespace AgyTui.Tests.Integration;
 
 public class LearningDataTests
@@ -57,3 +58,4 @@ public class LearningDataTests
         }
     }
 }
+

@@ -7,7 +7,7 @@ public sealed record CommandDoc(string Alias, string FullName, string Desc, stri
 
 public static class ProfileHelp
 {
-    private static readonly FrozenDictionary<string, string[]> HelpTopics = AgyTui.Core.Registries.CommandRegistry.All
+    private static readonly FrozenDictionary<string, string[]> HelpTopics = CommandRegistry.All
         .Where(c => c.HelpLines.Length > 0)
         .GroupBy(c => c.HelpCategory)
         .ToDictionary(
@@ -85,3 +85,5 @@ public static class ProfileHelp
         }
     }
 }
+
+

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using AgyTui.Domain.WorkspaceContext;
 
-namespace AgyTui.Core.Registries;
+namespace AgyTui.Infrastructure.Registries;
 
 public static class WorkspaceRegistry
 {

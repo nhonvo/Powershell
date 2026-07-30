@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
-using AgyTui.Core.Models;
 using AgyTui.Infrastructure.Common;
+using AgyTui.Infrastructure.Configuration;
 
-namespace AgyTui.Core.Services;
+namespace AgyTui.Infrastructure.Services;
 
 public class AppPathManager : IAppPathManager
 {
@@ -24,6 +24,22 @@ public class AppPathManager : IAppPathManager
 
         return _accountDirCache.GetOrAdd(accountName, name => $"{AccountPrefix}{name}");
     }
+
+    public void InvalidateAccountCache(string accountName)
+    {
+        _accountDirCache.TryRemove(accountName, out _);
+    }
+
+    public void ClearAllCache()
+    {
+        _cachedGeminiHome = null;
+        _cachedAccountPrefix = null;
+        _cachedLogsDirectory = null;
+        _cachedAssetDirectory = null;
+        _accountDirCache.Clear();
+    }
+
+    public void InvalidateCache() => ClearAllCache();
 
     private string ResolveGeminiHome()
     {
@@ -48,14 +64,5 @@ public class AppPathManager : IAppPathManager
         var accountsDir = Path.Combine(AppPaths.DataDir, ".gemini_");
         Directory.CreateDirectory(Path.GetDirectoryName(accountsDir)!);
         return accountsDir;
-    }
-
-    public void InvalidateCache()
-    {
-        _cachedGeminiHome = null;
-        _cachedAccountPrefix = null;
-        _cachedLogsDirectory = null;
-        _cachedAssetDirectory = null;
-        _accountDirCache.Clear();
     }
 }

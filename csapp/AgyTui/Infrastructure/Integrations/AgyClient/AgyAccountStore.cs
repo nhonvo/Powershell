@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using AgyTui.Core.Services;
+using AgyTui.Infrastructure.Services;
 using AgyTui.Domain.AccountContext;
 using AgyTui.Infrastructure.Di;
 using Microsoft.Extensions.DependencyInjection;
@@ -400,3 +400,4 @@ public class AgyAccountStore : IAgyAccountStore
         }
     }
 }
+

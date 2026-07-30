@@ -41,7 +41,7 @@ public static class MenuNodeBuilder
             "[Help & Docs]"
         };
 
-        var favoriteAliases = AgyTui.Core.Models.Config.Current.Ui.FavoriteAliases ?? AgyTui.Core.Models.Config.DefaultFavoriteAliases;
+        var favoriteAliases = AgyTui.Infrastructure.Configuration.Config.Current.Ui.FavoriteAliases ?? AgyTui.Infrastructure.Configuration.Config.DefaultFavoriteAliases;
 
         var categoryNodes = new List<MenuNode>();
 
@@ -202,3 +202,5 @@ public static class MenuNodeBuilder
         );
     }
 }
+
+

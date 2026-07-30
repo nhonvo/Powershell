@@ -1,6 +1,6 @@
 using AgyTui.Infrastructure.Integrations.Ai.Services;
 
-namespace AgyTui.Core.Registries;
+namespace AgyTui.Infrastructure.Registries;
 
 public sealed record IdeCommand(string Name, string ArgHint, string Description, string Category, Action<IdeContext, string[]> Run);
 

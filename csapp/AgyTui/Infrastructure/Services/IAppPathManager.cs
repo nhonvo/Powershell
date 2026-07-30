@@ -1,4 +1,4 @@
-namespace AgyTui.Core.Services;
+namespace AgyTui.Infrastructure.Services;
 
 public interface IAppPathManager
 {
@@ -7,5 +7,6 @@ public interface IAppPathManager
     string LogsDirectory { get; }
     string AssetDirectory { get; }
     string GetAccountDirectory(string accountName);
-    void InvalidateCache();
+    void InvalidateAccountCache(string accountName);
+    void ClearAllCache();
 }

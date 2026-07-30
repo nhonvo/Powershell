@@ -4,7 +4,7 @@ public sealed record PaletteCommand(string Alias, string Description, string Cat
 
 public static class CommandPalette
 {
-    public static readonly PaletteCommand[] Commands = AgyTui.Core.Registries.CommandRegistry.All
+    public static readonly PaletteCommand[] Commands = CommandRegistry.All
         .Select(c => new PaletteCommand(c.Alias, c.Description, c.HelpCategory))
         .ToArray();
 
@@ -20,3 +20,5 @@ public static class CommandPalette
         CcNavigator.Run();
     }
 }
+
+

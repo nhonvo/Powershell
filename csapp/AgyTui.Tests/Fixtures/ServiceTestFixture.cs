@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using AgyTui.Core.Services;
+using AgyTui.Infrastructure.Services;
 using AgyTui.Infrastructure.Integrations.AgyClient;
 using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 using AgyTui.Infrastructure.Persistence.Interfaces;
@@ -34,3 +34,4 @@ public class ServiceTestFixture : IDisposable
     {
     }
 }
+

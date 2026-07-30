@@ -1,4 +1,4 @@
-using AgyTui.Core.Configuration;
+using AgyTui.Infrastructure.Configuration;
 using AgyTui.Infrastructure.Di;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,3 +37,4 @@ public class SqliteDatabase : ISqliteDatabase
         _migrationEngineFactory().ApplyMigrations();
     }
 }
+

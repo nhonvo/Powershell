@@ -1,4 +1,4 @@
-namespace AgyTui.Core.Registries;
+namespace AgyTui.Infrastructure.Registries;
 
 public sealed record ResourceEntry(string Id, string Path, string Format, string Title, string[] Tags, string[] Topics, string Language, string SourceType, string? Checksum, long SizeBytes, string AddedAt, string? LastExtractedAt, string Status, string? ErrorMessage, int ExtractedItemCount, string[] LearnFiles, bool AutoDiscovered, bool Enabled);
 

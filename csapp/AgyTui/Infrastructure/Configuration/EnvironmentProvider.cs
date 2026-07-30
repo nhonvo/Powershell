@@ -1,4 +1,4 @@
-namespace AgyTui.Core.Configuration;
+namespace AgyTui.Infrastructure.Configuration;
 
 public static class EnvironmentProvider
 {

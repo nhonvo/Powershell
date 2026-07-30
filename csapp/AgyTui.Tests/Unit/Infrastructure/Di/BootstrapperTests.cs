@@ -1,4 +1,5 @@
-using AgyTui.Core.Interfaces;
+using AgyTui.UI.Core.Navigation.Interfaces;
+using AgyTui.Infrastructure.Services;
 using AgyTui.Infrastructure.Di;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using AgyTui.Infrastructure.Integrations.Aws;
@@ -46,3 +47,5 @@ public class BootstrapperTests
         Assert.Same(provider, Bootstrapper.ServiceProvider);
     }
 }
+
+

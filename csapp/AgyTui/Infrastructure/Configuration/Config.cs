@@ -1,7 +1,7 @@
 using AgyTui.Infrastructure.Di;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AgyTui.Core.Models;
+namespace AgyTui.Infrastructure.Configuration;
 
 public sealed class UiConfig
 {

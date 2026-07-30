@@ -1,4 +1,4 @@
-using AgyTui.Core.Services;
+using AgyTui.Infrastructure.Services;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using AgyTui.Infrastructure.Integrations.Ai.Providers;
 using AgyTui.Infrastructure.Integrations.Ai.Services;
@@ -71,3 +71,4 @@ public static class Bootstrapper
         return _serviceProvider;
     }
 }
+
