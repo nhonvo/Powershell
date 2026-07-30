@@ -1,5 +1,7 @@
 
 using System.Text.Json;
+using AgyTui.Infrastructure.Di;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
@@ -14,7 +16,7 @@ public class AgyQuotaEngine : IAgyQuotaEngine
         _accountStore = accountStore;
     }
 
-    public AgyQuotaEngine() : this(new AgyAccountStore()) { }
+    public AgyQuotaEngine() : this(Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>()) { }
 
     private string AgySourceHome => _accountStore.AgySourceHome;
 

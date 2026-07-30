@@ -7,6 +7,13 @@ namespace AgyTui.UI.Core.Navigation;
 
 public static class SubPageNavigator
 {
+    private static Func<IAgyAccountStore>? _accountStoreFactory;
+    public static Func<IAgyAccountStore> AccountStoreFactory
+    {
+        get => _accountStoreFactory ??= () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+        set => _accountStoreFactory = value;
+    }
+
     private static string _detailsSearchBuffer = "";
 
     public static string ProcessSearchKey(ConsoleKeyInfo key, string currentBuffer)
@@ -25,7 +32,7 @@ public static class SubPageNavigator
 
         if (mode == "agyswitch")
         {
-            var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+            var store = AccountStoreFactory();
             var accs = store.GetAccounts();
             var activeAcc = store.GetActiveAccount();
             detailsSel = Array.IndexOf(accs, activeAcc);
@@ -55,7 +62,7 @@ public static class SubPageNavigator
 
             if (mode == "agyswitch")
             {
-                var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+                var store = AccountStoreFactory();
                 var accs = store.GetAccounts();
                 if (!string.IsNullOrEmpty(_detailsSearchBuffer))
                 {

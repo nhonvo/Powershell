@@ -50,7 +50,7 @@ public class AgyAccountStore : IAgyAccountStore
         _vaultFactory = vaultFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>());
     }
 
-    public AgyAccountStore() : this(new SqliteAgyAccountRepository(new SqliteDatabase())) { }
+    public AgyAccountStore() : this(Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountRepository>()) { }
 
     public string GetAccountDirectory(string accountName)
     {

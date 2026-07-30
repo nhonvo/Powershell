@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text;
+using AgyTui.Infrastructure.Di;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
@@ -16,7 +18,7 @@ public class AgyVault : IAgyVault
         _accountStore = accountStore;
     }
 
-    public AgyVault() : this(new AgyAccountStore()) { }
+    public AgyVault() : this(Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>()) { }
 
     private string AgySourceHome => _accountStore.AgySourceHome;
 
@@ -240,20 +242,20 @@ public class AgyVault : IAgyVault
 
 public static class AgySecretVault
 {
-    private static readonly IAgyVault _vault = new AgyVault();
+    private static readonly Func<IAgyVault> _vaultFactory = () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>();
 
-    public static void SetSecret(string key, string value) => _vault.SetSecret(key, value);
-    public static string? GetSecret(string key) => _vault.GetSecret(key);
-    public static void ListSecrets() => _vault.ListSecrets();
-    public static void RemoveSecret(string key) => _vault.RemoveSecret(key);
+    public static void SetSecret(string key, string value) => _vaultFactory().SetSecret(key, value);
+    public static string? GetSecret(string key) => _vaultFactory().GetSecret(key);
+    public static void ListSecrets() => _vaultFactory().ListSecrets();
+    public static void RemoveSecret(string key) => _vaultFactory().RemoveSecret(key);
 }
 
 public static class TokenVault
 {
-    private static readonly IAgyVault _vault = new AgyVault();
+    private static readonly Func<IAgyVault> _vaultFactory = () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>();
 
-    public static string Protect(string plainText) => _vault.Protect(plainText);
-    public static string Unprotect(string cipherText) => _vault.Unprotect(cipherText);
+    public static string Protect(string plainText) => _vaultFactory().Protect(plainText);
+    public static string Unprotect(string cipherText) => _vaultFactory().Unprotect(cipherText);
 }
 
 internal static class AgyKeyringHelper

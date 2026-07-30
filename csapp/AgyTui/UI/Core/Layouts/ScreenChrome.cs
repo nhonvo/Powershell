@@ -6,6 +6,13 @@ namespace AgyTui.UI.Core.Layouts;
 
 public static class ScreenChrome
 {
+    private static Func<IAgyAccountStore>? _accountStoreFactory;
+    public static Func<IAgyAccountStore> AccountStoreFactory
+    {
+        get => _accountStoreFactory ??= () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+        set => _accountStoreFactory = value;
+    }
+
     public static IAnsiConsole? OverrideConsole { get; set; }
     private static IAnsiConsole ConsoleInstance => OverrideConsole ?? AnsiConsole.Console;
 
@@ -205,7 +212,7 @@ public static class ScreenChrome
     public static void RenderBanner(string? category = null, string? activeItem = null, bool forceClear = false, string? footerHint = null)
     {
         HideCursor();
-        var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+        var store = AccountStoreFactory();
         var acc = store.GetActiveAccount() ?? "default";
         var displayAcc = acc;
         if (string.Equals(acc, "default", StringComparison.OrdinalIgnoreCase))

@@ -74,9 +74,11 @@ public class AiProcessRunner : IAiProcessRunner
         Helpers.ProcessRunner.RunInteractive(exe, argList, fullEnv, workingDir);
     }
 
+    private static readonly Func<IAiProcessRunner> _runnerFactory = () => Bootstrapper.ServiceProvider.GetRequiredService<IAiProcessRunner>();
+
     public static void RunInteractiveStatic(string exe, IEnumerable<string> args, IDictionary<string, string?>? env = null, string? workingDir = null)
     {
-        new AiProcessRunner().RunInteractive(exe, args, env, workingDir);
+        _runnerFactory().RunInteractive(exe, args, env, workingDir);
     }
 
     public string RunCapture(string exe, string args)
