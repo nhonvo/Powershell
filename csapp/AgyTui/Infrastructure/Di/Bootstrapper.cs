@@ -3,6 +3,7 @@ using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using AgyTui.Infrastructure.Integrations.Ai.Providers;
 using AgyTui.Infrastructure.Integrations.Ai.Services;
 using AgyTui.Infrastructure.Logging;
+using AgyTui.Infrastructure.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Di;
@@ -32,6 +33,7 @@ public static class Bootstrapper
 
         // SQLite Persistence
         services.AddSingleton<ISqliteDatabase, SqliteDatabase>();
+        services.AddSingleton<SqliteMigrationEngine>();
         services.AddSingleton<IConfigRepository, SqliteConfigRepository>();
         services.AddSingleton<IAgyAccountRepository, SqliteAgyAccountRepository>();
 

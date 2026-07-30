@@ -6,19 +6,21 @@ namespace AgyTui.Tests.Mocks;
 public class FakeSqliteDatabase : ISqliteDatabase
 {
     private readonly SqliteConnection _keepAliveConnection;
+    private readonly string _connectionString;
 
-    public string DbPath => "Data Source=:memory:";
+    public string DbPath => _connectionString;
 
     public FakeSqliteDatabase()
     {
-        _keepAliveConnection = new SqliteConnection("Data Source=:memory:");
+        _connectionString = $"Data Source=file:memdb_{Guid.NewGuid():N}?mode=memory&cache=shared";
+        _keepAliveConnection = new SqliteConnection(_connectionString);
         _keepAliveConnection.Open();
         InitializeDatabase();
     }
 
     public SqliteConnection CreateConnection()
     {
-        var conn = new SqliteConnection("Data Source=:memory:");
+        var conn = new SqliteConnection(_connectionString);
         conn.Open();
         return conn;
     }
