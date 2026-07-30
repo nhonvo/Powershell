@@ -586,7 +586,7 @@ public class CommandRouter : ICommandRouter
                     case "cc":
                     case "control-center":
                     case "menu":
-                        CommandPalette.Show();
+                        CcNavigator.Run();
                         break;
                     case "ui-mode":
                     case "layout":
