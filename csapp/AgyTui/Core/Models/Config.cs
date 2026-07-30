@@ -48,6 +48,15 @@ public sealed class ProxyConfig
     public string NoProxy { get; set; } = "";
 }
 
+public sealed class EnvironmentConfig
+{
+    public string PoshThemesPath { get; set; } = "psapp/asset/powershell-themes";
+    public string PsModulePath { get; set; } = "psapp/Modules";
+    public bool SkipDllLoad { get; set; } = false;
+    public bool LoadDll { get; set; } = false;
+    public string Theme { get; set; } = "neko";
+}
+
 public sealed class ConfigData
 {
     public UiConfig Ui { get; set; } = new();
@@ -56,7 +65,7 @@ public sealed class ConfigData
     public SystemConfig System { get; set; } = new();
     public ObsidianConfig Obsidian { get; set; } = new();
     public ProxyConfig Proxy { get; set; } = new();
-
+    public EnvironmentConfig Environment { get; set; } = new();
 }
 
 public sealed class RuntimeState

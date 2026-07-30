@@ -39,6 +39,25 @@ public class CommandRouter : ICommandRouter
         _learningGenerator = learningGenerator;
     }
 
+    public static int Route(string alias, params string[]? args)
+    {
+        var router = Bootstrapper.ServiceProvider.GetRequiredService<ICommandRouter>();
+        return router.Execute(alias, args);
+    }
+
+    public static int Route(string alias, object? rawArgs)
+    {
+        string[]? args = rawArgs switch
+        {
+            null => null,
+            string s => [s],
+            string[] sa => sa,
+            System.Collections.IEnumerable ie => ie.Cast<object>().Select(o => o?.ToString() ?? "").Where(s => !string.IsNullOrEmpty(s)).ToArray(),
+            _ => [rawArgs.ToString() ?? ""]
+        };
+        return Route(alias, args);
+    }
+
     public static string? SelectTopicInteractive(string promptTitle)
     {
         var topics = new[] { "jp (Japanese / Language)", "en (English Vocabulary)", "cs (C# Quiz)", "dsa (Data Structures & Algorithms)", "interview (Question Bank & STAR)", "[Type Custom Topic...]" };

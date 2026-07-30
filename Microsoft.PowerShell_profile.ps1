@@ -1,8 +1,19 @@
-if ($global:AgyProfileLoaded -or $global:AgyUserProfileLoaded -or $env:AGY_SKIP_DLL_LOAD -eq '1') { return }
+# ==============================================================================
+#  ENHANCED POWERSHELL PROFILE (Microsoft.PowerShell_profile.ps1)
+# ==============================================================================
+
+$skipDll = ($null -ne $config.Environment -and $config.Environment.SkipDllLoad -eq $true) -or $env:AGY_SKIP_DLL_LOAD -eq 'true'
+$loadDll = ($null -ne $config.Environment -and $config.Environment.LoadDll -eq $true)     -or $env:AGY_LOAD_DLL     -eq 'true'
+
+if ($global:AgyUserProfileLoaded) { return }
 $global:AgyUserProfileLoaded = $true
 $Global:ProfileRepoRoot = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 
-# --- Load configuration from profile.config.json ---
+#region 1. CONFIG & ENVIRONMENT
+# ==============================================================================
+#  Loads profile configuration and sets up environment variables.
+# ==============================================================================
+
 $configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\profile.config.json"
 if (-not (Test-Path $configPath)) { $configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\profile.config.json" }
 if (-not (Test-Path $configPath)) { $configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "profile.config.json" }
@@ -15,132 +26,50 @@ if (Test-Path $configPath) {
     } catch {}
 }
 
-# Helper properties resolving nested vs flat config
-$poshThemesPath = if ($config.System -and $config.System.PoshThemesPath) { $config.System.PoshThemesPath } else { $config.PoshThemesPath }
-$startupLogFile = if ($config.System -and $config.System.StartupLogFile) { $config.System.StartupLogFile } else { $config.StartupLogFile }
-$verboseStartup = if ($config.System -and $null -ne $config.System.VerboseStartup) { $config.System.VerboseStartup } else { $config.VerboseStartup }
-$aiModeVal = if ($config.Ai -and $null -ne $config.Ai.Mode) { $config.Ai.Mode } else { $config.AiMode }
-$projectsBaseDir = if ($config.Project -and $config.Project.BaseDir) { $config.Project.BaseDir } else { $config.ProjectsBaseDir }
-$agySourceHome = if ($config.System -and $config.System.AgySourceHome) { $config.System.AgySourceHome } else { $config.AgySourceHome }
-$globalBinDir = if ($config.System -and $config.System.GlobalBinDir) { $config.System.GlobalBinDir } else { $config.GlobalBinDir }
+# Determine Flag State Matrix
+$skipDll = ($null -ne $config.Environment -and $config.Environment.SkipDllLoad -eq $true) -or $env:AGY_SKIP_DLL_LOAD -eq 'true'
+$loadDll = ($null -ne $config.Environment -and $config.Environment.LoadDll -eq $true)     -or $env:AGY_LOAD_DLL     -eq 'true'
 
-# Apply environment variable POSH_THEMES_PATH
-if ($poshThemesPath) {
-    if ([System.IO.Path]::IsPathRooted($poshThemesPath)) {
-        $env:POSH_THEMES_PATH = $poshThemesPath
+# --- Apply Environment Variables from JSON Config ---
+if ($config.Environment) {
+    if ($config.Environment.PoshThemesPath) {
+        $p = $config.Environment.PoshThemesPath
+        $env:POSH_THEMES_PATH = if ([System.IO.Path]::IsPathRooted($p)) { $p } else { Join-Path $Global:ProfileRepoRoot $p }
     } else {
-        $env:POSH_THEMES_PATH = Join-Path -Path $Global:ProfileRepoRoot -ChildPath $poshThemesPath
+        $env:POSH_THEMES_PATH = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "psapp\asset\powershell-themes"
     }
-} else {
-    $env:POSH_THEMES_PATH = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "psapp\asset\powershell-themes"
-}
 
-# Add local profile modules directory to PSModulePath
-$localModules = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "psapp\Modules"
-if ((Test-Path $localModules) -and ($env:PSModulePath -notlike "*$localModules*")) {
-    $env:PSModulePath = "$localModules;$env:PSModulePath"
-}
-
-# Apply global startup log file path
-if ($startupLogFile) {
-    if ([System.IO.Path]::IsPathRooted($startupLogFile)) {
-        $Global:AgyStartupLogFile = $startupLogFile
-    } else {
-        if ($startupLogFile -like "~*") {
-            $Global:AgyStartupLogFile = Join-Path -Path $env:USERPROFILE -ChildPath $startupLogFile.Substring(1).TrimStart('\', '/')
-        } else {
-            $Global:AgyStartupLogFile = Join-Path -Path $Global:ProfileRepoRoot -ChildPath $startupLogFile
+    if ($config.Environment.PsModulePath) {
+        $m = $config.Environment.PsModulePath
+        $modDir = if ([System.IO.Path]::IsPathRooted($m)) { $m } else { Join-Path $Global:ProfileRepoRoot $m }
+        if ((Test-Path $modDir) -and ($env:PSModulePath -notlike "*$modDir*")) {
+            $env:PSModulePath = "$modDir;$env:PSModulePath"
         }
     }
+
+    if ($null -ne $config.Environment.SkipDllLoad) { $env:AGY_SKIP_DLL_LOAD = if ($config.Environment.SkipDllLoad) { "true" } else { "false" } }
+    if ($null -ne $config.Environment.LoadDll)     { $env:AGY_LOAD_DLL     = if ($config.Environment.LoadDll)     { "true" } else { "false" } }
+    if ($config.Environment.Theme)       { $env:THEME            = "$($config.Environment.Theme)" }
 } else {
-    $Global:AgyStartupLogFile = Join-Path $env:USERPROFILE ".gemini\antigravity\profile.log"
-}
-
-# Apply Proxy environment variables if defined in profile.config.json
-$httpProxyVal = if ($config.Proxy -and $config.Proxy.HttpProxy) { $config.Proxy.HttpProxy } else { $config.HttpProxy }
-$httpsProxyVal = if ($config.Proxy -and $config.Proxy.HttpsProxy) { $config.Proxy.HttpsProxy } else { $config.HttpsProxy }
-$noProxyVal = if ($config.Proxy -and $config.Proxy.NoProxy) { $config.Proxy.NoProxy } else { $config.NoProxy }
-
-if ($httpProxyVal) { $env:HTTP_PROXY = $httpProxyVal }
-if ($httpsProxyVal) { $env:HTTPS_PROXY = $httpsProxyVal }
-if ($noProxyVal) { $env:NO_PROXY = $noProxyVal }
-
-$Global:AgyStartupStart = Get-Date
-
-# Apply VerboseStartup
-if ($null -ne $verboseStartup) {
-    $Global:VerboseStartup = [System.Convert]::ToBoolean($verboseStartup)
-} else {
-    $Global:VerboseStartup = $false
-}
-
-# Apply AiMode
-if ($null -ne $aiModeVal -and "$aiModeVal" -ne "auto") {
-    $Global:AiMode = [System.Convert]::ToBoolean($aiModeVal)
-} else {
-    $Global:AiMode = $false
-    $aiMarkers = @(
-        "anthropic-code",   # Claude Code
-        "vscode-copilot",   # GitHub Copilot CLI
-        "codex-agent",      # Codex Agent
-        "cursor-terminal"   # Cursor AI terminal
-    )
-    if ($env:AI_MODE -eq "true" -or
-        $env:TERM_PROGRAM -in $aiMarkers -or
-        ($null -ne $env:GEMINI_API_KEY -and ($env:TERM -eq "dumb" -or $env:PAGER -eq "cat"))) {
-        $Global:AiMode = $true
+    $env:POSH_THEMES_PATH = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "psapp\asset\powershell-themes"
+    $localModules = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "psapp\Modules"
+    if ((Test-Path $localModules) -and ($env:PSModulePath -notlike "*$localModules*")) {
+        $env:PSModulePath = "$localModules;$env:PSModulePath"
     }
 }
 
-# Apply ProjectsBaseDir
-if ($projectsBaseDir) {
-    $Global:ProjectsBaseDir = $projectsBaseDir
-} else {
-    $Global:ProjectsBaseDir = if (Test-Path "$env:USERPROFILE\Desktop\project") { "$env:USERPROFILE\Desktop\project" } elseif (Test-Path "$env:USERPROFILE\project") { "$env:USERPROFILE\project" } else { Join-Path $env:USERPROFILE "Documents" }
+if ($config.Proxy) {
+    if ($config.Proxy.HttpProxy)  { $env:HTTP_PROXY  = "$($config.Proxy.HttpProxy)" }
+    if ($config.Proxy.HttpsProxy) { $env:HTTPS_PROXY = "$($config.Proxy.HttpsProxy)" }
+    if ($config.Proxy.NoProxy)    { $env:NO_PROXY    = "$($config.Proxy.NoProxy)" }
 }
+#endregion
 
-# Apply AgySourceHome
-if ($agySourceHome) {
-    $Global:AgySourceHome = $agySourceHome
-} else {
-    $publicGemini = "C:\Users\Public\.gemini"
-    if (Test-Path $publicGemini) {
-        $Global:AgySourceHome = $publicGemini
-    } else {
-        $Global:AgySourceHome = Join-Path $env:USERPROFILE ".gemini"
-    }
-}
-
-
-
-# Apply GlobalBinDir
-if ($globalBinDir) {
-    $Global:GlobalBinDir = $globalBinDir
-} else {
-    $Global:GlobalBinDir = "C:\ProgramData\agy\bin"
-}
-
-# --- Startup checkpoint logging ---
-# Temporary diagnostic for the "profile loads too long / freezes" reports — appends a
-# timestamped, elapsed-ms line to profile.log at each major startup phase. Plain file I/O
-# (no dependency on AgyTuiApp.dll, which hasn't loaded yet at the top of this file) so it
-# works even if a later phase never returns. Check the tail of the log after a slow/frozen
-# session to see exactly which phase was last reached.
-function Write-AgyStartupCheckpoint {
-    param([string]$Label)
-    if (-not $Global:VerboseStartup -and -not $env:AGY_STARTUP_DEBUG) { return }
-    try {
-        $elapsedMs = [Math]::Round(((Get-Date) - $Global:AgyStartupStart).TotalMilliseconds)
-        $dir = Split-Path $Global:AgyStartupLogFile
-        if (-not (Test-Path $dir)) { $null = New-Item -ItemType Directory -Path $dir -Force }
-        Add-Content -Path $Global:AgyStartupLogFile -Value "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] [STARTUP] +$($elapsedMs)ms  $Label"
-    } catch {}
-}
-Write-AgyStartupCheckpoint "script start"
- 
+#region 2. ASSEMBLY & TYPE ACCELERATORS LOADER
 # ==============================================================================
-#  AGY TUI — compiled C# Spectre.Console application (AgyTuiApp)
+#  Loads compiled C# assembly (AgyTui.dll) and registers Type Accelerators.
 # ==============================================================================
+
 $Global:AgyTuiAppProject = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\AgyTui.csproj"
 
 function Get-AgyTuiDllPath {
@@ -148,10 +77,10 @@ function Get-AgyTuiDllPath {
     $distPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\dist\AgyTui.dll"
     if (Test-Path $distPath) { $candidates += Get-Item $distPath }
 
-    $debugBase = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin\Debug"
-    if (Test-Path $debugBase) {
-        $debugFiles = Get-ChildItem -Path $debugBase -Filter "AgyTui.dll" -Recurse -ErrorAction SilentlyContinue
-        if ($debugFiles) { $candidates += $debugFiles }
+    $binBase = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin"
+    if (Test-Path $binBase) {
+        $binFiles = Get-ChildItem -Path $binBase -Filter "AgyTui.dll" -Recurse -ErrorAction SilentlyContinue
+        if ($binFiles) { $candidates += $binFiles }
     }
 
     if ($candidates.Count -gt 0) {
@@ -162,7 +91,10 @@ function Get-AgyTuiDllPath {
 }
 
 function Load-AgyTuiDll {
-    param([bool]$SkipBuildCheck = $true)
+    param([bool]$SkipBuildCheck = $true, [bool]$ForceLoad = $false)
+    $shouldLoad = (-not $skipDll) -and ($ForceLoad -or $loadDll -or (-not [Console]::IsOutputRedirected))
+    if (-not $shouldLoad) { return }
+
     if ($null -eq ([System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTui" })) {
         $targetDll = Get-AgyTuiDllPath
         $proj = Join-Path -Path $Global:ProfileRepoRoot "csapp\AgyTui\AgyTui.csproj"
@@ -180,38 +112,29 @@ function Load-AgyTuiDll {
             try {
                 dotnet build "$proj" -p:TreatWarningsAsErrors=true | Out-Null
                 $targetDll = Get-AgyTuiDllPath
-            } catch {
-                Write-AgyStartupCheckpoint "dotnet build failed or locked: $_"
-            }
+            } catch {}
         }
 
-        if ($targetDll -and (Test-Path $targetDll) -and $env:AGY_SKIP_DLL_LOAD -ne '1' -and (-not [Console]::IsOutputRedirected -or $env:AGY_LOAD_DLL -eq '1')) {
+        if ($targetDll -and (Test-Path $targetDll)) {
             try {
                 $dllFolder = Split-Path $targetDll
                 Get-ChildItem -Path $dllFolder -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTui.dll" } | ForEach-Object {
                     try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
                 }
                 Add-Type -Path $targetDll -ErrorAction SilentlyContinue
-                Write-AgyStartupCheckpoint "Loaded AgyTui.dll from $targetDll"
-            } catch {
-                Write-AgyStartupCheckpoint "Failed loading AgyTui.dll: $_"
-            }
+            } catch {}
         }
     }
-    
-    # Register PowerShell Type Accelerators via Dynamic Assembly Reflection
+
     try {
         $acc = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
-        $agyAssembly = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTui" }
+        $agyAssembly = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTui" } | Select-Object -First 1
         if ($acc -and $agyAssembly) {
-            # Auto-register all public C# classes from AgyTui
             foreach ($type in $agyAssembly.GetExportedTypes()) {
-                if ($type.IsClass -and -not $acc::Get.ContainsKey($type.Name)) {
-                    $acc::Add($type.Name, $type)
+                if ($type.IsClass -and $type.Name -and -not $acc::Get.ContainsKey($type.Name)) {
+                    try { $acc::Add($type.Name, $type) } catch {}
                 }
             }
-
-            # Map shorthand aliases dynamically to primary class names
             $aliases = @{
                 "ObsidianHelper"     = "ObsidianBridge"
                 "StudyHelper"        = "LearnRouter"
@@ -226,80 +149,30 @@ function Load-AgyTuiDll {
             foreach ($alias in $aliases.Keys) {
                 $targetClass = $aliases[$alias]
                 if (-not $acc::Get.ContainsKey($alias) -and $acc::Get.ContainsKey($targetClass)) {
-                    $acc::Add($alias, $acc::Get[$targetClass])
+                    try { $acc::Add($alias, $acc::Get[$targetClass]) } catch {}
                 }
             }
         }
     } catch {}
-
-    # --- AgyAccountManager Legacy Compatibility Layer (Removed - Migrated to C# AgyAccountCore) ---
 }
-$global:AgySessionInitialized = $false
-function Initialize-AgySession {
-    if ($global:AgySessionInitialized) { return }
-    $global:AgySessionInitialized = $true
 
+if (-not $skipDll -and -not [Console]::IsOutputRedirected) {
     Load-AgyTuiDll
-    [ProfileEnvironment]::LoadModules()
-    
-    Load-GitHelper
-    Load-DockerHelper
-    Load-HelpHelper
 }
+#endregion
 
-function Test-AgyAiGate {
-    if ($null -ne ('AgyTui.Core.Models.Config' -as [type])) {
-        return [AgyTui.Core.Models.Config]::Current.EnableAiOllama -or [AgyTui.Core.Models.Config]::Current.EnableAgy
-    }
-    return $true
-}
+#region 3. PSREADLINE & PROMPT THEME ENGINE
+# ==============================================================================
+#  Configures PSReadLine options, keybindings, and Oh My Posh theme prompt.
+# ==============================================================================
 
-function Start-AgyManager {
-    Initialize-AgySession
-    if ($null -ne ('AgyTui.Infrastructure.Integrations.Sys.AntigravityManagerHelper' -as [type])) {
-        [AntigravityManager]::StartLocal()
-    } else {
-        Invoke-ControlCenter "mgr-start"
-    }
-}
-
-function Start-AgyProxy {
-    Initialize-AgySession
-    if ($null -ne ('AgyTui.Infrastructure.Integrations.Sys.AntigravityDeckHelper' -as [type])) {
-        [AntigravityDeck]::StartLocal()
-    } else {
-        Invoke-ControlCenter "deck-start"
-    }
-}
-
-Write-AgyStartupCheckpoint "AgyTuiApp subprocess mode ready"
- 
-# ==============================================================================
-#  Enhanced PowerShell Profile — single-file build
-#  (Everything below used to live in Profile\Core\*.ps1 / Profile\Helpers\*.ps1,
-#   dot-sourced from a loader loop. PowerShell compiles an entire script file as
-#   one unit before running any top-level statement, so classes defined anywhere
-#   below are visible to each other regardless of order — the old envFile/projFile-
-#   first / alphabetical dot-source ordering trick is no longer needed. Only the
-#   relative order of top-level *executable* statements with side effects still
-#   matters, and that order is preserved exactly as it ran before: ProfileEnvironment
-#   init -> oh-my-posh theme -> Projects workspace load -> Helper classes ->
-#   AgyAccountManager init -> ProfileHelp -> Aliases -> final banner.)
-# ==============================================================================
- 
-#region PROFILE ENVIRONMENT
-# ==============================================================================
-#  Shell environment setup, PSReadLine settings, and community modules loading.
-# ==============================================================================
- 
 class ProfileEnvironment {
     static [void] ConfigurePSReadLine() {
-        # --- PSReadLine Options ---
         Set-PSReadLineOption -EditMode Windows
         $psReadLineCmd = Get-Command Set-PSReadLineOption -ErrorAction SilentlyContinue
         if ($psReadLineCmd -and $psReadLineCmd.Parameters.ContainsKey('PredictionSource')) {
             try {
-                $supportsVt = -not $Global:AiMode -and $global:Host.UI.SupportsVirtualTerminal -and -not [Console]::IsOutputRedirected
+                $supportsVt = $global:Host.UI.SupportsVirtualTerminal -and -not [Console]::IsOutputRedirected
                 if ($supportsVt) {
                     Set-PSReadLineOption -PredictionSource History
                     Set-PSReadLineOption -PredictionViewStyle ListView
@@ -312,18 +185,17 @@ class ProfileEnvironment {
         }
         Set-PSReadLineOption -BellStyle None
 
-        # Define colors compatible with both older and newer PSReadLine versions
         $psReadlineColors = @{
-            "Command"          = [ConsoleColor]::Green
-            "Parameter"        = [ConsoleColor]::Gray
-            "Operator"         = [ConsoleColor]::Magenta
-            "Variable"         = [ConsoleColor]::Yellow
-            "String"           = [ConsoleColor]::Cyan
-            "Number"           = [ConsoleColor]::White
-            "Type"             = [ConsoleColor]::Blue
-            "Comment"          = [ConsoleColor]::DarkGreen
-            "Keyword"          = [ConsoleColor]::DarkYellow
-            "Error"            = [ConsoleColor]::Red
+            "Command"   = [ConsoleColor]::Green
+            "Parameter" = [ConsoleColor]::Gray
+            "Operator"  = [ConsoleColor]::Magenta
+            "Variable"  = [ConsoleColor]::Yellow
+            "String"    = [ConsoleColor]::Cyan
+            "Number"    = [ConsoleColor]::White
+            "Type"      = [ConsoleColor]::Blue
+            "Comment"   = [ConsoleColor]::DarkGreen
+            "Keyword"   = [ConsoleColor]::DarkYellow
+            "Error"     = [ConsoleColor]::Red
         }
         if ($psReadLineCmd -and $psReadLineCmd.Parameters.ContainsKey('PredictionSource')) {
             $psReadlineColors["InlinePrediction"] = '#70A99F'
@@ -333,8 +205,7 @@ class ProfileEnvironment {
             Set-PSReadlineOption -Color $psReadlineColors
         } catch {}
 
-        # --- PSReadLine Key Bindings ---
-        if (-not $Global:AiMode -and $global:Host.Name -eq 'ConsoleHost' -and (Get-Command Set-PSReadLineKeyHandler -ErrorAction SilentlyContinue)) {
+        if ($global:Host.Name -eq 'ConsoleHost' -and (Get-Command Set-PSReadLineKeyHandler -ErrorAction SilentlyContinue)) {
             Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
             Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
             Set-PSReadLineKeyHandler -Chord 'Ctrl+Spacebar' -Function Complete
@@ -348,870 +219,123 @@ class ProfileEnvironment {
                     }
                 }
             }
-            # .NET Hotkeys
-            Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+b' -ScriptBlock {
-                $pr = [Type]"Microsoft.PowerShell.PSConsoleReadLine"
-                if ($pr) {
-                    $pr::RevertLine()
-                    $pr::Insert('db')
-                    $pr::AcceptLine()
-                }
-            }
-            Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+t' -ScriptBlock {
-                $pr = [Type]"Microsoft.PowerShell.PSConsoleReadLine"
-                if ($pr) {
-                    $pr::RevertLine()
-                    $pr::Insert('dt')
-                    $pr::AcceptLine()
-                }
-            }
-            # Launches the C# Control Center TUI directly (same target as the `cc` alias)
-            Set-PSReadLineKeyHandler -Key 'Ctrl+Shift+c' -ScriptBlock {
-                $pr = [Type]"Microsoft.PowerShell.PSConsoleReadLine"
-                if ($pr) {
-                    $pr::RevertLine()
-                    $pr::Insert('cc')
-                    $pr::AcceptLine()
-                }
-            }
         }
     }
 
     static [void] LoadModules() {
-        # Ensure UTF8 for Icons
         [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-
-        if (-not $Global:AiMode -and $Global:VerboseStartup) {
-            Write-Host "[*] Loading Enhanced PowerShell Profile... (Core)" -ForegroundColor Cyan
-        }
-
-        # --- Module Loading & Auto-Healing ---
         $modules = @(
             @{ Name = "PSReadLine";                         Description = "Core CLI Experience" }
-            # @{ Name = "z";                                  Description = "Smart Directory Navigation" }
+            @{ Name = "Terminal-Icons";                     Description = "Rich File Icons" }
+            @{ Name = "posh-git";                           Description = "Git Status in Prompt" }
+            @{ Name = "Microsoft.PowerShell.ConsoleGuiTools"; Description = "Terminal UI" }
         )
-        if (-not $Global:AiMode) {
-            $modules += @(
-                @{ Name = "Terminal-Icons";                     Description = "Rich File Icons" }
-                @{ Name = "posh-git";                           Description = "Git Status in Prompt" }
-                @{ Name = "Microsoft.PowerShell.ConsoleGuiTools"; Description = "Terminal UI (Out-ConsoleGridView)" }
-                @{ Name = "BurntToast";                         Description = "Windows Notifications" }
-            )
-        }
-
         foreach ($mod in $modules) {
-            $loaded = $false
             try {
                 Import-Module $mod.Name -ErrorAction Stop
-                $loaded = $true
             } catch {
-                # Auto-Install if missing or failed to import (only in interactive console)
-                if ($Global:AiMode -or [Console]::IsOutputRedirected -or -not [Environment]::UserInteractive) {
-                    if (-not $Global:AiMode) {
-                        Write-Warning "[!] Module $($mod.Name) is missing or failed to load and console is non-interactive. Skipping installation."
-                    }
-                } else {
-                    Write-Host "[+] Installing $($mod.Name) ($($mod.Description))..." -ForegroundColor Cyan
-                    try {
-                        Install-Module $mod.Name -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck -ErrorAction Stop
-                        if ($mod.Name -eq "Terminal-Icons") {
-                            Import-Module $mod.Name -Force -ErrorAction SilentlyContinue
-                        } else {
-                            Import-Module $mod.Name -ErrorAction SilentlyContinue
-                        }
-                    } catch {
-                        Write-Warning "[!] Failed to install/load $($mod.Name). Skipping."
-                    }
-                }
+                try {
+                    Install-Module $mod.Name -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck -ErrorAction Stop
+                    Import-Module $mod.Name -ErrorAction SilentlyContinue
+                } catch {}
             }
         }
     }
 }
 
 [ProfileEnvironment]::ConfigurePSReadLine()
- 
-# --- Oh My Posh Theme (Initialized in global script scope to bypass class method scoping constraints) ---
-if (-not $Global:AiMode) {
-    # Theme name resolution (+ legacy active_theme.txt migration) lives in
-    # [ThemeHelper]::ResolveStartupTheme() now — pure file/JSON logic, no PS1-only dependency.
-    # This runs unconditionally on every shell startup (not deferred inside a method like every
-    # other AgyTui call site), so if AgyTui.dll isn't loaded yet it must not break oh-my-posh
-    # entirely — fall back to a bare default rather than let the whole file abort.
-    try {
-        $configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\config.json"
-        if (-not (Test-Path $configPath)) { $configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "config.json" }
-        $legacyPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "active_theme.txt"
-        if (Test-Path $configPath) {
-            $cfg = Get-Content $configPath -Raw -ErrorAction SilentlyContinue | ConvertFrom-Json -ErrorAction SilentlyContinue
-            if ($cfg -and $cfg.active_theme) {
-                $env:THEME = $cfg.active_theme
-            } else {
-                $env:THEME = "neko"
-            }
-        } elseif (Test-Path $legacyPath) {
-            $env:THEME = (Get-Content $legacyPath -Raw -ErrorAction SilentlyContinue).Trim()
-        } else {
-            $env:THEME = "neko"
-        }
-    } catch {
-        $env:THEME = "neko"
-    }
-    $themePath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "$($env:THEME).omp.json"
-    if ((Test-Path $themePath) -and (Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
-        if (-not $global:PoshInitialized) {
-            try {
-                oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
-                $global:PoshInitialized = $true
-            } catch {
-                Write-Warning "Failed to initialize oh-my-posh: $_"
-            }
-        }
-    }
-}
- 
-Write-AgyStartupCheckpoint "oh-my-posh init block done"
-#endregion
 
-#region GIT HELPER
-# ==============================================================================
-#  Shortcuts and wrappers for common Git operations.
-#
-#  Embedded via Invoke-Expression on an escaped-from-parsing string, not defined
-#  directly in this script's own AST: BranchCheckoutTui/Gcmt/GenerateAiCommitMessage
-#  reference [AgyTui.*] types inside the class body, and PowerShell resolves class-body
-#  type refs at parse time. If this class were a literal part of this file, an
-#  unresolvable type (pre-PowerShell-7.6, before AgyTuiApp.dll's .NET 10 types can
-#  load) would abort parsing of the ENTIRE file — verified empirically: nothing in the
-#  whole script would run, not even code physically before the failing class.
-#  Invoke-Expression gives this class its own independent parse pass, wrapped in
-#  try/catch, so a failure here only disables the git aliases instead of all ~100.
-# ==============================================================================
-function Load-GitHelper {
-    try {
-        Invoke-Expression @'
-class ShellGitHelper {
-    static [string] GenerateAiCommitMessage() {
-        if (-not (Test-AgyAiGate)) { return "" }
-        $diff = git diff --cached
-        if (-not $diff) { return "" }
-
-        $prompt = "Generate a concise, one-line conventional commit description (excluding type/scope prefix) based on the following git diff. Output ONLY the description:`n`n$diff"
-
-        $body = @{
-            model = [AgyAiCore]::OllamaDefaultModel
-            prompt = $prompt
-            stream = $false
-        } | ConvertTo-Json
-
+# Initialize Oh My Posh Theme
+$themePath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "$($env:THEME).omp.json"
+if ((Test-Path $themePath) -and (Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
+    if (-not $global:PoshInitialized) {
         try {
-            $res = Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:11434/api/generate" -Body $body -ContentType "application/json" -TimeoutSec 5
-            if ($res.response) {
-                $desc = $res.response.Trim()
-                $desc = $desc -replace '^(feat|fix|docs|style|refactor|test|chore)(\(.*?\))?:\s*', ''
-                return $desc
-            }
+            oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
+            $global:PoshInitialized = $true
         } catch {
-            Write-Warning "Failed to contact Ollama for AI commit suggestion: $_"
+            Write-Warning "Failed to initialize oh-my-posh: $_"
         }
-        return ""
-    }
-
-    static [void] Gcmt([string]$DirectMessage) {
-        $staged = git diff --cached --name-only
-        if (-not $staged) {
-            Write-Warning "No staged changes found. Run git add first."
-            return
-        }
-
-        if ($Global:AiMode -and -not $DirectMessage) {
-            Write-Host "Usage: gcmt <message>"
-            Write-Host "Supported Commit Types: feat, fix, docs, style, refactor, test, chore"
-            return
-        }
-
-        if ($DirectMessage) {
-            Write-Host "Committing with message: '$DirectMessage'" -ForegroundColor Cyan
-            git commit -m "$DirectMessage"
-            return
-        }
-
-        $types = @(
-            "feat     (New feature)",
-            "fix      (Bug fix)",
-            "docs     (Documentation changes)",
-            "style    (Formatting, missing semi colons, etc)",
-            "refactor (Code restructuring without behavior changes)",
-            "test     (Adding missing tests)",
-            "chore    (Maintenance/dependencies)"
-        )
-        $sel = [SpectreMenu]::Show("Select Commit Type", $types, 0)
-        if ($sel -lt 0) { return }
-
-        $type = switch ($sel) {
-            0 { "feat" }
-            1 { "fix" }
-            2 { "docs" }
-            3 { "style" }
-            4 { "refactor" }
-            5 { "test" }
-            6 { "chore" }
-        }
-
-        $scope = Read-Host "Enter commit scope (optional, press Enter to skip)"
-        $scope = $scope.Trim()
-
-        $desc = Read-Host "Enter commit description (or type 'ai' to auto-generate)"
-        if ($desc -eq "ai") {
-            Write-Host "[Ollama] Querying Ollama for commit suggestion..." -ForegroundColor Yellow
-            $desc = [ShellGitHelper]::GenerateAiCommitMessage()
-            if (-not $desc) {
-                $desc = Read-Host "Ollama failed to generate message. Please enter description manually"
-            } else {
-                Write-Host "[Ollama] Generated: $desc" -ForegroundColor Green
-            }
-        }
-
-        if ([string]::IsNullOrWhiteSpace($desc)) {
-            Write-Warning "Commit description cannot be empty."
-            return
-        }
-
-        $finalMsg = if ($scope) { "${type}($scope): $desc" } else { "${type}: $desc" }
-        Write-Host ""
-        Write-Host "Generated commit message: '$finalMsg'" -ForegroundColor Cyan
-        $confirm = Read-Host "Confirm commit? (Y/N)"
-        if ($DirectMessage) {
-            git commit -m "$finalMsg"
-        } else {
-            Write-Host "Executing: git commit -m `"$finalMsg`"" -ForegroundColor Yellow
-            git commit -m "$finalMsg"
-        }
-    }
-
-    static [void] MergeSquash([string]$BranchName) {
-        if ([string]::IsNullOrWhiteSpace($BranchName)) {
-            Write-Warning "Branch name required for merge-squash."
-            return
-        }
-        Write-Host "Squash merging branch: $BranchName" -ForegroundColor Yellow
-        git merge --squash $BranchName | Out-Default
-        Write-Host "Commit the squashed changes!" -ForegroundColor Cyan
-    }
-
-    static [void] StashSnapshot([string]$Message) {
-        $msg = if ($Message) { $Message } else { "snapshot" }
-        git stash push -m "$msg" | Out-Default
-        git stash apply 0 | Out-Default
-        Write-Host "[Git] Snapshot stashed: $msg" -ForegroundColor Green
-    }
-}
-'@
-    } catch {}
-}
-#endregion
- 
- 
-
-#region DOTNET HELPER
-# ==============================================================================
-#  Shortcuts and migrations tool wrappers for the .NET SDK.
-# ==============================================================================
- 
-class ShellDotNetHelper {
-    static [void] Run([string[]]$PassThruArgs) {
-        Write-Host "🚀 Running project..." -ForegroundColor Green
-        if ($PassThruArgs) { dotnet run $PassThruArgs | Out-Default } else { dotnet run | Out-Default }
-    }
- 
-    static [void] CleanBinObj() {
-        Write-Host "💥 Destroying bin/ and obj/ folders..." -ForegroundColor Red
-        $dirs = Get-ChildItem -Path . -Depth 3 -Directory -Force -ErrorAction SilentlyContinue |
-            Where-Object { ($_.Name -eq 'bin' -or $_.Name -eq 'obj') -and $_.FullName -notmatch '\\(node_modules|\.git|\.vs)\\' }
-        if ($dirs) {
-            foreach ($d in $dirs) {
-                if (Test-Path $d.FullName) {
-                    try {
-                        Remove-Item -Path $d.FullName -Recurse -Force -ErrorAction SilentlyContinue
-                    } catch {}
-                }
-            }
-        }
-        Write-Host "✅ Clean complete." -ForegroundColor Green
-    }
- 
-    static [void] NewSolution([string]$Name) {
-        dotnet new sln -n $Name | Out-Default
-    }
- 
-    static [void] AddAllProjectsToSolution() {
-        $projects = Get-ChildItem -Recurse -Filter "*.csproj"
-        foreach ($p in $projects) {
-            dotnet sln add $p.FullName | Out-Default
-        }
-    }
- 
-    static [void] WatchTest([string[]]$PassThruArgs) {
-        Write-Host "👀 Watching Tests..." -ForegroundColor Yellow
-        if ($PassThruArgs) { dotnet watch test $PassThruArgs | Out-Default } else { dotnet watch test | Out-Default }
-    }
- 
-    static [void] Watch([string[]]$PassThruArgs) {
-        Write-Host "👀 Watching for changes..." -ForegroundColor Cyan
-        if ($PassThruArgs) { dotnet watch $PassThruArgs | Out-Default } else { dotnet watch | Out-Default }
-    }
- 
-    static [void] Build([string[]]$PassThruArgs) {
-        Write-Host "🔨 Building project..." -ForegroundColor Blue
-        if ($PassThruArgs) { dotnet build $PassThruArgs | Out-Default } else { dotnet build | Out-Default }
-    }
- 
-    static [void] Format([string[]]$PassThruArgs) {
-        Write-Host "💅 Formatting code..." -ForegroundColor Magenta
-        if ($PassThruArgs) { dotnet format $PassThruArgs | Out-Default } else { dotnet format | Out-Default }
-    }
- 
-    static [void] Test([string[]]$PassThruArgs) {
-        Write-Host "🧪 Running tests..." -ForegroundColor Yellow
-        if ($PassThruArgs) { dotnet test $PassThruArgs | Out-Default } else { dotnet test | Out-Default }
-    }
- 
-    static [void] Clean([string[]]$PassThruArgs) {
-        Write-Host "🧹 Cleaning project..." -ForegroundColor Yellow
-        if ($PassThruArgs) { dotnet clean $PassThruArgs | Out-Default } else { dotnet clean | Out-Default }
-    }
- 
-    static [void] Restore([string[]]$PassThruArgs) {
-        Write-Host "📦 Restoring packages..." -ForegroundColor Magenta
-        if ($PassThruArgs) { dotnet restore $PassThruArgs | Out-Default } else { dotnet restore | Out-Default }
-    }
- 
-    static [void] UpdateDatabase([string]$Context) {
-        Write-Host "📈 Updating database..." -ForegroundColor Green
-        $params = @("ef", "database", "update")
-        if ($Context) { $params += @("--context", $Context) }
-        dotnet $params | Out-Default
-    }
- 
-    static [void] AddMigration([string]$MigrationName, [string]$Context) {
-        Write-Host "➕ Adding migration: $MigrationName" -ForegroundColor Cyan
-        $params = @("ef", "migrations", "add", $MigrationName)
-        if ($Context) { $params += @("--context", $Context) }
-        dotnet $params | Out-Default
-    }
- 
-    static [void] RemoveDatabase([string]$Context) {
-        Write-Host "🔥 Dropping database..." -ForegroundColor Red
-        if ((Read-Host "Are you sure? (y/N)") -eq "y") {
-            $params = @("ef", "database", "drop", "--force")
-            if ($Context) { $params += @("--context", $Context) }
-            dotnet $params | Out-Default
-            Write-Host "Database dropped."
-        } else {
-            Write-Host "Cancelled."
-        }
-    }
- 
-    static [void] RemoveMigration([string]$Context) {
-        Write-Host "⏪ Removing last migration..." -ForegroundColor Yellow
-        $params = @("ef", "migrations", "remove")
-        if ($Context) { $params += @("--context", $Context) }
-        dotnet $params | Out-Default
-    }
- 
-    static [void] NewConsole([string]$Name) {
-        dotnet new console -n $Name | Out-Default
-    }
- 
-    static [void] NewWebApi([string]$Name) {
-        dotnet new webapi -n $Name | Out-Default
-    }
-
-    static [void] Pack([string[]]$PassThruArgs) {
-        Write-Host "📦 Packing NuGet package..." -ForegroundColor Cyan
-        if ($PassThruArgs) { dotnet pack $PassThruArgs | Out-Default } else { dotnet pack | Out-Default }
-    }
-
-    static [void] PublishPackage([string[]]$PassThruArgs) {
-        Write-Host "🚀 Publishing NuGet package..." -ForegroundColor Green
-        if ($PassThruArgs) { dotnet nuget push $PassThruArgs | Out-Default } else { dotnet nuget push | Out-Default }
     }
 }
 #endregion
- 
 
-
- #region DOCKER HELPER
+#region 4. DOCKER & CONTAINER INTEGRATION
 # ==============================================================================
-# Shortcuts and prune utility wrappers for Docker and Docker Compose.
-#
-# Embedded via Invoke-Expression for the same reason as GitHelper above: Dkcl()
-# references [AgyTui.*] types inside the class body.
+#  Shortcuts and TUI dashboards for Docker and Docker Compose.
 # ==============================================================================
-function Load-DockerHelper {
-    try {
-        Invoke-Expression @'
-class ShellDockerHelper {
-    static [void] RemoveAllContainers() {
- Write-Host "[Prune] Removing ALL containers..." -ForegroundColor Red
- if ((Read-Host "This will remove ALL containers. Are you sure? (y/N)") -eq 'y') {
- $c = docker ps -aq
- if ($c) { docker rm $c | Out-Default }
- Write-Host "All containers removed."
- } else {
- Write-Host "Cancelled."
- }
- }
 
- static [void] StopAllContainers() {
- Write-Host "[Stop] Stopping ALL running containers..." -ForegroundColor Yellow
- $c = docker ps -q
- if ($c) { docker stop $c | Out-Default }
- Write-Host "All containers stopped."
- }
+function Invoke-DockerDashboard { Load-AgyTuiDll; [CommandRouter]::Route("dkcl") }
+function Invoke-DockerHealth { Load-AgyTuiDll; [CommandRouter]::Route("docker-health") }
+function Get-DockerContainers { param([switch]$All) if ($All) { docker ps -a } else { docker ps } }
+function Remove-AllDockerContainers { Load-AgyTuiDll; [CommandRouter]::Route("dkrmac") }
+function Stop-AllDockerContainers { Load-AgyTuiDll; [CommandRouter]::Route("dkstac") }
+function Invoke-ComposeUp { Load-AgyTuiDll; [CommandRouter]::Route("dcup", $args) }
+function Invoke-ComposeUpBuild { docker-compose up --build $args }
+function Invoke-ComposeDown { Load-AgyTuiDll; [CommandRouter]::Route("dcdown", $args) }
+function Remove-UnusedDockerVolumes { docker volume prune -f }
+function Remove-UnusedDockerImages { docker image prune -af }
 
- static [void] ComposeUp([string[]]$PassThruArgs) {
- Write-Host "[Compose] Starting Docker Compose..." -ForegroundColor Green
- if ($PassThruArgs) { docker-compose up $PassThruArgs | Out-Default } else { docker-compose up | Out-Default }
- }
-
- static [void] ComposeUpBuild([string[]]$PassThruArgs) {
- Write-Host "[Compose] Building and starting Docker Compose... " -ForegroundColor Blue
- if ($PassThruArgs) { docker-compose up --build $PassThruArgs | Out-Default } else { docker-compose up --build | Out-Default }
- }
-
- static [void] ComposeDown([string[]]$PassThruArgs) {
- Write-Host "[Compose] Stopping Docker Compose..." -ForegroundColor Yellow
- if ($PassThruArgs) { docker-compose down $PassThruArgs | Out-Default } else { docker-compose down | Out-Default }
- }
-
- static [void] RemoveUnusedVolumes() {
- Write-Host "[Prune] Pruning Docker volumes..." -ForegroundColor Magenta
- docker volume prune | Out-Default
- }
-
- static [void] RemoveUnusedImages() {
- Write-Host "[Prune] Pruning Docker images..." -ForegroundColor Magenta
- docker image prune | Out-Default
- }
-
- static [void] Dkcl() {
- $containers = @()
- try {
- $open = "{" + "{"
- $close = "}" + "}"
- $fmt = "$open.Names$close:::$open.State$close:::$open.Image$close:::$open.Label 'com.docker.compose.project'$close"
- $raw = docker ps -a --format $fmt 2>$null
- if ($null -ne $raw) {
- foreach ($line in $raw) {
- if ([string]::IsNullOrWhiteSpace($line)) { continue }
- $parts = $line -split ':::'
- $proj = "(Standalone)"
- if ($parts[3]) { $proj = $parts[3] }
- $containers += [PSCustomObject]@{
- Name = $parts[0]
- State = $parts[1]
- Image = $parts[2]
- Project = $proj
- }
- }
- }
- } catch {}
-
- if ($Global:AiMode) {
- foreach ($c in $containers) {
- Write-Host "$($c.Name),$($c.State),$($c.Image)"
- }
- return
- }
-
- if ($containers.Count -eq 0) {
- Write-Host "No Docker containers found." -ForegroundColor Yellow
- return
- }
-
- while ($true) {
- $containers = [SpectreProgress]::SpinnerResult("[Docker] Querying active container configurations...", {
- $cList = @()
- try {
- $open = "{" + "{"
- $close = "}" + "}"
- $fmt = "$open.Names$close:::$open.State$close:::$open.Image$close:::$open.Label 'com.docker.compose.project'$close"
- $raw = docker ps -a --format $fmt 2>$null
- if ($null -ne $raw) {
- foreach ($line in $raw) {
- if ([string]::IsNullOrWhiteSpace($line)) { continue }
- $parts = $line -split ':::'
- $proj = "(Standalone)"
- if ($parts[3]) { $proj = $parts[3] }
- $cList += [PSCustomObject]@{
- Name = $parts[0]
- State = $parts[1]
- Image = $parts[2]
- Project = $proj
- }
- }
- }
- } catch {}
- return $cList
- })
-
- $grouped = $containers | Group-Object Project
- $menuItems = @()
- $itemMapping = @()
- foreach ($group in $grouped) {
- $menuItems += "[$($group.Name)]"
- $itemMapping += $null
- foreach ($c in $group.Group) {
- $statusIcon = "[-]"
- if ($c.State -eq "running") { $statusIcon = "[+]" }
- $menuItems += " $statusIcon $($c.Name) ($($c.State)) - $($c.Image)"
- $itemMapping += $c
- }
- }
- $menuItems += "[x] Exit Dashboard"
- $itemMapping += $null
-
- $selected = [SpectreMenu]::Show("Docker Containers Dashboard (dkcl)", $menuItems, 0)
- if ($selected -lt 0 -or $selected -eq ($menuItems.Count - 1)) {
- break
- }
-
- $c = $itemMapping[$selected]
- if ($null -eq $c) {
- continue
- }
-
- $subItems = @(
- "[Start] Start Container",
- "[Stop] Stop Container",
- "[Restart] Restart Container",
- "[Logs] View Logs (tail 50)",
- "[Back] Return"
- )
- $subSel = [SpectreMenu]::Show("Manage Container: $($c.Name)", $subItems, 0)
- if ($subSel -eq 0) {
- Write-Host "Starting $($c.Name)..." -ForegroundColor Green
- docker start $c.Name | Out-Null
- }
- elseif ($subSel -eq 1) {
- Write-Host "Stopping $($c.Name)..." -ForegroundColor Yellow
- docker stop $c.Name | Out-Null
- }
- elseif ($subSel -eq 2) {
- Write-Host "Restarting $($c.Name)..." -ForegroundColor Cyan
- docker restart $c.Name | Out-Null
- }
- elseif ($subSel -eq 3) {
- Write-Host "Fetching logs for $($c.Name)..." -ForegroundColor Blue
- $logs = docker logs --tail 50 $c.Name 2>&1
- [SpectrePager]::Show("Logs: $($c.Name)", $logs)
- }
- }
- }
-}
-'@
-    } catch {}
-}
+Set-Alias -Name dkcl -Value Invoke-DockerDashboard -Force
+Set-Alias -Name docker-health -Value Invoke-DockerHealth -Force
+Set-Alias -Name dps -Value Get-DockerContainers -Force
+Set-Alias -Name containers -Value Get-DockerContainers -Force
+Set-Alias -Name dkcpu -Value Invoke-ComposeUp -Force
+Set-Alias -Name dcup -Value Invoke-ComposeUp -Force
+Set-Alias -Name dkcpub -Value Invoke-ComposeUpBuild -Force
+Set-Alias -Name dkcpd -Value Invoke-ComposeDown -Force
+Set-Alias -Name dcdown -Value Invoke-ComposeDown -Force
+Set-Alias -Name fix-volume -Value Remove-UnusedDockerVolumes -Force
+Set-Alias -Name fix-image -Value Remove-UnusedDockerImages -Force
 #endregion
 
-#region AWS HELPER
+#region 5. GIT & VCS INTEGRATION
 # ==============================================================================
-# AWS LocalStack commands and S3/SQS utility wrappers.
-# ==============================================================================
-
-class ShellAwsHelper {
- static [string]$LocalStackUrl = "http://localhost:4566"
-
- static [void] GetS3Buckets() {
- awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) s3 ls | Out-Default
- }
-
- static [void] NewS3Bucket([string]$Name) {
- awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) s3 mb s3://$Name | Out-Default
- }
-
- static [void] GetLambdaFunctions() {
- awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) lambda list-functions | Out-Default
- }
-
- static [void] GetLocalSQSQueues() {
- awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) sqs list-queues | Out-Default
- }
-
- static [void] NewLocalSQSQueue([string]$QueueName) {
- awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) sqs create-queue --queue-name=$QueueName | Out-Default
- }
-
- static [void] ClearLocalSQSQueue([string]$QueueUrl) {
- awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) sqs purge-queue --queue-url $QueueUrl | Out-Default
- }
-
- static [void] SendLocalSQSMessage([string]$QueueUrl, [string]$MessageBody, [string]$GroupId) {
- $gid = if ($GroupId) { $GroupId } else { "default-group" }
- awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) sqs send-message --queue-url $QueueUrl --message-body $MessageBody --message-group-id $gid | Out-Default
- }
-
- static [void] GetLocalSQSMessage([string]$QueueUrl) {
- awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) sqs receive-message --queue-url $QueueUrl | Out-Default
- }
-
- static [void] GetLocalSQSAttributes([string]$QueueUrl) {
- awslocal --endpoint-url=([ShellAwsHelper]::LocalStackUrl) sqs get-queue-attributes --queue-url $QueueUrl --attribute-names All | Out-Default
- }
-}
-#endregion
-
-#region SYSTEM HELPER
-# ==============================================================================
-# PS1-only system utility: clearing shell history.
-#
-# Everything else that used to live here (disk space, public IP, kill-port,
-# process picker, system monitor) now lives in AgyTui.SystemHelper (Program.cs).
-# ClearHistory stays PS1-only: it reaches into PSReadLine's own static class
-# and the engine-native Clear-History cmdlet, both of which are PowerShell
-# session/engine internals with no real portability win from moving to C#.
+#  Shortcuts and interactive commit/checkout wizards for Git.
 # ==============================================================================
 
-class ShellSystemHelper {
-    static [void] ClearHistory() {
-        Clear-Host
-        Remove-Item (Get-PSReadlineOption).HistorySavePath -ErrorAction SilentlyContinue
-        $prType = [Type]"Microsoft.PowerShell.PSConsoleReadLine"
-        if ($prType) { $prType::ClearHistory() }
-        Clear-History
-        Write-Host "🧹 All command history has been cleared." -ForegroundColor Yellow
-    }
-}
-#endregion
-#region PROFILE HELP
-# ==============================================================================
-#  Exposes interactive help documentation for all custom commands.
-#
-#  Embedded via Invoke-Expression for the same reason as GitHelper above: Show()
-#  references [ProfileHelp] inside the class body.
-# ==============================================================================
-function Load-HelpHelper {
-    try {
-        Invoke-Expression @'
-class ShellProfileHelp {
-    # Category/command menu building, filtering, and the drill-down loop all live in
-    # [ProfileHelp]::ShowInteractive() now. This just runs the returned command's alias —
-    # the one part that has to stay PS1-side, since it executes an arbitrary alias in the live
-    # session and C# can't do that.
-    static [void] Show([string]$CategoryFilter) {
-        $jsonPath = Join-Path $Global:ProfileRepoRoot "Profile\Core\CommandsMenu.json"
-        while ($true) {
-            $cmdObj = [ProfileHelp]::ShowInteractive($jsonPath, $CategoryFilter)
-            $CategoryFilter = ""
-            if (-not $cmdObj) { return }
- 
-            Clear-Host
-            Write-Host ""
-            Write-Host "  Running: $($cmdObj.Alias) ($($cmdObj.Command))" -ForegroundColor Green
-            Write-Host ""
- 
-            try {
-                Invoke-Expression $cmdObj.Alias | Out-Host
-            } catch {
-                Write-Error "Execution failed: $_"
-            }
- 
-            Write-Host ""
-            Write-Host "  [Press any key to return to help menu]" -ForegroundColor DarkGray
-            $null = [Console]::ReadKey($true)
-        }
-    }
-}
-'@
-    } catch {}
-}
-#endregion
-
-#region CENTRALIZED SHELL ALIASES & WRAPPER FUNCTIONS
-# ==============================================================================
-# Centralized routing layer bridging CLI commands to the static class helpers.
-# (Lazy per-file loading via EnsureHelper is gone — everything above is already
-# compiled as part of this single script, so there's no separate file to defer.)
-# ==============================================================================
-
-# --- Core Aliases ---
-Set-Alias -Name ip -Value Get-NetIPConfiguration -Force
-Set-Item -Path Alias:\cls -Value Clear-Host -Force -Option AllScope
-
-# --- Navigation & System Wrappers ---
-function Set-LocationParent { Set-Location .. }
-function Set-LocationGrandParent { Set-Location ..\.. }
-function Invoke-OpenExplorer { Initialize-AgySession; [SystemHelper]::OpenExplorer() }
-function Invoke-WorkspaceNavigator {
- param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Name)
- Invoke-ControlCenter "proj" $Name
-}
-Set-Alias -Name proj -Value Invoke-WorkspaceNavigator -Force
-function Invoke-TerminalIde {
- param([string]$Path)
- Initialize-AgySession
- $targetPath = if ($Path) { $Path } else { Get-Location }
- [TerminalIde]::Open($targetPath)
-}
-Set-Alias -Name ide -Value Invoke-TerminalIde -Force
-function Reload-Profile {
-# Must clear the exact guard variable checked at the top of this file (AgyUserProfileLoaded) —
-# this used to clear a differently-named AgyProfileLoaded, so `go` re-dot-sourced $PROFILE but
-# hit the top-of-file guard and returned immediately without reloading anything.
- $global:AgyUserProfileLoaded = $false
- $global:PoshInitialized = $false
- . $PROFILE
- Write-Host "✅ Profile reloaded." -ForegroundColor Green
-}
-function Rebuild-AgyApp {
-    Write-Host "🧹 Terminating running Agy processes to unlock DLL..." -ForegroundColor Yellow
-    Get-Process -Name "AgyTui", "agy", "AgyTuiApp" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
-    Start-Sleep -Milliseconds 500
-
-    $proj = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\AgyTui.csproj"
-    if (-not (Test-Path $proj)) {
-        Write-Error "AgyTui project file not found at: $proj"
-        return
-    }
-
-    Write-Host "🔨 Building AgyTui project..." -ForegroundColor Cyan
-    try {
-        dotnet build "$proj" -p:TreatWarningsAsErrors=true
-        if ($LASTEXITCODE -eq 0) {
-            $distDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\dist"
-            dotnet publish "$proj" -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o "$distDir" | Out-Null
-            Write-Host "✅ AgyTui built and published successfully to dist/." -ForegroundColor Green
-        } else {
-            Write-Error "❌ Build failed with exit code $LASTEXITCODE"
-        }
-    } catch {
-        Write-Error "❌ Build exception: $_"
-    }
-}
-Set-Alias -Name rebuild-agy -Value Rebuild-AgyApp -Force
-Set-Alias -Name build-agy -Value Rebuild-AgyApp -Force
-
-function Sync-AgyWorkspaces {
-    param([string]$BaseDir)
-    Initialize-AgySession
-    if ($null -ne ('WorkspaceRegistry' -as [type])) {
-        $count = [WorkspaceRegistry]::SyncAllProjects($BaseDir)
-        Write-Host "✅ Scanned and updated $count projects in priority_workspaces.json" -ForegroundColor Green
-    } else {
-        Invoke-ControlCenter "sync-projects"
-    }
-}
-Set-Alias -Name sync-projects -Value Sync-AgyWorkspaces -Force
-Set-Alias -Name scan-projects -Value Sync-AgyWorkspaces -Force
-function New-DirAndEnter {
- param([string]$Path)
- $null = New-Item -ItemType Directory -Path $Path -Force
- Set-Location $Path
-}
-function Get-DiskSpace { Initialize-AgySession; [SystemHelper]::ShowDiskSpace() }
-function Get-PublicIP { Initialize-AgySession; [SystemHelper]::GetPublicIP() }
-function Get-FileTree {
- param([int]$Depth = 2)
- tree.com /f /a | Select-Object -First (50 * $Depth)
-}
-function Stop-ProcessFriendly {
- param([string]$Name)
- Initialize-AgySession
- [SystemHelper]::StopProcessFriendly($Name)
-}
-
-function Get-SshConnectionInfo { Initialize-AgySession; [SshHelper]::GetConnectionInfo() }
-function Add-SshAuthorizedKey {
- param([string]$Key, [string]$Account)
- Initialize-AgySession
- [SshHelper]::AddAuthorizedKey($Key, $Account)
-}
-
-# Applies the (returned) theme path picked/computed by AgyTui.ThemeHelper: reload oh-my-posh and
-# re-register the prompt hook in-process — this must happen in the live PS1 session, not in C#.
-function Apply-ThemePath {
- param([string]$ThemePath)
- if (-not $ThemePath) { return }
- $Global:AgyOriginalPromptCmd = $null
- Remove-Module -Name "oh-my-posh-core" -Force -ErrorAction SilentlyContinue
- Remove-Item -Path "Function:\prompt" -Force -ErrorAction SilentlyContinue
- Remove-Item -Path "Function:\prompt_original" -Force -ErrorAction SilentlyContinue
- oh-my-posh --init --shell pwsh --config $ThemePath | Invoke-Expression
-}
-function Toggle-MobileMode {
- Apply-ThemePath ([ThemeHelper]::ToggleMobileMode($env:POSH_THEMES_PATH))
-}
-function Set-DesktopThemeMode {
- Apply-ThemePath ([ThemeHelper]::SetMobileMode($env:POSH_THEMES_PATH, $false))
-}
-function Set-MobileThemeMode {
- Apply-ThemePath ([ThemeHelper]::SetMobileMode($env:POSH_THEMES_PATH, $true))
-}
-function Start-MobileSshKeyReceiver { Initialize-AgySession; [SshHelper]::StartMobileSshKeyReceiver() }
-
-# Navigation & System Aliases
-Set-Alias -Name .. -Value Set-LocationParent -Force
-Set-Alias -Name ... -Value Set-LocationGrandParent -Force
-Set-Alias -Name f -Value Invoke-OpenExplorer -Force
-Set-Alias -Name go -Value Reload-Profile -Force
-Set-Alias -Name mkcd -Value New-DirAndEnter -Force
-Set-Alias -Name usage -Value Get-DiskSpace -Force
-Set-Alias -Name disk -Value Get-DiskSpace -Force
-Set-Alias -Name myip -Value Get-PublicIP -Force
-Set-Alias -Name public-ip -Value Get-PublicIP -Force
-Set-Alias -Name tree -Value Get-FileTree -Force
-Set-Item -Path Alias:\kill -Value Stop-ProcessFriendly -Force -Option AllScope
-
-Set-Alias -Name ssh-info -Value Get-SshConnectionInfo -Force
-Set-Alias -Name ssh-addkey -Value Add-SshAuthorizedKey -Force
-Set-Alias -Name mobile -Value Toggle-MobileMode -Force
-Set-Alias -Name mobile-setup -Value Toggle-MobileMode -Force
-Set-Alias -Name ssh-addkey-mobile -Value Start-MobileSshKeyReceiver -Force
-
-# --- Git Wrappers ---
 function Invoke-GitStatus { git status $args }
 function Show-GitDiff { git diff $args }
 function Get-GitLogGraph { git log --graph --oneline --decorate --all }
 function Get-GitLogPretty { git log --pretty=format:"%h - %an, %ar : %s" }
-function Get-GitLog { Initialize-AgySession; [GitHelper]::ShowLog() }
-function Get-GitBranches { Initialize-AgySession; [GitHelper]::ShowBranches() }
-function Invoke-GitCheckout {
- param([string]$branchName)
- Initialize-AgySession
- [GitHelper]::Checkout($branchName)
-}
-function New-GitBranch {
- param([string]$branchName)
- git checkout -b $branchName
-}
-function Remove-GitBranch {
- param([string]$branchName)
- git branch -d $branchName
-}
-function Invoke-GitAddAll { Initialize-AgySession; [GitHelper]::AddAll() }
+function Get-GitLog { Load-AgyTuiDll; [CommandRouter]::Route("glo", $args) }
+function Get-GitBranches { Load-AgyTuiDll; [CommandRouter]::Route("gb", $args) }
+function Invoke-GitCheckout { param([string]$branchName) Load-AgyTuiDll; [CommandRouter]::Route("co", $branchName) }
+function New-GitBranch { param([string]$branchName) git checkout -b $branchName }
+function Remove-GitBranch { param([string]$branchName) git branch -d $branchName }
+function Invoke-GitAddAll { Load-AgyTuiDll; [CommandRouter]::Route("ga", $args) }
 function Invoke-GitUnstage { git restore --staged . }
-function Invoke-GitCommit {
- param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message)
- if ($Message) { git commit -m ($Message -join " ") } else { Initialize-AgySession; [GitHelper]::ConventionalCommitWizard() }
-}
+function Invoke-GitCommit { param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message) if ($Message) { git commit -m ($Message -join " ") } else { Load-AgyTuiDll; [CommandRouter]::Route("gcmt") } }
 function Invoke-GitAmend { git commit --amend $args }
-function Invoke-GitUndo { Initialize-AgySession; [GitHelper]::InvokeGitUndo() }
+function Invoke-GitUndo { Load-AgyTuiDll; [CommandRouter]::Route("git-undo", $args) }
 function Invoke-GitResetSoft { git reset --soft HEAD~1 }
 function Invoke-GitResetHard { git reset --hard }
-function Invoke-GitFetch { Initialize-AgySession; [GitHelper]::Fetch() }
-function Invoke-GitPull { Initialize-AgySession; [GitHelper]::Pull() }
-function Invoke-GitPush { Initialize-AgySession; [GitHelper]::Push() }
+function Invoke-GitFetch { Load-AgyTuiDll; [CommandRouter]::Route("gf", $args) }
+function Invoke-GitPull { Load-AgyTuiDll; [CommandRouter]::Route("gpull", $args) }
+function Invoke-GitPush { Load-AgyTuiDll; [CommandRouter]::Route("gpush", $args) }
 function Invoke-GitPushForce { git push --force $args }
-function Invoke-GitMergeSquash {
- param([string]$BranchName)
- [ShellGitHelper]::MergeSquash($BranchName)
-}
-function Invoke-GitStashSnapshot {
- param([string]$Message)
- [ShellGitHelper]::StashSnapshot($Message)
+function Invoke-GitCommitWizard { param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message) Load-AgyTuiDll; $msg = $Message -join ' '; [CommandRouter]::Route("gcmt", $msg) }
+
+function Clone-Project {
+    param(
+        [Parameter(Mandatory=$true, Position=0)][string]$Url,
+        [Parameter(Position=1)][string]$DestName
+    )
+    $baseDir = Join-Path $env:USERPROFILE "Documents"
+    if (-not $DestName) {
+        if ($Url -match '/([^/]+)\.git$') { $DestName = $Matches[1] }
+        elseif ($Url -match '/([^/]+)$') { $DestName = $Matches[1] }
+        else { $DestName = "cloned-project-" + (Get-Random) }
+    }
+    $targetPath = Join-Path $baseDir $DestName
+    Write-Host "Cloning project from $Url into $targetPath..." -ForegroundColor Cyan
+    git clone $Url $targetPath
+    if ($LASTEXITCODE -eq 0 -and (Test-Path $targetPath)) {
+        Write-Host "Project successfully cloned!" -ForegroundColor Green
+    } else {
+        Write-Error "Failed to clone repository."
+    }
 }
 
-# Git Aliases
 Set-Alias -Name gs -Value Invoke-GitStatus -Force
 Set-Alias -Name gd -Value Show-GitDiff -Force
 Set-Alias -Name glo -Value Get-GitLogGraph -Force
@@ -1225,6 +349,7 @@ Set-Alias -Name gbd -Value Remove-GitBranch -Force
 Set-Alias -Name ga -Value Invoke-GitAddAll -Force
 Set-Alias -Name gunstage -Value Invoke-GitUnstage -Force
 Set-Alias -Name gcommit -Value Invoke-GitCommit -Force
+Set-Alias -Name gcmt -Value Invoke-GitCommitWizard -Force
 Set-Alias -Name gca -Value Invoke-GitAmend -Force
 Set-Alias -Name gundo -Value Invoke-GitUndo -Force
 Set-Alias -Name git-undo -Value Invoke-GitUndo -Force
@@ -1236,50 +361,34 @@ Set-Alias -Name gpull -Value Invoke-GitPull -Force
 Set-Alias -Name gus -Value Invoke-GitPush -Force
 Set-Alias -Name gpush -Value Invoke-GitPush -Force
 Set-Alias -Name guf -Value Invoke-GitPushForce -Force
-Set-Alias -Name gms -Value Invoke-GitMergeSquash -Force
-Set-Alias -Name gsnap -Value Invoke-GitStashSnapshot -Force
+Set-Alias -Name gclone -Value Clone-Project -Force
+#endregion
 
-# --- .NET Development Wrappers ---
-function Invoke-DotNetRun { [ShellDotNetHelper]::Run($args) }
-function Invoke-DotNetWatch { [ShellDotNetHelper]::Watch($args) }
-function Invoke-DotNetBuild { [ShellDotNetHelper]::Build($args) }
-function Invoke-DotNetFormat { [ShellDotNetHelper]::Format($args) }
-function Invoke-DotNetTest { [ShellDotNetHelper]::Test($args) }
-function Invoke-DotNetWatchTest { [ShellDotNetHelper]::WatchTest($args) }
-function Invoke-DotNetClean { [ShellDotNetHelper]::Clean($args) }
-function Invoke-DotNetRestore { [ShellDotNetHelper]::Restore($args) }
-function Remove-BinObj { [ShellDotNetHelper]::CleanBinObj() }
-function Update-Database {
- param([string]$Context)
- [ShellDotNetHelper]::UpdateDatabase($Context)
-}
-function Add-Migration {
- param([string]$MigrationName, [string]$Context)
- [ShellDotNetHelper]::AddMigration($MigrationName, $Context)
-}
-function Remove-Database {
- param([string]$Context)
- [ShellDotNetHelper]::RemoveDatabase($Context)
-}
-function Remove-Migration {
- param([string]$Context)
- [ShellDotNetHelper]::RemoveMigration($Context)
-}
-function New-Solution {
- param([string]$Name)
- [ShellDotNetHelper]::NewSolution($Name)
-}
-function Add-AllProjectsToSolution { [ShellDotNetHelper]::AddAllProjectsToSolution() }
-function New-ConsoleProject {
- param([string]$Name)
- [ShellDotNetHelper]::NewConsole($Name)
-}
-function New-WebApiProject {
- param([string]$Name)
- [ShellDotNetHelper]::NewWebApi($Name)
-}
+#region 6. DOTNET SDK INTEGRATION
+# ==============================================================================
+#  Shortcuts and tool wrappers for .NET development.
+# ==============================================================================
 
-# .NET Aliases
+function Invoke-DotNetRun { Load-AgyTuiDll; [CommandRouter]::Route("dr", $args) }
+function Invoke-DotNetWatch { Load-AgyTuiDll; [CommandRouter]::Route("dw", $args) }
+function Invoke-DotNetBuild { Load-AgyTuiDll; [CommandRouter]::Route("db", $args) }
+function Invoke-DotNetFormat { Load-AgyTuiDll; [CommandRouter]::Route("df", $args) }
+function Invoke-DotNetTest { Load-AgyTuiDll; [CommandRouter]::Route("dt", $args) }
+function Invoke-DotNetWatchTest { Load-AgyTuiDll; [CommandRouter]::Route("dwatch", $args) }
+function Invoke-DotNetClean { Load-AgyTuiDll; [CommandRouter]::Route("dcl", $args) }
+function Invoke-DotNetRestore { Load-AgyTuiDll; [CommandRouter]::Route("dres", $args) }
+function Remove-BinObj { Load-AgyTuiDll; [CommandRouter]::Route("dclean", $args) }
+function Update-Database { Load-AgyTuiDll; [CommandRouter]::Route("update-db", $args) }
+function Add-Migration { Load-AgyTuiDll; [CommandRouter]::Route("add-migration", $args) }
+function Remove-Database { Load-AgyTuiDll; [CommandRouter]::Route("dd", $args) }
+function Remove-Migration { Load-AgyTuiDll; [CommandRouter]::Route("dremove", $args) }
+function New-Solution { param([string]$Name) dotnet new sln -n $Name }
+function Add-AllProjectsToSolution { Get-ChildItem -Recurse -Filter "*.csproj" | ForEach-Object { dotnet sln add $_.FullName } }
+function New-ConsoleProject { param([string]$Name) dotnet new console -n $Name }
+function New-WebApiProject { param([string]$Name) dotnet new webapi -n $Name }
+function dpack { Load-AgyTuiDll; [CommandRouter]::Route("dpack", $args) }
+function dpubpkg { Load-AgyTuiDll; [CommandRouter]::Route("dpubpkg", $args) }
+
 Set-Alias -Name dr -Value Invoke-DotNetRun -Force
 Set-Alias -Name dw -Value Invoke-DotNetWatch -Force
 Set-Alias -Name dwatch -Value Invoke-DotNetWatch -Force
@@ -1305,366 +414,23 @@ Set-Alias -Name sln -Value New-Solution -Force
 Set-Alias -Name sln-add -Value Add-AllProjectsToSolution -Force
 Set-Alias -Name console -Value New-ConsoleProject -Force
 Set-Alias -Name webapi -Value New-WebApiProject -Force
+#endregion
 
-# --- Docker Wrappers ---
-function Get-DockerContainers {
- param([switch]$All)
- if ($All) { docker ps -a } else { docker ps }
-}
-function Remove-AllDockerContainers { [ShellDockerHelper]::RemoveAllContainers() }
-function Stop-AllDockerContainers { [ShellDockerHelper]::StopAllContainers() }
-function Invoke-ComposeUp { [ShellDockerHelper]::ComposeUp($args) }
-function Invoke-ComposeUpBuild { [ShellDockerHelper]::ComposeUpBuild($args) }
-function Invoke-ComposeDown { [ShellDockerHelper]::ComposeDown($args) }
-function Remove-UnusedDockerVolumes { [ShellDockerHelper]::RemoveUnusedVolumes() }
-function Remove-UnusedDockerImages { [ShellDockerHelper]::RemoveUnusedImages() }
+#region 7. AWS LOCALSTACK INTEGRATION
+# ==============================================================================
+#  Shortcuts and wrappers for AWS LocalStack (S3, SQS, Lambda).
+# ==============================================================================
 
-# Docker Aliases
-Set-Alias -Name dps -Value Get-DockerContainers -Force
-Set-Alias -Name containers -Value Get-DockerContainers -Force
-Set-Alias -Name dkcpu -Value Invoke-ComposeUp -Force
-Set-Alias -Name dcup -Value Invoke-ComposeUp -Force
-Set-Alias -Name dkcpub -Value Invoke-ComposeUpBuild -Force
-Set-Alias -Name dkcpd -Value Invoke-ComposeDown -Force
-Set-Alias -Name dcdown -Value Invoke-ComposeDown -Force
-Set-Alias -Name fix-volume -Value Remove-UnusedDockerVolumes -Force
-Set-Alias -Name fix-image -Value Remove-UnusedDockerImages -Force
+function Get-S3Buckets { Load-AgyTuiDll; [CommandRouter]::Route("aws-s3", $args) }
+function New-S3Bucket { param([string]$Name) awslocal s3 mb "s3://$Name" }
+function Get-LambdaFunctions { Load-AgyTuiDll; [CommandRouter]::Route("aws-local", $args) }
+function Get-LocalSQSQueues { Load-AgyTuiDll; [CommandRouter]::Route("aws-sqs", $args) }
+function New-LocalSQSQueue { param([string]$QueueName) awslocal sqs create-queue --queue-name=$QueueName }
+function Clear-LocalSQSQueue { param([string]$QueueUrl) awslocal sqs purge-queue --queue-url $QueueUrl }
+function Send-LocalSQSMessage { param([string]$QueueUrl, [string]$MessageBody, [string]$GroupId) $gid = if ($GroupId) { $GroupId } else { "default-group" }; awslocal sqs send-message --queue-url $QueueUrl --message-body $MessageBody --message-group-id $gid }
+function Get-LocalSQSMessage { param([string]$QueueUrl) awslocal sqs receive-message --queue-url $QueueUrl }
+function Get-LocalSQSAttributes { param([string]$QueueUrl) awslocal sqs get-queue-attributes --queue-url $QueueUrl --attribute-names All }
 
-# --- AWS LocalStack Wrappers ---
-function Get-S3Buckets { [ShellAwsHelper]::GetS3Buckets() }
-function New-S3Bucket {
- param([string]$Name)
- [ShellAwsHelper]::NewS3Bucket($Name)
-}
-function Get-LambdaFunctions { [ShellAwsHelper]::GetLambdaFunctions() }
-function Get-LocalSQSQueues { [ShellAwsHelper]::GetLocalSQSQueues() }
-function New-LocalSQSQueue {
- param([string]$QueueName)
- [ShellAwsHelper]::NewLocalSQSQueue($QueueName)
-}
-function Clear-LocalSQSQueue {
- param([string]$QueueUrl)
- [ShellAwsHelper]::ClearLocalSQSQueue($QueueUrl)
-}
-function Send-LocalSQSMessage {
- param([string]$QueueUrl, [string]$MessageBody, [string]$GroupId)
- [ShellAwsHelper]::SendLocalSQSMessage($QueueUrl, $MessageBody, $GroupId)
-}
-function Get-LocalSQSMessage {
- param([string]$QueueUrl)
- [ShellAwsHelper]::GetLocalSQSMessage($QueueUrl)
-}
-function Get-LocalSQSAttributes {
- param([string]$QueueUrl)
- [ShellAwsHelper]::GetLocalSQSAttributes($QueueUrl)
-}
-
-# --- AI Tools Wrappers ---
-function Invoke-AiTool {
-    param([string]$MethodName, [string]$FallbackAlias, [object[]]$ToolArgs)
-    try {
-        Load-AgyTuiDll
-        if ($null -ne ('AgyAiCore' -as [type])) {
-            [AgyAiCore]::$MethodName($ToolArgs)
-        } else {
-            Invoke-ControlCenter $FallbackAlias $ToolArgs
-        }
-    } catch {
-        Write-Host "⚠️ AI Tool invocation error: $_" -ForegroundColor Red
-    }
-}
-function Invoke-MultiAgent {
-    param([string]$Query)
-    Load-AgyTuiDll
-    if ($null -ne ('AgyAiCore' -as [type])) {
-        [AgyAiCore]::InvokeMultiAgent($Query, "Menu", "")
-    } else {
-        Invoke-ControlCenter "ai" $Query
-    }
-}
-Set-Alias -Name ai -Value Invoke-MultiAgent -Force
-Set-Alias -Name cai -Value Invoke-MultiAgent -Force
-Set-Alias -Name claude -Value Invoke-MultiAgent -Force
-
-# --- Tab Autocompleters ---
-if (Get-Command multigravity -ErrorAction SilentlyContinue) {
- Register-ArgumentCompleter -Native -CommandName multigravity -ScriptBlock {
- param($wordToComplete, $commandAst, $cursorPosition)
- $opts = @('new', 'list', 'status', 'rename', 'delete', 'clone', 'template', 'export', 'import', 'update', 'doctor', 'stats', 'completion', 'help')
- $profiles = if (Test-Path (Join-Path $env:USERPROFILE "AntigravityProfiles")) {
- Get-ChildItem -Directory -Path (Join-Path $env:USERPROFILE "AntigravityProfiles") | Select-Object -ExpandProperty Name
- } else { @() }
- ($opts + $profiles) | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
- [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
- }
- }
-}
-
-
-
-# --- Help shortcuts ---
-function Invoke-ControlCenter {
-    [CmdletBinding()]
-    param(
-        [switch]$NewWindow,
-        [Parameter(ValueFromRemainingArguments)][string[]]$ControlArgs
-    )
-    if ($NewWindow) {
-        $pwshExe = (Get-Command pwsh -ErrorAction SilentlyContinue).Source
-        if (-not $pwshExe) { $pwshExe = "powershell.exe" }
-        $argString = if ($ControlArgs) { $ControlArgs -join ' ' } else { '' }
-        Start-Process $pwshExe -ArgumentList "-NoExit", "-Command", "Invoke-ControlCenter $argString"
-        return
-    }
-
-    $targetDll = Get-AgyTuiDllPath
-    if ($targetDll -and (Test-Path $targetDll)) {
-        dotnet $targetDll @ControlArgs
-    } else {
-        $proj = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\AgyTui.csproj"
-        if (Test-Path $proj) {
-            dotnet run --project $proj -- $ControlArgs
-        } else {
-            Write-Warning "AgyTui application not found."
-            return
-        }
-    }
-    $selectedProjFile = Join-Path -Path $Global:AgySourceHome -ChildPath "selected_project.txt"
-    if (Test-Path $selectedProjFile -ErrorAction SilentlyContinue) {
-        $projPath = Get-Content $selectedProjFile -Raw -ErrorAction SilentlyContinue
-        if ($projPath) {
-            $cleanPath = $projPath.Trim()
-            try {
-                if (Test-Path $cleanPath -ErrorAction Stop) {
-                    Write-Host "🛸 Navigating to selected workspace: $cleanPath" -ForegroundColor Cyan
-                    Set-Location $cleanPath -ErrorAction Stop
-                }
-            } catch {
-                Write-Warning "Cannot navigate to '$cleanPath': $($_.Exception.Message)"
-            }
-        }
-        Remove-Item $selectedProjFile -Force -ErrorAction SilentlyContinue
-    }
-    $selectedThemeFile = Join-Path -Path $Global:AgySourceHome -ChildPath "selected_theme.txt"
-    if (Test-Path $selectedThemeFile -ErrorAction SilentlyContinue) {
-        $themePath = Get-Content $selectedThemeFile -Raw -ErrorAction SilentlyContinue
-        if ($themePath) {
-            $cleanTheme = $themePath.Trim()
-            try {
-                if (Test-Path $cleanTheme -ErrorAction Stop) {
-                    Apply-ThemePath $cleanTheme
-                }
-            } catch {
-                Write-Warning "Cannot apply theme '$cleanTheme': $($_.Exception.Message)"
-            }
-        }
-        Remove-Item $selectedThemeFile -Force -ErrorAction SilentlyContinue
-    }
-}
-Set-Alias -Name cc -Value Invoke-ControlCenter -Force
-
-function cg { Invoke-ControlCenter "gs" }
-function cnet { Invoke-ControlCenter "public-ip" }
-function csys { Invoke-ControlCenter "disk" }
-function cdk { Invoke-ControlCenter "dkcl" }
-function cai { Invoke-ControlCenter "claude" }
-function caws { Invoke-ControlCenter "aws-local" }
-function cnav { Invoke-ControlCenter "proj" }
-function goto { Invoke-ControlCenter "go" $args }
-function open-term {
-    if ($args) {
-        Start-Process wt.exe -ArgumentList $args
-    } else {
-        Initialize-AgySession
-        [SystemHelper]::OpenNewTerminalSession($pwd.Path, [string]$null, $true)
-    }
-}
-Set-Alias -Name term -Value open-term -Force
-Set-Alias -Name wt -Value open-term -Force
-function ui-mode { Invoke-ControlCenter "ui-mode" $args }
-function layout { Invoke-ControlCenter "ui-mode" $args }
-function view { Invoke-ControlCenter "ui-mode" $args }
-function dpack { [ShellDotNetHelper]::Pack($args) }
-function dpubpkg { [ShellDotNetHelper]::PublishPackage($args) }
-function cssh { Invoke-ControlCenter "ssh-info" }
-
-# Theme Switcher
-function Select-ShellTheme {
- Initialize-AgySession
- Apply-ThemePath ([ThemeHelper]::SelectThemeInteractive($env:POSH_THEMES_PATH, $env:THEME))
-}
-Set-Alias -Name theme -Value Select-ShellTheme -Force
-
-function Clone-Project {
- param(
- [Parameter(Mandatory=$true, Position=0)][string]$Url,
- [Parameter(Position=1)][string]$DestName
- )
-
- $baseDir = $Global:ProjectsBaseDir
- if (-not (Test-Path $baseDir)) {
- $baseDir = Join-Path $env:USERPROFILE "Documents"
- }
-
- if (-not $DestName) {
- if ($Url -match '/([^/]+)\.git$') {
- $DestName = $Matches[1]
- } elseif ($Url -match '/([^/]+)$') {
- $DestName = $Matches[1]
- } else {
- $DestName = "cloned-project-" + (Get-Random)
- }
- }
-
- $targetPath = Join-Path $baseDir $DestName
- Write-Host "Cloning project from $Url into $targetPath..." -ForegroundColor Cyan
- git clone $Url $targetPath
-
- if ($LASTEXITCODE -eq 0 -and (Test-Path $targetPath)) {
- $cacheFile = Join-Path $env:USERPROFILE ".gemini\antigravity\workspace_cache.json"
- Remove-Item $cacheFile -Force -ErrorAction SilentlyContinue
- Write-Host "Project successfully cloned and registered to workspace cache!" -ForegroundColor Green
- } else {
- Write-Error "Failed to clone repository."
- }
-}
-# Named "gclone", not "clone-project": PowerShell command names are case-insensitive, so an
-# alias named "clone-project" collides with the "Clone-Project" function it points to — aliases
-# take precedence over functions, so invoking either name tried to resolve the alias again and
-# failed outright with "term 'clone-project' is not recognized" (verified via isolated repro).
-Set-Alias -Name gclone -Value Clone-Project -Force
-
-# Operations Dashboards & Shortcuts
-function Invoke-DockerDashboard { Initialize-AgySession; [ShellDockerHelper]::Dkcl() }
-Set-Alias -Name dkcl -Value Invoke-DockerDashboard -Force
-
-function Invoke-KillPort {
- param([Parameter(Mandatory=$true, Position=0)][int]$Port)
- Initialize-AgySession
- [SystemHelper]::KillPort($Port)
-}
-Set-Alias -Name killport -Value Invoke-KillPort -Force
-
-function Invoke-SystemMonitor { Initialize-AgySession; [SystemHelper]::SystemMonitor() }
-Set-Alias -Name sysmon -Value Invoke-SystemMonitor -Force
-
-# Scaffolding Shortcuts
-function Invoke-ProjectScaffolder { Initialize-AgySession; [ProjectScaffolder]::Scaffold() }
-Set-Alias -Name new-project -Value Invoke-ProjectScaffolder -Force
-
-# Git TUI Shortcuts
-function Invoke-GitBranchCheckout { Invoke-GitCheckout $args }
-
-function Invoke-GitCommitWizard {
- param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message)
- Initialize-AgySession
- $msg = $Message -join ' '
- [ShellGitHelper]::Gcmt($msg)
-}
-Set-Alias -Name gcmt -Value Invoke-GitCommitWizard -Force
-
-function Invoke-AskAi {
- param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Query)
- Initialize-AgySession
- if (-not (Test-AgyAiGate)) { return }
- $q = $Query -join ' '
-# $Global:Error is PS1 session state — resolve the "explain my last error" fallback here,
-# then hand the C# side a plain resolved string to query the local Ollama model with.
- if ([string]::IsNullOrWhiteSpace($q)) {
- if ($Global:Error -and $Global:Error.Count -gt 0) {
- $lastErr = $Global:Error[0]
- $q = "Last Shell Error:`n$($lastErr | Format-List * -Force | Out-String)"
- if ($lastErr.InvocationInfo) {
- $q += "`nInvocation Line: $($lastErr.InvocationInfo.Line)"
- }
- }
- }
- [AgyAiCore]::AskAi($q)
-}
-Set-Alias -Name ask-ai -Value Invoke-AskAi -Force
-
-function Invoke-SecretVault {
- [CmdletBinding()]
- param(
- [Parameter(Position=0)]
- [ValidateSet("set", "get", "list", "remove", "rm")]
- [string]$Action = "list",
- [Parameter(Position=1)]
- [string]$Key,
- [Parameter(Position=2)]
- [string]$Value
- )
- Initialize-AgySession
- switch ($Action) {
- "set" {
- if (-not $Key -or -not $Value) {
- Write-Error "Usage: sec set <key> <value>"
- return
- }
- [AgySecretVault]::SetSecret($Key, $Value)
- }
- "get" {
- if (-not $Key) {
- Write-Error "Usage: sec get <key>"
- return
- }
- $val = [AgySecretVault]::GetSecret($Key)
- if ($val) { Write-Host $val }
- }
- "list" {
- [AgySecretVault]::ListSecrets()
- }
- { $_ -in "remove", "rm" } {
- if (-not $Key) {
- Write-Error "Usage: sec remove <key>"
- return
- }
- [AgySecretVault]::RemoveSecret($Key)
- }
- }
-}
-Set-Alias -Name sec -Value Invoke-SecretVault -Force
-
-function Invoke-DbTui {
- param([Parameter(Mandatory=$true, Position=0)][string]$DbPath)
- Initialize-AgySession
- $resolved = Resolve-Path $DbPath -ErrorAction SilentlyContinue
- if (-not $resolved) {
- Write-Error "Database file not found: $DbPath"
- return
- }
- [DatabaseHelper]::ShowDatabaseTui($resolved.Path)
-}
-Set-Alias -Name db-tui -Value Invoke-DbTui -Force
-
-function Invoke-LogStream {
- param([Parameter(Position=0)][string]$LogPath)
- Initialize-AgySession
- [LogHelper]::StreamLogs($LogPath)
-}
-Set-Alias -Name logstream -Value Invoke-LogStream -Force
-
-# --- Antigravity Projects Wrappers ---
-function Start-Manager { Start-AgyManager }
-Set-Alias -Name mgr -Value Start-Manager -Force
-
-function Start-Proxy { Start-AgyProxy }
-Set-Alias -Name prxy -Value Start-Proxy -Force
-
-
-
-# --- Master Learning Suite Router ---
-function Invoke-MasterLearningSuite {
-    param([string]$Topic)
-    if ($Topic) {
-        Invoke-ControlCenter $Topic $args
-    } else {
-        Invoke-ControlCenter "learn" $args
-    }
-}
-Set-Alias -Name learn -Value Invoke-MasterLearningSuite -Force
-
-# --- AWS LocalStack Aliases ---
 Set-Alias -Name s3ls -Value Get-S3Buckets -Force
 Set-Alias -Name s3mb -Value New-S3Bucket -Force
 Set-Alias -Name lbls -Value Get-LambdaFunctions -Force
@@ -1674,26 +440,77 @@ Set-Alias -Name sqspurge -Value Clear-LocalSQSQueue -Force
 Set-Alias -Name sqssend -Value Send-LocalSQSMessage -Force
 Set-Alias -Name sqsrecv -Value Get-LocalSQSMessage -Force
 Set-Alias -Name sqsattr -Value Get-LocalSQSAttributes -Force
-
-# --- System History Wrapper ---
-function Clear-ShellHistory { [ShellSystemHelper]::ClearHistory() }
-Set-Alias -Name clh -Value Clear-ShellHistory -Force
-
 #endregion
 
+#region 8. AI & MULTI-AGENT SHORTCUTS
 # ==============================================================================
-# Startup complete
+#  Shortcuts for AI agent sessions and routing.
 # ==============================================================================
-try {
-    Initialize-AgySession
-} catch {}
 
-try {
-    if ($global:AgySessionInitialized) {
-        [LogHelper]::Log("Enhanced PowerShell Profile loaded successfully. (AiMode = $Global:AiMode)")
+function Invoke-MultiAgent { param([string]$Query) Load-AgyTuiDll; [CommandRouter]::Route("ai", $Query) }
+function Invoke-ControlCenter { param([string]$CmdAlias, [object[]]$PassArgs) Load-AgyTuiDll; [CommandRouter]::Route($CmdAlias, $PassArgs) }
+
+Set-Alias -Name ai -Value Invoke-MultiAgent -Force
+Set-Alias -Name cai -Value Invoke-MultiAgent -Force
+Set-Alias -Name claude -Value Invoke-MultiAgent -Force
+Set-Alias -Name cc -Value Invoke-ControlCenter -Force
+#endregion
+
+#region 9. NAVIGATION & SYSTEM WRAPPERS
+# ==============================================================================
+#  Core navigation shortcuts, terminal launchers, and theme switcher.
+# ==============================================================================
+
+function Set-LocationParent { Set-Location .. }
+function Set-LocationGrandParent { Set-Location ..\.. }
+function Invoke-OpenExplorer { Load-AgyTuiDll; [CommandRouter]::Route("f") }
+function Invoke-WorkspaceNavigator { param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Name) Load-AgyTuiDll; [CommandRouter]::Route("proj", $Name) }
+function Invoke-TerminalIde { param([string]$Path) Load-AgyTuiDll; $targetPath = if ($Path) { $Path } else { Get-Location }; [TerminalIde]::Open($targetPath) }
+function Reload-Profile { . $PROFILE; Write-Host "✅ Profile reloaded." -ForegroundColor Green }
+
+function open-term {
+    if ($args) {
+        Start-Process wt.exe -ArgumentList $args
+    } else {
+        Load-AgyTuiDll
+        [SystemHelper]::OpenNewTerminalSession($pwd.Path, [string]$null, $true)
     }
-} catch {}
+}
 
-if (-not $Global:AiMode -and -not [Console]::IsOutputRedirected -and [Environment]::UserInteractive) {
+function Select-ShellTheme {
+    Load-AgyTuiDll
+    Apply-ThemePath ([ThemeHelper]::SelectThemeInteractive($env:POSH_THEMES_PATH, $env:THEME))
+}
+
+Set-Alias -Name ip -Value Get-NetIPConfiguration -Force
+Set-Item -Path Alias:\cls -Value Clear-Host -Force -Option AllScope
+Set-Alias -Name proj -Value Invoke-WorkspaceNavigator -Force
+Set-Alias -Name ide -Value Invoke-TerminalIde -Force
+Set-Alias -Name .. -Value Set-LocationParent -Force
+Set-Alias -Name ... -Value Set-LocationGrandParent -Force
+Set-Alias -Name f -Value Invoke-OpenExplorer -Force
+Set-Alias -Name go -Value Reload-Profile -Force
+Set-Alias -Name term -Value open-term -Force
+Set-Alias -Name wt -Value open-term -Force
+Set-Alias -Name theme -Value Select-ShellTheme -Force
+#endregion
+
+#region 10. SYSTEM UTILITIES & HISTORY
+# ==============================================================================
+#  System history cleanup and shell startup completion banner.
+# ==============================================================================
+
+function Clear-ShellHistory {
+    Clear-Host
+    Remove-Item (Get-PSReadlineOption).HistorySavePath -ErrorAction SilentlyContinue
+    $prType = [Type]"Microsoft.PowerShell.PSConsoleReadLine"
+    if ($prType) { $prType::ClearHistory() }
+    Clear-History
+    Write-Host "🧹 All command history has been cleared." -ForegroundColor Yellow
+}
+Set-Alias -Name clh -Value Clear-ShellHistory -Force
+
+if (-not [Console]::IsOutputRedirected -and [Environment]::UserInteractive) {
     Write-Host "🛸 Enhanced PowerShell Profile Loaded" -ForegroundColor Green
 }
+#endregion

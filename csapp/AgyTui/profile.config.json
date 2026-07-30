@@ -40,5 +40,12 @@
     "HttpProxy": "",
     "HttpsProxy": "",
     "NoProxy": ""
+  },
+  "Environment": {
+    "PoshThemesPath": "psapp/asset/powershell-themes",
+    "PsModulePath": "psapp/Modules",
+    "SkipDllLoad": false,
+    "LoadDll": false,
+    "Theme": "neko"
   }
 }
