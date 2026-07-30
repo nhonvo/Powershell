@@ -1,5 +1,5 @@
 using AgyTui.Domain.LearnContext;
-namespace AgyTui.Tests.Unit.Core.Services;
+namespace AgyTui.Tests.Unit.Infrastructure.Services;
 
 public class SpacedRepetitionTests
 {
@@ -36,4 +36,5 @@ public class SpacedRepetitionTests
         Assert.True(result.Updated.EaseFactor >= 1.3);
     }
 }
+
 

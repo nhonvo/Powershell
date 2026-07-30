@@ -1,8 +1,8 @@
-# PowerShell Control Center (`AgyTui`) — Codebase Structure & Architectural Review
+# PowerShell Control Center (`AgyTui`) — Codebase Structure, Database Storage & Architectural Review
 
 > **Date**: 2026-07-30  
 > **Author**: Antigravity AI Engineering Team  
-> **Scope**: Complete architectural tree representation of `AgyTui` & `AgyTui.Tests`, naming review, and location feedback.
+> **Scope**: Complete architectural tree representation of `AgyTui` & `AgyTui.Tests`, Domain DB storage suggestions, naming review, and location feedback.
 
 ---
 
@@ -203,22 +203,12 @@ csapp/AgyTui.Tests/
 ├── Parity/
 │   └── ProfileAliasParityTests.cs              # PowerShell Profile <-> C# Parity Assertions
 │
-└── Unit/
+└── Unit/                                       # Unit Tests Mirroring Main Project Layering
     ├── Architecture/
     │   ├── ArchitectureTests.cs                # Layer Boundary & Dependency Enforcement Tests
     │   ├── IdeCommandRegistryTests.cs          # IDE Command Verification Tests
     │   ├── RepoHygieneTests.cs                 # Code Base Hygiene & Formatting Tests
     │   └── SpacedRepetitionEdgeCasesTests.cs   # Spaced Repetition Edge Case Tests
-    ├── Core/
-    │   ├── Registries/
-    │   │   └── CommandRegistryTests.cs         # Menu & Command Registry Tests
-    │   └── Services/
-    │       ├── AppPathManagerTests.cs          # Path Manager Unit Tests
-    │       ├── CommandRouterEdgeCasesTests.cs  # Command Router Routing Tests
-    │       ├── PathResolutionBenchmarkTests.cs # Path Caching Benchmark Tests
-    │       ├── ProgramTests.cs                 # Entry Point Tests
-    │       ├── SpacedRepetitionTests.cs        # SuperMemo 2 Core Tests
-    │       └── WeakItemsQueueTests.cs          # Weak Items Queue Strategy Tests
     ├── Domain/
     │   └── DomainContextsTests.cs              # Aggregate Root Invariant Tests
     ├── Infrastructure/
@@ -243,30 +233,40 @@ csapp/AgyTui.Tests/
     │   │   └── ShowAiDashboardTests.cs
     │   ├── Logging/
     │   │   └── CommandLoggingMiddlewareTests.cs
-    │   └── Persistence/
-    │       ├── AccountServiceTests.cs
-    │       ├── AccountStatsTests.cs
-    │       ├── ConfigServiceTests.cs
-    │       ├── ConfigTests.cs
-    │       ├── QuotaCentralizationTests.cs
-    │       ├── QuotaTrackerEdgeCasesTests.cs
-    │       └── SqlitePersistenceTests.cs
+    │   ├── Persistence/
+    │   │   ├── AccountServiceTests.cs
+    │   │   ├── AccountStatsTests.cs
+    │   │   ├── ConfigServiceTests.cs
+    │   │   ├── ConfigTests.cs
+    │   │   ├── QuotaCentralizationTests.cs
+    │   │   ├── QuotaTrackerEdgeCasesTests.cs
+    │   │   └── SqlitePersistenceTests.cs
+    │   └── Services/
+    │       ├── AppPathManagerTests.cs          # Path Manager Unit Tests
+    │       ├── PathResolutionBenchmarkTests.cs # Path Caching Benchmark Tests
+    │       └── ProgramTests.cs                 # Entry Point Unit Tests
     └── UI/
         ├── Common/
-        │   └── IconsTests.cs
+        │   └── IconsTests.cs                   # UI Icon Dictionary Tests
         ├── Components/
-        │   └── ScreenChromeTests.cs
+        │   └── ScreenChromeTests.cs            # Screen Chrome Layout Tests
         ├── Layouts/
-        │   ├── FlatTreeRendererTests.cs
-        │   └── MenuRendererBaseTests.cs
+        │   ├── FlatTreeRendererTests.cs        # Flat Tree Layout Unit Tests
+        │   └── MenuRendererBaseTests.cs        # Menu Renderer Unit Tests
         ├── Navigation/
-        │   ├── CommandPaletteTests.cs
-        │   ├── SubPageNavigatorTests.cs
-        │   ├── SubPageTopicNavigatorTests.cs
-        │   └── UiNavigationHandlerTests.cs
+        │   ├── CommandPaletteTests.cs          # Command Palette Unit Tests
+        │   ├── CommandRouterEdgeCasesTests.cs  # Command Router Routing Unit Tests
+        │   ├── SubPageNavigatorTests.cs        # SubPage Router Unit Tests
+        │   ├── SubPageTopicNavigatorTests.cs   # Topic SubPage Router Tests
+        │   └── UiNavigationHandlerTests.cs     # Navigation Handler Unit Tests
+        ├── Registries/
+        │   └── CommandRegistryTests.cs         # Menu & Command Registry Tests
         ├── Screens/
-        │   └── Ide/
-        │       └── GitDiffViewerTests.cs
+        │   ├── Ide/
+        │   │   └── GitDiffViewerTests.cs
+        │   └── Learn/
+        │       ├── SpacedRepetitionTests.cs    # Spaced Repetition Engine Unit Tests
+        │       └── WeakItemsQueueTests.cs      # Weak Items Queue Unit Tests
         └── UiEngineTests.cs
 ```
 
@@ -277,16 +277,119 @@ csapp/AgyTui.Tests/
 | Subsystem / File | Location | Status | Assessment & Updates |
 | :--- | :--- | :--- | :--- |
 | `LearnDataPaths.cs` | `Infrastructure/Persistence/DbContext/LearnDataPaths.cs` | ✅ **Resolved** | Extracted from `UI/Screens/Learn/StudyConsoleView.cs` into `Infrastructure/Persistence/DbContext/`. Resolves UI-to-Persistence coupling. |
+| `Unit/Core/` Test Folder | `csapp/AgyTui.Tests/Unit/` | ✅ **Resolved** | Reorganized `Unit/Core/` test files into `Unit/Infrastructure/Services/`, `Unit/UI/Navigation/`, `Unit/UI/Registries/`, and `Unit/UI/Screens/Learn/` to mirror the main project structure. |
 | `CommandRegistry.cs` | `UI/Core/Registries/CommandRegistry.cs` | ✅ **Optimal** | Located correctly in `UI/Core/Registries` as it directly references `MenuNode` layout structures. |
 | `WorkspaceRegistry.cs` | `Infrastructure/Registries/WorkspaceRegistry.cs` | ✅ **Appropriate** | Encapsulates workspace filesystem scanning and cache. Abstracted via `IWorkspaceRegistry`. |
 | `ResourceRegistry.cs` | `Infrastructure/Registries/ResourceRegistry.cs` | ✅ **Appropriate** | Indexing and SHA-256 checksum logic for learning notes. Abstracted via `IResourceRegistry`. |
-| `AppPathManager.cs` | `Infrastructure/Services/AppPathManager.cs` | ✅ **Optimal** | Implements `IAppPathManager` singleton registered in `Bootstrapper.cs`. |
-| `ConfigService.cs` | `Infrastructure/Services/ConfigService.cs` | ✅ **Optimal** | Implements `IConfigService` singleton registered in `Bootstrapper.cs`. |
 
 ---
 
-## 4. Summary & Verification
+## 4. Database Storage Strategy & Schema Recommendations for Domain Aggregates
+
+To complete the DDD architecture transition and ensure transactional integrity, high query throughput, and atomic updates, we propose migrating domain models from legacy JSON files to SQLite database tables:
+
+### 4.1 Domain Aggregate Database Table Mapping
+
+```mermaid
+erDiagram
+    ACCOUNTS ||--o{ AGENT_INVOCATION_LOGS : executes
+    ACCOUNTS ||--o{ WORKSPACES : owns
+    FLASHCARD_DECKS ||--o{ FLASHCARDS : contains
+    FLASHCARDS ||--o{ STUDY_LOGS : records
+
+    ACCOUNTS {
+        string account_name PK
+        string email
+        integer is_active
+        string quota_status
+        string last_used
+        integer usage_count
+        text request_history_json
+        text metadata_json
+        string updated_at
+    }
+
+    WORKSPACES {
+        string name PK
+        string workspace_path
+        string associated_account FK
+        string tags_csv
+        string alias
+        string updated_at
+    }
+
+    AGENT_INVOCATION_LOGS {
+        string id PK
+        string alias
+        string timestamp_utc
+        integer duration_ms
+        integer success
+        string active_account FK
+        string mode
+    }
+
+    FLASHCARD_DECKS {
+        string topic PK
+        integer cards_count
+        real average_ease_factor
+        string last_reviewed_utc
+    }
+
+    FLASHCARDS {
+        string id PK
+        string topic FK
+        string front
+        string back
+        real ease_factor
+        integer interval_days
+        integer repetitions
+        string next_review
+        string status
+    }
+```
+
+### 4.2 Proposed Migration Schema (`V3__DomainDbStorage.sql`)
+
+```sql
+-- Workspaces Aggregate Storage
+CREATE TABLE IF NOT EXISTS workspaces (
+    name TEXT PRIMARY KEY NOT NULL,
+    workspace_path TEXT NOT NULL,
+    associated_account TEXT DEFAULT 'default',
+    tags_csv TEXT,
+    alias TEXT,
+    updated_at TEXT NOT NULL
+);
+
+-- Spaced Repetition Decks & Flashcards Aggregate Storage
+CREATE TABLE IF NOT EXISTS flashcard_decks (
+    topic TEXT PRIMARY KEY NOT NULL,
+    cards_count INTEGER DEFAULT 0,
+    average_ease_factor REAL DEFAULT 2.5,
+    last_reviewed_utc TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS flashcards (
+    id TEXT PRIMARY KEY NOT NULL,
+    topic TEXT NOT NULL,
+    front TEXT NOT NULL,
+    back TEXT NOT NULL,
+    ease_factor REAL DEFAULT 2.5,
+    interval_days INTEGER DEFAULT 0,
+    repetitions INTEGER DEFAULT 0,
+    next_review TEXT,
+    status TEXT DEFAULT 'new',
+    FOREIGN KEY(topic) REFERENCES flashcard_decks(topic) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_flashcards_topic ON flashcards(topic);
+CREATE INDEX IF NOT EXISTS idx_flashcards_next_review ON flashcards(next_review);
+```
+
+---
+
+## 5. Summary & Verification
 
 - **Total Unit/Integration Tests**: **117 Passed (100% PASS rate)**.
-- **Layer Architecture Compliance**: Enforced by `ArchitectureTests.cs` (zero infrastructure -> UI dependencies).
+- **Test Directory Parity**: Eliminating `Unit/Core/` in tests mirrors the main `AgyTui` structure.
 - **Git Commit**: Clean working directory on branch `main`.

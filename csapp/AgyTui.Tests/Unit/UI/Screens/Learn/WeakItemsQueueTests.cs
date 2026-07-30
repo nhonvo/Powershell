@@ -1,7 +1,7 @@
 using AgyTui.Infrastructure.Persistence.DbContext;
 using AgyTui.Domain.LearnContext;
 
-namespace AgyTui.Tests.Unit.Core.Services;
+namespace AgyTui.Tests.Unit.Infrastructure.Services;
 
 [Collection("Sequential")]
 public class WeakItemsQueueTests
@@ -36,4 +36,5 @@ public class WeakItemsQueueTests
         }
     }
 }
+
 

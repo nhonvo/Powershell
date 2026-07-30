@@ -3,7 +3,7 @@ using AgyTui.Infrastructure.Services;
 using AgyTui.Infrastructure.Di;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AgyTui.Tests.Unit.Core.Services;
+namespace AgyTui.Tests.Unit.Infrastructure.Services;
 
 public class ProgramTests
 {
@@ -22,5 +22,6 @@ public class ProgramTests
         Assert.Equal(1, exitCode);
     }
 }
+
 
 

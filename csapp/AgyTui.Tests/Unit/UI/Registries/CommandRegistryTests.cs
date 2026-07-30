@@ -1,5 +1,5 @@
 using AgyTui.UI.Core.Registries;
-namespace AgyTui.Tests.Unit.Core.Registries;
+namespace AgyTui.Tests.Unit.UI.Registries;
 
 public class CommandRegistryTests
 {
@@ -44,4 +44,5 @@ public class CommandRegistryTests
         Assert.Null(ex);
     }
 }
+
 

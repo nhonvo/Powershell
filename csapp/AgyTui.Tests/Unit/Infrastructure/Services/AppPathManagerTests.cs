@@ -1,7 +1,7 @@
 using AgyTui.Infrastructure.Services;
 using Xunit;
 
-namespace AgyTui.Tests.Unit.Core.Services;
+namespace AgyTui.Tests.Unit.Infrastructure.Services;
 
 public class AppPathManagerTests
 {
@@ -39,4 +39,5 @@ public class AppPathManagerTests
         Assert.NotSame(dir1, dir2);
     }
 }
+
 
