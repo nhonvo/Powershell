@@ -40,6 +40,7 @@ public static class Bootstrapper
         // SQLite Persistence
         services.AddSingleton<ISqliteDatabase, SqliteDatabase>();
         services.AddSingleton<SqliteMigrationEngine>();
+        services.AddSingleton<ILearningDataSeeder, LearningDataSeeder>();
         services.AddSingleton<IConfigRepository, SqliteConfigRepository>();
         services.AddSingleton<IAgyAccountRepository, SqliteAgyAccountRepository>();
         services.AddSingleton<IWorkspaceRepository, SqliteWorkspaceRepository>();
