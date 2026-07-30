@@ -33,10 +33,10 @@ public class LearningSeeder : ISeeder
             var countObj = cmd.ExecuteScalar();
             long count = countObj != null && countObj != DBNull.Value ? Convert.ToInt64(countObj) : 0;
 
-            var learnDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "csapp", "learn");
+            var learnDir = AppPaths.LearnDir;
             if (!Directory.Exists(learnDir))
             {
-                learnDir = Path.Combine(Directory.GetCurrentDirectory(), "csapp", "learn");
+                learnDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", "learn");
             }
             if (!Directory.Exists(learnDir)) return;
 
@@ -107,10 +107,10 @@ public class LearningSeeder : ISeeder
             long count = countObj != null && countObj != DBNull.Value ? Convert.ToInt64(countObj) : 0;
             if (count > 0) return;
 
-            var questionsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "csapp", "learn", "interview_questions.json");
+            var questionsFile = Path.Combine(AppPaths.LearnDir, "interview_questions.json");
             if (!File.Exists(questionsFile))
             {
-                questionsFile = Path.Combine(Directory.GetCurrentDirectory(), "csapp", "learn", "interview_questions.json");
+                questionsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", "learn", "interview_questions.json");
             }
             if (!File.Exists(questionsFile)) return;
 

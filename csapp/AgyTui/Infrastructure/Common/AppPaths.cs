@@ -127,6 +127,10 @@ public static class AppPaths
         }
     }
 
+    public static string LearnDir => Path.Combine(DataDir, "learn");
+    public static string ResourcesDir => Path.Combine(DataDir, "resources");
+    public static string SkillsDir => Path.Combine(DataDir, "skills");
+
     public static string CacheDir
     {
         get

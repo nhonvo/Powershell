@@ -24,10 +24,10 @@ public class SkillSeeder : ISeeder
             long count = countObj != null && countObj != DBNull.Value ? Convert.ToInt64(countObj) : 0;
             if (count > 0) return;
 
-            var skillsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "csapp", "skills");
+            var skillsDir = AppPaths.SkillsDir;
             if (!Directory.Exists(skillsDir))
             {
-                skillsDir = Path.Combine(Directory.GetCurrentDirectory(), "csapp", "skills");
+                skillsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", "skills");
             }
             if (!Directory.Exists(skillsDir)) return;
 

@@ -17,11 +17,12 @@ public static class LearnDataPaths
             var envDir = Environment.GetEnvironmentVariable("AGY_TEST_LEARN_DIR");
             if (!string.IsNullOrEmpty(envDir)) return envDir;
 
+            var dataLearn = AppPaths.LearnDir;
+            if (Directory.Exists(dataLearn)) return AppPaths.DataDir;
+
             var pwd = Directory.GetCurrentDirectory();
             var localLearn = System.IO.Path.Combine(pwd, "learn");
             if (Directory.Exists(localLearn)) return pwd;
-            var csappLearn = System.IO.Path.Combine(pwd, "csapp", "learn");
-            if (Directory.Exists(csappLearn)) return System.IO.Path.Combine(pwd, "csapp");
 
             var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
             return store.GetAccountDirectory(store.GetActiveAccount());

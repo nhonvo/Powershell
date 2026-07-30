@@ -26,10 +26,10 @@ public class ResourceSeeder : ISeeder
             long count = countObj != null && countObj != DBNull.Value ? Convert.ToInt64(countObj) : 0;
             if (count > 0) return;
 
-            var indexPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "csapp", "resources", "index.json");
+            var indexPath = Path.Combine(AppPaths.ResourcesDir, "index.json");
             if (!File.Exists(indexPath))
             {
-                indexPath = Path.Combine(Directory.GetCurrentDirectory(), "csapp", "resources", "index.json");
+                indexPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", "resources", "index.json");
             }
             if (!File.Exists(indexPath)) return;
 
