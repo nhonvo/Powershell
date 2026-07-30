@@ -6,7 +6,7 @@ public static class AntigravityManagerHelper
 
     private static string GetManagerPath()
     {
-        var primaryPath = @"C:\Users\sshuser\project\agy\AntigravityManager";
+        var primaryPath = Path.Combine(AppPaths.UserProfileDir, "project", "agy", "AntigravityManager");
         if (Directory.Exists(primaryPath))
         {
             return primaryPath;

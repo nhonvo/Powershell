@@ -45,10 +45,6 @@ public class AiProjectScanner : IAiProjectScanner
         var results = new List<ProjectScanResult>();
         var candidateRoots = new List<string>();
 
-        if (!string.IsNullOrEmpty(baseDir) && Directory.Exists(baseDir)) candidateRoots.Add(baseDir);
-        if (!string.IsNullOrEmpty(Config.Current.Project.BaseDir) && Directory.Exists(Config.Current.Project.BaseDir)) candidateRoots.Add(Config.Current.Project.BaseDir);
-        if (Directory.Exists(@"C:\Users\sshuser\project")) candidateRoots.Add(@"C:\Users\sshuser\project");
-
         var userProfile = AppPaths.UserProfileDir;
         if (Directory.Exists(Path.Combine(userProfile, "project"))) candidateRoots.Add(Path.Combine(userProfile, "project"));
         if (Directory.Exists(Path.Combine(userProfile, "Desktop", "project"))) candidateRoots.Add(Path.Combine(userProfile, "Desktop", "project"));

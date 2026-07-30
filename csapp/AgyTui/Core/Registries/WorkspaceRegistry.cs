@@ -121,8 +121,7 @@ public static class WorkspaceRegistry
         // 3. Candidate base project directories (including C:\Users\sshuser\project)
         var searchBases = new List<string>();
         if (!string.IsNullOrEmpty(Config.Current.Project.BaseDir)) searchBases.Add(Config.Current.Project.BaseDir);
-        searchBases.Add(@"C:\Users\sshuser\project");
-        searchBases.Add(Path.Combine(userProfile, "project"));
+        if (Directory.Exists(Path.Combine(userProfile, "project"))) searchBases.Add(Path.Combine(userProfile, "project"));
         searchBases.Add(Path.Combine(userProfile, "Documents"));
         searchBases.Add(Path.Combine(userProfile, "Desktop"));
         searchBases.Add(Path.Combine(userProfile, "Desktop", "project"));
@@ -177,8 +176,6 @@ public static class WorkspaceRegistry
         var searchBases = new List<string>();
         if (!string.IsNullOrEmpty(customBaseDir) && Directory.Exists(customBaseDir)) searchBases.Add(customBaseDir);
         if (!string.IsNullOrEmpty(Config.Current.Project.BaseDir) && Directory.Exists(Config.Current.Project.BaseDir)) searchBases.Add(Config.Current.Project.BaseDir);
-        searchBases.Add(@"C:\Users\sshuser\project");
-
         var userProfile = AppPaths.UserProfileDir;
         if (Directory.Exists(Path.Combine(userProfile, "project"))) searchBases.Add(Path.Combine(userProfile, "project"));
         if (Directory.Exists(Path.Combine(userProfile, "Desktop", "project"))) searchBases.Add(Path.Combine(userProfile, "Desktop", "project"));

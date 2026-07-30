@@ -29,7 +29,7 @@ public static class AppPaths
                 return _projectRoot;
             }
 
-            _projectRoot = @"C:\Users\TruongNhon\Documents\Powershell\csapp\AgyTui";
+            _projectRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Powershell", "csapp", "AgyTui");
             return _projectRoot;
         }
     }

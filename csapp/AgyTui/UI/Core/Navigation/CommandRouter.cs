@@ -924,8 +924,8 @@ public class CommandRouter : ICommandRouter
         SpectrePanel.Info("Initiating clean kill, rebuild and restart sequence for Control Center TUI & agy...");
         try
         {
-            var csproj = @"C:\Users\TruongNhon\Documents\Powershell\csapp\AgyTui\AgyTui.csproj";
-            var binDir = @"C:\Users\TruongNhon\Documents\Powershell\csapp\AgyTui\bin\Debug\net9.0";
+            var csproj = Path.Combine(AppPaths.ProjectRoot, "AgyTui.csproj");
+            var binDir = Path.Combine(AppPaths.ProjectRoot, "bin", "Debug", "net9.0");
             var exePath = Path.Combine(binDir, "AgyTui.exe");
 
             var script = $"Stop-Process -Name 'agy' -Force -ErrorAction SilentlyContinue; Stop-Process -Name 'AgyTui' -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 600; dotnet build '{csproj}' -c Debug; if ($?) {{ Start-Process '{exePath}' }}";

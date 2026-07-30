@@ -30,11 +30,11 @@
     "VerboseStartup": false,
     "StartupLogFile": "",
     "PoshThemesPath": "",
-    "AgySourceHome": "C:\\Users\\TruongNhon\\AppData\\Local\\Temp\\agy_cmd_log_test_22d9e397-6c25-446e-851c-d41144398602",
+    "AgySourceHome": "",
     "GlobalBinDir": ""
   },
   "Obsidian": {
-    "VaultPath": "C:\\Users\\TruongNhon\\AppData\\Local\\Temp\\agy_weak_items_test_5f649b17c46b4a11954d2fa42aa3b0b9\\learn"
+    "VaultPath": ""
   },
   "Proxy": {
     "HttpProxy": "",

@@ -29,9 +29,10 @@ public static class AgyAccountCore
     {
         get
         {
-            if (AgySourceHome.StartsWith(@"C:\Users\Public", StringComparison.OrdinalIgnoreCase))
+            var publicDir = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\", "Users", "Public");
+            if (AgySourceHome.StartsWith(publicDir, StringComparison.OrdinalIgnoreCase))
             {
-                return @"C:\Users\Public\.gemini_";
+                return Path.Combine(publicDir, ".gemini_");
             }
             var accountsDir = Path.Combine(AppPaths.DataDir, ".gemini_");
             Directory.CreateDirectory(Path.GetDirectoryName(accountsDir)!);
@@ -74,7 +75,7 @@ public static class AgyAccountCore
         var scanPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
         if (Directory.Exists(userProfile)) scanPaths.Add(userProfile);
-        var publicDir = @"C:\Users\Public";
+        var publicDir = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\", "Users", "Public");
         if (Directory.Exists(publicDir)) scanPaths.Add(publicDir);
         var prefixParent = Path.GetDirectoryName(AgyAccountPrefix);
         if (prefixParent != null && Directory.Exists(prefixParent)) scanPaths.Add(prefixParent);
