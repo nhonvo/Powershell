@@ -1,17 +1,11 @@
-
 using System.Text.Json;
 using AgyTui.Domain.LearnContext;
+using AgyTui.Infrastructure.Persistence.Interfaces;
 
 namespace AgyTui.Infrastructure.Persistence.Repositories;
 
-public class JsonStudyRepository : IStudyRepository
+public class JsonStudyRepository : JsonFileRepositoryBase<object>, IStudyRepository
 {
-    private static readonly JsonSerializerOptions _js = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        WriteIndented = true
-    };
-
     public void EnsureDirectories()
     {
         foreach (var d in new[]
@@ -32,7 +26,7 @@ public class JsonStudyRepository : IStudyRepository
 
         try
         {
-            return JsonSerializer.Deserialize<T>(File.ReadAllText(path), _js);
+            return JsonSerializer.Deserialize<T>(File.ReadAllText(path), JsonOptions);
         }
         catch (Exception ex)
         {
@@ -49,7 +43,7 @@ public class JsonStudyRepository : IStudyRepository
             if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
 
             var tempPath = path + ".tmp." + Guid.NewGuid().ToString("N");
-            var json = JsonSerializer.Serialize(obj, _js);
+            var json = JsonSerializer.Serialize(obj, JsonOptions);
             File.WriteAllText(tempPath, json, Encoding.UTF8);
             File.Move(tempPath, path, overwrite: true);
             return true;

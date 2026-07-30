@@ -1,32 +1,30 @@
-
 using System.Text.Json;
+using AgyTui.Infrastructure.Configuration;
+using AgyTui.Infrastructure.Persistence.DbContext;
+using AgyTui.Infrastructure.Persistence.Interfaces;
 
 namespace AgyTui.Infrastructure.Persistence.Repositories;
 
-public class SqliteConfigRepository : IConfigRepository
+public class SqliteConfigRepository : SqliteRepositoryBase<ConfigData, string>, IConfigRepository
 {
-    private readonly ISqliteDatabase _db;
+    public SqliteConfigRepository(ISqliteDatabase db) : base(db) { }
 
-    public SqliteConfigRepository(ISqliteDatabase db)
-    {
-        _db = db;
-        _db.InitializeDatabase();
-    }
+    public override ConfigData? GetById(string id) => LoadConfig();
+    public override IEnumerable<ConfigData> GetAll() => [LoadConfig()];
+    public override void Save(string id, ConfigData entity) => SaveConfig(entity);
+    public override void Delete(string id) { }
 
     public ConfigData LoadConfig()
     {
         try
         {
-            using var conn = _db.CreateConnection();
+            using var conn = Database.CreateConnection();
             using var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT json_data FROM app_config WHERE section_name = 'main';";
             var res = cmd.ExecuteScalar();
             if (res != null && res != DBNull.Value)
             {
-                var cfg = JsonSerializer.Deserialize<ConfigData>(res.ToString()!, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                var cfg = JsonSerializer.Deserialize<ConfigData>(res.ToString()!, JsonOptions);
                 if (cfg != null) return cfg;
             }
         }
@@ -38,12 +36,7 @@ public class SqliteConfigRepository : IConfigRepository
             try
             {
                 var text = File.ReadAllText(legacyFile);
-                var data = JsonSerializer.Deserialize<ConfigData>(text, new JsonSerializerOptions
-                {
-                    ReadCommentHandling = JsonCommentHandling.Skip,
-                    AllowTrailingCommas = true,
-                    PropertyNameCaseInsensitive = true
-                });
+                var data = JsonSerializer.Deserialize<ConfigData>(text, JsonOptions);
                 if (data != null)
                 {
                     SaveConfig(data);
@@ -61,10 +54,10 @@ public class SqliteConfigRepository : IConfigRepository
     public void SaveConfig(ConfigData config)
     {
         var now = DateTime.UtcNow.ToString("o");
-        var json = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(config, JsonOptions);
         try
         {
-            using var conn = _db.CreateConnection();
+            using var conn = Database.CreateConnection();
             using var cmd = conn.CreateCommand();
             cmd.CommandText = """
                 INSERT INTO app_config (section_name, json_data, updated_at)
@@ -92,7 +85,7 @@ public class SqliteConfigRepository : IConfigRepository
     {
         try
         {
-            using var conn = _db.CreateConnection();
+            using var conn = Database.CreateConnection();
             using var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT state_value FROM system_state WHERE state_key = @key;";
             cmd.Parameters.AddWithValue("@key", key);
@@ -108,7 +101,7 @@ public class SqliteConfigRepository : IConfigRepository
         var now = DateTime.UtcNow.ToString("o");
         try
         {
-            using var conn = _db.CreateConnection();
+            using var conn = Database.CreateConnection();
             using var cmd = conn.CreateCommand();
             cmd.CommandText = """
                 INSERT INTO system_state (state_key, state_value, updated_at)

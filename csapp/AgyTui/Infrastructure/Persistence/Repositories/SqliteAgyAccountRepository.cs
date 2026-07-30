@@ -1,23 +1,24 @@
-
 using System.Text.Json;
+using AgyTui.Domain.AccountContext;
+using AgyTui.Infrastructure.Persistence.DbContext;
+using AgyTui.Infrastructure.Persistence.Interfaces;
 
 namespace AgyTui.Infrastructure.Persistence.Repositories;
 
-public class SqliteAgyAccountRepository : IAgyAccountRepository
+public class SqliteAgyAccountRepository : SqliteRepositoryBase<AccountMetadata, string>, IAgyAccountRepository
 {
-    private readonly ISqliteDatabase _db;
+    public SqliteAgyAccountRepository(ISqliteDatabase db) : base(db) { }
 
-    public SqliteAgyAccountRepository(ISqliteDatabase db)
-    {
-        _db = db;
-        _db.InitializeDatabase();
-    }
+    public override AccountMetadata? GetById(string id) => GetAccountMetadata(id);
+    public override IEnumerable<AccountMetadata> GetAll() => GetAccounts().Select(GetAccountMetadata);
+    public override void Save(string id, AccountMetadata entity) => SaveAccountMetadata(id, entity);
+    public override void Delete(string id) => DeleteAccount(id);
 
     public string GetActiveAccount()
     {
         try
         {
-            using var conn = _db.CreateConnection();
+            using var conn = Database.CreateConnection();
             using var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT account_name FROM accounts WHERE is_active = 1 LIMIT 1;";
             var res = cmd.ExecuteScalar();
@@ -32,7 +33,7 @@ public class SqliteAgyAccountRepository : IAgyAccountRepository
         var now = DateTime.UtcNow.ToString("o");
         try
         {
-            using var conn = _db.CreateConnection();
+            using var conn = Database.CreateConnection();
             using var cmd = conn.CreateCommand();
             cmd.CommandText = """
                 UPDATE accounts SET is_active = 0;
@@ -51,14 +52,14 @@ public class SqliteAgyAccountRepository : IAgyAccountRepository
     {
         try
         {
-            using var conn = _db.CreateConnection();
+            using var conn = Database.CreateConnection();
             using var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT metadata_json FROM accounts WHERE account_name = @name;";
             cmd.Parameters.AddWithValue("@name", accountName);
             var res = cmd.ExecuteScalar();
             if (res != null && res != DBNull.Value)
             {
-                var meta = JsonSerializer.Deserialize<AccountMetadata>(res.ToString()!);
+                var meta = JsonSerializer.Deserialize<AccountMetadata>(res.ToString()!, JsonOptions);
                 if (meta != null) return meta;
             }
         }
@@ -69,11 +70,11 @@ public class SqliteAgyAccountRepository : IAgyAccountRepository
     public void SaveAccountMetadata(string accountName, AccountMetadata metadata)
     {
         var now = DateTime.UtcNow.ToString("o");
-        var json = JsonSerializer.Serialize(metadata, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(metadata, JsonOptions);
         var historyJson = JsonSerializer.Serialize(metadata.RequestHistory);
         try
         {
-            using var conn = _db.CreateConnection();
+            using var conn = Database.CreateConnection();
             using var cmd = conn.CreateCommand();
             cmd.CommandText = """
                 INSERT INTO accounts (account_name, quota_status, last_used, usage_count, request_history_json, metadata_json, updated_at)
@@ -103,7 +104,7 @@ public class SqliteAgyAccountRepository : IAgyAccountRepository
         var list = new List<string> { "default" };
         try
         {
-            using var conn = _db.CreateConnection();
+            using var conn = Database.CreateConnection();
             using var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT account_name FROM accounts ORDER BY account_name ASC;";
             using var reader = cmd.ExecuteReader();
@@ -122,7 +123,7 @@ public class SqliteAgyAccountRepository : IAgyAccountRepository
         var now = DateTime.UtcNow.ToString("o");
         try
         {
-            using var conn = _db.CreateConnection();
+            using var conn = Database.CreateConnection();
             using var cmd = conn.CreateCommand();
             cmd.CommandText = """
                 INSERT INTO accounts (account_name, email, updated_at)
@@ -141,7 +142,7 @@ public class SqliteAgyAccountRepository : IAgyAccountRepository
     {
         try
         {
-            using var conn = _db.CreateConnection();
+            using var conn = Database.CreateConnection();
             using var cmd = conn.CreateCommand();
             cmd.CommandText = "DELETE FROM accounts WHERE account_name = @name;";
             cmd.Parameters.AddWithValue("@name", accountName);
