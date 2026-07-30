@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using AgyTui.Domain.WorkspaceContext;
 
 namespace AgyTui.Core.Registries;
 
@@ -42,6 +43,11 @@ public static class WorkspaceRegistry
         if (string.IsNullOrWhiteSpace(name)) return "proj";
         var clean = Regex.Replace(name, @"[^a-zA-Z0-9]", "").ToLowerInvariant();
         return string.IsNullOrEmpty(clean) ? "proj" : clean;
+    }
+
+    public static WorkspaceAggregate[] GetWorkspaceAggregates()
+    {
+        return GetWorkspaces().Select(w => WorkspaceAggregate.FromEntry(w, false, GetGitBranch(w.WorkspacePath))).ToArray();
     }
 
     public static WorkspaceEntry[] GetWorkspaces()

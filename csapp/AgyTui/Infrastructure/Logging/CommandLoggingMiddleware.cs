@@ -1,3 +1,5 @@
+using AgyTui.Domain.AiAgentContext;
+
 namespace AgyTui.Infrastructure.Logging;
 
 public class CommandLoggingMiddleware : ICommandRouter
@@ -35,9 +37,11 @@ public class CommandLoggingMiddleware : ICommandRouter
             int exitCode = _inner.Execute(alias, args);
             sw.Stop();
 
+            var agentLog = new AgentInvocationLog(alias, sw.ElapsedMilliseconds, exitCode == 0, "default", ProviderMode.Auto);
+
             try
             {
-                File.AppendAllText(logFile, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] [END] Command: '{alias}' ExitCode: {exitCode} Elapsed: {sw.ElapsedMilliseconds}ms\n");
+                File.AppendAllText(logFile, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] [END] InvocationId: {agentLog.Id} Command: '{agentLog.Alias}' ExitCode: {exitCode} Elapsed: {agentLog.DurationMs}ms\n");
             }
             catch { }
 

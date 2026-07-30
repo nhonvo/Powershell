@@ -1,3 +1,5 @@
+using AgyTui.Domain.AccountContext;
+
 namespace AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 
 public interface IAgyAccountStore
@@ -11,6 +13,9 @@ public interface IAgyAccountStore
     void SetAccountQuotaExceeded(string accountName, bool exceeded);
     bool IsNoAutoCommitEnabled();
     bool ToggleNoAutoCommit();
+
+    AccountAggregate GetAccountAggregate(string accountName);
+    void SaveAccountAggregate(AccountAggregate aggregate);
 
     string GetActiveAccount();
     void SetActiveAccount(string accountName);

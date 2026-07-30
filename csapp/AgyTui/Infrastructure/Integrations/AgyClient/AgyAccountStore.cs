@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using AgyTui.Core.Services;
+using AgyTui.Domain.AccountContext;
 using AgyTui.Infrastructure.Di;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -60,6 +61,19 @@ public class AgyAccountStore : IAgyAccountStore
     public AccountMetadata GetAccountMetadata(string accountName)
     {
         return _accountRepo.GetAccountMetadata(accountName);
+    }
+
+    public AccountAggregate GetAccountAggregate(string accountName)
+    {
+        var meta = GetAccountMetadata(accountName);
+        var email = GetAccountEmail(accountName);
+        var active = string.Equals(GetActiveAccount(), accountName, StringComparison.OrdinalIgnoreCase);
+        return AccountAggregate.FromMetadata(accountName, meta, email, active);
+    }
+
+    public void SaveAccountAggregate(AccountAggregate aggregate)
+    {
+        _accountRepo.SaveAccountMetadata(aggregate.AccountName, aggregate.ToMetadata());
     }
 
     public void UpdateAccountMetadata(string accountName)
