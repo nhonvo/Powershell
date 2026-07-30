@@ -47,16 +47,10 @@ public static class AppPaths
             }
 
             var startDir = AppContext.BaseDirectory;
-            try
+            if (string.IsNullOrEmpty(startDir) && !string.IsNullOrEmpty(Environment.ProcessPath))
             {
-                var asmPath = typeof(AppPaths).Assembly.Location;
-                if (!string.IsNullOrEmpty(asmPath))
-                {
-                    var dir = Path.GetDirectoryName(asmPath);
-                    if (!string.IsNullOrEmpty(dir)) startDir = dir;
-                }
+                startDir = Path.GetDirectoryName(Environment.ProcessPath) ?? AppContext.BaseDirectory;
             }
-            catch (Exception) { }
 
             var curr = new DirectoryInfo(startDir);
             while (curr != null)

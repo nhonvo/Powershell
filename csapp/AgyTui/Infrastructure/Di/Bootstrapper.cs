@@ -51,7 +51,16 @@ public static class Bootstrapper
         services.AddSingleton<IAgyVault, AgyVault>();
         services.AddSingleton<IStudyRepository, JsonStudyRepository>();
 
-        // Navigation & Routers with Logging Middleware
+        // Navigation, Renderers & Routers with Logging Middleware
+        services.AddSingleton<ThreePaneRenderer>();
+        services.AddSingleton<FlatTreeRenderer>();
+        services.AddSingleton<IStatusWidget, DiskSpaceWidget>();
+        services.AddSingleton<IStatusWidget, PublicIpWidget>();
+        services.AddSingleton<IStatusWidget, SshInfoWidget>();
+        services.AddSingleton<IStatusWidget, AccountTreeWidget>();
+        services.AddSingleton<IStatusWidget, QuotaChartWidget>();
+        services.AddSingleton<IStatusWidget, LiveDashboardWidget>();
+        services.AddSingleton<IStatusWidget, OllamaStatusWidget>();
         services.AddSingleton<IUiNavigationHandler, UiNavigationHandler>();
         services.AddSingleton<CommandRouter>();
         services.AddSingleton<ICommandRouter>(sp => new CommandLoggingMiddleware(sp.GetRequiredService<CommandRouter>()));

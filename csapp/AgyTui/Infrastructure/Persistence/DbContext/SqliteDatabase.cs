@@ -1,18 +1,20 @@
+using AgyTui.Core.Configuration;
+using AgyTui.Infrastructure.Di;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Persistence.DbContext;
 
 public class SqliteDatabase : ISqliteDatabase
 {
-    public virtual string DbPath
+    private readonly Func<SqliteMigrationEngine> _migrationEngineFactory;
+
+    public SqliteDatabase(Func<SqliteMigrationEngine>? migrationEngineFactory = null)
     {
-        get
-        {
-            var env = Environment.GetEnvironmentVariable("ENVIRONMENT") ?? Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
-            var dbFileName = string.Equals(env, "Development", StringComparison.OrdinalIgnoreCase) ? "agytui.dev.db" : "agytui.db";
-            return Path.Combine(AppPaths.DataDir, dbFileName);
-        }
+        _migrationEngineFactory = migrationEngineFactory ?? (() => new SqliteMigrationEngine(this));
     }
+
+    public virtual string DbPath => Path.Combine(AppPaths.DataDir, EnvironmentProvider.DatabaseFileName);
 
     public SqliteConnection CreateConnection()
     {
@@ -32,6 +34,6 @@ public class SqliteDatabase : ISqliteDatabase
 
     public void InitializeDatabase()
     {
-        new SqliteMigrationEngine(this).ApplyMigrations();
+        _migrationEngineFactory().ApplyMigrations();
     }
 }

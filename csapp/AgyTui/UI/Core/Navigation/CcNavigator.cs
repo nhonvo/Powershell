@@ -1,3 +1,6 @@
+using AgyTui.Infrastructure.Di;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace AgyTui.UI.Core.Navigation;
 
 public static class CcNavigator
@@ -10,8 +13,8 @@ public static class CcNavigator
         {
             var root = MenuNodeBuilder.BuildTree();
             IMenuRenderer renderer = string.Equals(Config.Current.Ui.Mode, "flat-tree", StringComparison.OrdinalIgnoreCase)
-                ? new FlatTreeRenderer()
-                : new ThreePaneRenderer();
+                ? Bootstrapper.ServiceProvider.GetRequiredService<FlatTreeRenderer>()
+                : Bootstrapper.ServiceProvider.GetRequiredService<ThreePaneRenderer>();
             renderer.Run(root);
         }
         finally

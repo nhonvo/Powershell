@@ -17,7 +17,7 @@ public class ClaudeProvider : IClaudeClient
         _accountStoreFactory = accountStoreFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>());
     }
 
-    public ClaudeProvider() : this(new Services.AiProcessRunner()) { }
+    public ClaudeProvider() : this(Bootstrapper.ServiceProvider.GetRequiredService<IAiProcessRunner>()) { }
 
     public void InvokeClaude(string[] argsList, string? providerModeOverride = null)
     {

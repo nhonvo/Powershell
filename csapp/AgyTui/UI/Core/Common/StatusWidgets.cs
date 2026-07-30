@@ -132,11 +132,21 @@ public sealed class SshInfoWidget : IStatusWidget
 public sealed class AccountTreeWidget : IStatusWidget
 {
     public string Alias => "account-tree";
+    private readonly Func<IAgyAccountStore> _accountStoreFactory;
+    private readonly Func<IAgyQuotaEngine> _quotaEngineFactory;
+
+    public AccountTreeWidget(
+        Func<IAgyAccountStore>? accountStoreFactory = null,
+        Func<IAgyQuotaEngine>? quotaEngineFactory = null)
+    {
+        _accountStoreFactory = accountStoreFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>());
+        _quotaEngineFactory = quotaEngineFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>());
+    }
 
     public IRenderable Render()
     {
-        var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
-        var quotaEng = Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+        var store = _accountStoreFactory();
+        var quotaEng = _quotaEngineFactory();
         var accounts = store.GetAccounts();
         var active = store.GetActiveAccount();
         var tree = new Tree("[bold cyan]Account Tree[/]");
@@ -163,11 +173,21 @@ public sealed class AccountTreeWidget : IStatusWidget
 public sealed class QuotaChartWidget : IStatusWidget
 {
     public string Alias => "quota-chart";
+    private readonly Func<IAgyAccountStore> _accountStoreFactory;
+    private readonly Func<IAgyQuotaEngine> _quotaEngineFactory;
+
+    public QuotaChartWidget(
+        Func<IAgyAccountStore>? accountStoreFactory = null,
+        Func<IAgyQuotaEngine>? quotaEngineFactory = null)
+    {
+        _accountStoreFactory = accountStoreFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>());
+        _quotaEngineFactory = quotaEngineFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>());
+    }
 
     public IRenderable Render()
     {
-        var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
-        var quotaEng = Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+        var store = _accountStoreFactory();
+        var quotaEng = _quotaEngineFactory();
         var accountName = store.GetActiveAccount();
         var quota = quotaEng.CalculateRollingQuotas(accountName);
         var chartLabel = accountName;
@@ -197,6 +217,16 @@ public sealed class QuotaChartWidget : IStatusWidget
 public sealed class LiveDashboardWidget : IStatusWidget
 {
     public string Alias => "live-dashboard";
+    private readonly Func<IAgyAccountStore> _accountStoreFactory;
+    private readonly Func<IAgyQuotaEngine> _quotaEngineFactory;
+
+    public LiveDashboardWidget(
+        Func<IAgyAccountStore>? accountStoreFactory = null,
+        Func<IAgyQuotaEngine>? quotaEngineFactory = null)
+    {
+        _accountStoreFactory = accountStoreFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>());
+        _quotaEngineFactory = quotaEngineFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>());
+    }
 
     public IRenderable Render()
     {
@@ -206,8 +236,8 @@ public sealed class LiveDashboardWidget : IStatusWidget
         table.AddColumn("[bold cyan]W[/]");
         table.AddColumn("[bold cyan]5h[/]");
 
-        var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
-        var quotaEng = Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
+        var store = _accountStoreFactory();
+        var quotaEng = _quotaEngineFactory();
         foreach (var a in store.GetAccounts())
         {
             var s = quotaEng.GetAccountStats(a);
@@ -231,6 +261,12 @@ public sealed class OllamaStatusWidget : IStatusWidget
     public string Alias => "ollama-status";
     private static readonly TtlCache<string, IRenderable> _ollamaCache = new(TimeSpan.FromSeconds(5));
     private static bool _fetching;
+    private readonly Func<IOllamaClient> _ollamaClientFactory;
+
+    public OllamaStatusWidget(Func<IOllamaClient>? ollamaClientFactory = null)
+    {
+        _ollamaClientFactory = ollamaClientFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IOllamaClient>());
+    }
 
     public IRenderable Render()
     {
@@ -243,7 +279,7 @@ public sealed class OllamaStatusWidget : IStatusWidget
             {
                 try
                 {
-                    var isRunning = Bootstrapper.ServiceProvider.GetRequiredService<IOllamaClient>().IsRunning;
+                    var isRunning = _ollamaClientFactory().IsRunning;
                     var table = new Table().Border(TableBorder.Rounded).BorderColor(isRunning ? Color.Green : Color.Red);
                     table.AddColumn("[bold cyan]Ollama Daemon[/]");
                     table.AddColumn("[bold cyan]Value[/]");
@@ -304,8 +340,12 @@ public static class StatusWidgetRegistry
         new OllamaStatusWidget()
     };
 
+    public static IEnumerable<IStatusWidget> GetAll() => _widgets;
+
     public static IStatusWidget? GetByAlias(string alias)
     {
-        return _widgets.FirstOrDefault(w => string.Equals(w.Alias, alias, StringComparison.OrdinalIgnoreCase));
+        var registeredWidgets = Bootstrapper.ServiceProvider.GetServices<IStatusWidget>();
+        var found = registeredWidgets.FirstOrDefault(w => string.Equals(w.Alias, alias, StringComparison.OrdinalIgnoreCase));
+        return found ?? _widgets.FirstOrDefault(w => string.Equals(w.Alias, alias, StringComparison.OrdinalIgnoreCase));
     }
 }

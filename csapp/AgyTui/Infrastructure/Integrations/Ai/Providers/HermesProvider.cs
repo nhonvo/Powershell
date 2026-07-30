@@ -1,4 +1,6 @@
+using AgyTui.Infrastructure.Di;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
 
@@ -10,6 +12,8 @@ public class HermesProvider : IHermesClient
     {
         _processRunner = processRunner;
     }
+
+    public HermesProvider() : this(Bootstrapper.ServiceProvider.GetRequiredService<IAiProcessRunner>()) { }
 
     public static string? FindOnPath(string exe)
     {

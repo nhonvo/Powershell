@@ -133,8 +133,8 @@ function Load-AgyTuiDll {
             $aliases = @{
                 "ObsidianHelper"     = "ObsidianBridge"
                 "StudyHelper"        = "LearnRouter"
-                "AccountHelper"      = "AgyAccountCore"
-                "AgyAccountManager"  = "AgyAccountCore"
+                "AccountHelper"      = "AgyAccountStore"
+                "AgyAccountManager"  = "AgyAccountStore"
                 "AiHelper"           = "AgyAiCore"
                 "ThemeHelper"        = "ThemeManager"
                 "SshHelper"          = "SshConsoleView"
@@ -464,11 +464,18 @@ function Reset-AgyAccountData {
     Invoke-ControlCenter "reset-agy"
 }
 
+function Invoke-ControlCenterNavigator { Invoke-ControlCenter "cnav" }
+function Purge-AgyAccounts { Invoke-ControlCenter "purge-accounts" }
+function Show-DotNetInfo { Invoke-ControlCenter "dotnet-info" }
+
 Set-Alias -Name ai -Value Invoke-MultiAgent -Force
 Set-Alias -Name cai -Value Invoke-MultiAgent -Force
 Set-Alias -Name claude -Value Invoke-MultiAgent -Force
 Set-Alias -Name cc -Value Invoke-ControlCenter -Force
+Set-Alias -Name cnav -Value Invoke-ControlCenterNavigator -Force
 Set-Alias -Name reset-agy -Value Reset-AgyAccountData -Force
+Set-Alias -Name purge-accounts -Value Purge-AgyAccounts -Force
+Set-Alias -Name dotnet-info -Value Show-DotNetInfo -Force
 #endregion
 
 #region 9. NAVIGATION & SYSTEM WRAPPERS

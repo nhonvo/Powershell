@@ -34,9 +34,25 @@ public class ProfileAliasParityTests
     [InlineData("reset-agy")]
     [InlineData("cnav")]
     [InlineData("dotnet-info")]
+    [InlineData("purge-accounts")]
     public void Key_Profile_Aliases_Are_Registered_In_CommandRegistry(string alias)
     {
         var entry = CommandRegistry.GetByAlias(alias);
         Assert.NotNull(entry);
+    }
+
+    [Fact]
+    public void Profile_Script_Contains_Key_Aliases()
+    {
+        var rootDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", ".."));
+        var profilePath = Path.Combine(rootDir, "Microsoft.PowerShell_profile.ps1");
+        if (File.Exists(profilePath))
+        {
+            var content = File.ReadAllText(profilePath);
+            Assert.Contains("Set-Alias -Name cnav", content);
+            Assert.Contains("Set-Alias -Name reset-agy", content);
+            Assert.Contains("Set-Alias -Name purge-accounts", content);
+            Assert.Contains("Set-Alias -Name dotnet-info", content);
+        }
     }
 }
