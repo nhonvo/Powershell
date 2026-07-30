@@ -1,3 +1,5 @@
+using AgyTui.Domain.LearnContext;
+
 namespace AgyTui.Tests.Unit.Core.Services;
 
 [Collection("Sequential")]

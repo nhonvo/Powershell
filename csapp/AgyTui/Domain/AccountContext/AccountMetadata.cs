@@ -1,7 +1,6 @@
-
 using System.Text.Json.Serialization;
 
-namespace AgyTui.Core.Models;
+namespace AgyTui.Domain.AccountContext;
 
 public sealed class AccountMetadata
 {

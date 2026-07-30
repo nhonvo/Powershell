@@ -1,4 +1,4 @@
-namespace AgyTui.Core.Models;
+namespace AgyTui.Domain.LearnContext;
 
 public sealed record FlashCard(string Id, string Front, string Back, string? Hint, string? Mnemonic, string? ExampleSentence, string[] Tags, int Difficulty, SrState Sr);
 

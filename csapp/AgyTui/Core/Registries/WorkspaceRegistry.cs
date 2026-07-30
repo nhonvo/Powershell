@@ -5,17 +5,6 @@ using AgyTui.Domain.WorkspaceContext;
 
 namespace AgyTui.Core.Registries;
 
-public sealed record WorkspaceLink(string Label, string Url);
-
-public sealed record WorkspaceEntry(
-    string Name,
-    [property: JsonPropertyName("Path")] string WorkspacePath,
-    string? AssociatedAccount,
-    string[]? Tags,
-    WorkspaceLink[]? Links = null,
-    string? Alias = null
-);
-
 public static class WorkspaceRegistry
 {
     private static readonly TtlCache<string, WorkspaceEntry[]> WorkspacesCache = new(TimeSpan.FromSeconds(5));

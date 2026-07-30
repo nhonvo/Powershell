@@ -138,6 +138,7 @@ function Load-AgyTuiDll {
                 "AiHelper"           = "AgyAiCore"
                 "ThemeHelper"        = "ThemeManager"
                 "SshHelper"          = "SshConsoleView"
+                "SystemHelper"       = "SystemConsoleView"
                 "AntigravityManager" = "AntigravityManagerHelper"
                 "AntigravityDeck"    = "AntigravityDeckHelper"
             }

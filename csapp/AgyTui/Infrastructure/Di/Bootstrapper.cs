@@ -4,6 +4,7 @@ using AgyTui.Infrastructure.Integrations.Ai.Providers;
 using AgyTui.Infrastructure.Integrations.Ai.Services;
 using AgyTui.Infrastructure.Logging;
 using AgyTui.Infrastructure.Persistence;
+using AgyTui.Infrastructure.Services;
 using AgyTui.UI.Core.Commands;
 using AgyTui.UI.Core.State;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,7 @@ public static class Bootstrapper
 
         // Core Services & Reactive UI State
         services.AddSingleton<IAppPathManager, AppPathManager>();
+        services.AddSingleton<IConfigService, ConfigService>();
         services.AddSingleton<IUiStateStore, UiStateStore>();
         services.AddSingleton<IUiCommandDispatcher, UiCommandDispatcher>();
 

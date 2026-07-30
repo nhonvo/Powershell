@@ -12,7 +12,7 @@ public static class EditorResolver
         var editor = Environment.GetEnvironmentVariable("EDITOR");
         if (!string.IsNullOrWhiteSpace(editor)) return editor;
 
-        var (coreEditor, _, exitCode) = ProcessRunner.RunCaptureWithDetails("git", "config core.editor");
+        (string coreEditor, _, int exitCode) = ProcessRunner.RunCaptureWithDetails("git", "config core.editor");
         if (exitCode == 0 && !string.IsNullOrWhiteSpace(coreEditor)) return coreEditor.Trim();
 
         return RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "notepad" : "nano";

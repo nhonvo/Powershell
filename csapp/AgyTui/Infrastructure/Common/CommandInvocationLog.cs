@@ -1,7 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using AgyTui.Infrastructure.Di;
-using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Common;
