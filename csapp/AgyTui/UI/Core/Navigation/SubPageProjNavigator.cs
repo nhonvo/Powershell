@@ -235,7 +235,7 @@ public static class SubPageProjNavigator
                 var pathMarkup = $"[dim]· {boldPath}[/]";
 
                 var icon = item.ChildCount > 0 ? "📦" : "📁";
-                var badge = item.ChildCount > 0 ? $" [dim yellow][{item.ChildCount} sub-modules][/]" : "";
+                var badge = item.ChildCount > 0 ? $" [dim yellow][[{item.ChildCount} sub-modules]][/]" : "";
                 var expandSign = (item.WorkspaceIndex == ExpandedWorkspaceIndex) ? "[[-]] " : "[[+]] ";
 
                 grid.AddRow(new Markup($"{prefix}{expandSign}{icon} {status}{nameMarkup}{badge}{branchSuffix} {pathMarkup}"));
