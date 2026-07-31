@@ -7,14 +7,21 @@ public static class EditorResolver
     public static string Resolve()
     {
         var visual = Environment.GetEnvironmentVariable("VISUAL");
-        if (!string.IsNullOrWhiteSpace(visual)) return visual;
+        if (!string.IsNullOrWhiteSpace(visual) && !visual.Equals("notepad", StringComparison.OrdinalIgnoreCase)) return visual;
 
         var editor = Environment.GetEnvironmentVariable("EDITOR");
-        if (!string.IsNullOrWhiteSpace(editor)) return editor;
+        if (!string.IsNullOrWhiteSpace(editor) && !editor.Equals("notepad", StringComparison.OrdinalIgnoreCase)) return editor;
 
         (string coreEditor, _, int exitCode) = ProcessRunner.RunCaptureWithDetails("git", "config core.editor");
-        if (exitCode == 0 && !string.IsNullOrWhiteSpace(coreEditor)) return coreEditor.Trim();
+        if (exitCode == 0 && !string.IsNullOrWhiteSpace(coreEditor) && !coreEditor.Trim().Equals("notepad", StringComparison.OrdinalIgnoreCase))
+            return coreEditor.Trim();
 
-        return RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "notepad" : "nano";
+        foreach (var termEditor in new[] { "micro", "nvim", "vim", "nano" })
+        {
+            if (!string.IsNullOrEmpty(ProcessRunner.FindOnPath(termEditor)))
+                return termEditor;
+        }
+
+        return "micro";
     }
 }

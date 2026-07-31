@@ -56,7 +56,9 @@ public static class SubPageProjNavigator
                 ChildCount = children.Length
             });
 
-            bool isExpanded = (i == ExpandedWorkspaceIndex) || childMatch || (!string.IsNullOrEmpty(searchBuffer) && rootMatch && children.Length > 0);
+            bool isExpanded = string.IsNullOrEmpty(searchBuffer)
+                ? (i == ExpandedWorkspaceIndex)
+                : (rootMatch || childMatch);
 
             if (isExpanded)
             {
@@ -65,11 +67,12 @@ public static class SubPageProjNavigator
                     for (int c = 0; c < children.Length; c++)
                     {
                         var child = children[c];
-                        bool thisChildMatch = string.IsNullOrEmpty(searchBuffer) ||
+                        bool thisChildMatch = !string.IsNullOrEmpty(searchBuffer) && (
                             SystemHelper.IsFuzzyMatch(child.Name, searchBuffer) ||
-                            SystemHelper.IsFuzzyMatch(child.WorkspacePath, searchBuffer);
+                            SystemHelper.IsFuzzyMatch(child.WorkspacePath, searchBuffer));
 
-                        if (!thisChildMatch && !rootMatch) continue;
+                        bool showChild = string.IsNullOrEmpty(searchBuffer) || thisChildMatch;
+                        if (!showChild) continue;
 
                         list.Add(new FlatItem
                         {

@@ -564,7 +564,7 @@ public class CommandRouter : ICommandRouter
                         Helpers.ProcessRunner.RunInteractive("dotnet", ["--info"]);
                         break;
                     case "scaffold":
-                        ProjectScaffolder.Scaffold();
+                        AnsiConsole.MarkupLine("[bold yellow]Project scaffolding is managed via ask-ai or template commands.[/]");
                         break;
                     case "help":
                         ProfileHelp.Show();

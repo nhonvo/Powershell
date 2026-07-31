@@ -214,15 +214,18 @@ public static class WorkspaceRegistry
             }
         }
 
+        var userProfile = AppPaths.UserProfileDir;
+        TryAdd("Powershell Profile", Path.Combine(userProfile, "Documents", "Powershell"), null, true);
+
         try
         {
             var currentDir = Directory.GetCurrentDirectory();
             TryAdd(Path.GetFileName(currentDir), currentDir, null, true);
         }
-        catch { }
-
-        var userProfile = AppPaths.UserProfileDir;
-        TryAdd("Powershell Profile", Path.Combine(userProfile, "Documents", "Powershell"), null, true);
+        catch (Exception ex)
+        {
+            LogHelper.Log($"[WorkspaceRegistry] AutoDiscover currentDir non-fatal: {ex.Message}", "DEBUG");
+        }
 
         var searchBases = new List<string>();
 
