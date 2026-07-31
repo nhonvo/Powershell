@@ -165,25 +165,11 @@ public static class SubPageNavigator
                          (w.WorkspacePath != null && SystemHelper.IsFuzzyMatch(w.WorkspacePath, _detailsSearchBuffer)))).ToArray();
                 }
 
-                flatList = SubPageProjNavigator.GetFlatList(workspaces);
+                flatList = SubPageProjNavigator.GetFlatList(workspaces, _detailsSearchBuffer);
                 itemsCount = flatList.Count;
 
-                detailsSel = flatList.FindIndex(item => item.WorkspaceIndex == SubPageProjNavigator.SelectedWorkspaceIndex && item.ActionIndex == SubPageProjNavigator.SelectedActionIndex);
-                if (detailsSel < 0)
-                {
-                    if (flatList.Count > 0)
-                    {
-                        detailsSel = 0;
-                        SubPageProjNavigator.SelectedWorkspaceIndex = flatList[0].WorkspaceIndex;
-                        SubPageProjNavigator.SelectedActionIndex = flatList[0].ActionIndex;
-                    }
-                    else
-                    {
-                        detailsSel = 0;
-                        SubPageProjNavigator.SelectedWorkspaceIndex = 0;
-                        SubPageProjNavigator.SelectedActionIndex = -1;
-                    }
-                }
+                if (detailsSel < 0) detailsSel = 0;
+                if (itemsCount > 0 && detailsSel >= itemsCount) detailsSel = itemsCount - 1;
             }
 
             ScreenChrome.RenderFrame(() =>
@@ -318,14 +304,7 @@ public static class SubPageNavigator
                 case ConsoleKey.RightArrow:
                     if (mode == "proj" && flatList.Count > 0)
                     {
-                        if (detailsSel >= 0 && detailsSel < flatList.Count)
-                        {
-                            var item = flatList[detailsSel];
-                            if (item.ActionIndex == -1)
-                            {
-                                SubPageProjNavigator.ExpandedWorkspaceIndex = item.WorkspaceIndex;
-                            }
-                        }
+                        SubPageProjNavigator.HandleKeyInput(key, workspaces, flatList, detailsSel);
                     }
                     break;
                 case ConsoleKey.H:
@@ -339,23 +318,7 @@ public static class SubPageNavigator
                 case ConsoleKey.LeftArrow:
                     if (mode == "proj" && flatList.Count > 0)
                     {
-                        if (detailsSel >= 0 && detailsSel < flatList.Count)
-                        {
-                            var item = flatList[detailsSel];
-                            if (item.ActionIndex == -1)
-                            {
-                                if (SubPageProjNavigator.ExpandedWorkspaceIndex == item.WorkspaceIndex)
-                                {
-                                    SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
-                                }
-                            }
-                            else
-                            {
-                                SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
-                                SubPageProjNavigator.SelectedActionIndex = -1;
-                                SubPageProjNavigator.SelectedWorkspaceIndex = item.WorkspaceIndex;
-                            }
-                        }
+                        SubPageProjNavigator.HandleKeyInput(key, workspaces, flatList, detailsSel);
                     }
                     else
                     {
