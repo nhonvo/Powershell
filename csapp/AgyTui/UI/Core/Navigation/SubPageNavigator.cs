@@ -25,6 +25,73 @@ public static class SubPageNavigator
         return currentBuffer;
     }
 
+    public static void RunScreen(IScreenView screenView, string initialQuery = "")
+    {
+        if (screenView == null) return;
+        string searchBuffer = initialQuery;
+        int selectedIndex = 0;
+
+        Console.CursorVisible = false;
+        try { Console.Write("\x1b[?1049h\x1b[H"); } catch { }
+
+        try
+        {
+            while (true)
+            {
+                int itemCount = screenView.GetItemCount(searchBuffer);
+                if (selectedIndex < 0) selectedIndex = 0;
+                if (itemCount > 0 && selectedIndex >= itemCount) selectedIndex = itemCount - 1;
+
+                var grid = new Grid().AddColumn(new GridColumn().NoWrap());
+                var state = new ScreenState(searchBuffer, selectedIndex);
+                var renderable = screenView.Render(grid, state);
+
+                AnsiConsole.Clear();
+                AnsiConsole.Write(renderable);
+
+                var key = Console.ReadKey(true);
+                switch (key.Key)
+                {
+                    case ConsoleKey.UpArrow:
+                    case ConsoleKey.K:
+                        if (itemCount > 0) selectedIndex = (selectedIndex - 1 + itemCount) % itemCount;
+                        continue;
+
+                    case ConsoleKey.DownArrow:
+                    case ConsoleKey.J:
+                        if (itemCount > 0) selectedIndex = (selectedIndex + 1) % itemCount;
+                        continue;
+
+                    case ConsoleKey.Backspace:
+                        if (searchBuffer.Length > 0)
+                        {
+                            searchBuffer = searchBuffer[..^1];
+                            selectedIndex = 0;
+                        }
+                        continue;
+                }
+
+                if (!char.IsControl(key.KeyChar) && key.KeyChar != '\0')
+                {
+                    searchBuffer += key.KeyChar;
+                    selectedIndex = 0;
+                    continue;
+                }
+
+                var result = screenView.HandleInput(key, state);
+                if (result.Action == NavigationAction.Exit)
+                {
+                    break;
+                }
+            }
+        }
+        finally
+        {
+            try { Console.Write("\x1b[?1049l"); } catch { }
+            Console.CursorVisible = true;
+        }
+    }
+
     public static void Run(string mode, string initialQuery = "")
     {
         mode = mode.ToLowerInvariant();

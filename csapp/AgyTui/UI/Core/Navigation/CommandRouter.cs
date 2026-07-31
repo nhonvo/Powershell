@@ -478,10 +478,10 @@ public class CommandRouter : ICommandRouter
                         }
                         break;
                     case "tailscale-status":
-                        SshHelper.ShowTailscaleStatus();
+                        SpectrePanel.Info("Tailscale status widget is available in Control Center dashboard.");
                         break;
                     case "ssh-qr":
-                        SshHelper.ShowSshQrCode();
+                        SpectrePanel.Info("SSH QR code widget is available in Control Center dashboard.");
                         break;
                     case "disk":
                     case "usage":
@@ -496,7 +496,7 @@ public class CommandRouter : ICommandRouter
                         if (int.TryParse(portStr, out var port)) SystemHelper.KillPort(port);
                         break;
                     case "ssh-info":
-                        SshHelper.ShowSshInfo();
+                        SpectrePanel.Info("SSH connection info widget is available in Control Center dashboard.");
                         break;
                     case "system-reload":
                     case "sys-reload":
@@ -704,7 +704,7 @@ public class CommandRouter : ICommandRouter
                         HotkeysGuide.Show();
                         break;
                     case "learn":
-                        GuidedLearnFlow.Run();
+                        LearnRouter.StartLearning("jp");
                         break;
                     case "flashcard":
                         FlashcardEngine.PickAndRun(LearnDataPaths.DecksDir);

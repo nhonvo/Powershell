@@ -35,5 +35,3 @@ global using AgyTui.UI.Screens.Learn;
 global using AgyTui.UI.Screens.Quizzes;
 global using Spectre.Console;
 global using Helpers = AgyTui.Infrastructure.Common;
-global using SshHelper = AgyTui.UI.Screens.SysNet.SshConsoleView;
-global using SystemHelper = AgyTui.UI.Screens.SysNet.SystemConsoleView;

@@ -1,8 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using AgyTui.Infrastructure.Services;
-using AgyTui.Infrastructure.Integrations.AgyClient;
-using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 using AgyTui.Infrastructure.Persistence.Interfaces;
 using AgyTui.Tests.Mocks;
 

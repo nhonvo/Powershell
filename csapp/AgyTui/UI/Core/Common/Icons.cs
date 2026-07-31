@@ -21,17 +21,7 @@ public static class Icons
         string.Equals(Environment.GetEnvironmentVariable("AGY_NERD_FONTS"), "true", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(Environment.GetEnvironmentVariable("POSH_THEME_NERD_FONTS"), "true", StringComparison.OrdinalIgnoreCase);
 
-    public static int GetGlyphDisplayWidth(string glyph)
-    {
-        if (string.IsNullOrEmpty(glyph)) return 0;
-        int width = 0;
-        for (int i = 0; i < glyph.Length; i += char.IsSurrogatePair(glyph, i) ? 2 : 1)
-        {
-            int codePoint = char.ConvertToUtf32(glyph, i);
-            width += GetCodePointDisplayWidth(codePoint);
-        }
-        return width;
-    }
+    public static int GetGlyphDisplayWidth(string glyph) => GetStringDisplayWidth(glyph);
 
     public static int GetStringDisplayWidth(string text)
     {
@@ -43,13 +33,6 @@ public static class Icons
             width += GetCodePointDisplayWidth(codePoint);
         }
         return width;
-    }
-
-    public static string PadDisplayWidth(string text, int targetWidth)
-    {
-        int displayWidth = GetStringDisplayWidth(text);
-        int paddingNeeded = Math.Max(0, targetWidth - displayWidth);
-        return text + new string(' ', paddingNeeded);
     }
 
     public static int GetCodePointDisplayWidth(int codePoint)

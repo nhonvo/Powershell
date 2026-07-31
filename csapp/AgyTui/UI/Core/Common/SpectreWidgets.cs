@@ -10,20 +10,6 @@ public static class SpectreMenu
 
     public static int ShowRobust(string[] headerLines, string[] items, int defaultIndex, bool searchEnabled, bool fullScreen) => CoreShow(headerLines, items, [], searchEnabled, fullScreen);
 
-    public static int Show(string[] headerLines, string[] items, string[] cmds, int defaultIndex, bool searchEnabled, bool fullScreen)
-    {
-        if (items.Length == 0) return -1;
-        if (fullScreen) AnsiConsole.Clear();
-        PrintHeader(headerLines);
-        if (cmds.Length > defaultIndex && !string.IsNullOrWhiteSpace(cmds[defaultIndex]))
-            AnsiConsole.Write(new Panel($"[dim]{cmds[defaultIndex].EscapeMarkup()}[/]")
-            {
-                Header = new PanelHeader("[grey]Command[/]"),
-                Border = BoxBorder.Rounded
-            });
-        return PromptIndex(items, searchEnabled);
-    }
-
     public static string? ShowDynamic(string header, Func<string, string[]> resolver, int defaultIndex) => ShowDynamic(header, resolver, defaultIndex, string.Empty);
 
     public static string? ShowDynamic(string header, Func<string, string[]> resolver, int defaultIndex, string initialFilter)
@@ -374,67 +360,7 @@ public static class LogHelper
         }
     }
 
-    public static void LogError(string message, Exception? exception = null)
-    {
-        var text = exception != null ? $"{message} - Exception: {exception.Message}\n{exception.StackTrace}" : message;
-        Log(text, "ERROR");
-    }
 
-    public static void LogWarning(string message) => Log(message, "WARNING");
-
-    public static void StreamLogs(string? logPath = null)
-    {
-        if (string.IsNullOrWhiteSpace(logPath))
-        {
-            var candidates = Directory.GetFiles(".", "*.log").Select(f => new FileInfo(f)).OrderByDescending(f => f.LastWriteTime).ToArray();
-            if (candidates.Length == 0)
-                candidates = Directory.GetFiles(Path.GetTempPath(), "*.log").Select(f => new FileInfo(f)).OrderByDescending(f => f.LastWriteTime).ToArray();
-            if (candidates.Length > 0)
-                logPath = candidates[0].FullName;
-        }
-        if (string.IsNullOrWhiteSpace(logPath) || !File.Exists(logPath))
-        {
-            SpectrePanel.Error("No log files found to stream.");
-            return;
-        }
-        AnsiConsole.MarkupLine($"[cyan]Streaming logs from: {logPath.EscapeMarkup()}[/]");
-        AnsiConsole.MarkupLine("[dim]Press Ctrl+C to stop streaming.[/]");
-
-        using var stream = new FileStream(logPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        using var reader = new StreamReader(stream);
-        stream.Seek(0, SeekOrigin.End);
-        var cancelled = false;
-        ConsoleCancelEventHandler handler = (_, e) =>
-        {
-            cancelled = true;
-            e.Cancel = true;
-        };
-        Console.CancelKeyPress += handler;
-
-        try
-        {
-            while (!cancelled)
-            {
-                var line = reader.ReadLine();
-                if (line == null)
-                {
-                    Thread.Sleep(300);
-                    continue;
-                }
-                var color = Regex.IsMatch(line, @"error|fail|exception|err\b|critical", RegexOptions.IgnoreCase) ? "red" :
-                            Regex.IsMatch(line, "warn|warning", RegexOptions.IgnoreCase) ? "yellow" :
-                            Regex.IsMatch(line, @"success|ok\b|complete|done", RegexOptions.IgnoreCase) ? "green" : null;
-                if (color != null)
-                    AnsiConsole.MarkupLine($"[{color}]{line.EscapeMarkup()}[/]");
-                else
-                    AnsiConsole.WriteLine(line);
-            }
-        }
-        finally
-        {
-            Console.CancelKeyPress -= handler;
-        }
-    }
 }
 
 public static class SpectreTable

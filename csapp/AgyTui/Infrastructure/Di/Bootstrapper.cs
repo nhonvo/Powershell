@@ -10,6 +10,7 @@ using AgyTui.UI.Core.State;
 using Microsoft.Extensions.DependencyInjection;
 
 using AgyTui.Infrastructure.Persistence.Seeding;
+using AgyTui.UI.Screens;
 
 namespace AgyTui.Infrastructure.Di;
 
@@ -75,6 +76,10 @@ public static class Bootstrapper
         services.AddSingleton<IStatusWidget, QuotaChartWidget>();
         services.AddSingleton<IStatusWidget, LiveDashboardWidget>();
         services.AddSingleton<IStatusWidget, OllamaStatusWidget>();
+        services.AddSingleton<IScreenView, AccountScreen>();
+        services.AddSingleton<IScreenView, ProjectScreen>();
+        services.AddSingleton<IScreenView, ThemeScreen>();
+        services.AddSingleton<IScreenView, TopicScreen>();
         services.AddSingleton<IUiNavigationHandler, UiNavigationHandler>();
         services.AddSingleton<CommandRouter>();
         services.AddSingleton<ICommandRouter>(sp => new CommandLoggingMiddleware(sp.GetRequiredService<CommandRouter>()));

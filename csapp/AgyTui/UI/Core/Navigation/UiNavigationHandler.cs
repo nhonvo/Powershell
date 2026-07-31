@@ -1,8 +1,23 @@
+using AgyTui.UI.Core.Navigation.Interfaces;
+
 namespace AgyTui.UI.Core.Navigation;
 
 public class UiNavigationHandler : IUiNavigationHandler
 {
+    private readonly Dictionary<string, IScreenView> _screens;
     private readonly Stack<string> _history = new();
+
+    public UiNavigationHandler(IEnumerable<IScreenView>? screens = null)
+    {
+        _screens = new Dictionary<string, IScreenView>(StringComparer.OrdinalIgnoreCase);
+        if (screens != null)
+        {
+            foreach (var screen in screens)
+            {
+                _screens[screen.ScreenKey] = screen;
+            }
+        }
+    }
 
     public IReadOnlyCollection<string> NavigationHistory => _history.ToArray();
 
@@ -12,43 +27,37 @@ public class UiNavigationHandler : IUiNavigationHandler
         PushState(screenKey);
 
         var query = args != null && args.Length > 0 ? args[0] : "";
-        switch (screenKey.ToLowerInvariant())
+        var keyLower = screenKey.ToLowerInvariant();
+
+        string targetKey = keyLower switch
         {
-            case "account":
-            case "accounts":
-            case "agyswitch":
-                SubPageNavigator.Run("agyswitch", query);
-                return true;
+            "account" or "accounts" or "agyswitch" => "agyswitch",
+            "project" or "projects" or "proj" => "proj",
+            "theme" or "themes" => "theme",
+            "learn" or "topic" => "topic",
+            _ => keyLower
+        };
 
-            case "project":
-            case "projects":
-            case "proj":
-                SubPageNavigator.Run("proj", query);
-                return true;
-
-            case "theme":
-            case "themes":
-                SubPageNavigator.Run("theme", query);
-                return true;
-
-            case "palette":
-            case "cmd-palette":
-                CommandPalette.Show();
-                return true;
-
-            case "cc":
-                CcNavigator.Run();
-                return true;
-
-            case "learn":
-            case "topic":
-                SubPageNavigator.Run("topic", query);
-                return true;
-
-            default:
-                SubPageNavigator.Run(screenKey, query);
-                return true;
+        if (keyLower is "palette" or "cmd-palette")
+        {
+            CommandPalette.Show();
+            return true;
         }
+
+        if (keyLower is "cc")
+        {
+            CcNavigator.Run();
+            return true;
+        }
+
+        if (_screens.TryGetValue(targetKey, out var screenView))
+        {
+            SubPageNavigator.RunScreen(screenView, query);
+            return true;
+        }
+
+        SubPageNavigator.Run(screenKey, query);
+        return true;
     }
 
     public void PushState(string screenKey)
