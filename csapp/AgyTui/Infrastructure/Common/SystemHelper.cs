@@ -56,7 +56,10 @@ public static class SystemHelper
                 Process.Start(new ProcessStartInfo("explorer.exe", $"\"{path}\"") { UseShellExecute = true });
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            LogHelper.LogError("OpenExplorer failed", ex);
+        }
     }
 
     public static void OpenNewTerminalSession(string path = "", string? initialCommand = null, bool promptOptions = false)
@@ -108,7 +111,10 @@ public static class SystemHelper
                 Process.Start(new ProcessStartInfo("powershell.exe", cmdArgs) { UseShellExecute = true });
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            LogHelper.LogError("OpenNewTerminalSession failed", ex);
+        }
     }
 
     public static void ShowDiskSpace()
@@ -123,7 +129,10 @@ public static class SystemHelper
                 AnsiConsole.MarkupLine($"[cyan]Drive {d.Name}[/] {freeGb:F1} GB free of {totalGb:F1} GB");
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            LogHelper.LogError("ShowDiskSpace failed", ex);
+        }
     }
 
     public static string GetPublicIP()
@@ -133,8 +142,9 @@ public static class SystemHelper
             using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(3) };
             return client.GetStringAsync("https://api.ipify.org").Result.Trim();
         }
-        catch
+        catch (Exception ex)
         {
+            LogHelper.Log($"[SystemHelper] GetPublicIP unavailable: {ex.Message}", "DEBUG");
             return "Unavailable";
         }
     }

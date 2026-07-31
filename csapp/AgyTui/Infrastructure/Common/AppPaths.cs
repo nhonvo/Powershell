@@ -20,7 +20,10 @@ public static class AppPaths
                     return _projectRoot;
                 }
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                LogHelper.Log($"[AppPaths] Probe failed: {ex.Message}", "DEBUG");
+            }
 
             var pwd = Directory.GetCurrentDirectory();
             if (File.Exists(Path.Combine(pwd, "AgyTui.csproj")))

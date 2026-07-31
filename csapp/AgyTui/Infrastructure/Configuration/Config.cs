@@ -111,8 +111,9 @@ public static class Config
         {
             Current = Repository.LoadConfig();
         }
-        catch
+        catch (Exception ex)
         {
+            LogHelper.Log($"[Config] Load fallback: {ex.Message}", "DEBUG");
             Current = new ConfigData();
         }
     }
@@ -123,9 +124,9 @@ public static class Config
         {
             Repository.SaveConfig(Current);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // Ignored
+            LogHelper.LogError("Config Save failed", ex);
         }
     }
 
@@ -163,9 +164,9 @@ public static class Config
                 Current.Ui.Mode = "flat-tree";
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // Ignored
+            LogHelper.Log($"[Config] AutoDetectDensity non-fatal: {ex.Message}", "DEBUG");
         }
     }
 
@@ -181,9 +182,9 @@ public static class Config
             var theme = Environment.GetEnvironmentVariable("THEME") ?? "";
             if (theme.EndsWith("-mobile", StringComparison.OrdinalIgnoreCase)) return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // Ignored
+            LogHelper.Log($"[Config] IsMobileContext non-fatal: {ex.Message}", "DEBUG");
         }
         return false;
     }
