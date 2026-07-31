@@ -100,6 +100,9 @@ public static class WorkspaceRegistry
         });
     }
 
+    private static readonly TtlCache<string, WorkspaceEntry[]> RootWorkspacesCache = new(TimeSpan.FromSeconds(5));
+    private static readonly TtlCache<string, WorkspaceEntry[]> ChildWorkspacesCache = new(TimeSpan.FromSeconds(5));
+
     public static int PruneWorkspaces()
     {
         if (!File.Exists(ConfigFile)) return 0;
@@ -117,62 +120,84 @@ public static class WorkspaceRegistry
             }
             return prunedCount;
         }
-        catch { return 0; }
+        catch (Exception ex)
+        {
+            LogHelper.LogError("PruneWorkspaces failed", ex);
+            return 0;
+        }
     }
 
     public static WorkspaceEntry[] GetRootWorkspaces()
     {
-        var all = GetWorkspaces();
-        if (all.Length == 0) return Array.Empty<WorkspaceEntry>();
-
-        var allPaths = all.Select(w => w.WorkspacePath.TrimEnd('\\', '/')).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
-        var rootWorkspaces = new List<WorkspaceEntry>();
-
-        foreach (var w in all)
+        return RootWorkspacesCache.GetOrCompute("roots", () =>
         {
-            var p = w.WorkspacePath.TrimEnd('\\', '/');
-            bool hasParentInList = allPaths.Any(otherPath =>
-                !string.Equals(otherPath, p, StringComparison.OrdinalIgnoreCase) &&
-                p.StartsWith(otherPath + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase));
+            var all = GetWorkspaces();
+            if (all.Length == 0) return Array.Empty<WorkspaceEntry>();
 
-            if (!hasParentInList)
+            var containerNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "project", "projects" };
+            var nonContainerPaths = all
+                .Select(w => w.WorkspacePath.TrimEnd('\\', '/'))
+                .Where(p => !containerNames.Contains(Path.GetFileName(p)))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            var rootWorkspaces = new List<WorkspaceEntry>();
+
+            foreach (var w in all)
             {
-                rootWorkspaces.Add(w);
-            }
-        }
+                var p = w.WorkspacePath.TrimEnd('\\', '/');
+                if (containerNames.Contains(Path.GetFileName(p)))
+                {
+                    continue;
+                }
 
-        return rootWorkspaces.ToArray();
+                bool hasParentInList = nonContainerPaths.Any(otherPath =>
+                    !string.Equals(otherPath, p, StringComparison.OrdinalIgnoreCase) &&
+                    p.StartsWith(otherPath + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase));
+
+                if (!hasParentInList)
+                {
+                    rootWorkspaces.Add(w);
+                }
+            }
+
+            return rootWorkspaces.ToArray();
+        });
     }
 
     public static WorkspaceEntry[] GetChildWorkspaces(string parentPath)
     {
         if (string.IsNullOrEmpty(parentPath)) return Array.Empty<WorkspaceEntry>();
         var normParent = parentPath.TrimEnd('\\', '/');
-        var all = GetWorkspaces();
-        var children = new List<WorkspaceEntry>();
 
-        foreach (var w in all)
+        return ChildWorkspacesCache.GetOrCompute(normParent, () =>
         {
-            var p = w.WorkspacePath.TrimEnd('\\', '/');
-            if (p.StartsWith(normParent + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
-            {
-                bool hasCloserParent = all.Any(other =>
-                {
-                    var op = other.WorkspacePath.TrimEnd('\\', '/');
-                    return !string.Equals(op, normParent, StringComparison.OrdinalIgnoreCase) &&
-                           !string.Equals(op, p, StringComparison.OrdinalIgnoreCase) &&
-                           op.StartsWith(normParent + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) &&
-                           p.StartsWith(op + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
-                });
+            var all = GetWorkspaces();
+            var children = new List<WorkspaceEntry>();
 
-                if (!hasCloserParent)
+            foreach (var w in all)
+            {
+                var p = w.WorkspacePath.TrimEnd('\\', '/');
+                if (p.StartsWith(normParent + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
                 {
-                    children.Add(w);
+                    bool hasCloserParent = all.Any(other =>
+                    {
+                        var op = other.WorkspacePath.TrimEnd('\\', '/');
+                        return !string.Equals(op, normParent, StringComparison.OrdinalIgnoreCase) &&
+                               !string.Equals(op, p, StringComparison.OrdinalIgnoreCase) &&
+                               op.StartsWith(normParent + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) &&
+                               p.StartsWith(op + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+                    });
+
+                    if (!hasCloserParent)
+                    {
+                        children.Add(w);
+                    }
                 }
             }
-        }
 
-        return children.ToArray();
+            return children.ToArray();
+        });
     }
 
     public static WorkspaceEntry[] AutoDiscoverWorkspaces()

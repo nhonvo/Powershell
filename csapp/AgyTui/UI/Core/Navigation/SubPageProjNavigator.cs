@@ -61,8 +61,6 @@ public static class SubPageProjNavigator
             {
                 if (children.Length > 0)
                 {
-                    list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -200, IsChildGroupHeader = true, Depth = 1, ChildCount = children.Length });
-
                     for (int c = 0; c < children.Length; c++)
                     {
                         var child = children[c];
@@ -78,14 +76,14 @@ public static class SubPageProjNavigator
                             WorkspaceIndex = i,
                             ActionIndex = -300 - c,
                             IsChildWorkspace = true,
-                            Depth = 2
+                            Depth = 1
                         });
 
                         if (ExpandedChildWorkspacePath == child.WorkspacePath || (!string.IsNullOrEmpty(searchBuffer) && thisChildMatch))
                         {
                             for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
                             {
-                                list.Add(new FlatItem { Workspace = child, WorkspaceIndex = i, ActionIndex = j, Depth = 3 });
+                                list.Add(new FlatItem { Workspace = child, WorkspaceIndex = i, ActionIndex = j, Depth = 2 });
                             }
                         }
                     }
@@ -191,7 +189,7 @@ public static class SubPageProjNavigator
     public static IRenderable Render(Grid grid, string searchBuffer, WorkspaceEntry[] allWorkspaces, List<FlatItem> flatList, int selIdx, string currentDir)
     {
         int termH = 30;
-        try { termH = Console.WindowHeight; } catch { }
+        try { termH = Console.WindowHeight; } catch (Exception ex) { LogHelper.Log($"[SubPageProjNavigator] WindowHeight non-fatal: {ex.Message}", "DEBUG"); }
         int maxRows = Math.Max(5, termH - 18);
         int topRow = 0;
         int endRow = 0;
@@ -203,18 +201,13 @@ public static class SubPageProjNavigator
             var item = flatList[i];
             var isSelected = (i == selIdx);
 
-            if (item.IsChildGroupHeader)
-            {
-                var prefix = isSelected ? "  [green bold]❯──[/] " : "  ├── ";
-                grid.AddRow(new Markup($"{prefix}[bold cyan]📂 Sub-Projects & Child Modules ({item.ChildCount}):[/]"));
-            }
-            else if (item.IsChildWorkspace)
+            if (item.IsChildWorkspace)
             {
                 var ws = item.Workspace;
                 var isCurrent = !string.IsNullOrEmpty(ws.WorkspacePath) && string.Equals(ws.WorkspacePath.TrimEnd('\\', '/'), currentDir.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
 
-                var bullet = "  │   ├── ";
-                var prefix = isSelected ? "  [green bold]❯───[/] " : $"{bullet}";
+                var bullet = "  ├── ";
+                var prefix = isSelected ? "  [green bold]❯──[/] " : $"{bullet}";
                 var status = isCurrent ? "[bold black on green] ACTIVE [/] " : "";
                 var boldName = string.IsNullOrEmpty(searchBuffer) ? ws.Name.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(ws.Name, searchBuffer);
                 var boldPath = string.IsNullOrEmpty(searchBuffer) ? ws.WorkspacePath.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(ws.WorkspacePath, searchBuffer);
