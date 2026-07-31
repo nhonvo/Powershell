@@ -175,7 +175,7 @@ public static class SubPageNavigator
             ScreenChrome.RenderFrame(() =>
             {
                 RenderSubPageSelection(mode, detailsSel, workspaces, flatList);
-            }, forceClear: true);
+            }, forceClear: false);
 
             ScreenChrome.EnableMouseTracking();
             var (key, isScrollUp, isScrollDown) = ScreenChrome.ReadKeyWithMouse();

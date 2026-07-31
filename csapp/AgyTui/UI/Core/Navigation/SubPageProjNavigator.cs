@@ -20,6 +20,7 @@ public static class SubPageProjNavigator
     public static int SelectedActionIndex = -1;
     public static int ExpandedWorkspaceIndex = -1;
     public static string? ExpandedChildWorkspacePath = null;
+    public static string? ExpandedActionsWorkspacePath = null;
 
     public static List<FlatItem> GetFlatList(WorkspaceEntry[] allWorkspaces, string searchBuffer = "")
     {
@@ -79,7 +80,7 @@ public static class SubPageProjNavigator
                             Depth = 1
                         });
 
-                        if (ExpandedChildWorkspacePath == child.WorkspacePath || (!string.IsNullOrEmpty(searchBuffer) && thisChildMatch))
+                        if (ExpandedActionsWorkspacePath == child.WorkspacePath)
                         {
                             for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
                             {
@@ -98,9 +99,12 @@ public static class SubPageProjNavigator
                     }
                 }
 
-                for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
+                if (ExpandedActionsWorkspacePath == w.WorkspacePath)
                 {
-                    list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = j, Depth = 1 });
+                    for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
+                    {
+                        list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = j, Depth = 1 });
+                    }
                 }
             }
         }
@@ -116,6 +120,12 @@ public static class SubPageProjNavigator
     {
         if (detailsSel < 0 || detailsSel >= flatList.Count) return false;
         var item = flatList[detailsSel];
+
+        if (key.Key == ConsoleKey.A || (key.Modifiers.HasFlag(ConsoleModifiers.Control) && key.Key == ConsoleKey.A))
+        {
+            ExpandedActionsWorkspacePath = (ExpandedActionsWorkspacePath == item.Workspace.WorkspacePath) ? null : item.Workspace.WorkspacePath;
+            return false;
+        }
 
         if (key.Key == ConsoleKey.Tab || key.Key == ConsoleKey.Spacebar || key.Key == ConsoleKey.RightArrow)
         {
@@ -304,7 +314,7 @@ public static class SubPageProjNavigator
             new Rule().RuleStyle("cyan dim"),
             new Markup(scrollStatus),
             new Markup($"  [dim]Selected Target:[/] [bold cyan]{targetDisplay.EscapeMarkup()}[/]"),
-            new Markup("\n[bold cyan][[Enter]][/] Open Target Folder  ·  [bold cyan][[Tab / Space]][/] Expand Sub-modules  ·  [bold cyan][[Esc]][/] Cancel")
+            new Markup("\n[bold cyan][[Enter]][/] Open Target Folder  ·  [bold cyan][[Tab / Space]][/] Expand Sub-modules  ·  [bold cyan][[A]][/] Toggle Actions  ·  [bold cyan][[Esc]][/] Cancel")
         );
     }
 }
