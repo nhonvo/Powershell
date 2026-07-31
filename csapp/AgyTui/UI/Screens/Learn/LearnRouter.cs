@@ -98,7 +98,7 @@ public static class LearnRouter
                 else if (jpChoice == 2) KanjiLookup.Run();
                 else if (jpChoice == 3)
                 {
-                    var lvl = SpectreMenu.Show("Grammar Level", new[] { "N5", "N4", "N3" }, 0);
+                    var lvl = SpectreMenu.Show("Grammar Level", ["N5", "N4", "N3"], 0);
                     if (lvl == 0) GrammarQuiz.Run("N5");
                     else if (lvl == 1) GrammarQuiz.Run("N4");
                     else if (lvl == 2) GrammarQuiz.Run("N3");

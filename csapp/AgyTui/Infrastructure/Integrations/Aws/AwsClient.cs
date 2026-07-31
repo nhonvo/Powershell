@@ -13,9 +13,9 @@ public class AwsClient : CliToolWrapper, IAwsClient
         AnsiConsole.Write(new Rule("[bold cyan]LocalStack Sandbox[/]").RuleStyle("grey"));
         SpectreProgress.Spinner("Querying LocalStack…", () =>
         {
-            RunLocalAwsCli(new[] { "s3", "ls" }, "S3 Buckets");
-            RunLocalAwsCli(new[] { "sqs", "list-queues" }, "SQS Queues");
-            RunLocalAwsCli(new[] { "lambda", "list-functions", "--query", "Functions[*].FunctionName" }, "Lambda Functions");
+            RunLocalAwsCli(["s3", "ls"], "S3 Buckets");
+            RunLocalAwsCli(["sqs", "list-queues"], "SQS Queues");
+            RunLocalAwsCli(["lambda", "list-functions", "--query", "Functions[*].FunctionName"], "Lambda Functions");
         });
     }
 

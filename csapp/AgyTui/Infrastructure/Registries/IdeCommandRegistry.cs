@@ -18,7 +18,7 @@ public sealed class IdeContext
 
 public static class IdeCommandRegistry
 {
-    public static readonly IdeCommand[] All = {
+    public static readonly IdeCommand[] All = [
         new("open", "<path>", "Open a file", "Navigation", (ctx, a) => {
             if (a.Length > 0)
             {
@@ -53,7 +53,7 @@ public static class IdeCommandRegistry
                 AiDashboardView.AskAi($"Regarding the file '{ctx.CurrentFile}', question: {q}\n\nFile Content:\n{content}");
             }
         }),
-    };
+    ];
 
     public static bool ExecuteCommand(IdeContext ctx, string cmdLine)
     {

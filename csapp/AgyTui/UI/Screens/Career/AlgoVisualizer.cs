@@ -145,11 +145,11 @@ public static class AlgoVisualizer
 
         var graph = new Dictionary<string, string[]>
         {
-            ["A"] = new[] { "B", "C" },
-            ["B"] = new[] { "D", "E" },
-            ["C"] = new[] { "F" },
+            ["A"] = ["B", "C"],
+            ["B"] = ["D", "E"],
+            ["C"] = ["F"],
             ["D"] = Array.Empty<string>(),
-            ["E"] = new[] { "F" },
+            ["E"] = ["F"],
             ["F"] = Array.Empty<string>()
         };
 

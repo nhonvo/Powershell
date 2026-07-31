@@ -105,8 +105,8 @@ public static class Icons
 
     private record CategoryMeta(string Keyword, string NerdIcon, string Utf8Icon, string AsciiIcon, string Hotkey);
 
-    private static readonly CategoryMeta[] Categories = new CategoryMeta[]
-    {
+    private static readonly CategoryMeta[] Categories =
+    [
         new("workspace", "󰉋", "📁", "[Dev]", "cnav"),
         new("ai agent", "󰚩", "🤖", "[AI]", "cai"),
         new("ollama", "󰚩", "🤖", "[AI]", "cai"),
@@ -125,7 +125,7 @@ public static class Icons
         new("layout", "🎨", "🎨", "[UI]", "theme"),
         new("help", "🛸", "🛸", "[AGY]", "help"),
         new("docs", "🛸", "🛸", "[AGY]", "help"),
-    };
+    ];
 
     public static string GetCategoryIcon(string categoryLabel)
     {

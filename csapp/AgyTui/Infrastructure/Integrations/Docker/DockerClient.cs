@@ -154,7 +154,7 @@ public class DockerClient : CliToolWrapper, IDockerClient
         var filter = runningOnly ? "-q" : "-aq";
         var output = RunCapture($"ps {filter}");
         if (string.IsNullOrWhiteSpace(output)) return Array.Empty<string>();
-        return output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        return output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
 
     public void RemoveAllContainers()

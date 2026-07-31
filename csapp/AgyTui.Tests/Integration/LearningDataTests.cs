@@ -28,7 +28,7 @@ public class LearningDataTests
     public void GrammarCard_RecordInstantiation_WorksCorrectly()
     {
         var sr = new SrState(2.5, 1, 1, DateTime.UtcNow, DateTime.UtcNow.AddDays(1), "review");
-        var card = new GrammarCard("g_test_1", "N5", "～は～です", "A is B", "Noun + は + Noun + です", "わたしは がくせいです。", "I am a student.", new[] { "grammar", "n5" }, sr);
+        var card = new GrammarCard("g_test_1", "N5", "～は～です", "A is B", "Noun + は + Noun + です", "わたしは がくせいです。", "I am a student.", ["grammar", "n5"], sr);
 
         Assert.Equal("g_test_1", card.Id);
         Assert.Equal("N5", card.Level);

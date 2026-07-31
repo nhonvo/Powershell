@@ -110,7 +110,7 @@ public static class WorkspaceRegistry
             if (!string.IsNullOrEmpty(path) && Directory.Exists(path) && addedPaths.Add(path))
             {
                 var alias = DeriveAlias(name);
-                list.Add(new WorkspaceEntry(name, path, "default", new[] { "auto-discovered" }, null, alias));
+                list.Add(new WorkspaceEntry(name, path, "default", ["auto-discovered"], null, alias));
             }
         }
 
@@ -319,8 +319,8 @@ public static class WorkspaceRegistry
         });
     }
 
-    public static readonly string[] SharedWorkspaceActions = new[]
-    {
+    public static readonly string[] SharedWorkspaceActions =
+    [
         "📂 Change Directory to workspace",
         "🚀 Open in New Terminal",
         "💻 Open in Terminal IDE (/ide)",
@@ -332,7 +332,7 @@ public static class WorkspaceRegistry
         "🕸 Open Git Nexus Dashboard",
         "📊 View Git Nexus Commit Stats",
         "🔗 Manage/Open Project Links"
-    };
+    ];
 
     public static string HandleWorkspaceAction(WorkspaceEntry selected, int actionIdx)
     {

@@ -10,7 +10,7 @@ public class AntigravityDeckClientTests
         var sw = Stopwatch.StartNew();
 
         var exe = OperatingSystem.IsWindows() ? "cmd.exe" : "sleep";
-        var args = OperatingSystem.IsWindows() ? new[] { "/c", "ping 127.0.0.1 -n 2 >nul" } : new[] { "1" };
+        var args = OperatingSystem.IsWindows() ? new[] { "/c", "ping 127.0.0.1 -n 2 >nul" } : ["1"];
 
         ProcessRunner.RunInteractive(exe, args);
         sw.Stop();

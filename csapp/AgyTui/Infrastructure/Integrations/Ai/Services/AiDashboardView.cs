@@ -36,7 +36,7 @@ public static class AiDashboardView
 
             if (choice == 3)
             {
-                var modeChoice = SpectreMenu.Show("Select AI Provider Mode", new[] { "cloud", "ollama", "hybrid" }, 0);
+                var modeChoice = SpectreMenu.Show("Select AI Provider Mode", ["cloud", "ollama", "hybrid"], 0);
                 if (modeChoice >= 0)
                 {
                     var selected = modeChoice switch { 0 => "cloud", 1 => "ollama", _ => "hybrid" };
@@ -69,7 +69,7 @@ public static class AiDashboardView
     {
         SpectrePanel.Info($"Querying AI: {query}");
         var claude = Bootstrapper.ServiceProvider.GetRequiredService<IClaudeClient>();
-        claude.InvokeClaude(new[] { query });
+        claude.InvokeClaude([query]);
     }
 
     public static void InstallAIIntegrations()

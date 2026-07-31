@@ -47,16 +47,16 @@ public class HermesProvider : IHermesClient
     public HermesResult InvokeHermes(string[]? argsList = null)
     {
         var userProfile = AppPaths.UserProfileDir;
-        var exe = FindHermesBinary("hermes", new[] {
+        var exe = FindHermesBinary("hermes", [
             Path.Combine(userProfile, ".cargo", "bin", "hermes.exe"),
             Path.Combine(userProfile, "AppData", "Local", "Programs", "hermes", "hermes.exe")
-        });
+        ]);
 
         if (exe == null) return HermesResult.NotInstalled;
 
         try
         {
-            var args = argsList != null && argsList.Length > 0 ? argsList : new[] { "chat" };
+            var args = argsList != null && argsList.Length > 0 ? argsList : ["chat"];
             _processRunner.RunInteractive(exe, args);
             return HermesResult.Success;
         }

@@ -58,7 +58,7 @@ public class GitClient : CliToolWrapper, IGitClient
         var typeIdx = SpectreMenu.Show("Commit Type", CommitTypes, 0, false);
         if (typeIdx < 0) return;
         var commitType = CommitTypes[typeIdx];
-        var scope = AnsiConsole.Ask<string>("[dim]Scope[/] (optional, press Enter to skip):", string.Empty).Trim();
+        var scope = AnsiConsole.Ask("[dim]Scope[/] (optional, press Enter to skip):", string.Empty).Trim();
         var scopePart = string.IsNullOrWhiteSpace(scope) ? string.Empty : $"({scope})";
 
         string description;
@@ -103,7 +103,7 @@ public class GitClient : CliToolWrapper, IGitClient
             Border = BoxBorder.Rounded
         });
         if (!AnsiConsole.Confirm("Commit now?")) return;
-        var exitCode = Helpers.ProcessRunner.Run(BinaryName, new[] { "commit", "-m", message });
+        var exitCode = Helpers.ProcessRunner.Run(BinaryName, ["commit", "-m", message]);
         if (exitCode == 0) SpectrePanel.Success("Committed successfully.");
         else SpectrePanel.Error($"git commit failed (exit {exitCode}).");
     }

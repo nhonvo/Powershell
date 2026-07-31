@@ -64,7 +64,7 @@ public class AiProjectScanner : IAiProjectScanner
                         if (dirName.StartsWith(".") || dirName.Equals("node_modules", StringComparison.OrdinalIgnoreCase)) continue;
                         if (scannedPaths.Add(dir) && matchPredicate(dir))
                         {
-                            results.Add(new ProjectScanResult(dirName, dir, provider, new[] { provider, "scanned" }));
+                            results.Add(new ProjectScanResult(dirName, dir, provider, [provider, "scanned"]));
                         }
                     }
                     catch { }

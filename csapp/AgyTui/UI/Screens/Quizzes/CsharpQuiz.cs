@@ -11,10 +11,10 @@ public static class SnippetLibrary
 {
     public static void Run()
     {
-        var langs = Directory.Exists(LearnDataPaths.SnippetsDir) ? Directory.GetFiles(LearnDataPaths.SnippetsDir, "*.json").Select(f => System.IO.Path.GetFileNameWithoutExtension(f)).ToArray() : new[]
-        {
+        var langs = Directory.Exists(LearnDataPaths.SnippetsDir) ? Directory.GetFiles(LearnDataPaths.SnippetsDir, "*.json").Select(f => System.IO.Path.GetFileNameWithoutExtension(f)).ToArray() :
+        [
             "csharp","powershell","sql"
-        };
+        ];
         if (langs.Length == 0)
         {
             SpectrePanel.Warning("No snippet files found.");
@@ -73,10 +73,10 @@ public static class CheatSheetBrowser
 {
     public static void Run()
     {
-        var sheets = Directory.Exists(LearnDataPaths.SheetsDir) ? Directory.GetFiles(LearnDataPaths.SheetsDir, "*.txt").Select(f => System.IO.Path.GetFileNameWithoutExtension(f)).ToArray() : new[]
-        {
+        var sheets = Directory.Exists(LearnDataPaths.SheetsDir) ? Directory.GetFiles(LearnDataPaths.SheetsDir, "*.txt").Select(f => System.IO.Path.GetFileNameWithoutExtension(f)).ToArray() :
+        [
             "csharp","powershell","sql","bash","regex","git","docker"
-        };
+        ];
         var idx = SpectreMenu.Show("Cheat Sheets", [.. sheets, "← Back"], 0, false);
         if (idx < 0 || idx >= sheets.Length) return;
         Show(System.IO.Path.Combine(LearnDataPaths.SheetsDir, $"{sheets[idx]}.txt"), sheets[idx]);

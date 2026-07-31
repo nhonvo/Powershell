@@ -26,7 +26,7 @@ public class CommandLoggingMiddlewareTests
         var dummy = new DummyCommandRouter { ExpectedResult = 42 };
         var middleware = new CommandLoggingMiddleware(dummy);
 
-        var result = middleware.Execute("test-alias", new[] { "arg1", "arg2" });
+        var result = middleware.Execute("test-alias", ["arg1", "arg2"]);
 
         Assert.Equal(42, result);
         Assert.Equal("test-alias", dummy.LastAlias);

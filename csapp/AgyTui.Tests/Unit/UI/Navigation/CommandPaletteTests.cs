@@ -4,13 +4,13 @@ namespace AgyTui.Tests.Unit.UI.Navigation;
 
 public class CommandPaletteTests
 {
-    private static readonly PaletteCommand[] SampleCommands = new[]
-    {
+    private static readonly PaletteCommand[] SampleCommands =
+    [
         new PaletteCommand("proj", "Workspace", "Navigation"),
         new PaletteCommand("claude", "Claude AI", "AI")
-    };
+    ];
 
-    private static readonly string[] SampleCategories = new[] { "Navigation", "AI" };
+    private static readonly string[] SampleCategories = ["Navigation", "AI"];
 
     [Fact]
     public void CategoryPicker_EscapePressed_ReturnsNullToCancel()
