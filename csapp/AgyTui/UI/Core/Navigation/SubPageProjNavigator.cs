@@ -26,6 +26,11 @@ public static class SubPageProjNavigator
         var list = new List<FlatItem>();
         var roots = WorkspaceRegistry.GetRootWorkspaces();
 
+        if (ExpandedWorkspaceIndex == -1 && string.IsNullOrEmpty(searchBuffer) && roots.Length > 0)
+        {
+            ExpandedWorkspaceIndex = 0;
+        }
+
         for (int i = 0; i < roots.Length; i++)
         {
             var w = roots[i];

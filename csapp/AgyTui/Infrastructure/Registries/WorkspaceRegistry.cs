@@ -50,6 +50,9 @@ public static class WorkspaceRegistry
         if (Regex.IsMatch(norm, @"^C:\\Users\\sshuser\\(Documents|Desktop)($|\\)", RegexOptions.IgnoreCase))
             return true;
 
+        if (Regex.IsMatch(norm, @"^C:\\Users\\[^\\]+$", RegexOptions.IgnoreCase))
+            return true;
+
         return false;
     }
 
