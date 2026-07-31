@@ -106,10 +106,14 @@ public sealed class ThreePaneRenderer : MenuRendererBase
                                 string.Equals(alias, "learn", StringComparison.OrdinalIgnoreCase) ||
                                 string.Equals(alias, "session", StringComparison.OrdinalIgnoreCase) ||
                                 string.Equals(alias, "weak", StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals(alias, "proj", StringComparison.OrdinalIgnoreCase))
+                                string.Equals(alias, "proj", StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(alias, "cnav", StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(alias, "p", StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals(alias, "prj", StringComparison.OrdinalIgnoreCase))
                             {
-                                SubPageNavigator.Run(alias);
-                                if (File.Exists(Path.Combine(AppPaths.GeminiHome, "selected_project.txt")))
+                                var targetNav = (alias is "cnav" or "p" or "prj") ? "proj" : alias;
+                                SubPageNavigator.Run(targetNav);
+                                if (File.Exists(Path.Combine(AppPaths.GeminiHome, "selected_project.txt")) || File.Exists(Path.Combine(AppPaths.GeminiHome, "selected_theme.txt")))
                                 {
                                     return;
                                 }
@@ -122,6 +126,10 @@ public sealed class ThreePaneRenderer : MenuRendererBase
                             {
                                 Console.CursorVisible = true;
                                 Program.RunCommand(alias);
+                                if (File.Exists(Path.Combine(AppPaths.GeminiHome, "selected_project.txt")) || File.Exists(Path.Combine(AppPaths.GeminiHome, "selected_theme.txt")))
+                                {
+                                    return;
+                                }
                                 if (string.Equals(alias, "deck-start", StringComparison.OrdinalIgnoreCase) ||
                                     string.Equals(alias, "desk-start", StringComparison.OrdinalIgnoreCase) ||
                                     string.Equals(alias, "deck-online", StringComparison.OrdinalIgnoreCase) ||
@@ -261,10 +269,14 @@ public sealed class ThreePaneRenderer : MenuRendererBase
                                     string.Equals(alias, "learn", StringComparison.OrdinalIgnoreCase) ||
                                     string.Equals(alias, "session", StringComparison.OrdinalIgnoreCase) ||
                                     string.Equals(alias, "weak", StringComparison.OrdinalIgnoreCase) ||
-                                    string.Equals(alias, "proj", StringComparison.OrdinalIgnoreCase))
+                                    string.Equals(alias, "proj", StringComparison.OrdinalIgnoreCase) ||
+                                    string.Equals(alias, "cnav", StringComparison.OrdinalIgnoreCase) ||
+                                    string.Equals(alias, "p", StringComparison.OrdinalIgnoreCase) ||
+                                    string.Equals(alias, "prj", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    SubPageNavigator.Run(alias);
-                                    if (File.Exists(Path.Combine(AppPaths.GeminiHome, "selected_project.txt")))
+                                    var targetNav = (alias is "cnav" or "p" or "prj") ? "proj" : alias;
+                                    SubPageNavigator.Run(targetNav);
+                                    if (File.Exists(Path.Combine(AppPaths.GeminiHome, "selected_project.txt")) || File.Exists(Path.Combine(AppPaths.GeminiHome, "selected_theme.txt")))
                                     {
                                         return;
                                     }

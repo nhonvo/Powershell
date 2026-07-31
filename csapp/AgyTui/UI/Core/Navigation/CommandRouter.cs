@@ -122,6 +122,7 @@ public class CommandRouter : ICommandRouter
                     case "proj":
                     case "prj":
                     case "p":
+                    case "cnav":
                         var q = args != null && args.Length > 0 ? string.Join(" ", args) : "";
                         SubPageNavigator.Run("proj", q);
                         break;
@@ -554,9 +555,6 @@ public class CommandRouter : ICommandRouter
                     case "no-auto-commit":
                     case "autocommit":
                         Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().ToggleNoAutoCommit();
-                        break;
-                    case "cnav":
-                        SubPageNavigator.Run("proj");
                         break;
                     case "reset-agy":
                     case "purge-accounts":
