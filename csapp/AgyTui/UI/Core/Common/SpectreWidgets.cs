@@ -360,7 +360,10 @@ public static class LogHelper
         }
     }
 
-
+    public static void LogError(string message, Exception ex)
+    {
+        Log($"{message}: {ex.GetType().Name} - {ex.Message}\n{ex.StackTrace}", "ERROR");
+    }
 }
 
 public static class SpectreTable

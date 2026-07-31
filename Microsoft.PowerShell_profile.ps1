@@ -456,25 +456,31 @@ function Sync-ActiveAgyEnvironment {
         $agyHome = if ($env:GEMINI_HOME) { $env:GEMINI_HOME } else { [System.IO.Path]::Combine($env:USERPROFILE, ".gemini") }
 
         $projFile = [System.IO.Path]::Combine($agyHome, "selected_project.txt")
-        if (Test-Path $projFile) {
-            $targetProj = (Get-Content $projFile -Raw).Trim()
-            Remove-Item $projFile -Force -ErrorAction SilentlyContinue
-            if ($targetProj -and (Test-Path $targetProj)) {
-                Set-Location $targetProj
-                Write-Host "📂 Switched workspace directory to: $targetProj" -ForegroundColor Green
+        if (Test-Path -LiteralPath $projFile) {
+            $targetProj = (Get-Content -LiteralPath $projFile -Raw).Trim()
+            Remove-Item -LiteralPath $projFile -Force -ErrorAction SilentlyContinue
+            if ($targetProj -and (Test-Path -LiteralPath $targetProj)) {
+                try {
+                    Set-Location -LiteralPath $targetProj
+                    Write-Host "📂 Switched workspace directory to: $targetProj" -ForegroundColor Green
+                } catch {
+                    Write-Host "⚠️ Could not change directory to '$targetProj': $_" -ForegroundColor Red
+                }
             }
         }
 
         $themeFile = [System.IO.Path]::Combine($agyHome, "selected_theme.txt")
-        if (Test-Path $themeFile) {
-            $targetTheme = (Get-Content $themeFile -Raw).Trim()
-            Remove-Item $themeFile -Force -ErrorAction SilentlyContinue
+        if (Test-Path -LiteralPath $themeFile) {
+            $targetTheme = (Get-Content -LiteralPath $themeFile -Raw).Trim()
+            Remove-Item -LiteralPath $themeFile -Force -ErrorAction SilentlyContinue
             if ($targetTheme) {
                 $env:THEME = $targetTheme
                 Apply-ThemePath $targetTheme
             }
         }
-    } catch {}
+    } catch {
+        Write-Host "⚠️ Sync-ActiveAgyEnvironment warning: $_" -ForegroundColor Yellow
+    }
 }
 
 function Invoke-AgyAccountSwitch {

@@ -398,6 +398,7 @@ public static class WorkspaceRegistry
 
     public static string HandleWorkspaceAction(WorkspaceEntry selected, int actionIdx)
     {
+        LogHelper.Log($"[WorkspaceRegistry] HandleWorkspaceAction: path='{selected.WorkspacePath}', actionIdx={actionIdx}");
         switch (actionIdx)
         {
             case 0:
@@ -405,6 +406,7 @@ public static class WorkspaceRegistry
                 Directory.CreateDirectory(agyHome);
                 var selectedProjFile = Path.Combine(agyHome, "selected_project.txt");
                 File.WriteAllText(selectedProjFile, selected.WorkspacePath);
+                LogHelper.Log($"[WorkspaceRegistry] Wrote selected_project.txt to '{selectedProjFile}' -> '{selected.WorkspacePath}'");
                 return "EXIT";
             case 1:
                 SystemHelper.OpenNewTerminalSession(selected.WorkspacePath);

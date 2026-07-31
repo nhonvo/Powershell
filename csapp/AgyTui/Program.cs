@@ -28,15 +28,29 @@ public static class Program
         }
         catch (Exception ex)
         {
+            LogHelper.LogError("CommandRegistry assertion failed", ex);
             AnsiConsole.WriteException(ex);
             return 1;
         }
 
-        if (args.Length > 0)
+        try
         {
-            return RunCommand(args[0], args.Skip(1).ToArray());
+            if (args.Length > 0)
+            {
+                LogHelper.Log($"[Program] RunApp starting with command: '{args[0]}'");
+                return RunCommand(args[0], args.Skip(1).ToArray());
+            }
+
+            LogHelper.Log("[Program] RunApp starting CcNavigator.Run()");
+            CcNavigator.Run();
+            LogHelper.Log("[Program] CcNavigator.Run() completed cleanly.");
         }
-        CcNavigator.Run();
+        catch (Exception ex)
+        {
+            LogHelper.LogError("Unhandled exception in RunApp", ex);
+            AnsiConsole.WriteException(ex);
+            return 1;
+        }
 
         try
         {
