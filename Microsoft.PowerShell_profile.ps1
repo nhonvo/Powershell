@@ -451,6 +451,30 @@ function Sync-ActiveAgyEnvironment {
             $env:GEMINI_HOME = $userVal
         }
     } catch {}
+
+    try {
+        $agyHome = if ($env:GEMINI_HOME) { $env:GEMINI_HOME } else { [System.IO.Path]::Combine($env:USERPROFILE, ".gemini") }
+
+        $projFile = [System.IO.Path]::Combine($agyHome, "selected_project.txt")
+        if (Test-Path $projFile) {
+            $targetProj = (Get-Content $projFile -Raw).Trim()
+            Remove-Item $projFile -Force -ErrorAction SilentlyContinue
+            if ($targetProj -and (Test-Path $targetProj)) {
+                Set-Location $targetProj
+                Write-Host "📂 Switched workspace directory to: $targetProj" -ForegroundColor Green
+            }
+        }
+
+        $themeFile = [System.IO.Path]::Combine($agyHome, "selected_theme.txt")
+        if (Test-Path $themeFile) {
+            $targetTheme = (Get-Content $themeFile -Raw).Trim()
+            Remove-Item $themeFile -Force -ErrorAction SilentlyContinue
+            if ($targetTheme) {
+                $env:THEME = $targetTheme
+                Apply-ThemePath $targetTheme
+            }
+        }
+    } catch {}
 }
 
 function Invoke-AgyAccountSwitch {
@@ -470,13 +494,15 @@ function Invoke-AgyAccountSwitch {
 function Invoke-ControlCenter {
     param([string]$CmdAlias, [object[]]$PassArgs)
     $env:ENVIRONMENT = "Production"
-    if (-not $CmdAlias -or $CmdAlias -eq "cc") {
-        $tuiExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Release\net9.0\AgyTui.exe"
-        if (Test-Path $tuiExe) {
+    $tuiExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Release\net9.0\AgyTui.exe"
+    if (Test-Path $tuiExe) {
+        if ($CmdAlias) {
+            & $tuiExe $CmdAlias @PassArgs
+        } else {
             & $tuiExe
-            Sync-ActiveAgyEnvironment
-            return
         }
+        Sync-ActiveAgyEnvironment
+        return
     }
     Load-AgyTuiDll
     [CommandRouter]::Route($CmdAlias, $PassArgs)
@@ -489,13 +515,21 @@ function Invoke-ControlCenterDev {
     $tuiDevExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Debug\net9.0\AgyTui.exe"
     if (Test-Path $tuiDevExe) {
         Write-Host "🚀 Launching AgyTui [DEVELOPMENT MODE]..." -ForegroundColor Cyan
-        & $tuiDevExe
+        if ($CmdAlias) {
+            & $tuiDevExe $CmdAlias @PassArgs
+        } else {
+            & $tuiDevExe
+        }
         Sync-ActiveAgyEnvironment
         return
     }
     Write-Host "🔨 Building & Launching AgyTui [DEVELOPMENT MODE]..." -ForegroundColor Cyan
     Push-Location (Join-Path $Global:ProfileRepoRoot "csapp\AgyTui")
-    dotnet run -c Debug -- @PassArgs
+    if ($CmdAlias) {
+        dotnet run -c Debug -- $CmdAlias @PassArgs
+    } else {
+        dotnet run -c Debug
+    }
     Pop-Location
     Sync-ActiveAgyEnvironment
 }
