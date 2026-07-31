@@ -10,5 +10,7 @@ public sealed record WorkspaceEntry(
     string? AssociatedAccount,
     string[]? Tags,
     WorkspaceLink[]? Links = null,
-    string? Alias = null
+    string? Alias = null,
+    string? ParentPath = null,
+    bool IsRoot = true
 );

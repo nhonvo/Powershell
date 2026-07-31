@@ -100,29 +100,84 @@ public static class WorkspaceRegistry
         catch { return 0; }
     }
 
+    public static WorkspaceEntry[] GetRootWorkspaces()
+    {
+        var all = GetWorkspaces();
+        if (all.Length == 0) return Array.Empty<WorkspaceEntry>();
+
+        var allPaths = all.Select(w => w.WorkspacePath.TrimEnd('\\', '/')).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        var rootWorkspaces = new List<WorkspaceEntry>();
+
+        foreach (var w in all)
+        {
+            var p = w.WorkspacePath.TrimEnd('\\', '/');
+            bool hasParentInList = allPaths.Any(otherPath =>
+                !string.Equals(otherPath, p, StringComparison.OrdinalIgnoreCase) &&
+                p.StartsWith(otherPath + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase));
+
+            if (!hasParentInList)
+            {
+                rootWorkspaces.Add(w);
+            }
+        }
+
+        return rootWorkspaces.ToArray();
+    }
+
+    public static WorkspaceEntry[] GetChildWorkspaces(string parentPath)
+    {
+        if (string.IsNullOrEmpty(parentPath)) return Array.Empty<WorkspaceEntry>();
+        var normParent = parentPath.TrimEnd('\\', '/');
+        var all = GetWorkspaces();
+        var children = new List<WorkspaceEntry>();
+
+        foreach (var w in all)
+        {
+            var p = w.WorkspacePath.TrimEnd('\\', '/');
+            if (p.StartsWith(normParent + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+            {
+                bool hasCloserParent = all.Any(other =>
+                {
+                    var op = other.WorkspacePath.TrimEnd('\\', '/');
+                    return !string.Equals(op, normParent, StringComparison.OrdinalIgnoreCase) &&
+                           !string.Equals(op, p, StringComparison.OrdinalIgnoreCase) &&
+                           op.StartsWith(normParent + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) &&
+                           p.StartsWith(op + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+                });
+
+                if (!hasCloserParent)
+                {
+                    children.Add(w);
+                }
+            }
+        }
+
+        return children.ToArray();
+    }
+
     public static WorkspaceEntry[] AutoDiscoverWorkspaces()
     {
         var list = new List<WorkspaceEntry>();
         var addedPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        void TryAdd(string name, string path)
+        void TryAdd(string name, string path, string? parentPath, bool isRoot)
         {
             if (!string.IsNullOrEmpty(path) && Directory.Exists(path) && addedPaths.Add(path))
             {
                 var alias = DeriveAlias(name);
-                list.Add(new WorkspaceEntry(name, path, "default", ["auto-discovered"], null, alias));
+                list.Add(new WorkspaceEntry(name, path, "default", ["auto-discovered"], null, alias, parentPath, isRoot));
             }
         }
 
         try
         {
             var currentDir = Directory.GetCurrentDirectory();
-            TryAdd(Path.GetFileName(currentDir), currentDir);
+            TryAdd(Path.GetFileName(currentDir), currentDir, null, true);
         }
         catch { }
 
         var userProfile = AppPaths.UserProfileDir;
-        TryAdd("Powershell Profile", Path.Combine(userProfile, "Documents", "Powershell"));
+        TryAdd("Powershell Profile", Path.Combine(userProfile, "Documents", "Powershell"), null, true);
 
         var searchBases = new List<string>();
 
@@ -157,13 +212,13 @@ public static class WorkspaceRegistry
         foreach (var baseDir in searchBases.Distinct(StringComparer.OrdinalIgnoreCase))
         {
             if (!Directory.Exists(baseDir)) continue;
-            TryScanDirectory(baseDir, 0, 3, TryAdd);
+            TryScanDirectory(baseDir, 0, 3, null, TryAdd);
         }
 
         return list.ToArray();
     }
 
-    private static void TryScanDirectory(string dir, int depth, int maxDepth, Action<string, string> tryAdd)
+    private static void TryScanDirectory(string dir, int depth, int maxDepth, string? currentRootDir, Action<string, string, string?, bool> tryAdd)
     {
         if (depth > maxDepth) return;
         try
@@ -179,9 +234,16 @@ public static class WorkspaceRegistry
                              File.Exists(Path.Combine(dir, "go.mod")) ||
                              File.Exists(Path.Combine(dir, "requirements.txt"));
 
-            if (isProject || depth == 0)
+            string? nextRootDir = currentRootDir;
+
+            if (depth == 1)
             {
-                tryAdd(dirName, dir);
+                tryAdd(dirName, dir, null, true);
+                nextRootDir = dir;
+            }
+            else if (depth > 1 && (isProject || depth == 2))
+            {
+                tryAdd(dirName, dir, currentRootDir, false);
             }
 
             foreach (var sub in Directory.GetDirectories(dir))
@@ -189,7 +251,7 @@ public static class WorkspaceRegistry
                 var subName = Path.GetFileName(sub);
                 if (subName.StartsWith(".") || subName.Equals("node_modules", StringComparison.OrdinalIgnoreCase) || subName.Equals("bin", StringComparison.OrdinalIgnoreCase) || subName.Equals("obj", StringComparison.OrdinalIgnoreCase)) continue;
 
-                TryScanDirectory(sub, depth + 1, maxDepth, tryAdd);
+                TryScanDirectory(sub, depth + 1, maxDepth, nextRootDir, tryAdd);
             }
         }
         catch { }
@@ -343,7 +405,7 @@ public static class WorkspaceRegistry
                 Directory.CreateDirectory(agyHome);
                 var selectedProjFile = Path.Combine(agyHome, "selected_project.txt");
                 File.WriteAllText(selectedProjFile, selected.WorkspacePath);
-                break;
+                return "EXIT";
             case 1:
                 SystemHelper.OpenNewTerminalSession(selected.WorkspacePath);
                 break;
