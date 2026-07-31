@@ -39,6 +39,20 @@ public static class WorkspaceRegistry
         return GetWorkspaces().Select(w => WorkspaceAggregate.FromEntry(w, false, GetGitBranch(w.WorkspacePath))).ToArray();
     }
 
+    public static bool IsIgnoredWorkspacePath(string path)
+    {
+        if (string.IsNullOrEmpty(path)) return true;
+        var norm = path.Replace('/', '\\').TrimEnd('\\');
+
+        if (Regex.IsMatch(norm, @"^C:\\Users\\(Default|Default User|Public|All Users|Default\.migrated)($|\\)", RegexOptions.IgnoreCase))
+            return true;
+
+        if (Regex.IsMatch(norm, @"^C:\\Users\\sshuser\\(Documents|Desktop)($|\\)", RegexOptions.IgnoreCase))
+            return true;
+
+        return false;
+    }
+
     public static WorkspaceEntry[] GetWorkspaces()
     {
         return WorkspacesCache.GetOrCompute("workspaces", () =>
@@ -50,7 +64,7 @@ public static class WorkspaceRegistry
                 {
                     var raw = File.ReadAllText(ConfigFile);
                     var loaded = JsonSerializer.Deserialize<WorkspaceEntry[]>(raw)?
-                        .Where(w => !string.IsNullOrEmpty(w.WorkspacePath) && Directory.Exists(w.WorkspacePath))
+                        .Where(w => !string.IsNullOrEmpty(w.WorkspacePath) && Directory.Exists(w.WorkspacePath) && !IsIgnoredWorkspacePath(w.WorkspacePath))
                         .Select(w => string.IsNullOrEmpty(w.Alias) ? w with { Alias = DeriveAlias(w.Name) } : w)
                         .ToList() ?? new List<WorkspaceEntry>();
                     items.AddRange(loaded);
@@ -71,6 +85,9 @@ public static class WorkspaceRegistry
                 }
             }
 
+            // Also clean up any existing saved system entries from ConfigFile
+            items = items.Where(w => !IsIgnoredWorkspacePath(w.WorkspacePath)).ToList();
+
             if (addedNew || !File.Exists(ConfigFile))
             {
                 SaveWorkspaces(items.ToArray());
@@ -87,7 +104,7 @@ public static class WorkspaceRegistry
         {
             var raw = File.ReadAllText(ConfigFile);
             var items = JsonSerializer.Deserialize<WorkspaceEntry[]>(raw) ?? [];
-            var valid = items.Where(w => !string.IsNullOrEmpty(w.WorkspacePath) && Directory.Exists(w.WorkspacePath))
+            var valid = items.Where(w => !string.IsNullOrEmpty(w.WorkspacePath) && Directory.Exists(w.WorkspacePath) && !IsIgnoredWorkspacePath(w.WorkspacePath))
                              .Select(w => string.IsNullOrEmpty(w.Alias) ? w with { Alias = DeriveAlias(w.Name) } : w)
                              .ToArray();
             var prunedCount = items.Length - valid.Length;
@@ -162,7 +179,7 @@ public static class WorkspaceRegistry
 
         void TryAdd(string name, string path, string? parentPath, bool isRoot)
         {
-            if (!string.IsNullOrEmpty(path) && Directory.Exists(path) && addedPaths.Add(path))
+            if (!string.IsNullOrEmpty(path) && Directory.Exists(path) && !IsIgnoredWorkspacePath(path) && addedPaths.Add(path))
             {
                 var alias = DeriveAlias(name);
                 list.Add(new WorkspaceEntry(name, path, "default", ["auto-discovered"], null, alias, parentPath, isRoot));
@@ -199,11 +216,23 @@ public static class WorkspaceRegistry
             {
                 foreach (var uDir in Directory.GetDirectories(usersParent))
                 {
+                    var uName = Path.GetFileName(uDir);
+                    if (uName.Equals("Default", StringComparison.OrdinalIgnoreCase) ||
+                        uName.Equals("Default User", StringComparison.OrdinalIgnoreCase) ||
+                        uName.Equals("Public", StringComparison.OrdinalIgnoreCase) ||
+                        uName.Equals("All Users", StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
                     searchBases.Add(Path.Combine(uDir, "project"));
                     searchBases.Add(Path.Combine(uDir, "project", "learning"));
                     searchBases.Add(Path.Combine(uDir, "learning"));
-                    searchBases.Add(Path.Combine(uDir, "Documents"));
-                    searchBases.Add(Path.Combine(uDir, "Desktop"));
+
+                    if (uName.Equals("TruongNhon", StringComparison.OrdinalIgnoreCase))
+                    {
+                        searchBases.Add(Path.Combine(uDir, "Documents", "Powershell"));
+                    }
                 }
             }
             catch { }

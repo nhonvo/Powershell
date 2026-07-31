@@ -59,19 +59,53 @@ public static class SystemHelper
         catch { }
     }
 
-    public static void OpenNewTerminalSession(string path = "", string title = "")
+    public static void OpenNewTerminalSession(string path = "", string? initialCommand = null, bool promptOptions = false)
     {
         if (string.IsNullOrEmpty(path)) path = Directory.GetCurrentDirectory();
+
+        if (promptOptions && string.IsNullOrEmpty(initialCommand))
+        {
+            var options = new[]
+            {
+                "⚡ Blank Shell (No command)",
+                "🔨 Build Project (dotnet build)",
+                "📦 Pack Package (dotnet pack)",
+                "🧪 Run Tests (dotnet test)",
+                "🤖 Start Antigravity AI (ask-ai)",
+                "🛸 Open Control Center (cc)",
+                "❌ Cancel"
+            };
+
+            var sel = SpectreMenu.ShowWithEscape("Select Startup Command for New Terminal", options, 0);
+            if (sel < 0 || sel == options.Length - 1) return;
+
+            initialCommand = sel switch
+            {
+                1 => "dotnet build",
+                2 => "dotnet pack",
+                3 => "dotnet test",
+                4 => "ask-ai",
+                5 => "cc",
+                _ => null
+            };
+        }
+
         try
         {
             var wt = ProcessRunner.FindOnPath("wt.exe") ?? ProcessRunner.FindOnPath("wt");
             if (!string.IsNullOrEmpty(wt))
             {
-                Process.Start(new ProcessStartInfo(wt, $"-d \"{path}\"") { UseShellExecute = true });
+                var cmdArgs = !string.IsNullOrEmpty(initialCommand)
+                    ? $"-d \"{path}\" powershell -NoExit -Command \"Set-Location -LiteralPath '{path}'; {initialCommand}\""
+                    : $"-d \"{path}\"";
+                Process.Start(new ProcessStartInfo(wt, cmdArgs) { UseShellExecute = true });
             }
             else
             {
-                Process.Start(new ProcessStartInfo("powershell.exe", $"-NoExit -Command \"Set-Location '{path}'\"") { UseShellExecute = true });
+                var cmdArgs = !string.IsNullOrEmpty(initialCommand)
+                    ? $"-NoExit -Command \"Set-Location -LiteralPath '{path}'; {initialCommand}\""
+                    : $"-NoExit -Command \"Set-Location -LiteralPath '{path}'\"";
+                Process.Start(new ProcessStartInfo("powershell.exe", cmdArgs) { UseShellExecute = true });
             }
         }
         catch { }
