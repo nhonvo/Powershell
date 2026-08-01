@@ -469,22 +469,22 @@ public static class WorkspaceRegistry
                 LogHelper.Log($"[WorkspaceRegistry] Wrote selected_project.txt to '{selectedProjFile}' -> '{selected.WorkspacePath}'");
                 return "EXIT";
             case 1:
-                SystemHelper.OpenNewTerminalSession(selected.WorkspacePath);
+                SystemHelper.Instance.OpenNewTerminalSession(selected.WorkspacePath);
                 break;
             case 2:
                 TerminalIde.Open(selected.WorkspacePath);
                 break;
             case 3:
-                SystemHelper.OpenExplorer(selected.WorkspacePath);
+                SystemHelper.Instance.OpenExplorer(selected.WorkspacePath);
                 break;
             case 4:
                 GitDiffViewer.ShowDiff(selected.WorkspacePath);
                 break;
             case 5:
-                SystemHelper.OpenNewTerminalSession(selected.WorkspacePath, "ask-ai");
+                SystemHelper.Instance.OpenNewTerminalSession(selected.WorkspacePath, "ask-ai");
                 break;
             case 6:
-                SystemHelper.OpenNewTerminalSession(selected.WorkspacePath, "cc");
+                SystemHelper.Instance.OpenNewTerminalSession(selected.WorkspacePath, "cc");
                 break;
             case 7:
                 var projFiles = Directory.GetFiles(selected.WorkspacePath, "*.csproj", SearchOption.AllDirectories);
@@ -492,7 +492,7 @@ public static class WorkspaceRegistry
                 {
                     AnsiConsole.Clear();
                     AnsiConsole.MarkupLine("[bold cyan]🔨 Building .NET Projects...[/]\n");
-                    ProcessRunner.Run("dotnet", "build", selected.WorkspacePath);
+                    ProcessRunner.Instance.Run("dotnet", "build", selected.WorkspacePath);
                     AnsiConsole.MarkupLine("\n[dim]Press any key to return...[/]");
                     Console.ReadKey(true);
                 }

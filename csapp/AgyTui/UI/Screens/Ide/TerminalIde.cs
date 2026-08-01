@@ -237,7 +237,7 @@ public static class TerminalIde
             };
             layout["Editor"].Update(editorPanel);
 
-            var branch = ProcessRunner.RunCapture("git", "branch --show-current").Trim();
+            var branch = ProcessRunner.Instance.RunCapture("git", "branch --show-current").Trim();
             if (string.IsNullOrEmpty(branch)) branch = "main";
             var modeTag = sidebarFocused ? "[bold black on yellow] EXPLORER [/]" : "[bold black on green] EDITOR [/]";
             var statusText = $"{modeTag} | [green]⚙ {activeTab.EscapeMarkup()}[/] | Git: [yellow]{branch.EscapeMarkup()}[/] | [dim][[Tab]] Switch Pane | [[/]] Search | [[e]] Edit | [[k]] AI | [[b]] Sidebar[/]";
@@ -305,7 +305,7 @@ public static class TerminalIde
             {
                 if (currentFile != null)
                 {
-                    ProcessRunner.Run(Bootstrapper.ServiceProvider.GetRequiredService<IEditorResolver>().Resolve(), $"\"{currentFile}\"");
+                    ProcessRunner.Instance.Run(Bootstrapper.ServiceProvider.GetRequiredService<IEditorResolver>().Resolve(), $"\"{currentFile}\"");
                 }
                 else
                 {
@@ -576,7 +576,7 @@ public static class TerminalIde
     {
         try
         {
-            ProcessRunner.Run(Bootstrapper.ServiceProvider.GetRequiredService<IEditorResolver>().Resolve(), $"\"{filePath}\"");
+            ProcessRunner.Instance.Run(Bootstrapper.ServiceProvider.GetRequiredService<IEditorResolver>().Resolve(), $"\"{filePath}\"");
         }
         catch (Exception ex)
         {
@@ -640,7 +640,7 @@ public static class TerminalIde
             var matches = files;
             if (!string.IsNullOrEmpty(searchBuffer))
             {
-                matches = files.Where(f => SystemHelper.IsFuzzyMatch(f, searchBuffer)).ToList();
+                matches = files.Where(f => SystemHelper.Instance.IsFuzzyMatch(f, searchBuffer)).ToList();
             }
 
             if (selIdx < 0) selIdx = 0;
@@ -678,7 +678,7 @@ public static class TerminalIde
                         var prefix = isSelected ? "[green bold]❯ [/]" : "  ";
                         var f = matches[i];
                         var icon = Icons.GetFileIcon(Path.GetExtension(f));
-                        var boldF = string.IsNullOrEmpty(searchBuffer) ? f.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(f, searchBuffer);
+                        var boldF = string.IsNullOrEmpty(searchBuffer) ? f.EscapeMarkup() : SystemHelper.Instance.BoldFuzzyMatch(f, searchBuffer);
                         grid.AddRow(new Markup($"{prefix}{icon} {boldF}"));
                     }
                 }

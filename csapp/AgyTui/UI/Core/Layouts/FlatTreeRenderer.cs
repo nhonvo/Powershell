@@ -44,13 +44,13 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                 bool IsNodeMatch(MenuNode n)
                 {
                     if (matchAll) return true;
-                    if (!string.IsNullOrEmpty(n.Label) && SystemHelper.IsFuzzyMatch(n.Label, rawQ)) return true;
-                    if (!string.IsNullOrEmpty(n.SearchKey) && SystemHelper.IsFuzzyMatch(n.SearchKey, rawQ)) return true;
+                    if (!string.IsNullOrEmpty(n.Label) && SystemHelper.Instance.IsFuzzyMatch(n.Label, rawQ)) return true;
+                    if (!string.IsNullOrEmpty(n.SearchKey) && SystemHelper.Instance.IsFuzzyMatch(n.SearchKey, rawQ)) return true;
                     if (n.Command != null)
                     {
-                        if (!string.IsNullOrEmpty(n.Command.Alias) && SystemHelper.IsFuzzyMatch(n.Command.Alias, rawQ)) return true;
-                        if (!string.IsNullOrEmpty(n.Command.DisplayName) && SystemHelper.IsFuzzyMatch(n.Command.DisplayName, rawQ)) return true;
-                        if (!string.IsNullOrEmpty(n.Command.Description) && SystemHelper.IsFuzzyMatch(n.Command.Description, rawQ)) return true;
+                        if (!string.IsNullOrEmpty(n.Command.Alias) && SystemHelper.Instance.IsFuzzyMatch(n.Command.Alias, rawQ)) return true;
+                        if (!string.IsNullOrEmpty(n.Command.DisplayName) && SystemHelper.Instance.IsFuzzyMatch(n.Command.DisplayName, rawQ)) return true;
+                        if (!string.IsNullOrEmpty(n.Command.Description) && SystemHelper.Instance.IsFuzzyMatch(n.Command.Description, rawQ)) return true;
                     }
                     return false;
                 }
@@ -499,7 +499,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
 
                     var rawCatLabel = row.Node.Label.Trim();
                     var cleanCatLabel = rawCatLabel.StartsWith('[') && rawCatLabel.EndsWith(']') ? rawCatLabel[1..^1] : rawCatLabel;
-                    var boldText = string.IsNullOrEmpty(rawQ) ? cleanCatLabel.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(cleanCatLabel, rawQ);
+                    var boldText = string.IsNullOrEmpty(rawQ) ? cleanCatLabel.EscapeMarkup() : SystemHelper.Instance.BoldFuzzyMatch(cleanCatLabel, rawQ);
 
                     string lineMarkup;
                     if (isSelected)
@@ -524,7 +524,7 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     {
                         cleanLabelRaw = cleanLabelRaw[1..^1];
                     }
-                    var boldText = string.IsNullOrEmpty(rawQ) ? cleanLabelRaw.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(cleanLabelRaw, rawQ);
+                    var boldText = string.IsNullOrEmpty(rawQ) ? cleanLabelRaw.EscapeMarkup() : SystemHelper.Instance.BoldFuzzyMatch(cleanLabelRaw, rawQ);
 
                     string lineMarkup;
                     if (isSelected)
@@ -542,8 +542,8 @@ public sealed class FlatTreeRenderer : MenuRendererBase
                     var cmd = row.Node.Command!;
                     var icon = Icons.GetCommandIcon(cmd.Alias, cmd.Category);
 
-                    var boldAlias = string.IsNullOrEmpty(rawQ) ? cmd.Alias.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(cmd.Alias, rawQ);
-                    var boldDisplayName = string.IsNullOrEmpty(rawQ) ? cmd.DisplayName.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(cmd.DisplayName, rawQ);
+                    var boldAlias = string.IsNullOrEmpty(rawQ) ? cmd.Alias.EscapeMarkup() : SystemHelper.Instance.BoldFuzzyMatch(cmd.Alias, rawQ);
+                    var boldDisplayName = string.IsNullOrEmpty(rawQ) ? cmd.DisplayName.EscapeMarkup() : SystemHelper.Instance.BoldFuzzyMatch(cmd.DisplayName, rawQ);
 
                     var displayLabel = $"/{boldAlias} — {boldDisplayName}";
 

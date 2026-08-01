@@ -32,6 +32,6 @@ public static class GitDiffViewer
 
     private static string RunGit(string workingDir, string args)
     {
-        return ProcessRunner.RunCapture("git", args, workingDir);
+        return ProcessRunner.Instance.RunCapture("git", args, workingDir);
     }
 }

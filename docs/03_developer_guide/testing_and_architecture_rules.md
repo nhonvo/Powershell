@@ -102,3 +102,9 @@ dotnet test csapp/AgyTui.Tests/AgyTui.Tests.csproj -c Debug
 4. **Unmapped C# API Registration Standard**:
    - Internal helper methods (`prune-workspaces`, `discover-workspaces`, `daily-note`, `orphan-notes`, `mastery-tree`) must be registered in `CommandRegistry.cs` and routed in `CommandRouter.cs`.
 
+5. **Interface Dedicated Folder Invariant**:
+   - Every C# interface in `AgyTui` must reside in its own dedicated `.cs` file inside a layer-scoped `Interfaces/` subfolder (e.g. `Infrastructure/Common/Interfaces/`, `Infrastructure/Integrations/Ai/Interfaces/`, `Infrastructure/Persistence/Interfaces/`).
+
+6. **100% Interface Method Test Coverage Standard**:
+   - Every interface method declared across all C# interfaces must have an active, passing unit test case in `AgyTui.Tests`. Zero pending interface method tests are allowed in production release builds.
+

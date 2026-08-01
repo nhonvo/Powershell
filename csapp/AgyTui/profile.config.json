@@ -7,12 +7,10 @@
     "FavoriteAliases": [
       "proj",
       "agyswitch",
-      "ide",
-      "claude",
-      "theme",
-      "learn",
-      "obsidian",
-      "ssh-info"
+      "open-term",
+      "ask-ai",
+      "vault",
+      "ide"
     ]
   },
   "Ai": {
@@ -30,7 +28,7 @@
     "VerboseStartup": false,
     "StartupLogFile": "",
     "PoshThemesPath": "",
-    "AgySourceHome": "C:\\Users\\TruongNhon\\AppData\\Local\\Temp\\agy_cmd_log_test_74ff01d8-45a3-4630-bbbc-6939d7052625",
+    "AgySourceHome": "C:\\Users\\TruongNhon\\AppData\\Local\\Temp\\agy_cmd_log_test_9278443d-5bdb-4370-9ecf-d469bcaa3f10",
     "GlobalBinDir": ""
   },
   "Obsidian": {

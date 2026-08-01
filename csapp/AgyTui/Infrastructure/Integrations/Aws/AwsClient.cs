@@ -90,7 +90,7 @@ public class AwsClient : CliToolWrapper, IAwsClient
         AnsiConsole.MarkupLine($"\n[bold cyan]{section.EscapeMarkup()}[/]");
         var fullArgs = new List<string> { "--endpoint-url", LocalStackEndpoint };
         fullArgs.AddRange(args);
-        var output = Helpers.ProcessRunner.RunCapture("aws", fullArgs);
+        var output = Helpers.ProcessRunner.Instance.RunCapture("aws", fullArgs);
         if (string.IsNullOrWhiteSpace(output))
             AnsiConsole.MarkupLine("[dim] (no results or LocalStack unavailable)[/]");
         else

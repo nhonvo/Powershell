@@ -1,28 +1,21 @@
-# PowerShell script to extract all categories, groups, commands, and child actions from CommandRegistry.cs
+# PowerShell script to verify the exact rendered menu structure of MenuNodeBuilder
 
-$file = "$PSScriptRoot\..\csapp\AgyTui\UI\Core\Registries\CommandRegistry.cs"
-$content = Get-Content $file -Raw
+Add-Type -Path "$PSScriptRoot\..\csapp\AgyTui\bin\Debug\net9.0\AgyTui.dll"
 
-# Match new("alias", "name", "desc", "cat", "helpCat", ...)
-$regex = 'new\("([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)"'
-$matches = [regex]::Matches($content, $regex)
+$root = [AgyTui.UI.Core.Layouts.MenuNodeBuilder]::BuildTree()
 
-$commands = @()
-foreach ($m in $matches) {
-    $commands += [PSCustomObject]@{
-        Alias       = $m.Groups[1].Value
-        DisplayName = $m.Groups[2].Value
-        Description = $m.Groups[3].Value
-        Category    = $m.Groups[4].Value
+Write-Host "=================== CONTROL CENTER TUI MENU HIERARCHY ===================" -ForegroundColor Cyan
+
+foreach ($cat in $root.Children) {
+    Write-Host "`n=== $($cat.Label) ===" -ForegroundColor Yellow
+    foreach ($child in $cat.Children) {
+        if ($child.Kind -eq [AgyTui.UI.Core.Layouts.MenuNodeKind]::Group) {
+            Write-Host "  $($child.Label)" -ForegroundColor Green
+            foreach ($cmd in $child.Children) {
+                Write-Host "    • $($cmd.Label)" -ForegroundColor Gray
+            }
+        } else {
+            Write-Host "  • $($child.Label)" -ForegroundColor White
+        }
     }
-}
-
-$grouped = $commands | Group-Object Category
-
-foreach ($cat in $grouped) {
-    Write-Host "## Category: $($cat.Name)" -ForegroundColor Cyan
-    foreach ($cmd in $cat.Group) {
-        Write-Host "  - [$($cmd.Alias)] $($cmd.DisplayName) — $($cmd.Description)"
-    }
-    Write-Host ""
 }

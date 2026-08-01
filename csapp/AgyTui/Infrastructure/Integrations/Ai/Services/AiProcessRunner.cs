@@ -71,7 +71,7 @@ public class AiProcessRunner : IAiProcessRunner
                 argList.Add("--no-auto-commit");
             }
         }
-        Helpers.ProcessRunner.RunInteractive(exe, argList, fullEnv, workingDir);
+        Helpers.ProcessRunner.Instance.RunInteractive(exe, argList, fullEnv, workingDir);
     }
 
     private static readonly Func<IAiProcessRunner> _runnerFactory = () => Bootstrapper.ServiceProvider.GetRequiredService<IAiProcessRunner>();
@@ -83,6 +83,6 @@ public class AiProcessRunner : IAiProcessRunner
 
     public string RunCapture(string exe, string args)
     {
-        return Helpers.ProcessRunner.RunCapture(exe, args);
+        return Helpers.ProcessRunner.Instance.RunCapture(exe, args);
     }
 }

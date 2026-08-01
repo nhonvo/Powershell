@@ -38,8 +38,8 @@ public sealed class ThreePaneRenderer : MenuRendererBase
             if (!string.IsNullOrEmpty(searchBuffer))
             {
                 visibleItems = visibleItems.Where(item =>
-                    SystemHelper.IsFuzzyMatch(item.Label, searchBuffer) ||
-                    (item.Command != null && SystemHelper.IsFuzzyMatch(item.Command.Alias, searchBuffer))
+                    SystemHelper.Instance.IsFuzzyMatch(item.Label, searchBuffer) ||
+                    (item.Command != null && SystemHelper.Instance.IsFuzzyMatch(item.Command.Alias, searchBuffer))
                 ).ToList();
             }
 
@@ -367,7 +367,7 @@ public sealed class ThreePaneRenderer : MenuRendererBase
 
             if (!string.IsNullOrEmpty(searchBuffer))
             {
-                display = SystemHelper.BoldFuzzyMatch(display, searchBuffer);
+                display = SystemHelper.Instance.BoldFuzzyMatch(display, searchBuffer);
             }
             else
             {

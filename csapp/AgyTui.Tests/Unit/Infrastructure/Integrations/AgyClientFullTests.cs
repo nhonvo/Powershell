@@ -21,13 +21,14 @@ public class AgyClientFullTests
     public void AgyVault_SetSecretAndGetSecret_RoundtripsSuccessfully()
     {
         IAgyVault vault = new AgyVault();
-        vault.SetSecret("test_key_xyz", "test_val_xyz");
-        var val = vault.GetSecret("test_key_xyz");
+        string key = "test_key_" + Guid.NewGuid().ToString("N");
+        vault.SetSecret(key, "test_val_xyz");
+        var val = vault.GetSecret(key);
 
         Assert.Equal("test_val_xyz", val);
 
-        vault.RemoveSecret("test_key_xyz");
-        var valAfterRemove = vault.GetSecret("test_key_xyz");
+        vault.RemoveSecret(key);
+        var valAfterRemove = vault.GetSecret(key);
         Assert.Null(valAfterRemove);
     }
 }

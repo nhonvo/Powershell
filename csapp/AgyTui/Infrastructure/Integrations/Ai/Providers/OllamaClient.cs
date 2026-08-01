@@ -125,7 +125,7 @@ public class OllamaClient : IOllamaClient
 
         try
         {
-            var client = HttpClientProvider.Client;
+            var client = HttpClientProvider.Instance.Client;
             var response = client.GetStringAsync("http://127.0.0.1:11434/api/tags").Result;
             using var doc = JsonDocument.Parse(response);
             if (!doc.RootElement.TryGetProperty("models", out var modelsProp) || modelsProp.ValueKind != JsonValueKind.Array)
@@ -215,7 +215,7 @@ public class OllamaClient : IOllamaClient
 
         try
         {
-            var response = HttpClientProvider.Client.GetStringAsync("http://127.0.0.1:11434/api/tags").Result;
+            var response = HttpClientProvider.Instance.Client.GetStringAsync("http://127.0.0.1:11434/api/tags").Result;
             using var doc = JsonDocument.Parse(response);
             if (!doc.RootElement.TryGetProperty("models", out var modelsProp) || modelsProp.ValueKind != JsonValueKind.Array || modelsProp.GetArrayLength() == 0)
             {
@@ -254,7 +254,7 @@ public class OllamaClient : IOllamaClient
 
                 try
                 {
-                    var postTask = HttpClientProvider.Client.PostAsync(
+                    var postTask = HttpClientProvider.Instance.Client.PostAsync(
                         "http://127.0.0.1:11434/api/generate",
                         new StringContent(requestBody, Encoding.UTF8, "application/json")
                     );
@@ -314,7 +314,7 @@ public class OllamaClient : IOllamaClient
         AnsiConsole.MarkupLine($"[yellow]Starting pull command: ollama pull {modelName.EscapeMarkup()}[/]");
         try
         {
-            ProcessRunner.RunInteractive("ollama", new[] { "pull", modelName });
+            ProcessRunner.Instance.RunInteractive("ollama", new[] { "pull", modelName });
             SpectrePanel.Success($"Model '{modelName}' pull completed.");
         }
         catch (Exception ex)

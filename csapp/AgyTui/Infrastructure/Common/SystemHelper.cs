@@ -5,9 +5,12 @@ using Spectre.Console;
 
 namespace AgyTui.Infrastructure.Common;
 
-public static class SystemHelper
+public class SystemHelper : ISystemHelper
 {
-    public static bool IsFuzzyMatch(string text, string pattern)
+    private static readonly Lazy<SystemHelper> _instance = new(() => new SystemHelper());
+    public static SystemHelper Instance => _instance.Value;
+
+    public bool IsFuzzyMatch(string text, string pattern)
     {
         if (string.IsNullOrEmpty(pattern)) return true;
         if (string.IsNullOrEmpty(text)) return false;
@@ -29,7 +32,7 @@ public static class SystemHelper
         return false;
     }
 
-    public static string BoldFuzzyMatch(string text, string pattern)
+    public string BoldFuzzyMatch(string text, string pattern)
     {
         if (string.IsNullOrEmpty(pattern) || string.IsNullOrEmpty(text))
             return text.EscapeMarkup();
@@ -46,7 +49,7 @@ public static class SystemHelper
         return text.EscapeMarkup();
     }
 
-    public static void OpenExplorer(string path = "")
+    public void OpenExplorer(string path = "")
     {
         if (string.IsNullOrEmpty(path)) path = Directory.GetCurrentDirectory();
         try
@@ -62,7 +65,7 @@ public static class SystemHelper
         }
     }
 
-    public static void OpenNewTerminalSession(string path = "", string? initialCommand = null, bool promptOptions = false)
+    public void OpenNewTerminalSession(string path = "", string? initialCommand = null, bool promptOptions = false)
     {
         if (string.IsNullOrEmpty(path)) path = Directory.GetCurrentDirectory();
 
@@ -95,7 +98,7 @@ public static class SystemHelper
 
         try
         {
-            var wt = ProcessRunner.FindOnPath("wt.exe") ?? ProcessRunner.FindOnPath("wt");
+            var wt = ProcessRunner.Instance.FindOnPath("wt.exe") ?? ProcessRunner.Instance.FindOnPath("wt");
             if (!string.IsNullOrEmpty(wt))
             {
                 var cmdArgs = !string.IsNullOrEmpty(initialCommand)
@@ -117,7 +120,7 @@ public static class SystemHelper
         }
     }
 
-    public static void ShowDiskSpace()
+    public void ShowDiskSpace()
     {
         try
         {
@@ -135,7 +138,7 @@ public static class SystemHelper
         }
     }
 
-    public static string GetPublicIP()
+    public string GetPublicIP()
     {
         try
         {
@@ -149,7 +152,7 @@ public static class SystemHelper
         }
     }
 
-    public static void KillPort(int port)
+    public void KillPort(int port)
     {
         try
         {
@@ -180,4 +183,5 @@ public static class SystemHelper
             AnsiConsole.MarkupLine($"[red]Failed to kill port {port}: {ex.Message}[/]");
         }
     }
+
 }

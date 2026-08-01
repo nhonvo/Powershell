@@ -494,36 +494,58 @@ public static class CommandRegistry
         var obsidianCmds = new HashSet<string> { "obsidian", "refresh", "vault-open" };
 
         var hiddenCmds = new HashSet<string> {
-            "p", "prj", "gb",
+            "p", "prj", "gb", "glo", "glg", "gpu", "gus", "gundo",
+            "da", "db", "dclean", "dres", "dt", "du", "dw", "mobile",
             "desk-status", "desk-setup", "desk-start", "desk-online",
             "mgr", "manager-status", "manager-setup", "manager-start", "agm", "agm-status", "agm-setup", "agm-start"
         };
 
         var orderedAliases = new[]
         {
-            // Category 1: [Workspace & Dev]
-            "proj", "ide", "p", "prj", "f", "open-term", "ide-diff", "ide-search", "scaffold", "go",
+            // Category 1: [Favorites]
+            "proj", "agyswitch", "open-term", "ask-ai", "vault", "ide",
 
-            // Category 2: [AI Agent & Ollama]
-            "ask-ai", "claude", "codex", "hermes", "openclaw", "ollama-status", "ollama-models",
+            // Category 2: [Workspace & Dev]
+            "proj", "cnav", "go", "open-term", "f", "ide", "ide-diff", "ide-search", "scaffold",
+            "gs", "ga", "gbr", "gcmt", "glog", "gpull", "gpush", "gf", "gd", "git-undo", "nexus", "repo-graph", "nexus-stats",
+            "dbld", "dr", "dtst", "df", "dcl", "drestore", "dpublish", "dpack", "dpubpkg", "dwatch", "rebuild-tui", "clean-build", "add-migration", "update-db", "dotnet-info",
+            "docker-health", "dkcl", "dkrmac", "dkstac", "dimg", "dlogs", "dcup", "dcdown",
+            "aws-whoami", "aws-local", "aws-s3", "aws-sqs", "aws-ssm", "aws-sns", "aws-dynamodb", "aws-lambda",
 
-            // Category 3: [AGY Account Switch]
-            "vault", "agyswitch", "agyquota", "secret-set", "secret-get", "secret-list", "secret-remove",
+            // Category 3: [AI Agent & Ollama]
+            "ask-ai", "openclaw", "hermes", "claude", "codex", "agy-cli", "ai-history",
+            "ollama-status", "ollama-models", "ollama-pull", "ollama-start", "ollama-logs", "ollama-benchmark",
 
-            // Category 4: [Learn & Study]
+            // Category 4: [AGY Account Switch]
+            "vault", "agyswitch", "agyquota",
+            "secret-set", "secret-get", "secret-list", "secret-remove",
+            "account-tree", "quota-chart", "live-dashboard",
+            "autoswitch", "no-auto-commit", "autocommit",
+            "deck-status", "deck-setup", "deck-start", "deck-online", "mgr-status", "mgr-setup", "mgr-start",
+
+            // Category 5: [Learn & Study]
             "learn", "learn-gen", "guide", "slash-manual", "skills",
+            "session", "stats", "goals", "streak", "due", "progress", "weak",
+            "obsidian", "refresh", "vault-open",
+            "kana", "kanji", "jlpt", "grammar",
+            "word-of-day", "vocab", "flashcard",
+            "quiz", "snippets", "sheets",
+            "algo", "complexity", "problems",
+            "interview", "star", "mock",
 
-            // Category 5: [Git & Repo Tools]
-            "gs", "ga", "gbr", "gcmt", "glog", "gpull", "gpush", "gf", "gd",
+            // Category 6: [Obsidian & Resources]
+            "obs-graph", "add-resource",
 
-            // Category 6: [Appearance & Layout]
-            "theme", "ui-mode", "density", "favorite", "favorites",
+            // Category 7: [Appearance & Layout]
+            "theme", "ui-mode", "density", "favorite", "mobile-setup",
 
-            // Category 7: [System & Network]
+            // Category 8: [System & Network]
             "config", "disk", "public-ip", "kill-port", "ssh-info",
+            "tailscale-status", "ssh-qr",
+            "system-reload", "reload-cc", "reload-term", "reload-all",
 
-            // Category 8: [Help & Docs]
-            "exit", "cc", "help", "hotkeys"
+            // Category 9: [Help & Docs]
+            "cc", "help", "hotkeys", "exit"
         };
 
         var orderMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);

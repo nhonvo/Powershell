@@ -40,8 +40,8 @@ public static class SubPageProjNavigator
 
             if (!string.IsNullOrEmpty(query))
             {
-                bool rootMatch = SystemHelper.IsFuzzyMatch(w.Name, query);
-                var matchingChildren = children.Where(c => SystemHelper.IsFuzzyMatch(c.Name, query)).ToList();
+                bool rootMatch = SystemHelper.Instance.IsFuzzyMatch(w.Name, query);
+                var matchingChildren = children.Where(c => SystemHelper.Instance.IsFuzzyMatch(c.Name, query)).ToList();
                 bool hasChildMatch = matchingChildren.Count > 0;
 
                 if (!rootMatch && !hasChildMatch)
@@ -64,7 +64,7 @@ public static class SubPageProjNavigator
                     for (int c = 0; c < children.Length; c++)
                     {
                         var child = children[c];
-                        if (!SystemHelper.IsFuzzyMatch(child.Name, query)) continue;
+                        if (!SystemHelper.Instance.IsFuzzyMatch(child.Name, query)) continue;
 
                         list.Add(new FlatItem
                         {
@@ -253,8 +253,8 @@ public static class SubPageProjNavigator
                 var bullet = "  ├── ";
                 var prefix = isSelected ? "  [green bold]❯──[/] " : $"{bullet}";
                 var status = isCurrent ? "[bold black on green] ACTIVE [/] " : "";
-                var boldName = string.IsNullOrEmpty(searchBuffer) ? ws.Name.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(ws.Name, searchBuffer);
-                var boldPath = string.IsNullOrEmpty(searchBuffer) ? ws.WorkspacePath.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(ws.WorkspacePath, searchBuffer);
+                var boldName = string.IsNullOrEmpty(searchBuffer) ? ws.Name.EscapeMarkup() : SystemHelper.Instance.BoldFuzzyMatch(ws.Name, searchBuffer);
+                var boldPath = string.IsNullOrEmpty(searchBuffer) ? ws.WorkspacePath.EscapeMarkup() : SystemHelper.Instance.BoldFuzzyMatch(ws.WorkspacePath, searchBuffer);
                 var nameMarkup = isSelected ? $"[bold green]{boldName}[/]" : $"[cyan]{boldName}[/]";
 
                 var expandSign = (ExpandedChildWorkspacePath == ws.WorkspacePath) ? "[[-]] " : "[[+]] ";
@@ -270,8 +270,8 @@ public static class SubPageProjNavigator
                 var branch = WorkspaceRegistry.GetGitBranch(ws.WorkspacePath);
                 var branchSuffix = !string.IsNullOrEmpty(branch) ? $" [yellow]🌿 {branch}[/]" : "";
 
-                var boldName = string.IsNullOrEmpty(searchBuffer) ? ws.Name.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(ws.Name, searchBuffer);
-                var boldPath = string.IsNullOrEmpty(searchBuffer) ? ws.WorkspacePath.EscapeMarkup() : SystemHelper.BoldFuzzyMatch(ws.WorkspacePath, searchBuffer);
+                var boldName = string.IsNullOrEmpty(searchBuffer) ? ws.Name.EscapeMarkup() : SystemHelper.Instance.BoldFuzzyMatch(ws.Name, searchBuffer);
+                var boldPath = string.IsNullOrEmpty(searchBuffer) ? ws.WorkspacePath.EscapeMarkup() : SystemHelper.Instance.BoldFuzzyMatch(ws.WorkspacePath, searchBuffer);
 
                 var nameMarkup = isSelected ? $"[bold green]{boldName}[/]" : $"[bold white]{boldName}[/]";
                 var pathMarkup = $"[dim]· {boldPath}[/]";

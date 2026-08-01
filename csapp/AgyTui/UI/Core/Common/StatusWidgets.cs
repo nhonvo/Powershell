@@ -63,7 +63,7 @@ public sealed class PublicIpWidget : IStatusWidget
             {
                 try
                 {
-                    var ip = await HttpClientProvider.Client.GetStringAsync("https://api.ipify.org");
+                    var ip = await HttpClientProvider.Instance.Client.GetStringAsync("https://api.ipify.org");
                     _ipCache.Set("ip", ip.Trim());
                 }
                 catch
@@ -284,7 +284,7 @@ public sealed class OllamaStatusWidget : IStatusWidget
                     {
                         try
                         {
-                            var client = HttpClientProvider.Client;
+                            var client = HttpClientProvider.Instance.Client;
                             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
                             var response = client.GetStringAsync("http://127.0.0.1:11434/api/tags", cts.Token).GetAwaiter().GetResult();
                             using var doc = JsonDocument.Parse(response);

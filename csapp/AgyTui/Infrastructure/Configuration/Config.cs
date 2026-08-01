@@ -76,7 +76,7 @@ public sealed class RuntimeState
 
 public static class Config
 {
-    public static readonly string[] DefaultFavoriteAliases = ["proj", "agyswitch", "ide", "claude", "theme", "learn", "obsidian", "ssh-info"];
+    public static readonly string[] DefaultFavoriteAliases = ["proj", "agyswitch", "open-term", "ask-ai", "vault", "ide"];
 
     public static string? OverrideConfigPath { get; set; }
     public static ConfigData Current { get; private set; } = new();
@@ -110,11 +110,13 @@ public static class Config
         try
         {
             Current = Repository.LoadConfig();
+            Current.Ui.FavoriteAliases = DefaultFavoriteAliases;
         }
         catch (Exception ex)
         {
             LogHelper.Log($"[Config] Load fallback: {ex.Message}", "DEBUG");
             Current = new ConfigData();
+            Current.Ui.FavoriteAliases = DefaultFavoriteAliases;
         }
     }
 

@@ -127,7 +127,7 @@ public class CommandRouter : ICommandRouter
                         SubPageNavigator.Run("proj", q);
                         break;
                     case "f":
-                        SystemHelper.OpenExplorer();
+                        SystemHelper.Instance.OpenExplorer();
                         break;
                     case "gs":
                         _git.ShowStatus();
@@ -198,7 +198,7 @@ public class CommandRouter : ICommandRouter
                     case "open-term":
                     case "term":
                     case "wt":
-                        SystemHelper.OpenNewTerminalSession();
+                        SystemHelper.Instance.OpenNewTerminalSession();
                         break;
                     case "go":
                         var goTargetPath = ProfileNavigator.Navigate("");
@@ -403,7 +403,7 @@ public class CommandRouter : ICommandRouter
                             _claude.InvokeClaude([]);
                             break;
                         }
-                        Helpers.ProcessRunner.Run("cmd.exe", "/c agy");
+                        Helpers.ProcessRunner.Instance.Run("cmd.exe", "/c agy");
                         break;
                     case "ai-history":
                         {
@@ -486,15 +486,15 @@ public class CommandRouter : ICommandRouter
                         break;
                     case "disk":
                     case "usage":
-                        SystemHelper.ShowDiskSpace();
+                        SystemHelper.Instance.ShowDiskSpace();
                         break;
                     case "public-ip":
                     case "myip":
-                        AnsiConsole.MarkupLine($"Public IP: [green]{SystemHelper.GetPublicIP()}[/]");
+                        AnsiConsole.MarkupLine($"Public IP: [green]{SystemHelper.Instance.GetPublicIP()}[/]");
                         break;
                     case "kill-port":
                         var portStr = AnsiConsole.Ask<string>("Port number:");
-                        if (int.TryParse(portStr, out var port)) SystemHelper.KillPort(port);
+                        if (int.TryParse(portStr, out var port)) SystemHelper.Instance.KillPort(port);
                         break;
                     case "ssh-info":
                         SpectrePanel.Info("SSH connection info widget is available in Control Center dashboard.");
@@ -586,7 +586,7 @@ public class CommandRouter : ICommandRouter
                         SubPageAccountNavigator.PurgeAccounts();
                         break;
                     case "dotnet-info":
-                        Helpers.ProcessRunner.RunInteractive("dotnet", ["--info"]);
+                        Helpers.ProcessRunner.Instance.RunInteractive("dotnet", ["--info"]);
                         break;
                     case "scaffold":
                         AnsiConsole.MarkupLine("[bold yellow]Project scaffolding is managed via ask-ai or template commands.[/]");

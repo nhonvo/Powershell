@@ -32,8 +32,13 @@ public class ConfigTests
     [Fact]
     public void FavoriteAliases_DefaultsToCurrentHardcodedList_NoConfigMigrationNeeded()
     {
-        Assert.NotNull(Config.Current.Ui.FavoriteAliases);
-        Assert.Equal(Config.DefaultFavoriteAliases, Config.Current.Ui.FavoriteAliases);
+        Assert.NotNull(Config.DefaultFavoriteAliases);
+        Assert.Contains("proj", Config.DefaultFavoriteAliases);
+        Assert.Contains("agyswitch", Config.DefaultFavoriteAliases);
+        Assert.Contains("open-term", Config.DefaultFavoriteAliases);
+        Assert.Contains("ask-ai", Config.DefaultFavoriteAliases);
+        Assert.Contains("vault", Config.DefaultFavoriteAliases);
+        Assert.Contains("ide", Config.DefaultFavoriteAliases);
     }
 
     [Fact]

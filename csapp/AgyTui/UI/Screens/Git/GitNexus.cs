@@ -79,7 +79,7 @@ public static class GitNexus
 
     private static string Git(string workingDir, string args)
     {
-        return ProcessRunner.RunCapture("git", args, workingDir);
+        return ProcessRunner.Instance.RunCapture("git", args, workingDir);
     }
 }
 
@@ -186,7 +186,7 @@ public static class GitNexusStats
         if (!Directory.Exists(path)) return 0;
         try
         {
-            var output = ProcessRunner.RunCapture("git", $"log --since={days}.days --oneline", path);
+            var output = ProcessRunner.Instance.RunCapture("git", $"log --since={days}.days --oneline", path);
             return output.Split('\n').Count(l => !string.IsNullOrWhiteSpace(l));
         }
         catch
@@ -200,7 +200,7 @@ public static class GitNexusStats
         if (!Directory.Exists(path)) return [];
         try
         {
-            var output = ProcessRunner.RunCapture("git", "branch", path);
+            var output = ProcessRunner.Instance.RunCapture("git", "branch", path);
             return output.Split('\n').Where(l => !string.IsNullOrWhiteSpace(l)).Select(l => l.Trim()).ToArray();
         }
         catch

@@ -318,16 +318,16 @@ public class AgyAccountStore : IAgyAccountStore
         var targetDir = GetAccountDirectory(accountName);
         Environment.SetEnvironmentVariable("GEMINI_HOME", targetDir);
 
-        var agyExe = Helpers.ProcessRunner.FindOnPath("agy") ?? Helpers.ProcessRunner.FindOnPath("antigravity");
+        var agyExe = Helpers.ProcessRunner.Instance.FindOnPath("agy") ?? Helpers.ProcessRunner.Instance.FindOnPath("antigravity");
         if (!string.IsNullOrEmpty(agyExe))
         {
             SpectrePanel.Info($"Launching OAuth login for '{accountName}' via '{agyExe}'...");
-            Helpers.ProcessRunner.RunInteractive(agyExe, ["auth", "login"], new Dictionary<string, string?> { ["GEMINI_HOME"] = targetDir }, targetDir);
+            Helpers.ProcessRunner.Instance.RunInteractive(agyExe, ["auth", "login"], new Dictionary<string, string?> { ["GEMINI_HOME"] = targetDir }, targetDir);
         }
         else
         {
             SpectrePanel.Info($"Launching OAuth login for '{accountName}'...");
-            Helpers.ProcessRunner.RunInteractive("pwsh", ["-NoProfile", "-Command", $"$env:GEMINI_HOME='{targetDir}'; agy auth login"], null, targetDir);
+            Helpers.ProcessRunner.Instance.RunInteractive("pwsh", ["-NoProfile", "-Command", $"$env:GEMINI_HOME='{targetDir}'; agy auth login"], null, targetDir);
         }
         _quotaEngineFactory().ClearStatsCache();
     }

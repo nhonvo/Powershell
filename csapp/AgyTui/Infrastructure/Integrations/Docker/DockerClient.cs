@@ -167,7 +167,7 @@ public class DockerClient : CliToolWrapper, IDockerClient
             return;
         }
         if (!AnsiConsole.Confirm($"Remove {ids.Length} container(s)?")) return;
-        Helpers.ProcessRunner.Run(BinaryName, $"rm -f {string.Join(" ", ids)}");
+        Helpers.ProcessRunner.Instance.Run(BinaryName, $"rm -f {string.Join(" ", ids)}");
         SpectrePanel.Success("Executed container removal.");
     }
 
@@ -181,7 +181,7 @@ public class DockerClient : CliToolWrapper, IDockerClient
             return;
         }
         if (!AnsiConsole.Confirm($"Stop {ids.Length} running container(s)?")) return;
-        Helpers.ProcessRunner.Run(BinaryName, $"stop {string.Join(" ", ids)}");
+        Helpers.ProcessRunner.Instance.Run(BinaryName, $"stop {string.Join(" ", ids)}");
         SpectrePanel.Success("Executed container stop.");
     }
 
@@ -189,16 +189,16 @@ public class DockerClient : CliToolWrapper, IDockerClient
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            Helpers.ProcessRunner.Run("cmd", $"/c docker {args}");
+            Helpers.ProcessRunner.Instance.Run("cmd", $"/c docker {args}");
         }
         else
         {
-            Helpers.ProcessRunner.Run("sh", $"-c \"docker {args}\"");
+            Helpers.ProcessRunner.Instance.Run("sh", $"-c \"docker {args}\"");
         }
     }
 
     private int RunDockerCompose(string args)
     {
-        return Helpers.ProcessRunner.Run(BinaryName, $"compose {args}");
+        return Helpers.ProcessRunner.Instance.Run(BinaryName, $"compose {args}");
     }
 }

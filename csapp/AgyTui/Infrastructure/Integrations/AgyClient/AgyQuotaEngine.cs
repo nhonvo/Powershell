@@ -353,7 +353,7 @@ public class AgyQuotaEngine : IAgyQuotaEngine
                 Message = $"Warning: Account '{accountName}' has low quota ({Math.Round(remainingPct, 1)}% remaining in 5H window)."
             };
             using var content = new StringContent(JsonSerializer.Serialize(payload), System.Text.Encoding.UTF8, "application/json");
-            await HttpClientProvider.Client.PostAsync(uri, content);
+            await HttpClientProvider.Instance.Client.PostAsync(uri, content);
         }
         catch { }
     }

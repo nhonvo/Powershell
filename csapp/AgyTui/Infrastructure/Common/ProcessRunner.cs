@@ -1,10 +1,14 @@
 using System.Diagnostics;
+using System.Text;
 
 namespace AgyTui.Infrastructure.Common;
 
-public static class ProcessRunner
+public class ProcessRunner : IProcessRunner
 {
-    public static string? FindOnPath(string exe)
+    private static readonly Lazy<ProcessRunner> _instance = new(() => new ProcessRunner());
+    public static ProcessRunner Instance => _instance.Value;
+
+    public string? FindOnPath(string exe)
     {
         try
         {
@@ -37,7 +41,7 @@ public static class ProcessRunner
         return null;
     }
 
-    public static void RunInteractive(string exe, IEnumerable<string> args, IDictionary<string, string?>? env = null, string? workingDir = null)
+    public void RunInteractive(string exe, IEnumerable<string> args, IDictionary<string, string?>? env = null, string? workingDir = null)
     {
         var resolvedExe = Path.IsPathRooted(exe) ? exe : FindOnPath(exe) ?? exe;
         var targetWorkingDir = !string.IsNullOrEmpty(workingDir) && Directory.Exists(workingDir)
@@ -93,13 +97,13 @@ public static class ProcessRunner
         }
     }
 
-    public static string RunCapture(string exe, string args, string? workingDir = null)
+    public string RunCapture(string exe, string args, string? workingDir = null)
     {
         var (stdout, _, _) = RunCaptureWithDetails(exe, args, workingDir, TimeSpan.FromSeconds(30));
         return stdout;
     }
 
-    public static (string Stdout, string Stderr, int ExitCode) RunCaptureWithDetails(
+    public (string Stdout, string Stderr, int ExitCode) RunCaptureWithDetails(
         string exe, string args, string? workingDir = null, TimeSpan? timeout = null)
     {
         var resolvedExe = Path.IsPathRooted(exe) ? exe : FindOnPath(exe) ?? exe;
@@ -163,7 +167,7 @@ public static class ProcessRunner
         }
     }
 
-    public static int Run(string exe, string args, string? workingDir = null, TimeSpan? timeout = null)
+    public int Run(string exe, string args, string? workingDir = null, TimeSpan? timeout = null)
     {
         string realExe = exe.Trim();
         string realArgs = args;
@@ -195,13 +199,13 @@ public static class ProcessRunner
         }
     }
 
-    public static string RunCapture(string exe, IEnumerable<string> args, string? workingDir = null)
+    public string RunCapture(string exe, IEnumerable<string> args, string? workingDir = null)
     {
         var (stdout, _, _) = RunCaptureWithDetails(exe, args, workingDir, TimeSpan.FromSeconds(30));
         return stdout;
     }
 
-    public static (string Stdout, string Stderr, int ExitCode) RunCaptureWithDetails(
+    public (string Stdout, string Stderr, int ExitCode) RunCaptureWithDetails(
         string exe, IEnumerable<string> args, string? workingDir = null, TimeSpan? timeout = null)
     {
         var psi = new ProcessStartInfo(exe)
@@ -217,8 +221,8 @@ public static class ProcessRunner
             psi.ArgumentList.Add(a);
         }
 
-        var stdoutBuilder = new System.Text.StringBuilder();
-        var stderrBuilder = new System.Text.StringBuilder();
+        var stdoutBuilder = new StringBuilder();
+        var stderrBuilder = new StringBuilder();
 
         try
         {
@@ -248,12 +252,12 @@ public static class ProcessRunner
         }
     }
 
-    public static string RunCapture(string exe, string[] args, string? workingDir = null)
+    public string RunCapture(string exe, string[] args, string? workingDir = null)
     {
         return RunCapture(exe, (IEnumerable<string>)args, workingDir);
     }
 
-    public static int Run(string exe, string[] args, string? workingDir = null)
+    public int Run(string exe, string[] args, string? workingDir = null)
     {
         var psi = new ProcessStartInfo(exe)
         {
@@ -277,4 +281,5 @@ public static class ProcessRunner
         }
         catch { return -1; }
     }
+
 }

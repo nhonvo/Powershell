@@ -64,7 +64,7 @@ public class DomainAndUtilityCoverageTests
     [Fact]
     public void ProcessRunner_FindOnPath_NonExistentBinary_ReturnsNullOrEmpty()
     {
-        var path = ProcessRunner.FindOnPath("non_existent_binary_9999");
+        var path = ProcessRunner.Instance.FindOnPath("non_existent_binary_9999");
         Assert.True(string.IsNullOrEmpty(path));
     }
 }

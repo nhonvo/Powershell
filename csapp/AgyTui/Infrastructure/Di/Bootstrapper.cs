@@ -27,6 +27,9 @@ public static class Bootstrapper
         services.AddSingleton<IConfigService, ConfigService>();
         services.AddSingleton<IUiStateStore, UiStateStore>();
         services.AddSingleton<IUiCommandDispatcher, UiCommandDispatcher>();
+        services.AddSingleton<IHttpClientProvider, HttpClientProvider>();
+        services.AddSingleton<IProcessRunner, ProcessRunner>();
+        services.AddSingleton<ISystemHelper, SystemHelper>();
 
         // AI Services
         services.AddSingleton<IAiProcessRunner, AiProcessRunner>();

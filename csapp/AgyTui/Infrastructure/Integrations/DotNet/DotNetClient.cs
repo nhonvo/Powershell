@@ -170,6 +170,6 @@ public class DotNetClient : CliToolWrapper, IDotNetClient
 
     private int RunDotnet(string args, string? workingDir)
     {
-        return Helpers.ProcessRunner.Run(BinaryName, args, workingDir);
+        return Helpers.ProcessRunner.Instance.Run(BinaryName, args, workingDir);
     }
 }

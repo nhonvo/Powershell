@@ -12,13 +12,13 @@ public class EditorResolver : IEditorResolver
         var editor = Environment.GetEnvironmentVariable("EDITOR");
         if (!string.IsNullOrWhiteSpace(editor) && !editor.Equals("notepad", StringComparison.OrdinalIgnoreCase)) return editor;
 
-        (string coreEditor, _, int exitCode) = ProcessRunner.RunCaptureWithDetails("git", "config core.editor");
+        (string coreEditor, _, int exitCode) = ProcessRunner.Instance.RunCaptureWithDetails("git", "config core.editor");
         if (exitCode == 0 && !string.IsNullOrWhiteSpace(coreEditor) && !coreEditor.Trim().Equals("notepad", StringComparison.OrdinalIgnoreCase))
             return coreEditor.Trim();
 
         foreach (var termEditor in new[] { "micro", "nvim", "vim", "nano" })
         {
-            if (!string.IsNullOrEmpty(ProcessRunner.FindOnPath(termEditor)))
+            if (!string.IsNullOrEmpty(ProcessRunner.Instance.FindOnPath(termEditor)))
                 return termEditor;
         }
 

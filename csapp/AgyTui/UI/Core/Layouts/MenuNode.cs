@@ -133,21 +133,35 @@ public static class MenuNodeBuilder
                 groupsList.Add(groupNode);
             }
 
-            // Combine all children (both ungrouped and groups) and sort them by SortOrder
-            var allChildren = new List<MenuNode>();
-            allChildren.AddRange(ungrouped);
-            allChildren.AddRange(groupsList);
+            var groupOrder = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["/git-tools"] = 10,
+                ["/dotnet-tools"] = 20,
+                ["/docker-tools"] = 30,
+                ["/aws-tools"] = 40,
+                ["/ollama-tools"] = 10,
+                ["/secret-vault"] = 10,
+                ["/quota-views"] = 20,
+                ["/account-toggles"] = 30,
+                ["/antigravity-deck"] = 40,
+                ["/antigravity-manager"] = 50,
+                ["/track"] = 10,
+                ["/obsidian-vault"] = 20,
+                ["/jp-suite"] = 30,
+                ["/english-vocab"] = 40,
+                ["/csharp-master"] = 50,
+                ["/dsa-architect"] = 60,
+                ["/career-interview"] = 70,
+                ["/ssh-tools"] = 10,
+                ["/system-reload"] = 20
+            };
 
-            var sortedChildrenArray = allChildren
-                .OrderBy(node =>
-                {
-                    if (node.Kind == MenuNodeKind.Group)
-                    {
-                        return node.Children.Length > 0 ? node.Children.Min(c => c.Command!.SortOrder) : 9999;
-                    }
-                    return node.Command!.SortOrder;
-                })
-                .ToArray();
+            // Combine all children (both ungrouped and groups) and sort them strictly
+            var allChildren = new List<MenuNode>();
+            allChildren.AddRange(ungrouped.OrderBy(u => u.Command!.SortOrder));
+            allChildren.AddRange(groupsList.OrderBy(g => groupOrder.GetValueOrDefault(g.Id, 9999)));
+
+            var sortedChildrenArray = allChildren.ToArray();
 
             var catId = catName.Trim('[', ']').ToLowerInvariant().Replace(" & ", "-").Replace(" ", "-");
 

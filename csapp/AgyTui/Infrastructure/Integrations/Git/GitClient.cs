@@ -103,7 +103,7 @@ public class GitClient : CliToolWrapper, IGitClient
             Border = BoxBorder.Rounded
         });
         if (!AnsiConsole.Confirm("Commit now?")) return;
-        var exitCode = Helpers.ProcessRunner.Run(BinaryName, ["commit", "-m", message]);
+        var exitCode = Helpers.ProcessRunner.Instance.Run(BinaryName, ["commit", "-m", message]);
         if (exitCode == 0) SpectrePanel.Success("Committed successfully.");
         else SpectrePanel.Error($"git commit failed (exit {exitCode}).");
     }
@@ -212,6 +212,6 @@ public class GitClient : CliToolWrapper, IGitClient
 
     private int RunGitDirect(string args)
     {
-        return Helpers.ProcessRunner.Run(BinaryName, args);
+        return Helpers.ProcessRunner.Instance.Run(BinaryName, args);
     }
 }

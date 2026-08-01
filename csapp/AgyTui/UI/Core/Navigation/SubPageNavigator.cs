@@ -165,8 +165,8 @@ public static class SubPageNavigator
                 if (!string.IsNullOrEmpty(_detailsSearchBuffer))
                 {
                     workspaces = workspaces.Where(w => w != null &&
-                        ((w.Name != null && SystemHelper.IsFuzzyMatch(w.Name, _detailsSearchBuffer)) ||
-                         (w.WorkspacePath != null && SystemHelper.IsFuzzyMatch(w.WorkspacePath, _detailsSearchBuffer)))).ToArray();
+                        ((w.Name != null && SystemHelper.Instance.IsFuzzyMatch(w.Name, _detailsSearchBuffer)) ||
+                         (w.WorkspacePath != null && SystemHelper.Instance.IsFuzzyMatch(w.WorkspacePath, _detailsSearchBuffer)))).ToArray();
                 }
 
                 flatList = SubPageProjNavigator.GetFlatList(workspaces, _detailsSearchBuffer);
