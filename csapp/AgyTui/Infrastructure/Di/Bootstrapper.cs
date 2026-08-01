@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using AgyTui.Infrastructure.Persistence.Seeding;
 using AgyTui.UI.Core.Common;
 using AgyTui.UI.Core.Interfaces;
+using AgyTui.UI.Core.Layouts;
+using AgyTui.UI.Core.Layouts.Interfaces;
 using AgyTui.UI.Screens;
 
 namespace AgyTui.Infrastructure.Di;
@@ -40,6 +42,10 @@ public static class Bootstrapper
         services.AddSingleton<ISpectreTable, SpectreTableService>();
         services.AddSingleton<ISpectreProgress, SpectreProgressService>();
         services.AddSingleton<IStatusWidgetRegistry, StatusWidgetRegistryService>();
+        services.AddSingleton<IScreenChrome, ScreenChromeService>();
+        services.AddSingleton<IHotkeysGuide, HotkeysGuideService>();
+        services.AddSingleton<IProfileHelp, ProfileHelpService>();
+        services.AddSingleton<IMenuNodeBuilder, MenuNodeBuilderService>();
 
         // AI Services
         services.AddSingleton<IAiProcessRunner, AiProcessRunner>();

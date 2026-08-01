@@ -1,11 +1,15 @@
 using System.Collections.Frozen;
 using System.Text.Json;
+using AgyTui.UI.Core.Common;
+using AgyTui.UI.Core.Layouts.Interfaces;
+using AgyTui.UI.Core.Registries;
+using Spectre.Console;
 
 namespace AgyTui.UI.Core.Layouts;
 
 public sealed record CommandDoc(string Alias, string FullName, string Desc, string Command);
 
-public static class ProfileHelp
+public class ProfileHelpService : IProfileHelp
 {
     private static readonly FrozenDictionary<string, string[]> HelpTopics = CommandRegistry.All
         .Where(c => c.HelpLines.Length > 0)
@@ -17,73 +21,43 @@ public static class ProfileHelp
         )
         .ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
 
-    public static void Show()
+    public void Show()
     {
-        AnsiConsole.Write(new Rule("[bold cyan]Help Browser[/]").RuleStyle("grey"));
-        var topics = HelpTopics.Keys.ToArray();
-        var idx = SpectreMenu.Show("Help Topics", topics, 0, true);
-        if (idx < 0) return;
-        var topic = topics[idx];
-        SpectrePager.Show($"Help: {topic}", HelpTopics[topic]);
-    }
+        var topics = HelpTopics.Keys.OrderBy(k => k).ToArray();
 
-    public static Dictionary<string, Dictionary<string, CommandDoc[]>> GetCommands(string jsonPath)
-    {
-        if (!File.Exists(jsonPath)) return new();
+        var choice = SpectreMenu.ShowDynamic("🛸 Profile Comprehensive Documentation & Help Hub", filter =>
+        {
+            var matched = topics.Where(t => string.IsNullOrEmpty(filter) || t.Contains(filter, StringComparison.OrdinalIgnoreCase)).ToList();
+            matched.Add("Exit");
+            return matched.ToArray();
+        }, 0);
 
-        try
+        if (string.IsNullOrEmpty(choice) || choice == "Exit") return;
+
+        if (HelpTopics.TryGetValue(choice, out var lines))
         {
-            var raw = File.ReadAllText(jsonPath);
-            var opts = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-            return JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, CommandDoc[]>>>(raw, opts) ?? new();
-        }
-        catch
-        {
-            return new();
+            SpectrePager.Show($"Docs: {choice}", lines);
         }
     }
 
-    public static CommandDoc? ShowInteractive(string jsonPath, string initialFilter)
+    public void ShowTopic(string topic)
     {
-        var cmdsNested = GetCommands(jsonPath);
-        var cmds = new Dictionary<string, CommandDoc[]>();
-        foreach (var (_, subDict) in cmdsNested) foreach (var (sub, docs) in subDict) cmds[sub] = docs;
-        var categories = cmds.Keys.OrderBy(k => k, StringComparer.Ordinal).ToArray();
-        var allCommands = categories.SelectMany(c => cmds[c]).ToArray();
-        var categoryLookup = new Dictionary<string, string>();
-        foreach (var c in categories) categoryLookup[$"{c} ({cmds[c].Length} commands)"] = c;
-        var commandLookup = new Dictionary<string, CommandDoc>();
-        foreach (var c in allCommands) commandLookup[$"{c.Alias,-10} - {c.Desc}"] = c;
-        string[] TopResolver(string filter)
+        if (HelpTopics.TryGetValue(topic, out var lines))
         {
-            if (string.IsNullOrWhiteSpace(filter)) return categories.Select(c => $"{c} ({cmds[c].Length} commands)").ToArray();
-            return allCommands.Where(c => c.Alias.Contains(filter, StringComparison.OrdinalIgnoreCase) || c.Desc.Contains(filter, StringComparison.OrdinalIgnoreCase) || c.Command.Contains(filter, StringComparison.OrdinalIgnoreCase)).Select(c => $"{c.Alias,-10} - {c.Desc}").ToArray();
+            SpectrePager.Show($"Docs: {topic}", lines);
         }
-        var filter = initialFilter;
-        while (true)
+        else
         {
-            var selectedLabel = SpectreMenu.ShowDynamic("Select Help Category", TopResolver, 0, filter);
-            filter = "";
-            if (selectedLabel == null) return null;
-            if (commandLookup.TryGetValue(selectedLabel, out var cmdObj)) return cmdObj;
-            if (categoryLookup.TryGetValue(selectedLabel, out var catName))
-            {
-                var catCmds = cmds[catName];
-                var subLookup = new Dictionary<string, CommandDoc>();
-                foreach (var c in catCmds) subLookup[$"{c.Alias,-10} - {c.Desc}"] = c;
-                string[] SubResolver(string subFilter) => catCmds.Where(c => string.IsNullOrWhiteSpace(subFilter) || c.Alias.Contains(subFilter, StringComparison.OrdinalIgnoreCase) || c.Desc.Contains(subFilter, StringComparison.OrdinalIgnoreCase) || c.Command.Contains(subFilter, StringComparison.OrdinalIgnoreCase)).Select(c => $"{c.Alias,-10} - {c.Desc}").ToArray();
-                while (true)
-                {
-                    var selectedSubLabel = SpectreMenu.ShowDynamic($"Category: {catName}", SubResolver, 0);
-                    if (selectedSubLabel == null) break;
-                    if (subLookup.TryGetValue(selectedSubLabel, out var subCmd)) return subCmd;
-                }
-            }
+            SpectrePanel.Warning($"Help topic '{topic}' not found.");
         }
     }
 }
 
+public static class ProfileHelp
+{
+    private static readonly IProfileHelp _service = new ProfileHelpService();
+    public static IProfileHelp Instance => _service;
 
+    public static void Show() => _service.Show();
+    public static void ShowTopic(string topic) => _service.ShowTopic(topic);
+}

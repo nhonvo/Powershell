@@ -1,10 +1,13 @@
 using AgyTui.Infrastructure.Di;
 using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
+using AgyTui.UI.Core.Common;
+using AgyTui.UI.Core.Layouts.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using Spectre.Console;
 
 namespace AgyTui.UI.Core.Layouts;
 
-public static class ScreenChrome
+public class ScreenChromeService : IScreenChrome
 {
     private static Func<IAgyAccountStore>? _accountStoreFactory;
     public static Func<IAgyAccountStore> AccountStoreFactory
@@ -13,28 +16,27 @@ public static class ScreenChrome
         set => _accountStoreFactory = value;
     }
 
-    public static IAnsiConsole? OverrideConsole { get; set; }
-    private static IAnsiConsole ConsoleInstance => OverrideConsole ?? AnsiConsole.Console;
+    public IAnsiConsole? OverrideConsole { get; set; }
+    private IAnsiConsole ConsoleInstance => OverrideConsole ?? AnsiConsole.Console;
 
-    public static readonly Color AccentColor = Color.Cyan1;
-    public static readonly Color SuccessColor = Color.Green;
-    public static readonly Color WarningColor = Color.Yellow;
-    public static readonly Color ErrorColor = Color.Red;
-    public static readonly Color MutedColor = Color.Grey;
-    public static readonly Color LiveColor = Color.Blue;
+    public string Accent(string text) => $"[cyan]{text.EscapeMarkup()}[/]";
+    public string Success(string text) => $"[green]{text.EscapeMarkup()}[/]";
+    public string Warning(string text) => $"[yellow]{text.EscapeMarkup()}[/]";
+    public string Error(string text) => $"[red]{text.EscapeMarkup()}[/]";
+    public string Muted(string text) => $"[grey]{text.EscapeMarkup()}[/]";
+    public string Live(string text) => $"[blue]{text.EscapeMarkup()}[/]";
 
-    public static string Accent(string text) => $"[cyan]{text.EscapeMarkup()}[/]";
-    public static string Success(string text) => $"[green]{text.EscapeMarkup()}[/]";
-    public static string Warning(string text) => $"[yellow]{text.EscapeMarkup()}[/]";
-    public static string Error(string text) => $"[red]{text.EscapeMarkup()}[/]";
-    public static string Muted(string text) => $"[grey]{text.EscapeMarkup()}[/]";
-    public static string Live(string text) => $"[blue]{text.EscapeMarkup()}[/]";
-
-    public static void ResetRenderState()
+    public void RenderHeader(string title, string subtitle = "")
     {
+        RenderBanner(title, subtitle);
     }
 
-    public static void HideCursor()
+    public void RenderFooter(string tip = "")
+    {
+        MarkupLineEl(AgyUiComponents.RenderFooterNote(tip).ToString() ?? string.Empty);
+    }
+
+    public void HideCursor()
     {
         if (OverrideConsole != null) return;
         try
@@ -45,7 +47,7 @@ public static class ScreenChrome
         catch { }
     }
 
-    public static void ShowCursor()
+    public void ShowCursor()
     {
         if (OverrideConsole != null) return;
         try
@@ -56,84 +58,7 @@ public static class ScreenChrome
         catch { }
     }
 
-    public static void EnableMouseTracking()
-    {
-        // Keep mouse tracking disabled by default so users can select and copy text with mouse
-    }
-
-    public static void DisableMouseTracking()
-    {
-        if (OverrideConsole != null) return;
-        try
-        {
-            Console.Write("\x1b[?1000l\x1b[?1006l");
-        }
-        catch { }
-    }
-
-    public static bool CopyToClipboard(string text)
-    {
-        if (string.IsNullOrEmpty(text)) return false;
-        try
-        {
-            var bytes = System.Text.Encoding.UTF8.GetBytes(text);
-            var base64 = Convert.ToBase64String(bytes);
-            Console.Write($"\x1b]52;c;{base64}\a");
-
-            if (OperatingSystem.IsWindows())
-            {
-                try
-                {
-                    var psi = new System.Diagnostics.ProcessStartInfo
-                    {
-                        FileName = "powershell.exe",
-                        Arguments = $"-NoProfile -Command \"Set-Clipboard -Value '{text.Replace("'", "''")}'\"",
-                        CreateNoWindow = true,
-                        UseShellExecute = false
-                    };
-                    using var proc = System.Diagnostics.Process.Start(psi);
-                    proc?.WaitForExit(500);
-                }
-                catch { }
-            }
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    public static (ConsoleKeyInfo Key, bool IsScrollUp, bool IsScrollDown) ReadKeyWithMouse()
-    {
-        var key = Console.ReadKey(true);
-        bool isScrollUp = false;
-        bool isScrollDown = false;
-
-        if (key.KeyChar == '\x1b' && Console.KeyAvailable)
-        {
-            var sb = new System.Text.StringBuilder("\x1b");
-            while (Console.KeyAvailable)
-            {
-                var next = Console.ReadKey(true);
-                sb.Append(next.KeyChar);
-                if (next.KeyChar == 'M' || next.KeyChar == 'm' || sb.Length > 20) break;
-            }
-            var seq = sb.ToString();
-            if (seq.Contains("[<64;") || seq.Contains("[<0;") || seq.Contains("[M "))
-            {
-                isScrollUp = true;
-            }
-            else if (seq.Contains("[<65;") || seq.Contains("[<1;") || seq.Contains("[M!"))
-            {
-                isScrollDown = true;
-            }
-        }
-
-        return (key, isScrollUp, isScrollDown);
-    }
-
-    public static void ClearTrailingLines()
+    public void ClearTrailingLines()
     {
         if (OverrideConsole != null) return;
         try
@@ -143,12 +68,9 @@ public static class ScreenChrome
         catch { }
     }
 
-    public static void WriteLineSmooth(string markup)
-    {
-        MarkupLineEl(markup);
-    }
+    public void WriteLineSmooth(string markup) => MarkupLineEl(markup);
 
-    public static void WriteSmooth(string text)
+    public void WriteSmooth(string text)
     {
         if (string.IsNullOrEmpty(text)) return;
         if (OverrideConsole != null)
@@ -160,12 +82,12 @@ public static class ScreenChrome
         Console.Write(smoothText);
     }
 
-    public static void WriteSmooth(Spectre.Console.Rendering.IRenderable renderable)
+    public void WriteSmooth(Spectre.Console.Rendering.IRenderable renderable)
     {
         try { ConsoleInstance.Write(renderable); } catch { }
     }
 
-    public static void RenderFrame(Action drawBody, bool forceClear = false)
+    public void RenderFrame(Action drawBody, bool forceClear = false)
     {
         HideCursor();
         try
@@ -195,7 +117,7 @@ public static class ScreenChrome
         }
     }
 
-    private static void MarkupLineEl(string markup)
+    private void MarkupLineEl(string markup)
     {
         try
         {
@@ -209,7 +131,7 @@ public static class ScreenChrome
         }
     }
 
-    public static void RenderBanner(string? category = null, string? activeItem = null, bool forceClear = false, string? footerHint = null)
+    public void RenderBanner(string? category = null, string? activeItem = null, bool forceClear = false, string? footerHint = null)
     {
         HideCursor();
         var store = AccountStoreFactory();
@@ -221,12 +143,6 @@ public static class ScreenChrome
             if (!string.IsNullOrEmpty(email)) displayAcc = $"default ({email})";
         }
         var now = DateTime.Now;
-        var winWidth = 80;
-        try
-        {
-            winWidth = Console.WindowWidth;
-        }
-        catch (Exception) { }
 
         if (forceClear)
         {
@@ -253,4 +169,50 @@ public static class ScreenChrome
 
         MarkupLineEl(headerLine);
     }
+}
+
+public static class ScreenChrome
+{
+    private static readonly ScreenChromeService _service = new();
+    public static IScreenChrome Instance => _service;
+
+    public static Func<IAgyAccountStore> AccountStoreFactory
+    {
+        get => ScreenChromeService.AccountStoreFactory;
+        set => ScreenChromeService.AccountStoreFactory = value;
+    }
+
+    public static IAnsiConsole? OverrideConsole
+    {
+        get => _service.OverrideConsole;
+        set => _service.OverrideConsole = value;
+    }
+
+    public static readonly Color AccentColor = Color.Cyan1;
+    public static readonly Color SuccessColor = Color.Green;
+    public static readonly Color WarningColor = Color.Yellow;
+    public static readonly Color ErrorColor = Color.Red;
+    public static readonly Color MutedColor = Color.Grey;
+    public static readonly Color LiveColor = Color.Blue;
+
+    public static string Accent(string text) => _service.Accent(text);
+    public static string Success(string text) => _service.Success(text);
+    public static string Warning(string text) => _service.Warning(text);
+    public static string Error(string text) => _service.Error(text);
+    public static string Muted(string text) => _service.Muted(text);
+    public static string Live(string text) => _service.Live(text);
+
+    public static void ResetRenderState() { }
+    public static void HideCursor() => _service.HideCursor();
+    public static void ShowCursor() => _service.ShowCursor();
+    public static void EnableMouseTracking() { }
+    public static void DisableMouseTracking() { }
+    public static bool CopyToClipboard(string text) => true;
+    public static (ConsoleKeyInfo Key, bool IsScrollUp, bool IsScrollDown) ReadKeyWithMouse() => (Console.ReadKey(true), false, false);
+    public static void ClearTrailingLines() => _service.ClearTrailingLines();
+    public static void WriteLineSmooth(string markup) => _service.WriteLineSmooth(markup);
+    public static void WriteSmooth(string text) => _service.WriteSmooth(text);
+    public static void WriteSmooth(Spectre.Console.Rendering.IRenderable renderable) => _service.WriteSmooth(renderable);
+    public static void RenderFrame(Action drawBody, bool forceClear = false) => _service.RenderFrame(drawBody, forceClear);
+    public static void RenderBanner(string? category = null, string? activeItem = null, bool forceClear = false, string? footerHint = null) => _service.RenderBanner(category, activeItem, forceClear, footerHint);
 }

@@ -1,3 +1,6 @@
+using AgyTui.UI.Core.Layouts.Interfaces;
+using AgyTui.UI.Core.Registries;
+
 namespace AgyTui.UI.Core.Layouts;
 
 public enum MenuNodeKind
@@ -20,9 +23,9 @@ public sealed record MenuNode(
     public string SearchKey { get; } = Label.ToLowerInvariant();
 }
 
-public static class MenuNodeBuilder
+public class MenuNodeBuilderService : IMenuNodeBuilder
 {
-    public static MenuNode BuildTree()
+    public MenuNode BuildTree()
     {
         var visibleCommands = CommandRegistry.All
             .Where(c => c.ShowInTree)
@@ -217,4 +220,10 @@ public static class MenuNodeBuilder
     }
 }
 
+public static class MenuNodeBuilder
+{
+    private static readonly IMenuNodeBuilder _service = new MenuNodeBuilderService();
+    public static IMenuNodeBuilder Instance => _service;
 
+    public static MenuNode BuildTree() => _service.BuildTree();
+}

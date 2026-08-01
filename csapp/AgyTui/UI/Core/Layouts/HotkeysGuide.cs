@@ -1,8 +1,11 @@
+using AgyTui.UI.Core.Layouts.Interfaces;
+using Spectre.Console;
+
 namespace AgyTui.UI.Core.Layouts;
 
-public static class HotkeysGuide
+public class HotkeysGuideService : IHotkeysGuide
 {
-    public static void Show()
+    public void Show()
     {
         var table = new Table().Border(TableBorder.Rounded).BorderColor(Color.Cyan1);
         table.Title("[bold cyan]🛸 PowerShell Profile Hotkeys Guide[/]");
@@ -18,45 +21,38 @@ public static class HotkeysGuide
 
         table.AddRow("🌿 Git Operations", "[bold green]cg[/]", "/gs — Git status summary & conventional commit");
         table.AddRow("", "[green]gcmt[/]", "/gcmt — Conventional commit wizard");
-        table.AddRow("", "[green]git-undo[/]", "/git-undo — Soft-reset last local commit");
-        table.AddRow("", "[green]nexus[/]", "/nexus — Git Nexus multi-repo dashboard");
+        table.AddRow("", "[green]gbr[/]", "/gbr — Interactive branch selector");
+        table.AddRow("", "[green]glog[/]", "/glog — Interactive commit graph log");
+        table.AddRow("", "[green]nexus[/]", "/nexus — Repository graph & stats dashboard");
 
-        table.AddRow("🐳 Docker & DB", "[bold green]cdk[/]", "/dkcl — Docker cleanup TUI dashboard");
-        table.AddRow("", "[green]dcup[/]", "/dcup — docker compose up -d");
-        table.AddRow("", "[green]dcdown[/]", "/dcdown — docker compose down");
-        table.AddRow("", "[green]db-tui[/]", "/db-tui — SQLite database browser");
+        table.AddRow("👤 Account & Auth", "[bold green]agyswitch[/]", "/agyswitch — Switch active developer account");
+        table.AddRow("", "[green]agyquota[/]", "/agyquota — View token quota & usage stats");
 
-        table.AddRow("☁ AWS & Cloud", "[bold green]caws[/]", "/aws-local — LocalStack sandbox diagnostics");
+        table.AddRow("🐳 Docker & System", "[bold green]cdk[/]", "/docker-health — Docker system health check");
+        table.AddRow("", "[green]dkcl[/]", "/dkcl — Interactive container logs viewer");
+        table.AddRow("", "[green]csys[/]", "/disk — System disk space analyzer");
 
-        table.AddRow("🌐 System & Network", "[bold green]cnet[/]", "/public-ip — Public IP address & network status");
-        table.AddRow("", "[bold green]csys[/]", "/disk — Disk space & system health");
-        table.AddRow("", "[bold green]cssh[/]", "/ssh-info — SSH connection info & QR generator");
-        table.AddRow("", "[green]kill-port[/]", "/kill-port — Kill process by port number");
+        table.AddRow("📚 Learning & Study", "[bold green]learn[/]", "/stats — Study stats & progress dashboard");
+        table.AddRow("", "[green]due[/]", "/due — Review due cards & items");
+        table.AddRow("", "[green]weak[/]", "/weak — Practice weak items queue");
+        table.AddRow("", "[green]streak[/]", "/streak — Study streak counter");
 
-        table.AddRow("🤖 AI Assistants", "[bold green]cai[/]", "/claude — Launch Claude Code CLI");
-        table.AddRow("", "[green]codex[/]", "/codex — Launch Codex CLI");
-        table.AddRow("", "[green]openclaw[/]", "/openclaw — Launch OpenClaw via Ollama");
-        table.AddRow("", "[green]ollama-status[/]", "/ollama-status — Check local Ollama daemon");
+        table.AddRow("💎 Resources & Notes", "[bold green]obsidian[/]", "/obsidian — Open Obsidian markdown browser");
 
-        table.AddRow("👤 AGY Accounts", "[green]agyswitch[/]", "/agyswitch — Switch active account context");
-        table.AddRow("", "[green]agyquota[/]", "/agyquota — View quota usage across accounts");
-        table.AddRow("", "[green]autoswitch[/]", "/autoswitch — Toggle automatic workspace account switch");
-
-        table.AddRow("📚 Learn & Study", "[green]learn[/]", "/learn — Interactive learning topic browser");
-        table.AddRow("", "[green]vocab[/]", "/vocab — English vocabulary drill");
-        table.AddRow("", "[green]kana[/]", "/kana — Japanese Kana quiz");
-        table.AddRow("", "[green]kanji[/]", "/kanji — Kanji lookup & stroke detail");
-        table.AddRow("", "[green]algo[/]", "/algo — Algorithm visualizer");
-
-        table.AddRow("📈 Track & Progress", "[green]session[/]", "/session — Start Pomodoro study session");
-        table.AddRow("", "[green]stats[/]", "/stats — Weekly study statistics");
-        table.AddRow("", "[green]streak[/]", "/streak — Study streak display");
-
-        table.AddRow("🎨 Theme & Settings", "[green]cc[/]", "/cc — Open Command Palette");
-        table.AddRow("", "[green]theme[/]", "/theme — Select Shell theme");
-        table.AddRow("", "[green]ui-mode[/]", "/ui-mode — Toggle three-pane / flat-tree layout");
-        table.AddRow("", "[green]mobile-setup[/]", "/mobile-setup — Toggle mobile setup mode");
+        table.AddRow("🎨 Theme & Config", "[bold green]theme[/]", "/theme — Interactive shell theme selector");
+        table.AddRow("", "[green]help[/]", "/help — Open comprehensive profile help docs");
 
         AnsiConsole.Write(table);
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine("[dim grey]Press any key to return to main menu...[/]");
+        Console.ReadKey(true);
     }
+}
+
+public static class HotkeysGuide
+{
+    private static readonly IHotkeysGuide _service = new HotkeysGuideService();
+    public static IHotkeysGuide Instance => _service;
+
+    public static void Show() => _service.Show();
 }
