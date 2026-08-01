@@ -1,11 +1,14 @@
 using AgyTui.Infrastructure.Di;
+using AgyTui.UI.Core.Layouts;
+using AgyTui.UI.Core.Layouts.Interfaces;
+using AgyTui.UI.Core.Navigation.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.UI.Core.Navigation;
 
-public static class CcNavigator
+public class CcNavigatorService : ICcNavigator
 {
-    public static void Run()
+    public void Run()
     {
         Config.Load();
         try { Console.Write("\x1b[?1049h\x1b[H"); } catch { }
@@ -22,4 +25,12 @@ public static class CcNavigator
             try { Console.Write("\x1b[?1049l"); } catch { }
         }
     }
+}
+
+public static class CcNavigator
+{
+    private static readonly ICcNavigator _service = new CcNavigatorService();
+    public static ICcNavigator Instance => _service;
+
+    public static void Run() => _service.Run();
 }

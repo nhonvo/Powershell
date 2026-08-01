@@ -3,9 +3,11 @@ using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Rendering;
 
+using AgyTui.UI.Core.Navigation.Interfaces;
+
 namespace AgyTui.UI.Core.Navigation;
 
-public static class SubPageNavigator
+public class SubPageNavigatorService : ISubPageNavigator
 {
     private static Func<IAgyAccountStore>? _accountStoreFactory;
     public static Func<IAgyAccountStore> AccountStoreFactory
@@ -16,7 +18,7 @@ public static class SubPageNavigator
 
     private static string _detailsSearchBuffer = "";
 
-    public static string ProcessSearchKey(ConsoleKeyInfo key, string currentBuffer)
+    public string ProcessSearchKey(ConsoleKeyInfo key, string currentBuffer)
     {
         if (key.Key == ConsoleKey.Backspace)
         {
@@ -29,7 +31,7 @@ public static class SubPageNavigator
         return currentBuffer;
     }
 
-    public static void RunScreen(IScreenView screenView, string initialQuery = "")
+    public void RunScreen(IScreenView screenView, string initialQuery = "")
     {
         if (screenView == null) return;
         string searchBuffer = initialQuery;
@@ -96,7 +98,7 @@ public static class SubPageNavigator
         }
     }
 
-    public static void Run(string mode, string initialQuery = "")
+    public void Run(string mode, string initialQuery = "")
     {
         mode = mode.ToLowerInvariant();
         int detailsSel = 0;
@@ -512,4 +514,14 @@ public static class SubPageNavigator
         };
         ScreenChrome.WriteSmooth(panel);
     }
+}
+
+public static class SubPageNavigator
+{
+    private static readonly ISubPageNavigator _service = new SubPageNavigatorService();
+    public static ISubPageNavigator Instance => _service;
+
+    public static void Run(string mode, string initialQuery = "") => _service.Run(mode, initialQuery);
+    public static void RunScreen(IScreenView screenView, string initialQuery = "") => _service.RunScreen(screenView, initialQuery);
+    public static string ProcessSearchKey(ConsoleKeyInfo key, string currentBuffer) => _service.ProcessSearchKey(key, currentBuffer);
 }

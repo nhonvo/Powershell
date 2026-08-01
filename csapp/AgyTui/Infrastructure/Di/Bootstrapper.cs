@@ -12,6 +12,8 @@ using AgyTui.UI.Core.Common;
 using AgyTui.UI.Core.Interfaces;
 using AgyTui.UI.Core.Layouts;
 using AgyTui.UI.Core.Layouts.Interfaces;
+using AgyTui.UI.Core.Navigation;
+using AgyTui.UI.Core.Navigation.Interfaces;
 using AgyTui.UI.Screens;
 
 namespace AgyTui.Infrastructure.Di;
@@ -46,6 +48,9 @@ public static class Bootstrapper
         services.AddSingleton<IHotkeysGuide, HotkeysGuideService>();
         services.AddSingleton<IProfileHelp, ProfileHelpService>();
         services.AddSingleton<IMenuNodeBuilder, MenuNodeBuilderService>();
+        services.AddSingleton<ICcNavigator, CcNavigatorService>();
+        services.AddSingleton<ICommandPalette, CommandPaletteService>();
+        services.AddSingleton<ISubPageNavigator, SubPageNavigatorService>();
 
         // AI Services
         services.AddSingleton<IAiProcessRunner, AiProcessRunner>();
