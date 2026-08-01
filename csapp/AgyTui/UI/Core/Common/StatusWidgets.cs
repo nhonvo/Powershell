@@ -1,6 +1,7 @@
 using System.Text.Json;
 using AgyTui.Infrastructure.Di;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
+using AgyTui.UI.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Rendering;
 
@@ -102,63 +103,47 @@ public sealed class SshInfoWidget : IStatusWidget
         }
         catch { }
 
-        var user = Environment.UserName;
-        var hostName = Environment.MachineName;
-
-        var rightSb = new StringBuilder();
-        rightSb.AppendLine("[bold white]SSH Connection Info[/]");
-        rightSb.AppendLine();
-        rightSb.AppendLine("[dim]Local Network Address:[/]");
-        rightSb.AppendLine($"  [yellow]ssh {user.ToLowerInvariant()}@{localIp}[/]");
-        rightSb.AppendLine();
-        rightSb.AppendLine("[dim]Bonjour Hostname Address:[/]");
-        rightSb.AppendLine($"  [yellow]ssh {user.ToLowerInvariant()}@{hostName.ToLowerInvariant()}.local[/]");
-        rightSb.AppendLine();
-        rightSb.AppendLine("[dim]Ensure the Windows SSH service is running.[/]");
-        return new Panel(new Markup(rightSb.ToString()))
+        var panel = new Panel(
+            $"[bold green]🔑 SSH Connection Info[/]\n" +
+            $"[dim]Host:[/] [yellow]{Environment.MachineName}[/]\n" +
+            $"[dim]IP:[/] [yellow]{localIp}[/]\n" +
+            $"[dim]User:[/] [yellow]{Environment.UserName}[/]\n" +
+            $"[dim]Command:[/] [cyan]ssh {Environment.UserName}@{localIp}[/]"
+        )
         {
             Border = BoxBorder.Rounded,
-            BorderStyle = new Style(Color.Cyan1)
+            BorderStyle = new Style(Color.Grey)
         };
+
+        return panel;
     }
 }
 
 public sealed class AccountTreeWidget : IStatusWidget
 {
     public string Alias => "account-tree";
-    private readonly Func<IAgyAccountStore> _accountStoreFactory;
-    private readonly Func<IAgyQuotaEngine> _quotaEngineFactory;
-
-    public AccountTreeWidget(
-        Func<IAgyAccountStore>? accountStoreFactory = null,
-        Func<IAgyQuotaEngine>? quotaEngineFactory = null)
-    {
-        _accountStoreFactory = accountStoreFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>());
-        _quotaEngineFactory = quotaEngineFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>());
-    }
 
     public IRenderable Render()
     {
-        var store = _accountStoreFactory();
-        var quotaEng = _quotaEngineFactory();
-        var accounts = store.GetAccounts();
-        var active = store.GetActiveAccount();
-        var tree = new Tree("[bold cyan]Account Tree[/]");
-        foreach (var acc in accounts)
+        var tree = new Tree("[bold cyan]👤 Developer Accounts[/]");
+        try
         {
-            var stats = quotaEng.GetAccountStats(acc);
-            var displayName = acc;
-            if (string.Equals(acc, "default", StringComparison.OrdinalIgnoreCase))
+            var accountRepo = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountRepository>();
+            var accounts = accountRepo.GetAccounts();
+            var active = accountRepo.GetActiveAccount();
+
+            foreach (var acc in accounts)
             {
-                var email = store.GetAccountEmail("default");
-                if (!string.IsNullOrEmpty(email)) displayName = $"default ({email})";
+                var isAct = string.Equals(acc, active, StringComparison.OrdinalIgnoreCase);
+                var label = isAct ? $"[bold green]❯ {acc.EscapeMarkup()} (Active)[/]" : $"  [dim]{acc.EscapeMarkup()}[/]";
+                var node = tree.AddNode(label);
+                var meta = accountRepo.GetAccountMetadata(acc);
+                node.AddNode($"[dim]Quota Status: {meta.QuotaStatus}[/]");
             }
-            var label = acc == active ? $"[green bold]★ {displayName.EscapeMarkup()} (Active)[/]" : displayName.EscapeMarkup();
-            var node = tree.AddNode(label);
-            node.AddNode($"[dim]Login:[/] {(stats.TokenStatus == "Logged In" ? "[green]Logged In[/]" : "[red]Not Logged In[/]")}");
-            node.AddNode($"[dim]Convos:[/] {stats.ConversationsCount} [dim]Skills:[/] {stats.SkillsCount}");
-            node.AddNode($"[dim]Weekly:[/] {(int)Math.Round(stats.GeminiWeekly)}% [dim]5h:[/] {(int)Math.Round(stats.GeminiFiveHour)}%");
-            node.AddNode($"[dim]Size:[/] {stats.PrivateSize}");
+        }
+        catch
+        {
+            tree.AddNode("[dim]No account data available[/]");
         }
         return tree;
     }
@@ -167,163 +152,86 @@ public sealed class AccountTreeWidget : IStatusWidget
 public sealed class QuotaChartWidget : IStatusWidget
 {
     public string Alias => "quota-chart";
-    private readonly Func<IAgyAccountStore> _accountStoreFactory;
-    private readonly Func<IAgyQuotaEngine> _quotaEngineFactory;
-
-    public QuotaChartWidget(
-        Func<IAgyAccountStore>? accountStoreFactory = null,
-        Func<IAgyQuotaEngine>? quotaEngineFactory = null)
-    {
-        _accountStoreFactory = accountStoreFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>());
-        _quotaEngineFactory = quotaEngineFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>());
-    }
 
     public IRenderable Render()
     {
-        var store = _accountStoreFactory();
-        var quotaEng = _quotaEngineFactory();
-        var accountName = store.GetActiveAccount();
-        var quota = quotaEng.CalculateRollingQuotas(accountName);
-        var chartLabel = accountName;
-        if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
+        var chart = new BreakdownChart().Width(60);
+        try
         {
-            var email = store.GetAccountEmail("default");
-            if (!string.IsNullOrEmpty(email)) chartLabel = $"default ({email})";
+            var accountRepo = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountRepository>();
+            var accounts = accountRepo.GetAccounts();
+            foreach (var acc in accounts)
+            {
+                chart.AddItem(acc, 100, Color.Cyan1);
+            }
         }
-        var chart = new BarChart().Width(28).Label($"[bold cyan]{chartLabel.EscapeMarkup()} Quota Remaining %[/]").CenterLabel()
-            .AddItem("Gemini W", quota.RemainingWeekly, Color.Cyan1)
-            .AddItem("Gemini 5H", quota.Remaining5H, Color.Yellow)
-            .AddItem("Claude W", 100.0, Color.Green)
-            .AddItem("Claude 5H", 100.0, Color.Blue);
-
-        var lines = new List<IRenderable>
-        {
-            chart,
-            new Markup("\n"),
-            new Markup($"[dim]Weekly: {quota.CountWeekly,4}/1000 reqs[/]"),
-            new Markup($"[dim]5-Hour: {quota.Count5H,4}/50 reqs[/]"),
-            new Markup($"[dim]Refreshes in {quota.TimeWeekly}[/]")
-        };
-        return new Rows(lines);
+        catch { }
+        return chart;
     }
 }
 
 public sealed class LiveDashboardWidget : IStatusWidget
 {
     public string Alias => "live-dashboard";
-    private readonly Func<IAgyAccountStore> _accountStoreFactory;
-    private readonly Func<IAgyQuotaEngine> _quotaEngineFactory;
-
-    public LiveDashboardWidget(
-        Func<IAgyAccountStore>? accountStoreFactory = null,
-        Func<IAgyQuotaEngine>? quotaEngineFactory = null)
-    {
-        _accountStoreFactory = accountStoreFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>());
-        _quotaEngineFactory = quotaEngineFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>());
-    }
 
     public IRenderable Render()
     {
-        var table = new Table().Border(TableBorder.Rounded).BorderColor(Color.Grey);
-        table.AddColumn("[bold cyan]Account[/]");
-        table.AddColumn("[bold cyan]L[/]");
-        table.AddColumn("[bold cyan]W[/]");
-        table.AddColumn("[bold cyan]5h[/]");
-
-        var store = _accountStoreFactory();
-        var quotaEng = _quotaEngineFactory();
-        foreach (var a in store.GetAccounts())
-        {
-            var s = quotaEng.GetAccountStats(a);
-            var act = store.GetActiveAccount();
-            var displayName = a;
-            if (string.Equals(a, "default", StringComparison.OrdinalIgnoreCase))
-            {
-                var email = store.GetAccountEmail("default");
-                if (!string.IsNullOrEmpty(email)) displayName = $"default ({email})";
-            }
-            var n = a == act ? $"[green bold]* {displayName.EscapeMarkup()}[/]" : displayName.EscapeMarkup();
-            var st = s.TokenStatus == "Logged In" ? "[green]●[/]" : "[red]○[/]";
-            table.AddRow(n, st, $"{(int)Math.Round(s.GeminiWeekly)}%", $"{(int)Math.Round(s.GeminiFiveHour)}%");
-        }
-        return table;
+        var grid = new Grid();
+        grid.AddColumn();
+        grid.AddColumn();
+        grid.AddRow(new DiskSpaceWidget().Render(), new PublicIpWidget().Render());
+        grid.AddRow(new SshInfoWidget().Render(), new AccountTreeWidget().Render());
+        return grid;
     }
 }
 
 public sealed class OllamaStatusWidget : IStatusWidget
 {
-    public string Alias => "ollama-status";
-    private static readonly TtlCache<string, IRenderable> _ollamaCache = new(TimeSpan.FromSeconds(5));
-    private static bool _fetching;
-    private readonly Func<IOllamaClient> _ollamaClientFactory;
-
-    public OllamaStatusWidget(Func<IOllamaClient>? ollamaClientFactory = null)
-    {
-        _ollamaClientFactory = ollamaClientFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IOllamaClient>());
-    }
+    public string Alias => "ollama";
 
     public IRenderable Render()
     {
-        if (_ollamaCache.TryGet("widget", out var cached) && cached != null) return cached;
+        var cached = OllamaStatusWidgetCache.CachedOllamaWidget;
+        if (cached != null) return cached;
 
-        if (!_fetching)
+        var table = new Table().Border(TableBorder.Rounded).BorderColor(Color.Cyan1);
+        table.AddColumn("[bold cyan]Model[/]");
+        table.AddColumn("[bold cyan]Size[/]");
+        table.AddColumn("[bold cyan]Family[/]");
+        table.AddColumn("[bold cyan]Status[/]");
+
+        try
         {
-            _fetching = true;
-            Task.Run(() =>
+            var client = HttpClientProvider.Instance.Client;
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+            var response = client.GetStringAsync("http://127.0.0.1:11434/api/tags", cts.Token).GetAwaiter().GetResult();
+            using var doc = JsonDocument.Parse(response);
+            if (doc.RootElement.TryGetProperty("models", out var modelsProp) && modelsProp.ValueKind == JsonValueKind.Array)
             {
-                try
+                foreach (var item in modelsProp.EnumerateArray())
                 {
-                    var isRunning = _ollamaClientFactory().IsRunning;
-                    var table = new Table().Border(TableBorder.Rounded).BorderColor(isRunning ? Color.Green : Color.Red);
-                    table.AddColumn("[bold cyan]Ollama Daemon[/]");
-                    table.AddColumn("[bold cyan]Value[/]");
-                    table.AddRow("Status", isRunning ? "[green bold]● Active (Running)[/]" : "[red bold]○ Offline (Stopped)[/]");
-                    table.AddRow("Port", "11434");
+                    var name = item.GetProperty("name").GetString() ?? "";
+                    var size = item.TryGetProperty("size", out var s) ? $"{Math.Round(s.GetInt64() / 1_073_741_824.0, 1)} GB" : "N/A";
+                    var details = item.TryGetProperty("details", out var d) ? d : default;
+                    var family = details.ValueKind != JsonValueKind.Undefined && details.TryGetProperty("family", out var f) ? f.GetString() ?? "N/A" : "N/A";
 
-                    if (isRunning)
-                    {
-                        try
-                        {
-                            var client = HttpClientProvider.Instance.Client;
-                            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
-                            var response = client.GetStringAsync("http://127.0.0.1:11434/api/tags", cts.Token).GetAwaiter().GetResult();
-                            using var doc = JsonDocument.Parse(response);
-                            if (doc.RootElement.TryGetProperty("models", out var modelsProp) && modelsProp.ValueKind == JsonValueKind.Array)
-                            {
-                                var modelNames = new List<string>();
-                                foreach (var model in modelsProp.EnumerateArray())
-                                {
-                                    if (model.TryGetProperty("name", out var nameProp))
-                                    {
-                                        modelNames.Add(nameProp.GetString() ?? "");
-                                    }
-                                }
-                                if (modelNames.Count > 0)
-                                {
-                                    table.AddRow("Models", string.Join(", ", modelNames.Take(3)) + (modelNames.Count > 3 ? "..." : ""));
-                                }
-                            }
-                        }
-                        catch { }
-                    }
-                    _ollamaCache.Set("widget", table);
+                    table.AddRow(name.EscapeMarkup(), size, family.EscapeMarkup(), "[green]Ready[/]");
                 }
-                catch { }
-                finally { _fetching = false; }
-            });
+            }
+        }
+        catch
+        {
+            table.AddRow("[dim]Ollama Server[/]", "-", "-", "[red]Offline[/]");
         }
 
-        var initTable = new Table().Border(TableBorder.Rounded).BorderColor(Color.Grey);
-        initTable.AddColumn("[bold cyan]Ollama Daemon[/]");
-        initTable.AddColumn("[bold cyan]Value[/]");
-        initTable.AddRow("Status", "[yellow]Checking...[/]");
-        return initTable;
+        OllamaStatusWidgetCache.CachedOllamaWidget = table;
+        return table;
     }
 }
 
-public static class StatusWidgetRegistry
+public class StatusWidgetRegistryService : IStatusWidgetRegistry
 {
-    private static readonly List<IStatusWidget> _widgets = new()
+    private readonly List<IStatusWidget> _widgets = new()
     {
         new DiskSpaceWidget(),
         new PublicIpWidget(),
@@ -334,12 +242,21 @@ public static class StatusWidgetRegistry
         new OllamaStatusWidget()
     };
 
-    public static IEnumerable<IStatusWidget> GetAll() => _widgets;
+    public IEnumerable<IStatusWidget> GetAll() => _widgets;
 
-    public static IStatusWidget? GetByAlias(string alias)
+    public IStatusWidget? GetByAlias(string alias)
     {
         var registeredWidgets = Bootstrapper.ServiceProvider.GetServices<IStatusWidget>();
         var found = registeredWidgets.FirstOrDefault(w => string.Equals(w.Alias, alias, StringComparison.OrdinalIgnoreCase));
         return found ?? _widgets.FirstOrDefault(w => string.Equals(w.Alias, alias, StringComparison.OrdinalIgnoreCase));
     }
+}
+
+public static class StatusWidgetRegistry
+{
+    private static readonly IStatusWidgetRegistry _service = new StatusWidgetRegistryService();
+    public static IStatusWidgetRegistry Instance => _service;
+
+    public static IEnumerable<IStatusWidget> GetAll() => _service.GetAll();
+    public static IStatusWidget? GetByAlias(string alias) => _service.GetByAlias(alias);
 }

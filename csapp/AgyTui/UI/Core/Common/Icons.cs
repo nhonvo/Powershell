@@ -1,8 +1,11 @@
+using AgyTui.Domain.LearnContext;
+using AgyTui.UI.Core.Interfaces;
+
 namespace AgyTui.UI.Core.Common;
 
-public static class Icons
+public class IconsService : IIcons
 {
-    public static bool IsUtf8Supported
+    public bool IsUtf8Supported
     {
         get
         {
@@ -17,13 +20,13 @@ public static class Icons
         }
     }
 
-    public static bool UseNerdFonts { get; set; } =
+    public bool UseNerdFonts { get; set; } =
         string.Equals(Environment.GetEnvironmentVariable("AGY_NERD_FONTS"), "true", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(Environment.GetEnvironmentVariable("POSH_THEME_NERD_FONTS"), "true", StringComparison.OrdinalIgnoreCase);
 
-    public static int GetGlyphDisplayWidth(string glyph) => GetStringDisplayWidth(glyph);
+    public int GetGlyphDisplayWidth(string glyph) => GetStringDisplayWidth(glyph);
 
-    public static int GetStringDisplayWidth(string text)
+    public int GetStringDisplayWidth(string text)
     {
         if (string.IsNullOrEmpty(text)) return 0;
         int width = 0;
@@ -35,7 +38,7 @@ public static class Icons
         return width;
     }
 
-    public static int GetCodePointDisplayWidth(int codePoint)
+    public int GetCodePointDisplayWidth(int codePoint)
     {
         if (codePoint >= 0x1F300 && codePoint <= 0x1FAFF) return 2;
         if (codePoint >= 0x4E00 && codePoint <= 0x9FFF) return 2;
@@ -44,7 +47,7 @@ public static class Icons
         return 1;
     }
 
-    public static string GetFileIcon(string ext)
+    public string GetFileIcon(string ext)
     {
         ext = ext.ToLowerInvariant();
         if (UseNerdFonts)
@@ -100,8 +103,8 @@ public static class Icons
         }
     }
 
-    public static string FolderClosed => UseNerdFonts ? "󰉋" : (IsUtf8Supported ? "📁" : "[[+]]");
-    public static string FolderOpen => UseNerdFonts ? "󰉓" : (IsUtf8Supported ? "📂" : "[[-]]");
+    public string FolderClosed => UseNerdFonts ? "󰉋" : (IsUtf8Supported ? "📁" : "[[+]]");
+    public string FolderOpen => UseNerdFonts ? "󰉓" : (IsUtf8Supported ? "📂" : "[[-]]");
 
     private record CategoryMeta(string Keyword, string NerdIcon, string Utf8Icon, string AsciiIcon, string Hotkey);
 
@@ -127,7 +130,7 @@ public static class Icons
         new("docs", "🛸", "🛸", "[AGY]", "help"),
     ];
 
-    public static string GetCategoryIcon(string categoryLabel)
+    public string GetCategoryIcon(string categoryLabel)
     {
         var lower = categoryLabel.ToLowerInvariant();
         var match = Array.Find(Categories, c => lower.Contains(c.Keyword));
@@ -138,14 +141,14 @@ public static class Icons
         return UseNerdFonts ? "󰉋" : (IsUtf8Supported ? "📂" : "[[+]]");
     }
 
-    public static string GetCategoryHotkey(string categoryLabel)
+    public string GetCategoryHotkey(string categoryLabel)
     {
         var lower = categoryLabel.ToLowerInvariant();
         var match = Array.Find(Categories, c => lower.Contains(c.Keyword));
         return match?.Hotkey ?? "";
     }
 
-    public static string GetCommandIcon(string alias, string category)
+    public string GetCommandIcon(string alias, string category)
     {
         alias = alias.ToLowerInvariant();
         category = category.ToLowerInvariant();
@@ -169,7 +172,7 @@ public static class Icons
         return GetFileIcon(".txt");
     }
 
-    private static string? GetAliasIcon(string alias)
+    private string? GetAliasIcon(string alias)
     {
         if (UseNerdFonts)
         {
@@ -269,7 +272,7 @@ public static class Icons
         };
     }
 
-    public static string GetStatusIcon(string status)
+    public string GetStatusIcon(string status)
     {
         status = status.ToLowerInvariant();
         return status switch
@@ -283,7 +286,7 @@ public static class Icons
         };
     }
 
-    public static string GetGitGutter(string changeType)
+    public string GetGitGutter(string changeType)
     {
         return changeType.ToLowerInvariant() switch
         {
@@ -294,7 +297,7 @@ public static class Icons
         };
     }
 
-    public static string GetProviderIcon(string provider)
+    public string GetProviderIcon(string provider)
     {
         provider = provider.ToLowerInvariant();
         if (UseNerdFonts)
@@ -323,7 +326,7 @@ public static class Icons
         }
     }
 
-    public static string GetModelIcon(string family)
+    public string GetModelIcon(string family)
     {
         family = family.ToLowerInvariant();
         if (family.Contains("llama")) return "🦙";
@@ -333,7 +336,7 @@ public static class Icons
         return "🧠";
     }
 
-    public static string GetSubjectIcon(string subject)
+    public string GetSubjectIcon(string subject)
     {
         subject = subject.ToLowerInvariant();
         if (UseNerdFonts)
@@ -366,7 +369,7 @@ public static class Icons
         }
     }
 
-    public static string GetMasteryIcon(string mastery)
+    public string GetMasteryIcon(string mastery)
     {
         return mastery.ToLowerInvariant() switch
         {
@@ -379,10 +382,36 @@ public static class Icons
         };
     }
 
-    public static string GetMasteryIcon(SrState sr)
+    public string GetMasteryIcon(SrState sr)
     {
         if (sr.Status.Equals("mastered", StringComparison.OrdinalIgnoreCase) || sr.IntervalDays >= 21) return "🌳";
         if (sr.Status.Equals("review", StringComparison.OrdinalIgnoreCase) || sr.IntervalDays >= 3) return "🌿";
         return "🌱";
     }
+}
+
+public static class Icons
+{
+    private static readonly IIcons _service = new IconsService();
+    public static IIcons Instance => _service;
+
+    public static bool IsUtf8Supported => _service.IsUtf8Supported;
+    public static bool UseNerdFonts { get => _service.UseNerdFonts; set => _service.UseNerdFonts = value; }
+    public static string FolderClosed => _service.FolderClosed;
+    public static string FolderOpen => _service.FolderOpen;
+
+    public static int GetGlyphDisplayWidth(string glyph) => _service.GetGlyphDisplayWidth(glyph);
+    public static int GetStringDisplayWidth(string text) => _service.GetStringDisplayWidth(text);
+    public static int GetCodePointDisplayWidth(int codePoint) => _service.GetCodePointDisplayWidth(codePoint);
+    public static string GetFileIcon(string ext) => _service.GetFileIcon(ext);
+    public static string GetCategoryIcon(string categoryLabel) => _service.GetCategoryIcon(categoryLabel);
+    public static string GetCategoryHotkey(string categoryLabel) => _service.GetCategoryHotkey(categoryLabel);
+    public static string GetCommandIcon(string alias, string category) => _service.GetCommandIcon(alias, category);
+    public static string GetStatusIcon(string status) => _service.GetStatusIcon(status);
+    public static string GetGitGutter(string changeType) => _service.GetGitGutter(changeType);
+    public static string GetProviderIcon(string provider) => _service.GetProviderIcon(provider);
+    public static string GetModelIcon(string family) => _service.GetModelIcon(family);
+    public static string GetSubjectIcon(string subject) => _service.GetSubjectIcon(subject);
+    public static string GetMasteryIcon(string mastery) => _service.GetMasteryIcon(mastery);
+    public static string GetMasteryIcon(SrState sr) => _service.GetMasteryIcon(sr);
 }

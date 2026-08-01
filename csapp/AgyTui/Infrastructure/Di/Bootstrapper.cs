@@ -8,6 +8,8 @@ using AgyTui.UI.Core.State;
 using Microsoft.Extensions.DependencyInjection;
 
 using AgyTui.Infrastructure.Persistence.Seeding;
+using AgyTui.UI.Core.Common;
+using AgyTui.UI.Core.Interfaces;
 using AgyTui.UI.Screens;
 
 namespace AgyTui.Infrastructure.Di;
@@ -30,6 +32,14 @@ public static class Bootstrapper
         services.AddSingleton<IHttpClientProvider, HttpClientProvider>();
         services.AddSingleton<IProcessRunner, ProcessRunner>();
         services.AddSingleton<ISystemHelper, SystemHelper>();
+        services.AddSingleton<IAgyUiComponents, AgyUiComponentsService>();
+        services.AddSingleton<IIcons, IconsService>();
+        services.AddSingleton<IScrollableListView, ScrollableListViewService>();
+        services.AddSingleton<ISpectreMenu, SpectreMenuService>();
+        services.AddSingleton<ISpectrePanel, SpectrePanelService>();
+        services.AddSingleton<ISpectreTable, SpectreTableService>();
+        services.AddSingleton<ISpectreProgress, SpectreProgressService>();
+        services.AddSingleton<IStatusWidgetRegistry, StatusWidgetRegistryService>();
 
         // AI Services
         services.AddSingleton<IAiProcessRunner, AiProcessRunner>();

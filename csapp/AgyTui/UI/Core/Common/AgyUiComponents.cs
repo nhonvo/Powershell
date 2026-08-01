@@ -1,10 +1,13 @@
+using System.Text;
+using AgyTui.UI.Core.Interfaces;
+using Spectre.Console;
 using Spectre.Console.Rendering;
 
 namespace AgyTui.UI.Core.Common;
 
-public static class AgyUiComponents
+public class AgyUiComponentsService : IAgyUiComponents
 {
-    public static IRenderable RenderFilter(string searchBuffer, bool active)
+    public IRenderable RenderFilter(string searchBuffer, bool active)
     {
         var text = string.IsNullOrEmpty(searchBuffer)
             ? $"[bold {AgyThemeColors.Accent}]🔍 Filter:[/] [dim][[ / ]] type to filter...[/]"
@@ -13,7 +16,7 @@ public static class AgyUiComponents
         return new Markup(text);
     }
 
-    public static IRenderable RenderScrollIndicator(int totalCount, int topRow, int endRow, int maxRows)
+    public IRenderable RenderScrollIndicator(int totalCount, int topRow, int endRow, int maxRows)
     {
         if (totalCount <= maxRows)
         {
@@ -50,7 +53,7 @@ public static class AgyUiComponents
         return new Markup(sb.ToString());
     }
 
-    public static IRenderable RenderFooterNote(string noteText, int maxLen = 100)
+    public IRenderable RenderFooterNote(string noteText, int maxLen = 100)
     {
         var rawText = string.IsNullOrWhiteSpace(noteText)
             ? "Use [↑/↓] or [j/k] to navigate options."
@@ -61,4 +64,14 @@ public static class AgyUiComponents
         var text = $"[bold {AgyThemeColors.Secondary}]💡 Tip:[/] [white]{rawText.EscapeMarkup()}[/]";
         return new Markup(text);
     }
+}
+
+public static class AgyUiComponents
+{
+    private static readonly IAgyUiComponents _service = new AgyUiComponentsService();
+    public static IAgyUiComponents Instance => _service;
+
+    public static IRenderable RenderFilter(string searchBuffer, bool active) => _service.RenderFilter(searchBuffer, active);
+    public static IRenderable RenderScrollIndicator(int totalCount, int topRow, int endRow, int maxRows) => _service.RenderScrollIndicator(totalCount, topRow, endRow, maxRows);
+    public static IRenderable RenderFooterNote(string noteText, int maxLen = 100) => _service.RenderFooterNote(noteText, maxLen);
 }
