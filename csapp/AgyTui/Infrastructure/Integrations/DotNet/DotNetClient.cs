@@ -8,6 +8,8 @@ public class DotNetClient : CliToolWrapper, IDotNetClient
 
     public void RemoveBinObj(string rootPath)
     {
+        if (!Directory.Exists(rootPath)) return;
+
         var targets = new[] { "bin", "obj" };
         var deleted = new List<string>();
         var failed = new List<string>();

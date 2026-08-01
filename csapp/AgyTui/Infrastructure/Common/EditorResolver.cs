@@ -1,10 +1,10 @@
-using System.Runtime.InteropServices;
-
 namespace AgyTui.Infrastructure.Common;
 
-public static class EditorResolver
+public class EditorResolver : IEditorResolver
 {
-    public static string Resolve()
+    public string Resolve() => ResolveEditor();
+
+    public static string ResolveEditor()
     {
         var visual = Environment.GetEnvironmentVariable("VISUAL");
         if (!string.IsNullOrWhiteSpace(visual) && !visual.Equals("notepad", StringComparison.OrdinalIgnoreCase)) return visual;

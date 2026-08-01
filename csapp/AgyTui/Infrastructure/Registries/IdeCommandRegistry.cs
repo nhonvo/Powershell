@@ -1,4 +1,6 @@
 using AgyTui.Infrastructure.Integrations.Ai.Services;
+using AgyTui.Infrastructure.Di;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Registries;
 
@@ -43,7 +45,7 @@ public static class IdeCommandRegistry
             if (ctx.CurrentFile != null) SymbolSearch.BrowseSymbols(ctx.CurrentFile);
         }),
         new("edit", "", "Open current file in $EDITOR", "Navigation", (ctx, _) => {
-            if (ctx.CurrentFile != null) ProcessRunner.Run(EditorResolver.Resolve(), $"\"{ctx.CurrentFile}\"");
+            if (ctx.CurrentFile != null) ProcessRunner.Run(Bootstrapper.ServiceProvider.GetRequiredService<IEditorResolver>().Resolve(), $"\"{ctx.CurrentFile}\"");
         }),
         new("ask", "[question]", "Ask AI about the current file", "AI", (ctx, a) => {
             if (ctx.CurrentFile != null && File.Exists(ctx.CurrentFile)) {

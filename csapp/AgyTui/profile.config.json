@@ -1,21 +1,8 @@
 {
-  // Shell environment settings loaded by Microsoft.PowerShell_profile.ps1 at startup
-  "Environment": {
-    "PoshThemesPath": "psapp/asset/powershell-themes",
-    "PsModulePath": "psapp/Modules",
-    "EnableFastStartup": false,
-    "ForceLoadRedirected": false,
-    "Theme": "neko"
-  },
-  "Proxy": {
-    "HttpProxy": "",
-    "HttpsProxy": "",
-    "NoProxy": ""
-  },
   "Ui": {
     "Mode": "flat-tree",
     "Density": "compact",
-    "ActiveTheme": "neko",
+    "ActiveTheme": "non_existent_theme_9999",
     "EnableMobile": false,
     "FavoriteAliases": [
       "proj",
@@ -43,10 +30,22 @@
     "VerboseStartup": false,
     "StartupLogFile": "",
     "PoshThemesPath": "",
-    "AgySourceHome": "",
+    "AgySourceHome": "C:\\Users\\TruongNhon\\AppData\\Local\\Temp\\agy_cmd_log_test_74ff01d8-45a3-4630-bbbc-6939d7052625",
     "GlobalBinDir": ""
   },
   "Obsidian": {
-    "VaultPath": ""
+    "VaultPath": "C:\\Users\\TruongNhon\\Documents\\Powershell\\csapp\\AgyTui\\data\\learn"
+  },
+  "Proxy": {
+    "HttpProxy": "",
+    "HttpsProxy": "",
+    "NoProxy": ""
+  },
+  "Environment": {
+    "PoshThemesPath": "psapp/asset/powershell-themes",
+    "PsModulePath": "psapp/Modules",
+    "EnableFastStartup": false,
+    "ForceLoadRedirected": false,
+    "Theme": "neko"
   }
 }

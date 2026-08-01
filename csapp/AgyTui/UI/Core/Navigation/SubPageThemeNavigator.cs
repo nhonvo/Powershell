@@ -1,4 +1,6 @@
 using Spectre.Console.Rendering;
+using AgyTui.Infrastructure.Di;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.UI.Core.Navigation;
 
@@ -39,7 +41,7 @@ public static class SubPageThemeNavigator
             }
         }
 
-        var themePath = ThemeManager.SetTheme(themesPath, selectedTheme);
+        var themePath = Bootstrapper.ServiceProvider.GetRequiredService<IThemeManager>().SetTheme(themesPath, selectedTheme);
         if (!string.IsNullOrEmpty(themePath))
         {
             var agyHome = AppPaths.GeminiHome;

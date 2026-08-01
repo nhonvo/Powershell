@@ -31,17 +31,31 @@ public static class CommandRegistry
                 " If exactly one matches, jumps immediately.",
                 " Alias: p, prj"
             ]),
-        new("p", "Navigate Workspace (Alias)", "Alias for proj workspace navigation", "[Workspace & Dev]", "Navigation",
-            ["p <query> — Quick alias for proj workspace navigation."]),
-        new("prj", "Navigate Workspace (Alias)", "Alias for proj workspace navigation", "[Workspace & Dev]", "Navigation",
-            ["prj <query> — Quick alias for proj workspace navigation."]),
-        new("f", "Open Explorer", "Open File Explorer in active workspace", "[Workspace & Dev]", "Navigation",
-            ["f — Opens Windows File Explorer at the current working directory."]),
         new("ide", "Terminal IDE", "Launch terminal IDE session", "[Workspace & Dev]", "IDE",
             [
                 "ide — Interactive Terminal IDE with file Explorer, Code Viewer, and Symbol Search.",
                 " Keys: ↑↓/j/k navigate | Enter select | / search symbols | q back."
             ]),
+        new("ask-ai", "Antigravity AI Agent", "AI pair programming deck & chat", "[AI Agent & Ollama]", "AI",
+            ["ask-ai — Interactive AI pair programming deck & chat."]),
+        new("vault", "Vault & Account Quotas", "Manage tokens, quota, and credentials", "[AGY Account Switch]", "Security",
+            ["vault — Manage tokens, quota, and credentials."]),
+        new("exit", "Exit Control Center", "Clean exit from TUI", "[Help & Docs]", "System",
+            ["exit — Clean exit from Control Center."]),
+        new("prune-workspaces", "Prune Stale Workspaces", "Removes non-existent paths from workspace registry", "[Workspace & Dev]", "Navigation",
+            ["prune-workspaces — Prunes missing directory paths from workspace registry."]),
+        new("discover-workspaces", "Auto-Discover Projects", "Discovers unregistered projects in base directory", "[Workspace & Dev]", "Navigation",
+            ["discover-workspaces — Auto-scans container paths for new projects."]),
+        new("daily-note", "Open Today's Daily Note", "Opens today's Obsidian daily note", "[Obsidian & Resources]", "Obsidian",
+            ["daily-note — Opens today's markdown note in Obsidian vault."]),
+        new("orphan-notes", "List Orphan Notes", "Finds notes with zero inbound/outbound wikilinks", "[Obsidian & Resources]", "Obsidian",
+            ["orphan-notes — Lists orphan notes without wikilinks."]),
+        new("mastery-tree", "Topic Mastery Tree", "Displays topic mastery tree view", "[Learn & Study]", "Learn",
+            ["mastery-tree — Displays learning topic mastery hierarchy."]),
+        new("p", "Navigate Workspace (Alias)", "Alias for proj workspace navigation", "[Workspace & Dev]", "Navigation",
+            ["p <query> — Quick alias for proj workspace navigation."]),
+        new("prj", "Navigate Workspace (Alias)", "Alias for proj workspace navigation", "[Workspace & Dev]", "Navigation",
+            ["prj <query> — Quick alias for proj workspace navigation."]),
         new("ide-diff", "Diff Viewer", "Git diff viewer for current workspace", "[Workspace & Dev]", "IDE",
             [
                 "ide-diff — Full-screen colorized side-by-side / unified git diff viewer.",
@@ -488,67 +502,28 @@ public static class CommandRegistry
         var orderedAliases = new[]
         {
             // Category 1: [Workspace & Dev]
-            "go", "scaffold", "proj", "ide", "f", "open-term", "ide-diff", "ide-search",
-            // Git group
-            "gs", "ga", "gbr", "gcmt", "glog", "gpull", "gpush", "gf", "gd", "git-undo",
-            // Repo group
-            "nexus", "repo-graph", "nexus-stats",
-            // Dotnet group
-            "dbld", "dr", "dtst", "df", "dcl", "drestore", "dpublish", "dpack", "dpubpkg", "dwatch", "rebuild-tui", "clean-build", "add-migration", "update-db",
-            // Docker group
-            "docker-health", "dkcl", "dkrmac", "dkstac", "dimg", "dlogs", "dcup", "dcdown",
-            "aws-whoami", "aws-local", "aws-s3", "aws-sqs", "aws-ssm", "aws-sns", "aws-dynamodb", "aws-lambda",
+            "proj", "ide", "p", "prj", "f", "open-term", "ide-diff", "ide-search", "scaffold", "go",
 
-            // Category 2: [AGY Account Switch]
-            // Secret Vault group
-            "secret-set", "secret-get", "secret-list", "secret-remove",
-            // Deck group
-            "deck-status", "deck-setup", "deck-start", "deck-online",
-            // Mgr group
-            "mgr-status", "mgr-setup", "mgr-start",
-            "agyswitch", "agyquota",
-            // Quota group
-            "account-tree", "quota-chart", "live-dashboard",
-            // Account Toggles group
-            "autoswitch", "no-auto-commit", "autocommit",
+            // Category 2: [AI Agent & Ollama]
+            "ask-ai", "claude", "codex", "hermes", "openclaw", "ollama-status", "ollama-models",
 
-            // Category 3: [AI Agent & Ollama]
-            // Ollama group
-            "ollama-status", "ollama-models", "ollama-pull", "ollama-start", "ollama-logs", "ollama-benchmark",
-            // Other agents/models
-            "openclaw", "hermes", "hermesd",
-            "claude", "claude-cloud", "claude-ollama",
-            "codex", "codex-cloud", "codex-ollama",
-            "agy-cli", "ai-history",
+            // Category 3: [AGY Account Switch]
+            "vault", "agyswitch", "agyquota", "secret-set", "secret-get", "secret-list", "secret-remove",
 
-            // Category 4: [Appearance & Layout]
-            "theme", "ui-mode", "density", "mobile-setup", "favorite", "favorites",
+            // Category 4: [Learn & Study]
+            "learn", "learn-gen", "guide", "slash-manual", "skills",
 
-            // Category 5: [Learn & Study]
-            "learn", "learn-gen",
-            // Study tracking
-            "session", "stats", "goals", "streak", "due", "progress", "weak",
-            // Obsidian group (in category 5!)
-            "obsidian", "refresh", "vault-open",
-            // jpSuite
-            "kana", "kanji", "jlpt", "grammar",
-            // englishVocab
-            "word-of-day", "vocab", "flashcard",
-            // csharpMaster
-            "quiz", "snippets", "sheets",
-            // dsaArchitect
-            "algo", "complexity", "problems",
-            // careerInterview
-            "interview", "star", "mock",
+            // Category 5: [Git & Repo Tools]
+            "gs", "ga", "gbr", "gcmt", "glog", "gpull", "gpush", "gf", "gd",
 
-            // Category 6: [Obsidian & Resources]
-            "obs-graph", "add-resource",
+            // Category 6: [Appearance & Layout]
+            "theme", "ui-mode", "density", "favorite", "favorites",
 
             // Category 7: [System & Network]
-            "disk", "public-ip", "kill-port", "ssh-info", "tailscale-status", "ssh-qr",
+            "config", "disk", "public-ip", "kill-port", "ssh-info",
 
             // Category 8: [Help & Docs]
-            "cc", "help", "hotkeys"
+            "exit", "cc", "help", "hotkeys"
         };
 
         var orderMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);

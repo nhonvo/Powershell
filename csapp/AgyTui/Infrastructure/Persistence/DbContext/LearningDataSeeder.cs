@@ -5,11 +5,6 @@ using AgyTui.Infrastructure.Persistence.Interfaces;
 
 namespace AgyTui.Infrastructure.Persistence.DbContext;
 
-public interface ILearningDataSeeder
-{
-    void SeedFromFiles();
-}
-
 public class LearningDataSeeder : ILearningDataSeeder
 {
     private readonly ISqliteDatabase _db;

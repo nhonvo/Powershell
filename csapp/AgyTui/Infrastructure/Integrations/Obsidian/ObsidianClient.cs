@@ -7,9 +7,15 @@ public sealed record NoteMatch(string Title, string RelativePath, string FullPat
 public sealed record NoteNode(string Title, string NodePath, string[] OutLinks);
 public sealed record NoteFrontmatter(string[] Tags, string Topic, string Level, string Type, string Source, string Difficulty);
 
-public static class ObsidianBridge
+public class ObsidianBridge : IObsidianBridge
 {
-    public static void Configure()
+    public void Configure() => ConfigureStatic();
+    public void Run() => RunStatic();
+    public void SearchNotes() => SearchNotesStatic();
+    public void ShowDailyNote(string? vaultPath = null) => ShowDailyNoteStatic(vaultPath);
+    public void ListByTag() => ListByTagStatic();
+
+    public static void ConfigureStatic()
     {
         var vaultPath = AnsiConsole.Ask<string>("[cyan]Obsidian vault path:[/]").Trim();
         if (!Directory.Exists(vaultPath))
@@ -44,7 +50,7 @@ public static class ObsidianBridge
         return null;
     }
 
-    public static void Run()
+    public static void RunStatic()
     {
         var cfg = LoadConfig();
         if (cfg == null)
@@ -65,16 +71,16 @@ public static class ObsidianBridge
                     if (Directory.Exists(vaultPath)) SearchNotes(vaultPath, "");
                     break;
                 case 1:
-                    if (Directory.Exists(vaultPath)) ListByTag(vaultPath);
+                    if (Directory.Exists(vaultPath)) ListByTagStatic(vaultPath);
                     break;
                 case 2:
-                    if (Directory.Exists(vaultPath)) ShowDailyNote(vaultPath);
+                    if (Directory.Exists(vaultPath)) ShowDailyNoteStatic(vaultPath);
                     break;
                 case 3:
                     if (Directory.Exists(vaultPath)) ObsidianGraph.Run(vaultPath);
                     break;
                 case 4:
-                    Configure();
+                    ConfigureStatic();
                     cfg = LoadConfig();
                     vaultPath = cfg?.VaultPath ?? "";
                     break;
@@ -83,6 +89,13 @@ public static class ObsidianBridge
             }
             if (!Directory.Exists(vaultPath) && idx < 4) SpectrePanel.Warning("Configure vault path first.");
         }
+    }
+
+    public static void SearchNotesStatic()
+    {
+        var cfg = LoadConfig();
+        if (cfg != null && Directory.Exists(cfg.VaultPath))
+            SearchNotes(cfg.VaultPath, "");
     }
 
     public static void SearchNotes(string vaultPath, string query)
@@ -121,8 +134,10 @@ public static class ObsidianBridge
             .ToArray();
     }
 
-    public static void ShowDailyNote(string vaultPath)
+    public static void ShowDailyNoteStatic(string? vaultPath = null)
     {
+        vaultPath ??= LoadConfig()?.VaultPath ?? AppPaths.DefaultLearningVaultDir;
+        if (!Directory.Exists(vaultPath)) return;
         var noteFile = Path.Combine(vaultPath, $"{DateTime.Today:yyyy-MM-dd}.md");
         if (!File.Exists(noteFile))
         {
@@ -132,7 +147,7 @@ public static class ObsidianBridge
         ShowNote(noteFile, DateTime.Today.ToString("yyyy-MM-dd"));
     }
 
-    public static void ListByTag(string vaultPath)
+    public static void ListByTagStatic(string? vaultPath = null)
     {
         var allTags = GetVaultMarkdownFiles(vaultPath)
             .SelectMany(f => ParseFrontmatter(f)?.Tags ?? [])
@@ -158,7 +173,7 @@ public static class ObsidianBridge
 
     public static void AppendStudySummary(string vaultPath, string topic, string summary)
     {
-        ShowDailyNote(vaultPath);
+        ShowDailyNoteStatic(vaultPath);
         var noteFile = Path.Combine(vaultPath, $"{DateTime.Today:yyyy-MM-dd}.md");
         var block = $"\n## AGY Study — {DateTime.Now:HH:mm}\n{summary}\n";
         File.AppendAllText(noteFile, block, Encoding.UTF8);

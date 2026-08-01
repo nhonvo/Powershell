@@ -35,44 +35,36 @@ public static class SubPageProjNavigator
         for (int i = 0; i < roots.Length; i++)
         {
             var w = roots[i];
-            bool rootMatch = !string.IsNullOrEmpty(searchBuffer) &&
-                (SystemHelper.IsFuzzyMatch(w.Name, searchBuffer) || SystemHelper.IsFuzzyMatch(w.WorkspacePath, searchBuffer));
-
             var children = WorkspaceRegistry.GetChildWorkspaces(w.WorkspacePath);
-            bool childMatch = !string.IsNullOrEmpty(searchBuffer) && children.Any(c =>
-                SystemHelper.IsFuzzyMatch(c.Name, searchBuffer) || SystemHelper.IsFuzzyMatch(c.WorkspacePath, searchBuffer));
+            string query = searchBuffer.Trim();
 
-            if (!string.IsNullOrEmpty(searchBuffer) && !rootMatch && !childMatch)
+            if (!string.IsNullOrEmpty(query))
             {
-                continue;
-            }
+                bool rootMatch = SystemHelper.IsFuzzyMatch(w.Name, query);
+                var matchingChildren = children.Where(c => SystemHelper.IsFuzzyMatch(c.Name, query)).ToList();
+                bool hasChildMatch = matchingChildren.Count > 0;
 
-            list.Add(new FlatItem
-            {
-                Workspace = w,
-                WorkspaceIndex = i,
-                ActionIndex = -1,
-                Depth = 0,
-                ChildCount = children.Length
-            });
+                if (!rootMatch && !hasChildMatch)
+                {
+                    continue;
+                }
 
-            bool isExpanded = string.IsNullOrEmpty(searchBuffer)
-                ? (i == ExpandedWorkspaceIndex)
-                : (rootMatch || childMatch);
+                list.Add(new FlatItem
+                {
+                    Workspace = w,
+                    WorkspaceIndex = i,
+                    ActionIndex = -1,
+                    Depth = 0,
+                    ChildCount = hasChildMatch ? matchingChildren.Count : children.Length
+                });
 
-            if (isExpanded)
-            {
-                if (children.Length > 0)
+                // Expand root ONLY if child nodes matched query
+                if (hasChildMatch)
                 {
                     for (int c = 0; c < children.Length; c++)
                     {
                         var child = children[c];
-                        bool thisChildMatch = !string.IsNullOrEmpty(searchBuffer) && (
-                            SystemHelper.IsFuzzyMatch(child.Name, searchBuffer) ||
-                            SystemHelper.IsFuzzyMatch(child.WorkspacePath, searchBuffer));
-
-                        bool showChild = string.IsNullOrEmpty(searchBuffer) || thisChildMatch;
-                        if (!showChild) continue;
+                        if (!SystemHelper.IsFuzzyMatch(child.Name, query)) continue;
 
                         list.Add(new FlatItem
                         {
@@ -92,21 +84,60 @@ public static class SubPageProjNavigator
                         }
                     }
                 }
-
-                if (w.Links != null && w.Links.Length > 0)
+            }
+            else
+            {
+                list.Add(new FlatItem
                 {
-                    list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -100, Depth = 1 });
-                    for (int k = 0; k < w.Links.Length; k++)
+                    Workspace = w,
+                    WorkspaceIndex = i,
+                    ActionIndex = -1,
+                    Depth = 0,
+                    ChildCount = children.Length
+                });
+
+                bool isExpanded = (i == ExpandedWorkspaceIndex);
+                if (isExpanded)
+                {
+                    if (children.Length > 0)
                     {
-                        list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -2 - k, Depth = 2 });
+                        for (int c = 0; c < children.Length; c++)
+                        {
+                            var child = children[c];
+                            list.Add(new FlatItem
+                            {
+                                Workspace = child,
+                                WorkspaceIndex = i,
+                                ActionIndex = -300 - c,
+                                IsChildWorkspace = true,
+                                Depth = 1
+                            });
+
+                            if (ExpandedActionsWorkspacePath == child.WorkspacePath)
+                            {
+                                for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
+                                {
+                                    list.Add(new FlatItem { Workspace = child, WorkspaceIndex = i, ActionIndex = j, Depth = 2 });
+                                }
+                            }
+                        }
                     }
-                }
 
-                if (ExpandedActionsWorkspacePath == w.WorkspacePath)
-                {
-                    for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
+                    if (w.Links != null && w.Links.Length > 0)
                     {
-                        list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = j, Depth = 1 });
+                        list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -100, Depth = 1 });
+                        for (int k = 0; k < w.Links.Length; k++)
+                        {
+                            list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -2 - k, Depth = 2 });
+                        }
+                    }
+
+                    if (ExpandedActionsWorkspacePath == w.WorkspacePath)
+                    {
+                        for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
+                        {
+                            list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = j, Depth = 1 });
+                        }
                     }
                 }
             }

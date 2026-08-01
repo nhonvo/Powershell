@@ -6,12 +6,6 @@ using Spectre.Console.Rendering;
 
 namespace AgyTui.UI.Core.Common;
 
-public interface IStatusWidget
-{
-    string Alias { get; }
-    IRenderable Render();
-}
-
 public static class OllamaStatusWidgetCache
 {
     private static readonly TtlCache<string, Table> _cache = new(TimeSpan.FromSeconds(30));

@@ -18,6 +18,10 @@ public static class SubPageNavigator
 
     public static string ProcessSearchKey(ConsoleKeyInfo key, string currentBuffer)
     {
+        if (key.Key == ConsoleKey.Backspace)
+        {
+            return currentBuffer.Length > 0 ? currentBuffer[..^1] : "";
+        }
         if (!char.IsControl(key.KeyChar) && key.KeyChar != '\0')
         {
             return currentBuffer + key.KeyChar;

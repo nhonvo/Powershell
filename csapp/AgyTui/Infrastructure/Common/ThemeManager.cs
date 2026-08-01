@@ -3,9 +3,14 @@ using System.Text.RegularExpressions;
 
 namespace AgyTui.Infrastructure.Common;
 
-public static class ThemeManager
+public class ThemeManager : IThemeManager
 {
-    public static string? SelectThemeInteractive(string themesPath, string? currentTheme)
+    public string? SelectThemeInteractive(string themesPath, string? currentTheme) => SelectThemeInteractiveStatic(themesPath, currentTheme);
+    public string? SetTheme(string themesPath, string selectedTheme) => SetThemeStatic(themesPath, selectedTheme);
+    public string SetMobileMode(string profilePath, string targetMode) => SetMobileModeStatic(profilePath, targetMode);
+    public string ResolveStartupTheme(string themesPath) => ResolveStartupThemeStatic(themesPath);
+
+    public static string? SelectThemeInteractiveStatic(string themesPath, string? currentTheme)
     {
         if (!Directory.Exists(themesPath))
         {
@@ -30,13 +35,20 @@ public static class ThemeManager
         var selectedIndex = SpectreMenu.Show("Select Oh My Posh Theme (Color segment preview)", displayLabels, defaultIndex);
         if (selectedIndex < 0) return null;
         var selectedTheme = themeNames[selectedIndex];
-        var themePath = SetTheme(themesPath, selectedTheme);
+        var themePath = SetThemeStatic(themesPath, selectedTheme);
         if (themePath == null) return null;
         AnsiConsole.MarkupLine($"[green][[Theme]] Oh My Posh theme switched to '{selectedTheme}' (Persistent).[/]");
         return themePath;
     }
 
-    public static string? SetTheme(string themesPath, string selectedTheme)
+    public static string SetMobileModeStatic(string profilePath, string targetMode)
+    {
+        bool enableMobile = string.Equals(targetMode, "mobile", StringComparison.OrdinalIgnoreCase);
+        var res = ApplyMobileMode(profilePath, enableMobile);
+        return res ?? targetMode;
+    }
+
+    public static string? SetThemeStatic(string themesPath, string selectedTheme)
     {
         PersistConfig(themesPath, selectedTheme, selectedTheme.EndsWith("-mobile"));
         Environment.SetEnvironmentVariable("THEME", selectedTheme);
@@ -51,8 +63,6 @@ public static class ThemeManager
     }
 
     public static string? ToggleMobileMode(string? themesPath = null) => ApplyMobileMode(ResolveThemesPath(themesPath), !ReadConfig(ResolveThemesPath(themesPath)).IsMobile);
-
-    public static string? SetMobileMode(string themesPath, bool enableMobile) => ApplyMobileMode(themesPath, enableMobile);
 
     private static string ResolveThemesPath(string? themesPath)
     {
@@ -90,7 +100,7 @@ public static class ThemeManager
         return (themeName, isMobile);
     }
 
-    public static string ResolveStartupTheme(string themesPath)
+    public static string ResolveStartupThemeStatic(string themesPath)
     {
         var theme = ReadConfig(themesPath).ThemeName;
         var legacyFile = Path.Combine(Config.GetProfileRepoRoot(), "active_theme.txt");
@@ -198,7 +208,7 @@ public static class AgyThemeColors
                 themesPath = Path.Combine(repoRoot, "asset", "powershell-themes");
             }
 
-            var themeName = ThemeManager.ResolveStartupTheme(themesPath);
+            var themeName = ThemeManager.ResolveStartupThemeStatic(themesPath);
             var themePath = Path.Combine(themesPath, $"{themeName}.omp.json");
             if (!File.Exists(themePath)) return;
 

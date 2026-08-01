@@ -9,13 +9,6 @@ public record UiState(
     bool IsCompactMode = false
 );
 
-public interface IUiStateStore
-{
-    UiState Current { get; }
-    void Update(Func<UiState, UiState> updateFunc);
-    event Action<UiState>? OnStateChanged;
-}
-
 public class UiStateStore : IUiStateStore
 {
     private UiState _current = new();

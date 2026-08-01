@@ -521,8 +521,33 @@ public class CommandRouter : ICommandRouter
                     case "rall":
                         ReloadAll();
                         break;
+                    case "vault":
                     case "agyswitch":
                         SubPageNavigator.Run("agyswitch");
+                        break;
+                    case "ask-ai":
+                        SubPageNavigator.Run("ask-ai");
+                        break;
+                    case "exit":
+                        return 0;
+                    case "prune-workspaces":
+                        WorkspaceRegistry.PruneWorkspaces();
+                        break;
+                    case "discover-workspaces":
+                        WorkspaceRegistry.AutoDiscoverWorkspaces();
+                        break;
+                    case "daily-note":
+                        Bootstrapper.ServiceProvider.GetRequiredService<IObsidianBridge>().ShowDailyNote(AppPaths.DefaultLearningVaultDir);
+                        break;
+                    case "orphan-notes":
+                        var obsidianCfg = ObsidianBridge.LoadConfig();
+                        var vaultDir = obsidianCfg?.VaultPath ?? AppPaths.DefaultLearningVaultDir;
+                        var graphNodes = ObsidianGraph.BuildGraph(vaultDir);
+                        ObsidianGraph.ShowOrphans(graphNodes);
+                        break;
+                    case "mastery-tree":
+                        var studyLog = LearnDataPaths.LoadJson<StudyLogFile>(LearnDataPaths.StudyLogFile);
+                        ProgressDashboard.ShowMasteryTree(studyLog?.Sessions ?? []);
                         break;
                     case "agyquota":
                         AgyAccountDisplay.ShowAccountTree();
@@ -591,7 +616,7 @@ public class CommandRouter : ICommandRouter
                                 }
                             }
                             var currTheme = Environment.GetEnvironmentVariable("THEME");
-                            var newThemePath = ThemeManager.SelectThemeInteractive(tPath, currTheme);
+                            var newThemePath = Bootstrapper.ServiceProvider.GetRequiredService<IThemeManager>().SelectThemeInteractive(tPath, currTheme);
                             if (!string.IsNullOrEmpty(newThemePath))
                             {
                                 var accStoreTheme = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
@@ -800,8 +825,8 @@ public class CommandRouter : ICommandRouter
                         _learningGenerator.RunGenerator();
                         break;
                     case "obsidian":
-                    case "vault":
-                        ObsidianBridge.Run();
+                    case "obs-vault":
+                        Bootstrapper.ServiceProvider.GetRequiredService<IObsidianBridge>().Run();
                         break;
                     case "sync":
                         LearnRouter.RefreshData("all");

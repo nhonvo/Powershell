@@ -63,6 +63,10 @@ public static class Bootstrapper
         services.AddSingleton<IAgyQuotaEngine, AgyQuotaEngine>();
         services.AddSingleton<IAgyVault, AgyVault>();
         services.AddSingleton<IStudyRepository, JsonStudyRepository>();
+        services.AddSingleton<IEditorResolver, EditorResolver>();
+        services.AddSingleton<IProjectScaffolder, ProjectScaffolder>();
+        services.AddSingleton<IThemeManager, ThemeManager>();
+        services.AddSingleton<IObsidianBridge, ObsidianBridge>();
 
         // Navigation, Renderers & Routers with Logging Middleware
         services.AddSingleton<ThreePaneRenderer>();

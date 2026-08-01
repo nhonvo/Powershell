@@ -32,11 +32,11 @@ public static class MenuNodeBuilder
         {
             "[Favorites]",
             "[Workspace & Dev]",
-            "[AGY Account Switch]",
             "[AI Agent & Ollama]",
-            "[Appearance & Layout]",
+            "[AGY Account Switch]",
             "[Learn & Study]",
             "[Obsidian & Resources]",
+            "[Appearance & Layout]",
             "[System & Network]",
             "[Help & Docs]"
         };

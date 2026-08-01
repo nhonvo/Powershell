@@ -1,6 +1,8 @@
 using System.Buffers;
 using System.Text.RegularExpressions;
 using AgyTui.Infrastructure.Integrations.Ai.Services;
+using AgyTui.Infrastructure.Di;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.UI.Screens.Ide;
 
@@ -303,7 +305,7 @@ public static class TerminalIde
             {
                 if (currentFile != null)
                 {
-                    ProcessRunner.Run(EditorResolver.Resolve(), $"\"{currentFile}\"");
+                    ProcessRunner.Run(Bootstrapper.ServiceProvider.GetRequiredService<IEditorResolver>().Resolve(), $"\"{currentFile}\"");
                 }
                 else
                 {
@@ -505,10 +507,10 @@ public static class TerminalIde
             AnsiConsole.Write(new Rule($"[bold cyan]IDE: {Path.GetFileName(filePath).EscapeMarkup()}[/]").RuleStyle("grey"));
             var actions = new[]
             {
-                "View file", "Symbol search", "View diff (this file)", $"Edit ({EditorResolver.Resolve()})", "← Back"
+                "View file", "Symbol search", "View diff (this file)", $"Edit ({Bootstrapper.ServiceProvider.GetRequiredService<IEditorResolver>().Resolve()})", "← Back"
             };
-            var idx = SpectreMenu.Show("File actions", actions, 0, false);
-            switch (idx)
+            var sel = SpectreMenu.Show($"File: {Path.GetFileName(filePath)}", actions, 0, false);
+            switch (sel)
             {
                 case 0:
                     CodeViewer.Show(filePath);
@@ -574,7 +576,7 @@ public static class TerminalIde
     {
         try
         {
-            ProcessRunner.Run(EditorResolver.Resolve(), $"\"{filePath}\"");
+            ProcessRunner.Run(Bootstrapper.ServiceProvider.GetRequiredService<IEditorResolver>().Resolve(), $"\"{filePath}\"");
         }
         catch (Exception ex)
         {

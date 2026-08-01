@@ -1,10 +1,5 @@
 namespace AgyTui.Infrastructure.Persistence.Seeding;
 
-public interface IMasterSeeder
-{
-    void ExecuteAllSeeders();
-}
-
 public class MasterSeeder : IMasterSeeder
 {
     private readonly IEnumerable<ISeeder> _seeders;

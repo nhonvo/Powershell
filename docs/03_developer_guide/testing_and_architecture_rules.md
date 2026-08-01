@@ -84,3 +84,21 @@ dotnet test csapp/AgyTui.Tests/AgyTui.Tests.csproj -c Debug
 ## 5. Cross References
 - [Clean Architecture Overview](../01_architecture/overview.md)
 - [Production Release Publishing](release_publishing.md)
+
+---
+
+## 6. Persisted Architectural Invariants & Learned Standards
+
+1. **Search Tree Filtering & Expansion Invariant**:
+   - Match search terms strictly against node names (`w.Name`, `c.Name`), never against full absolute paths (`w.WorkspacePath`, `c.WorkspacePath`).
+   - Root nodes matching the search query must remain **collapsed by default** unless at least one child node matches, suppressing non-matching sibling sub-modules.
+
+2. **Strict Menu Priority & Verification Invariant**:
+   - Menu priority order must be synchronized across both `categoryNames` in `MenuNodeBuilder.cs` and `orderedAliases` in `CommandRegistry.cs`.
+
+3. **Zero Swallowed Exceptions Guardrail**:
+   - Empty `catch { }` blocks are prohibited. Every exception must be captured via `LogHelper.LogError` or handled via `ExceptionMiddleware.Handle`.
+
+4. **Unmapped C# API Registration Standard**:
+   - Internal helper methods (`prune-workspaces`, `discover-workspaces`, `daily-note`, `orphan-notes`, `mastery-tree`) must be registered in `CommandRegistry.cs` and routed in `CommandRouter.cs`.
+

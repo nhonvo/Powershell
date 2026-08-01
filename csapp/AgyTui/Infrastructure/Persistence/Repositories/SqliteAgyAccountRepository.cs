@@ -1,5 +1,7 @@
 using System.Text.Json;
 using AgyTui.Domain.AccountContext;
+using AgyTui.Domain.Common;
+using AgyTui.Infrastructure.Middleware;
 using AgyTui.Infrastructure.Persistence.DbContext;
 using AgyTui.Infrastructure.Persistence.Interfaces;
 
@@ -24,7 +26,10 @@ public class SqliteAgyAccountRepository : SqliteRepositoryBase<AccountMetadata, 
             var res = cmd.ExecuteScalar();
             if (res != null && res != DBNull.Value) return res.ToString()!;
         }
-        catch { }
+        catch (Exception ex)
+        {
+            LogHelper.LogError($"[SqliteAgyAccountRepository] GetActiveAccount failed: {ex.Message}", ex);
+        }
         return "default";
     }
 
@@ -45,7 +50,10 @@ public class SqliteAgyAccountRepository : SqliteRepositoryBase<AccountMetadata, 
             cmd.Parameters.AddWithValue("@now", now);
             cmd.ExecuteNonQuery();
         }
-        catch { }
+        catch (Exception ex)
+        {
+            ExceptionMiddleware.Handle(ex, ErrorConstants.Vault.AccountSyncFailed, "Database Sync Failed");
+        }
     }
 
     public AccountMetadata GetAccountMetadata(string accountName)
@@ -63,7 +71,10 @@ public class SqliteAgyAccountRepository : SqliteRepositoryBase<AccountMetadata, 
                 if (meta != null) return meta;
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            LogHelper.LogError($"[SqliteAgyAccountRepository] GetAccountMetadata failed for '{accountName}': {ex.Message}", ex);
+        }
         return new AccountMetadata();
     }
 
@@ -96,7 +107,10 @@ public class SqliteAgyAccountRepository : SqliteRepositoryBase<AccountMetadata, 
             cmd.Parameters.AddWithValue("@now", now);
             cmd.ExecuteNonQuery();
         }
-        catch { }
+        catch (Exception ex)
+        {
+            ExceptionMiddleware.Handle(ex, ErrorConstants.Vault.StorageAccessFailed, "Save Metadata Failed");
+        }
     }
 
     public string[] GetAccounts()
@@ -114,7 +128,10 @@ public class SqliteAgyAccountRepository : SqliteRepositoryBase<AccountMetadata, 
                 if (!list.Contains(name, StringComparer.OrdinalIgnoreCase)) list.Add(name);
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            LogHelper.LogError($"[SqliteAgyAccountRepository] GetAccounts failed: {ex.Message}", ex);
+        }
         return [.. list];
     }
 
