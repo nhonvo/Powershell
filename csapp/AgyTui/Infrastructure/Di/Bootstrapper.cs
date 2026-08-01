@@ -17,6 +17,7 @@ using AgyTui.UI.Core.Navigation.Interfaces;
 using AgyTui.UI.Screens;
 using AgyTui.UI.Screens.Interfaces;
 using AgyTui.UI.Screens.Services;
+using AgyTui.UI.Screens.Workspace;
 
 namespace AgyTui.Infrastructure.Di;
 

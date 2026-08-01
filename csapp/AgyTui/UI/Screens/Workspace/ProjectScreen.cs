@@ -2,7 +2,7 @@ using AgyTui.UI.Core.Navigation.Interfaces;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 
-namespace AgyTui.UI.Screens;
+namespace AgyTui.UI.Screens.Workspace;
 
 public class ProjectScreen : IScreenView
 {

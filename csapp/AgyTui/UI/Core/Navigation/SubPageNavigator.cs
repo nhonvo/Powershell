@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Rendering;
 
 using AgyTui.UI.Core.Navigation.Interfaces;
+using AgyTui.UI.Screens.Workspace;
 
 namespace AgyTui.UI.Core.Navigation;
 
