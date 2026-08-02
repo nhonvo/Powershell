@@ -216,6 +216,13 @@ public class SqliteMigrationEngine
                 );
 
                 CREATE INDEX IF NOT EXISTS idx_quiz_questions_category ON quiz_questions(category);
+                """),
+
+            (7, "V7__AccountCredentialStorage", """
+                ALTER TABLE accounts ADD COLUMN keyring_token TEXT;
+                ALTER TABLE accounts ADD COLUMN google_accounts_json TEXT;
+                ALTER TABLE accounts ADD COLUMN oauth_creds_json TEXT;
+                ALTER TABLE accounts ADD COLUMN state_json TEXT;
                 """)
         };
     }

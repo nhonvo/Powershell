@@ -58,6 +58,37 @@ public class AgyAccountStore : IAgyAccountStore
         return null;
     }
 
+    public string GetShortCredentialSignature(string accountName)
+    {
+        try
+        {
+            var creds = _accountRepo.GetAccountCredentials(accountName);
+            var rawToken = creds?.KeyringToken;
+
+            if (string.IsNullOrEmpty(rawToken))
+            {
+                var tokenFile = Path.Combine(GetAccountDirectory(accountName), "keyring_token.txt");
+                if (File.Exists(tokenFile))
+                {
+                    rawToken = File.ReadAllText(tokenFile).Trim();
+                }
+            }
+
+            if (string.IsNullOrEmpty(rawToken)) return "None";
+
+            var clean = rawToken.Trim();
+            if (clean.Length <= 5) return clean;
+
+            var head = clean[..2];
+            var tail = clean[^3..];
+            return $"{head}..{tail}";
+        }
+        catch
+        {
+            return "None";
+        }
+    }
+
     public AccountMetadata GetAccountMetadata(string accountName)
     {
         return _accountRepo.GetAccountMetadata(accountName);
@@ -157,6 +188,9 @@ public class AgyAccountStore : IAgyAccountStore
     }
     public string GetActiveAccount()
     {
+        var dbActive = _accountRepo.GetActiveAccount();
+        if (!string.IsNullOrEmpty(dbActive)) return dbActive;
+
         var envGemini = Environment.GetEnvironmentVariable("GEMINI_HOME");
         if (!string.IsNullOrEmpty(envGemini) && Directory.Exists(envGemini))
         {
@@ -170,9 +204,6 @@ public class AgyAccountStore : IAgyAccountStore
                 return "default";
             }
         }
-
-        var dbActive = _accountRepo.GetActiveAccount();
-        if (!string.IsNullOrEmpty(dbActive)) return dbActive;
 
         return "default";
     }
@@ -299,17 +330,20 @@ public class AgyAccountStore : IAgyAccountStore
             AgyKeyringHelper.DeleteToken("gemini:antigravity");
         }
         var dir = GetAccountDirectory(accountName);
-        if (!Directory.Exists(dir)) return;
-
-        var files = new[] { "google_accounts.json", "oauth_creds.json", "state.json", "keyring_token.txt" };
-        foreach (var f in files)
+        if (Directory.Exists(dir))
         {
-            var p = Path.Combine(dir, f);
-            if (File.Exists(p))
+            var files = new[] { "google_accounts.json", "oauth_creds.json", "state.json", "keyring_token.txt" };
+            foreach (var f in files)
             {
-                try { File.Delete(p); } catch { }
+                var p = Path.Combine(dir, f);
+                if (File.Exists(p))
+                {
+                    try { File.Delete(p); } catch { }
+                }
             }
         }
+        _accountRepo.SaveAccountCredentials(new AccountCredentials(accountName, null, null, null, null, null));
+        _quotaEngineFactory().ClearStatsCache();
     }
 
     public void AuthenticateAccount(string accountName)
@@ -329,6 +363,7 @@ public class AgyAccountStore : IAgyAccountStore
             SpectrePanel.Info($"Launching OAuth login for '{accountName}'...");
             Helpers.ProcessRunner.Instance.RunInteractive("pwsh", ["-NoProfile", "-Command", $"$env:GEMINI_HOME='{targetDir}'; agy auth login"], null, targetDir);
         }
+        _vaultFactory().BackupActiveToken(accountName);
         _quotaEngineFactory().ClearStatsCache();
     }
 

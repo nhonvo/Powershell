@@ -5,21 +5,19 @@ Describe "New Profile Features Tests" {
         if (Test-Path $profilePath) {
             . $profilePath
         }
+        Load-AgyTuiDll
     }
 
     Context "AgySecretVault" {
-        It "sets, gets, and removes secrets" {
+        It "sets, gets, and removes secrets via CommandRouter" {
             $tempHome = Join-Path ([System.IO.Path]::GetTempPath()) ("test_vault_" + [System.Guid]::NewGuid().ToString("N"))
             New-Item -ItemType Directory -Path $tempHome -Force | Out-Null
-            $origHome = [AgyTui.Core.Models.Config]::Current.System.AgySourceHome
-            [AgyTui.Core.Models.Config]::Current.System.AgySourceHome = $tempHome
             try {
-                { Invoke-SecretVault -Action "set" -Key "test_key" -Value "super_secret_value" } | Should Not Throw
-                { Invoke-SecretVault -Action "get" -Key "test_key" } | Should Not Throw
-                { Invoke-SecretVault -Action "list" } | Should Not Throw
-                { Invoke-SecretVault -Action "remove" -Key "test_key" } | Should Not Throw
+                { [CommandRouter]::Route("secret-set", @("test_key", "super_secret_value")) } | Should Not Throw
+                { [CommandRouter]::Route("secret-get", @("test_key")) } | Should Not Throw
+                { [CommandRouter]::Route("secret-list") } | Should Not Throw
+                { [CommandRouter]::Route("secret-remove", @("test_key")) } | Should Not Throw
             } finally {
-                [AgyTui.Core.Models.Config]::Current.System.AgySourceHome = $origHome
                 Remove-Item $tempHome -Recurse -Force -ErrorAction SilentlyContinue
             }
         }

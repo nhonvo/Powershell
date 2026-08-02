@@ -239,6 +239,10 @@ public static class CommandRegistry
             ["secret-remove <key> — Remove secret key from vault."], RequiresAgy: true),
 
         // [AI Agent & Ollama]
+        new("ai", "Invoke AI Agent", "Launch AI pair programming deck or query", "[AI Agent & Ollama]", "AI / LLM",
+            ["ai [query] — Launch AI agent query or interactive deck."], RequiresAiOllama: true),
+        new("cai", "Invoke AI Agent (Alias)", "Alias for ai command", "[AI Agent & Ollama]", "AI / LLM",
+            ["cai [query] — Alias for ai command."], RequiresAiOllama: true),
         new("claude", "Claude Code (Auto Mode)", "Launch Claude Code CLI (resolves Cloud vs Ollama via AiProviderMode)", "[AI Agent & Ollama]", "AI / LLM",
             ["claude — Launch Claude Code CLI using runtime AiProviderMode setting."], RequiresAiOllama: true),
         new("claude", "Claude Code CLI", "Launch Claude Code CLI session", "[AI Agent & Ollama]", "Integrations",

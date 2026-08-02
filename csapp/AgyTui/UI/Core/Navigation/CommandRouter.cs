@@ -115,6 +115,18 @@ public class CommandRouter : ICommandRouter
             {
                 switch (lAlias)
                 {
+                    case "ai":
+                    case "cai":
+                        var aiQuery = args != null && args.Length > 0 ? string.Join(" ", args) : null;
+                        if (!string.IsNullOrWhiteSpace(aiQuery))
+                        {
+                            _claude.InvokeClaude(args!);
+                        }
+                        else
+                        {
+                            SubPageNavigator.Run("ask-ai");
+                        }
+                        break;
                     case "ai-mode-check":
                         var targetAlias = args != null && args.Length > 0 ? args[0] : "claude";
                         AiDashboardView.ShowAiModeCheck(targetAlias);

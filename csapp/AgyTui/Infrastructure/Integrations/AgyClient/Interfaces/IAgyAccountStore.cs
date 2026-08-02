@@ -8,6 +8,7 @@ public interface IAgyAccountStore
     string AgyAccountPrefix { get; }
     string GetAccountDirectory(string accountName);
     string? GetAccountEmail(string accountName);
+    string GetShortCredentialSignature(string accountName);
     AccountMetadata GetAccountMetadata(string accountName);
     void UpdateAccountMetadata(string accountName);
     void SetAccountQuotaExceeded(string accountName, bool exceeded);

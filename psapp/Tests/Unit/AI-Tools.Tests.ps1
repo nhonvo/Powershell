@@ -26,50 +26,23 @@ Describe "AI Tools Wrapper Functions" {
         }
     }
     
-    Context "Ollama Helpers" {
-        It "defines Ensure-OllamaServer mapping to AgyAiCore" {
-            $cmd = Get-Command Ensure-OllamaServer -ErrorAction SilentlyContinue
+    Context "AI and Control Center Functions" {
+        It "defines Invoke-MultiAgent and ai alias" {
+            $cmd = Get-Command Invoke-MultiAgent -ErrorAction SilentlyContinue
             $cmd | Should Not Be $null
-            $cmd.Definition | Should Match "AgyAiCore"
+            (Get-Alias -Name ai -ErrorAction SilentlyContinue) | Should Not Be $null
         }
 
-        It "defines Initialize-OllamaServer mapping to AgyAiCore" {
-            $cmd = Get-Command Initialize-OllamaServer -ErrorAction SilentlyContinue
+        It "defines Invoke-ControlCenter and cc alias" {
+            $cmd = Get-Command Invoke-ControlCenter -ErrorAction SilentlyContinue
             $cmd | Should Not Be $null
-            $cmd.Definition | Should Match "AgyAiCore"
-        }
-    }
-    
-
-    Context "AI Wrapper Mappings" {
-        It "defines Invoke-Claude-By-Ollama wrapper mapping to AgyAiCore" {
-            $cmd = Get-Command Invoke-Claude-By-Ollama -ErrorAction SilentlyContinue
-            $cmd | Should Not Be $null
-            $cmd.Definition | Should Match "Invoke-AiTool|AgyAiCore"
+            (Get-Alias -Name cc -ErrorAction SilentlyContinue) | Should Not Be $null
         }
 
-        It "defines Invoke-Codex-By-Ollama wrapper mapping to AgyAiCore" {
-            $cmd = Get-Command Invoke-Codex-By-Ollama -ErrorAction SilentlyContinue
+        It "defines Reset-AgyAccountData and reset-agy alias" {
+            $cmd = Get-Command Reset-AgyAccountData -ErrorAction SilentlyContinue
             $cmd | Should Not Be $null
-            $cmd.Definition | Should Match "Invoke-AiTool|AgyAiCore"
-        }
-
-        It "defines Invoke-OpenClaw-By-Ollama wrapper mapping to AgyAiCore" {
-            $cmd = Get-Command Invoke-OpenClaw-By-Ollama -ErrorAction SilentlyContinue
-            $cmd | Should Not Be $null
-            $cmd.Definition | Should Match "Invoke-AiTool|AgyAiCore"
-        }
-
-        It "defines Invoke-Hermes-By-Ollama wrapper mapping to AgyAiCore" {
-            $cmd = Get-Command Invoke-Hermes-By-Ollama -ErrorAction SilentlyContinue
-            $cmd | Should Not Be $null
-            $cmd.Definition | Should Match "Invoke-AiTool|AgyAiCore"
-        }
-
-        It "defines Install-AIIntegrations wrapper mapping to AgyAiCore" {
-            $cmd = Get-Command Install-AIIntegrations -ErrorAction SilentlyContinue
-            $cmd | Should Not Be $null
-            $cmd.Definition | Should Match "AgyAiCore"
+            (Get-Alias -Name reset-agy -ErrorAction SilentlyContinue) | Should Not Be $null
         }
     }
 }

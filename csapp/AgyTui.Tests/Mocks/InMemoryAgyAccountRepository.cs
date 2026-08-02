@@ -8,6 +8,7 @@ public class InMemoryAgyAccountRepository : IAgyAccountRepository
 {
     private string _activeAccount = "default";
     private readonly Dictionary<string, AccountMetadata> _metadata = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, AccountCredentials> _credentials = new(StringComparer.OrdinalIgnoreCase);
 
     public InMemoryAgyAccountRepository()
     {
@@ -27,6 +28,17 @@ public class InMemoryAgyAccountRepository : IAgyAccountRepository
     public void SaveAccountMetadata(string accountName, AccountMetadata metadata)
     {
         _metadata[accountName] = metadata;
+    }
+
+    public AccountCredentials? GetAccountCredentials(string accountName)
+    {
+        if (_credentials.TryGetValue(accountName, out var creds)) return creds;
+        return null;
+    }
+
+    public void SaveAccountCredentials(AccountCredentials credentials)
+    {
+        _credentials[credentials.AccountName] = credentials;
     }
 
     public string[] GetAccounts() => _metadata.Keys.ToArray();

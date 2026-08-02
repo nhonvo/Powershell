@@ -14,7 +14,18 @@ if (Test-Path $dllPath) {
     Get-ChildItem -Path (Split-Path $dllPath) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTui.dll" } | ForEach-Object {
         try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
     }
-    try { Add-Type -Path $dllPath -ErrorAction SilentlyContinue } catch {}
+    try {
+        Add-Type -Path $dllPath -ErrorAction SilentlyContinue
+        $acc = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
+        $agyAssembly = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTui" } | Select-Object -First 1
+        if ($acc -and $agyAssembly) {
+            foreach ($type in $agyAssembly.GetExportedTypes()) {
+                if ($type.IsClass -and $type.Name -and -not $acc::Get.ContainsKey($type.Name)) {
+                    try { $acc::Add($type.Name, $type) } catch {}
+                }
+            }
+        }
+    } catch {}
 }
 
 # 1. Check syntax of the consolidated profile file
@@ -60,22 +71,23 @@ try {
 Write-Host "`nVerifying AI Integration Functions & Aliases..." -ForegroundColor Cyan
 
 $aiItems = @(
-    @{ Type = "Function"; Name = "Invoke-Claude-By-Ollama" }
-    @{ Type = "Function"; Name = "Invoke-Codex-By-Ollama" }
-    @{ Type = "Function"; Name = "Invoke-OpenClaw-By-Ollama" }
-    @{ Type = "Function"; Name = "Invoke-Clawdbot-By-Ollama" }
-    @{ Type = "Function"; Name = "Invoke-Hermes-By-Ollama" }
-    @{ Type = "Function"; Name = "Invoke-HermesDesktop-By-Ollama" }
-    @{ Type = "Function"; Name = "Initialize-OllamaServer" }
-    @{ Type = "Function"; Name = "Install-AIIntegrations" }
+    @{ Type = "Function"; Name = "Invoke-MultiAgent" }
+    @{ Type = "Function"; Name = "Invoke-ControlCenter" }
+    @{ Type = "Function"; Name = "Invoke-ControlCenterDev" }
+    @{ Type = "Function"; Name = "Reset-AgyAccountData" }
+    @{ Type = "Function"; Name = "Invoke-ControlCenterNavigator" }
+    @{ Type = "Function"; Name = "Purge-AgyAccounts" }
+    @{ Type = "Function"; Name = "Show-DotNetInfo" }
     
+    @{ Type = "Alias"; Name = "ai" }
+    @{ Type = "Alias"; Name = "cai" }
     @{ Type = "Alias"; Name = "claude" }
-    @{ Type = "Alias"; Name = "codex" }
-    @{ Type = "Alias"; Name = "openclaw" }
-    @{ Type = "Alias"; Name = "clawdbot" }
-    @{ Type = "Alias"; Name = "hermes" }
-    @{ Type = "Alias"; Name = "hermesd" }
-    @{ Type = "Alias"; Name = "model" }
+    @{ Type = "Alias"; Name = "cc" }
+    @{ Type = "Alias"; Name = "ccd" }
+    @{ Type = "Alias"; Name = "cnav" }
+    @{ Type = "Alias"; Name = "reset-agy" }
+    @{ Type = "Alias"; Name = "purge-accounts" }
+    @{ Type = "Alias"; Name = "dotnet-info" }
 )
 
 foreach ($item in $aiItems) {

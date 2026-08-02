@@ -2,8 +2,8 @@
 #  ENHANCED POWERSHELL PROFILE (Microsoft.PowerShell_profile.ps1)
 # ==============================================================================
 
-$skipDll = ($null -ne $config.Environment -and $config.Environment.SkipDllLoad -eq $true) -or $env:AGY_SKIP_DLL_LOAD -eq 'true'
-$loadDll = ($null -ne $config.Environment -and $config.Environment.LoadDll -eq $true)     -or $env:AGY_LOAD_DLL     -eq 'true'
+$skipDll = ($null -ne $config.Environment -and $config.Environment.SkipDllLoad -eq $true) -or $env:AGY_SKIP_DLL_LOAD -eq 'true' -or $env:AGY_SKIP_DLL_LOAD -eq '1'
+$loadDll = ($null -ne $config.Environment -and $config.Environment.LoadDll -eq $true)     -or $env:AGY_LOAD_DLL     -eq 'true' -or $env:AGY_LOAD_DLL     -eq '1'
 
 if ($global:AgyUserProfileLoaded) { return }
 $global:AgyUserProfileLoaded = $true
@@ -27,8 +27,8 @@ if (Test-Path $configPath) {
 }
 
 # Determine Flag State Matrix: Fast Startup vs Normal Load
-$fastStartup = ($null -ne $config.Environment -and $config.Environment.EnableFastStartup -eq $true) -or $env:AGY_ENABLE_FAST_STARTUP -eq 'true' -or $env:AGY_SKIP_DLL_LOAD -eq 'true'
-$forceLoad   = ($null -ne $config.Environment -and $config.Environment.ForceLoadRedirected -eq $true) -or $env:AGY_FORCE_LOAD_REDIRECTED -eq 'true' -or $env:AGY_LOAD_DLL -eq 'true'
+$fastStartup = ($null -ne $config.Environment -and $config.Environment.EnableFastStartup -eq $true) -or $env:AGY_ENABLE_FAST_STARTUP -eq 'true' -or $env:AGY_ENABLE_FAST_STARTUP -eq '1' -or $env:AGY_SKIP_DLL_LOAD -eq 'true' -or $env:AGY_SKIP_DLL_LOAD -eq '1'
+$forceLoad   = ($null -ne $config.Environment -and $config.Environment.ForceLoadRedirected -eq $true) -or $env:AGY_FORCE_LOAD_REDIRECTED -eq 'true' -or $env:AGY_FORCE_LOAD_REDIRECTED -eq '1' -or $env:AGY_LOAD_DLL -eq 'true' -or $env:AGY_LOAD_DLL -eq '1'
 
 # --- Apply Environment Variables from JSON Config ---
 if ($config.Environment) {
@@ -152,7 +152,7 @@ function Load-AgyTuiDll {
     } catch {}
 }
 
-if (-not $fastStartup -and -not [Console]::IsOutputRedirected) {
+if ($forceLoad -or (-not $fastStartup -and -not [Console]::IsOutputRedirected)) {
     Load-AgyTuiDll
 }
 #endregion
@@ -483,19 +483,6 @@ function Sync-ActiveAgyEnvironment {
     }
 }
 
-function Invoke-AgyAccountSwitch {
-    param([string]$AccountName)
-    Load-AgyTuiDll
-    if ($AccountName) {
-        [SubPageAccountNavigator]::HandleSelection($AccountName, 0)
-    } else {
-        [SubPageNavigator]::Run("agyswitch")
-    }
-    Sync-ActiveAgyEnvironment
-    if ($env:GEMINI_HOME) {
-        Write-Host "✅ Active shell GEMINI_HOME synchronized to: $env:GEMINI_HOME" -ForegroundColor Green
-    }
-}
 
 function Invoke-ControlCenter {
     param([string]$CmdAlias, [object[]]$PassArgs)
@@ -540,17 +527,10 @@ function Invoke-ControlCenterDev {
     Sync-ActiveAgyEnvironment
 }
 
-function Reset-AgyAccountData {
-    [CmdletBinding()]
-    param()
-
-    Write-Host "⚠️ Purging all AGY account data, custom account directories, and token credentials..." -ForegroundColor Yellow
-    Invoke-ControlCenter "reset-agy"
-}
-
-function Invoke-ControlCenterNavigator { Invoke-ControlCenter "cnav" }
-function Purge-AgyAccounts { Invoke-ControlCenter "purge-accounts" }
-function Show-DotNetInfo { Invoke-ControlCenter "dotnet-info" }
+function Reset-AgyAccountData { Invoke-ControlCenter "reset-agy" @args }
+function Invoke-ControlCenterNavigator { Invoke-ControlCenter "cnav" @args }
+function Purge-AgyAccounts { Invoke-ControlCenter "purge-accounts" @args }
+function Show-DotNetInfo { Invoke-ControlCenter "dotnet-info" @args }
 
 Set-Alias -Name ai -Value Invoke-MultiAgent -Force
 Set-Alias -Name cai -Value Invoke-MultiAgent -Force
@@ -558,7 +538,6 @@ Set-Alias -Name claude -Value Invoke-MultiAgent -Force
 Set-Alias -Name cc -Value Invoke-ControlCenter -Force
 Set-Alias -Name ccd -Value Invoke-ControlCenterDev -Force
 Set-Alias -Name cnav -Value Invoke-ControlCenterNavigator -Force
-Set-Alias -Name agyswitch -Value Invoke-AgyAccountSwitch -Force
 Set-Alias -Name reset-agy -Value Reset-AgyAccountData -Force
 Set-Alias -Name purge-accounts -Value Purge-AgyAccounts -Force
 Set-Alias -Name dotnet-info -Value Show-DotNetInfo -Force

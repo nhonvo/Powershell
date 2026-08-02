@@ -52,16 +52,10 @@ public class AppPathManager : IAppPathManager
         var cfgHome = Config.Current.System.AgySourceHome;
         if (!string.IsNullOrEmpty(cfgHome)) return cfgHome;
 
-        var envGemini = Environment.GetEnvironmentVariable("GEMINI_HOME");
-        if (!string.IsNullOrEmpty(envGemini) && Directory.Exists(envGemini))
-            return envGemini;
-
         var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         if (!string.IsNullOrEmpty(userProfile))
         {
-            var defaultGemini = Path.Combine(userProfile, ".gemini");
-            if (Directory.Exists(defaultGemini))
-                return defaultGemini;
+            return Path.Combine(userProfile, ".gemini");
         }
 
         return AppPaths.GeminiHome;

@@ -171,7 +171,9 @@ public static class SubPageAccountNavigator
             if (!string.IsNullOrEmpty(email)) displayName = $"{accs[i]} ({email})";
             var stats = QuotaEngine.GetAccountStats(accs[i]);
             var loginStatus = stats.TokenStatus == "Logged In" ? "[green]✔ Logged In[/]" : "[red]✘ Logged Out[/]";
-            grid.AddRow(new Markup($"{prefix}{displayName.EscapeMarkup()} [dim]({loginStatus})[/]{suffix}"));
+            var keySig = AccountStore.GetShortCredentialSignature(accs[i]);
+            var keyDisplay = keySig != "None" ? $"[yellow]Key: {keySig.EscapeMarkup()}[/]" : "[dim]Key: None[/]";
+            grid.AddRow(new Markup($"{prefix}{displayName.EscapeMarkup()} [dim]({loginStatus} · {keyDisplay})[/]{suffix}"));
         }
         grid.AddRow(new Markup("\n[dim]↑/↓ Navigate  ·  Enter Switch Account  ·  Esc Cancel[/]"));
         grid.AddRow(new Markup("[dim]a Create Account  ·  l Login/Auth  ·  d Delete  ·  r Reset/Purge  ·  o Log Out[/]"));
