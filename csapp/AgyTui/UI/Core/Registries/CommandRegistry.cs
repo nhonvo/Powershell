@@ -85,29 +85,25 @@ public static class CommandRegistry
                 " Recompiles the TUI binary executable in-place."
             ]),
         // Git Tools (/git-tools & /repo-dashboards)
-        new("gs", "Git Status", "Standard native git status", "[Workspace & Dev]", "Git",
-            [
-                "gs — Standard native `git status` execution.",
-                " Displays untracked, modified, staged, and branch tracking status."
-            ]),
+        new("gs", "Git Status (Native)", "Standard native git status command", "[Workspace & Dev]", "Git",
+            ["gs — Standard native `git status` execution."]),
         new("gsu", "✨ Git Status (Custom TUI Table)", "Color-coded Spectre TUI git status table", "[Workspace & Dev]", "Git",
-            [
-                "gsu — Color-coded Spectre TUI table formatting for git status.",
-                " Alias: gsi, +gs"
-            ]),
-        new("ga", "Git Add All", "Stage all modified and new files in workspace", "[Workspace & Dev]", "Git",
-            [
-                "ga — Executes `git add .` to stage all modified, deleted, and untracked files.",
-                " Prepares all changes for the next commit."
-            ]),
-        new("gb", "Git Branch Manager (Alias)", "Alias for gbr branch manager", "[Workspace & Dev]", "Git",
-            ["gb — Alias for gbr branch manager."]),
+            ["gsu — Color-coded Spectre TUI table formatting for git status. Alias: gsi, +gs"]),
+        new("ga", "Git Add All (Native)", "Stage all modified and new files in workspace", "[Workspace & Dev]", "Git",
+            ["ga — Executes `git add .` to stage all modified, deleted, and untracked files."]),
+        new("gb", "Git Branch (Native)", "Standard native git branch command", "[Workspace & Dev]", "Git",
+            ["gb — Standard native `git branch` command."]),
         new("gbr", "✨ Git Branch Manager", "List local and remote branches sorted by recent activity with quick checkout", "[Workspace & Dev]", "Git",
-            [
-                "gbr — Interactive branch manager sorted by commit date.",
-                " Select any branch to checkout instantly."
-            ]),
-        new("gcmt", "✨ Conventional Commit", "Conventional commit wizard", "[Workspace & Dev]", "Git",
+            ["gbr — Interactive branch manager sorted by commit date. Select any branch to checkout instantly."]),
+        new("co", "Git Checkout (Native)", "Checkout branch or commit reference", "[Workspace & Dev]", "Git",
+            ["co <branch> — Executes native `git checkout <branch>`."]),
+        new("cob", "New Git Branch (Native)", "Create and checkout new branch", "[Workspace & Dev]", "Git",
+            ["cob <branch> — Executes native `git checkout -b <branch>`."]),
+        new("gbd", "Delete Git Branch (Native)", "Delete local branch", "[Workspace & Dev]", "Git",
+            ["gbd <branch> — Executes native `git branch -d <branch>`."]),
+        new("gcommit", "Git Commit (Native)", "Commit staged changes with message", "[Workspace & Dev]", "Git",
+            ["gcommit -m \"msg\" — Executes native `git commit -m \"msg\"`."]),
+        new("gcmt", "✨ Conventional Commit", "Conventional commit wizard with optional AI diff draft", "[Workspace & Dev]", "Git",
             [
                 "gcmt — Conventional commit wizard. Prompts for:",
                 " 1. Type: feat | fix | docs | style | refactor | test | chore | ci",
@@ -115,34 +111,40 @@ public static class CommandRegistry
                 " 3. Short description (5–72 chars)",
                 " 4. Breaking changes / issues closed"
             ]),
-        new("glog", "Git Commit Log", "Paged single-repo commit log graph (--oneline --graph)", "[Workspace & Dev]", "Git",
-            [
-                "glog — Shows last 50 commits formatted as a single-line graph with branch decorations.",
-                " Output is scrollable via the built-in Spectre pager."
-            ]),
-        new("glo", "Git Commit Log (Alias)", "Alias for glog commit log graph", "[Workspace & Dev]", "Git",
-            ["glo — Alias for glog commit log graph."]),
-        new("glg", "Git Commit Log (Alias)", "Alias for glog commit log graph", "[Workspace & Dev]", "Git",
-            ["glg — Alias for glog commit log graph."]),
-        new("gpull", "Git Pull Remote", "Pull latest commits from remote tracking branch", "[Workspace & Dev]", "Git",
-            ["gpull — Executes `git pull` on current branch to incorporate remote changes."]),
+        new("glo", "Git Commit Log Graph (Native)", "Single-line branch commit log graph", "[Workspace & Dev]", "Git",
+            ["glo — Executes `git log --graph --oneline --decorate --all`."]),
+        new("glg", "Git Commit Log Graph (Alias)", "Alias for glo commit log graph", "[Workspace & Dev]", "Git",
+            ["glg — Alias for glo commit log graph."]),
+        new("glog", "Git Commit Log Pretty (Native)", "Pretty formatted commit history", "[Workspace & Dev]", "Git",
+            ["glog — Executes `git log --pretty=format:\"%h - %an, %ar : %s\"`."]),
+        new("glou", "✨ Git Commit Log Pager", "Interactive Spectre commit log pager", "[Workspace & Dev]", "Git",
+            ["glou — Shows last 50 commits scrollable via built-in Spectre pager. Alias: gloi, +glo"]),
+        new("gpull", "Git Pull Remote (Native)", "Pull latest commits from remote tracking branch", "[Workspace & Dev]", "Git",
+            ["gpull — Executes native `git pull` on current branch."]),
         new("gpu", "Git Pull Remote (Alias)", "Alias for gpull remote pull", "[Workspace & Dev]", "Git",
             ["gpu — Alias for gpull remote pull."]),
-        new("gpush", "Git Push Remote", "Push local commits to remote tracking branch", "[Workspace & Dev]", "Git",
-            ["gpush — Executes `git push` to upload local commits to upstream tracking branch."]),
+        new("gpush", "Git Push Remote (Native)", "Push local commits to remote tracking branch", "[Workspace & Dev]", "Git",
+            ["gpush — Executes native `git push`."]),
         new("gus", "Git Push Remote (Alias)", "Alias for gpush remote push", "[Workspace & Dev]", "Git",
             ["gus — Alias for gpush remote push."]),
-        new("gf", "Git Fetch Remote", "Fetch latest branch references from remote repository", "[Workspace & Dev]", "Git",
-            ["gf — Executes `git fetch` to update local tracking references without merging."]),
-        new("gd", "Git Diff Viewer", "Interactive git diff viewer for modified files", "[Workspace & Dev]", "Git",
-            ["gd — Shortcut for launching the interactive Git Diff Viewer for the current directory."]),
+        new("guf", "Git Push Force (Native)", "Force push local commits to remote", "[Workspace & Dev]", "Git",
+            ["guf — Executes native `git push --force`."]),
+        new("gf", "Git Fetch Remote (Native)", "Fetch latest branch references from remote repository", "[Workspace & Dev]", "Git",
+            ["gf — Executes native `git fetch`."]),
+        new("gd", "Git Diff (Native)", "Native git diff viewer for modified files", "[Workspace & Dev]", "Git",
+            ["gd — Executes native `git diff`."]),
+        new("gr", "Git Reset Soft (Native)", "Soft-reset HEAD to previous commit", "[Workspace & Dev]", "Git",
+            ["gr — Executes native `git reset --soft HEAD~1`."]),
+        new("grh", "Git Reset Hard (Native)", "Hard-reset working tree to HEAD", "[Workspace & Dev]", "Git",
+            ["grh — Executes native `git reset --hard`."]),
         new("git-undo", "✨ Git Undo Last Commit", "Soft-reset the last local commit with TUI confirmation", "[Workspace & Dev]", "Git",
-            [
-                "git-undo — Soft-reset the last commit (`git reset --soft HEAD~1`).",
-                " Keeps all file modifications staged in the index."
-            ]),
+            ["git-undo — Soft-reset the last commit (`git reset --soft HEAD~1`) with interactive TUI prompt."]),
         new("gundo", "✨ Git Undo Last Commit (Alias)", "Alias for git-undo soft reset", "[Workspace & Dev]", "Git",
             ["gundo — Alias for git-undo soft reset."]),
+        new("gclone", "Git Clone Project (Native)", "Clone git repository into working directory", "[Workspace & Dev]", "Git",
+            ["gclone <url> — Executes native `git clone <url>`."]),
+        new("gcloneu", "✨ Clone Project Assistant", "Interactive TUI repo cloning assistant", "[Workspace & Dev]", "Git",
+            ["gcloneu — Interactive TUI prompt asking for repo URL, auto-resolving destination in ~/Documents."]),
         new("nexus", "✨ Repo Nexus Graph", "Git Nexus multi-repo dashboard", "[Workspace & Dev]", "Git",
             ["nexus — Renders a multi-repository workspace dependency and git status dashboard."]),
         new("repo-graph", "✨ Repository dependency graph", "Repository dependency graph", "[Workspace & Dev]", "Git",
@@ -479,7 +481,11 @@ public static class CommandRegistry
 
     static CommandRegistry()
     {
-        var gitCmds = new HashSet<string> { "gs", "ga", "gbr", "gcmt", "glog", "gpull", "gpush", "gf", "gd", "git-undo", "glo", "glg", "gpu", "gus", "gundo" };
+        var gitCmds = new HashSet<string> {
+            "gs", "gsu", "ga", "gb", "gbr", "co", "cob", "gbd", "gcommit", "gcmt",
+            "glo", "glg", "glog", "glou", "gpull", "gpu", "gpush", "gus", "guf",
+            "gf", "gd", "gr", "grh", "git-undo", "gundo", "gclone", "gcloneu"
+        };
         var repoCmds = new HashSet<string> { "nexus", "repo-graph", "nexus-stats" };
         var dotnetCmds = new HashSet<string> { "dbld", "dr", "dtst", "df", "dcl", "drestore", "dpublish", "dpack", "dpubpkg", "dwatch", "rebuild-tui", "clean-build", "add-migration", "update-db", "db", "dt", "dres", "dw", "dclean", "da", "du" };
         var dockerCmds = new HashSet<string> { "docker-health", "dkcl", "dkrmac", "dkstac", "dimg", "dlogs", "dcup", "dcdown", "dkcpu", "dkcpd" };
@@ -503,7 +509,7 @@ public static class CommandRegistry
         var obsidianCmds = new HashSet<string> { "obsidian", "refresh", "vault-open" };
 
         var hiddenCmds = new HashSet<string> {
-            "p", "prj", "gb", "glo", "glg", "gpu", "gus", "gundo",
+            "p", "prj", "glg", "gpu", "gus", "gundo",
             "da", "db", "dclean", "dres", "dt", "du", "dw", "mobile",
             "desk-status", "desk-setup", "desk-start", "desk-online",
             "mgr", "manager-status", "manager-setup", "manager-start", "agm", "agm-status", "agm-setup", "agm-start"
@@ -516,7 +522,7 @@ public static class CommandRegistry
 
             // Category 2: [Workspace & Dev]
             "proj", "cnav", "go", "open-term", "f", "ide", "ide-diff", "ide-search", "scaffold",
-            "gs", "ga", "gbr", "gcmt", "glog", "gpull", "gpush", "gf", "gd", "git-undo", "nexus", "repo-graph", "nexus-stats",
+            "gs", "gsu", "ga", "gb", "gbr", "co", "cob", "gbd", "gcommit", "gcmt", "glo", "glog", "glou", "gpull", "gpush", "guf", "gf", "gd", "gr", "grh", "git-undo", "gclone", "gcloneu", "nexus", "repo-graph", "nexus-stats",
             "dbld", "dr", "dtst", "df", "dcl", "drestore", "dpublish", "dpack", "dpubpkg", "dwatch", "rebuild-tui", "clean-build", "add-migration", "update-db", "dotnet-info",
             "docker-health", "dkcl", "dkrmac", "dkstac", "dimg", "dlogs", "dcup", "dcdown",
             "aws-whoami", "aws-local", "aws-s3", "aws-sqs", "aws-ssm", "aws-sns", "aws-dynamodb", "aws-lambda",
