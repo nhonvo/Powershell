@@ -378,10 +378,7 @@ function Update-Database { Load-AgyTuiDll; [CommandRouter]::Route("update-db", $
 function Add-Migration { Load-AgyTuiDll; [CommandRouter]::Route("add-migration", $args) }
 function Remove-Database { Load-AgyTuiDll; [CommandRouter]::Route("dd", $args) }
 function Remove-Migration { Load-AgyTuiDll; [CommandRouter]::Route("dremove", $args) }
-function New-Solution { param([string]$Name) dotnet new sln -n $Name }
-function Add-AllProjectsToSolution { Load-AgyTuiDll; [CommandRouter]::Route("sln-add", $args) }
-function New-ConsoleProject { param([string]$Name) dotnet new console -n $Name }
-function New-WebApiProject { param([string]$Name) dotnet new webapi -n $Name }
+function Add-AllProjectsToSolution { Get-ChildItem -Recurse -Filter "*.csproj" | ForEach-Object { dotnet sln add $_.FullName } }
 function dpack { Load-AgyTuiDll; [CommandRouter]::Route("dpack", $args) }
 function dpubpkg { Load-AgyTuiDll; [CommandRouter]::Route("dpubpkg", $args) }
 
@@ -406,10 +403,7 @@ Set-Alias -Name da -Value Add-Migration -Force
 Set-Alias -Name add-migration -Value Add-Migration -Force
 Set-Alias -Name dd -Value Remove-Database -Force
 Set-Alias -Name dremove -Value Remove-Migration -Force
-Set-Alias -Name sln -Value New-Solution -Force
 Set-Alias -Name sln-add -Value Add-AllProjectsToSolution -Force
-Set-Alias -Name console -Value New-ConsoleProject -Force
-Set-Alias -Name webapi -Value New-WebApiProject -Force
 #endregion
 
 #region 7. AWS LOCALSTACK INTEGRATION
@@ -443,60 +437,42 @@ Set-Alias -Name sqsattr -Value Get-LocalSQSAttributes -Force
 #  Shortcuts for AI agent sessions and routing.
 # ==============================================================================
 
+#region 8. AI & MULTI-AGENT SHORTCUTS
+# ==============================================================================
+#  Delegates AI agent routing and Control Center TUI execution to C# engine.
+# ==============================================================================
+
 function Invoke-MultiAgent { param([string]$Query) Load-AgyTuiDll; [CommandRouter]::Route("ai", $Query) }
+
 function Sync-ActiveAgyEnvironment {
     try {
-        $userVal = [System.Environment]::GetEnvironmentVariable("GEMINI_HOME", [System.EnvironmentVariableTarget]::User)
-        if ($userVal -and (Test-Path $userVal)) {
-            $env:GEMINI_HOME = $userVal
-        }
-    } catch {}
+        $userVal = [System.Environment]::GetEnvironmentVariable("GEMINI_HOME", "User")
+        if ($userVal -and (Test-Path $userVal)) { $env:GEMINI_HOME = $userVal }
+        $agyHome = if ($env:GEMINI_HOME) { $env:GEMINI_HOME } else { Join-Path $env:USERPROFILE ".gemini" }
 
-    try {
-        $agyHome = if ($env:GEMINI_HOME) { $env:GEMINI_HOME } else { [System.IO.Path]::Combine($env:USERPROFILE, ".gemini") }
-
-        $projFile = [System.IO.Path]::Combine($agyHome, "selected_project.txt")
+        $projFile = Join-Path $agyHome "selected_project.txt"
         if (Test-Path -LiteralPath $projFile) {
             $targetProj = (Get-Content -LiteralPath $projFile -Raw).Trim()
             Remove-Item -LiteralPath $projFile -Force -ErrorAction SilentlyContinue
-            if ($targetProj -and (Test-Path -LiteralPath $targetProj)) {
-                try {
-                    Set-Location -LiteralPath $targetProj
-                    Write-Host "📂 Switched workspace directory to: $targetProj" -ForegroundColor Green
-                } catch {
-                    Write-Host "⚠️ Could not change directory to '$targetProj': $_" -ForegroundColor Red
-                }
-            }
+            if ($targetProj -and (Test-Path -LiteralPath $targetProj)) { Set-Location -LiteralPath $targetProj; Write-Host "📂 Switched workspace directory to: $targetProj" -ForegroundColor Green }
         }
 
-        $themeFile = [System.IO.Path]::Combine($agyHome, "selected_theme.txt")
+        $themeFile = Join-Path $agyHome "selected_theme.txt"
         if (Test-Path -LiteralPath $themeFile) {
             $targetTheme = (Get-Content -LiteralPath $themeFile -Raw).Trim()
             Remove-Item -LiteralPath $themeFile -Force -ErrorAction SilentlyContinue
-            if ($targetTheme) {
-                $env:THEME = $targetTheme
-                Apply-ThemePath $targetTheme
-            }
+            if ($targetTheme) { $env:THEME = $targetTheme; Apply-ThemePath $targetTheme }
         }
-    } catch {
-        Write-Host "⚠️ Sync-ActiveAgyEnvironment warning: $_" -ForegroundColor Yellow
-    }
+    } catch {}
 }
-
 
 function Invoke-ControlCenter {
     param([string]$CmdAlias, [object[]]$PassArgs)
     $env:ENVIRONMENT = "Production"
     $tuiExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\dist\AgyTui.exe"
-    if (-not (Test-Path $tuiExe)) {
-        $tuiExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Release\net9.0\AgyTui.exe"
-    }
+    if (-not (Test-Path $tuiExe)) { $tuiExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Release\net9.0\AgyTui.exe" }
     if (Test-Path $tuiExe) {
-        if ($CmdAlias) {
-            & $tuiExe $CmdAlias @PassArgs
-        } else {
-            & $tuiExe
-        }
+        if ($CmdAlias) { & $tuiExe $CmdAlias @PassArgs } else { & $tuiExe }
         Sync-ActiveAgyEnvironment
         return
     }
@@ -511,21 +487,13 @@ function Invoke-ControlCenterDev {
     $tuiDevExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Debug\net9.0\AgyTui.exe"
     if (Test-Path $tuiDevExe) {
         Write-Host "🚀 Launching AgyTui [DEVELOPMENT MODE]..." -ForegroundColor Cyan
-        if ($CmdAlias) {
-            & $tuiDevExe $CmdAlias @PassArgs
-        } else {
-            & $tuiDevExe
-        }
+        if ($CmdAlias) { & $tuiDevExe $CmdAlias @PassArgs } else { & $tuiDevExe }
         Sync-ActiveAgyEnvironment
         return
     }
     Write-Host "🔨 Building & Launching AgyTui [DEVELOPMENT MODE]..." -ForegroundColor Cyan
     Push-Location (Join-Path $Global:ProfileRepoRoot "csapp\AgyTui")
-    if ($CmdAlias) {
-        dotnet run -c Debug -- $CmdAlias @PassArgs
-    } else {
-        dotnet run -c Debug
-    }
+    if ($CmdAlias) { dotnet run -c Debug -- $CmdAlias @PassArgs } else { dotnet run -c Debug }
     Pop-Location
     Sync-ActiveAgyEnvironment
 }
