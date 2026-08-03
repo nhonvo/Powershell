@@ -162,11 +162,17 @@ public static class TerminalIde
                 }
             }
         }
+        List<ExplorerNode> visibleNodes = [];
+        bool dirtyNodes = true;
 
         while (true)
         {
             EnsureFileCached();
-            var visibleNodes = GetVisibleNodes(rootPath, rootPath, 0, expandedFolders);
+            if (dirtyNodes)
+            {
+                visibleNodes = GetVisibleNodes(rootPath, rootPath, 0, expandedFolders);
+                dirtyNodes = false;
+            }
 
             if (sidebarSel < 0) sidebarSel = 0;
             if (visibleNodes.Count > 0 && sidebarSel >= visibleNodes.Count) sidebarSel = visibleNodes.Count - 1;
@@ -312,8 +318,7 @@ public static class TerminalIde
             var statusText = $"{modeTag} | [cyan]{fileIcon} {activeTab.EscapeMarkup()}[/] | 🌿 [yellow]{cachedGitBranch.EscapeMarkup()}[/] | [dim][[Tab]] Focus | [[/]] Search | [[e]] Edit | [[g]] Git | [[k]] AI | [[b]] Sidebar | [[q]] Exit[/]";
             var statusPanel = new Panel(new Align(new Markup(statusText), HorizontalAlignment.Left, VerticalAlignment.Middle))
             {
-                Border = BoxBorder.Rounded,
-                BorderStyle = new Style(Color.Grey)
+                Border = BoxBorder.None
             };
             layout["Status"].Update(statusPanel);
 
@@ -347,6 +352,7 @@ public static class TerminalIde
             else if ((key.Key == ConsoleKey.P && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'p' || key.KeyChar == '/')
             {
                 OpenFileSearch(rootPath, files, ref currentFile);
+                dirtyNodes = true;
                 if (currentFile != null)
                 {
                     editorScrollOffset = 0;
@@ -375,6 +381,7 @@ public static class TerminalIde
                 ShowInIdeGitMenu(rootPath, currentFile);
                 RefreshGitBranch();
                 lastLoadedFile = null;
+                dirtyNodes = true;
             }
             // Edit file
             else if ((key.Key == ConsoleKey.R && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'e')
@@ -383,6 +390,7 @@ public static class TerminalIde
                 {
                     ProcessRunner.Instance.Run(Bootstrapper.ServiceProvider.GetRequiredService<IEditorResolver>().Resolve(), $"\"{currentFile}\"");
                     lastLoadedFile = null;
+                    dirtyNodes = true;
                 }
                 else
                 {
@@ -458,6 +466,7 @@ public static class TerminalIde
                                 expandedFolders.Remove(node.Path);
                             else
                                 expandedFolders.Add(node.Path);
+                            dirtyNodes = true;
                         }
                         else
                         {
@@ -475,6 +484,7 @@ public static class TerminalIde
                 if (sidebarFocused && sidebarSel >= 0 && sidebarSel < visibleNodes.Count && visibleNodes[sidebarSel].IsDirectory)
                 {
                     expandedFolders.Remove(visibleNodes[sidebarSel].Path);
+                    dirtyNodes = true;
                 }
                 else if (showSidebar)
                 {
@@ -486,6 +496,7 @@ public static class TerminalIde
                 if (sidebarFocused && sidebarSel >= 0 && sidebarSel < visibleNodes.Count && visibleNodes[sidebarSel].IsDirectory)
                 {
                     expandedFolders.Add(visibleNodes[sidebarSel].Path);
+                    dirtyNodes = true;
                 }
                 else
                 {
