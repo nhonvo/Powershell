@@ -379,7 +379,7 @@ function Add-Migration { Load-AgyTuiDll; [CommandRouter]::Route("add-migration",
 function Remove-Database { Load-AgyTuiDll; [CommandRouter]::Route("dd", $args) }
 function Remove-Migration { Load-AgyTuiDll; [CommandRouter]::Route("dremove", $args) }
 function New-Solution { param([string]$Name) dotnet new sln -n $Name }
-function Add-AllProjectsToSolution { Get-ChildItem -Recurse -Filter "*.csproj" | ForEach-Object { dotnet sln add $_.FullName } }
+function Add-AllProjectsToSolution { Load-AgyTuiDll; [CommandRouter]::Route("sln-add", $args) }
 function New-ConsoleProject { param([string]$Name) dotnet new console -n $Name }
 function New-WebApiProject { param([string]$Name) dotnet new webapi -n $Name }
 function dpack { Load-AgyTuiDll; [CommandRouter]::Route("dpack", $args) }

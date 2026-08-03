@@ -168,6 +168,29 @@ public class DotNetClient : CliToolWrapper, IDotNetClient
         return 0;
     }
 
+    public int AddAllProjectsToSolution()
+    {
+        var cwd = Directory.GetCurrentDirectory();
+        var projects = Directory.GetFiles(cwd, "*.csproj", SearchOption.AllDirectories)
+            .Where(f => !f.Contains("\\obj\\") && !f.Contains("/obj/") && !f.Contains("\\bin\\") && !f.Contains("/bin/"))
+            .ToList();
+
+        if (projects.Count == 0)
+        {
+            SpectrePanel.Warning("No .csproj projects found in directory structure.");
+            return 0;
+        }
+
+        foreach (var proj in projects)
+        {
+            SpectrePanel.Info($"Adding {Path.GetFileName(proj)} to solution...");
+            RunDotnet($"sln add \"{proj}\"", cwd);
+        }
+
+        SpectrePanel.Success($"Added {projects.Count} project(s) to solution.");
+        return 0;
+    }
+
     private int RunDotnet(string args, string? workingDir)
     {
         return Helpers.ProcessRunner.Instance.Run(BinaryName, args, workingDir);

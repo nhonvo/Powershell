@@ -207,6 +207,9 @@ public class CommandRouter : ICommandRouter
                     case "dpubpkg":
                         _dotNet.PublishPackage();
                         break;
+                    case "sln-add":
+                        _dotNet.AddAllProjectsToSolution();
+                        break;
                     case "open-term":
                     case "term":
                     case "wt":
