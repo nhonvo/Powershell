@@ -1,7 +1,7 @@
 # build-release.ps1 — Compile single-file Production Release binary
 [CmdletBinding()]
 param(
-    [string]$OutputDir = "./dist_release"
+    [string]$OutputDir = "csapp/AgyTui/dist"
 )
 
 Write-Host "📦 Publishing AgyTui single-file Production Release binary..." -ForegroundColor Cyan

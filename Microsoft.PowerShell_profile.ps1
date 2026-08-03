@@ -487,7 +487,10 @@ function Sync-ActiveAgyEnvironment {
 function Invoke-ControlCenter {
     param([string]$CmdAlias, [object[]]$PassArgs)
     $env:ENVIRONMENT = "Production"
-    $tuiExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Release\net9.0\AgyTui.exe"
+    $tuiExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\dist\AgyTui.exe"
+    if (-not (Test-Path $tuiExe)) {
+        $tuiExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Release\net9.0\AgyTui.exe"
+    }
     if (Test-Path $tuiExe) {
         if ($CmdAlias) {
             & $tuiExe $CmdAlias @PassArgs
