@@ -28,4 +28,9 @@ public interface IGitClient
     void ShowRemotes();
     void ShowRemotesNative(string[]? passArgs = null);
     void CheckoutRemoteBranch(string? remoteBranch = null);
+    void MergeBranch(string? branchName = null);
+    void ShowMergeWizard();
+    void ShowConflictResolver();
+    void ShowStashManager();
+    void ShowRebaseWizard(string? branchName = null);
 }

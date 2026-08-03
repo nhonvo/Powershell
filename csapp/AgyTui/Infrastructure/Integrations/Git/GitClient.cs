@@ -354,4 +354,192 @@ public class GitClient : CliToolWrapper, IGitClient
         if (exitCode == 0) SpectrePanel.Success($"Successfully checked out remote branch '{remoteBranch}'!");
         else SpectrePanel.Error($"Failed to checkout remote branch '{remoteBranch}'.");
     }
+
+    public void MergeBranch(string? branchName = null)
+    {
+        if (string.IsNullOrWhiteSpace(branchName))
+        {
+            ShowMergeWizard();
+            return;
+        }
+        AnsiConsole.MarkupLine($"[cyan]Merging branch:[/] [bold yellow]{branchName.EscapeMarkup()}[/]");
+        var exitCode = RunGitDirect($"merge \"{branchName}\"");
+        if (exitCode == 0) SpectrePanel.Success($"Merged '{branchName}' successfully.");
+        else
+        {
+            SpectrePanel.Error($"Merge conflict or failure detected (exit {exitCode}).");
+            AnsiConsole.MarkupLine("[yellow]Run [bold]gconflictu[/] to resolve unmerged files.[/]");
+        }
+    }
+
+    public void ShowMergeWizard()
+    {
+        var output = RunGit("branch -a");
+        if (string.IsNullOrWhiteSpace(output))
+        {
+            SpectrePanel.Warning("No branches found to merge.");
+            return;
+        }
+
+        var branches = output.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                             .Where(b => !b.StartsWith("*"))
+                             .Select(b => b.Trim())
+                             .ToArray();
+
+        if (branches.Length == 0)
+        {
+            SpectrePanel.Info("No other branches available for merging.");
+            return;
+        }
+
+        AnsiConsole.Write(new Rule("[bold cyan]Git Merge Wizard[/]").RuleStyle("grey"));
+        var selectedIdx = SpectreMenu.Show("Select Branch to Merge into Current HEAD", branches, 0, false);
+        if (selectedIdx < 0) return;
+
+        var target = branches[selectedIdx];
+        MergeBranch(target);
+    }
+
+    public void ShowConflictResolver()
+    {
+        var output = RunGit("diff --name-only --diff-filter=U");
+        var conflictedFiles = output.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        if (conflictedFiles.Length == 0)
+        {
+            SpectrePanel.Success("No active merge conflicts detected in working tree!");
+            return;
+        }
+
+        AnsiConsole.Write(new Rule("[bold red]✨ Git Conflict Resolution Helper[/]").RuleStyle("red"));
+        AnsiConsole.MarkupLine($"[bold yellow]Found {conflictedFiles.Length} file(s) with unmerged conflicts:[/]");
+
+        var table = new Table().Border(TableBorder.Rounded).BorderColor(Color.Red);
+        table.AddColumn("Conflicted File");
+        foreach (var f in conflictedFiles) table.AddRow($"[bold red]{f.EscapeMarkup()}[/]");
+        AnsiConsole.Write(table);
+
+        var actions = new[]
+        {
+            "🔍 Inspect Ours vs Theirs Diffs",
+            "🛡 Accept Ours (git checkout --ours .)",
+            "🚀 Accept Theirs (git checkout --theirs .)",
+            "✅ Stage Resolved Files (git add .)",
+            "↩ Cancel / Back"
+        };
+
+        var choice = SpectreMenu.Show("Conflict Resolution Actions", actions, 0);
+        switch (choice)
+        {
+            case 0:
+                RunGitDirect("diff --cc");
+                break;
+            case 1:
+                if (AnsiConsole.Confirm("Overwrites conflicted files with current branch version (ours)?"))
+                {
+                    RunGitDirect("checkout --ours .");
+                    RunGitDirect("add .");
+                    SpectrePanel.Success("Applied 'ours' changes to all conflicted files.");
+                }
+                break;
+            case 2:
+                if (AnsiConsole.Confirm("Overwrites conflicted files with incoming branch version (theirs)?"))
+                {
+                    RunGitDirect("checkout --theirs .");
+                    RunGitDirect("add .");
+                    SpectrePanel.Success("Applied 'theirs' changes to all conflicted files.");
+                }
+                break;
+            case 3:
+                RunGitDirect("add .");
+                SpectrePanel.Success("Staged all resolved conflict files.");
+                break;
+        }
+    }
+
+    public void ShowStashManager()
+    {
+        var output = RunGit("stash list");
+        var stashes = output.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        AnsiConsole.Write(new Rule("[bold cyan]✨ Git Stash Manager[/]").RuleStyle("grey"));
+
+        if (stashes.Length == 0)
+        {
+            AnsiConsole.MarkupLine("[dim]No stashes saved.[/]");
+            if (AnsiConsole.Confirm("Create a new stash now?"))
+            {
+                var msg = AnsiConsole.Ask<string>("Stash message (optional):", string.Empty);
+                var args = string.IsNullOrWhiteSpace(msg) ? "stash" : $"stash push -m \"{msg}\"";
+                RunGitDirect(args);
+            }
+            return;
+        }
+
+        var table = new Table().Border(TableBorder.Rounded).BorderColor(Color.Grey);
+        table.AddColumn("Stash Identifier");
+        table.AddColumn("Description");
+        foreach (var s in stashes)
+        {
+            var parts = s.Split(':', 2);
+            table.AddRow($"[bold cyan]{parts[0].EscapeMarkup()}[/]", parts.Length > 1 ? parts[1].EscapeMarkup() : "");
+        }
+        AnsiConsole.Write(table);
+
+        var actions = new[]
+        {
+            "💾 Save New Stash (git stash push)",
+            "📦 Pop Latest Stash (git stash pop)",
+            "⚡ Apply Latest Stash (git stash apply)",
+            "🗑 Clear All Stashes (git stash clear)",
+            "↩ Back"
+        };
+
+        var choice = SpectreMenu.Show("Stash Actions", actions, 0);
+        switch (choice)
+        {
+            case 0:
+                var msg = AnsiConsole.Ask<string>("Stash message (optional):", string.Empty);
+                var args = string.IsNullOrWhiteSpace(msg) ? "stash" : $"stash push -m \"{msg}\"";
+                RunGitDirect(args);
+                break;
+            case 1:
+                RunGitDirect("stash pop");
+                break;
+            case 2:
+                RunGitDirect("stash apply");
+                break;
+            case 3:
+                if (AnsiConsole.Confirm("Delete all stashes permanently?")) RunGitDirect("stash clear");
+                break;
+        }
+    }
+
+    public void ShowRebaseWizard(string? branchName = null)
+    {
+        if (string.IsNullOrWhiteSpace(branchName))
+        {
+            var output = RunGit("branch -a");
+            var branches = output.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                                 .Where(b => !b.StartsWith("*"))
+                                 .Select(b => b.Trim())
+                                 .ToArray();
+
+            if (branches.Length == 0)
+            {
+                SpectrePanel.Warning("No target branches available for rebase.");
+                return;
+            }
+
+            AnsiConsole.Write(new Rule("[bold cyan]Git Rebase Wizard[/]").RuleStyle("grey"));
+            var idx = SpectreMenu.Show("Select Base Branch for Rebase", branches, 0, false);
+            if (idx < 0) return;
+            branchName = branches[idx];
+        }
+
+        AnsiConsole.MarkupLine($"[cyan]Rebasing current branch onto:[/] [bold green]{branchName.EscapeMarkup()}[/]");
+        var exitCode = RunGitDirect($"rebase \"{branchName}\"");
+        if (exitCode == 0) SpectrePanel.Success($"Rebased onto '{branchName}' successfully.");
+        else SpectrePanel.Error($"Rebase stopped due to conflicts or error (exit {exitCode}). Run 'git rebase --continue' or 'git rebase --abort'.");
+    }
 }

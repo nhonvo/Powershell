@@ -151,6 +151,16 @@ public static class CommandRegistry
             ["gremoteu — Custom TUI remote manager table with fetch & add actions. Alias: grtu"]),
         new("gco-remote", "Git Checkout Remote Branch (Native)", "Checkout tracking branch from remote", "[Workspace & Dev]", "Git",
             ["gco-remote <remote/branch> — Checkout tracking branch. Alias: cor"]),
+        new("gmerge", "Git Merge Branch (Native)", "Merge specified branch into current HEAD", "[Workspace & Dev]", "Git",
+            ["gmerge <branch> — Executes native `git merge <branch>`. Alias: gm"]),
+        new("gmergeu", "✨ Git Merge Wizard", "Interactive branch merge selector and conflict launcher", "[Workspace & Dev]", "Git",
+            ["gmergeu — Interactive branch picker for merging into HEAD. Alias: gmi"]),
+        new("gconflict", "✨ Git Conflict Resolution Helper", "Inspect and resolve merge conflicts", "[Workspace & Dev]", "Git",
+            ["gconflict — List unmerged conflict files and offer ours/theirs resolution actions. Alias: gcf, gconflictu, gcfu"]),
+        new("gstash", "✨ Git Stash Manager", "List, save, pop, and apply git stashes", "[Workspace & Dev]", "Git",
+            ["gstash — Interactive stash manager dashboard. Alias: gst, gstashu, gstu"]),
+        new("grebase", "✨ Git Rebase Wizard", "Rebase current branch onto target branch", "[Workspace & Dev]", "Git",
+            ["grebase <branch> — Rebase current branch onto target branch. Alias: grb, grebaseu, grbu"]),
         new("nexus", "✨ Repo Nexus Graph", "Git Nexus multi-repo dashboard", "[Workspace & Dev]", "Git",
             ["nexus — Renders a multi-repository workspace dependency and git status dashboard."]),
         new("repo-graph", "✨ Repository dependency graph", "Repository dependency graph", "[Workspace & Dev]", "Git",
@@ -509,7 +519,9 @@ public static class CommandRegistry
             "gs", "gsu", "ga", "gb", "gbr", "co", "cob", "gbd", "gcommit", "gcmt",
             "glo", "glg", "glog", "glou", "gpull", "gpu", "gpush", "gus", "guf",
             "gf", "gd", "gr", "grh", "git-undo", "gundo", "gclone", "gcloneu",
-            "gremote", "gremoteu", "gco-remote", "grt", "grtu", "cor"
+            "gremote", "gremoteu", "gco-remote", "grt", "grtu", "cor",
+            "gmerge", "gmergeu", "gconflict", "gstash", "grebase",
+            "gm", "gmi", "gcf", "gconflictu", "gcfu", "gst", "gstashu", "gstu", "grb", "grebaseu", "grbu"
         };
         var repoCmds = new HashSet<string> { "nexus", "repo-graph", "nexus-stats" };
         var dotnetCmds = new HashSet<string> { "dbld", "db", "dbldu", "dbu", "dr", "dru", "dtst", "dt", "dtstu", "dtu", "df", "dcl", "drestore", "dres", "dpublish", "dwatch", "dw", "rebuild-tui", "clean-build", "dclean", "add-migration", "da", "update-db", "du", "dpack", "dpubpkg", "dotnet-info" };
@@ -535,6 +547,7 @@ public static class CommandRegistry
 
         var hiddenCmds = new HashSet<string> {
             "p", "prj", "glg", "gpu", "gus", "gundo", "grt", "grtu", "cor",
+            "gm", "gmi", "gcf", "gconflictu", "gcfu", "gst", "gstashu", "gstu", "grb", "grebaseu", "grbu",
             "db", "dbu", "dt", "dtu", "dw", "da", "du", "dres", "dclean", "dki", "dkcpu", "dkcpd", "mobile",
             "desk-status", "desk-setup", "desk-start", "desk-online",
             "mgr", "manager-status", "manager-setup", "manager-start", "agm", "agm-status", "agm-setup", "agm-start"

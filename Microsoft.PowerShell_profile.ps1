@@ -334,6 +334,11 @@ function Clone-Project { Load-AgyTuiDll; [CommandRouter]::Route("gclone", $args)
 function Get-GitRemotes { git remote -v @args }
 function Get-GitRemotesUI { Load-AgyTuiDll; [CommandRouter]::Route("gremoteu", $args) }
 function Invoke-GitCheckoutRemote { param([string]$remoteBranch) Load-AgyTuiDll; [CommandRouter]::Route("gco-remote", $remoteBranch) }
+function Invoke-GitMerge { param([string]$branchName) Load-AgyTuiDll; [CommandRouter]::Route("gmerge", $branchName) }
+function Invoke-GitMergeUI { Load-AgyTuiDll; [CommandRouter]::Route("gmergeu", $args) }
+function Invoke-GitConflictResolver { Load-AgyTuiDll; [CommandRouter]::Route("gconflict", $args) }
+function Invoke-GitStashManager { Load-AgyTuiDll; [CommandRouter]::Route("gstash", $args) }
+function Invoke-GitRebase { param([string]$branchName) Load-AgyTuiDll; [CommandRouter]::Route("grebase", $branchName) }
 
 Set-Alias -Name gs -Value Invoke-GitStatus -Force
 Set-Alias -Name gsu -Value Invoke-GitStatusUI -Force
@@ -370,6 +375,22 @@ Set-Alias -Name gremoteu -Value Get-GitRemotesUI -Force
 Set-Alias -Name grtu -Value Get-GitRemotesUI -Force
 Set-Alias -Name gco-remote -Value Invoke-GitCheckoutRemote -Force
 Set-Alias -Name cor -Value Invoke-GitCheckoutRemote -Force
+Set-Alias -Name gmerge -Value Invoke-GitMerge -Force
+Set-Alias -Name gm -Value Invoke-GitMerge -Force
+Set-Alias -Name gmergeu -Value Invoke-GitMergeUI -Force
+Set-Alias -Name gmi -Value Invoke-GitMergeUI -Force
+Set-Alias -Name gconflict -Value Invoke-GitConflictResolver -Force
+Set-Alias -Name gcf -Value Invoke-GitConflictResolver -Force
+Set-Alias -Name gconflictu -Value Invoke-GitConflictResolver -Force
+Set-Alias -Name gcfu -Value Invoke-GitConflictResolver -Force
+Set-Alias -Name gstash -Value Invoke-GitStashManager -Force
+Set-Alias -Name gst -Value Invoke-GitStashManager -Force
+Set-Alias -Name gstashu -Value Invoke-GitStashManager -Force
+Set-Alias -Name gstu -Value Invoke-GitStashManager -Force
+Set-Alias -Name grebase -Value Invoke-GitRebase -Force
+Set-Alias -Name grb -Value Invoke-GitRebase -Force
+Set-Alias -Name grebaseu -Value Invoke-GitRebase -Force
+Set-Alias -Name grbu -Value Invoke-GitRebase -Force
 #endregion
 
 #region 6. DOTNET SDK INTEGRATION

@@ -48,6 +48,12 @@ The **Dual-Tier CLI / TUI Architecture** separates standard CLI commands from ri
 | **`gd`** | `git diff @args` | **`gdu`** | **`✨ Git Diff Viewer`**: Interactive full-screen Spectre diff viewer. |
 | **`gr`** | `git reset --soft HEAD~1` | **`git-undo`** | **`✨ Git Undo Last Commit`**: Confirmation-guarded soft reset with preview. |
 | **`gclone`** | `git clone <url>` | **`gcloneu`** | **`✨ Clone Project`**: Interactive URL prompt with auto-destination resolution in `~/Documents`. |
+| **`gremote`** | `git remote -v` | **`gremoteu`** | **`✨ Git Remote Manager`**: Spectre table of remotes with fetch all & add remote actions. |
+| **`gco-remote`** | `git checkout --track` | **`cor`** | **`✨ Checkout Remote Branch`**: Interactive remote branch tracking selector. |
+| **`gmerge`** | `git merge <branch>` | **`gmergeu`** | **`✨ Git Merge Wizard`**: Interactive branch picker for merging into HEAD. |
+| N/A | Native CLI | **`gconflict`** | **`✨ Conflict Resolution Helper`**: Detects unmerged conflict files, view diffs, apply ours/theirs. |
+| N/A | Native CLI | **`gstash`** | **`✨ Git Stash Manager`**: Stash dashboard for list, save, pop, apply, and drop. |
+| **`grebase`** | `git rebase <branch>` | **`grebaseu`** | **`✨ Git Rebase Wizard`**: Interactive rebase assistant. |
 | N/A | Native CLI | **`nexus`** | **`✨ Repo Nexus Graph`**: Workspace multi-repository dashboard. |
 | N/A | Native CLI | **`repo-graph`** | **`✨ Repository Dependency Graph`**: Visual inter-project tree links. |
 | N/A | Native CLI | **`nexus-stats`** | **`✨ Git Nexus Stats`**: Commit velocity, active authors, and code churn analytics. |
@@ -65,9 +71,17 @@ All Git commands are grouped under **`📂 Git & Repo Tools`** in [CommandRegist
      ├── 📄 /ga — Git Add All (Native)
      ├── 🌿 /gb — Git Branch (Native)
      ├── 🌿 /gbr — ✨ Git Branch Manager
+     ├── 🌿 /gremote — Git Remotes List (Native)
+     ├── 🌿 /gremoteu — ✨ Git Remote Manager
+     ├── 🌿 /gco-remote — Git Checkout Remote Branch
      ├── 🌿 /co — Git Checkout (Native)
      ├── 🌿 /cob — New Git Branch (Native)
      ├── 🌿 /gbd — Delete Git Branch (Native)
+     ├── 🌿 /gmerge — Git Merge Branch (Native)
+     ├── 🌿 /gmergeu — ✨ Git Merge Wizard
+     ├── 🔀 /gconflict — ✨ Git Conflict Resolution Helper
+     ├── 📦 /gstash — ✨ Git Stash Manager
+     ├── 🔄 /grebase — ✨ Git Rebase Wizard
      ├── 💬 /gcommit — Git Commit (Native)
      ├── 💬 /gcmt — ✨ Conventional Commit
      ├── 📜 /glo — Git Commit Log Graph (Native)

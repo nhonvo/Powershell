@@ -236,6 +236,30 @@ public class CommandRouter : ICommandRouter
                     case "gundo":
                         _git.InvokeGitUndo();
                         break;
+                    case "gmerge":
+                    case "gm":
+                        _git.MergeBranch(args != null && args.Length > 0 ? args[0] : null);
+                        break;
+                    case "gmergeu":
+                    case "gmi":
+                        _git.ShowMergeWizard();
+                        break;
+                    case "gconflict":
+                    case "gcf":
+                    case "gconflictu":
+                    case "gcfu":
+                        _git.ShowConflictResolver();
+                        break;
+                    case "gstash":
+                    case "gst":
+                    case "gstashu":
+                    case "gstu":
+                        _git.ShowStashManager();
+                        break;
+                    case "grebase":
+                    case "grb":
+                        _git.ShowRebaseWizard(args != null && args.Length > 0 ? args[0] : null);
+                        break;
                     case "dkps":
                         _docker.ShowContainers();
                         break;
