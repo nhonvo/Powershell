@@ -505,7 +505,6 @@ function Show-DotNetInfo { Invoke-ControlCenter "dotnet-info" @args }
 
 Set-Alias -Name ai -Value Invoke-MultiAgent -Force
 Set-Alias -Name cai -Value Invoke-MultiAgent -Force
-Set-Alias -Name claude -Value Invoke-MultiAgent -Force
 Set-Alias -Name cc -Value Invoke-ControlCenter -Force
 Set-Alias -Name ccd -Value Invoke-ControlCenterDev -Force
 Set-Alias -Name cnav -Value Invoke-ControlCenterNavigator -Force

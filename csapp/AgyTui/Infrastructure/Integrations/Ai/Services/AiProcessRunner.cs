@@ -63,8 +63,8 @@ public class AiProcessRunner : IAiProcessRunner
         }
 
         var argList = new List<string>(args);
-        bool targetsClaudeOrCodexOrAgy = exe.Contains("agy") || exe.Contains("claude") || exe.Contains("codex") || args.Any(a => a is "claude" or "codex" or "agy" || a.Contains("claude", StringComparison.OrdinalIgnoreCase));
-        if (store.IsNoAutoCommitEnabled() && targetsClaudeOrCodexOrAgy)
+        bool isAgyScript = exe.Contains("agy", StringComparison.OrdinalIgnoreCase);
+        if (store.IsNoAutoCommitEnabled() && isAgyScript)
         {
             if (!argList.Contains("--no-auto-commit") && !argList.Contains("--no-commit"))
             {
