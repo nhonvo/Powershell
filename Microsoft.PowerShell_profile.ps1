@@ -114,9 +114,13 @@ function Load-AgyTuiDll {
             try {
                 $dllFolder = Split-Path $targetDll
                 Get-ChildItem -Path $dllFolder -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTui.dll" } | ForEach-Object {
-                    try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
+                    try {
+                        $bytes = [System.IO.File]::ReadAllBytes($_.FullName)
+                        [System.Reflection.Assembly]::Load($bytes) | Out-Null
+                    } catch {}
                 }
-                Add-Type -Path $targetDll -ErrorAction SilentlyContinue
+                $bytes = [System.IO.File]::ReadAllBytes($targetDll)
+                [System.Reflection.Assembly]::Load($bytes) | Out-Null
             } catch {}
         }
     }
@@ -327,6 +331,9 @@ function Invoke-GitPush { Load-AgyTuiDll; [CommandRouter]::Route("gpush", $args)
 function Invoke-GitPushForce { Load-AgyTuiDll; [CommandRouter]::Route("guf", $args) }
 function Invoke-GitCommitWizard { param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message) Load-AgyTuiDll; $msg = $Message -join ' '; [CommandRouter]::Route("gcmt", $msg) }
 function Clone-Project { Load-AgyTuiDll; [CommandRouter]::Route("gclone", $args) }
+function Get-GitRemotes { git remote -v @args }
+function Get-GitRemotesUI { Load-AgyTuiDll; [CommandRouter]::Route("gremoteu", $args) }
+function Invoke-GitCheckoutRemote { param([string]$remoteBranch) Load-AgyTuiDll; [CommandRouter]::Route("gco-remote", $remoteBranch) }
 
 Set-Alias -Name gs -Value Invoke-GitStatus -Force
 Set-Alias -Name gsu -Value Invoke-GitStatusUI -Force
@@ -357,6 +364,12 @@ Set-Alias -Name gus -Value Invoke-GitPush -Force
 Set-Alias -Name gpush -Value Invoke-GitPush -Force
 Set-Alias -Name guf -Value Invoke-GitPushForce -Force
 Set-Alias -Name gclone -Value Clone-Project -Force
+Set-Alias -Name gremote -Value Get-GitRemotes -Force
+Set-Alias -Name grt -Value Get-GitRemotes -Force
+Set-Alias -Name gremoteu -Value Get-GitRemotesUI -Force
+Set-Alias -Name grtu -Value Get-GitRemotesUI -Force
+Set-Alias -Name gco-remote -Value Invoke-GitCheckoutRemote -Force
+Set-Alias -Name cor -Value Invoke-GitCheckoutRemote -Force
 #endregion
 
 #region 6. DOTNET SDK INTEGRATION

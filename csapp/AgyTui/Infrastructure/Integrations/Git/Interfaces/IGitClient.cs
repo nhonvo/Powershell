@@ -25,4 +25,7 @@ public interface IGitClient
     void ResetHard();
     void PushForce(string[]? passArgs = null);
     void CloneProject(string? url = null, string? destName = null);
+    void ShowRemotes();
+    void ShowRemotesNative(string[]? passArgs = null);
+    void CheckoutRemoteBranch(string? remoteBranch = null);
 }

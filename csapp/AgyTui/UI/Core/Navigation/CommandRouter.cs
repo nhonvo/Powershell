@@ -220,6 +220,18 @@ public class CommandRouter : ICommandRouter
                     case "gcloneu":
                         _git.CloneProject(args != null && args.Length > 0 ? args[0] : null, args != null && args.Length > 1 ? args[1] : null);
                         break;
+                    case "gremote":
+                    case "grt":
+                        _git.ShowRemotesNative(args);
+                        break;
+                    case "gremoteu":
+                    case "grtu":
+                        _git.ShowRemotes();
+                        break;
+                    case "gco-remote":
+                    case "cor":
+                        _git.CheckoutRemoteBranch(args != null && args.Length > 0 ? args[0] : null);
+                        break;
                     case "git-undo":
                     case "gundo":
                         _git.InvokeGitUndo();

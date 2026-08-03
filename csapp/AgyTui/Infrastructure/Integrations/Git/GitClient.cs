@@ -262,4 +262,96 @@ public class GitClient : CliToolWrapper, IGitClient
         if (exitCode == 0) SpectrePanel.Success($"Project successfully cloned into {targetPath}!");
         else SpectrePanel.Error("Failed to clone repository.");
     }
+
+    public void ShowRemotesNative(string[]? passArgs = null)
+    {
+        var extra = passArgs != null && passArgs.Length > 0 ? string.Join(" ", passArgs) : "";
+        RunGitDirect($"remote -v {extra}".Trim());
+    }
+
+    public void ShowRemotes()
+    {
+        var output = RunGit("remote -v");
+        if (string.IsNullOrWhiteSpace(output))
+        {
+            SpectrePanel.Warning("No remote repositories configured.");
+            return;
+        }
+
+        AnsiConsole.Write(new Rule("[bold cyan]Git Remotes[/]").RuleStyle("grey"));
+        var table = new Table().Border(TableBorder.Rounded).BorderColor(Color.Grey);
+        table.AddColumn("Remote Name");
+        table.AddColumn("URL");
+        table.AddColumn("Type");
+
+        foreach (var line in output.Split('\n').Where(l => !string.IsNullOrWhiteSpace(l)))
+        {
+            var parts = line.Split(['\t', ' '], StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length >= 3)
+            {
+                table.AddRow($"[bold cyan]{parts[0].EscapeMarkup()}[/]", $"[white]{parts[1].EscapeMarkup()}[/]", $"[dim]{parts[2].Trim('(', ')').EscapeMarkup()}[/]");
+            }
+        }
+
+        AnsiConsole.Write(table);
+
+        var actions = new[]
+        {
+            "🌿 Fetch All Remotes (git fetch --all)",
+            "🌿 Checkout Remote Branch (--track)",
+            "➕ Add New Remote (git remote add)",
+            "↩ Back"
+        };
+
+        var choice = SpectreMenu.Show("Remote Actions", actions, 0);
+        switch (choice)
+        {
+            case 0:
+                RunGitDirect("fetch --all");
+                break;
+            case 1:
+                CheckoutRemoteBranch();
+                break;
+            case 2:
+                var rName = AnsiConsole.Ask<string>("Remote Name (e.g. upstream):").Trim();
+                var rUrl = AnsiConsole.Ask<string>("Remote URL:").Trim();
+                if (!string.IsNullOrEmpty(rName) && !string.IsNullOrEmpty(rUrl))
+                {
+                    RunGitDirect($"remote add \"{rName}\" \"{rUrl}\"");
+                }
+                break;
+        }
+    }
+
+    public void CheckoutRemoteBranch(string? remoteBranch = null)
+    {
+        if (string.IsNullOrWhiteSpace(remoteBranch))
+        {
+            RunGitDirect("fetch --all");
+            var output = RunGit("branch -r");
+            if (string.IsNullOrWhiteSpace(output))
+            {
+                SpectrePanel.Warning("No remote branches found.");
+                return;
+            }
+            var branches = output.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                                 .Where(b => !b.Contains("->"))
+                                 .ToArray();
+            var selectedIdx = SpectreMenu.Show("Select Remote Branch to Checkout", branches, 0, false);
+            if (selectedIdx < 0) return;
+            remoteBranch = branches[selectedIdx];
+        }
+
+        remoteBranch = remoteBranch.Trim();
+        AnsiConsole.MarkupLine($"[cyan]Checking out remote branch:[/] [bold green]{remoteBranch.EscapeMarkup()}[/]");
+        var exitCode = RunGitDirect($"checkout --track \"{remoteBranch}\"");
+        if (exitCode != 0)
+        {
+            var localName = remoteBranch.Contains('/') ? remoteBranch[(remoteBranch.IndexOf('/') + 1)..] : remoteBranch;
+            exitCode = RunGitDirect($"checkout -b \"{localName}\" \"{remoteBranch}\"");
+        }
+
+        if (exitCode == 0) SpectrePanel.Success($"Successfully checked out remote branch '{remoteBranch}'!");
+        else SpectrePanel.Error($"Failed to checkout remote branch '{remoteBranch}'.");
+    }
 }

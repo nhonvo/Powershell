@@ -145,6 +145,12 @@ public static class CommandRegistry
             ["gclone <url> — Executes native `git clone <url>`."]),
         new("gcloneu", "✨ Clone Project Assistant", "Interactive TUI repo cloning assistant", "[Workspace & Dev]", "Git",
             ["gcloneu — Interactive TUI prompt asking for repo URL, auto-resolving destination in ~/Documents."]),
+        new("gremote", "Git Remotes List (Native)", "List remote repositories and URLs", "[Workspace & Dev]", "Git",
+            ["gremote — Executes native `git remote -v`. Alias: grt"]),
+        new("gremoteu", "✨ Git Remote Manager", "Interactive remote manager and fetch wizard", "[Workspace & Dev]", "Git",
+            ["gremoteu — Custom TUI remote manager table with fetch & add actions. Alias: grtu"]),
+        new("gco-remote", "Git Checkout Remote Branch (Native)", "Checkout tracking branch from remote", "[Workspace & Dev]", "Git",
+            ["gco-remote <remote/branch> — Checkout tracking branch. Alias: cor"]),
         new("nexus", "✨ Repo Nexus Graph", "Git Nexus multi-repo dashboard", "[Workspace & Dev]", "Git",
             ["nexus — Renders a multi-repository workspace dependency and git status dashboard."]),
         new("repo-graph", "✨ Repository dependency graph", "Repository dependency graph", "[Workspace & Dev]", "Git",
@@ -497,16 +503,16 @@ public static class CommandRegistry
     static CommandRegistry()
     {
         var navCmds = new HashSet<string> { "prune-workspaces", "discover-workspaces", "proj", "cnav", "go", "open-term", "f" };
-        var ideCmds = new HashSet<string> { "ide", "ide-diff", "ide-search" };
-        var scaffoldCmds = new HashSet<string> { "scaffold" };
+        var devToolsCmds = new HashSet<string> { "ide", "ide-diff", "ide-search", "scaffold" };
 
         var gitCmds = new HashSet<string> {
             "gs", "gsu", "ga", "gb", "gbr", "co", "cob", "gbd", "gcommit", "gcmt",
             "glo", "glg", "glog", "glou", "gpull", "gpu", "gpush", "gus", "guf",
-            "gf", "gd", "gr", "grh", "git-undo", "gundo", "gclone", "gcloneu"
+            "gf", "gd", "gr", "grh", "git-undo", "gundo", "gclone", "gcloneu",
+            "gremote", "gremoteu", "gco-remote", "grt", "grtu", "cor"
         };
         var repoCmds = new HashSet<string> { "nexus", "repo-graph", "nexus-stats" };
-        var dotnetCmds = new HashSet<string> { "dbld", "db", "dbldu", "dbu", "dr", "dru", "dtst", "dt", "dtstu", "dtu", "df", "dcl", "drestore", "dres", "dpublish", "dwatch", "dw", "rebuild-tui", "clean-build", "dclean", "add-migration", "da", "update-db", "du", "dpack", "dpubpkg" };
+        var dotnetCmds = new HashSet<string> { "dbld", "db", "dbldu", "dbu", "dr", "dru", "dtst", "dt", "dtstu", "dtu", "df", "dcl", "drestore", "dres", "dpublish", "dwatch", "dw", "rebuild-tui", "clean-build", "dclean", "add-migration", "da", "update-db", "du", "dpack", "dpubpkg", "dotnet-info" };
         var dockerCmds = new HashSet<string> { "dk", "dku", "dki", "docker-health", "dkcl", "dkrmac", "dkstac", "dimg", "dimgu", "dlogs", "dlogsu", "dcup", "dkcpu", "dcdown", "dkcpd" };
         var awsCmds = new HashSet<string> { "aws-whoami", "aws-whoamiu", "aws-local", "aws-s3", "aws-s3u", "aws-sqs", "aws-ssm", "aws-sns", "aws-dynamodb", "aws-lambda" };
         var claudeCmds = new HashSet<string> { "claude", "claude-cloud", "claude-ollama" };
@@ -528,7 +534,7 @@ public static class CommandRegistry
         var obsidianCmds = new HashSet<string> { "obsidian", "refresh", "vault-open" };
 
         var hiddenCmds = new HashSet<string> {
-            "p", "prj", "glg", "gpu", "gus", "gundo",
+            "p", "prj", "glg", "gpu", "gus", "gundo", "grt", "grtu", "cor",
             "db", "dbu", "dt", "dtu", "dw", "da", "du", "dres", "dclean", "dki", "dkcpu", "dkcpd", "mobile",
             "desk-status", "desk-setup", "desk-start", "desk-online",
             "mgr", "manager-status", "manager-setup", "manager-start", "agm", "agm-status", "agm-setup", "agm-start"
@@ -603,8 +609,7 @@ public static class CommandRegistry
             }
 
             if (navCmds.Contains(alias)) { cmd.GroupPath = "/workspace-nav"; cmd.GroupName = "Workspace Navigation"; }
-            else if (ideCmds.Contains(alias)) { cmd.GroupPath = "/ide-tools"; cmd.GroupName = "Terminal IDE & Code Search"; }
-            else if (scaffoldCmds.Contains(alias)) { cmd.GroupPath = "/scaffold-tools"; cmd.GroupName = "Project Templates & Scaffolding"; }
+            else if (devToolsCmds.Contains(alias)) { cmd.GroupPath = "/dev-scaffold-tools"; cmd.GroupName = "Developer Tools & Scaffolding"; }
             else if (gitCmds.Contains(alias) || repoCmds.Contains(alias)) { cmd.GroupPath = "/git-tools"; cmd.GroupName = "Git & Repo Tools"; }
             else if (dotnetCmds.Contains(alias)) { cmd.GroupPath = "/dotnet-tools"; cmd.GroupName = ".NET Project Tools"; }
             else if (dockerCmds.Contains(alias)) { cmd.GroupPath = "/docker-tools"; cmd.GroupName = "Docker Tools"; }
