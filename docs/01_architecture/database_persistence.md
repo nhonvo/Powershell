@@ -83,7 +83,7 @@ erDiagram
 
 ---
 
-## 3. Complete SQL DDL Schemas (Migrations V1-V6)
+## 3. Complete SQL DDL Schemas (Migrations V1-V7)
 
 - **V1 (Initial Schema)**: `app_config`, `accounts`, `system_state`.
 - **V2 (Invocation Logs)**: `command_invocation_logs`.
@@ -91,6 +91,7 @@ erDiagram
 - **V4 (Extended Storage)**: `themes`, `ai_invocation_logs`.
 - **V5 (System State & Index)**: `resources`, `skills`.
 - **V6 (Quiz Questions)**: `quiz_questions`.
+- **V7 (Account Credential Storage)**: Adds `keyring_token`, `google_accounts_json`, `oauth_creds_json`, and `state_json` to `accounts` table for encrypted DPAPI persistence and multi-account isolation.
 
 ---
 

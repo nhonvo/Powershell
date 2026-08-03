@@ -59,8 +59,13 @@ sequenceDiagram
 
 ## 3. Running the Release Publish Script
 
-To trigger a production release build:
+To trigger a production release build, execute the root helper:
 
+```powershell
+pwsh -File build-release.ps1
+```
+
+Or run the underlying publish script:
 ```powershell
 . "$HOME\Documents\Powershell\psapp\scripts\publish_release.ps1"
 ```
