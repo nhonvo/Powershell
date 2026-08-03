@@ -1,8 +1,8 @@
 Describe "Publish Release Script Tests" {
     Context "Project File Paths" {
-        It "publish_release.ps1 references only project files that exist on disk" {
+        It "build-release.ps1 references only project files that exist on disk" {
             $repoRoot = (Get-Item (Join-Path $PSScriptRoot "..\..\..\")).FullName
-            $scriptPath = Join-Path $repoRoot "psapp\scripts\publish_release.ps1"
+            $scriptPath = Join-Path $repoRoot "build-release.ps1"
             Test-Path $scriptPath | Should Be $true
 
             $content = Get-Content $scriptPath -Raw
