@@ -2,6 +2,7 @@ using System.Buffers;
 using System.Text.RegularExpressions;
 using AgyTui.Infrastructure.Integrations.Ai.Services;
 using AgyTui.Infrastructure.Di;
+using AgyTui.Infrastructure.Persistence.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.UI.Screens.Ide;
@@ -80,6 +81,28 @@ public static class TerminalIde
     public static void ShowIdeLayout(string rootPath, string? openFilePath = null)
     {
         var currentFile = openFilePath;
+        if (currentFile == null)
+        {
+            try
+            {
+                var db = Bootstrapper.ServiceProvider.GetService<ISqliteDatabase>();
+                if (db != null)
+                {
+                    using var conn = db.CreateConnection();
+                    using var cmd = conn.CreateCommand();
+                    cmd.CommandText = "SELECT state_value FROM system_state WHERE state_key = @key;";
+                    cmd.Parameters.AddWithValue("@key", $"ide_last_file:{rootPath.ToLowerInvariant()}");
+                    var val = cmd.ExecuteScalar() as string;
+                    if (!string.IsNullOrEmpty(val))
+                    {
+                        var full = Path.Combine(rootPath, val);
+                        if (File.Exists(full)) currentFile = full;
+                    }
+                }
+            }
+            catch { }
+        }
+
         var files = Directory.EnumerateFiles(rootPath, "*.*", SearchOption.AllDirectories)
             .Where(f => !f.Contains("bin") && !f.Contains("obj") && !f.Contains(".git"))
             .Select(f => Path.GetRelativePath(rootPath, f))
@@ -451,73 +474,34 @@ public static class TerminalIde
     {
         try
         {
-            var contextFile = Path.Combine(rootPath, ".agy-context.md");
-            var touchedList = new List<string>();
-            if (File.Exists(contextFile))
+            // Clean up any legacy file polluting the workspace directory
+            var legacyContextFile = Path.Combine(rootPath, ".agy-context.md");
+            if (File.Exists(legacyContextFile))
             {
-                var lines = File.ReadAllLines(contextFile);
-                var isTouchedSection = false;
-                foreach (var line in lines)
-                {
-                    if (line.StartsWith("## Recently Touched Files"))
-                    {
-                        isTouchedSection = true;
-                        continue;
-                    }
-                    if (line.StartsWith("##"))
-                    {
-                        isTouchedSection = false;
-                    }
-                    if (isTouchedSection && line.StartsWith("- "))
-                    {
-                        touchedList.Add(line[2..].Trim());
-                    }
-                }
+                try { File.Delete(legacyContextFile); } catch { }
             }
 
-            if (!string.IsNullOrEmpty(touchedFile))
-            {
-                var relPath = Path.GetRelativePath(rootPath, touchedFile);
-                touchedList.Remove(relPath);
-                touchedList.Insert(0, relPath);
-            }
+            if (string.IsNullOrEmpty(touchedFile)) return;
 
-            var todoList = new List<string>();
-            foreach (var file in Directory.EnumerateFiles(rootPath, "*.*", SearchOption.AllDirectories)
-                .Where(f => !f.Contains("bin") && !f.Contains("obj") && !f.Contains(".git"))
-                .Take(200))
-            {
-                try
-                {
-                    var fileLines = File.ReadAllLines(file);
-                    for (int i = 0; i < fileLines.Length; i++)
-                    {
-                        var match = Regex.Match(fileLines[i], @"\bTODO\b:(.*)", RegexOptions.IgnoreCase);
-                        if (match.Success)
-                        {
-                            todoList.Add($"- {Path.GetRelativePath(rootPath, file)}:L{i + 1}:{match.Groups[1].Value.Trim()}");
-                        }
-                    }
-                }
-                catch { }
-            }
+            var db = Bootstrapper.ServiceProvider.GetService<ISqliteDatabase>();
+            if (db == null) return;
 
-            var sb = new StringBuilder();
-            sb.AppendLine("# Workspace Context Handoff (.agy-context.md)");
-            sb.AppendLine();
-            sb.AppendLine("## Recently Touched Files");
-            foreach (var f in touchedList.Take(5))
-            {
-                sb.AppendLine($"- {f}");
-            }
-            sb.AppendLine();
-            sb.AppendLine("## Active TODOs");
-            foreach (var todo in todoList.Take(10))
-            {
-                sb.AppendLine(todo);
-            }
+            using var conn = db.CreateConnection();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = """
+                INSERT INTO system_state (state_key, state_value, updated_at)
+                VALUES (@key, @val, @now)
+                ON CONFLICT(state_key) DO UPDATE SET state_value = @val, updated_at = @now;
+                """;
 
-            File.WriteAllText(contextFile, sb.ToString(), Encoding.UTF8);
+            var relPath = Path.GetRelativePath(rootPath, touchedFile);
+            var stateKey = $"ide_last_file:{rootPath.ToLowerInvariant()}";
+            var now = DateTime.UtcNow.ToString("o");
+
+            cmd.Parameters.AddWithValue("@key", stateKey);
+            cmd.Parameters.AddWithValue("@val", relPath);
+            cmd.Parameters.AddWithValue("@now", now);
+            cmd.ExecuteNonQuery();
         }
         catch { }
     }
