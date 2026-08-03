@@ -136,18 +136,18 @@ public static class CommandRegistry
             ["gf — Executes `git fetch` to update local tracking references without merging."]),
         new("gd", "Git Diff Viewer", "Interactive git diff viewer for modified files", "[Workspace & Dev]", "Git",
             ["gd — Shortcut for launching the interactive Git Diff Viewer for the current directory."]),
-        new("git-undo", "Git Undo Last Commit", "Soft-reset the last local commit", "[Workspace & Dev]", "Git",
+        new("git-undo", "✨ Git Undo Last Commit", "Soft-reset the last local commit with TUI confirmation", "[Workspace & Dev]", "Git",
             [
                 "git-undo — Soft-reset the last commit (`git reset --soft HEAD~1`).",
                 " Keeps all file modifications staged in the index."
             ]),
-        new("gundo", "Git Undo Last Commit (Alias)", "Alias for git-undo soft reset", "[Workspace & Dev]", "Git",
+        new("gundo", "✨ Git Undo Last Commit (Alias)", "Alias for git-undo soft reset", "[Workspace & Dev]", "Git",
             ["gundo — Alias for git-undo soft reset."]),
-        new("nexus", "Repo Nexus Graph", "Git Nexus multi-repo dashboard", "[Workspace & Dev]", "Git",
+        new("nexus", "✨ Repo Nexus Graph", "Git Nexus multi-repo dashboard", "[Workspace & Dev]", "Git",
             ["nexus — Renders a multi-repository workspace dependency and git status dashboard."]),
-        new("repo-graph", "Repository dependency graph", "Repository dependency graph", "[Workspace & Dev]", "Git",
+        new("repo-graph", "✨ Repository dependency graph", "Repository dependency graph", "[Workspace & Dev]", "Git",
             ["repo-graph — Displays dependency tree and inter-project relationship links."]),
-        new("nexus-stats", "Git Nexus commit stats", "Git Nexus commit stats", "[Workspace & Dev]", "Git",
+        new("nexus-stats", "✨ Git Nexus commit stats", "Git Nexus commit stats", "[Workspace & Dev]", "Git",
             ["nexus-stats — Summarizes commit velocity, active authors, and modification volume across repos."]),
 
         // .NET Tools (/dotnet-tools)
