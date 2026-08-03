@@ -119,8 +119,53 @@ public static class TerminalIde
         var editorScrollOffset = 0;
         var expandedFolders = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
+        string cachedGitBranch = "";
+        void RefreshGitBranch()
+        {
+            try
+            {
+                cachedGitBranch = ProcessRunner.Instance.RunCapture("git", "branch --show-current", rootPath).Trim();
+            }
+            catch { }
+            if (string.IsNullOrEmpty(cachedGitBranch)) cachedGitBranch = "main";
+        }
+        RefreshGitBranch();
+
+        string? lastLoadedFile = null;
+        string[] cachedFileLines = [];
+        string cachedFileInfoStr = "";
+
+        void EnsureFileCached()
+        {
+            if (currentFile != lastLoadedFile)
+            {
+                lastLoadedFile = currentFile;
+                if (currentFile != null && File.Exists(currentFile))
+                {
+                    try
+                    {
+                        cachedFileLines = File.ReadAllLines(currentFile);
+                        var fi = new FileInfo(currentFile);
+                        var sizeKb = fi.Length / 1024.0;
+                        cachedFileInfoStr = $"[dim]({cachedFileLines.Length} lines · {sizeKb:F1} KB)[/]";
+                    }
+                    catch
+                    {
+                        cachedFileLines = [];
+                        cachedFileInfoStr = "";
+                    }
+                }
+                else
+                {
+                    cachedFileLines = [];
+                    cachedFileInfoStr = "";
+                }
+            }
+        }
+
         while (true)
         {
+            EnsureFileCached();
             var visibleNodes = GetVisibleNodes(rootPath, rootPath, 0, expandedFolders);
 
             if (sidebarSel < 0) sidebarSel = 0;
@@ -145,9 +190,9 @@ public static class TerminalIde
 
             var layout = new Layout("Root")
                 .SplitRows(
-                    new Layout("Header").Size(3),
+                    new Layout("Header").Size(1),
                     mainLayout,
-                    new Layout("Status").Size(3)
+                    new Layout("Status").Size(1)
                 );
 
             if (showSidebar)
@@ -155,7 +200,7 @@ public static class TerminalIde
                 var sidebarLines = new List<string>();
                 int termH = 30;
                 try { termH = Console.WindowHeight; } catch { }
-                int maxSidebarRows = Math.Max(5, termH - 9);
+                int maxSidebarRows = Math.Max(5, termH - 7);
                 var (sTop, sEnd) = ScrollableListView.ComputeViewport(visibleNodes.Count, sidebarSel, maxSidebarRows);
 
                 for (int i = sTop; i < sEnd; i++)
@@ -209,50 +254,32 @@ public static class TerminalIde
                 layout["Sidebar"].Update(sidebarPanel);
             }
 
-            // Header Bar Rendering
+            // Header Bar Rendering (Borderless single line)
             var rootName = Path.GetFileName(rootPath);
             var fileRel = currentFile != null ? Path.GetRelativePath(rootPath, currentFile) : "No file open";
             var fileExt = currentFile != null ? Path.GetExtension(currentFile) : "";
             var fileIcon = Icons.GetFileIcon(fileExt);
 
-            var gitBranch = ProcessRunner.Instance.RunCapture("git", "branch --show-current").Trim();
-            if (string.IsNullOrEmpty(gitBranch)) gitBranch = "main";
-
-            var fileInfoStr = "";
-            if (currentFile != null && File.Exists(currentFile))
-            {
-                try
-                {
-                    var fi = new FileInfo(currentFile);
-                    var sizeKb = fi.Length / 1024.0;
-                    var lineCount = File.ReadLines(currentFile).Count();
-                    fileInfoStr = $"[dim]({lineCount} lines · {sizeKb:F1} KB)[/]";
-                }
-                catch { }
-            }
-
-            var headerMarkup = $" [bold cyan]IDE[/] [dim]│[/] [bold white]📂 {rootName.EscapeMarkup()}[/] › [bold green]{fileIcon} {fileRel.EscapeMarkup()}[/] {fileInfoStr} [dim]│[/] 🌿 [yellow]{gitBranch.EscapeMarkup()}[/]";
+            var headerMarkup = $"[bold cyan]IDE[/] [dim]│[/] [bold white]📂 {rootName.EscapeMarkup()}[/] › [bold green]{fileIcon} {fileRel.EscapeMarkup()}[/] {cachedFileInfoStr} [dim]│[/] 🌿 [yellow]{cachedGitBranch.EscapeMarkup()}[/]";
             var headerPanel = new Panel(new Align(new Markup(headerMarkup), HorizontalAlignment.Left, VerticalAlignment.Middle))
             {
-                Border = BoxBorder.Rounded,
-                BorderStyle = new Style(Color.Cyan1)
+                Border = BoxBorder.None
             };
             layout["Header"].Update(headerPanel);
 
             string editorText = "";
             var editorTitle = "";
-            if (currentFile != null && File.Exists(currentFile))
+            if (cachedFileLines.Length > 0)
             {
-                var allLines = File.ReadAllLines(currentFile);
                 int termH = 30;
                 try { termH = Console.WindowHeight; } catch { }
-                int maxEditorRows = Math.Max(5, termH - 9);
+                int maxEditorRows = Math.Max(5, termH - 7);
 
-                int maxScroll = Math.Max(0, allLines.Length - maxEditorRows);
+                int maxScroll = Math.Max(0, cachedFileLines.Length - maxEditorRows);
                 if (editorScrollOffset < 0) editorScrollOffset = 0;
                 if (editorScrollOffset > maxScroll) editorScrollOffset = maxScroll;
 
-                var displayLines = allLines.Skip(editorScrollOffset).Take(maxEditorRows).ToList();
+                var displayLines = cachedFileLines.Skip(editorScrollOffset).Take(maxEditorRows).ToList();
                 var sb = new StringBuilder();
                 for (int i = 0; i < displayLines.Count; i++)
                 {
@@ -260,12 +287,12 @@ public static class TerminalIde
                     sb.AppendLine($"[dim]{lineNum:D3} │[/] {displayLines[i].EscapeMarkup()}");
                 }
 
-                if (allLines.Length > editorScrollOffset + maxEditorRows)
+                if (cachedFileLines.Length > editorScrollOffset + maxEditorRows)
                 {
-                    sb.AppendLine($"[dim]... (truncated, showing lines {editorScrollOffset + 1}-{editorScrollOffset + displayLines.Count} of {allLines.Length}) ...[/]");
+                    sb.AppendLine($"[dim]... (showing lines {editorScrollOffset + 1}-{editorScrollOffset + displayLines.Count} of {cachedFileLines.Length})[/]");
                 }
                 editorText = sb.ToString();
-                editorTitle = $" [bold green] {activeTab} [/] ({allLines.Length} lines) ";
+                editorTitle = $" [bold green] {activeTab} [/] ({cachedFileLines.Length} lines) ";
             }
             else
             {
@@ -282,7 +309,7 @@ public static class TerminalIde
             layout["Editor"].Update(editorPanel);
 
             var modeTag = sidebarFocused ? "[bold black on yellow] EXPLORER [/]" : "[bold black on green] EDITOR [/]";
-            var statusText = $"{modeTag} | [cyan]{fileIcon} {activeTab.EscapeMarkup()}[/] | 🌿 [yellow]{gitBranch.EscapeMarkup()}[/] | [dim][[Tab]] Focus | [[/]] Search | [[e]] Edit | [[g]] Git | [[k]] AI | [[b]] Sidebar | [[q]] Exit[/]";
+            var statusText = $"{modeTag} | [cyan]{fileIcon} {activeTab.EscapeMarkup()}[/] | 🌿 [yellow]{cachedGitBranch.EscapeMarkup()}[/] | [dim][[Tab]] Focus | [[/]] Search | [[e]] Edit | [[g]] Git | [[k]] AI | [[b]] Sidebar | [[q]] Exit[/]";
             var statusPanel = new Panel(new Align(new Markup(statusText), HorizontalAlignment.Left, VerticalAlignment.Middle))
             {
                 Border = BoxBorder.Rounded,
@@ -346,6 +373,8 @@ public static class TerminalIde
             else if ((key.Key == ConsoleKey.G && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'g')
             {
                 ShowInIdeGitMenu(rootPath, currentFile);
+                RefreshGitBranch();
+                lastLoadedFile = null;
             }
             // Edit file
             else if ((key.Key == ConsoleKey.R && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'e')
@@ -353,6 +382,7 @@ public static class TerminalIde
                 if (currentFile != null)
                 {
                     ProcessRunner.Instance.Run(Bootstrapper.ServiceProvider.GetRequiredService<IEditorResolver>().Resolve(), $"\"{currentFile}\"");
+                    lastLoadedFile = null;
                 }
                 else
                 {
