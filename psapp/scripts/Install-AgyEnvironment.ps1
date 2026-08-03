@@ -40,13 +40,11 @@ if (-not (Test-Path $profilePath) -or -not (Get-Content $profilePath -ErrorActio
     Write-Host "✅ Linked PowerShell profile to $profileSource" -ForegroundColor Green
 }
 
-# 4. Restore & Compile AgyTui Binary
-Write-Host "🔨 Compiling AgyTui Control Center binary..." -ForegroundColor Cyan
+# 4. Restore & Compile AgyTui Production Binary
+Write-Host "🔨 Compiling & Publishing AgyTui Control Center production binary..." -ForegroundColor Cyan
 Push-Location $TargetDir
 try {
-    dotnet restore csapp/AgyTui/AgyTui.csproj
-    dotnet build csapp/AgyTui/AgyTui.csproj -c Release
-    Write-Host "✅ AgyTui binary built successfully!" -ForegroundColor Green
+    & "$TargetDir\build-release.ps1"
 } finally {
     Pop-Location
 }
