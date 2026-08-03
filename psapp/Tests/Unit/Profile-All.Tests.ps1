@@ -44,8 +44,10 @@ Describe "Core Profile Functions Validation" {
             } catch {}
         }
 
-        $global:AgyUserProfileLoaded = $false
+        $global:AgyUserProfileLoaded = $null
         . (Join-Path $repoRoot "Microsoft.PowerShell_profile.ps1")
+        $global:AgyUserProfileLoaded = $null
+        try { Load-AgyTuiDll -ForceLoad $true } catch {}
     }
 
     Context "ProfileHelp Type Accelerator" {
