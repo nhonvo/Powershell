@@ -606,7 +606,106 @@ Set-Alias -Name wt -Value open-term -Force
 Set-Alias -Name theme -Value Select-ShellTheme -Force
 #endregion
 
-#region 10. SYSTEM UTILITIES & HISTORY
+#region 11. LINUX CLI WORKSPACE HELPERS
+# ==============================================================================
+#  Linux-style file inspection, opener, search, and viewing tools.
+# ==============================================================================
+
+function Invoke-ViewFile {
+    param([string]$Path, [int]$MaxLines = 100)
+    if (-not $Path) { Write-Host "Usage: view <filepath> [maxLines]" -ForegroundColor Yellow; return }
+    if (-not (Test-Path -LiteralPath $Path)) { Write-Host "File not found: $Path" -ForegroundColor Red; return }
+
+    $fi = Get-Item -LiteralPath $Path
+    $lines = Get-Content -LiteralPath $Path -TotalCount $MaxLines
+    $totalLines = (Get-Content -LiteralPath $Path | Measure-Object -Line).Lines
+
+    Write-Host "📄 $Path ($totalLines lines · $([math]::Round($fi.Length / 1KB, 1)) KB)" -ForegroundColor Cyan
+    Write-Host ("─" * 80) -ForegroundColor DarkGray
+    $lineNum = 1
+    foreach ($l in $lines) {
+        $numStr = "{0:D3}" -f $lineNum
+        Write-Host "$numStr │ " -NoNewline -ForegroundColor DarkGray
+        Write-Host $l
+        $lineNum++
+    }
+    if ($totalLines -gt $MaxLines) {
+        Write-Host "... (showing $MaxLines of $totalLines lines, use 'ide $Path' for full IDE view)" -ForegroundColor DarkGray
+    }
+    Write-Host ("─" * 80) -ForegroundColor DarkGray
+}
+
+function Invoke-OpenFile {
+    param([string]$Target)
+    if (-not $Target) { $Target = "." }
+    if ($Target -match '^https?://') {
+        Start-Process $Target
+    } elseif (Test-Path -LiteralPath $Target -PathType Container) {
+        Invoke-Item -LiteralPath $Target
+    } elseif (Test-Path -LiteralPath $Target -PathType Leaf) {
+        $ext = [System.IO.Path]::GetExtension($Target).ToLower()
+        if ($ext -in @('.txt', '.md', '.json', '.cs', '.ps1', '.py', '.js', '.ts', '.html', '.css', '.yaml', '.yml')) {
+            Invoke-TerminalIde -Path $Target
+        } else {
+            Invoke-Item -LiteralPath $Target
+        }
+    } else {
+        Write-Host "Target not found: $Target" -ForegroundColor Red
+    }
+}
+
+function Invoke-HeadFile {
+    param([string]$Path, [int]$n = 20)
+    if (-not $Path) { Write-Host "Usage: head <file> [-n 20]" -ForegroundColor Yellow; return }
+    if (-not (Test-Path -LiteralPath $Path)) { Write-Host "File not found: $Path" -ForegroundColor Red; return }
+    $lines = Get-Content -LiteralPath $Path -TotalCount $n
+    $lineNum = 1
+    foreach ($l in $lines) {
+        Write-Host ("{0:D3} │ " -f $lineNum) -NoNewline -ForegroundColor DarkGray
+        Write-Host $l
+        $lineNum++
+    }
+}
+
+function Invoke-TailFile {
+    param([string]$Path, [int]$n = 20)
+    if (-not $Path) { Write-Host "Usage: tail <file> [-n 20]" -ForegroundColor Yellow; return }
+    if (-not (Test-Path -LiteralPath $Path)) { Write-Host "File not found: $Path" -ForegroundColor Red; return }
+    $lines = Get-Content -LiteralPath $Path -Tail $n
+    foreach ($l in $lines) {
+        Write-Host "│ " -NoNewline -ForegroundColor DarkGray
+        Write-Host $l
+    }
+}
+
+function Invoke-FindFile {
+    param([string]$Pattern = "*")
+    Get-ChildItem -Recurse -File -Filter "*$Pattern*" -Exclude bin,obj,.git | Select-Object -First 50 | ForEach-Object {
+        $rel = Resolve-Path -Relative $_.FullName
+        Write-Host "📄 $rel" -ForegroundColor Cyan
+    }
+}
+
+function Invoke-GrepFile {
+    param([string]$Pattern)
+    if (-not $Pattern) { Write-Host "Usage: gf <pattern>" -ForegroundColor Yellow; return }
+    Get-ChildItem -Recurse -File -Exclude bin,obj,.git | Select-Object -First 300 | Select-String -Pattern $Pattern | ForEach-Object {
+        $rel = Resolve-Path -Relative $_.Path
+        Write-Host "$rel`:$($_.LineNumber)" -NoNewline -ForegroundColor Yellow
+        Write-Host " │ $($_.Line.Trim())"
+    }
+}
+
+Set-Alias -Name view -Value Invoke-ViewFile -Force
+Set-Alias -Name cat-file -Value Invoke-ViewFile -Force
+Set-Alias -Name open -Value Invoke-OpenFile -Force
+Set-Alias -Name head -Value Invoke-HeadFile -Force
+Set-Alias -Name tail -Value Invoke-TailFile -Force
+Set-Alias -Name ff -Value Invoke-FindFile -Force
+Set-Alias -Name gf -Value Invoke-GrepFile -Force
+#endregion
+
+#region 12. SYSTEM UTILITIES & HISTORY
 # ==============================================================================
 #  System history cleanup and shell startup completion banner.
 # ==============================================================================
