@@ -294,7 +294,8 @@ Set-Alias -Name fix-image -Value Remove-UnusedDockerImages -Force
 #  Shortcuts and interactive commit/checkout wizards for Git.
 # ==============================================================================
 
-function Invoke-GitStatus { Load-AgyTuiDll; [CommandRouter]::Route("gs", $args) }
+function Invoke-GitStatus { git status @args }
+function Invoke-GitStatusUI { Load-AgyTuiDll; [CommandRouter]::Route("gsu", $args) }
 function Show-GitDiff { Load-AgyTuiDll; [CommandRouter]::Route("gd", $args) }
 function Get-GitLogGraph { Load-AgyTuiDll; [CommandRouter]::Route("glg", $args) }
 function Get-GitLogPretty { Load-AgyTuiDll; [CommandRouter]::Route("glog", $args) }
@@ -318,6 +319,8 @@ function Invoke-GitCommitWizard { param([Parameter(ValueFromRemainingArguments=$
 function Clone-Project { Load-AgyTuiDll; [CommandRouter]::Route("gclone", $args) }
 
 Set-Alias -Name gs -Value Invoke-GitStatus -Force
+Set-Alias -Name gsu -Value Invoke-GitStatusUI -Force
+Set-Alias -Name gsi -Value Invoke-GitStatusUI -Force
 Set-Alias -Name gd -Value Show-GitDiff -Force
 Set-Alias -Name glo -Value Get-GitLogGraph -Force
 Set-Alias -Name glg -Value Get-GitLogGraph -Force

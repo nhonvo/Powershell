@@ -52,6 +52,12 @@ public class GitClient : CliToolWrapper, IGitClient
         AnsiConsole.Write(table);
     }
 
+    public void ShowStatusNative(string[]? passArgs = null)
+    {
+        var extra = passArgs != null && passArgs.Length > 0 ? string.Join(" ", passArgs) : "";
+        RunGitDirect($"status {extra}".Trim());
+    }
+
     public void ConventionalCommitWizard()
     {
         AnsiConsole.Write(new Rule("[bold cyan]Conventional Commit Wizard[/]").RuleStyle("grey"));

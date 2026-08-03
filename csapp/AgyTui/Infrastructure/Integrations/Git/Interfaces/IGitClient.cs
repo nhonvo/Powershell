@@ -3,6 +3,7 @@ namespace AgyTui.Infrastructure.Integrations.Git;
 public interface IGitClient
 {
     void ShowStatus();
+    void ShowStatusNative(string[]? passArgs = null);
     void ShowBranches();
     void ShowLog();
     void Pull();

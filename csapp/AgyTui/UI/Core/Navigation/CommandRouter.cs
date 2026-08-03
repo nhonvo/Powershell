@@ -142,6 +142,11 @@ public class CommandRouter : ICommandRouter
                         SystemHelper.Instance.OpenExplorer();
                         break;
                     case "gs":
+                        _git.ShowStatusNative(args);
+                        break;
+                    case "gsu":
+                    case "gsi":
+                    case "+gs":
                         _git.ShowStatus();
                         break;
                     case "ga":
@@ -151,10 +156,22 @@ public class CommandRouter : ICommandRouter
                     case "gb":
                         _git.ShowBranches();
                         break;
+                    case "gbu":
+                    case "gbi":
+                    case "+gb":
+                        _git.ShowBranches();
+                        break;
                     case "gcmt":
+                    case "+gcmt":
                         _git.ConventionalCommitWizard();
                         break;
                     case "glo":
+                    case "glg":
+                        _git.ShowLogGraph();
+                        break;
+                    case "glou":
+                    case "gloi":
+                    case "+glo":
                         _git.ShowLog();
                         break;
                     case "gpull":
@@ -170,9 +187,6 @@ public class CommandRouter : ICommandRouter
                         break;
                     case "gd":
                         _git.ShowDiff();
-                        break;
-                    case "glg":
-                        _git.ShowLogGraph();
                         break;
                     case "glog":
                         _git.ShowLogPretty();

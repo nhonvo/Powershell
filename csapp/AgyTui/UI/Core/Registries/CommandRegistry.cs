@@ -85,10 +85,15 @@ public static class CommandRegistry
                 " Recompiles the TUI binary executable in-place."
             ]),
         // Git Tools (/git-tools & /repo-dashboards)
-        new("gs", "Git Status", "Git status summary", "[Workspace & Dev]", "Git",
+        new("gs", "Git Status", "Standard native git status", "[Workspace & Dev]", "Git",
             [
-                "gs — Short git status (--short) with color coding.",
+                "gs — Standard native `git status` execution.",
                 " Displays untracked, modified, staged, and branch tracking status."
+            ]),
+        new("gsu", "✨ Git Status (Custom TUI Table)", "Color-coded Spectre TUI git status table", "[Workspace & Dev]", "Git",
+            [
+                "gsu — Color-coded Spectre TUI table formatting for git status.",
+                " Alias: gsi, +gs"
             ]),
         new("ga", "Git Add All", "Stage all modified and new files in workspace", "[Workspace & Dev]", "Git",
             [
@@ -97,12 +102,12 @@ public static class CommandRegistry
             ]),
         new("gb", "Git Branch Manager (Alias)", "Alias for gbr branch manager", "[Workspace & Dev]", "Git",
             ["gb — Alias for gbr branch manager."]),
-        new("gbr", "Git Branch Manager", "List local and remote branches sorted by recent activity with quick checkout", "[Workspace & Dev]", "Git",
+        new("gbr", "✨ Git Branch Manager", "List local and remote branches sorted by recent activity with quick checkout", "[Workspace & Dev]", "Git",
             [
                 "gbr — Interactive branch manager sorted by commit date.",
                 " Select any branch to checkout instantly."
             ]),
-        new("gcmt", "Conventional Commit", "Conventional commit wizard", "[Workspace & Dev]", "Git",
+        new("gcmt", "✨ Conventional Commit", "Conventional commit wizard", "[Workspace & Dev]", "Git",
             [
                 "gcmt — Conventional commit wizard. Prompts for:",
                 " 1. Type: feat | fix | docs | style | refactor | test | chore | ci",
