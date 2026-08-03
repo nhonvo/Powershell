@@ -10,4 +10,8 @@ public interface IDockerClient
     void ShowContainerLogs();
     void RemoveAllContainers();
     void StopAllContainers();
+    void ShowContainers();
+    int ComposeUpBuild(string? composeFile = null);
+    void PruneVolumes();
+    void PruneImages();
 }

@@ -201,4 +201,9 @@ public class DockerClient : CliToolWrapper, IDockerClient
     {
         return Helpers.ProcessRunner.Instance.Run(BinaryName, $"compose {args}");
     }
+
+    public void ShowContainers() => Helpers.ProcessRunner.Instance.Run(BinaryName, "ps");
+    public int ComposeUpBuild(string? composeFile = null) => RunDockerCompose("up --build");
+    public void PruneVolumes() => Helpers.ProcessRunner.Instance.Run(BinaryName, "volume prune -f");
+    public void PruneImages() => Helpers.ProcessRunner.Instance.Run(BinaryName, "image prune -af");
 }

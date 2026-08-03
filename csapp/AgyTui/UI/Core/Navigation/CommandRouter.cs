@@ -154,9 +154,7 @@ public class CommandRouter : ICommandRouter
                     case "gcmt":
                         _git.ConventionalCommitWizard();
                         break;
-                    case "glog":
                     case "glo":
-                    case "glg":
                         _git.ShowLog();
                         break;
                     case "gpull":
@@ -171,11 +169,80 @@ public class CommandRouter : ICommandRouter
                         _git.Fetch();
                         break;
                     case "gd":
-                        GitDiffViewer.ShowDiff(Directory.GetCurrentDirectory());
+                        _git.ShowDiff();
+                        break;
+                    case "glg":
+                        _git.ShowLogGraph();
+                        break;
+                    case "glog":
+                        _git.ShowLogPretty();
+                        break;
+                    case "cob":
+                        _git.NewBranch(args != null && args.Length > 0 ? args[0] : null);
+                        break;
+                    case "gbd":
+                        _git.RemoveBranch(args != null && args.Length > 0 ? args[0] : null);
+                        break;
+                    case "gunstage":
+                        _git.UnstageAll();
+                        break;
+                    case "gca":
+                        _git.CommitAmend(args);
+                        break;
+                    case "gr":
+                        _git.ResetSoft();
+                        break;
+                    case "grh":
+                        _git.ResetHard();
+                        break;
+                    case "guf":
+                        _git.PushForce(args);
+                        break;
+                    case "gclone":
+                        _git.CloneProject(args != null && args.Length > 0 ? args[0] : null, args != null && args.Length > 1 ? args[1] : null);
                         break;
                     case "git-undo":
                     case "gundo":
                         _git.InvokeGitUndo();
+                        break;
+                    case "dkps":
+                        _docker.ShowContainers();
+                        break;
+                    case "dcupb":
+                        _docker.ComposeUpBuild();
+                        break;
+                    case "dkprunev":
+                        _docker.PruneVolumes();
+                        break;
+                    case "dkprunei":
+                        _docker.PruneImages();
+                        break;
+                    case "sln":
+                        _dotNet.NewSolution(args != null && args.Length > 0 ? args[0] : "");
+                        break;
+                    case "console":
+                        _dotNet.NewConsole(args != null && args.Length > 0 ? args[0] : "");
+                        break;
+                    case "webapi":
+                        _dotNet.NewWebApi(args != null && args.Length > 0 ? args[0] : "");
+                        break;
+                    case "s3mb":
+                        _aws.CreateS3Bucket(args != null && args.Length > 0 ? args[0] : "");
+                        break;
+                    case "sqsmb":
+                        _aws.CreateSQSQueue(args != null && args.Length > 0 ? args[0] : "");
+                        break;
+                    case "sqspurge":
+                        _aws.PurgeSQSQueue(args != null && args.Length > 0 ? args[0] : "");
+                        break;
+                    case "sqssend":
+                        _aws.SendSQSMessage(args != null && args.Length > 0 ? args[0] : "", args != null && args.Length > 1 ? args[1] : "", args != null && args.Length > 2 ? args[2] : null);
+                        break;
+                    case "sqsrecv":
+                        _aws.ReceiveSQSMessage(args != null && args.Length > 0 ? args[0] : "");
+                        break;
+                    case "sqsattr":
+                        _aws.GetSQSAttributes(args != null && args.Length > 0 ? args[0] : "");
                         break;
                     case "dbld":
                     case "db":

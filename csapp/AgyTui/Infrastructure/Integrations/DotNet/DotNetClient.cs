@@ -191,6 +191,10 @@ public class DotNetClient : CliToolWrapper, IDotNetClient
         return 0;
     }
 
+    public int NewSolution(string name) => RunDotnet($"new sln -n \"{name}\"", null);
+    public int NewConsole(string name) => RunDotnet($"new console -n \"{name}\"", null);
+    public int NewWebApi(string name) => RunDotnet($"new webapi -n \"{name}\"", null);
+
     private int RunDotnet(string args, string? workingDir)
     {
         return Helpers.ProcessRunner.Instance.Run(BinaryName, args, workingDir);

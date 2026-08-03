@@ -13,4 +13,15 @@ public interface IGitClient
     void Checkout(string? branchName = null);
     void ConventionalCommitWizard();
     void InvokeGitUndo();
+    void ShowDiff();
+    void ShowLogGraph();
+    void ShowLogPretty();
+    void NewBranch(string? branchName = null);
+    void RemoveBranch(string? branchName = null);
+    void UnstageAll();
+    void CommitAmend(string[]? passArgs = null);
+    void ResetSoft();
+    void ResetHard();
+    void PushForce(string[]? passArgs = null);
+    void CloneProject(string? url = null, string? destName = null);
 }

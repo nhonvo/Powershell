@@ -97,4 +97,15 @@ public class AwsClient : CliToolWrapper, IAwsClient
             foreach (var line in output.Trim().Split('\n'))
                 AnsiConsole.MarkupLine($" {line.EscapeMarkup()}");
     }
+
+    public void CreateS3Bucket(string name) => Helpers.ProcessRunner.Instance.Run("awslocal", $"s3 mb \"s3://{name}\"");
+    public void CreateSQSQueue(string name) => Helpers.ProcessRunner.Instance.Run("awslocal", $"sqs create-queue --queue-name={name}");
+    public void PurgeSQSQueue(string url) => Helpers.ProcessRunner.Instance.Run("awslocal", $"sqs purge-queue --queue-url \"{url}\"");
+    public void SendSQSMessage(string url, string body, string? groupId = null)
+    {
+        var gid = string.IsNullOrEmpty(groupId) ? "default-group" : groupId;
+        Helpers.ProcessRunner.Instance.Run("awslocal", $"sqs send-message --queue-url \"{url}\" --message-body \"{body}\" --message-group-id \"{gid}\"");
+    }
+    public void ReceiveSQSMessage(string url) => Helpers.ProcessRunner.Instance.Run("awslocal", $"sqs receive-message --queue-url \"{url}\"");
+    public void GetSQSAttributes(string url) => Helpers.ProcessRunner.Instance.Run("awslocal", $"sqs get-queue-attributes --queue-url \"{url}\" --attribute-names All");
 }

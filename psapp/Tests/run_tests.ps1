@@ -81,7 +81,6 @@ $aiItems = @(
     
     @{ Type = "Alias"; Name = "ai" }
     @{ Type = "Alias"; Name = "cai" }
-    @{ Type = "Alias"; Name = "claude" }
     @{ Type = "Alias"; Name = "cc" }
     @{ Type = "Alias"; Name = "ccd" }
     @{ Type = "Alias"; Name = "cnav" }

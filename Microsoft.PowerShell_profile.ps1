@@ -260,16 +260,21 @@ if ((Test-Path $themePath) -and (Get-Command oh-my-posh -ErrorAction SilentlyCon
 #  Shortcuts and TUI dashboards for Docker and Docker Compose.
 # ==============================================================================
 
+#region 4. DOCKER & CONTAINERS INTEGRATION
+# ==============================================================================
+#  Shortcuts and TUI dashboards for Docker and Docker Compose.
+# ==============================================================================
+
 function Invoke-DockerDashboard { Load-AgyTuiDll; [CommandRouter]::Route("dkcl") }
 function Invoke-DockerHealth { Load-AgyTuiDll; [CommandRouter]::Route("docker-health") }
-function Get-DockerContainers { param([switch]$All) if ($All) { docker ps -a } else { docker ps } }
+function Get-DockerContainers { Load-AgyTuiDll; [CommandRouter]::Route("dkps", $args) }
 function Remove-AllDockerContainers { Load-AgyTuiDll; [CommandRouter]::Route("dkrmac") }
 function Stop-AllDockerContainers { Load-AgyTuiDll; [CommandRouter]::Route("dkstac") }
 function Invoke-ComposeUp { Load-AgyTuiDll; [CommandRouter]::Route("dcup", $args) }
-function Invoke-ComposeUpBuild { docker-compose up --build $args }
+function Invoke-ComposeUpBuild { Load-AgyTuiDll; [CommandRouter]::Route("dcupb", $args) }
 function Invoke-ComposeDown { Load-AgyTuiDll; [CommandRouter]::Route("dcdown", $args) }
-function Remove-UnusedDockerVolumes { docker volume prune -f }
-function Remove-UnusedDockerImages { docker image prune -af }
+function Remove-UnusedDockerVolumes { Load-AgyTuiDll; [CommandRouter]::Route("dkprunev", $args) }
+function Remove-UnusedDockerImages { Load-AgyTuiDll; [CommandRouter]::Route("dkprunei", $args) }
 
 Set-Alias -Name dkcl -Value Invoke-DockerDashboard -Force
 Set-Alias -Name docker-health -Value Invoke-DockerHealth -Force
@@ -289,48 +294,28 @@ Set-Alias -Name fix-image -Value Remove-UnusedDockerImages -Force
 #  Shortcuts and interactive commit/checkout wizards for Git.
 # ==============================================================================
 
-function Invoke-GitStatus { git status $args }
-function Show-GitDiff { git diff $args }
-function Get-GitLogGraph { git log --graph --oneline --decorate --all }
-function Get-GitLogPretty { git log --pretty=format:"%h - %an, %ar : %s" }
+function Invoke-GitStatus { Load-AgyTuiDll; [CommandRouter]::Route("gs", $args) }
+function Show-GitDiff { Load-AgyTuiDll; [CommandRouter]::Route("gd", $args) }
+function Get-GitLogGraph { Load-AgyTuiDll; [CommandRouter]::Route("glg", $args) }
+function Get-GitLogPretty { Load-AgyTuiDll; [CommandRouter]::Route("glog", $args) }
 function Get-GitLog { Load-AgyTuiDll; [CommandRouter]::Route("glo", $args) }
 function Get-GitBranches { Load-AgyTuiDll; [CommandRouter]::Route("gb", $args) }
 function Invoke-GitCheckout { param([string]$branchName) Load-AgyTuiDll; [CommandRouter]::Route("co", $branchName) }
-function New-GitBranch { param([string]$branchName) git checkout -b $branchName }
-function Remove-GitBranch { param([string]$branchName) git branch -d $branchName }
+function New-GitBranch { Load-AgyTuiDll; [CommandRouter]::Route("cob", $args) }
+function Remove-GitBranch { Load-AgyTuiDll; [CommandRouter]::Route("gbd", $args) }
 function Invoke-GitAddAll { Load-AgyTuiDll; [CommandRouter]::Route("ga", $args) }
-function Invoke-GitUnstage { git restore --staged . }
+function Invoke-GitUnstage { Load-AgyTuiDll; [CommandRouter]::Route("gunstage", $args) }
 function Invoke-GitCommit { param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message) if ($Message) { git commit -m ($Message -join " ") } else { Load-AgyTuiDll; [CommandRouter]::Route("gcmt") } }
-function Invoke-GitAmend { git commit --amend $args }
+function Invoke-GitAmend { Load-AgyTuiDll; [CommandRouter]::Route("gca", $args) }
 function Invoke-GitUndo { Load-AgyTuiDll; [CommandRouter]::Route("git-undo", $args) }
-function Invoke-GitResetSoft { git reset --soft HEAD~1 }
-function Invoke-GitResetHard { git reset --hard }
+function Invoke-GitResetSoft { Load-AgyTuiDll; [CommandRouter]::Route("gr", $args) }
+function Invoke-GitResetHard { Load-AgyTuiDll; [CommandRouter]::Route("grh", $args) }
 function Invoke-GitFetch { Load-AgyTuiDll; [CommandRouter]::Route("gf", $args) }
 function Invoke-GitPull { Load-AgyTuiDll; [CommandRouter]::Route("gpull", $args) }
 function Invoke-GitPush { Load-AgyTuiDll; [CommandRouter]::Route("gpush", $args) }
-function Invoke-GitPushForce { git push --force $args }
+function Invoke-GitPushForce { Load-AgyTuiDll; [CommandRouter]::Route("guf", $args) }
 function Invoke-GitCommitWizard { param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message) Load-AgyTuiDll; $msg = $Message -join ' '; [CommandRouter]::Route("gcmt", $msg) }
-
-function Clone-Project {
-    param(
-        [Parameter(Mandatory=$true, Position=0)][string]$Url,
-        [Parameter(Position=1)][string]$DestName
-    )
-    $baseDir = Join-Path $env:USERPROFILE "Documents"
-    if (-not $DestName) {
-        if ($Url -match '/([^/]+)\.git$') { $DestName = $Matches[1] }
-        elseif ($Url -match '/([^/]+)$') { $DestName = $Matches[1] }
-        else { $DestName = "cloned-project-" + (Get-Random) }
-    }
-    $targetPath = Join-Path $baseDir $DestName
-    Write-Host "Cloning project from $Url into $targetPath..." -ForegroundColor Cyan
-    git clone $Url $targetPath
-    if ($LASTEXITCODE -eq 0 -and (Test-Path $targetPath)) {
-        Write-Host "Project successfully cloned!" -ForegroundColor Green
-    } else {
-        Write-Error "Failed to clone repository."
-    }
-}
+function Clone-Project { Load-AgyTuiDll; [CommandRouter]::Route("gclone", $args) }
 
 Set-Alias -Name gs -Value Invoke-GitStatus -Force
 Set-Alias -Name gd -Value Show-GitDiff -Force
@@ -378,7 +363,10 @@ function Update-Database { Load-AgyTuiDll; [CommandRouter]::Route("update-db", $
 function Add-Migration { Load-AgyTuiDll; [CommandRouter]::Route("add-migration", $args) }
 function Remove-Database { Load-AgyTuiDll; [CommandRouter]::Route("dd", $args) }
 function Remove-Migration { Load-AgyTuiDll; [CommandRouter]::Route("dremove", $args) }
-function Add-AllProjectsToSolution { Get-ChildItem -Recurse -Filter "*.csproj" | ForEach-Object { dotnet sln add $_.FullName } }
+function New-Solution { Load-AgyTuiDll; [CommandRouter]::Route("sln", $args) }
+function Add-AllProjectsToSolution { Load-AgyTuiDll; [CommandRouter]::Route("sln-add", $args) }
+function New-ConsoleProject { Load-AgyTuiDll; [CommandRouter]::Route("console", $args) }
+function New-WebApiProject { Load-AgyTuiDll; [CommandRouter]::Route("webapi", $args) }
 function dpack { Load-AgyTuiDll; [CommandRouter]::Route("dpack", $args) }
 function dpubpkg { Load-AgyTuiDll; [CommandRouter]::Route("dpubpkg", $args) }
 
@@ -403,7 +391,10 @@ Set-Alias -Name da -Value Add-Migration -Force
 Set-Alias -Name add-migration -Value Add-Migration -Force
 Set-Alias -Name dd -Value Remove-Database -Force
 Set-Alias -Name dremove -Value Remove-Migration -Force
+Set-Alias -Name sln -Value New-Solution -Force
 Set-Alias -Name sln-add -Value Add-AllProjectsToSolution -Force
+Set-Alias -Name console -Value New-ConsoleProject -Force
+Set-Alias -Name webapi -Value New-WebApiProject -Force
 #endregion
 
 #region 7. AWS LOCALSTACK INTEGRATION
@@ -412,14 +403,14 @@ Set-Alias -Name sln-add -Value Add-AllProjectsToSolution -Force
 # ==============================================================================
 
 function Get-S3Buckets { Load-AgyTuiDll; [CommandRouter]::Route("aws-s3", $args) }
-function New-S3Bucket { param([string]$Name) awslocal s3 mb "s3://$Name" }
+function New-S3Bucket { Load-AgyTuiDll; [CommandRouter]::Route("s3mb", $args) }
 function Get-LambdaFunctions { Load-AgyTuiDll; [CommandRouter]::Route("aws-local", $args) }
 function Get-LocalSQSQueues { Load-AgyTuiDll; [CommandRouter]::Route("aws-sqs", $args) }
-function New-LocalSQSQueue { param([string]$QueueName) awslocal sqs create-queue --queue-name=$QueueName }
-function Clear-LocalSQSQueue { param([string]$QueueUrl) awslocal sqs purge-queue --queue-url $QueueUrl }
-function Send-LocalSQSMessage { param([string]$QueueUrl, [string]$MessageBody, [string]$GroupId) $gid = if ($GroupId) { $GroupId } else { "default-group" }; awslocal sqs send-message --queue-url $QueueUrl --message-body $MessageBody --message-group-id $gid }
-function Get-LocalSQSMessage { param([string]$QueueUrl) awslocal sqs receive-message --queue-url $QueueUrl }
-function Get-LocalSQSAttributes { param([string]$QueueUrl) awslocal sqs get-queue-attributes --queue-url $QueueUrl --attribute-names All }
+function New-LocalSQSQueue { Load-AgyTuiDll; [CommandRouter]::Route("sqsmb", $args) }
+function Clear-LocalSQSQueue { Load-AgyTuiDll; [CommandRouter]::Route("sqspurge", $args) }
+function Send-LocalSQSMessage { Load-AgyTuiDll; [CommandRouter]::Route("sqssend", $args) }
+function Get-LocalSQSMessage { Load-AgyTuiDll; [CommandRouter]::Route("sqsrecv", $args) }
+function Get-LocalSQSAttributes { Load-AgyTuiDll; [CommandRouter]::Route("sqsattr", $args) }
 
 Set-Alias -Name s3ls -Value Get-S3Buckets -Force
 Set-Alias -Name s3mb -Value New-S3Bucket -Force

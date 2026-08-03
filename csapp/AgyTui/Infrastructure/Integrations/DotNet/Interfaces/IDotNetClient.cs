@@ -16,4 +16,7 @@ public interface IDotNetClient
     int AddMigration(string migrationName, string? project = null, string? context = null);
     int UpdateDatabase(string? project = null, string? context = null);
     int AddAllProjectsToSolution();
+    int NewSolution(string name);
+    int NewConsole(string name);
+    int NewWebApi(string name);
 }

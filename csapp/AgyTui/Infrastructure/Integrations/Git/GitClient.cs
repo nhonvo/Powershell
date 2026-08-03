@@ -214,4 +214,46 @@ public class GitClient : CliToolWrapper, IGitClient
     {
         return Helpers.ProcessRunner.Instance.Run(BinaryName, args);
     }
+
+    public void ShowDiff() => RunGitDirect("diff");
+    public void ShowLogGraph() => RunGitDirect("log --graph --oneline --decorate --all");
+    public void ShowLogPretty() => RunGitDirect("log --pretty=format:\"%h - %an, %ar : %s\"");
+    public void NewBranch(string? branchName = null)
+    {
+        if (string.IsNullOrWhiteSpace(branchName)) branchName = AnsiConsole.Ask<string>("New branch name:");
+        RunGitDirect($"checkout -b \"{branchName}\"");
+    }
+    public void RemoveBranch(string? branchName = null)
+    {
+        if (string.IsNullOrWhiteSpace(branchName)) branchName = AnsiConsole.Ask<string>("Branch to delete:");
+        RunGitDirect($"branch -d \"{branchName}\"");
+    }
+    public void UnstageAll() => RunGitDirect("restore --staged .");
+    public void CommitAmend(string[]? passArgs = null)
+    {
+        var extra = passArgs != null && passArgs.Length > 0 ? string.Join(" ", passArgs) : "";
+        RunGitDirect($"commit --amend {extra}".Trim());
+    }
+    public void ResetSoft() => RunGitDirect("reset --soft HEAD~1");
+    public void ResetHard() => RunGitDirect("reset --hard");
+    public void PushForce(string[]? passArgs = null)
+    {
+        var extra = passArgs != null && passArgs.Length > 0 ? string.Join(" ", passArgs) : "";
+        RunGitDirect($"push --force {extra}".Trim());
+    }
+    public void CloneProject(string? url = null, string? destName = null)
+    {
+        if (string.IsNullOrWhiteSpace(url)) url = AnsiConsole.Ask<string>("Git clone repository URL:");
+        var baseDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Documents");
+        if (string.IsNullOrWhiteSpace(destName))
+        {
+            var match = System.Text.RegularExpressions.Regex.Match(url, @"/([^/]+?)(\.git)?$");
+            destName = match.Success ? match.Groups[1].Value : "cloned-project-" + Random.Shared.Next(1000, 9999);
+        }
+        var targetPath = Path.Combine(baseDir, destName);
+        SpectrePanel.Info($"Cloning project from {url} into {targetPath}...");
+        var exitCode = RunGitDirect($"clone \"{url}\" \"{targetPath}\"");
+        if (exitCode == 0) SpectrePanel.Success($"Project successfully cloned into {targetPath}!");
+        else SpectrePanel.Error("Failed to clone repository.");
+    }
 }
