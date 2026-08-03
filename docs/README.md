@@ -38,9 +38,10 @@ graph TD
 ## 2. Quick Navigation Sitemap
 
 ### 🏛️ 01. System Architecture
+- [System Overview, File Tree & Feature Blueprint](01_architecture/system_overview_and_file_tree.md): Complete repository tree, component topology, and annotated feature blueprint.
 - [Clean Architecture & Layer Boundaries](01_architecture/overview.md): Layer rules, DIP, and `Bootstrapper` DI container setup.
 - [DDD Bounded Contexts & Aggregate Roots](01_architecture/ddd_bounded_contexts.md): Account, Workspace, AI Agent, and Learning contexts.
-- [SQLite Database Schemas & Persistence](01_architecture/database_persistence.md): Migrations V1-V6, ERD diagram, and SqliteRepositoryBase.
+- [SQLite Database Schemas & Persistence](01_architecture/database_persistence.md): Migrations V1-V7, ERD diagram, and SqliteRepositoryBase.
 - [MasterSeeder Data Ingestion Pipeline](01_architecture/seeding_pipeline.md): Automatic JSON-to-SQLite data seeding.
 
 ### 👤 02. User Guide
