@@ -13,6 +13,8 @@
 **/obj/
 **/dist/
 **/dist_run/
+**/dist_test/
+**/dist_release/
 **/publish/
 
 # IDE & Editor Configuration
@@ -42,5 +44,3 @@ data/
 logs/
 priority_workspaces.json
 .agy-context.md
-csapp/AgyTui/dist_test/AgyTui.exe
-csapp/AgyTui/dist_test/AgyTui.pdb
