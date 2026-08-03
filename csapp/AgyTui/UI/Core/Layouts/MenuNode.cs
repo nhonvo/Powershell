@@ -92,12 +92,14 @@ public class MenuNodeBuilderService : IMenuNodeBuilder
                 {
                     "/workspace-nav" => "Workspace Navigation",
                     "/dev-scaffold-tools" => "Developer Tools & Scaffolding",
+                    "/account-mgr" => "Account & Credentials Manager",
+                    "/quota-views" => "Quota & Analytics Views",
                     "/jp-suite" => "Japanese Suite",
                     "/english-vocab" => "English & Vocab",
                     "/csharp-master" => "C# & Dev Masterclass",
                     "/dsa-architect" => "DSA & System Design",
                     "/career-interview" => "Career & Interview Prep",
-                    "/obsidian-vault" => "Obsidian Vault & Sync",
+                    "/obsidian-vault" => "Obsidian Vault & Resources",
                     "/git-tools" => "Git & Repo Tools",
                     "/dotnet-tools" => ".NET Project Tools",
                     "/docker-tools" => "Docker Tools",
@@ -109,7 +111,6 @@ public class MenuNodeBuilderService : IMenuNodeBuilder
                     "/antigravity-manager" => "Antigravity Manager",
                     "/ssh-tailscale" => "SSH & Tailscale",
                     "/system-reload" => "System & Terminal Reload",
-                    "/quota-views" => "Quota Views",
                     "/track" => "Track & Progress",
                     _ => group.First().Command.GroupName ?? groupPath
                 };

@@ -881,10 +881,6 @@ public class CommandRouter : ICommandRouter
                             }
                         }
                         break;
-                    case "hotkeys":
-                    case "hotkey":
-                        HotkeysGuide.Show();
-                        break;
                     case "learn":
                         LearnRouter.StartLearning("jp");
                         break;

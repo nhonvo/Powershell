@@ -505,9 +505,7 @@ public static class CommandRegistry
         new("cc", "Command Palette", "Open this Command Palette", "[Help & Docs]", "Help",
             ["cc — Launches interactive Command Palette."]),
         new("help", "Help Browser", "Open interactive help browser", "[Help & Docs]", "Help",
-            ["help — Interactive browser listing all profile aliases, functions, and documentation."]),
-        new("hotkeys", "Profile Hotkeys Guide", "Show all PowerShell profile shortcut hotkeys grouped by domain", "[Help & Docs]", "Help",
-            ["hotkeys — Displays profile keyboard shortcuts grouped by domain (git, docker, aws, sys, ai, nav)."])
+            ["help — Interactive browser listing all profile aliases, functions, and documentation."])
     ];
 
     static CommandRegistry()
@@ -533,6 +531,7 @@ public static class CommandRegistry
         var deckCmds = new HashSet<string> { "deck-status", "deck-setup", "deck-start", "deck-online", "desk-status", "desk-setup", "desk-start", "desk-online" };
         var mgrCmds = new HashSet<string> { "mgr-status", "mgr-setup", "mgr-start", "mgr", "manager-status", "manager-setup", "manager-start", "agm", "agm-status", "agm-setup", "agm-start" };
         var sshCmds = new HashSet<string> { "ssh-info", "tailscale-status", "ssh-qr" };
+        var accountMgrCmds = new HashSet<string> { "agyswitch", "agyquota", "vault", "reset-agy", "purge-accounts" };
         var quotaCmds = new HashSet<string> { "account-tree", "quota-chart", "live-dashboard" };
         var secretCmds = new HashSet<string> { "secret-set", "secret-get", "secret-list", "secret-remove" };
         var toggleCmds = new HashSet<string> { "autoswitch", "no-auto-commit", "autocommit" };
@@ -543,7 +542,7 @@ public static class CommandRegistry
         var csCmds = new HashSet<string> { "quiz", "snippets", "sheets" };
         var dsaCmds = new HashSet<string> { "algo", "complexity", "problems" };
         var careerCmds = new HashSet<string> { "interview", "star", "mock" };
-        var obsidianCmds = new HashSet<string> { "obsidian", "refresh", "vault-open" };
+        var obsidianCmds = new HashSet<string> { "obsidian", "obs-vault", "refresh", "sync", "vault-open", "daily-note", "orphan-notes", "obs-graph", "add-resource" };
 
         var hiddenCmds = new HashSet<string> {
             "p", "prj", "glg", "gpu", "gus", "gundo", "grt", "grtu", "cor",
@@ -598,7 +597,7 @@ public static class CommandRegistry
             "system-reload", "reload-cc", "reload-term", "reload-all",
 
             // Category 9: [Help & Docs]
-            "cc", "help", "hotkeys", "exit"
+            "cc", "help", "exit"
         };
 
         var orderMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
@@ -632,7 +631,8 @@ public static class CommandRegistry
             else if (ollamaCmds.Contains(alias)) { cmd.GroupPath = "/ollama-tools"; cmd.GroupName = "Ollama Tools"; }
             else if (deckCmds.Contains(alias)) { cmd.GroupPath = "/antigravity-deck"; cmd.GroupName = "Antigravity Deck (Desk)"; }
             else if (mgrCmds.Contains(alias)) { cmd.GroupPath = "/antigravity-manager"; cmd.GroupName = "Antigravity Manager"; }
-            else if (quotaCmds.Contains(alias)) { cmd.GroupPath = "/quota-views"; cmd.GroupName = "Quota Views"; }
+            else if (accountMgrCmds.Contains(alias)) { cmd.GroupPath = "/account-mgr"; cmd.GroupName = "Account & Credentials Manager"; }
+            else if (quotaCmds.Contains(alias)) { cmd.GroupPath = "/quota-views"; cmd.GroupName = "Quota & Analytics Views"; }
             else if (secretCmds.Contains(alias)) { cmd.GroupPath = "/secret-vault"; cmd.GroupName = "Secret Vault"; }
             else if (toggleCmds.Contains(alias)) { cmd.GroupPath = "/account-toggles"; cmd.GroupName = "Account Toggles"; }
             else if (jpCmds.Contains(alias))
@@ -644,7 +644,7 @@ public static class CommandRegistry
             else if (csCmds.Contains(alias)) { cmd.GroupPath = "/csharp-master"; cmd.GroupName = "C# & Dev Masterclass"; }
             else if (dsaCmds.Contains(alias)) { cmd.GroupPath = "/dsa-architect"; cmd.GroupName = "DSA & System Design"; }
             else if (careerCmds.Contains(alias)) { cmd.GroupPath = "/career-interview"; cmd.GroupName = "Career & Interview Prep"; }
-            else if (obsidianCmds.Contains(alias)) { cmd.GroupPath = "/obsidian-vault"; cmd.GroupName = "Obsidian Vault & Sync"; }
+            else if (obsidianCmds.Contains(alias)) { cmd.GroupPath = "/obsidian-vault"; cmd.GroupName = "Obsidian Vault & Resources"; }
             else if (trackCmds.Contains(alias)) { cmd.GroupPath = "/track"; cmd.GroupName = "Track & Progress"; }
             else if (sshCmds.Contains(alias)) { cmd.GroupPath = "/ssh-tools"; cmd.GroupName = "SSH & Network Tools"; }
         }

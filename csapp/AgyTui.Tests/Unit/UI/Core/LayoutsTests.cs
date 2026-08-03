@@ -13,9 +13,6 @@ public class LayoutsTests
         var screenChrome = Bootstrapper.ServiceProvider.GetRequiredService<IScreenChrome>();
         Assert.NotNull(screenChrome);
 
-        var hotkeysGuide = Bootstrapper.ServiceProvider.GetRequiredService<IHotkeysGuide>();
-        Assert.NotNull(hotkeysGuide);
-
         var profileHelp = Bootstrapper.ServiceProvider.GetRequiredService<IProfileHelp>();
         Assert.NotNull(profileHelp);
 

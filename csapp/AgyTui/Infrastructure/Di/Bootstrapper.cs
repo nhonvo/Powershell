@@ -48,7 +48,6 @@ public static class Bootstrapper
         services.AddSingleton<ISpectreProgress, SpectreProgressService>();
         services.AddSingleton<IStatusWidgetRegistry, StatusWidgetRegistryService>();
         services.AddSingleton<IScreenChrome, ScreenChromeService>();
-        services.AddSingleton<IHotkeysGuide, HotkeysGuideService>();
         services.AddSingleton<IProfileHelp, ProfileHelpService>();
         services.AddSingleton<IMenuNodeBuilder, MenuNodeBuilderService>();
         services.AddSingleton<ICcNavigator, CcNavigatorService>();

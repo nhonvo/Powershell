@@ -186,12 +186,33 @@ public static class TerminalIde
                 layout["Sidebar"].Update(sidebarPanel);
             }
 
-            var breadcrumbs = currentFile != null
-                ? $"[bold white]📁 {Path.GetFileName(rootPath)}[/] › [green]{Path.GetRelativePath(rootPath, currentFile).Replace(Path.DirectorySeparatorChar, '›')}[/]"
-                : $"[bold white]📁 {Path.GetFileName(rootPath)}[/]";
-            var headerPanel = new Panel(new Align(new Markup(breadcrumbs), HorizontalAlignment.Left, VerticalAlignment.Middle))
+            // Header Bar Rendering
+            var rootName = Path.GetFileName(rootPath);
+            var fileRel = currentFile != null ? Path.GetRelativePath(rootPath, currentFile) : "No file open";
+            var fileExt = currentFile != null ? Path.GetExtension(currentFile) : "";
+            var fileIcon = Icons.GetFileIcon(fileExt);
+
+            var gitBranch = ProcessRunner.Instance.RunCapture("git", "branch --show-current").Trim();
+            if (string.IsNullOrEmpty(gitBranch)) gitBranch = "main";
+
+            var fileInfoStr = "";
+            if (currentFile != null && File.Exists(currentFile))
             {
-                Border = BoxBorder.None
+                try
+                {
+                    var fi = new FileInfo(currentFile);
+                    var sizeKb = fi.Length / 1024.0;
+                    var lineCount = File.ReadLines(currentFile).Count();
+                    fileInfoStr = $"[dim]({lineCount} lines · {sizeKb:F1} KB)[/]";
+                }
+                catch { }
+            }
+
+            var headerMarkup = $" [bold cyan]IDE[/] [dim]│[/] [bold white]📂 {rootName.EscapeMarkup()}[/] › [bold green]{fileIcon} {fileRel.EscapeMarkup()}[/] {fileInfoStr} [dim]│[/] 🌿 [yellow]{gitBranch.EscapeMarkup()}[/]";
+            var headerPanel = new Panel(new Align(new Markup(headerMarkup), HorizontalAlignment.Left, VerticalAlignment.Middle))
+            {
+                Border = BoxBorder.Rounded,
+                BorderStyle = new Style(Color.Cyan1)
             };
             layout["Header"].Update(headerPanel);
 
@@ -237,10 +258,8 @@ public static class TerminalIde
             };
             layout["Editor"].Update(editorPanel);
 
-            var branch = ProcessRunner.Instance.RunCapture("git", "branch --show-current").Trim();
-            if (string.IsNullOrEmpty(branch)) branch = "main";
             var modeTag = sidebarFocused ? "[bold black on yellow] EXPLORER [/]" : "[bold black on green] EDITOR [/]";
-            var statusText = $"{modeTag} | [green]⚙ {activeTab.EscapeMarkup()}[/] | Git: [yellow]{branch.EscapeMarkup()}[/] | [dim][[Tab]] Switch Pane | [[/]] Search | [[e]] Edit | [[k]] AI | [[b]] Sidebar[/]";
+            var statusText = $"{modeTag} | [cyan]{fileIcon} {activeTab.EscapeMarkup()}[/] | 🌿 [yellow]{gitBranch.EscapeMarkup()}[/] | [dim][[Tab]] Focus | [[/]] Search | [[e]] Edit | [[g]] Git | [[k]] AI | [[b]] Sidebar | [[q]] Exit[/]";
             var statusPanel = new Panel(new Align(new Markup(statusText), HorizontalAlignment.Left, VerticalAlignment.Middle))
             {
                 Border = BoxBorder.Rounded,
@@ -299,6 +318,11 @@ public static class TerminalIde
                     SpectrePanel.Warning("Please open a file first.");
                     Thread.Sleep(1000);
                 }
+            }
+            // In-IDE Git Actions Menu
+            else if ((key.Key == ConsoleKey.G && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'g')
+            {
+                ShowInIdeGitMenu(rootPath, currentFile);
             }
             // Edit file
             else if ((key.Key == ConsoleKey.R && key.Modifiers.HasFlag(ConsoleModifiers.Control)) || key.KeyChar == 'e')
@@ -496,6 +520,47 @@ public static class TerminalIde
             File.WriteAllText(contextFile, sb.ToString(), Encoding.UTF8);
         }
         catch { }
+    }
+
+    private static void ShowInIdeGitMenu(string rootPath, string? currentFile)
+    {
+        var gitClient = Bootstrapper.ServiceProvider.GetRequiredService<Infrastructure.Integrations.Git.IGitClient>();
+        var actions = new[]
+        {
+            "🌿 Git Status & Diff",
+            "🌿 Git Branch Manager (/gbr)",
+            "💬 Conventional Commit Wizard (/gcmt)",
+            "🔀 Conflict Resolution Helper (/gconflict)",
+            "📦 Git Stash Manager (/gstash)",
+            "🔄 Git Rebase Wizard (/grebase)",
+            "↩ Back to Editor"
+        };
+
+        var choice = SpectreMenu.Show("In-IDE Git Actions", actions, 0);
+        switch (choice)
+        {
+            case 0:
+                if (currentFile != null && File.Exists(currentFile))
+                    GitDiffViewer.ShowDiff(rootPath, currentFile);
+                else
+                    gitClient.ShowStatus();
+                break;
+            case 1:
+                gitClient.ShowBranches();
+                break;
+            case 2:
+                gitClient.ConventionalCommitWizard();
+                break;
+            case 3:
+                gitClient.ShowConflictResolver();
+                break;
+            case 4:
+                gitClient.ShowStashManager();
+                break;
+            case 5:
+                gitClient.ShowRebaseWizard();
+                break;
+        }
     }
 
     public static void OpenFile(string filePath)
