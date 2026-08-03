@@ -481,6 +481,10 @@ public static class CommandRegistry
 
     static CommandRegistry()
     {
+        var navCmds = new HashSet<string> { "prune-workspaces", "discover-workspaces", "proj", "cnav", "go", "open-term", "f" };
+        var ideCmds = new HashSet<string> { "ide", "ide-diff", "ide-search" };
+        var scaffoldCmds = new HashSet<string> { "scaffold" };
+
         var gitCmds = new HashSet<string> {
             "gs", "gsu", "ga", "gb", "gbr", "co", "cob", "gbd", "gcommit", "gcmt",
             "glo", "glg", "glog", "glou", "gpull", "gpu", "gpush", "gus", "guf",
@@ -583,7 +587,10 @@ public static class CommandRegistry
                 cmd.SortOrder = order;
             }
 
-            if (gitCmds.Contains(alias) || repoCmds.Contains(alias)) { cmd.GroupPath = "/git-tools"; cmd.GroupName = "Git & Repo Tools"; }
+            if (navCmds.Contains(alias)) { cmd.GroupPath = "/workspace-nav"; cmd.GroupName = "Workspace Navigation"; }
+            else if (ideCmds.Contains(alias)) { cmd.GroupPath = "/ide-tools"; cmd.GroupName = "Terminal IDE & Code Search"; }
+            else if (scaffoldCmds.Contains(alias)) { cmd.GroupPath = "/scaffold-tools"; cmd.GroupName = "Project Templates & Scaffolding"; }
+            else if (gitCmds.Contains(alias) || repoCmds.Contains(alias)) { cmd.GroupPath = "/git-tools"; cmd.GroupName = "Git & Repo Tools"; }
             else if (dotnetCmds.Contains(alias)) { cmd.GroupPath = "/dotnet-tools"; cmd.GroupName = ".NET Project Tools"; }
             else if (dockerCmds.Contains(alias)) { cmd.GroupPath = "/docker-tools"; cmd.GroupName = "Docker Tools"; }
             else if (awsCmds.Contains(alias)) { cmd.GroupPath = "/aws-tools"; cmd.GroupName = "AWS Tools"; }

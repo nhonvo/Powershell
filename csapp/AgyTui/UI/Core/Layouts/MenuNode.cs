@@ -90,6 +90,9 @@ public class MenuNodeBuilderService : IMenuNodeBuilder
                 var groupPath = group.Key;
                 var groupLabel = groupPath switch
                 {
+                    "/workspace-nav" => "Workspace Navigation",
+                    "/ide-tools" => "Terminal IDE & Code Search",
+                    "/scaffold-tools" => "Project Templates & Scaffolding",
                     "/jp-suite" => "Japanese Suite",
                     "/english-vocab" => "English & Vocab",
                     "/csharp-master" => "C# & Dev Masterclass",
@@ -113,7 +116,7 @@ public class MenuNodeBuilderService : IMenuNodeBuilder
                 };
 
                 var formattedLabel = groupPath.StartsWith("/") ? $" [{groupPath}] {groupLabel}" : $" [{groupLabel}]";
-                if (groupPath == "/jp-suite" || groupPath == "/english-vocab" || groupPath == "/csharp-master" || groupPath == "/dsa-architect" || groupPath == "/career-interview" || groupPath == "/obsidian-vault" || groupPath == "/git-tools" || groupPath == "/track")
+                if (groupPath == "/workspace-nav" || groupPath == "/ide-tools" || groupPath == "/scaffold-tools" || groupPath == "/jp-suite" || groupPath == "/english-vocab" || groupPath == "/csharp-master" || groupPath == "/dsa-architect" || groupPath == "/career-interview" || groupPath == "/obsidian-vault" || groupPath == "/git-tools" || groupPath == "/dotnet-tools" || groupPath == "/docker-tools" || groupPath == "/aws-tools" || groupPath == "/track")
                 {
                     formattedLabel = $" [{groupLabel}]";
                 }
@@ -138,6 +141,9 @@ public class MenuNodeBuilderService : IMenuNodeBuilder
 
             var groupOrder = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
             {
+                ["/workspace-nav"] = 1,
+                ["/ide-tools"] = 2,
+                ["/scaffold-tools"] = 3,
                 ["/git-tools"] = 10,
                 ["/dotnet-tools"] = 20,
                 ["/docker-tools"] = 30,
