@@ -402,6 +402,7 @@ internal static class AgyKeyringHelper
 
     public static bool DeleteToken(string target)
     {
+        WriteToken(target, "deleted", " ");
         return CredDelete(target, 1, 0);
     }
 

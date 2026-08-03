@@ -262,12 +262,14 @@ if ((Test-Path $themePath) -and (Get-Command oh-my-posh -ErrorAction SilentlyCon
 
 #region 4. DOCKER & CONTAINERS INTEGRATION
 # ==============================================================================
-#  Shortcuts and TUI dashboards for Docker and Docker Compose.
-# ==============================================================================
-
 function Invoke-DockerDashboard { Load-AgyTuiDll; [CommandRouter]::Route("dkcl") }
 function Invoke-DockerHealth { Load-AgyTuiDll; [CommandRouter]::Route("docker-health") }
-function Get-DockerContainers { Load-AgyTuiDll; [CommandRouter]::Route("dkps", $args) }
+function Get-DockerContainers { docker ps @args }
+function Get-DockerContainersUI { Load-AgyTuiDll; [CommandRouter]::Route("dku", $args) }
+function Get-DockerImages { docker images @args }
+function Get-DockerImagesUI { Load-AgyTuiDll; [CommandRouter]::Route("dimgu", $args) }
+function Get-DockerLogs { docker logs @args }
+function Get-DockerLogsUI { Load-AgyTuiDll; [CommandRouter]::Route("dlogsu", $args) }
 function Remove-AllDockerContainers { Load-AgyTuiDll; [CommandRouter]::Route("dkrmac") }
 function Stop-AllDockerContainers { Load-AgyTuiDll; [CommandRouter]::Route("dkstac") }
 function Invoke-ComposeUp { Load-AgyTuiDll; [CommandRouter]::Route("dcup", $args) }
@@ -276,6 +278,13 @@ function Invoke-ComposeDown { Load-AgyTuiDll; [CommandRouter]::Route("dcdown", $
 function Remove-UnusedDockerVolumes { Load-AgyTuiDll; [CommandRouter]::Route("dkprunev", $args) }
 function Remove-UnusedDockerImages { Load-AgyTuiDll; [CommandRouter]::Route("dkprunei", $args) }
 
+Set-Alias -Name dk -Value Get-DockerContainers -Force
+Set-Alias -Name dku -Value Get-DockerContainersUI -Force
+Set-Alias -Name dki -Value Get-DockerContainersUI -Force
+Set-Alias -Name dimg -Value Get-DockerImages -Force
+Set-Alias -Name dimgu -Value Get-DockerImagesUI -Force
+Set-Alias -Name dlogs -Value Get-DockerLogs -Force
+Set-Alias -Name dlogsu -Value Get-DockerLogsUI -Force
 Set-Alias -Name dkcl -Value Invoke-DockerDashboard -Force
 Set-Alias -Name docker-health -Value Invoke-DockerHealth -Force
 Set-Alias -Name dps -Value Get-DockerContainers -Force
@@ -300,7 +309,8 @@ function Show-GitDiff { Load-AgyTuiDll; [CommandRouter]::Route("gd", $args) }
 function Get-GitLogGraph { Load-AgyTuiDll; [CommandRouter]::Route("glg", $args) }
 function Get-GitLogPretty { Load-AgyTuiDll; [CommandRouter]::Route("glog", $args) }
 function Get-GitLog { Load-AgyTuiDll; [CommandRouter]::Route("glo", $args) }
-function Get-GitBranches { Load-AgyTuiDll; [CommandRouter]::Route("gb", $args) }
+function Get-GitBranches { git branch @args }
+function Get-GitBranchesUI { Load-AgyTuiDll; [CommandRouter]::Route("gbr", $args) }
 function Invoke-GitCheckout { param([string]$branchName) Load-AgyTuiDll; [CommandRouter]::Route("co", $branchName) }
 function New-GitBranch { Load-AgyTuiDll; [CommandRouter]::Route("cob", $args) }
 function Remove-GitBranch { Load-AgyTuiDll; [CommandRouter]::Route("gbd", $args) }
@@ -326,7 +336,8 @@ Set-Alias -Name glo -Value Get-GitLogGraph -Force
 Set-Alias -Name glg -Value Get-GitLogGraph -Force
 Set-Alias -Name glog -Value Get-GitLogPretty -Force
 Set-Alias -Name gb -Value Get-GitBranches -Force
-Set-Alias -Name gbr -Value Get-GitBranches -Force
+Set-Alias -Name gbr -Value Get-GitBranchesUI -Force
+Set-Alias -Name gbu -Value Get-GitBranchesUI -Force
 Set-Alias -Name co -Value Invoke-GitCheckout -Force
 Set-Alias -Name cob -Value New-GitBranch -Force
 Set-Alias -Name gbd -Value Remove-GitBranch -Force
@@ -353,14 +364,17 @@ Set-Alias -Name gclone -Value Clone-Project -Force
 #  Shortcuts and tool wrappers for .NET development.
 # ==============================================================================
 
-function Invoke-DotNetRun { Load-AgyTuiDll; [CommandRouter]::Route("dr", $args) }
-function Invoke-DotNetWatch { Load-AgyTuiDll; [CommandRouter]::Route("dw", $args) }
-function Invoke-DotNetBuild { Load-AgyTuiDll; [CommandRouter]::Route("db", $args) }
-function Invoke-DotNetFormat { Load-AgyTuiDll; [CommandRouter]::Route("df", $args) }
-function Invoke-DotNetTest { Load-AgyTuiDll; [CommandRouter]::Route("dt", $args) }
-function Invoke-DotNetWatchTest { Load-AgyTuiDll; [CommandRouter]::Route("dwatch", $args) }
-function Invoke-DotNetClean { Load-AgyTuiDll; [CommandRouter]::Route("dcl", $args) }
-function Invoke-DotNetRestore { Load-AgyTuiDll; [CommandRouter]::Route("dres", $args) }
+function Invoke-DotNetRun { dotnet run @args }
+function Invoke-DotNetRunUI { Load-AgyTuiDll; [CommandRouter]::Route("dru", $args) }
+function Invoke-DotNetWatch { dotnet watch @args }
+function Invoke-DotNetBuild { dotnet build @args }
+function Invoke-DotNetBuildUI { Load-AgyTuiDll; [CommandRouter]::Route("dbldu", $args) }
+function Invoke-DotNetFormat { dotnet format @args }
+function Invoke-DotNetTest { dotnet test @args }
+function Invoke-DotNetTestUI { Load-AgyTuiDll; [CommandRouter]::Route("dtstu", $args) }
+function Invoke-DotNetWatchTest { dotnet watch test @args }
+function Invoke-DotNetClean { dotnet clean @args }
+function Invoke-DotNetRestore { dotnet restore @args }
 function Remove-BinObj { Load-AgyTuiDll; [CommandRouter]::Route("dclean", $args) }
 function Update-Database { Load-AgyTuiDll; [CommandRouter]::Route("update-db", $args) }
 function Add-Migration { Load-AgyTuiDll; [CommandRouter]::Route("add-migration", $args) }
@@ -370,18 +384,23 @@ function New-Solution { Load-AgyTuiDll; [CommandRouter]::Route("sln", $args) }
 function Add-AllProjectsToSolution { Load-AgyTuiDll; [CommandRouter]::Route("sln-add", $args) }
 function New-ConsoleProject { Load-AgyTuiDll; [CommandRouter]::Route("console", $args) }
 function New-WebApiProject { Load-AgyTuiDll; [CommandRouter]::Route("webapi", $args) }
-function dpack { Load-AgyTuiDll; [CommandRouter]::Route("dpack", $args) }
+function dpack { dotnet pack @args }
 function dpubpkg { Load-AgyTuiDll; [CommandRouter]::Route("dpubpkg", $args) }
 
 Set-Alias -Name dr -Value Invoke-DotNetRun -Force
+Set-Alias -Name dru -Value Invoke-DotNetRunUI -Force
 Set-Alias -Name dw -Value Invoke-DotNetWatch -Force
 Set-Alias -Name dwatch -Value Invoke-DotNetWatch -Force
 Set-Alias -Name db -Value Invoke-DotNetBuild -Force
 Set-Alias -Name dbld -Value Invoke-DotNetBuild -Force
+Set-Alias -Name dbldu -Value Invoke-DotNetBuildUI -Force
+Set-Alias -Name dbu -Value Invoke-DotNetBuildUI -Force
 Set-Alias -Name rebuild -Value Invoke-DotNetBuild -Force
 Set-Alias -Name df -Value Invoke-DotNetFormat -Force
 Set-Alias -Name dt -Value Invoke-DotNetTest -Force
 Set-Alias -Name dtst -Value Invoke-DotNetTest -Force
+Set-Alias -Name dtstu -Value Invoke-DotNetTestUI -Force
+Set-Alias -Name dtu -Value Invoke-DotNetTestUI -Force
 Set-Alias -Name dwt -Value Invoke-DotNetWatchTest -Force
 Set-Alias -Name dcl -Value Invoke-DotNetClean -Force
 Set-Alias -Name dres -Value Invoke-DotNetRestore -Force
@@ -405,7 +424,10 @@ Set-Alias -Name webapi -Value New-WebApiProject -Force
 #  Shortcuts and wrappers for AWS LocalStack (S3, SQS, Lambda).
 # ==============================================================================
 
-function Get-S3Buckets { Load-AgyTuiDll; [CommandRouter]::Route("aws-s3", $args) }
+function Get-AWSWhoAmI { aws sts get-caller-identity @args }
+function Get-AWSWhoAmIUI { Load-AgyTuiDll; [CommandRouter]::Route("aws-whoamiu", $args) }
+function Get-S3Buckets { aws s3 ls @args }
+function Get-S3BucketsUI { Load-AgyTuiDll; [CommandRouter]::Route("aws-s3u", $args) }
 function New-S3Bucket { Load-AgyTuiDll; [CommandRouter]::Route("s3mb", $args) }
 function Get-LambdaFunctions { Load-AgyTuiDll; [CommandRouter]::Route("aws-local", $args) }
 function Get-LocalSQSQueues { Load-AgyTuiDll; [CommandRouter]::Route("aws-sqs", $args) }
@@ -415,6 +437,10 @@ function Send-LocalSQSMessage { Load-AgyTuiDll; [CommandRouter]::Route("sqssend"
 function Get-LocalSQSMessage { Load-AgyTuiDll; [CommandRouter]::Route("sqsrecv", $args) }
 function Get-LocalSQSAttributes { Load-AgyTuiDll; [CommandRouter]::Route("sqsattr", $args) }
 
+Set-Alias -Name aws-whoami -Value Get-AWSWhoAmI -Force
+Set-Alias -Name aws-whoamiu -Value Get-AWSWhoAmIUI -Force
+Set-Alias -Name aws-s3 -Value Get-S3Buckets -Force
+Set-Alias -Name aws-s3u -Value Get-S3BucketsUI -Force
 Set-Alias -Name s3ls -Value Get-S3Buckets -Force
 Set-Alias -Name s3mb -Value New-S3Bucket -Force
 Set-Alias -Name lbls -Value Get-LambdaFunctions -Force

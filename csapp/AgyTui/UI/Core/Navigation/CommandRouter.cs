@@ -161,10 +161,6 @@ public class CommandRouter : ICommandRouter
                     case "+gb":
                         _git.ShowBranches();
                         break;
-                    case "gcmt":
-                    case "+gcmt":
-                        _git.ConventionalCommitWizard();
-                        break;
                     case "glo":
                     case "glg":
                         _git.ShowLogGraph();
@@ -212,7 +208,16 @@ public class CommandRouter : ICommandRouter
                     case "guf":
                         _git.PushForce(args);
                         break;
+                    case "co":
+                        _git.Checkout(args != null && args.Length > 0 ? args[0] : null);
+                        break;
+                    case "gcommit":
+                    case "gcmt":
+                    case "+gcmt":
+                        _git.ConventionalCommitWizard();
+                        break;
                     case "gclone":
+                    case "gcloneu":
                         _git.CloneProject(args != null && args.Length > 0 ? args[0] : null, args != null && args.Length > 1 ? args[1] : null);
                         break;
                     case "git-undo":
@@ -260,14 +265,36 @@ public class CommandRouter : ICommandRouter
                         break;
                     case "dbld":
                     case "db":
+                    case "dbldu":
+                    case "dbu":
                         _dotNet.Build();
                         break;
                     case "dr":
+                    case "dru":
                         _dotNet.Run();
                         break;
                     case "dtst":
                     case "dt":
+                    case "dtstu":
+                    case "dtu":
                         _dotNet.Test();
+                        break;
+                    case "dk":
+                    case "dku":
+                    case "dki":
+                        _docker.ShowContainers();
+                        break;
+                    case "dimgu":
+                        _docker.ShowImages();
+                        break;
+                    case "dlogsu":
+                        _docker.ShowContainerLogs();
+                        break;
+                    case "aws-whoamiu":
+                        _aws.ShowCallerIdentity();
+                        break;
+                    case "aws-s3u":
+                        _aws.ShowS3Buckets();
                         break;
                     case "df":
                         _dotNet.Format();
