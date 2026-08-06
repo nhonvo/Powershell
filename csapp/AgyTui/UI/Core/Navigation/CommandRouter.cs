@@ -503,6 +503,7 @@ public class CommandRouter : ICommandRouter
                         break;
                     case "desk-status":
                     case "deck-status":
+                        try
                         {
                             var running = _ollama.IsPortListening(18789);
                             var statusStr = running ? "[green]Online (port 18789)[/]" : "[red]Offline[/]";
@@ -512,26 +513,56 @@ public class CommandRouter : ICommandRouter
                                 AnsiConsole.MarkupLine("Local App URL: [cyan]http://127.0.0.1:18789[/]");
                             }
                             Console.WriteLine("\nPress any key to return...");
-                            Console.ReadKey(true);
+                            SpectrePanel.SafeReadKey();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogHelper.LogError("CommandRouter desk-status failed", ex);
+                            SpectrePanel.Error($"desk-status error: {ex.Message}");
                         }
                         break;
                     case "desk-setup":
                     case "deck-setup":
-                        AntigravityDeckHelper.Setup();
+                        try
+                        {
+                            AntigravityDeckHelper.Setup();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogHelper.LogError("CommandRouter desk-setup failed", ex);
+                            SpectrePanel.Error($"desk-setup error: {ex.Message}");
+                        }
                         break;
                     case "desk-start":
                     case "deck-start":
-                        AntigravityDeckHelper.StartLocal();
+                        try
+                        {
+                            AntigravityDeckHelper.StartLocal();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogHelper.LogError("CommandRouter desk-start failed", ex);
+                            SpectrePanel.Error($"desk-start error: {ex.Message}");
+                        }
                         break;
                     case "desk-online":
                     case "deck-online":
-                        AntigravityDeckHelper.StartOnline();
+                        try
+                        {
+                            AntigravityDeckHelper.StartOnline();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogHelper.LogError("CommandRouter desk-online failed", ex);
+                            SpectrePanel.Error($"desk-online error: {ex.Message}");
+                        }
                         break;
 
                     // Antigravity Manager
                     case "mgr-status":
                     case "manager-status":
                     case "agm-status":
+                        try
                         {
                             var running = _ollama.IsPortListening(18790);
                             var statusStr = running ? "[green]Online (port 18790)[/]" : "[red]Offline[/]";
@@ -541,20 +572,41 @@ public class CommandRouter : ICommandRouter
                                 AnsiConsole.MarkupLine("Local Backend URL: [cyan]http://127.0.0.1:18790[/]");
                             }
                             Console.WriteLine("\nPress any key to return...");
-                            Console.ReadKey(true);
+                            SpectrePanel.SafeReadKey();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogHelper.LogError("CommandRouter mgr-status failed", ex);
+                            SpectrePanel.Error($"mgr-status error: {ex.Message}");
                         }
                         break;
                     case "mgr-setup":
                     case "manager-setup":
                     case "agm-setup":
-                        AntigravityManagerHelper.Setup();
+                        try
+                        {
+                            AntigravityManagerHelper.Setup();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogHelper.LogError("CommandRouter mgr-setup failed", ex);
+                            SpectrePanel.Error($"mgr-setup error: {ex.Message}");
+                        }
                         break;
                     case "mgr":
                     case "mgr-start":
                     case "manager-start":
                     case "agm":
                     case "agm-start":
-                        AntigravityManagerHelper.StartLocal();
+                        try
+                        {
+                            AntigravityManagerHelper.StartLocal();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogHelper.LogError("CommandRouter mgr-start failed", ex);
+                            SpectrePanel.Error($"mgr-start error: {ex.Message}");
+                        }
                         break;
                     case "agy-cli":
                         if (!Config.Current.Ai.EnableAgy)
@@ -1064,7 +1116,9 @@ public class CommandRouter : ICommandRouter
                 success = false;
                 errorType = ex.GetType().Name;
                 exitCode = 1;
-                SpectrePanel.Error($"Error running command: {ex.Message}");
+                var displayMsg = ex.InnerException != null ? $"{ex.Message} ({ex.InnerException.Message})" : ex.Message;
+                LogHelper.LogError($"CommandRouter.HandleCommand failed for '{alias}'", ex);
+                SpectrePanel.Error($"Error running command: {displayMsg}");
             }
             AnsiConsole.WriteLine();
         }

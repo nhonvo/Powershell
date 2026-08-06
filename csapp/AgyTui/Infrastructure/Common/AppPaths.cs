@@ -176,9 +176,14 @@ public static class AppPaths
     {
         get
         {
-            var dir = Path.Combine(DataDir, "deck");
-            Directory.CreateDirectory(dir);
-            return dir;
+            var localAppDataDeck = Path.Combine(LocalAppDataDir, "AntigravityDeck");
+            if (Directory.Exists(localAppDataDeck)) return localAppDataDeck;
+
+            var projectDeck = Path.Combine(DataDir, "deck");
+            if (Directory.Exists(projectDeck)) return projectDeck;
+
+            Directory.CreateDirectory(localAppDataDeck);
+            return localAppDataDeck;
         }
     }
 

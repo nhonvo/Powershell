@@ -156,7 +156,9 @@ public class SystemHelper : ISystemHelper
     {
         try
         {
-            var psi = new ProcessStartInfo("cmd.exe", $"/c netstat -ano | findstr :{port}")
+            var cmd = OperatingSystem.IsWindows() ? "cmd.exe" : "sh";
+            var args = OperatingSystem.IsWindows() ? $"/c netstat -ano | findstr :{port}" : $"-c \"lsof -i :{port} -t\"";
+            var psi = new ProcessStartInfo(cmd, args)
             {
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
@@ -167,20 +169,43 @@ public class SystemHelper : ISystemHelper
             {
                 var output = p.StandardOutput.ReadToEnd();
                 p.WaitForExit();
-                var matches = Regex.Matches(output, @"\s+(\d+)$");
-                foreach (Match m in matches)
+                var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var line in lines)
                 {
-                    if (m.Success && int.TryParse(m.Groups[1].Value, out var pid))
+                    if (OperatingSystem.IsWindows())
                     {
-                        Process.GetProcessById(pid).Kill();
-                        AnsiConsole.MarkupLine($"[green]Killed process {pid} on port {port}.[/]");
+                        if (line.Contains("LISTENING", StringComparison.OrdinalIgnoreCase))
+                        {
+                            var parts = line.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            if (parts.Length >= 5 && int.TryParse(parts[parts.Length - 1], out var pid) && pid > 0)
+                            {
+                                try
+                                {
+                                    Process.GetProcessById(pid).Kill(entireProcessTree: true);
+                                    AnsiConsole.MarkupLine($"[green]Killed existing process {pid} on port {port}.[/]");
+                                }
+                                catch { }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (int.TryParse(line.Trim(), out var pid) && pid > 0)
+                        {
+                            try
+                            {
+                                Process.GetProcessById(pid).Kill(entireProcessTree: true);
+                                AnsiConsole.MarkupLine($"[green]Killed existing process {pid} on port {port}.[/]");
+                            }
+                            catch { }
+                        }
                     }
                 }
             }
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]Failed to kill port {port}: {ex.Message}[/]");
+            LogHelper.LogError($"SystemHelper.KillPort failed for port {port}", ex);
         }
     }
 

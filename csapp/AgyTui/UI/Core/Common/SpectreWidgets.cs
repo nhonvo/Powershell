@@ -33,6 +33,11 @@ public class SpectreMenuService : ISpectreMenu
     private int CoreShow(string[] headerLines, string[] items, string[] cmds, bool searchEnabled, bool fullScreen)
     {
         if (items.Length == 0) return -1;
+        if (Console.IsInputRedirected)
+        {
+            LogHelper.Log("[SpectreMenuService] Non-interactive terminal detected. Returning default index 0.", "DEBUG");
+            return 0;
+        }
         if (fullScreen) AnsiConsole.Clear();
         PrintHeader(headerLines);
         return PromptIndex(items, searchEnabled);
@@ -52,8 +57,9 @@ public class SpectreMenuService : ISpectreMenu
         {
             return Array.IndexOf(items, AnsiConsole.Prompt(prompt));
         }
-        catch
+        catch (Exception ex)
         {
+            LogHelper.Log($"[SpectreMenuService] PromptIndex non-fatal: {ex.Message}", "DEBUG");
             return -1;
         }
     }
@@ -257,6 +263,21 @@ public static class SpectrePanel
     public static void Error(string message) => _service.Error(message);
     public static void Warning(string message) => _service.Warning(message);
     public static void Info(string message) => _service.Info(message);
+
+    public static void SafeReadKey()
+    {
+        try
+        {
+            if (!Console.IsInputRedirected)
+            {
+                Console.ReadKey(true);
+            }
+        }
+        catch (Exception ex)
+        {
+            LogHelper.Log($"[SpectrePanel] SafeReadKey ignored non-fatal exception: {ex.Message}", "DEBUG");
+        }
+    }
 }
 
 public class SpectreProgressService : ISpectreProgress

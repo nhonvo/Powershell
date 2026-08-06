@@ -93,6 +93,7 @@ public class ProcessRunner : IProcessRunner
         }
         catch (Exception ex)
         {
+            LogHelper.LogError($"ProcessRunner.RunInteractive failed to launch '{exe}' in '{targetWorkingDir}'", ex);
             SpectrePanel.Error($"Failed to launch '{exe}': {ex.Message}");
         }
     }

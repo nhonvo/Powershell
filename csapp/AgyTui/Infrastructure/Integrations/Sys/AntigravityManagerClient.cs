@@ -21,9 +21,9 @@ public static class AntigravityManagerHelper
 
     private static bool EnsureManagerPathExists()
     {
-        if (!Directory.Exists(ManagerPath))
+        if (!Directory.Exists(ManagerPath) || !File.Exists(Path.Combine(ManagerPath, "package.json")))
         {
-            SpectrePanel.Error($"Antigravity Manager path not found at {ManagerPath}.");
+            SpectrePanel.Error($"Antigravity Manager project or package.json not found at {ManagerPath}.\nPlease ensure the repository is cloned and contains package.json.");
             Thread.Sleep(2000);
             return false;
         }
@@ -32,6 +32,8 @@ public static class AntigravityManagerHelper
 
     public static void Setup()
     {
+        LogHelper.Log("[AntigravityManagerHelper] Running Setup");
+        SystemHelper.Instance.KillPort(18790);
         if (!EnsureManagerPathExists()) return;
         AnsiConsole.MarkupLine("[cyan]📦 Installing dependencies (npm install)...[/]");
         RunNpmCommand("install", "");
@@ -41,6 +43,8 @@ public static class AntigravityManagerHelper
 
     public static void StartLocal()
     {
+        LogHelper.Log("[AntigravityManagerHelper] Running StartLocal");
+        SystemHelper.Instance.KillPort(18790);
         if (!EnsureManagerPathExists()) return;
 
         AnsiConsole.MarkupLine("[cyan][[1/2]] 📦 Checking dependencies...[/]");
@@ -62,6 +66,7 @@ public static class AntigravityManagerHelper
     {
         try
         {
+            LogHelper.Log($"[AntigravityManagerHelper] RunNpmCommand: cmd='{cmd}', arg='{arg}', workingDir='{ManagerPath}'");
             var argsList = new List<string>();
             if (OperatingSystem.IsWindows())
             {
@@ -77,12 +82,16 @@ public static class AntigravityManagerHelper
                 if (!string.IsNullOrEmpty(arg)) argsList.Add(arg);
                 Helpers.ProcessRunner.Instance.RunInteractive("npm", argsList, workingDir: ManagerPath);
             }
+
+            AnsiConsole.MarkupLine("\n[cyan]Press any key to return to menu...[/]");
+            SpectrePanel.SafeReadKey();
         }
         catch (Exception ex)
         {
+            LogHelper.LogError($"AntigravityManagerHelper.RunNpmCommand failed for '{cmd} {arg}'", ex);
             SpectrePanel.Error($"Failed to run npm command: {ex.Message}");
             Console.WriteLine("\nPress any key to return...");
-            Console.ReadKey(true);
+            SpectrePanel.SafeReadKey();
         }
     }
 }
