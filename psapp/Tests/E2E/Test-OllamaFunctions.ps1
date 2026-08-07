@@ -1,10 +1,7 @@
 # C:\Users\TruongNhon\Documents\Powershell\Scripts\Test-OllamaFunctions.ps1
 
-$ProfileDir = Join-Path $PSScriptRoot "..\..\Profile"
-. (Join-Path $ProfileDir "Core\TerminalMenu.ps1")
-. (Join-Path $ProfileDir "Core\ProfileEnvironment.ps1")
-. (Join-Path $ProfileDir "Helpers\AiHelper.ps1")
-. (Join-Path $ProfileDir "Core\Aliases.ps1")
+. (Join-Path $PSScriptRoot "..\..\..\Microsoft.PowerShell_profile.ps1")
+Load-AgyTuiDll -ForceLoad $true
 
 Write-Host "1. Initializing Ollama Server and Proxy..." -ForegroundColor Cyan
 [AiHelper]::EnsureOllamaServer()

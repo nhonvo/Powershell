@@ -3,7 +3,10 @@ $env:AGY_LOAD_DLL = '1'
 Write-Host "Running PowerShell Profile Tests..." -ForegroundColor Cyan
 
 # Pre-load C# types assembly so the AST parser can resolve types during parsing
-$dllPath = Join-Path $PSScriptRoot "..\..\csapp\AgyTui\dist\AgyTui.dll"
+$dllPath = Join-Path $PSScriptRoot "..\..\csapp\AgyTui\bin\Release\net9.0\AgyTui.dll"
+if (-not (Test-Path $dllPath)) {
+    $dllPath = Join-Path $PSScriptRoot "..\..\csapp\AgyTui\dist\AgyTui.dll"
+}
 if (-not (Test-Path $dllPath)) {
     $dllPath = Join-Path $PSScriptRoot "..\..\csapp\AgyTui\bin\Debug\net9.0\AgyTui.dll"
 }
@@ -107,7 +110,44 @@ foreach ($item in $aiItems) {
     }
 }
 
-# 5. Dry-run Invocation Tests (non-blocking) - Removed to prevent interactive hangs in compiled C# helper wrappers.
+# 5. Verify C# Type References across all PS1 files
+Write-Host "`nVerifying C# Type References across all .ps1 files..." -ForegroundColor Cyan
+Load-AgyTuiDll -ForceLoad $true
+$repoRoot = (Get-Item (Join-Path $PSScriptRoot "..\..\")).FullName
+$allPsFiles = Get-ChildItem -Path $repoRoot -Filter "*.ps1" -Recurse | Where-Object {
+    $_.FullName -notlike "*\.git*" -and $_.FullName -notlike "*\bin\*" -and $_.FullName -notlike "*\obj\*" -and $_.FullName -notlike "*\psapp\Modules\*"
+}
+
+$missingTypesCount = 0
+$testedTypes = [System.Collections.Generic.HashSet[string]]::new()
+
+foreach ($file in $allPsFiles) {
+    $tokens = $null
+    $errors = $null
+    $ast = [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$tokens, [ref]$errors)
+    if ($ast) {
+        $typeNodes = $ast.FindAll({ param($node) $node -is [System.Management.Automation.Language.TypeExpressionAst] }, $true)
+        foreach ($node in $typeNodes) {
+            $typeName = $node.TypeName.FullName
+            if ($typeName -and $typeName -notmatch '^(string|int|bool|void|switch|array|object|hashtable|scriptblock|psobject|byte|long|double|char|decimal|float|ref|single|type|pscustomobject|System\..*|Microsoft\..*)$') {
+                if ($testedTypes.Add($typeName)) {
+                    $resolvedType = $typeName -as [type]
+                    if ($null -eq $resolvedType) {
+                        Write-Error "  [FAIL] Unable to find type [$typeName] referenced in $($file.Name)"
+                        $missingTypesCount++
+                    } else {
+                        Write-Host "  [OK] Type [$typeName] resolved successfully -> $($resolvedType.FullName)" -ForegroundColor Green
+                    }
+                }
+            }
+        }
+    }
+}
+
+if ($missingTypesCount -gt 0) {
+    Write-Error "❌ $missingTypesCount C# type reference(s) failed resolution."
+    exit 1
+}
 
 # 6. Run detailed Pester Unit Tests
 Write-Host "`nRunning detailed Pester unit tests..." -ForegroundColor Cyan

@@ -152,5 +152,48 @@ Describe "Core Profile Functions Validation" {
             { Load-AgyTuiDll; [CommandRouter]::Route("autoswitch") } | Should Not Throw
         }
     }
+
+    Context "PowerShell Profile & Script Type References Coverage" {
+        It "Ensures all custom C# type references in .ps1 files resolve without error" {
+            Load-AgyTuiDll -ForceLoad $true
+            $repoRoot = (Get-Item (Join-Path $PSScriptRoot "..\..\..\")).FullName
+            $allPsFiles = Get-ChildItem -Path $repoRoot -Filter "*.ps1" -Recurse | Where-Object {
+                $_.FullName -notlike "*\.git*" -and $_.FullName -notlike "*\bin\*" -and $_.FullName -notlike "*\obj\*" -and $_.FullName -notlike "*\psapp\Modules\*"
+            }
+
+            $missingTypes = @()
+            $testedTypes = [System.Collections.Generic.HashSet[string]]::new()
+
+            foreach ($file in $allPsFiles) {
+                $tokens = $null
+                $errors = $null
+                $ast = [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$tokens, [ref]$errors)
+                if ($ast) {
+                    $typeNodes = $ast.FindAll({ param($node) $node -is [System.Management.Automation.Language.TypeExpressionAst] }, $true)
+                    foreach ($node in $typeNodes) {
+                        $typeName = $node.TypeName.FullName
+                        if ($typeName -and $typeName -notmatch '^(string|int|bool|void|switch|array|object|hashtable|scriptblock|psobject|byte|long|double|char|decimal|float|ref|single|type|pscustomobject|System\..*|Microsoft\..*)$') {
+                            if ($testedTypes.Add($typeName)) {
+                                $resolvedType = $typeName -as [type]
+                                if ($null -eq $resolvedType) {
+                                    $missingTypes += "$typeName (referenced in $($file.Name))"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            $missingTypes | Should BeNullOrEmpty
+        }
+
+        It "Ensures CommandRouter type accelerator is registered and functional" {
+            Load-AgyTuiDll
+            $type = "CommandRouter" -as [type]
+            $type | Should Not Be $null
+            $type.FullName | Should Be "AgyTui.UI.Core.Navigation.CommandRouter"
+        }
+    }
 }
+
 

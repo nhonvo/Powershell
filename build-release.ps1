@@ -30,10 +30,24 @@ try {
     Unlock-Binaries -Dir "csapp\AgyTui\dist"
 
     if (-not $SkipTests) {
-        Write-Host "🧪 Executing test suite validation..." -ForegroundColor Cyan
+        Write-Host "🧪 Executing C# unit test suite validation..." -ForegroundColor Cyan
         dotnet test csapp/AgyTui.Tests/AgyTui.Tests.csproj -c Release --verbosity quiet
         if ($LASTEXITCODE -ne 0) {
-            Write-Error "❌ Tests failed. Aborting release publish."
+            Write-Error "❌ C# unit tests failed. Aborting release publish."
+            return
+        }
+
+        Write-Host "🔨 Building AgyTui assembly for PowerShell test validation..." -ForegroundColor Cyan
+        dotnet build csapp/AgyTui/AgyTui.csproj -c Release --verbosity quiet
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "❌ Assembly build failed. Aborting release publish."
+            return
+        }
+
+        Write-Host "🧪 Validating PowerShell Profile & PS1 C# Type References..." -ForegroundColor Cyan
+        pwsh -NoProfile -ExecutionPolicy Bypass -File psapp/Tests/run_tests.ps1
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "❌ PowerShell profile type reference validation failed. Aborting release publish."
             return
         }
     }

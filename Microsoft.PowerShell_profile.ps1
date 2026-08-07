@@ -7,7 +7,18 @@ $loadDll = ($null -ne $config.Environment -and $config.Environment.LoadDll -eq $
 
 if ($global:AgyUserProfileLoaded) { return }
 $global:AgyUserProfileLoaded = $true
-$Global:ProfileRepoRoot = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
+$profileFile = if ($MyInvocation.MyCommand.Definition) { $MyInvocation.MyCommand.Definition } else { $PSCommandPath }
+if ($profileFile -and (Test-Path $profileFile -PathType Leaf)) {
+    $Global:ProfileRepoRoot = Split-Path -Parent -Path $profileFile
+} else {
+    $curr = if ($PSScriptRoot) { $PSScriptRoot } else { Get-Location }
+    while ($curr -and (Test-Path $curr) -and -not (Test-Path (Join-Path $curr "csapp"))) {
+        $parent = Split-Path -Parent -Path $curr
+        if ($parent -eq $curr) { break }
+        $curr = $parent
+    }
+    $Global:ProfileRepoRoot = $curr
+}
 
 #region 1. CONFIG & ENVIRONMENT
 # ==============================================================================
@@ -87,7 +98,8 @@ function Get-AgyTuiDllPath {
 
 function Load-AgyTuiDll {
     param([bool]$SkipBuildCheck = $true, [bool]$ForceLoad = $false)
-    $shouldLoad = (-not $fastStartup) -and ($ForceLoad -or $forceLoad -or (-not [Console]::IsOutputRedirected))
+    $isLoaded = $null -ne ([System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTui" })
+    $shouldLoad = $ForceLoad -or $forceLoad -or (-not $isLoaded)
     if (-not $shouldLoad) { return }
 
     if ($null -eq ([System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTui" })) {
@@ -139,7 +151,7 @@ function Load-AgyTuiDll {
                 "StudyHelper"        = "LearnRouter"
                 "AccountHelper"      = "AgyAccountStore"
                 "AgyAccountManager"  = "AgyAccountStore"
-                "AiHelper"           = "AgyAiCore"
+                "AiHelper"           = "AiDashboardView"
                 "ThemeHelper"        = "ThemeManager"
                 "SshHelper"          = "SshConsoleView"
                 "SystemHelper"       = "SystemConsoleView"
