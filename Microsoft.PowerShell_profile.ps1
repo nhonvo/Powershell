@@ -84,16 +84,46 @@ if ($config.Proxy) {
 $Global:AgyTuiAppProject = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\AgyTui.csproj"
 
 function Get-AgyTuiDllPath {
-    $releasePath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin\Release\net9.0\AgyTui.dll"
-    if (Test-Path $releasePath) { return $releasePath }
-
-    $debugPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin\Debug\net9.0\AgyTui.dll"
-    if (Test-Path $debugPath) { return $debugPath }
-
-    $distPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\dist\AgyTui.dll"
-    if (Test-Path $distPath) { return $distPath }
-
+    $candidates = @(
+        (Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\dist\AgyTui.dll"),
+        (Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin\Release\net9.0\AgyTui.dll"),
+        (Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin\Release\net10.0\AgyTui.dll"),
+        (Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin\Debug\net9.0\AgyTui.dll"),
+        (Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin\Debug\net10.0\AgyTui.dll")
+    )
+    foreach ($cand in $candidates) {
+        if (Test-Path $cand) { return $cand }
+    }
     return $null
+}
+
+if ($null -eq $global:AgyAssemblyResolverRegistered) {
+    $global:AgyAssemblyResolverRegistered = $true
+    try {
+        [System.AppDomain]::CurrentDomain.add_AssemblyResolve({
+            param($sender, $eventArgs)
+            try {
+                $asmName = (New-Object System.Reflection.AssemblyName($eventArgs.Name)).Name
+                $root = $Global:ProfileRepoRoot
+                if (-not $root) { return $null }
+                $dirs = @(
+                    (Join-Path $root "csapp\AgyTui\dist"),
+                    (Join-Path $root "csapp\AgyTui\bin\Release\net9.0"),
+                    (Join-Path $root "csapp\AgyTui\bin\Release\net10.0"),
+                    (Join-Path $root "csapp\AgyTui\bin\Debug\net9.0"),
+                    (Join-Path $root "csapp\AgyTui\bin\Debug\net10.0")
+                )
+                foreach ($d in $dirs) {
+                    $cand = Join-Path $d "$asmName.dll"
+                    if (Test-Path $cand) {
+                        $b = [System.IO.File]::ReadAllBytes($cand)
+                        return [System.Reflection.Assembly]::Load($b)
+                    }
+                }
+            } catch {}
+            return $null
+        })
+    } catch {}
 }
 
 function Load-AgyTuiDll {
@@ -117,19 +147,40 @@ function Load-AgyTuiDll {
 
         if ($needsBuild -and (Test-Path $proj)) {
             try {
-                dotnet build "$proj" -p:TreatWarningsAsErrors=true | Out-Null
+                dotnet build "$proj" -c Release | Out-Null
                 $targetDll = Get-AgyTuiDllPath
+                if ($targetDll) {
+                    $distFolder = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\dist"
+                    if (-not (Test-Path $distFolder)) { New-Item -ItemType Directory -Path $distFolder -Force | Out-Null }
+                    $dllFolder = Split-Path $targetDll
+                    if ($dllFolder -ne $distFolder) {
+                        Get-ChildItem -Path $dllFolder -Filter "*.dll" | ForEach-Object {
+                            Copy-Item -Path $_.FullName -Destination $distFolder -Force -ErrorAction SilentlyContinue
+                        }
+                        $distDll = Join-Path -Path $distFolder -ChildPath "AgyTui.dll"
+                        if (Test-Path $distDll) { $targetDll = $distDll }
+                    }
+                }
             } catch {}
         }
 
         if ($targetDll -and (Test-Path $targetDll)) {
             try {
                 $dllFolder = Split-Path $targetDll
-                Get-ChildItem -Path $dllFolder -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTui.dll" } | ForEach-Object {
-                    try {
-                        $bytes = [System.IO.File]::ReadAllBytes($_.FullName)
-                        [System.Reflection.Assembly]::Load($bytes) | Out-Null
-                    } catch {}
+                $searchFolders = @(
+                    $dllFolder,
+                    (Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin\Release\net9.0"),
+                    (Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\bin\Debug\net9.0"),
+                    (Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui\dist")
+                ) | Select-Object -Unique | Where-Object { Test-Path $_ }
+
+                foreach ($folder in $searchFolders) {
+                    Get-ChildItem -Path $folder -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTui.dll" } | ForEach-Object {
+                        try {
+                            $bytes = [System.IO.File]::ReadAllBytes($_.FullName)
+                            [System.Reflection.Assembly]::Load($bytes) | Out-Null
+                        } catch {}
+                    }
                 }
                 $bytes = [System.IO.File]::ReadAllBytes($targetDll)
                 [System.Reflection.Assembly]::Load($bytes) | Out-Null
@@ -141,9 +192,15 @@ function Load-AgyTuiDll {
         $acc = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
         $agyAssembly = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTui" } | Select-Object -First 1
         if ($acc -and $agyAssembly) {
-            foreach ($type in $agyAssembly.GetExportedTypes()) {
-                if ($type.IsClass -and $type.Name -and -not $acc::Get.ContainsKey($type.Name)) {
-                    try { $acc::Add($type.Name, $type) } catch {}
+            $exportedTypes = $null
+            try { $exportedTypes = $agyAssembly.GetExportedTypes() } catch {
+                try { $exportedTypes = $agyAssembly.GetTypes() } catch {}
+            }
+            if ($exportedTypes) {
+                foreach ($type in $exportedTypes) {
+                    if ($type.IsClass -and $type.Name -and -not $acc::Get.ContainsKey($type.Name)) {
+                        try { $acc::Add($type.Name, $type) } catch {}
+                    }
                 }
             }
             $aliases = @{
@@ -170,6 +227,83 @@ function Load-AgyTuiDll {
 
 if ($forceLoad -or (-not $fastStartup -and -not [Console]::IsOutputRedirected)) {
     Load-AgyTuiDll
+}
+
+function Get-AgyType {
+    param([string]$TypeName)
+    Load-AgyTuiDll
+    $t = $TypeName -as [type]
+    if ($null -eq $t) {
+        $acc = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
+        if ($acc -and $acc::Get.ContainsKey($TypeName)) {
+            $t = $acc::Get[$TypeName]
+        }
+    }
+    if ($null -eq $t) {
+        $agyAssy = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTui" } | Select-Object -First 1
+        if ($agyAssy) {
+            try {
+                $t = $agyAssy.GetTypes() | Where-Object { $_.Name -eq $TypeName } | Select-Object -First 1
+            } catch {
+                try {
+                    $t = $agyAssy.GetExportedTypes() | Where-Object { $_.Name -eq $TypeName } | Select-Object -First 1
+                } catch {}
+            }
+        }
+    }
+    return $t
+}
+
+function Invoke-AgyRoute {
+    param([string]$Alias, $RouteArgs = $null)
+
+    $tuiExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\dist\AgyTui.exe"
+    if (-not (Test-Path $tuiExe)) { $tuiExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Release\net9.0\AgyTui.exe" }
+    if (-not (Test-Path $tuiExe)) { $tuiExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Debug\net9.0\AgyTui.exe" }
+
+    $flatArgs = @()
+    if ($RouteArgs) {
+        if ($RouteArgs -is [string]) {
+            if ($RouteArgs.Trim()) { $flatArgs += $RouteArgs }
+        }
+        elseif ($RouteArgs -is [System.Collections.IEnumerable]) {
+            foreach ($item in $RouteArgs) {
+                if ($null -ne $item -and [string]$item -ne "") { $flatArgs += [string]$item }
+            }
+        } else {
+            $flatArgs += [string]$RouteArgs
+        }
+    }
+
+    if (Test-Path $tuiExe) {
+        if ($flatArgs.Count -gt 0) {
+            & $tuiExe $Alias @flatArgs
+        } else {
+            & $tuiExe $Alias
+        }
+        return
+    }
+
+    $proj = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\AgyTui.csproj"
+    if (Test-Path $proj) {
+        if ($flatArgs.Count -gt 0) {
+            dotnet run --project "$proj" -c Release -- $Alias @flatArgs
+        } else {
+            dotnet run --project "$proj" -c Release -- $Alias
+        }
+        return
+    }
+
+    $routerType = Get-AgyType "CommandRouter"
+    if ($null -ne $routerType) {
+        if ($null -ne $RouteArgs) {
+            return $routerType::Route($Alias, $RouteArgs)
+        } else {
+            return $routerType::Route($Alias)
+        }
+    } else {
+        Write-Error "AgyTui binary/component [CommandRouter] could not be resolved."
+    }
 }
 #endregion
 
@@ -278,21 +412,21 @@ if ((Test-Path $themePath) -and (Get-Command oh-my-posh -ErrorAction SilentlyCon
 
 #region 4. DOCKER & CONTAINERS INTEGRATION
 # ==============================================================================
-function Invoke-DockerDashboard { Load-AgyTuiDll; [CommandRouter]::Route("dkcl") }
-function Invoke-DockerHealth { Load-AgyTuiDll; [CommandRouter]::Route("docker-health") }
+function Invoke-DockerDashboard { Invoke-AgyRoute "dkcl" }
+function Invoke-DockerHealth { Invoke-AgyRoute "docker-health" }
 function Get-DockerContainers { docker ps @args }
-function Get-DockerContainersUI { Load-AgyTuiDll; [CommandRouter]::Route("dku", $args) }
+function Get-DockerContainersUI { Invoke-AgyRoute "dku" $args }
 function Get-DockerImages { docker images @args }
-function Get-DockerImagesUI { Load-AgyTuiDll; [CommandRouter]::Route("dimgu", $args) }
+function Get-DockerImagesUI { Invoke-AgyRoute "dimgu" $args }
 function Get-DockerLogs { docker logs @args }
-function Get-DockerLogsUI { Load-AgyTuiDll; [CommandRouter]::Route("dlogsu", $args) }
-function Remove-AllDockerContainers { Load-AgyTuiDll; [CommandRouter]::Route("dkrmac") }
-function Stop-AllDockerContainers { Load-AgyTuiDll; [CommandRouter]::Route("dkstac") }
-function Invoke-ComposeUp { Load-AgyTuiDll; [CommandRouter]::Route("dcup", $args) }
-function Invoke-ComposeUpBuild { Load-AgyTuiDll; [CommandRouter]::Route("dcupb", $args) }
-function Invoke-ComposeDown { Load-AgyTuiDll; [CommandRouter]::Route("dcdown", $args) }
-function Remove-UnusedDockerVolumes { Load-AgyTuiDll; [CommandRouter]::Route("dkprunev", $args) }
-function Remove-UnusedDockerImages { Load-AgyTuiDll; [CommandRouter]::Route("dkprunei", $args) }
+function Get-DockerLogsUI { Invoke-AgyRoute "dlogsu" $args }
+function Remove-AllDockerContainers { Invoke-AgyRoute "dkrmac" }
+function Stop-AllDockerContainers { Invoke-AgyRoute "dkstac" }
+function Invoke-ComposeUp { Invoke-AgyRoute "dcup" $args }
+function Invoke-ComposeUpBuild { Invoke-AgyRoute "dcupb" $args }
+function Invoke-ComposeDown { Invoke-AgyRoute "dcdown" $args }
+function Remove-UnusedDockerVolumes { Invoke-AgyRoute "dkprunev" $args }
+function Remove-UnusedDockerImages { Invoke-AgyRoute "dkprunei" $args }
 
 Set-Alias -Name dk -Value Get-DockerContainers -Force
 Set-Alias -Name dku -Value Get-DockerContainersUI -Force
@@ -320,37 +454,37 @@ Set-Alias -Name fix-image -Value Remove-UnusedDockerImages -Force
 # ==============================================================================
 
 function Invoke-GitStatus { git status @args }
-function Invoke-GitStatusUI { Load-AgyTuiDll; [CommandRouter]::Route("gsu", $args) }
-function Show-GitDiff { Load-AgyTuiDll; [CommandRouter]::Route("gd", $args) }
-function Get-GitLogGraph { Load-AgyTuiDll; [CommandRouter]::Route("glg", $args) }
-function Get-GitLogPretty { Load-AgyTuiDll; [CommandRouter]::Route("glog", $args) }
-function Get-GitLog { Load-AgyTuiDll; [CommandRouter]::Route("glo", $args) }
+function Invoke-GitStatusUI { if ($args) { git status @args } else { Invoke-AgyRoute "gsu" } }
+function Show-GitDiff { if ($args) { git diff @args } else { Invoke-AgyRoute "gd" } }
+function Get-GitLogGraph { if ($args) { git log --graph --oneline --decorate @args } else { Invoke-AgyRoute "glg" } }
+function Get-GitLogPretty { if ($args) { git log --pretty=format:"%h - %an, %ar : %s" @args } else { Invoke-AgyRoute "glog" } }
+function Get-GitLog { git log @args }
 function Get-GitBranches { git branch @args }
-function Get-GitBranchesUI { Load-AgyTuiDll; [CommandRouter]::Route("gbr", $args) }
-function Invoke-GitCheckout { param([string]$branchName) Load-AgyTuiDll; [CommandRouter]::Route("co", $branchName) }
-function New-GitBranch { Load-AgyTuiDll; [CommandRouter]::Route("cob", $args) }
-function Remove-GitBranch { Load-AgyTuiDll; [CommandRouter]::Route("gbd", $args) }
-function Invoke-GitAddAll { Load-AgyTuiDll; [CommandRouter]::Route("ga", $args) }
-function Invoke-GitUnstage { Load-AgyTuiDll; [CommandRouter]::Route("gunstage", $args) }
-function Invoke-GitCommit { param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message) if ($Message) { git commit -m ($Message -join " ") } else { Load-AgyTuiDll; [CommandRouter]::Route("gcmt") } }
-function Invoke-GitAmend { Load-AgyTuiDll; [CommandRouter]::Route("gca", $args) }
-function Invoke-GitUndo { Load-AgyTuiDll; [CommandRouter]::Route("git-undo", $args) }
-function Invoke-GitResetSoft { Load-AgyTuiDll; [CommandRouter]::Route("gr", $args) }
-function Invoke-GitResetHard { Load-AgyTuiDll; [CommandRouter]::Route("grh", $args) }
-function Invoke-GitFetch { Load-AgyTuiDll; [CommandRouter]::Route("gf", $args) }
-function Invoke-GitPull { Load-AgyTuiDll; [CommandRouter]::Route("gpull", $args) }
-function Invoke-GitPush { Load-AgyTuiDll; [CommandRouter]::Route("gpush", $args) }
-function Invoke-GitPushForce { Load-AgyTuiDll; [CommandRouter]::Route("guf", $args) }
-function Invoke-GitCommitWizard { param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message) Load-AgyTuiDll; $msg = $Message -join ' '; [CommandRouter]::Route("gcmt", $msg) }
-function Clone-Project { Load-AgyTuiDll; [CommandRouter]::Route("gclone", $args) }
+function Get-GitBranchesUI { if ($args) { git branch @args } else { Invoke-AgyRoute "gbr" } }
+function Invoke-GitCheckout { if ($args) { git checkout @args } else { Invoke-AgyRoute "co" } }
+function New-GitBranch { if ($args) { git checkout -b @args } else { Invoke-AgyRoute "cob" } }
+function Remove-GitBranch { if ($args) { git branch -d @args } else { Invoke-AgyRoute "gbd" } }
+function Invoke-GitAddAll { if ($args) { git add @args } else { git add . } }
+function Invoke-GitUnstage { if ($args) { git restore --staged @args } else { git restore --staged . } }
+function Invoke-GitCommit { param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message) if ($Message) { git commit -m ($Message -join " ") } else { Invoke-AgyRoute "gcmt" } }
+function Invoke-GitAmend { if ($args) { git commit --amend @args } else { Invoke-AgyRoute "gca" } }
+function Invoke-GitUndo { if ($args) { git reset --soft @args } else { git reset --soft HEAD~1 } }
+function Invoke-GitResetSoft { if ($args) { git reset --soft @args } else { git reset --soft HEAD~1 } }
+function Invoke-GitResetHard { if ($args) { git reset --hard @args } else { git reset --hard } }
+function Invoke-GitFetch { git fetch @args }
+function Invoke-GitPull { git pull @args }
+function Invoke-GitPush { git push @args }
+function Invoke-GitPushForce { git push --force-with-lease @args }
+function Invoke-GitCommitWizard { param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Message) if ($Message) { git commit -m ($Message -join " ") } else { Invoke-AgyRoute "gcmt" } }
+function Clone-Project { if ($args) { git clone @args } else { Invoke-AgyRoute "gclone" } }
 function Get-GitRemotes { git remote -v @args }
-function Get-GitRemotesUI { Load-AgyTuiDll; [CommandRouter]::Route("gremoteu", $args) }
-function Invoke-GitCheckoutRemote { param([string]$remoteBranch) Load-AgyTuiDll; [CommandRouter]::Route("gco-remote", $remoteBranch) }
-function Invoke-GitMerge { param([string]$branchName) Load-AgyTuiDll; [CommandRouter]::Route("gmerge", $branchName) }
-function Invoke-GitMergeUI { Load-AgyTuiDll; [CommandRouter]::Route("gmergeu", $args) }
-function Invoke-GitConflictResolver { Load-AgyTuiDll; [CommandRouter]::Route("gconflict", $args) }
-function Invoke-GitStashManager { Load-AgyTuiDll; [CommandRouter]::Route("gstash", $args) }
-function Invoke-GitRebase { param([string]$branchName) Load-AgyTuiDll; [CommandRouter]::Route("grebase", $branchName) }
+function Get-GitRemotesUI { if ($args) { git remote -v @args } else { Invoke-AgyRoute "gremoteu" } }
+function Invoke-GitCheckoutRemote { if ($args) { git checkout -t @args } else { Invoke-AgyRoute "gco-remote" } }
+function Invoke-GitMerge { if ($args) { git merge @args } else { Invoke-AgyRoute "gmergeu" } }
+function Invoke-GitMergeUI { if ($args) { git merge @args } else { Invoke-AgyRoute "gmergeu" } }
+function Invoke-GitConflictResolver { Invoke-AgyRoute "gconflict" $args }
+function Invoke-GitStashManager { if ($args) { git stash @args } else { Invoke-AgyRoute "gstash" } }
+function Invoke-GitRebase { if ($args) { git rebase @args } else { Invoke-AgyRoute "grebase" } }
 
 Set-Alias -Name gs -Value Invoke-GitStatus -Force
 Set-Alias -Name gsu -Value Invoke-GitStatusUI -Force
@@ -411,27 +545,27 @@ Set-Alias -Name grbu -Value Invoke-GitRebase -Force
 # ==============================================================================
 
 function Invoke-DotNetRun { dotnet run @args }
-function Invoke-DotNetRunUI { Load-AgyTuiDll; [CommandRouter]::Route("dru", $args) }
+function Invoke-DotNetRunUI { Invoke-AgyRoute "dru" $args }
 function Invoke-DotNetWatch { dotnet watch @args }
 function Invoke-DotNetBuild { dotnet build @args }
-function Invoke-DotNetBuildUI { Load-AgyTuiDll; [CommandRouter]::Route("dbldu", $args) }
+function Invoke-DotNetBuildUI { Invoke-AgyRoute "dbldu" $args }
 function Invoke-DotNetFormat { dotnet format @args }
 function Invoke-DotNetTest { dotnet test @args }
-function Invoke-DotNetTestUI { Load-AgyTuiDll; [CommandRouter]::Route("dtstu", $args) }
+function Invoke-DotNetTestUI { Invoke-AgyRoute "dtstu" $args }
 function Invoke-DotNetWatchTest { dotnet watch test @args }
 function Invoke-DotNetClean { dotnet clean @args }
 function Invoke-DotNetRestore { dotnet restore @args }
-function Remove-BinObj { Load-AgyTuiDll; [CommandRouter]::Route("dclean", $args) }
-function Update-Database { Load-AgyTuiDll; [CommandRouter]::Route("update-db", $args) }
-function Add-Migration { Load-AgyTuiDll; [CommandRouter]::Route("add-migration", $args) }
-function Remove-Database { Load-AgyTuiDll; [CommandRouter]::Route("dd", $args) }
-function Remove-Migration { Load-AgyTuiDll; [CommandRouter]::Route("dremove", $args) }
-function New-Solution { Load-AgyTuiDll; [CommandRouter]::Route("sln", $args) }
-function Add-AllProjectsToSolution { Load-AgyTuiDll; [CommandRouter]::Route("sln-add", $args) }
-function New-ConsoleProject { Load-AgyTuiDll; [CommandRouter]::Route("console", $args) }
-function New-WebApiProject { Load-AgyTuiDll; [CommandRouter]::Route("webapi", $args) }
+function Remove-BinObj { Invoke-AgyRoute "dclean" $args }
+function Update-Database { Invoke-AgyRoute "update-db" $args }
+function Add-Migration { Invoke-AgyRoute "add-migration" $args }
+function Remove-Database { Invoke-AgyRoute "dd" $args }
+function Remove-Migration { Invoke-AgyRoute "dremove" $args }
+function New-Solution { Invoke-AgyRoute "sln" $args }
+function Add-AllProjectsToSolution { Invoke-AgyRoute "sln-add" $args }
+function New-ConsoleProject { Invoke-AgyRoute "console" $args }
+function New-WebApiProject { Invoke-AgyRoute "webapi" $args }
 function dpack { dotnet pack @args }
-function dpubpkg { Load-AgyTuiDll; [CommandRouter]::Route("dpubpkg", $args) }
+function dpubpkg { Invoke-AgyRoute "dpubpkg" $args }
 
 Set-Alias -Name dr -Value Invoke-DotNetRun -Force
 Set-Alias -Name dru -Value Invoke-DotNetRunUI -Force
@@ -471,17 +605,17 @@ Set-Alias -Name webapi -Value New-WebApiProject -Force
 # ==============================================================================
 
 function Get-AWSWhoAmI { aws sts get-caller-identity @args }
-function Get-AWSWhoAmIUI { Load-AgyTuiDll; [CommandRouter]::Route("aws-whoamiu", $args) }
+function Get-AWSWhoAmIUI { Invoke-AgyRoute "aws-whoamiu" $args }
 function Get-S3Buckets { aws s3 ls @args }
-function Get-S3BucketsUI { Load-AgyTuiDll; [CommandRouter]::Route("aws-s3u", $args) }
-function New-S3Bucket { Load-AgyTuiDll; [CommandRouter]::Route("s3mb", $args) }
-function Get-LambdaFunctions { Load-AgyTuiDll; [CommandRouter]::Route("aws-local", $args) }
-function Get-LocalSQSQueues { Load-AgyTuiDll; [CommandRouter]::Route("aws-sqs", $args) }
-function New-LocalSQSQueue { Load-AgyTuiDll; [CommandRouter]::Route("sqsmb", $args) }
-function Clear-LocalSQSQueue { Load-AgyTuiDll; [CommandRouter]::Route("sqspurge", $args) }
-function Send-LocalSQSMessage { Load-AgyTuiDll; [CommandRouter]::Route("sqssend", $args) }
-function Get-LocalSQSMessage { Load-AgyTuiDll; [CommandRouter]::Route("sqsrecv", $args) }
-function Get-LocalSQSAttributes { Load-AgyTuiDll; [CommandRouter]::Route("sqsattr", $args) }
+function Get-S3BucketsUI { Invoke-AgyRoute "aws-s3u" $args }
+function New-S3Bucket { Invoke-AgyRoute "s3mb" $args }
+function Get-LambdaFunctions { Invoke-AgyRoute "aws-local" $args }
+function Get-LocalSQSQueues { Invoke-AgyRoute "aws-sqs" $args }
+function New-LocalSQSQueue { Invoke-AgyRoute "sqsmb" $args }
+function Clear-LocalSQSQueue { Invoke-AgyRoute "sqspurge" $args }
+function Send-LocalSQSMessage { Invoke-AgyRoute "sqssend" $args }
+function Get-LocalSQSMessage { Invoke-AgyRoute "sqsrecv" $args }
+function Get-LocalSQSAttributes { Invoke-AgyRoute "sqsattr" $args }
 
 Set-Alias -Name aws-whoami -Value Get-AWSWhoAmI -Force
 Set-Alias -Name aws-whoamiu -Value Get-AWSWhoAmIUI -Force
@@ -500,15 +634,10 @@ Set-Alias -Name sqsattr -Value Get-LocalSQSAttributes -Force
 
 #region 8. AI & MULTI-AGENT SHORTCUTS
 # ==============================================================================
-#  Shortcuts for AI agent sessions and routing.
-# ==============================================================================
-
-#region 8. AI & MULTI-AGENT SHORTCUTS
-# ==============================================================================
 #  Delegates AI agent routing and Control Center TUI execution to C# engine.
 # ==============================================================================
 
-function Invoke-MultiAgent { param([string]$Query) Load-AgyTuiDll; [CommandRouter]::Route("ai", $Query) }
+function Invoke-MultiAgent { param([string]$Query) Invoke-AgyRoute "ai" $Query }
 
 function Sync-ActiveAgyEnvironment {
     try {
@@ -542,8 +671,7 @@ function Invoke-ControlCenter {
         Sync-ActiveAgyEnvironment
         return
     }
-    Load-AgyTuiDll
-    [CommandRouter]::Route($CmdAlias, $PassArgs)
+    Invoke-AgyRoute $CmdAlias $PassArgs
     Sync-ActiveAgyEnvironment
 }
 
@@ -586,23 +714,28 @@ Set-Alias -Name dotnet-info -Value Show-DotNetInfo -Force
 
 function Set-LocationParent { Set-Location .. }
 function Set-LocationGrandParent { Set-Location ..\.. }
-function Invoke-OpenExplorer { Load-AgyTuiDll; [CommandRouter]::Route("f") }
-function Invoke-WorkspaceNavigator { param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Name) Load-AgyTuiDll; [CommandRouter]::Route("proj", $Name) }
-function Invoke-TerminalIde { param([string]$Path) Load-AgyTuiDll; $targetPath = if ($Path) { $Path } else { Get-Location }; [TerminalIde]::Open($targetPath) }
+function Invoke-OpenExplorer { Invoke-AgyRoute "f" }
+function Invoke-WorkspaceNavigator { param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Name) Invoke-AgyRoute "proj" $Name }
+function Invoke-TerminalIde {
+    param([string]$Path)
+    $targetPath = if ($Path) { $Path } else { Get-Location }
+    $ideType = Get-AgyType "TerminalIde"
+    if ($ideType) { $ideType::Open($targetPath) }
+}
 function Reload-Profile { . $PROFILE; Write-Host "✅ Profile reloaded." -ForegroundColor Green }
 
 function open-term {
     if ($args) {
         Start-Process wt.exe -ArgumentList $args
     } else {
-        Load-AgyTuiDll
-        [SystemHelper]::OpenNewTerminalSession($pwd.Path, [string]$null, $true)
+        $sysType = Get-AgyType "SystemHelper"
+        if ($sysType) { $sysType::OpenNewTerminalSession($pwd.Path, [string]$null, $true) }
     }
 }
 
 function Select-ShellTheme {
-    Load-AgyTuiDll
-    Apply-ThemePath ([ThemeHelper]::SelectThemeInteractive($env:POSH_THEMES_PATH, $env:THEME))
+    $themeType = Get-AgyType "ThemeHelper"
+    if ($themeType) { Apply-ThemePath ($themeType::SelectThemeInteractive($env:POSH_THEMES_PATH, $env:THEME)) }
 }
 
 Set-Alias -Name ip -Value Get-NetIPConfiguration -Force

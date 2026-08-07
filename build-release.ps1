@@ -64,7 +64,17 @@ try {
         -o $OutputDir
 
     if ($LASTEXITCODE -eq 0) {
-        Write-Host "✅ Release Publish Succeeded! Single-file binary located at $OutputDir\AgyTui.exe" -ForegroundColor Green
+        Write-Host "📦 Copying AgyTui assembly DLLs to $OutputDir for PowerShell profile type integration..." -ForegroundColor Cyan
+        $binRelease = "csapp/AgyTui/bin/Release/net9.0"
+        if (-not (Test-Path $binRelease)) {
+            $binRelease = "csapp/AgyTui/bin/Release/net10.0"
+        }
+        if (Test-Path $binRelease) {
+            Get-ChildItem -Path $binRelease -Filter "*.dll" | ForEach-Object {
+                Copy-Item -Path $_.FullName -Destination $OutputDir -Force -ErrorAction SilentlyContinue
+            }
+        }
+        Write-Host "✅ Release Publish Succeeded! Single-file binary located at $OutputDir\AgyTui.exe and assembly at $OutputDir\AgyTui.dll" -ForegroundColor Green
     } else {
         Write-Error "❌ Release Publish Failed."
     }
