@@ -5,10 +5,12 @@ namespace AgyTui.Infrastructure.Logging;
 public class CommandLoggingMiddleware : ICommandRouter
 {
     private readonly ICommandRouter _inner;
+    private readonly IErrorLogger _errorLogger;
 
-    public CommandLoggingMiddleware(ICommandRouter inner)
+    public CommandLoggingMiddleware(ICommandRouter inner, IErrorLogger errorLogger)
     {
         _inner = inner;
+        _errorLogger = errorLogger;
     }
 
     public int Execute(string alias, string[]? args = null)
@@ -50,6 +52,7 @@ public class CommandLoggingMiddleware : ICommandRouter
         catch (Exception ex)
         {
             sw.Stop();
+            _errorLogger.LogError(ex, $"CommandRouter.Execute({alias})");
             try
             {
                 File.AppendAllText(logFile, $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] [FAIL] Command: '{alias}' Error: {ex.Message} Elapsed: {sw.ElapsedMilliseconds}ms\n");

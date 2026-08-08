@@ -118,8 +118,9 @@ public static class Bootstrapper
         services.AddSingleton<AgyTui.UI.Core.Navigation.Routers.AiCommandRouter>();
         services.AddSingleton<AgyTui.UI.Core.Navigation.Routers.LearnCommandRouter>();
         services.AddSingleton<AgyTui.UI.Core.Navigation.Routers.SystemCommandRouter>();
+        services.AddSingleton<IErrorLogger, FileErrorLogger>();
         services.AddSingleton<CommandRouter>();
-        services.AddSingleton<ICommandRouter>(sp => new CommandLoggingMiddleware(sp.GetRequiredService<CommandRouter>()));
+        services.AddSingleton<ICommandRouter>(sp => new CommandLoggingMiddleware(sp.GetRequiredService<CommandRouter>(), sp.GetRequiredService<IErrorLogger>()));
 
         _serviceProvider = services.BuildServiceProvider();
         return _serviceProvider;
