@@ -9,19 +9,26 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+$repoRoot = $PSScriptRoot
+if (-not (Test-Path (Join-Path $repoRoot "csapp\AgyTui\AgyTui.csproj"))) {
+    $repoRoot = Split-Path -Parent $PSScriptRoot
+}
+if (-not (Test-Path (Join-Path $repoRoot "csapp\AgyTui\AgyTui.csproj"))) {
+    $repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+}
+$projectPath = Join-Path $repoRoot "csapp\AgyTui\AgyTui.csproj"
 
 Write-Host "📦 Building & Publishing AgyTuiApp [Production Release Mode]..." -ForegroundColor Cyan
 pushd $repoRoot
 try {
     # Unlock DLL if loaded
-    $dll = "csapp\AgyTui\bin\Release\net9.0\AgyTui.dll"
+    $dll = Join-Path $repoRoot "csapp\AgyTui\bin\Release\net9.0\AgyTui.dll"
     if (Test-Path $dll) {
         $rand = Get-Random
         Rename-Item -Path $dll -NewName "AgyTui.dll.old_$rand" -Force -ErrorAction SilentlyContinue
     }
 
-    dotnet publish csapp/AgyTui/AgyTui.csproj -c Release --nologo
+    dotnet publish "$projectPath" -c Release --nologo
     if ($LASTEXITCODE -eq 0) {
         Write-Host "✅ Release Build & Publish Succeeded." -ForegroundColor Green
         if (-not [string]::IsNullOrWhiteSpace($Command)) {
