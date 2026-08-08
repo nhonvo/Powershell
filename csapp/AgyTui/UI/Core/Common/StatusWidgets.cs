@@ -251,22 +251,29 @@ public sealed class OllamaStatusWidget : IStatusWidget
 
 public class StatusWidgetRegistryService : IStatusWidgetRegistry
 {
-    private readonly List<IStatusWidget> _widgets = new()
-    {
-        new DiskSpaceWidget(),
-        new PublicIpWidget(),
-        new SshInfoWidget(),
-        new AccountTreeWidget(),
-        new QuotaChartWidget(),
-        new LiveDashboardWidget(),
-        new OllamaStatusWidget()
-    };
+    private readonly Dictionary<string, IStatusWidget> _widgetMap;
 
-    public IEnumerable<IStatusWidget> GetAll() => _widgets;
+    public StatusWidgetRegistryService()
+    {
+        var list = new IStatusWidget[]
+        {
+            new DiskSpaceWidget(),
+            new PublicIpWidget(),
+            new SshInfoWidget(),
+            new AccountTreeWidget(),
+            new QuotaChartWidget(),
+            new LiveDashboardWidget(),
+            new OllamaStatusWidget()
+        };
+        _widgetMap = list.ToDictionary(w => w.Alias, w => w, StringComparer.OrdinalIgnoreCase);
+    }
+
+    public IEnumerable<IStatusWidget> GetAll() => _widgetMap.Values;
 
     public IStatusWidget? GetByAlias(string alias)
     {
-        return _widgets.FirstOrDefault(w => string.Equals(w.Alias, alias, StringComparison.OrdinalIgnoreCase));
+        _widgetMap.TryGetValue(alias, out var widget);
+        return widget;
     }
 }
 
