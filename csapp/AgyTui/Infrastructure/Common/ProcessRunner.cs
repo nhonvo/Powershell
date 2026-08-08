@@ -283,4 +283,34 @@ public class ProcessRunner : IProcessRunner
         catch { return -1; }
     }
 
+    public async Task<(string Stdout, string Stderr, int ExitCode)> RunCaptureWithDetailsAsync(
+        string exe, IEnumerable<string> args, string? workingDir = null, CancellationToken cancellationToken = default)
+    {
+        var psi = new ProcessStartInfo(exe)
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            WorkingDirectory = workingDir ?? Directory.GetCurrentDirectory()
+        };
+        foreach (var a in args)
+        {
+            psi.ArgumentList.Add(a);
+        }
+
+        var stdoutBuilder = new StringBuilder();
+        var stderrBuilder = new StringBuilder();
+
+        using var p = new Process { StartInfo = psi };
+        p.OutputDataReceived += (s, e) => { if (e.Data != null) stdoutBuilder.AppendLine(e.Data); };
+        p.ErrorDataReceived += (s, e) => { if (e.Data != null) stderrBuilder.AppendLine(e.Data); };
+
+        p.Start();
+        p.BeginOutputReadLine();
+        p.BeginErrorReadLine();
+
+        await p.WaitForExitAsync(cancellationToken);
+        return (stdoutBuilder.ToString(), stderrBuilder.ToString(), p.ExitCode);
+    }
 }
