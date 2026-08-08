@@ -210,7 +210,7 @@ public class AgyAccountStore : IAgyAccountStore
             var targetDir = GetAccountDirectory(accountName);
             if (!Directory.Exists(targetDir))
             {
-                throw new ArgumentException($"Account '{accountName}' does not exist.");
+                throw new Domain.Exceptions.AccountNotFoundException(accountName);
             }
         }
 
