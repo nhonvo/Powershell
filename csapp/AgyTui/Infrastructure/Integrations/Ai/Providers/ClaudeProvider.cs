@@ -17,6 +17,10 @@ public class ClaudeProvider : IClaudeClient
         _accountStore = accountStore;
     }
 
+    public ClaudeProvider(IAiProcessRunner processRunner) : this(processRunner, new AgyClient.AgyAccountStore()) { }
+
+    public ClaudeProvider() : this(new Services.AiProcessRunner(), new AgyClient.AgyAccountStore()) { }
+
     public void InvokeClaude(string[] argsList, string? providerModeOverride = null)
     {
         EnsureSessionAccountMarker("last_claude_account.txt", "Claude");

@@ -23,6 +23,12 @@ public class AgyAccountStore : IAgyAccountStore
         _pathManager = pathManager;
     }
 
+    public AgyAccountStore(IAgyAccountRepository accountRepo)
+        : this(accountRepo, new Services.AppPathManager()) { }
+
+    public AgyAccountStore()
+        : this(new Persistence.Repositories.SqliteAgyAccountRepository(new Persistence.DbContext.SqliteDatabase()), new Services.AppPathManager()) { }
+
     public string GetAccountDirectory(string accountName) => _pathManager.GetAccountDirectory(accountName);
 
     public string? GetAccountEmail(string accountName)

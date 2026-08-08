@@ -19,6 +19,10 @@ public class AgyVault : IAgyVault
         _accountRepo = accountRepo;
     }
 
+    public AgyVault(IAgyAccountStore accountStore) : this(accountStore, new SqliteAgyAccountRepository(new SqliteDatabase())) { }
+
+    public AgyVault() : this(new AgyAccountStore(), new SqliteAgyAccountRepository(new SqliteDatabase())) { }
+
     private string AgySourceHome => _accountStore.AgySourceHome;
 
     public string Protect(string plainText)

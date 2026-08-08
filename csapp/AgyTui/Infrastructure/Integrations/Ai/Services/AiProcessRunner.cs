@@ -14,6 +14,8 @@ public class AiProcessRunner : IAiProcessRunner
         _accountStore = accountStore;
     }
 
+    public AiProcessRunner() : this(new AgyAccountStore()) { }
+
     public string ResolveProxyScriptPath()
     {
         var repoRoot = Config.GetProfileRepoRoot();

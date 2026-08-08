@@ -16,6 +16,8 @@ public class AgyQuotaEngine : IAgyQuotaEngine
         _accountStore = accountStore;
     }
 
+    public AgyQuotaEngine() : this(new AgyAccountStore()) { }
+
     private string AgySourceHome => _accountStore.AgySourceHome;
 
     public void ClearStatsCache() => _statsCache.InvalidateAll();
