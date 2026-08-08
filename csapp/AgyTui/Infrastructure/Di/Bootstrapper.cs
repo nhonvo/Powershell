@@ -31,7 +31,21 @@ public static class Bootstrapper
     {
         var services = customServices ?? new ServiceCollection();
 
-        // Core Services & Reactive UI State
+        services.AddOptions<Configuration.UiConfig>().Configure(o => {
+            var cfg = Configuration.Config.Current.Ui;
+            o.Mode = cfg.Mode;
+            o.Density = cfg.Density;
+            o.ActiveTheme = cfg.ActiveTheme;
+            o.EnableMobile = cfg.EnableMobile;
+            o.FavoriteAliases = cfg.FavoriteAliases;
+        });
+        services.AddOptions<Configuration.AiConfig>().Configure(o => {
+            var cfg = Configuration.Config.Current.Ai;
+            o.Mode = cfg.Mode;
+            o.ProviderMode = cfg.ProviderMode;
+            o.EnableOllama = cfg.EnableOllama;
+            o.EnableAgy = cfg.EnableAgy;
+        });
         services.AddSingleton<IAppPathManager, AppPathManager>();
         services.AddSingleton<IFileSystem, PhysicalFileSystem>();
         services.AddSingleton<IConfigService, ConfigService>();
