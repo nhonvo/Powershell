@@ -35,6 +35,7 @@ if (![string]::IsNullOrEmpty($Version)) {
 pushd $repoRoot
 try {
     Unlock-Binaries -Dir (Join-Path $repoRoot "csapp\AgyTui\bin")
+    Unlock-Binaries -Dir (Join-Path $repoRoot "csapp\AgyTui\obj")
     Unlock-Binaries -Dir (Join-Path $repoRoot $OutputDir)
 
     if (-not $SkipTests) {
