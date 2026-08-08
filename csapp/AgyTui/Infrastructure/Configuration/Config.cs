@@ -110,30 +110,38 @@ public static class Config
         set => _repository = value;
     }
 
+    private static readonly object _configLock = new();
+
     public static void Load()
     {
-        try
+        lock (_configLock)
         {
-            Current = Repository.LoadConfig();
-            Current.Ui.FavoriteAliases = DefaultFavoriteAliases;
-        }
-        catch (Exception ex)
-        {
-            LogHelper.Log($"[Config] Load fallback: {ex.Message}", "DEBUG");
-            Current = new ConfigData();
-            Current.Ui.FavoriteAliases = DefaultFavoriteAliases;
+            try
+            {
+                Current = Repository.LoadConfig();
+                Current.Ui.FavoriteAliases = DefaultFavoriteAliases;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Log($"[Config] Load fallback: {ex.Message}", "DEBUG");
+                Current = new ConfigData();
+                Current.Ui.FavoriteAliases = DefaultFavoriteAliases;
+            }
         }
     }
 
     public static void Save()
     {
-        try
+        lock (_configLock)
         {
-            Repository.SaveConfig(Current);
-        }
-        catch (Exception ex)
-        {
-            LogHelper.LogError("Config Save failed", ex);
+            try
+            {
+                Repository.SaveConfig(Current);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.LogError("Config Save failed", ex);
+            }
         }
     }
 
