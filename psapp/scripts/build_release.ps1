@@ -5,7 +5,7 @@
     .\psapp\scripts\build_release.ps1 -Command "theme"
 #>
 param(
-    [string]$Command = "theme"
+    [string]$Command = ""
 )
 
 $ErrorActionPreference = 'Stop'
