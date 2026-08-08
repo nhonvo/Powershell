@@ -12,8 +12,10 @@ $repoRoot = $PSScriptRoot
 if (-not (Test-Path (Join-Path $repoRoot "csapp\AgyTui\AgyTui.csproj"))) {
     $repoRoot = Split-Path -Parent $PSScriptRoot
 }
-$projectPath = Join-Path $repoRoot "csapp\AgyTui\AgyTui.csproj"
-$testProjectPath = Join-Path $repoRoot "csapp\AgyTui.Tests\AgyTui.Tests.csproj"
+$projectRelPath = "csapp/AgyTui/AgyTui.csproj"
+$testProjectRelPath = "csapp/AgyTui.Tests/AgyTui.Tests.csproj"
+$projectPath = Join-Path $repoRoot ($projectRelPath -replace '/', '\')
+$testProjectPath = Join-Path $repoRoot ($testProjectRelPath -replace '/', '\')
 
 function Unlock-Binaries {
     param([string]$Dir)

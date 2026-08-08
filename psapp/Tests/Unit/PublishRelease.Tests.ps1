@@ -6,7 +6,7 @@ Describe "Publish Release Script Tests" {
             Test-Path $scriptPath | Should Be $true
 
             $content = Get-Content $scriptPath -Raw
-            $regex = [regex]'(csapp/[^\s"]+\.csproj)'
+            $regex = [regex]'(csapp[/\\][^\s"]+\.csproj)'
             $matches = $regex.Matches($content)
 
             $matches.Count | Should BeGreaterThan 0
