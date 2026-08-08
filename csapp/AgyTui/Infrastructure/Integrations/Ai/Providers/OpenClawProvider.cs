@@ -1,6 +1,4 @@
-using AgyTui.Infrastructure.Di;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
 
@@ -14,8 +12,6 @@ public class OpenClawProvider : IOpenClawClient
         _processRunner = processRunner;
         _ollama = ollama;
     }
-
-    public OpenClawProvider() : this(Bootstrapper.ServiceProvider.GetRequiredService<IAiProcessRunner>(), Bootstrapper.ServiceProvider.GetRequiredService<IOllamaClient>()) { }
 
     public void EnsureGateway()
     {

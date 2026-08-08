@@ -7,9 +7,9 @@ public class GitClient : CliToolWrapper, IGitClient
     private static readonly string[] CommitTypes = ["feat", "fix", "docs", "style", "refactor", "test", "chore", "ci"];
     private readonly IAiCommitGenerator _commitGenerator;
 
-    public GitClient(IAiCommitGenerator commitGenerator) : base("git")
+    public GitClient(IAiCommitGenerator? commitGenerator = null) : base("git")
     {
-        _commitGenerator = commitGenerator;
+        _commitGenerator = commitGenerator!;
     }
 
     public void ShowStatus()

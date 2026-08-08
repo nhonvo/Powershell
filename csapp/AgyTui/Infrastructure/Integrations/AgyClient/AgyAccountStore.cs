@@ -11,30 +11,17 @@ public class AgyAccountStore : IAgyAccountStore
 {
     private readonly IAgyAccountRepository _accountRepo;
     private readonly IAppPathManager _pathManager;
-    private readonly Func<IAgyQuotaEngine> _quotaEngineFactory;
-    private readonly Func<IAgyVault> _vaultFactory;
 
     public string AgySourceHome => _pathManager.GeminiHome;
     public string AgyAccountPrefix => _pathManager.AccountPrefix;
 
     public AgyAccountStore(
         IAgyAccountRepository accountRepo,
-        IAppPathManager pathManager,
-        Func<IAgyQuotaEngine>? quotaEngineFactory = null,
-        Func<IAgyVault>? vaultFactory = null)
+        IAppPathManager pathManager)
     {
         _accountRepo = accountRepo;
         _pathManager = pathManager;
-        _quotaEngineFactory = quotaEngineFactory ??
-                              (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>());
-        _vaultFactory = vaultFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>());
     }
-
-    public AgyAccountStore(IAgyAccountRepository accountRepo)
-        : this(accountRepo, Bootstrapper.ServiceProvider.GetRequiredService<IAppPathManager>()) { }
-
-    public AgyAccountStore()
-        : this(Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountRepository>(), Bootstrapper.ServiceProvider.GetRequiredService<IAppPathManager>()) { }
 
     public string GetAccountDirectory(string accountName) => _pathManager.GetAccountDirectory(accountName);
 
@@ -221,9 +208,9 @@ public class AgyAccountStore : IAgyAccountStore
             }
         }
 
-        _quotaEngineFactory().ClearStatsCache();
+        (new AgyQuotaEngine(this)).ClearStatsCache();
         UpdateAccountMetadata(accountName);
-        _vaultFactory().BackupActiveToken(GetActiveAccount());
+        (new AgyVault(this, _accountRepo)).BackupActiveToken(GetActiveAccount());
 
         if (!temporary)
         {
@@ -240,7 +227,7 @@ public class AgyAccountStore : IAgyAccountStore
             Environment.SetEnvironmentVariable("GEMINI_HOME", targetDirLoc, EnvironmentVariableTarget.User);
         }
         catch { }
-        _vaultFactory().RestoreActiveToken(accountName);
+        (new AgyVault(this, _accountRepo)).RestoreActiveToken(accountName);
 
         if (!temporary)
         {
@@ -295,7 +282,7 @@ public class AgyAccountStore : IAgyAccountStore
         {
             Directory.CreateDirectory(Path.Combine(destDir, sub));
         }
-        _quotaEngineFactory().ClearStatsCache();
+        (new AgyQuotaEngine(this)).ClearStatsCache();
     }
 
     public void DeleteAccount(string accountName)
@@ -320,7 +307,7 @@ public class AgyAccountStore : IAgyAccountStore
         {
             SetActiveAccount("default", false);
         }
-        _quotaEngineFactory().ClearStatsCache();
+        (new AgyQuotaEngine(this)).ClearStatsCache();
     }
 
     public void LogoutAccount(string accountName)
@@ -343,7 +330,7 @@ public class AgyAccountStore : IAgyAccountStore
             }
         }
         _accountRepo.SaveAccountCredentials(new AccountCredentials(accountName, null, null, null, null, null));
-        _quotaEngineFactory().ClearStatsCache();
+        (new AgyQuotaEngine(this)).ClearStatsCache();
     }
 
     public void AuthenticateAccount(string accountName)
@@ -363,8 +350,8 @@ public class AgyAccountStore : IAgyAccountStore
             SpectrePanel.Info($"Launching OAuth login for '{accountName}'...");
             Helpers.ProcessRunner.Instance.RunInteractive("pwsh", ["-NoProfile", "-Command", $"$env:GEMINI_HOME='{targetDir}'; agy auth login"], null, targetDir);
         }
-        _vaultFactory().BackupActiveToken(accountName);
-        _quotaEngineFactory().ClearStatsCache();
+        (new AgyVault(this, _accountRepo)).BackupActiveToken(accountName);
+        (new AgyQuotaEngine(this)).ClearStatsCache();
     }
 
     public void PurgeAllNonDefaultAccounts()
@@ -392,7 +379,7 @@ public class AgyAccountStore : IAgyAccountStore
 
         LogoutAccount("default");
         SetActiveAccount("default", false);
-        _quotaEngineFactory().ClearStatsCache();
+        (new AgyQuotaEngine(this)).ClearStatsCache();
     }
 
     public bool IsAutoSwitchEnabled()

@@ -1,6 +1,7 @@
-using AgyTui.Infrastructure.Di;
+using AgyTui.Infrastructure.Integrations.AgyClient;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
+using AgyTui.Infrastructure.Integrations.Ai.Providers;
+using AgyTui.Infrastructure.Persistence.Repositories;
 
 namespace AgyTui.Infrastructure.Integrations.Ai.Services;
 
@@ -13,10 +14,8 @@ public static class AiDashboardView
         Thread.Sleep(1000);
     }
 
-    public static void ShowAiDashboard()
+    public static void ShowAiDashboard(IOllamaClient ollama)
     {
-        var ollama = Bootstrapper.ServiceProvider.GetRequiredService<IOllamaClient>();
-
         while (true)
         {
             var mode = Config.Current.Ai.ProviderMode ?? "hybrid";
@@ -65,11 +64,12 @@ public static class AiDashboardView
         }
     }
 
-    public static void AskAi(string query)
+    public static void AskAi(string query, IClaudeClient? claude = null)
     {
         SpectrePanel.Info($"Querying AI: {query}");
-        var claude = Bootstrapper.ServiceProvider.GetRequiredService<IClaudeClient>();
-        claude.InvokeClaude([query]);
+        var store = new AgyAccountStore(new SqliteAgyAccountRepository(new SqliteDatabase()), new AppPathManager());
+        var client = claude ?? new ClaudeProvider(new AiProcessRunner(store), store);
+        client.InvokeClaude([query]);
     }
 
     public static void InstallAIIntegrations()

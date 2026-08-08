@@ -16,8 +16,6 @@ public class AgyQuotaEngine : IAgyQuotaEngine
         _accountStore = accountStore;
     }
 
-    public AgyQuotaEngine() : this(Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>()) { }
-
     private string AgySourceHome => _accountStore.AgySourceHome;
 
     public void ClearStatsCache() => _statsCache.InvalidateAll();

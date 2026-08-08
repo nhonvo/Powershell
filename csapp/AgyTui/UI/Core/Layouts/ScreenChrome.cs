@@ -9,11 +9,11 @@ namespace AgyTui.UI.Core.Layouts;
 
 public class ScreenChromeService : IScreenChrome
 {
-    private static Func<IAgyAccountStore>? _accountStoreFactory;
-    public static Func<IAgyAccountStore> AccountStoreFactory
+    private readonly IAgyAccountStore? _accountStore;
+
+    public ScreenChromeService(IAgyAccountStore? accountStore = null)
     {
-        get => _accountStoreFactory ??= () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
-        set => _accountStoreFactory = value;
+        _accountStore = accountStore;
     }
 
     public IAnsiConsole? OverrideConsole { get; set; }
@@ -134,12 +134,11 @@ public class ScreenChromeService : IScreenChrome
     public void RenderBanner(string? category = null, string? activeItem = null, bool forceClear = false, string? footerHint = null)
     {
         HideCursor();
-        var store = AccountStoreFactory();
-        var acc = store.GetActiveAccount() ?? "default";
+        var acc = _accountStore?.GetActiveAccount() ?? "default";
         var displayAcc = acc;
         if (string.Equals(acc, "default", StringComparison.OrdinalIgnoreCase))
         {
-            var email = store.GetAccountEmail("default");
+            var email = _accountStore?.GetAccountEmail("default");
             if (!string.IsNullOrEmpty(email)) displayAcc = $"default ({email})";
         }
         var now = DateTime.Now;
@@ -175,12 +174,6 @@ public static class ScreenChrome
 {
     private static readonly ScreenChromeService _service = new();
     public static IScreenChrome Instance => _service;
-
-    public static Func<IAgyAccountStore> AccountStoreFactory
-    {
-        get => ScreenChromeService.AccountStoreFactory;
-        set => ScreenChromeService.AccountStoreFactory = value;
-    }
 
     public static IAnsiConsole? OverrideConsole
     {

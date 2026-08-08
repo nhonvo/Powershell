@@ -10,11 +10,11 @@ namespace AgyTui.UI.Core.Navigation;
 
 public class SubPageNavigatorService : ISubPageNavigator
 {
-    private static Func<IAgyAccountStore>? _accountStoreFactory;
-    public static Func<IAgyAccountStore> AccountStoreFactory
+    private readonly IAgyAccountStore? _accountStore;
+
+    public SubPageNavigatorService(IAgyAccountStore? accountStore = null)
     {
-        get => _accountStoreFactory ??= () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
-        set => _accountStoreFactory = value;
+        _accountStore = accountStore;
     }
 
     private static string _detailsSearchBuffer = "";
@@ -106,9 +106,8 @@ public class SubPageNavigatorService : ISubPageNavigator
 
         if (mode == "agyswitch")
         {
-            var store = AccountStoreFactory();
-            var accs = store.GetAccounts();
-            var activeAcc = store.GetActiveAccount();
+            var accs = _accountStore?.GetAccounts() ?? [];
+            var activeAcc = _accountStore?.GetActiveAccount();
             detailsSel = Array.IndexOf(accs, activeAcc);
             if (detailsSel < 0) detailsSel = 0;
         }
@@ -136,8 +135,7 @@ public class SubPageNavigatorService : ISubPageNavigator
 
             if (mode == "agyswitch")
             {
-                var store = AccountStoreFactory();
-                var accs = store.GetAccounts();
+                var accs = _accountStore?.GetAccounts() ?? [];
                 if (!string.IsNullOrEmpty(_detailsSearchBuffer))
                 {
                     accs = accs.Where(a => a.Contains(_detailsSearchBuffer, StringComparison.OrdinalIgnoreCase)).ToArray();

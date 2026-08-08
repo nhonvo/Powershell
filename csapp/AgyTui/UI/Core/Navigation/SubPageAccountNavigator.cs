@@ -1,18 +1,12 @@
-using AgyTui.Infrastructure.Di;
-using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Rendering;
 
 namespace AgyTui.UI.Core.Navigation;
 
 public static class SubPageAccountNavigator
 {
-    private static readonly Func<IAgyAccountStore> AccountStoreFactory = () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
-    private static readonly Func<IAgyQuotaEngine> QuotaEngineFactory = () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
-    private static IAgyAccountStore AccountStore => AccountStoreFactory();
-    private static IAgyQuotaEngine QuotaEngine => QuotaEngineFactory();
-
-    public static bool HandleSelection(string searchBuffer, int detailsSel)
+    public static bool HandleSelection(string searchBuffer, int detailsSel, IAgyAccountStore? AccountStore = null, IAgyQuotaEngine? QuotaEngine = null)
     {
+        if (AccountStore == null || QuotaEngine == null) return false;
         var accs = AccountStore.GetAccounts();
         if (!string.IsNullOrEmpty(searchBuffer))
         {
@@ -46,8 +40,9 @@ public static class SubPageAccountNavigator
         return true;
     }
 
-    public static void CreateAccount()
+    public static void CreateAccount(IAgyAccountStore? AccountStore = null)
     {
+        if (AccountStore == null) return;
         Console.CursorVisible = true;
         AnsiConsole.Clear();
         var newName = AnsiConsole.Ask<string>("Enter new account name:").Trim();
@@ -68,8 +63,9 @@ public static class SubPageAccountNavigator
         Console.CursorVisible = false;
     }
 
-    public static void DeleteAccount(string searchBuffer, int detailsSel)
+    public static void DeleteAccount(string searchBuffer, int detailsSel, IAgyAccountStore? AccountStore = null)
     {
+        if (AccountStore == null) return;
         var accs = AccountStore.GetAccounts();
         if (!string.IsNullOrEmpty(searchBuffer))
         {
@@ -96,8 +92,9 @@ public static class SubPageAccountNavigator
         Console.CursorVisible = false;
     }
 
-    public static void LoginAccount(string searchBuffer, int detailsSel)
+    public static void LoginAccount(string searchBuffer, int detailsSel, IAgyAccountStore? AccountStore = null)
     {
+        if (AccountStore == null) return;
         var accs = AccountStore.GetAccounts();
         if (!string.IsNullOrEmpty(searchBuffer))
         {
@@ -112,8 +109,9 @@ public static class SubPageAccountNavigator
         Console.CursorVisible = false;
     }
 
-    public static void PurgeAccounts()
+    public static void PurgeAccounts(IAgyAccountStore? AccountStore = null)
     {
+        if (AccountStore == null) return;
         Console.CursorVisible = true;
         AnsiConsole.Clear();
         var confirm = AnsiConsole.Confirm("Are you sure you want to purge all custom accounts and reset to default?");
@@ -126,8 +124,9 @@ public static class SubPageAccountNavigator
         Console.CursorVisible = false;
     }
 
-    public static void LogoutAccount(string searchBuffer, int detailsSel)
+    public static void LogoutAccount(string searchBuffer, int detailsSel, IAgyAccountStore? AccountStore = null)
     {
+        if (AccountStore == null) return;
         var accs = AccountStore.GetAccounts();
         if (!string.IsNullOrEmpty(searchBuffer))
         {
@@ -148,13 +147,14 @@ public static class SubPageAccountNavigator
         Console.CursorVisible = false;
     }
 
-    public static IRenderable Render(Grid grid, string searchBuffer, int selIdx)
+    public static IRenderable Render(Grid grid, string searchBuffer, int selIdx, IAgyAccountStore? AccountStore = null, IAgyQuotaEngine? QuotaEngine = null)
     {
         grid.AddRow(new Markup("[cyan bold]Select Account to Switch:[/]\n"));
         if (!string.IsNullOrEmpty(searchBuffer))
         {
             grid.AddRow(new Markup($"[yellow]Search:[/] [white]{searchBuffer.EscapeMarkup()}[/]_\n"));
         }
+        if (AccountStore == null) return grid;
         var allAccs = AccountStore.GetAccounts();
         var accs = string.IsNullOrEmpty(searchBuffer)
             ? allAccs
@@ -169,8 +169,8 @@ public static class SubPageAccountNavigator
             var displayName = accs[i];
             var email = AccountStore.GetAccountEmail(accs[i]);
             if (!string.IsNullOrEmpty(email)) displayName = $"{accs[i]} ({email})";
-            var stats = QuotaEngine.GetAccountStats(accs[i]);
-            var loginStatus = stats.TokenStatus == "Logged In" ? "[green]✔ Logged In[/]" : "[red]✘ Logged Out[/]";
+            var stats = QuotaEngine?.GetAccountStats(accs[i]);
+            var loginStatus = stats?.TokenStatus == "Logged In" ? "[green]✔ Logged In[/]" : "[red]✘ Logged Out[/]";
             var keySig = AccountStore.GetShortCredentialSignature(accs[i]);
             var keyDisplay = keySig != "None" ? $"[yellow]Key: {keySig.EscapeMarkup()}[/]" : "[dim]Key: None[/]";
             grid.AddRow(new Markup($"{prefix}{displayName.EscapeMarkup()} [dim]({loginStatus} · {keyDisplay})[/]{suffix}"));

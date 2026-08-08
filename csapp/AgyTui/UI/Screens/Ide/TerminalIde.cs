@@ -78,14 +78,13 @@ public static class TerminalIde
         return nodes;
     }
 
-    public static void ShowIdeLayout(string rootPath, string? openFilePath = null)
+    public static void ShowIdeLayout(string rootPath, string? openFilePath = null, ISqliteDatabase? db = null)
     {
         var currentFile = openFilePath;
         if (currentFile == null)
         {
             try
             {
-                var db = Bootstrapper.ServiceProvider.GetService<ISqliteDatabase>();
                 if (db != null)
                 {
                     using var conn = db.CreateConnection();
@@ -388,7 +387,7 @@ public static class TerminalIde
             {
                 if (currentFile != null)
                 {
-                    ProcessRunner.Instance.Run(Bootstrapper.ServiceProvider.GetRequiredService<IEditorResolver>().Resolve(), $"\"{currentFile}\"");
+                    ProcessRunner.Instance.Run((new EditorResolver()).Resolve(), $"\"{currentFile}\"");
                     lastLoadedFile = null;
                     dirtyNodes = true;
                 }
@@ -524,8 +523,7 @@ public static class TerminalIde
 
             if (string.IsNullOrEmpty(touchedFile)) return;
 
-            var db = Bootstrapper.ServiceProvider.GetService<ISqliteDatabase>();
-            if (db == null) return;
+            var db = new SqliteDatabase();
 
             using var conn = db.CreateConnection();
             using var cmd = conn.CreateCommand();
@@ -549,7 +547,7 @@ public static class TerminalIde
 
     private static void ShowInIdeGitMenu(string rootPath, string? currentFile)
     {
-        var gitClient = Bootstrapper.ServiceProvider.GetRequiredService<Infrastructure.Integrations.Git.IGitClient>();
+        var gitClient = new Infrastructure.Integrations.Git.GitClient();
         var actions = new[]
         {
             "🌿 Git Status & Diff",
@@ -597,7 +595,7 @@ public static class TerminalIde
             AnsiConsole.Write(new Rule($"[bold cyan]IDE: {Path.GetFileName(filePath).EscapeMarkup()}[/]").RuleStyle("grey"));
             var actions = new[]
             {
-                "View file", "Symbol search", "View diff (this file)", $"Edit ({Bootstrapper.ServiceProvider.GetRequiredService<IEditorResolver>().Resolve()})", "← Back"
+                "View file", "Symbol search", "View diff (this file)", $"Edit ({(new EditorResolver()).Resolve()})", "← Back"
             };
             var sel = SpectreMenu.Show($"File: {Path.GetFileName(filePath)}", actions, 0, false);
             switch (sel)
@@ -666,7 +664,7 @@ public static class TerminalIde
     {
         try
         {
-            ProcessRunner.Instance.Run(Bootstrapper.ServiceProvider.GetRequiredService<IEditorResolver>().Resolve(), $"\"{filePath}\"");
+            ProcessRunner.Instance.Run((new EditorResolver()).Resolve(), $"\"{filePath}\"");
         }
         catch (Exception ex)
         {

@@ -16,6 +16,11 @@ public class CommandRouter : ICommandRouter
     private readonly IDotNetClient _dotNet;
     private readonly IGitClient _git;
     private readonly IAiLearningGenerator _learningGenerator;
+    private readonly IAgyAccountStore? _accountStore;
+    private readonly IAgyQuotaEngine? _quotaEngine;
+    private readonly IThemeManager? _themeManager;
+    private readonly IObsidianBridge? _obsidianBridge;
+    private readonly IAiProcessRunner? _processRunner;
 
     public CommandRouter(
         IOllamaClient ollama,
@@ -26,7 +31,12 @@ public class CommandRouter : ICommandRouter
         IDockerClient docker,
         IDotNetClient dotNet,
         IGitClient git,
-        IAiLearningGenerator learningGenerator)
+        IAiLearningGenerator learningGenerator,
+        IAgyAccountStore? accountStore = null,
+        IAgyQuotaEngine? quotaEngine = null,
+        IThemeManager? themeManager = null,
+        IObsidianBridge? obsidianBridge = null,
+        IAiProcessRunner? processRunner = null)
     {
         _ollama = ollama;
         _claude = claude;
@@ -37,12 +47,17 @@ public class CommandRouter : ICommandRouter
         _dotNet = dotNet;
         _git = git;
         _learningGenerator = learningGenerator;
+        _accountStore = accountStore;
+        _quotaEngine = quotaEngine;
+        _themeManager = themeManager;
+        _obsidianBridge = obsidianBridge;
+        _processRunner = processRunner;
     }
 
     public static int Route(string alias, params string[]? args)
     {
-        var router = Bootstrapper.ServiceProvider.GetRequiredService<ICommandRouter>();
-        return router.Execute(alias, args);
+        var router = Bootstrapper.ServiceProvider?.GetService<ICommandRouter>();
+        return router != null ? router.Execute(alias, args) : 0;
     }
 
     public static int Route(string alias, object? rawArgs)
@@ -618,7 +633,8 @@ public class CommandRouter : ICommandRouter
                         break;
                     case "ai-history":
                         {
-                            var accStoreHist = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
+                            var accStoreHist = _accountStore;
+                            if (accStoreHist == null) break;
                             var logPath = Path.Combine(accStoreHist.AgySourceHome, "ai_activity_log.jsonl");
                             if (!File.Exists(logPath))
                             {
@@ -748,7 +764,7 @@ public class CommandRouter : ICommandRouter
                         WorkspaceRegistry.AutoDiscoverWorkspaces();
                         break;
                     case "daily-note":
-                        Bootstrapper.ServiceProvider.GetRequiredService<IObsidianBridge>().ShowDailyNote(AppPaths.DefaultLearningVaultDir);
+                        _obsidianBridge?.ShowDailyNote(AppPaths.DefaultLearningVaultDir);
                         break;
                     case "orphan-notes":
                         var obsidianCfg = ObsidianBridge.LoadConfig();
@@ -761,40 +777,43 @@ public class CommandRouter : ICommandRouter
                         ProgressDashboard.ShowMasteryTree(studyLog?.Sessions ?? []);
                         break;
                     case "agyquota":
-                        AgyAccountDisplay.ShowAccountTree();
+                        AgyAccountDisplay.ShowAccountTree(_accountStore, _quotaEngine);
                         break;
                     case "account-tree":
-                        AgyAccountDisplay.ShowAccountTree();
+                        AgyAccountDisplay.ShowAccountTree(_accountStore, _quotaEngine);
                         break;
                     case "quota-chart":
-                        AgyAccountDisplay.ShowQuotaChart(Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().GetActiveAccount());
+                        AgyAccountDisplay.ShowQuotaChart(_accountStore?.GetActiveAccount() ?? "", _quotaEngine);
                         break;
                     case "live-dashboard":
-                        var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
-                        var qEngine = Bootstrapper.ServiceProvider.GetRequiredService<IAgyQuotaEngine>();
-                        SpectreTable.Live(["Account", "Login", "Quota W", "Quota 5h", "Last Used"], () => store.GetAccounts().Select(a =>
+                        var store = _accountStore;
+                        var qEngine = _quotaEngine;
+                        if (store != null && qEngine != null)
                         {
-                            var s = qEngine.GetAccountStats(a);
-                            var act = store.GetActiveAccount();
-                            var n = a == act ? $"[green bold]* {a}[/]" : a;
-                            var st = s.TokenStatus == "Logged In" ? "[green]●[/]" : "[red]○[/]";
-                            var lu = s.LastUsed.Length >= 10 && s.LastUsed != "Never" ? s.LastUsed[..10] : "Never";
-                            return new[]
+                            SpectreTable.Live(["Account", "Login", "Quota W", "Quota 5h", "Last Used"], () => store.GetAccounts().Select(a =>
                             {
-                            n, st,$"{(int)Math.Round(s.GeminiWeekly)}%",$"{(int)Math.Round(s.GeminiFiveHour)}%", lu
-                            };
-                        }).ToArray(), 5000);
+                                var s = qEngine.GetAccountStats(a);
+                                var act = store.GetActiveAccount();
+                                var n = a == act ? $"[green bold]* {a}[/]" : a;
+                                var st = s.TokenStatus == "Logged In" ? "[green]●[/]" : "[red]○[/]";
+                                var lu = s.LastUsed.Length >= 10 && s.LastUsed != "Never" ? s.LastUsed[..10] : "Never";
+                                return new[]
+                                {
+                                n, st,$"{(int)Math.Round(s.GeminiWeekly)}%",$"{(int)Math.Round(s.GeminiFiveHour)}%", lu
+                                };
+                            }).ToArray(), 5000);
+                        }
                         break;
                     case "autoswitch":
-                        Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().ToggleAutoSwitch();
+                        _accountStore?.ToggleAutoSwitch();
                         break;
                     case "no-auto-commit":
                     case "autocommit":
-                        Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>().ToggleNoAutoCommit();
+                        _accountStore?.ToggleNoAutoCommit();
                         break;
                     case "reset-agy":
                     case "purge-accounts":
-                        SubPageAccountNavigator.PurgeAccounts();
+                        SubPageAccountNavigator.PurgeAccounts(_accountStore);
                         break;
                     case "dotnet-info":
                         Helpers.ProcessRunner.Instance.RunInteractive("dotnet", ["--info"]);
@@ -827,11 +846,11 @@ public class CommandRouter : ICommandRouter
                                 }
                             }
                             var currTheme = Environment.GetEnvironmentVariable("THEME");
-                            var newThemePath = Bootstrapper.ServiceProvider.GetRequiredService<IThemeManager>().SelectThemeInteractive(tPath, currTheme);
-                            if (!string.IsNullOrEmpty(newThemePath))
+                            var tm = _themeManager ?? new ThemeManager();
+                            var newThemePath = tm.SelectThemeInteractive(tPath, currTheme);
+                            if (!string.IsNullOrEmpty(newThemePath) && _accountStore != null)
                             {
-                                var accStoreTheme = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
-                                var selThemeFile = Path.Combine(accStoreTheme.AgySourceHome, "selected_theme.txt");
+                                var selThemeFile = Path.Combine(_accountStore.AgySourceHome, "selected_theme.txt");
                                 File.WriteAllText(selThemeFile, newThemePath);
                             }
                         }
@@ -1033,7 +1052,7 @@ public class CommandRouter : ICommandRouter
                         break;
                     case "obsidian":
                     case "obs-vault":
-                        Bootstrapper.ServiceProvider.GetRequiredService<IObsidianBridge>().Run();
+                        _obsidianBridge?.Run();
                         break;
                     case "sync":
                         LearnRouter.RefreshData("all");
@@ -1232,8 +1251,14 @@ public class CommandRouter : ICommandRouter
         SpectrePanel.Info("Reloading PowerShell Profile ($PROFILE)...");
         try
         {
-            var processRunner = Bootstrapper.ServiceProvider.GetRequiredService<IAiProcessRunner>();
-            processRunner.RunInteractive("pwsh", new[] { "-NoProfile", "-Command", "pwsh -NoExit -Command '. $PROFILE'" });
+            if (_processRunner != null)
+            {
+                _processRunner.RunInteractive("pwsh", new[] { "-NoProfile", "-Command", "pwsh -NoExit -Command '. $PROFILE'" });
+            }
+            else
+            {
+                Helpers.ProcessRunner.Instance.RunInteractive("pwsh", new[] { "-NoProfile", "-Command", "pwsh -NoExit -Command '. $PROFILE'" });
+            }
             SpectrePanel.Success("PowerShell profile reloaded successfully.");
         }
         catch (Exception ex)

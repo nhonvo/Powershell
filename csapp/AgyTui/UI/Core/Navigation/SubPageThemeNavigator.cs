@@ -21,7 +21,7 @@ public static class SubPageThemeNavigator
         return Directory.GetFiles(themesPath, "*.omp.json").Select(f => Path.GetFileName(f).Replace(".omp.json", "")).OrderBy(f => f).ToArray();
     }
 
-    public static bool HandleSelection(string searchBuffer, int detailsSel)
+    public static bool HandleSelection(string searchBuffer, int detailsSel, IThemeManager? themeManager = null)
     {
         var themeNames = GetThemeNames();
         if (!string.IsNullOrEmpty(searchBuffer))
@@ -41,7 +41,7 @@ public static class SubPageThemeNavigator
             }
         }
 
-        var themePath = Bootstrapper.ServiceProvider.GetRequiredService<IThemeManager>().SetTheme(themesPath, selectedTheme);
+        var themePath = (themeManager ?? new ThemeManager()).SetTheme(themesPath, selectedTheme);
         if (!string.IsNullOrEmpty(themePath))
         {
             var agyHome = AppPaths.GeminiHome;

@@ -121,6 +121,13 @@ public sealed class SshInfoWidget : IStatusWidget
 
 public sealed class AccountTreeWidget : IStatusWidget
 {
+    private readonly IAgyAccountRepository? _accountRepo;
+
+    public AccountTreeWidget(IAgyAccountRepository? accountRepo = null)
+    {
+        _accountRepo = accountRepo;
+    }
+
     public string Alias => "account-tree";
 
     public IRenderable Render()
@@ -128,17 +135,20 @@ public sealed class AccountTreeWidget : IStatusWidget
         var tree = new Tree("[bold cyan]👤 Developer Accounts[/]");
         try
         {
-            var accountRepo = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountRepository>();
-            var accounts = accountRepo.GetAccounts();
-            var active = accountRepo.GetActiveAccount();
-
-            foreach (var acc in accounts)
+            var accountRepo = _accountRepo;
+            if (accountRepo != null)
             {
-                var isAct = string.Equals(acc, active, StringComparison.OrdinalIgnoreCase);
-                var label = isAct ? $"[bold green]❯ {acc.EscapeMarkup()} (Active)[/]" : $"  [dim]{acc.EscapeMarkup()}[/]";
-                var node = tree.AddNode(label);
-                var meta = accountRepo.GetAccountMetadata(acc);
-                node.AddNode($"[dim]Quota Status: {meta.QuotaStatus}[/]");
+                var accounts = accountRepo.GetAccounts();
+                var active = accountRepo.GetActiveAccount();
+
+                foreach (var acc in accounts)
+                {
+                    var isAct = string.Equals(acc, active, StringComparison.OrdinalIgnoreCase);
+                    var label = isAct ? $"[bold green]❯ {acc.EscapeMarkup()} (Active)[/]" : $"  [dim]{acc.EscapeMarkup()}[/]";
+                    var node = tree.AddNode(label);
+                    var meta = accountRepo.GetAccountMetadata(acc);
+                    node.AddNode($"[dim]Quota Status: {meta.QuotaStatus}[/]");
+                }
             }
         }
         catch
@@ -151,6 +161,13 @@ public sealed class AccountTreeWidget : IStatusWidget
 
 public sealed class QuotaChartWidget : IStatusWidget
 {
+    private readonly IAgyAccountRepository? _accountRepo;
+
+    public QuotaChartWidget(IAgyAccountRepository? accountRepo = null)
+    {
+        _accountRepo = accountRepo;
+    }
+
     public string Alias => "quota-chart";
 
     public IRenderable Render()
@@ -158,11 +175,14 @@ public sealed class QuotaChartWidget : IStatusWidget
         var chart = new BreakdownChart().Width(60);
         try
         {
-            var accountRepo = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountRepository>();
-            var accounts = accountRepo.GetAccounts();
-            foreach (var acc in accounts)
+            var accountRepo = _accountRepo;
+            if (accountRepo != null)
             {
-                chart.AddItem(acc, 100, Color.Cyan1);
+                var accounts = accountRepo.GetAccounts();
+                foreach (var acc in accounts)
+                {
+                    chart.AddItem(acc, 100, Color.Cyan1);
+                }
             }
         }
         catch { }
@@ -246,9 +266,7 @@ public class StatusWidgetRegistryService : IStatusWidgetRegistry
 
     public IStatusWidget? GetByAlias(string alias)
     {
-        var registeredWidgets = Bootstrapper.ServiceProvider.GetServices<IStatusWidget>();
-        var found = registeredWidgets.FirstOrDefault(w => string.Equals(w.Alias, alias, StringComparison.OrdinalIgnoreCase));
-        return found ?? _widgets.FirstOrDefault(w => string.Equals(w.Alias, alias, StringComparison.OrdinalIgnoreCase));
+        return _widgets.FirstOrDefault(w => string.Equals(w.Alias, alias, StringComparison.OrdinalIgnoreCase));
     }
 }
 

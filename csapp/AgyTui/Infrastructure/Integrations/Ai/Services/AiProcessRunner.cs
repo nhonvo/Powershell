@@ -1,17 +1,17 @@
-using AgyTui.Infrastructure.Di;
+using AgyTui.Infrastructure.Integrations.AgyClient;
 using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
+using AgyTui.Infrastructure.Persistence.Repositories;
 
 namespace AgyTui.Infrastructure.Integrations.Ai.Services;
 
 public class AiProcessRunner : IAiProcessRunner
 {
-    private readonly Func<IAgyAccountStore> _accountStoreFactory;
+    private readonly IAgyAccountStore _accountStore;
 
-    public AiProcessRunner(Func<IAgyAccountStore>? accountStoreFactory = null)
+    public AiProcessRunner(IAgyAccountStore accountStore)
     {
-        _accountStoreFactory = accountStoreFactory ?? (() => Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>());
+        _accountStore = accountStore;
     }
 
     public string ResolveProxyScriptPath()
@@ -28,7 +28,7 @@ public class AiProcessRunner : IAiProcessRunner
 
     public void RunInteractive(string exe, IEnumerable<string> args, IDictionary<string, string?>? env = null, string? workingDir = null)
     {
-        var store = _accountStoreFactory();
+        var store = _accountStore;
         var activeAccount = store.GetActiveAccount();
         var accountDir = store.GetAccountDirectory(activeAccount);
         var fullEnv = env != null ? new Dictionary<string, string?>(env) : new Dictionary<string, string?>();
@@ -74,11 +74,16 @@ public class AiProcessRunner : IAiProcessRunner
         Helpers.ProcessRunner.Instance.RunInteractive(exe, argList, fullEnv, workingDir);
     }
 
-    private static readonly Func<IAiProcessRunner> _runnerFactory = () => Bootstrapper.ServiceProvider.GetRequiredService<IAiProcessRunner>();
+    private static IAiProcessRunner? _staticRunner;
+    public static IAiProcessRunner StaticRunner
+    {
+        get => _staticRunner ??= new AiProcessRunner(new AgyAccountStore(new SqliteAgyAccountRepository(new SqliteDatabase()), new AppPathManager()));
+        set => _staticRunner = value;
+    }
 
     public static void RunInteractiveStatic(string exe, IEnumerable<string> args, IDictionary<string, string?>? env = null, string? workingDir = null)
     {
-        _runnerFactory().RunInteractive(exe, args, env, workingDir);
+        StaticRunner.RunInteractive(exe, args, env, workingDir);
     }
 
     public string RunCapture(string exe, string args)

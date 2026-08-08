@@ -8,6 +8,15 @@ namespace AgyTui.UI.Core.Navigation;
 
 public class CcNavigatorService : ICcNavigator
 {
+    private readonly FlatTreeRenderer _flatTreeRenderer;
+    private readonly ThreePaneRenderer _threePaneRenderer;
+
+    public CcNavigatorService(FlatTreeRenderer flatTreeRenderer, ThreePaneRenderer threePaneRenderer)
+    {
+        _flatTreeRenderer = flatTreeRenderer;
+        _threePaneRenderer = threePaneRenderer;
+    }
+
     public void Run()
     {
         Config.Load();
@@ -16,8 +25,8 @@ public class CcNavigatorService : ICcNavigator
         {
             var root = MenuNodeBuilder.BuildTree();
             IMenuRenderer renderer = string.Equals(Config.Current.Ui.Mode, "flat-tree", StringComparison.OrdinalIgnoreCase)
-                ? Bootstrapper.ServiceProvider.GetRequiredService<FlatTreeRenderer>()
-                : Bootstrapper.ServiceProvider.GetRequiredService<ThreePaneRenderer>();
+                ? (IMenuRenderer)_flatTreeRenderer
+                : (IMenuRenderer)_threePaneRenderer;
             renderer.Run(root);
         }
         finally
@@ -29,7 +38,7 @@ public class CcNavigatorService : ICcNavigator
 
 public static class CcNavigator
 {
-    private static readonly ICcNavigator _service = new CcNavigatorService();
+    private static readonly ICcNavigator _service = new CcNavigatorService(new FlatTreeRenderer(), new ThreePaneRenderer());
     public static ICcNavigator Instance => _service;
 
     public static void Run() => _service.Run();

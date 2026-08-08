@@ -10,11 +10,13 @@ public sealed class IdeContext
 {
     public string RootPath { get; }
     public string? CurrentFile { get; set; }
+    public IEditorResolver? EditorResolver { get; }
 
-    public IdeContext(string rootPath, string? currentFile)
+    public IdeContext(string rootPath, string? currentFile, IEditorResolver? editorResolver = null)
     {
         RootPath = rootPath;
         CurrentFile = currentFile;
+        EditorResolver = editorResolver;
     }
 }
 
@@ -45,7 +47,10 @@ public static class IdeCommandRegistry
             if (ctx.CurrentFile != null) SymbolSearch.BrowseSymbols(ctx.CurrentFile);
         }),
         new("edit", "", "Open current file in $EDITOR", "Navigation", (ctx, _) => {
-            if (ctx.CurrentFile != null) ProcessRunner.Instance.Run(Bootstrapper.ServiceProvider.GetRequiredService<IEditorResolver>().Resolve(), $"\"{ctx.CurrentFile}\"");
+            if (ctx.CurrentFile != null) {
+                var editor = ctx.EditorResolver?.Resolve() ?? "notepad";
+                ProcessRunner.Instance.Run(editor, $"\"{ctx.CurrentFile}\"");
+            }
         }),
         new("ask", "[question]", "Ask AI about the current file", "AI", (ctx, a) => {
             if (ctx.CurrentFile != null && File.Exists(ctx.CurrentFile)) {

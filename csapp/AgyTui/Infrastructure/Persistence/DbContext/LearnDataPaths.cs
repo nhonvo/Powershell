@@ -1,7 +1,6 @@
 using System.Text.Json;
 using AgyTui.Domain.LearnContext;
-using AgyTui.Infrastructure.Di;
-using Microsoft.Extensions.DependencyInjection;
+using AgyTui.Infrastructure.Persistence.Repositories;
 
 namespace AgyTui.Infrastructure.Persistence.DbContext;
 
@@ -24,8 +23,7 @@ public static class LearnDataPaths
             var localLearn = System.IO.Path.Combine(pwd, "learn");
             if (Directory.Exists(localLearn)) return pwd;
 
-            var store = Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>();
-            return store.GetAccountDirectory(store.GetActiveAccount());
+            return AppPaths.DataDir;
         }
     }
 
@@ -73,9 +71,16 @@ public static class LearnDataPaths
 
     public static string ResourcesIndex => System.IO.Path.Combine(BaseDirectory, "resources", "index.json");
 
+    private static IStudyRepository? _repository;
+    public static IStudyRepository Repository
+    {
+        get => _repository ??= new JsonStudyRepository();
+        set => _repository = value;
+    }
+
     public static void EnsureDirectories()
     {
-        Bootstrapper.ServiceProvider.GetRequiredService<IStudyRepository>().EnsureDirectories();
+        Repository.EnsureDirectories();
         SeedDefaultData();
     }
 
@@ -353,7 +358,7 @@ public static class LearnDataPaths
 
     private static SrState NewCardState() => new(2.5, 0, 0, null, null, "new");
 
-    public static T? LoadJson<T>(string path) where T : class => Bootstrapper.ServiceProvider.GetRequiredService<IStudyRepository>().LoadJson<T>(path);
+    public static T? LoadJson<T>(string path) where T : class => Repository.LoadJson<T>(path);
 
-    public static void SaveJson<T>(string path, T obj) => Bootstrapper.ServiceProvider.GetRequiredService<IStudyRepository>().SaveJson(path, obj);
+    public static void SaveJson<T>(string path, T obj) => Repository.SaveJson(path, obj);
 }

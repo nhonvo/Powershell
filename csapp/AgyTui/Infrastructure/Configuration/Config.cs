@@ -103,7 +103,12 @@ public static class Config
 
     public static string GetProfileRepoRoot() => AppPaths.RepoRoot;
 
-    private static IConfigRepository Repository => Bootstrapper.ServiceProvider.GetRequiredService<IConfigRepository>();
+    private static IConfigRepository? _repository;
+    public static IConfigRepository Repository
+    {
+        get => _repository ??= new SqliteConfigRepository(new SqliteDatabase());
+        set => _repository = value;
+    }
 
     public static void Load()
     {

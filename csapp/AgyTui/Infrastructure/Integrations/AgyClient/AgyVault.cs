@@ -3,8 +3,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text;
 using AgyTui.Domain.AccountContext;
-using AgyTui.Infrastructure.Di;
-using Microsoft.Extensions.DependencyInjection;
+using AgyTui.Infrastructure.Persistence.Repositories;
 
 namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
@@ -14,13 +13,11 @@ public class AgyVault : IAgyVault
     private readonly IAgyAccountStore _accountStore;
     private readonly IAgyAccountRepository _accountRepo;
 
-    public AgyVault(IAgyAccountStore accountStore, IAgyAccountRepository? accountRepo = null)
+    public AgyVault(IAgyAccountStore accountStore, IAgyAccountRepository accountRepo)
     {
         _accountStore = accountStore;
-        _accountRepo = accountRepo ?? Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountRepository>();
+        _accountRepo = accountRepo;
     }
-
-    public AgyVault() : this(Bootstrapper.ServiceProvider.GetRequiredService<IAgyAccountStore>()) { }
 
     private string AgySourceHome => _accountStore.AgySourceHome;
 
@@ -266,20 +263,30 @@ public class AgyVault : IAgyVault
 
 public static class AgySecretVault
 {
-    private static readonly Func<IAgyVault> _vaultFactory = () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>();
+    private static IAgyVault? _instance;
+    public static IAgyVault Instance
+    {
+        get => _instance ??= new AgyVault(new AgyAccountStore(new SqliteAgyAccountRepository(new SqliteDatabase()), new AppPathManager()), new SqliteAgyAccountRepository(new SqliteDatabase()));
+        set => _instance = value;
+    }
 
-    public static void SetSecret(string key, string value) => _vaultFactory().SetSecret(key, value);
-    public static string? GetSecret(string key) => _vaultFactory().GetSecret(key);
-    public static void ListSecrets() => _vaultFactory().ListSecrets();
-    public static void RemoveSecret(string key) => _vaultFactory().RemoveSecret(key);
+    public static void SetSecret(string key, string value) => Instance.SetSecret(key, value);
+    public static string? GetSecret(string key) => Instance.GetSecret(key);
+    public static void ListSecrets() => Instance.ListSecrets();
+    public static void RemoveSecret(string key) => Instance.RemoveSecret(key);
 }
 
 public static class TokenVault
 {
-    private static readonly Func<IAgyVault> _vaultFactory = () => Bootstrapper.ServiceProvider.GetRequiredService<IAgyVault>();
+    private static IAgyVault? _instance;
+    public static IAgyVault Instance
+    {
+        get => _instance ??= new AgyVault(new AgyAccountStore(new SqliteAgyAccountRepository(new SqliteDatabase()), new AppPathManager()), new SqliteAgyAccountRepository(new SqliteDatabase()));
+        set => _instance = value;
+    }
 
-    public static string Protect(string plainText) => _vaultFactory().Protect(plainText);
-    public static string Unprotect(string cipherText) => _vaultFactory().Unprotect(cipherText);
+    public static string Protect(string plainText) => Instance.Protect(plainText);
+    public static string Unprotect(string cipherText) => Instance.Unprotect(cipherText);
 }
 
 internal static class AgyKeyringHelper
