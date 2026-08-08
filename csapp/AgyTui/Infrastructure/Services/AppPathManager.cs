@@ -21,9 +21,12 @@ public class AppPathManager : IAppPathManager
         if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
             return GeminiHome;
 
-        var accDir = Path.Combine(GeminiHome, "accounts", accountName);
-        Directory.CreateDirectory(accDir);
-        return accDir;
+        return _accountDirCache.GetOrAdd(accountName, name =>
+        {
+            var accDir = Path.Combine(GeminiHome, "accounts", name);
+            try { Directory.CreateDirectory(accDir); } catch { }
+            return accDir;
+        });
     }
 
     public void InvalidateAccountCache(string accountName)
