@@ -845,9 +845,24 @@ public class CommandRouter : ICommandRouter
                                     tPath = Path.Combine(Directory.GetCurrentDirectory(), "asset", "powershell-themes");
                                 }
                             }
-                            var currTheme = Environment.GetEnvironmentVariable("THEME");
                             var tm = _themeManager ?? new ThemeManager();
-                            var newThemePath = tm.SelectThemeInteractive(tPath, currTheme);
+                            string? newThemePath = null;
+
+                            if (args != null && args.Length > 0 && !string.IsNullOrWhiteSpace(args[0]))
+                            {
+                                newThemePath = tm.SetTheme(tPath, args[0]);
+                            }
+                            else if (string.Equals(Environment.GetEnvironmentVariable("NON_INTERACTIVE"), "1", StringComparison.OrdinalIgnoreCase) || Console.IsInputRedirected)
+                            {
+                                var currTheme = Environment.GetEnvironmentVariable("THEME") ?? "1_shell";
+                                newThemePath = tm.SetTheme(tPath, currTheme);
+                            }
+                            else
+                            {
+                                var currTheme = Environment.GetEnvironmentVariable("THEME");
+                                newThemePath = tm.SelectThemeInteractive(tPath, currTheme);
+                            }
+
                             if (!string.IsNullOrEmpty(newThemePath) && _accountStore != null)
                             {
                                 var agyHome = _accountStore.AgySourceHome;
