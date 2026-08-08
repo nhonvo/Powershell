@@ -253,7 +253,7 @@ public class SubPageNavigatorService : ISubPageNavigator
                 case ConsoleKey.Backspace:
                     if (!string.IsNullOrEmpty(_detailsSearchBuffer))
                     {
-                        if (key.Modifiers.HasFlag(ConsoleModifiers.Control) || key.KeyChar == '\x17' || key.KeyChar == '\x7f' || key.KeyChar == '\x08')
+                        if (key.Modifiers.HasFlag(ConsoleModifiers.Control))
                         {
                             _detailsSearchBuffer = DeletePreviousWord(_detailsSearchBuffer);
                         }
@@ -273,7 +273,7 @@ public class SubPageNavigatorService : ISubPageNavigator
                 case ConsoleKey.Enter:
                     if (mode == "proj")
                     {
-                        bool shouldExit = SubPageProjNavigator.HandleEnter(workspaces, flatList, detailsSel);
+                        bool shouldExit = SubPageProjNavigator.HandleEnter(workspaces, flatList, detailsSel, _detailsSearchBuffer);
                         if (shouldExit) return;
                     }
                     else if (mode == "theme")
@@ -310,7 +310,7 @@ public class SubPageNavigatorService : ISubPageNavigator
                 case ConsoleKey.Tab:
                     if (mode == "proj" && flatList.Count > 0)
                     {
-                        SubPageProjNavigator.HandleKeyInput(key, workspaces, flatList, detailsSel);
+                        SubPageProjNavigator.HandleKeyInput(key, workspaces, flatList, detailsSel, _detailsSearchBuffer);
                     }
                     break;
                 case ConsoleKey.H:
@@ -324,7 +324,7 @@ public class SubPageNavigatorService : ISubPageNavigator
                 case ConsoleKey.LeftArrow:
                     if (mode == "proj" && flatList.Count > 0)
                     {
-                        SubPageProjNavigator.HandleKeyInput(key, workspaces, flatList, detailsSel);
+                        SubPageProjNavigator.HandleKeyInput(key, workspaces, flatList, detailsSel, _detailsSearchBuffer);
                     }
                     else
                     {
@@ -424,6 +424,12 @@ public class SubPageNavigatorService : ISubPageNavigator
                     {
                         if (mode == "agyswitch" && (key.Key == ConsoleKey.A || key.Key == ConsoleKey.D || key.Key == ConsoleKey.O || key.Key == ConsoleKey.L || key.Key == ConsoleKey.R) && string.IsNullOrEmpty(_detailsSearchBuffer))
                         {
+                            break;
+                        }
+                        if (mode == "proj" && key.KeyChar >= '1' && key.KeyChar <= '9' && (string.IsNullOrEmpty(_detailsSearchBuffer) || key.Modifiers.HasFlag(ConsoleModifiers.Alt)))
+                        {
+                            bool shouldExit = SubPageProjNavigator.HandleKeyInput(key, workspaces, flatList, detailsSel, _detailsSearchBuffer);
+                            if (shouldExit) return;
                             break;
                         }
                         _detailsSearchBuffer += key.KeyChar;

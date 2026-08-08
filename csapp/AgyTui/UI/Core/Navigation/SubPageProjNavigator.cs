@@ -95,18 +95,18 @@ public static class SubPageProjNavigator
         return list;
     }
 
-    public static bool HandleEnter(WorkspaceEntry[] allWorkspaces, List<FlatItem> flatList, int detailsSel)
+    public static bool HandleEnter(WorkspaceEntry[] allWorkspaces, List<FlatItem> flatList, int detailsSel, string searchBuffer = "")
     {
-        return HandleKeyInput(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false), allWorkspaces, flatList, detailsSel);
+        return HandleKeyInput(new ConsoleKeyInfo('\r', ConsoleKey.Enter, false, false, false), allWorkspaces, flatList, detailsSel, searchBuffer);
     }
 
-    public static bool HandleKeyInput(ConsoleKeyInfo key, WorkspaceEntry[] allWorkspaces, List<FlatItem> flatList, int detailsSel)
+    public static bool HandleKeyInput(ConsoleKeyInfo key, WorkspaceEntry[] allWorkspaces, List<FlatItem> flatList, int detailsSel, string searchBuffer = "")
     {
         if (detailsSel < 0 || detailsSel >= flatList.Count) return false;
         var item = flatList[detailsSel];
 
-        // Number shortcuts 1-9 to trigger specific workspace action
-        if (key.KeyChar >= '1' && key.KeyChar <= '9')
+        // Number shortcuts 1-9 trigger actions ONLY when search filter is empty or Alt modifier is held
+        if ((key.KeyChar >= '1' && key.KeyChar <= '9') && (string.IsNullOrEmpty(searchBuffer) || key.Modifiers.HasFlag(ConsoleModifiers.Alt)))
         {
             int actionIdx = key.KeyChar - '1';
             if (actionIdx < WorkspaceRegistry.SharedWorkspaceActions.Length)
