@@ -16,6 +16,8 @@ public class OllamaClient : IOllamaClient
         _processRunner = processRunner;
     }
 
+    public OllamaClient() : this(new Services.AiProcessRunner()) { }
+
     public string DefaultModel => _defaultModel;
 
     public bool IsRunning => IsPortListening(11434);

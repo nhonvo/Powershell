@@ -113,6 +113,11 @@ public static class Bootstrapper
         services.AddSingleton<IScreenView, ThemeScreen>();
         services.AddSingleton<IScreenView, TopicScreen>();
         services.AddSingleton<IUiNavigationHandler, UiNavigationHandler>();
+        services.AddSingleton<AgyTui.UI.Core.Commands.CommandRegistry>();
+        services.AddSingleton<AgyTui.UI.Core.Navigation.Routers.GitCommandRouter>();
+        services.AddSingleton<AgyTui.UI.Core.Navigation.Routers.AiCommandRouter>();
+        services.AddSingleton<AgyTui.UI.Core.Navigation.Routers.LearnCommandRouter>();
+        services.AddSingleton<AgyTui.UI.Core.Navigation.Routers.SystemCommandRouter>();
         services.AddSingleton<CommandRouter>();
         services.AddSingleton<ICommandRouter>(sp => new CommandLoggingMiddleware(sp.GetRequiredService<CommandRouter>()));
 
