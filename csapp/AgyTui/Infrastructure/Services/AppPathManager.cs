@@ -21,15 +21,9 @@ public class AppPathManager : IAppPathManager
         if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
             return GeminiHome;
 
-        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        if (!string.IsNullOrEmpty(userProfile))
-        {
-            var userAccDir = Path.Combine(userProfile, $".gemini_{accountName}");
-            if (Directory.Exists(userAccDir))
-                return userAccDir;
-        }
-
-        return _accountDirCache.GetOrAdd(accountName, name => $"{AccountPrefix}{name}");
+        var accDir = Path.Combine(GeminiHome, "accounts", accountName);
+        Directory.CreateDirectory(accDir);
+        return accDir;
     }
 
     public void InvalidateAccountCache(string accountName)
@@ -51,32 +45,13 @@ public class AppPathManager : IAppPathManager
     {
         var cfgHome = Config.Current.System.AgySourceHome;
         if (!string.IsNullOrEmpty(cfgHome)) return cfgHome;
-
-        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        if (!string.IsNullOrEmpty(userProfile))
-        {
-            return Path.Combine(userProfile, ".gemini");
-        }
-
         return AppPaths.GeminiHome;
     }
 
     private string ResolveAccountPrefix()
     {
-        var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        if (!string.IsNullOrEmpty(userProfile))
-        {
-            return Path.Combine(userProfile, ".gemini_");
-        }
-
-        var publicDir = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\", "Users", "Public");
-        if (GeminiHome.StartsWith(publicDir, StringComparison.OrdinalIgnoreCase))
-        {
-            return Path.Combine(publicDir, ".gemini_");
-        }
-
-        var accountsDir = Path.Combine(AppPaths.DataDir, ".gemini_");
-        Directory.CreateDirectory(Path.GetDirectoryName(accountsDir)!);
-        return accountsDir;
+        var accountsDir = Path.Combine(AppPaths.GeminiHome, "accounts");
+        Directory.CreateDirectory(accountsDir);
+        return Path.Combine(accountsDir, "");
     }
 }

@@ -85,28 +85,28 @@ public static class AppPaths
             var envOverride = Environment.GetEnvironmentVariable("PROFILE_CONFIG_PATH");
             if (!string.IsNullOrEmpty(envOverride)) return envOverride;
 
-            var userGeminiDir = Path.Combine(UserProfileDir, ".gemini");
-            var userConfigPath = Path.Combine(userGeminiDir, "profile.config.json");
+            var projectGeminiDir = GeminiHome;
+            var projectConfigPath = Path.Combine(projectGeminiDir, "profile.config.json");
 
-            if (!File.Exists(userConfigPath))
+            if (!File.Exists(projectConfigPath))
             {
                 var repoSeed = Path.Combine(RepoRoot, "csapp", "AgyTui", "profile.config.json");
                 if (File.Exists(repoSeed))
                 {
                     try
                     {
-                        Directory.CreateDirectory(userGeminiDir);
-                        File.Copy(repoSeed, userConfigPath, overwrite: false);
+                        Directory.CreateDirectory(projectGeminiDir);
+                        File.Copy(repoSeed, projectConfigPath, overwrite: false);
                     }
                     catch { }
                 }
             }
 
-            if (File.Exists(userConfigPath)) return userConfigPath;
+            if (File.Exists(projectConfigPath)) return projectConfigPath;
 
-            var dir = Path.GetDirectoryName(userConfigPath);
+            var dir = Path.GetDirectoryName(projectConfigPath);
             if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-            return userConfigPath;
+            return projectConfigPath;
         }
     }
 
@@ -156,10 +156,7 @@ public static class AppPaths
             var envAgy = Environment.GetEnvironmentVariable("AGY_HOME");
             if (!string.IsNullOrEmpty(envAgy) && Directory.Exists(envAgy)) return envAgy;
 
-            var userProfileGemini = Path.Combine(UserProfileDir, ".gemini");
-            if (Directory.Exists(userProfileGemini)) return userProfileGemini;
-
-            var projectGemini = Path.Combine(DataDir, ".gemini");
+            var projectGemini = Path.Combine(RepoRoot, ".gemini");
             Directory.CreateDirectory(projectGemini);
             return projectGemini;
         }

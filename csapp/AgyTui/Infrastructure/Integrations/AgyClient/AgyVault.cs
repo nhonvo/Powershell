@@ -68,7 +68,7 @@ public class AgyVault : IAgyVault
             var accDir = _accountStore.GetAccountDirectory(accountName);
             if (!Directory.Exists(accDir)) Directory.CreateDirectory(accDir);
 
-            var defaultGeminiDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini");
+            var defaultGeminiDir = AppPaths.GeminiHome;
             var token = AgyKeyringHelper.ReadToken("gemini:antigravity");
 
             if (!string.IsNullOrEmpty(token) && Directory.Exists(defaultGeminiDir) && !string.Equals(accDir, defaultGeminiDir, StringComparison.OrdinalIgnoreCase))
@@ -121,7 +121,7 @@ public class AgyVault : IAgyVault
             var accDir = _accountStore.GetAccountDirectory(accountName);
             if (!Directory.Exists(accDir)) Directory.CreateDirectory(accDir);
 
-            var defaultGeminiDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".gemini");
+            var defaultGeminiDir = AppPaths.GeminiHome;
             var filesToSync = new[] { "google_accounts.json", "oauth_creds.json", "state.json", "keyring_token.txt" };
 
             var dbCreds = _accountRepo.GetAccountCredentials(accountName);
