@@ -45,7 +45,7 @@ public class SqliteMigrationEngine
 
             using var recordCmd = conn.CreateCommand();
             recordCmd.Transaction = tx;
-            recordCmd.CommandText = "INSERT INTO schema_migrations (version, applied_at_utc) VALUES (@v, @dt);";
+            recordCmd.CommandText = "INSERT OR IGNORE INTO schema_migrations (version, applied_at_utc) VALUES (@v, @dt);";
             recordCmd.Parameters.AddWithValue("@v", script.Version);
             recordCmd.Parameters.AddWithValue("@dt", DateTime.UtcNow.ToString("o"));
             recordCmd.ExecuteNonQuery();
