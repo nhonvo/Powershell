@@ -273,15 +273,9 @@ public class SubPageNavigatorService : ISubPageNavigator
                     break;
                 case ConsoleKey.Oem2:
                 case ConsoleKey.Divide:
-                    if (!_isSearchActive && key.KeyChar == '/')
+                    if (key.KeyChar == '/')
                     {
-                        _isSearchActive = true;
-                        break;
-                    }
-                    if (_isSearchActive)
-                    {
-                        _detailsSearchBuffer += "/";
-                        detailsSel = 0;
+                        _isSearchActive = !_isSearchActive;
                         break;
                     }
                     break;
