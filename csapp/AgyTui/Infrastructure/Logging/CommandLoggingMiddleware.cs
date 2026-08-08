@@ -13,6 +13,8 @@ public class CommandLoggingMiddleware : ICommandRouter
         _errorLogger = errorLogger;
     }
 
+    public CommandLoggingMiddleware(ICommandRouter inner) : this(inner, new FileErrorLogger()) { }
+
     public int Execute(string alias, string[]? args = null)
     {
         var logDir = AppPaths.LogsDir;
