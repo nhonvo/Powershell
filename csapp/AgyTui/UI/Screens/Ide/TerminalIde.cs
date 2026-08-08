@@ -618,39 +618,26 @@ public static class TerminalIde
         }
     }
 
+    private static readonly IdeFileSearchService _searchService = new();
+
     public static void SearchInFile(string filePath)
     {
         if (!File.Exists(filePath)) return;
         var pattern = AnsiConsole.Ask<string>("[cyan]Search pattern:[/]").Trim();
-        var lines = File.ReadAllLines(filePath);
-        var matches = lines.Select((l, i) => (line: l, num: i + 1)).Where(x => Regex.IsMatch(x.line, pattern, RegexOptions.IgnoreCase)).ToArray();
+        var matches = _searchService.SearchInFile(filePath, pattern).ToArray();
         if (matches.Length == 0)
         {
             AnsiConsole.MarkupLine("[yellow]No matches found.[/]");
             Thread.Sleep(1000);
             return;
         }
-        CodeViewer.ShowWithHighlight(filePath, matches.Select(m => m.num).ToArray());
+        CodeViewer.ShowWithHighlight(filePath, matches.Select(m => m.lineNumber).ToArray());
     }
 
     public static void SearchAcrossFiles(string rootPath, string pattern)
     {
         if (string.IsNullOrWhiteSpace(pattern)) return;
-        var results = new List<string>();
-        foreach (var f in Directory.EnumerateFiles(rootPath, "*.*", SearchOption.AllDirectories).Where(f => !f.Contains("bin") && !f.Contains("obj") && !f.Contains(".git")))
-        {
-            try
-            {
-                var lines = File.ReadAllLines(f);
-                for (int i = 0; i < lines.Length; i++)
-                    if (Regex.IsMatch(lines[i], pattern, RegexOptions.IgnoreCase))
-                        results.Add($"{Path.GetRelativePath(rootPath, f)}:{i + 1}: {lines[i].Trim()}");
-            }
-            catch
-            {
-            }
-            if (results.Count >= 100) break;
-        }
+        var results = _searchService.SearchAcrossFiles(rootPath, pattern).ToList();
         if (results.Count == 0)
         {
             AnsiConsole.MarkupLine("[yellow]No matches found.[/]");
