@@ -11,7 +11,7 @@ public class LearnCommandRouter
         {
             case "learn":
             case "study":
-                LearnRouter.LaunchMasterHub();
+                try { LearnRouter.LaunchMasterHub(); } catch { }
                 return true;
             default:
                 return false;
