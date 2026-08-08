@@ -850,8 +850,13 @@ public class CommandRouter : ICommandRouter
                             var newThemePath = tm.SelectThemeInteractive(tPath, currTheme);
                             if (!string.IsNullOrEmpty(newThemePath) && _accountStore != null)
                             {
-                                var selThemeFile = Path.Combine(_accountStore.AgySourceHome, "selected_theme.txt");
-                                File.WriteAllText(selThemeFile, newThemePath);
+                                var agyHome = _accountStore.AgySourceHome;
+                                if (!string.IsNullOrEmpty(agyHome))
+                                {
+                                    Directory.CreateDirectory(agyHome);
+                                    var selThemeFile = Path.Combine(agyHome, "selected_theme.txt");
+                                    File.WriteAllText(selThemeFile, newThemePath);
+                                }
                             }
                         }
                         break;
