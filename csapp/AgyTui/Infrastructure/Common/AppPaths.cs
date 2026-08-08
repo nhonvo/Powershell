@@ -85,25 +85,28 @@ public static class AppPaths
             var envOverride = Environment.GetEnvironmentVariable("PROFILE_CONFIG_PATH");
             if (!string.IsNullOrEmpty(envOverride)) return envOverride;
 
-            var root = RepoRoot;
-            if (root.EndsWith(Path.Combine("csapp", "AgyTui"), StringComparison.OrdinalIgnoreCase))
+            var userGeminiDir = Path.Combine(UserProfileDir, ".gemini");
+            var userConfigPath = Path.Combine(userGeminiDir, "profile.config.json");
+
+            if (!File.Exists(userConfigPath))
             {
-                return Path.Combine(root, "profile.config.json");
+                var repoSeed = Path.Combine(RepoRoot, "csapp", "AgyTui", "profile.config.json");
+                if (File.Exists(repoSeed))
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(userGeminiDir);
+                        File.Copy(repoSeed, userConfigPath, overwrite: false);
+                    }
+                    catch { }
+                }
             }
-            if (root.EndsWith("csapp", StringComparison.OrdinalIgnoreCase))
-            {
-                return Path.Combine(root, "AgyTui", "profile.config.json");
-            }
 
-            var agyTuiCfg = Path.Combine(root, "csapp", "AgyTui", "profile.config.json");
-            if (File.Exists(agyTuiCfg)) return agyTuiCfg;
+            if (File.Exists(userConfigPath)) return userConfigPath;
 
-            var csappCfg = Path.Combine(root, "csapp", "profile.config.json");
-            if (File.Exists(csappCfg)) return csappCfg;
-
-            var dir = Path.GetDirectoryName(agyTuiCfg);
+            var dir = Path.GetDirectoryName(userConfigPath);
             if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-            return agyTuiCfg;
+            return userConfigPath;
         }
     }
 
