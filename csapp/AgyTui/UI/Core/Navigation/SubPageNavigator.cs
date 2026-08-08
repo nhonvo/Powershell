@@ -18,6 +18,7 @@ public class SubPageNavigatorService : ISubPageNavigator
     }
 
     private static string _detailsSearchBuffer = "";
+    private static bool _isSearchActive = false;
 
     public string ProcessSearchKey(ConsoleKeyInfo key, string currentBuffer)
     {
@@ -270,7 +271,25 @@ public class SubPageNavigatorService : ISubPageNavigator
                         }
                     }
                     break;
+                case ConsoleKey.Oem2:
+                case ConsoleKey.Divide:
+                    if (!_isSearchActive && key.KeyChar == '/')
+                    {
+                        _isSearchActive = true;
+                        break;
+                    }
+                    if (_isSearchActive)
+                    {
+                        _detailsSearchBuffer += "/";
+                        detailsSel = 0;
+                        break;
+                    }
+                    break;
                 case ConsoleKey.Enter:
+                    if (_isSearchActive)
+                    {
+                        _isSearchActive = false;
+                    }
                     if (mode == "proj")
                     {
                         bool shouldExit = SubPageProjNavigator.HandleEnter(workspaces, flatList, detailsSel, _detailsSearchBuffer);
@@ -293,118 +312,11 @@ public class SubPageNavigatorService : ISubPageNavigator
                     }
                     break;
 
-                case ConsoleKey.L:
-                    if (mode == "agyswitch" && string.IsNullOrEmpty(_detailsSearchBuffer))
-                    {
-                        SubPageAccountNavigator.LoginAccount(_detailsSearchBuffer, detailsSel);
-                        break;
-                    }
-                    if (!string.IsNullOrEmpty(_detailsSearchBuffer))
-                    {
-                        _detailsSearchBuffer = ProcessSearchKey(key, _detailsSearchBuffer);
-                        detailsSel = 0;
-                        break;
-                    }
-                    goto case ConsoleKey.RightArrow;
-                case ConsoleKey.RightArrow:
-                case ConsoleKey.Tab:
-                    if (mode == "proj" && flatList.Count > 0)
-                    {
-                        SubPageProjNavigator.HandleKeyInput(key, workspaces, flatList, detailsSel, _detailsSearchBuffer);
-                    }
-                    break;
-                case ConsoleKey.H:
-                    if (!string.IsNullOrEmpty(_detailsSearchBuffer))
-                    {
-                        _detailsSearchBuffer = ProcessSearchKey(key, _detailsSearchBuffer);
-                        detailsSel = 0;
-                        break;
-                    }
-                    goto case ConsoleKey.LeftArrow;
-                case ConsoleKey.LeftArrow:
-                    if (mode == "proj" && flatList.Count > 0)
-                    {
-                        SubPageProjNavigator.HandleKeyInput(key, workspaces, flatList, detailsSel, _detailsSearchBuffer);
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(_detailsSearchBuffer))
-                        {
-                            _detailsSearchBuffer = "";
-                            detailsSel = 0;
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    break;
-                case ConsoleKey.A:
-                    if (mode == "agyswitch" && string.IsNullOrEmpty(_detailsSearchBuffer))
-                    {
-                        SubPageAccountNavigator.CreateAccount();
-                    }
-                    else
-                    {
-                        _detailsSearchBuffer += key.KeyChar;
-                        detailsSel = 0;
-                        if (mode == "proj")
-                        {
-                            SubPageProjNavigator.SelectedWorkspaceIndex = 0;
-                            SubPageProjNavigator.SelectedActionIndex = -1;
-                            SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
-                        }
-                    }
-                    break;
-                case ConsoleKey.D:
-                    if (mode == "agyswitch" && string.IsNullOrEmpty(_detailsSearchBuffer))
-                    {
-                        SubPageAccountNavigator.DeleteAccount(_detailsSearchBuffer, detailsSel);
-                    }
-                    else
-                    {
-                        _detailsSearchBuffer += key.KeyChar;
-                        detailsSel = 0;
-                        if (mode == "proj")
-                        {
-                            SubPageProjNavigator.SelectedWorkspaceIndex = 0;
-                            SubPageProjNavigator.SelectedActionIndex = -1;
-                            SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
-                        }
-                    }
-                    break;
-                case ConsoleKey.R:
-                    if (mode == "agyswitch" && string.IsNullOrEmpty(_detailsSearchBuffer))
-                    {
-                        SubPageAccountNavigator.PurgeAccounts();
-                    }
-                    else
-                    {
-                        _detailsSearchBuffer += key.KeyChar;
-                        detailsSel = 0;
-                    }
-                    break;
-                case ConsoleKey.O:
-                    if (mode == "agyswitch" && string.IsNullOrEmpty(_detailsSearchBuffer))
-                    {
-                        SubPageAccountNavigator.LogoutAccount(_detailsSearchBuffer, detailsSel);
-                    }
-                    else
-                    {
-                        _detailsSearchBuffer += key.KeyChar;
-                        detailsSel = 0;
-                        if (mode == "proj")
-                        {
-                            SubPageProjNavigator.SelectedWorkspaceIndex = 0;
-                            SubPageProjNavigator.SelectedActionIndex = -1;
-                            SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
-                        }
-                    }
-                    break;
                 case ConsoleKey.Escape:
                 case ConsoleKey.Q:
-                    if (!string.IsNullOrEmpty(_detailsSearchBuffer))
+                    if (_isSearchActive || !string.IsNullOrEmpty(_detailsSearchBuffer))
                     {
+                        _isSearchActive = false;
                         _detailsSearchBuffer = "";
                         detailsSel = 0;
                         if (mode == "proj")
@@ -419,26 +331,26 @@ public class SubPageNavigatorService : ISubPageNavigator
                         return;
                     }
                     break;
+
                 default:
-                    if (key.KeyChar >= 32 && key.KeyChar <= 126 && key.Key != ConsoleKey.Enter)
+                    if (key.KeyChar >= 32 && key.KeyChar <= 126)
                     {
-                        if (mode == "agyswitch" && (key.Key == ConsoleKey.A || key.Key == ConsoleKey.D || key.Key == ConsoleKey.O || key.Key == ConsoleKey.L || key.Key == ConsoleKey.R) && string.IsNullOrEmpty(_detailsSearchBuffer))
-                        {
-                            break;
-                        }
-                        if (mode == "proj" && key.KeyChar >= '1' && key.KeyChar <= '9' && (string.IsNullOrEmpty(_detailsSearchBuffer) || key.Modifiers.HasFlag(ConsoleModifiers.Alt)))
+                        if (!_isSearchActive && mode == "proj" && key.KeyChar >= '1' && key.KeyChar <= '9')
                         {
                             bool shouldExit = SubPageProjNavigator.HandleKeyInput(key, workspaces, flatList, detailsSel, _detailsSearchBuffer);
                             if (shouldExit) return;
                             break;
                         }
-                        _detailsSearchBuffer += key.KeyChar;
-                        detailsSel = 0;
-                        if (mode == "proj")
+                        if (_isSearchActive || !string.IsNullOrEmpty(_detailsSearchBuffer))
                         {
-                            SubPageProjNavigator.SelectedWorkspaceIndex = 0;
-                            SubPageProjNavigator.SelectedActionIndex = -1;
-                            SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
+                            _detailsSearchBuffer += key.KeyChar;
+                            detailsSel = 0;
+                            if (mode == "proj")
+                            {
+                                SubPageProjNavigator.SelectedWorkspaceIndex = 0;
+                                SubPageProjNavigator.SelectedActionIndex = -1;
+                                SubPageProjNavigator.ExpandedWorkspaceIndex = -1;
+                            }
                         }
                     }
                     break;

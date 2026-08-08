@@ -154,7 +154,7 @@ public static class SubPageProjNavigator
 
         var filterLine = !string.IsNullOrEmpty(searchBuffer)
             ? $"[yellow]Filter:[/] [white]{searchBuffer.EscapeMarkup()}[/]_\n"
-            : "[dim]Type to filter (Esc to clear)[/]\n";
+            : "[dim]Filter: (Press / to search)[/]\n";
         leftTable.AddRow(new Markup(filterLine));
 
         if (flatList.Count == 0)
@@ -252,7 +252,7 @@ public static class SubPageProjNavigator
         return new Rows(
             layoutGrid,
             new Rule().RuleStyle("cyan dim"),
-            new Markup("[bold cyan][[Enter]][/] Open Workspace  ·  [bold cyan][[1-9]][/] Run Direct Action  ·  [bold cyan][[Tab / →]][/] Sub-modules  ·  [bold cyan][[Esc]][/] Clear / Cancel")
+            new Markup("[bold cyan][[/]][/] Enable Search  ·  [bold cyan][[1-9]][/] Run Direct Action  ·  [bold cyan][[Enter]][/] Open Workspace  ·  [bold cyan][[Esc]][/] Clear / Exit")
         );
     }
 }
