@@ -33,6 +33,7 @@ public static class Bootstrapper
 
         // Core Services & Reactive UI State
         services.AddSingleton<IAppPathManager, AppPathManager>();
+        services.AddSingleton<IFileSystem, PhysicalFileSystem>();
         services.AddSingleton<IConfigService, ConfigService>();
         services.AddSingleton<IUiStateStore, UiStateStore>();
         services.AddSingleton<IUiCommandDispatcher, UiCommandDispatcher>();
