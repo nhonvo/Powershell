@@ -155,13 +155,13 @@ public static class SubPageProjNavigator
         if (detailsSel < 0 || detailsSel >= flatList.Count) return false;
         var item = flatList[detailsSel];
 
-        if (key.Key == ConsoleKey.A || (key.Modifiers.HasFlag(ConsoleModifiers.Control) && key.Key == ConsoleKey.A))
+        if (key.Modifiers.HasFlag(ConsoleModifiers.Control) && key.Key == ConsoleKey.A)
         {
-            ExpandedActionsWorkspacePath = (ExpandedActionsWorkspacePath == item.Workspace.WorkspacePath) ? null : item.Workspace.WorkspacePath;
+            ExpandedActionsWorkspacePath = (ExpandedActionsWorkspacePath == item.Workspace?.WorkspacePath) ? null : item.Workspace?.WorkspacePath;
             return false;
         }
 
-        if (key.Key == ConsoleKey.Tab || key.Key == ConsoleKey.Spacebar || key.Key == ConsoleKey.RightArrow)
+        if (key.Key == ConsoleKey.Tab || key.Key == ConsoleKey.RightArrow || (key.Key == ConsoleKey.Spacebar && string.IsNullOrEmpty(item.Workspace?.Name)))
         {
             if (item.ActionIndex == -1)
             {
@@ -170,7 +170,7 @@ public static class SubPageProjNavigator
             }
             if (item.IsChildWorkspace)
             {
-                ExpandedChildWorkspacePath = (ExpandedChildWorkspacePath == item.Workspace.WorkspacePath) ? null : item.Workspace.WorkspacePath;
+                ExpandedChildWorkspacePath = (ExpandedChildWorkspacePath == item.Workspace?.WorkspacePath) ? null : item.Workspace?.WorkspacePath;
                 return false;
             }
         }
@@ -213,7 +213,7 @@ public static class SubPageProjNavigator
             if (item.ActionIndex <= -2 && item.ActionIndex > -100)
             {
                 int linkIdx = -2 - item.ActionIndex;
-                if (item.Workspace.Links != null && linkIdx >= 0 && linkIdx < item.Workspace.Links.Length)
+                if (item.Workspace?.Links != null && linkIdx >= 0 && linkIdx < item.Workspace.Links.Length)
                 {
                     var link = item.Workspace.Links[linkIdx];
                     WorkspaceRegistry.OpenUrl(link.Url);
@@ -348,7 +348,7 @@ public static class SubPageProjNavigator
             new Rule().RuleStyle("cyan dim"),
             new Markup(scrollStatus),
             new Markup($"  [dim]Selected Target:[/] [bold cyan]{targetDisplay.EscapeMarkup()}[/]"),
-            new Markup("\n[bold cyan][[Enter]][/] Open Target Folder  ·  [bold cyan][[Tab / Space]][/] Expand Sub-modules  ·  [bold cyan][[A]][/] Toggle Actions  ·  [bold cyan][[Esc]][/] Cancel")
+            new Markup("\n[bold cyan][[Enter]][/] Open Target  ·  [bold cyan][[Tab / →]][/] Expand Sub-modules  ·  [bold cyan][[Ctrl+A]][/] Toggle Actions  ·  [bold cyan][[Esc]][/] Clear / Cancel")
         );
     }
 }

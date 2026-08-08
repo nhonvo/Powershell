@@ -294,7 +294,7 @@ public class SubPageNavigatorService : ISubPageNavigator
                     break;
 
                 case ConsoleKey.L:
-                    if (mode == "agyswitch")
+                    if (mode == "agyswitch" && string.IsNullOrEmpty(_detailsSearchBuffer))
                     {
                         SubPageAccountNavigator.LoginAccount(_detailsSearchBuffer, detailsSel);
                         break;
@@ -307,6 +307,7 @@ public class SubPageNavigatorService : ISubPageNavigator
                     }
                     goto case ConsoleKey.RightArrow;
                 case ConsoleKey.RightArrow:
+                case ConsoleKey.Tab:
                     if (mode == "proj" && flatList.Count > 0)
                     {
                         SubPageProjNavigator.HandleKeyInput(key, workspaces, flatList, detailsSel);
@@ -339,7 +340,12 @@ public class SubPageNavigatorService : ISubPageNavigator
                     }
                     break;
                 case ConsoleKey.A:
-                    if (mode == "agyswitch")
+                    if (key.Modifiers.HasFlag(ConsoleModifiers.Control) && mode == "proj" && flatList.Count > 0)
+                    {
+                        SubPageProjNavigator.HandleKeyInput(key, workspaces, flatList, detailsSel);
+                        break;
+                    }
+                    if (mode == "agyswitch" && string.IsNullOrEmpty(_detailsSearchBuffer))
                     {
                         SubPageAccountNavigator.CreateAccount();
                     }
@@ -356,7 +362,7 @@ public class SubPageNavigatorService : ISubPageNavigator
                     }
                     break;
                 case ConsoleKey.D:
-                    if (mode == "agyswitch")
+                    if (mode == "agyswitch" && string.IsNullOrEmpty(_detailsSearchBuffer))
                     {
                         SubPageAccountNavigator.DeleteAccount(_detailsSearchBuffer, detailsSel);
                     }
@@ -373,7 +379,7 @@ public class SubPageNavigatorService : ISubPageNavigator
                     }
                     break;
                 case ConsoleKey.R:
-                    if (mode == "agyswitch")
+                    if (mode == "agyswitch" && string.IsNullOrEmpty(_detailsSearchBuffer))
                     {
                         SubPageAccountNavigator.PurgeAccounts();
                     }
@@ -384,7 +390,7 @@ public class SubPageNavigatorService : ISubPageNavigator
                     }
                     break;
                 case ConsoleKey.O:
-                    if (mode == "agyswitch")
+                    if (mode == "agyswitch" && string.IsNullOrEmpty(_detailsSearchBuffer))
                     {
                         SubPageAccountNavigator.LogoutAccount(_detailsSearchBuffer, detailsSel);
                     }
