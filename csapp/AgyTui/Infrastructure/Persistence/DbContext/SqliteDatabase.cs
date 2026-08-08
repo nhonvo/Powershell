@@ -86,7 +86,7 @@ public class SqliteDatabase : ISqliteDatabase
         _migrationEngineFactory = migrationEngineFactory ?? (() => new SqliteMigrationEngine(this));
     }
 
-    public virtual string DbPath => Path.Combine(AppPaths.DataDir, EnvironmentProvider.DatabaseFileName);
+    public virtual string DbPath => Path.Combine(AppPaths.GeminiHome, EnvironmentProvider.DatabaseFileName);
 
     public SqliteConnection CreateConnection()
     {
