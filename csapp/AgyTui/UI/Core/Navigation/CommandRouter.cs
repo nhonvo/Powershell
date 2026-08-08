@@ -47,11 +47,11 @@ public class CommandRouter : ICommandRouter
         _dotNet = dotNet;
         _git = git;
         _learningGenerator = learningGenerator;
-        _accountStore = accountStore;
-        _quotaEngine = quotaEngine;
-        _themeManager = themeManager;
-        _obsidianBridge = obsidianBridge;
-        _processRunner = processRunner;
+        _accountStore = accountStore ?? new Infrastructure.Integrations.AgyClient.AgyAccountStore();
+        _quotaEngine = quotaEngine ?? new Infrastructure.Integrations.AgyClient.AgyQuotaEngine(_accountStore);
+        _themeManager = themeManager ?? new Infrastructure.Common.ThemeManager();
+        _obsidianBridge = obsidianBridge ?? new Infrastructure.Integrations.Obsidian.ObsidianBridge();
+        _processRunner = processRunner ?? new Infrastructure.Integrations.Ai.Services.AiProcessRunner(_accountStore);
     }
 
     public static int Route(string alias, params string[]? args)

@@ -2,10 +2,14 @@ namespace AgyTui.UI.Core.Navigation;
 
 public static class AgyAccountDisplay
 {
+    private static IAgyAccountStore GetStore(IAgyAccountStore? store) => store ?? new AgyAccountStore();
+    private static IAgyQuotaEngine GetEngine(IAgyQuotaEngine? engine, IAgyAccountStore store) => engine ?? new AgyQuotaEngine(store);
+
     public static void ShowQuotaChart(string accountName, IAgyQuotaEngine? quotaEngine = null)
     {
-        if (quotaEngine == null) return;
-        var quota = quotaEngine.CalculateRollingQuotas(accountName);
+        var store = new AgyAccountStore();
+        var engine = GetEngine(quotaEngine, store);
+        var quota = engine.CalculateRollingQuotas(accountName);
         AnsiConsole.Write(new Rule($"[bold cyan]Quota: {accountName.EscapeMarkup()}[/]").RuleStyle("grey"));
         var chart = new BarChart().Width(60).Label($"[bold]Remaining Quota % — {accountName.EscapeMarkup()}[/]").CenterLabel().AddItem("Gemini Weekly", quota.RemainingWeekly, Color.Cyan1).AddItem("Gemini 5-Hour", quota.Remaining5H, Color.Yellow).AddItem("Claude Weekly", 100.0, Color.Green).AddItem("Claude 5-Hour", 100.0, Color.Blue);
         AnsiConsole.Write(chart);
@@ -15,13 +19,14 @@ public static class AgyAccountDisplay
 
     public static void ShowAccountTree(IAgyAccountStore? store = null, IAgyQuotaEngine? quotaEngine = null)
     {
-        if (store == null || quotaEngine == null) return;
-        var accounts = store.GetAccounts();
-        var active = store.GetActiveAccount();
+        var s = GetStore(store);
+        var q = GetEngine(quotaEngine, s);
+        var accounts = s.GetAccounts();
+        var active = s.GetActiveAccount();
         var tree = new Tree("[bold cyan]AGY Accounts[/]");
         foreach (var acc in accounts)
         {
-            var stats = quotaEngine.GetAccountStats(acc);
+            var stats = q.GetAccountStats(acc);
             var label = acc == active ? $"[green bold]★ {acc.EscapeMarkup()} (Active)[/]" : acc.EscapeMarkup();
             var node = tree.AddNode(label);
             node.AddNode($"[dim]Login:[/] {(stats.TokenStatus == "Logged In" ? "[green]Logged In[/]" : "[red]Not Logged In[/]")}");
@@ -34,8 +39,8 @@ public static class AgyAccountDisplay
 
     public static string[] MultiSelectAccounts(IAgyAccountStore? store = null, string prompt = "Select accounts:")
     {
-        if (store == null) return [];
-        var accounts = store.GetAccounts();
+        var s = GetStore(store);
+        var accounts = s.GetAccounts();
         if (accounts.Length == 0)
         {
             SpectrePanel.Warning("No accounts found.");

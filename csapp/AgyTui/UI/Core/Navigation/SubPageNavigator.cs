@@ -10,11 +10,11 @@ namespace AgyTui.UI.Core.Navigation;
 
 public class SubPageNavigatorService : ISubPageNavigator
 {
-    private readonly IAgyAccountStore? _accountStore;
+    private readonly IAgyAccountStore _accountStore;
 
     public SubPageNavigatorService(IAgyAccountStore? accountStore = null)
     {
-        _accountStore = accountStore;
+        _accountStore = accountStore ?? new AgyAccountStore();
     }
 
     private static string _detailsSearchBuffer = "";
