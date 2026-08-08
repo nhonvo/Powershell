@@ -484,25 +484,9 @@ public class SubPageNavigatorService : ISubPageNavigator
         else if (mode == "proj")
         {
             var currentDir = Directory.GetCurrentDirectory();
-            grid.AddRow(new Markup($"[bold green]📁 Registered Workspace Navigator (cnav)[/] [dim]({workspaces.Length} workspaces)[/]:\n"));
-
-            if (!string.IsNullOrEmpty(_detailsSearchBuffer))
-            {
-                grid.AddRow(new Markup($"[yellow]Search:[/] [white]{_detailsSearchBuffer.EscapeMarkup()}[/]_\n"));
-            }
-            else
-            {
-                grid.AddRow(new Markup("[dim]Type to filter workspaces (Esc to clear / cancel)[/]\n"));
-            }
-
-            if (workspaces.Length == 0)
-            {
-                grid.AddRow(new Markup($"  [dim]No workspaces matching '{_detailsSearchBuffer.EscapeMarkup()}'.[/]"));
-            }
-            else
-            {
-                content = SubPageProjNavigator.Render(grid, _detailsSearchBuffer, workspaces, flatList, selIdx, currentDir);
-            }
+            content = SubPageProjNavigator.Render(grid, _detailsSearchBuffer, workspaces, flatList, selIdx, currentDir);
+            ScreenChrome.WriteSmooth(content);
+            return;
         }
 
         var panel = new Panel(content)

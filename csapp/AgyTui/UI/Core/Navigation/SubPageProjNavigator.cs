@@ -10,33 +10,25 @@ public static class SubPageProjNavigator
         public WorkspaceEntry Workspace;
         public int WorkspaceIndex;
         public int ActionIndex;
-        public bool IsChildGroupHeader;
         public bool IsChildWorkspace;
-        public int Depth;
         public int ChildCount;
     }
 
     public static int SelectedWorkspaceIndex = 0;
     public static int SelectedActionIndex = -1;
     public static int ExpandedWorkspaceIndex = -1;
-    public static string? ExpandedChildWorkspacePath = null;
-    public static string? ExpandedActionsWorkspacePath = null;
 
     public static List<FlatItem> GetFlatList(WorkspaceEntry[] allWorkspaces, string searchBuffer = "")
     {
         var list = new List<FlatItem>();
         var roots = WorkspaceRegistry.GetRootWorkspaces();
 
-        if (ExpandedWorkspaceIndex == -1 && string.IsNullOrEmpty(searchBuffer) && roots.Length > 0)
-        {
-            ExpandedWorkspaceIndex = 0;
-        }
+        string query = searchBuffer.Trim();
 
         for (int i = 0; i < roots.Length; i++)
         {
             var w = roots[i];
             var children = WorkspaceRegistry.GetChildWorkspaces(w.WorkspacePath);
-            string query = searchBuffer.Trim();
 
             if (!string.IsNullOrEmpty(query))
             {
@@ -54,35 +46,23 @@ public static class SubPageProjNavigator
                     Workspace = w,
                     WorkspaceIndex = i,
                     ActionIndex = -1,
-                    Depth = 0,
                     ChildCount = hasChildMatch ? matchingChildren.Count : children.Length
                 });
 
-                // Expand root ONLY if child nodes matched query
-                if (hasChildMatch)
+                if (hasChildMatch || i == ExpandedWorkspaceIndex)
                 {
                     for (int c = 0; c < children.Length; c++)
                     {
                         var child = children[c];
-                        if (!SystemHelper.Instance.IsFuzzyMatch(child.Name, query)) continue;
+                        if (!string.IsNullOrEmpty(query) && !SystemHelper.Instance.IsFuzzyMatch(child.Name, query)) continue;
 
                         list.Add(new FlatItem
                         {
                             Workspace = child,
                             WorkspaceIndex = i,
-                            ActionIndex = -300 - c,
-                            IsChildWorkspace = true,
-                            Depth = 1
+                            ActionIndex = -1,
+                            IsChildWorkspace = true
                         });
-
-                        list.Add(new FlatItem { Workspace = child, WorkspaceIndex = i, ActionIndex = -200, IsChildGroupHeader = true, Depth = 2 });
-                        if (ExpandedActionsWorkspacePath == child.WorkspacePath)
-                        {
-                            for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
-                            {
-                                list.Add(new FlatItem { Workspace = child, WorkspaceIndex = i, ActionIndex = j, Depth = 3 });
-                            }
-                        }
                     }
                 }
             }
@@ -93,54 +73,21 @@ public static class SubPageProjNavigator
                     Workspace = w,
                     WorkspaceIndex = i,
                     ActionIndex = -1,
-                    Depth = 0,
                     ChildCount = children.Length
                 });
 
-                bool isExpanded = (i == ExpandedWorkspaceIndex);
-                if (isExpanded)
+                if (i == ExpandedWorkspaceIndex)
                 {
-                    if (children.Length > 0)
+                    for (int c = 0; c < children.Length; c++)
                     {
-                        for (int c = 0; c < children.Length; c++)
+                        var child = children[c];
+                        list.Add(new FlatItem
                         {
-                            var child = children[c];
-                            list.Add(new FlatItem
-                            {
-                                Workspace = child,
-                                WorkspaceIndex = i,
-                                ActionIndex = -300 - c,
-                                IsChildWorkspace = true,
-                                Depth = 1
-                            });
-
-                            list.Add(new FlatItem { Workspace = child, WorkspaceIndex = i, ActionIndex = -200, IsChildGroupHeader = true, Depth = 2 });
-                            if (ExpandedActionsWorkspacePath == child.WorkspacePath)
-                            {
-                                for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
-                                {
-                                    list.Add(new FlatItem { Workspace = child, WorkspaceIndex = i, ActionIndex = j, Depth = 3 });
-                                }
-                            }
-                        }
-                    }
-
-                    if (w.Links != null && w.Links.Length > 0)
-                    {
-                        list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -100, Depth = 1 });
-                        for (int k = 0; k < w.Links.Length; k++)
-                        {
-                            list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -2 - k, Depth = 2 });
-                        }
-                    }
-
-                    list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -200, IsChildGroupHeader = true, Depth = 1 });
-                    if (ExpandedActionsWorkspacePath == w.WorkspacePath)
-                    {
-                        for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
-                        {
-                            list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = j, Depth = 2 });
-                        }
+                            Workspace = child,
+                            WorkspaceIndex = i,
+                            ActionIndex = -1,
+                            IsChildWorkspace = true
+                        });
                     }
                 }
             }
@@ -158,32 +105,25 @@ public static class SubPageProjNavigator
         if (detailsSel < 0 || detailsSel >= flatList.Count) return false;
         var item = flatList[detailsSel];
 
+        // Number shortcuts 1-9 to trigger specific workspace action
+        if (key.KeyChar >= '1' && key.KeyChar <= '9')
+        {
+            int actionIdx = key.KeyChar - '1';
+            if (actionIdx < WorkspaceRegistry.SharedWorkspaceActions.Length)
+            {
+                var res = WorkspaceRegistry.HandleWorkspaceAction(item.Workspace, actionIdx);
+                return res == "EXIT";
+            }
+        }
+
         if (key.Key == ConsoleKey.Tab || key.Key == ConsoleKey.RightArrow || (key.Key == ConsoleKey.Spacebar && string.IsNullOrEmpty(item.Workspace?.Name)))
         {
-            if (item.ActionIndex == -200)
-            {
-                ExpandedActionsWorkspacePath = (ExpandedActionsWorkspacePath == item.Workspace?.WorkspacePath) ? null : item.Workspace?.WorkspacePath;
-                return false;
-            }
-            if (item.ActionIndex == -1)
-            {
-                ExpandedWorkspaceIndex = (ExpandedWorkspaceIndex == item.WorkspaceIndex) ? -1 : item.WorkspaceIndex;
-                return false;
-            }
-            if (item.IsChildWorkspace)
-            {
-                ExpandedChildWorkspacePath = (ExpandedChildWorkspacePath == item.Workspace?.WorkspacePath) ? null : item.Workspace?.WorkspacePath;
-                return false;
-            }
+            ExpandedWorkspaceIndex = (ExpandedWorkspaceIndex == item.WorkspaceIndex) ? -1 : item.WorkspaceIndex;
+            return false;
         }
 
         if (key.Key == ConsoleKey.LeftArrow)
         {
-            if (ExpandedChildWorkspacePath != null)
-            {
-                ExpandedChildWorkspacePath = null;
-                return false;
-            }
             if (ExpandedWorkspaceIndex != -1)
             {
                 ExpandedWorkspaceIndex = -1;
@@ -193,180 +133,126 @@ public static class SubPageProjNavigator
 
         if (key.Key == ConsoleKey.Enter)
         {
-            if (item.ActionIndex == -200)
-            {
-                ExpandedActionsWorkspacePath = (ExpandedActionsWorkspacePath == item.Workspace?.WorkspacePath) ? null : item.Workspace?.WorkspacePath;
-                return false;
-            }
-            if (item.IsChildGroupHeader && item.ActionIndex != -200)
-            {
-                return false;
-            }
-            if (item.IsChildWorkspace)
-            {
-                var res = WorkspaceRegistry.HandleWorkspaceAction(item.Workspace, 0);
-                return res == "EXIT";
-            }
-            if (item.ActionIndex == -1)
-            {
-                var res = WorkspaceRegistry.HandleWorkspaceAction(item.Workspace, 0);
-                return res == "EXIT";
-            }
-            if (item.ActionIndex == -100)
-            {
-                WorkspaceRegistry.ManageWorkspaceLinks(item.Workspace);
-                return false;
-            }
-            if (item.ActionIndex <= -2 && item.ActionIndex > -100)
-            {
-                int linkIdx = -2 - item.ActionIndex;
-                if (item.Workspace?.Links != null && linkIdx >= 0 && linkIdx < item.Workspace.Links.Length)
-                {
-                    var link = item.Workspace.Links[linkIdx];
-                    WorkspaceRegistry.OpenUrl(link.Url);
-                }
-                return false;
-            }
-            if (item.ActionIndex >= 0)
-            {
-                var res = WorkspaceRegistry.HandleWorkspaceAction(item.Workspace, item.ActionIndex);
-                return res == "EXIT";
-            }
+            var res = WorkspaceRegistry.HandleWorkspaceAction(item.Workspace, 0);
+            return res == "EXIT";
         }
 
         return false;
     }
 
-    public static IRenderable Render(Grid grid, string searchBuffer, WorkspaceEntry[] allWorkspaces, List<FlatItem> flatList, int selIdx, string currentDir)
+    public static IRenderable Render(Grid outerGrid, string searchBuffer, WorkspaceEntry[] allWorkspaces, List<FlatItem> flatList, int selIdx, string currentDir)
     {
         int termH = 30;
         try { termH = Console.WindowHeight; } catch (Exception ex) { LogHelper.Log($"[SubPageProjNavigator] WindowHeight non-fatal: {ex.Message}", "DEBUG"); }
-        int maxRows = Math.Max(5, termH - 18);
-        int topRow = 0;
-        int endRow = 0;
+        int maxRows = Math.Max(6, termH - 10);
 
-        (topRow, endRow) = ScrollableListView.ComputeViewport(flatList.Count, selIdx, maxRows);
+        var (topRow, endRow) = ScrollableListView.ComputeViewport(flatList.Count, selIdx, maxRows);
 
-        for (int i = topRow; i < endRow; i++)
+        // Build Left Panel: Workspaces List
+        var leftTable = new Table().Border(TableBorder.None).NoBorder().Expand();
+        leftTable.AddColumn(new TableColumn("[bold cyan]📁 WORKSPACES[/]").LeftAligned());
+
+        var filterLine = !string.IsNullOrEmpty(searchBuffer)
+            ? $"[yellow]Filter:[/] [white]{searchBuffer.EscapeMarkup()}[/]_\n"
+            : "[dim]Type to filter (Esc to clear)[/]\n";
+        leftTable.AddRow(new Markup(filterLine));
+
+        if (flatList.Count == 0)
         {
-            var item = flatList[i];
-            var isSelected = (i == selIdx);
-
-            if (item.IsChildWorkspace)
-            {
-                var ws = item.Workspace;
-                var isCurrent = !string.IsNullOrEmpty(ws.WorkspacePath) && string.Equals(ws.WorkspacePath.TrimEnd('\\', '/'), currentDir.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
-
-                var bullet = "  ├── ";
-                var prefix = isSelected ? "  [green bold]❯──[/] " : $"{bullet}";
-                var status = isCurrent ? "[bold black on green] ACTIVE [/] " : "";
-                var boldName = string.IsNullOrEmpty(searchBuffer) ? ws.Name.EscapeMarkup() : SystemHelper.Instance.BoldFuzzyMatch(ws.Name, searchBuffer);
-                var boldPath = string.IsNullOrEmpty(searchBuffer) ? ws.WorkspacePath.EscapeMarkup() : SystemHelper.Instance.BoldFuzzyMatch(ws.WorkspacePath, searchBuffer);
-                var nameMarkup = isSelected ? $"[bold green]{boldName}[/]" : $"[cyan]{boldName}[/]";
-
-                var expandSign = (ExpandedChildWorkspacePath == ws.WorkspacePath) ? "[[-]] " : "[[+]] ";
-                grid.AddRow(new Markup($"{prefix}{expandSign}📄 {status}{nameMarkup} [dim]· {boldPath}[/]"));
-            }
-            else if (item.ActionIndex == -1)
-            {
-                var ws = item.Workspace;
-                var isCurrent = !string.IsNullOrEmpty(ws.WorkspacePath) && string.Equals(ws.WorkspacePath.TrimEnd('\\', '/'), currentDir.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
-
-                var prefix = isSelected ? "[green bold]❯ [/]" : "  ";
-                var status = isCurrent ? "[bold black on green] ACTIVE [/] " : "";
-                var branch = WorkspaceRegistry.GetGitBranch(ws.WorkspacePath);
-                var branchSuffix = !string.IsNullOrEmpty(branch) ? $" [yellow]🌿 {branch}[/]" : "";
-
-                var boldName = string.IsNullOrEmpty(searchBuffer) ? ws.Name.EscapeMarkup() : SystemHelper.Instance.BoldFuzzyMatch(ws.Name, searchBuffer);
-                var boldPath = string.IsNullOrEmpty(searchBuffer) ? ws.WorkspacePath.EscapeMarkup() : SystemHelper.Instance.BoldFuzzyMatch(ws.WorkspacePath, searchBuffer);
-
-                var nameMarkup = isSelected ? $"[bold green]{boldName}[/]" : $"[bold white]{boldName}[/]";
-                var pathMarkup = $"[dim]· {boldPath}[/]";
-
-                var icon = item.ChildCount > 0 ? "📦" : "📁";
-                var badge = item.ChildCount > 0 ? $" [dim yellow][[{item.ChildCount} sub-modules]][/]" : "";
-                var expandSign = (item.WorkspaceIndex == ExpandedWorkspaceIndex) ? "[[-]] " : "[[+]] ";
-
-                grid.AddRow(new Markup($"{prefix}{expandSign}{icon} {status}{nameMarkup}{badge}{branchSuffix} {pathMarkup}"));
-            }
-            else if (item.ActionIndex == -200)
-            {
-                var isExpanded = (ExpandedActionsWorkspacePath == item.Workspace.WorkspacePath);
-                var sign = isExpanded ? "[[-]] " : "[[+]] ";
-                var bullet = item.Depth == 2 ? "│   ├── " : "├── ";
-                var prefix = isSelected ? (item.Depth == 2 ? "  [green bold]❯───[/] " : "  [green bold]❯──[/] ") : $"  {bullet}";
-                var labelMarkup = isSelected
-                    ? $"[bold green]{sign}⚡ Workspace Actions (Enter / Tab to Expand)[/]"
-                    : $"[cyan]{sign}⚡ Workspace Actions[/]";
-                grid.AddRow(new Markup($"{prefix}{labelMarkup}"));
-            }
-            else if (item.ActionIndex == -100)
-            {
-                var bullet = "├── ";
-                var prefix = isSelected ? "  [green bold]❯──[/] " : $"  {bullet}";
-                var labelMarkup = isSelected
-                    ? "[bold green]🔗 Project Links (Enter to Manage)[/]"
-                    : "[cyan]🔗 Project Links[/]";
-                grid.AddRow(new Markup($"{prefix}{labelMarkup}"));
-            }
-            else if (item.ActionIndex <= -2 && item.ActionIndex > -100)
-            {
-                int linkIdx = -2 - item.ActionIndex;
-                var link = item.Workspace.Links![linkIdx];
-                var isLastLink = (linkIdx == item.Workspace.Links.Length - 1);
-
-                var bullet = isLastLink ? "│   └── " : "│   ├── ";
-                var prefix = isSelected ? "  [green bold]❯───[/] " : $"{bullet}";
-
-                var labelMarkup = isSelected
-                    ? $"[bold green]🌐 {link.Label.EscapeMarkup()}: {link.Url.EscapeMarkup()}[/]"
-                    : $"[dim]🌐 {link.Label.EscapeMarkup()}: {link.Url.EscapeMarkup()}[/]";
-                grid.AddRow(new Markup($"{prefix}{labelMarkup}"));
-            }
-            else
-            {
-                if (item.Depth == 3)
-                {
-                    var isLast = (item.ActionIndex == WorkspaceRegistry.SharedWorkspaceActions.Length - 1);
-                    var bullet = isLast ? "  │   │   └── " : "  │   │   ├── ";
-                    var prefix = isSelected ? "  [green bold]❯─────[/] " : $"{bullet}";
-                    var actionLabel = WorkspaceRegistry.SharedWorkspaceActions[item.ActionIndex];
-                    var labelMarkup = isSelected ? $"[bold green]{actionLabel.EscapeMarkup()}[/]" : $"[dim]{actionLabel.EscapeMarkup()}[/]";
-                    grid.AddRow(new Markup($"{prefix}{labelMarkup}"));
-                }
-                else
-                {
-                    var isLast = (item.ActionIndex == WorkspaceRegistry.SharedWorkspaceActions.Length - 1);
-                    var bullet = isLast ? "└── " : "├── ";
-                    var prefix = isSelected ? "  [green bold]❯──[/] " : $"  {bullet}";
-                    var actionLabel = WorkspaceRegistry.SharedWorkspaceActions[item.ActionIndex];
-                    var labelMarkup = isSelected ? $"[bold green]{actionLabel.EscapeMarkup()}[/]" : $"[dim]{actionLabel.EscapeMarkup()}[/]";
-                    grid.AddRow(new Markup($"{prefix}{labelMarkup}"));
-                }
-            }
-        }
-
-        string scrollStatus = "";
-        if (flatList.Count > maxRows)
-        {
-            var aboveStr = topRow > 0 ? $"[yellow]▲ {topRow} items above[/]" : "[grey]▲ Start of list[/]";
-            var belowStr = (endRow < flatList.Count) ? $"[yellow]▼ {flatList.Count - endRow} items below[/]" : "[grey]▼ End of list[/]";
-            scrollStatus = $"  {aboveStr}   ·   {belowStr}";
+            leftTable.AddRow(new Markup($"  [dim]No workspaces matching '{searchBuffer.EscapeMarkup()}'.[/]"));
         }
         else
         {
-            scrollStatus = "  [grey]▲ Start of list   ·   ▼ End of list[/]";
+            for (int i = topRow; i < endRow; i++)
+            {
+                var item = flatList[i];
+                var isSelected = (i == selIdx);
+                var ws = item.Workspace;
+                var isCurrent = !string.IsNullOrEmpty(ws.WorkspacePath) && string.Equals(ws.WorkspacePath.TrimEnd('\\', '/'), currentDir.TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase);
+
+                if (item.IsChildWorkspace)
+                {
+                    var prefix = isSelected ? "  [green bold]❯──[/] " : "  ├── ";
+                    var status = isCurrent ? "[bold black on green] ACTIVE [/] " : "";
+                    var boldName = string.IsNullOrEmpty(searchBuffer) ? ws.Name.EscapeMarkup() : SystemHelper.Instance.BoldFuzzyMatch(ws.Name, searchBuffer);
+                    var nameMarkup = isSelected ? $"[bold green]{boldName}[/]" : $"[cyan]{boldName}[/]";
+                    leftTable.AddRow(new Markup($"{prefix}📄 {status}{nameMarkup}"));
+                }
+                else
+                {
+                    var prefix = isSelected ? "[green bold]❯ [/]" : "  ";
+                    var status = isCurrent ? "[bold black on green] ACTIVE [/] " : "";
+                    var branch = WorkspaceRegistry.GetGitBranch(ws.WorkspacePath);
+                    var branchSuffix = !string.IsNullOrEmpty(branch) ? $" [yellow]🌿 {branch}[/]" : "";
+
+                    var boldName = string.IsNullOrEmpty(searchBuffer) ? ws.Name.EscapeMarkup() : SystemHelper.Instance.BoldFuzzyMatch(ws.Name, searchBuffer);
+                    var nameMarkup = isSelected ? $"[bold green]{boldName}[/]" : $"[bold white]{boldName}[/]";
+
+                    var icon = item.ChildCount > 0 ? "📦" : "📁";
+                    var badge = item.ChildCount > 0 ? $" [dim yellow][[{item.ChildCount}]][/]" : "";
+                    var expandSign = (item.WorkspaceIndex == ExpandedWorkspaceIndex) ? "[[-]] " : "[[+]] ";
+
+                    leftTable.AddRow(new Markup($"{prefix}{expandSign}{icon} {status}{nameMarkup}{badge}{branchSuffix}"));
+                }
+            }
         }
 
+        string scrollStatus = flatList.Count > maxRows
+            ? $"[yellow]▲ {topRow} above[/] · [yellow]▼ {flatList.Count - endRow} below[/]"
+            : "[dim]Showing all workspaces[/]";
+        leftTable.AddRow(new Markup($"\n[dim]{scrollStatus}[/]"));
+
+        // Build Right Panel: Target Details & Actions
+        var rightTable = new Table().Border(TableBorder.None).NoBorder().Expand();
+        rightTable.AddColumn(new TableColumn("[bold yellow]🎯 TARGET DETAILS & ACTIONS[/]").LeftAligned());
+
         var selectedItem = (selIdx >= 0 && selIdx < flatList.Count) ? flatList[selIdx] : default;
-        var targetDisplay = selectedItem.Workspace != null ? selectedItem.Workspace.WorkspacePath : "No workspace selected";
+        if (selectedItem.Workspace != null)
+        {
+            var ws = selectedItem.Workspace;
+            var branch = WorkspaceRegistry.GetGitBranch(ws.WorkspacePath);
+            var branchText = !string.IsNullOrEmpty(branch) ? $" [yellow]🌿 {branch}[/]" : "";
+
+            rightTable.AddRow(new Markup($"[bold green]📦 {ws.Name.EscapeMarkup()}[/]{branchText}"));
+            rightTable.AddRow(new Markup($"[dim]Path:[/] [cyan]{ws.WorkspacePath.EscapeMarkup()}[/]"));
+            rightTable.AddRow(new Rule().RuleStyle("dim cyan"));
+
+            rightTable.AddRow(new Markup("[bold yellow]⚡ ACTIONS (Press 1-9 or Enter):[/]"));
+            rightTable.AddRow(new Markup("  [bold green][[Enter]][/] 📂 Change Directory to workspace"));
+
+            for (int a = 0; a < WorkspaceRegistry.SharedWorkspaceActions.Length; a++)
+            {
+                var actionName = WorkspaceRegistry.SharedWorkspaceActions[a];
+                var keyNum = a + 1 <= 9 ? $"[bold yellow][[ {a + 1} ]][/]" : "    ";
+                rightTable.AddRow(new Markup($"  {keyNum} {actionName.EscapeMarkup()}"));
+            }
+
+            var children = WorkspaceRegistry.GetChildWorkspaces(ws.WorkspacePath);
+            if (children.Length > 0)
+            {
+                rightTable.AddRow(new Rule().RuleStyle("dim cyan"));
+                rightTable.AddRow(new Markup($"[bold cyan]📄 SUB-MODULES ({children.Length}):[/]"));
+                foreach (var child in children.Take(5))
+                {
+                    rightTable.AddRow(new Markup($"  ├── [white]{child.Name.EscapeMarkup()}[/]"));
+                }
+            }
+        }
+        else
+        {
+            rightTable.AddRow(new Markup("[dim]No workspace selected[/]"));
+        }
+
+        // Combine into 2-Column Layout
+        var layoutGrid = new Grid();
+        layoutGrid.AddColumn(new GridColumn().Width(52));
+        layoutGrid.AddColumn(new GridColumn());
+        layoutGrid.AddRow(leftTable, rightTable);
 
         return new Rows(
-            grid,
+            layoutGrid,
             new Rule().RuleStyle("cyan dim"),
-            new Markup(scrollStatus),
-            new Markup($"  [dim]Selected Target:[/] [bold cyan]{targetDisplay.EscapeMarkup()}[/]"),
-            new Markup("\n[bold cyan][[Enter]][/] Open Target  ·  [bold cyan][[Tab / →]][/] Expand Sub-modules  ·  [bold cyan][[Esc]][/] Clear / Cancel")
+            new Markup("[bold cyan][[Enter]][/] Open Workspace  ·  [bold cyan][[1-9]][/] Run Direct Action  ·  [bold cyan][[Tab / →]][/] Sub-modules  ·  [bold cyan][[Esc]][/] Clear / Cancel")
         );
     }
 }
