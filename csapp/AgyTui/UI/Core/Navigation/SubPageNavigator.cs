@@ -340,11 +340,6 @@ public class SubPageNavigatorService : ISubPageNavigator
                     }
                     break;
                 case ConsoleKey.A:
-                    if (key.Modifiers.HasFlag(ConsoleModifiers.Control) && mode == "proj" && flatList.Count > 0)
-                    {
-                        SubPageProjNavigator.HandleKeyInput(key, workspaces, flatList, detailsSel);
-                        break;
-                    }
                     if (mode == "agyswitch" && string.IsNullOrEmpty(_detailsSearchBuffer))
                     {
                         SubPageAccountNavigator.CreateAccount();

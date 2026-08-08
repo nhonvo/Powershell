@@ -155,12 +155,6 @@ public static class SubPageProjNavigator
         if (detailsSel < 0 || detailsSel >= flatList.Count) return false;
         var item = flatList[detailsSel];
 
-        if (key.Modifiers.HasFlag(ConsoleModifiers.Control) && key.Key == ConsoleKey.A)
-        {
-            ExpandedActionsWorkspacePath = (ExpandedActionsWorkspacePath == item.Workspace?.WorkspacePath) ? null : item.Workspace?.WorkspacePath;
-            return false;
-        }
-
         if (key.Key == ConsoleKey.Tab || key.Key == ConsoleKey.RightArrow || (key.Key == ConsoleKey.Spacebar && string.IsNullOrEmpty(item.Workspace?.Name)))
         {
             if (item.ActionIndex == -1)
@@ -348,7 +342,7 @@ public static class SubPageProjNavigator
             new Rule().RuleStyle("cyan dim"),
             new Markup(scrollStatus),
             new Markup($"  [dim]Selected Target:[/] [bold cyan]{targetDisplay.EscapeMarkup()}[/]"),
-            new Markup("\n[bold cyan][[Enter]][/] Open Target  ·  [bold cyan][[Tab / →]][/] Expand Sub-modules  ·  [bold cyan][[Ctrl+A]][/] Toggle Actions  ·  [bold cyan][[Esc]][/] Clear / Cancel")
+            new Markup("\n[bold cyan][[Enter]][/] Open Target  ·  [bold cyan][[Tab / →]][/] Expand Sub-modules  ·  [bold cyan][[Esc]][/] Clear / Cancel")
         );
     }
 }
