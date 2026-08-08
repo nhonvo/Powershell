@@ -149,7 +149,7 @@ Describe "Core Profile Functions Validation" {
     Context "Learning Suite & Account Integration (C# CommandRouter)" {
         It "Executes learning and account routes via CommandRouter" {
             { Load-AgyTuiDll; [CommandRouter]::Route("due") } | Should Not Throw
-            { Load-AgyTuiDll; [CommandRouter]::Route("autoswitch") } | Should Not Throw
+            { Load-AgyTuiDll; [CommandRouter]::Route("autoswitch"); [CommandRouter]::Route("autoswitch") } | Should Not Throw
         }
     }
 
