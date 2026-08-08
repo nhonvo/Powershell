@@ -2,8 +2,9 @@
 .SYNOPSIS
     Dev Build Script for AgyTuiApp (TreatWarningsAsErrors=true)
 #>
-[CmdletBinding()]
-param()
+param(
+    [string]$Command
+)
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
@@ -23,6 +24,16 @@ try {
     dotnet build csapp/AgyTui/AgyTui.csproj -p:TreatWarningsAsErrors=true
     if ($LASTEXITCODE -eq 0) {
         Write-Host "✅ Dev Build Succeeded cleanly." -ForegroundColor Green
+        if (-not [string]::IsNullOrWhiteSpace($Command)) {
+            Write-Host "🚀 Direct launch into command: '$Command'..." -ForegroundColor Yellow
+            $exe = "csapp\AgyTui\bin\Debug\net9.0\AgyTui.exe"
+            if (-not (Test-Path $exe)) {
+                $exe = "csapp\AgyTui\bin\Debug\net10.0\AgyTui.exe"
+            }
+            if (Test-Path $exe) {
+                & $exe $Command
+            }
+        }
     } else {
         Write-Error "❌ Dev Build Failed."
     }
