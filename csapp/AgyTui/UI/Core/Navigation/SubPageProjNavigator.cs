@@ -75,11 +75,12 @@ public static class SubPageProjNavigator
                             Depth = 1
                         });
 
+                        list.Add(new FlatItem { Workspace = child, WorkspaceIndex = i, ActionIndex = -200, IsChildGroupHeader = true, Depth = 2 });
                         if (ExpandedActionsWorkspacePath == child.WorkspacePath)
                         {
                             for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
                             {
-                                list.Add(new FlatItem { Workspace = child, WorkspaceIndex = i, ActionIndex = j, Depth = 2 });
+                                list.Add(new FlatItem { Workspace = child, WorkspaceIndex = i, ActionIndex = j, Depth = 3 });
                             }
                         }
                     }
@@ -113,11 +114,12 @@ public static class SubPageProjNavigator
                                 Depth = 1
                             });
 
+                            list.Add(new FlatItem { Workspace = child, WorkspaceIndex = i, ActionIndex = -200, IsChildGroupHeader = true, Depth = 2 });
                             if (ExpandedActionsWorkspacePath == child.WorkspacePath)
                             {
                                 for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
                                 {
-                                    list.Add(new FlatItem { Workspace = child, WorkspaceIndex = i, ActionIndex = j, Depth = 2 });
+                                    list.Add(new FlatItem { Workspace = child, WorkspaceIndex = i, ActionIndex = j, Depth = 3 });
                                 }
                             }
                         }
@@ -132,11 +134,12 @@ public static class SubPageProjNavigator
                         }
                     }
 
+                    list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = -200, IsChildGroupHeader = true, Depth = 1 });
                     if (ExpandedActionsWorkspacePath == w.WorkspacePath)
                     {
                         for (int j = 0; j < WorkspaceRegistry.SharedWorkspaceActions.Length; j++)
                         {
-                            list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = j, Depth = 1 });
+                            list.Add(new FlatItem { Workspace = w, WorkspaceIndex = i, ActionIndex = j, Depth = 2 });
                         }
                     }
                 }
@@ -157,6 +160,11 @@ public static class SubPageProjNavigator
 
         if (key.Key == ConsoleKey.Tab || key.Key == ConsoleKey.RightArrow || (key.Key == ConsoleKey.Spacebar && string.IsNullOrEmpty(item.Workspace?.Name)))
         {
+            if (item.ActionIndex == -200)
+            {
+                ExpandedActionsWorkspacePath = (ExpandedActionsWorkspacePath == item.Workspace?.WorkspacePath) ? null : item.Workspace?.WorkspacePath;
+                return false;
+            }
             if (item.ActionIndex == -1)
             {
                 ExpandedWorkspaceIndex = (ExpandedWorkspaceIndex == item.WorkspaceIndex) ? -1 : item.WorkspaceIndex;
@@ -185,7 +193,12 @@ public static class SubPageProjNavigator
 
         if (key.Key == ConsoleKey.Enter)
         {
-            if (item.IsChildGroupHeader)
+            if (item.ActionIndex == -200)
+            {
+                ExpandedActionsWorkspacePath = (ExpandedActionsWorkspacePath == item.Workspace?.WorkspacePath) ? null : item.Workspace?.WorkspacePath;
+                return false;
+            }
+            if (item.IsChildGroupHeader && item.ActionIndex != -200)
             {
                 return false;
             }
@@ -275,6 +288,17 @@ public static class SubPageProjNavigator
                 var expandSign = (item.WorkspaceIndex == ExpandedWorkspaceIndex) ? "[[-]] " : "[[+]] ";
 
                 grid.AddRow(new Markup($"{prefix}{expandSign}{icon} {status}{nameMarkup}{badge}{branchSuffix} {pathMarkup}"));
+            }
+            else if (item.ActionIndex == -200)
+            {
+                var isExpanded = (ExpandedActionsWorkspacePath == item.Workspace.WorkspacePath);
+                var sign = isExpanded ? "[[-]] " : "[[+]] ";
+                var bullet = item.Depth == 2 ? "│   ├── " : "├── ";
+                var prefix = isSelected ? (item.Depth == 2 ? "  [green bold]❯───[/] " : "  [green bold]❯──[/] ") : $"  {bullet}";
+                var labelMarkup = isSelected
+                    ? $"[bold green]{sign}⚡ Workspace Actions (Enter / Tab to Expand)[/]"
+                    : $"[cyan]{sign}⚡ Workspace Actions[/]";
+                grid.AddRow(new Markup($"{prefix}{labelMarkup}"));
             }
             else if (item.ActionIndex == -100)
             {
