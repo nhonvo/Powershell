@@ -916,34 +916,239 @@ public class CommandRouter : ICommandRouter
                         break;
                     case "favorite":
                         {
-                            var favAlias = (args != null && args.Length > 0) ? args[0].Trim().ToLowerInvariant() : null;
-                            if (string.IsNullOrEmpty(favAlias))
+                            var subAction = (args != null && args.Length > 0) ? args[0].Trim().ToLowerInvariant() : null;
+                            var secondaryArg = (args != null && args.Length > 1) ? args[1].Trim().ToLowerInvariant() : null;
+
+                            if (subAction == "reset")
                             {
-                                favAlias = Console.IsInputRedirected ? null : AnsiConsole.Ask<string>("Enter command alias to toggle favorite:");
+                                Config.Current.Ui.FavoriteAliases = [.. Config.DefaultFavoriteAliases];
+                                Config.Save();
+                                SpectrePanel.Success($"Reset Favorites to default list: [{string.Join(", ", Config.DefaultFavoriteAliases)}]");
+                                break;
                             }
-                            if (!string.IsNullOrEmpty(favAlias))
+
+                            if (subAction == "list" || subAction == "ls")
                             {
-                                var cmd = CommandRegistry.GetByAlias(favAlias);
+                                var favList = Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases;
+                                AnsiConsole.Write(new Rule("[bold cyan]Pinned Favorite Aliases[/]").RuleStyle("grey"));
+                                if (favList.Length == 0)
+                                {
+                                    AnsiConsole.MarkupLine("[yellow]No favorite aliases pinned. Use '/favorite <alias>' to pin.[/]");
+                                }
+                                else
+                                {
+                                    foreach (var f in favList)
+                                    {
+                                        var c = CommandRegistry.GetByAlias(f);
+                                        AnsiConsole.MarkupLine($"  [cyan]•[/] [bold white]{f}[/] - {(c != null ? c.DisplayName : "Custom Alias")}");
+                                    }
+                                }
+                                break;
+                            }
+
+                            if (subAction == "add" && !string.IsNullOrEmpty(secondaryArg))
+                            {
+                                var currentFavs = (Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases).ToList();
+                                if (!currentFavs.Contains(secondaryArg, StringComparer.OrdinalIgnoreCase))
+                                {
+                                    currentFavs.Add(secondaryArg);
+                                    Config.Current.Ui.FavoriteAliases = [.. currentFavs];
+                                    Config.Save();
+                                    SpectrePanel.Success($"Added '{secondaryArg}' to Favorites (saved to SQLite DB).");
+                                }
+                                else
+                                {
+                                    SpectrePanel.Info($"'{secondaryArg}' is already in Favorites.");
+                                }
+                                break;
+                            }
+
+                            if ((subAction == "remove" || subAction == "rm" || subAction == "delete") && !string.IsNullOrEmpty(secondaryArg))
+                            {
+                                var currentFavs = (Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases).ToList();
+                                if (currentFavs.Contains(secondaryArg, StringComparer.OrdinalIgnoreCase))
+                                {
+                                    currentFavs.RemoveAll(a => string.Equals(a, secondaryArg, StringComparison.OrdinalIgnoreCase));
+                                    Config.Current.Ui.FavoriteAliases = [.. currentFavs];
+                                    Config.Save();
+                                    SpectrePanel.Success($"Removed '{secondaryArg}' from Favorites (saved to SQLite DB).");
+                                }
+                                else
+                                {
+                                    SpectrePanel.Warning($"'{secondaryArg}' is not in Favorites.");
+                                }
+                                break;
+                            }
+
+                            if (string.IsNullOrEmpty(subAction))
+                            {
+                                if (Console.IsInputRedirected) break;
+
+                                var currentFavs = (Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases).ToList();
+                                var choices = new List<string>();
+
+                                foreach (var favAlias in currentFavs)
+                                {
+                                    var cmd = CommandRegistry.GetByAlias(favAlias);
+                                    var aliasCol = favAlias.PadRight(22);
+                                    var nameCol = cmd != null ? Markup.Escape(cmd.DisplayName) : "Custom Alias";
+                                    choices.Add($"⚡ {aliasCol} │ {nameCol}");
+                                }
+
+                                choices.Add("──────────────────────────────────────────────────────");
+                                choices.Add("➕ Add New Favorite");
+                                choices.Add("🔄 Reset Favorites to Defaults");
+                                choices.Add("❌ Exit");
+
+                                var selectedChoice = AnsiConsole.Prompt(
+                                    new SelectionPrompt<string>()
+                                        .Title("[bold cyan]⭐️ Favorites Manager[/]\n[grey]Left: Command Alias | Right: Description / Management Action:[/]")
+                                        .PageSize(15)
+                                        .AddChoices(choices));
+
+                                if (selectedChoice == "❌ Exit" || selectedChoice.StartsWith("───"))
+                                {
+                                    break;
+                                }
+
+                                if (selectedChoice.StartsWith("⚡ "))
+                                {
+                                    var rawAlias = selectedChoice.Substring(2).Split('│')[0].Trim();
+                                    var subPrompt = AnsiConsole.Prompt(
+                                        new SelectionPrompt<string>()
+                                            .Title($"Favorite Command: [bold cyan]/{Markup.Escape(rawAlias)}[/]")
+                                            .AddChoices([
+                                                $"🚀 Launch /{rawAlias}",
+                                                $"✏️ Edit / Replace /{rawAlias} with Another Command",
+                                                $"🗑️ Remove /{rawAlias} from Favorites",
+                                                "❌ Back"
+                                            ]));
+
+                                    if (subPrompt.StartsWith("🚀 Launch"))
+                                    {
+                                        Execute(rawAlias, args != null && args.Length > 1 ? args[1..] : Array.Empty<string>());
+                                    }
+                                    else if (subPrompt.StartsWith("✏️ Edit"))
+                                    {
+                                        var availableCmds = CommandRegistry.All
+                                            .Where(c => c.ShowInTree && !currentFavs.Contains(c.Alias, StringComparer.OrdinalIgnoreCase) && c.Alias != "favorite")
+                                            .OrderBy(c => c.Alias)
+                                            .ToList();
+
+                                        if (availableCmds.Count == 0)
+                                        {
+                                            SpectrePanel.Info("No other available commands to swap.");
+                                            break;
+                                        }
+
+                                        var editChoices = availableCmds
+                                            .Select(c => $"{c.Alias.PadRight(22)} │ {Markup.Escape(c.DisplayName)}")
+                                            .Concat(["❌ Cancel"])
+                                            .ToList();
+
+                                        var editSelected = AnsiConsole.Prompt(
+                                            new SelectionPrompt<string>()
+                                                .Title($"Select replacement command for [cyan]/{Markup.Escape(rawAlias)}[/]:")
+                                                .PageSize(15)
+                                                .AddChoices(editChoices));
+
+                                        if (editSelected != "❌ Cancel")
+                                        {
+                                            var newAlias = editSelected.Split('│')[0].Trim();
+                                            int idx = currentFavs.FindIndex(a => string.Equals(a, rawAlias, StringComparison.OrdinalIgnoreCase));
+                                            if (idx >= 0)
+                                            {
+                                                currentFavs[idx] = newAlias;
+                                            }
+                                            else
+                                            {
+                                                currentFavs.Add(newAlias);
+                                            }
+                                            Config.Current.Ui.FavoriteAliases = [.. currentFavs];
+                                            Config.Save();
+                                            SpectrePanel.Success($"Replaced '{rawAlias}' with '{newAlias}' in Favorites (saved to SQLite DB).");
+                                        }
+                                    }
+                                    else if (subPrompt.StartsWith("🗑️ Remove"))
+                                    {
+                                        currentFavs.RemoveAll(a => string.Equals(a, rawAlias, StringComparison.OrdinalIgnoreCase));
+                                        Config.Current.Ui.FavoriteAliases = [.. currentFavs];
+                                        Config.Save();
+                                        SpectrePanel.Success($"Removed '{rawAlias}' from Favorites (saved to SQLite DB).");
+                                    }
+                                    break;
+                                }
+
+                                if (selectedChoice.StartsWith("➕ Add"))
+                                {
+                                    var availableCmds = CommandRegistry.All
+                                        .Where(c => c.ShowInTree && !currentFavs.Contains(c.Alias, StringComparer.OrdinalIgnoreCase) && c.Alias != "favorite")
+                                        .OrderBy(c => c.Alias)
+                                        .ToList();
+
+                                    if (availableCmds.Count == 0)
+                                    {
+                                        SpectrePanel.Info("All available commands are already in Favorites.");
+                                        break;
+                                    }
+
+                                    var addChoices = availableCmds
+                                        .Select(c => $"{c.Alias.PadRight(22)} │ {Markup.Escape(c.DisplayName)}")
+                                        .Concat(["❌ Cancel"])
+                                        .ToList();
+
+                                    var addSelected = AnsiConsole.Prompt(
+                                        new SelectionPrompt<string>()
+                                            .Title("Select command to [green]add[/] to Favorites:")
+                                            .PageSize(15)
+                                            .AddChoices(addChoices));
+
+                                    if (addSelected != "❌ Cancel")
+                                    {
+                                        var selectedAlias = addSelected.Split('│')[0].Trim();
+                                        if (!currentFavs.Contains(selectedAlias, StringComparer.OrdinalIgnoreCase))
+                                        {
+                                            currentFavs.Add(selectedAlias);
+                                            Config.Current.Ui.FavoriteAliases = [.. currentFavs];
+                                            Config.Save();
+                                            SpectrePanel.Success($"Added '{selectedAlias}' to Favorites (saved to SQLite DB).");
+                                        }
+                                    }
+                                }
+                                else if (selectedChoice.StartsWith("🔄 Reset"))
+                                {
+                                    Config.Current.Ui.FavoriteAliases = [.. Config.DefaultFavoriteAliases];
+                                    Config.Save();
+                                    SpectrePanel.Success($"Reset Favorites to default list: [{string.Join(", ", Config.DefaultFavoriteAliases)}]");
+                                }
+                                break;
+                            }
+
+                            // Single-alias toggle via CLI argument (e.g. /favorite proj)
+                            var favTargetAlias = subAction;
+                            if (!string.IsNullOrEmpty(favTargetAlias))
+                            {
+                                var cmd = CommandRegistry.GetByAlias(favTargetAlias);
                                 if (cmd == null)
                                 {
-                                    SpectrePanel.Warning($"Unknown command alias '{favAlias}'.");
+                                    SpectrePanel.Warning($"Unknown command alias '{favTargetAlias}'.");
                                 }
                                 else
                                 {
                                     var currentFavs = (Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases).ToList();
-                                    if (currentFavs.Contains(favAlias, StringComparer.OrdinalIgnoreCase))
+                                    if (currentFavs.Contains(favTargetAlias, StringComparer.OrdinalIgnoreCase))
                                     {
-                                        currentFavs.RemoveAll(a => string.Equals(a, favAlias, StringComparison.OrdinalIgnoreCase));
+                                        currentFavs.RemoveAll(a => string.Equals(a, favTargetAlias, StringComparison.OrdinalIgnoreCase));
                                         Config.Current.Ui.FavoriteAliases = [.. currentFavs];
                                         Config.Save();
-                                        SpectrePanel.Success($"Removed '{favAlias}' from Favorites.");
+                                        SpectrePanel.Success($"Removed '{favTargetAlias}' from Favorites (saved to SQLite DB).");
                                     }
                                     else
                                     {
-                                        currentFavs.Add(favAlias);
+                                        currentFavs.Add(favTargetAlias);
                                         Config.Current.Ui.FavoriteAliases = [.. currentFavs];
                                         Config.Save();
-                                        SpectrePanel.Success($"Added '{favAlias}' to Favorites.");
+                                        SpectrePanel.Success($"Added '{favTargetAlias}' to Favorites (saved to SQLite DB).");
                                     }
                                 }
                             }

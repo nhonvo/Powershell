@@ -76,7 +76,7 @@ public sealed class RuntimeState
 
 public static class Config
 {
-    public static readonly string[] DefaultFavoriteAliases = ["proj", "agyswitch", "open-term", "ask-ai", "vault", "ide"];
+    public static readonly string[] DefaultFavoriteAliases = ["proj", "agyswitch", "open-term", "vault", "ide", "ask-ai"];
 
     public static string? OverrideConfigPath { get; set; }
     public static ConfigData Current { get; private set; } = new();
@@ -119,7 +119,10 @@ public static class Config
             try
             {
                 Current = Repository.LoadConfig();
-                Current.Ui.FavoriteAliases = DefaultFavoriteAliases;
+                if (Current.Ui.FavoriteAliases == null)
+                {
+                    Current.Ui.FavoriteAliases = DefaultFavoriteAliases;
+                }
             }
             catch (Exception ex)
             {

@@ -52,15 +52,21 @@ public class MenuNodeBuilderService : IMenuNodeBuilder
         {
             if (catName == "[Favorites]")
             {
-                var favCommands = favoriteAliases
+                var favCommandsList = favoriteAliases
                     .Select(a => CommandRegistry.GetByAlias(a))
                     .Where(c => c != null)
                     .Select(c => CreateCommandNode(c!))
-                    .ToArray();
+                    .ToList();
 
-                if (favCommands.Length > 0)
+                var favoriteManageCmd = CommandRegistry.GetByAlias("favorite");
+                if (favoriteManageCmd != null && !favCommandsList.Any(c => c.Command?.Alias == "favorite"))
                 {
-                    categoryNodes.Add(new MenuNode("favorites", "[Favorites]", MenuNodeKind.Category, favCommands, null));
+                    favCommandsList.Add(CreateCommandNode(favoriteManageCmd));
+                }
+
+                if (favCommandsList.Count > 0)
+                {
+                    categoryNodes.Add(new MenuNode("favorites", "[Favorites]", MenuNodeKind.Category, favCommandsList.ToArray(), null));
                 }
                 continue;
             }
@@ -162,7 +168,8 @@ public class MenuNodeBuilderService : IMenuNodeBuilder
                 ["/dsa-architect"] = 60,
                 ["/career-interview"] = 70,
                 ["/ssh-tools"] = 10,
-                ["/system-reload"] = 20
+                ["/system-reload"] = 20,
+                ["/appearance-favs"] = 30
             };
 
             // Combine all children (both ungrouped and groups) and sort them strictly

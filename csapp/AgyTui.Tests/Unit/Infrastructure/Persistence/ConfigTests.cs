@@ -51,13 +51,126 @@ public class ConfigTests
             var root = AgyTui.UI.Core.Layouts.MenuNodeBuilder.BuildTree();
             var favNode = root.Children.FirstOrDefault(c => c.Id == "favorites" || c.Label == "[Favorites]");
             Assert.NotNull(favNode);
-            Assert.Equal(2, favNode.Children.Length);
-            Assert.Equal("gs", favNode.Children[0].Command?.Alias);
-            Assert.Equal("ga", favNode.Children[1].Command?.Alias);
+            Assert.Contains(favNode.Children, c => c.Command?.Alias == "gs");
+            Assert.Contains(favNode.Children, c => c.Command?.Alias == "ga");
         }
         finally
         {
             Config.Current.Ui.FavoriteAliases = originalFavs;
+        }
+    }
+
+    [Fact]
+    public void FavoriteAliases_Add_SavesAndPersistsNewAlias()
+    {
+        var originalFavs = Config.Current.Ui.FavoriteAliases;
+        try
+        {
+            var favList = (Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases).ToList();
+            if (!favList.Contains("docker-health", StringComparer.OrdinalIgnoreCase))
+            {
+                favList.Add("docker-health");
+            }
+            Config.Current.Ui.FavoriteAliases = [.. favList];
+            Config.Save();
+
+            Config.Load();
+            Assert.Contains("docker-health", Config.Current.Ui.FavoriteAliases);
+        }
+        finally
+        {
+            Config.Current.Ui.FavoriteAliases = originalFavs;
+            Config.Save();
+        }
+    }
+
+    [Fact]
+    public void FavoriteAliases_Remove_RemovesAliasAndPersists()
+    {
+        var originalFavs = Config.Current.Ui.FavoriteAliases;
+        try
+        {
+            var favList = (Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases).ToList();
+            favList.RemoveAll(a => string.Equals(a, "proj", StringComparison.OrdinalIgnoreCase));
+            Config.Current.Ui.FavoriteAliases = [.. favList];
+            Config.Save();
+
+            Config.Load();
+            Assert.DoesNotContain("proj", Config.Current.Ui.FavoriteAliases);
+        }
+        finally
+        {
+            Config.Current.Ui.FavoriteAliases = originalFavs;
+            Config.Save();
+        }
+    }
+
+    [Fact]
+    public void FavoriteAliases_Reset_RestoresDefaultAliases()
+    {
+        var originalFavs = Config.Current.Ui.FavoriteAliases;
+        try
+        {
+            Config.Current.Ui.FavoriteAliases = ["custom1", "custom2"];
+            Config.Save();
+
+            Config.Current.Ui.FavoriteAliases = [.. Config.DefaultFavoriteAliases];
+            Config.Save();
+
+            Config.Load();
+            Assert.Equal(Config.DefaultFavoriteAliases.Length, Config.Current.Ui.FavoriteAliases.Length);
+            Assert.Contains("proj", Config.Current.Ui.FavoriteAliases);
+        }
+        finally
+        {
+            Config.Current.Ui.FavoriteAliases = originalFavs;
+            Config.Save();
+        }
+    }
+
+    [Fact]
+    public void FavoriteAliases_EmptyArray_PreservedOnReload()
+    {
+        var originalFavs = Config.Current.Ui.FavoriteAliases;
+        try
+        {
+            Config.Current.Ui.FavoriteAliases = Array.Empty<string>();
+            Config.Save();
+
+            Config.Load();
+            Assert.NotNull(Config.Current.Ui.FavoriteAliases);
+            Assert.Empty(Config.Current.Ui.FavoriteAliases);
+        }
+        finally
+        {
+            Config.Current.Ui.FavoriteAliases = originalFavs;
+            Config.Save();
+        }
+    }
+
+    [Fact]
+    public void FavoriteAliases_Edit_ReplacesAliasInSlotAndPersists()
+    {
+        var originalFavs = Config.Current.Ui.FavoriteAliases;
+        try
+        {
+            var favList = (Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases).ToList();
+            int idx = favList.FindIndex(a => string.Equals(a, "proj", StringComparison.OrdinalIgnoreCase));
+            if (idx >= 0)
+            {
+                favList[idx] = "gsu";
+            }
+            Config.Current.Ui.FavoriteAliases = [.. favList];
+            Config.Save();
+
+            Config.Load();
+            Assert.Contains("gsu", Config.Current.Ui.FavoriteAliases);
+            Assert.DoesNotContain("proj", Config.Current.Ui.FavoriteAliases);
+        }
+        finally
+        {
+            Config.Current.Ui.FavoriteAliases = originalFavs;
+            Config.Save();
         }
     }
 }

@@ -543,8 +543,10 @@ public static class CommandRegistry
         var dsaCmds = new HashSet<string> { "algo", "complexity", "problems" };
         var careerCmds = new HashSet<string> { "interview", "star", "mock" };
         var obsidianCmds = new HashSet<string> { "obsidian", "obs-vault", "refresh", "sync", "vault-open", "daily-note", "orphan-notes", "obs-graph", "add-resource" };
+        var appearanceCmds = new HashSet<string> { "theme", "ui-mode", "density", "mobile-setup", "favorite", "favorites" };
 
         var hiddenCmds = new HashSet<string> {
+            "cai",
             "p", "prj", "glg", "gpu", "gus", "gundo", "grt", "grtu", "cor",
             "gm", "gmi", "gcf", "gconflictu", "gcfu", "gst", "gstashu", "gstu", "grb", "grebaseu", "grbu",
             "db", "dbu", "dt", "dtu", "dw", "da", "du", "dres", "dclean", "dki", "dkcpu", "dkcpd", "mobile",
@@ -555,7 +557,7 @@ public static class CommandRegistry
         var orderedAliases = new[]
         {
             // Category 1: [Favorites]
-            "proj", "agyswitch", "open-term", "ask-ai", "vault", "ide",
+            "proj", "agyswitch", "open-term", "ide", "ask-ai",
 
             // Category 2: [Workspace & Dev]
             "proj", "cnav", "go", "open-term", "f", "ide", "ide-diff", "ide-search", "scaffold",
@@ -586,7 +588,7 @@ public static class CommandRegistry
             "interview", "star", "mock",
 
             // Category 6: [Obsidian & Resources]
-            "obs-graph", "add-resource",
+            "orphan-notes", "daily-note", "obs-graph", "add-resource",
 
             // Category 7: [Appearance & Layout]
             "theme", "ui-mode", "density", "favorite", "mobile-setup",
@@ -626,9 +628,9 @@ public static class CommandRegistry
             else if (dotnetCmds.Contains(alias)) { cmd.GroupPath = "/dotnet-tools"; cmd.GroupName = ".NET Project Tools"; }
             else if (dockerCmds.Contains(alias)) { cmd.GroupPath = "/docker-tools"; cmd.GroupName = "Docker Tools"; }
             else if (awsCmds.Contains(alias)) { cmd.GroupPath = "/aws-tools"; cmd.GroupName = "AWS Tools"; }
-            else if (claudeCmds.Contains(alias)) { cmd.GroupPath = "/claude-agents"; cmd.GroupName = "Claude Agents"; }
-            else if (codexCmds.Contains(alias)) { cmd.GroupPath = "/codex-agents"; cmd.GroupName = "Codex Agents"; }
-            else if (ollamaCmds.Contains(alias)) { cmd.GroupPath = "/ollama-tools"; cmd.GroupName = "Ollama Tools"; }
+            else if (claudeCmds.Contains(alias) && cmd.Category != "[AI Agent & Ollama]") { cmd.GroupPath = "/claude-agents"; cmd.GroupName = "Claude Agents"; }
+            else if (codexCmds.Contains(alias) && cmd.Category != "[AI Agent & Ollama]") { cmd.GroupPath = "/codex-agents"; cmd.GroupName = "Codex Agents"; }
+            else if (ollamaCmds.Contains(alias) && cmd.Category != "[AI Agent & Ollama]") { cmd.GroupPath = "/ollama-tools"; cmd.GroupName = "Ollama Tools"; }
             else if (deckCmds.Contains(alias)) { cmd.GroupPath = "/antigravity-deck"; cmd.GroupName = "Antigravity Deck (Desk)"; }
             else if (mgrCmds.Contains(alias)) { cmd.GroupPath = "/antigravity-manager"; cmd.GroupName = "Antigravity Manager"; }
             else if (accountMgrCmds.Contains(alias)) { cmd.GroupPath = "/account-mgr"; cmd.GroupName = "Account & Credentials Manager"; }
@@ -644,9 +646,10 @@ public static class CommandRegistry
             else if (csCmds.Contains(alias)) { cmd.GroupPath = "/csharp-master"; cmd.GroupName = "C# & Dev Masterclass"; }
             else if (dsaCmds.Contains(alias)) { cmd.GroupPath = "/dsa-architect"; cmd.GroupName = "DSA & System Design"; }
             else if (careerCmds.Contains(alias)) { cmd.GroupPath = "/career-interview"; cmd.GroupName = "Career & Interview Prep"; }
-            else if (obsidianCmds.Contains(alias)) { cmd.GroupPath = "/obsidian-vault"; cmd.GroupName = "Obsidian Vault & Resources"; }
+            else if (obsidianCmds.Contains(alias) && cmd.Category != "[Obsidian & Resources]") { cmd.GroupPath = "/obsidian-vault"; cmd.GroupName = "Obsidian Vault & Resources"; }
             else if (trackCmds.Contains(alias)) { cmd.GroupPath = "/track"; cmd.GroupName = "Track & Progress"; }
             else if (sshCmds.Contains(alias)) { cmd.GroupPath = "/ssh-tools"; cmd.GroupName = "SSH & Network Tools"; }
+            else if (appearanceCmds.Contains(alias)) { cmd.GroupPath = "/appearance-favs"; cmd.GroupName = "Appearance & Favorites"; }
         }
     }
 
