@@ -373,7 +373,6 @@ class ProfileEnvironment {
         $modules = @(
             @{ Name = "PSReadLine";                         Description = "Core CLI Experience" }
             @{ Name = "Terminal-Icons";                     Description = "Rich File Icons" }
-            @{ Name = "posh-git";                           Description = "Git Status in Prompt" }
             @{ Name = "Microsoft.PowerShell.ConsoleGuiTools"; Description = "Terminal UI" }
         )
         foreach ($mod in $modules) {
