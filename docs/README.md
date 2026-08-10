@@ -48,6 +48,10 @@ graph TD
 - [Automated Machine Setup & Onboarding](02_user_guide/onboarding_and_setup.md): Setup via `Install-AgyEnvironment.ps1`.
 - [PowerShell Commands & Profile Shortcuts](02_user_guide/powershell_profile_shortcuts.md): `cc`, `ccd`, `cnav`, `proj`, `reset-agy`.
 - [Spectre.Console TUI Screen Catalog](02_user_guide/tui_screen_catalog.md): Interactive screens, hotkeys, and navigation.
+- [Simple AGY CLI Menu UI Specification](02_user_guide/agy_cli_simple_menu_ui.md): Lightweight single-column CLI menu navigation design.
+- [Simple AGY CLI Implementation Checklist](02_user_guide/cli_first_checklist.md): Step-by-step checklist for building the single-column CLI menu.
+
+
 
 ### 🛠️ 03. Developer Guide
 - [Dual Environment Workflow (Dev vs. Stable)](03_developer_guide/dual_environment_workflow.md): Isolated sandbox testing flow.
