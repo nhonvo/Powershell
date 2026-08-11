@@ -52,7 +52,7 @@ Describe "Core Profile Functions Validation" {
 
     Context "ProfileHelp Type Accelerator" {
         It "ProfileHelp resolves to the AgyTui type accelerator" {
-            [ProfileHelp].FullName | Should Be "AgyTui.UI.Core.Layouts.ProfileHelp"
+            [ProfileHelp].FullName | Should Be "AgyTui.UI.Screens.Customization.Helpers.ProfileHelp"
         }
     }
 
