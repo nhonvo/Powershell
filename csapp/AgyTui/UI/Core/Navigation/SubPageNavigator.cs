@@ -2,9 +2,12 @@ using AgyTui.Infrastructure.Di;
 using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Rendering;
-
-using AgyTui.UI.Core.Navigation.Interfaces;
+using AgyTui.UI.Core.Navigation.Abstractions;
+using AgyTui.UI.Core.Abstractions;
 using AgyTui.UI.Screens.Workspace;
+using AgyTui.UI.Screens.Customization.Navigators;
+using AgyTui.UI.Screens.Workspace.Navigators;
+using AgyTui.UI.Screens.Learn.Navigators;
 
 namespace AgyTui.UI.Core.Navigation;
 
@@ -161,6 +164,11 @@ public class SubPageNavigatorService : ISubPageNavigator
                 }
                 itemsCount = topics.Length;
             }
+            else if (mode == "favorite")
+            {
+                var favItems = SubPageFavoriteNavigator.GetFavoriteItems(_detailsSearchBuffer);
+                itemsCount = favItems.Count;
+            }
             else if (mode == "proj")
             {
                 workspaces = WorkspaceRegistry.GetWorkspaces();
@@ -304,6 +312,11 @@ public class SubPageNavigatorService : ISubPageNavigator
                         bool shouldExit = SubPageTopicNavigator.HandleSelection(mode, _detailsSearchBuffer, detailsSel);
                         if (shouldExit) return;
                     }
+                    else if (mode == "favorite")
+                    {
+                        bool shouldExit = SubPageFavoriteNavigator.HandleSelection(_detailsSearchBuffer, detailsSel);
+                        if (shouldExit) return;
+                    }
                     break;
 
                 case ConsoleKey.Escape:
@@ -393,6 +406,10 @@ public class SubPageNavigatorService : ISubPageNavigator
         {
             content = SubPageTopicNavigator.Render(grid, mode, _detailsSearchBuffer, selIdx);
         }
+        else if (mode == "favorite")
+        {
+            content = SubPageFavoriteNavigator.Render(grid, _detailsSearchBuffer, selIdx);
+        }
         else if (mode == "proj")
         {
             var currentDir = Directory.GetCurrentDirectory();
@@ -401,14 +418,7 @@ public class SubPageNavigatorService : ISubPageNavigator
             return;
         }
 
-        var panel = new Panel(content)
-        {
-            Header = new PanelHeader($"[bold cyan] {mode.ToUpperInvariant()} Selector [/]"),
-            Border = BoxBorder.Rounded,
-            BorderStyle = new Style(Color.Cyan1),
-            Expand = true
-        };
-        ScreenChrome.WriteSmooth(panel);
+        ScreenChrome.WriteSmooth(content);
     }
 }
 
@@ -421,3 +431,4 @@ public static class SubPageNavigator
     public static void RunScreen(IScreenView screenView, string initialQuery = "") => _service.RunScreen(screenView, initialQuery);
     public static string ProcessSearchKey(ConsoleKeyInfo key, string currentBuffer) => _service.ProcessSearchKey(key, currentBuffer);
 }
+

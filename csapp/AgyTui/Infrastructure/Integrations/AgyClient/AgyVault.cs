@@ -238,7 +238,7 @@ public class AgyVault : IAgyVault
         var encrypted = AgyKeyringHelper.ReadToken($"agy:secret:{key}");
         if (string.IsNullOrEmpty(encrypted)) return null;
         var val = Unprotect(encrypted);
-        return string.IsNullOrEmpty(val) ? null : val;
+        return string.IsNullOrWhiteSpace(val) ? null : val;
     }
 
     public void ListSecrets()

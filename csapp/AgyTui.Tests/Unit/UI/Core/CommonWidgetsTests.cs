@@ -1,6 +1,7 @@
 using AgyTui.Infrastructure.Di;
-using AgyTui.UI.Core.Common;
-using AgyTui.UI.Core.Interfaces;
+using AgyTui.UI.Core.Components;
+using AgyTui.UI.Core.Abstractions;
+using AgyTui.UI.Core.Components.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Tests.Unit.UI.Core;
@@ -75,3 +76,4 @@ public class CommonWidgetsTests
         Assert.NotNull(diskWidget);
     }
 }
+

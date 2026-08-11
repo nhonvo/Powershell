@@ -1,5 +1,6 @@
 using AgyTui.Infrastructure.Di;
-using AgyTui.UI.Core.Navigation.Interfaces;
+using AgyTui.UI.Core.Navigation.Abstractions;
+using AgyTui.UI.Core.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Tests.Unit.UI.Core;
@@ -31,3 +32,4 @@ public class NavigationTests
         Assert.Equal("test", resultBack);
     }
 }
+

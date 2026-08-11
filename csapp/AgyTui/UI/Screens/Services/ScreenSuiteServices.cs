@@ -1,7 +1,7 @@
 using AgyTui.UI.Screens.Career;
-using AgyTui.UI.Screens.Git;
+using AgyTui.UI.Screens.GitNexus;
 using AgyTui.UI.Screens.Ide;
-using AgyTui.UI.Screens.Interfaces;
+using AgyTui.UI.Screens.Services;
 using AgyTui.UI.Screens.Learn;
 
 namespace AgyTui.UI.Screens.Services;
@@ -31,3 +31,4 @@ public class LearnSuiteService : ILearnSuite
     public void RunFlashcards() => FlashcardEngine.PickAndRun("decks");
     public void RunStudySession(string topic = "General", int durationMinutes = 25, int breakMinutes = 5) => StudySession.Run(topic, durationMinutes, breakMinutes);
 }
+

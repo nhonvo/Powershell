@@ -1,4 +1,4 @@
-using AgyTui.UI.Core.Registries;
+using AgyTui.UI.Core.Commands;
 namespace AgyTui.Tests.Unit.Architecture;
 
 public class IdeCommandRegistryTests
@@ -12,4 +12,5 @@ public class IdeCommandRegistryTests
         Assert.NotNull(ctx.CurrentFile);
     }
 }
+
 

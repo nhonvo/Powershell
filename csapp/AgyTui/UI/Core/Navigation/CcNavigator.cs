@@ -1,7 +1,9 @@
 using AgyTui.Infrastructure.Di;
 using AgyTui.UI.Core.Layouts;
-using AgyTui.UI.Core.Layouts.Interfaces;
-using AgyTui.UI.Core.Navigation.Interfaces;
+using AgyTui.UI.Core.Layouts.Abstractions;
+using AgyTui.UI.Core.Abstractions;
+using AgyTui.UI.Core.Navigation.Abstractions;
+using AgyTui.UI.Core.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.UI.Core.Navigation;
@@ -24,9 +26,9 @@ public class CcNavigatorService : ICcNavigator
         try
         {
             var root = MenuNodeBuilder.BuildTree();
-            IMenuRenderer renderer = string.Equals(Config.Current.Ui.Mode, "flat-tree", StringComparison.OrdinalIgnoreCase)
-                ? (IMenuRenderer)_flatTreeRenderer
-                : (IMenuRenderer)_threePaneRenderer;
+            IMenuRenderer renderer = string.Equals(Config.Current.Ui.Mode, "three-pane", StringComparison.OrdinalIgnoreCase)
+                ? (IMenuRenderer)_threePaneRenderer
+                : (IMenuRenderer)_flatTreeRenderer;
             renderer.Run(root);
         }
         finally
@@ -43,3 +45,4 @@ public static class CcNavigator
 
     public static void Run() => _service.Run();
 }
+

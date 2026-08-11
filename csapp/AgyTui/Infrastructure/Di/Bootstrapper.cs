@@ -8,14 +8,14 @@ using AgyTui.UI.Core.State;
 using Microsoft.Extensions.DependencyInjection;
 
 using AgyTui.Infrastructure.Persistence.Seeding;
-using AgyTui.UI.Core.Common;
-using AgyTui.UI.Core.Interfaces;
+using AgyTui.UI.Core.Abstractions;
+using AgyTui.UI.Core.Components;
+using AgyTui.UI.Core.Components.Abstractions;
 using AgyTui.UI.Core.Layouts;
-using AgyTui.UI.Core.Layouts.Interfaces;
+using AgyTui.UI.Core.Layouts.Abstractions;
 using AgyTui.UI.Core.Navigation;
-using AgyTui.UI.Core.Navigation.Interfaces;
+using AgyTui.UI.Core.Navigation.Abstractions;
 using AgyTui.UI.Screens;
-using AgyTui.UI.Screens.Interfaces;
 using AgyTui.UI.Screens.Services;
 using AgyTui.UI.Screens.Workspace;
 
@@ -128,7 +128,6 @@ public static class Bootstrapper
         services.AddSingleton<IScreenView, ThemeScreen>();
         services.AddSingleton<IScreenView, TopicScreen>();
         services.AddSingleton<IUiNavigationHandler, UiNavigationHandler>();
-        services.AddSingleton<AgyTui.UI.Core.Commands.CommandRegistry>();
         services.AddSingleton<AgyTui.UI.Core.Navigation.Routers.GitCommandRouter>();
         services.AddSingleton<AgyTui.UI.Core.Navigation.Routers.AiCommandRouter>();
         services.AddSingleton<AgyTui.UI.Core.Navigation.Routers.LearnCommandRouter>();

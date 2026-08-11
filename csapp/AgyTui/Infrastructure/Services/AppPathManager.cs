@@ -23,9 +23,38 @@ public class AppPathManager : IAppPathManager
 
         return _accountDirCache.GetOrAdd(accountName, name =>
         {
+            var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
+            if (!string.IsNullOrEmpty(userProfile))
+            {
+                var dotGeminiDir = Path.Combine(userProfile, $".gemini_{name}");
+                if (Directory.Exists(dotGeminiDir))
+                {
+                    return dotGeminiDir;
+                }
+            }
+
+            var geminiParent = Path.GetDirectoryName(GeminiHome);
+            if (!string.IsNullOrEmpty(geminiParent) && !string.Equals(geminiParent, userProfile, StringComparison.OrdinalIgnoreCase))
+            {
+                var dotGeminiDir = Path.Combine(geminiParent, $".gemini_{name}");
+                if (Directory.Exists(dotGeminiDir))
+                {
+                    return dotGeminiDir;
+                }
+            }
+
             var accDir = Path.Combine(GeminiHome, "accounts", name);
-            try { Directory.CreateDirectory(accDir); } catch { }
-            return accDir;
+            if (Directory.Exists(accDir))
+            {
+                return accDir;
+            }
+
+            var targetDir = !string.IsNullOrEmpty(userProfile)
+                ? Path.Combine(userProfile, $".gemini_{name}")
+                : accDir;
+
+            try { Directory.CreateDirectory(targetDir); } catch { }
+            return targetDir;
         });
     }
 

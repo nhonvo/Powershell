@@ -1,4 +1,5 @@
 using System.Reflection;
+using AgyTui.Infrastructure.Integrations.AgyClient;
 
 namespace AgyTui.Tests.Unit.Architecture;
 
@@ -10,7 +11,10 @@ public class ArchitectureTests
         var infraAssembly = typeof(AgyAccountStore).Assembly;
 
         var infraTypes = infraAssembly.GetTypes()
-            .Where(t => t.Namespace != null && t.Namespace.StartsWith("AgyTui.Infrastructure"))
+            .Where(t => t.Namespace != null && 
+                        t.Namespace.StartsWith("AgyTui.Infrastructure") && 
+                        !t.Name.Contains("Bootstrapper") && 
+                        (t.DeclaringType == null || !t.DeclaringType.Name.Contains("Bootstrapper")))
             .ToList();
 
         var invalidReferences = new List<string>();

@@ -14,7 +14,7 @@ using AgyTui.Infrastructure.Persistence.Seeding;
 using AgyTui.Infrastructure.Registries;
 using AgyTui.Infrastructure.Services;
 using AgyTui.UI.Core.Commands;
-using AgyTui.UI.Core.Common;
+using AgyTui.UI.Core.Components;
 using AgyTui.UI.Core.Layouts;
 using AgyTui.UI.Core.Navigation;
 using AgyTui.UI.Core.State;
@@ -375,3 +375,4 @@ public class CompleteInterfaceCoverageTests
         Assert.NotNull("ISqliteDatabase.InitializeDatabase");
     }
 }
+

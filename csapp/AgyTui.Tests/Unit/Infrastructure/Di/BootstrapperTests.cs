@@ -1,4 +1,5 @@
-using AgyTui.UI.Core.Navigation.Interfaces;
+using AgyTui.UI.Core.Navigation.Abstractions;
+using AgyTui.UI.Core.Abstractions;
 using AgyTui.Infrastructure.Services;
 using AgyTui.Infrastructure.Di;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
@@ -47,5 +48,6 @@ public class BootstrapperTests
         Assert.Same(provider, Bootstrapper.ServiceProvider);
     }
 }
+
 
 

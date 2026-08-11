@@ -1,6 +1,6 @@
 using AgyTui.Domain.LearnContext;
 using AgyTui.Infrastructure.Persistence.DbContext;
-using AgyTui.UI.Core.Registries;
+using AgyTui.UI.Core.Commands;
 namespace AgyTui.Tests.Integration;
 
 public class LearningDataTests
@@ -60,6 +60,7 @@ public class LearningDataTests
         }
     }
 }
+
 
 
 

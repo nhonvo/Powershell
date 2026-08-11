@@ -1,6 +1,1 @@
-namespace AgyTui.Infrastructure.Services;
-
-public interface ICommandRouter
-{
-    int Execute(string alias, string[]? args = null);
-}
+global using ICommandRouter = AgyTui.UI.Core.Abstractions.ICommandRouter;

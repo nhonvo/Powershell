@@ -1,7 +1,8 @@
 using AgyTui.Infrastructure.Di;
 using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
-using AgyTui.UI.Core.Common;
-using AgyTui.UI.Core.Layouts.Interfaces;
+using AgyTui.UI.Core.Components;
+using AgyTui.UI.Core.Layouts.Abstractions;
+using AgyTui.UI.Core.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 
@@ -209,3 +210,4 @@ public static class ScreenChrome
     public static void RenderFrame(Action drawBody, bool forceClear = false) => _service.RenderFrame(drawBody, forceClear);
     public static void RenderBanner(string? category = null, string? activeItem = null, bool forceClear = false, string? footerHint = null) => _service.RenderBanner(category, activeItem, forceClear, footerHint);
 }
+

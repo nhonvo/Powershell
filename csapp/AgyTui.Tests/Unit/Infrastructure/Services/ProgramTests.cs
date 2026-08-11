@@ -1,4 +1,5 @@
-using AgyTui.UI.Core.Navigation.Interfaces;
+using AgyTui.UI.Core.Navigation.Abstractions;
+using AgyTui.UI.Core.Abstractions;
 using AgyTui.Infrastructure.Services;
 using AgyTui.Infrastructure.Di;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,7 @@ public class ProgramTests
         Assert.Equal(1, exitCode);
     }
 }
+
 
 
 

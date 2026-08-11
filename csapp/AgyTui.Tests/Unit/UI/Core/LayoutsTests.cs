@@ -1,6 +1,8 @@
 using AgyTui.Infrastructure.Di;
 using AgyTui.UI.Core.Layouts;
-using AgyTui.UI.Core.Layouts.Interfaces;
+using AgyTui.UI.Core.Layouts.Abstractions;
+using AgyTui.UI.Core.Abstractions;
+using AgyTui.UI.Screens.Customization.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Tests.Unit.UI.Core;

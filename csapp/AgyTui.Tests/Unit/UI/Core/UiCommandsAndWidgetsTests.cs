@@ -1,5 +1,5 @@
 using AgyTui.UI.Core.Commands;
-using AgyTui.UI.Core.Common;
+using AgyTui.UI.Core.Components;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 using Xunit;
@@ -47,3 +47,4 @@ public class UiCommandsAndWidgetsTests
         Assert.Equal("test", widget.Alias);
     }
 }
+

@@ -283,7 +283,9 @@ public class AgyQuotaEngine : IAgyQuotaEngine
             if (!Directory.Exists(convPath)) convPath = Path.Combine(dir, "brain");
             if (Directory.Exists(convPath)) convCount = Directory.GetDirectories(convPath).Length;
             bool hasToken = File.Exists(Path.Combine(dir, "keyring_token.txt")) ||
-                            File.Exists(Path.Combine(dir, "oauth_creds.json"));
+                            File.Exists(Path.Combine(dir, "oauth_creds.json")) ||
+                            File.Exists(Path.Combine(dir, "google_accounts.json")) ||
+                            _accountStore.GetShortCredentialSignature(accountName) != "None";
 
             if (!hasToken && string.Equals(accountName, _accountStore.GetActiveAccount(), StringComparison.OrdinalIgnoreCase))
             {

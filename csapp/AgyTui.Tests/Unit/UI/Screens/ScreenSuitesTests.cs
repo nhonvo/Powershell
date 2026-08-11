@@ -1,5 +1,5 @@
 using AgyTui.Infrastructure.Di;
-using AgyTui.UI.Screens.Interfaces;
+using AgyTui.UI.Screens.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Tests.Unit.UI.Screens;
@@ -22,3 +22,4 @@ public class ScreenSuitesTests
         Assert.NotNull(learn);
     }
 }
+

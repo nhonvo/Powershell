@@ -1,4 +1,4 @@
-using AgyTui.UI.Core.Registries;
+using AgyTui.UI.Core.Commands;
 using AgyTui.Infrastructure.Registries;
 using AgyTui.UI.Core.Navigation;
 using Xunit;
@@ -59,5 +59,6 @@ public class ProfileAliasParityTests
         }
     }
 }
+
 
 
