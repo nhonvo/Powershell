@@ -49,12 +49,9 @@ public class AppPathManager : IAppPathManager
                 return accDir;
             }
 
-            var targetDir = !string.IsNullOrEmpty(userProfile)
+            return !string.IsNullOrEmpty(userProfile)
                 ? Path.Combine(userProfile, $".gemini_{name}")
                 : accDir;
-
-            try { Directory.CreateDirectory(targetDir); } catch { }
-            return targetDir;
         });
     }
 

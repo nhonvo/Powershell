@@ -149,12 +149,22 @@ public class AgyAccountStore : IAgyAccountStore
 
     public string[] GetAccounts()
     {
-        var accounts = new List<string> { "default" };
+        var accounts = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "default" };
+
+        try
+        {
+            var dbAccs = _accountRepo.GetAccounts();
+            foreach (var dbAcc in dbAccs)
+            {
+                if (!string.IsNullOrWhiteSpace(dbAcc))
+                    accounts.Add(dbAcc);
+            }
+        }
+        catch { }
+
         var scanPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
         if (Directory.Exists(userProfile)) scanPaths.Add(userProfile);
-        var publicDir = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\", "Users", "Public");
-        if (Directory.Exists(publicDir)) scanPaths.Add(publicDir);
         var prefixParent = Path.GetDirectoryName(AgyAccountPrefix);
         if (prefixParent != null && Directory.Exists(prefixParent)) scanPaths.Add(prefixParent);
 
@@ -165,18 +175,19 @@ public class AgyAccountStore : IAgyAccountStore
                 var m = Regex.Match(Path.GetFileName(dir), @"^\.gemini_(.+)$");
                 if (!m.Success) continue;
                 var name = m.Groups[1].Value;
-                if (!Regex.IsMatch(name, @"^(backup|copy|temp|test|testacc)([_-]|$)", RegexOptions.IgnoreCase) && !accounts.Contains(name, StringComparer.OrdinalIgnoreCase)) accounts.Add(name);
+                if (Regex.IsMatch(name, @"^(backup|copy|temp|test|testacc)([_-]|$)", RegexOptions.IgnoreCase)) continue;
+
+                bool hasAuthFiles = File.Exists(Path.Combine(dir, "keyring_token.txt")) ||
+                                    File.Exists(Path.Combine(dir, "google_accounts.json")) ||
+                                    File.Exists(Path.Combine(dir, "oauth_creds.json"));
+
+                if (hasAuthFiles)
+                {
+                    accounts.Add(name);
+                }
             }
         }
-        try
-        {
-            var dbAccs = _accountRepo.GetAccounts();
-            foreach (var dbAcc in dbAccs)
-            {
-                if (!accounts.Contains(dbAcc, StringComparer.OrdinalIgnoreCase)) accounts.Add(dbAcc);
-            }
-        }
-        catch { }
+
         return [.. accounts];
     }
     public string GetActiveAccount()
