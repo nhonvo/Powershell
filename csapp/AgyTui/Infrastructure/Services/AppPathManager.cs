@@ -1,6 +1,4 @@
 using System.Collections.Concurrent;
-using AgyTui.Infrastructure.Common;
-using AgyTui.Infrastructure.Configuration;
 
 namespace AgyTui.Infrastructure.Services;
 

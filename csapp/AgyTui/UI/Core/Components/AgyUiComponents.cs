@@ -1,7 +1,3 @@
-using System.Text;
-using AgyTui.UI.Core.Abstractions;
-using AgyTui.UI.Core.Components.Abstractions;
-using Spectre.Console;
 using Spectre.Console.Rendering;
 
 namespace AgyTui.UI.Core.Components;

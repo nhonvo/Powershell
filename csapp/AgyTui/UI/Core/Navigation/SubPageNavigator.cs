@@ -1,13 +1,4 @@
-using AgyTui.Infrastructure.Di;
-using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Rendering;
-using AgyTui.UI.Core.Navigation.Abstractions;
-using AgyTui.UI.Core.Abstractions;
-using AgyTui.UI.Screens.Workspace;
-using AgyTui.UI.Screens.Customization.Navigators;
-using AgyTui.UI.Screens.Workspace.Navigators;
-using AgyTui.UI.Screens.Learn.Navigators;
 
 namespace AgyTui.UI.Core.Navigation;
 

@@ -1,11 +1,3 @@
-using AgyTui.Infrastructure.Di;
-using AgyTui.UI.Core.Layouts;
-using AgyTui.UI.Core.Layouts.Abstractions;
-using AgyTui.UI.Core.Abstractions;
-using AgyTui.UI.Core.Navigation.Abstractions;
-using AgyTui.UI.Core.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace AgyTui.UI.Core.Navigation;
 
 public class CcNavigatorService : ICcNavigator

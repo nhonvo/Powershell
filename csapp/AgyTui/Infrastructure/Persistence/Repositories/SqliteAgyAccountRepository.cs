@@ -1,9 +1,6 @@
 using System.Text.Json;
-using AgyTui.Domain.AccountContext;
 using AgyTui.Domain.Common;
 using AgyTui.Infrastructure.Middleware;
-using AgyTui.Infrastructure.Persistence.DbContext;
-using AgyTui.Infrastructure.Persistence.Interfaces;
 
 namespace AgyTui.Infrastructure.Persistence.Repositories;
 

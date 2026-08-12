@@ -1,8 +1,4 @@
 using System.Text.Json;
-using AgyTui.Infrastructure.Di;
-using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
-using Spectre.Console;
 using Spectre.Console.Rendering;
 
 namespace AgyTui.UI.Core.Components;

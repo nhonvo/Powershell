@@ -1,5 +1,3 @@
-using AgyTui.Infrastructure.Registries;
-
 namespace AgyTui.Infrastructure.Services;
 
 public interface IResourceRegistry

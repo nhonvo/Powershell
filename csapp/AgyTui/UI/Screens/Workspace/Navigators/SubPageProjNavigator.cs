@@ -1,4 +1,3 @@
-using Spectre.Console;
 using Spectre.Console.Rendering;
 
 namespace AgyTui.UI.Screens.Workspace.Navigators;

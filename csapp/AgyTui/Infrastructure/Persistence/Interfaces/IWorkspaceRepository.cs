@@ -1,5 +1,3 @@
-using AgyTui.Domain.WorkspaceContext;
-
 namespace AgyTui.Infrastructure.Persistence.Interfaces;
 
 public interface IWorkspaceRepository : IRepository<WorkspaceAggregate, string>

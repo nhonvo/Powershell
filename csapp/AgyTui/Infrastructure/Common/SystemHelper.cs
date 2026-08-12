@@ -1,7 +1,4 @@
 using System.Diagnostics;
-using System.Net.Http;
-using System.Text.RegularExpressions;
-using Spectre.Console;
 
 namespace AgyTui.Infrastructure.Common;
 

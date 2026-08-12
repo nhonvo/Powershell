@@ -1,5 +1,3 @@
-using AgyTui.UI.Screens.Learn;
-
 namespace AgyTui.UI.Core.Navigation.Routers;
 
 public class LearnCommandRouter

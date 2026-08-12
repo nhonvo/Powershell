@@ -1,6 +1,3 @@
-using AgyTui.Domain.AccountContext;
-using AgyTui.Infrastructure.Persistence.Interfaces;
-
 namespace AgyTui.Infrastructure.Persistence.Seeding;
 
 public class AccountSeeder : ISeeder

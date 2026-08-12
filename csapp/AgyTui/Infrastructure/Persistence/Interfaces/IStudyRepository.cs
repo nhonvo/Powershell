@@ -1,5 +1,3 @@
-using AgyTui.Domain.LearnContext;
-
 namespace AgyTui.Infrastructure.Persistence.Interfaces;
 
 public interface IStudyRepository

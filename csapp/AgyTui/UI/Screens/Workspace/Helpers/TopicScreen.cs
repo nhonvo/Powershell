@@ -1,5 +1,3 @@
-using AgyTui.UI.Core.Navigation.Abstractions;
-using AgyTui.UI.Core.Abstractions;
 using Spectre.Console.Rendering;
 
 namespace AgyTui.UI.Screens.Workspace.Helpers;

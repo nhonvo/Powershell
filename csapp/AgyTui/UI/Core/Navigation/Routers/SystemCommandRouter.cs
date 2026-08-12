@@ -1,6 +1,4 @@
-using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 using AgyTui.Infrastructure.Integrations.Ai.Services;
-using AgyTui.Infrastructure.Services;
 
 namespace AgyTui.UI.Core.Navigation.Routers;
 

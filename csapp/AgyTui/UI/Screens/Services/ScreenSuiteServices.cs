@@ -1,9 +1,3 @@
-using AgyTui.UI.Screens.Career;
-using AgyTui.UI.Screens.GitNexus;
-using AgyTui.UI.Screens.Ide;
-using AgyTui.UI.Screens.Services;
-using AgyTui.UI.Screens.Learn;
-
 namespace AgyTui.UI.Screens.Services;
 
 public class CareerSuiteService : ICareerSuite

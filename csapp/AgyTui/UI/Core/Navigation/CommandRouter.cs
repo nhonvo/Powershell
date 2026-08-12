@@ -472,7 +472,7 @@ public class CommandRouter : ICommandRouter
                                     }
                                 }
                             }
-                            catch {}
+                            catch { }
                             SpectrePanel.Success("Control Center TUI recompiled successfully! Run 'go' or open a new terminal window to apply binary changes.");
                         }
                         else SpectrePanel.Warning("Build note: If running directly inside AgyTui.exe, Windows locks the executable while in-use. Exit TUI and run 'dbld' or run via PowerShell wrapper to refresh binary.");

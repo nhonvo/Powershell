@@ -1,9 +1,3 @@
-using System.Text.Json;
-using System.Text;
-using AgyTui.Infrastructure.Di;
-using Microsoft.Extensions.DependencyInjection;
-using Spectre.Console;
-
 namespace AgyTui.UI.Screens.Learn.Helpers;
 
 

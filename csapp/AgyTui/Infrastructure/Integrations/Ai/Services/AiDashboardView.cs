@@ -1,7 +1,5 @@
-using AgyTui.Infrastructure.Integrations.AgyClient;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
 using AgyTui.Infrastructure.Integrations.Ai.Providers;
-using AgyTui.Infrastructure.Persistence.Repositories;
 
 namespace AgyTui.Infrastructure.Integrations.Ai.Services;
 

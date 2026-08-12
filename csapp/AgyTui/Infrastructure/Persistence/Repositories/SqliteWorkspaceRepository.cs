@@ -1,7 +1,3 @@
-using AgyTui.Domain.WorkspaceContext;
-using AgyTui.Infrastructure.Persistence.DbContext;
-using AgyTui.Infrastructure.Persistence.Interfaces;
-
 namespace AgyTui.Infrastructure.Persistence.Repositories;
 
 public class SqliteWorkspaceRepository : SqliteRepositoryBase<WorkspaceAggregate, string>, IWorkspaceRepository

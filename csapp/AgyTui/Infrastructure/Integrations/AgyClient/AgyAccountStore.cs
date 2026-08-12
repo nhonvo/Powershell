@@ -1,9 +1,5 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using AgyTui.Infrastructure.Services;
-using AgyTui.Domain.AccountContext;
-using AgyTui.Infrastructure.Di;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Integrations.AgyClient;
 

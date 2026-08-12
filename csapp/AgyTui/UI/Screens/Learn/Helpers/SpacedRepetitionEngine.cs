@@ -1,5 +1,3 @@
-using AgyTui.Domain.LearnContext;
-
 namespace AgyTui.UI.Screens.Learn.Helpers;
 
 public static class SrStateExtensions

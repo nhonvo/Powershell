@@ -3,21 +3,8 @@ using AgyTui.Infrastructure.Integrations.Ai.Providers;
 using AgyTui.Infrastructure.Integrations.Ai.Services;
 using AgyTui.Infrastructure.Logging;
 using AgyTui.Infrastructure.Persistence;
-using AgyTui.UI.Core.Commands;
-using AgyTui.UI.Core.State;
-using Microsoft.Extensions.DependencyInjection;
-
 using AgyTui.Infrastructure.Persistence.Seeding;
-using AgyTui.UI.Core.Abstractions;
-using AgyTui.UI.Core.Components;
-using AgyTui.UI.Core.Components.Abstractions;
-using AgyTui.UI.Core.Layouts;
-using AgyTui.UI.Core.Layouts.Abstractions;
-using AgyTui.UI.Core.Navigation;
-using AgyTui.UI.Core.Navigation.Abstractions;
-using AgyTui.UI.Screens;
-using AgyTui.UI.Screens.Services;
-using AgyTui.UI.Screens.Workspace;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Di;
 
@@ -31,7 +18,8 @@ public static class Bootstrapper
     {
         var services = customServices ?? new ServiceCollection();
 
-        services.AddOptions<Configuration.UiConfig>().Configure(o => {
+        services.AddOptions<Configuration.UiConfig>().Configure(o =>
+        {
             var cfg = Configuration.Config.Current.Ui;
             o.Mode = cfg.Mode;
             o.Density = cfg.Density;
@@ -39,7 +27,8 @@ public static class Bootstrapper
             o.EnableMobile = cfg.EnableMobile;
             o.FavoriteAliases = cfg.FavoriteAliases;
         });
-        services.AddOptions<Configuration.AiConfig>().Configure(o => {
+        services.AddOptions<Configuration.AiConfig>().Configure(o =>
+        {
             var cfg = Configuration.Config.Current.Ai;
             o.Mode = cfg.Mode;
             o.ProviderMode = cfg.ProviderMode;

@@ -1,8 +1,4 @@
-using Spectre.Console;
 using Spectre.Console.Rendering;
-using AgyTui.UI.Core.Layouts;
-using AgyTui.UI.Core.Navigation.Abstractions;
-using AgyTui.UI.Core.Abstractions;
 
 namespace AgyTui.UI.Screens.Scaffolder;
 

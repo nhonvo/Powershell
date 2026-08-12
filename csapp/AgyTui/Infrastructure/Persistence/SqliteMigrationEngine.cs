@@ -1,5 +1,4 @@
 using Microsoft.Data.Sqlite;
-using AgyTui.Infrastructure.Persistence.Interfaces;
 
 namespace AgyTui.Infrastructure.Persistence;
 

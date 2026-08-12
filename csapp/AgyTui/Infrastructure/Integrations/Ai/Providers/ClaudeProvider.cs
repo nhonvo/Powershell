@@ -1,8 +1,4 @@
-using AgyTui.Infrastructure.Di;
-using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 using AgyTui.Infrastructure.Integrations.Ai.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 
 namespace AgyTui.Infrastructure.Integrations.Ai.Providers;
 

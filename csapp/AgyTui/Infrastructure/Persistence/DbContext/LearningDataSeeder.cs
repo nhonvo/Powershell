@@ -1,7 +1,4 @@
 using System.Text.Json;
-using AgyTui.Domain.LearnContext;
-using AgyTui.Domain.WorkspaceContext;
-using AgyTui.Infrastructure.Persistence.Interfaces;
 
 namespace AgyTui.Infrastructure.Persistence.DbContext;
 

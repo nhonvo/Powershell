@@ -1,11 +1,6 @@
-using Spectre.Console;
-using Spectre.Console.Rendering;
-using AgyTui.UI.Core.Navigation;
-using AgyTui.UI.Core.Navigation.Abstractions;
-using AgyTui.UI.Core.Abstractions;
 using AgyTui.Infrastructure.Di;
-using AgyTui.UI.Screens.Workspace;
 using Microsoft.Extensions.DependencyInjection;
+using Spectre.Console.Rendering;
 
 namespace AgyTui.UI.Screens.Customization;
 

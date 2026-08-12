@@ -1,5 +1,3 @@
-using AgyTui.Domain.AccountContext;
-
 namespace AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 
 public sealed record AccountStats(string LastUsed, int UsageCount, string PrivateSize, string JunctionStatus, int SkillsCount, int ConversationsCount, string TokenStatus, string QuotaStatus, double GeminiWeekly, double GeminiFiveHour);

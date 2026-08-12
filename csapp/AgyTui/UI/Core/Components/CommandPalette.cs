@@ -1,7 +1,3 @@
-using AgyTui.UI.Core.Navigation.Abstractions;
-using AgyTui.UI.Core.Abstractions;
-using AgyTui.UI.Core.Commands;
-
 namespace AgyTui.UI.Core.Components;
 
 public sealed record PaletteCommand(string Alias, string Description, string Category);

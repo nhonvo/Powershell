@@ -1,7 +1,4 @@
-using Spectre.Console;
 using Spectre.Console.Rendering;
-using AgyTui.Infrastructure.Di;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.UI.Screens.Customization.Navigators;
 

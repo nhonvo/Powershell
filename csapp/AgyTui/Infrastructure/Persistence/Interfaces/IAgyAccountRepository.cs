@@ -1,5 +1,3 @@
-using AgyTui.Domain.AccountContext;
-
 namespace AgyTui.Infrastructure.Persistence.Interfaces;
 
 public interface IAgyAccountRepository

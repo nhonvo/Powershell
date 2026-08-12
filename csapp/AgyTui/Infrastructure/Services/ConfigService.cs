@@ -1,6 +1,3 @@
-using AgyTui.Infrastructure.Services;
-using AgyTui.Infrastructure.Configuration;
-
 namespace AgyTui.Infrastructure.Services;
 
 public class ConfigService : IConfigService

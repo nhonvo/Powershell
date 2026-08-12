@@ -1,9 +1,5 @@
 using System.Buffers;
-using System.Text.RegularExpressions;
 using AgyTui.Infrastructure.Integrations.Ai.Services;
-using AgyTui.Infrastructure.Di;
-using AgyTui.Infrastructure.Persistence.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.UI.Screens.Ide.Helpers;
 

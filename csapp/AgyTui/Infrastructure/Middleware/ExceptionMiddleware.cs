@@ -1,7 +1,3 @@
-using System;
-using AgyTui.Domain.Common;
-using AgyTui.UI.Core.Components;
-
 namespace AgyTui.Infrastructure.Middleware;
 
 public static class ExceptionMiddleware

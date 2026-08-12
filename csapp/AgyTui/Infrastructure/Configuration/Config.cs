@@ -1,6 +1,3 @@
-using AgyTui.Infrastructure.Di;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace AgyTui.Infrastructure.Configuration;
 
 public sealed class UiConfig

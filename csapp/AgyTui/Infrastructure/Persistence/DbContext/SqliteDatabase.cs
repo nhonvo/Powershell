@@ -1,7 +1,4 @@
-using AgyTui.Infrastructure.Configuration;
-using AgyTui.Infrastructure.Di;
 using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Persistence.DbContext;
 
@@ -15,7 +12,7 @@ public class SqliteDatabase : ISqliteDatabase
         {
             var asmDir = AppContext.BaseDirectory;
             string thisAsmDir = "";
-            try { thisAsmDir = Path.GetDirectoryName(typeof(SqliteDatabase).Assembly.Location) ?? ""; } catch {}
+            try { thisAsmDir = Path.GetDirectoryName(typeof(SqliteDatabase).Assembly.Location) ?? ""; } catch { }
             var candidates = new[]
             {
                 Path.Combine(thisAsmDir, "e_sqlite3.dll"),
@@ -52,7 +49,7 @@ public class SqliteDatabase : ISqliteDatabase
                         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
                         var asmDir = AppContext.BaseDirectory;
                         string thisAsmDir = "";
-                        try { thisAsmDir = Path.GetDirectoryName(typeof(SqliteDatabase).Assembly.Location) ?? ""; } catch {}
+                        try { thisAsmDir = Path.GetDirectoryName(typeof(SqliteDatabase).Assembly.Location) ?? ""; } catch { }
                         var candidates = new[]
                         {
                             Path.Combine(thisAsmDir, "e_sqlite3.dll"),

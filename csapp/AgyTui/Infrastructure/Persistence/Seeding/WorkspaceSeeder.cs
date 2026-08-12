@@ -1,6 +1,4 @@
 using System.Text.Json;
-using AgyTui.Domain.WorkspaceContext;
-using AgyTui.Infrastructure.Persistence.Interfaces;
 
 namespace AgyTui.Infrastructure.Persistence.Seeding;
 

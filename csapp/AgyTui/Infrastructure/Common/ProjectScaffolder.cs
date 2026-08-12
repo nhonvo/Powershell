@@ -1,6 +1,4 @@
 using System.Diagnostics;
-using Spectre.Console;
-using AgyTui.UI.Core.Layouts;
 
 namespace AgyTui.Infrastructure.Common;
 

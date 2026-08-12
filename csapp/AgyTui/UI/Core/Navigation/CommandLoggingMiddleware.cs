@@ -1,7 +1,4 @@
-using AgyTui.Domain.AiAgentContext;
 using AgyTui.Infrastructure.Logging;
-using AgyTui.UI.Core.Abstractions;
-using AgyTui.UI.Core.Navigation.Abstractions;
 
 namespace AgyTui.UI.Core.Navigation;
 

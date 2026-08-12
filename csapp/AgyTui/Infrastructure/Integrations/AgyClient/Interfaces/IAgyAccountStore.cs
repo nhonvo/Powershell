@@ -1,5 +1,3 @@
-using AgyTui.Domain.AccountContext;
-
 namespace AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
 
 public interface IAgyAccountStore

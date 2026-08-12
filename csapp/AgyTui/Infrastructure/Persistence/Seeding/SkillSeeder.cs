@@ -1,5 +1,3 @@
-using AgyTui.Infrastructure.Persistence.Interfaces;
-
 namespace AgyTui.Infrastructure.Persistence.Seeding;
 
 public class SkillSeeder : ISeeder

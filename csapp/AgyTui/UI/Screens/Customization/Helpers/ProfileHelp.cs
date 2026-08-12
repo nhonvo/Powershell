@@ -1,8 +1,4 @@
 using System.Collections.Frozen;
-using System.Text.Json;
-using AgyTui.UI.Core.Components;
-using AgyTui.UI.Core.Commands;
-using Spectre.Console;
 
 namespace AgyTui.UI.Screens.Customization.Helpers;
 

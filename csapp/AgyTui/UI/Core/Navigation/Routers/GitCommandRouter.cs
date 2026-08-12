@@ -1,5 +1,3 @@
-using AgyTui.Infrastructure.Integrations.Git;
-
 namespace AgyTui.UI.Core.Navigation.Routers;
 
 public class GitCommandRouter

@@ -1,7 +1,3 @@
-using AgyTui.Domain.LearnContext;
-using AgyTui.UI.Core.Abstractions;
-using AgyTui.UI.Core.Components.Abstractions;
-
 namespace AgyTui.UI.Core.Components;
 
 public class IconsService : IIcons

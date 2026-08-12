@@ -1,7 +1,3 @@
-using System.Text.Json;
-using AgyTui.Domain.LearnContext;
-using AgyTui.Infrastructure.Persistence.Repositories;
-
 namespace AgyTui.Infrastructure.Persistence.DbContext;
 
 public static class LearnDataPaths

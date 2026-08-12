@@ -1,6 +1,4 @@
 using AgyTui.Infrastructure.Integrations.Ai.Services;
-using AgyTui.Infrastructure.Di;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Registries;
 

@@ -1,7 +1,5 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using AgyTui.Infrastructure.Di;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AgyTui.Infrastructure.Common;
 

@@ -1,11 +1,3 @@
-using AgyTui.Infrastructure.Di;
-using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
-using AgyTui.UI.Core.Components;
-using AgyTui.UI.Core.Layouts.Abstractions;
-using AgyTui.UI.Core.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
-using Spectre.Console;
-
 namespace AgyTui.UI.Core.Layouts;
 
 public class ScreenChromeService : IScreenChrome
