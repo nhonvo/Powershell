@@ -11,7 +11,7 @@ public static class SubPageFavoriteNavigator
 
     public static List<FavoriteItem> GetFavoriteItems(string searchBuffer = "")
     {
-        var currentFavs = (Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases).ToList();
+        var currentFavs = (Config.Current.Ui.FavoriteAliases ?? Array.Empty<string>()).ToList();
         var list = new List<FavoriteItem>();
 
         foreach (var favAlias in currentFavs)
@@ -72,7 +72,7 @@ public static class SubPageFavoriteNavigator
 
     public static void AddNewFavorite()
     {
-        var currentFavs = (Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases).ToList();
+        var currentFavs = (Config.Current.Ui.FavoriteAliases ?? Array.Empty<string>()).ToList();
         var availableCmds = CommandRegistry.All
             .Where(c => c.ShowInTree && !currentFavs.Contains(c.Alias, StringComparer.OrdinalIgnoreCase) && c.Alias != "favorite")
             .OrderBy(c => c.Alias)
@@ -118,7 +118,7 @@ public static class SubPageFavoriteNavigator
         AnsiConsole.Clear();
         if (AnsiConsole.Confirm("Are you sure you want to reset Favorites to default list?"))
         {
-            Config.Current.Ui.FavoriteAliases = [.. Config.DefaultFavoriteAliases];
+            Config.Current.Ui.FavoriteAliases = ["proj", "agyswitch", "open-term", "vault", "ide", "ask-ai"];
             Config.Save();
             SpectrePanel.Success($"Reset Favorites to default list.");
             Thread.Sleep(1200);

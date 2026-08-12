@@ -932,15 +932,16 @@ public class CommandRouter : ICommandRouter
 
                             if (subAction == "reset")
                             {
-                                Config.Current.Ui.FavoriteAliases = [.. Config.DefaultFavoriteAliases];
+                                var defaultList = new[] { "proj", "agyswitch", "open-term", "vault", "ide", "ask-ai" };
+                                Config.Current.Ui.FavoriteAliases = defaultList;
                                 Config.Save();
-                                SpectrePanel.Success($"Reset Favorites to default list: [{string.Join(", ", Config.DefaultFavoriteAliases)}]");
+                                SpectrePanel.Success($"Reset Favorites to default list: [{string.Join(", ", defaultList)}]");
                                 break;
                             }
 
                             if (subAction == "list" || subAction == "ls")
                             {
-                                var favList = Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases;
+                                var favList = Config.Current.Ui.FavoriteAliases ?? Array.Empty<string>();
                                 AnsiConsole.Write(new Rule("[bold cyan]Pinned Favorite Aliases[/]").RuleStyle("grey"));
                                 if (favList.Length == 0)
                                 {
@@ -959,7 +960,7 @@ public class CommandRouter : ICommandRouter
 
                             if (subAction == "add" && !string.IsNullOrEmpty(secondaryArg))
                             {
-                                var currentFavs = (Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases).ToList();
+                                var currentFavs = (Config.Current.Ui.FavoriteAliases ?? Array.Empty<string>()).ToList();
                                 if (!currentFavs.Contains(secondaryArg, StringComparer.OrdinalIgnoreCase))
                                 {
                                     currentFavs.Add(secondaryArg);
@@ -976,7 +977,7 @@ public class CommandRouter : ICommandRouter
 
                             if ((subAction == "remove" || subAction == "rm" || subAction == "delete") && !string.IsNullOrEmpty(secondaryArg))
                             {
-                                var currentFavs = (Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases).ToList();
+                                var currentFavs = (Config.Current.Ui.FavoriteAliases ?? Array.Empty<string>()).ToList();
                                 if (currentFavs.Contains(secondaryArg, StringComparer.OrdinalIgnoreCase))
                                 {
                                     currentFavs.RemoveAll(a => string.Equals(a, secondaryArg, StringComparison.OrdinalIgnoreCase));
@@ -1009,7 +1010,7 @@ public class CommandRouter : ICommandRouter
                                 }
                                 else
                                 {
-                                    var currentFavs = (Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases).ToList();
+                                    var currentFavs = (Config.Current.Ui.FavoriteAliases ?? Array.Empty<string>()).ToList();
                                     if (currentFavs.Contains(favTargetAlias, StringComparer.OrdinalIgnoreCase))
                                     {
                                         currentFavs.RemoveAll(a => string.Equals(a, favTargetAlias, StringComparison.OrdinalIgnoreCase));
@@ -1030,7 +1031,7 @@ public class CommandRouter : ICommandRouter
                         break;
                     case "favorites":
                         {
-                            var favs = Config.Current.Ui.FavoriteAliases ?? Config.DefaultFavoriteAliases;
+                            var favs = Config.Current.Ui.FavoriteAliases ?? Array.Empty<string>();
                             AnsiConsole.Write(new Rule("[bold cyan]Pinned Favorite Aliases[/]").RuleStyle("grey"));
                             if (favs.Length == 0)
                             {

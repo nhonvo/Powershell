@@ -1,8 +1,3 @@
-using System.Text.RegularExpressions;
-using AgyTui.UI.Core.Abstractions;
-using AgyTui.UI.Core.Components.Abstractions;
-using Spectre.Console;
-
 namespace AgyTui.UI.Core.Components;
 
 public class SpectreMenuService : ISpectreMenu

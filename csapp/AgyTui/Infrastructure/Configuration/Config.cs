@@ -9,7 +9,7 @@ public sealed class UiConfig
     public string Density { get; set; } = "comfortable";
     public string ActiveTheme { get; set; } = "neko";
     public bool EnableMobile { get; set; }
-    public string[] FavoriteAliases { get; set; } = Config.DefaultFavoriteAliases;
+    public string[] FavoriteAliases { get; set; } = Array.Empty<string>();
 }
 
 public sealed class AiConfig
@@ -76,8 +76,6 @@ public sealed class RuntimeState
 
 public static class Config
 {
-    public static readonly string[] DefaultFavoriteAliases = ["proj", "agyswitch", "open-term", "vault", "ide", "ask-ai"];
-
     public static string? OverrideConfigPath { get; set; }
     public static ConfigData Current { get; private set; } = new();
     public static RuntimeState Runtime { get; } = new();
@@ -119,16 +117,11 @@ public static class Config
             try
             {
                 Current = Repository.LoadConfig();
-                if (Current.Ui.FavoriteAliases == null)
-                {
-                    Current.Ui.FavoriteAliases = DefaultFavoriteAliases;
-                }
             }
             catch (Exception ex)
             {
                 LogHelper.Log($"[Config] Load fallback: {ex.Message}", "DEBUG");
                 Current = new ConfigData();
-                Current.Ui.FavoriteAliases = DefaultFavoriteAliases;
             }
         }
     }

@@ -27,10 +27,6 @@ public class SqliteConfigRepository : SqliteRepositoryBase<ConfigData, string>, 
                 var cfg = JsonSerializer.Deserialize<ConfigData>(res.ToString()!, JsonOptions);
                 if (cfg != null)
                 {
-                    if (cfg.Ui.FavoriteAliases == null)
-                    {
-                        cfg.Ui.FavoriteAliases = Config.DefaultFavoriteAliases;
-                    }
                     return cfg;
                 }
             }

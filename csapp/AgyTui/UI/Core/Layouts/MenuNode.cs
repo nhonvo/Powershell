@@ -126,7 +126,7 @@ public class MenuNodeBuilderService : IMenuNodeBuilder
             "[Help & Docs]"
         };
 
-        var favoriteAliases = AgyTui.Infrastructure.Configuration.Config.Current.Ui.FavoriteAliases ?? AgyTui.Infrastructure.Configuration.Config.DefaultFavoriteAliases;
+        var favoriteAliases = AgyTui.Infrastructure.Configuration.Config.Current.Ui.FavoriteAliases ?? Array.Empty<string>();
 
         var categoryNodes = new List<MenuNode>();
 
