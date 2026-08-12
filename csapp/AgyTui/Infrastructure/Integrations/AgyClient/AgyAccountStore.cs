@@ -43,11 +43,23 @@ public class AgyAccountStore : IAgyAccountStore
                 using var doc = JsonDocument.Parse(json);
                 if (doc.RootElement.TryGetProperty("activeAccount", out var acc) && acc.ValueKind == JsonValueKind.String)
                 {
-                    return acc.GetString();
+                    var emailStr = acc.GetString();
+                    if (!string.IsNullOrEmpty(emailStr)) return emailStr;
                 }
             }
             catch { }
         }
+
+        try
+        {
+            var dbCreds = _accountRepo.GetAccountCredentials(accountName);
+            if (dbCreds != null && !string.IsNullOrEmpty(dbCreds.Email))
+            {
+                return dbCreds.Email;
+            }
+        }
+        catch { }
+
         return null;
     }
 
@@ -67,13 +79,51 @@ public class AgyAccountStore : IAgyAccountStore
                 }
             }
 
+            if (string.IsNullOrEmpty(rawToken) && string.Equals(accountName, GetActiveAccount(), StringComparison.OrdinalIgnoreCase))
+            {
+                rawToken = AgyKeyringHelper.ReadToken("gemini:antigravity");
+            }
+
             if (string.IsNullOrEmpty(rawToken)) return "None";
 
             var clean = rawToken.Trim();
-            if (clean.Length <= 5) return clean;
+            string plainToken = clean;
 
-            var head = clean[..2];
-            var tail = clean[^3..];
+            try
+            {
+                var vault = new AgyVault(this);
+                var decrypted = vault.Unprotect(clean);
+                if (!string.IsNullOrWhiteSpace(decrypted))
+                {
+                    plainToken = decrypted.Trim();
+                }
+            }
+            catch { }
+
+            if (plainToken.StartsWith("{") && plainToken.EndsWith("}"))
+            {
+                try
+                {
+                    using var doc = JsonDocument.Parse(plainToken);
+                    if (doc.RootElement.TryGetProperty("access_token", out var at) && at.ValueKind == JsonValueKind.String)
+                    {
+                        plainToken = at.GetString() ?? plainToken;
+                    }
+                    else if (doc.RootElement.TryGetProperty("token", out var tk) && tk.ValueKind == JsonValueKind.String)
+                    {
+                        plainToken = tk.GetString() ?? plainToken;
+                    }
+                }
+                catch { }
+            }
+
+            if (plainToken.Length <= 6) return plainToken;
+
+            var headLength = plainToken.StartsWith("ya29") ? 4 : (plainToken.StartsWith("AIza") ? 4 : 3);
+            if (headLength >= plainToken.Length - 3) headLength = 2;
+
+            var head = plainToken[..headLength];
+            var tail = plainToken[^3..];
             return $"{head}..{tail}";
         }
         catch
@@ -177,25 +227,25 @@ public class AgyAccountStore : IAgyAccountStore
                 var name = m.Groups[1].Value;
                 if (Regex.IsMatch(name, @"^(backup|copy|temp|test|testacc)([_-]|$)", RegexOptions.IgnoreCase)) continue;
 
-                bool hasAuthFiles = File.Exists(Path.Combine(dir, "keyring_token.txt")) ||
-                                    File.Exists(Path.Combine(dir, "google_accounts.json")) ||
-                                    File.Exists(Path.Combine(dir, "oauth_creds.json"));
-
-                if (hasAuthFiles)
-                {
-                    accounts.Add(name);
-                }
+                accounts.Add(name);
             }
         }
 
-        return [.. accounts];
+        return accounts.OrderBy(a => a, StringComparer.OrdinalIgnoreCase).ToArray();
     }
+
     public string GetActiveAccount()
     {
-        var dbActive = _accountRepo.GetActiveAccount();
-        if (!string.IsNullOrEmpty(dbActive)) return dbActive;
-
         var envGemini = Environment.GetEnvironmentVariable("GEMINI_HOME");
+        if (string.IsNullOrEmpty(envGemini))
+        {
+            try
+            {
+                envGemini = Environment.GetEnvironmentVariable("GEMINI_HOME", EnvironmentVariableTarget.User);
+            }
+            catch { }
+        }
+
         if (!string.IsNullOrEmpty(envGemini) && Directory.Exists(envGemini))
         {
             var folderName = Path.GetFileName(envGemini.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
@@ -208,6 +258,27 @@ public class AgyAccountStore : IAgyAccountStore
                 return "default";
             }
         }
+
+        try
+        {
+            var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
+            if (!string.IsNullOrEmpty(userProfile))
+            {
+                var activeFile = Path.Combine(userProfile, ".gemini", "active_account.txt");
+                if (File.Exists(activeFile))
+                {
+                    var name = File.ReadAllText(activeFile).Trim();
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        return name;
+                    }
+                }
+            }
+        }
+        catch { }
+
+        var dbActive = _accountRepo.GetActiveAccount();
+        if (!string.IsNullOrEmpty(dbActive)) return dbActive;
 
         return "default";
     }
@@ -225,17 +296,11 @@ public class AgyAccountStore : IAgyAccountStore
             }
         }
 
+        var oldActiveAcc = GetActiveAccount();
+
         (new AgyQuotaEngine(this)).ClearStatsCache();
         UpdateAccountMetadata(accountName);
-        (new AgyVault(this, _accountRepo)).BackupActiveToken(GetActiveAccount());
-
-        if (!temporary)
-        {
-            _accountRepo.SetActiveAccount(accountName);
-            var activeAgg = GetAccountAggregate(accountName);
-            activeAgg.MarkActive();
-            SaveAccountAggregate(activeAgg);
-        }
+        (new AgyVault(this, _accountRepo)).BackupActiveToken(oldActiveAcc);
 
         var targetDirLoc = GetAccountDirectory(accountName);
         Environment.SetEnvironmentVariable("GEMINI_HOME", targetDirLoc);
@@ -244,6 +309,27 @@ public class AgyAccountStore : IAgyAccountStore
             Environment.SetEnvironmentVariable("GEMINI_HOME", targetDirLoc, EnvironmentVariableTarget.User);
         }
         catch { }
+
+        if (!temporary)
+        {
+            try
+            {
+                var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
+                if (!string.IsNullOrEmpty(userProfile))
+                {
+                    var rootGemini = Path.Combine(userProfile, ".gemini");
+                    Directory.CreateDirectory(rootGemini);
+                    File.WriteAllText(Path.Combine(rootGemini, "active_account.txt"), accountName, Encoding.UTF8);
+                }
+            }
+            catch { }
+
+            _accountRepo.SetActiveAccount(accountName);
+            var activeAgg = GetAccountAggregate(accountName);
+            activeAgg.MarkActive();
+            SaveAccountAggregate(activeAgg);
+        }
+
         (new AgyVault(this, _accountRepo)).RestoreActiveToken(accountName);
 
         if (!temporary)

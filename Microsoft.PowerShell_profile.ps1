@@ -641,7 +641,20 @@ function Invoke-MultiAgent { param([string]$Query) Invoke-AgyRoute "ai" $Query }
 function Sync-ActiveAgyEnvironment {
     try {
         $userVal = [System.Environment]::GetEnvironmentVariable("GEMINI_HOME", "User")
-        if ($userVal -and (Test-Path $userVal)) { $env:GEMINI_HOME = $userVal }
+        if ($userVal -and (Test-Path $userVal)) {
+            $env:GEMINI_HOME = $userVal
+        } else {
+            $activeAccFile = Join-Path $env:USERPROFILE ".gemini\active_account.txt"
+            if (Test-Path -LiteralPath $activeAccFile) {
+                $accName = (Get-Content -LiteralPath $activeAccFile -Raw).Trim()
+                if ($accName -and $accName -ne "default") {
+                    $targetHome = Join-Path $env:USERPROFILE ".gemini_$accName"
+                    if (Test-Path -LiteralPath $targetHome) { $env:GEMINI_HOME = $targetHome }
+                } elseif ($accName -eq "default") {
+                    $env:GEMINI_HOME = Join-Path $env:USERPROFILE ".gemini"
+                }
+            }
+        }
         $agyHome = if ($env:GEMINI_HOME) { $env:GEMINI_HOME } else { Join-Path $env:USERPROFILE ".gemini" }
 
         $projFile = Join-Path $agyHome "selected_project.txt"

@@ -14,8 +14,12 @@ public class SqliteDatabase : ISqliteDatabase
         try
         {
             var asmDir = AppContext.BaseDirectory;
+            string thisAsmDir = "";
+            try { thisAsmDir = Path.GetDirectoryName(typeof(SqliteDatabase).Assembly.Location) ?? ""; } catch {}
             var candidates = new[]
             {
+                Path.Combine(thisAsmDir, "e_sqlite3.dll"),
+                Path.Combine(thisAsmDir, "runtimes", "win-x64", "native", "e_sqlite3.dll"),
                 Path.Combine(asmDir, "e_sqlite3.dll"),
                 Path.Combine(asmDir, "runtimes", "win-x64", "native", "e_sqlite3.dll"),
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "e_sqlite3.dll"),
@@ -47,8 +51,12 @@ public class SqliteDatabase : ISqliteDatabase
                     {
                         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
                         var asmDir = AppContext.BaseDirectory;
+                        string thisAsmDir = "";
+                        try { thisAsmDir = Path.GetDirectoryName(typeof(SqliteDatabase).Assembly.Location) ?? ""; } catch {}
                         var candidates = new[]
                         {
+                            Path.Combine(thisAsmDir, "e_sqlite3.dll"),
+                            Path.Combine(thisAsmDir, "runtimes", "win-x64", "native", "e_sqlite3.dll"),
                             Path.Combine(asmDir, "e_sqlite3.dll"),
                             Path.Combine(asmDir, "runtimes", "win-x64", "native", "e_sqlite3.dll"),
                             Path.Combine(baseDir, "e_sqlite3.dll"),
