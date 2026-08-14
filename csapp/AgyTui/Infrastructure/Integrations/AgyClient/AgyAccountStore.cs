@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -5,6 +6,7 @@ namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
 public class AgyAccountStore : IAgyAccountStore
 {
+    private static readonly Encoding Utf8NoBom = new UTF8Encoding(false);
     private readonly IAgyAccountRepository _accountRepo;
     private readonly IAppPathManager _pathManager;
 
@@ -27,10 +29,44 @@ public class AgyAccountStore : IAgyAccountStore
 
     public string GetAccountDirectory(string accountName) => _pathManager.GetAccountDirectory(accountName);
 
-    public string? GetAccountEmail(string accountName)
+    public string GetCanonicalEmail(string accountName)
     {
+        if (string.IsNullOrWhiteSpace(accountName)) return "default@gmail.com";
+        var name = accountName.Trim();
+        if (name.Contains("@")) return name.ToLowerInvariant();
+
+        try
+        {
+            var dbCreds = _accountRepo.GetAccountCredentials(name);
+            if (dbCreds != null && !string.IsNullOrEmpty(dbCreds.Email) && dbCreds.Email.Contains("@"))
+            {
+                var dbEmail = dbCreds.Email.Trim().ToLowerInvariant();
+                if (dbEmail.StartsWith(name.ToLowerInvariant()) || dbEmail.Contains(name.ToLowerInvariant()))
+                {
+                    return dbEmail;
+                }
+            }
+        }
+        catch { }
+
+        if (!string.Equals(name, "default", StringComparison.OrdinalIgnoreCase))
+        {
+            return $"{name.ToLowerInvariant()}@gmail.com";
+        }
+
+        return "default@gmail.com";
+    }
+
+    public void SanitizeAccountDirectory(string accountName)
+    {
+        if (string.IsNullOrWhiteSpace(accountName)) return;
         var dir = GetAccountDirectory(accountName);
+        if (!Directory.Exists(dir)) return;
+
+        var expectedEmail = GetCanonicalEmail(accountName);
         var googleAccountsFile = Path.Combine(dir, "google_accounts.json");
+        bool needsSanitization = false;
+
         if (File.Exists(googleAccountsFile))
         {
             try
@@ -39,24 +75,65 @@ public class AgyAccountStore : IAgyAccountStore
                 using var doc = JsonDocument.Parse(json);
                 if (doc.RootElement.TryGetProperty("activeAccount", out var acc) && acc.ValueKind == JsonValueKind.String)
                 {
-                    var emailStr = acc.GetString();
-                    if (!string.IsNullOrEmpty(emailStr)) return emailStr;
+                    var activeEmail = acc.GetString()?.Trim() ?? "";
+                    if (!string.IsNullOrEmpty(activeEmail) && !string.Equals(activeEmail, expectedEmail, StringComparison.OrdinalIgnoreCase))
+                    {
+                        needsSanitization = true;
+                    }
                 }
+            }
+            catch
+            {
+                needsSanitization = true;
+            }
+        }
+        else
+        {
+            needsSanitization = true;
+        }
+
+        if (needsSanitization)
+        {
+            var filesToDelete = new[] { "google_accounts.json", "oauth_creds.json", "state.json", "keyring_token.txt" };
+            foreach (var f in filesToDelete)
+            {
+                var p = Path.Combine(dir, f);
+                if (File.Exists(p)) { try { File.Delete(p); } catch { } }
+            }
+
+            var subKeyring = Path.Combine(dir, "antigravity-cli", "keyring_token.txt");
+            if (File.Exists(subKeyring)) { try { File.Delete(subKeyring); } catch { } }
+
+            var gObj = new
+            {
+                accounts = new[] { new { email = expectedEmail } },
+                activeAccount = expectedEmail
+            };
+            var gJson = JsonSerializer.Serialize(gObj, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(googleAccountsFile, gJson, Utf8NoBom);
+
+            var sObj = new
+            {
+                accountName = accountName,
+                userEmail = expectedEmail
+            };
+            var sJson = JsonSerializer.Serialize(sObj, new JsonSerializerOptions { WriteIndented = true });
+            Directory.CreateDirectory(Path.Combine(dir, "antigravity-cli"));
+            File.WriteAllText(Path.Combine(dir, "antigravity-cli", "settings.json"), sJson, Utf8NoBom);
+
+            try
+            {
+                _accountRepo.SaveAccountCredentials(new AccountCredentials(accountName, null, gJson, null, null, expectedEmail));
             }
             catch { }
         }
+    }
 
-        try
-        {
-            var dbCreds = _accountRepo.GetAccountCredentials(accountName);
-            if (dbCreds != null && !string.IsNullOrEmpty(dbCreds.Email))
-            {
-                return dbCreds.Email;
-            }
-        }
-        catch { }
-
-        return null;
+    public string? GetAccountEmail(string accountName)
+    {
+        if (string.IsNullOrWhiteSpace(accountName)) return null;
+        SanitizeAccountDirectory(accountName);
+        return GetCanonicalEmail(accountName);
     }
 
     public string GetShortCredentialSignature(string accountName)
@@ -183,7 +260,7 @@ public class AgyAccountStore : IAgyAccountStore
         try
         {
             Directory.CreateDirectory(AgySourceHome);
-            File.WriteAllText(Path.Combine(AgySourceHome, "no_auto_commit_enabled.txt"), next ? "True" : "False", Encoding.UTF8);
+            File.WriteAllText(Path.Combine(AgySourceHome, "no_auto_commit_enabled.txt"), next ? "True" : "False", Utf8NoBom);
             SpectrePanel.Info($"No-Auto-Commit mode is now: {(next ? "Enabled" : "Disabled")}");
         }
         catch
@@ -257,6 +334,16 @@ public class AgyAccountStore : IAgyAccountStore
 
         try
         {
+            var dbActive = _accountRepo.GetActiveAccount();
+            if (!string.IsNullOrEmpty(dbActive) && !string.Equals(dbActive, "default", StringComparison.OrdinalIgnoreCase))
+            {
+                return dbActive;
+            }
+        }
+        catch { }
+
+        try
+        {
             var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
             if (!string.IsNullOrEmpty(userProfile))
             {
@@ -273,8 +360,8 @@ public class AgyAccountStore : IAgyAccountStore
         }
         catch { }
 
-        var dbActive = _accountRepo.GetActiveAccount();
-        if (!string.IsNullOrEmpty(dbActive)) return dbActive;
+        var fallbackActive = _accountRepo.GetActiveAccount();
+        if (!string.IsNullOrEmpty(fallbackActive)) return fallbackActive;
 
         return "default";
     }
@@ -288,7 +375,8 @@ public class AgyAccountStore : IAgyAccountStore
             var targetDir = GetAccountDirectory(accountName);
             if (!Directory.Exists(targetDir))
             {
-                throw new Domain.Exceptions.AccountNotFoundException(accountName);
+                Directory.CreateDirectory(targetDir);
+                SanitizeAccountDirectory(accountName);
             }
         }
 
@@ -315,7 +403,7 @@ public class AgyAccountStore : IAgyAccountStore
                 {
                     var rootGemini = Path.Combine(userProfile, ".gemini");
                     Directory.CreateDirectory(rootGemini);
-                    File.WriteAllText(Path.Combine(rootGemini, "active_account.txt"), accountName, Encoding.UTF8);
+                    File.WriteAllText(Path.Combine(rootGemini, "active_account.txt"), accountName, Utf8NoBom);
                 }
             }
             catch { }
@@ -348,40 +436,89 @@ public class AgyAccountStore : IAgyAccountStore
 
         var destDir = GetAccountDirectory(accountName);
         if (Directory.Exists(destDir))
-            throw new InvalidOperationException($"Account '{accountName}' already exists.");
+        {
+            DeleteDirectoryWithRetry(destDir);
+        }
 
         Directory.CreateDirectory(destDir);
 
-        var credentialsFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            "google_accounts.json", "oauth_creds.json", "state.json", "installation_id", "keyring_token.txt"
-        };
+        var email = accountName.Contains("@") ? accountName : $"{accountName}@gmail.com";
 
-        if (Directory.Exists(AgySourceHome))
+        var gObj = new
         {
-            foreach (var file in Directory.GetFiles(AgySourceHome))
-            {
-                var fileName = Path.GetFileName(file);
-                if (!credentialsFiles.Contains(fileName))
-                {
-                    try
-                    {
-                        File.Copy(file, Path.Combine(destDir, fileName), true);
-                    }
-                    catch { }
-                }
-            }
-        }
+            accounts = new[] { new { email } },
+            activeAccount = email
+        };
+        var gJson = JsonSerializer.Serialize(gObj, new JsonSerializerOptions { WriteIndented = true });
+        File.WriteAllText(Path.Combine(destDir, "google_accounts.json"), gJson, Utf8NoBom);
 
         var installationIdFile = Path.Combine(destDir, "installation_id");
-        File.WriteAllText(installationIdFile, Guid.NewGuid().ToString());
+        File.WriteAllText(installationIdFile, Guid.NewGuid().ToString(), Utf8NoBom);
 
         var subDirs = new[] { "antigravity", "antigravity-cli", "config", "history", "antigravity-ide", "wf", "learn" };
         foreach (var sub in subDirs)
         {
             Directory.CreateDirectory(Path.Combine(destDir, sub));
         }
+
+        var sObj = new
+        {
+            accountName = accountName,
+            userEmail = email
+        };
+        var sJson = JsonSerializer.Serialize(sObj, new JsonSerializerOptions { WriteIndented = true });
+        File.WriteAllText(Path.Combine(destDir, "antigravity-cli", "settings.json"), sJson, Utf8NoBom);
+
+        try
+        {
+            _accountRepo.AddAccount(accountName, email);
+            _accountRepo.SaveAccountCredentials(new AccountCredentials(accountName, null, gJson, null, null, email));
+        }
+        catch { }
+
         (new AgyQuotaEngine(this)).ClearStatsCache();
+    }
+
+    private static void DeleteDirectoryWithRetry(string path, int maxRetries = 5, int delayMs = 150)
+    {
+        if (!Directory.Exists(path)) return;
+
+        try { Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools(); } catch { }
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+
+        Exception? lastEx = null;
+        for (int attempt = 1; attempt <= maxRetries; attempt++)
+        {
+            try
+            {
+                var dirInfo = new DirectoryInfo(path);
+                foreach (var file in dirInfo.GetFiles("*", SearchOption.AllDirectories))
+                {
+                    try { file.Attributes = FileAttributes.Normal; } catch { }
+                }
+                foreach (var subDir in dirInfo.GetDirectories("*", SearchOption.AllDirectories))
+                {
+                    try { subDir.Attributes = FileAttributes.Normal; } catch { }
+                }
+
+                dirInfo.Delete(true);
+                return;
+            }
+            catch (Exception ex)
+            {
+                lastEx = ex;
+                try { Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools(); } catch { }
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                Thread.Sleep(delayMs);
+            }
+        }
+
+        if (lastEx != null)
+        {
+            throw new InvalidOperationException($"Could not delete account directory '{path}': {lastEx.Message}", lastEx);
+        }
     }
 
     public void DeleteAccount(string accountName)
@@ -390,9 +527,6 @@ public class AgyAccountStore : IAgyAccountStore
             throw new ArgumentException("Account name cannot be empty.");
 
         var targetDir = GetAccountDirectory(accountName);
-        if (!Directory.Exists(targetDir))
-            throw new DirectoryNotFoundException($"Account '{accountName}' does not exist.");
-
         bool wasActive = string.Equals(GetActiveAccount(), accountName, StringComparison.OrdinalIgnoreCase);
 
         if (wasActive)
@@ -400,7 +534,16 @@ public class AgyAccountStore : IAgyAccountStore
             AgyKeyringHelper.DeleteToken("gemini:antigravity");
         }
 
-        Directory.Delete(targetDir, true);
+        if (Directory.Exists(targetDir))
+        {
+            DeleteDirectoryWithRetry(targetDir);
+        }
+
+        try
+        {
+            _accountRepo.DeleteAccount(accountName);
+        }
+        catch { }
 
         if (wasActive)
         {
@@ -411,43 +554,104 @@ public class AgyAccountStore : IAgyAccountStore
 
     public void LogoutAccount(string accountName)
     {
-        if (string.Equals(GetActiveAccount(), accountName, StringComparison.OrdinalIgnoreCase))
+        var expectedEmail = GetCanonicalEmail(accountName);
+        bool isActive = string.Equals(GetActiveAccount(), accountName, StringComparison.OrdinalIgnoreCase);
+
+        if (isActive)
         {
             AgyKeyringHelper.DeleteToken("gemini:antigravity");
-        }
-        var dir = GetAccountDirectory(accountName);
-        if (Directory.Exists(dir))
-        {
-            var files = new[] { "google_accounts.json", "oauth_creds.json", "state.json", "keyring_token.txt" };
-            foreach (var f in files)
+            var primaryDir = Path.Combine(Environment.GetEnvironmentVariable("USERPROFILE") ?? "", ".gemini");
+            if (Directory.Exists(primaryDir))
             {
-                var p = Path.Combine(dir, f);
-                if (File.Exists(p))
+                var primaryAuthFiles = new[] { "oauth_creds.json", "state.json", "keyring_token.txt" };
+                foreach (var f in primaryAuthFiles)
                 {
-                    try { File.Delete(p); } catch { }
+                    var p = Path.Combine(primaryDir, f);
+                    if (File.Exists(p)) { try { File.Delete(p); } catch { } }
                 }
             }
         }
-        _accountRepo.SaveAccountCredentials(new AccountCredentials(accountName, null, null, null, null, null));
+
+        var dir = GetAccountDirectory(accountName);
+        if (Directory.Exists(dir))
+        {
+            var authFiles = new[] { "oauth_creds.json", "state.json", "keyring_token.txt" };
+            foreach (var f in authFiles)
+            {
+                var p = Path.Combine(dir, f);
+                if (File.Exists(p)) { try { File.Delete(p); } catch { } }
+            }
+
+            var subKeyring = Path.Combine(dir, "antigravity-cli", "keyring_token.txt");
+            if (File.Exists(subKeyring)) { try { File.Delete(subKeyring); } catch { } }
+
+            var gObj = new
+            {
+                accounts = new[] { new { email = expectedEmail } },
+                activeAccount = expectedEmail
+            };
+            var gJson = JsonSerializer.Serialize(gObj, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(Path.Combine(dir, "google_accounts.json"), gJson, Utf8NoBom);
+        }
+
+        try
+        {
+            _accountRepo.SaveAccountCredentials(new AccountCredentials(accountName, null, null, null, null, expectedEmail));
+        }
+        catch { }
+
         (new AgyQuotaEngine(this)).ClearStatsCache();
     }
 
     public void AuthenticateAccount(string accountName)
     {
-        SetActiveAccount(accountName, false);
+        var email = GetAccountEmail(accountName) ?? (accountName.Contains("@") ? accountName : $"{accountName}@gmail.com");
         var targetDir = GetAccountDirectory(accountName);
-        Environment.SetEnvironmentVariable("GEMINI_HOME", targetDir);
+
+        if (!Directory.Exists(targetDir))
+        {
+            AddAccount(accountName);
+        }
+
+        LogoutAccount(accountName);
+        AgyKeyringHelper.DeleteToken("gemini:antigravity");
+
+        var gObj = new
+        {
+            accounts = new[] { new { email } },
+            activeAccount = email
+        };
+        var gJson = JsonSerializer.Serialize(gObj, new JsonSerializerOptions { WriteIndented = true });
+        File.WriteAllText(Path.Combine(targetDir, "google_accounts.json"), gJson, Utf8NoBom);
+
+        var sObj = new
+        {
+            accountName = accountName,
+            userEmail = email
+        };
+        var sJson = JsonSerializer.Serialize(sObj, new JsonSerializerOptions { WriteIndented = true });
+        Directory.CreateDirectory(Path.Combine(targetDir, "antigravity-cli"));
+        File.WriteAllText(Path.Combine(targetDir, "antigravity-cli", "settings.json"), sJson, Utf8NoBom);
+
+        SetActiveAccount(accountName, false);
+
+        var envDict = new Dictionary<string, string?>
+        {
+            ["GEMINI_HOME"] = targetDir,
+            ["GEMINI_CLI_IDE_AUTH_TOKEN"] = null,
+            ["GEMINI_CLI_IDE_SERVER_PORT"] = null
+        };
 
         var agyExe = Helpers.ProcessRunner.Instance.FindOnPath("agy") ?? Helpers.ProcessRunner.Instance.FindOnPath("antigravity");
         if (!string.IsNullOrEmpty(agyExe))
         {
-            SpectrePanel.Info($"Launching OAuth login for '{accountName}' via '{agyExe}'...");
-            Helpers.ProcessRunner.Instance.RunInteractive(agyExe, ["auth", "login"], new Dictionary<string, string?> { ["GEMINI_HOME"] = targetDir }, targetDir);
+            SpectrePanel.Info($"Launching OAuth login for '{accountName}' ({email}) via '{agyExe}'...");
+            Helpers.ProcessRunner.Instance.RunInteractive(agyExe, ["auth", "login"], envDict, targetDir);
         }
         else
         {
-            SpectrePanel.Info($"Launching OAuth login for '{accountName}'...");
-            Helpers.ProcessRunner.Instance.RunInteractive("pwsh", ["-NoProfile", "-Command", $"$env:GEMINI_HOME='{targetDir}'; agy auth login"], null, targetDir);
+            SpectrePanel.Info($"Launching OAuth login for '{accountName}' ({email})...");
+            Helpers.ProcessRunner.Instance.RunInteractive("pwsh", ["-NoProfile", "-Command", $"Remove-Item Env:\\GEMINI_CLI_IDE_AUTH_TOKEN -ErrorAction SilentlyContinue; Remove-Item Env:\\GEMINI_CLI_IDE_SERVER_PORT -ErrorAction SilentlyContinue; $env:GEMINI_HOME='{targetDir}'; agy"], null, targetDir);
         }
         (new AgyVault(this, _accountRepo)).BackupActiveToken(accountName);
         (new AgyQuotaEngine(this)).ClearStatsCache();
@@ -470,11 +674,24 @@ public class AgyAccountStore : IAgyAccountStore
             {
                 foreach (var dir in Directory.GetDirectories(path, ".gemini_*"))
                 {
-                    try { Directory.Delete(dir, true); } catch { }
+                    try { DeleteDirectoryWithRetry(dir); } catch { }
                 }
             }
             catch { }
         }
+
+        try
+        {
+            var dbAccs = _accountRepo.GetAccounts();
+            foreach (var dbAcc in dbAccs)
+            {
+                if (!string.Equals(dbAcc, "default", StringComparison.OrdinalIgnoreCase))
+                {
+                    _accountRepo.DeleteAccount(dbAcc);
+                }
+            }
+        }
+        catch { }
 
         LogoutAccount("default");
         SetActiveAccount("default", false);
@@ -483,6 +700,17 @@ public class AgyAccountStore : IAgyAccountStore
 
     public bool IsAutoSwitchEnabled()
     {
+        try
+        {
+            var configRepo = new Persistence.Repositories.SqliteConfigRepository(new Persistence.DbContext.SqliteDatabase());
+            var val = configRepo.GetState("auto_switch_enabled");
+            if (!string.IsNullOrEmpty(val))
+            {
+                return val.Trim() != "False";
+            }
+        }
+        catch { }
+
         var file = Path.Combine(AgySourceHome, "auto_switch_enabled.txt");
         if (!File.Exists(file)) return true;
 
@@ -499,16 +727,22 @@ public class AgyAccountStore : IAgyAccountStore
     public void ToggleAutoSwitch()
     {
         var current = IsAutoSwitchEnabled();
+        var newStateStr = current ? "False" : "True";
+        try
+        {
+            var configRepo = new Persistence.Repositories.SqliteConfigRepository(new Persistence.DbContext.SqliteDatabase());
+            configRepo.SetState("auto_switch_enabled", newStateStr);
+        }
+        catch { }
+
         try
         {
             Directory.CreateDirectory(AgySourceHome);
-            File.WriteAllText(Path.Combine(AgySourceHome, "auto_switch_enabled.txt"), current ? "False" : "True", Encoding.UTF8);
-            SpectrePanel.Info($"Auto-Switch is now: {(current ? "Disabled" : "Enabled")}");
+            File.WriteAllText(Path.Combine(AgySourceHome, "auto_switch_enabled.txt"), newStateStr, Utf8NoBom);
         }
-        catch
-        {
-            SpectrePanel.Error("Failed to update Auto-Switch setting.");
-        }
+        catch { }
+
+        SpectrePanel.Info($"Auto-Switch is now: {(current ? "Disabled" : "Enabled")}");
     }
 
     public string? FindAutoSwitchCandidate()

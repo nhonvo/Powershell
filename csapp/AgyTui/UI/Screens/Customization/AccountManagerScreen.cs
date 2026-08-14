@@ -33,8 +33,31 @@ public class AccountManagerScreen : IScreenView
 
         if (key.Key == ConsoleKey.Enter)
         {
-            bool shouldExit = SubPageAccountNavigator.HandleSelection(state.SearchFilter, state.SelectedIndex);
+            bool shouldExit = SubPageAccountNavigator.HandleSelection(state.SearchFilter, state.SelectedIndex, AccountStore, QuotaEngine);
             return new ScreenNavigationResult(shouldExit ? NavigationAction.Exit : NavigationAction.Handled);
+        }
+
+        switch (key.Key)
+        {
+            case ConsoleKey.A:
+                SubPageAccountNavigator.CreateAccount(AccountStore);
+                return new ScreenNavigationResult(NavigationAction.Handled);
+
+            case ConsoleKey.D:
+                SubPageAccountNavigator.DeleteAccount(state.SearchFilter, state.SelectedIndex, AccountStore);
+                return new ScreenNavigationResult(NavigationAction.Handled);
+
+            case ConsoleKey.L:
+                SubPageAccountNavigator.LoginAccount(state.SearchFilter, state.SelectedIndex, AccountStore);
+                return new ScreenNavigationResult(NavigationAction.Handled);
+
+            case ConsoleKey.O:
+                SubPageAccountNavigator.LogoutAccount(state.SearchFilter, state.SelectedIndex, AccountStore);
+                return new ScreenNavigationResult(NavigationAction.Handled);
+
+            case ConsoleKey.R:
+                SubPageAccountNavigator.PurgeAccounts(AccountStore);
+                return new ScreenNavigationResult(NavigationAction.Handled);
         }
 
         return new ScreenNavigationResult(NavigationAction.Continue);

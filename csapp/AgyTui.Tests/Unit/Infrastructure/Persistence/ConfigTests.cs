@@ -3,6 +3,15 @@ namespace AgyTui.Tests.Unit.Infrastructure.Persistence;
 [Collection("Sequential")]
 public class ConfigTests
 {
+    public ConfigTests()
+    {
+        if (Config.Current.Ui.FavoriteAliases == null || Config.Current.Ui.FavoriteAliases.Length == 0)
+        {
+            Config.Current.Ui.FavoriteAliases = ["proj", "agyswitch", "open-term", "ask-ai", "vault", "ide"];
+            Config.Save();
+        }
+    }
+
     [Fact]
     public void Config_Defaults_AreValid()
     {
@@ -143,7 +152,9 @@ public class ConfigTests
         }
         finally
         {
-            Config.Current.Ui.FavoriteAliases = originalFavs;
+            Config.Current.Ui.FavoriteAliases = (originalFavs != null && originalFavs.Length > 0)
+                ? originalFavs
+                : ["proj", "agyswitch", "open-term", "ask-ai", "vault", "ide"];
             Config.Save();
         }
     }

@@ -6,6 +6,8 @@ public interface IAgyAccountStore
     string AgyAccountPrefix { get; }
     string GetAccountDirectory(string accountName);
     string? GetAccountEmail(string accountName);
+    string GetCanonicalEmail(string accountName);
+    void SanitizeAccountDirectory(string accountName);
     string GetShortCredentialSignature(string accountName);
     AccountMetadata GetAccountMetadata(string accountName);
     void UpdateAccountMetadata(string accountName);

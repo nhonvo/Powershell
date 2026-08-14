@@ -1,11 +1,13 @@
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 
 namespace AgyTui.Infrastructure.Integrations.AgyClient;
 
 public class AgyVault : IAgyVault
 {
+    private static readonly Encoding Utf8NoBom = new UTF8Encoding(false);
     private static readonly byte[] Entropy = Encoding.UTF8.GetBytes("AgyTui_Secure_Entropy_v1");
     private readonly IAgyAccountStore _accountStore;
     private readonly IAgyAccountRepository _accountRepo;
@@ -66,82 +68,75 @@ public class AgyVault : IAgyVault
             if (!Directory.Exists(accDir)) Directory.CreateDirectory(accDir);
 
             var primaryDir = Path.Combine(Environment.GetEnvironmentVariable("USERPROFILE") ?? "", ".gemini");
-            var token = AgyKeyringHelper.ReadToken("gemini:antigravity");
+            if (!Directory.Exists(primaryDir)) return;
 
-            if (!string.IsNullOrEmpty(token) && Directory.Exists(primaryDir) && !string.Equals(accDir, primaryDir, StringComparison.OrdinalIgnoreCase))
+            var expectedEmail = _accountStore.GetCanonicalEmail(accountName);
+            var primaryGJson = Path.Combine(primaryDir, "google_accounts.json");
+
+            bool primaryBelongsToAccount = false;
+            if (File.Exists(primaryGJson))
             {
-                var primaryGJson = Path.Combine(primaryDir, "google_accounts.json");
-                bool isPrimaryMatchingAcc = true;
-                if (File.Exists(primaryGJson))
+                try
                 {
-                    try
+                    var jsonStr = File.ReadAllText(primaryGJson);
+                    using var doc = JsonDocument.Parse(jsonStr);
+                    if (doc.RootElement.TryGetProperty("activeAccount", out var accProp) && accProp.ValueKind == JsonValueKind.String)
                     {
-                        var jsonStr = File.ReadAllText(primaryGJson);
-                        using var doc = JsonDocument.Parse(jsonStr);
-                        if (doc.RootElement.TryGetProperty("activeAccount", out var accProp) && accProp.ValueKind == JsonValueKind.String)
+                        var activeEmail = accProp.GetString()?.Trim() ?? "";
+                        if (!string.IsNullOrEmpty(activeEmail) && !string.IsNullOrEmpty(expectedEmail) && string.Equals(activeEmail, expectedEmail, StringComparison.OrdinalIgnoreCase))
                         {
-                            var activeEmail = accProp.GetString() ?? "";
-                            var targetEmail = _accountStore.GetAccountEmail(accountName) ?? "";
-                            if (!string.IsNullOrEmpty(activeEmail) && !string.IsNullOrEmpty(targetEmail) && !string.Equals(activeEmail, targetEmail, StringComparison.OrdinalIgnoreCase))
-                            {
-                                isPrimaryMatchingAcc = false;
-                            }
-                        }
-                    }
-                    catch { }
-                }
-
-                if (isPrimaryMatchingAcc)
-                {
-                    var filesToSync = new[]
-                    {
-                        "google_accounts.json", "oauth_creds.json", "state.json", "installation_id", "keyring_token.txt",
-                        Path.Combine("antigravity-cli", "settings.json"),
-                        Path.Combine("antigravity-cli", "installation_id"),
-                        Path.Combine("antigravity-cli", "keyring_token.txt")
-                    };
-                    foreach (var f in filesToSync)
-                    {
-                        var src = Path.Combine(primaryDir, f);
-                        var dst = Path.Combine(accDir, f);
-                        if (File.Exists(src))
-                        {
-                            try
-                            {
-                                var parent = Path.GetDirectoryName(dst);
-                                if (!string.IsNullOrEmpty(parent)) Directory.CreateDirectory(parent);
-                                File.Copy(src, dst, overwrite: true);
-                            }
-                            catch { }
+                            primaryBelongsToAccount = true;
                         }
                     }
                 }
+                catch { }
+            }
+            else if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
+            {
+                primaryBelongsToAccount = true;
             }
 
+            if (!primaryBelongsToAccount) return;
+
+            var token = AgyKeyringHelper.ReadToken("gemini:antigravity");
             string? encryptedToken = null;
             if (!string.IsNullOrEmpty(token))
             {
                 encryptedToken = Protect(token);
-                File.WriteAllText(Path.Combine(accDir, "keyring_token.txt"), encryptedToken, Encoding.UTF8);
-            }
-            else if (File.Exists(Path.Combine(accDir, "keyring_token.txt")))
-            {
-                encryptedToken = File.ReadAllText(Path.Combine(accDir, "keyring_token.txt")).Trim();
+                File.WriteAllText(Path.Combine(accDir, "keyring_token.txt"), encryptedToken, Utf8NoBom);
             }
 
-            if (string.IsNullOrEmpty(encryptedToken))
+            if (!string.Equals(accDir, primaryDir, StringComparison.OrdinalIgnoreCase))
             {
-                var nullCreds = new AccountCredentials(accountName, null, null, null, null, null);
-                _accountRepo.SaveAccountCredentials(nullCreds);
-                return;
+                var filesToSync = new[]
+                {
+                    "google_accounts.json", "oauth_creds.json", "state.json", "installation_id", "keyring_token.txt",
+                    Path.Combine("antigravity-cli", "settings.json"),
+                    Path.Combine("antigravity-cli", "installation_id"),
+                    Path.Combine("antigravity-cli", "keyring_token.txt")
+                };
+                foreach (var f in filesToSync)
+                {
+                    var src = Path.Combine(primaryDir, f);
+                    var dst = Path.Combine(accDir, f);
+                    if (File.Exists(src))
+                    {
+                        try
+                        {
+                            var parent = Path.GetDirectoryName(dst);
+                            if (!string.IsNullOrEmpty(parent)) Directory.CreateDirectory(parent);
+                            File.Copy(src, dst, overwrite: true);
+                        }
+                        catch { }
+                    }
+                }
             }
 
             string? googleAcc = File.Exists(Path.Combine(accDir, "google_accounts.json")) ? File.ReadAllText(Path.Combine(accDir, "google_accounts.json")) : null;
             string? oauthCreds = File.Exists(Path.Combine(accDir, "oauth_creds.json")) ? File.ReadAllText(Path.Combine(accDir, "oauth_creds.json")) : null;
             string? stateJson = File.Exists(Path.Combine(accDir, "state.json")) ? File.ReadAllText(Path.Combine(accDir, "state.json")) : null;
-            string? email = _accountStore.GetAccountEmail(accountName);
 
-            var creds = new AccountCredentials(accountName, encryptedToken, googleAcc, oauthCreds, stateJson, email);
+            var creds = new AccountCredentials(accountName, encryptedToken, googleAcc, oauthCreds, stateJson, expectedEmail);
             _accountRepo.SaveAccountCredentials(creds);
         }
         catch { }
@@ -151,6 +146,8 @@ public class AgyVault : IAgyVault
     {
         try
         {
+            _accountStore.SanitizeAccountDirectory(accountName);
+
             var accDir = _accountStore.GetAccountDirectory(accountName);
             if (!Directory.Exists(accDir)) Directory.CreateDirectory(accDir);
 
@@ -179,26 +176,47 @@ public class AgyVault : IAgyVault
             if (string.IsNullOrEmpty(token) && dbCreds != null && !string.IsNullOrEmpty(dbCreds.KeyringToken))
             {
                 token = Unprotect(dbCreds.KeyringToken);
-                File.WriteAllText(diskTokenFile, dbCreds.KeyringToken, Encoding.UTF8);
+                File.WriteAllText(diskTokenFile, dbCreds.KeyringToken, Utf8NoBom);
 
                 if (!File.Exists(Path.Combine(accDir, "google_accounts.json")) && !string.IsNullOrEmpty(dbCreds.GoogleAccountsJson))
-                    File.WriteAllText(Path.Combine(accDir, "google_accounts.json"), dbCreds.GoogleAccountsJson, Encoding.UTF8);
+                    File.WriteAllText(Path.Combine(accDir, "google_accounts.json"), dbCreds.GoogleAccountsJson, Utf8NoBom);
 
                 if (!File.Exists(Path.Combine(accDir, "oauth_creds.json")) && !string.IsNullOrEmpty(dbCreds.OAuthCredsJson))
-                    File.WriteAllText(Path.Combine(accDir, "oauth_creds.json"), dbCreds.OAuthCredsJson, Encoding.UTF8);
+                    File.WriteAllText(Path.Combine(accDir, "oauth_creds.json"), dbCreds.OAuthCredsJson, Utf8NoBom);
 
                 if (!File.Exists(Path.Combine(accDir, "state.json")) && !string.IsNullOrEmpty(dbCreds.StateJson))
-                    File.WriteAllText(Path.Combine(accDir, "state.json"), dbCreds.StateJson, Encoding.UTF8);
+                    File.WriteAllText(Path.Combine(accDir, "state.json"), dbCreds.StateJson, Utf8NoBom);
             }
-            else
+
+            if (!string.Equals(accDir, primaryDir, StringComparison.OrdinalIgnoreCase))
             {
-                var tokenFile = Path.Combine(accDir, "keyring_token.txt");
-                if (File.Exists(tokenFile))
+                foreach (var f in filesToSync)
                 {
-                    var encrypted = File.ReadAllText(tokenFile).Trim();
-                    if (!string.IsNullOrEmpty(encrypted))
+                    var src = Path.Combine(accDir, f);
+                    var dst = Path.Combine(primaryDir, f);
+                    if (File.Exists(src))
                     {
-                        token = Unprotect(encrypted);
+                        try
+                        {
+                            var parent = Path.GetDirectoryName(dst);
+                            if (!string.IsNullOrEmpty(parent)) Directory.CreateDirectory(parent);
+                            if (File.Exists(dst)) { try { File.SetAttributes(dst, FileAttributes.Normal); } catch { } }
+                            File.Copy(src, dst, overwrite: true);
+                        }
+                        catch
+                        {
+                            try
+                            {
+                                Thread.Sleep(50);
+                                if (File.Exists(dst)) { try { File.SetAttributes(dst, FileAttributes.Normal); } catch { } }
+                                File.Copy(src, dst, overwrite: true);
+                            }
+                            catch { }
+                        }
+                    }
+                    else if (File.Exists(dst))
+                    {
+                        try { File.Delete(dst); } catch { }
                     }
                 }
             }
@@ -206,39 +224,10 @@ public class AgyVault : IAgyVault
             if (!string.IsNullOrEmpty(token))
             {
                 AgyKeyringHelper.WriteToken("gemini:antigravity", "antigravity", token);
-                if (!string.Equals(accDir, primaryDir, StringComparison.OrdinalIgnoreCase))
-                {
-                    foreach (var f in filesToSync)
-                    {
-                        var src = Path.Combine(accDir, f);
-                        var dst = Path.Combine(primaryDir, f);
-                        if (File.Exists(src))
-                        {
-                            try
-                            {
-                                var parent = Path.GetDirectoryName(dst);
-                                if (!string.IsNullOrEmpty(parent)) Directory.CreateDirectory(parent);
-                                File.Copy(src, dst, overwrite: true);
-                            }
-                            catch { }
-                        }
-                    }
-                }
             }
             else
             {
                 AgyKeyringHelper.DeleteToken("gemini:antigravity");
-                if (!string.Equals(accDir, primaryDir, StringComparison.OrdinalIgnoreCase))
-                {
-                    foreach (var f in filesToSync)
-                    {
-                        var dst = Path.Combine(primaryDir, f);
-                        if (File.Exists(dst))
-                        {
-                            try { File.Delete(dst); } catch { }
-                        }
-                    }
-                }
             }
         }
         catch { }
@@ -459,8 +448,45 @@ internal static class AgyKeyringHelper
 
     public static bool DeleteToken(string target)
     {
-        WriteToken(target, "deleted", " ");
-        return CredDelete(target, 1, 0);
+        bool d1 = CredDelete(target, 1, 0);
+        bool d2 = CredDelete(target, 2, 0);
+        bool d3 = CredDelete("LegacyGeneric:target=" + target, 1, 0);
+        bool d4 = CredDelete("LegacyGeneric:target=" + target, 2, 0);
+        try
+        {
+            using var proc1 = new System.Diagnostics.Process
+            {
+                StartInfo = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "cmdkey",
+                    Arguments = $"/delete:{target}",
+                    CreateNoWindow = true,
+                    UseShellExecute = false
+                }
+            };
+            proc1.Start();
+            proc1.WaitForExit(1000);
+        }
+        catch { }
+
+        try
+        {
+            using var proc2 = new System.Diagnostics.Process
+            {
+                StartInfo = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "cmdkey",
+                    Arguments = $"/delete:LegacyGeneric:target={target}",
+                    CreateNoWindow = true,
+                    UseShellExecute = false
+                }
+            };
+            proc2.Start();
+            proc2.WaitForExit(1000);
+        }
+        catch { }
+
+        return d1 || d2 || d3 || d4;
     }
 
     public static string[] ListTokens(string prefix)

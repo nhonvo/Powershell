@@ -23,12 +23,12 @@ This document serves as the primary sitemap and entry point for the **PowerShell
 
 ```mermaid
 graph TD
-    User([User / Developer]) -->|PowerShell Profile: cc / ccd| PSProfile[Microsoft.PowerShell_profile.ps1]
+    User(["User / Developer"]) -->|PowerShell Profile: cc / ccd| PSProfile[Microsoft.PowerShell_profile.ps1]
     PSProfile -->|Launches| TUIBinary[AgyTui Terminal Binary]
     TUIBinary -->|Dependency Injection| Bootstrapper[Bootstrapper.cs DI Container]
     Bootstrapper -->|Schema Migration| Migrator[SqliteMigrationEngine]
     Bootstrapper -->|Ingests JSON Data| Seeder[MasterSeeder Pipeline]
-    Migrator -->|Executes SQL V1..V6| DB[(SQLite agytui.db / agytui.dev.db)]
+    Migrator -->|Executes SQL V1..V6| DB[("SQLite agytui.db / agytui.dev.db")]
     Seeder -->|Populates Tables| DB
     TUIBinary -->|Spectre.Console| UI[Interactive 3-Pane TUI Engine]
 ```

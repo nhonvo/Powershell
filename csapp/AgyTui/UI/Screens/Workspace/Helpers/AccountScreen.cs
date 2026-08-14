@@ -49,7 +49,7 @@ public class AccountScreen : IScreenView
 
         string filterInfo = !string.IsNullOrEmpty(state.SearchFilter) ? $" [yellow]Filter: {state.SearchFilter.EscapeMarkup()}[/]" : "";
         grid.AddRow(new Markup($"\n[bold cyan]Title: 💼 Account Manager > AGYSWITCH Account Manager (agysw){filterInfo}[/]"));
-        grid.AddRow(new Markup("[dim]Nav: ↑/↓ Move  │  Enter Switch  │  [[a]] Create  │  [[l]] Auth Login  │  [[d]] Delete  │  Esc Back[/]"));
+        grid.AddRow(new Markup("[dim]Nav: ↑/↓ Move  │  Enter Switch  │  [[a]] Create  │  [[l]] Auth Login  │  [[o]] Logout  │  [[d]] Delete  │  Esc Back[/]"));
         grid.AddRow(new Markup("[bold white]Select option: [/]"));
         return grid;
     }
@@ -117,9 +117,17 @@ public class AccountScreen : IScreenView
                     AnsiConsole.Clear();
                     if (AnsiConsole.Confirm($"Are you sure you want to delete account '{targetAcc}'?"))
                     {
-                        _accountStore.DeleteAccount(targetAcc);
-                        SpectrePanel.Success($"Account '{targetAcc}' deleted successfully!");
-                        Thread.Sleep(1200);
+                        try
+                        {
+                            _accountStore.DeleteAccount(targetAcc);
+                            SpectrePanel.Success($"Account '{targetAcc}' deleted successfully!");
+                            Thread.Sleep(1200);
+                        }
+                        catch (Exception ex)
+                        {
+                            SpectrePanel.Error($"Failed to delete account '{targetAcc}': {ex.Message}");
+                            Thread.Sleep(2000);
+                        }
                     }
                     Console.CursorVisible = false;
                     return new ScreenNavigationResult(NavigationAction.Handled);

@@ -640,22 +640,31 @@ function Invoke-MultiAgent { param([string]$Query) Invoke-AgyRoute "ai" $Query }
 
 function Sync-ActiveAgyEnvironment {
     try {
-        $userVal = [System.Environment]::GetEnvironmentVariable("GEMINI_HOME", "User")
-        if ($userVal -and (Test-Path $userVal)) {
-            $env:GEMINI_HOME = $userVal
-        } else {
-            $activeAccFile = Join-Path $env:USERPROFILE ".gemini\active_account.txt"
-            if (Test-Path -LiteralPath $activeAccFile) {
-                $accName = (Get-Content -LiteralPath $activeAccFile -Raw).Trim()
-                if ($accName -and $accName -ne "default") {
-                    $targetHome = Join-Path $env:USERPROFILE ".gemini_$accName"
-                    if (Test-Path -LiteralPath $targetHome) { $env:GEMINI_HOME = $targetHome }
-                } elseif ($accName -eq "default") {
-                    $env:GEMINI_HOME = Join-Path $env:USERPROFILE ".gemini"
+        $activeAccFile = Join-Path $env:USERPROFILE ".gemini\active_account.txt"
+        if (Test-Path -LiteralPath $activeAccFile) {
+            $accName = (Get-Content -LiteralPath $activeAccFile -Raw).Trim()
+            if ($accName -and $accName -ne "default") {
+                $targetHome = Join-Path $env:USERPROFILE ".gemini_$accName"
+                if (Test-Path -LiteralPath $targetHome) {
+                    $env:GEMINI_HOME = $targetHome
+                    try { [System.Environment]::SetEnvironmentVariable("GEMINI_HOME", $targetHome, "User") } catch {}
                 }
+            } elseif ($accName -eq "default") {
+                $targetHome = Join-Path $env:USERPROFILE ".gemini"
+                $env:GEMINI_HOME = $targetHome
+                try { [System.Environment]::SetEnvironmentVariable("GEMINI_HOME", $targetHome, "User") } catch {}
+            }
+        } else {
+            $userVal = [System.Environment]::GetEnvironmentVariable("GEMINI_HOME", "User")
+            if ($userVal -and (Test-Path $userVal)) {
+                $env:GEMINI_HOME = $userVal
             }
         }
         $agyHome = if ($env:GEMINI_HOME) { $env:GEMINI_HOME } else { Join-Path $env:USERPROFILE ".gemini" }
+        if ($agyHome -ne (Join-Path $env:USERPROFILE ".gemini")) {
+            Remove-Item Env:\GEMINI_CLI_IDE_AUTH_TOKEN -ErrorAction SilentlyContinue
+            Remove-Item Env:\GEMINI_CLI_IDE_SERVER_PORT -ErrorAction SilentlyContinue
+        }
 
         $projFile = Join-Path $agyHome "selected_project.txt"
         if (Test-Path -LiteralPath $projFile) {
@@ -691,7 +700,8 @@ function Invoke-ControlCenterDev {
     param([string]$CmdAlias, [object[]]$PassArgs)
     $env:ENVIRONMENT = "Development"
     $tuiDevExe = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Debug\net9.0\AgyTui.exe"
-    if (Test-Path $tuiDevExe) {
+    $spectreDll = Join-Path $Global:ProfileRepoRoot "csapp\AgyTui\bin\Debug\net9.0\Spectre.Console.dll"
+    if ((Test-Path $tuiDevExe) -and (Test-Path $spectreDll)) {
         Write-Host "🚀 Launching AgyTui [DEVELOPMENT MODE]..." -ForegroundColor Cyan
         if ($CmdAlias) { & $tuiDevExe $CmdAlias @PassArgs } else { & $tuiDevExe }
         Sync-ActiveAgyEnvironment
@@ -699,9 +709,74 @@ function Invoke-ControlCenterDev {
     }
     Write-Host "🔨 Building & Launching AgyTui [DEVELOPMENT MODE]..." -ForegroundColor Cyan
     Push-Location (Join-Path $Global:ProfileRepoRoot "csapp\AgyTui")
-    if ($CmdAlias) { dotnet run -c Debug -- $CmdAlias @PassArgs } else { dotnet run -c Debug }
+    dotnet build -c Debug --verbosity quiet
     Pop-Location
+    if ((Test-Path $tuiDevExe) -and (Test-Path $spectreDll)) {
+        if ($CmdAlias) { & $tuiDevExe $CmdAlias @PassArgs } else { & $tuiDevExe }
+    } else {
+        Push-Location (Join-Path $Global:ProfileRepoRoot "csapp\AgyTui")
+        if ($CmdAlias) { dotnet run -c Debug -- $CmdAlias @PassArgs } else { dotnet run -c Debug }
+        Pop-Location
+    }
     Sync-ActiveAgyEnvironment
+}
+
+function Invoke-AgyAccount {
+    param(
+        [Parameter(Position=0)]
+        [string]$SubCommand,
+        [Parameter(Position=1)]
+        [string]$TargetAccount,
+        [switch]$Temporary
+    )
+    if (-not $SubCommand) {
+        Invoke-ControlCenter "agyswitch"
+        return
+    }
+    switch ($SubCommand.ToLowerInvariant()) {
+        "use" {
+            if (-not $TargetAccount) {
+                Invoke-ControlCenter "agyswitch"
+            } else {
+                Invoke-ControlCenter "agyswitch" $TargetAccount
+            }
+        }
+        "list" { Invoke-ControlCenter "live-dashboard" }
+        "ls" { Invoke-ControlCenter "live-dashboard" }
+        "login" {
+            if ($TargetAccount) {
+                Invoke-ControlCenter "agyswitch" $TargetAccount
+            }
+            try { cmdkey /delete:gemini:antigravity | Out-Null } catch {}
+            try { cmdkey /delete:LegacyGeneric:target=gemini:antigravity | Out-Null } catch {}
+            $authFiles = @("keyring_token.txt", "oauth_creds.json", "state.json")
+            foreach ($af in $authFiles) {
+                $p1 = Join-Path $env:USERPROFILE ".gemini\$af"
+                if (Test-Path $p1) { Remove-Item -Path $p1 -Force -ErrorAction SilentlyContinue }
+                if ($env:GEMINI_HOME) {
+                    $p2 = Join-Path $env:GEMINI_HOME $af
+                    if (Test-Path $p2) { Remove-Item -Path $p2 -Force -ErrorAction SilentlyContinue }
+                }
+            }
+            Write-Host "🌐 Opening Antigravity CLI for OAuth authentication..." -ForegroundColor Cyan
+            $oldToken = $env:GEMINI_CLI_IDE_AUTH_TOKEN
+            $oldPort = $env:GEMINI_CLI_IDE_SERVER_PORT
+            Remove-Item Env:\GEMINI_CLI_IDE_AUTH_TOKEN -ErrorAction SilentlyContinue
+            Remove-Item Env:\GEMINI_CLI_IDE_SERVER_PORT -ErrorAction SilentlyContinue
+            try {
+                & agy
+            } finally {
+                if ($oldToken) { $env:GEMINI_CLI_IDE_AUTH_TOKEN = $oldToken }
+                if ($oldPort) { $env:GEMINI_CLI_IDE_SERVER_PORT = $oldPort }
+            }
+        }
+        "logout" {
+            Invoke-ControlCenter "reset-agy"
+        }
+        default {
+            Invoke-ControlCenter "agyswitch" $SubCommand
+        }
+    }
 }
 
 function Reset-AgyAccountData { Invoke-ControlCenter "reset-agy" @args }
@@ -714,6 +789,9 @@ Set-Alias -Name cai -Value Invoke-MultiAgent -Force
 Set-Alias -Name cc -Value Invoke-ControlCenter -Force
 Set-Alias -Name ccd -Value Invoke-ControlCenterDev -Force
 Set-Alias -Name cnav -Value Invoke-ControlCenterNavigator -Force
+Set-Alias -Name agy-account -Value Invoke-AgyAccount -Force
+Set-Alias -Name agy-acc -Value Invoke-AgyAccount -Force
+Set-Alias -Name agyswitch -Value Invoke-AgyAccount -Force
 Set-Alias -Name reset-agy -Value Reset-AgyAccountData -Force
 Set-Alias -Name purge-accounts -Value Purge-AgyAccounts -Force
 Set-Alias -Name dotnet-info -Value Show-DotNetInfo -Force
@@ -845,7 +923,7 @@ function Invoke-FindFile {
 
 function Invoke-GrepFile {
     param([string]$Pattern)
-    if (-not $Pattern) { Write-Host "Usage: gf <pattern>" -ForegroundColor Yellow; return }
+    if (-not $Pattern) { Write-Host 'Usage: gf <pattern>' -ForegroundColor Yellow; return }
     Get-ChildItem -Recurse -File -Exclude bin,obj,.git | Select-Object -First 300 | Select-String -Pattern $Pattern | ForEach-Object {
         $rel = Resolve-Path -Relative $_.Path
         Write-Host "$rel`:$($_.LineNumber)" -NoNewline -ForegroundColor Yellow

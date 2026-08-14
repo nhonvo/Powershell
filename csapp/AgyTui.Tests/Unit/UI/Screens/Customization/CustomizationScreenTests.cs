@@ -1,5 +1,6 @@
 using AgyTui.Infrastructure.Di;
 using AgyTui.Infrastructure.Integrations.AgyClient.Interfaces;
+using AgyTui.UI.Core.Abstractions;
 using AgyTui.UI.Screens.Customization;
 using AgyTui.UI.Screens.Customization.Helpers;
 using AgyTui.UI.Screens.Customization.Navigators;
@@ -44,5 +45,18 @@ public class CustomizationScreenTests
         Assert.NotNull(typeof(SubPageAccountNavigator));
         Assert.NotNull(typeof(SubPageThemeNavigator));
         Assert.NotNull(typeof(SubPageTopicNavigator));
+    }
+
+    [Fact]
+    public void AccountManagerScreen_HandleInput_HandlesEscape()
+    {
+        var screen = new AccountManagerScreen();
+        var state = new ScreenState("", 0);
+
+        var resEsc = screen.HandleInput(new ConsoleKeyInfo('\x1b', ConsoleKey.Escape, false, false, false), state);
+        var resQ = screen.HandleInput(new ConsoleKeyInfo('q', ConsoleKey.Q, false, false, false), state);
+
+        Assert.Equal(NavigationAction.Exit, resEsc.Action);
+        Assert.Equal(NavigationAction.Exit, resQ.Action);
     }
 }

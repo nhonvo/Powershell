@@ -99,13 +99,18 @@ public class SqliteDatabase : ISqliteDatabase
         {
             DataSource = DbPath,
             Mode = SqliteOpenMode.ReadWriteCreate,
-            Cache = SqliteCacheMode.Shared
+            Cache = SqliteCacheMode.Shared,
+            DefaultTimeout = 5
         };
         var conn = new SqliteConnection(builder.ConnectionString);
         conn.Open();
-        using var cmd = conn.CreateCommand();
-        cmd.CommandText = "PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL;";
-        cmd.ExecuteNonQuery();
+        try
+        {
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL; PRAGMA busy_timeout=5000;";
+            cmd.ExecuteNonQuery();
+        }
+        catch { }
         return conn;
     }
 

@@ -37,10 +37,22 @@ public class SqliteMigrationEngine
         foreach (var script in scripts.Where(s => s.Version > currentVersion))
         {
             using var tx = conn.BeginTransaction();
-            using var migrateCmd = conn.CreateCommand();
-            migrateCmd.Transaction = tx;
-            migrateCmd.CommandText = script.Sql;
-            migrateCmd.ExecuteNonQuery();
+            var statements = script.Sql.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            foreach (var stmt in statements)
+            {
+                if (string.IsNullOrWhiteSpace(stmt)) continue;
+                try
+                {
+                    using var migrateCmd = conn.CreateCommand();
+                    migrateCmd.Transaction = tx;
+                    migrateCmd.CommandText = stmt + ";";
+                    migrateCmd.ExecuteNonQuery();
+                }
+                catch (SqliteException ex) when (ex.Message.Contains("duplicate column name", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Safe to ignore if column was already added
+                }
+            }
 
             using var recordCmd = conn.CreateCommand();
             recordCmd.Transaction = tx;

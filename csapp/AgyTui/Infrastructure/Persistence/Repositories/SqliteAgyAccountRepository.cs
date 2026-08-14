@@ -190,10 +190,10 @@ public class SqliteAgyAccountRepository : SqliteRepositoryBase<AccountMetadata, 
                 INSERT INTO accounts (account_name, keyring_token, google_accounts_json, oauth_creds_json, state_json, email, updated_at)
                 VALUES (@name, @token, @googleAcc, @oauth, @state, @email, @now)
                 ON CONFLICT(account_name) DO UPDATE SET
-                    keyring_token = COALESCE(@token, keyring_token),
-                    google_accounts_json = COALESCE(@googleAcc, google_accounts_json),
-                    oauth_creds_json = COALESCE(@oauth, oauth_creds_json),
-                    state_json = COALESCE(@state, state_json),
+                    keyring_token = @token,
+                    google_accounts_json = @googleAcc,
+                    oauth_creds_json = @oauth,
+                    state_json = @state,
                     email = COALESCE(@email, email),
                     updated_at = @now;
                 """;

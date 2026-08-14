@@ -7,6 +7,16 @@ public static class SubPageAccountNavigator
     private static IAgyAccountStore GetStore(IAgyAccountStore? store) => store ?? new AgyAccountStore();
     private static IAgyQuotaEngine GetEngine(IAgyQuotaEngine? engine, IAgyAccountStore store) => engine ?? new AgyQuotaEngine(store);
 
+    private static void ClearScreen()
+    {
+        try { AnsiConsole.Clear(); } catch { }
+    }
+
+    private static void SetCursorVisible(bool visible)
+    {
+        try { Console.CursorVisible = visible; } catch { }
+    }
+
     public static bool HandleSelection(string searchBuffer, int detailsSel, IAgyAccountStore? AccountStore = null, IAgyQuotaEngine? QuotaEngine = null)
     {
         var store = GetStore(AccountStore);
@@ -19,36 +29,36 @@ public static class SubPageAccountNavigator
         if (detailsSel < 0 || detailsSel >= accs.Length) return false;
 
         var targetAcc = accs[detailsSel];
-        Console.CursorVisible = true;
+        SetCursorVisible(true);
         store.SetActiveAccount(targetAcc, false);
         var stats = quotaEngine.GetAccountStats(targetAcc);
         if (stats.TokenStatus != "Logged In")
         {
-            AnsiConsole.Clear();
+            ClearScreen();
             SpectrePanel.Warning($"Account '{targetAcc}' is currently logged out.");
             var confirm = AnsiConsole.Confirm("Would you like to launch the authentication login page now?");
             if (confirm)
             {
                 store.AuthenticateAccount(targetAcc);
-                Console.CursorVisible = false;
+                SetCursorVisible(false);
                 return true;
             }
             else
             {
-                Console.CursorVisible = false;
+                SetCursorVisible(false);
                 return false;
             }
         }
         Thread.Sleep(800);
-        Console.CursorVisible = false;
+        SetCursorVisible(false);
         return true;
     }
 
     public static void CreateAccount(IAgyAccountStore? AccountStore = null)
     {
         var store = GetStore(AccountStore);
-        Console.CursorVisible = true;
-        AnsiConsole.Clear();
+        SetCursorVisible(true);
+        ClearScreen();
         var newName = AnsiConsole.Ask<string>("Enter new account name:").Trim();
         if (!string.IsNullOrEmpty(newName))
         {
@@ -64,7 +74,7 @@ public static class SubPageAccountNavigator
                 Thread.Sleep(2000);
             }
         }
-        Console.CursorVisible = false;
+        SetCursorVisible(false);
     }
 
     public static void DeleteAccount(string searchBuffer, int detailsSel, IAgyAccountStore? AccountStore = null)
@@ -84,16 +94,24 @@ public static class SubPageAccountNavigator
             Thread.Sleep(1500);
             return;
         }
-        Console.CursorVisible = true;
-        AnsiConsole.Clear();
+        SetCursorVisible(true);
+        ClearScreen();
         var confirm = AnsiConsole.Confirm($"Are you sure you want to delete account '{targetAcc}'?");
         if (confirm)
         {
-            store.DeleteAccount(targetAcc);
-            SpectrePanel.Success($"Account '{targetAcc}' deleted successfully!");
-            Thread.Sleep(1500);
+            try
+            {
+                store.DeleteAccount(targetAcc);
+                SpectrePanel.Success($"Account '{targetAcc}' deleted successfully!");
+                Thread.Sleep(1500);
+            }
+            catch (Exception ex)
+            {
+                SpectrePanel.Error($"Failed to delete account '{targetAcc}': {ex.Message}");
+                Thread.Sleep(2500);
+            }
         }
-        Console.CursorVisible = false;
+        SetCursorVisible(false);
     }
 
     public static void LoginAccount(string searchBuffer, int detailsSel, IAgyAccountStore? AccountStore = null)
@@ -107,17 +125,17 @@ public static class SubPageAccountNavigator
         if (detailsSel < 0 || detailsSel >= accs.Length) return;
 
         var targetAcc = accs[detailsSel];
-        Console.CursorVisible = true;
-        AnsiConsole.Clear();
+        SetCursorVisible(true);
+        ClearScreen();
         store.AuthenticateAccount(targetAcc);
-        Console.CursorVisible = false;
+        SetCursorVisible(false);
     }
 
     public static void PurgeAccounts(IAgyAccountStore? AccountStore = null)
     {
         var store = GetStore(AccountStore);
-        Console.CursorVisible = true;
-        AnsiConsole.Clear();
+        SetCursorVisible(true);
+        ClearScreen();
         var confirm = AnsiConsole.Confirm("Are you sure you want to purge all custom accounts and reset to default?");
         if (confirm)
         {
@@ -125,7 +143,7 @@ public static class SubPageAccountNavigator
             SpectrePanel.Success("All custom accounts purged. Reset active context to clean default account.");
             Thread.Sleep(1500);
         }
-        Console.CursorVisible = false;
+        SetCursorVisible(false);
     }
 
     public static void LogoutAccount(string searchBuffer, int detailsSel, IAgyAccountStore? AccountStore = null)
@@ -139,8 +157,8 @@ public static class SubPageAccountNavigator
         if (detailsSel < 0 || detailsSel >= accs.Length) return;
 
         var targetAcc = accs[detailsSel];
-        Console.CursorVisible = true;
-        AnsiConsole.Clear();
+        SetCursorVisible(true);
+        ClearScreen();
         var confirm = AnsiConsole.Confirm($"Are you sure you want to log out of '{targetAcc}'?");
         if (confirm)
         {
@@ -148,7 +166,7 @@ public static class SubPageAccountNavigator
             SpectrePanel.Success($"Logged out of '{targetAcc}' successfully!");
             Thread.Sleep(1500);
         }
-        Console.CursorVisible = false;
+        SetCursorVisible(false);
     }
 
     public static IRenderable Render(Grid grid, string searchBuffer, int selIdx, IAgyAccountStore? AccountStore = null, IAgyQuotaEngine? QuotaEngine = null)
@@ -178,7 +196,7 @@ public static class SubPageAccountNavigator
 
         string filterInfo = !string.IsNullOrEmpty(searchBuffer) ? $" [yellow]Filter: {searchBuffer.EscapeMarkup()}[/]" : "";
         grid.AddRow(new Markup($"\n[bold cyan]Title: 💼 Account Manager > AGYSWITCH Account Manager (agysw){filterInfo}[/]"));
-        grid.AddRow(new Markup("[dim]Nav: ↑/↓ Move  │  Enter Switch  │  [[a]] Create  │  [[l]] Auth Login  │  [[d]] Delete  │  Esc Back[/]"));
+        grid.AddRow(new Markup("[dim]Nav: ↑/↓ Move  │  Enter Switch  │  [[a]] Create  │  [[l]] Auth Login  │  [[o]] Logout  │  [[d]] Delete  │  Esc Back[/]"));
         grid.AddRow(new Markup("[bold white]Select option: [/]"));
         return grid;
     }

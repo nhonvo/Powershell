@@ -29,27 +29,27 @@ This document provides an exhaustive reference for the **PowerShell Control Cent
 
 ```mermaid
 graph TD
-    User([User / Terminal Context]) -->|Launcher: cc / ccd| Profile[Microsoft.PowerShell_profile.ps1]
-    Profile -->|Load Assembly & Route| Router[CommandRouter (C# Route Dispatcher)]
+    User(["User / Terminal Context"]) -->|Launcher: cc / ccd| Profile[Microsoft.PowerShell_profile.ps1]
+    Profile -->|Load Assembly & Route| Router["CommandRouter (C# Route Dispatcher)"]
     
     subgraph UI ["UI Layer (Spectre.Console)"]
         Router -->|Dispatches| Views[TUI Screen Views / Dashboards]
-        Views -->|Render| Layout[3-Pane Header / Content / Footer Layout]
+        Views -->|Render| Layout["3-Pane Header / Content / Footer Layout"]
     end
 
     subgraph Infra ["Infrastructure Layer (C# Services & Persistence)"]
         Views -->|Consumes Interfaces| Di[Bootstrapper Container]
-        Di -->|SQLite ORM| Repo[SqliteRepositories (V1..V7 Schemas)]
-        Di -->|DPAPI Encryption| Vault[AgyVault & DPAPI Encryption Engine]
-        Di -->|CLI Integrations| Tools[Git / Docker / DotNet / AWS Services]
+        Di -->|SQLite ORM| Repo["SqliteRepositories (V1..V7 Schemas)"]
+        Di -->|DPAPI Encryption| Vault["AgyVault & DPAPI Encryption Engine"]
+        Di -->|CLI Integrations| Tools["Git / Docker / DotNet / AWS Services"]
     end
 
     subgraph Domain ["Domain Layer (Pure C# Business Entities)"]
-        Repo -->|Operates On| Entities[Account / Workspace / Learning Entities]
+        Repo -->|Operates On| Entities["Account / Workspace / Learning Entities"]
     end
 
-    Repo -->|Persists| DB[(SQLite agytui.db)]
-    Vault -->|Syncs Token| Keyring[Windows Credential Manager / Keyring]
+    Repo -->|Persists| DB[("SQLite agytui.db")]
+    Vault -->|Syncs Token| Keyring["Windows Credential Manager / Keyring"]
 ```
 
 ---

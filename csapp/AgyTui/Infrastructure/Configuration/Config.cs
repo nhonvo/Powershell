@@ -6,7 +6,7 @@ public sealed class UiConfig
     public string Density { get; set; } = "comfortable";
     public string ActiveTheme { get; set; } = "neko";
     public bool EnableMobile { get; set; }
-    public string[] FavoriteAliases { get; set; } = Array.Empty<string>();
+    public string[] FavoriteAliases { get; set; } = ["proj", "agyswitch", "open-term", "ask-ai", "vault", "ide"];
 }
 
 public sealed class AiConfig

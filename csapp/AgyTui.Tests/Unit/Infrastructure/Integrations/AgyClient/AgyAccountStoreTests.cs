@@ -20,4 +20,15 @@ public class AgyAccountStoreTests
 
         Assert.True(enabled || !enabled);
     }
+
+    [Fact]
+    public void AccountStore_DeleteAccount_NonExistentDir_DoesNotThrowException()
+    {
+        var store = new AgyAccountStore();
+        var testAcc = "test_delete_orphan_" + Guid.NewGuid().ToString("N")[..6];
+
+        // Should not throw DirectoryNotFoundException when deleting
+        var exception = Record.Exception(() => store.DeleteAccount(testAcc));
+        Assert.Null(exception);
+    }
 }

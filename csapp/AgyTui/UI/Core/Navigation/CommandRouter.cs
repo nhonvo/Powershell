@@ -750,13 +750,14 @@ public class CommandRouter : ICommandRouter
                         break;
                     case "vault":
                     case "agyswitch":
+                    case "agy-account":
+                    case "agy-acc":
                     case "switch-account":
                         var targetAccArg = args != null && args.Length > 0 ? args[0].Trim() : null;
                         if (!string.IsNullOrWhiteSpace(targetAccArg))
                         {
                             var accStoreObj = _accountStore ?? new AgyAccountStore();
                             accStoreObj.SetActiveAccount(targetAccArg, false);
-                            SpectrePanel.Success($"Switched active account context to '{targetAccArg}'.");
                         }
                         else
                         {

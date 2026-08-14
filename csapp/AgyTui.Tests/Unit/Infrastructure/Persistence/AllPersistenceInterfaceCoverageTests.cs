@@ -25,6 +25,7 @@ public class AllPersistenceInterfaceCoverageTests
     public void IConfigRepository_Methods_DeclaredAndCallable()
     {
         ISqliteDatabase db = new SqliteDatabase();
+        db.InitializeDatabase();
         IConfigRepository repo = new SqliteConfigRepository(db);
 
         repo.SetState("test_cov_key", "test_cov_val");

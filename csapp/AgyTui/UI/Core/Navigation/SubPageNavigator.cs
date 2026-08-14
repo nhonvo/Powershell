@@ -73,17 +73,21 @@ public class SubPageNavigatorService : ISubPageNavigator
                         continue;
                 }
 
+                var result = screenView.HandleInput(key, state);
+                if (result.Action == NavigationAction.Exit)
+                {
+                    break;
+                }
+                if (result.Action == NavigationAction.Handled)
+                {
+                    continue;
+                }
+
                 if (!char.IsControl(key.KeyChar) && key.KeyChar != '\0')
                 {
                     searchBuffer += key.KeyChar;
                     selectedIndex = 0;
                     continue;
-                }
-
-                var result = screenView.HandleInput(key, state);
-                if (result.Action == NavigationAction.Exit)
-                {
-                    break;
                 }
             }
         }
@@ -327,6 +331,74 @@ public class SubPageNavigatorService : ISubPageNavigator
                     else
                     {
                         return;
+                    }
+                    break;
+
+                case ConsoleKey.A:
+                    if (mode == "agyswitch" && !_isSearchActive)
+                    {
+                        SubPageAccountNavigator.CreateAccount(_accountStore);
+                        detailsSel = 0;
+                        break;
+                    }
+                    if (_isSearchActive || !string.IsNullOrEmpty(_detailsSearchBuffer))
+                    {
+                        _detailsSearchBuffer += key.KeyChar;
+                        detailsSel = 0;
+                    }
+                    break;
+
+                case ConsoleKey.D:
+                    if (mode == "agyswitch" && !_isSearchActive)
+                    {
+                        SubPageAccountNavigator.DeleteAccount(_detailsSearchBuffer, detailsSel, _accountStore);
+                        detailsSel = Math.Max(0, detailsSel - 1);
+                        break;
+                    }
+                    if (_isSearchActive || !string.IsNullOrEmpty(_detailsSearchBuffer))
+                    {
+                        _detailsSearchBuffer += key.KeyChar;
+                        detailsSel = 0;
+                    }
+                    break;
+
+                case ConsoleKey.L:
+                    if (mode == "agyswitch" && !_isSearchActive)
+                    {
+                        SubPageAccountNavigator.LoginAccount(_detailsSearchBuffer, detailsSel, _accountStore);
+                        break;
+                    }
+                    if (_isSearchActive || !string.IsNullOrEmpty(_detailsSearchBuffer))
+                    {
+                        _detailsSearchBuffer += key.KeyChar;
+                        detailsSel = 0;
+                    }
+                    break;
+
+                case ConsoleKey.O:
+                    if (mode == "agyswitch" && !_isSearchActive)
+                    {
+                        SubPageAccountNavigator.LogoutAccount(_detailsSearchBuffer, detailsSel, _accountStore);
+                        break;
+                    }
+                    if (_isSearchActive || !string.IsNullOrEmpty(_detailsSearchBuffer))
+                    {
+                        _detailsSearchBuffer += key.KeyChar;
+                        detailsSel = 0;
+                    }
+                    break;
+
+                case ConsoleKey.R:
+                    if (mode == "agyswitch" && !_isSearchActive)
+                    {
+                        SubPageAccountNavigator.PurgeAccounts(_accountStore);
+                        detailsSel = 0;
+                        break;
+                    }
+                    if (_isSearchActive || !string.IsNullOrEmpty(_detailsSearchBuffer))
+                    {
+                        _detailsSearchBuffer += key.KeyChar;
+                        detailsSel = 0;
                     }
                     break;
 

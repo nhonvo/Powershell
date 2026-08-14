@@ -43,6 +43,7 @@ public class AccountSwitchingE2ETests
                 var psi = new ProcessStartInfo
                 {
                     FileName = agyExe,
+                    Arguments = "--version",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     RedirectStandardInput = true,
