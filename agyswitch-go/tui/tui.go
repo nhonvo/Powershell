@@ -148,6 +148,22 @@ func Run(s *store.Store, v *vault.Vault, l *launcher.Launcher, opts ...Options) 
 	return nil
 }
 
+func formatStatusBadge(a store.AccountInfo) string {
+	if !a.IsLoggedIn {
+		return "\033[31m[✘ Logged Out]\033[0m"
+	}
+	switch a.QuotaStatus {
+	case "✔ Quota OK":
+		return fmt.Sprintf("\033[32m[✔ Quota OK · Key: %s]\033[0m", a.TokenSig)
+	case "⚡ Auto-Refresh":
+		return fmt.Sprintf("\033[33m[⚡ Ready · Key: %s]\033[0m", a.TokenSig)
+	case "✘ Rate Limit":
+		return fmt.Sprintf("\033[35m[✘ Rate Limit · Key: %s]\033[0m", a.TokenSig)
+	default:
+		return fmt.Sprintf("\033[32m[✔ Quota OK · Key: %s]\033[0m", a.TokenSig)
+	}
+}
+
 func renderUI(accs []store.AccountInfo, activeAcc string, selectedIndex int, statusMsg string) {
 	fmt.Print("\033[H\033[2J") // Clear screen
 	fmt.Print("\r\n🛸 \033[1;36mAGYSWITCH - Dedicated Antigravity Multi-Account Vault (Go TUI v1.3.0)\033[0m\r\n")
@@ -169,15 +185,10 @@ func renderUI(accs []store.AccountInfo, activeAcc string, selectedIndex int, sta
 			activeMarker = "\033[1;32m●\033[0m "
 		}
 
-		tokenBadge := "\033[31m✘ Logged Out\033[0m"
-		if a.IsLoggedIn {
-			tokenBadge = fmt.Sprintf("\033[32m✔ Logged In · Key: %s\033[0m", a.TokenSig)
-		}
+		badge := formatStatusBadge(a)
 
-		quotaBadge := fmt.Sprintf("\033[36m[%s]\033[0m", a.QuotaStatus)
-
-		fmt.Printf("%s%s%s%d. \033[1m%-22s\033[0m (%-26s) (%s) %s%s\r\n",
-			cursor, highlightStart, activeMarker, i+1, a.AccountName, a.Email, tokenBadge, quotaBadge, highlightEnd)
+		fmt.Printf("%s%s%s%d. \033[1m%-22s\033[0m (%-26s) %s%s\r\n",
+			cursor, highlightStart, activeMarker, i+1, a.AccountName, a.Email, badge, highlightEnd)
 	}
 
 	fmt.Print("──────────────────────────────────────────────────────────────────────────────────\r\n")
@@ -202,15 +213,11 @@ func PrintStatus(s *store.Store) {
 			activeMarker = "● "
 		}
 
-		statusBadge := "\033[31m✘ Logged Out\033[0m"
-		if a.IsLoggedIn {
-			statusBadge = fmt.Sprintf("\033[32m✔ Logged In · Key: %s\033[0m", a.TokenSig)
-		}
+		badge := formatStatusBadge(a)
 
-		quotaBadge := fmt.Sprintf("\033[36m[%s]\033[0m", a.QuotaStatus)
-
-		fmt.Printf(" %s%d. \033[1m%-22s\033[0m (%-26s) (%s) %s\n",
-			activeMarker, i+1, a.AccountName, a.Email, statusBadge, quotaBadge)
+		fmt.Printf(" %s%d. \033[1m%-22s\033[0m (%-26s) %s\n",
+			activeMarker, i+1, a.AccountName, a.Email, badge)
 	}
 	fmt.Printf("──────────────────────────────────────────────────────────────────────────────────\n\n")
 }
+

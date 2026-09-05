@@ -120,6 +120,41 @@ func (v *Vault) Decrypt(cipherText string) (string, error) {
 	return string(plaintext), nil
 }
 
+// ExtractCleanAccessToken parses raw token string or JSON to extract access token ya29...
+func ExtractCleanAccessToken(raw string) string {
+	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		return ""
+	}
+
+	type OAuthFile struct {
+		AccessToken string `json:"access_token"`
+		Token       struct {
+			AccessToken string `json:"access_token"`
+		} `json:"token"`
+	}
+
+	var parsed OAuthFile
+	if err := json.Unmarshal([]byte(raw), &parsed); err == nil {
+		if parsed.Token.AccessToken != "" {
+			return parsed.Token.AccessToken
+		}
+		if parsed.AccessToken != "" {
+			return parsed.AccessToken
+		}
+	}
+
+	if idx := strings.Index(raw, "ya29."); idx != -1 {
+		end := strings.IndexAny(raw[idx:], " \"'\n\r\t}")
+		if end != -1 {
+			return raw[idx : idx+end]
+		}
+		return raw[idx:]
+	}
+
+	return raw
+}
+
 // ReadTokenFromDir checks standalone CLI token locations inside directory context.
 func (v *Vault) ReadTokenFromDir(dir string) string {
 	if dir == "" {
@@ -131,7 +166,7 @@ func (v *Vault) ReadTokenFromDir(dir string) string {
 	if data, err := os.ReadFile(kFile); err == nil {
 		lines := strings.Split(string(data), "\n")
 		if len(lines) >= 2 && strings.TrimSpace(lines[1]) != "" {
-			return strings.TrimSpace(lines[1])
+			return ExtractCleanAccessToken(strings.TrimSpace(lines[1]))
 		}
 	}
 
@@ -142,9 +177,9 @@ func (v *Vault) ReadTokenFromDir(dir string) string {
 		if raw != "" {
 			dec, err := v.Decrypt(raw)
 			if err == nil && dec != "" {
-				return dec
+				return ExtractCleanAccessToken(dec)
 			}
-			return raw
+			return ExtractCleanAccessToken(raw)
 		}
 	}
 
@@ -152,7 +187,7 @@ func (v *Vault) ReadTokenFromDir(dir string) string {
 	aTok1 := filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token")
 	if data, err := os.ReadFile(aTok1); err == nil {
 		if tok := strings.TrimSpace(string(data)); tok != "" {
-			return tok
+			return ExtractCleanAccessToken(tok)
 		}
 	}
 
@@ -160,7 +195,7 @@ func (v *Vault) ReadTokenFromDir(dir string) string {
 	aTok2 := filepath.Join(dir, "antigravity-oauth-token")
 	if data, err := os.ReadFile(aTok2); err == nil {
 		if tok := strings.TrimSpace(string(data)); tok != "" {
-			return tok
+			return ExtractCleanAccessToken(tok)
 		}
 	}
 

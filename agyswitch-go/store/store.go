@@ -267,6 +267,7 @@ func ProbeQuotaStatus(tok string) string {
 		return "✔ Quota OK"
 	}
 	req.Header.Set("Authorization", "Bearer "+tok)
+	req.Header.Set("User-Agent", "antigravity/1.1.27")
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := client.Do(req)
@@ -276,13 +277,13 @@ func ProbeQuotaStatus(tok string) string {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == 200 {
-		return "✔ Quota OK (200 OK)"
+		return "✔ Quota OK"
 	} else if resp.StatusCode == 429 {
-		return "✘ Quota Limit (429 Rate Limit)"
+		return "✘ Rate Limit"
 	} else if resp.StatusCode == 401 || resp.StatusCode == 403 {
-		return "✘ Token Expired (401 Auth Required)"
+		return "⚡ Auto-Refresh"
 	}
-	return fmt.Sprintf("✔ Quota OK (%d)", resp.StatusCode)
+	return "✔ Quota OK"
 }
 
 // ListAccounts returns all registered accounts and their status.
