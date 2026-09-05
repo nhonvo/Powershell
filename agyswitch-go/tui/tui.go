@@ -136,6 +136,18 @@ func Run(s *store.Store, v *vault.Vault, l *launcher.Launcher, opts ...Options) 
 				email := fmt.Sprintf("%s@gmail.com", target)
 				msg = store.RenderQuotaSummary(email, summary)
 			}
+		case 'n', 'N': // Add / Register New Account
+			_ = term.Restore(fd, oldState)
+			fmt.Print("\r\n\033[36m[agyswitch]\033[0m Enter new account name (e.g. myaccount): ")
+			var newAcc string
+			fmt.Scanln(&newAcc)
+			newAcc = strings.TrimSpace(newAcc)
+			if newAcc != "" {
+				if err := s.AddAccount(newAcc); err == nil {
+					fmt.Printf("\033[36m[agyswitch]\033[0m Created account context '\033[32m%s\033[0m'. Launching 'agy login'...\r\n", newAcc)
+					return l.LaunchAccount(newAcc, []string{"login"})
+				}
+			}
 		case 'x', 'X': // Reset Account Credentials
 			target := accs[selectedIndex].AccountName
 			if err := s.ResetAccount(target); err != nil {
@@ -266,7 +278,7 @@ func renderUI(s *store.Store, accs []store.AccountInfo, activeAcc string, select
 	if statusMsg != "" {
 		fmt.Printf(" %s\r\n", statusMsg)
 	}
-	fmt.Print(" \033[1m[↑/↓ j/k]\033[0m Nav · \033[1m[1-5]\033[0m Jump · \033[1;32m[Enter]\033[0m Switch · \033[1;36m[V]\033[0m Full Quota · \033[1;36m[L]\033[0m Launch · \033[1;35m[A]\033[0m Auto-Select · \033[1;31m[Q/Esc]\033[0m Exit\r\n")
+	fmt.Print(" \033[1m[↑/↓ j/k]\033[0m Nav · \033[1m[1-9]\033[0m Jump · \033[1;32m[Enter]\033[0m Switch · \033[1;36m[N]\033[0m New Acc · \033[1;36m[V]\033[0m Full Quota · \033[1;36m[L]\033[0m Launch · \033[1;35m[A]\033[0m Auto · \033[1;31m[Q/Esc]\033[0m Exit\r\n")
 }
 
 // PrintStatus prints the non-interactive status table.

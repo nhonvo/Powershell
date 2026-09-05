@@ -60,6 +60,22 @@ func main() {
 				fmt.Print(store.RenderQuotaSummary(email, summary))
 			}
 		}
+	case "add", "create", "login", "new":
+		if len(args) < 2 {
+			fmt.Println("Usage: agyswitch add <accountName>")
+			os.Exit(1)
+		}
+		target := args[1]
+		if err := s.AddAccount(target); err != nil {
+			fmt.Fprintf(os.Stderr, "Error creating account '%s': %v\n", target, err)
+			os.Exit(1)
+		}
+		fmt.Printf("\033[36m[agyswitch]\033[0m Created account directory and switched context to '\033[32m%s\033[0m'.\n", target)
+		fmt.Printf("\033[36m[agyswitch]\033[0m Launching 'agy login' for authentication...\n")
+		if err := l.LaunchAccount(target, []string{"login"}); err != nil {
+			fmt.Fprintf(os.Stderr, "Error launching agy login: %v\n", err)
+			os.Exit(1)
+		}
 	case "reset":
 		target := s.GetActiveAccount()
 		if len(args) >= 2 {

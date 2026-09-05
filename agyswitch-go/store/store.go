@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -330,9 +331,54 @@ func ExtractGroupQuotas(summary *QuotaSummary) (gPct float64, cPct float64) {
 	return gPct, cPct
 }
 
+// ListAccountNames dynamically discovers all registered accounts and .gemini_* directories.
+func (s *Store) ListAccountNames() []string {
+	knownMap := map[string]bool{
+		"vothuongtruongnhon2002": true,
+		"fptvttnhon2020":         true,
+		"fptvttnhon2026":         true,
+		"nhontruongvo":           true,
+		"nhontruongvo3":          true,
+	}
+
+	entries, err := os.ReadDir(s.UserHome)
+	if err == nil {
+		for _, e := range entries {
+			if e.IsDir() && strings.HasPrefix(e.Name(), ".gemini_") {
+				accName := strings.TrimPrefix(e.Name(), ".gemini_")
+				if accName != "" && accName != "status" {
+					knownMap[accName] = true
+				}
+			}
+		}
+	}
+
+	var names []string
+	for k := range knownMap {
+		names = append(names, k)
+	}
+	sort.Strings(names)
+	return names
+}
+
+// AddAccount initializes a new account directory context and sets it active.
+func (s *Store) AddAccount(name string) error {
+	cleanName := strings.TrimSpace(name)
+	if cleanName == "" {
+		return errors.New("invalid account name")
+	}
+
+	accDir := s.GetAccountDirectory(cleanName)
+	if err := os.MkdirAll(accDir, 0755); err != nil {
+		return fmt.Errorf("failed to create account directory: %v", err)
+	}
+
+	return s.SetActiveAccount(cleanName)
+}
+
 // ListAccounts returns all registered accounts and their status.
 func (s *Store) ListAccounts() []AccountInfo {
-	known := []string{"vothuongtruongnhon2002", "fptvttnhon2020", "fptvttnhon2026", "nhontruongvo", "nhontruongvo3"}
+	known := s.ListAccountNames()
 	active := s.GetActiveAccount()
 
 	result := make([]AccountInfo, len(known))
