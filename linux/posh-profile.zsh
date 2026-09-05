@@ -410,4 +410,11 @@ alias ip-info="hostname -I 2>/dev/null || ip -br a"
 alias cat-file="view"
 alias open="open-file"
 
+# Agyswitch Multi-Account Vault Aliases (Go Engine v1.3.0)
+alias agyswitch="$HOME/.local/bin/agyswitch"
+alias agysw="$HOME/.local/bin/agyswitch"
+alias agys="$HOME/.local/bin/agyswitch"
+alias agy-quota="$HOME/.local/bin/agyswitch launch-quota"
+
 echo -e "\033[32m🛸 Enhanced Ubuntu Profile Loaded (Oh My Posh: ${POSH_THEME:-neko})\033[0m"
+

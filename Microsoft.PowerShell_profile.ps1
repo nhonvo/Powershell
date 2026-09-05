@@ -966,7 +966,20 @@ function Clear-ShellHistory {
 }
 Set-Alias -Name clh -Value Clear-ShellHistory -Force
 
+#region 13. AGYSWITCH MULTI-ACCOUNT VAULT (GO ENGINE V1.3.0)
+$AGYSWITCH_BIN = Join-Path $PSScriptRoot "agyswitch.exe"
+if (-not (Test-Path $AGYSWITCH_BIN)) {
+    $AGYSWITCH_BIN = Join-Path $HOME ".local\bin\agyswitch.exe"
+}
+
+function agyswitch { & $AGYSWITCH_BIN @args }
+function agysw { & $AGYSWITCH_BIN @args }
+function agys { & $AGYSWITCH_BIN @args }
+function agy-quota { & $AGYSWITCH_BIN launch-quota @args }
+#endregion
+
 if (-not [Console]::IsOutputRedirected -and [Environment]::UserInteractive) {
     Write-Host "🛸 Enhanced PowerShell Profile Loaded" -ForegroundColor Green
 }
 #endregion
+
