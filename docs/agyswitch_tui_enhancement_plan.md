@@ -143,4 +143,51 @@ alias agy="agyswitch"
 - [x] Complete Go engine codebase (`vault`, `store`, `launcher`, `main`).
 - [x] Unhook legacy C# Control Center (`cc`) account switching code.
 - [x] Maintain 100% test coverage across C# and Go test suites.
-- [ ] Implement raw terminal TUI keyboard handler (`termbox-go` or `bubbletea`) in `agyswitch-go/ui` for non-zero terminal interactions.
+- [x] Implement raw terminal TUI keyboard handler in `agyswitch-go/tui` with arrow keys, quick jump, and status badges.
+- [x] Implement Account Reset (`agyswitch reset <acc>`) feature to clear credential state cleanly.
+- [x] Implement Quota-Aware Account Selection & Auto-Launch (`agyswitch quota`, `agyswitch launch-quota`).
+
+---
+
+## 6. Multi-Agent Feature Blueprint: UI Enhancements, Account Reset & Quota Select Launch
+
+### 6.1 Account Reset Feature (`reset`)
+
+- **CLI Usage**: `agyswitch reset [accountName]`
+- **TUI Hotkey**: `[X]` (or `[Ctrl+X]`) on the currently highlighted account.
+- **Workflow**:
+  1. Locates target account isolated directory (`~/.gemini_<accountName>`).
+  2. Wipes OAuth tokens: `keyring_token.txt`, `antigravity-cli/antigravity-oauth-token`, `antigravity-oauth-token`, and `.keyring/` files.
+  3. If the reset account is the active account, clears primary `~/.gemini` token files and removes credentials from host OS keyring (`cmdkey.exe`).
+  4. Keeps `google_accounts.json` and settings metadata intact so the account can be cleanly re-authenticated via `agy login`.
+  5. Updates TUI status to `✘ Logged Out` and displays status confirmation.
+
+### 6.2 Quota-Aware Selection & Auto-Launch (`quota`, `launch-quota`)
+
+- **CLI Usage**:
+  - `agyswitch quota` — Evaluates all accounts, displaying token health, signature, and quota readiness (`✔ Quota OK` / `⚡ Full` / `✘ Logged Out`).
+  - `agyswitch launch-quota [args...]` — Scans accounts for active valid tokens, auto-picks the first logged-in account (or active account if valid), and launches `agy` immediately.
+- **TUI Hotkey**: `[A]` (Auto Quota Launch)
+- **Workflow**:
+  1. Reads token health and signature for each account (`vothuongtruongnhon2002`, `fptvttnhon2020`, `fptvttnhon2026`, `nhontruongvo`, `nhontruongvo3`).
+  2. Filters logged-in accounts with valid OAuth signatures.
+  3. If current active account is logged in and ready, keeps active account or picks next available logged-in account if active is logged out.
+  4. Context switches to selected account and immediately executes `agy` CLI with passed arguments.
+
+### 6.3 TUI Visual & Interactive Layout (v1.3.0)
+
+```text
+🛸 AGYSWITCH - Dedicated Antigravity Multi-Account Vault (Go Engine v1.3.0)
+──────────────────────────────────────────────────────────────────────────────────
+ Active Context: vothuongtruongnhon2002 · Mode: Standalone Vault
+
+> ● 1. vothuongtruongnhon2002 (vothuongtruongnhon2002@gmail.com) (✔ Logged In · Key: ya29..0211) [Quota OK]
+    2. fptvttnhon2020         (fptvttnhon2020@gmail.com      ) (✔ Logged In · Key: ya29..e39a) [Quota OK]
+    3. fptvttnhon2026         (fptvttnhon2026@gmail.com      ) (✘ Logged Out) [No Token]
+    4. nhontruongvo           (nhontruongvo@gmail.com        ) (✘ Logged Out) [No Token]
+    5. nhontruongvo3          (nhontruongvo3@gmail.com       ) (✘ Logged Out) [No Token]
+──────────────────────────────────────────────────────────────────────────────────
+ Status: Account 'vothuongtruongnhon2002' context active.
+ [↑/↓ j/k] Nav · [1-5] Quick Jump · [Enter] Switch · [L] Launch · [A] Auto Quota Launch · [X] Reset · [R] Refresh · [Q/Esc] Exit
+```
+

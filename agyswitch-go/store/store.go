@@ -18,6 +18,7 @@ type AccountInfo struct {
 	IsActive    bool   `json:"isActive"`
 	TokenSig    string `json:"tokenSig"`
 	IsLoggedIn  bool   `json:"isLoggedIn"`
+	QuotaStatus string `json:"quotaStatus"`
 }
 
 type Store struct {
@@ -206,6 +207,50 @@ func copyFile(src, dst string) error {
 	return err
 }
 
+// ResetAccount clears all OAuth token files and keyring credentials for account.
+func (s *Store) ResetAccount(accountName string) error {
+	acc := strings.TrimSpace(accountName)
+	if acc == "" {
+		return errors.New("account name cannot be empty")
+	}
+
+	accDir := s.GetAccountDirectory(acc)
+	_ = os.Remove(filepath.Join(accDir, "keyring_token.txt"))
+	_ = os.Remove(filepath.Join(accDir, "antigravity-cli", "antigravity-oauth-token"))
+	_ = os.Remove(filepath.Join(accDir, "antigravity-oauth-token"))
+	_ = os.RemoveAll(filepath.Join(accDir, ".keyring"))
+
+	// If resetting the currently active account, clear primary ~/.gemini files as well
+	active := s.GetActiveAccount()
+	if strings.EqualFold(acc, active) {
+		s.Vault.PurgeGlobalKeyring()
+	}
+
+	return nil
+}
+
+// SelectBestQuotaAccount scans accounts and returns active account if logged in, or first logged-in account.
+func (s *Store) SelectBestQuotaAccount() string {
+	accs := s.ListAccounts()
+	active := s.GetActiveAccount()
+
+	// Check active account
+	for _, a := range accs {
+		if strings.EqualFold(a.AccountName, active) && a.IsLoggedIn {
+			return a.AccountName
+		}
+	}
+
+	// Pick first available logged-in account
+	for _, a := range accs {
+		if a.IsLoggedIn {
+			return a.AccountName
+		}
+	}
+
+	return active
+}
+
 // ListAccounts returns all registered accounts and their status.
 func (s *Store) ListAccounts() []AccountInfo {
 	known := []string{"vothuongtruongnhon2002", "fptvttnhon2020", "fptvttnhon2026", "nhontruongvo", "nhontruongvo3"}
@@ -219,6 +264,10 @@ func (s *Store) ListAccounts() []AccountInfo {
 		email := fmt.Sprintf("%s@gmail.com", name)
 		sig := s.Vault.GetShortSignature(tok)
 		isLoggedIn := tok != ""
+		quotaStatus := "✔ Quota OK"
+		if !isLoggedIn {
+			quotaStatus = "✘ Logged Out"
+		}
 
 		result = append(result, AccountInfo{
 			AccountName: name,
@@ -226,6 +275,7 @@ func (s *Store) ListAccounts() []AccountInfo {
 			IsActive:    strings.EqualFold(name, active),
 			TokenSig:    sig,
 			IsLoggedIn:  isLoggedIn,
+			QuotaStatus: quotaStatus,
 		})
 	}
 	return result

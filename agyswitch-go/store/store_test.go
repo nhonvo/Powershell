@@ -3,6 +3,7 @@ package store_test
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"agyswitch/store"
@@ -123,5 +124,53 @@ func TestStore_ListAccounts(t *testing.T) {
 	}
 	if !foundActive {
 		t.Errorf("nhontruongvo3 should be marked active in list")
+	}
+}
+
+func TestStore_ResetAccount(t *testing.T) {
+	tempDir, err := os.MkdirTemp("", "store_reset_test_*")
+	if err != nil {
+		t.Fatalf("failed to create temp dir: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	v := vault.NewVault(tempDir)
+	s := store.NewStore(tempDir, v)
+
+	accDir := s.GetAccountDirectory("fptvttnhon2020")
+	_ = v.SaveTokenToContext(accDir, "ya29.sample_token_to_reset")
+
+	if !strings.Contains(v.ReadTokenFromDir(accDir), "sample_token") {
+		t.Fatalf("failed to set up test token")
+	}
+
+	err = s.ResetAccount("fptvttnhon2020")
+	if err != nil {
+		t.Fatalf("ResetAccount failed: %v", err)
+	}
+
+	tokAfter := v.ReadTokenFromDir(accDir)
+	if tokAfter != "" {
+		t.Errorf("expected token to be empty after reset, got: %s", tokAfter)
+	}
+}
+
+func TestStore_SelectBestQuotaAccount(t *testing.T) {
+	tempDir, err := os.MkdirTemp("", "store_quota_test_*")
+	if err != nil {
+		t.Fatalf("failed to create temp dir: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	v := vault.NewVault(tempDir)
+	s := store.NewStore(tempDir, v)
+
+	// Save token for fptvttnhon2026
+	accDir := s.GetAccountDirectory("fptvttnhon2026")
+	_ = v.SaveTokenToContext(accDir, "ya29.valid_quota_token")
+
+	best := s.SelectBestQuotaAccount()
+	if best != "fptvttnhon2026" {
+		t.Errorf("expected fptvttnhon2026, got %s", best)
 	}
 }

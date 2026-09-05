@@ -35,8 +35,25 @@ func main() {
 	cmd := strings.ToLower(args[0])
 
 	switch cmd {
-	case "status", "list", "ls":
+	case "status", "list", "ls", "quota":
 		tui.PrintStatus(s)
+	case "reset":
+		target := s.GetActiveAccount()
+		if len(args) >= 2 {
+			target = args[1]
+		}
+		if err := s.ResetAccount(target); err != nil {
+			fmt.Fprintf(os.Stderr, "Error resetting account '%s': %v\n", target, err)
+			os.Exit(1)
+		}
+		fmt.Printf("\033[36m[agyswitch]\033[0m Credentials and session token for account '\033[33m%s\033[0m' reset cleanly.\n", target)
+	case "launch-quota", "auto-launch":
+		bestAcc := s.SelectBestQuotaAccount()
+		fmt.Printf("\033[36m[agyswitch]\033[0m Quota selector auto-selected account '\033[32m%s\033[0m'\n", bestAcc)
+		if err := l.LaunchAccount(bestAcc, args[1:]); err != nil {
+			fmt.Fprintf(os.Stderr, "Error launching agy: %v\n", err)
+			os.Exit(1)
+		}
 	case "switch", "sw":
 		if len(args) < 2 {
 			fmt.Println("Usage: agyswitch switch <accountName>")

@@ -122,9 +122,22 @@ func Run(s *store.Store, v *vault.Vault, l *launcher.Launcher, opts ...Options) 
 				fmt.Printf("\r\n\033[36m[agyswitch]\033[0m Launching agy CLI for '\033[32m%s\033[0m'...\r\n", target)
 				return l.LaunchAccount(target, nil)
 			}
+		case 'a', 'A': // Auto Quota Select & Launch
+			bestAcc := s.SelectBestQuotaAccount()
+			_ = term.Restore(fd, oldState)
+			fmt.Printf("\r\n\033[36m[agyswitch]\033[0m Quota selector auto-selected account '\033[32m%s\033[0m'...\r\n", bestAcc)
+			return l.LaunchAccount(bestAcc, nil)
+		case 'x', 'X': // Reset Account Credentials
+			target := accs[selectedIndex].AccountName
+			if err := s.ResetAccount(target); err != nil {
+				msg = fmt.Sprintf("\033[31mError resetting account: %v\033[0m", err)
+			} else {
+				accs = s.ListAccounts()
+				msg = fmt.Sprintf("\033[33mCredentials and session token for '%s' reset cleanly.\033[0m", target)
+			}
 		case 'r', 'R': // Refresh
 			accs = s.ListAccounts()
-			msg = "\033[32mRefreshed token status.\033[0m"
+			msg = "\033[32mRefreshed token & quota status.\033[0m"
 		case 'q', 'Q', 0x03: // Quit or Ctrl+C
 			_ = term.Restore(fd, oldState)
 			fmt.Print("\r\n")
@@ -137,7 +150,7 @@ func Run(s *store.Store, v *vault.Vault, l *launcher.Launcher, opts ...Options) 
 
 func renderUI(accs []store.AccountInfo, activeAcc string, selectedIndex int, statusMsg string) {
 	fmt.Print("\033[H\033[2J") // Clear screen
-	fmt.Print("\r\n🛸 \033[1;36mAGYSWITCH - Dedicated Antigravity Multi-Account Vault (Go TUI v1.2.0)\033[0m\r\n")
+	fmt.Print("\r\n🛸 \033[1;36mAGYSWITCH - Dedicated Antigravity Multi-Account Vault (Go TUI v1.3.0)\033[0m\r\n")
 	fmt.Print("──────────────────────────────────────────────────────────────────────────────────\r\n")
 	fmt.Printf(" Active Context: \033[1;32m%s\033[0m\r\n\r\n", activeAcc)
 
@@ -161,20 +174,22 @@ func renderUI(accs []store.AccountInfo, activeAcc string, selectedIndex int, sta
 			tokenBadge = fmt.Sprintf("\033[32m✔ Logged In · Key: %s\033[0m", a.TokenSig)
 		}
 
-		fmt.Printf("%s%s%s%d. \033[1m%-22s\033[0m (%-28s) (%s)%s\r\n",
-			cursor, highlightStart, activeMarker, i+1, a.AccountName, a.Email, tokenBadge, highlightEnd)
+		quotaBadge := fmt.Sprintf("\033[36m[%s]\033[0m", a.QuotaStatus)
+
+		fmt.Printf("%s%s%s%d. \033[1m%-22s\033[0m (%-26s) (%s) %s%s\r\n",
+			cursor, highlightStart, activeMarker, i+1, a.AccountName, a.Email, tokenBadge, quotaBadge, highlightEnd)
 	}
 
 	fmt.Print("──────────────────────────────────────────────────────────────────────────────────\r\n")
 	if statusMsg != "" {
 		fmt.Printf(" %s\r\n", statusMsg)
 	}
-	fmt.Print(" \033[1m[↑/↓ j/k]\033[0m Nav · \033[1m[1-5]\033[0m Quick Jump · \033[1;32m[Enter]\033[0m Switch · \033[1;36m[L]\033[0m Launch CLI · \033[1;33m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\r\n")
+	fmt.Print(" \033[1m[↑/↓ j/k]\033[0m Nav · \033[1m[1-5]\033[0m Quick Jump · \033[1;32m[Enter]\033[0m Switch · \033[1;36m[L]\033[0m Launch · \033[1;35m[A]\033[0m Auto Quota · \033[1;33m[X]\033[0m Reset · \033[1;33m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\r\n")
 }
 
 // PrintStatus prints the non-interactive status table.
 func PrintStatus(s *store.Store) {
-	fmt.Println("\n🛸 \033[1;36mAGYSWITCH - Dedicated Antigravity Multi-Account Vault (Go Engine)\033[0m")
+	fmt.Println("\n🛸 \033[1;36mAGYSWITCH - Dedicated Antigravity Multi-Account Vault (Go Engine v1.3.0)\033[0m")
 	fmt.Println("──────────────────────────────────────────────────────────────────────────────────")
 	accs := s.ListAccounts()
 	active := s.GetActiveAccount()
@@ -192,8 +207,10 @@ func PrintStatus(s *store.Store) {
 			statusBadge = fmt.Sprintf("\033[32m✔ Logged In · Key: %s\033[0m", a.TokenSig)
 		}
 
-		fmt.Printf(" %s%d. \033[1m%-22s\033[0m (%-30s) (%s)\n",
-			activeMarker, i+1, a.AccountName, a.Email, statusBadge)
+		quotaBadge := fmt.Sprintf("\033[36m[%s]\033[0m", a.QuotaStatus)
+
+		fmt.Printf(" %s%d. \033[1m%-22s\033[0m (%-26s) (%s) %s\n",
+			activeMarker, i+1, a.AccountName, a.Email, statusBadge, quotaBadge)
 	}
 	fmt.Printf("──────────────────────────────────────────────────────────────────────────────────\n\n")
 }
