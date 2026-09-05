@@ -35,8 +35,31 @@ func main() {
 	cmd := strings.ToLower(args[0])
 
 	switch cmd {
-	case "status", "list", "ls", "quota":
+	case "status", "list", "ls":
 		tui.PrintStatus(s)
+	case "quota", "q":
+		target := s.GetActiveAccount()
+		if len(args) >= 2 {
+			target = args[1]
+		}
+		if target == "all" {
+			for _, a := range s.ListAccounts() {
+				if a.IsLoggedIn {
+					summary, err := s.GetAccountQuota(a.AccountName)
+					if err == nil {
+						fmt.Print(store.RenderQuotaSummary(a.Email, summary))
+					}
+				}
+			}
+		} else {
+			summary, err := s.GetAccountQuota(target)
+			if err != nil {
+				fmt.Printf("\033[31mError fetching quota for '%s': %v\033[0m\n", target, err)
+			} else {
+				email := fmt.Sprintf("%s@gmail.com", target)
+				fmt.Print(store.RenderQuotaSummary(email, summary))
+			}
+		}
 	case "reset":
 		target := s.GetActiveAccount()
 		if len(args) >= 2 {

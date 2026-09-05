@@ -127,6 +127,15 @@ func Run(s *store.Store, v *vault.Vault, l *launcher.Launcher, opts ...Options) 
 			_ = term.Restore(fd, oldState)
 			fmt.Printf("\r\n\033[36m[agyswitch]\033[0m Quota selector auto-selected account '\033[32m%s\033[0m'...\r\n", bestAcc)
 			return l.LaunchAccount(bestAcc, nil)
+		case 'v', 'V': // View detailed Quota
+			target := accs[selectedIndex].AccountName
+			summary, err := s.GetAccountQuota(target)
+			if err != nil {
+				msg = fmt.Sprintf("\033[31mError fetching quota for '%s': %v\033[0m", target, err)
+			} else {
+				email := fmt.Sprintf("%s@gmail.com", target)
+				msg = store.RenderQuotaSummary(email, summary)
+			}
 		case 'x', 'X': // Reset Account Credentials
 			target := accs[selectedIndex].AccountName
 			if err := s.ResetAccount(target); err != nil {
@@ -195,7 +204,7 @@ func renderUI(accs []store.AccountInfo, activeAcc string, selectedIndex int, sta
 	if statusMsg != "" {
 		fmt.Printf(" %s\r\n", statusMsg)
 	}
-	fmt.Print(" \033[1m[↑/↓ j/k]\033[0m Nav · \033[1m[1-5]\033[0m Quick Jump · \033[1;32m[Enter]\033[0m Switch · \033[1;36m[L]\033[0m Launch · \033[1;35m[A]\033[0m Auto Quota · \033[1;33m[X]\033[0m Reset · \033[1;33m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\r\n")
+	fmt.Print(" \033[1m[↑/↓ j/k]\033[0m Nav · \033[1m[1-5]\033[0m Quick Jump · \033[1;32m[Enter]\033[0m Switch · \033[1;36m[V]\033[0m Quota · \033[1;36m[L]\033[0m Launch · \033[1;35m[A]\033[0m Auto Quota · \033[1;33m[X]\033[0m Reset · \033[1;33m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\r\n")
 }
 
 // PrintStatus prints the non-interactive status table.

@@ -24,6 +24,26 @@ type AccountInfo struct {
 	QuotaStatus string `json:"quotaStatus"`
 }
 
+type QuotaBucket struct {
+	BucketID          string  `json:"bucketId"`
+	DisplayName       string  `json:"displayName"`
+	Window            string  `json:"window"`
+	ResetTime         string  `json:"resetTime"`
+	Description       string  `json:"description"`
+	RemainingFraction float64 `json:"remainingFraction"`
+}
+
+type QuotaGroup struct {
+	DisplayName string        `json:"displayName"`
+	Description string        `json:"description"`
+	Buckets     []QuotaBucket `json:"buckets"`
+}
+
+type QuotaSummary struct {
+	Groups      []QuotaGroup `json:"groups"`
+	Description string       `json:"description"`
+}
+
 type Store struct {
 	UserHome string
 	Vault    *vault.Vault
@@ -320,5 +340,119 @@ func (s *Store) ListAccounts() []AccountInfo {
 	wg.Wait()
 	return result
 }
+
+// FetchUserQuotaSummary queries Google Cloud Code API for live user quota details.
+func FetchUserQuotaSummary(tok string) (*QuotaSummary, error) {
+	tok = strings.TrimSpace(tok)
+	if tok == "" {
+		return nil, errors.New("unauthenticated")
+	}
+
+	client := &http.Client{Timeout: 4 * time.Second}
+	req, err := http.NewRequest("POST", "https://cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary", strings.NewReader("{}"))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Authorization", "Bearer "+tok)
+	req.Header.Set("User-Agent", "antigravity/1.1.27")
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("quota API HTTP %d", resp.StatusCode)
+	}
+
+	var summary QuotaSummary
+	if err := json.NewDecoder(resp.Body).Decode(&summary); err != nil {
+		return nil, err
+	}
+
+	return &summary, nil
+}
+
+// GetAccountQuota refreshes token if needed and fetches live QuotaSummary for named account.
+func (s *Store) GetAccountQuota(name string) (*QuotaSummary, error) {
+	accDir := s.GetAccountDirectory(name)
+	tok := s.Vault.EnsureValidAccessToken(accDir)
+	if tok == "" {
+		return nil, errors.New("account is logged out")
+	}
+
+	return FetchUserQuotaSummary(tok)
+}
+
+// RenderQuotaSummary builds terminal UI matching Antigravity Models & Quota layout.
+func RenderQuotaSummary(email string, summary *QuotaSummary) string {
+	if summary == nil || len(summary.Groups) == 0 {
+		return fmt.Sprintf("\033[31mNo quota details available for %s\033[0m\n", email)
+	}
+
+	var sb strings.Builder
+	sb.WriteString("\n└ \033[1;36mModels & Quota\033[0m\n\n")
+	sb.WriteString(fmt.Sprintf("  Account: \033[1;32m%s\033[0m\n", email))
+
+	for _, g := range summary.Groups {
+		sb.WriteString(fmt.Sprintf("\n\033[1;33m%s\033[0m\n", strings.ToUpper(g.DisplayName)))
+		if g.Description != "" {
+			sb.WriteString(fmt.Sprintf("  %s\n", g.Description))
+		}
+
+		for _, b := range g.Buckets {
+			pct := b.RemainingFraction * 100.0
+
+			filledLen := int((pct / 100.0) * 40.0)
+			if filledLen > 40 {
+				filledLen = 40
+			}
+			if filledLen < 0 {
+				filledLen = 0
+			}
+			emptyLen := 40 - filledLen
+
+			bar := strings.Repeat("█", filledLen) + strings.Repeat("░", emptyLen)
+
+			colorCode := "\033[32m" // Green
+			if pct < 20.0 {
+				colorCode = "\033[31m" // Red
+			} else if pct < 50.0 {
+				colorCode = "\033[33m" // Yellow
+			}
+
+			sb.WriteString(fmt.Sprintf("\n  %s\n", b.DisplayName))
+			sb.WriteString(fmt.Sprintf("    [%s%s\033[0m] %.2f%%\n", colorCode, bar, pct))
+
+			refreshMsg := "Quota available"
+			if b.ResetTime != "" {
+				if t, err := time.Parse(time.RFC3339, b.ResetTime); err == nil {
+					diff := time.Until(t)
+					if diff > 0 {
+						hours := int(diff.Hours())
+						mins := int(diff.Minutes()) % 60
+						if hours >= 24 {
+							days := hours / 24
+							h := hours % 24
+							refreshMsg = fmt.Sprintf("%.0f%% remaining · Refreshes in %dd %dh", pct, days, h)
+						} else {
+							refreshMsg = fmt.Sprintf("%.0f%% remaining · Refreshes in %dh %dm", pct, hours, mins)
+						}
+					}
+				}
+			}
+			sb.WriteString(fmt.Sprintf("    %s\n", refreshMsg))
+		}
+	}
+
+	if summary.Description != "" {
+		sb.WriteString("\n  │" + summary.Description + "\n")
+	}
+
+	return sb.String()
+}
+
 
 

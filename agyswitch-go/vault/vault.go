@@ -10,17 +10,25 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"os/user"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"golang.org/x/crypto/pbkdf2"
 )
 
 const KeyHash = "7407b4ddbbd1bfbf2dce30edc9115b02dd294ffb233a1e05d28b98df241bc386.key"
 const SaltString = "AgySwitch_Secure_Entropy_v2"
+
+const (
+	GoogleClientID     = "agy-placeholder-client-id.apps.googleusercontent.com"
+	GoogleClientSecret = "AGY_PLACEHOLDER_CLIENT_SECRET_REDACTED"
+)
 
 // Vault handles encryption, token discovery across all locations, and keyring sync.
 type Vault struct {
@@ -290,9 +298,103 @@ func (v *Vault) GetShortSignature(token string) string {
 		if len(cleanTok) >= 12 {
 			return fmt.Sprintf("ya29..%s", cleanTok[8:12])
 		}
+		return tok
 	}
 
-	head := tok[:4]
-	tail := tok[len(tok)-4:]
-	return fmt.Sprintf("%s..%s", head, tail)
+	return tok[:12]
+}
+
+// ExtractRefreshToken parses token JSON or file to extract refresh token string.
+func ExtractRefreshToken(dir string) string {
+	aTok1 := filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token")
+	data, err := os.ReadFile(aTok1)
+	if err != nil {
+		aTok2 := filepath.Join(dir, "antigravity-oauth-token")
+		data, err = os.ReadFile(aTok2)
+	}
+	if err != nil {
+		return ""
+	}
+
+	type OAuthFile struct {
+		Token struct {
+			RefreshToken string `json:"refresh_token"`
+		} `json:"token"`
+		RefreshToken string `json:"refresh_token"`
+	}
+
+	var parsed OAuthFile
+	if err := json.Unmarshal(data, &parsed); err == nil {
+		if parsed.Token.RefreshToken != "" {
+			return parsed.Token.RefreshToken
+		}
+		if parsed.RefreshToken != "" {
+			return parsed.RefreshToken
+		}
+	}
+	return ""
+}
+
+// RefreshOAuthToken performs HTTP refresh using Google OAuth endpoint.
+func RefreshOAuthToken(refreshToken string) (string, error) {
+	if strings.TrimSpace(refreshToken) == "" {
+		return "", errors.New("empty refresh token")
+	}
+
+	data := url.Values{}
+	data.Set("client_id", GoogleClientID)
+	data.Set("client_secret", GoogleClientSecret)
+	data.Set("grant_type", "refresh_token")
+	data.Set("refresh_token", refreshToken)
+
+	client := &http.Client{Timeout: 5 * time.Second}
+	resp, err := client.PostForm("https://oauth2.googleapis.com/token", data)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return "", fmt.Errorf("oauth endpoint returned status %d", resp.StatusCode)
+	}
+
+	var res struct {
+		AccessToken string `json:"access_token"`
+		ExpiresIn   int    `json:"expires_in"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
+		return "", err
+	}
+
+	if res.AccessToken == "" {
+		return "", errors.New("empty access token in refresh response")
+	}
+
+	return res.AccessToken, nil
+}
+
+// EnsureValidAccessToken reads access token and refreshes it via OAuth endpoint if refresh token exists.
+func (v *Vault) EnsureValidAccessToken(dir string) string {
+	tok := v.ReadTokenFromDir(dir)
+	rf := ExtractRefreshToken(dir)
+
+	if rf != "" {
+		if newTok, err := RefreshOAuthToken(rf); err == nil && newTok != "" {
+			aTokPath := filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token")
+			if data, err := os.ReadFile(aTokPath); err == nil {
+				var parsed map[string]interface{}
+				if json.Unmarshal(data, &parsed) == nil {
+					if tokMap, ok := parsed["token"].(map[string]interface{}); ok {
+						tokMap["access_token"] = newTok
+						if updated, err := json.MarshalIndent(parsed, "", "  "); err == nil {
+							_ = os.WriteFile(aTokPath, updated, 0600)
+						}
+					}
+				}
+			}
+			return newTok
+		}
+	}
+
+	return tok
 }
