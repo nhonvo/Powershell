@@ -18,10 +18,6 @@ public class CommandRegistryTests
             "[Favorites]",
             "[Workspace & Dev]",
             "[AI Agent & Ollama]",
-            "[AGY Account Switch]",
-            "[Learn & Study]",
-            "[Obsidian & Resources]",
-            "[Appearance & Layout]",
             "[System & Network]",
             "[Help & Docs]"
         };

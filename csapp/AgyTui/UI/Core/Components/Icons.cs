@@ -110,7 +110,6 @@ public class IconsService : IIcons
         new("workspace", "󰉋", "📁", "[Dev]", "cnav"),
         new("ai agent", "󰚩", "🤖", "[AI]", "cai"),
         new("ollama", "󰚩", "🤖", "[AI]", "cai"),
-        new("account", "👤", "👤", "[ACC]", "agyswitch"),
         new("docker", "🐳", "🐳", "[DKR]", "cdk"),
         new("database", "🐳", "🐳", "[DKR]", "cdk"),
         new("system", "🌐", "🌐", "[SYS]", "csys"),

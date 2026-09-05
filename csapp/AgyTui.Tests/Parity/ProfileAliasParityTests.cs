@@ -31,11 +31,8 @@ public class ProfileAliasParityTests
     [InlineData("dbld")]
     [InlineData("dtst")]
     [InlineData("docker-health")]
-    [InlineData("agyswitch")]
-    [InlineData("reset-agy")]
     [InlineData("cnav")]
     [InlineData("dotnet-info")]
-    [InlineData("purge-accounts")]
     public void Key_Profile_Aliases_Are_Registered_In_CommandRegistry(string alias)
     {
         var entry = CommandRegistry.GetByAlias(alias);

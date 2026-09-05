@@ -282,6 +282,8 @@ public class AgyQuotaEngine : IAgyQuotaEngine
             if (Directory.Exists(convPath)) convCount = Directory.GetDirectories(convPath).Length;
             bool hasToken = (File.Exists(Path.Combine(dir, "keyring_token.txt")) && new FileInfo(Path.Combine(dir, "keyring_token.txt")).Length > 0) ||
                             (File.Exists(Path.Combine(dir, "oauth_creds.json")) && new FileInfo(Path.Combine(dir, "oauth_creds.json")).Length > 0) ||
+                            (File.Exists(Path.Combine(dir, "antigravity-oauth-token")) && new FileInfo(Path.Combine(dir, "antigravity-oauth-token")).Length > 0) ||
+                            (File.Exists(Path.Combine(dir, "antigravity-cli", "antigravity-oauth-token")) && new FileInfo(Path.Combine(dir, "antigravity-cli", "antigravity-oauth-token")).Length > 0) ||
                             _accountStore.GetShortCredentialSignature(accountName) != "None";
 
             if (!hasToken && string.Equals(accountName, _accountStore.GetActiveAccount(), StringComparison.OrdinalIgnoreCase))

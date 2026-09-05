@@ -132,14 +132,70 @@ public class CommandRouter : ICommandRouter
                 {
                     case "ai":
                     case "cai":
-                        var aiQuery = args != null && args.Length > 0 ? string.Join(" ", args) : null;
-                        if (!string.IsNullOrWhiteSpace(aiQuery))
+                        var installedModels = _ollama.GetInstalledModels();
+                        var agentOptions = new List<string>();
+
+                        // 1. Installed Ollama Models
+                        foreach (var m in installedModels)
                         {
-                            _claude.InvokeClaude(args!);
+                            agentOptions.Add($"🦙 Run Ollama Model: {m}");
                         }
-                        else
+                        if (installedModels.Count == 0)
                         {
-                            SubPageNavigator.Run("ask-ai");
+                            agentOptions.Add($"🦙 Run Default Ollama Model ({_ollama.DefaultModel})");
+                        }
+
+                        // 2. Specialized Local AI Agents
+                        agentOptions.Add("☤ Nous Hermes 3 (Ollama / Local)");
+                        agentOptions.Add("🐛 Nous Hermes 3 (Debug Mode)");
+                        agentOptions.Add("🐾 OpenClaw Agent (Local Reasoning)");
+                        agentOptions.Add("🛸 Antigravity CLI (agy)");
+
+                        // 3. Tools & Activity
+                        agentOptions.Add("📜 AI Activity History Ledger");
+                        agentOptions.Add("⬇️ Pull New Ollama Model");
+                        agentOptions.Add("⚙️ Manage Installed Models");
+
+                        var agentChoice = SpectreMenu.ShowWithEscape("Select Local AI Agent / Model", agentOptions.ToArray(), 0);
+                        if (agentChoice < 0) break;
+
+                        var selectedAgent = agentOptions[agentChoice];
+                        if (selectedAgent.StartsWith("🦙 Run Ollama Model: "))
+                        {
+                            var modelName = selectedAgent.Replace("🦙 Run Ollama Model: ", "").Trim();
+                            _ollama.InvokeNative(modelName);
+                        }
+                        else if (selectedAgent.StartsWith("🦙 Run Default Ollama Model"))
+                        {
+                            _ollama.InvokeNative(_ollama.DefaultModel);
+                        }
+                        else if (selectedAgent.StartsWith("☤ Nous Hermes 3 (Ollama"))
+                        {
+                            _hermes.InvokeHermes([]);
+                        }
+                        else if (selectedAgent.StartsWith("🐛 Nous Hermes 3 (Debug"))
+                        {
+                            _hermes.InvokeHermesDesktop([]);
+                        }
+                        else if (selectedAgent.StartsWith("🐾 OpenClaw"))
+                        {
+                            _openClaw.InvokeOpenClaw([]);
+                        }
+                        else if (selectedAgent.StartsWith("🛸 Antigravity CLI"))
+                        {
+                            ProcessRunner.Instance.Run("agy", "");
+                        }
+                        else if (selectedAgent.StartsWith("📜 AI Activity"))
+                        {
+                            ShowAiHistory();
+                        }
+                        else if (selectedAgent.StartsWith("⬇️ Pull New"))
+                        {
+                            _ollama.PullModel();
+                        }
+                        else if (selectedAgent.StartsWith("⚙️ Manage"))
+                        {
+                            _ollama.ManageModels();
                         }
                         break;
                     case "ai-mode-check":
@@ -516,6 +572,36 @@ public class CommandRouter : ICommandRouter
                     case "ollama-status":
                         OllamaStatusWidgetCache.Invalidate();
                         break;
+                    case "ollama":
+                        var ollamaOptions = new[]
+                        {
+                            "Check Daemon Status (/ollama-status)",
+                            "Manage Pulled Models (/ollama-models)",
+                            "Pull New Model (/ollama-pull)",
+                            "Start Ollama Daemon (/ollama-start)",
+                            "View Server Logs (/ollama-logs)",
+                            "Benchmark Models (/ollama-benchmark)",
+                            "Launch Local AI Agent (Hermes / OpenClaw / agy)"
+                        };
+                        var oChoice = SpectreMenu.Show("Ollama & Local AI Center", ollamaOptions, 0);
+                        switch (oChoice)
+                        {
+                            case 0: OllamaStatusWidgetCache.Invalidate(); break;
+                            case 1: _ollama.ManageModels(); break;
+                            case 2: _ollama.PullModel(); break;
+                            case 3: _ollama.StartDaemon(); break;
+                            case 4: _ollama.ShowLogs(); break;
+                            case 5: _ollama.BenchmarkModels(); break;
+                            case 6:
+                                var subAgents = new[] { "Hermes3", "Hermes3 Debug", "OpenClaw", "Antigravity CLI (agy)" };
+                                var saChoice = SpectreMenu.Show("Select Local Agent", subAgents, 0);
+                                if (saChoice == 0) _hermes.InvokeHermes([]);
+                                else if (saChoice == 1) _hermes.InvokeHermesDesktop([]);
+                                else if (saChoice == 2) _openClaw.InvokeOpenClaw([]);
+                                else if (saChoice == 3) ProcessRunner.Instance.Run("agy", "");
+                                break;
+                        }
+                        break;
                     case "desk-status":
                     case "deck-status":
                         try
@@ -632,48 +718,7 @@ public class CommandRouter : ICommandRouter
                         Helpers.ProcessRunner.Instance.Run("cmd.exe", "/c agy");
                         break;
                     case "ai-history":
-                        {
-                            var accStoreHist = _accountStore;
-                            if (accStoreHist == null) break;
-                            var logPath = Path.Combine(accStoreHist.AgySourceHome, "ai_activity_log.jsonl");
-                            if (!File.Exists(logPath))
-                            {
-                                AnsiConsole.MarkupLine("[yellow]No AI activity log found yet.[/]");
-                                Console.WriteLine("\nPress any key to return...");
-                                Console.ReadKey(true);
-                                break;
-                            }
-                            var lines = File.ReadAllLines(logPath);
-                            var table = new Table().Border(TableBorder.Rounded);
-                            table.AddColumn("Timestamp");
-                            table.AddColumn("Agent");
-                            table.AddColumn("Mode");
-                            table.AddColumn("Duration (s)");
-                            table.AddColumn("Status");
-                            table.AddColumn("Account");
-
-                            foreach (var line in lines.TakeLast(30))
-                            {
-                                if (string.IsNullOrWhiteSpace(line)) continue;
-                                try
-                                {
-                                    using var doc = JsonDocument.Parse(line);
-                                    var root = doc.RootElement;
-                                    var ts = root.GetProperty("Timestamp").GetString() ?? "";
-                                    if (ts.Length > 19) ts = ts[..19].Replace("T", " ");
-                                    var agent = root.GetProperty("Agent").GetString() ?? "";
-                                    var modeVal = root.GetProperty("Mode").GetString() ?? "";
-                                    var dur = root.GetProperty("DurationMs").GetDouble() / 1000.0;
-                                    var status = root.GetProperty("Success").GetBoolean() ? "[green]Success[/]" : "[red]Failed[/]";
-                                    var acc = root.GetProperty("Account").GetString() ?? "";
-                                    table.AddRow(ts, agent, modeVal, dur.ToString("F2"), status, acc);
-                                }
-                                catch { }
-                            }
-                            AnsiConsole.Write(table);
-                            Console.WriteLine("\nPress any key to return...");
-                            Console.ReadKey(true);
-                        }
+                        ShowAiHistory();
                         break;
                     case "hermes":
                         if (_hermes.InvokeHermes([]) == HermesResult.NotInstalled)
@@ -1372,5 +1417,49 @@ public class CommandRouter : ICommandRouter
     {
         SpectrePanel.Info("Reloading PowerShell Profile and initiating Control Center TUI rebuild...");
         ReloadControlCenter();
+    }
+
+    private void ShowAiHistory()
+    {
+        var accStoreHist = _accountStore;
+        if (accStoreHist == null) return;
+        var logPath = Path.Combine(accStoreHist.AgySourceHome, "ai_activity_log.jsonl");
+        if (!File.Exists(logPath))
+        {
+            SpectrePanel.Warning("No AI activity log found yet.");
+            Console.WriteLine("\nPress any key to return...");
+            Console.ReadKey(true);
+            return;
+        }
+        var lines = File.ReadAllLines(logPath);
+        var table = new Table().Border(TableBorder.Rounded);
+        table.AddColumn("Timestamp");
+        table.AddColumn("Agent");
+        table.AddColumn("Mode");
+        table.AddColumn("Duration (s)");
+        table.AddColumn("Status");
+        table.AddColumn("Account");
+
+        foreach (var line in lines.TakeLast(30))
+        {
+            if (string.IsNullOrWhiteSpace(line)) continue;
+            try
+            {
+                using var doc = JsonDocument.Parse(line);
+                var root = doc.RootElement;
+                var ts = root.GetProperty("Timestamp").GetString() ?? "";
+                if (ts.Length > 19) ts = ts[..19].Replace("T", " ");
+                var agent = root.GetProperty("Agent").GetString() ?? "";
+                var modeVal = root.GetProperty("Mode").GetString() ?? "";
+                var dur = root.GetProperty("DurationMs").GetDouble() / 1000.0;
+                var status = root.GetProperty("Success").GetBoolean() ? "[green]Success[/]" : "[red]Failed[/]";
+                var acc = root.GetProperty("Account").GetString() ?? "";
+                table.AddRow(ts, agent, modeVal, dur.ToString("F2"), status, acc);
+            }
+            catch { }
+        }
+        AnsiConsole.Write(table);
+        Console.WriteLine("\nPress any key to return...");
+        Console.ReadKey(true);
     }
 }

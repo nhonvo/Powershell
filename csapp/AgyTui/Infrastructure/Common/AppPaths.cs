@@ -110,7 +110,26 @@ public static class AppPaths
         }
     }
 
-    public static string UserProfileDir => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+    public static string UserProfileDir
+    {
+        get
+        {
+            var userProfile = Environment.GetEnvironmentVariable("USERPROFILE");
+            if (!string.IsNullOrEmpty(userProfile) && !userProfile.Contains('\\') && !userProfile.Contains(':') && Directory.Exists(userProfile))
+            {
+                return userProfile;
+            }
+            if (OperatingSystem.IsWindows() && !string.IsNullOrEmpty(userProfile) && Directory.Exists(userProfile))
+            {
+                return userProfile;
+            }
+            var home = Environment.GetEnvironmentVariable("HOME");
+            if (!string.IsNullOrEmpty(home) && Directory.Exists(home))
+                return home;
+
+            return Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        }
+    }
     public static string LocalAppDataDir => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
     public static string LogsDir

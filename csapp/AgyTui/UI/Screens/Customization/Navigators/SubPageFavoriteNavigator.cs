@@ -117,7 +117,7 @@ public static class SubPageFavoriteNavigator
         AnsiConsole.Clear();
         if (AnsiConsole.Confirm("Are you sure you want to reset Favorites to default list?"))
         {
-            Config.Current.Ui.FavoriteAliases = ["proj", "agyswitch", "open-term", "vault", "ide", "ask-ai"];
+            Config.Current.Ui.FavoriteAliases = ["proj", "agyswitch", "vault", "ide", "ollama"];
             Config.Save();
             SpectrePanel.Success($"Reset Favorites to default list.");
             Thread.Sleep(1200);

@@ -206,6 +206,31 @@ public class OllamaClient : IOllamaClient
         }
     }
 
+    public List<string> GetInstalledModels()
+    {
+        var list = new List<string>();
+        try
+        {
+            if (!IsRunning) return list;
+            var client = HttpClientProvider.Instance.Client;
+            var response = client.GetStringAsync("http://127.0.0.1:11434/api/tags").Result;
+            using var doc = JsonDocument.Parse(response);
+            if (doc.RootElement.TryGetProperty("models", out var modelsProp) && modelsProp.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var m in modelsProp.EnumerateArray())
+                {
+                    if (m.TryGetProperty("name", out var nameProp))
+                    {
+                        var n = nameProp.GetString();
+                        if (!string.IsNullOrEmpty(n)) list.Add(n);
+                    }
+                }
+            }
+        }
+        catch { }
+        return list;
+    }
+
     public void BenchmarkModels()
     {
         if (!IsRunning)

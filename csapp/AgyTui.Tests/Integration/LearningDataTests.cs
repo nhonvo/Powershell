@@ -40,13 +40,13 @@ public class LearningDataTests
     [Fact]
     public void CommandRegistry_ContainsLearningAndVaultCommands()
     {
-        var aliases = new[] { "obsidian", "refresh", "vault-open", "grammar", "jlpt", "vocab", "algo", "quiz", "interview", "star", "mock" };
+        var aliases = new[] { "obsidian", "refresh", "vault-open" };
 
         foreach (var alias in aliases)
         {
             var entry = CommandRegistry.All.FirstOrDefault(c => c.Alias.Equals(alias, StringComparison.OrdinalIgnoreCase));
             Assert.NotNull(entry);
-            Assert.Equal("[Learn & Study]", entry.Category);
+            Assert.Equal("[Workspace & Dev]", entry.Category);
         }
     }
 

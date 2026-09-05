@@ -21,7 +21,8 @@ public class AppPathManager : IAppPathManager
 
         return _accountDirCache.GetOrAdd(accountName, name =>
         {
-            var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
+            var userProfile = AppPaths.UserProfileDir;
+
             if (!string.IsNullOrEmpty(userProfile))
             {
                 var dotGeminiDir = Path.Combine(userProfile, $".gemini_{name}");

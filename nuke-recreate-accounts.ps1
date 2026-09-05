@@ -52,12 +52,13 @@ foreach ($db in $dbPaths) {
             $cmd.CommandText = "DELETE FROM accounts;"
             $cmd.ExecuteNonQuery() | Out-Null
 
-            # Clear any token/auth related entries in system_state if present
             try {
                 $cmdState = $conn.CreateCommand()
                 $cmdState.CommandText = "DELETE FROM system_state WHERE state_key LIKE '%token%' OR state_key LIKE '%auth%' OR state_key LIKE '%account%';"
                 $cmdState.ExecuteNonQuery() | Out-Null
-            } catch {}
+            } catch {
+                # Ignore if system_state table does not exist
+            }
 
             $conn.Close()
             Write-Host "🧹 Cleared accounts table in DB: $db" -ForegroundColor Yellow

@@ -13,6 +13,11 @@ public class AgyAccountStore : IAgyAccountStore
     public string AgySourceHome => _pathManager.GeminiHome;
     public string AgyAccountPrefix => _pathManager.AccountPrefix;
 
+    private static string GetUserProfileDir()
+    {
+        return AppPaths.UserProfileDir;
+    }
+
     public AgyAccountStore(
         IAgyAccountRepository accountRepo,
         IAppPathManager pathManager)
@@ -40,11 +45,7 @@ public class AgyAccountStore : IAgyAccountStore
             var dbCreds = _accountRepo.GetAccountCredentials(name);
             if (dbCreds != null && !string.IsNullOrEmpty(dbCreds.Email) && dbCreds.Email.Contains("@"))
             {
-                var dbEmail = dbCreds.Email.Trim().ToLowerInvariant();
-                if (dbEmail.StartsWith(name.ToLowerInvariant()) || dbEmail.Contains(name.ToLowerInvariant()))
-                {
-                    return dbEmail;
-                }
+                return dbCreds.Email.Trim().ToLowerInvariant();
             }
         }
         catch { }
@@ -62,6 +63,9 @@ public class AgyAccountStore : IAgyAccountStore
         if (string.IsNullOrWhiteSpace(accountName)) return;
         var dir = GetAccountDirectory(accountName);
         if (!Directory.Exists(dir)) return;
+
+        if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
+            return;
 
         var expectedEmail = GetCanonicalEmail(accountName);
         var googleAccountsFile = Path.Combine(dir, "google_accounts.json");
@@ -94,16 +98,7 @@ public class AgyAccountStore : IAgyAccountStore
 
         if (needsSanitization)
         {
-            var filesToDelete = new[] { "google_accounts.json", "oauth_creds.json", "state.json", "keyring_token.txt" };
-            foreach (var f in filesToDelete)
-            {
-                var p = Path.Combine(dir, f);
-                if (File.Exists(p)) { try { File.Delete(p); } catch { } }
-            }
-
-            var subKeyring = Path.Combine(dir, "antigravity-cli", "keyring_token.txt");
-            if (File.Exists(subKeyring)) { try { File.Delete(subKeyring); } catch { } }
-
+            Directory.CreateDirectory(dir);
             var gObj = new
             {
                 accounts = new[] { new { email = expectedEmail } },
@@ -120,12 +115,6 @@ public class AgyAccountStore : IAgyAccountStore
             var sJson = JsonSerializer.Serialize(sObj, new JsonSerializerOptions { WriteIndented = true });
             Directory.CreateDirectory(Path.Combine(dir, "antigravity-cli"));
             File.WriteAllText(Path.Combine(dir, "antigravity-cli", "settings.json"), sJson, Utf8NoBom);
-
-            try
-            {
-                _accountRepo.SaveAccountCredentials(new AccountCredentials(accountName, null, gJson, null, null, expectedEmail));
-            }
-            catch { }
         }
     }
 
@@ -150,6 +139,15 @@ public class AgyAccountStore : IAgyAccountStore
                 {
                     rawToken = File.ReadAllText(tokenFile).Trim();
                 }
+            }
+
+            if (string.IsNullOrEmpty(rawToken))
+            {
+                var accDir = GetAccountDirectory(accountName);
+                var f1 = Path.Combine(accDir, "antigravity-cli", "antigravity-oauth-token");
+                var f2 = Path.Combine(accDir, "antigravity-oauth-token");
+                if (File.Exists(f1)) rawToken = File.ReadAllText(f1).Trim();
+                else if (File.Exists(f2)) rawToken = File.ReadAllText(f2).Trim();
             }
 
             if (string.IsNullOrEmpty(rawToken) && string.Equals(accountName, GetActiveAccount(), StringComparison.OrdinalIgnoreCase))
@@ -182,9 +180,16 @@ public class AgyAccountStore : IAgyAccountStore
                     {
                         plainToken = at.GetString() ?? plainToken;
                     }
-                    else if (doc.RootElement.TryGetProperty("token", out var tk) && tk.ValueKind == JsonValueKind.String)
+                    else if (doc.RootElement.TryGetProperty("token", out var tk))
                     {
-                        plainToken = tk.GetString() ?? plainToken;
+                        if (tk.ValueKind == JsonValueKind.String)
+                        {
+                            plainToken = tk.GetString() ?? plainToken;
+                        }
+                        else if (tk.ValueKind == JsonValueKind.Object && tk.TryGetProperty("access_token", out var nestedAt) && nestedAt.ValueKind == JsonValueKind.String)
+                        {
+                            plainToken = nestedAt.GetString() ?? plainToken;
+                        }
                     }
                 }
                 catch { }
@@ -279,29 +284,48 @@ public class AgyAccountStore : IAgyAccountStore
             var dbAccs = _accountRepo.GetAccounts();
             foreach (var dbAcc in dbAccs)
             {
-                if (!string.IsNullOrWhiteSpace(dbAcc))
+                if (string.IsNullOrWhiteSpace(dbAcc)) continue;
+                if (string.Equals(dbAcc, "default", StringComparison.OrdinalIgnoreCase))
+                {
+                    accounts.Add("default");
+                    continue;
+                }
+
+                var dir = GetAccountDirectory(dbAcc);
+                if (Directory.Exists(dir))
+                {
                     accounts.Add(dbAcc);
+                }
+                else
+                {
+                    try { _accountRepo.DeleteAccount(dbAcc); } catch { }
+                }
             }
         }
         catch { }
 
         var scanPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
+        var userProfile = GetUserProfileDir();
         if (Directory.Exists(userProfile)) scanPaths.Add(userProfile);
+
         var prefixParent = Path.GetDirectoryName(AgyAccountPrefix);
         if (prefixParent != null && Directory.Exists(prefixParent)) scanPaths.Add(prefixParent);
 
         foreach (var scanPath in scanPaths)
         {
-            foreach (var dir in Directory.GetDirectories(scanPath, ".gemini_*"))
+            try
             {
-                var m = Regex.Match(Path.GetFileName(dir), @"^\.gemini_(.+)$");
-                if (!m.Success) continue;
-                var name = m.Groups[1].Value;
-                if (Regex.IsMatch(name, @"^(backup|copy|temp|test|testacc)([_-]|$)", RegexOptions.IgnoreCase)) continue;
+                foreach (var dir in Directory.GetDirectories(scanPath, ".gemini_*"))
+                {
+                    var m = Regex.Match(Path.GetFileName(dir), @"^\.gemini_(.+)$");
+                    if (!m.Success) continue;
+                    var name = m.Groups[1].Value;
+                    if (Regex.IsMatch(name, @"^(backup|copy|temp|test|testacc)([_-]|$)", RegexOptions.IgnoreCase)) continue;
 
-                accounts.Add(name);
+                    accounts.Add(name);
+                }
             }
+            catch { }
         }
 
         return accounts.OrderBy(a => a, StringComparer.OrdinalIgnoreCase).ToArray();
@@ -344,7 +368,7 @@ public class AgyAccountStore : IAgyAccountStore
 
         try
         {
-            var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
+            var userProfile = GetUserProfileDir();
             if (!string.IsNullOrEmpty(userProfile))
             {
                 var activeFile = Path.Combine(userProfile, ".gemini", "active_account.txt");
@@ -384,7 +408,11 @@ public class AgyAccountStore : IAgyAccountStore
 
         (new AgyQuotaEngine(this)).ClearStatsCache();
         UpdateAccountMetadata(accountName);
-        (new AgyVault(this, _accountRepo)).BackupActiveToken(oldActiveAcc);
+        if (string.Equals(oldActiveAcc, "default", StringComparison.OrdinalIgnoreCase) ||
+            Directory.Exists(GetAccountDirectory(oldActiveAcc)))
+        {
+            (new AgyVault(this, _accountRepo)).BackupActiveToken(oldActiveAcc);
+        }
 
         var targetDirLoc = GetAccountDirectory(accountName);
         Environment.SetEnvironmentVariable("GEMINI_HOME", targetDirLoc);
@@ -398,7 +426,7 @@ public class AgyAccountStore : IAgyAccountStore
         {
             try
             {
-                var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
+                var userProfile = GetUserProfileDir();
                 if (!string.IsNullOrEmpty(userProfile))
                 {
                     var rootGemini = Path.Combine(userProfile, ".gemini");
@@ -560,10 +588,15 @@ public class AgyAccountStore : IAgyAccountStore
         if (isActive)
         {
             AgyKeyringHelper.DeleteToken("gemini:antigravity");
-            var primaryDir = Path.Combine(Environment.GetEnvironmentVariable("USERPROFILE") ?? "", ".gemini");
+            var primaryDir = Path.Combine(GetUserProfileDir(), ".gemini");
             if (Directory.Exists(primaryDir))
             {
-                var primaryAuthFiles = new[] { "oauth_creds.json", "state.json", "keyring_token.txt" };
+                var primaryAuthFiles = new[]
+                {
+                    "oauth_creds.json", "state.json", "keyring_token.txt", "antigravity-oauth-token",
+                    Path.Combine("antigravity-cli", "antigravity-oauth-token"),
+                    Path.Combine("antigravity-cli", "keyring_token.txt")
+                };
                 foreach (var f in primaryAuthFiles)
                 {
                     var p = Path.Combine(primaryDir, f);
@@ -575,7 +608,12 @@ public class AgyAccountStore : IAgyAccountStore
         var dir = GetAccountDirectory(accountName);
         if (Directory.Exists(dir))
         {
-            var authFiles = new[] { "oauth_creds.json", "state.json", "keyring_token.txt" };
+            var authFiles = new[]
+            {
+                "oauth_creds.json", "state.json", "keyring_token.txt", "antigravity-oauth-token",
+                Path.Combine("antigravity-cli", "antigravity-oauth-token"),
+                Path.Combine("antigravity-cli", "keyring_token.txt")
+            };
             foreach (var f in authFiles)
             {
                 var p = Path.Combine(dir, f);
@@ -646,12 +684,12 @@ public class AgyAccountStore : IAgyAccountStore
         if (!string.IsNullOrEmpty(agyExe))
         {
             SpectrePanel.Info($"Launching OAuth login for '{accountName}' ({email}) via '{agyExe}'...");
-            Helpers.ProcessRunner.Instance.RunInteractive(agyExe, ["auth", "login"], envDict, targetDir);
+            Helpers.ProcessRunner.Instance.RunInteractive(agyExe, ["--dangerously-skip-permissions"], envDict, targetDir);
         }
         else
         {
             SpectrePanel.Info($"Launching OAuth login for '{accountName}' ({email})...");
-            Helpers.ProcessRunner.Instance.RunInteractive("pwsh", ["-NoProfile", "-Command", $"Remove-Item Env:\\GEMINI_CLI_IDE_AUTH_TOKEN -ErrorAction SilentlyContinue; Remove-Item Env:\\GEMINI_CLI_IDE_SERVER_PORT -ErrorAction SilentlyContinue; $env:GEMINI_HOME='{targetDir}'; agy"], null, targetDir);
+            Helpers.ProcessRunner.Instance.RunInteractive("pwsh", ["-NoProfile", "-Command", $"Remove-Item Env:\\GEMINI_CLI_IDE_AUTH_TOKEN -ErrorAction SilentlyContinue; Remove-Item Env:\\GEMINI_CLI_IDE_SERVER_PORT -ErrorAction SilentlyContinue; $env:GEMINI_HOME='{targetDir}'; agy --dangerously-skip-permissions"], null, targetDir);
         }
         (new AgyVault(this, _accountRepo)).BackupActiveToken(accountName);
         (new AgyQuotaEngine(this)).ClearStatsCache();
@@ -659,7 +697,7 @@ public class AgyAccountStore : IAgyAccountStore
 
     public void PurgeAllNonDefaultAccounts()
     {
-        var userProfile = Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
+        var userProfile = GetUserProfileDir();
         var publicDir = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\", "Users", "Public");
         var prefixParent = Path.GetDirectoryName(AgyAccountPrefix);
 

@@ -729,59 +729,43 @@ function Invoke-AgyAccount {
         [string]$TargetAccount,
         [switch]$Temporary
     )
-    if (-not $SubCommand) {
-        Invoke-ControlCenter "agyswitch"
+    if (Get-Command agyswitch -ErrorAction SilentlyContinue) {
+        if (-not $SubCommand) {
+            & agyswitch
+            return
+        }
+        switch ($SubCommand.ToLowerInvariant()) {
+            "use" {
+                if ($TargetAccount) { & agyswitch switch $TargetAccount } else { & agyswitch }
+            }
+            "list" { & agyswitch status }
+            "ls" { & agyswitch status }
+            "status" { & agyswitch status }
+            default {
+                if ($TargetAccount) { & agyswitch $SubCommand $TargetAccount } else { & agyswitch $SubCommand }
+            }
+        }
         return
     }
-    switch ($SubCommand.ToLowerInvariant()) {
-        "use" {
-            if (-not $TargetAccount) {
-                Invoke-ControlCenter "agyswitch"
-            } else {
-                Invoke-ControlCenter "agyswitch" $TargetAccount
-            }
-        }
-        "list" { Invoke-ControlCenter "live-dashboard" }
-        "ls" { Invoke-ControlCenter "live-dashboard" }
-        "login" {
-            if ($TargetAccount) {
-                Invoke-ControlCenter "agyswitch" $TargetAccount
-            }
-            try { cmdkey /delete:gemini:antigravity | Out-Null } catch {}
-            try { cmdkey /delete:LegacyGeneric:target=gemini:antigravity | Out-Null } catch {}
-            $authFiles = @("keyring_token.txt", "oauth_creds.json", "state.json")
-            foreach ($af in $authFiles) {
-                $p1 = Join-Path $env:USERPROFILE ".gemini\$af"
-                if (Test-Path $p1) { Remove-Item -Path $p1 -Force -ErrorAction SilentlyContinue }
-                if ($env:GEMINI_HOME) {
-                    $p2 = Join-Path $env:GEMINI_HOME $af
-                    if (Test-Path $p2) { Remove-Item -Path $p2 -Force -ErrorAction SilentlyContinue }
-                }
-            }
-            Write-Host "🌐 Opening Antigravity CLI for OAuth authentication..." -ForegroundColor Cyan
-            $oldToken = $env:GEMINI_CLI_IDE_AUTH_TOKEN
-            $oldPort = $env:GEMINI_CLI_IDE_SERVER_PORT
-            Remove-Item Env:\GEMINI_CLI_IDE_AUTH_TOKEN -ErrorAction SilentlyContinue
-            Remove-Item Env:\GEMINI_CLI_IDE_SERVER_PORT -ErrorAction SilentlyContinue
-            try {
-                & agy
-            } finally {
-                if ($oldToken) { $env:GEMINI_CLI_IDE_AUTH_TOKEN = $oldToken }
-                if ($oldPort) { $env:GEMINI_CLI_IDE_SERVER_PORT = $oldPort }
-            }
-        }
-        "logout" {
-            Invoke-ControlCenter "reset-agy"
-        }
-        default {
-            Invoke-ControlCenter "agyswitch" $SubCommand
-        }
+    if (Get-Command wsl -ErrorAction SilentlyContinue) {
+        $wslCmd = "agyswitch"
+        if ($SubCommand) { $wslCmd += " $SubCommand" }
+        if ($TargetAccount) { $wslCmd += " $TargetAccount" }
+        wsl bash -c "$wslCmd"
+        return
     }
+    Write-Host "⚠️ agyswitch CLI is not found in PATH." -ForegroundColor Yellow
 }
 
-function Reset-AgyAccountData { Invoke-ControlCenter "reset-agy" @args }
+function Reset-AgyAccountData { 
+    if (Get-Command agyswitch -ErrorAction SilentlyContinue) { & agyswitch status }
+    else { wsl agyswitch status }
+}
 function Invoke-ControlCenterNavigator { Invoke-ControlCenter "cnav" @args }
-function Purge-AgyAccounts { Invoke-ControlCenter "purge-accounts" @args }
+function Purge-AgyAccounts { 
+    if (Get-Command agyswitch -ErrorAction SilentlyContinue) { & agyswitch status }
+    else { wsl agyswitch status }
+}
 function Show-DotNetInfo { Invoke-ControlCenter "dotnet-info" @args }
 
 Set-Alias -Name ai -Value Invoke-MultiAgent -Force
@@ -792,6 +776,33 @@ Set-Alias -Name cnav -Value Invoke-ControlCenterNavigator -Force
 Set-Alias -Name agy-account -Value Invoke-AgyAccount -Force
 Set-Alias -Name agy-acc -Value Invoke-AgyAccount -Force
 Set-Alias -Name agyswitch -Value Invoke-AgyAccount -Force
+Set-Alias -Name agysw -Value Invoke-AgyAccount -Force
+
+function agyx {
+    param([string]$Account, [ValueFromRemainingArguments()][string[]]$PassArgs)
+    $knownAccounts = @("fptvttnhon2020", "fptvttnhon2026", "nhontruongvo", "nhontruongvo3", "vothuongtruongnhon2002", "default", "acc1")
+    if ($Account -and ($knownAccounts -contains $Account -or (Test-Path (Join-Path $env:USERPROFILE ".gemini_$Account")))) {
+        $targetHome = if ($Account -eq "default") { Join-Path $env:USERPROFILE ".gemini" } else { Join-Path $env:USERPROFILE ".gemini_$Account" }
+        $env:GEMINI_HOME = $targetHome
+        Write-Host "[agyx] Isolated context for '$Account': $env:GEMINI_HOME" -ForegroundColor Cyan
+        if ($PassArgs) { & agy $PassArgs } else { & agy }
+    } else {
+        $activeFile = Join-Path $env:USERPROFILE ".gemini" "active_account.txt"
+        if (Test-Path $activeFile) {
+            $activeAcc = (Get-Content $activeFile -Raw).Trim()
+            if ($activeAcc -and $activeAcc -ne "default") {
+                $env:GEMINI_HOME = Join-Path $env:USERPROFILE ".gemini_$activeAcc"
+            } else {
+                $env:GEMINI_HOME = Join-Path $env:USERPROFILE ".gemini"
+            }
+        }
+        Write-Host "[agyx] Active account context: $env:GEMINI_HOME" -ForegroundColor Cyan
+        $allArgs = @()
+        if ($Account) { $allArgs += $Account }
+        if ($PassArgs) { $allArgs += $PassArgs }
+        if ($allArgs.Length -gt 0) { & agy $allArgs } else { & agy }
+    }
+}
 Set-Alias -Name reset-agy -Value Reset-AgyAccountData -Force
 Set-Alias -Name purge-accounts -Value Purge-AgyAccounts -Force
 Set-Alias -Name dotnet-info -Value Show-DotNetInfo -Force

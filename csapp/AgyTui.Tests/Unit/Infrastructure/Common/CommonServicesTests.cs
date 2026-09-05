@@ -23,17 +23,21 @@ public class CommonServicesTests
         var runner = Bootstrapper.ServiceProvider.GetRequiredService<IProcessRunner>();
         Assert.NotNull(runner);
 
-        var cmdPath = runner.FindOnPath("cmd.exe");
+        var tool = OperatingSystem.IsWindows() ? "cmd.exe" : "sh";
+        var cmdPath = runner.FindOnPath(tool);
         Assert.False(string.IsNullOrEmpty(cmdPath));
 
-        var output = runner.RunCapture("cmd.exe", "/c echo hello_process_runner");
+        var arg = OperatingSystem.IsWindows() ? "/c echo hello_process_runner" : "-c \"echo hello_process_runner\"";
+        var output = runner.RunCapture(tool, arg);
         Assert.Contains("hello_process_runner", output);
 
-        var (stdout, stderr, exitCode) = runner.RunCaptureWithDetails("cmd.exe", "/c echo details_test");
+        var detailArg = OperatingSystem.IsWindows() ? "/c echo details_test" : "-c \"echo details_test\"";
+        var (stdout, stderr, exitCode) = runner.RunCaptureWithDetails(tool, detailArg);
         Assert.Equal(0, exitCode);
         Assert.Contains("details_test", stdout);
 
-        var runCode = runner.Run("cmd.exe", "/c echo run_test");
+        var runArg = OperatingSystem.IsWindows() ? "/c echo run_test" : "-c \"echo run_test\"";
+        var runCode = runner.Run(tool, runArg);
         Assert.Equal(0, runCode);
     }
 

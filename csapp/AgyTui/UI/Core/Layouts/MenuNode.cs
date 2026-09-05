@@ -36,7 +36,6 @@ public abstract class MenuRendererBase : IMenuRenderer
             if (child.Kind == MenuNodeKind.Category)
             {
                 if (child.Label.Contains("AI Agent & Ollama") && !enableAi) continue;
-                if (child.Label.Contains("AGY Account Switch") && !enableAgy) continue;
             }
             else if (child.Kind == MenuNodeKind.Command && child.Command != null)
             {
@@ -115,10 +114,6 @@ public class MenuNodeBuilderService : IMenuNodeBuilder
             "[Favorites]",
             "[Workspace & Dev]",
             "[AI Agent & Ollama]",
-            "[AGY Account Switch]",
-            "[Learn & Study]",
-            "[Obsidian & Resources]",
-            "[Appearance & Layout]",
             "[System & Network]",
             "[Help & Docs]"
         };
@@ -136,12 +131,6 @@ public class MenuNodeBuilderService : IMenuNodeBuilder
                     .Where(c => c != null)
                     .Select(c => CreateCommandNode(c!))
                     .ToList();
-
-                var favoriteManageCmd = CommandRegistry.GetByAlias("favorite");
-                if (favoriteManageCmd != null && !favCommandsList.Any(c => c.Command?.Alias == "favorite"))
-                {
-                    favCommandsList.Add(CreateCommandNode(favoriteManageCmd));
-                }
 
                 if (favCommandsList.Count > 0)
                 {
@@ -175,33 +164,25 @@ public class MenuNodeBuilderService : IMenuNodeBuilder
                 var groupPath = group.Key;
                 var groupLabel = groupPath switch
                 {
-                    "/workspace-nav" => "Workspace Navigation",
-                    "/dev-scaffold-tools" => "Developer Tools & Scaffolding",
+                    "/workspace-dev" => "Workspace & Developer Tools",
+                    "/git-nexus" => "Git Nexus Graph & Stats",
                     "/account-mgr" => "Account & Credentials Manager",
                     "/quota-views" => "Quota & Analytics Views",
-                    "/jp-suite" => "Japanese Suite",
-                    "/english-vocab" => "English & Vocab",
-                    "/csharp-master" => "C# & Dev Masterclass",
-                    "/dsa-architect" => "DSA & System Design",
-                    "/career-interview" => "Career & Interview Prep",
                     "/obsidian-vault" => "Obsidian Vault & Resources",
                     "/git-tools" => "Git & Repo Tools",
                     "/dotnet-tools" => ".NET Project Tools",
                     "/docker-tools" => "Docker Tools",
                     "/aws-tools" => "AWS Tools",
-                    "/claude-agents" => "Claude Agents",
-                    "/codex-agents" => "Codex Agents",
-                    "/ollama-tools" => "Ollama Tools",
-                    "/antigravity-deck" => "Antigravity Deck (Desk)",
-                    "/antigravity-manager" => "Antigravity Manager",
+                    "/ollama-tools" => "Ollama & Local AI Agents",
+                    "/appearance-favs" => "Appearance & Favorites",
                     "/ssh-tailscale" => "SSH & Tailscale",
+                    "/ssh-tools" => "SSH & Network Tools",
                     "/system-reload" => "System & Terminal Reload",
-                    "/track" => "Track & Progress",
                     _ => group.First().Command.GroupName ?? groupPath
                 };
 
                 var formattedLabel = groupPath.StartsWith("/") ? $" [{groupPath}] {groupLabel}" : $" [{groupLabel}]";
-                if (groupPath == "/workspace-nav" || groupPath == "/dev-scaffold-tools" || groupPath == "/jp-suite" || groupPath == "/english-vocab" || groupPath == "/csharp-master" || groupPath == "/dsa-architect" || groupPath == "/career-interview" || groupPath == "/obsidian-vault" || groupPath == "/git-tools" || groupPath == "/dotnet-tools" || groupPath == "/docker-tools" || groupPath == "/aws-tools" || groupPath == "/track")
+                if (groupPath == "/workspace-dev" || groupPath == "/git-nexus" || groupPath == "/obsidian-vault" || groupPath == "/git-tools" || groupPath == "/dotnet-tools" || groupPath == "/docker-tools" || groupPath == "/aws-tools" || groupPath == "/ollama-tools" || groupPath == "/appearance-favs" || groupPath == "/ssh-tools")
                 {
                     formattedLabel = $" [{groupLabel}]";
                 }
@@ -226,29 +207,21 @@ public class MenuNodeBuilderService : IMenuNodeBuilder
 
             var groupOrder = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
             {
-                ["/workspace-nav"] = 1,
-                ["/dev-scaffold-tools"] = 2,
+                ["/workspace-dev"] = 1,
                 ["/scaffold-tools"] = 3,
+                ["/git-nexus"] = 8,
                 ["/git-tools"] = 10,
                 ["/dotnet-tools"] = 20,
                 ["/docker-tools"] = 30,
                 ["/aws-tools"] = 40,
+                ["/obsidian-vault"] = 50,
                 ["/ollama-tools"] = 10,
                 ["/secret-vault"] = 10,
                 ["/quota-views"] = 20,
                 ["/account-toggles"] = 30,
-                ["/antigravity-deck"] = 40,
-                ["/antigravity-manager"] = 50,
-                ["/track"] = 10,
-                ["/obsidian-vault"] = 20,
-                ["/jp-suite"] = 30,
-                ["/english-vocab"] = 40,
-                ["/csharp-master"] = 50,
-                ["/dsa-architect"] = 60,
-                ["/career-interview"] = 70,
+                ["/appearance-favs"] = 5,
                 ["/ssh-tools"] = 10,
-                ["/system-reload"] = 20,
-                ["/appearance-favs"] = 30
+                ["/system-reload"] = 20
             };
 
             // Combine all children (both ungrouped and groups) and sort them strictly

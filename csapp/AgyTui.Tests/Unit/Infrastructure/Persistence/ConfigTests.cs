@@ -5,9 +5,10 @@ public class ConfigTests
 {
     public ConfigTests()
     {
-        if (Config.Current.Ui.FavoriteAliases == null || Config.Current.Ui.FavoriteAliases.Length == 0)
+        Config.Load();
+        if (Config.Current.Ui.FavoriteAliases == null || Config.Current.Ui.FavoriteAliases.Length == 0 || Config.Current.Ui.FavoriteAliases.Contains("ask-ai") || Config.Current.Ui.FavoriteAliases.Contains("agyswitch"))
         {
-            Config.Current.Ui.FavoriteAliases = ["proj", "agyswitch", "open-term", "ask-ai", "vault", "ide"];
+            Config.Current.Ui.FavoriteAliases = ["proj", "ide", "ollama", "disk"];
             Config.Save();
         }
     }
@@ -43,11 +44,8 @@ public class ConfigTests
     {
         Assert.NotNull(Config.Current.Ui.FavoriteAliases);
         Assert.Contains("proj", Config.Current.Ui.FavoriteAliases);
-        Assert.Contains("agyswitch", Config.Current.Ui.FavoriteAliases);
-        Assert.Contains("open-term", Config.Current.Ui.FavoriteAliases);
-        Assert.Contains("ask-ai", Config.Current.Ui.FavoriteAliases);
-        Assert.Contains("vault", Config.Current.Ui.FavoriteAliases);
         Assert.Contains("ide", Config.Current.Ui.FavoriteAliases);
+        Assert.Contains("ollama", Config.Current.Ui.FavoriteAliases);
     }
 
     [Fact]
@@ -123,11 +121,11 @@ public class ConfigTests
             Config.Current.Ui.FavoriteAliases = ["custom1", "custom2"];
             Config.Save();
 
-            Config.Current.Ui.FavoriteAliases = ["proj", "agyswitch", "open-term", "vault", "ide", "ask-ai"];
+            Config.Current.Ui.FavoriteAliases = ["proj", "ide", "ollama", "disk"];
             Config.Save();
 
             Config.Load();
-            Assert.Equal(6, Config.Current.Ui.FavoriteAliases.Length);
+            Assert.Equal(4, Config.Current.Ui.FavoriteAliases.Length);
             Assert.Contains("proj", Config.Current.Ui.FavoriteAliases);
         }
         finally
@@ -154,7 +152,7 @@ public class ConfigTests
         {
             Config.Current.Ui.FavoriteAliases = (originalFavs != null && originalFavs.Length > 0)
                 ? originalFavs
-                : ["proj", "agyswitch", "open-term", "ask-ai", "vault", "ide"];
+                : ["proj", "ide", "ollama", "disk"];
             Config.Save();
         }
     }
@@ -162,6 +160,8 @@ public class ConfigTests
     [Fact]
     public void FavoriteAliases_Edit_ReplacesAliasInSlotAndPersists()
     {
+        Config.Current.Ui.FavoriteAliases = ["proj", "ide", "ollama", "disk"];
+        Config.Save();
         var originalFavs = Config.Current.Ui.FavoriteAliases;
         try
         {

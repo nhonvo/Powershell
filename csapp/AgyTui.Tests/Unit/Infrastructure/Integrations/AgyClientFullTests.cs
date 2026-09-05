@@ -4,6 +4,7 @@ using Xunit;
 
 namespace AgyTui.Tests.Unit.Infrastructure.Integrations;
 
+[Collection("Sequential")]
 public class AgyClientFullTests
 {
     [Fact]

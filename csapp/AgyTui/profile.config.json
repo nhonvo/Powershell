@@ -7,10 +7,9 @@
     "FavoriteAliases": [
       "proj",
       "agyswitch",
-      "open-term",
-      "ask-ai",
       "vault",
-      "ide"
+      "ide",
+      "ollama"
     ]
   },
   "Ai": {

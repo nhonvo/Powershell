@@ -5,6 +5,7 @@ using Xunit;
 
 namespace AgyTui.Tests.Unit.Infrastructure.Services;
 
+[Collection("Sequential")]
 public class AppPathManagerTests : IDisposable
 {
     private readonly string _testAccountName = "test_acc_" + Guid.NewGuid().ToString("N");

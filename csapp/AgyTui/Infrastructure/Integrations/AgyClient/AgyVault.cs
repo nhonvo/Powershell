@@ -27,11 +27,85 @@ public class AgyVault : IAgyVault
     public string Protect(string plainText)
     {
         if (string.IsNullOrEmpty(plainText)) return string.Empty;
+        if (OperatingSystem.IsWindows())
+        {
+            try
+            {
+                var data = Encoding.UTF8.GetBytes(plainText);
+                var encrypted = ProtectedData.Protect(data, Entropy, DataProtectionScope.CurrentUser);
+                return Convert.ToBase64String(encrypted);
+            }
+            catch { }
+        }
+        return AesProtect(plainText);
+    }
+
+    public string Unprotect(string cipherText)
+    {
+        if (string.IsNullOrEmpty(cipherText)) return string.Empty;
+        var trimmed = cipherText.Trim();
+
+        if (trimmed.StartsWith("ya29") || trimmed.StartsWith("AIza") || trimmed.StartsWith("{") || trimmed.StartsWith("ey"))
+        {
+            return trimmed;
+        }
+
+        if (OperatingSystem.IsWindows())
+        {
+            try
+            {
+                var data = Convert.FromBase64String(trimmed);
+                var decrypted = ProtectedData.Unprotect(data, Entropy, DataProtectionScope.CurrentUser);
+                var result = AgyKeyringHelper.DecodeTokenBytes(decrypted);
+                if (!string.IsNullOrEmpty(result)) return result;
+            }
+            catch { }
+        }
+
+        var aesDecrypted = AesUnprotect(trimmed);
+        if (!string.IsNullOrEmpty(aesDecrypted)) return aesDecrypted;
+
+        if (trimmed.Length >= 8 && !trimmed.Contains("\n"))
+        {
+            return trimmed;
+        }
+
+        return string.Empty;
+    }
+
+    private static string GetUserProfileDir()
+    {
+        return AppPaths.UserProfileDir;
+    }
+
+    private static byte[] GetPlatformKey()
+    {
+        var userProfile = GetUserProfileDir();
+
+        var seed = $"{Environment.UserName}@{Environment.MachineName}:{userProfile}";
+        using var kdf = new Rfc2898DeriveBytes(Encoding.UTF8.GetBytes(seed), Entropy, 10000, HashAlgorithmName.SHA256);
+        return kdf.GetBytes(32);
+    }
+
+    private static string AesProtect(string plainText)
+    {
         try
         {
-            var data = Encoding.UTF8.GetBytes(plainText);
-            var encrypted = ProtectedData.Protect(data, Entropy, DataProtectionScope.CurrentUser);
-            return Convert.ToBase64String(encrypted);
+            var key = GetPlatformKey();
+            using var aes = Aes.Create();
+            aes.Key = key;
+            aes.GenerateIV();
+            var iv = aes.IV;
+
+            using var ms = new MemoryStream();
+            ms.Write(iv, 0, iv.Length);
+            using (var cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
+            {
+                var plainBytes = Encoding.UTF8.GetBytes(plainText);
+                cs.Write(plainBytes, 0, plainBytes.Length);
+                cs.FlushFinalBlock();
+            }
+            return Convert.ToBase64String(ms.ToArray());
         }
         catch
         {
@@ -39,25 +113,100 @@ public class AgyVault : IAgyVault
         }
     }
 
-    public string Unprotect(string cipherText)
+    private static string AesUnprotect(string cipherText)
     {
-        if (string.IsNullOrEmpty(cipherText)) return string.Empty;
         try
         {
-            var data = Convert.FromBase64String(cipherText);
-            var decrypted = ProtectedData.Unprotect(data, Entropy, DataProtectionScope.CurrentUser);
-            return AgyKeyringHelper.DecodeTokenBytes(decrypted);
+            var key = GetPlatformKey();
+            var fullBytes = Convert.FromBase64String(cipherText);
+            if (fullBytes.Length <= 16) return string.Empty;
+
+            using var aes = Aes.Create();
+            aes.Key = key;
+            var iv = new byte[16];
+            Buffer.BlockCopy(fullBytes, 0, iv, 0, 16);
+            aes.IV = iv;
+
+            using var ms = new MemoryStream(fullBytes, 16, fullBytes.Length - 16);
+            using var cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Read);
+            using var reader = new StreamReader(cs, Encoding.UTF8);
+            return reader.ReadToEnd();
         }
         catch
         {
             return string.Empty;
         }
+    }
+
+    private static string GetPrimaryGeminiDir()
+    {
+        var userProfile = GetUserProfileDir();
+        return Path.Combine(userProfile, ".gemini");
     }
 
     public EncryptedToken CreateEncryptedToken(string accountName, string plainText)
     {
         var cipherText = Protect(plainText);
         return new EncryptedToken(accountName, cipherText, DateTime.UtcNow);
+    }
+
+    private static void MirrorDirectory(string srcDir, string dstDir)
+    {
+        if (!Directory.Exists(srcDir)) return;
+        Directory.CreateDirectory(dstDir);
+
+        var srcFiles = Directory.GetFiles(srcDir, "*", SearchOption.AllDirectories);
+        var srcFileSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var srcFile in srcFiles)
+        {
+            var relPath = Path.GetRelativePath(srcDir, srcFile);
+            srcFileSet.Add(relPath);
+
+            if (relPath.StartsWith(".keyring", StringComparison.OrdinalIgnoreCase) ||
+                relPath.EndsWith(".tmp", StringComparison.OrdinalIgnoreCase) ||
+                relPath.EndsWith(".lock", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            var dstFile = Path.Combine(dstDir, relPath);
+            var parent = Path.GetDirectoryName(dstFile);
+            if (!string.IsNullOrEmpty(parent)) Directory.CreateDirectory(parent);
+
+            try
+            {
+                if (File.Exists(dstFile)) File.SetAttributes(dstFile, FileAttributes.Normal);
+                File.Copy(srcFile, dstFile, overwrite: true);
+            }
+            catch { }
+        }
+
+        if (Directory.Exists(dstDir))
+        {
+            var dstFiles = Directory.GetFiles(dstDir, "*", SearchOption.AllDirectories);
+            foreach (var dstFile in dstFiles)
+            {
+                var relPath = Path.GetRelativePath(dstDir, dstFile);
+                if (relPath.StartsWith(".keyring", StringComparison.OrdinalIgnoreCase) ||
+                    relPath.Equals("active_account.txt", StringComparison.OrdinalIgnoreCase) ||
+                    relPath.EndsWith(".db", StringComparison.OrdinalIgnoreCase) ||
+                    relPath.EndsWith(".sqlite", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                if (!srcFileSet.Contains(relPath))
+                {
+                    try
+                    {
+                        File.SetAttributes(dstFile, FileAttributes.Normal);
+                        File.Delete(dstFile);
+                    }
+                    catch { }
+                }
+            }
+        }
     }
 
     public void BackupActiveToken(string accountName)
@@ -67,13 +216,12 @@ public class AgyVault : IAgyVault
             var accDir = _accountStore.GetAccountDirectory(accountName);
             if (!Directory.Exists(accDir)) Directory.CreateDirectory(accDir);
 
-            var primaryDir = Path.Combine(Environment.GetEnvironmentVariable("USERPROFILE") ?? "", ".gemini");
+            var primaryDir = GetPrimaryGeminiDir();
             if (!Directory.Exists(primaryDir)) return;
 
-            var expectedEmail = _accountStore.GetCanonicalEmail(accountName);
             var primaryGJson = Path.Combine(primaryDir, "google_accounts.json");
+            string? discoveredEmail = null;
 
-            bool primaryBelongsToAccount = false;
             if (File.Exists(primaryGJson))
             {
                 try
@@ -82,54 +230,72 @@ public class AgyVault : IAgyVault
                     using var doc = JsonDocument.Parse(jsonStr);
                     if (doc.RootElement.TryGetProperty("activeAccount", out var accProp) && accProp.ValueKind == JsonValueKind.String)
                     {
-                        var activeEmail = accProp.GetString()?.Trim() ?? "";
-                        if (!string.IsNullOrEmpty(activeEmail) && !string.IsNullOrEmpty(expectedEmail) && string.Equals(activeEmail, expectedEmail, StringComparison.OrdinalIgnoreCase))
+                        var em = accProp.GetString()?.Trim();
+                        if (!string.IsNullOrEmpty(em) && em.Contains("@"))
                         {
-                            primaryBelongsToAccount = true;
+                            discoveredEmail = em;
                         }
                     }
                 }
                 catch { }
             }
-            else if (string.Equals(accountName, "default", StringComparison.OrdinalIgnoreCase))
+
+            var expectedEmail = !string.IsNullOrEmpty(discoveredEmail)
+                ? discoveredEmail
+                : _accountStore.GetCanonicalEmail(accountName);
+
+            string? token = null;
+            var pTok1 = Path.Combine(primaryDir, "antigravity-cli", "antigravity-oauth-token");
+            var pTok2 = Path.Combine(primaryDir, "antigravity-oauth-token");
+            if (File.Exists(pTok1)) token = File.ReadAllText(pTok1).Trim();
+            else if (File.Exists(pTok2)) token = File.ReadAllText(pTok2).Trim();
+
+            if (string.IsNullOrEmpty(token))
             {
-                primaryBelongsToAccount = true;
+                token = AgyKeyringHelper.ReadToken("gemini:antigravity");
+            }
+            if (string.IsNullOrEmpty(token))
+            {
+                var localTok = Path.Combine(accDir, "antigravity-cli", "antigravity-oauth-token");
+                if (File.Exists(localTok)) token = File.ReadAllText(localTok).Trim();
+            }
+            if (string.IsNullOrEmpty(token))
+            {
+                var localTok2 = Path.Combine(accDir, "antigravity-oauth-token");
+                if (File.Exists(localTok2)) token = File.ReadAllText(localTok2).Trim();
             }
 
-            if (!primaryBelongsToAccount) return;
-
-            var token = AgyKeyringHelper.ReadToken("gemini:antigravity");
             string? encryptedToken = null;
             if (!string.IsNullOrEmpty(token))
             {
                 encryptedToken = Protect(token);
                 File.WriteAllText(Path.Combine(accDir, "keyring_token.txt"), encryptedToken, Utf8NoBom);
+                File.WriteAllText(Path.Combine(primaryDir, "keyring_token.txt"), encryptedToken, Utf8NoBom);
+
+                var t1 = Path.Combine(accDir, "antigravity-cli", "antigravity-oauth-token");
+                var t2 = Path.Combine(accDir, "antigravity-oauth-token");
+                var t3 = Path.Combine(primaryDir, "antigravity-cli", "antigravity-oauth-token");
+                var t4 = Path.Combine(primaryDir, "antigravity-oauth-token");
+                Directory.CreateDirectory(Path.GetDirectoryName(t1)!);
+                Directory.CreateDirectory(Path.GetDirectoryName(t3)!);
+                File.WriteAllText(t1, token, Utf8NoBom);
+                File.WriteAllText(t2, token, Utf8NoBom);
+                File.WriteAllText(t3, token, Utf8NoBom);
+                File.WriteAllText(t4, token, Utf8NoBom);
+
+                var kHash = "7407b4ddbbd1bfbf2dce30edc9115b02dd294ffb233a1e05d28b98df241bc386.key";
+                var kDir1 = Path.Combine(accDir, ".keyring");
+                var kDir2 = Path.Combine(primaryDir, ".keyring");
+                Directory.CreateDirectory(kDir1);
+                Directory.CreateDirectory(kDir2);
+                var keyContent = $"gemini:antigravity\n{token}";
+                File.WriteAllText(Path.Combine(kDir1, kHash), keyContent, Utf8NoBom);
+                File.WriteAllText(Path.Combine(kDir2, kHash), keyContent, Utf8NoBom);
             }
 
             if (!string.Equals(accDir, primaryDir, StringComparison.OrdinalIgnoreCase))
             {
-                var filesToSync = new[]
-                {
-                    "google_accounts.json", "oauth_creds.json", "state.json", "installation_id", "keyring_token.txt",
-                    Path.Combine("antigravity-cli", "settings.json"),
-                    Path.Combine("antigravity-cli", "installation_id"),
-                    Path.Combine("antigravity-cli", "keyring_token.txt")
-                };
-                foreach (var f in filesToSync)
-                {
-                    var src = Path.Combine(primaryDir, f);
-                    var dst = Path.Combine(accDir, f);
-                    if (File.Exists(src))
-                    {
-                        try
-                        {
-                            var parent = Path.GetDirectoryName(dst);
-                            if (!string.IsNullOrEmpty(parent)) Directory.CreateDirectory(parent);
-                            File.Copy(src, dst, overwrite: true);
-                        }
-                        catch { }
-                    }
-                }
+                MirrorDirectory(primaryDir, accDir);
             }
 
             string? googleAcc = File.Exists(Path.Combine(accDir, "google_accounts.json")) ? File.ReadAllText(Path.Combine(accDir, "google_accounts.json")) : null;
@@ -151,24 +317,34 @@ public class AgyVault : IAgyVault
             var accDir = _accountStore.GetAccountDirectory(accountName);
             if (!Directory.Exists(accDir)) Directory.CreateDirectory(accDir);
 
-            var primaryDir = Path.Combine(Environment.GetEnvironmentVariable("USERPROFILE") ?? "", ".gemini");
+            var primaryDir = GetPrimaryGeminiDir();
             Directory.CreateDirectory(primaryDir);
-            var filesToSync = new[]
-            {
-                "google_accounts.json", "oauth_creds.json", "state.json", "installation_id", "keyring_token.txt",
-                Path.Combine("antigravity-cli", "settings.json"),
-                Path.Combine("antigravity-cli", "installation_id"),
-                Path.Combine("antigravity-cli", "keyring_token.txt")
-            };
 
             var diskTokenFile = Path.Combine(accDir, "keyring_token.txt");
             string? token = null;
             if (File.Exists(diskTokenFile))
             {
-                var encrypted = File.ReadAllText(diskTokenFile).Trim();
-                if (!string.IsNullOrEmpty(encrypted))
+                var raw = File.ReadAllText(diskTokenFile).Trim();
+                if (!string.IsNullOrEmpty(raw))
                 {
-                    token = Unprotect(encrypted);
+                    token = Unprotect(raw);
+                    if (string.IsNullOrEmpty(token)) token = raw;
+                }
+            }
+
+            if (string.IsNullOrEmpty(token))
+            {
+                var linuxTok1 = Path.Combine(accDir, "antigravity-cli", "antigravity-oauth-token");
+                var linuxTok2 = Path.Combine(accDir, "antigravity-oauth-token");
+                if (File.Exists(linuxTok1))
+                {
+                    var raw = File.ReadAllText(linuxTok1).Trim();
+                    if (!string.IsNullOrEmpty(raw)) token = raw;
+                }
+                else if (File.Exists(linuxTok2))
+                {
+                    var raw = File.ReadAllText(linuxTok2).Trim();
+                    if (!string.IsNullOrEmpty(raw)) token = raw;
                 }
             }
 
@@ -176,6 +352,7 @@ public class AgyVault : IAgyVault
             if (string.IsNullOrEmpty(token) && dbCreds != null && !string.IsNullOrEmpty(dbCreds.KeyringToken))
             {
                 token = Unprotect(dbCreds.KeyringToken);
+                if (string.IsNullOrEmpty(token)) token = dbCreds.KeyringToken;
                 File.WriteAllText(diskTokenFile, dbCreds.KeyringToken, Utf8NoBom);
 
                 if (!File.Exists(Path.Combine(accDir, "google_accounts.json")) && !string.IsNullOrEmpty(dbCreds.GoogleAccountsJson))
@@ -190,35 +367,7 @@ public class AgyVault : IAgyVault
 
             if (!string.Equals(accDir, primaryDir, StringComparison.OrdinalIgnoreCase))
             {
-                foreach (var f in filesToSync)
-                {
-                    var src = Path.Combine(accDir, f);
-                    var dst = Path.Combine(primaryDir, f);
-                    if (File.Exists(src))
-                    {
-                        try
-                        {
-                            var parent = Path.GetDirectoryName(dst);
-                            if (!string.IsNullOrEmpty(parent)) Directory.CreateDirectory(parent);
-                            if (File.Exists(dst)) { try { File.SetAttributes(dst, FileAttributes.Normal); } catch { } }
-                            File.Copy(src, dst, overwrite: true);
-                        }
-                        catch
-                        {
-                            try
-                            {
-                                Thread.Sleep(50);
-                                if (File.Exists(dst)) { try { File.SetAttributes(dst, FileAttributes.Normal); } catch { } }
-                                File.Copy(src, dst, overwrite: true);
-                            }
-                            catch { }
-                        }
-                    }
-                    else if (File.Exists(dst))
-                    {
-                        try { File.Delete(dst); } catch { }
-                    }
-                }
+                MirrorDirectory(accDir, primaryDir);
             }
 
             if (!string.IsNullOrEmpty(token))
@@ -366,6 +515,26 @@ internal static class AgyKeyringHelper
         public string userName;
     }
 
+    private static string GetUserProfileDir() => AppPaths.UserProfileDir;
+
+    private static string GetKeyringDir()
+    {
+        var userProfile = GetUserProfileDir();
+
+        var dir = Path.Combine(userProfile, ".gemini", ".keyring");
+        if (!Directory.Exists(dir))
+        {
+            try { Directory.CreateDirectory(dir); } catch { }
+        }
+        return dir;
+    }
+
+    private static string GetTargetFilePath(string target)
+    {
+        var safeFileName = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(target))) + ".key";
+        return Path.Combine(GetKeyringDir(), safeFileName);
+    }
+
     public static string DecodeTokenBytes(byte[] bytes)
     {
         if (bytes == null || bytes.Length == 0) return string.Empty;
@@ -400,117 +569,288 @@ internal static class AgyKeyringHelper
 
     public static string? ReadToken(string target)
     {
-        if (CredRead(target, 1, 0, out var credPtr))
+        if (OperatingSystem.IsWindows())
         {
             try
             {
-                var cred = Marshal.PtrToStructure<CREDENTIAL>(credPtr);
-                if (cred.credentialBlob != IntPtr.Zero && cred.credentialBlobSize > 0)
+                if (CredRead(target, 1, 0, out var credPtr))
                 {
-                    var bytes = new byte[cred.credentialBlobSize];
-                    Marshal.Copy(cred.credentialBlob, bytes, 0, cred.credentialBlobSize);
-                    return DecodeTokenBytes(bytes);
+                    try
+                    {
+                        var cred = Marshal.PtrToStructure<CREDENTIAL>(credPtr);
+                        if (cred.credentialBlob != IntPtr.Zero && cred.credentialBlobSize > 0)
+                        {
+                            var bytes = new byte[cred.credentialBlobSize];
+                            Marshal.Copy(cred.credentialBlob, bytes, 0, cred.credentialBlobSize);
+                            var decoded = DecodeTokenBytes(bytes);
+                            if (!string.IsNullOrEmpty(decoded)) return decoded;
+                        }
+                    }
+                    finally
+                    {
+                        CredFree(credPtr);
+                    }
                 }
             }
-            finally
+            catch { }
+        }
+
+        // File-based keyring fallback / non-Windows storage
+        try
+        {
+            var filePath = GetTargetFilePath(target);
+            if (File.Exists(filePath))
             {
-                CredFree(credPtr);
+                var lines = File.ReadAllLines(filePath, Encoding.UTF8);
+                if (lines.Length > 1)
+                {
+                    return string.Join("\n", lines.Skip(1));
+                }
             }
         }
+        catch { }
+
+        // If target is gemini:antigravity, probe standard Linux/macOS token file locations
+        if (string.Equals(target, "gemini:antigravity", StringComparison.OrdinalIgnoreCase))
+        {
+            var userProfile = GetUserProfileDir();
+
+            var candidates = new[]
+            {
+                Path.Combine(userProfile, ".gemini", "antigravity-cli", "antigravity-oauth-token"),
+                Path.Combine(userProfile, ".gemini", "antigravity-oauth-token"),
+                Path.Combine(userProfile, ".gemini", "keyring_token.txt"),
+                Path.Combine(AppPaths.GeminiHome, "antigravity-cli", "antigravity-oauth-token"),
+                Path.Combine(AppPaths.GeminiHome, "antigravity-oauth-token"),
+                Path.Combine(AppPaths.GeminiHome, "keyring_token.txt")
+            };
+
+            foreach (var candidate in candidates)
+            {
+                try
+                {
+                    if (File.Exists(candidate) && new FileInfo(candidate).Length > 0)
+                    {
+                        var text = File.ReadAllText(candidate, Encoding.UTF8).Trim();
+                        if (!string.IsNullOrEmpty(text))
+                        {
+                            return text;
+                        }
+                    }
+                }
+                catch { }
+            }
+        }
+
         return null;
     }
 
     public static bool WriteToken(string target, string username, string token)
     {
         if (string.IsNullOrEmpty(token)) return false;
-        var bytes = Encoding.UTF8.GetBytes(token);
-        var blobPtr = Marshal.AllocHGlobal(bytes.Length);
+        bool windowsSuccess = false;
+
+        if (OperatingSystem.IsWindows())
+        {
+            try
+            {
+                var bytes = Encoding.UTF8.GetBytes(token);
+                var blobPtr = Marshal.AllocHGlobal(bytes.Length);
+                try
+                {
+                    Marshal.Copy(bytes, 0, blobPtr, bytes.Length);
+                    var cred = new CREDENTIAL
+                    {
+                        type = 1,
+                        targetName = target,
+                        userName = username,
+                        credentialBlob = blobPtr,
+                        credentialBlobSize = bytes.Length,
+                        persist = 2
+                    };
+                    CredDelete(target, 1, 0);
+                    windowsSuccess = CredWrite(ref cred, 0);
+                }
+                finally
+                {
+                    Marshal.FreeHGlobal(blobPtr);
+                }
+            }
+            catch { }
+        }
+
+        // Always save to file-based vault (for non-Windows or fallback)
         try
         {
-            Marshal.Copy(bytes, 0, blobPtr, bytes.Length);
-            var cred = new CREDENTIAL
+            var filePath = GetTargetFilePath(target);
+            var content = target + "\n" + token;
+            File.WriteAllText(filePath, content, Encoding.UTF8);
+
+            if (string.Equals(target, "gemini:antigravity", StringComparison.OrdinalIgnoreCase))
             {
-                type = 1,
-                targetName = target,
-                userName = username,
-                credentialBlob = blobPtr,
-                credentialBlobSize = bytes.Length,
-                persist = 2
-            };
-            CredDelete(target, 1, 0);
-            return CredWrite(ref cred, 0);
+                var userProfile = GetUserProfileDir();
+
+                var primaryDir = Path.Combine(userProfile, ".gemini");
+                var cliDir = Path.Combine(primaryDir, "antigravity-cli");
+                Directory.CreateDirectory(cliDir);
+
+                File.WriteAllText(Path.Combine(cliDir, "antigravity-oauth-token"), token, Encoding.UTF8);
+                File.WriteAllText(Path.Combine(primaryDir, "antigravity-oauth-token"), token, Encoding.UTF8);
+
+                var envGemini = Environment.GetEnvironmentVariable("GEMINI_HOME");
+                if (!string.IsNullOrEmpty(envGemini) && Directory.Exists(envGemini) && !string.Equals(envGemini, primaryDir, StringComparison.OrdinalIgnoreCase))
+                {
+                    var targetCli = Path.Combine(envGemini, "antigravity-cli");
+                    Directory.CreateDirectory(targetCli);
+                    File.WriteAllText(Path.Combine(targetCli, "antigravity-oauth-token"), token, Encoding.UTF8);
+                    File.WriteAllText(Path.Combine(envGemini, "antigravity-oauth-token"), token, Encoding.UTF8);
+                }
+            }
+
+            return true;
         }
-        finally
-        {
-            Marshal.FreeHGlobal(blobPtr);
-        }
+        catch { }
+
+        return windowsSuccess;
     }
 
     public static bool DeleteToken(string target)
     {
-        bool d1 = CredDelete(target, 1, 0);
-        bool d2 = CredDelete(target, 2, 0);
-        bool d3 = CredDelete("LegacyGeneric:target=" + target, 1, 0);
-        bool d4 = CredDelete("LegacyGeneric:target=" + target, 2, 0);
-        try
+        bool deleted = false;
+        if (OperatingSystem.IsWindows())
         {
-            using var proc1 = new System.Diagnostics.Process
+            try
             {
-                StartInfo = new System.Diagnostics.ProcessStartInfo
+                bool d1 = CredDelete(target, 1, 0);
+                bool d2 = CredDelete(target, 2, 0);
+                bool d3 = CredDelete("LegacyGeneric:target=" + target, 1, 0);
+                bool d4 = CredDelete("LegacyGeneric:target=" + target, 2, 0);
+                deleted = d1 || d2 || d3 || d4;
+
+                try
                 {
-                    FileName = "cmdkey",
-                    Arguments = $"/delete:{target}",
-                    CreateNoWindow = true,
-                    UseShellExecute = false
+                    using var proc1 = new System.Diagnostics.Process
+                    {
+                        StartInfo = new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = "cmdkey",
+                            Arguments = $"/delete:{target}",
+                            CreateNoWindow = true,
+                            UseShellExecute = false
+                        }
+                    };
+                    proc1.Start();
+                    proc1.WaitForExit(1000);
                 }
-            };
-            proc1.Start();
-            proc1.WaitForExit(1000);
+                catch { }
+
+                try
+                {
+                    using var proc2 = new System.Diagnostics.Process
+                    {
+                        StartInfo = new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = "cmdkey",
+                            Arguments = $"/delete:LegacyGeneric:target={target}",
+                            CreateNoWindow = true,
+                            UseShellExecute = false
+                        }
+                    };
+                    proc2.Start();
+                    proc2.WaitForExit(1000);
+                }
+                catch { }
+            }
+            catch { }
         }
-        catch { }
 
         try
         {
-            using var proc2 = new System.Diagnostics.Process
+            var filePath = GetTargetFilePath(target);
+            if (File.Exists(filePath))
             {
-                StartInfo = new System.Diagnostics.ProcessStartInfo
+                File.Delete(filePath);
+                deleted = true;
+            }
+
+            if (string.Equals(target, "gemini:antigravity", StringComparison.OrdinalIgnoreCase))
+            {
+                var userProfile = GetUserProfileDir();
+
+                var primaryDir = Path.Combine(userProfile, ".gemini");
+                var f1 = Path.Combine(primaryDir, "antigravity-cli", "antigravity-oauth-token");
+                var f2 = Path.Combine(primaryDir, "antigravity-oauth-token");
+                if (File.Exists(f1)) { try { File.Delete(f1); deleted = true; } catch { } }
+                if (File.Exists(f2)) { try { File.Delete(f2); deleted = true; } catch { } }
+
+                var envGemini = Environment.GetEnvironmentVariable("GEMINI_HOME");
+                if (!string.IsNullOrEmpty(envGemini) && Directory.Exists(envGemini) && !string.Equals(envGemini, primaryDir, StringComparison.OrdinalIgnoreCase))
                 {
-                    FileName = "cmdkey",
-                    Arguments = $"/delete:LegacyGeneric:target={target}",
-                    CreateNoWindow = true,
-                    UseShellExecute = false
+                    var gf1 = Path.Combine(envGemini, "antigravity-cli", "antigravity-oauth-token");
+                    var gf2 = Path.Combine(envGemini, "antigravity-oauth-token");
+                    if (File.Exists(gf1)) { try { File.Delete(gf1); deleted = true; } catch { } }
+                    if (File.Exists(gf2)) { try { File.Delete(gf2); deleted = true; } catch { } }
                 }
-            };
-            proc2.Start();
-            proc2.WaitForExit(1000);
+            }
         }
         catch { }
 
-        return d1 || d2 || d3 || d4;
+        return deleted;
     }
 
     public static string[] ListTokens(string prefix)
     {
-        var list = new List<string>();
-        if (CredEnumerate(prefix + "*", 0, out var count, out var credsPtr))
+        var list = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        if (OperatingSystem.IsWindows())
         {
             try
             {
-                for (int i = 0; i < count; i++)
+                if (CredEnumerate(prefix + "*", 0, out var count, out var credsPtr))
                 {
-                    var ptr = Marshal.ReadIntPtr(credsPtr, i * IntPtr.Size);
-                    var cred = Marshal.PtrToStructure<CREDENTIAL>(ptr);
-                    if (!string.IsNullOrEmpty(cred.targetName))
+                    try
                     {
-                        list.Add(cred.targetName);
+                        for (int i = 0; i < count; i++)
+                        {
+                            var ptr = Marshal.ReadIntPtr(credsPtr, i * IntPtr.Size);
+                            var cred = Marshal.PtrToStructure<CREDENTIAL>(ptr);
+                            if (!string.IsNullOrEmpty(cred.targetName))
+                            {
+                                list.Add(cred.targetName);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        CredFree(credsPtr);
                     }
                 }
             }
-            finally
+            catch { }
+        }
+
+        try
+        {
+            var dir = GetKeyringDir();
+            if (Directory.Exists(dir))
             {
-                CredFree(credsPtr);
+                foreach (var file in Directory.GetFiles(dir, "*.key"))
+                {
+                    try
+                    {
+                        using var reader = new StreamReader(file, Encoding.UTF8);
+                        var targetName = reader.ReadLine()?.Trim();
+                        if (!string.IsNullOrEmpty(targetName) && targetName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                        {
+                            list.Add(targetName);
+                        }
+                    }
+                    catch { }
+                }
             }
         }
+        catch { }
+
         return [.. list];
     }
 }

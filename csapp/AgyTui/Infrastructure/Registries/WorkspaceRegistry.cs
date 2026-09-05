@@ -443,14 +443,15 @@ public static class WorkspaceRegistry
     [
         "📂 Change Directory to workspace",
         "🚀 Open in New Terminal",
+        "🐧 Open in WSL",
         "💻 Open in Terminal IDE (/ide)",
         "📁 Open in Windows File Explorer",
         "🔀 View Git Status & Diff",
-        "🤖 Start Antigravity AI Agent (ask-ai)",
-        "🛸 Open Antigravity TUI / Deck",
         "📦 Clean & Rebuild Project (.NET)",
         "🕸 Open Git Nexus Dashboard",
         "📊 View Git Nexus Commit Stats",
+        "🔍 Auto-Discover Projects",
+        "🧹 Prune Stale Workspaces",
         "🔗 Manage/Open Project Links"
     ];
 
@@ -470,21 +471,32 @@ public static class WorkspaceRegistry
                 SystemHelper.Instance.OpenNewTerminalSession(selected.WorkspacePath);
                 break;
             case 2:
-                TerminalIde.Open(selected.WorkspacePath);
+                if (OperatingSystem.IsWindows())
+                {
+                    try
+                    {
+                        ProcessRunner.Instance.Run("wsl", "--cd", selected.WorkspacePath);
+                    }
+                    catch
+                    {
+                        SystemHelper.Instance.OpenNewTerminalSession(selected.WorkspacePath);
+                    }
+                }
+                else
+                {
+                    SystemHelper.Instance.OpenNewTerminalSession(selected.WorkspacePath);
+                }
                 break;
             case 3:
-                SystemHelper.Instance.OpenExplorer(selected.WorkspacePath);
+                TerminalIde.Open(selected.WorkspacePath);
                 break;
             case 4:
-                GitDiffViewer.ShowDiff(selected.WorkspacePath);
+                SystemHelper.Instance.OpenExplorer(selected.WorkspacePath);
                 break;
             case 5:
-                SystemHelper.Instance.OpenNewTerminalSession(selected.WorkspacePath, "ask-ai");
+                GitDiffViewer.ShowDiff(selected.WorkspacePath);
                 break;
             case 6:
-                SystemHelper.Instance.OpenNewTerminalSession(selected.WorkspacePath, "cc");
-                break;
-            case 7:
                 var projFiles = Directory.GetFiles(selected.WorkspacePath, "*.csproj", SearchOption.AllDirectories);
                 if (projFiles.Length > 0)
                 {
@@ -500,17 +512,27 @@ public static class WorkspaceRegistry
                     Thread.Sleep(1500);
                 }
                 break;
-            case 8:
+            case 7:
                 GitNexus.ShowLiveDashboard();
                 break;
-            case 9:
+            case 8:
                 GitNexusStats.Run();
                 break;
+            case 9:
+                AutoDiscoverWorkspaces();
+                SpectrePanel.Success("Auto-discovery complete.");
+                Thread.Sleep(1000);
+                break;
             case 10:
+                PruneWorkspaces();
+                SpectrePanel.Success("Pruning complete.");
+                Thread.Sleep(1000);
+                break;
+            case 11:
                 ManageWorkspaceLinks(selected);
                 break;
         }
-        return selected.WorkspacePath;
+        return "STAY";
     }
 
     public static void OpenUrl(string url)

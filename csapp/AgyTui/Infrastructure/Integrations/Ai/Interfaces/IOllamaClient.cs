@@ -13,4 +13,5 @@ public interface IOllamaClient
     void BenchmarkModels();
     void PullModel();
     void StartDaemon();
+    List<string> GetInstalledModels();
 }
