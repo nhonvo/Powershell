@@ -59,7 +59,7 @@ func Run(s *store.Store, v *vault.Vault, l *launcher.Launcher, opts ...Options) 
 	msg := ""
 
 	for {
-		renderUI(accs, s.GetActiveAccount(), selectedIndex, msg)
+		renderUI(s, accs, s.GetActiveAccount(), selectedIndex, msg)
 		msg = ""
 
 		var buf [3]byte
@@ -173,9 +173,21 @@ func formatStatusBadge(a store.AccountInfo) string {
 	}
 }
 
-func renderUI(accs []store.AccountInfo, activeAcc string, selectedIndex int, statusMsg string) {
+func formatInlineQuotaBadge(a store.AccountInfo) string {
+	if !a.IsLoggedIn {
+		return ""
+	}
+	if a.GeminiQuotaPct >= 0 && a.ClaudeQuotaPct >= 0 {
+		return fmt.Sprintf("\033[36mG: %.1f%%\033[0m · \033[35mC: %.1f%%\033[0m", a.GeminiQuotaPct, a.ClaudeQuotaPct)
+	} else if a.GeminiQuotaPct >= 0 {
+		return fmt.Sprintf("\033[36mG: %.1f%%\033[0m", a.GeminiQuotaPct)
+	}
+	return ""
+}
+
+func renderUI(s *store.Store, accs []store.AccountInfo, activeAcc string, selectedIndex int, statusMsg string) {
 	fmt.Print("\033[H\033[2J") // Clear screen
-	fmt.Print("\r\n🛸 \033[1;36mAGYSWITCH - Dedicated Antigravity Multi-Account Vault (Go TUI v1.3.0)\033[0m\r\n")
+	fmt.Print("\r\n🛸 \033[1;36mAGYSWITCH - Dedicated Antigravity Multi-Account Vault (Go TUI v1.4.0)\033[0m\r\n")
 	fmt.Print("──────────────────────────────────────────────────────────────────────────────────\r\n")
 	fmt.Printf(" Active Context: \033[1;32m%s\033[0m\r\n\r\n", activeAcc)
 
@@ -195,16 +207,66 @@ func renderUI(accs []store.AccountInfo, activeAcc string, selectedIndex int, sta
 		}
 
 		badge := formatStatusBadge(a)
+		inlineQuota := formatInlineQuotaBadge(a)
 
-		fmt.Printf("%s%s%s%d. \033[1m%-22s\033[0m (%-26s) %s%s\r\n",
-			cursor, highlightStart, activeMarker, i+1, a.AccountName, a.Email, badge, highlightEnd)
+		if inlineQuota != "" {
+			fmt.Printf("%s%s%s%d. \033[1m%-22s\033[0m (%-26s) %s  %s%s\r\n",
+				cursor, highlightStart, activeMarker, i+1, a.AccountName, a.Email, badge, inlineQuota, highlightEnd)
+		} else {
+			fmt.Printf("%s%s%s%d. \033[1m%-22s\033[0m (%-26s) %s%s\r\n",
+				cursor, highlightStart, activeMarker, i+1, a.AccountName, a.Email, badge, highlightEnd)
+		}
+	}
+
+	fmt.Print("──────────────────────────────────────────────────────────────────────────────────\r\n")
+
+	// Smart Suggestion Flow
+	_, recBanner := s.GetRecommendedAccountInfo(accs)
+	fmt.Printf(" %s\r\n", recBanner)
+
+	// Live Quota Breakdown Pane for Selected Account
+	if selectedIndex >= 0 && selectedIndex < len(accs) {
+		sel := accs[selectedIndex]
+		if sel.IsLoggedIn && sel.QuotaSummary != nil && len(sel.QuotaSummary.Groups) > 0 {
+			fmt.Printf("\r\n 📊 \033[1;33mQuota Breakdown (%s):\033[0m\r\n", sel.AccountName)
+			for _, g := range sel.QuotaSummary.Groups {
+				for _, b := range g.Buckets {
+					if b.Window == "weekly" || strings.Contains(b.BucketID, "weekly") {
+						pct := b.RemainingFraction * 100.0
+						filledLen := int((pct / 100.0) * 30.0)
+						if filledLen > 30 {
+							filledLen = 30
+						}
+						if filledLen < 0 {
+							filledLen = 0
+						}
+						emptyLen := 30 - filledLen
+						bar := strings.Repeat("█", filledLen) + strings.Repeat("░", emptyLen)
+
+						colorCode := "\033[32m"
+						if pct < 20.0 {
+							colorCode = "\033[31m"
+						} else if pct < 50.0 {
+							colorCode = "\033[33m"
+						}
+
+						grpName := "Gemini"
+						if strings.Contains(strings.ToLower(g.DisplayName), "claude") {
+							grpName = "Claude/GPT"
+						}
+
+						fmt.Printf("    • %-11s: [%s%s\033[0m] \033[1m%.1f%%\033[0m\r\n", grpName, colorCode, bar, pct)
+					}
+				}
+			}
+		}
 	}
 
 	fmt.Print("──────────────────────────────────────────────────────────────────────────────────\r\n")
 	if statusMsg != "" {
 		fmt.Printf(" %s\r\n", statusMsg)
 	}
-	fmt.Print(" \033[1m[↑/↓ j/k]\033[0m Nav · \033[1m[1-5]\033[0m Quick Jump · \033[1;32m[Enter]\033[0m Switch · \033[1;36m[V]\033[0m Quota · \033[1;36m[L]\033[0m Launch · \033[1;35m[A]\033[0m Auto Quota · \033[1;33m[X]\033[0m Reset · \033[1;33m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\r\n")
+	fmt.Print(" \033[1m[↑/↓ j/k]\033[0m Nav · \033[1m[1-5]\033[0m Jump · \033[1;32m[Enter]\033[0m Switch · \033[1;36m[V]\033[0m Full Quota · \033[1;36m[L]\033[0m Launch · \033[1;35m[A]\033[0m Auto-Select · \033[1;31m[Q/Esc]\033[0m Exit\r\n")
 }
 
 // PrintStatus prints the non-interactive status table.

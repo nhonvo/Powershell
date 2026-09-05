@@ -16,12 +16,15 @@ import (
 )
 
 type AccountInfo struct {
-	AccountName string `json:"accountName"`
-	Email       string `json:"email"`
-	IsActive    bool   `json:"isActive"`
-	TokenSig    string `json:"tokenSig"`
-	IsLoggedIn  bool   `json:"isLoggedIn"`
-	QuotaStatus string `json:"quotaStatus"`
+	AccountName    string        `json:"accountName"`
+	Email          string        `json:"email"`
+	IsActive       bool          `json:"isActive"`
+	TokenSig       string        `json:"tokenSig"`
+	IsLoggedIn     bool          `json:"isLoggedIn"`
+	QuotaStatus    string        `json:"quotaStatus"`
+	GeminiQuotaPct float64       `json:"geminiQuotaPct"`
+	ClaudeQuotaPct float64       `json:"claudeQuotaPct"`
+	QuotaSummary   *QuotaSummary `json:"quotaSummary,omitempty"`
 }
 
 type QuotaBucket struct {
@@ -306,6 +309,27 @@ func ProbeQuotaStatus(tok string) string {
 	return "✔ Quota OK"
 }
 
+// ExtractGroupQuotas returns Gemini and Claude weekly quota percentages from summary.
+func ExtractGroupQuotas(summary *QuotaSummary) (gPct float64, cPct float64) {
+	if summary == nil {
+		return -1, -1
+	}
+	gPct, cPct = -1, -1
+	for _, g := range summary.Groups {
+		name := strings.ToLower(g.DisplayName)
+		for _, b := range g.Buckets {
+			if b.Window == "weekly" || strings.Contains(b.BucketID, "weekly") {
+				if strings.Contains(name, "gemini") {
+					gPct = b.RemainingFraction * 100.0
+				} else if strings.Contains(name, "claude") || strings.Contains(name, "gpt") || strings.Contains(name, "3p") {
+					cPct = b.RemainingFraction * 100.0
+				}
+			}
+		}
+	}
+	return gPct, cPct
+}
+
 // ListAccounts returns all registered accounts and their status.
 func (s *Store) ListAccounts() []AccountInfo {
 	known := []string{"vothuongtruongnhon2002", "fptvttnhon2020", "fptvttnhon2026", "nhontruongvo", "nhontruongvo3"}
@@ -326,19 +350,67 @@ func (s *Store) ListAccounts() []AccountInfo {
 			isLoggedIn := tok != ""
 			quotaStatus := ProbeQuotaStatus(tok)
 
+			var summary *QuotaSummary
+			var gPct, cPct float64 = -1, -1
+
+			if isLoggedIn {
+				if q, err := s.GetAccountQuota(accName); err == nil {
+					summary = q
+					gPct, cPct = ExtractGroupQuotas(q)
+				}
+			}
+
 			result[idx] = AccountInfo{
-				AccountName: accName,
-				Email:       email,
-				IsActive:    strings.EqualFold(accName, active),
-				TokenSig:    sig,
-				IsLoggedIn:  isLoggedIn,
-				QuotaStatus: quotaStatus,
+				AccountName:    accName,
+				Email:          email,
+				IsActive:       strings.EqualFold(accName, active),
+				TokenSig:       sig,
+				IsLoggedIn:     isLoggedIn,
+				QuotaStatus:    quotaStatus,
+				GeminiQuotaPct: gPct,
+				ClaudeQuotaPct: cPct,
+				QuotaSummary:   summary,
 			}
 		}(i, name)
 	}
 
 	wg.Wait()
 	return result
+}
+
+// GetRecommendedAccountInfo evaluates best account by highest combined quota.
+func (s *Store) GetRecommendedAccountInfo(accs []AccountInfo) (string, string) {
+	bestAcc := ""
+	bestScore := -1.0
+
+	for _, a := range accs {
+		if !a.IsLoggedIn {
+			continue
+		}
+		score := 0.0
+		if a.GeminiQuotaPct >= 0 && a.ClaudeQuotaPct >= 0 {
+			score = (a.GeminiQuotaPct + a.ClaudeQuotaPct) / 2.0
+		} else if a.GeminiQuotaPct >= 0 {
+			score = a.GeminiQuotaPct
+		} else {
+			score = 100.0
+		}
+
+		if score > bestScore {
+			bestScore = score
+			bestAcc = a.AccountName
+		}
+	}
+
+	if bestAcc == "" {
+		return "", "💡 \033[33mNo active authenticated account with quota available.\033[0m"
+	}
+
+	if bestScore >= 0 {
+		return bestAcc, fmt.Sprintf("💡 \033[1;36mSmart Suggestion:\033[0m Account '\033[1;32m%s\033[0m' has the highest available quota (\033[1;33m%.1f%%\033[0m avg).", bestAcc, bestScore)
+	}
+
+	return bestAcc, fmt.Sprintf("💡 \033[1;36mSmart Suggestion:\033[0m Account '\033[1;32m%s\033[0m' is ready for requests.", bestAcc)
 }
 
 // FetchUserQuotaSummary queries Google Cloud Code API for live user quota details.
