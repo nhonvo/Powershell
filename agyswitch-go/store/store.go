@@ -5,9 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
+	"time"
 
 	"agyswitch/vault"
 )
@@ -251,32 +254,70 @@ func (s *Store) SelectBestQuotaAccount() string {
 	return active
 }
 
+// ProbeQuotaStatus checks live API response code for active OAuth token.
+func ProbeQuotaStatus(tok string) string {
+	tok = strings.TrimSpace(tok)
+	if tok == "" {
+		return "✘ Logged Out"
+	}
+
+	client := &http.Client{Timeout: 1 * time.Second}
+	req, err := http.NewRequest("POST", "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels", strings.NewReader("{}"))
+	if err != nil {
+		return "✔ Quota OK"
+	}
+	req.Header.Set("Authorization", "Bearer "+tok)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return "✔ Quota OK"
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == 200 {
+		return "✔ Quota OK (200 OK)"
+	} else if resp.StatusCode == 429 {
+		return "✘ Quota Limit (429 Rate Limit)"
+	} else if resp.StatusCode == 401 || resp.StatusCode == 403 {
+		return "✘ Token Expired (401 Auth Required)"
+	}
+	return fmt.Sprintf("✔ Quota OK (%d)", resp.StatusCode)
+}
+
 // ListAccounts returns all registered accounts and their status.
 func (s *Store) ListAccounts() []AccountInfo {
 	known := []string{"vothuongtruongnhon2002", "fptvttnhon2020", "fptvttnhon2026", "nhontruongvo", "nhontruongvo3"}
 	active := s.GetActiveAccount()
 
-	var result []AccountInfo
-	for _, name := range known {
-		accDir := s.GetAccountDirectory(name)
-		tok := s.Vault.ReadTokenFromDir(accDir)
+	result := make([]AccountInfo, len(known))
+	var wg sync.WaitGroup
 
-		email := fmt.Sprintf("%s@gmail.com", name)
-		sig := s.Vault.GetShortSignature(tok)
-		isLoggedIn := tok != ""
-		quotaStatus := "✔ Quota OK"
-		if !isLoggedIn {
-			quotaStatus = "✘ Logged Out"
-		}
+	for i, name := range known {
+		wg.Add(1)
+		go func(idx int, accName string) {
+			defer wg.Done()
+			accDir := s.GetAccountDirectory(accName)
+			tok := s.Vault.ReadTokenFromDir(accDir)
 
-		result = append(result, AccountInfo{
-			AccountName: name,
-			Email:       email,
-			IsActive:    strings.EqualFold(name, active),
-			TokenSig:    sig,
-			IsLoggedIn:  isLoggedIn,
-			QuotaStatus: quotaStatus,
-		})
+			email := fmt.Sprintf("%s@gmail.com", accName)
+			sig := s.Vault.GetShortSignature(tok)
+			isLoggedIn := tok != ""
+			quotaStatus := ProbeQuotaStatus(tok)
+
+			result[idx] = AccountInfo{
+				AccountName: accName,
+				Email:       email,
+				IsActive:    strings.EqualFold(accName, active),
+				TokenSig:    sig,
+				IsLoggedIn:  isLoggedIn,
+				QuotaStatus: quotaStatus,
+			}
+		}(i, name)
 	}
+
+	wg.Wait()
 	return result
 }
+
+
