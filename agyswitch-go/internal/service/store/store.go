@@ -418,6 +418,10 @@ func (s *Store) ListAccounts() []model.AccountInfo {
 				if q, err := s.GetAccountQuota(accName); err == nil {
 					summary = q
 					gPct, cPct = ExtractGroupQuotas(q)
+				} else {
+					if strings.Contains(err.Error(), "401") || strings.Contains(err.Error(), "403") {
+						quotaStatus = "🔑 Login Required"
+					}
 				}
 			}
 

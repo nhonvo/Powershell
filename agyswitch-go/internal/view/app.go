@@ -390,6 +390,8 @@ func formatStatusBadge(a model.AccountInfo) string {
 		return fmt.Sprintf("\033[32m[✔ Quota OK · Key: %s]\033[0m", a.TokenSig)
 	case "⚡ Auto-Refresh":
 		return fmt.Sprintf("\033[33m[⚡ Ready · Key: %s]\033[0m", a.TokenSig)
+	case "🔑 Login Required":
+		return fmt.Sprintf("\033[33m[🔑 Login Required · Key: %s]\033[0m", a.TokenSig)
 	case "✘ Rate Limit":
 		return fmt.Sprintf("\033[35m[✘ Rate Limit · Key: %s]\033[0m", a.TokenSig)
 	default:
