@@ -60,7 +60,7 @@ func main() {
 				fmt.Print(store.RenderQuotaSummary(email, summary))
 			}
 		}
-	case "add", "create", "login", "new":
+	case "add", "create", "new":
 		if len(args) < 2 {
 			fmt.Println("Usage: agyswitch add <accountName>")
 			os.Exit(1)
@@ -70,8 +70,15 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Error creating account '%s': %v\n", target, err)
 			os.Exit(1)
 		}
-		fmt.Printf("\033[36m[agyswitch]\033[0m Created account directory and switched context to '\033[32m%s\033[0m'.\n", target)
-		fmt.Printf("\033[36m[agyswitch]\033[0m Launching 'agy login' for authentication...\n")
+		fmt.Printf("\033[36m[agyswitch]\033[0m Created account context '\033[32m%s\033[0m' and set active.\n", target)
+		fmt.Printf("\033[36m[agyswitch]\033[0m Run '\033[33magyswitch login\033[0m' or launch \033[33magysw\033[0m to authenticate with Google.\n")
+	case "login":
+		target := s.GetActiveAccount()
+		if len(args) >= 2 {
+			target = args[1]
+			_ = s.SetActiveAccount(target)
+		}
+		fmt.Printf("\033[36m[agyswitch]\033[0m Launching 'agy login' for account '\033[32m%s\033[0m'...\n", target)
 		if err := l.LaunchAccount(target, []string{"login"}); err != nil {
 			fmt.Fprintf(os.Stderr, "Error launching agy login: %v\n", err)
 			os.Exit(1)

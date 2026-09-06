@@ -331,34 +331,83 @@ func ExtractGroupQuotas(summary *QuotaSummary) (gPct float64, cPct float64) {
 	return gPct, cPct
 }
 
-// ListAccountNames dynamically discovers all registered accounts and .gemini_* directories.
-func (s *Store) ListAccountNames() []string {
-	knownMap := map[string]bool{
-		"vothuongtruongnhon2002": true,
-		"fptvttnhon2020":         true,
-		"fptvttnhon2026":         true,
-		"nhontruongvo":           true,
-		"nhontruongvo3":          true,
+func (s *Store) GetRegistryPath() string {
+	return filepath.Join(s.UserHome, ".gemini", "agyswitch_accounts.json")
+}
+
+func (s *Store) LoadAccountRegistry() []string {
+	regPath := s.GetRegistryPath()
+	var names []string
+	hasRegistryFile := false
+
+	if data, err := os.ReadFile(regPath); err == nil {
+		if json.Unmarshal(data, &names) == nil && len(names) > 0 {
+			hasRegistryFile = true
+		}
 	}
 
-	entries, err := os.ReadDir(s.UserHome)
-	if err == nil {
-		for _, e := range entries {
-			if e.IsDir() && strings.HasPrefix(e.Name(), ".gemini_") {
-				accName := strings.TrimPrefix(e.Name(), ".gemini_")
-				if accName != "" && accName != "status" {
-					knownMap[accName] = true
+	knownMap := make(map[string]bool)
+	if hasRegistryFile {
+		for _, n := range names {
+			if strings.TrimSpace(n) != "" {
+				knownMap[n] = true
+			}
+		}
+	} else {
+		defaults := []string{"vothuongtruongnhon2002", "fptvttnhon2020", "fptvttnhon2026", "nhontruongvo", "nhontruongvo3"}
+		for _, d := range defaults {
+			knownMap[d] = true
+		}
+	}
+
+	if !hasRegistryFile {
+		entries, err := os.ReadDir(s.UserHome)
+		if err == nil {
+			for _, e := range entries {
+				if e.IsDir() && strings.HasPrefix(e.Name(), ".gemini_") {
+					accName := strings.TrimPrefix(e.Name(), ".gemini_")
+					if accName != "" && accName != "status" {
+						knownMap[accName] = true
+					}
 				}
 			}
 		}
 	}
 
-	var names []string
+	var result []string
 	for k := range knownMap {
-		names = append(names, k)
+		result = append(result, k)
 	}
-	sort.Strings(names)
-	return names
+	sort.Strings(result)
+	return result
+}
+
+func (s *Store) SaveAccountRegistry(names []string) error {
+	regPath := s.GetRegistryPath()
+	_ = os.MkdirAll(filepath.Dir(regPath), 0755)
+
+	var clean []string
+	seen := make(map[string]bool)
+	for _, n := range names {
+		n = strings.TrimSpace(n)
+		if n != "" && !seen[n] {
+			clean = append(clean, n)
+			seen[n] = true
+		}
+	}
+	sort.Strings(clean)
+
+	data, err := json.MarshalIndent(clean, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(regPath, data, 0644)
+}
+
+// ListAccountNames dynamically discovers all registered accounts.
+func (s *Store) ListAccountNames() []string {
+	return s.LoadAccountRegistry()
 }
 
 // AddAccount initializes a new account directory context and sets it active.
@@ -373,10 +422,14 @@ func (s *Store) AddAccount(name string) error {
 		return fmt.Errorf("failed to create account directory: %v", err)
 	}
 
+	names := s.LoadAccountRegistry()
+	names = append(names, cleanName)
+	_ = s.SaveAccountRegistry(names)
+
 	return s.SetActiveAccount(cleanName)
 }
 
-// RenameAccount renames account directory context and updates active state if active.
+// RenameAccount renames account directory context and updates registry.
 func (s *Store) RenameAccount(oldName, newName string) error {
 	oldName = strings.TrimSpace(oldName)
 	newName = strings.TrimSpace(newName)
@@ -388,13 +441,22 @@ func (s *Store) RenameAccount(oldName, newName string) error {
 	oldDir := s.GetAccountDirectory(oldName)
 	newDir := s.GetAccountDirectory(newName)
 
-	if _, err := os.Stat(oldDir); os.IsNotExist(err) {
-		return fmt.Errorf("account directory for '%s' does not exist", oldName)
+	if _, err := os.Stat(oldDir); err == nil {
+		_ = os.Rename(oldDir, newDir)
+	} else {
+		_ = os.MkdirAll(newDir, 0755)
 	}
 
-	if err := os.Rename(oldDir, newDir); err != nil {
-		return fmt.Errorf("failed to rename account directory: %v", err)
+	names := s.LoadAccountRegistry()
+	var updated []string
+	for _, n := range names {
+		if strings.EqualFold(n, oldName) {
+			updated = append(updated, newName)
+		} else {
+			updated = append(updated, n)
+		}
 	}
+	_ = s.SaveAccountRegistry(updated)
 
 	active := s.GetActiveAccount()
 	if strings.EqualFold(active, oldName) {
@@ -405,7 +467,7 @@ func (s *Store) RenameAccount(oldName, newName string) error {
 	return nil
 }
 
-// DeleteAccount purges credentials and deletes account directory context.
+// DeleteAccount purges credentials, deletes directory context, and removes from registry.
 func (s *Store) DeleteAccount(name string) error {
 	name = strings.TrimSpace(name)
 	if name == "" {
@@ -415,18 +477,21 @@ func (s *Store) DeleteAccount(name string) error {
 	_ = s.ResetAccount(name)
 
 	accDir := s.GetAccountDirectory(name)
-	if err := os.RemoveAll(accDir); err != nil {
-		return fmt.Errorf("failed to delete account directory: %v", err)
+	_ = os.RemoveAll(accDir)
+
+	names := s.LoadAccountRegistry()
+	var updated []string
+	for _, n := range names {
+		if !strings.EqualFold(n, name) {
+			updated = append(updated, n)
+		}
 	}
+	_ = s.SaveAccountRegistry(updated)
 
 	active := s.GetActiveAccount()
 	if strings.EqualFold(active, name) {
-		names := s.ListAccountNames()
-		for _, n := range names {
-			if !strings.EqualFold(n, name) {
-				_ = s.SetActiveAccount(n)
-				break
-			}
+		if len(updated) > 0 {
+			_ = s.SetActiveAccount(updated[0])
 		}
 	}
 
