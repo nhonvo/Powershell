@@ -5,9 +5,9 @@ import (
 	"path/filepath"
 	"testing"
 
+	"agyswitch/internal/service/store"
+	"agyswitch/internal/service/vault"
 	"agyswitch/launcher"
-	"agyswitch/store"
-	"agyswitch/vault"
 )
 
 func TestLauncher_CleanArgs(t *testing.T) {

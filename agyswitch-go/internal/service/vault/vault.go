@@ -327,6 +327,28 @@ func (v *Vault) EnsureValidAccessToken(dir string) string {
 	return tok
 }
 
+// SaveTokenToContext saves token JSON and encrypted keyring entry into directory context.
+func (v *Vault) SaveTokenToContext(dir string, token string) error {
+	tokFile := filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token")
+	_ = os.MkdirAll(filepath.Dir(tokFile), 0755)
+	jsonTok := fmt.Sprintf(`{"token":{"access_token":"%s"}}`, token)
+	_ = os.WriteFile(tokFile, []byte(jsonTok), 0600)
+
+	encTok, err := v.Encrypt(token)
+	if err == nil {
+		_ = os.WriteFile(filepath.Join(dir, "keyring_token.txt"), []byte(encTok), 0600)
+	}
+	return nil
+}
+
+// PurgeGlobalKeyring clears primary ~/.gemini credentials.
+func (v *Vault) PurgeGlobalKeyring() {
+	primaryDir := filepath.Join(v.userHome, ".gemini")
+	_ = os.Remove(filepath.Join(primaryDir, "keyring_token.txt"))
+	_ = os.Remove(filepath.Join(primaryDir, "antigravity-cli", "antigravity-oauth-token"))
+	_ = os.Remove(filepath.Join(primaryDir, "antigravity-oauth-token"))
+}
+
 // SyncKeyringCredentials copies credentials from dir context into Windows Credential Manager if cmdkey.exe is available.
 func (v *Vault) SyncKeyringCredentials(dir string) error {
 	tok := v.ReadTokenFromDir(dir)

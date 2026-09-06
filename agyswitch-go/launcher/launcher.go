@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"agyswitch/store"
-	"agyswitch/vault"
+	"agyswitch/internal/service/store"
+	"agyswitch/internal/service/vault"
 )
 
 type Launcher struct {

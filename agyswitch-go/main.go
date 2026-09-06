@@ -5,10 +5,10 @@ import (
 	"os"
 	"strings"
 
+	"agyswitch/internal/service/store"
+	"agyswitch/internal/service/vault"
+	"agyswitch/internal/view"
 	"agyswitch/launcher"
-	"agyswitch/store"
-	"agyswitch/tui"
-	"agyswitch/vault"
 )
 
 func main() {
@@ -20,12 +20,18 @@ func main() {
 
 	v := vault.NewVault(userHome)
 	s := store.NewStore(userHome, v)
-	l := launcher.NewLauncher(s, v)
 
+	// Custom launcher closure adapter
+	launchAdapter := func(accountName string, args []string) error {
+		oldLauncher := launcher.NewLauncher(nil, nil)
+		return oldLauncher.LaunchAccount(accountName, args)
+	}
+
+	app := view.NewApp(s, launchAdapter)
 	args := os.Args[1:]
 
 	if len(args) == 0 {
-		if err := tui.Run(s, v, l); err != nil {
+		if err := app.Run(); err != nil {
 			fmt.Fprintf(os.Stderr, "Error running TUI: %v\n", err)
 			os.Exit(1)
 		}
@@ -36,7 +42,7 @@ func main() {
 
 	switch cmd {
 	case "status", "list", "ls":
-		tui.PrintStatus(s)
+		app.PrintStatus(os.Stdout)
 	case "quota", "q":
 		target := s.GetActiveAccount()
 		if len(args) >= 2 {
@@ -79,7 +85,7 @@ func main() {
 			_ = s.SetActiveAccount(target)
 		}
 		fmt.Printf("\033[36m[agyswitch]\033[0m Launching 'agy login' for account '\033[32m%s\033[0m'...\n", target)
-		if err := l.LaunchAccount(target, []string{"login"}); err != nil {
+		if err := launchAdapter(target, []string{"login"}); err != nil {
 			fmt.Fprintf(os.Stderr, "Error launching agy login: %v\n", err)
 			os.Exit(1)
 		}
@@ -117,46 +123,20 @@ func main() {
 	case "launch-quota", "auto-launch":
 		bestAcc := s.SelectBestQuotaAccount()
 		fmt.Printf("\033[36m[agyswitch]\033[0m Quota selector auto-selected account '\033[32m%s\033[0m'\n", bestAcc)
-		if err := l.LaunchAccount(bestAcc, args[1:]); err != nil {
+		if err := launchAdapter(bestAcc, args[1:]); err != nil {
 			fmt.Fprintf(os.Stderr, "Error launching agy: %v\n", err)
 			os.Exit(1)
 		}
-	case "switch", "sw":
-		if len(args) < 2 {
-			fmt.Println("Usage: agyswitch switch <accountName>")
-			os.Exit(1)
-		}
-		target := args[1]
-		if err := s.SetActiveAccount(target); err != nil {
-			fmt.Fprintf(os.Stderr, "Error switching account: %v\n", err)
-			os.Exit(1)
-		}
-		fmt.Printf("\033[36m[agyswitch]\033[0m Successfully switched active account context to '\033[32m%s\033[0m'.\n", target)
 	default:
-		// Check if first argument is a known account name or folder name
-		accs := s.ListAccounts()
-		isAcc := false
-		targetAcc := cmd
-
-		for _, a := range accs {
-			if strings.EqualFold(a.AccountName, cmd) {
-				isAcc = true
-				break
-			}
+		target := cmd
+		if err := s.SetActiveAccount(target); err != nil {
+			fmt.Fprintf(os.Stderr, "Error setting active account context to '%s': %v\n", target, err)
+			os.Exit(1)
 		}
-
-		if isAcc {
-			if err := l.LaunchAccount(targetAcc, args[1:]); err != nil {
-				fmt.Fprintf(os.Stderr, "Error launching agy: %v\n", err)
-				os.Exit(1)
-			}
-		} else {
-			// Launch current active account with passed args
-			active := s.GetActiveAccount()
-			if err := l.LaunchAccount(active, args); err != nil {
-				fmt.Fprintf(os.Stderr, "Error launching agy: %v\n", err)
-				os.Exit(1)
-			}
+		fmt.Printf("\033[36m[agyswitch]\033[0m Switched active context to '\033[32m%s\033[0m'. Launching agy...\n", target)
+		if err := launchAdapter(target, args[1:]); err != nil {
+			fmt.Fprintf(os.Stderr, "Error launching agy: %v\n", err)
+			os.Exit(1)
 		}
 	}
 }

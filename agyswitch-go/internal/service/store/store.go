@@ -13,40 +13,9 @@ import (
 	"sync"
 	"time"
 
-	"agyswitch/vault"
+	"agyswitch/internal/model"
+	"agyswitch/internal/service/vault"
 )
-
-type AccountInfo struct {
-	AccountName    string        `json:"accountName"`
-	Email          string        `json:"email"`
-	IsActive       bool          `json:"isActive"`
-	TokenSig       string        `json:"tokenSig"`
-	IsLoggedIn     bool          `json:"isLoggedIn"`
-	QuotaStatus    string        `json:"quotaStatus"`
-	GeminiQuotaPct float64       `json:"geminiQuotaPct"`
-	ClaudeQuotaPct float64       `json:"claudeQuotaPct"`
-	QuotaSummary   *QuotaSummary `json:"quotaSummary,omitempty"`
-}
-
-type QuotaBucket struct {
-	BucketID          string  `json:"bucketId"`
-	DisplayName       string  `json:"displayName"`
-	Window            string  `json:"window"`
-	ResetTime         string  `json:"resetTime"`
-	Description       string  `json:"description"`
-	RemainingFraction float64 `json:"remainingFraction"`
-}
-
-type QuotaGroup struct {
-	DisplayName string        `json:"displayName"`
-	Description string        `json:"description"`
-	Buckets     []QuotaBucket `json:"buckets"`
-}
-
-type QuotaSummary struct {
-	Groups      []QuotaGroup `json:"groups"`
-	Description string       `json:"description"`
-}
 
 type Store struct {
 	UserHome string
@@ -101,117 +70,68 @@ func (s *Store) SetActiveAccount(accountName string) error {
 
 	primaryDir := filepath.Join(s.UserHome, ".gemini")
 
-	// Step 1: Pre-switch backup of current active account (~/.gemini -> ~/.gemini_<currentActive>)
 	currentActive := s.GetActiveAccount()
 	if currentActive != "" && !strings.EqualFold(currentActive, "default") && !strings.EqualFold(currentActive, acc) {
 		currentActiveDir := s.GetAccountDirectory(currentActive)
 		_ = os.MkdirAll(currentActiveDir, 0755)
 
 		curToken := s.Vault.ReadTokenFromDir(primaryDir)
-		if curToken != "" && curToken != "IDE_ACTIVE_SESSION" {
-			_ = s.Vault.SaveTokenToContext(currentActiveDir, curToken)
+		if curToken != "" {
+			tokenFile := filepath.Join(currentActiveDir, "antigravity-cli", "antigravity-oauth-token")
+			_ = os.MkdirAll(filepath.Dir(tokenFile), 0755)
+			jsonToken := fmt.Sprintf(`{"token":{"access_token":"%s"}}`, curToken)
+			_ = os.WriteFile(tokenFile, []byte(jsonToken), 0600)
+
+			encToken, err := s.Vault.Encrypt(curToken)
+			if err == nil {
+				_ = os.WriteFile(filepath.Join(currentActiveDir, "keyring_token.txt"), []byte(encToken), 0600)
+			}
 		}
-		_ = s.MirrorDirectory(primaryDir, currentActiveDir)
+
+		_ = mirrorDirectory(primaryDir, currentActiveDir)
 	}
 
 	targetDir := s.GetAccountDirectory(acc)
-	if err := os.MkdirAll(targetDir, 0755); err != nil {
-		return err
-	}
-	if err := os.MkdirAll(primaryDir, 0755); err != nil {
-		return err
+	if _, err := os.Stat(targetDir); os.IsNotExist(err) {
+		_ = os.MkdirAll(targetDir, 0755)
 	}
 
-	// Always sanitize target context files with exact account email
-	s.SanitizeAccountDirectory(acc)
-
-	// Read target account token before mirroring
 	targetToken := s.Vault.ReadTokenFromDir(targetDir)
+	if targetToken != "" {
+		primaryTokenFile := filepath.Join(primaryDir, "antigravity-cli", "antigravity-oauth-token")
+		_ = os.MkdirAll(filepath.Dir(primaryTokenFile), 0755)
+		jsonToken := fmt.Sprintf(`{"token":{"access_token":"%s"}}`, targetToken)
+		_ = os.WriteFile(primaryTokenFile, []byte(jsonToken), 0600)
 
-	// Step 2: Mirror target directory to primary directory
-	if !strings.EqualFold(targetDir, primaryDir) {
-		if err := s.MirrorDirectory(targetDir, primaryDir); err != nil {
-			return err
+		encToken, err := s.Vault.Encrypt(targetToken)
+		if err == nil {
+			_ = os.WriteFile(filepath.Join(primaryDir, "keyring_token.txt"), []byte(encToken), 0600)
 		}
 	}
 
-	// Always force-overwrite primary google_accounts.json & settings.json with target account email
-	s.SanitizeAccountDirectoryIn(primaryDir, acc)
+	_ = mirrorDirectory(targetDir, primaryDir)
 
-	// Record active account marker
 	activeFile := filepath.Join(primaryDir, "active_account.txt")
 	_ = os.WriteFile(activeFile, []byte(acc), 0644)
 
-	// Step 3: Keyring isolation logic - Purge global keyring if target account has no explicit OAuth token
-	if targetToken != "" && targetToken != "IDE_ACTIVE_SESSION" {
-		_ = s.Vault.SaveTokenToContext(targetDir, targetToken)
-		_ = s.Vault.SaveTokenToContext(primaryDir, targetToken)
-	} else {
-		s.Vault.PurgeGlobalKeyring()
-	}
-
+	_ = s.Vault.SyncKeyringCredentials(primaryDir)
 	return nil
 }
 
-// SanitizeAccountDirectory ensures google_accounts.json and settings.json exist cleanly.
-func (s *Store) SanitizeAccountDirectory(accountName string) {
-	accDir := s.GetAccountDirectory(accountName)
-	s.SanitizeAccountDirectoryIn(accDir, accountName)
-}
-
-func (s *Store) SanitizeAccountDirectoryIn(targetDir, accountName string) {
-	_ = os.MkdirAll(filepath.Join(targetDir, "antigravity-cli"), 0755)
-
-	email := fmt.Sprintf("%s@gmail.com", accountName)
-	if strings.Contains(accountName, "@") {
-		email = accountName
-	}
-
-	gPath := filepath.Join(targetDir, "google_accounts.json")
-	gObj := map[string]interface{}{
-		"accounts":      []map[string]string{{"email": email}},
-		"activeAccount": email,
-	}
-	if data, err := json.MarshalIndent(gObj, "", "  "); err == nil {
-		_ = os.WriteFile(gPath, data, 0644)
-	}
-
-	sPath := filepath.Join(targetDir, "antigravity-cli", "settings.json")
-	sObj := map[string]string{
-		"accountName": accountName,
-		"userEmail":   email,
-	}
-	if data, err := json.MarshalIndent(sObj, "", "  "); err == nil {
-		_ = os.WriteFile(sPath, data, 0644)
-	}
-}
-
-// MirrorDirectory performs 1-to-1 file copy from src to dst.
-func (s *Store) MirrorDirectory(srcDir, dstDir string) error {
-	if _, err := os.Stat(srcDir); os.IsNotExist(err) {
-		return nil
-	}
-	_ = os.MkdirAll(dstDir, 0755)
-
-	return filepath.Walk(srcDir, func(path string, info os.FileInfo, err error) error {
+func mirrorDirectory(src, dst string) error {
+	_ = os.MkdirAll(dst, 0755)
+	return filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return nil
 		}
-		relPath, err := filepath.Rel(srcDir, path)
+		relPath, err := filepath.Rel(src, path)
 		if err != nil || relPath == "." {
 			return nil
 		}
-
-		// Skip temporary or database lock files
-		if strings.HasSuffix(relPath, ".tmp") || strings.HasSuffix(relPath, ".lock") {
-			return nil
-		}
-
-		dstPath := filepath.Join(dstDir, relPath)
+		dstPath := filepath.Join(dst, relPath)
 		if info.IsDir() {
 			return os.MkdirAll(dstPath, info.Mode())
 		}
-
 		return copyFile(path, dstPath)
 	})
 }
@@ -234,7 +154,6 @@ func copyFile(src, dst string) error {
 	return err
 }
 
-// ResetAccount clears all OAuth token files and keyring credentials for account.
 func (s *Store) ResetAccount(accountName string) error {
 	acc := strings.TrimSpace(accountName)
 	if acc == "" {
@@ -247,88 +166,16 @@ func (s *Store) ResetAccount(accountName string) error {
 	_ = os.Remove(filepath.Join(accDir, "antigravity-oauth-token"))
 	_ = os.RemoveAll(filepath.Join(accDir, ".keyring"))
 
-	// If resetting the currently active account, clear primary ~/.gemini files as well
 	active := s.GetActiveAccount()
-	if strings.EqualFold(acc, active) {
-		s.Vault.PurgeGlobalKeyring()
+	if strings.EqualFold(active, acc) {
+		primaryDir := filepath.Join(s.UserHome, ".gemini")
+		_ = os.Remove(filepath.Join(primaryDir, "keyring_token.txt"))
+		_ = os.Remove(filepath.Join(primaryDir, "antigravity-cli", "antigravity-oauth-token"))
+		_ = os.Remove(filepath.Join(primaryDir, "antigravity-oauth-token"))
+		_ = os.RemoveAll(filepath.Join(primaryDir, ".keyring"))
 	}
 
 	return nil
-}
-
-// SelectBestQuotaAccount scans accounts and returns active account if logged in, or first logged-in account.
-func (s *Store) SelectBestQuotaAccount() string {
-	accs := s.ListAccounts()
-	active := s.GetActiveAccount()
-
-	// Check active account
-	for _, a := range accs {
-		if strings.EqualFold(a.AccountName, active) && a.IsLoggedIn {
-			return a.AccountName
-		}
-	}
-
-	// Pick first available logged-in account
-	for _, a := range accs {
-		if a.IsLoggedIn {
-			return a.AccountName
-		}
-	}
-
-	return active
-}
-
-// ProbeQuotaStatus checks live API response code for active OAuth token.
-func ProbeQuotaStatus(tok string) string {
-	tok = strings.TrimSpace(tok)
-	if tok == "" {
-		return "✘ Logged Out"
-	}
-
-	client := &http.Client{Timeout: 1 * time.Second}
-	req, err := http.NewRequest("POST", "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels", strings.NewReader("{}"))
-	if err != nil {
-		return "✔ Quota OK"
-	}
-	req.Header.Set("Authorization", "Bearer "+tok)
-	req.Header.Set("User-Agent", "antigravity/1.1.27")
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return "✔ Quota OK"
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode == 200 {
-		return "✔ Quota OK"
-	} else if resp.StatusCode == 429 {
-		return "✘ Rate Limit"
-	} else if resp.StatusCode == 401 || resp.StatusCode == 403 {
-		return "⚡ Auto-Refresh"
-	}
-	return "✔ Quota OK"
-}
-
-// ExtractGroupQuotas returns Gemini and Claude weekly quota percentages from summary.
-func ExtractGroupQuotas(summary *QuotaSummary) (gPct float64, cPct float64) {
-	if summary == nil {
-		return -1, -1
-	}
-	gPct, cPct = -1, -1
-	for _, g := range summary.Groups {
-		name := strings.ToLower(g.DisplayName)
-		for _, b := range g.Buckets {
-			if b.Window == "weekly" || strings.Contains(b.BucketID, "weekly") {
-				if strings.Contains(name, "gemini") {
-					gPct = b.RemainingFraction * 100.0
-				} else if strings.Contains(name, "claude") || strings.Contains(name, "gpt") || strings.Contains(name, "3p") {
-					cPct = b.RemainingFraction * 100.0
-				}
-			}
-		}
-	}
-	return gPct, cPct
 }
 
 func (s *Store) GetRegistryPath() string {
@@ -358,16 +205,16 @@ func (s *Store) LoadAccountRegistry() []string {
 		for _, d := range defaults {
 			knownMap[d] = true
 		}
-	}
 
-	if !hasRegistryFile {
-		entries, err := os.ReadDir(s.UserHome)
-		if err == nil {
-			for _, e := range entries {
-				if e.IsDir() && strings.HasPrefix(e.Name(), ".gemini_") {
-					accName := strings.TrimPrefix(e.Name(), ".gemini_")
-					if accName != "" && accName != "status" {
-						knownMap[accName] = true
+		if !hasRegistryFile {
+			entries, err := os.ReadDir(s.UserHome)
+			if err == nil {
+				for _, e := range entries {
+					if e.IsDir() && strings.HasPrefix(e.Name(), ".gemini_") {
+						accName := strings.TrimPrefix(e.Name(), ".gemini_")
+						if accName != "" && accName != "status" {
+							knownMap[accName] = true
+						}
 					}
 				}
 			}
@@ -405,12 +252,10 @@ func (s *Store) SaveAccountRegistry(names []string) error {
 	return os.WriteFile(regPath, data, 0644)
 }
 
-// ListAccountNames dynamically discovers all registered accounts.
 func (s *Store) ListAccountNames() []string {
 	return s.LoadAccountRegistry()
 }
 
-// AddAccount initializes a new account directory context and sets it active.
 func (s *Store) AddAccount(name string) error {
 	cleanName := strings.TrimSpace(name)
 	if cleanName == "" {
@@ -429,7 +274,6 @@ func (s *Store) AddAccount(name string) error {
 	return s.SetActiveAccount(cleanName)
 }
 
-// RenameAccount renames account directory context and updates registry.
 func (s *Store) RenameAccount(oldName, newName string) error {
 	oldName = strings.TrimSpace(oldName)
 	newName = strings.TrimSpace(newName)
@@ -467,7 +311,6 @@ func (s *Store) RenameAccount(oldName, newName string) error {
 	return nil
 }
 
-// DeleteAccount purges credentials, deletes directory context, and removes from registry.
 func (s *Store) DeleteAccount(name string) error {
 	name = strings.TrimSpace(name)
 	if name == "" {
@@ -498,12 +341,62 @@ func (s *Store) DeleteAccount(name string) error {
 	return nil
 }
 
-// ListAccounts returns all registered accounts and their status.
-func (s *Store) ListAccounts() []AccountInfo {
+func ProbeQuotaStatus(tok string) string {
+	tok = strings.TrimSpace(tok)
+	if tok == "" {
+		return "✘ Logged Out"
+	}
+
+	client := &http.Client{Timeout: 1 * time.Second}
+	req, err := http.NewRequest("POST", "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels", strings.NewReader("{}"))
+	if err != nil {
+		return "✔ Quota OK"
+	}
+	req.Header.Set("Authorization", "Bearer "+tok)
+	req.Header.Set("User-Agent", "antigravity/1.1.27")
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return "✔ Quota OK"
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == 200 {
+		return "✔ Quota OK"
+	} else if resp.StatusCode == 429 {
+		return "✘ Rate Limit"
+	} else if resp.StatusCode == 401 || resp.StatusCode == 403 {
+		return "⚡ Auto-Refresh"
+	}
+	return "✔ Quota OK"
+}
+
+func ExtractGroupQuotas(summary *model.QuotaSummary) (gPct float64, cPct float64) {
+	if summary == nil {
+		return -1, -1
+	}
+	gPct, cPct = -1, -1
+	for _, g := range summary.Groups {
+		name := strings.ToLower(g.DisplayName)
+		for _, b := range g.Buckets {
+			if b.Window == "weekly" || strings.Contains(b.BucketID, "weekly") {
+				if strings.Contains(name, "gemini") {
+					gPct = b.RemainingFraction * 100.0
+				} else if strings.Contains(name, "claude") || strings.Contains(name, "gpt") || strings.Contains(name, "3p") {
+					cPct = b.RemainingFraction * 100.0
+				}
+			}
+		}
+	}
+	return gPct, cPct
+}
+
+func (s *Store) ListAccounts() []model.AccountInfo {
 	known := s.ListAccountNames()
 	active := s.GetActiveAccount()
 
-	result := make([]AccountInfo, len(known))
+	result := make([]model.AccountInfo, len(known))
 	var wg sync.WaitGroup
 
 	for i, name := range known {
@@ -518,7 +411,7 @@ func (s *Store) ListAccounts() []AccountInfo {
 			isLoggedIn := tok != ""
 			quotaStatus := ProbeQuotaStatus(tok)
 
-			var summary *QuotaSummary
+			var summary *model.QuotaSummary
 			var gPct, cPct float64 = -1, -1
 
 			if isLoggedIn {
@@ -528,7 +421,7 @@ func (s *Store) ListAccounts() []AccountInfo {
 				}
 			}
 
-			result[idx] = AccountInfo{
+			result[idx] = model.AccountInfo{
 				AccountName:    accName,
 				Email:          email,
 				IsActive:       strings.EqualFold(accName, active),
@@ -546,8 +439,7 @@ func (s *Store) ListAccounts() []AccountInfo {
 	return result
 }
 
-// GetRecommendedAccountInfo evaluates best account by highest combined quota.
-func (s *Store) GetRecommendedAccountInfo(accs []AccountInfo) (string, string) {
+func (s *Store) GetRecommendedAccountInfo(accs []model.AccountInfo) (string, string) {
 	bestAcc := ""
 	bestScore := -1.0
 
@@ -581,8 +473,16 @@ func (s *Store) GetRecommendedAccountInfo(accs []AccountInfo) (string, string) {
 	return bestAcc, fmt.Sprintf("💡 \033[1;36mSmart Suggestion:\033[0m Account '\033[1;32m%s\033[0m' is ready for requests.", bestAcc)
 }
 
-// FetchUserQuotaSummary queries Google Cloud Code API for live user quota details.
-func FetchUserQuotaSummary(tok string) (*QuotaSummary, error) {
+func (s *Store) SelectBestQuotaAccount() string {
+	accs := s.ListAccounts()
+	bestAcc, _ := s.GetRecommendedAccountInfo(accs)
+	if bestAcc == "" {
+		return s.GetActiveAccount()
+	}
+	return bestAcc
+}
+
+func FetchUserQuotaSummary(tok string) (*model.QuotaSummary, error) {
 	tok = strings.TrimSpace(tok)
 	if tok == "" {
 		return nil, errors.New("unauthenticated")
@@ -607,7 +507,7 @@ func FetchUserQuotaSummary(tok string) (*QuotaSummary, error) {
 		return nil, fmt.Errorf("quota API HTTP %d", resp.StatusCode)
 	}
 
-	var summary QuotaSummary
+	var summary model.QuotaSummary
 	if err := json.NewDecoder(resp.Body).Decode(&summary); err != nil {
 		return nil, err
 	}
@@ -615,8 +515,7 @@ func FetchUserQuotaSummary(tok string) (*QuotaSummary, error) {
 	return &summary, nil
 }
 
-// GetAccountQuota refreshes token if needed and fetches live QuotaSummary for named account.
-func (s *Store) GetAccountQuota(name string) (*QuotaSummary, error) {
+func (s *Store) GetAccountQuota(name string) (*model.QuotaSummary, error) {
 	accDir := s.GetAccountDirectory(name)
 	tok := s.Vault.EnsureValidAccessToken(accDir)
 	if tok == "" {
@@ -626,8 +525,7 @@ func (s *Store) GetAccountQuota(name string) (*QuotaSummary, error) {
 	return FetchUserQuotaSummary(tok)
 }
 
-// RenderQuotaSummary builds terminal UI matching Antigravity Models & Quota layout.
-func RenderQuotaSummary(email string, summary *QuotaSummary) string {
+func RenderQuotaSummary(email string, summary *model.QuotaSummary) string {
 	if summary == nil || len(summary.Groups) == 0 {
 		return fmt.Sprintf("\033[31mNo quota details available for %s\033[0m\r\n", email)
 	}
@@ -656,11 +554,11 @@ func RenderQuotaSummary(email string, summary *QuotaSummary) string {
 
 			bar := strings.Repeat("█", filledLen) + strings.Repeat("░", emptyLen)
 
-			colorCode := "\033[32m" // Green
+			colorCode := "\033[32m"
 			if pct < 20.0 {
-				colorCode = "\033[31m" // Red
+				colorCode = "\033[31m"
 			} else if pct < 50.0 {
-				colorCode = "\033[33m" // Yellow
+				colorCode = "\033[33m"
 			}
 
 			sb.WriteString(fmt.Sprintf("\r\n  %s\r\n", b.DisplayName))
@@ -693,6 +591,3 @@ func RenderQuotaSummary(email string, summary *QuotaSummary) string {
 
 	return sb.String()
 }
-
-
-
