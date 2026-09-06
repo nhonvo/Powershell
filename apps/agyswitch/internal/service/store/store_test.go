@@ -50,29 +50,29 @@ func TestStore_CRUDAccountRegistry(t *testing.T) {
 	s := store.NewStore(tempDir, v)
 
 	// Add
-	err = s.AddAccount("test_acc1")
+	err = s.AddAccount("acc_alpha")
 	if err != nil {
 		t.Fatalf("failed to add account: %v", err)
 	}
 
 	active := s.GetActiveAccount()
-	if active != "test_acc1" {
-		t.Errorf("expected active 'test_acc1', got '%s'", active)
+	if active != "acc_alpha" {
+		t.Errorf("expected active 'acc_alpha', got '%s'", active)
 	}
 
 	// Rename
-	err = s.RenameAccount("test_acc1", "test_acc2")
+	err = s.RenameAccount("acc_alpha", "acc_beta")
 	if err != nil {
 		t.Fatalf("failed to rename account: %v", err)
 	}
 
 	active = s.GetActiveAccount()
-	if active != "test_acc2" {
-		t.Errorf("expected active 'test_acc2', got '%s'", active)
+	if active != "acc_beta" {
+		t.Errorf("expected active 'acc_beta', got '%s'", active)
 	}
 
 	// Delete
-	err = s.DeleteAccount("test_acc2")
+	err = s.DeleteAccount("acc_beta")
 	if err != nil {
 		t.Fatalf("failed to delete account: %v", err)
 	}

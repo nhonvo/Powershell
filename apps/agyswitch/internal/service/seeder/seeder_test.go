@@ -47,7 +47,7 @@ func TestResetAccountEx(t *testing.T) {
 	st := store.NewStore(tempDir, nil)
 	sd := NewSeeder(tempDir, st)
 
-	accName := "reset_test_acc"
+	accName := "acc_reset"
 	accDir := st.GetAccountDirectory(accName)
 	_ = os.MkdirAll(accDir, 0755)
 

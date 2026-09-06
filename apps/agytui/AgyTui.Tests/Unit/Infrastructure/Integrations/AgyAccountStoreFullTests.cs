@@ -70,27 +70,32 @@ public class AgyAccountStoreFullTests
         var pathManager = new AgyTui.Infrastructure.Services.AppPathManager();
         var accountStore = new AgyAccountStore(repo, pathManager);
 
-        var accName = "nhontruongvo3";
+        var accName = "test_unit_sanitize_tmp";
         var email = accountStore.GetCanonicalEmail(accName);
-        Assert.Equal("nhontruongvo3@gmail.com", email);
+        Assert.Equal($"{accName}@gmail.com", email);
 
         var accDir = accountStore.GetAccountDirectory(accName);
-        System.IO.Directory.CreateDirectory(accDir);
-
-        // Intentionally pollute folder with wrong activeAccount
-        var corruptedJson = "{\n  \"accounts\": [ { \"email\": \"fptvttnhon2020@gmail.com\" } ],\n  \"activeAccount\": \"fptvttnhon2020@gmail.com\"\n}";
-        System.IO.File.WriteAllText(System.IO.Path.Combine(accDir, "google_accounts.json"), corruptedJson);
-
-        // Sanitize should clean corruption and reset to nhontruongvo3@gmail.com
-        accountStore.SanitizeAccountDirectory(accName);
-
-        var fixedEmail = accountStore.GetAccountEmail(accName);
-        Assert.Equal("nhontruongvo3@gmail.com", fixedEmail);
-
-        // Clean up test dir if created
-        if (System.IO.Directory.Exists(accDir))
+        try
         {
-            try { accountStore.DeleteAccount(accName); } catch {}
+            System.IO.Directory.CreateDirectory(accDir);
+
+            // Intentionally pollute folder with wrong activeAccount
+            var corruptedJson = "{\n  \"accounts\": [ { \"email\": \"fptvttnhon2020@gmail.com\" } ],\n  \"activeAccount\": \"fptvttnhon2020@gmail.com\"\n}";
+            System.IO.File.WriteAllText(System.IO.Path.Combine(accDir, "google_accounts.json"), corruptedJson);
+
+            // Sanitize should clean corruption and reset to expected email
+            accountStore.SanitizeAccountDirectory(accName);
+
+            var fixedEmail = accountStore.GetAccountEmail(accName);
+            Assert.Equal($"{accName}@gmail.com", fixedEmail);
+        }
+        finally
+        {
+            if (System.IO.Directory.Exists(accDir))
+            {
+                try { System.IO.Directory.Delete(accDir, true); } catch {}
+            }
+            try { repo.DeleteAccount(accName); } catch {}
         }
     }
 }

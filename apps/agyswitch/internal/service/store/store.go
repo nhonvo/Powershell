@@ -168,6 +168,20 @@ func (s *Store) ResetAccount(accountName string) error {
 	return nil
 }
 
+func IsIgnoredAccount(name string) bool {
+	lower := strings.ToLower(strings.TrimSpace(name))
+	if lower == "" || lower == "status" || lower == "template" || lower == "default" {
+		return true
+	}
+	prefixes := []string{"demo", "test", "temp", "tmp", "backup", "copy", "--", "."}
+	for _, p := range prefixes {
+		if strings.HasPrefix(lower, p) {
+			return true
+		}
+	}
+	return false
+}
+
 func (s *Store) GetRegistryPath() string {
 	return filepath.Join(s.UserHome, ".gemini", "agyswitch_accounts.json")
 }
@@ -186,25 +200,26 @@ func (s *Store) LoadAccountRegistry() []string {
 	knownMap := make(map[string]bool)
 	if hasRegistryFile {
 		for _, n := range names {
-			if strings.TrimSpace(n) != "" {
+			n = strings.TrimSpace(n)
+			if n != "" && !IsIgnoredAccount(n) {
 				knownMap[n] = true
 			}
 		}
 	} else {
 		defaults := []string{"vothuongtruongnhon2002", "fptvttnhon2020", "fptvttnhon2026", "nhontruongvo", "nhontruongvo3"}
 		for _, d := range defaults {
-			knownMap[d] = true
+			if !IsIgnoredAccount(d) {
+				knownMap[d] = true
+			}
 		}
 
-		if !hasRegistryFile {
-			entries, err := os.ReadDir(s.UserHome)
-			if err == nil {
-				for _, e := range entries {
-					if e.IsDir() && strings.HasPrefix(e.Name(), ".gemini_") {
-						accName := strings.TrimPrefix(e.Name(), ".gemini_")
-						if accName != "" && accName != "status" {
-							knownMap[accName] = true
-						}
+		entries, err := os.ReadDir(s.UserHome)
+		if err == nil {
+			for _, e := range entries {
+				if e.IsDir() && strings.HasPrefix(e.Name(), ".gemini_") {
+					accName := strings.TrimPrefix(e.Name(), ".gemini_")
+					if !IsIgnoredAccount(accName) {
+						knownMap[accName] = true
 					}
 				}
 			}

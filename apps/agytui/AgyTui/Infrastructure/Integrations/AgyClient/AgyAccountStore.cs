@@ -275,6 +275,18 @@ public class AgyAccountStore : IAgyAccountStore
         return next;
     }
 
+    public static bool IsIgnoredAccount(string? accountName)
+    {
+        if (string.IsNullOrWhiteSpace(accountName)) return true;
+        var name = accountName.Trim();
+        if (string.Equals(name, "default", StringComparison.OrdinalIgnoreCase)) return false;
+        if (string.Equals(name, "status", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(name, "template", StringComparison.OrdinalIgnoreCase)) return true;
+
+        return Regex.IsMatch(name, @"^(backup|copy|temp|tmp|test|testacc|demo)([_-]|$)", RegexOptions.IgnoreCase) ||
+               name.StartsWith("--") || name.StartsWith(".");
+    }
+
     public string[] GetAccounts()
     {
         var accounts = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "default" };
@@ -288,6 +300,12 @@ public class AgyAccountStore : IAgyAccountStore
                 if (string.Equals(dbAcc, "default", StringComparison.OrdinalIgnoreCase))
                 {
                     accounts.Add("default");
+                    continue;
+                }
+
+                if (IsIgnoredAccount(dbAcc))
+                {
+                    try { _accountRepo.DeleteAccount(dbAcc); } catch { }
                     continue;
                 }
 
@@ -320,7 +338,7 @@ public class AgyAccountStore : IAgyAccountStore
                     var m = Regex.Match(Path.GetFileName(dir), @"^\.gemini_(.+)$");
                     if (!m.Success) continue;
                     var name = m.Groups[1].Value;
-                    if (Regex.IsMatch(name, @"^(backup|copy|temp|test|testacc)([_-]|$)", RegexOptions.IgnoreCase)) continue;
+                    if (IsIgnoredAccount(name)) continue;
 
                     accounts.Add(name);
                 }

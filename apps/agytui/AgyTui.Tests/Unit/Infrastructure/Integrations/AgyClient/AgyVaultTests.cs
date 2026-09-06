@@ -19,6 +19,8 @@ public class AgyVaultTests
         var tempRoot = Path.Combine(Path.GetTempPath(), "agy_vault_test_" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(tempRoot);
         var originalUserProfile = Environment.GetEnvironmentVariable("USERPROFILE");
+        var db = new AgyTui.Infrastructure.Persistence.DbContext.SqliteDatabase();
+        var repo = new AgyTui.Infrastructure.Persistence.Repositories.SqliteAgyAccountRepository(db);
 
         try
         {
@@ -32,8 +34,6 @@ public class AgyVaultTests
             File.WriteAllText(Path.Combine(primaryCli, "antigravity-oauth-token"), userToken);
             File.WriteAllText(Path.Combine(primaryDir, "google_accounts.json"), "{\"accounts\":[{\"email\":\"john.doe@example.com\"}],\"activeAccount\":\"john.doe@example.com\"}");
 
-            var db = new AgyTui.Infrastructure.Persistence.DbContext.SqliteDatabase();
-            var repo = new AgyTui.Infrastructure.Persistence.Repositories.SqliteAgyAccountRepository(db);
             var store = new AgyAccountStore(repo);
             var vault = new AgyVault(store, repo);
 
@@ -65,6 +65,8 @@ public class AgyVaultTests
         finally
         {
             Environment.SetEnvironmentVariable("USERPROFILE", originalUserProfile);
+            try { repo.DeleteAccount("acc1"); } catch { }
+            try { repo.DeleteAccount("acc2"); } catch { }
             try { Directory.Delete(tempRoot, true); } catch { }
         }
     }

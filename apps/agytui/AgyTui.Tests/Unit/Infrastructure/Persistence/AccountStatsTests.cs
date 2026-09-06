@@ -10,10 +10,11 @@ public class AccountStatsTests
         var originalHome = Config.Current.System.AgySourceHome;
         var store = new AgyAccountStore();
         var quotaEngine = new AgyQuotaEngine(store);
+        string? accDir = null;
         try
         {
             Config.Current.System.AgySourceHome = tempDir;
-            var accDir = store.GetAccountDirectory("testacc");
+            accDir = store.GetAccountDirectory("testacc");
             Directory.CreateDirectory(Path.Combine(accDir, "skills", "skill1"));
             Directory.CreateDirectory(Path.Combine(accDir, "skills", "skill2"));
             Directory.CreateDirectory(Path.Combine(accDir, "brain", "conv1"));
@@ -27,6 +28,10 @@ public class AccountStatsTests
         finally
         {
             Config.Current.System.AgySourceHome = originalHome;
+            if (!string.IsNullOrEmpty(accDir) && Directory.Exists(accDir))
+            {
+                try { Directory.Delete(accDir, true); } catch { }
+            }
             if (Directory.Exists(tempDir))
             {
                 try { Directory.Delete(tempDir, true); } catch { }
