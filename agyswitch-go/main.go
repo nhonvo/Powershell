@@ -23,7 +23,7 @@ func main() {
 
 	// Custom launcher closure adapter
 	launchAdapter := func(accountName string, args []string) error {
-		oldLauncher := launcher.NewLauncher(nil, nil)
+		oldLauncher := launcher.NewLauncher(s, v)
 		return oldLauncher.LaunchAccount(accountName, args)
 	}
 
