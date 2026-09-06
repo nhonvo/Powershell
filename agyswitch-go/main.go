@@ -128,15 +128,32 @@ func main() {
 			os.Exit(1)
 		}
 	default:
-		target := cmd
-		if err := s.SetActiveAccount(target); err != nil {
-			fmt.Fprintf(os.Stderr, "Error setting active account context to '%s': %v\n", target, err)
-			os.Exit(1)
+		knownAccounts := s.ListAccountNames()
+		isRegisteredAccount := false
+		for _, a := range knownAccounts {
+			if strings.EqualFold(a, cmd) {
+				isRegisteredAccount = true
+				break
+			}
 		}
-		fmt.Printf("\033[36m[agyswitch]\033[0m Switched active context to '\033[32m%s\033[0m'. Launching agy...\n", target)
-		if err := launchAdapter(target, args[1:]); err != nil {
-			fmt.Fprintf(os.Stderr, "Error launching agy: %v\n", err)
-			os.Exit(1)
+
+		if isRegisteredAccount && !strings.HasPrefix(cmd, "-") {
+			target := cmd
+			if err := s.SetActiveAccount(target); err != nil {
+				fmt.Fprintf(os.Stderr, "Error setting active account context to '%s': %v\n", target, err)
+				os.Exit(1)
+			}
+			fmt.Printf("\033[36m[agyswitch]\033[0m Switched active context to '\033[32m%s\033[0m'. Launching agy...\n", target)
+			if err := launchAdapter(target, args[1:]); err != nil {
+				fmt.Fprintf(os.Stderr, "Error launching agy: %v\n", err)
+				os.Exit(1)
+			}
+		} else {
+			target := s.GetActiveAccount()
+			if err := launchAdapter(target, args); err != nil {
+				fmt.Fprintf(os.Stderr, "Error launching agy: %v\n", err)
+				os.Exit(1)
+			}
 		}
 	}
 }
