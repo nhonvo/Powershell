@@ -376,6 +376,63 @@ func (s *Store) AddAccount(name string) error {
 	return s.SetActiveAccount(cleanName)
 }
 
+// RenameAccount renames account directory context and updates active state if active.
+func (s *Store) RenameAccount(oldName, newName string) error {
+	oldName = strings.TrimSpace(oldName)
+	newName = strings.TrimSpace(newName)
+
+	if oldName == "" || newName == "" {
+		return errors.New("old and new account names must not be empty")
+	}
+
+	oldDir := s.GetAccountDirectory(oldName)
+	newDir := s.GetAccountDirectory(newName)
+
+	if _, err := os.Stat(oldDir); os.IsNotExist(err) {
+		return fmt.Errorf("account directory for '%s' does not exist", oldName)
+	}
+
+	if err := os.Rename(oldDir, newDir); err != nil {
+		return fmt.Errorf("failed to rename account directory: %v", err)
+	}
+
+	active := s.GetActiveAccount()
+	if strings.EqualFold(active, oldName) {
+		activeFile := filepath.Join(s.UserHome, ".gemini", "active_account.txt")
+		_ = os.WriteFile(activeFile, []byte(newName), 0644)
+	}
+
+	return nil
+}
+
+// DeleteAccount purges credentials and deletes account directory context.
+func (s *Store) DeleteAccount(name string) error {
+	name = strings.TrimSpace(name)
+	if name == "" {
+		return errors.New("account name cannot be empty")
+	}
+
+	_ = s.ResetAccount(name)
+
+	accDir := s.GetAccountDirectory(name)
+	if err := os.RemoveAll(accDir); err != nil {
+		return fmt.Errorf("failed to delete account directory: %v", err)
+	}
+
+	active := s.GetActiveAccount()
+	if strings.EqualFold(active, name) {
+		names := s.ListAccountNames()
+		for _, n := range names {
+			if !strings.EqualFold(n, name) {
+				_ = s.SetActiveAccount(n)
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
 // ListAccounts returns all registered accounts and their status.
 func (s *Store) ListAccounts() []AccountInfo {
 	known := s.ListAccountNames()
@@ -507,17 +564,17 @@ func (s *Store) GetAccountQuota(name string) (*QuotaSummary, error) {
 // RenderQuotaSummary builds terminal UI matching Antigravity Models & Quota layout.
 func RenderQuotaSummary(email string, summary *QuotaSummary) string {
 	if summary == nil || len(summary.Groups) == 0 {
-		return fmt.Sprintf("\033[31mNo quota details available for %s\033[0m\n", email)
+		return fmt.Sprintf("\033[31mNo quota details available for %s\033[0m\r\n", email)
 	}
 
 	var sb strings.Builder
-	sb.WriteString("\n└ \033[1;36mModels & Quota\033[0m\n\n")
-	sb.WriteString(fmt.Sprintf("  Account: \033[1;32m%s\033[0m\n", email))
+	sb.WriteString("\r\n└ \033[1;36mModels & Quota\033[0m\r\n\r\n")
+	sb.WriteString(fmt.Sprintf("  Account: \033[1;32m%s\033[0m\r\n", email))
 
 	for _, g := range summary.Groups {
-		sb.WriteString(fmt.Sprintf("\n\033[1;33m%s\033[0m\n", strings.ToUpper(g.DisplayName)))
+		sb.WriteString(fmt.Sprintf("\r\n\033[1;33m%s\033[0m\r\n", strings.ToUpper(g.DisplayName)))
 		if g.Description != "" {
-			sb.WriteString(fmt.Sprintf("  %s\n", g.Description))
+			sb.WriteString(fmt.Sprintf("  %s\r\n", g.Description))
 		}
 
 		for _, b := range g.Buckets {
@@ -541,8 +598,8 @@ func RenderQuotaSummary(email string, summary *QuotaSummary) string {
 				colorCode = "\033[33m" // Yellow
 			}
 
-			sb.WriteString(fmt.Sprintf("\n  %s\n", b.DisplayName))
-			sb.WriteString(fmt.Sprintf("    [%s%s\033[0m] %.2f%%\n", colorCode, bar, pct))
+			sb.WriteString(fmt.Sprintf("\r\n  %s\r\n", b.DisplayName))
+			sb.WriteString(fmt.Sprintf("    [%s%s\033[0m] %.2f%%\r\n", colorCode, bar, pct))
 
 			refreshMsg := "Quota available"
 			if b.ResetTime != "" {
@@ -561,12 +618,12 @@ func RenderQuotaSummary(email string, summary *QuotaSummary) string {
 					}
 				}
 			}
-			sb.WriteString(fmt.Sprintf("    %s\n", refreshMsg))
+			sb.WriteString(fmt.Sprintf("    %s\r\n", refreshMsg))
 		}
 	}
 
 	if summary.Description != "" {
-		sb.WriteString("\n  │" + summary.Description + "\n")
+		sb.WriteString("\r\n  │" + summary.Description + "\r\n")
 	}
 
 	return sb.String()

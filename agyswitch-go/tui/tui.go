@@ -148,6 +148,38 @@ func Run(s *store.Store, v *vault.Vault, l *launcher.Launcher, opts ...Options) 
 					return l.LaunchAccount(newAcc, []string{"login"})
 				}
 			}
+		case 'm', 'M': // Rename / Move Account
+			target := accs[selectedIndex].AccountName
+			_ = term.Restore(fd, oldState)
+			fmt.Printf("\r\n\033[36m[agyswitch]\033[0m Enter new name for '\033[33m%s\033[0m': ", target)
+			var newName string
+			fmt.Scanln(&newName)
+			newName = strings.TrimSpace(newName)
+			if newName != "" && newName != target {
+				if err := s.RenameAccount(target, newName); err != nil {
+					msg = fmt.Sprintf("\033[31mError renaming account: %v\033[0m", err)
+				} else {
+					accs = s.ListAccounts()
+					msg = fmt.Sprintf("\033[32mSuccessfully renamed '%s' -> '%s'.\033[0m", target, newName)
+				}
+			}
+		case 'd', 'D': // Delete Account Context
+			target := accs[selectedIndex].AccountName
+			_ = term.Restore(fd, oldState)
+			fmt.Printf("\r\n\033[31m[agyswitch]\033[0m Are you sure you want to delete '%s'? (y/N): ", target)
+			var confirm string
+			fmt.Scanln(&confirm)
+			if strings.EqualFold(strings.TrimSpace(confirm), "y") {
+				if err := s.DeleteAccount(target); err != nil {
+					msg = fmt.Sprintf("\033[31mError deleting account: %v\033[0m", err)
+				} else {
+					accs = s.ListAccounts()
+					if selectedIndex >= len(accs) && len(accs) > 0 {
+						selectedIndex = len(accs) - 1
+					}
+					msg = fmt.Sprintf("\033[33mDeleted account '%s' cleanly.\033[0m", target)
+				}
+			}
 		case 'x', 'X': // Reset Account Credentials
 			target := accs[selectedIndex].AccountName
 			if err := s.ResetAccount(target); err != nil {
@@ -278,7 +310,7 @@ func renderUI(s *store.Store, accs []store.AccountInfo, activeAcc string, select
 	if statusMsg != "" {
 		fmt.Printf(" %s\r\n", statusMsg)
 	}
-	fmt.Print(" \033[1m[↑/↓ j/k]\033[0m Nav · \033[1m[1-9]\033[0m Jump · \033[1;32m[Enter]\033[0m Switch · \033[1;36m[N]\033[0m New Acc · \033[1;36m[V]\033[0m Full Quota · \033[1;36m[L]\033[0m Launch · \033[1;35m[A]\033[0m Auto · \033[1;31m[Q/Esc]\033[0m Exit\r\n")
+	fmt.Print(" \033[1m[↑/↓ j/k]\033[0m Nav · \033[1m[1-9]\033[0m Jump · \033[1;32m[Enter]\033[0m Switch · \033[1;36m[N]\033[0m New · \033[1;33m[M]\033[0m Rename · \033[1;31m[D]\033[0m Delete · \033[1;36m[V]\033[0m Quota · \033[1;36m[L]\033[0m Launch · \033[1;35m[A]\033[0m Auto · \033[1;31m[Q/Esc]\033[0m Exit\r\n")
 }
 
 // PrintStatus prints the non-interactive status table.

@@ -76,6 +76,27 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Error launching agy login: %v\n", err)
 			os.Exit(1)
 		}
+	case "rename", "mv":
+		if len(args) < 3 {
+			fmt.Println("Usage: agyswitch rename <oldName> <newName>")
+			os.Exit(1)
+		}
+		if err := s.RenameAccount(args[1], args[2]); err != nil {
+			fmt.Fprintf(os.Stderr, "Error renaming account: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("\033[36m[agyswitch]\033[0m Successfully renamed account '\033[33m%s\033[0m' -> '\033[32m%s\033[0m'.\n", args[1], args[2])
+	case "delete", "rm":
+		if len(args) < 2 {
+			fmt.Println("Usage: agyswitch delete <accountName>")
+			os.Exit(1)
+		}
+		target := args[1]
+		if err := s.DeleteAccount(target); err != nil {
+			fmt.Fprintf(os.Stderr, "Error deleting account '%s': %v\n", target, err)
+			os.Exit(1)
+		}
+		fmt.Printf("\033[36m[agyswitch]\033[0m Successfully deleted account '\033[31m%s\033[0m'.\n", target)
 	case "reset":
 		target := s.GetActiveAccount()
 		if len(args) >= 2 {
