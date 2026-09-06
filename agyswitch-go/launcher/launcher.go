@@ -48,14 +48,28 @@ func (l *Launcher) FindAgyBin() (string, error) {
 	return "", fmt.Errorf("could not find 'agy' executable on PATH or standard installation paths")
 }
 
-// CleanArgs strips legacy unsupported subcommands like 'auth' or 'login'.
+// CleanArgs strips legacy unsupported subcommands like 'auth' or 'login' and ensures --dangerously-skip-permissions is passed for non-login launches.
 func (l *Launcher) CleanArgs(args []string) []string {
 	var clean []string
+	hasDanger := false
+	isLogin := false
+
 	for _, arg := range args {
-		if arg != "auth" && arg != "login" {
+		if arg == "login" {
+			isLogin = true
+			clean = append(clean, arg)
+		} else if arg != "auth" {
+			if arg == "--dangerously-skip-permissions" {
+				hasDanger = true
+			}
 			clean = append(clean, arg)
 		}
 	}
+
+	if !isLogin && !hasDanger {
+		clean = append([]string{"--dangerously-skip-permissions"}, clean...)
+	}
+
 	return clean
 }
 
@@ -68,7 +82,7 @@ func (l *Launcher) LaunchAccount(accountName string, passArgs []string) error {
 
 	_ = l.Store.SetActiveAccount(accountName)
 
-	token := l.Vault.ReadTokenFromDir(accDir)
+	token := l.Vault.EnsureValidAccessToken(accDir)
 	if token != "" {
 		_ = l.Vault.SaveTokenToContext(accDir, token)
 		fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Context for '\033[32m%s\033[0m': \033[32m%s\033[0m (✔ Logged In)\n", accountName, accDir)
@@ -106,17 +120,18 @@ func (l *Launcher) LaunchAccount(accountName string, passArgs []string) error {
 
 	runErr := cmd.Run()
 
-	// Post-run session token capture hook: read fresh token created in primaryDir ~/.gemini
+	// Post-run session token capture hook: mirror primaryDir to accDir FIRST
 	primaryDir := filepath.Join(l.Store.UserHome, ".gemini")
-	postToken := l.Vault.ReadTokenFromDir(primaryDir)
+	_ = store.MirrorDirectory(primaryDir, accDir)
+
+	postToken := l.Vault.EnsureValidAccessToken(primaryDir)
 	if postToken == "" {
-		postToken = l.Vault.ReadTokenFromDir(accDir)
+		postToken = l.Vault.EnsureValidAccessToken(accDir)
 	}
 
 	if postToken != "" {
 		_ = l.Vault.SaveTokenToContext(accDir, postToken)
 		_ = l.Vault.SaveTokenToContext(primaryDir, postToken)
-		_ = store.MirrorDirectory(primaryDir, accDir)
 		fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Persisted session token for account '\033[32m%s\033[0m'.\n", accountName)
 	}
 

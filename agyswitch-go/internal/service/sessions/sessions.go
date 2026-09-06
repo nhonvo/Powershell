@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"agyswitch/internal/model"
 )
@@ -37,16 +38,93 @@ func (m *Manager) DiscoverSessions() ([]model.SessionInfo, error) {
 			info, err := os.Stat(logPath)
 			if err == nil {
 				stepCount := countLines(logPath)
+				estimatedCost := CalculateSessionCost(stepCount)
+				title, wsDir := parseSessionMetadata(logPath)
 				results = append(results, model.SessionInfo{
 					ConversationID: e.Name(),
+					Title:          title,
+					WorkspaceDir:   wsDir,
 					LastActive:     info.ModTime(),
 					StepCount:      stepCount,
+					EstimatedCost:  estimatedCost,
 					LogPath:        logPath,
 				})
 			}
 		}
 	}
 	return results, nil
+}
+
+func parseSessionMetadata(logPath string) (title string, workspaceDir string) {
+	f, err := os.Open(logPath)
+	if err != nil {
+		return "Untitled Session", "Default Workspace"
+	}
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+	buf := make([]byte, 0, 64*1024)
+	scanner.Buffer(buf, 1024*1024)
+
+	for scanner.Scan() {
+		line := scanner.Bytes()
+
+		if workspaceDir == "" {
+			if idx := strings.Index(string(line), `"Cwd"`); idx != -1 {
+				sub := string(line)[idx:]
+				parts := strings.SplitN(sub, `"`, 5)
+				if len(parts) >= 4 {
+					workspaceDir = strings.Trim(parts[3], `\"`)
+				}
+			}
+		}
+
+		if title == "" {
+			if strings.Contains(string(line), `"USER_INPUT"`) {
+				var rec struct {
+					Content string `json:"content"`
+				}
+				if json.Unmarshal(line, &rec) == nil && rec.Content != "" {
+					clean := rec.Content
+					clean = strings.ReplaceAll(clean, "<USER_REQUEST>", "")
+					clean = strings.ReplaceAll(clean, "</USER_REQUEST>", "")
+					clean = strings.TrimSpace(clean)
+					lines := strings.Split(clean, "\n")
+					for _, l := range lines {
+						l = strings.TrimSpace(l)
+						if l != "" && !strings.HasPrefix(l, "<") && !strings.HasPrefix(l, "The current") {
+							title = l
+							break
+						}
+					}
+				}
+			}
+		}
+
+		if title != "" && workspaceDir != "" {
+			break
+		}
+	}
+
+	if title == "" {
+		title = "Untitled Agent Task"
+	}
+	if workspaceDir == "" {
+		workspaceDir = "Default Workspace"
+	}
+
+	if len(title) > 60 {
+		title = title[:57] + "..."
+	}
+
+	return title, workspaceDir
+}
+
+func CalculateSessionCost(stepCount int) float64 {
+	if stepCount <= 0 {
+		return 0.0
+	}
+	return float64(stepCount*400) / 1000000.0 * 1.25
 }
 
 func countLines(path string) int {

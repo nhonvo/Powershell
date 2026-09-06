@@ -308,17 +308,28 @@ func (v *Vault) EnsureValidAccessToken(dir string) string {
 
 	if rf != "" {
 		if newTok, err := RefreshOAuthToken(rf); err == nil && newTok != "" {
-			aTokPath := filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token")
-			if data, err := os.ReadFile(aTokPath); err == nil {
-				var parsed map[string]interface{}
-				if json.Unmarshal(data, &parsed) == nil {
-					if tokMap, ok := parsed["token"].(map[string]interface{}); ok {
-						tokMap["access_token"] = newTok
+			tokFiles := []string{
+				filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token"),
+				filepath.Join(dir, "antigravity-oauth-token"),
+			}
+			for _, aTokPath := range tokFiles {
+				if data, err := os.ReadFile(aTokPath); err == nil {
+					var parsed map[string]interface{}
+					if json.Unmarshal(data, &parsed) == nil {
+						if tokMap, ok := parsed["token"].(map[string]interface{}); ok {
+							tokMap["access_token"] = newTok
+						} else {
+							parsed["access_token"] = newTok
+						}
 						if updated, err := json.MarshalIndent(parsed, "", "  "); err == nil {
 							_ = os.WriteFile(aTokPath, updated, 0600)
 						}
 					}
 				}
+			}
+			encTok, err := v.Encrypt(newTok)
+			if err == nil {
+				_ = os.WriteFile(filepath.Join(dir, "keyring_token.txt"), []byte(encTok), 0600)
 			}
 			return newTok
 		}
@@ -327,16 +338,59 @@ func (v *Vault) EnsureValidAccessToken(dir string) string {
 	return tok
 }
 
-// SaveTokenToContext saves token JSON and encrypted keyring entry into directory context.
-func (v *Vault) SaveTokenToContext(dir string, token string) error {
-	tokFile := filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token")
-	_ = os.MkdirAll(filepath.Dir(tokFile), 0755)
-	jsonTok := fmt.Sprintf(`{"token":{"access_token":"%s"}}`, token)
-	_ = os.WriteFile(tokFile, []byte(jsonTok), 0600)
+// SaveTokenToContext saves token JSON and encrypted keyring entry into directory context without stripping existing OAuth fields like refresh_token.
+func (v *Vault) SaveTokenToContext(dir string, tokenInput string) error {
+	tokenInput = strings.TrimSpace(tokenInput)
+	if tokenInput == "" {
+		return errors.New("empty token")
+	}
 
-	encTok, err := v.Encrypt(token)
-	if err == nil {
-		_ = os.WriteFile(filepath.Join(dir, "keyring_token.txt"), []byte(encTok), 0600)
+	cleanAccessToken := ExtractCleanAccessToken(tokenInput)
+
+	tokFiles := []string{
+		filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token"),
+		filepath.Join(dir, "antigravity-oauth-token"),
+	}
+
+	isFullJSON := strings.HasPrefix(tokenInput, "{") && strings.HasSuffix(tokenInput, "}")
+
+	for _, tokFile := range tokFiles {
+		_ = os.MkdirAll(filepath.Dir(tokFile), 0755)
+
+		if isFullJSON {
+			var parsed map[string]interface{}
+			if json.Unmarshal([]byte(tokenInput), &parsed) == nil {
+				_ = os.WriteFile(tokFile, []byte(tokenInput), 0600)
+				continue
+			}
+		}
+
+		if data, err := os.ReadFile(tokFile); err == nil && len(data) > 0 {
+			var parsed map[string]interface{}
+			if json.Unmarshal(data, &parsed) == nil {
+				if tokMap, ok := parsed["token"].(map[string]interface{}); ok {
+					tokMap["access_token"] = cleanAccessToken
+				} else {
+					parsed["access_token"] = cleanAccessToken
+				}
+				if updated, err := json.MarshalIndent(parsed, "", "  "); err == nil {
+					_ = os.WriteFile(tokFile, updated, 0600)
+					continue
+				}
+			}
+		}
+
+		if tokFile == tokFiles[0] {
+			jsonTok := fmt.Sprintf(`{"token":{"access_token":"%s"}}`, cleanAccessToken)
+			_ = os.WriteFile(tokFile, []byte(jsonTok), 0600)
+		}
+	}
+
+	if cleanAccessToken != "" {
+		encTok, err := v.Encrypt(cleanAccessToken)
+		if err == nil {
+			_ = os.WriteFile(filepath.Join(dir, "keyring_token.txt"), []byte(encTok), 0600)
+		}
 	}
 	return nil
 }

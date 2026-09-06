@@ -75,20 +75,12 @@ func (s *Store) SetActiveAccount(accountName string) error {
 		currentActiveDir := s.GetAccountDirectory(currentActive)
 		_ = os.MkdirAll(currentActiveDir, 0755)
 
+		_ = MirrorDirectory(primaryDir, currentActiveDir)
+
 		curToken := s.Vault.ReadTokenFromDir(primaryDir)
 		if curToken != "" {
-			tokenFile := filepath.Join(currentActiveDir, "antigravity-cli", "antigravity-oauth-token")
-			_ = os.MkdirAll(filepath.Dir(tokenFile), 0755)
-			jsonToken := fmt.Sprintf(`{"token":{"access_token":"%s"}}`, curToken)
-			_ = os.WriteFile(tokenFile, []byte(jsonToken), 0600)
-
-			encToken, err := s.Vault.Encrypt(curToken)
-			if err == nil {
-				_ = os.WriteFile(filepath.Join(currentActiveDir, "keyring_token.txt"), []byte(encToken), 0600)
-			}
+			_ = s.Vault.SaveTokenToContext(currentActiveDir, curToken)
 		}
-
-		_ = MirrorDirectory(primaryDir, currentActiveDir)
 	}
 
 	targetDir := s.GetAccountDirectory(acc)
@@ -96,20 +88,12 @@ func (s *Store) SetActiveAccount(accountName string) error {
 		_ = os.MkdirAll(targetDir, 0755)
 	}
 
+	_ = MirrorDirectory(targetDir, primaryDir)
+
 	targetToken := s.Vault.ReadTokenFromDir(targetDir)
 	if targetToken != "" {
-		primaryTokenFile := filepath.Join(primaryDir, "antigravity-cli", "antigravity-oauth-token")
-		_ = os.MkdirAll(filepath.Dir(primaryTokenFile), 0755)
-		jsonToken := fmt.Sprintf(`{"token":{"access_token":"%s"}}`, targetToken)
-		_ = os.WriteFile(primaryTokenFile, []byte(jsonToken), 0600)
-
-		encToken, err := s.Vault.Encrypt(targetToken)
-		if err == nil {
-			_ = os.WriteFile(filepath.Join(primaryDir, "keyring_token.txt"), []byte(encToken), 0600)
-		}
+		_ = s.Vault.SaveTokenToContext(primaryDir, targetToken)
 	}
-
-	_ = MirrorDirectory(targetDir, primaryDir)
 
 	activeFile := filepath.Join(primaryDir, "active_account.txt")
 	_ = os.WriteFile(activeFile, []byte(acc), 0644)
@@ -126,6 +110,12 @@ func MirrorDirectory(src, dst string) error {
 		}
 		relPath, err := filepath.Rel(src, path)
 		if err != nil || relPath == "." {
+			return nil
+		}
+		if strings.HasPrefix(relPath, "brain") || strings.HasPrefix(relPath, "antigravity-cli/log") {
+			if info.IsDir() {
+				return filepath.SkipDir
+			}
 			return nil
 		}
 		dstPath := filepath.Join(dst, relPath)
@@ -319,9 +309,6 @@ func (s *Store) DeleteAccount(name string) error {
 
 	_ = s.ResetAccount(name)
 
-	accDir := s.GetAccountDirectory(name)
-	_ = os.RemoveAll(accDir)
-
 	names := s.LoadAccountRegistry()
 	var updated []string
 	for _, n := range names {
@@ -335,8 +322,14 @@ func (s *Store) DeleteAccount(name string) error {
 	if strings.EqualFold(active, name) {
 		if len(updated) > 0 {
 			_ = s.SetActiveAccount(updated[0])
+		} else {
+			activeFile := filepath.Join(s.UserHome, ".gemini", "active_account.txt")
+			_ = os.Remove(activeFile)
 		}
 	}
+
+	accDir := s.GetAccountDirectory(name)
+	_ = os.RemoveAll(accDir)
 
 	return nil
 }
@@ -380,16 +373,29 @@ func ExtractGroupQuotas(summary *model.QuotaSummary) (gPct float64, cPct float64
 	for _, g := range summary.Groups {
 		name := strings.ToLower(g.DisplayName)
 		for _, b := range g.Buckets {
-			if b.Window == "weekly" || strings.Contains(b.BucketID, "weekly") {
-				if strings.Contains(name, "gemini") {
-					gPct = b.RemainingFraction * 100.0
-				} else if strings.Contains(name, "claude") || strings.Contains(name, "gpt") || strings.Contains(name, "3p") {
-					cPct = b.RemainingFraction * 100.0
+			pct := b.RemainingFraction * 100.0
+			if strings.Contains(name, "gemini") {
+				if gPct < 0 || pct < gPct {
+					gPct = pct
+				}
+			} else if strings.Contains(name, "claude") || strings.Contains(name, "gpt") || strings.Contains(name, "3p") {
+				if cPct < 0 || pct < cPct {
+					cPct = pct
 				}
 			}
 		}
 	}
 	return gPct, cPct
+}
+
+func (s *Store) PurgeQuotaCache(accName string) {
+	_ = os.Remove(s.GetQuotaCachePath(accName))
+}
+
+func (s *Store) PurgeAllQuotaCaches() {
+	for _, name := range s.ListAccountNames() {
+		s.PurgeQuotaCache(name)
+	}
 }
 
 func (s *Store) ListAccounts() []model.AccountInfo {
@@ -436,10 +442,78 @@ func (s *Store) ListAccounts() []model.AccountInfo {
 				ClaudeQuotaPct: cPct,
 				QuotaSummary:   summary,
 			}
+			s.SaveQuotaCache(accName, result[idx])
 		}(i, name)
 	}
 
 	wg.Wait()
+	return result
+}
+
+func (s *Store) GetQuotaCachePath(accName string) string {
+	return filepath.Join(s.GetAccountDirectory(accName), "quota_cache.json")
+}
+
+func (s *Store) SaveQuotaCache(accName string, info model.AccountInfo) {
+	cachePath := s.GetQuotaCachePath(accName)
+	if data, err := json.Marshal(info); err == nil {
+		_ = os.WriteFile(cachePath, data, 0644)
+	}
+}
+
+func (s *Store) LoadQuotaCache(accName string) (*model.AccountInfo, bool) {
+	cachePath := s.GetQuotaCachePath(accName)
+	data, err := os.ReadFile(cachePath)
+	if err != nil {
+		return nil, false
+	}
+	var info model.AccountInfo
+	if err := json.Unmarshal(data, &info); err == nil {
+		return &info, true
+	}
+	return nil, false
+}
+
+func (s *Store) ListAccountsFast() []model.AccountInfo {
+	known := s.ListAccountNames()
+	active := s.GetActiveAccount()
+
+	result := make([]model.AccountInfo, len(known))
+	for i, name := range known {
+		accDir := s.GetAccountDirectory(name)
+		tok := s.Vault.ReadTokenFromDir(accDir)
+		email := fmt.Sprintf("%s@gmail.com", name)
+		sig := s.Vault.GetShortSignature(tok)
+		isLoggedIn := tok != ""
+
+		var summary *model.QuotaSummary
+		var gPct, cPct float64 = -1, -1
+		quotaStatus := "✔ Quota OK"
+		if !isLoggedIn {
+			quotaStatus = "✘ Logged Out"
+		}
+
+		if cached, ok := s.LoadQuotaCache(name); ok && cached != nil {
+			summary = cached.QuotaSummary
+			gPct = cached.GeminiQuotaPct
+			cPct = cached.ClaudeQuotaPct
+			if cached.QuotaStatus != "" {
+				quotaStatus = cached.QuotaStatus
+			}
+		}
+
+		result[i] = model.AccountInfo{
+			AccountName:    name,
+			Email:          email,
+			IsActive:       strings.EqualFold(name, active),
+			TokenSig:       sig,
+			IsLoggedIn:     isLoggedIn,
+			QuotaStatus:    quotaStatus,
+			GeminiQuotaPct: gPct,
+			ClaudeQuotaPct: cPct,
+			QuotaSummary:   summary,
+		}
+	}
 	return result
 }
 
@@ -527,6 +601,69 @@ func (s *Store) GetAccountQuota(name string) (*model.QuotaSummary, error) {
 	}
 
 	return FetchUserQuotaSummary(tok)
+}
+
+func ExtractDetailedModelBuckets(summary *model.QuotaSummary) []model.ModelBucketDetail {
+	if summary == nil {
+		return nil
+	}
+	var details []model.ModelBucketDetail
+	now := time.Now()
+
+	for _, g := range summary.Groups {
+		grpName := g.DisplayName
+		for _, b := range g.Buckets {
+			pct := b.RemainingFraction * 100.0
+			win := b.Window
+			if win == "" {
+				if strings.Contains(b.BucketID, "weekly") {
+					win = "weekly"
+				} else if strings.Contains(b.BucketID, "daily") {
+					win = "daily"
+				} else {
+					win = "standard"
+				}
+			}
+
+			resetMsg := "Quota Available"
+			var resetTime time.Time
+			var until time.Duration
+
+			if b.ResetTime != "" {
+				if t, err := time.Parse(time.RFC3339, b.ResetTime); err == nil {
+					resetTime = t
+					if t.After(now) {
+						until = t.Sub(now)
+						hours := int(until.Hours())
+						mins := int(until.Minutes()) % 60
+						if hours >= 24 {
+							days := hours / 24
+							h := hours % 24
+							resetMsg = fmt.Sprintf("Refreshes in %dd %dh", days, h)
+						} else if hours > 0 {
+							resetMsg = fmt.Sprintf("Refreshes in %dh %dm", hours, mins)
+						} else {
+							secs := int(until.Seconds()) % 60
+							resetMsg = fmt.Sprintf("Refreshes in %dm %ds", mins, secs)
+						}
+					}
+				}
+			}
+
+			details = append(details, model.ModelBucketDetail{
+				BucketID:         b.BucketID,
+				ModelDisplayName: b.DisplayName,
+				QuotaGroup:       grpName,
+				WindowType:       win,
+				RemainingPct:     pct,
+				ResetTime:        resetTime,
+				TimeUntilReset:   until,
+				ResetMessage:     resetMsg,
+				IsThrottled:      pct <= 0.0,
+			})
+		}
+	}
+	return details
 }
 
 func RenderQuotaSummary(email string, summary *model.QuotaSummary) string {

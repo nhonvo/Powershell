@@ -15,7 +15,7 @@ func TestLauncher_CleanArgs(t *testing.T) {
 	s := store.NewStore("/tmp", v)
 	l := launcher.NewLauncher(s, v)
 
-	raw := []string{"auth", "login", "--dangerously-skip-permissions", "-p", "hello"}
+	raw := []string{"auth", "--dangerously-skip-permissions", "-p", "hello"}
 	cleaned := l.CleanArgs(raw)
 
 	if len(cleaned) != 3 {
@@ -23,6 +23,12 @@ func TestLauncher_CleanArgs(t *testing.T) {
 	}
 	if cleaned[0] != "--dangerously-skip-permissions" || cleaned[1] != "-p" || cleaned[2] != "hello" {
 		t.Errorf("unexpected cleaned args: %v", cleaned)
+	}
+
+	loginRaw := []string{"login"}
+	loginCleaned := l.CleanArgs(loginRaw)
+	if len(loginCleaned) != 1 || loginCleaned[0] != "login" {
+		t.Errorf("unexpected login cleaned args: %v", loginCleaned)
 	}
 }
 

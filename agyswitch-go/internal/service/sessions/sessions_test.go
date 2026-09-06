@@ -47,3 +47,23 @@ func TestSessions_DiscoverAndParse(t *testing.T) {
 		t.Fatalf("expected 2 steps, got %d", len(steps))
 	}
 }
+
+func TestCalculateSessionCost(t *testing.T) {
+	tests := []struct {
+		steps    int
+		expected float64
+	}{
+		{steps: 0, expected: 0.0},
+		{steps: -5, expected: 0.0},
+		{steps: 2000, expected: float64(2000*400) / 1000000.0 * 1.25}, // 1.0
+		{steps: 100, expected: float64(100*400) / 1000000.0 * 1.25},   // 0.05
+	}
+
+	for _, tt := range tests {
+		got := sessions.CalculateSessionCost(tt.steps)
+		if got != tt.expected {
+			t.Errorf("CalculateSessionCost(%d) = %f; want %f", tt.steps, got, tt.expected)
+		}
+	}
+}
+

@@ -56,7 +56,32 @@ type RuleInfo struct {
 // SessionInfo represents a conversation session log transcript summary.
 type SessionInfo struct {
 	ConversationID string    `json:"conversationId"`
+	Title          string    `json:"title"`
+	WorkspaceDir   string    `json:"workspaceDir"`
 	LastActive     time.Time `json:"lastActive"`
 	StepCount      int       `json:"stepCount"`
+	EstimatedCost  float64   `json:"estimatedCost"`
 	LogPath        string    `json:"logPath"`
+}
+
+// ModelBucketDetail extends QuotaBucket with precise reset calculations.
+type ModelBucketDetail struct {
+	BucketID         string        `json:"bucketId"`
+	ModelDisplayName string        `json:"modelDisplayName"`
+	QuotaGroup       string        `json:"quotaGroup"`
+	WindowType       string        `json:"windowType"`
+	RemainingPct     float64       `json:"remainingPct"`
+	ResetTime        time.Time     `json:"resetTime"`
+	TimeUntilReset   time.Duration `json:"timeUntilReset"`
+	ResetMessage     string        `json:"resetMessage"`
+	IsThrottled      bool          `json:"isThrottled"`
+}
+
+// MCPServerStatus represents health ping status of a Model Context Protocol server.
+type MCPServerStatus struct {
+	ServerName string `json:"serverName"`
+	Command    string `json:"command"`
+	IsRunning  bool   `json:"isRunning"`
+	LatencyMs  int64  `json:"latencyMs"`
+	LastError  string `json:"lastError,omitempty"`
 }

@@ -3,8 +3,11 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
+	"agyswitch/internal/service/seeder"
+	"agyswitch/internal/service/server"
 	"agyswitch/internal/service/store"
 	"agyswitch/internal/service/vault"
 	"agyswitch/internal/view"
@@ -110,16 +113,51 @@ func main() {
 			os.Exit(1)
 		}
 		fmt.Printf("\033[36m[agyswitch]\033[0m Successfully deleted account '\033[31m%s\033[0m'.\n", target)
-	case "reset":
+	case "init":
+		sd := seeder.NewSeeder(userHome, s)
+		if err := sd.EnsureSeedTemplate(); err != nil {
+			fmt.Fprintf(os.Stderr, "Error initializing seed template: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("\033[36m[agyswitch]\033[0m Successfully initialized master seed template at ~/.gemini_template\n")
+	case "seed":
 		target := s.GetActiveAccount()
 		if len(args) >= 2 {
 			target = args[1]
 		}
-		if err := s.ResetAccount(target); err != nil {
+		sd := seeder.NewSeeder(userHome, s)
+		if err := sd.SeedAccount(target); err != nil {
+			fmt.Fprintf(os.Stderr, "Error seeding account '%s': %v\n", target, err)
+			os.Exit(1)
+		}
+		fmt.Printf("\033[36m[agyswitch]\033[0m Successfully seeded account context '\033[32m%s\033[0m' from ~/.gemini_template\n", target)
+	case "serve", "--serve":
+		port := 8080
+		if len(args) >= 2 {
+			if p, err := strconv.Atoi(args[1]); err == nil && p > 0 {
+				port = p
+			}
+		}
+		srv := server.NewServer(s, port)
+		if err := srv.Start(); err != nil {
+			fmt.Fprintf(os.Stderr, "Error running web sidecar: %v\n", err)
+			os.Exit(1)
+		}
+	case "reset":
+		target := s.GetActiveAccount()
+		mode := "normal"
+		if len(args) >= 2 {
+			target = args[1]
+		}
+		if len(args) >= 3 {
+			mode = strings.TrimPrefix(args[2], "--")
+		}
+		sd := seeder.NewSeeder(userHome, s)
+		if err := sd.ResetAccountEx(target, mode); err != nil {
 			fmt.Fprintf(os.Stderr, "Error resetting account '%s': %v\n", target, err)
 			os.Exit(1)
 		}
-		fmt.Printf("\033[36m[agyswitch]\033[0m Credentials and session token for account '\033[33m%s\033[0m' reset cleanly.\n", target)
+		fmt.Printf("\033[36m[agyswitch]\033[0m Account '\033[33m%s\033[0m' reset cleanly (mode: %s).\n", target, mode)
 	case "launch-quota", "auto-launch":
 		bestAcc := s.SelectBestQuotaAccount()
 		fmt.Printf("\033[36m[agyswitch]\033[0m Quota selector auto-selected account '\033[32m%s\033[0m'\n", bestAcc)

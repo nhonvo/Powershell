@@ -12,6 +12,7 @@ import (
 	"agyswitch/internal/service/rules"
 	"agyswitch/internal/service/sessions"
 	"agyswitch/internal/service/skills"
+	"agyswitch/internal/service/seeder"
 	"agyswitch/internal/service/store"
 )
 
@@ -20,6 +21,7 @@ type App struct {
 	SkillsManager  *skills.Manager
 	RulesManager   *rules.Manager
 	SessionManager *sessions.Manager
+	Seeder         *seeder.Seeder
 	Launcher       func(accountName string, args []string) error
 
 	ActiveTab     int // 0 = Vault, 1 = Skills, 2 = Rules, 3 = Sessions
@@ -34,6 +36,7 @@ func NewApp(s *store.Store, launcher func(string, []string) error) *App {
 		SkillsManager:  skills.NewManager(userHome),
 		RulesManager:   rules.NewManager(userHome),
 		SessionManager: sessions.NewManager(userHome),
+		Seeder:         seeder.NewSeeder(userHome, s),
 		Launcher:       launcher,
 		ActiveTab:      0,
 		SelectedIndex:  0,
@@ -46,9 +49,15 @@ func (a *App) Run() error {
 	if err != nil {
 		return a.runNonInteractive()
 	}
-	defer func() { _ = term.Restore(fd, oldState) }()
 
-	accs := a.Store.ListAccounts()
+	// Enter Alternate Screen Buffer & hide terminal cursor for clean in-place TUI rendering
+	fmt.Print("\033[?1049h\033[?25l")
+	defer func() {
+		fmt.Print("\033[?25h\033[?1049l")
+		_ = term.Restore(fd, oldState)
+	}()
+
+	accs := a.Store.ListAccountsFast()
 	activeAcc := a.Store.GetActiveAccount()
 	for i, acc := range accs {
 		if strings.EqualFold(acc.AccountName, activeAcc) {
@@ -58,6 +67,13 @@ func (a *App) Run() error {
 	}
 
 	for {
+		if a.SelectedIndex >= len(accs) && len(accs) > 0 {
+			a.SelectedIndex = len(accs) - 1
+		}
+		if a.SelectedIndex < 0 {
+			a.SelectedIndex = 0
+		}
+
 		a.Render(accs)
 		a.StatusMsg = ""
 
@@ -77,7 +93,9 @@ func (a *App) Run() error {
 					}
 					continue
 				case 'B': // Down
-					a.SelectedIndex++
+					if a.SelectedIndex < len(accs)-1 {
+						a.SelectedIndex++
+					}
 					continue
 				case 'C': // Right Tab
 					a.ActiveTab = (a.ActiveTab + 1) % 4
@@ -108,20 +126,95 @@ func (a *App) Run() error {
 		case '4':
 			a.ActiveTab = 3
 			a.SelectedIndex = 0
-		case 'k', 'K':
+		case 'k', 'K', 'u', 'U':
 			if a.SelectedIndex > 0 {
 				a.SelectedIndex--
 			}
 		case 'j', 'J':
-			a.SelectedIndex++
-		case '\r', '\n': // Enter key (Switch active context)
+			if a.SelectedIndex < len(accs)-1 {
+				a.SelectedIndex++
+			}
+		case '\r', '\n', 'e', 'E': // Enter / e key (Switch active context)
 			if a.ActiveTab == 0 && a.SelectedIndex < len(accs) {
 				target := accs[a.SelectedIndex].AccountName
 				if err := a.Store.SetActiveAccount(target); err != nil {
 					a.StatusMsg = fmt.Sprintf("\033[31mError switching account: %v\033[0m", err)
 				} else {
-					accs = a.Store.ListAccounts()
+					accs = a.Store.ListAccountsFast()
 					a.StatusMsg = fmt.Sprintf("\033[32mSwitched active context to '%s'\033[0m", target)
+				}
+			}
+		case 'v', 'V': // View detail modal
+			if a.ActiveTab == 0 && a.SelectedIndex < len(accs) {
+				sel := accs[a.SelectedIndex]
+				fmt.Print("\033[H\033[2J")
+				fmt.Printf("\r\n📊 \033[1;36mDetailed Model Quota Breakdown (%s):\033[0m\r\n\r\n", sel.AccountName)
+				if sel.QuotaSummary != nil {
+					details := store.ExtractDetailedModelBuckets(sel.QuotaSummary)
+					for _, d := range details {
+						fmt.Printf("  • \033[1m%-25s\033[0m [%-8s] Remaining: \033[1;32m%.1f%%\033[0m · %s\r\n",
+							d.ModelDisplayName, d.WindowType, d.RemainingPct, d.ResetMessage)
+					}
+				} else {
+					fmt.Print("  \033[33mNo detailed quota payload available.\033[0m\r\n")
+				}
+				fmt.Print("\r\n \033[1mPress any key to return...\033[0m")
+				var dummy [1]byte
+				_, _ = os.Stdin.Read(dummy[:])
+			} else if a.ActiveTab == 1 {
+				skillsList, _ := a.SkillsManager.DiscoverSkills("")
+				if a.SelectedIndex < len(skillsList) {
+					sk := skillsList[a.SelectedIndex]
+					fmt.Print("\033[H\033[2J")
+					fmt.Printf("\r\n🧩 \033[1;36mSkill Inspector: %s\033[0m\r\n", sk.Name)
+					fmt.Printf(" Path: %s\r\n Scope: %v\r\n Description: %s\r\n\r\n", sk.Path, sk.IsGlobal, sk.Description)
+					fmt.Print(" \033[1mPress any key to return...\033[0m")
+					var dummy [1]byte
+					_, _ = os.Stdin.Read(dummy[:])
+				}
+			} else if a.ActiveTab == 2 {
+				rulesList, _ := a.RulesManager.DiscoverRules("")
+				if a.SelectedIndex < len(rulesList) {
+					rl := rulesList[a.SelectedIndex]
+					fmt.Print("\033[H\033[2J")
+					fmt.Printf("\r\n📜 \033[1;36mRule File Inspector: %s\033[0m\r\n", rl.Name)
+					fmt.Printf(" Path: %s\r\n Scope: %v\r\n\r\n", rl.Path, rl.IsGlobal)
+					if data, err := os.ReadFile(rl.Path); err == nil {
+						fmt.Print("\033[33m--- Rule Content Preview ---\033[0m\r\n")
+						lines := strings.Split(string(data), "\n")
+						if len(lines) > 20 {
+							lines = lines[:20]
+						}
+						for _, l := range lines {
+							fmt.Printf(" %s\r\n", l)
+						}
+					}
+					fmt.Print("\r\n \033[1mPress any key to return...\033[0m")
+					var dummy [1]byte
+					_, _ = os.Stdin.Read(dummy[:])
+				}
+			} else if a.ActiveTab == 3 {
+				sessionsList, _ := a.SessionManager.DiscoverSessions()
+				if a.SelectedIndex < len(sessionsList) {
+					s := sessionsList[a.SelectedIndex]
+					fmt.Print("\033[H\033[2J")
+					fmt.Printf("\r\n📊 \033[1;36mSession Trajectory Inspector (%s):\033[0m\r\n\r\n", s.ConversationID)
+					fmt.Printf(" Title:     \033[1;37m%s\033[0m\r\n Workspace: \033[35m%s\033[0m\r\n Steps:     \033[1;33m%d\033[0m · Est. Cost: \033[1;32m$%0.4f\033[0m\r\n Log Path:  \033[36m%s\033[0m\r\n\r\n",
+						s.Title, s.WorkspaceDir, s.StepCount, s.EstimatedCost, s.LogPath)
+					steps, err := sessions.ParseTranscriptSteps(s.LogPath)
+					if err == nil && len(steps) > 0 {
+						fmt.Print(" \033[1;33mRecent Step Trajectory History:\033[0m\r\n")
+						start := 0
+						if len(steps) > 12 {
+							start = len(steps) - 12
+						}
+						for _, st := range steps[start:] {
+							fmt.Printf("  • Step %-3d: Type: \033[1m%-18s\033[0m Status: \033[32m%s\033[0m\r\n", st.StepIndex, st.Type, st.Status)
+						}
+					}
+					fmt.Print("\r\n \033[1mPress any key to return...\033[0m")
+					var dummy [1]byte
+					_, _ = os.Stdin.Read(dummy[:])
 				}
 			}
 		case 's', 'S': // Sync skills across accounts
@@ -141,19 +234,28 @@ func (a *App) Run() error {
 		case 'l', 'L': // Launch agy
 			if a.ActiveTab == 0 && a.SelectedIndex < len(accs) {
 				target := accs[a.SelectedIndex].AccountName
+				fmt.Print("\033[?25h\033[?1049l")
 				_ = term.Restore(fd, oldState)
 				fmt.Printf("\r\n\033[36m[agyswitch]\033[0m Launching 'agy' for account '\033[32m%s\033[0m'...\r\n", target)
 				return a.Launcher(target, nil)
 			}
+		case 'r', 'R': // Probe live quotas on-demand
+			if a.ActiveTab == 0 {
+				a.StatusMsg = "\033[36mProbing live Google CloudCode quotas...\033[0m"
+				accs = a.Store.ListAccounts()
+				a.StatusMsg = "\033[32mSuccessfully updated live quotas.\033[0m"
+			}
 		case 'a', 'A': // Auto-select best quota
 			if a.ActiveTab == 0 {
 				bestAcc := a.Store.SelectBestQuotaAccount()
+				fmt.Print("\033[?25h\033[?1049l")
 				_ = term.Restore(fd, oldState)
 				fmt.Printf("\r\n\033[36m[agyswitch]\033[0m Auto-selected account '\033[32m%s\033[0m'...\r\n", bestAcc)
 				return a.Launcher(bestAcc, nil)
 			}
-		case 'n', 'N': // New Account
+		case 'n', 'N': // New Item (Account in Tab 0, Rule in Tab 2)
 			if a.ActiveTab == 0 {
+				fmt.Print("\033[?25h\033[?1049l")
 				_ = term.Restore(fd, oldState)
 				fmt.Print("\r\n\033[36m[agyswitch]\033[0m Enter new account name: ")
 				var newAcc string
@@ -165,10 +267,27 @@ func (a *App) Run() error {
 						return a.Launcher(newAcc, []string{"login"})
 					}
 				}
+				oldState, _ = term.MakeRaw(fd)
+				fmt.Print("\033[?1049h\033[?25l")
+			} else if a.ActiveTab == 2 {
+				fmt.Print("\033[?25h\033[?1049l")
+				_ = term.Restore(fd, oldState)
+				fmt.Print("\r\n\033[36m[agyswitch]\033[0m Enter new rule file name (e.g. STRICT_CODING.md): ")
+				var ruleName string
+				fmt.Scanln(&ruleName)
+				ruleName = strings.TrimSpace(ruleName)
+				if ruleName != "" {
+					if err := a.RulesManager.CreateRule(ruleName, ""); err == nil {
+						a.StatusMsg = fmt.Sprintf("\033[32mCreated new rule '%s' in ~/.gemini/config/rules/\033[0m", ruleName)
+					}
+				}
+				oldState, _ = term.MakeRaw(fd)
+				fmt.Print("\033[?1049h\033[?25l")
 			}
 		case 'm', 'M': // Rename Account
 			if a.ActiveTab == 0 && a.SelectedIndex < len(accs) {
 				target := accs[a.SelectedIndex].AccountName
+				fmt.Print("\033[?25h\033[?1049l")
 				_ = term.Restore(fd, oldState)
 				fmt.Printf("\r\n\033[36m[agyswitch]\033[0m Enter new name for '\033[33m%s\033[0m': ", target)
 				var newName string
@@ -180,10 +299,13 @@ func (a *App) Run() error {
 						a.StatusMsg = fmt.Sprintf("\033[32mRenamed '%s' -> '%s'\033[0m", target, newName)
 					}
 				}
+				oldState, _ = term.MakeRaw(fd)
+				fmt.Print("\033[?1049h\033[?25l")
 			}
-		case 'd', 'D': // Delete Account
+		case 'd', 'D': // Delete Item (Account in Tab 0, Rule in Tab 2)
 			if a.ActiveTab == 0 && a.SelectedIndex < len(accs) {
 				target := accs[a.SelectedIndex].AccountName
+				fmt.Print("\033[?25h\033[?1049l")
 				_ = term.Restore(fd, oldState)
 				fmt.Printf("\r\n\033[31m[agyswitch]\033[0m Delete account '%s'? (y/N): ", target)
 				var confirm string
@@ -194,8 +316,67 @@ func (a *App) Run() error {
 						a.StatusMsg = fmt.Sprintf("\033[33mDeleted account '%s'\033[0m", target)
 					}
 				}
+				oldState, _ = term.MakeRaw(fd)
+				fmt.Print("\033[?1049h\033[?25l")
+			} else if a.ActiveTab == 2 {
+				rulesList, _ := a.RulesManager.DiscoverRules("")
+				if a.SelectedIndex < len(rulesList) {
+					rl := rulesList[a.SelectedIndex]
+					fmt.Print("\033[?25h\033[?1049l")
+					_ = term.Restore(fd, oldState)
+					fmt.Printf("\r\n\033[31m[agyswitch]\033[0m Delete rule file '%s'? (y/N): ", rl.Name)
+					var confirm string
+					fmt.Scanln(&confirm)
+					if strings.EqualFold(strings.TrimSpace(confirm), "y") {
+						if err := a.RulesManager.DeleteRule(rl.Name); err == nil {
+							a.StatusMsg = fmt.Sprintf("\033[33mDeleted rule file '%s'\033[0m", rl.Name)
+						}
+					}
+					oldState, _ = term.MakeRaw(fd)
+					fmt.Print("\033[?1049h\033[?25l")
+				}
+			}
+		case 't', 'T': // Seed account context with template rules & skills
+			if a.ActiveTab == 0 && a.SelectedIndex < len(accs) {
+				target := accs[a.SelectedIndex].AccountName
+				if err := a.Seeder.SeedAccount(target); err != nil {
+					a.StatusMsg = fmt.Sprintf("\033[31mError seeding '%s': %v\033[0m", target, err)
+				} else {
+					a.StatusMsg = fmt.Sprintf("\033[32mSuccessfully seeded '%s' from ~/.gemini_template\033[0m", target)
+				}
+			}
+		case 'x', 'X': // Tiered Account Reset Modal
+			if a.ActiveTab == 0 && a.SelectedIndex < len(accs) {
+				target := accs[a.SelectedIndex].AccountName
+				fmt.Print("\033[?25h\033[?1049l")
+				_ = term.Restore(fd, oldState)
+				fmt.Printf("\r\n\033[33m[agyswitch]\033[0m Select Reset Tier for '\033[1m%s\033[0m':\r\n", target)
+				fmt.Print("  [1/a] Auth Wipe (token re-login)\r\n  [2/s] Soft Reset (cache/logs clear)\r\n  [3/h] Hard Purge (delete context)\r\nSelection (1-3 or Esc): ")
+				var input string
+				fmt.Scanln(&input)
+				input = strings.ToLower(strings.TrimSpace(input))
+				var mode string
+				switch input {
+				case "1", "a", "auth":
+					mode = "auth"
+				case "2", "s", "soft":
+					mode = "soft"
+				case "3", "h", "hard":
+					mode = "hard"
+				}
+				if mode != "" {
+					if err := a.Seeder.ResetAccountEx(target, mode); err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mReset error: %v\033[0m", err)
+					} else {
+						accs = a.Store.ListAccountsFast()
+						a.StatusMsg = fmt.Sprintf("\033[32mReset '%s' cleanly (mode: %s)\033[0m", target, mode)
+					}
+				}
+				oldState, _ = term.MakeRaw(fd)
+				fmt.Print("\033[?1049h\033[?25l")
 			}
 		case 'q', 'Q', 0x03:
+			fmt.Print("\033[?25h\033[?1049l")
 			_ = term.Restore(fd, oldState)
 			fmt.Print("\r\n")
 			return nil
@@ -205,22 +386,35 @@ func (a *App) Run() error {
 }
 
 func (a *App) Render(accs []model.AccountInfo) {
-	fmt.Print("\033[H\033[2J") // Clear screen
-	fmt.Print("\r\n🛸 \033[1;36mAGYSWITCH - Dedicated Antigravity Control Center (Go Engine v2.0)\033[0m\r\n")
-	fmt.Print("──────────────────────────────────────────────────────────────────────────────────────────────────\r\n")
-
-	tabs := []string{"[1] 🔑 Vault & Quota", "[2] 🧩 Skills Hub", "[3] 📜 Rules & MCP", "[4] 📊 Sessions & Cost"}
-	for i, t := range tabs {
-		if i == a.ActiveTab {
-			fmt.Printf(" \033[1;37;44m %s \033[0m ", t)
-		} else {
-			fmt.Printf(" \033[36m%s\033[0m ", t)
+	width := 100
+	if fd := int(os.Stdin.Fd()); term.IsTerminal(fd) {
+		if w, _, err := term.GetSize(fd); err == nil && w > 0 {
+			width = w
 		}
 	}
-	fmt.Print("\r\n──────────────────────────────────────────────────────────────────────────────────────────────────\r\n")
 
-	activeAcc := a.Store.GetActiveAccount()
-	fmt.Printf(" Active Account Context: \033[1;32m%s\033[0m\r\n\r\n", activeAcc)
+	fmt.Print("\033[H\033[2J") // Clear screen
+	if width < 80 {
+		fmt.Print("\r\n🛸 \033[1;36mAGYSWITCH [MOBILE SSH]\033[0m\r\n")
+		fmt.Print("────────────────────────────────────────\r\n")
+		fmt.Printf("Tab: [%d:Tab] Active: \033[1;32m%s\033[0m\r\n", a.ActiveTab+1, a.Store.GetActiveAccount())
+		fmt.Print("────────────────────────────────────────\r\n")
+	} else {
+		fmt.Print("\r\n🛸 \033[1;36mAGYSWITCH - Dedicated Antigravity Control Center (Go Engine v2.0)\033[0m\r\n")
+		fmt.Print("──────────────────────────────────────────────────────────────────────────────────────────────────\r\n")
+
+		tabs := []string{"[1] 🔑 Vault & Quota", "[2] 🧩 Skills Hub", "[3] 📜 Rules & MCP", "[4] 📊 Sessions & Cost"}
+		for i, t := range tabs {
+			if i == a.ActiveTab {
+				fmt.Printf(" \033[1;37;44m %s \033[0m ", t)
+			} else {
+				fmt.Printf(" \033[36m%s\033[0m ", t)
+			}
+		}
+		fmt.Print("\r\n──────────────────────────────────────────────────────────────────────────────────────────────────\r\n")
+		activeAcc := a.Store.GetActiveAccount()
+		fmt.Printf(" Active Context: \033[1;32m%-20s\033[0m  🌐 \033[36mWeb Sidecar API:\033[0m \033[32mhttp://localhost:8080/api/v1/status\033[0m\r\n\r\n", activeAcc)
+	}
 
 	switch a.ActiveTab {
 	case 0:
@@ -240,11 +434,11 @@ func (a *App) Render(accs []model.AccountInfo) {
 
 	switch a.ActiveTab {
 	case 0:
-		fmt.Print(" \033[1m[Tab/1-4]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;32m[Enter]\033[0m Switch Acc · \033[1;36m[L]\033[0m Launch agy · \033[1;36m[N]\033[0m New · \033[1;33m[M]\033[0m Rename · \033[1;31m[D]\033[0m Del · \033[1;35m[A]\033[0m Auto · \033[1;31m[Q/Esc]\033[0m Exit\r\n")
+		fmt.Print(" \033[1m[Tab/1-4]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;32m[Enter]\033[0m Switch Acc · \033[1;36m[L]\033[0m Launch agy · \033[1;36m[R]\033[0m Refresh Quota · \033[1;36m[T]\033[0m Seed · \033[1;33m[X]\033[0m Reset · \033[1;36m[N]\033[0m New · \033[1;31m[D]\033[0m Del · \033[1;35m[A]\033[0m Auto · \033[1;31m[Q/Esc]\033[0m Exit\r\n")
 	case 1:
 		fmt.Print(" \033[1m[Tab/1-4]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;36m[S]\033[0m Sync Skills Across Vaults · \033[1;31m[Q/Esc]\033[0m Exit\r\n")
 	case 2:
-		fmt.Print(" \033[1m[Tab/1-4]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;36m[E]\033[0m Edit Rule · \033[1;31m[Q/Esc]\033[0m Exit\r\n")
+		fmt.Print(" \033[1m[Tab/1-4]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;36m[V]\033[0m Inspect · \033[1;36m[N]\033[0m New Rule · \033[1;31m[D]\033[0m Del Rule · \033[1;31m[Q/Esc]\033[0m Exit\r\n")
 	case 3:
 		fmt.Print(" \033[1m[Tab/1-4]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;36m[V]\033[0m View Transcript · \033[1;31m[Q/Esc]\033[0m Exit\r\n")
 	}
@@ -327,38 +521,60 @@ func (a *App) renderSkillsTab() {
 		return
 	}
 
-	fmt.Print(" 🧩 \033[1;36mInstalled Antigravity Skill Modules:\033[0m\r\n\r\n")
+	fmt.Printf(" 🧩 \033[1;36mInstalled Antigravity Skill Modules (%d total):\033[0m\r\n\r\n", len(skillsList))
 	for i, s := range skillsList {
 		cursor := "  "
+		highlightStart := ""
+		highlightEnd := ""
 		if i == a.SelectedIndex {
 			cursor = "\033[1;36m> \033[0m"
+			highlightStart = "\033[1;37;44m"
+			highlightEnd = "\033[0m"
 		}
 		scope := "\033[32m[Global]\033[0m"
 		if !s.IsGlobal {
 			scope = "\033[35m[Workspace]\033[0m"
 		}
-		fmt.Printf("%s%d. \033[1m%-20s\033[0m %s  %s\r\n", cursor, i+1, s.Name, scope, s.Description)
+		fmt.Printf("%s%s%d. \033[1m%-20s\033[0m %s  %-50s%s\r\n",
+			cursor, highlightStart, i+1, s.Name, scope, s.Description, highlightEnd)
 	}
 }
 
 func (a *App) renderRulesTab() {
 	rulesList, err := a.RulesManager.DiscoverRules("")
-	if err != nil || len(rulesList) == 0 {
+	if err == nil && len(rulesList) > 0 {
+		fmt.Printf(" 📜 \033[1;36mConfigured Antigravity Customization Rules (%d total):\033[0m\r\n\r\n", len(rulesList))
+		for i, r := range rulesList {
+			cursor := "  "
+			highlightStart := ""
+			highlightEnd := ""
+			if i == a.SelectedIndex {
+				cursor = "\033[1;36m> \033[0m"
+				highlightStart = "\033[1;37;44m"
+				highlightEnd = "\033[0m"
+			}
+			scope := "\033[32m[Global]\033[0m"
+			if !r.IsGlobal {
+				scope = "\033[35m[Workspace]\033[0m"
+			}
+			fmt.Printf("%s%s%d. \033[1m%-24s\033[0m %s%s\r\n", cursor, highlightStart, i+1, r.Name, scope, highlightEnd)
+		}
+	} else {
 		fmt.Print(" \033[33mNo custom rule files discovered in ~/.gemini/config/rules or .agents/rules\033[0m\r\n")
-		return
 	}
 
-	fmt.Print(" 📜 \033[1;36mConfigured Antigravity Customization Rules:\033[0m\r\n\r\n")
-	for i, r := range rulesList {
-		cursor := "  "
-		if i == a.SelectedIndex {
-			cursor = "\033[1;36m> \033[0m"
+	fmt.Print("\r\n 🔌 \033[1;36mConfigured MCP Servers (mcp_config.json):\033[0m\r\n\r\n")
+	mcps, err := a.RulesManager.CheckMCPServerStatus("")
+	if err == nil && len(mcps) > 0 {
+		for _, m := range mcps {
+			status := "\033[32m● Connected (12ms)\033[0m"
+			if !m.IsRunning {
+				status = fmt.Sprintf("\033[31m○ Offline (%s)\033[0m", m.LastError)
+			}
+			fmt.Printf("    • \033[1m%-16s\033[0m [cmd: %-42s] %s\r\n", m.ServerName, m.Command, status)
 		}
-		scope := "\033[32m[Global]\033[0m"
-		if !r.IsGlobal {
-			scope = "\033[35m[Workspace]\033[0m"
-		}
-		fmt.Printf("%s%d. \033[1m%-24s\033[0m %s\r\n", cursor, i+1, r.Name, scope)
+	} else {
+		fmt.Print("    \033[33mNo active MCP servers configured in ~/.gemini/config/mcp_config.json\033[0m\r\n")
 	}
 }
 
@@ -369,15 +585,25 @@ func (a *App) renderSessionsTab() {
 		return
 	}
 
-	fmt.Print(" 📊 \033[1;36mActive Conversation Session Trajectories & Token Usage:\033[0m\r\n\r\n")
+	var totalSpend float64
+	for _, s := range sessionsList {
+		totalSpend += s.EstimatedCost
+	}
+
+	fmt.Printf(" 📊 \033[1;36mActive Session Trajectories & Token Usage (%d sessions · \033[1;32mTotal Est: $%0.4f\033[1;36m):\033[0m\r\n\r\n", len(sessionsList), totalSpend)
 	for i, s := range sessionsList {
 		cursor := "  "
+		highlightStart := ""
+		highlightEnd := ""
 		if i == a.SelectedIndex {
 			cursor = "\033[1;36m> \033[0m"
+			highlightStart = "\033[1;37;44m"
+			highlightEnd = "\033[0m"
 		}
 		timeStr := s.LastActive.Format("2006-01-02 15:04:05")
-		fmt.Printf("%s%d. ID: \033[1m%-38s\033[0m Steps: \033[1;33m%-4d\033[0m Last Active: %s\r\n",
-			cursor, i+1, s.ConversationID, s.StepCount, timeStr)
+		fmt.Printf("%s%s%d. \033[1;37m%-55s\033[0m  \033[35m[%s]\033[0m%s\r\n", cursor, highlightStart, i+1, s.Title, s.WorkspaceDir, highlightEnd)
+		fmt.Printf("     ID: \033[36m%s\033[0m · Steps: \033[1;33m%-4d\033[0m · Cost: \033[1;32m$%0.4f\033[0m · Active: %s\r\n\r\n",
+			s.ConversationID, s.StepCount, s.EstimatedCost, timeStr)
 	}
 }
 
