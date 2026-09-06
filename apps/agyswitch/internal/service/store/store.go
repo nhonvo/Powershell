@@ -76,11 +76,6 @@ func (s *Store) SetActiveAccount(accountName string) error {
 		_ = os.MkdirAll(currentActiveDir, 0755)
 
 		_ = MirrorDirectory(primaryDir, currentActiveDir)
-
-		curToken := s.Vault.ReadTokenFromDir(primaryDir)
-		if curToken != "" {
-			_ = s.Vault.SaveTokenToContext(currentActiveDir, curToken)
-		}
 	}
 
 	targetDir := s.GetAccountDirectory(acc)
@@ -89,11 +84,6 @@ func (s *Store) SetActiveAccount(accountName string) error {
 	}
 
 	_ = MirrorDirectory(targetDir, primaryDir)
-
-	targetToken := s.Vault.ReadTokenFromDir(targetDir)
-	if targetToken != "" {
-		_ = s.Vault.SaveTokenToContext(primaryDir, targetToken)
-	}
 
 	activeFile := filepath.Join(primaryDir, "active_account.txt")
 	_ = os.WriteFile(activeFile, []byte(acc), 0644)
@@ -355,8 +345,8 @@ func ProbeQuotaStatus(tok string) string {
 		return "✘ Logged Out"
 	}
 
-	client := &http.Client{Timeout: 1 * time.Second}
-	req, err := http.NewRequest("POST", "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels", strings.NewReader("{}"))
+	client := &http.Client{Timeout: 4 * time.Second}
+	req, err := http.NewRequest("POST", "https://cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels", strings.NewReader("{}"))
 	if err != nil {
 		return "✔ Quota OK"
 	}
@@ -441,7 +431,11 @@ func (s *Store) ListAccounts() []model.AccountInfo {
 					gPct, cPct = ExtractGroupQuotas(q)
 				} else {
 					if strings.Contains(err.Error(), "401") || strings.Contains(err.Error(), "403") {
-						quotaStatus = "🔑 Login Required"
+						if s.Vault.GetRefreshToken(accDir) == "" {
+							quotaStatus = "🔑 Login Required"
+						} else {
+							quotaStatus = "⚡ Auto-Refresh"
+						}
 					}
 				}
 			}
@@ -581,7 +575,7 @@ func FetchUserQuotaSummary(tok string) (*model.QuotaSummary, error) {
 		return nil, errors.New("unauthenticated")
 	}
 
-	client := &http.Client{Timeout: 4 * time.Second}
+	client := &http.Client{Timeout: 8 * time.Second}
 	req, err := http.NewRequest("POST", "https://cloudcode-pa.googleapis.com/v1internal:retrieveUserQuotaSummary", strings.NewReader("{}"))
 	if err != nil {
 		return nil, err
@@ -615,7 +609,16 @@ func (s *Store) GetAccountQuota(name string) (*model.QuotaSummary, error) {
 		return nil, errors.New("account is logged out")
 	}
 
-	return FetchUserQuotaSummary(tok)
+	summary, err := FetchUserQuotaSummary(tok)
+	if err != nil && (strings.Contains(err.Error(), "401") || strings.Contains(err.Error(), "403")) {
+		if rf := s.Vault.GetRefreshToken(accDir); rf != "" {
+			if newTok, expiresIn, refErr := vault.RefreshOAuthToken(rf); refErr == nil && newTok != "" {
+				s.Vault.SaveRefreshedAccessToken(accDir, newTok, expiresIn)
+				return FetchUserQuotaSummary(newTok)
+			}
+		}
+	}
+	return summary, err
 }
 
 func ExtractDetailedModelBuckets(summary *model.QuotaSummary) []model.ModelBucketDetail {

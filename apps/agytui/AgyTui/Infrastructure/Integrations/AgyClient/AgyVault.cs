@@ -619,10 +619,8 @@ internal static class AgyKeyringHelper
             {
                 Path.Combine(userProfile, ".gemini", "antigravity-cli", "antigravity-oauth-token"),
                 Path.Combine(userProfile, ".gemini", "antigravity-oauth-token"),
-                Path.Combine(userProfile, ".gemini", "keyring_token.txt"),
                 Path.Combine(AppPaths.GeminiHome, "antigravity-cli", "antigravity-oauth-token"),
-                Path.Combine(AppPaths.GeminiHome, "antigravity-oauth-token"),
-                Path.Combine(AppPaths.GeminiHome, "keyring_token.txt")
+                Path.Combine(AppPaths.GeminiHome, "antigravity-oauth-token")
             };
 
             foreach (var candidate in candidates)
@@ -632,7 +630,7 @@ internal static class AgyKeyringHelper
                     if (File.Exists(candidate) && new FileInfo(candidate).Length > 0)
                     {
                         var text = File.ReadAllText(candidate, Encoding.UTF8).Trim();
-                        if (!string.IsNullOrEmpty(text))
+                        if (!string.IsNullOrEmpty(text) && (text.Contains("ya29") || text.Contains("access_token")))
                         {
                             return text;
                         }

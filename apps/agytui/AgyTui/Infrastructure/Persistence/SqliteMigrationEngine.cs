@@ -4,6 +4,9 @@ namespace AgyTui.Infrastructure.Persistence;
 
 public class SqliteMigrationEngine
 {
+    private static readonly object _migrationLock = new();
+    private static readonly HashSet<string> _migratedDbs = new(StringComparer.OrdinalIgnoreCase);
+
     private readonly ISqliteDatabase _db;
 
     public SqliteMigrationEngine(ISqliteDatabase db)
@@ -13,31 +16,39 @@ public class SqliteMigrationEngine
 
     public void ApplyMigrations()
     {
-        var dir = Path.GetDirectoryName(_db.DbPath);
-        if (!string.IsNullOrEmpty(dir))
+        lock (_migrationLock)
         {
-            Directory.CreateDirectory(dir);
-        }
-        using var conn = _db.CreateConnection();
+            var dbPath = _db.DbPath;
+            if (!string.IsNullOrEmpty(dbPath) && !dbPath.Contains("mode=memory", StringComparison.OrdinalIgnoreCase) && _migratedDbs.Contains(dbPath))
+            {
+                return;
+            }
 
-        using (var cmd = conn.CreateCommand())
-        {
-            cmd.CommandText = """
-                CREATE TABLE IF NOT EXISTS schema_migrations (
-                    version INTEGER PRIMARY KEY,
-                    applied_at_utc TEXT NOT NULL
-                );
-                """;
-            cmd.ExecuteNonQuery();
-        }
+            var dir = Path.GetDirectoryName(dbPath);
+            if (!string.IsNullOrEmpty(dir) && !dbPath.Contains("mode=memory", StringComparison.OrdinalIgnoreCase))
+            {
+                Directory.CreateDirectory(dir);
+            }
+            using var conn = _db.CreateConnection();
 
-        int currentVersion = GetCurrentVersion(conn);
-        var scripts = GetMigrationScripts();
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = """
+                    CREATE TABLE IF NOT EXISTS schema_migrations (
+                        version INTEGER PRIMARY KEY,
+                        applied_at_utc TEXT NOT NULL
+                    );
+                    """;
+                cmd.ExecuteNonQuery();
+            }
 
-        foreach (var script in scripts.Where(s => s.Version > currentVersion))
-        {
-            using var tx = conn.BeginTransaction();
-            var statements = script.Sql.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            int currentVersion = GetCurrentVersion(conn);
+            var scripts = GetMigrationScripts();
+
+            foreach (var script in scripts.Where(s => s.Version > currentVersion))
+            {
+                using var tx = conn.BeginTransaction();
+                var statements = script.Sql.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             foreach (var stmt in statements)
             {
                 if (string.IsNullOrWhiteSpace(stmt)) continue;
@@ -63,7 +74,13 @@ public class SqliteMigrationEngine
 
             tx.Commit();
         }
+
+        if (!string.IsNullOrEmpty(dbPath) && !dbPath.Contains("mode=memory", StringComparison.OrdinalIgnoreCase))
+        {
+            _migratedDbs.Add(dbPath);
+        }
     }
+}
 
     public int GetCurrentVersion(SqliteConnection conn)
     {

@@ -84,7 +84,6 @@ func (l *Launcher) LaunchAccount(accountName string, passArgs []string) error {
 
 	token := l.Vault.EnsureValidAccessToken(accDir)
 	if token != "" {
-		_ = l.Vault.SaveTokenToContext(accDir, token)
 		fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Context for '\033[32m%s\033[0m': \033[32m%s\033[0m (✔ Logged In)\n", accountName, accDir)
 	} else {
 		l.Vault.PurgeGlobalKeyring()
@@ -120,18 +119,23 @@ func (l *Launcher) LaunchAccount(accountName string, passArgs []string) error {
 
 	runErr := cmd.Run()
 
-	// Post-run session token capture hook: mirror primaryDir to accDir FIRST
+	// Post-run session token capture hook: sync directory that had newer changes
 	primaryDir := filepath.Join(l.Store.UserHome, ".gemini")
-	_ = store.MirrorDirectory(primaryDir, accDir)
+	pTok := filepath.Join(primaryDir, "antigravity-cli", "antigravity-oauth-token")
+	aTok := filepath.Join(accDir, "antigravity-cli", "antigravity-oauth-token")
+	pInfo, pErr := os.Stat(pTok)
+	aInfo, aErr := os.Stat(aTok)
 
-	postToken := l.Vault.EnsureValidAccessToken(primaryDir)
-	if postToken == "" {
-		postToken = l.Vault.EnsureValidAccessToken(accDir)
+	if pErr == nil && (aErr != nil || pInfo.ModTime().After(aInfo.ModTime())) {
+		_ = store.MirrorDirectory(primaryDir, accDir)
+	} else {
+		_ = store.MirrorDirectory(accDir, primaryDir)
 	}
 
+	postToken := l.Vault.EnsureValidAccessToken(accDir)
 	if postToken != "" {
-		_ = l.Vault.SaveTokenToContext(accDir, postToken)
-		_ = l.Vault.SaveTokenToContext(primaryDir, postToken)
+		_ = l.Vault.SyncKeyringCredentials(accDir)
+		_ = l.Vault.SyncKeyringCredentials(primaryDir)
 		fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Persisted session token for account '\033[32m%s\033[0m'.\n", accountName)
 	}
 

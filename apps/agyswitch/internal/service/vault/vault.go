@@ -1,6 +1,7 @@
 package vault
 
 import (
+	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
@@ -113,6 +114,8 @@ func (v *Vault) Decrypt(encodedCiphertext string) (string, error) {
 
 // ExtractCleanAccessToken parses raw token string or JSON to extract access token ya29...
 func ExtractCleanAccessToken(raw string) string {
+	raw = strings.TrimPrefix(raw, "\ufeff")
+	raw = strings.TrimPrefix(raw, "\xef\xbb\xbf")
 	raw = strings.TrimSpace(raw)
 	if raw == "" {
 		return ""
@@ -127,10 +130,10 @@ func ExtractCleanAccessToken(raw string) string {
 
 	var parsed OAuthFile
 	if err := json.Unmarshal([]byte(raw), &parsed); err == nil {
-		if parsed.Token.AccessToken != "" {
+		if parsed.Token.AccessToken != "" && strings.HasPrefix(parsed.Token.AccessToken, "ya29.") {
 			return parsed.Token.AccessToken
 		}
-		if parsed.AccessToken != "" {
+		if parsed.AccessToken != "" && strings.HasPrefix(parsed.AccessToken, "ya29.") {
 			return parsed.AccessToken
 		}
 	}
@@ -143,7 +146,7 @@ func ExtractCleanAccessToken(raw string) string {
 		return raw[idx:]
 	}
 
-	return raw
+	return ""
 }
 
 // ReadTokenFromDir checks standalone CLI token locations inside directory context.
@@ -177,9 +180,13 @@ func (v *Vault) ReadTokenFromDir(dir string) string {
 		if raw != "" {
 			dec, err := v.Decrypt(raw)
 			if err == nil && dec != "" {
-				return ExtractCleanAccessToken(dec)
+				if tok := ExtractCleanAccessToken(dec); tok != "" {
+					return tok
+				}
 			}
-			return ExtractCleanAccessToken(raw)
+			if tok := ExtractCleanAccessToken(raw); tok != "" {
+				return tok
+			}
 		}
 	}
 
@@ -188,7 +195,9 @@ func (v *Vault) ReadTokenFromDir(dir string) string {
 	if data, err := os.ReadFile(kFile); err == nil {
 		lines := strings.Split(string(data), "\n")
 		if len(lines) >= 2 && strings.TrimSpace(lines[1]) != "" {
-			return ExtractCleanAccessToken(strings.TrimSpace(lines[1]))
+			if tok := ExtractCleanAccessToken(strings.TrimSpace(lines[1])); tok != "" {
+				return tok
+			}
 		}
 	}
 
@@ -197,76 +206,109 @@ func (v *Vault) ReadTokenFromDir(dir string) string {
 
 // GetShortSignature extracts access token string from raw text or JSON object and returns clean, unique signature.
 func (v *Vault) GetShortSignature(token string) string {
-	tok := strings.TrimSpace(token)
-	if tok == "" || tok == "None" {
+	cleanTok := ExtractCleanAccessToken(token)
+	if cleanTok == "" {
 		return "None"
 	}
 
-	if strings.HasPrefix(tok, "{") && strings.HasSuffix(tok, "}") {
-		var jsonObj map[string]interface{}
-		if err := json.Unmarshal([]byte(tok), &jsonObj); err == nil {
-			if at, ok := jsonObj["access_token"].(string); ok && at != "" {
-				tok = at
-			} else if tkStr, ok := jsonObj["token"].(string); ok && tkStr != "" {
-				tok = tkStr
-			} else if tkMap, ok := jsonObj["token"].(map[string]interface{}); ok {
-				if at, ok := tkMap["access_token"].(string); ok && at != "" {
-					tok = at
+	if strings.HasPrefix(cleanTok, "ya29.") {
+		s := strings.TrimPrefix(cleanTok, "ya29.")
+		if len(s) >= 12 {
+			return fmt.Sprintf("ya29..%s", s[8:12])
+		} else if len(s) >= 4 {
+			return fmt.Sprintf("ya29..%s", s[:4])
+		}
+		return cleanTok
+	}
+
+	if len(cleanTok) <= 8 {
+		return cleanTok
+	}
+	return cleanTok[:8]
+}
+
+// ExtractTokenExpiry parses token JSON to extract expiration timestamp.
+func ExtractTokenExpiry(dir string) (time.Time, bool) {
+	tokFiles := []string{
+		filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token"),
+		filepath.Join(dir, "antigravity-oauth-token"),
+	}
+	for _, f := range tokFiles {
+		data, err := os.ReadFile(f)
+		if err != nil {
+			continue
+		}
+		data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
+		data = bytes.TrimPrefix(data, []byte("\ufeff"))
+
+		type OAuthFile struct {
+			Token struct {
+				Expiry string `json:"expiry"`
+			} `json:"token"`
+			Expiry string `json:"expiry"`
+		}
+
+		var parsed OAuthFile
+		if err := json.Unmarshal(data, &parsed); err == nil {
+			expStr := parsed.Token.Expiry
+			if expStr == "" {
+				expStr = parsed.Expiry
+			}
+			if expStr != "" {
+				if t, err := time.Parse(time.RFC3339Nano, expStr); err == nil {
+					return t, true
+				}
+				if t, err := time.Parse(time.RFC3339, expStr); err == nil {
+					return t, true
 				}
 			}
 		}
 	}
-
-	if len(tok) <= 12 {
-		return tok
-	}
-
-	if strings.HasPrefix(tok, "ya29.") {
-		cleanTok := strings.TrimPrefix(tok, "ya29.")
-		if len(cleanTok) >= 12 {
-			return fmt.Sprintf("ya29..%s", cleanTok[8:12])
-		}
-		return tok
-	}
-
-	return tok[:12]
+	return time.Time{}, false
 }
 
 // ExtractRefreshToken parses token JSON or file to extract refresh token string.
 func ExtractRefreshToken(dir string) string {
-	aTok1 := filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token")
-	data, err := os.ReadFile(aTok1)
-	if err != nil {
-		aTok2 := filepath.Join(dir, "antigravity-oauth-token")
-		data, err = os.ReadFile(aTok2)
+	tokFiles := []string{
+		filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token"),
+		filepath.Join(dir, "antigravity-oauth-token"),
 	}
-	if err != nil {
-		return ""
-	}
-
-	type OAuthFile struct {
-		Token struct {
-			RefreshToken string `json:"refresh_token"`
-		} `json:"token"`
-		RefreshToken string `json:"refresh_token"`
-	}
-
-	var parsed OAuthFile
-	if err := json.Unmarshal(data, &parsed); err == nil {
-		if parsed.Token.RefreshToken != "" {
-			return parsed.Token.RefreshToken
+	for _, f := range tokFiles {
+		data, err := os.ReadFile(f)
+		if err != nil {
+			continue
 		}
-		if parsed.RefreshToken != "" {
-			return parsed.RefreshToken
+		data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
+		data = bytes.TrimPrefix(data, []byte("\ufeff"))
+
+		type OAuthFile struct {
+			Token struct {
+				RefreshToken string `json:"refresh_token"`
+			} `json:"token"`
+			RefreshToken string `json:"refresh_token"`
+		}
+
+		var parsed OAuthFile
+		if err := json.Unmarshal(data, &parsed); err == nil {
+			if parsed.Token.RefreshToken != "" {
+				return parsed.Token.RefreshToken
+			}
+			if parsed.RefreshToken != "" {
+				return parsed.RefreshToken
+			}
 		}
 	}
 	return ""
 }
 
+func (v *Vault) GetRefreshToken(dir string) string {
+	return ExtractRefreshToken(dir)
+}
+
 // RefreshOAuthToken performs HTTP refresh using Google OAuth endpoint.
-func RefreshOAuthToken(refreshToken string) (string, error) {
+func RefreshOAuthToken(refreshToken string) (string, int, error) {
 	if strings.TrimSpace(refreshToken) == "" {
-		return "", errors.New("empty refresh token")
+		return "", 0, errors.New("empty refresh token")
 	}
 
 	data := url.Values{}
@@ -275,15 +317,15 @@ func RefreshOAuthToken(refreshToken string) (string, error) {
 	data.Set("grant_type", "refresh_token")
 	data.Set("refresh_token", refreshToken)
 
-	client := &http.Client{Timeout: 5 * time.Second}
+	client := &http.Client{Timeout: 8 * time.Second}
 	resp, err := client.PostForm("https://oauth2.googleapis.com/token", data)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return "", fmt.Errorf("oauth endpoint returned status %d", resp.StatusCode)
+		return "", 0, fmt.Errorf("oauth endpoint returned status %d", resp.StatusCode)
 	}
 
 	var res struct {
@@ -291,46 +333,75 @@ func RefreshOAuthToken(refreshToken string) (string, error) {
 		ExpiresIn   int    `json:"expires_in"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
-		return "", err
+		return "", 0, err
 	}
 
 	if res.AccessToken == "" {
-		return "", errors.New("empty access token in refresh response")
+		return "", 0, errors.New("empty access token in refresh response")
 	}
 
-	return res.AccessToken, nil
+	expiresIn := res.ExpiresIn
+	if expiresIn <= 0 {
+		expiresIn = 3600
+	}
+
+	return res.AccessToken, expiresIn, nil
 }
 
-// EnsureValidAccessToken reads access token and refreshes it via OAuth endpoint if refresh token exists.
+// SaveRefreshedAccessToken writes updated access token and expiry to file without destroying refresh token.
+func (v *Vault) SaveRefreshedAccessToken(dir string, newTok string, expiresIn int) {
+	tokFiles := []string{
+		filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token"),
+		filepath.Join(dir, "antigravity-oauth-token"),
+	}
+	newExpiry := time.Now().Add(time.Duration(expiresIn) * time.Second).Format(time.RFC3339Nano)
+
+	for _, aTokPath := range tokFiles {
+		if data, err := os.ReadFile(aTokPath); err == nil {
+			data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
+			data = bytes.TrimPrefix(data, []byte("\ufeff"))
+			var parsed map[string]interface{}
+			if json.Unmarshal(data, &parsed) == nil {
+				if tokMap, ok := parsed["token"].(map[string]interface{}); ok {
+					tokMap["access_token"] = newTok
+					tokMap["expiry"] = newExpiry
+				} else {
+					parsed["access_token"] = newTok
+					parsed["expiry"] = newExpiry
+				}
+				if updated, err := json.MarshalIndent(parsed, "", "  "); err == nil {
+					_ = os.WriteFile(aTokPath, updated, 0600)
+				}
+			}
+		}
+	}
+	encTok, err := v.Encrypt(newTok)
+	if err == nil {
+		_ = os.WriteFile(filepath.Join(dir, "keyring_token.txt"), []byte(encTok), 0600)
+	}
+}
+
+// EnsureValidAccessToken reads access token and refreshes it via OAuth endpoint if expired and refresh token exists.
 func (v *Vault) EnsureValidAccessToken(dir string) string {
 	tok := v.ReadTokenFromDir(dir)
 	rf := ExtractRefreshToken(dir)
 
+	expiry, hasExpiry := ExtractTokenExpiry(dir)
+	isExpired := false
+	if hasExpiry {
+		// Expired if current time is within 5 minutes of expiration
+		isExpired = time.Now().Add(5 * time.Minute).After(expiry)
+	}
+
+	// Token is valid and fresh - return immediately
+	if tok != "" && hasExpiry && !isExpired {
+		return tok
+	}
+
+	// Token expired, missing, or needs refresh
 	if rf != "" {
-		if newTok, err := RefreshOAuthToken(rf); err == nil && newTok != "" {
-			tokFiles := []string{
-				filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token"),
-				filepath.Join(dir, "antigravity-oauth-token"),
-			}
-			for _, aTokPath := range tokFiles {
-				if data, err := os.ReadFile(aTokPath); err == nil {
-					var parsed map[string]interface{}
-					if json.Unmarshal(data, &parsed) == nil {
-						if tokMap, ok := parsed["token"].(map[string]interface{}); ok {
-							tokMap["access_token"] = newTok
-						} else {
-							parsed["access_token"] = newTok
-						}
-						if updated, err := json.MarshalIndent(parsed, "", "  "); err == nil {
-							_ = os.WriteFile(aTokPath, updated, 0600)
-						}
-					}
-				}
-			}
-			encTok, err := v.Encrypt(newTok)
-			if err == nil {
-				_ = os.WriteFile(filepath.Join(dir, "keyring_token.txt"), []byte(encTok), 0600)
-			}
+		if newTok, expiresIn, err := RefreshOAuthToken(rf); err == nil && newTok != "" {
+			v.SaveRefreshedAccessToken(dir, newTok, expiresIn)
 			return newTok
 		}
 	}
@@ -340,6 +411,8 @@ func (v *Vault) EnsureValidAccessToken(dir string) string {
 
 // SaveTokenToContext saves token JSON and encrypted keyring entry into directory context without stripping existing OAuth fields like refresh_token.
 func (v *Vault) SaveTokenToContext(dir string, tokenInput string) error {
+	tokenInput = strings.TrimPrefix(tokenInput, "\ufeff")
+	tokenInput = strings.TrimPrefix(tokenInput, "\xef\xbb\xbf")
 	tokenInput = strings.TrimSpace(tokenInput)
 	if tokenInput == "" {
 		return errors.New("empty token")
@@ -366,6 +439,8 @@ func (v *Vault) SaveTokenToContext(dir string, tokenInput string) error {
 		}
 
 		if data, err := os.ReadFile(tokFile); err == nil && len(data) > 0 {
+			data = bytes.TrimPrefix(data, []byte("\xef\xbb\xbf"))
+			data = bytes.TrimPrefix(data, []byte("\ufeff"))
 			var parsed map[string]interface{}
 			if json.Unmarshal(data, &parsed) == nil {
 				if tokMap, ok := parsed["token"].(map[string]interface{}); ok {
