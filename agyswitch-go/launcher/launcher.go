@@ -106,20 +106,17 @@ func (l *Launcher) LaunchAccount(accountName string, passArgs []string) error {
 
 	runErr := cmd.Run()
 
-	// Post-run session token capture hook
-	postToken := l.Vault.ReadTokenFromDir(accDir)
+	// Post-run session token capture hook: read fresh token created in primaryDir ~/.gemini
+	primaryDir := filepath.Join(l.Store.UserHome, ".gemini")
+	postToken := l.Vault.ReadTokenFromDir(primaryDir)
 	if postToken == "" {
-		globalKeyFile := filepath.Join(l.Store.UserHome, ".gemini", ".keyring", vault.KeyHash)
-		if data, err := os.ReadFile(globalKeyFile); err == nil {
-			lines := strings.Split(string(data), "\n")
-			if len(lines) >= 2 && strings.TrimSpace(lines[1]) != "" {
-				postToken = strings.TrimSpace(lines[1])
-			}
-		}
+		postToken = l.Vault.ReadTokenFromDir(accDir)
 	}
 
 	if postToken != "" {
 		_ = l.Vault.SaveTokenToContext(accDir, postToken)
+		_ = l.Vault.SaveTokenToContext(primaryDir, postToken)
+		_ = store.MirrorDirectory(primaryDir, accDir)
 		fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Persisted session token for account '\033[32m%s\033[0m'.\n", accountName)
 	}
 

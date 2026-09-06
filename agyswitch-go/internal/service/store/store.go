@@ -88,7 +88,7 @@ func (s *Store) SetActiveAccount(accountName string) error {
 			}
 		}
 
-		_ = mirrorDirectory(primaryDir, currentActiveDir)
+		_ = MirrorDirectory(primaryDir, currentActiveDir)
 	}
 
 	targetDir := s.GetAccountDirectory(acc)
@@ -109,7 +109,7 @@ func (s *Store) SetActiveAccount(accountName string) error {
 		}
 	}
 
-	_ = mirrorDirectory(targetDir, primaryDir)
+	_ = MirrorDirectory(targetDir, primaryDir)
 
 	activeFile := filepath.Join(primaryDir, "active_account.txt")
 	_ = os.WriteFile(activeFile, []byte(acc), 0644)
@@ -118,7 +118,7 @@ func (s *Store) SetActiveAccount(accountName string) error {
 	return nil
 }
 
-func mirrorDirectory(src, dst string) error {
+func MirrorDirectory(src, dst string) error {
 	_ = os.MkdirAll(dst, 0755)
 	return filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
