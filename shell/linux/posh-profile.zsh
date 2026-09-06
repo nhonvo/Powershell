@@ -5,17 +5,19 @@
 
 # --- 1. DYNAMIC REPO & THEME RESOLUTION ---
 if [ -n "$ZSH_VERSION" ]; then
-    CURRENT_SCRIPT_DIR="${0:A:h}"
+    _CURRENT_SCRIPT="${(%):-%N}"
+    [ -z "$_CURRENT_SCRIPT" ] && _CURRENT_SCRIPT="$0"
+    CURRENT_SCRIPT_DIR="${_CURRENT_SCRIPT:A:h}"
 elif [ -n "$BASH_VERSION" ]; then
     CURRENT_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 fi
 
 if [ -d "$CURRENT_SCRIPT_DIR/../../apps" ]; then
-    REPO_ROOT="$(cd "$CURRENT_SCRIPT_DIR/../.." && pwd)"
+    export REPO_ROOT="$(cd "$CURRENT_SCRIPT_DIR/../.." && pwd)"
 elif [ -d "$CURRENT_SCRIPT_DIR/../apps" ]; then
-    REPO_ROOT="$(cd "$CURRENT_SCRIPT_DIR/.." && pwd)"
+    export REPO_ROOT="$(cd "$CURRENT_SCRIPT_DIR/.." && pwd)"
 else
-    REPO_ROOT="$(cd "$CURRENT_SCRIPT_DIR/../.." 2>/dev/null || cd "$CURRENT_SCRIPT_DIR/.." && pwd)"
+    export REPO_ROOT="$(cd "$CURRENT_SCRIPT_DIR/../.." 2>/dev/null || cd "$CURRENT_SCRIPT_DIR/.." && pwd)"
 fi
 
 export POSH_THEMES_PATH="$REPO_ROOT/shell/assets/powershell-themes"
@@ -187,7 +189,6 @@ alias agyswitch="agyswitch"
 alias agysw="agyswitch"
 alias agyx="agyswitch"
 alias agy="agyswitch"
-alias seed-agy="$REPO_ROOT/seed-wsl-accounts.sh"
 
 # --- 6. CUSTOM FUNCTIONS ---
 
