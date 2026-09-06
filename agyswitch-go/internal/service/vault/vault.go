@@ -152,16 +152,25 @@ func (v *Vault) ReadTokenFromDir(dir string) string {
 		return ""
 	}
 
-	// 1. Check .keyring/7407b4dd...key
-	kFile := filepath.Join(dir, ".keyring", KeyHash)
-	if data, err := os.ReadFile(kFile); err == nil {
-		lines := strings.Split(string(data), "\n")
-		if len(lines) >= 2 && strings.TrimSpace(lines[1]) != "" {
-			return ExtractCleanAccessToken(strings.TrimSpace(lines[1]))
+	// 1. Check antigravity-cli/antigravity-oauth-token (Official Antigravity token file)
+	aTok1 := filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token")
+	if data, err := os.ReadFile(aTok1); err == nil {
+		tok := ExtractCleanAccessToken(string(data))
+		if tok != "" {
+			return tok
 		}
 	}
 
-	// 2. Check keyring_token.txt
+	// 2. Check antigravity-oauth-token
+	aTok2 := filepath.Join(dir, "antigravity-oauth-token")
+	if data, err := os.ReadFile(aTok2); err == nil {
+		tok := ExtractCleanAccessToken(string(data))
+		if tok != "" {
+			return tok
+		}
+	}
+
+	// 3. Check keyring_token.txt
 	kTXT := filepath.Join(dir, "keyring_token.txt")
 	if data, err := os.ReadFile(kTXT); err == nil {
 		raw := strings.TrimSpace(string(data))
@@ -174,21 +183,12 @@ func (v *Vault) ReadTokenFromDir(dir string) string {
 		}
 	}
 
-	// 3. Check antigravity-cli/antigravity-oauth-token
-	aTok1 := filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token")
-	if data, err := os.ReadFile(aTok1); err == nil {
-		tok := ExtractCleanAccessToken(string(data))
-		if tok != "" {
-			return tok
-		}
-	}
-
-	// 4. Check antigravity-oauth-token
-	aTok2 := filepath.Join(dir, "antigravity-oauth-token")
-	if data, err := os.ReadFile(aTok2); err == nil {
-		tok := ExtractCleanAccessToken(string(data))
-		if tok != "" {
-			return tok
+	// 4. Check .keyring/7407b4dd...key
+	kFile := filepath.Join(dir, ".keyring", KeyHash)
+	if data, err := os.ReadFile(kFile); err == nil {
+		lines := strings.Split(string(data), "\n")
+		if len(lines) >= 2 && strings.TrimSpace(lines[1]) != "" {
+			return ExtractCleanAccessToken(strings.TrimSpace(lines[1]))
 		}
 	}
 
