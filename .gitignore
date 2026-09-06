@@ -45,3 +45,10 @@ data/
 logs/
 priority_workspaces.json
 .agy-context.md
+
+# Compiled Binaries
+*.exe
+agyswitch
+agyswitch.exe
+apps/agyswitch/agyswitch
+apps/agyswitch/agyswitch.exe

@@ -6,43 +6,37 @@ A modular, strongly-typed, class-based PowerShell profile environment optimized 
 
 ## 📂 Repository Architecture & Layout
 
-Core environment scripts and specific helper classes are separated from the test project into logical subfolders under `Profile/` and `Tests/`:
+The repository is organized as a clean, domain-separated monorepo:
 
-```
-Powershell/
-├── .github/
-│   └── workflows/
-│       └── ci.yml                     # GitHub Actions CI Workflow
-├── Profile/                           # Profile configuration & classes
-│   ├── Core/                          # Core profile and TUI elements
-│   │   ├── TerminalMenu.ps1           # class TerminalMenu (TUI menu helper)
-│   │   ├── ProfileEnvironment.ps1     # class ProfileEnvironment (PSReadLine & theme options)
-│   │   ├── Aliases.ps1                # Centralized aliases & routing wrappers
-│   │   ├── Projects.ps1               # Projects collection configuration
-│   │   └── ProfileHelp.ps1            # class ProfileHelp (interactive help menu)
-│   └── Helpers/                       # Context-specific class modules
-│       ├── ProfileNavigator.ps1       # class ProfileNavigator (workspace hopper)
-│       ├── SystemHelper.ps1           # class SystemHelper (processes & disks helper)
-│       ├── SshHelper.ps1              # class SshHelper (SSH connections & secure keys)
-│       ├── DotNetHelper.ps1           # class DotNetHelper (.NET SDK & EF Migrations)
-│       ├── GitHelper.ps1              # class GitHelper (Git wrapper)
-│       ├── DockerHelper.ps1           # class DockerHelper (Docker Compose & cleanup)
-│       ├── AwsHelper.ps1              # class AwsHelper (LocalStack client queries)
-│       ├── AiHelper.ps1               # class AiHelper (Ollama CLI integrations)
-│       ├── AgyAccountManager.ps1      # class AgyAccountManager (Multi-Account isolation)
-│       ├── AgySecretVault.ps1         # class AgySecretVault (DPAPI Encrypted Secrets Vault)
-│       ├── DatabaseHelper.ps1         # class DatabaseHelper (SQLite Schema Viewer TUI)
-│       ├── ProjectScaffolder.ps1      # class ProjectScaffolder (Template Project Builder)
-│       └── LogHelper.ps1              # class LogHelper (Multiplexed Colorized Log Streamer)
-├── Tests/                             # Consolidated Test Project
-│   ├── Unit/                          # Pester unit tests
-│   │   ├── AI-Tools.Tests.ps1         # AI wrappers mock unit tests
-│   │   └── Profile-All.Tests.ps1      # Core profile features unit tests
-│   ├── E2E/                           # End-to-end integration tests
-│   │   └── Test-OllamaFunctions.ps1   # Real Ollama proxy integration validator
-│   ├── Mocks/                         # Mock proxy server logic
-│   │   └── ollama-proxy.js            # Port 11435 model-inject compat proxy
-│   └── run_tests.ps1                  # Local AST syntax and Pester test runner
+```text
+powershell-profile/
+├── apps/
+│   ├── agyswitch/              # Go v2.0 Antigravity Multi-Account Switcher & Quota Engine
+│   └── agytui/                 # .NET 9 Spectre.Console 3-Pane Control Center
+│       ├── AgyTui/             # Domain, Infrastructure, and UI layer implementation
+│       ├── AgyTui.Tests/       # 301 xUnit tests (Unit, Integration, and Parity)
+│       └── AgyTui.slnx         # Solution file
+│
+├── shell/
+│   ├── windows/                # Microsoft.PowerShell_profile.ps1 (Modularized Profile)
+│   ├── linux/                  # posh-profile.zsh (Ubuntu/Linux Zsh configuration)
+│   ├── assets/                 # Terminal & IDE themes (Posh, Typora, VSCode, Windhawk)
+│   └── tests/                  # Pester unit & E2E profile test suites
+│
+├── scripts/                    # Automation & Environment Setup
+│   ├── build-release.ps1       # Master production release publish script
+│   ├── install-windows.ps1     # 1-click Windows onboarding (.NET 9, GEMINI_HOME, Profile link)
+│   └── setup-ubuntu.sh         # 1-click Linux/WSL2 onboarding (Oh My Zsh, eza, .NET SDK)
+│
+├── docs/                       # Centralized Documentation Suite
+│   ├── 01_architecture/        # System & engine architecture specifications
+│   ├── 02_user_guide/           # Interactive guides, hotkeys, and CLI manuals
+│   ├── 03_developer_guide/     # Dev sandbox isolation, QA, and release pipelines
+│   ├── 04_command_enhancements/# Git, Dotnet, Docker, AWS CLI enhancement guides
+│   └── archive/                # Historical task plans & interim audit reports
+│
+├── Microsoft.PowerShell_profile.ps1 # Thin root forwarder (delegates to shell/windows/)
+├── build-release.ps1           # Thin root forwarder (delegates to scripts/build-release.ps1)
 ├── .gitignore
 └── README.md
 ```

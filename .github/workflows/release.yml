@@ -1,24 +1,68 @@
-name: AgyTui Production Release Pipeline
+name: Production Multi-Platform Release Pipeline
 
 on:
   push:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   build-and-release:
+    name: Build & Publish Release Artifacts
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Setup .NET 9 SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
-      - name: Restore & Run Tests
-        run: dotnet test csapp/AgyTui.Tests/AgyTui.Tests.csproj -c Release
-      - name: Build Production Single-File Binary
-        run: dotnet publish csapp/AgyTui/AgyTui.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o ./dist
-      - name: Create GitHub Release Artifact
-        uses: softprops/action-gh-release@v1
+          dotnet-version: '9.0.x'
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
         with:
-          files: ./dist/AgyTui.exe
+          go-version: '1.22.x'
+
+      - name: Run C# Test Suite
+        run: dotnet test apps/agytui/AgyTui.Tests/AgyTui.Tests.csproj -c Release --verbosity quiet
+
+      - name: Build C# Single-File Executable (AgyTui)
+        run: |
+          dotnet publish apps/agytui/AgyTui/AgyTui.csproj `
+            -c Release `
+            -r win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:EnableCompressionInSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -o ./dist/agytui-win-x64
+          mkdir -p ./dist/release
+          cp ./dist/agytui-win-x64/AgyTui.exe ./dist/release/AgyTui-win-x64.exe
+
+      - name: Build Go Multi-Platform Binaries (agyswitch)
+        shell: bash
+        run: |
+          cd apps/agyswitch
+          # Build Linux AMD64
+          GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o ../../dist/release/agyswitch-linux-amd64 .
+          # Build Windows AMD64
+          GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ../../dist/release/agyswitch-windows-amd64.exe .
+
+      - name: Generate SHA256 Checksums
+        shell: bash
+        run: |
+          cd dist/release
+          sha256sum * > checksums.txt
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            dist/release/AgyTui-win-x64.exe
+            dist/release/agyswitch-linux-amd64
+            dist/release/agyswitch-windows-amd64.exe
+            dist/release/checksums.txt

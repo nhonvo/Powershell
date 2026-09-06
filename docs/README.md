@@ -1,21 +1,13 @@
-# 🛸 PowerShell Control Center (`AgyTui`) — Documentation Gateway
+# 🛸 PowerShell Control Center & AGYSWITCH — Documentation Gateway
 
 > **Category**: System Sitemap & Index  
-> **Subsystem**: Core Documentation Suite  
-> **Date**: 2026-07-31  
-> **Author**: Antigravity AI Engineering Team  
-> **Status**: Completed / Active  
+> **Subsystem**: Centralized Documentation Suite  
+> **Status**: Production / Active  
 
 ---
 
 ## Executive Summary
-This document serves as the primary sitemap and entry point for the **PowerShell Control Center (`AgyTui`)** documentation suite. It provides a visual overview of system architecture, technology stack, directory layout, and quick navigation links to all technical specifications.
-
-## Table of Contents
-- [1. System Topology Overview](#1-system-topology-overview)
-- [2. Quick Navigation Sitemap](#2-quick-navigation-sitemap)
-- [3. Technology Stack & Prerequisites](#3-technology-stack--prerequisites)
-- [4. Repository Directory Structure](#4-repository-directory-structure)
+This document serves as the primary sitemap and entry point for the centralized documentation suite covering the **PowerShell Control Center (`AgyTui`)**, the **AGYSWITCH Go Engine (`agyswitch`)**, and **Cross-Platform Linux/WSL2 Integrations**.
 
 ---
 
@@ -23,14 +15,13 @@ This document serves as the primary sitemap and entry point for the **PowerShell
 
 ```mermaid
 graph TD
-    User(["User / Developer"]) -->|PowerShell Profile: cc / ccd| PSProfile[Microsoft.PowerShell_profile.ps1]
-    PSProfile -->|Launches| TUIBinary[AgyTui Terminal Binary]
-    TUIBinary -->|Dependency Injection| Bootstrapper[Bootstrapper.cs DI Container]
-    Bootstrapper -->|Schema Migration| Migrator[SqliteMigrationEngine]
-    Bootstrapper -->|Ingests JSON Data| Seeder[MasterSeeder Pipeline]
-    Migrator -->|Executes SQL V1..V6| DB[("SQLite agytui.db / agytui.dev.db")]
-    Seeder -->|Populates Tables| DB
-    TUIBinary -->|Spectre.Console| UI[Interactive 3-Pane TUI Engine]
+    User([User / Developer]) -->|Shell Triggers| PS[PowerShell / Zsh Profile]
+    PS -->|cc / ccd| CSharpTui[C# AgyTui Control Center]
+    PS -->|agysw / agyx| GoEngine[Go AGYSWITCH Engine]
+    CSharpTui -->|Persistence| SqliteDB[("SQLite (agytui.db)")]
+    GoEngine -->|AES-256 Vault & Mirroring| GeminiDirs["Contexts (~/.gemini_*)"]
+    GoEngine -->|HTTPS Quota Probe| CloudCodeAPI[Google CloudCode API]
+    GoEngine -->|Web Dashboard| SidecarServer[HTTP Sidecar :8080]
 ```
 
 ---
@@ -38,50 +29,42 @@ graph TD
 ## 2. Quick Navigation Sitemap
 
 ### 🏛️ 01. System Architecture
-- [System Overview, File Tree & Feature Blueprint](01_architecture/system_overview_and_file_tree.md): Complete repository tree, component topology, and annotated feature blueprint.
-- [Clean Architecture & Layer Boundaries](01_architecture/overview.md): Layer rules, DIP, and `Bootstrapper` DI container setup.
-- [DDD Bounded Contexts & Aggregate Roots](01_architecture/ddd_bounded_contexts.md): Account, Workspace, AI Agent, and Learning contexts.
-- [SQLite Database Schemas & Persistence](01_architecture/database_persistence.md): Migrations V1-V7, ERD diagram, and SqliteRepositoryBase.
+- [AGYSWITCH Go Engine Architecture](01_architecture/agyswitch_engine.md): Go v2.0 engine, multi-account context isolation, AES-256 vault encryption, quota probing, and subprocess launcher.
+- [System Overview & File Tree](01_architecture/system_overview_and_file_tree.md): Repository topology and subsystem relationships.
+- [Clean Architecture & Layer Boundaries](01_architecture/overview.md): C# Domain, Infrastructure, and UI layer separation rules.
+- [DDD Bounded Contexts & Aggregate Roots](01_architecture/ddd_bounded_contexts.md): Account, Workspace, AI Agent, and Learn contexts.
+- [SQLite Database Schemas & Persistence](01_architecture/database_persistence.md): Migrations V1-V7, SQLite schemas, and repositories.
 - [MasterSeeder Data Ingestion Pipeline](01_architecture/seeding_pipeline.md): Automatic JSON-to-SQLite data seeding.
 
 ### 👤 02. User Guide
-- [Automated Machine Setup & Onboarding](02_user_guide/onboarding_and_setup.md): Setup via `Install-AgyEnvironment.ps1`.
-- [PowerShell Commands & Profile Shortcuts](02_user_guide/powershell_profile_shortcuts.md): `cc`, `ccd`, `cnav`, `proj`, `reset-agy`.
-- [Spectre.Console TUI Screen Catalog](02_user_guide/tui_screen_catalog.md): Interactive screens, hotkeys, and navigation.
-- [Simple AGY CLI Menu UI Specification](02_user_guide/agy_cli_simple_menu_ui.md): Lightweight single-column CLI menu navigation design.
-- [Simple AGY CLI Implementation Checklist](02_user_guide/cli_first_checklist.md): Step-by-step checklist for building the single-column CLI menu.
-
-
+- [AGYSWITCH CLI & TUI Guide](02_user_guide/agyswitch_cli_tui.md): Interactive hotkeys, headless CLI commands, quota checking, and account switching.
+- [Automated Fresh Machine Setup](02_user_guide/onboarding_and_setup.md): Windows environment setup via `Install-AgyEnvironment.ps1` and Linux/WSL via `setup-ubuntu.sh`.
+- [PowerShell Profile Shortcuts & Aliases](02_user_guide/powershell_profile_shortcuts.md): Terminal navigation, Git helpers, and launcher aliases (`cc`, `cnav`, `agysw`, `proj`).
+- [Spectre.Console TUI Screen Catalog](02_user_guide/tui_screen_catalog.md): C# interactive 3-pane dashboard layout and screens.
 
 ### 🛠️ 03. Developer Guide
-- [Dual Environment Workflow (Dev vs. Stable)](03_developer_guide/dual_environment_workflow.md): Isolated sandbox testing flow.
-- [Testing & Architecture Rules](03_developer_guide/testing_and_architecture_rules.md): 117 XUnit tests and reflection rules.
-- [Production Release Publishing](03_developer_guide/release_publishing.md): Standalone build script `publish_release.ps1`.
+- [Dual Environment Workflow](03_developer_guide/dual_environment_workflow.md): Isolated Dev sandbox (`agytui.dev.db`) vs. Production (`agytui.db`).
+- [Testing & Quality Assurance](03_developer_guide/testing_and_architecture_rules.md): XUnit test suites, parity checks, and Pester tests.
+- [Production Release Publishing](03_developer_guide/release_publishing.md): Standalone single-file binary compilation via `build-release.ps1`.
+
+### 🚀 04. Command Enhancements
+- [Git Enhancements](04_command_enhancements/01_git_enhancement.md)
+- [Dotnet Enhancements](04_command_enhancements/02_dotnet_enhancement.md)
+- [Docker Enhancements](04_command_enhancements/03_docker_enhancement.md)
+- [AWS Enhancements](04_command_enhancements/04_aws_enhancement.md)
+- [Linux Neovim IDE](04_command_enhancements/05_linux_neovim_ide_flow.md)
+- [Linux CLI Tools](04_command_enhancements/06_linux_cli_tools.md)
+
+### 🗄️ Archive
+- [Archived Sprint Plans & Legacy Reports](archive/): Historical task plans, mockup blueprints, and interim audit reports preserved for auditability.
 
 ---
 
-## 3. Technology Stack & Prerequisites
+## 3. Technology Stack & Engines
 
-- **Core Framework**: .NET 9.0 (C# 13)
-- **Persistence Engine**: SQLite (`Microsoft.Data.Sqlite`) with automatic migration engine.
-- **UI Framework**: Spectre.Console (ANSI 256-color terminal widgets & reactive 3-pane layout).
-- **Shell Integration**: PowerShell 7+ (`Microsoft.PowerShell_profile.ps1`).
-
----
-
-## 4. Repository Directory Structure
-
-```text
-Powershell/
-├── Microsoft.PowerShell_profile.ps1          # Main PowerShell Profile Integrator
-├── csapp/
-│   ├── AgyTui/                               # Core Application Source Code (.NET 9)
-│   │   ├── Domain/                           # Pure DDD Domain Bounded Contexts
-│   │   ├── Infrastructure/                   # Technical Adapters, Repositories, DI & Seeding
-│   │   ├── UI/                               # Spectre.Console Screen Views & Command Handlers
-│   │   └── data/                             # SQLite DBs, Learning Assets & Skill Templates
-│   └── AgyTui.Tests/                         # Comprehensive XUnit Test Suite
-├── psapp/
-│   └── scripts/                              # Onboarding & Production Release Scripts
-└── docs/                                     # Master Documentation Suite
-```
+| Subsystem | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Shell Integration** | PowerShell 7+ & Zsh | Daily shell prompt, aliases, cross-platform shortcuts |
+| **Account Switcher** | Go 1.23+ (`agyswitch`) | High-speed multi-account switching, AES-256 keyring, live quota probing |
+| **Control Center** | .NET 9.0 (`AgyTui`) | Rich 3-pane terminal UI (Spectre.Console) for workspace & agent management |
+| **Persistence** | SQLite & AES-256 Files | Keyring token storage, workspace metadata, and session caches |
