@@ -1,9 +1,9 @@
 # 🏛️ Comprehensive Audit & Parity Report: Legacy C# System (`AgyTui`) vs. Go Engine Suite
 
 > **Category**: Historical System Audit & Architectural Parity  
-> **Target Legacy Codebase**: `apps/agytui/AgyTui` & `apps/agytui/AgyTui.Tests`  
-> **Source Files**: [apps/agytui/AgyTui/Program.cs](../../apps/agytui/AgyTui/Program.cs) · [apps/agytui/AgyTui/Infrastructure/Di/Bootstrapper.cs](../../apps/agytui/AgyTui/Infrastructure/Di/Bootstrapper.cs) · [apps/agytui/AgyTui/Infrastructure/Persistence/DbContext/SqliteDatabase.cs](../../apps/agytui/AgyTui/Infrastructure/Persistence/DbContext/SqliteDatabase.cs) · [apps/agytui/AgyTui/Infrastructure/Integrations/AgyClient/AgyVault.cs](../../apps/agytui/AgyTui/Infrastructure/Integrations/AgyClient/AgyVault.cs) · [apps/agytui/AgyTui/UI/Core/Navigation/CommandRouter.cs](../../apps/agytui/AgyTui/UI/Core/Navigation/CommandRouter.cs)  
-> **Windows UNC Reference**: `\\wsl.localhost\Ubuntu\home\truongnhon\projects\powershell-profile\apps\agytui`
+> **Target Legacy Codebase**: `archive/agytui/AgyTui` & `archive/agytui/AgyTui.Tests`  
+> **Source Files**: [Program.cs](../../archive/agytui/AgyTui/Program.cs) · [Bootstrapper.cs](../../archive/agytui/AgyTui/Infrastructure/Di/Bootstrapper.cs) · [SqliteDatabase.cs](../../archive/agytui/AgyTui/Infrastructure/Persistence/DbContext/SqliteDatabase.cs) · [AgyVault.cs](../../archive/agytui/AgyTui/Infrastructure/Integrations/AgyClient/AgyVault.cs) · [CommandRouter.cs](../../archive/agytui/AgyTui/UI/Core/Navigation/CommandRouter.cs)  
+> **Windows UNC Reference**: `\\wsl.localhost\Ubuntu\home\truongnhon\projects\powershell-profile\archive\agytui`
 
 ---
 

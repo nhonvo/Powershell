@@ -20,7 +20,7 @@ jobs:
         dotnet-version: '9.0.x'
 
     - name: Build AgyTui Assembly
-      run: dotnet build apps/agytui/AgyTui/AgyTui.csproj -c Release --verbosity quiet
+      run: dotnet build archive/agytui/AgyTui/AgyTui.csproj -c Release --verbosity quiet
 
     - name: Run Profile Verification Tests
       shell: powershell
@@ -43,18 +43,18 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.nuget/packages
-        key: nuget-${{ hashFiles('apps/agytui/Directory.Packages.props', 'apps/agytui/*/*.csproj') }}
+        key: nuget-${{ hashFiles('archive/agytui/Directory.Packages.props', 'archive/agytui/*/*.csproj') }}
         restore-keys: |
           nuget-
 
     - name: Restore dependencies
-      run: dotnet restore apps/agytui/AgyTui.slnx
+      run: dotnet restore archive/agytui/AgyTui.slnx
 
     - name: Build solution
-      run: dotnet build apps/agytui/AgyTui.slnx -c Release --no-restore -p:TreatWarningsAsErrors=true
+      run: dotnet build archive/agytui/AgyTui.slnx -c Release --no-restore -p:TreatWarningsAsErrors=true
 
     - name: Run unit & integration tests
-      run: dotnet test apps/agytui/AgyTui.Tests/AgyTui.Tests.csproj -c Release --no-build --verbosity normal
+      run: dotnet test archive/agytui/AgyTui.Tests/AgyTui.Tests.csproj -c Release --no-build --verbosity normal
 
   go-tests:
     name: Go agyswitch Engine

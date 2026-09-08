@@ -9,11 +9,11 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = $PSScriptRoot
-if (-not (Test-Path (Join-Path $repoRoot "apps\agytui\AgyTui\AgyTui.csproj")) -and -not (Test-Path (Join-Path $repoRoot "csapp\AgyTui\AgyTui.csproj"))) {
+if (-not (Test-Path (Join-Path $repoRoot "archive\agytui\AgyTui\AgyTui.csproj")) -and -not (Test-Path (Join-Path $repoRoot "apps\agytui\AgyTui\AgyTui.csproj")) -and -not (Test-Path (Join-Path $repoRoot "csapp\AgyTui\AgyTui.csproj"))) {
     $repoRoot = Split-Path -Parent $PSScriptRoot
 }
-$projectRelPath = if (Test-Path (Join-Path $repoRoot "apps\agytui\AgyTui\AgyTui.csproj")) { "apps/agytui/AgyTui/AgyTui.csproj" } else { "csapp/AgyTui/AgyTui.csproj" }
-$testProjectRelPath = if (Test-Path (Join-Path $repoRoot "apps\agytui\AgyTui.Tests\AgyTui.Tests.csproj")) { "apps/agytui/AgyTui.Tests/AgyTui.Tests.csproj" } else { "csapp/AgyTui.Tests/AgyTui.Tests.csproj" }
+$projectRelPath = if (Test-Path (Join-Path $repoRoot "archive\agytui\AgyTui\AgyTui.csproj")) { "archive/agytui/AgyTui/AgyTui.csproj" } elseif (Test-Path (Join-Path $repoRoot "apps\agytui\AgyTui\AgyTui.csproj")) { "apps/agytui/AgyTui/AgyTui.csproj" } else { "csapp/AgyTui/AgyTui.csproj" }
+$testProjectRelPath = if (Test-Path (Join-Path $repoRoot "archive\agytui\AgyTui.Tests\AgyTui.Tests.csproj")) { "archive/agytui/AgyTui.Tests/AgyTui.Tests.csproj" } elseif (Test-Path (Join-Path $repoRoot "apps\agytui\AgyTui.Tests\AgyTui.Tests.csproj")) { "apps/agytui/AgyTui.Tests/AgyTui.Tests.csproj" } else { "csapp/AgyTui.Tests/AgyTui.Tests.csproj" }
 if ([string]::IsNullOrWhiteSpace($OutputDir)) {
     $OutputDir = (Split-Path $projectRelPath) + "/dist"
 }

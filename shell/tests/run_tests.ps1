@@ -5,6 +5,9 @@ Write-Host "Running PowerShell Profile Tests..." -ForegroundColor Cyan
 
 # Pre-load C# types assembly so the AST parser can resolve types during parsing
 $candidates = @(
+    (Join-Path $PSScriptRoot "..\..\archive\agytui\AgyTui\bin\Release\net9.0\AgyTui.dll"),
+    (Join-Path $PSScriptRoot "..\..\archive\agytui\AgyTui\dist\AgyTui.dll"),
+    (Join-Path $PSScriptRoot "..\..\archive\agytui\AgyTui\bin\Debug\net9.0\AgyTui.dll"),
     (Join-Path $PSScriptRoot "..\..\apps\agytui\AgyTui\bin\Release\net9.0\AgyTui.dll"),
     (Join-Path $PSScriptRoot "..\..\apps\agytui\AgyTui\dist\AgyTui.dll"),
     (Join-Path $PSScriptRoot "..\..\apps\agytui\AgyTui\bin\Debug\net9.0\AgyTui.dll"),

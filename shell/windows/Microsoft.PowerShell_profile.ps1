@@ -20,7 +20,8 @@ if ($profileFile -and (Test-Path $profileFile -PathType Leaf)) {
     $Global:ProfileRepoRoot = $curr
 }
 
-$Global:AgyTuiDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "apps\agytui\AgyTui"
+$Global:AgyTuiDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "archive\agytui\AgyTui"
+if (-not (Test-Path $Global:AgyTuiDir)) { $Global:AgyTuiDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "apps\agytui\AgyTui" }
 if (-not (Test-Path $Global:AgyTuiDir)) { $Global:AgyTuiDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui" }
 
 #region 1. CONFIG & ENVIRONMENT

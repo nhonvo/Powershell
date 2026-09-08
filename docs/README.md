@@ -122,7 +122,7 @@ In September 2026, an exhaustive forensic code and architecture audit was execut
 
 ## 4. Legacy C# Control Center (`AgyTui`) Historical Role
 
-Prior to the Go micro-tool architecture, the developer environment was driven by **`AgyTui`**: a monolithic .NET 9.0 console application located in [apps/agytui/AgyTui/](../apps/agytui/AgyTui).
+Prior to the Go micro-tool architecture, the developer environment was driven by **`AgyTui`**: a monolithic .NET 9.0 console application now archived in [archive/agytui/AgyTui/](../archive/agytui/AgyTui).
 
 ### Why the Suite Migrated to Go:
 - **Startup Speed**: Cold-start dropped from **150ms–300ms (.NET CLR/JIT)** to **8ms–18ms (compiled native Go)**.
@@ -130,7 +130,7 @@ Prior to the Go micro-tool architecture, the developer environment was driven by
 - **Elimination of Shell Locking**: Loading .NET assemblies in-process inside PowerShell caused Win32 DLL file locks that blocked iterative rebuilds. Go standalone executables run out-of-process with zero locks.
 
 ### The Historical Value of the C# Codebase:
-The C# codebase is **fully preserved in `apps/agytui/`** as an architectural reference and feature gold-standard. It contains **200+ C# files**, **272 registered command handlers**, **60+ DI services**, a unified **relational SQLite database with migrations V1 through V7**, and **261 passing xUnit tests**.
+The C# codebase is **fully preserved in `archive/agytui/`** as an architectural reference and feature gold-standard. It contains **200+ C# files**, **272 registered command handlers**, **60+ DI services**, a unified **relational SQLite database with migrations V1 through V7**, and **261 passing xUnit tests**.
 
 Critical features originally implemented in C# that are slated for parity restoration in Go include:
 - **SuperMemo-2 (SM-2) Spaced Repetition Suite**: Japanese (Kana, Kanji, JLPT), English vocabulary, C# .NET 9, DSA, and STAR behavioral interview question banks (slated for new Go app `agylearn`).
