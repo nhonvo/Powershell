@@ -107,3 +107,5 @@ All data access is implemented via generic base classes inheriting from `IReposi
 ## 5. Cross References
 - [MasterSeeder Seeding Pipeline](seeding_pipeline.md)
 - [DDD Bounded Contexts](ddd_bounded_contexts.md)
+- [C# Legacy System & Parity Audit](../reports/08_cs_legacy_system_parity_audit.md)
+

@@ -22,10 +22,10 @@ This document specifies the XUnit test suite structure, reflection-based archite
 
 ## 1. Test Suite Structure
 
-The test project is located at `csapp/AgyTui.Tests/`:
+The test project is located at `apps/agytui/AgyTui.Tests/`:
 
 ```text
-csapp/AgyTui.Tests/
+apps/agytui/AgyTui.Tests/
 ├── Fixtures/                   # Service Container Fixtures (ServiceTestFixture.cs)
 ├── Integration/                # SQLite & JSON Storage Integration Tests
 ├── Mocks/                      # In-Memory SQLite Mock Connections & Repos
@@ -76,7 +76,7 @@ public void Domain_Namespace_DoesNotReference_Infrastructure_Or_UI()
 Execute the full test suite from the terminal:
 
 ```powershell
-dotnet test csapp/AgyTui.Tests/AgyTui.Tests.csproj -c Debug
+dotnet test apps/agytui/AgyTui.Tests/AgyTui.Tests.csproj -c Debug
 ```
 
 ---
@@ -84,6 +84,7 @@ dotnet test csapp/AgyTui.Tests/AgyTui.Tests.csproj -c Debug
 ## 5. Cross References
 - [Clean Architecture Overview](../01_architecture/overview.md)
 - [Production Release Publishing](release_publishing.md)
+- [C# Legacy System & Parity Audit](../reports/08_cs_legacy_system_parity_audit.md)
 
 ---
 

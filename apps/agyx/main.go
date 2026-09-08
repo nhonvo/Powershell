@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
 
 	"agyx/internal/proxy"
 	"agyx/internal/view"
@@ -45,7 +46,9 @@ func main() {
 	if tool != nil {
 		args := os.Args[2:]
 		if err := proxy.Execute(tool.BinaryName, args); err != nil {
-			// If error is an ExitError, preserve the exit code
+			if exitErr, ok := err.(*exec.ExitError); ok {
+				os.Exit(exitErr.ExitCode())
+			}
 			os.Exit(1)
 		}
 		return
@@ -75,6 +78,12 @@ Registered Module Proxies:
        Aliases: d, ram, ps
   agyx term [args...]              Proxy to 'agyterm' (Terminal Fonts & Shell Themes)
        Aliases: t, theme, font
+  agyx mobile [args...]            Proxy to 'agymobile' (Mobile Cockpit & Remote Station)
+       Aliases: m, remote, phone, pwa
+  agyx ollama [args...]            Proxy to 'agyollama' (Local Ollama & Open LLM AI Cockpit)
+       Aliases: ai, llm, localai, model
+  agyx aws [args...]               Proxy to 'aws' (AWS Cloud Identity, S3 & LocalStack)
+       Aliases: cloud, s3, localstack
 
 Examples:
   agyx switch                      Launch interactive Antigravity switcher
@@ -82,7 +91,11 @@ Examples:
   agyx git worktree add agent/test Create isolated AI agent worktree
   agyx docker ram                  Display real-time WSL2 RAM & Swap headroom
   agyx term theme neko             Switch shell prompt theme to 'neko'
-  agyx term font Ubuntu "Hack Nerd Font" 13 Set Windows Terminal font`)
+  agyx term font Ubuntu "Hack Nerd Font" 13 Set Windows Terminal font
+  agyx mobile                      Launch mobile cockpit station
+  agyx mobile serve                Start mobile web dashboard on port 7890
+  agyx ollama status               Check local Ollama daemon status
+  agyx ollama run qwen2.5-coder:7b Launch interactive local AI pair programming`)
 }
 
 func printSuiteStatus() {
@@ -111,6 +124,9 @@ alias agy-proj="agyx proj"
 alias agy-git="agyx git"
 alias agy-docker="agyx docker"
 alias agy-term="agyx term"
+alias agy-mobile="agyx mobile"
+alias agy-ollama="agyx ollama"
+alias agy-ai="agyx ai"
 
 # One-key direct shortcuts
 alias agys="agyx switch"
@@ -118,5 +134,8 @@ alias agyp="agyx proj"
 alias agyg="agyx git"
 alias agyd="agyx docker"
 alias agyt="agyx term"
+alias agym="agyx mobile"
+alias agyo="agyx ollama"
+alias agyai="agyx ai"
 `)
 }

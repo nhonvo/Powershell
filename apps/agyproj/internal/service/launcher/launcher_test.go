@@ -31,3 +31,18 @@ func TestLauncher_Launch(t *testing.T) {
 		t.Errorf("unexpected args: %+v", executedArgs)
 	}
 }
+
+func TestLauncher_WindowsPathConversion(t *testing.T) {
+	// Test basic Windows path translation
+	wslPath, err := launcher.WindowsToWslPath(`C:\Users\TestUser\AppData\Local`)
+	if err != nil {
+		t.Fatalf("unexpected error converting path: %v", err)
+	}
+	if wslPath != "/mnt/c/Users/TestUser/AppData/Local" {
+		t.Errorf("expected '/mnt/c/Users/TestUser/AppData/Local', got '%s'", wslPath)
+	}
+
+	// Test FindWindowsVSCode does not crash
+	_ = launcher.FindWindowsVSCode()
+}
+

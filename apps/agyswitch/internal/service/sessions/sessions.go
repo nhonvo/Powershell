@@ -27,8 +27,66 @@ func NewManager(userHome string) *Manager {
 	return &Manager{UserHome: userHome}
 }
 
+// ConsolidateSessions merges conversation databases and brain folders from historical account snapshots into primary ~/.gemini.
+func (m *Manager) ConsolidateSessions() {
+	primaryDB := filepath.Join(m.UserHome, ".gemini", "antigravity-cli", "conversation_summaries.db")
+	if _, err := os.Stat(primaryDB); err != nil {
+		return
+	}
+
+	script := `
+import sqlite3, glob, os, shutil, sys
+
+user_home = sys.argv[1]
+primary_db = os.path.join(user_home, ".gemini", "antigravity-cli", "conversation_summaries.db")
+primary_brain = os.path.join(user_home, ".gemini", "antigravity-cli", "brain")
+
+if not os.path.exists(primary_db):
+    sys.exit(0)
+
+try:
+    conn = sqlite3.connect(primary_db)
+    c = conn.cursor()
+    all_dbs = glob.glob(os.path.join(user_home, ".gemini*", "antigravity-cli", "conversation_summaries.db"))
+    for db in all_dbs:
+        if os.path.abspath(db) == os.path.abspath(primary_db):
+            continue
+        try:
+            s_conn = sqlite3.connect(db)
+            s_c = s_conn.cursor()
+            rows = s_c.execute("SELECT * FROM conversation_summaries").fetchall()
+            col_names = [d[0] for d in s_c.description]
+            placeholders = ",".join(["?"] * len(col_names))
+            sql = f"INSERT OR REPLACE INTO conversation_summaries ({','.join(col_names)}) VALUES ({placeholders})"
+            for r in rows:
+                c.execute(sql, r)
+            s_conn.close()
+        except Exception:
+            pass
+    conn.commit()
+    conn.close()
+
+    for s_brain in glob.glob(os.path.join(user_home, ".gemini*", "antigravity-cli", "brain")):
+        if os.path.abspath(s_brain) == os.path.abspath(primary_brain):
+            continue
+        try:
+            for item in os.listdir(s_brain):
+                src = os.path.join(s_brain, item)
+                dst = os.path.join(primary_brain, item)
+                if os.path.isdir(src) and not os.path.exists(dst):
+                    shutil.copytree(src, dst)
+        except Exception:
+            pass
+except Exception:
+    pass
+`
+	cmd := exec.Command("python3", "-c", script, m.UserHome)
+	_ = cmd.Run()
+}
+
 // DiscoverPrimarySessions returns top-level CLI sessions matching agy /resume dialog.
 func (m *Manager) DiscoverPrimarySessions() ([]model.SessionInfo, error) {
+	m.ConsolidateSessions()
 	dbPath := filepath.Join(m.UserHome, ".gemini", "antigravity-cli", "conversation_summaries.db")
 	if fi, err := os.Stat(dbPath); err == nil && !fi.IsDir() {
 		if sessions, err := m.queryConversationSummaries(dbPath); err == nil && len(sessions) > 0 {

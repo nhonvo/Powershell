@@ -1,8 +1,10 @@
 package launcher
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
@@ -32,8 +34,7 @@ func (l *Launcher) Launch(ide string, projectDir string) error {
 	switch ide {
 	case "code", "vscode":
 		if _, err := exec.LookPath("code"); err != nil {
-			cand := "/mnt/c/Users/TruongNhon/AppData/Local/Programs/Microsoft VS Code/bin/code"
-			if fi, errStat := os.Stat(cand); errStat == nil && !fi.IsDir() {
+			if cand := findWindowsVSCode(); cand != "" {
 				return l.Runner(cand, projectDir)
 			}
 		}
@@ -111,3 +112,100 @@ func FormatIdeName(ide string) string {
 		return ide
 	}
 }
+
+// findWindowsVSCode attempts to dynamically discover the VS Code executable in WSL/Windows.
+func findWindowsVSCode() string {
+	// 1. Check LOCALAPPDATA environment variable
+	if localApp := os.Getenv("LOCALAPPDATA"); localApp != "" {
+		if p, err := windowsToWslPath(localApp); err == nil {
+			cand := filepath.Join(p, "Programs", "Microsoft VS Code", "bin", "code")
+			if isFile(cand) {
+				return cand
+			}
+		}
+	}
+
+	// 2. Check USERPROFILE environment variable
+	if userProf := os.Getenv("USERPROFILE"); userProf != "" {
+		if p, err := windowsToWslPath(userProf); err == nil {
+			cand := filepath.Join(p, "AppData", "Local", "Programs", "Microsoft VS Code", "bin", "code")
+			if isFile(cand) {
+				return cand
+			}
+		}
+	}
+
+	// 3. Dynamically check cmd.exe /c echo %LOCALAPPDATA%
+	if out, err := exec.Command("cmd.exe", "/c", "echo %LOCALAPPDATA%").Output(); err == nil {
+		raw := strings.TrimSpace(string(out))
+		if raw != "" && !strings.Contains(raw, "%LOCALAPPDATA%") {
+			if p, err := windowsToWslPath(raw); err == nil {
+				cand := filepath.Join(p, "Programs", "Microsoft VS Code", "bin", "code")
+				if isFile(cand) {
+					return cand
+				}
+			}
+		}
+	}
+
+	// 4. Dynamically check cmd.exe /c echo %USERPROFILE%
+	if out, err := exec.Command("cmd.exe", "/c", "echo %USERPROFILE%").Output(); err == nil {
+		raw := strings.TrimSpace(string(out))
+		if raw != "" && !strings.Contains(raw, "%USERPROFILE%") {
+			if p, err := windowsToWslPath(raw); err == nil {
+				cand := filepath.Join(p, "AppData", "Local", "Programs", "Microsoft VS Code", "bin", "code")
+				if isFile(cand) {
+					return cand
+				}
+			}
+		}
+	}
+
+	// 5. Fallback glob across /mnt/c/Users/*/AppData/Local/Programs/Microsoft VS Code/bin/code
+	matches, _ := filepath.Glob("/mnt/c/Users/*/AppData/Local/Programs/Microsoft VS Code/bin/code")
+	for _, m := range matches {
+		if isFile(m) {
+			return m
+		}
+	}
+
+	return ""
+}
+
+func windowsToWslPath(winPath string) (string, error) {
+	winPath = strings.TrimSpace(winPath)
+	if winPath == "" {
+		return "", fmt.Errorf("empty path")
+	}
+	// Try wslpath utility if present
+	if out, err := exec.Command("wslpath", "-u", winPath).Output(); err == nil {
+		res := strings.TrimSpace(string(out))
+		if res != "" {
+			return res, nil
+		}
+	}
+	// Manual drive translation fallback (e.g. C:\path -> /mnt/c/path)
+	if len(winPath) >= 2 && winPath[1] == ':' {
+		drive := strings.ToLower(string(winPath[0]))
+		rest := strings.ReplaceAll(winPath[2:], `\`, `/`)
+		return filepath.Clean(fmt.Sprintf("/mnt/%s/%s", drive, strings.TrimPrefix(rest, "/"))), nil
+	}
+	return filepath.Clean(winPath), nil
+}
+
+func isFile(path string) bool {
+	fi, err := os.Stat(path)
+	return err == nil && !fi.IsDir()
+}
+
+// WindowsToWslPath converts a Windows path (e.g. C:\Users) to a WSL path (/mnt/c/Users).
+func WindowsToWslPath(winPath string) (string, error) {
+	return windowsToWslPath(winPath)
+}
+
+// FindWindowsVSCode dynamically discovers the VS Code binary on Windows/WSL.
+func FindWindowsVSCode() string {
+	return findWindowsVSCode()
+}
+
+

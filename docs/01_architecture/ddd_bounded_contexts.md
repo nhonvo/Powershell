@@ -65,7 +65,7 @@ classDiagram
 ## 2. AccountContext
 
 - **Location**: `AgyTui.Domain.AccountContext`
-- **Aggregate Root**: `csapp/AgyTui/Domain/AccountContext/AccountAggregate.cs`
+- **Aggregate Root**: `apps/agytui/AgyTui/Domain/AccountContext/AccountAggregate.cs`
 - **Value Objects / Records**:
   - `AccountMetadata`: Holds JSON-serializable account statistics (`UsageCount`, `QuotaStatus`, `LastUsed`, `RequestHistory`).
   - `EncryptedToken`: Encapsulates AES-encrypted keyring OAuth tokens.
@@ -76,7 +76,7 @@ classDiagram
 ## 3. WorkspaceContext
 
 - **Location**: `AgyTui.Domain.WorkspaceContext`
-- **Aggregate Root**: `csapp/AgyTui/Domain/WorkspaceContext/WorkspaceAggregate.cs`
+- **Aggregate Root**: `apps/agytui/AgyTui/Domain/WorkspaceContext/WorkspaceAggregate.cs`
 - **Value Objects**:
   - `ProjectPath`: Strongly typed path validation ensuring target directories exist.
   - `WorkspaceEntry`: DTO representation for `priority_workspaces.json`.
@@ -95,7 +95,7 @@ classDiagram
 ## 5. LearnContext
 
 - **Location**: `AgyTui.Domain.LearnContext`
-- **Aggregate Root**: `csapp/AgyTui/Domain/LearnContext/FlashcardDeck.cs`
+- **Aggregate Root**: `apps/agytui/AgyTui/Domain/LearnContext/FlashcardDeck.cs`
 - **Core Domain Records**:
   - `SrState`: SuperMemo 2 algorithm state (`EaseFactor`, `IntervalDays`, `Repetitions`, `NextReview`, `Status`).
   - `FlashCard`: Individual card with front/back text, mnemonic, and `SrState`.
@@ -106,3 +106,5 @@ classDiagram
 ## 6. Cross References
 - [Clean Architecture Overview](overview.md)
 - [Database Persistence Engine](database_persistence.md)
+- [C# Legacy System & Parity Audit](../reports/08_cs_legacy_system_parity_audit.md)
+

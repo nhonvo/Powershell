@@ -4,6 +4,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -180,4 +181,233 @@ func TestGitOps_CherryPick(t *testing.T) {
 		t.Fatalf("CherryPick failed: %v", err)
 	}
 }
+
+func TestGitOps_GitUndo(t *testing.T) {
+	repo := createTestRepo(t)
+
+	// Add a new commit
+	file := filepath.Join(repo, "undo_test.txt")
+	_ = os.WriteFile(file, []byte("will be undone"), 0644)
+	err := Commit(repo, "feat: commit to undo", true)
+	if err != nil {
+		t.Fatalf("Commit failed: %v", err)
+	}
+
+	commitsBefore, _ := GetLog(repo, 5)
+	if len(commitsBefore) < 2 {
+		t.Fatalf("expected at least 2 commits before undo, got %d", len(commitsBefore))
+	}
+
+	// Undo commit
+	if err := GitUndo(repo); err != nil {
+		t.Fatalf("GitUndo failed: %v", err)
+	}
+
+	commitsAfter, _ := GetLog(repo, 5)
+	if len(commitsAfter) != len(commitsBefore)-1 {
+		t.Errorf("expected %d commits after undo, got %d", len(commitsBefore)-1, len(commitsAfter))
+	}
+
+	// Staged file should still exist with changes preserved
+	st, err := GetRepoStatus(repo)
+	if err != nil {
+		t.Fatalf("GetRepoStatus failed: %v", err)
+	}
+	if st.StagedFiles == 0 {
+		t.Errorf("expected staged files to be preserved after soft reset undo")
+	}
+}
+
+func TestGitOps_ChangedFiles_Staging_Unstaging(t *testing.T) {
+	repo := createTestRepo(t)
+
+	// Create untracked file
+	file := filepath.Join(repo, "test_file.txt")
+	_ = os.WriteFile(file, []byte("some content\n"), 0644)
+
+	files, err := GetChangedFiles(repo)
+	if err != nil {
+		t.Fatalf("GetChangedFiles failed: %v", err)
+	}
+	if len(files) != 1 {
+		t.Fatalf("expected 1 changed file, got %d", len(files))
+	}
+	if !files[0].IsUntracked || files[0].IsStaged || files[0].Path != "test_file.txt" {
+		t.Fatalf("unexpected changed file: %+v", files[0])
+	}
+
+	// Stage file
+	if err := StageFile(repo, "test_file.txt"); err != nil {
+		t.Fatalf("StageFile failed: %v", err)
+	}
+
+	filesAfterStage, err := GetChangedFiles(repo)
+	if err != nil {
+		t.Fatalf("GetChangedFiles failed: %v", err)
+	}
+	if len(filesAfterStage) != 1 {
+		t.Fatalf("expected 1 file after staging, got %d", len(filesAfterStage))
+	}
+	if !filesAfterStage[0].IsStaged || filesAfterStage[0].IsUntracked {
+		t.Fatalf("expected file to be staged: %+v", filesAfterStage[0])
+	}
+
+	// Unstage file
+	if err := UnstageFile(repo, "test_file.txt"); err != nil {
+		t.Fatalf("UnstageFile failed: %v", err)
+	}
+
+	filesAfterUnstage, err := GetChangedFiles(repo)
+	if err != nil {
+		t.Fatalf("GetChangedFiles failed: %v", err)
+	}
+	if len(filesAfterUnstage) != 1 {
+		t.Fatalf("expected 1 file after unstaging, got %d", len(filesAfterUnstage))
+	}
+	if filesAfterUnstage[0].IsStaged {
+		t.Fatalf("expected file to be unstaged: %+v", filesAfterUnstage[0])
+	}
+}
+
+func TestGitOps_RejectFile_And_RejectAll(t *testing.T) {
+	repo := createTestRepo(t)
+
+	// Modify tracked file
+	readme := filepath.Join(repo, "README.md")
+	_ = os.WriteFile(readme, []byte("modified readme content\n"), 0644)
+
+	// Create untracked file
+	junk := filepath.Join(repo, "junk.txt")
+	_ = os.WriteFile(junk, []byte("junk content\n"), 0644)
+
+	// Reject untracked file
+	if err := RejectFile(repo, "junk.txt", true); err != nil {
+		t.Fatalf("RejectFile untracked failed: %v", err)
+	}
+	if _, err := os.Stat(junk); !os.IsNotExist(err) {
+		t.Fatalf("expected junk.txt to be removed")
+	}
+
+	// Reject modified tracked file
+	if err := RejectFile(repo, "README.md", false); err != nil {
+		t.Fatalf("RejectFile tracked failed: %v", err)
+	}
+	content, _ := os.ReadFile(readme)
+	if string(content) != "# Test Repo\n" {
+		t.Fatalf("expected README.md to be restored, got: %s", string(content))
+	}
+
+	// Test RejectAll
+	_ = os.WriteFile(readme, []byte("another modification\n"), 0644)
+	newJunk := filepath.Join(repo, "junk2.txt")
+	_ = os.WriteFile(newJunk, []byte("junk2 content\n"), 0644)
+
+	if err := RejectAll(repo); err != nil {
+		t.Fatalf("RejectAll failed: %v", err)
+	}
+	if _, err := os.Stat(newJunk); !os.IsNotExist(err) {
+		t.Fatalf("expected junk2.txt to be removed by RejectAll")
+	}
+	contentAfter, _ := os.ReadFile(readme)
+	if string(contentAfter) != "# Test Repo\n" {
+		t.Fatalf("expected README.md to be restored by RejectAll, got: %s", string(contentAfter))
+	}
+}
+
+func TestGitOps_GetFileDiff(t *testing.T) {
+	repo := createTestRepo(t)
+
+	// Modify README.md
+	readme := filepath.Join(repo, "README.md")
+	_ = os.WriteFile(readme, []byte("# Test Repo\nNew Line\n"), 0644)
+
+	diffUnstaged, err := GetFileDiff(repo, "README.md", false)
+	if err != nil {
+		t.Fatalf("GetFileDiff unstaged failed: %v", err)
+	}
+	if !strings.Contains(diffUnstaged, "+New Line") {
+		t.Fatalf("expected diff to contain '+New Line', got: %s", diffUnstaged)
+	}
+
+	// Stage README.md
+	_ = StageFile(repo, "README.md")
+	diffStaged, err := GetFileDiff(repo, "README.md", true)
+	if err != nil {
+		t.Fatalf("GetFileDiff staged failed: %v", err)
+	}
+	if !strings.Contains(diffStaged, "+New Line") {
+		t.Fatalf("expected staged diff to contain '+New Line', got: %s", diffStaged)
+	}
+
+	// Untracked file preview
+	untracked := filepath.Join(repo, "preview.txt")
+	_ = os.WriteFile(untracked, []byte("Preview Line 1\nPreview Line 2\n"), 0644)
+	diffUntracked, err := GetFileDiff(repo, "preview.txt", false)
+	if err != nil {
+		t.Fatalf("GetFileDiff untracked failed: %v", err)
+	}
+	if !strings.Contains(diffUntracked, "+Preview Line 1") {
+		t.Fatalf("expected untracked diff to contain '+Preview Line 1', got: %s", diffUntracked)
+	}
+}
+
+func TestGitOps_ConflictResolution(t *testing.T) {
+	repo := createTestRepo(t)
+
+	// Create branch conflict-branch
+	_ = CheckoutBranch(repo, "conflict-branch", true)
+	cFile := filepath.Join(repo, "conflict.txt")
+	_ = os.WriteFile(cFile, []byte("theirs content\n"), 0644)
+	_ = Commit(repo, "commit on branch", true)
+
+	// Switch back to main
+	_ = CheckoutBranch(repo, "main", false)
+	_ = os.WriteFile(cFile, []byte("ours content\n"), 0644)
+	_ = Commit(repo, "commit on main", true)
+
+	// Merge branch to cause conflict
+	_ = exec.Command("git", "-C", repo, "merge", "conflict-branch").Run()
+
+	files, err := GetChangedFiles(repo)
+	if err != nil {
+		t.Fatalf("GetChangedFiles during conflict failed: %v", err)
+	}
+	foundConflict := false
+	for _, f := range files {
+		if f.Path == "conflict.txt" && f.IsConflict {
+			foundConflict = true
+			break
+		}
+	}
+	if !foundConflict {
+		t.Fatalf("expected conflict.txt to be flagged as conflict, got: %+v", files)
+	}
+
+	// Resolve with "ours"
+	if err := ResolveConflict(repo, "conflict.txt", "ours"); err != nil {
+		t.Fatalf("ResolveConflict failed: %v", err)
+	}
+
+	content, _ := os.ReadFile(cFile)
+	if string(content) != "ours content\n" {
+		t.Fatalf("expected 'ours content\\n', got: %s", string(content))
+	}
+
+	filesAfter, err := GetChangedFiles(repo)
+	if err != nil {
+		t.Fatalf("GetChangedFiles after resolve failed: %v", err)
+	}
+	for _, f := range filesAfter {
+		if f.Path == "conflict.txt" {
+			if f.IsConflict {
+				t.Fatalf("expected conflict to be resolved, but IsConflict is true")
+			}
+			if !f.IsStaged {
+				t.Fatalf("expected conflict.txt to be staged after resolution")
+			}
+		}
+	}
+}
+
+
 

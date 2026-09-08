@@ -61,7 +61,41 @@ func (s *Store) GetActiveAccount() string {
 	return acc
 }
 
-// SetActiveAccount backs up current active context, mirrors target context, and syncs keyring.
+// syncAccountCredentials selectively copies OAuth tokens and keyring files between src and dst.
+func syncAccountCredentials(src, dst string) {
+	_ = os.MkdirAll(dst, 0755)
+	_ = os.MkdirAll(filepath.Join(dst, "antigravity-cli"), 0755)
+
+	credFiles := []string{
+		"antigravity-oauth-token",
+		filepath.Join("antigravity-cli", "antigravity-oauth-token"),
+		"keyring_token.txt",
+		"google_accounts.json",
+	}
+
+	for _, rel := range credFiles {
+		srcFile := filepath.Join(src, rel)
+		dstFile := filepath.Join(dst, rel)
+		if fi, err := os.Stat(srcFile); err == nil && !fi.IsDir() {
+			_ = copyFile(srcFile, dstFile)
+		}
+	}
+
+	// Copy .keyring directory if present
+	srcKeyring := filepath.Join(src, ".keyring")
+	if fi, err := os.Stat(srcKeyring); err == nil && fi.IsDir() {
+		dstKeyring := filepath.Join(dst, ".keyring")
+		_ = os.MkdirAll(dstKeyring, 0700)
+		entries, _ := os.ReadDir(srcKeyring)
+		for _, e := range entries {
+			if !e.IsDir() {
+				_ = copyFile(filepath.Join(srcKeyring, e.Name()), filepath.Join(dstKeyring, e.Name()))
+			}
+		}
+	}
+}
+
+// SetActiveAccount backs up current active credentials, restores target credentials, and syncs keyring.
 func (s *Store) SetActiveAccount(accountName string) error {
 	acc := strings.TrimSpace(accountName)
 	if acc == "" {
@@ -73,9 +107,7 @@ func (s *Store) SetActiveAccount(accountName string) error {
 	currentActive := s.GetActiveAccount()
 	if currentActive != "" && !strings.EqualFold(currentActive, "default") && !strings.EqualFold(currentActive, acc) {
 		currentActiveDir := s.GetAccountDirectory(currentActive)
-		_ = os.MkdirAll(currentActiveDir, 0755)
-
-		_ = MirrorDirectory(primaryDir, currentActiveDir)
+		syncAccountCredentials(primaryDir, currentActiveDir)
 	}
 
 	targetDir := s.GetAccountDirectory(acc)
@@ -83,7 +115,7 @@ func (s *Store) SetActiveAccount(accountName string) error {
 		_ = os.MkdirAll(targetDir, 0755)
 	}
 
-	_ = MirrorDirectory(targetDir, primaryDir)
+	syncAccountCredentials(targetDir, primaryDir)
 
 	activeFile := filepath.Join(primaryDir, "active_account.txt")
 	_ = os.WriteFile(activeFile, []byte(acc), 0644)
@@ -94,6 +126,18 @@ func (s *Store) SetActiveAccount(accountName string) error {
 
 func MirrorDirectory(src, dst string) error {
 	_ = os.MkdirAll(dst, 0755)
+	skipPrefixes := []string{
+		"brain",
+		"antigravity-cli/brain",
+		"antigravity-cli/conversations",
+		"antigravity-cli/conversation_summaries.db",
+		"antigravity-cli/history.jsonl",
+		"antigravity-cli/bin",
+		"antigravity-cli/cache",
+		"antigravity-cli/log",
+		"skills",
+	}
+
 	return filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return nil
@@ -102,11 +146,14 @@ func MirrorDirectory(src, dst string) error {
 		if err != nil || relPath == "." {
 			return nil
 		}
-		if strings.HasPrefix(relPath, "brain") || strings.HasPrefix(relPath, "antigravity-cli/log") {
-			if info.IsDir() {
-				return filepath.SkipDir
+		relSlash := filepath.ToSlash(relPath)
+		for _, sp := range skipPrefixes {
+			if relSlash == sp || strings.HasPrefix(relSlash, sp+"/") {
+				if info.IsDir() {
+					return filepath.SkipDir
+				}
+				return nil
 			}
-			return nil
 		}
 		dstPath := filepath.Join(dst, relPath)
 		if info.IsDir() {

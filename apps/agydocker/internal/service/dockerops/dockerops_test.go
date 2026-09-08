@@ -21,3 +21,41 @@ func TestDockerOps_ListContainers(t *testing.T) {
 	// Should run without panic regardless of daemon status
 	_, _ = ListContainers()
 }
+
+func TestDockerOps_PruneVolumes(t *testing.T) {
+	// Should run without panic regardless of daemon status
+	_, _ = PruneVolumes()
+}
+
+func TestDockerOps_KillContainer(t *testing.T) {
+	// Non-existent container test should safely return error or handle execution
+	_ = KillContainer("test_nonexistent_container_xyz")
+}
+
+func TestDockerOps_RemoveContainer(t *testing.T) {
+	// Non-existent container test should safely return error or handle execution
+	_ = RemoveContainer("test_nonexistent_container_xyz")
+}
+
+func TestDockerOps_DownCompose(t *testing.T) {
+	// Empty or Standalone project names should return error immediately
+	if err := DownCompose(""); err == nil {
+		t.Errorf("expected error for empty project")
+	}
+	if err := DownCompose("Standalone"); err == nil {
+		t.Errorf("expected error for Standalone project")
+	}
+	// Non-existent compose stack should return error without panic
+	_ = DownCompose("test_nonexistent_stack_xyz")
+}
+
+func TestDockerOps_DownContainer(t *testing.T) {
+	// Empty container ID should return error
+	if err := DownContainer(""); err == nil {
+		t.Errorf("expected error for empty container id")
+	}
+	// Non-existent container test should safely return error or handle execution
+	_ = DownContainer("test_nonexistent_container_xyz")
+}
+
+

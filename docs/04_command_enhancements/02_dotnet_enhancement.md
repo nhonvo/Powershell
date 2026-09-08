@@ -42,7 +42,7 @@ Following our established Dual-Tier Architecture pattern, **.NET Developer Tools
 
 ## 4. TUI Menu Tree Folder Mapping
 
-All .NET developer tools are grouped under **`📂 .NET Project Tools`** in [CommandRegistry.cs](file:///C:/Users/TruongNhon/Documents/Powershell/csapp/AgyTui/UI/Core/Registries/CommandRegistry.cs):
+All .NET developer tools are grouped under **`📂 .NET Project Tools`** in [CommandRegistry.cs](../../apps/agytui/AgyTui/UI/Core/Commands/CommandRegistry.cs):
 
 ```text
 ─ [-] 📂 .NET Project Tools

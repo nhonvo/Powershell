@@ -23,15 +23,17 @@ type App struct {
 	GroupViewMode int // 0: Grouped by Project, 1: Flat List
 	StatusMsg     string
 	tabSwitched   bool
+	dockerErr     error
 
 	cachedContainers []model.ContainerInfo
 	cachedMem        *model.MemInfo
 	cachedVolumes    []model.VolumeInfo
 	needsReload      bool
 
-	pendingActions map[string]string // map[containerID]action ("stopping", "starting", "restarting")
+	pendingActions map[string]string // map[containerID]action ("stopping", "starting", "restarting", "downing")
 	pendingMu      sync.RWMutex
 	spinnerIdx     int
+	isReloading    bool
 }
 
 func NewApp() *App {
@@ -66,15 +68,50 @@ func (a *App) hasPendingActions() bool {
 	return len(a.pendingActions) > 0
 }
 
+func (a *App) isReloadingActive() bool {
+	a.pendingMu.RLock()
+	defer a.pendingMu.RUnlock()
+	return a.isReloading
+}
+
+func (a *App) reloadAsync() {
+	a.pendingMu.Lock()
+	if a.isReloading {
+		a.pendingMu.Unlock()
+		return
+	}
+	a.isReloading = true
+	a.pendingMu.Unlock()
+
+	go func() {
+		containers, dErr := dockerops.ListContainers()
+		mem, _ := dockerops.GetMemoryInfo()
+		vols, _ := dockerops.ListVolumes()
+
+		a.pendingMu.Lock()
+		a.cachedContainers = containers
+		a.dockerErr = dErr
+		a.cachedMem = mem
+		a.cachedVolumes = vols
+		a.isReloading = false
+		a.pendingMu.Unlock()
+	}()
+}
+
 func (a *App) getOrderedContainers() []model.ContainerInfo {
+	a.pendingMu.RLock()
+	containers := make([]model.ContainerInfo, len(a.cachedContainers))
+	copy(containers, a.cachedContainers)
+	a.pendingMu.RUnlock()
+
 	if a.GroupViewMode == 1 {
-		return a.cachedContainers
+		return containers
 	}
 
 	// Group by ComposeProject
 	groups := make(map[string][]model.ContainerInfo)
 	var projNames []string
-	for _, c := range a.cachedContainers {
+	for _, c := range containers {
 		proj := c.ComposeProject
 		if proj == "" {
 			proj = "Standalone"
@@ -113,11 +150,20 @@ func (a *App) RunInteractive() error {
 	fmt.Print("\033[?1049h\033[?25l\033[H\033[2J")
 
 	for {
-		if a.needsReload || a.cachedContainers == nil {
-			a.cachedContainers, _ = dockerops.ListContainers()
+		a.pendingMu.RLock()
+		needInit := a.cachedContainers == nil
+		needRel := a.needsReload
+		a.pendingMu.RUnlock()
+
+		if needInit {
+			a.cachedContainers, a.dockerErr = dockerops.ListContainers()
 			a.cachedMem, _ = dockerops.GetMemoryInfo()
 			a.cachedVolumes, _ = dockerops.ListVolumes()
+		} else if needRel {
+			a.pendingMu.Lock()
 			a.needsReload = false
+			a.pendingMu.Unlock()
+			a.reloadAsync()
 		}
 
 		orderedContainers := a.getOrderedContainers()
@@ -125,7 +171,9 @@ func (a *App) RunInteractive() error {
 		if a.ActiveTab == 1 {
 			totalItems = 1
 		} else if a.ActiveTab == 2 {
+			a.pendingMu.RLock()
 			totalItems = len(a.cachedVolumes)
+			a.pendingMu.RUnlock()
 		}
 
 		if a.SelectedIndex >= totalItems && totalItems > 0 {
@@ -140,7 +188,7 @@ func (a *App) RunInteractive() error {
 		// Wait up to 150ms for keyboard input (non-blocking for background tasks)
 		ready := waitKey(fd, 150)
 		if !ready {
-			if a.hasPendingActions() {
+			if a.hasPendingActions() || a.isReloadingActive() {
 				a.spinnerIdx = (a.spinnerIdx + 1) % len(spinnerFrames)
 			}
 			continue
@@ -150,6 +198,10 @@ func (a *App) RunInteractive() error {
 		n, err := os.Stdin.Read(buf[:])
 		if err != nil || n == 0 {
 			break
+		}
+
+		if a.hasPendingActions() || a.isReloadingActive() {
+			a.spinnerIdx = (a.spinnerIdx + 1) % len(spinnerFrames)
 		}
 
 		a.StatusMsg = ""
@@ -209,8 +261,95 @@ func (a *App) RunInteractive() error {
 			a.SelectedIndex = 0
 			a.tabSwitched = true
 		case 'k', 'K':
-			if a.SelectedIndex > 0 {
+			if a.ActiveTab == 0 && len(orderedContainers) > 0 && a.SelectedIndex < len(orderedContainers) {
+				c := orderedContainers[a.SelectedIndex]
+				a.setPendingAction(c.ID, "killing")
+				a.StatusMsg = fmt.Sprintf("\033[31mKilling %s in background...\033[0m", c.Names)
+				go func(cid, cname string) {
+					err := dockerops.KillContainer(cid)
+					a.setPendingAction(cid, "")
+					a.pendingMu.Lock()
+					if err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mKill error (%s): %s\033[0m", cname, truncateString(err.Error(), 65))
+					} else {
+						a.StatusMsg = fmt.Sprintf("\033[32mKilled %s successfully.\033[0m", cname)
+					}
+					a.pendingMu.Unlock()
+					a.reloadAsync()
+				}(c.ID, c.Names)
+			} else if a.SelectedIndex > 0 {
 				a.SelectedIndex--
+			}
+		case 'd', 'D': // Remove container with confirmation
+			if a.ActiveTab == 0 && len(orderedContainers) > 0 && a.SelectedIndex < len(orderedContainers) {
+				c := orderedContainers[a.SelectedIndex]
+				fmt.Print("\033[?25h\033[?1049l")
+				_ = term.Restore(fd, oldState)
+				fmt.Printf("\r\n\033[31m[agydocker]\033[0m Force remove container '%s'? (y/N): ", c.Names)
+				var confirm string
+				fmt.Scanln(&confirm)
+				if strings.EqualFold(strings.TrimSpace(confirm), "y") {
+					err := dockerops.RemoveContainer(c.ID)
+					if err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mRemove error (%s): %s\033[0m", c.Names, truncateString(err.Error(), 65))
+					} else {
+						a.StatusMsg = fmt.Sprintf("\033[32mRemoved container %s successfully.\033[0m", c.Names)
+					}
+					a.reloadAsync()
+				}
+				oldState, _ = term.MakeRaw(fd)
+				fmt.Print("\033[?1049h\033[?25l")
+				a.tabSwitched = true
+			}
+		case 'x', 'X': // Down Stack: docker compose down (or down container if Standalone)
+			if a.ActiveTab == 0 && len(orderedContainers) > 0 && a.SelectedIndex < len(orderedContainers) {
+				sel := orderedContainers[a.SelectedIndex]
+				proj := sel.ComposeProject
+				if proj == "" {
+					proj = "Standalone"
+				}
+
+				if proj == "Standalone" {
+					a.setPendingAction(sel.ID, "downing")
+					a.StatusMsg = fmt.Sprintf("\033[31mDowning standalone container %s in background...\033[0m", sel.Names)
+					go func(cid, cname string) {
+						err := dockerops.DownContainer(cid)
+						a.setPendingAction(cid, "")
+						a.pendingMu.Lock()
+						if err != nil {
+							a.StatusMsg = fmt.Sprintf("\033[31mDown error (%s): %s\033[0m", cname, truncateString(err.Error(), 65))
+						} else {
+							a.StatusMsg = fmt.Sprintf("\033[33mDowned container %s cleanly.\033[0m", cname)
+						}
+						a.pendingMu.Unlock()
+						a.reloadAsync()
+					}(sel.ID, sel.Names)
+				} else {
+					a.setPendingAction(proj, "downing")
+					var inProj []model.ContainerInfo
+					for _, c := range orderedContainers {
+						if c.ComposeProject == proj {
+							inProj = append(inProj, c)
+							a.setPendingAction(c.ID, "downing")
+						}
+					}
+					a.StatusMsg = fmt.Sprintf("\033[31mDowning compose stack '%s' in background...\033[0m", proj)
+					go func(projectName string, targets []model.ContainerInfo) {
+						err := dockerops.DownCompose(projectName)
+						a.setPendingAction(projectName, "")
+						for _, c := range targets {
+							a.setPendingAction(c.ID, "")
+						}
+						a.pendingMu.Lock()
+						if err != nil {
+							a.StatusMsg = fmt.Sprintf("\033[31mDown stack error (%s): %s\033[0m", projectName, truncateString(err.Error(), 55))
+						} else {
+							a.StatusMsg = fmt.Sprintf("\033[33mDowned compose stack '%s' cleanly.\033[0m", projectName)
+						}
+						a.pendingMu.Unlock()
+						a.reloadAsync()
+					}(proj, inProj)
+				}
 			}
 		case 'j', 'J':
 			if a.SelectedIndex < totalItems-1 {
@@ -236,17 +375,17 @@ func (a *App) RunInteractive() error {
 					err := dockerops.RestartContainer(cid)
 					a.setPendingAction(cid, "")
 					a.pendingMu.Lock()
-					a.needsReload = true
 					if err != nil {
 						a.StatusMsg = fmt.Sprintf("\033[31mRestart error (%s): %s\033[0m", cname, truncateString(err.Error(), 65))
 					} else {
 						a.StatusMsg = fmt.Sprintf("\033[32mRestarted %s successfully.\033[0m", cname)
 					}
 					a.pendingMu.Unlock()
+					a.reloadAsync()
 				}(c.ID, c.Names)
 			} else {
-				a.needsReload = true
-				a.StatusMsg = "\033[32mRefreshed status.\033[0m"
+				a.reloadAsync()
+				a.StatusMsg = "\033[32mRefreshed status in background.\033[0m"
 			}
 		case 's', 'S': // Start / Stop toggle in background
 			if a.ActiveTab == 0 && len(orderedContainers) > 0 && a.SelectedIndex < len(orderedContainers) {
@@ -263,13 +402,13 @@ func (a *App) RunInteractive() error {
 						err := dockerops.StopContainer(cid)
 						a.setPendingAction(cid, "")
 						a.pendingMu.Lock()
-						a.needsReload = true
 						if err != nil {
 							a.StatusMsg = fmt.Sprintf("\033[31mStop error (%s): %s\033[0m", cname, truncateString(err.Error(), 65))
 						} else {
 							a.StatusMsg = fmt.Sprintf("\033[33mStopped %s.\033[0m", cname)
 						}
 						a.pendingMu.Unlock()
+						a.reloadAsync()
 					}(c.ID, c.Names)
 				} else {
 					a.setPendingAction(c.ID, "starting")
@@ -278,13 +417,13 @@ func (a *App) RunInteractive() error {
 						err := dockerops.StartContainer(cid)
 						a.setPendingAction(cid, "")
 						a.pendingMu.Lock()
-						a.needsReload = true
 						if err != nil {
 							a.StatusMsg = fmt.Sprintf("\033[31mStart error (%s): %s\033[0m", cname, truncateString(err.Error(), 65))
 						} else {
 							a.StatusMsg = fmt.Sprintf("\033[32mStarted %s.\033[0m", cname)
 						}
 						a.pendingMu.Unlock()
+						a.reloadAsync()
 					}(c.ID, c.Names)
 				}
 			}
@@ -331,13 +470,13 @@ func (a *App) RunInteractive() error {
 							}
 						}
 						a.pendingMu.Lock()
-						a.needsReload = true
 						if failed > 0 {
 							a.StatusMsg = fmt.Sprintf("\033[31mStopped %d, failed %d in '%s': %s\033[0m", stopped, failed, project, truncateString(firstErr.Error(), 55))
 						} else {
 							a.StatusMsg = fmt.Sprintf("\033[33mStopped stack '%s' (%d containers)\033[0m", project, stopped)
 						}
 						a.pendingMu.Unlock()
+						a.reloadAsync()
 					}(proj, inProj)
 				} else {
 					for _, c := range inProj {
@@ -364,13 +503,13 @@ func (a *App) RunInteractive() error {
 							}
 						}
 						a.pendingMu.Lock()
-						a.needsReload = true
 						if failed > 0 {
 							a.StatusMsg = fmt.Sprintf("\033[31mStarted %d, failed %d in '%s': %s\033[0m", started, failed, project, truncateString(firstErr.Error(), 55))
 						} else {
 							a.StatusMsg = fmt.Sprintf("\033[32mStarted stack '%s' (%d containers)\033[0m", project, started)
 						}
 						a.pendingMu.Unlock()
+						a.reloadAsync()
 					}(proj, inProj)
 				}
 			}
@@ -409,19 +548,34 @@ func (a *App) RunInteractive() error {
 				fmt.Print("\033[?1049h\033[?25l")
 				a.tabSwitched = true
 			}
-		case 'p', 'P': // Prune cache / system
+		case 'p', 'P': // Prune cache / system or volumes
 			fmt.Print("\033[?25h\033[?1049l")
 			_ = term.Restore(fd, oldState)
-			fmt.Print("\r\n\033[33m[agydocker]\033[0m Run 'docker system prune -f' to reclaim RAM/disk? (y/N): ")
-			var confirm string
-			fmt.Scanln(&confirm)
-			if strings.EqualFold(strings.TrimSpace(confirm), "y") {
-				out, err := dockerops.PruneSystem()
-				if err != nil {
-					a.StatusMsg = fmt.Sprintf("\033[31mPrune error: %v\033[0m", err)
-				} else {
-					a.needsReload = true
-					a.StatusMsg = fmt.Sprintf("\033[32mPruned successfully: %s\033[0m", truncateString(out, 50))
+			if a.ActiveTab == 2 {
+				fmt.Print("\r\n\033[33m[agydocker]\033[0m Run 'docker volume prune -f' to remove unused local volumes? (y/N): ")
+				var confirm string
+				fmt.Scanln(&confirm)
+				if strings.EqualFold(strings.TrimSpace(confirm), "y") {
+					out, err := dockerops.PruneVolumes()
+					if err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mVolume prune error: %v\033[0m", err)
+					} else {
+						a.StatusMsg = fmt.Sprintf("\033[32mVolumes pruned successfully: %s\033[0m", truncateString(out, 50))
+					}
+					a.reloadAsync()
+				}
+			} else {
+				fmt.Print("\r\n\033[33m[agydocker]\033[0m Run 'docker system prune -f' to reclaim RAM/disk? (y/N): ")
+				var confirm string
+				fmt.Scanln(&confirm)
+				if strings.EqualFold(strings.TrimSpace(confirm), "y") {
+					out, err := dockerops.PruneSystem()
+					if err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mPrune error: %v\033[0m", err)
+					} else {
+						a.StatusMsg = fmt.Sprintf("\033[32mPruned successfully: %s\033[0m", truncateString(out, 50))
+					}
+					a.reloadAsync()
 				}
 			}
 			oldState, _ = term.MakeRaw(fd)
@@ -518,6 +672,10 @@ func (a *App) Render() {
 		b.WriteString("\033[K\r\n" + hr(width))
 	}
 
+	if a.dockerErr != nil {
+		b.WriteString(" \033[1;37;41m ⚠️ Docker daemon is offline / cannot connect to docker.sock \033[0m\033[K\r\n\033[K\r\n")
+	}
+
 	switch a.ActiveTab {
 	case 0:
 		a.renderContainersTab(&b, width, height)
@@ -537,7 +695,7 @@ func (a *App) Render() {
 	if width < 85 {
 		switch a.ActiveTab {
 		case 0:
-			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;32m[S]\033[0mStart \033[1;33m[A]\033[0mStack \033[1;36m[g]\033[0mGrp \033[1;36m[L]\033[0mLog \033[1;31m[Q/Esc]\033[0mExit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;32m[S]\033[0mStart \033[1;31m[K]\033[0mKill \033[1;31m[X]\033[0mDown \033[1;31m[D]\033[0mRm \033[1;33m[A]\033[0mStack \033[1;36m[g]\033[0mGrp \033[1;36m[L]\033[0mLog \033[1;31m[Q/Esc]\033[0mExit\033[K\r\n")
 		case 1:
 			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;33m[P]\033[0mPrune (Reclaim RAM) \033[1;36m[R]\033[0mRefresh \033[1;31m[Q/Esc]\033[0mExit\033[K\r\n")
 		case 2:
@@ -546,7 +704,7 @@ func (a *App) Render() {
 	} else {
 		switch a.ActiveTab {
 		case 0:
-			b.WriteString(" \033[1m[Tab/1-3]\033[0m Switch · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;32m[S]\033[0m Start/Stop · \033[1;33m[A]\033[0m Start/Stop Stack · \033[1;35m[g]\033[0m Group/Flat · \033[1;36m[L]\033[0m Logs · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab/1-3]\033[0m Switch · \033[1m[↑/↓]\033[0m Nav · \033[1;32m[S]\033[0m Start/Stop · \033[1;31m[K]\033[0m Kill · \033[1;31m[X]\033[0m Down Stack · \033[1;31m[D]\033[0m Rm · \033[1;33m[A]\033[0m Start/Stop Stack · \033[1;35m[g]\033[0m Group/Flat · \033[1;36m[L]\033[0m Logs · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 		case 1:
 			b.WriteString(" \033[1m[Tab/1-3]\033[0m Switch · \033[1;33m[P]\033[0m Prune (Reclaim RAM & Docker Cache) · \033[1;36m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 		case 2:
@@ -606,7 +764,7 @@ func (a *App) renderContainersTab(b *strings.Builder, width int, height int) {
 				// Count total and running in this project
 				pTotal := 0
 				pUp := 0
-				for _, it := range a.cachedContainers {
+				for _, it := range containers {
 					itProj := it.ComposeProject
 					if itProj == "" {
 						itProj = "Standalone"
@@ -622,7 +780,12 @@ func (a *App) renderContainersTab(b *strings.Builder, width int, height int) {
 				if pUp == 0 {
 					upBadge = "\033[31m0 up\033[0m"
 				}
-				fmt.Fprintf(b, "📁 \033[1;36m%-24s\033[0m \033[37m(%d containers · %s)\033[0m\033[K\r\n", proj, pTotal, upBadge)
+				actBadge := ""
+				if act := a.getPendingAction(proj); act != "" {
+					sp := spinnerFrames[a.spinnerIdx%len(spinnerFrames)]
+					actBadge = fmt.Sprintf(" \033[1;31m[%s %s]\033[0m", sp, strings.ToUpper(act))
+				}
+				fmt.Fprintf(b, "📁 \033[1;36m%-24s\033[0m%s \033[37m(%d containers · %s)\033[0m\033[K\r\n", proj, actBadge, pTotal, upBadge)
 			}
 		}
 
@@ -639,7 +802,11 @@ func (a *App) renderContainersTab(b *strings.Builder, width int, height int) {
 		if c.IsRunning {
 			statusBadge = "\033[32m[Up]    \033[0m"
 		}
-		if act := a.getPendingAction(c.ID); act != "" {
+		act := a.getPendingAction(c.ID)
+		if act == "" && c.ComposeProject != "" {
+			act = a.getPendingAction(c.ComposeProject)
+		}
+		if act != "" {
 			sp := spinnerFrames[a.spinnerIdx%len(spinnerFrames)]
 			switch act {
 			case "stopping":
@@ -648,6 +815,12 @@ func (a *App) renderContainersTab(b *strings.Builder, width int, height int) {
 				statusBadge = fmt.Sprintf("\033[1;36m%s [Start]\033[0m", sp)
 			case "restarting":
 				statusBadge = fmt.Sprintf("\033[1;35m%s [Rest]\033[0m", sp)
+			case "killing":
+				statusBadge = fmt.Sprintf("\033[1;31m%s [Kill]\033[0m", sp)
+			case "removing":
+				statusBadge = fmt.Sprintf("\033[1;31m%s [Rm]\033[0m", sp)
+			case "downing":
+				statusBadge = fmt.Sprintf("\033[1;31m%s [Down]\033[0m", sp)
 			}
 		}
 
@@ -676,7 +849,7 @@ func (a *App) renderContainersTab(b *strings.Builder, width int, height int) {
 		}
 	}
 
-	fmt.Fprintf(b, "\033[K\r\n \033[37m[Page %d/%d · %d-%d of %d containers · [g] Toggle View · [S] Start/Stop · [A] Stack Action]\033[0m\033[K\r\n",
+	fmt.Fprintf(b, "\033[K\r\n \033[37m[Page %d/%d · %d-%d of %d containers · [g] Toggle View · [S] Start/Stop · [X] Down · [K] Kill · [D] Rm · [A] Stack Action]\033[0m\033[K\r\n",
 		page+1, totalPages, startIdx+1, endIdx, len(containers))
 }
 
@@ -813,7 +986,11 @@ func (a *App) PrintStatus(w io.Writer) {
 		usedGB := float64(mem.UsedKB) / (1024.0 * 1024.0)
 		fmt.Fprintf(w, " 🧠 WSL2 RAM: \033[1m%.2f / %.2f GB\033[0m (\033[33m%.1f%%\033[0m used)\n\n", usedGB, totalGB, mem.UsedPercent)
 	}
-	containers, _ := dockerops.ListContainers()
+	containers, err := dockerops.ListContainers()
+	if err != nil {
+		a.dockerErr = err
+		fmt.Fprintf(w, " \033[1;37;41m ⚠️ Docker daemon is offline / cannot connect to docker.sock \033[0m\n\n")
+	}
 	fmt.Fprintf(w, " 🐳 Containers (%d total):\n", len(containers))
 	for i, c := range containers {
 		st := "\033[31m[Exited]\033[0m"

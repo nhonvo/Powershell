@@ -1,15 +1,15 @@
 # 🧪 AgyTui Test Folder Structure Audit & Reorganization Report (`csapp/AgyTui.Tests`)
 
 **Generated At:** 2026-08-11  
-**Target Codebase:** `csapp/AgyTui.Tests/`  
-**Reference Architecture Spec:** [`docs/cli_clean_architecture_report.md`](file:///C:/Users/TruongNhon/Documents/Powershell/docs/cli_clean_architecture_report.md)  
+**Target Codebase:** `apps/agytui/AgyTui.Tests/`  
+**Reference Architecture Spec:** [`cli_clean_architecture_report.md`](./cli_clean_architecture_report.md)  
 **Status:** ✅ **COMPLETED — 299/299 TESTS PASSED (100% PASS RATE)**  
 
 ---
 
 ## 1. 📌 Executive Summary & Architecture Context
 
-Following the **Clean Architecture Refactoring** specified in [`cli_clean_architecture_report.md`](file:///C:/Users/TruongNhon/Documents/Powershell/docs/cli_clean_architecture_report.md), the primary production project `csapp/AgyTui/` and test suite `csapp/AgyTui.Tests/` are structured into three clean layers:
+Following the **Clean Architecture Refactoring** specified in [`cli_clean_architecture_report.md`](./cli_clean_architecture_report.md), the primary production project `apps/agytui/AgyTui/` and test suite `apps/agytui/AgyTui.Tests/` are structured into three clean layers:
 
 ```text
 csapp/AgyTui.Tests/Unit/UI/

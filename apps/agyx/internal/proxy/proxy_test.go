@@ -6,8 +6,8 @@ import (
 
 func TestProxy_GetRegisteredTools(t *testing.T) {
 	tools := GetRegisteredTools()
-	if len(tools) != 5 {
-		t.Fatalf("expected 5 tools, got %d", len(tools))
+	if len(tools) != 8 {
+		t.Fatalf("expected 8 tools, got %d", len(tools))
 	}
 }
 
@@ -28,6 +28,18 @@ func TestProxy_ResolveTool(t *testing.T) {
 		{"term", "agyterm"},
 		{"theme", "agyterm"},
 		{"font", "agyterm"},
+		{"mobile", "agymobile"},
+		{"m", "agymobile"},
+		{"remote", "agymobile"},
+		{"phone", "agymobile"},
+		{"pwa", "agymobile"},
+		{"ollama", "agyollama"},
+		{"ai", "agyollama"},
+		{"llm", "agyollama"},
+		{"localai", "agyollama"},
+		{"aws", "aws"},
+		{"cloud", "aws"},
+		{"localstack", "aws"},
 	}
 
 	for _, c := range cases {

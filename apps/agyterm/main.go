@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 
+	"agyterm/internal/service/linuxterm"
 	"agyterm/internal/service/theme"
 	"agyterm/internal/service/winterm"
 	"agyterm/internal/view"
@@ -42,6 +43,34 @@ func main() {
 		fmt.Printf("✔ Successfully set and persisted theme '%s'\n", target)
 
 	case "font":
+		if len(os.Args) >= 3 && os.Args[2] == "install" {
+			if len(os.Args) < 4 {
+				fmt.Println("Usage: agyterm font install <name>")
+				fmt.Println("Example: agyterm font install Hack")
+				fmt.Println("Supported popular Nerd Fonts:")
+				fmt.Println("  • Hack")
+				fmt.Println("  • FiraCode")
+				fmt.Println("  • JetBrainsMono")
+				fmt.Println("  • CascadiaCode")
+				fmt.Println("  • Meslo")
+				fmt.Println("  • UbuntuMono")
+				fmt.Println("  • SourceCodePro")
+				return
+			}
+			fontName := os.Args[3]
+			fmt.Printf("⏳ Installing Nerd Font '%s'...\n", fontName)
+			res, err := linuxterm.InstallNerdFont(fontName)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+				if res != "" {
+					fmt.Println(res)
+				}
+				os.Exit(1)
+			}
+			fmt.Println(res)
+			return
+		}
+
 		settingsFile := winterm.FindSettingsFile()
 		if settingsFile == "" {
 			fmt.Fprintln(os.Stderr, "Error: Windows Terminal settings.json not found")
@@ -49,6 +78,7 @@ func main() {
 		}
 		if len(os.Args) < 4 {
 			fmt.Println("Usage: agyterm font <profile-name|*> <font-face> [font-size]")
+			fmt.Println("       agyterm font install <name>")
 			fmt.Println("Example: agyterm font Ubuntu \"Hack Nerd Font\" 13")
 			return
 		}
@@ -128,6 +158,7 @@ Usage:
   agyterm                          Launch interactive keyboard-only TUI
   agyterm ls                       Display active prompt theme & terminal profiles
   agyterm theme <name>             Set Oh My Posh shell prompt theme
+  agyterm font install <name>      Download & install Nerd Font into ~/.local/share/fonts/
   agyterm font <prof|*> <face> [sz] Set Windows Terminal font face & size
   agyterm opacity <prof|*> <1-100> Set Windows Terminal background opacity
   agyterm fonts                    List available system & Nerd fonts

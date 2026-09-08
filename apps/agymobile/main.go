@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"agymobile/internal/service/hostops"
+	"agymobile/internal/service/tailscaleops"
 	"agymobile/internal/view"
 	"agymobile/internal/web"
 )
@@ -30,6 +31,15 @@ func main() {
 				fmt.Fprintf(os.Stderr, "Error starting web server: %v\n", err)
 				os.Exit(1)
 			}
+			return
+		case "qr", "pair":
+			port := 7890
+			if len(args) > 1 {
+				if p, err := strconv.Atoi(args[1]); err == nil && p > 0 {
+					port = p
+				}
+			}
+			tailscaleops.PrintPairingInfo(os.Stdout, port)
 			return
 		case "flush", "drop-cache":
 			fmt.Println("Reclaiming WSL2 RAM buffers & cache...")
@@ -60,6 +70,7 @@ Usage:
   agymobile               Launch interactive 38-column mobile TUI
   agymobile status        Print mobile-optimized summary metrics
   agymobile serve [port]  Start embedded Mobile Web PWA (default port 7890)
+  agymobile qr [port]     Display connection info and QR code for mobile pairing
   agymobile flush         Flush WSL2/Linux buffer RAM cache
   agymobile help          Display this help message
 

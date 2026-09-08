@@ -119,3 +119,5 @@ graph TD
 - [DDD Bounded Contexts](ddd_bounded_contexts.md)
 - [Database Persistence Engine](database_persistence.md)
 - [Testing & Architecture Rules](../03_developer_guide/testing_and_architecture_rules.md)
+- [C# Legacy System & Parity Audit](../reports/08_cs_legacy_system_parity_audit.md)
+

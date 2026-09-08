@@ -20,4 +20,7 @@ func TestCockpit_Render(t *testing.T) {
 	app := NewCockpitApp()
 	app.ActiveTab = 1
 	app.Render() // should not crash
+
+	app.ActiveTab = 5
+	app.Render() // should not crash on mobile tab
 }

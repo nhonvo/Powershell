@@ -49,10 +49,10 @@ sequenceDiagram
 ## 2. Automated Build Steps
 
 1. **Binary Unlocking**: Temporarily renames locked DLLs/EXEs in active PowerShell processes to prevent MSB3021 file-locking errors.
-2. **Automated Test Quality Gate**: Runs `dotnet test csapp/AgyTui.Tests/AgyTui.Tests.csproj -c Release`. Halts build on test failure.
+2. **Automated Test Quality Gate**: Runs `dotnet test apps/agytui/AgyTui.Tests/AgyTui.Tests.csproj -c Release`. Halts build on test failure.
 3. **Single-File Compilation**: Publishes self-contained `win-x64` executable:
    ```powershell
-   dotnet publish csapp/AgyTui/AgyTui.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o csapp/AgyTui/dist
+   dotnet publish apps/agytui/AgyTui/AgyTui.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o apps/agytui/AgyTui/dist
    ```
 
 ---
@@ -79,7 +79,7 @@ With an optional version tag:
 
 ## 4. Output Artifact Details
 
-- **Output Path**: `csapp/AgyTui/dist/AgyTui.exe`
+- **Output Path**: `apps/agytui/AgyTui/dist/AgyTui.exe`
 - **Format**: Self-contained single-file executable (includes .NET 9 runtime and SQLite native binaries).
 - **Prerequisites on Target Machine**: Zero. Runs standalone on any Windows x64 machine.
 

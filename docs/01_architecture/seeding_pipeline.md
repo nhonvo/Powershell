@@ -42,11 +42,11 @@ AgyTui.Infrastructure.Persistence.Seeding/
 | Seeder Class | Order | Source Data File | Target SQLite Database Table |
 | :--- | :---: | :--- | :--- |
 | `AccountSeeder` | 1 | Code Default | `accounts` |
-| `WorkspaceSeeder` | 2 | `csapp/AgyTui/data/priority_workspaces.json` | `workspaces` |
-| `LearningSeeder` | 3 | `csapp/AgyTui/data/learn/**/*.json` | `flashcard_decks`, `flashcards`, `quiz_questions` |
+| `WorkspaceSeeder` | 2 | `apps/agytui/AgyTui/data/priority_workspaces.json` | `workspaces` |
+| `LearningSeeder` | 3 | `apps/agytui/AgyTui/data/learn/**/*.json` | `flashcard_decks`, `flashcards`, `quiz_questions` |
 | `ThemeSeeder` | 4 | Code Palette Constants | `themes` |
-| `ResourceSeeder` | 5 | `csapp/AgyTui/data/resources/index.json` | `resources` |
-| `SkillSeeder` | 6 | `csapp/AgyTui/data/skills/*.md` | `skills` |
+| `ResourceSeeder` | 5 | `apps/agytui/AgyTui/data/resources/index.json` | `resources` |
+| `SkillSeeder` | 6 | `apps/agytui/AgyTui/data/skills/*.md` | `skills` |
 
 ---
 
@@ -86,3 +86,4 @@ sequenceDiagram
 ## 4. Cross References
 - [Database Persistence Engine](database_persistence.md)
 - [Clean Architecture Overview](overview.md)
+- [C# Legacy System & Parity Audit](../reports/08_cs_legacy_system_parity_audit.md)

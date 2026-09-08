@@ -6,6 +6,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"sync"
 
 	"golang.org/x/term"
 
@@ -16,6 +17,8 @@ import (
 	"agyswitch/internal/service/skills"
 	"agyswitch/internal/service/store"
 )
+
+var spinnerFrames = []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"}
 
 type App struct {
 	Store          *store.Store
@@ -40,6 +43,10 @@ type App struct {
 	cachedRules    []model.RuleInfo
 	cachedSessions []model.SessionInfo
 	needsReload    bool
+
+	probeMu         sync.Mutex
+	isProbingQuotas bool
+	spinnerIdx      int
 }
 
 func NewApp(s *store.Store, launcher func(string, string, []string) error) *App {
@@ -97,8 +104,12 @@ func (a *App) Run() error {
 	}
 
 	for {
+		a.probeMu.Lock()
+		probing := a.isProbingQuotas
 		if a.needsReload || a.cachedAccs == nil {
-			a.cachedAccs = a.Store.ListAccountsFast()
+			if !probing || a.cachedAccs == nil {
+				a.cachedAccs = a.Store.ListAccountsFast()
+			}
 		}
 		if a.ActiveTab == 1 && (a.needsReload || a.cachedSkills == nil) {
 			a.cachedSkills, _ = a.SkillsManager.DiscoverSkills(getWorkspaceDir())
@@ -115,6 +126,8 @@ func (a *App) Run() error {
 		skillsList = a.cachedSkills
 		rulesList = a.cachedRules
 		sessionsList = a.cachedSessions
+		a.probeMu.Unlock()
+
 		totalItems := len(accs)
 
 		switch a.ActiveTab {
@@ -136,13 +149,38 @@ func (a *App) Run() error {
 		}
 
 		a.Render(accs, sessionsList)
-		a.StatusMsg = ""
+
+		ready := waitKey(fd, 80)
+		if !ready {
+			a.probeMu.Lock()
+			isProbing := a.isProbingQuotas
+			if isProbing {
+				a.spinnerIdx = (a.spinnerIdx + 1) % len(spinnerFrames)
+			}
+			reloading := a.needsReload
+			a.probeMu.Unlock()
+
+			if isProbing {
+				a.Render(accs, sessionsList)
+			} else if reloading {
+				continue
+			}
+			continue
+		}
 
 		var buf [32]byte
 		n, err := os.Stdin.Read(buf[:])
 		if err != nil || n == 0 {
 			break
 		}
+
+		a.probeMu.Lock()
+		if a.isProbingQuotas {
+			a.spinnerIdx = (a.spinnerIdx + 1) % len(spinnerFrames)
+		}
+		a.probeMu.Unlock()
+
+		a.StatusMsg = ""
 
 		b := buf[0]
 		if b == 0x1b {
@@ -235,10 +273,16 @@ func (a *App) Run() error {
 			if a.ActiveTab == 0 && a.SelectedIndex < len(accs) {
 				target := accs[a.SelectedIndex].AccountName
 				if err := a.Store.SetActiveAccount(target); err != nil {
+					a.probeMu.Lock()
 					a.StatusMsg = fmt.Sprintf("\033[31mError switching account: %v\033[0m", err)
+					a.probeMu.Unlock()
 				} else {
-					accs = a.Store.ListAccountsFast()
-					a.StatusMsg = fmt.Sprintf("\033[32mSwitched active context to '%s'\033[0m", target)
+					a.probeMu.Lock()
+					a.cachedAccs = a.Store.ListAccountsFast()
+					accs = a.cachedAccs
+					a.needsReload = true
+					a.StatusMsg = fmt.Sprintf("\033[32m✔ Switched active context to '%s'\033[0m", target)
+					a.probeMu.Unlock()
 				}
 			} else if a.ActiveTab == 3 && len(sessionsList) > 0 && a.SelectedIndex < len(sessionsList) {
 				sel := sessionsList[a.SelectedIndex]
@@ -425,10 +469,23 @@ func (a *App) Run() error {
 			}
 		case 'r', 'R': // Probe live quotas on-demand
 			if a.ActiveTab == 0 {
-				a.StatusMsg = "\033[36mProbing live Google CloudCode quotas...\033[0m"
-				a.cachedAccs = a.Store.ListAccounts()
-				a.needsReload = true
-				a.StatusMsg = "\033[32mSuccessfully updated live quotas.\033[0m"
+				a.probeMu.Lock()
+				if !a.isProbingQuotas {
+					a.isProbingQuotas = true
+					a.StatusMsg = "\033[36mProbing live Google CloudCode quotas in background...\033[0m"
+					go func() {
+						newAccs := a.Store.ListAccounts()
+						a.probeMu.Lock()
+						a.cachedAccs = newAccs
+						a.isProbingQuotas = false
+						a.needsReload = true
+						a.StatusMsg = "\033[32m✔ Successfully updated live quotas in background.\033[0m"
+						a.probeMu.Unlock()
+					}()
+				} else {
+					a.StatusMsg = "\033[33mQuota probing already in progress in background...\033[0m"
+				}
+				a.probeMu.Unlock()
 			} else if a.ActiveTab == 3 {
 				a.needsReload = true
 				a.StatusMsg = "\033[32mRefreshed sessions telemetry.\033[0m"
@@ -502,8 +559,12 @@ func (a *App) Run() error {
 				newName = strings.TrimSpace(newName)
 				if newName != "" && newName != target {
 					if err := a.Store.RenameAccount(target, newName); err == nil {
-						accs = a.Store.ListAccounts()
+						a.probeMu.Lock()
+						a.cachedAccs = a.Store.ListAccountsFast()
+						accs = a.cachedAccs
+						a.needsReload = true
 						a.StatusMsg = fmt.Sprintf("\033[32mRenamed '%s' -> '%s'\033[0m", target, newName)
+						a.probeMu.Unlock()
 					}
 				}
 				oldState, _ = term.MakeRaw(fd)
@@ -519,8 +580,12 @@ func (a *App) Run() error {
 				fmt.Scanln(&confirm)
 				if strings.EqualFold(strings.TrimSpace(confirm), "y") {
 					if err := a.Store.DeleteAccount(target); err == nil {
-						accs = a.Store.ListAccounts()
+						a.probeMu.Lock()
+						a.cachedAccs = a.Store.ListAccountsFast()
+						accs = a.cachedAccs
+						a.needsReload = true
 						a.StatusMsg = fmt.Sprintf("\033[33mDeleted account '%s'\033[0m", target)
+						a.probeMu.Unlock()
 					}
 				}
 				oldState, _ = term.MakeRaw(fd)
@@ -656,6 +721,14 @@ func (a *App) Render(accs []model.AccountInfo, sessionsList []model.SessionInfo)
 	var b strings.Builder
 	b.Grow(4096)
 
+	a.probeMu.Lock()
+	probing := a.isProbingQuotas
+	spIdx := a.spinnerIdx
+	statusMsg := a.StatusMsg
+	a.probeMu.Unlock()
+
+	sp := spinnerFrames[spIdx%len(spinnerFrames)]
+
 	// Clear screen on tab switch, otherwise home cursor in-place
 	if a.tabSwitched {
 		b.WriteString("\033[H\033[2J")
@@ -665,7 +738,11 @@ func (a *App) Render(accs []model.AccountInfo, sessionsList []model.SessionInfo)
 	}
 
 	if width < 80 {
-		fmt.Fprintf(&b, "\r\n🛸 \033[1;36mAGYSWITCH\033[0m · Active: \033[1;32m%s\033[0m\033[K\r\n", truncateString(a.Store.GetActiveAccount(), 18))
+		fmt.Fprintf(&b, "\r\n🛸 \033[1;36mAGYSWITCH\033[0m · Active: \033[1;32m%s\033[0m", truncateString(a.Store.GetActiveAccount(), 18))
+		if probing {
+			fmt.Fprintf(&b, " \033[1;33m[%s Probing]\033[0m", sp)
+		}
+		b.WriteString("\033[K\r\n")
 		b.WriteString(hr(width))
 		tabNames := []string{"1:Vault", "2:Skills", "3:Rules", "4:Sess"}
 		for i, t := range tabNames {
@@ -677,7 +754,11 @@ func (a *App) Render(accs []model.AccountInfo, sessionsList []model.SessionInfo)
 		}
 		b.WriteString("\033[K\r\n" + hr(width))
 	} else {
-		b.WriteString("\r\n🛸 \033[1;36mAGYSWITCH - Dedicated Antigravity Control Center (Go Engine v2.0)\033[0m\033[K\r\n")
+		b.WriteString("\r\n🛸 \033[1;36mAGYSWITCH - Dedicated Antigravity Control Center (Go Engine v2.0)\033[0m")
+		if probing {
+			fmt.Fprintf(&b, "  \033[1;33m[%s Live Quota Syncing]\033[0m", sp)
+		}
+		b.WriteString("\033[K\r\n")
 		b.WriteString(hr(width))
 
 		tabs := []string{"[1] 🔑 Vault & Quota", "[2] 🧩 Skills Hub", "[3] 📜 Rules & MCP", "[4] 📊 Sessions & Cost"}
@@ -705,8 +786,10 @@ func (a *App) Render(accs []model.AccountInfo, sessionsList []model.SessionInfo)
 	}
 
 	b.WriteString(hr(width))
-	if a.StatusMsg != "" {
-		fmt.Fprintf(&b, " %s\033[K\r\n", a.StatusMsg)
+	if probing {
+		fmt.Fprintf(&b, " \033[1;36m[%s] Probing live CloudCode quotas in background... (Navigate freely)\033[0m\033[K\r\n", sp)
+	} else if statusMsg != "" {
+		fmt.Fprintf(&b, " %s\033[K\r\n", statusMsg)
 	} else {
 		b.WriteString("\033[K\r\n")
 	}

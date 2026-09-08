@@ -1,6 +1,6 @@
 # Console App & CLI Feature Flow & Task Breakdown Guide
 
-This document provides a detailed task breakdown, step-by-step user interaction flow, system sequence diagrams, and implementation logic for **all 12 feature subsystems** defined in **[console_app_cli_checklist.md](file:///C:/Users/TruongNhon/Documents/Powershell/console_app_cli_checklist.md)** and implemented in the **[AgyTui](file:///C:/Users/TruongNhon/Documents/Powershell/csapp/AgyTui/AgyTui.csproj)** codebase architecture.
+This document provides a detailed task breakdown, step-by-step user interaction flow, system sequence diagrams, and implementation logic for **all 12 feature subsystems** defined in **[console_app_cli_master_mockup_blueprint.md](./console_app_cli_master_mockup_blueprint.md)** and implemented in the **[AgyTui](../../apps/agytui/AgyTui/AgyTui.csproj)** codebase architecture.
 
 ---
 
@@ -26,7 +26,7 @@ flowchart TD
 
 ## 0. UI Rebuilding & Behavioral Standardization Framework
 
-To ensure 100% architectural consistency and visual excellence across all 12 feature subsystems, every UI screen is rebuilt to strictly align with the single-column Zero-Lag mockups in **[console_app_cli_checklist.md](file:///C:/Users/TruongNhon/Documents/Powershell/console_app_cli_checklist.md)** and standardized according to the following behavioral contracts:
+To ensure 100% architectural consistency and visual excellence across all 12 feature subsystems, every UI screen is rebuilt to strictly align with the single-column Zero-Lag mockups in **[console_app_cli_master_mockup_blueprint.md](./console_app_cli_master_mockup_blueprint.md)** and standardized according to the following behavioral contracts:
 
 ### 0.1 Standardized Interaction Behavioral Matrix
 | Input / Event | Standard Behavior Across All UI Screens | ANSI / Code Handling |

@@ -62,15 +62,18 @@ func ScanFleet(rootDir string) ([]model.RepoStatus, error) {
 		}
 	}
 
-	// 3. Parallel inspection with goroutines
+	// 3. Parallel inspection with goroutines (max 8 concurrent workers)
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	var results []model.RepoStatus
+	sem := make(chan struct{}, 8)
 
 	for _, p := range paths {
 		wg.Add(1)
+		sem <- struct{}{}
 		go func(repoPath string) {
 			defer wg.Done()
+			defer func() { <-sem }()
 			st, err := GetRepoStatus(repoPath)
 			if err == nil && st != nil {
 				mu.Lock()
@@ -590,3 +593,210 @@ func GetCommitDiff(repoPath string, commitHash string) (string, error) {
 	out, err := cmd.CombinedOutput()
 	return string(out), err
 }
+
+// GitUndo undoes the most recent commit keeping all changes staged (git reset --soft HEAD~1)
+func GitUndo(repoPath string) error {
+	cmd := exec.Command("git", "reset", "--soft", "HEAD~1")
+	cmd.Dir = repoPath
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("git undo failed: %s (%w)", strings.TrimSpace(string(out)), err)
+	}
+	return nil
+}
+
+// GetChangedFiles runs git status --porcelain=v1 -uall and parses into []model.ChangedFile
+func GetChangedFiles(repoPath string) ([]model.ChangedFile, error) {
+	cmd := exec.Command("git", "status", "--porcelain=v1", "-uall")
+	cmd.Dir = repoPath
+	out, err := cmd.Output()
+	if err != nil {
+		return nil, fmt.Errorf("git status failed: %w", err)
+	}
+
+	var files []model.ChangedFile
+	scanner := bufio.NewScanner(strings.NewReader(string(out)))
+	for scanner.Scan() {
+		line := scanner.Text()
+		if len(line) < 3 {
+			continue
+		}
+		x := line[0]
+		y := line[1]
+		rest := line[3:]
+
+		cf := model.ChangedFile{
+			IndexStatus:    x,
+			WorkTreeStatus: y,
+		}
+
+		if x == '?' && y == '?' {
+			cf.IsUntracked = true
+			cf.Path = rest
+			files = append(files, cf)
+			continue
+		}
+
+		xy := line[:2]
+		if xy == "UU" || xy == "AA" || xy == "UD" || xy == "DU" || xy == "DD" || xy == "AU" || xy == "UA" {
+			cf.IsConflict = true
+		} else if x != ' ' && x != '?' {
+			cf.IsStaged = true
+		}
+
+		if strings.Contains(rest, " -> ") {
+			parts := strings.Split(rest, " -> ")
+			cf.OriginalPath = strings.Trim(parts[0], "\"")
+			cf.Path = strings.Trim(parts[1], "\"")
+		} else {
+			cf.Path = strings.Trim(rest, "\"")
+		}
+
+		files = append(files, cf)
+	}
+	return files, nil
+}
+
+// StageFile runs git add -- <file>
+func StageFile(repoPath, file string) error {
+	cmd := exec.Command("git", "add", "--", file)
+	cmd.Dir = repoPath
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("git add failed: %s (%w)", strings.TrimSpace(string(out)), err)
+	}
+	return nil
+}
+
+// UnstageFile runs git restore --staged -- <file> falling back to git reset HEAD -- <file>
+func UnstageFile(repoPath, file string) error {
+	cmd := exec.Command("git", "restore", "--staged", "--", file)
+	cmd.Dir = repoPath
+	if out, err := cmd.CombinedOutput(); err != nil {
+		cmdFallback := exec.Command("git", "reset", "HEAD", "--", file)
+		cmdFallback.Dir = repoPath
+		if outFallback, errFallback := cmdFallback.CombinedOutput(); errFallback != nil {
+			cmdRm := exec.Command("git", "rm", "--cached", "--", file)
+			cmdRm.Dir = repoPath
+			if outRm, errRm := cmdRm.CombinedOutput(); errRm != nil {
+				return fmt.Errorf("git unstage failed: %s (%w)", strings.TrimSpace(string(outFallback)+" "+string(outRm)), errFallback)
+			}
+		}
+		_ = out
+	}
+	return nil
+}
+
+// RejectFile rejects changes: if untracked runs git clean -fd -- <file>, else git restore -- <file>
+func RejectFile(repoPath, file string, isUntracked bool) error {
+	if isUntracked {
+		cmd := exec.Command("git", "clean", "-fd", "--", file)
+		cmd.Dir = repoPath
+		if out, err := cmd.CombinedOutput(); err != nil {
+			fullPath := filepath.Join(repoPath, file)
+			if errRm := os.RemoveAll(fullPath); errRm != nil {
+				return fmt.Errorf("git clean failed: %s (%w)", strings.TrimSpace(string(out)), err)
+			}
+		}
+		return nil
+	}
+
+	cmd := exec.Command("git", "restore", "--", file)
+	cmd.Dir = repoPath
+	if out, err := cmd.CombinedOutput(); err != nil {
+		cmdFallback := exec.Command("git", "checkout", "--", file)
+		cmdFallback.Dir = repoPath
+		if outFallback, errFallback := cmdFallback.CombinedOutput(); errFallback != nil {
+			return fmt.Errorf("git restore failed: %s (%w)", strings.TrimSpace(string(outFallback)), errFallback)
+		}
+		_ = out
+	}
+	return nil
+}
+
+// RejectAll runs git restore . and git clean -fd
+func RejectAll(repoPath string) error {
+	cmdRestore := exec.Command("git", "restore", ".")
+	cmdRestore.Dir = repoPath
+	if out, err := cmdRestore.CombinedOutput(); err != nil {
+		cmdCheckout := exec.Command("git", "checkout", "--", ".")
+		cmdCheckout.Dir = repoPath
+		if outC, errC := cmdCheckout.CombinedOutput(); errC != nil {
+			return fmt.Errorf("git restore . failed: %s (%w)", strings.TrimSpace(string(outC)), errC)
+		}
+		_ = out
+	}
+
+	cmdClean := exec.Command("git", "clean", "-fd")
+	cmdClean.Dir = repoPath
+	outClean, errClean := cmdClean.CombinedOutput()
+	if errClean != nil {
+		return fmt.Errorf("git clean -fd failed: %s (%w)", strings.TrimSpace(string(outClean)), errClean)
+	}
+	return nil
+}
+
+// GetFileDiff returns diff for a file; if staged runs git diff --staged -- <file>, else git diff -- <file>
+// If untracked, reads file content or returns untracked preview
+func GetFileDiff(repoPath, file string, staged bool) (string, error) {
+	var cmd *exec.Cmd
+	if staged {
+		cmd = exec.Command("git", "diff", "--staged", "--", file)
+	} else {
+		cmd = exec.Command("git", "diff", "--", file)
+	}
+	cmd.Dir = repoPath
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return string(out), err
+	}
+
+	res := string(out)
+	if strings.TrimSpace(res) != "" {
+		return res, nil
+	}
+
+	fullPath := filepath.Join(repoPath, file)
+	cmdCheck := exec.Command("git", "ls-files", "--error-unmatch", "--", file)
+	cmdCheck.Dir = repoPath
+	if errCheck := cmdCheck.Run(); errCheck != nil {
+		data, readErr := os.ReadFile(fullPath)
+		if readErr == nil {
+			var sb strings.Builder
+			sb.WriteString(fmt.Sprintf("--- /dev/null\n+++ b/%s\n", file))
+			lines := strings.Split(string(data), "\n")
+			for _, l := range lines {
+				sb.WriteString("+" + l + "\n")
+			}
+			return sb.String(), nil
+		}
+	}
+
+	return res, nil
+}
+
+// ResolveConflict resolves a conflict using "ours" or "theirs" strategy and marks as resolved with git add
+func ResolveConflict(repoPath, file string, strategy string) error {
+	strategy = strings.TrimSpace(strings.ToLower(strategy))
+	if strategy != "ours" && strategy != "theirs" {
+		return fmt.Errorf("invalid conflict resolution strategy '%s', must be 'ours' or 'theirs'", strategy)
+	}
+
+	cmd := exec.Command("git", "checkout", "--"+strategy, "--", file)
+	cmd.Dir = repoPath
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("git checkout --%s failed: %s (%w)", strategy, strings.TrimSpace(string(out)), err)
+	}
+
+	cmdAdd := exec.Command("git", "add", "--", file)
+	cmdAdd.Dir = repoPath
+	outAdd, errAdd := cmdAdd.CombinedOutput()
+	if errAdd != nil {
+		return fmt.Errorf("git add failed: %s (%w)", strings.TrimSpace(string(outAdd)), errAdd)
+	}
+
+	return nil
+}
+
+

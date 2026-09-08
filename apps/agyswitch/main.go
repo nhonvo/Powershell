@@ -47,6 +47,17 @@ func main() {
 	cmd := strings.ToLower(args[0])
 
 	switch cmd {
+	case "switch", "use":
+		if len(args) < 2 {
+			fmt.Println("Usage: agyswitch switch <accountName>")
+			os.Exit(1)
+		}
+		target := args[1]
+		if err := s.SetActiveAccount(target); err != nil {
+			fmt.Fprintf(os.Stderr, "Error switching account: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("\033[36m[agyswitch]\033[0m Successfully switched active context to '\033[32m%s\033[0m'.\n", target)
 	case "status", "list", "ls":
 		app.PrintStatus(os.Stdout)
 	case "sessions", "session", "sess":

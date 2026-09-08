@@ -48,7 +48,7 @@ priority_workspaces.json
 
 # Compiled Binaries
 *.exe
-agyswitch
+/agyswitch
 agyswitch.exe
 apps/agyswitch/agyswitch
 apps/agyswitch/agyswitch.exe

@@ -3,6 +3,7 @@ package web
 import (
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 	"os/exec"
 	"strings"
@@ -15,25 +16,83 @@ import (
 
 // StartServer launches the mobile web dashboard
 func StartServer(port int) error {
-	addr := fmt.Sprintf("0.0.0.0:%d", port)
-
-	http.HandleFunc("/", handleIndex)
-	http.HandleFunc("/api/stats", handleStats)
-	http.HandleFunc("/api/action/flush-ram", handleFlushRAM)
-	http.HandleFunc("/api/action/docker-stop-all", handleDockerStopAll)
-
 	tsInfo := tailscaleops.GetTailscaleInfo()
-	fmt.Printf("\r\n📱 \033[1;36mAGYMOBILE Web Cockpit\033[0m listening on:\r\n")
-	fmt.Printf("   • Local:     \033[32mhttp://localhost:%d\033[0m\r\n", port)
-	if tsInfo.IPv4 != "" && tsInfo.IPv4 != "127.0.0.1" {
-		fmt.Printf("   • Tailscale: \033[1;33mhttp://%s:%d\033[0m\r\n", tsInfo.IPv4, port)
+	bindIP := tsInfo.IPv4
+	if bindIP == "" || bindIP == "127.0.0.1" {
+		bindIP = "127.0.0.1"
 	}
-	if tsInfo.MagicDNS != "" {
-		fmt.Printf("   • MagicDNS:  \033[1;35mhttp://%s:%d\033[0m\r\n", tsInfo.MagicDNS, port)
+	addr := fmt.Sprintf("%s:%d", bindIP, port)
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", handleIndex)
+	mux.HandleFunc("/api/stats", handleStats)
+	mux.HandleFunc("/api/action/flush-ram", handleFlushRAM)
+	mux.HandleFunc("/api/action/docker-stop-all", handleDockerStopAll)
+
+	token := tailscaleops.GetAuthToken()
+	fmt.Printf("\r\n📱 \033[1;36mAGYMOBILE Web Cockpit\033[0m listening on:\r\n")
+	if bindIP == "127.0.0.1" {
+		fmt.Printf("   • Local:     \033[32mhttp://127.0.0.1:%d\033[0m\r\n", port)
+		if token != "" {
+			fmt.Printf("   • Auth URL:  \033[1;36mhttp://127.0.0.1:%d/?token=%s\033[0m\r\n", port, token)
+		}
+	} else {
+		fmt.Printf("   • Tailscale: \033[1;33mhttp://%s:%d\033[0m\r\n", bindIP, port)
+		if token != "" {
+			fmt.Printf("   • Auth URL:  \033[1;36mhttp://%s:%d/?token=%s\033[0m\r\n", bindIP, port, token)
+		}
+		if tsInfo.MagicDNS != "" {
+			fmt.Printf("   • MagicDNS:  \033[1;35mhttp://%s:%d\033[0m\r\n", tsInfo.MagicDNS, port)
+		}
 	}
 	fmt.Printf("\r\n \033[37mTip: Open this URL on your phone browser and tap 'Add to Home Screen'\033[0m\r\n")
 
-	return http.ListenAndServe(addr, nil)
+	return http.ListenAndServe(addr, mux)
+}
+
+func isLoopback(r *http.Request) bool {
+	host, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		host = r.RemoteAddr
+	}
+	host = strings.Trim(host, "[]")
+	if host == "127.0.0.1" || host == "::1" || host == "localhost" {
+		return true
+	}
+	ip := net.ParseIP(host)
+	if ip != nil && ip.IsLoopback() {
+		return true
+	}
+	return false
+}
+
+func isAuthorized(r *http.Request) bool {
+	if isLoopback(r) {
+		return true
+	}
+
+	expectedToken := tailscaleops.GetAuthToken()
+	if expectedToken == "" {
+		return false
+	}
+
+	// 1. Check Authorization: Bearer <token>
+	authHeader := r.Header.Get("Authorization")
+	if authHeader != "" {
+		parts := strings.SplitN(authHeader, " ", 2)
+		if len(parts) == 2 && strings.EqualFold(parts[0], "Bearer") {
+			if strings.TrimSpace(parts[1]) == expectedToken {
+				return true
+			}
+		}
+	}
+
+	// 2. Check query parameter: ?token=<token>
+	if r.URL.Query().Get("token") == expectedToken {
+		return true
+	}
+
+	return false
 }
 
 func handleStats(w http.ResponseWriter, r *http.Request) {
@@ -46,8 +105,15 @@ func handleStats(w http.ResponseWriter, r *http.Request) {
 
 func handleFlushRAM(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	if !isAuthorized(r) {
+		w.WriteHeader(http.StatusUnauthorized)
+		_ = json.NewEncoder(w).Encode(map[string]string{"status": "error", "message": "Unauthorized: missing or invalid authentication token"})
+		return
+	}
+
 	if r.Method != http.MethodPost {
-		http.Error(w, `{"error":"Method not allowed"}`, http.StatusMethodNotAllowed)
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		_ = json.NewEncoder(w).Encode(map[string]string{"status": "error", "message": "Method not allowed"})
 		return
 	}
 
@@ -62,8 +128,15 @@ func handleFlushRAM(w http.ResponseWriter, r *http.Request) {
 
 func handleDockerStopAll(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	if !isAuthorized(r) {
+		w.WriteHeader(http.StatusUnauthorized)
+		_ = json.NewEncoder(w).Encode(map[string]string{"status": "error", "message": "Unauthorized: missing or invalid authentication token"})
+		return
+	}
+
 	if r.Method != http.MethodPost {
-		http.Error(w, `{"error":"Method not allowed"}`, http.StatusMethodNotAllowed)
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		_ = json.NewEncoder(w).Encode(map[string]string{"status": "error", "message": "Method not allowed"})
 		return
 	}
 
@@ -263,6 +336,28 @@ const embeddedHTML = `<!DOCTYPE html>
   <div id="toast" class="toast">Action completed</div>
 
   <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    let token = urlParams.get('token') || '';
+    if (token) {
+      try { sessionStorage.setItem('agymobile_token', token); } catch(e){}
+    } else {
+      try { token = sessionStorage.getItem('agymobile_token') || ''; } catch(e){}
+    }
+
+    function authHeaders() {
+      const h = { 'Content-Type': 'application/json' };
+      if (token) {
+        h['Authorization'] = 'Bearer ' + token;
+      }
+      return h;
+    }
+
+    function authUrl(endpoint) {
+      if (!token) return endpoint;
+      const sep = endpoint.includes('?') ? '&' : '?';
+      return endpoint + sep + 'token=' + encodeURIComponent(token);
+    }
+
     function showToast(msg) {
       const t = document.getElementById('toast');
       t.innerText = msg;
@@ -273,7 +368,7 @@ const embeddedHTML = `<!DOCTYPE html>
 
     async function fetchStats() {
       try {
-        const res = await fetch('/api/stats');
+        const res = await fetch(authUrl('/api/stats'), { headers: authHeaders() });
         const d = await res.json();
         
         // RAM
@@ -307,8 +402,15 @@ const embeddedHTML = `<!DOCTYPE html>
 
     async function flushRAM() {
       try {
-        const res = await fetch('/api/action/flush-ram', { method: 'POST' });
+        const res = await fetch(authUrl('/api/action/flush-ram'), {
+          method: 'POST',
+          headers: authHeaders()
+        });
         const d = await res.json();
+        if (res.status === 401) {
+          showToast('Unauthorized: Check token');
+          return;
+        }
         showToast(d.message || 'RAM Reclaimed');
         fetchStats();
       } catch (e) {
@@ -319,9 +421,16 @@ const embeddedHTML = `<!DOCTYPE html>
     async function stopDocker() {
       if (!confirm('Stop all running Docker containers?')) return;
       try {
-        const res = await fetch('/api/action/docker-stop-all', { method: 'POST' });
+        const res = await fetch(authUrl('/api/action/docker-stop-all'), {
+          method: 'POST',
+          headers: authHeaders()
+        });
         const d = await res.json();
-        showToast('Stopped ' + d.stopped_count + ' containers');
+        if (res.status === 401) {
+          showToast('Unauthorized: Check token');
+          return;
+        }
+        showToast('Stopped ' + (d.stopped_count !== undefined ? d.stopped_count : 0) + ' containers');
         fetchStats();
       } catch (e) {
         showToast('Failed to stop containers');

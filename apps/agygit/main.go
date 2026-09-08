@@ -4,9 +4,11 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
+	"agygit/internal/model"
 	"agygit/internal/service/gitops"
 	"agygit/internal/view"
 )
@@ -73,6 +75,13 @@ func main() {
 			os.Exit(1)
 		}
 		fmt.Printf("✔ Committed: %s\n", msg)
+
+	case "undo":
+		if err := gitops.GitUndo("."); err != nil {
+			fmt.Fprintf(os.Stderr, "Undo error: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Println("✔ Undid last commit (git reset --soft HEAD~1), changes preserved in staging area")
 
 	case "merge":
 		if len(os.Args) < 3 {
@@ -260,6 +269,141 @@ func main() {
 		fmt.Printf("   Changes:  +%d staged, ~%d dirty, ?%d untracked\n", st.StagedFiles, st.DirtyFiles, st.UntrackedFiles)
 		fmt.Printf("   Sync:     ↑%d ahead, ↓%d behind\n", st.Ahead, st.Behind)
 
+	case "stage":
+		if len(os.Args) < 3 {
+			fmt.Println("Usage: agygit stage <file>")
+			os.Exit(1)
+		}
+		file := os.Args[2]
+		if err := gitops.StageFile(".", file); err != nil {
+			fmt.Fprintf(os.Stderr, "Stage error: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("✔ Staged %s\n", file)
+
+	case "unstage":
+		if len(os.Args) < 3 {
+			fmt.Println("Usage: agygit unstage <file>")
+			os.Exit(1)
+		}
+		file := os.Args[2]
+		if err := gitops.UnstageFile(".", file); err != nil {
+			fmt.Fprintf(os.Stderr, "Unstage error: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("✔ Unstaged %s\n", file)
+
+	case "reject":
+		if len(os.Args) < 3 {
+			fmt.Println("Usage: agygit reject <file>")
+			os.Exit(1)
+		}
+		file := os.Args[2]
+		files, _ := gitops.GetChangedFiles(".")
+		isUntracked := false
+		for _, f := range files {
+			if f.Path == file && f.IsUntracked {
+				isUntracked = true
+				break
+			}
+		}
+		if err := gitops.RejectFile(".", file, isUntracked); err != nil {
+			fmt.Fprintf(os.Stderr, "Reject error: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("✔ Discarded changes in %s\n", file)
+
+	case "reject-all":
+		fmt.Print("⚠️  Are you sure you want to discard ALL uncommitted changes? (y/N): ")
+		scanner := bufio.NewScanner(os.Stdin)
+		var confirm string
+		if scanner.Scan() {
+			confirm = scanner.Text()
+		}
+		if !strings.EqualFold(strings.TrimSpace(confirm), "y") {
+			fmt.Println("Aborted.")
+			return
+		}
+		if err := gitops.RejectAll("."); err != nil {
+			fmt.Fprintf(os.Stderr, "Reject all error: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Println("✔ Discarded all uncommitted changes")
+
+	case "diff":
+		file := ""
+		if len(os.Args) > 2 {
+			file = os.Args[2]
+		}
+		if file != "" {
+			files, _ := gitops.GetChangedFiles(".")
+			staged := false
+			for _, f := range files {
+				if f.Path == file {
+					staged = f.IsStaged && f.WorkTreeStatus == ' '
+					break
+				}
+			}
+			diff, err := gitops.GetFileDiff(".", file, staged)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Diff error: %v\n", err)
+				os.Exit(1)
+			}
+			if strings.TrimSpace(diff) == "" {
+				fmt.Println("(no changes)")
+			} else {
+				fmt.Print(diff)
+			}
+		} else {
+			cmdDiff := exec.Command("git", "diff")
+			cmdDiff.Stdout = os.Stdout
+			cmdDiff.Stderr = os.Stderr
+			_ = cmdDiff.Run()
+		}
+
+	case "conflicts":
+		files, err := gitops.GetChangedFiles(".")
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
+		var conflicts []model.ChangedFile
+		for _, f := range files {
+			if f.IsConflict {
+				conflicts = append(conflicts, f)
+			}
+		}
+		if len(conflicts) == 0 {
+			fmt.Println("✔ No merge conflicts detected.")
+		} else {
+			fmt.Printf("⚠️  Merge Conflicts (%d):\n", len(conflicts))
+			for _, c := range conflicts {
+				fmt.Printf("  • \033[1;31m%s\033[0m (status: %c%c)\n", c.Path, c.IndexStatus, c.WorkTreeStatus)
+			}
+		}
+
+	case "resolve":
+		if len(os.Args) < 4 {
+			fmt.Println("Usage: agygit resolve <file> --ours/--theirs")
+			os.Exit(1)
+		}
+		file := os.Args[2]
+		flag := os.Args[3]
+		strategy := ""
+		if flag == "--ours" {
+			strategy = "ours"
+		} else if flag == "--theirs" {
+			strategy = "theirs"
+		} else {
+			fmt.Fprintln(os.Stderr, "Error: specify either --ours or --theirs")
+			os.Exit(1)
+		}
+		if err := gitops.ResolveConflict(".", file, strategy); err != nil {
+			fmt.Fprintf(os.Stderr, "Resolve error: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("✔ Resolved conflict in %s using strategy: %s\n", file, strategy)
+
 	case "help", "-h", "--help":
 		printHelp()
 
@@ -274,9 +418,17 @@ func printHelp() {
 
 Usage:
   agygit                           Launch interactive Git Cockpit TUI
+  agygit stage <file>              Stage a single file
+  agygit unstage <file>            Unstage a single file
+  agygit reject <file>             Discard changes in a file (git restore / clean)
+  agygit reject-all                Discard all uncommitted changes with confirmation
+  agygit diff [file]               Inspect diff for a file or entire repository
+  agygit conflicts                 List files currently in merge conflict
+  agygit resolve <file> <--ours|--theirs> Resolve conflict with strategy
   agygit graph                     Display visual ASCII git log graph with colors
   agygit log                       Show recent commits
-  agygit commit [msg]              Commit changes (stages all if untracked)
+  agygit commit [msg]              Commit changes
+  agygit undo                      Undo last commit (soft reset, keeps changes staged)
   agygit push                      Push commits to remote
   agygit pull                      Pull fast-forward changes
   agygit merge <branch> [--squash] Merge branch into current branch

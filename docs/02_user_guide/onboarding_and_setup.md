@@ -41,7 +41,7 @@ Open a PowerShell terminal and run:
 1. **SDK Audit**: Checks for `.NET 9 SDK`. If missing, installs `Microsoft.DotNet.SDK.9` silently via `winget`.
 2. **Profile Linking**: Integrates `Microsoft.PowerShell_profile.ps1` into your `$PROFILE`.
 3. **App Data Initialization**: Prepares `%APPDATA%\AgyTui` directory structure.
-4. **Binary Compilation**: Builds `csapp/AgyTui/AgyTui.csproj` in Release mode.
+4. **Binary Compilation**: Builds `apps/agytui/AgyTui/AgyTui.csproj` in Release mode.
 5. **Database Initialization**: Triggers automatic SQLite schema migrations (V1-V6) and populates default seed data.
 
 ---

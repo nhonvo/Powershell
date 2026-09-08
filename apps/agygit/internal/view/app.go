@@ -29,6 +29,8 @@ type App struct {
 	// Cached state
 	cachedFleet     []model.RepoStatus
 	cachedStatus    *model.RepoStatus
+	cachedSummary   string
+	cachedFiles     []model.ChangedFile
 	cachedCommits   []model.CommitInfo
 	cachedGraph     string
 	cachedBranches  []string
@@ -80,21 +82,28 @@ func (a *App) RunInteractive() error {
 			if a.ActiveRepoPath == "" && len(a.cachedFleet) > 0 {
 				a.ActiveRepoPath = a.cachedFleet[0].Path
 			}
-			a.needsReload = false
 		}
 
-		if a.ActiveRepoPath != "" {
-			a.cachedStatus, _ = gitops.GetRepoStatus(a.ActiveRepoPath)
-			a.cachedCommits, _ = gitops.GetLog(a.ActiveRepoPath, 40)
-			a.cachedGraph, _ = gitops.GetLogGraph(a.ActiveRepoPath, 35)
-			a.cachedBranches, a.activeBranch, _ = gitops.ListBranches(a.ActiveRepoPath)
-			a.cachedWorktrees, _ = gitops.ListWorktrees(a.ActiveRepoPath)
+		if a.needsReload || a.cachedStatus == nil {
+			if a.ActiveRepoPath != "" {
+				a.cachedStatus, _ = gitops.GetRepoStatus(a.ActiveRepoPath)
+				a.cachedSummary, _ = gitops.GetStatusSummary(a.ActiveRepoPath)
+				a.cachedFiles, _ = gitops.GetChangedFiles(a.ActiveRepoPath)
+				a.cachedCommits, _ = gitops.GetLog(a.ActiveRepoPath, 40)
+				a.cachedGraph, _ = gitops.GetLogGraph(a.ActiveRepoPath, 35)
+				a.cachedBranches, a.activeBranch, _ = gitops.ListBranches(a.ActiveRepoPath)
+				a.cachedWorktrees, _ = gitops.ListWorktrees(a.ActiveRepoPath)
+			}
+			a.needsReload = false
 		}
 
 		totalItems := 1
 		switch a.ActiveTab {
 		case 0:
-			totalItems = 1
+			totalItems = len(a.cachedFiles)
+			if totalItems == 0 {
+				totalItems = 1
+			}
 		case 1:
 			if a.GraphViewMode == 0 {
 				totalItems = len(a.cachedCommits)
@@ -206,6 +215,25 @@ func (a *App) RunInteractive() error {
 					a.StatusMsg = "\033[32mSwitched to ASCII Tree Graph View\033[0m"
 				}
 			}
+		case ' ': // Toggle Stage/Unstage selected file in Tab 0
+			if a.ActiveTab == 0 && a.ActiveRepoPath != "" && len(a.cachedFiles) > 0 && a.SelectedIndex < len(a.cachedFiles) {
+				f := a.cachedFiles[a.SelectedIndex]
+				if f.IsStaged {
+					if err := gitops.UnstageFile(a.ActiveRepoPath, f.Path); err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mUnstage error: %v\033[0m", err)
+					} else {
+						a.needsReload = true
+						a.StatusMsg = fmt.Sprintf("\033[33m✔ Unstaged '%s'\033[0m", f.Path)
+					}
+				} else {
+					if err := gitops.StageFile(a.ActiveRepoPath, f.Path); err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mStage error: %v\033[0m", err)
+					} else {
+						a.needsReload = true
+						a.StatusMsg = fmt.Sprintf("\033[32m✔ Staged '%s'\033[0m", f.Path)
+					}
+				}
+			}
 		case 'a', 'A': // Stage All in Tab 0
 			if a.ActiveTab == 0 && a.ActiveRepoPath != "" {
 				if err := gitops.StageAll(a.ActiveRepoPath); err != nil {
@@ -215,7 +243,7 @@ func (a *App) RunInteractive() error {
 					a.StatusMsg = "\033[32m✔ Staged all changes (git add -A)\033[0m"
 				}
 			}
-		case 'u', 'U': // Unstage All in Tab 0
+		case 'u': // Unstage All in Tab 0
 			if a.ActiveTab == 0 && a.ActiveRepoPath != "" {
 				if err := gitops.UnstageAll(a.ActiveRepoPath); err != nil {
 					a.StatusMsg = fmt.Sprintf("\033[31mUnstage error: %v\033[0m", err)
@@ -224,17 +252,47 @@ func (a *App) RunInteractive() error {
 					a.StatusMsg = "\033[33m✔ Unstaged all changes (git reset)\033[0m"
 				}
 			}
-		case 'c', 'C': // Input Commit in Tab 0 or Cherry-pick in Tab 1
+		case 'U': // Undo Commit (git reset --soft HEAD~1) in Tab 0
 			if a.ActiveTab == 0 && a.ActiveRepoPath != "" {
 				fmt.Print("\033[?25h\033[?1049l")
 				_ = term.Restore(fd, oldState)
-				fmt.Printf("\r\n📝 \033[1;36m[agygit] Commit Changes in '%s'\033[0m\r\n", filepath.Base(a.ActiveRepoPath))
+				fmt.Printf("\r\n\033[33m[agygit] Undo last commit (git reset --soft HEAD~1)? Changes will remain staged. (y/N): \033[0m")
+				var confirm string
+				fmt.Scanln(&confirm)
+				if strings.EqualFold(strings.TrimSpace(confirm), "y") {
+					if err := gitops.GitUndo(a.ActiveRepoPath); err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mUndo error: %v\033[0m", err)
+					} else {
+						a.needsReload = true
+						a.StatusMsg = "\033[32m✔ Undid last commit (git reset --soft HEAD~1)\033[0m"
+					}
+				}
+				oldState, _ = term.MakeRaw(fd)
+				fmt.Print("\033[?1049h\033[?25l")
+				a.tabSwitched = true
+			}
+		case 'c', 'C': // Input Commit in Tab 0 (staged only) or Cherry-pick in Tab 1
+			if a.ActiveTab == 0 && a.ActiveRepoPath != "" {
+				hasStaged := false
+				for _, f := range a.cachedFiles {
+					if f.IsStaged {
+						hasStaged = true
+						break
+					}
+				}
+				if !hasStaged {
+					a.StatusMsg = "\033[33mNo staged files to commit. Use [Space/s] to stage or [a] to stage all.\033[0m"
+					continue
+				}
+				fmt.Print("\033[?25h\033[?1049l")
+				_ = term.Restore(fd, oldState)
+				fmt.Printf("\r\n📝 \033[1;36m[agygit] Commit Staged Changes in '%s'\033[0m\r\n", filepath.Base(a.ActiveRepoPath))
 				fmt.Print("Enter commit message: ")
 				scanner := bufio.NewScanner(os.Stdin)
 				if scanner.Scan() {
 					msg := strings.TrimSpace(scanner.Text())
 					if msg != "" {
-						if err := gitops.Commit(a.ActiveRepoPath, msg, true); err != nil {
+						if err := gitops.Commit(a.ActiveRepoPath, msg, false); err != nil {
 							a.StatusMsg = fmt.Sprintf("\033[31mCommit error: %v\033[0m", err)
 						} else {
 							a.needsReload = true
@@ -302,8 +360,46 @@ func (a *App) RunInteractive() error {
 					}
 				}
 			}
-		case 'm', 'M': // Merge branch
-			if a.ActiveTab == 2 && len(a.cachedBranches) > 0 && a.SelectedIndex < len(a.cachedBranches) {
+		case 'm', 'M': // Conflict resolution in Tab 0, or Merge branch in Tab 2
+			if a.ActiveTab == 0 && a.ActiveRepoPath != "" && len(a.cachedFiles) > 0 && a.SelectedIndex < len(a.cachedFiles) {
+				f := a.cachedFiles[a.SelectedIndex]
+				if !f.IsConflict {
+					a.StatusMsg = fmt.Sprintf("\033[33m'%s' is not in conflict state.\033[0m", f.Path)
+					continue
+				}
+				fmt.Print("\033[H\033[2J")
+				fmt.Printf("\r\n⚔️  \033[1;31mConflict Resolution: %s\033[0m\r\n", f.Path)
+				fmt.Println("───────────────────────────────────────────────────────")
+				fmt.Println(" [1] Accept Ours   (Keep current HEAD changes: git checkout --ours)")
+				fmt.Println(" [2] Accept Theirs (Accept incoming branch changes: git checkout --theirs)")
+				fmt.Println(" [Esc] Cancel")
+				fmt.Println("───────────────────────────────────────────────────────")
+				fmt.Print(" Select option: ")
+
+				var optBuf [16]byte
+				optN, _ := os.Stdin.Read(optBuf[:])
+				if optN > 0 {
+					switch optBuf[0] {
+					case '1':
+						if err := gitops.ResolveConflict(a.ActiveRepoPath, f.Path, "ours"); err != nil {
+							a.StatusMsg = fmt.Sprintf("\033[31mResolve error: %v\033[0m", err)
+						} else {
+							a.needsReload = true
+							a.StatusMsg = fmt.Sprintf("\033[32m✔ Resolved '%s' with --ours\033[0m", f.Path)
+						}
+					case '2':
+						if err := gitops.ResolveConflict(a.ActiveRepoPath, f.Path, "theirs"); err != nil {
+							a.StatusMsg = fmt.Sprintf("\033[31mResolve error: %v\033[0m", err)
+						} else {
+							a.needsReload = true
+							a.StatusMsg = fmt.Sprintf("\033[32m✔ Resolved '%s' with --theirs\033[0m", f.Path)
+						}
+					default:
+						a.StatusMsg = "\033[33mConflict resolution cancelled.\033[0m"
+					}
+				}
+				a.tabSwitched = true
+			} else if a.ActiveTab == 2 && len(a.cachedBranches) > 0 && a.SelectedIndex < len(a.cachedBranches) {
 				br := a.cachedBranches[a.SelectedIndex]
 				if br == a.activeBranch {
 					a.StatusMsg = "\033[33mCannot merge branch into itself!\033[0m"
@@ -316,8 +412,25 @@ func (a *App) RunInteractive() error {
 					a.StatusMsg = fmt.Sprintf("\033[32m✔ Merged branch '%s'\033[0m", br)
 				}
 			}
-		case 's', 'S': // Squash merge in Tab 2, or View Status in Tab 0
-			if a.ActiveTab == 2 && len(a.cachedBranches) > 0 && a.SelectedIndex < len(a.cachedBranches) {
+		case 's', 'S': // Toggle Stage/Unstage in Tab 0, or Squash merge in Tab 2
+			if a.ActiveTab == 0 && a.ActiveRepoPath != "" && len(a.cachedFiles) > 0 && a.SelectedIndex < len(a.cachedFiles) {
+				f := a.cachedFiles[a.SelectedIndex]
+				if f.IsStaged {
+					if err := gitops.UnstageFile(a.ActiveRepoPath, f.Path); err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mUnstage error: %v\033[0m", err)
+					} else {
+						a.needsReload = true
+						a.StatusMsg = fmt.Sprintf("\033[33m✔ Unstaged '%s'\033[0m", f.Path)
+					}
+				} else {
+					if err := gitops.StageFile(a.ActiveRepoPath, f.Path); err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mStage error: %v\033[0m", err)
+					} else {
+						a.needsReload = true
+						a.StatusMsg = fmt.Sprintf("\033[32m✔ Staged '%s'\033[0m", f.Path)
+					}
+				}
+			} else if a.ActiveTab == 2 && len(a.cachedBranches) > 0 && a.SelectedIndex < len(a.cachedBranches) {
 				br := a.cachedBranches[a.SelectedIndex]
 				if br == a.activeBranch {
 					a.StatusMsg = "\033[33mCannot squash merge branch into itself!\033[0m"
@@ -330,31 +443,103 @@ func (a *App) RunInteractive() error {
 					a.StatusMsg = fmt.Sprintf("\033[32m✔ Squash merged '%s' (changes staged)\033[0m", br)
 				}
 			}
-		case 'r', 'R': // Rebase in Tab 2, or Refresh
-			if a.ActiveTab == 2 && len(a.cachedBranches) > 0 && a.SelectedIndex < len(a.cachedBranches) {
-				br := a.cachedBranches[a.SelectedIndex]
-				if br == a.activeBranch {
-					a.StatusMsg = "\033[33mCannot rebase branch onto itself!\033[0m"
-					continue
+		case 'r', 'x': // Reject selected file in Tab 0, Rebase in Tab 2 (r), Abort in Tab 2 (x)
+			if a.ActiveTab == 0 && a.ActiveRepoPath != "" && len(a.cachedFiles) > 0 && a.SelectedIndex < len(a.cachedFiles) {
+				f := a.cachedFiles[a.SelectedIndex]
+				fmt.Print("\033[?25h\033[?1049l")
+				_ = term.Restore(fd, oldState)
+				fmt.Printf("\r\n\033[31m[agygit] Discard changes in '%s'? (y/N): \033[0m", f.Path)
+				var confirm string
+				fmt.Scanln(&confirm)
+				if strings.EqualFold(strings.TrimSpace(confirm), "y") {
+					if err := gitops.RejectFile(a.ActiveRepoPath, f.Path, f.IsUntracked); err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mReject error: %v\033[0m", err)
+					} else {
+						a.needsReload = true
+						a.StatusMsg = fmt.Sprintf("\033[33m✔ Discarded changes in '%s'\033[0m", f.Path)
+					}
 				}
-				if err := gitops.Rebase(a.ActiveRepoPath, br); err != nil {
-					a.StatusMsg = fmt.Sprintf("\033[31mRebase error: %v\033[0m", err)
-				} else {
+				oldState, _ = term.MakeRaw(fd)
+				fmt.Print("\033[?1049h\033[?25l")
+				a.tabSwitched = true
+			} else if a.ActiveTab == 2 {
+				if b == 'r' && len(a.cachedBranches) > 0 && a.SelectedIndex < len(a.cachedBranches) {
+					br := a.cachedBranches[a.SelectedIndex]
+					if br == a.activeBranch {
+						a.StatusMsg = "\033[33mCannot rebase branch onto itself!\033[0m"
+						continue
+					}
+					if err := gitops.Rebase(a.ActiveRepoPath, br); err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mRebase error: %v\033[0m", err)
+					} else {
+						a.needsReload = true
+						a.StatusMsg = fmt.Sprintf("\033[32m✔ Rebased onto '%s'\033[0m", br)
+					}
+				} else if b == 'x' && a.ActiveRepoPath != "" {
+					_ = gitops.AbortOperation(a.ActiveRepoPath)
 					a.needsReload = true
-					a.StatusMsg = fmt.Sprintf("\033[32m✔ Rebased onto '%s'\033[0m", br)
+					a.StatusMsg = "\033[33m✔ Aborted active merge/rebase operation\033[0m"
 				}
 			} else {
 				a.needsReload = true
 				a.StatusMsg = "\033[32mRefreshed status.\033[0m"
 			}
-		case 'x', 'X': // Abort merge / rebase
-			if a.ActiveRepoPath != "" {
-				_ = gitops.AbortOperation(a.ActiveRepoPath)
+		case 'R', 'X': // Reject all uncommitted changes in Tab 0
+			if a.ActiveTab == 0 && a.ActiveRepoPath != "" {
+				fmt.Print("\033[?25h\033[?1049l")
+				_ = term.Restore(fd, oldState)
+				fmt.Printf("\r\n\033[1;31m[agygit] DISCARD ALL UNCOMMITTED CHANGES? (y/N): \033[0m")
+				var confirm string
+				fmt.Scanln(&confirm)
+				if strings.EqualFold(strings.TrimSpace(confirm), "y") {
+					if err := gitops.RejectAll(a.ActiveRepoPath); err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mReject all error: %v\033[0m", err)
+					} else {
+						a.needsReload = true
+						a.StatusMsg = "\033[33m✔ Discarded all uncommitted changes\033[0m"
+					}
+				}
+				oldState, _ = term.MakeRaw(fd)
+				fmt.Print("\033[?1049h\033[?25l")
+				a.tabSwitched = true
+			} else if a.ActiveTab == 2 {
+				if b == 'R' && len(a.cachedBranches) > 0 && a.SelectedIndex < len(a.cachedBranches) {
+					br := a.cachedBranches[a.SelectedIndex]
+					if br == a.activeBranch {
+						a.StatusMsg = "\033[33mCannot rebase branch onto itself!\033[0m"
+						continue
+					}
+					if err := gitops.Rebase(a.ActiveRepoPath, br); err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mRebase error: %v\033[0m", err)
+					} else {
+						a.needsReload = true
+						a.StatusMsg = fmt.Sprintf("\033[32m✔ Rebased onto '%s'\033[0m", br)
+					}
+				} else if b == 'X' && a.ActiveRepoPath != "" {
+					_ = gitops.AbortOperation(a.ActiveRepoPath)
+					a.needsReload = true
+					a.StatusMsg = "\033[33m✔ Aborted active merge/rebase operation\033[0m"
+				}
+			} else {
 				a.needsReload = true
-				a.StatusMsg = "\033[33m✔ Aborted active merge/rebase operation\033[0m"
+				a.StatusMsg = "\033[32mRefreshed status.\033[0m"
 			}
-		case 'd', 'D': // Commit diff in Tab 1, or Delete worktree in Tab 3
-			if a.ActiveTab == 1 && len(a.cachedCommits) > 0 && a.SelectedIndex < len(a.cachedCommits) {
+		case 'd', 'D': // Diff in Tab 0 or Tab 1, or Delete worktree in Tab 3
+			if a.ActiveTab == 0 && a.ActiveRepoPath != "" && len(a.cachedFiles) > 0 && a.SelectedIndex < len(a.cachedFiles) {
+				f := a.cachedFiles[a.SelectedIndex]
+				diff, _ := gitops.GetFileDiff(a.ActiveRepoPath, f.Path, f.IsStaged)
+				fmt.Print("\033[H\033[2J")
+				fmt.Printf("\r\n📜 \033[1;36mDiff: %s\033[0m\r\n\r\n", f.Path)
+				if strings.TrimSpace(diff) == "" {
+					fmt.Println("  (no diff)")
+				} else {
+					fmt.Printf("%s\r\n", diff)
+				}
+				fmt.Print("\r\n \033[1mPress any key to return...\033[0m")
+				var dummy [1]byte
+				_, _ = os.Stdin.Read(dummy[:])
+				a.tabSwitched = true
+			} else if a.ActiveTab == 1 && len(a.cachedCommits) > 0 && a.SelectedIndex < len(a.cachedCommits) {
 				c := a.cachedCommits[a.SelectedIndex]
 				diff, _ := gitops.GetCommitDiff(a.ActiveRepoPath, c.Hash)
 				fmt.Print("\033[H\033[2J")
@@ -420,7 +605,23 @@ func (a *App) RunInteractive() error {
 				if scanner.Scan() {
 					br := strings.TrimSpace(scanner.Text())
 					if br != "" {
-						_ = gitops.CheckoutBranch(a.ActiveRepoPath, br, false)
+						exists := false
+						for _, bName := range a.cachedBranches {
+							if bName == br {
+								exists = true
+								break
+							}
+						}
+						create := !exists
+						if err := gitops.CheckoutBranch(a.ActiveRepoPath, br, create); err != nil {
+							a.StatusMsg = fmt.Sprintf("\033[31mCheckout error: %v\033[0m", err)
+						} else {
+							if create {
+								a.StatusMsg = fmt.Sprintf("\033[32m✔ Created & checked out branch '%s'\033[0m", br)
+							} else {
+								a.StatusMsg = fmt.Sprintf("\033[32m✔ Checked out branch '%s'\033[0m", br)
+							}
+						}
 						a.needsReload = true
 					}
 				}
@@ -434,8 +635,17 @@ func (a *App) RunInteractive() error {
 				a.ActiveTab = 0
 				a.SelectedIndex = 0
 				a.needsReload = true
+				a.cachedStatus = nil
 				a.tabSwitched = true
 				a.StatusMsg = fmt.Sprintf("\033[32m✔ Switched active Git context to '%s'\033[0m", filepath.Base(a.ActiveRepoPath))
+			} else if a.ActiveTab == 2 && len(a.cachedBranches) > 0 && a.SelectedIndex < len(a.cachedBranches) {
+				br := a.cachedBranches[a.SelectedIndex]
+				if err := gitops.CheckoutBranch(a.ActiveRepoPath, br, false); err != nil {
+					a.StatusMsg = fmt.Sprintf("\033[31mCheckout error: %v\033[0m", err)
+				} else {
+					a.StatusMsg = fmt.Sprintf("\033[32m✔ Checked out branch '%s'\033[0m", br)
+				}
+				a.needsReload = true
 			} else if a.ActiveTab == 3 && len(a.cachedWorktrees) > 0 && a.SelectedIndex < len(a.cachedWorktrees) {
 				wt := a.cachedWorktrees[a.SelectedIndex]
 				fmt.Print("\033[?25h\033[?1049l")
@@ -462,19 +672,35 @@ func (a *App) RunInteractive() error {
 				_, _ = os.Stdin.Read(dummy[:])
 				a.tabSwitched = true
 			} else if a.ActiveTab == 0 && a.ActiveRepoPath != "" {
-				fmt.Print("\033[?25h\033[?1049l")
-				_ = term.Restore(fd, oldState)
-				fmt.Printf("\r\n\033[36m[agygit]\033[0m Launching Antigravity in '\033[32m%s\033[0m'...\r\n", a.ActiveRepoPath)
-				cmd := exec.Command("agy")
-				cmd.Dir = a.ActiveRepoPath
-				cmd.Stdin = os.Stdin
-				cmd.Stdout = os.Stdout
-				cmd.Stderr = os.Stderr
-				_ = cmd.Run()
-				oldState, _ = term.MakeRaw(fd)
-				fmt.Print("\033[?1049h\033[?25l")
-				a.needsReload = true
-				a.tabSwitched = true
+				if len(a.cachedFiles) > 0 && a.SelectedIndex < len(a.cachedFiles) {
+					f := a.cachedFiles[a.SelectedIndex]
+					diff, _ := gitops.GetFileDiff(a.ActiveRepoPath, f.Path, f.IsStaged)
+					fmt.Print("\033[H\033[2J")
+					fmt.Printf("\r\n📜 \033[1;36mDiff: %s\033[0m\r\n\r\n", f.Path)
+					if strings.TrimSpace(diff) == "" {
+						fmt.Println("  (no diff)")
+					} else {
+						fmt.Printf("%s\r\n", diff)
+					}
+					fmt.Print("\r\n \033[1mPress any key to return...\033[0m")
+					var dummy [1]byte
+					_, _ = os.Stdin.Read(dummy[:])
+					a.tabSwitched = true
+				} else {
+					fmt.Print("\033[?25h\033[?1049l")
+					_ = term.Restore(fd, oldState)
+					fmt.Printf("\r\n\033[36m[agygit]\033[0m Launching Antigravity in '\033[32m%s\033[0m'...\r\n", a.ActiveRepoPath)
+					cmd := exec.Command("agy")
+					cmd.Dir = a.ActiveRepoPath
+					cmd.Stdin = os.Stdin
+					cmd.Stdout = os.Stdout
+					cmd.Stderr = os.Stderr
+					_ = cmd.Run()
+					oldState, _ = term.MakeRaw(fd)
+					fmt.Print("\033[?1049h\033[?25l")
+					a.needsReload = true
+					a.tabSwitched = true
+				}
 			}
 		case 'q', 'Q', 0x03:
 			fmt.Print("\033[?25h\033[?1049l")
@@ -601,7 +827,7 @@ func (a *App) Render() {
 	if width < 80 {
 		switch a.ActiveTab {
 		case 0:
-			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;32m[c]\033[0mCommit \033[1;36m[p/l]\033[0mPush/Pull \033[1;33m[a/u]\033[0mStage \033[1;31m[Q]\033[0mExit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;32m[Space]\033[0mStage \033[1;36m[d]\033[0mDiff \033[1;31m[r]\033[0mReject \033[1;32m[c]\033[0mCommit \033[1;31m[Q]\033[0mExit\033[K\r\n")
 		case 1:
 			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;36m[c]\033[0mCherryPick \033[1;36m[d]\033[0mDiff \033[1;32m[g]\033[0mGraph \033[1;31m[Q]\033[0mExit\033[K\r\n")
 		case 2:
@@ -614,7 +840,7 @@ func (a *App) Render() {
 	} else {
 		switch a.ActiveTab {
 		case 0:
-			b.WriteString(" \033[1m[Tab/1-5]\033[0m Switch Tab · \033[1;32m[c]\033[0m Commit · \033[1;33m[a]\033[0m Stage All · \033[1;33m[u]\033[0m Unstage · \033[1;36m[p/l]\033[0m Push/Pull · \033[1;35m[z/Z]\033[0m Stash · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab/1-5]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Select · \033[1;32m[Space/s]\033[0m Stage/Unstage · \033[1;36m[d/Enter]\033[0m Diff · \033[1;31m[r/x]\033[0m Reject · \033[1;31m[R/X]\033[0m Reject All · \033[1;32m[c]\033[0m Commit · \033[1;33m[a/u]\033[0m All · \033[1;31m[U]\033[0m Undo · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 		case 1:
 			b.WriteString(" \033[1m[Tab/1-5]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Select · \033[1;36m[c]\033[0m Cherry-Pick · \033[1;36m[d/Enter]\033[0m Diff · \033[1;32m[g]\033[0m Tree/Table · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 		case 2:
@@ -628,6 +854,28 @@ func (a *App) Render() {
 
 	b.WriteString("\033[J")
 	os.Stdout.WriteString(b.String())
+}
+
+func fileStatusBadge(f model.ChangedFile) string {
+	if f.IsConflict {
+		return "\033[1;37;41m ⚠️ CONFLICT \033[0m"
+	}
+	if f.IsUntracked {
+		return "\033[37m[?Untrack]\033[0m"
+	}
+	if f.IndexStatus == 'D' || f.WorkTreeStatus == 'D' {
+		return "\033[31m[-Deleted]\033[0m"
+	}
+	if f.IndexStatus != ' ' && f.WorkTreeStatus != ' ' {
+		return "\033[36m[±Partial]\033[0m"
+	}
+	if f.IsStaged {
+		return "\033[32m[+Staged] \033[0m"
+	}
+	if f.WorkTreeStatus == 'M' {
+		return "\033[33m[~Modified]\033[0m"
+	}
+	return "\033[33m[~Modified]\033[0m"
 }
 
 func (a *App) renderStatusTab(b *strings.Builder, width int, height int) {
@@ -654,26 +902,56 @@ func (a *App) renderStatusTab(b *strings.Builder, width int, height int) {
 	fmt.Fprintf(b, " 📝 \033[1mStatus:\033[0m      %s\033[K\r\n", statusStr)
 	fmt.Fprintf(b, " 🔖 \033[1mLast Commit:\033[0m \033[36m%s\033[0m\033[K\r\n\033[K\r\n", truncateString(r.LastCommit, width-18))
 
-	// Quick status lines
-	sum, _ := gitops.GetStatusSummary(a.ActiveRepoPath)
-	trimmed := strings.TrimSpace(sum)
-	if trimmed != "" {
-		b.WriteString(" \033[1;36mChanged Files (Porcelain):\033[0m\033[K\r\n")
-		lines := strings.Split(trimmed, "\n")
-		maxFiles := height - 16
-		if maxFiles < 3 {
-			maxFiles = 3
-		}
-		for idx, l := range lines {
-			if idx >= maxFiles {
-				fmt.Fprintf(b, "    \033[37m...and %d more files\033[0m\033[K\r\n", len(lines)-maxFiles)
-				break
-			}
-			fmt.Fprintf(b, "    %s\033[K\r\n", truncateString(l, width-8))
-		}
-	} else {
-		b.WriteString(" \033[32m✔ No modified files to commit.\033[0m\033[K\r\n")
+	files := a.cachedFiles
+	if len(files) == 0 {
+		b.WriteString(" \033[32m✔ No modified files to commit (working tree clean).\033[0m\033[K\r\n")
+		return
 	}
+
+	b.WriteString(" \033[1;36mChanged Files (Interactive Selector):\033[0m\033[K\r\n")
+
+	pageSize := height - 15
+	if pageSize < 4 {
+		pageSize = 4
+	}
+	if pageSize > 10 {
+		pageSize = 10
+	}
+
+	page := a.SelectedIndex / pageSize
+	startIdx := page * pageSize
+	endIdx := startIdx + pageSize
+	if endIdx > len(files) {
+		endIdx = len(files)
+	}
+	totalPages := (len(files) + pageSize - 1) / pageSize
+	if totalPages == 0 {
+		totalPages = 1
+	}
+
+	for i := startIdx; i < endIdx; i++ {
+		f := files[i]
+		cursor := "  "
+		highlightStart := ""
+		highlightEnd := ""
+		if i == a.SelectedIndex {
+			cursor = "\033[1;32m▶ \033[0m"
+			highlightStart = "\033[1;37;44m"
+			highlightEnd = "\033[0m"
+		}
+
+		badge := fileStatusBadge(f)
+		maxPathLen := width - 26
+		if maxPathLen < 15 {
+			maxPathLen = 15
+		}
+
+		fmt.Fprintf(b, "%s%s%s %-*s%s\033[K\r\n",
+			cursor, highlightStart, badge, maxPathLen, truncateString(f.Path, maxPathLen), highlightEnd)
+	}
+
+	fmt.Fprintf(b, "\033[K\r\n \033[37m[Page %d/%d · %d-%d of %d files · [Space/s] Stage/Unstage · [d/Enter] Diff · [r/x] Discard · [m] Conflict · [c] Commit]\033[0m\033[K\r\n",
+		page+1, totalPages, startIdx+1, endIdx, len(files))
 }
 
 func (a *App) renderGraphTab(b *strings.Builder, width int, height int) {

@@ -44,7 +44,7 @@ AWS cloud and LocalStack tools are split into:
 
 ## 4. TUI Menu Tree Folder Mapping
 
-All AWS cloud tools are grouped under **`📂 AWS Tools`** in [CommandRegistry.cs](file:///C:/Users/TruongNhon/Documents/Powershell/csapp/AgyTui/UI/Core/Registries/CommandRegistry.cs):
+All AWS cloud tools are grouped under **`📂 AWS Tools`** in [CommandRegistry.cs](../../apps/agytui/AgyTui/UI/Core/Commands/CommandRegistry.cs):
 
 ```text
 ─ [-] 📂 AWS Tools

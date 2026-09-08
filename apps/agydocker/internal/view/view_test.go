@@ -2,6 +2,7 @@ package view
 
 import (
 	"bytes"
+	"errors"
 	"strings"
 	"testing"
 
@@ -66,11 +67,63 @@ func TestApp_PendingActions(t *testing.T) {
 	app.spinnerIdx = 3
 	app.Render() // should render with spinner frames without panic
 
+	app.setPendingAction("c1", "killing")
+	app.setPendingAction("c2", "removing")
+	app.Render()
+
 	app.setPendingAction("c1", "")
 	app.setPendingAction("c2", "")
 	if app.hasPendingActions() {
 		t.Errorf("expected pending actions cleared")
 	}
 }
+
+func TestApp_DockerDaemonWarning(t *testing.T) {
+	app := NewApp()
+	app.dockerErr = errors.New("connect: no such file or directory")
+	// Render with error banner
+	app.Render()
+
+	var buf bytes.Buffer
+	app.PrintStatus(&buf)
+	if !strings.Contains(buf.String(), "Docker daemon is offline") {
+		t.Errorf("expected daemon offline banner in PrintStatus, got: %s", buf.String())
+	}
+}
+
+func TestApp_DownActionAndAsyncReload(t *testing.T) {
+	app := NewApp()
+	app.ActiveTab = 0
+	app.cachedContainers = []model.ContainerInfo{
+		{ID: "c1", Names: "dev_tools_pgadmin", ComposeProject: "dev-tools", State: "exited", IsRunning: false},
+		{ID: "c2", Names: "dev_tools_mongo_express", ComposeProject: "dev-tools", State: "running", IsRunning: true},
+	}
+
+	// Test downing a compose stack
+	app.setPendingAction("dev-tools", "downing")
+	if !app.hasPendingActions() {
+		t.Errorf("expected pending actions true for dev-tools downing")
+	}
+	if app.getPendingAction("dev-tools") != "downing" {
+		t.Errorf("expected dev-tools downing, got %s", app.getPendingAction("dev-tools"))
+	}
+
+	app.spinnerIdx = 2
+	app.Render()
+
+	// Test downing a container
+	app.setPendingAction("c1", "downing")
+	app.Render()
+
+	app.setPendingAction("dev-tools", "")
+	app.setPendingAction("c1", "")
+
+	// Test reloadAsync
+	app.reloadAsync()
+	// Calling reloadAsync while one is in progress should not crash
+	app.reloadAsync()
+}
+
+
 
 

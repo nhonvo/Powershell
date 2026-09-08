@@ -32,7 +32,7 @@ To prevent developer testing, experimental DB migrations, or mock account genera
 | :--- | :--- | :--- |
 | **PowerShell Command** | `cc` | `ccd` |
 | **Environment Variable** | `$env:ENVIRONMENT = "Production"` | `$env:ENVIRONMENT = "Development"` |
-| **Target Binary** | `csapp/AgyTui/bin/Release/net9.0/AgyTui.exe` | `csapp/AgyTui/bin/Debug/net9.0/AgyTui.exe` |
+| **Target Binary** | `apps/agytui/AgyTui/bin/Release/net9.0/AgyTui.exe` | `apps/agytui/AgyTui/bin/Debug/net9.0/AgyTui.exe` |
 | **SQLite DB File** | `%APPDATA%/AgyTui/agytui.db` | `%APPDATA%/AgyTui/agytui.dev.db` |
 | **Config File** | `profile.config.json` | `profile.config.dev.json` |
 | **Data Safety** | Protected Daily Production Data | Isolated Sandbox Wiped & Tested Freely |

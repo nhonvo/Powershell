@@ -103,6 +103,26 @@ func RestartContainer(id string) error {
 	return nil
 }
 
+// KillContainer sends SIGKILL to a running container
+func KillContainer(id string) error {
+	cmd := exec.Command("docker", "kill", id)
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("kill failed: %s (%w)", strings.TrimSpace(string(out)), err)
+	}
+	return nil
+}
+
+// RemoveContainer forces the removal of a container
+func RemoveContainer(id string) error {
+	cmd := exec.Command("docker", "rm", "-f", id)
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("remove failed: %s (%w)", strings.TrimSpace(string(out)), err)
+	}
+	return nil
+}
+
 // GetContainerLogs returns recent logs
 func GetContainerLogs(id string, lines int) (string, error) {
 	if lines <= 0 {
@@ -175,6 +195,14 @@ func PruneSystem() (string, error) {
 	return strings.TrimSpace(string(out)), err
 }
 
+// PruneVolumes removes all unused local volumes
+func PruneVolumes() (string, error) {
+	cmd := exec.Command("docker", "volume", "prune", "-f")
+	out, err := cmd.CombinedOutput()
+	return strings.TrimSpace(string(out)), err
+}
+
+
 // ListVolumes lists Docker volumes
 func ListVolumes() ([]model.VolumeInfo, error) {
 	cmd := exec.Command("docker", "volume", "ls", "--format", "{{json .}}")
@@ -196,4 +224,35 @@ func ListVolumes() ([]model.VolumeInfo, error) {
 		}
 	}
 	return list, nil
+}
+
+// DownCompose tears down a Docker Compose project stack using docker compose down
+func DownCompose(project string) error {
+	project = strings.TrimSpace(project)
+	if project == "" || strings.EqualFold(project, "standalone") {
+		return fmt.Errorf("cannot down standalone containers as a compose stack")
+	}
+	cmd := exec.Command("docker", "compose", "-p", project, "down")
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("compose down failed: %s (%w)", strings.TrimSpace(string(out)), err)
+	}
+	return nil
+}
+
+// DownContainer stops a container with a 2-second grace period and force removes it
+func DownContainer(id string) error {
+	id = strings.TrimSpace(id)
+	if id == "" {
+		return fmt.Errorf("container id cannot be empty")
+	}
+	stopCmd := exec.Command("docker", "stop", "-t", "2", id)
+	_ = stopCmd.Run()
+
+	rmCmd := exec.Command("docker", "rm", "-f", id)
+	out, err := rmCmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("down container failed: %s (%w)", strings.TrimSpace(string(out)), err)
+	}
+	return nil
 }

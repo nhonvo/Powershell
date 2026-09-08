@@ -2,20 +2,31 @@
 
 > **Category**: Architecture & System Specification  
 > **Subsystem**: Core Documentation Suite  
-> **Date**: 2026-08-03  
-> **Author**: Antigravity AI Engineering Team  
-> **Status**: Completed / Active  
+> **Environment**: Ubuntu WSL2 + Windows 11 / VS Code  
+> **Date**: September 2026  
+> **Status**: Production / Active  
+> **Master Gateway**: [docs/README.md](../README.md)  
+> **Audit Catalog**: [docs/reports/README.md](../reports/README.md)  
+> **Strategic Roadmap**: [AGY_SYSTEM_AUDIT_AND_ROADMAP.md](../../AGY_SYSTEM_AUDIT_AND_ROADMAP.md)  
+> **Windows UNC Reference**: `\\wsl.localhost\Ubuntu\home\truongnhon\projects\powershell-profile\docs\01_architecture\system_overview_and_file_tree.md`
 
 ---
 
 ## Executive Summary
-This document provides an exhaustive reference for the **PowerShell Control Center (`AgyTui`)**. It details the **complete repository file tree**, an **annotated catalog of all system features**, the **Clean Architecture component topology**, and the **PowerShell-to-C# interop model**.
+
+This document provides a comprehensive architectural reference and file tree blueprint for the **Antigravity Developer Ecosystem**. 
+
+The system architecture combines:
+1. **Modern Go Engine Suite (7 Micro-Applications)**: High-speed native binaries (`apps/agyswitch`, `apps/agyproj`, `apps/agygit`, `apps/agydocker`, `apps/agyterm`, `apps/agyx`, `apps/agymobile`) providing sub-15ms startup, zero file-locking overhead, and specialized operational cockpits.
+2. **Master CLI Orchestrator (`agyx`)**: Unified gateway proxying commands and providing a multi-module interactive TUI cockpit.
+3. **Legacy C# Control Center (`apps/agytui`)**: Monolithic .NET 9.0 clean-architecture system preserved as an architectural reference, containing 261 xUnit tests, SQLite WAL relational migrations (V1–V7), and the SuperMemo-2 (SM-2) spaced repetition engine.
+4. **Cross-Platform Shell Integrations**: Lean PowerShell 7+ profile (`Microsoft.PowerShell_profile.ps1`) and Ubuntu WSL2 Zsh profiles (`setup-ubuntu.sh`) providing seamless hotkeys and path aliases.
 
 ---
 
 ## Table of Contents
 - [1. System Architecture & Component Topology](#1-system-architecture--component-topology)
-- [2. Comprehensive Feature Catalog](#2-comprehensive-feature-catalog)
+- [2. Modern Go Micro-Applications & Feature Catalog](#2-modern-go-micro-applications--feature-catalog)
 - [3. Complete Repository File Tree](#3-complete-repository-file-tree)
 - [4. Cross References & Sitemap](#4-cross-references--sitemap)
 
@@ -23,156 +34,197 @@ This document provides an exhaustive reference for the **PowerShell Control Cent
 
 ## 1. System Architecture & Component Topology
 
-`AgyTui` is designed around **Clean / Onion Architecture principles** with a strict **100% C# Domain Logic Centralization** policy.
-
-### Component Layer Topology
-
 ```mermaid
 graph TD
-    User(["User / Terminal Context"]) -->|Launcher: cc / ccd| Profile[Microsoft.PowerShell_profile.ps1]
-    Profile -->|Load Assembly & Route| Router["CommandRouter (C# Route Dispatcher)"]
+    User(["User / Terminal Context"]) -->|Shell Aliases: agyx, agysw, agyp, agyg, agyd, agyt, agym| Shell[Shell Profiles: PS7 & Zsh]
     
-    subgraph UI ["UI Layer (Spectre.Console)"]
-        Router -->|Dispatches| Views[TUI Screen Views / Dashboards]
-        Views -->|Render| Layout["3-Pane Header / Content / Footer Layout"]
+    subgraph MasterGateway ["Unified Gateway"]
+        Shell -->|agyx / x| AGYX["⚡ agyx (Master Proxy & Cockpit)"]
     end
 
-    subgraph Infra ["Infrastructure Layer (C# Services & Persistence)"]
-        Views -->|Consumes Interfaces| Di[Bootstrapper Container]
-        Di -->|SQLite ORM| Repo["SqliteRepositories (V1..V7 Schemas)"]
-        Di -->|DPAPI Encryption| Vault["AgyVault & DPAPI Encryption Engine"]
-        Di -->|CLI Integrations| Tools["Git / Docker / DotNet / AWS Services"]
+    subgraph GoEngines ["Modern Go Micro-Engine Suite"]
+        AGYX -.->|Route Proxy| AGYSWITCH["🛸 agyswitch (Vault & Quota)"]
+        AGYX -.->|Route Proxy| AGYPROJ["📁 agyproj (Workspaces & Stacks)"]
+        AGYX -.->|Route Proxy| AGYGIT["🐙 agygit (Git Fleet & Worktrees)"]
+        AGYX -.->|Route Proxy| AGYDOCKER["🐳 agydocker (Containers & RAM Guard)"]
+        AGYX -.->|Route Proxy| AGYTERM["🎨 agyterm (Themes & WinTerm JSON)"]
+        AGYX -.->|Route Proxy| AGYMOBILE["📱 agymobile (Mobile Station & Web :7890)"]
     end
 
-    subgraph Domain ["Domain Layer (Pure C# Business Entities)"]
-        Repo -->|Operates On| Entities["Account / Workspace / Learning Entities"]
+    subgraph HostIntegrations ["Host & External Interfaces"]
+        AGYSWITCH -->|AES-256 Vault / Mirroring| GeminiDirs["Context Stores (~/.gemini_*)"]
+        AGYSWITCH -->|HTTPS Probing| GoogleCloudCode["Google CloudCode API"]
+        AGYPROJ -->|Cost & Step Analytics| TranscriptLogs["Brain Logs (~/.gemini/.../brain)"]
+        AGYGIT -->|Isolated Worktrees| GitWorktrees[".worktrees/<branch>"]
+        AGYDOCKER -->|Kernel Memory Watchdog| ProcMem["WSL2 /proc/meminfo"]
+        AGYTERM -->|Direct JSON AST Mutation| WinTermSettings["Windows Terminal settings.json"]
+        AGYMOBILE -->|Remote Mesh Access| TailscaleMesh["Tailscale Network / Web UI"]
     end
 
-    Repo -->|Persists| DB[("SQLite agytui.db")]
-    Vault -->|Syncs Token| Keyring["Windows Credential Manager / Keyring"]
+    subgraph LegacyCSharp ["Legacy C# System (Historical Reference)"]
+        Shell -.->|cc / ccd| CSharpApp["🏛️ AgyTui (.NET 9.0 Monolith)"]
+        CSharpApp --> Repo["SqliteDatabase (V1-V7 Schemas)"]
+        Repo --> DB[("SQLite agytui.db")]
+        CSharpApp --> SM2["SM-2 Flashcard Engine"]
+    end
 ```
 
 ---
 
-## 2. Comprehensive Feature Catalog
+## 2. Modern Go Micro-Applications & Feature Catalog
 
-### 🔑 A. Multi-Account Authority & DPAPI Credential Isolation
-- **SQLite Master Account Authority**: Account state, active status (`is_active = 1`), and credentials are managed authoritatively inside SQLite (`accounts` table, Migration V7).
-- **DPAPI Encrypted Credential Vault**: OAuth refresh tokens, access tokens, and project configs are DPAPI-encrypted per account.
-- **Clean Context Switching Engine**: Switching accounts purges active Windows Keyring tokens (`gemini:antigravity`) and `%USERPROFILE%\.gemini` JSON state files when switching to clean or logged-out target accounts.
-- **Account Signature UI**: Renders 5-character key signatures (e.g. `✔ Logged In · Key: ae..awe`) in TUI headers for instant identity verification.
+### ⚡ A. Master Orchestrator (`apps/agyx`)
+- **CLI Subcommand Proxy**: Transparent command delegation (`agyx switch`, `agyx proj`, `agyx git`, `agyx docker`, `agyx term`, `agyx mobile`).
+- **Interactive Multi-Tab Cockpit**: Zero-lag status summaries across all micro-modules in a single view.
+- **PTY Session Handover**: Launches child interactive TUIs with preserved terminal state.
 
-### 🛠️ B. Centralized C# CLI Engine (`CommandRouter`)
-- **100% C# Logic Centralization**: **70 out of 70 domain and CLI tool functions** delegate directly to C# via `Load-AgyTuiDll` and `[CommandRouter]::Route`.
-- **PowerShell Profile Interop**: `Microsoft.PowerShell_profile.ps1` functions as a thin calling interface.
-- **Native CLI Conflict Avoidance**: Clean command isolation ensuring native CLIs (such as official Anthropic `claude.cmd`) run directly without alias collision.
+### 🔑 B. Multi-Account Authority & Quota Engine (`apps/agyswitch`)
+- **Context Mirroring**: Atomic symlink and file replication between isolated account directories (`~/.gemini_<name>`) and active runtime (`~/.gemini`).
+- **Encrypted Token Vault**: AES-256-GCM token encryption safeguarding Google OAuth refresh tokens.
+- **Live Quota Probing**: Direct HTTPS calls to Google CloudCode quota endpoints.
+- **Subprocess Launcher**: Environment sanitizer scrubbing IDE tokens and setting `GEMINI_HOME`.
 
-### 🐙 C. Git Integration & VCS Automation (`GitClient.cs`)
-- **Git Status & Visual Diff**: Color-coded status tables (`gs`) and diff viewer (`gd`).
-- **Interactive Log Graph & Formatting**: Graph log visualization (`glg`), pretty log (`glog`), and interactive Spectre pager log (`glo`).
-- **Branch Navigator & Switcher**: Branch listing (`gb`), branch checkout (`co`), branch creation (`cob`), and deletion (`gbd`).
-- **Conventional Commit Wizard**: AI-assisted conventional commit message generator (`gcmt`) and commit amend (`gca`).
-- **Git Undo & Reset**: Soft reset (`gr`), hard reset (`grh`), and commit undo (`git-undo`).
-- **Remote Operations**: Fetch (`gf`), Pull (`gpull`), Push (`gpush`), Force Push (`guf`), and Repo Cloning Assistant (`gclone`).
+### 📁 C. Project Workspace Hub (`apps/agyproj`)
+- **Technology Stack Auto-Detection**: Heuristically detects .NET, Go, Rust, Node/React, Python, and Docker.
+- **AI Session Cost Telemetry**: Scans `transcript.jsonl` files to compute inference steps, model usage, and USD costs.
+- **1-Tap IDE Launcher**: Launches VS Code or Neovim directly into projects on Windows or WSL2.
 
-### 🐳 D. Docker & Container Management (`DockerClient.cs`)
-- **Docker Dashboard & Health**: TUI cleanup dashboard (`dkcl`) and health audit widget (`docker-health`).
-- **Container Control**: Container listing (`dps`), stop all (`dkstac`), and purge all (`dkrmac`).
-- **Docker Compose**: Compose up (`dcup`), compose up build (`dcupb`), and compose down (`dcdown`).
-- **Resource Pruning**: Unused volume cleanup (`fix-volume`) and unused image cleanup (`fix-image`).
+### 🐙 D. Git Fleet & Worktree Orchestrator (`apps/agygit`)
+- **Parallel Fleet Scanner**: Discovers all Git repositories under workspace directories and audits uncommitted changes, stashes, and branch tracking.
+- **Multi-Agent Worktree Isolation**: Generates `.worktrees/<branch>` directories enabling concurrent Antigravity subagents to code on isolated branches without clobbering main workspaces.
 
-### ⚡ E. DotNet SDK Integration (`DotNetClient.cs`)
-- **Build, Run, Watch & Test**: `dr`, `dw`, `db`, `df`, `dt`, `dwatch`, `dcl`, `dres`.
-- **Clean Build Purger**: Binary & Obj directory cleaner (`dclean`).
-- **Entity Framework Core Tools**: Database update (`update-db`), add migration (`add-migration`), drop database (`dd`), and remove migration (`dremove`).
-- **Solution & Project Generators**: New solution (`sln`), add all projects (`sln-add`), new console (`console`), and new webapi (`webapi`).
-- **NuGet Packaging & Publishing**: NuGet pack (`dpack`) and push (`dpubpkg`).
+### 🐳 E. Container Fleet & WSL2 RAM Guard (`apps/agydocker`)
+- **WSL2 Kernel RAM Guard**: Directly parses `/proc/meminfo` to display live RAM and Swap pressure gauges.
+- **Container & Compose Batch Controls**: Start, stop, restart individual containers or batch-toggle entire Compose stacks.
+- **Interactive Shell Exec**: 1-key shell attachment (`e`) into running containers.
 
-### ☁️ F. AWS LocalStack Integration (`AwsClient.cs`)
-- **Resource Dashboards**: LocalStack status (`aws-local`), identity (`aws-whoami`), S3 buckets (`aws-s3`), SQS queues (`aws-sqs`), SSM parameters (`aws-ssm`), SNS topics (`aws-sns`), DynamoDB tables (`aws-dynamodb`), and Lambda functions (`aws-lambda`).
-- **Interactive Management**: Create S3 bucket (`s3mb`), create SQS queue (`sqsmb`), purge queue (`sqspurge`), send message (`sqssend`), receive message (`sqsrecv`), and get queue attributes (`sqsattr`).
+### 🎨 F. Terminal Themes & System Diagnostics (`apps/agyterm`)
+- **Windows Terminal Profile Mutator**: Safely edits `settings.json` across the WSL2/Windows boundary with `.bak` safety backups.
+- **Oh-My-Posh ANSI Previewer**: Parses and dynamically renders 80+ `.omp.json` theme files with live color segments.
+- **Subsystem Health Diagnostics**: Audits 9 shell tools (Oh-My-Posh, Starship, Zsh history, PSReadLine, fzf, eza, zoxide, bat, Docker).
 
-### 📚 G. Spaced Repetition Learning Suite (`StudyConsoleView.cs`)
-- **SM-2 Flashcard Engine**: Spaced repetition flashcards with SM-2 interval calculator.
-- **Multiple Domain Decks**: Pre-seeded decks for Japanese (`jp`), English (`en`), C# (`cs`), Data Structures & Algorithms (`dsa`), and Interview Questions (`interview`).
+### 📱 G. Mobile Remote Cockpit (`apps/agymobile`)
+- **38-Column Smartphone TUI**: Designed for narrow terminal clients (Termux, ConnectBot) with single-digit hotkeys.
+- **Embedded Web Cockpit**: Dark-mode mobile web interface on port 7890 accessible over Tailscale.
+- **Kernel Cache Drops**: Remote 1-tap memory reclamation via `/proc/sys/vm/drop_caches`.
 
-### 🚀 H. Dual-Environment Runtime Pipeline
-- **Production Mode (`cc`)**: Resolves and executes optimized single-file production binary (`csapp/AgyTui/dist/AgyTui.exe`).
-- **Development Mode (`ccd`)**: Resolves Debug binary or executes live `dotnet run -c Debug`.
-- **Master Release Publisher (`build-release.ps1`)**: Single canonical release build script with binary unlocking, test gate validation, single-file publish, and zip packaging.
+### 🏛️ H. Legacy C# Subsystems (`apps/agytui`)
+- **Relational SQLite Database**: Structured schema migrations V1 through V7 in WAL mode.
+- **SuperMemo-2 (SM-2) Spaced Repetition**: Curated curriculums for Japanese, English, C#, DSA, and STAR interview questions.
+- **AWS LocalStack Cloud Tools**: S3 buckets, SQS queues, DynamoDB tables, and Lambda functions.
+- Detailed in [08_cs_legacy_system_parity_audit.md](../reports/08_cs_legacy_system_parity_audit.md).
 
 ---
 
 ## 3. Complete Repository File Tree
 
 ```text
-Powershell/
+powershell-profile/
 ├── .gitignore                                   # Workspace git ignore rules
-├── build-release.ps1                            # Master Canonical Release Build Script
-├── Microsoft.PowerShell_profile.ps1             # Thin PowerShell Profile Integrator (79 Functions)
-├── csapp/                                       # C# Solution Root (.NET 9.0)
-│   ├── AgyTui.sln                               # Visual Studio / .NET Solution File
-│   ├── AgyTui/                                  # Core Application Project
-│   │   ├── AgyTui.csproj                        # .NET 9.0 C# Project Specification
-│   │   ├── Program.cs                           # Main Entry Point & Command Dispatcher
-│   │   ├── Domain/                              # Pure DDD Bounded Contexts (Zero Dependencies)
-│   │   │   ├── Accounts/                        # Account Aggregates & Value Objects
-│   │   │   ├── Workspaces/                      # Workspace Models & Enums
-│   │   │   └── Learning/                        # Flashcard & Quiz Aggregates
-│   │   ├── Infrastructure/                      # Infrastructure & Technical Services
-│   │   │   ├── Di/                              # ServiceCollection & Bootstrapper Container
-│   │   │   ├── Persistence/                     # SQLite Migration Engine & Repositories
-│   │   │   │   ├── Migrations/                  # Migration V1..V7 Schema Handlers
-│   │   │   │   └── Repositories/                # Account, Config, Workspace Repositories
-│   │   │   ├── Vault/                           # DPAPI Encryption & Vault Helper
-│   │   │   ├── Integrations/                    # External Tool Integrations
-│   │   │   │   ├── Ai/                          # Claude, Ollama & Multi-Agent Process Runners
-│   │   │   │   ├── Git/                         # GitClient & Diff Renderers
-│   │   │   │   ├── Docker/                      # DockerClient & Health Auditors
-│   │   │   │   ├── DotNet/                      # DotNetClient & EF Helpers
-│   │   │   │   └── Aws/                         # AwsClient & LocalStack Wrappers
-│   │   │   └── Seeding/                         # MasterSeeder & JSON Seed Handlers
-│   │   ├── UI/                                  # Spectre.Console Screen Views & Layouts
-│   │   │   ├── Core/                            # CommandRouter, Navigation & Registries
-│   │   │   ├── Views/                           # Dashboard, Git, Docker, Study Screens
-│   │   │   └── Widgets/                         # Reusable Spectre Headers, Panels, Tables
-│   │   ├── dist/                                # Single-File Production Binary (AgyTui.exe)
-│   │   └── data/                                # Local SQLite Database File (agytui.db)
-│   └── AgyTui.Tests/                            # XUnit Unit Test Suite (261 Tests)
-│       ├── AgyTui.Tests.csproj                  # Test Project File
-│       ├── Domain/                              # Domain Unit Tests
-│       ├── Infrastructure/                      # Repository, Migration & Service Tests
-│       └── Architecture/                        # Reflection Architecture Enforcement Tests
-├── psapp/                                       # PowerShell Helpers & Tests
-│   ├── scripts/                                 # Onboarding & Setup Scripts
-│   │   ├── Install-AgyEnvironment.ps1           # Environment Setup & Initial Build
-│   │   └── build_dev.ps1                        # Quick Dev Build Helper
-│   └── Tests/                                   # Pester PowerShell Unit Tests (20 Tests)
-│       ├── run_tests.ps1                        # Test Suite Runner
-│       └── Unit/                                # Pester Test Specifications
-└── docs/                                        # Master System Documentation Suite
-    ├── README.md                                # Documentation Gateway & Sitemap
-    ├── 01_architecture/                         # Architecture Specs & DB Schemas
-    │   ├── overview.md                          # Clean Architecture Principles & DI
-    │   ├── system_overview_and_file_tree.md     # Master File Tree & Feature Blueprint (This File)
-    │   ├── database_persistence.md              # SQLite Schema & Migration V7 Detail
-    │   ├── ddd_bounded_contexts.md              # Domain Aggregates & Bounded Contexts
-    │   └── seeding_pipeline.md                  # MasterSeeder Ingestion Pipeline
-    ├── 02_user_guide/                           # End-User Manuals & Catalogs
-    │   ├── onboarding_and_setup.md              # Environment Installation Guide
-    │   ├── powershell_profile_shortcuts.md      # Command & Alias Reference
-    │   └── tui_screen_catalog.md                # TUI Layouts & Keyboard Hotkeys
-    └── 03_developer_guide/                      # Developer Workflows
-        ├── dual_environment_workflow.md         # Dev vs Production Runtime Workflow
-        ├── release_publishing.md                # Single-File Release Publishing Guide
-        └── testing_and_architecture_rules.md    # XUnit & Reflection Architecture Rules
+├── AGY_SYSTEM_AUDIT_AND_ROADMAP.md              # Master Forensic Audit & Strategic Roadmap
+├── AGYX_AGYMOBILE_SECURITY_ROUTING_REPORT.md    # Phase 1 Fix Report: Agyx & Agymobile
+├── AGYGIT_AGYPROJ_PERF_UX_REPORT.md             # Phase 1 Fix Report: Agygit & Agyproj
+├── AGYDOCKER_AGYTERM_FIX_REPORT.md              # Phase 1 Fix Report: Agydocker & Agyterm
+├── AGYMOBILE_PLAN.md                            # Mobile Cockpit Architectural Plan
+├── Microsoft.PowerShell_profile.ps1             # PowerShell 7+ Profile Integrator
+├── setup-ubuntu.sh                              # Ubuntu WSL2 Environment Provisioning Script
+├── apps/                                        # Antigravity Application Suite
+│   ├── agyswitch/                               # [Go] Identity, Vault & Quota Engine
+│   │   ├── main.go                              # Entrypoint & CLI dispatcher
+│   │   ├── launcher/                            # Subprocess environment sanitizer & launcher
+│   │   └── internal/                            # Model, service (vault, store, sessions), view
+│   ├── agyx/                                    # [Go] Master Proxy & Multi-Tab Cockpit
+│   │   ├── main.go                              # Gateway entrypoint
+│   │   └── internal/                            # Proxy router & cockpit view
+│   ├── agygit/                                  # [Go] Git Fleet & Multi-Agent Worktrees
+│   │   ├── main.go                              # Git CLI dispatcher & TUI
+│   │   └── internal/                            # Git operations service & interactive view
+│   ├── agyproj/                                 # [Go] Workspace Hub & Stack Detector
+│   │   ├── main.go                              # Project launcher & TUI
+│   │   └── internal/                            # Detector, launcher, registry, view
+│   ├── agydocker/                               # [Go] Container Fleet & WSL2 RAM Guard
+│   │   ├── main.go                              # Docker CLI & TUI
+│   │   └── internal/                            # Dockerops service, meminfo parser, view
+│   ├── agyterm/                                 # [Go] Terminal Theme & WinTerm Customizer
+│   │   ├── main.go                              # Theme manager entrypoint
+│   │   └── internal/                            # WinTerm JSON editor, OMP parser, view
+│   ├── agymobile/                               # [Go] Mobile Cockpit & Tailscale Station
+│   │   ├── main.go                              # Mobile server & 38-col TUI
+│   │   └── internal/                            # Web server (:7890), hostops, agentops, view
+│   └── agytui/                                  # [C# .NET 9.0] Legacy Control Center Monolith
+│       ├── AgyTui.slnx                          # Solution definition
+│       ├── AgyTui/                              # Core C# console project (200+ source files)
+│       │   ├── Program.cs                       # C# main dispatcher
+│       │   ├── Domain/                          # Pure DDD aggregates (Account, Workspace, Learn)
+│       │   ├── Infrastructure/                  # SQLite WAL (V1-V7), DPAPI vault, CLI clients
+│       │   └── UI/                              # Spectre.Console 3-pane layout & command router
+│       └── AgyTui.Tests/                        # xUnit Test Suite (261 architecture/unit tests)
+├── bin/                                         # Compiled standalone native Go binaries
+│   ├── agyswitch                                # Compiled agyswitch binary
+│   ├── agyx                                     # Compiled agyx master binary
+│   ├── agygit                                   # Compiled agygit binary
+│   ├── agyproj                                  # Compiled agyproj binary
+│   ├── agydocker                                # Compiled agydocker binary
+│   ├── agyterm                                  # Compiled agyterm binary
+│   └── agymobile                                # Compiled agymobile binary
+└── docs/                                        # Centralized Documentation Suite
+    ├── README.md                                # Master Gateway & Documentation Sitemap
+    ├── 01_architecture/                         # Architecture Specifications & Designs
+    │   ├── agyswitch_engine.md                  # Go v2.0 engine architecture & vault
+    │   ├── agymobile_tailscale_ssh_plan.md      # Mobile cockpit & Tailscale SSH spec
+    │   ├── orca_multi_agent_ade_design.md       # Multi-agent ADE worktree design (Orca-inspired)
+    │   ├── skill_and_mcp_management_plan.md     # Dual-scope skill/rule/MCP management
+    │   ├── system_overview_and_file_tree.md     # System overview & repository tree (This file)
+    │   ├── overview.md                          # C# Clean Architecture & Onion layer boundaries
+    │   ├── ddd_bounded_contexts.md              # C# DDD Bounded Contexts & Aggregate Roots
+    │   ├── database_persistence.md              # C# SQLite WAL schemas & Migrations V1-V7
+    │   └── seeding_pipeline.md                  # C# MasterSeeder data ingestion pipeline
+    ├── 02_user_guide/                           # User Manuals & Workstation Setup
+    │   ├── agyswitch_cli_tui.md                 # agyswitch hotkeys, CLI syntax, and quota checks
+    │   ├── powershell_profile_shortcuts.md      # Profile shortcuts, aliases, and navigation
+    │   ├── onboarding_and_setup.md              # Automated setup via PowerShell & bash
+    │   └── tui_screen_catalog.md                # Spectre.Console screen catalog
+    ├── 03_developer_guide/                      # Developer Workflows & Quality Gates
+    │   ├── dual_environment_workflow.md         # Dev sandbox vs. production runtime
+    │   ├── testing_and_architecture_rules.md    # Architecture tests & invariant rules
+    │   └── release_publishing.md                # Release publishing pipeline
+    ├── 04_command_enhancements/                 # CLI Command Enhancements & Tooling
+    │   ├── 01_git_enhancement.md                # Git status, branch, and nexus tools
+    │   ├── 02_dotnet_enhancement.md             # .NET build, test, and cleanup tools
+    │   ├── 03_docker_enhancement.md             # Docker container, compose, and cleanup tools
+    │   ├── 04_aws_enhancement.md                # AWS LocalStack, S3, SQS, DynamoDB tools
+    │   ├── 05_linux_neovim_ide_flow.md          # Neovim workflow & multiplexing
+    │   └── 06_linux_cli_tools.md                # Modern CLI tools (fzf, eza, zoxide, bat)
+    ├── reports/                                 # Forensic Audit & Parity Reports
+    │   ├── README.md                            # Audit Reports Catalog & Executive Summary
+    │   ├── 01_agyswitch_deep_audit.md           # agyswitch deep audit
+    │   ├── 02_agyx_proxy_audit.md               # agyx master proxy audit
+    │   ├── 03_agygit_fleet_audit.md             # agygit fleet & worktrees audit
+    │   ├── 04_agyproj_workspace_audit.md        # agyproj workspaces & cost audit
+    │   ├── 05_agydocker_container_audit.md      # agydocker container & RAM guard audit
+    │   ├── 06_agyterm_theme_audit.md            # agyterm theme & diagnostics audit
+    │   ├── 07_agymobile_cockpit_audit.md        # agymobile mobile cockpit audit
+    │   └── 08_cs_legacy_system_parity_audit.md  # C# legacy system audit & parity roadmap
+    └── archive/                                 # Historical Blueprints & Interim Reports
+        ├── agy_switch_crud_and_sync_flows.md    # Early switch sync flows
+        ├── agyswitch_cli_flow_blueprint.md      # Early CLI flow blueprint
+        ├── agyswitch_cli_guide.md               # Legacy CLI guide
+        ├── agyswitch_tui_enhancement_plan.md    # Early TUI enhancement plan
+        ├── cli_clean_architecture_report.md     # Clean architecture refactoring report
+        ├── console_app_cli_feature_flow_breakdown.md # Feature flow breakdown
+        ├── console_app_cli_master_mockup_blueprint.md# Master mockup blueprint
+        ├── console_app_ui_test_folder_audit_report.md# UI test folder reorganization
+        ├── console_app_ui_test_rebuild_plan.md  # UI test rebuild plan
+        ├── master_documentation_plan.md         # Early documentation plan
+        └── tasks_refactor_plan.md               # Early task refactor plan
 ```
 
 ---
 
 ## 4. Cross References & Sitemap
 
-- [Clean Architecture Principles](overview.md)
-- [SQLite Database Persistence & Migration V7](database_persistence.md)
-- [PowerShell Profile Shortcuts Catalog](../02_user_guide/powershell_profile_shortcuts.md)
-- [Production Release Publishing Guide](../03_developer_guide/release_publishing.md)
+- [Documentation Gateway & Sitemap](../README.md)
+- [Audit & Deep-Dive Reports Catalog](../reports/README.md)
+- [Master System Audit & Product Roadmap](../../AGY_SYSTEM_AUDIT_AND_ROADMAP.md)
+- [AGYSWITCH Go Engine Architecture](agyswitch_engine.md)
+- [C# Legacy System & Parity Audit](../reports/08_cs_legacy_system_parity_audit.md)
