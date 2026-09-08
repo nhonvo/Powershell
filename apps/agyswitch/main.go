@@ -6,8 +6,11 @@ import (
 	"strconv"
 	"strings"
 
+	"agyswitch/internal/service/rules"
 	"agyswitch/internal/service/seeder"
 	"agyswitch/internal/service/server"
+	"agyswitch/internal/service/sessions"
+	"agyswitch/internal/service/skills"
 	"agyswitch/internal/service/store"
 	"agyswitch/internal/service/vault"
 	"agyswitch/internal/view"
@@ -25,9 +28,9 @@ func main() {
 	s := store.NewStore(userHome, v)
 
 	// Custom launcher closure adapter
-	launchAdapter := func(accountName string, args []string) error {
+	launchAdapter := func(accountName string, dir string, args []string) error {
 		oldLauncher := launcher.NewLauncher(s, v)
-		return oldLauncher.LaunchAccount(accountName, args)
+		return oldLauncher.LaunchAccountInDir(accountName, dir, args)
 	}
 
 	app := view.NewApp(s, launchAdapter)
@@ -46,6 +49,91 @@ func main() {
 	switch cmd {
 	case "status", "list", "ls":
 		app.PrintStatus(os.Stdout)
+	case "sessions", "session", "sess":
+		sm := sessions.NewManager(userHome)
+		list, err := sm.DiscoverSessions()
+		if err != nil || len(list) == 0 {
+			fmt.Println("No conversation sessions found in brain logs.")
+			return
+		}
+		if len(args) >= 2 && (args[1] == "resume" || args[1] == "continue") {
+			targetID := ""
+			if len(args) >= 3 {
+				targetID = args[2]
+			} else {
+				targetID = list[0].ConversationID
+			}
+			wsDir := ""
+			for _, item := range list {
+				if strings.HasPrefix(item.ConversationID, targetID) {
+					targetID = item.ConversationID
+					wsDir = item.WorkspaceDir
+					break
+				}
+			}
+			activeAcc := s.GetActiveAccount()
+			fmt.Printf("\033[36m[agyswitch]\033[0m Resuming session '\033[32m%s\033[0m' under account '\033[33m%s\033[0m'...\n", targetID, activeAcc)
+			if err := launchAdapter(activeAcc, wsDir, []string{"--conversation", targetID}); err != nil {
+				fmt.Fprintf(os.Stderr, "Error resuming session: %v\n", err)
+				os.Exit(1)
+			}
+			return
+		}
+
+		groups := sessions.GroupSessionsByProject(list)
+		fmt.Printf("\n📊 \033[1;36mAntigravity Sessions (%d total across %d projects):\033[0m\n\n", len(list), len(groups))
+		for _, g := range groups {
+			fmt.Printf(" \033[1;35m📁 %-30s\033[0m \033[36m(%d sessions · $%0.4f)\033[0m\n", g.ProjectName, len(g.Sessions), g.TotalCost)
+			for i, sess := range g.Sessions {
+				timeStr := sess.LastActive.Format("2006-01-02 15:04")
+				prefix := "├──"
+				if i == len(g.Sessions)-1 {
+					prefix = "└──"
+				}
+				fmt.Printf("   %s \033[1m%-48s\033[0m [%s] · %d steps · $%0.4f · %s\n",
+					prefix, sess.Title, sess.ConversationID[:8], sess.StepCount, sess.EstimatedCost, timeStr)
+			}
+			fmt.Println()
+		}
+	case "skills", "skill":
+		skm := skills.NewManager(userHome)
+		cwd, _ := os.Getwd()
+		list, err := skm.DiscoverSkills(cwd)
+		if err != nil || len(list) == 0 {
+			fmt.Println("No custom skills discovered in ~/.gemini/skills or .agents/skills")
+			return
+		}
+		fmt.Printf("\n🧩 \033[1;36mAntigravity Skills (%d total):\033[0m\n\n", len(list))
+		for i, sk := range list {
+			scope := "\033[32m[Global]\033[0m"
+			if !sk.IsGlobal {
+				scope = "\033[35m[Workspace]\033[0m"
+			}
+			fmt.Printf(" %2d. %s \033[1m%-24s\033[0m %s\n", i+1, scope, sk.Name, sk.Description)
+		}
+		fmt.Println()
+	case "rules", "rule":
+		rm := rules.NewManager(userHome)
+		cwd, _ := os.Getwd()
+		list, _ := rm.DiscoverRules(cwd)
+		fmt.Printf("\n📜 \033[1;36mAntigravity Rules (%d total):\033[0m\n\n", len(list))
+		for i, r := range list {
+			scope := "\033[32m[Global]\033[0m"
+			if !r.IsGlobal {
+				scope = "\033[35m[Workspace]\033[0m"
+			}
+			fmt.Printf(" %2d. %s \033[1m%s\033[0m (%s)\n", i+1, scope, r.Name, r.Path)
+		}
+		mcps, _ := rm.CheckMCPServerStatus(cwd)
+		fmt.Printf("\n🔌 \033[1;36mMCP Servers (%d total):\033[0m\n\n", len(mcps))
+		for _, m := range mcps {
+			status := "\033[32m● Connected\033[0m"
+			if !m.IsRunning {
+				status = fmt.Sprintf("\033[31m○ Off (%s)\033[0m", m.LastError)
+			}
+			fmt.Printf("  • \033[1m%-20s\033[0m %s\n", m.ServerName, status)
+		}
+		fmt.Println()
 	case "quota", "q":
 		target := s.GetActiveAccount()
 		if len(args) >= 2 {
@@ -88,7 +176,7 @@ func main() {
 			_ = s.SetActiveAccount(target)
 		}
 		fmt.Printf("\033[36m[agyswitch]\033[0m Launching 'agy login' for account '\033[32m%s\033[0m'...\n", target)
-		if err := launchAdapter(target, []string{"login"}); err != nil {
+		if err := launchAdapter(target, "", []string{"login"}); err != nil {
 			fmt.Fprintf(os.Stderr, "Error launching agy login: %v\n", err)
 			os.Exit(1)
 		}
@@ -161,7 +249,7 @@ func main() {
 	case "launch-quota", "auto-launch":
 		bestAcc := s.SelectBestQuotaAccount()
 		fmt.Printf("\033[36m[agyswitch]\033[0m Quota selector auto-selected account '\033[32m%s\033[0m'\n", bestAcc)
-		if err := launchAdapter(bestAcc, args[1:]); err != nil {
+		if err := launchAdapter(bestAcc, "", args[1:]); err != nil {
 			fmt.Fprintf(os.Stderr, "Error launching agy: %v\n", err)
 			os.Exit(1)
 		}
@@ -182,13 +270,13 @@ func main() {
 				os.Exit(1)
 			}
 			fmt.Printf("\033[36m[agyswitch]\033[0m Switched active context to '\033[32m%s\033[0m'. Launching agy...\n", target)
-			if err := launchAdapter(target, args[1:]); err != nil {
+			if err := launchAdapter(target, "", args[1:]); err != nil {
 				fmt.Fprintf(os.Stderr, "Error launching agy: %v\n", err)
 				os.Exit(1)
 			}
 		} else {
 			target := s.GetActiveAccount()
-			if err := launchAdapter(target, args); err != nil {
+			if err := launchAdapter(target, "", args); err != nil {
 				fmt.Fprintf(os.Stderr, "Error launching agy: %v\n", err)
 				os.Exit(1)
 			}

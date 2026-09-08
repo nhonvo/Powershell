@@ -184,11 +184,21 @@ alias cnav="cc cnav"
 alias reset-agy="cc reset-agy"
 alias purge-accounts="cc purge-accounts"
 alias dotnet-info="cc dotnet-info"
-alias agy-account="agyswitch"
-alias agyswitch="agyswitch"
-alias agysw="agyswitch"
-alias agyx="agyswitch"
-alias agy="agyswitch"
+# --- AGYX DEVELOPER SUITE (Go Native Binaries) ---
+alias agyx="$HOME/.local/bin/agyx"
+alias agyswitch="$HOME/.local/bin/agyswitch"
+alias agysw="$HOME/.local/bin/agyswitch"
+alias agys="$HOME/.local/bin/agyswitch"
+alias agyproj="$HOME/.local/bin/agyproj"
+alias agyp="$HOME/.local/bin/agyproj"
+alias agygit="$HOME/.local/bin/agygit"
+alias agyg="$HOME/.local/bin/agygit"
+alias agydocker="$HOME/.local/bin/agydocker"
+alias agyd="$HOME/.local/bin/agydocker"
+alias agyterm="$HOME/.local/bin/agyterm"
+alias agyt="$HOME/.local/bin/agyterm"
+alias agymobile="$HOME/.local/bin/agymobile"
+alias agym="$HOME/.local/bin/agymobile"
 
 # --- 6. CUSTOM FUNCTIONS ---
 
@@ -428,11 +438,6 @@ alias ip-info="hostname -I 2>/dev/null || ip -br a"
 alias cat-file="view"
 alias open="open-file"
 
-# Agyswitch Multi-Account Vault Aliases (Go Engine v1.3.0)
-alias agyswitch="$HOME/.local/bin/agyswitch"
-alias agysw="$HOME/.local/bin/agyswitch"
-alias agys="$HOME/.local/bin/agyswitch"
-alias agy-quota="$HOME/.local/bin/agyswitch launch-quota"
 
 echo -e "\033[32m🛸 Enhanced Ubuntu Profile Loaded (Oh My Posh: ${POSH_THEME:-neko})\033[0m"
 

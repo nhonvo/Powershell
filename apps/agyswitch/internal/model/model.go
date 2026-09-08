@@ -58,11 +58,25 @@ type SessionInfo struct {
 	ConversationID string    `json:"conversationId"`
 	Title          string    `json:"title"`
 	WorkspaceDir   string    `json:"workspaceDir"`
+	ProjectName    string    `json:"projectName"`
 	LastActive     time.Time `json:"lastActive"`
 	StepCount      int       `json:"stepCount"`
 	EstimatedCost  float64   `json:"estimatedCost"`
 	LogPath        string    `json:"logPath"`
+	IsSubagent     bool      `json:"isSubagent"`
+	ParentID       string    `json:"parentId"`
 }
+
+// ProjectGroup groups sessions belonging to a specific workspace or project directory.
+type ProjectGroup struct {
+	ProjectName  string        `json:"projectName"`
+	WorkspaceDir string        `json:"workspaceDir"`
+	TotalCost    float64       `json:"totalCost"`
+	TotalSteps   int           `json:"totalSteps"`
+	LastActive   time.Time     `json:"lastActive"`
+	Sessions     []SessionInfo `json:"sessions"`
+}
+
 
 // ModelBucketDetail extends QuotaBucket with precise reset calculations.
 type ModelBucketDetail struct {

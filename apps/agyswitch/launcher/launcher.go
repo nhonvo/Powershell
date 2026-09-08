@@ -75,6 +75,11 @@ func (l *Launcher) CleanArgs(args []string) []string {
 
 // LaunchAccount Context sets GEMINI_HOME, clears IDE environment sync, runs agy, and executes post-run session token capture.
 func (l *Launcher) LaunchAccount(accountName string, passArgs []string) error {
+	return l.LaunchAccountInDir(accountName, "", passArgs)
+}
+
+// LaunchAccountInDir sets GEMINI_HOME, working directory, and launches agy.
+func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, passArgs []string) error {
 	accDir := l.Store.GetAccountDirectory(accountName)
 	if err := os.MkdirAll(accDir, 0755); err != nil {
 		return err
@@ -98,6 +103,13 @@ func (l *Launcher) LaunchAccount(accountName string, passArgs []string) error {
 	cleanArgs := l.CleanArgs(passArgs)
 
 	cmd := exec.Command(agyBin, cleanArgs...)
+
+	if workingDir != "" && workingDir != "Default Workspace" {
+		if fi, err := os.Stat(workingDir); err == nil && fi.IsDir() {
+			cmd.Dir = workingDir
+			fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Working Directory: \033[35m%s\033[0m\n", workingDir)
+		}
+	}
 
 	// Environmental Isolation: Strip IDE sync variables to keep CLI strictly standalone
 	var finalEnv []string

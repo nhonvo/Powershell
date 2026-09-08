@@ -75,10 +75,22 @@ func parseSkillDescription(skillDir string) string {
 		return "Custom Antigravity skill cheatsheet module."
 	}
 	lines := strings.Split(string(data), "\n")
-	for _, l := range lines {
+	for i, l := range lines {
 		l = strings.TrimSpace(l)
 		if strings.HasPrefix(strings.ToLower(l), "description:") {
-			return strings.TrimSpace(strings.TrimPrefix(l, "description:"))
+			val := strings.TrimSpace(strings.TrimPrefix(l, "description:"))
+			val = strings.Trim(val, " \"'")
+			if val == ">" || val == ">-" || val == "|" || val == "|-" || val == "" {
+				for j := i + 1; j < len(lines); j++ {
+					next := strings.TrimSpace(lines[j])
+					if next != "" && !strings.HasPrefix(next, "---") && !strings.Contains(next, ":") {
+						return next
+					}
+				}
+			}
+			if val != "" {
+				return val
+			}
 		}
 	}
 	return "Antigravity skill module."
