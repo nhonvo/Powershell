@@ -86,6 +86,9 @@ The modern suite decomposes developer operations into 8 focused, independently t
 | **`agymobile`** | [apps/agymobile/](../apps/agymobile) | `agymobile`, `agym` | **Mobile Cockpit & Remote Station**: Ultra-compact 38-column smartphone portrait TUI, embedded Web Cockpit on port 7890 over Tailscale mesh network, host optimization, and AI thought stream telemetry. | [07_agymobile_cockpit_audit.md](reports/07_agymobile_cockpit_audit.md) |
 | **`agyollama`** | [apps/agyollama/](../apps/agyollama) | `agyollama`, `agyo`, `ai` | **Local AI & Ollama Cockpit**: Daemon lifecycle, model manager (pull/delete/default), hardware inference benchmark, non-blocking animated TUI, and subshell AI pair programming. | [09_agyollama_local_ai_plan.md](reports/09_agyollama_local_ai_plan.md) |
 
+> [!NOTE]
+> **☁️ AWS & Cloud Integration**: AWS and LocalStack management is integrated directly into **`agyx`** as Cockpit Tab **`[8] ☁️ AWS`** and the CLI command `agyx aws [whoami|s3|sqs|local]`. For native CLI wrappers and TUI monitors (`aws-whoamiu`, `aws-s3u`), see the dedicated guide: [docs/04_command_enhancements/04_aws_enhancement.md](04_command_enhancements/04_aws_enhancement.md).
+
 ---
 
 ## 3. 📋 Audit & Deep-Dive Reports
@@ -192,7 +195,9 @@ For a full technical analysis of the C# architecture and feature gaps, consult *
 | **Containers (`agydocker`)** | Go 1.25 (Native) | ~15ms | ~11MB | Docker lifecycle, WSL2 `/proc/meminfo` RAM guard | 🟢 Active |
 | **Terminal (`agyterm`)** | Go 1.25 (Native) | ~10ms | ~7MB | Windows Terminal JSON editor, Oh-My-Posh previews | 🟢 Active |
 | **Mobile Remote (`agymobile`)** | Go 1.22 (Native) | ~15ms | ~12MB | 38-col smartphone TUI, Web Cockpit (:7890), Tailscale | 🟢 Active |
-| **Legacy Control Center (`AgyTui`)** | .NET 9.0 C# | 150ms–300ms | 45MB–85MB | Monolithic 3-pane UI, SQLite WAL database, SM-2 learning, AWS | 🏛️ Preserved Baseline |
+| **Local AI (`agyollama`)** | Go 1.25 (Native) | ~10ms | ~9MB | Local Ollama daemon manager, model pull/delete & benchmarks | 🟢 Active |
+| **Cloud Explorer (`aws`)** | `agyx` Proxy + Profile | Instant | In-process / Go | LocalStack health probe (:4566), S3/SQS/STS CLI diagnostics | 🟢 Active |
+| **Legacy Control Center (`AgyTui`)** | .NET 9.0 C# | 150ms–300ms | 45MB–85MB | Monolithic 3-pane UI, SQLite WAL database, SM-2 learning, AWS | 🏛️ Archived Reference |
 | **Shell Integration** | PowerShell 7+ & Zsh | Instant | In-process | Prompt theming, path shortcuts, cross-platform aliases | 🟢 Active |
 
 ---
