@@ -77,7 +77,7 @@ The modern suite decomposes developer operations into 8 focused, independently t
 
 | Application | Path | Aliases | Primary Role & Capabilities | Audit Report |
 | :--- | :--- | :--- | :--- | :--- |
-| **`agyx`** | [apps/agyx/](../apps/agyx) | `agyx`, `x` | **Master Proxy & Unified Cockpit**: Single entrypoint delegating CLI commands and hosting an interactive 8-tab cockpit across all suite modules (Switch, Proj, Git, Docker, Term, Mobile, Ollama, AWS). | [02_agyx_proxy_audit.md](reports/02_agyx_proxy_audit.md) |
+| **`agyx`** | [apps/agyx/](../apps/agyx) | `agyx`, `x` | **Master Proxy & Unified Cockpit**: Single entrypoint delegating CLI commands and hosting an interactive 6-tab cockpit across core modules (Switch, Proj, Git, Docker, Ollama) and a dedicated Utilities & Cloud drawer (Term, Mobile, AWS). | [02_agyx_proxy_audit.md](reports/02_agyx_proxy_audit.md) |
 | **`agyswitch`** | [apps/agyswitch/](../apps/agyswitch) | `agysw`, `agys`, `switch` | **Identity, Vault & Quota Engine**: AES-256 encrypted credential storage, automated OAuth token refresh, non-blocking background quota probing, instant credential switching, and isolated `GEMINI_HOME` subprocess launching. | [01_agyswitch_deep_audit.md](reports/01_agyswitch_deep_audit.md) |
 | **`agyproj`** | [apps/agyproj/](../apps/agyproj) | `agyproj`, `agyp`, `proj` | **Project Hub & Workspace Registry**: Heuristic technology stack detection (C#, Go, Rust, Node, Python, Docker), Antigravity AI session inference cost/step calculations, and 1-tap IDE launch. | [04_agyproj_workspace_audit.md](reports/04_agyproj_workspace_audit.md) |
 | **`agygit`** | [apps/agygit/](../apps/agygit) | `agygit`, `agyg` | **Git Fleet & Worktree Orchestrator**: Multi-repo status fleet scanner across `~/projects`, interactive selective staging, file rejection, 3-way conflict resolver, and multi-agent `.worktrees/` isolation. | [03_agygit_fleet_audit.md](reports/03_agygit_fleet_audit.md) |
@@ -87,7 +87,7 @@ The modern suite decomposes developer operations into 8 focused, independently t
 | **`agyollama`** | [apps/agyollama/](../apps/agyollama) | `agyollama`, `agyo`, `ai` | **Local AI & Ollama Cockpit**: Daemon lifecycle, model manager (pull/delete/default), hardware inference benchmark, non-blocking animated TUI, and subshell AI pair programming. | [09_agyollama_local_ai_plan.md](reports/09_agyollama_local_ai_plan.md) |
 
 > [!NOTE]
-> **☁️ AWS & Cloud Integration**: AWS and LocalStack management is integrated directly into **`agyx`** as Cockpit Tab **`[8] ☁️ AWS`** and the CLI command `agyx aws [whoami|s3|sqs|local]`. For native CLI wrappers and TUI monitors (`aws-whoamiu`, `aws-s3u`), see the dedicated guide: [docs/04_command_enhancements/04_aws_enhancement.md](04_command_enhancements/04_aws_enhancement.md).
+> **🛠️ Streamlined Cockpit Architecture (Option C)**: The `agyx` TUI organizes developer workflows into **5 Core Daily Drivers** (`[1] Switch`, `[2] Proj`, `[3] Git`, `[4] Docker`, `[5] Ollama`) and a dedicated **`[6] 🛠️ Tools` Drawer** housing secondary utilities (`agyterm`, `agymobile`, and `AWS/LocalStack` diagnostics). For native CLI wrappers and TUI monitors (`aws-whoamiu`, `aws-s3u`), see [docs/04_command_enhancements/04_aws_enhancement.md](04_command_enhancements/04_aws_enhancement.md).
 
 ---
 

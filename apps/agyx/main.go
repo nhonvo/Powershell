@@ -36,6 +36,15 @@ func main() {
 		printShellInit()
 		return
 
+	case "tools", "util", "utils":
+		app := view.NewCockpitApp()
+		app.ActiveTab = 5
+		if err := app.RunInteractive(); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
+		return
+
 	case "help", "-h", "--help":
 		printHelp()
 		return

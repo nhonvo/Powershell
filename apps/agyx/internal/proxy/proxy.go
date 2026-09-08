@@ -152,11 +152,12 @@ func FindBinary(binName string) (string, error) {
 
 // Execute proxies input/output/error directly to the child process
 func Execute(binName string, args []string) error {
+	if binName == "aws" {
+		return RunAWS(args)
+	}
+
 	binPath, err := FindBinary(binName)
 	if err != nil {
-		if binName == "aws" {
-			return runAwsDiagnostics()
-		}
 		return err
 	}
 
@@ -169,20 +170,99 @@ func Execute(binName string, args []string) error {
 	return cmd.Run()
 }
 
-func runAwsDiagnostics() error {
+// RunAWS handles AWS CLI execution, subcommands, and diagnostic fallbacks safely
+func RunAWS(args []string) error {
+	binPath, _ := FindBinary("aws")
+
+	// If no arguments provided, run the diagnostics and quick command console!
+	if len(args) == 0 || args[0] == "status" || args[0] == "diagnostics" || args[0] == "diag" {
+		return runAwsDiagnostics(binPath)
+	}
+
+	// Translate friendly shortcuts
+	var finalArgs []string
+	switch strings.ToLower(args[0]) {
+	case "whoami", "identity", "id":
+		finalArgs = append([]string{"sts", "get-caller-identity"}, args[1:]...)
+	case "s3":
+		if len(args) == 1 {
+			finalArgs = []string{"s3", "ls"}
+		} else {
+			finalArgs = args
+		}
+	case "sqs":
+		if len(args) == 1 {
+			finalArgs = []string{"sqs", "list-queues"}
+		} else {
+			finalArgs = args
+		}
+	case "local", "localstack", "health":
+		return checkLocalStack()
+	default:
+		finalArgs = args
+	}
+
+	if binPath == "" {
+		fmt.Println("\r\n⚠️  \033[1;33mAWS CLI binary not found in PATH.\033[0m")
+		return runAwsDiagnostics("")
+	}
+
+	cmd := exec.Command(binPath, finalArgs...)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Env = os.Environ()
+	return cmd.Run()
+}
+
+func checkLocalStack() error {
+	client := http.Client{Timeout: 1500 * time.Millisecond}
+	resp, err := client.Get("http://localhost:4566/_localstack/health")
+	if err != nil {
+		fmt.Println("\r\n⚠️  \033[1;33mLocalStack service is not reachable at http://localhost:4566\033[0m")
+		fmt.Println("   Start it via: 'docker run -d -p 4566:4566 localstack/localstack'")
+		return nil
+	}
+	defer resp.Body.Close()
+	fmt.Printf("\r\n✔ \033[1;32mLocalStack is ONLINE (HTTP %s)\033[0m\r\n", resp.Status)
+	return nil
+}
+
+func runAwsDiagnostics(binPath string) error {
 	fmt.Println("\r\n☁️  \033[1;36mAWS Cloud & LocalStack Diagnostics\033[0m")
 	fmt.Println("──────────────────────────────────────────────────────────────────────────────────")
-	fmt.Println("  • Native AWS CLI ('aws' / 'aws.exe') not found in Linux PATH.")
-	fmt.Println("  • Available PowerShell commands: aws-whoami, aws-s3, aws-local, aws-sqs")
-	fmt.Println("  • Testing LocalStack mock service endpoint (http://localhost:4566)...")
+	if binPath != "" {
+		fmt.Printf("  • AWS CLI Binary:   \033[1;32m%s\033[0m\r\n", binPath)
+		if verOut, err := exec.Command(binPath, "--version").CombinedOutput(); err == nil {
+			fmt.Printf("  • Version:          %s", string(verOut))
+		}
+		fmt.Print("  • AWS IAM Identity: ")
+		stsCmd := exec.Command(binPath, "sts", "get-caller-identity")
+		if stsOut, err := stsCmd.CombinedOutput(); err == nil {
+			fmt.Printf("\033[1;32mConfigured\033[0m\r\n    %s\r\n", strings.TrimSpace(string(stsOut)))
+		} else {
+			fmt.Println("\033[1;33mNo active credentials (or offline)\033[0m")
+		}
+	} else {
+		fmt.Println("  • AWS CLI:          \033[1;33mNot found in Linux/Windows PATH\033[0m")
+	}
+
+	fmt.Print("  • LocalStack Mock:  ")
 	client := http.Client{Timeout: 800 * time.Millisecond}
 	resp, err := client.Get("http://localhost:4566/_localstack/health")
 	if err == nil {
 		defer resp.Body.Close()
-		fmt.Printf("    \033[1;32m✔ LocalStack is ONLINE (Status: %s)\033[0m\r\n", resp.Status)
+		fmt.Printf("\033[1;32mONLINE (Status: %s)\033[0m\r\n", resp.Status)
 	} else {
-		fmt.Println("    \033[1;33m⚠️ LocalStack service is OFFLINE (boot via 'agydocker' or docker run localstack/localstack)\033[0m")
+		fmt.Println("\033[1;33mOFFLINE (http://localhost:4566)\033[0m")
 	}
+
+	fmt.Println("──────────────────────────────────────────────────────────────────────────────────")
+	fmt.Println("  Quick Commands:")
+	fmt.Println("    • agyx aws whoami       - Query caller identity (aws sts get-caller-identity)")
+	fmt.Println("    • agyx aws s3           - List S3 buckets (aws s3 ls)")
+	fmt.Println("    • agyx aws sqs          - List SQS queues (aws sqs list-queues)")
+	fmt.Println("    • agyx aws local        - Test LocalStack health")
 	fmt.Println("──────────────────────────────────────────────────────────────────────────────────")
 	fmt.Print("Press [Enter] to return...")
 	var dummy [1]byte

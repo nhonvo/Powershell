@@ -12,9 +12,10 @@ import (
 )
 
 type CockpitApp struct {
-	ActiveTab   int // 0: Switch, 1: Proj, 2: Git, 3: Docker, 4: Term, 5: Mobile, 6: Ollama, 7: AWS
-	StatusMsg   string
-	tabSwitched bool
+	ActiveTab    int // 0: Switch, 1: Proj, 2: Git, 3: Docker, 4: Ollama, 5: Tools
+	ToolSubIndex int // 0: Term, 1: Mobile, 2: AWS (inside Tab 5)
+	StatusMsg    string
+	tabSwitched  bool
 }
 
 func NewCockpitApp() *CockpitApp {
@@ -64,13 +65,29 @@ func (a *CockpitApp) RunInteractive() error {
 			}
 			if n >= 3 && buf[1] == '[' {
 				switch buf[2] {
-				case 'C', 'B': // Right / Down
-					a.ActiveTab = (a.ActiveTab + 1) % 8
+				case 'C': // Right
+					a.ActiveTab = (a.ActiveTab + 1) % 6
 					a.tabSwitched = true
 					continue
-				case 'D', 'A': // Left / Up
-					a.ActiveTab = (a.ActiveTab + 7) % 8
+				case 'D': // Left
+					a.ActiveTab = (a.ActiveTab + 5) % 6
 					a.tabSwitched = true
+					continue
+				case 'A': // Up
+					if a.ActiveTab == 5 {
+						a.ToolSubIndex = (a.ToolSubIndex + 2) % 3
+					} else {
+						a.ActiveTab = (a.ActiveTab + 5) % 6
+						a.tabSwitched = true
+					}
+					continue
+				case 'B': // Down
+					if a.ActiveTab == 5 {
+						a.ToolSubIndex = (a.ToolSubIndex + 1) % 3
+					} else {
+						a.ActiveTab = (a.ActiveTab + 1) % 6
+						a.tabSwitched = true
+					}
 					continue
 				}
 			}
@@ -79,7 +96,7 @@ func (a *CockpitApp) RunInteractive() error {
 
 		switch b {
 		case '\t':
-			a.ActiveTab = (a.ActiveTab + 1) % 8
+			a.ActiveTab = (a.ActiveTab + 1) % 6
 			a.tabSwitched = true
 		case '1':
 			a.ActiveTab = 0
@@ -99,20 +116,23 @@ func (a *CockpitApp) RunInteractive() error {
 		case '6':
 			a.ActiveTab = 5
 			a.tabSwitched = true
-		case '7':
-			a.ActiveTab = 6
-			a.tabSwitched = true
-		case '8':
-			a.ActiveTab = 7
-			a.tabSwitched = true
+		case 'j', 'J':
+			if a.ActiveTab == 5 {
+				a.ToolSubIndex = (a.ToolSubIndex + 1) % 3
+			}
+		case 'k', 'K':
+			if a.ActiveTab == 5 {
+				a.ToolSubIndex = (a.ToolSubIndex + 2) % 3
+			}
+		case 't', 'T': // Direct launch agyterm
+			a.launchTool("agyterm", fd, oldState)
+		case 'm', 'M': // Direct launch agymobile
+			a.launchTool("agymobile", fd, oldState)
+		case 'a', 'A': // Direct launch aws
+			a.launchTool("aws", fd, oldState)
 		case '\r', '\n', 'e', 'E', 'l', 'L': // Launch active tool
 			toolName := a.getActiveToolBinary()
-			fmt.Print("\033[?25h\033[?1049l")
-			_ = term.Restore(fd, oldState)
-			_ = proxy.Execute(toolName, nil)
-			oldState, _ = term.MakeRaw(fd)
-			fmt.Print("\033[?1049h\033[?25l")
-			a.tabSwitched = true
+			a.launchTool(toolName, fd, oldState)
 		case 'r', 'R':
 			a.StatusMsg = "\033[32mRefreshed status.\033[0m"
 			a.tabSwitched = true
@@ -126,10 +146,34 @@ func (a *CockpitApp) RunInteractive() error {
 	return nil
 }
 
+func (a *CockpitApp) launchTool(binName string, fd int, oldState *term.State) {
+	fmt.Print("\033[?25h\033[?1049l")
+	_ = term.Restore(fd, oldState)
+	_ = proxy.Execute(binName, nil)
+	newOld, _ := term.MakeRaw(fd)
+	*oldState = *newOld
+	fmt.Print("\033[?1049h\033[?25l")
+	a.tabSwitched = true
+}
+
 func (a *CockpitApp) getActiveToolBinary() string {
-	tools := []string{"agyswitch", "agyproj", "agygit", "agydocker", "agyterm", "agymobile", "agyollama", "aws"}
-	if a.ActiveTab >= 0 && a.ActiveTab < len(tools) {
-		return tools[a.ActiveTab]
+	switch a.ActiveTab {
+	case 0:
+		return "agyswitch"
+	case 1:
+		return "agyproj"
+	case 2:
+		return "agygit"
+	case 3:
+		return "agydocker"
+	case 4:
+		return "agyollama"
+	case 5:
+		subTools := []string{"agyterm", "agymobile", "aws"}
+		if a.ToolSubIndex >= 0 && a.ToolSubIndex < len(subTools) {
+			return subTools[a.ToolSubIndex]
+		}
+		return "agyterm"
 	}
 	return "agyswitch"
 }
@@ -175,7 +219,7 @@ func (a *CockpitApp) Render() {
 	if width < 80 {
 		b.WriteString("\r\n⚡ \033[1;36mAGYX MASTER COCKPIT\033[0m\033[K\r\n")
 		b.WriteString(hr(width))
-		tabNames := []string{"1:Sw", "2:Pr", "3:Git", "4:Doc", "5:Term", "6:Mob", "7:Ai", "8:Aws"}
+		tabNames := []string{"1:Sw", "2:Pr", "3:Git", "4:Doc", "5:Ai", "6:Tools"}
 		for i, t := range tabNames {
 			if i == a.ActiveTab {
 				fmt.Fprintf(&b, "\033[1;37;44m [%s] \033[0m ", t)
@@ -192,10 +236,8 @@ func (a *CockpitApp) Render() {
 			"[2] 📁 Proj",
 			"[3] 🐙 Git",
 			"[4] 🐳 Docker",
-			"[5] 🎨 Term",
-			"[6] 📱 Mobile",
-			"[7] 🤖 Ollama",
-			"[8] ☁️ AWS",
+			"[5] 🤖 Ollama",
+			"[6] 🛠️ Tools",
 		}
 		for i, t := range tabs {
 			if i == a.ActiveTab {
@@ -218,13 +260,9 @@ func (a *CockpitApp) Render() {
 	case 3:
 		a.renderDockerSummary(&b, width)
 	case 4:
-		a.renderTermSummary(&b, width)
-	case 5:
-		a.renderMobileSummary(&b, width)
-	case 6:
 		a.renderOllamaSummary(&b, width)
-	case 7:
-		a.renderAwsSummary(&b, width)
+	case 5:
+		a.renderToolsSummary(&b, width)
 	}
 
 	b.WriteString(hr(width))
@@ -233,9 +271,13 @@ func (a *CockpitApp) Render() {
 	}
 
 	if width < 80 {
-		b.WriteString(" \033[1m[Tab/1-8]\033[0mNav \033[1;32m[Enter]\033[0mOpen App \033[1;31m[Q]\033[0mExit\033[K\r\n")
+		b.WriteString(" \033[1m[1-6]\033[0mNav \033[1m[↑/↓]\033[0mSelect \033[1;32m[Enter]\033[0mOpen \033[1;31m[Q]\033[0mExit\033[K\r\n")
 	} else {
-		b.WriteString(" \033[1m[Tab/1-8]\033[0m Switch Module · \033[1;32m[Enter]\033[0m Launch Dedicated App · \033[1;36m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+		if a.ActiveTab == 5 {
+			b.WriteString(" \033[1m[Tab/1-6]\033[0m Tabs · \033[1;33m[↑/↓]\033[0m Select Utility · \033[1;32m[Enter/T/M/A]\033[0m Launch · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+		} else {
+			b.WriteString(" \033[1m[Tab/1-6]\033[0m Switch Module · \033[1;32m[Enter]\033[0m Launch Dedicated App · \033[1;36m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+		}
 	}
 
 	b.WriteString("\033[J")
@@ -274,22 +316,6 @@ func (a *CockpitApp) renderDockerSummary(b *strings.Builder, width int) {
 	b.WriteString("  \033[1;32mPress [Enter] to launch full interactive 'agydocker' Container Hub...\033[0m\033[K\r\n")
 }
 
-func (a *CockpitApp) renderTermSummary(b *strings.Builder, width int) {
-	fmt.Fprintf(b, " 🎨 \033[1;36mTerminal Font & Shell Theme Customizer (agyterm)\033[0m\033[K\r\n\033[K\r\n")
-	fmt.Fprintf(b, "  • \033[1mPrimary Command:\033[0m  agyx term [ls|theme|font|opacity|fonts]\033[K\r\n")
-	fmt.Fprintf(b, "  • \033[1mKey Features:\033[0m     Oh My Posh themes (100+), Windows Terminal font face/size/opacity\033[K\r\n")
-	fmt.Fprintf(b, "  • \033[1mScope:\033[0m            Dual-platform configuration for Windows Terminal & Linux shells\033[K\r\n\033[K\r\n")
-	b.WriteString("  \033[1;32mPress [Enter] to launch full interactive 'agyterm' Customizer...\033[0m\033[K\r\n")
-}
-
-func (a *CockpitApp) renderMobileSummary(b *strings.Builder, width int) {
-	fmt.Fprintf(b, " 📱 \033[1;36mMobile Cockpit & Remote Station (agymobile)\033[0m\033[K\r\n\033[K\r\n")
-	fmt.Fprintf(b, "  • \033[1mPrimary Command:\033[0m  agyx mobile [status|serve|flush|qr]\033[K\r\n")
-	fmt.Fprintf(b, "  • \033[1mKey Features:\033[0m     Tailscale & SSH remote access, 38-col TUI, mobile Web PWA, RAM flush\033[K\r\n")
-	fmt.Fprintf(b, "  • \033[1mWeb Cockpit:\033[0m      http://<tailscale-ip>:7890\033[K\r\n\033[K\r\n")
-	b.WriteString("  \033[1;32mPress [Enter] to launch full interactive 'agymobile' Mobile Station...\033[0m\033[K\r\n")
-}
-
 func (a *CockpitApp) renderOllamaSummary(b *strings.Builder, width int) {
 	fmt.Fprintf(b, " 🤖 \033[1;36mLocal Ollama & Open LLM AI Cockpit (agyollama)\033[0m\033[K\r\n\033[K\r\n")
 	fmt.Fprintf(b, "  • \033[1mPrimary Command:\033[0m  agyx ollama [status|ls|pull|run|start|stop|benchmark|delete]\033[K\r\n")
@@ -298,12 +324,62 @@ func (a *CockpitApp) renderOllamaSummary(b *strings.Builder, width int) {
 	b.WriteString("  \033[1;32mPress [Enter] to launch full interactive 'agyollama' AI Cockpit...\033[0m\033[K\r\n")
 }
 
-func (a *CockpitApp) renderAwsSummary(b *strings.Builder, width int) {
-	fmt.Fprintf(b, " ☁️  \033[1;36mAWS Cloud & LocalStack Diagnostics (aws)\033[0m\033[K\r\n\033[K\r\n")
-	fmt.Fprintf(b, "  • \033[1mPrimary Commands:\033[0m  agyx aws [whoami|s3|local|sqs]\033[K\r\n")
-	fmt.Fprintf(b, "  • \033[1mKey Features:\033[0m     IAM Identity, S3 explorer, LocalStack health (localhost:4566)\033[K\r\n")
-	fmt.Fprintf(b, "  • \033[1mIntegration:\033[0m      PowerShell profile functions & LocalStack Docker mock\033[K\r\n\033[K\r\n")
-	b.WriteString("  \033[1;32mPress [Enter] to run AWS / LocalStack diagnostics...\033[0m\033[K\r\n")
+func (a *CockpitApp) renderToolsSummary(b *strings.Builder, width int) {
+	fmt.Fprintf(b, " 🛠️  \033[1;36mDeveloper Utilities & Cloud Services Drawer\033[0m\033[K\r\n\033[K\r\n")
+	fmt.Fprintf(b, "  Use \033[1m[↑/↓]\033[0m to navigate or press shortcut key to launch directly:\033[K\r\n\033[K\r\n")
+
+	items := []struct {
+		key   string
+		emoji string
+		title string
+		bin   string
+		desc  string
+		cmd   string
+	}{
+		{
+			key:   "T",
+			emoji: "🎨",
+			title: "Terminal Themes & Fonts",
+			bin:   "agyterm",
+			desc:  "Windows Terminal settings.json mutation & 80+ Oh-My-Posh themes",
+			cmd:   "agyx term [ls|theme|font|opacity]",
+		},
+		{
+			key:   "M",
+			emoji: "📱",
+			title: "Mobile Cockpit & Remote Station",
+			bin:   "agymobile",
+			desc:  "38-col smartphone TUI & Web Cockpit (:7890) over Tailscale / SSH",
+			cmd:   "agyx mobile [status|serve|flush|qr]",
+		},
+		{
+			key:   "A",
+			emoji: "☁️",
+			title: "AWS Cloud & LocalStack Diagnostics",
+			bin:   "aws",
+			desc:  "STS identity, S3 bucket explorer & LocalStack port 4566 diagnostics",
+			cmd:   "agyx aws [whoami|s3|sqs|local]",
+		},
+	}
+
+	for i, item := range items {
+		prefix := "    "
+		badgeStyle := "\033[36m"
+		textStyle := "\033[0m"
+		if i == a.ToolSubIndex {
+			prefix = " \033[1;32m▶ \033[0m"
+			badgeStyle = "\033[1;37;42m"
+			textStyle = "\033[1m"
+		}
+
+		fmt.Fprintf(b, "%s%s [%s] \033[0m %s %s%s\033[0m \033[90m(%s)\033[0m\033[K\r\n",
+			prefix, badgeStyle, item.key, item.emoji, textStyle, item.title, item.bin)
+		fmt.Fprintf(b, "      \033[90m• %s\033[0m\033[K\r\n", item.desc)
+		fmt.Fprintf(b, "      \033[90m• Command: %s\033[0m\033[K\r\n\033[K\r\n", item.cmd)
+	}
+
+	selectedName := items[a.ToolSubIndex].title
+	fmt.Fprintf(b, "  \033[1;32mPress [Enter] to launch '%s'...\033[0m\033[K\r\n", selectedName)
 }
 
 func (a *CockpitApp) runNonInteractive() error {
