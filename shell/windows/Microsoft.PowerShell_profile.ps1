@@ -7,14 +7,12 @@ $loadDll = ($null -ne $config.Environment -and $config.Environment.LoadDll -eq $
 
 if ($global:AgyUserProfileLoaded) { return }
 $global:AgyUserProfileLoaded = $true
-$profileFile = if ($MyInvocation.MyCommand.Definition) { $MyInvocation.MyCommand.Definition } else { $PSCommandPath }
-if ($profileFile -and (Test-Path $profileFile -PathType Leaf)) {
-    $Global:ProfileRepoRoot = Split-Path -Parent -Path $profileFile
-} else {
-    $curr = if ($PSScriptRoot) { $PSScriptRoot } else { if ($profileFile) { Split-Path -Parent $profileFile } else { Get-Location } }
-    while ($curr -and (Test-Path $curr) -and -not (Test-Path (Join-Path $curr "apps")) -and -not (Test-Path (Join-Path $curr "csapp"))) {
+if (-not $Global:ProfileRepoRoot) {
+    $profileFile = if ($MyInvocation.MyCommand.Definition) { $MyInvocation.MyCommand.Definition } else { $PSCommandPath }
+    $curr = if ($PSScriptRoot) { $PSScriptRoot } else { if ($profileFile) { Split-Path -Parent $profileFile } else { (Get-Location).Path } }
+    while ($curr -and (Test-Path $curr) -and -not (Test-Path (Join-Path $curr "apps")) -and -not (Test-Path (Join-Path $curr ".git"))) {
         $parent = Split-Path -Parent -Path $curr
-        if ($parent -eq $curr) { break }
+        if ($parent -eq $curr -or [string]::IsNullOrEmpty($parent)) { break }
         $curr = $parent
     }
     $Global:ProfileRepoRoot = $curr
@@ -41,40 +39,108 @@ if (Test-Path $configPath) {
 }
 
 # Determine Flag State Matrix: Fast Startup vs Normal Load
-$fastStartup = ($null -ne $config.Environment -and $config.Environment.EnableFastStartup -eq $true) -or $env:AGY_ENABLE_FAST_STARTUP -eq 'true' -or $env:AGY_ENABLE_FAST_STARTUP -eq '1' -or $env:AGY_SKIP_DLL_LOAD -eq 'true' -or $env:AGY_SKIP_DLL_LOAD -eq '1'
-$forceLoad   = ($null -ne $config.Environment -and $config.Environment.ForceLoadRedirected -eq $true) -or $env:AGY_FORCE_LOAD_REDIRECTED -eq 'true' -or $env:AGY_FORCE_LOAD_REDIRECTED -eq '1' -or $env:AGY_LOAD_DLL -eq 'true' -or $env:AGY_LOAD_DLL -eq '1'
+# Fast Startup by default (lazy-loads legacy C# assemblies only on demand) for sub-second startup
+$fastStartup = ($env:AGY_LOAD_DLL -ne 'true' -and $env:AGY_LOAD_DLL -ne '1') -and ($null -eq $config.Environment -or $config.Environment.LoadDll -ne $true)
+$forceLoad   = ($null -ne $config.Environment -and $config.Environment.ForceLoadRedirected -eq $true) -or $env:AGY_FORCE_LOAD_REDIRECTED -eq 'true' -or $env:AGY_LOAD_DLL -eq 'true' -or $env:AGY_LOAD_DLL -eq '1'
 
-# --- Apply Environment Variables from JSON Config ---
-if ($config.Environment) {
-    if ($config.Environment.PoshThemesPath) {
-        $p = $config.Environment.PoshThemesPath
-        $env:POSH_THEMES_PATH = if ([System.IO.Path]::IsPathRooted($p)) { $p } else { Join-Path $Global:ProfileRepoRoot $p }
-    } else {
-        $themesDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "shell\assets\powershell-themes"
-        if (-not (Test-Path $themesDir)) { $themesDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "psapp\asset\powershell-themes" }
-        $env:POSH_THEMES_PATH = $themesDir
-    }
-
-    if ($config.Environment.PsModulePath) {
-        $m = $config.Environment.PsModulePath
-        $modDir = if ([System.IO.Path]::IsPathRooted($m)) { $m } else { Join-Path $Global:ProfileRepoRoot $m }
-        if ((Test-Path $modDir) -and ($env:PSModulePath -notlike "*$modDir*")) {
-            $env:PSModulePath = "$modDir;$env:PSModulePath"
-        }
-    }
-
-    if ($null -ne $config.Environment.EnableFastStartup)  { $env:AGY_ENABLE_FAST_STARTUP  = if ($config.Environment.EnableFastStartup)  { "true" } else { "false" } }
-    if ($null -ne $config.Environment.ForceLoadRedirected) { $env:AGY_FORCE_LOAD_REDIRECTED = if ($config.Environment.ForceLoadRedirected) { "true" } else { "false" } }
-    if ($config.Environment.Theme)             { $env:THEME                  = "$($config.Environment.Theme)" }
-} else {
-    $themesDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "shell\assets\powershell-themes"
-    if (-not (Test-Path $themesDir)) { $themesDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "psapp\asset\powershell-themes" }
-    $env:POSH_THEMES_PATH = $themesDir
-    $localModules = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "shell\modules"
-    if ((Test-Path $localModules) -and ($env:PSModulePath -notlike "*$localModules*")) {
-        $env:PSModulePath = "$localModules;$env:PSModulePath"
+# --- Add Windows Suite Binaries to PATH ---
+$pathAdditions = @(
+    (Join-Path $HOME ".local\bin"),
+    (Join-Path $Global:ProfileRepoRoot "dist\windows")
+)
+foreach ($pa in $pathAdditions) {
+    if ((Test-Path $pa) -and ($env:PATH -notlike "*$pa*")) {
+        $env:PATH = "$pa;$env:PATH"
     }
 }
+
+# --- Module Search Paths ---
+$docPaths = [System.Collections.Generic.List[string]]::new()
+
+# Resolve Documents path via .NET SpecialFolder (handles OneDrive / redirected folders)
+try {
+    $specialDocs = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::MyDocuments)
+    if ($specialDocs -and (Test-Path $specialDocs)) { $docPaths.Add($specialDocs) }
+} catch {}
+
+# Fallbacks for OneDrive and standard USERPROFILE / HOME Documents
+if ($env:OneDrive -and (Test-Path (Join-Path $env:OneDrive "Documents"))) {
+    $odDocs = Join-Path $env:OneDrive "Documents"
+    if (-not $docPaths.Contains($odDocs)) { $docPaths.Add($odDocs) }
+}
+$stdDocs = if ($env:USERPROFILE) { Join-Path $env:USERPROFILE "Documents" } else { Join-Path $HOME "Documents" }
+if ($stdDocs -and (Test-Path $stdDocs) -and (-not $docPaths.Contains($stdDocs))) {
+    $docPaths.Add($stdDocs)
+}
+
+# Candidate module directories
+$modCandidates = [System.Collections.Generic.List[string]]::new()
+foreach ($doc in $docPaths) {
+    $modCandidates.Add((Join-Path $doc "PowerShell\Modules"))
+    $modCandidates.Add((Join-Path $doc "WindowsPowerShell\Modules"))
+}
+
+# Local AppData module directory (PowerShell 7+ / PSResourceGet)
+if ($env:LOCALAPPDATA) {
+    $modCandidates.Add((Join-Path $env:LOCALAPPDATA "PowerShell\Modules"))
+}
+
+# Cross-platform user modules (Linux / WSL pwsh)
+if ($HOME) {
+    $modCandidates.Add((Join-Path $HOME ".local\share\powershell\Modules"))
+}
+
+# Repository local modules (modern layout: shell/modules or modules)
+if ($Global:ProfileRepoRoot) {
+    $modCandidates.Add((Join-Path $Global:ProfileRepoRoot "shell\modules"))
+    $modCandidates.Add((Join-Path $Global:ProfileRepoRoot "modules"))
+}
+
+# Register existing module paths into PSModulePath
+$sep = [System.IO.Path]::PathSeparator
+$existingPaths = ($env:PSModulePath -split [System.Text.RegularExpressions.Regex]::Escape($sep)) | Where-Object { $_ }
+foreach ($mc in $modCandidates) {
+    if ((Test-Path $mc) -and ($existingPaths -notcontains $mc)) {
+        $env:PSModulePath = "$mc$sep$env:PSModulePath"
+        $existingPaths += $mc
+    }
+}
+
+# --- Apply Environment Variables & Themes ---
+$themesDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "shell\assets\powershell-themes"
+if (-not (Test-Path $themesDir) -and (Test-Path (Join-Path $Global:ProfileRepoRoot "shell\assets"))) {
+    $themesDir = Join-Path $Global:ProfileRepoRoot "shell\assets"
+}
+if ($config.Environment -and $config.Environment.PoshThemesPath) {
+    $p = $config.Environment.PoshThemesPath
+    $env:POSH_THEMES_PATH = if ([System.IO.Path]::IsPathRooted($p)) { $p } else { Join-Path $Global:ProfileRepoRoot $p }
+} else {
+    $env:POSH_THEMES_PATH = $themesDir
+}
+
+if (-not $env:THEME) {
+    $themeCandidates = @(
+        (Join-Path $HOME ".config\selected_posh_theme.txt"),
+        "\\wsl.localhost\Ubuntu\home\truongnhon\.config\selected_posh_theme.txt",
+        (Join-Path $HOME ".gemini\selected_theme.txt")
+    )
+    foreach ($tc in $themeCandidates) {
+        if (Test-Path $tc) {
+            $tVal = (Get-Content $tc -Raw -ErrorAction SilentlyContinue).Trim()
+            if ($tVal) { $env:THEME = $tVal; break }
+        }
+    }
+    if (-not $env:THEME) {
+        if ($config.Environment -and $config.Environment.Theme) {
+            $env:THEME = "$($config.Environment.Theme)"
+        } else {
+            $env:THEME = "catppuccin"
+        }
+    }
+}
+
+if ($null -ne $config.Environment.EnableFastStartup)  { $env:AGY_ENABLE_FAST_STARTUP  = if ($config.Environment.EnableFastStartup)  { "true" } else { "false" } }
+if ($null -ne $config.Environment.ForceLoadRedirected) { $env:AGY_FORCE_LOAD_REDIRECTED = if ($config.Environment.ForceLoadRedirected) { "true" } else { "false" } }
 
 if ($config.Proxy) {
     if ($config.Proxy.HttpProxy)  { $env:HTTP_PROXY  = "$($config.Proxy.HttpProxy)" }
@@ -232,7 +298,7 @@ function Load-AgyTuiDll {
     } catch {}
 }
 
-if ($forceLoad -or (-not $fastStartup -and -not [Console]::IsOutputRedirected)) {
+if ($forceLoad) {
     Load-AgyTuiDll
 }
 
@@ -261,12 +327,29 @@ function Get-AgyType {
     return $t
 }
 
+function Invoke-GoApp {
+    param([string]$AppName, [object[]]$AppArgs)
+    $binPath = Join-Path $HOME ".local\bin\$AppName.exe"
+    if (-not (Test-Path $binPath) -and $Global:ProfileRepoRoot) {
+        $binPath = Join-Path $Global:ProfileRepoRoot "dist\windows\$AppName.exe"
+    }
+    if (Test-Path $binPath) {
+        if ($AppArgs -and $AppArgs.Count -gt 0) { & $binPath @AppArgs } else { & $binPath }
+        return
+    }
+    if (Get-Command $AppName -ErrorAction SilentlyContinue) {
+        if ($AppArgs -and $AppArgs.Count -gt 0) { & $AppName @AppArgs } else { & $AppName }
+        return
+    }
+    if (Get-Command wsl -ErrorAction SilentlyContinue) {
+        if ($AppArgs -and $AppArgs.Count -gt 0) { wsl $AppName @AppArgs } else { wsl $AppName }
+        return
+    }
+    Write-Host "⚠️ Go engine [$AppName] is not found in PATH, dist\windows, or WSL." -ForegroundColor Yellow
+}
+
 function Invoke-AgyRoute {
     param([string]$Alias, $RouteArgs = $null)
-
-    $tuiExe = Join-Path $Global:AgyTuiDir "dist\AgyTui.exe"
-    if (-not (Test-Path $tuiExe)) { $tuiExe = Join-Path $Global:AgyTuiDir "bin\Release\net9.0\AgyTui.exe" }
-    if (-not (Test-Path $tuiExe)) { $tuiExe = Join-Path $Global:AgyTuiDir "bin\Debug\net9.0\AgyTui.exe" }
 
     $flatArgs = @()
     if ($RouteArgs) {
@@ -282,34 +365,157 @@ function Invoke-AgyRoute {
         }
     }
 
-    if (Test-Path $tuiExe) {
-        if ($flatArgs.Count -gt 0) {
-            & $tuiExe $Alias @flatArgs
-        } else {
-            & $tuiExe $Alias
+    $routeKey = if ($Alias) { $Alias.ToLowerInvariant() } else { "" }
+    switch ($routeKey) {
+        # --- Docker Routes -> agydocker ---
+        "dlogsu" {
+            if ($flatArgs.Count -gt 0) { Invoke-GoApp "agydocker" @("logs", $flatArgs[0]) }
+            else { Invoke-GoApp "agydocker" }
         }
-        return
-    }
+        { $_ -in "dku", "dki", "dkcl" } {
+            Invoke-GoApp "agydocker"
+        }
+        "dimgu" {
+            Invoke-GoApp "agydocker"
+        }
+        "docker-health" {
+            Invoke-GoApp "agydocker" @("ram")
+        }
+        "dkrmac" {
+            Invoke-GoApp "agydocker" @("prune")
+        }
+        "dkstac" {
+            $running = docker ps -q 2>$null
+            if ($running) { docker stop $running } else { Write-Host "No running containers." -ForegroundColor Green }
+        }
+        "dcup" {
+            docker compose up @flatArgs
+        }
+        "dcupb" {
+            docker compose up --build @flatArgs
+        }
+        "dcdown" {
+            if ($flatArgs.Count -gt 0) { Invoke-GoApp "agydocker" @("down", $flatArgs[0]) }
+            else { docker compose down }
+        }
+        { $_ -in "dkprunev", "dkprunei" } {
+            Invoke-GoApp "agydocker" @("prune")
+        }
 
-    $proj = $Global:AgyTuiAppProject
-    if (Test-Path $proj) {
-        if ($flatArgs.Count -gt 0) {
-            dotnet run --project "$proj" -c Release -- $Alias @flatArgs
-        } else {
-            dotnet run --project "$proj" -c Release -- $Alias
+        # --- Git Routes -> agygit ---
+        "gsu" {
+            Invoke-GoApp "agygit"
         }
-        return
-    }
+        "gd" {
+            if ($flatArgs.Count -gt 0) { git diff @flatArgs } else { git diff }
+        }
+        "glg" {
+            Invoke-GoApp "agygit" @("graph")
+        }
+        "glog" {
+            Invoke-GoApp "agygit" @("log")
+        }
+        { $_ -in "gbr", "gbu" } {
+            Invoke-GoApp "agygit"
+        }
+        "co" {
+            git checkout @flatArgs
+        }
+        "cob" {
+            git checkout -b @flatArgs
+        }
+        "gbd" {
+            git branch -d @flatArgs
+        }
+        "gcmt" {
+            if ($flatArgs.Count -gt 0) {
+                Invoke-GoApp "agygit" @("commit", ($flatArgs -join " "))
+            } else {
+                Invoke-GoApp "agygit" @("commit")
+            }
+        }
+        "gca" {
+            git commit --amend @flatArgs
+        }
+        "gclone" {
+            git clone @flatArgs
+        }
+        "gremoteu" {
+            git remote -v
+        }
+        "gco-remote" {
+            git checkout -t @flatArgs
+        }
+        "gmergeu" {
+            if ($flatArgs.Count -gt 0) { Invoke-GoApp "agygit" @("merge", $flatArgs[0]) }
+            else { Invoke-GoApp "agygit" }
+        }
+        "gconflict" {
+            git diff --name-only --diff-filter=U
+        }
+        "gstash" {
+            git stash @flatArgs
+        }
+        "grebase" {
+            git rebase @flatArgs
+        }
 
-    $routerType = Get-AgyType "CommandRouter"
-    if ($null -ne $routerType) {
-        if ($null -ne $RouteArgs) {
-            return $routerType::Route($Alias, $RouteArgs)
-        } else {
-            return $routerType::Route($Alias)
+        "gundo" {
+            Invoke-GoApp "agygit" @("undo")
         }
-    } else {
-        Write-Error "AgyTui binary/component [CommandRouter] could not be resolved."
+
+        # --- Workspace & Projects -> agyproj ---
+        { $_ -in "proj", "projects", "cnav" } {
+            Invoke-GoApp "agyproj" @flatArgs
+        }
+
+        # --- Cockpit / Control Center -> agyx ---
+        { $_ -in "cc", "ai", "cockpit" } {
+            Invoke-GoApp "agyx" @flatArgs
+        }
+
+        # --- .NET SDK Direct Commands ---
+        "dru" { dotnet run @flatArgs }
+        "dbldu" { dotnet build @flatArgs }
+        "dtstu" { dotnet test @flatArgs }
+        "dclean" {
+            Get-ChildItem -Path . -Include bin,obj -Recurse -Directory -Force -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+            Write-Host "🧹 Cleaned all bin/ and obj/ folders." -ForegroundColor Green
+        }
+        "update-db" { dotnet ef database update @flatArgs }
+        "add-migration" { dotnet ef migrations add @flatArgs }
+        "dd" { dotnet ef database drop @flatArgs }
+        "dremove" { dotnet ef migrations remove @flatArgs }
+        "sln" { dotnet new sln @flatArgs }
+        "sln-add" { dotnet sln add (Get-ChildItem -Path . -Filter *.csproj -Recurse | Select-Object -ExpandProperty FullName) }
+        "console" { dotnet new console @flatArgs }
+        "webapi" { dotnet new webapi @flatArgs }
+        "dpubpkg" { dotnet pack -c Release @flatArgs }
+
+        # --- AWS / LocalStack Direct Commands ---
+        "aws-whoamiu" { aws sts get-caller-identity @flatArgs }
+        "aws-s3u" { aws s3 ls @flatArgs }
+        "s3mb" { aws s3 mb @flatArgs }
+        "aws-local" { aws lambda list-functions @flatArgs }
+        "aws-sqs" { aws sqs list-queues @flatArgs }
+        "sqsmb" { aws sqs create-queue @flatArgs }
+        "sqspurge" { aws sqs purge-queue @flatArgs }
+        "sqssend" { aws sqs send-message @flatArgs }
+        "sqsrecv" { aws sqs receive-message @flatArgs }
+        "sqsattr" { aws sqs get-queue-attributes @flatArgs }
+
+        default {
+            if (Get-Command agyx -ErrorAction SilentlyContinue) {
+                & agyx $Alias @flatArgs
+                return
+            }
+            $tuiExe = Join-Path $Global:AgyTuiDir "dist\AgyTui.exe"
+            if (Test-Path $tuiExe) {
+                if ($flatArgs.Count -gt 0) { & $tuiExe $Alias @flatArgs } else { & $tuiExe $Alias }
+                return
+            }
+            Invoke-GoApp "agyx" @flatArgs
+        }
     }
 }
 #endregion
@@ -377,46 +583,38 @@ class ProfileEnvironment {
 
     static [void] LoadModules() {
         [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-        $modules = @(
-            @{ Name = "PSReadLine";                         Description = "Core CLI Experience" }
-            @{ Name = "Terminal-Icons";                     Description = "Rich File Icons" }
-            @{ Name = "Microsoft.PowerShell.ConsoleGuiTools"; Description = "Terminal UI" }
-        )
-        foreach ($mod in $modules) {
-            try {
-                Import-Module $mod.Name -ErrorAction Stop
-            } catch {
-                try {
-                    Install-Module $mod.Name -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck -ErrorAction Stop
-                    Import-Module $mod.Name -ErrorAction SilentlyContinue
-                } catch {}
-            }
+        if (-not (Get-Module -Name "Terminal-Icons")) {
+            Import-Module "Terminal-Icons" -ErrorAction SilentlyContinue
         }
     }
 }
 
 [ProfileEnvironment]::ConfigurePSReadLine()
+[ProfileEnvironment]::LoadModules()
 
-# Initialize Oh My Posh Theme
-$themePath = Join-Path -Path $env:POSH_THEMES_PATH -ChildPath "$($env:THEME).omp.json"
-if ((Test-Path $themePath) -and (Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
-    if (-not $global:PoshInitialized) {
+function Apply-ThemePath {
+    param([string]$ThemeName)
+    $themeFile = Join-Path $env:POSH_THEMES_PATH "$ThemeName.omp.json"
+    if ((Test-Path $themeFile) -and (Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {
         try {
-            oh-my-posh --init --shell pwsh --config $themePath | Invoke-Expression
-            $global:PoshInitialized = $true
+            oh-my-posh init pwsh --config $themeFile | Invoke-Expression
         } catch {
-            Write-Warning "Failed to initialize oh-my-posh: $_"
+            try {
+                oh-my-posh --init --shell pwsh --config $themeFile | Invoke-Expression
+            } catch {
+                Write-Warning "Failed to initialize oh-my-posh: $_"
+            }
         }
     }
 }
+
+# Initialize Oh My Posh Theme
+Apply-ThemePath $env:THEME
 #endregion
 
 #region 4. DOCKER & CONTAINER INTEGRATION
 # ==============================================================================
 #  Shortcuts and TUI dashboards for Docker and Docker Compose.
-# ==============================================================================
-
-#region 4. DOCKER & CONTAINERS INTEGRATION
 # ==============================================================================
 function Invoke-DockerDashboard { Invoke-AgyRoute "dkcl" }
 function Invoke-DockerHealth { Invoke-AgyRoute "docker-health" }
@@ -691,39 +889,20 @@ function Sync-ActiveAgyEnvironment {
 
 function Invoke-ControlCenter {
     param([string]$CmdAlias, [object[]]$PassArgs)
-    $env:ENVIRONMENT = "Production"
-    $tuiExe = Join-Path $Global:AgyTuiDir "dist\AgyTui.exe"
-    if (-not (Test-Path $tuiExe)) { $tuiExe = Join-Path $Global:AgyTuiDir "bin\Release\net9.0\AgyTui.exe" }
-    if (Test-Path $tuiExe) {
-        if ($CmdAlias) { & $tuiExe $CmdAlias @PassArgs } else { & $tuiExe }
-        Sync-ActiveAgyEnvironment
-        return
+    if ($CmdAlias) {
+        Invoke-AgyRoute $CmdAlias $PassArgs
+    } else {
+        Invoke-GoApp "agyx"
     }
-    Invoke-AgyRoute $CmdAlias $PassArgs
     Sync-ActiveAgyEnvironment
 }
 
 function Invoke-ControlCenterDev {
     param([string]$CmdAlias, [object[]]$PassArgs)
-    $env:ENVIRONMENT = "Development"
-    $tuiDevExe = Join-Path $Global:AgyTuiDir "bin\Debug\net9.0\AgyTui.exe"
-    $spectreDll = Join-Path $Global:AgyTuiDir "bin\Debug\net9.0\Spectre.Console.dll"
-    if ((Test-Path $tuiDevExe) -and (Test-Path $spectreDll)) {
-        Write-Host "🚀 Launching AgyTui [DEVELOPMENT MODE]..." -ForegroundColor Cyan
-        if ($CmdAlias) { & $tuiDevExe $CmdAlias @PassArgs } else { & $tuiDevExe }
-        Sync-ActiveAgyEnvironment
-        return
-    }
-    Write-Host "🔨 Building & Launching AgyTui [DEVELOPMENT MODE]..." -ForegroundColor Cyan
-    Push-Location $Global:AgyTuiDir
-    dotnet build -c Debug --verbosity quiet
-    Pop-Location
-    if ((Test-Path $tuiDevExe) -and (Test-Path $spectreDll)) {
-        if ($CmdAlias) { & $tuiDevExe $CmdAlias @PassArgs } else { & $tuiDevExe }
+    if ($CmdAlias) {
+        Invoke-AgyRoute $CmdAlias $PassArgs
     } else {
-        Push-Location $Global:AgyTuiDir
-        if ($CmdAlias) { dotnet run -c Debug -- $CmdAlias @PassArgs } else { dotnet run -c Debug }
-        Pop-Location
+        Invoke-GoApp "agyx"
     }
     Sync-ActiveAgyEnvironment
 }
@@ -786,39 +965,11 @@ Set-Alias -Name agyswitch -Value Invoke-AgyAccount -Force
 Set-Alias -Name agysw -Value Invoke-AgyAccount -Force
 
 function agyx {
-    param([string]$Account, [ValueFromRemainingArguments()][string[]]$PassArgs)
-    if (Get-Command agyswitch -ErrorAction SilentlyContinue) {
-        $allArgs = @()
-        if ($Account) { $allArgs += $Account }
-        if ($PassArgs) { $allArgs += $PassArgs }
-        if ($allArgs.Length -gt 0) { & agyswitch $allArgs } else { & agyswitch }
-        return
-    }
-    if (Get-Command wsl -ErrorAction SilentlyContinue) {
-        $wslCmd = "agyswitch"
-        if ($Account) { $wslCmd += " $Account" }
-        if ($PassArgs) { $wslCmd += " " + ($PassArgs -join " ") }
-        wsl bash -c "$wslCmd"
-        return
-    }
-    if ($Account -and (Test-Path (Join-Path $env:USERPROFILE ".gemini_$Account"))) {
-        $env:GEMINI_HOME = Join-Path $env:USERPROFILE ".gemini_$Account"
-    } else {
-        $activeFile = Join-Path $env:USERPROFILE ".gemini" "active_account.txt"
-        if (Test-Path $activeFile) {
-            $activeAcc = (Get-Content $activeFile -Raw).Trim()
-            if ($activeAcc -and $activeAcc -ne "default" -and (Test-Path (Join-Path $env:USERPROFILE ".gemini_$activeAcc"))) {
-                $env:GEMINI_HOME = Join-Path $env:USERPROFILE ".gemini_$activeAcc"
-            } else {
-                $env:GEMINI_HOME = Join-Path $env:USERPROFILE ".gemini"
-            }
-        }
-    }
-    Write-Host "[agyx] Active context: $env:GEMINI_HOME" -ForegroundColor Cyan
-    $allArgs = @()
-    if ($Account) { $allArgs += $Account }
-    if ($PassArgs) { $allArgs += $PassArgs }
-    if ($allArgs.Length -gt 0) { & agy $allArgs } else { & agy }
+    $bin = Join-Path $HOME ".local\bin\agyx.exe"
+    if (-not (Test-Path $bin)) { $bin = Join-Path $Global:ProfileRepoRoot "dist\windows\agyx.exe" }
+    if (Test-Path $bin) { & $bin @args; return }
+    if (Get-Command wsl -ErrorAction SilentlyContinue) { wsl agyx @args; return }
+    Write-Host "❌ agyx binary not found. Please compile via 'make windows'" -ForegroundColor Red
 }
 Set-Alias -Name reset-agy -Value Reset-AgyAccountData -Force
 Set-Alias -Name purge-accounts -Value Purge-AgyAccounts -Force
@@ -836,7 +987,21 @@ function Invoke-OpenExplorer { Invoke-AgyRoute "f" }
 function Invoke-WorkspaceNavigator { param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Name) Invoke-AgyRoute "proj" $Name }
 function Invoke-TerminalIde {
     param([string]$Path)
-    $targetPath = if ($Path) { $Path } else { Get-Location }
+    $targetPath = if ($Path) { $Path } else { (Get-Location).Path }
+    $agyProj = Join-Path $HOME ".local\bin\agyproj.exe"
+    if (-not (Test-Path $agyProj)) { $agyProj = Join-Path $Global:ProfileRepoRoot "dist\windows\agyproj.exe" }
+    if (Test-Path $agyProj) {
+        & $agyProj open $targetPath
+        return
+    }
+    if (Get-Command agyproj -ErrorAction SilentlyContinue) {
+        & agyproj open $targetPath
+        return
+    }
+    if (Get-Command code -ErrorAction SilentlyContinue) {
+        code $targetPath
+        return
+    }
     $ideType = Get-AgyType "TerminalIde"
     if ($ideType) { $ideType::Open($targetPath) }
 }
@@ -846,14 +1011,57 @@ function open-term {
     if ($args) {
         Start-Process wt.exe -ArgumentList $args
     } else {
+        if (Get-Command wt.exe -ErrorAction SilentlyContinue) {
+            Start-Process wt.exe -ArgumentList "-d `"$($pwd.Path)`""
+            return
+        }
         $sysType = Get-AgyType "SystemHelper"
         if ($sysType) { $sysType::OpenNewTerminalSession($pwd.Path, [string]$null, $true) }
     }
 }
 
-function Select-ShellTheme {
-    $themeType = Get-AgyType "ThemeHelper"
-    if ($themeType) { Apply-ThemePath ($themeType::SelectThemeInteractive($env:POSH_THEMES_PATH, $env:THEME)) }
+function Set-ShellTheme {
+    param([string]$ThemeName)
+    $themesDir = $env:POSH_THEMES_PATH
+    if (-not $ThemeName) {
+        $termBin = Join-Path $HOME ".local\bin\agyterm.exe"
+        if (-not (Test-Path $termBin)) { $termBin = Join-Path $Global:ProfileRepoRoot "dist\windows\agyterm.exe" }
+        if (Test-Path $termBin) {
+            & $termBin
+            return
+        }
+        if (Get-Command agyterm -ErrorAction SilentlyContinue) {
+            & agyterm
+            return
+        }
+        if (Get-Command Out-ConsoleGridView -ErrorAction SilentlyContinue) {
+            $sel = Get-ChildItem -Path $themesDir -Filter "*.omp.json" | ForEach-Object { $_.BaseName } | Out-ConsoleGridView -Title "Select Oh My Posh Theme (Type to search)" -OutputMode Single
+            if ($sel) { Set-ShellTheme $sel }
+            return
+        }
+        Write-Host "🎨 Current Theme: $env:THEME" -ForegroundColor Cyan
+        Write-Host "Usage: theme <theme-name>" -ForegroundColor Yellow
+        Write-Host "Available themes in your repository:" -ForegroundColor Cyan
+        if (Test-Path $themesDir) {
+            Get-ChildItem -Path $themesDir -Filter "*.omp.json" | ForEach-Object { $_.BaseName } | Format-Wide -Column 4
+        }
+        return
+    }
+    $themeFile = Join-Path $themesDir "$ThemeName.omp.json"
+    if (-not (Test-Path $themeFile)) {
+        Write-Host "❌ Theme not found: $ThemeName" -ForegroundColor Red
+        return
+    }
+    $env:THEME = $ThemeName
+    $configDir = Join-Path $HOME ".config"
+    if (-not (Test-Path $configDir)) { New-Item -ItemType Directory -Path $configDir -Force | Out-Null }
+    Set-Content -Path (Join-Path $configDir "selected_posh_theme.txt") -Value $ThemeName -Force
+    $wslConfigDir = "\\wsl.localhost\Ubuntu\home\truongnhon\.config"
+    if (Test-Path $wslConfigDir) {
+        try { Set-Content -Path (Join-Path $wslConfigDir "selected_posh_theme.txt") -Value $ThemeName -Force } catch {}
+    }
+    Apply-ThemePath $ThemeName
+    Write-Host "✨ Applied Oh My Posh theme: $ThemeName" -ForegroundColor Green
 }
 
 Set-Alias -Name ip -Value Get-NetIPConfiguration -Force
@@ -866,7 +1074,7 @@ Set-Alias -Name f -Value Invoke-OpenExplorer -Force
 Set-Alias -Name go -Value Reload-Profile -Force
 Set-Alias -Name term -Value open-term -Force
 Set-Alias -Name wt -Value open-term -Force
-Set-Alias -Name theme -Value Select-ShellTheme -Force
+Set-Alias -Name theme -Value Set-ShellTheme -Force
 #endregion
 
 #region 11. LINUX CLI WORKSPACE HELPERS
@@ -983,16 +1191,26 @@ function Clear-ShellHistory {
 }
 Set-Alias -Name clh -Value Clear-ShellHistory -Force
 
-#region 13. AGYSWITCH MULTI-ACCOUNT VAULT (GO ENGINE V1.3.0)
-$AGYSWITCH_BIN = Join-Path $PSScriptRoot "agyswitch.exe"
-if (-not (Test-Path $AGYSWITCH_BIN)) {
-    $AGYSWITCH_BIN = Join-Path $HOME ".local\bin\agyswitch.exe"
+#region 13. AGYX DEVELOPER SUITE — GO DYNAMIC INITIALIZER (OPTION A)
+$agyxBin = Join-Path $HOME ".local\bin\agyx.exe"
+if (-not (Test-Path $agyxBin) -and $Global:ProfileRepoRoot) {
+    $agyxBin = Join-Path $Global:ProfileRepoRoot "dist\windows\agyx.exe"
 }
-
-function agyswitch { & $AGYSWITCH_BIN @args }
-function agysw { & $AGYSWITCH_BIN @args }
-function agys { & $AGYSWITCH_BIN @args }
-function agy-quota { & $AGYSWITCH_BIN launch-quota @args }
+if (Test-Path $agyxBin) {
+    $initScript = & $agyxBin init powershell
+    if ($initScript) {
+        $sb = [ScriptBlock]::Create($initScript)
+        . $sb
+    }
+} elseif (Get-Command wsl -ErrorAction SilentlyContinue) {
+    try {
+        $initScript = wsl agyx init powershell
+        if ($initScript) {
+            $sb = [ScriptBlock]::Create($initScript)
+            . $sb
+        }
+    } catch {}
+}
 #endregion
 
 if (-not [Console]::IsOutputRedirected -and [Environment]::UserInteractive) {

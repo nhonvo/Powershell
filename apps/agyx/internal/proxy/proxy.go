@@ -1,6 +1,7 @@
 package proxy
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -233,11 +234,15 @@ func runAwsDiagnostics(binPath string) error {
 	fmt.Println("──────────────────────────────────────────────────────────────────────────────────")
 	if binPath != "" {
 		fmt.Printf("  • AWS CLI Binary:   \033[1;32m%s\033[0m\r\n", binPath)
-		if verOut, err := exec.Command(binPath, "--version").CombinedOutput(); err == nil {
+		ctx1, cancel1 := context.WithTimeout(context.Background(), 1500*time.Millisecond)
+		defer cancel1()
+		if verOut, err := exec.CommandContext(ctx1, binPath, "--version").CombinedOutput(); err == nil {
 			fmt.Printf("  • Version:          %s", string(verOut))
 		}
 		fmt.Print("  • AWS IAM Identity: ")
-		stsCmd := exec.Command(binPath, "sts", "get-caller-identity")
+		ctx2, cancel2 := context.WithTimeout(context.Background(), 1500*time.Millisecond)
+		defer cancel2()
+		stsCmd := exec.CommandContext(ctx2, binPath, "sts", "get-caller-identity")
 		if stsOut, err := stsCmd.CombinedOutput(); err == nil {
 			fmt.Printf("\033[1;32mConfigured\033[0m\r\n    %s\r\n", strings.TrimSpace(string(stsOut)))
 		} else {
@@ -264,8 +269,5 @@ func runAwsDiagnostics(binPath string) error {
 	fmt.Println("    • agyx aws sqs          - List SQS queues (aws sqs list-queues)")
 	fmt.Println("    • agyx aws local        - Test LocalStack health")
 	fmt.Println("──────────────────────────────────────────────────────────────────────────────────")
-	fmt.Print("Press [Enter] to return...")
-	var dummy [1]byte
-	_, _ = os.Stdin.Read(dummy[:])
 	return nil
 }

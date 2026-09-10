@@ -124,13 +124,7 @@ func (a *CockpitApp) RunInteractive() error {
 			if a.ActiveTab == 5 {
 				a.ToolSubIndex = (a.ToolSubIndex + 2) % 3
 			}
-		case 't', 'T': // Direct launch agyterm
-			a.launchTool("agyterm", fd, oldState)
-		case 'm', 'M': // Direct launch agymobile
-			a.launchTool("agymobile", fd, oldState)
-		case 'a', 'A': // Direct launch aws
-			a.launchTool("aws", fd, oldState)
-		case '\r', '\n', 'e', 'E', 'l', 'L': // Launch active tool
+		case '\r', '\n': // Launch active tool only on Enter
 			toolName := a.getActiveToolBinary()
 			a.launchTool(toolName, fd, oldState)
 		case 'r', 'R':

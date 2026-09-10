@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	"agyx/internal/proxy"
+	"agyx/internal/shellgen"
 	"agyx/internal/view"
 )
 
@@ -124,27 +126,29 @@ func printSuiteStatus() {
 }
 
 func printShellInit() {
-	fmt.Print(`# Put this in your ~/.zshrc or ~/.bashrc:
-# === AGYX UNIFIED DEVELOPER SUITE ===
-export PATH="$HOME/.local/bin:$PATH"
+	target := ""
+	if len(os.Args) > 2 {
+		target = strings.ToLower(strings.TrimSpace(os.Args[2]))
+	}
 
-alias agy-switch="agyx switch"
-alias agy-proj="agyx proj"
-alias agy-git="agyx git"
-alias agy-docker="agyx docker"
-alias agy-term="agyx term"
-alias agy-mobile="agyx mobile"
-alias agy-ollama="agyx ollama"
-alias agy-ai="agyx ai"
-
-# One-key direct shortcuts
-alias agys="agyx switch"
-alias agyp="agyx proj"
-alias agyg="agyx git"
-alias agyd="agyx docker"
-alias agyt="agyx term"
-alias agym="agyx mobile"
-alias agyo="agyx ollama"
-alias agyai="agyx ai"
+	switch target {
+	case "zsh", "bash", "sh":
+		fmt.Print(shellgen.GenerateZsh())
+	case "powershell", "pwsh", "ps1":
+		fmt.Print(shellgen.GeneratePowerShell())
+	default:
+		fmt.Print(`# === AGYX DEVELOPER SUITE — SHELL INTEGRATION ===
+#
+# To load all aliases, suite binaries, and workspace helpers dynamically:
+#
+# 1. For Linux (Zsh):
+#    eval "$(agyx init zsh)"
+#
+# 2. For Linux (Bash):
+#    eval "$(agyx init bash)"
+#
+# 3. For Windows (PowerShell):
+#    Invoke-Expression (& (Join-Path $HOME ".local\bin\agyx.exe") init powershell)
 `)
+	}
 }

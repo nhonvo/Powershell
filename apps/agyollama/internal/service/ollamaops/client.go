@@ -16,7 +16,6 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
-	"syscall"
 	"time"
 
 	"agyollama/internal/model"
@@ -216,7 +215,7 @@ func (c *Client) StartDaemon() error {
 	cmd := exec.Command(c.OllamaCmd, "serve")
 	cmd.Stdin = nil
 	// Decouple process group on Unix so child survives parent
-	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+	setDaemonSysProcAttr(cmd)
 
 	if err := cmd.Start(); err != nil {
 		return fmt.Errorf("failed to start %s serve: %w", c.OllamaCmd, err)

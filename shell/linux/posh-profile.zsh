@@ -142,65 +142,70 @@ sync_active_agy_environment() {
     fi
 }
 
-# --- 5. CONTROL CENTER & C# TUI APP (AgyTui) ---
+# --- 5. CONTROL CENTER & AGYX COCKPIT (Go Suite) ---
 cc() {
-    local proj_path="$REPO_ROOT/apps/agytui/AgyTui/AgyTui.csproj"
-    if [ ! -f "$proj_path" ]; then
-        proj_path="$REPO_ROOT/csapp/AgyTui/AgyTui.csproj"
+    local agyx_bin="$HOME/.local/bin/agyx"
+    if [ ! -f "$agyx_bin" ] && [ -n "$REPO_ROOT" ]; then
+        agyx_bin="$REPO_ROOT/dist/linux/agyx"
     fi
-    local proj_dir="$(dirname "$proj_path")"
-    local tui_dll="$proj_dir/bin/Release/net9.0/AgyTui.dll"
-    
-    if [ ! -f "$tui_dll" ] && [ -f "$proj_path" ]; then
-        echo -e "\033[36m🔨 Building AgyTui for Linux...\033[0m"
-        dotnet build "$proj_path" -c Release >/dev/null 2>&1
-    fi
-
-    if [ -f "$tui_dll" ]; then
-        ENVIRONMENT=Production dotnet "$tui_dll" "$@"
-    elif [ -f "$proj_path" ]; then
-        ENVIRONMENT=Production dotnet run --project "$proj_path" -c Release -- "$@"
+    if [ -f "$agyx_bin" ]; then
+        "$agyx_bin" "$@"
+    elif command -v agyx >/dev/null 2>&1; then
+        agyx "$@"
     else
-        echo -e "\033[31m❌ AgyTui project not found at $proj_path\033[0m"
+        echo -e "\033[31m❌ agyx binary not found in ~/.local/bin or PATH\033[0m"
     fi
     sync_active_agy_environment
 }
 
 ccd() {
-    local proj_path="$REPO_ROOT/apps/agytui/AgyTui/AgyTui.csproj"
-    if [ ! -f "$proj_path" ]; then
-        proj_path="$REPO_ROOT/csapp/AgyTui/AgyTui.csproj"
-    fi
-    ENVIRONMENT=Development dotnet run --project "$proj_path" -c Debug -- "$@"
-    sync_active_agy_environment
+    cc "$@"
 }
 
 # Sync active environment on startup
 sync_active_agy_environment
 
-
-alias cai="cc ai"
-alias cnav="cc cnav"
-alias reset-agy="cc reset-agy"
-alias purge-accounts="cc purge-accounts"
-alias dotnet-info="cc dotnet-info"
-# --- AGYX DEVELOPER SUITE (Go Native Binaries) ---
-alias agyx="$HOME/.local/bin/agyx"
-alias agyswitch="$HOME/.local/bin/agyswitch"
-alias agysw="$HOME/.local/bin/agyswitch"
-alias agys="$HOME/.local/bin/agyswitch"
-alias agyproj="$HOME/.local/bin/agyproj"
-alias agyp="$HOME/.local/bin/agyproj"
-alias agygit="$HOME/.local/bin/agygit"
-alias agyg="$HOME/.local/bin/agygit"
-alias agydocker="$HOME/.local/bin/agydocker"
-alias agyd="$HOME/.local/bin/agydocker"
-alias agyterm="$HOME/.local/bin/agyterm"
-alias agyt="$HOME/.local/bin/agyterm"
-alias agymobile="$HOME/.local/bin/agymobile"
-alias agym="$HOME/.local/bin/agymobile"
+# --- AGYX DEVELOPER SUITE (Go Single Source of Truth Hook) ---
+if [ -x "$HOME/.local/bin/agyx" ]; then
+    eval "$("$HOME/.local/bin/agyx" init zsh)"
+elif command -v agyx >/dev/null 2>&1; then
+    eval "$(agyx init zsh)"
+fi
 
 # --- 6. CUSTOM FUNCTIONS ---
+
+# Docker & Git Helpers (AGYX Integrated)
+dlogsu() {
+    if [ $# -gt 0 ]; then
+        agydocker logs "$1"
+    else
+        agydocker
+    fi
+}
+
+gcmt() {
+    if [ -x "$HOME/.local/bin/agygit" ]; then
+        if [ $# -gt 0 ]; then
+            "$HOME/.local/bin/agygit" commit "$*"
+        else
+            "$HOME/.local/bin/agygit" commit
+        fi
+    else
+        gcommit "$@"
+    fi
+}
+
+gmergeu() {
+    if [ -x "$HOME/.local/bin/agygit" ]; then
+        if [ $# -gt 0 ]; then
+            "$HOME/.local/bin/agygit" merge "$1"
+        else
+            "$HOME/.local/bin/agygit"
+        fi
+    else
+        git merge "$@"
+    fi
+}
 
 # Fast commit with automatic message concatenation
 gcommit() {
@@ -309,23 +314,46 @@ clh() {
     echo -e "\033[33m🧹 All command history has been cleared.\033[0m"
 }
 
-# proj: Workspace hopper
+# proj: Workspace hopper & Navigator (Integrated with agyproj)
 proj() {
-    local base_dir="$HOME/projects"
-    if [ -z "$1" ]; then
-        echo -e "\033[36m📂 Workspaces in $base_dir:\033[0m"
-        local i=1
-        for d in "$base_dir"/*; do
-            if [ -d "$d" ]; then
-                local bname=$(basename "$d")
-                echo -e "  \033[33m[$i]\033[0m \033[32m$bname\033[0m \033[90m($d)\033[0m"
-                ((i++))
+    if [ $# -eq 0 ]; then
+        if [ -x "$HOME/.local/bin/agyproj" ]; then
+            "$HOME/.local/bin/agyproj"
+            local sel_proj="$HOME/.gemini/selected_project.txt"
+            if [ -f "$sel_proj" ]; then
+                local target_dir="$(tr -d '\r\n' < "$sel_proj")"
+                rm -f "$sel_proj"
+                if [ -n "$target_dir" ] && [ -d "$target_dir" ]; then
+                    cd "$target_dir"
+                    echo -e "\033[32m📂 Switched workspace directory to:\033[0m \033[36m$target_dir\033[0m"
+                fi
             fi
-        done
+        else
+            local base_dir="$HOME/projects"
+            echo -e "\033[36m📂 Workspaces in $base_dir:\033[0m"
+            local i=1
+            for d in "$base_dir"/*; do
+                if [ -d "$d" ]; then
+                    local bname=$(basename "$d")
+                    echo -e "  \033[33m[$i]\033[0m \033[32m$bname\033[0m \033[90m($d)\033[0m"
+                    ((i++))
+                fi
+            done
+        fi
         return 0
     fi
 
     local query="$1"
+    if [ -x "$HOME/.local/bin/agyproj" ]; then
+        local target_dir="$("$HOME/.local/bin/agyproj" cd "$query" 2>/dev/null)"
+        if [ -n "$target_dir" ] && [ -d "$target_dir" ]; then
+            cd "$target_dir"
+            echo -e "\033[32m📂 Switched to:\033[0m \033[36m$(pwd)\033[0m"
+            return 0
+        fi
+    fi
+
+    local base_dir="$HOME/projects"
     local matches=()
     for d in "$base_dir"/*; do
         if [ -d "$d" ]; then
@@ -354,24 +382,24 @@ proj() {
 
 # --- 7. ALIASES ---
 
-# Git Aliases (Matching PowerShell profile)
+# Git Aliases (Integrated with agygit & matching PowerShell profile)
 alias gs="git status"
-alias gsu="git status"
+alias gsu="agygit"
 alias gsi="git status"
 alias gd="git diff"
 alias glo="git log --graph --oneline --decorate"
-alias glg="git log --graph --oneline --decorate"
-alias glog='git log --pretty=format:"%h - %an, %ar : %s"'
+alias glg="agygit graph"
+alias glog="agygit log"
 alias gb="git branch"
-alias gbr="git branch"
-alias gbu="git branch"
+alias gbr="agygit"
+alias gbu="agygit"
 alias co="git checkout"
 alias cob="git checkout -b"
 alias gbd="git branch -d"
 alias ga="git add ."
 alias gunstage="git restore --staged ."
 alias gca="git commit --amend"
-alias gundo="git reset --soft HEAD~1"
+alias gundo="agygit undo"
 alias git-undo="git reset --soft HEAD~1"
 alias gr="git reset --soft HEAD~1"
 alias grh="git reset --hard"
@@ -391,21 +419,26 @@ alias gstash="git stash"
 alias gst="git stash"
 alias grebase="git rebase"
 alias grb="git rebase"
-alias gcmt="gcommit"
 
-# Docker Aliases (Matching PowerShell profile)
+# Docker Aliases (Integrated with agydocker & matching PowerShell profile)
 alias dk="docker ps"
 alias dps="docker ps"
 alias containers="docker ps"
+alias dku="agydocker"
+alias dki="agydocker"
+alias dkcl="agydocker"
 alias dimg="docker images"
+alias dimgu="agydocker"
 alias dlogs="docker logs"
 alias dkcpu="docker compose up"
 alias dcup="docker compose up"
 alias dkcpub="docker compose up --build"
 alias dkcpd="docker compose down"
-alias dcdown="docker compose down"
-alias fix-volume="docker volume prune -f"
-alias fix-image="docker image prune -f"
+alias dcdown="agydocker down"
+alias dkprune="agydocker prune"
+alias fix-volume="agydocker prune"
+alias fix-image="agydocker prune"
+alias docker-health="agydocker ram"
 alias dkstac='docker stop $(docker ps -q) 2>/dev/null || echo "No running containers."'
 alias dkrmac='docker rm -f $(docker ps -aq) 2>/dev/null || echo "No containers to remove."'
 

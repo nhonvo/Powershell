@@ -4,7 +4,10 @@
 # ==============================================================================
 $target = Join-Path $PSScriptRoot "shell/windows/Microsoft.PowerShell_profile.ps1"
 if (Test-Path $target) {
-    . $target @args
+    $Global:ProfileRepoRoot = $PSScriptRoot
+    $scriptContent = Get-Content -LiteralPath $target -Raw -Encoding UTF8
+    $sb = [ScriptBlock]::Create($scriptContent)
+    . $sb @args
 } else {
     Write-Error "Could not locate PowerShell profile target at: $target"
 }

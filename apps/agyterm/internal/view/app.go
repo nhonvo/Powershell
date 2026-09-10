@@ -177,8 +177,8 @@ func (a *App) RunInteractive() error {
 			continue
 		}
 
-		// If in active search mode on Themes tab:
-		if a.ActiveTab == 0 && a.searchMode {
+		// If on Themes tab (Tab 0): instant type-to-filter
+		if a.ActiveTab == 0 {
 			switch b {
 			case '\r', '\n': // Select and apply currently selected filtered theme
 				if len(filteredThemes) > 0 && a.SelectedIndex < len(filteredThemes) {
@@ -190,7 +190,6 @@ func (a *App) RunInteractive() error {
 						a.StatusMsg = fmt.Sprintf("\033[32m✔ Applied Oh My Posh theme '%s'\033[0m", target)
 					}
 				}
-				a.searchMode = false
 				continue
 			case 127, 8: // Backspace
 				if len(a.searchQuery) > 0 {
@@ -198,23 +197,33 @@ func (a *App) RunInteractive() error {
 					a.SelectedIndex = 0
 				}
 				continue
-			case 0x17: // Ctrl+W (Clear query)
+			case 0x17, 0x15: // Ctrl+W, Ctrl+U (Clear query)
 				a.searchQuery = ""
 				a.SelectedIndex = 0
 				continue
-			case '\t': // Tab switches tab
-				a.searchMode = false
+			case '\t': // Tab switches to Fonts tab
 				a.ActiveTab = (a.ActiveTab + 1) % 4
 				a.SelectedIndex = 0
 				a.tabSwitched = true
+				continue
+			case 'q', 'Q':
+				if a.searchQuery == "" {
+					fmt.Print("\033[?25h\033[?1049l")
+					_ = term.Restore(fd, oldState)
+					fmt.Print("\r\n")
+					return nil
+				}
+				a.searchQuery += string(b)
+				a.SelectedIndex = 0
 				continue
 			default:
 				if b >= 32 && b <= 126 {
 					a.searchQuery += string(b)
 					a.SelectedIndex = 0
-					continue
 				}
+				continue
 			}
+			continue
 		}
 
 		switch b {
@@ -238,19 +247,6 @@ func (a *App) RunInteractive() error {
 			a.ActiveTab = 3
 			a.SelectedIndex = 0
 			a.tabSwitched = true
-		case '/', 's', 'S', 0x06: // [/] or [s] or [Ctrl+F] activates search
-			if a.ActiveTab == 0 {
-				a.searchMode = true
-				a.StatusMsg = "\033[36mSearch active - type theme name to filter...\033[0m"
-				continue
-			}
-		case 'c', 'C': // Clear search query
-			if a.ActiveTab == 0 && a.searchQuery != "" {
-				a.searchQuery = ""
-				a.SelectedIndex = 0
-				a.StatusMsg = "\033[33mSearch cleared.\033[0m"
-				continue
-			}
 		case 'k', 'K':
 			if a.SelectedIndex > 0 {
 				a.SelectedIndex--
@@ -482,12 +478,10 @@ func (a *App) Render() {
 	if width < 85 {
 		switch a.ActiveTab {
 		case 0:
-			if a.searchMode {
-				b.WriteString(" \033[1;33m[Typing]\033[0mFilter \033[1;32m[Enter]\033[0mApply \033[1;31m[Esc]\033[0mExit\033[K\r\n")
-			} else if a.searchQuery != "" {
-				b.WriteString(" \033[1m[↑/↓]\033[0mNav \033[1;32m[Enter]\033[0mApply \033[1;33m[/]\033[0mSearch \033[1;31m[Esc/C]\033[0mClear\033[K\r\n")
+			if a.searchQuery != "" {
+				b.WriteString(" \033[1;33m[Typing Filter]\033[0m \033[1;32m[Enter]\033[0mApply \033[1;36m[Bksp]\033[0mDel \033[1;31m[Esc]\033[0mClear\033[K\r\n")
 			} else {
-				b.WriteString(" \033[1m[Tab]\033[0mNav \033[1m[↑/↓]\033[0mNav \033[1;33m[/]\033[0mSearch \033[1;32m[Enter]\033[0mSet \033[1;31m[Q]\033[0mExit\033[K\r\n")
+				b.WriteString(" \033[1;33m[Type to Search]\033[0m \033[1m[↑/↓]\033[0mNav \033[1;32m[Enter]\033[0mApply \033[1;31m[Esc/Q]\033[0mExit\033[K\r\n")
 			}
 		case 1:
 			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1m[↑/↓]\033[0mNav \033[1;36m[F]\033[0mFont \033[1;36m[+/-]\033[0mSize \033[1;36m[O]\033[0mOpac \033[1;31m[Q]\033[0mExit\033[K\r\n")
@@ -499,12 +493,10 @@ func (a *App) Render() {
 	} else {
 		switch a.ActiveTab {
 		case 0:
-			if a.searchMode {
-				b.WriteString(" \033[1;33m[Type to Search]\033[0m · \033[1;32m[Enter]\033[0m Apply · \033[1;36m[Backspace]\033[0m Edit · \033[1;36m[Ctrl+W]\033[0m Clear · \033[1;31m[Esc]\033[0m Exit Search\033[K\r\n")
-			} else if a.searchQuery != "" {
-				b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;32m[Enter]\033[0m Apply · \033[1;33m[/]\033[0m Search · \033[1;33m[Esc/c]\033[0m Clear Filter · \033[1;31m[Q]\033[0m Exit\033[K\r\n")
+			if a.searchQuery != "" {
+				b.WriteString(" \033[1;33m[Search: Type letters to filter]\033[0m · \033[1;32m[Enter]\033[0m Apply · \033[1;36m[Backspace]\033[0m Edit · \033[1;36m[Ctrl+W]\033[0m Clear · \033[1;31m[Esc]\033[0m Reset\033[K\r\n")
 			} else {
-				b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;33m[/ or s]\033[0m Search Theme · \033[1;32m[Enter]\033[0m Apply · \033[1;36m[n/p]\033[0m Page · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+				b.WriteString(" \033[1;33m[Type letters to filter]\033[0m · \033[1m[↑/↓]\033[0m Navigate · \033[1;32m[Enter]\033[0m Apply Theme · \033[1m[Tab]\033[0m Tabs · \033[1;31m[Esc/Q]\033[0m Exit\033[K\r\n")
 			}
 		case 1:
 			b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;36m[F]\033[0m Font · \033[1;36m[+/-]\033[0m Size · \033[1;36m[O]\033[0m Opacity · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
@@ -539,14 +531,11 @@ func (a *App) renderThemesTab(b *strings.Builder, width int, height int) {
 	fmt.Fprintf(b, " 🎨 \033[1;36mShell Prompt Themes (%d total · Active: \033[1;32m%s\033[1;36m):\033[0m\033[K\r\n",
 		len(allThemes), a.currentTheme)
 
-	if a.searchMode {
-		fmt.Fprintf(b, " 🔍 \033[1;33mSearch:\033[0m \033[1;37;44m %-22s \033[0m \033[36m(%d matches · [Enter] Apply · [Esc] Exit)\033[0m\033[K\r\n\033[K\r\n",
+	if a.searchQuery != "" {
+		fmt.Fprintf(b, " 🔍 \033[1;33mFilter:\033[0m \033[1;37;44m %-22s \033[0m \033[36m(%d matches · [Enter] Apply · [Backspace] Edit · [Esc] Clear)\033[0m\033[K\r\n\033[K\r\n",
 			a.searchQuery+"█", len(themes))
-	} else if a.searchQuery != "" {
-		fmt.Fprintf(b, " 🔍 \033[1;33mFilter:\033[0m \033[1;32m\"%s\"\033[0m \033[36m(%d matches · [/] Search · [Esc] Clear)\033[0m\033[K\r\n\033[K\r\n",
-			a.searchQuery, len(themes))
 	} else {
-		fmt.Fprintf(b, " 🔍 \033[37mFilter:\033[0m \033[90mPress [/] or [s] to search 80+ themes (e.g. cat, drac, pure, agy)\033[0m\033[K\r\n\033[K\r\n")
+		fmt.Fprintf(b, " 🔍 \033[37mFilter:\033[0m \033[90mStart typing to instantly search 120+ themes (e.g. cat, drac, pure, agy)\033[0m\033[K\r\n\033[K\r\n")
 	}
 
 	if len(themes) == 0 {
