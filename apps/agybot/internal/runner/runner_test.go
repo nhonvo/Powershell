@@ -39,3 +39,11 @@ func TestRunner_FormatToolNotification(t *testing.T) {
 		t.Errorf("Unexpected tool notification: %s", res)
 	}
 }
+
+func TestRunner_AvailableModels(t *testing.T) {
+	r := NewAntigravityRunner(nil)
+	models := r.AvailableModels()
+	if len(models) == 0 {
+		t.Fatalf("Expected available models")
+	}
+}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -212,7 +213,22 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 		return
 	}
 
-	// 6. Natural Language / AI Coding Prompt to Antigravity
+	// 6. Quick project selection by number or "cd <name>"
+	numClean := strings.TrimPrefix(text, "#")
+	if num, err := strconv.Atoi(numClean); err == nil && num >= 1 && num <= 30 {
+		projs := h.wsMgr.ListProjects()
+		if num <= len(projs) {
+			h.handleCd(ctx, userID, chatID, numClean)
+			return
+		}
+	}
+	if strings.HasPrefix(strings.ToLower(text), "cd ") {
+		arg := strings.TrimSpace(text[3:])
+		h.handleCd(ctx, userID, chatID, arg)
+		return
+	}
+
+	// 7. Natural Language / AI Coding Prompt to Antigravity
 	h.handleAIPrompt(ctx, userID, chatID, text)
 }
 
@@ -221,6 +237,12 @@ func (h *BotHandler) handleCallbackQuery(ctx context.Context, q *CallbackQuery) 
 	userID := q.From.ID
 	chatID := q.Message.Chat.ID
 	data := q.Data
+
+	if strings.HasPrefix(data, "cd_proj_") {
+		numStr := strings.TrimPrefix(data, "cd_proj_")
+		h.handleCd(ctx, userID, chatID, numStr)
+		return
+	}
 
 	switch data {
 	case "btn_status":
@@ -292,6 +314,10 @@ func (h *BotHandler) handleProjects(ctx context.Context, chatID int64) {
 
 	var sb strings.Builder
 	sb.WriteString("📁 **REGISTERED PROJECTS (`agyproj`):**\n\n")
+
+	var keyboard [][]InlineKeyboardButton
+	var row []InlineKeyboardButton
+
 	for i, p := range projs {
 		activeMarker := "  "
 		if p.IsActive {
@@ -303,9 +329,22 @@ func (h *BotHandler) handleProjects(ctx context.Context, chatID int64) {
 		}
 		sb.WriteString(fmt.Sprintf("%s%d. **%s** (`%s`)\n   Path: `%s` [%s]\n",
 			activeMarker, i+1, p.Name, p.GitBranch, p.Path, dirty))
+
+		row = append(row, InlineKeyboardButton{
+			Text:         fmt.Sprintf("%d. %s", i+1, p.Name),
+			CallbackData: fmt.Sprintf("cd_proj_%d", i+1),
+		})
+		if len(row) == 2 {
+			keyboard = append(keyboard, row)
+			row = nil
+		}
 	}
-	sb.WriteString("\n👉 *Switch project with:* `/cd <project_id_or_name>`")
-	_, _ = h.client.SendMessage(ctx, chatID, sb.String(), nil)
+	if len(row) > 0 {
+		keyboard = append(keyboard, row)
+	}
+
+	sb.WriteString("\n👉 *Tap a button below or send:* `/cd <number_or_name>` *(or just reply with the number)*")
+	_, _ = h.client.SendMessage(ctx, chatID, sb.String(), &InlineKeyboardMarkup{InlineKeyboard: keyboard})
 }
 
 func (h *BotHandler) handleCd(ctx context.Context, userID int64, chatID int64, arg string) {
@@ -320,7 +359,7 @@ func (h *BotHandler) handleCd(ctx context.Context, userID int64, chatID int64, a
 		_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("❌ Error: %v", err), nil)
 		return
 	}
-	_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("✅ Workspace switched to:\n`%s`", newWs), nil)
+	_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("✅ Workspace switched to **%s**:\n`%s`", filepath.Base(newWs), newWs), nil)
 }
 
 func (h *BotHandler) handleLs(ctx context.Context, userID int64, chatID int64, subpath string) {
@@ -428,7 +467,7 @@ func (h *BotHandler) handleAIPrompt(ctx context.Context, userID int64, chatID in
 
 	h.client.SendChatAction(ctx, chatID, "typing")
 
-	initialMsg, err := h.client.SendMessage(ctx, chatID, "🤖 **Antigravity working...**", nil)
+	initialMsg, err := h.client.SendMessage(ctx, chatID, fmt.Sprintf("🤖 **Antigravity AI Agent**\n📍 Workspace: `%s`\n⚡ Working on: _%s_...", filepath.Base(ws), prompt), nil)
 	if err != nil {
 		return
 	}
@@ -446,12 +485,14 @@ func (h *BotHandler) handleAIPrompt(ctx context.Context, userID int64, chatID in
 		Mode:           h.cfg.DefaultMode,
 	})
 	if err != nil {
-		_ = h.client.EditMessageText(ctx, chatID, initialMsg.MessageID, fmt.Sprintf("❌ Error: %v", err), nil)
+		_ = h.client.EditMessageText(ctx, chatID, initialMsg.MessageID, fmt.Sprintf("❌ Error starting agent: %v", err), nil)
 		return
 	}
 
 	var lastStatusText string
 	var finalAnswer strings.Builder
+	var finalResultText string
+	toolCount := 0
 
 	for ev := range events {
 		switch ev.Type {
@@ -462,27 +503,66 @@ func (h *BotHandler) handleAIPrompt(ctx context.Context, userID int64, chatID in
 		case "tool_start":
 			if ev.Content != "" && ev.Content != lastStatusText {
 				lastStatusText = ev.Content
-				_ = h.client.EditMessageText(ctx, chatID, initialMsg.MessageID, ev.Content, nil)
+				toolCount++
+				// Push tool execution log message directly to Telegram like agy CLI
+				_, _ = h.client.SendMessage(ctx, chatID, ev.Content, nil)
+				h.client.SendChatAction(ctx, chatID, "typing")
 			}
 		case "content":
 			finalAnswer.WriteString(ev.Content)
+		case "result":
+			if ev.Content != "" {
+				finalResultText = ev.Content
+			}
 		case "error":
-			_ = h.client.EditMessageText(ctx, chatID, initialMsg.MessageID, ev.Content, nil)
+			_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("❌ Error: %s", ev.Content), nil)
 			return
 		}
 	}
 
-	ans := strings.TrimSpace(finalAnswer.String())
+	ans := strings.TrimSpace(finalResultText)
 	if ans == "" {
-		ans = "✔ **Antigravity completed task successfully.**"
+		ans = strings.TrimSpace(finalAnswer.String())
+	}
+	if ans == "" {
+		if toolCount > 0 {
+			ans = "✔ **Antigravity executed all tool operations successfully.**"
+		} else {
+			ans = "✔ **Task completed.**"
+		}
 	}
 
-	// Telegram maximum message length is 4096 chars
-	if len(ans) > 4000 {
-		ans = ans[:4000] + "\n...(truncated)"
+	// Update initial status indicator to mark completion
+	_ = h.client.EditMessageText(ctx, chatID, initialMsg.MessageID, fmt.Sprintf("🤖 **Antigravity Response** (in `%s`):", filepath.Base(ws)), nil)
+
+	// Send complete response (chunked if > 3900 chars)
+	sendChunkedMessage(ctx, h.client, chatID, ans)
+}
+
+func sendChunkedMessage(ctx context.Context, client *TelegramClient, chatID int64, text string) {
+	const maxLen = 3900
+	if len(text) <= maxLen {
+		_, _ = client.SendMessage(ctx, chatID, text, nil)
+		return
 	}
 
-	_ = h.client.EditMessageText(ctx, chatID, initialMsg.MessageID, ans, nil)
+	remaining := text
+	for len(remaining) > 0 {
+		if len(remaining) <= maxLen {
+			_, _ = client.SendMessage(ctx, chatID, remaining, nil)
+			break
+		}
+
+		splitIdx := strings.LastIndex(remaining[:maxLen], "\n")
+		if splitIdx < maxLen/3 {
+			splitIdx = maxLen
+		}
+
+		chunk := remaining[:splitIdx]
+		remaining = strings.TrimLeft(remaining[splitIdx:], "\n")
+		_, _ = client.SendMessage(ctx, chatID, chunk, nil)
+		time.Sleep(100 * time.Millisecond)
+	}
 }
 
 func (h *BotHandler) handleNewProj(ctx context.Context, userID int64, chatID int64, args []string) {

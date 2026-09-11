@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -165,15 +166,28 @@ func (w *WorkspaceManager) GetUserWorkspace(userID int64) string {
 	return cwd
 }
 
-// SetUserWorkspace updates the active workspace for a user by path or project ID
+// SetUserWorkspace updates the active workspace for a user by path, project ID, or 1-based index
 func (w *WorkspaceManager) SetUserWorkspace(userID int64, pathOrID string) (string, error) {
 	clean := strings.TrimSpace(pathOrID)
 	if clean == "" {
 		return "", fmt.Errorf("path or project id cannot be empty")
 	}
 
-	// Check if matching project ID in agyproj registry
 	projs := w.ListProjects()
+
+	// 1. Support numeric project selection (e.g. "4" or "#4")
+	numClean := strings.TrimPrefix(clean, "#")
+	if idx, err := strconv.Atoi(numClean); err == nil && idx >= 1 && idx <= len(projs) {
+		targetProj := projs[idx-1]
+		if isDir(targetProj.Path) {
+			w.mu.Lock()
+			w.userWorkspaces[userID] = targetProj.Path
+			w.mu.Unlock()
+			return targetProj.Path, nil
+		}
+	}
+
+	// 2. Check if matching project ID or Name in agyproj registry
 	for _, p := range projs {
 		if strings.EqualFold(p.ID, clean) || strings.EqualFold(p.Name, clean) {
 			if isDir(p.Path) {
@@ -185,10 +199,10 @@ func (w *WorkspaceManager) SetUserWorkspace(userID int64, pathOrID string) (stri
 		}
 	}
 
-	// Otherwise treat as directory path
+	// 3. Otherwise treat as directory path
 	absPath, err := filepath.Abs(clean)
 	if err != nil || !isDir(absPath) {
-		return "", fmt.Errorf("directory does not exist: %s", clean)
+		return "", fmt.Errorf("directory or project '%s' does not exist", clean)
 	}
 
 	w.mu.Lock()

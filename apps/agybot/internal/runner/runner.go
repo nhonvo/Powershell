@@ -2,6 +2,7 @@ package runner
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -138,6 +139,9 @@ func (r *AntigravityRunner) ExecutePrompt(ctx context.Context, opts RunnerOption
 		cmd.Dir = opts.WorkspaceDir
 	}
 
+	var errBuf bytes.Buffer
+	cmd.Stderr = &errBuf
+
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		close(outChan)
@@ -205,7 +209,44 @@ func (r *AntigravityRunner) ExecutePrompt(ctx context.Context, opts RunnerOption
 								Raw:      payload,
 							}
 						}
+					} else if stepType == "agent_response" {
+						if textDelta, ok := step["text_delta"].(string); ok && textDelta != "" {
+							outChan <- AgentEvent{
+								Type:    "content",
+								Content: textDelta,
+								Raw:     payload,
+							}
+						}
 					}
+				}
+			case "result":
+				if res, ok := payload["result"].(map[string]interface{}); ok {
+					respText, _ := res["response"].(string)
+					status, _ := res["status"].(string)
+					if respText != "" {
+						outChan <- AgentEvent{
+							Type:    "result",
+							Content: respText,
+							Raw:     payload,
+						}
+					}
+					if strings.EqualFold(status, "ERROR") {
+						errMsg := "execution error from agy"
+						if errObj, ok := res["error"].(map[string]interface{}); ok {
+							if msg, ok := errObj["message"].(string); ok && msg != "" {
+								errMsg = msg
+							}
+						}
+						outChan <- AgentEvent{
+							Type:    "error",
+							Content: errMsg,
+							Raw:     payload,
+						}
+					}
+				}
+				outChan <- AgentEvent{
+					Type: "done",
+					Raw:  payload,
 				}
 			case "content":
 				txt, _ := payload["content"].(string)
@@ -224,7 +265,16 @@ func (r *AntigravityRunner) ExecutePrompt(ctx context.Context, opts RunnerOption
 			}
 		}
 
-		_ = cmd.Wait()
+		err := cmd.Wait()
+		if err != nil && errBuf.Len() > 0 {
+			errStr := strings.TrimSpace(errBuf.String())
+			if errStr != "" && !strings.Contains(errStr, "context canceled") {
+				outChan <- AgentEvent{
+					Type:    "error",
+					Content: errStr,
+				}
+			}
+		}
 	}()
 
 	return outChan, nil
