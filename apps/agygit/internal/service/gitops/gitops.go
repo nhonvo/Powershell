@@ -2,6 +2,7 @@ package gitops
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -10,9 +11,38 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"agygit/internal/model"
 )
+
+// DefaultNetworkTimeout controls maximum duration allowed for remote network operations (push, pull, fetch).
+const DefaultNetworkTimeout = 30 * time.Second
+
+// gitNetworkCommand wraps exec.CommandContext with network resilience, fast connection timeouts,
+// and terminal prompt suppression so that SSH or HTTP credential prompts never hang the caller.
+func gitNetworkCommand(ctx context.Context, repoPath string, args ...string) *exec.Cmd {
+	cmd := exec.CommandContext(ctx, "git", args...)
+	cmd.Dir = repoPath
+
+	env := os.Environ()
+	sshCmd := os.Getenv("GIT_SSH_COMMAND")
+	if sshCmd == "" {
+		sshCmd = "ssh"
+	}
+	if !strings.Contains(sshCmd, "ConnectTimeout") {
+		sshCmd += " -o ConnectTimeout=15"
+	}
+	if !strings.Contains(sshCmd, "BatchMode") {
+		sshCmd += " -o BatchMode=yes"
+	}
+
+	cmd.Env = append(env,
+		"GIT_TERMINAL_PROMPT=0",
+		"GIT_SSH_COMMAND="+sshCmd,
+	)
+	return cmd
+}
 
 // IsGitRepo checks whether path is a valid Git working directory or worktree
 func IsGitRepo(path string) bool {
@@ -316,43 +346,63 @@ func RemoveWorktree(repoPath string, worktreePath string, force bool) error {
 	return nil
 }
 
-// Fetch runs git fetch on the repository
+// Fetch runs git fetch on the repository with a network timeout
 func Fetch(repoPath string) error {
-	cmd := exec.Command("git", "fetch", "--all", "--prune")
-	cmd.Dir = repoPath
+	ctx, cancel := context.WithTimeout(context.Background(), DefaultNetworkTimeout)
+	defer cancel()
+
+	cmd := gitNetworkCommand(ctx, repoPath, "fetch", "--all", "--prune")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
+		if ctx.Err() == context.DeadlineExceeded {
+			return fmt.Errorf("fetch timed out after %v", DefaultNetworkTimeout)
+		}
 		return fmt.Errorf("fetch failed: %s (%w)", strings.TrimSpace(string(out)), err)
 	}
 	return nil
 }
 
-// Pull runs git pull --ff-only
+// Pull runs git pull --ff-only with a network timeout
 func Pull(repoPath string) error {
-	cmd := exec.Command("git", "pull", "--ff-only")
-	cmd.Dir = repoPath
+	ctx, cancel := context.WithTimeout(context.Background(), DefaultNetworkTimeout)
+	defer cancel()
+
+	cmd := gitNetworkCommand(ctx, repoPath, "pull", "--ff-only")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
+		if ctx.Err() == context.DeadlineExceeded {
+			return fmt.Errorf("pull timed out after %v", DefaultNetworkTimeout)
+		}
 		return fmt.Errorf("pull failed: %s (%w)", strings.TrimSpace(string(out)), err)
 	}
 	return nil
 }
 
-// Push runs git push, automatically configuring upstream if needed
+// Push runs git push, automatically configuring upstream if needed, with a network timeout
 func Push(repoPath string) error {
-	cmd := exec.Command("git", "push")
-	cmd.Dir = repoPath
+	ctx, cancel := context.WithTimeout(context.Background(), DefaultNetworkTimeout)
+	defer cancel()
+
+	cmd := gitNetworkCommand(ctx, repoPath, "push")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
+		if ctx.Err() == context.DeadlineExceeded {
+			return fmt.Errorf("push timed out after %v", DefaultNetworkTimeout)
+		}
 		outStr := strings.TrimSpace(string(out))
 		if strings.Contains(outStr, "no upstream branch") || strings.Contains(outStr, "--set-upstream") {
 			_, activeBranch, bErr := ListBranches(repoPath)
 			if bErr == nil && activeBranch != "" {
-				cmdUp := exec.Command("git", "push", "-u", "origin", activeBranch)
-				cmdUp.Dir = repoPath
+				ctxUp, cancelUp := context.WithTimeout(context.Background(), DefaultNetworkTimeout)
+				defer cancelUp()
+
+				cmdUp := gitNetworkCommand(ctxUp, repoPath, "push", "-u", "origin", activeBranch)
 				if outUp, errUp := cmdUp.CombinedOutput(); errUp == nil {
 					return nil
 				} else {
+					if ctxUp.Err() == context.DeadlineExceeded {
+						return fmt.Errorf("push -u timed out after %v", DefaultNetworkTimeout)
+					}
 					return fmt.Errorf("push failed: %s (%w)", strings.TrimSpace(string(outUp)), errUp)
 				}
 			}
@@ -362,21 +412,31 @@ func Push(repoPath string) error {
 	return nil
 }
 
-// PushForceWithLease runs git push --force-with-lease, ideal for safely pushing amended commits
+// PushForceWithLease runs git push --force-with-lease with a network timeout, ideal for safely pushing amended commits
 func PushForceWithLease(repoPath string) error {
-	cmd := exec.Command("git", "push", "--force-with-lease")
-	cmd.Dir = repoPath
+	ctx, cancel := context.WithTimeout(context.Background(), DefaultNetworkTimeout)
+	defer cancel()
+
+	cmd := gitNetworkCommand(ctx, repoPath, "push", "--force-with-lease")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
+		if ctx.Err() == context.DeadlineExceeded {
+			return fmt.Errorf("force push timed out after %v", DefaultNetworkTimeout)
+		}
 		outStr := strings.TrimSpace(string(out))
 		if strings.Contains(outStr, "no upstream branch") || strings.Contains(outStr, "--set-upstream") {
 			_, activeBranch, bErr := ListBranches(repoPath)
 			if bErr == nil && activeBranch != "" {
-				cmdUp := exec.Command("git", "push", "--force-with-lease", "-u", "origin", activeBranch)
-				cmdUp.Dir = repoPath
+				ctxUp, cancelUp := context.WithTimeout(context.Background(), DefaultNetworkTimeout)
+				defer cancelUp()
+
+				cmdUp := gitNetworkCommand(ctxUp, repoPath, "push", "--force-with-lease", "-u", "origin", activeBranch)
 				if outUp, errUp := cmdUp.CombinedOutput(); errUp == nil {
 					return nil
 				} else {
+					if ctxUp.Err() == context.DeadlineExceeded {
+						return fmt.Errorf("force push -u timed out after %v", DefaultNetworkTimeout)
+					}
 					return fmt.Errorf("force push failed: %s (%w)", strings.TrimSpace(string(outUp)), errUp)
 				}
 			}
@@ -573,12 +633,17 @@ func AbortOperation(repoPath string) error {
 	return nil
 }
 
-// PullRebase runs git pull --rebase
+// PullRebase runs git pull --rebase with a network timeout
 func PullRebase(repoPath string) error {
-	cmd := exec.Command("git", "pull", "--rebase")
-	cmd.Dir = repoPath
+	ctx, cancel := context.WithTimeout(context.Background(), DefaultNetworkTimeout)
+	defer cancel()
+
+	cmd := gitNetworkCommand(ctx, repoPath, "pull", "--rebase")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
+		if ctx.Err() == context.DeadlineExceeded {
+			return fmt.Errorf("pull --rebase timed out after %v", DefaultNetworkTimeout)
+		}
 		return fmt.Errorf("pull --rebase failed: %s (%w)", strings.TrimSpace(string(out)), err)
 	}
 	return nil

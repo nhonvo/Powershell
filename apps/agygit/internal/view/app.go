@@ -356,7 +356,8 @@ func (a *App) RunInteractive() error {
 			}
 		case 'p': // Standard Push (git push)
 			if a.ActiveRepoPath != "" {
-				a.StatusMsg = "\033[36mPushing commits to remote...\033[0m"
+				a.StatusMsg = "\033[36m⏳ Pushing commits to remote...\033[0m"
+				a.Render()
 				if err := gitops.Push(a.ActiveRepoPath); err != nil {
 					a.StatusMsg = fmt.Sprintf("\033[31mPush error: %v\033[0m", err)
 				} else {
@@ -373,6 +374,10 @@ func (a *App) RunInteractive() error {
 				if scanner.Scan() {
 					resp := strings.ToLower(strings.TrimSpace(scanner.Text()))
 					if resp == "y" || resp == "yes" {
+						oldState, _ = term.MakeRaw(fd)
+						fmt.Print("\033[?1049h\033[?25l")
+						a.StatusMsg = "\033[36m⏳ Force pushing with lease to remote...\033[0m"
+						a.Render()
 						if err := gitops.PushForceWithLease(a.ActiveRepoPath); err != nil {
 							a.StatusMsg = fmt.Sprintf("\033[31mForce push error: %v\033[0m", err)
 						} else {
@@ -380,17 +385,21 @@ func (a *App) RunInteractive() error {
 							a.StatusMsg = "\033[32m✔ Pushed amended commit with --force-with-lease\033[0m"
 						}
 					} else {
+						oldState, _ = term.MakeRaw(fd)
+						fmt.Print("\033[?1049h\033[?25l")
 						a.StatusMsg = "\033[33mPush cancelled\033[0m"
 					}
+				} else {
+					oldState, _ = term.MakeRaw(fd)
+					fmt.Print("\033[?1049h\033[?25l")
 				}
-				oldState, _ = term.MakeRaw(fd)
-				fmt.Print("\033[?1049h\033[?25l")
 				a.tabSwitched = true
 			}
 		case 'l', 'L': // Pull / Pull Rebase
 			if a.ActiveRepoPath != "" {
 				if b == 'L' {
-					a.StatusMsg = "\033[36mPulling with rebase...\033[0m"
+					a.StatusMsg = "\033[36m⏳ Pulling with rebase...\033[0m"
+					a.Render()
 					if err := gitops.PullRebase(a.ActiveRepoPath); err != nil {
 						a.StatusMsg = fmt.Sprintf("\033[31mPull --rebase error: %v\033[0m", err)
 					} else {
@@ -398,13 +407,25 @@ func (a *App) RunInteractive() error {
 						a.StatusMsg = "\033[32m✔ Pulled and rebased successfully\033[0m"
 					}
 				} else {
-					a.StatusMsg = "\033[36mPulling fast-forward changes...\033[0m"
+					a.StatusMsg = "\033[36m⏳ Pulling fast-forward changes...\033[0m"
+					a.Render()
 					if err := gitops.Pull(a.ActiveRepoPath); err != nil {
 						a.StatusMsg = fmt.Sprintf("\033[31mPull error: %v\033[0m", err)
 					} else {
 						a.needsReload = true
 						a.StatusMsg = "\033[32m✔ Pulled successfully\033[0m"
 					}
+				}
+			}
+		case 'f', 'F': // Fetch remote
+			if a.ActiveRepoPath != "" {
+				a.StatusMsg = "\033[36m⏳ Fetching all remotes...\033[0m"
+				a.Render()
+				if err := gitops.Fetch(a.ActiveRepoPath); err != nil {
+					a.StatusMsg = fmt.Sprintf("\033[31mFetch error: %v\033[0m", err)
+				} else {
+					a.needsReload = true
+					a.StatusMsg = "\033[32m✔ Fetched remotes successfully\033[0m"
 				}
 			}
 		case 'z', 'Z': // Stash Save / Pop
