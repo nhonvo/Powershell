@@ -52,7 +52,7 @@ build:
 install:
 	@mkdir -p $(INSTALL_DIR)
 	@for app in $(APPS); do 		echo "🚀 Installing $$app -> $(INSTALL_DIR)/$$app"; 		(cd apps/$$app && go build -o $(INSTALL_DIR)/$$app .) || exit 1; 	done
-	@echo "✔ All 8 apps installed to $(INSTALL_DIR)/"
+	@echo "✔ All 9 apps installed to $(INSTALL_DIR)/"
 
 # Single-app build & install targets
 switch:

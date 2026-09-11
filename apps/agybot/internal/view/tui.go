@@ -8,6 +8,7 @@ import (
 	"agybot/internal/account"
 	"agybot/internal/auth"
 	"agybot/internal/config"
+	"agybot/internal/daemon"
 	"agybot/internal/sysinfo"
 	"agybot/internal/workspace"
 )
@@ -41,8 +42,14 @@ func (v *DashboardView) RenderOverview() string {
 		botStatus = "\033[1;33m⚠️ Token Missing (Edit .env)\033[0m"
 	}
 
+	daemonStatus := "\033[90m⚪ Stopped (Run: agybot start)\033[0m"
+	if isRun, pid := daemon.IsRunning(); isRun {
+		daemonStatus = fmt.Sprintf("\033[1;32m🟢 Running (PID: %d)\033[0m", pid)
+	}
+
 	sb.WriteString("\r\n\033[1;36m🤖 AGYBOT - Antigravity Remote Controller & Multi-Project Daemon (Go Engine v2.0)\033[0m\r\n")
 	sb.WriteString(strings.Repeat("─", 86) + "\r\n")
+	sb.WriteString(fmt.Sprintf(" \033[1mDaemon State:\033[0m   %s\r\n", daemonStatus))
 	sb.WriteString(fmt.Sprintf(" \033[1mTelegram Bot:\033[0m   %s  ·  Whitelist: %d Users  ·  Auto-Lock: %v\r\n",
 		botStatus, len(v.Cfg.AllowedUserIDs), v.Cfg.AuthAutoLockTimeout))
 	sb.WriteString(fmt.Sprintf(" \033[1mAI Engine:\033[0m      Google Antigravity (`%s`) · Mode: `%s`\r\n",
@@ -72,7 +79,7 @@ func (v *DashboardView) RenderOverview() string {
 	}
 
 	sb.WriteString(strings.Repeat("─", 86) + "\r\n")
-	sb.WriteString(" \033[1mCommands:\033[0m  agybot daemon (start bot) · agybot status · agybot test-prompt <text>\r\n")
+	sb.WriteString(" \033[1mCommands:\033[0m  agybot start · agybot stop · agybot restart · agybot logs · agybot config\r\n")
 
 	return sb.String()
 }

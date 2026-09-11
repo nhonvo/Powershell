@@ -4,7 +4,12 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
+	"path/filepath"
+	"strconv"
 	"strings"
+	"syscall"
+	"time"
 
 	"golang.org/x/term"
 
@@ -13,7 +18,7 @@ import (
 
 type CockpitApp struct {
 	ActiveTab    int // 0: Switch, 1: Proj, 2: Git, 3: Docker, 4: Ollama, 5: Tools
-	ToolSubIndex int // 0: Term, 1: Mobile, 2: AWS (inside Tab 5)
+	ToolSubIndex int // 0: Term, 1: Mobile, 2: AWS, 3: Bot (inside Tab 5)
 	StatusMsg    string
 	tabSwitched  bool
 }
@@ -75,7 +80,7 @@ func (a *CockpitApp) RunInteractive() error {
 					continue
 				case 'A': // Up
 					if a.ActiveTab == 5 {
-						a.ToolSubIndex = (a.ToolSubIndex + 2) % 3
+						a.ToolSubIndex = (a.ToolSubIndex + 3) % 4
 					} else {
 						a.ActiveTab = (a.ActiveTab + 5) % 6
 						a.tabSwitched = true
@@ -83,7 +88,7 @@ func (a *CockpitApp) RunInteractive() error {
 					continue
 				case 'B': // Down
 					if a.ActiveTab == 5 {
-						a.ToolSubIndex = (a.ToolSubIndex + 1) % 3
+						a.ToolSubIndex = (a.ToolSubIndex + 1) % 4
 					} else {
 						a.ActiveTab = (a.ActiveTab + 1) % 6
 						a.tabSwitched = true
@@ -118,11 +123,49 @@ func (a *CockpitApp) RunInteractive() error {
 			a.tabSwitched = true
 		case 'j', 'J':
 			if a.ActiveTab == 5 {
-				a.ToolSubIndex = (a.ToolSubIndex + 1) % 3
+				a.ToolSubIndex = (a.ToolSubIndex + 1) % 4
 			}
 		case 'k', 'K':
 			if a.ActiveTab == 5 {
-				a.ToolSubIndex = (a.ToolSubIndex + 2) % 3
+				a.ToolSubIndex = (a.ToolSubIndex + 3) % 4
+			}
+		case 't', 'T':
+			if a.ActiveTab == 5 {
+				a.ToolSubIndex = 0
+			}
+		case 'm', 'M':
+			if a.ActiveTab == 5 {
+				a.ToolSubIndex = 1
+			}
+		case 'a', 'A':
+			if a.ActiveTab == 5 {
+				a.ToolSubIndex = 2
+			}
+		case 'b', 'B':
+			if a.ActiveTab == 5 {
+				a.ToolSubIndex = 3
+			}
+		case 's', 'S':
+			if a.ActiveTab == 5 && a.ToolSubIndex == 3 {
+				bin, err := proxy.FindBinary("agybot")
+				if err != nil {
+					a.StatusMsg = fmt.Sprintf("\033[31mError locating agybot binary: %v\033[0m", err)
+				} else {
+					running, pid := isBotRunning()
+					if running {
+						_ = exec.Command(bin, "stop").Run()
+						a.StatusMsg = fmt.Sprintf("\033[33m⏹ agybot daemon stopped (was PID %d)\033[0m", pid)
+					} else {
+						_ = exec.Command(bin, "start").Run()
+						time.Sleep(150 * time.Millisecond)
+						if r, p := isBotRunning(); r {
+							a.StatusMsg = fmt.Sprintf("\033[32m▶ agybot daemon started (PID %d)\033[0m", p)
+						} else {
+							a.StatusMsg = "\033[32m▶ agybot daemon start initiated\033[0m"
+						}
+					}
+				}
+				a.tabSwitched = true
 			}
 		case '\r', '\n': // Launch active tool only on Enter
 			toolName := a.getActiveToolBinary()
@@ -163,13 +206,35 @@ func (a *CockpitApp) getActiveToolBinary() string {
 	case 4:
 		return "agyollama"
 	case 5:
-		subTools := []string{"agyterm", "agymobile", "aws"}
+		subTools := []string{"agyterm", "agymobile", "aws", "agybot"}
 		if a.ToolSubIndex >= 0 && a.ToolSubIndex < len(subTools) {
 			return subTools[a.ToolSubIndex]
 		}
 		return "agyterm"
 	}
 	return "agyswitch"
+}
+
+func isBotRunning() (bool, int) {
+	home, _ := os.UserHomeDir()
+	pidPath := filepath.Join(home, ".config", "antigravity", "agybot.pid")
+	data, err := os.ReadFile(pidPath)
+	if err != nil {
+		return false, 0
+	}
+	pidStr := strings.TrimSpace(string(data))
+	pid, err := strconv.Atoi(pidStr)
+	if err != nil || pid <= 0 {
+		return false, 0
+	}
+	process, err := os.FindProcess(pid)
+	if err != nil {
+		return false, 0
+	}
+	if err := process.Signal(syscall.Signal(0)); err == nil {
+		return true, pid
+	}
+	return false, 0
 }
 
 func getTermSize() (int, int) {
@@ -268,7 +333,7 @@ func (a *CockpitApp) Render() {
 		b.WriteString(" \033[1m[1-6]\033[0mNav \033[1m[↑/↓]\033[0mSelect \033[1;32m[Enter]\033[0mOpen \033[1;31m[Q]\033[0mExit\033[K\r\n")
 	} else {
 		if a.ActiveTab == 5 {
-			b.WriteString(" \033[1m[Tab/1-6]\033[0m Tabs · \033[1;33m[↑/↓]\033[0m Select Utility · \033[1;32m[Enter/T/M/A]\033[0m Launch · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab/1-6]\033[0m Tabs · \033[1;33m[↑/↓]\033[0m Select · \033[1;32m[Enter/T/M/A/B]\033[0m Open · \033[1;35m[S]\033[0m Bot Daemon · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 		} else {
 			b.WriteString(" \033[1m[Tab/1-6]\033[0m Switch Module · \033[1;32m[Enter]\033[0m Launch Dedicated App · \033[1;36m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 		}
@@ -354,6 +419,14 @@ func (a *CockpitApp) renderToolsSummary(b *strings.Builder, width int) {
 			desc:  "STS identity, S3 bucket explorer & LocalStack port 4566 diagnostics",
 			cmd:   "agyx aws [whoami|s3|sqs|local]",
 		},
+		{
+			key:   "B",
+			emoji: "🤖",
+			title: "Antigravity Telegram Controller & Daemon",
+			bin:   "agybot",
+			desc:  "Background Telegram bot daemon, multi-project access & research",
+			cmd:   "agyx bot [start|stop|restart|logs|status|config]",
+		},
 	}
 
 	for i, item := range items {
@@ -369,7 +442,15 @@ func (a *CockpitApp) renderToolsSummary(b *strings.Builder, width int) {
 		fmt.Fprintf(b, "%s%s [%s] \033[0m %s %s%s\033[0m \033[90m(%s)\033[0m\033[K\r\n",
 			prefix, badgeStyle, item.key, item.emoji, textStyle, item.title, item.bin)
 		fmt.Fprintf(b, "      \033[90m• %s\033[0m\033[K\r\n", item.desc)
-		fmt.Fprintf(b, "      \033[90m• Command: %s\033[0m\033[K\r\n\033[K\r\n", item.cmd)
+		fmt.Fprintf(b, "      \033[90m• Command: %s\033[0m\033[K\r\n", item.cmd)
+		if item.bin == "agybot" {
+			if running, pid := isBotRunning(); running {
+				fmt.Fprintf(b, "      \033[90m• Daemon State: \033[1;32m🟢 Running (PID: %d)\033[0m \033[90m· Press [S] to Stop\033[0m\033[K\r\n", pid)
+			} else {
+				fmt.Fprintf(b, "      \033[90m• Daemon State: \033[90m⚪ Stopped · Press [S] to Start\033[0m\033[K\r\n")
+			}
+		}
+		b.WriteString("\033[K\r\n")
 	}
 
 	selectedName := items[a.ToolSubIndex].title

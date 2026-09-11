@@ -14,6 +14,7 @@ import (
 	"agybot/internal/auth"
 	"agybot/internal/bot"
 	"agybot/internal/config"
+	"agybot/internal/daemon"
 	"agybot/internal/runner"
 	"agybot/internal/security"
 	"agybot/internal/view"
@@ -79,7 +80,45 @@ func main() {
 			fmt.Printf("%s[%d] %-20s  Branch: %-12s  Path: %s\n", marker, i+1, p.Name, p.GitBranch, p.Path)
 		}
 
-	case "daemon", "start", "bot":
+	case "start":
+		pid, err := daemon.Start("")
+		if err != nil {
+			fmt.Printf("❌ Failed to start daemon: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("🚀 AgyBot background daemon started successfully!\n")
+		fmt.Printf("• Process ID: %d\n", pid)
+		fmt.Printf("• Log File:   %s\n", daemon.LogFilePath())
+		fmt.Printf("• PID File:   %s\n", daemon.PIDFilePath())
+		fmt.Println("👉 Check status: 'agybot status' or 'agybot logs'")
+
+	case "stop":
+		pid, err := daemon.Stop()
+		if err != nil {
+			fmt.Printf("❌ %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("🛑 AgyBot daemon (PID: %d) stopped cleanly.\n", pid)
+
+	case "restart":
+		fmt.Println("🔄 Restarting AgyBot daemon...")
+		pid, err := daemon.Restart("")
+		if err != nil {
+			fmt.Printf("❌ Failed to restart daemon: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("🚀 AgyBot daemon restarted successfully with PID %d!\n", pid)
+
+	case "log", "logs":
+		maxLines := 30
+		logs, err := daemon.TailLogs(maxLines)
+		if err != nil {
+			fmt.Printf("❌ %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("📜 AgyBot Daemon Logs (Last %d lines):\n\n%s\n", maxLines, logs)
+
+	case "daemon", "foreground":
 		if cfg.TelegramBotToken == "" {
 			fmt.Println("❌ Error: TELEGRAM_BOT_TOKEN is not set in environment or .env file.")
 			fmt.Println("👉 Please set TELEGRAM_BOT_TOKEN in .env or ~/.config/antigravity/bot.env")
