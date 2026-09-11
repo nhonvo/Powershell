@@ -161,6 +161,18 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 			h.handleStatus(ctx, chatID)
 		case "/proj", "/projects":
 			h.handleProjects(ctx, chatID)
+		case "/newproj", "/createproj":
+			h.handleNewProj(ctx, userID, chatID, parts[1:])
+		case "/research":
+			h.handleResearch(ctx, userID, chatID, parts[1:])
+		case "/sessions":
+			h.handleSessions(ctx, chatID)
+		case "/resume":
+			h.handleResume(ctx, userID, chatID, parts[1:])
+		case "/session":
+			h.handleCurrentSession(ctx, userID, chatID)
+		case "/config":
+			h.handleConfig(ctx, chatID)
 		case "/cd", "/workspace":
 			arg := ""
 			if len(parts) > 1 {
@@ -191,7 +203,7 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 			}
 		case "/models":
 			h.handleModels(ctx, chatID)
-		case "/reset":
+		case "/reset", "/new":
 			delete(h.userSessions, userID)
 			_, _ = h.client.SendMessage(ctx, chatID, "🔄 Conversation session reset cleanly.", nil)
 		default:
@@ -217,6 +229,8 @@ func (h *BotHandler) handleCallbackQuery(ctx context.Context, q *CallbackQuery) 
 		h.handleProjects(ctx, chatID)
 	case "btn_accounts":
 		h.handleAccount(ctx, chatID)
+	case "btn_sessions":
+		h.handleSessions(ctx, chatID)
 	case "btn_finance":
 		h.handleFinanceDashboard(ctx, userID, chatID)
 	case "btn_lock":
@@ -471,6 +485,130 @@ func (h *BotHandler) handleAIPrompt(ctx context.Context, userID int64, chatID in
 	_ = h.client.EditMessageText(ctx, chatID, initialMsg.MessageID, ans, nil)
 }
 
+func (h *BotHandler) handleNewProj(ctx context.Context, userID int64, chatID int64, args []string) {
+	if len(args) == 0 {
+		_, _ = h.client.SendMessage(ctx, chatID, "Usage: `/newproj <project_name> [go|node|python|dotnet]`", nil)
+		return
+	}
+	name := args[0]
+	stack := "generic"
+	if len(args) > 1 {
+		stack = args[1]
+	}
+
+	p, err := h.wsMgr.CreateProject(name, stack)
+	if err != nil {
+		_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("❌ Error creating project: %v", err), nil)
+		return
+	}
+	_, _ = h.wsMgr.SetUserWorkspace(userID, p.Path)
+
+	msg := fmt.Sprintf(
+		"🎉 **PROJECT CREATED & REGISTERED!**\n\n"+
+			"• **Name:** `%s`\n"+
+			"• **Stack:** `%s`\n"+
+			"• **Path:** `%s`\n"+
+			"• **Git:** Initialized (`main`)\n"+
+			"• **Registered:** `agyproj` (`~/.config/antigravity/projects.json`)\n\n"+
+			"👉 Active workspace automatically switched to `%s`!",
+		p.Name, p.Stack, p.Path, p.Name,
+	)
+	_, _ = h.client.SendMessage(ctx, chatID, msg, nil)
+}
+
+func (h *BotHandler) handleResearch(ctx context.Context, userID int64, chatID int64, args []string) {
+	if len(args) == 0 {
+		_, _ = h.client.SendMessage(ctx, chatID, "Usage: `/research <topic or architectural question>`", nil)
+		return
+	}
+	topic := strings.Join(args, " ")
+	researchPrompt := fmt.Sprintf(
+		"Perform deep research on: %s. Structure your output clearly: "+
+			"1. Executive Summary, 2. Architectural Analysis & Key Options, "+
+			"3. Pros vs Cons / Risk Matrix, 4. Concrete Implementation Steps, 5. Recommendations.",
+		topic,
+	)
+	h.handleAIPrompt(ctx, userID, chatID, researchPrompt)
+}
+
+func (h *BotHandler) handleSessions(ctx context.Context, chatID int64) {
+	sessions := h.wsMgr.ListBrainSessions(8)
+	if len(sessions) == 0 {
+		_, _ = h.client.SendMessage(ctx, chatID, "🧠 No past Antigravity sessions found in `~/.gemini/antigravity-cli/brain/`.", nil)
+		return
+	}
+
+	var sb strings.Builder
+	sb.WriteString("🧠 **RECENT ANTIGRAVITY AI SESSIONS:**\n\n")
+	for i, s := range sessions {
+		timeAgo := time.Since(s.CreatedAt).Round(time.Minute)
+		sb.WriteString(fmt.Sprintf("%d. `%s` (%s ago · %d steps · est: $%.4f)\n   _%s_\n",
+			i+1, s.ID, timeAgo, s.Steps, s.CostUSD, s.Summary))
+	}
+	sb.WriteString("\n👉 Resume any session with: `/resume <conversation_id>`\n👉 Start fresh: `/reset`")
+	_, _ = h.client.SendMessage(ctx, chatID, sb.String(), nil)
+}
+
+func (h *BotHandler) handleResume(ctx context.Context, userID int64, chatID int64, args []string) {
+	if len(args) == 0 {
+		_, _ = h.client.SendMessage(ctx, chatID, "Usage: `/resume <conversation_id>`", nil)
+		return
+	}
+	convID := strings.TrimSpace(args[0])
+	sess, ok := h.userSessions[userID]
+	if !ok {
+		sess = &UserSessionState{}
+		h.userSessions[userID] = sess
+	}
+	sess.ActiveConvID = convID
+
+	_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("🔄 Resumed Antigravity conversation: `%s`.\nNext prompts will continue with full session context!", convID), nil)
+}
+
+func (h *BotHandler) handleCurrentSession(ctx context.Context, userID int64, chatID int64) {
+	sess, ok := h.userSessions[userID]
+	convID := "None (New Session)"
+	if ok && sess.ActiveConvID != "" {
+		convID = sess.ActiveConvID
+	}
+	ws := h.wsMgr.GetUserWorkspace(userID)
+	acc := h.accMgr.GetActiveAccount()
+
+	msg := fmt.Sprintf(
+		"📋 **ACTIVE SESSION CONTEXT**\n\n"+
+			"• **Conversation ID:** `%s`\n"+
+			"• **Workspace:** `%s`\n"+
+			"• **Account:** `%s` (via agyswitch)\n"+
+			"• **Model:** `%s`\n\n"+
+			"👉 Switch session: `/resume <id>` or `/reset`",
+		convID, ws, acc, h.cfg.DefaultModel,
+	)
+	_, _ = h.client.SendMessage(ctx, chatID, msg, nil)
+}
+
+func (h *BotHandler) handleConfig(ctx context.Context, chatID int64) {
+	msg := fmt.Sprintf(
+		"⚙️ **AGYBOT SYSTEM CONFIGURATION**\n\n"+
+			"• **Config Path:** `%s`\n"+
+			"• **Whitelisted Users:** `%d`\n"+
+			"• **Auto-Lock Inactivity:** `%v`\n"+
+			"• **Max PIN Attempts:** `%d`\n"+
+			"• **Lockout Duration:** `%v`\n"+
+			"• **Task Timeout:** `%v`\n"+
+			"• **Default Model:** `%s`\n"+
+			"• **Default Workspace:** `%s`\n",
+		config.GetConfigFilePath(),
+		len(h.cfg.AllowedUserIDs),
+		h.cfg.AuthAutoLockTimeout,
+		h.cfg.AuthMaxAttempts,
+		h.cfg.AuthLockoutDuration,
+		h.cfg.TaskTimeout,
+		h.cfg.DefaultModel,
+		h.cfg.DefaultWorkspace,
+	)
+	_, _ = h.client.SendMessage(ctx, chatID, msg, nil)
+}
+
 func (h *BotHandler) buildMainKeyboard() *InlineKeyboardMarkup {
 	return &InlineKeyboardMarkup{
 		InlineKeyboard: [][]InlineKeyboardButton{
@@ -479,12 +617,12 @@ func (h *BotHandler) buildMainKeyboard() *InlineKeyboardMarkup {
 				{Text: "📊 Finance DB", CallbackData: "btn_finance"},
 			},
 			{
-				{Text: "👤 Accounts & Quota", CallbackData: "btn_accounts"},
-				{Text: "🖥️ Host Status", CallbackData: "btn_status"},
+				{Text: "🧠 Sessions", CallbackData: "btn_sessions"},
+				{Text: "👤 Accounts", CallbackData: "btn_accounts"},
 			},
 			{
+				{Text: "🖥️ Host Status", CallbackData: "btn_status"},
 				{Text: "🔒 Lock", CallbackData: "btn_lock"},
-				{Text: "🔓 Unlock", CallbackData: "btn_unlock"},
 			},
 		},
 	}

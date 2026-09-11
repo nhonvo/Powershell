@@ -95,8 +95,12 @@ Registered Module Proxies:
        Aliases: ai, llm, localai, model
   agyx aws [args...]               Proxy to 'aws' (AWS Cloud Identity, S3 & LocalStack)
        Aliases: cloud, s3, localstack
+  agyx bot [args...]               Proxy to 'agybot' (Telegram Remote Controller, Multi-Project & Research)
+       Aliases: b, telegram, tg, agentbot
 
 Examples:
+  agyx bot                         Print AgyBot cockpit status & registered projects
+  agyx bot daemon                  Start background Telegram bot server
   agyx switch                      Launch interactive Antigravity switcher
   agyx proj ls                     List registered workspaces
   agyx git worktree add agent/test Create isolated AI agent worktree

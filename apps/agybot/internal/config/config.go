@@ -2,6 +2,7 @@ package config
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -55,8 +56,9 @@ func LoadConfig() *Config {
 	for _, p := range candidateFiles {
 		if fi, err := os.Stat(p); err == nil && !fi.IsDir() {
 			loadEnvFile(p)
-			cfg.ConfigLoadedFrom = p
-			break
+			if cfg.ConfigLoadedFrom == "" {
+				cfg.ConfigLoadedFrom = p
+			}
 		}
 	}
 
@@ -173,3 +175,61 @@ func loadEnvFile(path string) {
 		}
 	}
 }
+
+// GetConfigFilePath returns the primary user config file in ~/.config/antigravity/bot.env
+func GetConfigFilePath() string {
+	home, _ := os.UserHomeDir()
+	return filepath.Join(home, ".config", "antigravity", "bot.env")
+}
+
+// SaveConfigKey writes or replaces a key=value setting in ~/.config/antigravity/bot.env
+func SaveConfigKey(key, value string) error {
+	path := GetConfigFilePath()
+	_ = os.MkdirAll(filepath.Dir(path), 0755)
+
+	var lines []string
+	keyUpper := strings.ToUpper(strings.TrimSpace(key))
+	found := false
+
+	if data, err := os.ReadFile(path); err == nil {
+		scanner := bufio.NewScanner(strings.NewReader(string(data)))
+		for scanner.Scan() {
+			line := scanner.Text()
+			trimmed := strings.TrimSpace(line)
+			if strings.HasPrefix(trimmed, keyUpper+"=") {
+				lines = append(lines, fmt.Sprintf("%s=%q", keyUpper, value))
+				found = true
+			} else {
+				lines = append(lines, line)
+			}
+		}
+	}
+
+	if !found {
+		lines = append(lines, fmt.Sprintf("%s=%q", keyUpper, value))
+	}
+
+	content := strings.Join(lines, "\n") + "\n"
+	return os.WriteFile(path, []byte(content), 0600)
+}
+
+// AddWhitelistUser adds a user ID to the allowed list and persists to bot.env
+func (c *Config) AddWhitelistUser(id int64) error {
+	c.AllowedUserIDs[id] = true
+	var ids []string
+	for uid := range c.AllowedUserIDs {
+		ids = append(ids, strconv.FormatInt(uid, 10))
+	}
+	return SaveConfigKey("ALLOWED_USER_IDS", strings.Join(ids, ","))
+}
+
+// RemoveWhitelistUser removes a user ID from the allowed list and persists to bot.env
+func (c *Config) RemoveWhitelistUser(id int64) error {
+	delete(c.AllowedUserIDs, id)
+	var ids []string
+	for uid := range c.AllowedUserIDs {
+		ids = append(ids, strconv.FormatInt(uid, 10))
+	}
+	return SaveConfigKey("ALLOWED_USER_IDS", strings.Join(ids, ","))
+}
+

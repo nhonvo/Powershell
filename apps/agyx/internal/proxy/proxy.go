@@ -70,6 +70,12 @@ func GetRegisteredTools() []ToolDefinition {
 			Aliases:     []string{"cloud", "s3", "localstack"},
 			Description: "AWS Cloud identity, S3 buckets, SQS queues & LocalStack diagnostics",
 		},
+		{
+			Name:        "bot",
+			BinaryName:  "agybot",
+			Aliases:     []string{"b", "telegram", "tg", "agentbot"},
+			Description: "Antigravity remote Telegram controller, multi-project & research daemon",
+		},
 	}
 }
 
