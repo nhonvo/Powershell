@@ -409,5 +409,58 @@ func TestGitOps_ConflictResolution(t *testing.T) {
 	}
 }
 
+func TestGitOps_CommitAmend_And_GetLastCommitMessage(t *testing.T) {
+	repo := createTestRepo(t)
+
+	// Check initial commit message
+	msg, err := GetLastCommitMessage(repo)
+	if err != nil {
+		t.Fatalf("GetLastCommitMessage failed: %v", err)
+	}
+	if msg != "Initial test commit" {
+		t.Errorf("expected 'Initial test commit', got '%s'", msg)
+	}
+
+	// Create and stage a new file
+	f := filepath.Join(repo, "amend_test.txt")
+	_ = os.WriteFile(f, []byte("amended file content"), 0644)
+	if err := StageFile(repo, "amend_test.txt"); err != nil {
+		t.Fatalf("StageFile failed: %v", err)
+	}
+
+	// Amend commit with a new message
+	newMsg := "Initial test commit amended"
+	if err := CommitAmend(repo, newMsg, false); err != nil {
+		t.Fatalf("CommitAmend with new message failed: %v", err)
+	}
+
+	msg2, err := GetLastCommitMessage(repo)
+	if err != nil {
+		t.Fatalf("GetLastCommitMessage failed: %v", err)
+	}
+	if msg2 != newMsg {
+		t.Errorf("expected '%s', got '%s'", newMsg, msg2)
+	}
+
+	// Amend commit with --no-edit
+	f2 := filepath.Join(repo, "amend_test2.txt")
+	_ = os.WriteFile(f2, []byte("amended file content 2"), 0644)
+	if err := StageFile(repo, "amend_test2.txt"); err != nil {
+		t.Fatalf("StageFile failed: %v", err)
+	}
+
+	if err := CommitAmend(repo, "", true); err != nil {
+		t.Fatalf("CommitAmend --no-edit failed: %v", err)
+	}
+
+	msg3, err := GetLastCommitMessage(repo)
+	if err != nil {
+		t.Fatalf("GetLastCommitMessage failed: %v", err)
+	}
+	if msg3 != newMsg {
+		t.Errorf("expected '%s' to be preserved with --no-edit, got '%s'", newMsg, msg3)
+	}
+}
+
 
 

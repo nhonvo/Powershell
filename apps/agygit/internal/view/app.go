@@ -271,7 +271,7 @@ func (a *App) RunInteractive() error {
 				fmt.Print("\033[?1049h\033[?25l")
 				a.tabSwitched = true
 			}
-		case 'c', 'C': // Input Commit in Tab 0 (staged only) or Cherry-pick in Tab 1
+		case 'c': // Input Commit in Tab 0 (staged only) or Cherry-pick in Tab 1
 			if a.ActiveTab == 0 && a.ActiveRepoPath != "" {
 				hasStaged := false
 				for _, f := range a.cachedFiles {
@@ -281,7 +281,7 @@ func (a *App) RunInteractive() error {
 					}
 				}
 				if !hasStaged {
-					a.StatusMsg = "\033[33mNo staged files to commit. Use [Space/s] to stage or [a] to stage all.\033[0m"
+					a.StatusMsg = "\033[33mNo staged files to commit. Stage with [Space/s] or use [C] to amend last commit.\033[0m"
 					continue
 				}
 				fmt.Print("\033[?25h\033[?1049l")
@@ -312,7 +312,49 @@ func (a *App) RunInteractive() error {
 					a.StatusMsg = fmt.Sprintf("\033[32m✔ Cherry-picked commit %s\033[0m", c.Hash)
 				}
 			}
-		case 'p', 'P': // Push
+		case 'C': // Commit Amend in Tab 0 or Cherry-pick in Tab 1
+			if a.ActiveTab == 0 && a.ActiveRepoPath != "" {
+				lastMsg, _ := gitops.GetLastCommitMessage(a.ActiveRepoPath)
+				fmt.Print("\033[?25h\033[?1049l")
+				_ = term.Restore(fd, oldState)
+				fmt.Printf("\r\n📝 \033[1;36m[agygit] Commit Amend in '%s'\033[0m\r\n", filepath.Base(a.ActiveRepoPath))
+				if lastMsg != "" {
+					fmt.Printf(" \033[33mCurrent HEAD Message:\033[0m %s\r\n", lastMsg)
+				}
+				fmt.Print("Enter new commit message (or press Enter to keep existing): ")
+				scanner := bufio.NewScanner(os.Stdin)
+				if scanner.Scan() {
+					msg := strings.TrimSpace(scanner.Text())
+					var err error
+					if msg == "" {
+						err = gitops.CommitAmend(a.ActiveRepoPath, "", true)
+					} else {
+						err = gitops.CommitAmend(a.ActiveRepoPath, msg, false)
+					}
+					if err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mCommit --amend error: %v\033[0m", err)
+					} else {
+						a.needsReload = true
+						if msg != "" {
+							a.StatusMsg = fmt.Sprintf("\033[32m✔ Amended commit: %s\033[0m", truncateString(msg, 40))
+						} else {
+							a.StatusMsg = "\033[32m✔ Amended commit (kept previous message)\033[0m"
+						}
+					}
+				}
+				oldState, _ = term.MakeRaw(fd)
+				fmt.Print("\033[?1049h\033[?25l")
+				a.tabSwitched = true
+			} else if a.ActiveTab == 1 && len(a.cachedCommits) > 0 && a.SelectedIndex < len(a.cachedCommits) {
+				c := a.cachedCommits[a.SelectedIndex]
+				if err := gitops.CherryPick(a.ActiveRepoPath, c.Hash); err != nil {
+					a.StatusMsg = fmt.Sprintf("\033[31mCherry-pick error: %v\033[0m", err)
+				} else {
+					a.needsReload = true
+					a.StatusMsg = fmt.Sprintf("\033[32m✔ Cherry-picked commit %s\033[0m", c.Hash)
+				}
+			}
+		case 'p': // Standard Push (git push)
 			if a.ActiveRepoPath != "" {
 				a.StatusMsg = "\033[36mPushing commits to remote...\033[0m"
 				if err := gitops.Push(a.ActiveRepoPath); err != nil {
@@ -321,6 +363,29 @@ func (a *App) RunInteractive() error {
 					a.needsReload = true
 					a.StatusMsg = "\033[32m✔ Pushed commits successfully\033[0m"
 				}
+			}
+		case 'P': // Push Commit Amend / Force (--force-with-lease)
+			if a.ActiveRepoPath != "" {
+				fmt.Print("\033[?25h\033[?1049l")
+				_ = term.Restore(fd, oldState)
+				fmt.Printf("\r\n\033[1;33m[agygit] Push amended commit with --force-with-lease? (y/N): \033[0m")
+				scanner := bufio.NewScanner(os.Stdin)
+				if scanner.Scan() {
+					resp := strings.ToLower(strings.TrimSpace(scanner.Text()))
+					if resp == "y" || resp == "yes" {
+						if err := gitops.PushForceWithLease(a.ActiveRepoPath); err != nil {
+							a.StatusMsg = fmt.Sprintf("\033[31mForce push error: %v\033[0m", err)
+						} else {
+							a.needsReload = true
+							a.StatusMsg = "\033[32m✔ Pushed amended commit with --force-with-lease\033[0m"
+						}
+					} else {
+						a.StatusMsg = "\033[33mPush cancelled\033[0m"
+					}
+				}
+				oldState, _ = term.MakeRaw(fd)
+				fmt.Print("\033[?1049h\033[?25l")
+				a.tabSwitched = true
 			}
 		case 'l', 'L': // Pull / Pull Rebase
 			if a.ActiveRepoPath != "" {
@@ -827,11 +892,11 @@ func (a *App) Render() {
 	if width < 80 {
 		switch a.ActiveTab {
 		case 0:
-			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;32m[Space]\033[0mStage \033[1;36m[d]\033[0mDiff \033[1;31m[r]\033[0mReject \033[1;32m[c]\033[0mCommit \033[1;31m[Q]\033[0mExit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;32m[Space]\033[0mStage \033[1;36m[d]\033[0mDiff \033[1;32m[c]\033[0mCommit \033[1;33m[C]\033[0mAmend \033[1;36m[p]\033[0mPush \033[1;33m[P]\033[0mPushAmend \033[1;31m[Q]\033[0mExit\033[K\r\n")
 		case 1:
-			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;36m[c]\033[0mCherryPick \033[1;36m[d]\033[0mDiff \033[1;32m[g]\033[0mGraph \033[1;31m[Q]\033[0mExit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;36m[c]\033[0mCherryPick \033[1;36m[d]\033[0mDiff \033[1;36m[p]\033[0mPush \033[1;33m[P]\033[0mPushAmend \033[1;32m[g]\033[0mGraph \033[1;31m[Q]\033[0mExit\033[K\r\n")
 		case 2:
-			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;32m[m]\033[0mMerge \033[1;33m[s]\033[0mSquash \033[1;36m[r]\033[0mRebase \033[1;31m[Q]\033[0mExit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;32m[m]\033[0mMerge \033[1;33m[s]\033[0mSquash \033[1;36m[r]\033[0mRebase \033[1;36m[p]\033[0mPush \033[1;31m[Q]\033[0mExit\033[K\r\n")
 		case 3:
 			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;36m[n]\033[0mNew \033[1;32m[Enter]\033[0mAgy \033[1;31m[d]\033[0mDel \033[1;31m[Q]\033[0mExit\033[K\r\n")
 		case 4:
@@ -840,15 +905,15 @@ func (a *App) Render() {
 	} else {
 		switch a.ActiveTab {
 		case 0:
-			b.WriteString(" \033[1m[Tab/1-5]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Select · \033[1;32m[Space/s]\033[0m Stage/Unstage · \033[1;36m[d/Enter]\033[0m Diff · \033[1;31m[r/x]\033[0m Reject · \033[1;31m[R/X]\033[0m Reject All · \033[1;32m[c]\033[0m Commit · \033[1;33m[a/u]\033[0m All · \033[1;31m[U]\033[0m Undo · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab/1-5]\033[0m Tab · \033[1;32m[Space]\033[0m Stage · \033[1;36m[d]\033[0m Diff · \033[1;31m[r]\033[0m Reject · \033[1;32m[c]\033[0m Commit · \033[1;33m[C]\033[0m Amend · \033[1;36m[p]\033[0m Push · \033[1;33m[P]\033[0m Push Amend · \033[1;31m[U]\033[0m Undo · \033[1;31m[Q]\033[0m Exit\033[K\r\n")
 		case 1:
-			b.WriteString(" \033[1m[Tab/1-5]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Select · \033[1;36m[c]\033[0m Cherry-Pick · \033[1;36m[d/Enter]\033[0m Diff · \033[1;32m[g]\033[0m Tree/Table · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab/1-5]\033[0m Tab · \033[1m[↑/↓]\033[0m Select · \033[1;36m[c]\033[0m Cherry-Pick · \033[1;36m[d]\033[0m Diff · \033[1;32m[g]\033[0m Tree/Table · \033[1;36m[p]\033[0m Push · \033[1;33m[P]\033[0m Push Amend · \033[1;31m[Q]\033[0m Exit\033[K\r\n")
 		case 2:
-			b.WriteString(" \033[1m[Tab/1-5]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Select Branch · \033[1;32m[m]\033[0m Merge · \033[1;33m[s]\033[0m Squash · \033[1;36m[r]\033[0m Rebase · \033[1;31m[x]\033[0m Abort · \033[1;36m[b]\033[0m New\033[K\r\n")
+			b.WriteString(" \033[1m[Tab/1-5]\033[0m Tab · \033[1m[↑/↓]\033[0m Select · \033[1;32m[m]\033[0m Merge · \033[1;33m[s]\033[0m Squash · \033[1;36m[r]\033[0m Rebase · \033[1;36m[p]\033[0m Push · \033[1;36m[b]\033[0m New Branch · \033[1;31m[x]\033[0m Abort\033[K\r\n")
 		case 3:
-			b.WriteString(" \033[1m[Tab/1-5]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Select Tree · \033[1;36m[n]\033[0m New Agent Worktree · \033[1;32m[Enter]\033[0m Launch Agy · \033[1;31m[d]\033[0m Delete\033[K\r\n")
+			b.WriteString(" \033[1m[Tab/1-5]\033[0m Tab · \033[1m[↑/↓]\033[0m Select · \033[1;36m[n]\033[0m New Agent Worktree · \033[1;32m[Enter]\033[0m Launch Agy · \033[1;31m[d]\033[0m Delete\033[K\r\n")
 		case 4:
-			b.WriteString(" \033[1m[Tab/1-5]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Nav Fleet · \033[1;32m[Enter]\033[0m Select Repo · \033[1;36m[r]\033[0m Rescan · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab/1-5]\033[0m Tab · \033[1m[↑/↓]\033[0m Nav Fleet · \033[1;32m[Enter]\033[0m Select Repo · \033[1;36m[r]\033[0m Rescan · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 		}
 	}
 

@@ -57,8 +57,28 @@ func main() {
 
 	case "commit":
 		var msg string
-		if len(os.Args) > 2 {
-			msg = strings.Join(os.Args[2:], " ")
+		amend := false
+		args := os.Args[2:]
+		if len(args) > 0 && args[0] == "--amend" {
+			amend = true
+			args = args[1:]
+		}
+		if amend {
+			msg = strings.Join(args, " ")
+			noEdit := strings.TrimSpace(msg) == ""
+			if err := gitops.CommitAmend(".", msg, noEdit); err != nil {
+				fmt.Fprintf(os.Stderr, "Commit --amend error: %v\n", err)
+				os.Exit(1)
+			}
+			if noEdit {
+				fmt.Println("✔ Amended commit (kept previous commit message)")
+			} else {
+				fmt.Printf("✔ Amended commit: %s\n", msg)
+			}
+			return
+		}
+		if len(args) > 0 {
+			msg = strings.Join(args, " ")
 		} else {
 			fmt.Print("Enter commit message: ")
 			scanner := bufio.NewScanner(os.Stdin)
@@ -75,6 +95,22 @@ func main() {
 			os.Exit(1)
 		}
 		fmt.Printf("✔ Committed: %s\n", msg)
+
+	case "amend":
+		var msg string
+		if len(os.Args) > 2 {
+			msg = strings.Join(os.Args[2:], " ")
+		}
+		noEdit := strings.TrimSpace(msg) == ""
+		if err := gitops.CommitAmend(".", msg, noEdit); err != nil {
+			fmt.Fprintf(os.Stderr, "Commit --amend error: %v\n", err)
+			os.Exit(1)
+		}
+		if noEdit {
+			fmt.Println("✔ Amended commit (kept previous commit message)")
+		} else {
+			fmt.Printf("✔ Amended commit: %s\n", msg)
+		}
 
 	case "undo":
 		if err := gitops.GitUndo("."); err != nil {
@@ -251,11 +287,33 @@ func main() {
 		fmt.Println("✔ Pulled changes successfully")
 
 	case "push":
-		if err := gitops.Push("."); err != nil {
-			fmt.Fprintf(os.Stderr, "Push error: %v\n", err)
+		forceWithLease := false
+		if len(os.Args) > 2 {
+			flag := strings.ToLower(os.Args[2])
+			if flag == "--amend" || flag == "--force" || flag == "-f" || flag == "amend" {
+				forceWithLease = true
+			}
+		}
+		if forceWithLease {
+			if err := gitops.PushForceWithLease("."); err != nil {
+				fmt.Fprintf(os.Stderr, "Push (force-with-lease) error: %v\n", err)
+				os.Exit(1)
+			}
+			fmt.Println("✔ Pushed amended commit with --force-with-lease to remote")
+		} else {
+			if err := gitops.Push("."); err != nil {
+				fmt.Fprintf(os.Stderr, "Push error: %v\n", err)
+				os.Exit(1)
+			}
+			fmt.Println("✔ Pushed commits to remote")
+		}
+
+	case "push-amend":
+		if err := gitops.PushForceWithLease("."); err != nil {
+			fmt.Fprintf(os.Stderr, "Push (force-with-lease) error: %v\n", err)
 			os.Exit(1)
 		}
-		fmt.Println("✔ Pushed commits to remote")
+		fmt.Println("✔ Pushed amended commit with --force-with-lease to remote")
 
 	case "status":
 		st, err := gitops.GetRepoStatus(".")

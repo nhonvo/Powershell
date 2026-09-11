@@ -338,13 +338,50 @@ func Pull(repoPath string) error {
 	return nil
 }
 
-// Push runs git push
+// Push runs git push, automatically configuring upstream if needed
 func Push(repoPath string) error {
 	cmd := exec.Command("git", "push")
 	cmd.Dir = repoPath
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("push failed: %s (%w)", strings.TrimSpace(string(out)), err)
+		outStr := strings.TrimSpace(string(out))
+		if strings.Contains(outStr, "no upstream branch") || strings.Contains(outStr, "--set-upstream") {
+			_, activeBranch, bErr := ListBranches(repoPath)
+			if bErr == nil && activeBranch != "" {
+				cmdUp := exec.Command("git", "push", "-u", "origin", activeBranch)
+				cmdUp.Dir = repoPath
+				if outUp, errUp := cmdUp.CombinedOutput(); errUp == nil {
+					return nil
+				} else {
+					return fmt.Errorf("push failed: %s (%w)", strings.TrimSpace(string(outUp)), errUp)
+				}
+			}
+		}
+		return fmt.Errorf("push failed: %s (%w)", outStr, err)
+	}
+	return nil
+}
+
+// PushForceWithLease runs git push --force-with-lease, ideal for safely pushing amended commits
+func PushForceWithLease(repoPath string) error {
+	cmd := exec.Command("git", "push", "--force-with-lease")
+	cmd.Dir = repoPath
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		outStr := strings.TrimSpace(string(out))
+		if strings.Contains(outStr, "no upstream branch") || strings.Contains(outStr, "--set-upstream") {
+			_, activeBranch, bErr := ListBranches(repoPath)
+			if bErr == nil && activeBranch != "" {
+				cmdUp := exec.Command("git", "push", "--force-with-lease", "-u", "origin", activeBranch)
+				cmdUp.Dir = repoPath
+				if outUp, errUp := cmdUp.CombinedOutput(); errUp == nil {
+					return nil
+				} else {
+					return fmt.Errorf("force push failed: %s (%w)", strings.TrimSpace(string(outUp)), errUp)
+				}
+			}
+		}
+		return fmt.Errorf("force push failed: %s (%w)", outStr, err)
 	}
 	return nil
 }
@@ -419,6 +456,39 @@ func Commit(repoPath string, message string, addAll bool) error {
 		return fmt.Errorf("git commit failed: %s (%w)", strings.TrimSpace(string(out)), err)
 	}
 	return nil
+}
+
+// CommitAmend amends the previous commit. If message is empty, keeps previous message (--no-edit).
+func CommitAmend(repoPath string, message string, noEdit bool) error {
+	var args []string
+	if noEdit {
+		args = []string{"commit", "--amend", "--no-edit"}
+	} else {
+		message = strings.TrimSpace(message)
+		if message == "" {
+			args = []string{"commit", "--amend", "--no-edit"}
+		} else {
+			args = []string{"commit", "--amend", "-m", message}
+		}
+	}
+	cmd := exec.Command("git", args...)
+	cmd.Dir = repoPath
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("commit --amend failed: %s (%w)", strings.TrimSpace(string(out)), err)
+	}
+	return nil
+}
+
+// GetLastCommitMessage returns the commit message of HEAD
+func GetLastCommitMessage(repoPath string) (string, error) {
+	cmd := exec.Command("git", "log", "-1", "--format=%s")
+	cmd.Dir = repoPath
+	out, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(string(out)), nil
 }
 
 // StageAll runs git add -A
