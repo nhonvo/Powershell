@@ -485,9 +485,12 @@ Usage:
   agygit resolve <file> <--ours|--theirs> Resolve conflict with strategy
   agygit graph                     Display visual ASCII git log graph with colors
   agygit log                       Show recent commits
-  agygit commit [msg]              Commit changes
+  agygit commit [--amend] [msg]    Commit changes (or amend last commit)
+  agygit amend [msg]               Amend last commit (keeps message if omitted)
   agygit undo                      Undo last commit (soft reset, keeps changes staged)
   agygit push                      Push commits to remote
+  agygit push [--amend|--force]    Safely push amended commit (--force-with-lease)
+  agygit push-amend                Shortcut to push amended commit (--force-with-lease)
   agygit pull                      Pull fast-forward changes
   agygit merge <branch> [--squash] Merge branch into current branch
   agygit squash-merge <branch>     Squash merge branch into current branch
