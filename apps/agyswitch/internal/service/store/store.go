@@ -95,6 +95,39 @@ func syncAccountCredentials(src, dst string) {
 	}
 }
 
+// SyncActiveAccountCredentials keeps the active account directory and ~/.gemini in sync.
+func (s *Store) SyncActiveAccountCredentials() {
+	active := s.GetActiveAccount()
+	if active == "" || strings.EqualFold(active, "default") {
+		return
+	}
+	primaryDir := filepath.Join(s.UserHome, ".gemini")
+	activeDir := s.GetAccountDirectory(active)
+
+	pTok := s.Vault.ReadTokenFromDir(primaryDir)
+	aTok := s.Vault.ReadTokenFromDir(activeDir)
+
+	if pTok != "" && aTok == "" {
+		syncAccountCredentials(primaryDir, activeDir)
+		return
+	}
+	if aTok != "" && pTok == "" {
+		syncAccountCredentials(activeDir, primaryDir)
+		return
+	}
+
+	pTokFile := filepath.Join(primaryDir, "antigravity-cli", "antigravity-oauth-token")
+	aTokFile := filepath.Join(activeDir, "antigravity-cli", "antigravity-oauth-token")
+	pInfo, pErr := os.Stat(pTokFile)
+	aInfo, aErr := os.Stat(aTokFile)
+
+	if pErr == nil && (aErr != nil || pInfo.ModTime().After(aInfo.ModTime())) {
+		syncAccountCredentials(primaryDir, activeDir)
+	} else if aErr == nil && (pErr != nil || aInfo.ModTime().After(pInfo.ModTime())) {
+		syncAccountCredentials(activeDir, primaryDir)
+	}
+}
+
 // SetActiveAccount backs up current active credentials, restores target credentials, and syncs keyring.
 func (s *Store) SetActiveAccount(accountName string) error {
 	acc := strings.TrimSpace(accountName)
@@ -105,7 +138,7 @@ func (s *Store) SetActiveAccount(accountName string) error {
 	primaryDir := filepath.Join(s.UserHome, ".gemini")
 
 	currentActive := s.GetActiveAccount()
-	if currentActive != "" && !strings.EqualFold(currentActive, "default") && !strings.EqualFold(currentActive, acc) {
+	if currentActive != "" && !strings.EqualFold(currentActive, "default") {
 		currentActiveDir := s.GetAccountDirectory(currentActive)
 		syncAccountCredentials(primaryDir, currentActiveDir)
 	}
@@ -115,7 +148,9 @@ func (s *Store) SetActiveAccount(accountName string) error {
 		_ = os.MkdirAll(targetDir, 0755)
 	}
 
-	syncAccountCredentials(targetDir, primaryDir)
+	if !strings.EqualFold(currentActive, acc) {
+		syncAccountCredentials(targetDir, primaryDir)
+	}
 
 	activeFile := filepath.Join(primaryDir, "active_account.txt")
 	_ = os.WriteFile(activeFile, []byte(acc), 0644)
@@ -451,6 +486,7 @@ func (s *Store) PurgeAllQuotaCaches() {
 }
 
 func (s *Store) ListAccounts() []model.AccountInfo {
+	s.SyncActiveAccountCredentials()
 	known := s.ListAccountNames()
 	active := s.GetActiveAccount()
 
@@ -463,6 +499,9 @@ func (s *Store) ListAccounts() []model.AccountInfo {
 			defer wg.Done()
 			accDir := s.GetAccountDirectory(accName)
 			tok := s.Vault.ReadTokenFromDir(accDir)
+			if tok == "" && strings.EqualFold(accName, active) {
+				tok = s.Vault.ReadTokenFromDir(filepath.Join(s.UserHome, ".gemini"))
+			}
 
 			email := fmt.Sprintf("%s@gmail.com", accName)
 			sig := s.Vault.GetShortSignature(tok)
@@ -531,6 +570,7 @@ func (s *Store) LoadQuotaCache(accName string) (*model.AccountInfo, bool) {
 }
 
 func (s *Store) ListAccountsFast() []model.AccountInfo {
+	s.SyncActiveAccountCredentials()
 	known := s.ListAccountNames()
 	active := s.GetActiveAccount()
 
@@ -538,6 +578,9 @@ func (s *Store) ListAccountsFast() []model.AccountInfo {
 	for i, name := range known {
 		accDir := s.GetAccountDirectory(name)
 		tok := s.Vault.ReadTokenFromDir(accDir)
+		if tok == "" && strings.EqualFold(name, active) {
+			tok = s.Vault.ReadTokenFromDir(filepath.Join(s.UserHome, ".gemini"))
+		}
 		email := fmt.Sprintf("%s@gmail.com", name)
 		sig := s.Vault.GetShortSignature(tok)
 		isLoggedIn := tok != ""
@@ -650,8 +693,19 @@ func FetchUserQuotaSummary(tok string) (*model.QuotaSummary, error) {
 }
 
 func (s *Store) GetAccountQuota(name string) (*model.QuotaSummary, error) {
+	active := s.GetActiveAccount()
+	if strings.EqualFold(name, active) {
+		s.SyncActiveAccountCredentials()
+	}
 	accDir := s.GetAccountDirectory(name)
 	tok := s.Vault.EnsureValidAccessToken(accDir)
+	if tok == "" && strings.EqualFold(name, active) {
+		primaryDir := filepath.Join(s.UserHome, ".gemini")
+		tok = s.Vault.EnsureValidAccessToken(primaryDir)
+		if tok != "" {
+			syncAccountCredentials(primaryDir, accDir)
+		}
+	}
 	if tok == "" {
 		return nil, errors.New("account is logged out")
 	}

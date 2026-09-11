@@ -185,3 +185,50 @@ func TestExtractDetailedModelBuckets(t *testing.T) {
 	}
 }
 
+func TestStore_SyncActiveAccountCredentials(t *testing.T) {
+	tempDir, err := os.MkdirTemp("", "store_sync_test_*")
+	if err != nil {
+		t.Fatalf("failed to create temp dir: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	v := vault.NewVault(tempDir)
+	s := store.NewStore(tempDir, v)
+
+	accName := "active_test_user"
+	if err := s.SaveAccountRegistry([]string{accName}); err != nil {
+		t.Fatalf("failed to save registry: %v", err)
+	}
+
+	// Set active_account.txt directly
+	primaryDir := filepath.Join(tempDir, ".gemini")
+	_ = os.MkdirAll(primaryDir, 0755)
+	_ = os.WriteFile(filepath.Join(primaryDir, "active_account.txt"), []byte(accName), 0644)
+
+	// Simulate login directly in primary dir (~/.gemini)
+	primaryCliDir := filepath.Join(primaryDir, "antigravity-cli")
+	_ = os.MkdirAll(primaryCliDir, 0755)
+	fakeTokenJSON := `{"token":{"access_token":"ya29.testsyncactive12345"}}`
+	_ = os.WriteFile(filepath.Join(primaryCliDir, "antigravity-oauth-token"), []byte(fakeTokenJSON), 0600)
+
+	// Ensure ~/.gemini_<accName> has NO token yet
+	accDir := s.GetAccountDirectory(accName)
+	_ = os.MkdirAll(accDir, 0755)
+
+	// Call ListAccountsFast - should detect token and sync to accDir
+	accs := s.ListAccountsFast()
+	if len(accs) != 1 {
+		t.Fatalf("expected 1 account, got %d", len(accs))
+	}
+
+	if !accs[0].IsLoggedIn {
+		t.Errorf("expected account to be logged in, got false")
+	}
+
+	// Verify token was synced to account directory
+	accTokFile := filepath.Join(accDir, "antigravity-cli", "antigravity-oauth-token")
+	if _, err := os.Stat(accTokFile); err != nil {
+		t.Errorf("expected token to be synced to %s, but file does not exist", accTokFile)
+	}
+}
+
