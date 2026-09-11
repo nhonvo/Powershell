@@ -35,7 +35,8 @@ func (m *Manager) ConsolidateSessions() {
 	}
 
 	script := `
-import sqlite3, glob, os, shutil, sys
+import sqlite3, glob, os, shutil, sys, json
+from datetime import datetime
 
 user_home = sys.argv[1]
 primary_db = os.path.join(user_home, ".gemini", "antigravity-cli", "conversation_summaries.db")
@@ -63,8 +64,6 @@ try:
             s_conn.close()
         except Exception:
             pass
-    conn.commit()
-    conn.close()
 
     for s_brain in glob.glob(os.path.join(user_home, ".gemini*", "antigravity-cli", "brain")):
         if os.path.abspath(s_brain) == os.path.abspath(primary_brain):
@@ -77,6 +76,80 @@ try:
                     shutil.copytree(src, dst)
         except Exception:
             pass
+
+    # Backfill missing standalone brain sessions into conversation_summaries.db
+    existing = set(r[0] for r in c.execute("SELECT conversation_id FROM conversation_summaries").fetchall())
+    if os.path.exists(primary_brain):
+        for cid in os.listdir(primary_brain):
+            if cid in existing or cid == "scratch":
+                continue
+            log = os.path.join(primary_brain, cid, ".system_generated", "logs", "transcript.jsonl")
+            if not os.path.exists(log):
+                continue
+            title = ""
+            preview = ""
+            steps = 0
+            ws_dir = ""
+            mtime = datetime.fromtimestamp(os.path.getmtime(log)).strftime("%Y-%m-%d %H:%M:%S+00:00")
+            try:
+                with open(log, "r", encoding="utf-8", errors="replace") as f:
+                    for i, line in enumerate(f):
+                        steps += 1
+                        if not preview and "\"USER_INPUT\"" in line:
+                            try:
+                                d = json.loads(line)
+                                if d.get("type") == "USER_INPUT":
+                                    c_text = d.get("content", "").replace("<USER_REQUEST>", "").replace("</USER_REQUEST>", "").strip()
+                                    preview = c_text[:120].replace("\n", " ")
+                                    for sub in c_text.split("\n"):
+                                        sub = sub.strip()
+                                        if sub and not sub.startswith("<") and not sub.startswith("-") and not sub.startswith("The current"):
+                                            title = sub[:60]
+                                            break
+                            except Exception:
+                                pass
+                        if not ws_dir and "/projects/" in line:
+                            idx = line.find("/projects/")
+                            end = len(line)
+                            for sc in ["\"", "\\", "\n", "\r", " ", ",", ">", "]", "}"]:
+                                pos = line.find(sc, idx)
+                                if pos != -1 and pos < end:
+                                    end = pos
+                            cand = line[idx:end]
+                            if not cand.startswith(user_home):
+                                cand = os.path.join(user_home, cand.lstrip("/"))
+                            parts = cand.split("/")
+                            proj_idx = -1
+                            for pi, ppart in enumerate(parts):
+                                if ppart == "projects" and pi + 1 < len(parts):
+                                    proj_idx = pi + 1
+                                    break
+                            if proj_idx != -1:
+                                ws_dir = "/" + "/".join(parts[1:proj_idx+1])
+            except Exception:
+                pass
+
+            if not ws_dir:
+                ws_dir = user_home
+            if not title:
+                title = preview[:50] if preview else "Conversation Task"
+            if not preview:
+                preview = title
+
+            ws_uris = json.dumps([f"file://{ws_dir}"])
+            sql = """
+                INSERT OR REPLACE INTO conversation_summaries (
+                    conversation_id, title, preview, step_count, last_modified_time, 
+                    workspace_uris, status, source, project_id, agent_name, 
+                    parent_conversation_id, nesting_depth, battle_id, winning_conversation_id, 
+                    not_fully_idle, killed, last_user_input_time, last_user_input_step_index, 
+                    app_data_dir, group_id
+                ) VALUES (?, ?, ?, ?, ?, ?, "", "USER_EXPLICIT", "default-cli-project", "", "", 0, "", "", 0, 0, ?, 0, "", "")
+            """
+            c.execute(sql, (cid, title, preview, steps, mtime, ws_uris, mtime))
+
+    conn.commit()
+    conn.close()
 except Exception:
     pass
 `
@@ -88,12 +161,33 @@ except Exception:
 func (m *Manager) DiscoverPrimarySessions() ([]model.SessionInfo, error) {
 	m.ConsolidateSessions()
 	dbPath := filepath.Join(m.UserHome, ".gemini", "antigravity-cli", "conversation_summaries.db")
+	var dbSessions []model.SessionInfo
 	if fi, err := os.Stat(dbPath); err == nil && !fi.IsDir() {
-		if sessions, err := m.queryConversationSummaries(dbPath); err == nil && len(sessions) > 0 {
-			return sessions, nil
+		dbSessions, _ = m.queryConversationSummaries(dbPath)
+	}
+
+	brainSessions, _ := m.scanBrainDirectory()
+	if len(dbSessions) == 0 {
+		return brainSessions, nil
+	}
+
+	seen := make(map[string]bool)
+	for _, s := range dbSessions {
+		seen[s.ConversationID] = true
+	}
+
+	for _, bs := range brainSessions {
+		if !seen[bs.ConversationID] {
+			dbSessions = append(dbSessions, bs)
+			seen[bs.ConversationID] = true
 		}
 	}
-	return m.scanBrainDirectory()
+
+	sort.Slice(dbSessions, func(i, j int) bool {
+		return dbSessions[i].LastActive.After(dbSessions[j].LastActive)
+	})
+
+	return dbSessions, nil
 }
 
 // DiscoverAllSessions returns both primary CLI sessions and all internal subagent tasks.
