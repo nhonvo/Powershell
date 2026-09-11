@@ -5,22 +5,22 @@
 SHELL := /bin/bash
 INSTALL_DIR ?= $(HOME)/.local/bin
 DIST_WIN ?= ./dist/windows
-APPS := agyswitch agyproj agygit agydocker agyterm agyx agymobile agyollama
+APPS := agyswitch agyproj agygit agydocker agyterm agyx agymobile agyollama agybot
 
-.PHONY: all build install test test-v clean windows help $(APPS) mobile ollama
+.PHONY: all build install test test-v clean windows help $(APPS) mobile ollama bot agybot
 
 all: install
 
 help:
 	@echo "=================================================================="
-	@echo "⚡ Antigravity Developer Suite (Go Engine - 8 Micro-Apps)"
+	@echo "⚡ Antigravity Developer Suite (Go Engine - 9 Micro-Apps)"
 	@echo "=================================================================="
 	@echo "Usage:"
-	@echo "  make build         Build all 8 Linux binaries to ./bin/"
+	@echo "  make build         Build all 9 Linux binaries to ./bin/"
 	@echo "  make install       Build & install all binaries to $(INSTALL_DIR)"
-	@echo "  make test          Run unit test suites across all 8 applications"
+	@echo "  make test          Run unit test suites across all 9 applications"
 	@echo "  make windows       Cross-compile Windows .exe binaries to $(DIST_WIN)"
-	@echo "  make <app>         Build & install a single app (e.g. make ollama)"
+	@echo "  make <app>         Build & install a single app (e.g. make bot)"
 	@echo ""
 	@echo "Available single-app targets:"
 	@echo "  make switch        Build agyswitch  (Vault, Quota, Sessions)"
@@ -31,6 +31,7 @@ help:
 	@echo "  make proxy         Build agyx       (Master Proxy & Orchestrator)"
 	@echo "  make mobile        Build agymobile  (Mobile Terminal, Web PWA & Tailscale)"
 	@echo "  make ollama        Build agyollama  (Local Ollama & AI Agent Cockpit)"
+	@echo "  make bot           Build agybot     (Telegram Remote Controller & Project Daemon)"
 	@echo "=================================================================="
 
 # Test all apps
@@ -103,6 +104,14 @@ ollama:
 	@echo "🚀 Building & installing agyollama..."
 	@(cd apps/agyollama && go test ./... && go build -o $(INSTALL_DIR)/agyollama .)
 	@echo "✔ Installed $(INSTALL_DIR)/agyollama"
+
+bot:
+	@mkdir -p $(INSTALL_DIR)
+	@echo "🚀 Building & installing agybot..."
+	@(cd apps/agybot && go test ./... && go build -o $(INSTALL_DIR)/agybot .)
+	@echo "✔ Installed $(INSTALL_DIR)/agybot"
+
+agybot: bot
 
 # Cross-compile for Windows
 windows:
