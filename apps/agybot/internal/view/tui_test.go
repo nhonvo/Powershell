@@ -29,3 +29,21 @@ func TestDashboardView_RenderOverview(t *testing.T) {
 		t.Errorf("Expected Gemini 3.7 Flash in render")
 	}
 }
+
+func TestDashboardView_RenderTabs(t *testing.T) {
+	cfg := &config.Config{
+		DefaultModel: "Gemini 3.7 Flash",
+		DefaultMode:  "accept-edits",
+	}
+	authMgr := auth.NewAuthManager("", 3, 0, 0, nil)
+	wsMgr := workspace.NewWorkspaceManager("/tmp")
+	accMgr := account.NewAccountManager()
+
+	v := NewDashboardView(cfg, authMgr, wsMgr, accMgr)
+
+	for tab := 0; tab < 5; tab++ {
+		v.ActiveTab = tab
+		v.tabSwitched = true
+		v.Render() // Should not crash
+	}
+}

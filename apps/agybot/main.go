@@ -10,6 +10,8 @@ import (
 	"syscall"
 	"time"
 
+	"golang.org/x/term"
+
 	"agybot/internal/account"
 	"agybot/internal/auth"
 	"agybot/internal/bot"
@@ -38,6 +40,12 @@ func main() {
 
 	args := os.Args[1:]
 	if len(args) == 0 {
+		if term.IsTerminal(int(os.Stdin.Fd())) {
+			if err := v.RunInteractive(); err != nil {
+				fmt.Print(v.RenderOverview())
+			}
+			return
+		}
 		fmt.Print(v.RenderOverview())
 		return
 	}

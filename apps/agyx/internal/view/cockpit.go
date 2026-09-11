@@ -131,19 +131,43 @@ func (a *CockpitApp) RunInteractive() error {
 			}
 		case 't', 'T':
 			if a.ActiveTab == 5 {
-				a.ToolSubIndex = 0
+				if a.ToolSubIndex == 0 {
+					toolName := a.getActiveToolBinary()
+					a.launchTool(toolName, fd, oldState)
+				} else {
+					a.ToolSubIndex = 0
+					a.tabSwitched = true
+				}
 			}
 		case 'm', 'M':
 			if a.ActiveTab == 5 {
-				a.ToolSubIndex = 1
+				if a.ToolSubIndex == 1 {
+					toolName := a.getActiveToolBinary()
+					a.launchTool(toolName, fd, oldState)
+				} else {
+					a.ToolSubIndex = 1
+					a.tabSwitched = true
+				}
 			}
 		case 'a', 'A':
 			if a.ActiveTab == 5 {
-				a.ToolSubIndex = 2
+				if a.ToolSubIndex == 2 {
+					toolName := a.getActiveToolBinary()
+					a.launchTool(toolName, fd, oldState)
+				} else {
+					a.ToolSubIndex = 2
+					a.tabSwitched = true
+				}
 			}
 		case 'b', 'B':
 			if a.ActiveTab == 5 {
-				a.ToolSubIndex = 3
+				if a.ToolSubIndex == 3 {
+					toolName := a.getActiveToolBinary()
+					a.launchTool(toolName, fd, oldState)
+				} else {
+					a.ToolSubIndex = 3
+					a.tabSwitched = true
+				}
 			}
 		case 's', 'S':
 			if a.ActiveTab == 5 && a.ToolSubIndex == 3 {
@@ -186,10 +210,13 @@ func (a *CockpitApp) RunInteractive() error {
 func (a *CockpitApp) launchTool(binName string, fd int, oldState *term.State) {
 	fmt.Print("\033[?25h\033[?1049l")
 	_ = term.Restore(fd, oldState)
-	_ = proxy.Execute(binName, nil)
+	err := proxy.Execute(binName, nil)
 	newOld, _ := term.MakeRaw(fd)
 	*oldState = *newOld
 	fmt.Print("\033[?1049h\033[?25l")
+	if err != nil {
+		a.StatusMsg = fmt.Sprintf("\033[31mError running %s: %v\033[0m", binName, err)
+	}
 	a.tabSwitched = true
 }
 
