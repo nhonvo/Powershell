@@ -35,6 +35,8 @@ func GetSuiteApps() []string {
 		"agyx",
 		"agymobile",
 		"agyollama",
+		"agybot",
+		"agyport",
 	}
 }
 
@@ -53,6 +55,11 @@ func GetCatalog() []AliasSpec {
 		{Name: "agyt", Category: "Suite", Type: SuiteApp, Target: "agyterm", Description: "Quick launch Terminal Theme & Font manager"},
 		{Name: "agym", Category: "Suite", Type: SuiteApp, Target: "agymobile", Description: "Quick launch Mobile & Tailscale Station"},
 		{Name: "agyo", Category: "Suite", Type: SuiteApp, Target: "agyollama", Description: "Quick launch Local Ollama AI Cockpit"},
+		{Name: "agyport", Category: "Suite", Type: SuiteApp, Target: "agyport", Description: "Quick launch Port & RAM Manager"},
+		{Name: "agy-port", Category: "Suite", Type: SuiteApp, Target: "agyport", Description: "Alias for agyport"},
+		{Name: "killport", Category: "Suite", Type: SuiteApp, Target: "agyport", Args: []string{"kill"}, Description: "Kill process listening on specified port"},
+		{Name: "kp", Category: "Suite", Type: SuiteApp, Target: "agyport", Args: []string{"kill"}, Description: "Shortcut to kill port"},
+		{Name: "ports", Category: "Suite", Type: SuiteApp, Target: "agyport", Args: []string{"ls"}, Description: "List all listening network ports"},
 
 		// =========================================================================
 		// 2. DOCKER & CONTAINER SHORTCUTS

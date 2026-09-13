@@ -10,15 +10,17 @@ The repository is organized as a clean, domain-separated monorepo:
 
 ```text
 powershell-profile/
-├── apps/                       # Antigravity Go Engine Micro-Applications (8 Native Tools)
-│   ├── agyx/                   # Master CLI Proxy & Unified 8-Tab TUI Cockpit
+├── apps/                       # Antigravity Go Engine Micro-Applications (10 Native Tools)
+│   ├── agyx/                   # Master CLI Proxy & Unified Cockpit
 │   ├── agyswitch/              # Identity, AES-256 Vault & Google Quota Engine
 │   ├── agyproj/                # Workspace Registry, Stack Detector & AI Cost Analytics
 │   ├── agygit/                 # Git Fleet Cockpit, Multi-Agent Worktrees & Staging
 │   ├── agydocker/              # Container Fleet & WSL2 Kernel RAM/Swap Guard
+│   ├── agyport/                # Active Network Port Manager, Process Killer & RAM Optimizer
 │   ├── agyterm/                # Windows Terminal JSON Settings & Oh-My-Posh Themes
 │   ├── agymobile/              # Mobile Smartphone TUI, Web PWA & Tailscale Station
-│   └── agyollama/              # Local AI & Ollama Daemon Cockpit
+│   ├── agyollama/              # Local AI & Ollama Daemon Cockpit
+│   └── agybot/                 # Telegram Remote Controller & Project Daemon
 │
 ├── archive/                    # Archived Historical Codebases & Solutions
 │   └── agytui/                 # Legacy .NET 9.0 Spectre.Console Control Center (261 tests)

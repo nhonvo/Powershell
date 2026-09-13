@@ -471,6 +471,16 @@ alias ip-info="hostname -I 2>/dev/null || ip -br a"
 alias cat-file="view"
 alias open="open-file"
 
+# Port & RAM Management (Integrated with agyport)
+alias ports="agyport ls"
+alias killport="agyport kill"
+alias kp="agyport kill"
+alias killallports="agyport kill-all"
+alias killdev="agyport kill-all"
+alias reclaim-ram="agyport reclaim"
+alias ram-hogs="agyport top"
+alias mem-status="agyport ram"
+
 
 echo -e "\033[32m🛸 Enhanced Ubuntu Profile Loaded (Oh My Posh: ${POSH_THEME:-neko})\033[0m"
 

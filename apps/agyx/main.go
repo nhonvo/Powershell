@@ -38,9 +38,20 @@ func main() {
 		printShellInit()
 		return
 
+	case "port", "ports":
+		if len(os.Args) == 2 {
+			app := view.NewCockpitApp()
+			app.ActiveTab = 4
+			if err := app.RunInteractive(); err != nil {
+				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+				os.Exit(1)
+			}
+			return
+		}
+
 	case "tools", "util", "utils":
 		app := view.NewCockpitApp()
-		app.ActiveTab = 5
+		app.ActiveTab = 6
 		if err := app.RunInteractive(); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
@@ -97,6 +108,8 @@ Registered Module Proxies:
        Aliases: cloud, s3, localstack
   agyx bot [args...]               Proxy to 'agybot' (Telegram Remote Controller, Multi-Project & Research)
        Aliases: b, telegram, tg, agentbot
+  agyx port [args...]              Proxy to 'agyport' (Port Manager, Kill Ports & RAM Leverage)
+       Aliases: ports, killport, kp
 
 Examples:
   agyx bot                         Print AgyBot cockpit status & registered projects

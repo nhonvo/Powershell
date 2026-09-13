@@ -76,6 +76,12 @@ func GetRegisteredTools() []ToolDefinition {
 			Aliases:     []string{"b", "telegram", "tg", "agentbot"},
 			Description: "Antigravity remote Telegram controller, multi-project & research daemon",
 		},
+		{
+			Name:        "port",
+			BinaryName:  "agyport",
+			Aliases:     []string{"ports", "killport", "kp", "killports"},
+			Description: "Active network port manager, process killer & smart RAM leverage optimizer",
+		},
 	}
 }
 
@@ -177,13 +183,14 @@ func Execute(binName string, args []string) error {
 	return cmd.Run()
 }
 
-// RunAWS handles AWS CLI execution, subcommands, and diagnostic fallbacks safely
+// RunAWS handles AWS CLI execution, subcommands, and cheat sheet diagnostics
 func RunAWS(args []string) error {
 	binPath, _ := FindBinary("aws")
 
-	// If no arguments provided, run the diagnostics and quick command console!
-	if len(args) == 0 || args[0] == "status" || args[0] == "diagnostics" || args[0] == "diag" {
-		return runAwsDiagnostics(binPath)
+	// If no arguments provided, or sheet/cockpit requested, show the rich cheat sheet!
+	if len(args) == 0 || args[0] == "sheet" || args[0] == "cheatsheet" || args[0] == "status" || args[0] == "diag" || args[0] == "diagnostics" || args[0] == "cockpit" || args[0] == "help" || args[0] == "-h" || args[0] == "--help" {
+		pauseOnExit := len(args) > 0 && args[0] == "cockpit"
+		return runAwsCheatSheet(binPath, pauseOnExit)
 	}
 
 	// Translate friendly shortcuts
@@ -211,7 +218,7 @@ func RunAWS(args []string) error {
 
 	if binPath == "" {
 		fmt.Println("\r\n⚠️  \033[1;33mAWS CLI binary not found in PATH.\033[0m")
-		return runAwsDiagnostics("")
+		return runAwsCheatSheet("", false)
 	}
 
 	cmd := exec.Command(binPath, finalArgs...)
@@ -235,45 +242,78 @@ func checkLocalStack() error {
 	return nil
 }
 
-func runAwsDiagnostics(binPath string) error {
-	fmt.Println("\r\n☁️  \033[1;36mAWS Cloud & LocalStack Diagnostics\033[0m")
+func runAwsCheatSheet(binPath string, pauseOnExit bool) error {
+	fmt.Println("\r\n☁️  \033[1;36mAWS Cloud & LocalStack Developer Cheat Sheet\033[0m")
 	fmt.Println("──────────────────────────────────────────────────────────────────────────────────")
+
+	// 1. Live Telemetry
+	fmt.Print("  • AWS Identity:     ")
 	if binPath != "" {
-		fmt.Printf("  • AWS CLI Binary:   \033[1;32m%s\033[0m\r\n", binPath)
-		ctx1, cancel1 := context.WithTimeout(context.Background(), 1500*time.Millisecond)
-		defer cancel1()
-		if verOut, err := exec.CommandContext(ctx1, binPath, "--version").CombinedOutput(); err == nil {
-			fmt.Printf("  • Version:          %s", string(verOut))
-		}
-		fmt.Print("  • AWS IAM Identity: ")
-		ctx2, cancel2 := context.WithTimeout(context.Background(), 1500*time.Millisecond)
-		defer cancel2()
-		stsCmd := exec.CommandContext(ctx2, binPath, "sts", "get-caller-identity")
+		ctx, cancel := context.WithTimeout(context.Background(), 1200*time.Millisecond)
+		defer cancel()
+		stsCmd := exec.CommandContext(ctx, binPath, "sts", "get-caller-identity", "--output", "text")
 		if stsOut, err := stsCmd.CombinedOutput(); err == nil {
-			fmt.Printf("\033[1;32mConfigured\033[0m\r\n    %s\r\n", strings.TrimSpace(string(stsOut)))
+			parts := strings.Fields(strings.TrimSpace(string(stsOut)))
+			if len(parts) >= 2 {
+				fmt.Printf("\033[1;32mConfigured\033[0m (Account: \033[33m%s\033[0m, Arn: \033[90m%s\033[0m)\r\n", parts[0], parts[1])
+			} else {
+				fmt.Printf("\033[1;32mConfigured\033[0m (%s)\r\n", strings.TrimSpace(string(stsOut)))
+			}
 		} else {
 			fmt.Println("\033[1;33mNo active credentials (or offline)\033[0m")
 		}
 	} else {
-		fmt.Println("  • AWS CLI:          \033[1;33mNot found in Linux/Windows PATH\033[0m")
+		fmt.Println("\033[90mAWS CLI not found in PATH\033[0m")
 	}
 
-	fmt.Print("  • LocalStack Mock:  ")
-	client := http.Client{Timeout: 800 * time.Millisecond}
+	fmt.Print("  • LocalStack (:4566): ")
+	client := http.Client{Timeout: 600 * time.Millisecond}
 	resp, err := client.Get("http://localhost:4566/_localstack/health")
 	if err == nil {
 		defer resp.Body.Close()
-		fmt.Printf("\033[1;32mONLINE (Status: %s)\033[0m\r\n", resp.Status)
+		fmt.Printf("\033[1;32mONLINE (HTTP %s)\033[0m\r\n", resp.Status)
 	} else {
-		fmt.Println("\033[1;33mOFFLINE (http://localhost:4566)\033[0m")
+		fmt.Println("\033[90mOFFLINE (Run 'docker run -d -p 4566:4566 localstack/localstack')\033[0m")
 	}
 
 	fmt.Println("──────────────────────────────────────────────────────────────────────────────────")
-	fmt.Println("  Quick Commands:")
-	fmt.Println("    • agyx aws whoami       - Query caller identity (aws sts get-caller-identity)")
-	fmt.Println("    • agyx aws s3           - List S3 buckets (aws s3 ls)")
-	fmt.Println("    • agyx aws sqs          - List SQS queues (aws sqs list-queues)")
-	fmt.Println("    • agyx aws local        - Test LocalStack health")
+	fmt.Println("  \033[1;33m1. 🔐 AUTH, SSO & PROFILES:\033[0m")
+	fmt.Println("     aws sts get-caller-identity                           \033[90m# Check active IAM caller identity\033[0m")
+	fmt.Println("     aws configure list                                    \033[90m# View active profile, region & keys\033[0m")
+	fmt.Println("     aws sso login --profile <profile>                     \033[90m# Single Sign-On browser login\033[0m")
+	fmt.Println("     export AWS_PROFILE=<profile>                          \033[90m# Switch profile in current shell\033[0m")
+	fmt.Println("")
+	fmt.Println("  \033[1;33m2. 🧪 LOCALSTACK (PORT 4566 - ZERO CLOUD COST):\033[0m")
+	fmt.Println("     docker run -d --name localstack -p 4566:4566 localstack/localstack")
+	fmt.Println("     alias awslocal=\"aws --endpoint-url=http://localhost:4566\"")
+	fmt.Println("     awslocal s3 mb s3://test-bucket                       \033[90m# Create mock S3 bucket\033[0m")
+	fmt.Println("     awslocal sqs create-queue --queue-name test-queue     \033[90m# Create mock SQS queue\033[0m")
+	fmt.Println("")
+	fmt.Println("  \033[1;33m3. 🪣 S3 BUCKET & FILE OPERATIONS:\033[0m")
+	fmt.Println("     aws s3 ls                                             \033[90m# List all S3 buckets\033[0m")
+	fmt.Println("     aws s3 sync ./dist s3://my-bucket/ --delete           \033[90m# Sync build & delete missing\033[0m")
+	fmt.Println("     aws s3 presign s3://bucket/file.zip --expires-in 3600 \033[90m# Generate 1-hr secure link\033[0m")
+	fmt.Println("     aws s3 rb s3://my-bucket --force                      \033[90m# Force-delete bucket + files\033[0m")
+	fmt.Println("")
+	fmt.Println("  \033[1;33m4. 📨 SQS & SNS MESSAGING:\033[0m")
+	fmt.Println("     aws sqs list-queues                                   \033[90m# List active SQS queues\033[0m")
+	fmt.Println("     aws sqs send-message --queue-url <url> --message-body '{\"event\":\"test\"}'")
+	fmt.Println("     aws sqs receive-message --queue-url <url> --max-number-of-messages 10")
+	fmt.Println("     aws sqs purge-queue --queue-url <url>                 \033[90m# Purge all messages in queue\033[0m")
+	fmt.Println("")
+	fmt.Println("  \033[1;33m5. ⚡ DYNAMODB & LAMBDA LOGS:\033[0m")
+	fmt.Println("     aws dynamodb list-tables                              \033[90m# List DynamoDB tables\033[0m")
+	fmt.Println("     aws dynamodb scan --table-name Users --max-items 5    \033[90m# Quick sample table scan\033[0m")
+	fmt.Println("     aws logs tail /aws/lambda/<name> --follow             \033[90m# Live tail logs (like tail -f)\033[0m")
 	fmt.Println("──────────────────────────────────────────────────────────────────────────────────")
+	fmt.Println("  \033[1mQuick AGYX Shortcuts:\033[0m")
+	fmt.Println("    • agyx aws whoami    • agyx aws s3    • agyx aws sqs    • agyx aws local")
+	fmt.Println("──────────────────────────────────────────────────────────────────────────────────")
+
+	if pauseOnExit {
+		fmt.Print("\r\n\033[1;32mPress [Enter] to return to AGYX Cockpit...\033[0m")
+		var buf [1]byte
+		_, _ = os.Stdin.Read(buf[:])
+	}
 	return nil
 }

@@ -1,6 +1,7 @@
 package view
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -71,26 +72,26 @@ func (a *CockpitApp) RunInteractive() error {
 			if n >= 3 && buf[1] == '[' {
 				switch buf[2] {
 				case 'C': // Right
-					a.ActiveTab = (a.ActiveTab + 1) % 6
+					a.ActiveTab = (a.ActiveTab + 1) % 7
 					a.tabSwitched = true
 					continue
 				case 'D': // Left
-					a.ActiveTab = (a.ActiveTab + 5) % 6
+					a.ActiveTab = (a.ActiveTab + 6) % 7
 					a.tabSwitched = true
 					continue
 				case 'A': // Up
-					if a.ActiveTab == 5 {
+					if a.ActiveTab == 6 {
 						a.ToolSubIndex = (a.ToolSubIndex + 3) % 4
 					} else {
-						a.ActiveTab = (a.ActiveTab + 5) % 6
+						a.ActiveTab = (a.ActiveTab + 6) % 7
 						a.tabSwitched = true
 					}
 					continue
 				case 'B': // Down
-					if a.ActiveTab == 5 {
+					if a.ActiveTab == 6 {
 						a.ToolSubIndex = (a.ToolSubIndex + 1) % 4
 					} else {
-						a.ActiveTab = (a.ActiveTab + 1) % 6
+						a.ActiveTab = (a.ActiveTab + 1) % 7
 						a.tabSwitched = true
 					}
 					continue
@@ -101,7 +102,7 @@ func (a *CockpitApp) RunInteractive() error {
 
 		switch b {
 		case '\t':
-			a.ActiveTab = (a.ActiveTab + 1) % 6
+			a.ActiveTab = (a.ActiveTab + 1) % 7
 			a.tabSwitched = true
 		case '1':
 			a.ActiveTab = 0
@@ -121,16 +122,19 @@ func (a *CockpitApp) RunInteractive() error {
 		case '6':
 			a.ActiveTab = 5
 			a.tabSwitched = true
+		case '7':
+			a.ActiveTab = 6
+			a.tabSwitched = true
 		case 'j', 'J':
-			if a.ActiveTab == 5 {
+			if a.ActiveTab == 6 {
 				a.ToolSubIndex = (a.ToolSubIndex + 1) % 4
 			}
 		case 'k', 'K':
-			if a.ActiveTab == 5 {
+			if a.ActiveTab == 6 {
 				a.ToolSubIndex = (a.ToolSubIndex + 3) % 4
 			}
 		case 't', 'T':
-			if a.ActiveTab == 5 {
+			if a.ActiveTab == 6 {
 				if a.ToolSubIndex == 0 {
 					toolName := a.getActiveToolBinary()
 					a.launchTool(toolName, fd, oldState)
@@ -140,7 +144,7 @@ func (a *CockpitApp) RunInteractive() error {
 				}
 			}
 		case 'm', 'M':
-			if a.ActiveTab == 5 {
+			if a.ActiveTab == 6 {
 				if a.ToolSubIndex == 1 {
 					toolName := a.getActiveToolBinary()
 					a.launchTool(toolName, fd, oldState)
@@ -149,8 +153,47 @@ func (a *CockpitApp) RunInteractive() error {
 					a.tabSwitched = true
 				}
 			}
+		case 'p', 'P':
+			a.ActiveTab = 4
+			a.tabSwitched = true
+		case 'w', 'W':
+			if a.ActiveTab == 4 {
+				bin, err := proxy.FindBinary("agyport")
+				if err != nil {
+					a.StatusMsg = fmt.Sprintf("\033[31mError finding agyport: %v\033[0m", err)
+				} else {
+					cmd := exec.Command(bin, "ui")
+					_ = cmd.Start()
+					a.StatusMsg = "\033[32m✔ Launched AGYPORT Web UI Dashboard on http://127.0.0.1:5999\033[0m"
+				}
+				a.tabSwitched = true
+			}
+		case 'c', 'C':
+			if a.ActiveTab == 4 {
+				bin, err := proxy.FindBinary("agyport")
+				if err == nil {
+					out, _ := exec.Command(bin, "reclaim").Output()
+					a.StatusMsg = fmt.Sprintf("\033[32m✔ %s\033[0m", strings.TrimSpace(string(out)))
+				}
+				a.tabSwitched = true
+			}
 		case 'a', 'A':
-			if a.ActiveTab == 5 {
+			if a.ActiveTab == 4 {
+				fmt.Print("\033[?25h\033[?1049l")
+				_ = term.Restore(fd, oldState)
+				fmt.Print("\r\n\033[1;33m⚠️  Terminate ALL active developer server ports? (y/N): \033[0m")
+				var confirm string
+				fmt.Scanln(&confirm)
+				if strings.EqualFold(strings.TrimSpace(confirm), "y") {
+					bin, _ := proxy.FindBinary("agyport")
+					_ = exec.Command(bin, "kill-all").Run()
+					a.StatusMsg = "\033[32m✔ Terminated all active developer ports\033[0m"
+				}
+				newOld, _ := term.MakeRaw(fd)
+				*oldState = *newOld
+				fmt.Print("\033[?1049h\033[?25l")
+				a.tabSwitched = true
+			} else if a.ActiveTab == 6 {
 				if a.ToolSubIndex == 2 {
 					toolName := a.getActiveToolBinary()
 					a.launchTool(toolName, fd, oldState)
@@ -160,7 +203,7 @@ func (a *CockpitApp) RunInteractive() error {
 				}
 			}
 		case 'b', 'B':
-			if a.ActiveTab == 5 {
+			if a.ActiveTab == 6 {
 				if a.ToolSubIndex == 3 {
 					toolName := a.getActiveToolBinary()
 					a.launchTool(toolName, fd, oldState)
@@ -170,7 +213,7 @@ func (a *CockpitApp) RunInteractive() error {
 				}
 			}
 		case 's', 'S':
-			if a.ActiveTab == 5 && a.ToolSubIndex == 3 {
+			if a.ActiveTab == 6 && a.ToolSubIndex == 3 {
 				bin, err := proxy.FindBinary("agybot")
 				if err != nil {
 					a.StatusMsg = fmt.Sprintf("\033[31mError locating agybot binary: %v\033[0m", err)
@@ -210,7 +253,11 @@ func (a *CockpitApp) RunInteractive() error {
 func (a *CockpitApp) launchTool(binName string, fd int, oldState *term.State) {
 	fmt.Print("\033[?25h\033[?1049l")
 	_ = term.Restore(fd, oldState)
-	err := proxy.Execute(binName, nil)
+	var args []string
+	if binName == "aws" {
+		args = []string{"cockpit"}
+	}
+	err := proxy.Execute(binName, args)
 	newOld, _ := term.MakeRaw(fd)
 	*oldState = *newOld
 	fmt.Print("\033[?1049h\033[?25l")
@@ -231,8 +278,10 @@ func (a *CockpitApp) getActiveToolBinary() string {
 	case 3:
 		return "agydocker"
 	case 4:
-		return "agyollama"
+		return "agyport"
 	case 5:
+		return "agyollama"
+	case 6:
 		subTools := []string{"agyterm", "agymobile", "aws", "agybot"}
 		if a.ToolSubIndex >= 0 && a.ToolSubIndex < len(subTools) {
 			return subTools[a.ToolSubIndex]
@@ -305,7 +354,7 @@ func (a *CockpitApp) Render() {
 	if width < 80 {
 		b.WriteString("\r\n⚡ \033[1;36mAGYX MASTER COCKPIT\033[0m\033[K\r\n")
 		b.WriteString(hr(width))
-		tabNames := []string{"1:Sw", "2:Pr", "3:Git", "4:Doc", "5:Ai", "6:Tools"}
+		tabNames := []string{"1:Sw", "2:Pr", "3:Git", "4:Doc", "5:Port", "6:Ai", "7:Tool"}
 		for i, t := range tabNames {
 			if i == a.ActiveTab {
 				fmt.Fprintf(&b, "\033[1;37;44m [%s] \033[0m ", t)
@@ -322,8 +371,9 @@ func (a *CockpitApp) Render() {
 			"[2] 📁 Proj",
 			"[3] 🐙 Git",
 			"[4] 🐳 Docker",
-			"[5] 🤖 Ollama",
-			"[6] 🛠️ Tools",
+			"[5] 🌐 Ports",
+			"[6] 🤖 Ollama",
+			"[7] 🛠️ Tools",
 		}
 		for i, t := range tabs {
 			if i == a.ActiveTab {
@@ -346,8 +396,10 @@ func (a *CockpitApp) Render() {
 	case 3:
 		a.renderDockerSummary(&b, width)
 	case 4:
-		a.renderOllamaSummary(&b, width)
+		a.renderPortsSummary(&b, width)
 	case 5:
+		a.renderOllamaSummary(&b, width)
+	case 6:
 		a.renderToolsSummary(&b, width)
 	}
 
@@ -357,12 +409,14 @@ func (a *CockpitApp) Render() {
 	}
 
 	if width < 80 {
-		b.WriteString(" \033[1m[1-6]\033[0mNav \033[1m[↑/↓]\033[0mSelect \033[1;32m[Enter]\033[0mOpen \033[1;31m[Q]\033[0mExit\033[K\r\n")
+		b.WriteString(" \033[1m[1-7]\033[0mNav \033[1m[↑/↓]\033[0mSelect \033[1;32m[Enter]\033[0mOpen \033[1;31m[Q]\033[0mExit\033[K\r\n")
 	} else {
-		if a.ActiveTab == 5 {
-			b.WriteString(" \033[1m[Tab/1-6]\033[0m Tabs · \033[1;33m[↑/↓]\033[0m Select · \033[1;32m[Enter/T/M/A/B]\033[0m Open · \033[1;35m[S]\033[0m Bot Daemon · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+		if a.ActiveTab == 4 {
+			b.WriteString(" \033[1m[Tab/1-7]\033[0m Tabs · \033[1;32m[Enter]\033[0m TUI Cockpit · \033[1;36m[W]\033[0m Web Dashboard · \033[1;33m[C]\033[0m Reclaim RAM · \033[1;31m[A]\033[0m Kill All Dev · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+		} else if a.ActiveTab == 6 {
+			b.WriteString(" \033[1m[Tab/1-7]\033[0m Tabs · \033[1;33m[↑/↓]\033[0m Select · \033[1;32m[Enter/T/M/A/B]\033[0m Open · \033[1;35m[S]\033[0m Bot Daemon · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 		} else {
-			b.WriteString(" \033[1m[Tab/1-6]\033[0m Switch Module · \033[1;32m[Enter]\033[0m Launch Dedicated App · \033[1;36m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab/1-7]\033[0m Switch Module · \033[1;32m[Enter]\033[0m Launch Dedicated App · \033[1;36m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 		}
 	}
 
@@ -400,6 +454,41 @@ func (a *CockpitApp) renderDockerSummary(b *strings.Builder, width int) {
 	fmt.Fprintf(b, "  • \033[1mKey Features:\033[0m     Direct Linux kernel memory guard (/proc/meminfo), Docker prune cache\033[K\r\n")
 	fmt.Fprintf(b, "  • \033[1mWSL Health:\033[0m       Monitors vmmem consumption to prevent Windows host freezing\033[K\r\n\033[K\r\n")
 	b.WriteString("  \033[1;32mPress [Enter] to launch full interactive 'agydocker' Container Hub...\033[0m\033[K\r\n")
+}
+
+func (a *CockpitApp) renderPortsSummary(b *strings.Builder, width int) {
+	fmt.Fprintf(b, " 🌐 \033[1;36mActive Ports & Smart RAM Leverage Optimizer (agyport)\033[0m\033[K\r\n\033[K\r\n")
+	fmt.Fprintf(b, "  • \033[1mPrimary Command:\033[0m  agyx port [ls|check|kill|kill-all|ram|top|reclaim|ui]\033[K\r\n")
+	fmt.Fprintf(b, "  • \033[1mKey Features:\033[0m     Live TCP/UDP socket scanner, dev server detection (Vite, Next, FastAPI),\033[K\r\n")
+	fmt.Fprintf(b, "                      PID memory attribution, safe port kill & bulk dev server reclaim\033[K\r\n")
+	fmt.Fprintf(b, "  • \033[1mWeb Dashboard:\033[0m    http://127.0.0.1:5999 (Press \033[1;36m[W]\033[0m to open in browser)\033[K\r\n\033[K\r\n")
+
+	b.WriteString("  \033[1;33mLive System & Memory Telemetry:\033[0m\033[K\r\n")
+	bin, err := proxy.FindBinary("agyport")
+	if err == nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 800*time.Millisecond)
+		defer cancel()
+		if memOut, err := exec.CommandContext(ctx, bin, "ram").Output(); err == nil {
+			lines := strings.Split(strings.TrimSpace(string(memOut)), "\n")
+			for _, l := range lines {
+				trimmed := strings.TrimSpace(l)
+				if strings.HasPrefix(trimmed, "Total:") || strings.HasPrefix(trimmed, "Used:") || strings.HasPrefix(trimmed, "Available:") || strings.HasPrefix(trimmed, "Cached:") || strings.HasPrefix(trimmed, "Swap:") {
+					fields := strings.Fields(trimmed)
+					if len(fields) >= 2 {
+						fmt.Fprintf(b, "    • \033[1m%-11s\033[0m %s\033[K\r\n", fields[0], strings.Join(fields[1:], " "))
+					}
+				}
+			}
+		} else {
+			b.WriteString("    • RAM Status:       Scanning memory...\033[K\r\n")
+		}
+	} else {
+		b.WriteString("    • RAM Status:       agyport engine ready\033[K\r\n")
+	}
+	b.WriteString("\033[K\r\n")
+
+	b.WriteString("  \033[1;32mPress [Enter] to launch interactive TUI  ·  Press [W] for Web UI Dashboard\033[0m\033[K\r\n")
+	b.WriteString("  \033[1;33mPress [C] for 1-Click Dev RAM Reclaim     ·  Press [A] to Kill All Dev Ports\033[0m\033[K\r\n")
 }
 
 func (a *CockpitApp) renderOllamaSummary(b *strings.Builder, width int) {
@@ -441,10 +530,10 @@ func (a *CockpitApp) renderToolsSummary(b *strings.Builder, width int) {
 		{
 			key:   "A",
 			emoji: "☁️",
-			title: "AWS Cloud & LocalStack Diagnostics",
+			title: "AWS & LocalStack Cheat Sheet",
 			bin:   "aws",
-			desc:  "STS identity, S3 bucket explorer & LocalStack port 4566 diagnostics",
-			cmd:   "agyx aws [whoami|s3|sqs|local]",
+			desc:  "Interactive recipes: SSO, S3, SQS, DynamoDB & LocalStack port 4566",
+			cmd:   "agyx aws [sheet|whoami|s3|sqs|local]",
 		},
 		{
 			key:   "B",
