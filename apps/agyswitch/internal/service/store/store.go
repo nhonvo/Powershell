@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -61,8 +62,26 @@ func (s *Store) GetActiveAccount() string {
 	return acc
 }
 
-// syncAccountCredentials selectively copies OAuth tokens and keyring files between src and dst.
-func syncAccountCredentials(src, dst string) {
+// ClearCredentials removes all OAuth and keyring token files from a directory context.
+func (s *Store) ClearCredentials(dir string) {
+	if dir == "" {
+		return
+	}
+	credFiles := []string{
+		"antigravity-oauth-token",
+		filepath.Join("antigravity-cli", "antigravity-oauth-token"),
+		"keyring_token.txt",
+		"google_accounts.json",
+		"quota_cache.json",
+	}
+	for _, rel := range credFiles {
+		_ = os.Remove(filepath.Join(dir, rel))
+	}
+	_ = os.RemoveAll(filepath.Join(dir, ".keyring"))
+}
+
+// SyncCredentials selectively copies OAuth tokens and keyring files between src and dst.
+func (s *Store) SyncCredentials(src, dst string) {
 	_ = os.MkdirAll(dst, 0755)
 	_ = os.MkdirAll(filepath.Join(dst, "antigravity-cli"), 0755)
 
@@ -95,7 +114,47 @@ func syncAccountCredentials(src, dst string) {
 	}
 }
 
-// SyncActiveAccountCredentials keeps the active account directory and ~/.gemini in sync.
+// syncAccountCredentials is an internal alias for SyncCredentials.
+func syncAccountCredentials(src, dst string) {
+	s := &Store{}
+	s.SyncCredentials(src, dst)
+}
+
+// MatchesAccountEmail checks if the credentials in dir (via id_token JWT email or google_accounts.json) match the expected email handle.
+func (s *Store) MatchesAccountEmail(dir string, accountName string) bool {
+	targetEmail := strings.ToLower(fmt.Sprintf("%s@gmail.com", strings.TrimSpace(accountName)))
+
+	// 1. Verify actual JWT id_token email if available
+	if s.Vault != nil {
+		if tokenEmail := s.Vault.GetTokenEmail(dir); tokenEmail != "" {
+			return strings.EqualFold(tokenEmail, targetEmail)
+		}
+	}
+
+	// 2. Verify google_accounts.json
+	gJsonPath := filepath.Join(dir, "google_accounts.json")
+	if data, err := os.ReadFile(gJsonPath); err == nil {
+		var g struct {
+			ActiveAccount string `json:"activeAccount"`
+			Accounts      []struct {
+				Email string `json:"email"`
+			} `json:"accounts"`
+		}
+		if json.Unmarshal(data, &g) == nil {
+			if g.ActiveAccount != "" && !strings.EqualFold(g.ActiveAccount, targetEmail) {
+				return false
+			}
+			if len(g.Accounts) > 0 && !strings.EqualFold(g.Accounts[0].Email, targetEmail) {
+				return false
+			}
+			return true
+		}
+	}
+
+	return true
+}
+
+// SyncActiveAccountCredentials keeps the active account directory and ~/.gemini in sync without cross-pollination.
 func (s *Store) SyncActiveAccountCredentials() {
 	active := s.GetActiveAccount()
 	if active == "" || strings.EqualFold(active, "default") {
@@ -107,12 +166,23 @@ func (s *Store) SyncActiveAccountCredentials() {
 	pTok := s.Vault.ReadTokenFromDir(primaryDir)
 	aTok := s.Vault.ReadTokenFromDir(activeDir)
 
-	if pTok != "" && aTok == "" {
-		syncAccountCredentials(primaryDir, activeDir)
+	if pTok == "" && aTok == "" {
 		return
 	}
+
 	if aTok != "" && pTok == "" {
-		syncAccountCredentials(activeDir, primaryDir)
+		if s.MatchesAccountEmail(activeDir, active) {
+			s.SyncCredentials(activeDir, primaryDir)
+			_ = s.Vault.SyncKeyringCredentials(primaryDir)
+		}
+		return
+	}
+
+	if pTok != "" && aTok == "" {
+		// Only sync if credentials in primaryDir belong to active account
+		if s.MatchesAccountEmail(primaryDir, active) {
+			s.SyncCredentials(primaryDir, activeDir)
+		}
 		return
 	}
 
@@ -122,25 +192,32 @@ func (s *Store) SyncActiveAccountCredentials() {
 	aInfo, aErr := os.Stat(aTokFile)
 
 	if pErr == nil && (aErr != nil || pInfo.ModTime().After(aInfo.ModTime())) {
-		syncAccountCredentials(primaryDir, activeDir)
+		if s.MatchesAccountEmail(primaryDir, active) {
+			s.SyncCredentials(primaryDir, activeDir)
+		}
 	} else if aErr == nil && (pErr != nil || aInfo.ModTime().After(pInfo.ModTime())) {
-		syncAccountCredentials(activeDir, primaryDir)
+		if s.MatchesAccountEmail(activeDir, active) {
+			s.SyncCredentials(activeDir, primaryDir)
+		}
 	}
 }
 
-// SetActiveAccount backs up current active credentials, restores target credentials, and syncs keyring.
+// SetActiveAccount backs up current active credentials, clears primary context to avoid pollution, restores target credentials, and syncs keyring.
 func (s *Store) SetActiveAccount(accountName string) error {
-	acc := strings.TrimSpace(accountName)
+	acc := s.ResolveAccount(accountName)
 	if acc == "" {
 		return errors.New("account name cannot be empty")
 	}
 
 	primaryDir := filepath.Join(s.UserHome, ".gemini")
+	_ = os.MkdirAll(primaryDir, 0755)
 
 	currentActive := s.GetActiveAccount()
-	if currentActive != "" && !strings.EqualFold(currentActive, "default") {
+	if currentActive != "" && !strings.EqualFold(currentActive, "default") && !strings.EqualFold(currentActive, acc) {
 		currentActiveDir := s.GetAccountDirectory(currentActive)
-		syncAccountCredentials(primaryDir, currentActiveDir)
+		if s.MatchesAccountEmail(primaryDir, currentActive) {
+			s.SyncCredentials(primaryDir, currentActiveDir)
+		}
 	}
 
 	targetDir := s.GetAccountDirectory(acc)
@@ -149,13 +226,23 @@ func (s *Store) SetActiveAccount(accountName string) error {
 	}
 
 	if !strings.EqualFold(currentActive, acc) {
-		syncAccountCredentials(targetDir, primaryDir)
+		// Wipe primary credentials first so old account's credentials never bleed into target
+		s.ClearCredentials(primaryDir)
+
+		// Only copy if target actually has genuine credentials matching target
+		if s.Vault.ReadTokenFromDir(targetDir) != "" && s.MatchesAccountEmail(targetDir, acc) {
+			s.SyncCredentials(targetDir, primaryDir)
+		}
 	}
 
 	activeFile := filepath.Join(primaryDir, "active_account.txt")
 	_ = os.WriteFile(activeFile, []byte(acc), 0644)
 
-	_ = s.Vault.SyncKeyringCredentials(primaryDir)
+	if s.Vault.ReadTokenFromDir(primaryDir) != "" {
+		_ = s.Vault.SyncKeyringCredentials(primaryDir)
+	} else {
+		s.Vault.PurgeGlobalKeyring()
+	}
 	return nil
 }
 
@@ -216,27 +303,97 @@ func copyFile(src, dst string) error {
 	return err
 }
 
+// ResolveAccount matches exact name, prefix, or tokenized substring (e.g. "fp2026" -> "fptvttnhon2026").
+func (s *Store) ResolveAccount(input string) string {
+	clean := strings.TrimSpace(input)
+	if clean == "" {
+		return ""
+	}
+
+	known := s.ListAccountNames()
+	// 1. Exact match (case-insensitive)
+	for _, k := range known {
+		if strings.EqualFold(k, clean) {
+			return k
+		}
+	}
+
+	lower := strings.ToLower(clean)
+
+	// 2. Prefix match (e.g. "fp" -> unique matching account)
+	var prefixMatches []string
+	for _, k := range known {
+		if strings.HasPrefix(strings.ToLower(k), lower) {
+			prefixMatches = append(prefixMatches, k)
+		}
+	}
+	if len(prefixMatches) == 1 {
+		return prefixMatches[0]
+	}
+
+	// 3. Substring / Token match (e.g. "fp2026" or "2026" -> "fptvttnhon2026")
+	var subMatches []string
+	for _, k := range known {
+		kLower := strings.ToLower(k)
+		if strings.Contains(kLower, lower) {
+			subMatches = append(subMatches, k)
+		} else if strings.Contains(lower, "2026") && strings.Contains(kLower, "2026") {
+			subMatches = append(subMatches, k)
+		} else if strings.Contains(lower, "2020") && strings.Contains(kLower, "2020") {
+			subMatches = append(subMatches, k)
+		} else if strings.Contains(lower, "2002") && strings.Contains(kLower, "2002") {
+			subMatches = append(subMatches, k)
+		}
+	}
+	if len(subMatches) == 1 {
+		return subMatches[0]
+	}
+
+	return clean
+}
+
+// ResetAccount wipes auth credentials for specified account and active directory if applicable.
 func (s *Store) ResetAccount(accountName string) error {
-	acc := strings.TrimSpace(accountName)
+	acc := s.ResolveAccount(accountName)
 	if acc == "" {
 		return errors.New("account name cannot be empty")
 	}
 
 	accDir := s.GetAccountDirectory(acc)
-	_ = os.Remove(filepath.Join(accDir, "keyring_token.txt"))
-	_ = os.Remove(filepath.Join(accDir, "antigravity-cli", "antigravity-oauth-token"))
-	_ = os.Remove(filepath.Join(accDir, "antigravity-oauth-token"))
-	_ = os.RemoveAll(filepath.Join(accDir, ".keyring"))
+	s.ClearCredentials(accDir)
 
 	active := s.GetActiveAccount()
 	if strings.EqualFold(active, acc) {
 		primaryDir := filepath.Join(s.UserHome, ".gemini")
-		_ = os.Remove(filepath.Join(primaryDir, "keyring_token.txt"))
-		_ = os.Remove(filepath.Join(primaryDir, "antigravity-cli", "antigravity-oauth-token"))
-		_ = os.Remove(filepath.Join(primaryDir, "antigravity-oauth-token"))
-		_ = os.RemoveAll(filepath.Join(primaryDir, ".keyring"))
+		s.ClearCredentials(primaryDir)
+		s.Vault.PurgeGlobalKeyring()
 	}
 
+	s.MarkAccountLoggedOutInSqlite(acc)
+	return nil
+}
+
+// LogoutAccount clears all credentials from the account context, primary directory, and Windows Credential Manager.
+func (s *Store) LogoutAccount(accountName string) error {
+	target := s.ResolveAccount(accountName)
+	if target == "" {
+		target = s.GetActiveAccount()
+	}
+	if target == "" {
+		return errors.New("no account specified")
+	}
+
+	accDir := s.GetAccountDirectory(target)
+	s.ClearCredentials(accDir)
+
+	active := s.GetActiveAccount()
+	if strings.EqualFold(active, target) {
+		primaryDir := filepath.Join(s.UserHome, ".gemini")
+		s.ClearCredentials(primaryDir)
+		s.Vault.PurgeGlobalKeyring()
+	}
+
+	s.MarkAccountLoggedOutInSqlite(target)
 	return nil
 }
 
@@ -258,6 +415,7 @@ func (s *Store) GetRegistryPath() string {
 	return filepath.Join(s.UserHome, ".gemini", "agyswitch_accounts.json")
 }
 
+// LoadAccountRegistry reconciles agyswitch_accounts.json and on-disk ~/.gemini_* directories.
 func (s *Store) LoadAccountRegistry() []string {
 	regPath := s.GetRegistryPath()
 	var names []string
@@ -284,15 +442,16 @@ func (s *Store) LoadAccountRegistry() []string {
 				knownMap[d] = true
 			}
 		}
+	}
 
-		entries, err := os.ReadDir(s.UserHome)
-		if err == nil {
-			for _, e := range entries {
-				if e.IsDir() && strings.HasPrefix(e.Name(), ".gemini_") {
-					accName := strings.TrimPrefix(e.Name(), ".gemini_")
-					if !IsIgnoredAccount(accName) {
-						knownMap[accName] = true
-					}
+	// Always discover valid .gemini_* directories on disk so disk and registry never diverge
+	entries, err := os.ReadDir(s.UserHome)
+	if err == nil {
+		for _, e := range entries {
+			if e.IsDir() && strings.HasPrefix(e.Name(), ".gemini_") {
+				accName := strings.TrimPrefix(e.Name(), ".gemini_")
+				if !IsIgnoredAccount(accName) {
+					knownMap[accName] = true
 				}
 			}
 		}
@@ -333,6 +492,7 @@ func (s *Store) ListAccountNames() []string {
 	return s.LoadAccountRegistry()
 }
 
+// AddAccount creates account context, purges any preexisting corrupted auth, auto-seeds template, and registers in DB.
 func (s *Store) AddAccount(name string) error {
 	cleanName := strings.TrimSpace(name)
 	if cleanName == "" {
@@ -344,9 +504,20 @@ func (s *Store) AddAccount(name string) error {
 		return fmt.Errorf("failed to create account directory: %v", err)
 	}
 
+	// If directory already had stale/corrupt auth files, purge them so account starts pristine
+	s.ClearCredentials(accDir)
+
+	// Auto-seed canonical template into new account if available
+	templateDir := filepath.Join(s.UserHome, ".gemini_template")
+	if fi, err := os.Stat(templateDir); err == nil && fi.IsDir() {
+		_ = MirrorDirectory(templateDir, accDir)
+	}
+
 	names := s.LoadAccountRegistry()
 	names = append(names, cleanName)
 	_ = s.SaveAccountRegistry(names)
+
+	s.UpsertAccountToSqlite(cleanName)
 
 	return s.SetActiveAccount(cleanName)
 }
@@ -388,13 +559,78 @@ func (s *Store) RenameAccount(oldName, newName string) error {
 	return nil
 }
 
+func deleteDirectoryRobust(dir string) error {
+	if fi, err := os.Stat(dir); os.IsNotExist(err) || !fi.IsDir() {
+		return nil
+	}
+	_ = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err == nil {
+			_ = os.Chmod(path, 0777)
+		}
+		return nil
+	})
+	return os.RemoveAll(dir)
+}
+
+func (s *Store) UpsertAccountToSqlite(accountName string) {
+	script := fmt.Sprintf(`
+import sqlite3, glob, os
+email = '%s@gmail.com'
+for db in glob.glob(os.path.join('%s', '.gemini*', 'agytui*.db')):
+    try:
+        conn = sqlite3.connect(db)
+        c = conn.cursor()
+        c.execute("INSERT OR IGNORE INTO accounts (account_name, email, is_active, quota_status) VALUES (?, ?, 0, 'Logged Out')", ('%s', email))
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
+`, accountName, s.UserHome, accountName)
+	_ = exec.Command("python3", "-c", script).Run()
+}
+
+func (s *Store) MarkAccountLoggedOutInSqlite(accountName string) {
+	script := fmt.Sprintf(`
+import sqlite3, glob, os
+for db in glob.glob(os.path.join('%s', '.gemini*', 'agytui*.db')):
+    try:
+        conn = sqlite3.connect(db)
+        c = conn.cursor()
+        c.execute("UPDATE accounts SET quota_status = 'Logged Out', keyring_token = NULL, oauth_creds_json = NULL WHERE account_name = ?", ('%s',))
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
+`, s.UserHome, accountName)
+	_ = exec.Command("python3", "-c", script).Run()
+}
+
+func (s *Store) RemoveAccountFromSqlite(accountName string) {
+	script := fmt.Sprintf(`
+import sqlite3, glob, os
+for db in glob.glob(os.path.join('%s', '.gemini*', 'agytui*.db')):
+    try:
+        conn = sqlite3.connect(db)
+        c = conn.cursor()
+        c.execute("DELETE FROM accounts WHERE account_name = ?", ('%s',))
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
+`, s.UserHome, accountName)
+	_ = exec.Command("python3", "-c", script).Run()
+}
+
+// DeleteAccount cleans up credentials, removes registry and SQLite entries, safely transitions active context, and deletes account directory from disk.
 func (s *Store) DeleteAccount(name string) error {
 	name = strings.TrimSpace(name)
 	if name == "" {
 		return errors.New("account name cannot be empty")
 	}
-
-	_ = s.ResetAccount(name)
+	resolved := s.ResolveAccount(name)
+	if resolved != "" {
+		name = resolved
+	}
 
 	names := s.LoadAccountRegistry()
 	var updated []string
@@ -406,17 +642,37 @@ func (s *Store) DeleteAccount(name string) error {
 	_ = s.SaveAccountRegistry(updated)
 
 	active := s.GetActiveAccount()
+	primaryDir := filepath.Join(s.UserHome, ".gemini")
 	if strings.EqualFold(active, name) {
+		s.ClearCredentials(primaryDir)
 		if len(updated) > 0 {
-			_ = s.SetActiveAccount(updated[0])
+			nextAcc := updated[0]
+			nextDir := s.GetAccountDirectory(nextAcc)
+			if s.Vault.ReadTokenFromDir(nextDir) != "" {
+				s.SyncCredentials(nextDir, primaryDir)
+				_ = s.Vault.SyncKeyringCredentials(primaryDir)
+			} else {
+				s.Vault.PurgeGlobalKeyring()
+			}
+			activeFile := filepath.Join(primaryDir, "active_account.txt")
+			_ = os.WriteFile(activeFile, []byte(nextAcc), 0644)
 		} else {
-			activeFile := filepath.Join(s.UserHome, ".gemini", "active_account.txt")
+			activeFile := filepath.Join(primaryDir, "active_account.txt")
 			_ = os.Remove(activeFile)
+			s.Vault.PurgeGlobalKeyring()
 		}
 	}
 
 	accDir := s.GetAccountDirectory(name)
-	_ = os.RemoveAll(accDir)
+	s.ClearCredentials(accDir)
+	_ = deleteDirectoryRobust(accDir)
+
+	if !strings.EqualFold(name, "default") {
+		_ = deleteDirectoryRobust(filepath.Join(s.UserHome, fmt.Sprintf(".gemini_%s", name)))
+		_ = deleteDirectoryRobust(filepath.Join(s.UserHome, fmt.Sprintf(".gemini_%s", strings.ToLower(name))))
+	}
+
+	s.RemoveAccountFromSqlite(name)
 
 	return nil
 }
@@ -578,8 +834,14 @@ func (s *Store) ListAccountsFast() []model.AccountInfo {
 	for i, name := range known {
 		accDir := s.GetAccountDirectory(name)
 		tok := s.Vault.ReadTokenFromDir(accDir)
+		if tok != "" && !s.MatchesAccountEmail(accDir, name) {
+			tok = ""
+		}
 		if tok == "" && strings.EqualFold(name, active) {
-			tok = s.Vault.ReadTokenFromDir(filepath.Join(s.UserHome, ".gemini"))
+			pTok := s.Vault.ReadTokenFromDir(filepath.Join(s.UserHome, ".gemini"))
+			if pTok != "" && s.MatchesAccountEmail(filepath.Join(s.UserHome, ".gemini"), name) {
+				tok = pTok
+			}
 		}
 		email := fmt.Sprintf("%s@gmail.com", name)
 		sig := s.Vault.GetShortSignature(tok)

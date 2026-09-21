@@ -58,10 +58,7 @@ func (s *Seeder) ResetAccountEx(accountName string, mode string) error {
 
 	switch cleanMode {
 	case "auth":
-		_ = os.Remove(filepath.Join(accDir, "keyring_token.txt"))
-		_ = os.Remove(filepath.Join(accDir, "antigravity-cli", "antigravity-oauth-token"))
-		_ = os.Remove(filepath.Join(accDir, "antigravity-oauth-token"))
-		_ = os.RemoveAll(filepath.Join(accDir, ".keyring"))
+		return s.Store.LogoutAccount(accountName)
 	case "soft":
 		_ = os.RemoveAll(filepath.Join(accDir, "antigravity-cli", "log"))
 		_ = os.RemoveAll(filepath.Join(accDir, "antigravity-cli", "cache"))

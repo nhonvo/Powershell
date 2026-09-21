@@ -6,8 +6,8 @@
 - **Binary Target:** `~/.local/bin/agybot`
 - **Configuration Path:** `~/.config/antigravity/bot.env` or `.env`
 - **Dual Link Reference:**
-  - **VS Code Clickable (Recommended):** [AGYBOT_SYSTEM_ARCHITECTURE_AND_USER_GUIDE.md](./AGYBOT_SYSTEM_ARCHITECTURE_AND_USER_GUIDE.md)
-  - **Windows UNC Path:** `\\wsl.localhost\Ubuntu\home\truongnhon\projects\powershell-profile\AGYBOT_SYSTEM_ARCHITECTURE_AND_USER_GUIDE.md`
+  - **VS Code Clickable (Recommended):** [agybot_system_architecture.md](./docs/01_architecture/agybot_system_architecture.md)
+  - **Windows UNC Path:** `\\wsl.localhost\Ubuntu\home\truongnhon\projects\powershell-profile\docs\01_architecture\agybot_system_architecture.md`
 
 ---
 

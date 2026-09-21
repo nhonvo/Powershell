@@ -42,14 +42,17 @@ jobs:
           mkdir -p ./dist/release
           cp ./dist/agytui-win-x64/AgyTui.exe ./dist/release/AgyTui-win-x64.exe
 
-      - name: Build Go Multi-Platform Binaries (agyswitch)
+      - name: Build Go Multi-Platform Binaries (All 10 Suite Apps)
         shell: bash
         run: |
-          cd apps/agyswitch
-          # Build Linux AMD64
-          GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o ../../dist/release/agyswitch-linux-amd64 .
-          # Build Windows AMD64
-          GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ../../dist/release/agyswitch-windows-amd64.exe .
+          mkdir -p dist/release
+          APPS=("agyswitch" "agyproj" "agygit" "agydocker" "agyterm" "agyx" "agymobile" "agyollama" "agybot" "agyport")
+          for app in "${APPS[@]}"; do
+            echo "🔨 Building $app for Linux..."
+            (cd "apps/$app" && GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o "../../dist/release/${app}-linux-amd64" .)
+            echo "🪟 Building $app for Windows..."
+            (cd "apps/$app" && GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o "../../dist/release/${app}-windows-amd64.exe" .)
+          done
 
       - name: Generate SHA256 Checksums
         shell: bash
@@ -62,7 +65,5 @@ jobs:
         with:
           generate_release_notes: true
           files: |
-            dist/release/AgyTui-win-x64.exe
-            dist/release/agyswitch-linux-amd64
-            dist/release/agyswitch-windows-amd64.exe
-            dist/release/checksums.txt
+            dist/release/*
+

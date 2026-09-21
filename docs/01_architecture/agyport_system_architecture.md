@@ -4,8 +4,8 @@
 ---
 
 ## 🧭 Document References
-- **VS Code Clickable (Recommended):** [AGYPORT_SYSTEM_ARCHITECTURE_AND_USER_GUIDE.md](./AGYPORT_SYSTEM_ARCHITECTURE_AND_USER_GUIDE.md)
-- **Windows UNC Path:** `\\wsl.localhost\Ubuntu\home\truongnhon\projects\powershell-profile\AGYPORT_SYSTEM_ARCHITECTURE_AND_USER_GUIDE.md`
+- **VS Code Clickable (Recommended):** [agyport_system_architecture.md](./docs/01_architecture/agyport_system_architecture.md)
+- **Windows UNC Path:** `\\wsl.localhost\Ubuntu\home\truongnhon\projects\powershell-profile\docs\01_architecture\agyport_system_architecture.md`
 - **Application Source:** [apps/agyport/](./apps/agyport/)
 
 ---

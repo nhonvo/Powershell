@@ -4,8 +4,8 @@
 ---
 
 ## 🧭 Document References
-- **VS Code Clickable (Recommended):** [AWS_AND_LOCALSTACK_CHEATSHEET.md](./AWS_AND_LOCALSTACK_CHEATSHEET.md)
-- **Windows UNC Path:** `\\wsl.localhost\Ubuntu\home\truongnhon\projects\powershell-profile\AWS_AND_LOCALSTACK_CHEATSHEET.md`
+- **VS Code Clickable (Recommended):** [04_aws_localstack_cheatsheet.md](./docs/04_command_enhancements/04_aws_localstack_cheatsheet.md)
+- **Windows UNC Path:** `\\wsl.localhost\Ubuntu\home\truongnhon\projects\powershell-profile\docs\04_command_enhancements\04_aws_localstack_cheatsheet.md`
 - **AGYX Suite Proxy:** [apps/agyx/](./apps/agyx/)
 
 ---

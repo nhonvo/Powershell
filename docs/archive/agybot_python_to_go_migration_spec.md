@@ -6,8 +6,8 @@
 - **Destination Application:** [apps/agybot](./apps/agybot) (Go 1.26 Native)
 - **Target Monorepo:** [powershell-profile](./)
 - **Dual Link Reference:**
-  - **VS Code Clickable (Recommended):** [AGYBOT_PYTHON_TO_GO_MIGRATION_SPEC.md](./AGYBOT_PYTHON_TO_GO_MIGRATION_SPEC.md)
-  - **Windows UNC Path:** `\\wsl.localhost\Ubuntu\home\truongnhon\projects\powershell-profile\AGYBOT_PYTHON_TO_GO_MIGRATION_SPEC.md`
+  - **VS Code Clickable (Recommended):** [agybot_python_to_go_migration_spec.md](./docs/archive/agybot_python_to_go_migration_spec.md)
+  - **Windows UNC Path:** `\\wsl.localhost\Ubuntu\home\truongnhon\projects\powershell-profile\docs\archive\agybot_python_to_go_migration_spec.md`
 
 ---
 

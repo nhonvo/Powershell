@@ -27,8 +27,8 @@ func TestLauncher_CleanArgs(t *testing.T) {
 
 	loginRaw := []string{"login"}
 	loginCleaned := l.CleanArgs(loginRaw)
-	if len(loginCleaned) != 1 || loginCleaned[0] != "login" {
-		t.Errorf("unexpected login cleaned args: %v", loginCleaned)
+	if len(loginCleaned) != 0 {
+		t.Errorf("expected login to be stripped, got: %v", loginCleaned)
 	}
 }
 

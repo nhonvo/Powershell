@@ -83,9 +83,7 @@ func Start(binPath string) (int, error) {
 	cmd.Stdin = nil
 
 	// Detach process from current terminal session
-	cmd.SysProcAttr = &syscall.SysProcAttr{
-		Setsid: true,
-	}
+	setDaemonSysProcAttr(cmd)
 
 	if err := cmd.Start(); err != nil {
 		_ = logFile.Close()

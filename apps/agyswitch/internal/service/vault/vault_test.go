@@ -62,3 +62,37 @@ func TestVault_GetShortSignature(t *testing.T) {
 		t.Fatalf("expected signature 'ya29..1234', got '%s'", sig)
 	}
 }
+
+func TestVault_ExtractTokenEmail(t *testing.T) {
+	tempDir, err := os.MkdirTemp("", "vault_email_test_*")
+	if err != nil {
+		t.Fatalf("failed to create temp dir: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	v := vault.NewVault(tempDir)
+
+	// Sample JWT: header.{"email":"alice@example.com"}.sig
+	// {"email":"alice@example.com"} in base64url is eyJlbWFpbCI6ImFsaWNlQGV4YW1wbGUuY29tIn0
+	fakeJWT := "eyJhbGciOiJSUzI1NiJ9.eyJlbWFpbCI6ImFsaWNlQGV4YW1wbGUuY29tIn0.fakesig"
+	tokenJSON := `{"token":{"access_token":"ya29.test"},"id_token":"` + fakeJWT + `"}`
+
+	tokenPath := filepath.Join(tempDir, "antigravity-cli", "antigravity-oauth-token")
+	_ = os.MkdirAll(filepath.Dir(tokenPath), 0755)
+	_ = os.WriteFile(tokenPath, []byte(tokenJSON), 0600)
+
+	email := v.GetTokenEmail(tempDir)
+	if email != "alice@example.com" {
+		t.Fatalf("expected 'alice@example.com', got '%s'", email)
+	}
+}
+
+func TestVault_OAuthConfig(t *testing.T) {
+	if len(vault.GoogleClientID) < 30 {
+		t.Fatalf("unexpected GoogleClientID length: %d", len(vault.GoogleClientID))
+	}
+	if len(vault.GoogleClientSecret) < 20 {
+		t.Fatalf("unexpected GoogleClientSecret length: %d", len(vault.GoogleClientSecret))
+	}
+}
+

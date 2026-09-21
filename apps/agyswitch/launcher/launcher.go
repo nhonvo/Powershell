@@ -48,20 +48,21 @@ func (l *Launcher) FindAgyBin() (string, error) {
 	return "", fmt.Errorf("could not find 'agy' executable on PATH or standard installation paths")
 }
 
-// CleanArgs strips legacy unsupported subcommands like 'auth' or 'login' and ensures --dangerously-skip-permissions is passed for non-login launches.
+// CleanArgs strips unsupported subcommands like 'auth' or 'login' and ensures --dangerously-skip-permissions is passed for non-login launches.
 func (l *Launcher) CleanArgs(args []string) []string {
 	var clean []string
 	hasDanger := false
 	isLogin := false
 
 	for _, arg := range args {
-		if arg == "login" {
+		lower := strings.ToLower(arg)
+		if lower == "login" || lower == "auth" {
 			isLogin = true
+			// Strip 'login' and 'auth' because agy CLI rejects them as positional prompt arguments
+		} else if lower == "--dangerously-skip-permissions" {
+			hasDanger = true
 			clean = append(clean, arg)
-		} else if arg != "auth" {
-			if arg == "--dangerously-skip-permissions" {
-				hasDanger = true
-			}
+		} else {
 			clean = append(clean, arg)
 		}
 	}
@@ -80,6 +81,7 @@ func (l *Launcher) LaunchAccount(accountName string, passArgs []string) error {
 
 // LaunchAccountInDir sets GEMINI_HOME, working directory, and launches agy.
 func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, passArgs []string) error {
+	accountName = l.Store.ResolveAccount(accountName)
 	accDir := l.Store.GetAccountDirectory(accountName)
 	if err := os.MkdirAll(accDir, 0755); err != nil {
 		return err
@@ -87,12 +89,29 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 
 	_ = l.Store.SetActiveAccount(accountName)
 
-	token := l.Vault.EnsureValidAccessToken(accDir)
-	if token != "" {
-		fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Context for '\033[32m%s\033[0m': \033[32m%s\033[0m (✔ Logged In)\n", accountName, accDir)
+	isLogin := false
+	for _, a := range passArgs {
+		if strings.EqualFold(a, "login") || strings.EqualFold(a, "auth") {
+			isLogin = true
+			break
+		}
+	}
+
+	if isLogin {
+		_ = l.Store.LogoutAccount(accountName)
+		fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Starting interactive Google OAuth sign-in for account '\033[32m%s\033[0m'...\n", accountName)
+		fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Context: \033[33m%s\033[0m (Follow prompts in terminal/browser)\n", accDir)
 	} else {
-		l.Vault.PurgeGlobalKeyring()
-		fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Context for '\033[33m%s\033[0m': \033[33m%s\033[0m (✘ Logged Out - Login Required)\n", accountName, accDir)
+		token := l.Vault.EnsureValidAccessToken(accDir)
+		if token != "" && l.Store.MatchesAccountEmail(accDir, accountName) {
+			fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Context for '\033[32m%s\033[0m': \033[32m%s\033[0m (✔ Logged In)\n", accountName, accDir)
+		} else {
+			if token != "" && !l.Store.MatchesAccountEmail(accDir, accountName) {
+				l.Store.ClearCredentials(accDir)
+			}
+			l.Vault.PurgeGlobalKeyring()
+			fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Context for '\033[33m%s\033[0m': \033[33m%s\033[0m (✘ Logged Out - Login Required)\n", accountName, accDir)
+		}
 	}
 
 	agyBin, err := l.FindAgyBin()
@@ -131,24 +150,16 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 
 	runErr := cmd.Run()
 
-	// Post-run session token capture hook: sync directory that had newer changes
+	// Post-run hook: only sync from accDir to primaryDir if this account is currently active, has a valid token, and matches email
 	primaryDir := filepath.Join(l.Store.UserHome, ".gemini")
-	pTok := filepath.Join(primaryDir, "antigravity-cli", "antigravity-oauth-token")
-	aTok := filepath.Join(accDir, "antigravity-cli", "antigravity-oauth-token")
-	pInfo, pErr := os.Stat(pTok)
-	aInfo, aErr := os.Stat(aTok)
-
-	if pErr == nil && (aErr != nil || pInfo.ModTime().After(aInfo.ModTime())) {
-		_ = store.MirrorDirectory(primaryDir, accDir)
-	} else {
-		_ = store.MirrorDirectory(accDir, primaryDir)
-	}
-
-	postToken := l.Vault.EnsureValidAccessToken(accDir)
-	if postToken != "" {
-		_ = l.Vault.SyncKeyringCredentials(accDir)
-		_ = l.Vault.SyncKeyringCredentials(primaryDir)
-		fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Persisted session token for account '\033[32m%s\033[0m'.\n", accountName)
+	if strings.EqualFold(accountName, l.Store.GetActiveAccount()) {
+		aTok := l.Vault.ReadTokenFromDir(accDir)
+		if aTok != "" && l.Store.MatchesAccountEmail(accDir, accountName) {
+			l.Store.SyncCredentials(accDir, primaryDir)
+			_ = l.Vault.SyncKeyringCredentials(accDir)
+			_ = l.Vault.SyncKeyringCredentials(primaryDir)
+			fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Persisted session token for account '\033[32m%s\033[0m'.\n", accountName)
+		}
 	}
 
 	return runErr

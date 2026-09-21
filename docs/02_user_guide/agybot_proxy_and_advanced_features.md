@@ -7,8 +7,8 @@
 - **Config Storage:** `~/.config/antigravity/bot.env` (highest priority) and `.env`
 - **Daemon Files:** `~/.config/antigravity/agybot.pid` and `~/.config/antigravity/agybot.log`
 - **Dual Link Reference:**
-  - **VS Code Clickable (Recommended):** [AGYBOT_PROXY_AND_ADVANCED_FEATURES_GUIDE.md](./AGYBOT_PROXY_AND_ADVANCED_FEATURES_GUIDE.md)
-  - **Windows UNC Path:** `\\wsl.localhost\Ubuntu\home\truongnhon\projects\powershell-profile\AGYBOT_PROXY_AND_ADVANCED_FEATURES_GUIDE.md`
+  - **VS Code Clickable (Recommended):** [agybot_proxy_and_advanced_features.md](./docs/02_user_guide/agybot_proxy_and_advanced_features.md)
+  - **Windows UNC Path:** `\\wsl.localhost\Ubuntu\home\truongnhon\projects\powershell-profile\docs\02_user_guide\agybot_proxy_and_advanced_features.md`
 
 ---
 

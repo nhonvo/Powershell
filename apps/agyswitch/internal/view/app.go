@@ -426,8 +426,27 @@ func (a *App) Run() error {
 					a.StatusMsg = fmt.Sprintf("\033[32mFilter: %s\033[0m", a.SessionFilterProject)
 				}
 			}
-		case 'o', 'O': // Toggle Sort Order in Sessions Tab
-			if a.ActiveTab == 3 {
+		case 'o', 'O': // Logout in Tab 0, Toggle Sort Order in Tab 3
+			if a.ActiveTab == 0 && a.SelectedIndex < len(accs) {
+				target := accs[a.SelectedIndex].AccountName
+				fmt.Print("\033[?25h\033[?1049l")
+				_ = term.Restore(fd, oldState)
+				fmt.Printf("\r\n\033[33m[agyswitch]\033[0m Log out account '%s' (wipe auth tokens)? (y/N): ", target)
+				var confirm string
+				fmt.Scanln(&confirm)
+				if strings.EqualFold(strings.TrimSpace(confirm), "y") {
+					if err := a.Store.LogoutAccount(target); err == nil {
+						a.probeMu.Lock()
+						a.cachedAccs = a.Store.ListAccountsFast()
+						accs = a.cachedAccs
+						a.needsReload = true
+						a.StatusMsg = fmt.Sprintf("\033[33mLogged out account '%s'\033[0m", target)
+						a.probeMu.Unlock()
+					}
+				}
+				oldState, _ = term.MakeRaw(fd)
+				fmt.Print("\033[?1049h\033[?25l")
+			} else if a.ActiveTab == 3 {
 				a.SessionSortMode = (a.SessionSortMode + 1) % 3
 				a.SelectedIndex = 0
 				a.needsReload = true
@@ -808,7 +827,7 @@ func (a *App) Render(accs []model.AccountInfo, sessionsList []model.SessionInfo)
 	} else {
 		switch a.ActiveTab {
 		case 0:
-			b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;32m[Enter]\033[0m Switch Acc · \033[1;36m[L]\033[0m Launch agy · \033[1;36m[R]\033[0m Refresh Quota · \033[1;36m[T]\033[0m Seed · \033[1;33m[X]\033[0m Reset · \033[1;36m[N]\033[0m New · \033[1;31m[D]\033[0m Del · \033[1;35m[A]\033[0m Auto · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;32m[Enter]\033[0m Switch Acc · \033[1;36m[L]\033[0m Launch agy · \033[1;36m[R]\033[0m Refresh Quota · \033[1;33m[O]\033[0m Logout · \033[1;36m[T]\033[0m Seed · \033[1;33m[X]\033[0m Reset · \033[1;36m[N]\033[0m New · \033[1;31m[D]\033[0m Del · \033[1;35m[A]\033[0m Auto · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 		case 1:
 			b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;36m[V]\033[0m View Detail · \033[1;36m[S]\033[0m Sync Skills Across Vaults · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 		case 2:

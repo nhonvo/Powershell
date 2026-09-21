@@ -71,13 +71,13 @@ graph TD
 
 ---
 
-## 2. Modern Go Engine Suite (8 Applications)
+## 2. Modern Go Engine Suite (10 Applications)
 
-The modern suite decomposes developer operations into 8 focused, independently testable, single-binary Go applications:
+The modern suite decomposes developer operations into 10 focused, independently testable, single-binary Go applications:
 
-| Application | Path | Aliases | Primary Role & Capabilities | Audit Report |
+| Application | Path | Aliases | Primary Role & Capabilities | Architecture & Guide |
 | :--- | :--- | :--- | :--- | :--- |
-| **`agyx`** | [apps/agyx/](../apps/agyx) | `agyx`, `x` | **Master Proxy & Unified Cockpit**: Single entrypoint delegating CLI commands and hosting an interactive 6-tab cockpit across core modules (Switch, Proj, Git, Docker, Ollama) and a dedicated Utilities & Cloud drawer (Term, Mobile, AWS). | [02_agyx_proxy_audit.md](reports/02_agyx_proxy_audit.md) |
+| **`agyx`** | [apps/agyx/](../apps/agyx) | `agyx`, `x` | **Master Proxy & Unified Cockpit**: Single entrypoint delegating CLI commands and hosting an interactive cockpit across core modules and tools. | [02_agyx_proxy_audit.md](reports/02_agyx_proxy_audit.md) |
 | **`agyswitch`** | [apps/agyswitch/](../apps/agyswitch) | `agysw`, `agys`, `switch` | **Identity, Vault & Quota Engine**: AES-256 encrypted credential storage, automated OAuth token refresh, non-blocking background quota probing, instant credential switching, and isolated `GEMINI_HOME` subprocess launching. | [01_agyswitch_deep_audit.md](reports/01_agyswitch_deep_audit.md) |
 | **`agyproj`** | [apps/agyproj/](../apps/agyproj) | `agyproj`, `agyp`, `proj` | **Project Hub & Workspace Registry**: Heuristic technology stack detection (C#, Go, Rust, Node, Python, Docker), Antigravity AI session inference cost/step calculations, and 1-tap IDE launch. | [04_agyproj_workspace_audit.md](reports/04_agyproj_workspace_audit.md) |
 | **`agygit`** | [apps/agygit/](../apps/agygit) | `agygit`, `agyg` | **Git Fleet & Worktree Orchestrator**: Multi-repo status fleet scanner across `~/projects`, interactive selective staging, file rejection, 3-way conflict resolver, and multi-agent `.worktrees/` isolation. | [03_agygit_fleet_audit.md](reports/03_agygit_fleet_audit.md) |
@@ -85,9 +85,11 @@ The modern suite decomposes developer operations into 8 focused, independently t
 | **`agyterm`** | [apps/agyterm/](../apps/agyterm) | `agyterm`, `agyt` | **Terminal Themes & Diagnostics**: Direct JSON AST mutation of Windows Terminal `settings.json` from WSL2 with safety backups, Oh-My-Posh dynamic color previewer, and 9-subsystem shell health diagnostics. | [06_agyterm_theme_audit.md](reports/06_agyterm_theme_audit.md) |
 | **`agymobile`** | [apps/agymobile/](../apps/agymobile) | `agymobile`, `agym` | **Mobile Cockpit & Remote Station**: Ultra-compact 38-column smartphone portrait TUI, embedded Web Cockpit on port 7890 over Tailscale mesh network, host optimization, and AI thought stream telemetry. | [07_agymobile_cockpit_audit.md](reports/07_agymobile_cockpit_audit.md) |
 | **`agyollama`** | [apps/agyollama/](../apps/agyollama) | `agyollama`, `agyo`, `ai` | **Local AI & Ollama Cockpit**: Daemon lifecycle, model manager (pull/delete/default), hardware inference benchmark, non-blocking animated TUI, and subshell AI pair programming. | [09_agyollama_local_ai_plan.md](reports/09_agyollama_local_ai_plan.md) |
+| **`agybot`** | [apps/agybot/](../apps/agybot) | `agybot`, `bot` | **Remote Telegram Controller & Research Daemon**: Secure 2FA Telegram control, multi-project execution, research delegation, auto-lock timeouts, and background daemon lifecycle. | [agybot_system_architecture.md](01_architecture/agybot_system_architecture.md) |
+| **`agyport`** | [apps/agyport/](../apps/agyport) | `agyport`, `port` | **Active Port & RAM Leverage Manager**: Real-time listening port inspector, selective/all dev server port killer, framework detection (Vite, Next, Express, .NET), and RAM optimizer. | [agyport_system_architecture.md](01_architecture/agyport_system_architecture.md) |
 
 > [!NOTE]
-> **🛠️ Streamlined Cockpit Architecture (Option C)**: The `agyx` TUI organizes developer workflows into **5 Core Daily Drivers** (`[1] Switch`, `[2] Proj`, `[3] Git`, `[4] Docker`, `[5] Ollama`) and a dedicated **`[6] 🛠️ Tools` Drawer** housing secondary utilities (`agyterm`, `agymobile`, and `AWS/LocalStack` diagnostics). For native CLI wrappers and TUI monitors (`aws-whoamiu`, `aws-s3u`), see [docs/04_command_enhancements/04_aws_enhancement.md](04_command_enhancements/04_aws_enhancement.md).
+> **🛠️ Streamlined Cockpit Architecture**: The `agyx` TUI organizes developer workflows into daily drivers and utilities. For LocalStack recipes and AWS cloud CLI helpers, see [docs/04_command_enhancements/04_aws_localstack_cheatsheet.md](04_command_enhancements/04_aws_localstack_cheatsheet.md). For authentication and multi-account vault architecture, see [docs/01_architecture/agyswitch_engine.md](01_architecture/agyswitch_engine.md).
 
 ---
 

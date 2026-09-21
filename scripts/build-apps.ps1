@@ -12,7 +12,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$apps = @("agyswitch", "agyproj", "agygit", "agydocker", "agyterm", "agyx")
+$apps = @("agyswitch", "agyproj", "agygit", "agydocker", "agyterm", "agyx", "agymobile", "agyollama", "agybot", "agyport")
 
 if (-not $OutputDir) {
     if ($IsWindows -or $env:OS -like "*Windows*") {
@@ -70,10 +70,14 @@ switch ($Target.ToLower()) {
     "docker" { $Target = "agydocker" }
     "term"   { $Target = "agyterm" }
     "proxy"  { $Target = "agyx" }
+    "mobile" { $Target = "agymobile" }
+    "ollama" { $Target = "agyollama" }
+    "bot"    { $Target = "agybot" }
+    "port"   { $Target = "agyport" }
 }
 
 if ($Target -eq "all") {
-    Write-Host "🚀 Building all 6 Antigravity Suite applications..." -ForegroundColor Cyan
+    Write-Host "🚀 Building all 10 Antigravity Suite applications..." -ForegroundColor Cyan
     foreach ($app in $apps) {
         Build-SingleApp -AppName $app
     }

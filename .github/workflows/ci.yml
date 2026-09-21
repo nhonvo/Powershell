@@ -57,11 +57,8 @@ jobs:
       run: dotnet test archive/agytui/AgyTui.Tests/AgyTui.Tests.csproj -c Release --no-build --verbosity normal
 
   go-tests:
-    name: Go agyswitch Engine
+    name: Antigravity Go Suite (10 Applications)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/agyswitch
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
@@ -70,13 +67,13 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: '1.22.x'
-        cache-dependency-path: apps/agyswitch/go.sum
 
-    - name: Run Go unit tests
-      run: go test -v -race ./...
+    - name: Run Test Suites Across All 10 Applications
+      run: make test
 
-    - name: Test Linux Binary Build
-      run: go build -ldflags="-s -w" -o agyswitch-linux-amd64 .
+    - name: Test Linux Binary Builds
+      run: make build
 
     - name: Test Windows Binary Cross-Compilation
-      run: GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o agyswitch-windows-amd64.exe .
+      run: make windows
+

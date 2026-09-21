@@ -52,7 +52,7 @@ func main() {
 			fmt.Println("Usage: agyswitch switch <accountName>")
 			os.Exit(1)
 		}
-		target := args[1]
+		target := s.ResolveAccount(args[1])
 		if err := s.SetActiveAccount(target); err != nil {
 			fmt.Fprintf(os.Stderr, "Error switching account: %v\n", err)
 			os.Exit(1)
@@ -183,14 +183,25 @@ func main() {
 	case "login":
 		target := s.GetActiveAccount()
 		if len(args) >= 2 {
-			target = args[1]
+			target = s.ResolveAccount(args[1])
 			_ = s.SetActiveAccount(target)
 		}
-		fmt.Printf("\033[36m[agyswitch]\033[0m Launching 'agy login' for account '\033[32m%s\033[0m'...\n", target)
+		fmt.Printf("\033[36m[agyswitch]\033[0m Starting authentication for account '\033[32m%s\033[0m'...\n", target)
 		if err := launchAdapter(target, "", []string{"login"}); err != nil {
-			fmt.Fprintf(os.Stderr, "Error launching agy login: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error launching login: %v\n", err)
 			os.Exit(1)
 		}
+	case "logout":
+		target := s.GetActiveAccount()
+		if len(args) >= 2 {
+			target = s.ResolveAccount(args[1])
+		}
+		if err := s.LogoutAccount(target); err != nil {
+			fmt.Fprintf(os.Stderr, "Error logging out account '%s': %v\n", target, err)
+			os.Exit(1)
+		}
+		fmt.Printf("\033[36m[agyswitch]\033[0m Successfully logged out account '\033[33m%s\033[0m'. Context wiped clean.\n", target)
+		fmt.Printf("\033[36m[agyswitch]\033[0m Run '\033[33magyswitch login %s\033[0m' to authenticate again.\n", target)
 	case "rename", "mv":
 		if len(args) < 3 {
 			fmt.Println("Usage: agyswitch rename <oldName> <newName>")
@@ -206,12 +217,12 @@ func main() {
 			fmt.Println("Usage: agyswitch delete <accountName>")
 			os.Exit(1)
 		}
-		target := args[1]
+		target := s.ResolveAccount(args[1])
 		if err := s.DeleteAccount(target); err != nil {
 			fmt.Fprintf(os.Stderr, "Error deleting account '%s': %v\n", target, err)
 			os.Exit(1)
 		}
-		fmt.Printf("\033[36m[agyswitch]\033[0m Successfully deleted account '\033[31m%s\033[0m'.\n", target)
+		fmt.Printf("\033[36m[agyswitch]\033[0m Successfully deleted account '\033[31m%s\033[0m'. Folder and database records removed.\n", target)
 	case "init":
 		sd := seeder.NewSeeder(userHome, s)
 		if err := sd.EnsureSeedTemplate(); err != nil {
@@ -222,7 +233,7 @@ func main() {
 	case "seed":
 		target := s.GetActiveAccount()
 		if len(args) >= 2 {
-			target = args[1]
+			target = s.ResolveAccount(args[1])
 		}
 		sd := seeder.NewSeeder(userHome, s)
 		if err := sd.SeedAccount(target); err != nil {
@@ -246,7 +257,7 @@ func main() {
 		target := s.GetActiveAccount()
 		mode := "normal"
 		if len(args) >= 2 {
-			target = args[1]
+			target = s.ResolveAccount(args[1])
 		}
 		if len(args) >= 3 {
 			mode = strings.TrimPrefix(args[2], "--")
@@ -265,17 +276,18 @@ func main() {
 			os.Exit(1)
 		}
 	default:
+		resolved := s.ResolveAccount(cmd)
 		knownAccounts := s.ListAccountNames()
 		isRegisteredAccount := false
 		for _, a := range knownAccounts {
-			if strings.EqualFold(a, cmd) {
+			if strings.EqualFold(a, resolved) {
 				isRegisteredAccount = true
 				break
 			}
 		}
 
 		if isRegisteredAccount && !strings.HasPrefix(cmd, "-") {
-			target := cmd
+			target := resolved
 			if err := s.SetActiveAccount(target); err != nil {
 				fmt.Fprintf(os.Stderr, "Error setting active account context to '%s': %v\n", target, err)
 				os.Exit(1)

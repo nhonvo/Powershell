@@ -232,3 +232,156 @@ func TestStore_SyncActiveAccountCredentials(t *testing.T) {
 	}
 }
 
+func TestStore_ResolveAccount(t *testing.T) {
+	tempDir, err := os.MkdirTemp("", "store_resolve_test_*")
+	if err != nil {
+		t.Fatalf("failed to create temp dir: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	v := vault.NewVault(tempDir)
+	s := store.NewStore(tempDir, v)
+
+	accounts := []string{"fptvttnhon2020", "fptvttnhon2026", "nhontruongvo", "nhontruongvo3", "vothuongtruongnhon2002"}
+	_ = s.SaveAccountRegistry(accounts)
+
+	// 1. Exact match
+	if res := s.ResolveAccount("fptvttnhon2026"); res != "fptvttnhon2026" {
+		t.Errorf("expected 'fptvttnhon2026', got '%s'", res)
+	}
+
+	// 2. Case insensitive
+	if res := s.ResolveAccount("FptVttNhon2026"); res != "fptvttnhon2026" {
+		t.Errorf("expected 'fptvttnhon2026', got '%s'", res)
+	}
+
+	// 3. Substring token: "fp2026" -> "fptvttnhon2026"
+	if res := s.ResolveAccount("fp2026"); res != "fptvttnhon2026" {
+		t.Errorf("expected 'fptvttnhon2026' for 'fp2026', got '%s'", res)
+	}
+
+	// 4. Year token: "2026" -> "fptvttnhon2026"
+	if res := s.ResolveAccount("2026"); res != "fptvttnhon2026" {
+		t.Errorf("expected 'fptvttnhon2026' for '2026', got '%s'", res)
+	}
+
+	// 5. Unique token: "2002" -> "vothuongtruongnhon2002"
+	if res := s.ResolveAccount("2002"); res != "vothuongtruongnhon2002" {
+		t.Errorf("expected 'vothuongtruongnhon2002' for '2002', got '%s'", res)
+	}
+}
+
+func TestStore_LogoutAccount(t *testing.T) {
+	tempDir, err := os.MkdirTemp("", "store_logout_test_*")
+	if err != nil {
+		t.Fatalf("failed to create temp dir: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	v := vault.NewVault(tempDir)
+	s := store.NewStore(tempDir, v)
+
+	accName := "test_logout_user"
+	_ = s.AddAccount(accName)
+	_ = s.SetActiveAccount(accName)
+
+	// Create fake tokens in accDir and primaryDir
+	accDir := s.GetAccountDirectory(accName)
+	_ = os.MkdirAll(filepath.Join(accDir, "antigravity-cli"), 0755)
+	_ = os.WriteFile(filepath.Join(accDir, "antigravity-cli", "antigravity-oauth-token"), []byte("ya29.testtoken"), 0600)
+
+	primaryDir := filepath.Join(tempDir, ".gemini")
+	_ = os.MkdirAll(filepath.Join(primaryDir, "antigravity-cli"), 0755)
+	_ = os.WriteFile(filepath.Join(primaryDir, "antigravity-cli", "antigravity-oauth-token"), []byte("ya29.testtoken"), 0600)
+
+	// Perform logout
+	if err := s.LogoutAccount(accName); err != nil {
+		t.Fatalf("LogoutAccount failed: %v", err)
+	}
+
+	// Verify tokens purged in accDir
+	if s.Vault.ReadTokenFromDir(accDir) != "" {
+		t.Errorf("expected accDir token to be empty after logout")
+	}
+
+	// Verify tokens purged in primaryDir
+	if s.Vault.ReadTokenFromDir(primaryDir) != "" {
+		t.Errorf("expected primaryDir token to be empty after active logout")
+	}
+}
+
+func TestStore_DeleteAccountRobust(t *testing.T) {
+	tempDir, err := os.MkdirTemp("", "store_del_robust_test_*")
+	if err != nil {
+		t.Fatalf("failed to create temp dir: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	v := vault.NewVault(tempDir)
+	s := store.NewStore(tempDir, v)
+
+	_ = s.SaveAccountRegistry([]string{"user_alpha", "user_beta"})
+	_ = s.SetActiveAccount("user_beta")
+
+	betaDir := s.GetAccountDirectory("user_beta")
+	_ = os.MkdirAll(betaDir, 0755)
+	if _, err := os.Stat(betaDir); os.IsNotExist(err) {
+		t.Fatalf("expected user_beta directory to exist")
+	}
+
+	// Delete active account user_beta
+	if err := s.DeleteAccount("user_beta"); err != nil {
+		t.Fatalf("DeleteAccount failed: %v", err)
+	}
+
+	// 1. Directory must be completely removed from disk
+	if _, err := os.Stat(betaDir); !os.IsNotExist(err) {
+		t.Errorf("expected betaDir to be removed from disk, but it still exists")
+	}
+
+	// 2. Account must be removed from registry
+	names := s.LoadAccountRegistry()
+	for _, n := range names {
+		if n == "user_beta" {
+			t.Errorf("expected user_beta to be removed from registry")
+		}
+	}
+
+	// 3. Active account must have safely transitioned to user_alpha
+	active := s.GetActiveAccount()
+	if active != "user_alpha" {
+		t.Errorf("expected active account to transition to 'user_alpha', got '%s'", active)
+	}
+}
+
+func TestStore_MatchesAccountEmail_CrossPollinationPrevention(t *testing.T) {
+	tempDir, err := os.MkdirTemp("", "store_email_match_*")
+	if err != nil {
+		t.Fatalf("failed to create temp dir: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	v := vault.NewVault(tempDir)
+	s := store.NewStore(tempDir, v)
+
+	// Directory has token belonging to user_beta@gmail.com
+	betaJWT := "eyJhbGciOiJSUzI1NiJ9.eyJlbWFpbCI6InVzZXJfYmV0YUBnbWFpbC5jb20ifQ.fakesig"
+	tokJSON := `{"token":{"access_token":"ya29.beta"},"id_token":"` + betaJWT + `"}`
+
+	accDir := filepath.Join(tempDir, ".gemini_user_alpha")
+	cliDir := filepath.Join(accDir, "antigravity-cli")
+	_ = os.MkdirAll(cliDir, 0755)
+	_ = os.WriteFile(filepath.Join(cliDir, "antigravity-oauth-token"), []byte(tokJSON), 0600)
+
+	// When checking user_alpha, MatchesAccountEmail must return false because token actually belongs to user_beta
+	if s.MatchesAccountEmail(accDir, "user_alpha") {
+		t.Errorf("expected MatchesAccountEmail to return false for mismatched token email")
+	}
+
+	// When checking user_beta, it should match
+	if !s.MatchesAccountEmail(accDir, "user_beta") {
+		t.Errorf("expected MatchesAccountEmail to return true for matching token email")
+	}
+}
+
+
