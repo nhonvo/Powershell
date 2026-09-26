@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"sort"
 	"strings"
 	"time"
 
 	"agyswitch/internal/model"
+	"agyswitch/internal/service/store"
 )
 
 type Manager struct {
@@ -153,8 +153,7 @@ try:
 except Exception:
     pass
 `
-	cmd := exec.Command("python3", "-c", script, m.UserHome)
-	_ = cmd.Run()
+	_ = store.ExecPythonScript(script, m.UserHome)
 }
 
 // DiscoverPrimarySessions returns top-level CLI sessions matching agy /resume dialog.
@@ -280,8 +279,7 @@ for r in rows:
     })
 print(json.dumps(out))
 `
-	cmd := exec.Command("python3", "-c", script, dbPath)
-	out, err := cmd.Output()
+	out, err := store.ExecPythonOutput(script, dbPath)
 	if err != nil {
 		return nil, err
 	}

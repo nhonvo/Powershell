@@ -7,8 +7,8 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"strings"
 	"sync"
@@ -120,19 +120,14 @@ func syncAccountCredentials(src, dst string) {
 	s.SyncCredentials(src, dst)
 }
 
-// MatchesAccountEmail checks if the credentials in dir (via id_token JWT email or google_accounts.json) match the expected email handle.
-func (s *Store) MatchesAccountEmail(dir string, accountName string) bool {
-	targetEmail := strings.ToLower(fmt.Sprintf("%s@gmail.com", strings.TrimSpace(accountName)))
-
-	// 1. Verify actual JWT id_token email if available
-	if s.Vault != nil {
-		if tokenEmail := s.Vault.GetTokenEmail(dir); tokenEmail != "" {
-			return strings.EqualFold(tokenEmail, targetEmail)
-		}
+// GetAccountEmail resolves actual email claim from google_accounts.json or falls back to accountName@gmail.com.
+func (s *Store) GetAccountEmail(accountName string) string {
+	accName := strings.TrimSpace(accountName)
+	if accName == "" {
+		return ""
 	}
-
-	// 2. Verify google_accounts.json
-	gJsonPath := filepath.Join(dir, "google_accounts.json")
+	accDir := s.GetAccountDirectory(accName)
+	gJsonPath := filepath.Join(accDir, "google_accounts.json")
 	if data, err := os.ReadFile(gJsonPath); err == nil {
 		var g struct {
 			ActiveAccount string `json:"activeAccount"`
@@ -141,17 +136,72 @@ func (s *Store) MatchesAccountEmail(dir string, accountName string) bool {
 			} `json:"accounts"`
 		}
 		if json.Unmarshal(data, &g) == nil {
-			if g.ActiveAccount != "" && !strings.EqualFold(g.ActiveAccount, targetEmail) {
-				return false
+			if g.ActiveAccount != "" {
+				return g.ActiveAccount
 			}
-			if len(g.Accounts) > 0 && !strings.EqualFold(g.Accounts[0].Email, targetEmail) {
-				return false
+			if len(g.Accounts) > 0 && g.Accounts[0].Email != "" {
+				return g.Accounts[0].Email
 			}
-			return true
+		}
+	}
+	return fmt.Sprintf("%s@gmail.com", accName)
+}
+
+// MatchesAccountEmail checks if the credentials in dir match the expected account context without wiping custom alias accounts.
+func (s *Store) MatchesAccountEmail(dir string, accountName string) bool {
+	if dir == "" || accountName == "" {
+		return true
+	}
+	tokenEmail := ""
+	if s.Vault != nil {
+		tokenEmail = s.Vault.GetTokenEmail(dir)
+	}
+
+	gJsonPath := filepath.Join(dir, "google_accounts.json")
+	gJsonEmail := ""
+	if data, err := os.ReadFile(gJsonPath); err == nil {
+		var g struct {
+			ActiveAccount string `json:"activeAccount"`
+			Accounts      []struct {
+				Email string `json:"email"`
+			} `json:"accounts"`
+		}
+		if json.Unmarshal(data, &g) == nil {
+			if g.ActiveAccount != "" {
+				gJsonEmail = g.ActiveAccount
+			} else if len(g.Accounts) > 0 {
+				gJsonEmail = g.Accounts[0].Email
+			}
 		}
 	}
 
-	return true
+	if tokenEmail == "" {
+		tokenEmail = gJsonEmail
+	}
+
+	if tokenEmail == "" {
+		return true
+	}
+
+	targetEmail := strings.ToLower(fmt.Sprintf("%s@gmail.com", strings.TrimSpace(accountName)))
+
+	// 1. Exact match with accountName@gmail.com
+	if strings.EqualFold(tokenEmail, targetEmail) {
+		return true
+	}
+
+	// 2. Match with google_accounts.json inside dir (proves login was performed in this directory context)
+	if gJsonEmail != "" && strings.EqualFold(tokenEmail, gJsonEmail) {
+		return true
+	}
+
+	// 3. Match with bound email for accountName
+	boundEmail := s.GetAccountEmail(accountName)
+	if boundEmail != "" && strings.EqualFold(tokenEmail, boundEmail) {
+		return true
+	}
+
+	return false
 }
 
 // SyncActiveAccountCredentials keeps the active account directory and ~/.gemini in sync without cross-pollination.
@@ -202,6 +252,15 @@ func (s *Store) SyncActiveAccountCredentials() {
 	}
 }
 
+// GetAccountDirectoryForHome resolves path to <homeDir>/.gemini_<accountName> (or <homeDir>/.gemini for default).
+func (s *Store) GetAccountDirectoryForHome(homeDir, accountName string) string {
+	acc := strings.TrimSpace(accountName)
+	if acc == "" || acc == "default" {
+		return filepath.Join(homeDir, ".gemini")
+	}
+	return filepath.Join(homeDir, fmt.Sprintf(".gemini_%s", acc))
+}
+
 // SetActiveAccount backs up current active credentials, clears primary context to avoid pollution, restores target credentials, and syncs keyring.
 func (s *Store) SetActiveAccount(accountName string) error {
 	acc := s.ResolveAccount(accountName)
@@ -243,6 +302,32 @@ func (s *Store) SetActiveAccount(accountName string) error {
 	} else {
 		s.Vault.PurgeGlobalKeyring()
 	}
+
+	if runtime.GOOS == "windows" {
+		if winTok := s.Vault.ReadTokenFromDir(targetDir); winTok != "" && s.MatchesAccountEmail(targetDir, acc) {
+			vault.WriteWindowsCredential("gemini:antigravity", winTok)
+		} else {
+			vault.DeleteWindowsCredential("gemini:antigravity")
+		}
+	}
+
+	// Dual-Home Cross-Host Sync (Windows <-> WSL)
+	if counterpartHome := GetCounterpartHome(s.UserHome); counterpartHome != "" {
+		cpPrimary := filepath.Join(counterpartHome, ".gemini")
+		_ = os.MkdirAll(cpPrimary, 0755)
+		_ = os.WriteFile(filepath.Join(cpPrimary, "active_account.txt"), []byte(acc), 0644)
+		cpTarget := s.GetAccountDirectoryForHome(counterpartHome, acc)
+		_ = os.MkdirAll(cpTarget, 0755)
+
+		if s.Vault.ReadTokenFromDir(primaryDir) != "" && s.MatchesAccountEmail(primaryDir, acc) {
+			s.SyncCredentials(primaryDir, cpPrimary)
+			s.SyncCredentials(primaryDir, cpTarget)
+		} else if s.Vault.ReadTokenFromDir(targetDir) != "" && s.MatchesAccountEmail(targetDir, acc) {
+			s.SyncCredentials(targetDir, cpPrimary)
+			s.SyncCredentials(targetDir, cpTarget)
+		}
+	}
+
 	return nil
 }
 
@@ -586,7 +671,7 @@ for db in glob.glob(os.path.join('%s', '.gemini*', 'agytui*.db')):
     except Exception:
         pass
 `, accountName, s.UserHome, accountName)
-	_ = exec.Command("python3", "-c", script).Run()
+	_ = ExecPythonScript(script)
 }
 
 func (s *Store) MarkAccountLoggedOutInSqlite(accountName string) {
@@ -602,7 +687,7 @@ for db in glob.glob(os.path.join('%s', '.gemini*', 'agytui*.db')):
     except Exception:
         pass
 `, s.UserHome, accountName)
-	_ = exec.Command("python3", "-c", script).Run()
+	_ = ExecPythonScript(script)
 }
 
 func (s *Store) RemoveAccountFromSqlite(accountName string) {
@@ -618,7 +703,7 @@ for db in glob.glob(os.path.join('%s', '.gemini*', 'agytui*.db')):
     except Exception:
         pass
 `, s.UserHome, accountName)
-	_ = exec.Command("python3", "-c", script).Run()
+	_ = ExecPythonScript(script)
 }
 
 // DeleteAccount cleans up credentials, removes registry and SQLite entries, safely transitions active context, and deletes account directory from disk.
@@ -678,7 +763,7 @@ func (s *Store) DeleteAccount(name string) error {
 }
 
 func ProbeQuotaStatus(tok string) string {
-	tok = strings.TrimSpace(tok)
+	tok = vault.ExtractCleanAccessToken(tok)
 	if tok == "" {
 		return "✘ Logged Out"
 	}
@@ -754,12 +839,18 @@ func (s *Store) ListAccounts() []model.AccountInfo {
 		go func(idx int, accName string) {
 			defer wg.Done()
 			accDir := s.GetAccountDirectory(accName)
-			tok := s.Vault.ReadTokenFromDir(accDir)
+			
+			// Auto-refresh token if expired
+			tok := s.Vault.EnsureValidAccessToken(accDir)
 			if tok == "" && strings.EqualFold(accName, active) {
-				tok = s.Vault.ReadTokenFromDir(filepath.Join(s.UserHome, ".gemini"))
+				primaryDir := filepath.Join(s.UserHome, ".gemini")
+				tok = s.Vault.EnsureValidAccessToken(primaryDir)
+				if tok != "" && s.MatchesAccountEmail(primaryDir, accName) {
+					s.SyncCredentials(primaryDir, accDir)
+				}
 			}
 
-			email := fmt.Sprintf("%s@gmail.com", accName)
+			email := s.GetAccountEmail(accName)
 			sig := s.Vault.GetShortSignature(tok)
 			isLoggedIn := tok != ""
 			quotaStatus := ProbeQuotaStatus(tok)
@@ -771,6 +862,7 @@ func (s *Store) ListAccounts() []model.AccountInfo {
 				if q, err := s.GetAccountQuota(accName); err == nil {
 					summary = q
 					gPct, cPct = ExtractGroupQuotas(q)
+					quotaStatus = "✔ Quota OK"
 				} else {
 					if strings.Contains(err.Error(), "401") || strings.Contains(err.Error(), "403") {
 						if s.Vault.GetRefreshToken(accDir) == "" {
@@ -799,6 +891,59 @@ func (s *Store) ListAccounts() []model.AccountInfo {
 
 	wg.Wait()
 	return result
+}
+
+func (s *Store) RefreshSingleAccountQuota(accName string) model.AccountInfo {
+	s.PurgeQuotaCache(accName)
+	active := s.GetActiveAccount()
+	accDir := s.GetAccountDirectory(accName)
+
+	tok := s.Vault.EnsureValidAccessToken(accDir)
+	if tok == "" && strings.EqualFold(accName, active) {
+		primaryDir := filepath.Join(s.UserHome, ".gemini")
+		tok = s.Vault.EnsureValidAccessToken(primaryDir)
+		if tok != "" && s.MatchesAccountEmail(primaryDir, accName) {
+			s.SyncCredentials(primaryDir, accDir)
+		}
+	}
+
+	email := s.GetAccountEmail(accName)
+	sig := s.Vault.GetShortSignature(tok)
+	isLoggedIn := tok != ""
+	quotaStatus := ProbeQuotaStatus(tok)
+
+	var summary *model.QuotaSummary
+	var gPct, cPct float64 = -1, -1
+
+	if isLoggedIn {
+		if q, err := s.GetAccountQuota(accName); err == nil {
+			summary = q
+			gPct, cPct = ExtractGroupQuotas(q)
+			quotaStatus = "✔ Quota OK"
+		} else {
+			if strings.Contains(err.Error(), "401") || strings.Contains(err.Error(), "403") {
+				if s.Vault.GetRefreshToken(accDir) == "" {
+					quotaStatus = "🔑 Login Required"
+				} else {
+					quotaStatus = "⚡ Auto-Refresh"
+				}
+			}
+		}
+	}
+
+	info := model.AccountInfo{
+		AccountName:    accName,
+		Email:          email,
+		IsActive:       strings.EqualFold(accName, active),
+		TokenSig:       sig,
+		IsLoggedIn:     isLoggedIn,
+		QuotaStatus:    quotaStatus,
+		GeminiQuotaPct: gPct,
+		ClaudeQuotaPct: cPct,
+		QuotaSummary:   summary,
+	}
+	s.SaveQuotaCache(accName, info)
+	return info
 }
 
 func (s *Store) GetQuotaCachePath(accName string) string {
@@ -843,7 +988,7 @@ func (s *Store) ListAccountsFast() []model.AccountInfo {
 				tok = pTok
 			}
 		}
-		email := fmt.Sprintf("%s@gmail.com", name)
+		email := s.GetAccountEmail(name)
 		sig := s.Vault.GetShortSignature(tok)
 		isLoggedIn := tok != ""
 
@@ -860,6 +1005,9 @@ func (s *Store) ListAccountsFast() []model.AccountInfo {
 			cPct = cached.ClaudeQuotaPct
 			if cached.QuotaStatus != "" {
 				quotaStatus = cached.QuotaStatus
+			}
+			if cached.Email != "" {
+				email = cached.Email
 			}
 		}
 
@@ -922,7 +1070,7 @@ func (s *Store) SelectBestQuotaAccount() string {
 }
 
 func FetchUserQuotaSummary(tok string) (*model.QuotaSummary, error) {
-	tok = strings.TrimSpace(tok)
+	tok = vault.ExtractCleanAccessToken(tok)
 	if tok == "" {
 		return nil, errors.New("unauthenticated")
 	}

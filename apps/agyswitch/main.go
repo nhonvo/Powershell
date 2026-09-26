@@ -229,7 +229,12 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Error initializing seed template: %v\n", err)
 			os.Exit(1)
 		}
-		fmt.Printf("\033[36m[agyswitch]\033[0m Successfully initialized master seed template at ~/.gemini_template\n")
+		if len(args) >= 2 && (strings.EqualFold(args[1], "powershell") || strings.EqualFold(args[1], "pwsh") || strings.EqualFold(args[1], "bash") || strings.EqualFold(args[1], "zsh")) {
+			fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Initialized master seed template at ~/.gemini_template\n")
+			fmt.Println("# agyswitch shell initialization complete")
+		} else {
+			fmt.Printf("\033[36m[agyswitch]\033[0m Successfully initialized master seed template at ~/.gemini_template\n")
+		}
 	case "seed":
 		target := s.GetActiveAccount()
 		if len(args) >= 2 {

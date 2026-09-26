@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"agyswitch/internal/service/store"
@@ -99,17 +100,28 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 
 	if isLogin {
 		_ = l.Store.LogoutAccount(accountName)
+		if runtime.GOOS == "windows" {
+			vault.DeleteWindowsCredential("gemini:antigravity")
+		}
 		fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Starting interactive Google OAuth sign-in for account '\033[32m%s\033[0m'...\n", accountName)
 		fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Context: \033[33m%s\033[0m (Follow prompts in terminal/browser)\n", accDir)
 	} else {
 		token := l.Vault.EnsureValidAccessToken(accDir)
 		if token != "" && l.Store.MatchesAccountEmail(accDir, accountName) {
+			if runtime.GOOS == "windows" {
+				if winTok := l.Vault.ReadTokenFromDir(accDir); winTok != "" {
+					vault.WriteWindowsCredential("gemini:antigravity", winTok)
+				}
+			}
 			fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Context for '\033[32m%s\033[0m': \033[32m%s\033[0m (✔ Logged In)\n", accountName, accDir)
 		} else {
 			if token != "" && !l.Store.MatchesAccountEmail(accDir, accountName) {
 				l.Store.ClearCredentials(accDir)
 			}
 			l.Vault.PurgeGlobalKeyring()
+			if runtime.GOOS == "windows" {
+				vault.DeleteWindowsCredential("gemini:antigravity")
+			}
 			fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Context for '\033[33m%s\033[0m': \033[33m%s\033[0m (✘ Logged Out - Login Required)\n", accountName, accDir)
 		}
 	}
@@ -141,7 +153,13 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 			}
 		}
 	}
-	finalEnv = append(finalEnv, fmt.Sprintf("GEMINI_HOME=%s", accDir))
+	geminiHomePath := accDir
+	if strings.HasSuffix(strings.ToLower(agyBin), ".exe") && strings.HasPrefix(accDir, "/mnt/") {
+		geminiHomePath = store.ToWindowsPath(accDir)
+	} else if runtime.GOOS == "windows" && (strings.HasPrefix(geminiHomePath, "\\\\wsl") || strings.HasPrefix(geminiHomePath, "/")) {
+		geminiHomePath = store.ToLinuxPath(geminiHomePath)
+	}
+	finalEnv = append(finalEnv, fmt.Sprintf("GEMINI_HOME=%s", geminiHomePath))
 	cmd.Env = finalEnv
 
 	cmd.Stdin = os.Stdin
@@ -150,8 +168,17 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 
 	runErr := cmd.Run()
 
-	// Post-run hook: only sync from accDir to primaryDir if this account is currently active, has a valid token, and matches email
+	// Post-run hook: sync newly updated credentials back to account context & primaryDir
 	primaryDir := filepath.Join(l.Store.UserHome, ".gemini")
+	if runtime.GOOS == "windows" {
+		if winTok := vault.ReadWindowsCredential("gemini:antigravity"); winTok != "" {
+			_ = l.Vault.SaveTokenToContext(accDir, winTok)
+			if strings.EqualFold(accountName, l.Store.GetActiveAccount()) {
+				_ = l.Vault.SaveTokenToContext(primaryDir, winTok)
+			}
+		}
+	}
+
 	if strings.EqualFold(accountName, l.Store.GetActiveAccount()) {
 		aTok := l.Vault.ReadTokenFromDir(accDir)
 		if aTok != "" && l.Store.MatchesAccountEmail(accDir, accountName) {

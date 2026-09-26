@@ -25,7 +25,7 @@ func NewSeeder(userHome string, s *store.Store) *Seeder {
 	return &Seeder{UserHome: userHome, Store: s}
 }
 
-// EnsureSeedTemplate provisions ~/.gemini_template directory structure if missing.
+// EnsureSeedTemplate provisions ~/.gemini_template directory structure if missing across primary and counterpart homes.
 func (s *Seeder) EnsureSeedTemplate() error {
 	templateDir := filepath.Join(s.UserHome, ".gemini_template")
 	if err := os.MkdirAll(filepath.Join(templateDir, "config", "rules"), 0755); err != nil {
@@ -39,16 +39,30 @@ func (s *Seeder) EnsureSeedTemplate() error {
 		_ = os.WriteFile(geminiRule, []byte(content), 0644)
 	}
 
+	if cpHome := store.GetCounterpartHome(s.UserHome); cpHome != "" {
+		cpTemplateDir := filepath.Join(cpHome, ".gemini_template")
+		_ = os.MkdirAll(filepath.Join(cpTemplateDir, "config", "rules"), 0755)
+		_ = os.MkdirAll(filepath.Join(cpTemplateDir, "skills"), 0755)
+		_ = store.MirrorDirectory(templateDir, cpTemplateDir)
+	}
+
 	return nil
 }
 
-// SeedAccount copies ~/.gemini_template canonical defaults into target account directory.
+// SeedAccount copies ~/.gemini_template canonical defaults into target account directory on primary and counterpart homes.
 func (s *Seeder) SeedAccount(accountName string) error {
 	_ = s.EnsureSeedTemplate()
 	templateDir := filepath.Join(s.UserHome, ".gemini_template")
 	accDir := s.Store.GetAccountDirectory(accountName)
 
-	return store.MirrorDirectory(templateDir, accDir)
+	err := store.MirrorDirectory(templateDir, accDir)
+
+	if cpHome := store.GetCounterpartHome(s.UserHome); cpHome != "" {
+		cpAccDir := s.Store.GetAccountDirectoryForHome(cpHome, accountName)
+		_ = store.MirrorDirectory(templateDir, cpAccDir)
+	}
+
+	return err
 }
 
 // ResetAccountEx executes multi-tier account resets (--auth, --soft, --hard).

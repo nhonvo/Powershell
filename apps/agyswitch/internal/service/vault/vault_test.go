@@ -96,3 +96,8 @@ func TestVault_OAuthConfig(t *testing.T) {
 	}
 }
 
+func TestVault_ReadWindowsCredential(t *testing.T) {
+	tok := vault.ReadWindowsCredential("gemini:antigravity")
+	t.Logf("ReadWindowsCredential('gemini:antigravity') = %s", tok)
+}
+

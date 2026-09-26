@@ -915,24 +915,30 @@ function Invoke-AgyAccount {
         [string]$TargetAccount,
         [switch]$Temporary
     )
-    if (Get-Command agyswitch -ErrorAction SilentlyContinue) {
-        if (-not $SubCommand) {
-            & agyswitch
-            return
-        }
-        switch ($SubCommand.ToLowerInvariant()) {
-            "use" {
-                if ($TargetAccount) { & agyswitch switch $TargetAccount } else { & agyswitch }
+    $exe = Join-Path $HOME ".local\bin\agyswitch.exe"
+    if (-not (Test-Path $exe) -and $Global:ProfileRepoRoot) { $exe = Join-Path $Global:ProfileRepoRoot "dist\windows\agyswitch.exe" }
+    if (-not (Test-Path $exe)) {
+        $cmd = Get-Command agyswitch.exe -CommandType Application -ErrorAction SilentlyContinue
+        if ($cmd) { $exe = $cmd.Source }
+    }
+
+    if (Test-Path $exe) {
+        $argsList = @()
+        if ($SubCommand) {
+            switch ($SubCommand.ToLowerInvariant()) {
+                "use" { if ($TargetAccount) { $argsList += @("switch", $TargetAccount) } }
+                "list" { $argsList += "status" }
+                "ls" { $argsList += "status" }
+                default {
+                    $argsList += $SubCommand
+                    if ($TargetAccount) { $argsList += $TargetAccount }
+                }
             }
-            "list" { & agyswitch status }
-            "ls" { & agyswitch status }
-            "status" { & agyswitch status }
-            default {
-                if ($TargetAccount) { & agyswitch $SubCommand $TargetAccount } else { & agyswitch $SubCommand }
-            }
         }
+        & $exe @argsList
         return
     }
+
     if (Get-Command wsl -ErrorAction SilentlyContinue) {
         $wslCmd = "agyswitch"
         if ($SubCommand) { $wslCmd += " $SubCommand" }
@@ -944,13 +950,11 @@ function Invoke-AgyAccount {
 }
 
 function Reset-AgyAccountData { 
-    if (Get-Command agyswitch -ErrorAction SilentlyContinue) { & agyswitch status }
-    else { wsl agyswitch status }
+    Invoke-AgyAccount status
 }
 function Invoke-ControlCenterNavigator { Invoke-ControlCenter "cnav" @args }
 function Purge-AgyAccounts { 
-    if (Get-Command agyswitch -ErrorAction SilentlyContinue) { & agyswitch status }
-    else { wsl agyswitch status }
+    Invoke-AgyAccount status
 }
 function Show-DotNetInfo { Invoke-ControlCenter "dotnet-info" @args }
 
@@ -1197,15 +1201,15 @@ if (-not (Test-Path $agyxBin) -and $Global:ProfileRepoRoot) {
     $agyxBin = Join-Path $Global:ProfileRepoRoot "dist\windows\agyx.exe"
 }
 if (Test-Path $agyxBin) {
-    $initScript = & $agyxBin init powershell
-    if ($initScript) {
+    $initScript = & $agyxBin init powershell 2>$null
+    if ($initScript -and $initScript -notlike "*[agyswitch]*") {
         $sb = [ScriptBlock]::Create($initScript)
         . $sb
     }
 } elseif (Get-Command wsl -ErrorAction SilentlyContinue) {
     try {
-        $initScript = wsl agyx init powershell
-        if ($initScript) {
+        $initScript = wsl agyx init powershell 2>$null
+        if ($initScript -and $initScript -notlike "*[agyswitch]*") {
             $sb = [ScriptBlock]::Create($initScript)
             . $sb
         }

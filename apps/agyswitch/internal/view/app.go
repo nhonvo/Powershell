@@ -486,23 +486,49 @@ func (a *App) Run() error {
 				fmt.Printf(" \033[1mTask:\033[0m      %s\r\n\r\n", sel.Title)
 				return a.Launcher(curActive, sel.WorkspaceDir, []string{"--conversation", sel.ConversationID})
 			}
-		case 'r', 'R': // Probe live quotas on-demand
+		case 'r': // Probe single selected account login status & live quota
+			if a.ActiveTab == 0 && a.SelectedIndex < len(accs) {
+				target := accs[a.SelectedIndex].AccountName
+				a.probeMu.Lock()
+				if !a.isProbingQuotas {
+					a.isProbingQuotas = true
+					a.StatusMsg = fmt.Sprintf("\033[36mProbing status & quota for '%s'...\033[0m", target)
+					go func(accName string) {
+						a.Store.RefreshSingleAccountQuota(accName)
+						newAccs := a.Store.ListAccountsFast()
+						a.probeMu.Lock()
+						a.cachedAccs = newAccs
+						a.isProbingQuotas = false
+						a.needsReload = true
+						a.StatusMsg = fmt.Sprintf("\033[32m✔ Updated status & quota for '%s'\033[0m", accName)
+						a.probeMu.Unlock()
+					}(target)
+				} else {
+					a.StatusMsg = "\033[33mProbing already in progress...\033[0m"
+				}
+				a.probeMu.Unlock()
+			} else if a.ActiveTab == 3 {
+				a.needsReload = true
+				a.StatusMsg = "\033[32mRefreshed sessions telemetry.\033[0m"
+			}
+		case 'R': // Probe ALL accounts login status & live quotas
 			if a.ActiveTab == 0 {
 				a.probeMu.Lock()
 				if !a.isProbingQuotas {
 					a.isProbingQuotas = true
-					a.StatusMsg = "\033[36mProbing live Google CloudCode quotas in background...\033[0m"
+					a.StatusMsg = "\033[36mProbing status & quota across ALL accounts in background...\033[0m"
 					go func() {
+						a.Store.PurgeAllQuotaCaches()
 						newAccs := a.Store.ListAccounts()
 						a.probeMu.Lock()
 						a.cachedAccs = newAccs
 						a.isProbingQuotas = false
 						a.needsReload = true
-						a.StatusMsg = "\033[32m✔ Successfully updated live quotas in background.\033[0m"
+						a.StatusMsg = "\033[32m✔ Successfully updated status & quota across ALL accounts.\033[0m"
 						a.probeMu.Unlock()
 					}()
 				} else {
-					a.StatusMsg = "\033[33mQuota probing already in progress in background...\033[0m"
+					a.StatusMsg = "\033[33mQuota probing already in progress...\033[0m"
 				}
 				a.probeMu.Unlock()
 			} else if a.ActiveTab == 3 {
@@ -655,33 +681,24 @@ func (a *App) Run() error {
 		case 'x', 'X': // Tiered Account Reset Modal
 			if a.ActiveTab == 0 && a.SelectedIndex < len(accs) {
 				target := accs[a.SelectedIndex].AccountName
-				fmt.Print("\033[?25h\033[?1049l")
-				_ = term.Restore(fd, oldState)
-				fmt.Printf("\r\n\033[33m[agyswitch]\033[0m Select Reset Tier for '\033[1m%s\033[0m':\r\n", target)
-				fmt.Print("  [1/a] Auth Wipe (token re-login)\r\n  [2/s] Soft Reset (cache/logs clear)\r\n  [3/h] Hard Purge (delete context)\r\nSelection (1-3 or Esc): ")
-				var input string
-				fmt.Scanln(&input)
-				input = strings.ToLower(strings.TrimSpace(input))
-				var mode string
-				switch input {
-				case "1", "a", "auth":
-					mode = "auth"
-				case "2", "s", "soft":
-					mode = "soft"
-				case "3", "h", "hard":
-					mode = "hard"
-				}
+				mode := a.promptResetModalTUI(fd, target)
 				if mode != "" {
 					if err := a.Seeder.ResetAccountEx(target, mode); err != nil {
 						a.StatusMsg = fmt.Sprintf("\033[31mReset error: %v\033[0m", err)
 					} else {
-						accs = a.Store.ListAccountsFast()
-						a.StatusMsg = fmt.Sprintf("\033[32mReset '%s' cleanly (mode: %s)\033[0m", target, mode)
+						a.cachedAccs = a.Store.ListAccountsFast()
+						accs = a.cachedAccs
+						a.needsReload = true
+						a.StatusMsg = fmt.Sprintf("\033[32m✔ Reset '%s' cleanly (mode: %s)\033[0m", target, mode)
 					}
+				} else {
+					a.StatusMsg = "\033[33mReset cancelled.\033[0m"
 				}
-				oldState, _ = term.MakeRaw(fd)
-				fmt.Print("\033[?1049h\033[?25l")
+				a.tabSwitched = true
 			}
+		case '?', 'h', 'H': // Interactive Action Palette Modal
+			a.promptActionPaletteTUI(fd)
+			a.tabSwitched = true
 		case 'q', 'Q', 0x03:
 			fmt.Print("\033[?25h\033[?1049l")
 			_ = term.Restore(fd, oldState)
@@ -816,24 +833,32 @@ func (a *App) Render(accs []model.AccountInfo, sessionsList []model.SessionInfo)
 	if width < 80 {
 		switch a.ActiveTab {
 		case 0:
-			b.WriteString(" \033[1m[Tab]\033[0mTab \033[1m[↑/↓]\033[0mNav \033[1;32m[Enter]\033[0mUse \033[1;36m[L]\033[0mAgy \033[1;36m[R]\033[0mQuota \033[1;31m[Q]\033[0mExit\033[K\r\n")
+			b.WriteString(" ⚙️ \033[1;34m[NAV]\033[0m Tab/↑/↓  🚀 \033[1;32m[ACC]\033[0m Enter:Use · L:Agy · A:Auto\033[K\r\n")
+			b.WriteString(" 🔄 \033[1;36m[SYNC]\033[0m r:Acc · R:ALL  🛠️ \033[1;33m[MANAGE]\033[0m X:Reset · O:Out · D:Del  \033[1;35m[?]\033[0mHelp\033[K\r\n")
 		case 1:
-			b.WriteString(" \033[1m[Tab]\033[0mTab \033[1m[↑/↓]\033[0mNav \033[1;36m[V]\033[0mView \033[1;36m[S]\033[0mSync \033[1;31m[Q]\033[0mExit\033[K\r\n")
+			b.WriteString(" ⚙️ \033[1;34m[NAV]\033[0m Tab/↑/↓  👁️ \033[1;36m[INSPECT]\033[0m V:Detail\033[K\r\n")
+			b.WriteString(" 🔄 \033[1;32m[SYNC]\033[0m S:Sync Skills Across Vaults  ❌ \033[1;31m[QUIT]\033[0m Q\033[K\r\n")
 		case 2:
-			b.WriteString(" \033[1m[Tab]\033[0mTab \033[1m[↑/↓]\033[0mNav \033[1;36m[V]\033[0mView \033[1;36m[N]\033[0mNew \033[1;31m[D]\033[0mDel \033[1;31m[Q]\033[0mExit\033[K\r\n")
+			b.WriteString(" ⚙️ \033[1;34m[NAV]\033[0m Tab/↑/↓  👁️ \033[1;36m[INSPECT]\033[0m V:Preview\033[K\r\n")
+			b.WriteString(" 🛠️ \033[1;33m[MANAGE]\033[0m N:New Rule · D:Delete Rule  ❌ \033[1;31m[QUIT]\033[0m Q\033[K\r\n")
 		case 3:
-			b.WriteString(" \033[1m[Tab]\033[0mTab \033[1m[↑/↓]\033[0mNav \033[1;32m[Enter]\033[0mResume \033[1;36m[A]\033[0mScope \033[1;36m[n/p]\033[0mPg \033[1;36m[G]\033[0mGrp \033[1;31m[Q]\033[0mExit\033[K\r\n")
+			b.WriteString(" ⚙️ \033[1;34m[NAV]\033[0m Tab/↑/↓/n/p  🚀 \033[1;32m[SESS]\033[0m Enter:Continue · V:Log\033[K\r\n")
+			b.WriteString(" 🔍 \033[1;36m[VIEW]\033[0m A:Scope · G:Group · F:Filter  ❌ \033[1;31m[QUIT]\033[0m Q\033[K\r\n")
 		}
 	} else {
 		switch a.ActiveTab {
 		case 0:
-			b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;32m[Enter]\033[0m Switch Acc · \033[1;36m[L]\033[0m Launch agy · \033[1;36m[R]\033[0m Refresh Quota · \033[1;33m[O]\033[0m Logout · \033[1;36m[T]\033[0m Seed · \033[1;33m[X]\033[0m Reset · \033[1;36m[N]\033[0m New · \033[1;31m[D]\033[0m Del · \033[1;35m[A]\033[0m Auto · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" ⚙️  \033[1;34m[NAV]\033[0m  Tab/1-4 · ↑/↓ (j/k)    🚀 \033[1;32m[ACCOUNT]\033[0m  Enter: Switch · L: Launch agy · A: Auto-Quota\033[K\r\n")
+			b.WriteString(" 🔄 \033[1;36m[SYNC]\033[0m  r: Refresh Acc · R: Refresh ALL   🛠️ \033[1;33m[MANAGE]\033[0m  N: New · M: Rename · T: Seed · X: Reset · O: Logout · D: Del   💡 \033[1;35m[?]\033[0m Help   ❌ \033[1;31m[QUIT]\033[0m Esc/Q\033[K\r\n")
 		case 1:
-			b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;36m[V]\033[0m View Detail · \033[1;36m[S]\033[0m Sync Skills Across Vaults · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" ⚙️  \033[1;34m[NAV]\033[0m  Tab/1-4 · ↑/↓ (j/k)    👁️ \033[1;36m[INSPECT]\033[0m  V: View Detail & Description\033[K\r\n")
+			b.WriteString(" 🔄 \033[1;32m[SYNC]\033[0m  S: Synchronize Global Skills Across All Contexts    💡 \033[1;35m[?]\033[0m Help   ❌ \033[1;31m[QUIT]\033[0m Esc/Q\033[K\r\n")
 		case 2:
-			b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;36m[V]\033[0m Inspect · \033[1;36m[N]\033[0m New Rule · \033[1;31m[D]\033[0m Del Rule · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" ⚙️  \033[1;34m[NAV]\033[0m  Tab/1-4 · ↑/↓ (j/k)    👁️ \033[1;36m[INSPECT]\033[0m  V: Preview Markdown Rule\033[K\r\n")
+			b.WriteString(" 🛠️  \033[1;33m[MANAGE]\033[0m  N: Create New Rule · D: Delete Rule File    💡 \033[1;35m[?]\033[0m Help   ❌ \033[1;31m[QUIT]\033[0m Esc/Q\033[K\r\n")
 		case 3:
-			b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch Tab · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;32m[Enter/C]\033[0m Continue Session · \033[1;36m[A]\033[0m CLI/All · \033[1;36m[n/p]\033[0m Page · \033[1;36m[G]\033[0m Group/Flat · \033[1;36m[F]\033[0m Filter Proj · \033[1;36m[O]\033[0m Sort · \033[1;36m[V]\033[0m Transcript · \033[1;31m[D]\033[0m Del · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" ⚙️  \033[1;34m[NAV]\033[0m  Tab/1-4 · ↑/↓ (j/k) · n/p: Page    🚀 \033[1;32m[SESSION]\033[0m  Enter/C: Continue · V: Trajectory Log · D: Delete\033[K\r\n")
+			b.WriteString(" 🔍 \033[1;36m[VIEW]\033[0m  A: Scope CLI/All · G: Group/Flat · F: Filter Proj · O: Sort Mode    💡 \033[1;35m[?]\033[0m Help   ❌ \033[1;31m[QUIT]\033[0m Esc/Q\033[K\r\n")
 		}
 	}
 
@@ -1297,3 +1322,118 @@ func (a *App) PrintStatus(w io.Writer) {
 	}
 	fmt.Fprintln(w, "──────────────────────────────────────────────────────────────────────────────────")
 }
+
+func (a *App) promptResetModalTUI(fd int, target string) string {
+	width, _ := getTermSize()
+	selectedOption := 0 // 0: Auth Wipe, 1: Soft Reset, 2: Hard Purge
+
+	modes := []struct {
+		key   string
+		title string
+		desc  string
+		mode  string
+	}{
+		{key: "1/A", title: "🔑 Auth Wipe", desc: "Wipe OAuth tokens & keyring to re-authenticate cleanly", mode: "auth"},
+		{key: "2/S", title: "🧹 Soft Reset", desc: "Clear quota cache, SQLite temporary tables & runtime logs", mode: "soft"},
+		{key: "3/H", title: "🔥 Hard Purge", desc: "Reset account context back to pristine seed state", mode: "hard"},
+	}
+
+	for {
+		var b strings.Builder
+		b.WriteString("\033[H\033[2J")
+		b.WriteString("\r\n🛸 \033[1;36mAGYSWITCH - Account Reset Tier Selector (AGYX Main Style)\033[0m\r\n")
+		b.WriteString(hr(width))
+		fmt.Fprintf(&b, " Target Account Context: \033[1;33m%-20s\033[0m\033[K\r\n\033[K\r\n", target)
+
+		for i, m := range modes {
+			cursor := "    "
+			badgeStyle := "\033[36m"
+			textStyle := "\033[0m"
+			if i == selectedOption {
+				cursor = " \033[1;32m▶ \033[0m"
+				badgeStyle = "\033[1;37;44m"
+				textStyle = "\033[1;33m"
+			}
+			fmt.Fprintf(&b, "%s%s [%s] \033[0m %s%-16s\033[0m \033[90m(%s)\033[0m\033[K\r\n\033[K\r\n",
+				cursor, badgeStyle, m.key, textStyle, m.title, m.desc)
+		}
+
+		b.WriteString(hr(width))
+		b.WriteString(" \033[1m[1-3 / A/S/H]\033[0m Direct Select · \033[1m[↑/↓ j/k]\033[0m Move Cursor · \033[1;32m[Enter]\033[0m Confirm · \033[1;31m[Esc/Q]\033[0m Cancel\033[K\r\n")
+		b.WriteString("\033[J")
+
+		os.Stdout.WriteString(b.String())
+
+		var buf [16]byte
+		n, err := os.Stdin.Read(buf[:])
+		if err != nil || n == 0 {
+			return ""
+		}
+
+		b0 := buf[0]
+		if b0 == 0x1b {
+			if n == 1 { // Esc key
+				return ""
+			}
+			if n >= 3 && buf[1] == '[' {
+				switch buf[2] {
+				case 'A': // Up
+					selectedOption = (selectedOption + 2) % 3
+				case 'B': // Down
+					selectedOption = (selectedOption + 1) % 3
+				}
+			}
+			continue
+		}
+
+		switch b0 {
+		case '1', 'a', 'A':
+			return "auth"
+		case '2', 's', 'S':
+			return "soft"
+		case '3', 'h', 'H':
+			return "hard"
+		case 'k', 'K':
+			selectedOption = (selectedOption + 2) % 3
+		case 'j', 'J':
+			selectedOption = (selectedOption + 1) % 3
+		case '\r', '\n':
+			return modes[selectedOption].mode
+		case 'q', 'Q':
+			return ""
+		}
+	}
+}
+
+func (a *App) promptActionPaletteTUI(fd int) {
+	width, _ := getTermSize()
+	var b strings.Builder
+	b.WriteString("\033[H\033[2J")
+	b.WriteString("\r\n🛸 \033[1;36mAGYSWITCH - Command Palette & Action Helper\033[0m\r\n")
+	b.WriteString(hr(width))
+	b.WriteString(" \033[1;32m🚀 Account Launch & Selection:\033[0m\r\n")
+	b.WriteString("    • \033[1;37m[Enter / C]\033[0m  Switch Active Account Context\r\n")
+	b.WriteString("    • \033[1;37m[L]\033[0m          Launch 'agy' CLI under selected account\r\n")
+	b.WriteString("    • \033[1;37m[A]\033[0m          Auto-Select account with highest available quota\r\n\r\n")
+
+	b.WriteString(" \033[1;36m🔄 Quota & Telemetry Sync:\033[0m\r\n")
+	b.WriteString("    • \033[1;37m[r]\033[0m          Refresh status & quota for SELECTED account\r\n")
+	b.WriteString("    • \033[1;37m[R]\033[0m          Refresh status & quota across ALL accounts\r\n")
+	b.WriteString("    • \033[1;37m[V]\033[0m          View detailed model quota breakdown\r\n\r\n")
+
+	b.WriteString(" \033[1;33m🛠️  Account Context Management:\033[0m\r\n")
+	b.WriteString("    • \033[1;37m[N]\033[0m          Create NEW account context\r\n")
+	b.WriteString("    • \033[1;37m[M]\033[0m          Rename selected account\r\n")
+	b.WriteString("    • \033[1;37m[T]\033[0m          Seed context from master template (~/.gemini_template)\r\n")
+	b.WriteString("    • \033[1;37m[X]\033[0m          Interactive Tiered Reset (Auth Wipe / Soft Reset / Hard Purge)\r\n")
+	b.WriteString("    • \033[1;37m[O]\033[0m          Logout account (wipe token context)\r\n")
+	b.WriteString("    • \033[1;37m[D]\033[0m          Delete account context permanently\r\n\r\n")
+
+	b.WriteString(hr(width))
+	b.WriteString(" \033[1mPress any key to return...\033[0m\033[K\r\n")
+	os.Stdout.WriteString(b.String())
+
+	var dummy [1]byte
+	_, _ = os.Stdin.Read(dummy[:])
+}
+
