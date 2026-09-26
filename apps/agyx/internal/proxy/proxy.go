@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -102,7 +103,8 @@ func ResolveTool(aliasOrName string) *ToolDefinition {
 	return nil
 }
 
-// FindBinary searches for the tool binary across candidate paths and selects the NEWEST build version based on ModTime.
+// FindBinary searches for the tool binary across candidate paths and selects the best build version.
+// On Linux/Unix, native binaries are always prioritized over WSL Windows interop (.exe / /mnt/) binaries.
 func FindBinary(binName string) (string, error) {
 	home, _ := os.UserHomeDir()
 	cwd, _ := os.Getwd()
@@ -123,19 +125,30 @@ func FindBinary(binName string) (string, error) {
 		candidates = append(candidates, filepath.Join(filepath.Dir(exe), binName))
 	}
 
-	// 6. Look in PATH (including .exe / .cmd in WSL)
+	// 6. Look in PATH
 	if path, err := exec.LookPath(binName); err == nil {
 		candidates = append(candidates, path)
 	}
-	if path, err := exec.LookPath(binName + ".exe"); err == nil {
-		candidates = append(candidates, path)
-	}
-	if path, err := exec.LookPath(binName + ".cmd"); err == nil {
-		candidates = append(candidates, path)
+
+	if runtime.GOOS == "windows" {
+		candidates = append(candidates,
+			filepath.Join(cwd, "bin", binName+".exe"),
+			filepath.Join(home, "projects", "powershell-profile", "bin", binName+".exe"),
+			filepath.Join(home, ".local", "bin", binName+".exe"),
+			filepath.Join(home, "projects", "powershell-profile", "apps", binName, binName+".exe"),
+		)
+		if path, err := exec.LookPath(binName + ".exe"); err == nil {
+			candidates = append(candidates, path)
+		}
+		if path, err := exec.LookPath(binName + ".cmd"); err == nil {
+			candidates = append(candidates, path)
+		}
 	}
 
-	var newestPath string
-	var newestTime time.Time
+	var newestNativePath string
+	var newestNativeTime time.Time
+	var fallbackPath string
+	var fallbackTime time.Time
 	seen := make(map[string]bool)
 
 	for _, c := range candidates {
@@ -150,14 +163,26 @@ func FindBinary(binName string) (string, error) {
 			continue
 		}
 
-		if newestPath == "" || fi.ModTime().After(newestTime) {
-			newestPath = cleaned
-			newestTime = fi.ModTime()
+		isWindowsInterop := runtime.GOOS != "windows" && (strings.HasPrefix(cleaned, "/mnt/") || strings.HasSuffix(strings.ToLower(cleaned), ".exe") || strings.HasSuffix(strings.ToLower(cleaned), ".cmd"))
+
+		if isWindowsInterop {
+			if fallbackPath == "" || fi.ModTime().After(fallbackTime) {
+				fallbackPath = cleaned
+				fallbackTime = fi.ModTime()
+			}
+		} else {
+			if newestNativePath == "" || fi.ModTime().After(newestNativeTime) {
+				newestNativePath = cleaned
+				newestNativeTime = fi.ModTime()
+			}
 		}
 	}
 
-	if newestPath != "" {
-		return newestPath, nil
+	if newestNativePath != "" {
+		return newestNativePath, nil
+	}
+	if fallbackPath != "" {
+		return fallbackPath, nil
 	}
 
 	return "", fmt.Errorf("binary '%s' not found. Run 'make build' or 'make install'", binName)

@@ -59,3 +59,15 @@ func TestProxy_ResolveTool(t *testing.T) {
 		}
 	}
 }
+
+func TestProxy_FindBinary(t *testing.T) {
+	// FindBinary should find agyswitch in PATH or candidate paths
+	binPath, err := FindBinary("agyswitch")
+	if err != nil {
+		t.Fatalf("expected to find agyswitch, got error: %v", err)
+	}
+	if binPath == "" {
+		t.Fatalf("expected non-empty path for agyswitch")
+	}
+}
+
