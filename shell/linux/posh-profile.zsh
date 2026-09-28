@@ -21,9 +21,6 @@ else
 fi
 
 export POSH_THEMES_PATH="$REPO_ROOT/shell/assets/powershell-themes"
-if [ ! -d "$POSH_THEMES_PATH" ]; then
-    export POSH_THEMES_PATH="$REPO_ROOT/psapp/asset/powershell-themes"
-fi
 export PATH="$HOME/.local/bin:$HOME/.dotnet:$HOME/.dotnet/tools:$PATH"
 export DOTNET_ROOT="$HOME/.dotnet"
 

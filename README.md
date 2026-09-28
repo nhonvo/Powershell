@@ -22,12 +22,6 @@ powershell-profile/
 │   ├── agyollama/              # Local AI & Ollama Daemon Cockpit
 │   └── agybot/                 # Telegram Remote Controller & Project Daemon
 │
-├── archive/                    # Archived Historical Codebases & Solutions
-│   └── agytui/                 # Legacy .NET 9.0 Spectre.Console Control Center (261 tests)
-│       ├── AgyTui/             # Domain, Infrastructure, and UI layer implementation
-│       ├── AgyTui.Tests/       # 261 xUnit tests (Unit, Integration, and Parity)
-│       └── AgyTui.slnx         # Solution file
-│
 ├── shell/
 │   ├── windows/                # Microsoft.PowerShell_profile.ps1 (Modularized Profile)
 │   ├── linux/                  # posh-profile.zsh (Ubuntu/Linux Zsh configuration)

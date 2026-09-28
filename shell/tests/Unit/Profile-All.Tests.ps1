@@ -18,44 +18,10 @@ function tailscale { $global:tailscaleArgs = $args; return "100.115.92.12" }
 Describe "Core Profile Functions Validation" {
     BeforeAll {
         $repoRoot = (Get-Item (Join-Path $PSScriptRoot "..\..\..\")).FullName
-        $dllPath = Join-Path $repoRoot "csapp\AgyTui\dist\AgyTui.dll"
-        if (-not (Test-Path $dllPath)) {
-            $dllPath = Join-Path $repoRoot "csapp\AgyTui\bin\Debug\net9.0\AgyTui.dll"
-        }
-        if (-not (Test-Path $dllPath)) {
-            $dllPath = Join-Path $repoRoot "csapp\AgyTui\bin\Debug\net10.0\AgyTui.dll"
-        }
-        if (Test-Path $dllPath) {
-            # Load dependency assemblies
-            Get-ChildItem -Path (Split-Path $dllPath) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTui.dll" } | ForEach-Object {
-                try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
-            }
-            try {
-                Add-Type -Path $dllPath -ErrorAction SilentlyContinue
-                $acc = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
-                $agyAssembly = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTui" } | Select-Object -First 1
-                if ($acc -and $agyAssembly) {
-                    foreach ($type in $agyAssembly.GetExportedTypes()) {
-                        if ($type.IsClass -and $type.Name -and -not $acc::Get.ContainsKey($type.Name)) {
-                            try { $acc::Add($type.Name, $type) } catch {}
-                        }
-                    }
-                }
-            } catch {}
-        }
-
         $global:AgyUserProfileLoaded = $null
         . (Join-Path $repoRoot "Microsoft.PowerShell_profile.ps1")
         $global:AgyUserProfileLoaded = $null
-        try { Load-AgyTuiDll -ForceLoad $true } catch {}
     }
-
-    Context "ProfileHelp Type Accelerator" {
-        It "ProfileHelp resolves to the AgyTui type accelerator" {
-            [ProfileHelp].FullName | Should Be "AgyTui.UI.Screens.Customization.Helpers.ProfileHelp"
-        }
-    }
-
     Context "Navigation (20-Navigation.ps1)" {
         It "Set-LocationParent navigates up one level" {
             { Set-LocationParent } | Should Not Throw
@@ -68,17 +34,11 @@ Describe "Core Profile Functions Validation" {
 
     Context "System Helpers (30-System.ps1)" {
         It "Get-DiskSpace runs without throwing" {
-            { Load-AgyTuiDll; [CommandRouter]::Route("disk") } | Should Not Throw
-        }
-
-        It "Get-PublicIP runs and returns string" {
-            Load-AgyTuiDll
-            $ip = [SystemHelper]::Instance.GetPublicIP()
-            $ip | Should Not BeNullOrEmpty
+            { Get-DiskSpace } | Should Not Throw
         }
 
         It "Get-SshConnectionInfo runs without throwing" {
-            { Load-AgyTuiDll; [CommandRouter]::Route("ssh-info") } | Should Not Throw
+            { Get-SshConnectionInfo } | Should Not Throw
         }
     }
 
@@ -94,10 +54,6 @@ Describe "Core Profile Functions Validation" {
                 Pop-Location
                 Remove-Item $tempDir -Recurse -Force -ErrorAction SilentlyContinue
             }
-        }
-
-        It "Invoke-DotNetBuild executes CommandRouter db route" {
-            { Invoke-DotNetBuild } | Should Not Throw
         }
     }
 
@@ -140,25 +96,11 @@ Describe "Core Profile Functions Validation" {
         }
     }
 
-    Context "Theme & System Commands (C# CommandRouter)" {
-        It "Executes theme and mobile routes via CommandRouter" {
-            { Load-AgyTuiDll; [CommandRouter]::Route("theme") } | Should Not Throw
-        }
-    }
-
-    Context "Learning Suite & Account Integration (C# CommandRouter)" {
-        It "Executes learning and account routes via CommandRouter" {
-            { Load-AgyTuiDll; [CommandRouter]::Route("due") } | Should Not Throw
-            { Load-AgyTuiDll; [CommandRouter]::Route("autoswitch"); [CommandRouter]::Route("autoswitch") } | Should Not Throw
-        }
-    }
-
     Context "PowerShell Profile & Script Type References Coverage" {
-        It "Ensures all custom C# type references in .ps1 files resolve without error" {
-            Load-AgyTuiDll -ForceLoad $true
+        It "Ensures all custom type references in .ps1 files resolve without error" {
             $repoRoot = (Get-Item (Join-Path $PSScriptRoot "..\..\..\")).FullName
             $allPsFiles = Get-ChildItem -Path $repoRoot -Filter "*.ps1" -Recurse | Where-Object {
-                $_.FullName -notlike "*\.git*" -and $_.FullName -notlike "*\bin\*" -and $_.FullName -notlike "*\obj\*" -and $_.FullName -notlike "*\psapp\Modules\*"
+                $_.FullName -notlike "*\.git*" -and $_.FullName -notlike "*\bin\*" -and $_.FullName -notlike "*\obj\*" -and $_.FullName -notlike "*\Modules\*" -and $_.FullName -notlike "*\modules\*"
             }
 
             $missingTypes = @()
@@ -185,13 +127,6 @@ Describe "Core Profile Functions Validation" {
             }
 
             $missingTypes | Should BeNullOrEmpty
-        }
-
-        It "Ensures CommandRouter type accelerator is registered and functional" {
-            Load-AgyTuiDll
-            $type = "CommandRouter" -as [type]
-            $type | Should Not Be $null
-            $type.FullName | Should Be "AgyTui.UI.Core.Navigation.CommandRouter"
         }
     }
 }

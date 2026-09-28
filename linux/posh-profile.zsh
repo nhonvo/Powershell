@@ -1,1 +1,0 @@
-../shell/linux/posh-profile.zsh

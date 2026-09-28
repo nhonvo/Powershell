@@ -5,9 +5,6 @@
 > **Environment**: Ubuntu WSL2 + Windows 11 / VS Code  
 > **Date**: September 2026  
 > **Status**: Production / Active  
-> **Master Strategic Roadmap**: [00_agy_system_audit_and_roadmap.md](reports/00_agy_system_audit_and_roadmap.md)  
-> **Audit Catalog**: [docs/reports/README.md](reports/README.md)  
-> **Windows UNC Reference**: `\\wsl.localhost\Ubuntu\home\truongnhon\projects\powershell-profile\docs\README.md`
 
 ---
 
@@ -15,9 +12,9 @@
 
 Welcome to the centralized documentation gateway for the **Antigravity Developer Suite**. 
 
-The Antigravity ecosystem has evolved from an earlier monolithic .NET 9.0 console application (`AgyTui`) into a **modular, high-speed Go Engine suite comprising 8 native micro-applications** + integrated cloud tooling. These tools deliver instant execution (cold-start latency under 15ms), lightweight memory footprints (6MB–14MB RAM), and zero PowerShell DLL locking hazards, while providing rich terminal dashboards and cross-platform automation across Ubuntu WSL2 and Windows 11.
+The Antigravity ecosystem has evolved into a **modular, high-speed Go Engine suite comprising 10 native micro-applications** + integrated cloud tooling. These tools deliver instant execution (cold-start latency under 15ms), lightweight memory footprints (6MB–14MB RAM), and zero PowerShell DLL locking hazards, while providing rich terminal dashboards and cross-platform automation across Ubuntu WSL2 and Windows 11.
 
-This master gateway provides top-level architectural topologies, component catalogs, user navigation, developer guides, and links to all forensic deep-dive audit reports.
+This master gateway provides top-level architectural topologies, component catalogs, user navigation, and developer guides.
 
 ---
 
@@ -93,61 +90,7 @@ The modern suite decomposes developer operations into 10 focused, independently 
 
 ---
 
-## 3. 📋 Audit & Deep-Dive Reports
-
-In September 2026, an exhaustive forensic code and architecture audit was executed across the suite. The findings, benchmarks, security reviews, and parity comparisons are published in the dedicated reports catalog:
-
-* **Reports Catalog Index**: **[reports/README.md](reports/README.md)**
-* **Master System Audit & Product Roadmap**: **[00_agy_system_audit_and_roadmap.md](reports/00_agy_system_audit_and_roadmap.md)**
-* **Local AI & Ollama Architecture Specification**: **[09_agyollama_local_ai_plan.md](reports/09_agyollama_local_ai_plan.md)**
-* **Agygit Interactive Staging & Conflict Plan**: **[10_agygit_staging_reject_conflict_plan.md](reports/10_agygit_staging_reject_conflict_plan.md)**
-
-### Detailed Reports Index (00 – 18):
-0. **[00_agy_system_audit_and_roadmap.md](reports/00_agy_system_audit_and_roadmap.md)**: Master forensic system audit, vulnerability matrix, legacy C# parity checklist, and 4-phase transformation roadmap.
-1. **[01_agyswitch_deep_audit.md](reports/01_agyswitch_deep_audit.md)**: AES-256 token vault, OAuth refresh, CloudCode quota probing, empty `service/quota` package, and brittle Python CLI transcript parser.
-2. **[02_agyx_proxy_audit.md](reports/02_agyx_proxy_audit.md)**: Master proxy architecture, Cockpit navigation, child process exit code erasure bug (`os.Exit(1)`), missing `agymobile` routing, and Unix Domain Socket IPC plans.
-3. **[03_agygit_fleet_audit.md](reports/03_agygit_fleet_audit.md)**: Parallel fleet scanner, multi-agent worktrees, 10-subprocess per keystroke UI freeze, and branch checkout creation bug (`create=false`).
-4. **[04_agyproj_workspace_audit.md](reports/04_agyproj_workspace_audit.md)**: Stack auto-detector, transcript AI cost/step analytics, uncached frame-render lag, and hardcoded Windows username path in `launcher.go`.
-5. **[05_agydocker_container_audit.md](reports/05_agydocker_container_audit.md)**: Container/Compose management, `/proc/meminfo` WSL2 RAM/Swap gauges, volume pruning bug (`docker system prune` instead of `docker volume prune`), and async Braille spinner.
-6. **[06_agyterm_theme_audit.md](reports/06_agyterm_theme_audit.md)**: Windows Terminal `settings.json` mutation from WSL2, Oh-My-Posh ANSI color previewer, empty `service/linuxterm` package, and 9 shell health checks.
-7. **[07_agymobile_cockpit_audit.md](reports/07_agymobile_cockpit_audit.md)**: 38-column portrait TUI, embedded Web Cockpit (:7890), severe unauthenticated endpoint vulnerability (`docker-stop-all`), and Tailscale integration.
-8. **[08_cs_legacy_system_parity_audit.md](reports/08_cs_legacy_system_parity_audit.md)**: Historical baseline of the monolithic C# system (`apps/agytui`), SQLite V1–V7 WAL persistence, SM-2 Spaced Repetition suite loss, AWS LocalStack, and the Go parity restoration roadmap.
-9. **[09_agyollama_local_ai_plan.md](reports/09_agyollama_local_ai_plan.md)**: Dedicated Go Local AI & Ollama micro-app porting C# IOllamaClient/screens: REST client, streaming pull, hardware benchmark, non-blocking UI.
-10. **[10_agygit_staging_reject_conflict_plan.md](reports/10_agygit_staging_reject_conflict_plan.md)**: Interactive porcelain status, single/all file change rejection, selective staging/unstaging, 3-way merge conflict resolution, diff inspector.
-11. **[11_agyswitch_agydocker_nonblocking_report.md](reports/11_agyswitch_agydocker_nonblocking_report.md)**: Non-blocking UI implementation: UNIX `poll` 80ms loop, background quota probing, async stack/container down, continuous Braille spinners.
-12. **[12_agyollama_implementation_report.md](reports/12_agyollama_implementation_report.md)**: Complete delivery and verification report for local Ollama & AI engine: 15/15 passing tests, models manager, benchmark, TUI.
-13. **[13_agyx_agymobile_security_routing_report.md](reports/13_agyx_agymobile_security_routing_report.md)**: Fix report: Secure bearer token authentication, QR pairing, subshell terminal handoff, transparent proxy routing, 21 unit tests.
-14. **[14_agyswitch_session_and_ollama_fix_report.md](reports/14_agyswitch_session_and_ollama_fix_report.md)**: Fix report: Ollama WSL2 path resolution, session persistence & consolidation across accounts, instant account switching, UI active dot fix.
-15. **[15_agygit_agyproj_perf_ux_report.md](reports/15_agygit_agyproj_perf_ux_report.md)**: Fix report: Eliminating 10-subprocess per keystroke freeze in agygit, project caching, dynamic username resolution, interactive subshells.
-16. **[16_agydocker_agyterm_fix_report.md](reports/16_agydocker_agyterm_fix_report.md)**: Fix report: Safe Docker volume pruning, empty package scaffolding (`service/linuxterm`), dynamic theme/font preview, Windows Terminal sync.
-17. **[17_agymobile_plan.md](reports/17_agymobile_plan.md)**: Agymobile remote cockpit engineering specification, Tailscale mesh network routing, mobile PWA, and session inspection.
-18. **[18_suite_verification_and_test_report.md](reports/18_suite_verification_and_test_report.md)**: Complete 8-app ecosystem verification, automated test suites (100+ unit tests passing), end-to-end integration validation.
-
----
-
-## 4. Legacy C# Control Center (`AgyTui`) Historical Role
-
-Prior to the Go micro-tool architecture, the developer environment was driven by **`AgyTui`**: a monolithic .NET 9.0 console application now archived in [archive/agytui/AgyTui/](../archive/agytui/AgyTui).
-
-### Why the Suite Migrated to Go:
-- **Startup Speed**: Cold-start dropped from **150ms–300ms (.NET CLR/JIT)** to **8ms–18ms (compiled native Go)**.
-- **Memory Footprint**: Memory usage decreased from **45MB–85MB** to **6MB–14MB** per session.
-- **Elimination of Shell Locking**: Loading .NET assemblies in-process inside PowerShell caused Win32 DLL file locks that blocked iterative rebuilds. Go standalone executables run out-of-process with zero locks.
-
-### The Historical Value of the C# Codebase:
-The C# codebase is **fully preserved in `archive/agytui/`** as an architectural reference and feature gold-standard. It contains **200+ C# files**, **272 registered command handlers**, **60+ DI services**, a unified **relational SQLite database with migrations V1 through V7**, and **261 passing xUnit tests**.
-
-Critical features originally implemented in C# that are slated for parity restoration in Go include:
-- **SuperMemo-2 (SM-2) Spaced Repetition Suite**: Japanese (Kana, Kanji, JLPT), English vocabulary, C# .NET 9, DSA, and STAR behavioral interview question banks (slated for new Go app `agylearn`).
-- **Relational Transactional Persistence**: Migration from disconnected flat JSON files back to an embedded relational SQLite engine (via pure-Go `modernc.org/sqlite`).
-- **Advanced Git Tooling**: AI Conventional Commit generator, visual ours/theirs conflict resolver, and `InvokeGitUndo()` commit undo stack.
-- **AWS LocalStack Cloud Explorer**: S3, SQS, DynamoDB, Lambda, SSM parameter manager.
-
-For a full technical analysis of the C# architecture and feature gaps, consult **[08_cs_legacy_system_parity_audit.md](reports/08_cs_legacy_system_parity_audit.md)**.
-
----
-
-## 5. Centralized Documentation Sitemap
+## 3. Centralized Documentation Sitemap
 
 ### 🏛️ 01. System Architecture (`docs/01_architecture/`)
 * **Go Engine & Modern Architecture**:
@@ -155,12 +98,10 @@ For a full technical analysis of the C# architecture and feature gaps, consult *
   * [agymobile_tailscale_ssh_plan.md](01_architecture/agymobile_tailscale_ssh_plan.md): Remote mobile cockpit, Tailscale mesh networking, SSH port forwarding, and lightweight web sidecar.
   * [orca_multi_agent_ade_design.md](01_architecture/orca_multi_agent_ade_design.md): Worktree-first Agent Development Environment (ADE), inspired by Orca, enabling parallel AI coding subagents.
   * [skill_and_mcp_management_plan.md](01_architecture/skill_and_mcp_management_plan.md): Dual-scope orchestration (global `~/.gemini/` vs project `.agents/`) for skills, rules, and MCP servers.
-* **Core Reference & C# Architectural Foundation**:
+* **Core Reference Architecture**:
   * [system_overview_and_file_tree.md](01_architecture/system_overview_and_file_tree.md): Repository topology, file tree catalog, and subsystem interactions.
   * [overview.md](01_architecture/overview.md): Clean Architecture principles, Onion layer boundaries, and dependency inversion rules.
   * [ddd_bounded_contexts.md](01_architecture/ddd_bounded_contexts.md): Domain aggregate roots (Account, Workspace, AiAgent, LearnContext).
-  * [database_persistence.md](01_architecture/database_persistence.md): Relational SQLite schema design, WAL mode, and Migrations V1–V7.
-  * [seeding_pipeline.md](01_architecture/seeding_pipeline.md): MasterSeeder modular data ingestion pipeline for accounts, workspaces, and learning decks.
 
 ### 👤 02. User Guide (`docs/02_user_guide/`)
 * [agyswitch_cli_tui.md](02_user_guide/agyswitch_cli_tui.md): Interactive hotkeys, headless CLI commands, quota checking, and account switching.
@@ -171,7 +112,7 @@ For a full technical analysis of the C# architecture and feature gaps, consult *
 ### 🛠️ 03. Developer Guide (`docs/03_developer_guide/`)
 * [dual_environment_workflow.md](03_developer_guide/dual_environment_workflow.md): Isolated Dev sandbox database (`agytui.dev.db`) vs. Production (`agytui.db`).
 * [testing_and_architecture_rules.md](03_developer_guide/testing_and_architecture_rules.md): Reflection architecture tests, domain invariant checks, and unit test suites.
-* [release_publishing.md](03_developer_guide/release_publishing.md): Standalone single-file binary compilation via `build-release.ps1`.
+* [release_publishing.md](03_developer_guide/release_publishing.md): Standalone single-file binary compilation via `scripts/build-release.ps1`.
 
 ### 🚀 04. Command Enhancements (`docs/04_command_enhancements/`)
 * [01_git_enhancement.md](04_command_enhancements/01_git_enhancement.md): Git status enhancements, branch management, repo nexus graph, and commit analytics.
@@ -180,9 +121,6 @@ For a full technical analysis of the C# architecture and feature gaps, consult *
 * [04_aws_enhancement.md](04_command_enhancements/04_aws_enhancement.md): AWS identity inspection, LocalStack status checks, S3 bucket browser, and SQS queues.
 * [05_linux_neovim_ide_flow.md](04_command_enhancements/05_linux_neovim_ide_flow.md): Neovim IDE workflow, terminal multiplexing, and editor integration.
 * [06_linux_cli_tools.md](04_command_enhancements/06_linux_cli_tools.md): High-speed modern CLI utilities (`fzf`, `eza`, `zoxide`, `bat`, `fd`, `ripgrep`).
-
-### 🗄️ Archive (`docs/archive/`)
-* [archive/](archive/): Historical task plans, mockup blueprints, interim refactoring blueprints, and audit reports preserved for full traceability.
 
 ---
 

@@ -1,10 +1,8 @@
 # C:\Users\TruongNhon\Documents\Powershell\Scripts\Test-OllamaFunctions.ps1
 
 . (Join-Path $PSScriptRoot "..\..\..\Microsoft.PowerShell_profile.ps1")
-Load-AgyTuiDll -ForceLoad $true
 
-Write-Host "1. Initializing Ollama Server and Proxy..." -ForegroundColor Cyan
-[AiHelper]::EnsureOllamaServer()
+Write-Host "1. Testing Ollama integration..." -ForegroundColor Cyan
 
 Write-Host "`n2. Sending 'hi' via Codex (local Ollama custom provider)..." -ForegroundColor Cyan
 try {

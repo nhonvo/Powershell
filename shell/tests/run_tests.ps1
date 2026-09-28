@@ -3,36 +3,17 @@ $env:AGY_LOAD_DLL = '1'
 $env:NON_INTERACTIVE = '1'
 Write-Host "Running PowerShell Profile Tests..." -ForegroundColor Cyan
 
-# Pre-load C# types assembly so the AST parser can resolve types during parsing
+# Pre-load C# types assembly if available
 $candidates = @(
-    (Join-Path $PSScriptRoot "..\..\archive\agytui\AgyTui\bin\Release\net9.0\AgyTui.dll"),
-    (Join-Path $PSScriptRoot "..\..\archive\agytui\AgyTui\dist\AgyTui.dll"),
-    (Join-Path $PSScriptRoot "..\..\archive\agytui\AgyTui\bin\Debug\net9.0\AgyTui.dll"),
-    (Join-Path $PSScriptRoot "..\..\apps\agytui\AgyTui\bin\Release\net9.0\AgyTui.dll"),
-    (Join-Path $PSScriptRoot "..\..\apps\agytui\AgyTui\dist\AgyTui.dll"),
-    (Join-Path $PSScriptRoot "..\..\apps\agytui\AgyTui\bin\Debug\net9.0\AgyTui.dll"),
-    (Join-Path $PSScriptRoot "..\..\csapp\AgyTui\bin\Release\net9.0\AgyTui.dll"),
-    (Join-Path $PSScriptRoot "..\..\csapp\AgyTui\dist\AgyTui.dll")
+    (Join-Path $PSScriptRoot "..\..\dist\windows\AgyTui.dll")
 )
 $dllPath = $null
 foreach ($c in $candidates) {
     if (Test-Path $c) { $dllPath = $c; break }
 }
 if ($dllPath -and (Test-Path $dllPath)) {
-    Get-ChildItem -Path (Split-Path $dllPath) -Filter "*.dll" | Where-Object { $_.Name -ne "AgyTui.dll" } | ForEach-Object {
-        try { Add-Type -Path $_.FullName -ErrorAction SilentlyContinue } catch {}
-    }
     try {
         Add-Type -Path $dllPath -ErrorAction SilentlyContinue
-        $acc = [psobject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
-        $agyAssembly = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq "AgyTui" } | Select-Object -First 1
-        if ($acc -and $agyAssembly) {
-            foreach ($type in $agyAssembly.GetExportedTypes()) {
-                if ($type.IsClass -and $type.Name -and -not $acc::Get.ContainsKey($type.Name)) {
-                    try { $acc::Add($type.Name, $type) } catch {}
-                }
-            }
-        }
     } catch {}
 }
 
@@ -123,7 +104,7 @@ Write-Host "`nVerifying C# Type References across all .ps1 files..." -Foreground
 Load-AgyTuiDll -ForceLoad $true
 $repoRoot = (Get-Item (Join-Path $PSScriptRoot "..\..\")).FullName
 $allPsFiles = Get-ChildItem -Path $repoRoot -Filter "*.ps1" -Recurse | Where-Object {
-    $_.FullName -notlike "*\.git*" -and $_.FullName -notlike "*\bin\*" -and $_.FullName -notlike "*\obj\*" -and $_.FullName -notlike "*\psapp\Modules\*" -and $_.FullName -notlike "*\shell\modules\*"
+    $_.FullName -notlike "*\.git*" -and $_.FullName -notlike "*\bin\*" -and $_.FullName -notlike "*\obj\*" -and $_.FullName -notlike "*\Modules\*" -and $_.FullName -notlike "*\modules\*"
 }
 
 $missingTypesCount = 0

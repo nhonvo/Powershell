@@ -18,17 +18,7 @@ if (-not $Global:ProfileRepoRoot) {
     $Global:ProfileRepoRoot = $curr
 }
 
-$Global:AgyTuiDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "archive\agytui\AgyTui"
-if (-not (Test-Path $Global:AgyTuiDir)) { $Global:AgyTuiDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "apps\agytui\AgyTui" }
-if (-not (Test-Path $Global:AgyTuiDir)) { $Global:AgyTuiDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "csapp\AgyTui" }
-
-#region 1. CONFIG & ENVIRONMENT
-# ==============================================================================
-#  Loads profile configuration and sets up environment variables.
-# ==============================================================================
-
-$configPath = Join-Path -Path $Global:AgyTuiDir -ChildPath "profile.config.json"
-if (-not (Test-Path $configPath)) { $configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "profile.config.json" }
+$configPath = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "profile.config.json"
 
 $config = @{}
 if (Test-Path $configPath) {
@@ -151,18 +141,14 @@ if ($config.Proxy) {
 
 #region 2. ASSEMBLY & TYPE ACCELERATORS LOADER
 # ==============================================================================
-#  Loads compiled C# assembly (AgyTui.dll) and registers Type Accelerators.
-# ==============================================================================
-
+$Global:AgyTuiDir = Join-Path -Path $Global:ProfileRepoRoot -ChildPath "dist\windows"
 $Global:AgyTuiAppProject = Join-Path -Path $Global:AgyTuiDir -ChildPath "AgyTui.csproj"
 
 function Get-AgyTuiDllPath {
+    if (-not $Global:AgyTuiDir -or -not (Test-Path $Global:AgyTuiDir)) { return $null }
     $candidates = @(
-        (Join-Path -Path $Global:AgyTuiDir -ChildPath "dist\AgyTui.dll"),
-        (Join-Path -Path $Global:AgyTuiDir -ChildPath "bin\Release\net9.0\AgyTui.dll"),
-        (Join-Path -Path $Global:AgyTuiDir -ChildPath "bin\Release\net10.0\AgyTui.dll"),
-        (Join-Path -Path $Global:AgyTuiDir -ChildPath "bin\Debug\net9.0\AgyTui.dll"),
-        (Join-Path -Path $Global:AgyTuiDir -ChildPath "bin\Debug\net10.0\AgyTui.dll")
+        (Join-Path -Path $Global:AgyTuiDir -ChildPath "AgyTui.dll"),
+        (Join-Path -Path $Global:AgyTuiDir -ChildPath "dist\AgyTui.dll")
     )
     foreach ($cand in $candidates) {
         if (Test-Path $cand) { return $cand }

@@ -1,4 +1,0 @@
-<Solution>
-  <Project Path="AgyTui\AgyTui.csproj" />
-  <Project Path="AgyTui.Tests\AgyTui.Tests.csproj" />
-</Solution>
