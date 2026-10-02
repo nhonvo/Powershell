@@ -575,15 +575,37 @@ func UnstageAll(repoPath string) error {
 
 // CherryPick cherry-picks a commit hash
 func CherryPick(repoPath string, commitHash string) error {
+	return CherryPickEx(repoPath, commitHash, false)
+}
+
+// CherryPickEx cherry-picks a commit hash with optional --no-commit flag
+func CherryPickEx(repoPath string, commitHash string, noCommit bool) error {
 	commitHash = strings.TrimSpace(commitHash)
 	if commitHash == "" {
 		return fmt.Errorf("commit hash cannot be empty")
 	}
-	cmd := exec.Command("git", "cherry-pick", commitHash)
+	args := []string{"cherry-pick"}
+	if noCommit {
+		args = append(args, "-n")
+	}
+	args = append(args, commitHash)
+
+	cmd := exec.Command("git", args...)
 	cmd.Dir = repoPath
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("cherry-pick failed: %s (%w)", strings.TrimSpace(string(out)), err)
+	}
+	return nil
+}
+
+// CherryPickAbort aborts an ongoing cherry-pick operation
+func CherryPickAbort(repoPath string) error {
+	cmd := exec.Command("git", "cherry-pick", "--abort")
+	cmd.Dir = repoPath
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("cherry-pick --abort failed: %s (%w)", strings.TrimSpace(string(out)), err)
 	}
 	return nil
 }
@@ -610,6 +632,17 @@ func Merge(repoPath string, branchName string, squash bool) error {
 	return nil
 }
 
+// SquashMerge merges a branch with --squash and optionally creates a commit with the specified message.
+func SquashMerge(repoPath string, branchName string, commitMsg string) error {
+	if err := Merge(repoPath, branchName, true); err != nil {
+		return err
+	}
+	if strings.TrimSpace(commitMsg) != "" {
+		return Commit(repoPath, commitMsg, false)
+	}
+	return nil
+}
+
 // Rebase rebases current branch onto upstream
 func Rebase(repoPath string, upstreamBranch string) error {
 	upstreamBranch = strings.TrimSpace(upstreamBranch)
@@ -625,12 +658,47 @@ func Rebase(repoPath string, upstreamBranch string) error {
 	return nil
 }
 
-// AbortOperation aborts any ongoing merge, rebase, or cherry-pick
+// AbortOperation aborts any ongoing merge, rebase, cherry-pick, or squash merge
 func AbortOperation(repoPath string) error {
 	_ = exec.Command("git", "-C", repoPath, "merge", "--abort").Run()
 	_ = exec.Command("git", "-C", repoPath, "rebase", "--abort").Run()
 	_ = exec.Command("git", "-C", repoPath, "cherry-pick", "--abort").Run()
+	_ = exec.Command("git", "-C", repoPath, "reset", "--merge").Run()
 	return nil
+}
+
+// OperationInProgress checks if a merge, cherry-pick, rebase, or squash merge is currently active
+func OperationInProgress(repoPath string) string {
+	if repoPath == "" {
+		return ""
+	}
+	cmd := exec.Command("git", "rev-parse", "--git-dir")
+	cmd.Dir = repoPath
+	out, err := cmd.Output()
+	if err != nil {
+		return ""
+	}
+	gitDir := strings.TrimSpace(string(out))
+	if !filepath.IsAbs(gitDir) {
+		gitDir = filepath.Join(repoPath, gitDir)
+	}
+
+	if _, err := os.Stat(filepath.Join(gitDir, "MERGE_HEAD")); err == nil {
+		return "merge"
+	}
+	if _, err := os.Stat(filepath.Join(gitDir, "CHERRY_PICK_HEAD")); err == nil {
+		return "cherry-pick"
+	}
+	if _, err := os.Stat(filepath.Join(gitDir, "rebase-merge")); err == nil {
+		return "rebase"
+	}
+	if _, err := os.Stat(filepath.Join(gitDir, "rebase-apply")); err == nil {
+		return "rebase"
+	}
+	if _, err := os.Stat(filepath.Join(gitDir, "SQUASH_MSG")); err == nil {
+		return "squash"
+	}
+	return ""
 }
 
 // PullRebase runs git pull --rebase with a network timeout
@@ -729,15 +797,27 @@ func GetCommitDiff(repoPath string, commitHash string) (string, error) {
 	return string(out), err
 }
 
-// GitUndo undoes the most recent commit keeping all changes staged (git reset --soft HEAD~1)
-func GitUndo(repoPath string) error {
-	cmd := exec.Command("git", "reset", "--soft", "HEAD~1")
+// GitResetSoft resets HEAD to target commit or relative ref (e.g. HEAD~1, HEAD~2, commit-hash), keeping all changes staged.
+func GitResetSoft(repoPath string, target string) error {
+	target = strings.TrimSpace(target)
+	if target == "" {
+		target = "HEAD~1"
+	}
+	if n, err := strconv.Atoi(target); err == nil && n > 0 {
+		target = fmt.Sprintf("HEAD~%d", n)
+	}
+	cmd := exec.Command("git", "reset", "--soft", target)
 	cmd.Dir = repoPath
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		return fmt.Errorf("git undo failed: %s (%w)", strings.TrimSpace(string(out)), err)
+		return fmt.Errorf("git reset --soft %s failed: %s (%w)", target, strings.TrimSpace(string(out)), err)
 	}
 	return nil
+}
+
+// GitUndo undoes the most recent commit keeping all changes staged (git reset --soft HEAD~1)
+func GitUndo(repoPath string) error {
+	return GitResetSoft(repoPath, "HEAD~1")
 }
 
 // GetChangedFiles runs git status --porcelain=v1 -uall and parses into []model.ChangedFile

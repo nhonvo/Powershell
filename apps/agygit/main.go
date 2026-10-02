@@ -112,12 +112,16 @@ func main() {
 			fmt.Printf("✔ Amended commit: %s\n", msg)
 		}
 
-	case "undo":
-		if err := gitops.GitUndo("."); err != nil {
-			fmt.Fprintf(os.Stderr, "Undo error: %v\n", err)
+	case "undo", "reset-soft":
+		target := "HEAD~1"
+		if len(os.Args) > 2 {
+			target = os.Args[2]
+		}
+		if err := gitops.GitResetSoft(".", target); err != nil {
+			fmt.Fprintf(os.Stderr, "Reset soft error: %v\n", err)
 			os.Exit(1)
 		}
-		fmt.Println("✔ Undid last commit (git reset --soft HEAD~1), changes preserved in staging area")
+		fmt.Printf("✔ Soft reset to %s (git reset --soft %s), changes preserved in staging area\n", target, target)
 
 	case "merge":
 		if len(os.Args) < 3 {
@@ -141,15 +145,23 @@ func main() {
 
 	case "squash-merge":
 		if len(os.Args) < 3 {
-			fmt.Println("Usage: agygit squash-merge <branch-name>")
+			fmt.Println("Usage: agygit squash-merge <branch-name> [commit-message]")
 			os.Exit(1)
 		}
 		branch := os.Args[2]
-		if err := gitops.Merge(".", branch, true); err != nil {
+		commitMsg := ""
+		if len(os.Args) > 3 {
+			commitMsg = strings.Join(os.Args[3:], " ")
+		}
+		if err := gitops.SquashMerge(".", branch, commitMsg); err != nil {
 			fmt.Fprintf(os.Stderr, "Squash merge error: %v\n", err)
 			os.Exit(1)
 		}
-		fmt.Printf("✔ Squash merged branch '%s' (staged, ready to commit)\n", branch)
+		if commitMsg != "" {
+			fmt.Printf("✔ Squash merged branch '%s' and committed: %s\n", branch, commitMsg)
+		} else {
+			fmt.Printf("✔ Squash merged branch '%s' (staged, ready to commit)\n", branch)
+		}
 
 	case "rebase":
 		if len(os.Args) < 3 {
@@ -165,15 +177,35 @@ func main() {
 
 	case "cherry-pick":
 		if len(os.Args) < 3 {
-			fmt.Println("Usage: agygit cherry-pick <commit-hash>")
+			fmt.Println("Usage: agygit cherry-pick [-n|--no-commit] <commit-hash>")
+			fmt.Println("       agygit cherry-pick --abort")
 			os.Exit(1)
 		}
+		if os.Args[2] == "--abort" {
+			if err := gitops.CherryPickAbort("."); err != nil {
+				fmt.Fprintf(os.Stderr, "Cherry-pick abort error: %v\n", err)
+				os.Exit(1)
+			}
+			fmt.Println("✔ Aborted cherry-pick operation")
+			return
+		}
+		noCommit := false
 		hash := os.Args[2]
-		if err := gitops.CherryPick(".", hash); err != nil {
+		if (hash == "-n" || hash == "--no-commit") && len(os.Args) > 3 {
+			noCommit = true
+			hash = os.Args[3]
+		} else if len(os.Args) > 3 && (os.Args[3] == "-n" || os.Args[3] == "--no-commit") {
+			noCommit = true
+		}
+		if err := gitops.CherryPickEx(".", hash, noCommit); err != nil {
 			fmt.Fprintf(os.Stderr, "Cherry-pick error: %v\n", err)
 			os.Exit(1)
 		}
-		fmt.Printf("✔ Cherry-picked commit %s\n", hash)
+		if noCommit {
+			fmt.Printf("✔ Cherry-picked commit %s (--no-commit, changes staged)\n", hash)
+		} else {
+			fmt.Printf("✔ Cherry-picked commit %s\n", hash)
+		}
 
 	case "stash":
 		sub := "save"
@@ -487,15 +519,17 @@ Usage:
   agygit log                       Show recent commits
   agygit commit [--amend] [msg]    Commit changes (or amend last commit)
   agygit amend [msg]               Amend last commit (keeps message if omitted)
-  agygit undo                      Undo last commit (soft reset, keeps changes staged)
+  agygit undo                      Undo last commit (soft reset HEAD~1, keeps changes staged)
+  agygit reset-soft [target|N]     Soft reset to target ref or N commits back (keeps changes staged)
   agygit push                      Push commits to remote
   agygit push [--amend|--force]    Safely push amended commit (--force-with-lease)
   agygit push-amend                Shortcut to push amended commit (--force-with-lease)
   agygit pull                      Pull fast-forward changes
   agygit merge <branch> [--squash] Merge branch into current branch
-  agygit squash-merge <branch>     Squash merge branch into current branch
+  agygit squash-merge <br> [msg]   Squash merge branch into current branch (and commit if msg given)
   agygit rebase <branch>           Rebase current branch onto target branch
-  agygit cherry-pick <hash>        Cherry-pick a commit by hash
+  agygit cherry-pick [-n] <hash>   Cherry-pick a commit (optional -n: stage without commit)
+  agygit cherry-pick --abort       Abort ongoing cherry-pick operation
   agygit stash [save|pop]          Stash changes or pop stash
   agygit branch                    List branches
   agygit worktree <ls|add|rm>      Manage isolated multi-agent worktrees

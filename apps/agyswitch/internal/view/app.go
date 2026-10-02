@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"sort"
 	"strings"
 	"sync"
@@ -19,6 +20,16 @@ import (
 )
 
 var spinnerFrames = []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"}
+
+// SessionViewItem represents a row in the Sessions tab: either a session or an expand/collapse toggle.
+type SessionViewItem struct {
+	IsExpandToggle bool
+	ProjectName    string
+	Session        model.SessionInfo
+	HiddenCount    int
+	TotalInProject int
+	IsExpanded     bool
+}
 
 type App struct {
 	Store          *store.Store
@@ -37,12 +48,18 @@ type App struct {
 	SessionScope         int    // 0 = CLI Only (/resume matching) [Default], 1 = All (incl. Subagents)
 	tabSwitched          bool
 
+	// Sessions enhancement state: search & per-project expansion
+	SessionSearchQuery string
+	isSearching        bool
+	expandedProjects   map[string]bool
+
 	// In-memory telemetry cache for 60fps keyboard responsiveness
-	cachedAccs     []model.AccountInfo
-	cachedSkills   []model.SkillInfo
-	cachedRules    []model.RuleInfo
-	cachedSessions []model.SessionInfo
-	needsReload    bool
+	cachedAccs         []model.AccountInfo
+	cachedSkills       []model.SkillInfo
+	cachedRules        []model.RuleInfo
+	cachedSessions     []model.SessionInfo
+	cachedSessionItems []SessionViewItem
+	needsReload        bool
 
 	probeMu         sync.Mutex
 	isProbingQuotas bool
@@ -66,8 +83,10 @@ func NewApp(s *store.Store, launcher func(string, string, []string) error) *App 
 		SessionScope:         0,
 		tabSwitched:          true,
 		needsReload:          true,
+		expandedProjects:     make(map[string]bool),
 	}
 }
+
 
 func getWorkspaceDir() string {
 	cwd, err := os.Getwd()
@@ -138,7 +157,8 @@ func (a *App) Run() error {
 		case 2:
 			totalItems = len(rulesList)
 		case 3:
-			totalItems = len(sessionsList)
+			a.cachedSessionItems = a.buildSessionViewItems(sessionsList)
+			totalItems = len(a.cachedSessionItems)
 		}
 
 		if a.SelectedIndex >= totalItems && totalItems > 0 {
@@ -185,6 +205,23 @@ func (a *App) Run() error {
 		b := buf[0]
 		if b == 0x1b {
 			if n == 1 {
+				// Solitary Esc key pressed
+				if a.ActiveTab == 3 {
+					if a.isSearching {
+						a.isSearching = false
+						a.StatusMsg = "\033[33mSearch closed.\033[0m"
+						continue
+					}
+					if a.SessionSearchQuery != "" {
+						a.SessionSearchQuery = ""
+						a.SelectedIndex = 0
+						a.cachedSessions = nil
+						a.cachedSessionItems = nil
+						a.needsReload = true
+						a.StatusMsg = "\033[33mSearch filter cleared.\033[0m"
+						continue
+					}
+				}
 				// Solitary Esc key pressed -> Exit cleanly!
 				fmt.Print("\033[?25h\033[?1049l")
 				_ = term.Restore(fd, oldState)
@@ -204,16 +241,20 @@ func (a *App) Run() error {
 					}
 					continue
 				case 'C': // Right Tab
-					a.ActiveTab = (a.ActiveTab + 1) % 4
-					a.SelectedIndex = 0
-					a.tabSwitched = true
-					a.needsReload = true
+					if !a.isSearching {
+						a.ActiveTab = (a.ActiveTab + 1) % 4
+						a.SelectedIndex = 0
+						a.tabSwitched = true
+						a.needsReload = true
+					}
 					continue
 				case 'D': // Left Tab
-					a.ActiveTab = (a.ActiveTab + 3) % 4
-					a.SelectedIndex = 0
-					a.tabSwitched = true
-					a.needsReload = true
+					if !a.isSearching {
+						a.ActiveTab = (a.ActiveTab + 3) % 4
+						a.SelectedIndex = 0
+						a.tabSwitched = true
+						a.needsReload = true
+					}
 					continue
 				case '5': // PageUp
 					pageSize := 8
@@ -232,6 +273,42 @@ func (a *App) Run() error {
 				}
 			}
 			// Ignore any trackpad/mouse scroll escape codes cleanly
+			continue
+		}
+
+		// When search typing mode is active in Tab 3, intercept input to edit query
+		if a.ActiveTab == 3 && a.isSearching {
+			switch b {
+			case '\r', '\n':
+				a.isSearching = false
+				a.StatusMsg = fmt.Sprintf("\033[32m✔ Search set to %q (%d items)\033[0m", a.SessionSearchQuery, len(a.cachedSessionItems))
+				continue
+			case 0x7f, 0x08: // Backspace
+				if len(a.SessionSearchQuery) > 0 {
+					a.SessionSearchQuery = a.SessionSearchQuery[:len(a.SessionSearchQuery)-1]
+					a.SelectedIndex = 0
+					a.cachedSessions = nil
+					a.cachedSessionItems = nil
+					a.needsReload = true
+				}
+				continue
+			case 0x15: // Ctrl+U: clear search
+				a.SessionSearchQuery = ""
+				a.SelectedIndex = 0
+				a.cachedSessions = nil
+				a.cachedSessionItems = nil
+				a.needsReload = true
+				continue
+			default:
+				if b >= 0x20 && b <= 0x7e {
+					a.SessionSearchQuery += string(b)
+					a.SelectedIndex = 0
+					a.cachedSessions = nil
+					a.cachedSessionItems = nil
+					a.needsReload = true
+					continue
+				}
+			}
 			continue
 		}
 
@@ -269,7 +346,67 @@ func (a *App) Run() error {
 			if a.SelectedIndex < totalItems-1 {
 				a.SelectedIndex++
 			}
-		case '\r', '\n', 'c', 'C', 'e', 'E': // Enter / c / e key (Switch active account in Tab 0, Continue session in Tab 3)
+		case '/': // Open Search in Tab 3
+			if a.ActiveTab == 3 {
+				a.isSearching = true
+				a.StatusMsg = "\033[36mSearch sessions: Type keywords (Enter: Done · Esc: Cancel)\033[0m"
+				continue
+			}
+		case ' ': // Space: Toggle Expand/Collapse for current project
+			if a.ActiveTab == 3 && len(a.cachedSessionItems) > 0 && a.SelectedIndex < len(a.cachedSessionItems) {
+				selItem := a.cachedSessionItems[a.SelectedIndex]
+				a.expandedProjects[selItem.ProjectName] = !a.expandedProjects[selItem.ProjectName]
+				a.cachedSessionItems = nil
+				a.needsReload = true
+				if a.expandedProjects[selItem.ProjectName] {
+					a.StatusMsg = fmt.Sprintf("\033[32mExpanded all sessions for '%s'\033[0m", selItem.ProjectName)
+				} else {
+					a.StatusMsg = fmt.Sprintf("\033[33mCollapsed '%s' to top 5 sessions\033[0m", selItem.ProjectName)
+				}
+				continue
+			}
+		case 'e', 'E': // Tab 3: Toggle Expand All / Collapse All
+			if a.ActiveTab == 3 && len(a.cachedSessionItems) > 0 {
+				allExpanded := true
+				for _, it := range a.cachedSessionItems {
+					if it.ProjectName != "" && !a.expandedProjects[it.ProjectName] && it.TotalInProject > 5 {
+						allExpanded = false
+						break
+					}
+				}
+				if allExpanded {
+					for k := range a.expandedProjects {
+						a.expandedProjects[k] = false
+					}
+					a.StatusMsg = "\033[33mCollapsed all projects to top 5 sessions\033[0m"
+				} else {
+					for _, it := range a.cachedSessionItems {
+						if it.ProjectName != "" {
+							a.expandedProjects[it.ProjectName] = true
+						}
+					}
+					a.StatusMsg = "\033[32mExpanded all projects\033[0m"
+				}
+				a.cachedSessionItems = nil
+				a.needsReload = true
+				continue
+			}
+		case 'w', 'W': // Tab 3: Open workspace in VS Code
+			if a.ActiveTab == 3 && len(a.cachedSessionItems) > 0 && a.SelectedIndex < len(a.cachedSessionItems) {
+				selItem := a.cachedSessionItems[a.SelectedIndex]
+				if !selItem.IsExpandToggle && selItem.Session.WorkspaceDir != "" && selItem.Session.WorkspaceDir != "Default Workspace" {
+					ws := selItem.Session.WorkspaceDir
+					cmd := exec.Command("code", ws)
+					if err := cmd.Start(); err == nil {
+						a.StatusMsg = fmt.Sprintf("\033[32m✔ Launched VS Code for workspace: %s\033[0m", ws)
+					} else {
+						a.StatusMsg = fmt.Sprintf("\033[33mWorkspace: %s\033[0m", ws)
+					}
+				} else {
+					a.StatusMsg = "\033[33mNo valid workspace directory for selected item.\033[0m"
+				}
+			}
+		case '\r', '\n', 'c', 'C': // Enter / c key (Switch active account in Tab 0, Continue session or expand in Tab 3)
 			if a.ActiveTab == 0 && a.SelectedIndex < len(accs) {
 				target := accs[a.SelectedIndex].AccountName
 				if err := a.Store.SetActiveAccount(target); err != nil {
@@ -284,8 +421,20 @@ func (a *App) Run() error {
 					a.StatusMsg = fmt.Sprintf("\033[32m✔ Switched active context to '%s'\033[0m", target)
 					a.probeMu.Unlock()
 				}
-			} else if a.ActiveTab == 3 && len(sessionsList) > 0 && a.SelectedIndex < len(sessionsList) {
-				sel := sessionsList[a.SelectedIndex]
+			} else if a.ActiveTab == 3 && len(a.cachedSessionItems) > 0 && a.SelectedIndex < len(a.cachedSessionItems) {
+				selItem := a.cachedSessionItems[a.SelectedIndex]
+				if selItem.IsExpandToggle {
+					a.expandedProjects[selItem.ProjectName] = !a.expandedProjects[selItem.ProjectName]
+					a.cachedSessionItems = nil
+					a.needsReload = true
+					if a.expandedProjects[selItem.ProjectName] {
+						a.StatusMsg = fmt.Sprintf("\033[32mExpanded '%s' (%d sessions shown)\033[0m", selItem.ProjectName, selItem.TotalInProject)
+					} else {
+						a.StatusMsg = fmt.Sprintf("\033[33mCollapsed '%s' to top 5 sessions\033[0m", selItem.ProjectName)
+					}
+					continue
+				}
+				sel := selItem.Session
 				curActive := a.Store.GetActiveAccount()
 				fmt.Print("\033[?25h\033[?1049l")
 				_ = term.Restore(fd, oldState)
@@ -346,8 +495,12 @@ func (a *App) Run() error {
 					_, _ = os.Stdin.Read(dummy[:])
 				}
 			} else if a.ActiveTab == 3 {
-				if a.SelectedIndex < len(sessionsList) {
-					s := sessionsList[a.SelectedIndex]
+				if a.SelectedIndex < len(a.cachedSessionItems) {
+					selItem := a.cachedSessionItems[a.SelectedIndex]
+					if selItem.IsExpandToggle {
+						continue
+					}
+					s := selItem.Session
 					fmt.Print("\033[H\033[2J")
 					fmt.Printf("\r\n📊 \033[1;36mSession Trajectory Inspector (%s):\033[0m\r\n\r\n", s.ConversationID)
 					fmt.Printf(" Title:     \033[1;37m%s\033[0m\r\n Workspace: \033[35m%s\033[0m\r\n Steps:     \033[1;33m%d\033[0m · Est. Cost: \033[1;32m$%0.4f\033[0m\r\n Log Path:  \033[36m%s\033[0m\r\n\r\n",
@@ -474,8 +627,12 @@ func (a *App) Run() error {
 				_ = term.Restore(fd, oldState)
 				fmt.Printf("\r\n\033[36m[agyswitch]\033[0m Launching 'agy' for account '\033[32m%s\033[0m'...\r\n", target)
 				return a.Launcher(target, "", nil)
-			} else if a.ActiveTab == 3 && len(sessionsList) > 0 && a.SelectedIndex < len(sessionsList) {
-				sel := sessionsList[a.SelectedIndex]
+			} else if a.ActiveTab == 3 && len(a.cachedSessionItems) > 0 && a.SelectedIndex < len(a.cachedSessionItems) {
+				selItem := a.cachedSessionItems[a.SelectedIndex]
+				if selItem.IsExpandToggle {
+					continue
+				}
+				sel := selItem.Session
 				curActive := a.Store.GetActiveAccount()
 				fmt.Print("\033[?25h\033[?1049l")
 				_ = term.Restore(fd, oldState)
@@ -652,8 +809,12 @@ func (a *App) Run() error {
 					oldState, _ = term.MakeRaw(fd)
 					fmt.Print("\033[?1049h\033[?25l")
 				}
-			} else if a.ActiveTab == 3 && len(sessionsList) > 0 && a.SelectedIndex < len(sessionsList) {
-				sel := sessionsList[a.SelectedIndex]
+			} else if a.ActiveTab == 3 && len(a.cachedSessionItems) > 0 && a.SelectedIndex < len(a.cachedSessionItems) {
+				selItem := a.cachedSessionItems[a.SelectedIndex]
+				if selItem.IsExpandToggle {
+					continue
+				}
+				sel := selItem.Session
 				fmt.Print("\033[?25h\033[?1049l")
 				_ = term.Restore(fd, oldState)
 				fmt.Printf("\r\n\033[31m[agyswitch]\033[0m Delete conversation session '%s' (%s)? (y/N): ", sel.ConversationID, sel.Title)
@@ -661,6 +822,9 @@ func (a *App) Run() error {
 				fmt.Scanln(&confirm)
 				if strings.EqualFold(strings.TrimSpace(confirm), "y") {
 					if err := a.SessionManager.DeleteSession(sel.ConversationID); err == nil {
+						a.cachedSessions = nil
+						a.cachedSessionItems = nil
+						a.needsReload = true
 						a.StatusMsg = fmt.Sprintf("\033[33mDeleted session '%s'\033[0m", sel.ConversationID)
 					} else {
 						a.StatusMsg = fmt.Sprintf("\033[31mError deleting session: %v\033[0m", err)
@@ -842,8 +1006,8 @@ func (a *App) Render(accs []model.AccountInfo, sessionsList []model.SessionInfo)
 			b.WriteString(" ⚙️ \033[1;34m[NAV]\033[0m Tab/↑/↓  👁️ \033[1;36m[INSPECT]\033[0m V:Preview\033[K\r\n")
 			b.WriteString(" 🛠️ \033[1;33m[MANAGE]\033[0m N:New Rule · D:Delete Rule  ❌ \033[1;31m[QUIT]\033[0m Q\033[K\r\n")
 		case 3:
-			b.WriteString(" ⚙️ \033[1;34m[NAV]\033[0m Tab/↑/↓/n/p  🚀 \033[1;32m[SESS]\033[0m Enter:Continue · V:Log\033[K\r\n")
-			b.WriteString(" 🔍 \033[1;36m[VIEW]\033[0m A:Scope · G:Group · F:Filter  ❌ \033[1;31m[QUIT]\033[0m Q\033[K\r\n")
+			b.WriteString(" ⚙️ \033[1;34m[NAV]\033[0m Tab/↑/↓/n/p  🚀 \033[1;32m[SESS]\033[0m Enter:Resume · V:Log · W:Code\033[K\r\n")
+			b.WriteString(" 🔍 \033[1;36m[SEARCH]\033[0m /:Search · Sp/E:Exp · A:Scope · G:Group  ❌ \033[1;31m[QUIT]\033[0m Q\033[K\r\n")
 		}
 	} else {
 		switch a.ActiveTab {
@@ -857,8 +1021,8 @@ func (a *App) Render(accs []model.AccountInfo, sessionsList []model.SessionInfo)
 			b.WriteString(" ⚙️  \033[1;34m[NAV]\033[0m  Tab/1-4 · ↑/↓ (j/k)    👁️ \033[1;36m[INSPECT]\033[0m  V: Preview Markdown Rule\033[K\r\n")
 			b.WriteString(" 🛠️  \033[1;33m[MANAGE]\033[0m  N: Create New Rule · D: Delete Rule File    💡 \033[1;35m[?]\033[0m Help   ❌ \033[1;31m[QUIT]\033[0m Esc/Q\033[K\r\n")
 		case 3:
-			b.WriteString(" ⚙️  \033[1;34m[NAV]\033[0m  Tab/1-4 · ↑/↓ (j/k) · n/p: Page    🚀 \033[1;32m[SESSION]\033[0m  Enter/C: Continue · V: Trajectory Log · D: Delete\033[K\r\n")
-			b.WriteString(" 🔍 \033[1;36m[VIEW]\033[0m  A: Scope CLI/All · G: Group/Flat · F: Filter Proj · O: Sort Mode    💡 \033[1;35m[?]\033[0m Help   ❌ \033[1;31m[QUIT]\033[0m Esc/Q\033[K\r\n")
+			b.WriteString(" ⚙️  \033[1;34m[NAV]\033[0m  Tab/1-4 · ↑/↓ (j/k) · n/p: Page    🚀 \033[1;32m[SESSION]\033[0m  Enter/C: Resume · V: Log · W: VS Code · D: Del\033[K\r\n")
+			b.WriteString(" 🔍 \033[1;36m[SEARCH/VIEW]\033[0m  /: Search · Space/E: Exp/Col · A: Scope · G: Group/Flat · F: Filter · O: Sort    💡 \033[1;35m[?]\033[0m Help   ❌ \033[1;31m[QUIT]\033[0m Esc/Q\033[K\r\n")
 		}
 	}
 
@@ -1061,7 +1225,12 @@ func (a *App) getPreparedSessions() []model.SessionInfo {
 		return nil
 	}
 
-	// 1. Filter by project if set
+	// 1. Text search filter
+	if a.SessionSearchQuery != "" {
+		raw = sessions.FilterSessions(raw, a.SessionSearchQuery)
+	}
+
+	// 2. Filter by project if set
 	var filtered []model.SessionInfo
 	if a.SessionFilterProject != "" {
 		for _, s := range raw {
@@ -1073,7 +1242,7 @@ func (a *App) getPreparedSessions() []model.SessionInfo {
 		filtered = raw
 	}
 
-	// 2. Sort the sessions according to SessionSortMode
+	// 3. Sort the sessions according to SessionSortMode
 	switch a.SessionSortMode {
 	case 1: // Highest Cost
 		sort.Slice(filtered, func(i, j int) bool {
@@ -1089,19 +1258,95 @@ func (a *App) getPreparedSessions() []model.SessionInfo {
 		})
 	}
 
-	// 3. View mode: Grouped vs Flat
-	if a.SessionViewMode == 0 {
-		// Grouped mode: group by project, sort groups, and flatten so each project's sessions are contiguous
-		groups := sessions.GroupSessionsByProjectSorted(filtered, a.SessionSortMode)
-		return sessions.FlattenProjectGroups(groups)
-	}
-
 	return filtered
 }
 
-func (a *App) renderSessionsTab(b *strings.Builder, sessionsList []model.SessionInfo, width int, height int) {
+func (a *App) buildSessionViewItems(sessionsList []model.SessionInfo) []SessionViewItem {
 	if len(sessionsList) == 0 {
-		b.WriteString(" \033[33mNo conversation sessions match the current criteria.\033[0m\r\n")
+		return nil
+	}
+
+	if a.SessionViewMode == 1 {
+		// Flat view
+		var items []SessionViewItem
+		for _, s := range sessionsList {
+			items = append(items, SessionViewItem{
+				IsExpandToggle: false,
+				ProjectName:    s.ProjectName,
+				Session:        s,
+			})
+		}
+		return items
+	}
+
+	// Grouped view (by project)
+	groups := sessions.GroupSessionsByProjectSorted(sessionsList, a.SessionSortMode)
+	var items []SessionViewItem
+
+	for _, g := range groups {
+		proj := g.ProjectName
+		total := len(g.Sessions)
+		isExpanded := a.expandedProjects[proj]
+
+		if isExpanded || total <= 5 {
+			for _, s := range g.Sessions {
+				items = append(items, SessionViewItem{
+					IsExpandToggle: false,
+					ProjectName:    proj,
+					Session:        s,
+					TotalInProject: total,
+					IsExpanded:     isExpanded,
+				})
+			}
+			if isExpanded && total > 5 {
+				items = append(items, SessionViewItem{
+					IsExpandToggle: true,
+					ProjectName:    proj,
+					TotalInProject: total,
+					IsExpanded:     true,
+				})
+			}
+		} else {
+			limit := 5
+			if limit > total {
+				limit = total
+			}
+			for i := 0; i < limit; i++ {
+				items = append(items, SessionViewItem{
+					IsExpandToggle: false,
+					ProjectName:    proj,
+					Session:        g.Sessions[i],
+					TotalInProject: total,
+					IsExpanded:     false,
+				})
+			}
+			hidden := total - 5
+			items = append(items, SessionViewItem{
+				IsExpandToggle: true,
+				ProjectName:    proj,
+				HiddenCount:    hidden,
+				TotalInProject: total,
+				IsExpanded:     false,
+			})
+		}
+	}
+
+	return items
+}
+
+func (a *App) renderSessionsTab(b *strings.Builder, sessionsList []model.SessionInfo, width int, height int) {
+	viewItems := a.cachedSessionItems
+	if viewItems == nil {
+		viewItems = a.buildSessionViewItems(sessionsList)
+		a.cachedSessionItems = viewItems
+	}
+
+	if len(sessionsList) == 0 || len(viewItems) == 0 {
+		if a.SessionSearchQuery != "" {
+			fmt.Fprintf(b, " 🔍 \033[1;36mSearch:\033[0m [\033[1;33m%s\033[0m]  \033[33mNo sessions matched query. (Press Esc or Ctrl+U to clear)\033[0m\033[K\r\n", a.SessionSearchQuery)
+		} else {
+			b.WriteString(" \033[33mNo conversation sessions match the current criteria.\033[0m\033[K\r\n")
+		}
 		return
 	}
 
@@ -1148,56 +1393,63 @@ func (a *App) renderSessionsTab(b *strings.Builder, sessionsList []model.Session
 			len(sessionsList), totalSteps, totalSpend, modeStr, sortLabel, scopeStr, filterBadge)
 	}
 
+	// Interactive Search Bar Display
+	if a.isSearching {
+		cursorBlock := "\033[7;32m \033[0m"
+		fmt.Fprintf(b, " 🔍 \033[1;36mSearch:\033[0m [\033[1;33m%s\033[0m%s] \033[36m(%d matches)\033[0m · \033[90m(Type to filter · Enter: Done · Esc: Cancel)\033[0m\033[K\r\n",
+			a.SessionSearchQuery, cursorBlock, len(sessionsList))
+	} else if a.SessionSearchQuery != "" {
+		fmt.Fprintf(b, " 🔍 \033[1;36mSearch Filter:\033[0m \033[1;33m%q\033[0m \033[36m(%d matches)\033[0m · \033[90m(Press / to edit · Esc to clear)\033[0m\033[K\r\n",
+			a.SessionSearchQuery, len(sessionsList))
+	} else {
+		b.WriteString("\033[K\r\n")
+	}
+
 	// Dynamic page size based on available terminal height
 	pageSize := 7
 	if height < 20 {
 		pageSize = 4
 	} else if height < 26 {
-		pageSize = 5
+		pageSize = 6
 	} else if height >= 32 {
-		pageSize = 9
+		pageSize = 10
 	}
 
-	// Fixed page pagination: keeps view stationary when moving cursor within the page
 	page := a.SelectedIndex / pageSize
 	startIdx := page * pageSize
 	endIdx := startIdx + pageSize
-	if endIdx > len(sessionsList) {
-		endIdx = len(sessionsList)
+	if endIdx > len(viewItems) {
+		endIdx = len(viewItems)
 	}
-	totalPages := (len(sessionsList) + pageSize - 1) / pageSize
+	totalPages := (len(viewItems) + pageSize - 1) / pageSize
 	if totalPages == 0 {
 		totalPages = 1
 	}
 
 	if a.SessionViewMode == 0 {
-		// Grouped by project view (sessionsList is already ordered project-by-project)
-		groups := sessions.GroupSessionsByProjectSorted(sessionsList, a.SessionSortMode)
+		// Grouped view
 		currentProj := ""
-
 		for i := startIdx; i < endIdx; i++ {
-			s := sessionsList[i]
-			proj := s.ProjectName
+			it := viewItems[i]
+			proj := it.ProjectName
 			if proj == "" {
 				proj = "Default Workspace"
 			}
 
 			if i == startIdx || proj != currentProj {
 				currentProj = proj
-				var count int
-				var cost float64
-				for _, g := range groups {
-					if g.ProjectName == proj {
-						count = len(g.Sessions)
-						cost = g.TotalCost
-						break
-					}
+				statusBadge := ""
+				if a.expandedProjects[currentProj] {
+					statusBadge = fmt.Sprintf(" \033[32m[Expanded · All %d shown]\033[0m", it.TotalInProject)
+				} else if it.TotalInProject > 5 {
+					statusBadge = fmt.Sprintf(" \033[33m[Top 5 shown · %d more]\033[0m", it.TotalInProject-5)
 				}
+
 				if width < 80 {
-					pName := truncateString(proj, width-18)
-					fmt.Fprintf(b, " \033[1;35m📁 %s\033[0m \033[36m(%d · $%0.2f)\033[0m\033[K\r\n", pName, count, cost)
+					pName := truncateString(proj, width-20)
+					fmt.Fprintf(b, " \033[1;35m📁 %s\033[0m%s\033[K\r\n", pName, statusBadge)
 				} else {
-					fmt.Fprintf(b, " \033[1;35m📁 %-32s\033[0m \033[36m(%d sessions · $%0.4f)\033[0m\033[K\r\n", proj, count, cost)
+					fmt.Fprintf(b, " \033[1;35m📁 %-32s\033[0m \033[36m(%d sessions)\033[0m%s\033[K\r\n", proj, it.TotalInProject, statusBadge)
 				}
 			}
 
@@ -1209,33 +1461,45 @@ func (a *App) renderSessionsTab(b *strings.Builder, sessionsList []model.Session
 				highlightStart = "\033[1;37;44m"
 				highlightEnd = "\033[0m"
 			}
-			timeStr := s.LastActive.Format("01-02 15:04")
 
-			if width < 80 {
-				title := truncateString(s.Title, width-12)
-				fmt.Fprintf(b, "%s%s%2d. \033[1;37m%s\033[0m%s\033[K\r\n", cursor, highlightStart, i+1, title, highlightEnd)
-				fmt.Fprintf(b, "        \033[33m%d st\033[0m · \033[32m$%0.4f\033[0m · \033[36m%s\033[0m\033[K\r\n", s.StepCount, s.EstimatedCost, timeStr)
-				if i == a.SelectedIndex {
-					fmt.Fprintf(b, "        \033[36mID: %s\033[0m\033[K\r\n", truncateString(s.ConversationID, width-14))
+			if it.IsExpandToggle {
+				if it.IsExpanded {
+					fmt.Fprintf(b, "%s%s   \033[33m▼ [Showing all %d sessions · Press Enter/Space to collapse back to top 5]\033[0m%s\033[K\r\n",
+						cursor, highlightStart, it.TotalInProject, highlightEnd)
+				} else {
+					fmt.Fprintf(b, "%s%s   \033[36m▶ [... %d more sessions for %s · Press Enter/Space to expand]\033[0m%s\033[K\r\n",
+						cursor, highlightStart, it.HiddenCount, it.ProjectName, highlightEnd)
 				}
 			} else {
-				availTitle := width - 42
-				if availTitle < 20 {
-					availTitle = 20
-				}
-				title := truncateString(s.Title, availTitle)
-				fmt.Fprintf(b, "%s%s%2d. \033[1;37m%-48s\033[0m  \033[33m%3d st\033[0m · \033[32m$%0.4f\033[0m · \033[36m%s\033[0m%s\033[K\r\n",
-					cursor, highlightStart, i+1, title, s.StepCount, s.EstimatedCost, timeStr, highlightEnd)
-				if i == a.SelectedIndex {
-					wsShort := truncateString(s.WorkspaceDir, width-52)
-					fmt.Fprintf(b, "        \033[36mID: %s\033[0m · \033[35mWorkspace: %s\033[0m\033[K\r\n", s.ConversationID, wsShort)
+				s := it.Session
+				timeStr := s.LastActive.Format("01-02 15:04")
+				if width < 80 {
+					title := truncateString(s.Title, width-12)
+					fmt.Fprintf(b, "%s%s%2d. \033[1;37m%s\033[0m%s\033[K\r\n", cursor, highlightStart, i+1, title, highlightEnd)
+					fmt.Fprintf(b, "        \033[33m%d st\033[0m · \033[32m$%0.4f\033[0m · \033[36m%s\033[0m\033[K\r\n", s.StepCount, s.EstimatedCost, timeStr)
+					if i == a.SelectedIndex {
+						fmt.Fprintf(b, "        \033[36mID: %s\033[0m\033[K\r\n", truncateString(s.ConversationID, width-14))
+					}
+				} else {
+					availTitle := width - 42
+					if availTitle < 20 {
+						availTitle = 20
+					}
+					title := truncateString(s.Title, availTitle)
+					fmt.Fprintf(b, "%s%s%2d. \033[1;37m%-48s\033[0m  \033[33m%3d st\033[0m · \033[32m$%0.4f\033[0m · \033[36m%s\033[0m%s\033[K\r\n",
+						cursor, highlightStart, i+1, title, s.StepCount, s.EstimatedCost, timeStr, highlightEnd)
+					if i == a.SelectedIndex {
+						wsShort := truncateString(s.WorkspaceDir, width-52)
+						fmt.Fprintf(b, "        \033[36mID: %s\033[0m · \033[35mWorkspace: %s\033[0m\033[K\r\n", s.ConversationID, wsShort)
+					}
 				}
 			}
 		}
 	} else {
 		// Flat view
 		for i := startIdx; i < endIdx; i++ {
-			s := sessionsList[i]
+			it := viewItems[i]
+			s := it.Session
 			cursor := "  "
 			highlightStart := ""
 			highlightEnd := ""
@@ -1264,8 +1528,12 @@ func (a *App) renderSessionsTab(b *strings.Builder, sessionsList []model.Session
 		}
 	}
 
-	fmt.Fprintf(b, "\033[K\r\n \033[37m[Page %d/%d · %d-%d of %d sess · #%d · Enter to Resume]\033[0m\033[K\r\n",
-		page+1, totalPages, startIdx+1, endIdx, len(sessionsList), a.SelectedIndex+1)
+	searchHint := "· /: Search"
+	if a.SessionSearchQuery != "" {
+		searchHint = "· Esc: Clear Search"
+	}
+	fmt.Fprintf(b, "\033[K\r\n \033[37m[Page %d/%d · Items %d-%d of %d · #%d · Enter to Resume/Expand %s]\033[0m\033[K\r\n",
+		page+1, totalPages, startIdx+1, endIdx, len(viewItems), a.SelectedIndex+1, searchHint)
 }
 
 func formatStatusBadge(a model.AccountInfo) string {
@@ -1429,11 +1697,46 @@ func (a *App) promptActionPaletteTUI(fd int) {
 	b.WriteString("    • \033[1;37m[O]\033[0m          Logout account (wipe token context)\r\n")
 	b.WriteString("    • \033[1;37m[D]\033[0m          Delete account context permanently\r\n\r\n")
 
+	b.WriteString(" \033[1;35m📊 Sessions & Trajectory Management:\033[0m\r\n")
+	b.WriteString("    • \033[1;37m[Enter / C]\033[0m  Resume selected session / Expand project\r\n")
+	b.WriteString("    • \033[1;37m[/]\033[0m          Interactive real-time search (title, ID, project, workspace)\r\n")
+	b.WriteString("    • \033[1;37m[Space]\033[0m      Toggle Expand / Collapse project (top 5 vs all)\r\n")
+	b.WriteString("    • \033[1;37m[E]\033[0m          Expand All / Collapse All projects\r\n")
+	b.WriteString("    • \033[1;37m[W]\033[0m          Open workspace directory in VS Code\r\n")
+	b.WriteString("    • \033[1;37m[V]\033[0m          View session trajectory step log\r\n")
+	b.WriteString("    • \033[1;37m[D]\033[0m          Delete session permanently\r\n\r\n")
+
+
 	b.WriteString(hr(width))
 	b.WriteString(" \033[1mPress any key to return...\033[0m\033[K\r\n")
 	os.Stdout.WriteString(b.String())
 
 	var dummy [1]byte
 	_, _ = os.Stdin.Read(dummy[:])
+}
+
+// BuildSessionViewItems builds the list of SessionViewItems honoring the 5-item limit and expand toggles.
+func (a *App) BuildSessionViewItems(sessionsList []model.SessionInfo) []SessionViewItem {
+	return a.buildSessionViewItems(sessionsList)
+}
+
+// SetProjectExpanded sets the expand/collapse state for a project group.
+func (a *App) SetProjectExpanded(projectName string, expanded bool) {
+	if a.expandedProjects == nil {
+		a.expandedProjects = make(map[string]bool)
+	}
+	a.expandedProjects[projectName] = expanded
+	a.cachedSessionItems = nil
+	a.needsReload = true
+}
+
+// SetSearching sets the interactive search typing flag.
+func (a *App) SetSearching(searching bool) {
+	a.isSearching = searching
+}
+
+// FilterSessionsList filters a slice of sessions using the sessions service filter.
+func (a *App) FilterSessionsList(sessionsList []model.SessionInfo, query string) []model.SessionInfo {
+	return sessions.FilterSessions(sessionsList, query)
 }
 

@@ -641,3 +641,21 @@ func ParseTranscriptSteps(logPath string) ([]StepRecord, error) {
 	}
 	return steps, nil
 }
+
+// FilterSessions filters a slice of SessionInfo matching query across Title, ConversationID, ProjectName, and WorkspaceDir.
+func FilterSessions(sessions []model.SessionInfo, query string) []model.SessionInfo {
+	query = strings.TrimSpace(strings.ToLower(query))
+	if query == "" {
+		return sessions
+	}
+	var matched []model.SessionInfo
+	for _, s := range sessions {
+		if strings.Contains(strings.ToLower(s.Title), query) ||
+			strings.Contains(strings.ToLower(s.ConversationID), query) ||
+			strings.Contains(strings.ToLower(s.ProjectName), query) ||
+			strings.Contains(strings.ToLower(s.WorkspaceDir), query) {
+			matched = append(matched, s)
+		}
+	}
+	return matched
+}

@@ -230,4 +230,48 @@ func TestDiscoverPrimarySessions_Live(t *testing.T) {
 	}
 }
 
+func TestFilterSessions(t *testing.T) {
+	testSessions := []model.SessionInfo{
+		{ConversationID: "8641606f-73d8", Title: "Production Bank Sync Troubleshooting", ProjectName: "finance-dashboard", WorkspaceDir: "/home/user/projects/finance-dashboard"},
+		{ConversationID: "11223344-aabb", Title: "Check Mobile USB Connection", ProjectName: "finance-dashboard", WorkspaceDir: "/home/user/projects/finance-dashboard"},
+		{ConversationID: "aabbccdd-5566", Title: "Docker Container Health Check", ProjectName: "agydocker", WorkspaceDir: "/home/user/projects/agydocker"},
+	}
+
+	// 1. Empty query returns all
+	all := sessions.FilterSessions(testSessions, "")
+	if len(all) != 3 {
+		t.Errorf("expected 3 sessions for empty query, got %d", len(all))
+	}
+
+	// 2. Query matching title
+	byTitle := sessions.FilterSessions(testSessions, "bank sync")
+	if len(byTitle) != 1 || byTitle[0].ConversationID != "8641606f-73d8" {
+		t.Errorf("expected 1 session matching 'bank sync', got %d", len(byTitle))
+	}
+
+	// 3. Query matching conversation ID prefix
+	byID := sessions.FilterSessions(testSessions, "864160")
+	if len(byID) != 1 {
+		t.Errorf("expected 1 session matching '864160', got %d", len(byID))
+	}
+
+	// 4. Query matching project name
+	byProj := sessions.FilterSessions(testSessions, "finance")
+	if len(byProj) != 2 {
+		t.Errorf("expected 2 sessions matching 'finance', got %d", len(byProj))
+	}
+
+	// 5. Query matching workspace
+	byWs := sessions.FilterSessions(testSessions, "projects/agydocker")
+	if len(byWs) != 1 {
+		t.Errorf("expected 1 session matching 'projects/agydocker', got %d", len(byWs))
+	}
+
+	// 6. Non-matching query
+	none := sessions.FilterSessions(testSessions, "nonexistent-query-xyz")
+	if len(none) != 0 {
+		t.Errorf("expected 0 sessions, got %d", len(none))
+	}
+}
+
 

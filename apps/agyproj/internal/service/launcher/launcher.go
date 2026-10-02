@@ -89,7 +89,7 @@ func (l *Launcher) runInDir(name string, dir string, args ...string) error {
 
 func AvailableIDEs() []string {
 	var ides []string
-	candidates := []string{"code", "cursor", "nvim", "vim", "agy"}
+	candidates := []string{"code", "nvim", "vim", "agy"}
 	for _, c := range candidates {
 		if _, err := exec.LookPath(c); err == nil {
 			ides = append(ides, c)
@@ -102,10 +102,8 @@ func FormatIdeName(ide string) string {
 	switch strings.ToLower(ide) {
 	case "code", "vscode":
 		return "VS Code"
-	case "cursor":
-		return "Cursor AI"
-	case "nvim", "neovim":
-		return "Neovim"
+	case "nvim", "neovim", "vim":
+		return "Neovim / Vim"
 	case "agy", "antigravity":
 		return "Antigravity CLI"
 	default:

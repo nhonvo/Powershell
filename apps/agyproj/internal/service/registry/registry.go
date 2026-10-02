@@ -50,6 +50,9 @@ func (m *Manager) Load() (*model.RegistryConfig, error) {
 	if err := json.Unmarshal(data, &cfg); err != nil {
 		return nil, err
 	}
+	if strings.EqualFold(cfg.DefaultIDE, "cursor") || cfg.DefaultIDE == "" {
+		cfg.DefaultIDE = "code"
+	}
 	return &cfg, nil
 }
 

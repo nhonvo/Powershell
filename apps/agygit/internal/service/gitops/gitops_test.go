@@ -462,5 +462,88 @@ func TestGitOps_CommitAmend_And_GetLastCommitMessage(t *testing.T) {
 	}
 }
 
+func TestGitOps_SquashMerge_WithMessage(t *testing.T) {
+	repo := createTestRepo(t)
 
+	// Create feature branch
+	if err := CheckoutBranch(repo, "feat/squash-test", true); err != nil {
+		t.Fatalf("CheckoutBranch failed: %v", err)
+	}
+	_ = os.WriteFile(filepath.Join(repo, "f1.txt"), []byte("feat 1"), 0644)
+	_ = Commit(repo, "feat commit 1", true)
+	_ = os.WriteFile(filepath.Join(repo, "f2.txt"), []byte("feat 2"), 0644)
+	_ = Commit(repo, "feat commit 2", true)
 
+	// Switch to main
+	_ = CheckoutBranch(repo, "main", false)
+
+	// SquashMerge with custom commit message
+	commitMsg := "feat(squash): merged feat/squash-test into main"
+	if err := SquashMerge(repo, "feat/squash-test", commitMsg); err != nil {
+		t.Fatalf("SquashMerge failed: %v", err)
+	}
+
+	lastMsg, err := GetLastCommitMessage(repo)
+	if err != nil {
+		t.Fatalf("GetLastCommitMessage failed: %v", err)
+	}
+	if lastMsg != commitMsg {
+		t.Errorf("expected '%s', got '%s'", commitMsg, lastMsg)
+	}
+}
+
+func TestGitOps_GitResetSoft_Target(t *testing.T) {
+	repo := createTestRepo(t)
+
+	// Create 2 commits
+	_ = os.WriteFile(filepath.Join(repo, "c1.txt"), []byte("commit 1"), 0644)
+	_ = Commit(repo, "commit 1", true)
+	_ = os.WriteFile(filepath.Join(repo, "c2.txt"), []byte("commit 2"), 0644)
+	_ = Commit(repo, "commit 2", true)
+
+	// Soft reset 2 commits back using "2"
+	if err := GitResetSoft(repo, "2"); err != nil {
+		t.Fatalf("GitResetSoft '2' failed: %v", err)
+	}
+
+	// Staged files should still be preserved
+	st, err := GetRepoStatus(repo)
+	if err != nil {
+		t.Fatalf("GetRepoStatus failed: %v", err)
+	}
+	if st.StagedFiles == 0 {
+		t.Errorf("expected staged files after GitResetSoft, got 0")
+	}
+}
+
+func TestGitOps_CherryPickEx_NoCommit(t *testing.T) {
+	repo := createTestRepo(t)
+
+	// Create branch with commit
+	_ = CheckoutBranch(repo, "feat/cp-test", true)
+	_ = os.WriteFile(filepath.Join(repo, "cp.txt"), []byte("cherry pick content"), 0644)
+	_ = Commit(repo, "cherry pick target", true)
+
+	commits, _ := GetLog(repo, 5)
+	if len(commits) == 0 {
+		t.Fatalf("no commits found")
+	}
+	targetHash := commits[0].Hash
+
+	// Switch back to main
+	_ = CheckoutBranch(repo, "main", false)
+
+	// Cherry-pick with --no-commit
+	if err := CherryPickEx(repo, targetHash, true); err != nil {
+		t.Fatalf("CherryPickEx --no-commit failed: %v", err)
+	}
+
+	// Changes should be staged, but not committed to main yet
+	st, err := GetRepoStatus(repo)
+	if err != nil {
+		t.Fatalf("GetRepoStatus failed: %v", err)
+	}
+	if st.StagedFiles == 0 {
+		t.Errorf("expected staged files after cherry-pick --no-commit, got 0")
+	}
+}

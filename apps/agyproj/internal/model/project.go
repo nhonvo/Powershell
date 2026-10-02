@@ -22,7 +22,7 @@ type ProjectInfo struct {
 // RegistryConfig stores the persistent registry of pinned and registered projects.
 type RegistryConfig struct {
 	ActiveProjectID string        `json:"active_project_id"`
-	DefaultIDE      string        `json:"default_ide"` // "code", "cursor", "nvim", "agy"
+	DefaultIDE      string        `json:"default_ide"` // "code", "nvim", "agy"
 	ScanRoots       []string      `json:"scan_roots"`
 	Projects        []ProjectInfo `json:"projects"`
 }

@@ -158,7 +158,7 @@ func main() {
 
 	case "open":
 		if len(args) < 2 {
-			fmt.Println("Usage: agyproj open <project-name> [code|cursor|nvim|agy]")
+			fmt.Println("Usage: agyproj open <project-name> [code|nvim|agy]")
 			os.Exit(1)
 		}
 		target := strings.ToLower(args[1])
