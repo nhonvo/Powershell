@@ -223,7 +223,6 @@ func (a *App) RunInteractive() error {
 				}
 				continue
 			}
-			continue
 		}
 
 		switch b {
