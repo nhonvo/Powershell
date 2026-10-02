@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strings"
 	"sync"
+	"time"
 
 	"golang.org/x/term"
 
@@ -60,6 +61,7 @@ type App struct {
 	cachedSessions     []model.SessionInfo
 	cachedSessionItems []SessionViewItem
 	needsReload        bool
+	lastCacheTime      time.Time
 
 	probeMu         sync.Mutex
 	isProbingQuotas bool
@@ -83,6 +85,7 @@ func NewApp(s *store.Store, launcher func(string, string, []string) error) *App 
 		SessionScope:         0,
 		tabSwitched:          true,
 		needsReload:          true,
+		lastCacheTime:        time.Now(),
 		expandedProjects:     make(map[string]bool),
 	}
 }
@@ -123,6 +126,13 @@ func (a *App) Run() error {
 	}
 
 	for {
+		if time.Since(a.lastCacheTime) > 5*time.Second {
+			a.needsReload = true
+			a.cachedSessions = nil
+			a.cachedAccs = nil
+			a.lastCacheTime = time.Now()
+		}
+
 		a.probeMu.Lock()
 		probing := a.isProbingQuotas
 		if a.needsReload || a.cachedAccs == nil {

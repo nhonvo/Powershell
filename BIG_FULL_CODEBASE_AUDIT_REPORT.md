@@ -137,12 +137,14 @@ $ agy plugin validate .agents/plugins/code-review
 
 ---
 
-## 5. Architectural Recommendations (P4)
+## 5. Architectural Improvements Implemented
 
-1. **Shared ANSI Stripper Utility**:
-   - `agyswitch`, `agybot`, and `agyswarm` each implement terminal text rendering. Reusing a centralized ANSI stripper regex (`\x1b\[[0-9;]*[a-zA-Z]`) across apps will reduce code duplication.
-2. **Telemetry Cache TTL Expiry**:
-   - For TUI responsiveness, `agyswitch` caches quota and session telemetry. Adding an explicit 5-second TTL cache eviction ensures background CLI writes reflect in the TUI without requiring a manual reload.
+1. **Telemetry Cache TTL Expiry (Implemented)**:
+   - In [app.go:126](./apps/agyswitch/internal/view/app.go#L126), added automatic 5-second TTL cache eviction for `agyswitch`. Background CLI session creations and token updates now automatically sync to the TUI without requiring a manual reload.
+2. **Dual Gemini Home Environment Isolation (Implemented)**:
+   - In [manager.go:74](./apps/agyswarm/internal/engine/manager.go#L74), configured parallel child agent processes to inject both `GEMINI_HOME` and `GEMINI_CLI_HOME` pointing to isolated context directories (`~/.gemini_<account>`), guaranteeing compatibility across CLI toolchains.
+3. **Master Makefile Target Count (Implemented)**:
+   - In [Makefile:57](./Makefile#L57), corrected installed application count message from 10 to 11 micro-apps.
 
 ---
 

@@ -71,6 +71,7 @@ func (m *Manager) Spawn(cfg SpawnConfig) (*model.AgentSession, error) {
 	if cfg.AccountName != "" {
 		accountDir := filepath.Join(m.UserHome, ".gemini_"+cfg.AccountName)
 		if _, err := os.Stat(accountDir); err == nil {
+			env = append(env, fmt.Sprintf("GEMINI_HOME=%s", accountDir))
 			env = append(env, fmt.Sprintf("GEMINI_CLI_HOME=%s", accountDir))
 		}
 		env = append(env, fmt.Sprintf("AGY_ACTIVE_ACCOUNT=%s", cfg.AccountName))
