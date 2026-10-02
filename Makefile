@@ -5,22 +5,22 @@
 SHELL := /bin/bash
 INSTALL_DIR ?= $(HOME)/.local/bin
 DIST_WIN ?= ./dist/windows
-APPS := agyswitch agyproj agygit agydocker agyterm agyx agymobile agyollama agybot agyport
+APPS := agyswitch agyproj agygit agydocker agyterm agyx agymobile agyollama agybot agyport agyswarm
 
-.PHONY: all build install test test-v clean windows help $(APPS) mobile ollama bot agybot port agyport
+.PHONY: all build install test test-v clean windows help $(APPS) mobile ollama bot agybot port agyport swarm agyswarm
 
 all: install
 
 help:
 	@echo "=================================================================="
-	@echo "⚡ Antigravity Developer Suite (Go Engine - 10 Micro-Apps)"
+	@echo "⚡ Antigravity Developer Suite (Go Engine - 11 Micro-Apps)"
 	@echo "=================================================================="
 	@echo "Usage:"
-	@echo "  make build         Build all 10 Linux binaries to ./bin/"
+	@echo "  make build         Build all 11 Linux binaries to ./bin/"
 	@echo "  make install       Build & install all binaries to $(INSTALL_DIR)"
-	@echo "  make test          Run unit test suites across all 10 applications"
+	@echo "  make test          Run unit test suites across all 11 applications"
 	@echo "  make windows       Cross-compile Windows .exe binaries to $(DIST_WIN)"
-	@echo "  make <app>         Build & install a single app (e.g. make port)"
+	@echo "  make <app>         Build & install a single app (e.g. make swarm)"
 	@echo ""
 	@echo "Available single-app targets:"
 	@echo "  make switch        Build agyswitch  (Vault, Quota, Sessions)"
@@ -33,6 +33,7 @@ help:
 	@echo "  make ollama        Build agyollama  (Local Ollama & AI Agent Cockpit)"
 	@echo "  make bot           Build agybot     (Telegram Remote Controller & Project Daemon)"
 	@echo "  make port          Build agyport    (Port Manager, Kill Ports & RAM Leverage)"
+	@echo "  make swarm         Build agyswarm   (Multi-Agent Child Terminal Cockpit & PTY Swarm)"
 	@echo "=================================================================="
 
 # Test all apps
@@ -121,6 +122,14 @@ port:
 	@echo "✔ Installed $(INSTALL_DIR)/agyport"
 
 agyport: port
+
+swarm:
+	@mkdir -p $(INSTALL_DIR)
+	@echo "🚀 Building & installing agyswarm..."
+	@(cd apps/agyswarm && go test ./... && go build -o $(INSTALL_DIR)/agyswarm .)
+	@echo "✔ Installed $(INSTALL_DIR)/agyswarm"
+
+agyswarm: swarm
 
 # Cross-compile for Windows
 windows:
