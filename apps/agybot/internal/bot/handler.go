@@ -3,7 +3,10 @@ package bot
 import (
 	"context"
 	"fmt"
+	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -152,7 +155,22 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 		return
 	}
 
-	// 5. Authenticated commands
+	// 5. Authenticated commands & session continuation shortcuts
+	lowerText := strings.ToLower(text)
+
+	// Direct session continuation shortcuts: "-c", "0c", "/c", "/continue"
+	if lowerText == "-c" || lowerText == "0c" || lowerText == "/c" || lowerText == "/continue" {
+		h.handleAIPrompt(ctx, userID, chatID, "Continue the previous task, review progress, and execute next steps.")
+		return
+	}
+	if strings.HasPrefix(lowerText, "-c ") || strings.HasPrefix(lowerText, "0c ") || strings.HasPrefix(lowerText, "/c ") {
+		parts := strings.SplitN(text, " ", 2)
+		if len(parts) > 1 {
+			h.handleAIPrompt(ctx, userID, chatID, parts[1])
+			return
+		}
+	}
+
 	if strings.HasPrefix(text, "/") {
 		parts := strings.Fields(text)
 		cmd := strings.ToLower(parts[0])
@@ -162,6 +180,24 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 			h.handleStatus(ctx, chatID)
 		case "/proj", "/projects":
 			h.handleProjects(ctx, chatID)
+		case "/rebuild", "/build":
+			h.handleRebuild(ctx, userID, chatID)
+		case "/replan", "/plan":
+			h.handleReplan(ctx, userID, chatID)
+		case "/getfile", "/download":
+			filePath := ""
+			if len(parts) > 1 {
+				filePath = parts[1]
+			}
+			h.handleGetFile(ctx, userID, chatID, filePath)
+		case "/swarm":
+			taskStr := "Inspect project state and perform automated refactoring and verification"
+			if len(parts) > 1 {
+				taskStr = strings.Join(parts[1:], " ")
+			}
+			h.handleSwarm(ctx, userID, chatID, taskStr)
+		case "/review":
+			h.handleReview(ctx, userID, chatID, parts[1:])
 		case "/newproj", "/createproj":
 			h.handleNewProj(ctx, userID, chatID, parts[1:])
 		case "/research":
@@ -190,7 +226,7 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 			if len(parts) > 1 {
 				h.handleCat(ctx, userID, chatID, parts[1])
 			} else {
-				_, _ = h.client.SendMessage(ctx, chatID, "Usage: `/cat <filename>`", nil)
+				_, _ = h.client.SendMessage(ctx, chatID, "Usage: `/cat <filename>` or `/getfile <filename>`", nil)
 			}
 		case "/finance":
 			h.handleFinanceDashboard(ctx, userID, chatID)
@@ -249,6 +285,18 @@ func (h *BotHandler) handleCallbackQuery(ctx context.Context, q *CallbackQuery) 
 		h.handleStatus(ctx, chatID)
 	case "btn_projects":
 		h.handleProjects(ctx, chatID)
+	case "btn_continue":
+		h.handleAIPrompt(ctx, userID, chatID, "Continue the previous task, review progress, and execute next steps.")
+	case "btn_rebuild":
+		h.handleRebuild(ctx, userID, chatID)
+	case "btn_replan":
+		h.handleReplan(ctx, userID, chatID)
+	case "btn_swarm":
+		h.handleSwarm(ctx, userID, chatID, "Inspect current project status and run autonomous agent swarm review")
+	case "btn_review":
+		h.handleReview(ctx, userID, chatID, nil)
+	case "btn_files":
+		h.handleLs(ctx, userID, chatID, "")
 	case "btn_accounts":
 		h.handleAccount(ctx, chatID)
 	case "btn_sessions":
@@ -689,20 +737,107 @@ func (h *BotHandler) handleConfig(ctx context.Context, chatID int64) {
 	_, _ = h.client.SendMessage(ctx, chatID, msg, nil)
 }
 
+func (h *BotHandler) handleRebuild(ctx context.Context, userID int64, chatID int64) {
+	ws := h.wsMgr.GetUserWorkspace(userID)
+	_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("🛠️ **REBUILDING WORKSPACE / SUITE APPS**\nWorkspace: `%s`\nExecuting build pipeline...", filepath.Base(ws)), nil)
+
+	buildScript := filepath.Join(h.cfg.DefaultWorkspace, "scripts", "build-apps.ps1")
+	var cmd *exec.Cmd
+	if runtime.GOOS == "windows" {
+		cmd = exec.CommandContext(ctx, "powershell", "-ExecutionPolicy", "Bypass", "-File", buildScript, "-Target", "all")
+	} else {
+		cmd = exec.CommandContext(ctx, "wsl", "bash", "-c", "cd /mnt/c/Users/TruongNhon/Documents/Powershell && pwsh -File scripts/build-apps.ps1 -Target all")
+	}
+
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		resStr := string(out)
+		if len(resStr) > 2500 {
+			resStr = resStr[len(resStr)-2500:]
+		}
+		_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("❌ **Rebuild Error:**\n```\n%s\n```", resStr), nil)
+		return
+	}
+
+	resStr := string(out)
+	if len(resStr) > 2500 {
+		resStr = resStr[len(resStr)-2500:]
+	}
+	_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("✅ **BUILD SUCCESSFUL!**\n```\n%s\n```", resStr), nil)
+}
+
+func (h *BotHandler) handleReplan(ctx context.Context, userID int64, chatID int64) {
+	replanPrompt := "Replan and audit the current project workspace. Inspect technical debt, code structure, and generate an updated execution plan / product roadmap."
+	h.handleAIPrompt(ctx, userID, chatID, replanPrompt)
+}
+
+func (h *BotHandler) handleGetFile(ctx context.Context, userID int64, chatID int64, relOrAbsPath string) {
+	if relOrAbsPath == "" {
+		_, _ = h.client.SendMessage(ctx, chatID, "Usage: `/getfile <filepath>` or `/cat <filepath>`", nil)
+		return
+	}
+
+	ws := h.wsMgr.GetUserWorkspace(userID)
+	targetPath := relOrAbsPath
+	if !filepath.IsAbs(targetPath) {
+		targetPath = filepath.Join(ws, targetPath)
+	}
+
+	st, err := os.Stat(targetPath)
+	if err != nil {
+		_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("❌ File not found: `%s`", targetPath), nil)
+		return
+	}
+	if st.IsDir() {
+		h.handleLs(ctx, userID, chatID, relOrAbsPath)
+		return
+	}
+
+	h.client.SendChatAction(ctx, chatID, "upload_document")
+	err = h.client.SendDocument(ctx, chatID, targetPath, fmt.Sprintf("📄 `%s` (%d bytes)", filepath.Base(targetPath), st.Size()))
+	if err != nil {
+		_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("❌ Error sending document: %v", err), nil)
+	}
+}
+
+func (h *BotHandler) handleSwarm(ctx context.Context, userID int64, chatID int64, task string) {
+	ws := h.wsMgr.GetUserWorkspace(userID)
+	prompt := fmt.Sprintf("Spawn an agyswarm multi-agent workforce to execute task in `%s`: %s", filepath.Base(ws), task)
+	h.handleAIPrompt(ctx, userID, chatID, prompt)
+}
+
+func (h *BotHandler) handleReview(ctx context.Context, userID int64, chatID int64, args []string) {
+	ws := h.wsMgr.GetUserWorkspace(userID)
+	target := filepath.Base(ws)
+	if len(args) > 0 {
+		target = args[0]
+	}
+	prompt := fmt.Sprintf("Perform a comprehensive code review using agyreview on target `%s`. Report severity findings P0-P4.", target)
+	h.handleAIPrompt(ctx, userID, chatID, prompt)
+}
+
 func (h *BotHandler) buildMainKeyboard() *InlineKeyboardMarkup {
 	return &InlineKeyboardMarkup{
 		InlineKeyboard: [][]InlineKeyboardButton{
 			{
 				{Text: "📁 Projects", CallbackData: "btn_projects"},
-				{Text: "📊 Finance DB", CallbackData: "btn_finance"},
+				{Text: "🔄 Continue (-c)", CallbackData: "btn_continue"},
 			},
 			{
-				{Text: "🧠 Sessions", CallbackData: "btn_sessions"},
+				{Text: "🛠️ Rebuild App", CallbackData: "btn_rebuild"},
+				{Text: "📋 Replan Roadmap", CallbackData: "btn_replan"},
+			},
+			{
+				{Text: "🐝 Swarm Task", CallbackData: "btn_swarm"},
+				{Text: "👁️ Code Review", CallbackData: "btn_review"},
+			},
+			{
+				{Text: "📂 Files", CallbackData: "btn_files"},
 				{Text: "👤 Accounts", CallbackData: "btn_accounts"},
 			},
 			{
+				{Text: "🧠 Sessions", CallbackData: "btn_sessions"},
 				{Text: "🖥️ Host Status", CallbackData: "btn_status"},
-				{Text: "🔒 Lock", CallbackData: "btn_lock"},
 			},
 		},
 	}

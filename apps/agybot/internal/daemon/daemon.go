@@ -61,8 +61,8 @@ func Start(binPath string) (int, error) {
 		return pid, fmt.Errorf("daemon is already running with PID %d", pid)
 	}
 
+	home, _ := os.UserHomeDir()
 	if binPath == "" {
-		home, _ := os.UserHomeDir()
 		if runtime.GOOS == "windows" {
 			binPath = filepath.Join(home, ".local", "bin", "agybot.exe")
 			if _, err := os.Stat(binPath); err != nil {

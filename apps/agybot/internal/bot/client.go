@@ -6,7 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strconv"
 	"time"
 )
 
@@ -137,3 +141,51 @@ func (c *TelegramClient) SendChatAction(ctx context.Context, chatID int64, actio
 	}
 	_ = c.post(ctx, "sendChatAction", payload, &resp)
 }
+
+func (c *TelegramClient) SendDocument(ctx context.Context, chatID int64, filePath string, caption string) error {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return fmt.Errorf("open file error: %w", err)
+	}
+	defer file.Close()
+
+	var b bytes.Buffer
+	w := multipart.NewWriter(&b)
+
+	_ = w.WriteField("chat_id", strconv.FormatInt(chatID, 10))
+	if caption != "" {
+		_ = w.WriteField("caption", caption)
+	}
+
+	fw, err := w.CreateFormFile("document", filepath.Base(filePath))
+	if err != nil {
+		return err
+	}
+	if _, err = io.Copy(fw, file); err != nil {
+		return err
+	}
+	_ = w.Close()
+
+	url := fmt.Sprintf("%s/sendDocument", c.apiBaseURL)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, &b)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", w.FormDataContentType())
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	var apiResp APIResponse[Message]
+	if err := json.NewDecoder(resp.Body).Decode(&apiResp); err != nil {
+		return err
+	}
+	if !apiResp.OK {
+		return fmt.Errorf("sendDocument error: %s", apiResp.Description)
+	}
+	return nil
+}
+
