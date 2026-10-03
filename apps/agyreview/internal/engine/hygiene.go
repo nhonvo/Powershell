@@ -17,12 +17,24 @@ var (
 	tempPrefixes = []string{"temp", "tmp", "test2", "untitled", "scratch", "draft", "copy_of", "copy of"}
 )
 
+var dataExts = map[string]bool{
+	".xlsx": true, ".xls": true, ".csv": true, ".pdf": true,
+	".png": true, ".jpg": true, ".jpeg": true, ".gif": true,
+	".svg": true, ".mp4": true, ".mov": true, ".zip": true, ".gz": true,
+	".ico": true, ".woff": true, ".woff2": true, ".ttf": true, ".eot": true,
+}
+
 // AnalyzeFileNamingAndHygiene evaluates filenames, path conventions, and backup/temp file clutter.
 func AnalyzeFileNamingAndHygiene(fullPath string, relPath string, info os.FileInfo, loopIndex int) []model.Finding {
 	var findings []model.Finding
 	name := info.Name()
 	lowerName := strings.ToLower(name)
 	ext := strings.ToLower(filepath.Ext(name))
+
+	// Skip binary media assets, font files, and data export spreadsheets
+	if dataExts[ext] || strings.Contains(relPath, "/data/") || strings.Contains(relPath, "\\data\\") {
+		return nil
+	}
 
 	// 1. Unused backup/temporary extensions
 	if backupExts[ext] || strings.HasSuffix(name, "~") {

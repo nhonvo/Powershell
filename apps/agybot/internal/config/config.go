@@ -50,6 +50,9 @@ func LoadConfig() *Config {
 	candidateFiles := []string{
 		filepath.Join(home, ".config", "antigravity", "bot.env"),
 		".env",
+		"C:\\Users\\TruongNhon\\.config\\antigravity\\bot.env",
+		"/mnt/c/Users/TruongNhon/.config/antigravity/bot.env",
+		"/home/truongnhon/.config/antigravity/bot.env",
 		filepath.Join(home, "projects", "BOT_TELEGRAM_SERVER-main", ".env"),
 	}
 
@@ -184,33 +187,54 @@ func GetConfigFilePath() string {
 
 // SaveConfigKey writes or replaces a key=value setting in ~/.config/antigravity/bot.env
 func SaveConfigKey(key, value string) error {
-	path := GetConfigFilePath()
-	_ = os.MkdirAll(filepath.Dir(path), 0755)
+	primary := GetConfigFilePath()
+	targets := []string{primary}
 
-	var lines []string
-	keyUpper := strings.ToUpper(strings.TrimSpace(key))
-	found := false
-
-	if data, err := os.ReadFile(path); err == nil {
-		scanner := bufio.NewScanner(strings.NewReader(string(data)))
-		for scanner.Scan() {
-			line := scanner.Text()
-			trimmed := strings.TrimSpace(line)
-			if strings.HasPrefix(trimmed, keyUpper+"=") {
-				lines = append(lines, fmt.Sprintf("%s=%q", keyUpper, value))
-				found = true
-			} else {
-				lines = append(lines, line)
-			}
+	// Add counterpart target paths if directories exist
+	counterparts := []string{
+		"C:\\Users\\TruongNhon\\.config\\antigravity\\bot.env",
+		"/mnt/c/Users/TruongNhon/.config/antigravity/bot.env",
+		"/home/truongnhon/.config/antigravity/bot.env",
+	}
+	for _, cp := range counterparts {
+		if cp != primary {
+			targets = append(targets, cp)
 		}
 	}
 
-	if !found {
-		lines = append(lines, fmt.Sprintf("%s=%q", keyUpper, value))
-	}
+	var firstErr error
+	for _, path := range targets {
+		_ = os.MkdirAll(filepath.Dir(path), 0755)
 
-	content := strings.Join(lines, "\n") + "\n"
-	return os.WriteFile(path, []byte(content), 0600)
+		var lines []string
+		keyUpper := strings.ToUpper(strings.TrimSpace(key))
+		found := false
+
+		if data, err := os.ReadFile(path); err == nil {
+			scanner := bufio.NewScanner(strings.NewReader(string(data)))
+			for scanner.Scan() {
+				line := scanner.Text()
+				trimmed := strings.TrimSpace(line)
+				if strings.HasPrefix(trimmed, keyUpper+"=") {
+					lines = append(lines, fmt.Sprintf("%s=%q", keyUpper, value))
+					found = true
+				} else {
+					lines = append(lines, line)
+				}
+			}
+		}
+
+		if !found {
+			lines = append(lines, fmt.Sprintf("%s=%q", keyUpper, value))
+		}
+
+		content := strings.Join(lines, "\n") + "\n"
+		err := os.WriteFile(path, []byte(content), 0600)
+		if err != nil && firstErr == nil && path == primary {
+			firstErr = err
+		}
+	}
+	return firstErr
 }
 
 // AddWhitelistUser adds a user ID to the allowed list and persists to bot.env
