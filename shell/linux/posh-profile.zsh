@@ -132,9 +132,11 @@ sync_active_agy_environment() {
             local target_home="$HOME/.gemini_$acc_name"
             if [ -d "$target_home" ]; then
                 export GEMINI_HOME="$target_home"
+                export GEMINI_CLI_HOME="$target_home"
             fi
         elif [ "$acc_name" = "default" ]; then
             export GEMINI_HOME="$HOME/.gemini"
+            export GEMINI_CLI_HOME="$HOME/.gemini"
         fi
     fi
 }

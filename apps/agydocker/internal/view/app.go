@@ -12,13 +12,14 @@ import (
 	"golang.org/x/term"
 
 	"agydocker/internal/model"
+	"agydocker/internal/service/devtools"
 	"agydocker/internal/service/dockerops"
 )
 
 var spinnerFrames = []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"}
 
 type App struct {
-	ActiveTab     int // 0: Containers, 1: WSL2 RAM, 2: Volumes
+	ActiveTab     int // 0: Containers, 1: WSL2 RAM, 2: Volumes, 3: Dev Tools
 	SelectedIndex int
 	GroupViewMode int // 0: Grouped by Project, 1: Flat List
 	StatusMsg     string
@@ -28,6 +29,7 @@ type App struct {
 	cachedContainers []model.ContainerInfo
 	cachedMem        *model.MemInfo
 	cachedVolumes    []model.VolumeInfo
+	cachedDevTools   *model.DevToolsStackStatus
 	needsReload      bool
 
 	pendingActions map[string]string // map[containerID]action ("stopping", "starting", "restarting", "downing")
@@ -87,12 +89,14 @@ func (a *App) reloadAsync() {
 		containers, dErr := dockerops.ListContainers()
 		mem, _ := dockerops.GetMemoryInfo()
 		vols, _ := dockerops.ListVolumes()
+		dTools, _ := devtools.GetStackStatus()
 
 		a.pendingMu.Lock()
 		a.cachedContainers = containers
 		a.dockerErr = dErr
 		a.cachedMem = mem
 		a.cachedVolumes = vols
+		a.cachedDevTools = dTools
 		a.isReloading = false
 		a.pendingMu.Unlock()
 	}()
@@ -159,6 +163,7 @@ func (a *App) RunInteractive() error {
 			a.cachedContainers, a.dockerErr = dockerops.ListContainers()
 			a.cachedMem, _ = dockerops.GetMemoryInfo()
 			a.cachedVolumes, _ = dockerops.ListVolumes()
+			a.cachedDevTools, _ = devtools.GetStackStatus()
 		} else if needRel {
 			a.pendingMu.Lock()
 			a.needsReload = false
@@ -173,6 +178,12 @@ func (a *App) RunInteractive() error {
 		} else if a.ActiveTab == 2 {
 			a.pendingMu.RLock()
 			totalItems = len(a.cachedVolumes)
+			a.pendingMu.RUnlock()
+		} else if a.ActiveTab == 3 {
+			a.pendingMu.RLock()
+			if a.cachedDevTools != nil {
+				totalItems = len(a.cachedDevTools.RegisteredServers)
+			}
 			a.pendingMu.RUnlock()
 		}
 
@@ -229,12 +240,12 @@ func (a *App) RunInteractive() error {
 					}
 					continue
 				case 'C': // Right Tab
-					a.ActiveTab = (a.ActiveTab + 1) % 3
+					a.ActiveTab = (a.ActiveTab + 1) % 4
 					a.SelectedIndex = 0
 					a.tabSwitched = true
 					continue
 				case 'D': // Left Tab
-					a.ActiveTab = (a.ActiveTab + 2) % 3
+					a.ActiveTab = (a.ActiveTab + 3) % 4
 					a.SelectedIndex = 0
 					a.tabSwitched = true
 					continue
@@ -245,7 +256,7 @@ func (a *App) RunInteractive() error {
 
 		switch b {
 		case '\t':
-			a.ActiveTab = (a.ActiveTab + 1) % 3
+			a.ActiveTab = (a.ActiveTab + 1) % 4
 			a.SelectedIndex = 0
 			a.tabSwitched = true
 		case '1':
@@ -258,6 +269,10 @@ func (a *App) RunInteractive() error {
 			a.tabSwitched = true
 		case '3':
 			a.ActiveTab = 2
+			a.SelectedIndex = 0
+			a.tabSwitched = true
+		case '4':
+			a.ActiveTab = 3
 			a.SelectedIndex = 0
 			a.tabSwitched = true
 		case 'k', 'K':
@@ -280,8 +295,21 @@ func (a *App) RunInteractive() error {
 			} else if a.SelectedIndex > 0 {
 				a.SelectedIndex--
 			}
-		case 'd', 'D': // Remove container with confirmation
-			if a.ActiveTab == 0 && len(orderedContainers) > 0 && a.SelectedIndex < len(orderedContainers) {
+		case 'd', 'D': // Remove container with confirmation OR stop devtools stack in Tab 3
+			if a.ActiveTab == 3 {
+				a.StatusMsg = "\033[33mStopping centralized dev-tools stack in background...\033[0m"
+				go func() {
+					_, err := devtools.StopStack()
+					a.pendingMu.Lock()
+					if err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mStop error: %s\033[0m", truncateString(err.Error(), 65))
+					} else {
+						a.StatusMsg = "\033[33m⏹ Centralized dev-tools stack stopped.\033[0m"
+					}
+					a.pendingMu.Unlock()
+					a.reloadAsync()
+				}()
+			} else if a.ActiveTab == 0 && len(orderedContainers) > 0 && a.SelectedIndex < len(orderedContainers) {
 				c := orderedContainers[a.SelectedIndex]
 				fmt.Print("\033[?25h\033[?1049l")
 				_ = term.Restore(fd, oldState)
@@ -301,8 +329,17 @@ func (a *App) RunInteractive() error {
 				fmt.Print("\033[?1049h\033[?25l")
 				a.tabSwitched = true
 			}
-		case 'x', 'X': // Down Stack: docker compose down (or down container if Standalone)
-			if a.ActiveTab == 0 && len(orderedContainers) > 0 && a.SelectedIndex < len(orderedContainers) {
+		case 'x', 'X': // Down Stack: docker compose down OR detach server in Tab 3
+			if a.ActiveTab == 3 && a.cachedDevTools != nil && len(a.cachedDevTools.RegisteredServers) > 0 {
+				if a.SelectedIndex < len(a.cachedDevTools.RegisteredServers) {
+					targetServer := a.cachedDevTools.RegisteredServers[a.SelectedIndex]
+					devDir := devtools.GetDevToolsDir()
+					_, _ = devtools.RemoveServer(devDir, targetServer.Name)
+					_ = devtools.ReloadPgAdminServers()
+					a.StatusMsg = fmt.Sprintf("\033[33m✔ Detached %s from pgAdmin\033[0m", targetServer.Name)
+					a.reloadAsync()
+				}
+			} else if a.ActiveTab == 0 && len(orderedContainers) > 0 && a.SelectedIndex < len(orderedContainers) {
 				sel := orderedContainers[a.SelectedIndex]
 				proj := sel.ComposeProject
 				if proj == "" {
@@ -366,8 +403,16 @@ func (a *App) RunInteractive() error {
 					a.StatusMsg = "\033[32mSwitched to Flat Container View\033[0m"
 				}
 			}
-		case 'r', 'R': // Restart container in background or refresh
-			if a.ActiveTab == 0 && len(orderedContainers) > 0 && a.SelectedIndex < len(orderedContainers) {
+		case 'r', 'R': // Restart container in background or reload devtools servers
+			if a.ActiveTab == 3 {
+				err := devtools.ReloadPgAdminServers()
+				if err != nil {
+					a.StatusMsg = fmt.Sprintf("\033[31mReload error: %s\033[0m", truncateString(err.Error(), 65))
+				} else {
+					a.StatusMsg = "\033[32m✔ Reloaded pgAdmin servers configuration\033[0m"
+				}
+				a.reloadAsync()
+			} else if a.ActiveTab == 0 && len(orderedContainers) > 0 && a.SelectedIndex < len(orderedContainers) {
 				c := orderedContainers[a.SelectedIndex]
 				a.setPendingAction(c.ID, "restarting")
 				a.StatusMsg = fmt.Sprintf("\033[36mRestarting %s in background...\033[0m", c.Names)
@@ -387,8 +432,17 @@ func (a *App) RunInteractive() error {
 				a.reloadAsync()
 				a.StatusMsg = "\033[32mRefreshed status in background.\033[0m"
 			}
-		case 's', 'S': // Start / Stop toggle in background
-			if a.ActiveTab == 0 && len(orderedContainers) > 0 && a.SelectedIndex < len(orderedContainers) {
+		case 's', 'S': // Start / Stop toggle in background or sync devtools
+			if a.ActiveTab == 3 {
+				devDir := devtools.GetDevToolsDir()
+				count, err := devtools.SyncAllRunningDatabases(devDir)
+				if err != nil {
+					a.StatusMsg = fmt.Sprintf("\033[31mSync error: %s\033[0m", truncateString(err.Error(), 65))
+				} else {
+					a.StatusMsg = fmt.Sprintf("\033[32m✔ Synced %d active database containers into pgAdmin\033[0m", count)
+				}
+				a.reloadAsync()
+			} else if a.ActiveTab == 0 && len(orderedContainers) > 0 && a.SelectedIndex < len(orderedContainers) {
 				c := orderedContainers[a.SelectedIndex]
 				if a.getPendingAction(c.ID) != "" {
 					a.StatusMsg = fmt.Sprintf("\033[33m%s is already %s...\033[0m", c.Names, a.getPendingAction(c.ID))
@@ -427,8 +481,35 @@ func (a *App) RunInteractive() error {
 					}(c.ID, c.Names)
 				}
 			}
-		case 'a', 'A': // Start / Stop entire Compose Project Stack in background
-			if a.ActiveTab == 0 && len(orderedContainers) > 0 && a.SelectedIndex < len(orderedContainers) {
+		case 'a', 'A': // Start / Stop entire Compose Project Stack in background or auto-attach devtools
+			if a.ActiveTab == 3 {
+				cwd, _ := os.Getwd()
+				target, err := devtools.DetectProjectDB(cwd)
+				if err != nil {
+					a.StatusMsg = fmt.Sprintf("\033[31mAuto-attach error: %s\033[0m", truncateString(err.Error(), 65))
+				} else {
+					devDir := devtools.GetDevToolsDir()
+					_ = devtools.ConnectNetwork(target.NetworkName)
+					_ = devtools.EnsureNetworkInCompose(devDir, target.NetworkName)
+					entry := model.DevToolsServerEntry{
+						Name:          fmt.Sprintf("%s (%s)", target.ProjectName, target.DatabaseName),
+						Group:         target.ProjectName,
+						Host:          target.Host,
+						Port:          target.Port,
+						MaintenanceDB: target.DatabaseName,
+						Username:      target.Username,
+						SSLMode:       "prefer",
+						PassFile:      "/pgpassfile",
+					}
+					if err := devtools.RegisterServer(devDir, entry, target.Password); err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mRegister error: %s\033[0m", truncateString(err.Error(), 65))
+					} else {
+						_ = devtools.ReloadPgAdminServers()
+						a.StatusMsg = fmt.Sprintf("\033[32m✔ Attached %s DB to pgAdmin (:5050)\033[0m", target.ProjectName)
+					}
+				}
+				a.reloadAsync()
+			} else if a.ActiveTab == 0 && len(orderedContainers) > 0 && a.SelectedIndex < len(orderedContainers) {
 				sel := orderedContainers[a.SelectedIndex]
 				proj := sel.ComposeProject
 				if proj == "" {
@@ -581,6 +662,31 @@ func (a *App) RunInteractive() error {
 			oldState, _ = term.MakeRaw(fd)
 			fmt.Print("\033[?1049h\033[?25l")
 			a.tabSwitched = true
+		case 'u', 'U': // Start centralized devtools stack in Tab 3
+			if a.ActiveTab == 3 {
+				a.StatusMsg = "\033[36mStarting dev-tools stack (pgAdmin & Mongo Express)...\033[0m"
+				go func() {
+					_, err := devtools.StartStack()
+					a.pendingMu.Lock()
+					if err != nil {
+						a.StatusMsg = fmt.Sprintf("\033[31mStart error: %s\033[0m", truncateString(err.Error(), 65))
+					} else {
+						a.StatusMsg = "\033[32m✔ Centralized dev-tools running at http://localhost:5050\033[0m"
+					}
+					a.pendingMu.Unlock()
+					a.reloadAsync()
+				}()
+			}
+		case 'o', 'O': // Open pgAdmin in browser
+			if a.ActiveTab == 3 {
+				openBrowser("http://localhost:5050")
+				a.StatusMsg = "\033[32m✔ Opened pgAdmin 4 (http://localhost:5050) in browser\033[0m"
+			}
+		case 'm', 'M': // Open Mongo Express in browser
+			if a.ActiveTab == 3 {
+				openBrowser("http://localhost:8082")
+				a.StatusMsg = "\033[32m✔ Opened Mongo Express (http://localhost:8082) in browser\033[0m"
+			}
 		case 'q', 'Q', 0x03:
 			fmt.Print("\033[?25h\033[?1049l")
 			_ = term.Restore(fd, oldState)
@@ -589,6 +695,18 @@ func (a *App) RunInteractive() error {
 		}
 	}
 	return nil
+}
+
+func openBrowser(url string) {
+	if _, err := exec.LookPath("wslview"); err == nil {
+		_ = exec.Command("wslview", url).Start()
+		return
+	}
+	if _, err := exec.LookPath("cmd.exe"); err == nil {
+		_ = exec.Command("cmd.exe", "/c", "start", url).Start()
+		return
+	}
+	_ = exec.Command("xdg-open", url).Start()
 }
 
 func getTermSize() (int, int) {
@@ -649,7 +767,7 @@ func (a *App) Render() {
 	if width < 85 {
 		b.WriteString("\r\n🐳 \033[1;36mAGYDOCKER\033[0m · Containers & RAM\033[K\r\n")
 		b.WriteString(hr(width))
-		tabNames := []string{"1:Containers", "2:WSL RAM", "3:Volumes"}
+		tabNames := []string{"1:Containers", "2:WSL RAM", "3:Volumes", "4:Dev Tools"}
 		for i, t := range tabNames {
 			if i == a.ActiveTab {
 				fmt.Fprintf(&b, "\033[1;37;44m [%s] \033[0m ", t)
@@ -661,7 +779,7 @@ func (a *App) Render() {
 	} else {
 		b.WriteString("\r\n🐳 \033[1;36mAGYDOCKER - Container & WSL2 RAM Manager (Go Engine)\033[0m\033[K\r\n")
 		b.WriteString(hr(width))
-		tabs := []string{"[1] 🐳 Containers & Compose", "[2] 🧠 WSL2 RAM & Resources", "[3] 💾 Volumes & Caches"}
+		tabs := []string{"[1] 🐳 Containers & Compose", "[2] 🧠 WSL2 RAM & Resources", "[3] 💾 Volumes & Caches", "[4] 🛠️ Dev Tools (GUI)"}
 		for i, t := range tabs {
 			if i == a.ActiveTab {
 				fmt.Fprintf(&b, " \033[1;37;44m %s \033[0m ", t)
@@ -683,6 +801,8 @@ func (a *App) Render() {
 		a.renderMemTab(&b, width)
 	case 2:
 		a.renderVolumesTab(&b, width, height)
+	case 3:
+		a.renderDevToolsTab(&b, a.cachedDevTools, width)
 	}
 
 	b.WriteString(hr(width))
@@ -700,15 +820,19 @@ func (a *App) Render() {
 			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;33m[P]\033[0mPrune (Reclaim RAM) \033[1;36m[R]\033[0mRefresh \033[1;31m[Q/Esc]\033[0mExit\033[K\r\n")
 		case 2:
 			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;33m[P]\033[0mPrune Volumes \033[1;36m[R]\033[0mRefresh \033[1;31m[Q/Esc]\033[0mExit\033[K\r\n")
+		case 3:
+			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;32m[U]\033[0mUp \033[1;31m[D]\033[0mDown \033[1;36m[A]\033[0mAttach \033[1;35m[S]\033[0mSync \033[1;33m[O]\033[0mOpen \033[1;31m[X]\033[0mDetach \033[1;31m[Q]\033[0mExit\033[K\r\n")
 		}
 	} else {
 		switch a.ActiveTab {
 		case 0:
-			b.WriteString(" \033[1m[Tab/1-3]\033[0m Switch · \033[1m[↑/↓]\033[0m Nav · \033[1;32m[S]\033[0m Start/Stop · \033[1;31m[K]\033[0m Kill · \033[1;31m[X]\033[0m Down Stack · \033[1;31m[D]\033[0m Rm · \033[1;33m[A]\033[0m Start/Stop Stack · \033[1;35m[g]\033[0m Group/Flat · \033[1;36m[L]\033[0m Logs · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch · \033[1m[↑/↓]\033[0m Nav · \033[1;32m[S]\033[0m Start/Stop · \033[1;31m[K]\033[0m Kill · \033[1;31m[X]\033[0m Down Stack · \033[1;31m[D]\033[0m Rm · \033[1;33m[A]\033[0m Start/Stop Stack · \033[1;35m[g]\033[0m Group/Flat · \033[1;36m[L]\033[0m Logs · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 		case 1:
-			b.WriteString(" \033[1m[Tab/1-3]\033[0m Switch · \033[1;33m[P]\033[0m Prune (Reclaim RAM & Docker Cache) · \033[1;36m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch · \033[1;33m[P]\033[0m Prune (Reclaim RAM & Docker Cache) · \033[1;36m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 		case 2:
-			b.WriteString(" \033[1m[Tab/1-3]\033[0m Switch · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;33m[P]\033[0m Prune Volumes · \033[1;36m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;33m[P]\033[0m Prune Volumes · \033[1;36m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+		case 3:
+			b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;32m[U]\033[0m Start · \033[1;31m[D]\033[0m Stop · \033[1;36m[A]\033[0m Auto-Attach · \033[1;35m[S]\033[0m Sync DBs · \033[1;33m[O]\033[0m Open pgAdmin · \033[1;33m[M]\033[0m Mongo · \033[1;34m[R]\033[0m Reload · \033[1;31m[X]\033[0m Detach · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 		}
 	}
 

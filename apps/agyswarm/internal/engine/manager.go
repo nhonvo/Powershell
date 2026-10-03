@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"sync"
 	"syscall"
 	"time"
@@ -66,15 +67,30 @@ func (m *Manager) Spawn(cfg SpawnConfig) (*model.AgentSession, error) {
 	cmd := exec.Command(cfg.Command, cfg.Args...)
 	cmd.Dir = ws
 
-	// Setup isolated environment per account
-	env := os.Environ()
-	if cfg.AccountName != "" {
-		accountDir := filepath.Join(m.UserHome, ".gemini_"+cfg.AccountName)
-		if _, err := os.Stat(accountDir); err == nil {
-			env = append(env, fmt.Sprintf("GEMINI_HOME=%s", accountDir))
-			env = append(env, fmt.Sprintf("GEMINI_CLI_HOME=%s", accountDir))
+	// Setup isolated environment per account, stripping parent environment variables
+	var env []string
+	for _, envStr := range os.Environ() {
+		parts := strings.SplitN(envStr, "=", 2)
+		if len(parts) == 2 {
+			k := parts[0]
+			if k != "GEMINI_HOME" && k != "GEMINI_CLI_HOME" && k != "AGY_ACTIVE_ACCOUNT" {
+				env = append(env, envStr)
+			}
 		}
-		env = append(env, fmt.Sprintf("AGY_ACTIVE_ACCOUNT=%s", cfg.AccountName))
+	}
+
+	if cfg.AccountName != "" {
+		acc := strings.TrimSpace(cfg.AccountName)
+		accountDir := filepath.Join(m.UserHome, fmt.Sprintf(".gemini_%s", acc))
+		if acc == "default" {
+			accountDir = filepath.Join(m.UserHome, ".gemini")
+		}
+		if _, err := os.Stat(accountDir); err != nil {
+			_ = os.MkdirAll(accountDir, 0755)
+		}
+		env = append(env, fmt.Sprintf("GEMINI_HOME=%s", accountDir))
+		env = append(env, fmt.Sprintf("GEMINI_CLI_HOME=%s", accountDir))
+		env = append(env, fmt.Sprintf("AGY_ACTIVE_ACCOUNT=%s", acc))
 	}
 	for k, v := range cfg.Env {
 		env = append(env, fmt.Sprintf("%s=%s", k, v))

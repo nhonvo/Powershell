@@ -153,6 +153,10 @@ func (m *AccountManager) SwitchAccount(accountName string) error {
 		}
 	}
 
+	_ = os.Setenv("GEMINI_HOME", targetDir)
+	_ = os.Setenv("GEMINI_CLI_HOME", targetDir)
+	_ = os.Setenv("AGY_ACTIVE_ACCOUNT", targetName)
+
 	return nil
 }
 

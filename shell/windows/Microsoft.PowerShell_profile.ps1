@@ -858,17 +858,26 @@ function Sync-ActiveAgyEnvironment {
                 $targetHome = Join-Path $env:USERPROFILE ".gemini_$accName"
                 if (Test-Path -LiteralPath $targetHome) {
                     $env:GEMINI_HOME = $targetHome
-                    try { [System.Environment]::SetEnvironmentVariable("GEMINI_HOME", $targetHome, "User") } catch {}
+                    $env:GEMINI_CLI_HOME = $targetHome
+                    try { 
+                        [System.Environment]::SetEnvironmentVariable("GEMINI_HOME", $targetHome, "User") 
+                        [System.Environment]::SetEnvironmentVariable("GEMINI_CLI_HOME", $targetHome, "User")
+                    } catch {}
                 }
             } elseif ($accName -eq "default") {
                 $targetHome = Join-Path $env:USERPROFILE ".gemini"
                 $env:GEMINI_HOME = $targetHome
-                try { [System.Environment]::SetEnvironmentVariable("GEMINI_HOME", $targetHome, "User") } catch {}
+                $env:GEMINI_CLI_HOME = $targetHome
+                try { 
+                    [System.Environment]::SetEnvironmentVariable("GEMINI_HOME", $targetHome, "User")
+                    [System.Environment]::SetEnvironmentVariable("GEMINI_CLI_HOME", $targetHome, "User")
+                } catch {}
             }
         } else {
             $userVal = [System.Environment]::GetEnvironmentVariable("GEMINI_HOME", "User")
             if ($userVal -and (Test-Path $userVal)) {
                 $env:GEMINI_HOME = $userVal
+                $env:GEMINI_CLI_HOME = $userVal
             }
         }
         $agyHome = if ($env:GEMINI_HOME) { $env:GEMINI_HOME } else { Join-Path $env:USERPROFILE ".gemini" }

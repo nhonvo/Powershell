@@ -142,13 +142,13 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 		}
 	}
 
-	// Environmental Isolation: Strip IDE sync variables to keep CLI strictly standalone
+	// Environmental Isolation: Strip IDE sync variables and existing home paths to keep CLI strictly standalone
 	var finalEnv []string
 	for _, envStr := range os.Environ() {
 		parts := strings.SplitN(envStr, "=", 2)
 		if len(parts) == 2 {
 			k := parts[0]
-			if k != "GEMINI_CLI_IDE_AUTH_TOKEN" && k != "GEMINI_CLI_IDE_SERVER_PORT" && k != "ANTIGRAVITY_IDE_SERVER_PORT" {
+			if k != "GEMINI_CLI_IDE_AUTH_TOKEN" && k != "GEMINI_CLI_IDE_SERVER_PORT" && k != "ANTIGRAVITY_IDE_SERVER_PORT" && k != "GEMINI_HOME" && k != "GEMINI_CLI_HOME" && k != "AGY_ACTIVE_ACCOUNT" {
 				finalEnv = append(finalEnv, envStr)
 			}
 		}
@@ -160,6 +160,8 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 		geminiHomePath = store.ToLinuxPath(geminiHomePath)
 	}
 	finalEnv = append(finalEnv, fmt.Sprintf("GEMINI_HOME=%s", geminiHomePath))
+	finalEnv = append(finalEnv, fmt.Sprintf("GEMINI_CLI_HOME=%s", geminiHomePath))
+	finalEnv = append(finalEnv, fmt.Sprintf("AGY_ACTIVE_ACCOUNT=%s", accountName))
 	cmd.Env = finalEnv
 
 	cmd.Stdin = os.Stdin

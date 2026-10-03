@@ -126,6 +126,9 @@ func (s *Store) GetAccountEmail(accountName string) string {
 	if accName == "" {
 		return ""
 	}
+	if strings.Contains(accName, "@") {
+		return strings.ToLower(accName)
+	}
 	accDir := s.GetAccountDirectory(accName)
 	gJsonPath := filepath.Join(accDir, "google_accounts.json")
 	if data, err := os.ReadFile(gJsonPath); err == nil {
@@ -136,20 +139,38 @@ func (s *Store) GetAccountEmail(accountName string) string {
 			} `json:"accounts"`
 		}
 		if json.Unmarshal(data, &g) == nil {
-			if g.ActiveAccount != "" {
-				return g.ActiveAccount
+			emailCandidate := g.ActiveAccount
+			if emailCandidate == "" && len(g.Accounts) > 0 {
+				emailCandidate = g.Accounts[0].Email
 			}
-			if len(g.Accounts) > 0 && g.Accounts[0].Email != "" {
-				return g.Accounts[0].Email
+			if emailCandidate != "" {
+				belongsToOther := false
+				for _, knownAcc := range s.ListAccountNames() {
+					if strings.EqualFold(knownAcc, accName) || strings.EqualFold(knownAcc, "default") {
+						continue
+					}
+					knownEmail := strings.ToLower(knownAcc)
+					if !strings.Contains(knownEmail, "@") {
+						knownEmail = fmt.Sprintf("%s@gmail.com", knownEmail)
+					}
+					if strings.EqualFold(emailCandidate, knownEmail) {
+						belongsToOther = true
+						break
+					}
+				}
+				if !belongsToOther {
+					return emailCandidate
+				}
 			}
 		}
 	}
 	return fmt.Sprintf("%s@gmail.com", accName)
 }
 
-// MatchesAccountEmail checks if the credentials in dir match the expected account context without wiping custom alias accounts.
+// MatchesAccountEmail checks if the credentials in dir match the expected account context without cross-contaminating different registered accounts.
 func (s *Store) MatchesAccountEmail(dir string, accountName string) bool {
-	if dir == "" || accountName == "" {
+	accName := strings.TrimSpace(accountName)
+	if dir == "" || accName == "" || strings.EqualFold(accName, "default") {
 		return true
 	}
 	tokenEmail := ""
@@ -183,22 +204,43 @@ func (s *Store) MatchesAccountEmail(dir string, accountName string) bool {
 		return true
 	}
 
-	targetEmail := strings.ToLower(fmt.Sprintf("%s@gmail.com", strings.TrimSpace(accountName)))
+	tokenEmail = strings.ToLower(strings.TrimSpace(tokenEmail))
 
-	// 1. Exact match with accountName@gmail.com
+	// 1. Exact match with accountName (if email) or accountName@gmail.com
+	targetEmail := strings.ToLower(accName)
+	if !strings.Contains(targetEmail, "@") {
+		targetEmail = fmt.Sprintf("%s@gmail.com", targetEmail)
+	}
 	if strings.EqualFold(tokenEmail, targetEmail) {
 		return true
 	}
 
-	// 2. Match with google_accounts.json inside dir (proves login was performed in this directory context)
-	if gJsonEmail != "" && strings.EqualFold(tokenEmail, gJsonEmail) {
+	// 2. Username handle match (e.g. tokenEmail is nhontruongvo3@domain.com and accountName is nhontruongvo3)
+	tokenUser := strings.SplitN(tokenEmail, "@", 2)[0]
+	targetUser := strings.SplitN(accName, "@", 2)[0]
+	if strings.EqualFold(tokenUser, targetUser) {
 		return true
 	}
 
-	// 3. Match with bound email for accountName
-	boundEmail := s.GetAccountEmail(accountName)
+	// 3. Match with explicitly bound email for accountName
+	boundEmail := s.GetAccountEmail(accName)
 	if boundEmail != "" && strings.EqualFold(tokenEmail, boundEmail) {
 		return true
+	}
+
+	// 4. Strict Check: If tokenEmail belongs to ANOTHER registered account, return false immediately!
+	for _, knownAcc := range s.ListAccountNames() {
+		if strings.EqualFold(knownAcc, accName) || strings.EqualFold(knownAcc, "default") {
+			continue
+		}
+		knownEmail := strings.ToLower(knownAcc)
+		if !strings.Contains(knownEmail, "@") {
+			knownEmail = fmt.Sprintf("%s@gmail.com", knownEmail)
+		}
+		knownUser := strings.SplitN(knownEmail, "@", 2)[0]
+		if strings.EqualFold(tokenEmail, knownEmail) || strings.EqualFold(tokenUser, knownUser) {
+			return false
+		}
 	}
 
 	return false
@@ -327,6 +369,11 @@ func (s *Store) SetActiveAccount(accountName string) error {
 			s.SyncCredentials(targetDir, cpTarget)
 		}
 	}
+
+	// Synchronize current process environment variables
+	_ = os.Setenv("GEMINI_HOME", targetDir)
+	_ = os.Setenv("GEMINI_CLI_HOME", targetDir)
+	_ = os.Setenv("AGY_ACTIVE_ACCOUNT", acc)
 
 	return nil
 }

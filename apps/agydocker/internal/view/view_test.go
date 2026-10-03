@@ -36,6 +36,17 @@ func TestApp_Render(t *testing.T) {
 
 	app.ActiveTab = 2
 	app.Render() // tab 2 Volumes
+
+	app.ActiveTab = 3
+	app.cachedDevTools = &model.DevToolsStackStatus{
+		RootDir:        "/home/truongnhon/projects/dev-tools",
+		PgAdminRunning: true,
+		MongoRunning:   true,
+		RegisteredServers: []model.DevToolsServerEntry{
+			{Name: "Finance DB", Group: "Finance", Host: "finance_postgres", Port: 5432},
+		},
+	}
+	app.Render() // tab 3 Dev Tools
 }
 
 func TestApp_PendingActions(t *testing.T) {

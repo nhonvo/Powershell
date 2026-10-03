@@ -40,8 +40,10 @@ $geminiHome = Join-Path $HOME ".gemini"
 }
 
 $env:GEMINI_HOME = $geminiHome
+$env:GEMINI_CLI_HOME = $geminiHome
 [Environment]::SetEnvironmentVariable("GEMINI_HOME", $geminiHome, "User")
-Write-Host "✅ Configured GEMINI_HOME: $geminiHome" -ForegroundColor Green
+[Environment]::SetEnvironmentVariable("GEMINI_CLI_HOME", $geminiHome, "User")
+Write-Host "✅ Configured GEMINI_HOME & GEMINI_CLI_HOME: $geminiHome" -ForegroundColor Green
 
 # 3. Link $PROFILE to shell/windows/Microsoft.PowerShell_profile.ps1
 $profilePath = $PROFILE.CurrentUserAllHosts

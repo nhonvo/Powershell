@@ -35,6 +35,7 @@ foreach ($acc in $targetAccounts) {
 
     $geminiDir = Join-Path $env:USERPROFILE ".gemini_$acc"
     $env:GEMINI_HOME = $geminiDir
+    $env:GEMINI_CLI_HOME = $geminiDir
     $expectedEmail = ""
 
     # Read account email handle from google_accounts.json
