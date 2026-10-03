@@ -210,11 +210,14 @@ func runWatchCmd(args []string) {
 
 		sigChan := make(chan os.Signal, 1)
 		signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
-		go func() {
-			<-sigChan
-			fmt.Println("\n⏹ Stopping agyreview watcher sentinel...")
-			cancel()
-		}()
+		go func(ctx context.Context) {
+			select {
+			case <-sigChan:
+				fmt.Println("\n⏹ Stopping agyreview watcher sentinel...")
+				cancel()
+			case <-ctx.Done():
+			}
+		}(ctx)
 
 		fmt.Printf("👁️ [agyreview Sentinel] Started poller watching %d repos (poll interval: %ds)...\n",
 			len(cfg.WatchedRepos), cfg.PollIntervalSec)

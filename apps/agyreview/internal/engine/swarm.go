@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"context"
 	"fmt"
 	"sync"
 
@@ -23,12 +24,13 @@ type SwarmExecutionResult struct {
 
 // CoordinateSwarm coordinates parallel multi-agent audits across the target directory.
 func CoordinateSwarm(targetPath string) ([]model.Finding, model.BaremScore, error) {
+	ctx := context.Background()
 	var wg sync.WaitGroup
 	resultsChan := make(chan SwarmExecutionResult, 3)
 
 	// Agent Alpha: Security Sentry
 	wg.Add(1)
-	go func() {
+	go func(ctx context.Context) {
 		defer wg.Done()
 		findings, _ := AnalyzeDirectory(targetPath, 1)
 		var secFindings []model.Finding
@@ -41,11 +43,11 @@ func CoordinateSwarm(targetPath string) ([]model.Finding, model.BaremScore, erro
 			AgentRole: RoleSecuritySentry,
 			Findings:  secFindings,
 		}
-	}()
+	}(ctx)
 
 	// Agent Beta: Concurrency Auditor
 	wg.Add(1)
-	go func() {
+	go func(ctx context.Context) {
 		defer wg.Done()
 		findings, _ := AnalyzeDirectory(targetPath, 2)
 		var concFindings []model.Finding
@@ -58,11 +60,11 @@ func CoordinateSwarm(targetPath string) ([]model.Finding, model.BaremScore, erro
 			AgentRole: RoleConcurrencyAuditor,
 			Findings:  concFindings,
 		}
-	}()
+	}(ctx)
 
 	// Agent Gamma: Architecture Arbiter
 	wg.Add(1)
-	go func() {
+	go func(ctx context.Context) {
 		defer wg.Done()
 		findings, _ := AnalyzeDirectory(targetPath, 3)
 		var archFindings []model.Finding
@@ -75,7 +77,7 @@ func CoordinateSwarm(targetPath string) ([]model.Finding, model.BaremScore, erro
 			AgentRole: RoleArchitectureJudge,
 			Findings:  archFindings,
 		}
-	}()
+	}(ctx)
 
 	wg.Wait()
 	close(resultsChan)
