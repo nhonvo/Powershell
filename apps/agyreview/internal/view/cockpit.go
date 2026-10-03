@@ -136,8 +136,8 @@ func (a *CockpitApp) RunInteractive() error {
 				a.StatusMsg = fmt.Sprintf("\033[36m⏳ Executing 3-Loop Code Review for '%s'...\033[0m", target.Name)
 				a.Render()
 
-				result, err := engine.RunReview(&target, false, func(loop int, msg string) {
-					a.StatusMsg = fmt.Sprintf("\033[36mLoop %d: %s...\033[0m", loop, msg)
+				result, err := engine.RunReview(&target, false, func(loop int, msg string, count int) {
+					a.StatusMsg = fmt.Sprintf("\033[36mLoop %d: %s (%d findings)...\033[0m", loop, msg, count)
 					a.Render()
 				})
 
