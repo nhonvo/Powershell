@@ -220,8 +220,28 @@ function proj {
     }
 }`)
 
+	case "help", "-h", "--help":
+		printHelp()
+
 	default:
-		fmt.Println("Unknown command. Available commands: ls, scan, register, unregister, pin, cd, open, init")
+		fmt.Println("Unknown command. Run 'agyproj help' for usage.")
 		os.Exit(1)
 	}
+}
+
+func printHelp() {
+	fmt.Println(`📁 AGYPROJ - Workspaces & Project Registry (Go Engine)
+
+Usage:
+  agyproj                        Launch interactive keyboard-only project manager TUI
+  agyproj ls                     List all registered workspaces with git branch & dirty status
+  agyproj scan [root]            Scan directory for code projects (default: ~/projects)
+  agyproj register <path>        Register and pin a workspace directory
+  agyproj register-all [root]    Register all discovered projects in directory
+  agyproj unregister <name|id>   Unregister a workspace
+  agyproj pin <name|id>          Toggle pinned status for a workspace
+  agyproj cd <query>             Print absolute path of target workspace (for shell integration)
+  agyproj open <name> [ide]      Open workspace in VS Code, Neovim, or AGY CLI
+  agyproj init                   Output shell profile integration code
+  agyproj help                   Show this help message`)
 }

@@ -323,8 +323,10 @@ function Invoke-GoApp {
         if ($AppArgs -and $AppArgs.Count -gt 0) { & $binPath @AppArgs } else { & $binPath }
         return
     }
-    if (Get-Command $AppName -ErrorAction SilentlyContinue) {
-        if ($AppArgs -and $AppArgs.Count -gt 0) { & $AppName @AppArgs } else { & $AppName }
+    $cmd = Get-Command "$AppName.exe" -CommandType Application -ErrorAction SilentlyContinue
+    if (-not $cmd) { $cmd = Get-Command $AppName -CommandType Application -ErrorAction SilentlyContinue }
+    if ($cmd) {
+        if ($AppArgs -and $AppArgs.Count -gt 0) { & $cmd.Source @AppArgs } else { & $cmd.Source }
         return
     }
     if (Get-Command wsl -ErrorAction SilentlyContinue) {
@@ -852,33 +854,22 @@ function Invoke-MultiAgent { param([string]$Query) Invoke-AgyRoute "ai" $Query }
 function Sync-ActiveAgyEnvironment {
     try {
         $activeAccFile = Join-Path $env:USERPROFILE ".gemini\active_account.txt"
+        $primaryHome = Join-Path $env:USERPROFILE ".gemini"
         if (Test-Path -LiteralPath $activeAccFile) {
             $accName = (Get-Content -LiteralPath $activeAccFile -Raw).Trim()
-            if ($accName -and $accName -ne "default") {
-                $targetHome = Join-Path $env:USERPROFILE ".gemini_$accName"
-                if (Test-Path -LiteralPath $targetHome) {
-                    $env:GEMINI_HOME = $targetHome
-                    $env:GEMINI_CLI_HOME = $targetHome
-                    try { 
-                        [System.Environment]::SetEnvironmentVariable("GEMINI_HOME", $targetHome, "User") 
-                        [System.Environment]::SetEnvironmentVariable("GEMINI_CLI_HOME", $targetHome, "User")
-                    } catch {}
-                }
-            } elseif ($accName -eq "default") {
-                $targetHome = Join-Path $env:USERPROFILE ".gemini"
-                $env:GEMINI_HOME = $targetHome
-                $env:GEMINI_CLI_HOME = $targetHome
+            if ($accName) {
+                $env:AGY_ACTIVE_ACCOUNT = $accName
+                $env:GEMINI_HOME = $primaryHome
+                $env:GEMINI_CLI_HOME = $primaryHome
                 try { 
-                    [System.Environment]::SetEnvironmentVariable("GEMINI_HOME", $targetHome, "User")
-                    [System.Environment]::SetEnvironmentVariable("GEMINI_CLI_HOME", $targetHome, "User")
+                    [System.Environment]::SetEnvironmentVariable("GEMINI_HOME", $primaryHome, "User") 
+                    [System.Environment]::SetEnvironmentVariable("GEMINI_CLI_HOME", $primaryHome, "User")
+                    [System.Environment]::SetEnvironmentVariable("AGY_ACTIVE_ACCOUNT", $accName, "User")
                 } catch {}
             }
         } else {
-            $userVal = [System.Environment]::GetEnvironmentVariable("GEMINI_HOME", "User")
-            if ($userVal -and (Test-Path $userVal)) {
-                $env:GEMINI_HOME = $userVal
-                $env:GEMINI_CLI_HOME = $userVal
-            }
+            $env:GEMINI_HOME = $primaryHome
+            $env:GEMINI_CLI_HOME = $primaryHome
         }
         $agyHome = if ($env:GEMINI_HOME) { $env:GEMINI_HOME } else { Join-Path $env:USERPROFILE ".gemini" }
         if ($agyHome -ne (Join-Path $env:USERPROFILE ".gemini")) {

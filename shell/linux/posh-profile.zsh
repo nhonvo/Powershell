@@ -128,13 +128,8 @@ sync_active_agy_environment() {
     local active_file="$HOME/.gemini/active_account.txt"
     if [ -f "$active_file" ]; then
         local acc_name="$(tr -d '[:space:]' < "$active_file")"
-        if [ -n "$acc_name" ] && [ "$acc_name" != "default" ]; then
-            local target_home="$HOME/.gemini_$acc_name"
-            if [ -d "$target_home" ]; then
-                export GEMINI_HOME="$target_home"
-                export GEMINI_CLI_HOME="$target_home"
-            fi
-        elif [ "$acc_name" = "default" ]; then
+        if [ -n "$acc_name" ]; then
+            export AGY_ACTIVE_ACCOUNT="$acc_name"
             export GEMINI_HOME="$HOME/.gemini"
             export GEMINI_CLI_HOME="$HOME/.gemini"
         fi

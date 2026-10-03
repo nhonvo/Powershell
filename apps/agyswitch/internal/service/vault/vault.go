@@ -344,7 +344,48 @@ func (v *Vault) GetRefreshToken(dir string) string {
 	return ExtractRefreshToken(dir)
 }
 
-// ExtractTokenEmail parses token JSON, extracts id_token JWT, and decodes the email claim.
+// FetchTokenInfoEmail verifies access token against Google tokeninfo endpoint and caches the result.
+func FetchTokenInfoEmail(dir string, accessToken string) string {
+	if accessToken == "" {
+		return ""
+	}
+	cacheFile := filepath.Join(dir, ".verified_token_email")
+	sig := accessToken
+	if len(sig) > 24 {
+		sig = sig[len(sig)-24:]
+	}
+	if data, err := os.ReadFile(cacheFile); err == nil {
+		parts := strings.Split(strings.TrimSpace(string(data)), ":")
+		if len(parts) == 2 && parts[0] == sig && parts[1] != "" {
+			return strings.ToLower(strings.TrimSpace(parts[1]))
+		}
+	}
+
+	client := &http.Client{Timeout: 3 * time.Second}
+	reqUrl := fmt.Sprintf("https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=%s", url.QueryEscape(accessToken))
+	resp, err := client.Get(reqUrl)
+	if err != nil {
+		return ""
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return ""
+	}
+
+	var res struct {
+		Email string `json:"email"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil || res.Email == "" {
+		return ""
+	}
+
+	email := strings.ToLower(strings.TrimSpace(res.Email))
+	_ = os.WriteFile(cacheFile, []byte(fmt.Sprintf("%s:%s", sig, email)), 0600)
+	return email
+}
+
+// ExtractTokenEmail parses token JSON, extracts id_token JWT, or verifies access_token via Google tokeninfo.
 func ExtractTokenEmail(dir string) string {
 	tokFiles := []string{
 		filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token"),
@@ -359,9 +400,11 @@ func ExtractTokenEmail(dir string) string {
 		data = bytes.TrimPrefix(data, []byte("\ufeff"))
 
 		var parsed struct {
-			IdToken string `json:"id_token"`
-			Token   struct {
-				IdToken string `json:"id_token"`
+			IdToken     string `json:"id_token"`
+			AccessToken string `json:"access_token"`
+			Token       struct {
+				IdToken     string `json:"id_token"`
+				AccessToken string `json:"access_token"`
 			} `json:"token"`
 		}
 		if err := json.Unmarshal(data, &parsed); err == nil {
@@ -388,6 +431,17 @@ func ExtractTokenEmail(dir string) string {
 							return strings.ToLower(strings.TrimSpace(claims.Email))
 						}
 					}
+				}
+			}
+
+			// Fallback: Verify via access token tokeninfo
+			accTok := parsed.AccessToken
+			if accTok == "" {
+				accTok = parsed.Token.AccessToken
+			}
+			if accTok != "" {
+				if email := FetchTokenInfoEmail(dir, accTok); email != "" {
+					return email
 				}
 			}
 		}

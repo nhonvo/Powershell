@@ -56,6 +56,14 @@ function Build-SingleApp {
         go build -o $outPath .
         if ($LASTEXITCODE -eq 0) {
             Write-Host "✔ Installed: $outPath" -ForegroundColor Green
+            $localBin = Join-Path $env:USERPROFILE ".local\bin"
+            if (Test-Path $localBin) {
+                Copy-Item -Path $outPath -Destination (Join-Path $localBin "$AppName$exeSuffix") -Force -ErrorAction SilentlyContinue
+            }
+            $distDir = Join-Path $repoRoot "dist\windows"
+            if (Test-Path $distDir) {
+                Copy-Item -Path $outPath -Destination (Join-Path $distDir "$AppName$exeSuffix") -Force -ErrorAction SilentlyContinue
+            }
         }
     }
     finally {

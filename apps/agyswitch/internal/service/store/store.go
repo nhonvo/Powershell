@@ -196,51 +196,97 @@ func (s *Store) MatchesAccountEmail(dir string, accountName string) bool {
 		}
 	}
 
-	if tokenEmail == "" {
-		tokenEmail = gJsonEmail
-	}
+	// 1. If we have a verified token email from JWT or Google tokeninfo:
+	if tokenEmail != "" {
+		tokenEmail = strings.ToLower(strings.TrimSpace(tokenEmail))
+		tokenUser := strings.SplitN(tokenEmail, "@", 2)[0]
 
-	if tokenEmail == "" {
-		return true
-	}
-
-	tokenEmail = strings.ToLower(strings.TrimSpace(tokenEmail))
-
-	// 1. Exact match with accountName (if email) or accountName@gmail.com
-	targetEmail := strings.ToLower(accName)
-	if !strings.Contains(targetEmail, "@") {
-		targetEmail = fmt.Sprintf("%s@gmail.com", targetEmail)
-	}
-	if strings.EqualFold(tokenEmail, targetEmail) {
-		return true
-	}
-
-	// 2. Username handle match (e.g. tokenEmail is nhontruongvo3@domain.com and accountName is nhontruongvo3)
-	tokenUser := strings.SplitN(tokenEmail, "@", 2)[0]
-	targetUser := strings.SplitN(accName, "@", 2)[0]
-	if strings.EqualFold(tokenUser, targetUser) {
-		return true
-	}
-
-	// 3. Match with explicitly bound email for accountName
-	boundEmail := s.GetAccountEmail(accName)
-	if boundEmail != "" && strings.EqualFold(tokenEmail, boundEmail) {
-		return true
-	}
-
-	// 4. Strict Check: If tokenEmail belongs to ANOTHER registered account, return false immediately!
-	for _, knownAcc := range s.ListAccountNames() {
-		if strings.EqualFold(knownAcc, accName) || strings.EqualFold(knownAcc, "default") {
-			continue
+		// Strict Check: If tokenEmail belongs to ANOTHER registered account, return false immediately!
+		for _, knownAcc := range s.ListAccountNames() {
+			if strings.EqualFold(knownAcc, accName) || strings.EqualFold(knownAcc, "default") {
+				continue
+			}
+			knownEmail := strings.ToLower(knownAcc)
+			if !strings.Contains(knownEmail, "@") {
+				knownEmail = fmt.Sprintf("%s@gmail.com", knownEmail)
+			}
+			knownUser := strings.SplitN(knownEmail, "@", 2)[0]
+			if strings.EqualFold(tokenEmail, knownEmail) || strings.EqualFold(tokenUser, knownUser) {
+				return false
+			}
 		}
-		knownEmail := strings.ToLower(knownAcc)
-		if !strings.Contains(knownEmail, "@") {
-			knownEmail = fmt.Sprintf("%s@gmail.com", knownEmail)
+
+		// Check if it matches target account
+		targetEmail := strings.ToLower(accName)
+		if !strings.Contains(targetEmail, "@") {
+			targetEmail = fmt.Sprintf("%s@gmail.com", targetEmail)
 		}
-		knownUser := strings.SplitN(knownEmail, "@", 2)[0]
-		if strings.EqualFold(tokenEmail, knownEmail) || strings.EqualFold(tokenUser, knownUser) {
-			return false
+		if strings.EqualFold(tokenEmail, targetEmail) {
+			return true
 		}
+
+		targetUser := strings.SplitN(accName, "@", 2)[0]
+		if strings.EqualFold(tokenUser, targetUser) {
+			return true
+		}
+
+		boundEmail := s.GetAccountEmail(accName)
+		if boundEmail != "" && strings.EqualFold(tokenEmail, boundEmail) {
+			return true
+		}
+
+		return false
+	}
+
+	// 2. Fallback to google_accounts.json ONLY if genuine token email was not available
+	if gJsonEmail != "" {
+		gJsonEmail = strings.ToLower(strings.TrimSpace(gJsonEmail))
+		gJsonUser := strings.SplitN(gJsonEmail, "@", 2)[0]
+
+		for _, knownAcc := range s.ListAccountNames() {
+			if strings.EqualFold(knownAcc, accName) || strings.EqualFold(knownAcc, "default") {
+				continue
+			}
+			knownEmail := strings.ToLower(knownAcc)
+			if !strings.Contains(knownEmail, "@") {
+				knownEmail = fmt.Sprintf("%s@gmail.com", knownEmail)
+			}
+			knownUser := strings.SplitN(knownEmail, "@", 2)[0]
+			if strings.EqualFold(gJsonEmail, knownEmail) || strings.EqualFold(gJsonUser, knownUser) {
+				return false
+			}
+		}
+
+		targetEmail := strings.ToLower(accName)
+		if !strings.Contains(targetEmail, "@") {
+			targetEmail = fmt.Sprintf("%s@gmail.com", targetEmail)
+		}
+		if strings.EqualFold(gJsonEmail, targetEmail) {
+			return true
+		}
+		targetUser := strings.SplitN(accName, "@", 2)[0]
+		if strings.EqualFold(gJsonUser, targetUser) {
+			return true
+		}
+	}
+
+	// 3. Fallback: If no email could be established from Google or google_accounts.json (e.g. offline / mock test):
+	// Check if active_account.txt in this directory explicitly matches accName
+	if actData, err := os.ReadFile(filepath.Join(dir, "active_account.txt")); err == nil {
+		if strings.EqualFold(strings.TrimSpace(string(actData)), accName) {
+			return true
+		}
+	}
+
+	// If no email could be established at all:
+	// If credentials exist in directory, do NOT blindly assume they match!
+	tokFile1 := filepath.Join(dir, "antigravity-cli", "antigravity-oauth-token")
+	tokFile2 := filepath.Join(dir, "antigravity-oauth-token")
+	if _, err := os.Stat(tokFile1); err == nil {
+		return false
+	}
+	if _, err := os.Stat(tokFile2); err == nil {
+		return false
 	}
 
 	return false
@@ -326,8 +372,8 @@ func (s *Store) SetActiveAccount(accountName string) error {
 		_ = os.MkdirAll(targetDir, 0755)
 	}
 
-	if !strings.EqualFold(currentActive, acc) {
-		// Wipe primary credentials first so old account's credentials never bleed into target
+	// Wipe primary credentials if switching accounts OR if primaryDir does not match target account
+	if !strings.EqualFold(currentActive, acc) || !s.MatchesAccountEmail(primaryDir, acc) {
 		s.ClearCredentials(primaryDir)
 
 		// Only copy if target actually has genuine credentials matching target
@@ -361,12 +407,14 @@ func (s *Store) SetActiveAccount(accountName string) error {
 		cpTarget := s.GetAccountDirectoryForHome(counterpartHome, acc)
 		_ = os.MkdirAll(cpTarget, 0755)
 
-		if s.Vault.ReadTokenFromDir(primaryDir) != "" && s.MatchesAccountEmail(primaryDir, acc) {
-			s.SyncCredentials(primaryDir, cpPrimary)
-			s.SyncCredentials(primaryDir, cpTarget)
-		} else if s.Vault.ReadTokenFromDir(targetDir) != "" && s.MatchesAccountEmail(targetDir, acc) {
+		if s.Vault.ReadTokenFromDir(targetDir) != "" && s.MatchesAccountEmail(targetDir, acc) {
 			s.SyncCredentials(targetDir, cpPrimary)
 			s.SyncCredentials(targetDir, cpTarget)
+		} else if s.Vault.ReadTokenFromDir(primaryDir) != "" && s.MatchesAccountEmail(primaryDir, acc) {
+			s.SyncCredentials(primaryDir, cpPrimary)
+			s.SyncCredentials(primaryDir, cpTarget)
+		} else {
+			s.ClearCredentials(cpPrimary)
 		}
 	}
 
@@ -889,10 +937,14 @@ func (s *Store) ListAccounts() []model.AccountInfo {
 			
 			// Auto-refresh token if expired
 			tok := s.Vault.EnsureValidAccessToken(accDir)
+			if tok != "" && !s.MatchesAccountEmail(accDir, accName) {
+				tok = ""
+			}
 			if tok == "" && strings.EqualFold(accName, active) {
 				primaryDir := filepath.Join(s.UserHome, ".gemini")
-				tok = s.Vault.EnsureValidAccessToken(primaryDir)
-				if tok != "" && s.MatchesAccountEmail(primaryDir, accName) {
+				pTok := s.Vault.EnsureValidAccessToken(primaryDir)
+				if pTok != "" && s.MatchesAccountEmail(primaryDir, accName) {
+					tok = pTok
 					s.SyncCredentials(primaryDir, accDir)
 				}
 			}

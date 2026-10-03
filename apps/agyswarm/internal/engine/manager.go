@@ -88,6 +88,25 @@ func (m *Manager) Spawn(cfg SpawnConfig) (*model.AgentSession, error) {
 		if _, err := os.Stat(accountDir); err != nil {
 			_ = os.MkdirAll(accountDir, 0755)
 		}
+
+		// Isolate $HOME for child agy process so it resolves ~/.gemini directly to accountDir
+		agentHome := filepath.Join(m.UserHome, ".gemini_swarm", "agents", acc)
+		_ = os.MkdirAll(agentHome, 0755)
+		agentGeminiLink := filepath.Join(agentHome, ".gemini")
+		if _, err := os.Lstat(agentGeminiLink); err == nil {
+			_ = os.Remove(agentGeminiLink)
+		}
+		_ = os.Symlink(accountDir, agentGeminiLink)
+
+		var filteredEnv []string
+		for _, e := range env {
+			if !strings.HasPrefix(e, "HOME=") && !strings.HasPrefix(e, "USERPROFILE=") {
+				filteredEnv = append(filteredEnv, e)
+			}
+		}
+		env = filteredEnv
+		env = append(env, fmt.Sprintf("HOME=%s", agentHome))
+		env = append(env, fmt.Sprintf("USERPROFILE=%s", agentHome))
 		env = append(env, fmt.Sprintf("GEMINI_HOME=%s", accountDir))
 		env = append(env, fmt.Sprintf("GEMINI_CLI_HOME=%s", accountDir))
 		env = append(env, fmt.Sprintf("AGY_ACTIVE_ACCOUNT=%s", acc))
