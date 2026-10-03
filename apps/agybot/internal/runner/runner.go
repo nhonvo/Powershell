@@ -117,7 +117,6 @@ func (r *AntigravityRunner) ExecutePrompt(ctx context.Context, opts RunnerOption
 
 	args := []string{
 		"-p", effectivePrompt,
-		"--output-format", "stream-json",
 		"--dangerously-skip-permissions",
 	}
 
@@ -126,12 +125,6 @@ func (r *AntigravityRunner) ExecutePrompt(ctx context.Context, opts RunnerOption
 	}
 	if opts.Model != "" {
 		args = append(args, "--model", opts.Model)
-	}
-	if opts.Effort != "" {
-		args = append(args, "--effort", opts.Effort)
-	}
-	if opts.Mode != "" {
-		args = append(args, "--mode", opts.Mode)
 	}
 
 	cmd := exec.CommandContext(ctx, agyExec, args...)
@@ -168,6 +161,10 @@ func (r *AntigravityRunner) ExecutePrompt(ctx context.Context, opts RunnerOption
 
 			var payload map[string]interface{}
 			if err := json.Unmarshal([]byte(line), &payload); err != nil {
+				outChan <- AgentEvent{
+					Type:    "content",
+					Content: line + "\n",
+				}
 				continue
 			}
 
