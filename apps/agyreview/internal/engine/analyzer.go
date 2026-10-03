@@ -32,13 +32,18 @@ func AnalyzeDirectory(rootPath string, loopIndex int) ([]model.Finding, error) {
 		}
 		if info.IsDir() {
 			name := info.Name()
-			if strings.HasPrefix(name, ".") || name == "node_modules" || name == "vendor" || name == "dist" || name == "bin" {
+			if strings.HasPrefix(name, ".") || name == "node_modules" || name == "vendor" || name == "dist" || name == "bin" || name == "obj" {
 				return filepath.SkipDir
 			}
 			return nil
 		}
 
-		// Only inspect code & script files
+		// Only inspect user code & script files (skip minified/bundled vendor assets)
+		lowerPath := strings.ToLower(path)
+		if strings.HasSuffix(lowerPath, ".min.js") || strings.HasSuffix(lowerPath, ".bundle.js") || strings.Contains(lowerPath, "bootstrap") || strings.Contains(lowerPath, "jquery") {
+			return nil
+		}
+
 		ext := strings.ToLower(filepath.Ext(path))
 		if ext != ".go" && ext != ".ps1" && ext != ".sh" && ext != ".js" && ext != ".ts" && ext != ".py" {
 			return nil
@@ -74,8 +79,8 @@ func analyzeFile(fullPath string, relPath string, loopIndex int) ([]model.Findin
 		lineNum++
 		line := scanner.Text()
 
-		// Loop 1 & 2: Hardcoded secrets detection
-		if secretRegex.MatchString(line) && !strings.Contains(strings.ToLower(relPath), "test") && !strings.Contains(line, "example") {
+		// Loop 1 & 2: Hardcoded secrets detection (ignore test files, examples, and data attribute key constants)
+		if secretRegex.MatchString(line) && !strings.Contains(strings.ToLower(relPath), "test") && !strings.Contains(line, "example") && !strings.Contains(line, "DATA_API_KEY") {
 			findings = append(findings, model.Finding{
 				ID:                 "SEC-KEY",
 				Severity:           model.SevP0,

@@ -134,21 +134,43 @@ func (v *DashboardView) RunInteractive() error {
 			if v.SelectedIndex > 0 {
 				v.SelectedIndex--
 			}
-		case 's', 'S':
-			running, pid := daemon.IsRunning()
-			if running {
-				_, err := daemon.Stop()
-				if err != nil {
-					v.StatusMsg = fmt.Sprintf("\033[31mFailed to stop daemon: %v\033[0m", err)
+		case 't', 'T':
+			fmt.Print("\033[?25h\033[?1049l")
+			_ = term.Restore(fd, oldState)
+			fmt.Print("\r\n\033[36m[agybot]\033[0m Enter Telegram Bot Token (from @BotFather): ")
+			var tokenInput string
+			fmt.Scanln(&tokenInput)
+			tokenInput = strings.TrimSpace(tokenInput)
+			if tokenInput != "" {
+				if err := config.SaveConfigKey("TELEGRAM_BOT_TOKEN", tokenInput); err == nil {
+					v.Cfg.TelegramBotToken = tokenInput
+					v.StatusMsg = fmt.Sprintf("\033[32m✔ TELEGRAM_BOT_TOKEN set successfully!\033[0m")
 				} else {
-					v.StatusMsg = fmt.Sprintf("\033[33m⏹ Stopped agybot daemon (was PID %d)\033[0m", pid)
+					v.StatusMsg = fmt.Sprintf("\033[31mError saving token: %v\033[0m", err)
 				}
+			}
+			oldState, _ = term.MakeRaw(fd)
+			fmt.Print("\033[?1049h\033[?25l")
+			v.tabSwitched = true
+		case 's', 'S':
+			if v.Cfg.TelegramBotToken == "" {
+				v.StatusMsg = "\033[33m⚠️ TELEGRAM_BOT_TOKEN missing! Press [T] or run 'agybot config set TELEGRAM_BOT_TOKEN <token>'\033[0m"
 			} else {
-				newPid, err := daemon.Start("")
-				if err != nil {
-					v.StatusMsg = fmt.Sprintf("\033[31mFailed to start daemon: %v\033[0m", err)
+				running, pid := daemon.IsRunning()
+				if running {
+					_, err := daemon.Stop()
+					if err != nil {
+						v.StatusMsg = fmt.Sprintf("\033[31mFailed to stop daemon: %v\033[0m", err)
+					} else {
+						v.StatusMsg = fmt.Sprintf("\033[33m⏹ Stopped agybot daemon (was PID %d)\033[0m", pid)
+					}
 				} else {
-					v.StatusMsg = fmt.Sprintf("\033[32m▶ Started agybot daemon (PID %d)\033[0m", newPid)
+					newPid, err := daemon.Start("")
+					if err != nil {
+						v.StatusMsg = fmt.Sprintf("\033[31m%v\033[0m", err)
+					} else {
+						v.StatusMsg = fmt.Sprintf("\033[32m▶ Started agybot daemon (PID %d)\033[0m", newPid)
+					}
 				}
 			}
 			v.tabSwitched = true
@@ -255,7 +277,7 @@ func (v *DashboardView) Render() {
 		fmt.Fprintf(&b, " %s\033[K\r\n", v.StatusMsg)
 	}
 
-	b.WriteString(" \033[1m[Tab/1-5]\033[0m Tabs · \033[1;33m[↑/↓]\033[0m Select · \033[1;35m[S]\033[0m Start/Stop Daemon · \033[1;36m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+	b.WriteString(" \033[1m[Tab/1-5]\033[0m Tabs · \033[1;33m[↑/↓]\033[0m Select · \033[1;35m[S]\033[0m Start/Stop Daemon · \033[1;32m[T]\033[0m Set Token · \033[1;36m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 	b.WriteString("\033[J")
 	os.Stdout.WriteString(b.String())
 }

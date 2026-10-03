@@ -97,6 +97,13 @@ func Start(binPath string) (int, error) {
 	// Wait 300ms to verify it didn't immediately crash
 	time.Sleep(300 * time.Millisecond)
 	if running, _ := IsRunning(); !running {
+		if logs, errTail := TailLogs(2); errTail == nil && strings.TrimSpace(logs) != "" {
+			lastLine := strings.TrimSpace(logs)
+			if idx := strings.LastIndex(lastLine, "\n"); idx != -1 {
+				lastLine = lastLine[idx+1:]
+			}
+			return 0, fmt.Errorf("%s", lastLine)
+		}
 		return 0, fmt.Errorf("daemon started (PID %d) but exited prematurely. Check logs: %s", pid, logPath)
 	}
 
