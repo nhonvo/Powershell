@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -88,7 +89,11 @@ func runSpawn(args []string) {
 	fs := flag.NewFlagSet("spawn", flag.ExitOnError)
 	name := fs.String("name", "worker", "Name of the agent")
 	account := fs.String("account", "", "Gemini account alias")
-	cmdName := fs.String("cmd", "bash", "Command executable")
+	defaultCmd := "bash"
+	if runtime.GOOS == "windows" {
+		defaultCmd = "powershell.exe"
+	}
+	cmdName := fs.String("cmd", defaultCmd, "Command executable")
 	dir := fs.String("dir", "", "Working directory")
 	_ = fs.Parse(args)
 
@@ -157,9 +162,15 @@ func runSwarmTask(args []string) {
 		acc := accounts[i%len(accounts)]
 		workerName := fmt.Sprintf("worker-%d-%s", i+1, acc)
 
-		// Command to run: bash or echo command demonstrating swarm coordination
+		// Command to run: powershell or bash
 		cmd := "bash"
-		agentArgs := []string{"-c", fmt.Sprintf("echo 'Agent %s starting task on account %s...'; sleep 1; echo 'Finished research subtask %d.'; exit 0", workerName, acc, i+1)}
+		var agentArgs []string
+		if runtime.GOOS == "windows" {
+			cmd = "powershell.exe"
+			agentArgs = []string{"-NoProfile", "-Command", fmt.Sprintf("Write-Host 'Agent %s starting task on account %s...'; Start-Sleep -Seconds 1; Write-Host 'Finished research subtask %d.'", workerName, acc, i+1)}
+		} else {
+			agentArgs = []string{"-c", fmt.Sprintf("echo 'Agent %s starting task on account %s...'; sleep 1; echo 'Finished research subtask %d.'; exit 0", workerName, acc, i+1)}
+		}
 
 		sess, err := mgr.Spawn(engine.SpawnConfig{
 			Name:         workerName,
@@ -192,6 +203,11 @@ func runSwarmTask(args []string) {
 
 	task.Status = model.StatusDone
 	task.CompletedAt = time.Now()
+
+	if len(sessions) == 0 {
+		fmt.Fprintf(os.Stderr, "Error: No worker agents could be spawned for the task.\n")
+		os.Exit(1)
+	}
 
 	// Synthesize blackboard artifact
 	artifacts := []model.BlackboardArtifact{

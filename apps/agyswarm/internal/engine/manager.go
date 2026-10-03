@@ -27,10 +27,28 @@ type SpawnConfig struct {
 	Env          map[string]string
 }
 
+type pipeRWC struct {
+	r io.ReadCloser
+	w io.WriteCloser
+}
+
+func (p *pipeRWC) Read(b []byte) (int, error) {
+	return p.r.Read(b)
+}
+
+func (p *pipeRWC) Write(b []byte) (int, error) {
+	return p.w.Write(b)
+}
+
+func (p *pipeRWC) Close() error {
+	_ = p.r.Close()
+	return p.w.Close()
+}
+
 type Manager struct {
 	mu       sync.RWMutex
 	sessions map[string]*model.AgentSession
-	ptys     map[string]*os.File
+	ptys     map[string]io.ReadWriteCloser
 	cmds     map[string]*exec.Cmd
 	UserHome string
 }
@@ -43,13 +61,13 @@ func NewManager(userHome string) *Manager {
 	}
 	return &Manager{
 		sessions: make(map[string]*model.AgentSession),
-		ptys:     make(map[string]*os.File),
+		ptys:     make(map[string]io.ReadWriteCloser),
 		cmds:     make(map[string]*exec.Cmd),
 		UserHome: userHome,
 	}
 }
 
-// Spawn launches a child terminal agent process in its own PTY.
+// Spawn launches a child terminal agent process in its own PTY or stdin/stdout pipes.
 func (m *Manager) Spawn(cfg SpawnConfig) (*model.AgentSession, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
@@ -116,10 +134,23 @@ func (m *Manager) Spawn(cfg SpawnConfig) (*model.AgentSession, error) {
 	}
 	cmd.Env = env
 
-	// Start inside dedicated Pseudo-Terminal
-	ptmx, err := pty.Start(cmd)
-	if err != nil {
-		return nil, fmt.Errorf("failed to start pty: %w", err)
+	// Start inside dedicated Pseudo-Terminal or pipe fallback
+	var ptmx io.ReadWriteCloser
+	ptyFile, ptyErr := pty.Start(cmd)
+	if ptyErr == nil {
+		ptmx = ptyFile
+	} else {
+		// Pipe fallback for Windows or environments without native PTY support
+		inPipe, errIn := cmd.StdinPipe()
+		outPipe, errOut := cmd.StdoutPipe()
+		if errIn != nil || errOut != nil {
+			return nil, fmt.Errorf("failed to start process pipes: %v, %v (pty err: %v)", errIn, errOut, ptyErr)
+		}
+		cmd.Stderr = cmd.Stdout
+		if err := cmd.Start(); err != nil {
+			return nil, fmt.Errorf("failed to start process: %w (pty err: %v)", err, ptyErr)
+		}
+		ptmx = &pipeRWC{r: outPipe, w: inPipe}
 	}
 
 	session := &model.AgentSession{
@@ -145,7 +176,7 @@ func (m *Manager) Spawn(cfg SpawnConfig) (*model.AgentSession, error) {
 	return session, nil
 }
 
-func (m *Manager) readPTYOutput(id string, ptmx *os.File, cmd *exec.Cmd) {
+func (m *Manager) readPTYOutput(id string, ptmx io.ReadWriteCloser, cmd *exec.Cmd) {
 	scanner := bufio.NewScanner(ptmx)
 	maxCap := 500
 
@@ -287,9 +318,11 @@ func (m *Manager) Attach(idOrName string) error {
 		_ = term.Restore(stdinFd, oldState)
 	}()
 
-	// Synchronize window size
-	if w, h, err := term.GetSize(stdinFd); err == nil {
-		_ = pty.Setsize(ptmx, &pty.Winsize{Rows: uint16(h), Cols: uint16(w)})
+	// Synchronize window size if supported by real PTY file
+	if f, ok := ptmx.(*os.File); ok {
+		if w, h, err := term.GetSize(stdinFd); err == nil {
+			_ = pty.Setsize(f, &pty.Winsize{Rows: uint16(h), Cols: uint16(w)})
+		}
 	}
 
 	fmt.Print("\033[2J\033[H")

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -142,10 +143,16 @@ func (c *Cockpit) Run() error {
 
 			// 's' or 'S' - Quick Spawn
 			if keys[0] == 's' || keys[0] == 'S' {
+				defaultCmd := "bash"
+				defaultArgs := []string{"-i"}
+				if runtime.GOOS == "windows" {
+					defaultCmd = "powershell.exe"
+					defaultArgs = []string{"-NoExit", "-NoProfile"}
+				}
 				cfg := engine.SpawnConfig{
 					Name:    fmt.Sprintf("worker-%d", numAgents+1),
-					Command: "bash",
-					Args:    []string{"-i"},
+					Command: defaultCmd,
+					Args:    defaultArgs,
 				}
 				sess, err := c.Manager.Spawn(cfg)
 				if err != nil {

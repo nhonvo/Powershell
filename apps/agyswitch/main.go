@@ -47,6 +47,22 @@ func main() {
 	cmd := strings.ToLower(args[0])
 
 	switch cmd {
+	case "swarm", "agyswarm":
+		exe := filepath.Join(userHome, ".local", "bin", "agyswarm.exe")
+		if _, err := os.Stat(exe); err != nil {
+			if bin, err := exec.LookPath("agyswarm"); err == nil {
+				exe = bin
+			}
+		}
+		c := exec.Command(exe, args[1:]...)
+		c.Stdin = os.Stdin
+		c.Stdout = os.Stdout
+		c.Stderr = os.Stderr
+		if err := c.Run(); err != nil {
+			fmt.Fprintf(os.Stderr, "Error launching agyswarm: %v\n", err)
+			os.Exit(1)
+		}
+		return
 	case "switch", "use":
 		if len(args) < 2 {
 			fmt.Println("Usage: agyswitch switch <accountName>")
