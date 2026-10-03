@@ -104,6 +104,8 @@ func GenerateReviewReport(target *model.TargetRepo, findings []model.Finding, sc
 	// Save report in target repo: <target>/doc/audit/<timestamp>_review.md
 	reportDir := filepath.Join(target.Path, "doc", "audit")
 	_ = os.MkdirAll(reportDir, 0755)
+	EnsureAuditIgnored(target.Path)
+
 	fileName := fmt.Sprintf("%s_audit_review.md", time.Now().Format("20060102_150405"))
 	outPath := filepath.Join(reportDir, fileName)
 
@@ -112,6 +114,37 @@ func GenerateReviewReport(target *model.TargetRepo, findings []model.Finding, sc
 	}
 
 	return outPath, nil
+}
+
+// EnsureAuditIgnored ensures that doc/audit reports do not clutter git status.
+func EnsureAuditIgnored(targetPath string) {
+	// 1. Update .git/info/exclude if git directory exists
+	gitExcludePath := filepath.Join(targetPath, ".git", "info", "exclude")
+	if info, err := os.Stat(filepath.Dir(gitExcludePath)); err == nil && info.IsDir() {
+		content, _ := os.ReadFile(gitExcludePath)
+		if !strings.Contains(string(content), "doc/audit") {
+			f, err := os.OpenFile(gitExcludePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+			if err == nil {
+				_, _ = f.WriteString("\n# agyreview audit reports\ndoc/audit/\n")
+				_ = f.Close()
+			}
+		}
+	}
+
+	// 2. Update .gitignore in target project root
+	gitignorePath := filepath.Join(targetPath, ".gitignore")
+	content, err := os.ReadFile(gitignorePath)
+	if os.IsNotExist(err) {
+		_ = os.WriteFile(gitignorePath, []byte("# agyreview audit reports\ndoc/audit/\n"), 0644)
+	} else if err == nil {
+		if !strings.Contains(string(content), "doc/audit") {
+			f, err := os.OpenFile(gitignorePath, os.O_APPEND|os.O_WRONLY, 0644)
+			if err == nil {
+				_, _ = f.WriteString("\n# agyreview audit reports\ndoc/audit/\n")
+				_ = f.Close()
+			}
+		}
+	}
 }
 
 func getStatusIcon(current, max int) string {

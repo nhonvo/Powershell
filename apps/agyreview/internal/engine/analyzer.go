@@ -38,19 +38,38 @@ func AnalyzeDirectory(rootPath string, loopIndex int) ([]model.Finding, error) {
 			return nil
 		}
 
-		// Only inspect user code & script files (skip minified/bundled vendor assets)
+		relPath, _ := filepath.Rel(rootPath, path)
+		relPath = filepath.ToSlash(relPath)
+
+		// 1. Evaluate file naming, path standards, and temporary/backup file hygiene
+		namingFindings := AnalyzeFileNamingAndHygiene(path, relPath, info, loopIndex)
+		for _, f := range namingFindings {
+			count++
+			f.ID = f.ID + "-" + string(rune('0'+count))
+			findings = append(findings, f)
+		}
+
+		// 2. Evaluate Markdown documentation hygiene & unused markdown checks
+		ext := strings.ToLower(filepath.Ext(path))
+		if ext == ".md" {
+			mdFindings := AnalyzeMarkdownHygiene(path, relPath, info, loopIndex)
+			for _, f := range mdFindings {
+				count++
+				f.ID = f.ID + "-" + string(rune('0'+count))
+				findings = append(findings, f)
+			}
+			return nil
+		}
+
+		// 3. Only inspect user code & script files (skip minified/bundled vendor assets)
 		lowerPath := strings.ToLower(path)
 		if strings.HasSuffix(lowerPath, ".min.js") || strings.HasSuffix(lowerPath, ".bundle.js") || strings.Contains(lowerPath, "bootstrap") || strings.Contains(lowerPath, "jquery") {
 			return nil
 		}
 
-		ext := strings.ToLower(filepath.Ext(path))
 		if ext != ".go" && ext != ".ps1" && ext != ".sh" && ext != ".js" && ext != ".ts" && ext != ".py" {
 			return nil
 		}
-
-		relPath, _ := filepath.Rel(rootPath, path)
-		relPath = filepath.ToSlash(relPath)
 
 		fileFindings, _ := analyzeFile(path, relPath, loopIndex)
 		for _, f := range fileFindings {
