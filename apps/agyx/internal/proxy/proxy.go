@@ -83,6 +83,12 @@ func GetRegisteredTools() []ToolDefinition {
 			Aliases:     []string{"ports", "killport", "kp", "killports"},
 			Description: "Active network port manager, process killer & smart RAM leverage optimizer",
 		},
+		{
+			Name:        "swarm",
+			BinaryName:  "agyswarm",
+			Aliases:     []string{"sw", "agents", "cockpit-swarm", "agyswarm"},
+			Description: "Multi-Agent Child Terminal Cockpit, PTY keyboard pass-through & Markdown dossiers",
+		},
 	}
 }
 

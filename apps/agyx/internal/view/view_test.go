@@ -21,18 +21,32 @@ func TestCockpit_Render(t *testing.T) {
 	app.ActiveTab = 1
 	app.Render() // should not crash on proj
 
+	app.ActiveTab = 2
+	app.Render() // should not crash on git
+
+	app.ActiveTab = 3
+	app.Render() // should not crash on swarm tab
+
 	app.ActiveTab = 4
-	app.Render() // should not crash on ports tab
+	app.ToolSubIndex = 0 // Docker
+	app.Render()
 
-	app.ActiveTab = 5
-	app.Render() // should not crash on ollama tab
+	app.ToolSubIndex = 1 // Ports
+	app.Render()
 
-	app.ActiveTab = 6
-	app.ToolSubIndex = 2 // AWS cheat sheet
+	app.ToolSubIndex = 2 // Ollama
+	app.Render()
+
+	app.ToolSubIndex = 6 // AWS cheat sheet
 	app.Render()        // should not crash on tools tab
 
 	tool := app.getActiveToolBinary()
 	if tool != "aws" {
 		t.Errorf("expected active tool 'aws', got %s", tool)
+	}
+
+	app.ActiveTab = 3
+	if app.getActiveToolBinary() != "agyswarm" {
+		t.Errorf("expected active tool 'agyswarm', got %s", app.getActiveToolBinary())
 	}
 }
