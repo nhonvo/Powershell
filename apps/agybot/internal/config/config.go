@@ -172,7 +172,7 @@ func loadEnvFile(path string) {
 			k := strings.TrimSpace(parts[0])
 			v := strings.TrimSpace(parts[1])
 			v = strings.Trim(v, `"'`)
-			if os.Getenv(k) == "" {
+			if v != "" {
 				_ = os.Setenv(k, v)
 			}
 		}

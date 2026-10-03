@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"syscall"
@@ -61,11 +62,21 @@ func Start(binPath string) (int, error) {
 	}
 
 	if binPath == "" {
-		if p, err := exec.LookPath("agybot"); err == nil {
-			binPath = p
+		home, _ := os.UserHomeDir()
+		if runtime.GOOS == "windows" {
+			binPath = filepath.Join(home, ".local", "bin", "agybot.exe")
+			if _, err := os.Stat(binPath); err != nil {
+				if p, err := exec.LookPath("agybot.exe"); err == nil {
+					binPath = p
+				}
+			}
 		} else {
-			home, _ := os.UserHomeDir()
 			binPath = filepath.Join(home, ".local", "bin", "agybot")
+			if _, err := os.Stat(binPath); err != nil {
+				if p, err := exec.LookPath("agybot"); err == nil {
+					binPath = p
+				}
+			}
 		}
 	}
 
@@ -78,6 +89,8 @@ func Start(binPath string) (int, error) {
 	}
 
 	cmd := exec.Command(binPath, "daemon")
+	cmd.Dir = home
+	cmd.Env = os.Environ()
 	cmd.Stdout = logFile
 	cmd.Stderr = logFile
 	cmd.Stdin = nil
