@@ -1,11 +1,11 @@
 {
   "name": "code-review",
   "displayName": "Code Review & Quality Sentinel Pro",
-  "version": "1.0.0",
-  "description": "Comprehensive full-codebase review, security vulnerability audit, concurrency inspection, and static analysis suite with pure-Markdown deliverables.",
+  "version": "1.1.0",
+  "description": "Comprehensive full-codebase review, security vulnerability audit, concurrency inspection, remediation planning, and strategic product roadmap generator with pure-Markdown deliverables.",
   "suggestedPrompts": [
     "Review the whole codebase and produce an executive audit report",
-    "Audit all 11 Go micro-apps for concurrency bugs and memory leaks",
-    "Run a deep security audit for credentials, tokens, and path traversal"
+    "Formulate a 3-horizon product roadmap and tech debt plan from review findings",
+    "Audit all 11 Go micro-apps for concurrency bugs and memory leaks"
   ]
 }
