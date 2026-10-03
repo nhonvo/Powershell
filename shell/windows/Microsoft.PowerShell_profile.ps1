@@ -460,6 +460,21 @@ function Invoke-AgyRoute {
             Invoke-GoApp "agyx" @flatArgs
         }
 
+        # --- Multi-Agent PTY Swarm -> agyswarm ---
+        { $_ -in "swarm", "agyswarm" } {
+            Invoke-GoApp "agyswarm" @flatArgs
+        }
+
+        # --- Port & Memory Manager -> agyport ---
+        { $_ -in "port", "ports", "agyport", "killport" } {
+            Invoke-GoApp "agyport" @flatArgs
+        }
+
+        # --- Telegram Daemon & Remote -> agybot ---
+        { $_ -in "bot", "agybot" } {
+            Invoke-GoApp "agybot" @flatArgs
+        }
+
         # --- .NET SDK Direct Commands ---
         "dru" { dotnet run @flatArgs }
         "dbldu" { dotnet build @flatArgs }
@@ -961,6 +976,16 @@ function agyx {
     if (Get-Command wsl -ErrorAction SilentlyContinue) { wsl agyx @args; return }
     Write-Host "❌ agyx binary not found. Please compile via 'make windows'" -ForegroundColor Red
 }
+
+function agyswarm { Invoke-GoApp "agyswarm" $args }
+Set-Alias -Name swarm -Value agyswarm -Force
+Set-Alias -Name agy-swarm -Value agyswarm -Force
+
+function agyport { Invoke-GoApp "agyport" $args }
+Set-Alias -Name killport -Value agyport -Force
+
+function agybot { Invoke-GoApp "agybot" $args }
+
 Set-Alias -Name reset-agy -Value Reset-AgyAccountData -Force
 Set-Alias -Name purge-accounts -Value Purge-AgyAccounts -Force
 Set-Alias -Name dotnet-info -Value Show-DotNetInfo -Force

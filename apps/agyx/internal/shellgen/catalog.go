@@ -37,6 +37,7 @@ func GetSuiteApps() []string {
 		"agyollama",
 		"agybot",
 		"agyport",
+		"agyswarm",
 	}
 }
 
@@ -60,6 +61,9 @@ func GetCatalog() []AliasSpec {
 		{Name: "killport", Category: "Suite", Type: SuiteApp, Target: "agyport", Args: []string{"kill"}, Description: "Kill process listening on specified port"},
 		{Name: "kp", Category: "Suite", Type: SuiteApp, Target: "agyport", Args: []string{"kill"}, Description: "Shortcut to kill port"},
 		{Name: "ports", Category: "Suite", Type: SuiteApp, Target: "agyport", Args: []string{"ls"}, Description: "List all listening network ports"},
+		{Name: "agyswarm", Category: "Suite", Type: SuiteApp, Target: "agyswarm", Description: "Launch Multi-Agent Child Terminal Cockpit & PTY Swarm"},
+		{Name: "swarm", Category: "Suite", Type: SuiteApp, Target: "agyswarm", Description: "Quick launch agyswarm Cockpit"},
+		{Name: "agysw-swarm", Category: "Suite", Type: SuiteApp, Target: "agyswarm", Description: "Alias for agyswarm"},
 
 		// =========================================================================
 		// 2. DOCKER & CONTAINER SHORTCUTS

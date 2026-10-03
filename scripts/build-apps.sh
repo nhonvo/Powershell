@@ -7,7 +7,7 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 INSTALL_DIR="${HOME}/.local/bin"
 DIST_WIN="${REPO_ROOT}/dist/windows"
-APPS=("agyswitch" "agyproj" "agygit" "agydocker" "agyterm" "agyx" "agymobile" "agyollama" "agybot" "agyport")
+APPS=("agyswitch" "agyproj" "agygit" "agydocker" "agyterm" "agyx" "agymobile" "agyollama" "agybot" "agyport" "agyswarm")
 
 mkdir -p "${INSTALL_DIR}"
 
@@ -19,7 +19,7 @@ Usage:
   ./scripts/build-apps.sh [target] [options]
 
 Targets:
-  all (default)       Build & install all 10 applications
+  all (default)       Build & install all 11 applications
   test                Run unit tests across all applications
   windows             Cross-compile all applications for Windows (.exe)
   <app_name>          Build a specific app:
@@ -27,7 +27,8 @@ Targets:
                       agygit (or git), agydocker (or docker),
                       agyterm (or term), agyx (or proxy),
                       agymobile (or mobile), agyollama (or ollama),
-                      agybot (or bot), agyport (or port)
+                      agybot (or bot), agyport (or port),
+                      agyswarm (or swarm)
 
 Options:
   --skip-tests        Skip running tests before building
@@ -83,6 +84,7 @@ case "${TARGET}" in
     ollama) TARGET="agyollama" ;;
     bot) TARGET="agybot" ;;
     port) TARGET="agyport" ;;
+    swarm) TARGET="agyswarm" ;;
 esac
 
 build_app() {
@@ -124,7 +126,7 @@ elif [[ "${TARGET}" == "windows" ]]; then
     build_windows
     exit 0
 elif [[ "${TARGET}" == "all" ]]; then
-    echo "🚀 Building and installing all 10 Antigravity Suite applications..."
+    echo "🚀 Building and installing all 11 Antigravity Suite applications..."
     for app in "${APPS[@]}"; do
         build_app "${app}"
     done

@@ -196,7 +196,8 @@ func GeneratePowerShell() string {
 	b.WriteString("# =============================================================================\n\n")
 
 	// Suite Native Binaries Registration
-	b.WriteString(`$suiteAppNames = @("agyswitch", "agyproj", "agygit", "agydocker", "agyterm", "agyx", "agymobile", "agyollama")
+	appsList := `"` + strings.Join(GetSuiteApps(), `", "`) + `"`
+	b.WriteString(fmt.Sprintf(`$suiteAppNames = @(%s)
 foreach ($appName in $suiteAppNames) {
     $binPath = Join-Path $HOME ".local\bin\$appName.exe"
     if (-not (Test-Path $binPath) -and $Global:ProfileRepoRoot) {
@@ -209,7 +210,7 @@ foreach ($appName in $suiteAppNames) {
     }
 }
 
-`)
+`, appsList))
 
 	// Emit Catalog
 	b.WriteString("# --- Catalog Aliases & Functions ---\n")
