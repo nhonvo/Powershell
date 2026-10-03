@@ -41,6 +41,7 @@ function Build-SingleApp {
             go test ./...
             if ($LASTEXITCODE -ne 0) {
                 Write-Error "❌ Tests failed for $AppName"
+                Pop-Location
                 return
             }
         }
@@ -48,7 +49,7 @@ function Build-SingleApp {
         $exeSuffix = if ($IsWindows -or $Windows) { ".exe" } else { "" }
         $outPath = Join-Path $OutputDir "$AppName$exeSuffix"
 
-        if ($Windows -and -not $IsWindows) {
+        if ($exeSuffix -eq ".exe") {
             $env:GOOS = "windows"
             $env:GOARCH = "amd64"
         }
@@ -65,6 +66,9 @@ function Build-SingleApp {
                 Copy-Item -Path $outPath -Destination (Join-Path $distDir "$AppName$exeSuffix") -Force -ErrorAction SilentlyContinue
             }
         }
+    }
+    catch {
+        Write-Error $_
     }
     finally {
         Pop-Location

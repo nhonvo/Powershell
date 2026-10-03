@@ -124,10 +124,14 @@ func FindBinary(binName string) (string, error) {
 	candidates := []string{
 		// 1. Current working directory ./bin/
 		filepath.Join(cwd, "bin", binName),
-		// 2. Project workspace ./bin/
+		// 2. Project workspace ./bin/ & dist/windows/
 		filepath.Join(home, "projects", "powershell-profile", "bin", binName),
-		// 3. ~/.local/bin
+		filepath.Join(home, "projects", "powershell-profile", "dist", "windows", binName),
+		filepath.Join(home, "Documents", "Powershell", "dist", "windows", binName),
+		filepath.Join(home, "Documents", "Powershell", "bin", binName),
+		// 3. ~/.local/bin & WindowsApps
 		filepath.Join(home, ".local", "bin", binName),
+		filepath.Join(home, "AppData", "Local", "Microsoft", "WindowsApps", binName),
 		// 4. In-tree app bin
 		filepath.Join(home, "projects", "powershell-profile", "apps", binName, binName),
 	}
@@ -146,7 +150,11 @@ func FindBinary(binName string) (string, error) {
 		candidates = append(candidates,
 			filepath.Join(cwd, "bin", binName+".exe"),
 			filepath.Join(home, "projects", "powershell-profile", "bin", binName+".exe"),
+			filepath.Join(home, "projects", "powershell-profile", "dist", "windows", binName+".exe"),
+			filepath.Join(home, "Documents", "Powershell", "dist", "windows", binName+".exe"),
+			filepath.Join(home, "Documents", "Powershell", "bin", binName+".exe"),
 			filepath.Join(home, ".local", "bin", binName+".exe"),
+			filepath.Join(home, "AppData", "Local", "Microsoft", "WindowsApps", binName+".exe"),
 			filepath.Join(home, "projects", "powershell-profile", "apps", binName, binName+".exe"),
 		)
 		if path, err := exec.LookPath(binName + ".exe"); err == nil {

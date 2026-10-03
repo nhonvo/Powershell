@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
 	"strconv"
 	"strings"
 
@@ -133,11 +134,20 @@ func GetContainerLogs(id string, lines int) (string, error) {
 	return string(out), err
 }
 
-// GetMemoryInfo parses /proc/meminfo directly from Linux kernel
+// GetMemoryInfo parses /proc/meminfo directly from Linux kernel or via WSL on Windows
 func GetMemoryInfo() (*model.MemInfo, error) {
 	data, err := os.ReadFile("/proc/meminfo")
 	if err != nil {
-		return nil, fmt.Errorf("failed to read /proc/meminfo: %w", err)
+		if runtime.GOOS == "windows" {
+			out, wslErr := exec.Command("wsl", "cat", "/proc/meminfo").Output()
+			if wslErr == nil && len(out) > 0 {
+				data = out
+			} else {
+				return nil, fmt.Errorf("failed to read /proc/meminfo: %w", err)
+			}
+		} else {
+			return nil, fmt.Errorf("failed to read /proc/meminfo: %w", err)
+		}
 	}
 
 	mem := &model.MemInfo{}

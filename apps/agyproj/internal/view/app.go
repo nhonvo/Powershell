@@ -131,7 +131,7 @@ func (a *App) RunInteractive() error {
 		if a.ActiveTab == 1 {
 			totalItems = len(a.DiscoveredCache)
 		} else if a.ActiveTab == 2 {
-			totalItems = 3 // IDE options: code, nvim, agy
+			totalItems = 4 // IDE options: code, nvim, agy, sh
 		}
 
 		if a.SelectedIndex >= totalItems && totalItems > 0 {
@@ -315,7 +315,7 @@ func (a *App) RunInteractive() error {
 				a.StatusMsg = fmt.Sprintf("\033[32mRegistered workspace '%s'\033[0m", sel.Name)
 				a.DiscoveredCache, _ = a.Registry.ScanDirectory(a.ScanRootDir)
 			} else if a.ActiveTab == 2 {
-				options := []string{"code", "nvim", "agy"}
+				options := []string{"code", "nvim", "agy", "sh"}
 				if a.SelectedIndex < len(options) {
 					targetIDE := options[a.SelectedIndex]
 					_ = a.Registry.SetDefaultIDE(targetIDE)
@@ -346,24 +346,6 @@ func (a *App) RunInteractive() error {
 				a.needsReload = true
 				a.StatusMsg = fmt.Sprintf("\033[32mRegistered all %d projects from %s\033[0m", count, a.ScanRootDir)
 				a.DiscoveredCache, _ = a.Registry.ScanDirectory(a.ScanRootDir)
-			}
-		case 't', 'T': // Open Terminal Shell in Tab 0
-			if a.ActiveTab == 0 && a.SelectedIndex < len(registeredList) {
-				sel := registeredList[a.SelectedIndex]
-				fmt.Print("\033[?25h\033[?1049l")
-				_ = term.Restore(fd, oldState)
-				fmt.Printf("\r\n\033[36m[agyproj]\033[0m Dropping into shell in '\033[32m%s\033[0m'...\r\n", sel.Path)
-				err := a.Launcher.Launch("sh", sel.Path)
-				oldState, _ = term.MakeRaw(fd)
-				fmt.Print("\033[?1049h\033[?25l")
-				a.tabSwitched = true
-				a.needsReload = true
-				if err != nil {
-					a.StatusMsg = fmt.Sprintf("\033[31mShell error: %v\033[0m", err)
-				} else {
-					a.StatusMsg = fmt.Sprintf("\033[32m✔ Returned from shell in '%s'\033[0m", sel.Name)
-				}
-				continue
 			}
 		case 'p', 'P': // Toggle Pin in Tab 0
 			if a.ActiveTab == 0 && a.SelectedIndex < len(registeredList) {
@@ -564,7 +546,7 @@ func (a *App) Render(registered []model.ProjectInfo, discovered []model.ProjectI
 	} else if width < 85 {
 		switch a.ActiveTab {
 		case 0:
-			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;32m[Enter]\033[0mOpen \033[1;36m[/]\033[0mFilter \033[1;35m[T]\033[0mShell \033[1;33m[P]\033[0mPin \033[1;31m[D]\033[0mDel \033[1;31m[Q]\033[0mExit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;32m[Enter]\033[0mOpen \033[1;36m[/]\033[0mFilter \033[1;33m[P]\033[0mPin \033[1;31m[D]\033[0mDel \033[1;31m[Q]\033[0mExit\033[K\r\n")
 		case 1:
 			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;32m[Enter]\033[0mRegister \033[1;36m[A]\033[0mAll \033[1;36m[S]\033[0mRescan \033[1;31m[Q]\033[0mExit\033[K\r\n")
 		case 2:
@@ -573,7 +555,7 @@ func (a *App) Render(registered []model.ProjectInfo, discovered []model.ProjectI
 	} else {
 		switch a.ActiveTab {
 		case 0:
-			b.WriteString(" \033[1m[Tab/1-3]\033[0m Switch · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;32m[Enter]\033[0m IDE · \033[1;36m[/]\033[0m Filter · \033[1;35m[T]\033[0m Shell · \033[1;33m[P]\033[0m Pin · \033[1;32m[S]\033[0m Active · \033[1;31m[D]\033[0m Del · \033[1;31m[Q]\033[0m Exit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab/1-3]\033[0m Switch · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;32m[Enter]\033[0m IDE · \033[1;36m[/]\033[0m Filter · \033[1;33m[P]\033[0m Pin · \033[1;32m[S]\033[0m Active · \033[1;31m[D]\033[0m Del · \033[1;31m[Q]\033[0m Exit\033[K\r\n")
 		case 1:
 			b.WriteString(" \033[1m[Tab/1-3]\033[0m Switch · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;32m[Enter/R]\033[0m Register · \033[1;36m[A]\033[0m Register All · \033[1;36m[S]\033[0m Rescan · \033[1;31m[Q]\033[0m Exit\033[K\r\n")
 		case 2:
@@ -666,10 +648,10 @@ func (a *App) renderWorkspacesTab(b *strings.Builder, registered []model.Project
 	}
 
 	if a.searchQuery != "" {
-		fmt.Fprintf(b, "\033[K\r\n \033[37m[Page %d/%d · %d-%d of %d · [/] Filter · [Esc] Clear · [Enter] Open in IDE · [T] Shell · [P] Pin]\033[0m\033[K\r\n",
+		fmt.Fprintf(b, "\033[K\r\n \033[37m[Page %d/%d · %d-%d of %d · [/] Filter · [Esc] Clear · [Enter] Open in IDE · [P] Pin]\033[0m\033[K\r\n",
 			page+1, totalPages, startIdx+1, endIdx, len(registered))
 	} else {
-		fmt.Fprintf(b, "\033[K\r\n \033[37m[Page %d/%d · %d-%d of %d workspaces · [/] Filter · [Enter] Open in IDE · [T] Shell · [P] Pin]\033[0m\033[K\r\n",
+		fmt.Fprintf(b, "\033[K\r\n \033[37m[Page %d/%d · %d-%d of %d workspaces · [/] Filter · [Enter] Open in IDE · [P] Pin]\033[0m\033[K\r\n",
 			page+1, totalPages, startIdx+1, endIdx, len(registered))
 	}
 }
@@ -750,7 +732,8 @@ func (a *App) renderIdesTab(b *strings.Builder, width int) {
 	}{
 		{"code", "Visual Studio Code", "Default cross-platform IDE ('code <dir>')"},
 		{"nvim", "Neovim / Vim (Terminal Editor)", "Fast terminal editor in project dir ('nvim/vim/nano .')"},
-		{"agy", "Antigravity CLI Agent", "Launch interactive Antigravity coding agent in workspace ('agy')"},
+		{"agy", "Antigravity CLI Agent", "Launch interactive Antigravity coding agent in workspace ('agy --dangerously-skip-permissions')"},
+		{"sh", "Terminal / Shell Only", "Open interactive terminal shell in project directory ('$SHELL')"},
 	}
 
 	for i, opt := range options {

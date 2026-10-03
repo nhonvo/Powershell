@@ -192,7 +192,9 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 			l.Store.SyncCredentials(primaryDir, cpPrimary)
 			l.Store.SyncCredentials(primaryDir, cpTarget)
 		}
-		fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Persisted session token for account '\033[32m%s\033[0m'.\n", accountName)
+		if os.Getenv("AGY_VERBOSE") != "" {
+			fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Persisted session token for account '\033[32m%s\033[0m'.\n", accountName)
+		}
 	} else if aTok := l.Vault.ReadTokenFromDir(accDir); aTok != "" && l.Store.MatchesAccountEmail(accDir, accountName) {
 		l.Store.SyncCredentials(accDir, primaryDir)
 		_ = l.Vault.SyncKeyringCredentials(accDir)

@@ -230,7 +230,6 @@ func main() {
 			os.Exit(1)
 		}
 		if len(args) >= 2 && (strings.EqualFold(args[1], "powershell") || strings.EqualFold(args[1], "pwsh") || strings.EqualFold(args[1], "bash") || strings.EqualFold(args[1], "zsh")) {
-			fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Initialized master seed template at ~/.gemini_template\n")
 			fmt.Println("# agyswitch shell initialization complete")
 		} else {
 			fmt.Printf("\033[36m[agyswitch]\033[0m Successfully initialized master seed template at ~/.gemini_template\n")

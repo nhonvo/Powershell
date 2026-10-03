@@ -53,6 +53,10 @@ func main() {
 	cmd := strings.ToLower(args[0])
 
 	switch cmd {
+	case "help", "-h", "--help":
+		printHelp()
+		return
+
 	case "status", "info":
 		fmt.Print(v.RenderOverview())
 
@@ -409,3 +413,25 @@ func formatWhitelist(ids map[int64]bool) []int64 {
 	}
 	return list
 }
+
+func printHelp() {
+	fmt.Println("🤖 AGYBOT - Telegram Remote Daemon & Cockpit (Go Engine v2.0)")
+	fmt.Println()
+	fmt.Println("Usage:")
+	fmt.Println("  agybot                           Launch interactive TUI cockpit")
+	fmt.Println("  agybot status                    Display daemon, Telegram, AI engine, and workspace status")
+	fmt.Println("  agybot start                     Start background Telegram bot daemon")
+	fmt.Println("  agybot stop                      Stop background Telegram bot daemon")
+	fmt.Println("  agybot restart                   Restart background Telegram bot daemon")
+	fmt.Println("  agybot logs                      Display recent daemon logs")
+	fmt.Println("  agybot daemon                    Run bot in foreground")
+	fmt.Println("  agybot config                    View or edit configuration parameters")
+	fmt.Println("  agybot set-pin <pin>             Generate secure scrypt PIN hash")
+	fmt.Println("  agybot switch <account>          Switch active Antigravity account")
+	fmt.Println("  agybot projects                  List registered projects from agyproj")
+	fmt.Println("  agybot newproj <name> [stack]    Create and register a new project")
+	fmt.Println("  agybot research <topic>          Perform deep Antigravity research")
+	fmt.Println("  agybot sessions                  View recent sessions across workspaces")
+	fmt.Println("  agybot help                      Show this help message")
+}
+

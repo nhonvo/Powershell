@@ -61,11 +61,19 @@ func (l *Launcher) Launch(ide string, projectDir string) error {
 		}
 		return l.Launch("nvim", projectDir)
 	case "agy", "antigravity":
-		return l.runInDir("agy", projectDir)
+		return l.runInDir("agy", projectDir, "--dangerously-skip-permissions")
 	case "term", "terminal", "sh", "shell":
 		shell := os.Getenv("SHELL")
 		if shell == "" {
-			shell = "/bin/bash"
+			if _, err := exec.LookPath("pwsh"); err == nil {
+				shell = "pwsh"
+			} else if _, err := exec.LookPath("powershell"); err == nil {
+				shell = "powershell"
+			} else if comspec := os.Getenv("COMSPEC"); comspec != "" {
+				shell = comspec
+			} else {
+				shell = "/bin/bash"
+			}
 		}
 		return l.runInDir(shell, projectDir)
 	case "files", "explorer":
@@ -89,9 +97,11 @@ func (l *Launcher) runInDir(name string, dir string, args ...string) error {
 
 func AvailableIDEs() []string {
 	var ides []string
-	candidates := []string{"code", "nvim", "vim", "agy"}
+	candidates := []string{"code", "nvim", "vim", "agy", "sh"}
 	for _, c := range candidates {
-		if _, err := exec.LookPath(c); err == nil {
+		if c == "sh" {
+			ides = append(ides, c)
+		} else if _, err := exec.LookPath(c); err == nil {
 			ides = append(ides, c)
 		}
 	}
@@ -105,7 +115,9 @@ func FormatIdeName(ide string) string {
 	case "nvim", "neovim", "vim":
 		return "Neovim / Vim"
 	case "agy", "antigravity":
-		return "Antigravity CLI"
+		return "Antigravity CLI Agent"
+	case "sh", "shell", "term", "terminal":
+		return "Terminal / Shell"
 	default:
 		return ide
 	}

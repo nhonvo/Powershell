@@ -315,14 +315,33 @@ function Get-AgyType {
 
 function Invoke-GoApp {
     param([string]$AppName, [object[]]$AppArgs)
-    $binPath = Join-Path $HOME ".local\bin\$AppName.exe"
-    if (-not (Test-Path $binPath) -and $Global:ProfileRepoRoot) {
-        $binPath = Join-Path $Global:ProfileRepoRoot "dist\windows\$AppName.exe"
+    $candidates = @(
+        (Join-Path $HOME ".local\bin\$AppName.exe"),
+        (Join-Path $HOME "AppData\Local\Microsoft\WindowsApps\$AppName.exe")
+    )
+    if ($Global:ProfileRepoRoot) {
+        $candidates += (Join-Path $Global:ProfileRepoRoot "dist\windows\$AppName.exe")
+        $candidates += (Join-Path $Global:ProfileRepoRoot "bin\$AppName.exe")
     }
-    if (Test-Path $binPath) {
-        if ($AppArgs -and $AppArgs.Count -gt 0) { & $binPath @AppArgs } else { & $binPath }
+
+    $bestPath = $null
+    $bestTime = [System.DateTime]::MinValue
+
+    foreach ($cand in $candidates) {
+        if (Test-Path $cand) {
+            $item = Get-Item $cand -ErrorAction SilentlyContinue
+            if ($item -and $item.LastWriteTime -gt $bestTime) {
+                $bestPath = $cand
+                $bestTime = $item.LastWriteTime
+            }
+        }
+    }
+
+    if ($bestPath) {
+        if ($AppArgs -and $AppArgs.Count -gt 0) { & $bestPath @AppArgs } else { & $bestPath }
         return
     }
+
     $cmd = Get-Command "$AppName.exe" -CommandType Application -ErrorAction SilentlyContinue
     if (-not $cmd) { $cmd = Get-Command $AppName -CommandType Application -ErrorAction SilentlyContinue }
     if ($cmd) {
@@ -535,6 +554,9 @@ function Invoke-AgyRoute {
 
 class ProfileEnvironment {
     static [void] ConfigurePSReadLine() {
+        [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+        $Global:OutputEncoding = [System.Text.Encoding]::UTF8
+
         Set-PSReadLineOption -EditMode Windows
         $psReadLineCmd = Get-Command Set-PSReadLineOption -ErrorAction SilentlyContinue
         if ($psReadLineCmd -and $psReadLineCmd.Parameters.ContainsKey('PredictionSource')) {
@@ -553,19 +575,20 @@ class ProfileEnvironment {
         Set-PSReadLineOption -BellStyle None
 
         $psReadlineColors = @{
-            "Command"   = [ConsoleColor]::Green
-            "Parameter" = [ConsoleColor]::Gray
-            "Operator"  = [ConsoleColor]::Magenta
-            "Variable"  = [ConsoleColor]::Yellow
-            "String"    = [ConsoleColor]::Cyan
-            "Number"    = [ConsoleColor]::White
-            "Type"      = [ConsoleColor]::Blue
-            "Comment"   = [ConsoleColor]::DarkGreen
-            "Keyword"   = [ConsoleColor]::DarkYellow
-            "Error"     = [ConsoleColor]::Red
-        }
-        if ($psReadLineCmd -and $psReadLineCmd.Parameters.ContainsKey('PredictionSource')) {
-            $psReadlineColors["InlinePrediction"] = '#70A99F'
+            "Command"                  = [ConsoleColor]::Green
+            "Parameter"                = [ConsoleColor]::Gray
+            "Operator"                 = [ConsoleColor]::Magenta
+            "Variable"                 = [ConsoleColor]::Yellow
+            "String"                   = [ConsoleColor]::Cyan
+            "Number"                   = [ConsoleColor]::White
+            "Type"                     = [ConsoleColor]::Blue
+            "Comment"                  = [ConsoleColor]::DarkGreen
+            "Keyword"                  = [ConsoleColor]::DarkYellow
+            "Error"                    = [ConsoleColor]::Red
+            "InlinePrediction"         = "`e[38;5;246m"
+            "ListPrediction"           = "`e[38;5;39m"
+            "ListPredictionSelected"   = "`e[38;5;231;48;5;33m"
+            "ListPredictionTooltip"    = "`e[38;5;244m"
         }
 
         try {
@@ -576,6 +599,14 @@ class ProfileEnvironment {
             Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
             Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
             Set-PSReadLineKeyHandler -Chord 'Ctrl+Spacebar' -Function Complete
+            Set-PSReadLineKeyHandler -Key F2 -ScriptBlock {
+                $opt = Get-PSReadLineOption
+                if ($opt.PredictionViewStyle -eq 'ListView') {
+                    Set-PSReadLineOption -PredictionViewStyle InlineView
+                } else {
+                    Set-PSReadLineOption -PredictionViewStyle ListView
+                }
+            }
             Set-PSReadLineKeyHandler -Key F7 -ScriptBlock {
                 $command = Get-History | Out-GridView -Title 'Command History' -PassThru
                 if ($command) {
@@ -591,14 +622,16 @@ class ProfileEnvironment {
 
     static [void] LoadModules() {
         [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-        if (-not (Get-Module -Name "Terminal-Icons")) {
-            Import-Module "Terminal-Icons" -ErrorAction SilentlyContinue
-        }
+        $Global:OutputEncoding = [System.Text.Encoding]::UTF8
     }
 }
 
 [ProfileEnvironment]::ConfigurePSReadLine()
 [ProfileEnvironment]::LoadModules()
+
+if (-not (Get-Module -Name "Terminal-Icons")) {
+    Import-Module "Terminal-Icons" -ErrorAction SilentlyContinue
+}
 
 function Apply-ThemePath {
     param([string]$ThemeName)
@@ -1090,7 +1123,12 @@ function Set-ShellTheme {
 }
 
 Set-Alias -Name ip -Value Get-NetIPConfiguration -Force
-Set-Item -Path Alias:\cls -Value Clear-Host -Force -Option AllScope
+function Clear-HostClean {
+    try { [System.Console]::Clear() } catch {}
+    Clear-Host
+}
+Set-Item -Path Alias:\cls -Value Clear-HostClean -Force -Option AllScope
+if (Test-Path Alias:\clear) { Set-Item -Path Alias:\clear -Value Clear-HostClean -Force -Option AllScope } else { Set-Alias -Name clear -Value Clear-HostClean -Force }
 Set-Alias -Name proj -Value Invoke-WorkspaceNavigator -Force
 Set-Alias -Name ide -Value Invoke-TerminalIde -Force
 Set-Alias -Name .. -Value Set-LocationParent -Force
@@ -1222,15 +1260,17 @@ if (-not (Test-Path $agyxBin) -and $Global:ProfileRepoRoot) {
     $agyxBin = Join-Path $Global:ProfileRepoRoot "dist\windows\agyx.exe"
 }
 if (Test-Path $agyxBin) {
-    $initScript = & $agyxBin init powershell 2>$null
-    if ($initScript -and $initScript -notlike "*[agyswitch]*") {
-        $sb = [ScriptBlock]::Create($initScript)
-        . $sb
-    }
+    try {
+        $initScript = & $agyxBin init powershell 2>$null
+        if ($initScript) {
+            $sb = [ScriptBlock]::Create($initScript)
+            . $sb
+        }
+    } catch {}
 } elseif (Get-Command wsl -ErrorAction SilentlyContinue) {
     try {
         $initScript = wsl agyx init powershell 2>$null
-        if ($initScript -and $initScript -notlike "*[agyswitch]*") {
+        if ($initScript) {
             $sb = [ScriptBlock]::Create($initScript)
             . $sb
         }

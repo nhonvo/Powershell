@@ -422,6 +422,23 @@ func CleanWorkspaceDir(raw string) string {
 	return clean
 }
 
+// IsWSLPath checks if a path is a Linux / WSL environment path.
+func IsWSLPath(raw string) bool {
+	if raw == "" || raw == "Default Workspace" {
+		return false
+	}
+	pLower := strings.ToLower(raw)
+	return strings.Contains(pLower, "wsl.localhost") ||
+		strings.Contains(pLower, "wsl$") ||
+		strings.HasPrefix(pLower, "\\\\wsl") ||
+		strings.HasPrefix(pLower, "wsl.") ||
+		strings.HasPrefix(pLower, "/home/") ||
+		strings.HasPrefix(pLower, "/mnt/") ||
+		strings.HasPrefix(pLower, "/usr/") ||
+		strings.HasPrefix(pLower, "/var/") ||
+		strings.HasPrefix(pLower, "/root/")
+}
+
 // GroupSessionsByProject groups sessions by their associated project workspace.
 func GroupSessionsByProject(sessions []model.SessionInfo) []model.ProjectGroup {
 	return GroupSessionsByProjectSorted(sessions, 0)

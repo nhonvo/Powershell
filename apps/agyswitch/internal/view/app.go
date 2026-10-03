@@ -406,11 +406,15 @@ func (a *App) Run() error {
 				selItem := a.cachedSessionItems[a.SelectedIndex]
 				if !selItem.IsExpandToggle && selItem.Session.WorkspaceDir != "" && selItem.Session.WorkspaceDir != "Default Workspace" {
 					ws := selItem.Session.WorkspaceDir
-					cmd := exec.Command("code", ws)
-					if err := cmd.Start(); err == nil {
-						a.StatusMsg = fmt.Sprintf("\033[32m✔ Launched VS Code for workspace: %s\033[0m", ws)
+					if sessions.IsWSLPath(ws) {
+						a.StatusMsg = "\033[33mWSL session workspace path hidden on Windows\033[0m"
 					} else {
-						a.StatusMsg = fmt.Sprintf("\033[33mWorkspace: %s\033[0m", ws)
+						cmd := exec.Command("code", ws)
+						if err := cmd.Start(); err == nil {
+							a.StatusMsg = fmt.Sprintf("\033[32m✔ Launched VS Code for workspace: %s\033[0m", ws)
+						} else {
+							a.StatusMsg = fmt.Sprintf("\033[33mWorkspace: %s\033[0m", ws)
+						}
 					}
 				} else {
 					a.StatusMsg = "\033[33mNo valid workspace directory for selected item.\033[0m"
@@ -449,7 +453,7 @@ func (a *App) Run() error {
 				fmt.Print("\033[?25h\033[?1049l")
 				_ = term.Restore(fd, oldState)
 				fmt.Printf("\r\n\033[36m[agyswitch]\033[0m Continuing session '\033[32m%s\033[0m' under account '\033[33m%s\033[0m'...\r\n", sel.ConversationID, curActive)
-				if sel.WorkspaceDir != "" && sel.WorkspaceDir != "Default Workspace" {
+				if sel.WorkspaceDir != "" && sel.WorkspaceDir != "Default Workspace" && !sessions.IsWSLPath(sel.WorkspaceDir) {
 					fmt.Printf(" \033[1mWorkspace:\033[0m \033[35m%s\033[0m\r\n", sel.WorkspaceDir)
 				}
 				fmt.Printf(" \033[1mTask:\033[0m      %s\r\n\r\n", sel.Title)
@@ -513,8 +517,12 @@ func (a *App) Run() error {
 					s := selItem.Session
 					fmt.Print("\033[H\033[2J")
 					fmt.Printf("\r\n📊 \033[1;36mSession Trajectory Inspector (%s):\033[0m\r\n\r\n", s.ConversationID)
+					wsDisp := s.WorkspaceDir
+					if sessions.IsWSLPath(wsDisp) {
+						wsDisp = "(WSL Session Path Hidden)"
+					}
 					fmt.Printf(" Title:     \033[1;37m%s\033[0m\r\n Workspace: \033[35m%s\033[0m\r\n Steps:     \033[1;33m%d\033[0m · Est. Cost: \033[1;32m$%0.4f\033[0m\r\n Log Path:  \033[36m%s\033[0m\r\n\r\n",
-						s.Title, s.WorkspaceDir, s.StepCount, s.EstimatedCost, s.LogPath)
+						s.Title, wsDisp, s.StepCount, s.EstimatedCost, s.LogPath)
 					steps, err := sessions.ParseTranscriptSteps(s.LogPath)
 					if err == nil && len(steps) > 0 {
 						fmt.Print(" \033[1;33mRecent Step Trajectory History:\033[0m\r\n")
@@ -647,7 +655,7 @@ func (a *App) Run() error {
 				fmt.Print("\033[?25h\033[?1049l")
 				_ = term.Restore(fd, oldState)
 				fmt.Printf("\r\n\033[36m[agyswitch]\033[0m Continuing session '\033[32m%s\033[0m' under account '\033[33m%s\033[0m'...\r\n", sel.ConversationID, curActive)
-				if sel.WorkspaceDir != "" && sel.WorkspaceDir != "Default Workspace" {
+				if sel.WorkspaceDir != "" && sel.WorkspaceDir != "Default Workspace" && !sessions.IsWSLPath(sel.WorkspaceDir) {
 					fmt.Printf(" \033[1mWorkspace:\033[0m \033[35m%s\033[0m\r\n", sel.WorkspaceDir)
 				}
 				fmt.Printf(" \033[1mTask:\033[0m      %s\r\n\r\n", sel.Title)
@@ -1499,8 +1507,12 @@ func (a *App) renderSessionsTab(b *strings.Builder, sessionsList []model.Session
 					fmt.Fprintf(b, "%s%s%2d. \033[1;37m%-48s\033[0m  \033[33m%3d st\033[0m · \033[32m$%0.4f\033[0m · \033[36m%s\033[0m%s\033[K\r\n",
 						cursor, highlightStart, i+1, title, s.StepCount, s.EstimatedCost, timeStr, highlightEnd)
 					if i == a.SelectedIndex {
-						wsShort := truncateString(s.WorkspaceDir, width-52)
-						fmt.Fprintf(b, "        \033[36mID: %s\033[0m · \033[35mWorkspace: %s\033[0m\033[K\r\n", s.ConversationID, wsShort)
+						if s.WorkspaceDir != "" && s.WorkspaceDir != "Default Workspace" && !sessions.IsWSLPath(s.WorkspaceDir) {
+							wsShort := truncateString(s.WorkspaceDir, width-52)
+							fmt.Fprintf(b, "        \033[36mID: %s\033[0m · \033[35mWorkspace: %s\033[0m\033[K\r\n", s.ConversationID, wsShort)
+						} else {
+							fmt.Fprintf(b, "        \033[36mID: %s\033[0m\033[K\r\n", s.ConversationID)
+						}
 					}
 				}
 			}
