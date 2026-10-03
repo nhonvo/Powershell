@@ -6,8 +6,8 @@ import (
 
 func TestProxy_GetRegisteredTools(t *testing.T) {
 	tools := GetRegisteredTools()
-	if len(tools) != 11 {
-		t.Fatalf("expected 11 tools, got %d", len(tools))
+	if len(tools) != 12 {
+		t.Fatalf("expected 12 tools, got %d", len(tools))
 	}
 }
 
@@ -52,6 +52,11 @@ func TestProxy_ResolveTool(t *testing.T) {
 		{"sw", "agyswarm"},
 		{"agents", "agyswarm"},
 		{"agyswarm", "agyswarm"},
+		{"review", "agyreview"},
+		{"audit", "agyreview"},
+		{"reviewer", "agyreview"},
+		{"agyreview", "agyreview"},
+		{"sentinel", "agyreview"},
 	}
 
 	for _, c := range cases {

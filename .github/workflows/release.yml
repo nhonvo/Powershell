@@ -21,11 +21,11 @@ jobs:
         with:
           go-version: '1.22.x'
 
-      - name: Build Go Multi-Platform Binaries (All 11 Suite Apps)
+      - name: Build Go Multi-Platform Binaries (All 12 Suite Apps)
         shell: bash
         run: |
           mkdir -p dist/release
-          APPS=("agyswitch" "agyproj" "agygit" "agydocker" "agyterm" "agyx" "agymobile" "agyollama" "agybot" "agyport" "agyswarm")
+          APPS=("agyswitch" "agyproj" "agygit" "agydocker" "agyterm" "agyx" "agymobile" "agyollama" "agybot" "agyport" "agyswarm" "agyreview")
           for app in "${APPS[@]}"; do
             echo "🔨 Building $app for Linux..."
             (cd "apps/$app" && GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o "../../dist/release/${app}-linux-amd64" .)

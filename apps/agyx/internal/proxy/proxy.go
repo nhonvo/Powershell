@@ -89,6 +89,12 @@ func GetRegisteredTools() []ToolDefinition {
 			Aliases:     []string{"sw", "agents", "cockpit-swarm", "agyswarm"},
 			Description: "Multi-Agent Child Terminal Cockpit, PTY keyboard pass-through & Markdown dossiers",
 		},
+		{
+			Name:        "review",
+			BinaryName:  "agyreview",
+			Aliases:     []string{"audit", "reviewer", "agyreview", "sentinel"},
+			Description: "Autonomous Multi-Repo Code Reviewer, 3-Loop Sentinel, Task Remediation & Product Roadmap",
+		},
 	}
 }
 

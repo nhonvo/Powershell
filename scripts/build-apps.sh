@@ -7,7 +7,7 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 INSTALL_DIR="${HOME}/.local/bin"
 DIST_WIN="${REPO_ROOT}/dist/windows"
-APPS=("agyswitch" "agyproj" "agygit" "agydocker" "agyterm" "agyx" "agymobile" "agyollama" "agybot" "agyport" "agyswarm")
+APPS=("agyswitch" "agyproj" "agygit" "agydocker" "agyterm" "agyx" "agymobile" "agyollama" "agybot" "agyport" "agyswarm" "agyreview")
 
 mkdir -p "${INSTALL_DIR}"
 
@@ -19,7 +19,7 @@ Usage:
   ./scripts/build-apps.sh [target] [options]
 
 Targets:
-  all (default)       Build & install all 11 applications
+  all (default)       Build & install all 12 applications
   test                Run unit tests across all applications
   windows             Cross-compile all applications for Windows (.exe)
   <app_name>          Build a specific app:
@@ -28,7 +28,7 @@ Targets:
                       agyterm (or term), agyx (or proxy),
                       agymobile (or mobile), agyollama (or ollama),
                       agybot (or bot), agyport (or port),
-                      agyswarm (or swarm)
+                      agyswarm (or swarm), agyreview (or review)
 
 Options:
   --skip-tests        Skip running tests before building
@@ -85,6 +85,7 @@ case "${TARGET}" in
     bot) TARGET="agybot" ;;
     port) TARGET="agyport" ;;
     swarm) TARGET="agyswarm" ;;
+    review) TARGET="agyreview" ;;
 esac
 
 build_app() {

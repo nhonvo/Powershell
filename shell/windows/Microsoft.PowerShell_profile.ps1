@@ -465,6 +465,11 @@ function Invoke-AgyRoute {
             Invoke-GoApp "agyswarm" @flatArgs
         }
 
+        # --- Code Reviewer & Sentinel -> agyreview ---
+        { $_ -in "review", "agyreview", "audit", "reviewer" } {
+            Invoke-GoApp "agyreview" @flatArgs
+        }
+
         # --- Port & Memory Manager -> agyport ---
         { $_ -in "port", "ports", "agyport", "killport" } {
             Invoke-GoApp "agyport" @flatArgs
@@ -980,6 +985,11 @@ function agyx {
 function agyswarm { Invoke-GoApp "agyswarm" $args }
 Set-Alias -Name swarm -Value agyswarm -Force
 Set-Alias -Name agy-swarm -Value agyswarm -Force
+
+function agyreview { Invoke-GoApp "agyreview" $args }
+Set-Alias -Name agyrv -Value agyreview -Force
+Set-Alias -Name codereview -Value agyreview -Force
+Set-Alias -Name agy-review -Value agyreview -Force
 
 function agyport { Invoke-GoApp "agyport" $args }
 Set-Alias -Name killport -Value agyport -Force

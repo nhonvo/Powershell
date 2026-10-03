@@ -12,7 +12,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$apps = @("agyswitch", "agyproj", "agygit", "agydocker", "agyterm", "agyx", "agymobile", "agyollama", "agybot", "agyport", "agyswarm")
+$apps = @("agyswitch", "agyproj", "agygit", "agydocker", "agyterm", "agyx", "agymobile", "agyollama", "agybot", "agyport", "agyswarm", "agyreview")
 
 if (-not $OutputDir) {
     if ($IsWindows -or $env:OS -like "*Windows*") {

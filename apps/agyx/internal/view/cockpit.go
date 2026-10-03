@@ -49,7 +49,7 @@ func (a *CockpitApp) RunInteractive() error {
 	fmt.Print("\033[?1049h\033[?25l")
 
 	const totalTabs = 5
-	const totalTools = 7
+	const totalTools = 8
 
 	for {
 		a.Render()
@@ -199,6 +199,16 @@ func (a *CockpitApp) RunInteractive() error {
 					a.tabSwitched = true
 				}
 			}
+		case 'v', 'V':
+			if a.ActiveTab == 4 {
+				if a.ToolSubIndex == 7 {
+					toolName := a.getActiveToolBinary()
+					a.launchTool(toolName, fd, oldState)
+				} else {
+					a.ToolSubIndex = 7
+					a.tabSwitched = true
+				}
+			}
 		case 'w', 'W':
 			if a.ActiveTab == 4 && a.ToolSubIndex == 1 {
 				bin, err := proxy.FindBinary("agyport")
@@ -294,6 +304,7 @@ func (a *CockpitApp) getActiveToolBinary() string {
 			"agymobile",
 			"agybot",
 			"aws",
+			"agyreview",
 		}
 		if a.ToolSubIndex >= 0 && a.ToolSubIndex < len(subTools) {
 			return subTools[a.ToolSubIndex]
@@ -418,7 +429,7 @@ func (a *CockpitApp) Render() {
 		b.WriteString(" \033[1m[1-5]\033[0mNav \033[1m[↑/↓]\033[0mSelect \033[1;32m[Enter]\033[0mOpen \033[1;31m[Q]\033[0mExit\033[K\r\n")
 	} else {
 		if a.ActiveTab == 4 {
-			b.WriteString(" \033[1m[Tab/1-5]\033[0m Tabs · \033[1;33m[↑/↓]\033[0m Select · \033[1;32m[Enter/D/P/O/T/M/B/A]\033[0m Open · \033[1;35m[S]\033[0m Bot · \033[1;36m[W]\033[0m Ports UI · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" \033[1m[Tab/1-5]\033[0m Tabs · \033[1;33m[↑/↓]\033[0m Select · \033[1;32m[Enter/D/P/O/T/M/B/A/V]\033[0m Open · \033[1;35m[S]\033[0m Bot · \033[1;36m[W]\033[0m Ports UI · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 		} else {
 			b.WriteString(" \033[1m[Tab/1-5]\033[0m Switch Module · \033[1;32m[Enter]\033[0m Launch Dedicated App · \033[1;36m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
 		}
@@ -529,6 +540,14 @@ func (a *CockpitApp) renderToolsSummary(b *strings.Builder, width int) {
 			bin:   "aws",
 			desc:  "Interactive recipes: SSO, S3, SQS, DynamoDB & LocalStack port 4566",
 			cmd:   "agyx aws [sheet|whoami|s3|sqs|local]",
+		},
+		{
+			key:   "V",
+			emoji: "🔍",
+			title: "Autonomous Code Reviewer & Sentinel",
+			bin:   "agyreview",
+			desc:  "3-Loop Headless review, 100-pt Barème, Task Remediation & Product Roadmap",
+			cmd:   "agyx review [cockpit|run|pr|watch|fix|roadmap]",
 		},
 	}
 

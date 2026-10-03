@@ -45,6 +45,13 @@ func TestCockpit_Render(t *testing.T) {
 		t.Errorf("expected active tool 'aws', got %s", tool)
 	}
 
+	app.ToolSubIndex = 7 // Code Reviewer
+	app.Render()
+	tool = app.getActiveToolBinary()
+	if tool != "agyreview" {
+		t.Errorf("expected active tool 'agyreview', got %s", tool)
+	}
+
 	app.ActiveTab = 3
 	if app.getActiveToolBinary() != "agyswarm" {
 		t.Errorf("expected active tool 'agyswarm', got %s", app.getActiveToolBinary())

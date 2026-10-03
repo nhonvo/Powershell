@@ -38,6 +38,7 @@ func GetSuiteApps() []string {
 		"agybot",
 		"agyport",
 		"agyswarm",
+		"agyreview",
 	}
 }
 
@@ -64,6 +65,10 @@ func GetCatalog() []AliasSpec {
 		{Name: "agyswarm", Category: "Suite", Type: SuiteApp, Target: "agyswarm", Description: "Launch Multi-Agent Child Terminal Cockpit & PTY Swarm"},
 		{Name: "swarm", Category: "Suite", Type: SuiteApp, Target: "agyswarm", Description: "Quick launch agyswarm Cockpit"},
 		{Name: "agysw-swarm", Category: "Suite", Type: SuiteApp, Target: "agyswarm", Description: "Alias for agyswarm"},
+		{Name: "agyreview", Category: "Suite", Type: SuiteApp, Target: "agyreview", Description: "Launch Autonomous Code Reviewer & Sentinel Cockpit"},
+		{Name: "agyrv", Category: "Suite", Type: SuiteApp, Target: "agyreview", Description: "Alias for agyreview"},
+		{Name: "agy-review", Category: "Suite", Type: SuiteApp, Target: "agyreview", Description: "Alias for agyreview"},
+		{Name: "codereview", Category: "Suite", Type: SuiteApp, Target: "agyreview", Description: "Run agyreview code review"},
 
 		// =========================================================================
 		// 2. DOCKER & CONTAINER SHORTCUTS
