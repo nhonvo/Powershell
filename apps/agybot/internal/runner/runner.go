@@ -263,9 +263,12 @@ func (r *AntigravityRunner) ExecutePrompt(ctx context.Context, opts RunnerOption
 		}
 
 		err := cmd.Wait()
-		if err != nil && errBuf.Len() > 0 {
+		if err != nil {
 			errStr := strings.TrimSpace(errBuf.String())
-			if errStr != "" && !strings.Contains(errStr, "context canceled") {
+			if errStr == "" {
+				errStr = fmt.Sprintf("agy process failed: %v", err)
+			}
+			if !strings.Contains(errStr, "context canceled") {
 				outChan <- AgentEvent{
 					Type:    "error",
 					Content: errStr,

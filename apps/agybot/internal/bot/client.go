@@ -97,9 +97,11 @@ func (c *TelegramClient) SendMessage(ctx context.Context, chatID int64, text str
 		payload["reply_markup"] = markup
 	}
 
-	if err := c.post(ctx, "sendMessage", payload, &resp); err != nil {
+	err := c.post(ctx, "sendMessage", payload, &resp)
+	if err != nil || !resp.OK {
 		// Fallback without markdown if formatting was invalid
-		payload["parse_mode"] = ""
+		delete(payload, "parse_mode")
+		resp = APIResponse[Message]{}
 		_ = c.post(ctx, "sendMessage", payload, &resp)
 	}
 	if !resp.OK {
@@ -119,7 +121,11 @@ func (c *TelegramClient) EditMessageText(ctx context.Context, chatID int64, mess
 	if markup != nil {
 		payload["reply_markup"] = markup
 	}
-	_ = c.post(ctx, "editMessageText", payload, &resp)
+	err := c.post(ctx, "editMessageText", payload, &resp)
+	if err != nil || !resp.OK {
+		delete(payload, "parse_mode")
+		_ = c.post(ctx, "editMessageText", payload, &resp)
+	}
 	return nil
 }
 

@@ -540,7 +540,9 @@ func (h *BotHandler) handleAIPrompt(ctx context.Context, userID int64, chatID in
 	var lastStatusText string
 	var finalAnswer strings.Builder
 	var finalResultText string
+	var lastEditTime time.Time
 	toolCount := 0
+	hasError := false
 
 	for ev := range events {
 		switch ev.Type {
@@ -552,20 +554,33 @@ func (h *BotHandler) handleAIPrompt(ctx context.Context, userID int64, chatID in
 			if ev.Content != "" && ev.Content != lastStatusText {
 				lastStatusText = ev.Content
 				toolCount++
-				// Push tool execution log message directly to Telegram like agy CLI
+				// Push tool execution log message directly to Telegram
 				_, _ = h.client.SendMessage(ctx, chatID, ev.Content, nil)
 				h.client.SendChatAction(ctx, chatID, "typing")
 			}
 		case "content":
 			finalAnswer.WriteString(ev.Content)
+			if time.Since(lastEditTime) > 2*time.Second {
+				lastEditTime = time.Now()
+				snippet := finalAnswer.String()
+				if len(snippet) > 800 {
+					snippet = snippet[len(snippet)-800:]
+				}
+				_ = h.client.EditMessageText(ctx, chatID, initialMsg.MessageID, fmt.Sprintf("🤖 **Antigravity AI Agent** (Streaming...)\n📍 Workspace: `%s`\n```\n%s\n```", filepath.Base(ws), snippet), nil)
+			}
 		case "result":
 			if ev.Content != "" {
 				finalResultText = ev.Content
 			}
 		case "error":
-			_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("❌ Error: %s", ev.Content), nil)
-			return
+			hasError = true
+			_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("❌ **Antigravity CLI Error:**\n```\n%s\n```", ev.Content), nil)
 		}
+	}
+
+	if hasError {
+		_ = h.client.EditMessageText(ctx, chatID, initialMsg.MessageID, fmt.Sprintf("❌ **Antigravity Agent Exited with Error** (Workspace: `%s`)", filepath.Base(ws)), nil)
+		return
 	}
 
 	ans := strings.TrimSpace(finalResultText)
@@ -574,9 +589,9 @@ func (h *BotHandler) handleAIPrompt(ctx context.Context, userID int64, chatID in
 	}
 	if ans == "" {
 		if toolCount > 0 {
-			ans = "✔ **Antigravity executed all tool operations successfully.**"
+			ans = fmt.Sprintf("✔ **Antigravity executed %d tool operations successfully.**", toolCount)
 		} else {
-			ans = "✔ **Task completed.**"
+			ans = fmt.Sprintf("✔ **Task completed in `%s`.**", filepath.Base(ws))
 		}
 	}
 
