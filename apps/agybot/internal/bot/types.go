@@ -33,6 +33,10 @@ type ReplyKeyboardMarkup struct {
 	IsPersistent   bool               `json:"is_persistent,omitempty"`
 }
 
+type ReplyKeyboardRemove struct {
+	RemoveKeyboard bool `json:"remove_keyboard"`
+}
+
 type Document struct {
 	FileID   string `json:"file_id"`
 	FileName string `json:"file_name,omitempty"`

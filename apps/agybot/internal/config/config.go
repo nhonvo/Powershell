@@ -40,7 +40,7 @@ func LoadConfig() *Config {
 		AuthLockoutDuration: 5 * time.Minute,
 		AuthAutoLockTimeout: 30 * time.Minute,
 		DefaultModel:        "Gemini 3.7 Flash",
-		DefaultEffort:       "high",
+		DefaultEffort:       "low",
 		DefaultMode:         "accept-edits",
 		TaskTimeout:         10 * time.Minute,
 		ServerPort:          8090,

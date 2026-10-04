@@ -179,14 +179,68 @@ func (h *BotHandler) handleFileUpload(ctx context.Context, userID int64, chatID 
 }
 
 func (h *BotHandler) handleSearch(ctx context.Context, userID int64, chatID int64, query string) {
+	query = strings.TrimSpace(query)
 	if query == "" {
-		_, _ = h.client.SendMessage(ctx, chatID, "Usage: `/search <search_term or filename_pattern>`", nil)
+		msg := "🔎 **WORKSPACE FILE SEARCH**\n\n" +
+			"Please send your search keyword or filename pattern.\n\n" +
+			"👉 Examples:\n" +
+			"• `/search auth` - Find auth handlers & files\n" +
+			"• `/search main.go` - Find main entrypoints\n" +
+			"• `/search config` - Search config variables"
+		_, _ = h.client.SendMessage(ctx, chatID, msg, nil)
 		return
 	}
 
 	ws := h.wsMgr.GetUserWorkspace(userID)
-	searchPrompt := fmt.Sprintf("Search for references, files, or implementations of '%s' across workspace `%s`. Summarize key locations, definitions, and usage.", query, filepath.Base(ws))
-	h.handleAIPrompt(ctx, userID, chatID, searchPrompt)
+	var matches []string
+	queryLower := strings.ToLower(query)
+
+	_ = filepath.Walk(ws, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return nil
+		}
+		if info.IsDir() {
+			base := filepath.Base(path)
+			if base == ".git" || base == "node_modules" || base == "vendor" || base == ".gemini" || base == "dist" {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+
+		rel, errRel := filepath.Rel(ws, path)
+		if errRel == nil && strings.Contains(strings.ToLower(rel), queryLower) {
+			matches = append(matches, rel)
+			if len(matches) >= 15 {
+				return filepath.SkipAll
+			}
+		}
+		return nil
+	})
+
+	var sb strings.Builder
+	sb.WriteString(fmt.Sprintf("🔎 **SEARCH RESULTS FOR:** `%s` (in `%s`)\n\n", query, filepath.Base(ws)))
+
+	if len(matches) == 0 {
+		sb.WriteString("⚠️ No local matching files found by filename.\n\n")
+	} else {
+		sb.WriteString(fmt.Sprintf("📁 **Found %d matching file(s):**\n", len(matches)))
+		for i, m := range matches {
+			sb.WriteString(fmt.Sprintf("%d. `%s`\n", i+1, m))
+		}
+		sb.WriteString("\n")
+	}
+
+	sb.WriteString("👉 *Tap button below if you want AI to analyze and summarize code usage:*")
+
+	aiBtn := &InlineKeyboardMarkup{
+		InlineKeyboard: [][]InlineKeyboardButton{
+			{
+				{Text: "🤖 Summarize Code Usage with AI", CallbackData: "ai_search_" + query},
+			},
+		},
+	}
+
+	_, _ = h.client.SendMessage(ctx, chatID, sb.String(), aiBtn)
 }
 
 func (h *BotHandler) handleNewProj(ctx context.Context, userID int64, chatID int64, args []string) {

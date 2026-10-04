@@ -139,9 +139,6 @@ func (h *BotHandler) handleAIPrompt(ctx context.Context, userID int64, chatID in
 
 	// Send complete response (chunked if > 3900 chars)
 	sendChunkedMessage(ctx, h.client, chatID, ansWithMetrics)
-
-	// Auto-reopen / refresh main menu keyboard for smooth chat experience
-	_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("💡 *Workspace `%s` ready:*", filepath.Base(ws)), h.buildMainKeyboard(userID))
 }
 
 func sendChunkedMessage(ctx context.Context, client *TelegramClient, chatID int64, text string) {

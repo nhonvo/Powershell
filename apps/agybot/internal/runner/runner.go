@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -145,6 +146,18 @@ func (r *AntigravityRunner) ExecutePrompt(ctx context.Context, opts RunnerOption
 		close(outChan)
 		return nil, fmt.Errorf("failed to start agy process: %w", err)
 	}
+
+	pid := cmd.Process.Pid
+	go func() {
+		<-ctx.Done()
+		if ctx.Err() != nil && cmd.Process != nil {
+			if runtime.GOOS == "windows" {
+				_ = exec.Command("taskkill", "/F", "/T", "/PID", fmt.Sprintf("%d", pid)).Run()
+			} else {
+				_ = cmd.Process.Kill()
+			}
+		}
+	}()
 
 	go func() {
 		defer close(outChan)

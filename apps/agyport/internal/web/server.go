@@ -438,6 +438,7 @@ const dashboardHTML = `<!DOCTYPE html>
             Group By:
             <select id="groupBySelect" onchange="changeGroupBy()" style="background: #0d1117; color: var(--text-bright); border: 1px solid var(--card-border); padding: 4px 8px; border-radius: 4px; outline: none; font-size: 12px;">
               <option value="none">None (Flat List)</option>
+              <option value="process">Process / Project (node, Code, python...)</option>
               <option value="framework">Framework (Node.js, Vite, PostgreSQL...)</option>
               <option value="category">Category (Frontend, Backend, DB...)</option>
             </select>
@@ -479,29 +480,6 @@ const dashboardHTML = `<!DOCTYPE html>
           <button class="btn-outline btn-sm" id="btnNextPage" onclick="nextPage()">Next ▶</button>
         </div>
       </div>
-    </div>
-
-    <div class="table-container">
-      <div class="table-header-row">
-        <h2>🔥 Top Memory Consuming Processes</h2>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>PID</th>
-            <th>PROCESS / PROJECT</th>
-            <th>FRAMEWORK</th>
-            <th>RAM (RSS)</th>
-            <th>% OF RAM</th>
-            <th>PORTS</th>
-            <th>USER</th>
-            <th style="text-align: right;">ACTION</th>
-          </tr>
-        </thead>
-        <tbody id="topProcsTableBody">
-          <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">Loading processes...</td></tr>
-        </tbody>
-      </table>
     </div>
   </div>
 
@@ -610,7 +588,6 @@ const dashboardHTML = `<!DOCTYPE html>
       document.getElementById('reclaimableSub').innerText = devServers + ' dev processes reclaimable';
 
       renderPortsTable(ports);
-      renderTopProcsTable(data.top_procs || []);
     }
 
     function sortPorts(ports) {
@@ -687,16 +664,39 @@ const dashboardHTML = `<!DOCTYPE html>
       if (currentGroupBy !== 'none') {
         var groups = {};
         pagedList.forEach(function(p) {
-          var key = (currentGroupBy === 'framework') ? (p.framework || 'Other') : (p.dev_category || 'Other');
+          var key = 'Other';
+          if (currentGroupBy === 'process') {
+            key = p.project_name || p.process_name || 'Unknown Process';
+          } else if (currentGroupBy === 'framework') {
+            key = p.framework || 'Other Framework';
+          } else if (currentGroupBy === 'category') {
+            key = p.dev_category || 'Other Category';
+          }
           if (!groups[key]) groups[key] = [];
           groups[key].push(p);
         });
 
-        Object.keys(groups).sort().forEach(function(grp) {
-          html += '<tr style="background: rgba(88, 166, 255, 0.08); font-weight: 700; color: var(--primary);">' +
-            '<td colspan="8" style="padding: 8px 16px;">📁 ' + grp + ' (' + groups[grp].length + ' ports)</td>' +
+        Object.keys(groups).sort().forEach(function(grpKey) {
+          var items = groups[grpKey];
+          var totalRam = 0;
+          var killablePorts = [];
+          items.forEach(function(item) {
+            totalRam += item.memory_bytes;
+            if (!item.is_system_port && item.port > 0) {
+              killablePorts.push(item.port);
+            }
+          });
+
+          var killBtnHtml = (killablePorts.length > 0)
+            ? ('<button class="btn-danger btn-sm" onclick="killGroup(\'' + escapeJsStr(grpKey) + '\', [' + killablePorts.join(',') + '])">⚡ Kill Group (' + killablePorts.length + ')</button>')
+            : ('<span style="color: var(--text-muted); font-size: 11px;">Protected Group</span>');
+
+          html += '<tr style="background: rgba(88, 166, 255, 0.12); font-weight: 700; color: var(--primary); border-top: 2px solid var(--card-border);">' +
+            '<td colspan="7" style="padding: 10px 16px;">📁 <span style="color: var(--text-bright); font-size: 13px;">' + grpKey + '</span> <span style="font-weight: 400; color: var(--text-muted); font-size: 12px;">(' + items.length + ' ports, ' + formatBytes(totalRam) + ' RAM)</span></td>' +
+            '<td style="text-align: right; padding: 6px 16px;">' + killBtnHtml + '</td>' +
             '</tr>';
-          groups[grp].forEach(function(p) {
+
+          items.forEach(function(p) {
             html += renderPortRowHtml(p);
           });
         });
@@ -709,29 +709,58 @@ const dashboardHTML = `<!DOCTYPE html>
       tbody.innerHTML = html;
     }
 
+    function escapeJsStr(str) {
+      return (str || '').replace(/'/g, "\\'").replace(/"/g, '\\"');
+    }
+
+    function killGroup(groupName, portList) {
+      if (!portList || portList.length === 0) return;
+      if (!confirm('⚠️ Are you sure you want to terminate ALL ' + portList.length + ' ports in group "' + groupName + '"?')) return;
+
+      var successCount = 0;
+      var promises = portList.map(function(port) {
+        return fetch('/api/kill?port=' + port, { method: 'POST' })
+          .then(function(res) { return res.json(); })
+          .then(function(data) {
+            if (data.success) successCount++;
+          })
+          .catch(function(err) {});
+      });
+
+      Promise.all(promises).then(function() {
+        showToast('✔ Successfully terminated ' + successCount + ' / ' + portList.length + ' ports in group "' + groupName + '"');
+        fetchData();
+      });
+    }
+
     function renderPortRowHtml(p) {
       var fwBadgeClass = getBadgeClass(p.dev_category);
       var memStr = p.memory_bytes > 0 ? (p.memory_formatted + ' (' + p.memory_percent.toFixed(1) + '%)') : '-';
-      var openBtn = p.is_system_port 
-        ? '' 
-        : '<a href="http://localhost:' + p.port + '" target="_blank" class="btn-outline btn-sm" style="text-decoration:none; margin-right:6px;">🌐 Open</a>';
       var killBtn = p.is_system_port 
         ? '<span style="color: var(--text-muted); font-size: 11px;">Protected</span>' 
         : '<button class="btn-danger btn-sm" onclick="killPort(' + p.port + ')">Kill :' + p.port + '</button>';
 
-      var procDisplay = p.project_name
+      var rawProc = p.project_name
         ? ('<span style="color: var(--primary); font-weight:700;">' + p.project_name + '</span> <span style="font-size:11px; color:var(--text-muted);">(' + (p.process_name || '-') + ')</span>')
         : ('<strong>' + (p.process_name || '-') + '</strong>');
 
+      var portDisplay = p.is_system_port
+        ? ('<span class="badge badge-port">' + p.port + '</span>')
+        : ('<a href="http://localhost:' + p.port + '" target="_blank" style="text-decoration:none;" title="Open http://localhost:' + p.port + '"><span class="badge badge-port" style="cursor:pointer;">' + p.port + ' ↗</span></a>');
+
+      var procDisplay = p.is_system_port
+        ? rawProc
+        : ('<a href="http://localhost:' + p.port + '" target="_blank" style="text-decoration:none; color:inherit;" title="Open http://localhost:' + p.port + '">' + rawProc + ' <span style="font-size:11px; color:var(--primary);">↗</span></a>');
+
       return '<tr>' +
-        '<td><span class="badge badge-port">' + p.port + '</span></td>' +
+        '<td>' + portDisplay + '</td>' +
         '<td><span style="font-size:11px; font-weight:600;">' + p.protocol.toUpperCase() + '</span></td>' +
         '<td><span class="badge badge-pid">' + (p.pid > 0 ? p.pid : '-') + '</span></td>' +
         '<td>' + procDisplay + '</td>' +
         '<td><span class="badge ' + fwBadgeClass + '">' + (p.framework || '-') + '</span></td>' +
         '<td>' + memStr + '</td>' +
         '<td style="color: var(--text-muted);">' + (p.user || '-') + ' @ ' + p.bind_address + '</td>' +
-        '<td style="text-align: right;">' + openBtn + killBtn + '</td>' +
+        '<td style="text-align: right;">' + killBtn + '</td>' +
         '</tr>';
     }
 

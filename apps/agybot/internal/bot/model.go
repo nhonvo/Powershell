@@ -12,9 +12,9 @@ func (h *BotHandler) handlePlanDashboard(ctx context.Context, userID int64, chat
 	ws := h.wsMgr.GetUserWorkspace(userID)
 	acc := h.accMgr.GetActiveAccount()
 
-	thinkState := "🔴 OFF (Free & Clean)"
+	thinkState := "🔴 OFF"
 	if sess.ShowThinking {
-		thinkState = "🟢 ON (Showing Reasoning - $0 FREE)"
+		thinkState = "🟢 ON ($0 FREE)"
 	}
 
 	modelState := sess.ActiveModel
@@ -28,26 +28,79 @@ func (h *BotHandler) handlePlanDashboard(ctx context.Context, userID int64, chat
 	}
 
 	msg := fmt.Sprintf(
-		"📋 **ANTIGRAVITY CONTROL & EXECUTION PLANNER**\n\n"+
-			"• **Active Workspace:** `%s`\n"+
-			"• **Active Account:** `%s` (via agyswitch)\n"+
-			"• **Selected Model:** `%s`\n"+
-			"• **Reasoning Effort:** `%s`\n"+
-			"• **Thinking Steps:** %s\n"+
-			"• **Session Telemetry:** `%d prompts · %d steps · est: $%.4f`\n\n"+
-			"💡 *Select an action below to switch models, inspect quotas, check skills, toggle reasoning, or diagnose app status:*",
+		"🎛️ **ANTIGRAVITY REMOTE CONTROLLER (5-MODULE DASHBOARD)**\n\n"+
+			"📌 **CURRENT RUNTIME STATE:**\n"+
+			"• **Workspace:** `%s`\n"+
+			"• **Account:** `%s` (agyswitch)\n"+
+			"• **Model:** `%s` · Effort: `%s`\n"+
+			"• **Thinking:** %s\n"+
+			"• **Telemetry:** `%d prompts · %d steps · $%.4f USD`\n\n"+
+			"🕹️ **Group 1: System Control**\n"+
+			"`/plan` · `/status` · `/health` · `/help` · `/lock`\n\n"+
+			"🧠 **Group 2: AI Engine & Quotas**\n"+
+			"`/model` · `/effort` · `/thinking` · `/quota` · `/switch` · `/skills`\n\n"+
+			"📁 **Group 3: Workspace & Files**\n"+
+			"`/proj` · `/cd` · `/ls` · `/search` · `/getfile` · `/cat` · `/newproj`\n\n"+
+			"🛠️ **Group 4: Automation & Swarm**\n"+
+			"`-c` · `/rebuild` · `/replan` · `/swarm` · `/review` · `/research`\n\n"+
+			"💾 **Group 5: Session Management**\n"+
+			"`/sessions` · `/resume` · `/session` · `/clear`\n\n"+
+			"💡 *Tap an inline module button below to execute instantly:*",
 		filepath.Base(ws), acc, modelState, effortState, thinkState,
 		sess.Metrics.TotalPrompts, sess.Metrics.TotalSteps, sess.Metrics.EstCostUSD,
 	)
 
-	_, _ = h.client.SendMessage(ctx, chatID, msg, h.buildMainKeyboard(userID))
+	inlineKeyboard := &InlineKeyboardMarkup{
+		InlineKeyboard: [][]InlineKeyboardButton{
+			{
+				{Text: "🕹️ Status", CallbackData: "btn_status"},
+				{Text: "🩺 Health", CallbackData: "btn_health"},
+				{Text: "❓ Help", CallbackData: "btn_help"},
+			},
+			{
+				{Text: "🧠 Models", CallbackData: "btn_models"},
+				{Text: "⚡ Effort", CallbackData: "btn_effort"},
+				{Text: "💭 Thinking", CallbackData: "btn_thinking"},
+				{Text: "👤 Quotas", CallbackData: "btn_accounts"},
+			},
+			{
+				{Text: "📁 Projects", CallbackData: "btn_projects"},
+				{Text: "📂 Files", CallbackData: "btn_files"},
+				{Text: "🔎 Search", CallbackData: "btn_search"},
+			},
+			{
+				{Text: "🔄 Continue", CallbackData: "btn_continue"},
+				{Text: "🔨 Rebuild", CallbackData: "btn_rebuild"},
+				{Text: "🐝 Swarm", CallbackData: "btn_swarm"},
+				{Text: "🛡️ Review", CallbackData: "btn_review"},
+			},
+			{
+				{Text: "💾 Sessions", CallbackData: "btn_sessions"},
+				{Text: "🔄 Clear", CallbackData: "btn_clear"},
+				{Text: "🛑 Abort", CallbackData: "cancel_prompt"},
+			},
+		},
+	}
+
+	_, _ = h.client.SendMessage(ctx, chatID, msg, inlineKeyboard)
+	// Send reply keyboard only when dashboard explicitly triggered
+	_, _ = h.client.SendMessage(ctx, chatID, "⌨️ *Quick Navigation Menu:*", h.buildMainKeyboard(userID))
 }
 
 func (h *BotHandler) getSession(userID int64) *UserSessionState {
 	sess, ok := h.userSessions[userID]
 	if !ok {
-		sess = &UserSessionState{}
+		sess = &UserSessionState{
+			ActiveModel:  h.cfg.DefaultModel,
+			ActiveEffort: h.cfg.DefaultEffort,
+		}
 		h.userSessions[userID] = sess
+	}
+	if sess.ActiveModel == "" {
+		sess.ActiveModel = h.cfg.DefaultModel
+	}
+	if sess.ActiveEffort == "" {
+		sess.ActiveEffort = h.cfg.DefaultEffort
 	}
 	return sess
 }

@@ -308,13 +308,58 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 			}
 		case "/reset", "/new":
 			h.handleClear(ctx, userID, chatID)
+		case "/hidemenu", "/closemenu":
+			h.handleHideMenu(ctx, chatID)
 		default:
-			_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("Unknown command `%s`. Type /help for menu.", cmd), nil)
+			_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("Unknown command `%s`. Type /help or /menu for menu.", cmd), nil)
 		}
 		return
 	}
 
-	// 5. Quick project selection by number or "cd <name>"
+	// 5. Reply Keyboard text shortcuts
+	switch lowerText {
+	case "🕹️ control":
+		h.handlePlanDashboard(ctx, userID, chatID)
+		return
+	case "🧠 ai & quota":
+		h.handleModels(ctx, userID, chatID)
+		return
+	case "📁 workspace":
+		h.handleProjects(ctx, chatID)
+		return
+	case "🛠️ automation":
+		h.handleSwarm(ctx, userID, chatID, "Inspect project status and run autonomous agent swarm")
+		return
+	case "💾 session":
+		h.handleCurrentSession(ctx, userID, chatID)
+		return
+	case "❌ hide menu":
+		h.handleHideMenu(ctx, chatID)
+		return
+	}
+
+	// 6. Fast greeting response (< 0.05s latency bypass)
+	if lowerText == "hi" || lowerText == "hello" || lowerText == "hey" || lowerText == "ping" || lowerText == "chào" {
+		ws := h.wsMgr.GetUserWorkspace(userID)
+		sess := h.getSession(userID)
+		reply := fmt.Sprintf(
+			"👋 **Hello Noname!** I'm your Antigravity AI Controller.\n"+
+				"• **Workspace:** `%s`\n"+
+				"• **Active Model:** `%s` (Effort: `%s`)\n"+
+				"• **Thinking:** `%s`\n\n"+
+				"💡 *How can I help you with your project today? Type `/menu` for the 5-module dashboard or ask me any coding prompt!*",
+			filepath.Base(ws), sess.ActiveModel, sess.ActiveEffort, func() string {
+				if sess.ShowThinking {
+					return "ON"
+				}
+				return "OFF"
+			}(),
+		)
+		_, _ = h.client.SendMessage(ctx, chatID, reply, nil)
+		return
+	}
+
+	// 7. Quick project selection by number or "cd <name>"
 	numClean := strings.TrimPrefix(text, "#")
 	if num, err := strconv.Atoi(numClean); err == nil && num >= 1 && num <= 30 {
 		projs := h.wsMgr.ListProjects()
@@ -334,7 +379,7 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 		return
 	}
 
-	// 6. Natural Language / AI Coding Prompt to Antigravity
+	// 8. Natural Language / AI Coding Prompt to Antigravity
 	h.handleAIPrompt(ctx, userID, chatID, text)
 }
 
@@ -346,6 +391,14 @@ func (h *BotHandler) handleCallbackQuery(ctx context.Context, q *CallbackQuery) 
 
 	if data == "cancel_prompt" {
 		h.handleCancel(ctx, userID, chatID)
+		return
+	}
+
+	if strings.HasPrefix(data, "ai_search_") {
+		query := strings.TrimPrefix(data, "ai_search_")
+		ws := h.wsMgr.GetUserWorkspace(userID)
+		prompt := fmt.Sprintf("Search for references, files, or implementations of '%s' across workspace `%s`. Summarize key locations, definitions, and usage.", query, filepath.Base(ws))
+		h.handleAIPrompt(ctx, userID, chatID, prompt)
 		return
 	}
 

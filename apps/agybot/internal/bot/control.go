@@ -115,29 +115,25 @@ func (h *BotHandler) handleConfig(ctx context.Context, chatID int64) {
 	_, _ = h.client.SendMessage(ctx, chatID, msg, nil)
 }
 
+func (h *BotHandler) handleHideMenu(ctx context.Context, chatID int64) {
+	_, _ = h.client.SendMessage(ctx, chatID, "🙈 Reply keyboard hidden. Type `/menu` or `/plan` anytime to trigger it again!", &ReplyKeyboardRemove{RemoveKeyboard: true})
+}
+
 func (h *BotHandler) buildMainKeyboard(userID int64) *ReplyKeyboardMarkup {
 	return &ReplyKeyboardMarkup{
 		Keyboard: [][]KeyboardButton{
 			{
-				{Text: "📊 Status"},
-				{Text: "🤖 Models"},
-				{Text: "📁 Projects"},
+				{Text: "🕹️ Control"},
+				{Text: "🧠 AI & Quota"},
+				{Text: "📁 Workspace"},
 			},
 			{
-				{Text: "💬 New Chat"},
-				{Text: "🔎 Search"},
-				{Text: "📈 Metrics"},
-			},
-			{
-				{Text: "⚡ Effort"},
-				{Text: "🧠 Thinking"},
-				{Text: "🔄 Rebuild"},
-			},
-			{
-				{Text: "❓ Help"},
+				{Text: "🛠️ Automation"},
+				{Text: "💾 Session"},
+				{Text: "❌ Hide Menu"},
 			},
 		},
 		ResizeKeyboard: true,
-		IsPersistent:   true,
+		IsPersistent:   false,
 	}
 }
