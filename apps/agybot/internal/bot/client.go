@@ -195,3 +195,56 @@ func (c *TelegramClient) SendDocument(ctx context.Context, chatID int64, filePat
 	return nil
 }
 
+type BotCommand struct {
+	Command     string `json:"command"`
+	Description string `json:"description"`
+}
+
+func (c *TelegramClient) SetMyCommands(ctx context.Context, commands []BotCommand) error {
+	var resp APIResponse[bool]
+	payload := map[string]interface{}{
+		"commands": commands,
+	}
+	return c.post(ctx, "setMyCommands", payload, &resp)
+}
+
+func (c *TelegramClient) GetFile(ctx context.Context, fileID string) (*TGFile, error) {
+	var resp APIResponse[TGFile]
+	payload := map[string]interface{}{
+		"file_id": fileID,
+	}
+	if err := c.post(ctx, "getFile", payload, &resp); err != nil {
+		return nil, err
+	}
+	if !resp.OK {
+		return nil, fmt.Errorf("getFile error: %s", resp.Description)
+	}
+	return &resp.Result, nil
+}
+
+func (c *TelegramClient) DownloadFile(ctx context.Context, filePath string, targetLocalPath string) error {
+	url := fmt.Sprintf("https://api.telegram.org/file/bot%s/%s", c.token, filePath)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return err
+	}
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("download file failed with status %d", resp.StatusCode)
+	}
+
+	out, err := os.Create(targetLocalPath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, resp.Body)
+	return err
+}
+

@@ -23,13 +23,35 @@ type InlineKeyboardMarkup struct {
 	InlineKeyboard [][]InlineKeyboardButton `json:"inline_keyboard"`
 }
 
+type Document struct {
+	FileID   string `json:"file_id"`
+	FileName string `json:"file_name,omitempty"`
+	MimeType string `json:"mime_type,omitempty"`
+	FileSize int64  `json:"file_size,omitempty"`
+}
+
+type PhotoSize struct {
+	FileID   string `json:"file_id"`
+	Width    int    `json:"width"`
+	Height   int    `json:"height"`
+	FileSize int64  `json:"file_size,omitempty"`
+}
+
+type TGFile struct {
+	FileID   string `json:"file_id"`
+	FilePath string `json:"file_path,omitempty"`
+}
+
 type Message struct {
-	MessageID int64                 `json:"message_id"`
-	From      *User                 `json:"from,omitempty"`
-	Chat      Chat                  `json:"chat"`
-	Text      string                `json:"text,omitempty"`
-	Date      int64                 `json:"date"`
-	ReplyTo   *Message              `json:"reply_to_message,omitempty"`
+	MessageID int64       `json:"message_id"`
+	From      *User       `json:"from,omitempty"`
+	Chat      Chat        `json:"chat"`
+	Text      string      `json:"text,omitempty"`
+	Caption   string      `json:"caption,omitempty"`
+	Document  *Document   `json:"document,omitempty"`
+	Photo     []PhotoSize `json:"photo,omitempty"`
+	Date      int64       `json:"date"`
+	ReplyTo   *Message    `json:"reply_to_message,omitempty"`
 }
 
 type CallbackQuery struct {

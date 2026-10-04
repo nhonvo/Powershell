@@ -61,6 +61,25 @@ func NewBotHandler(
 
 // StartPolling launches long-polling loop against Telegram Bot API
 func (h *BotHandler) StartPolling(ctx context.Context) error {
+	// Register commands with Telegram API for auto-complete on mobile phone
+	_ = h.client.SetMyCommands(ctx, []BotCommand{
+		{Command: "plan", Description: "Interactive Plan & Controller Dashboard"},
+		{Command: "model", Description: "Switch Active AI Model (Gemini/Claude/Ollama)"},
+		{Command: "effort", Description: "Set Model Reasoning Effort (High/Medium/Low)"},
+		{Command: "quota", Description: "Check Account Quotas (agyswitch)"},
+		{Command: "thinking", Description: "Toggle Reasoning Steps ($0 Free)"},
+		{Command: "projects", Description: "Select Registered Projects"},
+		{Command: "cd", Description: "Switch Workspace Directory"},
+		{Command: "ls", Description: "List Directory Files & Folders"},
+		{Command: "getfile", Description: "Download File from PC to Phone"},
+		{Command: "rebuild", Description: "Rebuild All 12 Micro-Apps"},
+		{Command: "replan", Description: "Audit Tech Debt & Replan Roadmap"},
+		{Command: "swarm", Description: "Run Multi-Agent Parallel Swarm"},
+		{Command: "review", Description: "Perform Code Security Review"},
+		{Command: "health", Description: "Micro-App & System Health Check"},
+		{Command: "help", Description: "Bot Commands & Reference Guide"},
+	})
+
 	var offset int64 = 0
 
 	for {
@@ -124,39 +143,7 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 		return
 	}
 
-	// 3. Command dispatcher
-	if strings.HasPrefix(text, "/") {
-		parts := strings.Fields(text)
-		cmd := strings.ToLower(parts[0])
-
-		switch cmd {
-		case "/start", "/menu", "/help":
-			h.handleStart(ctx, userID, chatID)
-			return
-		case "/pin", "/auth", "/unlock":
-			h.authMgr.SetAwaitingPin(userID, true)
-			_, _ = h.client.SendMessage(ctx, chatID, "🔐 **Please send your 6-digit security PIN:**", nil)
-			return
-		case "/lock":
-			h.authMgr.Lock(userID)
-			_, _ = h.client.SendMessage(ctx, chatID, "🔒 **Antigravity Controller has been locked.**", nil)
-			return
-		}
-	}
-
-	// 4. Verify Authentication
-	isAuth, isLocked, reason := h.authMgr.CheckAuth(userID)
-	if !isAuth {
-		h.authMgr.SetAwaitingPin(userID, true)
-		lockWarning := "🔒 **CONTROLLER IS LOCKED**\n\n" + reason + "\n\n👉 *Send your security PIN to unlock:*"
-		if isLocked {
-			lockWarning = "⏳ **TEMPORARY LOCKOUT**\n\n" + reason
-		}
-		_, _ = h.client.SendMessage(ctx, chatID, lockWarning, nil)
-		return
-	}
-
-	// 5. Authenticated commands & session continuation shortcuts
+	// 3. Authenticated commands & session continuation shortcuts
 	lowerText := strings.ToLower(text)
 
 	// Direct session continuation shortcuts: "-c", "0c", "/c", "/continue"
@@ -172,12 +159,18 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 		}
 	}
 
+	// 4. File Upload Handler (Document or Photo attached in message)
+	if msg.Document != nil || len(msg.Photo) > 0 {
+		h.handleFileUpload(ctx, userID, chatID, msg)
+		return
+	}
+
 	if strings.HasPrefix(text, "/") {
 		parts := strings.Fields(text)
 		cmd := strings.ToLower(parts[0])
 
 		switch cmd {
-		case "/plan", "/menu":
+		case "/start", "/plan", "/menu":
 			h.handlePlanDashboard(ctx, userID, chatID)
 		case "/help":
 			h.handleHelp(ctx, chatID)
@@ -187,6 +180,14 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 			} else {
 				h.handleModels(ctx, userID, chatID)
 			}
+		case "/effort":
+			arg := ""
+			if len(parts) > 1 {
+				arg = parts[1]
+			}
+			h.handleEffort(ctx, userID, chatID, arg)
+		case "/quota":
+			h.handleAccount(ctx, chatID)
 		case "/thinking", "/thought":
 			arg := ""
 			if len(parts) > 1 {
@@ -268,7 +269,7 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 		return
 	}
 
-	// 6. Quick project selection by number or "cd <name>"
+	// 5. Quick project selection by number or "cd <name>"
 	numClean := strings.TrimPrefix(text, "#")
 	if num, err := strconv.Atoi(numClean); err == nil && num >= 1 && num <= 30 {
 		projs := h.wsMgr.ListProjects()
@@ -283,7 +284,7 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 		return
 	}
 
-	// 7. Natural Language / AI Coding Prompt to Antigravity
+	// 6. Natural Language / AI Coding Prompt to Antigravity
 	h.handleAIPrompt(ctx, userID, chatID, text)
 }
 
@@ -321,6 +322,15 @@ func (h *BotHandler) handleCallbackQuery(ctx context.Context, q *CallbackQuery) 
 		return
 	}
 
+	if strings.HasPrefix(data, "set_effort_") {
+		effortLevel := strings.TrimPrefix(data, "set_effort_")
+		sess := h.getSession(userID)
+		sess.ActiveEffort = effortLevel
+		_ = h.client.AnswerCallbackQuery(ctx, q.ID, "Effort set to "+effortLevel, false)
+		_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("⚡ Model reasoning effort set to: `%s`", effortLevel), h.buildMainKeyboard(userID))
+		return
+	}
+
 	switch data {
 	case "btn_plan":
 		h.handlePlanDashboard(ctx, userID, chatID)
@@ -328,6 +338,8 @@ func (h *BotHandler) handleCallbackQuery(ctx context.Context, q *CallbackQuery) 
 		h.handleHelp(ctx, chatID)
 	case "btn_models":
 		h.handleModels(ctx, userID, chatID)
+	case "btn_effort":
+		h.handleEffort(ctx, userID, chatID, "")
 	case "btn_toggle_thinking":
 		h.handleToggleThinking(ctx, userID, chatID, "")
 	case "btn_skills":
@@ -691,6 +703,83 @@ func (h *BotHandler) handleAIPrompt(ctx context.Context, userID int64, chatID in
 
 	// Send complete response (chunked if > 3900 chars)
 	sendChunkedMessage(ctx, h.client, chatID, ans)
+
+	// Auto-reopen / refresh main menu keyboard for smooth chat experience
+	_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("💡 *Workspace `%s` ready:*", filepath.Base(ws)), h.buildMainKeyboard(userID))
+}
+
+func (h *BotHandler) handleFileUpload(ctx context.Context, userID int64, chatID int64, msg *Message) {
+	ws := h.wsMgr.GetUserWorkspace(userID)
+	fileID := ""
+	fileName := "uploaded_file"
+
+	if msg.Document != nil {
+		fileID = msg.Document.FileID
+		if msg.Document.FileName != "" {
+			fileName = msg.Document.FileName
+		}
+	} else if len(msg.Photo) > 0 {
+		largest := msg.Photo[len(msg.Photo)-1]
+		fileID = largest.FileID
+		fileName = fmt.Sprintf("photo_%d.jpg", time.Now().Unix())
+	}
+
+	if fileID == "" {
+		_, _ = h.client.SendMessage(ctx, chatID, "❌ Cannot process uploaded file.", nil)
+		return
+	}
+
+	h.client.SendChatAction(ctx, chatID, "typing")
+	tgFile, err := h.client.GetFile(ctx, fileID)
+	if err != nil || tgFile.FilePath == "" {
+		_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("❌ Error getting file metadata: %v", err), nil)
+		return
+	}
+
+	targetPath := filepath.Join(ws, fileName)
+	err = h.client.DownloadFile(ctx, tgFile.FilePath, targetPath)
+	if err != nil {
+		_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("❌ Error downloading file to workspace: %v", err), nil)
+		return
+	}
+
+	msgText := fmt.Sprintf("📥 **FILE RECEIVED & SAVED TO WORKSPACE!**\n\n"+
+		"• **File Name:** `%s`\n"+
+		"• **Saved Path:** `%s`\n"+
+		"• **Workspace:** `%s`\n\n"+
+		"👉 *You can now ask Antigravity to inspect, analyze, or process this file!*",
+		fileName, targetPath, filepath.Base(ws))
+
+	_, _ = h.client.SendMessage(ctx, chatID, msgText, h.buildMainKeyboard(userID))
+}
+
+func (h *BotHandler) handleEffort(ctx context.Context, userID int64, chatID int64, arg string) {
+	sess := h.getSession(userID)
+	arg = strings.ToLower(strings.TrimSpace(arg))
+	if arg == "" {
+		curEffort := sess.ActiveEffort
+		if curEffort == "" {
+			curEffort = h.cfg.DefaultEffort
+		}
+		keyboard := [][]InlineKeyboardButton{
+			{
+				{Text: "⚡ High (Default)", CallbackData: "set_effort_high"},
+				{Text: "⚡ Medium", CallbackData: "set_effort_medium"},
+				{Text: "⚡ Low", CallbackData: "set_effort_low"},
+			},
+		}
+		msg := fmt.Sprintf("⚡ **SELECT MODEL REASONING EFFORT:**\n\nCurrent Effort: `%s`\n\n👉 *Tap an effort level below:*", curEffort)
+		_, _ = h.client.SendMessage(ctx, chatID, msg, &InlineKeyboardMarkup{InlineKeyboard: keyboard})
+		return
+	}
+
+	switch arg {
+	case "high", "medium", "low":
+		sess.ActiveEffort = arg
+		_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("⚡ Model reasoning effort set to: `%s`", arg), h.buildMainKeyboard(userID))
+	default:
+		_, _ = h.client.SendMessage(ctx, chatID, "Usage: `/effort [high|medium|low]`", nil)
+	}
 }
 
 func sendChunkedMessage(ctx context.Context, client *TelegramClient, chatID int64, text string) {
