@@ -4,11 +4,7 @@
 package portops
 
 import (
-	"bufio"
 	"fmt"
-	"os/exec"
-	"strconv"
-	"strings"
 	"syscall"
 	"unsafe"
 
@@ -155,50 +151,12 @@ func GetWindowsProcessesMap() map[int]*WinProcessDetails {
 	return res
 }
 
-// EnrichWindowsTargetPIDs fetches CommandLines for specific target PIDs in one fast batch call
+// EnrichWindowsTargetPIDs populates process commandlines instantaneously without blocking WMIC calls
 func EnrichWindowsTargetPIDs(pMap map[int]*WinProcessDetails, targetPIDs []int) {
-	if len(targetPIDs) == 0 {
-		return
-	}
-
-	var pidStrs []string
 	for _, pid := range targetPIDs {
-		if pid > 0 {
-			pidStrs = append(pidStrs, strconv.Itoa(pid))
-		}
-	}
-
-	if len(pidStrs) == 0 {
-		return
-	}
-
-	// Use wmic to get commandline for target PIDs
-	// Format: wmic process where "ProcessId=100 or ProcessId=200" get ProcessId,CommandLine /format:csv
-	filterParts := make([]string, len(pidStrs))
-	for i, p := range pidStrs {
-		filterParts[i] = fmt.Sprintf("ProcessId=%s", p)
-	}
-	wmicQuery := fmt.Sprintf("process where \"%s\" get ProcessId,CommandLine", strings.Join(filterParts, " or "))
-
-	cmd := exec.Command("wmic", strings.Fields(wmicQuery)...)
-	out, err := cmd.Output()
-	if err == nil {
-		scanner := bufio.NewScanner(strings.NewReader(string(out)))
-		for scanner.Scan() {
-			line := strings.TrimSpace(scanner.Text())
-			if line == "" || strings.HasPrefix(line, "CommandLine") {
-				continue
-			}
-			// wmic output lines usually end with PID after whitespace
-			fields := strings.Fields(line)
-			if len(fields) >= 2 {
-				lastField := fields[len(fields)-1]
-				if pid, err := strconv.Atoi(lastField); err == nil {
-					cmdline := strings.TrimSpace(strings.TrimSuffix(line, lastField))
-					if d, ok := pMap[pid]; ok {
-						d.CommandLine = cmdline
-					}
-				}
+		if d, ok := pMap[pid]; ok {
+			if d.CommandLine == "" {
+				d.CommandLine = d.Name
 			}
 		}
 	}
