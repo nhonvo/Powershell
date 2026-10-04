@@ -427,14 +427,6 @@ const dashboardHTML = `<!DOCTYPE html>
       </div>
     </div>
 
-    <div class="suggestion-box" id="suggestionBox">
-      <div class="suggestion-header">
-        <h3>💡 Smart RAM Leverage Suggestions</h3>
-        <span style="font-size: 12px; color: var(--primary);" id="suggestionCount">0 suggestions</span>
-      </div>
-      <div id="suggestionList"></div>
-    </div>
-
     <div class="table-container">
       <div class="table-header-row">
         <h2>🌐 Active Listening Ports (<span id="tablePortCount">0</span>)</h2>
@@ -442,18 +434,26 @@ const dashboardHTML = `<!DOCTYPE html>
           <label style="font-size: 12px; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 4px;">
             <input type="checkbox" id="hideSystemPortsToggle" checked onchange="currentPage=1; filterTable()"> 🛡️ Hide System Ports
           </label>
+          <label style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+            Group By:
+            <select id="groupBySelect" onchange="changeGroupBy()" style="background: #0d1117; color: var(--text-bright); border: 1px solid var(--card-border); padding: 4px 8px; border-radius: 4px; outline: none; font-size: 12px;">
+              <option value="none">None (Flat List)</option>
+              <option value="framework">Framework (Node.js, Vite, PostgreSQL...)</option>
+              <option value="category">Category (Frontend, Backend, DB...)</option>
+            </select>
+          </label>
           <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search port, process, framework..." oninput="currentPage=1; filterTable()">
         </div>
       </div>
       <table>
         <thead>
           <tr>
-            <th>PORT</th>
-            <th>PROTO</th>
-            <th>PID</th>
-            <th>PROCESS / PROJECT</th>
-            <th>FRAMEWORK</th>
-            <th>RAM USAGE</th>
+            <th style="cursor: pointer;" onclick="sortByColumn('port')">PORT <span id="sort_port"></span></th>
+            <th style="cursor: pointer;" onclick="sortByColumn('proto')">PROTO <span id="sort_proto"></span></th>
+            <th style="cursor: pointer;" onclick="sortByColumn('pid')">PID <span id="sort_pid"></span></th>
+            <th style="cursor: pointer;" onclick="sortByColumn('process')">PROCESS / PROJECT <span id="sort_process"></span></th>
+            <th style="cursor: pointer;" onclick="sortByColumn('framework')">FRAMEWORK <span id="sort_framework"></span></th>
+            <th style="cursor: pointer;" onclick="sortByColumn('ram')">RAM USAGE <span id="sort_ram"></span></th>
             <th>USER & BIND</th>
             <th style="text-align: right;">ACTION</th>
           </tr>
@@ -511,9 +511,18 @@ const dashboardHTML = `<!DOCTYPE html>
     var globalData = null;
     var currentPage = 1;
     var pageSize = 25;
+    var currentSortCol = 'framework';
+    var currentSortDir = 'asc';
+    var currentGroupBy = 'none';
 
     function changePageSize() {
       pageSize = parseInt(document.getElementById('pageSizeSelect').value, 10);
+      currentPage = 1;
+      filterTable();
+    }
+
+    function changeGroupBy() {
+      currentGroupBy = document.getElementById('groupBySelect').value;
       currentPage = 1;
       filterTable();
     }
@@ -528,6 +537,31 @@ const dashboardHTML = `<!DOCTYPE html>
     function nextPage() {
       currentPage++;
       filterTable();
+    }
+
+    function sortByColumn(col) {
+      if (currentSortCol === col) {
+        currentSortDir = (currentSortDir === 'asc') ? 'desc' : 'asc';
+      } else {
+        currentSortCol = col;
+        currentSortDir = 'asc';
+      }
+      updateSortIcons();
+      filterTable();
+    }
+
+    function updateSortIcons() {
+      var cols = ['port', 'proto', 'pid', 'process', 'framework', 'ram'];
+      cols.forEach(function(c) {
+        var el = document.getElementById('sort_' + c);
+        if (el) {
+          if (c === currentSortCol) {
+            el.innerText = currentSortDir === 'asc' ? ' ▲' : ' ▼';
+          } else {
+            el.innerText = '';
+          }
+        }
+      });
     }
 
     function fetchData() {
@@ -575,27 +609,37 @@ const dashboardHTML = `<!DOCTYPE html>
       document.getElementById('reclaimableRAM').innerText = formatBytes(reclaimBytes);
       document.getElementById('reclaimableSub').innerText = devServers + ' dev processes reclaimable';
 
-      // Suggestions
-      var suggestions = data.suggestions || [];
-      var sugBox = document.getElementById('suggestionBox');
-      if (suggestions.length > 0) {
-        sugBox.classList.add('active');
-        document.getElementById('suggestionCount').innerText = suggestions.length + ' suggestions';
-        var sugHtml = '';
-        suggestions.forEach(function(s) {
-          sugHtml += '<div class="suggestion-item">' +
-            '<div><strong>' + s.title + '</strong> <span style="color: var(--success); font-weight:600;">(+' + s.reclaimable_formatted + ' reclaimable)</span>' +
-            '<div style="font-size: 12px; color: var(--text-muted);">' + s.description + '</div></div>' +
-            '<button class="btn-primary btn-sm" onclick="applySuggestion(\'' + s.action_type + '\')">Reclaim Now</button>' +
-            '</div>';
-        });
-        document.getElementById('suggestionList').innerHTML = sugHtml;
-      } else {
-        sugBox.classList.remove('active');
-      }
-
       renderPortsTable(ports);
       renderTopProcsTable(data.top_procs || []);
+    }
+
+    function sortPorts(ports) {
+      var dir = currentSortDir === 'asc' ? 1 : -1;
+      return ports.slice().sort(function(a, b) {
+        var valA, valB;
+        switch (currentSortCol) {
+          case 'port':
+            return (a.port - b.port) * dir;
+          case 'proto':
+            valA = a.protocol || '';
+            valB = b.protocol || '';
+            return valA.localeCompare(valB) * dir;
+          case 'pid':
+            return (a.pid - b.pid) * dir;
+          case 'process':
+            valA = a.project_name || a.process_name || '';
+            valB = b.project_name || b.process_name || '';
+            return valA.localeCompare(valB) * dir;
+          case 'framework':
+            valA = a.framework || '';
+            valB = b.framework || '';
+            return valA.localeCompare(valB) * dir;
+          case 'ram':
+            return (a.memory_bytes - b.memory_bytes) * dir;
+          default:
+            return 0;
+        }
+      });
     }
 
     function renderPortsTable(ports) {
@@ -614,7 +658,8 @@ const dashboardHTML = `<!DOCTYPE html>
                (p.user && p.user.toLowerCase().indexOf(q) !== -1);
       });
 
-      var totalItems = filtered.length;
+      var sorted = sortPorts(filtered);
+      var totalItems = sorted.length;
       document.getElementById('tablePortCount').innerText = totalItems;
 
       var totalPages = (pageSize > 0) ? Math.ceil(totalItems / pageSize) : 1;
@@ -623,7 +668,7 @@ const dashboardHTML = `<!DOCTYPE html>
       var startIndex = (pageSize > 0) ? (currentPage - 1) * pageSize : 0;
       var endIndex = (pageSize > 0) ? Math.min(startIndex + pageSize, totalItems) : totalItems;
 
-      var pagedList = filtered.slice(startIndex, endIndex);
+      var pagedList = (pageSize > 0) ? sorted.slice(startIndex, endIndex) : sorted;
 
       document.getElementById('pageInfoLabel').innerText = totalItems > 0 
         ? ('Showing ' + (startIndex + 1) + '-' + endIndex + ' of ' + totalItems + ' ports')
@@ -639,32 +684,55 @@ const dashboardHTML = `<!DOCTYPE html>
       }
 
       var html = '';
-      pagedList.forEach(function(p) {
-        var fwBadgeClass = getBadgeClass(p.dev_category);
-        var memStr = p.memory_bytes > 0 ? (p.memory_formatted + ' (' + p.memory_percent.toFixed(1) + '%)') : '-';
-        var openBtn = p.is_system_port 
-          ? '' 
-          : '<a href="http://localhost:' + p.port + '" target="_blank" class="btn-outline btn-sm" style="text-decoration:none; margin-right:6px;">🌐 Open</a>';
-        var killBtn = p.is_system_port 
-          ? '<span style="color: var(--text-muted); font-size: 11px;">Protected</span>' 
-          : '<button class="btn-danger btn-sm" onclick="killPort(' + p.port + ')">Kill :' + p.port + '</button>';
+      if (currentGroupBy !== 'none') {
+        var groups = {};
+        pagedList.forEach(function(p) {
+          var key = (currentGroupBy === 'framework') ? (p.framework || 'Other') : (p.dev_category || 'Other');
+          if (!groups[key]) groups[key] = [];
+          groups[key].push(p);
+        });
 
-        var procDisplay = p.project_name
-          ? ('<span style="color: var(--primary); font-weight:700;">' + p.project_name + '</span> <span style="font-size:11px; color:var(--text-muted);">(' + (p.process_name || '-') + ')</span>')
-          : ('<strong>' + (p.process_name || '-') + '</strong>');
+        Object.keys(groups).sort().forEach(function(grp) {
+          html += '<tr style="background: rgba(88, 166, 255, 0.08); font-weight: 700; color: var(--primary);">' +
+            '<td colspan="8" style="padding: 8px 16px;">📁 ' + grp + ' (' + groups[grp].length + ' ports)</td>' +
+            '</tr>';
+          groups[grp].forEach(function(p) {
+            html += renderPortRowHtml(p);
+          });
+        });
+      } else {
+        pagedList.forEach(function(p) {
+          html += renderPortRowHtml(p);
+        });
+      }
 
-        html += '<tr>' +
-          '<td><span class="badge badge-port">' + p.port + '</span></td>' +
-          '<td><span style="font-size:11px; font-weight:600;">' + p.protocol.toUpperCase() + '</span></td>' +
-          '<td><span class="badge badge-pid">' + (p.pid > 0 ? p.pid : '-') + '</span></td>' +
-          '<td>' + procDisplay + '</td>' +
-          '<td><span class="badge ' + fwBadgeClass + '">' + (p.framework || '-') + '</span></td>' +
-          '<td>' + memStr + '</td>' +
-          '<td style="color: var(--text-muted);">' + (p.user || '-') + ' @ ' + p.bind_address + '</td>' +
-          '<td style="text-align: right;">' + openBtn + killBtn + '</td>' +
-          '</tr>';
-      });
       tbody.innerHTML = html;
+    }
+
+    function renderPortRowHtml(p) {
+      var fwBadgeClass = getBadgeClass(p.dev_category);
+      var memStr = p.memory_bytes > 0 ? (p.memory_formatted + ' (' + p.memory_percent.toFixed(1) + '%)') : '-';
+      var openBtn = p.is_system_port 
+        ? '' 
+        : '<a href="http://localhost:' + p.port + '" target="_blank" class="btn-outline btn-sm" style="text-decoration:none; margin-right:6px;">🌐 Open</a>';
+      var killBtn = p.is_system_port 
+        ? '<span style="color: var(--text-muted); font-size: 11px;">Protected</span>' 
+        : '<button class="btn-danger btn-sm" onclick="killPort(' + p.port + ')">Kill :' + p.port + '</button>';
+
+      var procDisplay = p.project_name
+        ? ('<span style="color: var(--primary); font-weight:700;">' + p.project_name + '</span> <span style="font-size:11px; color:var(--text-muted);">(' + (p.process_name || '-') + ')</span>')
+        : ('<strong>' + (p.process_name || '-') + '</strong>');
+
+      return '<tr>' +
+        '<td><span class="badge badge-port">' + p.port + '</span></td>' +
+        '<td><span style="font-size:11px; font-weight:600;">' + p.protocol.toUpperCase() + '</span></td>' +
+        '<td><span class="badge badge-pid">' + (p.pid > 0 ? p.pid : '-') + '</span></td>' +
+        '<td>' + procDisplay + '</td>' +
+        '<td><span class="badge ' + fwBadgeClass + '">' + (p.framework || '-') + '</span></td>' +
+        '<td>' + memStr + '</td>' +
+        '<td style="color: var(--text-muted);">' + (p.user || '-') + ' @ ' + p.bind_address + '</td>' +
+        '<td style="text-align: right;">' + openBtn + killBtn + '</td>' +
+        '</tr>';
     }
 
     function renderTopProcsTable(procs) {
@@ -763,10 +831,6 @@ const dashboardHTML = `<!DOCTYPE html>
         });
     }
 
-    function applySuggestion(actionType) {
-      reclaimDevRAM();
-    }
-
     function getBadgeClass(cat) {
       switch(cat) {
         case 'Frontend': return 'badge-frontend';
@@ -794,6 +858,7 @@ const dashboardHTML = `<!DOCTYPE html>
     }
 
     // Initial Load & Live Polling
+    updateSortIcons();
     fetchData();
     setInterval(function() {
       if (document.getElementById('autoRefreshToggle').checked) {

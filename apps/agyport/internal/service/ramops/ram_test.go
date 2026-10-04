@@ -98,34 +98,8 @@ func TestGenerateRAMSuggestions(t *testing.T) {
 
 	suggestions := GenerateRAMSuggestions(ports, procs, mem)
 
-	if len(suggestions) == 0 {
-		t.Fatalf("expected suggestions to be generated, got 0")
-	}
-
-	hasDevReclaim := false
-	hasDupServer := false
-	hasHeavyHog := false
-
-	for _, s := range suggestions {
-		if s.ID == "reclaim_dev_servers" {
-			hasDevReclaim = true
-		}
-		if s.ID == "dup_server_next.js" {
-			hasDupServer = true
-		}
-		if s.ID == "kill_hog_3001" {
-			hasHeavyHog = true
-		}
-	}
-
-	if !hasDevReclaim {
-		t.Errorf("expected reclaim_dev_servers suggestion")
-	}
-	if !hasDupServer {
-		t.Errorf("expected dup_server_next.js suggestion")
-	}
-	if !hasHeavyHog {
-		t.Errorf("expected kill_hog_3001 suggestion")
+	if len(suggestions) != 0 {
+		t.Fatalf("expected 0 suggestions (disabled per user directive), got %d", len(suggestions))
 	}
 }
 

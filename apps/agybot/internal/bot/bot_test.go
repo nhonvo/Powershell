@@ -51,8 +51,8 @@ func TestBot_MockServerAndHandler(t *testing.T) {
 	}
 
 	// Verify buildMainKeyboard
-	kb := handler.buildMainKeyboard()
-	if len(kb.InlineKeyboard) < 3 {
-		t.Errorf("Expected at least 3 rows in keyboard, got %d", len(kb.InlineKeyboard))
+	kb := handler.buildMainKeyboard(123)
+	if len(kb.Keyboard) < 3 {
+		t.Errorf("Expected at least 3 rows in keyboard, got %d", len(kb.Keyboard))
 	}
 }

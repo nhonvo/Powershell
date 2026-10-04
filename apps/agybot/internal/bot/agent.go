@@ -19,13 +19,24 @@ func (h *BotHandler) handleAIPrompt(ctx context.Context, userID int64, chatID in
 
 	h.client.SendChatAction(ctx, chatID, "typing")
 
-	initialMsg, err := h.client.SendMessage(ctx, chatID, fmt.Sprintf("🤖 **Antigravity AI Agent**\n📍 Workspace: `%s`\n⚡ Working on: _%s_...", filepath.Base(ws), prompt), nil)
+	cancelMarkup := &InlineKeyboardMarkup{
+		InlineKeyboard: [][]InlineKeyboardButton{
+			{
+				{Text: "🛑 Abort / Cancel Request", CallbackData: "cancel_prompt"},
+			},
+		},
+	}
+
+	initialMsg, err := h.client.SendMessage(ctx, chatID, fmt.Sprintf("🤖 **Antigravity AI Agent**\n📍 Workspace: `%s`\n⚡ Working on: _%s_...", filepath.Base(ws), prompt), cancelMarkup)
 	if err != nil {
 		return
 	}
 
 	runCtx, cancel := context.WithTimeout(ctx, h.cfg.TaskTimeout)
 	defer cancel()
+
+	h.registerCancel(userID, cancel)
+	defer h.unregisterCancel(userID)
 
 	events, err := h.runner.ExecutePrompt(runCtx, runner.RunnerOptions{
 		AgyPath:        h.cfg.AgyPath,

@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"agybot/internal/account"
@@ -25,6 +26,8 @@ type BotHandler struct {
 	runner       *runner.AntigravityRunner
 	guard        *security.SecurityGuard
 	userSessions map[int64]*UserSessionState
+	userCancels  map[int64]context.CancelFunc
+	mu           sync.RWMutex
 }
 
 func NewBotHandler(
@@ -45,32 +48,71 @@ func NewBotHandler(
 		runner:       r,
 		guard:        guard,
 		userSessions: make(map[int64]*UserSessionState),
+		userCancels:  make(map[int64]context.CancelFunc),
+	}
+}
+
+func (h *BotHandler) registerCancel(userID int64, cancel context.CancelFunc) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	h.userCancels[userID] = cancel
+}
+
+func (h *BotHandler) unregisterCancel(userID int64) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	delete(h.userCancels, userID)
+}
+
+func (h *BotHandler) handleCancel(ctx context.Context, userID int64, chatID int64) {
+	h.mu.Lock()
+	cancelFunc, exists := h.userCancels[userID]
+	if exists && cancelFunc != nil {
+		cancelFunc()
+		delete(h.userCancels, userID)
+		h.mu.Unlock()
+		_, _ = h.client.SendMessage(ctx, chatID, "🛑 **Task request cancelled by user.**", h.buildMainKeyboard(userID))
+	} else {
+		h.mu.Unlock()
+		_, _ = h.client.SendMessage(ctx, chatID, "ℹ️ No active task or prompt is currently running.", h.buildMainKeyboard(userID))
 	}
 }
 
 // StartPolling launches long-polling loop against Telegram Bot API
 func (h *BotHandler) StartPolling(ctx context.Context) error {
-	// Register commands with Telegram API for auto-complete on mobile phone
-	_ = h.client.SetMyCommands(ctx, []BotCommand{
+	// Register 25 slash commands with Telegram API for auto-complete menu
+	err := h.client.SetMyCommands(ctx, []BotCommand{
+		{Command: "start", Description: "Start & Authenticate Remote Controller"},
 		{Command: "plan", Description: "Interactive Plan & Controller Dashboard"},
+		{Command: "status", Description: "Host CPU, RAM, Containers & Session Metrics"},
+		{Command: "health", Description: "Micro-App & System Health Check"},
+		{Command: "cancel", Description: "Abort Active AI Prompt or Task"},
 		{Command: "model", Description: "Switch Active AI Model (Gemini/Claude/Ollama)"},
 		{Command: "effort", Description: "Set Model Reasoning Effort (High/Medium/Low)"},
 		{Command: "quota", Description: "Check Account Quotas (agyswitch)"},
 		{Command: "thinking", Description: "Toggle Reasoning Steps ($0 Free)"},
 		{Command: "metrics", Description: "View Token Usage & Cost Telemetry"},
-		{Command: "projects", Description: "Select Registered Projects"},
+		{Command: "skills", Description: "Inspect Loaded Skills & Plugins"},
+		{Command: "proj", Description: "Registered Projects List (agyproj)"},
 		{Command: "cd", Description: "Switch Workspace Directory"},
 		{Command: "ls", Description: "List Directory Files & Folders"},
+		{Command: "cat", Description: "View File Content"},
 		{Command: "search", Description: "Deep Workspace Search & AI Summary"},
 		{Command: "getfile", Description: "Download File from PC to Phone"},
+		{Command: "newproj", Description: "Scaffold & Register New Project"},
 		{Command: "clear", Description: "Clear Context & Start Fresh"},
 		{Command: "rebuild", Description: "Rebuild All 12 Micro-Apps"},
 		{Command: "replan", Description: "Audit Tech Debt & Replan Roadmap"},
 		{Command: "swarm", Description: "Run Multi-Agent Parallel Swarm"},
 		{Command: "review", Description: "Perform Code Security Review"},
-		{Command: "health", Description: "Micro-App & System Health Check"},
+		{Command: "config", Description: "Show Bot System Configuration"},
 		{Command: "help", Description: "Bot Commands & Reference Guide"},
 	})
+	if err != nil {
+		fmt.Printf("⚠️ SetMyCommands Error: %v\n", err)
+	} else {
+		fmt.Println("✅ Successfully registered 25 slash commands with Telegram Bot API!")
+	}
 
 	var offset int64 = 0
 
@@ -164,6 +206,8 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 		switch cmd {
 		case "/start", "/plan", "/menu":
 			h.handlePlanDashboard(ctx, userID, chatID)
+		case "/cancel", "/stop", "/abort":
+			h.handleCancel(ctx, userID, chatID)
 		case "/help":
 			h.handleHelp(ctx, chatID)
 		case "/model", "/models":
@@ -285,6 +329,11 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 		return
 	}
 
+	if lowerText == "🛑 cancel" || lowerText == "cancel" || lowerText == "stop" || lowerText == "abort" {
+		h.handleCancel(ctx, userID, chatID)
+		return
+	}
+
 	// 6. Natural Language / AI Coding Prompt to Antigravity
 	h.handleAIPrompt(ctx, userID, chatID, text)
 }
@@ -294,6 +343,11 @@ func (h *BotHandler) handleCallbackQuery(ctx context.Context, q *CallbackQuery) 
 	userID := q.From.ID
 	chatID := q.Message.Chat.ID
 	data := q.Data
+
+	if data == "cancel_prompt" {
+		h.handleCancel(ctx, userID, chatID)
+		return
+	}
 
 	if strings.HasPrefix(data, "cd_proj_") {
 		numStr := strings.TrimPrefix(data, "cd_proj_")

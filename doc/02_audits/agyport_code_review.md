@@ -1,126 +1,86 @@
-# ⚡ AGYPORT — Code Review & Architecture Quality Audit
+# AGYPORT Code & Architecture Review Report
 
-> **Scope:** `apps/agyport` (Port Manager, RAM Leverage & Web UI Dashboard)  
-> **Auditor:** Antigravity AI Code Sentinel  
-> **Target App Version:** AGYPORT v2.0 (Go Engine)  
-> **Deliverable Path:** [`./doc/02_audits/agyport_code_review.md`](./doc/02_audits/agyport_code_review.md)
-
----
-
-## 🧭 Workspace Relative Links
-
-- **Audit Document:** [`./doc/02_audits/agyport_code_review.md`](./doc/02_audits/agyport_code_review.md)
-- **Port Model:** [`./apps/agyport/internal/model/port.go`](./apps/agyport/internal/model/port.go)
-- **Port Collector (Linux & General):** [`./apps/agyport/internal/service/portops/collector.go`](./apps/agyport/internal/service/portops/collector.go)
-- **Port Collector (Windows Win32 Native):** [`./apps/agyport/internal/service/portops/collector_windows.go`](./apps/agyport/internal/service/portops/collector_windows.go)
-- **RAM Leverage Service:** [`./apps/agyport/internal/service/ramops/ram.go`](./apps/agyport/internal/service/ramops/ram.go)
-- **Web Server & Dashboard:** [`./apps/agyport/internal/web/server.go`](./apps/agyport/internal/web/server.go)
-- **TUI Cockpit View:** [`./apps/agyport/internal/view/tui.go`](./apps/agyport/internal/view/tui.go)
+**Date:** October 5, 2026  
+**Application:** `agyport` (Port Manager & RAM Optimizer Go Engine)  
+**Binary Location:** [dist/windows/agyport.exe](./dist/windows/agyport.exe)  
+**Web Engine:** `http://127.0.0.1:5999/`
 
 ---
 
-## 1. Executive Summary & Audit Overview
+## 1. Executive Summary
 
-A comprehensive architectural and performance code review was performed on **`agyport`** following user feedback regarding:
-1. **Missing Process & Project Names on Windows:** Listening ports (e.g., `http://localhost:3000`) displayed with blank process names, 0 RAM usage, and unknown project names.
-2. **Dashboard Performance & Polling Overhead:** Web UI (`http://127.0.0.1:5999/`) experienced heavy navigation lag due to un-cached background process scans.
-3. **Identification of Developer Servers:** Inability to pinpoint which app/folder owned specific port listeners (e.g. `inventory-app`).
-4. **Misclassification of Windows System Services:** Sockets owned by `svchost.exe`, `System`, `dosvc`, and Web Browsers (`msedge.exe`) were misclassified as `Custom Dev Server`.
-5. **Table Default Order & Noise Reduction:** Lack of framework-priority sorting (developer ports should appear on top), missing system port filter toggle, and absence of table pagination.
+This code review and system audit addresses critical process control issues on Windows, corrects TCP `netstat` state parsing, eliminates RAM suggestion clutter, and adds developer-focused sorting, grouping, pagination, and system port filtering to both the Web Dashboard (`http://127.0.0.1:5999/`) and CLI engine.
 
 ---
 
-## 2. Evidence-Based Findings & Remediation
+## 2. Severity Taxonomy & Identified Findings
 
-### **[P0 - CRITICAL]: Complete Failure of Process & RAM Inspection on Windows due to Hardcoded `/proc` VFS Assumption**
+### [P0 - CRITICAL] Process Tree Kill Failures on Windows (Resolved)
+- **Location:** [apps/agyport/internal/service/portops/killer.go:70-76](./apps/agyport/internal/service/portops/killer.go#L70-L76)
+- **Failure Mechanism:** On Windows, developer web applications (e.g. Node.js, Vite, Next.js) spawn child worker processes (`node.exe` -> `esbuild`/`swc`). Calling `taskkill /PID <pid> /T` without `/F` fails with exit code `128` ("process can only be terminated forcefully (with /F option)").
+- **Fix Applied:** Modified `killer.go` to unconditionally include `/T /F` flags in Windows `taskkill` calls (`exec.Command("taskkill", "/PID", pidStr, "/T", "/F")`), guaranteeing clean process tree termination without dangling child sockets.
 
-- **File Path:** [`collector.go:317`](./apps/agyport/internal/service/portops/collector.go#L317)
-- **Offending Code Snippet:**
-  ```go
-  // 1. Read /proc/{pid}/cmdline
-  if cmdBytes, err := os.ReadFile(fmt.Sprintf("/proc/%d/cmdline", p.PID)); err == nil { ... }
-  ```
-- **Failure Mechanism:** On Windows, `/proc/{pid}/cmdline`, `/proc/{pid}/statm`, and `/proc/{pid}/status` do not exist. `parseWindowsNetstat` extracted PIDs from `netstat -ano`, but `enrichPortDetails` failed silently when trying to read Linux `/proc` files. Consequently, `p.ProcessName` remained empty (`""`), `p.CommandLine` was empty, `p.MemoryBytes` remained `0`, and `p.ProjectName` could not be inferred.
-- **Remediation Patch:** Implemented Win32 native API bindings in [`collector_windows.go`](./apps/agyport/internal/service/portops/collector_windows.go#L1) using `kernel32.dll` (`CreateToolhelp32Snapshot`, `GlobalMemoryStatusEx`, `OpenProcess`) and `psapi.dll` (`GetProcessMemoryInfo` for `WorkingSetSize`). Process names and RAM metrics are now retrieved natively in microsecond execution time.
-
----
-
-### **[P1 - HIGH]: Un-cached Repeated Execution of Heavy OS Process Commands on 2.5s Web Polling**
-
-- **File Path:** [`server.go:84-89`](./apps/agyport/internal/web/server.go#L84-L89) & [`collector.go:26`](./apps/agyport/internal/service/portops/collector.go#L26)
-- **Offending Code Snippet:**
-  ```go
-  func handleStats(w http.ResponseWriter, r *http.Request) {
-      ports, _ := portops.ListPorts()
-      mem, _ := ramops.GetMemorySummary()
-      procs, _ := ramops.GetTopMemoryProcesses(20)
-      suggestions := ramops.GenerateRAMSuggestions(ports, procs, mem)
-      ...
-  }
-  ```
-- **Failure Mechanism:** Every 2.5 seconds, the Web UI JavaScript frontend polled `/api/stats`. Each request unconditionally re-scanned network sockets and all running system processes. On Windows systems with hundreds of processes, un-targeted process lookups (such as `tasklist /v`) took up to 150 seconds, blocking thread loops, causing web dashboard latency, and spawning high CPU usage.
-- **Remediation Patch:** Introduced a thread-safe 2-second TTL in-memory cache layer in [`collector.go`](./apps/agyport/internal/service/portops/collector.go#L24-L35) and [`ram.go`](./apps/agyport/internal/service/ramops/ram.go#L15-L25). Calls within the 2-second window return cached stats instantly (< 1 ms), while termination calls (`KillPort`, `KillPID`, `ReclaimDevRAM`) invoke `InvalidatePortCache()` for immediate re-scans.
+```go
+if runtime.GOOS == "windows" {
+    // Always use /T (tree kill) and /F (force) on Windows to ensure child processes are terminated
+    cmd := exec.Command("taskkill", "/PID", strconv.Itoa(pid), "/T", "/F")
+    if out, err := cmd.CombinedOutput(); err != nil {
+        return fmt.Errorf("taskkill error: %s (%v)", strings.TrimSpace(string(out)), err)
+    }
+    return nil
+}
+```
 
 ---
 
-### **[P1 - HIGH]: TCP Listening State Column Offset Bug in `parseWindowsNetstat`**
-
-- **File Path:** [`collector.go:315-319`](./apps/agyport/internal/service/portops/collector.go#L315-L319)
-- **Offending Code Snippet:**
-  ```go
-  if proto == "tcp" {
-      state = fields[2]
-      if !strings.EqualFold(state, "LISTENING") {
-          continue
-      }
-      pid, _ = strconv.Atoi(fields[4])
-  }
-  ```
-- **Failure Mechanism:** In Windows `netstat -ano` output format (`TCP LocalAddress ForeignAddress State PID`), `fields[2]` contains the *Foreign Address* (e.g. `0.0.0.0:0`), while `fields[3]` contains the *State* (`LISTENING`). Checking `fields[2] == "LISTENING"` evaluated to `false` for every single TCP port, hiding all TCP listeners (including port 3000) from the user interface.
-- **Remediation Patch:** Updated `parseWindowsNetstat` in [`collector.go`](./apps/agyport/internal/service/portops/collector.go#L312) to dynamically inspect state columns across all fields, accurately detecting TCP `LISTENING` sockets on Windows.
+### [P1 - HIGH] Netstat TCP Listening State Parsing Index Shift (Resolved)
+- **Location:** [apps/agyport/internal/service/portops/collector.go:210-230](./apps/agyport/internal/service/portops/collector.go#L210-L225)
+- **Failure Mechanism:** Windows `netstat -ano` output format is:
+  `TCP    0.0.0.0:3000    0.0.0.0:0    LISTENING    21588`
+  The code previously checked `fields[2] == "LISTENING"`, which evaluated `0.0.0.0:0` (Foreign Address). This caused active TCP dev ports (such as 3000, 4321, 5432, 6379) to be dropped from listening port listings.
+- **Fix Applied:** Updated field index check to `fields[3] == "LISTENING"` and parsed PID from `fields[4]`.
 
 ---
 
-### **[P2 - MEDIUM]: Misclassification of Windows System Services as Custom Dev Servers**
-
-- **File Path:** [`collector.go:437-513`](./apps/agyport/internal/service/portops/collector.go#L437-L513)
-- **Offending Code Snippet:**
-  ```go
-  default:
-      if p.Port >= 3000 && p.Port <= 9999 {
-          p.Framework = "Custom Dev Server"
-          p.DevCategory = "Web Server"
-      }
-  ```
-- **Failure Mechanism:** Windows system background processes (e.g. `svchost.exe` on WSD port 3702, LLMNR 5355, Delivery Optimization 7680, IPsec 4500) and Web Browsers (`msedge.exe` on QUIC/mDNS 5353) were assigned `Custom Dev Server` because their port numbers exceeded 1024.
-- **Remediation Patch:** Enhanced `inferFramework` in [`collector.go`](./apps/agyport/internal/service/portops/collector.go#L437) with explicit categorizations for Web Browsers (`Browser`), Windows OS Services (`WSD Service`, `LLMNR`, `mDNS`, `Delivery Optimization`), VPNs (`Tailscale VPN`), and Dev Tools (`Android ADB`). Added `is_system_port = true` protection to all system services.
+### [P2 - MEDIUM] System Socket Misclassification as Custom Dev Servers (Resolved)
+- **Location:** [apps/agyport/internal/service/portops/collector.go:345-385](./apps/agyport/internal/service/portops/collector.go#L345-L385)
+- **Failure Mechanism:** High system sockets (`svchost.exe`, `System`, `dosvc`, `lsass`, `msedge.exe`, `chrome.exe`) on ports > 1024 were falling through to default `Custom Dev Server`.
+- **Fix Applied:**
+  1. Added explicit `Browser` detection category for `msedge.exe`, `chrome.exe`, `firefox.exe`, `brave.exe`.
+  2. Identified system background daemons (`svchost`, `System`, `lsass`, `services`, `dosvc`, `sshd`, `tailscaled`, `adb`, `hasplms`, `sqlservr`) and flagged `is_system_port = true`.
+  3. Formulated priority sorting (`getCategoryPriority`) placing Dev Servers (Priority #1) at the VERY TOP of port listings.
 
 ---
 
-### **[P2 - MEDIUM]: Absence of Framework Priority Sorting and System Port Filter**
-
-- **File Path:** [`collector.go:123-126`](./apps/agyport/internal/service/portops/collector.go#L123-L126) & [`server.go:560-600`](./apps/agyport/internal/web/server.go#L560-L600)
-- **Failure Mechanism:** Default sorting was strictly by port number ascending, displaying system ports (22, 53, 135, 137) at the top and pushing developer app ports (3000, 4321, 5432, 6379) off screen.
-- **Remediation Patch:** 
-  1. Implemented `getCategoryPriority(p)` in [`collector.go`](./apps/agyport/internal/service/portops/collector.go#L509) to sort active developer servers (Next.js, Vite, FastAPI, ASP.NET Core, Custom Dev Server) at Priority #1, Databases at #2, DevTools at #3, Browsers at #4, and System Services at the bottom.
-  2. Added **`🛡️ Hide System Ports`** toggle (checked by default) and **Table Pagination** (15, 25, 50, 100, All items per page) in [`server.go`](./apps/agyport/internal/web/server.go#L440).
+### [P3 - LOW] Removal of Smart RAM Suggestions Box (Resolved)
+- **Location:** [apps/agyport/internal/service/ramops/ram.go:75-80](./apps/agyport/internal/service/ramops/ram.go#L75-L80) & [apps/agyport/internal/web/server.go](./apps/agyport/internal/web/server.go)
+- **Rationale:** Per user feedback ("remove the suggset part thes so dumb"), removed suggestion banners from the Web UI and emptied the backend generator `GenerateRAMSuggestions` to return 0 suggestions.
 
 ---
 
-## 3. Verification Matrix
-
-| Audit Aspect | Linux/WSL2 | Windows (Win32 Native) | Status |
-| :--- | :--- | :--- | :--- |
-| **Unit Tests (`go test ./...`)** | 100% Pass | 100% Pass | `PASS` |
-| **Listening Port Enumeration** | `lsof` / `ss` | `netstat -ano` | `PASS` |
-| **TCP Port 3000 / 4321 Discovery** | Discovered | Discovered | `PASS` |
-| **Host Memory Summary** | `/proc/meminfo` | `GlobalMemoryStatusEx` | `PASS` |
-| **Process RAM (RSS)** | `/proc/{pid}/statm` | `GetProcessMemoryInfo` | `PASS` |
-| **System Service Protection** | Protected | Protected (`is_system_port`) | `PASS` |
-| **Browser Category (`msedge`)** | Categorized | Categorized (`Browser`) | `PASS` |
-| **Framework Priority Ordering** | Dev App Top | Dev App Top | `PASS` |
-| **Table Pagination Controls** | Supported | Supported (25/page) | `PASS` |
-| **Response Latency** | < 15 ms | < 15 ms | `PASS` |
+### [P4 - INFO / ENHANCEMENT] Web Dashboard Enhancements (Resolved)
+- **Location:** [apps/agyport/internal/web/server.go](./apps/agyport/internal/web/server.go)
+- **Features Implemented:**
+  1. **🛡️ Hide System Ports Toggle:** Checked by default to declutter developer workspace.
+  2. **Group By Dropdown:** Supports `None (Flat List)`, `Framework`, and `Category` with collapsible section headers.
+  3. **Interactive Column Sorting:** Clickable column headers (`PORT`, `PROTO`, `PID`, `PROCESS / PROJECT`, `FRAMEWORK`, `RAM USAGE`) with `▲`/`▼` indicators.
+  4. **Table Pagination:** Customizable page size (`15`, `25`, `50`, `100`, `All`) with `Prev`/`Next` navigation and total count displays.
+  5. **Direct Server Access:** Added `🌐 Open` button for instant dev server navigation (`http://localhost:<port>`).
 
 ---
-*Audit Completed for AGYPORT v2.0.*
+
+## 3. Verification & Test Suite
+
+All unit tests pass cleanly:
+```bash
+wsl bash -c "cd apps/agyport && go test -v ./..."
+# Result: PASS (ok agyport/internal/model, portops, ramops, view, web)
+```
+Cross-compiled binary verified on Windows:
+```powershell
+dist\windows\agyport.exe ls --json
+```
+
+---
+
+*Report prepared by Antigravity AI Code Review Engine.*
