@@ -106,7 +106,7 @@ func (g *SecurityGuard) GetSafetyPromptPrefix(workspaceDir string) string {
 	return fmt.Sprintf(
 		"[SYSTEM SAFETY CONSTRAINT: You must NEVER execute destructive OS operations "+
 			"such as formatting disks, running diskpart, wiping system directories, modifying HKLM registry, "+
-			"or shutting down the computer. Strictly confine all file operations to: %s]\n\n",
+			"or shutting down the computer. Primary workspace is %s. You may read/access files and drives (like D:, E:, etc.) when explicitly requested by the user, provided you perform no destructive operations.]\n\n",
 		workspaceDir,
 	)
 }

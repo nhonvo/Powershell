@@ -211,9 +211,15 @@ func (w *WorkspaceManager) SetUserWorkspace(userID int64, pathOrID string) (stri
 	return absPath, nil
 }
 
-// ListFiles lists directory contents of a workspace subfolder
+// ListFiles lists directory contents of a workspace subfolder or absolute target path
 func (w *WorkspaceManager) ListFiles(workspaceDir string, subpath string) ([]FileNode, error) {
-	target := filepath.Join(workspaceDir, subpath)
+	target := subpath
+	if target == "" {
+		target = workspaceDir
+	} else if !filepath.IsAbs(target) && !strings.HasPrefix(target, `\\`) {
+		target = filepath.Join(workspaceDir, subpath)
+	}
+
 	entries, err := os.ReadDir(target)
 	if err != nil {
 		return nil, err
@@ -236,13 +242,17 @@ func (w *WorkspaceManager) ListFiles(workspaceDir string, subpath string) ([]Fil
 	return nodes, nil
 }
 
-// ReadFileContent securely reads text files within the workspace limit
-func (w *WorkspaceManager) ReadFileContent(workspaceDir string, relativePath string, maxBytes int64) (string, error) {
+// ReadFileContent securely reads text files within the workspace limit or absolute target path
+func (w *WorkspaceManager) ReadFileContent(workspaceDir string, relativeOrAbsPath string, maxBytes int64) (string, error) {
 	if maxBytes <= 0 {
 		maxBytes = 32 * 1024 // 32KB default
 	}
 
-	fullPath := filepath.Join(workspaceDir, relativePath)
+	fullPath := relativeOrAbsPath
+	if !filepath.IsAbs(fullPath) {
+		fullPath = filepath.Join(workspaceDir, relativeOrAbsPath)
+	}
+
 	f, err := os.Open(fullPath)
 	if err != nil {
 		return "", err

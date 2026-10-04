@@ -418,8 +418,13 @@ func (h *BotHandler) handleLs(ctx context.Context, userID int64, chatID int64, s
 		return
 	}
 
+	displayPath := subpath
+	if displayPath == "" {
+		displayPath = ws
+	}
+
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("📂 **Files in `%s/%s`:**\n\n", filepath.Base(ws), subpath))
+	sb.WriteString(fmt.Sprintf("📂 **Files in `%s`:**\n\n", displayPath))
 	for _, f := range files {
 		icon := "📄"
 		if f.IsDir {
