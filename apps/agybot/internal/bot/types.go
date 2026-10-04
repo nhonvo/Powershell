@@ -23,6 +23,16 @@ type InlineKeyboardMarkup struct {
 	InlineKeyboard [][]InlineKeyboardButton `json:"inline_keyboard"`
 }
 
+type KeyboardButton struct {
+	Text string `json:"text"`
+}
+
+type ReplyKeyboardMarkup struct {
+	Keyboard       [][]KeyboardButton `json:"keyboard"`
+	ResizeKeyboard bool               `json:"resize_keyboard,omitempty"`
+	IsPersistent   bool               `json:"is_persistent,omitempty"`
+}
+
 type Document struct {
 	FileID   string `json:"file_id"`
 	FileName string `json:"file_name,omitempty"`
@@ -72,4 +82,19 @@ type APIResponse[T any] struct {
 	Result      T      `json:"result,omitempty"`
 	Description string `json:"description,omitempty"`
 	ErrorCode   int    `json:"error_code,omitempty"`
+}
+
+type PromptMetrics struct {
+	TotalPrompts int     `json:"total_prompts"`
+	TotalSteps   int     `json:"total_steps"`
+	EstTokens    int     `json:"est_tokens"`
+	EstCostUSD   float64 `json:"est_cost_usd"`
+}
+
+type UserSessionState struct {
+	ActiveConvID string        `json:"active_conv_id"`
+	ActiveModel  string        `json:"active_model"`
+	ActiveEffort string        `json:"active_effort"`
+	ShowThinking bool          `json:"show_thinking"`
+	Metrics      PromptMetrics `json:"metrics"`
 }

@@ -12,6 +12,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
+	"time"
 
 	"agyport/internal/model"
 )
@@ -20,14 +22,42 @@ var (
 	ssUserRegex   = regexp.MustCompile(`pid=(\d+)`)
 	ssNameRegex   = regexp.MustCompile(`"([^"]+)"`)
 	pageSizeBytes = uint64(os.Getpagesize())
+
+	portCacheMutex sync.Mutex
+	cachedPorts    []model.PortInfo
+	lastPortScan   time.Time
+	cacheTTL       = 2 * time.Second
 )
+
+// InvalidatePortCache clears the cached ports for an instant re-scan
+func InvalidatePortCache() {
+	portCacheMutex.Lock()
+	defer portCacheMutex.Unlock()
+	lastPortScan = time.Time{}
+	cachedPorts = nil
+}
 
 // ListPorts retrieves all active listening ports with enriched process and memory stats
 func ListPorts() ([]model.PortInfo, error) {
+	portCacheMutex.Lock()
+	if time.Since(lastPortScan) < cacheTTL && cachedPorts != nil {
+		result := make([]model.PortInfo, len(cachedPorts))
+		copy(result, cachedPorts)
+		portCacheMutex.Unlock()
+		return result, nil
+	}
+	portCacheMutex.Unlock()
+
 	totalMemBytes := getTotalMemoryBytes()
 
 	var ports []model.PortInfo
 	seen := make(map[string]bool)
+
+	// Pre-fetch Windows native process map if on Windows
+	var winProcMap map[int]*WinProcessDetails
+	if runtime.GOOS == "windows" {
+		winProcMap = GetWindowsProcessesMap()
+	}
 
 	// 1. Try lsof first (fast and rich for current user processes)
 	if lsofPorts, err := parseLsof(); err == nil && len(lsofPorts) > 0 {
@@ -56,10 +86,33 @@ func ListPorts() ([]model.PortInfo, error) {
 	// 3. Fallback: If on Windows or cross-compiled
 	if len(ports) == 0 && runtime.GOOS == "windows" {
 		if winPorts, err := parseWindowsNetstat(); err == nil {
+			var targetPIDs []int
+			for _, wp := range winPorts {
+				if wp.PID > 0 {
+					targetPIDs = append(targetPIDs, wp.PID)
+				}
+			}
+			EnrichWindowsTargetPIDs(winProcMap, targetPIDs)
+
 			for _, p := range winPorts {
 				key := fmt.Sprintf("%s:%d", p.Protocol, p.Port)
 				if !seen[key] {
 					seen[key] = true
+					if d, ok := winProcMap[p.PID]; ok {
+						if p.ProcessName == "" {
+							p.ProcessName = d.Name
+						}
+						if p.CommandLine == "" {
+							p.CommandLine = d.CommandLine
+						}
+						if p.MemoryBytes == 0 {
+							p.MemoryBytes = d.MemoryBytes
+							p.MemoryFormatted = model.FormatBytes(p.MemoryBytes)
+							if totalMemBytes > 0 {
+								p.MemoryPercent = (float64(p.MemoryBytes) / float64(totalMemBytes)) * 100.0
+							}
+						}
+					}
 					enrichPortDetails(&p, totalMemBytes)
 					ports = append(ports, p)
 				}
@@ -67,10 +120,21 @@ func ListPorts() ([]model.PortInfo, error) {
 		}
 	}
 
-	// Sort ports ascending
+	// Sort ports: Custom Dev & App Frameworks first, DBs second, Browsers third, System ports on bottom
 	sort.Slice(ports, func(i, j int) bool {
+		pI := getCategoryPriority(ports[i])
+		pJ := getCategoryPriority(ports[j])
+		if pI != pJ {
+			return pI < pJ
+		}
 		return ports[i].Port < ports[j].Port
 	})
+
+	portCacheMutex.Lock()
+	cachedPorts = make([]model.PortInfo, len(ports))
+	copy(cachedPorts, ports)
+	lastPortScan = time.Now()
+	portCacheMutex.Unlock()
 
 	return ports, nil
 }
@@ -253,14 +317,21 @@ func parseWindowsNetstat() ([]model.PortInfo, error) {
 			if len(fields) < 5 {
 				continue
 			}
-			state = fields[2]
-			if !strings.EqualFold(state, "LISTENING") {
+			isListen := false
+			for i := 2; i < len(fields)-1; i++ {
+				if strings.EqualFold(fields[i], "LISTENING") {
+					isListen = true
+					state = "LISTENING"
+					break
+				}
+			}
+			if !isListen {
 				continue
 			}
-			pid, _ = strconv.Atoi(fields[4])
+			pid, _ = strconv.Atoi(fields[len(fields)-1])
 		} else {
 			state = "UNCONN"
-			pid, _ = strconv.Atoi(fields[3])
+			pid, _ = strconv.Atoi(fields[len(fields)-1])
 		}
 
 		addr, port := parseAddrAndPort(localAddr)
@@ -369,11 +440,21 @@ func enrichPortDetails(p *model.PortInfo, totalMem uint64) {
 
 // inferFramework inspects process name, commandline, and port to determine framework and category
 func inferFramework(p *model.PortInfo) {
+	p.ProjectName = InferProjectName(p.CommandLine, p.ProcessName)
 	cmdLower := strings.ToLower(p.CommandLine)
 	nameLower := strings.ToLower(p.ProcessName)
 
-	// Framework detection
 	switch {
+	// 1. Web Browsers
+	case nameLower == "msedge.exe" || nameLower == "msedge" ||
+		nameLower == "chrome.exe" || nameLower == "chrome" ||
+		nameLower == "firefox.exe" || nameLower == "firefox" ||
+		nameLower == "brave.exe" || nameLower == "brave" ||
+		nameLower == "opera.exe" || nameLower == "vivaldi.exe":
+		p.Framework = "Browser"
+		p.DevCategory = "Browser"
+
+	// 2. Known Dev Frameworks
 	case strings.Contains(cmdLower, "next") || strings.Contains(cmdLower, "next-server"):
 		p.Framework = "Next.js"
 		p.DevCategory = "Frontend"
@@ -392,7 +473,7 @@ func inferFramework(p *model.PortInfo) {
 	case strings.Contains(cmdLower, "express") || strings.Contains(cmdLower, "nest"):
 		p.Framework = "Nest/Express"
 		p.DevCategory = "Backend"
-	case nameLower == "node" || strings.Contains(cmdLower, "node "):
+	case nameLower == "node" || nameLower == "node.exe" || strings.Contains(cmdLower, "node "):
 		p.Framework = "Node.js"
 		p.DevCategory = "Web Server"
 	case strings.Contains(cmdLower, "fastapi") || strings.Contains(cmdLower, "uvicorn"):
@@ -407,35 +488,91 @@ func inferFramework(p *model.PortInfo) {
 	case strings.HasPrefix(nameLower, "python"):
 		p.Framework = "Python App"
 		p.DevCategory = "Backend"
-	case nameLower == "dotnet" || strings.Contains(cmdLower, "dotnet"):
+	case nameLower == "dotnet" || nameLower == "dotnet.exe" || strings.Contains(cmdLower, "dotnet"):
 		p.Framework = "ASP.NET Core"
 		p.DevCategory = "Backend"
-	case nameLower == "postgres" || p.Port == 5432:
+
+	// 3. Databases & AI/ML
+	case nameLower == "postgres" || nameLower == "postgres.exe" || p.Port == 5432:
 		p.Framework = "PostgreSQL"
 		p.DevCategory = "Database"
-	case nameLower == "redis-server" || p.Port == 6379:
+	case nameLower == "redis-server" || nameLower == "redis-server.exe" || nameLower == "wslrelay.exe" || p.Port == 6379:
 		p.Framework = "Redis"
 		p.DevCategory = "Database"
-	case nameLower == "mysqld" || p.Port == 3306:
+	case nameLower == "mysqld" || nameLower == "mysqld.exe" || p.Port == 3306:
 		p.Framework = "MySQL"
 		p.DevCategory = "Database"
-	case nameLower == "mongod" || p.Port == 27017:
+	case nameLower == "mongod" || nameLower == "mongod.exe" || p.Port == 27017:
 		p.Framework = "MongoDB"
 		p.DevCategory = "Database"
 	case nameLower == "docker-proxy" || strings.Contains(cmdLower, "docker-proxy"):
 		p.Framework = "Docker Container"
 		p.DevCategory = "Container"
-	case nameLower == "ollama" || p.Port == 11434:
+	case nameLower == "ollama" || nameLower == "ollama.exe" || p.Port == 11434:
 		p.Framework = "Ollama AI"
 		p.DevCategory = "AI/ML"
-	case nameLower == "agy" || strings.Contains(cmdLower, "agy"):
+	case nameLower == "agy" || nameLower == "agy.exe" || strings.Contains(cmdLower, "agy"):
 		p.Framework = "Antigravity CLI"
 		p.DevCategory = "DevTool"
+	case nameLower == "adb" || nameLower == "adb.exe" || p.Port == 5037:
+		p.Framework = "Android ADB"
+		p.DevCategory = "DevTool"
+
+	// 4. Windows OS & System Services (svchost, System, lsass, etc.)
+	case nameLower == "svchost.exe" || nameLower == "svchost" ||
+		nameLower == "system" || nameLower == "system.exe" ||
+		nameLower == "lsass.exe" || nameLower == "services.exe" ||
+		nameLower == "wininit.exe" || nameLower == "spoolsv.exe" ||
+		nameLower == "dosvc" || nameLower == "sshd.exe" || nameLower == "sshd":
+		p.DevCategory = "System"
+		p.IsSystemPort = true
+		switch p.Port {
+		case 22:
+			p.Framework = "OpenSSH"
+		case 53:
+			p.Framework = "DNS"
+		case 3702:
+			p.Framework = "WSD Service"
+		case 4500:
+			p.Framework = "IPsec NAT-T"
+		case 5040, 5050:
+			p.Framework = "Windows Service"
+		case 5353:
+			p.Framework = "mDNS"
+		case 5355:
+			p.Framework = "LLMNR"
+		case 5357:
+			p.Framework = "WSDAPI"
+		case 7680:
+			p.Framework = "Delivery Optimization"
+		default:
+			p.Framework = "System Service"
+		}
+
+	case nameLower == "teamviewer_service.exe" || nameLower == "teamviewer_service" || strings.Contains(nameLower, "teamviewer"):
+		p.Framework = "TeamViewer"
+		p.DevCategory = "System"
+		p.IsSystemPort = true
+	case nameLower == "tailscaled.exe" || nameLower == "tailscaled":
+		p.Framework = "Tailscale VPN"
+		p.DevCategory = "System"
+		p.IsSystemPort = true
+	case nameLower == "hasplms.exe" || nameLower == "hasplms":
+		p.Framework = "HASP License"
+		p.DevCategory = "System"
+		p.IsSystemPort = true
+	case nameLower == "sqlservr.exe" || nameLower == "sqlservr" || p.Port == 1434:
+		p.Framework = "MS SQL Server"
+		p.DevCategory = "Database"
+
 	case p.IsSystemPort:
 		p.Framework = "System Service"
 		p.DevCategory = "System"
+
 	default:
-		if p.Port >= 3000 && p.Port <= 9999 {
+		// User/Dev app listening on port 3000-9999
+		isUserProc := !strings.Contains(nameLower, "service") && nameLower != "system" && nameLower != "svchost.exe"
+		if p.Port >= 3000 && p.Port <= 9999 && isUserProc {
 			p.Framework = "Custom Dev Server"
 			p.DevCategory = "Web Server"
 		} else {
@@ -443,6 +580,78 @@ func inferFramework(p *model.PortInfo) {
 			p.DevCategory = "Network"
 		}
 	}
+}
+
+func getCategoryPriority(p model.PortInfo) int {
+	if p.DevCategory == "Frontend" || p.DevCategory == "Backend" || (p.DevCategory == "Web Server" && p.Framework != "Generic Service") || p.Framework == "Custom Dev Server" {
+		return 1 // Top priority: Active Dev Servers!
+	}
+	if p.DevCategory == "Database" || p.DevCategory == "AI/ML" || p.DevCategory == "Container" {
+		return 2 // DBs & AI
+	}
+	if p.DevCategory == "DevTool" {
+		return 3
+	}
+	if p.DevCategory == "Browser" {
+		return 4 // Browsers
+	}
+	if p.DevCategory == "System" || p.IsSystemPort {
+		return 5 // System Services on bottom
+	}
+	return 4 // Generic Network
+}
+
+// InferProjectName extracts project name from command line or process path
+func InferProjectName(cmdline, procName string) string {
+	if cmdline == "" && procName == "" {
+		return ""
+	}
+
+	cleanCmd := strings.ReplaceAll(cmdline, "\\", "/")
+	parts := strings.Fields(cleanCmd)
+
+	for _, part := range parts {
+		if strings.Contains(part, "/") {
+			segments := strings.Split(part, "/")
+			for i := len(segments) - 1; i >= 0; i-- {
+				seg := strings.TrimSpace(segments[i])
+				if seg == "" {
+					continue
+				}
+				segLower := strings.ToLower(seg)
+				if isIgnoredDir(segLower) {
+					continue
+				}
+				if idx := strings.LastIndex(seg, "."); idx > 0 {
+					seg = seg[:idx]
+				}
+				if seg != "" && !isIgnoredDir(strings.ToLower(seg)) {
+					return seg
+				}
+			}
+		}
+	}
+
+	name := filepath.Base(procName)
+	if idx := strings.LastIndex(name, "."); idx > 0 {
+		name = name[:idx]
+	}
+	if name != "" && !isIgnoredDir(strings.ToLower(name)) {
+		return name
+	}
+
+	return ""
+}
+
+func isIgnoredDir(d string) bool {
+	switch d {
+	case "node", "node.exe", "python", "python.exe", "python3", "dotnet", "dotnet.exe",
+		"node_modules", "bin", "debug", "release", "dist", "build", ".next", "target",
+		"venv", "site-packages", "appdata", "program files", "program files (x86)",
+		"system32", "cmd", "powershell", "pwsh", "exe", "dll", "js", "ts", "py", "go":
+		return true
+	}
+	return false
 }
 
 // inferServiceFromPort provides fallbacks if PID could not be inspected

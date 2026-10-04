@@ -219,6 +219,14 @@ func (a *App) RunInteractive() error {
 			a.SelectedIndex = 0
 			a.tabSwitched = true
 
+		case 'o', 'O': // Open selected port in default browser
+			if a.ActiveTab == 0 && len(ports) > 0 && a.SelectedIndex < len(ports) {
+				p := ports[a.SelectedIndex]
+				targetURL := fmt.Sprintf("http://localhost:%d", p.Port)
+				web.OpenBrowser(targetURL)
+				a.StatusMsg = fmt.Sprintf("\033[32m🌐 Opened %s in default browser\033[0m", targetURL)
+			}
+
 		case 'w', 'W': // Launch Web UI Dashboard & open default browser
 			go func() {
 				client := http.Client{Timeout: 300 * time.Millisecond}
@@ -568,7 +576,11 @@ func (a *App) renderPortsTab(b *strings.Builder, ports []model.PortInfo, width i
 		}
 
 		if width >= 90 {
-			procName := truncateStr(p.ProcessName, 16)
+			nameToShow := p.ProcessName
+			if p.ProjectName != "" {
+				nameToShow = p.ProjectName
+			}
+			procName := truncateStr(nameToShow, 16)
 			framework := truncateStr(p.Framework, 16)
 			user := truncateStr(p.User, 10)
 			if i == a.SelectedIndex {
@@ -579,7 +591,11 @@ func (a *App) renderPortsTab(b *strings.Builder, ports []model.PortInfo, width i
 					pointer, portCol, p.Port, protoCol, p.State, pidStr, procName, framework, ramStr, user))
 			}
 		} else {
-			procName := truncateStr(p.ProcessName, 15)
+			nameToShow := p.ProcessName
+			if p.ProjectName != "" {
+				nameToShow = p.ProjectName
+			}
+			procName := truncateStr(nameToShow, 15)
 			framework := truncateStr(p.Framework, 14)
 			if i == a.SelectedIndex {
 				b.WriteString(fmt.Sprintf("%s%s %-6d %-5s %-6s %-15s %-14s %-11s\033[0m\033[K\r\n",

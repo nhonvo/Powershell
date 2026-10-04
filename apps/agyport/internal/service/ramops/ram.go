@@ -5,18 +5,48 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
+	"time"
 
 	"agyport/internal/model"
 	"agyport/internal/service/portops"
 )
 
-var pageSizeBytes = uint64(os.Getpagesize())
+var (
+	pageSizeBytes = uint64(os.Getpagesize())
 
-// GetMemorySummary inspects /proc/meminfo and calculates host RAM usage
+	ramCacheMutex  sync.Mutex
+	cachedMem      *model.MemorySummary
+	lastMemScan    time.Time
+	cachedProcs    []model.ProcessMemInfo
+	lastProcsScan  time.Time
+	ramCacheTTL    = 2 * time.Second
+)
+
+// GetMemorySummary inspects host RAM usage (Windows API on Windows, /proc/meminfo on Linux)
 func GetMemorySummary() (*model.MemorySummary, error) {
+	ramCacheMutex.Lock()
+	if time.Since(lastMemScan) < ramCacheTTL && cachedMem != nil {
+		memCopy := *cachedMem
+		ramCacheMutex.Unlock()
+		return &memCopy, nil
+	}
+	ramCacheMutex.Unlock()
+
+	if runtime.GOOS == "windows" {
+		if winMem, err := portops.GetWindowsMemorySummary(); err == nil && winMem != nil {
+			ramCacheMutex.Lock()
+			cachedMem = winMem
+			lastMemScan = time.Now()
+			ramCacheMutex.Unlock()
+			return winMem, nil
+		}
+	}
+
 	data, err := os.ReadFile("/proc/meminfo")
 	if err != nil {
 		return nil, fmt.Errorf("could not read /proc/meminfo: %w", err)
@@ -72,11 +102,28 @@ func GetMemorySummary() (*model.MemorySummary, error) {
 	mem.CachedFormatted = model.FormatBytes(mem.CachedBytes + mem.BuffersBytes)
 	mem.SwapUsedFormatted = model.FormatBytes(mem.SwapUsedBytes)
 
+	ramCacheMutex.Lock()
+	cachedMem = mem
+	lastMemScan = time.Now()
+	ramCacheMutex.Unlock()
+
 	return mem, nil
 }
 
 // GetTopMemoryProcesses returns the highest RAM-consuming processes
 func GetTopMemoryProcesses(limit int) ([]model.ProcessMemInfo, error) {
+	ramCacheMutex.Lock()
+	if time.Since(lastProcsScan) < ramCacheTTL && cachedProcs != nil {
+		procsCopy := make([]model.ProcessMemInfo, len(cachedProcs))
+		copy(procsCopy, cachedProcs)
+		ramCacheMutex.Unlock()
+		if limit > 0 && len(procsCopy) > limit {
+			return procsCopy[:limit], nil
+		}
+		return procsCopy, nil
+	}
+	ramCacheMutex.Unlock()
+
 	memSummary, _ := GetMemorySummary()
 	totalMem := uint64(1)
 	if memSummary != nil && memSummary.TotalBytes > 0 {
@@ -92,95 +139,123 @@ func GetTopMemoryProcesses(limit int) ([]model.ProcessMemInfo, error) {
 		}
 	}
 
-	entries, err := os.ReadDir("/proc")
-	if err != nil {
-		return nil, err
-	}
-
 	var procs []model.ProcessMemInfo
 
-	for _, e := range entries {
-		if !e.IsDir() {
-			continue
-		}
-		pid, err := strconv.Atoi(e.Name())
-		if err != nil || pid <= 1 {
-			continue // Skip non-numeric and init/kernel processes
-		}
-
-		// 1. Read statm
-		statmBytes, err := os.ReadFile(fmt.Sprintf("/proc/%d/statm", pid))
-		if err != nil {
-			continue
-		}
-		fields := strings.Fields(string(statmBytes))
-		if len(fields) < 2 {
-			continue
-		}
-		residentPages, _ := strconv.ParseUint(fields[1], 10, 64)
-		rssBytes := residentPages * pageSizeBytes
-		if rssBytes < 1024*1024 {
-			continue // Skip negligible processes under 1MB
-		}
-
-		// 2. Read cmdline
-		cmdline := ""
-		if cmdBytes, err := os.ReadFile(fmt.Sprintf("/proc/%d/cmdline", pid)); err == nil {
-			parts := strings.Split(string(cmdBytes), "\x00")
-			var clean []string
-			for _, p := range parts {
-				if strings.TrimSpace(p) != "" {
-					clean = append(clean, p)
-				}
+	if runtime.GOOS == "windows" {
+		winMap := portops.GetWindowsProcessesMap()
+		for pid, d := range winMap {
+			if d.MemoryBytes < 1024*1024 {
+				continue // Skip negligible processes under 1MB
 			}
-			cmdline = strings.Join(clean, " ")
-		}
+			isDev := isDevProcess(d.Name, d.CommandLine)
+			ports := pidToPorts[pid]
+			projName := portops.InferProjectName(d.CommandLine, d.Name)
 
-		// 3. Read status for Name and Uid
-		name := ""
-		userName := ""
-		if statusBytes, err := os.ReadFile(fmt.Sprintf("/proc/%d/status", pid)); err == nil {
-			for _, l := range strings.Split(string(statusBytes), "\n") {
-				if strings.HasPrefix(l, "Name:") {
-					name = strings.TrimSpace(strings.TrimPrefix(l, "Name:"))
-				} else if strings.HasPrefix(l, "Uid:") {
-					f := strings.Fields(l)
-					if len(f) >= 2 {
-						if u, err := user.LookupId(f[1]); err == nil {
-							userName = u.Username
-						} else {
-							userName = f[1]
+			procs = append(procs, model.ProcessMemInfo{
+				PID:          pid,
+				Name:         d.Name,
+				ProjectName:  projName,
+				User:         d.User,
+				Cmdline:      d.CommandLine,
+				RSSBytes:     d.MemoryBytes,
+				RSSFormatted: model.FormatBytes(d.MemoryBytes),
+				RSSPercent:   (float64(d.MemoryBytes) / float64(totalMem)) * 100.0,
+				Ports:        ports,
+				IsDevServer:  isDev,
+				Framework:    detectFrameworkFromCmd(d.Name, d.CommandLine),
+			})
+		}
+	} else {
+		entries, err := os.ReadDir("/proc")
+		if err == nil {
+			for _, e := range entries {
+				if !e.IsDir() {
+					continue
+				}
+				pid, err := strconv.Atoi(e.Name())
+				if err != nil || pid <= 1 {
+					continue
+				}
+
+				statmBytes, err := os.ReadFile(fmt.Sprintf("/proc/%d/statm", pid))
+				if err != nil {
+					continue
+				}
+				fields := strings.Fields(string(statmBytes))
+				if len(fields) < 2 {
+					continue
+				}
+				residentPages, _ := strconv.ParseUint(fields[1], 10, 64)
+				rssBytes := residentPages * pageSizeBytes
+				if rssBytes < 1024*1024 {
+					continue
+				}
+
+				cmdline := ""
+				if cmdBytes, err := os.ReadFile(fmt.Sprintf("/proc/%d/cmdline", pid)); err == nil {
+					parts := strings.Split(string(cmdBytes), "\x00")
+					var clean []string
+					for _, p := range parts {
+						if strings.TrimSpace(p) != "" {
+							clean = append(clean, p)
+						}
+					}
+					cmdline = strings.Join(clean, " ")
+				}
+
+				name := ""
+				userName := ""
+				if statusBytes, err := os.ReadFile(fmt.Sprintf("/proc/%d/status", pid)); err == nil {
+					for _, l := range strings.Split(string(statusBytes), "\n") {
+						if strings.HasPrefix(l, "Name:") {
+							name = strings.TrimSpace(strings.TrimPrefix(l, "Name:"))
+						} else if strings.HasPrefix(l, "Uid:") {
+							f := strings.Fields(l)
+							if len(f) >= 2 {
+								if u, err := user.LookupId(f[1]); err == nil {
+									userName = u.Username
+								} else {
+									userName = f[1]
+								}
+							}
 						}
 					}
 				}
+
+				if name == "" && cmdline != "" {
+					name = filepath.Base(strings.Fields(cmdline)[0])
+				}
+
+				isDev := isDevProcess(name, cmdline)
+				ports := pidToPorts[pid]
+				projName := portops.InferProjectName(cmdline, name)
+
+				procs = append(procs, model.ProcessMemInfo{
+					PID:          pid,
+					Name:         name,
+					ProjectName:  projName,
+					User:         userName,
+					Cmdline:      cmdline,
+					RSSBytes:     rssBytes,
+					RSSFormatted: model.FormatBytes(rssBytes),
+					RSSPercent:   (float64(rssBytes) / float64(totalMem)) * 100.0,
+					Ports:        ports,
+					IsDevServer:  isDev,
+					Framework:    detectFrameworkFromCmd(name, cmdline),
+				})
 			}
 		}
-
-		if name == "" && cmdline != "" {
-			name = filepath.Base(strings.Fields(cmdline)[0])
-		}
-
-		isDev := isDevProcess(name, cmdline)
-		ports := pidToPorts[pid]
-
-		procs = append(procs, model.ProcessMemInfo{
-			PID:          pid,
-			Name:         name,
-			User:         userName,
-			Cmdline:      cmdline,
-			RSSBytes:     rssBytes,
-			RSSFormatted: model.FormatBytes(rssBytes),
-			RSSPercent:   (float64(rssBytes) / float64(totalMem)) * 100.0,
-			Ports:        ports,
-			IsDevServer:  isDev,
-			Framework:    detectFrameworkFromCmd(name, cmdline),
-		})
 	}
 
-	// Sort by RSSBytes descending
 	sort.Slice(procs, func(i, j int) bool {
 		return procs[i].RSSBytes > procs[j].RSSBytes
 	})
+
+	ramCacheMutex.Lock()
+	cachedProcs = make([]model.ProcessMemInfo, len(procs))
+	copy(cachedProcs, procs)
+	lastProcsScan = time.Now()
+	ramCacheMutex.Unlock()
 
 	if limit > 0 && len(procs) > limit {
 		procs = procs[:limit]

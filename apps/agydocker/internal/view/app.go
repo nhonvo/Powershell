@@ -1111,8 +1111,10 @@ func (a *App) PrintStatus(w io.Writer) {
 		fmt.Fprintf(w, " 🧠 WSL2 RAM: \033[1m%.2f / %.2f GB\033[0m (\033[33m%.1f%%\033[0m used)\n\n", usedGB, totalGB, mem.UsedPercent)
 	}
 	containers, err := dockerops.ListContainers()
-	if err != nil {
-		a.dockerErr = err
+	if err != nil || a.dockerErr != nil {
+		if err != nil {
+			a.dockerErr = err
+		}
 		fmt.Fprintf(w, " \033[1;37;41m ⚠️ Docker daemon is offline / cannot connect to docker.sock \033[0m\n\n")
 	}
 	fmt.Fprintf(w, " 🐳 Containers (%d total):\n", len(containers))

@@ -86,7 +86,7 @@ func (c *TelegramClient) GetUpdates(ctx context.Context, offset int64, timeoutSe
 	return resp.Result, nil
 }
 
-func (c *TelegramClient) SendMessage(ctx context.Context, chatID int64, text string, markup *InlineKeyboardMarkup) (*Message, error) {
+func (c *TelegramClient) SendMessage(ctx context.Context, chatID int64, text string, markup interface{}) (*Message, error) {
 	var resp APIResponse[Message]
 	payload := map[string]interface{}{
 		"chat_id":    chatID,

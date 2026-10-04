@@ -65,15 +65,16 @@ func KillPID(pid int, force bool) error {
 	}
 
 	if runtime.GOOS == "windows" {
-		args := []string{"/PID", strconv.Itoa(pid), "/T"}
-		if force {
-			args = append(args, "/F")
-		}
+		args := []string{"/PID", strconv.Itoa(pid), "/T", "/F"}
 		cmd := exec.Command("taskkill", args...)
 		out, err := cmd.CombinedOutput()
 		if err != nil {
-			return fmt.Errorf("taskkill error: %s (%w)", string(out), err)
+			outStr := strings.TrimSpace(string(out))
+			if !strings.Contains(outStr, "not found") && !strings.Contains(outStr, "Not Found") {
+				return fmt.Errorf("taskkill error: %s (%w)", outStr, err)
+			}
 		}
+		InvalidatePortCache()
 		return nil
 	}
 
@@ -83,7 +84,11 @@ func KillPID(pid int, force bool) error {
 	}
 
 	if force {
-		return proc.Signal(syscall.SIGKILL)
+		err := proc.Signal(syscall.SIGKILL)
+		if err == nil {
+			InvalidatePortCache()
+		}
+		return err
 	}
 
 	// 1. Try graceful SIGTERM

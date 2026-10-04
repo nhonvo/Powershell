@@ -17,6 +17,7 @@ type PortInfo struct {
 	MemoryPercent   float64 `json:"memory_percent"`
 	Framework       string  `json:"framework"`        // e.g. Next.js, Vite, FastAPI
 	DevCategory     string  `json:"dev_category"`     // Frontend, Backend, DB, AI, System
+	ProjectName     string  `json:"project_name"`     // Executable directory or project folder name (e.g. inventory-app)
 	IsSystemPort    bool    `json:"is_system_port"`   // true if port < 1024 or critical (22, 53)
 	CanKill         bool    `json:"can_kill"`
 }
@@ -45,6 +46,7 @@ type MemorySummary struct {
 type ProcessMemInfo struct {
 	PID            int      `json:"pid"`
 	Name           string   `json:"name"`
+	ProjectName    string   `json:"project_name"`
 	User           string   `json:"user"`
 	Cmdline        string   `json:"cmdline"`
 	RSSBytes       uint64   `json:"rss_bytes"`

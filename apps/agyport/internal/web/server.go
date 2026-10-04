@@ -397,7 +397,7 @@ const dashboardHTML = `<!DOCTYPE html>
         <button class="btn-danger" onclick="killAllDevPorts()">⚡ Kill All Dev Ports</button>
         <button class="btn-outline" onclick="fetchData()">🔄 Refresh</button>
         <label style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
-          <input type="checkbox" id="autoRefreshToggle" checked> Live Polling
+          <input type="checkbox" id="autoRefreshToggle"> Auto-Polling (Manual Refresh Preferred)
         </label>
       </div>
     </header>
@@ -438,7 +438,12 @@ const dashboardHTML = `<!DOCTYPE html>
     <div class="table-container">
       <div class="table-header-row">
         <h2>🌐 Active Listening Ports (<span id="tablePortCount">0</span>)</h2>
-        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search port, process, framework..." oninput="filterTable()">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <label style="font-size: 12px; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 4px;">
+            <input type="checkbox" id="hideSystemPortsToggle" checked onchange="currentPage=1; filterTable()"> 🛡️ Hide System Ports
+          </label>
+          <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search port, process, framework..." oninput="currentPage=1; filterTable()">
+        </div>
       </div>
       <table>
         <thead>
@@ -446,7 +451,7 @@ const dashboardHTML = `<!DOCTYPE html>
             <th>PORT</th>
             <th>PROTO</th>
             <th>PID</th>
-            <th>PROCESS</th>
+            <th>PROCESS / PROJECT</th>
             <th>FRAMEWORK</th>
             <th>RAM USAGE</th>
             <th>USER & BIND</th>
@@ -457,6 +462,23 @@ const dashboardHTML = `<!DOCTYPE html>
           <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">Loading ports...</td></tr>
         </tbody>
       </table>
+      <div style="padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--card-border); background: #161b22; flex-wrap: wrap; gap: 12px; font-size: 13px;">
+        <div id="pageInfoLabel" style="color: var(--text-muted);">0 ports</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <label style="color: var(--text-muted); font-size: 12px;">Per Page:
+            <select id="pageSizeSelect" onchange="changePageSize()" style="background: #0d1117; color: var(--text-bright); border: 1px solid var(--card-border); padding: 4px 8px; border-radius: 4px; outline: none;">
+              <option value="15">15</option>
+              <option value="25" selected>25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option value="0">All</option>
+            </select>
+          </label>
+          <button class="btn-outline btn-sm" id="btnPrevPage" onclick="prevPage()">◀ Prev</button>
+          <span id="pageNavLabel" style="color: var(--text-muted); font-size: 12px;">Page 1 of 1</span>
+          <button class="btn-outline btn-sm" id="btnNextPage" onclick="nextPage()">Next ▶</button>
+        </div>
+      </div>
     </div>
 
     <div class="table-container">
@@ -467,7 +489,7 @@ const dashboardHTML = `<!DOCTYPE html>
         <thead>
           <tr>
             <th>PID</th>
-            <th>PROCESS</th>
+            <th>PROCESS / PROJECT</th>
             <th>FRAMEWORK</th>
             <th>RAM (RSS)</th>
             <th>% OF RAM</th>
@@ -487,6 +509,26 @@ const dashboardHTML = `<!DOCTYPE html>
 
   <script>
     var globalData = null;
+    var currentPage = 1;
+    var pageSize = 25;
+
+    function changePageSize() {
+      pageSize = parseInt(document.getElementById('pageSizeSelect').value, 10);
+      currentPage = 1;
+      filterTable();
+    }
+
+    function prevPage() {
+      if (currentPage > 1) {
+        currentPage--;
+        filterTable();
+      }
+    }
+
+    function nextPage() {
+      currentPage++;
+      filterTable();
+    }
 
     function fetchData() {
       fetch('/api/stats')
@@ -520,7 +562,6 @@ const dashboardHTML = `<!DOCTYPE html>
 
       var ports = data.ports || [];
       document.getElementById('activePortsCount').innerText = ports.length;
-      document.getElementById('tablePortCount').innerText = ports.length;
 
       var devServers = 0;
       var reclaimBytes = 0;
@@ -559,37 +600,68 @@ const dashboardHTML = `<!DOCTYPE html>
 
     function renderPortsTable(ports) {
       var q = document.getElementById('searchInput').value.toLowerCase().trim();
+      var hideSys = document.getElementById('hideSystemPortsToggle').checked;
+
       var filtered = ports.filter(function(p) {
+        if (hideSys && (p.is_system_port || p.dev_category === 'System' || p.framework === 'System Service')) {
+          return false;
+        }
         if (!q) return true;
         return p.port.toString().indexOf(q) !== -1 ||
                (p.process_name && p.process_name.toLowerCase().indexOf(q) !== -1) ||
+               (p.project_name && p.project_name.toLowerCase().indexOf(q) !== -1) ||
                (p.framework && p.framework.toLowerCase().indexOf(q) !== -1) ||
                (p.user && p.user.toLowerCase().indexOf(q) !== -1);
       });
 
+      var totalItems = filtered.length;
+      document.getElementById('tablePortCount').innerText = totalItems;
+
+      var totalPages = (pageSize > 0) ? Math.ceil(totalItems / pageSize) : 1;
+      if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+
+      var startIndex = (pageSize > 0) ? (currentPage - 1) * pageSize : 0;
+      var endIndex = (pageSize > 0) ? Math.min(startIndex + pageSize, totalItems) : totalItems;
+
+      var pagedList = filtered.slice(startIndex, endIndex);
+
+      document.getElementById('pageInfoLabel').innerText = totalItems > 0 
+        ? ('Showing ' + (startIndex + 1) + '-' + endIndex + ' of ' + totalItems + ' ports')
+        : '0 ports';
+      document.getElementById('pageNavLabel').innerText = 'Page ' + currentPage + ' of ' + Math.max(1, totalPages);
+      document.getElementById('btnPrevPage').disabled = (currentPage <= 1);
+      document.getElementById('btnNextPage').disabled = (currentPage >= totalPages || totalPages === 0);
+
       var tbody = document.getElementById('portsTableBody');
-      if (filtered.length === 0) {
+      if (pagedList.length === 0) {
         tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">No matching ports found.</td></tr>';
         return;
       }
 
       var html = '';
-      filtered.forEach(function(p) {
+      pagedList.forEach(function(p) {
         var fwBadgeClass = getBadgeClass(p.dev_category);
         var memStr = p.memory_bytes > 0 ? (p.memory_formatted + ' (' + p.memory_percent.toFixed(1) + '%)') : '-';
+        var openBtn = p.is_system_port 
+          ? '' 
+          : '<a href="http://localhost:' + p.port + '" target="_blank" class="btn-outline btn-sm" style="text-decoration:none; margin-right:6px;">🌐 Open</a>';
         var killBtn = p.is_system_port 
           ? '<span style="color: var(--text-muted); font-size: 11px;">Protected</span>' 
           : '<button class="btn-danger btn-sm" onclick="killPort(' + p.port + ')">Kill :' + p.port + '</button>';
+
+        var procDisplay = p.project_name
+          ? ('<span style="color: var(--primary); font-weight:700;">' + p.project_name + '</span> <span style="font-size:11px; color:var(--text-muted);">(' + (p.process_name || '-') + ')</span>')
+          : ('<strong>' + (p.process_name || '-') + '</strong>');
 
         html += '<tr>' +
           '<td><span class="badge badge-port">' + p.port + '</span></td>' +
           '<td><span style="font-size:11px; font-weight:600;">' + p.protocol.toUpperCase() + '</span></td>' +
           '<td><span class="badge badge-pid">' + (p.pid > 0 ? p.pid : '-') + '</span></td>' +
-          '<td><strong>' + (p.process_name || '-') + '</strong></td>' +
+          '<td>' + procDisplay + '</td>' +
           '<td><span class="badge ' + fwBadgeClass + '">' + (p.framework || '-') + '</span></td>' +
           '<td>' + memStr + '</td>' +
           '<td style="color: var(--text-muted);">' + (p.user || '-') + ' @ ' + p.bind_address + '</td>' +
-          '<td style="text-align: right;">' + killBtn + '</td>' +
+          '<td style="text-align: right;">' + openBtn + killBtn + '</td>' +
           '</tr>';
       });
       tbody.innerHTML = html;
@@ -608,9 +680,13 @@ const dashboardHTML = `<!DOCTYPE html>
         var devBadge = p.is_dev_server ? '<span class="badge badge-backend">Dev Server</span>' : '<span style="color: var(--text-muted);">No</span>';
         var killBtn = p.pid > 1 ? '<button class="btn-danger btn-sm" onclick="killPID(' + p.pid + ')">Kill PID</button>' : '';
 
+        var procDisplay = p.project_name
+          ? ('<span style="color: var(--primary); font-weight:700;">' + p.project_name + '</span> <span style="font-size:11px; color:var(--text-muted);">(' + p.name + ')</span>')
+          : ('<strong>' + p.name + '</strong>');
+
         html += '<tr>' +
           '<td><span class="badge badge-pid">' + p.pid + '</span></td>' +
-          '<td><strong>' + p.name + '</strong></td>' +
+          '<td>' + procDisplay + '</td>' +
           '<td>' + devBadge + '</td>' +
           '<td style="color: var(--danger); font-weight: 600;">' + p.rss_formatted + '</td>' +
           '<td>' + p.rss_percent.toFixed(1) + '%</td>' +
