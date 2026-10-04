@@ -117,7 +117,7 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 	if h.authMgr.IsAwaitingPin(userID) && !strings.HasPrefix(text, "/") {
 		ok, reason := h.authMgr.Authenticate(userID, text)
 		if ok {
-			_, _ = h.client.SendMessage(ctx, chatID, "✅ "+reason, h.buildMainKeyboard())
+			_, _ = h.client.SendMessage(ctx, chatID, "✅ "+reason, h.buildMainKeyboard(userID))
 		} else {
 			_, _ = h.client.SendMessage(ctx, chatID, "❌ "+reason, nil)
 		}
@@ -185,7 +185,7 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 			if len(parts) > 1 {
 				h.handleSetModel(ctx, userID, chatID, strings.Join(parts[1:], " "))
 			} else {
-				h.handleModels(ctx, chatID)
+				h.handleModels(ctx, userID, chatID)
 			}
 		case "/thinking", "/thought":
 			arg := ""
@@ -299,13 +299,35 @@ func (h *BotHandler) handleCallbackQuery(ctx context.Context, q *CallbackQuery) 
 		return
 	}
 
+	if strings.HasPrefix(data, "set_model_") {
+		modelKey := strings.TrimPrefix(data, "set_model_")
+		modelName := "Gemini 3.7 Flash"
+		switch modelKey {
+		case "gemini_3.7_flash", "gemini_flash":
+			modelName = "Gemini 3.7 Flash"
+		case "gemini_3.8_pro", "gemini_pro":
+			modelName = "Gemini 3.8 Pro"
+		case "claude_3.5_sonnet", "claude_sonnet":
+			modelName = "Claude 3.5 Sonnet"
+		case "claude_3.7_sonnet":
+			modelName = "Claude 3.7 Sonnet"
+		case "claude_opus_4.6", "claude_opus":
+			modelName = "Claude Opus 4.6"
+		case "ollama_local", "ollama":
+			modelName = "Ollama Local"
+		}
+		_ = h.client.AnswerCallbackQuery(ctx, q.ID, "Switched to "+modelName, false)
+		h.handleSetModel(ctx, userID, chatID, modelName)
+		return
+	}
+
 	switch data {
 	case "btn_plan":
 		h.handlePlanDashboard(ctx, userID, chatID)
 	case "btn_help":
 		h.handleHelp(ctx, chatID)
 	case "btn_models":
-		h.handleModels(ctx, chatID)
+		h.handleModels(ctx, userID, chatID)
 	case "btn_toggle_thinking":
 		h.handleToggleThinking(ctx, userID, chatID, "")
 	case "btn_skills":
@@ -363,7 +385,7 @@ func (h *BotHandler) handleStart(ctx context.Context, userID int64, chatID int64
 		statusBadge, acc, filepath.Base(ws),
 	)
 
-	_, _ = h.client.SendMessage(ctx, chatID, msg, h.buildMainKeyboard())
+	_, _ = h.client.SendMessage(ctx, chatID, msg, h.buildMainKeyboard(userID))
 }
 
 func (h *BotHandler) handleStatus(ctx context.Context, chatID int64) {
@@ -532,13 +554,46 @@ func (h *BotHandler) handleSwitch(ctx context.Context, chatID int64, targetName 
 	_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("✅ Switched active Antigravity account to: `%s`", targetName), nil)
 }
 
-func (h *BotHandler) handleModels(ctx context.Context, chatID int64) {
-	models := h.runner.AvailableModels()
-	msg := "🧠 **AVAILABLE ANTIGRAVITY AI MODELS:**\n\n"
-	for _, m := range models {
-		msg += fmt.Sprintf("• `%s`\n", m)
+func (h *BotHandler) handleModels(ctx context.Context, userID int64, chatID int64) {
+	sess := h.getSession(userID)
+	curModel := sess.ActiveModel
+	if curModel == "" {
+		curModel = h.cfg.DefaultModel
 	}
-	_, _ = h.client.SendMessage(ctx, chatID, msg, nil)
+
+	models := []string{
+		"Gemini 3.7 Flash",
+		"Gemini 3.8 Pro",
+		"Claude 3.5 Sonnet",
+		"Claude 3.7 Sonnet",
+		"Claude Opus 4.6",
+		"Ollama Local",
+	}
+
+	var keyboard [][]InlineKeyboardButton
+	var row []InlineKeyboardButton
+
+	for _, m := range models {
+		prefix := "  "
+		if strings.EqualFold(m, curModel) {
+			prefix = "⭐ "
+		}
+		key := strings.ReplaceAll(strings.ToLower(m), " ", "_")
+		row = append(row, InlineKeyboardButton{
+			Text:         prefix + m,
+			CallbackData: "set_model_" + key,
+		})
+		if len(row) == 2 {
+			keyboard = append(keyboard, row)
+			row = nil
+		}
+	}
+	if len(row) > 0 {
+		keyboard = append(keyboard, row)
+	}
+
+	msg := fmt.Sprintf("🧠 **SELECT ACTIVE ANTIGRAVITY AI MODEL:**\n\nActive Model: `%s`\n\n👉 *Tap a model button below to switch instantly:*", curModel)
+	_, _ = h.client.SendMessage(ctx, chatID, msg, &InlineKeyboardMarkup{InlineKeyboard: keyboard})
 }
 
 func (h *BotHandler) handleAIPrompt(ctx context.Context, userID int64, chatID int64, prompt string) {
@@ -1034,12 +1089,27 @@ func (h *BotHandler) handleHelp(ctx context.Context, chatID int64) {
 	_, _ = h.client.SendMessage(ctx, chatID, helpText, nil)
 }
 
-func (h *BotHandler) buildMainKeyboard() *InlineKeyboardMarkup {
+func (h *BotHandler) buildMainKeyboard(userID int64) *InlineKeyboardMarkup {
+	sess := h.getSession(userID)
+	curModel := sess.ActiveModel
+	if curModel == "" {
+		curModel = h.cfg.DefaultModel
+	}
+
+	thinkText := "OFF"
+	if sess.ShowThinking {
+		thinkText = "ON"
+	}
+
 	return &InlineKeyboardMarkup{
 		InlineKeyboard: [][]InlineKeyboardButton{
 			{
-				{Text: "📋 Plan & Dashboard", CallbackData: "btn_plan"},
+				{Text: "📋 Plan & Controller", CallbackData: "btn_plan"},
 				{Text: "🔄 Continue (-c)", CallbackData: "btn_continue"},
+			},
+			{
+				{Text: "🧠 Model: " + curModel, CallbackData: "btn_models"},
+				{Text: "💭 Thinking: " + thinkText, CallbackData: "btn_toggle_thinking"},
 			},
 			{
 				{Text: "📁 Projects", CallbackData: "btn_projects"},
