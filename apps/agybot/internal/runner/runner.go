@@ -214,6 +214,13 @@ func (r *AntigravityRunner) ExecutePrompt(ctx context.Context, opts RunnerOption
 								Raw:     payload,
 							}
 						}
+						if thinkText, ok := step["thinking"].(string); ok && thinkText != "" {
+							outChan <- AgentEvent{
+								Type:    "thinking",
+								Content: thinkText,
+								Raw:     payload,
+							}
+						}
 					}
 				}
 			case "result":

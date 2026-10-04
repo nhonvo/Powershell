@@ -35,6 +35,7 @@ type UserSessionState struct {
 	ActiveConvID string
 	ActiveModel  string
 	ActiveEffort string
+	ShowThinking bool
 }
 
 func NewBotHandler(
@@ -176,13 +177,33 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 		cmd := strings.ToLower(parts[0])
 
 		switch cmd {
+		case "/plan", "/menu":
+			h.handlePlanDashboard(ctx, userID, chatID)
+		case "/help":
+			h.handleHelp(ctx, chatID)
+		case "/model", "/models":
+			if len(parts) > 1 {
+				h.handleSetModel(ctx, userID, chatID, strings.Join(parts[1:], " "))
+			} else {
+				h.handleModels(ctx, chatID)
+			}
+		case "/thinking", "/thought":
+			arg := ""
+			if len(parts) > 1 {
+				arg = parts[1]
+			}
+			h.handleToggleThinking(ctx, userID, chatID, arg)
+		case "/skills", "/plugins":
+			h.handleSkills(ctx, chatID)
+		case "/health", "/diag", "/diagnose":
+			h.handleHealthCheck(ctx, chatID)
 		case "/status":
 			h.handleStatus(ctx, chatID)
 		case "/proj", "/projects":
 			h.handleProjects(ctx, chatID)
 		case "/rebuild", "/build":
 			h.handleRebuild(ctx, userID, chatID)
-		case "/replan", "/plan":
+		case "/replan":
 			h.handleReplan(ctx, userID, chatID)
 		case "/getfile", "/download":
 			filePath := ""
@@ -238,8 +259,6 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 			} else {
 				_, _ = h.client.SendMessage(ctx, chatID, "Usage: `/switch <account_name>`", nil)
 			}
-		case "/models":
-			h.handleModels(ctx, chatID)
 		case "/reset", "/new":
 			delete(h.userSessions, userID)
 			_, _ = h.client.SendMessage(ctx, chatID, "🔄 Conversation session reset cleanly.", nil)
@@ -281,6 +300,18 @@ func (h *BotHandler) handleCallbackQuery(ctx context.Context, q *CallbackQuery) 
 	}
 
 	switch data {
+	case "btn_plan":
+		h.handlePlanDashboard(ctx, userID, chatID)
+	case "btn_help":
+		h.handleHelp(ctx, chatID)
+	case "btn_models":
+		h.handleModels(ctx, chatID)
+	case "btn_toggle_thinking":
+		h.handleToggleThinking(ctx, userID, chatID, "")
+	case "btn_skills":
+		h.handleSkills(ctx, chatID)
+	case "btn_health":
+		h.handleHealthCheck(ctx, chatID)
 	case "btn_status":
 		h.handleStatus(ctx, chatID)
 	case "btn_projects":
@@ -836,16 +867,183 @@ func (h *BotHandler) handleReview(ctx context.Context, userID int64, chatID int6
 	h.handleAIPrompt(ctx, userID, chatID, prompt)
 }
 
+func (h *BotHandler) handlePlanDashboard(ctx context.Context, userID int64, chatID int64) {
+	sess := h.getSession(userID)
+	ws := h.wsMgr.GetUserWorkspace(userID)
+	acc := h.accMgr.GetActiveAccount()
+
+	thinkState := "🔴 OFF (Free & Clean)"
+	if sess.ShowThinking {
+		thinkState = "🟢 ON (Showing Reasoning - $0 FREE)"
+	}
+
+	modelState := sess.ActiveModel
+	if modelState == "" {
+		modelState = h.cfg.DefaultModel
+	}
+
+	msg := fmt.Sprintf(
+		"📋 **ANTIGRAVITY CONTROL & EXECUTION PLANNER**\n\n"+
+			"• **Active Workspace:** `%s`\n"+
+			"• **Active Account:** `%s` (via agyswitch)\n"+
+			"• **Selected Model:** `%s`\n"+
+			"• **Thinking Steps:** %s\n\n"+
+			"💡 *Select an action below to switch models, inspect quotas, check skills, toggle reasoning, or diagnose app status:*",
+		filepath.Base(ws), acc, modelState, thinkState,
+	)
+
+	markup := &InlineKeyboardMarkup{
+		InlineKeyboard: [][]InlineKeyboardButton{
+			{
+				{Text: "🧠 Switch Model", CallbackData: "btn_models"},
+				{Text: "👤 Account Quota", CallbackData: "btn_accounts"},
+			},
+			{
+				{Text: "⚡ Active Skills", CallbackData: "btn_skills"},
+				{Text: "💭 Thinking: " + getToggleText(sess.ShowThinking), CallbackData: "btn_toggle_thinking"},
+			},
+			{
+				{Text: "🩺 App Health Check", CallbackData: "btn_health"},
+				{Text: "🛠️ Rebuild Apps", CallbackData: "btn_rebuild"},
+			},
+			{
+				{Text: "📁 Switch Project", CallbackData: "btn_projects"},
+				{Text: "❓ Commands & Help", CallbackData: "btn_help"},
+			},
+		},
+	}
+
+	_, _ = h.client.SendMessage(ctx, chatID, msg, markup)
+}
+
+func getToggleText(on bool) string {
+	if on {
+		return "ON"
+	}
+	return "OFF"
+}
+
+func (h *BotHandler) getSession(userID int64) *UserSessionState {
+	sess, ok := h.userSessions[userID]
+	if !ok {
+		sess = &UserSessionState{}
+		h.userSessions[userID] = sess
+	}
+	return sess
+}
+
+func (h *BotHandler) handleToggleThinking(ctx context.Context, userID int64, chatID int64, arg string) {
+	sess := h.getSession(userID)
+	arg = strings.ToLower(strings.TrimSpace(arg))
+	if arg == "on" || arg == "true" || arg == "1" {
+		sess.ShowThinking = true
+	} else if arg == "off" || arg == "false" || arg == "0" {
+		sess.ShowThinking = false
+	} else {
+		sess.ShowThinking = !sess.ShowThinking
+	}
+
+	status := "🔴 OFF (Clean mode)"
+	if sess.ShowThinking {
+		status = "🟢 ON (Thinking reasoning will be streamed into chat - $0 FREE local cost)"
+	}
+	_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("💭 **Thinking Steps Visibility:** %s", status), nil)
+}
+
+func (h *BotHandler) handleSetModel(ctx context.Context, userID int64, chatID int64, modelName string) {
+	sess := h.getSession(userID)
+	sess.ActiveModel = modelName
+	_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("🧠 Active AI model set to: `%s`", modelName), nil)
+}
+
+func (h *BotHandler) handleSkills(ctx context.Context, chatID int64) {
+	skills := []string{
+		"agy-customizations (Skill & Rule Engine)",
+		"code-review (P0-P4 Severity Audits)",
+		"security-audit (Vulnerability & Credential Scanner)",
+		"product-roadmap-evolution (Roadmap & Architecture Plan)",
+		"dotnet-clean-architecture (.NET Solution Auditing)",
+		"csharp-ef-seeder (EF Core Migrations & Seeders)",
+		"react-chart-auditor (React UI & Chart Audit)",
+		"docker-full-stack (Container Stack Operations)",
+		"git-worktree-fleet (Parallel Worktree Agent Fleet)",
+	}
+
+	var sb strings.Builder
+	sb.WriteString("⚡ **ACTIVE ANTIGRAVITY SKILLS & PLUGINS:**\n\n")
+	for _, s := range skills {
+		sb.WriteString(fmt.Sprintf("• `%s`\n", s))
+	}
+	sb.WriteString("\n👉 *All skills are automatically loaded from `.agents/plugins/` and local rules.*")
+	_, _ = h.client.SendMessage(ctx, chatID, sb.String(), nil)
+}
+
+func (h *BotHandler) handleHealthCheck(ctx context.Context, chatID int64) {
+	home, _ := os.UserHomeDir()
+	apps := []string{
+		"agybot.exe", "agyswitch.exe", "agyproj.exe", "agygit.exe",
+		"agydocker.exe", "agyterm.exe", "agyx.exe", "agymobile.exe",
+		"agyollama.exe", "agyport.exe", "agyswarm.exe", "agyreview.exe",
+	}
+
+	var sb strings.Builder
+	sb.WriteString("🩺 **ANTIGRAVITY SUITE HEALTH DIAGNOSTICS**\n\n")
+
+	missingCount := 0
+	for _, app := range apps {
+		p := filepath.Join(home, ".local", "bin", app)
+		if _, err := os.Stat(p); err == nil {
+			sb.WriteString(fmt.Sprintf("✅ `%s`: Healthy (`%s`)\n", app, p))
+		} else {
+			missingCount++
+			sb.WriteString(fmt.Sprintf("❌ `%s`: **MISSING / DOWN**\n", app))
+		}
+	}
+
+	if missingCount > 0 {
+		sb.WriteString(fmt.Sprintf("\n⚠️ **Diagnostic Alert:** %d micro-app(s) missing or outdated.\n👉 *Run `/rebuild` to automatically compile all 12 micro-apps!*", missingCount))
+	} else {
+		sb.WriteString("\n🎉 **All 12 Antigravity Micro-Apps are ONLINE and healthy!**")
+	}
+
+	_, _ = h.client.SendMessage(ctx, chatID, sb.String(), nil)
+}
+
+func (h *BotHandler) handleHelp(ctx context.Context, chatID int64) {
+	helpText := "🤖 **ANTIGRAVITY BOT COMMAND REFERENCE**\n\n" +
+		"📋 **Planner & Controls:**\n" +
+		"• `/plan` - Interactive Plan & Controller Dashboard\n" +
+		"• `/status` - Host RAM, CPU, Container & Session Metrics\n" +
+		"• `/health` - System & Micro-App Health Diagnostics\n" +
+		"• `/thinking [on|off]` - Toggle Reasoning Steps ($0 Free)\n\n" +
+		"📁 **Workspaces & Code Projects:**\n" +
+		"• `/proj` - Registered Projects List (`agyproj`)\n" +
+		"• `/cd <dir>` - Switch Workspace (`/cd D:\\...`)\n" +
+		"• `/ls [dir]` - List Files & Subfolders\n" +
+		"• `/getfile <file>` - Upload File from PC to Phone\n" +
+		"• `/newproj <name>` - Scaffold & Register New Project\n\n" +
+		"🛠️ **Build & Multi-Agent Operations:**\n" +
+		"• `/rebuild` - Rebuild All 12 Suite Micro-Apps\n" +
+		"• `/replan` - Audit Tech Debt & Replan Roadmap\n" +
+		"• `/swarm <task>` - Run Multi-Agent Parallel Swarm\n" +
+		"• `/review` - Perform P0-P4 Code Security Review\n" +
+		"• `/account` - View Quotas & Account Switcher (`agyswitch`)\n\n" +
+		"🔄 **Session Continuation Shortcuts:**\n" +
+		"• Reply `-c` or `0c` to seamlessly continue active prompt!"
+
+	_, _ = h.client.SendMessage(ctx, chatID, helpText, nil)
+}
+
 func (h *BotHandler) buildMainKeyboard() *InlineKeyboardMarkup {
 	return &InlineKeyboardMarkup{
 		InlineKeyboard: [][]InlineKeyboardButton{
 			{
-				{Text: "📁 Projects", CallbackData: "btn_projects"},
+				{Text: "📋 Plan & Dashboard", CallbackData: "btn_plan"},
 				{Text: "🔄 Continue (-c)", CallbackData: "btn_continue"},
 			},
 			{
-				{Text: "🛠️ Rebuild App", CallbackData: "btn_rebuild"},
-				{Text: "📋 Replan Roadmap", CallbackData: "btn_replan"},
+				{Text: "📁 Projects", CallbackData: "btn_projects"},
+				{Text: "🛠️ Rebuild Apps", CallbackData: "btn_rebuild"},
 			},
 			{
 				{Text: "🐝 Swarm Task", CallbackData: "btn_swarm"},
