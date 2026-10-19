@@ -59,26 +59,27 @@ func ListPorts() ([]model.PortInfo, error) {
 		winProcMap = GetWindowsProcessesMap()
 	}
 
-	// 1. Try lsof first (fast and rich for current user processes)
-	if lsofPorts, err := parseLsof(); err == nil && len(lsofPorts) > 0 {
-		for _, p := range lsofPorts {
-			key := fmt.Sprintf("%s:%d", p.Protocol, p.Port)
-			if !seen[key] {
-				seen[key] = true
-				enrichPortDetails(&p, totalMemBytes)
-				ports = append(ports, p)
+	// 1. Try lsof and ss on Unix/Linux
+	if runtime.GOOS != "windows" {
+		if lsofPorts, err := parseLsof(); err == nil && len(lsofPorts) > 0 {
+			for _, p := range lsofPorts {
+				key := fmt.Sprintf("%s:%d", p.Protocol, p.Port)
+				if !seen[key] {
+					seen[key] = true
+					enrichPortDetails(&p, totalMemBytes)
+					ports = append(ports, p)
+				}
 			}
 		}
-	}
 
-	// 2. Try ss for system-wide sockets (catches services run by other users/daemons)
-	if ssPorts, err := parseSs(); err == nil && len(ssPorts) > 0 {
-		for _, p := range ssPorts {
-			key := fmt.Sprintf("%s:%d", p.Protocol, p.Port)
-			if !seen[key] {
-				seen[key] = true
-				enrichPortDetails(&p, totalMemBytes)
-				ports = append(ports, p)
+		if ssPorts, err := parseSs(); err == nil && len(ssPorts) > 0 {
+			for _, p := range ssPorts {
+				key := fmt.Sprintf("%s:%d", p.Protocol, p.Port)
+				if !seen[key] {
+					seen[key] = true
+					enrichPortDetails(&p, totalMemBytes)
+					ports = append(ports, p)
+				}
 			}
 		}
 	}

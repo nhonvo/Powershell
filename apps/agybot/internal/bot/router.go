@@ -166,14 +166,25 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 		return
 	}
 
-	// 2. Check if user is awaiting PIN input
-	if h.authMgr.IsAwaitingPin(userID) && !strings.HasPrefix(text, "/") {
-		ok, reason := h.authMgr.Authenticate(userID, text)
-		if ok {
-			_, _ = h.client.SendMessage(ctx, chatID, "✅ "+reason, h.buildMainKeyboard(userID))
-		} else {
-			_, _ = h.client.SendMessage(ctx, chatID, "❌ "+reason, nil)
+	// 2. Check PIN Authentication
+	authed, lockedOut, reason := h.authMgr.CheckAuth(userID)
+	if !authed {
+		if lockedOut {
+			_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("🔒 **CONTROLLER IS LOCKED OUT**\n\n%s", reason), nil)
+			return
 		}
+		if h.authMgr.IsAwaitingPin(userID) && !strings.HasPrefix(text, "/") {
+			ok, res := h.authMgr.Authenticate(userID, text)
+			if ok {
+				_, _ = h.client.SendMessage(ctx, chatID, "✅ "+res, h.buildPlanInlineKeyboard(userID))
+			} else {
+				_, _ = h.client.SendMessage(ctx, chatID, "❌ "+res, nil)
+			}
+			return
+		}
+		// Prompt for PIN to authenticate controller
+		h.authMgr.SetAwaitingPin(userID, true)
+		_, _ = h.client.SendMessage(ctx, chatID, "🔒 **CONTROLLER IS LOCKED**\n\nPlease enter your 6-digit PIN to authenticate and unlock control:", nil)
 		return
 	}
 
@@ -388,6 +399,23 @@ func (h *BotHandler) handleCallbackQuery(ctx context.Context, q *CallbackQuery) 
 	userID := q.From.ID
 	chatID := q.Message.Chat.ID
 	data := q.Data
+
+	if data == "btn_unlock" {
+		h.authMgr.SetAwaitingPin(userID, true)
+		_, _ = h.client.SendMessage(ctx, chatID, "🔐 **Send your security PIN:**", nil)
+		return
+	}
+
+	authed, lockedOut, reason := h.authMgr.CheckAuth(userID)
+	if !authed {
+		if lockedOut {
+			_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("🔒 **CONTROLLER IS LOCKED OUT**\n\n%s", reason), nil)
+			return
+		}
+		h.authMgr.SetAwaitingPin(userID, true)
+		_, _ = h.client.SendMessage(ctx, chatID, "🔒 **CONTROLLER IS LOCKED**\n\nPlease enter your 6-digit PIN to authenticate and unlock control:", nil)
+		return
+	}
 
 	if data == "cancel_prompt" {
 		h.handleCancel(ctx, userID, chatID)

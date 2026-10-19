@@ -36,11 +36,13 @@ $forceLoad   = ($null -ne $config.Environment -and $config.Environment.ForceLoad
 # --- Add Windows Suite Binaries to PATH ---
 $pathAdditions = @(
     (Join-Path $HOME ".local\bin"),
+    (Join-Path $env:LOCALAPPDATA "agy\bin"),
     (Join-Path $Global:ProfileRepoRoot "dist\windows")
 )
 foreach ($pa in $pathAdditions) {
-    if ((Test-Path $pa) -and ($env:PATH -notlike "*$pa*")) {
-        $env:PATH = "$pa;$env:PATH"
+    if (Test-Path $pa) {
+        $cleanPath = ($env:PATH -split ';') | Where-Object { $_ -and $_ -ne $pa -and $_ -ne "C:\ProgramData\agy\bin" }
+        $env:PATH = "$pa;$($cleanPath -join ';')"
     }
 }
 
@@ -1013,6 +1015,13 @@ function agyx {
     if (Test-Path $bin) { & $bin @args; return }
     if (Get-Command wsl -ErrorAction SilentlyContinue) { wsl agyx @args; return }
     Write-Host "❌ agyx binary not found. Please compile via 'make windows'" -ForegroundColor Red
+}
+
+function agy {
+    $bin = Join-Path $env:LOCALAPPDATA "agy\bin\agy.exe"
+    if (-not (Test-Path $bin)) { $bin = Join-Path $HOME ".local\bin\agy.exe" }
+    if (Test-Path $bin) { & $bin @args; return }
+    & "agy.exe" @args
 }
 
 function agyswarm { Invoke-GoApp "agyswarm" $args }

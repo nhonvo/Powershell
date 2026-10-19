@@ -26,6 +26,12 @@ func TestHandleIndex(t *testing.T) {
 	if !strings.Contains(body, "reclaimDevRAM") {
 		t.Errorf("expected dashboard HTML to contain reclaimDevRAM function")
 	}
+	if !strings.Contains(body, "devPids[p.pid]") {
+		t.Errorf("expected dashboard HTML to contain devPids deduplication logic")
+	}
+	if !strings.Contains(body, "RAM USAGE (PID Total)") {
+		t.Errorf("expected dashboard HTML to contain 'RAM USAGE (PID Total)' header")
+	}
 }
 
 func TestHandleStats(t *testing.T) {

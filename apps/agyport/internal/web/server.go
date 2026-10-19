@@ -397,7 +397,7 @@ const dashboardHTML = `<!DOCTYPE html>
         <button class="btn-danger" onclick="killAllDevPorts()">⚡ Kill All Dev Ports</button>
         <button class="btn-outline" onclick="fetchData()">🔄 Refresh</button>
         <label style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
-          <input type="checkbox" id="autoRefreshToggle"> Auto-Polling (Manual Refresh Preferred)
+          <input type="checkbox" id="autoRefreshToggle"> Auto-Polling (Press 'R' or Refresh to update)
         </label>
       </div>
     </header>
@@ -454,7 +454,7 @@ const dashboardHTML = `<!DOCTYPE html>
             <th style="cursor: pointer;" onclick="sortByColumn('pid')">PID <span id="sort_pid"></span></th>
             <th style="cursor: pointer;" onclick="sortByColumn('process')">PROCESS / PROJECT <span id="sort_process"></span></th>
             <th style="cursor: pointer;" onclick="sortByColumn('framework')">FRAMEWORK <span id="sort_framework"></span></th>
-            <th style="cursor: pointer;" onclick="sortByColumn('ram')">RAM USAGE <span id="sort_ram"></span></th>
+            <th style="cursor: pointer;" onclick="sortByColumn('ram')" title="Process total RSS memory (shared if PID listens on multiple ports)">RAM USAGE (PID Total) <span id="sort_ram"></span></th>
             <th>USER & BIND</th>
             <th style="text-align: right;">ACTION</th>
           </tr>
@@ -575,12 +575,16 @@ const dashboardHTML = `<!DOCTYPE html>
       var ports = data.ports || [];
       document.getElementById('activePortsCount').innerText = ports.length;
 
+      var devPids = {};
       var devServers = 0;
       var reclaimBytes = 0;
       ports.forEach(function(p) {
         if (!p.is_system_port && p.pid > 0) {
-          devServers++;
-          reclaimBytes += p.memory_bytes;
+          if (!devPids[p.pid]) {
+            devPids[p.pid] = true;
+            devServers++;
+            reclaimBytes += p.memory_bytes;
+          }
         }
       });
       document.getElementById('devPortsCount').innerText = devServers + ' dev processes running';
@@ -660,6 +664,13 @@ const dashboardHTML = `<!DOCTYPE html>
         return;
       }
 
+      var pidPortCounts = {};
+      (ports || []).forEach(function(p) {
+        if (p.pid > 0) {
+          pidPortCounts[p.pid] = (pidPortCounts[p.pid] || 0) + 1;
+        }
+      });
+
       var html = '';
       if (currentGroupBy !== 'none') {
         var groups = {};
@@ -679,9 +690,17 @@ const dashboardHTML = `<!DOCTYPE html>
         Object.keys(groups).sort().forEach(function(grpKey) {
           var items = groups[grpKey];
           var totalRam = 0;
+          var groupPids = {};
           var killablePorts = [];
           items.forEach(function(item) {
-            totalRam += item.memory_bytes;
+            if (item.pid > 0) {
+              if (!groupPids[item.pid]) {
+                groupPids[item.pid] = true;
+                totalRam += item.memory_bytes;
+              }
+            } else {
+              totalRam += item.memory_bytes;
+            }
             if (!item.is_system_port && item.port > 0) {
               killablePorts.push(item.port);
             }
@@ -692,17 +711,17 @@ const dashboardHTML = `<!DOCTYPE html>
             : ('<span style="color: var(--text-muted); font-size: 11px;">Protected Group</span>');
 
           html += '<tr style="background: rgba(88, 166, 255, 0.12); font-weight: 700; color: var(--primary); border-top: 2px solid var(--card-border);">' +
-            '<td colspan="7" style="padding: 10px 16px;">📁 <span style="color: var(--text-bright); font-size: 13px;">' + grpKey + '</span> <span style="font-weight: 400; color: var(--text-muted); font-size: 12px;">(' + items.length + ' ports, ' + formatBytes(totalRam) + ' RAM)</span></td>' +
+            '<td colspan="7" style="padding: 10px 16px;">📁 <span style="color: var(--text-bright); font-size: 13px;">' + grpKey + '</span> <span style="font-weight: 400; color: var(--text-muted); font-size: 12px;">(' + items.length + ' ports, ' + formatBytes(totalRam) + ' group process RAM)</span></td>' +
             '<td style="text-align: right; padding: 6px 16px;">' + killBtnHtml + '</td>' +
             '</tr>';
 
           items.forEach(function(p) {
-            html += renderPortRowHtml(p);
+            html += renderPortRowHtml(p, pidPortCounts);
           });
         });
       } else {
         pagedList.forEach(function(p) {
-          html += renderPortRowHtml(p);
+          html += renderPortRowHtml(p, pidPortCounts);
         });
       }
 
@@ -733,9 +752,11 @@ const dashboardHTML = `<!DOCTYPE html>
       });
     }
 
-    function renderPortRowHtml(p) {
+    function renderPortRowHtml(p, pidPortCounts) {
       var fwBadgeClass = getBadgeClass(p.dev_category);
-      var memStr = p.memory_bytes > 0 ? (p.memory_formatted + ' (' + p.memory_percent.toFixed(1) + '%)') : '-';
+      var portCount = (p.pid > 0 && pidPortCounts && pidPortCounts[p.pid]) ? pidPortCounts[p.pid] : 1;
+      var sharedLabel = (portCount > 1) ? (' <span style="font-size:10px; color:var(--text-muted);" title="PID ' + p.pid + ' listens on ' + portCount + ' ports. Value is total process RSS memory.">(Shared across ' + portCount + ' ports)</span>') : '';
+      var memStr = p.memory_bytes > 0 ? (p.memory_formatted + ' (' + p.memory_percent.toFixed(1) + '%)' + sharedLabel) : '-';
       var killBtn = p.is_system_port 
         ? '<span style="color: var(--text-muted); font-size: 11px;">Protected</span>' 
         : '<button class="btn-danger btn-sm" onclick="killPort(' + p.port + ')">Kill :' + p.port + '</button>';

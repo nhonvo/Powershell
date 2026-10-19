@@ -50,7 +50,15 @@ func (h *BotHandler) handlePlanDashboard(ctx context.Context, userID int64, chat
 		sess.Metrics.TotalPrompts, sess.Metrics.TotalSteps, sess.Metrics.EstCostUSD,
 	)
 
-	inlineKeyboard := &InlineKeyboardMarkup{
+	inlineKeyboard := h.buildPlanInlineKeyboard(userID)
+
+	_, _ = h.client.SendMessage(ctx, chatID, msg, inlineKeyboard)
+	// Send reply keyboard only when dashboard explicitly triggered
+	_, _ = h.client.SendMessage(ctx, chatID, "⌨️ *Quick Navigation Menu:*", h.buildMainKeyboard(userID))
+}
+
+func (h *BotHandler) buildPlanInlineKeyboard(userID int64) *InlineKeyboardMarkup {
+	return &InlineKeyboardMarkup{
 		InlineKeyboard: [][]InlineKeyboardButton{
 			{
 				{Text: "🕹️ Status", CallbackData: "btn_status"},
@@ -81,10 +89,6 @@ func (h *BotHandler) handlePlanDashboard(ctx context.Context, userID int64, chat
 			},
 		},
 	}
-
-	_, _ = h.client.SendMessage(ctx, chatID, msg, inlineKeyboard)
-	// Send reply keyboard only when dashboard explicitly triggered
-	_, _ = h.client.SendMessage(ctx, chatID, "⌨️ *Quick Navigation Menu:*", h.buildMainKeyboard(userID))
 }
 
 func (h *BotHandler) getSession(userID int64) *UserSessionState {
@@ -161,7 +165,7 @@ func (h *BotHandler) handleModels(ctx context.Context, userID int64, chatID int6
 		keyboard = append(keyboard, row)
 	}
 
-	msg := fmt.Sprintf("🧠 **SELECT ACTIVE ANTIGRAVITY AI MODEL:**\n\nActive Model: `%s`\n\n👉 *Tap a model button below to switch instantly:*", curModel)
+	msg := fmt.Sprintf("🧠 **AVAILABLE ANTIGRAVITY AI MODELS**\n\nActive Model: `%s`\n\n👉 *Tap a model button below to switch instantly:*", curModel)
 	_, _ = h.client.SendMessage(ctx, chatID, msg, &InlineKeyboardMarkup{InlineKeyboard: keyboard})
 }
 

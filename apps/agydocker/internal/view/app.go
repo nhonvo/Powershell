@@ -154,17 +154,13 @@ func (a *App) RunInteractive() error {
 	fmt.Print("\033[?1049h\033[?25l\033[H\033[2J")
 
 	for {
+		// All docker I/O runs in the background so the key loop never blocks
+		// (previously an offline daemon caused a synchronous reload every frame).
 		a.pendingMu.RLock()
-		needInit := a.cachedContainers == nil
 		needRel := a.needsReload
 		a.pendingMu.RUnlock()
 
-		if needInit {
-			a.cachedContainers, a.dockerErr = dockerops.ListContainers()
-			a.cachedMem, _ = dockerops.GetMemoryInfo()
-			a.cachedVolumes, _ = dockerops.ListVolumes()
-			a.cachedDevTools, _ = devtools.GetStackStatus()
-		} else if needRel {
+		if needRel {
 			a.pendingMu.Lock()
 			a.needsReload = false
 			a.pendingMu.Unlock()
@@ -790,8 +786,14 @@ func (a *App) Render() {
 		b.WriteString("\033[K\r\n" + hr(width))
 	}
 
-	if a.dockerErr != nil {
-		b.WriteString(" \033[1;37;41m ⚠️ Docker daemon is offline / cannot connect to docker.sock \033[0m\033[K\r\n\033[K\r\n")
+	a.pendingMu.RLock()
+	dErr := a.dockerErr
+	loading := a.isReloading && a.cachedContainers == nil
+	a.pendingMu.RUnlock()
+	if loading {
+		fmt.Fprintf(&b, " \033[1;33m[%s Loading Docker state in background...]\033[0m\033[K\r\n\033[K\r\n", spinnerFrames[a.spinnerIdx%len(spinnerFrames)])
+	} else if dErr != nil {
+		b.WriteString(" \033[1;37;41m ⚠️ Docker daemon is offline / cannot connect to docker.sock \033[0m \033[90m(R: retry · Tab: switch · Q/Esc: quit)\033[0m\033[K\r\n\033[K\r\n")
 	}
 
 	switch a.ActiveTab {
@@ -812,27 +814,36 @@ func (a *App) Render() {
 		b.WriteString("\033[K\r\n")
 	}
 
+	quit := "   ❌ \033[1;31m[QUIT]\033[0m Esc/Q\033[K\r\n"
 	if width < 85 {
 		switch a.ActiveTab {
 		case 0:
-			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;32m[S]\033[0mStart \033[1;31m[K]\033[0mKill \033[1;31m[X]\033[0mDown \033[1;31m[D]\033[0mRm \033[1;33m[A]\033[0mStack \033[1;36m[g]\033[0mGrp \033[1;36m[L]\033[0mLog \033[1;31m[Q/Esc]\033[0mExit\033[K\r\n")
+			b.WriteString(" ⚙️ \033[1;34m[NAV]\033[0m Tab/1-4/↑/↓  🚀 \033[1;32m[CTR]\033[0m S:Start/Stop · K:Kill · L:Log · E:Exec\033[K\r\n")
+			b.WriteString(" 🛠️ \033[1;33m[STACK]\033[0m A:Toggle · X:Down · D:Rm · g:Group" + quit)
 		case 1:
-			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;33m[P]\033[0mPrune (Reclaim RAM) \033[1;36m[R]\033[0mRefresh \033[1;31m[Q/Esc]\033[0mExit\033[K\r\n")
+			b.WriteString(" ⚙️ \033[1;34m[NAV]\033[0m Tab/1-4  🔄 \033[1;36m[SYNC]\033[0m R:Refresh\033[K\r\n")
+			b.WriteString(" 🛠️ \033[1;33m[MANAGE]\033[0m P:Prune (Reclaim RAM)" + quit)
 		case 2:
-			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;33m[P]\033[0mPrune Volumes \033[1;36m[R]\033[0mRefresh \033[1;31m[Q/Esc]\033[0mExit\033[K\r\n")
+			b.WriteString(" ⚙️ \033[1;34m[NAV]\033[0m Tab/1-4/↑/↓  🔄 \033[1;36m[SYNC]\033[0m R:Refresh\033[K\r\n")
+			b.WriteString(" 🛠️ \033[1;33m[MANAGE]\033[0m P:Prune Volumes" + quit)
 		case 3:
-			b.WriteString(" \033[1m[Tab]\033[0mNav \033[1;32m[U]\033[0mUp \033[1;31m[D]\033[0mDown \033[1;36m[A]\033[0mAttach \033[1;35m[S]\033[0mSync \033[1;33m[O]\033[0mOpen \033[1;31m[X]\033[0mDetach \033[1;31m[Q]\033[0mExit\033[K\r\n")
+			b.WriteString(" ⚙️ \033[1;34m[NAV]\033[0m Tab/1-4/↑/↓  🚀 \033[1;32m[STACK]\033[0m U:Up · D:Down · O:pgAdmin · M:Mongo\033[K\r\n")
+			b.WriteString(" 🛠️ \033[1;33m[DB]\033[0m A:Attach · S:Sync · R:Reload · X:Detach" + quit)
 		}
 	} else {
 		switch a.ActiveTab {
 		case 0:
-			b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch · \033[1m[↑/↓]\033[0m Nav · \033[1;32m[S]\033[0m Start/Stop · \033[1;31m[K]\033[0m Kill · \033[1;31m[X]\033[0m Down Stack · \033[1;31m[D]\033[0m Rm · \033[1;33m[A]\033[0m Start/Stop Stack · \033[1;35m[g]\033[0m Group/Flat · \033[1;36m[L]\033[0m Logs · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" ⚙️  \033[1;34m[NAV]\033[0m  Tab/1-4 · ↑/↓ (j)    🚀 \033[1;32m[CONTAINER]\033[0m  S: Start/Stop · K: Kill · R: Restart · L: Logs · E: Exec Shell\033[K\r\n")
+			b.WriteString(" 🛠️  \033[1;33m[STACK]\033[0m  A: Start/Stop Stack · X: Down Stack · D: Remove · g: Group/Flat · P: Prune" + quit)
 		case 1:
-			b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch · \033[1;33m[P]\033[0m Prune (Reclaim RAM & Docker Cache) · \033[1;36m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" ⚙️  \033[1;34m[NAV]\033[0m  Tab/1-4    🔄 \033[1;36m[SYNC]\033[0m  R: Refresh Metrics\033[K\r\n")
+			b.WriteString(" 🛠️  \033[1;33m[MANAGE]\033[0m  P: Prune (Reclaim RAM & Docker Cache)" + quit)
 		case 2:
-			b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;33m[P]\033[0m Prune Volumes · \033[1;36m[R]\033[0m Refresh · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" ⚙️  \033[1;34m[NAV]\033[0m  Tab/1-4 · ↑/↓ (j)    🔄 \033[1;36m[SYNC]\033[0m  R: Refresh Volumes\033[K\r\n")
+			b.WriteString(" 🛠️  \033[1;33m[MANAGE]\033[0m  P: Prune Unused Volumes" + quit)
 		case 3:
-			b.WriteString(" \033[1m[Tab/1-4]\033[0m Switch · \033[1m[↑/↓ j/k]\033[0m Nav · \033[1;32m[U]\033[0m Start · \033[1;31m[D]\033[0m Stop · \033[1;36m[A]\033[0m Auto-Attach · \033[1;35m[S]\033[0m Sync DBs · \033[1;33m[O]\033[0m Open pgAdmin · \033[1;33m[M]\033[0m Mongo · \033[1;34m[R]\033[0m Reload · \033[1;31m[X]\033[0m Detach · \033[1;31m[Q/Esc]\033[0m Exit\033[K\r\n")
+			b.WriteString(" ⚙️  \033[1;34m[NAV]\033[0m  Tab/1-4 · ↑/↓ (j)    🚀 \033[1;32m[STACK]\033[0m  U: Start · D: Stop · O: Open pgAdmin · M: Mongo Express\033[K\r\n")
+			b.WriteString(" 🛠️  \033[1;33m[DATABASES]\033[0m  A: Auto-Attach · S: Sync DBs · R: Reload · X: Detach" + quit)
 		}
 	}
 

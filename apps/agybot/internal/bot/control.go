@@ -130,6 +130,9 @@ func (h *BotHandler) buildMainKeyboard(userID int64) *ReplyKeyboardMarkup {
 			{
 				{Text: "🛠️ Automation"},
 				{Text: "💾 Session"},
+				{Text: "❓ Help"},
+			},
+			{
 				{Text: "❌ Hide Menu"},
 			},
 		},

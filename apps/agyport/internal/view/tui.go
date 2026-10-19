@@ -116,12 +116,6 @@ func (a *App) RunInteractive() error {
 
 		a.Render(ports, mem, suggestions, procs)
 
-		// Poll input with timeout for live background refresh
-		if !waitKey(fd, 800) {
-			a.ReloadAsync()
-			continue
-		}
-
 		var buf [32]byte
 		n, err := os.Stdin.Read(buf[:])
 		if err != nil || n == 0 {
@@ -309,9 +303,11 @@ func (a *App) RunInteractive() error {
 			a.isFiltering = true
 			a.StatusMsg = "\033[36mType filter text (Enter/Esc to exit)...\033[0m"
 
-		case 'r', 'R': // Refresh
+		case 'r', 'R': // Manual Refresh
+			a.StatusMsg = "\033[33m⏳ Refreshing port & process metrics...\033[0m"
+			a.Render(ports, mem, suggestions, procs)
 			a.ReloadData()
-			a.StatusMsg = "\033[32m✔ Refreshed ports & memory\033[0m"
+			a.StatusMsg = fmt.Sprintf("\033[32m✔ Metrics refreshed at %s\033[0m", time.Now().Format("15:04:05"))
 			a.tabSwitched = true
 
 		case 'i', '\r', '\n': // Inspector Modal
@@ -501,9 +497,9 @@ func (a *App) Render(ports []model.PortInfo, mem *model.MemorySummary, suggestio
 
 	// 5. Hotkeys Footer
 	if width < 85 {
-		b.WriteString("\033[1mKeys:\033[0m [↑/↓]Move \033[31m[k]\033[0mKill \033[33m[a]\033[0mKillAll \033[32m[c]\033[0mReclaim \033[36m[w]\033[0mWeb \033[36m[/]\033[0mFind \033[35m[Tab]\033[0mTab \033[31m[q/Esc]\033[0mQuit\033[K")
+		b.WriteString("\033[1mKeys:\033[0m [↑/↓]Move \033[33m[r]\033[0mRefresh \033[31m[k]\033[0mKill \033[33m[a]\033[0mKillAll \033[32m[c]\033[0mReclaim \033[36m[w]\033[0mWeb \033[36m[/]\033[0mFind \033[35m[Tab]\033[0mTab \033[31m[q/Esc]\033[0mQuit\033[K")
 	} else {
-		b.WriteString("\033[1mHotkeys:\033[0m [↑/↓] Move  \033[31m[k]\033[0m Kill  \033[31m[K/f]\033[0m Force  \033[33m[a]\033[0m Kill-All  \033[32m[c]\033[0m Reclaim  \033[36m[w]\033[0m Web UI  \033[36m[/]\033[0m Filter  [i/↵] Info  [Tab] Switch  \033[31m[q/Esc]\033[0m Quit\033[K")
+		b.WriteString("\033[1mHotkeys:\033[0m [↑/↓] Move  \033[33m[r]\033[0m Refresh Metrics  \033[31m[k]\033[0m Kill  \033[31m[K/f]\033[0m Force  \033[33m[a]\033[0m Kill-All  \033[32m[c]\033[0m Reclaim  \033[36m[w]\033[0m Web UI  \033[36m[/]\033[0m Filter  [i/↵] Info  [Tab] Switch  \033[31m[q/Esc]\033[0m Quit\033[K")
 	}
 
 	// Erase below cursor to clear any remnants
@@ -514,11 +510,11 @@ func (a *App) Render(ports []model.PortInfo, mem *model.MemorySummary, suggestio
 
 func (a *App) renderPortsTab(b *strings.Builder, ports []model.PortInfo, width int, maxRows int) {
 	if width >= 90 {
-		b.WriteString(fmt.Sprintf("\033[1m %-7s %-5s %-7s %-7s %-16s %-16s %-12s %-10s\033[0m\033[K\r\n",
-			"PORT", "PROTO", "STATE", "PID", "PROCESS", "FRAMEWORK", "RAM (MB/%)", "USER"))
+		b.WriteString(fmt.Sprintf("\033[1m %-7s %-5s %-7s %-7s %-16s %-16s %-14s %-10s\033[0m\033[K\r\n",
+			"PORT", "PROTO", "STATE", "PID", "PROCESS", "FRAMEWORK", "RAM (PID Total)", "USER"))
 	} else {
-		b.WriteString(fmt.Sprintf("\033[1m %-6s %-5s %-6s %-15s %-14s %-11s\033[0m\033[K\r\n",
-			"PORT", "PROTO", "PID", "PROCESS", "FRAMEWORK", "RAM"))
+		b.WriteString(fmt.Sprintf("\033[1m %-6s %-5s %-6s %-15s %-14s %-14s\033[0m\033[K\r\n",
+			"PORT", "PROTO", "PID", "PROCESS", "FRAMEWORK", "RAM (PID Total)"))
 	}
 	b.WriteString(hrDotted(width))
 
@@ -559,12 +555,23 @@ func (a *App) renderPortsTab(b *strings.Builder, ports []model.PortInfo, width i
 			pidStr = "-"
 		}
 
+		pidCounts := make(map[int]int)
+		for _, pItem := range ports {
+			if pItem.PID > 0 {
+				pidCounts[pItem.PID]++
+			}
+		}
+
 		ramStr := "-"
 		if p.MemoryBytes > 0 {
+			sharedTag := ""
+			if p.PID > 0 && pidCounts[p.PID] > 1 {
+				sharedTag = "*"
+			}
 			if width >= 90 {
-				ramStr = fmt.Sprintf("%s (%.1f%%)", p.MemoryFormatted, p.MemoryPercent)
+				ramStr = fmt.Sprintf("%s%s (%.1f%%)", p.MemoryFormatted, sharedTag, p.MemoryPercent)
 			} else {
-				ramStr = p.MemoryFormatted
+				ramStr = fmt.Sprintf("%s%s", p.MemoryFormatted, sharedTag)
 			}
 		}
 
@@ -610,6 +617,7 @@ func (a *App) renderPortsTab(b *strings.Builder, ports []model.PortInfo, width i
 	for i := end - start; i < maxRows; i++ {
 		b.WriteString("\033[K\r\n")
 	}
+	b.WriteString("\033[90m*Note: RAM is total process RSS memory (shared across ports of same PID). Press [r] to refresh metrics.\033[0m\033[K\r\n")
 }
 
 func (a *App) renderRAMTab(b *strings.Builder, mem *model.MemorySummary, suggestions []model.RAMSuggestion, procs []model.ProcessMemInfo, width int, maxRows int) {
