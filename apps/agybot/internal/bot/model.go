@@ -79,7 +79,7 @@ func (h *BotHandler) buildPlanInlineKeyboard(userID int64) *InlineKeyboardMarkup
 			{
 				{Text: "🔄 Continue", CallbackData: "btn_continue"},
 				{Text: "🔨 Rebuild", CallbackData: "btn_rebuild"},
-				{Text: "🐝 Swarm", CallbackData: "btn_swarm"},
+				{Text: "📋 Replan", CallbackData: "btn_replan"},
 				{Text: "🛡️ Review", CallbackData: "btn_review"},
 			},
 			{

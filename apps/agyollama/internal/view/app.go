@@ -775,7 +775,9 @@ func (a *App) renderDeleteConfirmModal(b *strings.Builder, width int) {
 
 // PrintStatus outputs non-interactive status to w.
 func (a *App) PrintStatus(w io.Writer) {
-	a.refreshData()
+	if a.daemonStatus == nil {
+		a.refreshData()
+	}
 	st := a.daemonStatus
 	if st == nil {
 		fmt.Fprintln(w, "Ollama status unavailable")

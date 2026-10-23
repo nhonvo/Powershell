@@ -7,7 +7,8 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 INSTALL_DIR="${HOME}/.local/bin"
 DIST_WIN="${REPO_ROOT}/dist/windows"
-APPS=("agyswitch" "agyproj" "agygit" "agydocker" "agyterm" "agyx" "agymobile" "agyollama" "agybot" "agyport" "agyswarm" "agyreview")
+# agybot elevated to the TOP (#1 Flagship Controller)
+APPS=("agybot" "agyswitch" "agyproj" "agygit" "agydocker" "agyterm" "agyx" "agymobile" "agyollama" "agyport" "agyreview")
 
 mkdir -p "${INSTALL_DIR}"
 
@@ -91,6 +92,9 @@ esac
 build_app() {
     local app="$1"
     local app_dir="${REPO_ROOT}/apps/${app}"
+    if [[ ! -d "${app_dir}" && -d "${REPO_ROOT}/tools/${app}" ]]; then
+        app_dir="${REPO_ROOT}/tools/${app}"
+    fi
     
     if [[ ! -d "${app_dir}" ]]; then
         echo "❌ App directory not found: ${app_dir}"

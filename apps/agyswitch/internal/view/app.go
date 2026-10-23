@@ -432,7 +432,18 @@ func (a *App) Run() error {
 					a.cachedAccs = a.Store.ListAccountsFast()
 					accs = a.cachedAccs
 					a.needsReload = true
-					a.StatusMsg = fmt.Sprintf("\033[32m✔ Switched active context to '%s'\033[0m", target)
+					isLoggedIn := false
+					for _, ac := range accs {
+						if strings.EqualFold(ac.AccountName, target) {
+							isLoggedIn = ac.IsLoggedIn
+							break
+						}
+					}
+					if isLoggedIn {
+						a.StatusMsg = fmt.Sprintf("\033[32m✔ Switched active context to '%s'\033[0m", target)
+					} else {
+						a.StatusMsg = fmt.Sprintf("\033[33m✔ Switched to '%s' · ⚠️ Account Logged Out: Press [I] to Sign In\033[0m", target)
+					}
 					a.probeMu.Unlock()
 				}
 			} else if a.ActiveTab == 3 && len(a.cachedSessionItems) > 0 && a.SelectedIndex < len(a.cachedSessionItems) {
@@ -638,9 +649,23 @@ func (a *App) Run() error {
 					a.SelectedIndex = 0
 				}
 			}
+		case 'i', 'I': // Interactive Sign-in (Google OAuth) for selected account in Tab 0
+			if a.ActiveTab == 0 && a.SelectedIndex < len(accs) {
+				target := accs[a.SelectedIndex].AccountName
+				fmt.Print("\033[?25h\033[?1049l")
+				_ = term.Restore(fd, oldState)
+				fmt.Printf("\r\n\033[36m[agyswitch]\033[0m Starting interactive Google OAuth sign-in for account '\033[32m%s\033[0m'...\r\n", target)
+				return a.Launcher(target, "", []string{"login"})
+			}
 		case 'l', 'L': // Launch agy
 			if a.ActiveTab == 0 && a.SelectedIndex < len(accs) {
 				target := accs[a.SelectedIndex].AccountName
+				if !accs[a.SelectedIndex].IsLoggedIn {
+					fmt.Print("\033[?25h\033[?1049l")
+					_ = term.Restore(fd, oldState)
+					fmt.Printf("\r\n\033[33m[agyswitch]\033[0m Account '\033[31m%s\033[0m' is not logged in. Starting Google OAuth sign-in...\r\n", target)
+					return a.Launcher(target, "", []string{"login"})
+				}
 				fmt.Print("\033[?25h\033[?1049l")
 				_ = term.Restore(fd, oldState)
 				fmt.Printf("\r\n\033[36m[agyswitch]\033[0m Launching 'agy' for account '\033[32m%s\033[0m'...\r\n", target)
@@ -1015,7 +1040,7 @@ func (a *App) Render(accs []model.AccountInfo, sessionsList []model.SessionInfo)
 	if width < 80 {
 		switch a.ActiveTab {
 		case 0:
-			b.WriteString(" ⚙️ \033[1;34m[NAV]\033[0m Tab/↑/↓  🚀 \033[1;32m[ACC]\033[0m Enter:Use · L:Agy · A:Auto\033[K\r\n")
+			b.WriteString(" ⚙️ \033[1;34m[NAV]\033[0m Tab/↑/↓  🚀 \033[1;32m[ACC]\033[0m Enter:Use · I:Sign In · L:Agy · A:Auto\033[K\r\n")
 			b.WriteString(" 🔄 \033[1;36m[SYNC]\033[0m r:Acc · R:ALL  🛠️ \033[1;33m[MANAGE]\033[0m X:Reset · O:Out · D:Del  \033[1;35m[?]\033[0mHelp\033[K\r\n")
 		case 1:
 			b.WriteString(" ⚙️ \033[1;34m[NAV]\033[0m Tab/↑/↓  👁️ \033[1;36m[INSPECT]\033[0m V:Detail\033[K\r\n")
@@ -1030,7 +1055,7 @@ func (a *App) Render(accs []model.AccountInfo, sessionsList []model.SessionInfo)
 	} else {
 		switch a.ActiveTab {
 		case 0:
-			b.WriteString(" ⚙️  \033[1;34m[NAV]\033[0m  Tab/1-4 · ↑/↓ (j/k)    🚀 \033[1;32m[ACCOUNT]\033[0m  Enter: Switch · L: Launch agy · A: Auto-Quota\033[K\r\n")
+			b.WriteString(" ⚙️  \033[1;34m[NAV]\033[0m  Tab/1-4 · ↑/↓ (j/k)    🚀 \033[1;32m[ACCOUNT]\033[0m  Enter: Switch · I: Sign In · L: Launch agy · A: Auto-Quota\033[K\r\n")
 			b.WriteString(" 🔄 \033[1;36m[SYNC]\033[0m  r: Refresh Acc · R: Refresh ALL   🛠️ \033[1;33m[MANAGE]\033[0m  N: New · M: Rename · T: Seed · X: Reset · O: Logout · D: Del   💡 \033[1;35m[?]\033[0m Help   ❌ \033[1;31m[QUIT]\033[0m Esc/Q\033[K\r\n")
 		case 1:
 			b.WriteString(" ⚙️  \033[1;34m[NAV]\033[0m  Tab/1-4 · ↑/↓ (j/k)    👁️ \033[1;36m[INSPECT]\033[0m  V: View Detail & Description\033[K\r\n")
@@ -1703,6 +1728,7 @@ func (a *App) promptActionPaletteTUI(fd int) {
 	b.WriteString(hr(width))
 	b.WriteString(" \033[1;32m🚀 Account Launch & Selection:\033[0m\r\n")
 	b.WriteString("    • \033[1;37m[Enter / C]\033[0m  Switch Active Account Context\r\n")
+	b.WriteString("    • \033[1;37m[I]\033[0m          Interactive Google OAuth Sign-in for selected account\r\n")
 	b.WriteString("    • \033[1;37m[L]\033[0m          Launch 'agy' CLI under selected account\r\n")
 	b.WriteString("    • \033[1;37m[A]\033[0m          Auto-Select account with highest available quota\r\n\r\n")
 

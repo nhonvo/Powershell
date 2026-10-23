@@ -83,6 +83,7 @@ func (l *Launcher) LaunchAccount(accountName string, passArgs []string) error {
 // LaunchAccountInDir sets GEMINI_HOME, working directory, and launches agy.
 func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, passArgs []string) error {
 	accountName = l.Store.ResolveAccount(accountName)
+	primaryDir := filepath.Join(l.Store.UserHome, ".gemini")
 	accDir := l.Store.GetAccountDirectory(accountName)
 	if err := os.MkdirAll(accDir, 0755); err != nil {
 		return err
@@ -100,6 +101,8 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 
 	if isLogin {
 		_ = l.Store.LogoutAccount(accountName)
+		l.Store.ClearCredentials(primaryDir)
+		l.Vault.PurgeGlobalKeyring()
 		if runtime.GOOS == "windows" {
 			vault.DeleteWindowsCredential("gemini:antigravity")
 		}
@@ -107,7 +110,19 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 		fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Context: \033[33m%s\033[0m (Follow prompts in terminal/browser)\n", accDir)
 	} else {
 		token := l.Vault.EnsureValidAccessToken(accDir)
+		if token == "" {
+			if pTok := l.Vault.EnsureValidAccessToken(primaryDir); pTok != "" && l.Store.MatchesAccountEmail(primaryDir, accountName) {
+				l.Store.SyncCredentials(primaryDir, accDir)
+				token = pTok
+			}
+		}
+
 		if token != "" && l.Store.MatchesAccountEmail(accDir, accountName) {
+			l.Store.SyncCredentials(accDir, primaryDir)
+			_ = l.Vault.SyncKeyringCredentials(primaryDir)
+			activeFile := filepath.Join(primaryDir, "active_account.txt")
+			_ = os.WriteFile(activeFile, []byte(accountName), 0644)
+
 			if runtime.GOOS == "windows" {
 				if winTok := l.Vault.ReadTokenFromDir(accDir); winTok != "" {
 					vault.WriteWindowsCredential("gemini:antigravity", winTok)
@@ -118,6 +133,7 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 			if token != "" && !l.Store.MatchesAccountEmail(accDir, accountName) {
 				l.Store.ClearCredentials(accDir)
 			}
+			l.Store.ClearCredentials(primaryDir)
 			l.Vault.PurgeGlobalKeyring()
 			if runtime.GOOS == "windows" {
 				vault.DeleteWindowsCredential("gemini:antigravity")
@@ -143,7 +159,6 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 	}
 
 	// Environmental Isolation: Strip IDE sync variables and existing home paths to keep CLI strictly standalone
-	primaryDir := filepath.Join(l.Store.UserHome, ".gemini")
 	var finalEnv []string
 	for _, envStr := range os.Environ() {
 		parts := strings.SplitN(envStr, "=", 2)
@@ -154,9 +169,13 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 			}
 		}
 	}
-	geminiHomePath := primaryDir
-	if strings.HasSuffix(strings.ToLower(agyBin), ".exe") && strings.HasPrefix(primaryDir, "/mnt/") {
-		geminiHomePath = store.ToWindowsPath(primaryDir)
+	targetContextDir := accDir
+	if strings.EqualFold(accountName, "default") {
+		targetContextDir = primaryDir
+	}
+	geminiHomePath := targetContextDir
+	if strings.HasSuffix(strings.ToLower(agyBin), ".exe") && strings.HasPrefix(targetContextDir, "/mnt/") {
+		geminiHomePath = store.ToWindowsPath(targetContextDir)
 	} else if runtime.GOOS == "windows" && (strings.HasPrefix(geminiHomePath, "\\\\wsl") || strings.HasPrefix(geminiHomePath, "/")) {
 		geminiHomePath = store.ToLinuxPath(geminiHomePath)
 	}
@@ -171,7 +190,7 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 
 	runErr := cmd.Run()
 
-	// Post-run hook: sync newly updated credentials from primaryDir back to accDir & counterpart
+	// Post-run hook: sync newly updated credentials from accDir back to primaryDir if active
 	if runtime.GOOS == "windows" {
 		if winTok := vault.ReadWindowsCredential("gemini:antigravity"); winTok != "" {
 			_ = l.Vault.SaveTokenToContext(accDir, winTok)
@@ -181,24 +200,19 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 		}
 	}
 
-	pTok := l.Vault.ReadTokenFromDir(primaryDir)
-	if pTok != "" && l.Store.MatchesAccountEmail(primaryDir, accountName) {
+	aTok := l.Vault.ReadTokenFromDir(accDir)
+	if aTok != "" && l.Store.MatchesAccountEmail(accDir, accountName) {
+		if strings.EqualFold(accountName, l.Store.GetActiveAccount()) {
+			l.Store.SyncCredentials(accDir, primaryDir)
+			_ = l.Vault.SyncKeyringCredentials(primaryDir)
+		}
+		if cpHome := store.GetCounterpartHome(l.Store.UserHome); cpHome != "" {
+			cpTarget := l.Store.GetAccountDirectoryForHome(cpHome, accountName)
+			l.Store.SyncCredentials(accDir, cpTarget)
+		}
+	} else if pTok := l.Vault.ReadTokenFromDir(primaryDir); pTok != "" && l.Store.MatchesAccountEmail(primaryDir, accountName) {
 		l.Store.SyncCredentials(primaryDir, accDir)
 		_ = l.Vault.SyncKeyringCredentials(accDir)
-		_ = l.Vault.SyncKeyringCredentials(primaryDir)
-		if cpHome := store.GetCounterpartHome(l.Store.UserHome); cpHome != "" {
-			cpPrimary := filepath.Join(cpHome, ".gemini")
-			cpTarget := l.Store.GetAccountDirectoryForHome(cpHome, accountName)
-			l.Store.SyncCredentials(primaryDir, cpPrimary)
-			l.Store.SyncCredentials(primaryDir, cpTarget)
-		}
-		if os.Getenv("AGY_VERBOSE") != "" {
-			fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Persisted session token for account '\033[32m%s\033[0m'.\n", accountName)
-		}
-	} else if aTok := l.Vault.ReadTokenFromDir(accDir); aTok != "" && l.Store.MatchesAccountEmail(accDir, accountName) {
-		l.Store.SyncCredentials(accDir, primaryDir)
-		_ = l.Vault.SyncKeyringCredentials(accDir)
-		_ = l.Vault.SyncKeyringCredentials(primaryDir)
 	}
 
 	return runErr

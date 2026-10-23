@@ -53,7 +53,7 @@ func TestCockpit_Render(t *testing.T) {
 	}
 
 	app.ActiveTab = 3
-	if app.getActiveToolBinary() != "agyswarm" {
-		t.Errorf("expected active tool 'agyswarm', got %s", app.getActiveToolBinary())
+	if app.getActiveToolBinary() != "agybot" {
+		t.Errorf("expected active tool 'agybot', got %s", app.getActiveToolBinary())
 	}
 }

@@ -10,7 +10,8 @@ The repository is organized as a clean, domain-separated monorepo:
 
 ```text
 powershell-profile/
-├── apps/                       # Antigravity Go Engine Micro-Applications (11 Native Tools)
+├── apps/                       # Antigravity Go Engine Micro-Applications (11 Native Suite Apps)
+│   ├── agybot/                 # ⭐ FLAGSHIP: Telegram Remote Controller & Autonomous Mobile Daemon
 │   ├── agyx/                   # Master CLI Proxy & Unified Cockpit
 │   ├── agyswitch/              # Identity, AES-256 Vault & Google Quota Engine
 │   ├── agyproj/                # Workspace Registry, Stack Detector & AI Cost Analytics
@@ -20,8 +21,10 @@ powershell-profile/
 │   ├── agyterm/                # Windows Terminal JSON Settings & Oh-My-Posh Themes
 │   ├── agymobile/              # Mobile Smartphone TUI, Web PWA & Tailscale Station
 │   ├── agyollama/              # Local AI & Ollama Daemon Cockpit
-│   ├── agybot/                 # Telegram Remote Controller & Project Daemon
-│   └── agyswarm/               # Multi-Agent Child Terminal Cockpit & PTY Swarm Orchestrator
+│   └── agyreview/              # Autonomous Multi-Repo Code Reviewer & Sentinel
+│
+├── tools/                      # Standalone Developer & Experimental Tools
+│   └── agyswarm/               # Multi-Agent Child Terminal Cockpit & PTY Swarm (Sunset/Legacy)
 │
 ├── shell/
 │   ├── windows/                # Microsoft.PowerShell_profile.ps1 (Modularized Profile)

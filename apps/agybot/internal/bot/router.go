@@ -101,10 +101,10 @@ func (h *BotHandler) StartPolling(ctx context.Context) error {
 		{Command: "getfile", Description: "Download File from PC to Phone"},
 		{Command: "newproj", Description: "Scaffold & Register New Project"},
 		{Command: "clear", Description: "Clear Context & Start Fresh"},
-		{Command: "rebuild", Description: "Rebuild All 12 Micro-Apps"},
+		{Command: "rebuild", Description: "Rebuild Antigravity Suite Apps"},
 		{Command: "replan", Description: "Audit Tech Debt & Replan Roadmap"},
-		{Command: "swarm", Description: "Run Multi-Agent Parallel Swarm"},
-		{Command: "review", Description: "Perform Code Security Review"},
+		{Command: "research", Description: "Deep Tech Research & Trade-Offs"},
+		{Command: "review", Description: "Perform Code Security Review (P0-P4)"},
 		{Command: "config", Description: "Show Bot System Configuration"},
 		{Command: "help", Description: "Bot Commands & Reference Guide"},
 	})
@@ -339,7 +339,24 @@ func (h *BotHandler) handleUpdate(ctx context.Context, u Update) {
 		h.handleProjects(ctx, chatID)
 		return
 	case "🛠️ automation":
-		h.handleSwarm(ctx, userID, chatID, "Inspect project status and run autonomous agent swarm")
+		msg := "🛠️ **ANTIGRAVITY AUTOMATION & SENTINELS**\n\n" +
+			"• 🔨 `/rebuild`: Compile and install all suite applications\n" +
+			"• 📋 `/replan`: Audit technical debt and replan product roadmap\n" +
+			"• 🛡️ `/review`: Autonomous multi-repo code review (P0-P4)\n" +
+			"• 🔬 `/research <topic>`: Deep architectural research & trade-offs\n"
+		kb := &InlineKeyboardMarkup{
+			InlineKeyboard: [][]InlineKeyboardButton{
+				{
+					{Text: "🔨 Rebuild Suite", CallbackData: "btn_rebuild"},
+					{Text: "📋 Replan Roadmap", CallbackData: "btn_replan"},
+				},
+				{
+					{Text: "🛡️ Code Review", CallbackData: "btn_review"},
+					{Text: "🩺 Health Check", CallbackData: "btn_health"},
+				},
+			},
+		}
+		_, _ = h.client.SendMessage(ctx, chatID, msg, kb)
 		return
 	case "💾 session":
 		h.handleCurrentSession(ctx, userID, chatID)

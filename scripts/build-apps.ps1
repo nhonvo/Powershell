@@ -12,7 +12,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$apps = @("agyswitch", "agyproj", "agygit", "agydocker", "agyterm", "agyx", "agymobile", "agyollama", "agybot", "agyport", "agyswarm", "agyreview")
+$apps = @("agybot", "agyswitch", "agyproj", "agygit", "agydocker", "agyterm", "agyx", "agymobile", "agyollama", "agyport", "agyreview")
 
 if (-not $OutputDir) {
     if ($IsWindows -or $env:OS -like "*Windows*") {
@@ -29,6 +29,9 @@ if (-not (Test-Path $OutputDir)) {
 function Build-SingleApp {
     param([string]$AppName)
     $appDir = Join-Path $repoRoot "apps/$AppName"
+    if (-not (Test-Path $appDir) -and (Test-Path (Join-Path $repoRoot "tools/$AppName"))) {
+        $appDir = Join-Path $repoRoot "tools/$AppName"
+    }
     if (-not (Test-Path $appDir)) {
         Write-Error "App directory not found: $appDir"
         return

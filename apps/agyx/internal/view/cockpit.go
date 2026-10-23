@@ -294,7 +294,7 @@ func (a *CockpitApp) getActiveToolBinary() string {
 	case 2:
 		return "agygit"
 	case 3:
-		return "agyswarm"
+		return "agybot"
 	case 4:
 		subTools := []string{
 			"agydocker",
@@ -302,7 +302,7 @@ func (a *CockpitApp) getActiveToolBinary() string {
 			"agyollama",
 			"agyterm",
 			"agymobile",
-			"agybot",
+			"agyswarm",
 			"aws",
 			"agyreview",
 		}
@@ -377,7 +377,7 @@ func (a *CockpitApp) Render() {
 	if width < 80 {
 		b.WriteString("\r\n⚡ \033[1;36mAGYX MASTER COCKPIT\033[0m\033[K\r\n")
 		b.WriteString(hr(width))
-		tabNames := []string{"1:Sw", "2:Pr", "3:Git", "4:Swarm", "5:Tools"}
+		tabNames := []string{"1:Sw", "2:Pr", "3:Git", "4:Bot", "5:Tools"}
 		for i, t := range tabNames {
 			if i == a.ActiveTab {
 				fmt.Fprintf(&b, "\033[1;37;44m [%s] \033[0m ", t)
@@ -393,7 +393,7 @@ func (a *CockpitApp) Render() {
 			"[1] 🛸 Switch",
 			"[2] 📁 Proj",
 			"[3] 🐙 Git",
-			"[4] 🐝 Swarm",
+			"[4] 🤖 Bot",
 			"[5] 🛠️ Tools",
 		}
 		for i, t := range tabs {
@@ -415,7 +415,7 @@ func (a *CockpitApp) Render() {
 	case 2:
 		a.renderGitSummary(&b, width)
 	case 3:
-		a.renderSwarmSummary(&b, width)
+		a.renderBotSummary(&b, width)
 	case 4:
 		a.renderToolsSummary(&b, width)
 	}
@@ -463,14 +463,19 @@ func (a *CockpitApp) renderGitSummary(b *strings.Builder, width int) {
 	b.WriteString("  \033[1;32mPress [Enter] to launch full interactive 'agygit' Fleet Hub...\033[0m\033[K\r\n")
 }
 
-func (a *CockpitApp) renderSwarmSummary(b *strings.Builder, width int) {
-	fmt.Fprintf(b, " 🐝 \033[1;36mMulti-Agent Child Terminal Cockpit & PTY Swarm (agyswarm)\033[0m\033[K\r\n\033[K\r\n")
-	fmt.Fprintf(b, "  • \033[1mPrimary Command:\033[0m  agyx swarm [cockpit|run|spawn|version]\033[K\r\n")
-	fmt.Fprintf(b, "  • \033[1mKey Features:\033[0m     Multi-child terminal PTY management, direct human keyboard pass-through\033[K\r\n")
-	fmt.Fprintf(b, "                      ([Enter/i] attach, [Ctrl+] detach), status heuristics (● WORKING, ⚡ NEED INPUT)\033[K\r\n")
-	fmt.Fprintf(b, "  • \033[1mOrchestration:\033[0m    Cross-account isolated environments, pure Markdown deliverable export\033[K\r\n")
-	fmt.Fprintf(b, "  • \033[1mDeliverables:\033[0m     ./doc/swarm/*.md (Pure GFM with ANSI stripped)\033[K\r\n\033[K\r\n")
-	b.WriteString("  \033[1;32mPress [Enter] to launch interactive 'agyswarm' Multi-Agent Cockpit...\033[0m\033[K\r\n")
+func (a *CockpitApp) renderBotSummary(b *strings.Builder, width int) {
+	fmt.Fprintf(b, " 🤖 \033[1;36mTelegram Remote Controller & Autonomous Project Daemon (agybot)\033[0m\033[K\r\n\033[K\r\n")
+	running, pid := isBotRunning()
+	if running {
+		fmt.Fprintf(b, "  • \033[1mDaemon Status:\033[0m    \033[1;32m● RUNNING (PID: %d)\033[0m\033[K\r\n", pid)
+	} else {
+		fmt.Fprintf(b, "  • \033[1mDaemon Status:\033[0m    \033[1;31m○ STOPPED\033[0m (Run 'agybot start' or press [Enter])\033[K\r\n")
+	}
+	fmt.Fprintf(b, "  • \033[1mPrimary Command:\033[0m  agyx bot [start|stop|restart|status|logs|foreground]\033[K\r\n")
+	fmt.Fprintf(b, "  • \033[1mKey Features:\033[0m     Telegram smartphone control, multi-project dispatch, PIN security\033[K\r\n")
+	fmt.Fprintf(b, "                      Session continuation (-c), model selector, file transfers, health check\033[K\r\n")
+	fmt.Fprintf(b, "  • \033[1mConfig File:\033[0m      ~/.config/antigravity/bot.env\033[K\r\n\033[K\r\n")
+	b.WriteString("  \033[1;32mPress [Enter] to launch interactive 'agybot' Controller Dashboard...\033[0m\033[K\r\n")
 }
 
 func (a *CockpitApp) renderToolsSummary(b *strings.Builder, width int) {

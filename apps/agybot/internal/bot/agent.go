@@ -3,6 +3,7 @@ package bot
 import (
 	"context"
 	"fmt"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
@@ -171,12 +172,23 @@ func (h *BotHandler) handleRebuild(ctx context.Context, userID int64, chatID int
 	ws := h.wsMgr.GetUserWorkspace(userID)
 	_, _ = h.client.SendMessage(ctx, chatID, fmt.Sprintf("🛠️ **REBUILDING WORKSPACE / SUITE APPS**\nWorkspace: `%s`\nExecuting build pipeline...", filepath.Base(ws)), nil)
 
-	buildScript := filepath.Join(h.cfg.DefaultWorkspace, "scripts", "build-apps.ps1")
 	var cmd *exec.Cmd
 	if runtime.GOOS == "windows" {
+		buildScript := filepath.Join(h.cfg.DefaultWorkspace, "scripts", "build-apps.ps1")
 		cmd = exec.CommandContext(ctx, "powershell", "-ExecutionPolicy", "Bypass", "-File", buildScript, "-Target", "all")
 	} else {
-		cmd = exec.CommandContext(ctx, "wsl", "bash", "-c", "cd /mnt/c/Users/TruongNhon/Documents/Powershell && pwsh -File scripts/build-apps.ps1 -Target all")
+		workspaceDir := h.cfg.DefaultWorkspace
+		if workspaceDir == "" {
+			workspaceDir = "."
+		}
+		if _, err := os.Stat(filepath.Join(workspaceDir, "Makefile")); err == nil {
+			cmd = exec.CommandContext(ctx, "make", "all")
+			cmd.Dir = workspaceDir
+		} else {
+			buildScript := filepath.Join(workspaceDir, "scripts", "build-apps.sh")
+			cmd = exec.CommandContext(ctx, "bash", buildScript, "all")
+			cmd.Dir = workspaceDir
+		}
 	}
 
 	out, err := cmd.CombinedOutput()
@@ -203,7 +215,7 @@ func (h *BotHandler) handleReplan(ctx context.Context, userID int64, chatID int6
 
 func (h *BotHandler) handleSwarm(ctx context.Context, userID int64, chatID int64, task string) {
 	ws := h.wsMgr.GetUserWorkspace(userID)
-	prompt := fmt.Sprintf("Spawn an agyswarm multi-agent workforce to execute task in `%s`: %s", filepath.Base(ws), task)
+	prompt := fmt.Sprintf("Decompose and execute the following task systematically in `%s`: %s", filepath.Base(ws), task)
 	h.handleAIPrompt(ctx, userID, chatID, prompt)
 }
 

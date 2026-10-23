@@ -5,24 +5,29 @@
 SHELL := /bin/bash
 INSTALL_DIR ?= $(HOME)/.local/bin
 DIST_WIN ?= ./dist/windows
-APPS := agyswitch agyproj agygit agydocker agyterm agyx agymobile agyollama agybot agyport agyswarm agyreview
+# agybot elevated to the TOP (#1 Flagship Controller)
+APPS := agybot agyswitch agyproj agygit agydocker agyterm agyx agymobile agyollama agyport agyreview
+TOOLS := agyswarm
 
-.PHONY: all build install test test-v clean windows help $(APPS) mobile ollama bot agybot port agyport swarm agyswarm review agyreview
+.PHONY: all build install test test-v clean windows help $(APPS) $(TOOLS) bot agybot switch proj git docker term proxy agyx mobile ollama port review agyreview swarm agyswarm
 
 all: install
 
 help:
 	@echo "=================================================================="
-	@echo "⚡ Antigravity Developer Suite (Go Engine - 12 Micro-Apps)"
+	@echo "⚡ Antigravity Developer Suite (Go Engine - 11 Apps + 1 Tool)"
 	@echo "=================================================================="
 	@echo "Usage:"
-	@echo "  make build         Build all 12 Linux binaries to ./bin/"
+	@echo "  make build         Build all 11 Linux binaries to ./bin/"
 	@echo "  make install       Build & install all binaries to $(INSTALL_DIR)"
-	@echo "  make test          Run unit test suites across all 12 applications"
+	@echo "  make test          Run unit test suites across all applications"
 	@echo "  make windows       Cross-compile Windows .exe binaries to $(DIST_WIN)"
-	@echo "  make <app>         Build & install a single app (e.g. make review)"
+	@echo "  make <app>         Build & install a single app (e.g. make bot)"
 	@echo ""
-	@echo "Available single-app targets:"
+	@echo "Flagship Application (#1):"
+	@echo "  make bot           Build agybot     (Telegram Remote Controller & Project Daemon)"
+	@echo ""
+	@echo "Available Suite Applications:"
 	@echo "  make switch        Build agyswitch  (Vault, Quota, Sessions)"
 	@echo "  make proj          Build agyproj    (Workspaces, IDE Hub)"
 	@echo "  make git           Build agygit     (Git Cockpit, Staging, Worktrees)"
@@ -31,10 +36,11 @@ help:
 	@echo "  make proxy         Build agyx       (Master Proxy & Orchestrator)"
 	@echo "  make mobile        Build agymobile  (Mobile Terminal, Web PWA & Tailscale)"
 	@echo "  make ollama        Build agyollama  (Local Ollama & AI Agent Cockpit)"
-	@echo "  make bot           Build agybot     (Telegram Remote Controller & Project Daemon)"
 	@echo "  make port          Build agyport    (Port Manager, Kill Ports & RAM Leverage)"
-	@echo "  make swarm         Build agyswarm   (Multi-Agent Child Terminal Cockpit & PTY Swarm)"
 	@echo "  make review        Build agyreview  (Autonomous Multi-Repo Code Reviewer & Sentinel)"
+	@echo ""
+	@echo "Standalone Tools (tools/):"
+	@echo "  make swarm         Build agyswarm   (Moved to tools/agyswarm · Sunset/Legacy)"
 	@echo "=================================================================="
 
 # Test all apps
@@ -126,8 +132,8 @@ agyport: port
 
 swarm:
 	@mkdir -p $(INSTALL_DIR)
-	@echo "🚀 Building & installing agyswarm..."
-	@(cd apps/agyswarm && go test ./... && go build -o $(INSTALL_DIR)/agyswarm .)
+	@echo "🚀 Building & installing agyswarm (tools/agyswarm)..."
+	@(cd tools/agyswarm && go test ./... && go build -o $(INSTALL_DIR)/agyswarm .)
 	@echo "✔ Installed $(INSTALL_DIR)/agyswarm"
 
 agyswarm: swarm

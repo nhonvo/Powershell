@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"agybot/internal/config"
@@ -31,30 +32,35 @@ func (h *BotHandler) handleStatus(ctx context.Context, chatID int64) {
 
 func (h *BotHandler) handleHealthCheck(ctx context.Context, chatID int64) {
 	home, _ := os.UserHomeDir()
+	ext := ""
+	if runtime.GOOS == "windows" {
+		ext = ".exe"
+	}
 	apps := []string{
-		"agybot.exe", "agyswitch.exe", "agyproj.exe", "agygit.exe",
-		"agydocker.exe", "agyterm.exe", "agyx.exe", "agymobile.exe",
-		"agyollama.exe", "agyport.exe", "agyswarm.exe", "agyreview.exe",
+		"agybot", "agyswitch", "agyproj", "agygit",
+		"agydocker", "agyterm", "agyx", "agymobile",
+		"agyollama", "agyport", "agyreview",
 	}
 
 	var sb strings.Builder
 	sb.WriteString("🩺 **ANTIGRAVITY SUITE HEALTH DIAGNOSTICS**\n\n")
 
 	missingCount := 0
-	for _, app := range apps {
-		p := filepath.Join(home, ".local", "bin", app)
+	for _, name := range apps {
+		appBin := name + ext
+		p := filepath.Join(home, ".local", "bin", appBin)
 		if _, err := os.Stat(p); err == nil {
-			sb.WriteString(fmt.Sprintf("✅ `%s`: Healthy (`%s`)\n", app, p))
+			sb.WriteString(fmt.Sprintf("✅ `%s`: Healthy (`%s`)\n", appBin, p))
 		} else {
 			missingCount++
-			sb.WriteString(fmt.Sprintf("❌ `%s`: **MISSING / DOWN**\n", app))
+			sb.WriteString(fmt.Sprintf("❌ `%s`: **MISSING / DOWN**\n", appBin))
 		}
 	}
 
 	if missingCount > 0 {
-		sb.WriteString(fmt.Sprintf("\n⚠️ **Diagnostic Alert:** %d micro-app(s) missing or outdated.\n👉 *Run `/rebuild` to automatically compile all 12 micro-apps!*", missingCount))
+		sb.WriteString(fmt.Sprintf("\n⚠️ **Diagnostic Alert:** %d micro-app(s) missing or outdated.\n👉 *Run `/rebuild` to automatically compile the suite!*", missingCount))
 	} else {
-		sb.WriteString("\n🎉 **All 12 Antigravity Micro-Apps are ONLINE and healthy!**")
+		sb.WriteString(fmt.Sprintf("\n🎉 **All %d Antigravity Suite Apps are ONLINE and healthy!**", len(apps)))
 	}
 
 	_, _ = h.client.SendMessage(ctx, chatID, sb.String(), nil)

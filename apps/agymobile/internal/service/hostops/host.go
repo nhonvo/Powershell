@@ -63,10 +63,10 @@ func GetHostStats() model.HostStats {
 
 // DropCaches writes 3 to /proc/sys/vm/drop_caches to reclaim Linux/WSL2 buffer memory
 func DropCaches() error {
-	cmd := exec.Command("sudo", "sync")
+	cmd := exec.Command("sudo", "-n", "sync")
 	_ = cmd.Run()
 
-	cmd = exec.Command("sudo", "sh", "-c", "echo 3 > /proc/sys/vm/drop_caches")
+	cmd = exec.Command("sudo", "-n", "sh", "-c", "echo 3 > /proc/sys/vm/drop_caches")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		// Fallback without sudo if already running as root
