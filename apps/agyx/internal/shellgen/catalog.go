@@ -48,8 +48,11 @@ func GetCatalog() []AliasSpec {
 		// =========================================================================
 		// 1. AGYX DEVELOPER SUITE BINARIES & SHORTCUTS
 		// =========================================================================
+		{Name: "s", Category: "Suite", Type: SuiteApp, Target: "agyswitch", Description: "Quick launch Antigravity multi-account vault"},
 		{Name: "agys", Category: "Suite", Type: SuiteApp, Target: "agyswitch", Description: "Quick launch Antigravity multi-account vault"},
 		{Name: "agysw", Category: "Suite", Type: SuiteApp, Target: "agyswitch", Description: "Alias for agyswitch"},
+		{Name: "agy-account", Category: "Suite", Type: SuiteApp, Target: "agyswitch", Description: "Alias for agyswitch"},
+		{Name: "agy-acc", Category: "Suite", Type: SuiteApp, Target: "agyswitch", Description: "Alias for agyswitch"},
 		{Name: "agy-quota", Category: "Suite", Type: SuiteApp, Target: "agyswitch", Args: []string{"launch-quota"}, Description: "Launch quota monitor"},
 		{Name: "agyp", Category: "Suite", Type: SuiteApp, Target: "agyproj", Description: "Quick launch Workspace Navigator"},
 		{Name: "agyg", Category: "Suite", Type: SuiteApp, Target: "agygit", Description: "Quick launch Git Fleet manager"},

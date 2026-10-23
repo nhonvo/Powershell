@@ -23,8 +23,41 @@ else
 fi
 
 export POSH_THEMES_PATH="$REPO_ROOT/shell/assets/powershell-themes"
-export PATH="$HOME/.local/bin:$HOME/.dotnet:$HOME/.dotnet/tools:$PATH"
+export PATH="$HOME/.local/go/bin:$HOME/.local/bin:$HOME/.dotnet:$HOME/.dotnet/tools:$PATH"
 export DOTNET_ROOT="$HOME/.dotnet"
+
+sync_active_agy_environment() {
+    local active_file="$HOME/.gemini/active_account.txt"
+    if [ -f "$active_file" ]; then
+        local acc_name="$(tr -d '[:space:]' < "$active_file")"
+        if [ -n "$acc_name" ]; then
+            export AGY_ACTIVE_ACCOUNT="$acc_name"
+            export GEMINI_HOME="$HOME/.gemini"
+            export GEMINI_CLI_HOME="$HOME/.gemini"
+        fi
+    fi
+}
+
+cc() {
+    local agyx_bin="$HOME/.local/bin/agyx"
+    if [ ! -f "$agyx_bin" ] && [ -n "$REPO_ROOT" ]; then
+        agyx_bin="$REPO_ROOT/dist/linux/agyx"
+    fi
+    if [ -f "$agyx_bin" ]; then
+        "$agyx_bin" "$@"
+    elif command -v agyx >/dev/null 2>&1; then
+        agyx "$@"
+    else
+        echo -e "\033[31m❌ agyx binary not found in ~/.local/bin or PATH\033[0m"
+    fi
+    sync_active_agy_environment
+}
+
+ccd() {
+    cc "$@"
+}
+
+sync_active_agy_environment
 
 # --- 2. PROMPT & THEME (Oh My Posh with fallback to Starship) ---
 if [ -f "$HOME/.config/selected_posh_theme.txt" ]; then
@@ -254,6 +287,7 @@ proj() {
 }
 
 # Network Ports Management
+unalias ports killport kp 2>/dev/null || true
 ports() {
     echo -e "\033[36m🔌 Active Listening Ports:\033[0m"
     ss -tulpn 2>/dev/null | grep -E "LISTEN" || netstat -tulpn 2>/dev/null
@@ -269,13 +303,72 @@ killport() {
     echo -e "\033[32m✓ Terminated process on port $port\033[0m"
 }
 
-# --- 6. ALIASES (Matching PowerShell Profile) ---
+# Native Shell AI Assistant (Streams from local Ollama http://localhost:11434/api/generate)
+ask() {
+    if [ $# -eq 0 ]; then
+        echo -e "\033[33mUsage: ask [--code] \"<question>\"\033[0m"
+        return 1
+    fi
+    "$HOME/.local/bin/ask" "$@"
+}
+
+# --- 6. ALIASES & UTILITIES (Matching PowerShell Profile Parity) ---
+
+# AGYX Suite & Multi-Account Switcher Shortcuts
+alias s="agyswitch"
+alias agys="agyswitch"
+alias agysw="agyswitch"
+alias agy-acc="agyswitch"
+alias agy-account="agyswitch"
+alias reset-agy="agyswitch status"
+alias purge-accounts="agyswitch status"
+
+# IDE & Editor Shortcuts
+ide() {
+    local target="${1:-.}"
+    if command -v agyproj >/dev/null 2>&1; then
+        agyproj open "$target"
+    elif command -v code >/dev/null 2>&1; then
+        code "$target"
+    elif command -v nvim >/dev/null 2>&1; then
+        nvim "$target"
+    else
+        xdg-open "$target" >/dev/null 2>&1 || true
+    fi
+}
+
+open-folder() {
+    local target="${1:-.}"
+    if command -v xdg-open >/dev/null 2>&1; then
+        xdg-open "$target" >/dev/null 2>&1 &
+    elif command -v nemo >/dev/null 2>&1; then
+        nemo "$target" >/dev/null 2>&1 &
+    fi
+}
+
+open-term() {
+    local target="${1:-$(pwd)}"
+    if command -v gnome-terminal >/dev/null 2>&1; then
+        gnome-terminal --working-directory="$target" >/dev/null 2>&1 &
+    elif command -v x-terminal-emulator >/dev/null 2>&1; then
+        x-terminal-emulator --working-directory="$target" >/dev/null 2>&1 &
+    fi
+}
+
+alias f="open-folder"
+alias p="proj"
+alias term="open-term"
+alias wt="open-term"
+alias go="source \"\$HOME/.config/posh-profile.sh\" && echo -e '\033[32m✅ Profile reloaded.\033[0m'"
+alias reload="source \"\$HOME/.config/posh-profile.sh\" && echo -e '\033[32m✅ Profile reloaded.\033[0m'"
 
 # Git Aliases
 alias gs="git status"
 alias gsi="git status"
 alias gd="git diff"
 alias glo="git log --graph --oneline --decorate"
+alias glg="git log --graph --oneline --decorate"
+alias glog="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 alias gb="git branch"
 alias co="git checkout"
 alias cob="git checkout -b"
@@ -283,12 +376,16 @@ alias gbd="git branch -d"
 alias ga="git add ."
 alias gunstage="git restore --staged ."
 alias gca="git commit --amend"
+alias gcmt="gcommit"
 alias git-undo="git reset --soft HEAD~1"
+alias gundo="git reset --soft HEAD~1"
 alias gr="git reset --soft HEAD~1"
 alias grh="git reset --hard"
+alias gf="git fetch"
 alias gfetch="git fetch"
 alias gpu="git push"
 alias gpush="git push"
+alias gus="git push"
 alias gpull="git pull"
 alias guf="git push --force-with-lease"
 alias gclone="git clone"
@@ -302,6 +399,8 @@ alias gstash="git stash"
 alias gst="git stash"
 alias grebase="git rebase"
 alias grb="git rebase"
+alias gcf="git diff --name-only --diff-filter=U"
+alias gconflict="git diff --name-only --diff-filter=U"
 
 # Docker Aliases
 alias dk="docker ps"
@@ -312,21 +411,31 @@ alias dlogs="docker logs"
 alias dkcpu="docker compose up"
 alias dcup="docker compose up"
 alias dkcpub="docker compose up --build"
+alias dcupb="docker compose up --build"
 alias dkcpd="docker compose down"
 alias dcdown="docker compose down"
 alias dkstac='docker stop $(docker ps -q) 2>/dev/null || echo "No running containers."'
 alias dkrmac='docker rm -f $(docker ps -aq) 2>/dev/null || echo "No containers to remove."'
+alias fix-volume="docker volume prune -f"
+alias fix-image="docker image prune -a -f"
+alias docker-health="docker stats --no-stream"
 
 # .NET SDK Aliases
 alias dr="dotnet run"
+alias dru="dotnet run"
 alias dw="dotnet watch"
 alias dwatch="dotnet watch"
 alias db="dotnet build"
 alias dbld="dotnet build"
+alias dbu="dotnet build"
+alias dbldu="dotnet build"
 alias rebuild="dotnet build"
+alias df="dotnet format"
 alias dfmt="dotnet format"
 alias dt="dotnet test"
 alias dtst="dotnet test"
+alias dtu="dotnet test"
+alias dtstu="dotnet test"
 alias dwt="dotnet watch test"
 alias dcl="dotnet clean"
 alias dres="dotnet restore"
@@ -334,18 +443,70 @@ alias drestore="dotnet restore"
 alias sln="dotnet new sln"
 alias console="dotnet new console"
 alias webapi="dotnet new webapi"
+alias du="dotnet ef database update"
 alias update-db="dotnet ef database update"
+alias da="dotnet ef migrations add"
 alias add-migration="dotnet ef migrations add"
+alias dd="dotnet ef database drop"
+alias dremove="dotnet ef migrations remove"
+alias dpubpkg="dotnet pack -c Release"
+alias dotnet-info="dotnet --info"
 alias clean-build="dclean"
+
+# AWS & LocalStack Aliases
+alias aws-whoami="aws sts get-caller-identity 2>/dev/null || echo 'AWS CLI not configured'"
+alias aws-whoamiu="aws sts get-caller-identity 2>/dev/null || echo 'AWS CLI not configured'"
+alias aws-s3="aws s3 ls 2>/dev/null"
+alias aws-s3u="aws s3 ls 2>/dev/null"
+alias s3ls="aws s3 ls 2>/dev/null"
+alias s3mb="aws s3 mb 2>/dev/null"
+alias lbls="aws lambda list-functions 2>/dev/null"
+alias aws-local="aws lambda list-functions 2>/dev/null"
+alias sqsls="aws sqs list-queues 2>/dev/null"
+alias aws-sqs="aws sqs list-queues 2>/dev/null"
 
 # Navigation & Utilities
 alias cls="clear"
 alias ..="cd .."
 alias ...="cd ../.."
 alias ip-info="hostname -I 2>/dev/null || ip -br a"
+alias ip="hostname -I 2>/dev/null || ip -br a"
 alias cat-file="view"
 alias open="open-file"
 alias kp="killport"
 
-# --- 7. LOAD NOTIFICATION ---
+# Touchpad 2-finger tap mapping enforcer (0 1 = Left, Middle/Paste, Right)
+if [ -n "$DISPLAY" ] && command -v xinput >/dev/null 2>&1; then
+    _tp=$(xinput list --name-only 2>/dev/null | grep -i "touchpad" | head -n 1)
+    if [ -n "$_tp" ]; then
+        xinput set-prop "$_tp" "libinput Tapping Button Mapping Enabled" 0 1 2>/dev/null || true
+    fi
+fi
+
+# --- 7. AGYX UNIFIED SUITE INITIALIZATION ---
+if [ -x "$HOME/.local/bin/agyx" ]; then
+    if [ -n "$ZSH_VERSION" ]; then
+        eval "$("$HOME/.local/bin/agyx" init zsh)"
+    else
+        eval "$("$HOME/.local/bin/agyx" init bash)"
+    fi
+elif command -v agyx >/dev/null 2>&1; then
+    if [ -n "$ZSH_VERSION" ]; then
+        eval "$(agyx init zsh)"
+    else
+        eval "$(agyx init bash)"
+    fi
+fi
+
+# Terminal TTY key unmasking (allow Ctrl+V clipboard paste in terminals)
+stty lnext undef 2>/dev/null || true
+
+# Interactive Command History Suggestions & Search (FZF Integration)
+if command -v fzf >/dev/null 2>&1; then
+    eval "$(fzf --bash 2>/dev/null)"
+elif [ -x "$HOME/.local/bin/fzf" ]; then
+    eval "$("$HOME/.local/bin/fzf" --bash 2>/dev/null)"
+fi
+
+# --- 8. LOAD NOTIFICATION ---
 # echo -e "\033[32m🛸 Enhanced Linux Profile Loaded (Repository: nhonvo/powershell)\033[0m"
