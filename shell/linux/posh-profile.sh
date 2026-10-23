@@ -123,11 +123,11 @@ fi
 
 # --- 4. TERMINAL ICONS & MODERN LS (eza) ---
 if command -v eza >/dev/null 2>&1; then
-    alias ls="eza --icons --group-directories-first"
-    alias l="eza -la --icons --git --group-directories-first"
-    alias ll="eza -l --icons --git --group-directories-first"
-    alias la="eza -a --icons --group-directories-first"
-    alias lt="eza --tree --level=2 --icons"
+    alias ls="eza --icons=always --group-directories-first"
+    alias l="eza -la --icons=always --git --group-directories-first"
+    alias ll="eza -l --icons=always --git --group-directories-first"
+    alias la="eza -a --icons=always --group-directories-first"
+    alias lt="eza --tree --level=2 --icons=always"
 else
     alias ls="ls --color=auto"
     alias ll="ls -lah --color=auto"
