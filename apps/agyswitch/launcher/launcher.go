@@ -103,9 +103,7 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 		_ = l.Store.LogoutAccount(accountName)
 		l.Store.ClearCredentials(primaryDir)
 		l.Vault.PurgeGlobalKeyring()
-		if runtime.GOOS == "windows" {
-			vault.DeleteWindowsCredential("gemini:antigravity")
-		}
+		vault.DeleteWindowsCredential("gemini:antigravity")
 		fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Starting interactive Google OAuth sign-in for account '\033[32m%s\033[0m'...\n", accountName)
 		fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Context: \033[33m%s\033[0m (Follow prompts in terminal/browser)\n", accDir)
 	} else {
@@ -123,10 +121,8 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 			activeFile := filepath.Join(primaryDir, "active_account.txt")
 			_ = os.WriteFile(activeFile, []byte(accountName), 0644)
 
-			if runtime.GOOS == "windows" {
-				if winTok := l.Vault.ReadTokenFromDir(accDir); winTok != "" {
-					vault.WriteWindowsCredential("gemini:antigravity", winTok)
-				}
+			if winTok := l.Vault.ReadTokenFromDir(accDir); winTok != "" {
+				vault.WriteWindowsCredential("gemini:antigravity", winTok)
 			}
 			fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Context for '\033[32m%s\033[0m': \033[32m%s\033[0m (✔ Logged In)\n", accountName, accDir)
 		} else {
@@ -135,9 +131,7 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 			}
 			l.Store.ClearCredentials(primaryDir)
 			l.Vault.PurgeGlobalKeyring()
-			if runtime.GOOS == "windows" {
-				vault.DeleteWindowsCredential("gemini:antigravity")
-			}
+			vault.DeleteWindowsCredential("gemini:antigravity")
 			fmt.Fprintf(os.Stderr, "\033[36m[agyswitch]\033[0m Context for '\033[33m%s\033[0m': \033[33m%s\033[0m (✘ Logged Out - Login Required)\n", accountName, accDir)
 		}
 	}
@@ -190,13 +184,11 @@ func (l *Launcher) LaunchAccountInDir(accountName string, workingDir string, pas
 
 	runErr := cmd.Run()
 
-	// Post-run hook: sync newly updated credentials from accDir back to primaryDir if active
-	if runtime.GOOS == "windows" {
-		if winTok := vault.ReadWindowsCredential("gemini:antigravity"); winTok != "" {
-			_ = l.Vault.SaveTokenToContext(accDir, winTok)
-			if strings.EqualFold(accountName, l.Store.GetActiveAccount()) {
-				_ = l.Vault.SaveTokenToContext(primaryDir, winTok)
-			}
+	// Post-run hook: sync newly updated credentials from system keyring back to accDir and primaryDir if active
+	if winTok := vault.ReadWindowsCredential("gemini:antigravity"); winTok != "" {
+		_ = l.Vault.SaveTokenToContext(accDir, winTok)
+		if strings.EqualFold(accountName, l.Store.GetActiveAccount()) {
+			_ = l.Vault.SaveTokenToContext(primaryDir, winTok)
 		}
 	}
 

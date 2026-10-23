@@ -223,19 +223,17 @@ func (v *Vault) ReadTokenFromDir(dir string) string {
 		}
 	}
 
-	// 5. Check Windows Credential Manager for gemini:antigravity if dir has google_accounts.json or is active
-	if runtime.GOOS == "windows" {
-		gJsonPath := filepath.Join(dir, "google_accounts.json")
-		primaryDir := filepath.Join(v.userHome, ".gemini")
-		isPrimaryOrActive := filepath.Clean(dir) == filepath.Clean(primaryDir)
-		_, hasGJson := os.Stat(gJsonPath)
+	// 5. Check System Keyring / Credential Manager for gemini:antigravity if dir has google_accounts.json or is active
+	gJsonPath := filepath.Join(dir, "google_accounts.json")
+	primaryDir := filepath.Join(v.userHome, ".gemini")
+	isPrimaryOrActive := filepath.Clean(dir) == filepath.Clean(primaryDir)
+	_, hasGJson := os.Stat(gJsonPath)
 
-		if isPrimaryOrActive || hasGJson == nil {
-			if winTok := ReadWindowsCredential("gemini:antigravity"); winTok != "" {
-				_ = v.SaveTokenToContext(dir, winTok)
-				if cleanTok := ExtractCleanAccessToken(winTok); cleanTok != "" {
-					return cleanTok
-				}
+	if isPrimaryOrActive || hasGJson == nil {
+		if sysTok := ReadWindowsCredential("gemini:antigravity"); sysTok != "" {
+			_ = v.SaveTokenToContext(dir, sysTok)
+			if cleanTok := ExtractCleanAccessToken(sysTok); cleanTok != "" {
+				return cleanTok
 			}
 		}
 	}
@@ -619,7 +617,7 @@ func (v *Vault) SaveTokenToContext(dir string, tokenInput string) error {
 	return nil
 }
 
-// PurgeGlobalKeyring clears primary ~/.gemini credentials and Windows Credential Manager.
+// PurgeGlobalKeyring clears primary ~/.gemini credentials and system keyring (Windows Credential Manager / Linux Secret Service).
 func (v *Vault) PurgeGlobalKeyring() {
 	primaryDir := filepath.Join(v.userHome, ".gemini")
 	_ = os.Remove(filepath.Join(primaryDir, "keyring_token.txt"))
@@ -628,6 +626,8 @@ func (v *Vault) PurgeGlobalKeyring() {
 	_ = os.Remove(filepath.Join(primaryDir, "google_accounts.json"))
 	_ = os.RemoveAll(filepath.Join(primaryDir, ".keyring"))
 
+	_ = DeleteWindowsCredential("gemini:antigravity")
+
 	if runtime.GOOS == "windows" {
 		if cmdkeyPath, err := exec.LookPath("cmdkey.exe"); err == nil {
 			_ = exec.Command(cmdkeyPath, "/delete:gemini:antigravity").Run()
@@ -635,23 +635,22 @@ func (v *Vault) PurgeGlobalKeyring() {
 	}
 }
 
-// SyncKeyringCredentials copies credentials from dir context into Windows Credential Manager if cmdkey.exe is available.
+// SyncKeyringCredentials copies credentials from dir context into system Keyring / Windows Credential Manager.
 func (v *Vault) SyncKeyringCredentials(dir string) error {
 	tok := v.ReadTokenFromDir(dir)
 	if tok == "" {
 		return errors.New("no token available in directory context")
 	}
 
-	if runtime.GOOS != "windows" {
-		return nil
+	_ = WriteWindowsCredential("gemini:antigravity", tok)
+
+	if runtime.GOOS == "windows" {
+		if cmdkeyPath, err := exec.LookPath("cmdkey.exe"); err == nil {
+			user := "antigravity"
+			cmd := exec.Command(cmdkeyPath, "/generic:gemini:antigravity", "/user:"+user, "/pass:"+tok)
+			_ = cmd.Run()
+		}
 	}
 
-	cmdkeyPath, err := exec.LookPath("cmdkey.exe")
-	if err != nil {
-		return nil
-	}
-
-	user := "antigravity"
-	cmd := exec.Command(cmdkeyPath, "/generic:gemini:antigravity", "/user:"+user, "/pass:"+tok)
-	return cmd.Run()
+	return nil
 }

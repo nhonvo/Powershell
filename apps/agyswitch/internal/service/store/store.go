@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"runtime"
 	"sort"
 	"strings"
 	"sync"
@@ -391,12 +390,10 @@ func (s *Store) SetActiveAccount(accountName string) error {
 		s.Vault.PurgeGlobalKeyring()
 	}
 
-	if runtime.GOOS == "windows" {
-		if winTok := s.Vault.ReadTokenFromDir(targetDir); winTok != "" && s.MatchesAccountEmail(targetDir, acc) {
-			vault.WriteWindowsCredential("gemini:antigravity", winTok)
-		} else {
-			vault.DeleteWindowsCredential("gemini:antigravity")
-		}
+	if winTok := s.Vault.ReadTokenFromDir(targetDir); winTok != "" && s.MatchesAccountEmail(targetDir, acc) {
+		vault.WriteWindowsCredential("gemini:antigravity", winTok)
+	} else {
+		vault.DeleteWindowsCredential("gemini:antigravity")
 	}
 
 	// Dual-Home Cross-Host Sync (Windows <-> WSL)
