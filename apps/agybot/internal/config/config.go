@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -190,15 +191,19 @@ func SaveConfigKey(key, value string) error {
 	primary := GetConfigFilePath()
 	targets := []string{primary}
 
-	// Add counterpart target paths if directories exist
+	// Add counterpart target paths only if valid for the current OS and directory exists
 	counterparts := []string{
-		"C:\\Users\\TruongNhon\\.config\\antigravity\\bot.env",
-		"/mnt/c/Users/TruongNhon/.config/antigravity/bot.env",
 		"/home/truongnhon/.config/antigravity/bot.env",
+		"/mnt/c/Users/TruongNhon/.config/antigravity/bot.env",
+	}
+	if runtime.GOOS == "windows" {
+		counterparts = append(counterparts, "C:\\Users\\TruongNhon\\.config\\antigravity\\bot.env")
 	}
 	for _, cp := range counterparts {
 		if cp != primary {
-			targets = append(targets, cp)
+			if _, err := os.Stat(filepath.Dir(cp)); err == nil {
+				targets = append(targets, cp)
+			}
 		}
 	}
 
