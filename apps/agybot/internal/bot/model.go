@@ -135,11 +135,12 @@ func (h *BotHandler) handleModels(ctx context.Context, userID int64, chatID int6
 	}
 
 	models := []string{
-		"Gemini 3.7 Flash",
-		"Gemini 3.8 Pro",
-		"Claude 3.5 Sonnet",
-		"Claude 3.7 Sonnet",
-		"Claude Opus 4.6",
+		"Gemini 3.8 Flash (Low)",
+		"Gemini 3.8 Flash (Medium)",
+		"Gemini 3.8 Flash (High)",
+		"Claude Sonnet 4.6 (Thinking)",
+		"Claude Opus 4.6 (Thinking)",
+		"GPT-OSS 120B (Medium)",
 		"Ollama Local",
 	}
 

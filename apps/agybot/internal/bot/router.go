@@ -455,20 +455,24 @@ func (h *BotHandler) handleCallbackQuery(ctx context.Context, q *CallbackQuery) 
 
 	if strings.HasPrefix(data, "set_model_") {
 		modelKey := strings.TrimPrefix(data, "set_model_")
-		modelName := "Gemini 3.7 Flash"
+		modelName := "Gemini 3.8 Flash (Low)"
 		switch modelKey {
-		case "gemini_3.7_flash", "gemini_flash":
-			modelName = "Gemini 3.7 Flash"
-		case "gemini_3.8_pro", "gemini_pro":
-			modelName = "Gemini 3.8 Pro"
-		case "claude_3.5_sonnet", "claude_sonnet":
-			modelName = "Claude 3.5 Sonnet"
-		case "claude_3.7_sonnet":
-			modelName = "Claude 3.7 Sonnet"
-		case "claude_opus_4.6", "claude_opus":
-			modelName = "Claude Opus 4.6"
+		case "gemini_3.8_flash_(low)", "gemini_3.8_flash_low", "gemini_3.7_flash", "gemini_flash":
+			modelName = "Gemini 3.8 Flash (Low)"
+		case "gemini_3.8_flash_(medium)", "gemini_3.8_flash_medium", "gemini_medium":
+			modelName = "Gemini 3.8 Flash (Medium)"
+		case "gemini_3.8_flash_(high)", "gemini_3.8_flash_high", "gemini_3.8_pro", "gemini_pro":
+			modelName = "Gemini 3.8 Flash (High)"
+		case "claude_sonnet_4.6_(thinking)", "claude_sonnet_4.6", "claude_3.5_sonnet", "claude_3.7_sonnet", "claude_sonnet":
+			modelName = "Claude Sonnet 4.6 (Thinking)"
+		case "claude_opus_4.6_(thinking)", "claude_opus_4.6", "claude_opus":
+			modelName = "Claude Opus 4.6 (Thinking)"
+		case "gpt-oss_120b_(medium)", "gpt_oss_120b_(medium)", "gpt_oss_120b", "gpt_oss":
+			modelName = "GPT-OSS 120B (Medium)"
 		case "ollama_local", "ollama":
 			modelName = "Ollama Local"
+		default:
+			modelName = runner.NormalizeCLIModel(modelKey, "")
 		}
 		_ = h.client.AnswerCallbackQuery(ctx, q.ID, "Switched to "+modelName, false)
 		h.handleSetModel(ctx, userID, chatID, modelName)

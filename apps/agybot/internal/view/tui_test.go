@@ -12,7 +12,7 @@ import (
 
 func TestDashboardView_RenderOverview(t *testing.T) {
 	cfg := &config.Config{
-		DefaultModel: "Gemini 3.7 Flash",
+		DefaultModel: "Gemini 3.8 Flash (Low)",
 		DefaultMode:  "accept-edits",
 	}
 	authMgr := auth.NewAuthManager("", 3, 0, 0, nil)
@@ -25,14 +25,14 @@ func TestDashboardView_RenderOverview(t *testing.T) {
 	if !strings.Contains(rendered, "AGYBOT") {
 		t.Errorf("Expected AGYBOT header in render")
 	}
-	if !strings.Contains(rendered, "Gemini 3.7 Flash") {
-		t.Errorf("Expected Gemini 3.7 Flash in render")
+	if !strings.Contains(rendered, "Gemini 3.8 Flash") {
+		t.Errorf("Expected Gemini 3.8 Flash in render")
 	}
 }
 
 func TestDashboardView_RenderTabs(t *testing.T) {
 	cfg := &config.Config{
-		DefaultModel: "Gemini 3.7 Flash",
+		DefaultModel: "Gemini 3.8 Flash (Low)",
 		DefaultMode:  "accept-edits",
 	}
 	authMgr := auth.NewAuthManager("", 3, 0, 0, nil)

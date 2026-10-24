@@ -6,6 +6,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
@@ -45,13 +48,57 @@ func NewAntigravityRunner(guard *security.SecurityGuard) *AntigravityRunner {
 	return &AntigravityRunner{guard: guard}
 }
 
-// AvailableModels returns standard Google Antigravity models
+// AvailableModels returns standard Google Antigravity and local models
 func (r *AntigravityRunner) AvailableModels() []string {
 	return []string{
-		"Gemini 3.7 Flash",
-		"Gemini 3.1 Pro",
-		"Claude Sonnet 4.6",
-		"Claude Opus 4.6",
+		"Gemini 3.8 Flash (Low)",
+		"Gemini 3.8 Flash (Medium)",
+		"Gemini 3.8 Flash (High)",
+		"Claude Sonnet 4.6 (Thinking)",
+		"Claude Opus 4.6 (Thinking)",
+		"GPT-OSS 120B (Medium)",
+		"Ollama Local",
+	}
+}
+
+// NormalizeCLIModel maps human, legacy, or partial model names to canonical AGY CLI models.
+// Effort is resolved directly into the canonical model identifier (e.g. Low/Medium/High).
+func NormalizeCLIModel(model, effort string) string {
+	m := strings.ToLower(strings.TrimSpace(model))
+	eff := strings.ToLower(strings.TrimSpace(effort))
+
+	canonical := []string{
+		"Gemini 3.8 Flash (Low)",
+		"Gemini 3.8 Flash (Medium)",
+		"Gemini 3.8 Flash (High)",
+		"Claude Sonnet 4.6 (Thinking)",
+		"Claude Opus 4.6 (Thinking)",
+		"GPT-OSS 120B (Medium)",
+	}
+	for _, c := range canonical {
+		if strings.EqualFold(model, c) {
+			return c
+		}
+	}
+
+	if strings.Contains(m, "opus") {
+		return "Claude Opus 4.6 (Thinking)"
+	}
+	if strings.Contains(m, "sonnet") || strings.Contains(m, "claude") {
+		return "Claude Sonnet 4.6 (Thinking)"
+	}
+	if strings.Contains(m, "gpt") || strings.Contains(m, "oss") {
+		return "GPT-OSS 120B (Medium)"
+	}
+
+	// Default family: Gemini Flash
+	switch eff {
+	case "high", "max", "xhigh":
+		return "Gemini 3.8 Flash (High)"
+	case "medium", "med":
+		return "Gemini 3.8 Flash (Medium)"
+	default:
+		return "Gemini 3.8 Flash (Low)"
 	}
 }
 
@@ -89,7 +136,7 @@ func (r *AntigravityRunner) FormatToolNotification(toolName string, params map[s
 	}
 }
 
-// ExecutePrompt runs agy CLI with streaming JSON and pushes events to output channel
+// ExecutePrompt runs agy CLI or Ollama Local with streaming output and pushes events to output channel
 func (r *AntigravityRunner) ExecutePrompt(ctx context.Context, opts RunnerOptions) (<-chan AgentEvent, error) {
 	outChan := make(chan AgentEvent, 100)
 
@@ -105,6 +152,12 @@ func (r *AntigravityRunner) ExecutePrompt(ctx context.Context, opts RunnerOption
 		return outChan, nil
 	}
 
+	// Check if this is an Ollama Local request
+	if strings.EqualFold(opts.Model, "Ollama Local") || strings.HasPrefix(strings.ToLower(opts.Model), "ollama") {
+		go r.executeOllama(ctx, opts, outChan)
+		return outChan, nil
+	}
+
 	agyExec := opts.AgyPath
 	if agyExec == "" {
 		agyExec = "agy"
@@ -116,21 +169,20 @@ func (r *AntigravityRunner) ExecutePrompt(ctx context.Context, opts RunnerOption
 		effectivePrompt = r.guard.GetSafetyPromptPrefix(opts.WorkspaceDir) + opts.Prompt
 	}
 
+	effectiveModel := NormalizeCLIModel(opts.Model, opts.Effort)
+
 	args := []string{
 		"-p", effectivePrompt,
 		"--output-format", "stream-json",
 		"--dangerously-skip-permissions",
+		"--model", effectiveModel,
 	}
 
 	if opts.ConversationID != "" {
 		args = append(args, "--conversation", opts.ConversationID)
 	}
-	if opts.Model != "" {
-		args = append(args, "--model", opts.Model)
-	}
-	if opts.Effort != "" {
-		args = append(args, "--effort", opts.Effort)
-	}
+	// Note: We do NOT append --effort because canonical AGY models embed their effort/thinking level
+	// and passing --effort causes the CLI to error out with "error: --effort is not supported for model ..."
 
 	cmd := exec.CommandContext(ctx, agyExec, args...)
 	if opts.WorkspaceDir != "" {
@@ -302,4 +354,72 @@ func (r *AntigravityRunner) ExecutePrompt(ctx context.Context, opts RunnerOption
 	}()
 
 	return outChan, nil
+}
+
+// executeOllama handles local Ollama model generation via HTTP stream
+func (r *AntigravityRunner) executeOllama(ctx context.Context, opts RunnerOptions, outChan chan<- AgentEvent) {
+	defer close(outChan)
+
+	targetModel := "llama3.2:3b"
+	home, _ := os.UserHomeDir()
+	if cfgData, err := os.ReadFile(filepath.Join(home, ".config", "antigravity", "ollama_default_model.txt")); err == nil {
+		if tm := strings.TrimSpace(string(cfgData)); tm != "" {
+			targetModel = tm
+		}
+	}
+
+	reqBody, _ := json.Marshal(map[string]interface{}{
+		"model":  targetModel,
+		"prompt": opts.Prompt,
+		"stream": true,
+	})
+
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", "http://127.0.0.1:11434/api/generate", bytes.NewReader(reqBody))
+	if err != nil {
+		outChan <- AgentEvent{Type: "error", Content: fmt.Sprintf("Failed to build Ollama request: %v", err)}
+		return
+	}
+	httpReq.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{Timeout: 0}
+	resp, err := client.Do(httpReq)
+	if err != nil {
+		outChan <- AgentEvent{
+			Type:    "error",
+			Content: fmt.Sprintf("Ollama daemon is offline at http://127.0.0.1:11434 (%v). Start it with 'ollama serve' or 'agyollama start'.", err),
+		}
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		b, _ := io.ReadAll(resp.Body)
+		outChan <- AgentEvent{Type: "error", Content: fmt.Sprintf("Ollama returned status %d: %s", resp.StatusCode, string(b))}
+		return
+	}
+
+	scanner := bufio.NewScanner(resp.Body)
+	for scanner.Scan() {
+		line := scanner.Bytes()
+		if len(line) == 0 {
+			continue
+		}
+		var chunk struct {
+			Response string `json:"response"`
+			Done     bool   `json:"done"`
+		}
+		if err := json.Unmarshal(line, &chunk); err == nil {
+			if chunk.Response != "" {
+				outChan <- AgentEvent{Type: "content", Content: chunk.Response}
+			}
+			if chunk.Done {
+				outChan <- AgentEvent{Type: "done"}
+				return
+			}
+		}
+	}
+
+	if err := scanner.Err(); err != nil && ctx.Err() == nil {
+		outChan <- AgentEvent{Type: "error", Content: fmt.Sprintf("Ollama stream error: %v", err)}
+	}
 }

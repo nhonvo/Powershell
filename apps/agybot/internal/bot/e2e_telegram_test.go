@@ -101,7 +101,7 @@ func setupTestFixture(t *testing.T) *testBotFixture {
 		AuthMaxAttempts:     5,
 		AuthLockoutDuration: 5 * time.Minute,
 		AuthAutoLockTimeout: 30 * time.Minute,
-		DefaultModel:        "Gemini 3.7 Flash",
+		DefaultModel:        "Gemini 3.8 Flash (Low)",
 		DefaultWorkspace:    tempDir,
 	}
 

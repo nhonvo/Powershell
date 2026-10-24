@@ -46,4 +46,15 @@ func TestRunner_AvailableModels(t *testing.T) {
 	if len(models) == 0 {
 		t.Fatalf("Expected available models")
 	}
+
+	// Verify model normalization
+	if m := NormalizeCLIModel("Gemini 3.7 Flash", "low"); m != "Gemini 3.8 Flash (Low)" {
+		t.Errorf("Expected Gemini 3.8 Flash (Low), got %s", m)
+	}
+	if m := NormalizeCLIModel("Gemini 3.8 Pro", "high"); m != "Gemini 3.8 Flash (High)" {
+		t.Errorf("Expected Gemini 3.8 Flash (High), got %s", m)
+	}
+	if m := NormalizeCLIModel("Claude 3.5 Sonnet", ""); m != "Claude Sonnet 4.6 (Thinking)" {
+		t.Errorf("Expected Claude Sonnet 4.6 (Thinking), got %s", m)
+	}
 }
