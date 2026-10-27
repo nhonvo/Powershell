@@ -103,6 +103,8 @@ theme() {
 if [ -n "$BASH_VERSION" ]; then
     HISTSIZE=50000
     HISTFILESIZE=50000
+    HISTCONTROL=ignoreboth:erasedups
+    HISTTIMEFORMAT="%F %T  "
     shopt -s histappend 2>/dev/null || true
     # Arrow up/down prefix search
     bind '"\e[A": history-search-backward' 2>/dev/null || true
@@ -208,6 +210,7 @@ ff() {
 }
 
 # gf: Fast recursive text search / grep
+unalias gf 2>/dev/null || true
 gf() {
     local pattern="$1"
     if [ -z "$pattern" ]; then
@@ -381,7 +384,7 @@ alias git-undo="git reset --soft HEAD~1"
 alias gundo="git reset --soft HEAD~1"
 alias gr="git reset --soft HEAD~1"
 alias grh="git reset --hard"
-alias gf="git fetch"
+# Note: 'gf' is reserved for fast recursive text search function gf()
 alias gfetch="git fetch"
 alias gpu="git push"
 alias gpush="git push"
@@ -475,14 +478,6 @@ alias cat-file="view"
 alias open="open-file"
 alias kp="killport"
 
-# Touchpad 2-finger tap mapping enforcer (0 1 = Left, Middle/Paste, Right)
-if [ -n "$DISPLAY" ] && command -v xinput >/dev/null 2>&1; then
-    _tp=$(xinput list --name-only 2>/dev/null | grep -i "touchpad" | head -n 1)
-    if [ -n "$_tp" ]; then
-        xinput set-prop "$_tp" "libinput Tapping Button Mapping Enabled" 0 1 2>/dev/null || true
-    fi
-fi
-
 # --- 7. AGYX UNIFIED SUITE INITIALIZATION ---
 if [ -x "$HOME/.local/bin/agyx" ]; then
     if [ -n "$ZSH_VERSION" ]; then
@@ -502,10 +497,18 @@ fi
 stty lnext undef 2>/dev/null || true
 
 # Interactive Command History Suggestions & Search (FZF Integration)
+export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --inline-info"
 if command -v fzf >/dev/null 2>&1; then
     eval "$(fzf --bash 2>/dev/null)"
 elif [ -x "$HOME/.local/bin/fzf" ]; then
     eval "$("$HOME/.local/bin/fzf" --bash 2>/dev/null)"
+fi
+
+# Restore native Git bash completion (prevent FZF _fzf_path_completion shadowing)
+if [ -f /usr/share/bash-completion/completions/git ]; then
+    source /usr/share/bash-completion/completions/git
+elif [ -f /etc/bash_completion.d/git ]; then
+    source /etc/bash_completion.d/git
 fi
 
 # --- 8. LOAD NOTIFICATION ---
