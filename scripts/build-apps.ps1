@@ -52,15 +52,24 @@ function Build-SingleApp {
         $exeSuffix = if ($IsWindows -or $Windows) { ".exe" } else { "" }
         $outPath = Join-Path $OutputDir "$AppName$exeSuffix"
 
+        $origGoos = $env:GOOS
+        $origGoarch = $env:GOARCH
         if ($exeSuffix -eq ".exe") {
             $env:GOOS = "windows"
             $env:GOARCH = "amd64"
         }
 
-        go build -o $outPath .
+        try {
+            go build -o $outPath .
+        } finally {
+            $env:GOOS = $origGoos
+            $env:GOARCH = $origGoarch
+        }
+
         if ($LASTEXITCODE -eq 0) {
             Write-Host "✔ Installed: $outPath" -ForegroundColor Green
-            $localBin = Join-Path $env:USERPROFILE ".local\bin"
+            $userDir = if ($env:USERPROFILE) { $env:USERPROFILE } else { $HOME }
+            $localBin = Join-Path $userDir ".local\bin"
             if (Test-Path $localBin) {
                 Copy-Item -Path $outPath -Destination (Join-Path $localBin "$AppName$exeSuffix") -Force -ErrorAction SilentlyContinue
             }
@@ -90,6 +99,7 @@ switch ($Target.ToLower()) {
     "bot"    { $Target = "agybot" }
     "port"   { $Target = "agyport" }
     "swarm"  { $Target = "agyswarm" }
+    "review" { $Target = "agyreview" }
 }
 
 if ($Target -eq "all") {

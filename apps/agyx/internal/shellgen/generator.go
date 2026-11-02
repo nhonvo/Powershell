@@ -197,15 +197,19 @@ func GeneratePowerShell() string {
 
 	// Suite Native Binaries Registration
 	appsList := `"` + strings.Join(GetSuiteApps(), `", "`) + `"`
-	b.WriteString(fmt.Sprintf(`$suiteAppNames = @(%s)
+	b.WriteString(fmt.Sprintf(`$isWin = $IsWindows -or ($null -ne $env:OS -and $env:OS -like "*Windows*")
+$exeSuffix = if ($isWin) { ".exe" } else { "" }
+$suiteAppNames = @(%s)
 foreach ($appName in $suiteAppNames) {
-    $binPath = Join-Path $HOME ".local\bin\$appName.exe"
+    $binPath = Join-Path $HOME ".local/bin/$appName$exeSuffix"
+    if (-not (Test-Path $binPath) -and -not $isWin) { $binPath = Join-Path $HOME ".local/bin/$appName" }
     if (-not (Test-Path $binPath) -and $Global:ProfileRepoRoot) {
-        $binPath = Join-Path $Global:ProfileRepoRoot "dist\windows\$appName.exe"
+        $binPath = Join-Path $Global:ProfileRepoRoot "dist/windows/$appName.exe"
+        if (-not (Test-Path $binPath)) { $binPath = Join-Path $Global:ProfileRepoRoot "bin/$appName" }
     }
     if (Test-Path $binPath) {
         Set-Item -Path "Function:$appName" -Value ([ScriptBlock]::Create("& '$binPath' @args")) -Force
-    } else {
+    } elseif ($isWin -and (Get-Command wsl -ErrorAction SilentlyContinue)) {
         Set-Item -Path "Function:$appName" -Value ([ScriptBlock]::Create("wsl $appName @args")) -Force
     }
 }
@@ -241,14 +245,21 @@ foreach ($appName in $suiteAppNames) {
 	b.WriteString(`# --- Shell Functions & State Mutators ---
 function proj {
     param([string]$Query)
+    $isWin = $IsWindows -or ($null -ne $env:OS -and $env:OS -like "*Windows*")
+    $exeSuffix = if ($isWin) { ".exe" } else { "" }
     if (-not $Query) {
-        $agyProj = Join-Path $HOME ".local\bin\agyproj.exe"
-        if (-not (Test-Path $agyProj) -and $Global:ProfileRepoRoot) { $agyProj = Join-Path $Global:ProfileRepoRoot "dist\windows\agyproj.exe" }
+        $agyProj = Join-Path $HOME ".local/bin/agyproj$exeSuffix"
+        if (-not (Test-Path $agyProj) -and -not $isWin) { $agyProj = Join-Path $HOME ".local/bin/agyproj" }
+        if (-not (Test-Path $agyProj) -and $Global:ProfileRepoRoot) {
+            $agyProj = Join-Path $Global:ProfileRepoRoot "dist/windows/agyproj.exe"
+            if (-not (Test-Path $agyProj)) { $agyProj = Join-Path $Global:ProfileRepoRoot "bin/agyproj" }
+        }
         if (Test-Path $agyProj) { & $agyProj }
         elseif (Get-Command agyproj -ErrorAction SilentlyContinue) { agyproj }
-        else { wsl agyproj }
+        elseif ($isWin -and (Get-Command wsl -ErrorAction SilentlyContinue)) { wsl agyproj }
 
-        $agyHome = if ($env:GEMINI_HOME) { $env:GEMINI_HOME } else { Join-Path $env:USERPROFILE ".gemini" }
+        $userHome = if ($env:USERPROFILE) { $env:USERPROFILE } else { $HOME }
+        $agyHome = if ($env:GEMINI_HOME) { $env:GEMINI_HOME } else { Join-Path $userHome ".gemini" }
         $projFile = Join-Path $agyHome "selected_project.txt"
         if (Test-Path -LiteralPath $projFile) {
             $targetProj = (Get-Content -LiteralPath $projFile -Raw).Trim()
@@ -264,7 +275,7 @@ function proj {
     $targetDir = $null
     if (Get-Command agyproj -ErrorAction SilentlyContinue) {
         $targetDir = (agyproj cd $Query 2>$null)
-    } elseif (Get-Command wsl -ErrorAction SilentlyContinue) {
+    } elseif ($isWin -and (Get-Command wsl -ErrorAction SilentlyContinue)) {
         $targetDir = (wsl agyproj cd $Query 2>$null)
     }
     if ($targetDir -and (Test-Path -LiteralPath $targetDir)) {

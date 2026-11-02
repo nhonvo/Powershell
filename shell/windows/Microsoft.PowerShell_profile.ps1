@@ -317,13 +317,19 @@ function Get-AgyType {
 
 function Invoke-GoApp {
     param([string]$AppName, [object[]]$AppArgs)
+    $isWin = $IsWindows -or ($null -ne $env:OS -and $env:OS -like "*Windows*")
+    $exeSuffix = if ($isWin) { ".exe" } else { "" }
     $candidates = @(
-        (Join-Path $HOME ".local\bin\$AppName.exe"),
-        (Join-Path $HOME "AppData\Local\Microsoft\WindowsApps\$AppName.exe")
+        (Join-Path $HOME ".local/bin/$AppName$exeSuffix"),
+        (Join-Path $HOME ".local/bin/$AppName")
     )
+    if ($isWin -and $env:LOCALAPPDATA) {
+        $candidates += (Join-Path $env:LOCALAPPDATA "Microsoft/WindowsApps/$AppName.exe")
+    }
     if ($Global:ProfileRepoRoot) {
-        $candidates += (Join-Path $Global:ProfileRepoRoot "dist\windows\$AppName.exe")
-        $candidates += (Join-Path $Global:ProfileRepoRoot "bin\$AppName.exe")
+        $candidates += (Join-Path $Global:ProfileRepoRoot "dist/windows/$AppName.exe")
+        $candidates += (Join-Path $Global:ProfileRepoRoot "bin/$AppName")
+        $candidates += (Join-Path $Global:ProfileRepoRoot "bin/$AppName.exe")
     }
 
     $bestPath = $null
@@ -344,17 +350,17 @@ function Invoke-GoApp {
         return
     }
 
-    $cmd = Get-Command "$AppName.exe" -CommandType Application -ErrorAction SilentlyContinue
+    $cmd = Get-Command "$AppName$exeSuffix" -CommandType Application -ErrorAction SilentlyContinue
     if (-not $cmd) { $cmd = Get-Command $AppName -CommandType Application -ErrorAction SilentlyContinue }
     if ($cmd) {
         if ($AppArgs -and $AppArgs.Count -gt 0) { & $cmd.Source @AppArgs } else { & $cmd.Source }
         return
     }
-    if (Get-Command wsl -ErrorAction SilentlyContinue) {
+    if ($isWin -and (Get-Command wsl -ErrorAction SilentlyContinue)) {
         if ($AppArgs -and $AppArgs.Count -gt 0) { wsl $AppName @AppArgs } else { wsl $AppName }
         return
     }
-    Write-Host "⚠️ Go engine [$AppName] is not found in PATH, dist\windows, or WSL." -ForegroundColor Yellow
+    Write-Host "⚠️ Go engine [$AppName] is not found in PATH, dist/windows, bin, or WSL." -ForegroundColor Yellow
 }
 
 function Invoke-AgyRoute {
@@ -888,8 +894,9 @@ function Invoke-MultiAgent { param([string]$Query) Invoke-AgyRoute "ai" $Query }
 
 function Sync-ActiveAgyEnvironment {
     try {
-        $activeAccFile = Join-Path $env:USERPROFILE ".gemini\active_account.txt"
-        $primaryHome = Join-Path $env:USERPROFILE ".gemini"
+        $userHome = if ($env:USERPROFILE) { $env:USERPROFILE } else { $HOME }
+        $activeAccFile = Join-Path $userHome ".gemini/active_account.txt"
+        $primaryHome = Join-Path $userHome ".gemini"
         if (Test-Path -LiteralPath $activeAccFile) {
             $accName = (Get-Content -LiteralPath $activeAccFile -Raw).Trim()
             if ($accName) {
@@ -906,8 +913,8 @@ function Sync-ActiveAgyEnvironment {
             $env:GEMINI_HOME = $primaryHome
             $env:GEMINI_CLI_HOME = $primaryHome
         }
-        $agyHome = if ($env:GEMINI_HOME) { $env:GEMINI_HOME } else { Join-Path $env:USERPROFILE ".gemini" }
-        if ($agyHome -ne (Join-Path $env:USERPROFILE ".gemini")) {
+        $agyHome = if ($env:GEMINI_HOME) { $env:GEMINI_HOME } else { Join-Path $userHome ".gemini" }
+        if ($agyHome -ne (Join-Path $userHome ".gemini")) {
             Remove-Item Env:\GEMINI_CLI_IDE_AUTH_TOKEN -ErrorAction SilentlyContinue
             Remove-Item Env:\GEMINI_CLI_IDE_SERVER_PORT -ErrorAction SilentlyContinue
         }
@@ -956,10 +963,17 @@ function Invoke-AgyAccount {
         [string]$TargetAccount,
         [switch]$Temporary
     )
-    $exe = Join-Path $HOME ".local\bin\agyswitch.exe"
-    if (-not (Test-Path $exe) -and $Global:ProfileRepoRoot) { $exe = Join-Path $Global:ProfileRepoRoot "dist\windows\agyswitch.exe" }
+    $isWin = $IsWindows -or ($null -ne $env:OS -and $env:OS -like "*Windows*")
+    $exeSuffix = if ($isWin) { ".exe" } else { "" }
+    $exe = Join-Path $HOME ".local/bin/agyswitch$exeSuffix"
+    if (-not (Test-Path $exe) -and -not $isWin) { $exe = Join-Path $HOME ".local/bin/agyswitch" }
+    if (-not (Test-Path $exe) -and $Global:ProfileRepoRoot) {
+        $exe = Join-Path $Global:ProfileRepoRoot "dist/windows/agyswitch.exe"
+        if (-not (Test-Path $exe)) { $exe = Join-Path $Global:ProfileRepoRoot "bin/agyswitch" }
+    }
     if (-not (Test-Path $exe)) {
-        $cmd = Get-Command agyswitch.exe -CommandType Application -ErrorAction SilentlyContinue
+        $cmd = Get-Command "agyswitch$exeSuffix" -CommandType Application -ErrorAction SilentlyContinue
+        if (-not $cmd) { $cmd = Get-Command agyswitch -CommandType Application -ErrorAction SilentlyContinue }
         if ($cmd) { $exe = $cmd.Source }
     }
 
@@ -980,7 +994,7 @@ function Invoke-AgyAccount {
         return
     }
 
-    if (Get-Command wsl -ErrorAction SilentlyContinue) {
+    if ($isWin -and (Get-Command wsl -ErrorAction SilentlyContinue)) {
         $wslCmd = "agyswitch"
         if ($SubCommand) { $wslCmd += " $SubCommand" }
         if ($TargetAccount) { $wslCmd += " $TargetAccount" }
@@ -1010,18 +1024,28 @@ Set-Alias -Name agyswitch -Value Invoke-AgyAccount -Force
 Set-Alias -Name agysw -Value Invoke-AgyAccount -Force
 
 function agyx {
-    $bin = Join-Path $HOME ".local\bin\agyx.exe"
-    if (-not (Test-Path $bin)) { $bin = Join-Path $Global:ProfileRepoRoot "dist\windows\agyx.exe" }
+    $isWin = $IsWindows -or ($null -ne $env:OS -and $env:OS -like "*Windows*")
+    $exeSuffix = if ($isWin) { ".exe" } else { "" }
+    $bin = Join-Path $HOME ".local/bin/agyx$exeSuffix"
+    if (-not (Test-Path $bin) -and -not $isWin) { $bin = Join-Path $HOME ".local/bin/agyx" }
+    if (-not (Test-Path $bin) -and $Global:ProfileRepoRoot) {
+        $bin = Join-Path $Global:ProfileRepoRoot "dist/windows/agyx.exe"
+        if (-not (Test-Path $bin)) { $bin = Join-Path $Global:ProfileRepoRoot "bin/agyx" }
+    }
     if (Test-Path $bin) { & $bin @args; return }
-    if (Get-Command wsl -ErrorAction SilentlyContinue) { wsl agyx @args; return }
-    Write-Host "❌ agyx binary not found. Please compile via 'make windows'" -ForegroundColor Red
+    if ($isWin -and (Get-Command wsl -ErrorAction SilentlyContinue)) { wsl agyx @args; return }
+    Write-Host "❌ agyx binary not found. Please compile via 'make build' or 'make windows'" -ForegroundColor Red
 }
 
 function agy {
-    $bin = Join-Path $env:LOCALAPPDATA "agy\bin\agy.exe"
-    if (-not (Test-Path $bin)) { $bin = Join-Path $HOME ".local\bin\agy.exe" }
+    $isWin = $IsWindows -or ($null -ne $env:OS -and $env:OS -like "*Windows*")
+    $bin = if ($isWin -and $env:LOCALAPPDATA) { Join-Path $env:LOCALAPPDATA "agy\bin\agy.exe" } else { $null }
+    if (-not $bin -or -not (Test-Path $bin)) {
+        $exeSuffix = if ($isWin) { ".exe" } else { "" }
+        $bin = Join-Path $HOME ".local/bin/agy$exeSuffix"
+    }
     if (Test-Path $bin) { & $bin @args; return }
-    & "agy.exe" @args
+    & agy @args
 }
 
 function agyswarm { Invoke-GoApp "agyswarm" $args }
@@ -1055,8 +1079,14 @@ function Invoke-WorkspaceNavigator { param([Parameter(ValueFromRemainingArgument
 function Invoke-TerminalIde {
     param([string]$Path)
     $targetPath = if ($Path) { $Path } else { (Get-Location).Path }
-    $agyProj = Join-Path $HOME ".local\bin\agyproj.exe"
-    if (-not (Test-Path $agyProj)) { $agyProj = Join-Path $Global:ProfileRepoRoot "dist\windows\agyproj.exe" }
+    $isWin = $IsWindows -or ($null -ne $env:OS -and $env:OS -like "*Windows*")
+    $exeSuffix = if ($isWin) { ".exe" } else { "" }
+    $agyProj = Join-Path $HOME ".local/bin/agyproj$exeSuffix"
+    if (-not (Test-Path $agyProj) -and -not $isWin) { $agyProj = Join-Path $HOME ".local/bin/agyproj" }
+    if (-not (Test-Path $agyProj) -and $Global:ProfileRepoRoot) {
+        $agyProj = Join-Path $Global:ProfileRepoRoot "dist/windows/agyproj.exe"
+        if (-not (Test-Path $agyProj)) { $agyProj = Join-Path $Global:ProfileRepoRoot "bin/agyproj" }
+    }
     if (Test-Path $agyProj) {
         & $agyProj open $targetPath
         return
@@ -1075,24 +1105,40 @@ function Invoke-TerminalIde {
 function Reload-Profile { . $PROFILE; Write-Host "✅ Profile reloaded." -ForegroundColor Green }
 
 function open-term {
-    if ($args) {
-        Start-Process wt.exe -ArgumentList $args
-    } else {
-        if (Get-Command wt.exe -ErrorAction SilentlyContinue) {
-            Start-Process wt.exe -ArgumentList "-d `"$($pwd.Path)`""
-            return
+    $isWin = $IsWindows -or ($null -ne $env:OS -and $env:OS -like "*Windows*")
+    if ($isWin) {
+        if ($args) {
+            Start-Process wt.exe -ArgumentList $args
+        } else {
+            if (Get-Command wt.exe -ErrorAction SilentlyContinue) {
+                Start-Process wt.exe -ArgumentList "-d `"$($pwd.Path)`""
+                return
+            }
+            $sysType = Get-AgyType "SystemHelper"
+            if ($sysType) { $sysType::OpenNewTerminalSession($pwd.Path, [string]$null, $true) }
         }
-        $sysType = Get-AgyType "SystemHelper"
-        if ($sysType) { $sysType::OpenNewTerminalSession($pwd.Path, [string]$null, $true) }
+    } else {
+        $target = if ($args) { $args[0] } else { (Get-Location).Path }
+        if (Get-Command gnome-terminal -ErrorAction SilentlyContinue) {
+            Start-Process gnome-terminal -ArgumentList "--working-directory=`"$target`""
+        } elseif (Get-Command x-terminal-emulator -ErrorAction SilentlyContinue) {
+            Start-Process x-terminal-emulator -ArgumentList "--working-directory=`"$target`""
+        }
     }
 }
 
 function Set-ShellTheme {
     param([string]$ThemeName)
     $themesDir = $env:POSH_THEMES_PATH
+    $isWin = $IsWindows -or ($null -ne $env:OS -and $env:OS -like "*Windows*")
+    $exeSuffix = if ($isWin) { ".exe" } else { "" }
     if (-not $ThemeName) {
-        $termBin = Join-Path $HOME ".local\bin\agyterm.exe"
-        if (-not (Test-Path $termBin)) { $termBin = Join-Path $Global:ProfileRepoRoot "dist\windows\agyterm.exe" }
+        $termBin = Join-Path $HOME ".local/bin/agyterm$exeSuffix"
+        if (-not (Test-Path $termBin) -and -not $isWin) { $termBin = Join-Path $HOME ".local/bin/agyterm" }
+        if (-not (Test-Path $termBin) -and $Global:ProfileRepoRoot) {
+            $termBin = Join-Path $Global:ProfileRepoRoot "dist/windows/agyterm.exe"
+            if (-not (Test-Path $termBin)) { $termBin = Join-Path $Global:ProfileRepoRoot "bin/agyterm" }
+        }
         if (Test-Path $termBin) {
             & $termBin
             return
@@ -1264,9 +1310,13 @@ function Clear-ShellHistory {
 Set-Alias -Name clh -Value Clear-ShellHistory -Force
 
 #region 13. AGYX DEVELOPER SUITE — GO DYNAMIC INITIALIZER (OPTION A)
-$agyxBin = Join-Path $HOME ".local\bin\agyx.exe"
+$isWin = $IsWindows -or ($null -ne $env:OS -and $env:OS -like "*Windows*")
+$exeSuffix = if ($isWin) { ".exe" } else { "" }
+$agyxBin = Join-Path $HOME ".local/bin/agyx$exeSuffix"
+if (-not (Test-Path $agyxBin) -and -not $isWin) { $agyxBin = Join-Path $HOME ".local/bin/agyx" }
 if (-not (Test-Path $agyxBin) -and $Global:ProfileRepoRoot) {
-    $agyxBin = Join-Path $Global:ProfileRepoRoot "dist\windows\agyx.exe"
+    $agyxBin = Join-Path $Global:ProfileRepoRoot "dist/windows/agyx.exe"
+    if (-not (Test-Path $agyxBin)) { $agyxBin = Join-Path $Global:ProfileRepoRoot "bin/agyx" }
 }
 if (Test-Path $agyxBin) {
     try {
@@ -1276,7 +1326,7 @@ if (Test-Path $agyxBin) {
             . $sb
         }
     } catch {}
-} elseif (Get-Command wsl -ErrorAction SilentlyContinue) {
+} elseif ($isWin -and (Get-Command wsl -ErrorAction SilentlyContinue)) {
     try {
         $initScript = wsl agyx init powershell 2>$null
         if ($initScript) {
